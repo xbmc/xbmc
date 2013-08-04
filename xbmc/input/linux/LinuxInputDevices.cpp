@@ -103,184 +103,154 @@ typedef unsigned long kernel_ulong_t;
 #undef test_bit
 #define test_bit(bit, array) ((array[LONG(bit)] >> OFF(bit)) & 1)
 
-#ifndef D_ARRAY_SIZE
-#define D_ARRAY_SIZE(array)        ((int)(sizeof(array) / sizeof((array)[0])))
-#endif
-
 #define MAX_LINUX_INPUT_DEVICES 16
 
-static const
-XBMCKey basic_keycodes[] = { XBMCK_UNKNOWN, XBMCK_ESCAPE, XBMCK_1, XBMCK_2, XBMCK_3,
-    XBMCK_4, XBMCK_5, XBMCK_6, XBMCK_7, XBMCK_8, XBMCK_9, XBMCK_0, XBMCK_MINUS,
-    XBMCK_EQUALS, XBMCK_BACKSPACE,
-
-    XBMCK_TAB, XBMCK_q, XBMCK_w, XBMCK_e, XBMCK_r, XBMCK_t, XBMCK_y, XBMCK_u, XBMCK_i,
-    XBMCK_o, XBMCK_p, XBMCK_LEFTBRACKET, XBMCK_RIGHTBRACKET, XBMCK_RETURN,
-
-    XBMCK_LCTRL, XBMCK_a, XBMCK_s, XBMCK_d, XBMCK_f, XBMCK_g, XBMCK_h, XBMCK_j,
-    XBMCK_k, XBMCK_l, XBMCK_SEMICOLON, XBMCK_QUOTE, XBMCK_BACKQUOTE,
-
-    XBMCK_LSHIFT, XBMCK_BACKSLASH, XBMCK_z, XBMCK_x, XBMCK_c, XBMCK_v, XBMCK_b,
-    XBMCK_n, XBMCK_m, XBMCK_COMMA, XBMCK_PERIOD, XBMCK_SLASH, XBMCK_RSHIFT,
-    XBMCK_KP_MULTIPLY, XBMCK_LALT, XBMCK_SPACE, XBMCK_CAPSLOCK,
-
-    XBMCK_F1, XBMCK_F2, XBMCK_F3, XBMCK_F4, XBMCK_F5, XBMCK_F6, XBMCK_F7, XBMCK_F8,
-    XBMCK_F9, XBMCK_F10, XBMCK_NUMLOCK, XBMCK_SCROLLOCK,
-
-    XBMCK_KP7, XBMCK_KP8, XBMCK_KP9, XBMCK_KP_MINUS, XBMCK_KP4, XBMCK_KP5,
-    XBMCK_KP6, XBMCK_KP_PLUS, XBMCK_KP1, XBMCK_KP2, XBMCK_KP3, XBMCK_KP0,
-    XBMCK_KP_PERIOD,
-
-    /*KEY_103RD,*/XBMCK_BACKSLASH,
-    /*KEY_F13,*/XBMCK_F13,
-    /*KEY_102ND*/XBMCK_LESS,
-
-    XBMCK_F11, XBMCK_F12, XBMCK_F14, XBMCK_F15,
-    XBMCK_UNKNOWN,XBMCK_UNKNOWN,XBMCK_UNKNOWN, /*XBMCK_F16, XBMCK_F17, XBMCK_F18,*/
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, /*XBMCK_F19, XBMCK_F20,*/
-
-    XBMCK_KP_ENTER, XBMCK_RCTRL, XBMCK_KP_DIVIDE, XBMCK_PRINT, XBMCK_MODE,
-
-    /*KEY_LINEFEED*/XBMCK_UNKNOWN,
-
-    XBMCK_HOME, XBMCK_UP, XBMCK_PAGEUP, XBMCK_LEFT, XBMCK_RIGHT, XBMCK_END,
-    XBMCK_DOWN, XBMCK_PAGEDOWN, XBMCK_INSERT, XBMCK_DELETE,
-
-    /*KEY_MACRO,*/XBMCK_UNKNOWN,
-
-    XBMCK_VOLUME_MUTE, XBMCK_VOLUME_DOWN, XBMCK_VOLUME_UP, XBMCK_POWER, XBMCK_KP_EQUALS,
-
-    /*KEY_KPPLUSMINUS,*/XBMCK_UNKNOWN,
-
-    XBMCK_PAUSE, XBMCK_UNKNOWN, XBMCK_UNKNOWN, /*DFB_FUNCTION_KEY(21), DFB_FUNCTION_KEY(22), */
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, /*DFB_FUNCTION_KEY(23), DFB_FUNCTION_KEY(24),*/
-
-    /*DIKI_KP_SEPARATOR*/XBMCK_UNKNOWN, XBMCK_LMETA, XBMCK_RMETA, XBMCK_LSUPER,
-
-    XBMCK_MEDIA_STOP,
-
-    /*DIKS_AGAIN, DIKS_PROPS, DIKS_UNDO, DIKS_FRONT, DIKS_COPY,
-     DIKS_OPEN, DIKS_PASTE, DIKS_FIND, DIKS_CUT,*/
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-    XBMCK_HELP,
-
-    /* DIKS_MENU, DIKS_CALCULATOR, DIKS_SETUP, */
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-    /*KEY_SLEEP, KEY_WAKEUP, KEY_FILE, KEY_SENDFILE, KEY_DELETEFILE,
-     KEY_XFER,*/
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-    XBMCK_UNKNOWN,
-
-    /*KEY_PROG1, KEY_PROG2,*/
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-    /*DIKS_INTERNET*/ XBMCK_UNKNOWN,
-
-    /*KEY_MSDOS, KEY_COFFEE, KEY_DIRECTION, KEY_CYCLEWINDOWS,*/
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-    /*DIKS_MAIL*/ XBMCK_UNKNOWN,
-
-    /*KEY_BOOKMARKS, KEY_COMPUTER, */
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-    /*DIKS_BACK, DIKS_FORWARD,*/
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-    /*KEY_CLOSECD, KEY_EJECTCD, KEY_EJECTCLOSECD,*/
-    XBMCK_EJECT, XBMCK_EJECT, XBMCK_EJECT,
-
-    XBMCK_MEDIA_NEXT_TRACK, XBMCK_MEDIA_PLAY_PAUSE, XBMCK_MEDIA_PREV_TRACK, XBMCK_MEDIA_STOP, XBMCK_RECORD,
-    XBMCK_REWIND, XBMCK_PHONE,
-
-    /*KEY_ISO,*/XBMCK_UNKNOWN,
-    /*KEY_CONFIG,*/XBMCK_UNKNOWN,
-    /*KEY_HOMEPAGE, KEY_REFRESH,*/XBMCK_UNKNOWN, XBMCK_SHUFFLE,
-
-    /*DIKS_EXIT*/XBMCK_UNKNOWN, /*KEY_MOVE,*/XBMCK_UNKNOWN, /*DIKS_EDITOR*/XBMCK_UNKNOWN,
-
-    /*KEY_SCROLLUP,*/XBMCK_PAGEUP,
-    /*KEY_SCROLLDOWN,*/XBMCK_PAGEDOWN,
-    /*KEY_KPLEFTPAREN,*/XBMCK_UNKNOWN,
-    /*KEY_KPRIGHTPAREN,*/XBMCK_UNKNOWN,
-
-    /* unused codes 181-182: */
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-/*
-    DFB_FUNCTION_KEY(13), DFB_FUNCTION_KEY(14), DFB_FUNCTION_KEY(15),
-    DFB_FUNCTION_KEY(16), DFB_FUNCTION_KEY(17), DFB_FUNCTION_KEY(18),
-    DFB_FUNCTION_KEY(19), DFB_FUNCTION_KEY(20), DFB_FUNCTION_KEY(21),
-    DFB_FUNCTION_KEY(22), DFB_FUNCTION_KEY(23), DFB_FUNCTION_KEY(24),
-*/
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-    /* unused codes 195-199: */
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-    /* KEY_PLAYCD, KEY_PAUSECD */
-    XBMCK_PLAY, XBMCK_PAUSE,
-
-    /*KEY_PROG3, KEY_PROG4,*/
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-    XBMCK_UNKNOWN,
-
-    /*KEY_SUSPEND, KEY_CLOSE*/
-    XBMCK_UNKNOWN, XBMCK_UNKNOWN,
-
-    /* KEY_PLAY */
-    XBMCK_PLAY,
-
-    /* KEY_FASTFORWARD */
-    XBMCK_FASTFORWARD,
-
-    /* KEY_BASSBOOST */
-    XBMCK_UNKNOWN,
-
-    /* KEY_PRINT */
-    XBMCK_PRINT,
-
-    /* KEY_HP             */XBMCK_UNKNOWN,
-    /* KEY_CAMERA         */XBMCK_UNKNOWN,
-    /* KEY_SOUND          */XBMCK_UNKNOWN,
-    /* KEY_QUESTION       */XBMCK_HELP,
-    /* KEY_EMAIL          */XBMCK_UNKNOWN,
-    /* KEY_CHAT           */XBMCK_UNKNOWN,
-    /* KEY_SEARCH         */XBMCK_UNKNOWN,
-    /* KEY_CONNECT        */XBMCK_UNKNOWN,
-    /* KEY_FINANCE        */XBMCK_UNKNOWN,
-    /* KEY_SPORT          */XBMCK_UNKNOWN,
-    /* KEY_SHOP           */XBMCK_UNKNOWN,
-    /* KEY_ALTERASE       */XBMCK_UNKNOWN,
-    /* KEY_CANCEL         */XBMCK_UNKNOWN,
-    /* KEY_BRIGHTNESSDOWN */XBMCK_UNKNOWN,
-    /* KEY_BRIGHTNESSUP   */XBMCK_UNKNOWN,
-    /* KEY_MEDIA          */XBMCK_UNKNOWN, };
-
-/*
-  In the future we may want it...
+typedef struct {
+  unsigned short Key;
+  XBMCKey xbmcKey;
+} KeyMap;
 
 static const
-int ext_keycodes[] = { DIKS_OK, DIKS_SELECT, DIKS_GOTO, DIKS_CLEAR,
-    DIKS_POWER2, DIKS_OPTION, DIKS_INFO, DIKS_TIME, DIKS_VENDOR, DIKS_ARCHIVE,
-    DIKS_PROGRAM, DIKS_CHANNEL, DIKS_FAVORITES, DIKS_EPG, DIKS_PVR, DIKS_MHP,
-    DIKS_LANGUAGE, DIKS_TITLE, DIKS_SUBTITLE, DIKS_ANGLE, DIKS_ZOOM, DIKS_MODE,
-    DIKS_KEYBOARD, DIKS_SCREEN, DIKS_PC, DIKS_TV, DIKS_TV2, DIKS_VCR,
-    DIKS_VCR2, DIKS_SAT, DIKS_SAT2, DIKS_CD, DIKS_TAPE, DIKS_RADIO, DIKS_TUNER,
-    DIKS_PLAYER, DIKS_TEXT, DIKS_DVD, DIKS_AUX, DIKS_MP3, DIKS_AUDIO,
-    DIKS_VIDEO, DIKS_DIRECTORY, DIKS_LIST, DIKS_MEMO, DIKS_CALENDAR, DIKS_RED,
-    DIKS_GREEN, DIKS_YELLOW, DIKS_BLUE, DIKS_CHANNEL_UP, DIKS_CHANNEL_DOWN,
-    DIKS_FIRST, DIKS_LAST, DIKS_AB, DIKS_NEXT, DIKS_RESTART, DIKS_SLOW,
-    DIKS_SHUFFLE, DIKS_FASTFORWARD, DIKS_PREVIOUS, DIKS_NEXT, DIKS_DIGITS,
-    DIKS_TEEN, DIKS_TWEN, DIKS_BREAK };
-*/
+KeyMap keyMap[] = {
+  { KEY_ESC           , XBMCK_ESCAPE      },
+  { KEY_1             , XBMCK_1           },
+  { KEY_2             , XBMCK_2           },
+  { KEY_3             , XBMCK_3           },
+  { KEY_4             , XBMCK_4           },
+  { KEY_5             , XBMCK_5           },
+  { KEY_6             , XBMCK_6           },
+  { KEY_7             , XBMCK_7           },
+  { KEY_8             , XBMCK_8           },
+  { KEY_9             , XBMCK_9           },
+  { KEY_0             , XBMCK_0           },
+  { KEY_MINUS         , XBMCK_MINUS       },
+  { KEY_EQUAL         , XBMCK_EQUALS      },
+  { KEY_BACKSPACE     , XBMCK_BACKSPACE   },
+  { KEY_TAB           , XBMCK_TAB         },
+  { KEY_Q             , XBMCK_q           },
+  { KEY_W             , XBMCK_w           },
+  { KEY_E             , XBMCK_e           },
+  { KEY_R             , XBMCK_r           },
+  { KEY_T             , XBMCK_t           },
+  { KEY_Y             , XBMCK_y           },
+  { KEY_U             , XBMCK_u           },
+  { KEY_I             , XBMCK_i           },
+  { KEY_O             , XBMCK_o           },
+  { KEY_P             , XBMCK_p           },
+  { KEY_LEFTBRACE     , XBMCK_LEFTBRACKET },
+  { KEY_RIGHTBRACE    , XBMCK_RIGHTBRACKET},
+  { KEY_ENTER         , XBMCK_RETURN      },
+  { KEY_LEFTCTRL      , XBMCK_LCTRL       },
+  { KEY_A             , XBMCK_a           },
+  { KEY_S             , XBMCK_s           },
+  { KEY_D             , XBMCK_d           },
+  { KEY_F             , XBMCK_f           },
+  { KEY_G             , XBMCK_g           },
+  { KEY_H             , XBMCK_h           },
+  { KEY_J             , XBMCK_j           },
+  { KEY_K             , XBMCK_k           },
+  { KEY_L             , XBMCK_l           },
+  { KEY_SEMICOLON     , XBMCK_SEMICOLON   },
+  { KEY_APOSTROPHE    , XBMCK_QUOTE       },
+  { KEY_GRAVE         , XBMCK_BACKQUOTE   },
+  { KEY_LEFTSHIFT     , XBMCK_LSHIFT      },
+  { KEY_BACKSLASH     , XBMCK_BACKSLASH   },
+  { KEY_Z             , XBMCK_z           },
+  { KEY_X             , XBMCK_x           },
+  { KEY_C             , XBMCK_c           },
+  { KEY_V             , XBMCK_v           },
+  { KEY_B             , XBMCK_b           },
+  { KEY_N             , XBMCK_n           },
+  { KEY_M             , XBMCK_m           },
+  { KEY_COMMA         , XBMCK_COMMA       },
+  { KEY_DOT           , XBMCK_PERIOD      },
+  { KEY_SLASH         , XBMCK_SLASH       },
+  { KEY_RIGHTSHIFT    , XBMCK_RSHIFT      },
+  { KEY_KPASTERISK    , XBMCK_KP_MULTIPLY },
+  { KEY_LEFTALT       , XBMCK_LALT        },
+  { KEY_SPACE         , XBMCK_SPACE       },
+  { KEY_CAPSLOCK      , XBMCK_CAPSLOCK    },
+  { KEY_F1            , XBMCK_F1          },
+  { KEY_F2            , XBMCK_F2          },
+  { KEY_F3            , XBMCK_F3          },
+  { KEY_F4            , XBMCK_F4          },
+  { KEY_F5            , XBMCK_F5          },
+  { KEY_F6            , XBMCK_F6          },
+  { KEY_F7            , XBMCK_F7          },
+  { KEY_F8            , XBMCK_F8          },
+  { KEY_F9            , XBMCK_F9          },
+  { KEY_F10           , XBMCK_F10         },
+  { KEY_NUMLOCK       , XBMCK_NUMLOCK     },
+  { KEY_SCROLLLOCK    , XBMCK_SCROLLOCK   },
+  { KEY_KP7           , XBMCK_KP7         },
+  { KEY_KP8           , XBMCK_KP8         },
+  { KEY_KP9           , XBMCK_KP9         },
+  { KEY_KPMINUS       , XBMCK_KP_MINUS    },
+  { KEY_KP4           , XBMCK_KP4         },
+  { KEY_KP5           , XBMCK_KP5         },
+  { KEY_KP6           , XBMCK_KP6         },
+  { KEY_KPPLUS        , XBMCK_KP_PLUS     },
+  { KEY_KP1           , XBMCK_KP1         },
+  { KEY_KP2           , XBMCK_KP2         },
+  { KEY_KP3           , XBMCK_KP3         },
+  { KEY_KP0           , XBMCK_KP0         },
+  { KEY_KPDOT         , XBMCK_KP_PERIOD   },
+  { 84                , XBMCK_BACKSLASH   },
+  { 85                , XBMCK_F13         },
+  { 86                , XBMCK_LESS        },
+  { KEY_F11           , XBMCK_F11         },
+  { KEY_F12           , XBMCK_F12         },
+  { 89                , XBMCK_F14         },
+  { 90                , XBMCK_F15         },
+  { KEY_KPENTER       , XBMCK_KP_ENTER    },
+  { KEY_RIGHTCTRL     , XBMCK_RCTRL       },
+  { KEY_KPSLASH       , XBMCK_KP_DIVIDE   },
+  { KEY_SYSRQ         , XBMCK_PRINT       },
+  { KEY_RIGHTALT      , XBMCK_MODE        },
+  { KEY_HOME          , XBMCK_HOME        },
+  { KEY_UP            , XBMCK_UP          },
+  { KEY_PAGEUP        , XBMCK_PAGEUP      },
+  { KEY_LEFT          , XBMCK_LEFT        },
+  { KEY_RIGHT         , XBMCK_RIGHT       },
+  { KEY_END           , XBMCK_END         },
+  { KEY_DOWN          , XBMCK_DOWN        },
+  { KEY_PAGEDOWN      , XBMCK_PAGEDOWN    },
+  { KEY_INSERT        , XBMCK_INSERT      },
+  { KEY_DELETE        , XBMCK_DELETE      },
+  { KEY_MUTE          , XBMCK_VOLUME_MUTE },
+  { KEY_VOLUMEDOWN    , XBMCK_VOLUME_DOWN },
+  { KEY_VOLUMEUP      , XBMCK_VOLUME_UP   },
+  { KEY_POWER         , XBMCK_POWER       },
+  { KEY_KPEQUAL       , XBMCK_KP_EQUALS   },
+  { KEY_PAUSE         , XBMCK_PAUSE       },
+  { KEY_LEFTMETA      , XBMCK_LMETA       },
+  { KEY_RIGHTMETA     , XBMCK_RMETA       },
+  { KEY_COMPOSE       , XBMCK_LSUPER      },
+  { KEY_STOP          , XBMCK_MEDIA_STOP  },
+  { KEY_HELP          , XBMCK_HELP        },
+  { KEY_CLOSECD       , XBMCK_EJECT       },
+  { KEY_EJECTCD       , XBMCK_EJECT       },
+  { KEY_EJECTCLOSECD  , XBMCK_EJECT       },
+  { KEY_NEXTSONG      , XBMCK_MEDIA_NEXT_TRACK},
+  { KEY_PLAYPAUSE     , XBMCK_MEDIA_PLAY_PAUSE},
+  { KEY_PREVIOUSSONG  , XBMCK_MEDIA_PREV_TRACK},
+  { KEY_STOPCD        , XBMCK_MEDIA_STOP  },
+  { KEY_RECORD        , XBMCK_RECORD      },
+  { KEY_REWIND        , XBMCK_REWIND      },
+  { KEY_PHONE         , XBMCK_PHONE       },
+  { KEY_REFRESH       , XBMCK_SHUFFLE     },
+  { KEY_SCROLLUP      , XBMCK_PAGEUP      },
+  { KEY_SCROLLDOWN    , XBMCK_PAGEDOWN    },
+  { KEY_PLAY          , XBMCK_PLAY        },
+  { KEY_FASTFORWARD   , XBMCK_FASTFORWARD },
+  { KEY_PRINT         , XBMCK_PRINT       },
+  { KEY_QUESTION      , XBMCK_HELP        },
+  // The Little Black Box Remote Additions
+  { 384               , XBMCK_LEFT        }, // Red
+  { 378               , XBMCK_RIGHT       }, // Green
+  { 381               , XBMCK_UP          }, // Yellow
+  { 366               , XBMCK_DOWN        }, // Blue
+};
 
 typedef enum
 {
@@ -336,16 +306,11 @@ CLinuxInputDevice::~CLinuxInputDevice()
  */
 XBMCKey CLinuxInputDevice::TranslateKey(unsigned short code)
 {
-  if (code < D_ARRAY_SIZE(basic_keycodes))
-    return basic_keycodes[code];
-
-/*
-  In the future we may want it...
-
-  if (code >= KEY_OK)
-    if (code - KEY_OK < D_ARRAY_SIZE(ext_keycodes))
-      return ext_keycodes[code - KEY_OK];
-*/
+  for (size_t index = 0; index < sizeof(keyMap) / sizeof(KeyMap); index++)
+  {
+    if (code == keyMap[index].Key)
+      return keyMap[index].xbmcKey;
+  }
 
   return XBMCK_UNKNOWN;
 }
@@ -542,10 +507,14 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
     XBMCKey key = TranslateKey(code);
 
     if (key == XBMCK_UNKNOWN)
+    {
+      CLog::Log(LOGDEBUG, "CLinuxInputDevice::KeyEvent: TranslateKey returned XBMCK_UNKNOWN from code(%d)", code);
       return false;
+    }
 
     devt.type = levt.value ? XBMC_KEYDOWN : XBMC_KEYUP;
     devt.key.type = devt.type;
+    // warning, key.keysym.scancode is unsigned char so 0 - 255 only
     devt.key.keysym.scancode = code;
     devt.key.keysym.sym = key;
     devt.key.keysym.mod = UpdateModifiers(devt);
