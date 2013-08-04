@@ -40,14 +40,17 @@
 #include "osx/CocoaPowerSyscall.h"
 #elif defined(TARGET_ANDROID)
 #include "android/AndroidPowerSyscall.h"
-#elif defined(TARGET_POSIX) && defined(HAS_DBUS)
+#elif defined(TARGET_POSIX)
+#include "linux/FallbackPowerSyscall.h"
+#if defined(HAS_DBUS)
 #include "linux/ConsoleUPowerSyscall.h"
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
 #include "linux/LogindUPowerSyscall.h"
 #include "linux/UPowerSyscall.h"
-#ifdef HAS_HAL
+#if defined(HAS_HAL)
 #include "linux/HALPowerSyscall.h"
-#endif
+#endif // HAS_HAL
+#endif // HAS_DBUS
 #elif defined(TARGET_WINDOWS)
 #include "powermanagement/windows/Win32PowerSyscall.h"
 extern HWND g_hWnd;
@@ -73,7 +76,8 @@ void CPowerManager::Initialize()
   m_instance = new CCocoaPowerSyscall();
 #elif defined(TARGET_ANDROID)
   m_instance = new CAndroidPowerSyscall();
-#elif defined(TARGET_POSIX) && defined(HAS_DBUS)
+#elif defined(TARGET_POSIX)
+#if defined(HAS_DBUS)
   if (CConsoleUPowerSyscall::HasConsoleKitAndUPower())
     m_instance = new CConsoleUPowerSyscall();
   else if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
@@ -82,10 +86,13 @@ void CPowerManager::Initialize()
     m_instance = new CLogindUPowerSyscall();
   else if (CUPowerSyscall::HasUPower())
     m_instance = new CUPowerSyscall();
-#ifdef HAS_HAL
-  else
+#if defined(HAS_HAL)
+  else if(1)
     m_instance = new CHALPowerSyscall();
-#endif
+#endif // HAS_HAL
+  else
+#endif // HAS_DBUS
+    m_instance = new CFallbackPowerSyscall();
 #elif defined(TARGET_WINDOWS)
   m_instance = new CWin32PowerSyscall();
 #endif
