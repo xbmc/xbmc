@@ -750,22 +750,25 @@ bool CGUIDialogKeyboardGeneric::ShowAndGetInput(char_callback_t pCallback, const
 
 void CGUIDialogKeyboardGeneric::OnPasteClipboard(void)
 {
-  CStdStringW pasted_text;
+  CStdStringW unicode_text;
+  CStdStringA utf8_text;
 
 // Get text from the clipboard
-  pasted_text = g_Windowing.GetClipboard();
+  utf8_text = g_Windowing.GetClipboardText();
 
   // Insert the pasted text at the current cursor position.
-  if (pasted_text.length() > 0)
+  if (utf8_text.length() > 0)
   {
+    g_charsetConverter.utf8ToW(utf8_text, unicode_text);
+
     int i = GetCursorPos();
     CStdStringW left_end = m_strEdit.Left(i);
     CStdStringW right_end = m_strEdit.Right(m_strEdit.length() - i);
 
     m_strEdit = left_end;
-    m_strEdit.append(pasted_text);
+    m_strEdit.append(unicode_text);
     m_strEdit.append(right_end);
     UpdateLabel();
-    MoveCursor(pasted_text.length());
+    MoveCursor(unicode_text.length());
   }
 }
