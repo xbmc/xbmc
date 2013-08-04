@@ -12942,7 +12942,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36177"
-msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr ""
 
 #: system/settings/settings.xml
