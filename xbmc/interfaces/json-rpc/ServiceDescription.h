@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://www.xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.5.3";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.6.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -807,7 +807,25 @@ namespace JSONRPC
         "}"
       "}"
     "}",
-    "\"List.Filter.Rule\": {"
+    "\"Profiles.Password\": {"
+      "\"type\": \"object\","
+      "\"properties\": {"
+        "\"value\": { \"type\": \"string\", \"required\": true, \"description\": \"Password\" },"
+        "\"encryption\": { \"type\": \"string\", \"description\": \"Password Encryption\", \"default\": \"md5\", \"enum\": [ \"none\", \"md5\" ] }"
+      "}"
+    "}",
+    "\"Profiles.Fields.Profile\": {"
+      "\"extends\": \"Item.Fields.Base\","
+      "\"items\": { \"type\": \"string\", \"enum\": [ \"thumbnail\", \"lockmode\" ] }"
+    "}",
+	  "\"Profiles.Details.Profile\": {"
+      "\"extends\": \"Item.Details.Base\","
+      "\"properties\": {"
+        "\"thumbnail\": { \"type\": \"string\" },"
+        "\"lockmode\": { \"type\": \"integer\" }"
+      "}"
+    "}",
+	  "\"List.Filter.Rule\": {"
       "\"type\": \"object\","
       "\"properties\": {"
         "\"operator\": { \"$ref\": \"List.Filter.Operators\", \"required\": true },"
@@ -2933,6 +2951,48 @@ namespace JSONRPC
       "\"permission\": \"ControlPVR\","
       "\"params\": [ ],"
       "\"returns\":  \"string\""
+    "}",
+    "\"Profiles.GetProfiles\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Retrieve all profiles\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": ["
+        "{ \"name\": \"properties\", \"$ref\": \"Profiles.Fields.Profile\" },"
+        "{ \"name\": \"limits\", \"$ref\": \"List.Limits\" },"
+        "{ \"name\": \"sort\", \"$ref\": \"List.Sort\" }"
+      "],"
+      "\"returns\": {"
+        "\"type\": \"object\","
+        "\"properties\": {"
+          "\"limits\": { \"$ref\": \"List.LimitsReturned\", \"required\": true },"
+          "\"profiles\": { \"type\": \"array\", \"required\": true,"
+           "\"items\": { \"$ref\": \"Profiles.Details.Profile\" }"
+          "}"
+        "}"
+      "}"
+    "}",
+    "\"Profiles.GetCurrentProfile\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Retrieve the current profile\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": ["
+        "{ \"name\": \"properties\", \"$ref\": \"Profiles.Fields.Profile\" }"
+      "],"
+      "\"returns\":  { \"$ref\": \"Profiles.Details.Profile\", \"required\": true }"
+    "}",
+    "\"Profiles.LoadProfile\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Load the specified profile\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": ["
+        "{ \"name\": \"profile\", \"type\": \"string\", \"required\": true, \"description\": \"Profile name\" },"
+        "{ \"name\": \"prompt\", \"type\": \"boolean\", \"description\": \"Prompt for password\" },"
+        "{ \"name\": \"password\", \"$ref\": \"Profiles.Password\" }"
+      "],"
+      "\"returns\": \"string\""
     "}",
     "\"System.GetProperties\": {"
       "\"type\": \"method\","

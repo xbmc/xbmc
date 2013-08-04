@@ -1664,6 +1664,48 @@
     "params": [ ],
     "returns":  "string"
   },
+  "Profiles.GetProfiles": {
+    "type": "method",
+    "description": "Retrieve all profiles",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "Profiles.Fields.Profile" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }"
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "profiles": { "type": "array", "required": true,
+          "items": { "$ref": "Profiles.Details.Profile" }
+        }
+      }
+    }
+  },
+  "Profiles.GetCurrentProfile": {
+    "type": "method",
+    "description": "Retrieve the current profile",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "Profiles.Fields.Profile" }
+    ],
+	"returns":  { "$ref": "Profiles.Details.Profile", "required": true }
+  },
+  "Profiles.LoadProfile": {
+    "type": "method",
+    "description": "Load the specified profile",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [
+      { "name": "profile", "type": "string", "required": true, "description": "Profile name" },
+      { "name": "prompt", "type": "boolean", "description": "Prompt for password" },
+      { "name": "password", "$ref": "Profiles.Password" }
+    ],
+    "returns": "string"
+  },
   "System.GetProperties": {
     "type": "method",
     "description": "Retrieves the values of the given properties",
