@@ -48,6 +48,17 @@
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 
+/* Target identification */
+#if defined(TARGET_DARWIN)
+#include <Availability.h>
+#elif defined(TARGET_ANDROID)
+#include <android/api-level.h>
+#elif defined(TARGET_FREEBSD)
+#include <sys/param.h>
+#elif defined(TARGET_LINUX)
+#include <linux/version.h>
+#endif
+
 CSysInfo g_sysinfo;
 
 CSysInfoJob::CSysInfoJob()
@@ -806,6 +817,52 @@ bool CSysInfo::HasVideoToolBoxDecoder()
 #endif
   return result;
 }
+
+std::string CSysInfo::GetBuildTargetPlatformName(void)
+{
+#if defined(TARGET_DARWIN_OSX)
+  return "Darwin OSX";
+#elif defined(TARGET_DARWIN_IOS_ATV2)
+  return "Darwin iOS ATV2";
+#elif defined(TARGET_DARWIN_IOS)
+  return "Darwin iOS";
+#elif defined(TARGET_FREEBSD)
+  return "FreeBSD";
+#elif defined(TARGET_ANDROID)
+  return "Android";
+#elif defined(TARGET_LINUX)
+  return "Linux";
+#elif defined(TARGET_WINDOWS)
+  return "Win32";
+#else
+  return "unknown platform";
+#endif
+}
+
+std::string CSysInfo::GetBuildTargetPlatformVersion(void)
+{
+/* Expand macro before stringify */
+#define STR_MACRO(x) #x
+#define XSTR_MACRO(x) STR_MACRO(x)
+
+#if defined(TARGET_DARWIN_OSX)
+  return "version " XSTR_MACRO(__MAC_OS_X_VERSION_MIN_REQUIRED);
+#elif defined(TARGET_DARWIN_IOS)
+  return "version " XSTR_MACRO(__IPHONE_OS_VERSION_MIN_REQUIRED);
+#elif defined(TARGET_FREEBSD)
+  return "version " XSTR_MACRO(__FreeBSD_version);
+#elif defined(TARGET_ANDROID)
+  return "API level " XSTR_MACRO(__ANDROID_API__);
+#elif defined(TARGET_LINUX)
+  std::string ver = StringUtils::Format("%i.%i.%i", LINUX_VERSION_CODE >> 16, (LINUX_VERSION_CODE >> 8) & 0xff, LINUX_VERSION_CODE & 0xff);
+  return ver;
+#elif defined(TARGET_WINDOWS)
+  return "version " XSTR_MACRO(NTDDI_VERSION);
+#else
+  return "(unknown platform)";
+#endif
+}
+
 
 CJob *CSysInfo::GetJob() const
 {
