@@ -1244,5 +1244,6 @@ plex/Dependencies/iphoneos*
 plex/Dependencies/*darwin-i686
 plex/build
 plex/build_xc
+plex/Dependencies/built-depends/*
 
 *.autosave
