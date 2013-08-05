@@ -71,7 +71,7 @@ struct DVDVideoPicture
     struct {
       struct __CVBuffer *cvBufferRef;
     };
-    
+
     struct {
       CStageFrightVideo* stf;
       EGLImageKHR eglimg;

@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 
+DEPS= ../../Makefile.include Makefile
 INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/include
 INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/native/include
 INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/include/media/stagefright
@@ -43,7 +43,7 @@ $(PLATFORM): install-sources
 
 $(PLATFORM)/libstagefright.so:  $(PLATFORM) $(DEPS) libstagefright.cpp
 	$(CXX) -Wno-multichar -fno-exceptions -fno-rtti $(INCLUDES) -DHAVE_PTHREADS -shared -o $(PLATFORM)/libstagefright.so libstagefright.cpp
-	
+
 $(PLATFORM)/libutils.so:  $(PLATFORM) $(DEPS) libutils.cpp
 	$(CXX) -Wno-multichar -fno-exceptions -fno-rtti $(INCLUDES) -shared -o $(PLATFORM)/libutils.so libutils.cpp
 

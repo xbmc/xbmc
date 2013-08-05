@@ -29,4 +29,4 @@ status_t SurfaceTexture::updateTexImage()
 void SurfaceTexture::getTransformMatrix(float mtx[16]) {}
 
 }
-  
+

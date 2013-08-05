@@ -173,7 +173,7 @@ bool CEGLWrapper::ShowWindow(bool show)
 {
   if (!m_nativeTypes)
     return false;
-  
+
   return m_nativeTypes->ShowWindow(show);
 }
 
@@ -198,7 +198,7 @@ bool CEGLWrapper::InitDisplay(EGLDisplay *display)
 
   *display = eglGetDisplay(*nativeDisplay);
   CheckError();
-  if (*display == EGL_NO_DISPLAY) 
+  if (*display == EGL_NO_DISPLAY)
   {
     CLog::Log(LOGERROR, "EGL failed to obtain display");
     return false;
@@ -215,7 +215,7 @@ bool CEGLWrapper::ChooseConfig(EGLDisplay display, EGLint *configAttrs, EGLConfi
   EGLint     configCount = 0;
   EGLConfig* configList = NULL;
 
-  // Find out how many configurations suit our needs  
+  // Find out how many configurations suit our needs
   eglStatus = eglChooseConfig(display, configAttrs, NULL, 0, &configCount);
   CheckError();
 
@@ -387,7 +387,7 @@ void* CEGLWrapper::GetProcAddress(const char* function)
     CLog::Log(LOGERROR, "EGL error in %s - cannot get proc addr of %s", __FUNCTION__, function);
     return NULL;
   }
-  
+
   return ext;
 }
 

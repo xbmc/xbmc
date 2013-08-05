@@ -26,7 +26,7 @@ using namespace jni;
 CJNISurfaceTexture::CJNISurfaceTexture(int texid) : CJNIBase("android/graphics/SurfaceTexture")
 {
   m_object = new_object(GetClassName(),
-    "<init>", "(I)V", 
+    "<init>", "(I)V",
     texid);
   m_object.setGlobal();
 }
@@ -56,7 +56,7 @@ void CJNISurfaceTexture::getTransformMatrix(float* transformMatrix)
 
   call_method<jhobject>(m_object,
     "getTransformMatrix", "([F)V", arr);
-    
+
   env->GetFloatArrayRegion(arr, 0, 16, transformMatrix);
   env->DeleteLocalRef(arr);
 }

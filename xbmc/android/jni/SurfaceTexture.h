@@ -26,7 +26,7 @@ class CJNISurfaceTexture : public CJNIBase
 public:
   CJNISurfaceTexture(int texid);
   ~CJNISurfaceTexture();
-  
+
   void updateTexImage();
   void release();
   void getTransformMatrix(float* transformMatrix);

@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
- 
+
 #define STAGEFRIGHT_EXPORT __attribute__ ((visibility ("default")))
 #include <media/stagefright/foundation/ABuffer.h>
 #include <media/stagefright/DataSource.h>
