@@ -420,6 +420,27 @@ void CLangCodeExpander::CodeToString(long code, CStdString& ret)
   }
 }
 
+std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */) const
+{
+  std::vector<std::string> languages;
+  const LCENTRY *lang = g_iso639_1;
+  size_t length = sizeof(g_iso639_1);
+  if (format == CLangCodeExpander::ISO_639_2)
+  {
+    lang = g_iso639_2;
+    length = sizeof(g_iso639_2);
+  }
+  length /= sizeof(LCENTRY);
+
+  for (size_t i = 0; i < length; i++)
+  {
+    languages.push_back(lang->name);
+    ++lang;
+  }
+
+  return languages;
+}
+
 extern const LCENTRY g_iso639_1[144] =
 {
   { MAKECODE('\0','\0','c','c'), "Closed Caption" },
