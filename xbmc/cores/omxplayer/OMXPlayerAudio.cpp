@@ -148,6 +148,9 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_use_passthrough = (CSettings::Get().GetInt("audiooutput.mode") == AUDIO_HDMI) ? true : false ;
   m_use_hw_decode   = g_advancedSettings.m_omxHWAudioDecode;
+  m_format.m_dataFormat    = GetDataFormat(m_hints);
+  m_format.m_sampleRate    = 0;
+  m_format.m_channelLayout = 0;
 }
 
 bool OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
