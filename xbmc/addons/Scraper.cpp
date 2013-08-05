@@ -158,13 +158,13 @@ CScraper::CScraper(const cp_extension_t *ext) : CAddon(ext), m_fLoaded(false)
   }
 }
 
-AddonPtr CScraper::Clone(const AddonPtr &self) const
+AddonPtr CScraper::Clone() const
 {
-  return AddonPtr(new CScraper(*this, self));
+  return AddonPtr(new CScraper(*this));
 }
 
-CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
-  : CAddon(rhs, self), m_fLoaded(false)
+CScraper::CScraper(const CScraper &rhs)
+  : CAddon(rhs), m_fLoaded(false)
 {
   m_pathContent = rhs.m_pathContent;
   m_persistence = rhs.m_persistence;

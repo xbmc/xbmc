@@ -49,6 +49,11 @@ CPluginSource::CPluginSource(const cp_extension_t *ext)
   SetProvides(provides);
 }
 
+AddonPtr CPluginSource::Clone() const
+{
+  return AddonPtr(new CPluginSource(*this));
+}
+
 void CPluginSource::SetProvides(const CStdString &content)
 {
   vector<CStdString> provides;

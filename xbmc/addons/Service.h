@@ -41,6 +41,7 @@ namespace ADDON
 
     CService(const cp_extension_t *ext);
     CService(const AddonProps &props);
+    virtual AddonPtr Clone() const;
 
     bool Start();
     bool Stop();
