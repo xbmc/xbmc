@@ -127,12 +127,6 @@ public:
 protected:
   void SetDefaults();
 
-protected:
-
-  static void SettingOptionsLanguagesFillerGeneral(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current,
-                                                   const std::vector<std::string> &languages = std::vector<std::string>(),
-                                                   const std::vector<std::string> &languageKeys = std::vector<std::string>());
-
   class CRegion
   {
   public:

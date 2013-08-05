@@ -593,18 +593,41 @@ const CStdString& CLangInfo::GetSpeedUnitString() const
 
 void CLangInfo::SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
-  SettingOptionsLanguagesFillerGeneral(setting, list, current);
+  //find languages...
+  CFileItemList items;
+  XFILE::CDirectory::GetDirectory("special://xbmc/language/", items);
+
+  vector<string> vecLanguage;
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItemPtr pItem = items[i];
+    if (pItem->m_bIsFolder)
+    {
+      if (StringUtils::EqualsNoCase(pItem->GetLabel(), ".svn") ||
+          StringUtils::EqualsNoCase(pItem->GetLabel(), "fonts") ||
+          StringUtils::EqualsNoCase(pItem->GetLabel(), "media"))
+        continue;
+
+      vecLanguage.push_back(pItem->GetLabel());
+    }
+  }
+
+  sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
+
+  for (unsigned int i = 0; i < vecLanguage.size(); ++i)
+    list.push_back(make_pair(vecLanguage[i], vecLanguage[i]));
 }
 
 void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
-  vector<string> languages;
-  languages.push_back(g_localizeStrings.Get(308));
-  languages.push_back(g_localizeStrings.Get(309));
-  vector<string> languageKeys;
-  languageKeys.push_back("original");
-  languageKeys.push_back("default");
-  SettingOptionsLanguagesFillerGeneral(setting, list, current, languages, languageKeys);
+  list.push_back(make_pair(g_localizeStrings.Get(308), "original"));
+  list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
+
+  // get a list of language names
+  vector<string> languages = g_LangCodeExpander.GetLanguageNames();
+  sort(languages.begin(), languages.end(), sortstringbyname());
+  for (std::vector<std::string>::const_iterator language = languages.begin(); language != languages.end(); ++language)
+    list.push_back(make_pair(*language, *language));
 }
 
 void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
@@ -628,39 +651,4 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
 
   if (!match && regions.size() > 0)
     current = regions[0];
-}
-
-void CLangInfo::SettingOptionsLanguagesFillerGeneral(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current,
-                                                     const std::vector<std::string> &languages /* = std::vector<std::string>() */,
-                                                     const std::vector<std::string> &languageKeys /* = std::vector<std::string>() */)
-{
-  //find languages...
-  CFileItemList items;
-  XFILE::CDirectory::GetDirectory("special://xbmc/language/", items);
-
-  vector<string> vecLanguage;
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    CFileItemPtr pItem = items[i];
-    if (pItem->m_bIsFolder)
-    {
-      if (StringUtils::EqualsNoCase(pItem->GetLabel(), ".svn") ||
-          StringUtils::EqualsNoCase(pItem->GetLabel(), "fonts") ||
-          StringUtils::EqualsNoCase(pItem->GetLabel(), "media"))
-        continue;
-
-      vecLanguage.push_back(pItem->GetLabel());
-    }
-  }
-
-  sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
-  // Add language options passed by parameter at the beginning
-  if (languages.size() > 0)
-  {
-    for (unsigned int i = 0; i < languages.size(); ++i)
-      list.push_back(make_pair(languages[i], languageKeys[i]));
-  }
-  
-  for (unsigned int i = 0; i < vecLanguage.size(); ++i)
-    list.push_back(make_pair(vecLanguage[i], vecLanguage[i]));
 }
