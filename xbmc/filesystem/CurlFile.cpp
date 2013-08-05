@@ -597,20 +597,6 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
 
-  /* PLEX */
-  // See if we need to add any options from the FileItem.
-  if (g_application.CurrentFileItem().GetPath() == m_url)
-  {
-    CStdString cookies = g_application.CurrentFileItem().GetProperty("httpCookies").asString();
-    if (cookies.size() > 0)
-      g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, cookies.c_str());
-
-    CStdString userAgent = g_application.CurrentFileItem().GetProperty("userAgent").asString();
-    if (userAgent.size() > 0)
-      g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, userAgent.c_str());
-  }
-  /* END PLEX */
-
   if (m_skipshout)
     // For shoutcast file, content-length should not be set, and in libcurl there is a bug, if the
     // cast file was 302 redirected then getinfo of CURLINFO_CONTENT_LENGTH_DOWNLOAD will return

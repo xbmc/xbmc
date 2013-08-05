@@ -28,6 +28,7 @@
 /* PLEX */
 #include "Variant.h"
 #include "PlexMediaPart.h"
+#include "PlexMediaDecisionEngine.h"
 /* END PLEX */
 
 #include "DVDMessageQueue.h"
@@ -322,7 +323,6 @@ public:
   }
   virtual bool CanOpenAsync() { return false; }
   virtual void Abort() { m_bAbortRequest = true; }
-  bool PlexProcess(bool* isTranscoding);
   /* END PLEX */
 protected:
   friend class CSelectionStreams;
@@ -559,6 +559,8 @@ protected:
 
   unsigned int m_readRate;
   void UpdateReadRate();
+
+  CPlexMediaDecisionEngine *m_plexMDE;
   /* END PLEX */
 
   bool m_HasVideo;

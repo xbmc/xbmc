@@ -35,10 +35,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 
-/* PLEX */
-#include "PlexAsyncUrlResolver.h"
-/* END PLEX */
-
 using namespace PLAYLIST;
 
 CPlayListPlayer::CPlayListPlayer(void)

@@ -102,7 +102,6 @@
 
 #include <boost/lexical_cast.hpp>
 #include "Utility/Base64.h"
-#include "PlexAsyncUrlResolver.h"
 
 #include "Client/PlexMediaServerClient.h"
 #include "ApplicationMessenger.h"
@@ -459,6 +458,10 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
+
+  /* PLEX */
+  m_plexMDE = NULL;
+  /* END PLEX */
 }
 
 CDVDPlayer::~CDVDPlayer()
@@ -512,6 +515,10 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
           if (dialog->IsCanceled())
           {
             m_bStop = true;
+
+            if (m_plexMDE && m_plexMDE->IsRunning())
+              m_plexMDE->StopThread();
+
             Abort();
           }
           /* END PLEX */
@@ -1101,10 +1108,16 @@ void CDVDPlayer::Process()
     return;
   }
 #else
-
-  bool isTranscoding;
-  if (m_item.IsPlexMediaServer() && !PlexProcess(&isTranscoding))
-    return;
+  if (m_item.IsPlexMediaServer())
+  {
+    CFileItem newItem;
+    m_plexMDE = new CPlexMediaDecisionEngine;
+    if (m_plexMDE->BlockAndResolve(m_item, newItem))
+    {
+      m_item = newItem;
+      m_filename = m_item.GetPath();
+    }
+  }
 
   try
   {
@@ -1415,7 +1428,7 @@ void CDVDPlayer::Process()
 
   /* PLEX */
   // We're done, if we transcoded we need to stop that now
-  if (isTranscoding)
+  if (m_item.GetProperty("plexDidTranscode").asBoolean())
   {
     CPlexServerPtr server = g_plexServerManager.FindByUUID(m_item.GetProperty("plexserver").asString());
     if (server)
@@ -1641,11 +1654,9 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
 
   delay = cache_left - play_left;
 
-#ifndef __PLEX__
   if (full && (currate < maxrate) )
     level = -1.0;                          /* buffer is full & our read rate is too low  */
   else
-#endif
     level = (cached + queued) / (cache_need + queued);
 
   return true;
@@ -2503,13 +2514,11 @@ void CDVDPlayer::SetCaching(ECacheState state)
 {
   if(state == CACHESTATE_FLUSH)
   {
-#ifndef __PLEX__
     double level, delay, offset;
     if(GetCachingTimes(level, delay, offset))
       state = CACHESTATE_FULL;
     else
       state = CACHESTATE_INIT;
-#endif
     state = CACHESTATE_FULL;
   }
 
@@ -4331,10 +4340,6 @@ bool CDVDPlayer::SwitchChannel(const CPVRChannel &channel)
 
 bool CDVDPlayer::CachePVRStream(void) const
 {
-  /* PLEX */
-  return true;
-  /* END PLEX */
-
   return m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
       !g_PVRManager.IsPlayingRecording() &&
       g_advancedSettings.m_bPVRCacheInDvdPlayer;
@@ -4506,156 +4511,6 @@ void CDVDPlayer::RelinkPlexStreams()
       }
     }
   }
-}
-
-
-bool CDVDPlayer::PlexProcess(bool* isTranscoding)
-{
-  bool usingLocalPath = false;
-  *isTranscoding = false;
-
-  int64_t mediaItemIdx = 0;
-  if (m_item.HasProperty("selectedMediaItem"))
-    mediaItemIdx = m_item.GetProperty("selectedMediaItem").asInteger();
-
-  CFileItem item = m_item;
-  if (item.GetProperty("IsSynthesized").asBoolean() == false)
-  {
-    CLog::Log(LOGDEBUG, "DVDPlayer::PlexProcess Item is not synthesized, resolving...");
-    PlexAsyncUrlResolverPtr resolver = PlexAsyncUrlResolver::ResolveFirst(item);
-    // Wait for it to complete.
-    for (bool done = false; done == false && m_bAbortRequest == false; )
-      done = resolver->WaitForCompletion(100);
-
-    // If we cancelled, stop it.
-    if (m_bAbortRequest == true && resolver->Success() == false)
-    {
-      resolver->Cancel();
-      m_bAbortRequest = true;
-      return false;
-    }
-
-    if (resolver->Success() == true)
-    {
-      item = *resolver->GetFinalItemPtr().get();
-      m_itemWithDetails = resolver->GetFinalItemPtr();
-    }
-  }
-
-  CFileItemPtr mediaItem;
-  if (item.m_mediaItems.size() > 0 && item.m_mediaItems.size() > mediaItemIdx)
-    mediaItem = item.m_mediaItems[mediaItemIdx];
-  else
-    return false;
-  
-  // See if we need to resolve an indirect item.
-  bool isIndirect = mediaItem->GetProperty("indirect").asBoolean();
-
-  while (isIndirect)
-  {
-    CLog::Log(LOG_LEVEL_DEBUG, "DVDPlayer::PlexProcess item is indirect, going one level deeper...");
-    
-    // Spin up async thread.
-    PlexAsyncUrlResolverPtr resolver = PlexAsyncUrlResolver::Resolve(*mediaItem.get());
-
-    // Wait for it to complete.
-    for (bool done = false; done == false && m_bAbortRequest == false; )
-      done = resolver->WaitForCompletion(100);
-
-    // If we cancelled, stop it.
-    if (m_bAbortRequest == true && resolver->Success() == false)
-    {
-      resolver->Cancel();
-      m_bAbortRequest = true;
-      return false;
-    }
-    
-    CFileItemPtr resolvedItem = resolver->GetFinalItemPtr();
-    
-    /* in the indirected item we should only have one media part */
-    if (resolvedItem->m_mediaItems.size() > 0)
-    {
-      mediaItem = resolvedItem->m_mediaItems[0];
-      isIndirect = mediaItem->GetProperty("indirect").asBoolean();
-    }
-    else
-    {
-      return false;
-    }
-
-  }
-
-  /* FIXME: we really need to handle multiple parts */
-  CFileItemPtr mediaPart = mediaItem->m_mediaParts[0];
-  CStdString unprocessed_key = mediaPart->GetProperty("unprocessed_key").asString();
-  if (!mediaPart->IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
-  {
-    CStdString localPath = mediaPart->GetProperty("file").asString();
-    if (CFile::Exists(localPath))
-    {
-      item.SetPath(localPath);
-      usingLocalPath = true;
-    }
-    else if (boost::starts_with(unprocessed_key, "rtmp"))
-    {
-      item.SetPath(unprocessed_key);
-    }
-    else
-      item.SetPath(mediaPart->GetPath());
-  }
-  else
-  {
-    item.SetPath(mediaPart->GetPath());
-  }
-
-  item.m_selectedMediaPart = mediaPart;
-  m_mimetype = item.GetMimeType();
-  m_filename = item.GetPath();
-  m_item = item;
-
-  if (item.IsPlexWebkit())
-  {
-    // Get the hostname of the best server
-    CPlexServerPtr bestServer = g_plexServerManager.GetBestServer();
-    CStdString serverHost = bestServer->GetActiveConnection()->GetAddress().GetHostName();
-
-    // If we ended up with a webkit URL which is local, restart the player. This
-    // will be the case if we're resolving an indirect.
-    //
-    if (bestServer->GetActiveConnection()->IsLocal())
-    {
-      CApplicationMessenger::Get().RestartWithNewPlayer(0, item.GetPath());
-      return false;
-    }
-
-    int pos = m_filename.find("&") + 1;
-
-    // Extract the web page URL and decode it
-    CStdString mediaURLString = m_filename.substr(36, pos - 37);
-    CURL::Decode(mediaURLString);
-
-    // Construct a string of extra options - the prefix (or identifier) from the original URL, plus the webkit argument
-    CStdString extraOptions = m_filename.substr(pos, m_filename.size() - pos);
-    boost::replace_all(extraOptions, "/", "%2F");
-    extraOptions += "&webkit=1";
-
-    // Generate a transcode URL and set the filename
-    //m_filename = TranscodeURL(stopURL, mediaURLString, -1, serverHost, extraOptions);
-    dprintf("Transcode URL for WebKit content: %s\n", m_filename.c_str());
-  }
-
-  // Get details on the item we're playing.
-  else if (g_application.CurrentFileItem().IsPlexMediaServerLibrary())
-  {
-    /* find the server for the item */
-    CPlexServerPtr server = g_plexServerManager.FindByUUID(item.GetProperty("plexserver").asString());
-    if (server && CPlexTranscoderClient::ShouldTranscode(server, item))
-    {
-      m_filename = CPlexTranscoderClient::GetTranscodeURL(server, item).Get();
-      *isTranscoding = true;
-    }
-  }
-  return true;
 }
 
 int CDVDPlayer::GetAudioStreamPlexID()

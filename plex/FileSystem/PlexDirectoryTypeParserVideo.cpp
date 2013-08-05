@@ -76,6 +76,10 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   {
     videoTag.m_strShowTitle = item.GetProperty("parentTitle").asString();
     videoTag.m_iSeason = item.GetProperty("index").asInteger();
+    if (!item.HasArt(PLEX_ART_THUMB) && item.HasArt("parentThumb"))
+    {
+      item.SetArt(PLEX_ART_THUMB, item.GetArt("parentThumb"));
+    }
   }
   else if (dirType == PLEX_DIR_TYPE_SHOW)
   {

@@ -71,9 +71,22 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   }
 
   CStdString data;
-  if (!m_file.Get(m_url.Get(), data))
+  bool httpSuccess;
+
+  if (m_body.empty())
   {
-    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to fetch data from %s", m_url.Get().c_str());
+    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory issuing GET request");
+    httpSuccess = m_file.Get(m_url.Get(), data);
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory issuing POST request");
+    httpSuccess = m_file.Post(m_url.Get(), m_body, data);
+  }
+
+  if (!httpSuccess)
+  {
+    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to fetch data from %s: %ld", m_url.Get().c_str(), m_file.GetLastHTTPResponseCode());
     if (m_file.GetLastHTTPResponseCode() == 500)
     {
       /* internal server error, we should handle this .. */
