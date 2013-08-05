@@ -49,6 +49,9 @@ public:
   void Deinitialize();
   int GetArmMem() { return m_arm_mem; }
   int GetGpuMem() { return m_gpu_mem; }
+  void GetDisplaySize(int &width, int &height);
+  // stride can be null for packed output
+  unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue);
 
 private:
   DllBcmHost *m_DllBcmHost;
