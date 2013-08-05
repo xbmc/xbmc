@@ -1626,15 +1626,15 @@ void* CWinSystemOSX::GetCGLContextObj()
   return [(NSOpenGLContext*)m_glContext CGLContextObj];
 }
 
-CStdStringW CWinSystemOSX::GetClipboard(void)
+std::string CWinSystemOSX::GetClipboardText(void)
 {
-  CStdStringW pasted_text;
+  std::string utf8_text;
 
   const char *szStr = Cocoa_Paste();
   if (szStr)
-    pasted_text = szStr;
+    utf8_text = szStr;
 
-  return pasted_text;
+  return utf8_text;
 }
 
 #endif
