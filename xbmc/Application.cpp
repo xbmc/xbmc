@@ -650,6 +650,8 @@ bool CApplication::Create()
   std::string compilerStr;
 #if defined(__clang__)
   compilerStr = "Clang " XSTR_MACRO(__clang_major__) "." XSTR_MACRO(__clang_minor__) "." XSTR_MACRO(__clang_patchlevel__);
+#elif defined (__INTEL_COMPILER)
+  compilerStr = "Intel Compiler " XSTR_MACRO(__INTEL_COMPILER);
 #elif defined (__GNUC__)
 #ifdef __llvm__
   /* Note: this will not detect GCC + DragonEgg */
