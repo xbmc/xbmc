@@ -66,7 +66,9 @@ void CGUIWindowHome::OnInitWindow()
   // for shared databases (ie mysql) always force an update on return to home
   // this is a temporary solution until remote announcements can be delivered
   if ( g_advancedSettings.m_databaseVideo.type.Equals("mysql") ||
-       g_advancedSettings.m_databaseMusic.type.Equals("mysql") )
+       g_advancedSettings.m_databaseMusic.type.Equals("mysql") ||
+       g_advancedSettings.m_databasePicture.type.Equals("mysql") )
+      
     m_updateRA = (Audio | Video | Totals);
   AddRecentlyAddedJobs( m_updateRA );
 

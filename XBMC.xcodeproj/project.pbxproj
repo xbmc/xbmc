@@ -3136,6 +3136,7 @@
 		F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
 		FE6D10CD17AD556E00D819D5 /* PictureLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10CB17AD556E00D819D5 /* PictureLibrary.cpp */; };
 		FE6D10D017ADD2FD00D819D5 /* ContactLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10CE17ADD2FA00D819D5 /* ContactLibrary.cpp */; };
+		FE6D10D717AE140600D819D5 /* PictureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10D517AE140600D819D5 /* PictureDatabase.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -5507,6 +5508,8 @@
 		FE6D10CC17AD556E00D819D5 /* PictureLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureLibrary.h; sourceTree = "<group>"; };
 		FE6D10CE17ADD2FA00D819D5 /* ContactLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactLibrary.cpp; sourceTree = "<group>"; };
 		FE6D10CF17ADD2FC00D819D5 /* ContactLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactLibrary.h; sourceTree = "<group>"; };
+		FE6D10D517AE140600D819D5 /* PictureDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureDatabase.cpp; sourceTree = "<group>"; };
+		FE6D10D617AE140600D819D5 /* PictureDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureDatabase.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6079,6 +6082,8 @@
 				E38E1DDE0D25F9FD00618676 /* PictureThumbLoader.h */,
 				E38E1E090D25F9FD00618676 /* SlideShowPicture.cpp */,
 				E38E1E0A0D25F9FD00618676 /* SlideShowPicture.h */,
+				FE6D10D517AE140600D819D5 /* PictureDatabase.cpp */,
+				FE6D10D617AE140600D819D5 /* PictureDatabase.h */,
 			);
 			path = pictures;
 			sourceTree = "<group>";
@@ -10530,6 +10535,7 @@
 				551C3A45175A12010051AAAD /* VDA.cpp in Sources */,
 				FE6D10CD17AD556E00D819D5 /* PictureLibrary.cpp in Sources */,
 				FE6D10D017ADD2FD00D819D5 /* ContactLibrary.cpp in Sources */,
+				FE6D10D717AE140600D819D5 /* PictureDatabase.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

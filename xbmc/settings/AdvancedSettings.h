@@ -353,6 +353,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
                                //otherwise it will use the windows refreshrate
 
     DatabaseSettings m_databaseMusic; // advanced music database setup
+    DatabaseSettings m_databasePicture;// advanced picture database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
     DatabaseSettings m_databaseTV;    // advanced tv database setup
     DatabaseSettings m_databaseEpg;   /*!< advanced EPG database setup */

@@ -24,6 +24,7 @@
 #include "view/ViewDatabase.h"
 #include "TextureDatabase.h"
 #include "music/MusicDatabase.h"
+#include "pictures/PictureDatabase.h"
 #include "video/VideoDatabase.h"
 #include "pvr/PVRDatabase.h"
 #include "epg/EpgDatabase.h"
@@ -60,6 +61,7 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   { CViewDatabase db; UpdateDatabase(db); }
   { CTextureDatabase db; UpdateDatabase(db); }
   { CMusicDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseMusic); }
+  { CPictureDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databasePicture); }
   { CVideoDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseVideo); }
   { CPVRDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseTV); }
   { CEpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
