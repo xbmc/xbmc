@@ -119,7 +119,7 @@ function getBuildRevDateStr ()
   if [ "$?" == "0" ]
   then
     #fetch the first branch containing head
-    revStr=$revStr"-"`git branch -r --contains HEAD | head -n1 | awk '{gsub(".*/","");print $1}'`
+    revStr=$revStr"-"`git branch -r --contains HEAD | sed "/origin\/pr\//d" | head -n1 | awk '{gsub(".*/","");print $1}'`
     if [ "$?" == "0" ]
     then
       echo $revStr
