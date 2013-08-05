@@ -38,15 +38,9 @@
 using namespace XFILE;
 using namespace ADDON;
 
-AddonPtr CRepository::Clone(const AddonPtr &self) const
+AddonPtr CRepository::Clone() const
 {
-  CRepository* result = new CRepository(*this, self);
-  result->m_info = m_info;
-  result->m_checksum = m_checksum;
-  result->m_datadir = m_datadir;
-  result->m_compressed = m_compressed;
-  result->m_zipped = m_zipped;
-  return AddonPtr(result);
+  return AddonPtr(new CRepository(*this));
 }
 
 CRepository::CRepository(const AddonProps& props) :
@@ -73,9 +67,15 @@ CRepository::CRepository(const cp_extension_t *ext)
   }
 }
 
-CRepository::CRepository(const CRepository &rhs, const AddonPtr &self)
-  : CAddon(rhs, self)
+CRepository::CRepository(const CRepository &rhs)
+  : CAddon(rhs)
 {
+  m_info       = rhs.m_info;
+  m_checksum   = rhs.m_checksum;
+  m_datadir    = rhs.m_datadir;
+  m_compressed = rhs.m_compressed;
+  m_zipped     = rhs.m_zipped;
+  m_hashes     = rhs.m_hashes;
 }
 
 CRepository::~CRepository()

@@ -42,8 +42,9 @@ namespace ADDON
   public:
     CAddonDll(const AddonProps &props);
     CAddonDll(const cp_extension_t *ext);
+    CAddonDll(const CAddonDll<TheDll, TheStruct, TheProps> &rhs);
     virtual ~CAddonDll();
-    AddonPtr Clone() const;
+    virtual AddonPtr Clone() const;
     virtual ADDON_STATUS GetStatus();
 
     // addon settings
@@ -67,6 +68,7 @@ namespace ADDON
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
     CAddonCallbacks* m_pHelpers;
+    bool m_bIsChild;
 
   private:
     TheDll* m_pDll;
@@ -87,7 +89,8 @@ namespace ADDON
 
 template<class TheDll, typename TheStruct, typename TheProps>
 CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
-  : CAddon(ext)
+  : CAddon(ext),
+    m_bIsChild(false)
 {
   // if library attribute isn't present, look for a system-dependent one
   if (ext && m_strLibName.IsEmpty())
@@ -109,12 +112,14 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   m_initialized = false;
   m_pDll        = NULL;
   m_pInfo       = NULL;
+  m_pHelpers    = NULL;
   m_needsavedsettings = false;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
 CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const AddonProps &props)
-  : CAddon(props)
+  : CAddon(props),
+    m_bIsChild(false)
 {
   m_pStruct     = NULL;
   m_initialized = false;
@@ -122,6 +127,19 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const AddonProps &props)
   m_pInfo       = NULL;
   m_pHelpers    = NULL;
   m_needsavedsettings = false;
+}
+
+template<class TheDll, typename TheStruct, typename TheProps>
+CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const CAddonDll<TheDll, TheStruct, TheProps> &rhs)
+  : CAddon(rhs),
+    m_bIsChild(true)
+{
+  m_pStruct           = rhs.m_pStruct;
+  m_initialized       = rhs.m_initialized;
+  m_pDll              = rhs.m_pDll;
+  m_pInfo             = rhs.m_pInfo;
+  m_pHelpers          = rhs.m_pHelpers;
+  m_needsavedsettings = rhs.m_needsavedsettings;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -141,7 +159,7 @@ template<class TheDll, typename TheStruct, typename TheProps>
 bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 {
   CStdString strFileName;
-  if (!Parent())
+  if (!m_bIsChild)
   {
     strFileName = LibPath();
   }

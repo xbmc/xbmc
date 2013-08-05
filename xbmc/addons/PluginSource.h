@@ -33,6 +33,7 @@ public:
   CPluginSource(const cp_extension_t *ext);
   CPluginSource(const AddonProps &props);
   virtual ~CPluginSource() {}
+  virtual AddonPtr Clone() const;
   virtual bool IsType(TYPE type) const;
   bool Provides(const Content& content) const
   {
