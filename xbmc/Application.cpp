@@ -685,8 +685,8 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Running on %s", g_sysinfo.GetKernelVersion().c_str());
 #endif
   
+  CLog::Log(LOGNOTICE, "Host CPU: %s", g_cpuInfo.getCPUModel().c_str());
 #if defined(TARGET_WINDOWS)
-  CLog::Log(LOGNOTICE, "%s", g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, "%s", CWIN32Util::GetResInfoString().c_str());
   CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
   CLog::Log(LOGNOTICE, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
