@@ -69,7 +69,7 @@ public:
   
   void* GetCGLContextObj();
 
-  CStdStringW GetClipboard(void);
+  std::string GetClipboardText(void);
 
 protected:
   void* CreateWindowedContext(void* shareCtx);

@@ -108,7 +108,7 @@ public:
   virtual void EnableTextInput(bool bEnable) {}
   virtual bool IsTextInputEnabled() { return false; }
 
-  CStdStringW GetClipboard(void);
+  std::string GetClipboardText(void);
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);

@@ -236,7 +236,7 @@ bool CWinSystemBase::UseLimitedColor()
 #endif
 }
 
-CStdStringW CWinSystemBase::GetClipboard(void)
+std::string CWinSystemBase::GetClipboardText(void)
 {
   return "";
 }

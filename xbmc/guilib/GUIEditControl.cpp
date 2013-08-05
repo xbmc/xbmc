@@ -578,21 +578,23 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
 
 void CGUIEditControl::OnPasteClipboard()
 {
-  CStdStringW pasted_text;
+  CStdStringW unicode_text;
+  CStdStringA utf8_text;
 
 // Get text from the clipboard
-  pasted_text = g_Windowing.GetClipboard();
+  utf8_text = g_Windowing.GetClipboardText();
+  g_charsetConverter.utf8ToW(utf8_text, unicode_text);
 
   // Insert the pasted text at the current cursor position.
-  if (pasted_text.length() > 0)
+  if (unicode_text.length() > 0)
   {
     CStdStringW left_end = m_text2.Left(m_cursorPos);
     CStdStringW right_end = m_text2.Right(m_text2.length() - m_cursorPos);
 
     m_text2 = left_end;
-    m_text2.append(pasted_text);
+    m_text2.append(unicode_text);
     m_text2.append(right_end);
-    m_cursorPos += pasted_text.length();
+    m_cursorPos += unicode_text.length();
     UpdateText();
   }
 }
