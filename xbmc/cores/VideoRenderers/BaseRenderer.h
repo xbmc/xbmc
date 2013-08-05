@@ -109,6 +109,7 @@ protected:
   void       MarkDirty();
 
   RESOLUTION m_resolution;    // the resolution we're running in
+  RESOLUTION m_bestResolution;  // the preferred resolution 
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
   float m_sourceFrameRatio;
