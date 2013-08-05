@@ -18,6 +18,9 @@
 #include "FileSystem/PlexFile.h"
 
 #include "LocalizeStrings.h"
+#include "Client/PlexServerDataLoader.h"
+
+#include "dialogs/GUIDialogKaiToast.h"
 
 
 #define FAILURE_TMOUT 3600
@@ -73,6 +76,7 @@ void CMyPlexManager::BroadcastState()
   {
     case STATE_LOGGEDIN:
       g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44011) + " (" + CStdString(m_currentUserInfo.username) + ")");
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Logged into to myPlex", "Enjoy your plexCloud!");
       break;
     case STATE_NOT_LOGGEDIN:
       g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
@@ -205,6 +209,8 @@ int CMyPlexManager::DoFetchWaitPin()
 
 int CMyPlexManager::DoScanMyPlex()
 {
+  g_plexServerDataLoader.LoadDataFromServer(m_myplex);
+
   if (!CMyPlexScanner::DoScan())
   {
     m_state = STATE_NOT_LOGGEDIN;
@@ -259,6 +265,9 @@ int CMyPlexManager::DoRemoveAllServers()
 {
   PlexServerList list;
   g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MYPLEX);
+  g_plexServerDataLoader.RemoveServer(m_myplex);
+
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Lost connection to myPlex", "You need to relogin");
 
   return FAILURE_TMOUT;
 }

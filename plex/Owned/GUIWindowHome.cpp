@@ -157,13 +157,11 @@ void CPlexSectionFanout::Refresh()
   }
   else if (m_sectionType == SECTION_TYPE_QUEUE)
   {
-    /*if (!g_advancedSettings.m_bHideFanouts)
+    if (!g_advancedSettings.m_bHideFanouts)
     {
-      if (m_url.Find("queue") != -1)
-        LoadSection(MyPlexManager::Get().getPlaylistUrl("/queue/unwatched"), CONTENT_LIST_QUEUE);
-      else if (m_url.Find("recommendations") != -1)
-        LoadSection(MyPlexManager::Get().getPlaylistUrl("/recommendations/unwatched"), CONTENT_LIST_QUEUE);
-    }*/
+      PlexUtils::AppendPathToURL(trueUrl, "unwatched");
+      LoadSection(trueUrl, CONTENT_LIST_QUEUE);
+    }
   }
   else if (m_sectionType == SECTION_TYPE_CHANNELS)
   {
@@ -977,6 +975,8 @@ CGUIWindowHome::GetSectionTypeFromDirectoryType(EPlexDirectoryType dirType)
     return SECTION_TYPE_PHOTOS;
   else if (dirType == PLEX_DIR_TYPE_ARTIST)
     return SECTION_TYPE_ALBUM;
+  else if (dirType == PLEX_DIR_TYPE_PLAYLIST)
+    return SECTION_TYPE_QUEUE;
   else
   {
     CLog::Log(LOGINFO, "CGUIWindowHome::GetSectionTypeFromDirectoryType not handling DirectoryType %d", (int)dirType);

@@ -56,6 +56,10 @@ CPlexFile::BuildHTTPURL(CURL& url)
   CPlexServerPtr server;
   CStdString key;
 
+  /* allow passthrough */
+  if (url.GetProtocol() != "plexserver")
+    return true;
+
   if (PlexUtils::IsValidIP(url.GetHostName()))
   {
     server = g_plexServerManager.FindByHostAndPort(url.GetHostName(), url.GetPort());

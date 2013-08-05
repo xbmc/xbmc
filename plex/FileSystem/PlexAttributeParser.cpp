@@ -16,6 +16,11 @@
 
 #include "AdvancedSettings.h"
 
+#include "Client/PlexServer.h"
+#include "Client/PlexServerManager.h"
+#include "StringUtils.h"
+#include "URL.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 void CPlexAttributeParserBase::Process(const CURL& url, const CStdString& key, const CStdString& value, CFileItem *item)
 {
@@ -82,7 +87,14 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
   /* reset the options to not bust cache stuff */
   mediaUrl.SetOptions("");
 
-  if (boost::starts_with(value, "http://"))
+  if (mediaUrl.GetHostName() == "myplex")
+  {
+    CPlexServerPtr bestServer = g_plexServerManager.GetBestServer();
+    if (bestServer)
+      mediaUrl.SetHostName(bestServer->GetUUID());
+  }
+
+  if (boost::starts_with(value, "http://") || boost::starts_with(value, "https://"))
   {
     imageURL = CURL(value);
   }
@@ -211,4 +223,3 @@ void CPlexAttributeParserTitleSort::Process(const CURL &url, const CStdString &k
   item->SetSortLabel(value);
   item->SetProperty(key, value);
 }
-

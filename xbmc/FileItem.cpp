@@ -3437,6 +3437,8 @@ int CFileItem::GetVideoContentType() const
 
 bool CFileItem::IsPlexMediaServer() const
 {
+  if (HasProperty("plex") && GetProperty("plex").asBoolean())
+    return true;
   return PlexUtils::IsPlexMediaServer(m_strPath);
 }
 

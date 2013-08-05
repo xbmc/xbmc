@@ -11,15 +11,24 @@
 
 using namespace XFILE;
 
+#define SECTION_REFRESH_INTERVAL 30 * 1000
+
 CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIORITY_NORMAL)
 {
+  m_refreshTimer = new CTimer(this);
+  m_refreshTimer->Start(SECTION_REFRESH_INTERVAL, true);
 }
 
 void
 CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
 {
-  CLog::Log(LOGDEBUG, "CPlexServerDataLoader::LoadDataFromServer loading data for server %s", server->GetName().c_str());
-  AddJob(new CPlexServerDataLoaderJob(server));
+  CSingleLock lk(m_serverLock);
+  if (m_servers.find(server->GetUUID()) == m_servers.end())
+  {
+    m_servers[server->GetUUID()] = server;
+    CLog::Log(LOGDEBUG, "CPlexServerDataLoader::LoadDataFromServer loading data for server %s", server->GetName().c_str());
+    AddJob(new CPlexServerDataLoaderJob(server));
+  }
 }
 
 void CPlexServerDataLoader::RemoveServer(const CPlexServerPtr &server)
@@ -42,6 +51,9 @@ void CPlexServerDataLoader::RemoveServer(const CPlexServerPtr &server)
     CLog::Log(LOG_LEVEL_DEBUG, "CPlexServerDataLoader::RemoveServer from channelMap %s", server->GetName().c_str());
     m_channelMap.equal_range(server->GetUUID());
   }
+
+  if (m_servers.find(server->GetUUID()) != m_servers.end())
+    m_servers.erase(server->GetUUID());
 
   CGUIMessage msg(GUI_MSG_PLEX_SERVER_DATA_UNLOADED, PLEX_DATA_LOADER, 0);
   msg.SetStringParam(server->GetUUID());
@@ -119,11 +131,22 @@ CPlexServerDataLoaderJob::FetchList(const CStdString& path)
 bool
 CPlexServerDataLoaderJob::DoWork()
 {
-  m_sectionList = FetchList("/library/sections");
-
-  if (m_server->GetOwned())
-    m_channelList = FetchList("/channels/all");
-
+  if (m_server->GetUUID() != "myplex")
+  {
+    m_sectionList = FetchList("/library/sections");
+    if (m_server->GetOwned())
+      m_channelList = FetchList("/channels/all");
+  }
+  else
+  {
+    m_sectionList = FetchList("/pms/playlists");
+    if (m_sectionList)
+    {
+      m_sectionList->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
+      for (int i = 0; i < m_sectionList->Size(); i ++)
+        m_sectionList->Get(i)->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
+    }
+  }
   return true;
 }
 
@@ -179,4 +202,15 @@ CFileItemListPtr CPlexServerDataLoader::GetAllChannels() const
   }
 
   return CFileItemListPtr(list);
+}
+
+void CPlexServerDataLoader::OnTimeout()
+{
+  CSingleLock lk(m_serverLock);
+
+  CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnTimeout Refreshing data for all servers...");
+
+  std::pair<CStdString, CPlexServerPtr> p;
+  BOOST_FOREACH(p, m_servers)
+    AddJob(new CPlexServerDataLoaderJob(p.second));
 }

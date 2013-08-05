@@ -11,10 +11,12 @@
 
 #include "FileItem.h"
 #include "plex/PlexTypes.h"
+#include "threads/Timer.h"
 
 /* Maps UUID->list of sections for the section */
 typedef std::map<CStdString, CFileItemListPtr> ServerDataMap;
 typedef std::pair<CStdString, CFileItemListPtr> ServerDataPair;
+typedef std::map<CStdString, CPlexServerPtr> ServerMap;
 
 class CPlexServerDataLoaderJob : public CJob
 {
@@ -37,7 +39,7 @@ public:
   }
 };
 
-class CPlexServerDataLoader : public CJobQueue
+class CPlexServerDataLoader : public CJobQueue, public ITimerCallback
 {
 public:
   CPlexServerDataLoader();
@@ -58,8 +60,15 @@ public:
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
+  void OnTimeout();
+
 private:
+  CTimer *m_refreshTimer;
+
   CCriticalSection m_dataLock;
+  CCriticalSection m_serverLock;
+
+  ServerMap m_servers;
 
   ServerDataMap m_sectionMap;
   ServerDataMap m_channelMap;
