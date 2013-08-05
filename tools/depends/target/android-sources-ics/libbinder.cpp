@@ -39,5 +39,5 @@ ProcessState::ProcessState()
 ProcessState::~ProcessState()
 {
 }
-        
+
 }; // namespace android

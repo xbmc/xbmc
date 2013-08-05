@@ -134,7 +134,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_bImageReady = false;
   m_StrictBinding = false;
   m_clearColour = 0.0f;
-  
+
 #ifdef HAS_LIBSTAGEFRIGHT
   if (!eglCreateImageKHR)
     eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC) CEGLWrapper::GetProcAddress("eglCreateImageKHR");
@@ -1294,7 +1294,7 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, plane.id);
-  
+
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
@@ -1345,7 +1345,7 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
 
   glBindTexture(m_textureTarget, 0);
   VerifyGLState();
-  
+
 #ifdef DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "RenderEglImage %d: tm:%d\n", index, XbmcThreads::SystemClockMillis() - time);
 #endif
@@ -1922,10 +1922,10 @@ void CLinuxRendererGLES::UploadEGLIMGTexture(int index)
     glBindTexture(m_textureTarget, plane.id);
     glEGLImageTargetTexture2DOES(m_textureTarget, (EGLImageKHR)m_buffers[index].eglimg);
     glBindTexture(m_textureTarget, 0);
-    
+
     plane.flipindex = m_buffers[index].flipindex;
   }
-  
+
 #ifdef DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "UploadEGLIMGTexture %d: img:%p, tm:%d\n", index, m_buffers[index].eglimg, XbmcThreads::SystemClockMillis() - time);
 #endif
@@ -1977,7 +1977,7 @@ bool CLinuxRendererGLES::CreateEGLIMGTexture(int index)
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-  
+
   glDisable(m_textureTarget);
 #endif
   return true;
@@ -2200,10 +2200,10 @@ void CLinuxRendererGLES::AddProcessor(CStageFrightVideo* stf, EGLImageKHR eglimg
   if (buf.eglimg != EGL_NO_IMAGE_KHR)
     stf->ReleaseBuffer(buf.eglimg);
   stf->LockBuffer(eglimg);
-  
+
   buf.stf = stf;
   buf.eglimg = eglimg;
-  
+
 #ifdef DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "AddProcessor %d: img:%p: tm:%d\n", index, eglimg, XbmcThreads::SystemClockMillis() - time);
 #endif

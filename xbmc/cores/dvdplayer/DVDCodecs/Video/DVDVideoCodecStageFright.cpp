@@ -37,7 +37,7 @@
 #define CLASSNAME "CDVDVideoCodecStageFright"
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
-CDVDVideoCodecStageFright::CDVDVideoCodecStageFright() 
+CDVDVideoCodecStageFright::CDVDVideoCodecStageFright()
   : CDVDVideoCodec()
   , m_stf_decoder(NULL), m_converter(NULL), m_convert_bitstream(false)
 {
@@ -50,13 +50,13 @@ CDVDVideoCodecStageFright::~CDVDVideoCodecStageFright()
 }
 
 bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
-{  
+{
   // we always qualify even if DVDFactoryCodec does this too.
   if (CSettings::Get().GetBool("videoplayer.usestagefright") && !hints.software)
   {
     m_convert_bitstream = false;
     CLog::Log(LOGDEBUG,
-          "%s::%s - trying to open, codec(%d), profile(%d), level(%d)", 
+          "%s::%s - trying to open, codec(%d), profile(%d), level(%d)",
           CLASSNAME, __func__, hints.codec, hints.profile, hints.level);
 
     switch (hints.codec)
@@ -98,11 +98,11 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
     if (!m_stf_decoder->Open(hints))
     {
       CLog::Log(LOGERROR,
-          "%s::%s - failed to open, codec(%d), profile(%d), level(%d)", 
+          "%s::%s - failed to open, codec(%d), profile(%d), level(%d)",
           CLASSNAME, __func__, hints.codec, hints.profile, hints.level);
       delete m_stf_decoder;
       m_stf_decoder = NULL;
-      
+
       if (m_converter)
       {
         m_converter->Close();
@@ -155,7 +155,7 @@ int CDVDVideoCodecStageFright::Decode(uint8_t *pData, int iSize, double dts, dou
     {
       demuxer_content = m_converter->GetConvertBuffer();
       demuxer_bytes = m_converter->GetConvertSize();
-    } 
+    }
     else
       CLog::Log(LOGERROR,"%s::%s - bitstream_convert error", CLASSNAME, __func__);
   }

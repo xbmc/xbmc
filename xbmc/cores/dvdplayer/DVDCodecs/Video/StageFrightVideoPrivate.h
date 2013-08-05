@@ -100,7 +100,7 @@ public:
   CStageFrightDecodeThread* decode_thread;
 
   sp<MediaSource> source;
-  
+
   MediaBuffer* inbuf[INBUFCOUNT];
 
   GLuint mPgm;

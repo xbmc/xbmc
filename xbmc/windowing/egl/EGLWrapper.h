@@ -65,9 +65,8 @@ public:
   bool SurfaceAttrib(EGLDisplay display, EGLSurface surface, EGLint  attribute, EGLint  value);
 
   static void* GetProcAddress(const char* function);
-  
+
 private:
     CEGLNativeType          *m_nativeTypes;
     EGLint                  m_result;
 };
-

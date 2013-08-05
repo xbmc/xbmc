@@ -27,6 +27,6 @@ class CJNISurface : public CJNIBase
 public:
   CJNISurface(CJNISurfaceTexture *surf_texture);
   ~CJNISurface();
-  
+
   void release();
 };

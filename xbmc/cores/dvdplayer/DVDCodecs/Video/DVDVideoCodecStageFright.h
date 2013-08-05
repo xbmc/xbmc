@@ -48,7 +48,7 @@ public:
 protected:
   const char        *m_pFormatName;
   CStageFrightVideo     *m_stf_decoder;
-  
+
   bool              m_convert_bitstream;
   CBitstreamConverter   *m_converter;
 };
