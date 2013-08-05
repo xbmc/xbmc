@@ -65,7 +65,6 @@ static int ff_h264_find_frame_end(H264Context *h, const uint8_t *buf, int buf_si
             i += h->h264dsp.h264_find_start_code_candidate(buf + i, buf_size - i);
             if (i < buf_size)
                 state = 2;
-            }
         }else if(state<=2){
             if(buf[i]==1)   state^= 5; //2->7, 1->4, 0->5
             else if(buf[i]) state = 7;

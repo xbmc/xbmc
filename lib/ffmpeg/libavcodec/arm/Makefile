@@ -9,6 +9,7 @@ OBJS-$(CONFIG_AAC_DECODER)             += arm/sbrdsp_init_arm.o         \
 OBJS-$(CONFIG_DCA_DECODER)             += arm/dcadsp_init_arm.o         \
 
 ARMV6-OBJS-$(CONFIG_AC3DSP)            += arm/ac3dsp_armv6.o
+ARMV6-OBJS-$(CONFIG_H264DSP)           += arm/h264dsp_armv6.o
 
 OBJS-$(CONFIG_FLAC_DECODER)            += arm/flacdsp_init_arm.o        \
                                           arm/flacdsp_arm.o             \
