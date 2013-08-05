@@ -64,6 +64,8 @@ public:
 
   void LoadUserCodes(const TiXmlElement* pRootElement);
   void Clear();
+
+  std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1) const;
 protected:
 
   /** \brief Converts a language code given as a long, see #MAKECODE(a, b, c, d)
