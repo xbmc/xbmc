@@ -85,6 +85,7 @@
 
 #include "log.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -383,6 +384,8 @@ CCPUInfo::CCPUInfo(void)
   }
 
 #endif
+  StringUtils::RemoveDuplicatedSpacesAndTabs(m_cpuModel);
+
   /* Set some default for empty string variables */
   if (m_cpuBogoMips.empty())
     m_cpuBogoMips = "N/A";
