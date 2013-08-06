@@ -134,6 +134,9 @@ public:
   int GetTotalUptime() const { return m_iSystemTimeTotalUp; }
   void SetTotalUptime(int uptime) { m_iSystemTimeTotalUp = uptime; }
 
+  static std::string GetBuildTargetPlatformName(void);
+  static std::string GetBuildTargetPlatformVersion(void);
+
 protected:
   virtual CJob *GetJob() const;
   virtual CStdString TranslateInfo(int info) const;

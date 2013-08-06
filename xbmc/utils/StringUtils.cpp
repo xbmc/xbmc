@@ -165,6 +165,33 @@ std::string& StringUtils::TrimRight(std::string &str)
   return str;
 }
 
+std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str)
+{
+  std::string::iterator it = str.begin();
+  bool onSpace = false;
+  while(it != str.end())
+  {
+    if (*it == '\t')
+      *it = ' ';
+
+    if (*it == ' ')
+    {
+      if (onSpace)
+      {
+        it = str.erase(it);
+        continue;
+      }
+      else
+        onSpace = true;
+    }
+    else
+      onSpace = false;
+
+    ++it;
+  }
+  return str;
+}
+
 int StringUtils::Replace(string &str, char oldChar, char newChar)
 {
   int replacedChars = 0;
