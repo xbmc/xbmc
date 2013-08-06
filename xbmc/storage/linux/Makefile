@@ -1,6 +1,5 @@
 SRCS=DeviceKitDisksProvider.cpp \
-     HALProvider.cpp \
-     UDisksProvider.cpp \
+     UDisksProvider.cpp
      
 LIB=storage_linux.a
 
