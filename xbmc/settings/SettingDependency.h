@@ -29,7 +29,8 @@
 typedef enum {
   SettingDependencyTypeNone   = 0,
   SettingDependencyTypeEnable,
-  SettingDependencyTypeUpdate
+  SettingDependencyTypeUpdate,
+  SettingDependencyTypeVisible
 } SettingDependencyType;
 
 typedef enum {

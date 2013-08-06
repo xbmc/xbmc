@@ -953,6 +953,13 @@ void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, c
       break;
     }
 
+    case SettingDependencyTypeVisible:
+      // just trigger the property changed callback and a call to
+      // CSetting::IsVisible() will automatically determine the new
+      // visible state
+      OnSettingPropertyChanged(setting, "visible");
+      break;
+
     case SettingDependencyTypeNone:
     default:
       break;
