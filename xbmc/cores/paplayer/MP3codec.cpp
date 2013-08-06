@@ -90,7 +90,7 @@ MP3Codec::MP3Codec()
   m_InputBufferPos = 0;
 
   memset(&m_Formatdata,0,sizeof(m_Formatdata));
-  m_DataFormat = AE_FMT_S32NE;
+  m_DataFormat = AE_FMT_FLOAT;
 
   // create our output buffer
   m_OutputBufferSize = OUTPUTFRAMESIZE * 4;        // enough for 4 frames
@@ -557,15 +557,15 @@ madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrit
   mxhouse->frame_cnt++;
   m_dll.mad_timer_add( &mxhouse->timer, mxhouse->frame.header.duration );
 
-  int32_t *dest = (int32_t*)mxhouse->output_ptr;
+  float *dest = (float *)mxhouse->output_ptr;
   for(int i=0; i < mxhouse->synth.pcm.length; i++)
   {
     // Left channel
-    *dest++ = (int32_t)(mxhouse->synth.pcm.samples[0][i] << 2);
+    *dest++ = mad_f_todouble(mxhouse->synth.pcm.samples[0][i]);
 
     // Right channel
     if(MAD_NCHANNELS(&mxhouse->frame.header) == 2)
-      *dest++ = (int32_t)(mxhouse->synth.pcm.samples[1][i] << 2);
+      *dest++ = mad_f_todouble(mxhouse->synth.pcm.samples[1][i]);
   }
 
   // Tell calling code buffer size
