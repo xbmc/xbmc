@@ -210,6 +210,7 @@ void CSetting::OnSettingPropertyChanged(const CSetting *setting, const char *pro
 void CSetting::Copy(const CSetting &setting)
 {
   SetVisible(setting.IsVisible());
+  SetRequirementsMet(setting.MeetsRequirements());
   m_callback = setting.m_callback;
   m_label = setting.m_label;
   m_help = setting.m_help;

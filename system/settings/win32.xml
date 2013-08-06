@@ -11,10 +11,10 @@
     <category id="videoplayer">
       <group id="2">
         <setting id="videoplayer.usedisplayasclock">
-          <visible negated="true">HAS_GL</visible>
+          <requirement negated="true">HAS_GL</requirement>
         </setting>
         <setting id="videoplayer.synctype">
-          <visible negated="true">HAS_GL</visible>
+          <requirement negated="true">HAS_GL</requirement>
         </setting>
       </group>
     </category>
@@ -35,7 +35,7 @@
     <category id="videoscreen">
       <group id="1">
         <setting id="videoscreen.fakefullscreen">
-          <visible negated="true">HAS_GL</visible>
+          <requirement negated="true">HAS_GL</requirement>
         </setting>
       </group>
     </category>
