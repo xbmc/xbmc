@@ -347,12 +347,10 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded() &&
        !pItem->GetMusicInfoTag()->GetAlbum().IsEmpty())
     {
-      bool result = ShowAlbumInfo(pItem.get());
-
       if (m_dlgProgress && bShowInfo)
         m_dlgProgress->Close();
 
-      if (!result) // Something went wrong, so bail for the rest
+      if (!ShowAlbumInfo(pItem.get())) // Something went wrong, so bail for the rest
         break;
     }
   }
@@ -399,6 +397,9 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
         break;
       }
     }
+
+    if (m_dlgProgress)
+      m_dlgProgress->Close();
 
     CGUIDialogMusicInfo *pDlgArtistInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgArtistInfo)
@@ -469,6 +470,9 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
         return false;
       }
     }
+
+    if (m_dlgProgress)
+      m_dlgProgress->Close();
 
     CGUIDialogMusicInfo *pDlgAlbumInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgAlbumInfo)
