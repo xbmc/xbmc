@@ -20,6 +20,7 @@
 
 #include "XBMCTinyXML.h"
 #include "filesystem/File.h"
+#include "utils/FileUtils.h"
 #include "RegExp.h"
 
 #define MAX_ENTITY_LENGTH 8 // size of largest entity "&#xNNNN;"
@@ -53,18 +54,11 @@ bool CXBMCTinyXML::LoadFile(const char *_filename, TiXmlEncoding encoding)
 
 bool CXBMCTinyXML::LoadFile(const CStdString &_filename, TiXmlEncoding encoding)
 {
-  // There was a really terrifying little bug here. The code:
-  //    value = filename
-  // in the STL case, cause the assignment method of the std::string to
-  // be called. What is strange, is that the std::string had the same
-  // address as it's c_str() method, and so bad things happen. Looks
-  // like a bug in the Microsoft STL implementation.
-  // Add an extra string to avoid the crash.
-  CStdString filename(_filename);
-  value = filename;
+  value = _filename.c_str();
 
-  XFILE::CFileStream file;
-  if (!file.Open(value))
+  void * buffPtr;
+  unsigned int buffSize = CFileUtils::LoadFile(value, buffPtr);
+  if (buffSize == 0)
   {
     SetError(TIXML_ERROR_OPENING_FILE, NULL, NULL, TIXML_ENCODING_UNKNOWN);
     return false;
@@ -74,10 +68,8 @@ bool CXBMCTinyXML::LoadFile(const CStdString &_filename, TiXmlEncoding encoding)
   Clear();
   location.Clear();
 
-  CStdString data;
-  data.reserve(8 * 1000);
-  StreamIn(&file, &data);
-  file.Close();
+  CStdString data ((char*) buffPtr, (size_t) buffSize);
+  free(buffPtr);
 
   Parse(data, NULL, encoding);
 
