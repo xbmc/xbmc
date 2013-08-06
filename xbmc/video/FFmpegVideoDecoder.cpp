@@ -107,7 +107,11 @@ double FFmpegVideoDecoder::getDuration() const
   
 double FFmpegVideoDecoder::getFramesPerSecond() const
 {
+#if defined(AVFORMAT_HAS_STREAM_GET_R_FRAME_RATE)
+  return m_pFormatCtx ? av_q2d( m_dllAvFormat->av_stream_get_r_frame_rate( m_pFormatCtx->streams[ m_videoStream ] ) ) : 0.0;
+#else
   return m_pFormatCtx ? av_q2d( m_pFormatCtx->streams[ m_videoStream ]->r_frame_rate ) : 0.0;
+#endif
 }
   
 unsigned int FFmpegVideoDecoder::getWidth() const

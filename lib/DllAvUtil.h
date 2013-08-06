@@ -46,6 +46,9 @@ extern "C" {
   #include <libavutil/opt.h>
   #include <libavutil/mem.h>
   #include <libavutil/mathematics.h>
+  #if (defined USE_LIBAV_HACKS)
+    #include "xbmc-libav-hacks/libav_hacks.h"
+  #endif
 #else
   #include "libavutil/avutil.h"
   //for av_get_default_channel_layout
@@ -59,14 +62,7 @@ extern "C" {
 #endif
 }
 
-#if LIBAVUTIL_VERSION_MICRO >= 100
-  #define LIBAVUTIL_FROM_FFMPEG
-#else
-  #define LIBAVUTIL_FROM_LIBAV
-#endif
-
-#if (defined LIBAVUTIL_FROM_FFMPEG && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52,29,100)) || \
-    (defined LIBAVUTIL_FROM_LIBAV  && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52,8,0))
+#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52,29,100)
 #define AVFRAME_IN_LAVU
 #endif
 
