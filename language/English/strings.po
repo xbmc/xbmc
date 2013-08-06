@@ -13812,7 +13812,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36350"
-msgid "No info available yet."
+msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr ""
 
 #: system/settings/settings.xml
