@@ -37,15 +37,10 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 #if (defined USE_EXTERNAL_FFMPEG)
-  #if HAVE_LIBSWRESAMPLE_SWRESAMPLE_H
-    #include <libswresample/swresample.h>
-  #elif HAVE_LIBAVRESAMPLE_AVRESAMPLE_H
-    #include <libavresample/avresample.h>
-    #include <libavutil/opt.h>
-    #include <libavutil/samplefmt.h>
-    #define SwrContext AVAudioResampleContext
+  #if (defined USE_LIBAV_HACKS)
+    #include "xbmc-libav-hacks/libav_hacks.h"
   #else
-    #error "Either libswresample or libavresample is needed!"
+    #include <libswresample/swresample.h>
   #endif
 #else
   #include "libswresample/swresample.h"
@@ -67,7 +62,6 @@ public:
 
 #if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
 
-#if HAVE_LIBSWRESAMPLE_SWRESAMPLE_H || (defined TARGET_DARWIN)
 // Use direct mapping
 class DllSwResample : public DllDynamic, DllSwResampleInterface
 {
@@ -91,37 +85,6 @@ public:
   virtual int swr_set_channel_mapping (struct SwrContext *s, const int *channel_map) { return ::swr_set_channel_mapping(s, channel_map); }
   virtual int swr_set_matrix(struct SwrContext *s, const double *matrix, int stride) { return ::swr_set_matrix(s, matrix, stride); }
 };
-#else
-// Wrap the same API through libavresample.
-class DllSwResample : public DllDynamic, DllSwResampleInterface
-{
-public:
-  virtual ~DllSwResample() {}
-
-  // DLL faking.
-  virtual bool ResolveExports() { return true; }
-  virtual bool Load() {
-#if !defined(TARGET_DARWIN)
-    CLog::Log(LOGDEBUG, "DllAvFormat: Using libavresample system library");
-#endif
-    return true;
-  }
-  virtual void Unload() {}
-  virtual struct SwrContext *swr_alloc_set_opts(struct SwrContext *s, int64_t out_ch_layout, enum AVSampleFormat out_sample_fmt, int out_sample_rate, int64_t in_ch_layout, enum AVSampleFormat in_sample_fmt, int in_sample_rate, int log_offset, void *log_ctx) {
-          AVAudioResampleContext *ret = ::avresample_alloc_context();
-          av_opt_set_int(ret, "out_channel_layout", out_ch_layout  , 0);
-          av_opt_set_int(ret, "out_sample_fmt"    , out_sample_fmt , 0);
-          av_opt_set_int(ret, "out_sample_rate"   , out_sample_rate, 0);
-          av_opt_set_int(ret, "in_channel_layout" , in_ch_layout   , 0);
-          av_opt_set_int(ret, "in_sample_fmt"     , in_sample_fmt  , 0);
-          av_opt_set_int(ret, "in_sample_rate"    , in_sample_rate , 0);
-          return ret;
-  }
-  virtual int swr_init(struct SwrContext *s) { return ::avresample_open(s); }
-  virtual void swr_free(struct SwrContext **s){ ::avresample_close(*s); *s = NULL; }
-  virtual int swr_convert(struct SwrContext *s, uint8_t **out, int out_count, const uint8_t **in , int in_count){ return ::avresample_convert(s, out, 0, out_count, (uint8_t**)in, 0,in_count); }
-};
-#endif
 
 #else
 

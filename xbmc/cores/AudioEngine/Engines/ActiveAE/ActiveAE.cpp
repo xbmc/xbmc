@@ -896,7 +896,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       outputFormat.m_frames = m_encoderFormat.m_frames;
 
       // encoder buffer
-      if (m_encoder->GetCodecID() == CODEC_ID_AC3)
+      if (m_encoder->GetCodecID() == AV_CODEC_ID_AC3)
       {
         AEAudioFormat format;
         format.m_channelLayout = AE_CH_LAYOUT_2_0;

@@ -1,0 +1,4 @@
+Name: libswresample to libavresample
+Version: 0
+Description: Hack to provide libswresample through libavresample
+Requires: libavresample
