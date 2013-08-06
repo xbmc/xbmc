@@ -124,8 +124,15 @@ public:
   static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
+  static std::string GetAvailableDefaultLanguage(std::string& detectedDefaultRegion);
+
 protected:
   void SetDefaults();
+
+  static bool FindBestAvailableLanguage(const std::string& langName, const std::string& extLangName, const std::string& scriptName, const std::string& regionName,
+                                    const std::string& regionTag, const std::string& variantName, std::string& foundLanguage, std::string& foundRegionName);
+  static bool IsSpecificLanguagePresent(const std::string& langName, const std::string& extLangName, const std::string& scriptName, const std::string& regionName,
+                                    const std::string& regionTag, const std::string& variantName, std::string& foundLanguage, std::string& foundRegionName);
 
   class CRegion
   {
