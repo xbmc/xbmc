@@ -445,6 +445,13 @@ void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
         p.rect.y2 /= 1 << im->cshift_y;
       }
 
+      // protect against division by zero
+      if (p.texheight == 0 || p.texwidth == 0 ||
+          p.pixpertex_x == 0 || p.pixpertex_y == 0)
+      {
+        continue;
+      }
+
       p.height  /= p.pixpertex_y;
       p.rect.y1 /= p.pixpertex_y;
       p.rect.y2 /= p.pixpertex_y;
