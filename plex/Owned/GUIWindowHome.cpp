@@ -213,6 +213,7 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
   CPlexSectionLoadJob *load = (CPlexSectionLoadJob*)job;
   if (success)
   {
+    CSingleLock lk(m_critical);
     int type = load->GetContentType();
     if (m_fileLists.find(type) != m_fileLists.end() && m_fileLists[type] != NULL)
       delete m_fileLists[type];
