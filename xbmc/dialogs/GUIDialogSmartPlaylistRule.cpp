@@ -103,7 +103,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   videodatabase.Open();
 
   std::string basePath;
-  if (m_type.Equals("songs") || m_type.Equals("albums") || m_type.Equals("artists") || m_type.Equals("mixed"))
+  if (CSmartPlaylist::IsMusicType(m_type))
     basePath = "musicdb://";
   else
     basePath = "videodb://";
@@ -153,7 +153,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldArtist || m_rule.m_field == FieldAlbumArtist)
   {
-    if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums") || m_type.Equals("artists"))
+    if (CSmartPlaylist::IsMusicType(m_type))
       database.GetArtistsNav("musicdb://artists/", items, m_rule.m_field == FieldAlbumArtist, -1);
     if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
@@ -165,7 +165,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldAlbum)
   {
-    if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums"))
+    if (CSmartPlaylist::IsMusicType(m_type))
       database.GetAlbumsNav("musicdb://albums/", items);
     if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
@@ -182,9 +182,9 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldYear)
   {
-    if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums"))
+    if (CSmartPlaylist::IsMusicType(m_type))
       database.GetYearsNav("musicdb://years/", items);
-    if (!m_type.Equals("songs") && !m_type.Equals("albums"))
+    if (!m_type.Equals("songs") && !m_type.Equals("albums") && !m_type.Equals("artists"))
     {
       CFileItemList items2;
       videodatabase.GetYearsNav(basePath + "years/", items2, type);
@@ -242,7 +242,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     else
       assert(false);
   }
-  else if (m_rule.m_field == FieldPlaylist)
+  else if (m_rule.m_field == FieldPlaylist || m_rule.m_field == FieldVirtualFolder)
   {
     // use filebrowser to grab another smart playlist
 
@@ -257,7 +257,19 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     {
       CFileItemPtr item = items[i];
       CSmartPlaylist playlist;
-      if (playlist.OpenAndReadName(item->GetPath()))
+      // don't list unloadable smartplaylists or any referencable smartplaylists
+      // which do not match the type of the current smartplaylist
+      if (!playlist.Load(item->GetPath()) ||
+         (m_rule.m_field == FieldPlaylist &&
+         (!CSmartPlaylist::CheckTypeCompatibility(m_type, playlist.GetType()) ||
+         (!playlist.GetGroup().empty() || playlist.IsGroupMixed()))))
+      {
+        items.Remove(i);
+        i -= 1;
+        continue;
+      }
+
+      if (!playlist.GetName().empty())
         item->SetLabel(playlist.GetName());
     }
     iLabel = 559;
@@ -316,7 +328,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   CStdString strHeading;
   strHeading.Format(g_localizeStrings.Get(13401),g_localizeStrings.Get(iLabel));
   pDialog->SetHeading(strHeading);
-  pDialog->SetMultiSelection(m_rule.m_field != FieldPlaylist);
+  pDialog->SetMultiSelection(m_rule.m_field != FieldPlaylist && m_rule.m_field != FieldVirtualFolder);
 
   if (!m_rule.m_parameter.empty())
     pDialog->SetSelected(m_rule.m_parameter);

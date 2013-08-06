@@ -2531,7 +2531,12 @@ msgctxt "#613"
 msgid "Sample rate"
 msgstr ""
 
-#empty strings from id 614 to 619
+#: xbmc/playlists/SmartPlayList.cpp
+msgctxt "#614"
+msgid "Virtual folder"
+msgstr ""
+
+#empty strings from id 615 to 619
 
 #: system/settings/settings.xml
 msgctxt "#620"

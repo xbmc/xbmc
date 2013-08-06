@@ -79,7 +79,12 @@ public:
   virtual bool Save(TiXmlNode *parent) const;
   virtual bool Save(CVariant &obj) const;
 
+  CStdString                  GetParameter() const;
+  void                        SetParameter(const CStdString &value);
+  void                        SetParameter(const std::vector<CStdString> &values);
+  CStdString                  GetLocalizedRule() const;
   CStdString                  GetWhereClause(const CDatabase &db, const CStdString& strType) const;
+
   static Field                TranslateField(const char *field);
   static CStdString           TranslateField(Field field);
   static SortBy               TranslateOrder(const char *order);
@@ -100,10 +105,6 @@ public:
   static FIELD_TYPE           GetFieldType(Field field);
   static bool                 IsFieldBrowseable(Field field);
 
-  CStdString                  GetLocalizedRule() const;
-  CStdString                  GetParameter() const;
-  void                        SetParameter(const CStdString &value);
-  void                        SetParameter(const std::vector<CStdString> &values);
 
   Field                       m_field;
   SEARCH_OPERATOR             m_operator;
@@ -136,6 +137,7 @@ public:
   virtual bool Save(CVariant &obj) const;
 
   CStdString GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const;
+  void GetVirtualFolders(const CStdString& strType, std::vector<CStdString> &virtualFolders) const;
   std::string TranslateCombinationType() const;
 
   Combination GetType() const { return m_type; }
@@ -177,6 +179,8 @@ public:
   void SetType(const CStdString &type); // music, video, mixed
   const CStdString& GetName() const { return m_playlistName; };
   const CStdString& GetType() const { return m_playlistType; };
+  bool IsVideoType() const;
+  bool IsMusicType() const;
 
   void SetMatchAllRules(bool matchAll) { m_ruleCombination.SetType(matchAll ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr); }
   bool GetMatchAllRules() const { return m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd; }
@@ -186,10 +190,11 @@ public:
 
   void SetOrder(SortBy order) { m_orderField = order; };
   SortBy GetOrder() const { return m_orderField; };
-
   void SetOrderAscending(bool orderAscending) { m_orderDirection = orderAscending ? SortOrderAscending : SortOrderDescending; };
   bool GetOrderAscending() const { return m_orderDirection != SortOrderDescending; };
   SortOrder GetOrderDirection() const { return m_orderDirection; }
+  void SetOrderAttributes(SortAttribute attributes) { m_orderAttributes = attributes; }
+  SortAttribute GetOrderAttributes() const { return m_orderAttributes; }
 
   void SetGroup(const CStdString &group) { m_group = group; }
   const CStdString& GetGroup() const { return m_group; }
@@ -205,11 +210,16 @@ public:
    \param needWhere whether we need to prepend the where clause with "WHERE "
    */
   CStdString GetWhereClause(const CDatabase &db, std::set<CStdString> &referencedPlaylists) const;
+  void GetVirtualFolders(std::vector<CStdString> &virtualFolders) const;
 
   CStdString GetSaveLocation() const;
 
   static void GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList);
   static void GetAvailableOperators(std::vector<std::string> &operatorList);
+
+  static bool IsVideoType(const CStdString &type);
+  static bool IsMusicType(const CStdString &type);
+  static bool CheckTypeCompatibility(const CStdString &typeLeft, const CStdString &typeRight);
 
   bool IsEmpty(bool ignoreSortAndLimit = true) const;
 private:
@@ -229,6 +239,7 @@ private:
   unsigned int m_limit;
   SortBy m_orderField;
   SortOrder m_orderDirection;
+  SortAttribute m_orderAttributes;
   CStdString m_group;
   bool m_groupMixed;
 
