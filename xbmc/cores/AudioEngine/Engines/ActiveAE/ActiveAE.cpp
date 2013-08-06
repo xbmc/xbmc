@@ -1201,6 +1201,12 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
       }
     }
 
+    if (m_settings.mode == AUDIO_IEC958 && format.m_sampleRate > 48000)
+    {
+      format.m_sampleRate = 48000;
+      CLog::Log(LOGINFO, "CActiveAE::ApplySettings - limit samplerate for SPDIF to %d", format.m_sampleRate);
+    }
+
     if (g_advancedSettings.m_audioResample)
     {
       format.m_sampleRate = g_advancedSettings.m_audioResample;
