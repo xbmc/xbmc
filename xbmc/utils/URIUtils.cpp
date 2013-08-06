@@ -445,7 +445,7 @@ bool URIUtils::IsOnDVD(const CStdString& strFile)
 {
 #ifdef TARGET_WINDOWS
   if (strFile.Mid(1,1) == ":")
-    return (GetDriveType(strFile.Left(2)) == DRIVE_CDROM);
+    return (GetDriveType(strFile.Left(3)) == DRIVE_CDROM);
 #endif
 
   if (strFile.Left(4).CompareNoCase("dvd:") == 0)

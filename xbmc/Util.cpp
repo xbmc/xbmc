@@ -389,23 +389,29 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 
 void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
-  CStdString strHomePath;
-  strHomePath = ResolveExecutablePath();
   strPath = CEnvironment::getenv(strTarget);
 
+#ifdef TARGET_WINDOWS
   if (!strPath.IsEmpty())
   {
-#ifdef TARGET_WINDOWS
-    char tmp[1024];
     //expand potential relative path to full path
-    if(GetFullPathName(strPath, 1024, tmp, 0) != 0)
+    CStdStringW strPathW;
+    g_charsetConverter.utf8ToW(strPath, strPathW, false);
+    const int bufSize = GetFullPathNameW(strPathW, 0, NULL, NULL);
+    if (bufSize > 0)
     {
-      strPath = tmp;
+      wchar_t * buf = new wchar_t[bufSize];
+      if (GetFullPathNameW(strPathW, bufSize, buf, NULL) == bufSize-1)
+        g_charsetConverter.wToUTF8(buf, strPath);
+
+      delete [] buf;
     }
-#endif
   }
-  else
+#endif
+
+  if (strPath.IsEmpty())
   {
+    CStdString strHomePath = ResolveExecutablePath();
 #if defined(TARGET_DARWIN)
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
@@ -1797,10 +1803,13 @@ CStdString CUtil::ResolveExecutablePath()
 {
   CStdString strExecutablePath;
 #ifdef TARGET_WINDOWS
-  wchar_t szAppPathW[MAX_PATH] = L"";
-  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW)/sizeof(szAppPathW[0]) - 1);
-  CStdStringW strPathW = szAppPathW;
-  g_charsetConverter.wToUTF8(strPathW,strExecutablePath);
+  static const size_t bufSize = MAX_PATH * 2;
+  wchar_t* buf = new wchar_t[bufSize];
+  buf[0] = 0;
+  ::GetModuleFileNameW(0, buf, bufSize);
+  buf[bufSize-1] = 0;
+  g_charsetConverter.wToUTF8(buf,strExecutablePath);
+  delete[] buf;
 #elif defined(TARGET_DARWIN)
   char     given_path[2*MAXPATHLEN];
   uint32_t path_size =2*MAXPATHLEN;
