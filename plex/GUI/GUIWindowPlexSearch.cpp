@@ -573,7 +573,7 @@ void CGUIWindowPlexSearch::SaveStateBeforePlay(CGUIBaseContainer* container)
 ///////////////////////////////////////////////////////////////////////////////
 string CGUIWindowPlexSearch::BuildSearchUrl(const CPlexServerPtr& server, const string& theQuery)
 {
-  CURL url = server->BuildURL("/search");
+  CURL url = server->BuildPlexURL("/search");
   url.SetOption("query", theQuery);
   return url.Get();
 }
