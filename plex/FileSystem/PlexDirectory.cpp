@@ -643,6 +643,8 @@ bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
 
     items.Add(item);
   }
+  
+  items.SetPath("plexserver://shared");
 
   return true;
 }
@@ -670,6 +672,8 @@ bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
     items.Add(channel);
   }
   
+  items.SetPath("plexserver://channels");
+  
   return true;
 }
 
@@ -680,6 +684,10 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
     return false;
 
   CURL newURL = g_plexServerManager.GetBestServer()->BuildPlexURL("/system/appstore");
-  return CPlexDirectory::GetDirectory(newURL.Get(), items);
+  bool success = CPlexDirectory::GetDirectory(newURL.Get(), items);
+  if (success)
+    items.SetPath("plexserver://channeldirectory");
+  
+  return success;
 }
 
