@@ -209,7 +209,8 @@ int CMyPlexManager::DoFetchWaitPin()
 
 int CMyPlexManager::DoScanMyPlex()
 {
-  g_plexServerDataLoader.LoadDataFromServer(m_myplex);
+  if (g_guiSettings.GetBool("myplex.enablequeueandrec"))
+    g_plexServerDataLoader.LoadDataFromServer(m_myplex);
 
   if (!CMyPlexScanner::DoScan())
   {

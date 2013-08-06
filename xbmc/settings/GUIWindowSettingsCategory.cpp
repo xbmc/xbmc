@@ -132,6 +132,7 @@
 #include "BackgroundMusicPlayer.h"
 #include "Client/PlexServerManager.h"
 #include "Client/PlexTranscoderClient.h"
+#include "Client/PlexServerDataLoader.h"
 /* END PLEX */
 
 using namespace std;
@@ -2196,6 +2197,17 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     {
       PlexServerList list;
       g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
+    }
+  }
+  else if (strSetting.Equals("myplex.enablequeueandrec"))
+  {
+    CPlexServerPtr myPlex = g_plexServerManager.FindByUUID("myplex");
+    if (myPlex)
+    {
+      if (g_guiSettings.GetBool(strSetting))
+        g_plexServerDataLoader.LoadDataFromServer(myPlex);
+      else
+        g_plexServerDataLoader.RemoveServer(myPlex);
     }
   }
   else if (strSetting.Equals("services.plexplayer"))

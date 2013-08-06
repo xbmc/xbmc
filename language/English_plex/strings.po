@@ -915,3 +915,7 @@ msgstr "Local Video Quality"
 msgctxt "#52202"
 msgid "Remote Video Quality"
 msgstr "Remote Video Quality"
+
+msgctxt "#52210"
+msgid "Show myPlex Queue and Recommendations"
+msgstr "Show myPlex Queue and Recommendations"

@@ -424,6 +424,10 @@ void CGUISettings::Initialize()
   SetString("myplex.status", g_localizeStrings.Get(g_myplexManager.IsSignedIn() ? 44011 : 44010));
   AddString(myPlex, "myplex.signin", g_myplexManager.IsSignedIn() ? 44002 : 44100, "", BUTTON_CONTROL_STANDARD);
   AddBool(myPlex, "myplex.searchsharedlibraries", 13143, true);
+  
+  AddSeparator(myPlex, "myplex.sep1");
+  
+  AddBool(myPlex, "myplex.enablequeueandrec", 52210, true);  
 
   CSettingsCategory* vs = AddCategory(SETTINGS_SYSTEM, "videoscreen", 21373);
 

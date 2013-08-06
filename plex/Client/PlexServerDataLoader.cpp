@@ -2,6 +2,7 @@
 #include "FileSystem/PlexDirectory.h"
 #include "GUIWindowManager.h"
 #include "GUIMessage.h"
+#include "settings/GUISettings.h"
 
 #include "PlexTypes.h"
 
