@@ -166,10 +166,10 @@ void CPlexSectionFanout::Refresh()
   else if (m_sectionType == SECTION_TYPE_CHANNELS)
   {
     if (!g_advancedSettings.m_bHideFanouts)
-      LoadSection(GetBestServerUrl("channels/recentlyViewed"), CONTENT_LIST_RECENTLY_ACCESSED);
+      m_outstandingJobs.push_back(LoadSection(GetBestServerUrl("channels/recentlyViewed"), CONTENT_LIST_RECENTLY_ACCESSED));
 
     /* We always show this as fanart */
-    LoadSection(GetBestServerUrl("channels/arts"), CONTENT_LIST_FANART);
+    m_outstandingJobs.push_back(LoadSection(GetBestServerUrl("channels/arts"), CONTENT_LIST_FANART));
   }
 
   else
@@ -545,7 +545,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
             CLog::Log(LOGDEBUG, "CGUIWindowHome::OnMessage GetContentListFromSection returned empty list");
         }
         else
-          CLog::Log(LOGDEBUG, "CGUIWindowHome::OnMessage not activating FANART for '%s'", url.c_str());
+          CLog::Log(LOGDEBUG, "CGUIWindowHome::OnMessage not activating FANART for '%s' sectionToLoad == %s", url.c_str(), sectionToLoad.c_str());
       }
       else
       {
@@ -739,14 +739,14 @@ void CGUIWindowHome::UpdateSections()
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
     item->SetLabel(g_localizeStrings.Get(52102));
     item->SetProperty("plexchannels", true);
-    item->SetProperty("sectionPath", "plexserver://channels");
+    item->SetProperty("sectionPath", "plexserver://channels/");
 
     item->SetPath("XBMC.ActivateWindow(MyChannels,plexserver://channels,return)");
     item->SetClickActions(CGUIAction("", item->GetPath()));
     newList.push_back(item);
     listUpdated = true;
 
-    AddSection("plexserver://channels", SECTION_TYPE_CHANNELS);
+    AddSection("plexserver://channels/", SECTION_TYPE_CHANNELS);
   }
 
   CFileItemListPtr sharedSections = g_plexServerDataLoader.GetAllSharedSections();
