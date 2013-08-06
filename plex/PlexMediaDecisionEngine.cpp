@@ -19,7 +19,7 @@ bool CPlexMediaDecisionEngine::BlockAndResolve(const CFileItem &item, CFileItem 
 {
   m_item = item;
 
-  Create(true);
+  Create();
   WaitForThreadExit(0xFFFFFFFF);
 
   if (m_success)

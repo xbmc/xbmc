@@ -471,6 +471,12 @@ CDVDPlayer::~CDVDPlayer()
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.DeInit();
 #endif
+  
+  /* PLEX */
+  if (m_plexMDE)
+    delete m_plexMDE;
+  m_plexMDE = NULL;
+  /* END PLEX */
 }
 
 bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
