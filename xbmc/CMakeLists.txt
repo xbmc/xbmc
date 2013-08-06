@@ -18,7 +18,7 @@ foreach(dir ${subdirs})
   add_subdirectory(${dir})
 endforeach()
 
-set(PlexOwnedFiles BackgroundInfoLoader.cpp)
+#set(PlexOwnedFiles BackgroundInfoLoader.cpp)
 
 find_all_sources(. xbmc_SRCS)
 foreach(f ${PlexOwnedFiles})

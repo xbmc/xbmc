@@ -91,6 +91,8 @@ namespace XFILE
       virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
       long GetHTTPResponseCode() const { return m_file.GetLastHTTPResponseCode(); }
+    
+      virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_NEVER; };
 
     private:
       bool ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaContainer);

@@ -27,9 +27,6 @@
 #include <vector>
 #include "boost/shared_ptr.hpp"
 
-#ifdef __PLEX__
-#include "plex/Owned/BackgroundInfoLoader.h"
-#else
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 
@@ -76,5 +73,3 @@ protected:
 
   std::vector<CThread *> m_workers;
 };
-
-#endif

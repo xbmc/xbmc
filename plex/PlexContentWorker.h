@@ -42,7 +42,7 @@ class PlexContentWorkerManager
   }
 
   /// Queue a new worker.
-  PlexContentWorkerPtr enqueue(int targetWindow, const string& url, int contextID);
+  PlexContentWorkerPtr enqueue(int targetWindow, const std::string& url, int contextID);
   
   /// Find by ID.
   PlexContentWorkerPtr find(int id)
@@ -73,7 +73,7 @@ class PlexContentWorkerManager
   int m_workerID;
 
   /// Keeps track of pending workers.
-  map<int, PlexContentWorkerPtr> m_pendingWorkers;
+  std::map<int, PlexContentWorkerPtr> m_pendingWorkers;
   
   /// Protects the map.
   boost::recursive_mutex m_mutex;
@@ -118,7 +118,7 @@ class PlexContentWorker
 
  protected:
 
-  PlexContentWorker(PlexContentWorkerManager* manager, int id, int targetWindow, const string& url, int contextID)
+  PlexContentWorker(PlexContentWorkerManager* manager, int id, int targetWindow, const std::string& url, int contextID)
     : m_manager(manager)
     , m_id(id)
     , m_targetWindow(targetWindow)
@@ -134,7 +134,7 @@ class PlexContentWorker
   
   int              m_id;
   int              m_targetWindow;
-  string           m_url;
+  std::string      m_url;
   bool             m_cancelled;
   int              m_contextID;
   CFileItemListPtr m_results;

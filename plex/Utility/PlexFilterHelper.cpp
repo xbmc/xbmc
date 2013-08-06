@@ -22,6 +22,7 @@
 #include "GUIWindowManager.h"
 
 using namespace XFILE;
+using namespace std;
 
 typedef pair<CStdString, CPlexFilterPtr> name_filter_pair;
 

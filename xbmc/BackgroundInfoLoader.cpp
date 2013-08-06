@@ -24,7 +24,6 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#ifndef __PLEX__
 using namespace std;
 
 #define ITEMS_PER_THREAD 5
@@ -181,5 +180,3 @@ void CBackgroundInfoLoader::SetProgressCallback(IProgressCallback* pCallback)
 {
   m_pProgressCallback = pCallback;
 }
-
-#endif

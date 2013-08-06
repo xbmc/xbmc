@@ -105,7 +105,7 @@ void CPlexSectionFanout::GetContentList(int type, CFileItemList& list)
 {
   CSingleLock lk(m_critical);
   if (m_fileLists.find(type) != m_fileLists.end())
-    list.Copy(*m_fileLists[type]);
+    list.Assign(*m_fileLists[type], false);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -219,7 +219,7 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
       delete m_fileLists[type];
     
     CFileItemList* newList = new CFileItemList;
-    newList->Copy(load->m_list);
+    newList->Assign(load->m_list, false);
     m_fileLists[type] = newList;
     
     /* Pre-cache stuff */

@@ -48,6 +48,7 @@
 #define SEARCH_DELAY         750
 
 using namespace XFILE;
+using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
 CGUIWindowPlexSearch::CGUIWindowPlexSearch()

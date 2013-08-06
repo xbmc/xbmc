@@ -3740,12 +3740,12 @@ void CApplication::Stop(int exitCode)
 
     /* PLEX */
     // Make sure background loader threads are all dead.
-    CBackgroundRunner::StopAll();
+    /*CBackgroundRunner::StopAll();
     for (int i=0; CBackgroundRunner::GetNumActive() != 0 && i<120; i++)
     {
       CApplicationMessenger::Get().ProcessMessages();
       Sleep(50);
-    }
+    }*/
 
     g_backgroundMusicPlayer.Die();
     /* END PLEX */

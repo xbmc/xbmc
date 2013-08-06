@@ -39,7 +39,7 @@ public:
 
   static bool FillThumb(CFileItem &item);
   
-  static vector<string> GetArtTypes(const string &type);
+  static std::vector<std::string> GetArtTypes(const std::string &type);
   
   static std::string GetLocalArt(const CFileItem &item, const std::string &type, bool checkFolder);
   
