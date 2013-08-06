@@ -641,28 +641,54 @@ bool CApplication::Create()
   CProfilesManager::Get().Load();
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-#if defined(TARGET_DARWIN_OSX)
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (GCC version %i.%i.%i). Platform: Darwin OSX (%s)", 
-              g_infoManager.GetVersion().c_str(), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetUnameVersion().c_str());
-#elif defined(TARGET_DARWIN_IOS)
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (GCC version %i.%i.%i). Platform: Darwin iOS (%s)",
-              g_infoManager.GetVersion().c_str(), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetUnameVersion().c_str());
-#elif defined(TARGET_FREEBSD)
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (GCC version %i.%i.%i). Platform: FreeBSD (%s)",
-              g_infoManager.GetVersion().c_str(), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetUnameVersion().c_str());
-#elif defined(TARGET_POSIX)
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (GCC version %i.%i.%i). Platform: Linux (%s, %s)",
-              g_infoManager.GetVersion().c_str(), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
-#elif defined(TARGET_WINDOWS)
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (MSVC version %i). Platform: %s", g_infoManager.GetVersion().c_str(), _MSC_VER, g_sysinfo.GetKernelVersion().c_str());
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s). Platform: %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str());
+
+/* Expand macro before stringify */
+#define STR_MACRO(x) #x
+#define XSTR_MACRO(x) STR_MACRO(x)
+
+  std::string compilerStr;
+#if defined(__clang__)
+  compilerStr = "Clang " XSTR_MACRO(__clang_major__) "." XSTR_MACRO(__clang_minor__) "." XSTR_MACRO(__clang_patchlevel__);
+#elif defined (__INTEL_COMPILER)
+  compilerStr = "Intel Compiler " XSTR_MACRO(__INTEL_COMPILER);
+#elif defined (__GNUC__)
+#ifdef __llvm__
+  /* Note: this will not detect GCC + DragonEgg */
+  compilerStr = "llvm-gcc "; 
+#else // __llvm__
+  compilerStr = "GCC ";
+#endif // !__llvm__
+  compilerStr += XSTR_MACRO(__GNUC__) "." XSTR_MACRO(__GNUC_MINOR__) "." XSTR_MACRO(__GNUC_PATCHLEVEL__);
+#elif defined (_MSC_VER)
+  compilerStr = "MSVC " XSTR_MACRO(_MSC_FULL_VER);
+#else
+  compilerStr = "unknown compiler";
 #endif
+  std::string buildType;
 #if defined(_DEBUG)
-  CLog::Log(LOGINFO, "Using Debug XBMC build");
+  buildType = "Debug";
 #elif defined(NDEBUG)
-  CLog::Log(LOGINFO, "Using Release XBMC build");
+  buildType = "Release";
+#else
+  buildType = "Unknown";
 #endif
+  CLog::Log(LOGNOTICE, "Using %s XBMC build, compiled " __DATE__ " by %s for %s %s", buildType.c_str(), compilerStr.c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetBuildTargetPlatformVersion().c_str());
+
+#if defined(TARGET_DARWIN_OSX)
+  CLog::Log(LOGNOTICE, "Running on Darwin OSX %s", g_sysinfo.GetUnameVersion().c_str());
+#elif defined(TARGET_DARWIN_IOS)
+  CLog::Log(LOGNOTICE, "Running on Darwin iOS%s %s", g_sysinfo.IsAppleTV2() ? " (AppleTV2)" : "", g_sysinfo.GetUnameVersion().c_str());
+#elif defined(TARGET_FREEBSD)
+  CLog::Log(LOGNOTICE, "Running on FreeBSD %s", g_sysinfo.GetUnameVersion().c_str());
+#elif defined(TARGET_POSIX)
+  CLog::Log(LOGNOTICE, "Running on Linux (%s, %s)", g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
+#elif defined(TARGET_WINDOWS)
+  CLog::Log(LOGNOTICE, "Running on %s", g_sysinfo.GetKernelVersion().c_str());
+#endif
+  
+  CLog::Log(LOGNOTICE, "Host CPU: %s", g_cpuInfo.getCPUModel().c_str());
 #if defined(TARGET_WINDOWS)
-  CLog::Log(LOGNOTICE, "%s", g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, "%s", CWIN32Util::GetResInfoString().c_str());
   CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
   CLog::Log(LOGNOTICE, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
