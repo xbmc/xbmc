@@ -27,4 +27,5 @@ public:
   static bool DeleteItem(const CStdString &strPath, bool force=false);
   static bool RenameFile(const CStdString &strFile);
   static bool RemoteAccessAllowed(const CStdString &strPath);
+  static unsigned int LoadFile(const std::string &filename, void* &outputBuffer);
 };
