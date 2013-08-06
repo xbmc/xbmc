@@ -116,6 +116,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
 {
   CURL urlFile(strFile);
   if( strContent.Equals("audio/mpeg")
+  ||  strContent.Equals("audio/mpeg3")
   ||  strContent.Equals("audio/mp3") )
     return new MP3Codec();
   else if (strContent.Left(9).Equals("audio/l16"))

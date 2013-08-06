@@ -54,7 +54,7 @@ class CTagLoaderTagLib
 public:
   CTagLoaderTagLib();
   virtual ~CTagLoaderTagLib();
-  virtual bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = NULL);
+  virtual bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = NULL, const std::string& fallbackFileExtension = "");
 private:
   bool                           Open(const std::string& strFileName, bool readOnly);
   const std::vector<std::string> GetASFStringList(const TagLib::List<TagLib::ASF::Attribute>& list);
