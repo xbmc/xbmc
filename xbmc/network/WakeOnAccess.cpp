@@ -529,6 +529,7 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
   // add mysql servers
   AddHostFromDatabase(g_advancedSettings.m_databaseVideo, hosts);
   AddHostFromDatabase(g_advancedSettings.m_databaseMusic, hosts);
+  AddHostFromDatabase(g_advancedSettings.m_databasePicture, hosts);
   AddHostFromDatabase(g_advancedSettings.m_databaseEpg, hosts);
   AddHostFromDatabase(g_advancedSettings.m_databaseTV, hosts);
 
