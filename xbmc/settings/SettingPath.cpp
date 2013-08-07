@@ -59,17 +59,6 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
     return false;
   }
     
-  // get the default value by abusing the FromString
-  // implementation to parse the default value
-  CStdString value;
-  if (XMLUtils::GetString(node, XML_ELM_DEFAULT, value))
-    m_value = m_default = value;
-  else if (!update && !m_allowEmpty)
-  {
-    CLog::Log(LOGERROR, "CSettingPath: error reading the default value of \"%s\"", m_id.c_str());
-    return false;
-  }
-    
   const TiXmlNode *constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
   if (constraints != NULL)
   {
