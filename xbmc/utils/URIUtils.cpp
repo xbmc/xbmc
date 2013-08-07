@@ -258,6 +258,7 @@ bool URIUtils::ProtocolHasParentInHostname(const CStdString& prot)
 {
   return prot.Equals("zip")
       || prot.Equals("rar")
+      || prot.Equals("apk")
       || prot.Equals("bluray")
       || prot.Equals("udf");
 }
