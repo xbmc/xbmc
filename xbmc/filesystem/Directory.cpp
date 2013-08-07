@@ -64,7 +64,17 @@ private:
     virtual bool DoWork()
     {
       m_result->m_list.SetPath(m_result->m_dir);
-      m_result->m_result         = m_imp->GetDirectory(m_result->m_dir, m_result->m_list);
+      try
+      {
+        m_result->m_result = m_imp->GetDirectory(m_result->m_dir, m_result->m_list);
+      }
+      catch (...)
+      {
+        CLog::Log(LOGERROR, "CGetDirectory job raised exception getting %s", m_result->m_dir.c_str());
+        m_result->m_result = false;
+        m_result->m_event.Set();
+        throw;
+      }
       m_result->m_event.Set();
       return m_result->m_result;
     }
