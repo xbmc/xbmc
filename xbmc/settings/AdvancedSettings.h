@@ -243,6 +243,14 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_musicThumbs;
     CStdString m_fanartImages;
 
+    bool m_bPictureLibraryHideAllItems;
+    int m_iPictureLibraryRecentlyAddedItems;
+    bool m_bPictureLibraryAllItemsOnBottom;
+    bool m_bPictureLibraryAlbumsSortByArtistThenYear;
+    CStdString m_strPictureLibraryAlbumFormat;
+    CStdString m_strPictureLibraryAlbumFormatRight;
+    CStdString m_pictureItemSeparator;
+
     bool m_bMusicLibraryHideAllItems;
     int m_iMusicLibraryRecentlyAddedItems;
     bool m_bMusicLibraryAllItemsOnBottom;

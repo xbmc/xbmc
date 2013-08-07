@@ -257,6 +257,7 @@ void CAdvancedSettings::Initialize()
   m_fanartImages = "fanart.jpg|fanart.png";
 
   m_bMusicLibraryHideAllItems = false;
+  m_bPictureLibraryHideAllItems = false;
   m_bMusicLibraryAllItemsOnBottom = false;
   m_bMusicLibraryAlbumsSortByArtistThenYear = false;
   m_iMusicLibraryRecentlyAddedItems = 25;
@@ -264,6 +265,7 @@ void CAdvancedSettings::Initialize()
   m_strMusicLibraryAlbumFormatRight = "";
   m_prioritiseAPEv2tags = false;
   m_musicItemSeparator = " / ";
+  m_pictureItemSeparator = " / ";
   m_videoItemSeparator = " / ";
 
   m_bVideoLibraryHideAllItems = false;
