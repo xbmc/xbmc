@@ -3075,6 +3075,10 @@
     <ClCompile Include="..\..\xbmc\utils\ActorProtocol.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\playlists\SmartPlaylistFileItemListModifier.cpp">
+      <Filter>playlists</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileItemListModification.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6029,6 +6033,11 @@
     <ClInclude Include="..\..\xbmc\utils\ActorProtocol.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\IFileItemListModifier.h" />
+    <ClInclude Include="..\..\xbmc\playlists\SmartPlaylistFileItemListModifier.h">
+      <Filter>playlists</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileItemListModification.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

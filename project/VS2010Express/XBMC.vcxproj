@@ -456,6 +456,7 @@
     <ClCompile Include="..\..\xbmc\epg\EpgSearchFilter.cpp" />
     <ClCompile Include="..\..\xbmc\epg\GUIEPGGridContainer.cpp" />
     <ClCompile Include="..\..\xbmc\FileItem.cpp" />
+    <ClCompile Include="..\..\xbmc\FileItemListModification.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\AddonsDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\AFPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\AFPFile.cpp" />
@@ -909,6 +910,7 @@
     <ClCompile Include="..\..\xbmc\playlists\PlayListWPL.cpp" />
     <ClCompile Include="..\..\xbmc\playlists\PlayListXML.cpp" />
     <ClCompile Include="..\..\xbmc\playlists\SmartPlayList.cpp" />
+    <ClCompile Include="..\..\xbmc\playlists\SmartPlaylistFileItemListModifier.cpp" />
     <ClCompile Include="..\..\xbmc\powermanagement\DPMSSupport.cpp" />
     <ClCompile Include="..\..\xbmc\powermanagement\PowerManager.cpp" />
     <ClCompile Include="..\..\xbmc\powermanagement\windows\Win32PowerSyscall.cpp" />
@@ -1075,6 +1077,7 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h" />
     <ClInclude Include="..\..\xbmc\DbUrl.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.h" />
+    <ClInclude Include="..\..\xbmc\FileItemListModification.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HTTPFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DAVCommon.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DAVFile.h" />
@@ -1098,6 +1101,7 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
     <ClInclude Include="..\..\xbmc\guilib\iimage.h" />
     <ClInclude Include="..\..\xbmc\guilib\imagefactory.h" />
+    <ClInclude Include="..\..\xbmc\IFileItemListModifier.h" />
     <ClInclude Include="..\..\xbmc\input\touch\generic\GenericTouchActionHandler.h" />
     <ClInclude Include="..\..\xbmc\input\touch\generic\GenericTouchSwipeDetector.h" />
     <ClInclude Include="..\..\xbmc\input\touch\generic\IGenericTouchGestureDetector.h" />
@@ -1158,6 +1162,7 @@
     <ClInclude Include="..\..\xbmc\network\NetworkServices.h" />
     <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.h" />
     <ClInclude Include="..\..\xbmc\network\upnp\UPnPSettings.h" />
+    <ClInclude Include="..\..\xbmc\playlists\SmartPlaylistFileItemListModifier.h" />
     <ClInclude Include="..\..\xbmc\profiles\dialogs\GUIDialogLockSettings.h" />
     <ClInclude Include="..\..\xbmc\profiles\dialogs\GUIDialogProfileSettings.h" />
     <ClInclude Include="..\..\xbmc\profiles\Profile.h" />
