@@ -18,8 +18,8 @@
  *
  */
 
-#include "PictureThumbLoader.h"
 #include "Picture.h"
+#include "PictureThumbLoader.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "TextureCache.h"
@@ -220,7 +220,8 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
           files.push_back(items[thumb]->GetPath());
         CStdString thumb = CTextureCache::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
         CStdString relativeCacheFile = CTextureCache::GetCacheFile(thumb) + ".png";
-        if (CPicture::CreateTiledThumb(files, CTextureCache::GetCachedPath(relativeCacheFile)))
+        /*
+        if (CPictureThumbLoader::CreateTiledThumb(files, CTextureCache::GetCachedPath(relativeCacheFile)))
         {
           CTextureDetails details;
           details.file = relativeCacheFile;
@@ -230,6 +231,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
           db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
           pItem->SetArt("thumb", CTextureCache::GetCachedPath(relativeCacheFile));
         }
+         */
       }
     }
     // refill in the icon to get it to update
