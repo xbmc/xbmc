@@ -72,7 +72,7 @@ static int GetBufferS(AVCodecContext *avctx, AVFrame *pic)
 static inline VASurfaceID GetSurfaceID(AVFrame *pic)
 { return (VASurfaceID)(uintptr_t)pic->data[3]; }
 
-static CDisplayPtr GetGlobalDisplay()
+static CDisplayPtr GetGlobalDisplay(bool &blacklist_high_res)
 {
   static weak_ptr<CDisplay> display_global;
 
@@ -113,6 +113,12 @@ static CDisplayPtr GetGlobalDisplay()
     {
       CLog::Log(LOGDEBUG, "VAAPI - deinterlace not support on this intel driver version");
       deinterlace = false;
+    }
+    // do the same check for 4K decoding: version < 1.2.0 (stable) and 1.0.21 (staging)
+    // cannot decode 4K and will crash the GPU
+    if((compare_version(major, minor, micro, 1, 2, 0) < 0) && (compare_version(major, minor, micro, 1, 0, 21) < 0))
+    {
+      blacklist_high_res = true;
     }
   }
 
@@ -266,13 +272,6 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 
   CLog::Log(LOGDEBUG, "VAAPI - attempting to open codec %d with profile %d at level %d with %d reference frames", avctx->codec_id, avctx->profile, avctx->level, avctx->refs);
 
-  if(avctx->width  > 1920
-  || avctx->height > 1088)
-  {
-    CLog::Log(LOGDEBUG, "VAAPI - frame size (%dx%d) too large - disallowing", avctx->width, avctx->height);
-    return false;
-  }
-
   vector<VAProfile> accepted;
   switch (avctx->codec_id) {
     case AV_CODEC_ID_MPEG2VIDEO:
@@ -311,9 +310,18 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
       return false;
   }
 
-  m_display = GetGlobalDisplay();
+  bool blacklist_high_res = false;
+  
+  m_display = GetGlobalDisplay(blacklist_high_res);
   if(!m_display)
     return false;
+  
+  if(blacklist_high_res && (avctx->width > 1920 || avctx->height > 1088))
+  {
+    CLog::Log(LOGDEBUG, "VAAPI - frame size (%dx%d) too large - disallowing", avctx->width, avctx->height);
+    return false;
+  }
+
 
   int num_display_attrs = 0;
   scoped_array<VADisplayAttribute> display_attrs(new VADisplayAttribute[vaMaxNumDisplayAttributes(m_display->get())]);
