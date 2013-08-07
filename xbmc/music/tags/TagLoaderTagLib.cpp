@@ -84,7 +84,12 @@ static const vector<string> StringListToVectorString(const StringList& stringLis
   return values;
 }
 
-bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art /* = NULL */, const string& fallbackFileExtension /* = "" */)
+bool CTagLoaderTagLib::Load(const CStdString& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art /* = NULL */)
+{
+  return Load(strFileName, tag, "", art);
+}
+
+bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, const CStdString& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art /* = NULL */)
 {  
   CStdString strExtension = URIUtils::GetExtension(strFileName);
   strExtension.ToLower();
