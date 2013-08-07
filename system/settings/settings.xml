@@ -371,42 +371,42 @@
           </control>
         </setting>
         <setting id="videoplayer.usevdpau" type="boolean" label="13425" help="36155">
-          <visible>HAVE_LIBVDPAU</visible>
+          <requirement>HAVE_LIBVDPAU</requirement>
           <level>2</level>
           <default>true</default>
         </setting>
         <setting id="videoplayer.usevaapi" type="boolean" label="13426" help="36156">
-          <visible>HAVE_LIBVA</visible>
+          <requirement>HAVE_LIBVA</requirement>
           <level>2</level>
           <default>true</default>
         </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
-          <visible>HasDXVA2</visible>
+          <requirement>HasDXVA2</requirement>
           <level>2</level>
           <default>true</default>
         </setting>
         <setting id="videoplayer.usechd" type="boolean" label="13428" help="36159">
-          <visible>HasCrystalHDDevice</visible>
+          <requirement>HasCrystalHDDevice</requirement>
           <level>2</level>
           <default>true</default>
         </setting>
         <setting id="videoplayer.useomx" type="boolean" label="13430" help="36161">
-          <visible>HAVE_LIBOPENMAX</visible>
+          <requirement>HAVE_LIBOPENMAX</requirement>
           <level>2</level>
           <default>true</default>
         </setting>
         <setting id="videoplayer.usevideotoolbox" type="boolean" label="13432" help="36162">
-          <visible>HasVideoToolBoxDecoder</visible>
+          <requirement>HasVideoToolBoxDecoder</requirement>
           <level>2</level>
           <default>true</default>
         </setting>
         <setting id="videoplayer.usestagefright" type="boolean" label="13436" help="36260">
-          <visible>HAVE_LIBSTAGEFRIGHTDECODER</visible>
+          <requirement>HAVE_LIBSTAGEFRIGHTDECODER</requirement>
           <level>2</level>
           <default>true</default>
         </setting>
         <setting id="videoplayer.usepbo" type="boolean" label="13424" help="36163">
-          <visible>HAS_GL</visible>
+          <requirement>HAS_GL</requirement>
           <level>4</level>
           <default>true</default>
         </setting>
@@ -517,13 +517,13 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="videoplayer.vdpau_allow_xrandr" type="boolean" label="13122" help="36172">
-          <visible>HAVE_LIBVDPAU</visible>
+          <requirement>HAVE_LIBVDPAU</requirement>
           <level>4</level>
           <default>false</default>
         </setting>
       </group>
       <group id="3">
-        <visible>
+        <requirement>
           <and>
             <or>
               <condition>HAS_GL</condition>
@@ -531,7 +531,7 @@
             </or>
             <condition>HAVE_LIBVDPAU</condition>
           </and>
-        </visible>
+        </requirement>
         <setting id="videoplayer.vdpauUpscalingLevel" type="boolean" label="13121" help="36173">
           <level>4</level>
           <default>false</default>
@@ -1444,7 +1444,7 @@
       </group>
     </category>
     <category id="karaoke" label="13327" help="36292">
-      <visible>HAS_KARAOKE</visible>
+      <requirement>HAS_KARAOKE</requirement>
       <group id="1">
         <setting id="karaoke.enabled" type="boolean" label="13323" help="36293">
           <level>2</level>
@@ -1661,7 +1661,7 @@
       </group>
     </category>
     <category id="webserver" label="33101" help="36327">
-      <visible>HAS_WEB_SERVER</visible>
+      <requirement>HAS_WEB_SERVER</requirement>
       <group id="1">
         <setting id="services.webserver" type="boolean" label="263" help="36328">
           <level>1</level>
@@ -1709,19 +1709,19 @@
       </group>
     </category>
     <category id="remotecontrol" label="790" help="36333">
-      <visible>
+      <requirement>
         <or>
           <condition>HAS_EVENT_SERVER</condition>
           <condition>HAS_JSONRPC</condition>
         </or>
-      </visible>
+      </requirement>
       <group id="1">
         <setting id="services.esenabled" type="boolean" label="791" help="36334">
           <level>1</level>
           <default>true</default>
         </setting>
         <setting id="services.esport" type="integer" label="792" help="36335">
-          <visible>HAS_EVENT_SERVER</visible>
+          <requirement>HAS_EVENT_SERVER</requirement>
           <level>4</level>
           <default>9777</default>
           <constraints>
@@ -1735,7 +1735,7 @@
           <control type="edit" format="integer" />
         </setting>
         <setting id="services.esportrange" type="integer" label="793" help="36336">
-          <visible>HAS_EVENT_SERVER</visible>
+          <requirement>HAS_EVENT_SERVER</requirement>
           <level>4</level>
           <default>10</default>
           <constraints>
@@ -1749,7 +1749,7 @@
           <control type="spinner" format="integer" />
         </setting>
         <setting id="services.esmaxclients" type="integer" label="797" help="36337">
-          <visible>HAS_EVENT_SERVER</visible>
+          <requirement>HAS_EVENT_SERVER</requirement>
           <level>4</level>
           <default>20</default>
           <constraints>
@@ -1770,7 +1770,7 @@
           </dependencies>
         </setting>
         <setting id="services.esinitialdelay" type="integer" label="795" help="36339">
-          <visible>HAS_EVENT_SERVER</visible>
+          <requirement>HAS_EVENT_SERVER</requirement>
           <level>4</level>
           <default>750</default>
           <constraints>
@@ -1784,7 +1784,7 @@
           <control type="spinner" format="integer" />
         </setting>
         <setting id="services.escontinuousdelay" type="integer" label="796" help="36340">
-          <visible>HAS_EVENT_SERVER</visible>
+          <requirement>HAS_EVENT_SERVER</requirement>
           <level>4</level>
           <default>25</default>
           <constraints>
@@ -1800,7 +1800,7 @@
       </group>
     </category>
     <category id="zeroconf" label="1259" help="36341">
-      <visible>HAS_ZEROCONF</visible>
+      <requirement>HAS_ZEROCONF</requirement>
       <group id="1">
         <setting id="services.zeroconf" type="boolean" label="1260" help="36342">
           <level>2</level>
@@ -1809,7 +1809,7 @@
       </group>
     </category>
     <category id="airplay" label="1273" help="36343">
-      <visible>HAS_AIRPLAY</visible>
+      <requirement>HAS_AIRPLAY</requirement>
       <group id="1">
         <setting id="services.airplay" type="boolean" label="1270" help="36343">
           <level>1</level>
@@ -1885,7 +1885,7 @@
           <control type="list" format="string" />
         </setting>
         <setting id="videoscreen.screenmode" type="string" label="243" help="36353">
-          <visible>IsStandAlone</visible>
+          <requirement>IsStandAlone</requirement>
           <level>0</level>
           <default>DESKTOP</default>
           <constraints>
@@ -1947,16 +1947,16 @@
           <level>1</level>
         </setting>
         <setting id="videoscreen.testpattern" type="action" label="226" help="36358">
-          <visible>HAS_GL</visible>
+          <requirement>HAS_GL</requirement>
           <level>1</level>
         </setting>
         <setting id="videoscreen.limitedrange" type="boolean" label="36042" help="36359">
-          <visible>
+          <requirement>
             <or>
               <condition>HAS_GL</condition>
               <condition>HAS_DX</condition>
             </or>
-          </visible>
+          </requirement>
           <level>3</level>
           <default>false</default>
           <updates>
@@ -2002,7 +2002,7 @@
           <default>true</default>
         </setting>
         <setting id="audiooutput.processquality" type="integer" label="13505" help="36169">
-          <visible>HAS_AE_QUALITY_LEVELS</visible>
+          <requirement>HAS_AE_QUALITY_LEVELS</requirement>
           <level>2</level>
           <default>30</default> <!-- AE_QUALITY_MID -->
           <constraints>
@@ -2078,7 +2078,7 @@
         </setting>
         <setting id="audiooutput.streamsilence" type="boolean" label="421" help="34111">
           <level>2</level>
-          <visible>audiosupportsdrain</visible>
+          <requirement>audiosupportsdrain</requirement>
           <default>true</default>
         </setting>
       </group>
@@ -2142,7 +2142,7 @@
           <default>true</default>
         </setting>
         <setting id="input.enablejoystick" type="boolean" label="35100" help="36378">
-          <visible>HAS_SDL_JOYSTICK</visible>
+          <requirement>HAS_SDL_JOYSTICK</requirement>
           <level>0</level>
           <default>true</default>
         </setting>

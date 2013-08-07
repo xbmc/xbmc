@@ -13,8 +13,8 @@ SRCS=AdvancedSettings.cpp \
      SettingSection.cpp \
      Settings.cpp \
      SettingsManager.cpp \
+     SettingRequirement.cpp \
      SettingUpdate.cpp \
-     SettingVisibility.cpp \
      SkinSettings.cpp \
      VideoSettings.cpp \
 

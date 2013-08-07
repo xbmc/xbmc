@@ -984,7 +984,7 @@
     <ClCompile Include="..\..\xbmc\settings\SettingSection.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingsManager.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingUpdate.cpp" />
-    <ClCompile Include="..\..\xbmc\settings\SettingVisibility.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\SettingRequirement.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SkinSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\windows\GUIControlSettings.cpp" />
@@ -1185,7 +1185,7 @@
     <ClInclude Include="..\..\xbmc\settings\SettingSection.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingsManager.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingUpdate.h" />
-    <ClInclude Include="..\..\xbmc\settings\SettingVisibility.h" />
+    <ClInclude Include="..\..\xbmc\settings\SettingRequirement.h" />
     <ClInclude Include="..\..\xbmc\settings\SkinSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\windows\GUIControlSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettings.h" />

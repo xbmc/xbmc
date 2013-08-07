@@ -18,10 +18,10 @@
  *
  */
 
-#include "SettingVisibility.h"
+#include "SettingRequirement.h"
 #include "SettingsManager.h"
 
-bool CSettingVisibilityCondition::Check() const
+bool CSettingRequirementCondition::Check() const
 {
   if (m_settingsManager == NULL)
     return false;
@@ -33,7 +33,7 @@ bool CSettingVisibilityCondition::Check() const
   return found;
 }
 
-bool CSettingVisibilityConditionCombination::Check() const
+bool CSettingRequirementConditionCombination::Check() const
 {
   if (m_operations.empty() && m_values.empty())
     return true;
@@ -41,8 +41,8 @@ bool CSettingVisibilityConditionCombination::Check() const
   return CSettingConditionCombination::Check();
 }
 
-CSettingVisibility::CSettingVisibility(CSettingsManager *settingsManager /* = NULL */)
+CSettingRequirement::CSettingRequirement(CSettingsManager *settingsManager /* = NULL */)
   : CSettingCondition(settingsManager)
 {
-  m_operation = CBooleanLogicOperationPtr(new CSettingVisibilityConditionCombination(m_settingsManager));
+  m_operation = CBooleanLogicOperationPtr(new CSettingRequirementConditionCombination(m_settingsManager));
 }

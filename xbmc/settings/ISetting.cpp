@@ -21,8 +21,10 @@
 #include "ISetting.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 
 #define XML_VISIBLE     "visible"
+#define XML_REQUIREMENT "requirement"
 #define XML_CONDITION   "condition"
 
 using namespace std;
@@ -31,7 +33,8 @@ ISetting::ISetting(const std::string &id, CSettingsManager *settingsManager /* =
   : m_id(id),
     m_settingsManager(settingsManager),
     m_visible(true),
-    m_visibilityCondition(settingsManager)
+    m_meetsRequirements(true),
+    m_requirementCondition(settingsManager)
 { }
   
 bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
@@ -39,11 +42,15 @@ bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   if (node == NULL)
     return false;
 
-  const TiXmlNode *visibleNode = node->FirstChild(XML_VISIBLE);
-  if (visibleNode == NULL)
+  bool value;
+  if (XMLUtils::GetBoolean(node, XML_VISIBLE, value))
+    m_visible = value;
+
+  const TiXmlNode *requirementNode = node->FirstChild(XML_REQUIREMENT);
+  if (requirementNode == NULL)
     return true;
 
-  return m_visibilityCondition.Deserialize(visibleNode);
+  return m_requirementCondition.Deserialize(requirementNode);
 }
 
 bool ISetting::DeserializeIdentification(const TiXmlNode *node, std::string &identification)
@@ -63,7 +70,7 @@ bool ISetting::DeserializeIdentification(const TiXmlNode *node, std::string &ide
   return true;
 }
 
-void ISetting::CheckVisible()
+void ISetting::CheckRequirements()
 {
-  m_visible = m_visibilityCondition.Check();
+  m_meetsRequirements = m_requirementCondition.Check();
 }

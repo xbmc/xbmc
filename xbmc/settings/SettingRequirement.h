@@ -24,35 +24,35 @@
 
 #include "SettingConditions.h"
 
-class CSettingVisibilityCondition : public CSettingConditionItem
+class CSettingRequirementCondition : public CSettingConditionItem
 {
 public:
-  CSettingVisibilityCondition(CSettingsManager *settingsManager = NULL)
+  CSettingRequirementCondition(CSettingsManager *settingsManager = NULL)
     : CSettingConditionItem(settingsManager)
   { }
-  virtual ~CSettingVisibilityCondition() { }
+  virtual ~CSettingRequirementCondition() { }
 
   virtual bool Check() const;
 };
 
-class CSettingVisibilityConditionCombination : public CSettingConditionCombination
+class CSettingRequirementConditionCombination : public CSettingConditionCombination
 {
 public:
-  CSettingVisibilityConditionCombination(CSettingsManager *settingsManager = NULL)
+  CSettingRequirementConditionCombination(CSettingsManager *settingsManager = NULL)
     : CSettingConditionCombination(settingsManager)
   { }
-  virtual ~CSettingVisibilityConditionCombination() { }
+  virtual ~CSettingRequirementConditionCombination() { }
 
   virtual bool Check() const;
 
 private:
-  virtual CBooleanLogicOperation* newOperation() { return new CSettingVisibilityConditionCombination(m_settingsManager); }
-  virtual CBooleanLogicValue* newValue() { return new CSettingVisibilityCondition(m_settingsManager); }
+  virtual CBooleanLogicOperation* newOperation() { return new CSettingRequirementConditionCombination(m_settingsManager); }
+  virtual CBooleanLogicValue* newValue() { return new CSettingRequirementCondition(m_settingsManager); }
 };
 
-class CSettingVisibility : public CSettingCondition
+class CSettingRequirement : public CSettingCondition
 {
 public:
-  CSettingVisibility(CSettingsManager *settingsManager = NULL);
-  virtual ~CSettingVisibility() { }
+  CSettingRequirement(CSettingsManager *settingsManager = NULL);
+  virtual ~CSettingRequirement() { }
 };

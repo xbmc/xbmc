@@ -73,20 +73,20 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
 
       if (section->Deserialize(sectionNode, update))
       {
-        section->CheckVisible();
+        section->CheckRequirements();
         if (!update)
           m_sections[section->GetId()] = section;
 
         // get all settings and add them to the settings map
         for (SettingCategoryList::const_iterator categoryIt = section->GetCategories().begin(); categoryIt != section->GetCategories().end(); ++categoryIt)
         {
-          (*categoryIt)->CheckVisible();
+          (*categoryIt)->CheckRequirements();
           for (SettingGroupList::const_iterator groupIt = (*categoryIt)->GetGroups().begin(); groupIt != (*categoryIt)->GetGroups().end(); ++groupIt)
           {
-            (*groupIt)->CheckVisible();
+            (*groupIt)->CheckRequirements();
             for (SettingList::const_iterator settingIt = (*groupIt)->GetSettings().begin(); settingIt != (*groupIt)->GetSettings().end(); ++settingIt)
             {
-              (*settingIt)->CheckVisible();
+              (*settingIt)->CheckRequirements();
 
               const std::string &settingId = (*settingIt)->GetId();
               SettingMap::iterator setting = m_settings.find(settingId);
@@ -952,6 +952,13 @@ void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, c
       }
       break;
     }
+
+    case SettingDependencyTypeVisible:
+      // just trigger the property changed callback and a call to
+      // CSetting::IsVisible() will automatically determine the new
+      // visible state
+      OnSettingPropertyChanged(setting, "visible");
+      break;
 
     case SettingDependencyTypeNone:
     default:

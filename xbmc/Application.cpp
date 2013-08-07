@@ -1271,7 +1271,7 @@ bool CApplication::Initialize()
   m_dpms = new DPMSSupport();
   if (g_windowManager.Initialized())
   {
-    CSettings::Get().GetSetting("powermanagement.displaysoff")->SetVisible(m_dpms->IsSupported());
+    CSettings::Get().GetSetting("powermanagement.displaysoff")->SetRequirementsMet(m_dpms->IsSupported());
 
     g_windowManager.Add(new CGUIWindowHome);
     g_windowManager.Add(new CGUIWindowPrograms);

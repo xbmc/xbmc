@@ -245,6 +245,8 @@ bool CSettingDependency::setType(const std::string &type)
     m_type = SettingDependencyTypeEnable;
   else if (StringUtils::EqualsNoCase(type, "update"))
     m_type = SettingDependencyTypeUpdate;
+  else if (StringUtils::EqualsNoCase(type, "visible"))
+    m_type = SettingDependencyTypeVisible;
   else
     return false;
 
