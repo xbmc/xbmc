@@ -47,7 +47,8 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "TextureCache.h"
-//#include "picture/PictureThumbLoader.h"
+#include "pictures/Picture.h"
+#include "pictures/PictureThumbLoader.h"
 #include "interfaces/AnnouncementManager.h"
 #include "GUIUserMessages.h"
 #include "addons/AddonManager.h"
@@ -1021,7 +1022,7 @@ void CPictureInfoScanner::FindArtForAlbums(VECPICTUREALBUMS &albums, const CStdS
     {
         // assign to folder thumb as well
         CFileItem albumItem(path, true);
-        //CPictureThumbLoader::SetCachedImage(albumItem, "thumb", albumArt);
+        CPictureThumbLoader::SetCachedImage(albumItem, "thumb", albumArt);
     }
 }
 
