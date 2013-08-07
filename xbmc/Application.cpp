@@ -5517,6 +5517,19 @@ void CApplication::StopVideoScan()
     m_videoInfoScanner->Stop();
 }
 
+bool CApplication::IsPictureScanning() const
+{
+    return false;//return m_pictureInfoScanner->IsScanning();
+}
+
+void CApplication::StopPictureScan()
+{
+    /*
+    if (m_pictureInfoScanner->IsScanning())
+        m_pictureInfoScanner->Stop();
+     */
+}
+
 void CApplication::StopMusicScan()
 {
   if (m_musicInfoScanner->IsScanning())
@@ -5539,6 +5552,10 @@ void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
   m_videoInfoScanner->ShowDialog(true);
 
   m_videoInfoScanner->Start(strDirectory,scanAll);
+}
+
+void CApplication::StartPictureScan(const CStdString &strDirectory, int flags)
+{
 }
 
 void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)

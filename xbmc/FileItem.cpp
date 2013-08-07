@@ -35,6 +35,7 @@
 #include "CueDocument.h"
 #include "video/VideoDatabase.h"
 #include "music/MusicDatabase.h"
+#include "pictures/PictureDatabase.h"
 #include "utils/TuxBoxUtil.h"
 #include "epg/Epg.h"
 #include "pvr/channels/PVRChannel.h"
@@ -48,6 +49,9 @@
 #include "music/Artist.h"
 #include "music/Album.h"
 #include "music/Song.h"
+#include "pictures/Face.h"
+#include "pictures/PictureAlbum.h"
+#include "pictures/Picture.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -64,6 +68,7 @@ using namespace std;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
+//using namespace PICTURE_INFO;
 using namespace PVR;
 using namespace EPG;
 
@@ -486,7 +491,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
       delete m_pvrRecordingInfoTag;
 
     m_pvrRecordingInfoTag = NULL;
-  }
+  }	
 
   if (item.HasPVRTimerInfoTag())
   {

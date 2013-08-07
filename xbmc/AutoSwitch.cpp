@@ -246,7 +246,7 @@ float CAutoSwitch::MetadataPercentage(const CFileItemList &vecItems)
     const CFileItemPtr item = vecItems[i];
     if(item->HasMusicInfoTag()
     || item->HasVideoInfoTag()
-    || item->HasPictureInfoTag()
+//    || item->HasPictureInfoTag()
     || item->HasProperty("Addon.ID"))
       count++;
     if(item->IsParentFolder())
