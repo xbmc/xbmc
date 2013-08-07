@@ -106,7 +106,7 @@ unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool sw
   {
     resource = vc_dispmanx_resource_create( VC_IMAGE_RGBA32, width, height, &vc_image_ptr );
 
-    vc_dispmanx_snapshot(display, resource, VC_IMAGE_ROT0);
+    vc_dispmanx_snapshot(display, resource, (DISPMANX_TRANSFORM_T)0);
 
     vc_dispmanx_rect_set(&rect, 0, 0, width, height);
     vc_dispmanx_resource_read_data(resource, &rect, image, stride);
