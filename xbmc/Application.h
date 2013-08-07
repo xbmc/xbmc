@@ -83,6 +83,11 @@ namespace MUSIC_INFO
   class CMusicInfoScanner;
 }
 
+namespace PICTURE_INFO
+{
+    class CPictureInfoScanner;
+}
+
 #define VOLUME_MINIMUM 0.0f        // -60dB
 #define VOLUME_MAXIMUM 1.0f        // 0dB
 #define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
@@ -434,6 +439,7 @@ protected:
 
   VIDEO::CVideoInfoScanner *m_videoInfoScanner;
   MUSIC_INFO::CMusicInfoScanner *m_musicInfoScanner;
+  PICTURE_INFO::CPictureInfoScanner *m_pictureInfoScanner;
 
   bool m_muted;
   float m_volumeLevel;

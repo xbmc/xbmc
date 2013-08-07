@@ -164,6 +164,7 @@
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 #include "peripherals/devices/PeripheralImon.h"
 #include "music/infoscanner/MusicInfoScanner.h"
+#include "pictures/infoscanner/PictureInfoScanner.h"
 
 // Windows includes
 #include "guilib/GUIWindowManager.h"
@@ -354,6 +355,7 @@ using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 using namespace VIDEO;
 using namespace MUSIC_INFO;
+using namespace PICTURE_INFO;
 #ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
 #endif
@@ -382,6 +384,7 @@ CApplication::CApplication(void)
   , m_progressTrackingItem(new CFileItem)
   , m_videoInfoScanner(new CVideoInfoScanner)
   , m_musicInfoScanner(new CMusicInfoScanner)
+  , m_pictureInfoScanner(new CPictureInfoScanner)
   , m_seekHandler(new CSeekHandler)
   , m_playerController(new CPlayerController)
 {
@@ -444,6 +447,7 @@ CApplication::~CApplication(void)
 {
   delete m_musicInfoScanner;
   delete m_videoInfoScanner;
+  delete m_pictureInfoScanner;
   delete &m_progressTrackingVideoResumeBookmark;
 #ifdef HAS_DVD_DRIVE
   delete m_Autorun;
@@ -3320,6 +3324,9 @@ void CApplication::Stop(int exitCode)
     if (m_musicInfoScanner->IsScanning())
       m_musicInfoScanner->Stop();
 
+    if (m_pictureInfoScanner->IsScanning())
+        m_pictureInfoScanner->Stop();
+      
     if (m_videoInfoScanner->IsScanning())
       m_videoInfoScanner->Stop();
 
@@ -4585,6 +4592,9 @@ void CApplication::CheckShutdown()
   if (m_musicInfoScanner->IsScanning())
     resetTimer = true;
 
+  if (m_pictureInfoScanner->IsScanning())
+    resetTimer = true;
+    
   if (m_videoInfoScanner->IsScanning())
     resetTimer = true;
 
@@ -5519,15 +5529,13 @@ void CApplication::StopVideoScan()
 
 bool CApplication::IsPictureScanning() const
 {
-    return false;//return m_pictureInfoScanner->IsScanning();
+    return m_pictureInfoScanner->IsScanning();
 }
 
 void CApplication::StopPictureScan()
 {
-    /*
     if (m_pictureInfoScanner->IsScanning())
         m_pictureInfoScanner->Stop();
-     */
 }
 
 void CApplication::StopMusicScan()
@@ -5556,6 +5564,21 @@ void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
 
 void CApplication::StartPictureScan(const CStdString &strDirectory, int flags)
 {
+    if (m_pictureInfoScanner->IsScanning())
+        return;
+    
+    if (!flags)
+    { // setup default flags
+        if (CSettings::Get().GetBool("picturelibrary.downloadinfo"))
+            flags |= CMusicInfoScanner::SCAN_ONLINE;
+        if (CSettings::Get().GetBool("picturelibrary.backgroundupdate"))
+            flags |= CMusicInfoScanner::SCAN_BACKGROUND;
+    }
+    
+    if (!(flags & CPictureInfoScanner::SCAN_BACKGROUND))
+        m_pictureInfoScanner->ShowDialog(true);
+    
+    m_pictureInfoScanner->Start(strDirectory, flags);
 }
 
 void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
