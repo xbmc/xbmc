@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://www.xbmc.org
@@ -18,46 +17,134 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+/*!
+ \file Picture.h
+ \brief
+ */
+#pragma once
+
+#include "utils/StdString.h"
+#include "utils/ISerializable.h"
+#include "XBDateTime.h"
+//#include "music/tags/PictureInfoTag.h" // for EmbeddedArt
+#include "Face.h"
+#include <map>
+#include <vector>
+
 #include "utils/StdString.h"
 #include "utils/Job.h"
 
 class CBaseTexture;
 
-class CPicture
+/*!
+ \ingroup music
+ \brief Class to store and read album information from CPictureDatabase
+ \sa CPicture, CPictureDatabase
+ */
+
+class CLocation
 {
 public:
-  static bool CreateThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const CStdString &thumbFile);
-
-  /*! \brief Create a tiled thumb of the given files
-   \param files the files to create the thumb from
-   \param thumb the filename of the thumb
-   */
-  static bool CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb);
-
-  /*! \brief Cache a texture, resizing, rotating and flipping as needed, and saving as a JPG or PNG
-   \param texture a pointer to a CBaseTexture
-   \param dest_width [in/out] maximum width in pixels of cached version - replaced with actual cached width
-   \param dest_height [in/out] maximum height in pixels of cached version - replaced with actual cached height
-   \param dest the output cache file
-   \return true if successful, false otherwise
-   */
-  static bool CacheTexture(CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest);
-  static bool CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest);
-
-private:
-  static void GetScale(unsigned int width, unsigned int height, unsigned int &out_width, unsigned int &out_height);
-  static bool ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned int in_height, unsigned int in_pitch,
-                         uint8_t *out_pixels, unsigned int out_width, unsigned int out_height, unsigned int out_pitch);
-  static bool OrientateImage(uint32_t *&pixels, unsigned int &width, unsigned int &height, int orientation);
-
-  static bool FlipHorizontal(uint32_t *&pixels, unsigned int &width, unsigned int &height);
-  static bool FlipVertical(uint32_t *&pixels, unsigned int &width, unsigned int &height);
-  static bool Rotate90CCW(uint32_t *&pixels, unsigned int &width, unsigned int &height);
-  static bool Rotate270CCW(uint32_t *&pixels, unsigned int &width, unsigned int &height);
-  static bool Rotate180CCW(uint32_t *&pixels, unsigned int &width, unsigned int &height);
-  static bool Transpose(uint32_t *&pixels, unsigned int &width, unsigned int &height);
-  static bool TransposeOffAxis(uint32_t *&pixels, unsigned int &width, unsigned int &height);
+    long idLocation;
+    CStdString strLocation;
 };
+
+class CFileItem;
+
+/*!
+ \ingroup music
+ \brief Class to store and read song information from CPictureDatabase
+ \sa CAlbum, CPictureDatabase
+ */
+class CPicture: public ISerializable
+{
+public:
+    CPicture() ;
+    CPicture(CFileItem& item);
+    virtual ~CPicture(){};
+    void Clear() ;
+    virtual void Serialize(CVariant& value) const;
+    
+    bool operator<(const CPicture &song) const
+    {
+        if (strFileName < song.strFileName) return true;
+        if (strFileName > song.strFileName) return false;
+        if (iTrack < song.iTrack) return true;
+        return false;
+    }
+    
+    /*! \brief whether this song has art associated with it
+     Tests both the strThumb and embeddedArt members.
+     */
+    bool HasArt() const;
+    
+    /*! \brief whether the art from this song matches the art from another
+     Tests both the strThumb and embeddedArt members.
+     */
+    bool ArtMatches(const CPicture &right) const;
+    
+    
+    static bool CreateThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const CStdString &thumbFile);
+    
+    /*! \brief Create a tiled thumb of the given files
+     \param files the files to create the thumb from
+     \param thumb the filename of the thumb
+     */
+    static bool CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb);
+    
+    /*! \brief Cache a texture, resizing, rotating and flipping as needed, and saving as a JPG or PNG
+     \param texture a pointer to a CBaseTexture
+     \param dest_width [in/out] maximum width in pixels of cached version - replaced with actual cached width
+     \param dest_height [in/out] maximum height in pixels of cached version - replaced with actual cached height
+     \param dest the output cache file
+     \return true if successful, false otherwise
+     */
+    static bool CacheTexture(CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest);
+    static bool CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest);
+    
+private:
+    static void GetScale(unsigned int width, unsigned int height, unsigned int &out_width, unsigned int &out_height);
+    static bool ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned int in_height, unsigned int in_pitch,
+                           uint8_t *out_pixels, unsigned int out_width, unsigned int out_height, unsigned int out_pitch);
+    static bool OrientateImage(uint32_t *&pixels, unsigned int &width, unsigned int &height, int orientation);
+    
+    static bool FlipHorizontal(uint32_t *&pixels, unsigned int &width, unsigned int &height);
+    static bool FlipVertical(uint32_t *&pixels, unsigned int &width, unsigned int &height);
+    static bool Rotate90CCW(uint32_t *&pixels, unsigned int &width, unsigned int &height);
+    static bool Rotate270CCW(uint32_t *&pixels, unsigned int &width, unsigned int &height);
+    static bool Rotate180CCW(uint32_t *&pixels, unsigned int &width, unsigned int &height);
+    static bool Transpose(uint32_t *&pixels, unsigned int &width, unsigned int &height);
+    static bool TransposeOffAxis(uint32_t *&pixels, unsigned int &width, unsigned int &height);
+public:
+    long idPicture;
+    int idAlbum;
+    CStdString strFileName;
+    CStdString strTitle;
+    std::vector<std::string> face;
+    VECFACECREDITS faceCredits;
+    CStdString strAlbum;
+    std::vector<std::string> albumFace;
+    std::vector<std::string> location;
+    CStdString strThumb;
+//    MUSIC_INFO::EmbeddedArtInfo embeddedArt;
+    CStdString strPictureBrainzTrackID;
+    CStdString strComment;
+    char rating;
+    int iTrack;
+    int iDuration;
+    int iYear;
+    int iTimesPlayed;
+    CDateTime lastPlayed;
+    int iStartOffset;
+    int iEndOffset;
+    bool bCompilation;
+    
+    // Karaoke-specific information
+    long       iKaraokeNumber;        //! Karaoke song number to "select by number". 0 for non-karaoke
+    CStdString strKaraokeLyrEncoding; //! Karaoke song lyrics encoding if known. Empty if unknown.
+    int        iKaraokeDelay;         //! Karaoke song lyrics-music delay in 1/10 seconds.
+};
+
 
 //this class calls CreateThumbnailFromSurface in a CJob, so a png file can be written without halting the render thread
 class CThumbnailWriter : public CJob
@@ -74,4 +161,28 @@ class CThumbnailWriter : public CJob
     int            m_stride;
     CStdString     m_thumbFile;
 };
+
+
+/*!
+ \ingroup music
+ \brief A map of CPicture objects, used for CPictureDatabase
+ */
+typedef std::map<std::string, CPicture> MAPPICTURES;
+
+/*!
+ \ingroup music
+ \brief A vector of CPicture objects, used for CPictureDatabase
+ \sa CPictureDatabase
+ */
+typedef std::vector<CPicture> VECPICTURES;
+
+/*!
+ \ingroup music
+ \brief A vector of CStdString objects, used for CPictureDatabase
+ \sa CPictureDatabase
+ */
+typedef std::vector<CLocation> VECLOCATIONS;
+
+
+
 
