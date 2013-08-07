@@ -1083,7 +1083,7 @@
     "properties": {
       "file": { "type": "string", "required": true },
       "filetype": { "type": "string", "enum": [ "file", "directory" ], "required": true },
-      "size": { "type": "integer", "description": "Size of the file in kB (1000 Byte)" },
+      "size": { "type": "integer", "description": "Size of the file in bytes" },
       "lastmodified": { "type": "string" },
       "mimetype": { "type": "string" }
     }
