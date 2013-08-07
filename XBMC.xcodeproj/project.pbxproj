@@ -3137,6 +3137,26 @@
 		FE6D10CD17AD556E00D819D5 /* PictureLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10CB17AD556E00D819D5 /* PictureLibrary.cpp */; };
 		FE6D10D017ADD2FD00D819D5 /* ContactLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10CE17ADD2FA00D819D5 /* ContactLibrary.cpp */; };
 		FE6D10D717AE140600D819D5 /* PictureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10D517AE140600D819D5 /* PictureDatabase.cpp */; };
+		FE9D6F7717B1D7D400CDCDDC /* PictureAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F7517B1D7D300CDCDDC /* PictureAlbum.cpp */; };
+		FE9D6F7A17B1D7E000CDCDDC /* Face.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F7817B1D7DF00CDCDDC /* Face.cpp */; };
+		FE9D6F7D17B1D8CF00CDCDDC /* PictureDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F7B17B1D8CE00CDCDDC /* PictureDbUrl.cpp */; };
+		FE9D6F8117B1E93100CDCDDC /* PictureDatabaseDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F7F17B1E93000CDCDDC /* PictureDatabaseDirectory.cpp */; };
+		FE9D6F8D17B1EF4200CDCDDC /* DirectoryNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F8917B1EF4200CDCDDC /* DirectoryNode.cpp */; };
+		FE9D6F8E17B1EF4200CDCDDC /* QueryParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F8B17B1EF4200CDCDDC /* QueryParams.cpp */; };
+		FE9D6F9517B233DD00CDCDDC /* PictureInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F9317B233DC00CDCDDC /* PictureInfoScanner.cpp */; };
+		FE9D6F9817B2352100CDCDDC /* PictureAlbumInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F9617B2351E00CDCDDC /* PictureAlbumInfo.cpp */; };
+		FE9D6F9E17B2355200CDCDDC /* PictureInfoScraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F9C17B2355100CDCDDC /* PictureInfoScraper.cpp */; };
+		FE9D6FA117B239C800CDCDDC /* PictureFaceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F9F17B239C700CDCDDC /* PictureFaceInfo.cpp */; };
+		FE9D6FA417B25A6D00CDCDDC /* DirectoryNodeRoot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6FA217B25A6B00CDCDDC /* DirectoryNodeRoot.cpp */; };
+		FE9D6FA717B25A8200CDCDDC /* DirectoryNodeOverview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6FA517B25A8000CDCDDC /* DirectoryNodeOverview.cpp */; };
+		FE9D6FAA17B25A9900CDCDDC /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6FA817B25A9800CDCDDC /* DirectoryNodeGrouped.cpp */; };
+		FE9D6FAD17B25AB100CDCDDC /* DirectoryNodeFace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6FAB17B25AAF00CDCDDC /* DirectoryNodeFace.cpp */; };
+		FE9D6FB017B25AC300CDCDDC /* DirectoryNodeAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6FAE17B25AC100CDCDDC /* DirectoryNodeAlbum.cpp */; };
+		FE9D6FB317B25AD700CDCDDC /* DirectoryNodePicture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6FB117B25AD500CDCDDC /* DirectoryNodePicture.cpp */; };
+		FE9D6FB617B25AF000CDCDDC /* DirectoryNodeAlbumRecentlyAdded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6FB417B25AED00CDCDDC /* DirectoryNodeAlbumRecentlyAdded.cpp */; };
+		FE9D6FB917B25B0500CDCDDC /* DirectoryNodeAlbumRecentlyAddedPicture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6FB717B25B0300CDCDDC /* DirectoryNodeAlbumRecentlyAddedPicture.cpp */; };
+		FE9D6FBC17B25B2700CDCDDC /* DirectoryNodeYearAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6FBA17B25B2400CDCDDC /* DirectoryNodeYearAlbum.cpp */; };
+		FE9D6FBF17B25B3C00CDCDDC /* DirectoryNodeYearPicture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6FBD17B25B3800CDCDDC /* DirectoryNodeYearPicture.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -5510,6 +5530,46 @@
 		FE6D10CF17ADD2FC00D819D5 /* ContactLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactLibrary.h; sourceTree = "<group>"; };
 		FE6D10D517AE140600D819D5 /* PictureDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureDatabase.cpp; sourceTree = "<group>"; };
 		FE6D10D617AE140600D819D5 /* PictureDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureDatabase.h; sourceTree = "<group>"; };
+		FE9D6F7517B1D7D300CDCDDC /* PictureAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureAlbum.cpp; sourceTree = "<group>"; };
+		FE9D6F7617B1D7D400CDCDDC /* PictureAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureAlbum.h; sourceTree = "<group>"; };
+		FE9D6F7817B1D7DF00CDCDDC /* Face.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Face.cpp; sourceTree = "<group>"; };
+		FE9D6F7917B1D7DF00CDCDDC /* Face.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Face.h; sourceTree = "<group>"; };
+		FE9D6F7B17B1D8CE00CDCDDC /* PictureDbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureDbUrl.cpp; sourceTree = "<group>"; };
+		FE9D6F7C17B1D8CE00CDCDDC /* PictureDbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureDbUrl.h; sourceTree = "<group>"; };
+		FE9D6F7F17B1E93000CDCDDC /* PictureDatabaseDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureDatabaseDirectory.cpp; sourceTree = "<group>"; };
+		FE9D6F8017B1E93000CDCDDC /* PictureDatabaseDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureDatabaseDirectory.h; sourceTree = "<group>"; };
+		FE9D6F8917B1EF4200CDCDDC /* DirectoryNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNode.cpp; sourceTree = "<group>"; };
+		FE9D6F8A17B1EF4200CDCDDC /* DirectoryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNode.h; sourceTree = "<group>"; };
+		FE9D6F8B17B1EF4200CDCDDC /* QueryParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QueryParams.cpp; sourceTree = "<group>"; };
+		FE9D6F8C17B1EF4200CDCDDC /* QueryParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryParams.h; sourceTree = "<group>"; };
+		FE9D6F9317B233DC00CDCDDC /* PictureInfoScanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PictureInfoScanner.cpp; path = infoscanner/PictureInfoScanner.cpp; sourceTree = "<group>"; };
+		FE9D6F9417B233DC00CDCDDC /* PictureInfoScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PictureInfoScanner.h; path = infoscanner/PictureInfoScanner.h; sourceTree = "<group>"; };
+		FE9D6F9617B2351E00CDCDDC /* PictureAlbumInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PictureAlbumInfo.cpp; path = infoscanner/PictureAlbumInfo.cpp; sourceTree = "<group>"; };
+		FE9D6F9717B2351F00CDCDDC /* PictureAlbumInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PictureAlbumInfo.h; path = infoscanner/PictureAlbumInfo.h; sourceTree = "<group>"; };
+		FE9D6F9C17B2355100CDCDDC /* PictureInfoScraper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PictureInfoScraper.cpp; path = infoscanner/PictureInfoScraper.cpp; sourceTree = "<group>"; };
+		FE9D6F9D17B2355100CDCDDC /* PictureInfoScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PictureInfoScraper.h; path = infoscanner/PictureInfoScraper.h; sourceTree = "<group>"; };
+		FE9D6F9F17B239C700CDCDDC /* PictureFaceInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PictureFaceInfo.cpp; path = infoscanner/PictureFaceInfo.cpp; sourceTree = "<group>"; };
+		FE9D6FA017B239C800CDCDDC /* PictureFaceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PictureFaceInfo.h; path = infoscanner/PictureFaceInfo.h; sourceTree = "<group>"; };
+		FE9D6FA217B25A6B00CDCDDC /* DirectoryNodeRoot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeRoot.cpp; sourceTree = "<group>"; };
+		FE9D6FA317B25A6B00CDCDDC /* DirectoryNodeRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeRoot.h; sourceTree = "<group>"; };
+		FE9D6FA517B25A8000CDCDDC /* DirectoryNodeOverview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeOverview.cpp; sourceTree = "<group>"; };
+		FE9D6FA617B25A8100CDCDDC /* DirectoryNodeOverview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeOverview.h; sourceTree = "<group>"; };
+		FE9D6FA817B25A9800CDCDDC /* DirectoryNodeGrouped.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeGrouped.cpp; sourceTree = "<group>"; };
+		FE9D6FA917B25A9900CDCDDC /* DirectoryNodeGrouped.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeGrouped.h; sourceTree = "<group>"; };
+		FE9D6FAB17B25AAF00CDCDDC /* DirectoryNodeFace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeFace.cpp; sourceTree = "<group>"; };
+		FE9D6FAC17B25AB000CDCDDC /* DirectoryNodeFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeFace.h; sourceTree = "<group>"; };
+		FE9D6FAE17B25AC100CDCDDC /* DirectoryNodeAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeAlbum.cpp; sourceTree = "<group>"; };
+		FE9D6FAF17B25AC200CDCDDC /* DirectoryNodeAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeAlbum.h; sourceTree = "<group>"; };
+		FE9D6FB117B25AD500CDCDDC /* DirectoryNodePicture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodePicture.cpp; sourceTree = "<group>"; };
+		FE9D6FB217B25AD600CDCDDC /* DirectoryNodePicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodePicture.h; sourceTree = "<group>"; };
+		FE9D6FB417B25AED00CDCDDC /* DirectoryNodeAlbumRecentlyAdded.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeAlbumRecentlyAdded.cpp; sourceTree = "<group>"; };
+		FE9D6FB517B25AEF00CDCDDC /* DirectoryNodeAlbumRecentlyAdded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeAlbumRecentlyAdded.h; sourceTree = "<group>"; };
+		FE9D6FB717B25B0300CDCDDC /* DirectoryNodeAlbumRecentlyAddedPicture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeAlbumRecentlyAddedPicture.cpp; sourceTree = "<group>"; };
+		FE9D6FB817B25B0400CDCDDC /* DirectoryNodeAlbumRecentlyAddedPicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeAlbumRecentlyAddedPicture.h; sourceTree = "<group>"; };
+		FE9D6FBA17B25B2400CDCDDC /* DirectoryNodeYearAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeYearAlbum.cpp; sourceTree = "<group>"; };
+		FE9D6FBB17B25B2600CDCDDC /* DirectoryNodeYearAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeYearAlbum.h; sourceTree = "<group>"; };
+		FE9D6FBD17B25B3800CDCDDC /* DirectoryNodeYearPicture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeYearPicture.cpp; sourceTree = "<group>"; };
+		FE9D6FBE17B25B3A00CDCDDC /* DirectoryNodeYearPicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeYearPicture.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6062,6 +6122,8 @@
 		4313767E12D63EC200680C15 /* pictures */ = {
 			isa = PBXGroup;
 			children = (
+				FE9D6F8F17B21F6600CDCDDC /* tags */,
+				FE9D6F7417B1D64900CDCDDC /* infoscanner */,
 				E38E16860D25F9FA00618676 /* DllImageLib.h */,
 				E38E16870D25F9FA00618676 /* DllLibExif.h */,
 				E38E17C60D25F9FA00618676 /* GUIDialogPictureInfo.cpp */,
@@ -6084,6 +6146,12 @@
 				E38E1E0A0D25F9FD00618676 /* SlideShowPicture.h */,
 				FE6D10D517AE140600D819D5 /* PictureDatabase.cpp */,
 				FE6D10D617AE140600D819D5 /* PictureDatabase.h */,
+				FE9D6F7517B1D7D300CDCDDC /* PictureAlbum.cpp */,
+				FE9D6F7617B1D7D400CDCDDC /* PictureAlbum.h */,
+				FE9D6F7817B1D7DF00CDCDDC /* Face.cpp */,
+				FE9D6F7917B1D7DF00CDCDDC /* Face.h */,
+				FE9D6F7B17B1D8CE00CDCDDC /* PictureDbUrl.cpp */,
+				FE9D6F7C17B1D8CE00CDCDDC /* PictureDbUrl.h */,
 			);
 			path = pictures;
 			sourceTree = "<group>";
@@ -7660,6 +7728,7 @@
 		E38E16940D25F9FA00618676 /* filesystem */ = {
 			isa = PBXGroup;
 			children = (
+				FE9D6F8817B1EF4100CDCDDC /* PictureDatabaseDirectory */,
 				F5A7B42B113CBB950059D6AA /* AddonsDirectory.cpp */,
 				F5A7B42A113CBB950059D6AA /* AddonsDirectory.h */,
 				DF24A6B01406C7C500C7721E /* AFPDirectory.cpp */,
@@ -7867,6 +7936,8 @@
 				DF93D6981444A8B0007C6459 /* ZipFile.h */,
 				E38E17950D25F9FA00618676 /* ZipManager.cpp */,
 				E38E17960D25F9FA00618676 /* ZipManager.h */,
+				FE9D6F7F17B1E93000CDCDDC /* PictureDatabaseDirectory.cpp */,
+				FE9D6F8017B1E93000CDCDDC /* PictureDatabaseDirectory.h */,
 			);
 			path = filesystem;
 			sourceTree = "<group>";
@@ -9174,6 +9245,59 @@
 				DFB65F7B15373AE7006B8FF1 /* ICoreAudioSource.h */,
 			);
 			name = CoreAudio;
+			sourceTree = "<group>";
+		};
+		FE9D6F7417B1D64900CDCDDC /* infoscanner */ = {
+			isa = PBXGroup;
+			children = (
+				FE9D6F9317B233DC00CDCDDC /* PictureInfoScanner.cpp */,
+				FE9D6F9417B233DC00CDCDDC /* PictureInfoScanner.h */,
+				FE9D6F9617B2351E00CDCDDC /* PictureAlbumInfo.cpp */,
+				FE9D6F9717B2351F00CDCDDC /* PictureAlbumInfo.h */,
+				FE9D6F9C17B2355100CDCDDC /* PictureInfoScraper.cpp */,
+				FE9D6F9D17B2355100CDCDDC /* PictureInfoScraper.h */,
+				FE9D6F9F17B239C700CDCDDC /* PictureFaceInfo.cpp */,
+				FE9D6FA017B239C800CDCDDC /* PictureFaceInfo.h */,
+			);
+			name = infoscanner;
+			sourceTree = "<group>";
+		};
+		FE9D6F8817B1EF4100CDCDDC /* PictureDatabaseDirectory */ = {
+			isa = PBXGroup;
+			children = (
+				FE9D6F8917B1EF4200CDCDDC /* DirectoryNode.cpp */,
+				FE9D6F8A17B1EF4200CDCDDC /* DirectoryNode.h */,
+				FE9D6F8B17B1EF4200CDCDDC /* QueryParams.cpp */,
+				FE9D6F8C17B1EF4200CDCDDC /* QueryParams.h */,
+				FE9D6FA217B25A6B00CDCDDC /* DirectoryNodeRoot.cpp */,
+				FE9D6FA317B25A6B00CDCDDC /* DirectoryNodeRoot.h */,
+				FE9D6FA517B25A8000CDCDDC /* DirectoryNodeOverview.cpp */,
+				FE9D6FA617B25A8100CDCDDC /* DirectoryNodeOverview.h */,
+				FE9D6FA817B25A9800CDCDDC /* DirectoryNodeGrouped.cpp */,
+				FE9D6FA917B25A9900CDCDDC /* DirectoryNodeGrouped.h */,
+				FE9D6FAB17B25AAF00CDCDDC /* DirectoryNodeFace.cpp */,
+				FE9D6FAC17B25AB000CDCDDC /* DirectoryNodeFace.h */,
+				FE9D6FAE17B25AC100CDCDDC /* DirectoryNodeAlbum.cpp */,
+				FE9D6FAF17B25AC200CDCDDC /* DirectoryNodeAlbum.h */,
+				FE9D6FB117B25AD500CDCDDC /* DirectoryNodePicture.cpp */,
+				FE9D6FB217B25AD600CDCDDC /* DirectoryNodePicture.h */,
+				FE9D6FB417B25AED00CDCDDC /* DirectoryNodeAlbumRecentlyAdded.cpp */,
+				FE9D6FB517B25AEF00CDCDDC /* DirectoryNodeAlbumRecentlyAdded.h */,
+				FE9D6FB717B25B0300CDCDDC /* DirectoryNodeAlbumRecentlyAddedPicture.cpp */,
+				FE9D6FB817B25B0400CDCDDC /* DirectoryNodeAlbumRecentlyAddedPicture.h */,
+				FE9D6FBA17B25B2400CDCDDC /* DirectoryNodeYearAlbum.cpp */,
+				FE9D6FBB17B25B2600CDCDDC /* DirectoryNodeYearAlbum.h */,
+				FE9D6FBD17B25B3800CDCDDC /* DirectoryNodeYearPicture.cpp */,
+				FE9D6FBE17B25B3A00CDCDDC /* DirectoryNodeYearPicture.h */,
+			);
+			path = PictureDatabaseDirectory;
+			sourceTree = "<group>";
+		};
+		FE9D6F8F17B21F6600CDCDDC /* tags */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = tags;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -10536,6 +10660,26 @@
 				FE6D10CD17AD556E00D819D5 /* PictureLibrary.cpp in Sources */,
 				FE6D10D017ADD2FD00D819D5 /* ContactLibrary.cpp in Sources */,
 				FE6D10D717AE140600D819D5 /* PictureDatabase.cpp in Sources */,
+				FE9D6F7717B1D7D400CDCDDC /* PictureAlbum.cpp in Sources */,
+				FE9D6F7A17B1D7E000CDCDDC /* Face.cpp in Sources */,
+				FE9D6F7D17B1D8CF00CDCDDC /* PictureDbUrl.cpp in Sources */,
+				FE9D6F8117B1E93100CDCDDC /* PictureDatabaseDirectory.cpp in Sources */,
+				FE9D6F8D17B1EF4200CDCDDC /* DirectoryNode.cpp in Sources */,
+				FE9D6F8E17B1EF4200CDCDDC /* QueryParams.cpp in Sources */,
+				FE9D6F9517B233DD00CDCDDC /* PictureInfoScanner.cpp in Sources */,
+				FE9D6F9817B2352100CDCDDC /* PictureAlbumInfo.cpp in Sources */,
+				FE9D6F9E17B2355200CDCDDC /* PictureInfoScraper.cpp in Sources */,
+				FE9D6FA117B239C800CDCDDC /* PictureFaceInfo.cpp in Sources */,
+				FE9D6FA417B25A6D00CDCDDC /* DirectoryNodeRoot.cpp in Sources */,
+				FE9D6FA717B25A8200CDCDDC /* DirectoryNodeOverview.cpp in Sources */,
+				FE9D6FAA17B25A9900CDCDDC /* DirectoryNodeGrouped.cpp in Sources */,
+				FE9D6FAD17B25AB100CDCDDC /* DirectoryNodeFace.cpp in Sources */,
+				FE9D6FB017B25AC300CDCDDC /* DirectoryNodeAlbum.cpp in Sources */,
+				FE9D6FB317B25AD700CDCDDC /* DirectoryNodePicture.cpp in Sources */,
+				FE9D6FB617B25AF000CDCDDC /* DirectoryNodeAlbumRecentlyAdded.cpp in Sources */,
+				FE9D6FB917B25B0500CDCDDC /* DirectoryNodeAlbumRecentlyAddedPicture.cpp in Sources */,
+				FE9D6FBC17B25B2700CDCDDC /* DirectoryNodeYearAlbum.cpp in Sources */,
+				FE9D6FBF17B25B3C00CDCDDC /* DirectoryNodeYearPicture.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
