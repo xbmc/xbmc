@@ -42,6 +42,7 @@
 #include <taglib/xiphcomment.h>
 #include <taglib/mp4tag.h>
 #include "TagLibVFSStream.h"
+#include "ImusicInfoTagLoader.h"
 
 namespace MUSIC_INFO
 {
@@ -49,12 +50,14 @@ namespace MUSIC_INFO
   class EmbeddedArt;
 };
 
-class CTagLoaderTagLib
+class CTagLoaderTagLib : public MUSIC_INFO::IMusicInfoTagLoader
 {
 public:
   CTagLoaderTagLib();
   virtual ~CTagLoaderTagLib();
-  virtual bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = NULL, const std::string& fallbackFileExtension = "");
+  virtual bool                   Load(const CStdString& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = NULL);
+
+  bool                           Load(const CStdString& strFileName, MUSIC_INFO::CMusicInfoTag& tag, const CStdString& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art = NULL);
 private:
   bool                           Open(const std::string& strFileName, bool readOnly);
   const std::vector<std::string> GetASFStringList(const TagLib::List<TagLib::ASF::Attribute>& list);
