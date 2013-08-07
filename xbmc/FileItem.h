@@ -494,6 +494,7 @@ public:
 
   CFileItemList();
   CFileItemList(const CStdString& strPath);
+  CFileItemList(const CFileItemList& rhs);
   virtual ~CFileItemList();
   virtual void Archive(CArchive& ar);
   CFileItemPtr operator[] (int iItem);
@@ -506,6 +507,7 @@ public:
   void AddFront(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
+  void RemoveRange(int iRangeBegin, int iRangeEnd);
   CFileItemPtr Get(int iItem);
   const CFileItemPtr Get(int iItem) const;
   const VECFILEITEMS GetList() const { return m_items; }
@@ -585,6 +587,7 @@ public:
   void RemoveDiscCache(int windowID = 0) const;
   bool AlwaysCache() const;
 
+    //void Move(int position, int move);
   void Swap(unsigned int item1, unsigned int item2);
 
   /*! \brief Update an item in the item list

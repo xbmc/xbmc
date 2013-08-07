@@ -90,7 +90,7 @@ bool CGUIFixedListContainer::MoveUp(bool wrapAround)
     SelectItem(item - 1);
   else if (wrapAround)
   {
-    SelectItem((int)m_items.size() - 1);
+    SelectItem(m_items.Size() - 1);
     SetContainerMoving(-1);
   }
   else
@@ -101,7 +101,7 @@ bool CGUIFixedListContainer::MoveUp(bool wrapAround)
 bool CGUIFixedListContainer::MoveDown(bool wrapAround)
 {
   int item = GetSelectedItem();
-  if (item < (int)m_items.size() - 1)
+  if (item < m_items.Size() - 1)
     SelectItem(item + 1);
   else if (wrapAround)
   { // move first item in list
@@ -115,7 +115,7 @@ bool CGUIFixedListContainer::MoveDown(bool wrapAround)
 
 void CGUIFixedListContainer::Scroll(int amount)
 {
-  // increase or decrease the offset within [-minCursor, m_items.size() - maxCursor]
+  // increase or decrease the offset within [-minCursor, m_items.Size() - maxCursor]
   int minCursor, maxCursor;
   GetCursorRange(minCursor, maxCursor);
   int offset = GetOffset() + amount;
@@ -124,9 +124,9 @@ void CGUIFixedListContainer::Scroll(int amount)
     offset = -minCursor;
     SetCursor(minCursor);
   }
-  if (offset > (int)m_items.size() - 1 - maxCursor)
+  if (offset > m_items.Size() - 1 - maxCursor)
   {
-    offset = m_items.size() - 1 - maxCursor;
+    offset = m_items.Size() - 1 - maxCursor;
     SetCursor(maxCursor);
   }
   ScrollToOffset(offset);
@@ -136,7 +136,7 @@ bool CGUIFixedListContainer::GetOffsetRange(int &minOffset, int &maxOffset) cons
 {
   GetCursorRange(minOffset, maxOffset);
   minOffset = -minOffset;
-  maxOffset = m_items.size() - maxOffset - 1;
+  maxOffset = m_items.Size() - maxOffset - 1;
   return true;
 }
 
@@ -225,7 +225,7 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
     }
     return true;
   }
-  else if (pos > end && GetOffset() + maxCursor < (int)m_items.size() - 1)
+  else if (pos > end && GetOffset() + maxCursor < m_items.Size() - 1)
   {
     if (!InsideLayout(m_layout, point))
       return false;
@@ -255,7 +255,7 @@ void CGUIFixedListContainer::SelectItem(int item)
   // Check that GetOffset() is valid
   ValidateOffset();
   // only select an item if it's in a valid range
-  if (item >= 0 && item < (int)m_items.size())
+  if (item >= 0 && item < m_items.Size())
   {
     // Select the item requested - we first set the cursor position
     // which may be different at either end of the list, then the offset
@@ -263,8 +263,8 @@ void CGUIFixedListContainer::SelectItem(int item)
     GetCursorRange(minCursor, maxCursor);
 
     int cursor;
-    if ((int)m_items.size() - 1 - item <= maxCursor - m_fixedCursor)
-      cursor = std::max(m_fixedCursor, maxCursor + item - (int)m_items.size() + 1);
+    if (m_items.Size() - 1 - item <= maxCursor - m_fixedCursor)
+      cursor = std::max(m_fixedCursor, maxCursor + item - m_items.Size() + 1);
     else if (item <= m_fixedCursor - minCursor)
       cursor = std::min(m_fixedCursor, minCursor + item);
     else
@@ -283,7 +283,7 @@ bool CGUIFixedListContainer::HasPreviousPage() const
 
 bool CGUIFixedListContainer::HasNextPage() const
 {
-  return (GetOffset() != (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
+  return (GetOffset() != m_items.Size() - m_itemsPerPage && m_items.Size() >= m_itemsPerPage);
 }
 
 int CGUIFixedListContainer::GetCurrentPage() const
@@ -299,14 +299,14 @@ void CGUIFixedListContainer::GetCursorRange(int &minCursor, int &maxCursor) cons
   minCursor = std::max(m_fixedCursor - m_cursorRange, 0);
   maxCursor = std::min(m_fixedCursor + m_cursorRange, m_itemsPerPage);
 
-  if (!m_items.size())
+  if (!m_items.Size())
   {
     minCursor = m_fixedCursor;
     maxCursor = m_fixedCursor;
     return;
   }
 
-  while (maxCursor - minCursor > (int)m_items.size() - 1)
+  while (maxCursor - minCursor > m_items.Size() - 1)
   {
     if (maxCursor - m_fixedCursor > m_fixedCursor - minCursor)
       maxCursor--;

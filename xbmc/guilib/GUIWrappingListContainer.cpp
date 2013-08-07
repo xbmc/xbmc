@@ -127,22 +127,22 @@ bool CGUIWrappingListContainer::GetOffsetRange(int &minOffset, int &maxOffset) c
 void CGUIWrappingListContainer::ValidateOffset()
 {
   // our minimal amount of items - we need to take into acount extra items to display wrapped items when scrolling
-  unsigned int minItems = (unsigned int)m_itemsPerPage + ScrollCorrectionRange() + GetCacheCount() / 2;
-  if (minItems <= m_items.size())
+  int minItems = m_itemsPerPage + ScrollCorrectionRange() + GetCacheCount() / 2;
+  if (minItems <= m_items.Size())
     return;
 
   // no need to check the range here, but we need to check we have
   // more items than slots.
   ResetExtraItems();
-  if (m_items.size())
+  if (m_items.Size())
   {
-    unsigned int numItems = m_items.size();
-    while (m_items.size() < minItems)
+    int numItems = m_items.Size();
+    while (m_items.Size() < minItems)
     {
       // add additional copies of items, as we require extras at render time
-      for (unsigned int i = 0; i < numItems; i++)
+      for (int i = 0; i < numItems; i++)
       {
-        m_items.push_back(CGUIListItemPtr(m_items[i]->Clone()));
+        m_items.Add(CFileItemPtr(new CFileItem(*(m_items[i]))));
         m_extraItems++;
       }
     }
@@ -151,10 +151,10 @@ void CGUIWrappingListContainer::ValidateOffset()
 
 int CGUIWrappingListContainer::CorrectOffset(int offset, int cursor) const
 {
-  if (m_items.size())
+  if (m_items.Size())
   {
-    int correctOffset = (offset + cursor) % (int)m_items.size();
-    if (correctOffset < 0) correctOffset += m_items.size();
+    int correctOffset = (offset + cursor) % (int)m_items.Size();
+    if (correctOffset < 0) correctOffset += m_items.Size();
     return correctOffset;
   }
   return 0;
@@ -162,9 +162,9 @@ int CGUIWrappingListContainer::CorrectOffset(int offset, int cursor) const
 
 int CGUIWrappingListContainer::GetSelectedItem() const
 {
-  if (m_items.size() > m_extraItems)
+  if (m_items.Size() > (int)m_extraItems)
   {
-    int numItems = (int)(m_items.size() - m_extraItems);
+    int numItems = (int)(m_items.Size() - m_extraItems);
     int correctOffset = (GetOffset() + GetCursor()) % numItems;
     if (correctOffset < 0) correctOffset += numItems;
     return correctOffset;
@@ -216,7 +216,7 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
 
 void CGUIWrappingListContainer::SelectItem(int item)
 {
-  if (item >= 0 && item < (int)m_items.size())
+  if (item >= 0 && item < m_items.Size())
     ScrollToOffset(item - GetCursor());
 }
 
@@ -224,7 +224,7 @@ void CGUIWrappingListContainer::ResetExtraItems()
 {
   // delete any extra items
   if (m_extraItems)
-    m_items.erase(m_items.begin() + m_items.size() - m_extraItems, m_items.end());
+    m_items.RemoveRange(m_items.Size() - m_extraItems, m_items.Size());
   m_extraItems = 0;
 }
 
