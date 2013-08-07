@@ -8955,11 +8955,11 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
     while (path)
     {
       CStdString strPath;
-      if (XMLUtils::GetString(path,"url",strPath))
+      if (XMLUtils::GetString(path,"url",strPath) && !strPath.empty())
         AddPath(strPath);
 
       CStdString content;
-      if (XMLUtils::GetString(path,"content", content))
+      if (XMLUtils::GetString(path,"content", content) && !content.empty())
       { // check the scraper exists, if so store the path
         AddonPtr addon;
         CStdString id;
