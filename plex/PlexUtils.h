@@ -37,7 +37,7 @@ bool Cocoa_IsHostLocal(const std::string& host);
 
 #include <sys/timeb.h>
 #ifndef gettimeofday
-static inline int _private_gettimeofday( struct timeval *tv, void *tz )
+static inline int _plex_private_gettimeofday( struct timeval *tv, void *tz )
 {
   struct timeb t;
   ftime( &t );
@@ -45,7 +45,7 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
   tv->tv_usec = t.millitm * 1000;
   return 0;
 }
-#define gettimeofday(TV, TZ) _private_gettimeofday((TV), (TZ))
+#define gettimeofday(TV, TZ) _plex_private_gettimeofday((TV), (TZ))
 #endif
 
 #ifndef usleep
