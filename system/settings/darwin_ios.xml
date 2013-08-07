@@ -34,10 +34,10 @@
     <category id="audiooutput">
       <group id="1">
         <setting id="audiooutput.ac3passthrough">
-          <visible>IsAppleTV2</visible>
+          <requirement>IsAppleTV2</requirement>
         </setting>
         <setting id="audiooutput.dtspassthrough">
-          <visible>IsAppleTV2</visible>
+          <requirement>IsAppleTV2</requirement>
         </setting>
         <setting id="audiooutput.multichannellpcm">
           <visible>false</visible>

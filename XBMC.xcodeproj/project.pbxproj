@@ -385,6 +385,9 @@
 		DF28EDA7170E1A11005FA9D2 /* ProfilesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28ED9C170E1A11005FA9D2 /* ProfilesManager.cpp */; };
 		DF28EDA8170E1A11005FA9D2 /* GUIWindowSettingsProfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28ED9F170E1A11005FA9D2 /* GUIWindowSettingsProfile.cpp */; };
 		DF28EE03170E1E51005FA9D2 /* DisplaySettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28EE01170E1E51005FA9D2 /* DisplaySettings.cpp */; };
+		DF29668017B2B04300DF10F9 /* SettingRequirement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29667E17B2B04300DF10F9 /* SettingRequirement.cpp */; };
+		DF29668117B2B04300DF10F9 /* SettingRequirement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29667E17B2B04300DF10F9 /* SettingRequirement.cpp */; };
+		DF29668217B2B04300DF10F9 /* SettingRequirement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29667E17B2B04300DF10F9 /* SettingRequirement.cpp */; };
 		DF3488E713FD958F0026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF3488E513FD958F0026A711 /* GUIAction.cpp */; };
 		DF34892A13FD9C780026A711 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34892813FD9C780026A711 /* AirPlayServer.cpp */; };
 		DF34898213FDAAF60026A711 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34898113FDAAF60026A711 /* HttpParser.cpp */; };
@@ -541,7 +544,6 @@
 		DFECFB0F172D9CAB00A43CF7 /* SettingSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB00172D9CAB00A43CF7 /* SettingSection.cpp */; };
 		DFECFB10172D9CAB00A43CF7 /* SettingsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB02172D9CAB00A43CF7 /* SettingsManager.cpp */; };
 		DFECFB11172D9CAB00A43CF7 /* SettingUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB03172D9CAB00A43CF7 /* SettingUpdate.cpp */; };
-		DFECFB12172D9CAB00A43CF7 /* SettingVisibility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB05172D9CAB00A43CF7 /* SettingVisibility.cpp */; };
 		DFECFB1C172D9D0100A43CF7 /* BooleanLogic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB1A172D9D0100A43CF7 /* BooleanLogic.cpp */; };
 		DFECFB4C172D9D6D00A43CF7 /* NetworkServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB4A172D9D6D00A43CF7 /* NetworkServices.cpp */; };
 		DFF0EB54175280D1002DA3A4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CE6131F5DC6000AD0F6 /* libz.dylib */; };
@@ -1346,7 +1348,6 @@
 		DFF0F3A717528350002DA3A4 /* SettingSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB00172D9CAB00A43CF7 /* SettingSection.cpp */; };
 		DFF0F3A817528350002DA3A4 /* SettingsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB02172D9CAB00A43CF7 /* SettingsManager.cpp */; };
 		DFF0F3A917528350002DA3A4 /* SettingUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB03172D9CAB00A43CF7 /* SettingUpdate.cpp */; };
-		DFF0F3AA17528350002DA3A4 /* SettingVisibility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB05172D9CAB00A43CF7 /* SettingVisibility.cpp */; };
 		DFF0F3AB17528350002DA3A4 /* SkinSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF89901A1709BB2D00B35C21 /* SkinSettings.cpp */; };
 		DFF0F3AC17528350002DA3A4 /* VideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E010D25F9FD00618676 /* VideoSettings.cpp */; };
 		DFF0F3AD17528350002DA3A4 /* DarwinStorageProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F599CD73108E6A7A0010EC2A /* DarwinStorageProvider.cpp */; };
@@ -2773,7 +2774,6 @@
 		E499142B174E603C00741B6D /* SettingSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB00172D9CAB00A43CF7 /* SettingSection.cpp */; };
 		E499142C174E603C00741B6D /* SettingsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB02172D9CAB00A43CF7 /* SettingsManager.cpp */; };
 		E499142D174E603C00741B6D /* SettingUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB03172D9CAB00A43CF7 /* SettingUpdate.cpp */; };
-		E499142E174E603C00741B6D /* SettingVisibility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB05172D9CAB00A43CF7 /* SettingVisibility.cpp */; };
 		E499142F174E603C00741B6D /* SkinSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF89901A1709BB2D00B35C21 /* SkinSettings.cpp */; };
 		E4991430174E603C00741B6D /* VideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E010D25F9FD00618676 /* VideoSettings.cpp */; };
 		E4991431174E604300741B6D /* DarwinStorageProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F599CD73108E6A7A0010EC2A /* DarwinStorageProvider.cpp */; };
@@ -4014,6 +4014,8 @@
 		DF28EDA0170E1A11005FA9D2 /* GUIWindowSettingsProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowSettingsProfile.h; sourceTree = "<group>"; };
 		DF28EE01170E1E51005FA9D2 /* DisplaySettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DisplaySettings.cpp; sourceTree = "<group>"; };
 		DF28EE02170E1E51005FA9D2 /* DisplaySettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplaySettings.h; sourceTree = "<group>"; };
+		DF29667E17B2B04300DF10F9 /* SettingRequirement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingRequirement.cpp; sourceTree = "<group>"; };
+		DF29667F17B2B04300DF10F9 /* SettingRequirement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingRequirement.h; sourceTree = "<group>"; };
 		DF3488E513FD958F0026A711 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
 		DF3488E613FD958F0026A711 /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
 		DF34892813FD9C780026A711 /* AirPlayServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayServer.cpp; sourceTree = "<group>"; };
@@ -4255,8 +4257,6 @@
 		DFECFB02172D9CAB00A43CF7 /* SettingsManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsManager.cpp; sourceTree = "<group>"; };
 		DFECFB03172D9CAB00A43CF7 /* SettingUpdate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingUpdate.cpp; sourceTree = "<group>"; };
 		DFECFB04172D9CAB00A43CF7 /* SettingUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingUpdate.h; sourceTree = "<group>"; };
-		DFECFB05172D9CAB00A43CF7 /* SettingVisibility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingVisibility.cpp; sourceTree = "<group>"; };
-		DFECFB06172D9CAB00A43CF7 /* SettingVisibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingVisibility.h; sourceTree = "<group>"; };
 		DFECFB1A172D9D0100A43CF7 /* BooleanLogic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BooleanLogic.cpp; sourceTree = "<group>"; };
 		DFECFB1B172D9D0100A43CF7 /* BooleanLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BooleanLogic.h; sourceTree = "<group>"; };
 		DFECFB4A172D9D6D00A43CF7 /* NetworkServices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetworkServices.cpp; sourceTree = "<group>"; };
@@ -8513,6 +8513,8 @@
 				DFECFAFD172D9CAB00A43CF7 /* SettingDependency.h */,
 				DFECFAFE172D9CAB00A43CF7 /* SettingPath.cpp */,
 				DFECFAFF172D9CAB00A43CF7 /* SettingPath.h */,
+				DF29667E17B2B04300DF10F9 /* SettingRequirement.cpp */,
+				DF29667F17B2B04300DF10F9 /* SettingRequirement.h */,
 				18B7C38E129420E5009E7A26 /* Settings.cpp */,
 				18B7C38F129420E5009E7A26 /* Settings.h */,
 				DFECFB00172D9CAB00A43CF7 /* SettingSection.cpp */,
@@ -8521,8 +8523,6 @@
 				0E30286C1759FCC200D93596 /* SettingsManager.h */,
 				DFECFB03172D9CAB00A43CF7 /* SettingUpdate.cpp */,
 				DFECFB04172D9CAB00A43CF7 /* SettingUpdate.h */,
-				DFECFB05172D9CAB00A43CF7 /* SettingVisibility.cpp */,
-				DFECFB06172D9CAB00A43CF7 /* SettingVisibility.h */,
 				DF89901A1709BB2D00B35C21 /* SkinSettings.cpp */,
 				DF89901B1709BB2D00B35C21 /* SkinSettings.h */,
 				E38E1E010D25F9FD00618676 /* VideoSettings.cpp */,
@@ -10567,7 +10567,6 @@
 				DFECFB0F172D9CAB00A43CF7 /* SettingSection.cpp in Sources */,
 				DFECFB10172D9CAB00A43CF7 /* SettingsManager.cpp in Sources */,
 				DFECFB11172D9CAB00A43CF7 /* SettingUpdate.cpp in Sources */,
-				DFECFB12172D9CAB00A43CF7 /* SettingVisibility.cpp in Sources */,
 				DFECFB1C172D9D0100A43CF7 /* BooleanLogic.cpp in Sources */,
 				DFECFB4C172D9D6D00A43CF7 /* NetworkServices.cpp in Sources */,
 				F5DB700217322DBB00D4DF21 /* FavouritesOperations.cpp in Sources */,
@@ -10586,6 +10585,7 @@
 				55611BA31766672F00754072 /* RenderFlags.cpp in Sources */,
 				5558ED10176396CD00118C35 /* StereoscopicsManager.cpp in Sources */,
 				F59EED7E17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
+				DF29668017B2B04300DF10F9 /* SettingRequirement.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11376,7 +11376,6 @@
 				DFF0F3A717528350002DA3A4 /* SettingSection.cpp in Sources */,
 				DFF0F3A817528350002DA3A4 /* SettingsManager.cpp in Sources */,
 				DFF0F3A917528350002DA3A4 /* SettingUpdate.cpp in Sources */,
-				DFF0F3AA17528350002DA3A4 /* SettingVisibility.cpp in Sources */,
 				DFF0F3AB17528350002DA3A4 /* SkinSettings.cpp in Sources */,
 				DFF0F3AC17528350002DA3A4 /* VideoSettings.cpp in Sources */,
 				DFF0F3AD17528350002DA3A4 /* DarwinStorageProvider.cpp in Sources */,
@@ -11612,6 +11611,7 @@
 				F55BA70C17AB2265002A36D1 /* StereoscopicsManager.cpp in Sources */,
 				F55BA71117AB2293002A36D1 /* RenderFlags.cpp in Sources */,
 				F59EED8017AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
+				DF29668217B2B04300DF10F9 /* SettingRequirement.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12409,7 +12409,6 @@
 				E499142B174E603C00741B6D /* SettingSection.cpp in Sources */,
 				E499142C174E603C00741B6D /* SettingsManager.cpp in Sources */,
 				E499142D174E603C00741B6D /* SettingUpdate.cpp in Sources */,
-				E499142E174E603C00741B6D /* SettingVisibility.cpp in Sources */,
 				E499142F174E603C00741B6D /* SkinSettings.cpp in Sources */,
 				E4991430174E603C00741B6D /* VideoSettings.cpp in Sources */,
 				E4991431174E604300741B6D /* DarwinStorageProvider.cpp in Sources */,
@@ -12640,6 +12639,7 @@
 				F55BA70B17AB2264002A36D1 /* StereoscopicsManager.cpp in Sources */,
 				F55BA71017AB2293002A36D1 /* RenderFlags.cpp in Sources */,
 				F59EED7F17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
+				DF29668117B2B04300DF10F9 /* SettingRequirement.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

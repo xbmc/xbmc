@@ -3005,9 +3005,6 @@
     <ClCompile Include="..\..\xbmc\settings\SettingDependency.cpp">
       <Filter>settings</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\SettingVisibility.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\network\NetworkServices.cpp">
       <Filter>network</Filter>
     </ClCompile>
@@ -3076,6 +3073,9 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\ApplicationPlayer.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\SettingRequirement.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5948,9 +5948,6 @@
     <ClInclude Include="..\..\xbmc\settings\SettingDependency.h">
       <Filter>settings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\SettingVisibility.h">
-      <Filter>settings</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\network\NetworkServices.h">
       <Filter>network</Filter>
     </ClInclude>
@@ -6031,6 +6028,9 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\ApplicationPlayer.h" />
+    <ClInclude Include="..\..\xbmc\settings\SettingRequirement.h">
+      <Filter>settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

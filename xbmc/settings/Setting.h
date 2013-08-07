@@ -100,6 +100,9 @@ public:
   const SettingDependencies& GetDependencies() const { return m_dependencies; }
   const std::set<CSettingUpdate>& GetUpdates() const { return m_updates; }
 
+  // overrides of ISetting
+  virtual bool IsVisible() const;
+
 protected:
   friend class CSettingsManager;
 
