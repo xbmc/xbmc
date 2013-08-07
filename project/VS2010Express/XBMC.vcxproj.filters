@@ -3073,6 +3073,10 @@
     <ClCompile Include="..\..\xbmc\windowing\WinEvents.cpp">
       <Filter>windowing</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\playlists\SmartPlaylistFileItemListModifier.cpp">
+      <Filter>playlists</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileItemListModification.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6034,6 +6038,11 @@
     <ClInclude Include="..\..\xbmc\utils\uXstrings.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\IFileItemListModifier.h" />
+    <ClInclude Include="..\..\xbmc\playlists\SmartPlaylistFileItemListModifier.h">
+      <Filter>playlists</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileItemListModification.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
