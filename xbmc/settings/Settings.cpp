@@ -661,6 +661,11 @@ void CSettings::InitializeDefaults()
   if (CUtil::CanBindPrivileged())
     ((CSettingInt*)m_settingsManager->GetSetting("services.webserverport"))->SetDefault(80);
 #endif
+
+  std::string defaultRegion;
+  ((CSettingString*)m_settingsManager->GetSetting("locale.language"))->SetDefault(g_langInfo.GetAvailableDefaultLanguage(defaultRegion));
+  if (!defaultRegion.empty())
+    ((CSettingString*)m_settingsManager->GetSetting("locale.country"))->SetDefault(defaultRegion);
 }
 
 void CSettings::InitializeOptionFillers()

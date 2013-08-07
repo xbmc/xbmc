@@ -34,7 +34,7 @@ public:
 
   virtual void OnSettingChanged(const CSetting *setting);
 
-  bool Load(const CStdString& strFileName);
+  bool Load(const CStdString& strFileName, bool onlyCheckLanguage = false);
 
   CStdString GetGuiCharSet() const;
   CStdString GetSubtitleCharSet() const;
@@ -42,7 +42,7 @@ public:
   // three char language code (not win32 specific)
   const CStdString& GetLanguageCode() const { return m_languageCodeGeneral; }
 
-  bool SetLanguage(const std::string &strLanguage);
+  bool SetLanguage(const std::string &strLanguage, bool onlyCheckLanguage = false);
 
   const CStdString& GetAudioLanguage() const;
   // language can either be a two char language code as defined in ISO639
@@ -124,8 +124,15 @@ public:
   static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
+  static std::string GetAvailableDefaultLanguage(std::string& detectedDefaultRegion);
+
 protected:
   void SetDefaults();
+
+  static bool FindBestAvailableLanguage(const std::string& langName, const std::string& extLangName, const std::string& scriptName, const std::string& regionName,
+                                    const std::string& regionTag, const std::string& variantName, std::string& foundLanguage, std::string& foundRegionName);
+  static bool IsSpecificLanguagePresent(const std::string& langName, const std::string& extLangName, const std::string& scriptName, const std::string& regionName,
+                                    const std::string& regionTag, const std::string& variantName, std::string& foundLanguage, std::string& foundRegionName);
 
   class CRegion
   {

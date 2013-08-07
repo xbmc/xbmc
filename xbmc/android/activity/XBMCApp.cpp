@@ -70,6 +70,7 @@
 #include "android/jni/Cursor.h"
 #include "android/jni/ContentResolver.h"
 #include "android/jni/MediaStore.h"
+#include "android/jni/Locale.h"
 
 #define GIGABYTES       1073741824
 
@@ -342,6 +343,11 @@ int CXBMCApp::GetDPI()
   AConfiguration_delete(config);
 
   return dpi;
+}
+
+std::string CXBMCApp::GetSystemLanguage()
+{
+  return CJNILocale::getDefault().toString();
 }
 
 bool CXBMCApp::ListApplications(vector<androidPackage> *applications)

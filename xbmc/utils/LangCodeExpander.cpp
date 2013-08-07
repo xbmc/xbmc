@@ -22,6 +22,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "LangInfo.h"
 #include "utils/log.h" 
+#include "utils/StringUtils.h"
+#include "utils/RegExp.h"
 
 #define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
 #define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
@@ -51,6 +53,411 @@ struct CharCodeConvertion
 // declared as extern to allow forward declaration
 extern const CharCodeConvertionWithHack CharCode2To3[184];
 extern const CharCodeConvertion RegionCode2To3[246];
+
+#ifdef TARGET_WINDOWS
+typedef struct _WINLCIDENTRY
+{
+  const LCID LcId;
+  const char* LanguageTag;
+} WINLCIDENTRY;
+
+extern const WINLCIDENTRY WinLCIDtoLangTag[351];
+#endif
+
+// TODO: move CLanguageTag implementation to new .cpp file
+
+CLanguageTag::CLanguageTag(void)
+{
+  m_FromWellFormedString = false;
+  m_DecodedToNames = false;
+  m_DecodedToNamesWithoutErrors = false;
+}
+
+CLanguageTag::CLanguageTag(const std::string& languageTagString)
+{
+  SetFromString(languageTagString);
+}
+
+CLanguageTag::CLanguageTag(const CLanguageTag& other)
+{
+  operator=(other);
+}
+
+CLanguageTag& CLanguageTag::operator=(const CLanguageTag& other)
+{
+  m_FromWellFormedString = other.m_FromWellFormedString;
+  m_LanguageSubtag       = other.m_LanguageSubtag;
+  m_ExtlangSubtag        = other.m_ExtlangSubtag;
+  m_ScriptSubtag         = other.m_ScriptSubtag;
+  m_RegionSubtag         = other.m_RegionSubtag;
+  m_VariantSubtag        = other.m_VariantSubtag;
+  m_ExtensionSubtag      = other.m_ExtensionSubtag;
+  m_PrivateuseSubtag     = other.m_PrivateuseSubtag;
+  m_DefaultScriptSubtag  = other.m_DefaultScriptSubtag;
+
+  m_DecodedToNames       = other.m_DecodedToNames;
+  if (m_DecodedToNames)
+  {
+    m_DecodedToNamesWithoutErrors =
+                           other.m_DecodedToNamesWithoutErrors;
+    m_LanguageName       = other.m_LanguageName;
+    m_ExtlangName        = other.m_ExtlangName;
+    m_ScriptName         = other.m_ScriptName;
+    m_RegionName         = other.m_RegionName;
+  }
+  else
+    ClearDecodedNames();
+
+  return *this;
+}
+
+bool CLanguageTag::operator==(const CLanguageTag& other) const
+{
+  return  m_LanguageSubtag   == other.m_LanguageSubtag &&
+          m_ExtlangSubtag    == other.m_ExtlangSubtag &&
+          m_ScriptSubtag     == other.m_ScriptSubtag &&
+          m_RegionSubtag     == other.m_RegionSubtag &&
+          m_VariantSubtag    == other.m_VariantSubtag &&
+          m_ExtensionSubtag  == other.m_ExtensionSubtag &&
+          StringUtils::EqualsNoCase(m_PrivateuseSubtag, other.m_PrivateuseSubtag);
+}
+
+bool CLanguageTag::operator!=(const CLanguageTag& other) const
+{
+  return !operator==(other);
+}
+
+void CLanguageTag::Clear(void)
+{
+  m_FromWellFormedString = false;
+  m_LanguageSubtag.clear();
+  m_ExtlangSubtag.clear();
+  m_ScriptSubtag.clear();
+  m_RegionSubtag.clear();
+  m_VariantSubtag.clear();
+  m_ExtensionSubtag.clear();
+  m_PrivateuseSubtag.clear();
+  m_DefaultScriptSubtag.clear();
+
+  ClearDecodedNames();
+}
+
+bool CLanguageTag::IsValid(void) const
+{
+  const size_t s = m_LanguageSubtag.length();
+  return s==2 || s==3;
+}
+
+bool CLanguageTag::SetFromString(const std::string& languageTagString)
+{
+  Clear();
+  if (languageTagString.length() < 2)
+    return false;
+
+  CRegExp re; 
+  /* note: regexp formed for matching lower case string */ 
+  if (!re.RegComp("^(?<lang>(?:(?<primlang>[a-z]{2,3})(?:-(?<extlang>[a-z]{3}))?)|[a-z]{4,8})"
+                    "(?:-(?<script>[a-z]{4}))?(?:-(?<region>[a-z]{2}|\\d{3}))?"
+                    "(?:-(?<variant>[0-9a-z]{5,8}|\\d[0-9a-z]{3})(?:-(?<mvariants>[0-9a-z]{5,8}|\\d[0-9a-z]{3}))*)?" /* PCRE catches only last match, 'variant' will contain first match */
+                    "(?:-(?<ext>[0-9a-wyz](?:-[0-9a-z]{2,8})+))*(?:-(?<private>x(?:-[0-9a-z]{1,8})+))?$"))
+    return false; /* PCRE error */
+
+  std::string strLower (languageTagString);
+  StringUtils::ToLower(strLower);
+
+  if (re.RegFind(strLower) == 0)
+  {
+    std::string languageFullSubtag;
+    if (!re.GetNamedSubPattern("lang", languageFullSubtag) ||
+          !re.GetNamedSubPattern("primlang", m_LanguageSubtag) ||
+          !re.GetNamedSubPattern("extlang", m_ExtlangSubtag) ||
+          !re.GetNamedSubPattern("script", m_ScriptSubtag) ||
+          !re.GetNamedSubPattern("region", m_RegionSubtag) ||
+          !re.GetNamedSubPattern("variant", m_VariantSubtag) ||
+          !re.GetNamedSubPattern("ext", m_ExtensionSubtag))
+    {
+      Clear();
+      return false; /* PCRE error */
+    }
+    
+    if (m_LanguageSubtag.empty())
+      m_LanguageSubtag = languageFullSubtag;
+
+    int privNum = re.GetNamedSubPatternNumber("private");
+    if (privNum < 0)
+    {
+      Clear();
+      return false; /* PCRE error */
+    }
+    else
+    {
+      int pos = re.GetSubStart(privNum);
+      int len = re.GetSubLength(privNum);
+      if (pos >= 0 && len > 0)
+        m_PrivateuseSubtag.assign(languageTagString, pos, len); /* preserve case for private subtag */
+    }
+
+    m_FromWellFormedString = true;
+  }
+  else
+  {
+    /* string is not well formed RFC 5646 language tag */
+    /* try to extract minimum language information */
+    StringUtils::Trim(strLower);
+    /* note: regexp formed for matching lower case string */ 
+    if (!re.RegComp("^(?<lang>[a-z]{2,3})"
+            "(?:$|-(?:(?<region1>[a-z]{2})(?:$|-))|-(?:[0-9a-wyz]-|[0-9a-z]{2,}-)+(?<region2>[a-z]{2})(?:$|-)|.)"))
+    {
+      Clear();
+      return false; /* PCRE error */
+    }
+  
+    if (re.RegFind(strLower) < 0)
+    {
+      Clear();
+      return false;
+    }
+
+    re.GetNamedSubPattern("lang", m_LanguageSubtag);
+    re.GetNamedSubPattern("region1", m_RegionSubtag);
+    if (m_RegionSubtag.empty())
+      re.GetNamedSubPattern("region2", m_RegionSubtag);
+  }
+
+  /* Format result */
+  if (!m_RegionSubtag.empty())
+    StringUtils::ToUpper(m_RegionSubtag);
+  if (!m_ScriptSubtag.empty())
+    m_ScriptSubtag[0] = toupper(m_ScriptSubtag[0]);
+  
+  SetSubtagsDefaults();
+
+  return m_FromWellFormedString;
+}
+
+std::string CLanguageTag::GetTagString(void) const
+{
+  std::string tag (GetLanguageFullSubtag());
+  if (!GetScriptSubtag().empty())
+    tag += "-" + GetScriptSubtag();
+  if (!m_RegionSubtag.empty())
+    tag += "-" + m_RegionSubtag;
+  if (!m_VariantSubtag.empty())
+    tag += "-" + m_VariantSubtag;
+  if (!m_ExtensionSubtag.empty())
+    tag += "-" + m_ExtensionSubtag;
+  if (!m_PrivateuseSubtag.empty())
+    tag += "-" + m_PrivateuseSubtag;
+
+  return tag;
+}
+
+void CLanguageTag::SetLanguageSubtag(const std::string& languageSubtag)
+{
+  if (languageSubtag == m_LanguageSubtag)
+    return;
+  ClearDecodedNames();
+  m_LanguageSubtag = languageSubtag; 
+  StringUtils::ToLower(m_LanguageSubtag);
+  SetSubtagsDefaults();
+}
+
+std::string CLanguageTag::GetLanguageFullSubtag(void) const
+{
+  std::string tag (m_LanguageSubtag);
+  if (!m_ExtlangSubtag.empty())
+    tag += "-" + m_ExtlangSubtag;
+
+  return tag;
+}
+
+void CLanguageTag::SetExtlangSubtag(const std::string& extlangSubtag)
+{
+  if (extlangSubtag == m_ExtlangSubtag)
+    return;
+  ClearDecodedNames();
+  m_ExtlangSubtag = extlangSubtag; 
+  StringUtils::ToLower(m_ExtlangSubtag);
+  SetSubtagsDefaults();
+}
+
+void CLanguageTag::SetScriptSubtag(const std::string& scriptSubtag)
+{
+  if (scriptSubtag == m_ScriptSubtag)
+    return;
+  ClearDecodedNames();
+  m_ScriptSubtag = scriptSubtag; 
+  StringUtils::ToLower(m_ScriptSubtag);
+  if (!m_ScriptSubtag.empty())
+    m_ScriptSubtag[0] = toupper(m_ScriptSubtag[0]);
+  SetSubtagsDefaults();
+}
+
+std::string CLanguageTag::GetScriptSubtag(void) const
+{
+  if (m_ScriptSubtag.empty())
+    return m_DefaultScriptSubtag;
+
+  return m_ScriptSubtag;
+}
+
+void CLanguageTag::SetRegionSubtag(const std::string& regionSubtag)
+{
+  if (regionSubtag == m_RegionSubtag)
+    return;
+  ClearDecodedNames();
+  m_RegionSubtag = regionSubtag; 
+  StringUtils::ToUpper(m_RegionSubtag);
+  SetSubtagsDefaults();
+}
+
+void CLanguageTag::SetVariantSubtag(const std::string& variantSubtag)
+{
+  if (variantSubtag == m_VariantSubtag)
+    return;
+  ClearDecodedNames();
+  m_VariantSubtag = variantSubtag; 
+  StringUtils::ToLower(m_VariantSubtag);
+}
+
+void CLanguageTag::SetExtensionSubtag(const std::string& extensionSubtag)
+{
+  if (extensionSubtag == m_ExtensionSubtag)
+    return;
+  ClearDecodedNames();
+  m_ExtensionSubtag = extensionSubtag; 
+  StringUtils::ToLower(m_ExtensionSubtag);
+}
+
+void CLanguageTag::SetPrivateuseSubtag(const std::string& privateuseSubtag)
+{
+  if (privateuseSubtag == m_PrivateuseSubtag)
+    return;
+  m_PrivateuseSubtag = privateuseSubtag; 
+}
+
+bool CLanguageTag::DecodeTagToNames(void)
+{
+  if (m_DecodedToNames)
+    return m_DecodedToNamesWithoutErrors;
+
+  m_DecodedToNamesWithoutErrors = DecodeLanguageSubtag();
+
+  /* Only few scripts and regions are supported for now, variant and extension are not used */
+  /* TODO: when needed, add decoding support for all standard scripts, regions and variants to CLangCodeExpander */
+
+  /* Decode script subtag */
+  std::string scriptTag = GetScriptSubtag();
+  if (scriptTag == "Cyrl")
+    m_ScriptName = "Cyrillic";
+  else if (scriptTag == "Hans")
+    m_ScriptName = "Simplified";
+  else if (scriptTag == "Hant")
+    m_ScriptName = "Traditional";
+  else if (scriptTag == "Deva")
+    m_ScriptName = "Devanagari";
+
+  /* Decode region subtag */
+  if (m_RegionSubtag == "AR")
+    m_RegionName = "Argentina";
+  else if (m_RegionSubtag == "BR")
+    m_RegionName = "Brazil";
+  else if (m_RegionSubtag == "MX")
+    m_RegionName = "Mexico";
+  else if (m_RegionSubtag == "US")
+    m_RegionName = "United States";
+
+  m_DecodedToNames = true;
+
+  return m_DecodedToNamesWithoutErrors;
+}
+
+std::string CLanguageTag::GetLanguageName(void)
+{
+  DecodeTagToNames();
+  return m_LanguageName;
+}
+
+std::string CLanguageTag::GetExtlangName(void)
+{
+  DecodeTagToNames();
+  return m_ExtlangName;
+}
+
+std::string CLanguageTag::GetScriptName(void)
+{
+  DecodeTagToNames();
+  return m_ScriptName;
+}
+
+std::string CLanguageTag::GetRegionName(void)
+{
+  DecodeTagToNames();
+  return m_RegionName;
+}
+
+std::string CLanguageTag::GetVariantName(void)
+{
+  return "";
+}
+
+std::string CLanguageTag::GetExtensionName(void)
+{
+  return "";
+}
+
+void CLanguageTag::SetSubtagsDefaults(void)
+{
+  DecodeLanguageSubtag();
+  if (m_LanguageName.empty() && m_ExtlangName.empty())
+    return;
+
+  /* minimum defaults, only required for XBMC language selection */
+  if (m_ScriptSubtag.empty())
+  {
+    /* Set some default scripts */
+    if (m_LanguageName == "Chinese" || m_ExtlangName == "Chinese")
+    {
+      if (m_RegionSubtag == "CN")
+        m_DefaultScriptSubtag = "Hans";
+      else if (m_RegionSubtag == "TW")
+        m_DefaultScriptSubtag = "Hant";
+      else
+        m_DefaultScriptSubtag = "Hans"; // FIXME: Hant?
+    }
+    else if (m_LanguageName == "Hindi" || m_ExtlangName == "Hindi")
+      m_DefaultScriptSubtag = "Deva";
+    else
+      m_DefaultScriptSubtag.clear();
+  }
+  else
+    m_DefaultScriptSubtag.clear();
+}
+
+bool CLanguageTag::DecodeLanguageSubtag(void)
+{
+  if (m_DecodedToNames)
+    return m_DecodedToNamesWithoutErrors;
+
+  bool decodedOK = true;
+  if (m_LanguageSubtag.empty() || !g_LangCodeExpander.LookupInDb(m_LanguageName, m_LanguageSubtag))
+    decodedOK = false;
+  if (!m_ExtlangSubtag.empty() && !g_LangCodeExpander.LookupInDb(m_ExtlangName, m_ExtlangSubtag))
+    decodedOK = false;
+
+  return decodedOK;
+}
+
+void CLanguageTag::ClearDecodedNames(void)
+{
+  m_DecodedToNames = false;
+  m_DecodedToNamesWithoutErrors = false;
+  m_LanguageName.clear();
+  m_ExtlangName.clear();
+  m_ScriptName.clear();
+  m_RegionName.clear();
+}
+
 
 CLangCodeExpander::CLangCodeExpander(void)
 {}
@@ -213,10 +620,8 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
   }
   else if (strCharCode.size() > 3)
   {
-    CStdString strLangInfoPath;
-    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strCharCode.c_str());
     CLangInfo langInfo;
-    if (!langInfo.Load(strLangInfoPath))
+    if (!langInfo.SetLanguage(strCharCode, true))
       return false;
 
     strThreeCharCode = langInfo.GetLanguageCode();
@@ -227,18 +632,17 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
 }
 
 #ifdef TARGET_WINDOWS
-bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode)
+bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const std::string& strTwoCharCode, std::string& strThreeCharCode)
 {
-  if (strTwoCharCode.length() != 2)
+  std::string strLower( strTwoCharCode );
+  StringUtils::ToLower(strLower);
+  StringUtils::Trim(strLower);
+  if (strLower.length() != 2)
     return false;
 
-  CStdString strLower( strTwoCharCode );
-  strLower.MakeLower();
-  strLower.TrimLeft();
-  strLower.TrimRight();
   for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
   {
-    if (strLower.Equals(RegionCode2To3[index].old))
+    if (strLower == RegionCode2To3[index].old)
     {
       strThreeCharCode = RegionCode2To3[index].id;
       return true;
@@ -266,6 +670,24 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
   }
 
   return true;
+}
+
+bool CLangCodeExpander::ConvertWindowsLCIDtoLanguageTag(LCID id, std::string& languageTag)
+{
+  if (id == LOCALE_USER_DEFAULT || id == LOCALE_SYSTEM_DEFAULT || id == LOCALE_INVARIANT)
+    id = ConvertDefaultLocale(id);
+
+  for (int i = 0; i < RTL_NUMBER_OF_V1(WinLCIDtoLangTag); ++i)
+  {
+    if (WinLCIDtoLangTag[i].LcId == id)
+    {
+      languageTag = WinLCIDtoLangTag[i].LanguageTag;
+      return true;
+    }
+  }
+
+  languageTag = "";
+  return false;
 }
 #endif
 
@@ -373,7 +795,7 @@ bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
   return false;
 }
 
-bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
+bool CLangCodeExpander::LookupInDb(std::string& desc, const std::string& code)
 {
   long longcode;
   CStdString sCode(code);
@@ -1569,3 +1991,362 @@ const CharCodeConvertion RegionCode2To3[246] =
   { "zm", "zmb" },
   { "zw", "zwe" }
 };
+
+#ifdef TARGET_WINDOWS
+// See http://msdn.microsoft.com/goglobal/bb896001.aspx
+static const WINLCIDENTRY WinLCIDtoLangTag[351] = 
+{
+  { 0x0036, "af" },
+  { 0x0436, "af-ZA" },
+  { 0x001C, "sq" },
+  { 0x041C, "sq-AL" },
+  { 0x0084, "gsw" },
+  { 0x0484, "gsw-FR" },
+  { 0x005E, "am" },
+  { 0x045E, "am-ET" },
+  { 0x0001, "ar" },
+  { 0x1401, "ar-DZ" },
+  { 0x3C01, "ar-BH" },
+  { 0x0C01, "ar-EG" },
+  { 0x0801, "ar-IQ" },
+  { 0x2C01, "ar-JO" },
+  { 0x3401, "ar-KW" },
+  { 0x3001, "ar-LB" },
+  { 0x1001, "ar-LY" },
+  { 0x1801, "ar-MA" },
+  { 0x2001, "ar-OM" },
+  { 0x4001, "ar-QA" },
+  { 0x0401, "ar-SA" },
+  { 0x2801, "ar-SY" },
+  { 0x1C01, "ar-TN" },
+  { 0x3801, "ar-AE" },
+  { 0x2401, "ar-YE" },
+  { 0x002B, "hy" },
+  { 0x042B, "hy-AM" },
+  { 0x004D, "as" },
+  { 0x044D, "as-IN" },
+  { 0x002C, "az" },
+  { 0x742C, "az-Cyrl" },
+  { 0x082C, "az-Cyrl-AZ" },
+  { 0x782C, "az-Latn" },
+  { 0x042C, "az-Latn-AZ" },
+  { 0x006D, "ba" },
+  { 0x046D, "ba-RU" },
+  { 0x002D, "eu" },
+  { 0x042D, "eu-ES" },
+  { 0x0023, "be" },
+  { 0x0423, "be-BY" },
+  { 0x0045, "bn" },
+  { 0x0845, "bn-BD" },
+  { 0x0445, "bn-IN" },
+  { 0x781A, "bs" },
+  { 0x641A, "bs-Cyrl" },
+  { 0x201A, "bs-Cyrl-BA" },
+  { 0x681A, "bs-Latn" },
+  { 0x141A, "bs-Latn-BA" },
+  { 0x007E, "br" },
+  { 0x047E, "br-FR" },
+  { 0x0002, "bg" },
+  { 0x0402, "bg-BG" },
+  { 0x0003, "ca" },
+  { 0x0403, "ca-ES" },
+  { 0x7804, "zh" },
+  { 0x0004, "zh-Hans" },
+  { 0x0804, "zh-CN" },
+  { 0x1004, "zh-SG" },
+  { 0x7C04, "zh-Hant" },
+  { 0x0C04, "zh-HK" },
+  { 0x1404, "zh-MO" },
+  { 0x0404, "zh-TW" },
+  { 0x0083, "co" },
+  { 0x0483, "co-FR" },
+  { 0x001A, "hr" },
+  { 0x041A, "hr-HR" },
+  { 0x101A, "hr-BA" },
+  { 0x0005, "cs" },
+  { 0x0405, "cs-CZ" },
+  { 0x0006, "da" },
+  { 0x0406, "da-DK" },
+  { 0x008C, "prs" },
+  { 0x048C, "prs-AF" },
+  { 0x0065, "dv" },
+  { 0x0465, "dv-MV" },
+  { 0x0013, "nl" },
+  { 0x0813, "nl-BE" },
+  { 0x0413, "nl-NL" },
+  { 0x0009, "en" },
+  { 0x0C09, "en-AU" },
+  { 0x2809, "en-BZ" },
+  { 0x1009, "en-CA" },
+  { 0x2409, "en-029" },
+  { 0x4009, "en-IN" },
+  { 0x1809, "en-IE" },
+  { 0x2009, "en-JM" },
+  { 0x4409, "en-MY" },
+  { 0x1409, "en-NZ" },
+  { 0x3409, "en-PH" },
+  { 0x4809, "en-SG" },
+  { 0x1C09, "en-ZA" },
+  { 0x2C09, "en-TT" },
+  { 0x0809, "en-GB" },
+  { 0x0409, "en-US" },
+  { 0x3009, "en-ZW" },
+  { 0x0025, "et" },
+  { 0x0425, "et-EE" },
+  { 0x0038, "fo" },
+  { 0x0438, "fo-FO" },
+  { 0x0064, "fil" },
+  { 0x0464, "fil-PH" },
+  { 0x000B, "fi" },
+  { 0x040B, "fi-FI" },
+  { 0x000C, "fr" },
+  { 0x080C, "fr-BE" },
+  { 0x0C0C, "fr-CA" },
+  { 0x040C, "fr-FR" },
+  { 0x140C, "fr-LU" },
+  { 0x180C, "fr-MC" },
+  { 0x100C, "fr-CH" },
+  { 0x0062, "fy" },
+  { 0x0462, "fy-NL" },
+  { 0x0056, "gl" },
+  { 0x0456, "gl-ES" },
+  { 0x0037, "ka" },
+  { 0x0437, "ka-GE" },
+  { 0x0007, "de" },
+  { 0x0C07, "de-AT" },
+  { 0x0407, "de-DE" },
+  { 0x1407, "de-LI" },
+  { 0x1007, "de-LU" },
+  { 0x0807, "de-CH" },
+  { 0x0008, "el" },
+  { 0x0408, "el-GR" },
+  { 0x006F, "kl" },
+  { 0x046F, "kl-GL" },
+  { 0x0047, "gu" },
+  { 0x0447, "gu-IN" },
+  { 0x0068, "ha" },
+  { 0x7C68, "ha-Latn" },
+  { 0x0468, "ha-Latn-NG" },
+  { 0x000D, "he" },
+  { 0x040D, "he-IL" },
+  { 0x0039, "hi" },
+  { 0x0439, "hi-IN" },
+  { 0x000E, "hu" },
+  { 0x040E, "hu-HU" },
+  { 0x000F, "is" },
+  { 0x040F, "is-IS" },
+  { 0x0070, "ig" },
+  { 0x0470, "ig-NG" },
+  { 0x0021, "id" },
+  { 0x0421, "id-ID" },
+  { 0x005D, "iu" },
+  { 0x7C5D, "iu-Latn" },
+  { 0x085D, "iu-Latn-CA" },
+  { 0x785D, "iu-Cans" },
+  { 0x045D, "iu-Cans-CA" },
+  { 0x003C, "ga" },
+  { 0x083C, "ga-IE" },
+  { 0x0034, "xh" },
+  { 0x0434, "xh-ZA" },
+  { 0x0035, "zu" },
+  { 0x0435, "zu-ZA" },
+  { 0x0010, "it" },
+  { 0x0410, "it-IT" },
+  { 0x0810, "it-CH" },
+  { 0x0011, "ja" },
+  { 0x0411, "ja-JP" },
+  { 0x004B, "kn" },
+  { 0x044B, "kn-IN" },
+  { 0x003F, "kk" },
+  { 0x043F, "kk-KZ" },
+  { 0x0053, "km" },
+  { 0x0453, "km-KH" },
+  { 0x0086, "qut" },
+  { 0x0486, "qut-GT" },
+  { 0x0087, "rw" },
+  { 0x0487, "rw-RW" },
+  { 0x0041, "sw" },
+  { 0x0441, "sw-KE" },
+  { 0x0057, "kok" },
+  { 0x0457, "kok-IN" },
+  { 0x0012, "ko" },
+  { 0x0412, "ko-KR" },
+  { 0x0040, "ky" },
+  { 0x0440, "ky-KG" },
+  { 0x0054, "lo" },
+  { 0x0454, "lo-LA" },
+  { 0x0026, "lv" },
+  { 0x0426, "lv-LV" },
+  { 0x0027, "lt" },
+  { 0x0427, "lt-LT" },
+  { 0x7C2E, "dsb" },
+  { 0x082E, "dsb-DE" },
+  { 0x006E, "lb" },
+  { 0x046E, "lb-LU" },
+  { 0x042F, "mk-MK" },
+  { 0x002F, "mk" },
+  { 0x003E, "ms" },
+  { 0x083E, "ms-BN" },
+  { 0x043E, "ms-MY" },
+  { 0x004C, "ml" },
+  { 0x044C, "ml-IN" },
+  { 0x003A, "mt" },
+  { 0x043A, "mt-MT" },
+  { 0x0081, "mi" },
+  { 0x0481, "mi-NZ" },
+  { 0x007A, "arn" },
+  { 0x047A, "arn-CL" },
+  { 0x004E, "mr" },
+  { 0x044E, "mr-IN" },
+  { 0x007C, "moh" },
+  { 0x047C, "moh-CA" },
+  { 0x0050, "mn" },
+  { 0x7850, "mn-Cyrl" },
+  { 0x0450, "mn-MN" },
+  { 0x7C50, "mn-Mong" },
+  { 0x0850, "mn-Mong-CN" },
+  { 0x0061, "ne" },
+  { 0x0461, "ne-NP" },
+  { 0x0014, "no" },
+  { 0x7C14, "nb" },
+  { 0x7814, "nn" },
+  { 0x0414, "nb-NO" },
+  { 0x0814, "nn-NO" },
+  { 0x0082, "oc" },
+  { 0x0482, "oc-FR" },
+  { 0x0048, "or" },
+  { 0x0448, "or-IN" },
+  { 0x0063, "ps" },
+  { 0x0463, "ps-AF" },
+  { 0x0029, "fa" },
+  { 0x0429, "fa-IR" },
+  { 0x0015, "pl" },
+  { 0x0415, "pl-PL" },
+  { 0x0016, "pt" },
+  { 0x0416, "pt-BR" },
+  { 0x0816, "pt-PT" },
+  { 0x0046, "pa" },
+  { 0x0446, "pa-IN" },
+  { 0x006B, "quz" },
+  { 0x046B, "quz-BO" },
+  { 0x086B, "quz-EC" },
+  { 0x0C6B, "quz-PE" },
+  { 0x0018, "ro" },
+  { 0x0418, "ro-RO" },
+  { 0x0017, "rm" },
+  { 0x0417, "rm-CH" },
+  { 0x0019, "ru" },
+  { 0x0419, "ru-RU" },
+  { 0x703B, "smn" },
+  { 0x7C3B, "smj" },
+  { 0x003B, "se" },
+  { 0x743B, "sms" },
+  { 0x783B, "sma" },
+  { 0x243B, "smn-FI" },
+  { 0x103B, "smj-NO" },
+  { 0x143B, "smj-SE" },
+  { 0x0C3B, "se-FI" },
+  { 0x043B, "se-NO" },
+  { 0x083B, "se-SE" },
+  { 0x203B, "sms-FI" },
+  { 0x183B, "sma-NO" },
+  { 0x1C3B, "sma-SE" },
+  { 0x004F, "sa" },
+  { 0x044F, "sa-IN" },
+  { 0x0091, "gd" },
+  { 0x0491, "gd-GB" },
+  { 0x7C1A, "sr" },
+  { 0x6C1A, "sr-Cyrl" },
+  { 0x1C1A, "sr-Cyrl-BA" },
+  { 0x301A, "sr-Cyrl-ME" },
+  { 0x0C1A, "sr-Cyrl-CS" },
+  { 0x281A, "sr-Cyrl-RS" },
+  { 0x701A, "sr-Latn" },
+  { 0x181A, "sr-Latn-BA" },
+  { 0x2C1A, "sr-Latn-ME" },
+  { 0x081A, "sr-Latn-CS" },
+  { 0x241A, "sr-Latn-RS" },
+  { 0x006C, "nso" },
+  { 0x046C, "nso-ZA" },
+  { 0x0032, "tn" },
+  { 0x0432, "tn-ZA" },
+  { 0x005B, "si" },
+  { 0x045B, "si-LK" },
+  { 0x001B, "sk" },
+  { 0x041B, "sk-SK" },
+  { 0x0024, "sl" },
+  { 0x0424, "sl-SI" },
+  { 0x000A, "es" },
+  { 0x2C0A, "es-AR" },
+  { 0x400A, "es-BO" },
+  { 0x340A, "es-CL" },
+  { 0x240A, "es-CO" },
+  { 0x140A, "es-CR" },
+  { 0x1C0A, "es-DO" },
+  { 0x300A, "es-EC" },
+  { 0x440A, "es-SV" },
+  { 0x100A, "es-GT" },
+  { 0x480A, "es-HN" },
+  { 0x080A, "es-MX" },
+  { 0x4C0A, "es-NI" },
+  { 0x180A, "es-PA" },
+  { 0x3C0A, "es-PY" },
+  { 0x280A, "es-PE" },
+  { 0x500A, "es-PR" },
+  { 0x0C0A, "es-ES" },
+  { 0x540A, "es-US" },
+  { 0x380A, "es-UY" },
+  { 0x200A, "es-VE" },
+  { 0x001D, "sv" },
+  { 0x081D, "sv-FI" },
+  { 0x041D, "sv-SE" },
+  { 0x005A, "syr" },
+  { 0x045A, "syr-SY" },
+  { 0x0028, "tg" },
+  { 0x7C28, "tg-Cyrl" },
+  { 0x0428, "tg-Cyrl-TJ" },
+  { 0x005F, "tzm" },
+  { 0x7C5F, "tzm-Latn" },
+  { 0x085F, "tzm-Latn-DZ" },
+  { 0x0049, "ta" },
+  { 0x0449, "ta-IN" },
+  { 0x0044, "tt" },
+  { 0x0444, "tt-RU" },
+  { 0x004A, "te" },
+  { 0x044A, "te-IN" },
+  { 0x001E, "th" },
+  { 0x041E, "th-TH" },
+  { 0x0051, "bo" },
+  { 0x0451, "bo-CN" },
+  { 0x001F, "tr" },
+  { 0x041F, "tr-TR" },
+  { 0x0042, "tk" },
+  { 0x0442, "tk-TM" },
+  { 0x0022, "uk" },
+  { 0x0422, "uk-UA" },
+  { 0x002E, "hsb" },
+  { 0x042E, "hsb-DE" },
+  { 0x0020, "ur" },
+  { 0x0420, "ur-PK" },
+  { 0x0080, "ug" },
+  { 0x0480, "ug-CN" },
+  { 0x7843, "uz-Cyrl" },
+  { 0x0843, "uz-Cyrl-UZ" },
+  { 0x0043, "uz" },
+  { 0x7C43, "uz-Latn" },
+  { 0x0443, "uz-Latn-UZ" },
+  { 0x002A, "vi" },
+  { 0x042A, "vi-VN" },
+  { 0x0052, "cy" },
+  { 0x0452, "cy-GB" },
+  { 0x0088, "wo" },
+  { 0x0488, "wo-SN" },
+  { 0x0085, "sah" },
+  { 0x0485, "sah-RU" },
+  { 0x0078, "ii" },
+  { 0x0478, "ii-CN" },
+  { 0x006A, "yo" },
+  { 0x046A, "yo-NG" }
+};
+
+#endif

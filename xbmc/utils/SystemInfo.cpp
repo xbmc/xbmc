@@ -47,6 +47,10 @@
 #include "powermanagement/PowerManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
+#include "utils/LangCodeExpander.h"
+#ifdef TARGET_LINUX
+#include "utils/Environment.h"
+#endif
 
 /* Target identification */
 #if defined(TARGET_DARWIN)
@@ -57,6 +61,10 @@
 #include <sys/param.h>
 #elif defined(TARGET_LINUX)
 #include <linux/version.h>
+#endif
+
+#if defined(TARGET_ANDROID)
+#include "android/activity/XBMCApp.h"
 #endif
 
 CSysInfo g_sysinfo;
@@ -604,6 +612,76 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
       strRet = g_localizeStrings.Get(161);
   }
   return strRet;
+}
+
+std::string CSysInfo::GetUserDefaultLanguageTag()
+{
+#if defined(TARGET_WINDOWS)
+  if (IsWindowsVersionAtLeast(WindowsVersionVista))
+  {
+    #define MAXLOCALENAMELEN 85
+    char info[MAXLOCALENAMELEN];
+    if (GetLocaleInfoA(LOCALE_USER_DEFAULT, 0x5c /* LOCALE_SNAME */, info, MAXLOCALENAMELEN) > 0)
+      return info;
+  }
+  std::string langTag;
+  if (g_LangCodeExpander.ConvertWindowsLCIDtoLanguageTag(GetUserDefaultLCID(), langTag))
+    return langTag;
+  return "";
+#elif defined(TARGET_ANDROID) || defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+  std::string sysLang;
+#if defined(TARGET_ANDROID)
+  sysLang = CXBMCApp::GetSystemLanguage();
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+  sysLang = CEnvironment::getenv("LC_ALL");
+  if (sysLang.empty())
+    sysLang = CEnvironment::getenv("LANG");
+  if (sysLang == "C")
+    return "";
+#endif // defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+  if (sysLang.length() < 2)
+    return "";
+  size_t pos = sysLang.find('.');
+  if (pos != std::string::npos)
+    sysLang.erase(pos); // Cut encoding
+
+  std::string regTag, additionalTag;
+  pos = sysLang.find('@');
+  if (pos != std::string::npos)
+  {
+    if (sysLang.length() > pos + 1)
+      additionalTag.assign(sysLang, pos + 1, std::string::npos);
+    sysLang.erase(pos);
+  }
+
+  pos = sysLang.find('_');
+  if (pos != std::string::npos)
+  {
+    if (sysLang.length() > pos + 1)
+      regTag = "-" + sysLang.substr(pos + 1, std::string::npos);
+    sysLang.erase(pos);
+  }
+
+  /* now sysLang should contain only main language tag, like 'en'  */
+  if (sysLang.empty())
+    return "";
+
+  if (!additionalTag.empty())
+  {
+    if (additionalTag == "euro")
+      return sysLang + regTag;
+    if (additionalTag.length() == 3)
+      return sysLang + "-" + additionalTag + regTag; // additionalTag is extended language tag
+    if (additionalTag.length() == 4 && isalpha(additionalTag[0]))
+      return sysLang + "-" + additionalTag + regTag; // additionalTag is script tag
+    return sysLang + regTag + "-" + additionalTag; // additionalTag is variant tag
+  }
+
+  return sysLang + regTag;
+#else
+  // TODO: Implement for darwin targets
+  return "";
+#endif
 }
 
 #if defined(TARGET_LINUX)

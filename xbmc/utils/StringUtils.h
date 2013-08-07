@@ -105,6 +105,9 @@ public:
    \return true if the string is an integer, false otherwise.
    */
   static bool IsInteger(const CStdString& str);
+  static bool IsDigits(const std::string& str);
+  static bool IsAlphas(const std::string& str);
+  static bool IsAlphanums(const std::string& str);
   static CStdString SizeToString(int64_t size);
   static const CStdString EmptyString;
   static const std::string Empty;

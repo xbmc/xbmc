@@ -35,6 +35,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Weather.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/SystemInfo.h"
 
 using namespace std;
 using namespace PVR;
@@ -223,19 +224,19 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == "locale.country")
   {
-    g_langInfo.SetCurrentRegion(((CSettingString*)setting)->GetValue());
+    SetCurrentRegion(((CSettingString*)setting)->GetValue());
     g_weatherManager.Refresh(); // need to reset our weather, as temperatures need re-translating.
   }
 }
 
-bool CLangInfo::Load(const CStdString& strFileName)
+bool CLangInfo::Load(const CStdString& strFileName, bool onlyCheckLanguage /* = false */)
 {
   SetDefaults();
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strFileName))
   {
-    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    CLog::Log(onlyCheckLanguage ? LOGDEBUG : LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;
   }
 
@@ -361,11 +362,15 @@ bool CLangInfo::Load(const CStdString& strFileName)
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    const CStdString& strName=CSettings::Get().GetString("locale.country");
-    SetCurrentRegion(strName);
+    if (!onlyCheckLanguage)
+    {
+      const CStdString& strName = CSettings::Get().GetString("locale.country");
+      SetCurrentRegion(strName);
+    }
   }
 
-  LoadTokens(pRootElement->FirstChild("sorttokens"),g_advancedSettings.m_vecTokens);
+  if (!onlyCheckLanguage)
+    LoadTokens(pRootElement->FirstChild("sorttokens"),g_advancedSettings.m_vecTokens);
 
   return true;
 }
@@ -425,11 +430,14 @@ CStdString CLangInfo::GetSubtitleCharSet() const
   return strCharSet;
 }
 
-bool CLangInfo::SetLanguage(const std::string &strLanguage)
+bool CLangInfo::SetLanguage(const std::string &strLanguage, bool onlyCheckLanguage /* = false */)
 {
   string strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
-  if (!g_langInfo.Load(strLangInfoPath))
+  if (!Load(strLangInfoPath, onlyCheckLanguage))
     return false;
+
+  if (onlyCheckLanguage)
+    return true;
 
   if (ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
   {
@@ -651,4 +659,191 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
 
   if (!match && regions.size() > 0)
     current = regions[0];
+}
+
+std::string CLangInfo::GetAvailableDefaultLanguage(std::string& detectedDefaultRegion)
+{
+  detectedDefaultRegion.clear();
+  std::string currentDefLang;
+  CSettingString* xbmcDefLangSetting = (CSettingString*)CSettings::Get().GetSetting("locale.language");
+  if (xbmcDefLangSetting != NULL)
+    currentDefLang = xbmcDefLangSetting->GetDefault();
+  if (currentDefLang.empty())
+    currentDefLang = "English";
+
+  std::string langTag = g_sysinfo.GetUserDefaultLanguageTag();
+  if (langTag.empty())
+  {
+    CLog::Log(LOGWARNING, "Can't detect system user default language");
+    return currentDefLang;
+  }
+  CLanguageTag ctag (langTag);
+
+  if (!ctag.IsFromWellFormedString())
+  {
+    if (ctag.GetLanguageSubtag().empty())
+    {
+      CLog::Log(LOGERROR, "Can't find main language subtag in system user default language tag: \"%s\"", langTag.c_str());
+      return currentDefLang;
+    }
+    else
+      CLog::Log(LOGWARNING, "Problem parsing system user default language tag: \"%s\"", langTag.c_str());
+  }
+  else
+    CLog::Log(LOGINFO, "System user default language tag: \"%s\"", langTag.c_str());
+
+  CLog::Log(LOGDEBUG, "Detected language subtag  : \"%s\"", ctag.GetLanguageSubtag().c_str());
+  CLog::Log(LOGDEBUG, "         extended language: \"%s\"", ctag.GetExtlangSubtag().c_str());
+  CLog::Log(LOGDEBUG, "         script subtag    : \"%s\"", ctag.GetScriptSubtag().c_str());
+  CLog::Log(LOGDEBUG, "         region subtag    : \"%s\"", ctag.GetRegionSubtag().c_str());
+  CLog::Log(LOGDEBUG, "         language variant : \"%s\"", ctag.GetVariantSubtag().c_str());
+
+  std::string langName, extLangName;
+
+  ctag.DecodeTagToNames();
+
+  langName = ctag.GetLanguageName();
+  extLangName = ctag.GetExtlangName();
+
+  if (!ctag.IsDecodedToNamesWithoutErrors())
+  {
+    if (!ctag.GetExtlangSubtag().empty() && extLangName.empty())
+      CLog::Log(LOGWARNING, "Can't find language name for extended language subtag \"%s\". Main language subtag will be used.", ctag.GetExtlangSubtag().c_str());
+
+    if (langName.empty())
+    {
+      if (extLangName.empty())
+      {
+        CLog::Log(LOGERROR, "Can't find language name for main language subtag \"%s\"", ctag.GetLanguageSubtag().c_str());
+        return currentDefLang;
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "Can't find language name for main language subtag \"%s\". Extended language subtag \"%s\" will be used as main language subtag.", ctag.GetLanguageSubtag().c_str(), ctag.GetExtlangSubtag().c_str());
+        langName = extLangName;
+        extLangName.clear();
+      }
+    }
+  }
+
+  std::string foundLanguage;
+  if (FindBestAvailableLanguage(langName, extLangName, ctag.GetScriptName(), ctag.GetRegionName(), ctag.GetRegionSubtag(), ctag.GetVariantName(), foundLanguage, detectedDefaultRegion))
+  {
+    CLog::Log(LOGINFO, "Using \"%s\" as default language", foundLanguage.c_str());
+    if (!detectedDefaultRegion.empty())
+      CLog::Log(LOGINFO, "Using \"%s\" as default region", detectedDefaultRegion.c_str());
+    return foundLanguage;
+  }
+
+  CLog::Log(LOGINFO, "No suitable default language is available. Using \"%s\" as default language.", currentDefLang.c_str());
+  return currentDefLang;
+}
+
+bool CLangInfo::FindBestAvailableLanguage(const std::string& langName, const std::string& extLangName, const std::string& scriptName, const std::string& regionName,
+                                            const std::string& regionTag, const std::string& variantName, std::string& foundLanguage, std::string& foundRegionName)
+{
+  foundLanguage.clear();
+  foundRegionName.clear();
+
+  if (IsSpecificLanguagePresent(langName, extLangName, scriptName , regionName, regionTag, variantName, foundLanguage, foundRegionName))
+    return true;
+
+  /* Specific language was not found */
+  /* Try generalized languages */
+  if (!extLangName.empty())
+    return FindBestAvailableLanguage(langName, "", scriptName , regionName, regionTag, variantName, foundLanguage, foundRegionName);
+
+  if (!regionName.empty())
+  {
+    if (IsSpecificLanguagePresent(langName, extLangName, scriptName, "", regionTag, variantName, foundLanguage, foundRegionName))
+      return true;
+  }
+
+  if (!scriptName.empty())
+  {
+    if (IsSpecificLanguagePresent(langName, extLangName, "", regionName, regionTag, variantName, foundLanguage, foundRegionName))
+      return true;
+  }
+
+  if (!regionName.empty() && !scriptName.empty())
+  {
+    if (IsSpecificLanguagePresent(langName, extLangName, "", "", regionTag, variantName, foundLanguage, foundRegionName))
+      return true;
+  }
+
+  return false;
+}
+
+bool CLangInfo::IsSpecificLanguagePresent(const std::string& langName, const std::string& extLangName, const std::string& scriptName, const std::string& regionName,
+                                    const std::string& regionTag, const std::string& variantName, std::string& foundLanguage, std::string& foundRegionName)
+{
+  foundLanguage.clear();
+  foundRegionName.clear();
+
+  std::string testName;
+  if (extLangName.empty())
+    testName = langName;
+  else
+    testName = extLangName;
+
+  if (!scriptName.empty())
+  {
+    testName += " (";
+    testName += scriptName;
+    testName += ")";
+  }
+
+  if (!regionName.empty())
+  {
+    testName += " (";
+    testName += regionName;
+    testName += ")";
+  }
+  
+  CLangInfo testLangInfo;
+  if (testLangInfo.SetLanguage(testName, true))
+  {
+    foundLanguage = testName;
+    if (regionTag.size() == 2)
+    {
+      std::string regionLocaleName;
+#ifndef TARGET_WINDOWS
+      regionLocaleName = regionTag;
+      StringUtils::ToLower(regionLocaleName);
+#else
+      if (!g_LangCodeExpander.ConvertLinuxToWindowsRegionCodes(regionTag, regionLocaleName))
+        return true;
+#endif
+      for(MAPREGIONS::const_iterator it = testLangInfo.m_regions.begin(); it != testLangInfo.m_regions.end(); ++it)
+      {
+        std::string strLower (it->second.m_strRegionLocaleName);
+        StringUtils::ToLower(strLower);
+        if (strLower == regionLocaleName)
+        {
+          foundRegionName = it->first;
+          break;
+        }
+      }
+    }
+    return true;
+  }
+
+  /* Try alternative names */
+  if (scriptName == "Simplified")
+  {
+    if (IsSpecificLanguagePresent(langName, extLangName, "Simple", regionName, regionTag, variantName, foundLanguage, foundRegionName))
+      return true;
+  }
+  else if (scriptName == "Devanagari")
+  {
+    if (IsSpecificLanguagePresent(langName, extLangName, "Devanagiri", regionName, regionTag, variantName, foundLanguage, foundRegionName))
+      return true;
+  }
+  if (regionName == "United States")
+  {
+    if (IsSpecificLanguagePresent(langName, extLangName, scriptName, "US", regionTag, variantName, foundLanguage, foundRegionName))
+      return true;
+  }
+
+  return false;
 }

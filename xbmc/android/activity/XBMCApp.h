@@ -100,6 +100,8 @@ public:
   static int GetMaxSystemVolume();
 
   static int GetDPI();
+
+  static std::string GetSystemLanguage();
 protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
