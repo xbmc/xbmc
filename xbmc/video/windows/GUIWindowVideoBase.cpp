@@ -67,6 +67,8 @@
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "utils/URIUtils.h"
+#include "utils/Job.h"
+#include "utils/JobManager.h"
 #include "GUIUserMessages.h"
 #include "addons/Skin.h"
 #include "storage/MediaManager.h"
@@ -1637,57 +1639,73 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
     CFileUtils::DeleteItem(item);
 }
 
-void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
+class CMarkWatchedJob : public CJob
 {
-  if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
-    return;
-  // dont allow update while scanning
-  if (g_application.IsVideoScanning())
+public:
+  CMarkWatchedJob(const CFileItemPtr& item, bool bMark)
+    : m_item(item), m_bMark(bMark)
   {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
-    return;
   }
 
-  CVideoDatabase database;
-  if (database.Open())
+  virtual bool DoWork()
   {
-    CFileItemList items;
-    if (item->m_bIsFolder)
+    if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
+      return false;
+
+    CVideoDatabase database;
+    if (!database.Open())
+      return false;
+
+    if (m_item->m_bIsFolder)
     {
-      CStdString strPath = item->GetPath();
-      CDirectory::GetDirectory(strPath, items);
+      CFileItemList items;
+      CStdString strPath = m_item->GetPath();
+
+      CUtil::GetRecursiveListing(strPath, items, "");
+
+      for (int i = 0; i < items.Size(); ++i)
+        MarkOneWatched(database, items[i], m_bMark);
     }
     else
-      items.Add(item);
+      MarkOneWatched(database, m_item, m_bMark);
 
-    for (int i=0;i<items.Size();++i)
-    {
-      CFileItemPtr pItem=items[i];
-      if (pItem->m_bIsFolder)
-      {
-        MarkWatched(pItem, bMark);
-        continue;
-      }
+    database.Close();
 
-      if (pItem->HasVideoInfoTag() &&
-          (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||
-           (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
-        continue;
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+    g_windowManager.SendThreadMessage(msg);
+
+    return true;
+  }
+
+  virtual const char *GetType() const { return "markwatched"; };
+
+private:
+  void MarkOneWatched(CVideoDatabase &database, const CFileItemPtr &item, bool bMark)
+  {
+    if (item->HasVideoInfoTag() &&
+        (( bMark && item->GetVideoInfoTag()->m_playCount) ||
+         (!bMark && !(item->GetVideoInfoTag()->m_playCount))))
+      return;
 
 #ifdef HAS_UPNP
-      if (!URIUtils::IsUPnP(item->GetPath()) || !UPNP::CUPnP::MarkWatched(*pItem, bMark))
+    if (!URIUtils::IsUPnP(item->GetPath()) || !UPNP::CUPnP::MarkWatched(*item, bMark))
 #endif
-      {
-        // Clear resume bookmark
-        if (bMark)
-          database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+    {
+      // Clear resume bookmark
+      if (bMark)
+        database.ClearBookMarksOfFile(item->GetPath(), CBookmark::RESUME);
 
-        database.SetPlayCount(*pItem, bMark ? 1 : 0);
-      }
+      database.SetPlayCount(*item, bMark ? 1 : 0);
     }
-    
-    database.Close(); 
   }
+
+  const CFileItemPtr &m_item;
+  bool m_bMark;
+};
+
+void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &pItem, bool bMark)
+{
+  CJobManager::GetInstance().AddJob(new CMarkWatchedJob(pItem, bMark), 0);
 }
 
 //Add change a title's name
