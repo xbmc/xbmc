@@ -123,7 +123,7 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
 {
   try
   {
-    if (NULL == m_pDB.get()) return -1;
+    if (isNullDb()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
     bool bDisablePVRAddon = addon->Type() == ADDON_PVRDLL && !HasAddon(addon->ID());
@@ -175,7 +175,7 @@ bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS2.get()) return false;
 
     // there may be multiple addons with this id (eg from different repositories) in the database,
@@ -213,7 +213,7 @@ bool CAddonDatabase::GetRepoForAddon(const CStdString& addonID, CStdString& repo
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS2.get()) return false;
 
     CStdString sql = PrepareSQL("select repo.addonID from repo join addonlinkrepo on repo.id=addonlinkrepo.idRepo join addon on addonlinkrepo.idAddon=addon.id where addon.addonID like '%s'", addonID.c_str()); 
@@ -236,7 +236,7 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS2.get()) return false;
 
     CStdString sql = PrepareSQL("select * from addon where id=%i",id);
@@ -293,7 +293,7 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS2.get()) return false;
 
     CStdString sql = PrepareSQL("select distinct addonID from addon");
@@ -321,7 +321,7 @@ void CAddonDatabase::DeleteRepository(const CStdString& id)
 {
   try
   {
-    if (NULL == m_pDB.get()) return;
+    if (isNullDb()) return;
     if (NULL == m_pDS.get()) return;
 
     CStdString sql = PrepareSQL("select id from repo where addonID='%s'",id.c_str());
@@ -339,7 +339,7 @@ void CAddonDatabase::DeleteRepository(int idRepo)
 {
   try
   {
-    if (NULL == m_pDB.get()) return;
+    if (isNullDb()) return;
     if (NULL == m_pDS.get()) return;
 
     CStdString sql = PrepareSQL("delete from repo where id=%i",idRepo);
@@ -364,7 +364,7 @@ int CAddonDatabase::AddRepository(const CStdString& id, const VECADDONS& addons,
 {
   try
   {
-    if (NULL == m_pDB.get()) return -1;
+    if (isNullDb()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
     CStdString sql;
@@ -396,7 +396,7 @@ int CAddonDatabase::GetRepoChecksum(const CStdString& id, CStdString& checksum)
 {
   try
   {
-    if (NULL == m_pDB.get()) return -1;
+    if (isNullDb()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
     CStdString strSQL = PrepareSQL("select * from repo where addonID='%s'",id.c_str());
@@ -420,7 +420,7 @@ CDateTime CAddonDatabase::GetRepoTimestamp(const CStdString& id)
   CDateTime date;
   try
   {
-    if (NULL == m_pDB.get()) return date;
+    if (isNullDb()) return date;
     if (NULL == m_pDS.get()) return date;
 
     CStdString strSQL = PrepareSQL("select * from repo where addonID='%s'",id.c_str());
@@ -442,7 +442,7 @@ bool CAddonDatabase::SetRepoTimestamp(const CStdString& id, const CStdString& ti
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString sql = PrepareSQL("update repo set lastcheck='%s' where addonID='%s'",time.c_str(),id.c_str());
@@ -461,7 +461,7 @@ bool CAddonDatabase::GetRepository(int id, VECADDONS& addons)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL = PrepareSQL("select * from addonlinkrepo where idRepo=%i",id);
@@ -486,7 +486,7 @@ bool CAddonDatabase::GetRepository(const CStdString& id, VECADDONS& addons)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL = PrepareSQL("select id from repo where addonID='%s'",id.c_str());
@@ -505,7 +505,7 @@ bool CAddonDatabase::Search(const CStdString& search, VECADDONS& addons)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
@@ -561,7 +561,7 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     if (disable)
@@ -619,7 +619,7 @@ bool CAddonDatabase::BreakAddon(const CStdString &addonID, const CStdString& rea
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString sql = PrepareSQL("delete from broken where addonID='%s'", addonID.c_str());
@@ -651,7 +651,7 @@ bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString sql = PrepareSQL("select id from disabled where addonID='%s'", addonID.c_str());
@@ -679,7 +679,7 @@ CStdString CAddonDatabase::IsAddonBroken(const CStdString &addonID)
 {
   try
   {
-    if (NULL == m_pDB.get()) return "";
+    if (isNullDb()) return "";
     if (NULL == m_pDS.get()) return "";
 
     CStdString sql = PrepareSQL("select reason from broken where addonID='%s'", addonID.c_str());
@@ -701,7 +701,7 @@ bool CAddonDatabase::HasDisabledAddons()
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     m_pDS->query("select count(id) from disabled");
@@ -721,7 +721,7 @@ bool CAddonDatabase::BlacklistAddon(const CStdString& addonID,
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString sql = PrepareSQL("insert into blacklist(id, addonID, version) values(NULL, '%s', '%s')", addonID.c_str(),version.c_str());
@@ -748,7 +748,7 @@ bool CAddonDatabase::RemoveAddonFromBlacklist(const CStdString& addonID,
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString sql = PrepareSQL("delete from blacklist where addonID='%s' and version='%s'",addonID.c_str(),version.c_str());

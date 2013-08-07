@@ -21,6 +21,7 @@
  */
 
 #include "utils/StdString.h"
+#include "threads/SingleLock.h"
 
 namespace dbiplus {
   class Database;
@@ -162,11 +163,17 @@ protected:
 
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 
-  std::auto_ptr<dbiplus::Database> m_pDB;
   std::auto_ptr<dbiplus::Dataset> m_pDS;
   std::auto_ptr<dbiplus::Dataset> m_pDS2;
 
+  inline bool isNullDb() const { CSingleLock l(lock); return NULL == m_pDB.get(); }
+  dbiplus::Dataset* CreateDataset() const;
+
 private:
+  // The critical section protects the m_pDB
+  CCriticalSection lock;
+  std::auto_ptr<dbiplus::Database> m_pDB;
+
   void InitSettings(DatabaseSettings &dbSettings);
   bool Connect(const CStdString &dbName, const DatabaseSettings &db, bool create);
   bool UpdateVersionNumber();
