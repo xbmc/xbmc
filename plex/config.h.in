@@ -190,7 +190,7 @@
 #cmakedefine LIRC_DEVICE "@LIRC_DEVICE@"
 
 /* SDL JOYSTICK */
-#define HAS_SDL_JOYSTICK 1
+#cmakedefine HAS_SDL_JOYSTICK @HAS_SDL_JOYSTICK@
 
 /* Enable UPNP */
 #define USE_UPNP @USE_UPNP@

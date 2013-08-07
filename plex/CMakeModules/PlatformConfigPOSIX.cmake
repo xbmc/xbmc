@@ -28,6 +28,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g -Os")
 
 ############ Check for pthread_setname -> HAVE_PTHREAD_SETNAME_NP
 set(HAVE_PTHREAD_SETNAME_NP 1)
+set(HAS_SDL_JOYSTICK 1)
+set(HAS_LIBRTMP 1)
 
 add_definitions(
   -DTARGET_POSIX

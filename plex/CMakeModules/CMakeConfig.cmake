@@ -10,7 +10,7 @@ set(CONFIG_INTERNAL_LIBS
   lib_upnp
 )
 
-OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" ON)
+OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" OFF)
 OPTION(ENABLE_PYTHON "Enable Python addon support" OFF)
 OPTION(CREATE_BUNDLE "Create the finished bundle" ON)
 OPTION(COMPRESS_TEXTURES "If we should compress the textures or not" ON)
@@ -87,7 +87,6 @@ if(ENABLE_PYTHON)
 endif()
 
 set(USE_UPNP 1)
-set(HAS_LIBRTMP 1)
 
 if(ENABLE_DVD_DRIVE)
   set(HAS_DVD_DRIVE 1)
