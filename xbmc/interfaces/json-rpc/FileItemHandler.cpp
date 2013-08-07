@@ -50,12 +50,25 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
   if (result.isMember(field) && !result[field].empty())
     return true;
 
+  // overwrite serialized values
+  if (item)
+  {
+    if (field == "mimetype" && item->GetMimeType().empty())
+    {
+      item->FillInMimeType(false);
+      result[field] = item->GetMimeType();
+      return true;
+    }
+  }
+
+  // check for serialized values
   if (info.isMember(field) && !info[field].isNull())
   {
     result[field] = info[field];
     return true;
   }
 
+  // check if the field requires special handling
   if (item)
   {
     if (item->IsAlbum())
