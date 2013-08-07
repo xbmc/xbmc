@@ -190,6 +190,7 @@ public:
   void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
   void ActivateScreenSaver(bool forceType = false);
+  void CloseNetworkShares();
 
   virtual void Process();
   void ProcessSlow();
