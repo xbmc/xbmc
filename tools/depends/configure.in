@@ -4,6 +4,7 @@ AC_INIT([xbmc-depends], [2.00], [http://trac.xbmc.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake])
 AC_CANONICAL_HOST
+m4_include([../../m4/xbmc_arch.m4])
 
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
@@ -243,6 +244,8 @@ case $host in
   *)
     AC_MSG_ERROR(unsupported host ($use_host))
 esac
+
+XBMC_SETUP_ARCH_DEFINES()
 
 platform_cflags+=" $passed_cflags"
 platform_ldflags+=" $passed_ldflags $LIBS"
