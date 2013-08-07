@@ -594,7 +594,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
         sorting.sortAttributes = CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone;
 
         // if the sort order is descending, we need to switch the original sort order, as we assume
-        // in CGUIViewState::AddPlaylistOrder that SortByPlaylistOrder is ascending.
+        // in CGUIViewState::AddAndSetSortMethod that SortByPlaylistOrder is ascending.
         if (guiState->GetDisplaySortOrder() == SortOrderDescending)
           sorting.sortOrder = sorting.sortOrder == SortOrderDescending ? SortOrderAscending : SortOrderDescending;
       }
@@ -751,10 +751,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   CStdString filter;
   CURL url(directory);
   if (canfilter && url.HasOption("filter"))
-  {
-    filter = url.GetOption("filter");
     directory = RemoveParameterFromPath(directory, "filter");
-  }
 
   CFileItemList items;
   if (!GetDirectory(directory, items))
@@ -776,44 +773,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   ClearFileItems();
   m_vecItems->Copy(items);
 
-  // only set the filter path if it hasn't been marked
-  // as preset or if it's empty
-  if (updateFilterPath || m_strFilterPath.empty())
-  {
-    if (items.HasProperty(PROPERTY_PATH_DB))
-      m_strFilterPath = items.GetProperty(PROPERTY_PATH_DB).asString();
-    else
-      m_strFilterPath = items.GetPath();
-  }
-  
-  // maybe the filter path can contain a filter
-  if (!canfilter && CanContainFilter(m_strFilterPath))
-    canfilter = true;
-
-  // check if the filter path contains a filter
-  CURL filterPathUrl(m_strFilterPath);
-  if (canfilter && filter.empty())
-  {
-    if (filterPathUrl.HasOption("filter"))
-      filter = filterPathUrl.GetOption("filter");
-  }
-
-  // check if there is a filter and re-apply it
-  if (canfilter && !filter.empty())
-  {
-    if (!m_filter.LoadFromJson(filter))
-    {
-      CLog::Log(LOGWARNING, "CGUIMediaWindow::Update: unable to load existing filter (%s)", filter.c_str());
-      m_filter.Reset();
-      m_strFilterPath = m_vecItems->GetPath();
-    }
-    else
-    {
-      // add the filter to the filter path
-      filterPathUrl.SetOption("filter", filter);
-      m_strFilterPath = filterPathUrl.Get();
-    }
-  }
+  // check the given path for filter data
+  UpdateFilterPath(strDirectory, items, updateFilterPath);
     
   // if we're getting the root source listing
   // make sure the path history is clean
@@ -929,7 +890,21 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
 // It's used to load tag info for music.
 void CGUIMediaWindow::OnPrepareFileItems(CFileItemList &items)
 {
-
+  // check for smartplaylist-specific sorting information
+  if (!items.HasProperty(PROPERTY_SORT_ORDER))
+  {  
+    CURL url(items.GetPath());
+    CStdString strXsp;
+    if (url.GetOption("xsp", strXsp))
+    {
+      CSmartPlaylist xsp;
+      if (xsp.LoadFromJson(strXsp))
+      {
+        items.SetProperty(PROPERTY_SORT_ORDER, (int)xsp.GetOrder());
+        items.SetProperty(PROPERTY_SORT_ASCENDING, xsp.GetOrderDirection() == SortOrderAscending);
+      }
+    }
+  }
 }
 
 // \brief This function will be called by Update() before
@@ -1663,6 +1638,55 @@ bool CGUIMediaWindow::WaitForNetwork() const
   }
   progress->Close();
   return true;
+}
+
+void CGUIMediaWindow::UpdateFilterPath(const CStdString &strDirectory, const CFileItemList &items, bool updateFilterPath)
+{
+  bool canfilter = CanContainFilter(strDirectory);
+
+  CStdString filter;
+  CURL url(strDirectory);
+  if (canfilter && url.HasOption("filter"))
+    filter = url.GetOption("filter");
+
+  // only set the filter path if it hasn't been marked
+  // as preset or if it's empty
+  if (updateFilterPath || m_strFilterPath.empty())
+  {
+    if (items.HasProperty(PROPERTY_PATH_DB))
+      m_strFilterPath = items.GetProperty(PROPERTY_PATH_DB).asString();
+    else
+      m_strFilterPath = items.GetPath();
+  }
+  
+  // maybe the filter path can contain a filter
+  if (!canfilter && CanContainFilter(m_strFilterPath))
+    canfilter = true;
+
+  // check if the filter path contains a filter
+  CURL filterPathUrl(m_strFilterPath);
+  if (canfilter && filter.empty())
+  {
+    if (filterPathUrl.HasOption("filter"))
+      filter = filterPathUrl.GetOption("filter");
+  }
+
+  // check if there is a filter and re-apply it
+  if (canfilter && !filter.empty())
+  {
+    if (!m_filter.LoadFromJson(filter))
+    {
+      CLog::Log(LOGWARNING, "CGUIMediaWindow::UpdateFilterPath(): unable to load existing filter (%s)", filter.c_str());
+      m_filter.Reset();
+      m_strFilterPath = m_vecItems->GetPath();
+    }
+    else
+    {
+      // add the filter to the filter path
+      filterPathUrl.SetOption("filter", filter);
+      m_strFilterPath = filterPathUrl.Get();
+    }
+  }
 }
 
 void CGUIMediaWindow::OnFilterItems(const CStdString &filter)

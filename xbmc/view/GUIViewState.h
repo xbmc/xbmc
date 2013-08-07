@@ -79,8 +79,10 @@ protected:
    Defaults to SORT_METHOD_PLAYLIST_ORDER if no order is defined.
    \param items the list of items for the view state.
    \param label_mask the label masks for formatting items.
+   \return True if a special playlist order has been added, false otherwise
    */
-  void AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks);
+  bool AddAndSetSortMethod(const CFileItemList &items, LABEL_MASKS label_masks = LABEL_MASKS(), SortBy sortBy = SortByPlaylistOrder, SortOrder sortOrder = SortOrderAscending, SortAttribute sortAttributes = SortAttributeNone);
+  bool AddAndSetSortMethod(const CFileItemList &items, LABEL_MASKS label_masks, SortDescription sortDescription);
 
   void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone);
   void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks);
