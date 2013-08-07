@@ -1,0 +1,10 @@
+SET(XBMC_INCLUDE_DIR @prefix@/include)
+LIST(APPEND CMAKE_MODULE_PATH @prefix@/lib/xbmc)
+ADD_DEFINITIONS(@ARCH_DEFINES@)
+
+include(xbmc-addon-helpers)
+include(AddOptions)
+prepare_addon_environment()
+
+OPTION(PACKAGE_ZIP "Package Zip file?" OFF)
+OPTION(PACKAGE_TGZ "Package TGZ file?" OFF)
