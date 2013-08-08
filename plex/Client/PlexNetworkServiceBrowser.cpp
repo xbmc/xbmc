@@ -8,8 +8,18 @@ void
 CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr &service)
 {
   CPlexServerPtr server = CPlexServerPtr(new CPlexServer(service->getResourceIdentifier(), service->getParam("Name"), true));
-  CPlexConnection* conn = new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED, service->address().to_string(), service->port());
-  server->AddConnection(CPlexConnectionPtr(conn));
+  
+  int port = 32400;
+  try {
+    port = boost::lexical_cast<int>(service->getParam("Port"));
+  } catch (...) {
+    eprintf("CPlexNetworkServiceBrowser::handleServiceArrival failed to get port?");
+  }
+  
+  CPlexConnectionPtr conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED,
+                                                                   service->address().to_string(),
+                                                                   port));
+  server->AddConnection(conn);
   server->UpdateReachability();
 
   g_plexServerManager.UpdateFromDiscovery(server);

@@ -55,7 +55,6 @@
 #include "HTTP.h"
 #include "PlexUtils.h"
 #include "pictures/Picture.h"
-#include "plex/Network/NetworkInterface.h"
 #include "filesystem/CurlFile.h"
 /* END PLEX */
 
@@ -988,7 +987,7 @@ string CGUIDialogVideoInfo::OnGetMedia(const string& mediaType, const string& cu
   finalURL.SetFileName(strData.substr(1));
   finalURL.SetOptions("");
 
-  bool local = NetworkInterface::IsLocalAddress(finalURL.GetHostName());
+  //bool local = NetworkInterface::IsLocalAddress(finalURL.GetHostName());
   //return XFILE::CPlexDirectory::BuildImageURL(url, finalURL.Get(), local);
   return "";
 }

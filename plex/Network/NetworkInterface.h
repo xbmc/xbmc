@@ -7,14 +7,13 @@
 
 #pragma once
 
-#include "plex/PlexLog.h"
-
 #include <vector>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/function.hpp>
 #include <boost/thread/mutex.hpp>
 
+#include "PlexLog.h"
 
 using namespace std;
 
@@ -136,14 +135,25 @@ class NetworkInterface
       dprintf("Network change notification but nothing changed.");
     }
   }
-    
 
-  
   int           index() const { return m_index; }
   const string& name() const { return m_name; }
   const string& address() const { return m_address; }
   bool          loopback() const { return m_loopback; }
   const string& netmask() const { return m_netmask; }
+
+  /// Get the broadcast address.
+  string broadcast() const
+  {
+    boost::asio::ip::address_v4 address = boost::asio::ip::address_v4::from_string(m_address);
+    boost::asio::ip::address_v4 netmask = boost::asio::ip::address_v4::from_string(m_netmask);
+    
+    /* this code differs from the one in PMS because PHT ships with a older version of boost that has
+     * a bug that makes localhost addresses return bogus broadcast addresses */
+    boost::asio::ip::address_v4 broadcast = boost::asio::ip::address_v4(address.to_ulong() | (netmask.to_ulong() ^ 0xFFFFFFFF));
+
+    return broadcast.to_string();
+  }
 
   /// Equality test.
   bool operator==(const NetworkInterface& rhs)

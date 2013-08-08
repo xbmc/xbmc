@@ -9,7 +9,7 @@
 
 #include <boost/enable_shared_from_this.hpp>
 
-#include "BonjourRequestHandler.h"
+#include "GdmRequestHandler.h"
 #include "Common.h"
 #include "Database.h"
 #include "LibrarySection.h"
@@ -17,43 +17,15 @@
 #include "NetworkServiceAdvertiser.h"
 #include "Preferences.h"
 #include "Serializable.h"
-#include "GUIInfoManager.h"
+#include "MachineId.h"
 
 #ifdef _WIN32
 extern int getUpdatedAt();
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-class PlexMediaServer : public Serializable
-{
-  DEFINE_CLASS_NAME(PlexMediaServer);
-  
-  void serialize(ostream& out)
-  {
-    SERIALIZE_ELEMENT_START(out, className());
-    {
-      SERIALIZE_ELEMENT_START(out, "Library");
-      
-      // Library sections.
-      Database db;
-      vector<LibrarySectionPtr> sections = LibrarySection::FindAll(db);
-      BOOST_FOREACH(LibrarySectionPtr section, sections)
-      {
-        section->setAttribute("refreshing", LibraryUpdater::GetUpdater().isUpdatingSection(section->id) ? "1" : "0");
-        section->serialize(out, false);
-      }
-      
-      SERIALIZE_ELEMENT_END(out, "Library");
-    }
-
-    SERIALIZE_FULL_CLASS_END(out);
-  }
-};
-
-/////////////////////////////////////////////////////////////////////////////
 class NetworkServiceAdvertiserPMS : public NetworkServiceAdvertiser,
-                                    public PreferenceObserver,
-                                    public boost::enable_shared_from_this<NetworkServiceAdvertiserPMS>
+                                    public IServerEventSink
 {
  public:
   
@@ -73,12 +45,12 @@ class NetworkServiceAdvertiserPMS : public NetworkServiceAdvertiser,
   /// From NetworkServiceAdvertiser.
   virtual void doStart()
   {
-    Preferences::Get()->addPreferenceObserver(PREF_FRIENDLY_NAME, shared_from_this());    
+    ServerEventManager::Get().registerSink(EVENT_PREFERENCE_MODIFIED, this);
   }
   
   virtual void doStop()
   {
-    Preferences::Get()->removePreferenceObserver(PREF_FRIENDLY_NAME, shared_from_this());
+    ServerEventManager::Get().unregisterSink(EVENT_PREFERENCE_MODIFIED, this);
   }
   
   /// For subclasses to fill in.
@@ -86,7 +58,7 @@ class NetworkServiceAdvertiserPMS : public NetworkServiceAdvertiser,
   {
     headers["Name"] = GetMachineName();
     headers["Port"] = "32400";
-    headers["Version"] = g_infoManager.GetVersion();
+    headers["Version"] = Cocoa_GetAppVersion();
     headers["Updated-At"] = lexical_cast<string>(getUpdatedAt());
   }
   
@@ -99,14 +71,13 @@ class NetworkServiceAdvertiserPMS : public NetworkServiceAdvertiser,
   /// For subclasses to fill in.
   virtual string getResourceIdentifier()
   {
-    return BonjourRequestHandler::Get()->GetMachineIdentifier();
+    return GetMachineIdentifier();
   }
   
   /// For subclasses to fill in.
   virtual string getBody()
   {
-    PlexMediaServer pms;
-    return pms.toReply().content;
+    return "";
   }
   
   /// Overridden from PreferenceObserver.

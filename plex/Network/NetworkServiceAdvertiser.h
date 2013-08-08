@@ -10,7 +10,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/asio.hpp>
 #include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include <boost/timer.hpp>
@@ -109,21 +108,40 @@ class NetworkServiceAdvertiser : public NetworkServiceBase
     // Send out the message.
     if (socket)
     {
-      string hello = action + " * HTTP/1.0\r\n" + createReplyMessage(parameter);
-      try { socket->send_to(boost::asio::buffer(hello), m_notifyEndpoint); } catch (...) {}
+      try 
+      { 
+        string hello = action + " * HTTP/1.0\r\n" + createReplyMessage(parameter);
+        socket->send_to(boost::asio::buffer(hello), m_notifyEndpoint); 
+      } 
+      catch (std::exception& e) 
+      {
+        eprintf("Error broadcasting message: %s", e.what());
+      }
     }
   }
   
   void handleRead(const udp_socket_ptr& socket, const boost::system::error_code& error, size_t bytes)
   {
+    const char Search[] = "M-SEARCH * ";
+
     if (!error)
     {
-      // Create the reply, we don't actually look at the request for now.
-      string reply = "HTTP/1.0 200 OK\r\n" + createReplyMessage();
-      
-      // Write the reply back to the client and wait for the next packet.
-      try { socket->send_to(boost::asio::buffer(reply), m_endpoint); } 
-      catch (...) { wprintf("Error replying to broadcast packet."); }
+      // We only reply if the search query at least begins with Search
+      if (memcmp(Search, m_data, sizeof(Search)-sizeof(Search[0])) == 0)
+      {
+        try
+        {
+          // Create the reply
+          string reply = "HTTP/1.0 200 OK\r\n" + createReplyMessage();
+
+          // Write the reply back to the client and wait for the next packet.
+          socket->send_to(boost::asio::buffer(reply), m_endpoint);
+        }
+        catch (std::exception& e)
+        {
+          wprintf("Error replying to broadcast packet: %s", e.what());
+        }
+      }
     }
     
     if (error)
