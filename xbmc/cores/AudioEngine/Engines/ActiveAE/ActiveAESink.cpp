@@ -389,8 +389,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkControlProtocol::TIMEOUT:
-          unsigned int delay;
-          delay = OutputSamples(&m_sampleOfSilence);
+          OutputSamples(&m_sampleOfSilence);
           m_extCycleCounter--;
           if (m_extError)
           {
@@ -418,8 +417,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkControlProtocol::TIMEOUT:
-          unsigned int delay;
-          delay = OutputSamples(&m_sampleOfNoise);
+          OutputSamples(&m_sampleOfNoise);
           m_extCycleCounter--;
           if (m_extError)
           {
@@ -832,7 +830,7 @@ void CActiveAESink::EnsureConvertBuffer(CSampleBuffer* samples)
 
 uint8_t* CActiveAESink::Convert(CSampleBuffer* samples)
 {
-  unsigned int nb_samples = m_convertFn((float*)samples->pkt->data[0], samples->pkt->nb_samples * samples->pkt->config.channels, m_convertBuffer);
+  m_convertFn((float*)samples->pkt->data[0], samples->pkt->nb_samples * samples->pkt->config.channels, m_convertBuffer);
   return m_convertBuffer;
 }
 
