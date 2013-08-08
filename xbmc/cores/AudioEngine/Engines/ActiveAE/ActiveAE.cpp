@@ -1456,7 +1456,7 @@ bool CActiveAE::RunStages()
 
             int nb_floats = out->pkt->nb_samples * out->pkt->config.channels / out->pkt->planes;
             int nb_loops = 1;
-            float fadingStep;
+            float fadingStep = 0.0f;
 
             // fading
             if ((*it)->m_fadingSamples == -1)
@@ -1511,7 +1511,7 @@ bool CActiveAE::RunStages()
 
             int nb_floats = mix->pkt->nb_samples * mix->pkt->config.channels / mix->pkt->planes;
             int nb_loops = 1;
-            float fadingStep;
+            float fadingStep = 0.0f;
 
             // fading
             if ((*it)->m_fadingSamples == -1)
@@ -1573,7 +1573,7 @@ bool CActiveAE::RunStages()
         if (m_mode == MODE_TRANSCODE && m_encoder)
         {
           CSampleBuffer *buf = m_encoderBuffers->GetFreeBuffer();
-          int ret = m_encoder->Encode(out->pkt->data[0], out->pkt->planes*out->pkt->linesize,
+          m_encoder->Encode(out->pkt->data[0], out->pkt->planes*out->pkt->linesize,
                             buf->pkt->data[0], buf->pkt->planes*buf->pkt->linesize);
           buf->pkt->nb_samples = buf->pkt->max_nb_samples;
           out->Return();
@@ -1991,7 +1991,6 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   AVIOContext *io_ctx;
   AVInputFormat *io_fmt;
   AVCodec *dec = NULL;
-  int bit_rate;
   CActiveAESound *sound = NULL;
   SampleConfig config;
 
@@ -2030,7 +2029,6 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
       dec_ctx = fmt_ctx->streams[0]->codec;
       dec = m_dllAvCodec.avcodec_find_decoder(dec_ctx->codec_id);
       config.sample_rate = dec_ctx->sample_rate;
-      bit_rate = dec_ctx->bit_rate;
       config.channels = dec_ctx->channels;
       config.channel_layout = dec_ctx->channel_layout;
     }
