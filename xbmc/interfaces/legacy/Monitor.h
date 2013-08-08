@@ -45,6 +45,7 @@ namespace XBMCAddon
       inline void    OnDatabaseUpdated(const String &database) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseUpdated,database)); }
       inline void    OnDatabaseScanStarted(const String &database) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseScanStarted,database)); }
       inline void    OnAbortRequested() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
+      inline void    OnNotification(const String &sender, const String &method, const String &data) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String,const String,const String>(this,&Monitor::onNotification,sender,method,data)); }
 #endif
 
       /**
@@ -92,6 +93,17 @@ namespace XBMCAddon
        * Will be called when XBMC requests Abort
        */
       virtual void    onAbortRequested() { TRACE; }
+
+      /**
+       * onNotification(sender, method, data) -- onNotification method.
+       *
+       * sender - sender of the notification
+       * method - name of the notification
+       * data - JSON-encoded data of the notification
+       *
+       * Will be called when XBMC receives or sends a notification
+       */
+      virtual void    onNotification(const String sender, const String method, const String data) { TRACE; }
 
       virtual ~Monitor();
 
