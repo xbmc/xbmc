@@ -85,6 +85,7 @@
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
 #include "powermanagement/DPMSSupport.h"
+#include "bluetooth/BluetoothManager.h"
 #include "settings/SettingAddon.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -182,6 +183,7 @@
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoNav.h"
 #include "profiles/windows/GUIWindowSettingsProfile.h"
+#include "settings/windows/GUIWindowSettingsBluetooth.h"
 #ifdef HAS_GL
 #include "rendering/gl/GUIWindowTestPatternGL.h"
 #endif
@@ -724,6 +726,8 @@ bool CApplication::Create()
 #endif
 
   g_powerManager.Initialize();
+
+  g_bluetoothManager.Initialize();
 
   // Load the AudioEngine before settings as they need to query the engine
   if (!CAEFactory::LoadEngine())
@@ -1291,6 +1295,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowVideoPlaylist);
     g_windowManager.Add(new CGUIWindowLoginScreen);
     g_windowManager.Add(new CGUIWindowSettingsProfile);
+    g_windowManager.Add(new CGUIWindowSettingsBluetooth);
     g_windowManager.Add(new CGUIWindow(WINDOW_SKIN_SETTINGS, "SkinSettings.xml"));
     g_windowManager.Add(new CGUIWindowAddonBrowser);
     g_windowManager.Add(new CGUIWindowScreensaverDim);
@@ -5030,6 +5035,8 @@ void CApplication::ProcessSlow()
 #endif
 
   g_mediaManager.ProcessEvents();
+
+  g_bluetoothManager.ProcessEvents();
 
 #ifdef HAS_LIRC
   if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())

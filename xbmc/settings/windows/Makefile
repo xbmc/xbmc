@@ -1,6 +1,7 @@
 SRCS=GUIControlSettings.cpp \
      GUIWindowSettings.cpp \
      GUIWindowSettingsCategory.cpp \
+     GUIWindowSettingsBluetooth.cpp \
      GUIWindowSettingsScreenCalibration.cpp \
      GUIWindowTestPattern.cpp \
 

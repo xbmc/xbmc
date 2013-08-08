@@ -26,11 +26,13 @@
 class CDBusUtil
 {
 public:
-  static CVariant GetAll(const char *destination, const char *object, const char *interface);
+  static CVariant GetAll(const char *destination, const char *object, const char *arg);
+  static CVariant GetAll(const char *destination, const char *object, const char *interface, const char *method, const char *arg);
 
   static CVariant GetVariant(const char *destination, const char *object, const char *interface, const char *property);
-private:
+
+  static CVariant Parse(DBusMessageIter *itr);
+  static CVariant ParseDictionary(DBusMessageIter *itr);
   static CVariant ParseType(DBusMessageIter *itr);
-  static CVariant ParseVariant(DBusMessageIter *itr);
 };
 #endif
