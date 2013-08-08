@@ -1002,14 +1002,22 @@ bool CApplication::InitWindow()
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
   bool bFullScreen = false;
+#ifndef __PLEX__
   if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
+#else
+  if (!g_Windowing.CreateNewWindow("Plex Home Theater", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
+#endif
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
   }
 #else
   bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
+#ifndef __PLEX__
   if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
+#else
+  if (!g_Windowing.CreateNewWindow("Plex Home Theater", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
+#endif
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
