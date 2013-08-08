@@ -94,6 +94,7 @@ public:
 
   bool BadState() { return !m_Initialized; };
   unsigned int GetAudioRenderingLatency();
+  void VizPacket(const void* data, unsigned int len, double pts);
 
 private:
   IAudioCallback* m_pCallback;
@@ -125,6 +126,12 @@ private:
   uint8_t       *m_vizRemapBuffer;
   CAERemap      m_vizRemap;
   bool          m_submitted_eos;
+  typedef struct {
+    int num_samples;
+    float samples[VIS_PACKET_SIZE];
+    double pts;
+  } vizblock_t;
+  std::queue<vizblock_t> m_vizqueue;
 
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_output;
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_input;

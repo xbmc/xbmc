@@ -628,6 +628,9 @@ bool COMXAudio::Deinitialize()
   m_extradata = NULL;
   m_extrasize = 0;
 
+  while(!m_vizqueue.empty())
+    m_vizqueue.pop();
+
   m_dllAvUtil.Unload();
 
   m_last_pts      = DVD_NOPTS_VALUE;
@@ -746,26 +749,8 @@ bool COMXAudio::SetCurrentVolume(float fVolume)
   return true;
 }
 
-
-//***********************************************************************************************
-unsigned int COMXAudio::AddPackets(const void* data, unsigned int len)
+void COMXAudio::VizPacket(const void* data, unsigned int len, double pts)
 {
-  return AddPackets(data, len, 0, 0);
-}
-
-//***********************************************************************************************
-unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dts, double pts)
-{
-  CSingleLock lock (m_critSection);
-
-  if(!m_Initialized) 
-  {
-    CLog::Log(LOGERROR,"COMXAudio::AddPackets - sanity failed. no valid play handle!");
-    return len;
-  }
-
-  if (m_pCallback && len && !(m_Passthrough || m_HWDecode))
-  {
     /* input samples */
     unsigned int vizBufferSamples = len / (CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3);
 
@@ -798,9 +783,47 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     if(vizBufferSamples > VIS_PACKET_SIZE)
       vizBufferSamples = VIS_PACKET_SIZE;
 
-    if(m_pCallback)
-      m_pCallback->OnAudioData((float *)m_vizRemapBuffer, vizBufferSamples);
+    vizblock_t v;
+    v.pts = pts;
+    v.num_samples = vizBufferSamples;
+    memcpy(v.samples, m_vizRemapBuffer, vizBufferSamples * sizeof(float));
+    m_vizqueue.push(v);
+
+    double stamp = m_av_clock->OMXMediaTime();
+    while(!m_vizqueue.empty())
+    {
+      vizblock_t &v = m_vizqueue.front();
+      /* if packet has almost reached media time (allow time for rendering delay) then display it */
+      /* we'll also consume if queue gets unexpectedly long to avoid filling memory */
+      if (v.pts == DVD_NOPTS_VALUE || v.pts - stamp < DVD_SEC_TO_TIME(1.0/30.0) || v.pts - stamp > DVD_SEC_TO_TIME(15.0))
+      {
+         m_pCallback->OnAudioData(v.samples, v.num_samples);
+         m_vizqueue.pop();
+      }
+      else break;
+   }
+}
+
+
+//***********************************************************************************************
+unsigned int COMXAudio::AddPackets(const void* data, unsigned int len)
+{
+  return AddPackets(data, len, 0, 0);
+}
+
+//***********************************************************************************************
+unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dts, double pts)
+{
+  CSingleLock lock (m_critSection);
+
+  if(!m_Initialized)
+  {
+    CLog::Log(LOGERROR,"COMXAudio::AddPackets - sanity failed. no valid play handle!");
+    return len;
   }
+
+  if (m_pCallback && len && !(m_Passthrough || m_HWDecode))
+    VizPacket(data, len, pts);
 
   if(m_eEncoding == OMX_AUDIO_CodingDTS && m_LostSync && (m_Passthrough || m_HWDecode))
   {
