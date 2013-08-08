@@ -93,6 +93,7 @@ public:
   virtual void avcodec_free_frame(AVFrame **frame)=0;
   virtual int av_codec_is_decoder(const AVCodec *codec)=0;
   virtual AVDictionary* av_frame_get_metadata(const AVFrame* frame)=0;
+  virtual int64_t av_frame_get_best_effort_timestamp(const AVFrame *frame) = 0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
@@ -163,6 +164,7 @@ public:
   virtual void avcodec_free_frame(AVFrame **frame) { return ::avcodec_free_frame(frame); };
   virtual int av_codec_is_decoder(const AVCodec *codec) { return ::av_codec_is_decoder(codec); }
   virtual AVDictionary* av_frame_get_metadata(const AVFrame* frame) { return ::av_frame_get_metadata(frame); }
+  virtual int64_t av_frame_get_best_effort_timestamp(const AVFrame *frame) { return ::av_frame_get_best_effort_timestamp(frame); }
 
   // DLL faking.
   virtual bool ResolveExports() { return true; }
@@ -214,6 +216,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD1(AVCodec*, av_codec_next, (AVCodec *p1))
   DEFINE_METHOD1(int, av_codec_is_decoder, (const AVCodec *p1))
   DEFINE_METHOD1(AVDictionary*, av_frame_get_metadata, (const AVFrame* p1))
+  DEFINE_METHOD1(int64_t, av_frame_get_best_effort_timestamp, (const AVFrame *p1))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
@@ -249,6 +252,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_free_frame)
     RESOLVE_METHOD(av_codec_is_decoder)
     RESOLVE_METHOD(av_frame_get_metadata)
+    RESOLVE_METHOD(av_frame_get_best_effort_timestamp)
   END_METHOD_RESOLVE()
 
   /* dependencies of libavcodec */
