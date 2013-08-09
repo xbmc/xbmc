@@ -97,9 +97,11 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   {
     CXBMCTinyXML doc;
 
-    if (!doc.Parse(data))
+    doc.Parse(data);
+    
+    if (doc.Error())
     {
-      CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s", m_url.Get().c_str());
+      CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s\nError on %d:%d - %s\n%s", m_url.Get().c_str(), doc.ErrorRow(), doc.ErrorCol(), doc.ErrorDesc(), data.c_str());
       CancelAugmentations();
       return false;
     }
