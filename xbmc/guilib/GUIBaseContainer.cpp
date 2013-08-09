@@ -716,7 +716,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
   }
   else if (event.m_id == ACTION_MOUSE_DRAG) 
   {
-    if (event.m_state == 1 && HitTest(point))
+    if (event.m_state == MOUSE_EVENT_START && HitTest(point))
     {
       int selected = GetItemPositionFromPoint(point - CPoint(GetXPosition(), GetYPosition()));
       if (selected >= 0 && selected < (int)m_items.size())

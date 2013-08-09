@@ -599,7 +599,7 @@ EVENT_RESULT CGUIControl::OnMouseEvent(const CPoint &point, const CMouseEvent &e
     if (!IsVisible() || !event.m_dndInfo || !HitTest(point) || !IsDropable())
       return EVENT_RESULT_UNHANDLED;
     
-    if (event.m_state == 2)
+    if (event.m_state == MOUSE_EVENT_IN_PROGRESS)
     {
       //Set us as drop target
       if (!m_dropTarget)
@@ -611,7 +611,7 @@ EVENT_RESULT CGUIControl::OnMouseEvent(const CPoint &point, const CMouseEvent &e
       }
       return EVENT_RESULT_HANDLED;
     }
-    if (event.m_state == 3)
+    if (event.m_state == MOUSE_EVENT_STOP)
     {  
       m_actionDrop.ExecuteActions(GetID(), GetParentID());
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetParentID(), 0, GUI_DND_STOP);

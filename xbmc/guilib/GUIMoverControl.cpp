@@ -147,12 +147,12 @@ EVENT_RESULT CGUIMoverControl::OnMouseEvent(const CPoint &point, const CMouseEve
 {
   if (event.m_id == ACTION_MOUSE_DRAG)
   {
-    if (event.m_state == 1)
+    if (event.m_state == MOUSE_EVENT_START)
     { // grab exclusive access
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
       SendWindowMessage(msg);
     }
-    else if (event.m_state == 3)
+    else if (event.m_state == MOUSE_EVENT_STOP)
     { // release exclusive access
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
       SendWindowMessage(msg);

@@ -477,7 +477,7 @@ EVENT_RESULT CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
   if (event.m_id == ACTION_MOUSE_DRAG)
   { // if no one feels responsible for the drag events, 
     // we should notify the info handler and the current hovered element about that
-    if (event.m_state == 2)
+    if (event.m_state == MOUSE_EVENT_IN_PROGRESS)
     {
       if (event.m_dndInfo != NULL && !m_dropTarget) // We no longer have a drop target
       {
@@ -488,7 +488,7 @@ EVENT_RESULT CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
       }
       return EVENT_RESULT_HANDLED;
     }
-    if (event.m_state == 3)
+    if (event.m_state == MOUSE_EVENT_STOP)
     {
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetParentID(), 0, GUI_DND_STOP);
       g_windowManager.SendMessage(msg);

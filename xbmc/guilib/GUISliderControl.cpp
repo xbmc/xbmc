@@ -530,13 +530,13 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
   {
     m_dragging = true;
     bool guessSelector = false;
-    if (event.m_state == 1)
+    if (event.m_state == MOUSE_EVENT_START)
     { // grab exclusive access
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
       SendWindowMessage(msg);
       guessSelector = true;
     }
-    else if (event.m_state == 3)
+    else if (event.m_state == MOUSE_EVENT_STOP)
     { // release exclusive access
       m_dragging = false;
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());

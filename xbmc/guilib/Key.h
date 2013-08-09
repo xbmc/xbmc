@@ -366,6 +366,10 @@
 #define ICON_TYPE_WEATHER       107
 #define ICON_TYPE_SETTINGS      109
 
+#define MOUSE_EVENT_START         1
+#define MOUSE_EVENT_IN_PROGRESS   2
+#define MOUSE_EVENT_STOP          3
+
 class CKey;
 
 /*!
