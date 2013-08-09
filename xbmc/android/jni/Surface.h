@@ -1,7 +1,7 @@
 #pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +25,24 @@ class CJNISurfaceTexture;
 class CJNISurface : public CJNIBase
 {
 public:
-  CJNISurface(CJNISurfaceTexture *surf_texture);
-  ~CJNISurface();
+  CJNISurface(const CJNISurfaceTexture &surfaceTexture);
+  CJNISurface(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNISurface() {};
 
-  void release();
+  bool        isValid();
+  void        release();
+//CJNICanvas  lockCanvas(CJNIRect);
+//void        unlockCanvasAndPost(const CJNICanvas &canvas);
+//void        unlockCanvas(const CJNICanvas &canvas);
+  std::string toString();
+
+  int         describeContents();
+  static void PopulateStaticFields();
+  static int  ROTATION_0;
+  static int  ROTATION_90;
+  static int  ROTATION_180;
+  static int  ROTATION_270;
+
+private:
+  static const char *m_classname;
 };

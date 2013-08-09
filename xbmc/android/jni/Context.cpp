@@ -36,6 +36,7 @@
 #include "Cursor.h"
 #include "ConnectivityManager.h"
 #include "AudioManager.h"
+#include "Surface.h"
 
 #include <android/native_activity.h>
 
@@ -70,6 +71,7 @@ void CJNIContext::PopulateStaticFields()
   CJNIContentResolver::PopulateStaticFields();
   CJNIConnectivityManager::PopulateStaticFields();
   CJNIAudioManager::PopulateStaticFields();
+  CJNISurface::PopulateStaticFields();
 }
 
 CJNIPackageManager CJNIContext::GetPackageManager()

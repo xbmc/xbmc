@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,27 +18,70 @@
  *
  */
 
+#include "JNIBase.h"
 #include "Surface.h"
 #include "SurfaceTexture.h"
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
 
-CJNISurface::CJNISurface(CJNISurfaceTexture *surf_texture) : CJNIBase("android/view/Surface")
+int CJNISurface::ROTATION_0;
+int CJNISurface::ROTATION_90;
+int CJNISurface::ROTATION_180;
+int CJNISurface::ROTATION_270;
+const char* CJNISurface::m_classname = "android/view/Surface";
+
+void CJNISurface::PopulateStaticFields()
 {
-  m_object = new_object(GetClassName(),
-    "<init>", "(Landroid/graphics/SurfaceTexture;)V",
-    surf_texture->get_raw());
+  jhclass clazz = find_class(m_classname);
+  ROTATION_0  = get_static_field<int>(clazz, "ROTATION_0");
+  ROTATION_90 = get_static_field<int>(clazz, "ROTATION_90");
+  ROTATION_180= get_static_field<int>(clazz, "ROTATION_180");
+  ROTATION_270= get_static_field<int>(clazz, "ROTATION_270");
+}
+
+
+CJNISurface::CJNISurface(const CJNISurfaceTexture &surfaceTexture) : CJNIBase(m_classname)
+{
+  m_object = new_object(m_classname, "<init>", "(Landroid/graphics/SurfaceTexture;)V", surfaceTexture.get_raw());
   m_object.setGlobal();
 }
 
-CJNISurface::~CJNISurface()
+bool CJNISurface::isValid()
 {
-  release();
+  return call_method<jboolean>(m_object,
+    "isValid", "()Z");
 }
 
 void CJNISurface::release()
 {
-  call_method<jhobject>(m_object,
+  call_method<jboolean>(m_object,
     "release", "()V");
+}
+
+/*
+CJNICanvas CJNISurface::lockCanvas(const CJNIRect &rect)
+{
+}
+
+void CJNISurface::unlockCanvasAndPost(const CJNICanvas &canvas)
+{
+}
+
+void CJNISurface::unlockCanvas(const CJNICanvas &canvas)
+{
+}
+*/
+
+std::string CJNISurface::toString()
+{
+  return jcast<std::string>(call_method<jhstring>(m_object,
+    "toString", "()Ljava/lang/String;"));
+}
+
+int CJNISurface::describeContents()
+{
+  return call_method<int>(m_object,
+    "describeContents", "()I");
 }
