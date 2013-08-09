@@ -4326,7 +4326,7 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
       extSubDetails.push_back(p);
     }
     
-    bool result = CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, extSubDetails, details);
+    bool result = CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, m_pDemuxers, extSubDetails, details);
     if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
     {
       /* 
