@@ -9,6 +9,7 @@
 #include <boost/foreach.hpp>
 
 #include "utils/log.h"
+#include "guilib/LocalizeStrings.h"
 
 using namespace XFILE;
 
@@ -154,7 +155,14 @@ CPlexServerDataLoaderJob::DoWork()
     {
       m_sectionList->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
       for (int i = 0; i < m_sectionList->Size(); i ++)
-        m_sectionList->Get(i)->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
+      {
+        CFileItemPtr item = m_sectionList->Get(i);
+        if (item->GetPath() == "plexserver://myplex/pms/playlists/recommendations")
+          item->SetLabel(g_localizeStrings.Get(44022));
+        else if (item->GetPath() == "plexserver://myplex/pms/playlists/queue")
+          item->SetLabel(g_localizeStrings.Get(44021));
+        item->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
+      }
     }
   }
   return true;
