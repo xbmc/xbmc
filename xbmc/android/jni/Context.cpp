@@ -49,6 +49,7 @@ CJNIContext::CJNIContext(const ANativeActivity *nativeActivity)
 {
   m_context.reset(nativeActivity->clazz);
   xbmc_jni_on_load(nativeActivity->vm, nativeActivity->env);
+  CJNIBase::SetSDKVersion(nativeActivity->sdkVersion);
   PopulateStaticFields();
   m_appInstance = this;
 }

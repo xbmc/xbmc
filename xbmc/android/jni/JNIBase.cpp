@@ -21,6 +21,7 @@
 #include "JNIBase.h"
 
 using namespace jni;
+int CJNIBase::m_sdk_version = -1;
 
 CJNIBase::CJNIBase(std::string classname)
 {
@@ -38,4 +39,14 @@ CJNIBase::~CJNIBase()
 {
   if(!m_object)
     return;
+}
+
+void CJNIBase::SetSDKVersion(int version)
+{
+  m_sdk_version = version;
+}
+
+int CJNIBase::GetSDKVersion()
+{
+  return m_sdk_version;
 }
