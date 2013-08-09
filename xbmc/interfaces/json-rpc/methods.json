@@ -1672,7 +1672,7 @@
     "params": [
       { "name": "properties", "$ref": "Profiles.Fields.Profile" },
       { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" }"
+      { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": {
       "type": "object",
