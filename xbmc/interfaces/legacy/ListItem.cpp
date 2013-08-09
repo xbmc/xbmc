@@ -32,6 +32,8 @@
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 
+using namespace PICTURE_INFO;
+
 namespace XBMCAddon
 {
   namespace xbmcgui
