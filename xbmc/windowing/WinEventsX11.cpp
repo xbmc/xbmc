@@ -461,7 +461,7 @@ bool CWinEventsX11Imp::MessagePump()
             if (keys.length() > 0)
             {
               newEvent.key.keysym.scancode = xevent.xkey.keycode;
-              xkeysym = XLookupKeysym(&xevent.xkey, 0);
+              XLookupString(&xevent.xkey, NULL, 0, &xkeysym, NULL);
               newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
               newEvent.key.keysym.unicode = keys[keys.length() - 1];
               newEvent.key.state = xevent.xkey.state;
