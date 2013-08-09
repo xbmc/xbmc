@@ -64,7 +64,10 @@ print_crash_report()
   echo -n " Kernel: " >> $FILE
   uname -rvs >> $FILE
   echo -n " Release: " >> $FILE
-  if which lsb_release > /dev/null; then
+  if [ -f /etc/os-release ]; then
+	  . /etc/os-release
+	  echo $NAME $VERSION >> $FILE
+  elif which lsb_release > /dev/null; then
     echo >> $FILE
     lsb_release -a 2> /dev/null | sed -e 's/^/    /' >> $FILE
   else
