@@ -224,7 +224,8 @@ class CVdpauRenderPicture
   friend class COutput;
 public:
   CVdpauRenderPicture(CCriticalSection &section)
-    : renderPicSection(section), refCount(0) {}
+    : renderPicSection(section), refCount(0) { fence = None; }
+  void Sync();
   DVDVideoPicture DVDPic;
   int texWidth, texHeight;
   CRect crop;
@@ -236,6 +237,8 @@ public:
   long Release();
 private:
   void ReturnUnused();
+  bool usefence;
+  GLsync fence;
   int refCount;
   CCriticalSection &renderPicSection;
 };
@@ -391,6 +394,7 @@ struct VdpauBufferPool
   std::queue<CVdpauProcessedPicture> processedPics;
   std::deque<int> usedRenderPics;
   std::deque<int> freeRenderPics;
+  std::deque<int> syncRenderPics;
   CCriticalSection renderPicSec;
 };
 
@@ -450,7 +454,9 @@ protected:
   void StateMachine(int signal, Protocol *port, Message *msg);
   bool HasWork();
   CVdpauRenderPicture *ProcessMixerPicture();
+  void QueueReturnPicture(CVdpauRenderPicture *pic);
   void ProcessReturnPicture(CVdpauRenderPicture *pic);
+  bool ProcessSyncPicture();
   int FindFreePixmap();
   bool Init();
   bool Uninit();

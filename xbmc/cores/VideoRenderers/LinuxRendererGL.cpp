@@ -1245,6 +1245,17 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     RenderSoftware(renderBuffer, m_currentField);
     VerifyGLState();
   }
+
+#ifdef HAVE_LIBVDPAU
+  if (m_format == RENDER_FMT_VDPAU || m_format == RENDER_FMT_VDPAU_420)
+  {
+    YUVBUFFER &buf = m_buffers[renderBuffer];
+    if (buf.vdpau)
+    {
+      buf.vdpau->Sync();
+    }
+  }
+#endif
 }
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)

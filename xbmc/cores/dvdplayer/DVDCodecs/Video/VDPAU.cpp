@@ -1144,6 +1144,23 @@ void CVdpauRenderPicture::ReturnUnused()
   if (vdpau)
     vdpau->ReturnRenderPicture(this);
 }
+
+void CVdpauRenderPicture::Sync()
+{
+#ifdef GL_ARB_sync
+  CSingleLock lock(renderPicSection);
+  if (usefence)
+  {
+    if(glIsSync(fence))
+    {
+      glDeleteSync(fence);
+      fence = None;
+    }
+    fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+  }
+#endif
+}
+
 //-----------------------------------------------------------------------------
 // Mixer
 //-----------------------------------------------------------------------------
@@ -2531,7 +2548,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         case COutputDataProtocol::RETURNPIC:
           CVdpauRenderPicture *pic;
           pic = *((CVdpauRenderPicture**)msg->data);
-          ProcessReturnPicture(pic);
+          QueueReturnPicture(pic);
           return;
         default:
           break;
@@ -2622,7 +2639,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         case COutputDataProtocol::RETURNPIC:
           CVdpauRenderPicture *pic;
           pic = *((CVdpauRenderPicture**)msg->data);
-          ProcessReturnPicture(pic);
+          QueueReturnPicture(pic);
           m_controlPort.SendInMessage(COutputControlProtocol::STATS);
           m_state = O_TOP_CONFIGURED_WORK;
           m_extTimeout = 0;
@@ -2654,6 +2671,15 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
+          if (ProcessSyncPicture())
+            m_extTimeout = 10;
+          else
+            m_extTimeout = 100;
+          if (HasWork())
+          {
+            m_state = O_TOP_CONFIGURED_WORK;
+            m_extTimeout = 0;
+          }
           return;
         default:
           break;
@@ -2682,7 +2708,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           else
           {
             m_state = O_TOP_CONFIGURED_IDLE;
-            m_extTimeout = 100;
+            m_extTimeout = 0;
           }
           return;
         default:
@@ -2845,7 +2871,7 @@ void COutput::Flush()
     {
       CVdpauRenderPicture *pic;
       pic = *((CVdpauRenderPicture**)msg->data);
-      ProcessReturnPicture(pic);
+      QueueReturnPicture(pic);
     }
     msg->Release();
   }
@@ -2856,7 +2882,7 @@ void COutput::Flush()
     {
       CVdpauRenderPicture *pic;
       pic = *((CVdpauRenderPicture**)msg->data);
-      ProcessReturnPicture(pic);
+      QueueReturnPicture(pic);
     }
   }
 
@@ -2984,7 +3010,7 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
   return retPic;
 }
 
-void COutput::ProcessReturnPicture(CVdpauRenderPicture *pic)
+void COutput::QueueReturnPicture(CVdpauRenderPicture *pic)
 {
   std::deque<int>::iterator it;
   for (it = m_bufferPool.usedRenderPics.begin(); it != m_bufferPool.usedRenderPics.end(); ++it)
@@ -2997,17 +3023,84 @@ void COutput::ProcessReturnPicture(CVdpauRenderPicture *pic)
 
   if (it == m_bufferPool.usedRenderPics.end())
   {
-    CLog::Log(LOGWARNING, "COutput::ProcessReturnPicture - pic not found");
-    return;
-  }
-  m_bufferPool.freeRenderPics.push_back(*it);
-  m_bufferPool.usedRenderPics.erase(it);
-  if (!pic->valid)
-  {
-    CLog::Log(LOGDEBUG, "COutput::%s - return of invalid render pic", __FUNCTION__);
+    CLog::Log(LOGWARNING, "COutput::QueueReturnPicture - pic not found");
     return;
   }
 
+  // check if already queued
+  std::deque<int>::iterator it2 = find(m_bufferPool.syncRenderPics.begin(),
+                                       m_bufferPool.syncRenderPics.end(),
+                                       *it);
+  if (it2 == m_bufferPool.syncRenderPics.end())
+  {
+    m_bufferPool.syncRenderPics.push_back(*it);
+  }
+
+  ProcessSyncPicture();
+}
+
+bool COutput::ProcessSyncPicture()
+{
+  CVdpauRenderPicture *pic;
+  bool busy = false;
+
+  std::deque<int>::iterator it;
+  for (it = m_bufferPool.syncRenderPics.begin(); it != m_bufferPool.syncRenderPics.end(); )
+  {
+    pic = m_bufferPool.allRenderPics[*it];
+
+#ifdef GL_ARB_sync
+    if (pic->usefence)
+    {
+      if (glIsSync(pic->fence))
+      {
+        GLint state;
+        GLsizei length;
+        glGetSynciv(pic->fence, GL_SYNC_STATUS, 1, &length, &state);
+        if(state == GL_SIGNALED)
+        {
+          glDeleteSync(pic->fence);
+          pic->fence = None;
+        }
+        else
+        {
+          busy = true;
+          ++it;
+          continue;
+        }
+      }
+    }
+#endif
+
+    m_bufferPool.freeRenderPics.push_back(*it);
+
+    std::deque<int>::iterator it2 = find(m_bufferPool.usedRenderPics.begin(),
+                                         m_bufferPool.usedRenderPics.end(),
+                                         *it);
+    if (it2 == m_bufferPool.usedRenderPics.end())
+    {
+      CLog::Log(LOGERROR, "COutput::ProcessSyncPicture - pic not found in queue");
+    }
+    else
+    {
+      m_bufferPool.usedRenderPics.erase(it2);
+    }
+    it = m_bufferPool.syncRenderPics.erase(it);
+
+    if (pic->valid)
+    {
+      ProcessReturnPicture(pic);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "COutput::%s - return of invalid render pic", __FUNCTION__);
+    }
+  }
+  return busy;
+}
+
+void COutput::ProcessReturnPicture(CVdpauRenderPicture *pic)
+{
   if (m_config.usePixmaps)
   {
     m_bufferPool.pixmaps[pic->sourceIdx].used = false;
@@ -3156,10 +3249,43 @@ void COutput::ReleaseBufferPool()
   }
   m_bufferPool.outputSurfaces.clear();
 
+  // wait for all fences
+  XbmcThreads::EndTime timeout(1000);
+  for (int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
+  {
+    CVdpauRenderPicture *pic = m_bufferPool.allRenderPics[i];
+    if (pic->usefence)
+    {
+#ifdef GL_ARB_sync
+      while (glIsSync(pic->fence))
+      {
+        GLint state;
+        GLsizei length;
+        glGetSynciv(pic->fence, GL_SYNC_STATUS, 1, &length, &state);
+        if(state == GL_SIGNALED || timeout.IsTimePast())
+        {
+          glDeleteSync(pic->fence);
+        }
+        else
+        {
+          Sleep(5);
+        }
+      }
+      pic->fence = None;
+#endif
+    }
+  }
+  if (timeout.IsTimePast())
+  {
+    CLog::Log(LOGERROR, "COutput::%s - timeout waiting for fence", __FUNCTION__);
+  }
+  ProcessSyncPicture();
+
   // invalidate all used render pictures
   for (unsigned int i = 0; i < m_bufferPool.usedRenderPics.size(); ++i)
   {
-    m_bufferPool.allRenderPics[m_bufferPool.usedRenderPics[i]]->valid = false;
+    CVdpauRenderPicture *pic = m_bufferPool.allRenderPics[m_bufferPool.usedRenderPics[i]];
+    pic->valid = false;
   }
 }
 
@@ -3169,6 +3295,7 @@ void COutput::PreCleanup()
   VdpStatus vdp_st;
 
   m_mixer.Dispose();
+  ProcessSyncPicture();
 
   CSingleLock lock(m_bufferPool.renderPicSec);
   for (unsigned int i = 0; i < m_bufferPool.outputSurfaces.size(); ++i)
@@ -3375,6 +3502,15 @@ bool COutput::GLInit()
     CLog::Log(LOGNOTICE, "VDPAU::COutput: vdpau gl interop initialized");
   }
 #endif
+
+#ifdef GL_ARB_sync
+  bool hasfence = glewIsSupported("GL_ARB_sync");
+  for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
+  {
+    m_bufferPool.allRenderPics[i]->usefence = hasfence;
+  }
+#endif
+
   return true;
 }
 
