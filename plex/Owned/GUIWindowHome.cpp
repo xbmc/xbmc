@@ -653,6 +653,11 @@ static bool _sortLabels(const CGUIListItemPtr& item1, const CGUIListItemPtr& ite
 {
   if (item1->GetLabel() == item2->GetLabel())
     return (item1->GetLabel2() < item2->GetLabel2());
+  
+  if (item1->GetLabel2() == "myPlex")
+    return false;
+  if (item2->GetLabel2() == "myPlex")
+    return true;
 
   return (item1->GetLabel() < item2->GetLabel());
 }
