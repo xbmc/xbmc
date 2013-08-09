@@ -82,6 +82,8 @@ public:
   bool SupportsAudioTranscoding() const { return m_supportsAudioTranscoding; }
   bool SupportsDeletion() const { return m_supportsDeletion; }
   
+  bool HasAuthToken() const;
+  
 private:
   bool m_owned;
   CStdString m_uuid;

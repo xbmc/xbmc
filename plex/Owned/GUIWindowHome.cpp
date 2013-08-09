@@ -92,10 +92,11 @@ using namespace boost;
 
 #define SLIDESHOW_MULTIIMAGE 10101
 
+typedef std::pair<CStdString, CPlexSectionFanout*> nameSectionPair;
 
 //////////////////////////////////////////////////////////////////////////////
 CPlexSectionFanout::CPlexSectionFanout(const CStdString &url, SectionTypes sectionType)
-  : m_url(url), m_sectionType(sectionType)
+  : m_url(url), m_sectionType(sectionType), m_needsRefresh(false)
 {
   Refresh();
 }
@@ -268,6 +269,12 @@ void CPlexSectionFanout::Show()
 //////////////////////////////////////////////////////////////////////////////
 bool CPlexSectionFanout::NeedsRefresh()
 {
+  if (m_needsRefresh)
+  {
+    m_needsRefresh = false;
+    return true;
+  }
+  
   int refreshTime = 5;
   if (m_sectionType == SECTION_TYPE_ALBUM ||
       m_sectionType == SECTION_TYPE_QUEUE ||
@@ -510,7 +517,14 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
       if (message.GetMessage() != GUI_MSG_PLEX_SERVER_DATA_LOADED ||
           message.GetMessage() != GUI_MSG_PLEX_SERVER_DATA_UNLOADED)
+      {
         RefreshAllSections(false);
+      }
+      
+      if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
+      {
+        RefreshSectionsForServer(message.GetStringParam());
+      }
     }
       break;
 
@@ -873,7 +887,6 @@ void CGUIWindowHome::RefreshSection(const CStdString &url, SectionTypes type)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-typedef std::pair<CStdString, CPlexSectionFanout*> nameSectionPair;
 void CGUIWindowHome::RefreshAllSections(bool force)
 {
   BOOST_FOREACH(nameSectionPair p, m_sections)
@@ -882,6 +895,19 @@ void CGUIWindowHome::RefreshAllSections(bool force)
       p.second->Refresh();
   }
 
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::RefreshSectionsForServer(const CStdString &uuid)
+{
+  BOOST_FOREACH(nameSectionPair p, m_sections)
+  {
+    CURL sectionUrl(p.first);
+    if (sectionUrl.GetHostName() == uuid)
+    {
+      CLog::Log(LOGDEBUG, "CGUIWindowHome::RefreshSectionsForServer refreshing section %s because it belongs to server %s", p.first.c_str(), uuid.c_str());
+      p.second->m_needsRefresh = true;
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

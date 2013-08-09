@@ -60,9 +60,9 @@ public:
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
+private:
   void OnTimeout();
 
-private:
   CTimer *m_refreshTimer;
 
   CCriticalSection m_dataLock;

@@ -99,6 +99,9 @@ class CPlexSectionFanout : public IJobCallback
 
     bool NeedsRefresh();
     static CStdString GetBestServerUrl(const CStdString& extraUrl="");
+  
+    SectionTypes m_sectionType;
+    bool m_needsRefresh;
 
   private:
     int LoadSection(const CURL& url, int contentType);
@@ -109,7 +112,6 @@ class CPlexSectionFanout : public IJobCallback
     CURL m_url;
     boost::timer m_age;
     CCriticalSection m_critical;
-    SectionTypes m_sectionType;
     std::vector<int> m_outstandingJobs;
   
     /* Thumb loaders, we pre-cache posters to make the fanouts quick and nice */
@@ -135,6 +137,7 @@ public:
   void RestoreSection();
   void RefreshSection(const CStdString& url, SectionTypes type);
   void RefreshAllSections(bool force = true);
+  void RefreshSectionsForServer(const CStdString &uuid);
   void AddSection(const CStdString& url, SectionTypes sectionType);
   void RemoveSection(const CStdString& url);
   bool ShowSection(const CStdString& url);

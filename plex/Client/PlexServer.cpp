@@ -224,7 +224,7 @@ CPlexServer::Merge(CPlexServerPtr otherServer)
     if (it != m_connections.end())
       (*it)->Merge(conn);
     else
-      m_connections.push_back(conn);
+      AddConnection(conn);
   }
 }
 
@@ -298,9 +298,24 @@ CPlexServer::BuildURL(const CStdString &path, const CStdString &options) const
   return url;
 }
 
+bool CPlexServer::HasAuthToken() const
+{
+  CStdString token;
+  BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
+  {
+    if (!conn->GetAccessToken().empty())
+      return true;
+  }
+  return false;
+}
+
 void
 CPlexServer::AddConnection(CPlexConnectionPtr connection)
 {
+  if (m_activeConnection && m_activeConnection->IsLocal() &&
+      (!connection->GetAccessToken().empty() && !HasAuthToken()))
+    m_activeConnection.reset();
+  
   m_connections.push_back(connection);
 }
 

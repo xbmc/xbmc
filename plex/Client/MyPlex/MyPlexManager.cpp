@@ -69,7 +69,9 @@ CMyPlexManager::Process()
 
 void CMyPlexManager::BroadcastState()
 {
-  CGUIMessage msg(GUI_MSG_MYPLEX_STATE_CHANGE, PLEX_MYPLEX_MANAGER, 0, m_state, m_lastError);
+  CGUIMessage msg(GUI_MSG_MYPLEX_STATE_CHANGE, PLEX_MYPLEX_MANAGER, 0);
+  msg.SetParam1((int)m_state);
+  msg.SetParam2((int)m_lastError);
   m_lastError = ERROR_NOERROR;
 
   switch(m_state)
