@@ -32,6 +32,7 @@
 #include "guilib/LocalizeStrings.h"
 
 using namespace MUSIC_INFO;
+using namespace PICTURE_INFO;
 
 /* LabelFormatter
  * ==============
