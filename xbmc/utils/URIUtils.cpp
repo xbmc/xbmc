@@ -706,6 +706,9 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
   // PMS files always count as streams (needed for
   // thumbnails on LAN, strangely enough).
   //
+  if (url.GetProtocol() == "plexserver")
+    return true;
+  
   if (url.GetPort() == 32400)
     return true;
 
