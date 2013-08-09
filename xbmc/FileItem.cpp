@@ -72,9 +72,34 @@ using namespace PICTURE_INFO;
 using namespace PVR;
 using namespace EPG;
 
+/*
+CFileItem::CFileItem(const CStdString &path, const CPictureAlbum& album)
+CFileItem::CFileItem(const CPicture& picture);
+CFileItem::CFileItem(const CFace& face);
+CFileItem::CFileItem(const CLocation& location);
+CFileItem::CFileItem(const PICTURE_INFO::CPictureInfoTag& music);
+*/
+
+
+CFileItem::CFileItem(const CPicture& picture)
+{
+    m_musicInfoTag = NULL;
+    m_videoInfoTag = NULL;
+    m_epgInfoTag = NULL;
+    m_pvrChannelInfoTag = NULL;
+    m_pvrRecordingInfoTag = NULL;
+    m_pvrTimerInfoTag = NULL;
+    m_pictureInfoTag = NULL;
+    Reset();
+    
+    SetFromPicture(picture);
+}
+
+
 CFileItem::CFileItem(const CSong& song)
 {
   m_musicInfoTag = NULL;
+    m_pictureInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
@@ -100,6 +125,22 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   m_strPath = path;
   URIUtils::AddSlashAtEnd(m_strPath);
   SetFromAlbum(album);
+}
+
+CFileItem::CFileItem(const CStdString &path, const CPictureAlbum& album)
+{
+    m_musicInfoTag = NULL;
+    m_videoInfoTag = NULL;
+    m_epgInfoTag = NULL;
+    m_pvrChannelInfoTag = NULL;
+    m_pvrRecordingInfoTag = NULL;
+    m_pvrTimerInfoTag = NULL;
+    m_pictureInfoTag = NULL;
+    Reset();
+    
+    m_strPath = path;
+    URIUtils::AddSlashAtEnd(m_strPath);
+    SetFromPictureAlbum(album);
 }
 
 CFileItem::CFileItem(const CMusicInfoTag& music)
@@ -1526,6 +1567,34 @@ void CFileItem::SetFromSong(const CSong &song)
   FillInMimeType(false);
 }
 
+
+void CFileItem::SetFromPictureAlbum(const CPictureAlbum &album)
+{
+    if (!album.strAlbum.empty())
+        SetLabel(album.strAlbum);
+    m_bIsFolder = true;
+    m_strLabel2 = StringUtils::Join(album.face, g_advancedSettings.m_pictureItemSeparator);
+    GetPictureInfoTag()->SetAlbum(album);
+    m_bIsAlbum = true;
+    CPictureDatabase::SetPropertiesFromPictureAlbum(*this,album);
+    FillInMimeType(false);
+}
+
+void CFileItem::SetFromPicture(const CPicture &picture)
+{
+    if (!picture.strTitle.empty())
+        SetLabel(picture.strTitle);
+    if (!picture.strFileName.empty())
+        m_strPath = picture.strFileName;
+    GetPictureInfoTag()->SetPicture(picture);
+    m_lStartOffset = picture.iStartOffset;
+    m_lStartPartNumber = 1;
+    SetProperty("item_start", picture.iStartOffset);
+    m_lEndOffset = picture.iEndOffset;
+    if (!picture.strThumb.empty())
+        SetArt("thumb", picture.strThumb);
+    FillInMimeType(false);
+}
 /////////////////////////////////////////////////////////////////////////////////
 /////
 ///// CFileItemList

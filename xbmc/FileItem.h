@@ -61,6 +61,11 @@ class CArtist;
 class CSong;
 class CGenre;
 
+class CPictureAlbum;
+class CFace;
+class CPicture;
+class CLocation;
+
 class CURL;
 
 /* special startoffset used to indicate that we wish to resume */
@@ -98,6 +103,13 @@ public:
   CFileItem(const CStdString &path, const CAlbum& album);
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
+  CFileItem(const CPicture& picture);
+  CFileItem(const CStdString &path, const CPictureAlbum& album);
+    /*
+  CFileItem(const CFace& face);
+  CFileItem(const CLocation& location);
+  CFileItem(const PICTURE_INFO::CPictureInfoTag& music);
+     */
   CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
   CFileItem(const EPG::CEpgInfoTag& tag);
@@ -411,6 +423,19 @@ public:
    */
   void SetFromSong(const CSong &song);
 
+    /*! \brief Sets details using the information from the CAlbum object
+     Sets the album in the music info tag and uses its information to set the
+     label and album-specific properties.
+     \param album album details to use and set
+     */
+    void SetFromPictureAlbum(const CPictureAlbum &album);
+    /*! \brief Sets details using the information from the CSong object
+     Sets the song in the music info tag and uses its information to set the
+     label, path, song-specific properties and artwork.
+     \param song song details to use and set
+     */
+    void SetFromPicture(const CPicture &picture);
+    
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
   int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
