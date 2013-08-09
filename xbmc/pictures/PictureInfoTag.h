@@ -89,6 +89,9 @@
 #define SLIDE_IPTC_COUNTRY_CODE     979
 #define SLIDE_IPTC_REF_SERVICE      980
 
+class CFace;
+class CPictureAlbum;
+class CPicture;
 
 namespace PICTURE_INFO
 {
@@ -117,23 +120,23 @@ namespace PICTURE_INFO
 class CPictureInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
-  CPictureInfoTag() { Reset(); };
-  void Reset();
+    CPictureInfoTag(void);
+    CPictureInfoTag(const CPictureInfoTag& tag);
+    virtual ~CPictureInfoTag();
+    
+  void Reset();    
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem& sortable);
   const CPictureInfoTag& operator=(const CPictureInfoTag& item);
   const CStdString GetInfo(int info) const;
 
-  bool Loaded() const { return m_isLoaded; };
   bool Load(const CStdString &path);
 
   static int TranslateString(const CStdString &info);
 
   void SetInfo(int info, const CStdString& value);
 
-    int GetDatabaseId() const;
-    
   /**
    * GetDateTimeTaken() -- Returns the EXIF DateTimeOriginal for current picture
    * 
@@ -145,11 +148,150 @@ private:
   void GetStringFromArchive(CArchive &ar, char *string, size_t length);
   ExifInfo_t m_exifInfo;
   IPTCInfo_t m_iptcInfo;
-  bool       m_isLoaded;             // Set to true if metadata has been loaded from the picture file successfully
   bool       m_isInfoSetExternally;  // Set to true if metadata has been set by an external call to SetInfo
   CDateTime  m_dateTimeTaken;
   void ConvertDateTime();
-    int m_iDbId;
 
+    //////////////////////////////
+    //support for JSON response
+public:
+    bool operator !=(const CPictureInfoTag& tag) const;
+    bool Loaded() const;
+    const CStdString& GetTitle() const;
+    const CStdString& GetURL() const;
+    const std::vector<std::string>& GetFace() const;
+    const CStdString& GetAlbum() const;
+    int GetAlbumId() const;
+    const std::vector<std::string>& GetAlbumFace() const;
+    const std::vector<std::string>& GetLocation() const;
+    int GetTrackNumber() const;
+    int GetDiscNumber() const;
+    int GetTrackAndDiskNumber() const;
+    int GetDuration() const;  // may be set even if Loaded() returns false
+    int GetYear() const;
+    int GetDatabaseId() const;
+    const std::string &GetType() const;
+    
+    void GetReleaseDate(SYSTEMTIME& dateTime) const;
+    CStdString GetYearString() const;
+    const CStdString& GetPictureBrainzTrackID() const;
+    const std::vector<std::string>& GetPictureBrainzFaceID() const;
+    const CStdString& GetPictureBrainzAlbumID() const;
+    const std::vector<std::string>& GetPictureBrainzAlbumFaceID() const;
+    const CStdString& GetPictureBrainzTRMID() const;
+    const CStdString& GetComment() const;
+    const CStdString& GetLyrics() const;
+    const CDateTime& GetLastPlayed() const;
+    bool  GetCompilation() const;
+    char  GetRating() const;
+    int  GetListeners() const;
+    int  GetPlayCount() const;
+    const EmbeddedArtInfo &GetCoverArtInfo() const;
+    int   GetReplayGainTrackGain() const;
+    int   GetReplayGainAlbumGain() const;
+    float GetReplayGainTrackPeak() const;
+    float GetReplayGainAlbumPeak() const;
+    int   HasReplayGainInfo() const;
+    
+    void SetURL(const CStdString& strURL);
+    void SetTitle(const CStdString& strTitle);
+    void SetFace(const CStdString& strFace);
+    void SetFace(const std::vector<std::string>& faces);
+    void SetAlbum(const CStdString& strAlbum);
+    void SetAlbumId(const int iAlbumId);
+    void SetAlbumFace(const CStdString& strAlbumFace);
+    void SetAlbumFace(const std::vector<std::string>& albumFaces);
+    void SetLocation(const CStdString& strLocation);
+    void SetLocation(const std::vector<std::string>& locations);
+    void SetYear(int year);
+    void SetDatabaseId(long id, const std::string &type);
+    void SetReleaseDate(SYSTEMTIME& dateTime);
+    void SetTrackNumber(int iTrack);
+    void SetPartOfSet(int m_iPartOfSet);
+    void SetTrackAndDiskNumber(int iTrackAndDisc);
+    void SetDuration(int iSec);
+    void SetLoaded(bool bOnOff = true);
+    void SetFace(const CFace& face);
+    void SetAlbum(const CPictureAlbum& album);
+    void SetPicture(const CPicture& picture);
+    void SetPictureBrainzTrackID(const CStdString& strTrackID);
+    void SetPictureBrainzFaceID(const std::vector<std::string>& pictureBrainzFaceId);
+    void SetPictureBrainzAlbumID(const CStdString& strAlbumID);
+    void SetPictureBrainzAlbumFaceID(const std::vector<std::string>& pictureBrainzAlbumFaceId);
+    void SetPictureBrainzTRMID(const CStdString& strTRMID);
+    void SetComment(const CStdString& comment);
+    void SetLyrics(const CStdString& lyrics);
+    void SetRating(char rating);
+    void SetListeners(int listeners);
+    void SetPlayCount(int playcount);
+    void SetLastPlayed(const CStdString& strLastPlayed);
+    void SetLastPlayed(const CDateTime& strLastPlayed);
+    void SetCompilation(bool compilation);
+    void SetCoverArtInfo(size_t size, const std::string &mimeType);
+    void SetReplayGainTrackGain(int trackGain);
+    void SetReplayGainAlbumGain(int albumGain);
+    void SetReplayGainTrackPeak(float trackPeak);
+    void SetReplayGainAlbumPeak(float albumPeak);
+    
+    /*! \brief Append a unique face to the face list
+     Checks if we have this face already added, and if not adds it to the pictures face list.
+     \param value face to add.
+     */
+    void AppendFace(const CStdString &face);
+    
+    /*! \brief Append a unique album face to the face list
+     Checks if we have this album face already added, and if not adds it to the pictures album face list.
+     \param albumFace album face to add.
+     */
+    void AppendAlbumFace(const CStdString &albumFace);
+    
+    /*! \brief Append a unique location to the location list
+     Checks if we have this location already added, and if not adds it to the pictures location list.
+     \param location location to add.
+     */
+    void AppendLocation(const CStdString &location);
+    
+    
+    void Clear();
+protected:
+    /*! \brief Trim whitespace off the given string
+     \param value string to trim
+     \return trimmed value, with spaces removed from left and right, as well as carriage returns from the right.
+     */
+    CStdString Trim(const CStdString &value) const;
+    
+    CStdString m_strURL;
+    CStdString m_strTitle;
+    std::vector<std::string> m_face;
+    CStdString m_strAlbum;
+    std::vector<std::string> m_albumFace;
+    std::vector<std::string> m_location;
+    CStdString m_strPictureBrainzTrackID;
+    std::vector<std::string> m_pictureBrainzFaceID;
+    CStdString m_strPictureBrainzAlbumID;
+    std::vector<std::string> m_pictureBrainzAlbumFaceID;
+    CStdString m_strPictureBrainzTRMID;
+    CStdString m_strComment;
+    CStdString m_strLyrics;
+    CDateTime m_lastPlayed;
+    bool m_bCompilation;
+    int m_iDuration;
+    int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
+    int m_iDbId;
+    std::string m_type; ///< item type "picture", "album", "face"
+    bool m_bLoaded;
+    char m_rating;
+    int m_listeners;
+    int m_iTimesPlayed;
+    int m_iAlbumId;
+    SYSTEMTIME m_dwReleaseDate;
+    
+    // ReplayGain
+    int m_iTrackGain; // measured in milliBels
+    int m_iAlbumGain;
+    float m_fTrackPeak; // 1.0 == full digital scale
+    float m_fAlbumPeak;
+    int m_iHasGainInfo;   // valid info
+    EmbeddedArtInfo m_coverArt; ///< art information
 };
 }

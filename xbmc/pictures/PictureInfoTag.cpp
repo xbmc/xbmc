@@ -24,6 +24,12 @@
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
 
+#include "pictures/PictureAlbum.h"
+#include "pictures/Face.h"
+#include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
+
+
 using namespace std;
 
 using namespace PICTURE_INFO;
@@ -79,43 +85,33 @@ void CPictureInfoTag::Reset()
 {
   memset(&m_exifInfo, 0, sizeof(m_exifInfo));
   memset(&m_iptcInfo, 0, sizeof(m_iptcInfo));
-  m_isLoaded = false;
+  m_bLoaded = false;
   m_isInfoSetExternally = false;
   m_dateTimeTaken.Reset();
 }
 
-const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
-{
-  if (this == &right) return * this;
-  memcpy(&m_exifInfo, &right.m_exifInfo, sizeof(m_exifInfo));
-  memcpy(&m_iptcInfo, &right.m_iptcInfo, sizeof(m_iptcInfo));
-  m_isLoaded = right.m_isLoaded;
-  m_isInfoSetExternally = right.m_isInfoSetExternally;
-  m_dateTimeTaken = right.m_dateTimeTaken;
-  return *this;
-}
 
 bool CPictureInfoTag::Load(const CStdString &path)
 {
-  m_isLoaded = false;
+  m_bLoaded = false;
 
   DllLibExif exifDll;
   if (path.IsEmpty() || !exifDll.Load())
     return false;
 
   if (exifDll.process_jpeg(path.c_str(), &m_exifInfo, &m_iptcInfo))
-    m_isLoaded = true;
+    m_bLoaded = true;
 
   ConvertDateTime();
 
-  return m_isLoaded;
+  return m_bLoaded;
 }
 
 void CPictureInfoTag::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {
-    ar << m_isLoaded;
+    ar << m_bLoaded;
     ar << m_isInfoSetExternally;
     ar << m_exifInfo.ApertureFNumber;
     ar << CStdString(m_exifInfo.CameraMake);
@@ -183,7 +179,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
   }
   else
   {
-    ar >> m_isLoaded;
+    ar >> m_bLoaded;
     ar >> m_isInfoSetExternally;
     ar >> m_exifInfo.ApertureFNumber;
     GetStringFromArchive(ar, m_exifInfo.CameraMake, sizeof(m_exifInfo.CameraMake));
@@ -250,76 +246,83 @@ void CPictureInfoTag::Archive(CArchive& ar)
     GetStringFromArchive(ar, m_iptcInfo.SubLocation, sizeof(m_iptcInfo.SubLocation));
     GetStringFromArchive(ar, m_iptcInfo.ImageType, sizeof(m_iptcInfo.ImageType));
   }
+    if (ar.IsStoring())
+    {
+        ar << m_strURL;
+        ar << m_strTitle;
+        ar << m_face;
+        ar << m_strAlbum;
+        ar << m_albumFace;
+        ar << m_location;
+        ar << m_iDuration;
+        ar << m_iTrack;
+        ar << m_bLoaded;
+        ar << m_dwReleaseDate;
+        ar << m_strPictureBrainzTrackID;
+        ar << m_pictureBrainzFaceID;
+        ar << m_strPictureBrainzAlbumID;
+        ar << m_pictureBrainzAlbumFaceID;
+        ar << m_strPictureBrainzTRMID;
+        ar << m_lastPlayed;
+        ar << m_strComment;
+        ar << m_rating;
+        ar << m_iTimesPlayed;
+        ar << m_iAlbumId;
+        ar << m_iDbId;
+        ar << m_type;
+        ar << m_strLyrics;
+        ar << m_bCompilation;
+        ar << m_listeners;
+    }
+    else
+    {
+        ar >> m_strURL;
+        ar >> m_strTitle;
+        ar >> m_face;
+        ar >> m_strAlbum;
+        ar >> m_albumFace;
+        ar >> m_location;
+        ar >> m_iDuration;
+        ar >> m_iTrack;
+        ar >> m_bLoaded;
+        ar >> m_dwReleaseDate;
+        ar >> m_strPictureBrainzTrackID;
+        ar >> m_pictureBrainzFaceID;
+        ar >> m_strPictureBrainzAlbumID;
+        ar >> m_pictureBrainzAlbumFaceID;
+        ar >> m_strPictureBrainzTRMID;
+        ar >> m_lastPlayed;
+        ar >> m_strComment;
+        ar >> m_rating;
+        ar >> m_iTimesPlayed;
+        ar >> m_iAlbumId;
+        ar >> m_iDbId;
+        ar >> m_type;
+        ar >> m_strLyrics;
+        ar >> m_bCompilation;
+        ar >> m_listeners;
+    }
 }
 
-void CPictureInfoTag::Serialize(CVariant& value) const
-{
-  value["aperturefnumber"] = m_exifInfo.ApertureFNumber;
-  value["cameramake"] = CStdString(m_exifInfo.CameraMake);
-  value["cameramodel"] = CStdString(m_exifInfo.CameraModel);
-  value["ccdwidth"] = m_exifInfo.CCDWidth;
-  value["comments"] = GetInfo(SLIDE_EXIF_COMMENT); // Charset conversion
-  value["description"] = CStdString(m_exifInfo.Description);
-  value["datetime"] = CStdString(m_exifInfo.DateTime);
-  for (int i = 0; i < 10; i++)
-    value["datetimeoffsets"][i] = m_exifInfo.DateTimeOffsets[i];
-  value["digitalzoomratio"] = m_exifInfo.DigitalZoomRatio;
-  value["distance"] = m_exifInfo.Distance;
-  value["exposurebias"] = m_exifInfo.ExposureBias;
-  value["exposuremode"] = m_exifInfo.ExposureMode;
-  value["exposureprogram"] = m_exifInfo.ExposureProgram;
-  value["exposuretime"] = m_exifInfo.ExposureTime;
-  value["flashused"] = m_exifInfo.FlashUsed;
-  value["focallength"] = m_exifInfo.FocalLength;
-  value["focallength35mmequiv"] = m_exifInfo.FocalLength35mmEquiv;
-  value["gpsinfopresent"] = m_exifInfo.GpsInfoPresent;
-  value["gpsinfo"]["alt"] = CStdString(m_exifInfo.GpsAlt);
-  value["gpsinfo"]["lat"] = CStdString(m_exifInfo.GpsLat);
-  value["gpsinfo"]["long"] = CStdString(m_exifInfo.GpsLong);
-  value["height"] = m_exifInfo.Height;
-  value["iscolor"] = m_exifInfo.IsColor;
-  value["isoequivalent"] = m_exifInfo.ISOequivalent;
-  value["largestexifoffset"] = m_exifInfo.LargestExifOffset;
-  value["lightsource"] = m_exifInfo.LightSource;
-  value["meteringmode"] = m_exifInfo.MeteringMode;
-  value["numdatetimetags"] = m_exifInfo.numDateTimeTags;
-  value["orientation"] = m_exifInfo.Orientation;
-  value["process"] = m_exifInfo.Process;
-  value["thumbnailatend"] = m_exifInfo.ThumbnailAtEnd;
-  value["thumbnailoffset"] = m_exifInfo.ThumbnailOffset;
-  value["thumbnailsize"] = m_exifInfo.ThumbnailSize;
-  value["thumbnailsizeoffset"] = m_exifInfo.ThumbnailSizeOffset;
-  value["whitebalance"] = m_exifInfo.Whitebalance;
-  value["width"] = m_exifInfo.Width;
-
-  value["author"] = CStdString(m_iptcInfo.Author);
-  value["byline"] = CStdString(m_iptcInfo.Byline);
-  value["bylinetitle"] = CStdString(m_iptcInfo.BylineTitle);
-  value["caption"] = CStdString(m_iptcInfo.Caption);
-  value["category"] = CStdString(m_iptcInfo.Category);
-  value["city"] = CStdString(m_iptcInfo.City);
-  value["urgency"] = CStdString(m_iptcInfo.Urgency);
-  value["copyrightnotice"] = CStdString(m_iptcInfo.CopyrightNotice);
-  value["country"] = CStdString(m_iptcInfo.Country);
-  value["countrycode"] = CStdString(m_iptcInfo.CountryCode);
-  value["credit"] = CStdString(m_iptcInfo.Credit);
-  value["date"] = CStdString(m_iptcInfo.Date);
-  value["headline"] = CStdString(m_iptcInfo.Headline);
-  value["keywords"] = CStdString(m_iptcInfo.Keywords);
-  value["objectname"] = CStdString(m_iptcInfo.ObjectName);
-  value["referenceservice"] = CStdString(m_iptcInfo.ReferenceService);
-  value["source"] = CStdString(m_iptcInfo.Source);
-  value["specialinstructions"] = CStdString(m_iptcInfo.SpecialInstructions);
-  value["state"] = CStdString(m_iptcInfo.State);
-  value["supplementalcategories"] = CStdString(m_iptcInfo.SupplementalCategories);
-  value["transmissionreference"] = CStdString(m_iptcInfo.TransmissionReference);
-  value["timecreated"] = CStdString(m_iptcInfo.TimeCreated);
-  value["sublocation"] = CStdString(m_iptcInfo.SubLocation);
-  value["imagetype"] = CStdString(m_iptcInfo.ImageType);
-}
 
 void CPictureInfoTag::ToSortable(SortItem& sortable)
 {
+    /*
+    sortable[FieldTitle] = m_strTitle;
+    sortable[FieldFace] = m_face;
+    sortable[FieldAlbum] = m_strAlbum;
+    sortable[FieldAlbumFace] = FieldAlbumFace;
+    sortable[FieldLocation] = m_location;
+    sortable[FieldTime] = m_iDuration;
+    sortable[FieldTrackNumber] = m_iTrack;
+    sortable[FieldYear] = m_dwReleaseDate.wYear;
+    sortable[FieldComment] = m_strComment;
+    sortable[FieldRating] = (float)(m_rating - '0');
+    sortable[FieldPlaycount] = m_iTimesPlayed;
+    sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
+    sortable[FieldListeners] = m_listeners;
+    sortable[FieldId] = (int64_t)m_iDbId;
+    */
   if (m_dateTimeTaken.IsValid())
     sortable[FieldDateTaken] = m_dateTimeTaken.GetAsDBDateTime();
 }
@@ -336,7 +339,7 @@ void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t le
 
 const CStdString CPictureInfoTag::GetInfo(int info) const
 {
-  if (!m_isLoaded && !m_isInfoSetExternally) // If no metadata has been loaded from the picture file or set with SetInfo(), just return
+  if (!m_bLoaded && !m_isInfoSetExternally) // If no metadata has been loaded from the picture file or set with SetInfo(), just return
     return "";
 
   CStdString value;
@@ -699,4 +702,674 @@ void CPictureInfoTag::ConvertDateTime()
     int sec   = atoi(dateTime.Mid(17,2).c_str());
     m_dateTimeTaken.SetDateTime(year, month, day, hour, min, sec);
   }
+}
+
+
+///////////
+//json support
+
+CPictureInfoTag::CPictureInfoTag(void)
+{
+    Clear();
+    Reset();
+}
+
+CPictureInfoTag::CPictureInfoTag(const CPictureInfoTag& tag)
+{
+    *this = tag;
+}
+
+CPictureInfoTag::~CPictureInfoTag()
+{}
+
+const CPictureInfoTag& CPictureInfoTag::operator =(const CPictureInfoTag& tag)
+{
+    if (this == &tag) return * this;
+    
+    m_strURL = tag.m_strURL;
+    m_face = tag.m_face;
+    m_albumFace = tag.m_albumFace;
+    m_strAlbum = tag.m_strAlbum;
+    m_location = tag.m_location;
+    m_strTitle = tag.m_strTitle;
+    m_strPictureBrainzTrackID = tag.m_strPictureBrainzTrackID;
+    m_pictureBrainzFaceID = tag.m_pictureBrainzFaceID;
+    m_strPictureBrainzAlbumID = tag.m_strPictureBrainzAlbumID;
+    m_pictureBrainzAlbumFaceID = tag.m_pictureBrainzAlbumFaceID;
+    m_strPictureBrainzTRMID = tag.m_strPictureBrainzTRMID;
+    m_strComment = tag.m_strComment;
+    m_strLyrics = tag.m_strLyrics;
+    m_lastPlayed = tag.m_lastPlayed;
+    m_bCompilation = tag.m_bCompilation;
+    m_iDuration = tag.m_iDuration;
+    m_iTrack = tag.m_iTrack;
+    m_bLoaded = tag.m_bLoaded;
+    m_rating = tag.m_rating;
+    m_listeners = tag.m_listeners;
+    m_iTimesPlayed = tag.m_iTimesPlayed;
+    m_iDbId = tag.m_iDbId;
+    m_type = tag.m_type;
+    m_iAlbumId = tag.m_iAlbumId;
+    m_iTrackGain = tag.m_iTrackGain;
+    m_iAlbumGain = tag.m_iAlbumGain;
+    m_fTrackPeak = tag.m_fTrackPeak;
+    m_fAlbumPeak = tag.m_fAlbumPeak;
+    m_iHasGainInfo = tag.m_iHasGainInfo;
+    
+    memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
+    m_coverArt = tag.m_coverArt;
+
+    if (this == &tag) return * this;
+    memcpy(&m_exifInfo, &tag.m_exifInfo, sizeof(m_exifInfo));
+    memcpy(&m_iptcInfo, &tag.m_iptcInfo, sizeof(m_iptcInfo));
+    m_bLoaded = tag.m_bLoaded;
+    m_isInfoSetExternally = tag.m_isInfoSetExternally;
+    m_dateTimeTaken = tag.m_dateTimeTaken;
+    return *this;
+    
+    return *this;
+}
+
+bool CPictureInfoTag::operator !=(const CPictureInfoTag& tag) const
+{
+    if (this == &tag) return false;
+    if (m_strURL != tag.m_strURL) return true;
+    if (m_strTitle != tag.m_strTitle) return true;
+    if (m_bCompilation != tag.m_bCompilation) return true;
+    if (m_face != tag.m_face) return true;
+    if (m_albumFace != tag.m_albumFace) return true;
+    if (m_strAlbum != tag.m_strAlbum) return true;
+    if (m_iDuration != tag.m_iDuration) return true;
+    if (m_iTrack != tag.m_iTrack) return true;
+    return false;
+}
+
+int CPictureInfoTag::GetTrackNumber() const
+{
+    return (m_iTrack & 0xffff);
+}
+
+int CPictureInfoTag::GetDiscNumber() const
+{
+    return (m_iTrack >> 16);
+}
+
+int CPictureInfoTag::GetTrackAndDiskNumber() const
+{
+    return m_iTrack;
+}
+
+int CPictureInfoTag::GetDuration() const
+{
+    return m_iDuration;
+}
+
+const CStdString& CPictureInfoTag::GetTitle() const
+{
+    return m_strTitle;
+}
+
+const CStdString& CPictureInfoTag::GetURL() const
+{
+    return m_strURL;
+}
+
+const std::vector<std::string>& CPictureInfoTag::GetFace() const
+{
+    return m_face;
+}
+
+const CStdString& CPictureInfoTag::GetAlbum() const
+{
+    return m_strAlbum;
+}
+
+int CPictureInfoTag::GetAlbumId() const
+{
+    return m_iAlbumId;
+}
+
+const std::vector<std::string>& CPictureInfoTag::GetAlbumFace() const
+{
+    return m_albumFace;
+}
+
+const std::vector<std::string>& CPictureInfoTag::GetLocation() const
+{
+    return m_location;
+}
+
+void CPictureInfoTag::GetReleaseDate(SYSTEMTIME& dateTime) const
+{
+    memcpy(&dateTime, &m_dwReleaseDate, sizeof(m_dwReleaseDate) );
+}
+
+int CPictureInfoTag::GetYear() const
+{
+    return m_dwReleaseDate.wYear;
+}
+
+const std::string &CPictureInfoTag::GetType() const
+{
+    return m_type;
+}
+
+CStdString CPictureInfoTag::GetYearString() const
+{
+    CStdString strReturn;
+    strReturn.Format("%i", m_dwReleaseDate.wYear);
+    return m_dwReleaseDate.wYear ? strReturn : "";
+}
+
+const CStdString &CPictureInfoTag::GetComment() const
+{
+    return m_strComment;
+}
+
+const CStdString &CPictureInfoTag::GetLyrics() const
+{
+    return m_strLyrics;
+}
+
+char CPictureInfoTag::GetRating() const
+{
+    return m_rating;
+}
+
+int CPictureInfoTag::GetListeners() const
+{
+    return m_listeners;
+}
+
+int CPictureInfoTag::GetPlayCount() const
+{
+    return m_iTimesPlayed;
+}
+
+const CDateTime &CPictureInfoTag::GetLastPlayed() const
+{
+    return m_lastPlayed;
+}
+
+bool CPictureInfoTag::GetCompilation() const
+{
+    return m_bCompilation;
+}
+
+const EmbeddedArtInfo &CPictureInfoTag::GetCoverArtInfo() const
+{
+    return m_coverArt;
+}
+
+int CPictureInfoTag::GetReplayGainTrackGain() const
+{
+    return m_iTrackGain;
+}
+
+int CPictureInfoTag::GetReplayGainAlbumGain() const
+{
+    return m_iAlbumGain;
+}
+
+float CPictureInfoTag::GetReplayGainTrackPeak() const
+{
+    return m_fTrackPeak;
+}
+
+float CPictureInfoTag::GetReplayGainAlbumPeak() const
+{
+    return m_fAlbumPeak;
+}
+
+int CPictureInfoTag::HasReplayGainInfo() const
+{
+    return m_iHasGainInfo;
+}
+
+void CPictureInfoTag::SetURL(const CStdString& strURL)
+{
+    m_strURL = strURL;
+}
+
+void CPictureInfoTag::SetTitle(const CStdString& strTitle)
+{
+    m_strTitle = Trim(strTitle);
+}
+
+void CPictureInfoTag::SetFace(const CStdString& strFace)
+{
+    if (!strFace.empty())
+        SetFace(StringUtils::Split(strFace, g_advancedSettings.m_pictureItemSeparator));
+    else
+        m_face.clear();
+}
+
+void CPictureInfoTag::SetFace(const std::vector<std::string>& faces)
+{
+    m_face = faces;
+}
+
+void CPictureInfoTag::SetAlbum(const CStdString& strAlbum)
+{
+    m_strAlbum = Trim(strAlbum);
+}
+
+void CPictureInfoTag::SetAlbumId(const int iAlbumId)
+{
+    m_iAlbumId = iAlbumId;
+}
+
+void CPictureInfoTag::SetAlbumFace(const CStdString& strAlbumFace)
+{
+    if (!strAlbumFace.empty())
+        SetAlbumFace(StringUtils::Split(strAlbumFace, g_advancedSettings.m_pictureItemSeparator));
+    else
+        m_albumFace.clear();
+}
+
+void CPictureInfoTag::SetAlbumFace(const std::vector<std::string>& albumFaces)
+{
+    m_albumFace = albumFaces;
+}
+
+void CPictureInfoTag::SetLocation(const CStdString& strLocation)
+{
+    if (!strLocation.empty())
+        SetLocation(StringUtils::Split(strLocation, g_advancedSettings.m_pictureItemSeparator));
+    else
+        m_location.clear();
+}
+
+void CPictureInfoTag::SetLocation(const std::vector<std::string>& locations)
+{
+    m_location = locations;
+}
+
+void CPictureInfoTag::SetYear(int year)
+{
+    memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
+    m_dwReleaseDate.wYear = year;
+}
+
+void CPictureInfoTag::SetDatabaseId(long id, const std::string &type)
+{
+    m_iDbId = id;
+    m_type = type;
+}
+
+void CPictureInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
+{
+    memcpy(&m_dwReleaseDate, &dateTime, sizeof(m_dwReleaseDate) );
+}
+
+void CPictureInfoTag::SetTrackNumber(int iTrack)
+{
+    m_iTrack = (m_iTrack & 0xffff0000) | (iTrack & 0xffff);
+}
+
+void CPictureInfoTag::SetPartOfSet(int iPartOfSet)
+{
+    m_iTrack = (m_iTrack & 0xffff) | (iPartOfSet << 16);
+}
+
+void CPictureInfoTag::SetTrackAndDiskNumber(int iTrackAndDisc)
+{
+    m_iTrack=iTrackAndDisc;
+}
+
+void CPictureInfoTag::SetDuration(int iSec)
+{
+    m_iDuration = iSec;
+}
+
+void CPictureInfoTag::SetComment(const CStdString& comment)
+{
+    m_strComment = comment;
+}
+
+void CPictureInfoTag::SetLyrics(const CStdString& lyrics)
+{
+    m_strLyrics = lyrics;
+}
+
+void CPictureInfoTag::SetRating(char rating)
+{
+    m_rating = rating;
+}
+
+void CPictureInfoTag::SetListeners(int listeners)
+{
+    m_listeners = listeners;
+}
+
+void CPictureInfoTag::SetPlayCount(int playcount)
+{
+    m_iTimesPlayed = playcount;
+}
+
+void CPictureInfoTag::SetLastPlayed(const CStdString& lastplayed)
+{
+    m_lastPlayed.SetFromDBDateTime(lastplayed);
+}
+
+void CPictureInfoTag::SetLastPlayed(const CDateTime& lastplayed)
+{
+    m_lastPlayed = lastplayed;
+}
+
+void CPictureInfoTag::SetCompilation(bool compilation)
+{
+    m_bCompilation = compilation;
+}
+
+void CPictureInfoTag::SetLoaded(bool bOnOff)
+{
+    m_bLoaded = bOnOff;
+}
+
+bool CPictureInfoTag::Loaded() const
+{
+    return m_bLoaded;
+}
+
+const CStdString& CPictureInfoTag::GetPictureBrainzTrackID() const
+{
+    return m_strPictureBrainzTrackID;
+}
+
+const std::vector<std::string>& CPictureInfoTag::GetPictureBrainzFaceID() const
+{
+    return m_pictureBrainzFaceID;
+}
+
+const CStdString& CPictureInfoTag::GetPictureBrainzAlbumID() const
+{
+    return m_strPictureBrainzAlbumID;
+}
+
+const std::vector<std::string>& CPictureInfoTag::GetPictureBrainzAlbumFaceID() const
+{
+    return m_pictureBrainzAlbumFaceID;
+}
+
+const CStdString& CPictureInfoTag::GetPictureBrainzTRMID() const
+{
+    return m_strPictureBrainzTRMID;
+}
+
+void CPictureInfoTag::SetPictureBrainzTrackID(const CStdString& strTrackID)
+{
+    m_strPictureBrainzTrackID=strTrackID;
+}
+
+void CPictureInfoTag::SetPictureBrainzFaceID(const std::vector<std::string>& pictureBrainzFaceId)
+{
+    m_pictureBrainzFaceID = pictureBrainzFaceId;
+}
+
+void CPictureInfoTag::SetPictureBrainzAlbumID(const CStdString& strAlbumID)
+{
+    m_strPictureBrainzAlbumID=strAlbumID;
+}
+
+void CPictureInfoTag::SetPictureBrainzAlbumFaceID(const std::vector<std::string>& pictureBrainzAlbumFaceId)
+{
+    m_pictureBrainzAlbumFaceID = pictureBrainzAlbumFaceId;
+}
+
+void CPictureInfoTag::SetPictureBrainzTRMID(const CStdString& strTRMID)
+{
+    m_strPictureBrainzTRMID=strTRMID;
+}
+
+void CPictureInfoTag::SetCoverArtInfo(size_t size, const std::string &mimeType)
+{
+    m_coverArt.set(size, mimeType);
+}
+
+void CPictureInfoTag::SetReplayGainTrackGain(int trackGain)
+{
+    m_iTrackGain = trackGain;
+    //m_iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
+}
+
+void CPictureInfoTag::SetReplayGainAlbumGain(int albumGain)
+{
+    m_iAlbumGain = albumGain;
+    //m_iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
+}
+
+void CPictureInfoTag::SetReplayGainTrackPeak(float trackPeak)
+{
+    m_fTrackPeak = trackPeak;
+    //m_iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
+}
+
+void CPictureInfoTag::SetReplayGainAlbumPeak(float albumPeak)
+{
+    m_fAlbumPeak = albumPeak;
+    //m_iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
+}
+
+void CPictureInfoTag::SetFace(const CFace& face)
+{
+    SetFace(face.strFace);
+    SetAlbumFace(face.strFace);
+    SetLocation(face.location);
+    m_iDbId = face.idFace;
+    m_type = "face";
+    m_bLoaded = true;
+}
+
+void CPictureInfoTag::SetAlbum(const CPictureAlbum& album)
+{
+    SetFace(album.face);
+    SetAlbumId(album.idAlbum);
+    SetAlbum(album.strAlbum);
+    SetTitle(album.strAlbum);
+    SetAlbumFace(album.face);
+    SetLocation(album.location);
+    SetRating('0' + album.iRating);
+    SetCompilation(album.bCompilation);
+    SYSTEMTIME stTime;
+    stTime.wYear = album.iYear;
+    SetReleaseDate(stTime);
+    m_iTimesPlayed = album.iTimesPlayed;
+    m_iDbId = album.idAlbum;
+    m_type = "album";
+    m_bLoaded = true;
+}
+
+void CPictureInfoTag::SetPicture(const CPicture& picture)
+{
+    SetTitle(picture.strTitle);
+    SetLocation(picture.location);
+    SetFace(picture.face);
+    SetAlbum(picture.strAlbum);
+    SetAlbumFace(picture.albumFace);
+    SetPictureBrainzTrackID(picture.strPictureBrainzTrackID);
+    SetComment(picture.strComment);
+    SetPlayCount(picture.iTimesPlayed);
+    SetLastPlayed(picture.lastPlayed);
+    m_rating = picture.rating;
+    m_strURL = picture.strFileName;
+    SYSTEMTIME stTime;
+    stTime.wYear = picture.iYear;
+    SetReleaseDate(stTime);
+    m_iTrack = picture.iTrack;
+    m_iDuration = picture.iDuration;
+    m_iDbId = picture.idPicture;
+    m_type = "picture";
+    m_bLoaded = true;
+    m_iTimesPlayed = picture.iTimesPlayed;
+    m_iAlbumId = picture.idAlbum;
+}
+
+void CPictureInfoTag::Serialize(CVariant& value) const
+{
+    value["aperturefnumber"] = m_exifInfo.ApertureFNumber;
+    value["cameramake"] = CStdString(m_exifInfo.CameraMake);
+    value["cameramodel"] = CStdString(m_exifInfo.CameraModel);
+    value["ccdwidth"] = m_exifInfo.CCDWidth;
+    value["comments"] = GetInfo(SLIDE_EXIF_COMMENT); // Charset conversion
+    value["description"] = CStdString(m_exifInfo.Description);
+    value["datetime"] = CStdString(m_exifInfo.DateTime);
+    for (int i = 0; i < 10; i++)
+        value["datetimeoffsets"][i] = m_exifInfo.DateTimeOffsets[i];
+    value["digitalzoomratio"] = m_exifInfo.DigitalZoomRatio;
+    value["distance"] = m_exifInfo.Distance;
+    value["exposurebias"] = m_exifInfo.ExposureBias;
+    value["exposuremode"] = m_exifInfo.ExposureMode;
+    value["exposureprogram"] = m_exifInfo.ExposureProgram;
+    value["exposuretime"] = m_exifInfo.ExposureTime;
+    value["flashused"] = m_exifInfo.FlashUsed;
+    value["focallength"] = m_exifInfo.FocalLength;
+    value["focallength35mmequiv"] = m_exifInfo.FocalLength35mmEquiv;
+    value["gpsinfopresent"] = m_exifInfo.GpsInfoPresent;
+    value["gpsinfo"]["alt"] = CStdString(m_exifInfo.GpsAlt);
+    value["gpsinfo"]["lat"] = CStdString(m_exifInfo.GpsLat);
+    value["gpsinfo"]["long"] = CStdString(m_exifInfo.GpsLong);
+    value["height"] = m_exifInfo.Height;
+    value["iscolor"] = m_exifInfo.IsColor;
+    value["isoequivalent"] = m_exifInfo.ISOequivalent;
+    value["largestexifoffset"] = m_exifInfo.LargestExifOffset;
+    value["lightsource"] = m_exifInfo.LightSource;
+    value["meteringmode"] = m_exifInfo.MeteringMode;
+    value["numdatetimetags"] = m_exifInfo.numDateTimeTags;
+    value["orientation"] = m_exifInfo.Orientation;
+    value["process"] = m_exifInfo.Process;
+    value["thumbnailatend"] = m_exifInfo.ThumbnailAtEnd;
+    value["thumbnailoffset"] = m_exifInfo.ThumbnailOffset;
+    value["thumbnailsize"] = m_exifInfo.ThumbnailSize;
+    value["thumbnailsizeoffset"] = m_exifInfo.ThumbnailSizeOffset;
+    value["whitebalance"] = m_exifInfo.Whitebalance;
+    value["width"] = m_exifInfo.Width;
+    
+    value["author"] = CStdString(m_iptcInfo.Author);
+    value["byline"] = CStdString(m_iptcInfo.Byline);
+    value["bylinetitle"] = CStdString(m_iptcInfo.BylineTitle);
+    value["caption"] = CStdString(m_iptcInfo.Caption);
+    value["category"] = CStdString(m_iptcInfo.Category);
+    value["city"] = CStdString(m_iptcInfo.City);
+    value["urgency"] = CStdString(m_iptcInfo.Urgency);
+    value["copyrightnotice"] = CStdString(m_iptcInfo.CopyrightNotice);
+    value["country"] = CStdString(m_iptcInfo.Country);
+    value["countrycode"] = CStdString(m_iptcInfo.CountryCode);
+    value["credit"] = CStdString(m_iptcInfo.Credit);
+    value["date"] = CStdString(m_iptcInfo.Date);
+    value["headline"] = CStdString(m_iptcInfo.Headline);
+    value["keywords"] = CStdString(m_iptcInfo.Keywords);
+    value["objectname"] = CStdString(m_iptcInfo.ObjectName);
+    value["referenceservice"] = CStdString(m_iptcInfo.ReferenceService);
+    value["source"] = CStdString(m_iptcInfo.Source);
+    value["specialinstructions"] = CStdString(m_iptcInfo.SpecialInstructions);
+    value["state"] = CStdString(m_iptcInfo.State);
+    value["supplementalcategories"] = CStdString(m_iptcInfo.SupplementalCategories);
+    value["transmissionreference"] = CStdString(m_iptcInfo.TransmissionReference);
+    value["timecreated"] = CStdString(m_iptcInfo.TimeCreated);
+    value["sublocation"] = CStdString(m_iptcInfo.SubLocation);
+    value["imagetype"] = CStdString(m_iptcInfo.ImageType);
+
+    
+    value["url"] = m_strURL;
+    value["title"] = m_strTitle;
+    if (m_type.compare("face") == 0 && m_face.size() == 1)
+        value["face"] = m_face[0];
+    else
+        value["face"] = m_face;
+    value["displayface"] = StringUtils::Join(m_face, g_advancedSettings.m_pictureItemSeparator);
+    value["album"] = m_strAlbum;
+    value["albumface"] = m_albumFace;
+    value["location"] = m_location;
+    value["duration"] = m_iDuration;
+    value["track"] = GetTrackNumber();
+    value["disc"] = GetDiscNumber();
+    value["loaded"] = m_bLoaded;
+    value["year"] = m_dwReleaseDate.wYear;
+    value["picturebrainztrackid"] = m_strPictureBrainzTrackID;
+    value["picturebrainzfaceid"] = StringUtils::Join(m_pictureBrainzFaceID, " / ");
+    value["picturebrainzalbumid"] = m_strPictureBrainzAlbumID;
+    value["picturebrainzalbumfaceid"] = StringUtils::Join(m_pictureBrainzAlbumFaceID, " / ");
+    value["picturebrainztrmid"] = m_strPictureBrainzTRMID;
+    value["comment"] = m_strComment;
+    value["rating"] = (int)(m_rating - '0');
+    value["playcount"] = m_iTimesPlayed;
+    value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
+    value["lyrics"] = m_strLyrics;
+    value["albumid"] = m_iAlbumId;
+    value["compilationface"] = m_bCompilation;
+}
+
+void CPictureInfoTag::Clear()
+{
+    m_strURL.Empty();
+    m_face.clear();
+    m_strAlbum.Empty();
+    m_albumFace.clear();
+    m_location.clear();
+    m_strTitle.Empty();
+    m_strPictureBrainzTrackID.Empty();
+    m_pictureBrainzFaceID.clear();
+    m_strPictureBrainzAlbumID.Empty();
+    m_pictureBrainzAlbumFaceID.clear();
+    m_strPictureBrainzTRMID.Empty();
+    m_iDuration = 0;
+    m_iTrack = 0;
+    m_bLoaded = false;
+    m_lastPlayed.Reset();
+    m_bCompilation = false;
+    m_strComment.Empty();
+    m_rating = '0';
+    m_iDbId = -1;
+    m_type.clear();
+    m_iTimesPlayed = 0;
+    memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
+    m_iAlbumId = -1;
+    m_coverArt.clear();
+    m_iTrackGain = 0;
+    m_iAlbumGain = 0;
+    m_fTrackPeak = 0.0f;
+    m_fAlbumPeak = 0.0f;
+    m_iHasGainInfo = 0;
+}
+
+void CPictureInfoTag::AppendFace(const CStdString &face)
+{
+    for (unsigned int index = 0; index < m_face.size(); index++)
+    {
+        if (face.Equals(m_face.at(index).c_str()))
+            return;
+    }
+    
+    m_face.push_back(face);
+}
+
+void CPictureInfoTag::AppendAlbumFace(const CStdString &albumFace)
+{
+    for (unsigned int index = 0; index < m_albumFace.size(); index++)
+    {
+        if (albumFace.Equals(m_albumFace.at(index).c_str()))
+            return;
+    }
+    
+    m_albumFace.push_back(albumFace);
+}
+
+void CPictureInfoTag::AppendLocation(const CStdString &location)
+{
+    for (unsigned int index = 0; index < m_location.size(); index++)
+    {
+        if (location.Equals(m_location.at(index).c_str()))
+            return;
+    }
+    
+    m_location.push_back(location);
+}
+
+CStdString CPictureInfoTag::Trim(const CStdString &value) const
+{
+    CStdString trimmedValue(value);
+    trimmedValue.TrimLeft(' ');
+    trimmedValue.TrimRight(" \n\r");
+    return trimmedValue;
 }
