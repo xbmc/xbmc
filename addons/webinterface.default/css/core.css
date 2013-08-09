@@ -75,7 +75,8 @@ body {
 	padding: 10px 10px 15px 10px;
 	}
 
-.floatableMovieCover {
+.floatableMovieCover,
+.floatableProfileThumb {
 	float: left;
 	width: 130px;
 	height: 200px;
@@ -84,7 +85,8 @@ body {
 
 .floatableAlbum:hover,
 .floatableTVShowCover:hover,
-.floatableMovieCover:hover {
+.floatableMovieCover:hover,
+.floatableProfileThumb:hover {
 	background: #aeaeae;
 	}
 
@@ -119,12 +121,14 @@ body {
 
 #libraryContainer .floatableAlbum,
 #movieLibraryContainer .floatableMovieCover,
+#profilesContainer .floatableProfileThumb,
 #tvshowLibraryContainer .floatableTVShowCover {
 	cursor: pointer;
 	}
 
 .floatableAlbum div.imgWrapper,
 .floatableMovieCover div.imgWrapper,
+.floatableProfileThumb div.imgWrapper,
 .floatableTVShowCover div.imgWrapper {
 	width: 130px;
 	height: 130px;
@@ -147,7 +151,9 @@ div.imgWrapper div.inner {
 	}
 
 .floatableMovieCover div.imgWrapper,
-.floatableMovieCover div.imgWrapper div.inner {
+.floatableMovieCover div.imgWrapper div.inner,
+.floatableProfileThumb div.imgWrapper,
+.floatableProfileThumb div.imgWrapper div.inner {
 	height: 190px;
 	}
 
@@ -176,12 +182,14 @@ div.imgWrapper div.inner {
 	width: 130px;
 	}
 
-.floatableMovieCover img {
+.floatableMovieCover img,
+.floatableProfileThumb img {
 	height: 180px;
 	}
 
 .floatableAlbum p.album,
-.floatableMovieCover p.album {
+.floatableMovieCover p.album,
+.floatableProfileThumb p.album {
 	font-size: 12px;
 	font-weight: 700;
 	color: #000;
@@ -194,7 +202,8 @@ div.imgWrapper div.inner {
 	}
 
 .floatableAlbum p.artist,
-.floatableMovieCover p.artist {
+.floatableMovieCover p.artist,
+.floatableProfileThumb p.artist {
 	font-size: 11px;
 	color: #777;
 	text-align: center;

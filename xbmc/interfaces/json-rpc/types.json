@@ -780,6 +780,24 @@
       }
     }
   },
+  "Profiles.Password": {
+    "type": "object",
+    "properties": {
+      "value": { "type": "string", "required": true, "description": "Password" },
+      "encryption": { "type": "string", "description": "Password Encryption", "default": "md5", "enum": [ "none", "md5" ] }
+    }
+  },
+  "Profiles.Fields.Profile": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string", "enum": [ "thumbnail", "lockmode" ] }
+  },
+  "Profiles.Details.Profile": {
+    "extends": "Item.Details.Base",
+    "properties": {
+      "thumbnail": { "type": "string" },
+      "lockmode": { "type": "integer" }
+    }
+  },
   "List.Filter.Rule": {
     "type": "object",
     "properties": {
