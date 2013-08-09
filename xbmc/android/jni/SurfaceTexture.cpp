@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,45 +18,67 @@
  *
  */
 
+#include "JNIBase.h"
 #include "SurfaceTexture.h"
+
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
 
-CJNISurfaceTexture::CJNISurfaceTexture(int texid) : CJNIBase("android/graphics/SurfaceTexture")
+CJNISurfaceTexture::CJNISurfaceTexture(int texName) : CJNIBase("android/graphics/SurfaceTexture")
 {
-  m_object = new_object(GetClassName(),
-    "<init>", "(I)V",
-    texid);
+  m_object = new_object(GetClassName(), "<init>", "(I)V", texName);
   m_object.setGlobal();
 }
 
-CJNISurfaceTexture::~CJNISurfaceTexture()
+/*
+void setOnFrameAvailableListener(const CJNISurfaceTextureOnFrameAvailableListener &listener)
 {
-  release();
+}
+*/
+
+void CJNISurfaceTexture::setDefaultBufferSize(int width, int height)
+{
+  call_method<void>(m_object,
+    "setDefaultBufferSize", "(II)V", width, height);
 }
 
 void CJNISurfaceTexture::updateTexImage()
 {
-  call_method<jhobject>(m_object,
+  call_method<void>(m_object,
     "updateTexImage", "()V");
+}
+
+void CJNISurfaceTexture::detachFromGLContext()
+{
+  call_method<void>(m_object,
+    "detachFromGLContext", "()V");
+}
+
+void CJNISurfaceTexture::attachToGLContext(int texName)
+{
+  call_method<void>(m_object,
+    "attachToGLContext", "(I)V", texName);
+}
+
+void CJNISurfaceTexture::getTransformMatrix(float* mtx)
+{
+  jsize size = 16; // hard-coded 4x4 matrix.
+  JNIEnv *env = xbmc_jnienv();
+  jfloatArray floatarray = env->NewFloatArray(size);
+  call_method<void>(m_object,
+    "getTransformMatrix", "([F)V", floatarray);
+  env->GetFloatArrayRegion(floatarray, 0, size, mtx);
+}
+
+int64_t CJNISurfaceTexture::getTimestamp()
+{
+  return call_method<jlong>(m_object,
+    "getTimestamp", "()J");
 }
 
 void CJNISurfaceTexture::release()
 {
-  call_method<jhobject>(m_object,
-    "release", "()V");
-}
-
-void CJNISurfaceTexture::getTransformMatrix(float* transformMatrix)
-{
-  JNIEnv* env = xbmc_jnienv();
-  jfloatArray arr = (jfloatArray)env->NewFloatArray(16);
-  env->SetFloatArrayRegion(arr, 0, 16, transformMatrix);
-
-  call_method<jhobject>(m_object,
-    "getTransformMatrix", "([F)V", arr);
-
-  env->GetFloatArrayRegion(arr, 0, 16, transformMatrix);
-  env->DeleteLocalRef(arr);
+  call_method<void>(m_object,
+    "attachToGLContext", "()V");
 }
