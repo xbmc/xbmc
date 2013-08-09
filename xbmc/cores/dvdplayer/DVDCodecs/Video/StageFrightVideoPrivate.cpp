@@ -321,7 +321,7 @@ bool CStageFrightVideoPrivate::InitStagefrightSurface()
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
 
   mSurfTexture = new CJNISurfaceTexture(mVideoTextureId);
-  mSurface = new CJNISurface(mSurfTexture);
+  mSurface = new CJNISurface(*mSurfTexture);
 
   mVideoNativeWindow = ANativeWindow_fromSurface(env, mSurface->get_raw());
 
