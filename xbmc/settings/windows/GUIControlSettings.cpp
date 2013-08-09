@@ -570,6 +570,10 @@ CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl *pEdit, int id, C
   m_pEdit->SetInputType(inputType, heading);
 
   Update();
+
+  // this will automatically trigger validation so it must be executed after
+  // having set the value of the control based on the value of the setting
+  m_pEdit->SetInputValidation(InputValidation, this);
 }
 
 CGUIControlEditSetting::~CGUIControlEditSetting()
@@ -592,6 +596,18 @@ void CGUIControlEditSetting::Update()
   CGUIControlBaseSetting::Update();
 
   m_pEdit->SetLabel2(m_pSetting->ToString());
+}
+
+bool CGUIControlEditSetting::InputValidation(const std::string &input, void *data)
+{
+  if (data == NULL)
+    return true;
+
+  CGUIControlEditSetting *editControl = reinterpret_cast<CGUIControlEditSetting*>(data);
+  if (editControl == NULL || editControl->GetSetting() == NULL)
+    return true;
+
+  return editControl->GetSetting()->FromString(input);
 }
 
 CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int id)
