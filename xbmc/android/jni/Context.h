@@ -31,6 +31,7 @@ class CJNIClassLoader;
 class CJNIApplicationInfo;
 class CJNIFile;
 class CJNIContentResolver;
+class CJNIWindow;
 
 class CJNIContext
 {
@@ -51,6 +52,8 @@ public:
   static CJNIFile getDir(const std::string &path, int mode);
   static CJNIFile getExternalFilesDir(const std::string &path);
   static CJNIContentResolver getContentResolver();
+  static CJNIWindow getWindow();
+
   static CJNIContext* GetAppInstance() { return m_appInstance; };
   static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
 
