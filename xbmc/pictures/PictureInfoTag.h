@@ -89,6 +89,31 @@
 #define SLIDE_IPTC_COUNTRY_CODE     979
 #define SLIDE_IPTC_REF_SERVICE      980
 
+
+namespace PICTURE_INFO
+{
+    class EmbeddedArtInfo
+    {
+    public:
+        EmbeddedArtInfo() {};
+        EmbeddedArtInfo(size_t size, const std::string &mime);
+        void set(size_t size, const std::string &mime);
+        void clear();
+        bool empty() const;
+        bool matches(const EmbeddedArtInfo &right) const;
+        size_t      size;
+        std::string mime;
+    };
+    
+    class EmbeddedArt : public EmbeddedArtInfo
+    {
+    public:
+        EmbeddedArt() {};
+        EmbeddedArt(const uint8_t *data, size_t size, const std::string &mime);
+        void set(const uint8_t *data, size_t size, const std::string &mime);
+        std::vector<uint8_t> data;
+    };
+
 class CPictureInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
@@ -107,6 +132,8 @@ public:
 
   void SetInfo(int info, const CStdString& value);
 
+    int GetDatabaseId() const;
+    
   /**
    * GetDateTimeTaken() -- Returns the EXIF DateTimeOriginal for current picture
    * 
@@ -122,5 +149,7 @@ private:
   bool       m_isInfoSetExternally;  // Set to true if metadata has been set by an external call to SetInfo
   CDateTime  m_dateTimeTaken;
   void ConvertDateTime();
-};
+    int m_iDbId;
 
+};
+}

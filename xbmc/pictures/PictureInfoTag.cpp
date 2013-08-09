@@ -26,6 +26,55 @@
 
 using namespace std;
 
+using namespace PICTURE_INFO;
+
+EmbeddedArtInfo::EmbeddedArtInfo(size_t siz, const std::string &mim)
+{
+    set(siz, mim);
+}
+
+void EmbeddedArtInfo::set(size_t siz, const std::string &mim)
+{
+    size = siz;
+    mime = mim;
+}
+
+void EmbeddedArtInfo::clear()
+{
+    mime.clear();
+    size = 0;
+}
+
+bool EmbeddedArtInfo::empty() const
+{
+    return size == 0;
+}
+
+bool EmbeddedArtInfo::matches(const EmbeddedArtInfo &right) const
+{
+    return (size == right.size &&
+            mime == right.mime);
+}
+
+EmbeddedArt::EmbeddedArt(const uint8_t *dat, size_t siz, const std::string &mim)
+{
+    set(dat, siz, mim);
+}
+
+void EmbeddedArt::set(const uint8_t *dat, size_t siz, const std::string &mim)
+{
+    EmbeddedArtInfo::set(siz, mim);
+    data.resize(siz);
+    memcpy(&data[0], dat, siz);
+}
+
+
+int CPictureInfoTag::GetDatabaseId() const
+{
+    return m_iDbId;
+}
+
+
 void CPictureInfoTag::Reset()
 {
   memset(&m_exifInfo, 0, sizeof(m_exifInfo));

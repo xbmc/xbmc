@@ -23,6 +23,8 @@
 #include "settings/Settings.h"
 #include "FileItem.h"
 
+using namespace PICTURE_INFO;
+
 CPictureInfoLoader::CPictureInfoLoader()
 {
   m_mapFileItems = new CFileItemList;
