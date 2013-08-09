@@ -27,4 +27,15 @@
       </group>
     </category>
   </section>
+  <section id="videos">
+    <category id="videoplayer">
+      <group id="2">
+        <setting id="videoplayer.usemediacodec" type="boolean" label="13439" help="36544">
+          <visible>HAS_MEDIACODEC</visible>
+          <level>2</level>
+          <default>true</default>
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>

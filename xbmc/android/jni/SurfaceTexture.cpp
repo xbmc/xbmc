@@ -25,6 +25,8 @@
 
 #include "jutils/jutils-details.hpp"
 
+#include <algorithm>
+
 using namespace jni;
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -40,11 +42,7 @@ CJNISurfaceTextureOnFrameAvailableListener::CJNISurfaceTextureOnFrameAvailableLi
 
   // Convert "the/class/name" to "the.class.name" as loadClass() expects it.
   std::string dotClassName = GetClassName();
-  for (std::string::iterator it = dotClassName.begin(); it != dotClassName.end(); ++it)
-  {
-    if (*it == '/')
-      *it = '.';
-  }
+  std::replace(dotClassName.begin(), dotClassName.end(), '/', '.');
   m_object = new_object(appInstance->getClassLoader().loadClass(dotClassName));
   m_object.setGlobal();
 
