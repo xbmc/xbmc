@@ -341,7 +341,35 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("takescreenshot"))
   {
-    CScreenShot::TakeScreenshot();
+    if (params.size())
+    {
+      // get the parameters
+      CStdString strSaveToPath = params[0];
+      bool sync = false;
+      if (params.size() >= 2)
+        sync = params[1].Equals("sync");
+
+      if (!strSaveToPath.IsEmpty())
+      {
+        if (CDirectory::Exists(strSaveToPath))
+        {
+          CStdString file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strSaveToPath, "screenshot%03d.png"), 999);
+
+          if (!file.IsEmpty())
+          {
+            CScreenShot::TakeScreenshot(file, sync);
+          }
+          else
+          {
+            CLog::Log(LOGWARNING, "Too many screen shots or invalid folder %s", strSaveToPath.c_str());
+          }
+        }
+        else
+          CScreenShot::TakeScreenshot(strSaveToPath, sync);
+      }
+    }
+    else
+      CScreenShot::TakeScreenshot();
   }
   else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
   {
