@@ -23,12 +23,13 @@
 
 using namespace jni;
 
-CJNIBitSet::CJNIBitSet() : CJNIBase("java.util.BitSet")
+CJNIBitSet::CJNIBitSet() : CJNIBase("java/util/BitSet")
 {
   m_object = new_object(GetClassName());
+  m_object.setGlobal();
 }
 
-CJNIBitSet::CJNIBitSet(int bitCount) : CJNIBase("java.util.BitSet")
+CJNIBitSet::CJNIBitSet(int bitCount) : CJNIBase("java/util/BitSet")
 {
   m_object = new_object(GetClassName(),
     "<init>", "(I)V",
