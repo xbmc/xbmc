@@ -29,6 +29,7 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 
+using namespace PICTURE_INFO;
 using namespace JSONRPC;
 using namespace PLAYLIST;
 using namespace std;

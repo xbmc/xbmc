@@ -98,10 +98,24 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Files.Download",                               CFileOperations::Download },
 
 // Picture Library
-  { "PictureLibrary.GetPictures",                    CPictureLibrary::GetPictures },
-  { "PictureLibrary.GetPictureDetails",              CPictureLibrary::GetPictureDetails },
-
-// Picture Library
+    { "PictureLibrary.GetFaces",                      CPictureLibrary::GetFaces },
+    { "PictureLibrary.GetFaceDetails",                CPictureLibrary::GetFaceDetails },
+    { "PictureLibrary.GetPictureAlbums",              CPictureLibrary::GetPictureAlbums },
+    { "PictureLibrary.GetPictureAlbumDetails",        CPictureLibrary::GetPictureAlbumDetails },
+    { "PictureLibrary.GetPictures",                   CPictureLibrary::GetPictures },
+    { "PictureLibrary.GetPictureDetails",             CPictureLibrary::GetPictureDetails },
+    { "PictureLibrary.GetRecentlyAddedPictureAlbums", CPictureLibrary::GetRecentlyAddedPictureAlbums },
+    { "PictureLibrary.GetRecentlyAddedPictures",      CPictureLibrary::GetRecentlyAddedPictures },
+    { "PictureLibrary.GetRecentlyPlayedPictureAlbums",CPictureLibrary::GetRecentlyPlayedPictureAlbums },
+    { "PictureLibrary.GetRecentlyPlayedPictures",     CPictureLibrary::GetRecentlyPlayedPictures },
+    { "PictureLibrary.GetLocations",                  CPictureLibrary::GetLocations },
+    { "PictureLibrary.SetFaceDetails",                CPictureLibrary::SetFaceDetails },
+    { "PictureLibrary.SetPictureAlbumDetails",        CPictureLibrary::SetPictureAlbumDetails },
+    { "PictureLibrary.SetPictureDetails",             CPictureLibrary::SetPictureDetails },
+    { "PictureLibrary.Scan",                          CPictureLibrary::Scan },
+    { "PictureLibrary.Export",                        CPictureLibrary::Export },
+    { "PictureLibrary.Clean",                         CPictureLibrary::Clean },
+// Contact Library
   { "ContactLibrary.GetContacts",                    CContactLibrary::GetContacts },
   { "ContactLibrary.GetContactDetails",              CContactLibrary::GetContactDetails },
     

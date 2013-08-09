@@ -42,6 +42,7 @@
 #include "pvr/channels/PVRChannel.h"
 
 using namespace MUSIC_INFO;
+using namespace PICTURE_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
 

@@ -735,10 +735,10 @@ JSONRPC_STATUS CPictureLibrary::GetAdditionalPictureDetails(const CVariant &para
                 item->SetProperty("faceid", faceidObj);
             }
         }
-        if (additionalProperties.find("albumfaceid") != additionalProperties.end() && item->GetPictureInfoTag()->GetPictureAlbumId() > 0)
+        if (additionalProperties.find("albumfaceid") != additionalProperties.end() && item->GetPictureInfoTag()->GetAlbumId() > 0)
         {
             std::vector<int> albumfaceids;
-            if (picturedatabase.GetFacesByPictureAlbum(item->GetPictureInfoTag()->GetPictureAlbumId(), true, albumfaceids))
+            if (picturedatabase.GetFacesByPictureAlbum(item->GetPictureInfoTag()->GetAlbumId(), true, albumfaceids))
             {
                 CVariant albumfaceidObj(CVariant::VariantTypeArray);
                 for (std::vector<int>::const_iterator albumfaceid = albumfaceids.begin(); albumfaceid != albumfaceids.end(); ++albumfaceid)
