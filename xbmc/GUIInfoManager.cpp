@@ -89,6 +89,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using namespace PICTURE_INFO;
 using namespace ADDON;
 using namespace PVR;
 using namespace INFO;

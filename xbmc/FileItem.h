@@ -52,7 +52,9 @@ namespace PVR
   class CPVRRecording;
   class CPVRTimerInfoTag;
 }
-class CPictureInfoTag;
+namespace PICTURE_INFO {
+    class CPictureInfoTag;
+}
 
 class CAlbum;
 class CArtist;
@@ -290,12 +292,12 @@ public:
     return m_pictureInfoTag != NULL;
   }
 
-  inline const CPictureInfoTag* GetPictureInfoTag() const
+    inline const PICTURE_INFO::CPictureInfoTag* GetPictureInfoTag() const
   {
     return m_pictureInfoTag;
   }
 
-  CPictureInfoTag* GetPictureInfoTag();
+  PICTURE_INFO::CPictureInfoTag* GetPictureInfoTag();
 
   /*!
    \brief Get the local fanart for this item if it exists
@@ -440,7 +442,7 @@ private:
   PVR::CPVRChannel* m_pvrChannelInfoTag;
   PVR::CPVRRecording* m_pvrRecordingInfoTag;
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
-  CPictureInfoTag* m_pictureInfoTag;
+  PICTURE_INFO::CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
 };
 
