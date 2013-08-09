@@ -1,0 +1,25 @@
+Upstream Changes:
+[*] Fix upstart on 10.9 Mavericks
+
+Plex Changes:
+[*] Linux build fixes (Thanks Mark and Christian)
+[*] Linux FLAC fixes
+[*] Fix several channel playback issues
+[*] Set and read viewMode from Plex Media Server
+[*] Server discovery fixes
+[*] Memory leak removed
+[*] Jump to letter now skips "the" and other articles
+[*] Media Queue and Recommendations are back
+[*] Button to disable Media Queue and Recommendations
+[*] Transcoding is now done with the new universal transcoder (Make sure you have PMS 0.9.8.3 or later)
+[*] Several crashes fixed
+[*] Switched server discovery from multicast to broadcast
+[*] Fixed "Play On" from mobile clients
+[*] PHT can now play videos from iOS and Android mobile servers
+[*] Fixed broken search results
+[*] Fix back/escape button functionallity in many places
+[*] Reload onDeck when we received our myPlex token (fixes some multiuser weirdness)
+[*] PHT on OSX now supports encrypted HLS channels. Will come to other platforms soon.
+[*] Fixed playback of shoutcast streams.
+[*] Channels now show a fanout in the home window
+
