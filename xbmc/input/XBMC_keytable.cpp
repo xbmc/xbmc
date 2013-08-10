@@ -181,6 +181,10 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_LAUNCH_MEDIA_CENTER,    0,    0, XBMCVK_LAUNCH_MEDIA_CENTER, "launch_media_center" }
 , { XBMCK_PLAY,                   0,    0, XBMCVK_MEDIA_PLAY_PAUSE,    "play_pause" }
 , { XBMCK_STOP,                   0,    0, XBMCVK_MEDIA_STOP,          "stop" }
+, { XBMCK_REWIND,                 0,    0, XBMCVK_MEDIA_REWIND,        "rewind" }
+, { XBMCK_FASTFORWARD,            0,    0, XBMCVK_MEDIA_FASTFORWARD,   "fastforward" }
+, { XBMCK_RECORD,                 0,    0, XBMCVK_MEDIA_RECORD,        "record" }
+
 
 // Function keys
 , { XBMCK_F1,                     0,    0, XBMCVK_F1,            "f1"}
