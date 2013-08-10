@@ -163,7 +163,7 @@ size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
 }
 
 template<class INPUT,class OUTPUT>
-static bool convert_checked(iconv_t& type, int multiplier, const std::string& strFromCharset, const std::string& strToCharset, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false)
+static bool convert(iconv_t& type, int multiplier, const std::string& strFromCharset, const std::string& strToCharset, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false)
 {
   strDest.clear();
 
@@ -279,13 +279,6 @@ static bool convert_checked(iconv_t& type, int multiplier, const std::string& st
   free(outBuf);
 
   return true;
-}
-
-template<class INPUT,class OUTPUT>
-static void convert(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
-{
-  if(!convert_checked(type, multiplier, strFromCharset, strToCharset, strSource, strDest))
-    strDest = strSource;
 }
 
 using namespace std;
@@ -524,8 +517,7 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest))
-    strDest.clear();
+  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -533,8 +525,7 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest))
-    strDest.clear();
+  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -565,30 +556,26 @@ void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDe
 void CCharsetConverter::utf16BEtoUTF8(const CStdString16& strSource, CStdStringA &strDest)
 {
   CSingleLock lock(m_critSection);
-  if(!convert_checked(m_iconvUtf16BEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16BE","UTF-8",strSource,strDest))
-    strDest.clear();
+  convert(m_iconvUtf16BEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16BE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::utf16LEtoUTF8(const CStdString16& strSource,
                                       CStdStringA &strDest)
 {
   CSingleLock lock(m_critSection);
-  if(!convert_checked(m_iconvUtf16LEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16LE","UTF-8",strSource,strDest))
-    strDest.clear();
+  convert(m_iconvUtf16LEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16LE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::ucs2ToUTF8(const CStdString16& strSource, CStdStringA& strDest)
 {
   CSingleLock lock(m_critSection);
-  if(!convert_checked(m_iconvUcs2CharsetToUtf8,UTF8_DEST_MULTIPLIER,"UCS-2LE","UTF-8",strSource,strDest))
-    strDest.clear();
+  convert(m_iconvUcs2CharsetToUtf8,UTF8_DEST_MULTIPLIER,"UCS-2LE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::utf16LEtoW(const CStdString16& strSource, CStdStringW &strDest)
 {
   CSingleLock lock(m_critSection);
-  if(!convert_checked(m_iconvUtf16LEtoW,sizeof(wchar_t),"UTF-16LE",WCHAR_CHARSET,strSource,strDest))
-    strDest.clear();
+  convert(m_iconvUtf16LEtoW,sizeof(wchar_t),"UTF-16LE",WCHAR_CHARSET,strSource,strDest);
 }
 
 void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap)
