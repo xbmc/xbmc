@@ -144,8 +144,8 @@ static struct SCharsetMapping
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
-size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
-                    char* * outbuf, size_t *outbytesleft)
+size_t iconv_const (void* cd, const char** inbuf, size_t* inbytesleft,
+                    char** outbuf, size_t* outbytesleft)
 {
     struct iconv_param_adapter {
         iconv_param_adapter(const char**p) : p(p) {}
@@ -316,7 +316,7 @@ static void logicalToVisualBiDi(const std::string& strSource, std::string& strDe
       // Apperently a string can get longer during this transformation
       // so make sure we allocate the maximum possible character utf8
       // can generate atleast, should cover all bases
-      char *result = strTmp.GetBuffer(len*4);
+      char* result = strTmp.GetBuffer(len*4);
 
       // Convert back from Unicode to the charset
       int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
@@ -351,12 +351,12 @@ CCharsetConverter::CCharsetConverter()
 {
 }
 
-void CCharsetConverter::OnSettingChanged(const CSetting *setting)
+void CCharsetConverter::OnSettingChanged(const CSetting* setting)
 {
   if (setting == NULL)
     return;
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
   // TODO: does this make any sense at all for subtitles and karaoke?
   if (settingId == "subtitles.charset" ||
       settingId == "karaoke.charset" ||
@@ -371,7 +371,7 @@ void CCharsetConverter::clear()
 std::vector<std::string> CCharsetConverter::getCharsetLabels()
 {
   vector<std::string> lab;
-  for(SCharsetMapping * c = g_charsets; c->charset; c++)
+  for(SCharsetMapping* c = g_charsets; c->charset; c++)
     lab.push_back(c->caption);
 
   return lab;
@@ -379,7 +379,7 @@ std::vector<std::string> CCharsetConverter::getCharsetLabels()
 
 std::string CCharsetConverter::getCharsetLabelByName(const std::string& charsetName)
 {
-  for(SCharsetMapping * c = g_charsets; c->charset; c++)
+  for(SCharsetMapping* c = g_charsets; c->charset; c++)
   {
     if (StringUtils::EqualsNoCase(charsetName,c->charset))
       return c->caption;
@@ -390,7 +390,7 @@ std::string CCharsetConverter::getCharsetLabelByName(const std::string& charsetN
 
 std::string CCharsetConverter::getCharsetNameByLabel(const std::string& charsetLabel)
 {
-  for(SCharsetMapping *c = g_charsets; c->charset; c++)
+  for(SCharsetMapping* c = g_charsets; c->charset; c++)
   {
     if (StringUtils::EqualsNoCase(charsetLabel, c->caption))
       return c->charset;
@@ -401,7 +401,7 @@ std::string CCharsetConverter::getCharsetNameByLabel(const std::string& charsetL
 
 bool CCharsetConverter::isBidiCharset(const std::string& charset)
 {
-  for(SFribidMapping *c = g_fribidi; c->charset; c++)
+  for(SFribidMapping* c = g_fribidi; c->charset; c++)
   {
     if (StringUtils::EqualsNoCase(charset, c->charset))
       return true;
@@ -429,7 +429,7 @@ void CCharsetConverter::reset(void)
   m_stringFribidiCharset = FRIBIDI_NOTFOUND;
 
   std::string strCharset=g_langInfo.GetGuiCharSet();
-  for(SFribidMapping *c = g_fribidi; c->charset; c++)
+  for(SFribidMapping* c = g_fribidi; c->charset; c++)
   {
     if (StringUtils::EqualsNoCase(strCharset, c->charset))
       m_stringFribidiCharset = c->name;
@@ -531,13 +531,13 @@ void CCharsetConverter::utf8To(const std::string& strDestCharset, const std::str
   iconv_close(iconvString);
 }
 
-void CCharsetConverter::unknownToUTF8(std::string &sourceAndDest)
+void CCharsetConverter::unknownToUTF8(std::string& sourceAndDest)
 {
   std::string source = sourceAndDest;
   unknownToUTF8(source, sourceAndDest);
 }
 
-void CCharsetConverter::unknownToUTF8(const std::string &source, std::string &dest)
+void CCharsetConverter::unknownToUTF8(const std::string& source, std::string& dest)
 {
   // checks whether it's utf8 already, and if not converts using the sourceCharset if given, else the string charset
   if (isValidUtf8(source))
@@ -549,20 +549,20 @@ void CCharsetConverter::unknownToUTF8(const std::string &source, std::string &de
   }
 }
 
-void CCharsetConverter::wToUTF8(const std::wstring& strSource, std::string &strDest)
+void CCharsetConverter::wToUTF8(const std::wstring& strSource, std::string& strDest)
 {
   CSingleLock lock(m_critSection);
   convert(m_iconvWtoUtf8,UTF8_DEST_MULTIPLIER,WCHAR_CHARSET,"UTF-8",strSource,strDest);
 }
 
-void CCharsetConverter::utf16BEtoUTF8(const std::u16string& strSource, std::string &strDest)
+void CCharsetConverter::utf16BEtoUTF8(const std::u16string& strSource, std::string& strDest)
 {
   CSingleLock lock(m_critSection);
   convert(m_iconvUtf16BEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16BE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::utf16LEtoUTF8(const std::u16string& strSource,
-                                      std::string &strDest)
+                                      std::string& strDest)
 {
   CSingleLock lock(m_critSection);
   convert(m_iconvUtf16LEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16LE","UTF-8",strSource,strDest);
@@ -620,14 +620,14 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, std
     const char* src = (const char*) strSource;
     size_t inBytes = (ptr-strSource+1)*4;
 
-    char *dst = dstTmp.GetBuffer(inBytes);
+    char* dst = dstTmp.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
     if (iconv_const(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
       CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       dstTmp.ReleaseBuffer();
-      strDest = (const char *)strSource;
+      strDest = (const char*)strSource;
       return;
     }
 
@@ -635,7 +635,7 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, std
     {
       CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
       dstTmp.ReleaseBuffer();
-      strDest = (const char *)strSource;
+      strDest = (const char*)strSource;
       return;
     }
 
@@ -652,9 +652,9 @@ void CCharsetConverter::utf8ToSystem(std::string& strSourceDest)
 }
 
 // Taken from RFC2640
-bool CCharsetConverter::isValidUtf8(const char *buf, unsigned int len)
+bool CCharsetConverter::isValidUtf8(const char* buf, unsigned int len)
 {
-  const unsigned char *endbuf = (unsigned char*)buf + len;
+  const unsigned char* endbuf = (unsigned char*)buf + len;
   unsigned char byte2mask=0x00, c;
   int trailing=0; // trailing (continuation) bytes to follow
 
@@ -722,7 +722,7 @@ void CCharsetConverter::utf8logicalToVisualBiDi(const std::string& strSource, st
   logicalToVisualBiDi(strSource, strDest, FRIBIDI_UTF8, FRIBIDI_TYPE_RTL);
 }
 
-void CCharsetConverter::SettingOptionsCharsetsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+void CCharsetConverter::SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current)
 {
   vector<std::string> vecCharsets = g_charsetConverter.getCharsetLabels();
   sort(vecCharsets.begin(), vecCharsets.end(), sortstringbyname());
