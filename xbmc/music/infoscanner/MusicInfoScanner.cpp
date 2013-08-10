@@ -121,13 +121,18 @@ void CMusicInfoScanner::Process()
       bool cancelled = false;
       for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); it++)
       {
-        /*
-         * A copy of the directory path is used because the path supplied is
-         * immediately removed from the m_pathsToScan set in DoScan(). If the
-         * reference points to the entry in the set a null reference error
-         * occurs.
-         */
-        if (!DoScan(*it))
+        if (!CDirectory::Exists(*it) && !m_bClean)
+        {
+          /*
+           * Note that this will skip scanning (if m_bClean is disabled) if the directory really
+           * doesn't exist. Since the music scanner is fed with a list of existing paths from the DB
+           * and cleans out all songs under that path as its first step before re-adding files, if 
+           * the entire source is offline we totally empty the music database in one go.
+           */
+          CLog::Log(LOGWARNING, "%s directory '%s' does not exist - skipping scan.", __FUNCTION__, it->c_str());
+          continue;
+        }
+        else if (!DoScan(*it))
           cancelled = true;
         commit = !cancelled;
       }
@@ -250,6 +255,7 @@ void CMusicInfoScanner::Start(const CStdString& strDirectory, int flags)
   }
   else
     m_pathsToScan.insert(strDirectory);
+  m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
 
   m_scanType = 0;
   Create();
