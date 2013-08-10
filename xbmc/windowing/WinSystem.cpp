@@ -136,7 +136,8 @@ static void AddResolution(vector<RESOLUTION_WHR> &resolutions, unsigned int addi
       // check if the refresh rate of this resolution is better suited than
       // the refresh rate of the resolution with the same width/height/interlaced
       // property and if so replace it
-      if (bestRefreshrate > 0.0 && refreshrate == bestRefreshrate)
+      // don't touch RES_DESKTOP
+      if (idx != 0 && bestRefreshrate > 0.0 && refreshrate == bestRefreshrate)
         resolutions[idx].ResInfo_Index = addindex;
 
       // no need to add the resolution again
@@ -168,7 +169,8 @@ vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen, float refre
   }
 
   // Can't assume a sort order
-  sort(resolutions.begin(), resolutions.end(), resSortPredicate);
+  // don't touch RES_DESKTOP which is index 0
+  sort(resolutions.begin()+1, resolutions.end(), resSortPredicate);
 
   return resolutions;
 }
