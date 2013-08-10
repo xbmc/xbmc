@@ -69,6 +69,8 @@ void CJNISurfaceTexture::getTransformMatrix(float* mtx)
   call_method<void>(m_object,
     "getTransformMatrix", "([F)V", floatarray);
   env->GetFloatArrayRegion(floatarray, 0, size, mtx);
+
+  env->DeleteLocalRef(floatarray);
 }
 
 int64_t CJNISurfaceTexture::getTimestamp()
