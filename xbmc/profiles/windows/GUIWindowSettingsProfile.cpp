@@ -172,13 +172,18 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_AUTOLOGIN)
       {
-        int currentId = CProfilesManager::Get().GetAutoLoginProfileId();
-        int profileId;
-        if (GetAutoLoginProfileChoice(profileId) && (currentId != profileId))
-        {
-          CProfilesManager::Get().SetAutoLoginProfileId(profileId);
-          CProfilesManager::Get().Save();
-        }
+        int profileId = CProfilesManager::Get().GetAutoLoginProfileId() + 1;
+        if (profileId >= (int)CProfilesManager::Get().GetNumberOfProfiles())
+          profileId = -1;
+        CProfilesManager::Get().SetAutoLoginProfileId(profileId);
+        CProfilesManager::Get().Save();
+//        int currentId = CProfilesManager::Get().GetAutoLoginProfileId();
+//        int profileId;
+//        if (GetAutoLoginProfileChoice(profileId) && (currentId != profileId))
+//        {
+//          CProfilesManager::Get().SetAutoLoginProfileId(profileId);
+//          CProfilesManager::Get().Save();
+//        }
         return true;
       }
     }

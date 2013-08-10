@@ -14372,3 +14372,8 @@ msgstr ""
 msgctxt "#37015"
 msgid "Browse Into"
 msgstr ""
+
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
+msgctxt "#37015"
+msgid "Auto login using this profile"
+msgstr ""
