@@ -163,7 +163,7 @@ size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
 }
 
 template<class INPUT,class OUTPUT>
-static bool convert_checked(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false)
+static bool convert_checked(iconv_t& type, int multiplier, const std::string& strFromCharset, const std::string& strToCharset, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false)
 {
   strDest.clear();
 
