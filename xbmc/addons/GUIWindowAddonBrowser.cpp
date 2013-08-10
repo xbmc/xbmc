@@ -157,7 +157,7 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
   if (addon->Type() == ADDON_REPOSITORY && pItem->m_bIsFolder)
   {
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
-    buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY,24035);
+    buttons.Add(CONTEXT_BUTTON_REFRESH,24035);
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO,24003);
@@ -185,7 +185,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   if (button == CONTEXT_BUTTON_SETTINGS)
     return CGUIDialogAddonSettings::ShowAndGetInput(addon);
 
-  if (button == CONTEXT_BUTTON_UPDATE_LIBRARY)
+  if (button == CONTEXT_BUTTON_REFRESH)
   {
     CAddonDatabase database;
     database.Open();

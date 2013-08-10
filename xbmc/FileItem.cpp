@@ -31,6 +31,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
+#include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "CueDocument.h"
 #include "video/VideoDatabase.h"
@@ -939,6 +940,14 @@ bool CFileItem::IsSmartPlayList() const
     return true;
 
   return URIUtils::HasExtension(m_strPath, ".xsp");
+}
+
+bool CFileItem::IsLibraryFolder() const
+{
+  if (HasProperty("library.filter") && GetProperty("library.filter").asBoolean())
+    return true;
+
+  return URIUtils::IsLibraryFolder(m_strPath);
 }
 
 bool CFileItem::IsPlayList() const
@@ -3264,9 +3273,16 @@ int CFileItem::GetVideoContentType() const
   if (HasVideoInfoTag() && !GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
     type = VIDEODB_CONTENT_TVSHOWS;
   if (HasVideoInfoTag() && GetVideoInfoTag()->m_iSeason > -1 && !m_bIsFolder) // episode
-    type = VIDEODB_CONTENT_EPISODES;
-  if (HasVideoInfoTag() && !GetVideoInfoTag()->m_artist.empty())
-    type = VIDEODB_CONTENT_MUSICVIDEOS;
+    return VIDEODB_CONTENT_EPISODES;
+  if (HasVideoInfoTag() && !GetVideoInfoTag()->m_artist.empty()) // music video
+    return VIDEODB_CONTENT_MUSICVIDEOS;
+
+  CVideoDatabaseDirectory dir;
+  VIDEODATABASEDIRECTORY::CQueryParams params;
+  dir.GetQueryParams(m_strPath, params);
+  if (params.GetSetId() != -1 && params.GetMovieId() == -1) // movie set
+    return VIDEODB_CONTENT_MOVIE_SETS;
+
   return type;
 }
 

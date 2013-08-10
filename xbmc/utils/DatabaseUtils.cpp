@@ -84,6 +84,33 @@ MediaType DatabaseUtils::MediaTypeFromString(const std::string &strMediaType)
   return MediaTypeNone;
 }
 
+MediaType DatabaseUtils::MediaTypeFromVideoContentType(int videoContentType)
+{
+  VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)videoContentType;
+  switch (type)
+  {
+    case VIDEODB_CONTENT_MOVIES:
+      return MediaTypeMovie;
+
+    case VIDEODB_CONTENT_MOVIE_SETS:
+      return MediaTypeVideoCollection;
+
+    case VIDEODB_CONTENT_TVSHOWS:
+      return MediaTypeTvShow;
+
+    case VIDEODB_CONTENT_EPISODES:
+      return MediaTypeEpisode;
+
+    case VIDEODB_CONTENT_MUSICVIDEOS:
+      return MediaTypeMusicVideo;
+
+    default:
+      break;
+  }
+
+  return MediaTypeNone;
+}
+
 std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQueryPart queryPart)
 {
   if (field == FieldNone || mediaType == MediaTypeNone)
@@ -275,184 +302,20 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
   return "";
 }
 
+int DatabaseUtils::GetField(Field field, MediaType mediaType)
+{
+  if (field == FieldNone || mediaType == MediaTypeNone)
+    return -1;
+
+  return GetField(field, mediaType, false);
+}
+
 int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
 {
   if (field == FieldNone || mediaType == MediaTypeNone)
     return -1;
 
-  int index = -1;
-
-  if (mediaType == MediaTypeAlbum)
-  {
-    if (field == FieldId) return CMusicDatabase::album_idAlbum;
-    else if (field == FieldAlbum) return CMusicDatabase::album_strAlbum;
-    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::album_strArtists;
-    else if (field == FieldGenre) return CMusicDatabase::album_strGenres;
-    else if (field == FieldYear) return CMusicDatabase::album_iYear;
-    else if (field == FieldMoods) return CMusicDatabase::album_strMoods;
-    else if (field == FieldStyles) return CMusicDatabase::album_strStyles;
-    else if (field == FieldThemes) return CMusicDatabase::album_strThemes;
-    else if (field == FieldReview) return CMusicDatabase::album_strReview;
-    else if (field == FieldMusicLabel) return CMusicDatabase::album_strLabel;
-    else if (field == FieldAlbumType) return CMusicDatabase::album_strType;
-    else if (field == FieldRating) return CMusicDatabase::album_iRating;
-    else if (field == FieldPlaycount) return CMusicDatabase::album_iTimesPlayed;
-  }
-  else if (mediaType == MediaTypeSong)
-  {
-    if (field == FieldId) return CMusicDatabase::song_idSong;
-    else if (field == FieldTitle) return CMusicDatabase::song_strTitle;
-    else if (field == FieldTrackNumber) return CMusicDatabase::song_iTrack;
-    else if (field == FieldTime) return CMusicDatabase::song_iDuration;
-    else if (field == FieldYear) return CMusicDatabase::song_iYear;
-    else if (field == FieldFilename) return CMusicDatabase::song_strFileName;
-    else if (field == FieldPlaycount) return CMusicDatabase::song_iTimesPlayed;
-    else if (field == FieldStartOffset) return CMusicDatabase::song_iStartOffset;
-    else if (field == FieldEndOffset) return CMusicDatabase::song_iEndOffset;
-    else if (field == FieldLastPlayed) return CMusicDatabase::song_lastplayed;
-    else if (field == FieldRating) return CMusicDatabase::song_rating;
-    else if (field == FieldComment) return CMusicDatabase::song_comment;
-    else if (field == FieldAlbum) return CMusicDatabase::song_strAlbum;
-    else if (field == FieldPath) return CMusicDatabase::song_strPath;
-    else if (field == FieldGenre) return CMusicDatabase::song_strGenres;
-    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::song_strArtists;
-  }
-  else if (mediaType == MediaTypeArtist)
-  {
-    if (field == FieldId) return CMusicDatabase::artist_idArtist;
-    else if (field == FieldArtist) return CMusicDatabase::artist_strArtist;
-    else if (field == FieldGenre) return CMusicDatabase::artist_strGenres;
-    else if (field == FieldMoods) return CMusicDatabase::artist_strMoods;
-    else if (field == FieldStyles) return CMusicDatabase::artist_strStyles;
-    else if (field == FieldInstruments) return CMusicDatabase::artist_strInstruments;
-    else if (field == FieldBiography) return CMusicDatabase::artist_strBiography;
-    else if (field == FieldBorn) return CMusicDatabase::artist_strBorn;
-    else if (field == FieldBandFormed) return CMusicDatabase::artist_strFormed;
-    else if (field == FieldDisbanded) return CMusicDatabase::artist_strDisbanded;
-    else if (field == FieldDied) return CMusicDatabase::artist_strDied;
-  }
-  else if (mediaType == MediaTypeMusicVideo)
-  {
-    if (field == FieldId) return 0;
-    else if (field == FieldTitle) index = VIDEODB_ID_MUSICVIDEO_TITLE;
-    else if (field == FieldTime) index =  VIDEODB_ID_MUSICVIDEO_RUNTIME;
-    else if (field == FieldDirector) index =  VIDEODB_ID_MUSICVIDEO_DIRECTOR;
-    else if (field == FieldStudio) index =  VIDEODB_ID_MUSICVIDEO_STUDIOS;
-    else if (field == FieldYear) index = VIDEODB_ID_MUSICVIDEO_YEAR;
-    else if (field == FieldPlot) index =  VIDEODB_ID_MUSICVIDEO_PLOT;
-    else if (field == FieldAlbum) index = VIDEODB_ID_MUSICVIDEO_ALBUM;
-    else if (field == FieldArtist) index =  VIDEODB_ID_MUSICVIDEO_ARTIST;
-    else if (field == FieldGenre) index =  VIDEODB_ID_MUSICVIDEO_GENRE;
-    else if (field == FieldTrackNumber) index =  VIDEODB_ID_MUSICVIDEO_TRACK;
-    else if (field == FieldFilename) return VIDEODB_DETAILS_MUSICVIDEO_FILE;
-    else if (field == FieldPath) return VIDEODB_DETAILS_MUSICVIDEO_PATH;
-    else if (field == FieldPlaycount) return VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT;
-    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED;
-    else if (field == FieldDateAdded) return VIDEODB_DETAILS_MUSICVIDEO_DATEADDED;
-
-    if (index < 0)
-      return index;
-
-    // see VideoDatabase.h
-    // the first field is the item's ID and the second is the item's file ID
-    index += 2;
-  }
-  else if (mediaType == MediaTypeMovie)
-  {
-    if (field == FieldId) return 0;
-    else if (field == FieldTitle) index = VIDEODB_ID_TITLE;
-    else if (field == FieldSortTitle) index = VIDEODB_ID_SORTTITLE;
-    else if (field == FieldPlot) index = VIDEODB_ID_PLOT;
-    else if (field == FieldPlotOutline) index = VIDEODB_ID_PLOTOUTLINE;
-    else if (field == FieldTagline) index = VIDEODB_ID_TAGLINE;
-    else if (field == FieldVotes) index = VIDEODB_ID_VOTES;
-    else if (field == FieldRating) index = VIDEODB_ID_RATING;
-    else if (field == FieldWriter) index = VIDEODB_ID_CREDITS;
-    else if (field == FieldYear) index = VIDEODB_ID_YEAR;
-    else if (field == FieldTime) index = VIDEODB_ID_RUNTIME;
-    else if (field == FieldMPAA) index = VIDEODB_ID_MPAA;
-    else if (field == FieldTop250) index = VIDEODB_ID_TOP250;
-    else if (field == FieldSet) return VIDEODB_DETAILS_MOVIE_SET_NAME;
-    else if (field == FieldGenre) index = VIDEODB_ID_GENRE;
-    else if (field == FieldDirector) index = VIDEODB_ID_DIRECTOR;
-    else if (field == FieldStudio) index = VIDEODB_ID_STUDIOS;
-    else if (field == FieldTrailer) index = VIDEODB_ID_TRAILER;
-    else if (field == FieldCountry) index = VIDEODB_ID_COUNTRY;
-    else if (field == FieldFilename) index = VIDEODB_DETAILS_MOVIE_FILE;
-    else if (field == FieldPath) return VIDEODB_DETAILS_MOVIE_PATH;
-    else if (field == FieldPlaycount) return VIDEODB_DETAILS_MOVIE_PLAYCOUNT;
-    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_MOVIE_LASTPLAYED;
-    else if (field == FieldDateAdded) return VIDEODB_DETAILS_MOVIE_DATEADDED;
-
-    if (index < 0)
-      return index;
-
-    // see VideoDatabase.h
-    // the first field is the item's ID and the second is the item's file ID
-    index += 2;
-  }
-  else if (mediaType == MediaTypeTvShow)
-  {
-    if (field == FieldId) return 0;
-    else if (field == FieldTitle) index = VIDEODB_ID_TV_TITLE;
-    else if (field == FieldSortTitle) index = VIDEODB_ID_TV_SORTTITLE;
-    else if (field == FieldPlot) index = VIDEODB_ID_TV_PLOT;
-    else if (field == FieldTvShowStatus) index = VIDEODB_ID_TV_STATUS;
-    else if (field == FieldVotes) index = VIDEODB_ID_TV_VOTES;
-    else if (field == FieldRating) index = VIDEODB_ID_TV_RATING;
-    else if (field == FieldYear) index = VIDEODB_ID_TV_PREMIERED;
-    else if (field == FieldGenre) index = VIDEODB_ID_TV_GENRE;
-    else if (field == FieldMPAA) index = VIDEODB_ID_TV_MPAA;
-    else if (field == FieldStudio) index = VIDEODB_ID_TV_STUDIOS;
-    else if (field == FieldPath) return VIDEODB_DETAILS_TVSHOW_PATH;
-    else if (field == FieldDateAdded) return VIDEODB_DETAILS_TVSHOW_DATEADDED;
-    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_TVSHOW_LASTPLAYED;
-    else if (field == FieldNumberOfEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_EPISODES;
-    else if (field == FieldNumberOfWatchedEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_WATCHED;
-    else if (field == FieldSeason) return VIDEODB_DETAILS_TVSHOW_NUM_SEASONS;
-
-    if (index < 0)
-      return index;
-
-    // see VideoDatabase.h
-    // the first field is the item's ID
-    index += 1;
-  }
-  else if (mediaType == MediaTypeEpisode)
-  {
-    if (field == FieldId) return 0;
-    else if (field == FieldTitle) index = VIDEODB_ID_EPISODE_TITLE;
-    else if (field == FieldPlot) index = VIDEODB_ID_EPISODE_PLOT;
-    else if (field == FieldVotes) index = VIDEODB_ID_EPISODE_VOTES;
-    else if (field == FieldRating) index = VIDEODB_ID_EPISODE_RATING;
-    else if (field == FieldWriter) index = VIDEODB_ID_EPISODE_CREDITS;
-    else if (field == FieldAirDate) index = VIDEODB_ID_EPISODE_AIRED;
-    else if (field == FieldTime) index = VIDEODB_ID_EPISODE_RUNTIME;
-    else if (field == FieldDirector) index = VIDEODB_ID_EPISODE_DIRECTOR;
-    else if (field == FieldSeason) index = VIDEODB_ID_EPISODE_SEASON;
-    else if (field == FieldEpisodeNumber) index = VIDEODB_ID_EPISODE_EPISODE;
-    else if (field == FieldUniqueId) index = VIDEODB_ID_EPISODE_UNIQUEID;
-    else if (field == FieldEpisodeNumberSpecialSort) index = VIDEODB_ID_EPISODE_SORTEPISODE;
-    else if (field == FieldSeasonSpecialSort) index = VIDEODB_ID_EPISODE_SORTSEASON;
-    else if (field == FieldFilename) return VIDEODB_DETAILS_EPISODE_FILE;
-    else if (field == FieldPath) return VIDEODB_DETAILS_EPISODE_PATH;
-    else if (field == FieldPlaycount) return VIDEODB_DETAILS_EPISODE_PLAYCOUNT;
-    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_EPISODE_LASTPLAYED;
-    else if (field == FieldDateAdded) return VIDEODB_DETAILS_EPISODE_DATEADDED;
-    else if (field == FieldTvShowTitle) return VIDEODB_DETAILS_EPISODE_TVSHOW_NAME;
-    else if (field == FieldStudio) return VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO;
-    else if (field == FieldYear) return VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED;
-    else if (field == FieldMPAA) return VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA;
-
-    if (index < 0)
-      return index;
-
-    // see VideoDatabase.h
-    // the first field is the item's ID and the second is the item's file ID
-    index += 2;
-  }
-
-  return index;
+  return GetField(field, mediaType, true);
 }
 
 bool DatabaseUtils::GetSelectFields(const Fields &fields, MediaType mediaType, FieldList &selectFields)
@@ -673,4 +536,196 @@ std::string DatabaseUtils::BuildLimitClause(int end, int start /* = 0 */)
     sql << end;
 
   return sql.str();
+}
+
+int DatabaseUtils::GetField(Field field, MediaType mediaType, bool asIndex)
+{
+  if (field == FieldNone || mediaType == MediaTypeNone)
+    return -1;
+
+  int index = -1;
+
+  if (mediaType == MediaTypeAlbum)
+  {
+    if (field == FieldId) return CMusicDatabase::album_idAlbum;
+    else if (field == FieldAlbum) return CMusicDatabase::album_strAlbum;
+    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::album_strArtists;
+    else if (field == FieldGenre) return CMusicDatabase::album_strGenres;
+    else if (field == FieldYear) return CMusicDatabase::album_iYear;
+    else if (field == FieldMoods) return CMusicDatabase::album_strMoods;
+    else if (field == FieldStyles) return CMusicDatabase::album_strStyles;
+    else if (field == FieldThemes) return CMusicDatabase::album_strThemes;
+    else if (field == FieldReview) return CMusicDatabase::album_strReview;
+    else if (field == FieldMusicLabel) return CMusicDatabase::album_strLabel;
+    else if (field == FieldAlbumType) return CMusicDatabase::album_strType;
+    else if (field == FieldRating) return CMusicDatabase::album_iRating;
+    else if (field == FieldPlaycount) return CMusicDatabase::album_iTimesPlayed;
+  }
+  else if (mediaType == MediaTypeSong)
+  {
+    if (field == FieldId) return CMusicDatabase::song_idSong;
+    else if (field == FieldTitle) return CMusicDatabase::song_strTitle;
+    else if (field == FieldTrackNumber) return CMusicDatabase::song_iTrack;
+    else if (field == FieldTime) return CMusicDatabase::song_iDuration;
+    else if (field == FieldYear) return CMusicDatabase::song_iYear;
+    else if (field == FieldFilename) return CMusicDatabase::song_strFileName;
+    else if (field == FieldPlaycount) return CMusicDatabase::song_iTimesPlayed;
+    else if (field == FieldStartOffset) return CMusicDatabase::song_iStartOffset;
+    else if (field == FieldEndOffset) return CMusicDatabase::song_iEndOffset;
+    else if (field == FieldLastPlayed) return CMusicDatabase::song_lastplayed;
+    else if (field == FieldRating) return CMusicDatabase::song_rating;
+    else if (field == FieldComment) return CMusicDatabase::song_comment;
+    else if (field == FieldAlbum) return CMusicDatabase::song_strAlbum;
+    else if (field == FieldPath) return CMusicDatabase::song_strPath;
+    else if (field == FieldGenre) return CMusicDatabase::song_strGenres;
+    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::song_strArtists;
+  }
+  else if (mediaType == MediaTypeArtist)
+  {
+    if (field == FieldId) return CMusicDatabase::artist_idArtist;
+    else if (field == FieldArtist) return CMusicDatabase::artist_strArtist;
+    else if (field == FieldGenre) return CMusicDatabase::artist_strGenres;
+    else if (field == FieldMoods) return CMusicDatabase::artist_strMoods;
+    else if (field == FieldStyles) return CMusicDatabase::artist_strStyles;
+    else if (field == FieldInstruments) return CMusicDatabase::artist_strInstruments;
+    else if (field == FieldBiography) return CMusicDatabase::artist_strBiography;
+    else if (field == FieldBorn) return CMusicDatabase::artist_strBorn;
+    else if (field == FieldBandFormed) return CMusicDatabase::artist_strFormed;
+    else if (field == FieldDisbanded) return CMusicDatabase::artist_strDisbanded;
+    else if (field == FieldDied) return CMusicDatabase::artist_strDied;
+  }
+  else if (mediaType == MediaTypeMusicVideo)
+  {
+    if (field == FieldId) return 0;
+    else if (field == FieldTitle) index = VIDEODB_ID_MUSICVIDEO_TITLE;
+    else if (field == FieldTime) index =  VIDEODB_ID_MUSICVIDEO_RUNTIME;
+    else if (field == FieldDirector) index =  VIDEODB_ID_MUSICVIDEO_DIRECTOR;
+    else if (field == FieldStudio) index =  VIDEODB_ID_MUSICVIDEO_STUDIOS;
+    else if (field == FieldYear) index = VIDEODB_ID_MUSICVIDEO_YEAR;
+    else if (field == FieldPlot) index =  VIDEODB_ID_MUSICVIDEO_PLOT;
+    else if (field == FieldAlbum) index = VIDEODB_ID_MUSICVIDEO_ALBUM;
+    else if (field == FieldArtist) index =  VIDEODB_ID_MUSICVIDEO_ARTIST;
+    else if (field == FieldGenre) index =  VIDEODB_ID_MUSICVIDEO_GENRE;
+    else if (field == FieldTrackNumber) index =  VIDEODB_ID_MUSICVIDEO_TRACK;
+    else if (field == FieldFilename) return VIDEODB_DETAILS_MUSICVIDEO_FILE;
+    else if (field == FieldPath) return VIDEODB_DETAILS_MUSICVIDEO_PATH;
+    else if (field == FieldPlaycount) return VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT;
+    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED;
+    else if (field == FieldDateAdded) return VIDEODB_DETAILS_MUSICVIDEO_DATEADDED;
+
+    if (index < 0)
+      return index;
+
+    if (asIndex)
+    {
+      // see VideoDatabase.h
+      // the first field is the item's ID and the second is the item's file ID
+      index += 2;
+    }
+  }
+  else if (mediaType == MediaTypeMovie)
+  {
+    if (field == FieldId) return 0;
+    else if (field == FieldTitle) index = VIDEODB_ID_TITLE;
+    else if (field == FieldSortTitle) index = VIDEODB_ID_SORTTITLE;
+    else if (field == FieldPlot) index = VIDEODB_ID_PLOT;
+    else if (field == FieldPlotOutline) index = VIDEODB_ID_PLOTOUTLINE;
+    else if (field == FieldTagline) index = VIDEODB_ID_TAGLINE;
+    else if (field == FieldVotes) index = VIDEODB_ID_VOTES;
+    else if (field == FieldRating) index = VIDEODB_ID_RATING;
+    else if (field == FieldWriter) index = VIDEODB_ID_CREDITS;
+    else if (field == FieldYear) index = VIDEODB_ID_YEAR;
+    else if (field == FieldTime) index = VIDEODB_ID_RUNTIME;
+    else if (field == FieldMPAA) index = VIDEODB_ID_MPAA;
+    else if (field == FieldTop250) index = VIDEODB_ID_TOP250;
+    else if (field == FieldSet) return VIDEODB_DETAILS_MOVIE_SET_NAME;
+    else if (field == FieldGenre) index = VIDEODB_ID_GENRE;
+    else if (field == FieldDirector) index = VIDEODB_ID_DIRECTOR;
+    else if (field == FieldStudio) index = VIDEODB_ID_STUDIOS;
+    else if (field == FieldTrailer) index = VIDEODB_ID_TRAILER;
+    else if (field == FieldCountry) index = VIDEODB_ID_COUNTRY;
+    else if (field == FieldFilename) index = VIDEODB_DETAILS_MOVIE_FILE;
+    else if (field == FieldPath) return VIDEODB_DETAILS_MOVIE_PATH;
+    else if (field == FieldPlaycount) return VIDEODB_DETAILS_MOVIE_PLAYCOUNT;
+    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_MOVIE_LASTPLAYED;
+    else if (field == FieldDateAdded) return VIDEODB_DETAILS_MOVIE_DATEADDED;
+
+    if (index < 0)
+      return index;
+
+    if (asIndex)
+    {
+      // see VideoDatabase.h
+      // the first field is the item's ID and the second is the item's file ID
+      index += 2;
+    }
+  }
+  else if (mediaType == MediaTypeTvShow)
+  {
+    if (field == FieldId) return 0;
+    else if (field == FieldTitle) index = VIDEODB_ID_TV_TITLE;
+    else if (field == FieldSortTitle) index = VIDEODB_ID_TV_SORTTITLE;
+    else if (field == FieldPlot) index = VIDEODB_ID_TV_PLOT;
+    else if (field == FieldTvShowStatus) index = VIDEODB_ID_TV_STATUS;
+    else if (field == FieldVotes) index = VIDEODB_ID_TV_VOTES;
+    else if (field == FieldRating) index = VIDEODB_ID_TV_RATING;
+    else if (field == FieldYear) index = VIDEODB_ID_TV_PREMIERED;
+    else if (field == FieldGenre) index = VIDEODB_ID_TV_GENRE;
+    else if (field == FieldMPAA) index = VIDEODB_ID_TV_MPAA;
+    else if (field == FieldStudio) index = VIDEODB_ID_TV_STUDIOS;
+    else if (field == FieldPath) return VIDEODB_DETAILS_TVSHOW_PATH;
+    else if (field == FieldDateAdded) return VIDEODB_DETAILS_TVSHOW_DATEADDED;
+    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_TVSHOW_LASTPLAYED;
+    else if (field == FieldNumberOfEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_EPISODES;
+    else if (field == FieldNumberOfWatchedEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_WATCHED;
+    else if (field == FieldSeason) return VIDEODB_DETAILS_TVSHOW_NUM_SEASONS;
+
+    if (index < 0)
+      return index;
+
+    if (asIndex)
+    {
+      // see VideoDatabase.h
+      // the first field is the item's ID
+      index += 1;
+    }
+  }
+  else if (mediaType == MediaTypeEpisode)
+  {
+    if (field == FieldId) return 0;
+    else if (field == FieldTitle) index = VIDEODB_ID_EPISODE_TITLE;
+    else if (field == FieldPlot) index = VIDEODB_ID_EPISODE_PLOT;
+    else if (field == FieldVotes) index = VIDEODB_ID_EPISODE_VOTES;
+    else if (field == FieldRating) index = VIDEODB_ID_EPISODE_RATING;
+    else if (field == FieldWriter) index = VIDEODB_ID_EPISODE_CREDITS;
+    else if (field == FieldAirDate) index = VIDEODB_ID_EPISODE_AIRED;
+    else if (field == FieldTime) index = VIDEODB_ID_EPISODE_RUNTIME;
+    else if (field == FieldDirector) index = VIDEODB_ID_EPISODE_DIRECTOR;
+    else if (field == FieldSeason) index = VIDEODB_ID_EPISODE_SEASON;
+    else if (field == FieldEpisodeNumber) index = VIDEODB_ID_EPISODE_EPISODE;
+    else if (field == FieldUniqueId) index = VIDEODB_ID_EPISODE_UNIQUEID;
+    else if (field == FieldEpisodeNumberSpecialSort) index = VIDEODB_ID_EPISODE_SORTEPISODE;
+    else if (field == FieldSeasonSpecialSort) index = VIDEODB_ID_EPISODE_SORTSEASON;
+    else if (field == FieldFilename) return VIDEODB_DETAILS_EPISODE_FILE;
+    else if (field == FieldPath) return VIDEODB_DETAILS_EPISODE_PATH;
+    else if (field == FieldPlaycount) return VIDEODB_DETAILS_EPISODE_PLAYCOUNT;
+    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_EPISODE_LASTPLAYED;
+    else if (field == FieldDateAdded) return VIDEODB_DETAILS_EPISODE_DATEADDED;
+    else if (field == FieldTvShowTitle) return VIDEODB_DETAILS_EPISODE_TVSHOW_NAME;
+    else if (field == FieldStudio) return VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO;
+    else if (field == FieldYear) return VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED;
+    else if (field == FieldMPAA) return VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA;
+
+    if (index < 0)
+      return index;
+
+    if (asIndex)
+    {
+      // see VideoDatabase.h
+      // the first field is the item's ID and the second is the item's file ID
+      index += 2;
+    }
+  }
+
+  return index;
 }

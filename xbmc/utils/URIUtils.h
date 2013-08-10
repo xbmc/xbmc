@@ -114,6 +114,7 @@ public:
   static bool IsArchive(const CStdString& strFile);
   static bool IsBluray(const CStdString& strFile);
   static bool IsAndroidApp(const CStdString& strFile);
+  static bool IsLibraryFolder(const CStdString& strFile);
 
   static void AddSlashAtEnd(CStdString& strFolder);
   static bool HasSlashAtEnd(const CStdString& strFile, bool checkURL = false);

@@ -147,6 +147,7 @@ public:
   bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsPlayList() const;
   bool IsSmartPlayList() const;
+  bool IsLibraryFolder() const;
   bool IsPythonScript() const;
   bool IsPlugin() const;
   bool IsScript() const;

@@ -61,9 +61,9 @@
 			<include>SideBladeLeft</include>
 			<control type="grouplist" id="9000">
 				<posx>0</posx>
-				<posy>110</posy>
+				<posy>60</posy>
 				<width>250</width>
-				<height>600</height>
+				<height>650</height>
 				<onleft>9000</onleft>
 				<onright>50</onright>
 				<onup>9000</onup>
@@ -106,7 +106,7 @@
 					<include>ButtonCommonValues</include>
 					<label>587</label>
 				</control>
-				<control type="radiobutton" id="20">
+				<control type="radiobutton" id="98">
 					<visible>Container.CanFilterAdvanced</visible>
 					<description>Filter</description>
 					<include>ButtonCommonValues</include>
@@ -144,18 +144,6 @@
 					<include>ButtonCommonValues</include>
 					<label>137</label>
 				</control>
-				<control type="radiobutton" id="7">
-					<description>Stack Toggle</description>
-					<textwidth>170</textwidth>
-					<include>ButtonCommonValues</include>
-					<label>346</label>
-				</control>
-				<control type="radiobutton" id="17">
-					<description>Flatten</description>
-					<textwidth>170</textwidth>
-					<include>ButtonCommonValues</include>
-					<label>20411</label>
-				</control>
 				<control type="radiobutton" id="16">
 					<description>PartyMode</description>
 					<label>589</label>
@@ -170,6 +158,24 @@
 					<onclick>xbmc.mastermode</onclick>
 					<selected>system.ismaster</selected>
 					<visible>system.haslocks</visible>
+				</control>
+				<control type="label" id="203">
+					<width>250</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31039</label>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="togglebutton" id="20">
+					<description>Update library</description>
+					<include>ButtonCommonValues</include>
+					<label>653</label>
+					<altlabel>13353</altlabel>
+					<alttexturefocus border="5">button-focus.png</alttexturefocus>
+					<alttexturenofocus>-</alttexturenofocus>
+					<usealttexture>library.isscanningvideo</usealttexture>
 				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
