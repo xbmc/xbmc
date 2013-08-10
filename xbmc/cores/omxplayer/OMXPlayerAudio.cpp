@@ -391,7 +391,15 @@ void OMXPlayerAudio::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     { //player asked us to set internal clock
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
-      CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, %d)", m_audioClock, pMsgGeneralResync->m_clock);
+
+      if (pMsgGeneralResync->m_clock && pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
+      {
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, %f, 1)", m_audioClock, pMsgGeneralResync->m_timestamp);
+        m_av_clock->Discontinuity(pMsgGeneralResync->m_timestamp);
+      }
+      else
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_audioClock);
+
       m_flush = false;
       m_audioClock = DVD_NOPTS_VALUE;
     }
@@ -424,12 +432,14 @@ void OMXPlayerAudio::Process()
     else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
     {
       COMXPlayer::SPlayerState& state = ((CDVDMsgType<COMXPlayer::SPlayerState>*)pMsg)->m_value;
+      double pts = m_audioClock;
+      double stamp = m_av_clock->OMXMediaTime();
 
       if(state.time_src == COMXPlayer::ETIMESOURCE_CLOCK)
-        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime());
-        //state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
+        state.time      = stamp == 0.0 ? state.time : DVD_TIME_TO_MSEC(stamp + state.time_offset);
       else
-        state.timestamp = m_av_clock->GetAbsoluteClock();
+        state.time      = stamp == 0.0 || pts == DVD_NOPTS_VALUE ? state.time : state.time + DVD_TIME_TO_MSEC(stamp - pts);
+      state.timestamp = m_av_clock->GetAbsoluteClock();
       state.player    = DVDPLAYER_AUDIO;
       m_messageParent.Put(pMsg->Acquire());
     }
