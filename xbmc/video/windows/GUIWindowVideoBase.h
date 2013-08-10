@@ -50,8 +50,6 @@ public:
 
   void AddToDatabase(int iItem);
   virtual void OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scraper);
-  static void MarkWatched(const CFileItemPtr &pItem, bool bMark);
-  static void UpdateVideoTitle(const CFileItem* pItem);
 
   /*! \brief Show dialog allowing selection of wanted playback item */
   static bool ShowPlaySelection(CFileItemPtr& item);
@@ -104,7 +102,6 @@ protected:
   virtual bool CanContainFilter(const CStdString &strDirectory) const;
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
-  void GetNonContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(CFileItemPtr pItem);

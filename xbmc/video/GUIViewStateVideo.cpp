@@ -479,7 +479,7 @@ CGUIViewStateVideoMovies::CGUIViewStateVideoMovies(const CFileItemList& items) :
   AddSortMethod(SortByYear, 562, LABEL_MASKS("%T", "%Y", "%T", "%Y"));  // Title, Year | Title, Year
 
   const CViewState *viewState = CViewStateSettings::Get().Get("videonavtitles");
-  if (items.IsSmartPlayList() || items.GetProperty("library.filter").asBoolean())
+  if (items.IsSmartPlayList() || items.IsLibraryFolder())
     AddPlaylistOrder(items, LABEL_MASKS("%T", "%R", "%T", "%R"));  // Title, Rating | Title, Rating
   else
   {
@@ -516,7 +516,7 @@ CGUIViewStateVideoMusicVideos::CGUIViewStateVideoMusicVideos(const CFileItemList
   AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
 
   const CViewState *viewState = CViewStateSettings::Get().Get("videonavmusicvideos");
-  if (items.IsSmartPlayList() || items.GetProperty("library.filter").asBoolean())
+  if (items.IsSmartPlayList() || items.IsLibraryFolder())
     AddPlaylistOrder(items, LABEL_MASKS("%A - %T", "%Y"));  // Artist - Title, Year | empty, empty
   else
   {
@@ -541,7 +541,7 @@ CGUIViewStateVideoTVShows::CGUIViewStateVideoTVShows(const CFileItemList& items)
   AddSortMethod(SortByYear, 562, LABEL_MASKS("%T", "%Y", "%T", "%Y"));  // Title, Year | Title, Year
 
   const CViewState *viewState = CViewStateSettings::Get().Get("videonavtvshows");
-  if (items.IsSmartPlayList() || items.GetProperty("library.filter").asBoolean())
+  if (items.IsSmartPlayList() || items.IsLibraryFolder())
     AddPlaylistOrder(items, LABEL_MASKS("%T", "%M", "%T", "%M"));  // Title, #Episodes | Title, #Episodes
   else
   {
@@ -581,7 +581,7 @@ CGUIViewStateVideoEpisodes::CGUIViewStateVideoEpisodes(const CFileItemList& item
   }
 
   const CViewState *viewState = CViewStateSettings::Get().Get("videonavepisodes");
-  if (items.IsSmartPlayList() || items.GetProperty("library.filter").asBoolean())
+  if (items.IsSmartPlayList() || items.IsLibraryFolder())
     AddPlaylistOrder(items, LABEL_MASKS("%Z - %H. %T", "%R"));  // TvShow - Order. Title, Rating | empty, empty
   else
   {

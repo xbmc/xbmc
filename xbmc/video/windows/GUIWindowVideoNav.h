@@ -64,7 +64,6 @@ protected:
   virtual bool GetFilteredItems(const CStdString &filter, CFileItemList &items);
 
   virtual void OnItemLoaded(CFileItem* pItem) {};
-  void OnLinkMovieToTvShow(int itemnumber, bool bRemove);
   // override base class methods
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
@@ -80,10 +79,6 @@ protected:
 
   bool GetItemsForTag(const CStdString &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
   static CStdString GetLocalizedType(const std::string &strType);
-
-  bool GetSetForMovie(CFileItemPtr &movieItem, CFileItemPtr &selectedSet);
-  bool GetMoviesForSet(CFileItemPtr &setItem, CFileItemList &originalMovies, CFileItemList &selectedMovies);
-  bool SetMovieSet(CFileItemPtr &movieItem, CFileItemPtr &selectedSet);
 
   VECSOURCES m_shares;
 };

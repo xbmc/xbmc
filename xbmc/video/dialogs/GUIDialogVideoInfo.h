@@ -23,6 +23,8 @@
 #include "guilib/GUIDialog.h"
 #include "FileItem.h"
 
+class CVideoDatabase;
+
 class CGUIDialogVideoInfo :
       public CGUIDialog
 {
@@ -43,6 +45,14 @@ public:
 
   static std::string ChooseArtType(const CFileItem &item, std::map<std::string, std::string> &currentArt);
   static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
+
+  static int ManageVideoItem(const CFileItemPtr &item);
+  static bool UpdateVideoItemTitle(const CFileItemPtr &pItem);
+  static bool MarkWatched(const CFileItemPtr &item, bool bMark);
+
+  static bool GetMoviesForSet(const CFileItem *setItem, CFileItemList &originalMovies, CFileItemList &selectedMovies);
+  static bool GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet);
+  static bool SetMovieSet(const CFileItem *movieItem, const CFileItem *selectedSet);
 protected:
   virtual void OnInitWindow();
   void Update();
@@ -57,6 +67,9 @@ protected:
   void OnGetArt();
   void OnGetFanart();
   void PlayTrailer();
+
+  static bool UpdateVideoItemSortTitle(const CFileItemPtr &pItem);
+  static bool LinkMovieToTvShow(const CFileItemPtr &item, bool bRemove, CVideoDatabase &database);
 
   CFileItemPtr m_movieItem;
   CFileItemList *m_castList;

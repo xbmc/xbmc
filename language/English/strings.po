@@ -6719,7 +6719,15 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr ""
 
-#empty strings from id 16106 to 16199
+msgctxt "#16106"
+msgid "Manage ..."
+msgstr ""
+
+msgctxt "#16107"
+msgid "Edit sort title"
+msgstr ""
+
+#empty strings from id 16108 to 16199
 
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#16200"
@@ -9981,7 +9989,10 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr ""
 
-#empty string with id 20435
+#: system/settings/settings.xml
+msgctxt "#20435"
+msgid "Combine split video items"
+msgstr ""
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
@@ -10070,7 +10081,10 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr ""
 
-#empty string with id 20456
+#: system/settings/settings.xml
+msgctxt "#20456"
+msgid "Flatten library hierarchy"
+msgstr ""
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -12972,12 +12986,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36182"
-msgid "No info available yet."
+msgid "Enables direct playback of videos that are in folders, without having to open those folders first, as well as displaying multi-part video files as single items in non-library views."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36183"
-msgid "No info available yet."
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr ""
 
 #: system/settings/settings.xml

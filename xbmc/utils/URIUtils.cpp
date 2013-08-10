@@ -853,6 +853,12 @@ bool URIUtils::IsAndroidApp(const CStdString &path)
   return path.Left(11).Equals("androidapp:");
 }
 
+bool URIUtils::IsLibraryFolder(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("library");
+}
+
 bool URIUtils::IsDOSPath(const CStdString &path)
 {
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))

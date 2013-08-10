@@ -4702,45 +4702,70 @@ void CVideoDatabase::UpdateMovieTitle(int idMovie, const CStdString& strNewMovie
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
     CStdString content;
-    CStdString strSQL;
     if (iType == VIDEODB_CONTENT_MOVIES)
     {
       CLog::Log(LOGINFO, "Changing Movie:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
-      strSQL = PrepareSQL("UPDATE movie SET c%02d='%s' WHERE idMovie=%i", VIDEODB_ID_TITLE, strNewMovieTitle.c_str(), idMovie );
       content = "movie";
     }
     else if (iType == VIDEODB_CONTENT_EPISODES)
     {
       CLog::Log(LOGINFO, "Changing Episode:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
-      strSQL = PrepareSQL("UPDATE episode SET c%02d='%s' WHERE idEpisode=%i", VIDEODB_ID_EPISODE_TITLE, strNewMovieTitle.c_str(), idMovie );
       content = "episode";
     }
     else if (iType == VIDEODB_CONTENT_TVSHOWS)
     {
       CLog::Log(LOGINFO, "Changing TvShow:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
-      strSQL = PrepareSQL("UPDATE tvshow SET c%02d='%s' WHERE idShow=%i", VIDEODB_ID_TV_TITLE, strNewMovieTitle.c_str(), idMovie );
       content = "tvshow";
     }
     else if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     {
       CLog::Log(LOGINFO, "Changing MusicVideo:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
-      strSQL = PrepareSQL("UPDATE musicvideo SET c%02d='%s' WHERE idMVideo=%i", VIDEODB_ID_MUSICVIDEO_TITLE, strNewMovieTitle.c_str(), idMovie );
       content = "musicvideo";
     }
     else if (iType == VIDEODB_CONTENT_MOVIE_SETS)
     {
       CLog::Log(LOGINFO, "Changing Movie set:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
-      strSQL = PrepareSQL("UPDATE sets SET strSet='%s' WHERE idSet=%i", strNewMovieTitle.c_str(), idMovie );
+      CStdString strSQL = PrepareSQL("UPDATE sets SET strSet='%s' WHERE idSet=%i", strNewMovieTitle.c_str(), idMovie );
+      m_pDS->exec(strSQL.c_str());
     }
-    m_pDS->exec(strSQL.c_str());
 
-    if (content.size() > 0)
+    if (!content.empty())
+    {
+      SetSingleValue(iType, idMovie, FieldTitle, strNewMovieTitle);
       AnnounceUpdate(content, idMovie);
+    }
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (int idMovie, const CStdString& strNewMovieTitle) failed on MovieID:%i and Title:%s", __FUNCTION__, idMovie, strNewMovieTitle.c_str());
   }
+}
+
+bool CVideoDatabase::UpdateVideoSortTitle(int idDb, const CStdString& strNewSortTitle, VIDEODB_CONTENT_TYPE iType /* = VIDEODB_CONTENT_MOVIES */)
+{
+  try
+  {
+    if (NULL == m_pDB.get() || NULL == m_pDS.get())
+      return false;
+    if (iType != VIDEODB_CONTENT_MOVIES && iType != VIDEODB_CONTENT_TVSHOWS)
+      return false;
+
+    CStdString content = "movie";
+    if (iType == VIDEODB_CONTENT_TVSHOWS)
+      content = "tvshow";
+
+    if (SetSingleValue(iType, idDb, FieldSortTitle, strNewSortTitle))
+    {
+      AnnounceUpdate(content, idDb);
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (int idDb, const CStdString& strNewSortTitle, VIDEODB_CONTENT_TYPE iType) failed on ID: %i and Sort Title: %s", __FUNCTION__, idDb, strNewSortTitle.c_str());
+  }
+
+  return false;
 }
 
 /// \brief EraseVideoSettings() Erases the videoSettings table and reconstructs it
@@ -9146,42 +9171,84 @@ bool CVideoDatabase::CommitTransaction()
   return false;
 }
 
-void CVideoDatabase::SetDetail(const CStdString& strDetail, int id, int field,
-                               VIDEODB_CONTENT_TYPE type)
+bool CVideoDatabase::SetSingleValue(VIDEODB_CONTENT_TYPE type, int dbId, int dbField, const std::string &strValue)
 {
+  string strSQL;
   try
   {
-    if (NULL == m_pDB.get()) return;
-    if (NULL == m_pDS.get()) return;
+    if (NULL == m_pDB.get() || NULL == m_pDS.get())
+      return false;
 
-    CStdString strTable, strField;
+    string strTable, strField;
     if (type == VIDEODB_CONTENT_MOVIES)
     {
       strTable = "movie";
       strField = "idMovie";
     }
-    if (type == VIDEODB_CONTENT_TVSHOWS)
+    else if (type == VIDEODB_CONTENT_TVSHOWS)
     {
       strTable = "tvshow";
       strField = "idShow";
     }
-    if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+    else if (type == VIDEODB_CONTENT_EPISODES)
+    {
+      strTable = "episode";
+      strField = "idEpisode";
+    }
+    else if (type == VIDEODB_CONTENT_MUSICVIDEOS)
     {
       strTable = "musicvideo";
       strField = "idMVideo";
     }
 
-    if (strTable.IsEmpty())
-      return;
+    if (strTable.empty())
+      return false;
 
-    CStdString strSQL = PrepareSQL("update %s set c%02u='%s' where %s=%u",
-                                  strTable.c_str(), field, strDetail.c_str(), strField.c_str(), id);
-    m_pDS->exec(strSQL.c_str());
+    return SetSingleValue(strTable, StringUtils::Format("c%02u", dbField), strValue, strField, dbId);
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
   }
+  return false;
+}
+
+bool CVideoDatabase::SetSingleValue(VIDEODB_CONTENT_TYPE type, int dbId, Field dbField, const std::string &strValue)
+{
+  MediaType mediaType = DatabaseUtils::MediaTypeFromVideoContentType(type);
+  if (mediaType == MediaTypeNone)
+    return false;
+
+  int dbFieldIndex = DatabaseUtils::GetField(dbField, mediaType);
+  if (dbFieldIndex < 0)
+    return false;
+
+  return SetSingleValue(type, dbId, dbFieldIndex, strValue);
+}
+
+bool CVideoDatabase::SetSingleValue(const std::string &table, const std::string &fieldName, const std::string &strValue,
+                                    const std::string &conditionName /* = "" */, int conditionValue /* = -1 */)
+{
+  if (table.empty() || fieldName.empty())
+    return false;
+
+  std::string sql;
+  try
+  {
+    if (NULL == m_pDB.get() || NULL == m_pDS.get())
+      return false;
+
+    sql = PrepareSQL("UPDATE %s SET %s='%s'", table.c_str(), fieldName.c_str(), strValue.c_str());
+    if (!conditionName.empty())
+      sql += PrepareSQL(" WHERE %s=%u", conditionName.c_str(), conditionValue);
+    if (m_pDS->exec(sql.c_str()) == 0)
+      return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, sql.c_str());
+  }
+  return false;
 }
 
 CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &name) const
