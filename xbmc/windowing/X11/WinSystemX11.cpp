@@ -437,7 +437,7 @@ void CWinSystemX11::GetConnectedOutputs(std::vector<CStdString> *outputs)
 
 bool CWinSystemX11::IsCurrentOutput(CStdString output)
 {
-  return m_currentOutput.Equals(output);
+  return output.Equals("Default") || m_currentOutput.Equals(output);
 }
 
 bool CWinSystemX11::IsSuitableVisual(XVisualInfo *vInfo)
