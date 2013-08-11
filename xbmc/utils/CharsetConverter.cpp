@@ -443,7 +443,10 @@ void CCharsetConverter::reset(void)
   for(SFribidMapping* c = g_fribidi; c->charset; c++)
   {
     if (StringUtils::EqualsNoCase(strCharset, c->charset))
+    {
       m_stringFribidiCharset = c->name;
+      break;
+    }
   }
 }
 
