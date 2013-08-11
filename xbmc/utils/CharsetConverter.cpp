@@ -284,12 +284,13 @@ static bool convert(iconv_t& type, int multiplier, const std::string& strFromCha
 
 using namespace std;
 
-static void logicalToVisualBiDi(const std::string& strSource, std::string& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped =NULL)
+static void logicalToVisualBiDi(const std::string& stringSrc, std::string& stringDst, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped =NULL)
 {
   // libfribidi is not threadsafe, so make sure we make it so
   CSingleLock lock(m_critSection);
-  strDest.clear();
-  vector<std::string> lines = StringUtils::Split(strSource, "\n");
+
+  stringDst.clear();
+  vector<std::string> lines = StringUtils::Split(stringSrc, "\n");
   std::string resultString;
 
   if (bWasFlipped)
@@ -354,7 +355,7 @@ static void logicalToVisualBiDi(const std::string& strSource, std::string& strDe
     free(levels);
   }
 
-  strDest = resultString;
+  stringDst = resultString;
 }
 
 CCharsetConverter::CCharsetConverter()
@@ -448,140 +449,140 @@ void CCharsetConverter::reset(void)
 
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
 // of the string is already made or the string is not displayed in the GUI
-void CCharsetConverter::utf8ToW(const std::string& utf8String, std::wstring& wString, bool bVisualBiDiFlip /*= true*/, bool forceLTRReadingOrder /*= false*/, bool* bWasFlipped /*= NULL*/)
+void CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst, bool bVisualBiDiFlip /*= true*/, bool forceLTRReadingOrder /*= false*/, bool* bWasFlipped /*= NULL*/)
 {
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
     std::string strFlipped;
     FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
-    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_UTF8, charset, bWasFlipped);
+    logicalToVisualBiDi(utf8StringSrc, strFlipped, FRIBIDI_UTF8, charset, bWasFlipped);
     CSingleLock lock(m_critSection);
-    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);
+    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wStringDst);
   }
   else
   {
     CSingleLock lock(m_critSection);
-    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,utf8String,wString);
+    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,utf8StringSrc,wStringDst);
   }
 }
 
-void CCharsetConverter::subtitleCharsetToW(const std::string& strSource, std::wstring& strDest)
+void CCharsetConverter::subtitleCharsetToW(const std::string& stringSrc, std::wstring& wStringDst)
 {
   // No need to flip hebrew/arabic as mplayer does the flipping
   CSingleLock lock(m_critSection);
-  convert(m_iconvSubtitleCharsetToW,sizeof(wchar_t),g_langInfo.GetSubtitleCharSet(),WCHAR_CHARSET,strSource,strDest);
+  convert(m_iconvSubtitleCharsetToW,sizeof(wchar_t),g_langInfo.GetSubtitleCharSet(),WCHAR_CHARSET,stringSrc,wStringDst);
 }
 
-void CCharsetConverter::fromW(const std::wstring& strSource,
-                              std::string& strDest, const std::string& enc)
+void CCharsetConverter::fromW(const std::wstring& wStringSrc,
+                              std::string& stringDst, const std::string& enc)
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,4,WCHAR_CHARSET,enc,strSource,strDest);
+  convert(iconvString,4,WCHAR_CHARSET,enc,wStringSrc,stringDst);
   iconv_close(iconvString);
 }
 
-void CCharsetConverter::toW(const std::string& strSource,
-                            std::wstring& strDest, const std::string& enc)
+void CCharsetConverter::toW(const std::string& stringSrc,
+                            std::wstring& wStringDst, const std::string& enc)
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,sizeof(wchar_t),enc,WCHAR_CHARSET,strSource,strDest);
+  convert(iconvString,sizeof(wchar_t),enc,WCHAR_CHARSET,stringSrc,wStringDst);
   iconv_close(iconvString);
 }
 
-void CCharsetConverter::utf8ToStringCharset(const std::string& strSource, std::string& strDest)
+void CCharsetConverter::utf8ToStringCharset(const std::string& utf8StringSrc, std::string& stringDst)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUtf8ToStringCharset,1,UTF8_SOURCE,g_langInfo.GetGuiCharSet(),strSource,strDest);
+  convert(m_iconvUtf8ToStringCharset,1,UTF8_SOURCE,g_langInfo.GetGuiCharSet(),utf8StringSrc,stringDst);
 }
 
-void CCharsetConverter::utf8ToStringCharset(std::string& strSourceDest)
+void CCharsetConverter::utf8ToStringCharset(std::string& stringSrcDst)
 {
   std::string strDest;
-  utf8ToStringCharset(strSourceDest, strDest);
-  strSourceDest=strDest;
+  utf8ToStringCharset(stringSrcDst, strDest);
+  stringSrcDst=strDest;
 }
 
-void CCharsetConverter::stringCharsetToUtf8(const std::string& strSourceCharset, const std::string& strSource, std::string& strDest)
+void CCharsetConverter::stringCharsetToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst)
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,UTF8_DEST_MULTIPLIER,strSourceCharset,"UTF-8",strSource,strDest);
+  convert(iconvString,UTF8_DEST_MULTIPLIER,strSourceCharset,"UTF-8",stringSrc,utf8StringDst);
   iconv_close(iconvString);
 }
 
-void CCharsetConverter::utf8To(const std::string& strDestCharset, const std::string& strSource, std::string& strDest)
+void CCharsetConverter::utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::string& stringDst)
 {
   if (strDestCharset == "UTF-8")
   { // simple case - no conversion necessary
-    strDest = strSource;
+    stringDst = utf8StringSrc;
     return;
   }
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest);
+  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,utf8StringSrc,stringDst);
   iconv_close(iconvString);
 }
 
-void CCharsetConverter::utf8To(const std::string& strDestCharset, const std::string& strSource, std::u16string& strDest)
+void CCharsetConverter::utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u16string& utf16StringDst)
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest);
+  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,utf8StringSrc,utf16StringDst);
   iconv_close(iconvString);
 }
 
-void CCharsetConverter::utf8To(const std::string& strDestCharset, const std::string& strSource, std::u32string& strDest)
+void CCharsetConverter::utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u32string& utf32StringDst)
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest);
+  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,utf8StringSrc,utf32StringDst);
   iconv_close(iconvString);
 }
 
-void CCharsetConverter::unknownToUTF8(std::string& sourceAndDest)
+void CCharsetConverter::unknownToUTF8(std::string& stringSrcDst)
 {
-  std::string source = sourceAndDest;
-  unknownToUTF8(source, sourceAndDest);
+  std::string source = stringSrcDst;
+  unknownToUTF8(source, stringSrcDst);
 }
 
-void CCharsetConverter::unknownToUTF8(const std::string& source, std::string& dest)
+void CCharsetConverter::unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst)
 {
   // checks whether it's utf8 already, and if not converts using the sourceCharset if given, else the string charset
-  if (isValidUtf8(source))
-    dest = source;
+  if (isValidUtf8(stringSrc))
+    utf8StringDst = stringSrc;
   else
   {
     CSingleLock lock(m_critSection);
-    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", source, dest);
+    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", stringSrc, utf8StringDst);
   }
 }
 
-void CCharsetConverter::wToUTF8(const std::wstring& strSource, std::string& strDest)
+void CCharsetConverter::wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvWtoUtf8,UTF8_DEST_MULTIPLIER,WCHAR_CHARSET,"UTF-8",strSource,strDest);
+  convert(m_iconvWtoUtf8,UTF8_DEST_MULTIPLIER,WCHAR_CHARSET,"UTF-8",wStringSrc,utf8StringDst);
 }
 
-void CCharsetConverter::utf16BEtoUTF8(const std::u16string& strSource, std::string& strDest)
+void CCharsetConverter::utf16BEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUtf16BEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16BE","UTF-8",strSource,strDest);
+  convert(m_iconvUtf16BEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16BE","UTF-8",utf16StringSrc,utf8StringDst);
 }
 
-void CCharsetConverter::utf16LEtoUTF8(const std::u16string& strSource,
-                                      std::string& strDest)
+void CCharsetConverter::utf16LEtoUTF8(const std::u16string& utf16StringSrc,
+                                      std::string& utf8StringDst)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUtf16LEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16LE","UTF-8",strSource,strDest);
+  convert(m_iconvUtf16LEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16LE","UTF-8",utf16StringSrc,utf8StringDst);
 }
 
-void CCharsetConverter::ucs2ToUTF8(const std::u16string& strSource, std::string& strDest)
+void CCharsetConverter::ucs2ToUTF8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUcs2CharsetToUtf8,UTF8_DEST_MULTIPLIER,"UCS-2LE","UTF-8",strSource,strDest);
+  convert(m_iconvUcs2CharsetToUtf8,UTF8_DEST_MULTIPLIER,"UCS-2LE","UTF-8",ucs2StringSrc,utf8StringDst);
 }
 
 void CCharsetConverter::utf16LEtoW(const std::u16string& utf16String, std::wstring& wString)
@@ -590,9 +591,9 @@ void CCharsetConverter::utf16LEtoW(const std::u16string& utf16String, std::wstri
   convert(m_iconvUtf16LEtoW,sizeof(wchar_t),"UTF-16LE",WCHAR_CHARSET,utf16String,wString);
 }
 
-void CCharsetConverter::ucs2CharsetToStringCharset(const std::u16string& strSource, std::string& strDest, bool swap /*= false*/)
+void CCharsetConverter::ucs2CharsetToStringCharset(const std::u16string& ucs2StringSrc, std::string& stringDst, bool swap /*= false*/)
 {
-  std::u16string strCopy = strSource;
+  std::u16string strCopy = ucs2StringSrc;
   if (swap)
   {
     char* s = (char*) strCopy.c_str();
@@ -609,10 +610,10 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const std::u16string& strSour
   }
   CSingleLock lock(m_critSection);
   convert(m_iconvUcs2CharsetToStringCharset,4,"UTF-16LE",
-          g_langInfo.GetGuiCharSet(),strCopy,strDest);
+          g_langInfo.GetGuiCharSet(),strCopy,stringDst);
 }
 
-void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, std::string& strDest)
+void CCharsetConverter::utf32ToStringCharset(const unsigned long* utf32StringSrc, std::string& stringDst)
 {
   CSingleLock lock(m_critSection);
 
@@ -621,10 +622,10 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, std
 
   if (m_iconvUtf32ToStringCharset != (iconv_t) - 1)
   {
-    const unsigned long* ptr=strSource;
+    const unsigned long* ptr=utf32StringSrc;
     while (*ptr) ptr++;
-    const char* src = (const char*) strSource;
-    size_t inBytes = (ptr-strSource+1)*4;
+    const char* src = (const char*) utf32StringSrc;
+    size_t inBytes = (ptr-utf32StringSrc+1)*4;
 
     char* dst = new char[inBytes];
     size_t outBytes = inBytes;
@@ -633,7 +634,7 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, std
     {
       CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       delete[] dst;
-      strDest = (const char*)strSource;
+      stringDst = (const char*)utf32StringSrc;
       return;
     }
 
@@ -641,21 +642,21 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, std
     {
       CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
       delete[] dst;
-      strDest = (const char*)strSource;
+      stringDst = (const char*)utf32StringSrc;
       return;
     }
-    strDest = dst;
+    stringDst = dst;
     delete[] dst;
   }
   else
-    strDest.clear();
+    stringDst.clear();
 }
 
-void CCharsetConverter::utf8ToSystem(std::string& strSourceDest)
+void CCharsetConverter::utf8ToSystem(std::string& stringSrcDst)
 {
   std::string strDest;
-  g_charsetConverter.utf8To("", strSourceDest, strDest);
-  strSourceDest = strDest;
+  g_charsetConverter.utf8To("", stringSrcDst, strDest);
+  stringSrcDst = strDest;
 }
 
 // Taken from RFC2640
@@ -724,9 +725,9 @@ bool CCharsetConverter::isValidUtf8(const std::string& str)
   return isValidUtf8(str.c_str(), str.size());
 }
 
-void CCharsetConverter::utf8logicalToVisualBiDi(const std::string& strSource, std::string& strDest)
+void CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst)
 {
-  logicalToVisualBiDi(strSource, strDest, FRIBIDI_UTF8, FRIBIDI_TYPE_RTL);
+  logicalToVisualBiDi(utf8StringSrc, utf8StringDst, FRIBIDI_UTF8, FRIBIDI_TYPE_RTL);
 }
 
 void CCharsetConverter::SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current)

@@ -42,48 +42,48 @@ public:
 
   void clear();
 
-  void utf8ToW(const std::string& utf8String, std::wstring& wString, bool bVisualBiDiFlip = true, bool forceLTRReadingOrder = false, bool* bWasFlipped = NULL);
+  void utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst, bool bVisualBiDiFlip = true, bool forceLTRReadingOrder = false, bool* bWasFlipped = NULL);
 
   void utf16LEtoW(const std::u16string& utf16String, std::wstring& wString);
 
-  void subtitleCharsetToW(const std::string& strSource, std::wstring& strDest);
+  void subtitleCharsetToW(const std::string& stringSrc, std::wstring& wStringDst);
 
-  void utf8ToStringCharset(const std::string& strSource, std::string& strDest);
+  void utf8ToStringCharset(const std::string& utf8StringSrc, std::string& stringDst);
 
-  void utf8ToStringCharset(std::string& strSourceDest);
-  void utf8ToSystem(std::string& strSourceDest);
+  void utf8ToStringCharset(std::string& stringSrcDst);
+  void utf8ToSystem(std::string& stringSrcDst);
 
-  void utf8To(const std::string& strDestCharset, const std::string& strSource, std::string& strDest);
-  void utf8To(const std::string& strDestCharset, const std::string& strSource, std::u16string& strDest);
-  void utf8To(const std::string& strDestCharset, const std::string& strSource, std::u32string& strDest);
+  void utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::string& stringDst);
+  void utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u16string& utf16StringDst);
+  void utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u32string& utf32StringDst);
 
-  void stringCharsetToUtf8(const std::string& strSourceCharset, const std::string& strSource, std::string& strDest);
+  void stringCharsetToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst);
 
   bool isValidUtf8(const std::string& str);
 
   bool isValidUtf8(const char* buf, unsigned int len);
 
-  void ucs2CharsetToStringCharset(const std::u16string& strSource, std::string& strDest, bool swap = false);
+  void ucs2CharsetToStringCharset(const std::u16string& ucs2StringSrc, std::string& stringDst, bool swap = false);
 
-  void wToUTF8(const std::wstring& strSource, std::string& strDest);
-  void utf16BEtoUTF8(const std::u16string& strSource, std::string& strDest);
-  void utf16LEtoUTF8(const std::u16string& strSource, std::string& strDest);
-  void ucs2ToUTF8(const std::u16string& strSource, std::string& strDest);
+  void wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst);
+  void utf16BEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
+  void utf16LEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
+  void ucs2ToUTF8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst);
 
-  void utf8logicalToVisualBiDi(const std::string& strSource, std::string& strDest);
+  void utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst);
 
-  void utf32ToStringCharset(const unsigned long* strSource, std::string& strDest);
+  void utf32ToStringCharset(const unsigned long* utf32StringSrc, std::string& stringDst);
 
   std::vector<std::string> getCharsetLabels();
   std::string getCharsetLabelByName(const std::string& charsetName);
   std::string getCharsetNameByLabel(const std::string& charsetLabel);
   bool isBidiCharset(const std::string& charset);
 
-  void unknownToUTF8(std::string& sourceDest);
-  void unknownToUTF8(const std::string& source, std::string& dest);
+  void unknownToUTF8(std::string& stringSrcDst);
+  void unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst);
 
-  void toW(const std::string& source, std::wstring& dest, const std::string& enc);
-  void fromW(const std::wstring& source, std::string& dest, const std::string& enc);
+  void toW(const std::string& stringSrc, std::wstring& wStringDst, const std::string& enc);
+  void fromW(const std::wstring& wStringSrc, std::string& stringDst, const std::string& enc);
 
   static void SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current);
 };
