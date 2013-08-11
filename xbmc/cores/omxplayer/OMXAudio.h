@@ -69,10 +69,10 @@ public:
   unsigned int GetSpace();
   bool Deinitialize();
 
-  long GetCurrentVolume() const;
-  void Mute(bool bMute);
-  bool SetCurrentVolume(float fVolume);
-  void SetDynamicRangeCompression(long drc) { m_drc = drc; }
+  void SetVolume(float nVolume);
+  void SetMute(bool bOnOff);
+  void SetDynamicRangeCompression(long drc);
+  bool ApplyVolume();
   int SetPlaySpeed(int iSpeed);
   void SubmitEOS();
   bool IsEOS();
@@ -100,6 +100,7 @@ private:
   IAudioCallback* m_pCallback;
   bool          m_Initialized;
   float         m_CurrentVolume;
+  bool          m_Mute;
   long          m_drc;
   bool          m_Passthrough;
   bool          m_HWDecode;

@@ -185,10 +185,10 @@ public:
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_omxPlayerAudio.RegisterAudioCallback(pCallback); }
   virtual void UnRegisterAudioCallback()                        { m_omxPlayerAudio.UnRegisterAudioCallback(); }
-  virtual void SetVolume(float nVolume);
-  virtual void SetMute(bool bOnOff);
+  virtual void SetVolume(float nVolume)                         { m_omxPlayerAudio.SetVolume(nVolume); }
+  virtual void SetMute(bool bOnOff)                             { m_omxPlayerAudio.SetMute(bOnOff); }
+  virtual void SetDynamicRangeCompression(long drc)             { m_omxPlayerAudio.SetDynamicRangeCompression(drc); }
   virtual bool ControlsVolume() {return true;}
-  virtual void SetDynamicRangeCompression(long drc)              {}
   virtual void GetAudioInfo(CStdString &strAudioInfo);
   virtual void GetVideoInfo(CStdString &strVideoInfo);
   virtual void GetGeneralInfo(CStdString &strVideoInfo);
@@ -375,9 +375,7 @@ protected:
   CDVDClock m_clock;                // master clock
   OMXClock m_av_clock;
 
-  float m_current_volume;
-  bool m_current_mute;
-  bool m_change_volume;
+  bool m_stepped;
 
   CDVDOverlayContainer m_overlayContainer;
 
