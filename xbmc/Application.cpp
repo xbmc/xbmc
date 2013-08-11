@@ -5503,11 +5503,15 @@ void CApplication::UpdateLibraries()
     CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
     StartVideoScan("");
   }
-
   if (CSettings::Get().GetBool("musiclibrary.updateonstartup"))
   {
     CLog::Log(LOGNOTICE, "%s - Starting music library startup scan", __FUNCTION__);
     StartMusicScan("");
+  }
+  //if (CSettings::Get().GetBool("musiclibrary.updateonstartup"))
+  {
+    CLog::Log(LOGNOTICE, "%s - Starting picture library startup scan", __FUNCTION__);
+    StartPictureScan("");
   }
 }
 
