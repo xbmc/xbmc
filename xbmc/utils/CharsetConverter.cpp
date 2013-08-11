@@ -580,9 +580,9 @@ void CCharsetConverter::utf16LEtoW(const std::u16string& utf16String, std::wstri
   convert(m_iconvUtf16LEtoW,sizeof(wchar_t),"UTF-16LE",WCHAR_CHARSET,utf16String,wString);
 }
 
-void CCharsetConverter::ucs2CharsetToStringCharset(const std::wstring& strSource, std::string& strDest, bool swap /*= false*/)
+void CCharsetConverter::ucs2CharsetToStringCharset(const std::u16string& strSource, std::string& strDest, bool swap /*= false*/)
 {
-  std::wstring strCopy = strSource;
+  std::u16string strCopy = strSource;
   if (swap)
   {
     char* s = (char*) strCopy.c_str();
