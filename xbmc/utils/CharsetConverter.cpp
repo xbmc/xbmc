@@ -332,7 +332,7 @@ static bool logicalToVisualBiDi(const std::string& stringSrc, std::string& strin
 
       // Convert back from Unicode to the charset
       int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
-      ASSERT(len2 <= len*4);
+      assert(len2 <= len*4);
       stringDst += result;
       delete[] result;
 
