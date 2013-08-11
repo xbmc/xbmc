@@ -160,9 +160,9 @@ int CJNICursor::getInt(int columnIndex)
     columnIndex);
 }
 
-long CJNICursor::getLong(int columnIndex)
+int64_t CJNICursor::getLong(int columnIndex)
 {
-  return call_method<jint>(m_object,
+  return call_method<jlong>(m_object,
     "getLong", "()J",
     columnIndex);
 }

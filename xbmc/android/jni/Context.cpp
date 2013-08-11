@@ -36,6 +36,13 @@
 #include "Cursor.h"
 #include "ConnectivityManager.h"
 #include "AudioManager.h"
+#include "Surface.h"
+#include "MediaCodec.h"
+#include "MediaCodecInfo.h"
+#include "MediaFormat.h"
+#include "Window.h"
+#include "View.h"
+#include "Build.h"
 
 #include <android/native_activity.h>
 
@@ -48,6 +55,7 @@ CJNIContext::CJNIContext(const ANativeActivity *nativeActivity)
 {
   m_context.reset(nativeActivity->clazz);
   xbmc_jni_on_load(nativeActivity->vm, nativeActivity->env);
+  CJNIBase::SetSDKVersion(nativeActivity->sdkVersion);
   PopulateStaticFields();
   m_appInstance = this;
 }
@@ -70,6 +78,13 @@ void CJNIContext::PopulateStaticFields()
   CJNIContentResolver::PopulateStaticFields();
   CJNIConnectivityManager::PopulateStaticFields();
   CJNIAudioManager::PopulateStaticFields();
+  CJNISurface::PopulateStaticFields();
+  CJNIMediaCodec::PopulateStaticFields();
+  CJNIMediaCodecInfoCodecProfileLevel::PopulateStaticFields();
+  CJNIMediaCodecInfoCodecCapabilities::PopulateStaticFields();
+  CJNIMediaFormat::PopulateStaticFields();
+  CJNIView::PopulateStaticFields();
+  CJNIBuild::PopulateStaticFields();
 }
 
 CJNIPackageManager CJNIContext::GetPackageManager()
@@ -175,6 +190,12 @@ CJNIContentResolver CJNIContext::getContentResolver()
 {
   return call_method<jhobject>(m_context,
     "getContentResolver", "()Landroid/content/ContentResolver;");
+}
+
+CJNIWindow CJNIContext::getWindow()
+{
+  return call_method<jhobject>(m_context,
+    "getWindow", "()Landroid/view/Window;");
 }
 
 void CJNIContext::_onNewIntent(JNIEnv *env, jobject context, jobject intent)

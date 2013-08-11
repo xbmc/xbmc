@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,6 +33,18 @@ CJNIList<CJNIWifiConfiguration> CJNIWifiManager::getConfiguredNetworks()
 {
   return call_method<jhobject>(m_object,
     "getConfiguredNetworks" , "()Ljava/util/List;");
+}
+
+int CJNIWifiManager::addNetwork(const CJNIWifiConfiguration &config)
+{
+    return call_method<int>(m_object,
+    "addNetwork" , "(Landroid/net/wifi/WifiConfiguration;)I", config.get_raw());
+}
+
+int CJNIWifiManager::updateNetwork(const CJNIWifiConfiguration &config)
+{
+    return call_method<int>(m_object,
+    "updateNetwork" , "(Landroid/net/wifi/WifiConfiguration;)I", config.get_raw());
 }
 
 CJNIList<CJNIScanResult> CJNIWifiManager::getScanResults()

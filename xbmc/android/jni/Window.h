@@ -1,7 +1,7 @@
 #pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,31 +19,14 @@
  *
  */
 
-#include "jutils/jutils.hpp"
-class CJNIBase
+#include "JNIBase.h"
+
+class CJNIView;
+class CJNIWindow : public CJNIBase
 {
-  friend class CJNIContext; //for SetSDKVersion()
-
-  typedef void (CJNIBase::*safe_bool_type)();
-  void non_null_object() {}
-
 public:
-  operator safe_bool_type() const { return !m_object ?  0 : &CJNIBase::non_null_object; }
-  const jni::jhobject& get_raw() const { return m_object; }
-  static int GetSDKVersion();
+  CJNIWindow(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIWindow() {};
 
-protected:
-  CJNIBase(jni::jhobject const& object);
-  CJNIBase(std::string classname);
-  ~CJNIBase();
-
-  const std::string & GetClassName() {return m_className;};
-
-  jni::jhobject m_object;
-
-private:
-  static void SetSDKVersion(int);
-  std::string m_className;
-  static int m_sdk_version;
+  CJNIView getDecorView();
 };
-

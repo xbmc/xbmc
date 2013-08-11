@@ -1,7 +1,6 @@
-#pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,31 +18,24 @@
  *
  */
 
-#include "jutils/jutils.hpp"
-class CJNIBase
+#include "MediaCodecList.h"
+#include "MediaCodecInfo.h"
+
+#include "jutils/jutils-details.hpp"
+
+using namespace jni;
+
+const char* CJNIMediaCodecList::m_classname = "android/media/MediaCodecList";
+
+int CJNIMediaCodecList::getCodecCount()
 {
-  friend class CJNIContext; //for SetSDKVersion()
+  return call_static_method<int>(m_classname,
+    "getCodecCount", "()I");
+}
 
-  typedef void (CJNIBase::*safe_bool_type)();
-  void non_null_object() {}
-
-public:
-  operator safe_bool_type() const { return !m_object ?  0 : &CJNIBase::non_null_object; }
-  const jni::jhobject& get_raw() const { return m_object; }
-  static int GetSDKVersion();
-
-protected:
-  CJNIBase(jni::jhobject const& object);
-  CJNIBase(std::string classname);
-  ~CJNIBase();
-
-  const std::string & GetClassName() {return m_className;};
-
-  jni::jhobject m_object;
-
-private:
-  static void SetSDKVersion(int);
-  std::string m_className;
-  static int m_sdk_version;
-};
-
+const CJNIMediaCodecInfo CJNIMediaCodecList::getCodecInfoAt(int index)
+{
+  return call_static_method<jhobject>(m_classname,
+    "getCodecInfoAt", "(I)Landroid/media/MediaCodecInfo;",
+    index);
+}

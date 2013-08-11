@@ -49,7 +49,7 @@ public:
   std::string getString(int columnIndex);
   short getShort(int columnIndex);
   int  getInt(int columnIndex);
-  long getLong(int columnIndex);
+  int64_t getLong(int columnIndex);
   float getFloat(int columnIndex);
   double getDouble(int columnIndex);
   int  getType(int columnIndex);

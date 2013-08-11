@@ -21,28 +21,35 @@
 
 #include "JNIBase.h"
 
-class CJNISurfaceTexture;
-class CJNISurface : public CJNIBase
+class CJNIBuild
 {
 public:
-  CJNISurface(const CJNISurfaceTexture &surfaceTexture);
-  CJNISurface(const jni::jhobject &object) : CJNIBase(object) {};
-  ~CJNISurface() {};
+  static std::string UNKNOWN;
+  static std::string ID;
+  static std::string DISPLAY;
+  static std::string PRODUCT;
+  static std::string DEVICE;
+  static std::string BOARD;
+  static std::string CPU_ABI;
+  static std::string CPU_ABI2;
+  static std::string MANUFACTURER;
+  static std::string BRAND;
+  static std::string MODEL;
+  static std::string BOOTLOADER;
+  static std::string RADIO;
+  static std::string HARDWARE;
+  static std::string SERIAL;
+  static std::string TYPE;
+  static std::string TAGS;
+  static std::string FINGERPRINT;
+  static int64_t TIME;
+  static std::string USER;
+  static std::string HOST;
+  static std::string getRadioVersion();
 
-  bool        isValid();
-  void        release();
-//CJNICanvas  lockCanvas(CJNIRect);
-//void        unlockCanvasAndPost(const CJNICanvas &canvas);
-//void        unlockCanvas(const CJNICanvas &canvas);
-  std::string toString();
-
-  int         describeContents();
   static void PopulateStaticFields();
-  static int  ROTATION_0;
-  static int  ROTATION_90;
-  static int  ROTATION_180;
-  static int  ROTATION_270;
-
 private:
+  CJNIBuild();
+  ~CJNIBuild() {};
   static const char *m_classname;
 };
