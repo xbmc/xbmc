@@ -502,12 +502,8 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     goto fail;
   }
 
-  p->mVideoNativeWindow = NULL;
   if ((p->quirks & QuirkSWRender) == 0)
-  {
     p->InitStagefrightSurface();
-    native_window_api_connect(p->mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
-  }
 
   p->decoder  = OMXCodec::Create(p->client->interface(), p->meta,
                                          false, p->source, NULL,
