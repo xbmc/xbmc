@@ -794,7 +794,7 @@ CStdString CSysInfo::GetUserAgent()
   result += "; ";
   result += GetUnameVersion();
 #endif
-  result += "; http://www.xbmc.org)";
+  result += "; http://xbmc.org)";
 
   return result;
 }

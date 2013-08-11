@@ -83,7 +83,7 @@ void CAppParamParser::Parse(const char* argv[], int nArgs)
 void CAppParamParser::DisplayVersion()
 {
   printf("XBMC Media Center %s\n", g_infoManager.GetVersion().c_str());
-  printf("Copyright (C) 2005-2013 Team XBMC - http://www.xbmc.org\n");
+  printf("Copyright (C) 2005-2013 Team XBMC - http://xbmc.org\n");
   exit(0);
 }
 

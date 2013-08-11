@@ -582,7 +582,7 @@ List getAllVirtualMethods(Node clazz)
 %>
 /*
  *      Copyright (C) 2005-2013 Team XBMC
- *      http://www.xbmc.org
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -775,7 +775,7 @@ namespace PythonBindings
    }%>
 
    // constants
-   PyModule_AddStringConstant(module, (char*)"__author__", (char*)"Team XBMC <www.xbmc.org>");
+   PyModule_AddStringConstant(module, (char*)"__author__", (char*)"Team XBMC <http://xbmc.org>");
    PyModule_AddStringConstant(module, (char*)"__date__", (char*)"${new Date().toString()}");
    PyModule_AddStringConstant(module, (char*)"__version__", (char*)"2.0");
    PyModule_AddStringConstant(module, (char*)"__credits__", (char*)"Team XBMC");

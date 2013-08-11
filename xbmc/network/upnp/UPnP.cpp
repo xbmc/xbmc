@@ -512,9 +512,9 @@ CUPnP::CreateServer(int port /* = 0 */)
     device->m_ModelName        = "XBMC Media Center";
     device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
     device->m_ModelDescription = "XBMC Media Center - Media Server";
-    device->m_ModelURL         = "http://www.xbmc.org/";
+    device->m_ModelURL         = "http://xbmc.org/";
     device->m_Manufacturer     = "Team XBMC";
-    device->m_ManufacturerURL  = "http://www.xbmc.org/";
+    device->m_ManufacturerURL  = "http://xbmc.org/";
 
     device->SetDelegate(device);
     return device;
@@ -594,9 +594,9 @@ CUPnP::CreateRenderer(int port /* = 0 */)
     device->m_ModelName        = "XBMC Media Center";
     device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
     device->m_ModelDescription = "XBMC Media Center - Media Renderer";
-    device->m_ModelURL         = "http://www.xbmc.org/";
+    device->m_ModelURL         = "http://xbmc.org/";
     device->m_Manufacturer     = "Team XBMC";
-    device->m_ManufacturerURL  = "http://www.xbmc.org/";
+    device->m_ManufacturerURL  = "http://xbmc.org/";
 
     return device;
 }
