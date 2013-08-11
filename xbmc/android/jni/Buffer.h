@@ -1,7 +1,7 @@
 #pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,31 +19,30 @@
  *
  */
 
-#include "jutils/jutils.hpp"
-class CJNIBase
+#include "JNIBase.h"
+
+class CJNIBuffer : public CJNIBase
 {
-  friend class CJNIContext; //for SetSDKVersion()
-
-  typedef void (CJNIBase::*safe_bool_type)();
-  void non_null_object() {}
-
-public:
-  operator safe_bool_type() const { return !m_object ?  0 : &CJNIBase::non_null_object; }
-  const jni::jhobject& get_raw() const { return m_object; }
-  static int GetSDKVersion();
-
 protected:
-  CJNIBase(jni::jhobject const& object);
-  CJNIBase(std::string classname);
-  ~CJNIBase();
+  CJNIBuffer(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIBuffer() {};
 
-  const std::string & GetClassName() {return m_className;};
+  int           capacity();
+  int           position();
+  CJNIBuffer    position(int newPosition);
+  int           limit();
+  CJNIBuffer    limit(int newLimit);
+  CJNIBuffer    mark();
+  CJNIBuffer    reset();
+  CJNIBuffer    clear();
+  CJNIBuffer    flip();
+  CJNIBuffer    rewind();
+  int           remaining();
+  bool          hasRemaining();
 
-  jni::jhobject m_object;
-
-private:
-  static void SetSDKVersion(int);
-  std::string m_className;
-  static int m_sdk_version;
+  virtual bool  isReadOnly();
+  virtual bool  hasArray();
+//virtual CJNIObject array();
+  virtual int   arrayOffset();
+  virtual bool  isDirect();
 };
-

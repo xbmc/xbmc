@@ -21,28 +21,25 @@
 
 #include "JNIBase.h"
 
-class CJNISurfaceTexture;
-class CJNISurface : public CJNIBase
+class CJNIMediaCodecCryptoInfo : public CJNIBase
 {
 public:
-  CJNISurface(const CJNISurfaceTexture &surfaceTexture);
-  CJNISurface(const jni::jhobject &object) : CJNIBase(object) {};
-  ~CJNISurface() {};
+  CJNIMediaCodecCryptoInfo(const jni::jhobject &object) : CJNIBase(object) {};
+  //~CJNIMediaCodecCryptoInfo() {};
 
-  bool        isValid();
-  void        release();
-//CJNICanvas  lockCanvas(CJNIRect);
-//void        unlockCanvasAndPost(const CJNICanvas &canvas);
-//void        unlockCanvas(const CJNICanvas &canvas);
-  std::string toString();
-
-  int         describeContents();
-  static void PopulateStaticFields();
-  static int  ROTATION_0;
-  static int  ROTATION_90;
-  static int  ROTATION_180;
-  static int  ROTATION_270;
+  int               numSubSamples() const;
+  std::vector<int>  numBytesOfClearData() const;
+  std::vector<int>  numBytesOfEncryptedData() const;
+  std::vector<char> key()  const;
+  std::vector<char> iv()   const;
+  int               mode() const;
+  void              set(int newNumSubSamples,
+                      const std::vector<int>  &newNumBytesOfClearData,
+                      const std::vector<int>  &newNumBytesOfEncryptedData,
+                      const std::vector<char> &newKey,
+                      const std::vector<char> &newIV,
+                      int newMode);
 
 private:
-  static const char *m_classname;
+  CJNIMediaCodecCryptoInfo();
 };

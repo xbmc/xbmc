@@ -1,7 +1,7 @@
 #pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,31 +19,20 @@
  *
  */
 
-#include "jutils/jutils.hpp"
-class CJNIBase
+#include "JNIBase.h"
+#include "MediaCodecInfo.h"
+
+class CJNIMediaCodecList : public CJNIBase
 {
-  friend class CJNIContext; //for SetSDKVersion()
-
-  typedef void (CJNIBase::*safe_bool_type)();
-  void non_null_object() {}
-
 public:
-  operator safe_bool_type() const { return !m_object ?  0 : &CJNIBase::non_null_object; }
-  const jni::jhobject& get_raw() const { return m_object; }
-  static int GetSDKVersion();
+  CJNIMediaCodecList(const jni::jhobject &object) : CJNIBase(object) {};
+  //~CJNIMediaCodecList() {};
 
-protected:
-  CJNIBase(jni::jhobject const& object);
-  CJNIBase(std::string classname);
-  ~CJNIBase();
-
-  const std::string & GetClassName() {return m_className;};
-
-  jni::jhobject m_object;
+  static int   getCodecCount();
+  static const CJNIMediaCodecInfo getCodecInfoAt(int index);
 
 private:
-  static void SetSDKVersion(int);
-  std::string m_className;
-  static int m_sdk_version;
-};
+  CJNIMediaCodecList();
 
+  static const char *m_classname;
+};

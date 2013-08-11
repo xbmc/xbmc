@@ -1,7 +1,7 @@
 #pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@ public:
   CJNIWifiManager(const jni::jhobject &object) : CJNIBase(object){};
 
   CJNIList<CJNIWifiConfiguration> getConfiguredNetworks();
+  int addNetwork(const CJNIWifiConfiguration &config);
+  int updateNetwork(const CJNIWifiConfiguration &config);
   bool removeNetwork(int);
   bool enableNetwork(int, bool);
   bool disableNetwork(int);

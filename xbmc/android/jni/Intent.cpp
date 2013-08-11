@@ -34,45 +34,45 @@ CJNIIntent::CJNIIntent(const std::string &action) : CJNIBase("android/content/In
       jcast<jhstring>(action));
 }
 
-std::string CJNIIntent::getAction()
+std::string CJNIIntent::getAction() const
 {
   return jcast<std::string>(call_method<jhstring>(m_object,
     "getAction", "()Ljava/lang/String;"));
 }
 
-std::string CJNIIntent::getDataString()
+std::string CJNIIntent::getDataString() const
 {
   return jcast<std::string>(call_method<jhstring>(m_object,
     "getDataString", "()Ljava/lang/String;"));
 }
 
-std::string CJNIIntent::getPackage()
+std::string CJNIIntent::getPackage() const
 {
   return jcast<std::string>(call_method<jhstring>(m_object,
     "getPackage", "()Ljava/lang/String;"));
 }
 
-std::string CJNIIntent::getType()
+std::string CJNIIntent::getType() const
 {
   return jcast<std::string>(call_method<jhstring>(m_object,
     "getType", "()Ljava/lang/String;"));
 }
 
-int CJNIIntent::getIntExtra(const std::string &name, int defaultValue)
+int CJNIIntent::getIntExtra(const std::string &name, int defaultValue) const
 {
   return call_method<jint>(m_object,
     "getIntExtra", "(Ljava/lang/String;I)I",
     jcast<jhstring>(name), defaultValue);
 }
 
-bool CJNIIntent::hasExtra(const std::string &name)
+bool CJNIIntent::hasExtra(const std::string &name) const
 {
   return call_method<jboolean>(m_object,
     "hasExtra", "(Ljava/lang/String;)Z",
     jcast<jhstring>(name));
 }
 
-bool CJNIIntent::hasCategory(const std::string &category)
+bool CJNIIntent::hasCategory(const std::string &category) const
 {
   return call_method<jboolean>(m_object,
     "hasCategory", "(Ljava/lang/String;)Z",

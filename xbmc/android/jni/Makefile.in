@@ -32,10 +32,21 @@ SRCS      += BitmapDrawable.cpp
 SRCS      += CharSequence.cpp
 SRCS      += ContentResolver.cpp
 SRCS      += Cursor.cpp
+SRCS      += Buffer.cpp
+SRCS      += ByteBuffer.cpp
 SRCS      += BaseColumns.cpp
 SRCS      += MediaStore.cpp
 SRCS      += Surface.cpp
+SRCS      += MediaCodec.cpp
+SRCS      += MediaCodecBufferInfo.cpp
+SRCS      += MediaCodecCryptoInfo.cpp
+SRCS      += MediaCodecInfo.cpp
+SRCS      += MediaCodecList.cpp
+SRCS      += MediaFormat.cpp
 SRCS      += SurfaceTexture.cpp
+SRCS      += View.cpp
+SRCS      += Window.cpp
+SRCS      += Build.cpp
 
 LIB        = jni.a
 
