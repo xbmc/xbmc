@@ -415,7 +415,6 @@ vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
     fields.push_back(FieldLastPlayed);
     fields.push_back(FieldRating);
     fields.push_back(FieldComment);
-    fields.push_back(FieldDateAdded);
   }
   else if (type == "albums")
   {
