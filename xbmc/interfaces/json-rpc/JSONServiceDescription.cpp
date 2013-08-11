@@ -98,10 +98,11 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Files.Download",                               CFileOperations::Download },
 
 // Picture Library
-    { "PictureLibrary.GetFaces",                      CPictureLibrary::GetFaces },
-    { "PictureLibrary.GetFaceDetails",                CPictureLibrary::GetFaceDetails },
+//    { "PictureLibrary.GetFaces",                      CPictureLibrary::GetFaces },
+//    { "PictureLibrary.GetFaceDetails",                CPictureLibrary::GetFaceDetails },
     { "PictureLibrary.GetPictureAlbums",              CPictureLibrary::GetPictureAlbums },
     { "PictureLibrary.GetPictureAlbumDetails",        CPictureLibrary::GetPictureAlbumDetails },
+/*
     { "PictureLibrary.GetPictures",                   CPictureLibrary::GetPictures },
     { "PictureLibrary.GetPictureDetails",             CPictureLibrary::GetPictureDetails },
     { "PictureLibrary.GetRecentlyAddedPictureAlbums", CPictureLibrary::GetRecentlyAddedPictureAlbums },
@@ -115,6 +116,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
     { "PictureLibrary.Scan",                          CPictureLibrary::Scan },
     { "PictureLibrary.Export",                        CPictureLibrary::Export },
     { "PictureLibrary.Clean",                         CPictureLibrary::Clean },
+ */
 // Contact Library
   { "ContactLibrary.GetContacts",                    CContactLibrary::GetContacts },
   { "ContactLibrary.GetContactDetails",              CContactLibrary::GetContactDetails },
@@ -1480,6 +1482,7 @@ bool CJSONServiceDescription::addMethod(const std::string &jsonMethod, MethodCal
     return false;
   }
 
+  CLog::Log(LOGINFO, "JSONRPC: Adding method \"%s\" to list of incomplete definitions (waiting for \"%s\")", methodName.c_str(), newMethod.missingReference.c_str());
   m_actionMap.add(newMethod);
 
   return true;
