@@ -394,7 +394,7 @@ bool CPictureInfoScanner::DoScan(const CStdString& strDirectory)
     items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
     CStdString hash;
     GetPathHash(items, hash);
-    
+
     // check whether we need to rescan or not
     CStdString dbHash;
     if ((m_flags & SCAN_RESCAN) || !m_pictureDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
@@ -449,7 +449,7 @@ bool CPictureInfoScanner::DoScan(const CStdString& strDirectory)
             }
         }
     }
-    
+
     return !m_bStop;
 }
 
@@ -1661,7 +1661,7 @@ int CPictureInfoScanner::CountFilesRecursively(const CStdString& strPath)
     int count = CountFiles(items, true);
     return count;
 }
-
+ 
 int CPictureInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
 {
     int count = 0;
