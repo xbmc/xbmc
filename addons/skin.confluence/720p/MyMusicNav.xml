@@ -162,7 +162,7 @@
 					<altlabel>13353</altlabel>
 					<alttexturefocus border="5">button-focus.png</alttexturefocus>
 					<alttexturenofocus>-</alttexturenofocus>
-					<usealttexture>library.isscanningvideo</usealttexture>
+					<usealttexture>library.isscanningmusic</usealttexture>
 				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
