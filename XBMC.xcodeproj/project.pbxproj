@@ -379,6 +379,9 @@
 		DF2345E315FA639500A934F6 /* UPnPRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2345DD15FA639500A934F6 /* UPnPRenderer.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		DF2345E415FA639500A934F6 /* UPnPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2345DF15FA639500A934F6 /* UPnPServer.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		DF24A6B41406C7C500C7721E /* AFPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF24A6B01406C7C500C7721E /* AFPDirectory.cpp */; };
+		DF28DF4D17B8379E0077F41A /* ProfilesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */; };
+		DF28DF4E17B8379E0077F41A /* ProfilesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */; };
+		DF28DF4F17B8379E0077F41A /* ProfilesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */; };
 		DF28EDA2170E1A11005FA9D2 /* GUIDialogLockSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28ED94170E1A11005FA9D2 /* GUIDialogLockSettings.cpp */; };
 		DF28EDA3170E1A11005FA9D2 /* GUIDialogProfileSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28ED96170E1A11005FA9D2 /* GUIDialogProfileSettings.cpp */; };
 		DF28EDA6170E1A11005FA9D2 /* Profile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28ED9A170E1A11005FA9D2 /* Profile.cpp */; };
@@ -4002,6 +4005,8 @@
 		DF2345E015FA639500A934F6 /* UPnPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPServer.h; sourceTree = "<group>"; };
 		DF24A6B01406C7C500C7721E /* AFPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPDirectory.cpp; sourceTree = "<group>"; };
 		DF24A6B11406C7C500C7721E /* AFPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPDirectory.h; sourceTree = "<group>"; };
+		DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProfilesOperations.cpp; sourceTree = "<group>"; };
+		DF28DF4C17B8379E0077F41A /* ProfilesOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfilesOperations.h; sourceTree = "<group>"; };
 		DF28ED94170E1A11005FA9D2 /* GUIDialogLockSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogLockSettings.cpp; sourceTree = "<group>"; };
 		DF28ED95170E1A11005FA9D2 /* GUIDialogLockSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogLockSettings.h; sourceTree = "<group>"; };
 		DF28ED96170E1A11005FA9D2 /* GUIDialogProfileSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogProfileSettings.cpp; sourceTree = "<group>"; };
@@ -8987,6 +8992,8 @@
 				F5AE409313415D9E0004BD79 /* PlayerOperations.h */,
 				F5AE409413415D9E0004BD79 /* PlaylistOperations.cpp */,
 				F5AE409513415D9E0004BD79 /* PlaylistOperations.h */,
+				DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */,
+				DF28DF4C17B8379E0077F41A /* ProfilesOperations.h */,
 				DF00492B162DAEA200A971AD /* PVROperations.cpp */,
 				DF00492C162DAEA200A971AD /* PVROperations.h */,
 				F5AE409613415D9E0004BD79 /* SystemOperations.cpp */,
@@ -10586,6 +10593,7 @@
 				5558ED10176396CD00118C35 /* StereoscopicsManager.cpp in Sources */,
 				F59EED7E17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
 				DF29668017B2B04300DF10F9 /* SettingRequirement.cpp in Sources */,
+				DF28DF4D17B8379E0077F41A /* ProfilesOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11612,6 +11620,7 @@
 				F55BA71117AB2293002A36D1 /* RenderFlags.cpp in Sources */,
 				F59EED8017AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
 				DF29668217B2B04300DF10F9 /* SettingRequirement.cpp in Sources */,
+				DF28DF4F17B8379E0077F41A /* ProfilesOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12640,6 +12649,7 @@
 				F55BA71017AB2293002A36D1 /* RenderFlags.cpp in Sources */,
 				F59EED7F17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
 				DF29668117B2B04300DF10F9 /* SettingRequirement.cpp in Sources */,
+				DF28DF4E17B8379E0077F41A /* ProfilesOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
