@@ -654,7 +654,7 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, std
 
 void CCharsetConverter::utf8ToSystem(std::string& strSourceDest)
 {
-  CStdString strDest;
+  std::string strDest;
   g_charsetConverter.utf8To("", strSourceDest, strDest);
   strSourceDest = strDest;
 }
