@@ -102,6 +102,8 @@ CPictureDatabase::~CPictureDatabase(void)
     EmptyCache();
 }
 
+const char *CPictureDatabase::GetBaseDBName() const { return "MyPicture"; };
+
 bool CPictureDatabase::Open()
 {
     return CDatabase::Open(g_advancedSettings.m_databasePicture);
@@ -118,6 +120,7 @@ bool CPictureDatabase::CreateTables()
         m_pDS->exec("CREATE TABLE Face ( idFace integer primary key, strFace varchar(256), strPictureBrainzFaceID text)\n");
         CLog::Log(LOGINFO, "create album table");
         m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strPictureAlbum varchar(256), strFaces text, strLocations text, iYear integer, idThumb integer, bCompilation integer not null default '0', strPictureBrainzPictureAlbumID text )\n");
+      
         CLog::Log(LOGINFO, "create album_Face table");
         m_pDS->exec("CREATE TABLE album_Face ( idFace integer, idAlbum integer, strJoinPhrase text, boolFeatured integer, iOrder integer )\n");
         CLog::Log(LOGINFO, "create album_location table");
@@ -217,7 +220,18 @@ bool CPictureDatabase::CreateTables()
         m_pDS->exec("CREATE TRIGGER delete_picture AFTER DELETE ON picture FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idPicture AND media_type='picture'; END");
         m_pDS->exec("CREATE TRIGGER delete_album AFTER DELETE ON album FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album'; END");
         m_pDS->exec("CREATE TRIGGER delete_Face AFTER DELETE ON Face FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idFace AND media_type='Face'; END");
-        
+     
+        //insert untitled album by default
+      CStdString strSQL;
+      strSQL=PrepareSQL("insert into album (idAlbum, strPictureAlbum, strPictureBrainzPictureAlbumID, strFaces, strLocations, iYear, bCompilation) values( NULL, '%s', '%s', '%s', '%s', %i, %i)",
+                        "Untitled",
+                        "",
+                        "",
+                        "",
+                        2012,
+                        false);
+      m_pDS->exec(strSQL.c_str());
+      
     }
     catch (...)
     {

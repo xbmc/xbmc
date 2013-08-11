@@ -419,8 +419,8 @@ protected:
     virtual bool CreateTables();
     virtual int GetMinVersion() const;
     
-    const char *GetBaseDBName() const { return "MyPicture"; };
-    
+  const char *GetBaseDBName() const;
+  
     
 private:
     /*! \brief (Re)Create the generic database views for pictures and PictureAlbums
