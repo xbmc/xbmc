@@ -56,12 +56,18 @@ static void LoadTexture(GLenum target
                       , GLfloat* u, GLfloat* v
                       , GLenum internalFormat, GLenum externalFormat, const GLvoid* pixels)
 {
-  int width2  = NP2(width);
-  int height2 = NP2(height);
+  int width2  = width;
+  int height2 = height;
   char *pixelVector = NULL;
   const GLvoid *pixelData = pixels;
 
   int bytesPerPixel = glFormatElementByteCount(externalFormat);
+
+  if (!g_Windowing.SupportsNPOT(0))
+  {
+    width2  = NP2(width);
+    height2 = NP2(height);
+  }
 
 #ifdef HAS_GLES
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
