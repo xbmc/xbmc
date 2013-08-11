@@ -298,10 +298,11 @@ public:
       else
       {
         CLog::Log(LOGERROR, "%s - decoding error (%d)\n", CLASSNAME,frame->status);
-        decode_done   = 1;
         if (frame->medbuf)
           frame->medbuf->release();
         frame->medbuf = NULL;
+        free(frame);
+        continue;
       }
 
       if (frame->format == RENDER_FMT_EGLIMG)
