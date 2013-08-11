@@ -43,6 +43,7 @@
 #include "utils/URIUtils.h"
 #include "Autorun.h"
 #include "interfaces/AnnouncementManager.h"
+#include "profiles/ProfilesManager.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
@@ -454,6 +455,37 @@ void CGUIWindowPictures::OnRegenerateThumbs()
   m_thumbLoader.Load(*m_vecItems);
 }
 
+void CGUIWindowPictures::OnScan(int iItem)
+{
+  CStdString strPath;
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    strPath = m_vecItems->GetPath();
+  else if (m_vecItems->Get(iItem)->m_bIsFolder)
+    strPath = m_vecItems->Get(iItem)->GetPath();
+  else
+  { // TODO: MUSICDB - should we allow scanning a single item into the database?
+    //       This will require changes to the info scanner, which assumes we're running on a folder
+    strPath = m_vecItems->GetPath();
+  }
+  DoScan(strPath);
+}
+
+void CGUIWindowPictures::DoScan(const CStdString &strPath)
+{
+  if (g_application.IsPictureScanning())
+  {
+    g_application.StopPictureScan();
+    return;
+  }
+  
+  // Start background loader
+  int iControl=GetFocusedControlID();
+  g_application.StartPictureScan(strPath);
+  SET_CONTROL_FOCUS(iControl, 0);
+  UpdateButtons();
+  
+  return;
+}
 void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItemPtr item;
@@ -501,6 +533,18 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
   if (item && !item->GetProperty("pluginreplacecontextitems").asBoolean())
     buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings
+
+  // Add the scan button(s)
+  if (g_application.IsPictureScanning())
+    buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
+  else if ( !item->GetPath().Equals("add") && !item->IsParentFolder() &&
+           !item->IsPlugin()                                         &&
+           !item->GetPath().Left(9).Equals("addons://")              &&
+           (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+  {
+    buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
+  }
+
 }
 
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -516,39 +560,42 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   switch (button)
   {
-  case CONTEXT_BUTTON_VIEW_SLIDESHOW:
-    if (item && item->m_bIsFolder)
-      OnSlideShow(item->GetPath());
-    else
-      ShowPicture(itemNumber, true);
-    return true;
-  case CONTEXT_BUTTON_RECURSIVE_SLIDESHOW:
-    if (item)
-      OnSlideShowRecursive(item->GetPath());
-    return true;
-  case CONTEXT_BUTTON_INFO:
-    OnInfo(itemNumber);
-    return true;
-  case CONTEXT_BUTTON_REFRESH_THUMBS:
-    OnRegenerateThumbs();
-    return true;
-  case CONTEXT_BUTTON_DELETE:
-    OnDeleteItem(itemNumber);
-    return true;
-  case CONTEXT_BUTTON_RENAME:
-    OnRenameItem(itemNumber);
-    return true;
-  case CONTEXT_BUTTON_SETTINGS:
-    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
-    return true;
-  case CONTEXT_BUTTON_GOTO_ROOT:
-    Update("");
-    return true;
-  case CONTEXT_BUTTON_SWITCH_MEDIA:
-    CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems->GetPath());
-    return true;
-  default:
-    break;
+    case CONTEXT_BUTTON_SCAN:
+      OnScan(itemNumber);
+      return true;
+    case CONTEXT_BUTTON_VIEW_SLIDESHOW:
+      if (item && item->m_bIsFolder)
+        OnSlideShow(item->GetPath());
+      else
+        ShowPicture(itemNumber, true);
+      return true;
+    case CONTEXT_BUTTON_RECURSIVE_SLIDESHOW:
+      if (item)
+        OnSlideShowRecursive(item->GetPath());
+      return true;
+    case CONTEXT_BUTTON_INFO:
+      OnInfo(itemNumber);
+      return true;
+    case CONTEXT_BUTTON_REFRESH_THUMBS:
+      OnRegenerateThumbs();
+      return true;
+    case CONTEXT_BUTTON_DELETE:
+      OnDeleteItem(itemNumber);
+      return true;
+    case CONTEXT_BUTTON_RENAME:
+      OnRenameItem(itemNumber);
+      return true;
+    case CONTEXT_BUTTON_SETTINGS:
+      g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
+      return true;
+    case CONTEXT_BUTTON_GOTO_ROOT:
+      Update("");
+      return true;
+    case CONTEXT_BUTTON_SWITCH_MEDIA:
+      CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems->GetPath());
+      return true;
+    default:
+      break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
