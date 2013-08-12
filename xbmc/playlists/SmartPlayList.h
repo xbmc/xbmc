@@ -105,6 +105,8 @@ public:
   static FIELD_TYPE           GetFieldType(Field field);
   static bool                 IsFieldBrowseable(Field field);
 
+  static bool Validate(const std::string &input, void *data);
+  static bool ValidateRating(const std::string &input, void *data);
 
   Field                       m_field;
   SEARCH_OPERATOR             m_operator;
