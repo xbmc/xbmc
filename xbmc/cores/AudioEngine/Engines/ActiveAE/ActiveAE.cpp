@@ -649,6 +649,12 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CActiveAEControlProtocol::TIMEOUT:
+          if (m_extError)
+          {
+            m_state = AE_TOP_ERROR;
+            m_extTimeout = 100;
+            return;
+          }
           if (RunStages())
           {
             m_extTimeout = 0;
