@@ -170,6 +170,7 @@ static DirectoryTypeMap g_typeMap = boost::assign::list_of<DirectoryTypeMap::rel
                                     (PLEX_DIR_TYPE_COUNTRY, "country")
                                     (PLEX_DIR_TYPE_DIRECTOR, "director")
                                     (PLEX_DIR_TYPE_THUMB, "thumb")
+                                    (PLEX_DIR_TYPE_IMAGE, "image")
                                     ;
 
 
@@ -300,6 +301,15 @@ CPlexDirectory::NewPlexElement(TiXmlElement *element, const CFileItem &parentIte
     /* no type attribute, let's try to use the name of the XML element */
     CPlexAttributeParserType t;
     t.Process(baseUrl, "type", element->ValueStr(), newItem.get());
+  }
+  else if (newItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_IMAGE)
+  {
+    // Images usually are things returned from /library/arts and similar endpoints
+    // they just have the "key" attribute and that points to the image, so here
+    // I make sure to manually pass it through the photo transcoder.
+    CPlexAttributeParserMediaUrl t;
+    t.Process(baseUrl, "art", element->Attribute("key"), newItem.get());
+    newItem->SetProperty("key", newItem->GetArt("fanart"));
   }
 
   if (newItem->HasProperty("key"))
