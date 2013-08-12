@@ -25,6 +25,7 @@ vector<stringPair> CPlexFile::GetHeaderList()
   
   hdrs.push_back(stringPair("X-Plex-Platform", "Plex Home Theater"));
   hdrs.push_back(stringPair("X-Plex-Model", PlexUtils::GetMachinePlatform()));
+  hdrs.push_back(stringPair("X-Plex-Capabilities", "ehls,rtmp,multipart"));
 #ifdef TARGET_RPI
   hdrs.push_back(stringPair("X-Plex-Device", "RaspberryPi"));
 #elif defined(TARGET_DARWIN_IOS)
