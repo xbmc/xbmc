@@ -258,6 +258,7 @@ bool URIUtils::ProtocolHasParentInHostname(const CStdString& prot)
 {
   return prot.Equals("zip")
       || prot.Equals("rar")
+      || prot.Equals("apk")
       || prot.Equals("bluray")
       || prot.Equals("udf");
 }
@@ -432,7 +433,7 @@ bool URIUtils::IsRemote(const CStdString& strFile)
   }
 
   CURL url(strFile);
-  if(IsInArchive(strFile))
+  if(ProtocolHasParentInHostname(url.GetProtocol()))
     return IsRemote(url.GetHostName());
 
   if (!url.IsLocal())
@@ -487,7 +488,7 @@ bool URIUtils::IsOnLAN(const CStdString& strPath)
     return true;
 
   CURL url(strPath);
-  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip")
+  if (ProtocolHasParentInHostname(url.GetProtocol()))
     return IsOnLAN(url.GetHostName());
 
   if(!IsRemote(strPath))
@@ -538,7 +539,7 @@ bool URIUtils::IsHD(const CStdString& strFileName)
   if(IsStack(strFileName))
     return IsHD(CStackDirectory::GetFirstStackedFile(strFileName));
 
-  if (IsInArchive(strFileName))
+  if (ProtocolHasParentInHostname(url.GetProtocol()))
     return IsHD(url.GetHostName());
 
   return url.GetProtocol().IsEmpty() || url.GetProtocol() == "file";

@@ -42,9 +42,6 @@ bool CAPKDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CStdString host = url.GetHostName();
   URIUtils::AddSlashAtEnd(path);
 
-  // host name might be encoded rfc1738.txt, decode it.
-  CURL::Decode(host);
-
   int zip_flags = 0, zip_error = 0, dir_marker = 0;
   struct zip *zip_archive;
   zip_archive = zip_open(host.c_str(), zip_flags, &zip_error);
