@@ -24,7 +24,7 @@
 #include "Util.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "pictures/PictureInfoTag.h"
+#include "pictures/tags/PictureInfoTag.h"
 #include "pictures/Face.h"
 #include "pictures/PictureAlbum.h"
 #include "pictures/Picture.h"
