@@ -26,7 +26,7 @@
 
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
-#include "pictures/PictureInfoTag.h"
+#include "pictures/tags/PictureInfoTag.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
