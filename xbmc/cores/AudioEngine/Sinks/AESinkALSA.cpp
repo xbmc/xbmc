@@ -518,6 +518,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
   }
 
   if ((unsigned int)ret < frames)
+  {
     if(blocking)
     {
       ret = snd_pcm_wait(m_pcm, m_timeout);
@@ -526,6 +527,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
     }
     else
       return 0;
+  }
 
   ret = snd_pcm_writei(m_pcm, (void*)data, frames);
   if (ret < 0)
