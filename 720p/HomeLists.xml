@@ -561,7 +561,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<scroll>false</scroll>
-				<label>S$INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] E$INFO[ListItem.Property(TotalEpisodes)]</label>
+				<label>$LOCALIZE[31141] $INFO[ListItem.Season]</label>
 				<font>CondensedBold-14</font>
 				<textcolor>white</textcolor>
 				<wrapmultiline>false</wrapmultiline>
