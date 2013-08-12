@@ -19,7 +19,7 @@
  */
 
 #include "PictureInfoLoader.h"
-#include "PictureInfoTag.h"
+#include "tags/PictureInfoTag.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 

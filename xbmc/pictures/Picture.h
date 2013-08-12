@@ -26,7 +26,7 @@
 #include "utils/StdString.h"
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"
-//#include "music/tags/PictureInfoTag.h" // for EmbeddedArt
+#include "pictures/tags/PictureInfoTag.h" // for EmbeddedArt
 #include "Face.h"
 #include <map>
 #include <vector>
@@ -126,7 +126,7 @@ public:
     std::vector<std::string> albumFace;
     std::vector<std::string> location;
     CStdString strThumb;
-//    MUSIC_INFO::EmbeddedArtInfo embeddedArt;
+    PICTURE_INFO::EmbeddedArtInfo embeddedArt;
     CStdString strPictureBrainzTrackID;
     CStdString strComment;
     char rating;

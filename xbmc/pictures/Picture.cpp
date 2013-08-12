@@ -19,7 +19,7 @@
  */
 
 #include "Picture.h"
-//#include "pictures/tags/PictureInfoTag.h"
+#include "pictures/tags/PictureInfoTag.h"
 #include "utils/Variant.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
@@ -46,7 +46,7 @@
 
 using namespace XFILE;
 using namespace std;
-//using namespace PICTURE_INFO;
+using namespace PICTURE_INFO;
 
 bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const CStdString &thumbFile)
 {
@@ -442,12 +442,12 @@ bool CPicture::TransposeOffAxis(uint32_t *&pixels, unsigned int &width, unsigned
 
 CPicture::CPicture(CFileItem& item)
 {
-    /*
+    
     CPictureInfoTag& tag = *item.GetPictureInfoTag();
     SYSTEMTIME stTime;
     tag.GetReleaseDate(stTime);
     strTitle = tag.GetTitle();
-    location = tag.GetGenre();
+//    location = tag.GetLocation()();
     face = tag.GetFace();
     strAlbum = tag.GetAlbum();
     albumFace = tag.GetAlbumFace();
@@ -468,7 +468,7 @@ CPicture::CPicture(CFileItem& item)
     iKaraokeNumber = 0;
     iKaraokeDelay = 0;         //! Karaoke song lyrics-picture delay in 1/10 seconds.
     idAlbum = -1;
-     */
+     
 }
 
 CPicture::CPicture()
