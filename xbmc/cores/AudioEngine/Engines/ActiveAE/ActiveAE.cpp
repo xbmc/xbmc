@@ -1077,6 +1077,33 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   stream->m_streamPort->Purge();
   stream->m_bufferedTime = 0.0;
   stream->m_paused = true;
+
+  // flsuh the engine if we only have a single stream
+  if (m_streams.size() == 1)
+  {
+    m_sinkBuffers->Flush();
+    m_vizBuffers->Flush();
+
+    // send message to sink
+    Message *reply;
+    if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, 
+                                             &reply, 2000))
+    {
+      bool success = reply->signal == CSinkControlProtocol::ACC ? true : false;
+      if (!success)
+      {
+        CLog::Log(LOGERROR, "ActiveAE::%s - returned error on flush", __FUNCTION__);
+        m_extError = true;
+      }
+      reply->Release();
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "ActiveAE::%s - failed to flush", __FUNCTION__);
+      m_extError = true;
+    }
+    m_stats.Reset(m_sinkFormat.m_sampleRate);
+  }
 }
 
 void CActiveAE::ClearDiscardedBuffers()

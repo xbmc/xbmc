@@ -50,6 +50,7 @@ public:
     UNCONFIGURE,
     SILENCEMODE,
     VOLUME,
+    FLUSH,
     TIMEOUT,
   };
   enum InSignal
