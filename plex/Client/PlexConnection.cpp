@@ -117,3 +117,45 @@ CPlexConnection::ConnectionTypeName(CPlexConnection::ConnectionType type)
 
   return typeName;
 }
+
+void CPlexConnection::save(TiXmlNode* server)
+{
+  TiXmlElement conn("connection");
+
+  conn.SetAttribute("host", m_url.GetHostName().c_str());
+  conn.SetAttribute("port", m_url.GetPort());
+  conn.SetAttribute("state", m_state);
+  conn.SetAttribute("token", m_token.c_str());
+  conn.SetAttribute("refreshed", m_refreshed);
+  conn.SetAttribute("type", m_type);
+
+  server->InsertEndChild(conn);
+}
+
+CPlexConnectionPtr CPlexConnection::load(TiXmlElement *element)
+{
+  int port, type;
+  std::string host, token;
+
+  if (element->QueryStringAttribute("host", &host) != TIXML_SUCCESS)
+    return CPlexConnectionPtr();
+
+  if (element->QueryStringAttribute("token", &token) != TIXML_SUCCESS)
+    return CPlexConnectionPtr();
+
+  if (element->QueryIntAttribute("port", &port) != TIXML_SUCCESS)
+    return CPlexConnectionPtr();
+
+  if (element->QueryIntAttribute("type", &type) != TIXML_SUCCESS)
+    return CPlexConnectionPtr();
+
+  CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(type, host, port, token));
+
+  int state;
+  if (element->QueryIntAttribute("state", &state) == TIXML_SUCCESS)
+    connection->m_state = (CPlexConnection::ConnectionState)state;
+
+  element->QueryBoolAttribute("refreshed", &connection->m_refreshed);
+
+  return connection;
+}

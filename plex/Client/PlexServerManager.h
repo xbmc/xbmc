@@ -13,6 +13,8 @@ typedef std::vector<CPlexServerPtr> PlexServerList;
 typedef std::map<CStdString, CPlexServerPtr> PlexServerMap;
 typedef std::pair<CStdString, CPlexServerPtr> PlexServerPair;
 
+#define PLEX_SERVER_MANAGER_XML_FORMAT_VERSION 1
+#define PLEX_SERVER_MANAGER_XML_FILE "special://profile/plexservermanager.xml"
 
 class CPlexServerReachabilityThread : public CThread
 {
@@ -63,6 +65,9 @@ public:
   void UpdateReachability(bool force = false);
 
   void ServerReachabilityDone(CPlexServerPtr server, bool success);
+
+  void save();
+  void load();
 
 private:
   CPlexServerPtr _myPlexServer;

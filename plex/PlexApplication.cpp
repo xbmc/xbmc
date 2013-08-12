@@ -23,6 +23,8 @@ PlexApplication::Start()
 
   m_autoUpdater = new CPlexAutoUpdate("http://plexapp.com/appcast/plexht/appcast.xml");
 
+  g_plexServerManager.load();
+
   if (g_advancedSettings.m_bEnableGDM)
     m_serviceListener = CPlexServiceListenerPtr(new CPlexServiceListener);
   

@@ -80,6 +80,9 @@ public:
 
   int m_type;
 
+  void save(TiXmlNode* server);
+  static CPlexConnectionPtr load(TiXmlElement* element);
+
 private:
   ConnectionState m_state;
 

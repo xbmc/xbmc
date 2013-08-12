@@ -12,6 +12,8 @@
 #include "JobManager.h"
 #include "URL.h"
 
+#include "utils/XBMCTinyXML.h"
+
 class CPlexServer;
 class CPlexConnection;
 typedef boost::shared_ptr<CPlexServer> CPlexServerPtr;
@@ -84,6 +86,9 @@ public:
   
   bool HasAuthToken() const;
   
+  void save(TiXmlNode* parent);
+  static CPlexServerPtr load(TiXmlElement* element);
+
 private:
   bool m_owned;
   CStdString m_uuid;

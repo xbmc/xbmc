@@ -8,6 +8,7 @@
 #include "plex/PlexTypes.h"
 #include "Client/PlexConnection.h"
 #include "PlexServerDataLoader.h"
+#include "File.h"
 
 #include "Stopwatch.h"
 
@@ -112,6 +113,7 @@ CPlexServerManager::UpdateFromConnectionType(PlexServerList servers, int connect
 
   ServerRefreshComplete(connectionType);
   UpdateReachability();
+  save();
 }
 
 void
@@ -223,4 +225,66 @@ CPlexServerManager::NotifyAboutServer(CPlexServerPtr server, bool added)
     g_plexServerDataLoader.LoadDataFromServer(server);
   else
     g_plexServerDataLoader.RemoveServer(server);
+}
+
+void CPlexServerManager::save()
+{
+  CXBMCTinyXML xml;
+  TiXmlElement srvmgr("serverManager");
+  srvmgr.SetAttribute("version", PLEX_SERVER_MANAGER_XML_FORMAT_VERSION);
+
+  if (m_bestServer)
+    srvmgr.SetAttribute("bestServer", m_bestServer->GetUUID().c_str());
+
+  TiXmlNode *root = xml.InsertEndChild(srvmgr);
+
+  CSingleLock lk(m_serverManagerLock);
+
+  BOOST_FOREACH(PlexServerPair p, m_serverMap)
+  {
+    p.second->save(root);
+  }
+
+  xml.SaveFile(PLEX_SERVER_MANAGER_XML_FILE);
+}
+
+void CPlexServerManager::load()
+{
+  if (XFILE::CFile::Exists(PLEX_SERVER_MANAGER_XML_FILE))
+  {
+    CXBMCTinyXML doc;
+    if (doc.LoadFile(PLEX_SERVER_MANAGER_XML_FILE))
+    {
+      TiXmlElement* element = doc.FirstChildElement();
+      if (!element)
+        return;
+
+      std::string bestServer;
+      element->QueryStringAttribute("bestServer", &bestServer);
+
+      element = element->FirstChildElement();
+
+      while (element)
+      {
+        CPlexServerPtr server = CPlexServer::load(element);
+        if (server)
+        {
+          CLog::Log(LOGDEBUG, "CPlexServerManager::load got server %s from xml file", server->GetName().c_str());
+          m_serverMap[server->GetUUID()] = server;
+          NotifyAboutServer(server);
+        }
+
+        element = element->NextSiblingElement();
+      }
+
+      if (!bestServer.empty())
+        SetBestServer(FindByUUID(bestServer), true);
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "CPlexServerManager::load failed to open %s: %s", PLEX_SERVER_MANAGER_XML_FILE, doc.ErrorDesc());
+    }
+
+    CLog::Log(LOGDEBUG, "CPlexServerManager::load Got %ld servers from plexservermanager.xml", m_serverMap.size());
+  }
 }
