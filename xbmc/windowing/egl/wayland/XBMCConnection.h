@@ -43,6 +43,11 @@ class Compositor;
 class Output;
 class Shell;
 
+namespace events
+{
+class IEventQueueStrategy;
+}
+
 class XBMCConnection
 {
 public:
@@ -50,6 +55,7 @@ public:
   struct EventInjector
   {
     typedef void (*SetWaylandDisplay)(IDllWaylandClient &clientLibrary,
+                                      events::IEventQueueStrategy &strategy,
                                       struct wl_display *display);
     typedef void (*DestroyWaylandDisplay)();
     typedef void (*SetWaylandSeat)(IDllWaylandClient &clientLibrary,

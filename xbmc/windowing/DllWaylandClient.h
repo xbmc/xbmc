@@ -65,6 +65,8 @@ public:
                                        uint32_t,
                                        ...);
   typedef void(*wl_proxy_listener_func)(void);
+  typedef int(*wl_display_read_events_func)(struct wl_display *);
+  typedef int(*wl_display_prepare_read_func)(struct wl_display *);
 
   virtual struct wl_interface ** Get_wl_display_interface() = 0;
   virtual struct wl_interface ** Get_wl_registry_interface() = 0;
@@ -82,8 +84,10 @@ public:
   virtual struct wl_display * wl_display_connect(const char *) = 0;
   virtual void wl_display_disconnect(struct wl_display *) = 0;
   virtual int wl_display_get_fd(struct wl_display *) = 0;
-  virtual int wl_display_dispatch(struct wl_display *) = 0;
+  virtual wl_display_prepare_read_func wl_display_prepare_read_proc() = 0;
+  virtual wl_display_read_events_func wl_display_read_events_proc() = 0;
   virtual int wl_display_dispatch_pending(struct wl_display *) = 0;
+  virtual int wl_display_dispatch(struct wl_display *) = 0;
   virtual int wl_display_flush(struct wl_display *) = 0;
   
   virtual wl_proxy_marshal_func wl_proxy_marshaller() = 0;
@@ -118,8 +122,10 @@ class DllWaylandClient : public DllDynamic, public IDllWaylandClient
   DEFINE_METHOD1(struct wl_display *, wl_display_connect, (const char *p1));
   DEFINE_METHOD1(void, wl_display_disconnect, (struct wl_display *p1));
   DEFINE_METHOD1(int, wl_display_get_fd, (struct wl_display *p1));
-  DEFINE_METHOD1(int, wl_display_dispatch, (struct wl_display *p1));
+  DEFINE_METHOD_FP(int, wl_display_prepare_read, (struct wl_display *p1));
+  DEFINE_METHOD_FP(int, wl_display_read_events, (struct wl_display *p1));
   DEFINE_METHOD1(int, wl_display_dispatch_pending, (struct wl_display *p1));
+  DEFINE_METHOD1(int, wl_display_dispatch, (struct wl_display *p1));
   DEFINE_METHOD1(int, wl_display_flush, (struct wl_display *p1));
   
   /* We need to resolve wl_proxy_marshal as a function pointer as it
@@ -155,8 +161,10 @@ class DllWaylandClient : public DllDynamic, public IDllWaylandClient
     RESOLVE_METHOD(wl_display_connect)
     RESOLVE_METHOD(wl_display_disconnect)
     RESOLVE_METHOD(wl_display_get_fd)
-    RESOLVE_METHOD(wl_display_dispatch)
+    RESOLVE_METHOD_FP(wl_display_prepare_read)
+    RESOLVE_METHOD_FP(wl_display_read_events)
     RESOLVE_METHOD(wl_display_dispatch_pending)
+    RESOLVE_METHOD(wl_display_dispatch)
     RESOLVE_METHOD(wl_display_flush)
     RESOLVE_METHOD_FP(wl_proxy_marshal)
     RESOLVE_METHOD(wl_proxy_create)
@@ -171,5 +179,15 @@ public:
   wl_proxy_marshal_func wl_proxy_marshaller()
   {
     return DllWaylandClient::wl_proxy_marshal;
+  }
+  
+  wl_display_prepare_read_func wl_display_prepare_read_proc()
+  {
+    return DllWaylandClient::wl_display_prepare_read;
+  }
+  
+  wl_display_read_events_func wl_display_read_events_proc()
+  {
+    return DllWaylandClient::wl_display_read_events;
   }
 };
