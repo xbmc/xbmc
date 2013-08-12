@@ -157,7 +157,7 @@ bool Win32DllLoader::Load()
   CStdString strFileName = GetFileName();
 
   CStdStringW strDllW;
-  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(strFileName), strDllW);
+  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(strFileName), strDllW, false, false, false);
   m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
