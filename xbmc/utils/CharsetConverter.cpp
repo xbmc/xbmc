@@ -513,6 +513,11 @@ bool CCharsetConverter::utf8ToStringCharset(std::string& stringSrcDst)
 
 bool CCharsetConverter::stringCharsetToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst)
 {
+  if (strSourceCharset == "UTF-8")
+  { // simple case - no conversion necessary
+    utf8StringDst = stringSrc;
+    return true;
+  }
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
   const bool result = convert(iconvString,m_Utf8CharMaxSize,strSourceCharset,"UTF-8",stringSrc,utf8StringDst);
