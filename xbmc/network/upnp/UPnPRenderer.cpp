@@ -11,7 +11,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "pictures/PictureInfoTag.h"
+#include "pictures/tags/PictureInfoTag.h"
 #include "interfaces/AnnouncementManager.h"
 #include "settings/Settings.h"
 #include "TextureCache.h"
