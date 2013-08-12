@@ -424,6 +424,11 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_state = AE_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           return;
+        case CActiveAEControlProtocol::FLUSHSTREAM:
+          stream = *(CActiveAEStream**)msg->data;
+          SFlushStream(stream);
+          msg->Reply(CActiveAEControlProtocol::ACC);
+          return;
         case CActiveAEControlProtocol::STREAMAMP:
           MsgStreamParameter *par;
           par = (MsgStreamParameter*)msg->data;
@@ -539,11 +544,6 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           stream->m_resampleBuffers->m_drain = true;
           m_extTimeout = 0;
           m_state = AE_TOP_CONFIGURED_PLAY;
-          msg->Reply(CActiveAEDataProtocol::ACC);
-          return;
-        case CActiveAEDataProtocol::FLUSHSTREAM:
-          stream = *(CActiveAEStream**)msg->data;
-          SFlushStream(stream);
           msg->Reply(CActiveAEDataProtocol::ACC);
           return;
         default:
@@ -1084,11 +1084,13 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   stream->m_bufferedTime = 0.0;
   stream->m_paused = true;
 
-  // flsuh the engine if we only have a single stream
+  // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
   {
-    m_sinkBuffers->Flush();
-    m_vizBuffers->Flush();
+    if (m_sinkBuffers)
+      m_sinkBuffers->Flush();
+    if (m_vizBuffers)
+      m_vizBuffers->Flush();
 
     // send message to sink
     Message *reply;
@@ -2263,11 +2265,11 @@ IAEStream *CActiveAE::FreeStream(IAEStream *stream)
 void CActiveAE::FlushStream(CActiveAEStream *stream)
 {
   Message *reply;
-  if (m_dataPort.SendOutMessageSync(CActiveAEDataProtocol::FLUSHSTREAM,
+  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::FLUSHSTREAM,
                                        &reply,1000,
                                        &stream, sizeof(CActiveAEStream*)))
   {
-    bool success = reply->signal == CActiveAEDataProtocol::ACC ? true : false;
+    bool success = reply->signal == CActiveAEControlProtocol::ACC ? true : false;
     reply->Release();
     if (!success)
     {

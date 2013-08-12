@@ -73,6 +73,7 @@ public:
     VOLUME,
     PAUSESTREAM,
     RESUMESTREAM,
+    FLUSHSTREAM,
     STREAMRGAIN,
     STREAMVOLUME,
     STREAMAMP,
@@ -106,7 +107,6 @@ public:
     FREESTREAM,
     STREAMSAMPLE,
     DRAINSTREAM,
-    FLUSHSTREAM,
   };
   enum InSignal
   {
