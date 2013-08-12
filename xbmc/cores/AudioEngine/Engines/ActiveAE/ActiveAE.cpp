@@ -1172,7 +1172,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
            settings.ac3passthrough &&
            (!settings.multichannellpcm || (m_settings.mode != AUDIO_HDMI)) && 
            !m_streams.empty() &&
-           format.m_channelLayout.Count() > 2)
+           (format.m_channelLayout.Count() > 2 || settings.stereoupmix))
   {
     format.m_dataFormat = AE_FMT_AC3;
     format.m_sampleRate = 48000;
