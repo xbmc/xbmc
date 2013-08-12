@@ -454,7 +454,8 @@ void CCharsetConverter::reset(void)
 
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
 // of the string is already made or the string is not displayed in the GUI
-bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst, bool bVisualBiDiFlip /*= true*/, bool forceLTRReadingOrder /*= false*/, bool* bWasFlipped /*= NULL*/)
+bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst, bool bVisualBiDiFlip /*= true*/, 
+                                bool forceLTRReadingOrder /*= false*/, bool failOnBadChar /*= false*/, bool* bWasFlipped /*= NULL*/)
 {
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
@@ -463,12 +464,12 @@ bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& 
     FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
     logicalToVisualBiDi(utf8StringSrc, strFlipped, FRIBIDI_UTF8, charset, bWasFlipped);
     CSingleLock lock(m_critSection);
-    return convert(m_iconvUtf8toW,1,UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wStringDst);
+    return convert(m_iconvUtf8toW,1,UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wStringDst, failOnBadChar);
   }
   else
   {
     CSingleLock lock(m_critSection);
-    return convert(m_iconvUtf8toW,1,UTF8_SOURCE,WCHAR_CHARSET,utf8StringSrc,wStringDst);
+    return convert(m_iconvUtf8toW,1,UTF8_SOURCE,WCHAR_CHARSET,utf8StringSrc,wStringDst, failOnBadChar);
   }
 }
 
@@ -563,7 +564,7 @@ bool CCharsetConverter::unknownToUTF8(std::string& stringSrcDst)
   return unknownToUTF8(source, stringSrcDst);
 }
 
-bool CCharsetConverter::unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst)
+bool CCharsetConverter::unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
 {
   // checks whether it's utf8 already, and if not converts using the sourceCharset if given, else the string charset
   if (isValidUtf8(stringSrc))
@@ -572,13 +573,13 @@ bool CCharsetConverter::unknownToUTF8(const std::string& stringSrc, std::string&
     return true;
   }
   CSingleLock lock(m_critSection);
-  return convert(m_iconvStringCharsetToUtf8, m_Utf8CharMaxSize, g_langInfo.GetGuiCharSet(), "UTF-8", stringSrc, utf8StringDst);
+  return convert(m_iconvStringCharsetToUtf8, m_Utf8CharMaxSize, g_langInfo.GetGuiCharSet(), "UTF-8", stringSrc, utf8StringDst, failOnBadChar);
 }
 
-bool CCharsetConverter::wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst)
+bool CCharsetConverter::wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
 {
   CSingleLock lock(m_critSection);
-  return convert(m_iconvWtoUtf8,m_Utf8CharMaxSize,WCHAR_CHARSET,"UTF-8",wStringSrc,utf8StringDst);
+  return convert(m_iconvWtoUtf8,m_Utf8CharMaxSize,WCHAR_CHARSET,"UTF-8",wStringSrc,utf8StringDst, failOnBadChar);
 }
 
 bool CCharsetConverter::utf16BEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst)
@@ -670,7 +671,7 @@ bool CCharsetConverter::utf32ToStringCharset(const unsigned long* utf32StringSrc
   return false;
 }
 
-bool CCharsetConverter::utf8ToSystem(std::string& stringSrcDst)
+bool CCharsetConverter::utf8ToSystem(std::string& stringSrcDst, bool failOnBadChar /*= false*/)
 {
   std::string strSrc(stringSrcDst);
   return utf8To("", strSrc, stringSrcDst);

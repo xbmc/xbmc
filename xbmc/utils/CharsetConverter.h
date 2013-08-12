@@ -42,7 +42,9 @@ public:
 
   void clear();
 
-  bool utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst, bool bVisualBiDiFlip = true, bool forceLTRReadingOrder = false, bool* bWasFlipped = NULL);
+  bool utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst,
+                bool bVisualBiDiFlip = true, bool forceLTRReadingOrder = false,
+                bool failOnBadChar = false, bool* bWasFlipped = NULL);
 
   bool utf16LEtoW(const std::u16string& utf16String, std::wstring& wString);
 
@@ -51,7 +53,7 @@ public:
   bool utf8ToStringCharset(const std::string& utf8StringSrc, std::string& stringDst);
 
   bool utf8ToStringCharset(std::string& stringSrcDst);
-  bool utf8ToSystem(std::string& stringSrcDst);
+  bool utf8ToSystem(std::string& stringSrcDst, bool failOnBadChar = false);
 
   bool utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::string& stringDst);
   bool utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u16string& utf16StringDst);
@@ -65,7 +67,7 @@ public:
 
   bool ucs2CharsetToStringCharset(const std::u16string& ucs2StringSrc, std::string& stringDst, bool swap = false);
 
-  bool wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst);
+  bool wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
   bool utf16BEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
   bool utf16LEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
   bool ucs2ToUTF8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst);
@@ -80,7 +82,7 @@ public:
   bool isBidiCharset(const std::string& charset);
 
   bool unknownToUTF8(std::string& stringSrcDst);
-  bool unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst);
+  bool unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
 
   bool toW(const std::string& stringSrc, std::wstring& wStringDst, const std::string& enc);
   bool fromW(const std::wstring& wStringSrc, std::string& stringDst, const std::string& enc);
