@@ -1252,7 +1252,6 @@
 		DFF0F35817528350002DA3A4 /* GUIWindowSlideShow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18350D25F9FA00618676 /* GUIWindowSlideShow.cpp */; };
 		DFF0F35917528350002DA3A4 /* Picture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DD70D25F9FD00618676 /* Picture.cpp */; };
 		DFF0F35A17528350002DA3A4 /* PictureInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DD90D25F9FD00618676 /* PictureInfoLoader.cpp */; };
-		DFF0F35B17528350002DA3A4 /* PictureInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DDB0D25F9FD00618676 /* PictureInfoTag.cpp */; };
 		DFF0F35C17528350002DA3A4 /* PictureThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DDD0D25F9FD00618676 /* PictureThumbLoader.cpp */; };
 		DFF0F35D17528350002DA3A4 /* SlideShowPicture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E090D25F9FD00618676 /* SlideShowPicture.cpp */; };
 		DFF0F35E17528350002DA3A4 /* PlayList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C91D129428CA009E7A26 /* PlayList.cpp */; };
@@ -1881,7 +1880,6 @@
 		E38E22A00D25F9FE00618676 /* PartyModeManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DD50D25F9FD00618676 /* PartyModeManager.cpp */; };
 		E38E22A10D25F9FE00618676 /* Picture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DD70D25F9FD00618676 /* Picture.cpp */; };
 		E38E22A20D25F9FE00618676 /* PictureInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DD90D25F9FD00618676 /* PictureInfoLoader.cpp */; };
-		E38E22A30D25F9FE00618676 /* PictureInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DDB0D25F9FD00618676 /* PictureInfoTag.cpp */; };
 		E38E22A40D25F9FE00618676 /* PictureThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DDD0D25F9FD00618676 /* PictureThumbLoader.cpp */; };
 		E38E22AA0D25F9FE00618676 /* PlayListPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DE90D25F9FD00618676 /* PlayListPlayer.cpp */; };
 		E38E22B30D25F9FE00618676 /* SectionLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */; };
@@ -2680,7 +2678,6 @@
 		E49913D9174E5F8D00741B6D /* GUIWindowSlideShow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18350D25F9FA00618676 /* GUIWindowSlideShow.cpp */; };
 		E49913DA174E5F8D00741B6D /* Picture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DD70D25F9FD00618676 /* Picture.cpp */; };
 		E49913DB174E5F8D00741B6D /* PictureInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DD90D25F9FD00618676 /* PictureInfoLoader.cpp */; };
-		E49913DC174E5F8D00741B6D /* PictureInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DDB0D25F9FD00618676 /* PictureInfoTag.cpp */; };
 		E49913DD174E5F8D00741B6D /* PictureThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DDD0D25F9FD00618676 /* PictureThumbLoader.cpp */; };
 		E49913DE174E5F8D00741B6D /* SlideShowPicture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E090D25F9FD00618676 /* SlideShowPicture.cpp */; };
 		E49913DF174E5F8D00741B6D /* PlayList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C91D129428CA009E7A26 /* PlayList.cpp */; };
@@ -3137,6 +3134,10 @@
 		FE6D10CD17AD556E00D819D5 /* PictureLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10CB17AD556E00D819D5 /* PictureLibrary.cpp */; };
 		FE6D10D017ADD2FD00D819D5 /* ContactLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10CE17ADD2FA00D819D5 /* ContactLibrary.cpp */; };
 		FE6D10D717AE140600D819D5 /* PictureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10D517AE140600D819D5 /* PictureDatabase.cpp */; };
+		FE7027B017B864D300D72349 /* PictureInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE7027AE17B864D300D72349 /* PictureInfoTag.cpp */; };
+		FE7027B417B8658000D72349 /* PictureInfoTagLoaderFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE7027B217B8658000D72349 /* PictureInfoTagLoaderFactory.cpp */; };
+		FE7027B717B865BE00D72349 /* PictureInfoTagLoaderDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE7027B517B865BD00D72349 /* PictureInfoTagLoaderDatabase.cpp */; };
+		FE7027BA17B869BF00D72349 /* PictureInfoTagLoaderJPG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE7027B817B869BD00D72349 /* PictureInfoTagLoaderJPG.cpp */; };
 		FE9D6F7717B1D7D400CDCDDC /* PictureAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F7517B1D7D300CDCDDC /* PictureAlbum.cpp */; };
 		FE9D6F7A17B1D7E000CDCDDC /* Face.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F7817B1D7DF00CDCDDC /* Face.cpp */; };
 		FE9D6F7D17B1D8CF00CDCDDC /* PictureDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE9D6F7B17B1D8CE00CDCDDC /* PictureDbUrl.cpp */; };
@@ -5012,8 +5013,6 @@
 		E38E1DD80D25F9FD00618676 /* Picture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Picture.h; sourceTree = "<group>"; };
 		E38E1DD90D25F9FD00618676 /* PictureInfoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureInfoLoader.cpp; sourceTree = "<group>"; };
 		E38E1DDA0D25F9FD00618676 /* PictureInfoLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureInfoLoader.h; sourceTree = "<group>"; };
-		E38E1DDB0D25F9FD00618676 /* PictureInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureInfoTag.cpp; sourceTree = "<group>"; };
-		E38E1DDC0D25F9FD00618676 /* PictureInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureInfoTag.h; sourceTree = "<group>"; };
 		E38E1DDD0D25F9FD00618676 /* PictureThumbLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureThumbLoader.cpp; sourceTree = "<group>"; };
 		E38E1DDE0D25F9FD00618676 /* PictureThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureThumbLoader.h; sourceTree = "<group>"; };
 		E38E1DE90D25F9FD00618676 /* PlayListPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayListPlayer.cpp; sourceTree = "<group>"; };
@@ -5530,6 +5529,15 @@
 		FE6D10CF17ADD2FC00D819D5 /* ContactLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactLibrary.h; sourceTree = "<group>"; };
 		FE6D10D517AE140600D819D5 /* PictureDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureDatabase.cpp; sourceTree = "<group>"; };
 		FE6D10D617AE140600D819D5 /* PictureDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureDatabase.h; sourceTree = "<group>"; };
+		FE7027AE17B864D300D72349 /* PictureInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureInfoTag.cpp; sourceTree = "<group>"; };
+		FE7027AF17B864D300D72349 /* PictureInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureInfoTag.h; sourceTree = "<group>"; };
+		FE7027B117B8654800D72349 /* IpictureInfoTagLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IpictureInfoTagLoader.h; sourceTree = "<group>"; };
+		FE7027B217B8658000D72349 /* PictureInfoTagLoaderFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureInfoTagLoaderFactory.cpp; sourceTree = "<group>"; };
+		FE7027B317B8658000D72349 /* PictureInfoTagLoaderFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureInfoTagLoaderFactory.h; sourceTree = "<group>"; };
+		FE7027B517B865BD00D72349 /* PictureInfoTagLoaderDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureInfoTagLoaderDatabase.cpp; sourceTree = "<group>"; };
+		FE7027B617B865BE00D72349 /* PictureInfoTagLoaderDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureInfoTagLoaderDatabase.h; sourceTree = "<group>"; };
+		FE7027B817B869BD00D72349 /* PictureInfoTagLoaderJPG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureInfoTagLoaderJPG.cpp; sourceTree = "<group>"; };
+		FE7027B917B869BE00D72349 /* PictureInfoTagLoaderJPG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureInfoTagLoaderJPG.h; sourceTree = "<group>"; };
 		FE9D6F7517B1D7D300CDCDDC /* PictureAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureAlbum.cpp; sourceTree = "<group>"; };
 		FE9D6F7617B1D7D400CDCDDC /* PictureAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureAlbum.h; sourceTree = "<group>"; };
 		FE9D6F7817B1D7DF00CDCDDC /* Face.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Face.cpp; sourceTree = "<group>"; };
@@ -6122,8 +6130,8 @@
 		4313767E12D63EC200680C15 /* pictures */ = {
 			isa = PBXGroup;
 			children = (
+				FE7027AD17B864D300D72349 /* tags */,
 				FE9D6FC017B6421F00CDCDDC /* windows */,
-				FE9D6F8F17B21F6600CDCDDC /* tags */,
 				FE9D6F7417B1D64900CDCDDC /* infoscanner */,
 				E38E16860D25F9FA00618676 /* DllImageLib.h */,
 				E38E16870D25F9FA00618676 /* DllLibExif.h */,
@@ -6131,8 +6139,6 @@
 				E38E1DD80D25F9FD00618676 /* Picture.h */,
 				E38E1DD90D25F9FD00618676 /* PictureInfoLoader.cpp */,
 				E38E1DDA0D25F9FD00618676 /* PictureInfoLoader.h */,
-				E38E1DDB0D25F9FD00618676 /* PictureInfoTag.cpp */,
-				E38E1DDC0D25F9FD00618676 /* PictureInfoTag.h */,
 				E38E1DDD0D25F9FD00618676 /* PictureThumbLoader.cpp */,
 				E38E1DDE0D25F9FD00618676 /* PictureThumbLoader.h */,
 				E38E1E090D25F9FD00618676 /* SlideShowPicture.cpp */,
@@ -9240,6 +9246,22 @@
 			name = CoreAudio;
 			sourceTree = "<group>";
 		};
+		FE7027AD17B864D300D72349 /* tags */ = {
+			isa = PBXGroup;
+			children = (
+				FE7027AE17B864D300D72349 /* PictureInfoTag.cpp */,
+				FE7027AF17B864D300D72349 /* PictureInfoTag.h */,
+				FE7027B117B8654800D72349 /* IpictureInfoTagLoader.h */,
+				FE7027B217B8658000D72349 /* PictureInfoTagLoaderFactory.cpp */,
+				FE7027B317B8658000D72349 /* PictureInfoTagLoaderFactory.h */,
+				FE7027B517B865BD00D72349 /* PictureInfoTagLoaderDatabase.cpp */,
+				FE7027B617B865BE00D72349 /* PictureInfoTagLoaderDatabase.h */,
+				FE7027B817B869BD00D72349 /* PictureInfoTagLoaderJPG.cpp */,
+				FE7027B917B869BE00D72349 /* PictureInfoTagLoaderJPG.h */,
+			);
+			path = tags;
+			sourceTree = "<group>";
+		};
 		FE9D6F7417B1D64900CDCDDC /* infoscanner */ = {
 			isa = PBXGroup;
 			children = (
@@ -9284,13 +9306,6 @@
 				FE9D6FBE17B25B3A00CDCDDC /* DirectoryNodeYearPicture.h */,
 			);
 			path = PictureDatabaseDirectory;
-			sourceTree = "<group>";
-		};
-		FE9D6F8F17B21F6600CDCDDC /* tags */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = tags;
 			sourceTree = "<group>";
 		};
 		FE9D6FC017B6421F00CDCDDC /* windows */ = {
@@ -9958,7 +9973,6 @@
 				E38E22A00D25F9FE00618676 /* PartyModeManager.cpp in Sources */,
 				E38E22A10D25F9FE00618676 /* Picture.cpp in Sources */,
 				E38E22A20D25F9FE00618676 /* PictureInfoLoader.cpp in Sources */,
-				E38E22A30D25F9FE00618676 /* PictureInfoTag.cpp in Sources */,
 				E38E22A40D25F9FE00618676 /* PictureThumbLoader.cpp in Sources */,
 				E38E22AA0D25F9FE00618676 /* PlayListPlayer.cpp in Sources */,
 				E38E22B30D25F9FE00618676 /* SectionLoader.cpp in Sources */,
@@ -10688,6 +10702,10 @@
 				FE9D6FB917B25B0500CDCDDC /* DirectoryNodeAlbumRecentlyAddedPicture.cpp in Sources */,
 				FE9D6FBC17B25B2700CDCDDC /* DirectoryNodeYearAlbum.cpp in Sources */,
 				FE9D6FBF17B25B3C00CDCDDC /* DirectoryNodeYearPicture.cpp in Sources */,
+				FE7027B017B864D300D72349 /* PictureInfoTag.cpp in Sources */,
+				FE7027B417B8658000D72349 /* PictureInfoTagLoaderFactory.cpp in Sources */,
+				FE7027B717B865BE00D72349 /* PictureInfoTagLoaderDatabase.cpp in Sources */,
+				FE7027BA17B869BF00D72349 /* PictureInfoTagLoaderJPG.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11400,7 +11418,6 @@
 				DFF0F35817528350002DA3A4 /* GUIWindowSlideShow.cpp in Sources */,
 				DFF0F35917528350002DA3A4 /* Picture.cpp in Sources */,
 				DFF0F35A17528350002DA3A4 /* PictureInfoLoader.cpp in Sources */,
-				DFF0F35B17528350002DA3A4 /* PictureInfoTag.cpp in Sources */,
 				DFF0F35C17528350002DA3A4 /* PictureThumbLoader.cpp in Sources */,
 				DFF0F35D17528350002DA3A4 /* SlideShowPicture.cpp in Sources */,
 				DFF0F35E17528350002DA3A4 /* PlayList.cpp in Sources */,
@@ -12426,7 +12443,6 @@
 				E49913D9174E5F8D00741B6D /* GUIWindowSlideShow.cpp in Sources */,
 				E49913DA174E5F8D00741B6D /* Picture.cpp in Sources */,
 				E49913DB174E5F8D00741B6D /* PictureInfoLoader.cpp in Sources */,
-				E49913DC174E5F8D00741B6D /* PictureInfoTag.cpp in Sources */,
 				E49913DD174E5F8D00741B6D /* PictureThumbLoader.cpp in Sources */,
 				E49913DE174E5F8D00741B6D /* SlideShowPicture.cpp in Sources */,
 				E49913DF174E5F8D00741B6D /* PlayList.cpp in Sources */,
