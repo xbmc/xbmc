@@ -52,6 +52,7 @@
 #include "wayland/Seat.h"
 #include "wayland/Pointer.h"
 #include "wayland/Keyboard.h"
+#include "wayland/EventQueueStrategy.h"
 
 #include "input/linux/XKBCommonKeymap.h"
 #include "input/linux/Keymap.h"
@@ -86,9 +87,9 @@ class IEventListener
 public:
 
   virtual ~IEventListener() {}
-  virtual bool OnEvent(XBMC_Event &) = 0;
-  virtual bool OnFocused() = 0;
-  virtual bool OnUnfocused() = 0;
+  virtual void OnEvent(XBMC_Event &) = 0;
+  virtual void OnFocused() = 0;
+  virtual void OnUnfocused() = 0;
 };
 
 class ICursorManager
@@ -211,19 +212,10 @@ private:
   
   struct xkb_context *m_context;
 };
-
-class EventDispatch :
-  public IEventListener
-{
-public:
-
-  bool OnEvent(XBMC_Event &);
-  bool OnFocused();
-  bool OnUnfocused();
-};
 }
 
 namespace xw = xbmc::wayland;
+namespace xwe = xbmc::wayland::events;
 
 namespace
 {
@@ -233,11 +225,13 @@ namespace
  * timers and events to be dispatched. It implements ITimeoutManager
  * and timeouts can be added directly to it */
 class WaylandEventLoop :
+  public xbmc::IEventListener,
   public xbmc::ITimeoutManager
 {
 public:
 
   WaylandEventLoop(IDllWaylandClient &clientLibrary,
+                   xwe::IEventQueueStrategy &strategy,
                    struct wl_display *display);
   
   void Dispatch();
@@ -262,11 +256,17 @@ private:
                             uint32_t timeout);
   void DispatchTimers();
   
+  void OnEvent(XBMC_Event &);
+  void OnFocused();
+  void OnUnfocused();
+  
   IDllWaylandClient &m_clientLibrary;
   
   struct wl_display *m_display;
   std::vector<CallbackTracker> m_callbackQueue;
   CStopWatch m_stopWatch;
+  
+  xwe::IEventQueueStrategy &m_eventQueue;
 };
 
 /* WaylandInput is effectively just a manager class that encapsulates
@@ -282,7 +282,7 @@ public:
   WaylandInput(IDllWaylandClient &clientLibrary,
                IDllXKBCommon &xkbCommonLibrary,
                struct wl_seat *seat,
-               xbmc::EventDispatch &dispatch,
+               xbmc::IEventListener &dispatch,
                xbmc::ITimeoutManager &timeouts);
 
   void SetXBMCSurface(struct wl_surface *s);
@@ -300,8 +300,6 @@ private:
   void RemovePointer();
   void RemoveKeyboard();
 
-  bool OnEvent(XBMC_Event &);
-
   IDllWaylandClient &m_clientLibrary;
   IDllXKBCommon &m_xkbCommonLibrary;
 
@@ -313,7 +311,6 @@ private:
   boost::scoped_ptr<xw::Keyboard> m_keyboard;
 };
 
-xbmc::EventDispatch g_dispatch;
 boost::scoped_ptr <WaylandInput> g_inputInstance;
 boost::scoped_ptr <WaylandEventLoop> g_eventLoop;
 }
@@ -649,8 +646,7 @@ xbmc::KeyboardProcessor::Modifier(uint32_t serial,
   m_keymap->UpdateMask(depressed, latched, locked, group);
 }
 
-/* Once EventDispatch recieves some information it just forwards
- * it all on to XBMC */
+<<<<<<< HEAD
 bool xbmc::EventDispatch::OnEvent(XBMC_Event &e)
 {
   return g_application.OnEvent(e);
@@ -670,10 +666,12 @@ bool xbmc::EventDispatch::OnUnfocused()
   return true;
 }
 
+=======
+>>>>>>> c5aa463... Read or dispatch events in a separate thread.
 WaylandInput::WaylandInput(IDllWaylandClient &clientLibrary,
                            IDllXKBCommon &xkbCommonLibrary,
                            struct wl_seat *seat,
-                           xbmc::EventDispatch &dispatch,
+                           xbmc::IEventListener &dispatch,
                            xbmc::ITimeoutManager &timeouts) :
   m_clientLibrary(clientLibrary),
   m_xkbCommonLibrary(xkbCommonLibrary),
@@ -728,10 +726,55 @@ void WaylandInput::RemoveKeyboard()
   m_keyboard.reset();
 }
 
+namespace
+{
+void DispatchEventAction(XBMC_Event &e)
+{
+  g_application.OnEvent(e);
+}
+
+void DispatchFocusedAction()
+{
+  g_application.m_AppFocused = true;
+  g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+}
+
+void DispatchUnfocusedAction()
+{
+  g_application.m_AppFocused = false;
+  g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+}
+}
+
+/* Once WaylandEventLoop recieves some information we need to enqueue
+ * it to be dispatched on MessagePump. This is done by using
+ * a command pattern to wrap the incoming data in function objects
+ * and then pushing it to a queue.
+ * 
+ * The reason for this is that these three functions may or may not
+ * be running in a separate thread depending on the dispatch
+ * strategy in place.  */
+void WaylandEventLoop::OnEvent(XBMC_Event &e)
+{
+  m_eventQueue.PushAction(boost::bind(DispatchEventAction, e));
+}
+
+void WaylandEventLoop::OnFocused()
+{
+  m_eventQueue.PushAction(boost::bind(DispatchFocusedAction));
+}
+
+void WaylandEventLoop::OnUnfocused()
+{
+  m_eventQueue.PushAction(boost::bind(DispatchUnfocusedAction));
+}
+
 WaylandEventLoop::WaylandEventLoop(IDllWaylandClient &clientLibrary,
+                                   xwe::IEventQueueStrategy &strategy,
                                    struct wl_display *display) :
   m_clientLibrary(clientLibrary),
-  m_display(display)
+  m_display(display),
+  m_eventQueue(strategy)
 {
   m_stopWatch.StartZero();
 }
@@ -797,26 +840,6 @@ void WaylandEventLoop::DispatchTimers()
 
 void WaylandEventLoop::Dispatch()
 {
-  /* It is very important that these functions occurr in this order.
-   * Deadlocks might occurr otherwise.
-   * 
-   * The first function dispatches any pending events that have been
-   * determined from prior reads of the event queue without *also*
-   * reading the event queue.
-   * 
-   * The second function flushes the output buffer of any requests
-   * to be made to the server, including requests that should have
-   * been made in response to just-dispatched events earlier.
-   * 
-   * The third function reads the input buffer and dispatches any events
-   * that occurred.
-   * 
-   * If the functions are not called in this order, you might run into
-   * a situation where pending-dispatch events might have generated a
-   * write to the event queue in order to keep us awake (frame events
-   * are a particular culprit here), or where events that we need to
-   * dispatch in order to keep going are never read.
-   */
   m_clientLibrary.wl_display_dispatch_pending(m_display);
   m_clientLibrary.wl_display_flush(m_display);
 
@@ -839,19 +862,7 @@ void WaylandEventLoop::Dispatch()
       minTimeout = it->remaining;
   }
   
-  struct pollfd pfd;
-  pfd.events = POLLIN | POLLHUP | POLLERR;
-  pfd.revents = 0;
-  pfd.fd = m_clientLibrary.wl_display_get_fd(m_display);
-  
-  int pollTimeout = minTimeout == 0 ?
-                    -1 : minTimeout;
-
-  if (poll(&pfd, 1, pollTimeout) == -1)
-    throw std::runtime_error(strerror(errno));
-
-  DispatchTimers();
-  m_clientLibrary.wl_display_dispatch(m_display);
+  m_eventQueue.DispatchEventsFromMain();
 }
 
 xbmc::ITimeoutManager::CallbackPtr
@@ -916,17 +927,14 @@ size_t CWinEventsWayland::GetQueueSize()
 }
 
 void CWinEventsWayland::SetWaylandDisplay(IDllWaylandClient &clientLibrary,
+                                          xwe::IEventQueueStrategy &strategy,
                                           struct wl_display *d)
 {
-  g_eventLoop.reset(new WaylandEventLoop(clientLibrary, d));
+  g_eventLoop.reset(new WaylandEventLoop(clientLibrary, strategy, d));
 }
 
 void CWinEventsWayland::DestroyWaylandDisplay()
 {
-  /* We should make sure that everything else is gone first before
-   * destroying the display */
-  MessagePump();
-
   g_eventLoop.reset();
 }
 
@@ -945,7 +953,7 @@ void CWinEventsWayland::SetWaylandSeat(IDllWaylandClient &clientLibrary,
   g_inputInstance.reset(new WaylandInput(clientLibrary,
                                          xkbCommonLibrary,
                                          s,
-                                         g_dispatch,
+                                         *g_eventLoop,
                                          *g_eventLoop));
 }
 
