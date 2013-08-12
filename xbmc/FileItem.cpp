@@ -45,7 +45,7 @@
 #include "video/VideoInfoTag.h"
 #include "threads/SingleLock.h"
 #include "music/tags/MusicInfoTag.h"
-#include "pictures/PictureInfoTag.h"
+#include "pictures/tags/PictureInfoTag.h"
 #include "music/Artist.h"
 #include "music/Album.h"
 #include "music/Song.h"
@@ -1208,6 +1208,12 @@ bool CFileItem::IsMusicDb() const
 {
   CURL url(m_strPath);
   return url.GetProtocol().Equals("musicdb");
+}
+
+bool CFileItem::IsPictureDb() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("picturedb");
 }
 
 bool CFileItem::IsVideoDb() const
@@ -2753,6 +2759,53 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bo
   // No thumb found
   return "";
 }
+
+CStdString CFileItem::GetUserPictureThumb(bool alwaysCheckRemote /* = false */, bool fallbackToFolder /* = false */) const
+{
+  if (m_strPath.IsEmpty()
+      || m_strPath.Left(19).Equals("newsmartplaylist://")
+      || m_strPath.Left(14).Equals("newplaylist://")
+      || m_bIsShareOrDrive
+      || IsInternetStream()
+      || URIUtils::IsUPnP(m_strPath)
+      || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+      || IsPlugin()
+      || IsAddonsPath()
+      || IsParentFolder()
+      || IsPictureDb())
+    return "";
+  
+  // we first check for <filename>.tbn or <foldername>.tbn
+  CStdString fileThumb(GetTBNFile());
+  if (CFile::Exists(fileThumb))
+    return fileThumb;
+  
+  // Fall back to folder thumb, if requested
+  if (!m_bIsFolder && fallbackToFolder)
+  {
+    CFileItem item(URIUtils::GetDirectory(m_strPath), true);
+    return item.GetUserPictureThumb(alwaysCheckRemote);
+  }
+  /*
+  // if a folder, check for folder.jpg
+  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CSettings::Get().GetBool("musicfiles.findremotethumbs")))
+  {
+    CStdStringArray thumbs;
+    StringUtils::SplitString(g_advancedSettings.m_pictureThumbs, "|", thumbs);
+    for (unsigned int i = 0; i < thumbs.size(); ++i)
+    {
+      CStdString folderThumb(GetFolderThumb(thumbs[i]));
+      if (CFile::Exists(folderThumb))
+      {
+        return folderThumb;
+      }
+    }
+  }
+   */
+  // No thumb found
+  return "";
+}
+
 
 // Gets the .tbn filename from a file or folder name.
 // <filename>.ext -> <filename>.tbn

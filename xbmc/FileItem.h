@@ -191,6 +191,7 @@ public:
   bool IsStack() const;
   bool IsMultiPath() const;
   bool IsMusicDb() const;
+  bool IsPictureDb() const;
   bool IsVideoDb() const;
   bool IsEPG() const;
   bool IsPVRChannel() const;
@@ -355,6 +356,9 @@ public:
   // Gets the user thumb, if it exists
   CStdString GetUserMusicThumb(bool alwaysCheckRemote = false, bool fallbackToFolder = false) const;
 
+  // Gets the user thumb, if it exists
+  CStdString GetUserPictureThumb(bool alwaysCheckRemote = false, bool fallbackToFolder = false) const;
+  
   /*! \brief Get the path where we expect local metadata to reside.
    For a folder, this is just the existing path (eg tvshow folder)
    For a file, this is the parent path, with exceptions made for VIDEO_TS and BDMV files
