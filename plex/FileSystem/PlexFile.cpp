@@ -17,7 +17,6 @@ vector<stringPair> CPlexFile::GetHeaderList()
   std::vector<std::pair<std::string, std::string> > hdrs;
   
   hdrs.push_back(stringPair("X-Plex-Version", PLEX_VERSION));
-  hdrs.push_back(stringPair("X-Plex-Client-Platform", PlexUtils::GetMachinePlatform()));
 
   hdrs.push_back(stringPair("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid")));
   hdrs.push_back(stringPair("X-Plex-Provides", "player"));
