@@ -476,6 +476,15 @@ void CGUIEditControl::RenderText()
   }
 }
 
+CGUILabel::COLOR CGUIEditControl::GetTextColor() const
+{
+  CGUILabel::COLOR color = CGUIButtonControl::GetTextColor();
+  if (color != CGUILabel::COLOR_DISABLED && HasInvalidInput())
+    return CGUILabel::COLOR_INVALID;
+
+  return color;
+}
+
 void CGUIEditControl::SetHint(const CGUIInfoLabel& hint)
 {
   m_hintInfo = hint;

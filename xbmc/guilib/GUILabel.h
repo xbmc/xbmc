@@ -52,6 +52,7 @@ public:
     changed |= selectedColor.Update();
     changed |= disabledColor.Update();
     changed |= focusedColor.Update();
+    changed |= invalidColor.Update();
 
     return changed;
   };
@@ -61,6 +62,7 @@ public:
   CGUIInfoColor selectedColor;
   CGUIInfoColor disabledColor;
   CGUIInfoColor focusedColor;
+  CGUIInfoColor invalidColor;
   uint32_t align;
   float offsetX;
   float offsetY;
@@ -83,7 +85,8 @@ public:
   enum COLOR { COLOR_TEXT = 0,
                COLOR_SELECTED,
                COLOR_FOCUSED,
-               COLOR_DISABLED };
+               COLOR_DISABLED,
+               COLOR_INVALID };
   
   /*! \brief allowed overflow handling techniques for labels, as defined by the skin
    */

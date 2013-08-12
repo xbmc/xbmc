@@ -87,6 +87,7 @@ public:
 protected:
   virtual void ProcessText(unsigned int currentTime);
   virtual void RenderText();
+  virtual CGUILabel::COLOR GetTextColor() const;
   CStdStringW GetDisplayedText() const;
   void RecalcLabelPosition();
   void ValidateCursor();
