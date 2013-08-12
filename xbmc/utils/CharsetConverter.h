@@ -74,7 +74,7 @@ public:
 
   bool utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst);
 
-  bool utf32ToStringCharset(const unsigned long* utf32StringSrc, std::string& stringDst);
+  bool utf32ToStringCharset(const std::u32string& utf32StringSrc, std::string& stringDst);
 
   std::vector<std::string> getCharsetLabels();
   std::string getCharsetLabelByName(const std::string& charsetName);

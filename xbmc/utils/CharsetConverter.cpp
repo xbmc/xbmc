@@ -629,46 +629,10 @@ bool CCharsetConverter::ucs2CharsetToStringCharset(const std::u16string& ucs2Str
           g_langInfo.GetGuiCharSet(),strCopy,stringDst);
 }
 
-bool CCharsetConverter::utf32ToStringCharset(const unsigned long* utf32StringSrc, std::string& stringDst)
+bool CCharsetConverter::utf32ToStringCharset(const std::u32string& utf32StringSrc, std::string& stringDst)
 {
-  stringDst.clear();
-
   CSingleLock lock(m_critSection);
-
-  if (m_iconvUtf32ToStringCharset == (iconv_t) - 1)
-    m_iconvUtf32ToStringCharset = iconv_open(g_langInfo.GetGuiCharSet().c_str(), "UTF-32LE");
-
-  if (m_iconvUtf32ToStringCharset != (iconv_t) - 1)
-  {
-    const unsigned long* ptr=utf32StringSrc;
-    while (*ptr) ptr++;
-    const char* src = (const char*) utf32StringSrc;
-    size_t inBytes = (ptr-utf32StringSrc+1)*4;
-
-    char* dst = new char[inBytes];
-    size_t outBytes = inBytes;
-
-    if (iconv_const(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      delete[] dst;
-      stringDst = (const char*)utf32StringSrc;
-      return false;
-    }
-
-    if (iconv(m_iconvUtf32ToStringCharset, NULL, NULL, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      delete[] dst;
-      stringDst = (const char*)utf32StringSrc;
-      return false;
-    }
-    stringDst = dst;
-    delete[] dst;
-    return true;
-  }
-
-  return false;
+  return convert(m_iconvUtf32ToStringCharset, 1, g_langInfo.GetGuiCharSet().c_str(), "UTF-32", utf32StringSrc, stringDst);
 }
 
 bool CCharsetConverter::utf8ToSystem(std::string& stringSrcDst, bool failOnBadChar /*= false*/)
