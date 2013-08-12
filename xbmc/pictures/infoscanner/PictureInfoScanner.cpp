@@ -20,7 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "PictureInfoScanner.h"
-//#include "picture/tags/PictureInfoTagLoaderFactory.h"
+#include "pictures/tags/PictureInfoTagLoaderFactory.h"
 #include "PictureAlbumInfo.h"
 #include "PictureInfoScraper.h"
 #include "filesystem/PictureDatabaseDirectory.h"
@@ -30,7 +30,7 @@
 #include "GUIInfoManager.h"
 #include "utils/Variant.h"
 #include "NfoFile.h"
-//#include "picture/tags/PictureInfoTag.h"
+#include "pictures/tags/PictureInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -376,81 +376,81 @@ static CStdString Prettify(const CStdString& strDirectory)
 
 bool CPictureInfoScanner::DoScan(const CStdString& strDirectory)
 {
-    if (m_handle)
-        m_handle->SetText(Prettify(strDirectory));
-    
-    // Discard all excluded files defined by m_pictureExcludeRegExps
-    CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
-    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
-        return true;
-    
-    // load subfolder
-    CFileItemList items;
-    CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_pictureExtensions + "|.jpg|.tbn|.lrc|.cdg");
-    
-    // sort and get the path hash.  Note that we don't filter .cue sheet items here as we want
-    // to detect changes in the .cue sheet as well.  The .cue sheet items only need filtering
-    // if we have a changed hash.
-    items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
-    CStdString hash;
-    GetPathHash(items, hash);
-
-    // check whether we need to rescan or not
-    CStdString dbHash;
-    if ((m_flags & SCAN_RESCAN) || !m_pictureDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
-    { // path has changed - rescan
-        if (dbHash.IsEmpty())
-            CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());
-        else
-            CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, strDirectory.c_str());
-        
-        // filter items in the sub dir (for .cue sheet support)
-        items.FilterCueItems();
-        items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
-        
-        // and then scan in the new information
-        if (RetrievePictureInfo(strDirectory, items) > 0)
-        {
-            if (m_handle)
-                OnDirectoryScanned(strDirectory);
-        }
-        
-        // save information about this folder
-        m_pictureDatabase.SetPathHash(strDirectory, hash);
-    }
+  if (m_handle)
+    m_handle->SetText(Prettify(strDirectory));
+  
+  // Discard all excluded files defined by m_pictureExcludeRegExps
+  CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+    return true;
+  
+  // load subfolder
+  CFileItemList items;
+  CDirectory::GetDirectory(strDirectory, items, g_advancedSettings.m_pictureExtensions + "|.jpg|.tbn|.lrc|.cdg");
+  
+  // sort and get the path hash.  Note that we don't filter .cue sheet items here as we want
+  // to detect changes in the .cue sheet as well.  The .cue sheet items only need filtering
+  // if we have a changed hash.
+  items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
+  CStdString hash;
+  GetPathHash(items, hash);
+  
+  // check whether we need to rescan or not
+  CStdString dbHash;
+  if ((m_flags & SCAN_RESCAN) || !m_pictureDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
+  { // path has changed - rescan
+    if (dbHash.IsEmpty())
+      CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());
     else
-    { // path is the same - no need to rescan
-        CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, strDirectory.c_str());
-        m_currentItem += CountFiles(items, false);  // false for non-recursive
-        
-        // updated the dialog with our progress
-        if (m_handle)
-        {
-            if (m_itemCount>0)
-                m_handle->SetPercentage(m_currentItem/(float)m_itemCount*100);
-            OnDirectoryScanned(strDirectory);
-        }
+      CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, strDirectory.c_str());
+    
+    // filter items in the sub dir (for .cue sheet support)
+    items.FilterCueItems();
+    items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
+    
+    // and then scan in the new information
+    if (RetrievePictureInfo(strDirectory, items) > 0)
+    {
+      if (m_handle)
+        OnDirectoryScanned(strDirectory);
     }
     
-    // now scan the subfolders
-    for (int i = 0; i < items.Size(); ++i)
+    // save information about this folder
+    m_pictureDatabase.SetPathHash(strDirectory, hash);
+  }
+  else
+  { // path is the same - no need to rescan
+    CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, strDirectory.c_str());
+    m_currentItem += CountFiles(items, false);  // false for non-recursive
+    
+    // updated the dialog with our progress
+    if (m_handle)
     {
-        CFileItemPtr pItem = items[i];
-        
-        if (m_bStop)
-            break;
-        // if we have a directory item (non-playlist) we then recurse into that folder
-        if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList())
-        {
-            CStdString strPath=pItem->GetPath();
-            if (!DoScan(strPath))
-            {
-                m_bStop = true;
-            }
-        }
+      if (m_itemCount>0)
+        m_handle->SetPercentage(m_currentItem/(float)m_itemCount*100);
+      OnDirectoryScanned(strDirectory);
     }
-
-    return !m_bStop;
+  }
+  
+  // now scan the subfolders
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItemPtr pItem = items[i];
+    
+    if (m_bStop)
+      break;
+    // if we have a directory item (non-playlist) we then recurse into that folder
+    if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList())
+    {
+      CStdString strPath=pItem->GetPath();
+      if (!DoScan(strPath))
+      {
+        m_bStop = true;
+      }
+    }
+  }
+  
+  return !m_bStop;
 }
 
 INFO_RET CPictureInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& scannedItems)
@@ -467,11 +467,11 @@ INFO_RET CPictureInfoScanner::ScanTags(const CFileItemList& items, CFileItemList
         if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps))
             continue;
         
-        if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || pItem->IsLyrics())
+        if (pItem->m_bIsFolder )
             continue;
         
         m_currentItem++;
-        /*
+        
         CPictureInfoTag& tag = *pItem->GetPictureInfoTag();
         if (!tag.Loaded())
         {
@@ -488,7 +488,7 @@ INFO_RET CPictureInfoScanner::ScanTags(const CFileItemList& items, CFileItemList
             CLog::Log(LOGDEBUG, "%s - No tag found for: %s", __FUNCTION__, pItem->GetPath().c_str());
             continue;
         }
-         */
+      
         scannedItems.Add(pItem);
     }
     return INFO_ADDED;
@@ -515,18 +515,7 @@ void CPictureInfoScanner::FileItemsToAlbums(CFileItemList& items, VECPICTUREALBU
                 if (picture.strThumb.empty()) picture.strThumb = it->second.strThumb;
             }
         }
-        /*
-        if (!tag.GetPictureBrainzFaceID().empty())
-        {
-            for (vector<string>::const_iterator it = tag.GetPictureBrainzFaceID().begin(); it != tag.GetPictureBrainzFaceID().end(); ++it)
-            {
-                CStdString strJoinPhrase = (it == --tag.GetPictureBrainzFaceID().end() ? "" : g_advancedSettings.m_pictureItemSeparator);
-                CFaceCredit mbface(tag.GetFace().empty() ? "" : tag.GetFace()[0], *it, strJoinPhrase);
-                picture.faceCredits.push_back(mbface);
-            }
-            picture.face = tag.GetFace();
-        }
-        else
+        
         {
             for (vector<string>::const_iterator it = tag.GetFace().begin(); it != tag.GetFace().end(); ++it)
             {
@@ -540,7 +529,7 @@ void CPictureInfoScanner::FileItemsToAlbums(CFileItemList& items, VECPICTUREALBU
         bool found = false;
         for (VECPICTUREALBUMS::iterator it = albums.begin(); it != albums.end(); ++it)
         {
-            if (it->strAlbum == tag.GetAlbum() && it->strPictureBrainzAlbumID == tag.GetPictureBrainzAlbumID())
+            if (it->strAlbum == tag.GetAlbum() )
             {
                 it->pictures.push_back(picture);
                 found = true;
@@ -549,18 +538,6 @@ void CPictureInfoScanner::FileItemsToAlbums(CFileItemList& items, VECPICTUREALBU
         if (!found)
         {
             CPictureAlbum album(*pItem.get());
-            if (!tag.GetPictureBrainzAlbumFaceID().empty())
-            {
-                for (vector<string>::const_iterator it = tag.GetPictureBrainzAlbumFaceID().begin(); it != tag.GetPictureBrainzAlbumFaceID().end(); ++it)
-                {
-                    // Picard always stored the display face string in the first face slot, no need to split it
-                    CStdString strJoinPhrase = (it == --tag.GetPictureBrainzAlbumFaceID().end() ? "" : g_advancedSettings.m_pictureItemSeparator);
-                    CFaceCredit mbface(tag.GetAlbumFace().empty() ? "" : tag.GetAlbumFace()[0], *it, strJoinPhrase);
-                    album.faceCredits.push_back(mbface);
-                }
-                album.face = tag.GetAlbumFace();
-            }
-            else
             {
                 for (vector<string>::const_iterator it = tag.GetAlbumFace().begin(); it != tag.GetAlbumFace().end(); ++it)
                 {
@@ -573,7 +550,6 @@ void CPictureInfoScanner::FileItemsToAlbums(CFileItemList& items, VECPICTUREALBU
             album.pictures.push_back(picture);
             albums.push_back(album);
         }
-         */
     }
 }
 
@@ -596,15 +572,6 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
     FindArtForAlbums(albums, items.GetPath());
     
     int numAdded = 0;
-    ADDON::AddonPtr addon;
-    ADDON::ScraperPtr albumScraper;
-    ADDON::ScraperPtr faceScraper;
-    if(ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_SCRAPER_ALBUMS, addon))
-        albumScraper = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
-    
-    if(ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_SCRAPER_ARTISTS, addon))
-        faceScraper = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
-    
     // Add each album
     for (VECPICTUREALBUMS::iterator album = albums.begin(); album != albums.end(); ++album)
     {
@@ -620,9 +587,6 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
         {
             // No - download the information
             CPictureAlbumInfo albumInfo;
-            INFO_RET albumDownloadStatus = INFO_NOT_FOUND;
-            if ((m_flags & SCAN_ONLINE) && albumScraper)
-                albumDownloadStatus = DownloadAlbumInfo(*album, albumScraper, albumInfo);
             /*
             if (albumDownloadStatus == INFO_ADDED || albumDownloadStatus == INFO_HAVE_ALREADY)
             {
@@ -665,13 +629,13 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
         
         if (m_bStop)
             break;
-        
+        /*
         // Add the album faces
         for (VECFACECREDITS::iterator faceCredit = cachedAlbum->second.faceCredits.begin(); faceCredit != cachedAlbum->second.faceCredits.end(); ++faceCredit)
         {
             if (m_bStop)
                 break;
-            /*
+            
             // Check if the face has already been downloaded or failed
             map<CFaceCredit, CFace>::iterator cachedFace = m_faceCache.find(*faceCredit);
             if (cachedFace == m_faceCache.end())
@@ -719,9 +683,8 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
                                            faceCredit->GetJoinPhrase(),
                                            faceCredit == album->faceCredits.begin() ? false : true,
                                            std::distance(cachedAlbum->second.faceCredits.begin(), faceCredit));
-             */
         }
-        
+*/        
         if (m_bStop)
             break;
         
@@ -1039,7 +1002,7 @@ int CPictureInfoScanner::GetPathHash(const CFileItemList &items, CStdString &has
         md5state.append((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
         FILETIME time = pItem->m_dateTime;
         md5state.append((unsigned char *)&time, sizeof(FILETIME));
-        if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
+        if (pItem->IsPicture() )
             count++;
     }
     md5state.getDigest(hash);
