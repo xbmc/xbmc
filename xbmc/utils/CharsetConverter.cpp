@@ -163,8 +163,10 @@ size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
 }
 
 template<class INPUT,class OUTPUT>
-static bool convert_checked(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource, OUTPUT& strDest)
+static bool convert_checked(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false)
 {
+  strDest.clear();
+
   if (type == (iconv_t)-1)
   {
     type = iconv_open(strToCharset.c_str(), strFromCharset.c_str());
@@ -177,10 +179,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
   }
 
   if (strSource.IsEmpty())
-  {
-    strDest.clear(); //empty strings are easy
-    return true;
-  }
+    return true; //empty strings are easy
 
   //input buffer for iconv() is the buffer from strSource
   size_t      inBufSize  = (strSource.length() + 1) * sizeof(strSource[0]);
@@ -189,18 +188,24 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
   //allocate output buffer for iconv()
   size_t      outBufSize = (strSource.length() + 1) * multiplier;
   char*       outBuf     = (char*)malloc(outBufSize);
+  if (outBuf == NULL)
+  {
+      CLog::Log(LOGSEVERE, "%s: malloc failed", __FUNCTION__);
+      return false;
+  }
 
   size_t      inBytesAvail  = inBufSize;  //how many bytes iconv() can read
   size_t      outBytesAvail = outBufSize; //how many bytes iconv() can write
   const char* inBufStart    = inBuf;      //where in our input buffer iconv() should start reading
   char*       outBufStart   = outBuf;     //where in out output buffer iconv() should start writing
 
+  size_t returnV;
   while(1)
   {
     //iconv() will update inBufStart, inBytesAvail, outBufStart and outBytesAvail
-    size_t returnV = iconv_const(type, &inBufStart, &inBytesAvail, &outBufStart, &outBytesAvail);
+    returnV = iconv_const(type, &inBufStart, &inBytesAvail, &outBufStart, &outBytesAvail);
 
-    if ((returnV == (size_t)-1) && (errno != EINVAL))
+    if (returnV == (size_t)-1)
     {
       if (errno == E2BIG) //output buffer is not big enough
       {
@@ -214,8 +219,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
         {
           CLog::Log(LOGERROR, "%s realloc failed with buffer=%p size=%zu errno=%d(%s)",
                     __FUNCTION__, outBuf, outBufSize, errno, strerror(errno));
-          free(outBuf);
-          return false;
+          break;
         }
         outBuf = newBuf;
 
@@ -224,34 +228,45 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
         outBytesAvail = outBufSize - bytesConverted;
 
         //continue in the loop and convert the rest
+        continue;
       }
       else if (errno == EILSEQ) //An invalid multibyte sequence has been encountered in the input
       {
+        if (failOnInvalidChar)
+          break;
+
         //skip invalid byte
         inBufStart++;
         inBytesAvail--;
-
         //continue in the loop and convert the rest
+        continue;
+      }
+      else if (errno == EINVAL) /* Invalid sequence at the end of input buffer */
+      {
+        if (!failOnInvalidChar)
+          returnV = 0; /* reset error status to use converted part */
+
+        break;
       }
       else //iconv() had some other error
       {
         CLog::Log(LOGERROR, "%s iconv() failed from %s to %s, errno=%d(%s)",
                   __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno, strerror(errno));
-        free(outBuf);
-        return false;
       }
     }
-    else
-    {
-      //complete the conversion, otherwise the current data will prefix the data on the next call
-      returnV = iconv_const(type, NULL, NULL, &outBufStart, &outBytesAvail);
-      if (returnV == (size_t)-1)
-        CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
-
-      //we're done
-      break;
-    }
+    break;
   }
+
+  //complete the conversion (reset buffers), otherwise the current data will prefix the data on the next call
+  if (iconv_const(type, NULL, NULL, &outBufStart, &outBytesAvail) == (size_t)-1)
+    CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
+
+  if (returnV == (size_t)-1)
+  {
+    free(outBuf);
+    return false;
+  }
+  //we're done
 
   size_t bytesWritten = outBufSize - outBytesAvail;
   char*  dest         = (char*)strDest.GetBuffer(bytesWritten);
