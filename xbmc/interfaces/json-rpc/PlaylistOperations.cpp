@@ -27,7 +27,7 @@
 #include "GUIUserMessages.h"
 #include "ApplicationMessenger.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "pictures/PictureInfoTag.h"
+#include "pictures/tags/PictureInfoTag.h"
 
 using namespace PICTURE_INFO;
 using namespace JSONRPC;
