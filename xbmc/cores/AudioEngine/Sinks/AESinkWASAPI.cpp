@@ -466,7 +466,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
   {
     memcpy(m_pBuffer+m_bufferPtr*m_format.m_frameSize, data, FramesToCopy*m_format.m_frameSize);
     m_bufferPtr += FramesToCopy;
-    if (frames != m_format.m_frames)
+    if (m_bufferPtr != m_format.m_frames)
       return frames;
   }
 
