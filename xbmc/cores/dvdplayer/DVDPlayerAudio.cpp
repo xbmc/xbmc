@@ -231,6 +231,11 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
     m_dvdAudio.Drain();
     m_bStop = true;
   }
+  else
+  {
+    m_dvdAudio.Flush();
+  }
+
   m_dvdAudio.Destroy();
 
   // uninit queue
