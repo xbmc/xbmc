@@ -12,7 +12,6 @@
 #include <SystemConfiguration/SystemConfiguration.h>
 #endif
 
-#include "Log.h"
 #include "NetworkInterface.h"
 
 #if defined(__APPLE__) || defined(__linux__) || defined(__FreeBSD__)
