@@ -98,7 +98,6 @@ unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
 
       int freeSamples = m_currentBuffer->pkt->max_nb_samples - m_currentBuffer->pkt->nb_samples;
       int availableSamples = bytesToCopy / m_format.m_frameSize;
-      int space =  freeSamples * m_currentBuffer->pkt->bytes_per_sample * m_currentBuffer->pkt->config.channels;
       int samples = std::min(freeSamples, availableSamples);
       int bytes = samples * m_format.m_frameSize;
       //TODO: handle planar formats
