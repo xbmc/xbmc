@@ -80,7 +80,7 @@ std::string CHttpHeader::GetValue(std::string strParam) const
 
 void CHttpHeader::GetHeader(std::string& strHeader) const
 {
-  strHeader.clear();
+  strHeader = m_protoLine + '\n';
 
   HeaderParams::const_iterator iter;
   for(iter = m_params.begin(); iter != m_params.end(); ++iter)
