@@ -23,7 +23,6 @@
 
 CHttpHeader::CHttpHeader()
 {
-  m_params.clear();
 }
 
 CHttpHeader::~CHttpHeader()
