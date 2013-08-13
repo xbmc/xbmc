@@ -43,6 +43,10 @@ ifeq ($(OS),osx)
 	echo "_scproxy \$$(srcdir)/Mac/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation" >> $(PLATFORM)/Modules/Setup.dist
 endif
 
+ifeq ($(OS),android)
+	cd $(PLATFORM); sed -ie 's|-framework CoreFoundation||' configure.in
+endif
+
 	cd $(PLATFORM); $(AUTORECONF)
 	cd $(PLATFORM); $(CONFIGURE)
 
