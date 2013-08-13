@@ -72,14 +72,15 @@ std::string CHttpHeader::GetValue(std::string strParam) const
   return "";
 }
 
-void CHttpHeader::GetHeader(std::string& strHeader) const
+std::string CHttpHeader::GetHeader(void) const
 {
-  strHeader = m_protoLine + '\n';
+  std::string strHeader(m_protoLine + '\n');
 
   for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
     strHeader += ((*iter).first + ": " + (*iter).second + "\n");
 
   strHeader += "\n";
+  return strHeader;
 }
 
 void CHttpHeader::Clear()
