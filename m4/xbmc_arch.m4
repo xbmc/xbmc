@@ -32,7 +32,7 @@ case $host in
   arm*-*-linux-gnu*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
-  arm*-*linux-android*)
+  *-*linux-android*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_ANDROID")
      ;;
   *)
