@@ -42,7 +42,11 @@ void CHttpHeader::Parse(const std::string& strData)
     if (lineEnd == std::string::npos)
       break;
 
-    if (valueStart != std::string::npos && valueStart < lineEnd)
+    if (valueStart == pos)
+    { 
+      /* skip (erroneously) empty parameter */
+    }
+    else if (valueStart != std::string::npos && valueStart < lineEnd)
     {
       std::string strParam(strData, pos, valueStart - pos);
       std::string strValue(strData, valueStart + 1, lineEnd - valueStart - 1);
