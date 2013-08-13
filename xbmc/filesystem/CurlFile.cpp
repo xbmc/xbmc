@@ -147,24 +147,19 @@ size_t CCurlFile::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmem
     m_headerdone = false;
   }
 
+  std::string inString;
   // libcurl doc says that this info is not always \0 terminated
-  char* strData = (char*)ptr;
-  int iSize = size * nmemb;
+  const char* strBuf = (const char*)ptr;
+  const size_t iSize = size * nmemb;
+  if (strBuf[iSize - 1] == 0)
+    inString.assign(strBuf, iSize - 1); // skip last char if it's zero
+  else
+    inString.append(strBuf, iSize);
 
-  if (strData[iSize] != 0)
-  {
-    strData = (char*)malloc(iSize + 1);
-    strncpy(strData, (char*)ptr, iSize);
-    strData[iSize] = 0;
-  }
-  else strData = strdup((char*)ptr);
-
-  if(strcmp(strData, "\r\n") == 0)
+  if(inString == "\r\n")
     m_headerdone = true;
 
-  m_httpheader.Parse(strData);
-
-  free(strData);
+  m_httpheader.Parse(inString);
 
   return iSize;
 }
