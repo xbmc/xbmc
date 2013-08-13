@@ -85,4 +85,5 @@ void CHttpHeader::GetHeader(std::string& strHeader) const
 void CHttpHeader::Clear()
 {
   m_params.clear();
+  m_protoLine.clear();
 }
