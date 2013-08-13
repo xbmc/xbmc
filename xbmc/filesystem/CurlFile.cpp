@@ -140,13 +140,6 @@ static inline void* realloc_simple(void *ptr, size_t size)
 
 size_t CCurlFile::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmemb)
 {
-  // clear any previous header
-  if(m_headerdone)
-  {
-    m_httpheader.Clear();
-    m_headerdone = false;
-  }
-
   std::string inString;
   // libcurl doc says that this info is not always \0 terminated
   const char* strBuf = (const char*)ptr;
@@ -155,9 +148,6 @@ size_t CCurlFile::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmem
     inString.assign(strBuf, iSize - 1); // skip last char if it's zero
   else
     inString.append(strBuf, iSize);
-
-  if(inString == "\r\n")
-    m_headerdone = true;
 
   m_httpheader.Parse(inString);
 
@@ -243,7 +233,6 @@ CCurlFile::CReadState::CReadState()
   m_cancelled = false;
   m_bFirstLoop = true;
   m_sendRange = true;
-  m_headerdone = false;
   m_readBuffer = 0;
   m_isPaused = false;
   m_curlHeaderList = NULL;
@@ -327,7 +316,7 @@ long CCurlFile::CReadState::Connect(unsigned int size)
   m_bufferSize = size;
   m_buffer.Destroy();
   m_buffer.Create(size * 3);
-  m_headerdone = false;
+  m_httpheader.Clear();
 
   // read some data in to try and obtain the length
   // maybe there's a better way to get this info??
