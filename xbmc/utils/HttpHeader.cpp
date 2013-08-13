@@ -76,7 +76,7 @@ std::string CHttpHeader::GetValue(std::string strParam) const
   return "";
 }
 
-void CHttpHeader::GetHeader(std::string& strHeader) const
+std::string& CHttpHeader::GetHeader(std::string& strHeader) const
 {
   strHeader = m_protoLine + '\n';
 
@@ -85,6 +85,14 @@ void CHttpHeader::GetHeader(std::string& strHeader) const
     strHeader += ((*iter).first + ": " + (*iter).second + '\n');
 
   strHeader += '\n';
+  
+  return strHeader;
+}
+
+std::string CHttpHeader::GetHeader(void) const
+{
+  std::string strHeader;
+  return GetHeader(strHeader);
 }
 
 void CHttpHeader::Clear()
