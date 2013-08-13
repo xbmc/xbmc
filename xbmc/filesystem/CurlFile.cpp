@@ -652,7 +652,7 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
     if( !h.GetValue("icy-notice1").empty()
     || !h.GetValue("icy-name").empty()
     || !h.GetValue("icy-br").empty() )
-    h.Parse("Content-Type: audio/mpeg\r\n");
+      h.AddParam("Content-Type", "audio/mpeg");
   }
 
   /* hack for google video */
@@ -661,7 +661,7 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
   {
     CStdString strValue = h.GetValue("Content-Disposition");
     if (strValue.Find("filename=") > -1 && strValue.Find(".flv") > -1)
-      h.Parse("Content-Type: video/flv\r\n");
+      h.AddParam("Content-Type", "video/flv");
   }
 }
 
