@@ -119,7 +119,7 @@ public:
    \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
    \param bAllowSelection [in] should we allow the user to manually override the info with a GUI if the album is not found?
    */
-  INFO_RET UpdateDatabaseAlbumInfo(const CStdString& strPath, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
+  INFO_RET UpdateDatabaseAlbumInfo(int idAlbum, const ADDON::ScraperPtr& scraper, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
  
   /*! \brief Update the database information for a MusicDB artist
    Given a musicdb:// style path pointing to an artist, search and update its info
@@ -130,7 +130,7 @@ public:
    \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
    \param bAllowSelection [in] should we allow the user to manually override the info with a GUI if the album is not found?
    */
-  INFO_RET UpdateDatabaseArtistInfo(const CStdString& strPath, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
+  INFO_RET UpdateDatabaseArtistInfo(int idAlbum, const ADDON::ScraperPtr& scraper, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
 
   /*! \brief Using the scrapers download metadata for an album
    Given a CAlbum style struct containing some data about an album, query

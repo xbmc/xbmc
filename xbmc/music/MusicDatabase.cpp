@@ -381,6 +381,8 @@ void CMusicDatabase::CreateViews()
 
 bool CMusicDatabase::AddAlbum(CAlbum& album)
 {
+  BeginTransaction();
+
   album.idAlbum = AddAlbum(album.strAlbum,
                            album.strMusicBrainzAlbumID,
                            album.GetArtistString(),
