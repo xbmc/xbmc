@@ -62,7 +62,6 @@ void CHttpHeader::Parse(std::string strData)
     else if (m_protoLine.empty())
       m_protoLine = strData;
 
-
     pos = iValueEnd + 2;
   }
 }
@@ -72,7 +71,8 @@ std::string CHttpHeader::GetValue(std::string strParam) const
   StringUtils::ToLower(strParam);
 
   HeaderParams::const_iterator pIter = m_params.find(strParam);
-  if (pIter != m_params.end()) return pIter->second;
+  if (pIter != m_params.end())
+    return pIter->second;
 
   return "";
 }
