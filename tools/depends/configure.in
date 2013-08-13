@@ -102,7 +102,7 @@ case $host in
     #android builds are always cross
     cross_compiling="yes"
   ;;     
-  i*86*-android-linux-gnu*)
+  i*86*-linux-android*)
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
