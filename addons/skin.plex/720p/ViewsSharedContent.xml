@@ -138,63 +138,120 @@
 			<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
+	<include name="SharedContentLeafs">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>264</width>
+			<height>264</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>238</width>
+			<height>238</height>
+			<texture background="true">default-square-big.png</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>119</width>
+			<height>119</height>
+			<texture background="true" diffuse="mask-4leaf1.png">$INFO[ListItem(0).Thumb0]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+		<control type="image">
+			<posx>132</posx>
+			<posy>13</posy>
+			<width>119</width>
+			<height>119</height>
+			<texture background="true" diffuse="mask-4leaf2.png">$INFO[ListItem(0).Thumb1]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>132</posy>
+			<width>119</width>
+			<height>119</height>
+			<texture background="true" diffuse="mask-4leaf3.png">$INFO[ListItem(0).Thumb2]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+		<control type="image">
+			<posx>132</posx>
+			<posy>132</posy>
+			<width>119</width>
+			<height>119</height>
+			<texture background="true" diffuse="mask-4leaf4.png">$INFO[ListItem(0).Thumb3]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="SharedContentLeafsSelectedBorder">
+		<control type="image">
+			<width>244</width>
+			<height>244</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="SharedContentLeafsTitle">
+		<posy>265</posy>
+		<posx>119</posx>
+		<width>238</width>
+		<height>30</height>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>CondensedBold-26</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>	
+	<include name="SharedContentLeafsTitle2">
+		<posy>295</posy>
+		<posx>119</posx>
+		<width>238</width>
+		<height>30</height>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Property(sourceTitle)] &#xB7; $INFO[ListItem.Property(serverName)]</label>
+		<textcolor>greyLighter</textcolor>
+		<font>Condensed-17</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>	
 	<include name="SharedContent">
 		<include>SharedContentMainBG</include>
 		<control type="group">
 			<!-- main list -->
 			<control type="group" id="777">
-				<control type="fixedlist" id="56">
-					<viewtype label="ListSharedSecondary">list</viewtype>
-					<posy>235</posy>
-					<posx>100</posx>
-					<width>1000</width>
-					<height>400</height>
-					<onright>-</onright>
-					<onleft>9100</onleft>
-					<onup>56</onup>
-					<ondown>56</ondown>
-					<focusposition>1</focusposition>
-					<wraparound>true</wraparound>
-					<scrolltime>200</scrolltime>
-					<pagecontrol>61</pagecontrol>
-					<itemlayout height="45" width="1000">
+				<control type="panel" id="50">
+					<viewtype label="PanelSharedSecondary">panel</viewtype>
+					<onup>50</onup>
+					<ondown>50</ondown>
+					<onright>50</onright>
+					<onleft>50</onleft>
+					<orientation>vertical</orientation>
+					<posx>53</posx>
+					<posy>67</posy>
+					<width>1150</width>
+					<height>635</height>
+					<itemlayout width="304" height="315">
+						<include>SharedContentLeafs</include>
 						<control type="label">
-							<posx>80</posx>
-							<width>800</width>
-							<height>42</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(sourceTitle)] &#xB7; [COLOR=orangeLight]$INFO[ListItem.Label][/COLOR] &#xB7; $INFO[ListItem.Property(serverName)]</label>
-							<font>Condensed-28</font>
-							<textcolor>FF999999</textcolor>
-							<shadowcolor>FF222222</shadowcolor>
+							<include>SharedContentLeafsTitle</include>
+						</control>
+						<control type="label">
+							<include>SharedContentLeafsTitle2</include>
 						</control>
 					</itemlayout>
-					<focusedlayout height="120" width="1000">
+					<focusedlayout width="223" height="315">
+						<include>SharedContentLeafs</include>
 						<control type="label">
-							<posx>0</posx>
-							<width>800</width>
-							<height>80</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-							<font>CondensedBold-48</font>
-							<scroll>false</scroll>
+							<include>SharedContentLeafsTitle</include>
 							<textcolor>orangeLight</textcolor>
-							<shadowcolor>FF222222</shadowcolor>
 						</control>
 						<control type="label">
-							<posy>60</posy>
-							<posx>0</posx>
-							<width>800</width>
-							<height>42</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(sourceTitle)] &#xB7; $INFO[ListItem.Property(serverName)]</label>
-							<font>Condensed-20</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>FF222222</shadowcolor>
+							<include>SharedContentLeafsTitle2</include>
 						</control>
+						<include>SharedContentLeafsSelectedBorder</include>
 					</focusedlayout>
 				</control>
 			</control>

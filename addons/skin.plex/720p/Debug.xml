@@ -47,7 +47,7 @@
 			<!-- left list -->
 			<control type="grouplist">
 				<posx>50</posx>
-				<posy>160</posy>
+				<posy>80</posy>
 				<width>590</width>
 				<height>600</height>
 				<orientation>vertical</orientation>
@@ -108,15 +108,6 @@
 					<include>debugFont</include>
 					<label>System.CpuFrequency : [COLOR=orangeLight]$INFO[System.CpuFrequency][/COLOR]</label>
 				</control>
-			</control>
-			<!-- right list -->
-			<control type="grouplist">
-				<posx>640</posx>
-				<posy>160</posy>
-				<width>570</width>
-				<height>600</height>
-				<orientation>vertical</orientation>
-				<itemgap>0</itemgap>
 				<control type="label">
 					<include>debugFont</include>
 					<label>ListItem.FileNameAndPath : [COLOR=orangeLight]$INFO[ListItem.FileNameAndPath][/COLOR]</label>
@@ -131,7 +122,7 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Listitem.MPAA : [COLOR=orangeLight]$INFO[Listitem.MPAA][/COLOR]</label>
+					<label>Listitem.Type : [COLOR=orangeLight]$INFO[Listitem.Type][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
@@ -181,6 +172,131 @@
 					<include>debugFont</include>
 					<label>Container.Property(reponame) : [COLOR=orangeLight]$INFO[Container.Property(reponame)][/COLOR]</label>
 				</control>
+			</control>
+			<!-- right list -->
+			<control type="grouplist">
+				<posx>640</posx>
+				<posy>80</posy>
+				<width>570</width>
+				<height>600</height>
+				<orientation>vertical</orientation>
+				<itemgap>0</itemgap>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Title : [COLOR=orangeLight]$INFO[ListItem.Title][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.OriginalTitle : [COLOR=orangeLight]$INFO[ListItem.OriginalTitle][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Label : [COLOR=orangeLight]$INFO[ListItem.Label][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Label2 : [COLOR=orangeLight]$INFO[ListItem.Label2][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Genre : [COLOR=orangeLight]$INFO[Listitem.Genre][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.DurationStr : [COLOR=orangeLight]$INFO[Listitem.DurationStr][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Year : [COLOR=orangeLight]$INFO[Listitem.Year][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.MPAA : [COLOR=orangeLight]$INFO[Listitem.MPAA][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Director : [COLOR=orangeLight]$INFO[Listitem.Director][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Cast : [COLOR=orangeLight]$INFO[Listitem.Cast][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Plot : [COLOR=orangeLight]$INFO[Listitem.Plot][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(summary) : [COLOR=orangeLight]$INFO[Container.Property(summary)][/COLOR]</label>
+				</control>
+					<control type="label">
+						<include>debugFont</include>
+						<label>ListItem.Country : [COLOR=orangeLight]$INFO[ListItem.Country][/COLOR]</label>
+					</control>
+					<control type="label">
+						<include>debugFont</include>
+						<label>ListItem.Property(firstCountry) : [COLOR=orangeLight]$INFO[ListItem.Property(firstCountry)][/COLOR]</label>
+					</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.SortLetter : [COLOR=orangeLight]$INFO[ListItem.SortLetter][/COLOR]</label>
+				</control>
+					<control type="label">
+						<include>debugFont</include>
+						<label/>
+					</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Premiered : [COLOR=orangeLight]$INFO[Listitem.Premiered][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Episode : [COLOR=orangeLight]$INFO[Listitem.Episode][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Season : [COLOR=orangeLight]$INFO[ListItem.Season][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.TVShowTitle : [COLOR=orangeLight]$INFO[ListItem.TVShowTitle][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Property(TotalSeasons) : [COLOR=orangeLight]$INFO[ListItem.Property(TotalSeasons)][/COLOR]</label>
+				</control>
+			<control type="label">
+				<include>debugFont</include>
+				<label>ListItem.Property(TotalEpisodes) : [COLOR=orangeLight]$INFO[ListItem.Property(TotalEpisodes)][/COLOR]</label>
+			</control>
+			<control type="label">
+				<include>debugFont</include>
+				<label>Listitem.Property(WatchedEpisodes) : [COLOR=orangeLight]$INFO[Listitem.Property(WatchedEpisodes)][/COLOR]</label>
+			</control>
+			<control type="label">
+				<include>debugFont</include>
+				<label>ListItem.Property(UnWatchedEpisodes) : [COLOR=orangeLight]$INFO[ListItem.Property(UnWatchedEpisodes)][/COLOR]</label>
+			</control>
+			<control type="label">
+				<include>debugFont</include>
+				<label>ListItem.Property(NumEpisodes) : [COLOR=orangeLight]$INFO[ListItem.Property(NumEpisodes)][/COLOR]</label>
+			</control>	
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
+			<control type="label">
+				<include>debugFont</include>
+				<label>ListItem.PercentPlayed : [COLOR=orangeLight]$INFO[ListItem.PercentPlayed][/COLOR]</label>
+			</control>
+			<control type="label">
+				<include>debugFont</include>
+				<label>ListItem.AudioLanguage : [COLOR=orangeLight]$INFO[ListItem.AudioLanguage][/COLOR]</label>
+			</control>
+			<control type="label">
+				<include>debugFont</include>
+				<label>ListItem.SubtitleLanguage : [COLOR=orangeLight]$INFO[ListItem.SubtitleLanguage][/COLOR]</label>
+			</control>
 			</control>
 		</control>
 	</include>
