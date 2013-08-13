@@ -428,6 +428,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           stream = *(CActiveAEStream**)msg->data;
           SFlushStream(stream);
           msg->Reply(CActiveAEControlProtocol::ACC);
+          m_state = AE_TOP_CONFIGURED_PLAY;
+          m_extTimeout = 0;
           return;
         case CActiveAEControlProtocol::STREAMAMP:
           MsgStreamParameter *par;
@@ -1082,7 +1084,7 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   stream->m_resampleBuffers->Flush();
   stream->m_streamPort->Purge();
   stream->m_bufferedTime = 0.0;
-  stream->m_paused = true;
+  stream->m_paused = false;
 
   // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
