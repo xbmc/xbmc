@@ -39,7 +39,8 @@ void CHttpHeader::Parse(std::string strData)
   std::string strParam;
   std::string strValue;
 
-  while (pos < strData.length())
+  const size_t len = strData.length();
+  while (pos < len)
   {
     iValueStart = strData.find(':', pos);
     iValueEnd = strData.find("\r\n", pos);
@@ -81,12 +82,9 @@ void CHttpHeader::GetHeader(std::string& strHeader) const
 {
   strHeader.clear();
 
-  HeaderParams::const_iterator iter = m_params.begin();
-  while (iter != m_params.end())
-  {
+  HeaderParams::const_iterator iter;
+  for(iter = m_params.begin(); iter != m_params.end(); ++iter)
     strHeader += ((*iter).first + ": " + (*iter).second + "\n");
-    iter++;
-  }
 
   strHeader += "\n";
 }
