@@ -418,7 +418,19 @@ double CAESinkWASAPI::GetDelay()
   if (!m_initialized)
     return 0.0;
 
-  return m_sinkLatency;
+  double time_played = 0.0;
+  if (m_running)
+  {
+    unsigned int now = XbmcThreads::SystemClockMillis();
+    time_played = (double)(now-m_lastWriteToBuffer) / 1000;
+  }
+
+  double delay = m_sinkLatency - time_played + (double)m_bufferPtr / (double)m_format.m_sampleRate;
+
+  if (delay < 0)
+    delay = 0.0;
+
+  return delay;
 }
 
 double CAESinkWASAPI::GetCacheTime()
@@ -579,6 +591,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
     #endif
     return INT_MAX;
   }
+  m_lastWriteToBuffer = XbmcThreads::SystemClockMillis();
 
   if (FramesToCopy != frames)
   {
