@@ -23,7 +23,6 @@
 
 CHttpHeader::CHttpHeader()
 {
-  m_params.clear();
 }
 
 CHttpHeader::~CHttpHeader()
@@ -33,24 +32,19 @@ CHttpHeader::~CHttpHeader()
 void CHttpHeader::Parse(const std::string& strData)
 {
   size_t pos = 0;
-  size_t iValueStart = 0;
-  size_t iValueEnd = 0;
-
-  std::string strParam;
-  std::string strValue;
-
-  while (pos < strData.length())
+  const size_t len = strData.length();
+  while (pos < len)
   {
-    iValueStart = strData.find(':', pos);
-    iValueEnd = strData.find("\r\n", pos);
+    const size_t valueStart = strData.find(':', pos);
+    const size_t lineEnd = strData.find("\r\n", pos);
 
-    if (iValueEnd == std::string::npos)
+    if (lineEnd == std::string::npos)
       break;
 
-    if (iValueStart != std::string::npos && iValueStart < iValueEnd)
+    if (valueStart != std::string::npos && valueStart < lineEnd)
     {
-      strParam.assign(strData, pos, iValueStart - pos);
-      strValue.assign(strData, iValueStart + 1, iValueEnd - iValueStart - 1);
+      std::string strParam(strData, pos, valueStart - pos);
+      std::string strValue(strData, valueStart + 1, lineEnd - valueStart - 1);
 
       StringUtils::Trim(strParam);
       StringUtils::ToLower(strParam);
@@ -62,7 +56,7 @@ void CHttpHeader::Parse(const std::string& strData)
     else if (m_protoLine.empty())
       m_protoLine = strData;
 
-    pos = iValueEnd + 2;
+    pos = lineEnd + 2;
   }
 }
 
@@ -81,12 +75,8 @@ void CHttpHeader::GetHeader(std::string& strHeader) const
 {
   strHeader.clear();
 
-  HeaderParams::const_iterator iter = m_params.begin();
-  while (iter != m_params.end())
-  {
+  for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
     strHeader += ((*iter).first + ": " + (*iter).second + "\n");
-    iter++;
-  }
 
   strHeader += "\n";
 }
