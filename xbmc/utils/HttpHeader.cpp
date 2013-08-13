@@ -51,10 +51,11 @@ void CHttpHeader::Parse(const std::string& strData)
 
       StringUtils::Trim(strValue);
 
-      m_params.insert(HeaderParams::value_type(strParam, strValue));
+      if (!strParam.empty() && !strValue.empty())
+        m_params.insert(HeaderParams::value_type(strParam, strValue));
     }
     else if (m_protoLine.empty())
-      m_protoLine = strData;
+      m_protoLine.assign(strData, pos, lineEnd - pos);
 
     pos = lineEnd + 2;
   }
