@@ -669,17 +669,31 @@ bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
   {
     CFileItemPtr channel = channels->Get(i);
     
-    CStdString window;
+    CStdString window, type;
     CURL p(channel->GetPath());
     /* figure out what type of plugin this is so we can open it correctly */
     if (boost::starts_with(p.GetFileName(), "video"))
+    {
       window = "MyVideoFiles";
+      type = "video";
+    }
     else if (boost::starts_with(p.GetFileName(), "music"))
+    {
       window = "MyMusicFiles";
+      type = "music";
+    }
     else if (boost::starts_with(p.GetFileName(), "photos"))
+    {
       window = "MyPictures";
+      type = "photos";
+    }
     
     channel->SetProperty("mediaWindow", window);
+    channel->SetProperty("channelType", type);
+    
+    CStdString serverUUID = channel->GetProperty("plexserver").asString();
+    if (g_plexServerManager.FindByUUID(serverUUID))
+      channel->SetLabel2(g_plexServerManager.FindByUUID(serverUUID)->GetName());
     
     items.Add(channel);
   }
