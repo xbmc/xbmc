@@ -43,8 +43,8 @@ public:
   std::string& GetHeader(std::string& strHeader) const;
   std::string GetHeader(void) const;
 
-  std::string GetMimeType() { return GetValue(HTTPHEADER_CONTENT_TYPE); }
-  std::string GetProtoLine() { return m_protoLine; }
+  std::string GetMimeType() const { return GetValue(HTTPHEADER_CONTENT_TYPE); }
+  std::string GetProtoLine() const { return m_protoLine; }
 
   bool IsHeaderDone(void) const
   { return m_headerdone; }
