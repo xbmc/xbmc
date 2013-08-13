@@ -52,19 +52,6 @@ void CHttpHeader::Parse(std::string strData)
       strParam.assign(strData, pos, iValueStart - pos);
       strValue.assign(strData, iValueStart + 1, iValueEnd - iValueStart - 1);
 
-      /*
-      CUtil::Lower(strParam.c_str()
-      // trim left and right
-      {
-        string::size_type pos = strValue.find_last_not_of(' ');
-        if(pos != string::npos)
-        {
-          strValue.erase(pos + 1);
-          pos = strValue.find_first_not_of(' ');
-          if(pos != string::npos) strValue.erase(0, pos);
-        }
-        else strValue.erase(strValue.begin(), strValue.end());
-      }*/
       StringUtils::Trim(strParam);
       StringUtils::ToLower(strParam);
 
