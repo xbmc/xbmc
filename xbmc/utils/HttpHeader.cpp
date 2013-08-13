@@ -61,6 +61,30 @@ void CHttpHeader::Parse(const std::string& strData)
   }
 }
 
+void CHttpHeader::AddParam(const std::string& param, const std::string& value, const bool overwrite /*= false*/)
+{
+  if (param.empty() || value.empty())
+    return;
+
+  std::string paramLower(param);
+  if (overwrite)
+  { // delete ALL parameters with the same name
+    // note: 'GetValue' always returns last added parameter,
+    //       so you probably don't need to overwrite 
+    for (size_t i = 0; i < m_params.size();)
+    {
+      if (m_params[i].first == param)
+        m_params.erase(m_params.begin() + i);
+      else
+        ++i;
+    }
+  }
+
+  StringUtils::ToLower(paramLower);
+
+  m_params.push_back(HeaderParams::value_type(paramLower, value));
+}
+
 std::string CHttpHeader::GetValue(std::string strParam) const
 {
   StringUtils::ToLower(strParam);
