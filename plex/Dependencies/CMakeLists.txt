@@ -9,7 +9,7 @@ elseif(TARGET_IOS)
 endif()
 
 execute_process(
-  COMMAND ${plexdir}/scripts/fetch-depends.sh ${DEPEND_ARGS}
+  COMMAND ${plexdir}/scripts/fetch-depends.sh ${DEPEND_ARGS} ${OSX_SDK_VERSION}
   WORKING_DIRECTORY ${root}
   RESULT_VARIABLE result
 )

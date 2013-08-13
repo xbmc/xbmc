@@ -24,24 +24,45 @@ if(NOT XCODE_SELECT MATCHES "-NOTFOUND")
     message(FATAL_ERROR "No xcodebuild found in ${XCODE_PATH}/usr/bin")
   endif()
   
-  execute_process(
-    COMMAND ${XCODE_BUILD} -showsdks
-    COMMAND grep macosx
-    COMMAND sort
-    COMMAND tail -n 1
-    COMMAND grep -oE "macosx[0-9.0-9]+"
-    COMMAND cut -c 7-
-    OUTPUT_VARIABLE _OSX_SDK_VERSION
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
+  if(NOT USE_OSX_SDK)
+    execute_process(
+      COMMAND ${XCODE_BUILD} -showsdks
+      COMMAND grep macosx
+      COMMAND sort
+      COMMAND tail -n 1
+      COMMAND grep -oE "macosx[0-9.0-9]+"
+      COMMAND cut -c 7-
+      OUTPUT_VARIABLE _OSX_SDK_VERSION
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    
+    message(STATUS "Detected OSX SDK ${_OSX_SDK_VERSION}")
   
-  if(NOT _OSX_SDK_VERSION MATCHES "1[01].[0-9]+")
-    message(FATAL_ERROR "Version ${_OSX_SDK_VERSION} is not parsable")
-  endif()
+    if(NOT _OSX_SDK_VERSION MATCHES "1[01].[0-9]+")
+      message(FATAL_ERROR "Version ${_OSX_SDK_VERSION} is not parsable")
+    endif()
+  else(NOT USE_OSX_SDK)
+    execute_process(
+      COMMAND ${XCODE_BUILD} -showsdks
+      COMMAND grep macosx
+      COMMAND sort
+      COMMAND grep ${USE_OSX_SDK}
+      COMMAND grep -oE "macosx[0-9.0-9]+"
+      COMMAND cut -c 7-
+      OUTPUT_VARIABLE _OSX_SDK_VERSION
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    
+    if(USE_OSX_SDK STREQUAL _OSX_SDK_VERSION)
+      message(STATUS "Selected OSX SDK '${_OSX_SDK_VERSION}'")
+    else()
+      message(FATAL_ERROR "Could not find OSX SDK ${USE_OSX_SDK}")
+    endif()
+  endif(NOT USE_OSX_SDK)
 
   set(HAVE_OSX_SDK 1 CACHE BOOL "Have OSX SDK")
   set(OSX_SDK_VERSION ${_OSX_SDK_VERSION} CACHE STRING "Version of OSX SDK")
-  set(OSX_SDK_PATH ${XCODE_PATH}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX${OSX_SDK_VERSION}.sdk)
+  set(OSX_SDK_PATH ${XCODE_PATH}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX${OSX_SDK_VERSION}.sdk CACHE STRING "Path to OSX SDK")
   
   if(NOT OSX_SDK_QUIET)
     message(STATUS "Found OSX SDK version ${_OSX_SDK_VERSION} (${OSX_SDK_PATH})")
