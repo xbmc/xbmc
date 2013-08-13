@@ -64,6 +64,11 @@ void CHttpHeader::Parse(const std::string& strData)
   }
 }
 
+void CHttpHeader::AddParamWithValue(const std::string& param, const std::string& value)
+{
+  m_params.insert(HeaderParams::value_type(param, value));
+}
+
 std::string CHttpHeader::GetValue(std::string strParam) const
 {
   StringUtils::ToLower(strParam);

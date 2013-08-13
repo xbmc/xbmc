@@ -36,6 +36,8 @@ public:
   ~CHttpHeader();
 
   void Parse(const std::string& strData);
+  void AddParamWithValue(const std::string& param, const std::string& value);
+
   std::string GetValue(std::string strParam) const;
 
   std::string& GetHeader(std::string& strHeader) const;
