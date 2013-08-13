@@ -19,6 +19,7 @@
  */
 
 #include "HttpHeader.h"
+#include "utils/StringUtils.h"
 
 CHttpHeader::CHttpHeader()
 {
@@ -29,26 +30,27 @@ CHttpHeader::~CHttpHeader()
 {
 }
 
-void CHttpHeader::Parse(CStdString strData)
+void CHttpHeader::Parse(const std::string& strData)
 {
-  unsigned int iIter = 0;
-  int iValueStart = 0;
-  int iValueEnd = 0;
+  size_t pos = 0;
+  size_t iValueStart = 0;
+  size_t iValueEnd = 0;
 
-  CStdString strParam;
-  CStdString strValue;
+  std::string strParam;
+  std::string strValue;
 
-  while (iIter < strData.size())
+  while (pos < strData.length())
   {
-    iValueStart = strData.Find(":", iIter);
-    iValueEnd = strData.Find("\r\n", iIter);
+    iValueStart = strData.find(':', pos);
+    iValueEnd = strData.find("\r\n", pos);
 
-    if (iValueEnd < 0) break;
+    if (iValueEnd == std::string::npos)
+      break;
 
-    if (iValueStart > 0)
+    if (iValueStart != std::string::npos && iValueStart < iValueEnd)
     {
-      strParam = strData.substr(iIter, iValueStart - iIter);
-      strValue = strData.substr(iValueStart + 1, iValueEnd - iValueStart - 1);
+      strParam.assign(strData, pos, iValueStart - pos);
+      strValue.assign(strData, iValueStart + 1, iValueEnd - iValueStart - 1);
 
       /*
       CUtil::Lower(strParam.c_str()
@@ -63,37 +65,36 @@ void CHttpHeader::Parse(CStdString strData)
         }
         else strValue.erase(strValue.begin(), strValue.end());
       }*/
-      strParam.Trim();
-      strParam.ToLower();
+      StringUtils::Trim(strParam);
+      StringUtils::ToLower(strParam);
 
-      strValue.Trim();
+      StringUtils::Trim(strValue);
 
-
-      m_params[strParam] = strValue;
+      m_params.insert(HeaderParams::value_type(strParam, strValue));
     }
-    else if (m_protoLine.IsEmpty())
+    else if (m_protoLine.empty())
       m_protoLine = strData;
 
 
-    iIter = iValueEnd + 2;
+    pos = iValueEnd + 2;
   }
 }
 
-CStdString CHttpHeader::GetValue(CStdString strParam) const
+std::string CHttpHeader::GetValue(std::string strParam) const
 {
-  strParam.ToLower();
+  StringUtils::ToLower(strParam);
 
-  std::map<CStdString,CStdString>::const_iterator pIter = m_params.find(strParam);
+  HeaderParams::const_iterator pIter = m_params.find(strParam);
   if (pIter != m_params.end()) return pIter->second;
 
   return "";
 }
 
-void CHttpHeader::GetHeader(CStdString& strHeader) const
+void CHttpHeader::GetHeader(std::string& strHeader) const
 {
   strHeader.clear();
 
-  std::map<CStdString,CStdString>::const_iterator iter = m_params.begin();
+  HeaderParams::const_iterator iter = m_params.begin();
   while (iter != m_params.end())
   {
     strHeader += ((*iter).first + ": " + (*iter).second + "\n");
