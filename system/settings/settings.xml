@@ -2194,6 +2194,9 @@
             <step>5</step>
             <maximum>120</maximum>
           </constraints>
+          <dependencies>
+            <dependency type="enable" setting="powermanagement.shutdownstate" operator="!is">6</dependency> 
+          </dependencies>
           <control type="spinner" format="string">
             <formatlabel>14044</formatlabel>
           </control>

@@ -63,5 +63,12 @@
         </setting>
       </group>
     </category>
+    <category id="powermanagement">
+      <group id="1">
+        <setting id="powermanagement.shutdownstate">
+          <default>6</default> <!-- POWERSTATE_STOPMEDIA -->
+        </setting>
+      </group>
+    </category>
   </section>
 </settings>

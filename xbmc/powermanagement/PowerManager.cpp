@@ -100,6 +100,10 @@ void CPowerManager::SetDefaults()
 
   switch (defaultShutdown)
   {
+    case POWERSTATE_STOPMEDIA:
+      if (!g_application.IsStandAlone())
+        defaultShutdown = POWERSTATE_QUIT;
+    break;
     case POWERSTATE_QUIT:
     case POWERSTATE_MINIMIZE:
       // assume we can shutdown if --standalone is passed
@@ -111,8 +115,10 @@ void CPowerManager::SetDefaults()
       {
         if (g_powerManager.CanSuspend())
           defaultShutdown = POWERSTATE_SUSPEND;
-        else
-          defaultShutdown = g_powerManager.CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
+        else if (g_powerManager.CanPowerdown())
+          defaultShutdown = POWERSTATE_SHUTDOWN;
+        else 
+          defaultShutdown = g_application.IsStandAlone() ? POWERSTATE_STOPMEDIA : POWERSTATE_QUIT;
       }
     break;
     case POWERSTATE_SUSPEND:
@@ -120,8 +126,10 @@ void CPowerManager::SetDefaults()
       {
         if (g_powerManager.CanHibernate())
           defaultShutdown = POWERSTATE_HIBERNATE;
+        else if (g_powerManager.CanPowerdown())
+          defaultShutdown = POWERSTATE_SHUTDOWN;
         else
-          defaultShutdown = g_powerManager.CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
+          defaultShutdown = g_application.IsStandAlone() ? POWERSTATE_STOPMEDIA : POWERSTATE_QUIT;
       }
     break;
     case POWERSTATE_SHUTDOWN:
@@ -129,8 +137,10 @@ void CPowerManager::SetDefaults()
       {
         if (g_powerManager.CanSuspend())
           defaultShutdown = POWERSTATE_SUSPEND;
+        else if (g_powerManager.CanHibernate())
+          defaultShutdown = POWERSTATE_HIBERNATE;
         else
-          defaultShutdown = g_powerManager.CanHibernate() ? POWERSTATE_HIBERNATE : POWERSTATE_QUIT;
+          defaultShutdown = g_application.IsStandAlone() ? POWERSTATE_STOPMEDIA : POWERSTATE_QUIT;
       }
     break;
   }
@@ -307,4 +317,5 @@ void CPowerManager::SettingOptionsShutdownStatesFiller(const CSetting *setting, 
     list.push_back(make_pair(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE));
 #endif
   }
+  list.push_back(make_pair(g_localizeStrings.Get(13019), POWERSTATE_STOPMEDIA));
 }

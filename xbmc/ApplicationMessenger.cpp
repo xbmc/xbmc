@@ -250,6 +250,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
             Minimize();
             break;
 
+          case POWERSTATE_STOPMEDIA:
+            MediaStop();
+            break;
+
           case TMSG_RENDERER_FLUSH:
             g_renderManager.Flush();
             break;
