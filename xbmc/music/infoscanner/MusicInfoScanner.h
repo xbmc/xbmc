@@ -207,6 +207,7 @@ protected:
   int m_itemCount;
   bool m_bRunning;
   bool m_bCanInterrupt;
+  bool m_bClean;
   bool m_needsCleanup;
   int m_scanType; // 0 - load from files, 1 - albums, 2 - artists
   CMusicDatabase m_musicDatabase;
