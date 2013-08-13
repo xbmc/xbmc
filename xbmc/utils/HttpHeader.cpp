@@ -78,9 +78,9 @@ void CHttpHeader::GetHeader(std::string& strHeader) const
 
   HeaderParams::const_iterator iter;
   for(iter = m_params.begin(); iter != m_params.end(); ++iter)
-    strHeader += ((*iter).first + ": " + (*iter).second + "\n");
+    strHeader += ((*iter).first + ": " + (*iter).second + '\n');
 
-  strHeader += "\n";
+  strHeader += '\n';
 }
 
 void CHttpHeader::Clear()
