@@ -443,6 +443,38 @@ int CMusicDatabase::AddSong(const int idAlbum,
   return idSong;
 }
 
+bool CMusicDatabase::GetSong(int idSong, CSong& song)
+{
+  try
+  {
+    song.Clear();
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=PrepareSQL("select * from songview "
+                                 "where idSong=%i"
+                                 , idSong);
+
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    song = GetSongFromDataset();
+    m_pDS->close(); // cleanup recordset data
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idSong);
+  }
+
+  return false;
+}
+
 int CMusicDatabase::UpdateSong(int idSong,
                                const CStdString& strTitle, const CStdString& strMusicBrainzTrackID,
                                const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb,
@@ -1225,38 +1257,6 @@ int CMusicDatabase::GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist,
   }
 
   return -1;
-}
-
-bool CMusicDatabase::GetSong(int idSong, CSong& song)
-{
-  try
-  {
-    song.Clear();
-
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString strSQL=PrepareSQL("select * from songview "
-                                "where idSong=%i"
-                                , idSong);
-
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return false;
-    }
-    song = GetSongFromDataset();
-    m_pDS->close(); // cleanup recordset data
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idSong);
-  }
-
-  return false;
 }
 
 bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &artists)
