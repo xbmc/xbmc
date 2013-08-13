@@ -23,6 +23,7 @@
 
 CHttpHeader::CHttpHeader()
 {
+  m_headerdone = false;
 }
 
 CHttpHeader::~CHttpHeader()
@@ -31,6 +32,9 @@ CHttpHeader::~CHttpHeader()
 
 void CHttpHeader::Parse(const std::string& strData)
 {
+  if (m_headerdone)
+    Clear();
+
   size_t pos = 0;
   const size_t len = strData.length();
   while (pos < len)
@@ -41,7 +45,12 @@ void CHttpHeader::Parse(const std::string& strData)
     if (lineEnd == std::string::npos)
       break;
 
-    if (valueStart != std::string::npos && valueStart < lineEnd)
+    if (lineEnd == pos)
+    {
+      m_headerdone = true;
+      break;
+    }
+    else if (valueStart != std::string::npos && valueStart < lineEnd)
     {
       std::string strParam(strData, pos, valueStart - pos);
       std::string strValue(strData, valueStart + 1, lineEnd - valueStart - 1);
@@ -128,4 +137,5 @@ void CHttpHeader::Clear()
 {
   m_params.clear();
   m_protoLine.clear();
+  m_headerdone = false;
 }

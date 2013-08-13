@@ -120,7 +120,8 @@ namespace XFILE
 
           /* returned http header */
           CHttpHeader m_httpheader;
-          bool        m_headerdone;
+          bool        IsHeaderDone(void)
+          { return m_httpheader.IsHeaderDone(); }
 
           struct XCURL::curl_slist* m_curlHeaderList;
           struct XCURL::curl_slist* m_curlAliasList;

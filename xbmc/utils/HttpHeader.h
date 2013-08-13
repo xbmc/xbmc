@@ -47,10 +47,14 @@ public:
   std::string GetMimeType() { return GetValue(HTTPHEADER_CONTENT_TYPE); }
   std::string GetProtoLine() { return m_protoLine; }
 
+  inline bool IsHeaderDone(void) const
+  { return m_headerdone; }
+
   void Clear();
 
 protected:
   HeaderParams m_params;
   std::string   m_protoLine;
+  bool m_headerdone;
 };
 
