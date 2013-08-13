@@ -30,7 +30,7 @@ CHttpHeader::~CHttpHeader()
 {
 }
 
-void CHttpHeader::Parse(std::string strData)
+void CHttpHeader::Parse(const std::string& strData)
 {
   size_t pos = 0;
   size_t iValueStart = 0;

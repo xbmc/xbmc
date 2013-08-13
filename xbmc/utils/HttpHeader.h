@@ -35,7 +35,7 @@ public:
   CHttpHeader();
   ~CHttpHeader();
 
-  void Parse(std::string strData);
+  void Parse(const std::string& strData);
   std::string GetValue(std::string strParam) const;
 
   void GetHeader(std::string& strHeader) const;
