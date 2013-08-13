@@ -10756,3 +10756,86 @@ msgstr "不支持的libCEC接口版本，%x 低于XBMC支持的版本（%x）"
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* 项目文件夹"
+
+msgctxt "#36042"
+msgid "On Demand"
+msgstr "视屏点播"
+
+msgctxt "#36043"
+msgid "Top Pick"
+msgstr "热播"
+
+msgctxt "#36044"
+msgid "Station"
+msgstr "电视机构"
+
+msgctxt "#36045"
+msgid "Documentation"
+msgstr "纪录片"
+
+msgctxt "#36046"
+msgid "In Theatre"
+msgstr "院线"
+
+msgctxt "#36047"
+msgid "Hot Topics"
+msgstr "专题"
+
+
+msgctxt "#36048"
+msgid "Top Chart"
+msgstr "精选专辑"
+
+msgctxt "#36049"
+msgid "New Releases"
+msgstr "新碟上架"
+
+msgctxt "#36050"
+msgid "Lossless"
+msgstr "高保真专区"
+
+
+msgctxt "#36051"
+msgid "Just Play"
+msgstr "随便听听"
+
+
+msgctxt "#36052"
+msgid "My Playlist"
+msgstr "我的歌单"
+
+
+msgctxt "#36053"
+msgid "Cloud Storage"
+msgstr "云盘"
+
+
+msgctxt "#36054"
+msgid "Favorite"
+msgstr "收藏"
+
+
+msgctxt "#36055"
+msgid "History"
+msgstr "播放纪录"
+
+
+msgctxt "#36056"
+msgid "Baidu Cloud"
+msgstr "百度云"
+
+msgctxt "#36057"
+msgid "My Account"
+msgstr "帐号"
+
+msgctxt "#36058"
+msgid “Mobile Connect"
+msgstr "多屏连接"
+
+msgctxt "#36059"
+msgid “Bind Account"
+msgstr "绑定帐户"
+
+msgctxt "#36060"
+msgid “Use Device"
+msgstr "使用助手"
