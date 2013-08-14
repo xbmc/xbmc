@@ -32,17 +32,17 @@ CDirectoryNodePicture::CDirectoryNodePicture(const CStdString& strName, CDirecto
 
 bool CDirectoryNodePicture::GetContent(CFileItemList& items) const
 {
-    CPictureDatabase musicdatabase;
-    if (!musicdatabase.Open())
+    CPictureDatabase picturedatabase;
+    if (!picturedatabase.Open())
         return false;
     
     CQueryParams params;
     CollectQueryParams(params);
     
     CStdString strBaseDir=BuildPath();
-    bool bSuccess=musicdatabase.GetPicturesNav(strBaseDir, items, params.GetLocationId(), params.GetFaceId(), params.GetPictureAlbumId());
+    bool bSuccess=picturedatabase.GetPicturesNav(strBaseDir, items, params.GetLocationId(), params.GetFaceId(), params.GetPictureAlbumId());
     
-    musicdatabase.Close();
+    picturedatabase.Close();
     
     return bSuccess;
 }

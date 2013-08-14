@@ -22,7 +22,7 @@
 #include "utils/URIUtils.h"
 #include "QueryParams.h"
 #include "DirectoryNodeRoot.h"
-/*
+
 #include "DirectoryNodeOverview.h"
 #include "DirectoryNodeGrouped.h"
 #include "DirectoryNodeFace.h"
@@ -30,7 +30,7 @@
 #include "DirectoryNodePicture.h"
 #include "DirectoryNodeAlbumRecentlyAdded.h"
 #include "DirectoryNodeAlbumRecentlyAddedPicture.h"
-
+/*
 #include "DirectoryNodeAlbumRecentlyPlayed.h"
 #include "DirectoryNodeAlbumRecentlyPlayedPicture.h"
 #include "DirectoryNodeTop100.h"
@@ -39,11 +39,12 @@
 #include "DirectoryNodeAlbumTop100Picture.h"
 #include "DirectoryNodeAlbumCompilations.h"
 #include "DirectoryNodeAlbumCompilationsPictures.h"
- #include "DirectoryNodeSingles.h"
- 
+#include "DirectoryNodeSingles.h"
+*/
+
 #include "DirectoryNodeYearAlbum.h"
 #include "DirectoryNodeYearPicture.h"
-*/
+
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
@@ -112,7 +113,6 @@ void CDirectoryNode::GetDatabaseInfo(const CStdString& strPath, CQueryParams& pa
 //  Create a node object
 CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent)
 {
- /*
     switch (Type)
     {
         case NODE_TYPE_ROOT:
@@ -128,6 +128,7 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
             return new CDirectoryNodeAlbum(strName, pParent);
         case NODE_TYPE_PICTURE:
             return new CDirectoryNodePicture(strName, pParent);
+/*
         case NODE_TYPE_SINGLES:
             return new CDirectoryNodeSingles(strName, pParent);
         case NODE_TYPE_TOP100:
@@ -138,10 +139,12 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
             return new CDirectoryNodeAlbumTop100Picture(strName, pParent);
         case NODE_TYPE_PICTURE_TOP100:
             return new CDirectoryNodePictureTop100(strName, pParent);
+ */
         case NODE_TYPE_ALBUM_RECENTLY_ADDED:
             return new CDirectoryNodeAlbumRecentlyAdded(strName, pParent);
         case NODE_TYPE_ALBUM_RECENTLY_ADDED_PICTURES:
             return new CDirectoryNodeAlbumRecentlyAddedPicture(strName, pParent);
+/*
         case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
             return new CDirectoryNodeAlbumRecentlyPlayed(strName, pParent);
         case NODE_TYPE_ALBUM_RECENTLY_PLAYED_PICTURES:
@@ -150,6 +153,7 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
             return new CDirectoryNodeAlbumCompilations(strName, pParent);
         case NODE_TYPE_ALBUM_COMPILATIONS_PICTURES:
             return new CDirectoryNodeAlbumCompilationsPictures(strName, pParent);
+ */
         case NODE_TYPE_YEAR_ALBUM:
             return new CDirectoryNodeYearAlbum(strName, pParent);
         case NODE_TYPE_YEAR_PICTURE:
@@ -157,7 +161,6 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
         default:
             break;
     }
-  */
     return NULL;
 }
 
