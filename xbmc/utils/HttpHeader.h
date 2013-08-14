@@ -24,8 +24,6 @@
 #include <vector>
 #include <string>
 
-#define HTTPHEADER_CONTENT_TYPE "Content-Type"
-
 typedef std::map<std::string, std::string> HeaderParams;
 typedef HeaderParams::iterator HeaderParamsIter;
 
@@ -43,7 +41,7 @@ public:
   std::string& GetHeader(std::string& strHeader) const;
   std::string GetHeader(void) const;
 
-  std::string GetMimeType() const { return GetValue(HTTPHEADER_CONTENT_TYPE); }
+  std::string GetMimeType(void) const;
   std::string GetProtoLine() const { return m_protoLine; }
 
   bool IsHeaderDone(void) const

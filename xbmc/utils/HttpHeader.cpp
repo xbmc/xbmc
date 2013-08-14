@@ -108,6 +108,16 @@ std::string CHttpHeader::GetHeader(void) const
   return GetHeader(strHeader);
 }
 
+std::string CHttpHeader::GetMimeType(void) const
+{
+  const HeaderParams::const_iterator it = m_params.find("content-type");
+  if (it == m_params.end())
+    return "";
+
+  const std::string& strValue = it->second;
+  return strValue.substr(0, strValue.find(';'));
+}
+
 void CHttpHeader::Clear()
 {
   m_params.clear();
