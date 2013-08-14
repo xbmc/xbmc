@@ -174,11 +174,6 @@ public:
     
     void GetReleaseDate(SYSTEMTIME& dateTime) const;
     CStdString GetYearString() const;
-    const CStdString& GetPictureBrainzTrackID() const;
-    const std::vector<std::string>& GetPictureBrainzFaceID() const;
-    const CStdString& GetPictureBrainzAlbumID() const;
-    const std::vector<std::string>& GetPictureBrainzAlbumFaceID() const;
-    const CStdString& GetPictureBrainzTRMID() const;
     const CStdString& GetComment() const;
     const CStdString& GetLyrics() const;
     const CDateTime& GetLastPlayed() const;
@@ -214,11 +209,6 @@ public:
     void SetFace(const CFace& face);
     void SetAlbum(const CPictureAlbum& album);
     void SetPicture(const CPicture& picture);
-    void SetPictureBrainzTrackID(const CStdString& strTrackID);
-    void SetPictureBrainzFaceID(const std::vector<std::string>& pictureBrainzFaceId);
-    void SetPictureBrainzAlbumID(const CStdString& strAlbumID);
-    void SetPictureBrainzAlbumFaceID(const std::vector<std::string>& pictureBrainzAlbumFaceId);
-    void SetPictureBrainzTRMID(const CStdString& strTRMID);
     void SetComment(const CStdString& comment);
     void SetLyrics(const CStdString& lyrics);
     void SetRating(char rating);
@@ -266,11 +256,6 @@ protected:
     CStdString m_strAlbum;
     std::vector<std::string> m_albumFace;
     std::vector<std::string> m_location;
-    CStdString m_strPictureBrainzTrackID;
-    std::vector<std::string> m_pictureBrainzFaceID;
-    CStdString m_strPictureBrainzAlbumID;
-    std::vector<std::string> m_pictureBrainzAlbumFaceID;
-    CStdString m_strPictureBrainzTRMID;
     CStdString m_strComment;
     CStdString m_strLyrics;
     CDateTime m_lastPlayed;

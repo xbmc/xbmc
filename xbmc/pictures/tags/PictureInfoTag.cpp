@@ -258,11 +258,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
         ar << m_iTrack;
         ar << m_bLoaded;
         ar << m_dwReleaseDate;
-        ar << m_strPictureBrainzTrackID;
-        ar << m_pictureBrainzFaceID;
-        ar << m_strPictureBrainzAlbumID;
-        ar << m_pictureBrainzAlbumFaceID;
-        ar << m_strPictureBrainzTRMID;
         ar << m_lastPlayed;
         ar << m_strComment;
         ar << m_rating;
@@ -286,11 +281,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
         ar >> m_iTrack;
         ar >> m_bLoaded;
         ar >> m_dwReleaseDate;
-        ar >> m_strPictureBrainzTrackID;
-        ar >> m_pictureBrainzFaceID;
-        ar >> m_strPictureBrainzAlbumID;
-        ar >> m_pictureBrainzAlbumFaceID;
-        ar >> m_strPictureBrainzTRMID;
         ar >> m_lastPlayed;
         ar >> m_strComment;
         ar >> m_rating;
@@ -307,12 +297,12 @@ void CPictureInfoTag::Archive(CArchive& ar)
 
 void CPictureInfoTag::ToSortable(SortItem& sortable)
 {
-    /*
+    
     sortable[FieldTitle] = m_strTitle;
-    sortable[FieldFace] = m_face;
+//    sortable[FieldFace] = m_face;
     sortable[FieldAlbum] = m_strAlbum;
-    sortable[FieldAlbumFace] = FieldAlbumFace;
-    sortable[FieldLocation] = m_location;
+//    sortable[FieldAlbumFace] = FieldAlbumFace;
+//    sortable[FieldLocation] = m_location;
     sortable[FieldTime] = m_iDuration;
     sortable[FieldTrackNumber] = m_iTrack;
     sortable[FieldYear] = m_dwReleaseDate.wYear;
@@ -322,7 +312,7 @@ void CPictureInfoTag::ToSortable(SortItem& sortable)
     sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
     sortable[FieldListeners] = m_listeners;
     sortable[FieldId] = (int64_t)m_iDbId;
-    */
+    
   if (m_dateTimeTaken.IsValid())
     sortable[FieldDateTaken] = m_dateTimeTaken.GetAsDBDateTime();
 }
@@ -732,11 +722,6 @@ const CPictureInfoTag& CPictureInfoTag::operator =(const CPictureInfoTag& tag)
     m_strAlbum = tag.m_strAlbum;
     m_location = tag.m_location;
     m_strTitle = tag.m_strTitle;
-    m_strPictureBrainzTrackID = tag.m_strPictureBrainzTrackID;
-    m_pictureBrainzFaceID = tag.m_pictureBrainzFaceID;
-    m_strPictureBrainzAlbumID = tag.m_strPictureBrainzAlbumID;
-    m_pictureBrainzAlbumFaceID = tag.m_pictureBrainzAlbumFaceID;
-    m_strPictureBrainzTRMID = tag.m_strPictureBrainzTRMID;
     m_strComment = tag.m_strComment;
     m_strLyrics = tag.m_strLyrics;
     m_lastPlayed = tag.m_lastPlayed;
@@ -1072,55 +1057,6 @@ bool CPictureInfoTag::Loaded() const
     return m_bLoaded;
 }
 
-const CStdString& CPictureInfoTag::GetPictureBrainzTrackID() const
-{
-    return m_strPictureBrainzTrackID;
-}
-
-const std::vector<std::string>& CPictureInfoTag::GetPictureBrainzFaceID() const
-{
-    return m_pictureBrainzFaceID;
-}
-
-const CStdString& CPictureInfoTag::GetPictureBrainzAlbumID() const
-{
-    return m_strPictureBrainzAlbumID;
-}
-
-const std::vector<std::string>& CPictureInfoTag::GetPictureBrainzAlbumFaceID() const
-{
-    return m_pictureBrainzAlbumFaceID;
-}
-
-const CStdString& CPictureInfoTag::GetPictureBrainzTRMID() const
-{
-    return m_strPictureBrainzTRMID;
-}
-
-void CPictureInfoTag::SetPictureBrainzTrackID(const CStdString& strTrackID)
-{
-    m_strPictureBrainzTrackID=strTrackID;
-}
-
-void CPictureInfoTag::SetPictureBrainzFaceID(const std::vector<std::string>& pictureBrainzFaceId)
-{
-    m_pictureBrainzFaceID = pictureBrainzFaceId;
-}
-
-void CPictureInfoTag::SetPictureBrainzAlbumID(const CStdString& strAlbumID)
-{
-    m_strPictureBrainzAlbumID=strAlbumID;
-}
-
-void CPictureInfoTag::SetPictureBrainzAlbumFaceID(const std::vector<std::string>& pictureBrainzAlbumFaceId)
-{
-    m_pictureBrainzAlbumFaceID = pictureBrainzAlbumFaceId;
-}
-
-void CPictureInfoTag::SetPictureBrainzTRMID(const CStdString& strTRMID)
-{
-    m_strPictureBrainzTRMID=strTRMID;
-}
 
 void CPictureInfoTag::SetCoverArtInfo(size_t size, const std::string &mimeType)
 {
@@ -1187,7 +1123,6 @@ void CPictureInfoTag::SetPicture(const CPicture& picture)
     SetFace(picture.face);
     SetAlbum(picture.strAlbum);
     SetAlbumFace(picture.albumFace);
-    SetPictureBrainzTrackID(picture.strPictureBrainzTrackID);
     SetComment(picture.strComment);
     SetPlayCount(picture.iTimesPlayed);
     SetLastPlayed(picture.lastPlayed);
@@ -1286,11 +1221,6 @@ void CPictureInfoTag::Serialize(CVariant& value) const
     value["disc"] = GetDiscNumber();
     value["loaded"] = m_bLoaded;
     value["year"] = m_dwReleaseDate.wYear;
-    value["picturebrainztrackid"] = m_strPictureBrainzTrackID;
-    value["picturebrainzfaceid"] = StringUtils::Join(m_pictureBrainzFaceID, " / ");
-    value["picturebrainzalbumid"] = m_strPictureBrainzAlbumID;
-    value["picturebrainzalbumfaceid"] = StringUtils::Join(m_pictureBrainzAlbumFaceID, " / ");
-    value["picturebrainztrmid"] = m_strPictureBrainzTRMID;
     value["comment"] = m_strComment;
     value["rating"] = (int)(m_rating - '0');
     value["playcount"] = m_iTimesPlayed;
@@ -1308,11 +1238,6 @@ void CPictureInfoTag::Clear()
     m_albumFace.clear();
     m_location.clear();
     m_strTitle.Empty();
-    m_strPictureBrainzTrackID.Empty();
-    m_pictureBrainzFaceID.clear();
-    m_strPictureBrainzAlbumID.Empty();
-    m_pictureBrainzAlbumFaceID.clear();
-    m_strPictureBrainzTRMID.Empty();
     m_iDuration = 0;
     m_iTrack = 0;
     m_bLoaded = false;

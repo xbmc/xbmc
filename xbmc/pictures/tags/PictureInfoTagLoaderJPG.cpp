@@ -21,6 +21,7 @@
 #include "PictureInfoTagLoaderJPG.h"
 #include "PictureInfoTag.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 
 using namespace PICTURE_INFO;
 
@@ -34,17 +35,22 @@ bool CPictureInfoTagLoaderJPG::Load(const CStdString& strFileName, CPictureInfoT
 {
   try
   {
-    // JPG has no tag information other than the duration.
-    // Load our codec class
-//    JPGCodec codec;
-//    if (codec.Init(strFileName, 4096))
-    {
-      tag.SetURL(strFileName);
-//      tag.SetDuration((int)(codec.m_TotalTime/1000));
-      tag.SetLoaded(true);
-//      codec.DeInit();
-      return true;
-    }
+    CStdString strExtension = URIUtils::GetExtension(strFileName);
+    strExtension.ToLower();
+    strExtension.TrimLeft('.');
+    
+    if (strExtension.IsEmpty())
+      return false;
+
+    tag.SetTitle(URIUtils::GetFileName(strFileName));
+    if (!tag.GetTitle().IsEmpty() || !tag.GetAlbum().IsEmpty())
+      tag.SetLoaded();
+    else
+      tag.SetLoaded();
+    tag.SetURL(strFileName);
+        
+    return true;
+    
   }
   catch (...)
   {
