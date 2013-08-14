@@ -97,7 +97,7 @@ void CLanguageInvokerThread::OnExit()
   if (m_invoker == NULL)
     return;
 
-  m_invoker->onDone();
+  m_invoker->onExectuionDone();
   m_invocationManager->OnScriptEnded(GetId());
 }
 
@@ -106,6 +106,6 @@ void CLanguageInvokerThread::OnException()
   if (m_invoker == NULL)
     return;
 
-  m_invoker->onError();
+  m_invoker->onExectuionFailed();
   m_invocationManager->OnScriptEnded(GetId());
 }

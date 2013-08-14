@@ -68,12 +68,12 @@ protected:
   virtual bool execute(const std::string &script, const std::vector<std::string> &arguments) = 0;
   virtual bool stop(bool abort) = 0;
 
-  virtual void onError()
+  virtual void onExectuionFailed()
   {
     if (m_invocationHandler)
       m_invocationHandler->OnScriptEnded(this);
   }
-  virtual void onDone()
+  virtual void onExectuionDone()
   {
     if (m_invocationHandler)
       m_invocationHandler->OnScriptEnded(this);
