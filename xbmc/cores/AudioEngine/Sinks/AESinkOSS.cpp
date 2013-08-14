@@ -262,7 +262,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
 
 #if defined(TARGET_FREEBSD)
   /* fix hdmi 8 channels order */
-  if (!AE_IS_RAW(format.m_dataFormat) && 8 == oss_ch)
+  if ((oss_fmt != AFMT_AC3) && 8 == oss_ch)
   {
     unsigned long long order = 0x0000000087346521ULL;
 
