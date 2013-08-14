@@ -83,6 +83,9 @@ float CEngineStats::GetDelay()
   float delay = m_sinkDelay - (double)(now-m_sinkUpdate) / 1000;
   delay += (float)m_bufferedSamples / m_sinkSampleRate;
 
+  if (delay < 0)
+    delay = 0.0;
+
   return delay;
 }
 
