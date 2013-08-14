@@ -24,8 +24,6 @@
 #include <vector>
 #include <string>
 
-#define HTTPHEADER_CONTENT_TYPE "Content-Type"
-
 class CHttpHeader
 {
 public:
@@ -44,7 +42,7 @@ public:
 
   std::string GetHeader(void) const;
 
-  std::string GetMimeType() { return GetValue(HTTPHEADER_CONTENT_TYPE); }
+  std::string GetMimeType(void) const;
   std::string GetProtoLine() { return m_protoLine; }
 
   inline bool IsHeaderDone(void) const

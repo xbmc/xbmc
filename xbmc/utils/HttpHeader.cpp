@@ -139,6 +139,13 @@ std::string CHttpHeader::GetHeader(void) const
   return strHeader;
 }
 
+std::string CHttpHeader::GetMimeType(void) const
+{
+  std::string strValue(GetValueRaw("content-type"));
+
+  return strValue.substr(0, strValue.find(';'));
+}
+
 void CHttpHeader::Clear()
 {
   m_params.clear();
