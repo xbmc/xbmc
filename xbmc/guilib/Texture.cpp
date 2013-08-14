@@ -311,7 +311,6 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
   if(!LoadIImage(pImage, (unsigned char *) inputBuff, inputBuffSize, width, height, autoRotate))
   {
     delete pImage;
-    pImage = NULL;
     pImage = ImageFactory::CreateFallbackLoader(texturePath);
     if(!LoadIImage(pImage, (unsigned char *) inputBuff, inputBuffSize, width, height))
     {
@@ -339,7 +338,6 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   if(!LoadIImage(pImage, buffer, size, width, height))
   {
     delete pImage;
-    pImage = NULL;
     pImage = ImageFactory::CreateFallbackLoader(mimeType);
     if(!LoadIImage(pImage, buffer, size, width, height))
     {
