@@ -71,7 +71,7 @@ public:
   virtual void              SetReplayGain   (float factor) { m_rgain  = std::max( 0.0f, factor); }
   virtual void              SetAmplification(float amplify){ m_limiter.SetAmplification(amplify); }
 
-  virtual float             RunLimiter(float* frame, int channels) { return m_limiter.Run(frame, channels); }
+  virtual float             RunLimiter(float* frame, int channels) { return m_limiter.Run(&frame, channels); }
 
   virtual const unsigned int      GetFrameSize   () const  { return m_format.m_frameSize; }
   virtual const unsigned int      GetChannelCount() const  { return m_initChannelLayout.Count(); }
