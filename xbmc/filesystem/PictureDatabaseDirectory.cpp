@@ -34,6 +34,9 @@ using namespace std;
 using namespace XFILE;
 using namespace PICTUREDATABASEDIRECTORY;
 
+
+#define _ENABLE_PICTURE_SCAN_
+
 CPictureDatabaseDirectory::CPictureDatabaseDirectory(void)
 {
 }
@@ -181,11 +184,11 @@ bool CPictureDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStr
     }
     
     // get album
-    if (params.GetAlbumId() >= 0)
+    if (params.GetPictureAlbumId() >= 0)
     {
         if (!strLabel.IsEmpty())
             strLabel += " / ";
-        strLabel += picturedatabase.GetAlbumById(params.GetAlbumId());
+        strLabel += picturedatabase.GetPictureAlbumById(params.GetPictureAlbumId());
     }
     
     if (strLabel.IsEmpty())
