@@ -32,8 +32,9 @@ $(LIBDYLIB): $(PLATFORM)
 	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py build -x bdist_egg --plat-name $(OS)-$(CPU)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	mkdir -p $(PREFIX)/lib/python2.6/site-packages
-	cp $(LIBDYLIB) $(PREFIX)/lib/python2.6/site-packages
+	mkdir -p $(PREFIX)/lib/python2.6/site-packages/PIL
+	unzip $(LIBDYLIB) -d $(PREFIX)/lib/python2.6/site-packages/PIL/
+	echo 'PIL' > $(PREFIX)/lib/python2.6/site-packages/PIL.pth
 	touch $@
 
 clean:
