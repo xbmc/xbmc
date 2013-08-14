@@ -257,7 +257,7 @@ void CTextureBundleXPR::GetTexturesFromPath(const CStdString &path, std::vector<
     testPath += "\\";
   int testLength = testPath.GetLength();
   std::map<CStdString, FileHeader_t>::iterator it;
-  for (it = m_FileHeaders.begin(); it != m_FileHeaders.end(); it++)
+  for (it = m_FileHeaders.begin(); it != m_FileHeaders.end(); ++it)
   {
     if (it->first.Left(testLength).Equals(testPath))
       textures.push_back(it->first);

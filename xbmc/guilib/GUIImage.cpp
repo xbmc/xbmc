@@ -122,7 +122,7 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
         if (!ProcessFading(*i, frameTime, currentTime))
           i = m_fadingTextures.erase(i);
         else
-          i++;
+          ++i;
       }
 
       if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
@@ -169,7 +169,7 @@ void CGUIImage::Render()
 {
   if (!IsVisible()) return;
 
-  for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); itr++)
+  for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); ++itr)
     (*itr)->m_texture->Render();
 
   m_texture.Render();
@@ -282,7 +282,7 @@ CRect CGUIImage::CalcRenderRegion() const
 {
   CRect region = m_texture.GetRenderRect();
 
-  for (vector<CFadingTexture *>::const_iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); itr++)
+  for (vector<CFadingTexture *>::const_iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); ++itr)
     region.Union( (*itr)->m_texture->GetRenderRect() );
 
   return CGUIControl::CalcRenderRegion().Intersect(region);

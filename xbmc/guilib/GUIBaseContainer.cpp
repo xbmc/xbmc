@@ -807,7 +807,7 @@ void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
 {
   if (updateAllItems)
   { // free memory of items
-    for (iItems it = m_items.begin(); it != m_items.end(); it++)
+    for (iItems it = m_items.begin(); it != m_items.end(); ++it)
       (*it)->FreeMemory();
   }
   // and recalculate the layout

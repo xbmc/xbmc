@@ -353,7 +353,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
     // first compute the size of the text to render in both characters and pixels
     unsigned int lineChars = 0;
     float linePixels = 0;
-    for (vecText::const_iterator pos = text.begin(); pos != text.end(); pos++)
+    for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
     {
       Character *ch = GetCharacter(*pos);
       if (ch)
@@ -367,7 +367,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
   }
   float cursorX = 0; // current position along the line
 
-  for (vecText::const_iterator pos = text.begin(); pos != text.end(); pos++)
+  for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
   {
     // If starting text on a new line, determine justification effects
     // Get the current letter in the CStdString
