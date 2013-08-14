@@ -13,6 +13,7 @@
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "FileItem.h"
+#include "guilib/GUIMessage.h"
 
 class CPlexHTTPFetchJob : public CJob
 {
@@ -54,5 +55,29 @@ public:
   CPlexSectionFetchJob(const CURL& url, int contentType) : CPlexDirectoryFetchJob(url), m_contentType(contentType) {}
   int m_contentType;
 };
+
+class CPlexMediaServerClientJob : public CJob
+{
+public:
+  CPlexMediaServerClientJob(CURL command, const std::string verb = "GET", const CGUIMessage &msg = CGUIMessage(0, 0, 0, 0), int error = 0) :
+  m_url(command), m_verb(verb), m_msg(msg), m_errorMsg(error) {}
+  
+  virtual bool DoWork();
+  
+  CURL m_url;
+  std::string m_verb;
+  CStdString m_data;
+  CGUIMessage m_msg;
+  int m_errorMsg;
+  
+  virtual bool operator==(const CJob* job) const
+  {
+    CPlexMediaServerClientJob *oJob = (CPlexMediaServerClientJob*)job;
+    if (oJob->m_url.Get() == m_url.Get())
+      return true;
+    return false;
+  }
+};
+
 
 #endif /* defined(__Plex_Home_Theater__PlexJobs__) */

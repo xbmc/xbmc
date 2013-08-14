@@ -79,6 +79,7 @@
 #include "dialogs/GUIDialogCache.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "filesystem/CurlFile.h"
+#include "Client/PlexServerManager.h"
 /* END PLEX */
 
 #define CONTROL_BTNVIEWASICONS       2
@@ -1781,24 +1782,9 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
   // Confirm.
   if (!CGUIDialogYesNo::ShowAndGetInput(122, 125, 0, 0))
     return;
+  
+  g_plexMediaServerClient.deleteItem(item);
 
-  // Delete.
-  CStdString strData;
-  CCurlFile http;
-  bool status = http.Delete(item->GetProperty("key").asString(), strData);
-
-  if (status == false)
-  {
-    // Show error.
-    CGUIDialogOK::ShowAndGetInput(257, 16205, 0, 0);
-  }
-  else
-  {
-    // Refresh.
-    g_directoryCache.ClearDirectory(m_vecItems->GetPath());
-    Update(m_vecItems->GetPath());
-    m_viewControl.SetSelectedItem(iItem);
-  }
 }
 #endif
 
@@ -1891,7 +1877,9 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
       (item->GetProperty("type") == "episode" || item->GetProperty("type") == "movie" ||
        item->GetProperty("type") == "track"   || item->GetProperty("type") == "photo"))
   {
-    buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
+    CPlexServerPtr server = g_plexServerManager.FindByUUID(item->GetProperty("plexserver").asString());
+    if (server && server->SupportsDeletion())
+      buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
   }
   /* END PLEX */
 

@@ -12,21 +12,23 @@
 #include "PlexFile.h"
 #include "video/VideoInfoTag.h"
 #include "Client/PlexTranscoderClient.h"
+#include "PlexJobs.h"
+#include "guilib/GUIWindowManager.h"
+#include "GUIUserMessages.h"
+#include "guilib/Key.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
 
-using namespace XFILE;
-
-bool
-CPlexMediaServerClientJob::DoWork()
+void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CPlexFile file;
-  bool success;
+  CPlexMediaServerClientJob *clientJob = static_cast<CPlexMediaServerClientJob*>(job);
+
+  if (success && clientJob->m_msg.GetMessage() != 0)
+    g_windowManager.SendThreadMessage(clientJob->m_msg);
+  else if (!success && clientJob->m_errorMsg)
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), g_localizeStrings.Get(clientJob->m_errorMsg));
   
-  if (m_put)
-    success = file.Put(m_url.Get(), m_data);
-  else
-    success = file.Get(m_url.Get(), m_data);
-  
-  return success;
+  CJobQueue::OnJobComplete(jobID, success, job);
 }
 
 void
@@ -43,7 +45,7 @@ CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,
   if (audioStreamID != -1)
     u.SetOption("audioStreamID", boost::lexical_cast<std::string>(audioStreamID));
   
-  AddJob(new CPlexMediaServerClientJob(u, true));
+  AddJob(new CPlexMediaServerClientJob(u, "PUT"));
 }
 
 void CPlexMediaServerClient::ReportItemProgress(const CFileItemPtr &item, const CStdString& state, int64_t currentPosition)
@@ -133,4 +135,10 @@ CPlexMediaServerClient::SetViewMode(const CFileItem &item, int viewMode, int sor
 void CPlexMediaServerClient::StopTranscodeSession(CPlexServerPtr server)
 {
   AddJob(new CPlexMediaServerClientJob(CPlexTranscoderClient::GetTranscodeStopURL(server)));
+}
+
+void CPlexMediaServerClient::deleteItem(const CFileItemPtr &item)
+{
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
+  AddJob(new CPlexMediaServerClientJob(item->GetPath(), "DELETE", msg, 16205));
 }

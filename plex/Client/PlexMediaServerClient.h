@@ -13,32 +13,7 @@
 #include "Client/PlexServer.h"
 #include "FileItem.h"
 #include "GlobalsHandling.h"
-
-class CPlexMediaServerClientJob : public CJob
-{
-public:
-  CPlexMediaServerClientJob(CURL command, bool put = false)
-  {
-    m_url = command;
-    m_put = put;
-  };
-  
-  virtual bool DoWork();
-  CStdString GetData() const { return m_data; }
-
-private:
-  CURL m_url;
-  bool m_put;
-  CStdString m_data;
-
-  virtual bool operator==(const CJob* job) const
-  {
-    CPlexMediaServerClientJob *oJob = (CPlexMediaServerClientJob*)job;
-    if (oJob->m_url.Get() == m_url.Get())
-      return true;
-    return false;
-  }
-};
+#include "guilib/GUIMessage.h"
 
 class CPlexMediaServerClient : public CJobQueue
 {
@@ -70,6 +45,10 @@ public:
   
   /* stop a transcode session */
   void StopTranscodeSession(CPlexServerPtr server);
+  
+  void deleteItem(const CFileItemPtr &item);
+  
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
 private:
   CStdString GetPrefix(const CFileItemPtr& item) const
