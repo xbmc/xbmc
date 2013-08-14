@@ -2786,12 +2786,12 @@ CStdString CFileItem::GetUserPictureThumb(bool alwaysCheckRemote /* = false */, 
     CFileItem item(URIUtils::GetDirectory(m_strPath), true);
     return item.GetUserPictureThumb(alwaysCheckRemote);
   }
-  /*
+  
   // if a folder, check for folder.jpg
   if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CSettings::Get().GetBool("musicfiles.findremotethumbs")))
   {
     CStdStringArray thumbs;
-    StringUtils::SplitString(g_advancedSettings.m_pictureThumbs, "|", thumbs);
+//    StringUtils::SplitString(g_advancedSettings.m_pictureThumbs, "|", thumbs);
     for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
       CStdString folderThumb(GetFolderThumb(thumbs[i]));
@@ -2801,7 +2801,7 @@ CStdString CFileItem::GetUserPictureThumb(bool alwaysCheckRemote /* = false */, 
       }
     }
   }
-   */
+   
   // No thumb found
   return "";
 }
