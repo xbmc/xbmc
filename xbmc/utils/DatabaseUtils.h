@@ -137,8 +137,14 @@ typedef enum {
   MediaTypeMusicVideo,
   MediaTypeMovie,
   MediaTypeTvShow,
-  MediaTypeEpisode
+  MediaTypeEpisode,
+  MediaTypePicture,
+  MediaTypePictureAlbum,
+  MediaTypeFace,
+  MediaTypeLocation
 } MediaType;
+
+
 
 typedef enum {
   DatabaseQueryPartSelect,
