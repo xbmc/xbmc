@@ -150,7 +150,10 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
   else if ((format.m_dataFormat == AE_FMT_U8   ) && (format_mask & AFMT_U8    ))
     oss_fmt = AFMT_U8;
   else if ((AE_IS_RAW(format.m_dataFormat)     ) && (format_mask & AFMT_AC3   ))
+  {
     oss_fmt = AFMT_AC3;
+    format.m_dataFormat = AE_FMT_S16NE;
+  }
   else if (AE_IS_RAW(format.m_dataFormat))
   {
     close(m_fd);
