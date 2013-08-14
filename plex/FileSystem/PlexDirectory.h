@@ -32,26 +32,6 @@ namespace XFILE
   {
     public:
 
-      class CPlexDirectoryFetchJob : public CJob
-      {
-        public:
-          CPlexDirectoryFetchJob(const CURL &url) : CJob(), m_url(url) {}
-
-          virtual bool operator==(const CJob* job) const
-          {
-            const CPlexDirectoryFetchJob *fjob = static_cast<const CPlexDirectoryFetchJob*>(job);
-            if (fjob && fjob->m_url.Get() == m_url.Get())
-              return true;
-            return false;
-          }
-
-          virtual const char* GetType() const { return "plexdirectoryfetch"; }
-
-          virtual bool DoWork();
-
-          CFileItemList m_items;
-          CURL m_url;
-      };
 
       CPlexDirectory() : m_isAugmented(false) {}
 
@@ -100,14 +80,7 @@ namespace XFILE
 
       void DoAugmentation(CFileItemList& fileItems);
 
-      void AddAugmentation(const CURL &url)
-      {
-        CLog::Log(LOGDEBUG, "CPlexDirectory::AddAugmentation %s", url.Get().c_str());
-        CSingleLock lk(m_augmentationLock);
-        int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
-        m_augmentationJobs.push_back(id);
-        m_isAugmented = true;
-      }
+      void AddAugmentation(const CURL &url);
 
       void CancelAugmentations()
       {

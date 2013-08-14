@@ -31,6 +31,8 @@
 
 #include "GUIViewState.h"
 
+#include "PlexJobs.h"
+
 using namespace XFILE;
 
 /* IDirectory Interface */
@@ -610,12 +612,6 @@ bool CPlexDirectory::IsFolder(const CFileItemPtr& item, TiXmlElement* element)
   return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool CPlexDirectory::CPlexDirectoryFetchJob::DoWork()
-{
-  CPlexDirectory dir;
-  return dir.GetDirectory(m_url.Get(), m_items);
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
@@ -717,3 +713,12 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
   return success;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+void CPlexDirectory::AddAugmentation(const CURL &url)
+{
+  CLog::Log(LOGDEBUG, "CPlexDirectory::AddAugmentation %s", url.Get().c_str());
+  CSingleLock lk(m_augmentationLock);
+  int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
+  m_augmentationJobs.push_back(id);
+  m_isAugmented = true;
+}

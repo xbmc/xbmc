@@ -72,6 +72,7 @@
 
 #include "Client/PlexServerManager.h"
 #include "Client/PlexServerDataLoader.h"
+#include "PlexJobs.h"
 
 using namespace std;
 using namespace XFILE;
@@ -120,7 +121,7 @@ void CPlexSectionFanout::GetContentTypes(std::vector<int> &lists)
 //////////////////////////////////////////////////////////////////////////////
 int CPlexSectionFanout::LoadSection(const CURL &url, int contentType)
 {
-  CPlexSectionLoadJob* job = new CPlexSectionLoadJob(url, contentType);
+  CPlexSectionFetchJob* job = new CPlexSectionFetchJob(url, contentType);
   return CJobManager::GetInstance().AddJob(job, this, CJob::PRIORITY_HIGH);
 }
 
@@ -211,16 +212,16 @@ void CPlexSectionFanout::Refresh()
 //////////////////////////////////////////////////////////////////////////////
 void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CPlexSectionLoadJob *load = (CPlexSectionLoadJob*)job;
+  CPlexSectionFetchJob *load = (CPlexSectionFetchJob*)job;
   if (success)
   {
     CSingleLock lk(m_critical);
-    int type = load->GetContentType();
+    int type = load->m_contentType;
     if (m_fileLists.find(type) != m_fileLists.end() && m_fileLists[type] != NULL)
       delete m_fileLists[type];
     
     CFileItemList* newList = new CFileItemList;
-    newList->Assign(load->m_list, false);
+    newList->Assign(load->m_items, false);
     m_fileLists[type] = newList;
     
     /* Pre-cache stuff */
@@ -234,13 +235,13 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
   if (it != m_outstandingJobs.end())
     m_outstandingJobs.erase(it);
 
-  if (m_outstandingJobs.size() == 0 && load->GetContentType() != CONTENT_LIST_FANART)
+  if (m_outstandingJobs.size() == 0 && load->m_contentType != CONTENT_LIST_FANART)
   {
     CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, m_sectionType);
     msg.SetStringParam(m_url.Get());
     g_windowManager.SendThreadMessage(msg);
   }
-  else if (load->GetContentType() == CONTENT_LIST_FANART)
+  else if (load->m_contentType == CONTENT_LIST_FANART)
   {
     CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, CONTENT_LIST_FANART);
     msg.SetStringParam(m_url.Get());

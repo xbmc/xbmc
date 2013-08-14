@@ -64,29 +64,6 @@ enum SectionTypes
 
 typedef std::pair<int, CFileItemList*> contentListPair;
 
-class CPlexSectionLoadJob : public CJob
-{
-  public:
-    CPlexSectionLoadJob(const CURL& url, int contentType) :
-      CJob(), m_url(url), m_contentType(contentType) {}
-  
-    bool DoWork()
-    {
-      XFILE::CPlexDirectory dir;
-      bool success = dir.GetDirectory(m_url, m_list);
-      return success;
-    }
-
-    int GetContentType() const { return m_contentType; }
-    CURL GetUrl() const { return m_url; }
-  
-    CFileItemList m_list;
-
-  private:
-    CURL m_url;
-    int m_contentType;
-};
-
 class CPlexSectionFanout : public IJobCallback
 {
   public:
