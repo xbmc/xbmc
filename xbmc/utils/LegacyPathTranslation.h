@@ -49,6 +49,14 @@ public:
    */
   static std::string TranslateMusicDbPath(const std::string &legacyPath);
 
+  /*!
+   \brief Translates old musicdb:// paths to new ones
+   
+   \param legacyPath Path in the old musicdb:// format using numbers
+   \return Path in the new musicdb:// format using descriptive strings
+   */
+  static std::string TranslatePictureDbPath(const std::string &legacyPath);
+  
 private:
   static std::string TranslatePath(const std::string &legacyPath, Translator *translationMap, size_t translationMapSize);
 };
