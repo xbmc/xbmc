@@ -608,10 +608,10 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
             else if (albumDownloadStatus == INFO_CANCELLED)
                 break;
             else
+             */
             {
                 // No download info, fallback to already gathered (eg. local) information/art (if any)
-                album->idAlbum = m_pictureDatabase.AddAlbum(album->strAlbum,
-                                                          album->strPictureBrainzAlbumID,
+                album->idAlbum = m_pictureDatabase.AddPictureAlbum(album->strAlbum,
                                                           album->GetFaceString(),
                                                           album->GetLocationString(),
                                                           album->iYear,
@@ -624,7 +624,7 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
             
             // Update the cache pointer with our newly created info
             cachedAlbum = m_albumCache.find(*album);
-             */
+             
         }
         
         if (m_bStop)
@@ -692,7 +692,7 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
         {
             picture->idAlbum = cachedAlbum->second.idAlbum;
             picture->idPicture = m_pictureDatabase.AddPicture(cachedAlbum->second.idAlbum,
-                                                   picture->strTitle, picture->strPictureBrainzTrackID,
+                                                   picture->strTitle,
                                                    picture->strFileName, picture->strComment,
                                                    picture->strThumb,
                                                    picture->face, picture->location,
