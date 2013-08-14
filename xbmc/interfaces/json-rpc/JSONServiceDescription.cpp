@@ -90,21 +90,21 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Playlist.Remove",                              CPlaylistOperations::Remove },
   { "Playlist.Swap",                                CPlaylistOperations::Swap },
 
-// Files
+  // Files
   { "Files.GetSources",                             CFileOperations::GetRootDirectory },
   { "Files.GetDirectory",                           CFileOperations::GetDirectory },
   { "Files.GetFileDetails",                         CFileOperations::GetFileDetails },
   { "Files.PrepareDownload",                        CFileOperations::PrepareDownload },
   { "Files.Download",                               CFileOperations::Download },
-
-// Picture Library
-//    { "PictureLibrary.GetFaces",                      CPictureLibrary::GetFaces },
-//    { "PictureLibrary.GetFaceDetails",                CPictureLibrary::GetFaceDetails },
-    { "PictureLibrary.GetPictureAlbums",              CPictureLibrary::GetPictureAlbums },
-    { "PictureLibrary.GetPictureAlbumDetails",        CPictureLibrary::GetPictureAlbumDetails },
+  
+  // Picture Library
+  //    { "PictureLibrary.GetFaces",                      CPictureLibrary::GetFaces },
+  //    { "PictureLibrary.GetFaceDetails",                CPictureLibrary::GetFaceDetails },
+  { "PictureLibrary.GetPictureAlbums",              CPictureLibrary::GetPictureAlbums },
+  { "PictureLibrary.GetPictureAlbumDetails",        CPictureLibrary::GetPictureAlbumDetails },
+  { "PictureLibrary.GetPictures",                   CPictureLibrary::GetPictures },
+  { "PictureLibrary.GetPictureDetails",             CPictureLibrary::GetPictureDetails },
 /*
-    { "PictureLibrary.GetPictures",                   CPictureLibrary::GetPictures },
-    { "PictureLibrary.GetPictureDetails",             CPictureLibrary::GetPictureDetails },
     { "PictureLibrary.GetRecentlyAddedPictureAlbums", CPictureLibrary::GetRecentlyAddedPictureAlbums },
     { "PictureLibrary.GetRecentlyAddedPictures",      CPictureLibrary::GetRecentlyAddedPictures },
     { "PictureLibrary.GetRecentlyPlayedPictureAlbums",CPictureLibrary::GetRecentlyPlayedPictureAlbums },
@@ -769,7 +769,6 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
               break;
             }
           }
-
           if (!ok)
           {
             CLog::Log(LOGDEBUG, "JSONRPC: Array contains non-conforming additional items in type %s", name.c_str());

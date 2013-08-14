@@ -512,7 +512,7 @@ JSONRPC_STATUS CPictureLibrary::SetPictureDetails(const CStdString &method, ITra
     if (ParameterNotNull(parameterObject, "picturebrainztrackid"))
         picture.strPictureBrainzTrackID = parameterObject["picturebrainztrackid"].asString();
     
-    if (picturedatabase.UpdatePicture(id, picture.strTitle, picture.strPictureBrainzTrackID, picture.strFileName, picture.strComment, picture.strThumb, picture.face, picture.location, picture.iTrack, picture.iDuration, picture.iYear, picture.iTimesPlayed, picture.iStartOffset, picture.iEndOffset, picture.lastPlayed, picture.rating, picture.iKaraokeNumber) <= 0)
+    if (picturedatabase.UpdatePicture(id, picture.strTitle, picture.strFileName, picture.strComment, picture.strThumb, picture.face, picture.location, picture.iTrack, picture.iDuration, picture.iYear, picture.iTimesPlayed, picture.iStartOffset, picture.iEndOffset, picture.lastPlayed, picture.rating, picture.iKaraokeNumber) <= 0)
         return InternalError;
     
     CJSONRPCUtils::NotifyItemUpdated();
