@@ -98,7 +98,6 @@ public:
   void EmptyCache();
   void Clean();
   int  Cleanup(CGUIDialogProgress *pDlgProgress=NULL);
-  void DeleteAlbumInfo();
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
 
