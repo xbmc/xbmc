@@ -1098,6 +1098,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(enabled);
     }
+    else if (strSetting.Equals("plexmediaserver.port"))
+    {
+      bool enabled = g_guiSettings.GetBool("plexmediaserver.manualaddress");
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(enabled);      
+    }
     else if (strSetting.Equals("backgroundmusic.bgmusicenabled"))
     {
       if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
@@ -2152,52 +2158,41 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     CGUIMessage msg(GUI_MSG_BG_MUSIC_SETTINGS_UPDATED, 0, 0);
     g_windowManager.SendMessage(msg);
   }
-  else if (strSetting.Left(15).Equals("plexmediaserver"))
+  else if (strSetting.Equals("plexmediaserver.localqualitystr"))
   {
-    if (strSetting.Equals("plexmediaserver.localqualitystr"))
+    CPlexServerPtr server = g_plexServerManager.GetBestServer();
+    if (server)
     {
-      CPlexServerPtr server = g_plexServerManager.GetBestServer();
-      if (server)
-      {
-        int quality = CPlexTranscoderClient::SelectATranscoderQuality(server, g_guiSettings.GetInt("plexmediaserver.localquality"));
-        g_guiSettings.SetInt("plexmediaserver.localquality", quality);
-        if (quality > 0)
-          g_guiSettings.SetString("plexmediaserver.localqualitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
-        else
-          g_guiSettings.SetString("plexmediaserver.localqualitystr", g_localizeStrings.Get(42999));
-      }
+      int quality = CPlexTranscoderClient::SelectATranscoderQuality(server, g_guiSettings.GetInt("plexmediaserver.localquality"));
+      g_guiSettings.SetInt("plexmediaserver.localquality", quality);
+      if (quality > 0)
+        g_guiSettings.SetString("plexmediaserver.localqualitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
+      else
+        g_guiSettings.SetString("plexmediaserver.localqualitystr", g_localizeStrings.Get(42999));
     }
-    else if (strSetting.Equals("plexmediaserver.remotequalitystr"))
+  }
+  else if (strSetting.Equals("plexmediaserver.remotequalitystr"))
+  {
+    CPlexServerPtr server = g_plexServerManager.GetBestServer();
+    if (server)
     {
-      CPlexServerPtr server = g_plexServerManager.GetBestServer();
-      if (server)
-      {
-        int quality = CPlexTranscoderClient::SelectATranscoderQuality(server, g_guiSettings.GetInt("plexmediaserver.remotequality"));
-        g_guiSettings.SetInt("plexmediaserver.remotequality", quality);
-        if (quality > 0)
-          g_guiSettings.SetString("plexmediaserver.remotequalitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
-        else
-          g_guiSettings.SetString("plexmediaserver.remotequalitystr", g_localizeStrings.Get(42999));
-      }
+      int quality = CPlexTranscoderClient::SelectATranscoderQuality(server, g_guiSettings.GetInt("plexmediaserver.remotequality"));
+      g_guiSettings.SetInt("plexmediaserver.remotequality", quality);
+      if (quality > 0)
+        g_guiSettings.SetString("plexmediaserver.remotequalitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
+      else
+        g_guiSettings.SetString("plexmediaserver.remotequalitystr", g_localizeStrings.Get(42999));
     }
-    // Check manual server.
-    if (g_guiSettings.GetBool("plexmediaserver.manualaddress"))
-    {
-      
-      string address = g_guiSettings.GetString("plexmediaserver.address");
-      if (PlexUtils::IsValidIP(address))
-      {
-        PlexServerList list;
-        CPlexServerPtr server = CPlexServerPtr(new CPlexServer("", address, 32400));
-        list.push_back(server);
-        g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
-      }
-    }
-    else
-    {
-      PlexServerList list;
-      g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
-    }
+  }
+  // Check manual server.
+  else if (strSetting.Equals("plexmediaserver.manualaddress") || strSetting.Equals("plexmediaserver.address"))
+  {
+    g_plexServerManager.m_manualServerManager.checkManualServersAsync();
+  }
+  else if (strSetting.Equals("plexmediaserver.port"))
+  {
+    ValidatePortNumber(pSettingControl, "32400", "32400", false);
+    g_plexServerManager.m_manualServerManager.checkManualServersAsync();
   }
   else if (strSetting.Equals("myplex.enablequeueandrec"))
   {

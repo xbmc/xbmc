@@ -933,6 +933,7 @@ void CGUISettings::Initialize()
   CSettingsCategory* pms = AddCategory(6, "plexmediaserver", 40210);
   AddBool(pms, "plexmediaserver.manualaddress", 40211, false);
   AddString(pms, "plexmediaserver.address", 40212, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
+  AddString(pms,"plexmediaserver.port", 792, "32400", EDIT_CONTROL_NUMBER_INPUT, false, 792);
   AddString(pms, "plexmediaserver.localqualitystr", 52201, g_localizeStrings.Get(42999), BUTTON_CONTROL_MISC_INPUT);
   AddInt(NULL, "plexmediaserver.localquality", 52201, 0, 0, 1, INT_MAX, SPIN_CONTROL_INT);
   AddString(pms, "plexmediaserver.remotequalitystr", 52202, g_localizeStrings.Get(42999), BUTTON_CONTROL_MISC_INPUT);

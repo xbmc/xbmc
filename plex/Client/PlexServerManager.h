@@ -8,6 +8,7 @@
 #include "PlexServer.h"
 #include "PlexConnection.h"
 #include "JobManager.h"
+#include "PlexManualServerManager.h"
 
 typedef std::vector<CPlexServerPtr> PlexServerList;
 typedef std::map<CStdString, CPlexServerPtr> PlexServerMap;
@@ -68,6 +69,8 @@ public:
 
   void save();
   void load();
+  
+  CPlexManualServerManager m_manualServerManager;
 
 private:
   CPlexServerPtr _myPlexServer;

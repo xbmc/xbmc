@@ -1,6 +1,8 @@
 #include "PlexServerManager.h"
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include <vector>
 #include "utils/log.h"
 #include "GUIMessage.h"
@@ -11,6 +13,7 @@
 #include "File.h"
 
 #include "Stopwatch.h"
+#include "settings/GUISettings.h"
 
 using namespace std;
 
@@ -250,6 +253,10 @@ void CPlexServerManager::save()
 
 void CPlexServerManager::load()
 {
+  /* let's see if we have manual servers first */
+  m_manualServerManager.checkManualServersAsync();
+  
+  /* now load our saved state */
   if (XFILE::CFile::Exists(PLEX_SERVER_MANAGER_XML_FILE))
   {
     CXBMCTinyXML doc;

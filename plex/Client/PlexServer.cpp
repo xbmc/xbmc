@@ -56,7 +56,7 @@ CPlexServer::CollectDataFromRoot(const CStdString xmlData)
     std::string uuid;
 
     /* first we need to check that this is the server we should talk to */
-    if (root->QueryStringAttribute("machineIdentifier", &uuid))
+    if (root->QueryStringAttribute("machineIdentifier", &uuid) == TIXML_SUCCESS)
     {
       if (!m_uuid.Equals(uuid.c_str()))
       {
