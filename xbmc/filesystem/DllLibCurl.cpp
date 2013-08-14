@@ -27,6 +27,39 @@
 
 #include <assert.h>
 
+#ifdef HAVE_OPENSSL
+#include "threads/Thread.h"
+#include "openssl/crypto.h"
+
+static CCriticalSection** m_sslLockArray = NULL;
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+void ssl_lock_callback(int mode, int type, char *file, int line)
+{
+  if (!m_sslLockArray)
+    return;
+
+  if (mode & CRYPTO_LOCK)
+    m_sslLockArray[type]->lock();
+  else
+    m_sslLockArray[type]->unlock();
+}
+
+unsigned long ssl_thread_id(void)
+{
+  return (unsigned long)CThread::GetCurrentThreadId();
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // HAVE_OPENSSL
+
 using namespace XCURL;
 
 /* okey this is damn ugly. our dll loader doesn't allow for postload, preunload functions */
@@ -59,6 +92,16 @@ bool DllLibCurlGlobal::Load()
   /* check idle will clean up the last one */
   g_curlReferences = 2;
 
+#if defined(HAS_CURL_STATIC)
+  // Initialize ssl locking array
+  m_sslLockArray = new CCriticalSection*[CRYPTO_num_locks()];
+  for (int i=0; i<CRYPTO_num_locks(); i++)
+    m_sslLockArray[i] = new CCriticalSection;  
+ 
+  crypto_set_id_callback((unsigned long (*)())ssl_thread_id);
+  crypto_set_locking_callback((void (*)(int, int, const char*, int))ssl_lock_callback);
+#endif
+
   return true;
 }
 
@@ -73,6 +116,16 @@ void DllLibCurlGlobal::Unload()
     // close libcurl
     global_cleanup();
 
+#if defined(HAS_CURL_STATIC)
+    // Cleanup ssl locking array
+    crypto_set_id_callback(NULL);
+    crypto_set_locking_callback(NULL);
+    for (int i=0; i<CRYPTO_num_locks(); i++)
+      delete m_sslLockArray[i];
+ 
+    delete[] m_sslLockArray;
+#endif
+    
     DllDynamic::Unload();
   }
 
