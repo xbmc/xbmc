@@ -63,7 +63,7 @@ public:
 
 private:
   void Allocate(unsigned int width, unsigned int height, unsigned int format);
-  const char *GetFourCC(unsigned int format) const;
+  static const char *GetFourCC(unsigned int format);
   bool WriteFile(const std::string &file) const;
 
   /*! \brief Compress an ARGB buffer into a DXT1/3/5 image
@@ -76,7 +76,7 @@ private:
    */
   bool Compress(unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *argb, double maxMSE = 0);
 
-  unsigned int GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format) const;
+  static unsigned int GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format);
   enum {
     ddsd_caps        = 0x00000001,
     ddsd_height      = 0x00000002,

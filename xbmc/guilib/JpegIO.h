@@ -40,7 +40,7 @@ public:
   bool           Read(unsigned char* buffer, unsigned int bufSize, unsigned int minx, unsigned int miny);
   bool           CreateThumbnail(const CStdString& sourceFile, const CStdString& destFile, int minx, int miny, bool rotateExif);
   bool           CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufSize, const CStdString& destFile, unsigned int minx, unsigned int miny);
-  bool           CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile);
+  static bool           CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile);
   void           Close();
   // methods for the imagefactory
   virtual bool   Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
@@ -52,7 +52,7 @@ public:
 protected:
   static  void   jpeg_error_exit(j_common_ptr cinfo);
 
-  unsigned int   GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size);
+  static unsigned int   GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size);
 
   unsigned char  *m_inputBuff;
   unsigned int   m_inputBuffSize;

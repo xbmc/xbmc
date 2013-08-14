@@ -144,7 +144,7 @@ bool CDDSImage::WriteFile(const std::string &outputFile) const
   return true;
 }
 
-unsigned int CDDSImage::GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format) const
+unsigned int CDDSImage::GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format)
 {
   switch (format)
   {
@@ -248,7 +248,7 @@ void CDDSImage::Allocate(unsigned int width, unsigned int height, unsigned int f
   m_data = new unsigned char[m_desc.linearSize];
 }
 
-const char *CDDSImage::GetFourCC(unsigned int format) const
+const char *CDDSImage::GetFourCC(unsigned int format)
 {
   switch (format)
   {

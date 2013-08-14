@@ -225,7 +225,7 @@ CGUITextureManager::~CGUITextureManager(void)
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-bool CGUITextureManager::CanLoad(const CStdString &texturePath) const
+bool CGUITextureManager::CanLoad(const CStdString &texturePath)
 {
   if (texturePath == "-")
     return false;

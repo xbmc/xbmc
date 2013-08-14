@@ -267,7 +267,7 @@ public:
     return easeOut(time, start, change, duration);
   }
 protected:
-  float easeOut(float time, float start, float change, float duration)
+  static float easeOut(float time, float start, float change, float duration)
   {
     time /= duration;
     if (time < (1/2.75)) {

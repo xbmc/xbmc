@@ -113,8 +113,8 @@ public:
 protected:
   void LineBreakText(const vecText &text, std::vector<CGUIString> &lines);
   void WrapText(const vecText &text, float maxWidth);
-  void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
-  CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
+  static void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
+  static CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
   void CalcTextExtent();
 
   // our text to render

@@ -51,7 +51,7 @@ GUIFontManager::~GUIFontManager(void)
   Clear();
 }
 
-void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect) const
+void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect)
 {
   // set scaling resolution so that we can scale our font sizes correctly
   // as fonts aren't scaled at render time (due to aliasing) we must scale

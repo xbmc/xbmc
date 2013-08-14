@@ -86,7 +86,7 @@ public:
   static void SettingOptionsFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
 protected:
-  void RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect) const;
+  static void RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect);
   void LoadFonts(const TiXmlNode* fontNode);
   CGUIFontTTFBase* GetFontFile(const CStdString& strFontFile);
   bool OpenFontFile(CXBMCTinyXML& xmlDoc);

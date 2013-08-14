@@ -112,13 +112,13 @@ public:
     return stroker;
   };
 
-  void ReleaseFont(FT_Face face)
+  static void ReleaseFont(FT_Face face)
   {
     assert(face);
     FT_Done_Face(face);
   };
   
-  void ReleaseStroker(FT_Stroker stroker)
+  static void ReleaseStroker(FT_Stroker stroker)
   {
     assert(stroker);
     FT_Stroker_Done(stroker);
