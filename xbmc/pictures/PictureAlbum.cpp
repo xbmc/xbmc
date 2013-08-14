@@ -26,23 +26,22 @@
 #include "FileItem.h"
 
 using namespace std;
-using namespace MUSIC_INFO;
+using namespace PICTURE_INFO;
 
 CPictureAlbum::CPictureAlbum(const CFileItem& item)
 {
-    /*
+    
     Reset();
-    const CMusicInfoTag& tag = *item.GetMusicInfoTag();
+    const CPictureInfoTag& tag = *item.GetPictureInfoTag();
     SYSTEMTIME stTime;
     tag.GetReleaseDate(stTime);
-    strAlbum = tag.GetPictureAlbum();
-    strMusicBrainzPictureAlbumID = tag.GetMusicBrainzPictureAlbumID();
-    location = tag.GetGenre();
-    face = tag.GetPictureAlbumFace();
+    strAlbum = tag.GetAlbum();
+    location = tag.GetLocation();
+    face = tag.GetAlbumFace();
     iYear = stTime.wYear;
     bCompilation = tag.GetCompilation();
     iTimesPlayed = 0;
-     */
+     
 }
 
 CStdString CPictureAlbum::GetFaceString() const
@@ -50,7 +49,7 @@ CStdString CPictureAlbum::GetFaceString() const
     return StringUtils::Join(face, g_advancedSettings.m_pictureItemSeparator);
 }
 
-CStdString CPictureAlbum::GetGenreString() const
+CStdString CPictureAlbum::GetLocationString() const
 {
     return StringUtils::Join(location, g_advancedSettings.m_pictureItemSeparator);
 }
@@ -59,8 +58,6 @@ bool CPictureAlbum::operator<(const CPictureAlbum &a) const
 {
     if (strAlbum < a.strAlbum) return true;
     if (strAlbum > a.strAlbum) return false;
-    if (strMusicBrainzPictureAlbumID < a.strMusicBrainzPictureAlbumID) return true;
-    if (strMusicBrainzPictureAlbumID > a.strMusicBrainzPictureAlbumID) return false;
     return false;
 }
 
@@ -71,10 +68,7 @@ bool CPictureAlbum::Load(const TiXmlElement *PictureAlbum, bool append, bool pri
         Reset();
     
     XMLUtils::GetString(PictureAlbum,              "title", strAlbum);
-    XMLUtils::GetString(PictureAlbum, "pictureBrainzPictureAlbumID", strMusicBrainzPictureAlbumID);
-    
-    
-    
+  
     XMLUtils::GetStringArray(PictureAlbum, "face", face, prioritise, g_advancedSettings.m_pictureItemSeparator);
     XMLUtils::GetStringArray(PictureAlbum, "location", location, prioritise, g_advancedSettings.m_pictureItemSeparator);
     XMLUtils::GetStringArray(PictureAlbum, "style", styles, prioritise, g_advancedSettings.m_pictureItemSeparator);
@@ -135,7 +129,7 @@ bool CPictureAlbum::Load(const TiXmlElement *PictureAlbum, bool append, bool pri
             /*
             CFaceCredit faceCredit;
             XMLUtils::GetString(PictureAlbumFaceCreditsNode,  "face",               faceCredit.m_strFace);
-            XMLUtils::GetString(PictureAlbumFaceCreditsNode,  "pictureBrainzFaceID",  faceCredit.m_strMusicBrainzFaceID);
+            XMLUtils::GetString(PictureAlbumFaceCreditsNode,  "pictureBrainzFaceID",  faceCredit.m_strPictureBrainzFaceID);
             XMLUtils::GetString(PictureAlbumFaceCreditsNode,  "joinphrase",           faceCredit.m_strJoinPhrase);
             XMLUtils::GetBoolean(PictureAlbumFaceCreditsNode, "featuring",            faceCredit.m_boolFeatured);
             faceCredits.push_back(faceCredit);
@@ -168,7 +162,7 @@ bool CPictureAlbum::Load(const TiXmlElement *PictureAlbum, bool append, bool pri
                     
                     CFaceCredit faceCredit;
                     XMLUtils::GetString(pictureFaceCreditsNode,  "face",               faceCredit.m_strFace);
-                    XMLUtils::GetString(pictureFaceCreditsNode,  "pictureBrainzFaceID",  faceCredit.m_strMusicBrainzFaceID);
+                    XMLUtils::GetString(pictureFaceCreditsNode,  "pictureBrainzFaceID",  faceCredit.m_strPictureBrainzFaceID);
                     XMLUtils::GetString(pictureFaceCreditsNode,  "joinphrase",           faceCredit.m_strJoinPhrase);
                     XMLUtils::GetBoolean(pictureFaceCreditsNode, "featuring",            faceCredit.m_boolFeatured);
                     picture.faceCredits.push_back(faceCredit);
@@ -178,7 +172,7 @@ bool CPictureAlbum::Load(const TiXmlElement *PictureAlbum, bool append, bool pri
                 pictureFaceCreditsNode = pictureFaceCreditsNode->NextSiblingElement("PictureAlbumFaceCredits");
             }
             
-            XMLUtils::GetString(node,   "pictureBrainzTrackID",   picture.strMusicBrainzTrackID);
+            XMLUtils::GetString(node,   "pictureBrainzTrackID",   picture.strPictureBrainzTrackID);
             XMLUtils::GetInt(node, "position", picture.iTrack);
             
             if (picture.iTrack == 0)
@@ -212,7 +206,6 @@ bool CPictureAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdStrin
     if (!PictureAlbum) return false;
     
     XMLUtils::SetString(PictureAlbum,                    "title", strAlbum);
-    XMLUtils::SetString(PictureAlbum,       "pictureBrainzPictureAlbumID", strMusicBrainzPictureAlbumID);
     XMLUtils::SetStringArray(PictureAlbum,              "face", face);
     XMLUtils::SetStringArray(PictureAlbum,               "location", location);
     XMLUtils::SetStringArray(PictureAlbum,               "style", styles);
@@ -247,7 +240,7 @@ bool CPictureAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdStrin
         TiXmlElement PictureAlbumFaceCreditsElement("PictureAlbumFaceCredits");
         TiXmlNode *PictureAlbumFaceCreditsNode = PictureAlbum->InsertEndChild(PictureAlbumFaceCreditsElement);
         XMLUtils::SetString(PictureAlbumFaceCreditsNode,               "face", faceCredit->m_strFace);
-        XMLUtils::SetString(PictureAlbumFaceCreditsNode,  "pictureBrainzFaceID", faceCredit->m_strMusicBrainzFaceID);
+        XMLUtils::SetString(PictureAlbumFaceCreditsNode,  "pictureBrainzFaceID", faceCredit->m_strPictureBrainzFaceID);
         XMLUtils::SetString(PictureAlbumFaceCreditsNode,           "joinphrase", faceCredit->m_strJoinPhrase);
         XMLUtils::SetString(PictureAlbumFaceCreditsNode,            "featuring", faceCredit->GetFace());
     }
@@ -263,11 +256,11 @@ bool CPictureAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdStrin
             TiXmlElement pictureFaceCreditsElement("pictureFaceCredits");
             TiXmlNode *pictureFaceCreditsNode = node->InsertEndChild(pictureFaceCreditsElement);
             XMLUtils::SetString(pictureFaceCreditsNode,               "face", faceCredit->m_strFace);
-            XMLUtils::SetString(pictureFaceCreditsNode,  "pictureBrainzFaceID", faceCredit->m_strMusicBrainzFaceID);
+            XMLUtils::SetString(pictureFaceCreditsNode,  "pictureBrainzFaceID", faceCredit->m_strPictureBrainzFaceID);
             XMLUtils::SetString(pictureFaceCreditsNode,           "joinphrase", faceCredit->m_strJoinPhrase);
             XMLUtils::SetString(pictureFaceCreditsNode,            "featuring", faceCredit->GetFace());
         }
-        XMLUtils::SetString(node,   "pictureBrainzTrackID",   picture->strMusicBrainzTrackID);
+        XMLUtils::SetString(node,   "pictureBrainzTrackID",   picture->strPictureBrainzTrackID);
         XMLUtils::SetString(node,   "title",                picture->strTitle);
         XMLUtils::SetInt(node,      "position",             picture->iTrack);
         XMLUtils::SetString(node,   "duration",             StringUtils::SecondsToTimeString(picture->iDuration));

@@ -125,7 +125,7 @@ public:
      \param iKaraokeNumber [in] the karaoke id of the picture
      \return the id of the picture
      */
-    int AddPicture(const int idPictureAlbum, const CStdString& strTitle, const CStdString& strPictureBrainzTrackID, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations, int iTrack, int iDuration, int iYear, const int iTimesPlayed, int iStartOffset, int iEndOffset, const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber);
+    int AddPicture(const int idPictureAlbum, const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations, int iTrack, int iDuration, int iYear, const int iTimesPlayed, int iStartOffset, int iEndOffset, const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber);
     bool GetPicture(int idPicture, CPicture& picture);
     
     /*! \brief Update a picture in the database
@@ -148,7 +148,7 @@ public:
      \param iKaraokeNumber [in] the karaoke id of the picture
      \return the id of the picture
      */
-    int UpdatePicture(int idPicture, const CStdString& strTitle, const CStdString& strPictureBrainzTrackID, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations, int iTrack, int iDuration, int iYear, int iTimesPlayed, int iStartOffset, int iEndOffset, const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber);
+    int UpdatePicture(int idPicture, const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations, int iTrack, int iDuration, int iYear, int iTimesPlayed, int iStartOffset, int iEndOffset, const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber);
     // bool DeletePicture(int idPicture);
     
     //// Misc Picture
@@ -167,7 +167,7 @@ public:
      \param pictureIDs [out] the ids of the added pictures
      \return the id of the PictureAlbum
      */
-    int  AddPictureAlbum(const CStdString& strPictureAlbum, const CStdString& strPictureBrainzPictureAlbumID, const CStdString& strFace, const CStdString& strLocation, int year, bool bCompilation);
+    int  AddPictureAlbum(const CStdString& strPictureAlbum, const CStdString& strFace, const CStdString& strLocation, int year, bool bCompilation);
     bool GetPictureAlbum(int idPictureAlbum, CPictureAlbum& PictureAlbum);
     int  UpdatePictureAlbum(int idPictureAlbum, const CPictureAlbum &PictureAlbum);
     bool DeletePictureAlbum(int idPictureAlbum);
@@ -186,7 +186,7 @@ public:
     /////////////////////////////////////////////////
     // Face CRUD
     /////////////////////////////////////////////////
-    int  AddFace(const CStdString& strFace, const CStdString& strPictureBrainzFaceID);
+    int  AddFace(const CStdString& strFace);
     bool GetFace(int idFace, CFace& Face);
     int  UpdateFace(int idFace, const CFace& Face);
     bool DeleteFace(int idFace);
@@ -447,7 +447,7 @@ private:
     bool SearchPictureAlbums(const CStdString& search, CFileItemList &PictureAlbums);
     bool SearchPictures(const CStdString& strSearch, CFileItemList &pictures);
     int GetPictureIDFromPath(const CStdString &filePath);
-    
+
     // Fields should be ordered as they
     // appear in the pictureview
     enum _PictureFields
@@ -455,75 +455,68 @@ private:
         picture_idPicture=0,
         picture_strFaces,
         picture_strLocations,
-        picture_strTitle,
-        picture_iTrack,
-        picture_iDuration,
-        picture_iYear,
-        picture_dwFileNameCRC,
-        picture_strFileName,
-        picture_strPictureBrainzTrackID,
-        picture_iTimesPlayed,
-        picture_iStartOffset,
-        picture_iEndOffset,
-        picture_lastplayed,
-        picture_rating,
-        picture_comment,
+        picture_idPath,
         picture_idAlbum,
         picture_strAlbum,
-        picture_strPath,
-        picture_iKarNumber,
-        picture_iKarDelay,
-        picture_strKarEncoding,
-        picture_bCompilation,
-        picture_strPictureFaces
+        picture_strTitle,
+        picture_strFileName,
+        picture_idThumb,
+      picture_strPath,
+      picture_iTimesPlayed,
+      picture_iStartOffset,
+      picture_iEndOffset,
+      picture_lastplayed,
+      picture_rating,
+      picture_comment,
+      picture_iTrack,
+      picture_iDuration,
+      picture_iYear
+      
     } PictureFields;
     
     // Fields should be ordered as they
     // appear in the PictureAlbumview
     enum _PictureAlbumFields
     {
-        Album_idAlbum=0,
-        Album_strAlbum,
-        Album_strPictureBrainzPictureAlbumID,
-        Album_strFaces,
-        Album_strLocations,
-        Album_iYear,
-        Album_idAlbumInfo,
-        Album_strMoods,
-        Album_strStyles,
-        Album_strThemes,
-        Album_strReview,
-        Album_strLabel,
-        Album_strType,
-        Album_strThumbURL,
-        Album_iRating,
-        Album_bCompilation,
-        Album_iTimesPlayed,
+        album_idAlbum=0,
+        album_strAlbum,
+        album_strFaces,
+        album_strLocations,
+        album_iYear,
+        album_idAlbumInfo,
+        album_strMoods,
+        album_strStyles,
+        album_strThemes,
+        album_strReview,
+        album_strLabel,
+        album_strType,
+        album_strThumbURL,
+        album_iRating,
+        album_bCompilation,
+        album_iTimesPlayed,
         
         // used for GetPictureAlbumInfo to get the cascaded Face credits
-        Album_idFace,
-        Album_strFace,
-        Album_strPictureBrainzFaceID,
-        Album_bFeatured,
-        Album_strJoinPhrase
+        album_idFace,
+        album_strFace,
+        album_bFeatured,
+        album_strJoinPhrase
     } PictureAlbumFields;
     
     enum _FaceFields
     {
-        Face_idFace=0,
-        Face_strFace,
-        Face_strPictureBrainzFaceID,
-        Face_strBorn,
-        Face_strFormed,
-        Face_strLocations,
-        Face_strMoods,
-        Face_strStyles,
-        Face_strInstruments,
-        Face_strBiography,
-        Face_strDied,
-        Face_strDisbanded,
-        Face_strYearsActive,
-        Face_strImage,
-        Face_strFanart
+        face_idFace=0,
+        face_strFace,
+        face_strBorn,
+        face_strFormed,
+        face_strLocations,
+        face_strMoods,
+        face_strStyles,
+        face_strInstruments,
+        face_strBiography,
+        face_strDied,
+        face_strDisbanded,
+        face_strYearsActive,
+        face_strImage,
+        face_strFanart
     } FaceFields;
 };

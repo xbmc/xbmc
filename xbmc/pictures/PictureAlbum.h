@@ -43,7 +43,6 @@ public:
     {
         idAlbum = -1;
         strAlbum.Empty();
-        strMusicBrainzPictureAlbumID.Empty();
         face.clear();
         faceCredits.clear();
         location.clear();
@@ -65,7 +64,7 @@ public:
     }
     
     CStdString GetFaceString() const;
-    CStdString GetGenreString() const;
+    CStdString GetLocationString() const;
     
     /*! \brief Load PictureAlbum information from an XML file.
      See CVideoInfoTag::Load for a description of the types of elements we load.
@@ -79,7 +78,6 @@ public:
     
     long idAlbum;
     CStdString strAlbum;
-    CStdString strMusicBrainzPictureAlbumID;
     std::vector<std::string> face;
     VECFACECREDITS faceCredits;
     std::vector<std::string> location;

@@ -447,11 +447,10 @@ CPicture::CPicture(CFileItem& item)
     SYSTEMTIME stTime;
     tag.GetReleaseDate(stTime);
     strTitle = tag.GetTitle();
-//    location = tag.GetLocation()();
+    location = tag.GetLocation();
     face = tag.GetFace();
     strAlbum = tag.GetAlbum();
     albumFace = tag.GetAlbumFace();
-    strPictureBrainzTrackID = tag.GetPictureBrainzTrackID();
     strComment = tag.GetComment();
     rating = tag.GetRating();
     iYear = stTime.wYear;
