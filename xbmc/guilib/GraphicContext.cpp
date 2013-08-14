@@ -86,7 +86,7 @@ void CGraphicContext::OnSettingChanged(const CSetting *setting)
 
 void CGraphicContext::SetOrigin(float x, float y)
 {
-  if (m_origins.size())
+  if (!m_origins.empty())
     m_origins.push(CPoint(x,y) + m_origins.top());
   else
     m_origins.push(CPoint(x,y));
@@ -96,7 +96,7 @@ void CGraphicContext::SetOrigin(float x, float y)
 
 void CGraphicContext::RestoreOrigin()
 {
-  if (m_origins.size())
+  if (!m_origins.empty())
     m_origins.pop();
   RemoveTransform();
 }
@@ -105,13 +105,13 @@ void CGraphicContext::RestoreOrigin()
 bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
 { // transform from our origin
   CPoint origin;
-  if (m_origins.size())
+  if (!m_origins.empty())
     origin = m_origins.top();
 
   // ok, now intersect with our old clip region
   CRect rect(x, y, x + w, y + h);
   rect += origin;
-  if (m_clipRegions.size())
+  if (!m_clipRegions.empty())
   {
     // intersect with original clip region
     rect.Intersect(m_clipRegions.top());
@@ -128,7 +128,7 @@ bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
 
 void CGraphicContext::RestoreClipRegion()
 {
-  if (m_clipRegions.size())
+  if (!m_clipRegions.empty())
     m_clipRegions.pop();
 
   // here we could reset the hardware clipping, if applicable
@@ -138,12 +138,12 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 {
   // this is the software clipping routine.  If the graphics hardware is set to do the clipping
   // (eg via SetClipPlane in D3D for instance) then this routine is unneeded.
-  if (m_clipRegions.size())
+  if (!m_clipRegions.empty())
   {
     // take a copy of the vertex rectangle and intersect
     // it with our clip region (moved to the same coordinate system)
     CRect clipRegion(m_clipRegions.top());
-    if (m_origins.size())
+    if (!m_origins.empty())
       clipRegion -= m_origins.top();
     CRect original(vertex);
     vertex.Intersect(clipRegion);
@@ -795,10 +795,10 @@ void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool need
   }
 
   // reset our origin and camera
-  while (m_origins.size())
+  while (!m_origins.empty())
     m_origins.pop();
   m_origins.push(CPoint(0, 0));
-  while (m_cameras.size())
+  while (!m_cameras.empty())
     m_cameras.pop();
   m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
 
@@ -828,7 +828,7 @@ void CGraphicContext::SetStereoView(RENDER_STEREO_VIEW view)
 {
   m_stereoView = view;
 
-  while(m_viewStack.size())
+  while(!m_viewStack.empty())
     m_viewStack.pop();
 
   CRect viewport(0.0f, 0.0f, (float)m_iScreenWidth, (float)m_iScreenHeight);
@@ -858,7 +858,7 @@ void CGraphicContext::SetCameraPosition(const CPoint &camera)
   // offset the camera from our current location (this is in XML coordinates) and scale it up to
   // the screen resolution
   CPoint cam(camera);
-  if (m_origins.size())
+  if (!m_origins.empty())
     cam += m_origins.top();
 
   cam.x *= (float)m_iScreenWidth / m_windowResolution.iWidth;

@@ -169,7 +169,7 @@ public:
   void Serialize(CVariant& value);
 
   bool       HasProperty(const CStdString &strKey) const;
-  bool       HasProperties() const { return m_mapProperties.size() > 0; };
+  bool       HasProperties() const { return !m_mapProperties.empty(); };
   void       ClearProperty(const CStdString &strKey);
 
   CVariant   GetProperty(const CStdString &strKey) const;

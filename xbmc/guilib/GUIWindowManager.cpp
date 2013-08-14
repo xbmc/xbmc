@@ -423,7 +423,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
   // as all messages done in WINDOW_INIT will want to be sent to the new
   // topmost window).  If we are swapping windows, we pop the old window
   // off the history stack
-  if (swappingWindows && m_windowHistory.size())
+  if (swappingWindows && !m_windowHistory.empty())
     m_windowHistory.pop();
   AddToWindowHistory(iWindowID);
 
@@ -798,7 +798,7 @@ void CGUIWindowManager::DispatchThreadMessages()
 
   CSingleLock lock(m_critSection);
 
-  for(int msgCount = m_vecThreadMessages.size(); m_vecThreadMessages.size() > 0 && msgCount > 0; --msgCount)
+  for(int msgCount = m_vecThreadMessages.size(); !m_vecThreadMessages.empty() && msgCount > 0; --msgCount)
   {
     // pop up one message per time to make messages be processed by order.
     // this will ensure rule No.2 & No.3
@@ -963,7 +963,7 @@ void CGUIWindowManager::AddToWindowHistory(int newWindowID)
   // and if so, pop all the other windows off the stack so that we
   // always have a predictable "Back" behaviour for each window
   stack<int> historySave = m_windowHistory;
-  while (historySave.size())
+  while (!historySave.empty())
   {
     if (historySave.top() == newWindowID)
       break;
@@ -1023,7 +1023,7 @@ bool CGUIWindowManager::IsWindowTopMost(const CStdString &xmlFile) const
 
 void CGUIWindowManager::ClearWindowHistory()
 {
-  while (m_windowHistory.size())
+  while (!m_windowHistory.empty())
     m_windowHistory.pop();
 }
 
