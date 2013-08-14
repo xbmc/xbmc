@@ -100,13 +100,6 @@ public:
   void PulseGlobalEvent();
   bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
-  // inject xbmc stuff into the interpreter.
-  // should be called for every new interpreter
-  void InitializeInterpreter(ADDON::AddonPtr addon);
-
-  // remove modules and references when interpreter done
-  void DeInitializeInterpreter();
-
   void RegisterExtensionLib(LibraryLoader *pLib);
   void UnregisterExtensionLib(LibraryLoader *pLib);
   void UnloadExtensionLibs();

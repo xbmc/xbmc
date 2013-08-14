@@ -11,7 +11,7 @@ all: $(LIB)
 
 include ../../../codegenerator.mk
 
-SRCS=	CallbackHandler.cpp LanguageHook.cpp \
+SRCS=	AddonPythonInvoker.cpp CallbackHandler.cpp LanguageHook.cpp \
 	PythonInvoker.cpp XBPython.cpp swig.cpp PyContext.cpp \
 	$(GENERATED)
 
