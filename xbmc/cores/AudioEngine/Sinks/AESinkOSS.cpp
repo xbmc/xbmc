@@ -435,7 +435,10 @@ void CAESinkOSS::Drain()
   if (m_fd == -1)
     return;
 
-  // ???
+  if(ioctl(m_fd, SNDCTL_DSP_SYNC, NULL) == -1)
+  {
+    CLog::Log(LOGERROR, "CAESinkOSS::Drain - Draining the Sink failed");
+  }
 }
 
 void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
