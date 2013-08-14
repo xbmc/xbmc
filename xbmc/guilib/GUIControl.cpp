@@ -30,7 +30,8 @@
 
 using namespace std;
 
-CGUIControl::CGUIControl()
+CGUIControl::CGUIControl() :
+  m_diffuseColor(0xffffffff)
 {
   m_hasProcessed = false;
   m_bHasFocus = false;
@@ -42,7 +43,6 @@ CGUIControl::CGUIControl()
   m_visibleCondition = 0;
   m_enableCondition = 0;
   m_enabled = true;
-  m_diffuseColor = 0xffffffff;
   m_posX = 0;
   m_posY = 0;
   m_width = 0;
@@ -58,7 +58,8 @@ CGUIControl::CGUIControl()
 }
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
-: m_hitRect(posX, posY, posX + width, posY + height)
+: m_hitRect(posX, posY, posX + width, posY + height),
+  m_diffuseColor(0xffffffff)
 {
   m_posX = posX;
   m_posY = posY;
@@ -69,7 +70,6 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_parentID = parentID;
   m_visible = VISIBLE;
   m_visibleFromSkinCondition = true;
-  m_diffuseColor = 0xffffffff;
   m_forceHidden = false;
   m_visibleCondition = 0;
   m_enableCondition = 0;

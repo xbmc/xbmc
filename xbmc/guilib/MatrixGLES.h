@@ -57,7 +57,7 @@ protected:
 
   struct MatrixWrapper 
   {
-    MatrixWrapper(){};
+    MatrixWrapper(){ memset(&m_values, 0, sizeof(m_values)); };
     MatrixWrapper( const float values[16]) { memcpy(m_values,values,sizeof(m_values)); }
     MatrixWrapper( const MatrixWrapper &rhs ) { memcpy(m_values, rhs.m_values, sizeof(m_values)); }
     MatrixWrapper &operator=( const MatrixWrapper &rhs ) { memcpy(m_values, rhs.m_values, sizeof(m_values)); return *this;}

@@ -37,9 +37,14 @@ CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float 
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
-    : CGUIControl(left), m_texture(left.m_texture)
+  : CGUIControl(left), 
+  m_image(left.m_image),
+  m_info(left.m_info),
+  m_texture(left.m_texture),
+  m_fadingTextures(),
+  m_currentTexture(),
+  m_currentFallback()
 {
-  m_info = left.m_info;
   m_crossFadeTime = left.m_crossFadeTime;
   // defaults
   m_currentFadeTime = 0;

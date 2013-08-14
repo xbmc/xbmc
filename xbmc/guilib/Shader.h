@@ -189,13 +189,15 @@ namespace Shaders {
     : virtual public CShaderProgram
   {
   public:
-    CGLSLShaderProgram()
+    CGLSLShaderProgram() : 
+      m_validated(false)
       {
         m_pFP = new CGLSLPixelShader();
         m_pVP = new CGLSLVertexShader();
       }
     CGLSLShaderProgram(const std::string& vert
-                     , const std::string& frag)
+                     , const std::string& frag) :
+      m_validated(false)
       {
         m_pFP = new CGLSLPixelShader();
         m_pFP->LoadSource(frag);

@@ -248,12 +248,11 @@ void CRotateEffect::ApplyEffect(float offset, const CPoint &center)
     m_matrix.SetZRotation(((m_endAngle - m_startAngle)*offset + m_startAngle) * degree_to_radian, m_center.x, m_center.y, g_graphicsContext.GetScalingPixelRatio());
 }
 
-CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEffect(node, EFFECT_TYPE_ZOOM)
+CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEffect(node, EFFECT_TYPE_ZOOM), m_center(CPoint(0,0))
 {
   // effect defaults
   m_startX = m_startY = 100;
   m_endX = m_endY = 100;
-  m_center = CPoint(0,0);
   m_autoCenter = false;
 
   float startPosX = rect.x1;

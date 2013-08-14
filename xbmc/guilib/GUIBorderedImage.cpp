@@ -29,9 +29,8 @@ CGUIBorderedImage::CGUIBorderedImage(int parentID, int controlID, float posX, fl
 }
 
 CGUIBorderedImage::CGUIBorderedImage(const CGUIBorderedImage &right)
-: CGUIImage(right), m_borderImage(right.m_borderImage)
+: CGUIImage(right), m_borderImage(right.m_borderImage), m_borderSize(right.m_borderSize)
 {
-  m_borderSize = right.m_borderSize;
   ControlType = GUICONTROL_BORDEREDIMAGE;
 }
 

@@ -116,9 +116,10 @@ public:
   {
     return iWidth * fPixelRatio / iHeight;
   }
-  RESOLUTION_INFO(const RESOLUTION_INFO& res)
+  RESOLUTION_INFO(const RESOLUTION_INFO& res) :
+    Overscan(res.Overscan)
   {
-    Overscan = res.Overscan; bFullScreen = res.bFullScreen;
+    bFullScreen = res.bFullScreen;
     iScreen = res.iScreen; iWidth = res.iWidth; iHeight = res.iHeight;
     iScreenWidth = res.iScreenWidth; iScreenHeight = res.iScreenHeight;
     iSubtitles = res.iSubtitles; dwFlags = res.dwFlags;
