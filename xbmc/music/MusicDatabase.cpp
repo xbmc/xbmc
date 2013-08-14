@@ -211,8 +211,25 @@ bool CMusicDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX idxKarSong on karaokedata(idSong)");
 
     // Trigger
-    CLog::Log(LOGINFO, "create albuminfo trigger");
-    m_pDS->exec("CREATE TRIGGER tgrAlbumInfo AFTER delete ON albuminfo FOR EACH ROW BEGIN delete from albuminfosong where albuminfosong.idAlbumInfo=old.idAlbumInfo; END");
+    CLog::Log(LOGINFO, "create album triggers");
+    m_pDS->exec("CREATE TRIGGER tgrAlbumSong AFTER delete ON album FOR EACH ROW BEGIN delete from song where song.idAlbum = old.idAlbum; END");
+    m_pDS->exec("CREATE TRIGGER tgrAlbumArtist AFTER delete ON album FOR EACH ROW BEGIN delete from album_artist where album_artist.idAlbum = old.idAlbum; END");
+    m_pDS->exec("CREATE TRIGGER tgrAlbumGenre AFTER delete ON album FOR EACH ROW BEGIN delete from album_genre where album_genre.idAlbum = old.idAlbum; END");
+    m_pDS->exec("CREATE TRIGGER tgrAlbumAlbumInfo AFTER delete ON album FOR EACH ROW BEGIN delete from albuminfo where albuminfo.idAlbum = old.idAlbum; END");
+
+    CLog::Log(LOGINFO, "create albuminfo triggers");
+    m_pDS->exec("CREATE TRIGGER tgrAlbumInfo AFTER delete ON albuminfo FOR EACH ROW BEGIN delete from albuminfosong where albuminfosong.idAlbumInfo = old.idAlbumInfo; END");
+
+    CLog::Log(LOGINFO, "create artist triggers");
+    m_pDS->exec("CREATE TRIGGER tgrArtistAlbum AFTER delete ON artist FOR EACH ROW BEGIN delete from album_artist where album_artist.idArtist = old.idArtist; END");
+    m_pDS->exec("CREATE TRIGGER tgrArtistSong AFTER delete ON artist FOR EACH ROW BEGIN delete from song_artist where song_artist.idArtist = old.idArtist; END");
+    m_pDS->exec("CREATE TRIGGER tgrArtistArtistInfo AFTER delete ON artist FOR EACH ROW BEGIN delete from artistinfo where artistinfo.idArtist = old.idArtist; END");
+    m_pDS->exec("CREATE TRIGGER tgrArtistDiscography AFTER delete ON artist FOR EACH ROW BEGIN delete from discography where discography.idArtist = old.idArtist; END");
+
+    CLog::Log(LOGINFO, "create song triggers");
+    m_pDS->exec("CREATE TRIGGER tgrSongArtist AFTER delete ON song FOR EACH ROW BEGIN delete from song_artist where song_artist.idSong = old.idSong; END");
+    m_pDS->exec("CREATE TRIGGER tgrSongGenre AFTER delete ON song FOR EACH ROW BEGIN delete from song_genre where song_genre.idSong = old.idSong; END");
+    m_pDS->exec("CREATE TRIGGER tgrSongKaraokedata AFTER delete ON song FOR EACH ROW BEGIN delete from karaokedata where karaokedata.idSong = old.idSong; END");
 
     CLog::Log(LOGINFO, "create art table, index and triggers");
     m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
@@ -2097,9 +2114,6 @@ int CMusicDatabase::SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONG
     m_pDS->exec(strSQL.c_str());
     int idAlbumInfo = (int)m_pDS->lastinsertid();
     
-    strSQL=PrepareSQL("delete from albuminfosong where idAlbumInfo=%i", idAlbumInfo);
-    m_pDS->exec(strSQL.c_str());
-    
     for (int i = 0; i < (int)songs.size(); i++)
     {
       CSong song = songs[i];
@@ -2217,12 +2231,6 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
       // ok, now delete these songs + all references to them from the linked tables
       strSQL = "delete from song where idSong in " + strSongsToDelete;
       m_pDS->exec(strSQL.c_str());
-      strSQL = "delete from song_artist where idSong in " + strSongsToDelete;
-      m_pDS->exec(strSQL.c_str());
-      strSQL = "delete from song_genre where idSong in " + strSongsToDelete;
-      m_pDS->exec(strSQL.c_str());
-      strSQL = "delete from karaokedata where idSong in " + strSongsToDelete;
-      m_pDS->exec(strSQL.c_str());
       m_pDS->close();
     }
     return true;
@@ -2298,12 +2306,6 @@ bool CMusicDatabase::CleanupAlbums()
     std::string strAlbumIds = "(" + StringUtils::Join(albumIds, ",") + ")";
     // ok, now we can delete them and the references in the linked tables
     strSQL = "delete from album where idAlbum in " + strAlbumIds;
-    m_pDS->exec(strSQL.c_str());
-    strSQL = "delete from album_artist where idAlbum in " + strAlbumIds;
-    m_pDS->exec(strSQL.c_str());
-    strSQL = "delete from album_genre where idAlbum in " + strAlbumIds;
-    m_pDS->exec(strSQL.c_str());
-    strSQL = "delete from albuminfo where idAlbum in " + strAlbumIds;
     m_pDS->exec(strSQL.c_str());
     return true;
   }
@@ -2382,10 +2384,6 @@ bool CMusicDatabase::CleanupArtists()
     strSQL += " and idArtist not in (select idArtist from album_artist)";
     CStdString strSQL2;
     m_pDS->exec(strSQL.c_str());
-    m_pDS->exec("delete from artistinfo where idArtist not in (select idArtist from artist)");
-    m_pDS->exec("delete from album_artist where idArtist not in (select idArtist from artist)");
-    m_pDS->exec("delete from song_artist where idArtist not in (select idArtist from artist)");
-    m_pDS->exec("delete from discography where idArtist not in (select idArtist from artist)");
     return true;
   }
   catch (...)
@@ -3903,7 +3901,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
 int CMusicDatabase::GetMinVersion() const
 {
-  return 38;
+  return 39;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
@@ -4371,13 +4369,6 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path1, MAPSONGS& song
       // and delete all songs, and anything linked to them
       sql = "delete from song where idSong in (" + StringUtils::Join(songIds, ",") + ")";
       m_pDS->exec(sql.c_str());
-      sql = "delete from song_artist where idSong in (" + StringUtils::Join(songIds, ",") + ")";
-      m_pDS->exec(sql.c_str());
-      sql = "delete from song_genre where idSong in (" + StringUtils::Join(songIds, ",") + ")";
-      m_pDS->exec(sql.c_str());
-      sql = "delete from karaokedata where idSong in (" + StringUtils::Join(songIds, ",") + ")";
-      m_pDS->exec(sql.c_str());
-
     }
     // and remove the path as well (it'll be re-added later on with the new hash if it's non-empty)
     sql = "delete from path" + where;
