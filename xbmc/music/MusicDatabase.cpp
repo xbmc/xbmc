@@ -742,7 +742,8 @@ bool CMusicDatabase::AddSongGenre(int idGenre, int idSong, int iOrder)
   CStdString strSQL;
   strSQL=PrepareSQL("replace into song_genre (idGenre, idSong, iOrder) values(%i,%i,%i)",
                     idGenre, idSong, iOrder);
-  return ExecuteQuery(strSQL);};
+  return ExecuteQuery(strSQL);
+};
 
 bool CMusicDatabase::AddAlbumGenre(int idGenre, int idAlbum, int iOrder)
 {
