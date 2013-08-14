@@ -107,6 +107,7 @@ protected:
   CAELimiter m_limiter;
   float m_volume;
   float m_rgain;
+  float m_amplify;
   float m_bufferedTime;
   int m_fadingSamples;
   float m_fadingBase;

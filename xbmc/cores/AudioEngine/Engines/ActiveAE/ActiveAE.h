@@ -258,7 +258,6 @@ protected:
   void ClearDiscardedBuffers();
   void SStopSound(CActiveAESound *sound);
   void DiscardSound(CActiveAESound *sound);
-  float CalcStreamAmplification(CActiveAEStream *stream, CSampleBuffer *buf);
   void ChangeResampleQuality();
 
   bool RunStages();
