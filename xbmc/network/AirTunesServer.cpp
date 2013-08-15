@@ -315,7 +315,7 @@ void  CAirTunesServer::AudioOutputFunctions::ao_set_volume(float volume)
 #ifdef HAS_AIRPLAY
   CAirPlayServer::backupVolume();
 #endif
-  if (CSettings::Get().GetString("services.airplayvolumecontrol"))
+  if (CSettings::Get().GetBool("services.airplayvolumecontrol"))
     g_application.SetVolume(volPercent, false);//non-percent volume 0.0-1.0
 }
 
