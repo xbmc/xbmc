@@ -1611,6 +1611,7 @@ bool CActiveAE::RunStages()
       }
 
       // process output buffer, gui sounds, encode, viz
+      CSampleBuffer *viz = NULL;
       if (out)
       {
         // mix gui sounds
@@ -1618,20 +1619,16 @@ bool CActiveAE::RunStages()
         if (!m_sinkHasVolume)
           Deamplify(*(out->pkt));
 
-        // encode
+        // encode and backup out buffer for viz
+        viz = out;
         if (m_mode == MODE_TRANSCODE && m_encoder)
         {
           CSampleBuffer *buf = m_encoderBuffers->GetFreeBuffer();
           m_encoder->Encode(out->pkt->data[0], out->pkt->planes*out->pkt->linesize,
                             buf->pkt->data[0], buf->pkt->planes*buf->pkt->linesize);
           buf->pkt->nb_samples = buf->pkt->max_nb_samples;
-          out->Return();
           out = buf;
         }
-
-        // update stats
-        m_stats.AddSamples(out->pkt->nb_samples, m_streams);
-        m_sinkBuffers->m_inputSamples.push_back(out);
 
         busy = true;
       }
@@ -1647,13 +1644,13 @@ bool CActiveAE::RunStages()
             m_vizInitialized = true;
           }
 
-          // if viz has no free buffer, it won't return current buffer "out"
+          // if viz has no free buffer, it won't return current buffer "viz"
           if (!m_vizBuffers->m_freeSamples.empty())
           {
-            if (out)
+            if (viz)
             {
-              out->Acquire();
-              m_vizBuffers->m_inputSamples.push_back(out);
+              viz->Acquire();
+              m_vizBuffers->m_inputSamples.push_back(viz);
             }
           }
           else
@@ -1683,6 +1680,14 @@ bool CActiveAE::RunStages()
         }
         else if (m_vizBuffers)
           m_vizBuffers->Flush();
+      }
+      // update stats
+      if(out)
+      {
+        m_stats.AddSamples(out->pkt->nb_samples, m_streams);
+        m_sinkBuffers->m_inputSamples.push_back(out);
+        if(viz && (viz != out))
+          viz->Return();
       }
     }
     // pass through
