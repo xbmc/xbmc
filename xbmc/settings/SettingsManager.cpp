@@ -473,15 +473,12 @@ bool CSettingsManager::GetBool(const std::string &id) const
 {
   CSingleLock lock(m_critical);
   CSetting *setting = GetSetting(id, true);
-  if (setting == NULL || setting->GetType() != SettingTypeBool)
-  {
     // Backward compatibility (skins use this setting)
     if (setting == NULL && StringUtils::EqualsNoCase(id.c_str(), "lookandfeel.enablemouse"))
       return GetBool("input.enablemouse");
 
-    return false;
-  }
-
+  assert(setting->GetType() == SettingTypeBool);
+  
   return ((CSettingBool*)setting)->GetValue();
 }
 
@@ -489,8 +486,7 @@ bool CSettingsManager::SetBool(const std::string &id, bool value)
 {
   CSingleLock lock(m_critical);
   CSetting *setting = GetSetting(id);
-  if (setting == NULL || setting->GetType() != SettingTypeBool)
-    return false;
+  assert(setting->GetType() == SettingTypeBool);
 
   return ((CSettingBool*)setting)->SetValue(value);
 }
@@ -499,8 +495,7 @@ bool CSettingsManager::ToggleBool(const std::string &id)
 {
   CSingleLock lock(m_critical);
   CSetting *setting = GetSetting(id);
-  if (setting == NULL || setting->GetType() != SettingTypeBool)
-    return false;
+  assert(setting->GetType() == SettingTypeBool);
 
   return SetBool(id, !((CSettingBool*)setting)->GetValue());
 }
@@ -509,8 +504,7 @@ int CSettingsManager::GetInt(const std::string &id) const
 {
   CSingleLock lock(m_critical);
   CSetting *setting = GetSetting(id);
-  if (setting == NULL || setting->GetType() != SettingTypeInteger)
-    return 0;
+  assert(setting->GetType() == SettingTypeInteger);
 
   return ((CSettingInt*)setting)->GetValue();
 }
@@ -519,8 +513,7 @@ bool CSettingsManager::SetInt(const std::string &id, int value)
 {
   CSingleLock lock(m_critical);
   CSetting *setting = GetSetting(id);
-  if (setting == NULL || setting->GetType() != SettingTypeInteger)
-    return false;
+  assert(setting->GetType() == SettingTypeInteger);
 
   return ((CSettingInt*)setting)->SetValue(value);
 }
@@ -529,8 +522,7 @@ double CSettingsManager::GetNumber(const std::string &id) const
 {
   CSingleLock lock(m_critical);
   CSetting *setting = GetSetting(id);
-  if (setting == NULL || setting->GetType() != SettingTypeNumber)
-    return 0.0;
+  assert(setting->GetType() == SettingTypeNumber);
 
   return ((CSettingNumber*)setting)->GetValue();
 }
@@ -539,8 +531,7 @@ bool CSettingsManager::SetNumber(const std::string &id, double value)
 {
   CSingleLock lock(m_critical);
   CSetting *setting = GetSetting(id);
-  if (setting == NULL || setting->GetType() != SettingTypeNumber)
-    return false;
+  assert(setting->GetType() == SettingTypeNumber);
 
   return ((CSettingNumber*)setting)->SetValue(value);
 }
@@ -549,8 +540,7 @@ std::string CSettingsManager::GetString(const std::string &id) const
 {
   CSingleLock lock(m_critical);
   CSetting *setting = GetSetting(id);
-  if (setting == NULL || setting->GetType() != SettingTypeString)
-    return "";
+  assert(setting->GetType() == SettingTypeString);
 
   return ((CSettingString*)setting)->GetValue();
 }
@@ -559,8 +549,7 @@ bool CSettingsManager::SetString(const std::string &id, const std::string &value
 {
   CSingleLock lock(m_critical);
   CSetting *setting = GetSetting(id);
-  if (setting == NULL || setting->GetType() != SettingTypeString)
-    return false;
+  assert(setting->GetType() == SettingTypeString);
 
   return ((CSettingString*)setting)->SetValue(value);
 }
