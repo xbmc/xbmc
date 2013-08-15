@@ -275,15 +275,24 @@ bool CEGLWrapper::CreateSurface(EGLDisplay display, EGLConfig config, EGLSurface
   return *surface != EGL_NO_SURFACE;
 }
 
+bool CEGLWrapper::TrustSurfaceSize()
+{
+  return !(m_nativeTypes->GetQuirks() & EGL_QUIRK_DONT_TRUST_SURFACE_SIZE);
+}
+
 bool CEGLWrapper::GetSurfaceSize(EGLDisplay display, EGLSurface surface, EGLint *width, EGLint *height)
 {
   if (!width || !height)
     return false;
 
-  if (!eglQuerySurface(display, surface, EGL_WIDTH, width)     ||
-        !eglQuerySurface(display, surface, EGL_HEIGHT, height) ||
-        *width <= 0 || *height <= 0)
-  return false;
+  const bool failedToQuerySurfaceSize =
+    !eglQuerySurface(display, surface, EGL_WIDTH, width) ||
+    !eglQuerySurface(display, surface, EGL_HEIGHT, height);
+  const bool invalidSurfaceSize =
+    *width <= 0 || *height <= 0;
+
+  if (failedToQuerySurfaceSize || invalidSurfaceSize)
+    return false;
 
   return true;
 }

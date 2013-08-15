@@ -34,7 +34,7 @@ public:
   virtual bool  CheckCompatibility();
   virtual void  Initialize();
   virtual void  Destroy();
-  virtual int   GetQuirks() { return EGL_QUIRK_NONE; };
+  virtual int   GetQuirks();
 
   virtual bool  CreateNativeDisplay();
   virtual bool  CreateNativeWindow();
