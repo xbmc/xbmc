@@ -193,8 +193,7 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_avgTimeWaiting(50),
   m_sinkLatency(0.0),
   m_pBuffer(NULL),
-  m_bufferPtr(0),
-  m_hnsRequestedDuration(0)
+  m_bufferPtr(0)
 {
   m_channelLayout.Reset();
 }
@@ -1196,8 +1195,6 @@ initialize:
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
                                     audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
 
-  m_hnsRequestedDuration = audioSinkBufferDurationMsec;
-
   if (hr == AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
   {
     /* WASAPI requires aligned buffer */
@@ -1333,7 +1330,7 @@ void CAESinkWASAPI::Drain()
   if(!m_pAudioClient)
     return;
 
-  Sleep( (DWORD)(m_hnsRequestedDuration / 10000));
+  Sleep( (DWORD)(GetDelay()*50) );
 
   if (m_running)
   {
