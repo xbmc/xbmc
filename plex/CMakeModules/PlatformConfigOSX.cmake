@@ -48,7 +48,7 @@ if(DEFINED XCODE_VERSION)
 endif()
 
 ######################### Compiler CFLAGS
-set(EXTRA_CFLAGS "-mmacosx-version-min=10.6 -isysroot ${CMAKE_OSX_SYSROOT}")
+set(EXTRA_CFLAGS "-mmacosx-version-min=10.6 -isysroot ${OSX_SDK_PATH}")
 
 ######################### CHECK LIBRARIES / FRAMEWORKS
 #### Frameworks for MacOSX
