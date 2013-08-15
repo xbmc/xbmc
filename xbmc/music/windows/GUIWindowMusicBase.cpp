@@ -373,8 +373,8 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
   while (1)
   {
     // Check if we have the information in the database first
-    if (!m_musicdatabase.HasArtistInfo(params.GetArtistId()) ||
-        !m_musicdatabase.GetArtistInfo(params.GetArtistId(), artistInfo.GetArtist()))
+    if (!m_musicdatabase.HasArtistBeenScraped(params.GetArtistId()) ||
+        !m_musicdatabase.GetArtist(params.GetArtistId(), artistInfo.GetArtist()))
     {
       if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
         break; // should display a dialog saying no permissions
@@ -416,7 +416,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
 
       if (pDlgArtistInfo->NeedRefresh())
       {
-        m_musicdatabase.DeleteArtistInfo(params.GetArtistId());
+        m_musicdatabase.ClearArtistLastScrapedTime(params.GetArtistId());
         continue;
       } 
       else if (pDlgArtistInfo->HasUpdatedThumb()) 
