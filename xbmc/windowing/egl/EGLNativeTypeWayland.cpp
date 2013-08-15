@@ -141,6 +141,11 @@ void CEGLNativeTypeWayland::Destroy()
 #endif
 }
 
+int CEGLNativeTypeWayland::GetQuirks()
+{
+  return EGL_QUIRK_DONT_TRUST_SURFACE_SIZE;
+}
+
 bool CEGLNativeTypeWayland::CreateNativeDisplay()
 {
 #if defined(HAVE_WAYLAND)
