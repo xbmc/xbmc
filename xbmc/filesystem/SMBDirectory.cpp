@@ -125,7 +125,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     strFile = aDir.name;
 
     if (!strFile.Equals(".") && !strFile.Equals("..")
-      && !strFile.Equals("lost+found")
+      && !strFile.Equals("lost+found") && !strFile.empty()
       && aDir.type != SMBC_PRINTER_SHARE && aDir.type != SMBC_IPC_SHARE)
     {
      int64_t iSize = 0;
