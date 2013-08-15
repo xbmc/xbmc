@@ -51,6 +51,7 @@
 
 /* PLEX */
 #include "guilib/LocalizeStrings.h"
+#include "FileSystem/PlexFile.h"
 /* END PLEX */
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
@@ -258,7 +259,18 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_dllAvFormat.av_register_all();
 
   m_pInput = pInput;
-  strFile = m_pInput->GetFileName();
+  /* PLEX - We need to translate the plexserver:// URL here */
+  if (m_pInput->GetURL().GetProtocol() == "plexserver")
+  {
+    CURL purl(m_pInput->GetURL());
+    purl.SetProtocolOptions("");
+    
+    XFILE::CPlexFile::BuildHTTPURL(purl);
+    strFile = purl.Get();
+  }
+  else
+  /* END PLEX */
+    strFile = m_pInput->GetFileName();
 
   bool streaminfo = true; /* set to true if we want to look for streams before playback*/
 

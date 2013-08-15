@@ -20,8 +20,6 @@ namespace XFILE
     virtual int Stat(const CURL& url, struct __stat64* buffer);
     
     static std::vector<std::pair<std::string, std::string> > GetHeaderList();
-
-  private:
-    bool BuildHTTPURL(CURL& url);
+    static bool BuildHTTPURL(CURL& url);
   };
 }
