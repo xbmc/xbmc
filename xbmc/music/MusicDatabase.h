@@ -124,7 +124,17 @@ public:
    \param iKaraokeNumber [in] the karaoke id of the song
    \return the id of the song
    */
-  int AddSong(const int idAlbum, const CStdString& strTitle, const CStdString& strMusicBrainzTrackID, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& artists, const std::vector<std::string>& genres, int iTrack, int iDuration, int iYear, const int iTimesPlayed, int iStartOffset, int iEndOffset, const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber);
+  int AddSong(const int idAlbum,
+              const CStdString& strTitle,
+              const CStdString& strMusicBrainzTrackID,
+              const CStdString& strPathAndFileName,
+              const CStdString& strComment,
+              const CStdString& strThumb,
+              const std::vector<std::string>& artists, const std::vector<std::string>& genres,
+              int iTrack, int iDuration, int iYear,
+              const int iTimesPlayed, int iStartOffset, int iEndOffset,
+              const CDateTime& dtLastPlayed,
+              char rating, int iKaraokeNumber);
   bool GetSong(int idSong, CSong& song);
 
   /*! \brief Update a song in the database
@@ -147,7 +157,15 @@ public:
    \param iKaraokeNumber [in] the karaoke id of the song
    \return the id of the song
    */
-  int UpdateSong(int idSong, const CStdString& strTitle, const CStdString& strMusicBrainzTrackID, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& artists, const std::vector<std::string>& genres, int iTrack, int iDuration, int iYear, int iTimesPlayed, int iStartOffset, int iEndOffset, const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber);
+  int UpdateSong(int idSong,
+                 const CStdString& strTitle, const CStdString& strMusicBrainzTrackID,
+                 const CStdString& strPathAndFileName, const CStdString& strComment,
+                 const CStdString& strThumb,
+                 const std::vector<std::string>& artists, const std::vector<std::string>& genres,
+                 int iTrack, int iDuration, int iYear,
+                 int iTimesPlayed, int iStartOffset, int iEndOffset,
+                 const CDateTime& dtLastPlayed,
+                 char rating, int iKaraokeNumber);
   // bool DeleteSong(int idSong);
 
   //// Misc Song
@@ -166,7 +184,9 @@ public:
    \param songIDs [out] the ids of the added songs
    \return the id of the album
    */
-  int  AddAlbum(const CStdString& strAlbum, const CStdString& strMusicBrainzAlbumID, const CStdString& strArtist, const CStdString& strGenre, int year, bool bCompilation);
+  int  AddAlbum(const CStdString& strAlbum, const CStdString& strMusicBrainzAlbumID,
+                const CStdString& strArtist, const CStdString& strGenre,
+                int year, bool bCompilation);
   bool GetAlbum(int idAlbum, CAlbum& album);
   int  UpdateAlbum(int idAlbum, const CAlbum &album);
   bool DeleteAlbum(int idAlbum);
