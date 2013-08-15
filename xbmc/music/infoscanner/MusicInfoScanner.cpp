@@ -1098,7 +1098,7 @@ loop:
 
 #define THRESHOLD .95f
 
-INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, ADDON::ScraperPtr& info, CMusicAlbumInfo& albumInfo, CGUIDialogProgress* pDialog)
+INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::ScraperPtr& info, CMusicAlbumInfo& albumInfo, CGUIDialogProgress* pDialog)
 {
   if (m_handle)
   {
@@ -1141,10 +1141,10 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, ADDON::Scrape
     {
       CScraperUrl scrUrl(nfoReader.ScraperUrl());
       CMusicAlbumInfo albumNfo("nfo",scrUrl);
-      info = nfoReader.GetScraperInfo();
-      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",info->Name().c_str());
+      ADDON::ScraperPtr nfoReaderScraper = nfoReader.GetScraperInfo();
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReaderScraper->Name().c_str());
       CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
-      scraper.SetScraperInfo(info);
+      scraper.SetScraperInfo(nfoReaderScraper);
       scraper.GetAlbums().clear();
       scraper.GetAlbums().push_back(albumNfo);
     }
@@ -1310,7 +1310,7 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
   }
 }
 
-INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, ADDON::ScraperPtr& info, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, CGUIDialogProgress* pDialog)
+INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDON::ScraperPtr& info, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, CGUIDialogProgress* pDialog)
 {
   if (m_handle)
   {
@@ -1353,10 +1353,10 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, ADDON::Scr
     {
       CScraperUrl scrUrl(nfoReader.ScraperUrl());
       CMusicArtistInfo artistNfo("nfo",scrUrl);
-      info = nfoReader.GetScraperInfo();
-      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",info->Name().c_str());
+      ADDON::ScraperPtr nfoReaderScraper = nfoReader.GetScraperInfo();
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReaderScraper->Name().c_str());
       CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
-      scraper.SetScraperInfo(info);
+      scraper.SetScraperInfo(nfoReaderScraper);
       scraper.GetArtists().push_back(artistNfo);
     }
     else
@@ -1463,7 +1463,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, ADDON::Scr
   return INFO_ADDED;
 }
 
-bool CMusicInfoScanner::ResolveMusicBrainz(const CStdString strMusicBrainzID, ScraperPtr &preferredScraper, CMusicInfoScraper &musicInfoScraper, CScraperUrl &musicBrainzURL)
+bool CMusicInfoScanner::ResolveMusicBrainz(const CStdString strMusicBrainzID, const ScraperPtr &preferredScraper, CMusicInfoScraper &musicInfoScraper, CScraperUrl &musicBrainzURL)
 {
   // We have a MusicBrainz ID
   // Get a scraper that can resolve it to a MusicBrainz URL & force our
