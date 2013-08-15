@@ -288,12 +288,16 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
       if (!free_space)
       { // (re)alloc
         m_inputBuffSize += chunksize;
-        m_inputBuff = (unsigned char *)realloc(m_inputBuff, m_inputBuffSize);
-        if (!m_inputBuff)
+        unsigned char* new_buf = (unsigned char *)realloc(m_inputBuff, m_inputBuffSize);
+        if (!new_buf)
         {
           CLog::Log(LOGERROR, "%s unable to allocate buffer of size %u", __FUNCTION__, m_inputBuffSize);
+          free(m_inputBuff);
           return false;
         }
+        else
+          m_inputBuff = new_buf;
+
         free_space = chunksize;
         chunksize = std::min(chunksize*2, maxchunksize);
       }
