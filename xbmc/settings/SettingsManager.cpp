@@ -245,7 +245,10 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, const std::string &set
 
   CSetting *setting = GetSetting(settingId, true);
   if (setting == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CSettingsManager: Settings %s already exists in map!", settingId.c_str());
     return false;
+  }
 
   return LoadSetting(node, setting);
 }
