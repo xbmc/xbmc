@@ -212,9 +212,10 @@ public:
    \brief Gets the setting with the given identifier.
 
    \param id Setting identifier
+   \param allowNULL Don't assert if the requested setting isn't found
    \return Setting object with the given identifier or NULL if the identifier is unknown
    */
-  CSetting* GetSetting(const std::string &id) const;
+  CSetting* GetSetting(const std::string &id, bool allowNULL=false) const;
   /*!
    \brief Gets the setting section with the given identifier.
 

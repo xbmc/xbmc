@@ -89,11 +89,6 @@ bool CSettingDependencyCondition::Check() const
         return false;
 
       const CSetting *setting = m_settingsManager->GetSetting(m_setting);
-      if (setting == NULL)
-      {
-        CLog::Log(LOGWARNING, "CSettingDependencyCondition: unable to check condition on unknown setting \"%s\"", m_setting.c_str());
-        return false;
-      }
 
       if (m_operator == SettingDependencyOperatorEquals)
         result = setting->Equals(m_value);

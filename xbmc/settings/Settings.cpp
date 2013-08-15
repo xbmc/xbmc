@@ -94,8 +94,6 @@ bool AddonHasSettings(const std::string &condition, const std::string &value, co
     return false;
 
   CSettingAddon *setting = (CSettingAddon*)CSettings::Get().GetSetting(settingId);
-  if (setting == NULL)
-    return false;
 
   ADDON::AddonPtr addon;
   if (!ADDON::CAddonMgr::Get().GetAddon(setting->GetValue(), addon, setting->GetAddonType()) || addon == NULL)

@@ -243,7 +243,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, const std::string &set
   if (node == NULL)
     return false;
 
-  CSetting *setting = GetSetting(settingId);
+  CSetting *setting = GetSetting(settingId, true);
   if (setting == NULL)
     return false;
 
@@ -416,7 +416,7 @@ void* CSettingsManager::GetSettingOptionsFiller(const CSetting *setting)
   return fillerIt->second.filler;
 }
 
-CSetting* CSettingsManager::GetSetting(const std::string &id) const
+CSetting* CSettingsManager::GetSetting(const std::string &id, bool allowNULL /*=false*/) const
 {
   CSingleLock lock(m_critical);
   if (id.empty())
@@ -426,10 +426,10 @@ CSetting* CSettingsManager::GetSetting(const std::string &id) const
   StringUtils::ToLower(settingId);
 
   SettingMap::const_iterator setting = m_settings.find(settingId);
+  assert(setting != m_settings.end() || allowNULL);
   if (setting != m_settings.end())
     return setting->second.setting;
 
-  CLog::Log(LOGDEBUG, "CSettingsManager: requested setting (%s) was not found.", id.c_str());
   return NULL;
 }
 
@@ -472,7 +472,7 @@ SettingDependencyMap CSettingsManager::GetDependencies(const CSetting *setting) 
 bool CSettingsManager::GetBool(const std::string &id) const
 {
   CSingleLock lock(m_critical);
-  CSetting *setting = GetSetting(id);
+  CSetting *setting = GetSetting(id, true);
   if (setting == NULL || setting->GetType() != SettingTypeBool)
   {
     // Backward compatibility (skins use this setting)
@@ -923,8 +923,6 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode *node, CSetting *setting, c
 void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, const CSettingDependency &dependency)
 {
   CSetting *setting = GetSetting(settingId);
-  if (setting == NULL)
-    return;
 
   switch (dependency.GetType())
   {
