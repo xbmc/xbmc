@@ -133,29 +133,34 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   changed |= Animate(currentTime);
 
-  m_cachedTransform = g_graphicsContext.AddTransform(m_transform);
-  if (m_hasCamera)
-    g_graphicsContext.SetCameraPosition(m_camera);
-
   if (IsVisible())
   {
+    m_cachedTransform = g_graphicsContext.AddTransform(m_transform);
+    if (m_hasCamera)
+      g_graphicsContext.SetCameraPosition(m_camera);
+
     Process(currentTime, dirtyregions);
     m_bInvalidated = false;
+
+    if (dirtyRegion != m_renderRegion)
+    {
+      dirtyRegion.Union(m_renderRegion);
+      changed = true;
+    }
+
+    if (m_hasCamera)
+      g_graphicsContext.RestoreCameraPosition();
+    g_graphicsContext.RemoveTransform();
   }
 
-  changed |=  m_controlIsDirty;
-
-  if (changed || dirtyRegion != m_renderRegion)
-  {
-    dirtyRegion.Union(m_renderRegion);
-    dirtyregions.push_back(dirtyRegion);
-  }
-
-  if (m_hasCamera)
-    g_graphicsContext.RestoreCameraPosition();
-  g_graphicsContext.RemoveTransform();
+  changed |= m_controlIsDirty;
 
   m_controlIsDirty = false;
+
+  if (changed)
+  {
+    dirtyregions.push_back(dirtyRegion);
+  }
 }
 
 void CGUIControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -171,18 +176,20 @@ void CGUIControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
 // 3. reset the animation transform
 void CGUIControl::DoRender()
 {
-  g_graphicsContext.SetTransform(m_cachedTransform);
-  if (m_hasCamera)
-    g_graphicsContext.SetCameraPosition(m_camera);
   if (IsVisible())
   {
+    g_graphicsContext.SetTransform(m_cachedTransform);
+    if (m_hasCamera)
+      g_graphicsContext.SetCameraPosition(m_camera);
+
     GUIPROFILER_RENDER_BEGIN(this);
     Render();
     GUIPROFILER_RENDER_END(this);
+
+    if (m_hasCamera)
+      g_graphicsContext.RestoreCameraPosition();
+    g_graphicsContext.RemoveTransform();
   }
-  if (m_hasCamera)
-    g_graphicsContext.RestoreCameraPosition();
-  g_graphicsContext.RemoveTransform();
 }
 
 bool CGUIControl::OnAction(const CAction &action)
