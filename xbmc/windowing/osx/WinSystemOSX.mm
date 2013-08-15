@@ -1489,6 +1489,7 @@ void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
       IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
         kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
     }
+    UpdateSystemActivity(UsrActivity);
   }
   else if (assertionID != 0)
   {
