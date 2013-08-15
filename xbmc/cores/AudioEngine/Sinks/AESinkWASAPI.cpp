@@ -1150,6 +1150,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 initialize:
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
+  format.m_channelLayout = m_channelLayout;
 
   /* When the stream is raw, the values in the format structure are set to the link    */
   /* parameters, so store the encoded stream values here for the IsCompatible function */
