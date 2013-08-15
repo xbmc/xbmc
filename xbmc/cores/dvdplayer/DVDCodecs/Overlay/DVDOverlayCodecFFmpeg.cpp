@@ -63,6 +63,8 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   m_pCodecContext->codec_tag = hints.codec_tag;
   m_pCodecContext->time_base.num = 1;
   m_pCodecContext->time_base.den = DVD_TIME_BASE;
+  m_pCodecContext->pkt_timebase.num = 1;
+  m_pCodecContext->pkt_timebase.den = DVD_TIME_BASE;
 
   if( hints.extradata && hints.extrasize > 0 )
   {
