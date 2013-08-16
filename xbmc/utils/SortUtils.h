@@ -21,6 +21,7 @@
 
 #include <map>
 #include <string>
+#include "boost/shared_ptr.hpp"
 
 #include "DatabaseUtils.h"
 #include "SortFileItem.h"
@@ -114,7 +115,8 @@ typedef struct
 } SORT_METHOD_DETAILS;
 
 typedef DatabaseResult SortItem;
-typedef DatabaseResults SortItems;
+typedef boost::shared_ptr<SortItem> SortItemPtr;
+typedef std::vector<SortItemPtr> SortItems;
 
 class SortUtils
 {
@@ -128,7 +130,9 @@ public:
    */
   static int GetSortLabel(SortBy sortBy);
 
+  static void Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attributes, DatabaseResults& items, int limitEnd = -1, int limitStart = 0);
   static void Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attributes, SortItems& items, int limitEnd = -1, int limitStart = 0);
+  static void Sort(const SortDescription &sortDescription, DatabaseResults& items);
   static void Sort(const SortDescription &sortDescription, SortItems& items);
   static bool SortFromDataset(const SortDescription &sortDescription, MediaType mediaType, const std::auto_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results);
   
@@ -136,11 +140,13 @@ public:
   static std::string RemoveArticles(const std::string &label);
   
   typedef std::string (*SortPreparator) (SortAttribute, const SortItem&);
-  typedef bool (*Sorter) (const SortItem&, const SortItem&);
+  typedef bool (*Sorter) (const DatabaseResult &, const DatabaseResult &);
+  typedef bool (*SorterIndirect) (const SortItemPtr &, const SortItemPtr &);
   
 private:
   static const SortPreparator& getPreparator(SortBy sortBy);
   static Sorter getSorter(SortOrder sortOrder, SortAttribute attributes);
+  static SorterIndirect getSorterIndirect(SortOrder sortOrder, SortAttribute attributes);
 
   static std::map<SortBy, SortPreparator> m_preparators;
   static std::map<SortBy, Fields> m_sortingFields;
