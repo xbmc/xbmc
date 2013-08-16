@@ -26,7 +26,9 @@ FOR /F "tokens=*" %%S IN ('dir /B /AD BUILD_WIN32\Xbmc\language') DO (
 
 SET Counter=1
 FOR /F "tokens=*" %%P IN ('dir /B /AD BUILD_WIN32\Xbmc\xbmc-pvr-addons') DO (
-  ECHO Section "%%P" SecPvrAddons!Counter! >> xbmc-pvr-addons.nsi
+  SET "output=%%P"
+  SET output=!output:pvr.=!
+  ECHO Section !output! SecPvrAddons!Counter! >> xbmc-pvr-addons.nsi
   ECHO SectionIn 1 #section is in installtype Full >> xbmc-pvr-addons.nsi
   ECHO SetOutPath "$INSTDIR\addons\%%P" >> xbmc-pvr-addons.nsi
   ECHO File /r "${xbmc_root}\Xbmc\xbmc-pvr-addons\%%P\*.*" >> xbmc-pvr-addons.nsi
