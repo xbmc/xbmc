@@ -1330,7 +1330,7 @@ void CAESinkWASAPI::Drain()
   if(!m_pAudioClient)
     return;
 
-  Sleep( (DWORD)(GetDelay()*50) );
+  Sleep( (DWORD)(GetDelay()*500) );
 
   if (m_running)
   {
