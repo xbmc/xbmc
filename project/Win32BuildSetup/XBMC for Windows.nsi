@@ -121,6 +121,7 @@ Section "XBMC" SecXBMC
   
   ;Turn on overwrite for rest of install
   SetOverwrite on
+  RMDir /r $INSTDIR\addons
   SetOutPath "$INSTDIR\addons"
   File /r /x skin.touched ${xbmc_root}\Xbmc\addons\*.*
   ;SetOutPath "$INSTDIR\web"
