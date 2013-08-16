@@ -28,7 +28,6 @@
 /* PLEX */
 #include "Variant.h"
 #include "PlexMediaPart.h"
-#include "PlexMediaDecisionEngine.h"
 /* END PLEX */
 
 #include "DVDMessageQueue.h"
@@ -559,8 +558,6 @@ protected:
 
   unsigned int m_readRate;
   void UpdateReadRate();
-
-  CPlexMediaDecisionEngine *m_plexMDE;
   /* END PLEX */
 
   bool m_HasVideo;

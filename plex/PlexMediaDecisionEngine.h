@@ -24,9 +24,12 @@ class CPlexMediaDecisionEngine : public CThread
     bool m_success;
 
     bool BlockAndResolve(const CFileItem &item, CFileItem &resolvedItem);
+    static void ProcessStack(const CFileItem& item, const CFileItemList& stack);
+    static CFileItemPtr getSelecteMediaItem(const CFileItem& item);
 
   private:
     virtual void Process();
+    CStdString GetPartURL(CFileItemPtr mediaPart);
 
     void ChooseMedia();
     CFileItemPtr ResolveIndirect(CFileItemPtr item);
@@ -36,6 +39,7 @@ class CPlexMediaDecisionEngine : public CThread
     XFILE::CCurlFile m_http;
 
     CFileItem m_item;
+    CEvent m_done;
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexMediaDecisionEngine__) */

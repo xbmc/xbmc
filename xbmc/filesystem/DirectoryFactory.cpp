@@ -248,6 +248,7 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   CStdString strProtocol = url.GetProtocol();
 
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
+  if (strProtocol == "stack") return new CStackDirectory();
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)

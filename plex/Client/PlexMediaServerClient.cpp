@@ -50,7 +50,7 @@ CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,
 
 void CPlexMediaServerClient::ReportItemProgress(const CFileItemPtr &item, const CStdString& state, int64_t currentPosition)
 {
-  CURL u(item->GetPath());
+  CURL u(item->GetProperty("key").asString());
   u.SetFileName("/:/timeline");
 
   u.SetOption("state", state);

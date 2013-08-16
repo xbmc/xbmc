@@ -456,10 +456,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
-
-  /* PLEX */
-  m_plexMDE = NULL;
-  /* END PLEX */
 }
 
 CDVDPlayer::~CDVDPlayer()
@@ -469,13 +465,7 @@ CDVDPlayer::~CDVDPlayer()
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.DeInit();
 #endif
-  
-  /* PLEX */
-  if (m_plexMDE)
-    delete m_plexMDE;
-  m_plexMDE = NULL;
-  /* END PLEX */
-}
+  }
 
 bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
@@ -519,10 +509,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
           if (dialog->IsCanceled())
           {
             m_bStop = true;
-
-            if (m_plexMDE && m_plexMDE->IsRunning())
-              m_plexMDE->StopThread();
-
             Abort();
           }
           /* END PLEX */
@@ -1112,17 +1098,6 @@ void CDVDPlayer::Process()
     return;
   }
 #else
-  if (m_item.IsPlexMediaServer())
-  {
-    CFileItem newItem;
-    m_plexMDE = new CPlexMediaDecisionEngine;
-    if (m_plexMDE->BlockAndResolve(m_item, newItem))
-    {
-      m_item = newItem;
-      m_filename = m_item.GetPath();
-    }
-  }
-
   try
   {
     if (!OpenInputStream())

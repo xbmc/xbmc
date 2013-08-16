@@ -259,18 +259,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_dllAvFormat.av_register_all();
 
   m_pInput = pInput;
-  /* PLEX - We need to translate the plexserver:// URL here */
-  if (m_pInput->GetURL().GetProtocol() == "plexserver")
-  {
-    CURL purl(m_pInput->GetURL());
-    purl.SetProtocolOptions("");
-    
-    XFILE::CPlexFile::BuildHTTPURL(purl);
-    strFile = purl.Get();
-  }
-  else
-  /* END PLEX */
-    strFile = m_pInput->GetFileName();
+  strFile = m_pInput->GetFileName();
 
   bool streaminfo = true; /* set to true if we want to look for streams before playback*/
 
@@ -318,6 +307,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         strFile = url.Get();
       } 
     }
+    /* PLEX - We need to translate the plexserver:// URL here */
+    else if (protocol == "plexserver")
+    {
+      url.SetProtocolOptions("");
+      
+      XFILE::CPlexFile::BuildHTTPURL(url);
+      strFile = url.Get();
+    }
+    /* END PLEX */
     if (result < 0 && m_dllAvFormat.avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, &options) < 0 )
     {
       /* PLEX */
@@ -453,7 +451,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
     m_pFormatContext->pb = m_ioContext;
 
-    /* PLEX */
+    /* PLEX changed the seterror and friends */
     int res;
     if ((res=m_dllAvFormat.avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, NULL) < 0))
     {

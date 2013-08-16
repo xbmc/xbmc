@@ -14,14 +14,39 @@
 #include "File.h"
 #include "Client/PlexTranscoderClient.h"
 #include "Client/PlexServerManager.h"
+#include "utils/StringUtils.h"
+#include "filesystem/StackDirectory.h"
+#include "dialogs/GUIDialogBusy.h"
+#include "guilib/GUIWindowManager.h"
 
 bool CPlexMediaDecisionEngine::BlockAndResolve(const CFileItem &item, CFileItem &resolvedItem)
 {
   m_item = item;
 
+  m_done.Reset();
   Create();
-  WaitForThreadExit(0xFFFFFFFF);
-
+  
+  CLog::Log(LOGDEBUG, "CPlexMediaDecisionEngine::BlockAndResolve waiting for resolve to return");
+  if (!m_done.WaitMSec(100))
+  {
+    CLog::Log(LOGDEBUG, "CPlexMediaDecisionEngine::BlockAndResolve show busy dialog");
+    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    if(dialog)
+    {
+      dialog->Show();
+      while(!m_done.WaitMSec(1))
+      {
+        if (dialog->IsCanceled())
+          return false;
+        
+        g_windowManager.ProcessRenderLoop(false);
+      }
+      dialog->Close();
+    }
+  }
+  
+  CLog::Log(LOGDEBUG, "CPlexMediaDecisionEngine::BlockAndResolve resolve done, success: %s", m_success ? "Yes" : "No");
+ 
   if (m_success)
   {
     resolvedItem = m_choosenMedia;
@@ -33,6 +58,7 @@ bool CPlexMediaDecisionEngine::BlockAndResolve(const CFileItem &item, CFileItem 
 void CPlexMediaDecisionEngine::Process()
 {
   ChooseMedia();
+  m_done.Set();
 }
 
 void CPlexMediaDecisionEngine::Cancel()
@@ -139,6 +165,22 @@ void CPlexMediaDecisionEngine::AddHeaders()
   }
 }
 
+CStdString CPlexMediaDecisionEngine::GetPartURL(CFileItemPtr mediaPart)
+{
+  CStdString unprocessed_key = mediaPart->GetProperty("unprocessed_key").asString();
+  if (!mediaPart->IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
+  {
+    CStdString localPath = mediaPart->GetProperty("file").asString();
+    if (XFILE::CFile::Exists(localPath))
+      return localPath;
+    else if (boost::starts_with(unprocessed_key, "rtmp"))
+      return unprocessed_key;
+    else
+      return mediaPart->GetPath();
+  }
+  return mediaPart->GetPath();
+}
+
 /* this method is responsible for resolving and chosing what media item
  * should be passed to the player core */
 void CPlexMediaDecisionEngine::ChooseMedia()
@@ -160,23 +202,22 @@ void CPlexMediaDecisionEngine::ChooseMedia()
     m_choosenMedia = *list.Get(0).get();
   }
   else
-    m_choosenMedia = m_item;
-
-  int64_t mediaItemIdx = 0;
-  if (m_choosenMedia.HasProperty("selectedMediaItem"))
-    mediaItemIdx = m_choosenMedia.GetProperty("selectedMediaItem").asInteger();
-
-  CFileItemPtr mediaItem;
-  if (m_choosenMedia.m_mediaItems.size() > 0 && m_choosenMedia.m_mediaItems.size() > mediaItemIdx)
   {
-    mediaItem = m_choosenMedia.m_mediaItems[mediaItemIdx];
+    m_choosenMedia = m_item;
+    if (m_choosenMedia.m_mediaItems.size() == 0)
+    {
+      m_success = true;
+      return;
+    }
   }
-  else
+
+  CFileItemPtr mediaItem = getSelecteMediaItem(m_choosenMedia);
+  if (!mediaItem)
   {
     m_success = false;
     return;
   }
-
+  
   mediaItem = ResolveIndirect(mediaItem);
   if (!mediaItem)
   {
@@ -189,24 +230,25 @@ void CPlexMediaDecisionEngine::ChooseMedia()
     m_choosenMedia.SetProperty("httpHeaders", mediaItem->GetProperty("httpHeaders"));
 
   /* FIXME: we really need to handle multiple parts */
-  CFileItemPtr mediaPart = mediaItem->m_mediaParts[0];
-  CStdString unprocessed_key = mediaItem->GetProperty("unprocessed_key").asString();
-  if (!mediaPart->IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
+  if (mediaItem->m_mediaParts.size() > 1)
   {
-    CStdString localPath = mediaPart->GetProperty("file").asString();
-    if (XFILE::CFile::Exists(localPath))
-      m_choosenMedia.SetPath(localPath);
-    else if (boost::starts_with(unprocessed_key, "rtmp"))
-      m_choosenMedia.SetPath(unprocessed_key);
-    else
-      m_choosenMedia.SetPath(mediaPart->GetPath());
-  }
-  else
-  {
-    m_choosenMedia.SetPath(mediaPart->GetPath());
-  }
+    /* Multi-part video, now we build a stack URL */
+    CStdStringArray urls;
+    BOOST_FOREACH(CFileItemPtr mediaPart, mediaItem->m_mediaParts)
+      urls.push_back(GetPartURL(mediaPart));
 
-  m_choosenMedia.m_selectedMediaPart = mediaPart;
+    CStdString stackUrl;
+    if (XFILE::CStackDirectory::ConstructStackPath(urls, stackUrl))
+    {
+      CLog::Log(LOGDEBUG, "%s created stack with URL %s", __FUNCTION__, stackUrl.c_str());
+      m_choosenMedia.SetPath(stackUrl);
+    }
+  }
+  else if (mediaItem->m_mediaParts.size() == 1)
+  {
+    m_choosenMedia.SetPath(GetPartURL(mediaItem->m_mediaParts[0]));
+    m_choosenMedia.m_selectedMediaPart = mediaItem->m_mediaParts[0];
+  }
 
   // Get details on the item we're playing.
   if (m_choosenMedia.IsPlexMediaServerLibrary())
@@ -226,4 +268,42 @@ void CPlexMediaDecisionEngine::ChooseMedia()
   CLog::Log(LOGDEBUG, "CPlexMediaDecisionEngine::ChooseMedia final URL from MDE is %s", m_choosenMedia.GetPath().c_str());
 
   m_success = true;
+}
+
+CFileItemPtr CPlexMediaDecisionEngine::getSelecteMediaItem(const CFileItem &item)
+{
+  int mediaItemIdx = 0;
+  CFileItemPtr mediaItem;
+  
+  if (item.HasProperty("selectedMediaItem"))
+    mediaItemIdx = item.GetProperty("selectedMediaItem").asInteger();
+  
+  if (item.m_mediaItems.size() > 0 && item.m_mediaItems.size() > mediaItemIdx)
+    mediaItem = item.m_mediaItems[mediaItemIdx];
+  
+  return mediaItem;
+}
+
+void CPlexMediaDecisionEngine::ProcessStack(const CFileItem &item, const CFileItemList &stack)
+{
+  CFileItemPtr mediaItem = getSelecteMediaItem(item);
+  
+  for (int i = 0; i < stack.Size(); i++)
+  {
+    CFileItemPtr stackItem = stack.Get(i);
+    CFileItemPtr mediaPart = mediaItem->m_mediaParts[i];
+    CFileItemPtr currMediaItem = CFileItemPtr(new CFileItem);
+    
+    stackItem->SetProperty("isSynthesized", true);
+    stackItem->SetProperty("duration", mediaPart->GetProperty("duration"));
+    stackItem->SetProperty("partIndex", i);
+    stackItem->SetProperty("file", mediaPart->GetProperty("file"));
+    stackItem->SetProperty("selectedMediaItem", 0);
+    
+    currMediaItem->m_mediaParts.clear();
+    currMediaItem->m_mediaParts.push_back(mediaPart);
+    stackItem->m_mediaItems.push_back(currMediaItem);
+    
+    stackItem->m_selectedMediaPart = mediaPart;
+  }
 }

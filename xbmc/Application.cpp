@@ -355,6 +355,7 @@
 #include "plex/GUI/GUIWindowPlexPreplayVideo.h"
 #include "plex/GUI/GUIWindowPlexMyChannels.h"
 #include "settings/GUISettings.h"
+#include "plex/PlexMediaDecisionEngine.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -464,9 +465,6 @@ CApplication::CApplication(void)
   m_lastRenderTime = 0;
   m_bTestMode = false;
 
-  /* PLEX */
-  m_bPlaybackInFullScreen = false;
-  /* END PLEX */
 }
 
 CApplication::~CApplication(void)
@@ -4041,30 +4039,17 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       dbs.Close();
     }
 
-
     // calculate the total time of the stack
     CStackDirectory dir;
     dir.GetDirectory(item.GetPath(), *m_currentStack);
 
     /* PLEX */
-    // Move local paths in.
-    if (item.HasProperty("localPath"))
-    {
-      CFileItemList stackedItems;
-      dir.GetDirectory(item.GetProperty("localPath").asString(), stackedItems);
-      for (int i=0; i<stackedItems.Size(); i++)
-        (*m_currentStack)[i]->SetProperty("localPath", stackedItems[i]->GetPath());
-    }
+    CPlexMediaDecisionEngine::ProcessStack(item, *m_currentStack);
     /* END PLEX */
 
     long totalTime = 0;
     for (int i = 0; i < m_currentStack->Size(); i++)
     {
-
-      /* PLEX */
-      (*m_currentStack)[i]->SetProperty("partIndex", i);
-      /* END PLEX */
-
       if (haveTimes)
         (*m_currentStack)[i]->m_lEndOffset = times[i];
       else
@@ -4074,14 +4059,12 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 #else
         /* PLEX */
         int duration = 0;
-        if (item.m_mediaParts.size() > (unsigned int)i && item.m_mediaParts[i]->GetProperty("duration").asInteger() > 0)
-        {
-          duration = item.m_mediaParts[i]->GetProperty("duration").asInteger();
-        }
+        if ((*m_currentStack)[i]->HasProperty("duration"))
+          duration = (*m_currentStack)[i]->GetProperty("duration").asInteger();
         /* END PLEX */
 #endif
 
-        if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->GetPath(), duration))
+        else if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->GetPath(), duration))
         {
           m_currentStack->Clear();
           return false;
@@ -4117,7 +4100,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 #endif
 
     /* PLEX */
-    if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME)
+    if (item.m_lStartOffset == STARTOFFSET_RESUME)
     {
       // See if we have a view offset.
       if (item.HasProperty("viewOffset") && item.GetProperty("viewOffset").empty() == false)
@@ -4152,8 +4135,9 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   return false;
 }
 
-bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
+bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
 {
+  CFileItem item(item_);
   if (!bRestart)
   {
     SaveCurrentFileSettings();
@@ -4216,6 +4200,17 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   /* PLEX */
   BackgroundMusicPlayer::SendThemeChangeMessage();
+
+  if (item.IsPlexMediaServer())
+  {
+    CFileItem newItem;
+    CPlexMediaDecisionEngine plexMDE;
+    if (plexMDE.BlockAndResolve(item, newItem))
+    {
+      newItem.m_lStartOffset = item.m_lStartOffset;
+      item = newItem;
+    }
+  }
   /* END PLEX */
 
   // if we have a stacked set of files, we need to setup our stack routines for
@@ -4461,9 +4456,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
       // if player didn't manange to switch to fullscreen by itself do it here
       //if( options.fullscreen && g_renderManager.IsStarted()
-      /* PLEX */
-      if(m_bPlaybackInFullScreen && g_renderManager.IsStarted()
-      /* END PLEX */
+      if(options.fullscreen && g_renderManager.IsStarted()
        && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
        SwitchToFullScreen();
     }
