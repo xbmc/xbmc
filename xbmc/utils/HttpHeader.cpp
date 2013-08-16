@@ -24,6 +24,7 @@
 CHttpHeader::CHttpHeader()
 {
   m_headerdone = false;
+  m_mimeTypeIsCached = false;
   m_charsetIsCached = false;
 }
 
@@ -110,14 +111,22 @@ std::string CHttpHeader::GetHeader(void) const
   return GetHeader(strHeader);
 }
 
-std::string CHttpHeader::GetMimeType(void) const
+std::string CHttpHeader::GetMimeType(void)
 {
+  if (m_mimeTypeIsCached && m_headerdone)
+    return m_detectedMimeType;
+
+  m_mimeTypeIsCached = m_headerdone;
+
   const HeaderParams::const_iterator it = m_params.find("content-type");
   if (it == m_params.end())
-    return "";
+  {
+    m_detectedMimeType.clear();
+    return m_detectedMimeType;
+  }
 
   const std::string& strValue = it->second;
-  return strValue.substr(0, strValue.find(';'));
+  return m_detectedMimeType.assign(strValue, 0, strValue.find(';'));
 }
 
 std::string CHttpHeader::GetCharset(void)
@@ -168,6 +177,8 @@ void CHttpHeader::Clear()
 
 void CHttpHeader::ClearCached(void)
 {
+  m_detectedMimeType.clear();
+  m_mimeTypeIsCached = false;
   m_detectedCharset.clear();
   m_charsetIsCached = false;
 }

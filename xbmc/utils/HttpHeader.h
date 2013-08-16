@@ -41,7 +41,7 @@ public:
   std::string& GetHeader(std::string& strHeader) const;
   std::string GetHeader(void) const;
 
-  std::string GetMimeType(void) const;
+  std::string GetMimeType(void);
   std::string GetCharset(void);
   std::string GetProtoLine() const { return m_protoLine; }
 
@@ -56,6 +56,8 @@ protected:
   HeaderParams m_params;
   std::string   m_protoLine;
   bool m_headerdone;
+  std::string m_detectedMimeType;
+  bool m_mimeTypeIsCached;
   std::string m_detectedCharset;
   bool m_charsetIsCached;
 };
