@@ -229,7 +229,7 @@ bool CGUIControl::OnAction(const CAction &action)
   return false;
 }
 
-bool CGUIControl::Navigate(int direction)
+bool CGUIControl::Navigate(int direction) const
 {
   if (HasFocus())
   {
@@ -275,7 +275,7 @@ void CGUIControl::OnPrevControl()
   Navigate(ACTION_PREV_CONTROL);
 }
 
-bool CGUIControl::SendWindowMessage(CGUIMessage &message)
+bool CGUIControl::SendWindowMessage(CGUIMessage &message) const
 {
   CGUIWindow *pWindow = g_windowManager.GetWindow(GetParentID());
   if (pWindow)

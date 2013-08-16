@@ -55,10 +55,10 @@ public:
   bool IsSupported();
 
   // returns true if FBO has been initialized
-  bool IsValid() { return m_valid; }
+  bool IsValid() const { return m_valid; }
 
   // returns true if FBO has a texture bound to it
-  bool IsBound() { return m_bound; }
+  bool IsBound() const { return m_bound; }
 
   // initialize the FBO
   bool Initialize();
@@ -77,12 +77,12 @@ public:
                               GLenum filter=GL_LINEAR, GLenum clampmode=GL_CLAMP_TO_EDGE);
 
   // Return the internally created texture ID
-  GLuint Texture() { return m_texid; }
+  GLuint Texture() const { return m_texid; }
 
   // Begin rendering to FBO
   bool BeginRender();
   // Finish rendering to FBO
-  void EndRender();
+  void EndRender() const;
 
 private:
   GLuint m_fbo;

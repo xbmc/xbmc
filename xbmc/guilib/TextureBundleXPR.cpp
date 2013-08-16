@@ -58,7 +58,7 @@ public:
   CAutoBuffer() { p = 0; }
   explicit CAutoBuffer(size_t s) { p = (BYTE*)malloc(s); }
   ~CAutoBuffer() { free(p); }
-operator BYTE*() { return p; }
+operator BYTE*() const { return p; }
   void Set(BYTE* buf) { free(p); p = buf; }
   bool Resize(size_t s);
 void Release() { p = 0; }
@@ -91,7 +91,7 @@ public:
   CAutoTexBuffer() { p = 0; }
   explicit CAutoTexBuffer(size_t s) { p = (BYTE*)XPhysicalAlloc(s, MAXULONG_PTR, 128, PAGE_READWRITE); }
   ~CAutoTexBuffer() { if (p) XPhysicalFree(p); }
-operator BYTE*() { return p; }
+operator BYTE*() const { return p; }
   BYTE* Set(BYTE* buf) { if (p) XPhysicalFree(p); return p = buf; }
 void Release() { p = 0; }
 };

@@ -69,13 +69,13 @@ public:
   }
 
   // Are the class instance and method pointers initialised?
-  bool HasAHandler()
+  bool HasAHandler() const
   {
     return (m_pInstance && m_pMethod);
   }
 
   // Execute the associated class method
-  void Fire(Cookie aCookie)
+  void Fire(Cookie aCookie) const
   {
     if (HasAHandler())
     {
@@ -150,13 +150,13 @@ public:
   }
 
   // Are the class instance and method pointers initialised?
-  bool HasAHandler()
+  bool HasAHandler() const
   {
     return (m_pInstance && m_pMethod);
   }
 
   // Execute the associated class method and return the result
-  Result Fire(Cookie aCookie)
+  Result Fire(Cookie aCookie) const
   {
     if (HasAHandler())
     {

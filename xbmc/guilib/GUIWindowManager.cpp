@@ -435,7 +435,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
 //  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
 }
 
-void CGUIWindowManager::CloseDialogs(bool forceClose)
+void CGUIWindowManager::CloseDialogs(bool forceClose) const
 {
   CSingleLock lock(g_graphicsContext);
   while (m_activeDialogs.size() > 0)
@@ -445,7 +445,7 @@ void CGUIWindowManager::CloseDialogs(bool forceClose)
   }
 }
 
-bool CGUIWindowManager::OnAction(const CAction &action)
+bool CGUIWindowManager::OnAction(const CAction &action) const
 {
   CSingleLock lock(g_graphicsContext);
   unsigned int topMost = m_activeDialogs.size();
@@ -525,7 +525,7 @@ void CGUIWindowManager::MarkDirty(const CRect& rect)
   m_tracker.MarkDirtyRegion(rect);
 }
 
-void CGUIWindowManager::RenderPass()
+void CGUIWindowManager::RenderPass() const
 {
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)

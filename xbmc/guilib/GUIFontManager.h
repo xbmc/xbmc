@@ -76,7 +76,7 @@ public:
   void Clear();
   void FreeFontFile(CGUIFontTTFBase *pFont);
 
-  bool IsFontSetUnicode() { return m_fontsetUnicode; }
+  bool IsFontSetUnicode() const { return m_fontsetUnicode; }
   bool IsFontSetUnicode(const CStdString& strFontSet);
   bool GetFirstFontSetUnicode(CStdString& strFontSet);
 
