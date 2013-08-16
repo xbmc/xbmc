@@ -208,6 +208,17 @@ IF %comp%==vs2010 (
   Echo userdata\thumbnails\>>exclude.txt
   rem UserData\visualisations contains currently only xbox visualisationfiles
   Echo userdata\visualisations\>>exclude.txt
+  rem Exclude non Windows addons
+  Echo addons\repository.pvr-android.xbmc.org\>>exclude.txt
+  Echo addons\repository.pvr-ios.xbmc.org\>>exclude.txt
+  Echo addons\repository.pvr-osx32.xbmc.org\>>exclude.txt
+  Echo addons\repository.pvr-osx64.xbmc.org\>>exclude.txt
+  Echo addons\screensaver.rsxs.euphoria\>>exclude.txt
+  Echo addons\screensaver.rsxs.plasma\>>exclude.txt
+  Echo addons\screensaver.rsxs.solarwinds\>>exclude.txt
+  Echo addons\visualization.fishbmc\>>exclude.txt
+  Echo addons\visualization.projectm\>>exclude.txt
+  Echo addons\visualization.glspectrum\>>exclude.txt
   rem other platform stuff
   Echo lib-osx>>exclude.txt
   Echo players\mplayer>>exclude.txt
