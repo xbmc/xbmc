@@ -234,7 +234,7 @@ bool CGUIListItem::IsSelected() const
   return m_bSelected;
 }
 
-const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
+CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
 {
   if (&item == this) return * this;
   m_strLabel2 = item.m_strLabel2;

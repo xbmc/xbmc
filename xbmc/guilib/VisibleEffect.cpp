@@ -61,7 +61,7 @@ CAnimEffect::CAnimEffect(const CAnimEffect &src)
   *this = src;
 }
 
-const CAnimEffect &CAnimEffect::operator=(const CAnimEffect &src)
+CAnimEffect& CAnimEffect::operator=(const CAnimEffect &src)
 {
   if (&src == this) return *this;
 
@@ -385,7 +385,7 @@ CAnimation::~CAnimation()
   m_effects.clear();
 }
 
-const CAnimation &CAnimation::operator =(const CAnimation &src)
+CAnimation &CAnimation::operator =(const CAnimation &src)
 {
   if (this == &src) return *this; // same
   m_type = src.m_type;
@@ -721,7 +721,7 @@ CScroller::CScroller(const CScroller& right)
   *this = right;
 }
 
-const CScroller &CScroller::operator=(const CScroller &right)
+CScroller& CScroller::operator=(const CScroller &right)
 {
   if (&right == this) return *this;
 

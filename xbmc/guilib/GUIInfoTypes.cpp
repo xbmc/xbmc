@@ -67,14 +67,14 @@ CGUIInfoColor::CGUIInfoColor(uint32_t color)
   m_info = 0;
 }
 
-const CGUIInfoColor &CGUIInfoColor::operator=(color_t color)
+CGUIInfoColor &CGUIInfoColor::operator=(color_t color)
 {
   m_color = color;
   m_info = 0;
   return *this;
 }
 
-const CGUIInfoColor &CGUIInfoColor::operator=(const CGUIInfoColor &color)
+CGUIInfoColor &CGUIInfoColor::operator=(const CGUIInfoColor &color)
 {
   m_color = color.m_color;
   m_info = color.m_info;
