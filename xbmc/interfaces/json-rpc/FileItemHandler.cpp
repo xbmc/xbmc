@@ -284,6 +284,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
         object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
         object[ID] = item->GetVideoInfoTag()->m_iDbId;
+      else if (item->HasPictureInfoTag() && item->GetPictureInfoTag()->GetDatabaseId() > 0)
+        object[ID] = (int)item->GetPictureInfoTag()->GetDatabaseId();
 
       if (stricmp(ID, "id") == 0)
       {
