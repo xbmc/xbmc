@@ -223,12 +223,12 @@ bool CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
   if (rect.Intersect(label2.m_renderRect).IsEmpty())
     return false; // nothing to do (though it could potentially encroach on the min_space requirement)
   
-  static const float min_space = 10;
   // overlap vertically and horizontally - check alignment
   CGUILabel &left = label1.m_renderRect.x1 <= label2.m_renderRect.x1 ? label1 : label2;
   CGUILabel &right = label1.m_renderRect.x1 <= label2.m_renderRect.x1 ? label2 : label1;
   if ((left.m_label.align & 3) == 0 && right.m_label.align & XBFONT_RIGHT)
   {
+    static const float min_space = 10;
     float chopPoint = (left.m_maxRect.x1 + left.GetMaxWidth() + right.m_maxRect.x2 - right.GetMaxWidth()) * 0.5f;
     // [1       [2...[2  1].|..........1]         2]
     // [1       [2.....[2   |      1]..1]         2]

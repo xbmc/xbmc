@@ -486,10 +486,9 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
 
   int low = 0;
   int high = m_numChars - 1;
-  int mid;
   while (low <= high)
   {
-    mid = (low + high) >> 1;
+    int mid = (low + high) >> 1;
     if (ch > m_char[mid].letterAndStyle)
       low = mid + 1;
     else if (ch < m_char[mid].letterAndStyle)

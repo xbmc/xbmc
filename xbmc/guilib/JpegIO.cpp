@@ -494,7 +494,7 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
   long unsigned int outBufSize = width * height;
   unsigned char* result;
   unsigned char* src = buffer;
-  unsigned char* rgbbuf, *src2, *dst2;
+  unsigned char* rgbbuf;
 
   if(buffer == NULL)
   {
@@ -520,8 +520,8 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
     unsigned char* dst = rgbbuf;
     for (unsigned int y = 0; y < height; y++)
     {
-      dst2 = dst;
-      src2 = src;
+      unsigned char* dst2 = dst;
+      unsigned char* src2 = src;
       for (unsigned int x = 0; x < width; x++, src2 += 4)
       {
         *dst2++ = src2[2];
@@ -746,7 +746,7 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int w
   JSAMPROW row_pointer[1];
   long unsigned int outBufSize = width * height;
   unsigned char* src = bufferin;
-  unsigned char* rgbbuf, *src2, *dst2;
+  unsigned char* rgbbuf;
 
   if(bufferin == NULL)
   {
@@ -772,8 +772,9 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int w
     unsigned char* dst = rgbbuf;
     for (unsigned int y = 0; y < height; y++)
     {
-      dst2 = dst;
-      src2 = src;
+
+      unsigned char* dst2 = dst;
+      unsigned char* src2 = src;
       for (unsigned int x = 0; x < width; x++, src2 += 4)
       {
         *dst2++ = src2[2];
