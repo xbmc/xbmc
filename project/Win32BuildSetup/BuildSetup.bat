@@ -253,6 +253,10 @@ IF %comp%==vs2010 (
   cd ..\..\addons\skin.confluence
   call build.bat > NUL
   cd %build_path%
+  ECHO Building Touched Skin...
+  cd ..\..\addons\skin.touched
+  call build.bat > NUL
+  cd %build_path%
   rem restore color and title, some scripts mess these up
   COLOR 1B
   TITLE XBMC for Windows Build Script
