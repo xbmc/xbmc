@@ -165,7 +165,7 @@ JSONRPC_STATUS CPictureLibrary::GetPictureAlbums(const CStdString &method, ITran
     int size = items.Size();
     if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
         size = (int)items.GetProperty("total").asInteger();
-    HandleFileItemList("albumid", false, "albums", items, parameterObject, result, size, false);
+    HandleFileItemList("albumid", false, "picturealbums", items, parameterObject, result, size, false);
     
     return OK;
 }
