@@ -584,7 +584,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         CLog::Log(LOGDEBUG, "Unfocus WindowID: %i, ControlID: %i",GetID(), control->GetID());
       }
       return true;
-    break;
     }
 
   case GUI_MSG_SELCHANGED:
