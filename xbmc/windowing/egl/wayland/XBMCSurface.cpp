@@ -53,8 +53,8 @@ public:
   Private(IDllWaylandClient &clientLibrary,
           IDllWaylandEGL &eglLibrary,
           const EventInjector &eventInjector,
-          const boost::scoped_ptr<Compositor> &compositor,
-          const boost::scoped_ptr<Shell> &shell,
+          Compositor &compositor,
+          Shell &shell,
           uint32_t width,
           uint32_t height);
 
@@ -96,19 +96,19 @@ namespace xw = xbmc::wayland;
 xw::XBMCSurface::Private::Private(IDllWaylandClient &clientLibrary,
                                   IDllWaylandEGL &eglLibrary,
                                   const EventInjector &eventInjector,
-                                  const boost::scoped_ptr<Compositor> &compositor,
-                                  const boost::scoped_ptr<Shell> &shell,
+                                  Compositor &compositor,
+                                  Shell &shell,
                                   uint32_t width,
                                   uint32_t height) :
   m_clientLibrary(clientLibrary),
   m_eglLibrary(eglLibrary),
   m_eventInjector(eventInjector),
   m_regionFactory(boost::bind(&Compositor::CreateRegion,
-                              compositor.get())),
+                              &compositor)),
   m_surface(new xw::Surface(m_clientLibrary,
-                            compositor->CreateSurface())),
+                            compositor.CreateSurface())),
   m_shellSurface(new xw::ShellSurface(m_clientLibrary,
-                                      shell->CreateShellSurface(
+                                      shell.CreateShellSurface(
                                         m_surface->GetWlSurface()))),
   /* Creating a new xbmc::wayland::OpenGLSurface will manage the
    * attach-and-commit process on eglSwapBuffers */
@@ -145,8 +145,8 @@ xw::XBMCSurface::Private::Private(IDllWaylandClient &clientLibrary,
 xw::XBMCSurface::XBMCSurface(IDllWaylandClient &clientLibrary,
                              IDllWaylandEGL &eglLibrary,
                              const EventInjector &eventInjector,
-                             const boost::scoped_ptr<Compositor> &compositor,
-                             const boost::scoped_ptr<Shell> &shell,
+                             Compositor &compositor,
+                             Shell &shell,
                              uint32_t width,
                              uint32_t height) :
   priv(new Private(clientLibrary,
@@ -166,10 +166,8 @@ xw::XBMCSurface::~XBMCSurface()
 }
 
 void
-xw::XBMCSurface::Show(const boost::shared_ptr<xw::Output> &output)
-{
-  xw::Output &mutableOutput (const_cast<xw::Output &>(*output));
-  
+xw::XBMCSurface::Show(xw::Output &output)
+{ 
   /* Calling SetFullscreen will implicitly show the surface, center
    * it as full-screen on the selected output and change the resolution
    * of the output so as to fit as much of the surface as possible
@@ -179,7 +177,7 @@ xw::XBMCSurface::Show(const boost::shared_ptr<xw::Output> &output)
    * result in the resolution changing to the nearest match */
   priv->m_shellSurface->SetFullscreen(WL_SHELL_SURFACE_FULLSCREEN_METHOD_DRIVER,
                                       0,
-                                      mutableOutput.GetWlOutput());
+                                      output.GetWlOutput());
 }
 
 void
