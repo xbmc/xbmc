@@ -71,7 +71,7 @@ namespace XBMCAddon
      *
      * TODO:This later solution should be implemented for future scripting 
      * languages while the former will remain as deprecated functionality 
-     * for Python.
+     * for Python. 
      */
     // We don't need the SWIGHIDDENVIRTUAL since this is not a director.
     class Control : public AddonClass
@@ -92,6 +92,10 @@ namespace XBMCAddon
       // currently we only accept messages from a button or controllist with a select action
       virtual bool canAcceptMessages(int actionId) { return false; }
 
+      /**
+       * setLabel() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
                             const char* textColor = NULL,
@@ -99,50 +103,182 @@ namespace XBMCAddon
                             const char* shadowColor = NULL,
                             const char* focusedColor = NULL,
                             const String& label2 = emptyString) DECL_UNIMP("Control");
+      /**
+       * reset() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void reset() DECL_UNIMP("Control");
+      /**
+       * removeItem() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void removeItem(int index) DECL_UNIMP2("Control",WindowException);
+      /**
+       * setSelected() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setSelected(bool selected) DECL_UNIMP("Control");
+      /**
+       * setPercent() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setPercent(float pct) DECL_UNIMP("Control");
+      /**
+       * setDisabledColor() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setDisabledColor(const char* color) DECL_UNIMP("Control");
+      /**
+       * getPercent() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual float getPercent() DECL_UNIMP("Control");
+      /**
+       * getLabel() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual String getLabel() DECL_UNIMP("Control");
+      /**
+       * getText() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual String getText() DECL_UNIMP("Control");
+      /**
+       * size() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual long size() DECL_UNIMP("Control");
+      /**
+       * setTextures() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setTextures(const char* up, const char* down, 
                                const char* upFocus, 
                                const char* downFocus) DECL_UNIMP("Control");
+      /**
+       * setText() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setText(const String& text) DECL_UNIMP("Control");
+      /**
+       * setStaticContent() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setStaticContent(const ListItemList* items) DECL_UNIMP("Control");
+      /**
+       * setSpace() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setSpace(int space) DECL_UNIMP("Control");
+      /**
+       * setRadioDimension() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setRadioDimension(long x, long y, long width, long height) DECL_UNIMP("Control");
+      /**
+       * setPageControlVisible() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setPageControlVisible(bool visible) DECL_UNIMP("Control");
+      /**
+       * setItemHeight() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setItemHeight(long height) DECL_UNIMP("Control");
+      /**
+       * setImageDimensions() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setImageDimensions(long imageWidth,long imageHeight) DECL_UNIMP("Control");
+      /**
+       * setImage() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setImage(const char* imageFilename) DECL_UNIMP("Control");
+      /**
+       * setColorDiffuse() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void setColorDiffuse(const char* hexString) DECL_UNIMP("Control");
+      /**
+       * selectItem() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void selectItem(long item) DECL_UNIMP("Control");
+      /**
+       * scroll() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void scroll(long id) DECL_UNIMP("Control");
+      /**
+       * isSelected() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual bool isSelected() DECL_UNIMP("Control");
+      /**
+       * getSpinControl() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual Control* getSpinControl() DECL_UNIMP("Control");
+      /**
+       * getSpace() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual long getSpace() DECL_UNIMP("Control");
+      /**
+       * getSelectedPosition() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual long getSelectedPosition() DECL_UNIMP("Control");
+      /**
+       * getSelectedItem() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual XBMCAddon::xbmcgui::ListItem* getSelectedItem() DECL_UNIMP("Control");
+      /**
+       * getSelected() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual bool getSelected() DECL_UNIMP("Control");
+      /**
+       * getListItem() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual XBMCAddon::xbmcgui::ListItem* getListItem(int index) DECL_UNIMP2("Control",WindowException);
+      /**
+       * getLabel2() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual String getLabel2() DECL_UNIMP("Control");
+      /**
+       * getItemHeight() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual long getItemHeight() DECL_UNIMP("Control");
+      /**
+       * addLabel() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void addLabel(const String& label) DECL_UNIMP("Control");
 
       // These need to be here for the stubbed out addItem
       //   and addItems methods
+      /**
+       * addItemStream() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void addItemStream(const String& fileOrUrl, bool sendMessage = true) DECL_UNIMP2("Control",WindowException);
+      /**
+       * addListItem() is only defined in subclasses of Control. See the specific
+       *  subclass for the appropriate documentation.
+       */
       virtual void addListItem(const XBMCAddon::xbmcgui::ListItem* listitem, bool sendMessage = true) DECL_UNIMP2("Control",WindowException);
 
       /**
-       * getId() -- Returns the control's current id as an integer.
-       * 
-       * example:
-       *   - id = self.button.getId()\n
+       * getId() -- Returns the control's current id as an integer.\n
+       * \n
+       * example:\n
+       *   - id = self.button.getId()n\n
        */
       virtual int getId() { return iControlId; }
 
@@ -152,151 +288,151 @@ namespace XBMCAddon
 
       // hack this because it returns a tuple
       /**
-       * getPosition() -- Returns the control's current position as a x,y integer tuple.
-       * 
-       * example:
-       *   - pos = self.button.getPosition()
+       * getPosition() -- Returns the control's current position as a x,y integer tuple.\n
+       * \n
+       * example:\n
+       *   - pos = self.button.getPosition()\n
        */
       virtual std::vector<int> getPosition();
       virtual int getX() { return dwPosX; }
       virtual int getY() { return dwPosY; }
 
       /**
-       * getHeight() -- Returns the control's current height as an integer.
-       * 
-       * example:
-       *   - height = self.button.getHeight()
+       * getHeight() -- Returns the control's current height as an integer.\n
+       * \n
+       * example:\n
+       *   - height = self.button.getHeight()\n
        */
       virtual int getHeight() { return dwHeight; }
 
       // getWidth() Method
       /**
-       * getWidth() -- Returns the control's current width as an integer.
-       * 
-       * example:
-       *   - width = self.button.getWidth()
+       * getWidth() -- Returns the control's current width as an integer.\n
+       * \n
+       * example:\n
+       *   - width = self.button.getWidth()\n
        */
       virtual int getWidth() { return dwWidth; }
 
       // setEnabled() Method
       /**
-       * setEnabled(enabled) -- Set's the control's enabled/disabled state.
-       * 
-       * enabled        : bool - True=enabled / False=disabled.
-       * 
-       * example:
-       *   - self.button.setEnabled(False)\n
+       * setEnabled(enabled) -- Set's the control's enabled/disabled state.\n
+       * \n
+       * enabled        : bool - True=enabled / False=disabled.\n
+       * \n
+       * example:\n
+       *   - self.button.setEnabled(False)n\n
        */
       virtual void setEnabled(bool enabled);
 
       // setVisible() Method
       /**
-       * setVisible(visible) -- Set's the control's visible/hidden state.
-       * 
-       * visible        : bool - True=visible / False=hidden.
-       * 
-       * example:
-       *   - self.button.setVisible(False)
+       * setVisible(visible) -- Set's the control's visible/hidden state.\n
+       * \n
+       * visible        : bool - True=visible / False=hidden.\n
+       * \n
+       * example:\n
+       *   - self.button.setVisible(False)\n
        */
       virtual void setVisible(bool visible);
 
       // setVisibleCondition() Method
       /**
-       * setVisibleCondition(visible[,allowHiddenFocus]) -- Set's the control's visible condition.
-       *     Allows XBMC to control the visible status of the control.
-       * 
-       * visible          : string - Visible condition.
-       * allowHiddenFocus : bool - True=gains focus even if hidden.
-       * 
-       * List of Conditions - http://wiki.xbmc.org/index.php?title=List_of_Boolean_Conditions 
-       * 
-       * example:
-       *   - self.button.setVisibleCondition('[Control.IsVisible(41) + !Control.IsVisible(12)]', True)\n
+       * setVisibleCondition(visible[,allowHiddenFocus]) -- Set's the control's visible condition.\n
+       *     Allows XBMC to control the visible status of the control.\n
+       * \n
+       * visible          : string - Visible condition.\n
+       * allowHiddenFocus : bool - True=gains focus even if hidden.\n
+       * \n
+       * List of Conditions - http://wiki.xbmc.org/index.php?title=List_of_Boolean_Conditions \n
+       * \n
+       * example:\n
+       *   - self.button.setVisibleCondition('[Control.IsVisible(41) + !Control.IsVisible(12)]', True)n\n
        */
       virtual void setVisibleCondition(const char* visible, bool allowHiddenFocus = false);
 
       // setEnableCondition() Method
       /**
-       * setEnableCondition(enable) -- Set's the control's enabled condition.
-       *     Allows XBMC to control the enabled status of the control.
-       * 
-       * enable           : string - Enable condition.
-       * 
-       * List of Conditions - http://wiki.xbmc.org/index.php?title=List_of_Boolean_Conditions 
-       * 
-       * example:
-       *   - self.button.setEnableCondition('System.InternetState')
+       * setEnableCondition(enable) -- Set's the control's enabled condition.\n
+       *     Allows XBMC to control the enabled status of the control.\n
+       * \n
+       * enable           : string - Enable condition.\n
+       * \n
+       * List of Conditions - http://wiki.xbmc.org/index.php?title=List_of_Boolean_Conditions \n
+       * \n
+       * example:\n
+       *   - self.button.setEnableCondition('System.InternetState')\n
        */
       virtual void setEnableCondition(const char* enable);
 
       // setAnimations() Method
       /**
-       * setAnimations([(event, attr,)*]) -- Set's the control's animations.
-       * 
-       * [(event,attr,)*] : list - A list of tuples consisting of event and attributes pairs.
-       *   - event        : string - The event to animate.
-       *   - attr         : string - The whole attribute string separated by spaces.
-       * 
-       * Animating your skin - http://wiki.xbmc.org/?title=Animating_Your_Skin 
-       * 
-       * example:
-       *   - self.button.setAnimations([('focus', 'effect=zoom end=90,247,220,56 time=0',)])\n
+       * setAnimations([(event, attr,)*]) -- Set's the control's animations.\n
+       * \n
+       * [(event,attr,)*] : list - A list of tuples consisting of event and attributes pairs.\n
+       *   - event        : string - The event to animate.\n
+       *   - attr         : string - The whole attribute string separated by spaces.\n
+       * \n
+       * Animating your skin - http://wiki.xbmc.org/?title=Animating_Your_Skin \n
+       * \n
+       * example:\n
+       *   - self.button.setAnimations([('focus', 'effect=zoom end=90,247,220,56 time=0',)])n\n
        */
       virtual void setAnimations(const std::vector< Tuple<String,String> >& eventAttr) throw (WindowException);
 
       // setPosition() Method
       /**
-       * setPosition(x, y) -- Set's the controls position.
-       * 
-       * x              : integer - x coordinate of control.
-       * y              : integer - y coordinate of control.
-       * 
-       * *Note, You may use negative integers. (e.g sliding a control into view)
-       * 
-       * example:
-       *   - self.button.setPosition(100, 250)\n
+       * setPosition(x, y) -- Set's the controls position.\n
+       * \n
+       * x              : integer - x coordinate of control.\n
+       * y              : integer - y coordinate of control.\n
+       * \n
+       * *Note, You may use negative integers. (e.g sliding a control into view)\n
+       * \n
+       * example:\n
+       *   - self.button.setPosition(100, 250)n\n
        */
       virtual void setPosition(long x, long y);
 
       // setWidth() Method
       /**
-       * setWidth(width) -- Set's the controls width.
-       * 
-       * width          : integer - width of control.
-       * 
-       * example:
-       *   - self.image.setWidth(100)
+       * setWidth(width) -- Set's the controls width.\n
+       * \n
+       * width          : integer - width of control.\n
+       * \n
+       * example:\n
+       *   - self.image.setWidth(100)\n
        */
       virtual void setWidth(long width);
 
       // setHeight() Method
       /**
-       * setHeight(height) -- Set's the controls height.
-       * 
-       * height         : integer - height of control.
-       * 
-       * example:
-       *   - self.image.setHeight(100)
+       * setHeight(height) -- Set's the controls height.\n
+       * \n
+       * height         : integer - height of control.\n
+       * \n
+       * example:\n
+       *   - self.image.setHeight(100)\n
        */
       virtual void setHeight(long height);
 
       // setNavigation() Method
       /**
-       * setNavigation(up, down, left, right) -- Set's the controls navigation.
-       * 
-       * up             : control object - control to navigate to on up.
-       * down           : control object - control to navigate to on down.
-       * left           : control object - control to navigate to on left.
-       * right          : control object - control to navigate to on right.
-       * 
-       * *Note, Same as controlUp(), controlDown(), controlLeft(), controlRight().
-       *        Set to self to disable navigation for that direction.
-       * 
-       * Throws: TypeError, if one of the supplied arguments is not a control type.
-       *         ReferenceError, if one of the controls is not added to a window.
-       * 
-       * example:
-       *   - self.button.setNavigation(self.button1, self.button2, self.button3, self.button4)
+       * setNavigation(up, down, left, right) -- Set's the controls navigation.\n
+       * \n
+       * up             : control object - control to navigate to on up.\n
+       * down           : control object - control to navigate to on down.\n
+       * left           : control object - control to navigate to on left.\n
+       * right          : control object - control to navigate to on right.\n
+       * \n
+       * *Note, Same as controlUp(), controlDown(), controlLeft(), controlRight().\n
+       *        Set to self to disable navigation for that direction.\n
+       * \n
+       * Throws: TypeError, if one of the supplied arguments is not a control type.\n
+       *         ReferenceError, if one of the controls is not added to a window.\n
+       * \n
+       * example:\n
+       *   - self.button.setNavigation(self.button1, self.button2, self.button3, self.button4)\n
        */
       virtual void setNavigation(const Control* up, const Control* down,
                                  const Control* left, const Control* right) 
@@ -304,65 +440,65 @@ namespace XBMCAddon
 
       // controlUp() Method
       /**
-       * controlUp(control) -- Set's the controls up navigation.
-       * 
-       * control        : control object - control to navigate to on up.
-       * 
-       * *Note, You can also use setNavigation(). Set to self to disable navigation.
-       * 
-       * Throws: TypeError, if one of the supplied arguments is not a control type.
-       *         ReferenceError, if one of the controls is not added to a window.
-       * 
-       * example:
-       *   - self.button.controlUp(self.button1)
+       * controlUp(control) -- Set's the controls up navigation.\n
+       * \n
+       * control        : control object - control to navigate to on up.\n
+       * \n
+       * *Note, You can also use setNavigation(). Set to self to disable navigation.\n
+       * \n
+       * Throws: TypeError, if one of the supplied arguments is not a control type.\n
+       *         ReferenceError, if one of the controls is not added to a window.\n
+       * \n
+       * example:\n
+       *   - self.button.controlUp(self.button1)\n
        */
       virtual void controlUp(const Control* up) throw (WindowException);
 
       // controlDown() Method
       /**
-       * controlDown(control) -- Set's the controls down navigation.
-       * 
-       * control        : control object - control to navigate to on down.
-       * 
-       * *Note, You can also use setNavigation(). Set to self to disable navigation.
-       * 
-       * Throws: TypeError, if one of the supplied arguments is not a control type.
-       *         ReferenceError, if one of the controls is not added to a window.
-       * 
-       * example:
-       *   - self.button.controlDown(self.button1)
+       * controlDown(control) -- Set's the controls down navigation.\n
+       * \n
+       * control        : control object - control to navigate to on down.\n
+       * \n
+       * *Note, You can also use setNavigation(). Set to self to disable navigation.\n
+       * \n
+       * Throws: TypeError, if one of the supplied arguments is not a control type.\n
+       *         ReferenceError, if one of the controls is not added to a window.\n
+       * \n
+       * example:\n
+       *   - self.button.controlDown(self.button1)\n
        */
       virtual void controlDown(const Control* control) throw (WindowException);
 
       // controlLeft() Method
       /**
-       * controlLeft(control) -- Set's the controls left navigation.
-       * 
-       * control        : control object - control to navigate to on left.
-       * 
-       * *Note, You can also use setNavigation(). Set to self to disable navigation.
-       * 
-       * Throws: TypeError, if one of the supplied arguments is not a control type.
-       *         ReferenceError, if one of the controls is not added to a window.
-       * 
-       * example:
-       *   - self.button.controlLeft(self.button1)
+       * controlLeft(control) -- Set's the controls left navigation.\n
+       * \n
+       * control        : control object - control to navigate to on left.\n
+       * \n
+       * *Note, You can also use setNavigation(). Set to self to disable navigation.\n
+       * \n
+       * Throws: TypeError, if one of the supplied arguments is not a control type.\n
+       *         ReferenceError, if one of the controls is not added to a window.\n
+       * \n
+       * example:\n
+       *   - self.button.controlLeft(self.button1)\n
        */
       virtual void controlLeft(const Control* control) throw (WindowException);
 
       // controlRight() Method
       /**
-       * controlRight(control) -- Set's the controls right navigation.
-       * 
-       * control        : control object - control to navigate to on right.
-       * 
-       * *Note, You can also use setNavigation(). Set to self to disable navigation.
-       * 
-       * Throws: TypeError, if one of the supplied arguments is not a control type.
-       *         ReferenceError, if one of the controls is not added to a window.
-       * 
-       * example:
-       *   - self.button.controlRight(self.button1)\n
+       * controlRight(control) -- Set's the controls right navigation.\n
+       * \n
+       * control        : control object - control to navigate to on right.\n
+       * \n
+       * *Note, You can also use setNavigation(). Set to self to disable navigation.\n
+       * \n
+       * Throws: TypeError, if one of the supplied arguments is not a control type.\n
+       *         ReferenceError, if one of the controls is not added to a window.\n
+       * \n
+       * example:\n
+       *   - self.button.controlRight(self.button1)n\n
        */
       virtual void controlRight(const Control* control) throw (WindowException);
 
@@ -383,11 +519,11 @@ namespace XBMCAddon
     };
 
     /**
-     * ControlSpin class.
-     * 
-     *  - Not working yet -.
-     * 
-     * you can't create this object, it is returned by objects like ControlTextBox and ControlList.
+     * ControlSpin class.\n
+     * \n
+     *  - Not working yet -.\n
+     * \n
+     * you can't create this object, it is returned by objects like ControlTextBox and ControlList.\n
      */
     class ControlSpin : public Control
     {
@@ -395,9 +531,9 @@ namespace XBMCAddon
       virtual ~ControlSpin();
 
       /**
-       * setTextures(up, down, upFocus, downFocus) -- Set's textures for this control.
-       * 
-       * texture are image files that are used for example in the skin
+       * setTextures(up, down, upFocus, downFocus) -- Set's textures for this control.\n
+       * \n
+       * texture are image files that are used for example in the skin\n
        */
       virtual void setTextures(const char* up, const char* down, 
                                const char* upFocus, 
@@ -419,25 +555,25 @@ namespace XBMCAddon
     };
 
     /**
-     * ControlLabel class.
-     * 
-     * ControlLabel(x, y, width, height, label[, font, textColor, 
-     *              disabledColor, alignment, hasPath, angle])
-     * 
-     * x              : integer - x coordinate of control.
-     * y              : integer - y coordinate of control.
-     * width          : integer - width of control.
-     * height         : integer - height of control.
-     * label          : string or unicode - text string.
-     * font           : [opt] string - font used for label text. (e.g. 'font13')
-     * textColor      : [opt] hexstring - color of enabled label's label. (e.g. '0xFFFFFFFF')
-     * disabledColor  : [opt] hexstring - color of disabled label's label. (e.g. '0xFFFF3300')
-     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h
-     * hasPath        : [opt] bool - True=stores a path / False=no path.
-     * angle          : [opt] integer - angle of control. (+ rotates CCW, - rotates C
-     * 
-     * example:
-     *   - self.label = xbmcgui.ControlLabel(100, 250, 125, 75, 'Status', angle=45)\n
+     * ControlLabel class.\n
+     * \n
+     * ControlLabel(x, y, width, height, label[, font, textColor, \n
+     *              disabledColor, alignment, hasPath, angle])\n
+     * \n
+     * x              : integer - x coordinate of control.\n
+     * y              : integer - y coordinate of control.\n
+     * width          : integer - width of control.\n
+     * height         : integer - height of control.\n
+     * label          : string or unicode - text string.\n
+     * font           : [opt] string - font used for label text. (e.g. 'font13')\n
+     * textColor      : [opt] hexstring - color of enabled label's label. (e.g. '0xFFFFFFFF')\n
+     * disabledColor  : [opt] hexstring - color of disabled label's label. (e.g. '0xFFFF3300')\n
+     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n
+     * hasPath        : [opt] bool - True=stores a path / False=no path.\n
+     * angle          : [opt] integer - angle of control. (+ rotates CCW, - rotates C\n
+     * \n
+     * example:\n
+     *   - self.label = xbmcgui.ControlLabel(100, 250, 125, 75, 'Status', angle=45)n\n
      */
     class ControlLabel : public Control
     {
@@ -451,20 +587,20 @@ namespace XBMCAddon
       virtual ~ControlLabel();
 
       /**
-       * getLabel() -- Returns the text value for this label.
-       * 
-       * example:
-       *   - label = self.label.getLabel()\n
+       * getLabel() -- Returns the text value for this label.\n
+       * \n
+       * example:\n
+       *   - label = self.label.getLabel()n\n
        */
       virtual String getLabel() throw(UnimplementedException);
 
       /**
-       * setLabel(label) -- Set's text for this label.
-       * 
-       * label          : string or unicode - text string.
-       * 
-       * example:
-       *   - self.label.setLabel('Status')
+       * setLabel(label) -- Set's text for this label.\n
+       * \n
+       * label          : string or unicode - text string.\n
+       * \n
+       * example:\n
+       *   - self.label.setLabel('Status')\n
        */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
@@ -494,30 +630,30 @@ namespace XBMCAddon
 
     // ControlEdit class
     /**
-     * ControlEdit class.
-     * 
-     * ControlEdit(x, y, width, height, label[, font, textColor, 
-     *              disabledColor, alignment, focusTexture, noFocusTexture])
-     * 
-     * x              : integer - x coordinate of control.
-     * y              : integer - y coordinate of control.
-     * width          : integer - width of control.
-     * height         : integer - height of control.
-     * label          : string or unicode - text string.
-     * font           : [opt] string - font used for label text. (e.g. 'font13')
-     * textColor      : [opt] hexstring - color of enabled label's label. (e.g. '0xFFFFFFFF')
-     * disabledColor  : [opt] hexstring - color of disabled label's label. (e.g. '0xFFFF3300')
-     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h
-     * focusTexture   : [opt] string - filename for focus texture.
-     * noFocusTexture : [opt] string - filename for no focus texture.
-     * isPassword     : [opt] bool - if true, mask text value.
-     * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
-     *        After you create the control, you need to add it to the window with addControl().
-     * 
-     * example:
-     *   - self.edit = xbmcgui.ControlEdit(100, 250, 125, 75, 'Status')
+     * ControlEdit class.\n
+     * \n
+     * ControlEdit(x, y, width, height, label[, font, textColor, \n
+     *              disabledColor, alignment, focusTexture, noFocusTexture])\n
+     * \n
+     * x              : integer - x coordinate of control.\n
+     * y              : integer - y coordinate of control.\n
+     * width          : integer - width of control.\n
+     * height         : integer - height of control.\n
+     * label          : string or unicode - text string.\n
+     * font           : [opt] string - font used for label text. (e.g. 'font13')\n
+     * textColor      : [opt] hexstring - color of enabled label's label. (e.g. '0xFFFFFFFF')\n
+     * disabledColor  : [opt] hexstring - color of disabled label's label. (e.g. '0xFFFF3300')\n
+     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n
+     * focusTexture   : [opt] string - filename for focus texture.\n
+     * noFocusTexture : [opt] string - filename for no focus texture.\n
+     * isPassword     : [opt] bool - if true, mask text value.\n
+     * \n
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
+     *        After you create the control, you need to add it to the window with addControl().\n
+     * \n
+     * example:\n
+     *   - self.edit = xbmcgui.ControlEdit(100, 250, 125, 75, 'Status')\n
      */
     class ControlEdit : public Control
     {
@@ -531,12 +667,12 @@ namespace XBMCAddon
 
       // setLabel() Method
       /**
-       * setLabel(label) -- Set's text heading for this edit control.
-       * 
-       * label          : string or unicode - text string.
-       * 
-       * example:
-       *   - self.edit.setLabel('Status')\n
+       * setLabel(label) -- Set's text heading for this edit control.\n
+       * \n
+       * label          : string or unicode - text string.\n
+       * \n
+       * example:\n
+       *   - self.edit.setLabel('Status')n\n
        */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
@@ -548,30 +684,30 @@ namespace XBMCAddon
 
       // getLabel() Method
       /**
-       * getLabel() -- Returns the text heading for this edit control.
-       * 
-       * example:
-       *   - label = self.edit.getLabel()
+       * getLabel() -- Returns the text heading for this edit control.\n
+       * \n
+       * example:\n
+       *   - label = self.edit.getLabel()\n
        */
       virtual String getLabel() throw(UnimplementedException);
 
       // setText() Method
       /**
-       * setText(value) -- Set's text value for this edit control.
-       * 
-       * value          : string or unicode - text string.
-       * 
-       * example:
-       *   - self.edit.setText('online')\n
+       * setText(value) -- Set's text value for this edit control.\n
+       * \n
+       * value          : string or unicode - text string.\n
+       * \n
+       * example:\n
+       *   - self.edit.setText('online')n\n
        */
       virtual void setText(const String& text) throw(UnimplementedException);
 
       // getText() Method
       /**
-       * getText() -- Returns the text value for this edit control.
-       * 
-       * example:
-       *   - value = self.edit.getText()
+       * getText() -- Returns the text value for this edit control.\n
+       * \n
+       * example:\n
+       *   - value = self.edit.getText()\n
        */
       virtual String getText() throw(UnimplementedException);
 
@@ -595,36 +731,36 @@ namespace XBMCAddon
     };
 
     /**
-     * ControlList class.
-     * 
-     * ControlList(x, y, width, height[, font, textColor, buttonTexture, buttonFocusTexture,
-     *             selectedColor, imageWidth, imageHeight, itemTextXOffset, itemTextYOffset,
-     *             itemHeight, space, alignmentY])\n"//, shadowColor])
-     * 
-     * x                  : integer - x coordinate of control.
-     * y                  : integer - y coordinate of control.
-     * width              : integer - width of control.
-     * height             : integer - height of control.
-     * font               : [opt] string - font used for items label. (e.g. 'font13')
-     * textColor          : [opt] hexstring - color of items label. (e.g. '0xFFFFFFFF')
-     * buttonTexture      : [opt] string - filename for focus texture.
-     * buttonFocusTexture : [opt] string - filename for no focus texture.
-     * selectedColor      : [opt] integer - x offset of label.
-     * imageWidth         : [opt] integer - width of items icon or thumbnail.
-     * imageHeight        : [opt] integer - height of items icon or thumbnail.
-     * itemTextXOffset    : [opt] integer - x offset of items label.
-     * itemTextYOffset    : [opt] integer - y offset of items label.
-     * itemHeight         : [opt] integer - height of items.
-     * space              : [opt] integer - space between items.
-     * alignmentY         : [opt] integer - Y-axis alignment of items label - *Note, see xbfont.h
-     * //"shadowColor        : [opt] hexstring - color of items label's shadow. (e.g. '0xFF000000')
-     * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
-     *        After you create the control, you need to add it to the window with addControl().
-     * 
-     * example:
-     *   - self.cList = xbmcgui.ControlList(100, 250, 200, 250, 'font14', space=5)
+     * ControlList class.\n
+     * \n
+     * ControlList(x, y, width, height[, font, textColor, buttonTexture, buttonFocusTexture,\n
+     *             selectedColor, imageWidth, imageHeight, itemTextXOffset, itemTextYOffset,\n
+     *             itemHeight, space, alignmentY])n"//, shadowColor])\n
+     * \n
+     * x                  : integer - x coordinate of control.\n
+     * y                  : integer - y coordinate of control.\n
+     * width              : integer - width of control.\n
+     * height             : integer - height of control.\n
+     * font               : [opt] string - font used for items label. (e.g. 'font13')\n
+     * textColor          : [opt] hexstring - color of items label. (e.g. '0xFFFFFFFF')\n
+     * buttonTexture      : [opt] string - filename for focus texture.\n
+     * buttonFocusTexture : [opt] string - filename for no focus texture.\n
+     * selectedColor      : [opt] integer - x offset of label.\n
+     * imageWidth         : [opt] integer - width of items icon or thumbnail.\n
+     * imageHeight        : [opt] integer - height of items icon or thumbnail.\n
+     * itemTextXOffset    : [opt] integer - x offset of items label.\n
+     * itemTextYOffset    : [opt] integer - y offset of items label.\n
+     * itemHeight         : [opt] integer - height of items.\n
+     * space              : [opt] integer - space between items.\n
+     * alignmentY         : [opt] integer - Y-axis alignment of items label - *Note, see xbfont.h\n
+     * //"shadowColor        : [opt] hexstring - color of items label's shadow. (e.g. '0xFF000000')\n
+     * \n
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
+     *        After you create the control, you need to add it to the window with addControl().\n
+     * \n
+     * example:\n
+     *   - self.cList = xbmcgui.ControlList(100, 250, 200, 250, 'font14', space=5)\n
      */
     class ControlList : public Control 
     {
@@ -642,174 +778,174 @@ namespace XBMCAddon
       virtual ~ControlList();
 
       /**
-       * addItem(item) -- Add a new item to this list control.
-       * 
-       * item               : string, unicode or ListItem - item to add.
-       * 
-       * example:
-       *   - cList.addItem('Reboot XBMC')
+       * addItem(item) -- Add a new item to this list control.\n
+       * \n
+       * item               : string, unicode or ListItem - item to add.\n
+       * \n
+       * example:\n
+       *   - cList.addItem('Reboot XBMC')\n
        */
       virtual void addItemStream(const String& fileOrUrl, bool sendMessage = true) throw(UnimplementedException,WindowException);
       virtual void addListItem(const XBMCAddon::xbmcgui::ListItem* listitem, bool sendMessage = true) throw(UnimplementedException,WindowException);
 
       /**
-       * selectItem(item) -- Select an item by index number.
-       * 
-       * item               : integer - index number of the item to select.
-       * 
-       * example:
-       *   - cList.selectItem(12)
+       * selectItem(item) -- Select an item by index number.\n
+       * \n
+       * item               : integer - index number of the item to select.\n
+       * \n
+       * example:\n
+       *   - cList.selectItem(12)\n
        */
       virtual void selectItem(long item) throw(UnimplementedException);
 
       /**
-       * removeItem(index) -- Remove an item by index number.
-       *
-       * index              : integer - index number of the item to remove.
-       *
-       * example:
-       *   - cList.removeItem(12)
+       * removeItem(index) -- Remove an item by index number.\n
+       *\n
+       * index              : integer - index number of the item to remove.\n
+       *\n
+       * example:\n
+       *   - cList.removeItem(12)\n
        */
       virtual void removeItem(int index) throw (UnimplementedException,WindowException);
 
       /**
-       * reset() -- Clear all ListItems in this control list.
-       * 
-       * example:
-       *   - cList.reset()\n
+       * reset() -- Clear all ListItems in this control list.\n
+       * \n
+       * example:\n
+       *   - cList.reset()n\n
        */
       virtual void reset() throw (UnimplementedException);
 
       /**
-       * getSpinControl() -- returns the associated ControlSpin object.
-       * 
-       * *Note, Not working completely yet -
-       *        After adding this control list to a window it is not possible to change
-       *        the settings of this spin control.
-       * 
-       * example:
-       *   - ctl = cList.getSpinControl()
+       * getSpinControl() -- returns the associated ControlSpin object.\n
+       * \n
+       * *Note, Not working completely yet -\n
+       *        After adding this control list to a window it is not possible to change\n
+       *        the settings of this spin control.\n
+       * \n
+       * example:\n
+       *   - ctl = cList.getSpinControl()\n
        */
       virtual Control* getSpinControl() throw (UnimplementedException);
 
       /**
-       * getSelectedPosition() -- Returns the position of the selected item as an integer.
-       * 
-       * *Note, Returns -1 for empty lists.
-       * 
-       * example:
-       *   - pos = cList.getSelectedPosition()
+       * getSelectedPosition() -- Returns the position of the selected item as an integer.\n
+       * \n
+       * *Note, Returns -1 for empty lists.\n
+       * \n
+       * example:\n
+       *   - pos = cList.getSelectedPosition()\n
        */
       virtual long getSelectedPosition() throw (UnimplementedException);
 
       /**
-       * getSelectedItem() -- Returns the selected item as a ListItem object.
-       * 
-       * *Note, Same as getSelectedPosition(), but instead of an integer a ListItem object
-       *        is returned. Returns None for empty lists.
-       *        See windowexample.py on how to use this.
-       * 
-       * example:
-       *   - item = cList.getSelectedItem()
+       * getSelectedItem() -- Returns the selected item as a ListItem object.\n
+       * \n
+       * *Note, Same as getSelectedPosition(), but instead of an integer a ListItem object\n
+       *        is returned. Returns None for empty lists.\n
+       *        See windowexample.py on how to use this.\n
+       * \n
+       * example:\n
+       *   - item = cList.getSelectedItem()\n
        */
       virtual XBMCAddon::xbmcgui::ListItem* getSelectedItem() throw (UnimplementedException);
 
 
       // setImageDimensions() method
       /**
-       * setImageDimensions(imageWidth, imageHeight) -- Sets the width/height of items icon or thumbnail.
-       * 
-       * imageWidth         : [opt] integer - width of items icon or thumbnail.
-       * imageHeight        : [opt] integer - height of items icon or thumbnail.
-       * 
-       * example:
-       *   - cList.setImageDimensions(18, 18)\n
+       * setImageDimensions(imageWidth, imageHeight) -- Sets the width/height of items icon or thumbnail.\n
+       * \n
+       * imageWidth         : [opt] integer - width of items icon or thumbnail.\n
+       * imageHeight        : [opt] integer - height of items icon or thumbnail.\n
+       * \n
+       * example:\n
+       *   - cList.setImageDimensions(18, 18)n\n
        */
       virtual void setImageDimensions(long imageWidth,long imageHeight) throw (UnimplementedException);
 
       // setItemHeight() method
       /**
-       * setItemHeight(itemHeight) -- Sets the height of items.
-       * 
-       * itemHeight         : integer - height of items.
-       * 
-       * example:
-       *   - cList.setItemHeight(25)
+       * setItemHeight(itemHeight) -- Sets the height of items.\n
+       * \n
+       * itemHeight         : integer - height of items.\n
+       * \n
+       * example:\n
+       *   - cList.setItemHeight(25)\n
        */
       virtual void setItemHeight(long height) throw (UnimplementedException);
 
       // setSpace() method
       /**
-       * setSpace(space) -- Set's the space between items.
-       * 
-       * space              : [opt] integer - space between items.
-       * 
-       * example:
-       *   - cList.setSpace(5)
+       * setSpace(space) -- Set's the space between items.\n
+       * \n
+       * space              : [opt] integer - space between items.\n
+       * \n
+       * example:\n
+       *   - cList.setSpace(5)\n
        */
       virtual void setSpace(int space) throw (UnimplementedException);
 
       // setPageControlVisible() method
       /**
-       * setPageControlVisible(visible) -- Sets the spin control's visible/hidden state.
-       * 
-       * visible            : boolean - True=visible / False=hidden.
-       * 
-       * example:
-       *   - cList.setPageControlVisible(True)
+       * setPageControlVisible(visible) -- Sets the spin control's visible/hidden state.\n
+       * \n
+       * visible            : boolean - True=visible / False=hidden.\n
+       * \n
+       * example:\n
+       *   - cList.setPageControlVisible(True)\n
        */
       virtual void setPageControlVisible(bool visible) throw(UnimplementedException);
 
       // size() method
       /**
-       * size() -- Returns the total number of items in this list control as an integer.
-       * 
-       * example:
-       *   - cnt = cList.size()
+       * size() -- Returns the total number of items in this list control as an integer.\n
+       * \n
+       * example:\n
+       *   - cnt = cList.size()\n
        */
       virtual long size() throw (UnimplementedException);
 
 
       // getItemHeight() Method
       /**
-       * getItemHeight() -- Returns the control's current item height as an integer.
-       * 
-       * example:
-       *   - item_height = self.cList.getItemHeight()\n
+       * getItemHeight() -- Returns the control's current item height as an integer.\n
+       * \n
+       * example:\n
+       *   - item_height = self.cList.getItemHeight()n\n
        */
       virtual long getItemHeight() throw(UnimplementedException);
 
       // getSpace() Method
       /**
-       * getSpace() -- Returns the control's space between items as an integer.
-       * 
-       * example:
-       *   - gap = self.cList.getSpace()\n
+       * getSpace() -- Returns the control's space between items as an integer.\n
+       * \n
+       * example:\n
+       *   - gap = self.cList.getSpace()n\n
        */
       virtual long getSpace() throw (UnimplementedException);
 
       // getListItem() method
       /**
-       * getListItem(index) -- Returns a given ListItem in this List.
-       * 
-       * index           : integer - index number of item to return.
-       * 
-       * *Note, throws a ValueError if index is out of range.
-       * 
-       * example:
-       *   - listitem = cList.getListItem(6)\n
+       * getListItem(index) -- Returns a given ListItem in this List.\n
+       * \n
+       * index           : integer - index number of item to return.\n
+       * \n
+       * *Note, throws a ValueError if index is out of range.\n
+       * \n
+       * example:\n
+       *   - listitem = cList.getListItem(6)n\n
        */
       virtual XBMCAddon::xbmcgui::ListItem* getListItem(int index) throw (UnimplementedException,WindowException);
 
       /**
-       * setStaticContent(items) -- Fills a static list with a list of listitems.
-       * 
-       * items                : List - list of listitems to add.
-       * 
-       * *Note, You can use the above as keywords for arguments.
-       * 
-       * example:
-       *   - cList.setStaticContent(items=listitems)\n
+       * setStaticContent(items) -- Fills a static list with a list of listitems.\n
+       * \n
+       * items                : List - list of listitems to add.\n
+       * \n
+       * *Note, You can use the above as keywords for arguments.\n
+       * \n
+       * example:\n
+       *   - cList.setStaticContent(items=listitems)n\n
        */
       virtual void setStaticContent(const ListItemList* items) throw (UnimplementedException);
 
@@ -855,25 +991,25 @@ namespace XBMCAddon
 
     // ControlFadeLabel class
     /**
-     * ControlFadeLabel class.
-     * Control that scroll's labl
-     * 
-     * ControlFadeLabel(x, y, width, height[, font, textColor, alignment])
-     * 
-     * x              : integer - x coordinate of control.
-     * y              : integer - y coordinate of control.
-     * width          : integer - width of control.
-     * height         : integer - height of control.
-     * font           : [opt] string - font used for label text. (e.g. 'font13')
-     * textColor      : [opt] hexstring - color of fadelabel's labels. (e.g. '0xFFFFFFFF')
-     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h
-     * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
-     *        After you create the control, you need to add it to the window with addControl().
-     * 
-     * example:
-     *   - self.fadelabel = xbmcgui.ControlFadeLabel(100, 250, 200, 50, textColor='0xFFFFFFFF')
+     * ControlFadeLabel class.\n
+     * Control that scroll's labl\n
+     * \n
+     * ControlFadeLabel(x, y, width, height[, font, textColor, alignment])\n
+     * \n
+     * x              : integer - x coordinate of control.\n
+     * y              : integer - y coordinate of control.\n
+     * width          : integer - width of control.\n
+     * height         : integer - height of control.\n
+     * font           : [opt] string - font used for label text. (e.g. 'font13')\n
+     * textColor      : [opt] hexstring - color of fadelabel's labels. (e.g. '0xFFFFFFFF')\n
+     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n
+     * \n
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
+     *        After you create the control, you need to add it to the window with addControl().\n
+     * \n
+     * example:\n
+     *   - self.fadelabel = xbmcgui.ControlFadeLabel(100, 250, 200, 50, textColor='0xFFFFFFFF')\n
      */
     class ControlFadeLabel : public Control
     {
@@ -885,20 +1021,20 @@ namespace XBMCAddon
 
       // addLabel() Method
       /**
-       * addLabel(label) -- Add a label to this control for scrolling.
-       * 
-       * label          : string or unicode - text string.
-       * 
-       * example:
-       *   - self.fadelabel.addLabel('This is a line of text that can scroll.')
+       * addLabel(label) -- Add a label to this control for scrolling.\n
+       * \n
+       * label          : string or unicode - text string.\n
+       * \n
+       * example:\n
+       *   - self.fadelabel.addLabel('This is a line of text that can scroll.')\n
        */
        virtual void addLabel(const String& label) throw (UnimplementedException);
 
       /**
-       * reset() -- Clear this fade label.
-       * 
-       * example:
-       *   - self.fadelabel.reset()\n
+       * reset() -- Clear this fade label.\n
+       * \n
+       * example:\n
+       *   - self.fadelabel.reset()n\n
        */
       virtual void reset() throw (UnimplementedException);
 
@@ -915,23 +1051,23 @@ namespace XBMCAddon
     };
 
     /**
-     * ControlTextBox class.
-     * 
-     * ControlTextBox(x, y, width, height[, font, textColor])
-     * 
-     * x              : integer - x coordinate of control.
-     * y              : integer - y coordinate of control.
-     * width          : integer - width of control.
-     * height         : integer - height of control.
-     * font           : [opt] string - font used for text. (e.g. 'font13')
-     * textColor      : [opt] hexstring - color of textbox's text. (e.g. '0xFFFFFFFF')
-     * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
-     *        After you create the control, you need to add it to the window with addControl().
-     * 
-     * example:
-     *   - self.textbox = xbmcgui.ControlTextBox(100, 250, 300, 300, textColor='0xFFFFFFFF')
+     * ControlTextBox class.\n
+     * \n
+     * ControlTextBox(x, y, width, height[, font, textColor])\n
+     * \n
+     * x              : integer - x coordinate of control.\n
+     * y              : integer - y coordinate of control.\n
+     * width          : integer - width of control.\n
+     * height         : integer - height of control.\n
+     * font           : [opt] string - font used for text. (e.g. 'font13')\n
+     * textColor      : [opt] hexstring - color of textbox's text. (e.g. '0xFFFFFFFF')\n
+     * \n
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
+     *        After you create the control, you need to add it to the window with addControl().\n
+     * \n
+     * example:\n
+     *   - self.textbox = xbmcgui.ControlTextBox(100, 250, 300, 300, textColor='0xFFFFFFFF')\n
      */
     class ControlTextBox : public Control
     {
@@ -942,32 +1078,32 @@ namespace XBMCAddon
 
       // SetText() Method
       /**
-       * setText(text) -- Set's the text for this textbox.
-       * 
-       * text           : string or unicode - text string.
-       * 
-       * example:
-       *   - self.textbox.setText('This is a line of text that can wrap.')
+       * setText(text) -- Set's the text for this textbox.\n
+       * \n
+       * text           : string or unicode - text string.\n
+       * \n
+       * example:\n
+       *   - self.textbox.setText('This is a line of text that can wrap.')\n
        */
       virtual void setText(const String& text) throw(UnimplementedException);
 
       // reset() Method
       /**
-       * reset() -- Clear's this textbox.
-       * 
-       * example:
-       *   - self.textbox.reset()\n
+       * reset() -- Clear's this textbox.\n
+       * \n
+       * example:\n
+       *   - self.textbox.reset()n\n
        */
       virtual void reset() throw(UnimplementedException);
 
       // scroll() Method
       /**
-       * scroll(position) -- Scrolls to the given position.
-       * 
-       * id           : integer - position to scroll to.
-       * 
-       * example:
-       *   - self.textbox.scroll(10)
+       * scroll(position) -- Scrolls to the given position.\n
+       * \n
+       * id           : integer - position to scroll to.\n
+       * \n
+       * example:\n
+       *   - self.textbox.scroll(10)\n
        */
       virtual void scroll(long id) throw(UnimplementedException);
 
@@ -983,24 +1119,24 @@ namespace XBMCAddon
 
     // ControlImage class
     /**
-     * ControlImage class.
-     * 
-     * ControlImage(x, y, width, height, filename[, aspectRatio, colorDiffuse])
-     * 
-     * x              : integer - x coordinate of control.
-     * y              : integer - y coordinate of control.
-     * width          : integer - width of control.
-     * height         : integer - height of control.
-     * filename       : string - image filename.
-     * aspectRatio    : [opt] integer - (values 0 = stretch (default), 1 = scale up (crops), 2 = scale down (black bar
-     * colorDiffuse   : hexString - (example, '0xC0FF0000' (red tint))
-     * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
-     *        After you create the control, you need to add it to the window with addControl().
-     * 
-     * example:
-     *   - self.image = xbmcgui.ControlImage(100, 250, 125, 75, aspectRatio=2)
+     * ControlImage class.\n
+     * \n
+     * ControlImage(x, y, width, height, filename[, aspectRatio, colorDiffuse])\n
+     * \n
+     * x              : integer - x coordinate of control.\n
+     * y              : integer - y coordinate of control.\n
+     * width          : integer - width of control.\n
+     * height         : integer - height of control.\n
+     * filename       : string - image filename.\n
+     * aspectRatio    : [opt] integer - (values 0 = stretch (default), 1 = scale up (crops), 2 = scale down (black bar\n
+     * colorDiffuse   : hexString - (example, '0xC0FF0000' (red tint))\n
+     * \n
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
+     *        After you create the control, you need to add it to the window with addControl().\n
+     * \n
+     * example:\n
+     *   - self.image = xbmcgui.ControlImage(100, 250, 125, 75, aspectRatio=2)\n
      */
     class ControlImage : public Control
     {
@@ -1010,22 +1146,22 @@ namespace XBMCAddon
                    const char* colorDiffuse = NULL);
 
       /**
-       * setImage(filename) -- Changes the image.
-       * 
-       * filename       : string - image filename.
-       * 
-       * example:
-       *   - self.image.setImage('special://home/scripts/test.png')
+       * setImage(filename) -- Changes the image.\n
+       * \n
+       * filename       : string - image filename.\n
+       * \n
+       * example:\n
+       *   - self.image.setImage('special://home/scripts/test.png')\n
        */
       virtual void setImage(const char* imageFilename) throw (UnimplementedException);
 
       /**
-       * setColorDiffuse(colorDiffuse) -- Changes the images color.
-       * 
-       * colorDiffuse   : hexString - (example, '0xC0FF0000' (red tint))
-       * 
-       * example:
-       *   - self.image.setColorDiffuse('0xC0FF0000')
+       * setColorDiffuse(colorDiffuse) -- Changes the images color.\n
+       * \n
+       * colorDiffuse   : hexString - (example, '0xC0FF0000' (red tint))\n
+       * \n
+       * example:\n
+       *   - self.image.setColorDiffuse('0xC0FF0000')\n
        */
       virtual void setColorDiffuse(const char* hexString) throw (UnimplementedException);
 
@@ -1054,22 +1190,22 @@ namespace XBMCAddon
                       const char* textureoverlay = NULL);
 
       /**
-       * setPercent(percent) -- Sets the percentage of the progressbar to show.
-       * 
-       * percent       : float - percentage of the bar to show.
-       * 
-       * *Note, valid range for percent is 0-100
-       * 
-       * example:
-       *   - self.progress.setPercent(60)
+       * setPercent(percent) -- Sets the percentage of the progressbar to show.\n
+       * \n
+       * percent       : float - percentage of the bar to show.\n
+       * \n
+       * *Note, valid range for percent is 0-100\n
+       * \n
+       * example:\n
+       *   - self.progress.setPercent(60)\n
        */
       virtual void setPercent(float pct) throw (UnimplementedException);
 
       /**
-       * getPercent() -- Returns a float of the percent of the progress.
-       * 
-       * example:
-       *   - print self.progress.getValue()
+       * getPercent() -- Returns a float of the percent of the progress.\n
+       * \n
+       * example:\n
+       *   - print self.progress.getValue()\n
        */
        virtual float getPercent() throw (UnimplementedException);
 
@@ -1092,34 +1228,34 @@ namespace XBMCAddon
 
     // ControlButton class
     /**
-     * ControlButton class.
-     * 
-     * ControlButton(x, y, width, height, label[, focusTexture, noFocusTexture, textOffsetX, textOffsetY,
-     *               alignment, font, textColor, disabledColor, angle, shadowColor, focusedColor])
-     * 
-     * x              : integer - x coordinate of control.
-     * y              : integer - y coordinate of control.
-     * width          : integer - width of control.
-     * height         : integer - height of control.
-     * label          : string or unicode - text string.
-     * focusTexture   : [opt] string - filename for focus texture.
-     * noFocusTexture : [opt] string - filename for no focus texture.
-     * textOffsetX    : [opt] integer - x offset of label.
-     * textOffsetY    : [opt] integer - y offset of label.
-     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h
-     * font           : [opt] string - font used for label text. (e.g. 'font13')
-     * textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')
-     * disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')
-     * angle          : [opt] integer - angle of control. (+ rotates CCW, - rotates CW)
-     * shadowColor    : [opt] hexstring - color of button's label's shadow. (e.g. '0xFF000000')
-     * focusedColor   : [opt] hexstring - color of focused button's label. (e.g. '0xFF00FFFF')
-     * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
-     *        After you create the control, you need to add it to the window with addControl().
-     * 
-     * example:
-     *   - self.button = xbmcgui.ControlButton(100, 250, 200, 50, 'Status', font='font14')
+     * ControlButton class.\n
+     * \n
+     * ControlButton(x, y, width, height, label[, focusTexture, noFocusTexture, textOffsetX, textOffsetY,\n
+     *               alignment, font, textColor, disabledColor, angle, shadowColor, focusedColor])\n
+     * \n
+     * x              : integer - x coordinate of control.\n
+     * y              : integer - y coordinate of control.\n
+     * width          : integer - width of control.\n
+     * height         : integer - height of control.\n
+     * label          : string or unicode - text string.\n
+     * focusTexture   : [opt] string - filename for focus texture.\n
+     * noFocusTexture : [opt] string - filename for no focus texture.\n
+     * textOffsetX    : [opt] integer - x offset of label.\n
+     * textOffsetY    : [opt] integer - y offset of label.\n
+     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n
+     * font           : [opt] string - font used for label text. (e.g. 'font13')\n
+     * textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')\n
+     * disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n
+     * angle          : [opt] integer - angle of control. (+ rotates CCW, - rotates CW)\n
+     * shadowColor    : [opt] hexstring - color of button's label's shadow. (e.g. '0xFF000000')\n
+     * focusedColor   : [opt] hexstring - color of focused button's label. (e.g. '0xFF00FFFF')\n
+     * \n
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
+     *        After you create the control, you need to add it to the window with addControl().\n
+     * \n
+     * example:\n
+     *   - self.button = xbmcgui.ControlButton(100, 250, 200, 50, 'Status', font='font14')\n
      */
     class ControlButton : public Control
     {
@@ -1135,21 +1271,21 @@ namespace XBMCAddon
 
       // setLabel() Method
       /**
-       * setLabel([label, font, textColor, disabledColor, shadowColor, focusedColor]) -- Set's this buttons text attributes.
-       * 
-       * label          : [opt] string or unicode - text string.
-       * font           : [opt] string - font used for label text. (e.g. 'font13')
-       * textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')
-       * disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')
-       * shadowColor    : [opt] hexstring - color of button's label's shadow. (e.g. '0xFF000000')
-       * focusedColor   : [opt] hexstring - color of focused button's label. (e.g. '0xFFFFFF00')
-       * label2         : [opt] string or unicode - text string.
-       * 
-       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-       *        Once you use a keyword, all following arguments require the keyword.
-       * 
-       * example:
-       *   - self.button.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300', '0xFF000000')
+       * setLabel([label, font, textColor, disabledColor, shadowColor, focusedColor]) -- Set's this buttons text attributes.\n
+       * \n
+       * label          : [opt] string or unicode - text string.\n
+       * font           : [opt] string - font used for label text. (e.g. 'font13')\n
+       * textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')\n
+       * disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n
+       * shadowColor    : [opt] hexstring - color of button's label's shadow. (e.g. '0xFF000000')\n
+       * focusedColor   : [opt] hexstring - color of focused button's label. (e.g. '0xFFFFFF00')\n
+       * label2         : [opt] string or unicode - text string.\n
+       * \n
+       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+       *        Once you use a keyword, all following arguments require the keyword.\n
+       * \n
+       * example:\n
+       *   - self.button.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300', '0xFF000000')\n
        */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
@@ -1161,30 +1297,30 @@ namespace XBMCAddon
 
       // setDisabledColor() Method
       /**
-       * setDisabledColor(disabledColor) -- Set's this buttons disabled color.
-       * 
-       * disabledColor  : hexstring - color of disabled button's label. (e.g. '0xFFFF3300')
-       * 
-       * example:
-       *   - self.button.setDisabledColor('0xFFFF3300')
+       * setDisabledColor(disabledColor) -- Set's this buttons disabled color.\n
+       * \n
+       * disabledColor  : hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n
+       * \n
+       * example:\n
+       *   - self.button.setDisabledColor('0xFFFF3300')\n
        */
       virtual void setDisabledColor(const char* color) throw (UnimplementedException);
 
       // getLabel() Method
       /**
-       * getLabel() -- Returns the buttons label as a unicode string.
-       * 
-       * example:
-       *   - label = self.button.getLabel()
+       * getLabel() -- Returns the buttons label as a unicode string.\n
+       * \n
+       * example:\n
+       *   - label = self.button.getLabel()\n
        */
       virtual String getLabel() throw (UnimplementedException);
 
       // getLabel2() Method
       /**
-       * getLabel2() -- Returns the buttons label2 as a unicode string.
-       * 
-       * example:
-       *   - label = self.button.getLabel2()
+       * getLabel2() -- Returns the buttons label2 as a unicode string.\n
+       * \n
+       * example:\n
+       *   - label = self.button.getLabel2()\n
        */
       virtual String getLabel2() throw (UnimplementedException);
 #ifndef SWIG
@@ -1219,31 +1355,31 @@ namespace XBMCAddon
 
     // ControlCheckMark class
     /**
-     * ControlCheckMark class.
-     * 
-     * ControlCheckMark(x, y, width, height, label[, focusTexture, noFocusTexture,
-     *                  checkWidth, checkHeight, alignment, font, textColor, disabledColor])
-     * 
-     * x              : integer - x coordinate of control.
-     * y              : integer - y coordinate of control.
-     * width          : integer - width of control.
-     * height         : integer - height of control.
-     * label          : string or unicode - text string.
-     * focusTexture   : [opt] string - filename for focus texture.
-     * noFocusTexture : [opt] string - filename for no focus texture.
-     * checkWidth     : [opt] integer - width of checkmark.
-     * checkHeight    : [opt] integer - height of checkmark.
-     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h
-     * font           : [opt] string - font used for label text. (e.g. 'font13')
-     * textColor      : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')
-     * disabledColor  : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')
-     * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
-     *        After you create the control, you need to add it to the window with addControl().
-     * 
-     * example:
-     *   - self.checkmark = xbmcgui.ControlCheckMark(100, 250, 200, 50, 'Status', font='font14')
+     * ControlCheckMark class.\n
+     * \n
+     * ControlCheckMark(x, y, width, height, label[, focusTexture, noFocusTexture,\n
+     *                  checkWidth, checkHeight, alignment, font, textColor, disabledColor])\n
+     * \n
+     * x              : integer - x coordinate of control.\n
+     * y              : integer - y coordinate of control.\n
+     * width          : integer - width of control.\n
+     * height         : integer - height of control.\n
+     * label          : string or unicode - text string.\n
+     * focusTexture   : [opt] string - filename for focus texture.\n
+     * noFocusTexture : [opt] string - filename for no focus texture.\n
+     * checkWidth     : [opt] integer - width of checkmark.\n
+     * checkHeight    : [opt] integer - height of checkmark.\n
+     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n
+     * font           : [opt] string - font used for label text. (e.g. 'font13')\n
+     * textColor      : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')\n
+     * disabledColor  : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')\n
+     * \n
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
+     *        After you create the control, you need to add it to the window with addControl().\n
+     * \n
+     * example:\n
+     *   - self.checkmark = xbmcgui.ControlCheckMark(100, 250, 200, 50, 'Status', font='font14')\n
      */
     class ControlCheckMark : public Control
     {
@@ -1257,35 +1393,35 @@ namespace XBMCAddon
 
       // getSelected() Method
       /**
-       * getSelected() -- Returns the selected status for this checkmark as a bool.
-       * 
-       * example:
-       *   - selected = self.checkmark.getSelected()
+       * getSelected() -- Returns the selected status for this checkmark as a bool.\n
+       * \n
+       * example:\n
+       *   - selected = self.checkmark.getSelected()\n
        */
       virtual bool getSelected() throw (UnimplementedException);
 
       // setSelected() Method
       /**
-       * setSelected(isOn) -- Sets this checkmark status to on or off.
-       * 
-       * isOn           : bool - True=selected (on) / False=not selected (off)
-       * 
-       * example:
-       *   - self.checkmark.setSelected(True)
+       * setSelected(isOn) -- Sets this checkmark status to on or off.\n
+       * \n
+       * isOn           : bool - True=selected (on) / False=not selected (off)\n
+       * \n
+       * example:\n
+       *   - self.checkmark.setSelected(True)\n
        */
       virtual void setSelected(bool selected) throw (UnimplementedException);
 
       // setLabel() Method
       /**
-       * setLabel(label[, font, textColor, disabledColor]) -- Set's this controls text attributes.
-       * 
-       * label          : string or unicode - text string.
-       * font           : [opt] string - font used for label text. (e.g. 'font13')
-       * textColor      : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')
-       * disabledColor  : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')
-       * 
-       * example:
-       *   - self.checkmark.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300')
+       * setLabel(label[, font, textColor, disabledColor]) -- Set's this controls text attributes.\n
+       * \n
+       * label          : string or unicode - text string.\n
+       * font           : [opt] string - font used for label text. (e.g. 'font13')\n
+       * textColor      : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')\n
+       * disabledColor  : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')\n
+       * \n
+       * example:\n
+       *   - self.checkmark.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300')\n
        */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
@@ -1297,12 +1433,12 @@ namespace XBMCAddon
 
       // setDisabledColor() Method
       /**
-       * setDisabledColor(disabledColor) -- Set's this controls disabled color.
-       * 
-       * disabledColor  : hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')
-       * 
-       * example:
-       *   - self.checkmark.setDisabledColor('0xFFFF3300')
+       * setDisabledColor(disabledColor) -- Set's this controls disabled color.\n
+       * \n
+       * disabledColor  : hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')\n
+       * \n
+       * example:\n
+       *   - self.checkmark.setDisabledColor('0xFFFF3300')\n
        */
       virtual void setDisabledColor(const char* color) throw (UnimplementedException);
 
@@ -1331,16 +1467,16 @@ namespace XBMCAddon
 
     // ControlGroup class
     /**
-     * ControlGroup class.
-     * 
-     * ControlGroup(x, y, width, height
-     * 
-     * x              : integer - x coordinate of control.
-     * y              : integer - y coordinate of control.
-     * width          : integer - width of control.
-     * height         : integer - height of control.
-     * example:
-     *   - self.group = xbmcgui.ControlGroup(100, 250, 125, 75)
+     * ControlGroup class.\n
+     * \n
+     * ControlGroup(x, y, width, height\n
+     * \n
+     * x              : integer - x coordinate of control.\n
+     * y              : integer - y coordinate of control.\n
+     * width          : integer - width of control.\n
+     * height         : integer - height of control.\n
+     * example:\n
+     *   - self.group = xbmcgui.ControlGroup(100, 250, 125, 75)\n
      */
     class ControlGroup : public Control 
     {
@@ -1370,43 +1506,43 @@ namespace XBMCAddon
 
       // setSelected() Method
       /**
-       * setSelected(selected) -- Sets the radio buttons's selected status.
-       * 
-       * selected            : bool - True=selected (on) / False=not selected (off)
-       * 
-       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-       *        Once you use a keyword, all following arguments require the keyword.
-       * 
-       * example:
-       *   - self.radiobutton.setSelected(True)
+       * setSelected(selected) -- Sets the radio buttons's selected status.\n
+       * \n
+       * selected            : bool - True=selected (on) / False=not selected (off)\n
+       * \n
+       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+       *        Once you use a keyword, all following arguments require the keyword.\n
+       * \n
+       * example:\n
+       *   - self.radiobutton.setSelected(True)\n
        */
       virtual void setSelected(bool selected) throw (UnimplementedException);
 
       // isSelected() Method
       /**
-       * isSelected() -- Returns the radio buttons's selected status.
-       * 
-       * example:
-       *   - is = self.radiobutton.isSelected()\n
+       * isSelected() -- Returns the radio buttons's selected status.\n
+       * \n
+       * example:\n
+       *   - is = self.radiobutton.isSelected()n\n
        */
       virtual bool isSelected() throw (UnimplementedException);
 
       // setLabel() Method
       /**
-       * setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor]) -- Set's the radio buttons text attributes.
-       * 
-       * label          : string or unicode - text string.
-       * font           : [opt] string - font used for label text. (e.g. 'font13')
-       * textColor      : [opt] hexstring - color of enabled radio button's label. (e.g. '0xFFFFFFFF')
-       * disabledColor  : [opt] hexstring - color of disabled radio button's label. (e.g. '0xFFFF3300')
-       * shadowColor    : [opt] hexstring - color of radio button's label's shadow. (e.g. '0xFF000000')
-       * focusedColor   : [opt] hexstring - color of focused radio button's label. (e.g. '0xFFFFFF00')
-       * 
-       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-       *        Once you use a keyword, all following arguments require the keyword.
-       * 
-       * example:
-       *   - self.radiobutton.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300', '0xFF000000')
+       * setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor]) -- Set's the radio buttons text attributes.\n
+       * \n
+       * label          : string or unicode - text string.\n
+       * font           : [opt] string - font used for label text. (e.g. 'font13')\n
+       * textColor      : [opt] hexstring - color of enabled radio button's label. (e.g. '0xFFFFFFFF')\n
+       * disabledColor  : [opt] hexstring - color of disabled radio button's label. (e.g. '0xFFFF3300')\n
+       * shadowColor    : [opt] hexstring - color of radio button's label's shadow. (e.g. '0xFF000000')\n
+       * focusedColor   : [opt] hexstring - color of focused radio button's label. (e.g. '0xFFFFFF00')\n
+       * \n
+       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+       *        Once you use a keyword, all following arguments require the keyword.\n
+       * \n
+       * example:\n
+       *   - self.radiobutton.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300', '0xFF000000')\n
        */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
@@ -1418,18 +1554,18 @@ namespace XBMCAddon
 
       // setRadioDimension() Method
       /**
-       * setRadioDimension(x, y, width, height) -- Sets the radio buttons's radio texture's position and size.
-       * 
-       * x                   : integer - x coordinate of radio texture.
-       * y                   : integer - y coordinate of radio texture.
-       * width               : integer - width of radio texture.
-       * height              : integer - height of radio texture.
-       * 
-       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-       *        Once you use a keyword, all following arguments require the keyword.
-       * 
-       * example:
-       *   - self.radiobutton.setRadioDimension(x=100, y=5, width=20, height=20)
+       * setRadioDimension(x, y, width, height) -- Sets the radio buttons's radio texture's position and size.\n
+       * \n
+       * x                   : integer - x coordinate of radio texture.\n
+       * y                   : integer - y coordinate of radio texture.\n
+       * width               : integer - width of radio texture.\n
+       * height              : integer - height of radio texture.\n
+       * \n
+       * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+       *        Once you use a keyword, all following arguments require the keyword.\n
+       * \n
+       * example:\n
+       *   - self.radiobutton.setRadioDimension(x=100, y=5, width=20, height=20)\n
        */
       virtual void setRadioDimension(long x, long y, long width, long height) throw (UnimplementedException);
 
@@ -1463,23 +1599,23 @@ namespace XBMCAddon
     };
 	
     /**
-     * ControlSlider class.
-     * 
-     * ControlSlider(x, y, width, height[, textureback, texture, texturefocus])
-     * 
-     * x              : integer - x coordinate of control.
-     * y              : integer - y coordinate of control.
-     * width          : integer - width of control.
-     * height         : integer - height of control.
-     * textureback    : [opt] string - image filename.
-     * texture        : [opt] string - image filename.
-     * texturefocus   : [opt] string - image filename.\n"            
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
-     *        After you create the control, you need to add it to the window with addControl().
-     * 
-     * example:
-     *   - self.slider = xbmcgui.ControlSlider(100, 250, 350, 40)
+     * ControlSlider class.\n
+     * \n
+     * ControlSlider(x, y, width, height[, textureback, texture, texturefocus])\n
+     * \n
+     * x              : integer - x coordinate of control.\n
+     * y              : integer - y coordinate of control.\n
+     * width          : integer - width of control.\n
+     * height         : integer - height of control.\n
+     * textureback    : [opt] string - image filename.\n
+     * texture        : [opt] string - image filename.\n
+     * texturefocus   : [opt] string - image filename.n"            \n
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
+     *        After you create the control, you need to add it to the window with addControl().\n
+     * \n
+     * example:\n
+     *   - self.slider = xbmcgui.ControlSlider(100, 250, 350, 40)\n
      */
     class ControlSlider : public Control
     {
@@ -1490,18 +1626,18 @@ namespace XBMCAddon
                     const char* texturefocus = NULL);
 
       /**
-       * getPercent() -- Returns a float of the percent of the slider.
-       * 
-       * example:
-       *   - print self.slider.getPercent()
+       * getPercent() -- Returns a float of the percent of the slider.\n
+       * \n
+       * example:\n
+       *   - print self.slider.getPercent()\n
        */
       virtual float getPercent() throw (UnimplementedException);
 
       /**
-       * setPercent(50) -- Sets the percent of the slider.
-       * 
-       * example:
-       * self.slider.setPercent(50)
+       * setPercent(50) -- Sets the percent of the slider.\n
+       * \n
+       * example:\n
+       * self.slider.setPercent(50)\n
        */
       virtual void setPercent(float pct) throw (UnimplementedException);
 
