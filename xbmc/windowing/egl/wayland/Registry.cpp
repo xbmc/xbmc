@@ -31,11 +31,45 @@ const struct wl_registry_listener xw::Registry::m_listener =
   Registry::HandleRemoveGlobalCallback
 };
 
+/* Only one observer may be registered at a time */
+void
+xw::ExtraWaylandGlobals::SetHandler(const GlobalHandler &handler)
+{
+  m_handler = handler;
+}
+
+void
+xw::ExtraWaylandGlobals::NewGlobal(struct wl_registry *registry,
+                                   uint32_t name,
+                                   const char *interface,
+                                   uint32_t version)
+{
+  if (!m_handler.empty())
+    m_handler(registry, name, interface, version);
+}
+
+xw::ExtraWaylandGlobals &
+xw::ExtraWaylandGlobals::GetInstance()
+{
+  if (!m_instance)
+    m_instance.reset(new ExtraWaylandGlobals());
+
+  return *m_instance;
+}
+
+boost::scoped_ptr<xw::ExtraWaylandGlobals> xw::ExtraWaylandGlobals::m_instance;
+
 /* We inject an IWaylandRegistration here which is a virtual
- * class which a series of callbacks for the global objects
+ * class which a callback for the global objects
  * used by xbmc. Once one of those objects becomes
- * available, we call the specified callback function on that
- * interface */
+ * available, we call the callback function on that
+ * interface. If it returns false, then it means that the main
+ * xbmc implementation isn't interested in that object, so we 
+ * call out to a listener that can be bound to by any client code
+ * (as it is a singleton) to see if that code is interested
+ * in the interface and wants to bind to it. This is particularly
+ * useful for testing purposes where custom objects on the compositor
+ * side are used. */
 xw::Registry::Registry(IDllWaylandClient &clientLibrary,
                        struct wl_display *display,
                        IWaylandRegistration &registration) :
@@ -85,9 +119,17 @@ xw::Registry::HandleGlobal(uint32_t name,
                            const char *interface,
                            uint32_t version)
 {
-  m_registration.OnGlobalInterfaceAvailable(name,
-                                            interface,
-                                            version);
+  /* Check if our injected listener wants to know about this -
+   * otherwise let any external listeners know */
+  if (!m_registration.OnGlobalInterfaceAvailable(name,
+                                                 interface,
+                                                 version))
+  {
+    ExtraWaylandGlobals::GetInstance().NewGlobal(m_registry,
+                                                 name,
+                                                 interface,
+                                                 version);
+  }
 }
 
 void

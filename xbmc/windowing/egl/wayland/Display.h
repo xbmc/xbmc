@@ -20,6 +20,8 @@
  *
  */
 #include <boost/noncopyable.hpp>
+#include <boost/function.hpp>
+#include <boost/scoped_ptr.hpp>
 
 class IDllWaylandClient;
 
@@ -48,6 +50,26 @@ class Display :
 
     IDllWaylandClient &m_clientLibrary;
     struct wl_display *m_display;
+};
+
+/* This is effectively just a seam for testing purposes so that
+ * we can listen for extra objects that the core implementation might
+ * not necessarily be interested in */
+class WaylandDisplayListener
+{
+public:
+
+  typedef boost::function<void(Display &)> Handler;
+  
+  void SetHandler(const Handler &);
+  void DisplayAvailable(Display &);
+
+  static WaylandDisplayListener & GetInstance();
+private:
+
+  Handler m_handler;
+  
+  static boost::scoped_ptr<WaylandDisplayListener> m_instance;
 };
 }
 }

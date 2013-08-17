@@ -25,11 +25,36 @@
 
 namespace xw = xbmc::wayland;
 
+boost::scoped_ptr<xw::WaylandSurfaceListener> xw::WaylandSurfaceListener::m_instance;
+
+xw::WaylandSurfaceListener &
+xw::WaylandSurfaceListener::GetInstance()
+{
+  if (!m_instance)
+    m_instance.reset(new WaylandSurfaceListener());
+
+  return *m_instance;
+}
+
+void
+xw::WaylandSurfaceListener::SetHandler(const Handler &handler)
+{
+  m_handler = handler;
+}
+
+void
+xw::WaylandSurfaceListener::SurfaceCreated(xw::Surface &surface)
+{
+  if (!m_handler.empty())
+    m_handler(surface);
+}
+
 xw::Surface::Surface(IDllWaylandClient &clientLibrary,
                      struct wl_surface *surface) :
   m_clientLibrary(clientLibrary),
   m_surface(surface)
 {
+  WaylandSurfaceListener::GetInstance().SurfaceCreated(*this);
 }
 
 xw::Surface::~Surface()

@@ -35,6 +35,32 @@ namespace xbmc
 {
 namespace wayland
 {
+/* This is effectively just a seam for testing purposes so that
+ * we can listen for extra objects that the core implementation might
+ * not necessarily be interested in */
+class ExtraWaylandGlobals
+{
+public:
+
+  typedef boost::function<void(struct wl_registry *,
+                               uint32_t,
+                               const char *,
+                               uint32_t)> GlobalHandler;
+  
+  void SetHandler(const GlobalHandler &);
+  void NewGlobal(struct wl_registry *,
+                 uint32_t,
+                 const char *,
+                 uint32_t);
+
+  static ExtraWaylandGlobals & GetInstance();
+private:
+
+  GlobalHandler m_handler;
+  
+  static boost::scoped_ptr<ExtraWaylandGlobals> m_instance;
+};
+
 class IWaylandRegistration
 {
 public:

@@ -21,6 +21,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <boost/function.hpp>
+
 #include <cstdlib>
 
 #include <wayland-client.h>
@@ -30,6 +32,30 @@
 #include "Display.h"
 
 namespace xw = xbmc::wayland;
+
+void
+xw::WaylandDisplayListener::SetHandler(const Handler &handler)
+{
+  m_handler = handler;
+}
+
+void
+xw::WaylandDisplayListener::DisplayAvailable(Display &display)
+{
+  if (!m_handler.empty())
+    m_handler(display);
+}
+
+xw::WaylandDisplayListener &
+xw::WaylandDisplayListener::GetInstance()
+{
+  if (!m_instance)
+    m_instance.reset(new WaylandDisplayListener());
+
+  return *m_instance;
+}
+
+boost::scoped_ptr<xw::WaylandDisplayListener> xw::WaylandDisplayListener::m_instance;
 
 xw::Display::Display(IDllWaylandClient &clientLibrary) :
   m_clientLibrary(clientLibrary),
@@ -47,6 +73,8 @@ xw::Display::Display(IDllWaylandClient &clientLibrary) :
        << getenv("WAYLAND_DISPLAY");
     throw std::runtime_error(ss.str());
   }
+  
+  WaylandDisplayListener::GetInstance().DisplayAvailable(*this);
 }
 
 xw::Display::~Display()

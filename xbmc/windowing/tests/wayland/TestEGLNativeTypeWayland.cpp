@@ -932,6 +932,7 @@ class WestonTest :
 public:
 
   WestonTest();
+  ~WestonTest();
   pid_t Pid();
   
   virtual void SetUp();
@@ -940,7 +941,6 @@ protected:
 
   CEGLNativeTypeWayland m_nativeType;
   xw::Display *m_display;
-  boost::scoped_ptr<xtw::XBMCWayland> m_xbmcWayland;
   struct wl_surface *m_mostRecentSurface;
   
   CStdString m_xbmcTestBase;
@@ -949,7 +949,6 @@ protected:
   
 private:
 
-  void Global(struct wl_registry *, uint32_t, const char *, uint32_t);
   void DisplayAvailable(xw::Display &display);
   void SurfaceCreated(xw::Surface &surface);
 
@@ -969,6 +968,22 @@ WestonTest::WestonTest() :
   m_process(m_xbmcTestBase,
             m_tempSocketName.FetchFilename())
 {
+  xw::WaylandDisplayListener &displayListener(xw::WaylandDisplayListener::GetInstance());
+  displayListener.SetHandler(boost::bind(&WestonTest::DisplayAvailable,
+                                         this, _1));
+
+  xw::WaylandSurfaceListener &surfaceListener(xw::WaylandSurfaceListener::GetInstance());
+  surfaceListener.SetHandler(boost::bind(&WestonTest::SurfaceCreated,
+                                        this, _1));
+}
+
+WestonTest::~WestonTest()
+{
+  xw::WaylandDisplayListener &displayListener(xw::WaylandDisplayListener::GetInstance());
+  displayListener.SetHandler(xw::WaylandDisplayListener::Handler());
+  
+  xw::WaylandSurfaceListener &surfaceListener(xw::WaylandSurfaceListener::GetInstance());
+  surfaceListener.SetHandler(xw::WaylandSurfaceListener::Handler());
 }
 
 pid_t
@@ -981,19 +996,6 @@ void
 WestonTest::SetUp()
 {
   m_process.WaitForSignal(SIGUSR2, DefaultProcessWaitTimeout);
-}
-
-void
-WestonTest::Global(struct wl_registry *registry,
-                   uint32_t name,
-                   const char *interface,
-                   uint32_t version)
-{
-  if (std::string(interface) == "xbmc_wayland")
-    m_xbmcWayland.reset(new xtw::XBMCWayland(static_cast<xbmc_wayland *>(wl_registry_bind(registry,
-                                                                                          name,
-                                                                                          &xbmc_wayland_interface,
-                                                                                          version))));
 }
 
 void
@@ -1048,6 +1050,62 @@ CompatibleWestonTest::SetUp()
 TEST_F(CompatibleWestonTest, TestConnection)
 {
   EXPECT_TRUE(m_nativeType.CreateNativeDisplay());
+}
+
+class ConnectedWestonTest :
+  public CompatibleWestonTest
+{
+public:
+
+  ConnectedWestonTest();
+  ~ConnectedWestonTest();
+  virtual void SetUp();
+
+protected:
+
+  boost::scoped_ptr<xtw::XBMCWayland> m_xbmcWayland;
+
+private:
+
+  void Global(struct wl_registry *, uint32_t, const char *, uint32_t);
+};
+
+ConnectedWestonTest::ConnectedWestonTest()
+{
+  xw::ExtraWaylandGlobals &extra(xw::ExtraWaylandGlobals::GetInstance());
+  extra.SetHandler(boost::bind(&ConnectedWestonTest::Global,
+                               this, _1, _2, _3, _4));
+}
+
+ConnectedWestonTest::~ConnectedWestonTest()
+{
+  xw::ExtraWaylandGlobals &extra(xw::ExtraWaylandGlobals::GetInstance());
+  extra.SetHandler(xw::ExtraWaylandGlobals::GlobalHandler());
+}
+
+void
+ConnectedWestonTest::SetUp()
+{
+  CompatibleWestonTest::SetUp();
+  ASSERT_TRUE(m_nativeType.CreateNativeDisplay());
+}
+
+void
+ConnectedWestonTest::Global(struct wl_registry *registry,
+                            uint32_t name,
+                            const char *interface,
+                            uint32_t version)
+{
+  if (std::string(interface) == "xbmc_wayland")
+    m_xbmcWayland.reset(new xtw::XBMCWayland(static_cast<xbmc_wayland *>(wl_registry_bind(registry,
+                                                                                          name,
+                                                                                          &xbmc_wayland_interface,
+                                                                                          version))));
+}
+
+TEST_F(ConnectedWestonTest, TestGotXBMCWayland)
+{
+  EXPECT_TRUE(m_xbmcWayland.get() != NULL);
 }
 
 #endif
