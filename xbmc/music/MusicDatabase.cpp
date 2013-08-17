@@ -148,7 +148,16 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strHash text)\n");
     CLog::Log(LOGINFO, "create song table");
-    m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, strArtists text, strGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
+    m_pDS->exec("CREATE TABLE song ( idSong integer primary key, "
+                " idAlbum integer, idPath integer, "
+                " strArtists text, strGenres text, strTitle varchar(512), "
+                " iTrack integer, iDuration integer, iYear integer, "
+                " dwFileNameCRC text, "
+                " strFileName text, strMusicBrainzTrackID text, "
+                " iTimesPlayed integer, iStartOffset integer, iEndOffset integer, "
+                " idThumb integer, "
+                " lastplayed varchar(20) default NULL, "
+                " rating char default '0', comment text)");
     CLog::Log(LOGINFO, "create song_artist table");
     m_pDS->exec("CREATE TABLE song_artist ( idArtist integer, idSong integer, strJoinPhrase text, boolFeatured integer, iOrder integer )\n");
     CLog::Log(LOGINFO, "create song_genre table");
@@ -269,24 +278,73 @@ void CMusicDatabase::CreateViews()
 {
   CLog::Log(LOGINFO, "create song view");
   m_pDS->exec("DROP VIEW IF EXISTS songview");
-  m_pDS->exec("CREATE VIEW songview AS SELECT "
-              "  song.idSong AS idSong, "
-              "  song.strArtists AS strArtists,"
-              "  song.strGenres AS strGenres,"
-              "  strTitle, iTrack, iDuration,"
-              "  song.iYear AS iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID,"
-              "  iTimesPlayed, iStartOffset, iEndOffset, lastplayed,"
-              "  rating, comment, song.idAlbum AS idAlbum, strAlbum, strPath,"
-              "  iKaraNumber, iKaraDelay, strKaraEncoding,"
-              "  album.bCompilation AS bCompilation,"
-              "  album.strArtists AS strAlbumArtists "
-              "FROM song"
-              "  JOIN album ON"
-              "    song.idAlbum=album.idAlbum"
-              "  JOIN path ON"
-              "    song.idPath=path.idPath"
-              "  LEFT OUTER JOIN karaokedata ON"
-              "    song.idSong=karaokedata.idSong");
+  if (m_sqlite)
+  {
+    m_pDS->exec("CREATE VIEW songview AS SELECT "
+                "        song.idSong AS idSong, "
+                "        GROUP_CONCAT(strArtist || strJoinPhrase, '') as strArtists, "
+                "        song.strGenres AS strGenres,"
+                "        strTitle, "
+                "        iTrack, iDuration, "
+                "        song.iYear AS iYear, "
+                "        dwFileNameCRC, "
+                "        strFileName, "
+                "        strMusicBrainzTrackID, "
+                "        iTimesPlayed, iStartOffset, iEndOffset, "
+                "        lastplayed, rating, comment, "
+                "        song.idAlbum AS idAlbum, "
+                "        strAlbum, "
+                "        strPath, "
+                "        iKaraNumber, iKaraDelay, strKaraEncoding,"
+                "        album.bCompilation AS bCompilation,"
+                "        album.strArtists AS strAlbumArtists "
+                "FROM song"
+                "   LEFT OUTER JOIN song_artist ON "
+                "       song.idSong = song_artist.idSong "
+                "   LEFT OUTER JOIN artist ON "
+                "       song_artist.idArtist = artist.idArtist "
+                "  JOIN album ON"
+                "    song.idAlbum=album.idAlbum"
+                "  JOIN path ON"
+                "    song.idPath=path.idPath"
+                "  LEFT OUTER JOIN karaokedata ON"
+                "    song.idSong=karaokedata.idSong"
+                "  GROUP BY song.idSong");
+  }
+  else
+  {
+    m_pDS->exec("CREATE VIEW songview AS SELECT "
+                "        song.idSong AS idSong, "
+                "        GROUP_CONCAT(strArtist, strJoinPhrase ORDER BY iOrder SEPARATOR '') as strArtists, "
+                "        song.strGenres AS strGenres,"
+                "        strTitle, "
+                "        iTrack, iDuration,"
+                "        song.iYear AS iYear, "
+                "        dwFileNameCRC, "
+                "        strFileName, "
+                "        strMusicBrainzTrackID, "
+                "        iTimesPlayed, iStartOffset, iEndOffset, "
+                "        lastplayed, rating, comment, "
+                "        song.idAlbum AS idAlbum, "
+                "        strAlbum, "
+                "        strPath, "
+                "        iKaraNumber, iKaraDelay, strKaraEncoding,"
+                "        album.bCompilation AS bCompilation,"
+                "        album.strArtists AS strAlbumArtists "
+                "FROM song"
+                "   LEFT OUTER JOIN song_artist ON "
+                "       song.idSong = song_artist.idAlbum "
+                "   LEFT OUTER JOIN artist ON "
+                "       album_artist.idArtist = artist.idArtist "
+                "  JOIN album ON"
+                "    song.idAlbum=album.idAlbum"
+                "  JOIN path ON"
+                "    song.idPath=path.idPath"
+                "  LEFT OUTER JOIN karaokedata ON"
+                "    song.idSong=karaokedata.idSong"
+                " GROUP BY song.idSong");
+  }
+
 
   CLog::Log(LOGINFO, "create album view");
   m_pDS->exec("DROP VIEW IF EXISTS albumview");
@@ -624,9 +682,9 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=PrepareSQL("select * from songview "
-                                 "where idSong=%i"
-                                 , idSong);
+    CStdString strSQL=PrepareSQL("SELECT songview.*,songartistview.* FROM songview "
+                                 " JOIN songartistview ON songview.idSong = songartistview.idSong "
+                                 " WHERE songview.idSong = %i", idSong);
 
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -635,7 +693,24 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
       m_pDS->close();
       return false;
     }
+
+    int songArtistOffset = song_enumCount;
+
+    set<int> artistcredits;
     song = GetSongFromDataset(m_pDS.get()->get_sql_record());
+    while (!m_pDS->eof())
+    {
+      const dbiplus::sql_record* const record = m_pDS.get()->get_sql_record();
+
+      int idSongArtist = record->at(songArtistOffset + songArtist_idArtist).get_asInt();
+      if (artistcredits.find(idSongArtist) == artistcredits.end())
+      {
+        song.artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
+        artistcredits.insert(idSongArtist);
+      }
+
+      m_pDS->next();
+    }
     m_pDS->close(); // cleanup recordset data
     return true;
   }
@@ -806,6 +881,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album)
                                  " WHERE albumview.idAlbum = %ld "
                                  " ORDER BY iOrder, iTrack", idAlbum);
 
+    CLog::Log(LOGDEBUG, "%s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     if (m_pDS->num_rows() == 0)
     {
@@ -816,7 +892,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album)
     int albumArtistOffset = album_enumCount;
     int songOffset = albumArtistOffset + artistCredit_enumCount;
     int songArtistOffset = songOffset + song_enumCount;
-    int infoSongOffset = songOffset + song_enumCount;
+    int infoSongOffset = songArtistOffset + artistCredit_enumCount;
 
     set<int> songs;
     set<int> artistcredits;
@@ -1662,48 +1738,34 @@ CSong CMusicDatabase::GetAlbumInfoSongFromDataset(const dbiplus::sql_record* con
 
 bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& song, int startOffset)
 {
-  try
+  song.Clear();
+  CURL url(strFileName);
+  
+  if (url.GetProtocol()=="musicdb")
   {
-    song.Clear();
-    CURL url(strFileName);
-
-    if (url.GetProtocol()=="musicdb")
-    {
-      CStdString strFile = URIUtils::GetFileName(strFileName);
-      URIUtils::RemoveExtension(strFile);
-      return GetSong(atol(strFile.c_str()), song);
-    }
-
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString strPath = URIUtils::GetDirectory(strFileName);
-    URIUtils::AddSlashAtEnd(strPath);
-
-    DWORD crc = ComputeCRC(strFileName);
-    CStdString strSQL=PrepareSQL("select * from songview "
-                                "where dwFileNameCRC='%ul' and strPath='%s'"
-                                , crc,
-                                strPath.c_str());
-    if (startOffset)
-      strSQL += PrepareSQL(" AND iStartOffset=%i", startOffset);
-
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return false;
-    }
-    song = GetSongFromDataset(m_pDS.get()->get_sql_record());
-    m_pDS->close(); // cleanup recordset data
-    return true;
+    CStdString strFile = URIUtils::GetFileName(strFileName);
+    URIUtils::RemoveExtension(strFile);
+    return GetSong(atol(strFile.c_str()), song);
   }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strFileName.c_str());
-  }
-
+  
+  CStdString strPath = URIUtils::GetDirectory(strFileName);
+  URIUtils::AddSlashAtEnd(strPath);
+  
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+  
+  DWORD crc = ComputeCRC(strFileName);
+  
+  CStdString strSQL = PrepareSQL("select idSong from songview "
+                                 "where dwFileNameCRC='%ul' and strPath='%s'",
+                                 crc, strPath.c_str());
+  if (startOffset)
+    strSQL += PrepareSQL(" AND iStartOffset=%i", startOffset);
+  
+  int idSong = (int)strtol(GetSingleValue(strSQL).c_str(), NULL, 10);
+  if (idSong > 0)
+    return GetSong(idSong, song);
+  
   return false;
 }
 

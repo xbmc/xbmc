@@ -552,6 +552,19 @@ private:
     artistCredit_enumCount
   } ArtistCreditFields;
 
+  enum _SongArtistFields
+  {
+    // used for GetAlbumInfo to get the cascaded artist credits
+    songArtist_idSong = 0,
+    songArtist_idArtist,
+    songArtist_strArtist,
+    songArtist_strMusicBrainzArtistID,
+    songArtist_bFeatured,
+    songArtist_strJoinPhrase,
+    songArtist_iOrder,
+    songArtist_enumCount
+  } SongArtistFields;
+
   enum _ArtistFields
   {
     artist_idArtist=0,
