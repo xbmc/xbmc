@@ -28,7 +28,7 @@ namespace XBMCAddon
   namespace xbmc
   {
     /**
-     * InfoTagMusic class.
+     * InfoTagMusic class.\n
      */
     class InfoTagMusic : public AddonClass
     {
@@ -43,63 +43,63 @@ namespace XBMCAddon
       virtual ~InfoTagMusic();
 
       /**
-       * getURL() -- returns a string.
+       * getURL() -- returns a string.\n
        */
       String getURL();
       /**
-       * getTitle() -- returns a string.
+       * getTitle() -- returns a string.\n
        */
       String getTitle();
       /**
-       * getArtist() -- returns a string.
+       * getArtist() -- returns a string.\n
        */
       String getArtist();
       /**
-       * getAlbum() -- returns a string.
+       * getAlbum() -- returns a string.\n
        */
       String getAlbum();
       /**
-       * getAlbumArtist() -- returns a string.
+       * getAlbumArtist() -- returns a string.\n
        */
       String getAlbumArtist();
       /**
-       * getGenre() -- returns a string.
+       * getGenre() -- returns a string.\n
        */
       String getGenre();
       /**
-       * getDuration() -- returns an integer.
+       * getDuration() -- returns an integer.\n
        */
       int getDuration();
       /**
-       * getTrack() -- returns an integer.
+       * getTrack() -- returns an integer.\n
        */
       int getTrack();
       /**
-       * getDisc() -- returns an integer.
+       * getDisc() -- returns an integer.\n
        */
       int getDisc();
       /**
-       * getReleaseDate() -- returns a string.
+       * getReleaseDate() -- returns a string.\n
        */
       String getReleaseDate();
       /**
-       * getListeners() -- returns an integer.
+       * getListeners() -- returns an integer.\n
        */
       int getListeners();
       /**
-       * getPlayCount() -- returns an integer.
+       * getPlayCount() -- returns an integer.\n
        */
       int getPlayCount();
       /**
-       * getLastPlayed() -- returns a string.
+       * getLastPlayed() -- returns a string.\n
        */
       String getLastPlayed();
       /**
-       * getComment() -- returns a string.
+       * getComment() -- returns a string.\n
        */
       String getComment();
       /**
-       * getLyrics() -- returns a string.
+       * getLyrics() -- returns a string.\n
        */
       String getLyrics();
 

@@ -32,11 +32,11 @@ namespace XBMCAddon
     /**
      * copy(source, destination) -- copy file to destination, returns true/false.
      * 
-     * source          : file to copy.
-     * destination     : destination fi
+     * source          : file to copy.\n
+     * destination     : destination fi\n
      * 
      * example:
-     *   success = xbmcvfs.copy(source, destination)
+     *   - success = xbmcvfs.copy(source, destination)
      */
     bool copy(const String& strSource, const String& strDestnation);
 
@@ -54,62 +54,62 @@ namespace XBMCAddon
     /**
      * rename(file, newFileName)
      * 
-     * file        : file to reana
+     * file        : file to reana\n
      * newFileName : new filename, including the full pa
      * 
-     * example:
-     *   success = xbmcvfs.rename(file,newFileName)
+     * example:\n
+     *   success = xbmcvfs.rename(file,newFileName)\n
      */
     // rename a file
     bool rename(const String& file, const String& newFile);
 
     /**
-     * exists(path)
-     * 
-     * path        : file or folder (folder must end with slash or backslash)
-     * 
-     * example:
-     *   success = xbmcvfs.exists(path)
+     * exists(path)\n
+     * \n
+     * path        : file or folder (folder must end with slash or backslash)\n
+     * \n
+     * example:\n
+     *   success = xbmcvfs.exists(path)\n
      */
     // check for a file or folder existance, mimics Pythons os.path.exists()
     bool exists(const String& path);
 
     /**
-     * mkdir(path) -- Create a folder.
-     * 
-     * path        : folder
-     * 
-     * example:
-     *  - success = xbmcvfs.mkdir(path)
+     * mkdir(path) -- Create a folder.\n
+     * \n
+     * path        : folder\n
+     * \n
+     * example:\n
+     *  - success = xbmcvfs.mkdir(path)\n
      */
     // make a directory
     bool mkdir(const String& path);
 
     /**
-     * mkdirs(path) -- Create folder(s) - it will create all folders in the path.
-     * 
-     * path        : folder
-     * 
-     * example:
-     *  - success = xbmcvfs.mkdirs(path)
+     * mkdirs(path) -- Create folder(s) - it will create all folders in the path.\n
+     * \n
+     * path        : folder\n
+     * \n
+     * example:\n
+     *  - success = xbmcvfs.mkdirs(path)\n
      */
     // make all directories along the path
     bool mkdirs(const String& path);
 
     /**
-     * rmdir(path) -- Remove a folder.
-     * 
-     * path        : folder
-     * 
-     * example:
-     *  - success = xbmcvfs.rmdir(path)\n
+     * rmdir(path) -- Remove a folder.\n
+     * \n
+     * path        : folder\n
+     * \n
+     * example:\n
+     *  - success = xbmcvfs.rmdir(path)n\n
      */
     bool rmdir(const String& path, bool force = false);
 
     /**
-     * listdir(path) -- lists content of a folder.
-     * 
-     * path        : folder
+     * listdir(path) -- lists content of a folder.\n
+     * \n
+     * path        : folder\n
      * 
      * example:
      *  - dirs, files = xbmcvfs.listdir(path)

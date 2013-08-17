@@ -39,18 +39,17 @@ namespace XBMCAddon
 #endif
 
     /**
-     * log(msg[, level]) -- Write a string to XBMC's log file and the debug window.
-     *     msg            : string - text to output.
-     *     level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)
-     *     
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
-     * 
-     * Text is written to the log for the following conditions.
-     *           XBMC loglevel == -1 (NONE, nothing at all is logged)
-     *           XBMC loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)\
-     *           XBMC loglevel == 1 (DEBUG, shows all)
-     *           See pydocs for valid values for level.
+     * log(msg[, level]) -- Write a string to XBMC's log file and the debug window.\n
+     *     msg            : string - text to output.\n
+     *     level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n
+     *     \n
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
+     * \n
+     * Text is written to the log for the following conditions.\n
+     *           XBMC loglevel == -1 (NONE, nothing at all is logged)\n
+     *           XBMC loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)     *           XBMC loglevel == 1 (DEBUG, shows all)\n
+     *           See pydocs for valid values for level.\n
      *           
      *           example:
      *             - xbmc.output(msg='This is a test string.', level=xbmc.LOGDEBUG));
@@ -90,7 +89,7 @@ namespace XBMCAddon
      * List of functions - http://wiki.xbmc.org/?title=List_of_Built_In_Functions 
      * 
      * example:
-     *   - xbmc.executebuiltin('XBMC.RunXBE(c:\\\\avalaunch.xbe)')
+     *   - xbmc.executebuiltin('XBMC.RunXBE(c:\\avalaunch.xbe)')
      */
     void executebuiltin(const char* function, bool wait = false);
 
@@ -107,7 +106,7 @@ namespace XBMCAddon
      * List of commands - 
      * 
      * example:
-     *   - response = xbmc.executeJSONRPC('{ \"jsonrpc\": \"2.0\", \"method\": \"JSONRPC.Introspect\", \"id\": 1 }')
+     *   - response = xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "JSONRPC.Introspect", "id": 1 }')
      */
     String executeJSONRPC(const char* jsonrpccommand);
 
@@ -116,8 +115,8 @@ namespace XBMCAddon
      * 
      * time           : integer - number of msec to sleep.
      * 
-     * *Note, This is useful if you have for example a Player class that is waiting
-     *        for onPlayBackEnded() calls.
+     * *Note, This is useful if you have for example a Player class that is waiting\n
+     *        for onPlayBackEnded() calls.\n
      * 
      * Throws: PyExc_TypeError, if time is not an integer.
      * 
@@ -131,7 +130,7 @@ namespace XBMCAddon
      * 
      * id             : integer - id# for string you want to localize.
      * 
-     * *Note, See strings.xml in \\language\\{yourlanguage}\\ for which id
+     * *Note, See strings.xml in \language\{yourlanguage}\ for which id\n
      *        you need for a string.
      * 
      * example:
@@ -153,9 +152,9 @@ namespace XBMCAddon
     * getLanguage([format], [region]) -- Returns the active language as a string.
     *
     * format: [opt] format of the returned language string
-    *               xbmc.ISO_639_1: two letter code as defined in ISO 639-1
-    *               xbmc.ISO_639_2: three letter code as defined in ISO 639-2/T or ISO 639-2/B
-    *               xbmc.ENGLISH_NAME: full language name in English (default)
+    *               - xbmc.ISO_639_1: two letter code as defined in ISO 639-1
+    *               - xbmc.ISO_639_2: three letter code as defined in ISO 639-2/T or ISO 639-2/B
+    *               - xbmc.ENGLISH_NAME: full language name in English (default)
     *
     * region: [opt] append the region delimited by "-" of the language (setting)
     *               to the returned language string
@@ -177,10 +176,10 @@ namespace XBMCAddon
      * getDVDState() -- Returns the dvd state as an integer.
      * 
      * return values are:
-     *    1 : xbmc.DRIVE_NOT_READY
-     *   16 : xbmc.TRAY_OPEN
-     *   64 : xbmc.TRAY_CLOSED_NO_MEDIA
-     *   96 : xbmc.TRAY_CLOSED_MEDIA_PRESENT
+     *   -  1 : xbmc.DRIVE_NOT_READY
+     *   - 16 : xbmc.TRAY_OPEN
+     *   - 64 : xbmc.TRAY_CLOSED_NO_MEDIA
+     *   - 96 : xbmc.TRAY_CLOSED_MEDIA_PRESENT
      * 
      * example:
      *   - dvdstate = xbmc.getDVDState()
@@ -247,8 +246,8 @@ namespace XBMCAddon
      * 
      * List of Conditions - http://wiki.xbmc.org/?title=List_of_Boolean_Conditions 
      * 
-     * *Note, You can combine two (or more) of the above settings by using \"+\" as an AND operator,
-     * \"|\" as an OR operator, \"!\" as a NOT operator, and \"[\" and \"]\" to bracket expressions.
+     * *Note, You can combine two (or more) of the above settings by using "+" as an AND operator,\n
+     * "|" as an OR operator, "!" as a NOT operator, and "[" and "]" to bracket expressions.\n
      * 
      * example:
      *   - visible = xbmc.getCondVisibility('[Control.IsVisible(41) + !Control.IsVisible(12)]')
@@ -269,15 +268,15 @@ namespace XBMCAddon
      * path           : string or unicode - path to file
      * 
      * example:
-     *   - thumb = xbmc.getCacheThumbName('f:\\\\videos\\\\movie.avi')
+     *   - thumb = xbmc.getCacheThumbName('f:\\videos\\movie.avi')
      */
     String getCacheThumbName(const String& path);
 
     /**
      * makeLegalFilename(filename[, fatX]) -- Returns a legal filename or path as a string.
      * 
-     * filename       : string or unicode - filename/path to make legal
-     * fatX           : [opt] bool - True=Xbox file system(Default)
+     * filename       : string or unicode - filename/path to make legal\n
+     * fatX           : [opt] bool - True=Xbox file system(Default)\n
      * 
      * *Note, If fatX is true you should pass a full path. If fatX is false only pass
      *        the basename of the path.
@@ -286,7 +285,7 @@ namespace XBMCAddon
      *        Once you use a keyword, all following arguments require the keyword.
      * 
      * example:
-     *   - filename = xbmc.makeLegalFilename('F:\\Trailers\\Ice Age: The Meltdown.avi')
+     *   - filename = xbmc.makeLegalFilename('F:\Trailers\Ice Age: The Meltdown.avi')
      */
     String makeLegalFilename(const String& filename,bool fatX = true);
 
@@ -295,7 +294,7 @@ namespace XBMCAddon
      * 
      * path           : string or unicode - Path to format
      * 
-     * *Note, Only useful if you are coding for both Linux and Windows.
+     * *Note, Only useful if you are coding for both Linux and Windows.\n
      *        e.g. Converts 'special://masterprofile/script_data' -> '/home/user/XBMC/UserData/script_data'
      *        on Linux.
      * 
@@ -307,7 +306,7 @@ namespace XBMCAddon
     /**
      * getCleanMovieTitle(path[, usefoldername]) -- Returns a clean movie title and year string if available.
      * 
-     * path           : string or unicode - String to clean
+     * path           : string or unicode - String to clean\n
      * bool           : [opt] bool - use folder names (defaults to false)
      * 
      * example:
@@ -320,8 +319,8 @@ namespace XBMCAddon
      * 
      * path           : string or unicode - Path to format
      * 
-     * *Note, Only useful if you are coding for both Linux and Windows for fixing slash problems.
-     *        e.g. Corrects 'Z://something' -> 'Z:\\something'
+     * *Note, Only useful if you are coding for both Linux and Windows for fixing slash problems.\n
+     *        e.g. Corrects 'Z://something' -> 'Z:\something'\n
      * 
      * example:
      *   - fpath = xbmc.validatePath(somepath)
@@ -363,7 +362,7 @@ namespace XBMCAddon
      * 
      * image          : string - image filename
      * 
-     * *Note, If the media resides in a subfolder include it. (eg. home-myfiles\\\\home-myfiles2.png)
+     * *Note, If the media resides in a subfolder include it. (eg. home-myfiles\\home-myfiles2.png)
      * 
      *        You can use the above as keywords for arguments.
      * 
@@ -375,13 +374,11 @@ namespace XBMCAddon
     /**
      * startServer(typ, bStart, bWait) -- start or stop a server.
      * 
-     * typ          : integer - use SERVER_* constants
-     * 
-     * bStart       : bool - start (True) or stop (False) a server
-     * 
-     * bWait        : [opt] bool - wait on stop before returning (not supported by all servers)
-     * 
-     * returnValue  : bool - True or False
+     * typ          : integer - use SERVER_* constants\n
+     * bStart       : bool - start (True) or stop (False) a server\n
+     * bWait        : [opt] bool - wait on stop before returning (not supported by all servers)\n
+     * returnValue  : bool - True or False\n
+     *
      * example:
      *   - xbmc.startServer(xbmc.SERVER_AIRPLAYSERVER, False)
      */
@@ -391,7 +388,7 @@ namespace XBMCAddon
      * audioSuspend() -- Suspend Audio engine.
      * 
      * example:
-     *   xbmc.audioSuspend()
+     *   - xbmc.audioSuspend()
      */
     void audioSuspend();
 
@@ -408,10 +405,10 @@ namespace XBMCAddon
     *
     * language: string either as name in English, two letter code (ISO 639-1), or three letter code (ISO 639-2/T(B)
     *
-    * format: format of the returned language string
-    *         xbmc.ISO_639_1: two letter code as defined in ISO 639-1
-    *         xbmc.ISO_639_2: three letter code as defined in ISO 639-2/T or ISO 639-2/B
-    *         xbmc.ENGLISH_NAME: full language name in English (default)
+    * format: format of the returned language string\n
+    *         xbmc.ISO_639_1: two letter code as defined in ISO 639-1\n
+    *         xbmc.ISO_639_2: three letter code as defined in ISO 639-2/T or ISO 639-2/B\n
+    *         xbmc.ENGLISH_NAME: full language name in English (default)\n
     *
     * example:
     *   - language = xbmc.convertLanguage(English, xbmc.ISO_639_2)
