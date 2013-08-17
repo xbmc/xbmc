@@ -148,8 +148,10 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
 CPVRChannelGroupPtr CGUIDialogPVRChannelsOSD::GetPlayingGroup()
 {
   CPVRChannelPtr channel;
-  g_PVRManager.GetCurrentChannel(channel);
-  return g_PVRManager.GetPlayingGroup(channel->IsRadio());
+  if(g_PVRManager.GetCurrentChannel(channel))
+    return g_PVRManager.GetPlayingGroup(channel->IsRadio());
+  else
+    return CPVRChannelGroupPtr();
 }
 
 void CGUIDialogPVRChannelsOSD::Update()
@@ -190,7 +192,8 @@ void CGUIDialogPVRChannelsOSD::SaveControlStates()
   CGUIDialog::SaveControlStates();
 
   CPVRChannelGroupPtr group = GetPlayingGroup();
-  SaveSelectedItem(group->GroupID());
+  if(group)
+    SaveSelectedItem(group->GroupID());
 }
 
 void CGUIDialogPVRChannelsOSD::RestoreControlStates()
