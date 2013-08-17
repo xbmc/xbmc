@@ -82,9 +82,9 @@ public:
   
   EGLNativeDisplayType * NativeDisplay() const;
   
-  const boost::scoped_ptr<Compositor> & GetCompositor() const;
-  const boost::scoped_ptr<Shell> & GetShell() const;
-  const boost::shared_ptr<Output> & GetFirstOutput() const;
+  Compositor & GetCompositor();
+  Shell & GetShell();
+  Output & GetFirstOutput();
   
 private:
 

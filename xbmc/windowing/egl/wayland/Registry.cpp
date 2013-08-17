@@ -23,14 +23,6 @@
 #include "windowing/WaylandProtocol.h"
 #include "Registry.h"
 
-namespace
-{
-const std::string CompositorName("wl_compositor");
-const std::string ShellName("wl_shell");
-const std::string SeatName("wl_seat");
-const std::string OutputName("wl_output");
-}
-
 namespace xw = xbmc::wayland;
 
 const struct wl_registry_listener xw::Registry::m_listener =
@@ -74,74 +66,28 @@ xw::Registry::~Registry()
  * is available on a named object. This allows that interface to
  * respond to the arrival of the new global how it wishes */
 void
+xw::Registry::BindInternal(uint32_t name,
+                           const char *interface,
+                           uint32_t version,
+                           void *proxy)
+{
+  protocol::CallMethodOnWaylandObject(m_clientLibrary,
+                                      m_registry,
+                                      WL_REGISTRY_BIND,
+                                      name,
+                                      interface,
+                                      version,
+                                      proxy);
+}
+
+void
 xw::Registry::HandleGlobal(uint32_t name,
                            const char *interface,
                            uint32_t version)
 {
-  if (interface == CompositorName)
-  {
-    struct wl_compositor *compositor =
-      static_cast<struct wl_compositor *>(protocol::CreateWaylandObject<struct wl_compositor *,
-                                                                        struct wl_registry *>(m_clientLibrary,
-                                                                                              m_registry,
-                                                                                              m_clientLibrary.Get_wl_compositor_interface()));
-    protocol::CallMethodOnWaylandObject(m_clientLibrary,
-                                        m_registry,
-                                        WL_REGISTRY_BIND,
-                                        name,
-                                        reinterpret_cast<struct wl_interface *>(m_clientLibrary.Get_wl_compositor_interface())->name,
-                                        1,
-                                        compositor);
-    m_registration.OnCompositorAvailable(compositor);
-  }
-  else if (interface == ShellName)
-  {
-    struct wl_shell *shell =
-      static_cast<struct wl_shell *>(protocol::CreateWaylandObject<struct wl_shell *,
-                                                                   struct wl_registry *>(m_clientLibrary,
-                                                                                         m_registry,
-                                                                                         m_clientLibrary.Get_wl_shell_interface()));
-    protocol::CallMethodOnWaylandObject(m_clientLibrary,
-                                        m_registry,
-                                        WL_REGISTRY_BIND,
-                                        name,
-                                        reinterpret_cast<struct wl_interface *>(m_clientLibrary.Get_wl_shell_interface())->name,
-                                        1,
-                                        shell);
-    m_registration.OnShellAvailable(shell);
-  }
-  else if (interface == SeatName)
-  {
-    struct wl_seat *seat =
-      static_cast<struct wl_seat *>(protocol::CreateWaylandObject<struct wl_seat *,
-                                                                  struct wl_registry *>(m_clientLibrary,
-                                                                                        m_registry,
-                                                                                        m_clientLibrary.Get_wl_seat_interface()));
-    protocol::CallMethodOnWaylandObject(m_clientLibrary,
-                                        m_registry,
-                                        WL_REGISTRY_BIND,
-                                        name,
-                                        reinterpret_cast<struct wl_interface *>(m_clientLibrary.Get_wl_seat_interface())->name,
-                                        1,
-                                        seat);
-    m_registration.OnSeatAvailable(seat);
-  }
-  else if (interface == OutputName)
-  {
-    struct wl_output *output =
-      static_cast<struct wl_output *>(protocol::CreateWaylandObject<struct wl_output *,
-                                                                    struct wl_registry *>(m_clientLibrary,
-                                                                                          m_registry,
-                                                                                          m_clientLibrary.Get_wl_output_interface()));
-    protocol::CallMethodOnWaylandObject(m_clientLibrary,
-                                        m_registry,
-                                        WL_REGISTRY_BIND,
-                                        name,
-                                        reinterpret_cast<struct wl_interface *>(m_clientLibrary.Get_wl_output_interface())->name,
-                                        1,
-                                        output);
-    m_registration.OnOutputAvailable(output);
-  }
+  m_registration.OnGlobalInterfaceAvailable(name,
+                                            interface,
+                                            version);
 }
 
 void
