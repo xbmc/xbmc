@@ -1108,4 +1108,74 @@ TEST_F(ConnectedWestonTest, TestGotXBMCWayland)
   EXPECT_TRUE(m_xbmcWayland.get() != NULL);
 }
 
+TEST_F(ConnectedWestonTest, CreateNativeWindowSuccess)
+{
+  EXPECT_TRUE(m_nativeType.CreateNativeWindow());
+}
+
+TEST_F(ConnectedWestonTest, ProbeResolutionsSuccess)
+{
+  std::vector<RESOLUTION_INFO> info;
+  EXPECT_TRUE(m_nativeType.ProbeResolutions(info));
+}
+
+TEST_F(ConnectedWestonTest, PreferredResolutionSuccess)
+{
+  RESOLUTION_INFO info;
+  EXPECT_TRUE(m_nativeType.GetPreferredResolution(&info));
+}
+
+TEST_F(ConnectedWestonTest, CurrentNativeSuccess)
+{
+  RESOLUTION_INFO info;
+  EXPECT_TRUE(m_nativeType.GetNativeResolution(&info));
+}
+
+TEST_F(ConnectedWestonTest, GetMostRecentSurface)
+{
+  m_nativeType.CreateNativeWindow();
+  EXPECT_TRUE(m_mostRecentSurface != NULL);
+}
+
+class XBMCWaylandAssistedWestonTest :
+  public ConnectedWestonTest
+{
+protected:
+
+  virtual void SetUp();
+};
+
+void
+XBMCWaylandAssistedWestonTest::SetUp()
+{
+  ConnectedWestonTest::SetUp();
+  ASSERT_TRUE(m_xbmcWayland.get());
+}
+
+TEST_F(XBMCWaylandAssistedWestonTest, AdditionalResolutions)
+{
+  m_xbmcWayland->AddMode(2, 2, 2, static_cast<enum wl_output_mode>(0));
+  std::vector<RESOLUTION_INFO> resolutions;
+  m_nativeType.ProbeResolutions(resolutions);
+  EXPECT_TRUE(resolutions.size() == 2);
+}
+
+TEST_F(XBMCWaylandAssistedWestonTest, PreferredResolutionChange)
+{
+  m_xbmcWayland->AddMode(2, 2, 2, static_cast<enum wl_output_mode>(WL_OUTPUT_MODE_PREFERRED));
+  RESOLUTION_INFO res;
+  m_nativeType.GetPreferredResolution(&res);
+  EXPECT_EQ(res.iWidth, 2);
+  EXPECT_EQ(res.iHeight, 2);
+}
+
+TEST_F(XBMCWaylandAssistedWestonTest, CurrentResolutionChange)
+{
+  m_xbmcWayland->AddMode(2, 2, 2, static_cast<enum wl_output_mode>(WL_OUTPUT_MODE_CURRENT));
+  RESOLUTION_INFO res;
+  m_nativeType.GetNativeResolution(&res);
+  EXPECT_EQ(res.iWidth, 2);
+  EXPECT_EQ(res.iHeight, 2);
+}
+
 #endif
