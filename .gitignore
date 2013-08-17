@@ -728,6 +728,10 @@ lib/cmyth/Makefile
 # /xbmc/windowing/
 /xbmc/windowing/Makefile
 /xbmc/windowing/egl/Makefile
+/xbmc/windowing/tests/wayland/xbmc_wayland_test_client_protocol.h
+/xbmc/windowing/tests/wayland/xbmc_wayland_test_protocol.c
+/xbmc/windowing/tests/wayland/xbmc_wayland_test_server_protocol.h
+/xbmc/windowing/tests/wayland/Makefile
 
 # /lib/ffmpeg/
 /lib/ffmpeg/config.h
