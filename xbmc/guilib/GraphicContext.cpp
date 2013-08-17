@@ -980,7 +980,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     {
       /* we need to trick renderer that we are fullscreen already so it gives us a valid value */
       m_bFullScreenRoot = true;
-      newRes = g_renderManager.GetResolution();
+      uiRes = g_renderManager.GetResolution();
       m_bFullScreenRoot = false;
     }
 #endif
