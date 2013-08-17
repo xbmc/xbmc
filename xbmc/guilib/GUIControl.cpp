@@ -480,16 +480,22 @@ void CGUIControl::SetNavigationActions(const CGUIAction &up, const CGUIAction &d
                                        const CGUIAction &left, const CGUIAction &right,
                                        const CGUIAction &back, bool replace)
 {
-  if (!m_actionLeft.HasAnyActions()  || replace) m_actionLeft  = left;
-  if (!m_actionRight.HasAnyActions() || replace) m_actionRight = right;
-  if (!m_actionUp.HasAnyActions()    || replace) m_actionUp    = up;
-  if (!m_actionDown.HasAnyActions()  || replace) m_actionDown  = down;
-  if (!m_actionBack.HasAnyActions()  || replace) m_actionBack  = back;
+  if (!m_actionLeft.HasAnyActions()  || replace)
+    m_actionLeft  = left;
+  if (!m_actionRight.HasAnyActions() || replace)
+    m_actionRight = right;
+  if (!m_actionUp.HasAnyActions()    || replace)
+    m_actionUp    = up;
+  if (!m_actionDown.HasAnyActions()  || replace)
+    m_actionDown  = down;
+  if (!m_actionBack.HasAnyActions()  || replace)
+    m_actionBack  = back;
 }
 
 void CGUIControl::SetDropAction(const CGUIAction& drop, bool replace)
 {
-  if (!m_actionDrop.HasAnyActions()  || replace) m_actionDrop  = drop;
+  if (!m_actionDrop.HasAnyActions()  || replace)
+    m_actionDrop  = drop;
 }
 
 void CGUIControl::SetNavigationAction(int direction, const CGUIAction &action, bool replace /*= true*/)
