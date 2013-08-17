@@ -587,8 +587,6 @@ void CCurlFile::SetCommonOptions(CReadState* state)
 
   if (m_useOldHttpVersion)
     g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-  else
-    SetRequestHeader("Connection", "keep-alive");
 
   if (g_advancedSettings.m_curlDisableIPV6)
     g_curlInterface.easy_setopt(h, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
