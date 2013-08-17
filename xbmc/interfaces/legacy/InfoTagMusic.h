@@ -27,6 +27,9 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
+    /**
+     * InfoTagMusic class.
+     */
     class InfoTagMusic : public AddonClass
     {
     private:
@@ -39,21 +42,65 @@ namespace XBMCAddon
       InfoTagMusic();
       virtual ~InfoTagMusic();
 
+      /**
+       * getURL() -- returns a string.
+       */
       String getURL();
+      /**
+       * getTitle() -- returns a string.
+       */
       String getTitle();
+      /**
+       * getArtist() -- returns a string.
+       */
       String getArtist();
+      /**
+       * getAlbum() -- returns a string.
+       */
       String getAlbum();
+      /**
+       * getAlbumArtist() -- returns a string.
+       */
       String getAlbumArtist();
+      /**
+       * getGenre() -- returns a string.
+       */
       String getGenre();
+      /**
+       * getDuration() -- returns an integer.
+       */
       int getDuration();
+      /**
+       * getTrack() -- returns an integer.
+       */
       int getTrack();
+      /**
+       * getDisc() -- returns an integer.
+       */
       int getDisc();
+      /**
+       * getReleaseDate() -- returns a string.
+       */
       String getReleaseDate();
-
+      /**
+       * getListeners() -- returns an integer.
+       */
       int getListeners();
+      /**
+       * getPlayCount() -- returns an integer.
+       */
       int getPlayCount();
+      /**
+       * getLastPlayed() -- returns a string.
+       */
       String getLastPlayed();
+      /**
+       * getComment() -- returns a string.
+       */
       String getComment();
+      /**
+       * getLyrics() -- returns a string.
+       */
       String getLyrics();
 
     };
