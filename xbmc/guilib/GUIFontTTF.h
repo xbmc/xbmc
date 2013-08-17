@@ -169,6 +169,8 @@ protected:
   CStdString m_strFileName;
 
 private:
+  CGUIFontTTFBase(const CGUIFontTTFBase&);
+  CGUIFontTTFBase& operator=(const CGUIFontTTFBase&);
   int m_referenceCount;
 };
 

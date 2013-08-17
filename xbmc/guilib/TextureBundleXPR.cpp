@@ -62,6 +62,10 @@ operator BYTE*() const { return p; }
   void Set(BYTE* buf) { free(p); p = buf; }
   bool Resize(size_t s);
 void Release() { p = 0; }
+
+private:
+  CAutoBuffer(const CAutoBuffer&);
+  CAutoBuffer& operator=(const CAutoBuffer&);
 };
 
 bool CAutoBuffer::Resize(size_t s)
