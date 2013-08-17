@@ -121,14 +121,15 @@ namespace XBMCAddon
        * useThumbs      : [opt] boolean - if True autoswitch to Thumb view if files exist.\n
        * treatAsFolder  : [opt] boolean - if True playlists and archives act as folders.\n
        * default        : [opt] string - default path or file.\n
-       * \n
-       * enableMultiple : [opt] boolean - if True multiple file selection is enabled.\n
-       * Types:\n
-       *   0 : ShowAndGetDirectory\n
-       *   1 : ShowAndGetFile\n
-       *   2 : ShowAndGetImage\n
-       *   3 : ShowAndGetWriteableDirectory\n
-       * \n
+       * 
+       * enableMultiple : [opt] boolean - if True multiple file selection is enabled.
+       *
+       * Types:
+       *   - 0 : ShowAndGetDirectory
+       *   - 1 : ShowAndGetFile
+       *   - 2 : ShowAndGetImage
+       *   - 3 : ShowAndGetWriteableDirectory
+       * 
        * *Note, If enableMultiple is False (default): returns filename and/or path as a string\n
        *        to the location of the highlighted item, if user pressed 'Ok' or a masked item\n
        *        was selected. Returns the default value if dialog was canceled.\n
