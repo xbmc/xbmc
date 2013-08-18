@@ -347,6 +347,8 @@
 #include "utils/Environment.h"
 #endif
 
+#include "guilib/GUIDragAndDropManager.h"
+
 using namespace std;
 using namespace ADDON;
 using namespace XFILE;
@@ -1860,6 +1862,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   g_windowManager.AddMsgTarget(&g_infoManager);
   g_windowManager.AddMsgTarget(&g_fontManager);
   g_windowManager.AddMsgTarget(&CStereoscopicsManager::Get());
+  g_windowManager.AddMsgTarget(&g_dragAndDropManager);
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
   CTextureCache::Get().Initialize();

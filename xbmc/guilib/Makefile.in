@@ -19,6 +19,7 @@ SRCS += GUIControlGroup.cpp
 SRCS += GUIControlGroupList.cpp
 SRCS += GUIControlProfiler.cpp
 SRCS += GUIDialog.cpp
+SRCS += GUIDragAndDropManager.cpp
 SRCS += GUIEditControl.cpp
 SRCS += GUIFadeLabelControl.cpp
 SRCS += GUIFixedListContainer.cpp

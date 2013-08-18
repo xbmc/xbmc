@@ -306,12 +306,12 @@ EVENT_RESULT CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent 
 {
   if (event.m_id == ACTION_MOUSE_DRAG)
   {
-    if (event.m_state == 1)
+    if (event.m_state == MOUSE_EVENT_START)
     { // we want exclusive access
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
       SendWindowMessage(msg);
     }
-    else if (event.m_state == 3)
+    else if (event.m_state == MOUSE_EVENT_STOP)
     { // we're done with exclusive access
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
       SendWindowMessage(msg);

@@ -360,6 +360,13 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       return true;
     }
   }
+  if (message.GetMessage() == GUI_MSG_NOTIFY_ALL)
+  {
+    if (message.GetParam1() == GUI_DND_HOVER && message.GetPointer()!=this && m_dropTarget)
+      DraggedAway();
+    else if (message.GetParam1() == GUI_DND_STOP && m_dropTarget)
+      DragStop();
+  }
   return false;
 }
 
@@ -473,11 +480,22 @@ void CGUIControl::SetNavigationActions(const CGUIAction &up, const CGUIAction &d
                                        const CGUIAction &left, const CGUIAction &right,
                                        const CGUIAction &back, bool replace)
 {
-  if (!m_actionLeft.HasAnyActions()  || replace) m_actionLeft  = left;
-  if (!m_actionRight.HasAnyActions() || replace) m_actionRight = right;
-  if (!m_actionUp.HasAnyActions()    || replace) m_actionUp    = up;
-  if (!m_actionDown.HasAnyActions()  || replace) m_actionDown  = down;
-  if (!m_actionBack.HasAnyActions()  || replace) m_actionBack  = back;
+  if (!m_actionLeft.HasAnyActions()  || replace)
+    m_actionLeft  = left;
+  if (!m_actionRight.HasAnyActions() || replace)
+    m_actionRight = right;
+  if (!m_actionUp.HasAnyActions()    || replace)
+    m_actionUp    = up;
+  if (!m_actionDown.HasAnyActions()  || replace)
+    m_actionDown  = down;
+  if (!m_actionBack.HasAnyActions()  || replace)
+    m_actionBack  = back;
+}
+
+void CGUIControl::SetDropAction(const CGUIAction& drop, bool replace)
+{
+  if (!m_actionDrop.HasAnyActions()  || replace)
+    m_actionDrop  = drop;
 }
 
 void CGUIControl::SetNavigationAction(int direction, const CGUIAction &action, bool replace /*= true*/)
@@ -578,6 +596,50 @@ EVENT_RESULT CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent 
   if (ret)
     return ret;
   return (handled && (event.m_id == ACTION_MOUSE_MOVE)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
+}
+
+EVENT_RESULT CGUIControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event) 
+{ 
+  if (event.m_id == ACTION_MOUSE_DRAG) 
+  {
+    if (!IsVisible() || !event.m_dndInfo || !HitTest(point) || !IsDropable())
+      return EVENT_RESULT_UNHANDLED;
+    
+    if (event.m_state == MOUSE_EVENT_IN_PROGRESS)
+    {
+      //Set us as drop target
+      if (!m_dropTarget)
+      {
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetParentID(), 0, GUI_DND_HOVER);
+        msg.SetPointer(this);
+        g_windowManager.SendMessage(msg);
+        m_dropTarget = true;
+      }
+      return EVENT_RESULT_HANDLED;
+    }
+    if (event.m_state == MOUSE_EVENT_STOP)
+    {  
+      m_actionDrop.ExecuteActions(GetID(), GetParentID());
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetParentID(), 0, GUI_DND_STOP);
+      g_windowManager.SendMessage(msg);
+      DragStop();
+      return EVENT_RESULT_HANDLED;
+    }
+  }
+    
+  return EVENT_RESULT_UNHANDLED; 
+};
+
+void CGUIControl::DraggedAway() 
+{ 
+  CGUIMessage msg(GUI_MSG_LOSTFOCUS, GetParentID(), GetID());
+  OnMessage(msg);
+  m_dropTarget = false;
+}
+
+void CGUIControl::DragStop() 
+{
+   m_dropTarget = false;
 }
 
 // override this function to implement custom mouse behaviour
@@ -944,6 +1006,12 @@ bool CGUIControl::HasVisibleID(int id) const
 void CGUIControl::SaveStates(vector<CControlState> &states)
 {
   // empty for now - do nothing with the majority of controls
+}
+
+
+bool CGUIControl::IsDropable() const
+{
+  return m_actionDrop.HasActionsMeetingCondition();
 }
 
 void CGUIControl::SetHitRect(const CRect &rect)

@@ -33,6 +33,8 @@
 #include <map>
 #include <string>
 
+#define ITEM_IS_DRAGGED_FLAG "isdragged"
+
 //  Forward
 class CGUIListItemLayout;
 class CArchive;

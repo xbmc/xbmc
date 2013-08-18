@@ -23,6 +23,7 @@
 #include "settings/Setting.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WindowingFactory.h"
+#include "guilib/GUIDragAndDropManager.h"
 
 CMouseStat::CMouseStat()
 {
@@ -191,6 +192,10 @@ void CMouseStat::SetResolution(int maxX, int maxY, float speedX, float speedY)
 void CMouseStat::SetActive(bool active /*=true*/)
 {
   m_lastActiveTime = CTimeUtils::GetFrameTime();
+  
+  if (!active && m_pointerState == MOUSE_STATE_DRAG)
+    return; //keep the mouse visible, because we're dragging (even if told otherwise)
+  
   m_mouseState.active = active;
   // we show the OS mouse if:
   // 1. The mouse is active (it has been moved) AND
@@ -200,9 +205,13 @@ void CMouseStat::SetActive(bool active /*=true*/)
 }
 
 // IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period
+// it will always return true while dragging
 bool CMouseStat::IsActive()
 {
-  if (m_mouseState.active && (CTimeUtils::GetFrameTime() - m_lastActiveTime > MOUSE_ACTIVE_LENGTH))
+  
+  if (m_mouseState.active && 
+     (CTimeUtils::GetFrameTime() - m_lastActiveTime > MOUSE_ACTIVE_LENGTH) &&
+      !(m_pointerState == MOUSE_STATE_DRAG))
     SetActive(false);
   return (m_mouseState.active && IsEnabled());
 }

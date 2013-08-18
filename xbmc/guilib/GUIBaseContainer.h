@@ -84,6 +84,9 @@ public:
    \param offset CPoint holding the offset in skin coordinates.
    */
   void SetRenderOffset(const CPoint &offset);
+  
+  virtual void DraggedAway();
+  virtual void DragStop();
 
 #ifdef _DEBUG
   virtual void DumpTextureUse();
@@ -188,6 +191,11 @@ protected:
    \sa GetItemOffset
   */
   inline int GetOffset() const { return m_offset; };
+  /*! \brief Returns the array index of the item being hovered
+   \param point - current mouse position
+   \return the position in the list of the hovered item
+  */
+  virtual int GetItemPositionFromPoint(const CPoint& point) { return GetCursorFromPoint(point) + GetItemOffset(); }
   /*! \brief Returns the index of the first visible item
    returns the first visible item. This will always be in the range of available items. Use GetOffset() to retrieve the first visible row in the list.
    \sa GetOffset
@@ -201,6 +209,8 @@ private:
   CStopWatch m_scrollTimer;
   CStopWatch m_lastScrollStartTimer;
   CStopWatch m_pageChangeTimer;
+  
+  bool m_bDragStart; //true if the user is currently dragging and it started on this item
 
   // letter match searching
   CStopWatch m_matchTimer;
