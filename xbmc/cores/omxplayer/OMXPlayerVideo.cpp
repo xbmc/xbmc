@@ -343,7 +343,17 @@ void OMXPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     {
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
-      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, %d)", pMsgGeneralResync->m_timestamp, pMsgGeneralResync->m_clock);
+
+      double delay = 0;
+
+      if(pMsgGeneralResync->m_clock && pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
+      {
+        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, %f, 1)", m_iCurrentPts, pMsgGeneralResync->m_timestamp);
+        m_av_clock->Discontinuity(pMsgGeneralResync->m_timestamp - delay);
+      }
+      else
+        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_iCurrentPts);
+
       m_nextOverlay = DVD_NOPTS_VALUE;
       m_iCurrentPts = DVD_NOPTS_VALUE;
       pMsgGeneralResync->Release();
@@ -394,12 +404,14 @@ void OMXPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
     {
       COMXPlayer::SPlayerState& state = ((CDVDMsgType<COMXPlayer::SPlayerState>*)pMsg)->m_value;
+      double pts = m_iCurrentPts;
+      double stamp = m_av_clock->OMXMediaTime();
 
       if(state.time_src == COMXPlayer::ETIMESOURCE_CLOCK)
-        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime());
-        //state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
+        state.time      = stamp == 0.0 ? state.time : DVD_TIME_TO_MSEC(stamp + state.time_offset);
       else
-        state.timestamp = m_av_clock->GetAbsoluteClock();
+        state.time      = stamp == 0.0 || pts == DVD_NOPTS_VALUE ? state.time : state.time + DVD_TIME_TO_MSEC(stamp - pts);
+      state.timestamp = m_av_clock->GetAbsoluteClock();
       state.player    = DVDPLAYER_VIDEO;
       m_messageParent.Put(pMsg->Acquire());
     }
@@ -466,7 +478,8 @@ void OMXPlayerVideo::Process()
 
         m_omxVideo.Decode(pPacket->pData, pPacket->iSize, pts);
         Output(pts, bRequestDrop);
-        m_iCurrentPts = pts;
+        if(pts != DVD_NOPTS_VALUE)
+          m_iCurrentPts = pts;
 
         if(m_started == false)
         {
