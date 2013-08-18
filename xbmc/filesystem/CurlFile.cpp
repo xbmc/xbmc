@@ -401,6 +401,7 @@ CCurlFile::CCurlFile()
   m_oldState = NULL;
   m_skipshout = false;
   m_httpresponse = -1;
+  m_acceptCharset = "UTF-8,*;q=0.8"; /* prefer UTF-8 if available */
 }
 
 //Has to be called before Open()
@@ -559,6 +560,9 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // setup Content-Encoding if requested
   if( m_contentencoding.length() > 0 )
     g_curlInterface.easy_setopt(h, CURLOPT_ENCODING, m_contentencoding.c_str());
+
+  if (!m_useOldHttpVersion && !m_acceptCharset.empty())
+    SetRequestHeader("Accept-Charset", m_acceptCharset);
 
   if (m_userAgent.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, m_userAgent.c_str());
@@ -767,6 +771,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           m_skipshout = true;
         else if (name.Equals("seekable") && value.Equals("0"))
           m_seekable = false;
+        else if (name.Equals("Accept-Charset"))
+          SetAcceptCharset(value);
         else
           SetRequestHeader(name, value);
       }
