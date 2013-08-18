@@ -1546,6 +1546,14 @@ void CCurlFile::SetRequestHeader(CStdString header, long value)
   m_requestheaders[header] = buffer;
 }
 
+std::string CCurlFile::GetServerReportedCharset(void)
+{
+  if (!m_state)
+    return "";
+
+  return m_state->m_httpheader.GetCharset();
+}
+
 /* STATIC FUNCTIONS */
 bool CCurlFile::GetHttpHeader(const CURL &url, CHttpHeader &headers)
 {
