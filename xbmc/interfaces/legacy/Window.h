@@ -302,7 +302,7 @@ namespace XBMCAddon
        * 
        * example:
        *   - win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-       *   - win.setProperty('Category', 'Newest')n
+       *   - win.setProperty('Category', 'Newest')
        */
       SWIGHIDDENVIRTUAL void setProperty(const char* key, const String& value);
 
