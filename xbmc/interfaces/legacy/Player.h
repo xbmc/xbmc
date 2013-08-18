@@ -289,7 +289,7 @@ namespace XBMCAddon
       String getSubtitles();
 
       /**
-       * DisableSubtitles() -- disable subtitlesn
+       * DisableSubtitles() -- disable subtitles
        */
       // Player_DisableSubtitles
       void disableSubtitles();
