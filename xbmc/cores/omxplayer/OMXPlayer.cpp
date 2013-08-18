@@ -506,9 +506,6 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
     m_State.Clear();
     m_UpdateApplication = 0;
     m_offset_pts        = 0;
-    m_current_volume    = 0;
-    m_current_mute      = false;
-    m_change_volume     = true;
 
     m_PlayerOptions = options;
     m_item              = file;
@@ -1429,12 +1426,6 @@ void COMXPlayer::Process()
     if (IsBetterStream(m_CurrentVideo,    pStream)) OpenVideoStream   (pStream->iId, pStream->source);
     if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
     if (IsBetterStream(m_CurrentTeletext, pStream)) OpenTeletextStream(pStream->iId, pStream->source);
-
-    if(m_change_volume && m_CurrentAudio.started)
-    {
-      if(m_omxPlayerAudio.SetCurrentVolume(m_current_mute ? VOLUME_MINIMUM : m_current_volume))
-        m_change_volume = false;
-    }
 
     // process the packet
     ProcessPacket(pStream, pPacket);
@@ -4445,18 +4436,6 @@ bool COMXPlayer::CachePVRStream(void) const
   return m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
       !g_PVRManager.IsPlayingRecording() &&
       g_advancedSettings.m_bPVRCacheInDvdPlayer;
-}
-
-void COMXPlayer::SetMute(bool bOnOff)
-{
-  m_current_mute = bOnOff;
-  m_change_volume = true;
-}
-
-void COMXPlayer::SetVolume(float fVolume)
-{
-  m_current_volume = fVolume;
-  m_change_volume = true;
 }
 
 void COMXPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)

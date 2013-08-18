@@ -652,21 +652,6 @@ void OMXPlayerAudio::WaitCompletion()
   }
 }
 
-void OMXPlayerAudio::RegisterAudioCallback(IAudioCallback *pCallback)
-{
-  m_omxAudio.RegisterAudioCallback(pCallback);
-}
-
-void OMXPlayerAudio::UnRegisterAudioCallback()
-{
-  m_omxAudio.UnRegisterAudioCallback();
-}
-
-bool OMXPlayerAudio::SetCurrentVolume(float fVolume)
-{
-  return m_omxAudio.SetCurrentVolume(fVolume);
-}
-
 void OMXPlayerAudio::SetSpeed(int speed)
 {
   if(m_messageQueue.IsInited())
