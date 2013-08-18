@@ -31,33 +31,36 @@ namespace XBMCAddon
   public:
   private:
     WhichAlternative pos;
-    unsigned char data[sizeof(T1) > sizeof(T2) ? sizeof(T1) : sizeof(T2)];
+    unsigned char m_data[sizeof(T1) > sizeof(T2) ? sizeof(T1) : sizeof(T2)];
 
   public:
     Alternative() : pos(none) {}
     Alternative(const Alternative& o)
     {
+      unsigned char* data = m_data;
       pos = o.pos;
       if (pos == first)
-        new(&data) T1(o.former());
+        new(data) T1(o.former());
       else if (pos == second)
-        new(&data) T2(o.later());
+        new(data) T2(o.later());
     }
 
     inline WhichAlternative which() { return pos; }
 
     inline T1& former() throw (WrongTypeException)
     {
+      unsigned char* data = m_data;
       if (pos == second)// first and none is ok
         throw WrongTypeException("Access of XBMCAddon::Alternative as incorrect type");
       if (pos == none)
-        new(&data) T1();
+        new(data) T1();
       pos = first;
       return *((T1*)data);
     }
 
     inline const T1& former() const throw (WrongTypeException)
     {
+      const unsigned char* data = m_data;
       if (pos != first)
         throw WrongTypeException("Access of XBMCAddon::Alternative as incorrect type");
       return *((T1*)data);
@@ -65,16 +68,18 @@ namespace XBMCAddon
 
     inline T2& later() throw (WrongTypeException)
     {
+      unsigned char* data = m_data;
       if (pos == first)
         throw WrongTypeException("Access of XBMCAddon::Alternative as incorrect type");
       if (pos == none)
-        new(&data) T2();
+        new(data) T2();
       pos = second;
       return *((T2*)data);
     }
 
     inline const T2& later() const throw (WrongTypeException)
     {
+      const unsigned char* data = m_data;
       if (pos != second)
         throw WrongTypeException("Access of XBMCAddon::Alternative as incorrect type");
       return *((T2*)data);
