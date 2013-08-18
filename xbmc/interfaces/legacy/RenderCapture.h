@@ -53,9 +53,9 @@ namespace XBMCAddon
        * getCaptureState() -- returns processing state of capture request.
        *
        * The returned value could be compared against the following constants:
-       * xbmc.CAPTURE_STATE_WORKING  : Capture request in progress.
-       * xbmc.CAPTURE_STATE_DONE     : Capture request done. The image could be retrieved with getImage()
-       * xbmc.CAPTURE_STATE_FAILED   : Capture request failed.
+       * - xbmc.CAPTURE_STATE_WORKING  : Capture request in progress.
+       * - xbmc.CAPTURE_STATE_DONE     : Capture request done. The image could be retrieved with getImage()
+       * - xbmc.CAPTURE_STATE_FAILED   : Capture request failed.
        */
       inline int getCaptureState() { return m_capture->GetUserState(); }
 
@@ -90,13 +90,13 @@ namespace XBMCAddon
       /**
        * capture(width, height [, flags]) -- issue capture request.
        * 
-       * width    : Width capture image should be rendered to
-       * height   : Height capture image should should be rendered to
+       * width    : Width capture image should be rendered to\n
+       * height   : Height capture image should should be rendered to\n
        * flags    : Optional. Flags that control the capture processing.
        * 
        * The value for 'flags' could be or'ed from the following constants:
-       * xbmc.CAPTURE_FLAG_CONTINUOUS    : after a capture is done, issue a new capture request immediately
-       * xbmc.CAPTURE_FLAG_IMMEDIATELY   : read out immediately when capture() is called, this can cause a busy wait
+       * - xbmc.CAPTURE_FLAG_CONTINUOUS    : after a capture is done, issue a new capture request immediately
+       * - xbmc.CAPTURE_FLAG_IMMEDIATELY   : read out immediately when capture() is called, this can cause a busy wait
        */
       inline void capture(int width, int height, int flags = 0)
       {

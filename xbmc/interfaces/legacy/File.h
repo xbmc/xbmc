@@ -35,11 +35,11 @@ namespace XBMCAddon
   {
 
     /**
-     * File class.
-     * 
-     * 'w' - opt open for write
-     * example:
-     *  f = xbmcvfs.File(file, ['w'])
+     * File class.\n
+     * \n
+     * 'w' - opt open for write\n
+     * example:\n
+     *  f = xbmcvfs.File(file, ['w'])\n
      */
     class File : public AddonClass
     {
@@ -57,16 +57,16 @@ namespace XBMCAddon
       inline ~File() { delete file; }
 
       /**
-       * read(bytes)
-       * 
-       * bytes : how many bytes to read [opt]- if not set it will read the whole file
-       *
-       * returns: string
-       * 
-       * example:
-       *  f = xbmcvfs.File(file)
-       *  b = f.read()
-       *  f.close()
+       * read(bytes)\n
+       * \n
+       * bytes : how many bytes to read [opt]- if not set it will read the whole file\n
+       *\n
+       * returns: string\n
+       * \n
+       * example:\n
+       *  f = xbmcvfs.File(file)\n
+       *  b = f.read()\n
+       *  f.close()\n
        */
       inline String read(unsigned long numBytes = 0) 
       { 
@@ -75,61 +75,61 @@ namespace XBMCAddon
       }
 
       /**
-       * readBytes(numbytes)
-       * 
-       * numbytes : how many bytes to read [opt]- if not set it will read the whole file
-       *
-       * returns: bytearray
-       * 
-       * example:
-       *  f = xbmcvfs.File(file)
-       *  b = f.read()
-       *  f.close()
+       * readBytes(numbytes)\n
+       * \n
+       * numbytes : how many bytes to read [opt]- if not set it will read the whole file\n
+       *\n
+       * returns: bytearray\n
+       * \n
+       * example:\n
+       *  f = xbmcvfs.File(file)\n
+       *  b = f.read()\n
+       *  f.close()\n
        */
       XbmcCommons::Buffer readBytes(unsigned long numBytes = 0);
 
       /**
-       * write(buffer)
-       * 
-       * buffer : buffer to write to file
-       *
-       * returns: true on success.
-       * 
-       * example:
-       *  f = xbmcvfs.File(file, 'w', True)
-       *  result = f.write(buffer)
-       *  f.close()
+       * write(buffer)\n
+       * \n
+       * buffer : buffer to write to file\n
+       *\n
+       * returns: true on success.\n
+       * \n
+       * example:\n
+       *  f = xbmcvfs.File(file, 'w', True)\n
+       *  result = f.write(buffer)\n
+       *  f.close()\n
        */
       bool write(XbmcCommons::Buffer& buffer);
 
       /**
-       * size()
-       * 
-       * example:
-       *  f = xbmcvfs.File(file)
-       *  s = f.size()
-       *  f.close()
+       * size()\n
+       * \n
+       * example:\n
+       *  f = xbmcvfs.File(file)\n
+       *  s = f.size()\n
+       *  f.close()\n
        */
       inline long long size() { DelayedCallGuard dg(languageHook); return file->GetLength(); }
 
       /**
-       * seek()
-       * 
-       * FilePosition : position in the file
-       * Whence : where in a file to seek from[0 begining, 1 current , 2 end possition]
-       * example:
-       *  f = xbmcvfs.File(file)
-       *  result = f.seek(8129, 0)
-       *  f.close()
+       * seek()\n
+       * \n
+       * FilePosition : position in the file\n
+       * Whence : where in a file to seek from[0 begining, 1 current , 2 end possition]\n
+       * example:\n
+       *  f = xbmcvfs.File(file)\n
+       *  result = f.seek(8129, 0)\n
+       *  f.close()\n
        */
       inline long long seek(long long seekBytes, int iWhence) { DelayedCallGuard dg(languageHook); return file->Seek(seekBytes,iWhence); }
 
       /**
-       * close()
-       * 
-       * example:
-       *  f = xbmcvfs.File(file)
-       *  f.close()
+       * close()\n
+       * \n
+       * example:\n
+       *  f = xbmcvfs.File(file)\n
+       *  f.close()\n
        */
       inline void close() { DelayedCallGuard dg(languageHook); file->Close(); }
 

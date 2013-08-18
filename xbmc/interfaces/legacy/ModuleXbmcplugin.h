@@ -36,17 +36,17 @@ namespace XBMCAddon
      * addDirectoryItem(handle, url, listitem [,isFolder, totalItems]) -- Callback function to pass directory contents back to XBMC.
      *  - Returns a bool for successful completion.
      * 
-     * handle      : integer - handle the plugin was started with.
-     * url         : string - url of the entry. would be plugin:// for another virtual directory
-     * listitem    : ListItem - item to add.
-     * isFolder    : [opt] bool - True=folder / False=not a folder(default).
-     * totalItems  : [opt] integer - total number of items that will be passed.(used for progressbar)
+     * handle      : integer - handle the plugin was started with.\n
+     * url         : string - url of the entry. would be plugin:// for another virtual directory\n
+     * listitem    : ListItem - item to add.\n
+     * isFolder    : [opt] bool - True=folder / False=not a folder(default).\n
+     * totalItems  : [opt] integer - total number of items that will be passed.(used for progressbar)\n
      * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
      * 
      * example:
-     *   - if not xbmcplugin.addDirectoryItem(int(sys.argv[1]), 'F:\\\\Trailers\\\\300.mov', listitem, totalItems=50): break
+     *   - if not xbmcplugin.addDirectoryItem(int(sys.argv[1]), 'F:\\Trailers\\300.mov', listitem, totalItems=50): break
      */
     bool addDirectoryItem(int handle, const String& url, const XBMCAddon::xbmcgui::ListItem* listitem,
                           bool isFolder = false, int totalItems = 0);
@@ -55,9 +55,9 @@ namespace XBMCAddon
      * addDirectoryItems(handle, items [,totalItems]) -- Callback function to pass directory contents back to XBMC as a list.
      *  - Returns a bool for successful completion.
      * 
-     * handle      : integer - handle the plugin was started with.
-     * items       : List - list of (url, listitem[, isFolder]) as a tuple to add.
-     * totalItems  : [opt] integer - total number of items that will be passed.(used for progressbar)
+     * handle      : integer - handle the plugin was started with.\n
+     * items       : List - list of (url, listitem[, isFolder]) as a tuple to add.\n
+     * totalItems  : [opt] integer - total number of items that will be passed.(used for progressbar)\n
      * 
      *        Large lists benefit over using the standard addDirectoryItem()
      *        You may call this more than once to add items in chunks
@@ -72,9 +72,9 @@ namespace XBMCAddon
     /**
      * endOfDirectory(handle[, succeeded, updateListing, cacheToDisc]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.
      * 
-     * handle           : integer - handle the plugin was started with.
-     * succeeded        : [opt] bool - True=script completed successfully(Default)/False=Script did not.
-     * updateListing    : [opt] bool - True=this folder should update the current listing/False=Folder is a subfolder(Default).
+     * handle           : integer - handle the plugin was started with.\n
+     * succeeded        : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n
+     * updateListing    : [opt] bool - True=this folder should update the current listing/False=Folder is a subfolder(Default).\n
      * cacheToDisc      : [opt] bool - True=Folder will cache if extended time(default)/False=this folder will never cache to disc.
      * 
      * example:
@@ -86,8 +86,8 @@ namespace XBMCAddon
     /**
      * setResolvedUrl(handle, succeeded, listitem) -- Callback function to tell XBMC that the file plugin has been resolved to a url
      * 
-     * handle           : integer - handle the plugin was started with.
-     * succeeded        : bool - True=script completed successfully/False=Script did not.
+     * handle           : integer - handle the plugin was started with.\n
+     * succeeded        : bool - True=script completed successfully/False=Script did not.\n
      * listitem         : ListItem - item the file plugin resolved to for playback.
      * 
      * example:
@@ -98,15 +98,16 @@ namespace XBMCAddon
     /**
      * addSortMethod(handle, sortMethod, label2Mask) -- Adds a sorting method for the media list.
      * 
-     * handle      : integer - handle the plugin was started with.
-     * sortMethod  : integer - number for sortmethod see SortFileItem.h.
+     * handle      : integer - handle the plugin was started with.\n
+     * sortMethod  : integer - number for sortmethod see SortFileItem.h.\n
      * label2Mask  : [opt] string - the label mask to use for the second label.  Defaults to '%D'
-     *               applies to: SORT_METHOD_NONE, SORT_METHOD_UNSORTED, SORT_METHOD_VIDEO_TITLE,
-     *                           SORT_METHOD_TRACKNUM, SORT_METHOD_FILE, SORT_METHOD_TITLE,
-     *                           SORT_METHOD_TITLE_IGNORE_THE, SORT_METHOD_LABEL,
-     *                           SORT_METHOD_LABEL_IGNORE_THE, SORT_METHOD_VIDEO_SORT_TITLE,
-     *                           SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, SORT_METHOD_FULLPATH,
-     *                           SORT_METHOD_LABEL_IGNORE_FOLDERS, SORT_METHOD_CHANNEL
+     *               - applies to:
+     *                           - SORT_METHOD_NONE, SORT_METHOD_UNSORTED, SORT_METHOD_VIDEO_TITLE,
+     *                           - SORT_METHOD_TRACKNUM, SORT_METHOD_FILE, SORT_METHOD_TITLE,
+     *                           - SORT_METHOD_TITLE_IGNORE_THE, SORT_METHOD_LABEL,
+     *                           - SORT_METHOD_LABEL_IGNORE_THE, SORT_METHOD_VIDEO_SORT_TITLE,
+     *                           - SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, SORT_METHOD_FULLPATH,
+     *                           - SORT_METHOD_LABEL_IGNORE_FOLDERS, SORT_METHOD_CHANNEL
      * 
      * example:
      *   - xbmcplugin.addSortMethod(int(sys.argv[1]), 1)
@@ -116,7 +117,7 @@ namespace XBMCAddon
     /**
      * getSetting(handle, id) -- Returns the value of a setting as a string.
      * 
-     * handle    : integer - handle the plugin was started with.
+     * handle    : integer - handle the plugin was started with.\n
      * id        : string - id of the setting that the module needs to access.
      * 
      * *Note, You can use the above as a keyword.
@@ -129,8 +130,8 @@ namespace XBMCAddon
     /**
      * setSetting(handle, id, value) -- Sets a plugin setting for the current running plugin.
      * 
-     * handle    : integer - handle the plugin was started with.
-     * id        : string - id of the setting that the module needs to access.
+     * handle    : integer - handle the plugin was started with.\n
+     * id        : string - id of the setting that the module needs to access.\n
      * value     : string or unicode - value of the setting.
      * 
      * example:
@@ -141,7 +142,7 @@ namespace XBMCAddon
     /**
      * setContent(handle, content) -- Sets the plugins content.
      * 
-     * handle      : integer - handle the plugin was started with.
+     * handle      : integer - handle the plugin was started with.\n
      * content     : string - content type (eg. movies)
      * 
      *  *Note:  content: files, songs, artists, albums, movies, tvshows, episodes, musicvideos
@@ -154,7 +155,7 @@ namespace XBMCAddon
     /**
      * setPluginCategory(handle, category) -- Sets the plugins name for skins to display.
      * 
-     * handle      : integer - handle the plugin was started with.
+     * handle      : integer - handle the plugin was started with.\n
      * category    : string or unicode - plugins sub category.
      * 
      * example:
@@ -165,14 +166,14 @@ namespace XBMCAddon
     /**
      * setPluginFanart(handle, image, color1, color2, color3) -- Sets the plugins fanart and color for skins to display.
      * 
-     * handle      : integer - handle the plugin was started with.
-     * image       : [opt] string - path to fanart image.
-     * color1      : [opt] hexstring - color1. (e.g. '0xFFFFFFFF')
-     * color2      : [opt] hexstring - color2. (e.g. '0xFFFF3300')
+     * handle      : integer - handle the plugin was started with.\n
+     * image       : [opt] string - path to fanart image.\n
+     * color1      : [opt] hexstring - color1. (e.g. '0xFFFFFFFF')\n
+     * color2      : [opt] hexstring - color2. (e.g. '0xFFFF3300')\n
      * color3      : [opt] hexstring - color3. (e.g. '0xFF000000')
      * 
      * example:
-     *   - xbmcplugin.setPluginFanart(int(sys.argv[1]), 'special://home/addons/plugins/video/Apple movie trailers II/fanart.png', color2='0xFFFF3300')\n
+     *   - xbmcplugin.setPluginFanart(int(sys.argv[1]), 'special://home/addons/plugins/video/Apple movie trailers II/fanart.png', color2='0xFFFF3300')
      */
     void setPluginFanart(int handle, const char* image = NULL, 
                          const char* color1 = NULL,
@@ -182,14 +183,14 @@ namespace XBMCAddon
     /**
      * setProperty(handle, key, value) -- Sets a container property for this plugin.
      * 
-     * handle      : integer - handle the plugin was started with.
-     * key         : string - property name.
+     * handle      : integer - handle the plugin was started with.\n
+     * key         : string - property name.\n
      * value       : string or unicode - value of property.
      * 
      * *Note, Key is NOT case sensitive.
      * 
      * example:
-     *   - xbmcplugin.setProperty(int(sys.argv[1]), 'Emulator', 'M.A.M.E.')\n
+     *   - xbmcplugin.setProperty(int(sys.argv[1]), 'Emulator', 'M.A.M.E.')
      */
     void setProperty(int handle, const char* key, const String& value);
 
