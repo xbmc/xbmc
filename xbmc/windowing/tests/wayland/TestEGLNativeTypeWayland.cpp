@@ -28,6 +28,8 @@
 #include <stdexcept>
 #include <queue>
 
+#include <tr1/tuple>
+
 #include <iostream>
 
 #include <boost/array.hpp>
@@ -77,6 +79,9 @@
 
 #define WAYLAND_VERSION ((WAYLAND_VERSION_MAJOR << 16) | (WAYLAND_VERSION_MINOR << 8) | (WAYLAND_VERSION_MICRO))
 #define WAYLAND_VERSION_CHECK(major, minor, micro) ((major << 16) | (minor << 8) | (micro))
+
+using ::testing::Values;
+using ::testing::WithParamInterface;
 
 namespace
 {
@@ -1643,4 +1648,140 @@ INSTANTIATE_TYPED_TEST_CASE_P(EventQueues,
                               InputEventQueueWestonTest,
                               EventQueueTypes);
 
+class WaylandPointerProcessor :
+  public ::testing::Test
+{
+public:
+
+  WaylandPointerProcessor();
+
+protected:
+
+  StubCursorManager cursorManager;
+  StubEventListener listener;
+  xbmc::PointerProcessor processor;
+};
+
+WaylandPointerProcessor::WaylandPointerProcessor() :
+  processor(listener, cursorManager)
+{
+}
+
+class WaylandPointerProcessorButtons :
+  public WaylandPointerProcessor,
+  public ::testing::WithParamInterface<std::tr1::tuple<uint32_t, uint32_t> >
+{
+protected:
+
+  uint32_t WaylandButton();
+  uint32_t XBMCButton();
+};
+
+uint32_t WaylandPointerProcessorButtons::WaylandButton()
+{
+  return std::tr1::get<0>(GetParam());
+}
+
+uint32_t WaylandPointerProcessorButtons::XBMCButton()
+{
+  return std::tr1::get<1>(GetParam());
+}
+
+TEST_P(WaylandPointerProcessorButtons, ButtonPress)
+{
+  xw::IPointerReceiver &receiver =
+    static_cast<xw::IPointerReceiver &>(processor);
+  receiver.Button(0, 0, WaylandButton(), WL_POINTER_BUTTON_STATE_PRESSED);
+  
+  XBMC_Event event(listener.FetchLastEvent());
+  EXPECT_EQ(XBMC_MOUSEBUTTONDOWN, event.type);
+  EXPECT_EQ(XBMCButton(), event.button.button);
+}
+
+TEST_P(WaylandPointerProcessorButtons, ButtonRelease)
+{
+  xw::IPointerReceiver &receiver =
+    static_cast<xw::IPointerReceiver &>(processor);
+  receiver.Button(0, 0, WaylandButton(), WL_POINTER_BUTTON_STATE_RELEASED);
+  
+  XBMC_Event event(listener.FetchLastEvent());
+  EXPECT_EQ(XBMC_MOUSEBUTTONUP, event.type);
+  EXPECT_EQ(XBMCButton(), event.button.button);
+}
+
+INSTANTIATE_TEST_CASE_P(ThreeButtonMouse,
+                        WaylandPointerProcessorButtons,
+                        Values(std::tr1::tuple<uint32_t, uint32_t>(272, 1),
+                               std::tr1::tuple<uint32_t, uint32_t>(274, 2),
+                               std::tr1::tuple<uint32_t, uint32_t>(273, 3)));
+
+class WaylandPointerProcessorAxisButtons :
+  public WaylandPointerProcessor,
+  public ::testing::WithParamInterface<std::tr1::tuple<float, uint32_t> >
+{
+protected:
+
+  float Magnitude();
+  uint32_t XBMCButton();
+};
+
+float WaylandPointerProcessorAxisButtons::Magnitude()
+{
+  return std::tr1::get<0>(GetParam());
+}
+
+uint32_t WaylandPointerProcessorAxisButtons::XBMCButton()
+{
+  return std::tr1::get<1>(GetParam());
+}
+
+TEST_P(WaylandPointerProcessorAxisButtons, Axis)
+{
+  xw::IPointerReceiver &receiver =
+    static_cast<xw::IPointerReceiver &>(processor);
+  receiver.Axis(0, WL_POINTER_AXIS_VERTICAL_SCROLL, Magnitude());
+  
+  XBMC_Event event(listener.FetchLastEvent());
+  EXPECT_EQ(XBMC_MOUSEBUTTONDOWN, event.type);
+  EXPECT_EQ(XBMCButton(), event.button.button);
+  
+  event = listener.FetchLastEvent();
+  EXPECT_EQ(XBMC_MOUSEBUTTONUP, event.type);
+  EXPECT_EQ(XBMCButton(), event.button.button);
+}
+
+INSTANTIATE_TEST_CASE_P(VerticalScrollWheel,
+                        WaylandPointerProcessorAxisButtons,
+                        Values(std::tr1::tuple<float, uint32_t>(-1.0, 4),
+                               std::tr1::tuple<float, uint32_t>(1.0, 5)));
+
+TEST_F(WaylandPointerProcessor, Motion)
+{
+  const float x = 5.0;
+  const float y = 5.0;
+  xw::IPointerReceiver &receiver =
+    static_cast<xw::IPointerReceiver &>(processor);
+  receiver.Motion(0, x, y);
+  
+  XBMC_Event event(listener.FetchLastEvent());
+  EXPECT_EQ(XBMC_MOUSEMOTION, event.type);
+  EXPECT_EQ(::round(x), event.motion.xrel);
+  EXPECT_EQ(::round(y), event.motion.yrel);  
+}
+
+TEST_F(WaylandPointerProcessor, MotionThenButton)
+{
+  const float x = 5.0;
+  const float y = 5.0;
+  xw::IPointerReceiver &receiver =
+    static_cast<xw::IPointerReceiver &>(processor);
+  receiver.Motion(0, x, y);
+  receiver.Button(0, 0, 272, WL_POINTER_BUTTON_STATE_PRESSED);
+  
+  listener.FetchLastEvent();
+  XBMC_Event event(listener.FetchLastEvent());
+  EXPECT_EQ(XBMC_MOUSEBUTTONDOWN, event.type);
+  EXPECT_EQ(::round(x), event.button.y);
+  EXPECT_EQ(::round(y), event.button.x);  
+}
 #endif
