@@ -91,6 +91,7 @@ namespace XFILE
       void SetBufferSize(unsigned int size);
 
       const CHttpHeader& GetHttpHeader() { return m_state->m_httpheader; }
+      std::string GetServerReportedCharset(void);
 
       /* static function that will get content type of a file */
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
