@@ -51,10 +51,8 @@ public:
   static void RefreshDevices();
   static bool IsRemoteLowBattery();
 
-  static void SetWaylandDisplay(IDllWaylandClient &clientLibrary,
-                                xbmc::wayland::events::IEventQueueStrategy &strategy,
-                                struct wl_display *d);
-  static void DestroyWaylandDisplay();
+  static void SetEventQueueStrategy(xbmc::wayland::events::IEventQueueStrategy &strategy);
+  static void DestroyEventQueueStrategy();
 
   static void SetWaylandSeat(IDllWaylandClient &clientLibrary,
                              IDllXKBCommon &xkbCommonLibrary,
