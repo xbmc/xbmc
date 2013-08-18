@@ -121,6 +121,7 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight, bool fa
 
       if (info.iScreenWidth  == curr.iScreenWidth
        && info.iScreenHeight == curr.iScreenHeight
+       && (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK)
        && info.iScreen       == curr.iScreen)
       {
         if (info.fRefreshRate <= override.refreshmax
@@ -181,6 +182,7 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
         if (MathUtils::round_int(info.fRefreshRate) == 60
          && info.iScreenWidth  == curr.iScreenWidth
          && info.iScreenHeight == curr.iScreenHeight
+         && (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK)
          && info.iScreen       == curr.iScreen)
         {
           if (fabs(info.fRefreshRate - 60.0) < fabs(curr.fRefreshRate - 60.0)) {
@@ -201,6 +203,7 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
           if (info.fRefreshRate  >  curr.fRefreshRate
            && info.iScreenWidth  == curr.iScreenWidth
            && info.iScreenHeight == curr.iScreenHeight
+           && (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK)
            && info.iScreen       == curr.iScreen)
           {
             m_resolution = (RESOLUTION)i;
@@ -227,11 +230,12 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
   {
     const RESOLUTION_INFO info = g_graphicsContext.GetResInfo((RESOLUTION)i);
 
-    //discard resolutions that are not the same width and height
+    //discard resolutions that are not the same width and height (and interlaced/3D flags)
     //or have a too low refreshrate
     if (info.iScreenWidth  != curr.iScreenWidth
     ||  info.iScreenHeight != curr.iScreenHeight
     ||  info.iScreen       != curr.iScreen
+    ||  (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK)
     ||  info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
       continue;
 
