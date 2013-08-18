@@ -26,6 +26,7 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <queue>
 
 #include <iostream>
 
@@ -43,19 +44,39 @@
 
 #include <wayland-client.h>
 #include <wayland-client-protocol.h>
+#include <wayland-version.h>
 #include "xbmc_wayland_test_client_protocol.h"
 
 #include "windowing/egl/wayland/Callback.h"
+#include "windowing/egl/wayland/Compositor.h"
 #include "windowing/egl/wayland/Display.h"
+#include "windowing/egl/wayland/OpenGLSurface.h"
 #include "windowing/egl/wayland/Registry.h"
 #include "windowing/egl/wayland/Surface.h"
+#include "windowing/egl/wayland/Shell.h"
+#include "windowing/egl/wayland/ShellSurface.h"
+#include "windowing/egl/wayland/XBMCConnection.h"
+#include "windowing/egl/wayland/XBMCSurface.h"
 #include "windowing/egl/EGLNativeTypeWayland.h"
+#include "windowing/wayland/EventLoop.h"
+#include "windowing/wayland/EventQueueStrategy.h"
+#include "windowing/wayland/TimeoutManager.h"
+#include "windowing/wayland/CursorManager.h"
+#include "windowing/wayland/InputFactory.h"
+#include "windowing/wayland/Wayland11EventQueueStrategy.h"
+#include "windowing/wayland/Wayland12EventQueueStrategy.h"
 #include "windowing/WinEvents.h"
 
 #include "windowing/DllWaylandClient.h"
+#include "windowing/DllWaylandEgl.h"
+#include "windowing/DllXKBCommon.h"
 
 #include "utils/StringUtils.h"
 #include "test/TestUtils.h"
+#include "input/XBMC_keysym.h"
+
+#define WAYLAND_VERSION ((WAYLAND_VERSION_MAJOR << 16) | (WAYLAND_VERSION_MINOR << 8) | (WAYLAND_VERSION_MICRO))
+#define WAYLAND_VERSION_CHECK(major, minor, micro) ((major << 16) | (minor << 8) | (micro))
 
 namespace
 {
@@ -1177,5 +1198,449 @@ TEST_F(XBMCWaylandAssistedWestonTest, CurrentResolutionChange)
   EXPECT_EQ(res.iWidth, 2);
   EXPECT_EQ(res.iHeight, 2);
 }
+
+namespace
+{
+class StubEventListener :
+  public xbmc::IEventListener
+{
+public:
+
+  StubEventListener();
+
+  /* Returns front of event queue, otherwise throws */
+  XBMC_Event FetchLastEvent();
+  bool Focused();
+
+private:
+
+  void OnFocused();
+  void OnUnfocused();
+  void OnEvent(XBMC_Event &);
+
+  bool m_focused;
+  std::queue<XBMC_Event> m_events;
+};
+
+StubEventListener::StubEventListener() :
+  m_focused(false)
+{
+}
+
+XBMC_Event
+StubEventListener::FetchLastEvent()
+{
+  if (m_events.empty())
+    throw std::logic_error("No events left to get!");
+  
+  XBMC_Event ev = m_events.front();
+  m_events.pop();
+  return ev;
+}
+
+bool
+StubEventListener::Focused()
+{
+  return m_focused;
+}
+
+void
+StubEventListener::OnFocused()
+{
+  m_focused = true;
+}
+
+void
+StubEventListener::OnUnfocused()
+{
+  m_focused = false;
+}
+
+void
+StubEventListener::OnEvent(XBMC_Event &ev)
+{
+  m_events.push(ev);
+}
+
+class StubCursorManager :
+  public xbmc::ICursorManager
+{
+public:
+
+  void SetCursor(uint32_t serial,
+                 struct wl_surface *surface,
+                 double surfaceX,
+                 double surfaceY)
+  {
+  }
+};
+
+class SingleThreadedEventQueue :
+  public xwe::IEventQueueStrategy
+{
+public:
+
+  SingleThreadedEventQueue(IDllWaylandClient &clientLibrary,
+                           struct wl_display *display);
+
+private:
+
+  void PushAction(const Action &action);
+  void DispatchEventsFromMain();
+  
+  IDllWaylandClient &m_clientLibrary;
+  struct wl_display *m_display;
+};
+
+SingleThreadedEventQueue::SingleThreadedEventQueue(IDllWaylandClient &clientLibrary,
+                                                   struct wl_display *display) :
+  m_clientLibrary(clientLibrary),
+  m_display(display)
+{
+}
+
+void SingleThreadedEventQueue::PushAction(const Action &action)
+{
+  action();
+}
+
+void SingleThreadedEventQueue::DispatchEventsFromMain()
+{
+  m_clientLibrary.wl_display_dispatch_pending(m_display);
+  m_clientLibrary.wl_display_flush(m_display);
+  m_clientLibrary.wl_display_dispatch(m_display);
+}
+}
+
+class InputEventsWestonTest :
+  public WestonTest,
+  public xw::IWaylandRegistration
+{
+public:
+
+  InputEventsWestonTest();
+  virtual void SetUp();
+
+protected:
+
+  DllWaylandClient clientLibrary;
+  DllWaylandEGL eglLibrary;
+  DllXKBCommon xkbCommonLibrary;
+  
+  StubCursorManager cursors;
+  StubEventListener listener;
+
+  boost::scoped_ptr<xw::Display> display;
+  boost::scoped_ptr<xwe::IEventQueueStrategy> queue;
+  boost::scoped_ptr<xw::Registry> registry;
+
+  boost::scoped_ptr<xwe::Loop> loop;
+  boost::scoped_ptr<xbmc::InputFactory> input;
+
+  boost::scoped_ptr<xw::Compositor> compositor;
+  boost::scoped_ptr<xw::Shell> shell;
+  boost::scoped_ptr<xtw::XBMCWayland> xbmcWayland;
+
+  boost::scoped_ptr<xw::Surface> surface;
+  boost::scoped_ptr<xw::ShellSurface> shellSurface;
+  boost::scoped_ptr<xw::OpenGLSurface> openGLSurface;
+
+  virtual xwe::IEventQueueStrategy * CreateEventQueue() = 0;
+
+  void WaitForSynchronize();
+  
+  static const unsigned int SurfaceWidth = 512;
+  static const unsigned int SurfaceHeight = 512;
+
+private:
+
+  virtual bool OnGlobalInterfaceAvailable(uint32_t name,
+                                          const char *interface,
+                                          uint32_t version);
+
+  bool synchronized;
+  void Synchronize();
+  boost::scoped_ptr<xw::Callback> syncCallback;
+  
+  TmpEnv m_waylandDisplayEnv;
+};
+
+InputEventsWestonTest::InputEventsWestonTest() :
+  m_waylandDisplayEnv("WAYLAND_DISPLAY",
+                      m_tempSocketName.FetchFilename().c_str())
+{
+}
+
+void InputEventsWestonTest::SetUp()
+{
+  WestonTest::SetUp();
+  
+  clientLibrary.Load();
+  eglLibrary.Load();
+  xkbCommonLibrary.Load();
+  
+  display.reset(new xw::Display(clientLibrary));
+  queue.reset(CreateEventQueue());
+  registry.reset(new xw::Registry(clientLibrary,
+                                  display->GetWlDisplay(),
+                                  *this));
+  loop.reset(new xwe::Loop(listener, *queue));
+
+  /* Wait for the seat, shell, compositor to appear */
+  WaitForSynchronize();
+  
+  ASSERT_TRUE(input.get() != NULL);
+  ASSERT_TRUE(compositor.get() != NULL);
+  ASSERT_TRUE(shell.get() != NULL);
+  ASSERT_TRUE(xbmcWayland.get() != NULL);
+  
+  /* Wait for input devices to appear etc */
+  WaitForSynchronize();
+  
+  surface.reset(new xw::Surface(clientLibrary,
+                                compositor->CreateSurface()));
+  shellSurface.reset(new xw::ShellSurface(clientLibrary,
+                                          shell->CreateShellSurface(
+                                            surface->GetWlSurface())));
+  openGLSurface.reset(new xw::OpenGLSurface(eglLibrary,
+                                            surface->GetWlSurface(),
+                                            SurfaceWidth,
+                                            SurfaceHeight));
+
+  wl_shell_surface_set_toplevel(shellSurface->GetWlShellSurface());
+  surface->Commit();
+}
+
+bool InputEventsWestonTest::OnGlobalInterfaceAvailable(uint32_t name,
+                                                       const char *interface,
+                                                       uint32_t version)
+{
+  if (strcmp(interface, "wl_seat") == 0)
+  {
+    /* We must use the one provided by dlopen, as the address
+     * may be different */
+    struct wl_interface **seatInterface =
+      clientLibrary.Get_wl_seat_interface();
+    struct wl_seat *seat =
+      registry->Bind<struct wl_seat *>(name,
+                                       seatInterface,
+                                       1);
+    input.reset(new xbmc::InputFactory(clientLibrary,
+                                       xkbCommonLibrary,
+                                       seat,
+                                       listener,
+                                       *loop));
+    return true;
+  }
+  else if (strcmp(interface, "wl_compositor") == 0)
+  {
+    struct wl_interface **compositorInterface =
+      clientLibrary.Get_wl_compositor_interface();
+    struct wl_compositor *wlcompositor =
+      registry->Bind<struct wl_compositor *>(name,
+                                             compositorInterface,
+                                             1);
+    compositor.reset(new xw::Compositor(clientLibrary, wlcompositor));
+    return true;
+  }
+  else if (strcmp(interface, "wl_shell") == 0)
+  {
+    struct wl_interface **shellInterface =
+      clientLibrary.Get_wl_shell_interface();
+    struct wl_shell *wlshell =
+      registry->Bind<struct wl_shell *>(name,
+                                        shellInterface,
+                                        1);
+    shell.reset(new xw::Shell(clientLibrary, wlshell));
+    return true;
+  }
+  else if (strcmp(interface, "xbmc_wayland") == 0)
+  {
+    struct wl_interface **xbmcWaylandInterface =
+      (struct wl_interface **) &xbmc_wayland_interface;
+    struct xbmc_wayland *wlxbmc_wayland =
+      registry->Bind<struct xbmc_wayland *>(name,
+                                            xbmcWaylandInterface,
+                                            version);
+    xbmcWayland.reset(new xtw::XBMCWayland(wlxbmc_wayland));
+    return true;
+  }
+  
+  return false;
+}
+
+void InputEventsWestonTest::WaitForSynchronize()
+{
+  synchronized = false;
+  syncCallback.reset(new xw::Callback(clientLibrary,
+                                      display->Sync(),
+                                      boost::bind(&InputEventsWestonTest::Synchronize,
+                                                  this)));
+  
+  while (!synchronized)
+    loop->Dispatch();
+}
+
+void InputEventsWestonTest::Synchronize()
+{
+  synchronized = true;
+}
+
+template <typename EventQueue>
+class InputEventQueueWestonTest :
+  public InputEventsWestonTest
+{
+private:
+
+  virtual xwe::IEventQueueStrategy * CreateEventQueue()
+  {
+    return new EventQueue(clientLibrary, display->GetWlDisplay());
+  }
+};
+TYPED_TEST_CASE_P(InputEventQueueWestonTest);
+
+TYPED_TEST_P(InputEventQueueWestonTest, Construction)
+{
+}
+
+TYPED_TEST_P(InputEventQueueWestonTest, MotionEvent)
+{
+  typedef InputEventsWestonTest Base;
+  int x = Base::SurfaceWidth / 2;
+  int y = Base::SurfaceHeight / 2;
+  Base::xbmcWayland->MovePointerTo(Base::surface->GetWlSurface(),
+                                   wl_fixed_from_int(x),
+                                   wl_fixed_from_int(y));
+  Base::WaitForSynchronize();
+  XBMC_Event event(Base::listener.FetchLastEvent());
+
+  EXPECT_EQ(XBMC_MOUSEMOTION, event.type);
+  EXPECT_EQ(x, event.motion.xrel);
+  EXPECT_EQ(y, event.motion.yrel);
+}
+
+TYPED_TEST_P(InputEventQueueWestonTest, ButtonEvent)
+{
+  typedef InputEventsWestonTest Base;
+  int x = Base::SurfaceWidth / 2;
+  int y = Base::SurfaceHeight / 2;
+  const unsigned int WaylandLeftButton = 272;
+  
+  Base::xbmcWayland->MovePointerTo(Base::surface->GetWlSurface(),
+                                   wl_fixed_from_int(x),
+                                   wl_fixed_from_int(y));
+  Base::xbmcWayland->SendButtonTo(Base::surface->GetWlSurface(),
+                                  WaylandLeftButton,
+                                  WL_POINTER_BUTTON_STATE_PRESSED);
+  Base::WaitForSynchronize();
+  
+  /* Throw away motion event */
+  Base::listener.FetchLastEvent();
+
+  XBMC_Event event(Base::listener.FetchLastEvent());
+
+  EXPECT_EQ(XBMC_MOUSEBUTTONDOWN, event.type);
+  EXPECT_EQ(1, event.button.button);
+  EXPECT_EQ(x, event.button.x);
+  EXPECT_EQ(y, event.button.y);
+}
+
+TYPED_TEST_P(InputEventQueueWestonTest, AxisEvent)
+{
+  typedef InputEventsWestonTest Base;
+  int x = Base::SurfaceWidth / 2;
+  int y = Base::SurfaceHeight / 2;
+  
+  Base::xbmcWayland->MovePointerTo(Base::surface->GetWlSurface(),
+                                   wl_fixed_from_int(x),
+                                   wl_fixed_from_int(y));
+  Base::xbmcWayland->SendAxisTo(Base::surface->GetWlSurface(),
+                                WL_POINTER_AXIS_VERTICAL_SCROLL,
+                                wl_fixed_from_int(10));
+  Base::WaitForSynchronize();
+  
+  /* Throw away motion event */
+  Base::listener.FetchLastEvent();
+
+  /* Should get button up and down */
+  XBMC_Event event(Base::listener.FetchLastEvent());
+
+  EXPECT_EQ(XBMC_MOUSEBUTTONDOWN, event.type);
+  EXPECT_EQ(5, event.button.button);
+  EXPECT_EQ(x, event.button.x);
+  EXPECT_EQ(y, event.button.y);
+  
+  event = Base::listener.FetchLastEvent();
+
+  EXPECT_EQ(XBMC_MOUSEBUTTONUP, event.type);
+  EXPECT_EQ(5, event.button.button);
+  EXPECT_EQ(x, event.button.x);
+  EXPECT_EQ(y, event.button.y);
+}
+
+TYPED_TEST_P(InputEventQueueWestonTest, KeyEvent)
+{
+  typedef InputEventsWestonTest Base;
+  
+  /* PC-105 layout */
+  const unsigned int oKeycode = 24;
+
+  Base::xbmcWayland->GiveSurfaceKeyboardFocus(Base::surface->GetWlSurface());
+  Base::xbmcWayland->SendKeyToKeyboard(Base::surface->GetWlSurface(),
+                                       oKeycode,
+                                       WL_KEYBOARD_KEY_STATE_PRESSED);
+  Base::WaitForSynchronize();
+  
+  XBMC_Event event(Base::listener.FetchLastEvent());
+  EXPECT_EQ(XBMC_KEYDOWN, event.type);
+  EXPECT_EQ(oKeycode, event.key.keysym.scancode);
+  EXPECT_EQ(XBMCK_o, event.key.keysym.sym);
+  EXPECT_EQ(XBMCK_o, event.key.keysym.unicode);
+}
+
+TYPED_TEST_P(InputEventQueueWestonTest, Modifiers)
+{
+  typedef InputEventsWestonTest Base;
+  
+  /* PC-105 layout */
+  const unsigned int oKeycode = 24;
+  const unsigned int leftShiftIndex = 1 << 0;
+
+  Base::xbmcWayland->GiveSurfaceKeyboardFocus(Base::surface->GetWlSurface());
+  Base::xbmcWayland->SendModifiersToKeyboard(Base::surface->GetWlSurface(),
+                                             leftShiftIndex,
+                                             0,
+                                             0,
+                                             0);
+  Base::xbmcWayland->SendKeyToKeyboard(Base::surface->GetWlSurface(),
+                                       oKeycode,
+                                       WL_KEYBOARD_KEY_STATE_PRESSED);
+  Base::WaitForSynchronize();
+  
+  XBMC_Event event(Base::listener.FetchLastEvent());
+  EXPECT_EQ(XBMC_KEYDOWN, event.type);
+  EXPECT_EQ(oKeycode, event.key.keysym.scancode);
+  EXPECT_TRUE((XBMCKMOD_LSHIFT & event.key.keysym.mod) != 0);
+}
+
+REGISTER_TYPED_TEST_CASE_P(InputEventQueueWestonTest,
+                           Construction,
+                           MotionEvent,
+                           ButtonEvent,
+                           AxisEvent,
+                           KeyEvent,
+                           Modifiers);
+
+typedef ::testing::Types<SingleThreadedEventQueue,
+#if (WAYLAND_VERSION >= WAYLAND_VERSION_CHECK(1, 1, 90))
+                         xw::version_11::EventQueueStrategy,
+                         xw::version_12::EventQueueStrategy> EventQueueTypes;
+#else
+                         xw::version_11::EventQueueStrategy> EventQueueTypes;
+#endif
+
+INSTANTIATE_TYPED_TEST_CASE_P(EventQueues,
+                              InputEventQueueWestonTest,
+                              EventQueueTypes);
 
 #endif
