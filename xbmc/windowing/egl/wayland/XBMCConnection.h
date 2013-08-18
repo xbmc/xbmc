@@ -54,18 +54,16 @@ public:
 
   struct EventInjector
   {
-    typedef void (*SetWaylandDisplay)(IDllWaylandClient &clientLibrary,
-                                      events::IEventQueueStrategy &strategy,
-                                      struct wl_display *display);
-    typedef void (*DestroyWaylandDisplay)();
+    typedef void (*SetEventQueue)(events::IEventQueueStrategy &strategy);
+    typedef void (*DestroyEventQueue)();
     typedef void (*SetWaylandSeat)(IDllWaylandClient &clientLibrary,
                                    IDllXKBCommon &xkbCommonLibrary,
                                    struct wl_seat *seat);
     typedef void (*DestroyWaylandSeat)();
     typedef bool (*MessagePump)();
     
-    SetWaylandDisplay setDisplay;
-    DestroyWaylandDisplay destroyDisplay;
+    SetEventQueue setEventQueue;
+    DestroyEventQueue destroyEventQueue;
     SetWaylandSeat setWaylandSeat;
     DestroyWaylandSeat destroyWaylandSeat;
     MessagePump messagePump;
