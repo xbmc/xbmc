@@ -67,14 +67,15 @@ void CGUIDialogBoxBase::SetHeading(const CVariant& heading)
     SET_CONTROL_LABEL_THREAD_SAFE(1, m_strHeading);
 }
 
-void CGUIDialogBoxBase::SetLine(int iLine, const CVariant& line)
+void CGUIDialogBoxBase::SetLine(int iLine, const CVariant& line, bool scrolling/* = false*/)
 {
   if (iLine < 0 || iLine >= DIALOG_MAX_LINES)
     return;
 
   m_strLines[iLine] = GetLocalized(line);
+  m_lineScrolling[iLine] = scrolling;
   if (IsActive())
-    SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_LINES_START + iLine, m_strLines[iLine]);
+    SET_CONTROL_LABEL_AND_SCROLLING_THREAD_SAFE(CONTROL_LINES_START + iLine, m_strLines[iLine], scrolling);
 }
 
 void CGUIDialogBoxBase::SetChoice(int iButton, const CVariant &choice) // iButton == 0 for no, 1 for yes
@@ -94,8 +95,8 @@ void CGUIDialogBoxBase::OnInitWindow()
 
   // set control labels
   SET_CONTROL_LABEL(CONTROL_HEADING, !m_strHeading.empty() ? m_strHeading : GetDefaultLabel(CONTROL_HEADING));
-  for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
-    SET_CONTROL_LABEL(CONTROL_LINES_START + i, !m_strLines[i].empty() ? m_strLines[i] : GetDefaultLabel(CONTROL_LINES_START + i));
+  for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i) 
+    SET_CONTROL_LABEL_AND_SCROLLING(CONTROL_LINES_START + i, !m_strLines[i].empty() ? m_strLines[i] : GetDefaultLabel(CONTROL_LINES_START + i), m_lineScrolling[i]);
   for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
     SET_CONTROL_LABEL(CONTROL_CHOICES_START + i, !m_strChoices[i].empty() ? m_strChoices[i] : GetDefaultLabel(CONTROL_CHOICES_START + i));
 
@@ -106,8 +107,10 @@ void CGUIDialogBoxBase::OnDeinitWindow(int nextWindowID)
 {
   // make sure we set default labels for heading, lines and choices
   SetHeading(m_strHeading = "");
-  for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
+  for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i) {
     SetLine(i, m_strLines[i] = "");
+    m_lineScrolling[i] = false;
+  }
   for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
     SetChoice(i, m_strChoices[i] = "");
 

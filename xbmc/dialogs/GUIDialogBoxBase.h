@@ -34,7 +34,7 @@ public:
   virtual ~CGUIDialogBoxBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   bool IsConfirmed() const;
-  void SetLine(int iLine, const CVariant &line);
+  void SetLine(int iLine, const CVariant &line, bool scrolling = false);
   void SetHeading(const CVariant &heading);
   void SetChoice(int iButton, const CVariant &choice);
 protected:
@@ -55,5 +55,6 @@ protected:
   // actual strings
   std::string m_strHeading;
   std::string m_strLines[DIALOG_MAX_LINES];
+  bool m_lineScrolling[DIALOG_MAX_LINES];
   std::string m_strChoices[DIALOG_MAX_CHOICES];
 };

@@ -133,6 +133,12 @@
 
 #define GUI_MSG_WINDOW_LOAD 43
 
+/*!
+  \brief Set the scrolling property of a label
+  \arg param1 contains the boolean value if the label should scroll or not
+*/
+#define GUI_MSG_LABEL_SCROLL 44
+
 #define GUI_MSG_USER         1000
 
 /*!
@@ -213,6 +219,21 @@ do { \
  \ingroup winmsg
  \brief Set the label of the current control
  */
+#define SET_CONTROL_LABEL_AND_SCROLLING(controlID,label,scrolling) \
+do { \
+ CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), controlID); \
+ msg.SetLabel(label); \
+ OnMessage(msg); \
+ CGUIMessage scrollMsg(GUI_MSG_LABEL_SCROLL, GetID(), controlID); \
+ scrollMsg.SetParam1(scrolling ? 1 : 0); \
+ OnMessage(scrollMsg); \
+} while(0)
+
+
+/*!
+ \ingroup winmsg
+ \brief Set the label of the current control
+ */
 #define SET_CONTROL_LABEL_THREAD_SAFE(controlID,label) \
 { \
  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), controlID); \
@@ -221,6 +242,26 @@ do { \
    OnMessage(msg); \
  else \
    g_windowManager.SendThreadMessage(msg, GetID()); \
+}
+
+
+/*!
+ \ingroup winmsg
+ \brief Set the label of the current control
+ */
+#define SET_CONTROL_LABEL_AND_SCROLLING_THREAD_SAFE(controlID,label,scrolling) \
+{ \
+ CGUIMessage labelMsg(GUI_MSG_LABEL_SET, GetID(), controlID); \
+ labelMsg.SetLabel(label); \
+ CGUIMessage scrollMsg(GUI_MSG_LABEL_SCROLL, GetID(), controlID); \
+ scrollMsg.SetParam1(scrolling ? 1 : 0); \
+ if(g_application.IsCurrentThread()) { \
+   OnMessage(labelMsg); \
+   OnMessage(scrollMsg); \
+ } else { \
+   g_windowManager.SendThreadMessage(labelMsg, GetID()); \
+   g_windowManager.SendThreadMessage(scrollMsg, GetID()); \
+ } \
 }
 
 /*!
