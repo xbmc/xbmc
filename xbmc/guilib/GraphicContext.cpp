@@ -720,14 +720,21 @@ void CGraphicContext::SetResInfo(RESOLUTION res, const RESOLUTION_INFO& info)
   RESOLUTION_INFO& curr = CDisplaySettings::Get().GetResolutionInfo(res);
   curr.Overscan   = info.Overscan;
   curr.iSubtitles = info.iSubtitles;
+  curr.fPixelRatio = info.fPixelRatio;
 
   if(info.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
+  {
     curr.Overscan.right  = info.Overscan.right  * 2 + info.iBlanking;
+    if((curr.dwFlags & D3DPRESENTFLAG_MODE3DSBS) == 0)
+      curr.fPixelRatio  /= 2.0;
+  }
 
   if(info.dwFlags & D3DPRESENTFLAG_MODE3DTB)
   {
     curr.Overscan.bottom = info.Overscan.bottom * 2 + info.iBlanking;
     curr.iSubtitles      = info.iSubtitles      * 2 + info.iBlanking;
+    if((curr.dwFlags & D3DPRESENTFLAG_MODE3DTB) == 0)
+      curr.fPixelRatio  *= 2.0;
   }
 }
 
