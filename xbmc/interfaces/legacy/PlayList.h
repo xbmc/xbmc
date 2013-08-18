@@ -47,8 +47,8 @@ namespace XBMCAddon
       /**
        * add(url[, listitem, index]) -- Adds a new file to the playlist.
        * 
-       * url            : string or unicode - filename or url to add.
-       * listitem       : [opt] listitem - used with setInfo() to set different infolabels.
+       * url            : string or unicode - filename or url to add.\n
+       * listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n
        * index          : [opt] integer - position to add playlist item. (default=end)
        * 
        * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
@@ -56,10 +56,10 @@ namespace XBMCAddon
        * 
        * example:
        *   - playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-       *   - video = 'F:\\\\movies\\\\Ironman.mov'
-       *   - listitem = xbmcgui.ListItem('Ironman', thumbnailImage='F:\\\\movies\\\\Ironman.tbn')
+       *   - video = 'F:\\movies\\Ironman.mov'
+       *   - listitem = xbmcgui.ListItem('Ironman', thumbnailImage='F:\\movies\\Ironman.tbn')
        *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})
-       *   - playlist.add(url=video, listitem=listitem, index=7)\n
+       *   - playlist.add(url=video, listitem=listitem, index=7)n
        */
       void add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem = NULL, int index = -1);
 
@@ -67,7 +67,7 @@ namespace XBMCAddon
        * load(filename) -- Load a playlist.
        * 
        * clear current playlist and copy items from the file to this Playlist
-       * filename can be like .pls or .m3u ...
+       * filename can be like .pls or .m3u ...\n
        * returns False if unable to load playlist
        */
       bool load(const char* filename) throw (PlayListException);

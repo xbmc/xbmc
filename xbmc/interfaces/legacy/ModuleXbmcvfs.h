@@ -32,21 +32,21 @@ namespace XBMCAddon
     /**
      * copy(source, destination) -- copy file to destination, returns true/false.
      * 
-     * source          : file to copy.
-     * destination     : destination fi
+     * source          : file to copy.\n
+     * destination     : destination file
      * 
      * example:
-     *   success = xbmcvfs.copy(source, destination)
+     *   - success = xbmcvfs.copy(source, destination)
      */
     bool copy(const String& strSource, const String& strDestnation);
 
     /**
      * delete(file)
      * 
-     * file        : file to dele
+     * file        : file to delete
      * 
      * example:
-     *   xbmcvfs.delete(file)
+     *   - xbmcvfs.delete(file)
      */
     // delete a file
     bool deleteFile(const String& file);
@@ -54,11 +54,11 @@ namespace XBMCAddon
     /**
      * rename(file, newFileName)
      * 
-     * file        : file to reana
-     * newFileName : new filename, including the full pa
+     * file        : file to rename\n
+     * newFileName : new filename, including the full path
      * 
      * example:
-     *   success = xbmcvfs.rename(file,newFileName)
+     *   - success = xbmcvfs.rename(file,newFileName)
      */
     // rename a file
     bool rename(const String& file, const String& newFile);
@@ -69,7 +69,7 @@ namespace XBMCAddon
      * path        : file or folder (folder must end with slash or backslash)
      * 
      * example:
-     *   success = xbmcvfs.exists(path)
+     *   - success = xbmcvfs.exists(path)
      */
     // check for a file or folder existance, mimics Pythons os.path.exists()
     bool exists(const String& path);
@@ -102,14 +102,14 @@ namespace XBMCAddon
      * path        : folder
      * 
      * example:
-     *  - success = xbmcvfs.rmdir(path)\n
+     *  - success = xbmcvfs.rmdir(path)
      */
     bool rmdir(const String& path, bool force = false);
 
     /**
      * listdir(path) -- lists content of a folder.
      * 
-     * path        : folder
+     * path        : folder 
      * 
      * example:
      *  - dirs, files = xbmcvfs.listdir(path)

@@ -28,9 +28,9 @@ namespace XBMCAddon
   namespace xbmc
   {
     /**
-     * Monitor class.
-     * 
-     * Monitor() -- Creates a new Monitor to notify addon about changes.
+     * Monitor class.\n
+     * \n
+     * Monitor() -- Creates a new Monitor to notify addon about changes.\n
      */
     class Monitor : public AddonCallback
     {
@@ -48,48 +48,48 @@ namespace XBMCAddon
 #endif
 
       /**
-       * onSettingsChanged() -- onSettingsChanged method.
-       * 
-       * Will be called when addon settings are changed
+       * onSettingsChanged() -- onSettingsChanged method.\n
+       * \n
+       * Will be called when addon settings are changed\n
        */
       virtual void    onSettingsChanged() { TRACE; }
 
       /**
-       * onScreensaverActivated() -- onScreensaverActivated method.
-       * 
-       * Will be called when screensaver kicks in
+       * onScreensaverActivated() -- onScreensaverActivated method.\n
+       * \n
+       * Will be called when screensaver kicks in\n
        */
       virtual void    onScreensaverActivated() { TRACE; }
 
       /**
-       * onScreensaverDeactivated() -- onScreensaverDeactivated method.
-       * 
-       * Will be called when screensaver goes off
+       * onScreensaverDeactivated() -- onScreensaverDeactivated method.\n
+       * \n
+       * Will be called when screensaver goes off\n
        */
       virtual void    onScreensaverDeactivated() { TRACE; }
 
       /**
-       * onDatabaseUpdated(database) -- onDatabaseUpdated method.
-       * 
-       * database - video/music as string
-       * 
-       * Will be called when database gets updated and return video or music to indicate which DB has been changed
+       * onDatabaseUpdated(database) -- onDatabaseUpdated method.\n
+       * \n
+       * database - video/music as string\n
+       * \n
+       * Will be called when database gets updated and return video or music to indicate which DB has been changed\n
        */
       virtual void    onDatabaseUpdated(const String database) { TRACE; }
 
       /**
-       * onDatabaseScanStarted(database) -- onDatabaseScanStarted method.
-       *
-       * database - video/music as string
-       *
-       * Will be called when database update starts and return video or music to indicate which DB is being updated
+       * onDatabaseScanStarted(database) -- onDatabaseScanStarted method.\n
+       *\n
+       * database - video/music as string\n
+       *\n
+       * Will be called when database update starts and return video or music to indicate which DB is being updated\n
        */
       virtual void    onDatabaseScanStarted(const String database) { TRACE; }
       
       /**
-       * onAbortRequested() -- onAbortRequested method.
-       * 
-       * Will be called when XBMC requests Abort
+       * onAbortRequested() -- onAbortRequested method.\n
+       * \n
+       * Will be called when XBMC requests Abort\n
        */
       virtual void    onAbortRequested() { TRACE; }
 
