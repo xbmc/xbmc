@@ -61,7 +61,7 @@ CSoftAE::CSoftAE():
   m_sinkIsSuspended    (false       ),
   m_isSuspended        (false       ),
   m_softSuspend        (false       ),
-  m_softSuspendTimer   (0           ),
+  m_softSuspendTimeout (XbmcThreads::EndTime::InfiniteValue),
   m_volume             (1.0         ),
   m_sink               (NULL        ),
   m_sinkBlockTime      (0           ),
@@ -1482,24 +1482,21 @@ inline void CSoftAE::RemoveStream(StreamList &streams, CSoftAEStream *stream)
 
 inline void CSoftAE::ProcessSuspend()
 {
-  unsigned int curSystemClock = 0;
 #if defined(TARGET_WINDOWS) || defined(TARGET_LINUX)
   if (!m_softSuspend && m_playingStreams.empty() && m_playing_sounds.empty() &&
       !g_advancedSettings.m_streamSilence)
   {
     m_softSuspend = true;
-    m_softSuspendTimer = XbmcThreads::SystemClockMillis() + 10000; //10.0 second delay for softSuspend
+    m_softSuspendTimeout.Set(10000); //10.0 second delay for softSuspend
     Sleep(10);
   }
 
-  if (m_softSuspend)
-    curSystemClock = XbmcThreads::SystemClockMillis();
 #endif
   /* idle while in Suspend() state until Resume() called */
   /* idle if nothing to play and user hasn't enabled     */
   /* continuous streaming (silent stream) in as.xml      */
   /* In case of Suspend stay in there until Resume is called from outer thread */
-  while (m_isSuspended || ((m_softSuspend && (curSystemClock > m_softSuspendTimer)) &&
+  while (m_isSuspended || ((m_softSuspend && m_softSuspendTimeout.IsTimePast()) &&
           m_running     && !m_reOpen))
   {
     if (!m_isSuspended && m_sink && !m_sinkIsSuspended)
