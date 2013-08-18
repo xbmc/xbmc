@@ -175,11 +175,12 @@ int COMXAudioCodecOMX::GetData(BYTE** dst)
 {
   if (!m_bGotFrame)
     return 0;
-
+  int inLineSize, outLineSize;
   /* input audio is aligned */
-  int inputSize = m_dllAvUtil.av_samples_get_buffer_size(NULL, m_pCodecContext->channels, m_pFrame1->nb_samples, m_pCodecContext->sample_fmt, 0);
+  int inputSize = m_dllAvUtil.av_samples_get_buffer_size(&inLineSize, m_pCodecContext->channels, m_pFrame1->nb_samples, m_pCodecContext->sample_fmt, 0);
   /* output audio will be packed */
-  int outputSize = m_dllAvUtil.av_samples_get_buffer_size(NULL, m_pCodecContext->channels, m_pFrame1->nb_samples, m_desiredSampleFormat, 1);
+  int outputSize = m_dllAvUtil.av_samples_get_buffer_size(&outLineSize, m_pCodecContext->channels, m_pFrame1->nb_samples, m_desiredSampleFormat, 1);
+  bool cont = !m_pFrame1->data[1] || (m_pFrame1->data[1] == m_pFrame1->data[0] + inLineSize && inLineSize == outLineSize && inLineSize * m_pCodecContext->channels == inputSize);
 
   if (m_iBufferOutputAlloced < outputSize)
   {
@@ -224,7 +225,7 @@ int COMXAudioCodecOMX::GetData(BYTE** dst)
   else
   {
     /* if it is already contiguous, just return decoded frame */
-    if (inputSize == outputSize)
+    if (cont)
     {
       *dst = m_pFrame1->data[0];
     }
@@ -242,7 +243,7 @@ int COMXAudioCodecOMX::GetData(BYTE** dst)
 
   if (m_bFirstFrame)
   {
-    CLog::Log(LOGDEBUG, "COMXAudioCodecOMX::GetData size=%d/%d cont=%d buf=%p", inputSize, outputSize, inputSize == outputSize, *dst);
+    CLog::Log(LOGDEBUG, "COMXAudioCodecOMX::GetData size=%d/%d line=%d/%d cont=%d buf=%p", inputSize, outputSize, inLineSize, outLineSize, cont, *dst);
     m_bFirstFrame = false;
   }
   return outputSize;
