@@ -33,13 +33,6 @@ CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
     
     m_refreshTimer->Restart();
   }
-  else if (server->GetActiveConnection() && server->GetActiveConnection()->IsLocal())
-  {
-    /* local server might have received a new token. so we need to refresh */
-    AddJob(new CPlexServerDataLoaderJob(server));
-    CLog::Log(LOGDEBUG, "CPlexServerDataLoader::LoadDataFromServer loading data for local server %s", server->GetName().c_str());
-    m_refreshTimer->Restart();
-  }
 }
 
 void CPlexServerDataLoader::RemoveServer(const CPlexServerPtr &server)
