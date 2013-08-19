@@ -503,6 +503,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           if(stream)
           {
             msg->Reply(CActiveAEDataProtocol::ACC, &stream, sizeof(CActiveAEStream*));
+            LoadSettings();
             Configure();
             if (!m_extError)
             {
