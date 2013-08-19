@@ -158,6 +158,7 @@ public:
   }
 
   void             Clear   (StreamType type, StreamSource source);
+  void             Clear   (StreamType type, int source);
   int              Source  (StreamSource source, std::string filename);
 
   void             Update  (SelectionStream& s);

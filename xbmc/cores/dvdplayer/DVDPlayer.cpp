@@ -104,6 +104,21 @@ void CSelectionStreams::Clear(StreamType type, StreamSource source)
   }
 }
 
+void CSelectionStreams::Clear(StreamType type, int source)
+{
+  CSingleLock lock(m_section);
+  for(int i = m_Streams.size()-1; i >= 0; i--)
+  {
+    if(type && m_Streams[i].type != type)
+      continue;
+
+    if(source && m_Streams[i].source != source)
+      continue;
+
+    m_Streams.erase(m_Streams.begin() + i);
+  }
+}
+
 SelectionStream& CSelectionStreams::Get(StreamType type, int index)
 {
   CSingleLock lock(m_section);
@@ -909,8 +924,23 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     }
   }
 
-  if(m_pDemuxers[source])
-    packet = m_pDemuxers[source]->Read();
+  do
+  {
+    if(source > 0 && m_pDemuxers[source])
+      packet = m_pDemuxers[source]->Read();
+
+    // no packet could be read form external file, e.g. eof or not a valid audio file
+    if (!packet && source > 0 && (source != m_CurrentVideo.source))
+    {
+      m_SelectionStreams.Clear(STREAM_NONE, source);
+      m_pDemuxers.erase(source);
+      CloseAudioStream(false);
+      OpenDefaultStreams(false);
+      source = m_CurrentAudio.source;
+      if(source > 0 && m_pDemuxers[source])
+        packet = m_pDemuxers[source]->Read();
+    }
+  }while (!packet && source > 0 && (source != m_CurrentVideo.source));
 
   if(packet)
   {
