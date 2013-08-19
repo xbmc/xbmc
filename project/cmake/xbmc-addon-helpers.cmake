@@ -34,23 +34,6 @@ macro (addon_version dir prefix)
   message(STATUS ${prefix}_VERSION=${${prefix}_VERSION})
 endmacro()
 
-# Prepare the add-on build environment
-macro (prepare_addon_environment)
-  IF(WIN32)
-    SET(BINDING_FILE ${XBMC_BINDINGS}.zip)
-    message (STATUS "downloading XBMC bindings: " ${BINDING_FILE})
-    file(DOWNLOAD http://mirrors.xbmc.org/build-deps/win32/${BINDING_FILE} ${CMAKE_BINARY_DIR}/downloads/${BINDING_FILE} STATUS STATUSLIST SHOW_PROGRESS)
-    LIST(GET STATUSLIST 0 VALUE)
-    IF(${VALUE} STRGREATER "0")
-      LIST(GET STATUSLIST 1 VALUE)
-      message (STATUS "failed to download XBMC bindings: " ${VALUE})
-    ENDIF(${VALUE} STRGREATER "0")
-    execute_process(
-      COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_BINARY_DIR}/downloads/${BINDING_FILE}
-    )
-  ENDIF(WIN32)
-endmacro()
-
 # Build and link an add-on
 macro (build_addon target sources libs version)
   ADD_LIBRARY(${target} ${${sources}})
@@ -62,3 +45,12 @@ macro (build_addon target sources libs version)
     SET_TARGET_PROPERTIES(${target} PROPERTIES PREFIX "lib")
   ENDIF(OS STREQUAL "android")
 endmacro()
+
+# finds a path to a given file (recursive)
+function (xbmc_find_path var_name filename search_path strip_file)
+  file(GLOB_RECURSE PATH_TO_FILE ${search_path} ${filename})
+  if(strip_file)
+    string(REPLACE ${filename} "" PATH_TO_FILE ${PATH_TO_FILE})
+  endif(strip_file)
+  set (${var_name} ${PATH_TO_FILE} PARENT_SCOPE)
+endfunction()

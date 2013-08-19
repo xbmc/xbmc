@@ -1,6 +1,7 @@
-SET(XBMC_INCLUDE_DIR @prefix@/include)
-LIST(APPEND CMAKE_MODULE_PATH @prefix@/lib/xbmc)
-ADD_DEFINITIONS(@ARCH_DEFINES@)
+SET(XBMC_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
+LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
+
+add_definitions(-DTARGET_WINDOWS)
 
 include(xbmc-addon-helpers)
 include(AddOptions)
