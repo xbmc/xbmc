@@ -35,10 +35,7 @@ vector<stringPair> CPlexFile::GetHeaderList()
 #endif
   
   if (g_myplexManager.IsSignedIn())
-  {
-    hdrs.push_back(stringPair("X-Plex-Account", boost::lexical_cast<std::string>(g_myplexManager.GetCurrentUserInfo().id)));
     hdrs.push_back(stringPair("X-Plex-Username", g_myplexManager.GetCurrentUserInfo().username));
-  }
 
   return hdrs;
 }
