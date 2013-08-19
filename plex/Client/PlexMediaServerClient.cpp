@@ -70,28 +70,15 @@ void CPlexMediaServerClient::ReportItemProgress(const CFileItemPtr &item, const 
   if (item->HasVideoInfoTag())
     u.SetOption("duration", boost::lexical_cast<std::string>(item->GetVideoInfoTag()->m_duration * 1000));
   
+  item->SetProperty("viewOffset", currentPosition);
+  
   AddJob(new CPlexMediaServerClientJob(u));
 }
 
 void
 CPlexMediaServerClient::ReportItemProgress(const CFileItemPtr &item, CPlexMediaServerClient::MediaState state, int64_t currentPosition)
 {
-  CStdString strstate;
-  switch (state) {
-    case MEDIA_STATE_STOPPED:
-      strstate = "stopped";
-      break;
-    case MEDIA_STATE_BUFFERING:
-      strstate = "buffering";
-      break;
-    case MEDIA_STATE_PLAYING:
-      strstate = "playing";
-      break;
-    case MEDIA_STATE_PAUSED:
-      strstate = "paused";
-      break;
-  }
-  ReportItemProgress(item, strstate, currentPosition);
+  ReportItemProgress(item, StateToString(state), currentPosition);
 }
 
 void
@@ -141,4 +128,25 @@ void CPlexMediaServerClient::deleteItem(const CFileItemPtr &item)
 {
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
   AddJob(new CPlexMediaServerClientJob(item->GetPath(), "DELETE", msg, 16205));
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+std::string CPlexMediaServerClient::StateToString(CPlexMediaServerClient::MediaState state)
+{
+  CStdString strstate;
+  switch (state) {
+    case MEDIA_STATE_STOPPED:
+      strstate = "stopped";
+      break;
+    case MEDIA_STATE_BUFFERING:
+      strstate = "buffering";
+      break;
+    case MEDIA_STATE_PLAYING:
+      strstate = "playing";
+      break;
+    case MEDIA_STATE_PAUSED:
+      strstate = "paused";
+      break;
+  }
+  return strstate;
 }

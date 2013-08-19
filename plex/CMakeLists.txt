@@ -13,6 +13,7 @@ include_directories(
 	${root}/xbmc/playlists
 	${root}/plex/FileSystem
 	${root}/plex/Network
+	${root}/plex/Remote
   ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
@@ -24,6 +25,7 @@ add_subdirectory(Owned)
 add_subdirectory(Players)
 add_subdirectory(Utility)
 add_subdirectory(AutoUpdate)
+add_subdirectory(Remote)
 
 if(TARGET_WIN32)
   add_subdirectory(Resources/MCE)

@@ -63,6 +63,7 @@ namespace MEDIA_DETECT
 
 /* PLEX */
 #include "plex/LaunchHost.h"
+class CPlexHTTPRemoteHandler;
 class CGUIDialogCache;
 class PlexApplication;
 typedef boost::shared_ptr<PlexApplication> PlexApplicationPtr;
@@ -504,6 +505,7 @@ protected:
 
 
   /* PLEX */
+  CPlexHTTPRemoteHandler& m_plexRemoteHandler;
   LaunchHost *m_pLaunchHost;
   /* END PLEX */
 };

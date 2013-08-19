@@ -356,6 +356,8 @@
 #include "plex/GUI/GUIWindowPlexMyChannels.h"
 #include "settings/GUISettings.h"
 #include "plex/PlexMediaDecisionEngine.h"
+#include "plex/Remote/PlexHTTPRemoteHandler.h"
+#include "plex/Remote/PlexRemoteSubscriberManager.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -412,7 +414,10 @@ CApplication::CApplication(void)
   , m_videoInfoScanner(new CVideoInfoScanner)
   , m_musicInfoScanner(new CMusicInfoScanner)
   , m_seekHandler(new CSeekHandler)
-  , m_pLaunchHost(NULL) /* PLEX */
+  /* PLEX */
+  , m_plexRemoteHandler(*new CPlexHTTPRemoteHandler)
+  , m_pLaunchHost(NULL)
+  /* END PLEX */
 {
   m_network = NULL;
   TiXmlBase::SetCondenseWhiteSpace(false);
@@ -1342,6 +1347,9 @@ bool CApplication::Initialize()
 #ifdef HAS_WEB_SERVER
   CWebServer::RegisterRequestHandler(&m_httpImageHandler);
   CWebServer::RegisterRequestHandler(&m_httpVfsHandler);
+  /* PLEX */
+  CWebServer::RegisterRequestHandler(&m_plexRemoteHandler);
+  /* END PLEX */
 #ifdef HAS_JSONRPC
   CWebServer::RegisterRequestHandler(&m_httpJsonRpcHandler);
 #endif
@@ -3787,6 +3795,9 @@ void CApplication::Stop(int exitCode)
 #ifdef HAS_WEB_SERVER
   CWebServer::UnregisterRequestHandler(&m_httpImageHandler);
   CWebServer::UnregisterRequestHandler(&m_httpVfsHandler);
+  /* PLEX */
+  CWebServer::UnregisterRequestHandler(&m_plexRemoteHandler);
+  /* END PLEX */
 #ifdef HAS_JSONRPC
   CWebServer::UnregisterRequestHandler(&m_httpJsonRpcHandler);
   CJSONRPC::Cleanup();
@@ -6300,16 +6311,25 @@ void CApplication::UpdateFileState(const string& aState)
 
   // Update the media server as needed.
   static time_t lastUpdated = 0;
-  static string lastState;
+  static CPlexMediaServerClient::MediaState lastState;
   static double lastTime = 0.0;
   static double latestTime = 0.0;
   static bool   hasScrobbled = false;
   static string lastKey;
 
   // Compute the state if not passed on.
-  string state = aState;
-  if (state.empty())
-    state = IsBuffering() ? "buffering" : IsPaused() ? "paused" : "playing";
+  CPlexMediaServerClient::MediaState state;
+  if (aState == "paused")
+    state = CPlexMediaServerClient::MEDIA_STATE_PAUSED;
+  else if (aState == "playing")
+    state = CPlexMediaServerClient::MEDIA_STATE_PLAYING;
+  else if (aState == "buffering")
+    state = CPlexMediaServerClient::MEDIA_STATE_BUFFERING;
+  else if (aState == "stopped")
+    state = CPlexMediaServerClient::MEDIA_STATE_STOPPED;
+  
+  if (aState.empty())
+    state = IsBuffering() ? CPlexMediaServerClient::MEDIA_STATE_BUFFERING : IsPaused() ? CPlexMediaServerClient::MEDIA_STATE_PAUSED : CPlexMediaServerClient::MEDIA_STATE_PLAYING;
 
   // Keep latest time.
   double nowTime = GetTime();
@@ -6323,21 +6343,25 @@ void CApplication::UpdateFileState(const string& aState)
     latestTime = 0.0;
   }
 
-  // Every 5 seconds by default.
-  int cadence = 5;
+  // Every 5 seconds by default, or 1 second if we have subscribers that needs to be updated
+  int cadence = g_plexRemoteSubscriberManager.hasSubscribers() ? 1 : 5;
+  
   if (m_itemCurrentFile->GetProperty("pluginIdentifier") == "com.plexapp.plugins.myplex")
-    cadence = 20;
+    cadence = g_plexRemoteSubscriberManager.hasSubscribers() ? 1 : 20;
 
-  if (state == "stopped" || IsPlayingVideo() || IsPlayingAudio())
+  if (state == CPlexMediaServerClient::MEDIA_STATE_STOPPED || IsPlayingVideo() || IsPlayingAudio())
   {
     // Enough time has passed, we changed state, we skipped, or we're playing something different.
     time_t now = time(0);
+    
     if (now - lastUpdated > cadence        ||
         lastState != state                 ||
         fabs(lastTime-nowTime) > cadence*2 ||
         lastKey != m_itemCurrentFile->GetProperty("key").asString())
     {
       // Update state.
+      double currentDuration = now - lastUpdated;
+      
       lastUpdated = time(0);
       lastState = state;
       lastTime = nowTime;
@@ -6345,7 +6369,7 @@ void CApplication::UpdateFileState(const string& aState)
 
       // If we've stopped, use the most up to date time possible.
       double t = nowTime;
-      if (state == "stopped")
+      if (state == CPlexMediaServerClient::MEDIA_STATE_STOPPED)
         t = latestTime;
 
       // Update progress.
@@ -6358,10 +6382,14 @@ void CApplication::UpdateFileState(const string& aState)
         }
         
         g_plexMediaServerClient.ReportItemProgress(m_itemCurrentFile, state, int(t*1000));
+        g_plexRemoteSubscriberManager.reportItemProgress(m_itemCurrentFile, state, int(t*1000));
       }
       else
       {
-        g_plexMediaServerClient.ReportItemProgress(m_itemCurrentFile, state, int(t*1000));
+        if (currentDuration >= 5)
+          g_plexMediaServerClient.ReportItemProgress(m_itemCurrentFile, state, int(t*1000));
+        
+        g_plexRemoteSubscriberManager.reportItemProgress(m_itemCurrentFile, state, int(t*1000));
       }
     }
 

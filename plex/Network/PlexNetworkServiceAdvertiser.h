@@ -30,7 +30,8 @@ class PlexNetworkServiceAdvertiser : public NetworkServiceAdvertiser
     headers["Port"] = g_guiSettings.GetString("services.webserverport");
     headers["Version"] = g_infoManager.GetVersion();
     headers["Product"] = PLEX_TARGET_NAME;
-    headers["Protocol"] = "xbmcjson";
+    headers["Protocol"] = "plex";
+    headers["Protocol-Version"] = "2";
     headers["Device-Class"] = "HTPC";
   }
   

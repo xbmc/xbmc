@@ -49,6 +49,8 @@ public:
   void deleteItem(const CFileItemPtr &item);
   
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  
+  static std::string StateToString(CPlexMediaServerClient::MediaState state);
 
 private:
   CStdString GetPrefix(const CFileItemPtr& item) const
