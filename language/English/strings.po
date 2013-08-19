@@ -14372,3 +14372,9 @@ msgstr ""
 msgctxt "#37015"
 msgid "Browse Into"
 msgstr ""
+
+#: xbmc/Windows/GUIWindowVideoNav.cpp
+msgctxt "#37016"
+msgid "Retry"
+msgstr ""
+

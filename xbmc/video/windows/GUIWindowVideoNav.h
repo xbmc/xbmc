@@ -80,5 +80,7 @@ protected:
   bool GetItemsForTag(const CStdString &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
   static CStdString GetLocalizedType(const std::string &strType);
 
+  bool RetryItem(const CFileItemPtr& pItem, const int iItem);
+
   VECSOURCES m_shares;
 };
