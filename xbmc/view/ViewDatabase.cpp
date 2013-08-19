@@ -207,7 +207,7 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
     { // add the view
       m_pDS->close();
       sql = PrepareSQL("insert into view (idView, path, window, viewMode, sortMethod, sortOrder, sortAttributes, skin) values(NULL, '%s', %i, %i, %i, %i, %i, '%s')",
-        path1.c_str(), window, state.m_viewMode, (int)state.m_sortDescription.sortOrder, (int)state.m_sortDescription.sortAttributes, skin.c_str());
+        path1.c_str(), window, state.m_viewMode, (int)state.m_sortDescription.sortBy, (int)state.m_sortDescription.sortOrder, (int)state.m_sortDescription.sortAttributes, skin.c_str());
       m_pDS->exec(sql.c_str());
     }
   }
