@@ -24,6 +24,7 @@
 /* HAVE_WAYLAND is implicit in HAVE_WAYLAND_XBMC_PROTO */
 #if defined(HAVE_WAYLAND_XBMC_PROTO)
 
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <queue>
@@ -34,6 +35,7 @@
 
 #include <boost/array.hpp>
 #include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <gtest/gtest.h>
@@ -75,6 +77,7 @@
 
 #include "utils/StringUtils.h"
 #include "test/TestUtils.h"
+#include "input/linux/XKBCommonKeymap.h"
 #include "input/XBMC_keysym.h"
 
 #define WAYLAND_VERSION ((WAYLAND_VERSION_MAJOR << 16) | (WAYLAND_VERSION_MINOR << 8) | (WAYLAND_VERSION_MICRO))
@@ -1335,6 +1338,9 @@ protected:
   StubCursorManager cursors;
   StubEventListener listener;
 
+  boost::shared_ptr<struct xkb_context> xkbContext;
+  boost::scoped_ptr<CXKBKeymap> keymap;
+
   boost::scoped_ptr<xw::Display> display;
   boost::scoped_ptr<xwe::IEventQueueStrategy> queue;
   boost::scoped_ptr<xw::Registry> registry;
@@ -1383,6 +1389,19 @@ void InputEventsWestonTest::SetUp()
   clientLibrary.Load();
   eglLibrary.Load();
   xkbCommonLibrary.Load();
+  
+  xkbContext.reset(CXKBKeymap::CreateXKBContext(xkbCommonLibrary),
+                   boost::bind(&IDllXKBCommon::xkb_context_unref,
+                               &xkbCommonLibrary, _1));
+  keymap.reset(new CXKBKeymap(
+                 xkbCommonLibrary, 
+                 CXKBKeymap::CreateXKBKeymapFromNames(xkbCommonLibrary,
+                                                      xkbContext.get(),
+                                                      "evdev",
+                                                      "pc105",
+                                                      "us",
+                                                      "",
+                                                      "")));
   
   display.reset(new xw::Display(clientLibrary));
   queue.reset(CreateEventQueue());
@@ -1583,12 +1602,63 @@ TYPED_TEST_P(InputEventQueueWestonTest, AxisEvent)
   EXPECT_EQ(y, event.button.y);
 }
 
+namespace
+{
+/* Brute-force lookup functions to compensate for the fact that
+ * Keymap interface only supports conversion from scancodes
+ * to keysyms and not vice-versa (as such is not implemented in
+ * xkbcommon)
+ */
+uint32_t LookupKeycodeForKeysym(ILinuxKeymap &keymap,
+                                XBMCKey sym)
+{
+  uint32_t code = 0;
+  
+  while (code < XKB_KEYCODE_MAX)
+  {
+    /* Supress exceptions from unsupported keycodes */
+    try
+    {
+      if (keymap.XBMCKeysymForKeycode(code) == sym)
+        return code;
+    }
+    catch (std::runtime_error &err)
+    {
+    }
+    
+    ++code;
+  }
+  
+  throw std::logic_error("Keysym has no corresponding keycode");
+}
+
+uint32_t LookupModifierIndexForModifier(ILinuxKeymap &keymap,
+                                        XBMCMod modifier)
+{
+  uint32_t maxIndex = std::numeric_limits<uint32_t>::max();
+  uint32_t index = 0;
+  
+  while (index < maxIndex)
+  {
+    keymap.UpdateMask(1 << index, 0, 0, 0);
+    XBMCMod mask = static_cast<XBMCMod>(keymap.ActiveXBMCModifiers());
+    keymap.UpdateMask(0, 0, 0, 0);
+    if (mask & modifier)
+      return index;
+    
+    ++index;
+  }
+  
+  throw std::logic_error("Modifier has no corresponding keymod index");
+}
+}
+
 TYPED_TEST_P(InputEventQueueWestonTest, KeyEvent)
 {
   typedef InputEventsWestonTest Base;
   
-  /* PC-105 layout */
-  const unsigned int oKeycode = 24;
+  const unsigned int oKeycode = LookupKeycodeForKeysym(*Base::keymap,
+                                                       XBMCK_o);
 
   Base::xbmcWayland->GiveSurfaceKeyboardFocus(Base::surface->GetWlSurface());
   Base::xbmcWayland->SendKeyToKeyboard(Base::surface->GetWlSurface(),
@@ -1607,13 +1677,14 @@ TYPED_TEST_P(InputEventQueueWestonTest, Modifiers)
 {
   typedef InputEventsWestonTest Base;
   
-  /* PC-105 layout */
-  const unsigned int oKeycode = 24;
-  const unsigned int leftShiftIndex = 1 << 0;
+  const unsigned int oKeycode = LookupKeycodeForKeysym(*Base::keymap,
+                                                       XBMCK_o);
+  const unsigned int leftShiftIndex =
+    LookupModifierIndexForModifier(*Base::keymap, XBMCKMOD_LSHIFT);
 
   Base::xbmcWayland->GiveSurfaceKeyboardFocus(Base::surface->GetWlSurface());
   Base::xbmcWayland->SendModifiersToKeyboard(Base::surface->GetWlSurface(),
-                                             leftShiftIndex,
+                                             1 << leftShiftIndex,
                                              0,
                                              0,
                                              0);
