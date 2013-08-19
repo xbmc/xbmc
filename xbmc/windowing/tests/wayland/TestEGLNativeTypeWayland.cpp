@@ -1673,6 +1673,78 @@ TYPED_TEST_P(InputEventQueueWestonTest, KeyEvent)
   EXPECT_EQ(XBMCK_o, event.key.keysym.unicode);
 }
 
+TYPED_TEST_P(InputEventQueueWestonTest, RepeatAfter1000Ms)
+{
+  typedef InputEventsWestonTest Base;
+  
+  const unsigned int oKeycode = LookupKeycodeForKeysym(*Base::keymap,
+                                                       XBMCK_o);
+
+  Base::xbmcWayland->GiveSurfaceKeyboardFocus(Base::surface->GetWlSurface());
+  Base::xbmcWayland->SendKeyToKeyboard(Base::surface->GetWlSurface(),
+                                       oKeycode,
+                                       WL_KEYBOARD_KEY_STATE_PRESSED);
+  Base::WaitForSynchronize();
+  ::usleep(1100000); // 1100ms
+  Base::xbmcWayland->SendKeyToKeyboard(Base::surface->GetWlSurface(),
+                                       oKeycode,
+                                       WL_KEYBOARD_KEY_STATE_RELEASED);
+  Base::WaitForSynchronize();
+  
+  /* Throw away first key down */
+  XBMC_Event event(Base::listener.FetchLastEvent());
+  
+  /* Synthetic key up should be generated */
+  event = Base::listener.FetchLastEvent();
+  EXPECT_EQ(XBMC_KEYUP, event.type);
+  EXPECT_EQ(oKeycode, event.key.keysym.scancode);
+  
+  /* Synthetic key down should be generated */
+  event = Base::listener.FetchLastEvent();
+  EXPECT_EQ(XBMC_KEYDOWN, event.type);
+  EXPECT_EQ(oKeycode, event.key.keysym.scancode);
+}
+
+TYPED_TEST_P(InputEventQueueWestonTest, NoRepeatAfterRelease)
+{
+  typedef InputEventsWestonTest Base;
+  
+  const unsigned int oKeycode = LookupKeycodeForKeysym(*Base::keymap,
+                                                       XBMCK_o);
+
+  Base::xbmcWayland->GiveSurfaceKeyboardFocus(Base::surface->GetWlSurface());
+  Base::xbmcWayland->SendKeyToKeyboard(Base::surface->GetWlSurface(),
+                                       oKeycode,
+                                       WL_KEYBOARD_KEY_STATE_PRESSED);
+  Base::WaitForSynchronize();
+  ::usleep(1100000); // 1100ms
+  Base::xbmcWayland->SendKeyToKeyboard(Base::surface->GetWlSurface(),
+                                       oKeycode,
+                                       WL_KEYBOARD_KEY_STATE_RELEASED);
+  Base::WaitForSynchronize();
+
+  /* Drain any residual events */
+  bool eventsPending = true;
+  while (eventsPending)
+  {
+    try
+    {
+      Base::listener.FetchLastEvent();
+    }
+    catch (std::logic_error &err)
+    {
+      eventsPending = false;
+    }
+  }
+  
+  /* Sleep-wait again */
+  ::usleep(1100000); // 1100ms
+  Base::WaitForSynchronize();
+  
+  /* Should not be any more events */
+  EXPECT_THROW({ Base::listener.FetchLastEvent(); }, std::logic_error);
+}
+
 TYPED_TEST_P(InputEventQueueWestonTest, Modifiers)
 {
   typedef InputEventsWestonTest Base;
@@ -1705,6 +1777,8 @@ REGISTER_TYPED_TEST_CASE_P(InputEventQueueWestonTest,
                            ButtonEvent,
                            AxisEvent,
                            KeyEvent,
+                           RepeatAfter1000Ms,
+                           NoRepeatAfterRelease,
                            Modifiers);
 
 typedef ::testing::Types<SingleThreadedEventQueue,
@@ -1855,4 +1929,5 @@ TEST_F(WaylandPointerProcessor, MotionThenButton)
   EXPECT_EQ(::round(x), event.button.y);
   EXPECT_EQ(::round(y), event.button.x);  
 }
+
 #endif
