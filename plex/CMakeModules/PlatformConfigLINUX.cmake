@@ -35,6 +35,7 @@ set(LINK_PKG
   LibDl
   LibRt
   FLAC
+  DBUS
 )
 
 foreach(l ${LINK_PKG})
