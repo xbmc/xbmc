@@ -74,3 +74,6 @@ function (xbmc_find_path var_name filename search_path strip_file)
   endif(strip_file)
   set (${var_name} ${PATH_TO_FILE} PARENT_SCOPE)
 endfunction()
+
+OPTION(PACKAGE_ZIP "Package Zip file?" OFF)
+OPTION(PACKAGE_TGZ "Package TGZ file?" OFF)

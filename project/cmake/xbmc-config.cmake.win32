@@ -3,6 +3,3 @@ LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 
 include(xbmc-addon-helpers)
 include(AddOptions)
-
-OPTION(PACKAGE_ZIP "Package Zip file?" ON)
-OPTION(PACKAGE_TGZ "Package TGZ file?" OFF)
