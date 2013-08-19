@@ -1313,8 +1313,14 @@ bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point, bool justGri
   if (block > m_blocksPerPage) block = m_blocksPerPage - 1;
   if (block < 0) block = 0;
 
+  int channelIndex = channel + m_channelOffset;
+  int blockIndex = block + m_blockOffset;
+
+  // bail if out of range
+  if (channelIndex >= m_channels || blockIndex > MAXBLOCKS)
+    return false;
   // bail if block isn't occupied
-  if (!m_gridIndex[channel + m_channelOffset][block + m_blockOffset].item)
+  if (!m_gridIndex[channelIndex][blockIndex].item)
     return false;
 
   SetChannel(channel);
