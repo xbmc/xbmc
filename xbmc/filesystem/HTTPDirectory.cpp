@@ -92,7 +92,17 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       g_charsetConverter.wToUTF8(wConverted, strNameTemp);
       URIUtils::RemoveSlashAtEnd(strNameTemp);
 
-      CStdString strLinkTemp = strLink;
+      CStdString strLinkBase = strLink;
+      CStdString strLinkOptions;
+
+      // split link with url options
+      int pos = strLinkBase.Find('?');
+      if (pos != -1) {
+        strLinkOptions = strLinkBase.Mid(pos);
+        strLinkBase.erase(pos);
+      }
+      CStdString strLinkTemp = strLinkBase;
+
       URIUtils::RemoveSlashAtEnd(strLinkTemp);
       CURL::Decode(strLinkTemp);
       g_charsetConverter.unknownToUTF8(strLinkTemp);
@@ -104,14 +114,17 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           strLinkTemp.Left(strNameTemp.GetLength()-3).Equals(strNameTemp.Left(strNameTemp.GetLength()-3)))
         strName = strNameTemp = strLinkTemp;
 
+      // we detect http directory items by its display name and its stripped link
+      // if same, we consider it as a valid item.
       if (strNameTemp == strLinkTemp && strLinkTemp != "..")
       {
         CFileItemPtr pItem(new CFileItem(strNameTemp));
         pItem->SetProperty("IsHTTPDirectory", true);
-        url.SetFileName(strBasePath + strLink);
+        url.SetFileName(strBasePath + strLinkBase);
+        url.SetOptions(strLinkOptions);
         pItem->SetPath(url.Get());
 
-        if(URIUtils::HasSlashAtEnd(pItem->GetPath()))
+        if(URIUtils::HasSlashAtEnd(pItem->GetPath(), true))
           pItem->m_bIsFolder = true;
 
         CStdString day, month, year, hour, minute;
