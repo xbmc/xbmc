@@ -56,7 +56,6 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      ResetLabels();
       SET_CONTROL_LABEL(52, "XBMC " + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) +
                             " (Compiled: " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
       CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR,
@@ -68,7 +67,6 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
       m_diskUsage.clear();
-      ResetLabels();
       return true;
     }
     break;
@@ -76,8 +74,11 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
       int focusedControl = GetFocusedControlID();
-      if (focusedControl >= CONTROL_START && focusedControl <= CONTROL_END)
+      if (m_section != focusedControl && focusedControl >= CONTROL_START && focusedControl <= CONTROL_END)
+      {
+        ResetLabels();
         m_section = focusedControl;
+      }
       return true;
     }
     break;
@@ -87,7 +88,6 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowSystemInfo::FrameMove()
 {
-  ResetLabels();
   int i = 2;
   if (m_section == CONTROL_BT_DEFAULT)
   {
