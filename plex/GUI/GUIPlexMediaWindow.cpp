@@ -99,7 +99,7 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters)
 {
-  bool isSecondary;
+  bool isSecondary = false;
   CStdString newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, isSecondary);
 
   bool ret = CGUIWindowVideoNav::Update(newUrl, updateFilterPath);
