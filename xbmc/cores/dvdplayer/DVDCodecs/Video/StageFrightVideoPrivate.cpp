@@ -324,6 +324,7 @@ bool CStageFrightVideoPrivate::InitStagefrightSurface()
   mSurface = new CJNISurface(*mSurfTexture);
 
   mVideoNativeWindow = ANativeWindow_fromSurface(env, mSurface->get_raw());
+  native_window_api_connect(mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
 
   return true;
 }

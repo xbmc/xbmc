@@ -298,10 +298,11 @@ public:
       else
       {
         CLog::Log(LOGERROR, "%s - decoding error (%d)\n", CLASSNAME,frame->status);
-        decode_done   = 1;
         if (frame->medbuf)
           frame->medbuf->release();
         frame->medbuf = NULL;
+        free(frame);
+        continue;
       }
 
       if (frame->format == RENDER_FMT_EGLIMG)
@@ -501,12 +502,8 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     goto fail;
   }
 
-  p->mVideoNativeWindow = NULL;
   if ((p->quirks & QuirkSWRender) == 0)
-  {
     p->InitStagefrightSurface();
-    native_window_api_connect(p->mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
-  }
 
   p->decoder  = OMXCodec::Create(p->client->interface(), p->meta,
                                          false, p->source, NULL,
@@ -532,12 +529,17 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     CLog::Log(LOGDEBUG, "%s::%s - component: %s\n", CLASSNAME, __func__, component);
 
     //Blacklist
-    if (!strncmp(component, "OMX.Nvidia.mp4.decode", 21) && g_advancedSettings.m_stagefrightConfig.useMP4codec != 1)
+    if (!strncmp(component, "OMX.google", 10))
+    {
+      // On some platforms, software decoders are returned anyway
+      CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (software)");
+      goto fail;
+    }
+    else if (!strncmp(component, "OMX.Nvidia.mp4.decode", 21) && g_advancedSettings.m_stagefrightConfig.useMP4codec != 1)
     {
       // Has issues with some XVID encoded MP4. Only fails after actual decoding starts...
       CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (MP4)");
       goto fail;
-
     }
     else if (!strncmp(component, "OMX.rk.", 7))
     {
