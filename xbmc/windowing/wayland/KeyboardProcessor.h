@@ -51,8 +51,7 @@ class KeyboardProcessor :
 {
 public:
 
-  KeyboardProcessor(IDllXKBCommon &m_xkbCommonLibrary,
-                    IEventListener &listener,
+  KeyboardProcessor(IEventListener &listener,
                     ITimeoutManager &timeouts);
   ~KeyboardProcessor();
   
@@ -60,9 +59,7 @@ public:
 
 private:
 
-  void UpdateKeymap(uint32_t format,
-                    int fd,
-                    uint32_t size);
+  void UpdateKeymap(ILinuxKeymap *);
   void Enter(uint32_t serial,
              struct wl_surface *surface,
              struct wl_array *keys);
@@ -84,12 +81,6 @@ private:
   void RepeatCallback(uint32_t key,
                       uint32_t sym);
 
-  IDllXKBCommon &m_xkbCommonLibrary;
-
-  /* KeyboardProcessor owns a keymap and does parts of its processing
-   * by delegating to the keymap the job of looking up generic keysyms
-   * for keycodes */
-  boost::scoped_ptr<ILinuxKeymap> m_keymap;
   IEventListener &m_listener;
   ITimeoutManager &m_timeouts;
   struct wl_surface *m_xbmcWindow;
@@ -98,5 +89,10 @@ private:
   uint32_t m_repeatSym;
   
   struct xkb_context *m_context;
+
+  /* KeyboardProcessor has an observing reference to the  keymap and
+   * does parts of its processing by delegating to the keymap the job 
+   * of looking up generic keysyms for keycodes */
+  ILinuxKeymap *m_keymap;
 };
 }

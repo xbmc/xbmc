@@ -19,11 +19,18 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 
 #include <wayland-client.h>
 
+#include "input/linux/Keymap.h"
+
 class IDllWaylandClient;
+class IDllXKBCommon;
+
+struct xkb_context;
 
 namespace xbmc
 {
@@ -35,9 +42,7 @@ public:
 
   virtual ~IKeyboardReceiver() {}
 
-  virtual void UpdateKeymap(uint32_t format,
-                            int fd,
-                            uint32_t size) = 0;
+  virtual void UpdateKeymap(ILinuxKeymap *) = 0;
   virtual void Enter(uint32_t serial,
                      struct wl_surface *surface,
                      struct wl_array *keys) = 0;
@@ -75,6 +80,7 @@ class Keyboard :
 public:
 
   Keyboard(IDllWaylandClient &,
+           IDllXKBCommon &,
            struct wl_keyboard *,
            IKeyboardReceiver &);
   ~Keyboard();
@@ -132,8 +138,19 @@ private:
   static const struct wl_keyboard_listener m_listener;
 
   IDllWaylandClient &m_clientLibrary;
+  IDllXKBCommon &m_xkbCommonLibrary;
+  
+  /* boost::scoped_ptr does not permit custom deleters
+   * and std::auto_ptr is deprecated, so we are using
+   * boost::shared_ptr instead */
+  boost::shared_ptr<struct xkb_context> m_xkbCommonContext;
   struct wl_keyboard *m_keyboard;
   IKeyboardReceiver &m_reciever;
+
+  /* Keyboard owns the keymap object, but it might inject observing
+   * references elsewhere in order to assist those objects in their
+   * processing */
+  boost::scoped_ptr<ILinuxKeymap> m_keymap;
 };
 }
 }
