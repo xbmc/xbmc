@@ -535,8 +535,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       CStdString url = message.GetStringParam();
       CFileItem* currentFileItem = GetCurrentFileItem();
 
-      CLog::Log(LOGDEBUG, "GUIWindowHome:OnMessage Plex Section loaded %s %d", url.c_str(), type);
-
       CStdString sectionToLoad;
       if (currentFileItem && currentFileItem->HasProperty("sectionPath"))
         sectionToLoad = currentFileItem->GetProperty("sectionPath").asString();
@@ -559,8 +557,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           else
             CLog::Log(LOGDEBUG, "CGUIWindowHome::OnMessage GetContentListFromSection returned empty list");
         }
-        else
-          CLog::Log(LOGDEBUG, "CGUIWindowHome::OnMessage not activating FANART for '%s' sectionToLoad == %s", url.c_str(), sectionToLoad.c_str());
       }
       else
       {
@@ -578,7 +574,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
               if(list.Size() > 0)
               {
                 CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), p, 0, 0, &list);
-                CLog::Log(LOGDEBUG, "GUIWindowHome::OnMessage sending BIND to %d", p);
                 OnMessage(msg);
                 SET_CONTROL_VISIBLE(p);
               }

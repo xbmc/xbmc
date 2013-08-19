@@ -75,7 +75,6 @@ CPlexFile::BuildHTTPURL(CURL& url)
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "CPlexFile::BuildHTTURL Passing %s to BuildURL", url.GetFileName().c_str());
   newUrl = server->BuildURL(url.GetFileName(), url.GetOptions());
 
   if (!url.GetUserName().empty())

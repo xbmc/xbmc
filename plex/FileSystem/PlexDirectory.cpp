@@ -76,15 +76,9 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   bool httpSuccess;
 
   if (m_body.empty())
-  {
-    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory issuing GET request");
     httpSuccess = m_file.Get(m_url.Get(), data);
-  }
   else
-  {
-    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory issuing POST request");
     httpSuccess = m_file.Post(m_url.Get(), m_body, data);
-  }
 
   if (!httpSuccess)
   {
@@ -402,10 +396,7 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   /* now we need to set content to something that XBMC expects */
   CStdString content = CPlexDirectory::GetContentFromType(mediaContainer.GetPlexDirectoryType());
   if (!content.empty())
-  {
-    CLog::Log(LOGDEBUG, "CPlexDirectory::ReadMediaContainer setting content = %s", content.c_str());
     mediaContainer.SetContent(content);
-  }
   
   /* set the sort method to none, this means that we respect the order from the server */
   mediaContainer.AddSortMethod(SORT_METHOD_NONE, 553, LABEL_MASKS());
@@ -465,7 +456,7 @@ CStdString CPlexDirectory::GetContentFromType(EPlexDirectoryType typeNr)
       content = "secondary";
       break;
     default:
-      CLog::Log(LOGDEBUG, "CPlexDirectory::GetContentFromType oopes, no Content for Type %s", CPlexDirectory::GetDirectoryTypeString(typeNr).c_str());
+      CLog::Log(LOGWARNING, "CPlexDirectory::GetContentFromType oopes, no Content for Type %s", CPlexDirectory::GetDirectoryTypeString(typeNr).c_str());
       break;
   }
 
@@ -476,10 +467,8 @@ CStdString CPlexDirectory::GetContentFromType(EPlexDirectoryType typeNr)
 void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
 {
   /* Wait for the agumentation to return for 5 seconds */
-  CLog::Log(LOGDEBUG, "CPlexDirectory::DoAugmentation waiting for augmentation to download...");
   if (m_augmentationEvent.WaitMSec(5 * 1000))
   {
-    CLog::Log(LOGDEBUG, "CPlexDirectory::DoAugmentation got it...");
     BOOST_FOREACH(CFileItemList *augList, m_augmentationItems)
     {
       if (augList->Size() > 0)
@@ -552,8 +541,6 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
 ////////////////////////////////////////////////////////////////////////////////
 void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CLog::Log(LOGDEBUG, "CPlexDirectory::OnJobComplete Augmentationjob complete...");
-
   CSingleLock lk(m_augmentationLock);
 
   if (success)
@@ -716,7 +703,6 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
 ////////////////////////////////////////////////////////////////////////////////
 void CPlexDirectory::AddAugmentation(const CURL &url)
 {
-  CLog::Log(LOGDEBUG, "CPlexDirectory::AddAugmentation %s", url.Get().c_str());
   CSingleLock lk(m_augmentationLock);
   int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
   m_augmentationJobs.push_back(id);

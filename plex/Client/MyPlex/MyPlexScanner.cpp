@@ -95,7 +95,9 @@ bool CMyPlexScanner::DoScan()
     CFileItemPtr section = sectionList.Get(i);
     CStdString serverUUID = section->GetProperty("machineIdentifier").asString();
 
+#if 0
     CLog::Log(LOGDEBUG, "CMyPlexScanner::DoScan found section %s for server %s", section->GetProperty("path").asString().c_str(), serverUUID.c_str());
+#endif
 
     if (sectionMap.find(serverUUID) != sectionMap.end())
     {
