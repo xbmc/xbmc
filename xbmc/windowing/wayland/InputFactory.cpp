@@ -17,6 +17,10 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/scoped_ptr.hpp>
+
 #include "EventListener.h"
 #include "Keyboard.h"
 #include "Pointer.h"
@@ -34,7 +38,7 @@ xbmc::InputFactory::InputFactory(IDllWaylandClient &clientLibrary,
   m_clientLibrary(clientLibrary),
   m_xkbCommonLibrary(xkbCommonLibrary),
   m_pointerProcessor(dispatch, *this),
-  m_keyboardProcessor(m_xkbCommonLibrary, dispatch, timeouts),
+  m_keyboardProcessor(dispatch, timeouts),
   m_seat(new xw::Seat(clientLibrary, seat, *this))
 {
 }
@@ -69,6 +73,7 @@ bool xbmc::InputFactory::InsertKeyboard(struct wl_keyboard *k)
     return false;
 
   m_keyboard.reset(new xw::Keyboard(m_clientLibrary,
+                                    m_xkbCommonLibrary,
                                     k,
                                     m_keyboardProcessor));
   return true;

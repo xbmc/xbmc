@@ -38,6 +38,9 @@ public:
                                                          const char *,
                                                          enum xkb_keymap_format,
                                                          enum xkb_keymap_compile_flags) = 0;
+  virtual struct xkb_keymap * xkb_keymap_new_from_names(struct xkb_context *,
+                                                        const struct xkb_rule_names *,
+                                                        enum xkb_keymap_compile_flags) = 0;
   virtual xkb_mod_index_t xkb_keymap_mod_get_index(struct xkb_keymap *, 
                                                    const char *) = 0;
   virtual void xkb_keymap_unref(struct xkb_keymap *) = 0;
@@ -64,6 +67,7 @@ class DllXKBCommon : public DllDynamic, public IDllXKBCommon
   DEFINE_METHOD1(struct xkb_context *, xkb_context_new, (enum xkb_context_flags p1));
   DEFINE_METHOD1(void, xkb_context_unref, (struct xkb_context *p1));
   DEFINE_METHOD4(struct xkb_keymap *, xkb_keymap_new_from_string, (struct xkb_context *p1, const char *p2, enum xkb_keymap_format p3, enum xkb_keymap_compile_flags p4));
+  DEFINE_METHOD3(struct xkb_keymap *, xkb_keymap_new_from_names, (struct xkb_context *p1, const struct xkb_rule_names *p2, enum xkb_keymap_compile_flags p3));
   DEFINE_METHOD2(xkb_mod_index_t, xkb_keymap_mod_get_index, (struct xkb_keymap *p1, const char *p2));
   DEFINE_METHOD1(void, xkb_keymap_unref, (struct xkb_keymap *p1));
   DEFINE_METHOD1(struct xkb_state *, xkb_state_new, (struct xkb_keymap *p1));
@@ -76,6 +80,7 @@ class DllXKBCommon : public DllDynamic, public IDllXKBCommon
     RESOLVE_METHOD(xkb_context_new)
     RESOLVE_METHOD(xkb_context_unref)
     RESOLVE_METHOD(xkb_keymap_new_from_string)
+    RESOLVE_METHOD(xkb_keymap_new_from_names)
     RESOLVE_METHOD(xkb_keymap_mod_get_index)
     RESOLVE_METHOD(xkb_keymap_unref)
     RESOLVE_METHOD(xkb_state_new)

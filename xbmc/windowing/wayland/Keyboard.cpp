@@ -21,10 +21,16 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/scope_exit.hpp>
+
 #include <wayland-client.h>
 
 #include "windowing/DllWaylandClient.h"
+#include "windowing/DllXKBCommon.h"
 #include "windowing/WaylandProtocol.h"
+#include "input/linux/XKBCommonKeymap.h"
 #include "Keyboard.h"
 
 namespace xw = xbmc::wayland;
@@ -38,10 +44,25 @@ const struct wl_keyboard_listener xw::Keyboard::m_listener =
   Keyboard::HandleModifiersCallback
 };
 
+namespace
+{
+void DestroyXKBCommonContext(struct xkb_context *context,
+                             IDllXKBCommon &xkbCommonLibrary)
+{
+  xkbCommonLibrary.xkb_context_unref(context);
+}
+}
+
 xw::Keyboard::Keyboard(IDllWaylandClient &clientLibrary,
+                       IDllXKBCommon &xkbCommonLibrary,
                        struct wl_keyboard *keyboard,
                        IKeyboardReceiver &receiver) :
   m_clientLibrary(clientLibrary),
+  m_xkbCommonLibrary(xkbCommonLibrary),
+  m_xkbCommonContext(CXKBKeymap::CreateXKBContext(m_xkbCommonLibrary),
+                     boost::bind(DestroyXKBCommonContext,
+                                 _1,
+                                 boost::ref(m_xkbCommonLibrary))),
   m_keyboard(keyboard),
   m_reciever(receiver)
 {
@@ -116,11 +137,51 @@ void xw::Keyboard::HandleModifiersCallback(void *data,
                                                  group);
 }
 
+/* Creates a new internal keymap representation for a serialized
+ * keymap as represented in shared memory as referred to by fd.
+ * 
+ * Since the fd is sent to us via sendmsg(), the currently running
+ * process has ownership over it. As such, it MUST close the file
+ * descriptor after it has decided what to do with it in order to
+ * avoid a leak.
+ */
 void xw::Keyboard::HandleKeymap(uint32_t format,
                                 int fd,
                                 uint32_t size)
 {
-  m_reciever.UpdateKeymap(format, fd, size);
+  /* The file descriptor must always be closed */
+  BOOST_SCOPE_EXIT((fd))
+  {
+    close(fd);
+  } BOOST_SCOPE_EXIT_END
+
+  /* We don't understand anything other than xkbv1. If we get some
+   * other keyboard, then we can't process keyboard events reliably
+   * and that's a runtime error. */
+  if (format != WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1)
+    throw std::runtime_error("Server gave us a keymap we don't understand");
+
+  bool successfullyCreatedKeyboard = false;
+  
+  /* Either throws or returns a valid xkb_keymap * */
+  struct xkb_keymap *keymap =
+    CXKBKeymap::ReceiveXKBKeymapFromSharedMemory(m_xkbCommonLibrary,
+                                                 m_xkbCommonContext.get(),
+                                                 fd,
+                                                 size);
+
+  BOOST_SCOPE_EXIT((&m_xkbCommonLibrary)(&successfullyCreatedKeyboard)(keymap))
+  {
+    if (!successfullyCreatedKeyboard)
+      m_xkbCommonLibrary.xkb_keymap_unref(keymap);
+  } BOOST_SCOPE_EXIT_END
+
+  m_keymap.reset(new CXKBKeymap(m_xkbCommonLibrary,
+                                keymap));
+  
+  successfullyCreatedKeyboard = true;
+
+  m_reciever.UpdateKeymap(m_keymap.get());
 }
 
 void xw::Keyboard::HandleEnter(uint32_t serial,

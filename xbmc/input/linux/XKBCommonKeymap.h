@@ -20,7 +20,6 @@
  *
  */
 #include <boost/noncopyable.hpp>
-#include <boost/scope_exit.hpp>
 
 #include "input/linux/Keymap.h"
 
@@ -37,13 +36,14 @@ class CXKBKeymap : public ILinuxKeymap
 public:
 
   CXKBKeymap(IDllXKBCommon &m_xkbCommonLibrary,
-             struct xkb_keymap *keymap,
-             struct xkb_state *state);
+             struct xkb_keymap *keymap);
   ~CXKBKeymap();
 
+  static struct xkb_context * CreateXKBContext(IDllXKBCommon &xkbCommonLibrary);
   /* ReceiveXKBKeymapFromSharedMemory does not own the file descriptor, as such it takes a const reference to it */ 
   static struct xkb_keymap * ReceiveXKBKeymapFromSharedMemory(IDllXKBCommon &xkbCommonLibrary, struct xkb_context *, const int &fd, uint32_t size);
   static struct xkb_state * CreateXKBStateFromKeymap(IDllXKBCommon &xkbCommonLibrary, struct xkb_keymap *keymap);
+  static struct xkb_keymap * CreateXKBKeymapFromNames(IDllXKBCommon &xkbCommonLibrary, struct xkb_context *context,  const std::string &rules, const std::string &model, const std::string &layout, const std::string &variant, const std::string &options);
 private:
 
   uint32_t KeysymForKeycode(uint32_t code) const;
