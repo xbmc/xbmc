@@ -117,7 +117,6 @@ COMXAudio::COMXAudio() :
   m_BytesPerSec     (0      ),
   m_BufferLen       (0      ),
   m_ChunkLen        (0      ),
-  m_OutputChannels  (0      ),
   m_BitsPerSample   (0      ),
   m_maxLevel        (0.0f   ),
   m_amplification   (1.0f   ),
@@ -532,7 +531,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   m_drc         = 0;
 
   memset(m_input_channels, 0x0, sizeof(m_input_channels));
-  memset(m_output_channels, 0x0, sizeof(m_output_channels));
   memset(&m_wave_header, 0x0, sizeof(m_wave_header));
 
   for(int i = 0; i < OMX_AUDIO_MAXCHANNELS; i++)
@@ -541,16 +539,11 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
     m_input_channels[i] = OMX_AUDIO_ChannelMax;
   }
 
-  m_output_channels[0] = OMX_AUDIO_ChannelLF;
-  m_output_channels[1] = OMX_AUDIO_ChannelRF;
-  m_output_channels[2] = OMX_AUDIO_ChannelMax;
-
   m_input_channels[0] = OMX_AUDIO_ChannelLF;
   m_input_channels[1] = OMX_AUDIO_ChannelRF;
   m_input_channels[2] = OMX_AUDIO_ChannelMax;
 
-  m_OutputChannels                = 2;
-  m_wave_header.Format.nChannels  = m_OutputChannels;
+  m_wave_header.Format.nChannels  = 2;
   m_wave_header.dwChannelMask     = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
 
   if (!m_Passthrough)
@@ -770,9 +763,9 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   m_failed_eos = false;
   m_last_pts      = DVD_NOPTS_VALUE;
 
-  CLog::Log(LOGDEBUG, "COMXAudio::Initialize Input bps %d samplerate %d channels %d buffer size %d bytes per second %d", 
+  CLog::Log(LOGDEBUG, "COMXAudio::Initialize Input bps %d samplerate %d channels %d buffer size %d bytes per second %d",
       (int)m_pcm_input.nBitPerSample, (int)m_pcm_input.nSamplingRate, (int)m_pcm_input.nChannels, m_BufferLen, m_BytesPerSec);
-  PrintPCM(&m_pcm_output, std::string("input"));
+  PrintPCM(&m_pcm_input, std::string("input"));
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize device passthrough %d hwdecode %d",
      m_Passthrough, m_HWDecode);
 
