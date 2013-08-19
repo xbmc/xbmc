@@ -79,7 +79,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iAddonInfoToggleCurrent     = 0;
   m_iTimerInfoToggleStart       = 0;
   m_iTimerInfoToggleCurrent     = 0;
-  m_iToggleShowInfo             = 0;
+  m_ToggleShowInfo.SetInfinite();
   m_iDuration                   = 0;
   m_bHasNonRecordingTimers      = false;
   m_bIsPlayingTV                = false;
@@ -123,7 +123,7 @@ void CPVRGUIInfo::ShowPlayerInfo(int iTimeout)
   CSingleLock lock(m_critSection);
 
   if (iTimeout > 0)
-    m_iToggleShowInfo = (int) XbmcThreads::SystemClockMillis() + iTimeout * 1000;
+    m_ToggleShowInfo.Set(iTimeout * 1000);
 
   g_infoManager.SetShowInfo(true);
 }
@@ -132,9 +132,9 @@ void CPVRGUIInfo::ToggleShowInfo(void)
 {
   CSingleLock lock(m_critSection);
 
-  if (m_iToggleShowInfo > 0 && m_iToggleShowInfo < (unsigned int) XbmcThreads::SystemClockMillis())
+  if (m_ToggleShowInfo.IsTimePast())
   {
-    m_iToggleShowInfo = 0;
+    m_ToggleShowInfo.SetInfinite();
     g_infoManager.SetShowInfo(false);
   }
 }
