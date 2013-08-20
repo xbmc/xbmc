@@ -794,6 +794,7 @@ bool CApplication::Create()
     g_curlInterface.Load();
   g_curlInterface.global_init(CURL_GLOBAL_ALL);
 #endif
+  /* END PLEX */
 
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
@@ -842,9 +843,6 @@ bool CApplication::Create()
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::Get().Initialize(true);
 
-  g_plexApplication.Start();
-  /* END PLEX */
-
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
   if (!CAddonMgr::Get().Init())
@@ -879,6 +877,11 @@ bool CApplication::Create()
 
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
   m_lastRenderTime = m_lastFrameTime;
+  
+  /* PLEX */
+  g_plexApplication.Start();
+  /* END PLEX */
+  
   return true;
 }
 
