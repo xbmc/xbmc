@@ -1216,6 +1216,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   {
     format.m_dataFormat = AE_FMT_AC3;
     format.m_sampleRate = 48000;
+    format.m_channelLayout = AE_CH_LAYOUT_2_0;
     if (setmode)
       m_mode = MODE_TRANSCODE;
   }
