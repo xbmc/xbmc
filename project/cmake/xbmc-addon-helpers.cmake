@@ -9,9 +9,9 @@
 add_custom_target(addon-package
                   COMMAND cmake --build ${CMAKE_BINARY_DIR} --target package)
 
-macro(add_cpack_workaround target version)
+macro(add_cpack_workaround target version ext)
   add_custom_command(TARGET addon-package PRE_BUILD
-                     COMMAND cmake -E rename addon-${target}-${version}.zip ${target}-${version}.zip)
+                     COMMAND cmake -E rename addon-${target}-${version}.${ext} ${target}-${version}.${ext})
 endmacro()
 
 # Grab the version from a given add-on's addon.xml
@@ -34,12 +34,13 @@ macro (build_addon target prefix libs)
     SET_TARGET_PROPERTIES(${target} PROPERTIES PREFIX "lib")
   ENDIF(OS STREQUAL "android")
 
+  # set zip as default if addon-package is called without PACKAGE_XXX
+  SET(CPACK_GENERATOR "ZIP")
+  SET(ext "zip")
   IF(PACKAGE_ZIP OR PACKAGE_TGZ)
-    IF(PACKAGE_ZIP)
-      SET(CPACK_GENERATOR "ZIP")
-    ENDIF(PACKAGE_ZIP)
     IF(PACKAGE_TGZ)
       SET(CPACK_GENERATOR "TGZ")
+      SET(ext "tar.gz")
     ENDIF(PACKAGE_TGZ)
     SET(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
     set(CPACK_PACKAGE_FILE_NAME addon)
@@ -59,7 +60,7 @@ macro (build_addon target prefix libs)
       INSTALL(TARGETS ${target} DESTINATION ${target}
               COMPONENT ${target}-${${prefix}_VERSION})
     ENDIF(WIN32)
-    add_cpack_workaround(${target} ${${prefix}_VERSION})
+    add_cpack_workaround(${target} ${${prefix}_VERSION} ${ext})
   ELSE(PACKAGE_ZIP OR PACKAGE_TGZ)
     INSTALL(TARGETS ${target} DESTINATION lib/xbmc/addons/${target})
     INSTALL(DIRECTORY ${target} DESTINATION share/xbmc/addons)
