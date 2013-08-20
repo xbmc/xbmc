@@ -300,7 +300,7 @@ bool CActiveAEStream::SetResampleRatio(double ratio)
 
 void CActiveAEStream::FadeVolume(float from, float target, unsigned int time)
 {
-  if (time == 0)
+  if (time == 0 || AE_IS_RAW(m_format.m_dataFormat))
     return;
 
   m_streamFading = true;
