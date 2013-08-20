@@ -14,6 +14,7 @@
 
 #include "PlexFile.h"
 #include "video/VideoInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
 #include "Client/PlexTranscoderClient.h"
 #include "PlexJobs.h"
 #include "guilib/GUIWindowManager.h"
@@ -243,6 +244,8 @@ CURL CPlexMediaServerClient::constructTimelineRequest(CFileItemPtr item, CPlexMe
     
     if (item->HasVideoInfoTag())
       u.SetOption("duration", boost::lexical_cast<std::string>(item->GetVideoInfoTag()->m_duration * 1000));
+    else if (item->HasMusicInfoTag())
+      u.SetOption("duration", boost::lexical_cast<std::string>(item->GetMusicInfoTag()->GetDuration() * 1000));
   }
   
   if (includeSystemVars)
