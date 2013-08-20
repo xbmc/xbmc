@@ -284,9 +284,10 @@ CFileItemPtr CPlexMediaDecisionEngine::getSelecteMediaItem(const CFileItem &item
   return mediaItem;
 }
 
-void CPlexMediaDecisionEngine::ProcessStack(const CFileItem &item, const CFileItemList &stack)
+void CPlexMediaDecisionEngine::ProcessStack(const CFileItem& item, const CFileItemList &stack)
 {
   CFileItemPtr mediaItem = getSelecteMediaItem(item);
+  int64_t totalDuration = 0;
   
   for (int i = 0; i < stack.Size(); i++)
   {
@@ -295,10 +296,13 @@ void CPlexMediaDecisionEngine::ProcessStack(const CFileItem &item, const CFileIt
     CFileItemPtr currMediaItem = CFileItemPtr(new CFileItem);
     
     stackItem->SetProperty("isSynthesized", true);
-    stackItem->SetProperty("duration", mediaPart->GetProperty("duration"));
     stackItem->SetProperty("partIndex", i);
     stackItem->SetProperty("file", mediaPart->GetProperty("file"));
     stackItem->SetProperty("selectedMediaItem", 0);
+    
+    int64_t dur = mediaPart->GetProperty("duration").asInteger();
+    stackItem->SetProperty("duration", dur);
+    totalDuration += dur;
     
     currMediaItem->m_mediaParts.clear();
     currMediaItem->m_mediaParts.push_back(mediaPart);

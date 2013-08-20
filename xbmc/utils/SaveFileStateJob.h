@@ -80,7 +80,6 @@ bool CSaveFileStateJob::DoWork()
             CFileItemPtr item = boost::make_shared<CFileItem>(m_item);
             g_plexMediaServerClient.SetItemWatched(item);
             g_plexMediaServerClient.ReportItemProgress(item, CPlexMediaServerClient::MEDIA_STATE_STOPPED);
-            g_plexRemoteSubscriberManager.reportItemProgress(item, CPlexMediaServerClient::MEDIA_STATE_STOPPED, 0);
             /* END PLEX */
           }
 #ifndef __PLEX__
@@ -99,12 +98,10 @@ bool CSaveFileStateJob::DoWork()
             if (m_bookmark.timeInSeconds < 0.0f)
             {
               g_plexMediaServerClient.ReportItemProgress(boost::make_shared<CFileItem>(m_item), CPlexMediaServerClient::MEDIA_STATE_STOPPED);
-              g_plexRemoteSubscriberManager.reportItemProgress(boost::make_shared<CFileItem>(m_item), CPlexMediaServerClient::MEDIA_STATE_STOPPED, 0);
             }
             else if (m_bookmark.timeInSeconds > 0.0f)
             {
               g_plexMediaServerClient.ReportItemProgress(boost::make_shared<CFileItem>(m_item), CPlexMediaServerClient::MEDIA_STATE_STOPPED, m_bookmark.timeInSeconds*1000);
-              g_plexRemoteSubscriberManager.reportItemProgress(boost::make_shared<CFileItem>(m_item), CPlexMediaServerClient::MEDIA_STATE_STOPPED, m_bookmark.timeInSeconds*1000);
               m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
             }
 #endif

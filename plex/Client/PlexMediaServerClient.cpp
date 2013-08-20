@@ -7,8 +7,11 @@
 //
 
 #include "PlexMediaServerClient.h"
+
 #include <boost/lexical_cast.hpp>
+#include <boost/foreach.hpp>
 #include <string>
+
 #include "PlexFile.h"
 #include "video/VideoInfoTag.h"
 #include "Client/PlexTranscoderClient.h"
@@ -19,6 +22,11 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 
+#include "Application.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/log.h"
+
+////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CPlexMediaServerClientJob *clientJob = static_cast<CPlexMediaServerClientJob*>(job);
@@ -31,8 +39,9 @@ void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJo
   CJobQueue::OnJobComplete(jobID, success, job);
 }
 
-void
-CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,
+
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,
                                      int partID,
                                      int subtitleStreamID,
                                      int audioStreamID)
@@ -48,41 +57,94 @@ CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,
   AddJob(new CPlexMediaServerClientJob(u, "PUT"));
 }
 
-void CPlexMediaServerClient::ReportItemProgress(const CFileItemPtr &item, const CStdString& state, int64_t currentPosition)
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::ReportItemProgress(const CFileItemPtr &item, CPlexMediaServerClient::MediaState state, int64_t currentPosition)
 {
-  CURL u(item->GetProperty("key").asString());
-  u.SetFileName("/:/timeline");
+  int64_t totalDuration = item->GetProperty("duration").asInteger();
+  time_t now = time(NULL);
+  
+  
+  if (m_lastItemKey == item->GetProperty("key").asString() &&
+      m_lastItemState == state)
+  {
+    int64_t lastUpdated = item->GetProperty("lastTimelineUpdate").asInteger();
 
-  u.SetOption("state", state);
-  u.SetOption("ratingKey", item->GetProperty("ratingKey").asString());
-  u.SetOption("key", item->GetProperty("unprocessed_key").asString());
-  u.SetOption("containerKey", item->GetProperty("containerKey").asString());
+    if (currentPosition == item->GetProperty("viewOffset").asInteger() &&
+        (now - lastUpdated < 10))
+      /* same state, same key no change in played duration */
+      return;
+    
+    if (now - lastUpdated >= 5)
+    {
+      item->SetProperty("viewOffset", currentPosition);
+      /* report to the server */
+      CURL u = constructTimelineRequest(item, state, currentPosition, false);
+      AddJob(new CPlexMediaServerClientJob(u));
+      
+      item->SetProperty("lastTimelineUpdate", (int64_t)now);
+    }
+    
+    if (now - lastUpdated >= 1 && g_plexRemoteSubscriberManager.hasSubscribers())
+    {
+      std::vector<CURL> subs = g_plexRemoteSubscriberManager.getSubscriberURL();
+      BOOST_FOREACH(CURL su, subs)
+        ReportItemProgressToSubscriber(su, item, state, currentPosition);
+      
+      item->SetProperty("viewOffset", currentPosition);
+    }
+  }
+  else
+  {
+    CURL u = constructTimelineRequest(item, state, currentPosition, false);
+    AddJob(new CPlexMediaServerClientJob(u));
+    
+    /* notify any subscribers as well */
+    std::vector<CURL> subs = g_plexRemoteSubscriberManager.getSubscriberURL();
+    BOOST_FOREACH(CURL su, subs)
+      ReportItemProgressToSubscriber(su, item, state, currentPosition);
+    
+    m_lastItemKey = item->GetProperty("key").asString();
+    m_lastItemState = state;
+    item->SetProperty("lastTimelineUpdate", (int64_t)now);
+  }
   
-  if (item->HasProperty("guid"))
-    u.SetOption("guid", item->GetProperty("guid").asString());
+  float percentage = 0.0;
+  if (totalDuration)
+  {
+    percentage = (float)(((float)currentPosition/(float)totalDuration) * 100.0);
+    CLog::Log(LOGDEBUG, "CPlexMediaServerClient::ReportItemProgress %lld / %lld = %f", currentPosition, totalDuration, percentage);
+  }
+  
+  if (item->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED &&
+      currentPosition >= 5)
+  {
+    item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
+  }
+  
+  CLog::Log(LOGDEBUG, "CPlexMediaServerClient::ReportItemProgress percentage is %f", percentage);
+  if ((item->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_IN_PROGRESS ||
+      item->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED) &&
+      percentage > g_advancedSettings.m_videoPlayCountMinimumPercent)
+  {
+    item->MarkAsWatched();
+  }
+    
+  
+}
 
-  if (item->HasProperty("url"))
-    u.SetOption("url", item->GetProperty("url").asString());
-  
-  if (currentPosition != 0)
-    u.SetOption("time", boost::lexical_cast<std::string>(currentPosition));
-  
-  if (item->HasVideoInfoTag())
-    u.SetOption("duration", boost::lexical_cast<std::string>(item->GetVideoInfoTag()->m_duration * 1000));
-  
-  item->SetProperty("viewOffset", currentPosition);
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::ReportItemProgressToSubscriber(const CURL &url, CFileItemPtr item, CPlexMediaServerClient::MediaState state, int64_t currentPosition)
+{
+  CURL u = constructTimelineRequest(item, state, currentPosition, true);
+  u.SetProtocol("http");
+  u.SetHostName(url.GetHostName());
+  u.SetPort(url.GetPort());
   
   AddJob(new CPlexMediaServerClientJob(u));
 }
 
-void
-CPlexMediaServerClient::ReportItemProgress(const CFileItemPtr &item, CPlexMediaServerClient::MediaState state, int64_t currentPosition)
-{
-  ReportItemProgress(item, StateToString(state), currentPosition);
-}
-
-void
-CPlexMediaServerClient::SetItemWatchStatus(const CFileItemPtr &item, bool watched)
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::SetItemWatchStatus(const CFileItemPtr &item, bool watched)
 {
   CURL u(item->GetPath());
   
@@ -93,8 +155,8 @@ CPlexMediaServerClient::SetItemWatchStatus(const CFileItemPtr &item, bool watche
   AddJob(new CPlexMediaServerClientJob(u));
 }
 
-void
-CPlexMediaServerClient::SetItemRating(const CFileItemPtr &item, float rating)
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::SetItemRating(const CFileItemPtr &item, float rating)
 {
   CURL u(item->GetPath());
   
@@ -104,8 +166,8 @@ CPlexMediaServerClient::SetItemRating(const CFileItemPtr &item, float rating)
   AddJob(new CPlexMediaServerClientJob(u));
 }
 
-void
-CPlexMediaServerClient::SetViewMode(const CFileItem &item, int viewMode, int sortMode, int sortAsc)
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::SetViewMode(const CFileItem &item, int viewMode, int sortMode, int sortAsc)
 {
   CURL u(item.GetPath());
   u.SetFileName("/:/viewChange");
@@ -119,11 +181,13 @@ CPlexMediaServerClient::SetViewMode(const CFileItem &item, int viewMode, int sor
   AddJob(new CPlexMediaServerClientJob(u));
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::StopTranscodeSession(CPlexServerPtr server)
 {
   AddJob(new CPlexMediaServerClientJob(CPlexTranscoderClient::GetTranscodeStopURL(server)));
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::deleteItem(const CFileItemPtr &item)
 {
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
@@ -149,4 +213,60 @@ std::string CPlexMediaServerClient::StateToString(CPlexMediaServerClient::MediaS
       break;
   }
   return strstate;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+CURL CPlexMediaServerClient::constructTimelineRequest(CFileItemPtr item, CPlexMediaServerClient::MediaState state, int64_t currentPosition, bool includeSystemVars)
+{
+  CURL u("http://localhost:32400/");
+  if (item)
+    u = CURL(item->GetPath());
+  
+  u.SetFileName(":/timeline");
+  
+  u.SetOption("state", StateToString(state));
+  u.SetOption("controllable", "volume,shuffle,repeat,audioStream,videoStream,subtitleStream");
+  u.SetOption("time", boost::lexical_cast<std::string>(currentPosition));
+  
+  if (item)
+  {
+    u.SetOption("ratingKey", item->GetProperty("ratingKey").asString());
+    u.SetOption("key", item->GetProperty("unprocessed_key").asString());
+    u.SetOption("containerKey", item->GetProperty("containerKey").asString());
+    u.SetOption("machineIdentifier", item->GetProperty("plexserver").asString());
+    
+    if (item->HasProperty("guid"))
+      u.SetOption("guid", item->GetProperty("guid").asString());
+    
+    if (item->HasProperty("url"))
+      u.SetOption("url", item->GetProperty("url").asString());
+    
+    if (item->HasVideoInfoTag())
+      u.SetOption("duration", boost::lexical_cast<std::string>(item->GetVideoInfoTag()->m_duration * 1000));
+  }
+  
+  if (includeSystemVars)
+  {
+    u.SetOption("volume", boost::lexical_cast<std::string>(g_application.GetVolume()));
+    if (g_application.IsPlayingAudio())
+    {
+      if (g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC))
+        u.SetOption("shuffled", "1");
+      
+      if (g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ONE)
+        u.SetOption("repeat", "1");
+      else if (g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ALL)
+        u.SetOption("repeat", "2");
+    }
+    else if (g_application.IsPlayingVideo())
+    {
+      u.SetOption("subtitleStreamID", boost::lexical_cast<std::string>(g_application.m_pPlayer->GetSubtitlePlexID()));
+      u.SetOption("audioStreamID", boost::lexical_cast<std::string>(g_application.m_pPlayer->GetAudioStreamPlexID()));
+      
+      /* TODO */
+      u.SetOption("videoStreamID", "0");
+    }
+  }
+  
+  return u;
 }

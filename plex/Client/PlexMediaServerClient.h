@@ -14,6 +14,7 @@
 #include "FileItem.h"
 #include "GlobalsHandling.h"
 #include "guilib/GUIMessage.h"
+#include "Remote/PlexRemoteSubscriberManager.h"
 
 class CPlexMediaServerClient : public CJobQueue
 {
@@ -38,7 +39,7 @@ public:
   
   /* timeline api */
   void ReportItemProgress(const CFileItemPtr& item, MediaState state, int64_t currentPosition = 0);
-  void ReportItemProgress(const CFileItemPtr& item, const CStdString& state, int64_t currentPosition = 0);
+  void ReportItemProgressToSubscriber(const CURL &url, CFileItemPtr item, MediaState state, int64_t currentPosition);
   
   /* Set viewMode */
   void SetViewMode(const CFileItem& item, int viewMode, int sortMode = -1, int sortAsc = 1);
@@ -53,6 +54,8 @@ public:
   static std::string StateToString(CPlexMediaServerClient::MediaState state);
 
 private:
+  CURL constructTimelineRequest(CFileItemPtr item, MediaState state, int64_t currentPosition = 0, bool includeSystemVars = false);
+  
   CStdString GetPrefix(const CFileItemPtr& item) const
   {
     CStdString prefix = "/:/";
@@ -60,6 +63,10 @@ private:
       prefix = "/pms/:/";
     return prefix;
   }
+  
+  /* last timeline state */
+  CStdString m_lastItemKey;
+  MediaState m_lastItemState;
 };
 
 XBMC_GLOBAL_REF(CPlexMediaServerClient, g_plexMediaServerClient);

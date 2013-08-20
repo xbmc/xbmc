@@ -6309,14 +6309,6 @@ void CApplication::UpdateFileState(const string& aState)
   if (!m_itemCurrentFile)
     return;
 
-  // Update the media server as needed.
-  static time_t lastUpdated = 0;
-  static CPlexMediaServerClient::MediaState lastState;
-  static double lastTime = 0.0;
-  static double latestTime = 0.0;
-  static bool   hasScrobbled = false;
-  static string lastKey;
-
   // Compute the state if not passed on.
   CPlexMediaServerClient::MediaState state;
   if (aState == "paused")
@@ -6331,79 +6323,12 @@ void CApplication::UpdateFileState(const string& aState)
   if (aState.empty())
     state = IsBuffering() ? CPlexMediaServerClient::MEDIA_STATE_BUFFERING : IsPaused() ? CPlexMediaServerClient::MEDIA_STATE_PAUSED : CPlexMediaServerClient::MEDIA_STATE_PLAYING;
 
-  // Keep latest time.
-  double nowTime = GetTime();
-  if (nowTime > 0.0)
-    latestTime = nowTime;
-
-  // If the item changed, reset things.
-  if (lastKey != m_itemCurrentFile->GetProperty("key").asString())
-  {
-    hasScrobbled = false;
-    latestTime = 0.0;
-  }
-
-  // Every 5 seconds by default, or 1 second if we have subscribers that needs to be updated
-  int cadence = g_plexRemoteSubscriberManager.hasSubscribers() ? 1 : 5;
-  
-  if (m_itemCurrentFile->GetProperty("pluginIdentifier") == "com.plexapp.plugins.myplex")
-    cadence = g_plexRemoteSubscriberManager.hasSubscribers() ? 1 : 20;
+  if (!m_itemCurrentFile->HasProperty("duration"))
+    m_itemCurrentFile->SetProperty("duration", GetTotalTime());
 
   if (state == CPlexMediaServerClient::MEDIA_STATE_STOPPED || IsPlayingVideo() || IsPlayingAudio())
   {
-    // Enough time has passed, we changed state, we skipped, or we're playing something different.
-    time_t now = time(0);
-    
-    if (now - lastUpdated > cadence        ||
-        lastState != state                 ||
-        fabs(lastTime-nowTime) > cadence*2 ||
-        lastKey != m_itemCurrentFile->GetProperty("key").asString())
-    {
-      // Update state.
-      double currentDuration = now - lastUpdated;
-      
-      lastUpdated = time(0);
-      lastState = state;
-      lastTime = nowTime;
-      lastKey = m_itemCurrentFile->GetProperty("key").asString();
-
-      // If we've stopped, use the most up to date time possible.
-      double t = nowTime;
-      if (state == CPlexMediaServerClient::MEDIA_STATE_STOPPED)
-        t = latestTime;
-
-      // Update progress.
-      if (hasScrobbled == false)
-      {
-        if (t>5.0)
-        {
-          m_itemCurrentFile->SetProperty("viewOffset", boost::lexical_cast<string>((int)(t*1000)));
-          m_itemCurrentFile->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
-        }
-        
-        g_plexMediaServerClient.ReportItemProgress(m_itemCurrentFile, state, int(t*1000));
-        g_plexRemoteSubscriberManager.reportItemProgress(m_itemCurrentFile, state, int(t*1000));
-      }
-      else
-      {
-        if (currentDuration >= 5)
-          g_plexMediaServerClient.ReportItemProgress(m_itemCurrentFile, state, int(t*1000));
-        
-        g_plexRemoteSubscriberManager.reportItemProgress(m_itemCurrentFile, state, int(t*1000));
-      }
-    }
-
-    // See if we should scrobble.
-    if (hasScrobbled == false && GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent)
-    {
-      hasScrobbled = true;
-
-      // Scrobble.
-      m_itemCurrentFile->GetVideoInfoTag()->m_playCount++;
-      m_itemCurrentFile->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
-      m_itemCurrentFile->ClearProperty("viewOffset");
-      g_plexMediaServerClient.SetItemWatched(m_itemCurrentFile);
-    }
+    g_plexMediaServerClient.ReportItemProgress(m_itemCurrentFile, state, GetTime() * 1000);
 
     // Update the item in place.
     CGUIMediaWindow* mediaWindow = (CGUIMediaWindow* )g_windowManager.GetWindow(WINDOW_VIDEO_FILES);

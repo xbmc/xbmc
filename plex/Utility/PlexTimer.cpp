@@ -1,0 +1,39 @@
+//
+//  PlexTimer.cpp
+//  Plex Home Theater
+//
+//  Created by Tobias Hieta on 2013-08-20.
+//
+//
+
+#include "PlexTimer.h"
+
+using namespace boost::posix_time;
+
+////////////////////////////////////////////////////////////////////////////////////////
+CPlexTimer::CPlexTimer() : m_started(microsec_clock::local_time())
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexTimer::restart()
+{
+  m_started = ptime(microsec_clock::local_time());
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+int64_t CPlexTimer::elapsedMs() const
+{
+  time_duration dur;
+  ptime now(microsec_clock::local_time());
+  
+  dur = now - m_started;
+  
+  return dur.total_milliseconds();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+int CPlexTimer::elapsed() const
+{
+  return elapsedMs() / 1000.0;
+}

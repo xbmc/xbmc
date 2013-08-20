@@ -15,13 +15,17 @@
 #include "threads/Timer.h"
 #include "URL.h"
 #include "FileItem.h"
-#include "Client/PlexMediaServerClient.h"
 #include "utils/GlobalsHandling.h"
+#include "Utility/PlexTimer.h"
 
 class CPlexRemoteSubscriber;
 typedef boost::shared_ptr<CPlexRemoteSubscriber> CPlexRemoteSubscriberPtr;
 
-#define PLEX_REMOTE_SUBSCRIBER_REMOVE_INTERVAL 10
+/* give clients 90 seconds before we time them out */
+#define PLEX_REMOTE_SUBSCRIBER_REMOVE_INTERVAL 90
+
+/* check all subscribers every 10th second */
+#define PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL 10
 
 class CPlexRemoteSubscriber
 {
@@ -31,15 +35,15 @@ class CPlexRemoteSubscriber
       return CPlexRemoteSubscriberPtr(new CPlexRemoteSubscriber(uuid, ipaddress, port));
     };
     CPlexRemoteSubscriber(const std::string &uuid, const std::string &ipaddress, int port=32400);
-    void refresh() { m_lastUpdated.restart(); }
-    bool shouldRemove() { return m_lastUpdated.elapsed() > PLEX_REMOTE_SUBSCRIBER_REMOVE_INTERVAL; }
+    void refresh();
+    bool shouldRemove() const;
   
     CURL getURL() const { return m_url; }
     std::string getUUID() const { return m_uuid; }
   
   private:
     CURL m_url;
-    boost::timer m_lastUpdated;
+    CPlexTimer m_lastUpdated;
     std::string m_uuid;
 };
 
@@ -52,8 +56,7 @@ class CPlexRemoteSubscriberManager : public ITimerCallback
     CPlexRemoteSubscriberManager() : m_refreshTimer(this) {}
     void addSubscriber(CPlexRemoteSubscriberPtr subscriber);
     void removeSubscriber(CPlexRemoteSubscriberPtr subscriber);
-    void reportItemProgress(const CFileItemPtr &item, CPlexMediaServerClient::MediaState state, int64_t currentPosition);
-    void sendTimeLineRequest(CPlexRemoteSubscriberPtr sub, const CFileItemPtr& item, CPlexMediaServerClient::MediaState state, int64_t currentPosition);
+    std::vector<CURL> getSubscriberURL() const;
   
     bool hasSubscribers() const { CSingleLock lk(m_crit); return m_map.size(); }
   
