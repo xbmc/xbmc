@@ -32,6 +32,8 @@ public:
   static CJNIByteBuffer wrap(const std::vector<char> &array, int start, int byteCount);
   static CJNIByteBuffer wrap(const std::vector<char> &array);
 
+  CJNIByteBuffer    duplicate();
+
   CJNIByteBuffer    get(const std::vector<char> &dst, int dstOffset, int byteCount);
   CJNIByteBuffer    get(const std::vector<char> &dst);
   CJNIByteBuffer    put(const CJNIByteBuffer &src);

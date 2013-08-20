@@ -63,6 +63,12 @@ CJNIByteBuffer CJNIByteBuffer::wrap(const std::vector<char> &array)
     bytearray));
 }
 
+CJNIByteBuffer CJNIByteBuffer::duplicate()
+{
+  return CJNIByteBuffer(call_method<jhobject>(m_object,
+    "duplicate","()Ljava/nio/ByteBuffer;"));
+}
+
 CJNIByteBuffer CJNIByteBuffer::get(const std::vector<char> &dst, int dstOffset, int byteCount)
 {
   JNIEnv *env = xbmc_jnienv();
@@ -99,7 +105,7 @@ CJNIByteBuffer CJNIByteBuffer::put(const std::vector<char> &src, int srcOffset, 
   JNIEnv *env = xbmc_jnienv();
   jsize size  = src.size();
   jbyteArray bytearray = env->NewByteArray(size);
-  env->SetByteArrayRegion(bytearray, 0, size, (jbyte*)&src[0]);
+  env->SetByteArrayRegion(bytearray, 0, size, (jbyte*)src.data());
 
   return CJNIByteBuffer(call_method<jhobject>(m_object,
     "put","([BII)Ljava/nio/ByteBuffer;",
@@ -111,7 +117,7 @@ CJNIByteBuffer CJNIByteBuffer::put(const std::vector<char> &src)
   JNIEnv *env = xbmc_jnienv();
   jsize size  = src.size();
   jbyteArray bytearray = env->NewByteArray(size);
-  env->SetByteArrayRegion(bytearray, 0, size, (jbyte*)&src[0]);
+  env->SetByteArrayRegion(bytearray, 0, size, (jbyte*)src.data());
 
   return CJNIByteBuffer(call_method<jhobject>(m_object,
     "put","([B)Ljava/nio/ByteBuffer;",

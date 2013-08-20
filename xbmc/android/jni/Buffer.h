@@ -27,6 +27,7 @@ protected:
   CJNIBuffer(const jni::jhobject &object) : CJNIBase(object) {};
   ~CJNIBuffer() {};
 
+public:
   int           capacity();
   int           position();
   CJNIBuffer    position(int newPosition);
