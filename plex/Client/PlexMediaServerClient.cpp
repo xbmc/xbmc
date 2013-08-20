@@ -254,12 +254,16 @@ CURL CPlexMediaServerClient::constructTimelineRequest(CFileItemPtr item, CPlexMe
     if (g_application.IsPlayingAudio())
     {
       if (g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC))
-        u.SetOption("shuffled", "1");
+        u.SetOption("shuffle", "1");
+      else
+        u.SetOption("shuffle", "0");
       
       if (g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ONE)
         u.SetOption("repeat", "1");
       else if (g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ALL)
         u.SetOption("repeat", "2");
+      else
+        u.SetOption("repeat", "0");
     }
     else if (g_application.IsPlayingVideo())
     {

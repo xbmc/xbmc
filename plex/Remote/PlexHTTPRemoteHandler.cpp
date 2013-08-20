@@ -193,12 +193,12 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     if (g_application.IsPlaying())
       CApplicationMessenger::Get().MediaStop();
     
-    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.Add(PLAYLIST_MUSIC, list);
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    g_playlistPlayer.Play(idx);
+    if (g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC))
+      CApplicationMessenger::Get().PlayListPlayerShuffle(PLAYLIST_MUSIC, false);
     
+    CApplicationMessenger::Get().PlayListPlayerClear(PLAYLIST_MUSIC);
+    CApplicationMessenger::Get().PlayListPlayerAdd(PLAYLIST_MUSIC, list);
+    CApplicationMessenger::Get().MediaPlay(PLAYLIST_MUSIC, idx);
   }
   else if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO)
   {
@@ -333,6 +333,28 @@ void CPlexHTTPRemoteHandler::set(const ArgMap &arguments)
     ArgMap vmap;
     vmap["level"] = arguments.find("volume")->second;
     setVolume(vmap);
+  }
+  
+  if (arguments.find("shuffle") != arguments.end())
+  {
+    int shuffle = boost::lexical_cast<int>(arguments.find("shuffle")->second);
+    int playlistType = g_playlistPlayer.GetCurrentPlaylist();
+    CApplicationMessenger::Get().PlayListPlayerShuffle(playlistType, shuffle == 1);
+  }
+  
+  if (arguments.find("repeat") != arguments.end())
+  {
+    int repeat = boost::lexical_cast<int>(arguments.find("repeat")->second);
+    int playlistType = g_playlistPlayer.GetCurrentPlaylist();
+    
+    int xbmcRepeat = PLAYLIST::REPEAT_NONE;
+    
+    if (repeat==1)
+      xbmcRepeat = PLAYLIST::REPEAT_ONE;
+    else if (repeat==2)
+      xbmcRepeat = PLAYLIST::REPEAT_ALL;
+    
+    CApplicationMessenger::Get().PlayListPlayerRepeat(playlistType, xbmcRepeat);
   }
 }
 
