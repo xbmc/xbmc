@@ -97,7 +97,7 @@ typedef std::pair<CStdString, CPlexSectionFanout*> nameSectionPair;
 
 //////////////////////////////////////////////////////////////////////////////
 CPlexSectionFanout::CPlexSectionFanout(const CStdString &url, SectionTypes sectionType)
-  : m_url(url), m_sectionType(sectionType), m_needsRefresh(false)
+  : m_sectionType(sectionType), m_needsRefresh(false), m_url(url)
 {
   Refresh();
 }
