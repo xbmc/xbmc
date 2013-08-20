@@ -4506,4 +4506,30 @@ int CDVDPlayer::GetSubtitlePlexID()
   return stream.plexID;
 }
 
+void CDVDPlayer::SetAudioStreamPlexID(int plexID)
+{
+  std::vector<SelectionStream> audiost = m_SelectionStreams.Get(STREAM_AUDIO);
+  for (int i = 0; i < audiost.size(); i ++)
+  {
+    if (audiost[i].plexID == plexID)
+    {
+      SetAudioStream(audiost[i].type_index);
+      break;
+    }
+  }
+}
+
+void CDVDPlayer::SetSubtitleStreamPlexID(int plexID)
+{
+  std::vector<SelectionStream> subst = m_SelectionStreams.Get(STREAM_SUBTITLE);
+  for (int i = 0; i < subst.size(); i ++)
+  {
+    if (subst[i].plexID == plexID)
+    {
+      SetSubtitle(subst[i].type_index);
+      break;
+    }
+  }
+}
+
 /* END PLEX */

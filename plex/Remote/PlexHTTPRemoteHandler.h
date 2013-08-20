@@ -42,6 +42,7 @@ class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
     void sendVKey(const ArgMap &arguments);
     void subscribe(const HTTPRequest &request, const ArgMap &arguments);
     void unsubscribe(const HTTPRequest &request, const ArgMap &arguments);
+    void setStreams(const ArgMap &arguments);
   
     CPlexRemoteSubscriberPtr getSubFromRequest(const HTTPRequest &request, const ArgMap &arguments);
     CStdString m_data;

@@ -78,6 +78,8 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     subscribe(request, argumentMap);
   else if (path.Equals("/player/unsubscribe"))
     unsubscribe(request, argumentMap);
+  else if (path.Equals("/player/setStreams"))
+    setStreams(argumentMap);
   else
   {
     m_responseCode = MHD_HTTP_NOT_IMPLEMENTED;
@@ -462,4 +464,23 @@ CPlexRemoteSubscriberPtr CPlexHTTPRemoteHandler::getSubFromRequest(const HTTPReq
   CPlexRemoteSubscriberPtr sub = CPlexRemoteSubscriber::NewSubscriber(uuid, ipstr, port);
   
   return sub;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexHTTPRemoteHandler::setStreams(const ArgMap &arguments)
+{
+  if (!g_application.IsPlayingVideo())
+    return;
+  
+  if (arguments.find("audioStreamID") != arguments.end())
+  {
+    int audioStreamID = boost::lexical_cast<int>(arguments.find("audioStreamID")->second);
+    g_application.m_pPlayer->SetAudioStreamPlexID(audioStreamID);
+  }
+  
+  if (arguments.find("subtitleStreamID") != arguments.end())
+  {
+    int subStreamID = boost::lexical_cast<int>(arguments.find("subtitleStreamID")->second);
+    g_application.m_pPlayer->SetSubtitleStreamPlexID(subStreamID);
+  }
 }

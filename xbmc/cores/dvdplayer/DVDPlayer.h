@@ -312,6 +312,8 @@ public:
   /* PLEX */
   virtual int GetSubtitlePlexID();
   virtual int GetAudioStreamPlexID();
+  virtual void SetAudioStreamPlexID(int plexID);
+  virtual void SetSubtitleStreamPlexID(int plexID);
   virtual int GetPlexMediaPartID()
   {
     CFileItemPtr part = m_item.m_selectedMediaPart;
