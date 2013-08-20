@@ -205,13 +205,8 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     /* if we are playing music, we don't need to stop */
     if (g_application.IsPlayingVideo())
       CApplicationMessenger::Get().MediaStop();
-
-    CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, false, idx);
-    msg.SetStringParam(itemURL.Get());
     
-    CGUIWindow* pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-    if (pWindow)
-      pWindow->OnMessage(msg);
+    CApplicationMessenger::Get().PictureSlideShow(itemURL.Get(), false, list.Get(idx)->GetPath());
   }
   else
   {
