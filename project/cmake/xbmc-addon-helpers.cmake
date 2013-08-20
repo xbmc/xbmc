@@ -75,5 +75,18 @@ function (xbmc_find_path var_name filename search_path strip_file)
   set (${var_name} ${PATH_TO_FILE} PARENT_SCOPE)
 endfunction()
 
+# Cmake build options
+include(AddOptions)
+include(TestCXXAcceptsFlag)
 OPTION(PACKAGE_ZIP "Package Zip file?" OFF)
 OPTION(PACKAGE_TGZ "Package TGZ file?" OFF)
+
+# LTO support?
+CHECK_CXX_ACCEPTS_FLAG("-flto" HAVE_LTO)
+IF(HAVE_LTO)
+  OPTION(USE_LTO "use link time optimization" OFF)
+  IF(USE_LTO)
+    add_options(ALL_LANGUAGES ALL_BUILDS "-flto")
+  ENDIF(USE_LTO)
+ENDIF(HAVE_LTO) 
+

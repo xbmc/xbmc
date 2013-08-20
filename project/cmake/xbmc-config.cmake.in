@@ -3,4 +3,3 @@ LIST(APPEND CMAKE_MODULE_PATH @prefix@/lib/xbmc)
 ADD_DEFINITIONS(@ARCH_DEFINES@)
 
 include(xbmc-addon-helpers)
-include(AddOptions)
