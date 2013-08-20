@@ -94,8 +94,8 @@ void PlexApplication::OnWakeUp()
 {
   /* Scan servers */
   m_serviceListener->ScanNow();
-  //MyPlexManager::Get().scanAsync();
-
+  g_myplexManager.Poke();
+  
 #ifdef TARGET_DARWIN_OSX
   CRemoteRestartThread* hack = new CRemoteRestartThread;
   hack->Create(true);
