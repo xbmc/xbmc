@@ -34,6 +34,8 @@
 #include "MusicThumbLoader.h"
 #include "PictureThumbLoader.h"
 
+#include "Utility/PlexTimer.h"
+
 
 // List IDs.
 #define CONTENT_LIST_RECENTLY_ADDED    11000
@@ -87,7 +89,7 @@ class CPlexSectionFanout : public IJobCallback
 
     std::map<int, CFileItemList*> m_fileLists;
     CURL m_url;
-    boost::timer m_age;
+    CPlexTimer m_age;
     CCriticalSection m_critical;
     std::vector<int> m_outstandingJobs;
   
