@@ -86,15 +86,19 @@
   !insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
-;Installer Sections
+;Install levels
 
-InstType "Full"
-InstType "Minimal" 
+InstType "Full"    ; 1.
+InstType "Normal"  ; 2.
+InstType "Minimal" ; 3.
+
+;--------------------------------
+;Installer Sections
 
 Section "XBMC" SecXBMC
   SetShellVarContext current
   SectionIn RO
-  SectionIn 1 2 #section is in installtype Full and Minimal
+  SectionIn 1 2 3 #section is in install type Normal/Full/Minimal
   ;ADD YOUR OWN FILES HERE...
   SetOutPath "$INSTDIR"
   File "${xbmc_root}\Xbmc\XBMC.exe"
@@ -179,7 +183,7 @@ SectionEnd
 
 SectionGroup "Language" SecLanguages
 Section "English" SecLanguageEnglish
-  SectionIn 1 2 #section is in installtype Full and Minimal
+  SectionIn 1 2 3 #section is in install type Full/Normal/Minimal
   SectionIn RO
   SetOutPath "$INSTDIR\language\English"
   File /r "${xbmc_root}\Xbmc\language\English\*.*"
@@ -190,7 +194,7 @@ SectionGroupEnd
 
 SectionGroup "Skins" SecSkins
 Section "Confluence" SecSkinConfluence
-  SectionIn 1 2 #section is in installtype Full and Minimal
+  SectionIn 1 2 3 #section is in install type Full/Normal/Minimal
   SectionIn RO
   SetOutPath "$INSTDIR\addons\skin.confluence\"
   File /r "${xbmc_root}\Xbmc\addons\skin.confluence\*.*"
@@ -327,7 +331,7 @@ SectionEnd
 
 Section "Microsoft Visual C++ 2008/2010 Redistributable Package (x86)" SEC_VCREDIST
 
-  SectionIn 1 2
+  SectionIn 1 2 #section is in install type Full/Normal and when not installed
   
   DetailPrint "Running VS Redist Setup..."
 
@@ -356,7 +360,7 @@ SectionEnd
 
 Section "DirectX Install" SEC_DIRECTX
  
-  SectionIn 1 2
+  SectionIn 1 2 #section is in install type Full/Normal and when not installed
 
   DetailPrint "Running DirectX Setup..."
 
