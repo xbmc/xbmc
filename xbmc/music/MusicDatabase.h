@@ -436,6 +436,7 @@ private:
   CArtistCredit GetAlbumArtistCreditFromDataset(const dbiplus::sql_record* const record);
   void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath);
+  void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath, CMusicDbUrl *itemUrl);
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);
   bool CleanupPaths();

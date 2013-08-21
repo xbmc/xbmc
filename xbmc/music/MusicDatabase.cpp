@@ -1012,6 +1012,20 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
 
 void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath)
 {
+  if (strMusicDBbasePath.IsEmpty())
+    return GetFileItemFromDataset(record, item, strMusicDBbasePath, NULL);
+  else
+  {
+    CMusicDbUrl itemUrl;
+    if (!itemUrl.FromString(strMusicDBbasePath))
+      return GetFileItemFromDataset(record, item, strMusicDBbasePath, NULL);
+    else
+      return GetFileItemFromDataset(record, item, strMusicDBbasePath, &itemUrl);
+  }
+}
+
+void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath, CMusicDbUrl *itemUrl)
+{
   // get the full artist string
   item->GetMusicInfoTag()->SetArtist(StringUtils::Split(record->at(song_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator));
   // and the full genre string
@@ -1043,17 +1057,13 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   // Get filename with full path
   if (strMusicDBbasePath.IsEmpty())
     item->SetPath(strRealPath);
-  else
+  else if (itemUrl)
   {
-    CMusicDbUrl itemUrl;
-    if (!itemUrl.FromString(strMusicDBbasePath))
-      return;
-    
     CStdString strFileName = record->at(song_strFileName).get_asString();
     CStdString strExt = URIUtils::GetExtension(strFileName);
     CStdString path; path.Format("%ld%s", record->at(song_idSong).get_asInt(), strExt.c_str());
-    itemUrl.AppendPath(path);
-    item->SetPath(itemUrl.ToString());
+    itemUrl->AppendPath(path);
+    item->SetPath(itemUrl->ToString());
   }
 }
 
@@ -3342,8 +3352,9 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &fi
       
       try
       {
+        CMusicDbUrl itemUrl = musicUrl;
         CFileItemPtr item(new CFileItem);
-        GetFileItemFromDataset(record, item.get(), musicUrl.ToString());
+        GetFileItemFromDataset(record, item.get(), baseDir, &itemUrl);
         // HACK for sorting by database returned order
         item->m_iprogramCount = ++count;
         items.Add(item);
