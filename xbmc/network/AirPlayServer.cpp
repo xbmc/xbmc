@@ -865,6 +865,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       CFileItem fileToPlay(location, false);
       fileToPlay.SetProperty("StartPercent", position*100.0f);
       ServerInstance->AnnounceToClients(EVENT_LOADING);
+      // froce to internal dvdplayer cause it is the only
+      // one who will work well with airplay
+      g_application.m_eForcedNextPlayer = EPC_DVDPLAYER;
       CApplicationMessenger::Get().MediaPlay(fileToPlay);
     }
   }
