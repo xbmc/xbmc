@@ -178,25 +178,39 @@ class PlexContentPlayerMixin
     // If there is more than one media item, allow picking which one.
      if (file->m_mediaItems.size() > 1)
      {
-       bool pickLibraryItem = g_guiSettings.GetBool("videogeneral.alternatemedia");
        int  onlineQuality   = g_guiSettings.GetInt("videogeneral.onlinemediaquality");
        bool isLibraryItem   = file->IsPlexMediaServerLibrary();
        
        // See if we're offering a choice.
-       if ((isLibraryItem  && pickLibraryItem) ||
-           (!isLibraryItem && onlineQuality == MEDIA_QUALITY_ALWAYS_ASK))
+       if (isLibraryItem || (!isLibraryItem && onlineQuality == MEDIA_QUALITY_ALWAYS_ASK))
        {
          CFileItemList   fileItems;
          CContextButtons choices;
-         XFILE::CPlexDirectory  mediaChoices;
          
          for (size_t i=0; i < file->m_mediaItems.size(); i++)
          {
            CFileItemPtr item = file->m_mediaItems[i];
+           int mpartID = item->GetProperty("id").asInteger();
+           if (mpartID == 0)
+             mpartID = i;
            
            CStdString label;
            CStdString videoCodec = CStdString(item->GetProperty("mediaTag-videoCodec").asString()).ToUpper();
            CStdString videoRes = CStdString(item->GetProperty("mediaTag-videoResolution").asString()).ToUpper();
+           
+           CStdString audioCodec = CStdString(item->GetProperty("mediaTag-audioCodec").asString()).ToUpper();
+           if (audioCodec.Equals("DCA"))
+             audioCodec = "DTS";
+           
+           CStdString channelStr;
+           int audioChannels = item->GetProperty("mediaTag-audioChannels").asInteger();
+           
+           if (audioChannels == 1)
+             channelStr = "Mono";
+           else if (audioChannels == 2)
+             channelStr = "Stereo";
+           else
+             channelStr = boost::lexical_cast<std::string>(audioChannels - 1) + ".1";
            
            if (videoCodec.size() == 0 && videoRes.size() == 0)
            {
@@ -211,7 +225,14 @@ class PlexContentPlayerMixin
              label += " " + videoCodec;
            }
            
-           choices.Add(i, label);
+           label += " - ";
+           
+           if (audioCodec.empty())
+             label += "Unknown";
+           else
+             label += channelStr + " " + audioCodec;
+           
+           choices.Add(mpartID, label);
          }
          
          int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
@@ -255,7 +276,7 @@ class PlexContentPlayerMixin
              if (q <= onlineQuality)
              {
                pickedIndex = qualityMap[q];
-               file->SetProperty("selectedMediaItem", pickedIndex);
+               file->SetProperty("selectedMediaItem", file->m_mediaItems[pickedIndex]->GetProperty("id").asInteger());
                break;
              }
            }

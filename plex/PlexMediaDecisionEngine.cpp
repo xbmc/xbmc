@@ -210,6 +210,9 @@ void CPlexMediaDecisionEngine::ChooseMedia()
       return;
     }
   }
+  
+  if (m_item.HasProperty("selectedMediaItem"))
+    m_choosenMedia.SetProperty("selectedMediaItem", m_item.GetProperty("selectedMediaItem"));
 
   CFileItemPtr mediaItem = getSelecteMediaItem(m_choosenMedia);
   if (!mediaItem)
@@ -270,6 +273,11 @@ void CPlexMediaDecisionEngine::ChooseMedia()
   m_success = true;
 }
 
+/* Items from the library can be ordered in different ways, so they store
+ * the id property in selectedMediaItem, but channels don't have id
+ * properties, so we need to rely on the correct indexing. Let's trust that
+ * shall we
+ */
 CFileItemPtr CPlexMediaDecisionEngine::getSelecteMediaItem(const CFileItem &item)
 {
   int mediaItemIdx = 0;
@@ -278,8 +286,20 @@ CFileItemPtr CPlexMediaDecisionEngine::getSelecteMediaItem(const CFileItem &item
   if (item.HasProperty("selectedMediaItem"))
     mediaItemIdx = item.GetProperty("selectedMediaItem").asInteger();
   
-  if (item.m_mediaItems.size() > 0 && item.m_mediaItems.size() > mediaItemIdx)
-    mediaItem = item.m_mediaItems[mediaItemIdx];
+  for (int i = 0; i < item.m_mediaItems.size(); i ++)
+  {
+    if (item.m_mediaItems[i]->HasProperty("id") &&
+        item.m_mediaItems[i]->GetProperty("id").asInteger() == mediaItemIdx)
+      mediaItem = item.m_mediaItems[i];
+  }
+  
+  if (!mediaItem && item.m_mediaItems.size() > 0)
+  {
+    if (mediaItemIdx > 0 && item.m_mediaItems.size() > mediaItemIdx)
+      mediaItem = item.m_mediaItems[mediaItemIdx];
+    else
+      mediaItem = item.m_mediaItems[0];
+  }
   
   return mediaItem;
 }
