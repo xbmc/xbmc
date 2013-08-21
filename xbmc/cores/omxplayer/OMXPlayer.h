@@ -378,6 +378,8 @@ protected:
   bool m_stepped;
   int m_video_fifo;
   int m_audio_fifo;
+  double m_last_check_time;         // we periodically check for gpu underrun
+  double m_stamp;                   // last media stamp
 
   CDVDOverlayContainer m_overlayContainer;
 
