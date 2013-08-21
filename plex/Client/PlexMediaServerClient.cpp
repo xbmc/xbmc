@@ -267,11 +267,12 @@ CURL CPlexMediaServerClient::constructTimelineRequest(CFileItemPtr item, CPlexMe
     }
     else if (g_application.IsPlayingVideo())
     {
-      u.SetOption("subtitleStreamID", boost::lexical_cast<std::string>(g_application.m_pPlayer->GetSubtitlePlexID()));
-      u.SetOption("audioStreamID", boost::lexical_cast<std::string>(g_application.m_pPlayer->GetAudioStreamPlexID()));
+      std::string subid = boost::lexical_cast<std::string>(g_application.m_pPlayer->GetSubtitlePlexID());
+      if (!g_application.m_pPlayer->GetSubtitleVisible())
+        subid = "-1";
+      u.SetOption("subtitleStreamID", subid);
       
-      /* TODO */
-      u.SetOption("videoStreamID", "0");
+      u.SetOption("audioStreamID", boost::lexical_cast<std::string>(g_application.m_pPlayer->GetAudioStreamPlexID()));
     }
   }
   

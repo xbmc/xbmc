@@ -481,6 +481,12 @@ void CPlexHTTPRemoteHandler::setStreams(const ArgMap &arguments)
   if (arguments.find("subtitleStreamID") != arguments.end())
   {
     int subStreamID = boost::lexical_cast<int>(arguments.find("subtitleStreamID")->second);
-    g_application.m_pPlayer->SetSubtitleStreamPlexID(subStreamID);
+    if (subStreamID == -1 && g_application.m_pPlayer->GetSubtitleVisible())
+      g_application.m_pPlayer->SetSubtitleVisible(false);
+    else
+    {
+      g_application.m_pPlayer->SetSubtitleStreamPlexID(subStreamID);
+      g_application.m_pPlayer->SetSubtitleVisible(true);
+    }
   }
 }
