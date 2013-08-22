@@ -36,8 +36,8 @@ extern "C"
   #define HAS_AMLPLAYER_VIDEO_STREAMS10
 #endif
 
-#include <player_type.h>
-#include <player_error.h>
+#include <amplayer/player_type.h>
+#include <amplayer/player_error.h>
 }
 
 struct AML_URLProtocol;

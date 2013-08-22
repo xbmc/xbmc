@@ -1,6 +1,7 @@
 .PHONY: compile
 
-INCLUDES += -I$(prefix)/include/amlplayer
+INCLUDES += -I$(prefix)/include/amcodec
+INCLUDES += -I$(prefix)/include/amplayer
 
 SRCS = AMLPlayer.cpp
 SRCS+= FileURLProtocol.cpp

@@ -37,7 +37,8 @@ endif
 ifeq (@USE_LIBAMCODEC@,1)
 SRCS += AMLCodec.cpp
 SRCS += DVDVideoCodecAmlogic.cpp
-INCLUDES += -I$(prefix)/include/amlplayer
+INCLUDES += -I$(prefix)/include/amcodec
+INCLUDES += -I$(prefix)/include/amplayer
 endif
 
 LIB=Video.a

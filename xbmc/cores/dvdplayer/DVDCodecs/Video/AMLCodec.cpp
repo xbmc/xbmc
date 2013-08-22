@@ -44,7 +44,7 @@
 
 // amcodec include
 extern "C" {
-#include <codec.h>
+#include <amcodec/codec.h>
 }  // extern "C"
 
 class DllLibamCodecInterface
