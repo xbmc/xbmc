@@ -1595,7 +1595,16 @@ void CApplication::OnSettingChanged(const CSetting *setting)
   else if (StringUtils::StartsWith(settingId, "audiooutput."))
   {
     if (settingId == "audiooutput.guisoundmode")
+    {
       CAEFactory::SetSoundMode(((CSettingInt*)setting)->GetValue());
+    }
+    // this tells player whether to open an audio stream passthrough or PCM
+    // if this is changed, audio stream has to be reopened
+    else if (settingId == "audiooutput.mode")
+    {
+      CApplicationMessenger::Get().MediaRestart(false);
+      return;
+    }
 
     CAEFactory::OnSettingsChange(settingId);
   }
@@ -2722,18 +2731,14 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_DIGITAL_ANALOG)
   {
-    // we are only allowed to SetInt to a value supported in GUISettings, so we keep trying until it sticks
+    // TODO
+    // revisit after new audio settings page have been implemented
+    // makes no sense toggling a mode when you have three different settings
     int mode = CSettings::Get().GetInt("audiooutput.mode");
-    for (int i = 0; i < 3; i++)
-    {
-      if (++mode == 3)
-        mode = 0;
-      CSettings::Get().SetInt("audiooutput.mode", mode);
-      if (CSettings::Get().GetInt("audiooutput.mode") == mode)
-         break;
-    }
+    if (++mode == 3)
+      mode = 0;
+    CSettings::Get().SetInt("audiooutput.mode", mode);
 
-    g_application.Restart();
     if (g_windowManager.GetActiveWindow() == WINDOW_SETTINGS_SYSTEM)
     {
       CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0,0,WINDOW_INVALID,g_windowManager.GetActiveWindow());

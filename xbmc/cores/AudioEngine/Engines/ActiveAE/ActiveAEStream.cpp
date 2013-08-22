@@ -44,6 +44,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_paused = false;
   m_rgain = 1.0;
   m_volume = 1.0;
+  m_amplify = 1.0;
   m_streamSpace = m_format.m_frameSize * m_format.m_frames;
   m_streamDraining = false;
   m_streamDrained = false;
@@ -247,15 +248,7 @@ bool CActiveAEStream::IsDrained()
 
 void CActiveAEStream::Flush()
 {
-  if (m_currentBuffer)
-  {
-    MsgStreamSample msgData;
-    m_currentBuffer->pkt->nb_samples = 0;
-    msgData.buffer = m_currentBuffer;
-    msgData.stream = this;
-    m_streamPort->SendOutMessage(CActiveAEDataProtocol::STREAMSAMPLE, &msgData, sizeof(MsgStreamSample));
-    m_currentBuffer = NULL;
-  }
+  m_currentBuffer = NULL;
   AE.FlushStream(this);
   ResetFreeBuffers();
 }
@@ -307,7 +300,7 @@ bool CActiveAEStream::SetResampleRatio(double ratio)
 
 void CActiveAEStream::FadeVolume(float from, float target, unsigned int time)
 {
-  if (time == 0)
+  if (time == 0 || AE_IS_RAW(m_format.m_dataFormat))
     return;
 
   m_streamFading = true;

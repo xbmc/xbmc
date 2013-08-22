@@ -34,12 +34,23 @@ CAELimiter::CAELimiter()
   m_increase = 0.0f;
 }
 
-float CAELimiter::Run(float* frame, int channels)
+float CAELimiter::Run(float* frame[AE_CH_MAX], int channels, int offset /*= 0*/, bool planar /*= false*/)
 {
-  float* end = frame + channels;
   float highest = 0.0f;
-  while (frame != end)
-    highest = std::max(highest, fabsf(*(frame++)));
+  if (!planar)
+  {
+    for(int i=0; i<channels; i++)
+    {
+      highest = std::max(highest, fabsf(*(frame[0]+offset+i)));
+    }
+  }
+  else
+  {
+    for(int i=0; i<channels; i++)
+    {
+      highest = std::max(highest, fabsf(*(frame[i]+offset)));
+    }
+  }
 
   float sample = highest * m_amplify;
   if (sample * m_attenuation > 1.0f)

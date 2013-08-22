@@ -346,6 +346,14 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   snd_pcm_hw_params_t *hw_params_copy;
   snd_pcm_hw_params_alloca(&hw_params_copy);
   snd_pcm_hw_params_copy(hw_params_copy, hw_params); // copy what we have and is already working
+
+  // Make sure to not initialize too large to not cause underruns
+  snd_pcm_uframes_t periodSizeMax = bufferSize / 3;
+  if(snd_pcm_hw_params_set_period_size_max(m_pcm, hw_params_copy, &periodSizeMax, NULL) != 0)
+  {
+    snd_pcm_hw_params_copy(hw_params_copy, hw_params); // restore working copy
+    CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Request: Failed to limit periodSize to %lu", periodSizeMax);
+  }
   
   // first trying bufferSize, PeriodSize
   // for more info see here:

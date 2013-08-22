@@ -73,6 +73,7 @@ public:
     VOLUME,
     PAUSESTREAM,
     RESUMESTREAM,
+    FLUSHSTREAM,
     STREAMRGAIN,
     STREAMVOLUME,
     STREAMAMP,
@@ -106,7 +107,6 @@ public:
     FREESTREAM,
     STREAMSAMPLE,
     DRAINSTREAM,
-    FLUSHSTREAM,
   };
   enum InSignal
   {
@@ -258,7 +258,6 @@ protected:
   void ClearDiscardedBuffers();
   void SStopSound(CActiveAESound *sound);
   void DiscardSound(CActiveAESound *sound);
-  float CalcStreamAmplification(CActiveAEStream *stream, CSampleBuffer *buf);
   void ChangeResampleQuality();
 
   bool RunStages();

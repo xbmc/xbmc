@@ -83,6 +83,9 @@ float CEngineStats::GetDelay()
   float delay = m_sinkDelay - (double)(now-m_sinkUpdate) / 1000;
   delay += (float)m_bufferedSamples / m_sinkSampleRate;
 
+  if (delay < 0)
+    delay = 0.0;
+
   return delay;
 }
 
@@ -424,10 +427,18 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_state = AE_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           return;
+        case CActiveAEControlProtocol::FLUSHSTREAM:
+          stream = *(CActiveAEStream**)msg->data;
+          SFlushStream(stream);
+          msg->Reply(CActiveAEControlProtocol::ACC);
+          m_state = AE_TOP_CONFIGURED_PLAY;
+          m_extTimeout = 0;
+          return;
         case CActiveAEControlProtocol::STREAMAMP:
           MsgStreamParameter *par;
           par = (MsgStreamParameter*)msg->data;
           par->stream->m_limiter.SetAmplification(par->parameter.float_par);
+          par->stream->m_amplify = par->parameter.float_par;
           return;
         case CActiveAEControlProtocol::STREAMVOLUME:
           par = (MsgStreamParameter*)msg->data;
@@ -492,6 +503,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           if(stream)
           {
             msg->Reply(CActiveAEDataProtocol::ACC, &stream, sizeof(CActiveAEStream*));
+            LoadSettings();
             Configure();
             if (!m_extError)
             {
@@ -539,11 +551,6 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           stream->m_resampleBuffers->m_drain = true;
           m_extTimeout = 0;
           m_state = AE_TOP_CONFIGURED_PLAY;
-          msg->Reply(CActiveAEDataProtocol::ACC);
-          return;
-        case CActiveAEDataProtocol::FLUSHSTREAM:
-          stream = *(CActiveAEStream**)msg->data;
-          SFlushStream(stream);
           msg->Reply(CActiveAEDataProtocol::ACC);
           return;
         default:
@@ -649,6 +656,12 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CActiveAEControlProtocol::TIMEOUT:
+          if (m_extError)
+          {
+            m_state = AE_TOP_ERROR;
+            m_extTimeout = 100;
+            return;
+          }
           if (RunStages())
           {
             m_extTimeout = 0;
@@ -882,6 +895,14 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         CLog::Log(LOGINFO, "CActiveAE::Configure - Forcing samplerate to %d", inputFormat.m_sampleRate);
       }
 
+      // check for valid sampling rates
+      if (inputFormat.m_sampleRate != 48000 &&
+          inputFormat.m_sampleRate != 44100 &&
+          inputFormat.m_sampleRate != 32000)
+      {
+        outputFormat.m_sampleRate = 48000;
+      }
+
       // setup encoder
       if (!m_encoder)
       {
@@ -964,6 +985,9 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       }
       if (m_mode == MODE_TRANSCODE || m_streams.size() > 1)
         (*it)->m_resampleBuffers->m_fillPackets = true;
+
+      // amplification
+      (*it)->m_limiter.SetSamplerate(outputFormat.m_sampleRate);
     }
 
     // buffers for viz
@@ -1076,7 +1100,36 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   stream->m_resampleBuffers->Flush();
   stream->m_streamPort->Purge();
   stream->m_bufferedTime = 0.0;
-  stream->m_paused = true;
+  stream->m_paused = false;
+
+  // flush the engine if we only have a single stream
+  if (m_streams.size() == 1)
+  {
+    if (m_sinkBuffers)
+      m_sinkBuffers->Flush();
+    if (m_vizBuffers)
+      m_vizBuffers->Flush();
+
+    // send message to sink
+    Message *reply;
+    if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, 
+                                             &reply, 2000))
+    {
+      bool success = reply->signal == CSinkControlProtocol::ACC ? true : false;
+      if (!success)
+      {
+        CLog::Log(LOGERROR, "ActiveAE::%s - returned error on flush", __FUNCTION__);
+        m_extError = true;
+      }
+      reply->Release();
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "ActiveAE::%s - failed to flush", __FUNCTION__);
+      m_extError = true;
+    }
+    m_stats.Reset(m_sinkFormat.m_sampleRate);
+  }
 }
 
 void CActiveAE::ClearDiscardedBuffers()
@@ -1128,19 +1181,6 @@ void CActiveAE::DiscardSound(CActiveAESound *sound)
   }
 }
 
-float CActiveAE::CalcStreamAmplification(CActiveAEStream *stream, CSampleBuffer *buf)
-{
-  float amp = 1.0f;
-  int nb_floats = buf->pkt->nb_samples * buf->pkt->config.channels / buf->pkt->planes;
-  float tamp;
-  for(int i=0; i<buf->pkt->planes; i++)
-  {
-    tamp = stream->m_limiter.Run((float*)buf->pkt->data[i], nb_floats);
-    amp = std::min(amp, tamp);
-  }
-  return amp;
-}
-
 void CActiveAE::ChangeResampleQuality()
 {
   std::list<CActiveAEStream*>::iterator it;
@@ -1172,10 +1212,11 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
            settings.ac3passthrough &&
            (!settings.multichannellpcm || (m_settings.mode != AUDIO_HDMI)) && 
            !m_streams.empty() &&
-           format.m_channelLayout.Count() > 2)
+           (format.m_channelLayout.Count() > 2 || settings.stereoupmix))
   {
     format.m_dataFormat = AE_FMT_AC3;
     format.m_sampleRate = 48000;
+    format.m_channelLayout = AE_CH_LAYOUT_2_0;
     if (setmode)
       m_mode = MODE_TRANSCODE;
   }
@@ -1451,9 +1492,6 @@ bool CActiveAE::RunStages()
             out = (*it)->m_resampleBuffers->m_outputSamples.front();
             (*it)->m_resampleBuffers->m_outputSamples.pop_front();
 
-            // volume for stream
-            float amp = (*it)->m_rgain * CalcStreamAmplification((*it), out);
-
             int nb_floats = out->pkt->nb_samples * out->pkt->config.channels / out->pkt->planes;
             int nb_loops = 1;
             float fadingStep = 0.0f;
@@ -1472,6 +1510,14 @@ bool CActiveAE::RunStages()
               int samples = m_internalFormat.m_sampleRate * (float)(*it)->m_fadingTime / 1000.0f;
               fadingStep = delta / samples;
             }
+
+            // for stream amplification we need to run on a per sample basis
+            if ((*it)->m_amplify != 1.0)
+            {
+              nb_floats = out->pkt->config.channels / out->pkt->planes;
+              nb_loops = out->pkt->nb_samples;
+            }
+
             for(int i=0; i<nb_loops; i++)
             {
               if ((*it)->m_fadingSamples > 0)
@@ -1486,7 +1532,11 @@ bool CActiveAE::RunStages()
                   (*it)->m_streamFading = false;
                 }
               }
-              float volume = (*it)->m_volume * amp;
+
+              // volume for stream
+              float volume = (*it)->m_volume * (*it)->m_rgain;
+              if(nb_loops > 1)
+                volume *= (*it)->m_limiter.Run((float**)out->pkt->data, out->pkt->config.channels, i*nb_floats, out->pkt->planes > 1);
 
               for(int j=0; j<out->pkt->planes; j++)
               {
@@ -1506,9 +1556,6 @@ bool CActiveAE::RunStages()
             mix = (*it)->m_resampleBuffers->m_outputSamples.front();
             (*it)->m_resampleBuffers->m_outputSamples.pop_front();
 
-            // volume for stream
-            float amp = (*it)->m_volume * (*it)->m_rgain * CalcStreamAmplification((*it), mix);
-
             int nb_floats = mix->pkt->nb_samples * mix->pkt->config.channels / mix->pkt->planes;
             int nb_loops = 1;
             float fadingStep = 0.0f;
@@ -1527,6 +1574,14 @@ bool CActiveAE::RunStages()
               int samples = m_internalFormat.m_sampleRate * (float)(*it)->m_fadingTime / 1000.0f;
               fadingStep = delta / samples;
             }
+
+            // for stream amplification we need to run on a per sample basis
+            if ((*it)->m_amplify != 1.0)
+            {
+              nb_floats = out->pkt->config.channels / out->pkt->planes;
+              nb_loops = out->pkt->nb_samples;
+            }
+
             for(int i=0; i<nb_loops; i++)
             {
               if ((*it)->m_fadingSamples > 0)
@@ -1541,7 +1596,11 @@ bool CActiveAE::RunStages()
                   (*it)->m_streamFading = false;
                 }
               }
-              float volume = (*it)->m_volume * amp;
+
+              // volume for stream
+              float volume = (*it)->m_volume * (*it)->m_rgain;
+              if(nb_loops > 1)
+                volume *= (*it)->m_limiter.Run((float**)mix->pkt->data, mix->pkt->config.channels, i*nb_floats, mix->pkt->planes > 1);
 
               for(int j=0; j<out->pkt->planes && j<mix->pkt->planes; j++)
               {
@@ -1562,6 +1621,7 @@ bool CActiveAE::RunStages()
       }
 
       // process output buffer, gui sounds, encode, viz
+      CSampleBuffer *viz = NULL;
       if (out)
       {
         // mix gui sounds
@@ -1569,20 +1629,16 @@ bool CActiveAE::RunStages()
         if (!m_sinkHasVolume)
           Deamplify(*(out->pkt));
 
-        // encode
+        // encode and backup out buffer for viz
+        viz = out;
         if (m_mode == MODE_TRANSCODE && m_encoder)
         {
           CSampleBuffer *buf = m_encoderBuffers->GetFreeBuffer();
           m_encoder->Encode(out->pkt->data[0], out->pkt->planes*out->pkt->linesize,
                             buf->pkt->data[0], buf->pkt->planes*buf->pkt->linesize);
           buf->pkt->nb_samples = buf->pkt->max_nb_samples;
-          out->Return();
           out = buf;
         }
-
-        // update stats
-        m_stats.AddSamples(out->pkt->nb_samples, m_streams);
-        m_sinkBuffers->m_inputSamples.push_back(out);
 
         busy = true;
       }
@@ -1598,13 +1654,13 @@ bool CActiveAE::RunStages()
             m_vizInitialized = true;
           }
 
-          // if viz has no free buffer, it won't return current buffer "out"
+          // if viz has no free buffer, it won't return current buffer "viz"
           if (!m_vizBuffers->m_freeSamples.empty())
           {
-            if (out)
+            if (viz)
             {
-              out->Acquire();
-              m_vizBuffers->m_inputSamples.push_back(out);
+              viz->Acquire();
+              m_vizBuffers->m_inputSamples.push_back(viz);
             }
           }
           else
@@ -1634,6 +1690,14 @@ bool CActiveAE::RunStages()
         }
         else if (m_vizBuffers)
           m_vizBuffers->Flush();
+      }
+      // update stats
+      if(out)
+      {
+        m_stats.AddSamples(out->pkt->nb_samples, m_streams);
+        m_sinkBuffers->m_inputSamples.push_back(out);
+        if(viz && (viz != out))
+          viz->Return();
       }
     }
     // pass through
@@ -2230,11 +2294,11 @@ IAEStream *CActiveAE::FreeStream(IAEStream *stream)
 void CActiveAE::FlushStream(CActiveAEStream *stream)
 {
   Message *reply;
-  if (m_dataPort.SendOutMessageSync(CActiveAEDataProtocol::FLUSHSTREAM,
+  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::FLUSHSTREAM,
                                        &reply,1000,
                                        &stream, sizeof(CActiveAEStream*)))
   {
-    bool success = reply->signal == CActiveAEDataProtocol::ACC ? true : false;
+    bool success = reply->signal == CActiveAEControlProtocol::ACC ? true : false;
     reply->Release();
     if (!success)
     {

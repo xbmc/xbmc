@@ -167,6 +167,11 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           msg->Reply(CSinkControlProtocol::ACC);
           return;
 
+        case CSinkControlProtocol::FLUSH:
+          ReturnBuffers();
+          msg->Reply(CSinkControlProtocol::ACC);
+          return;
+
         default:
           break;
         }
