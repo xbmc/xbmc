@@ -17,6 +17,7 @@ include_directories(
   ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
+add_subdirectory(CrashReporter)
 add_subdirectory(Client)
 add_subdirectory(FileSystem)
 add_subdirectory(GUI)
@@ -26,6 +27,7 @@ add_subdirectory(Players)
 add_subdirectory(Utility)
 add_subdirectory(AutoUpdate)
 add_subdirectory(Remote)
+
 
 if(TARGET_WIN32)
   add_subdirectory(Resources/MCE)
@@ -70,6 +72,9 @@ set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NA
 
 add_dependencies(${PLEX_TARGET_NAME} git_revision.h)
 target_link_libraries(${PLEX_TARGET_NAME} xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
+if(HAVE_BREAKPAD)
+  target_link_libraries(${PLEX_TARGET_NAME} ${LIBBREAKPAD_CLIENT})
+endif(HAVE_BREAKPAD)
 
 if(ENABLE_PYTHON)
   target_link_libraries(${PLEX_TARGET_NAME} addons_python)

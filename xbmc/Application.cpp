@@ -358,6 +358,7 @@
 #include "plex/PlexMediaDecisionEngine.h"
 #include "plex/Remote/PlexHTTPRemoteHandler.h"
 #include "plex/Remote/PlexRemoteSubscriberManager.h"
+#include "plex/CrashReporter/Breakpad.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -806,6 +807,13 @@ bool CApplication::Create()
 
   update_emu_environ();//apply the GUI settings
 
+  /* PLEX */
+  /* now that we have our directories we can fire up our crashreporter */
+#if defined(HAVE_BREAKPAD) && !defined(DEBUG)
+  m_breakpad = new BreakpadScope("PLEX HOME THEATER");
+#endif
+  /* PLEX */
+
   // initialize our charset converter
   g_charsetConverter.reset();
 
@@ -923,16 +931,23 @@ bool CApplication::CreateGUI()
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
 
+  /* PLEX - We don't want SDL signal handler */
+  sdlFlags |= SDL_INIT_NOPARACHUTE;
+  /* END PLEX */
+
+
 #ifdef HAS_SDL
   if (SDL_Init(sdlFlags) != 0)
   {
     CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
     return false;
   }
+#ifndef __PLEX__
   #if defined(TARGET_DARWIN)
   // SDL_Init will install a handler for segfaults, restore the default handler.
   signal(SIGSEGV, SIG_DFL);
   #endif
+#endif
 #endif
 
   // Initialize core peripheral port support. Note: If these parameters

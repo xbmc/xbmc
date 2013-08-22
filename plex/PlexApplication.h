@@ -16,6 +16,7 @@
 #include "AutoUpdate/PlexAutoUpdate.h"
 #include "threads/Thread.h"
 #include "GlobalsHandling.h"
+#include "plex/CrashReporter/CrashSubmitter.h"
 
 #ifdef TARGET_DARWIN_OSX
 #include "Helper/PlexHTHelper.h"

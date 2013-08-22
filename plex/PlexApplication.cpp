@@ -15,6 +15,7 @@
 #include "plex/Helper/PlexHTHelper.h"
 #include "Client/MyPlex/MyPlexManager.h"
 #include "AdvancedSettings.h"
+#include "plex/CrashReporter/CrashSubmitter.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 void
@@ -24,6 +25,8 @@ PlexApplication::Start()
   m_autoUpdater = new CPlexAutoUpdate("http://plexapp.com/appcast/plexht/appcast.xml");
 
   g_plexServerManager.load();
+
+  new CrashSubmitter;
 
   if (g_advancedSettings.m_bEnableGDM)
     m_serviceListener = CPlexServiceListenerPtr(new CPlexServiceListener);

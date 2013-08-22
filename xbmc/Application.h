@@ -67,6 +67,7 @@ class CPlexHTTPRemoteHandler;
 class CGUIDialogCache;
 class PlexApplication;
 typedef boost::shared_ptr<PlexApplication> PlexApplicationPtr;
+#include "plex/CrashReporter/Breakpad.h"
 /* END PLEX */
 
 class CSeekHandler;
@@ -505,6 +506,10 @@ protected:
 
 
   /* PLEX */
+#ifdef HAVE_BREAKPAD
+  BreakpadScope *m_breakpad;
+#endif
+
   CPlexHTTPRemoteHandler& m_plexRemoteHandler;
   LaunchHost *m_pLaunchHost;
   /* END PLEX */
