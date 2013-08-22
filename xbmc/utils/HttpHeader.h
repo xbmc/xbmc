@@ -42,6 +42,7 @@ public:
   std::string GetHeader(void) const;
 
   std::string GetMimeType(void) const;
+  std::string GetCharset(void);
   std::string GetProtoLine() const { return m_protoLine; }
 
   bool IsHeaderDone(void) const
@@ -50,8 +51,12 @@ public:
   void Clear();
 
 protected:
+  void ClearCached(void);
+
   HeaderParams m_params;
   std::string   m_protoLine;
   bool m_headerdone;
+  std::string m_detectedCharset;
+  bool m_charsetIsCached;
 };
 
