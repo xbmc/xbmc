@@ -56,10 +56,6 @@ msgctxt "#32010"
 msgid "You can enable/disable it through addon settings."
 msgstr ""
 
-msgctxt "#32011"
-msgid "Use your package manager(apt) to upgrade."
-msgstr ""
-
 msgctxt "#32020"
 msgid "General"
 msgstr ""
