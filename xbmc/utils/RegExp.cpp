@@ -336,3 +336,30 @@ bool CRegExp::AreUnicodePropertiesSupported(void)
 
   return m_UcpSupported == 1;
 }
+
+bool CRegExp::LogCheckUtf8Support(void)
+{
+  bool utf8FullSupport = true;
+
+  if (!CRegExp::IsUtf8Supported())
+  {
+    utf8FullSupport = false;
+    CLog::Log(LOGWARNING, "UTF-8 is not supported in PCRE lib, support for national symbols is limited!");
+  }
+
+  if (!CRegExp::AreUnicodePropertiesSupported())
+  {
+    utf8FullSupport = false;
+    CLog::Log(LOGWARNING, "Unicode properties are not enabled in PCRE lib, support for national symbols may be limited!");
+  }
+
+  if (!utf8FullSupport)
+  {
+    CLog::Log(LOGNOTICE, "Consider installing PCRE lib version 8.10 or later with enabled Unicode properties and UTF-8 support. Your PCRE lib version: %s", PCRE::pcre_version());
+#if PCRE_UCP == 0
+    CLog::Log(LOGNOTICE, "You will need to rebuild XBMC after PCRE lib update.", PCRE::pcre_version());
+#endif
+  }
+
+  return utf8FullSupport;
+}

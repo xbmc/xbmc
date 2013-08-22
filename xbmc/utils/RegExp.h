@@ -73,6 +73,7 @@ public:
   const CRegExp& operator= (const CRegExp& re);
   static bool IsUtf8Supported(void);
   static bool AreUnicodePropertiesSupported(void);
+  static bool LogCheckUtf8Support(void);
 
 private:
   int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
