@@ -40,6 +40,7 @@
 #include "Video/DVDVideoCodecCrystalHD.h"
 #endif
 #if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
 #include "Video/DVDVideoCodecAmlogic.h"
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
@@ -247,7 +248,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #endif
 
 #if defined(HAS_LIBAMCODEC)
-  if (!hint.software)
+  if (!hint.software && aml_present())
   {
     CLog::Log(LOGINFO, "Amlogic Video Decoder...");
     if ( (pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options)) ) return pCodec;

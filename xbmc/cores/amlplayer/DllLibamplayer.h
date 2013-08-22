@@ -25,17 +25,6 @@
 
 extern "C"
 {
-// beware, these will alter the structs
-// in player_type.h.
-#if 1
-  #define HAS_AMLPLAYER_CHAPTERS
-  #define HAS_AMLPLAYER_AUDIO_LANG
-  #define HAS_AMLPLAYER_AUDIO_SETDELAY
-  #define HAS_AMLPLAYER_AUDIO_SETVOLUME
-#else
-  #define HAS_AMLPLAYER_VIDEO_STREAMS10
-#endif
-
 #include <amplayer/player_type.h>
 #include <amplayer/player_error.h>
 }
