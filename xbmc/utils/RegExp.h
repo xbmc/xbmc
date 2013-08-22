@@ -71,6 +71,7 @@ public:
   int GetNamedSubPatternNumber(const char* strName) const;
   void DumpOvector(int iLog);
   const CRegExp& operator= (const CRegExp& re);
+  static bool IsUtf8Supported(void);
 
 private:
   int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
@@ -87,6 +88,7 @@ private:
   bool        m_bMatched;
   std::string m_subject;
   std::string m_pattern;
+  static int  m_Utf8Supported;     
 };
 
 typedef std::vector<CRegExp> VECCREGEXP;

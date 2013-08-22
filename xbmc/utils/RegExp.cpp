@@ -27,6 +27,10 @@
 
 using namespace PCRE;
 
+
+int CRegExp::m_Utf8Supported = -1;
+
+
 CRegExp::CRegExp(bool caseless)
 {
   m_re          = NULL;
@@ -302,5 +306,17 @@ void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
 inline bool CRegExp::IsValidSubNumber(int iSub) const
 {
   return iSub >= 0 && iSub <= m_iMatchCount && iSub <= m_MaxNumOfBackrefrences;
+}
+
+
+bool CRegExp::IsUtf8Supported(void)
+{
+  if (m_Utf8Supported == -1)
+  {
+    if (pcre_config(PCRE_CONFIG_UTF8, &m_Utf8Supported) != 0)
+      m_Utf8Supported = 0;
+  }
+
+  return m_Utf8Supported == 1;
 }
 
