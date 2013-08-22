@@ -66,6 +66,7 @@ public:
   bool GetNamedSubPattern(const char* strName, std::string& strMatch);
   void DumpOvector(int iLog);
   const CRegExp& operator= (const CRegExp& re);
+  static bool IsUtf8Supported(void);
 
 private:
   void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
@@ -78,6 +79,7 @@ private:
   bool        m_bMatched;
   std::string m_subject;
   std::string m_pattern;
+  static int  m_Utf8Supported;     
 };
 
 typedef std::vector<CRegExp> VECCREGEXP;
