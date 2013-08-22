@@ -193,8 +193,7 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_avgTimeWaiting(50),
   m_sinkLatency(0.0),
   m_pBuffer(NULL),
-  m_bufferPtr(0),
-  m_hnsRequestedDuration(0)
+  m_bufferPtr(0)
 {
   m_channelLayout.Reset();
 }
@@ -418,7 +417,19 @@ double CAESinkWASAPI::GetDelay()
   if (!m_initialized)
     return 0.0;
 
-  return m_sinkLatency;
+  double time_played = 0.0;
+  if (m_running)
+  {
+    unsigned int now = XbmcThreads::SystemClockMillis();
+    time_played = (double)(now-m_lastWriteToBuffer) / 1000;
+  }
+
+  double delay = m_sinkLatency - time_played + (double)m_bufferPtr / (double)m_format.m_sampleRate;
+
+  if (delay < 0)
+    delay = 0.0;
+
+  return delay;
 }
 
 double CAESinkWASAPI::GetCacheTime()
@@ -466,7 +477,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
   {
     memcpy(m_pBuffer+m_bufferPtr*m_format.m_frameSize, data, FramesToCopy*m_format.m_frameSize);
     m_bufferPtr += FramesToCopy;
-    if (frames != m_format.m_frames)
+    if (m_bufferPtr != m_format.m_frames)
       return frames;
   }
 
@@ -579,6 +590,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
     #endif
     return INT_MAX;
   }
+  m_lastWriteToBuffer = XbmcThreads::SystemClockMillis();
 
   if (FramesToCopy != frames)
   {
@@ -1137,6 +1149,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 initialize:
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
+  format.m_channelLayout = m_channelLayout;
 
   /* When the stream is raw, the values in the format structure are set to the link    */
   /* parameters, so store the encoded stream values here for the IsCompatible function */
@@ -1181,8 +1194,6 @@ initialize:
 
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
                                     audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
-
-  m_hnsRequestedDuration = audioSinkBufferDurationMsec;
 
   if (hr == AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
   {
@@ -1319,7 +1330,7 @@ void CAESinkWASAPI::Drain()
   if(!m_pAudioClient)
     return;
 
-  Sleep( (DWORD)(m_hnsRequestedDuration / 10000));
+  Sleep( (DWORD)(GetDelay()*500) );
 
   if (m_running)
   {

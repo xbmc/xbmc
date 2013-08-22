@@ -20,6 +20,7 @@
  */
 
 #include <algorithm>
+#include "cores/AudioEngine/AEAudioFormat.h"
 
 class CAELimiter
 {
@@ -48,5 +49,5 @@ class CAELimiter
       m_samplerate = (float)samplerate;
     }
 
-    float Run(float* frame, int channels);
+    float Run(float* frame[AE_CH_MAX], int channels, int offset = 0, bool planar = false);
 };

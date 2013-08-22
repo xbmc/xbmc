@@ -46,6 +46,7 @@ public:
   static  void         EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 private:
   int m_fd;
+  bool m_blockingNeedsUpdate;
   std::string      m_device;
   AEAudioFormat   m_initFormat;
   AEAudioFormat   m_format;
