@@ -50,10 +50,7 @@ class Main:
                 xbmc.executebuiltin('XBMC.AlarmClock(CheckAtBoot,XBMC.RunScript(service.xbmc.versioncheck, started),00:00:30,silent)')
                 xbmc.executebuiltin('XBMC.AlarmClock(CheckWhileRunning,XBMC.RunScript(service.xbmc.versioncheck, started),24:00:00,silent,loop)')
             elif sys.argv[0] and sys.argv[1] == 'started':
-                if xbmc.getCondVisibility('System.Platform.Linux'):
-                    oldversion = _versionchecklinux('xbmc')
-                else:
-                    oldversion = _versioncheck()
+                oldversion = _versioncheck()
                 if oldversion[0]:
                     _upgrademessage(oldversion[1])
             else:
@@ -154,67 +151,6 @@ def _versioncheck():
         # Nothing to see here, move along
         pass
     return oldversion, msg
-
-
-def _versionchecklinux(package):
-    if (platform.dist()[0] == "Ubuntu" or platform.dist()[0] == "Debian"):
-        oldversion, msg = _versioncheckapt(package)
-    else:
-        log("Unsupported platform %s" %platform.dist()[0])
-        sys.exit(0)
-    return oldversion, msg
-        
-def _versioncheckapt(package):
-    #check for linux using Apt
-    # initial vars
-    oldversion = False
-    msg = ''
-    result = ''
-    
-    # try to import apt
-    try:
-        import apt
-        from aptdaemon import client
-        from aptdaemon import errors
-    except:
-        log('python apt import error')
-        sys.exit(0)
-    apt_client = client.AptClient()
-    try:
-        result = apt_client.update_cache(wait=True)
-        if (result == "exit-success"):
-            log("Finished updating the cache")
-        else:
-            log("Error updating the cache %s" %result) 
-    except errors.NotAuthorizedError:
-        log("You are not allowed to update the cache")
-        sys.exit(0)
-    
-    trans = apt_client.upgrade_packages([package])
-    trans.simulate(reply_handler=_apttransstarted, error_handler=_apterrorhandler)
-    pkg = trans.packages[4][0]
-    if (pkg == package):
-       cache=apt.Cache()
-       cache.open(None)
-       cache.upgrade()
-       if (cache[package].installed and cache[package].installed.version != cache[package].candidate.version):
-           log("Version installed  %s" %cache[package].installed.version)
-           log("Version available  %s" %cache[package].candidate.version)
-           oldversion = True
-           msg = __localize__(32011)
-       elif (cache[package].installed):
-           log("Already on newest version  %s" %cache[package].installed.version)
-       else:
-           log("No installed package found, probably manual install")
-           sys.exit(0)
-
-    return oldversion, msg
-
-def _apttransstarted():
-    pass
-
-def _apterrorhandler(error):
-    raise error
 
 def _upgrademessage(msg):
     # Don't show while watching a video

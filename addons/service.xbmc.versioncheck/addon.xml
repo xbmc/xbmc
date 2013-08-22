@@ -14,7 +14,7 @@
         <description lang="en">XBMC Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the xbmc.org website.</description>
         <disclaimer lang="en">Feel free to use this script. For information visit xbmc.org</disclaimer>
         <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
-        <platform>osx osx32 osx64 ios windx wingl linux</platform>
+        <platform>osx osx32 osx64 ios windx wingl</platform>
         <website>http://xbmc.org</website>
         <source>https://github.com/XBMC-Addons/service.xbmc.versioncheck</source>
         <forum>http://forum.xbmc.org/showthread.php?tid=160228</forum>
