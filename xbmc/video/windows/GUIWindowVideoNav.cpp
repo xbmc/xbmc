@@ -81,6 +81,17 @@ using namespace std;
 
 #define CONTROL_UPDATE_LIBRARY    20
 
+namespace {
+  /*!
+	  @return a composite string of "Path <filepath>"
+  */
+  static CStdString getFileItemPathString(const CFileItem* pItem) {
+	  CStdString str;
+	  str.Format("%s %s", g_localizeStrings.Get(15311), pItem->GetVideoInfoTag()->m_strFileNameAndPath);
+	  return str;
+  }
+}
+
 CGUIWindowVideoNav::CGUIWindowVideoNav(void)
     : CGUIWindowVideoBase(WINDOW_VIDEO_NAV, "MyVideoNav.xml")
 {
@@ -767,10 +778,12 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_artist.empty())
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
-  // dont allow update while scanning
+  // don't allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    // dont confuse the user with this message, if we came here because he wanted to play an unavailble item during scan
+    if (!bUnavailable)
+      CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
     return false;
   }
 
@@ -787,11 +800,11 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
   if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     pDialog->SetHeading(20392);
 
-  if(bUnavailable)
+  if (bUnavailable)
   {
     pDialog->SetLine(0, g_localizeStrings.Get(662));
-    pDialog->SetLine(1, g_localizeStrings.Get(663));
-    pDialog->SetLine(2, "");;
+    pDialog->SetLine(1, getFileItemPathString(pItem), true);
+    pDialog->SetLine(2, g_localizeStrings.Get(663));
     pDialog->DoModal();
   }
   else
@@ -1433,8 +1446,13 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
   if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
   {
     CLog::Log(LOGDEBUG, "%s called on '%s' but file doesn't exist", __FUNCTION__, item->GetPath().c_str());
-    if (!DeleteItem(item.get(), true))
+    // If the file is missing allow the user to retry
+    if (!RetryItem(item, iItem)) {
+      if (!DeleteItem(item.get(), true))
+        return true;
+    } else {
       return true;
+    }
 
     // update list
     Refresh(true);
@@ -1700,4 +1718,20 @@ CStdString CGUIWindowVideoNav::GetLocalizedType(const std::string &strType)
     return g_localizeStrings.Get(20391);
   else
     return "";
+}
+
+bool CGUIWindowVideoNav::RetryItem(const CFileItemPtr& item, int iItem)
+{
+	CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+	if (!pDialog)
+	  return false;
+	pDialog->SetHeading(g_localizeStrings.Get(15300));
+	pDialog->SetLine(0, g_localizeStrings.Get(662));
+	pDialog->SetLine(1, getFileItemPathString(item.get()), true);
+	pDialog->SetChoice(0, g_localizeStrings.Get(37016));
+	pDialog->DoModal();
+	if (!pDialog->IsConfirmed())
+	  return false;
+	OnClick(iItem);
+  return true;
 }

@@ -267,7 +267,12 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
     {
       SetLabel(message.GetLabel());
       return true;
-    }
+    } else if (message.GetMessage() == GUI_MSG_LABEL_SCROLL) 
+	  {
+	    if (m_label.SetScrolling(message.GetParam1() > 0)) { 
+	      MarkDirtyRegion(); 
+	    }
+	  }
   }
 
   return CGUIControl::OnMessage(message);
