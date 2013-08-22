@@ -29,7 +29,7 @@ using namespace PCRE;
 CRegExp::CRegExp(bool caseless)
 {
   m_re          = NULL;
-  m_iOptions    = PCRE_DOTALL;
+  m_iOptions    = PCRE_DOTALL | PCRE_NEWLINE_ANY;
   if(caseless)
     m_iOptions |= PCRE_CASELESS;
 
