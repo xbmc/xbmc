@@ -417,13 +417,13 @@ namespace XBMCAddon
         sscanf(_colorDiffuse, "%x", &colorDiffuse);
     }
 
-    void ControlImage::setImage(const char* imageFilename) throw (UnimplementedException)
+    void ControlImage::setImage(const char* imageFilename, const bool useCache) throw (UnimplementedException)
     {
       strFileName = imageFilename;
 
       LOCKGUI;
       if (pGUIControl)
-        ((CGUIImage*)pGUIControl)->SetFileName(strFileName);
+        ((CGUIImage*)pGUIControl)->SetFileName(strFileName, false, useCache);
     }
 
     void ControlImage::setColorDiffuse(const char* cColorDiffuse) throw (UnimplementedException)
