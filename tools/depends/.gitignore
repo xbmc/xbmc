@@ -3,6 +3,7 @@
 /autom4te.cache/
 /**/.gitignore
 /**/.installed-*
+/target/*/.patched-*
 /target/*/.installed-*
 /native/*/.installed-*
 /target/*/x86/*

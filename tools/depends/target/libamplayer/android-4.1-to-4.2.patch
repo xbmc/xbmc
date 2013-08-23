@@ -1,0 +1,38 @@
+--- a/libamplayer/include/amcodec/codec_type.h
++++ b/libamplayer/include/amcodec/codec_type.h
+@@ -56,6 +56,7 @@ typedef struct {
+     CODEC_HANDLE handle;        ///< codec device handler
+     CODEC_HANDLE cntl_handle;   ///< video control device handler
+     CODEC_HANDLE sub_handle;    ///< subtile device handler
++    CODEC_HANDLE audio_utils_handle;  ///< audio utils handler
+     stream_type_t stream_type;  ///< stream type(es, ps, rm, ts)
+ unsigned int has_video:
+     1;                          ///< stream has video(1) or not(0)
+--- a/libamplayer/include/amplayer/player_type.h
++++ b/libamplayer/include/amplayer/player_type.h
+@@ -204,7 +204,7 @@ typedef struct player_file_type
+ #define STATE_PRE(sta) (sta>>16)
+ #define PLAYER_THREAD_IS_INITING(sta)	(STATE_PRE(sta)==0x1)
+ #define PLAYER_THREAD_IS_RUNNING(sta)	(STATE_PRE(sta)==0x2)
+-#define PLAYER_THREAD_IS_STOPPED(sta)	(STATE_PRE(sta)==0x3)
++#define PLAYER_THREAD_IS_STOPPED(sta)  (sta==PLAYER_EXIT)
+ 
+ typedef int (*update_state_fun_t)(int pid,player_info_t *) ;
+ typedef int (*notify_callback)(int pid,int msg,unsigned long ext1,unsigned long ext2);
+@@ -217,6 +217,7 @@ typedef enum
+	PLAYER_EVENTS_FILE_TYPE,				///<ext1=player_file_type_t*,ext2=0
+	PLAYER_EVENTS_HTTP_WV,				        ///<(need use DRMExtractor),ext1=0, ext2=0
+	PLAYER_EVENTS_HWBUF_DATA_SIZE_CHANGED,		///<(need use DRMExtractor),ext1=0, ext2=0
++       PLAYER_EVENTS_NOT_SUPPORT_SEEKABLE,     //not support seek;
+ }player_events;
+ 
+ typedef struct
+@@ -284,6 +285,7 @@ typedef struct
+ 	int buffing_starttime_s;			//for rest buffing_middle,buffering seconds data to start.
+ 	int buffing_force_delay_s;
+ 	int lowbuffermode_flag;
++	int lowbuffermode_limited_ms;
+ 	int reserved [56];					//reserved  for furthur used,some one add more ,can del reserved num
+ 	int SessionID;
+  }play_control_t; 
+

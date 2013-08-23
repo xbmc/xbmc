@@ -1,0 +1,524 @@
+--- a/libamplayer/include/amcodec/amports/aformat.h
++++ b/libamplayer/include/amcodec/amports/aformat.h
+@@ -7,7 +7,7 @@
+ */
+ /* Copyright (C) 2007-2011, Amlogic Inc.
+ * All right reserved
+-* 
++*
+ */
+ 
+ /*
+@@ -57,14 +57,16 @@ typedef enum {
+     AFORMAT_VORBIS    = 18,
+     AFORMAT_AAC_LATM   = 19,
+     AFORMAT_APE   = 20,
++    AFORMAT_EAC3   = 21,
++    AFORMAT_PCM_WIFIDISPLAY = 22,
+     AFORMAT_UNSUPPORT ,
+-    AFORMAT_MAX    
++    AFORMAT_MAX
+ 
+ } aformat_t;
+ 
+ #define AUDIO_EXTRA_DATA_SIZE   (4096)
+ #define IS_AFMT_VALID(afmt)	((afmt > AFORMAT_UNKNOWN) && (afmt < AFORMAT_MAX))
+-    
++
+ #define IS_AUIDO_NEED_EXT_INFO(afmt) ((afmt == AFORMAT_ADPCM) \
+ 								 ||(afmt == AFORMAT_WMA) \
+ 								 ||(afmt == AFORMAT_WMAPRO) \
+@@ -75,15 +77,23 @@ typedef enum {
+ 								 ||(afmt == AFORMAT_AMR)\
+ 								 ||(afmt == AFORMAT_ALAC)\
+ 								 ||(afmt == AFORMAT_AC3) \
++								 ||(afmt == AFORMAT_EAC3) \
+ 								 ||(afmt == AFORMAT_APE) \
+-								 ||(afmt == AFORMAT_FLAC) )
++								 ||(afmt == AFORMAT_FLAC)\
++								 ||(afmt == AFORMAT_PCM_WIFIDISPLAY))
+ 
+ 
+ #define IS_AUDIO_NOT_SUPPORT_EXCEED_2CH(afmt) ((afmt == AFORMAT_RAAC) \
+ 										||(afmt == AFORMAT_COOK) \
+-										||(afmt == AFORMAT_FLAC))
++										/*||(afmt == AFORMAT_FLAC)*/)
+ 
+-#define IS_AUIDO_NEED_PREFEED_HEADER(afmt) ((afmt == AFORMAT_VORBIS) )
++#define IS_AUDIO_NOT_SUPPORT_EXCEED_6CH(afmt) ((afmt == AFORMAT_WMAPRO))
++#define IS_AUDIO_NOT_SUPPORT_EXCEED_FS48k(afmt) ((afmt == AFORMAT_WMAPRO))
+ 
++
++#define IS_AUIDO_NEED_PREFEED_HEADER(afmt) ((afmt == AFORMAT_VORBIS) )
++#define IS_AUDIO_NOT_SUPPORTED_BY_AUDIODSP(afmt,codec)  \
++							((afmt == AFORMAT_AAC_LATM || afmt == AFORMAT_AAC) \
++							 &&codec->profile == 0/* FF_PROFILE_AAC_MAIN*/)
+ #endif /* AFORMAT_H */
+ 
+--- a/libamplayer/include/amcodec/amports/amstream.h
++++ b/libamplayer/include/amcodec/amports/amstream.h
+@@ -83,6 +83,7 @@
+ #define AMSTREAM_IOC_SET_DEC_RESET _IOW(AMSTREAM_IOC_MAGIC, 0x1c, int)
+ #define AMSTREAM_IOC_TS_SKIPBYTE _IOW(AMSTREAM_IOC_MAGIC, 0x1d, int)
+ #define AMSTREAM_IOC_SUB_TYPE    _IOW(AMSTREAM_IOC_MAGIC, 0x1e, int)
++#define AMSTREAM_IOC_CLEAR_VIDEO    _IOW(AMSTREAM_IOC_MAGIC, 0x1f, int)
+ #define AMSTREAM_IOC_APTS             _IOR(AMSTREAM_IOC_MAGIC, 0x40, unsigned long)
+ #define AMSTREAM_IOC_VPTS             _IOR(AMSTREAM_IOC_MAGIC, 0x41, unsigned long)
+ #define AMSTREAM_IOC_PCRSCR           _IOR(AMSTREAM_IOC_MAGIC, 0x42, unsigned long)
+@@ -96,10 +97,35 @@
+ #define AMSTREAM_IOC_SET_PCRSCR       _IOW(AMSTREAM_IOC_MAGIC, 0x4a, unsigned long)
+ #define AMSTREAM_IOC_GET_VIDEO_AXIS   _IOR(AMSTREAM_IOC_MAGIC, 0x4b, unsigned long)
+ #define AMSTREAM_IOC_SET_VIDEO_AXIS   _IOW(AMSTREAM_IOC_MAGIC, 0x4c, unsigned long)
++#define AMSTREAM_IOC_GET_VIDEO_CROP   _IOR(AMSTREAM_IOC_MAGIC, 0x4d, unsigned long)
++#define AMSTREAM_IOC_SET_VIDEO_CROP   _IOW(AMSTREAM_IOC_MAGIC, 0x4e, unsigned long)
+ #define AMSTREAM_IOC_SUB_NUM	_IOR(AMSTREAM_IOC_MAGIC, 0x50, unsigned long)
+ #define AMSTREAM_IOC_SUB_INFO	_IOR(AMSTREAM_IOC_MAGIC, 0x51, unsigned long)
+-
++#define AMSTREAM_IOC_GET_SCREEN_MODE _IOR(AMSTREAM_IOC_MAGIC, 0x58, int)
++#define AMSTREAM_IOC_SET_SCREEN_MODE _IOW(AMSTREAM_IOC_MAGIC, 0x59, int)
+ #define AMSTREAM_IOC_SET_DEMUX  _IOW(AMSTREAM_IOC_MAGIC, 0x90, unsigned long)
++#define AMSTREAM_IOC_GET_SYNC_ADISCON_DIFF  _IOR(AMSTREAM_IOC_MAGIC, 0x83, unsigned long)
++#define AMSTREAM_IOC_GET_SYNC_VDISCON_DIFF  _IOR(AMSTREAM_IOC_MAGIC, 0x84, unsigned long)
++#define AMSTREAM_IOC_SET_SYNC_ADISCON_DIFF  _IOW(AMSTREAM_IOC_MAGIC, 0x85, unsigned long)
++#define AMSTREAM_IOC_SET_SYNC_VDISCON_DIFF  _IOW(AMSTREAM_IOC_MAGIC, 0x86, unsigned long)
++#define AMSTREAM_IOC_GET_FREERUN_MODE  _IOR(AMSTREAM_IOC_MAGIC, 0x87, unsigned long)
++#define AMSTREAM_IOC_SET_FREERUN_MODE  _IOW(AMSTREAM_IOC_MAGIC, 0x88, unsigned long)
++#define AMSTREAM_IOC_SET_VSYNC_UPINT   _IOW(AMSTREAM_IOC_MAGIC, 0x89, unsigned long)
++
++#define AMSTREAM_IOC_SET_VIDEO_DELAY_LIMIT_MS _IOW(AMSTREAM_IOC_MAGIC, 0xa0, unsigned long)
++#define AMSTREAM_IOC_GET_VIDEO_DELAY_LIMIT_MS _IOR(AMSTREAM_IOC_MAGIC, 0xa1, unsigned long)
++#define AMSTREAM_IOC_SET_AUDIO_DELAY_LIMIT_MS _IOW(AMSTREAM_IOC_MAGIC, 0xa2, unsigned long)
++#define AMSTREAM_IOC_GET_AUDIO_DELAY_LIMIT_MS _IOR(AMSTREAM_IOC_MAGIC, 0xa3, unsigned long)
++#define AMSTREAM_IOC_GET_AUDIO_CUR_DELAY_MS _IOR(AMSTREAM_IOC_MAGIC, 0xa4, unsigned long)
++#define AMSTREAM_IOC_GET_VIDEO_CUR_DELAY_MS _IOR(AMSTREAM_IOC_MAGIC, 0xa5, unsigned long)
++#define AMSTREAM_IOC_GET_AUDIO_AVG_BITRATE_BPS _IOR(AMSTREAM_IOC_MAGIC, 0xa6, unsigned long)
++#define AMSTREAM_IOC_GET_VIDEO_AVG_BITRATE_BPS _IOR(AMSTREAM_IOC_MAGIC, 0xa7, unsigned long)
++
++#define AMAUDIO_IOC_MAGIC  'A'
++#define AMAUDIO_IOC_SET_RESAMPLE_ENA        _IOW(AMAUDIO_IOC_MAGIC, 0x19, unsigned long)
++#define AMAUDIO_IOC_GET_RESAMPLE_ENA        _IOR(AMAUDIO_IOC_MAGIC, 0x1a, unsigned long)
++#define AMAUDIO_IOC_SET_RESAMPLE_TYPE       _IOW(AMAUDIO_IOC_MAGIC, 0x1b, unsigned long)
++#define AMAUDIO_IOC_GET_RESAMPLE_TYPE       _IOR(AMAUDIO_IOC_MAGIC, 0x1c, unsigned long)
+ 
+ struct buf_status {
+     int size;
+--- a/libamplayer/include/amcodec/amports/vformat.h
++++ b/libamplayer/include/amcodec/amports/vformat.h
+@@ -85,6 +85,7 @@ typedef enum {
+ #define CODEC_TAG_MP43      (0x3334504d)
+ #define CODEC_TAG_M4S2      (0x3253344d)
+ #define CODEC_TAG_DIV4      (0x34564944)
++#define CODEC_TAG_divx       (0x78766964)
+ #define CODEC_TAG_DIVX      (0x58564944)
+ #define CODEC_TAG_DIV5      (0x35564944)
+ #define CODEC_TAG_DX50      (0x30355844)
+@@ -108,5 +109,6 @@ typedef enum {
+ #define CODEC_TAG_WVC1      (0x31435657)
+ #define CODEC_TAG_WMVA      (0x41564d57)
+ #define CODEC_TAG_FMP4      (0x34504d46)
++#define CODEC_TAG_FVFW      (0x57465646)
+ 
+ #endif /* VFORMAT_H */
+--- a/libamplayer/include/amcodec/codec.h
++++ b/libamplayer/include/amcodec/codec.h
+@@ -86,8 +86,32 @@ int codec_set_sync_audio_discont(codec_para_t *pcodec, int discontinue);
+ int codec_get_sync_audio_discont(codec_para_t *pcodec);
+ int codec_set_sync_video_discont(codec_para_t *pcodec, int discontinue);
+ int codec_get_sync_video_discont(codec_para_t *pcodec);
+-
++unsigned long codec_get_sync_audio_discont_diff(codec_para_t *pcodec);
++unsigned long codec_get_sync_video_discont_diff(codec_para_t *pcodec);
++int codec_set_sync_audio_discont_diff(codec_para_t *pcodec, unsigned long discontinue_diff);
++int codec_set_sync_video_discont_diff(codec_para_t *pcodec, unsigned long discontinue_diff);
+ int codec_get_sub_num(codec_para_t *pcodec);
+ int codec_get_sub_info(codec_para_t *pcodec, subtitle_info_t *sub_info);
+ 
++int codec_set_av_threshold(codec_para_t *pcodec, int threshold);
++
++int codec_get_freerun_mode(codec_para_t *pcodec);
++int codec_set_freerun_mode(codec_para_t *pcodec, unsigned int mode);
++
++int codec_init_audio_utils(codec_para_t *pcodec);
++int codec_release_audio_utils(codec_para_t *pcodec);
++int codec_set_audio_resample_ena(codec_para_t *pcodec, unsigned long mode);
++int codec_get_audio_resample_ena(codec_para_t *pcodec);
++int codec_set_audio_resample_type(codec_para_t *pcodec, unsigned long type);
++
++int codec_set_video_delay_limited_ms(codec_para_t *pcodec,int delay_ms);
++int codec_get_video_delay_limited_ms(codec_para_t *pcodec,int *delay_ms);
++int codec_set_audio_delay_limited_ms(codec_para_t *pcodec,int delay_ms);
++int codec_get_audio_delay_limited_ms(codec_para_t *pcodec,int *delay_ms);
++int codec_get_audio_cur_delay_ms(codec_para_t *pcodec,int *delay_ms);
++int codec_get_video_cur_delay_ms(codec_para_t *pcodec,int *delay_ms);
++int codec_get_video_cur_bitrate(codec_para_t *pcodec,int *bitrate);
++int codec_get_audio_cur_bitrate(codec_para_t *pcodec,int *bitrate);
++
++int codec_set_vsync_upint(codec_para_t *pcodec, unsigned int mode);
+ #endif
+--- a/libamplayer/include/amcodec/codec_type.h
++++ b/libamplayer/include/amcodec/codec_type.h
+@@ -7,7 +7,7 @@
+ */
+ /* Copyright (C) 2007-2011, Amlogic Inc.
+ * All right reserved
+-*
++* 
+ */
+ #ifndef CODEC_TYPE_H_
+ #define CODEC_TYPE_H_
+@@ -15,6 +15,7 @@
+ #include "amports/amstream.h"
+ #include "amports/vformat.h"
+ #include "amports/aformat.h"
++#include "ppmgr/ppmgr.h"
+ 
+ typedef int CODEC_HANDLE;
+ 
+@@ -37,7 +38,7 @@ typedef struct {
+     unsigned int    status;  ///< status of video stream
+     unsigned int    ratio;   ///< aspect ratio of video source
+     void *          param;   ///< other parameters for video decoder
+-    unsigned long long ratio64; ///< aspect ratio of video source
++    unsigned long long    ratio64;   ///< aspect ratio of video source
+ } dec_sysinfo_t;
+ 
+ typedef struct {
+@@ -48,7 +49,7 @@ typedef struct {
+     int codec_id;            ///< codec format id
+     int block_align;         ///< audio block align from ffmpeg
+     int extradata_size;      ///< extra data size
+-    char extradata[AUDIO_EXTRA_DATA_SIZE];   ///< extra data information for decoder
++    char extradata[AUDIO_EXTRA_DATA_SIZE];;   ///< extra data information for decoder
+ } audio_info_t;
+ 
+ typedef struct {
+@@ -56,10 +57,14 @@ typedef struct {
+     CODEC_HANDLE cntl_handle;   ///< video control device handler
+     CODEC_HANDLE sub_handle;    ///< subtile device handler
+     stream_type_t stream_type;  ///< stream type(es, ps, rm, ts)
+-    unsigned int has_video:1;   ///< stream has video(1) or not(0)
+-    unsigned int has_audio:1;   ///< stream has audio(1) or not(0)
+-    unsigned int has_sub:1;     ///< stream has subtitle(1) or not(0)
+-    unsigned int noblock:1;     ///< codec device is NONBLOCK(1) or not(0)
++unsigned int has_video:
++    1;                          ///< stream has video(1) or not(0)
++unsigned int  has_audio:
++    1;                          ///< stream has audio(1) or not(0)
++unsigned int has_sub:
++    1;                          ///< stream has subtitle(1) or not(0)
++unsigned int noblock:
++    1;                          ///< codec device is NONBLOCK(1) or not(0)
+     int video_type;             ///< stream video type(H264, VC1...)
+     int audio_type;             ///< stream audio type(PCM, WMA...)
+     int sub_type;               ///< stream subtitle type(TXT, SSA...)
+@@ -73,17 +78,20 @@ typedef struct {
+     dec_sysinfo_t am_sysinfo;   ///< system information for video
+     audio_info_t audio_info;    ///< audio information pass to audiodsp
+     int packet_size;            ///< data size per packet
+-    int avsync_threshold;       ///<for adec in ms>
+-    void * adec_priv;           ///<for adec>
++    int avsync_threshold;    ///<for adec in ms>
++    void * adec_priv;          ///<for adec>
++    int SessionID;
++	int dspdec_not_supported;//check some profile that audiodsp decoder can not support,we switch to arm decoder
++	int switch_audio_flag;		//<switch audio flag switching(1) else(0)
+ } codec_para_t;
+ 
+-typedef struct
++typedef struct 
+ {
+-    signed char id;
++    signed char id;      
+     unsigned char width;
+     unsigned char height;
+-    unsigned char type;
+-} subtitle_info_t;
++	unsigned char type;    
++}subtitle_info_t;
+ #define MAX_SUB_NUM			(32)
+ 
+ #define IS_VALID_PID(t)     (t>=0 && t<=0x1fff)
+@@ -95,10 +103,13 @@ typedef struct
+ typedef struct {
+     int sample_rate;         ///< audio stream sample rate
+     int channels;            ///< audio stream channels
+-    int format;              ///< codec format id
+-    int handle;              ///< codec device handler
++    int format;            ///< codec format id
++    int handle;        ///< codec device handler
+     int extradata_size;      ///< extra data size
+     char extradata[AUDIO_EXTRA_DATA_SIZE];
++	int SessionID;
++	int dspdec_not_supported;//check some profile that audiodsp decoder can not support,we switch to arm decoder	
++	int droppcm_flag;				// drop pcm flag, if switch audio (1)
+ } arm_audio_info;
+ 
+ //audio decoder type, default arc
+new file mode 100644
+--- /dev/null
++++ b/libamplayer/include/amcodec/ppmgr/ppmgr.h
+@@ -0,0 +1,24 @@
++/**
++* @file ppmgr.h
++* @brief  Porting from ppmgr driver for codec ioctl commands
++* @author Tim Yao <timyao@amlogic.com>
++* @version 1.0.0
++* @date 2011-02-24
++*/
++/* Copyright (C) 2007-2011, Amlogic Inc.
++* All right reserved
++* 
++*/
++
++#ifndef PPMGR_H
++#define PPMGR_H
++
++#define PPMGR_IOC_MAGIC  'P'
++//#define PPMGR_IOC_2OSD0		_IOW(PPMGR_IOC_MAGIC, 0x00, unsigned int)
++//#define PPMGR_IOC_ENABLE_PP _IOW(PPMGR_IOC_MAGIC,0X01,unsigned int)
++//#define PPMGR_IOC_CONFIG_FRAME  _IOW(PPMGR_IOC_MAGIC,0X02,unsigned int)
++#define PPMGR_IOC_GET_ANGLE  _IOR(PPMGR_IOC_MAGIC,0X03,unsigned long)
++#define PPMGR_IOC_SET_ANGLE  _IOW(PPMGR_IOC_MAGIC,0X04,unsigned long)
++
++#endif /* PPMGR_H */
++
+--- a/libamplayer/include/amplayer/message.h
++++ b/libamplayer/include/amplayer/message.h
+@@ -1,7 +1,7 @@
+ #ifndef PLAYER_MESSAGE_H
+ #define PLAYER_MESSAGE_H
+ 
+-#define MESSAGE_MAX 4
++#define MESSAGE_MAX 8
+ 
+ #define CTRL_CMD_RESPONSE   (0xffff)
+ 
+@@ -41,6 +41,7 @@ typedef enum {
+     CMD_SET_STEREO      = (1 << 14),   
+     CMD_EN_AUTOBUF      = (1 << 15),
+     CMD_SET_AUTOBUF_LEV = (1 << 16),
++    CMD_SET_FREERUN_MODE = (1 << 17),
+     CMD_MODE_MAX        = (1 << 31),
+ } ctrl_mode_t;
+ 
+@@ -85,6 +86,5 @@ typedef struct {
+ int message_free(player_cmd_t * cmd);
+ player_cmd_t * message_alloc(void);
+ int cmd2str(player_cmd_t *cmd, char *buf);
+-
+ #endif
+ 
+--- a/libamplayer/include/amplayer/player.h
++++ b/libamplayer/include/amplayer/player.h
+@@ -6,7 +6,7 @@
+ #include <player_type.h>
+ #include <player_error.h>
+ #include <message.h>
+-
++#include <player_dump.h>
+ 
+ #ifdef  __cplusplus
+ extern "C" {
+@@ -52,7 +52,8 @@ int 	audio_right_mono(int pid);
+ int 	audio_stereo(int pid);
+ int 	audio_set_spectrum_switch(int pid,int isStart,int interval);
+ int 	player_register_update_callback(callback_t *cb,update_state_fun_t up_fn,int interval_s);
+-char 	*player_status2str(player_status status);
++char *player_status2str(player_status status);
++char *player_value2str(char *key, int value);
+ int 	player_cache_system_init(int enable,const char*dir,int max_size,int block_size);
+ 
+ //control interface
+new file mode 100644
+--- /dev/null
++++ b/libamplayer/include/amplayer/player_ctrl.h
+@@ -0,0 +1,4 @@
++/*
++Just for old code compatible,no this header file may get compare error.
++we can add more player controls to here later.
++*/
+new file mode 100644
+--- /dev/null
++++ b/libamplayer/include/amplayer/player_dump.h
+@@ -0,0 +1,14 @@
++#ifndef _PLAYER_DUMP_H_
++#define _PLAYER_DUMP_H_
++#ifdef  __cplusplus
++extern "C" {
++#endif
++ 
++int player_dump_playinfo(int pid, int fd);
++int player_dump_bufferinfo(int pid, int fd);
++int player_dump_tsyncinfo(int pid, int fd);
++#ifdef  __cplusplus
++}
++#endif
++#endif
++
+--- a/libamplayer/include/amplayer/player_set_sys.h
++++ b/libamplayer/include/amplayer/player_set_sys.h
+@@ -40,6 +40,7 @@ int set_black_policy(int blackout);
+ int get_black_policy();
+ int get_karaok_flag();
+ int set_tsync_enable(int enable);
++int get_tsync_enable(void);
+ int set_tsync_discontinue(int enable);
+ int get_pts_discontinue();
+ int set_fb0_blank(int blank);
+@@ -61,8 +62,6 @@ int set_fb1_scale_height(int height);
+ int check_audiodsp_fatal_err(void);
+ int set_stb_source_hiu(void);
+ int set_stb_demux_source_hiu(void);
+-int get_stb_demux_source(char *strval, int size);
+-int get_stb_source(char *strval, int size);
+ 
+ int set_subtitle_enable(int num);
+ int set_subtitle_curr(int num);
+@@ -72,6 +71,8 @@ int check_file_same(char *filename2);
+ int set_amutils_enable(int isOn);
+ int set_amutils_cmd(const char* cmd);
+ int get_amutils_cmd(char* cmd);
++int check_audio_output();
++
+ 
+ #ifdef  __cplusplus
+ }
+--- a/libamplayer/include/amplayer/player_thumbnail.h
++++ b/libamplayer/include/amplayer/player_thumbnail.h
+@@ -19,6 +19,7 @@ int thumbnail_get_key_data(void* handle, char* key, const void** data, int* data
+ void thumbnail_get_video_rotation(void *handle, int* rotation);
+ int thumbnail_decoder_close(void *handle);
+ void thumbnail_res_free(void* handle);
++int thumbnail_get_tracks_info(void *handle, int *vtracks,int *atracks,int *stracks);
+ 
+ #ifdef  __cplusplus
+ }
+--- a/libamplayer/include/amplayer/player_type.h
++++ b/libamplayer/include/amplayer/player_type.h
+@@ -5,14 +5,7 @@
+ #include <stream_format.h>
+ 
+ #define MSG_SIZE                    64
+-#if defined(HAS_AMLPLAYER_CHAPTERS)
+-#define MAX_CHAPTERS                64
+-#endif
+-#if defined(HAS_AMLPLAYER_VIDEO_STREAMS10)
+ #define MAX_VIDEO_STREAMS           10
+-#else
+-#define MAX_VIDEO_STREAMS           8
+-#endif
+ #define MAX_AUDIO_STREAMS           8
+ #define MAX_SUB_INTERNAL            8
+ #define MAX_SUB_EXTERNAL            24
+@@ -33,7 +26,7 @@ typedef enum
+ 	PLAYER_INITING  	= 0x10001,
+ 	PLAYER_TYPE_REDY  = 0x10002,
+ 	PLAYER_INITOK   	= 0x10003,	
+-
++        
+ 	/******************************
+ 	* 0x2000x: 
+ 	* playback status
+@@ -51,7 +44,7 @@ typedef enum
+ 
+ 	PLAYER_PLAY_NEXT	= 0x20009,	
+ 	PLAYER_BUFFER_OK	= 0x2000a,	
+-	PLAYER_FOUND_SUB	= 0x2000b,
++	PLAYER_FOUND_SUB	= 0x2000b,	
+ 
+ 	/******************************
+ 	* 0x3000x: 
+@@ -120,9 +113,6 @@ typedef struct
+     aformat_t aformat;
+     int duration;
+ 	audio_tag_info *audio_tag;    
+-#if defined(HAS_AMLPLAYER_AUDIO_LANG)
+-    char audio_language[4];
+-#endif
+ }maudio_info_t;
+ 
+ typedef struct
+@@ -157,33 +147,15 @@ typedef struct
+     int cur_sub_index;	
+     int seekable;
+     int drm_check;
+-#if defined(HAS_AMLPLAYER_VIDEO_STREAMS10)
+-    int t1;
+-    int t2;
+-#endif
+-#if defined(HAS_AMLPLAYER_CHAPTERS)
+-    int has_chapter;
+-    int total_chapter_num;
+-#endif
++	int adif_file_flag;
+ }mstream_info_t;
+ 
+-#if defined(HAS_AMLPLAYER_CHAPTERS)
+-typedef struct
+-{
+-    char    *name;
+-    int64_t seekto_ms;
+-} mchapter_info_t;
+-#endif
+-
+ typedef struct
+ {	
+ 	mstream_info_t stream_info;
+ 	mvideo_info_t *video_info[MAX_VIDEO_STREAMS];
+ 	maudio_info_t *audio_info[MAX_AUDIO_STREAMS];
+     msub_info_t *sub_info[MAX_SUB_STREAMS];
+-#if defined(HAS_AMLPLAYER_CHAPTERS)
+-	mchapter_info_t *chapter_info[MAX_CHAPTERS];
+-#endif
+ }media_info_t;
+ 
+ typedef struct player_info
+@@ -210,6 +182,7 @@ typedef struct player_info
+ 	int64_t	bufed_pos;
+ 	int	bufed_time;/* Second*/
+     unsigned int drm_rental;
++	int64_t download_speed; //download speed
+ }player_info_t;
+ 
+ typedef struct pid_info
+@@ -252,13 +225,14 @@ typedef struct
+     int vbufsize;
+     int vdatasize;
+     int abufused;
+-    int abufsize;
+-    int adatasize;
++    int abufsize;	
++    int adatasize;	
+     int sbufused;
+-    int sbufsize;
+-    int sdatasize;
++    int sbufsize;	
++    int sdatasize;		
+ }hwbufstats_t;
+ 
++
+ typedef struct
+ {
+     update_state_fun_t update_statue_callback;
+@@ -275,7 +249,7 @@ typedef struct
+ 	int	video_index;						//video track, no assigned, please set to -1
+ 	int	audio_index;						//audio track, no assigned, please set to -1
+ 	int sub_index;							//subtitle track, no assigned, please set to -1
+-	float t_pos;							//start postion, use second as unit
++	float t_pos;								//start postion, use second as unit
+ 	int	read_max_cnt;						//read retry maxium counts, if exceed it, return error
+ 	int avsync_threshold;                             //for adec av sync threshold in ms
+ 	union
+--- a/libamplayer/include/amplayer/stream_format.h
++++ b/libamplayer/include/amplayer/stream_format.h
+@@ -37,7 +37,9 @@ typedef enum
+     ASF_FILE        = 17,
+     STREAM_FILE     = 18,
+     APE_FILE		= 19,        
+-    FILE_MAX		= 20,        
++    AMR_FILE        = 20,
++    AVS_FILE		= 21, 
++    FILE_MAX		= 22,        
+ }pfile_type;
+ 
+ #endif
