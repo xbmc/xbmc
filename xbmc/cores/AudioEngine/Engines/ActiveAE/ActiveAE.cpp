@@ -2144,6 +2144,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
         {
           int samples = fileSize / m_dllAvUtil.av_get_bytes_per_sample(dec_ctx->sample_fmt) / config.channels;
           config.fmt = dec_ctx->sample_fmt;
+          config.bits_per_sample = dec_ctx->bits_per_coded_sample;
           sound->InitSound(true, config, samples);
           init = true;
         }
@@ -2214,16 +2215,19 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
   dst_config.channels = m_internalFormat.m_channelLayout.Count();
   dst_config.sample_rate = m_internalFormat.m_sampleRate;
   dst_config.fmt = CActiveAEResample::GetAVSampleFormat(m_internalFormat.m_dataFormat);
+  dst_config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_internalFormat.m_dataFormat);
 
   CActiveAEResample *resampler = new CActiveAEResample();
   resampler->Init(dst_config.channel_layout,
                   dst_config.channels,
                   dst_config.sample_rate,
                   dst_config.fmt,
+                  dst_config.bits_per_sample,
                   orig_config.channel_layout,
                   orig_config.channels,
                   orig_config.sample_rate,
                   orig_config.fmt,
+                  orig_config.bits_per_sample,
                   NULL,
                   AE_QUALITY_MID);
 

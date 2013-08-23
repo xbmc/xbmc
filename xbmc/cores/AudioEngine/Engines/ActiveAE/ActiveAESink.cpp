@@ -706,6 +706,7 @@ void CActiveAESink::OpenSink()
   // init sample of silence
   SampleConfig config;
   config.fmt = CActiveAEResample::GetAVSampleFormat(m_sinkFormat.m_dataFormat);
+  config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat);
   config.channel_layout = CActiveAEResample::GetAVChannelLayout(m_sinkFormat.m_channelLayout);
   config.channels = m_sinkFormat.m_channelLayout.Count();
   config.sample_rate = m_sinkFormat.m_sampleRate;
@@ -802,7 +803,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
 
 void CActiveAESink::ConvertInit(CSampleBuffer* samples)
 {
-  if (CActiveAEResample::GetAESampleFormat(samples->pkt->config.fmt) != m_sinkFormat.m_dataFormat)
+  if (CActiveAEResample::GetAESampleFormat(samples->pkt->config.fmt, samples->pkt->config.bits_per_sample) != m_sinkFormat.m_dataFormat)
   {
     m_convertFn = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
     if (m_convertBuffer)
@@ -860,7 +861,7 @@ void CActiveAESink::GenerateNoise()
     noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001;
   }
 
-  AEDataFormat fmt = CActiveAEResample::GetAESampleFormat(m_sampleOfNoise.pkt->config.fmt);
+  AEDataFormat fmt = CActiveAEResample::GetAESampleFormat(m_sampleOfNoise.pkt->config.fmt, m_sampleOfNoise.pkt->config.bits_per_sample);
   CAEConvert::AEConvertFrFn convertFn = CAEConvert::FrFloat(fmt);
   convertFn(noise, nb_floats, m_sampleOfNoise.pkt->data[0]);
   delete [] noise;
