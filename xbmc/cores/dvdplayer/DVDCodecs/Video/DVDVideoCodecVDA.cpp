@@ -645,7 +645,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     m_dll = new DllLibVDADecoder;
     if (!m_dll->Load())
     {
-      CLog::Log(LOGNOTICE, "%s - DllLibVDADecoder load failed", __FUNCTION__, hints.profile);
+      CLog::Log(LOGNOTICE, "%s - DllLibVDADecoder load failed", __FUNCTION__);
       return false;
     }
     g_DllLibVDADecoder = m_dll;

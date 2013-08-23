@@ -94,7 +94,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
   /// Handle network change.
   virtual void handleNetworkChange(const vector<NetworkInterface>& interfaces)
   {
-    dprintf("Network change for browser (polled=%d), closing %d browse sockets.", m_polled, m_sockets.size());
+    dprintf("Network change for browser (polled=%d), closing %lu browse sockets.", m_polled, m_sockets.size());
 
     // Close the old one.
     BOOST_FOREACH(socket_string_pair pair, m_sockets)
