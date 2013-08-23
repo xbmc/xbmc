@@ -83,7 +83,22 @@ The fix:
     retrun externalDir;
   }
 
-b. Probably lots more.
+b. Java has an understanding of arrays like Type[] which contain size info.
+   C-style arrays don't carry size information, so passing a c-array as a
+   parameter does not provide enough info to work with it realistically.
+
+   workaround: Data should be passed in/out of Java arrays as std::vectors of
+   primitive types or jni classes.
+   Care should be taken to avoid making needless copies of objects in the
+   process. To automate this, jcast() can be used to convert a j(h)objectArray
+   directly to a vector of native objects. For example:
+
+  std::vector<CJNIFoo> example()
+  {
+    return jcast<std::vector<CJNIFoo> >(call_method<jhobjectArray>(object, "function", "()[Lsome/Class;"))
+  }
+
+c. Probably lots more.
 
 8. Is the entire API implemented?
 Not even close! Classes and individual functions have been added as-needed.
