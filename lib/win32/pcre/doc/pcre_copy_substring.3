@@ -1,4 +1,4 @@
-.TH PCRE_COPY_SUBSTRING 3
+.TH PCRE_COPY_SUBSTRING 3 "24 June 2012" "PCRE 8.30"
 .SH NAME
 PCRE - Perl-compatible regular expressions
 .SH SYNOPSIS
@@ -12,6 +12,18 @@ PCRE - Perl-compatible regular expressions
 .B int \fIstringcount\fP, int \fIstringnumber\fP, char *\fIbuffer\fP,
 .ti +5n
 .B int \fIbuffersize\fP);
+.PP
+.B int pcre16_copy_substring(PCRE_SPTR16 \fIsubject\fP, int *\fIovector\fP,
+.ti +5n
+.B int \fIstringcount\fP, int \fIstringnumber\fP, PCRE_UCHAR16 *\fIbuffer\fP,
+.ti +5n
+.B int \fIbuffersize\fP);
+.PP
+.B int pcre32_copy_substring(PCRE_SPTR32 \fIsubject\fP, int *\fIovector\fP,
+.ti +5n
+.B int \fIstringcount\fP, int \fIstringnumber\fP, PCRE_UCHAR32 *\fIbuffer\fP,
+.ti +5n
+.B int \fIbuffersize\fP);
 .
 .SH DESCRIPTION
 .rs
@@ -20,8 +32,8 @@ This is a convenience function for extracting a captured substring into a given
 buffer. The arguments are:
 .sp
   \fIsubject\fP       Subject that has been successfully matched
-  \fIovector\fP       Offset vector that \fBpcre_exec()\fP used
-  \fIstringcount\fP   Value returned by \fBpcre_exec()\fP
+  \fIovector\fP       Offset vector that \fBpcre[16|32]_exec()\fP used
+  \fIstringcount\fP   Value returned by \fBpcre[16|32]_exec()\fP
   \fIstringnumber\fP  Number of the required substring
   \fIbuffer\fP        Buffer to receive the string
   \fIbuffersize\fP    Size of buffer

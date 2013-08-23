@@ -21,14 +21,15 @@ time. The way you express your pattern as a regular expression can affect both
 of them.
 </P>
 <br><b>
-MEMORY USAGE
+COMPILED PATTERN MEMORY USAGE
 </b><br>
 <P>
-Patterns are compiled by PCRE into a reasonably efficient byte code, so that
-most simple patterns do not use much memory. However, there is one case where
-memory usage can be unexpectedly large. When a parenthesized subpattern has a
-quantifier with a minimum greater than 1 and/or a limited maximum, the whole
-subpattern is repeated in the compiled code. For example, the pattern
+Patterns are compiled by PCRE into a reasonably efficient interpretive code, so
+that most simple patterns do not use much memory. However, there is one case
+where the memory usage of a compiled pattern can be unexpectedly large. If a
+parenthesized subpattern has a quantifier with a minimum greater than 1 and/or
+a limited maximum, the whole subpattern is repeated in the compiled code. For
+example, the pattern
 <pre>
   (abc|def){2,4}
 </pre>
@@ -47,12 +48,12 @@ example, the very simple pattern
 <pre>
   ((ab){1,1000}c){1,3}
 </pre>
-uses 51K bytes when compiled. When PCRE is compiled with its default internal
-pointer size of two bytes, the size limit on a compiled pattern is 64K, and
-this is reached with the above pattern if the outer repetition is increased
-from 3 to 4. PCRE can be compiled to use larger internal pointers and thus
-handle larger compiled patterns, but it is better to try to rewrite your
-pattern to use less memory if you can.
+uses 51K bytes when compiled using the 8-bit library. When PCRE is compiled
+with its default internal pointer size of two bytes, the size limit on a
+compiled pattern is 64K data units, and this is reached with the above pattern
+if the outer repetition is increased from 3 to 4. PCRE can be compiled to use
+larger internal pointers and thus handle larger compiled patterns, but it is
+better to try to rewrite your pattern to use less memory if you can.
 </P>
 <P>
 One way of reducing the memory usage for such patterns is to make use of PCRE's
@@ -73,6 +74,18 @@ speed is acceptable, this kind of rewriting will allow you to process patterns
 that PCRE cannot otherwise handle.
 </P>
 <br><b>
+STACK USAGE AT RUN TIME
+</b><br>
+<P>
+When <b>pcre_exec()</b> or <b>pcre[16|32]_exec()</b> is used for matching, certain
+kinds of pattern can cause it to use large amounts of the process stack. In
+some environments the default process stack is quite small, and if it runs out
+the result is often SIGSEGV. This issue is probably the most frequently raised
+problem with PCRE. Rewriting your pattern can often help. The
+<a href="pcrestack.html"><b>pcrestack</b></a>
+documentation discusses this issue in detail.
+</P>
+<br><b>
 PROCESSING TIME
 </b><br>
 <P>
@@ -86,10 +99,19 @@ contains a few observations about PCRE.
 </P>
 <P>
 Using Unicode character properties (the \p, \P, and \X escapes) is slow,
-because PCRE has to scan a structure that contains data for over fifteen
-thousand characters whenever it needs a character's property. If you can find
-an alternative pattern that does not use character properties, it will probably
-be faster.
+because PCRE has to use a multi-stage table lookup whenever it needs a
+character's property. If you can find an alternative pattern that does not use
+character properties, it will probably be faster.
+</P>
+<P>
+By default, the escape sequences \b, \d, \s, and \w, and the POSIX
+character classes such as [:alpha:] do not use Unicode properties, partly for
+backwards compatibility, and partly for performance reasons. However, you can
+set PCRE_UCP if you want Unicode character properties to be used. This can
+double the matching time for items such as \d, when matched with
+a traditional matching function; the performance loss is less with
+a DFA matching function, and in both cases there is not much difference for
+\b.
 </P>
 <P>
 When a pattern begins with .* not in parentheses, or in parentheses that are
@@ -164,9 +186,9 @@ Cambridge CB2 3QH, England.
 REVISION
 </b><br>
 <P>
-Last updated: 06 March 2007
+Last updated: 25 August 2012
 <br>
-Copyright &copy; 1997-2007 University of Cambridge.
+Copyright &copy; 1997-2012 University of Cambridge.
 <br>
 <p>
 Return to the <a href="index.html">PCRE index page</a>.

@@ -21,15 +21,21 @@ SYNOPSIS
 <P>
 <b>const unsigned char *pcre_maketables(void);</b>
 </P>
+<P>
+<b>const unsigned char *pcre16_maketables(void);</b>
+</P>
+<P>
+<b>const unsigned char *pcre32_maketables(void);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
 <P>
 This function builds a set of character tables for character values less than
-256. These can be passed to <b>pcre_compile()</b> to override PCRE's internal,
-built-in tables (which were made by <b>pcre_maketables()</b> when PCRE was
-compiled). You might want to do this if you are using a non-standard locale.
-The function yields a pointer to the tables.
+256. These can be passed to <b>pcre[16|32]_compile()</b> to override PCRE's
+internal, built-in tables (which were made by <b>pcre[16|32]_maketables()</b> when
+PCRE was compiled). You might want to do this if you are using a non-standard
+locale. The function yields a pointer to the tables.
 </P>
 <P>
 There is a complete description of the PCRE native API in the

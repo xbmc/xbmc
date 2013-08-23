@@ -674,6 +674,7 @@ class PCRECPP_EXP_DEFN RE {
   int TryMatch(const StringPiece& text,
                int startpos,
                Anchor anchor,
+               bool empty_ok,
                int *vec,
                int vecsize) const;
 

@@ -4,8 +4,28 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 exec_prefix_set=no
 
-usage="\
-Usage: pcre-config [--prefix] [--exec-prefix] [--version] [--libs] [--libs-posix] [--cflags] [--cflags-posix]"
+cflags="[--cflags]"
+
+if test @enable_cpp@ = yes ; then
+  libs="[--libs-cpp]"
+else
+  libs=
+fi
+
+if test @enable_pcre16@ = yes ; then
+  libs="[--libs16] $libs"
+fi
+
+if test @enable_pcre32@ = yes ; then
+  libs="[--libs32] $libs"
+fi
+
+if test @enable_pcre8@ = yes ; then
+  libs="[--libs] [--libs-posix] $libs"
+  cflags="$cflags [--cflags-posix]"
+fi
+
+usage="Usage: pcre-config [--prefix] [--exec-prefix] [--version] $libs $cflags"
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2
@@ -21,6 +41,11 @@ case `uname -s` in
   libR=" -Wl,-R@libdir@"
   ;;
 esac
+
+libS=
+if test @libdir@ != /usr/lib ; then
+  libS=-L@libdir@
+fi
 
 while test $# -gt 0; do
   case "$1" in
@@ -48,17 +73,56 @@ while test $# -gt 0; do
     --version)
       echo @PACKAGE_VERSION@
       ;;
-    --cflags | --cflags-posix)
+    --cflags)
       if test @includedir@ != /usr/include ; then
         includes=-I@includedir@
       fi
       echo $includes @PCRE_STATIC_CFLAG@
       ;;
+    --cflags-posix)
+      if test @enable_pcre8@ = yes ; then
+        if test @includedir@ != /usr/include ; then
+          includes=-I@includedir@
+        fi
+        echo $includes @PCRE_STATIC_CFLAG@
+      else
+        echo "${usage}" 1>&2
+      fi
+      ;;
     --libs-posix)
-      echo -L@libdir@$libR -lpcreposix -lpcre
+      if test @enable_pcre8@ = yes ; then
+        echo $libS$libR -lpcreposix -lpcre
+      else
+        echo "${usage}" 1>&2
+      fi
       ;;
     --libs)
-      echo -L@libdir@$libR -lpcre
+      if test @enable_pcre8@ = yes ; then
+        echo $libS$libR -lpcre
+      else
+        echo "${usage}" 1>&2
+      fi
+      ;;
+    --libs16)
+      if test @enable_pcre16@ = yes ; then
+        echo $libS$libR -lpcre16
+      else
+        echo "${usage}" 1>&2
+      fi
+      ;;
+    --libs32)
+      if test @enable_pcre32@ = yes ; then
+        echo $libS$libR -lpcre32
+      else
+        echo "${usage}" 1>&2
+      fi
+      ;;
+    --libs-cpp)
+      if test @enable_cpp@ = yes ; then
+        echo $libS$libR -lpcrecpp -lpcre
+      else
+        echo "${usage}" 1>&2
+      fi
       ;;
     *)
       echo "${usage}" 1>&2

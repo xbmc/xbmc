@@ -24,6 +24,18 @@ SYNOPSIS
 <b>int <i>stringcount</i>, const char *<i>stringname</i>,</b>
 <b>char *<i>buffer</i>, int <i>buffersize</i>);</b>
 </P>
+<P>
+<b>int pcre16_copy_named_substring(const pcre16 *<i>code</i>,</b>
+<b>PCRE_SPTR16 <i>subject</i>, int *<i>ovector</i>,</b>
+<b>int <i>stringcount</i>, PCRE_SPTR16 <i>stringname</i>,</b>
+<b>PCRE_UCHAR16 *<i>buffer</i>, int <i>buffersize</i>);</b>
+</P>
+<P>
+<b>int pcre32_copy_named_substring(const pcre32 *<i>code</i>,</b>
+<b>PCRE_SPTR32 <i>subject</i>, int *<i>ovector</i>,</b>
+<b>int <i>stringcount</i>, PCRE_SPTR32 <i>stringname</i>,</b>
+<b>PCRE_UCHAR32 *<i>buffer</i>, int <i>buffersize</i>);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
@@ -33,8 +45,8 @@ by name, into a given buffer. The arguments are:
 <pre>
   <i>code</i>          Pattern that was successfully matched
   <i>subject</i>       Subject that has been successfully matched
-  <i>ovector</i>       Offset vector that <b>pcre_exec()</b> used
-  <i>stringcount</i>   Value returned by <b>pcre_exec()</b>
+  <i>ovector</i>       Offset vector that <b>pcre[16|32]_exec()</b> used
+  <i>stringcount</i>   Value returned by <b>pcre[16|32]_exec()</b>
   <i>stringname</i>    Name of the required substring
   <i>buffer</i>        Buffer to receive the string
   <i>buffersize</i>    Size of buffer

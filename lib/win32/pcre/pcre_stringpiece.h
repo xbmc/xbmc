@@ -38,20 +38,22 @@
 #ifndef _PCRE_STRINGPIECE_H
 #define _PCRE_STRINGPIECE_H
 
-#include <string.h>
+#include <cstring>
 #include <string>
 #include <iosfwd>    // for ostream forward-declaration
 
-#if 0 //@pcre_have_type_traits@
+#if 0
 #define HAVE_TYPE_TRAITS
 #include <type_traits.h>
-#elif 0 //@pcre_have_bits_type_traits@
+#elif 0
 #define HAVE_TYPE_TRAITS
 #include <bits/type_traits.h>
 #endif
 
 #include <pcre.h>
 
+using std::memcmp;
+using std::strlen;
 using std::string;
 
 namespace pcrecpp {

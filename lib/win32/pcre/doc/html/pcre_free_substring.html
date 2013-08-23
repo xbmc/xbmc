@@ -21,13 +21,19 @@ SYNOPSIS
 <P>
 <b>void pcre_free_substring(const char *<i>stringptr</i>);</b>
 </P>
+<P>
+<b>void pcre16_free_substring(PCRE_SPTR16 <i>stringptr</i>);</b>
+</P>
+<P>
+<b>void pcre32_free_substring(PCRE_SPTR32 <i>stringptr</i>);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
 <P>
 This is a convenience function for freeing the store obtained by a previous
-call to <b>pcre_get_substring()</b> or <b>pcre_get_named_substring()</b>. Its
-only argument is a pointer to the string.
+call to <b>pcre[16|32]_get_substring()</b> or <b>pcre[16|32]_get_named_substring()</b>.
+Its only argument is a pointer to the string.
 </P>
 <P>
 There is a complete description of the PCRE native API in the

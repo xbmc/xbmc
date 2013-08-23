@@ -1,4 +1,4 @@
-.TH PCREPERFORM 3
+.TH PCREPERFORM 3 "09 January 2012" "PCRE 8.30"
 .SH NAME
 PCRE - Perl-compatible regular expressions
 .SH "PCRE PERFORMANCE"
@@ -8,14 +8,15 @@ Two aspects of performance are discussed below: memory usage and processing
 time. The way you express your pattern as a regular expression can affect both
 of them.
 .
-.SH "MEMORY USAGE"
+.SH "COMPILED PATTERN MEMORY USAGE"
 .rs
 .sp
-Patterns are compiled by PCRE into a reasonably efficient byte code, so that
-most simple patterns do not use much memory. However, there is one case where
-memory usage can be unexpectedly large. When a parenthesized subpattern has a
-quantifier with a minimum greater than 1 and/or a limited maximum, the whole
-subpattern is repeated in the compiled code. For example, the pattern
+Patterns are compiled by PCRE into a reasonably efficient interpretive code, so
+that most simple patterns do not use much memory. However, there is one case
+where the memory usage of a compiled pattern can be unexpectedly large. If a
+parenthesized subpattern has a quantifier with a minimum greater than 1 and/or
+a limited maximum, the whole subpattern is repeated in the compiled code. For
+example, the pattern
 .sp
   (abc|def){2,4}
 .sp
@@ -33,12 +34,12 @@ example, the very simple pattern
 .sp
   ((ab){1,1000}c){1,3}
 .sp
-uses 51K bytes when compiled. When PCRE is compiled with its default internal
-pointer size of two bytes, the size limit on a compiled pattern is 64K, and
-this is reached with the above pattern if the outer repetition is increased
-from 3 to 4. PCRE can be compiled to use larger internal pointers and thus
-handle larger compiled patterns, but it is better to try to rewrite your
-pattern to use less memory if you can.
+uses 51K bytes when compiled using the 8-bit library. When PCRE is compiled
+with its default internal pointer size of two bytes, the size limit on a
+compiled pattern is 64K data units, and this is reached with the above pattern
+if the outer repetition is increased from 3 to 4. PCRE can be compiled to use
+larger internal pointers and thus handle larger compiled patterns, but it is
+better to try to rewrite your pattern to use less memory if you can.
 .P
 One way of reducing the memory usage for such patterns is to make use of PCRE's
 .\" HTML <a href="pcrepattern.html#subpatternsassubroutines">
@@ -63,6 +64,21 @@ pattern. Nevertheless, if the atomic grouping is not a problem and the loss of
 speed is acceptable, this kind of rewriting will allow you to process patterns
 that PCRE cannot otherwise handle.
 .
+.
+.SH "STACK USAGE AT RUN TIME"
+.rs
+.sp
+When \fBpcre_exec()\fP or \fBpcre[16|32]_exec()\fP is used for matching, certain
+kinds of pattern can cause it to use large amounts of the process stack. In
+some environments the default process stack is quite small, and if it runs out
+the result is often SIGSEGV. This issue is probably the most frequently raised
+problem with PCRE. Rewriting your pattern can often help. The
+.\" HREF
+\fBpcrestack\fP
+.\"
+documentation discusses this issue in detail.
+.
+.
 .SH "PROCESSING TIME"
 .rs
 .sp
@@ -75,10 +91,18 @@ about optimizing regular expressions for efficient performance. This document
 contains a few observations about PCRE.
 .P
 Using Unicode character properties (the \ep, \eP, and \eX escapes) is slow,
-because PCRE has to scan a structure that contains data for over fifteen
-thousand characters whenever it needs a character's property. If you can find
-an alternative pattern that does not use character properties, it will probably
-be faster.
+because PCRE has to use a multi-stage table lookup whenever it needs a
+character's property. If you can find an alternative pattern that does not use
+character properties, it will probably be faster.
+.P
+By default, the escape sequences \eb, \ed, \es, and \ew, and the POSIX
+character classes such as [:alpha:] do not use Unicode properties, partly for
+backwards compatibility, and partly for performance reasons. However, you can
+set PCRE_UCP if you want Unicode character properties to be used. This can
+double the matching time for items such as \ed, when matched with
+a traditional matching function; the performance loss is less with
+a DFA matching function, and in both cases there is not much difference for
+\eb.
 .P
 When a pattern begins with .* not in parentheses, or in parentheses that are
 not the subject of a backreference, and the PCRE_DOTALL option is set, the
@@ -148,6 +172,6 @@ Cambridge CB2 3QH, England.
 .rs
 .sp
 .nf
-Last updated: 06 March 2007
-Copyright (c) 1997-2007 University of Cambridge.
+Last updated: 25 August 2012
+Copyright (c) 1997-2012 University of Cambridge.
 .fi

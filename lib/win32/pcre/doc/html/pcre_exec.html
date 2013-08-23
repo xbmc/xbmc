@@ -23,6 +23,16 @@ SYNOPSIS
 <b>const char *<i>subject</i>, int <i>length</i>, int <i>startoffset</i>,</b>
 <b>int <i>options</i>, int *<i>ovector</i>, int <i>ovecsize</i>);</b>
 </P>
+<P>
+<b>int pcre16_exec(const pcre16 *<i>code</i>, const pcre16_extra *<i>extra</i>,</b>
+<b>PCRE_SPTR16 <i>subject</i>, int <i>length</i>, int <i>startoffset</i>,</b>
+<b>int <i>options</i>, int *<i>ovector</i>, int <i>ovecsize</i>);</b>
+</P>
+<P>
+<b>int pcre32_exec(const pcre32 *<i>code</i>, const pcre32_extra *<i>extra</i>,</b>
+<b>PCRE_SPTR32 <i>subject</i>, int <i>length</i>, int <i>startoffset</i>,</b>
+<b>int <i>options</i>, int *<i>ovector</i>, int <i>ovecsize</i>);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
@@ -32,17 +42,18 @@ string, using a matching algorithm that is similar to Perl's. It returns
 offsets to captured substrings. Its arguments are:
 <pre>
   <i>code</i>         Points to the compiled pattern
-  <i>extra</i>        Points to an associated <b>pcre_extra</b> structure,
+  <i>extra</i>        Points to an associated <b>pcre[16|32]_extra</b> structure,
                  or is NULL
   <i>subject</i>      Points to the subject string
-  <i>length</i>       Length of the subject string, in bytes
-  <i>startoffset</i>  Offset in bytes in the subject at which to
-                 start matching
+  <i>length</i>       Length of the subject string
+  <i>startoffset</i>  Offset in the subject at which to start matching
   <i>options</i>      Option bits
   <i>ovector</i>      Points to a vector of ints for result offsets
   <i>ovecsize</i>     Number of elements in the vector (a multiple of 3)
 </pre>
-The options are:
+The units for <i>length</i> and <i>startoffset</i> are bytes for
+<b>pcre_exec()</b>, 16-bit data items for <b>pcre16_exec()</b>, and 32-bit items
+for <b>pcre32_exec()</b>. The options are:
 <pre>
   PCRE_ANCHORED          Match only at the first position
   PCRE_BSR_ANYCRLF       \R matches only CR, LF, or CRLF
@@ -58,28 +69,36 @@ The options are:
   PCRE_NOTEMPTY_ATSTART  An empty string at the start of the subject
                            is not a valid match
   PCRE_NO_START_OPTIMIZE Do not do "start-match" optimizations
+  PCRE_NO_UTF16_CHECK    Do not check the subject for UTF-16
+                           validity (only relevant if PCRE_UTF16
+                           was set at compile time)
+  PCRE_NO_UTF32_CHECK    Do not check the subject for UTF-32
+                           validity (only relevant if PCRE_UTF32
+                           was set at compile time)
   PCRE_NO_UTF8_CHECK     Do not check the subject for UTF-8
                            validity (only relevant if PCRE_UTF8
                            was set at compile time)
   PCRE_PARTIAL           ) Return PCRE_ERROR_PARTIAL for a partial
   PCRE_PARTIAL_SOFT      )   match if no full matches are found
   PCRE_PARTIAL_HARD      Return PCRE_ERROR_PARTIAL for a partial match
-                           even if there is a full match as well
+                           if that is found before a full match
 </pre>
 For details of partial matching, see the
 <a href="pcrepartial.html"><b>pcrepartial</b></a>
 page. A <b>pcre_extra</b> structure contains the following fields:
 <pre>
-  <i>flags</i>        Bits indicating which fields are set
-  <i>study_data</i>   Opaque data from <b>pcre_study()</b>
-  <i>match_limit</i>  Limit on internal resource use
+  <i>flags</i>            Bits indicating which fields are set
+  <i>study_data</i>       Opaque data from <b>pcre[16|32]_study()</b>
+  <i>match_limit</i>      Limit on internal resource use
   <i>match_limit_recursion</i>  Limit on internal recursion depth
-  <i>callout_data</i> Opaque data passed back to callouts
-  <i>tables</i>       Points to character tables or is NULL
+  <i>callout_data</i>     Opaque data passed back to callouts
+  <i>tables</i>           Points to character tables or is NULL
+  <i>mark</i>             For passing back a *MARK pointer
+  <i>executable_jit</i>   Opaque data from JIT compilation
 </pre>
 The flag bits are PCRE_EXTRA_STUDY_DATA, PCRE_EXTRA_MATCH_LIMIT,
-PCRE_EXTRA_MATCH_LIMIT_RECURSION, PCRE_EXTRA_CALLOUT_DATA, and
-PCRE_EXTRA_TABLES.
+PCRE_EXTRA_MATCH_LIMIT_RECURSION, PCRE_EXTRA_CALLOUT_DATA,
+PCRE_EXTRA_TABLES, PCRE_EXTRA_MARK and PCRE_EXTRA_EXECUTABLE_JIT.
 </P>
 <P>
 There is a complete description of the PCRE native API in the

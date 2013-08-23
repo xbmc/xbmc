@@ -17,36 +17,36 @@ man page, in case the conversion went wrong.
 <li><a name="TOC2" href="#SEC2">QUOTING</a>
 <li><a name="TOC3" href="#SEC3">CHARACTERS</a>
 <li><a name="TOC4" href="#SEC4">CHARACTER TYPES</a>
-<li><a name="TOC5" href="#SEC5">GENERAL CATEGORY PROPERTY CODES FOR \p and \P</a>
-<li><a name="TOC6" href="#SEC6">SCRIPT NAMES FOR \p AND \P</a>
-<li><a name="TOC7" href="#SEC7">CHARACTER CLASSES</a>
-<li><a name="TOC8" href="#SEC8">QUANTIFIERS</a>
-<li><a name="TOC9" href="#SEC9">ANCHORS AND SIMPLE ASSERTIONS</a>
-<li><a name="TOC10" href="#SEC10">MATCH POINT RESET</a>
-<li><a name="TOC11" href="#SEC11">ALTERNATION</a>
-<li><a name="TOC12" href="#SEC12">CAPTURING</a>
-<li><a name="TOC13" href="#SEC13">ATOMIC GROUPS</a>
-<li><a name="TOC14" href="#SEC14">COMMENT</a>
-<li><a name="TOC15" href="#SEC15">OPTION SETTING</a>
-<li><a name="TOC16" href="#SEC16">LOOKAHEAD AND LOOKBEHIND ASSERTIONS</a>
-<li><a name="TOC17" href="#SEC17">BACKREFERENCES</a>
-<li><a name="TOC18" href="#SEC18">SUBROUTINE REFERENCES (POSSIBLY RECURSIVE)</a>
-<li><a name="TOC19" href="#SEC19">CONDITIONAL PATTERNS</a>
-<li><a name="TOC20" href="#SEC20">BACKTRACKING CONTROL</a>
-<li><a name="TOC21" href="#SEC21">NEWLINE CONVENTIONS</a>
-<li><a name="TOC22" href="#SEC22">WHAT \R MATCHES</a>
-<li><a name="TOC23" href="#SEC23">CALLOUTS</a>
-<li><a name="TOC24" href="#SEC24">SEE ALSO</a>
-<li><a name="TOC25" href="#SEC25">AUTHOR</a>
-<li><a name="TOC26" href="#SEC26">REVISION</a>
+<li><a name="TOC5" href="#SEC5">GENERAL CATEGORY PROPERTIES FOR \p and \P</a>
+<li><a name="TOC6" href="#SEC6">PCRE SPECIAL CATEGORY PROPERTIES FOR \p and \P</a>
+<li><a name="TOC7" href="#SEC7">SCRIPT NAMES FOR \p AND \P</a>
+<li><a name="TOC8" href="#SEC8">CHARACTER CLASSES</a>
+<li><a name="TOC9" href="#SEC9">QUANTIFIERS</a>
+<li><a name="TOC10" href="#SEC10">ANCHORS AND SIMPLE ASSERTIONS</a>
+<li><a name="TOC11" href="#SEC11">MATCH POINT RESET</a>
+<li><a name="TOC12" href="#SEC12">ALTERNATION</a>
+<li><a name="TOC13" href="#SEC13">CAPTURING</a>
+<li><a name="TOC14" href="#SEC14">ATOMIC GROUPS</a>
+<li><a name="TOC15" href="#SEC15">COMMENT</a>
+<li><a name="TOC16" href="#SEC16">OPTION SETTING</a>
+<li><a name="TOC17" href="#SEC17">LOOKAHEAD AND LOOKBEHIND ASSERTIONS</a>
+<li><a name="TOC18" href="#SEC18">BACKREFERENCES</a>
+<li><a name="TOC19" href="#SEC19">SUBROUTINE REFERENCES (POSSIBLY RECURSIVE)</a>
+<li><a name="TOC20" href="#SEC20">CONDITIONAL PATTERNS</a>
+<li><a name="TOC21" href="#SEC21">BACKTRACKING CONTROL</a>
+<li><a name="TOC22" href="#SEC22">NEWLINE CONVENTIONS</a>
+<li><a name="TOC23" href="#SEC23">WHAT \R MATCHES</a>
+<li><a name="TOC24" href="#SEC24">CALLOUTS</a>
+<li><a name="TOC25" href="#SEC25">SEE ALSO</a>
+<li><a name="TOC26" href="#SEC26">AUTHOR</a>
+<li><a name="TOC27" href="#SEC27">REVISION</a>
 </ul>
 <br><a name="SEC1" href="#TOC1">PCRE REGULAR EXPRESSION SYNTAX SUMMARY</a><br>
 <P>
 The full syntax and semantics of the regular expressions that are supported by
 PCRE are described in the
 <a href="pcrepattern.html"><b>pcrepattern</b></a>
-documentation. This document contains just a quick-reference summary of the
-syntax.
+documentation. This document contains a quick-reference summary of the syntax.
 </P>
 <br><a name="SEC2" href="#TOC1">QUOTING</a><br>
 <P>
@@ -59,9 +59,9 @@ syntax.
 <P>
 <pre>
   \a         alarm, that is, the BEL character (hex 07)
-  \cx        "control-x", where x is any character
+  \cx        "control-x", where x is any ASCII character
   \e         escape (hex 1B)
-  \f         formfeed (hex 0C)
+  \f         form feed (hex 0C)
   \n         newline (hex 0A)
   \r         carriage return (hex 0D)
   \t         tab (hex 09)
@@ -75,25 +75,28 @@ syntax.
 <pre>
   .          any character except newline;
                in dotall mode, any character whatsoever
-  \C         one byte, even in UTF-8 mode (best avoided)
+  \C         one data unit, even in UTF mode (best avoided)
   \d         a decimal digit
   \D         a character that is not a decimal digit
-  \h         a horizontal whitespace character
-  \H         a character that is not a horizontal whitespace character
+  \h         a horizontal white space character
+  \H         a character that is not a horizontal white space character
+  \N         a character that is not a newline
   \p{<i>xx</i>}     a character with the <i>xx</i> property
   \P{<i>xx</i>}     a character without the <i>xx</i> property
   \R         a newline sequence
-  \s         a whitespace character
-  \S         a character that is not a whitespace character
-  \v         a vertical whitespace character
-  \V         a character that is not a vertical whitespace character
+  \s         a white space character
+  \S         a character that is not a white space character
+  \v         a vertical white space character
+  \V         a character that is not a vertical white space character
   \w         a "word" character
   \W         a "non-word" character
-  \X         an extended Unicode sequence
+  \X         a Unicode extended grapheme cluster
 </pre>
-In PCRE, \d, \D, \s, \S, \w, and \W recognize only ASCII characters.
+In PCRE, by default, \d, \D, \s, \S, \w, and \W recognize only ASCII
+characters, even in a UTF mode. However, this can be changed by setting the
+PCRE_UCP option.
 </P>
-<br><a name="SEC5" href="#TOC1">GENERAL CATEGORY PROPERTY CODES FOR \p and \P</a><br>
+<br><a name="SEC5" href="#TOC1">GENERAL CATEGORY PROPERTIES FOR \p and \P</a><br>
 <P>
 <pre>
   C          Other
@@ -142,18 +145,34 @@ In PCRE, \d, \D, \s, \S, \w, and \W recognize only ASCII characters.
   Zs         Space separator
 </PRE>
 </P>
-<br><a name="SEC6" href="#TOC1">SCRIPT NAMES FOR \p AND \P</a><br>
+<br><a name="SEC6" href="#TOC1">PCRE SPECIAL CATEGORY PROPERTIES FOR \p and \P</a><br>
+<P>
+<pre>
+  Xan        Alphanumeric: union of properties L and N
+  Xps        POSIX space: property Z or tab, NL, VT, FF, CR
+  Xsp        Perl space: property Z or tab, NL, FF, CR
+  Xuc        Univerally-named character: one that can be
+               represented by a Universal Character Name
+  Xwd        Perl word: property Xan or underscore
+</PRE>
+</P>
+<br><a name="SEC7" href="#TOC1">SCRIPT NAMES FOR \p AND \P</a><br>
 <P>
 Arabic,
 Armenian,
+Avestan,
 Balinese,
+Bamum,
+Batak,
 Bengali,
 Bopomofo,
+Brahmi,
 Braille,
 Buginese,
 Buhid,
 Canadian_Aboriginal,
 Carian,
+Chakma,
 Cham,
 Cherokee,
 Common,
@@ -163,6 +182,7 @@ Cypriot,
 Cyrillic,
 Deseret,
 Devanagari,
+Egyptian_Hieroglyphs,
 Ethiopic,
 Georgian,
 Glagolitic,
@@ -175,7 +195,12 @@ Hangul,
 Hanunoo,
 Hebrew,
 Hiragana,
+Imperial_Aramaic,
 Inherited,
+Inscriptional_Pahlavi,
+Inscriptional_Parthian,
+Javanese,
+Kaithi,
 Kannada,
 Katakana,
 Kayah_Li,
@@ -186,9 +211,15 @@ Latin,
 Lepcha,
 Limbu,
 Linear_B,
+Lisu,
 Lycian,
 Lydian,
 Malayalam,
+Mandaic,
+Meetei_Mayek,
+Meroitic_Cursive,
+Meroitic_Hieroglyphs,
+Miao,
 Mongolian,
 Myanmar,
 New_Tai_Lue,
@@ -196,6 +227,8 @@ Nko,
 Ogham,
 Old_Italic,
 Old_Persian,
+Old_South_Arabian,
+Old_Turkic,
 Ol_Chiki,
 Oriya,
 Osmanya,
@@ -203,15 +236,21 @@ Phags_Pa,
 Phoenician,
 Rejang,
 Runic,
+Samaritan,
 Saurashtra,
+Sharada,
 Shavian,
 Sinhala,
-Sudanese,
+Sora_Sompeng,
+Sundanese,
 Syloti_Nagri,
 Syriac,
 Tagalog,
 Tagbanwa,
 Tai_Le,
+Tai_Tham,
+Tai_Viet,
+Takri,
 Tamil,
 Telugu,
 Thaana,
@@ -222,7 +261,7 @@ Ugaritic,
 Vai,
 Yi.
 </P>
-<br><a name="SEC7" href="#TOC1">CHARACTER CLASSES</a><br>
+<br><a name="SEC8" href="#TOC1">CHARACTER CLASSES</a><br>
 <P>
 <pre>
   [...]       positive character class
@@ -241,15 +280,16 @@ Yi.
   lower       lower case letter
   print       printing, including space
   punct       printing, excluding alphanumeric
-  space       whitespace
+  space       white space
   upper       upper case letter
   word        same as \w
   xdigit      hexadecimal digit
 </pre>
-In PCRE, POSIX character set names recognize only ASCII characters. You can use
+In PCRE, POSIX character set names recognize only ASCII characters by default,
+but some of them use Unicode properties if PCRE_UCP is set. You can use
 \Q...\E inside a character class.
 </P>
-<br><a name="SEC8" href="#TOC1">QUANTIFIERS</a><br>
+<br><a name="SEC9" href="#TOC1">QUANTIFIERS</a><br>
 <P>
 <pre>
   ?           0 or 1, greedy
@@ -270,10 +310,10 @@ In PCRE, POSIX character set names recognize only ASCII characters. You can use
   {n,}?       n or more, lazy
 </PRE>
 </P>
-<br><a name="SEC9" href="#TOC1">ANCHORS AND SIMPLE ASSERTIONS</a><br>
+<br><a name="SEC10" href="#TOC1">ANCHORS AND SIMPLE ASSERTIONS</a><br>
 <P>
 <pre>
-  \b          word boundary (only ASCII letters recognized)
+  \b          word boundary
   \B          not a word boundary
   ^           start of subject
                also after internal newline in multiline mode
@@ -287,19 +327,19 @@ In PCRE, POSIX character set names recognize only ASCII characters. You can use
   \G          first matching position in subject
 </PRE>
 </P>
-<br><a name="SEC10" href="#TOC1">MATCH POINT RESET</a><br>
+<br><a name="SEC11" href="#TOC1">MATCH POINT RESET</a><br>
 <P>
 <pre>
   \K          reset start of match
 </PRE>
 </P>
-<br><a name="SEC11" href="#TOC1">ALTERNATION</a><br>
+<br><a name="SEC12" href="#TOC1">ALTERNATION</a><br>
 <P>
 <pre>
   expr|expr|expr...
 </PRE>
 </P>
-<br><a name="SEC12" href="#TOC1">CAPTURING</a><br>
+<br><a name="SEC13" href="#TOC1">CAPTURING</a><br>
 <P>
 <pre>
   (...)           capturing group
@@ -311,19 +351,19 @@ In PCRE, POSIX character set names recognize only ASCII characters. You can use
                    capturing groups in each alternative
 </PRE>
 </P>
-<br><a name="SEC13" href="#TOC1">ATOMIC GROUPS</a><br>
+<br><a name="SEC14" href="#TOC1">ATOMIC GROUPS</a><br>
 <P>
 <pre>
   (?&#62;...)         atomic, non-capturing group
 </PRE>
 </P>
-<br><a name="SEC14" href="#TOC1">COMMENT</a><br>
+<br><a name="SEC15" href="#TOC1">COMMENT</a><br>
 <P>
 <pre>
   (?#....)        comment (not nestable)
 </PRE>
 </P>
-<br><a name="SEC15" href="#TOC1">OPTION SETTING</a><br>
+<br><a name="SEC16" href="#TOC1">OPTION SETTING</a><br>
 <P>
 <pre>
   (?i)            caseless
@@ -334,13 +374,20 @@ In PCRE, POSIX character set names recognize only ASCII characters. You can use
   (?x)            extended (ignore white space)
   (?-...)         unset option(s)
 </pre>
-The following is recognized only at the start of a pattern or after one of the
+The following are recognized only at the start of a pattern or after one of the
 newline-setting options with similar syntax:
 <pre>
-  (*UTF8)         set UTF-8 mode
+  (*LIMIT_MATCH=d) set the match limit to d (decimal number)
+  (*LIMIT_RECURSION=d) set the recursion limit to d (decimal number)
+  (*NO_START_OPT) no start-match optimization (PCRE_NO_START_OPTIMIZE)
+  (*UTF8)         set UTF-8 mode: 8-bit library (PCRE_UTF8)
+  (*UTF16)        set UTF-16 mode: 16-bit library (PCRE_UTF16)
+  (*UTF32)        set UTF-32 mode: 32-bit library (PCRE_UTF32)
+  (*UTF)          set appropriate UTF mode for the library in use
+  (*UCP)          set PCRE_UCP (use Unicode properties for \d etc)
 </PRE>
 </P>
-<br><a name="SEC16" href="#TOC1">LOOKAHEAD AND LOOKBEHIND ASSERTIONS</a><br>
+<br><a name="SEC17" href="#TOC1">LOOKAHEAD AND LOOKBEHIND ASSERTIONS</a><br>
 <P>
 <pre>
   (?=...)         positive look ahead
@@ -350,7 +397,7 @@ newline-setting options with similar syntax:
 </pre>
 Each top-level branch of a look behind must be of a fixed length.
 </P>
-<br><a name="SEC17" href="#TOC1">BACKREFERENCES</a><br>
+<br><a name="SEC18" href="#TOC1">BACKREFERENCES</a><br>
 <P>
 <pre>
   \n              reference by number (can be ambiguous)
@@ -364,7 +411,7 @@ Each top-level branch of a look behind must be of a fixed length.
   (?P=name)       reference by name (Python)
 </PRE>
 </P>
-<br><a name="SEC18" href="#TOC1">SUBROUTINE REFERENCES (POSSIBLY RECURSIVE)</a><br>
+<br><a name="SEC19" href="#TOC1">SUBROUTINE REFERENCES (POSSIBLY RECURSIVE)</a><br>
 <P>
 <pre>
   (?R)            recurse whole pattern
@@ -383,7 +430,7 @@ Each top-level branch of a look behind must be of a fixed length.
   \g'-n'          call subpattern by relative number (PCRE extension)
 </PRE>
 </P>
-<br><a name="SEC19" href="#TOC1">CONDITIONAL PATTERNS</a><br>
+<br><a name="SEC20" href="#TOC1">CONDITIONAL PATTERNS</a><br>
 <P>
 <pre>
   (?(condition)yes-pattern)
@@ -402,12 +449,13 @@ Each top-level branch of a look behind must be of a fixed length.
   (?(assert)...   assertion condition
 </PRE>
 </P>
-<br><a name="SEC20" href="#TOC1">BACKTRACKING CONTROL</a><br>
+<br><a name="SEC21" href="#TOC1">BACKTRACKING CONTROL</a><br>
 <P>
 The following act immediately they are reached:
 <pre>
   (*ACCEPT)       force successful match
   (*FAIL)         force backtrack; synonym (*F)
+  (*MARK:NAME)    set name to be passed back; synonym (*:NAME)
 </pre>
 The following act only when a subsequent match failure causes a backtrack to
 reach them. They all force a match failure, but they differ in what happens
@@ -416,14 +464,18 @@ pattern is not anchored.
 <pre>
   (*COMMIT)       overall failure, no advance of starting point
   (*PRUNE)        advance to next starting character
-  (*SKIP)         advance start to current matching position
+  (*PRUNE:NAME)   equivalent to (*MARK:NAME)(*PRUNE)
+  (*SKIP)         advance to current matching position
+  (*SKIP:NAME)    advance to position corresponding to an earlier
+                  (*MARK:NAME); if not found, the (*SKIP) is ignored
   (*THEN)         local failure, backtrack to next alternation
+  (*THEN:NAME)    equivalent to (*MARK:NAME)(*THEN)
 </PRE>
 </P>
-<br><a name="SEC21" href="#TOC1">NEWLINE CONVENTIONS</a><br>
+<br><a name="SEC22" href="#TOC1">NEWLINE CONVENTIONS</a><br>
 <P>
 These are recognized only at the very start of the pattern or after a
-(*BSR_...) or (*UTF8) option.
+(*BSR_...), (*UTF8), (*UTF16), (*UTF32) or (*UCP) option.
 <pre>
   (*CR)           carriage return only
   (*LF)           linefeed only
@@ -432,28 +484,28 @@ These are recognized only at the very start of the pattern or after a
   (*ANY)          any Unicode newline sequence
 </PRE>
 </P>
-<br><a name="SEC22" href="#TOC1">WHAT \R MATCHES</a><br>
+<br><a name="SEC23" href="#TOC1">WHAT \R MATCHES</a><br>
 <P>
 These are recognized only at the very start of the pattern or after a
-(*...) option that sets the newline convention or UTF-8 mode.
+(*...) option that sets the newline convention or a UTF or UCP mode.
 <pre>
   (*BSR_ANYCRLF)  CR, LF, or CRLF
   (*BSR_UNICODE)  any Unicode newline sequence
 </PRE>
 </P>
-<br><a name="SEC23" href="#TOC1">CALLOUTS</a><br>
+<br><a name="SEC24" href="#TOC1">CALLOUTS</a><br>
 <P>
 <pre>
   (?C)      callout
   (?Cn)     callout with data n
 </PRE>
 </P>
-<br><a name="SEC24" href="#TOC1">SEE ALSO</a><br>
+<br><a name="SEC25" href="#TOC1">SEE ALSO</a><br>
 <P>
 <b>pcrepattern</b>(3), <b>pcreapi</b>(3), <b>pcrecallout</b>(3),
 <b>pcrematching</b>(3), <b>pcre</b>(3).
 </P>
-<br><a name="SEC25" href="#TOC1">AUTHOR</a><br>
+<br><a name="SEC26" href="#TOC1">AUTHOR</a><br>
 <P>
 Philip Hazel
 <br>
@@ -462,11 +514,11 @@ University Computing Service
 Cambridge CB2 3QH, England.
 <br>
 </P>
-<br><a name="SEC26" href="#TOC1">REVISION</a><br>
+<br><a name="SEC27" href="#TOC1">REVISION</a><br>
 <P>
-Last updated: 11 April 2009
+Last updated: 26 April 2013
 <br>
-Copyright &copy; 1997-2009 University of Cambridge.
+Copyright &copy; 1997-2013 University of Cambridge.
 <br>
 <p>
 Return to the <a href="index.html">PCRE index page</a>.

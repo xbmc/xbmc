@@ -48,16 +48,16 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NO_RECURSE;WIN32;_DEBUG;_LIB;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <PreprocessorDefinitions>WIN32;_DEBUG;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <CompileAs>CompileAsCpp</CompileAs>
+      <CompileAs>Default</CompileAs>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Lib>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
@@ -70,7 +70,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NO_RECURSE;WIN32;NDEBUG;_LIB;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
@@ -78,9 +78,14 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\pcrecpp.cc" />
+    <ClCompile Include="..\pcre_byte_order.c" />
     <ClCompile Include="..\pcre_chartables.c" />
     <ClCompile Include="..\pcre_compile.c" />
     <ClCompile Include="..\pcre_config.c" />
@@ -89,27 +94,28 @@
     <ClCompile Include="..\pcre_fullinfo.c" />
     <ClCompile Include="..\pcre_get.c" />
     <ClCompile Include="..\pcre_globals.c" />
-    <ClCompile Include="..\pcre_info.c" />
+    <ClCompile Include="..\pcre_jit_compile.c" />
     <ClCompile Include="..\pcre_maketables.c" />
     <ClCompile Include="..\pcre_newline.c" />
     <ClCompile Include="..\pcre_ord2utf8.c" />
     <ClCompile Include="..\pcre_refcount.c" />
+    <ClCompile Include="..\pcre_stringpiece.cc" />
+    <ClCompile Include="..\pcre_string_utils.c" />
     <ClCompile Include="..\pcre_study.c" />
     <ClCompile Include="..\pcre_tables.c" />
-    <ClCompile Include="..\pcre_try_flipped.c" />
     <ClCompile Include="..\pcre_ucd.c" />
     <ClCompile Include="..\pcre_valid_utf8.c" />
     <ClCompile Include="..\pcre_version.c" />
     <ClCompile Include="..\pcre_xclass.c" />
-    <ClCompile Include="..\pcrecpp.cc" />
-    <ClCompile Include="..\pcreposix.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\config.h" />
     <ClInclude Include="..\pcre.h" />
-    <ClInclude Include="..\pcre_internal.h" />
-    <ClInclude Include="..\pcre_scanner.h" />
+    <ClInclude Include="..\pcrecpp.h" />
+    <ClInclude Include="..\pcrecpparg.h" />
     <ClInclude Include="..\pcrecpp_internal.h" />
-    <ClInclude Include="..\pcreposix.h" />
+    <ClInclude Include="..\pcre_internal.h" />
+    <ClInclude Include="..\pcre_stringpiece.h" />
     <ClInclude Include="..\ucp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

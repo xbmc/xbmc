@@ -121,7 +121,7 @@ int Scanner::LineNumber() const {
 }
 
 int Scanner::Offset() const {
-  return input_.data() - data_.c_str();
+  return (int)(input_.data() - data_.c_str());
 }
 
 bool Scanner::LookingAt(const RE& re) const {
@@ -153,7 +153,7 @@ void Scanner::ConsumeSkip() {
       comments_ = new vector<StringPiece>;
     }
     // already pointing one past end, so no need to +1
-    int length = input_.data() - start_data;
+    int length = (int)(input_.data() - start_data);
     if (length > 0) {
       comments_->push_back(StringPiece(start_data, length));
     }

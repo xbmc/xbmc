@@ -1,4 +1,4 @@
-.TH PCRE_COMPILE2 3
+.TH PCRE_COMPILE2 3 "24 June 2012" "PCRE 8.30"
 .SH NAME
 PCRE - Perl-compatible regular expressions
 .SH SYNOPSIS
@@ -14,22 +14,38 @@ PCRE - Perl-compatible regular expressions
 .B const char **\fIerrptr\fP, int *\fIerroffset\fP,
 .ti +5n
 .B const unsigned char *\fItableptr\fP);
+.PP
+.B pcre16 *pcre16_compile2(PCRE_SPTR16 \fIpattern\fP, int \fIoptions\fP,
+.ti +5n
+.B int *\fIerrorcodeptr\fP,
+.ti +5n
+.B const char **\fIerrptr\fP, int *\fIerroffset\fP,
+.ti +5n
+.B const unsigned char *\fItableptr\fP);
+.PP
+.B pcre32 *pcre32_compile2(PCRE_SPTR32 \fIpattern\fP, int \fIoptions\fP,
+.ti +5n
+.B int *\fIerrorcodeptr\fP,
+.ti +5n
+.B const char **\fIerrptr\fP, int *\fIerroffset\fP,
+.ti +5n
+.B const unsigned char *\fItableptr\fP);
 .
 .SH DESCRIPTION
 .rs
 .sp
 This function compiles a regular expression into an internal form. It is the
-same as \fBpcre_compile()\fP, except for the addition of the \fIerrorcodeptr\fP
-argument. The arguments are:
-
+same as \fBpcre[16|32]_compile()\fP, except for the addition of the
+\fIerrorcodeptr\fP argument. The arguments are:
+.
 .sp
-  \fIpattern\fR       A zero-terminated string containing the
+  \fIpattern\fP       A zero-terminated string containing the
                   regular expression to be compiled
-  \fIoptions\fR       Zero or more option bits
+  \fIoptions\fP       Zero or more option bits
   \fIerrorcodeptr\fP  Where to put an error code
-  \fIerrptr\fR        Where to put an error message
-  \fIerroffset\fR     Offset in pattern where error was found
-  \fItableptr\fR      Pointer to character tables, or NULL to
+  \fIerrptr\fP        Where to put an error message
+  \fIerroffset\fP     Offset in pattern where error was found
+  \fItableptr\fP      Pointer to character tables, or NULL to
                   use the built-in default
 .sp
 The option bits are:
@@ -42,7 +58,7 @@ The option bits are:
   PCRE_DOLLAR_ENDONLY     $ not to match newline at end
   PCRE_DOTALL             . matches anything including NL
   PCRE_DUPNAMES           Allow duplicate names for subpatterns
-  PCRE_EXTENDED           Ignore whitespace and # comments
+  PCRE_EXTENDED           Ignore white space and # comments
   PCRE_EXTRA              PCRE extra features
                             (not much use currently)
   PCRE_FIRSTLINE          Force matching to be before newline
@@ -56,14 +72,23 @@ The option bits are:
   PCRE_NEWLINE_LF         Set LF as the newline sequence
   PCRE_NO_AUTO_CAPTURE    Disable numbered capturing paren-
                             theses (named ones available)
+  PCRE_NO_UTF16_CHECK     Do not check the pattern for UTF-16
+                            validity (only relevant if
+                            PCRE_UTF16 is set)
+  PCRE_NO_UTF32_CHECK     Do not check the pattern for UTF-32
+                            validity (only relevant if
+                            PCRE_UTF32 is set)
   PCRE_NO_UTF8_CHECK      Do not check the pattern for UTF-8
                             validity (only relevant if
                             PCRE_UTF8 is set)
+  PCRE_UCP                Use Unicode properties for \ed, \ew, etc.
   PCRE_UNGREEDY           Invert greediness of quantifiers
-  PCRE_UTF8               Run in UTF-8 mode
+  PCRE_UTF16              Run \fBpcre16_compile()\fP in UTF-16 mode
+  PCRE_UTF32              Run \fBpcre32_compile()\fP in UTF-32 mode
+  PCRE_UTF8               Run \fBpcre_compile()\fP in UTF-8 mode
 .sp
-PCRE must be built with UTF-8 support in order to use PCRE_UTF8 and
-PCRE_NO_UTF8_CHECK.
+PCRE must be built with UTF support in order to use PCRE_UTF8/16/32 and
+PCRE_NO_UTF8/16/32_CHECK, and with UCP support if PCRE_UCP is used.
 .P
 The yield of the function is a pointer to a private data structure that
 contains the compiled pattern, or NULL if an error was detected. Note that
@@ -72,10 +97,10 @@ version is not guaranteed to work and may cause crashes.
 .P
 There is a complete description of the PCRE native API in the
 .\" HREF
-\fBpcreapi\fR
+\fBpcreapi\fP
 .\"
 page and a description of the POSIX API in the
 .\" HREF
-\fBpcreposix\fR
+\fBpcreposix\fP
 .\"
 page.

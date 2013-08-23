@@ -22,6 +22,14 @@ SYNOPSIS
 <b>int pcre_get_stringtable_entries(const pcre *<i>code</i>,</b>
 <b>const char *<i>name</i>, char **<i>first</i>, char **<i>last</i>);</b>
 </P>
+<P>
+<b>int pcre16_get_stringtable_entries(const pcre16 *<i>code</i>,</b>
+<b>PCRE_SPTR16 <i>name</i>, PCRE_UCHAR16 **<i>first</i>, PCRE_UCHAR16 **<i>last</i>);</b>
+</P>
+<P>
+<b>int pcre32_get_stringtable_entries(const pcre32 *<i>code</i>,</b>
+<b>PCRE_SPTR32 <i>name</i>, PCRE_UCHAR32 **<i>first</i>, PCRE_UCHAR32 **<i>last</i>);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
@@ -29,7 +37,7 @@ DESCRIPTION
 This convenience function finds, for a compiled pattern, the first and last
 entries for a given name in the table that translates capturing parenthesis
 names into numbers. When names are required to be unique (PCRE_DUPNAMES is
-<i>not</i> set), it is usually easier to use <b>pcre_get_stringnumber()</b>
+<i>not</i> set), it is usually easier to use <b>pcre[16|32]_get_stringnumber()</b>
 instead.
 <pre>
   <i>code</i>    Compiled regular expression

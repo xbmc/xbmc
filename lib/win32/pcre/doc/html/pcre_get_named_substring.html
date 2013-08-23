@@ -24,6 +24,18 @@ SYNOPSIS
 <b>int <i>stringcount</i>, const char *<i>stringname</i>,</b>
 <b>const char **<i>stringptr</i>);</b>
 </P>
+<P>
+<b>int pcre16_get_named_substring(const pcre16 *<i>code</i>,</b>
+<b>PCRE_SPTR16 <i>subject</i>, int *<i>ovector</i>,</b>
+<b>int <i>stringcount</i>, PCRE_SPTR16 <i>stringname</i>,</b>
+<b>PCRE_SPTR16 *<i>stringptr</i>);</b>
+</P>
+<P>
+<b>int pcre32_get_named_substring(const pcre32 *<i>code</i>,</b>
+<b>PCRE_SPTR32 <i>subject</i>, int *<i>ovector</i>,</b>
+<b>int <i>stringcount</i>, PCRE_SPTR32 <i>stringname</i>,</b>
+<b>PCRE_SPTR32 *<i>stringptr</i>);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
@@ -33,16 +45,17 @@ arguments are:
 <pre>
   <i>code</i>          Compiled pattern
   <i>subject</i>       Subject that has been successfully matched
-  <i>ovector</i>       Offset vector that <b>pcre_exec()</b> used
-  <i>stringcount</i>   Value returned by <b>pcre_exec()</b>
+  <i>ovector</i>       Offset vector that <b>pcre[16|32]_exec()</b> used
+  <i>stringcount</i>   Value returned by <b>pcre[16|32]_exec()</b>
   <i>stringname</i>    Name of the required substring
   <i>stringptr</i>     Where to put the string pointer
 </pre>
 The memory in which the substring is placed is obtained by calling
-<b>pcre_malloc()</b>. The convenience function <b>pcre_free_substring()</b> can
-be used to free it when it is no longer needed. The yield of the function is
-the length of the extracted substring, PCRE_ERROR_NOMEMORY if sufficient memory
-could not be obtained, or PCRE_ERROR_NOSUBSTRING if the string name is invalid.
+<b>pcre[16|32]_malloc()</b>. The convenience function
+<b>pcre[16|32]_free_substring()</b> can be used to free it when it is no longer
+needed. The yield of the function is the length of the extracted substring,
+PCRE_ERROR_NOMEMORY if sufficient memory could not be obtained, or
+PCRE_ERROR_NOSUBSTRING if the string name is invalid.
 </P>
 <P>
 There is a complete description of the PCRE native API in the

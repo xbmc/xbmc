@@ -1,4 +1,4 @@
-.TH PCREMATCHING 3
+.TH PCREMATCHING 3 "08 January 2012" "PCRE 8.30"
 .SH NAME
 PCRE - Perl-compatible regular expressions
 .SH "PCRE MATCHING ALGORITHMS"
@@ -6,12 +6,18 @@ PCRE - Perl-compatible regular expressions
 .sp
 This document describes the two different algorithms that are available in PCRE
 for matching a compiled regular expression against a given subject string. The
-"standard" algorithm is the one provided by the \fBpcre_exec()\fP function.
-This works in the same was as Perl's matching function, and provides a
-Perl-compatible matching operation.
+"standard" algorithm is the one provided by the \fBpcre_exec()\fP,
+\fBpcre16_exec()\fP and \fBpcre32_exec()\fP functions. These work in the same
+as as Perl's matching function, and provide a Perl-compatible matching operation.
+The just-in-time (JIT) optimization that is described in the
+.\" HREF
+\fBpcrejit\fP
+.\"
+documentation is compatible with these functions.
 .P
-An alternative algorithm is provided by the \fBpcre_dfa_exec()\fP function;
-this operates in a different way, and is not Perl-compatible. It has advantages
+An alternative algorithm is provided by the \fBpcre_dfa_exec()\fP,
+\fBpcre16_dfa_exec()\fP and \fBpcre32_dfa_exec()\fP functions; they operate in
+a different way, and are not Perl-compatible. This alternative has advantages
 and disadvantages compared with the standard algorithm, and these are described
 below.
 .P
@@ -28,6 +34,7 @@ is matched against the string
 there are three possible answers. The standard algorithm finds only one of
 them, whereas the alternative algorithm finds all three.
 .
+.
 .SH "REGULAR EXPRESSIONS AS TREES"
 .rs
 .sp
@@ -37,6 +44,7 @@ infinite size, but it is still a tree. Matching the pattern to a given subject
 string (from a given starting point) can be thought of as a search of the tree.
 There are two ways to search a tree: depth-first and breadth-first, and these
 correspond to the two matching algorithms provided by PCRE.
+.
 .
 .SH "THE STANDARD MATCHING ALGORITHM"
 .rs
@@ -63,6 +71,7 @@ straightforward for this algorithm to keep track of the substrings that are
 matched by portions of the pattern in parentheses. This provides support for
 capturing parentheses and back references.
 .
+.
 .SH "THE ALTERNATIVE MATCHING ALGORITHM"
 .rs
 .sp
@@ -83,16 +92,17 @@ The scan continues until either the end of the subject is reached, or there are
 no more unterminated paths. At this point, terminated paths represent the
 different matching possibilities (if there are none, the match has failed).
 Thus, if there is more than one possible match, this algorithm finds all of
-them, and in particular, it finds the longest. There is an option to stop the
-algorithm after the first match (which is necessarily the shortest) is found.
+them, and in particular, it finds the longest. The matches are returned in
+decreasing order of length. There is an option to stop the algorithm after the
+first match (which is necessarily the shortest) is found.
 .P
 Note that all the matches that are found start at the same point in the
 subject. If the pattern
 .sp
-  cat(er(pillar)?)
+  cat(er(pillar)?)?
 .sp
 is matched against the string "the caterpillar catchment", the result will be
-the three strings "cat", "cater", and "caterpillar" that start at the fourth
+the three strings "caterpillar", "cater", and "cat" that start at the fifth
 character of the subject. The algorithm does not automatically move on to find
 matches that start at later positions.
 .P
@@ -130,13 +140,14 @@ and not on others), is not supported. It causes an error if encountered.
 6. Callouts are supported, but the value of the \fIcapture_top\fP field is
 always 1, and the value of the \fIcapture_last\fP field is always -1.
 .P
-7. The \eC escape sequence, which (in the standard algorithm) matches a single
-byte, even in UTF-8 mode, is not supported because the alternative algorithm
-moves through the subject string one character at a time, for all active paths
-through the tree.
+7. The \eC escape sequence, which (in the standard algorithm) always matches a
+single data unit, even in UTF-8, UTF-16 or UTF-32 modes, is not supported in
+these modes, because the alternative algorithm moves through the subject string
+one character (not data unit) at a time, for all active paths through the tree.
 .P
 8. Except for (*FAIL), the backtracking control verbs such as (*PRUNE) are not
 supported. (*FAIL) is supported, and behaves like a failing negative assertion.
+.
 .
 .SH "ADVANTAGES OF THE ALTERNATIVE ALGORITHM"
 .rs
@@ -149,13 +160,16 @@ match using the standard algorithm, you have to do kludgy things with
 callouts.
 .P
 2. Because the alternative algorithm scans the subject string just once, and
-never needs to backtrack, it is possible to pass very long subject strings to
-the matching function in several pieces, checking for partial matching each
-time. The
+never needs to backtrack (except for lookbehinds), it is possible to pass very
+long subject strings to the matching function in several pieces, checking for
+partial matching each time. Although it is possible to do multi-segment
+matching using the standard algorithm by retaining partially matched
+substrings, it is more complicated. The
 .\" HREF
 \fBpcrepartial\fP
 .\"
-documentation gives details of partial matching.
+documentation gives details of partial matching and discusses multi-segment
+matching.
 .
 .
 .SH "DISADVANTAGES OF THE ALTERNATIVE ALGORITHM"
@@ -187,6 +201,6 @@ Cambridge CB2 3QH, England.
 .rs
 .sp
 .nf
-Last updated: 29 September 2009
-Copyright (c) 1997-2009 University of Cambridge.
+Last updated: 08 January 2012
+Copyright (c) 1997-2012 University of Cambridge.
 .fi
