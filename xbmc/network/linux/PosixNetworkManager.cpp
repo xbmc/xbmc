@@ -240,7 +240,7 @@ void CPosixNetworkManager::RestoreSavedConnection()
   for (size_t i = 0; i < m_connections.size(); i++)
   {
     std::string connection_name = ((CPosixConnection*)m_connections[i].get())->GetName();
-    if (connection_name.find(saved_name) != std::string::npos)
+    if (connection_name == saved_name)
     {
       if (!((CPosixConnection*)m_connections[i].get())->Connect(NULL, saved_ipconfig))
       {
