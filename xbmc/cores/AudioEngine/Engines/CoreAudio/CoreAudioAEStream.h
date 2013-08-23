@@ -83,7 +83,7 @@ public:
   virtual void  SetReplayGain(float factor);
   virtual void  SetAmplification(float amplify){ m_limiter.SetAmplification(amplify); }
   
-  virtual float RunLimiter(float* frame, int channels) { return m_limiter.Run(frame, channels); }
+  virtual float RunLimiter(float* frame, int channels) { return m_limiter.Run(&frame, channels); }
 
   virtual const unsigned int      GetChannelCount() const;
   virtual const unsigned int      GetSampleRate() const;
