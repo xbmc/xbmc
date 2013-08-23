@@ -116,6 +116,10 @@ missing_headers="Could not find some required headers. Please see the README for
 missing_program="Could not find a required program. Please see the README for your platform."
 xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
+waveform_enabled="== WAVEFORM enabled =="
+waveform_disabled="== WAVEFORM disabled =="
+spectrum_enabled="== SPECTRUM enabled =="
+spectrum_disabled="== SPECTRUM disabled =="
 goom_enabled="== GOOM enabled. =="
 goom_disabled="== GOOM disabled. =="
 alsa_disabled="== ALSA support disabled. =="
@@ -299,6 +303,18 @@ AC_ARG_ENABLE([xrandr],
   [enable XRandR support (default is yes)])],
   [use_xrandr=$enableval],
   [use_xrandr=yes])
+
+AC_ARG_ENABLE([waveform],
+  [AS_HELP_STRING([--enable-waveform],
+  [enable Waveform visualisation (default is yes)])],
+  [use_waveform=$enableval],
+  [use_waveform=yes])
+
+AC_ARG_ENABLE([spectrum],
+  [AS_HELP_STRING([--enable-spectrum],
+  [enable Spectrum visualisation (default is yes)])],
+  [use_spectrum=$enableval],
+  [use_spectrum=yes])
 
 AC_ARG_ENABLE([goom],
   [AS_HELP_STRING([--enable-goom],
@@ -1304,6 +1320,24 @@ else
   fi
 fi
 
+# WAVEFORM
+if test "$use_waveform" = "yes"; then
+  AC_MSG_NOTICE($waveform_enabled)
+    DISABLE_WAVEFORM=0
+else
+  AC_MSG_NOTICE($waveform_disabled)
+  DISABLE_WAVEFORM=1
+fi
+
+# SPECTRUM
+if test "$use_spectrum" = "yes"; then
+  AC_MSG_NOTICE($spectrum_enabled)
+    DISABLE_SPECTRUM=0
+else
+  AC_MSG_NOTICE($spectrum_disabled)
+  DISABLE_SPECTRUM=1
+fi
+
 # GOOM
 if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($goom_disabled)
@@ -2005,6 +2039,18 @@ else
   USE_XRANDR=0
 fi
 
+if test "$use_waveform" = "yes"; then
+  final_message="$final_message\n  Waveform:\tYes"
+else
+  final_message="$final_message\n  Waveform:\tNo"
+fi
+
+if test "$use_spectrum" = "yes"; then
+  final_message="$final_message\n  Spectrum:\tYes"
+else
+  final_message="$final_message\n  Spectrum:\tNo"
+fi
+
 if test "$use_goom" = "yes"; then
   final_message="$final_message\n  GOOM:\t\tYes"
 else
@@ -2423,6 +2469,8 @@ AC_SUBST(INCLUDES)
 AC_SUBST(LDFLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
+AC_SUBST(DISABLE_WAVEFORM)
+AC_SUBST(DISABLE_SPECTRUM)
 AC_SUBST(DISABLE_GOOM)
 AC_SUBST(DISABLE_RSXS)
 AC_SUBST(DISABLE_FISHBMC)

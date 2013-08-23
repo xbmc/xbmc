@@ -209,8 +209,15 @@ ifneq (@DISABLE_RSXS@,1)
   SS_DIRS+= xbmc/screensavers/rsxs-0.9/xbmc
 endif
 
-VIS_DIRS=xbmc/visualizations/OpenGLSpectrum \
-         xbmc/visualizations/WaveForm
+ifneq (@DISABLE_SPECTRUM@,1)
+  VIS_DIRS+= xbmc/visualizations/OpenGLSpectrum
+else
+  INSTALL_FILTER+= .*visualization\.glspectrum.*
+endif
+
+ifneq (@DISABLE_WAVEFORM@,1)
+  VIS_DIRS+= xbmc/visualizations/WaveForm
+endif
 
 ifneq (@DISABLE_FISHBMC@,1)
   VIS_DIRS+= xbmc/visualizations/fishBMC
