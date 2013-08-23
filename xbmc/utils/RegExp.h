@@ -73,7 +73,6 @@ public:
 private:
   void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
 
-private:
   PCRE::pcre* m_re;
   int         m_iOvector[OVECCOUNT];
   int         m_iMatchCount;
