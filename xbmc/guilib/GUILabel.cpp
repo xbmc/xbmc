@@ -92,9 +92,9 @@ bool CGUILabel::Process(unsigned int currentTime)
   bool renderSolid = (m_color == COLOR_DISABLED);
 
   if (overFlows && m_scrolling && !renderSolid)
-    m_textLayout.UpdateScrollinfo(m_scrollInfo);
+    return m_textLayout.UpdateScrollinfo(m_scrollInfo);
 
-  return (overFlows && m_scrolling);
+  return false;
 }
 
 void CGUILabel::Render()
