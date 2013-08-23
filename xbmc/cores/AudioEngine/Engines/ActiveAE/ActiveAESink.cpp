@@ -786,6 +786,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
       {
         m_extError = true;
         CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - failed");
+        m_stats->UpdateSinkDelay(0, frames);
         return 0;
       }
       else
