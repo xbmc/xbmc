@@ -48,10 +48,6 @@ public:
   const CJNIMediaFormat getOutputFormat();
   std::vector<CJNIByteBuffer> getInputBuffers();
   std::vector<CJNIByteBuffer> getOutputBuffers();
-  int   getInputBufferSize();
-  int   getOutputBufferSize();
-  const CJNIByteBuffer getInputBuffer(int index);
-  const CJNIByteBuffer getOutputBuffer(int index);
   void  setVideoScalingMode(int mode);
 
   static void  PopulateStaticFields();

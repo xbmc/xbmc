@@ -174,42 +174,6 @@ std::vector<CJNIByteBuffer> CJNIMediaCodec::getOutputBuffers()
     "getOutputBuffers", "()[Ljava/nio/ByteBuffer;"));
 }
 
-int CJNIMediaCodec::getInputBufferSize()
-{
-  jhobjectArray oByteBuffers = call_method<jhobjectArray>(m_object,
-    "getInputBuffers", "()[Ljava/nio/ByteBuffer;");
-
-  JNIEnv *env = xbmc_jnienv();
-  return env->GetArrayLength(oByteBuffers.get());
-}
-
-int CJNIMediaCodec::getOutputBufferSize()
-{
-  jhobjectArray oByteBuffers = call_method<jhobjectArray>(m_object,
-    "getOutputBuffers", "()[Ljava/nio/ByteBuffer;");
-
-  JNIEnv *env = xbmc_jnienv();
-  return env->GetArrayLength(oByteBuffers.get());
-}
-
-const CJNIByteBuffer CJNIMediaCodec::getInputBuffer(int index)
-{
-  jhobjectArray oByteBuffers = call_method<jhobjectArray>(m_object,
-    "getInputBuffers", "()[Ljava/nio/ByteBuffer;");
-
-  JNIEnv *env = xbmc_jnienv();
-  return CJNIByteBuffer(jhobject(env->GetObjectArrayElement(oByteBuffers.get(), index)));
-}
-
-const CJNIByteBuffer CJNIMediaCodec::getOutputBuffer(int index)
-{
-  jhobjectArray oByteBuffers = call_method<jhobjectArray>(m_object,
-    "getOutputBuffers", "()[Ljava/nio/ByteBuffer;");
-
-  JNIEnv *env = xbmc_jnienv();
-  return CJNIByteBuffer(jhobject(env->GetObjectArrayElement(oByteBuffers.get(), index)));
-}
-
 void CJNIMediaCodec::setVideoScalingMode(int mode)
 {
   call_method<void>(m_object,
