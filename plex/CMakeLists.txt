@@ -29,6 +29,8 @@ add_subdirectory(AutoUpdate)
 add_subdirectory(Remote)
 
 
+include(BreakpadSymbols)
+
 if(TARGET_WIN32)
   add_subdirectory(Resources/MCE)
 endif(TARGET_WIN32)
@@ -66,6 +68,9 @@ if(TARGET_COMMON_DARWIN)
 else()
   add_executable(${PLEX_TARGET_NAME} WIN32 ${PLEX_ALL_SRCS})
 endif()
+
+GENERATE_BREAKPAD_SYMBOLS(${PLEX_TARGET_NAME})
+add_custom_target(symbols DEPENDS ${PLEX_TARGET_NAME}_symbols)
 
 # Set the correct binary name
 set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})

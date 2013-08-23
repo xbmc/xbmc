@@ -72,9 +72,13 @@ set(CPACK_SOURCE_IGNORE_FILES
   "^${PROJECT_SOURCE_DIR}/upload"
 )
 
+set(PKG package)
 if(TARGET_WIN32)
   add_custom_target(signed_package ${plexdir}/scripts/WindowsSign.cmd ${CPACK_PACKAGE_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}.exe DEPENDS package)
+  set(PKG signed_package)
 endif()
+
+add_custom_target(release_package DEPENDS symbols ${PKG})
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/plex/CMakeModules ${CMAKE_MODULE_PATH})
 include(CPack)
