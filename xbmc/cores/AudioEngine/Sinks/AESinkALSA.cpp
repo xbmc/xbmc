@@ -33,7 +33,7 @@
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
 #if defined(HAS_AMLPLAYER)
-#include "cores/amlplayer/AMLUtils.h"
+#include "utils/AMLUtils.h"
 #endif
 
 #define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
