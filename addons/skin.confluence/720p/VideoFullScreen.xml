@@ -595,7 +595,7 @@
 				<description>BER value</description>
 				<left>220</left>
 				<top>165</top>
-				<width>1000</width>
+				<width>165</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamBER]</label>
 				<align>left</align>
@@ -605,7 +605,7 @@
 			</control>
 			<control type="label">
 				<description>UNC</description>
-				<left>430</left>
+				<left>390</left>
 				<top>165</top>
 				<width>165</width>
 				<height>25</height>
@@ -617,11 +617,35 @@
 			</control>
 			<control type="label">
 				<description>UNC value</description>
-				<left>600</left>
+				<left>560</left>
 				<top>165</top>
-				<width>1000</width>
+				<width>165</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamUNC]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+			</control>
+			<control type="label">
+				<description>Service</description>
+				<left>730</left>
+				<top>165</top>
+				<width>165</width>
+				<height>25</height>
+				<label>$LOCALIZE[19099]:</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label">
+				<description>Service value</description>
+				<left>900</left>
+				<top>165</top>
+				<width>330</width>
+				<height>25</height>
+				<label>$INFO[PVR.ActStreamServiceName]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font12</font>
@@ -643,9 +667,57 @@
 				<description>Encryption value</description>
 				<left>220</left>
 				<top>190</top>
-				<width>1000</width>
+				<width>165</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamEncryptionName]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+			</control>
+			<control type="label">
+				<description>Provider</description>
+				<left>390</left>
+				<top>190</top>
+				<width>165</width>
+				<height>25</height>
+				<label>$LOCALIZE[19101]:</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label">
+				<description>Provider value</description>
+				<left>560</left>
+				<top>190</top>
+				<width>165</width>
+				<height>25</height>
+				<label>$INFO[PVR.ActStreamProviderName]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+			</control>
+			<control type="label">
+				<description>Mux</description>
+				<left>730</left>
+				<top>190</top>
+				<width>165</width>
+				<height>25</height>
+				<label>$LOCALIZE[19100]:</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label">
+				<description>Mux value</description>
+				<left>900</left>
+				<top>190</top>
+				<width>330</width>
+				<height>25</height>
+				<label>$INFO[PVR.ActStreamMux]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font12</font>

@@ -194,6 +194,9 @@ extern "C" {
   {
     char   strAdapterName[PVR_ADDON_NAME_STRING_LENGTH];   /*!< @brief (optional) name of the adapter that's being used */
     char   strAdapterStatus[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (optional) status of the adapter that's being used */
+    char   strServiceName[PVR_ADDON_NAME_STRING_LENGTH];   /*!< @brief (optional) name of the current service */
+    char   strProviderName[PVR_ADDON_NAME_STRING_LENGTH];  /*!< @brief (optional) name of the current service's provider */
+    char   strMuxName[PVR_ADDON_NAME_STRING_LENGTH];       /*!< @brief (optional) name of the current mux */
     int    iSNR;                                           /*!< @brief (optional) signal/noise ratio */
     int    iSignal;                                        /*!< @brief (optional) signal strength */
     long   iBER;                                           /*!< @brief (optional) bit error rate */
