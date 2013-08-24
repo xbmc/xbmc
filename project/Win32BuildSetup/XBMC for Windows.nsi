@@ -10,6 +10,7 @@
   !include "MUI2.nsh"
   !include "nsDialogs.nsh"
   !include "LogicLib.nsh"
+  !include "WinVer.nsh"
 ;--------------------------------
 ;General
 
@@ -380,6 +381,10 @@ Section "-Check DirectX installation" SEC_DIRECTXCHECK
 SectionEnd
 
 Function .onInit
+  ${IfNot} ${AtLeastWinVista}
+    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows Vista or above required.$\nThis program can not be run on Windows XP"
+    Quit
+  ${EndIf}
   # set section 'SEC_DIRECTX' as selected and read-only if required dx version not found
   IfFileExists ${DXVERSIONDLL} +3 0
   IntOp $0 ${SF_SELECTED} | ${SF_RO}
