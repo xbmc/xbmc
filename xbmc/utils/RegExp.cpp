@@ -143,6 +143,17 @@ int CRegExp::RegFind(const char* str, int startoffset)
       CLog::Log(LOGERROR, "PCRE: Match limit reached");
       return -1;
 
+#ifdef PCRE_ERROR_SHORTUTF8 
+    case PCRE_ERROR_SHORTUTF8:
+#endif
+    case PCRE_ERROR_BADUTF8:
+      CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character");
+      return -1;
+
+    case PCRE_ERROR_BADUTF8_OFFSET:
+      CLog::Log(LOGERROR, "PCRE: Offset (%d) is pointing to the middle of UTF-8 character", startoffset);
+      return -1;
+
     default:
       CLog::Log(LOGERROR, "PCRE: Unknown error: %d", rc);
       return -1;
