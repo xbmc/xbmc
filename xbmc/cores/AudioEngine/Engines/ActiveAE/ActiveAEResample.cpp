@@ -36,7 +36,7 @@ CActiveAEResample::~CActiveAEResample()
   m_dllSwResample.Unload();
 }
 
-bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, CAEChannelInfo *remapLayout, AEQuality quality)
+bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, CAEChannelInfo *remapLayout, AEQuality quality)
 {
   if (!m_dllAvUtil.Load() || !m_dllSwResample.Load())
     return false;
@@ -45,10 +45,12 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
   m_dst_channels = dst_channels;
   m_dst_rate = dst_rate;
   m_dst_fmt = dst_fmt;
+  m_dst_bits = dst_bits;
   m_src_chan_layout = src_chan_layout;
   m_src_channels = src_channels;
   m_src_rate = src_rate;
   m_src_fmt = src_fmt;
+  m_src_bits = src_bits;
 
   if (m_dst_chan_layout == 0)
     m_dst_chan_layout = m_dllAvUtil.av_get_default_channel_layout(m_dst_channels);
@@ -73,6 +75,11 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
   {
     m_dllAvUtil.av_opt_set_double(m_pContext, "cutoff", 0.97, 0);
     m_dllAvUtil.av_opt_set_int(m_pContext,"filter_size", 32, 0);
+  }
+
+  if (m_dst_fmt == AV_SAMPLE_FMT_S32 || m_dst_fmt == AV_SAMPLE_FMT_S32P)
+  {
+    m_dllAvUtil.av_opt_set_int(m_pContext, "output_sample_bits", m_dst_bits, 0);
   }
 
   if(!m_pContext)
@@ -203,29 +210,33 @@ AVSampleFormat CActiveAEResample::GetAVSampleFormat(AEDataFormat format)
   if      (format == AE_FMT_U8)     return AV_SAMPLE_FMT_U8;
   else if (format == AE_FMT_S16NE)  return AV_SAMPLE_FMT_S16;
   else if (format == AE_FMT_S32NE)  return AV_SAMPLE_FMT_S32;
+  else if (format == AE_FMT_S24NE4) return AV_SAMPLE_FMT_S32;
   else if (format == AE_FMT_FLOAT)  return AV_SAMPLE_FMT_FLT;
   else if (format == AE_FMT_DOUBLE) return AV_SAMPLE_FMT_DBL;
 
   else if (format == AE_FMT_U8P)     return AV_SAMPLE_FMT_U8P;
   else if (format == AE_FMT_S16NEP)  return AV_SAMPLE_FMT_S16P;
   else if (format == AE_FMT_S32NEP)  return AV_SAMPLE_FMT_S32P;
+  else if (format == AE_FMT_S24NE4P) return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_FLOATP)  return AV_SAMPLE_FMT_FLTP;
   else if (format == AE_FMT_DOUBLEP) return AV_SAMPLE_FMT_DBLP;
 
   return AV_SAMPLE_FMT_FLT;
 }
 
-AEDataFormat CActiveAEResample::GetAESampleFormat(AVSampleFormat format)
+AEDataFormat CActiveAEResample::GetAESampleFormat(AVSampleFormat format, int bits)
 {
   if      (format == AV_SAMPLE_FMT_U8)   return AE_FMT_U8;
   else if (format == AV_SAMPLE_FMT_S16)  return AE_FMT_S16NE;
-  else if (format == AV_SAMPLE_FMT_S32)  return AE_FMT_S32NE;
+  else if (format == AV_SAMPLE_FMT_S32 && bits == 32)  return AE_FMT_S32NE;
+  else if (format == AV_SAMPLE_FMT_S32 && bits == 24)  return AE_FMT_S24NE4;
   else if (format == AV_SAMPLE_FMT_FLT)  return AE_FMT_FLOAT;
   else if (format == AV_SAMPLE_FMT_DBL)  return AE_FMT_DOUBLE;
 
   else if (format == AV_SAMPLE_FMT_U8P)   return AE_FMT_U8P;
   else if (format == AV_SAMPLE_FMT_S16P)  return AE_FMT_S16NEP;
-  else if (format == AV_SAMPLE_FMT_S32P)  return AE_FMT_S32NEP;
+  else if (format == AV_SAMPLE_FMT_S32P && bits == 32)  return AE_FMT_S32NEP;
+  else if (format == AV_SAMPLE_FMT_S32P && bits == 24)  return AE_FMT_S24NE4P;
   else if (format == AV_SAMPLE_FMT_FLTP)  return AE_FMT_FLOATP;
   else if (format == AV_SAMPLE_FMT_DBLP)  return AE_FMT_DOUBLEP;
 

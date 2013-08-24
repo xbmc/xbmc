@@ -796,6 +796,7 @@ void CActiveAE::Process()
 void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 {
   bool initSink = false;
+
   AEAudioFormat sinkInputFormat, inputFormat;
   m_mode = MODE_PCM;
 
@@ -829,7 +830,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   std::string device = AE_IS_RAW(m_sinkRequestFormat.m_dataFormat) ? m_settings.passthoughdevice : m_settings.device;
   std::string driver;
   CAESinkFactory::ParseDevice(device, driver);
-  if (!m_sink.IsCompatible(m_sinkRequestFormat, device) || m_settings.driver.compare(driver) != 0)
+  if (!IsSinkCompatible(m_sinkRequestFormat, device) || m_settings.driver.compare(driver) != 0)
   {
     if (!InitSink())
       return;
@@ -1015,7 +1016,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   }
 
   // resample buffers for sink
-  if (m_sinkBuffers && !m_sink.IsCompatible(m_sinkBuffers->m_format, device))
+  if (m_sinkBuffers && 
+     (!CompareFormat(m_sinkBuffers->m_format,m_sinkFormat) || !CompareFormat(m_sinkBuffers->m_inputFormat, sinkInputFormat)))
   {
     m_discardBufferPools.push_back(m_sinkBuffers);
     m_sinkBuffers = NULL;
@@ -1292,7 +1294,7 @@ bool CActiveAE::NeedReconfigureSink()
   if (m_settings.driver.compare(driver) != 0)
     return true;
 
-  if (!m_sink.IsCompatible(newFormat, device))
+  if (!IsSinkCompatible(newFormat, device))
     return true;
 
   return false;
@@ -1303,6 +1305,8 @@ bool CActiveAE::InitSink()
   SinkConfig config;
   config.format = m_sinkRequestFormat;
   config.stats = &m_stats;
+  config.device = AE_IS_RAW(m_sinkRequestFormat.m_dataFormat) ? &m_settings.passthoughdevice :
+                                                                &m_settings.device;
 
   // send message to sink
   Message *reply;
@@ -1363,6 +1367,40 @@ void CActiveAE::DrainSink()
     m_extError = true;
     return;
   }
+}
+
+bool CActiveAE::IsSinkCompatible(const AEAudioFormat format, const std::string &device)
+{
+  bool compatible = false;
+  SinkConfig config;
+  config.format = format;
+  config.device = &device;
+
+  // send message to sink
+  Message *reply;
+  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::ISCOMPATIBLE,
+                                                 &reply,
+                                                 1000,
+                                                 &config, sizeof(config)))
+  {
+    bool success = reply->signal == CSinkControlProtocol::ACC ? true : false;
+    if (!success)
+    {
+      reply->Release();
+      CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+      m_extError = true;
+      return false;
+    }
+    compatible = *(bool*)reply->data;
+    reply->Release();
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "ActiveAE::%s - failed to query compatibility", __FUNCTION__);
+    m_extError = true;
+    return false;
+  }
+  return compatible;
 }
 
 void CActiveAE::UnconfigureSink()
@@ -2027,8 +2065,10 @@ uint8_t **CActiveAE::AllocSoundSample(SampleConfig &config, int &samples, int &b
   uint8_t **buffer;
   planes = m_dllAvUtil.av_sample_fmt_is_planar(config.fmt) ? config.channels : 1;
   buffer = new uint8_t*[planes];
+
+  // align buffer to 16 in order to be compatible with sse in CAEConvert
   m_dllAvUtil.av_samples_alloc(buffer, &linesize, config.channels,
-                                 samples, config.fmt, 0);
+                                 samples, config.fmt, 16);
   bytes_per_sample = m_dllAvUtil.av_get_bytes_per_sample(config.fmt);
   return buffer;
 }
@@ -2037,6 +2077,17 @@ void CActiveAE::FreeSoundSample(uint8_t **data)
 {
   m_dllAvUtil.av_freep(data);
   delete [] data;
+}
+
+bool CActiveAE::CompareFormat(AEAudioFormat &lhs, AEAudioFormat &rhs)
+{
+  if (lhs.m_channelLayout != rhs.m_channelLayout ||
+      lhs.m_dataFormat != rhs.m_dataFormat ||
+      lhs.m_sampleRate != rhs.m_sampleRate ||
+      lhs.m_frames != rhs.m_frames)
+    return false;
+  else
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -2144,6 +2195,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
         {
           int samples = fileSize / m_dllAvUtil.av_get_bytes_per_sample(dec_ctx->sample_fmt) / config.channels;
           config.fmt = dec_ctx->sample_fmt;
+          config.bits_per_sample = dec_ctx->bits_per_coded_sample;
           sound->InitSound(true, config, samples);
           init = true;
         }
@@ -2214,16 +2266,19 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
   dst_config.channels = m_internalFormat.m_channelLayout.Count();
   dst_config.sample_rate = m_internalFormat.m_sampleRate;
   dst_config.fmt = CActiveAEResample::GetAVSampleFormat(m_internalFormat.m_dataFormat);
+  dst_config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_internalFormat.m_dataFormat);
 
   CActiveAEResample *resampler = new CActiveAEResample();
   resampler->Init(dst_config.channel_layout,
                   dst_config.channels,
                   dst_config.sample_rate,
                   dst_config.fmt,
+                  dst_config.bits_per_sample,
                   orig_config.channel_layout,
                   orig_config.channels,
                   orig_config.sample_rate,
                   orig_config.fmt,
+                  orig_config.bits_per_sample,
                   NULL,
                   AE_QUALITY_MID);
 
