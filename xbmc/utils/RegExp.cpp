@@ -76,10 +76,10 @@ CRegExp::~CRegExp()
   Cleanup();
 }
 
-CRegExp* CRegExp::RegComp(const char *re)
+bool CRegExp::RegComp(const char *re)
 {
   if (!re)
-    return NULL;
+    return false;
 
   m_bMatched         = false;
   m_iMatchCount      = 0;
@@ -94,12 +94,12 @@ CRegExp* CRegExp::RegComp(const char *re)
     m_pattern.clear();
     CLog::Log(LOGERROR, "PCRE: %s. Compilation failed at offset %d in expression '%s'",
               errMsg, errOffset, re);
-    return NULL;
+    return false;
   }
 
   m_pattern = re;
 
-  return this;
+  return true;
 }
 
 int CRegExp::RegFind(const char* str, int startoffset)
