@@ -67,6 +67,7 @@ public:
   void DumpOvector(int iLog);
   const CRegExp& operator= (const CRegExp& re);
   static bool IsUtf8Supported(void);
+  static bool AreUnicodePropertiesSupported(void);
 
 private:
   void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
@@ -80,6 +81,7 @@ private:
   std::string m_subject;
   std::string m_pattern;
   static int  m_Utf8Supported;     
+  static int  m_UcpSupported;
 };
 
 typedef std::vector<CRegExp> VECCREGEXP;

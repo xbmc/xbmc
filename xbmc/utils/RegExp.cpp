@@ -28,6 +28,7 @@ using namespace PCRE;
 
 
 int CRegExp::m_Utf8Supported = -1;
+int CRegExp::m_UcpSupported  = -1;
 
 
 CRegExp::CRegExp(bool caseless)
@@ -283,3 +284,13 @@ bool CRegExp::IsUtf8Supported(void)
   return m_Utf8Supported != 0;
 }
 
+bool CRegExp::AreUnicodePropertiesSupported(void)
+{
+  if (m_UcpSupported == -1)
+  {
+    if (pcre_config(PCRE_CONFIG_UNICODE_PROPERTIES, &m_UcpSupported) != 0)
+      m_UcpSupported = 0;
+  }
+
+  return m_UcpSupported != 0;
+}
