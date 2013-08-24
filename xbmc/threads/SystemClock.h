@@ -63,5 +63,8 @@ namespace XbmcThreads
 
     inline void SetExpired() { totalWaitTime = 0; }
     inline void SetInfinite() { totalWaitTime = InfiniteValue; }
+    inline bool IsInfinite(void) { return (totalWaitTime == InfiniteValue); }
+    inline unsigned int GetInitialTimeoutValue(void) { return totalWaitTime; }
+    inline unsigned int GetStartTime(void) { return startTime; }
   };
 }
