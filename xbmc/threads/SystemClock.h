@@ -57,6 +57,8 @@ namespace XbmcThreads
     {
       if (totalWaitTime == InfiniteValue)
         return InfiniteValue;
+      if (totalWaitTime == 0)
+        return 0;
       unsigned int timeWaitedAlready = (SystemClockMillis() - startTime);
       return (timeWaitedAlready >= totalWaitTime) ? 0 : (totalWaitTime - timeWaitedAlready);
     }
