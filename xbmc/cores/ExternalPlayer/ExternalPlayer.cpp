@@ -185,7 +185,7 @@ void CExternalPlayer::Process()
       CStdString strMatch = vecSplit[0];
       strMatch.Replace(",,",",");
       bool bCaseless = vecSplit[3].Find('i') > -1;
-      CRegExp regExp(bCaseless);
+      CRegExp regExp(bCaseless, true);
 
       if (!regExp.RegComp(strMatch.c_str()))
       { // invalid regexp - complain in logs
