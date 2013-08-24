@@ -859,7 +859,11 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
 
   map<string, JoystickMap>::iterator it = jmap->find(szDevice);
   if (it==jmap->end())
-    return false;
+  {
+    it = jmap->find("_xbmc_"); // default global map name
+    if (it==jmap->end())
+      return false;
+  }
 
   JoystickMap wmap = it->second;
 

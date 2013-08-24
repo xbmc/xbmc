@@ -21,6 +21,8 @@
 #include "EventLoop.h"
 #include "XBMCApp.h"
 
+#include "AndroidExtra.h"
+
 CEventLoop::CEventLoop(android_app* application)
   : m_enabled(false),
     m_application(application),
@@ -134,19 +136,22 @@ void CEventLoop::processActivity(int32_t command)
 int32_t CEventLoop::processInput(AInputEvent* event)
 {
   int32_t type = AInputEvent_getType(event);
+  int32_t src = AInputEvent_getSource(event);
   switch (type)
   {
     case AINPUT_EVENT_TYPE_MOTION:
-      switch (AInputEvent_getSource(event))
-      {
-        case AINPUT_SOURCE_TOUCHSCREEN:
-          return m_inputHandler->onTouchEvent(event);
-        case AINPUT_SOURCE_MOUSE:
-          return m_inputHandler->onMouseEvent(event);
-      }
+      if (src & AINPUT_SOURCE_TOUCHSCREEN)
+        return m_inputHandler->onTouchEvent(event);
+      else if (src & AINPUT_SOURCE_MOUSE)
+        return m_inputHandler->onMouseEvent(event);
+      else if (src & AINPUT_SOURCE_GAMEPAD || src & AINPUT_SOURCE_JOYSTICK)
+        return m_inputHandler->onJoystickMoveEvent(event);
       break;
 
     case AINPUT_EVENT_TYPE_KEY:
+      if (src & AINPUT_SOURCE_GAMEPAD || src & AINPUT_SOURCE_JOYSTICK)
+        if (m_inputHandler->onJoystickButtonEvent(event))
+          return true;
       return m_inputHandler->onKeyboardEvent(event);
   }
 

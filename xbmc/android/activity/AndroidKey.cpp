@@ -155,6 +155,9 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent* event)
   int32_t state = AKeyEvent_getMetaState(event);
   int32_t repeatCount = AKeyEvent_getRepeatCount(event);
 
+  CXBMCApp::android_printf("CXBMCApp: key event (code: %d; repeat: %d; flags: 0x%0X; state: %d; device:%d, src:%d)", 
+    keycode, repeatCount, flags, AKeyEvent_getAction(event), AInputEvent_getDeviceId(event), AInputEvent_getSource(event));
+
   // Check if we got some special key
   uint16_t sym = XBMCK_UNKNOWN;
   for (unsigned int index = 0; index < sizeof(keyMap) / sizeof(KeyMap); index++)
