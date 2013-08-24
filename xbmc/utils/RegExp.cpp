@@ -76,6 +76,8 @@ const CRegExp& CRegExp::operator=(const CRegExp& re)
         m_subject = re.m_subject;
         m_iOptions = re.m_iOptions;
       }
+      else
+        CLog::Log(LOGSEVERE, "%s: Failed to allocate memory", __FUNCTION__);
     }
   }
   return *this;
@@ -212,7 +214,10 @@ std::string CRegExp::GetReplaceString( const char* sReplaceExp )
   // Now allocate buf
   buf = (char *)malloc((replacelen + 1)*sizeof(char));
   if( buf == NULL )
+  {
+    CLog::Log(LOGSEVERE, "%s: Failed to allocate memory", __FUNCTION__);
     return std::string();
+  }
 
   char* sReplaceStr = buf;
 
