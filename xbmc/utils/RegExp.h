@@ -49,22 +49,22 @@ public:
   CRegExp* RegComp(const std::string& re) { return RegComp(re.c_str()); }
   int RegFind(const char *str, int startoffset = 0);
   int RegFind(const std::string& str, int startoffset = 0) { return RegFind(str.c_str(), startoffset); }
-  std::string GetReplaceString( const char* sReplaceExp );
-  int GetFindLen()
+  std::string GetReplaceString( const char* sReplaceExp ) const;
+  int GetFindLen() const
   {
     if (!m_re || !m_bMatched)
       return 0;
 
     return (m_iOvector[1] - m_iOvector[0]);
   };
-  int GetSubCount() { return m_iMatchCount - 1; } // PCRE returns the number of sub-patterns + 1
-  int GetSubStart(int iSub);
-  int GetSubLength(int iSub);
-  int GetCaptureTotal();
-  std::string GetMatch(int iSub = 0);
-  const std::string& GetPattern() { return m_pattern; }
-  bool GetNamedSubPattern(const char* strName, std::string& strMatch);
-  int GetNamedSubPatternNumber(const char* strName);
+  int GetSubCount() const { return m_iMatchCount - 1; } // PCRE returns the number of sub-patterns + 1
+  int GetSubStart(int iSub) const;
+  int GetSubLength(int iSub) const;
+  int GetCaptureTotal() const;
+  std::string GetMatch(int iSub = 0) const;
+  const std::string& GetPattern() const { return m_pattern; }
+  bool GetNamedSubPattern(const char* strName, std::string& strMatch) const;
+  int GetNamedSubPatternNumber(const char* strName) const;
   void DumpOvector(int iLog);
   const CRegExp& operator= (const CRegExp& re);
 
