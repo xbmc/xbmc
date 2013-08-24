@@ -17,7 +17,7 @@
 #define SUPPORT_PCRE8 1
 /* #undef SUPPORT_PCRE16 */
 /* #undef SUPPORT_PCRE32 */
-/* #undef SUPPORT_JIT */
+#define SUPPORT_JIT 1
 /* #undef SUPPORT_PCREGREP_JIT */
 #define SUPPORT_UTF 1
 #define SUPPORT_UCP 1
