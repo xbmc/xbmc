@@ -45,7 +45,7 @@ CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IDVDPlayer* pPlayer) : CDVD
   m_pLiveTV         = NULL;
   m_pOtherStream    = NULL;
   m_eof             = true;
-  m_iScanTimeout    = 0;
+  m_ScanTimeout.Set(0);
 }
 
 /************************************************************************
@@ -58,15 +58,13 @@ CDVDInputStreamPVRManager::~CDVDInputStreamPVRManager()
 
 void CDVDInputStreamPVRManager::ResetScanTimeout(unsigned int iTimeoutMs)
 {
-  m_iScanTimeout = iTimeoutMs > 0 ?
-      XbmcThreads::SystemClockMillis() + iTimeoutMs :
-      0;
+  m_ScanTimeout.Set(iTimeoutMs);
 }
 
 bool CDVDInputStreamPVRManager::IsEOF()
 {
   // don't mark as eof while within the scan timeout
-  if (m_iScanTimeout && XbmcThreads::SystemClockMillis() < m_iScanTimeout)
+  if (!m_ScanTimeout.IsTimePast())
     return false;
 
   if (m_pOtherStream)
