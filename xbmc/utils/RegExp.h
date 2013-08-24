@@ -41,7 +41,7 @@ const int OVECCOUNT=(20+1)*3;
 class CRegExp
 {
 public:
-  CRegExp(bool caseless = false);
+  CRegExp(bool caseless = false, bool utf8 = false);
   CRegExp(const CRegExp& re);
   ~CRegExp();
 
