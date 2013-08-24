@@ -123,6 +123,14 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
   return formats[dataFormat];
 }
 
+const unsigned int CAEUtil::DataFormatToUsedBits(const enum AEDataFormat dataFormat)
+{
+  if (dataFormat == AE_FMT_S24BE4 || dataFormat == AE_FMT_S24LE4 || dataFormat == AE_FMT_S24NE4)
+    return 24;
+  else
+    return DataFormatToBits(dataFormat);
+}
+
 const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
 {
   if (dataFormat < 0 || dataFormat >= AE_FMT_MAX)

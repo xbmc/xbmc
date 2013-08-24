@@ -38,6 +38,7 @@ struct SinkConfig
 {
   AEAudioFormat format;
   CEngineStats *stats;
+  const std::string *device;
 };
 
 class CSinkControlProtocol : public Protocol
@@ -49,6 +50,7 @@ public:
     CONFIGURE,
     UNCONFIGURE,
     SILENCEMODE,
+    ISCOMPATIBLE,
     VOLUME,
     FLUSH,
     TIMEOUT,
@@ -86,7 +88,6 @@ public:
   std::string GetDefaultDevice(bool passthrough);
   void Start();
   void Dispose();
-  bool IsCompatible(const AEAudioFormat format, const std::string &device);
   bool HasVolume();
   CSinkControlProtocol m_controlPort;
   CSinkDataProtocol m_dataPort;
@@ -98,6 +99,7 @@ protected:
   void GetDeviceFriendlyName(std::string &device);
   void OpenSink();
   void ReturnBuffers();
+  bool IsCompatible(const AEAudioFormat format, const std::string &device);
 
   unsigned int OutputSamples(CSampleBuffer* samples);
   void ConvertInit(CSampleBuffer* samples);
@@ -129,6 +131,7 @@ protected:
   } m_convertState;
 
   std::string m_deviceFriendlyName;
+  std::string m_device;
   AESinkInfoList m_sinkInfoList;
   IAESink *m_sink;
   AEAudioFormat m_sinkFormat, m_requestedFormat;

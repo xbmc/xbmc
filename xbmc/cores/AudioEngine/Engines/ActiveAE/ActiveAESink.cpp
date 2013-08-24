@@ -134,6 +134,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           {
             m_requestedFormat = data->format;
             m_stats = data->stats;
+            m_device = *(data->device);
           }
           m_extError = false;
           m_extSilence = false;
@@ -170,6 +171,13 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         case CSinkControlProtocol::FLUSH:
           ReturnBuffers();
           msg->Reply(CSinkControlProtocol::ACC);
+          return;
+
+        case CSinkControlProtocol::ISCOMPATIBLE:
+          data = (SinkConfig*)msg->data;
+          bool compatible;
+          compatible = IsCompatible(data->format, *(data->device));
+          msg->Reply(CSinkControlProtocol::ACC, &compatible, sizeof(bool));
           return;
 
         default:
@@ -626,14 +634,10 @@ void CActiveAESink::GetDeviceFriendlyName(std::string &device)
 
 void CActiveAESink::OpenSink()
 {
-  std::string device, driver;
+  std::string driver;
   bool passthrough = AE_IS_RAW(m_requestedFormat.m_dataFormat);
-  if (passthrough)
-    device = CSettings::Get().GetString("audiooutput.passthroughdevice");
-  else
-    device = CSettings::Get().GetString("audiooutput.audiodevice");
 
-  CAESinkFactory::ParseDevice(device, driver);
+  CAESinkFactory::ParseDevice(m_device, driver);
   if (driver.empty() && m_sink)
     driver = m_sink->GetName();
 
@@ -644,7 +648,7 @@ void CActiveAESink::OpenSink()
     std::transform(sinkName.begin(), sinkName.end(), sinkName.begin(), ::toupper);
   }
 
-  if (!m_sink || sinkName != driver || !m_sink->IsCompatible(m_requestedFormat, device))
+  if (!m_sink || sinkName != driver || !m_sink->IsCompatible(m_requestedFormat, m_device))
   {
     CLog::Log(LOGINFO, "CActiveAE::OpenSink - sink incompatible, re-starting");
 
@@ -657,15 +661,15 @@ void CActiveAESink::OpenSink()
     }
 
     // get the display name of the device
-    GetDeviceFriendlyName(device);
+    GetDeviceFriendlyName(m_device);
 
     // if we already have a driver, prepend it to the device string
     if (!driver.empty())
-      device = driver + ":" + device;
+      m_device = driver + ":" + m_device;
 
     // WARNING: this changes format and does not use passthrough
     m_sinkFormat = m_requestedFormat;
-    m_sink = CAESinkFactory::Create(device, m_sinkFormat, passthrough);
+    m_sink = CAESinkFactory::Create(m_device, m_sinkFormat, passthrough);
 
     if (!m_sink)
     {
@@ -706,6 +710,7 @@ void CActiveAESink::OpenSink()
   // init sample of silence
   SampleConfig config;
   config.fmt = CActiveAEResample::GetAVSampleFormat(m_sinkFormat.m_dataFormat);
+  config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat);
   config.channel_layout = CActiveAEResample::GetAVChannelLayout(m_sinkFormat.m_channelLayout);
   config.channels = m_sinkFormat.m_channelLayout.Count();
   config.sample_rate = m_sinkFormat.m_sampleRate;
@@ -802,7 +807,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
 
 void CActiveAESink::ConvertInit(CSampleBuffer* samples)
 {
-  if (CActiveAEResample::GetAESampleFormat(samples->pkt->config.fmt) != m_sinkFormat.m_dataFormat)
+  if (CActiveAEResample::GetAESampleFormat(samples->pkt->config.fmt, samples->pkt->config.bits_per_sample) != m_sinkFormat.m_dataFormat)
   {
     m_convertFn = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
     if (m_convertBuffer)
@@ -845,7 +850,7 @@ uint8_t* CActiveAESink::Convert(CSampleBuffer* samples)
 void CActiveAESink::GenerateNoise()
 {
   int nb_floats = m_sinkFormat.m_frames*m_sinkFormat.m_channelLayout.Count();
-  float *noise = new float[nb_floats];
+  float *noise = (float*)_aligned_malloc(nb_floats*sizeof(float), 16);
 
   float R1, R2;
   for(int i=0; i<nb_floats;i++)
@@ -860,8 +865,8 @@ void CActiveAESink::GenerateNoise()
     noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001;
   }
 
-  AEDataFormat fmt = CActiveAEResample::GetAESampleFormat(m_sampleOfNoise.pkt->config.fmt);
+  AEDataFormat fmt = CActiveAEResample::GetAESampleFormat(m_sampleOfNoise.pkt->config.fmt, m_sampleOfNoise.pkt->config.bits_per_sample);
   CAEConvert::AEConvertFrFn convertFn = CAEConvert::FrFloat(fmt);
   convertFn(noise, nb_floats, m_sampleOfNoise.pkt->data[0]);
-  delete [] noise;
+  _aligned_free(noise);
 }

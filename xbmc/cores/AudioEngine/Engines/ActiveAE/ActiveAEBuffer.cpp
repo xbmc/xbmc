@@ -21,6 +21,7 @@
 #include "ActiveAEBuffer.h"
 #include "AEFactory.h"
 #include "ActiveAE.h"
+#include "Utils/AEUtil.h"
 
 using namespace ActiveAE;
 
@@ -105,6 +106,7 @@ bool CActiveAEBufferPool::Create(unsigned int totaltime)
   CSampleBuffer *buffer;
   SampleConfig config;
   config.fmt = CActiveAEResample::GetAVSampleFormat(m_format.m_dataFormat);
+  config.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat);
   config.channels = m_format.m_channelLayout.Count();
   config.sample_rate = m_format.m_sampleRate;
   config.channel_layout = CActiveAEResample::GetAVChannelLayout(m_format.m_channelLayout);
@@ -163,10 +165,12 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap)
                                 m_format.m_channelLayout.Count(),
                                 m_format.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_format.m_dataFormat),
+                                CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat),
                                 CActiveAEResample::GetAVChannelLayout(m_inputFormat.m_channelLayout),
                                 m_inputFormat.m_channelLayout.Count(),
                                 m_inputFormat.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_inputFormat.m_dataFormat),
+                                CAEUtil::DataFormatToUsedBits(m_inputFormat.m_dataFormat),
                                 remap ? &m_format.m_channelLayout : NULL,
                                 m_resampleQuality);
   }
@@ -188,10 +192,12 @@ void CActiveAEBufferPoolResample::ChangeResampler()
                                 m_format.m_channelLayout.Count(),
                                 m_outSampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_format.m_dataFormat),
+                                CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat),
                                 CActiveAEResample::GetAVChannelLayout(m_inputFormat.m_channelLayout),
                                 m_inputFormat.m_channelLayout.Count(),
                                 m_inputFormat.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_inputFormat.m_dataFormat),
+                                CAEUtil::DataFormatToUsedBits(m_inputFormat.m_dataFormat),
                                 NULL,
                                 m_resampleQuality);
 

@@ -80,6 +80,7 @@ public:
   static CAEChannelInfo          GuessChLayout     (const unsigned int channels);
   static const char*             GetStdChLayoutName(const enum AEStdChLayout layout);
   static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
+  static const unsigned int      DataFormatToUsedBits (const enum AEDataFormat dataFormat);
   static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
 
   /*! \brief convert a volume percentage (as a proportion) to a dB gain

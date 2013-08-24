@@ -245,6 +245,7 @@ protected:
   bool InitSink();
   void DrainSink();
   void UnconfigureSink();
+  bool IsSinkCompatible(const AEAudioFormat format, const std::string &device);
   void Start();
   void Dispose();
   void LoadSettings();
@@ -267,6 +268,8 @@ protected:
   bool ResampleSound(CActiveAESound *sound);
   void MixSounds(CSoundPacket &dstSample);
   void Deamplify(CSoundPacket &dstSample);
+
+  bool CompareFormat(AEAudioFormat &lhs, AEAudioFormat &rhs);
 
   CEvent m_inMsgEvent;
   CEvent m_outMsgEvent;
