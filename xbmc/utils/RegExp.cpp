@@ -166,7 +166,7 @@ int CRegExp::RegFind(const char* str, int startoffset)
   return m_iOvector[0];
 }
 
-int CRegExp::GetCaptureTotal()
+int CRegExp::GetCaptureTotal() const
 {
   int c = -1;
   if (m_re)
@@ -174,7 +174,7 @@ int CRegExp::GetCaptureTotal()
   return c;
 }
 
-std::string CRegExp::GetReplaceString( const char* sReplaceExp )
+std::string CRegExp::GetReplaceString( const char* sReplaceExp ) const
 {
   char *src = (char *)sReplaceExp;
   char *buf;
@@ -257,7 +257,7 @@ std::string CRegExp::GetReplaceString( const char* sReplaceExp )
   return replaceStr;
 }
 
-int CRegExp::GetSubStart(int iSub)
+int CRegExp::GetSubStart(int iSub) const
 {
   if (!IsValidSubNumber(iSub))
     return -1;
@@ -265,7 +265,7 @@ int CRegExp::GetSubStart(int iSub)
   return m_iOvector[iSub*2];
 }
 
-int CRegExp::GetSubLength(int iSub)
+int CRegExp::GetSubLength(int iSub) const
 {
   if (!IsValidSubNumber(iSub))
     return -1;
@@ -273,7 +273,7 @@ int CRegExp::GetSubLength(int iSub)
   return m_iOvector[(iSub*2)+1] - m_iOvector[(iSub*2)];
 }
 
-std::string CRegExp::GetMatch(int iSub /* = 0 */)
+std::string CRegExp::GetMatch(int iSub /* = 0 */) const
 {
   if (!IsValidSubNumber(iSub))
     return "";
@@ -286,7 +286,7 @@ std::string CRegExp::GetMatch(int iSub /* = 0 */)
   return m_subject.substr(pos, len);
 }
 
-bool CRegExp::GetNamedSubPattern(const char* strName, std::string& strMatch)
+bool CRegExp::GetNamedSubPattern(const char* strName, std::string& strMatch) const
 {
   strMatch.clear();
   int iSub = pcre_get_stringnumber(m_re, strName);
@@ -296,7 +296,7 @@ bool CRegExp::GetNamedSubPattern(const char* strName, std::string& strMatch)
   return true;
 }
 
-int CRegExp::GetNamedSubPatternNumber(const char* strName)
+int CRegExp::GetNamedSubPatternNumber(const char* strName) const
 {
   return pcre_get_stringnumber(m_re, strName);
 }
