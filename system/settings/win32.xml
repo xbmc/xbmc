@@ -43,7 +43,7 @@
       <group id="2">
         <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
           <level>2</level>
-          <default>WASAPI:default</default> <!-- will be properly set on startup -->
+          <default>DirectSound:default</default>
           <constraints>
             <options>audiodevices</options>
           </constraints>
@@ -51,7 +51,7 @@
         </setting>
         <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
           <level>2</level>
-          <default>WASAPI:default</default> <!-- will be properly set on startup -->
+          <default>DirectSound:default</default>
           <constraints>
             <options>audiodevicespassthrough</options>
           </constraints>
