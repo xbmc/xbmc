@@ -481,7 +481,7 @@ to characters. The vector data is divided into two groups: the first
 group contains the start / end character pointers, and the second is
 the start pointers when the end of the capturing group has not yet reached. */
 #define OVECTOR_START    (common->ovector_start)
-#define OVECTOR(i)       (OVECTOR_START + (i) * sizeof(sljit_sw))
+#define OVECTOR(i)       (OVECTOR_START + (i) * (sljit_sw)sizeof(sljit_sw))
 #define OVECTOR_PRIV(i)  (common->cbra_ptr + (i) * sizeof(sljit_sw))
 #define PRIVATE_DATA(cc) (common->private_data_ptrs[(cc) - common->start])
 
