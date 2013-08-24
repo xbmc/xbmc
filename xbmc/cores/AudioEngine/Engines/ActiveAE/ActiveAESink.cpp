@@ -850,7 +850,7 @@ uint8_t* CActiveAESink::Convert(CSampleBuffer* samples)
 void CActiveAESink::GenerateNoise()
 {
   int nb_floats = m_sinkFormat.m_frames*m_sinkFormat.m_channelLayout.Count();
-  float *noise = new float[nb_floats];
+  float *noise = (float*)_aligned_malloc(nb_floats*sizeof(float), 16);
 
   float R1, R2;
   for(int i=0; i<nb_floats;i++)
@@ -868,5 +868,5 @@ void CActiveAESink::GenerateNoise()
   AEDataFormat fmt = CActiveAEResample::GetAESampleFormat(m_sampleOfNoise.pkt->config.fmt, m_sampleOfNoise.pkt->config.bits_per_sample);
   CAEConvert::AEConvertFrFn convertFn = CAEConvert::FrFloat(fmt);
   convertFn(noise, nb_floats, m_sampleOfNoise.pkt->data[0]);
-  delete [] noise;
+  _aligned_free(noise);
 }
