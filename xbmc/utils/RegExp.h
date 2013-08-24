@@ -55,8 +55,8 @@ public:
     return (m_iOvector[1] - m_iOvector[0]);
   };
   int GetSubCount() { return m_iMatchCount - 1; } // PCRE returns the number of sub-patterns + 1
-  int GetSubStart(int iSub) { return m_iOvector[iSub*2]; } // normalized to match old engine
-  int GetSubLength(int iSub) { return (m_iOvector[(iSub*2)+1] - m_iOvector[(iSub*2)]); } // correct spelling
+  int GetSubStart(int iSub);
+  int GetSubLength(int iSub);
   int GetCaptureTotal();
   std::string GetMatch(int iSub = 0);
   const std::string& GetPattern() { return m_pattern; }

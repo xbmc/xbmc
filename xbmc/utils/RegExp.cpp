@@ -257,9 +257,25 @@ std::string CRegExp::GetReplaceString( const char* sReplaceExp )
   return replaceStr;
 }
 
+int CRegExp::GetSubStart(int iSub)
+{
+  if (!IsValidSubNumber(iSub))
+    return -1;
+
+  return m_iOvector[iSub*2];
+}
+
+int CRegExp::GetSubLength(int iSub)
+{
+  if (!IsValidSubNumber(iSub))
+    return -1;
+
+  return m_iOvector[(iSub*2)+1] - m_iOvector[(iSub*2)];
+}
+
 std::string CRegExp::GetMatch(int iSub /* = 0 */)
 {
-  if (iSub < 0 || iSub > m_iMatchCount)
+  if (!IsValidSubNumber(iSub))
     return "";
 
   int pos = m_iOvector[(iSub*2)];
@@ -274,7 +290,7 @@ bool CRegExp::GetNamedSubPattern(const char* strName, std::string& strMatch)
 {
   strMatch.clear();
   int iSub = pcre_get_stringnumber(m_re, strName);
-  if (iSub < 0)
+  if (!IsValidSubNumber(iSub))
     return false;
   strMatch = GetMatch(iSub);
   return true;
