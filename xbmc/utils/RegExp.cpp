@@ -242,12 +242,22 @@ int CRegExp::GetSubStart(int iSub) const
   return m_iOvector[iSub*2];
 }
 
+int CRegExp::GetSubStart(const std::string& subName) const
+{
+  return GetSubStart(GetNamedSubPatternNumber(subName.c_str()));
+}
+
 int CRegExp::GetSubLength(int iSub) const
 {
   if (!IsValidSubNumber(iSub))
     return -1;
 
   return m_iOvector[(iSub*2)+1] - m_iOvector[(iSub*2)];
+}
+
+int CRegExp::GetSubLength(const std::string& subName) const
+{
+  return GetSubLength(GetNamedSubPatternNumber(subName.c_str()));
 }
 
 std::string CRegExp::GetMatch(int iSub /* = 0 */) const
@@ -261,6 +271,11 @@ std::string CRegExp::GetMatch(int iSub /* = 0 */) const
     return "";
 
   return m_subject.substr(pos, len);
+}
+
+std::string CRegExp::GetMatch(const std::string& subName) const
+{
+  return GetMatch(GetNamedSubPatternNumber(subName.c_str()));
 }
 
 bool CRegExp::GetNamedSubPattern(const char* strName, std::string& strMatch) const
