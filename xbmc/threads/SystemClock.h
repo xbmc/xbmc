@@ -51,9 +51,9 @@ namespace XbmcThreads
 
     inline void Set(unsigned int millisecondsIntoTheFuture) { startTime = SystemClockMillis(); totalWaitTime = millisecondsIntoTheFuture; }
 
-    inline bool IsTimePast() { return totalWaitTime == InfiniteValue ? false : (totalWaitTime == 0 ? true : (SystemClockMillis() - startTime) >= totalWaitTime); }
+    inline bool IsTimePast() const { return totalWaitTime == InfiniteValue ? false : (totalWaitTime == 0 ? true : (SystemClockMillis() - startTime) >= totalWaitTime); }
 
-    inline unsigned int MillisLeft()
+    inline unsigned int MillisLeft() const
     {
       if (totalWaitTime == InfiniteValue)
         return InfiniteValue;
@@ -65,8 +65,8 @@ namespace XbmcThreads
 
     inline void SetExpired() { totalWaitTime = 0; }
     inline void SetInfinite() { totalWaitTime = InfiniteValue; }
-    inline bool IsInfinite(void) { return (totalWaitTime == InfiniteValue); }
-    inline unsigned int GetInitialTimeoutValue(void) { return totalWaitTime; }
-    inline unsigned int GetStartTime(void) { return startTime; }
+    inline bool IsInfinite(void) const { return (totalWaitTime == InfiniteValue); }
+    inline unsigned int GetInitialTimeoutValue(void) const { return totalWaitTime; }
+    inline unsigned int GetStartTime(void) const { return startTime; }
   };
 }
