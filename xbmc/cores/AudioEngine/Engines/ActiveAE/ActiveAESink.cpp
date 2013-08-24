@@ -134,6 +134,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           {
             m_requestedFormat = data->format;
             m_stats = data->stats;
+            m_device = *(data->device);
           }
           m_extError = false;
           m_extSilence = false;
@@ -170,6 +171,13 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         case CSinkControlProtocol::FLUSH:
           ReturnBuffers();
           msg->Reply(CSinkControlProtocol::ACC);
+          return;
+
+        case CSinkControlProtocol::ISCOMPATIBLE:
+          data = (SinkConfig*)msg->data;
+          bool compatible;
+          compatible = IsCompatible(data->format, *(data->device));
+          msg->Reply(CSinkControlProtocol::ACC, &compatible, sizeof(bool));
           return;
 
         default:
@@ -626,14 +634,10 @@ void CActiveAESink::GetDeviceFriendlyName(std::string &device)
 
 void CActiveAESink::OpenSink()
 {
-  std::string device, driver;
+  std::string driver;
   bool passthrough = AE_IS_RAW(m_requestedFormat.m_dataFormat);
-  if (passthrough)
-    device = CSettings::Get().GetString("audiooutput.passthroughdevice");
-  else
-    device = CSettings::Get().GetString("audiooutput.audiodevice");
 
-  CAESinkFactory::ParseDevice(device, driver);
+  CAESinkFactory::ParseDevice(m_device, driver);
   if (driver.empty() && m_sink)
     driver = m_sink->GetName();
 
@@ -644,7 +648,7 @@ void CActiveAESink::OpenSink()
     std::transform(sinkName.begin(), sinkName.end(), sinkName.begin(), ::toupper);
   }
 
-  if (!m_sink || sinkName != driver || !m_sink->IsCompatible(m_requestedFormat, device))
+  if (!m_sink || sinkName != driver || !m_sink->IsCompatible(m_requestedFormat, m_device))
   {
     CLog::Log(LOGINFO, "CActiveAE::OpenSink - sink incompatible, re-starting");
 
@@ -657,15 +661,15 @@ void CActiveAESink::OpenSink()
     }
 
     // get the display name of the device
-    GetDeviceFriendlyName(device);
+    GetDeviceFriendlyName(m_device);
 
     // if we already have a driver, prepend it to the device string
     if (!driver.empty())
-      device = driver + ":" + device;
+      m_device = driver + ":" + m_device;
 
     // WARNING: this changes format and does not use passthrough
     m_sinkFormat = m_requestedFormat;
-    m_sink = CAESinkFactory::Create(device, m_sinkFormat, passthrough);
+    m_sink = CAESinkFactory::Create(m_device, m_sinkFormat, passthrough);
 
     if (!m_sink)
     {
