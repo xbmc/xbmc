@@ -27,8 +27,12 @@
 
 using namespace PCRE;
 
+#ifndef PCRE_UCP
+#define PCRE_UCP 0
+#endif // PCRE_UCP
 
 int CRegExp::m_Utf8Supported = -1;
+int CRegExp::m_UcpSupported  = -1;
 
 
 CRegExp::CRegExp(bool caseless)
@@ -320,3 +324,15 @@ bool CRegExp::IsUtf8Supported(void)
   return m_Utf8Supported == 1;
 }
 
+bool CRegExp::AreUnicodePropertiesSupported(void)
+{
+#if defined(PCRE_CONFIG_UNICODE_PROPERTIES) && PCRE_UCP != 0
+  if (m_UcpSupported == -1)
+  {
+    if (pcre_config(PCRE_CONFIG_UNICODE_PROPERTIES, &m_UcpSupported) != 0)
+      m_UcpSupported = 0;
+  }
+#endif
+
+  return m_UcpSupported == 1;
+}

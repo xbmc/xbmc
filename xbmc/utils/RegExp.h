@@ -72,6 +72,7 @@ public:
   void DumpOvector(int iLog);
   const CRegExp& operator= (const CRegExp& re);
   static bool IsUtf8Supported(void);
+  static bool AreUnicodePropertiesSupported(void);
 
 private:
   int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
@@ -89,6 +90,7 @@ private:
   std::string m_subject;
   std::string m_pattern;
   static int  m_Utf8Supported;     
+  static int  m_UcpSupported;
 };
 
 typedef std::vector<CRegExp> VECCREGEXP;
