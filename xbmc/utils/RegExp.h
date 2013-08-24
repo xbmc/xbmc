@@ -37,13 +37,10 @@ namespace PCRE {
 #include <pcre.h>
 }
 
-// maximum of 20 backreferences
-// OVEVCOUNT must be a multiple of 3
-const int OVECCOUNT=(20+1)*3;
-
 class CRegExp
 {
 public:
+  static const int m_MaxNumOfBackrefrences = 20;
   CRegExp(bool caseless = false);
   CRegExp(const CRegExp& re);
   ~CRegExp();
@@ -75,6 +72,7 @@ private:
   void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
 
   PCRE::pcre* m_re;
+  static const int OVECCOUNT=(m_MaxNumOfBackrefrences + 1) * 3;
   int         m_iOvector[OVECCOUNT];
   int         m_iMatchCount;
   int         m_iOptions;
