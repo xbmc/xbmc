@@ -41,7 +41,7 @@ class CRegExp
 {
 public:
   static const int m_MaxNumOfBackrefrences = 20;
-  CRegExp(bool caseless = false);
+  CRegExp(bool caseless = false, bool utf8 = false);
   CRegExp(const CRegExp& re);
   ~CRegExp();
 

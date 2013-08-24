@@ -35,12 +35,19 @@ int CRegExp::m_Utf8Supported = -1;
 int CRegExp::m_UcpSupported  = -1;
 
 
-CRegExp::CRegExp(bool caseless)
+CRegExp::CRegExp(bool caseless /*= false*/, bool utf8 /*= false*/)
 {
   m_re          = NULL;
   m_iOptions    = PCRE_DOTALL | PCRE_NEWLINE_ANY;
   if(caseless)
     m_iOptions |= PCRE_CASELESS;
+  if (utf8)
+  {
+    if (IsUtf8Supported())
+      m_iOptions |= PCRE_UTF8;
+    if (AreUnicodePropertiesSupported())
+      m_iOptions |= PCRE_UCP;
+  }
 
   m_offset      = 0;
   m_bMatched    = false;
