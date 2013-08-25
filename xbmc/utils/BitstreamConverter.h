@@ -133,7 +133,7 @@ public:
   CBitstreamConverter();
   ~CBitstreamConverter();
 
-  bool              Open(enum CodecID codec, uint8_t *in_extradata, int in_extrasize, bool to_annexb);
+  bool              Open(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize, bool to_annexb);
   void              Close(void);
   bool              NeedConvert(void) { return m_convert_bitstream; };
   bool              Convert(uint8_t *pData, int iSize);
