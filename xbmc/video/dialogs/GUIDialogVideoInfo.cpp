@@ -1301,7 +1301,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
     database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId);
 
   CStdString currentTitle;
-  if (detail.m_strSortTitle.Empty())
+  if (detail.m_strSortTitle.IsEmpty())
     currentTitle = detail.m_strTitle;
   else
     currentTitle = detail.m_strSortTitle;
