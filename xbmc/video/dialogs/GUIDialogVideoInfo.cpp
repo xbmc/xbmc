@@ -1300,11 +1300,17 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
   else if (iType == VIDEODB_CONTENT_TVSHOWS)
     database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId);
 
+  CStdString currentTitle;
+  if (detail.m_strSortTitle.Empty())
+    currentTitle = detail.m_strTitle;
+  else
+    currentTitle = detail.m_strSortTitle;
+  
   // get the new sort title
-  if (!CGUIKeyboardFactory::ShowAndGetInput(detail.m_strTitle, g_localizeStrings.Get(16107), false))
+  if (!CGUIKeyboardFactory::ShowAndGetInput(currentTitle, g_localizeStrings.Get(16107), false))
     return false;
 
-  return database.UpdateVideoSortTitle(iDbId, detail.m_strTitle, iType);
+  return database.UpdateVideoSortTitle(iDbId, currentTitle, iType);
 }
 
 bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemove, CVideoDatabase &database)
