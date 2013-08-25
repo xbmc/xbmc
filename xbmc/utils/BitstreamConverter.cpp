@@ -296,7 +296,7 @@ CBitstreamConverter::~CBitstreamConverter()
   Close();
 }
 
-bool CBitstreamConverter::Open(enum CodecID codec, uint8_t *in_extradata, int in_extrasize, bool to_annexb)
+bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize, bool to_annexb)
 {
   m_to_annexb = to_annexb;
 
