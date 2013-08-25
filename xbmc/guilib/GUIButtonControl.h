@@ -73,7 +73,7 @@ public:
   void PythonSetDisabledColor(color_t disabledColor);
 
   virtual void OnClick();
-  bool HasClickActions() { return m_clickActions.HasActionsMeetingCondition(); };
+  bool HasClickActions() const { return m_clickActions.HasActionsMeetingCondition(); };
 
   virtual bool UpdateColors();
 

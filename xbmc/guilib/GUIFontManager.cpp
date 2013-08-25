@@ -51,7 +51,7 @@ GUIFontManager::~GUIFontManager(void)
   Clear();
 }
 
-void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect) const
+void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect)
 {
   // set scaling resolution so that we can scale our font sizes correctly
   // as fonts aren't scaled at render time (due to aliasing) we must scale
@@ -243,12 +243,12 @@ void GUIFontManager::ReloadTTFFonts(void)
 
 void GUIFontManager::UnloadTTFFonts()
 {
-  for (vector<CGUIFontTTFBase*>::iterator i = m_vecFontFiles.begin(); i != m_vecFontFiles.end(); i++)
+  for (vector<CGUIFontTTFBase*>::iterator i = m_vecFontFiles.begin(); i != m_vecFontFiles.end(); ++i)
     delete (*i);
 
   m_vecFontFiles.clear();
 
-  for (vector<CGUIFont*>::iterator i = m_vecFonts.begin(); i != m_vecFonts.end(); i++)
+  for (vector<CGUIFont*>::iterator i = m_vecFonts.begin(); i != m_vecFonts.end(); ++i)
     (*i)->SetFont(NULL);
 }
 

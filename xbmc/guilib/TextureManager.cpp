@@ -225,7 +225,7 @@ CGUITextureManager::~CGUITextureManager(void)
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-bool CGUITextureManager::CanLoad(const CStdString &texturePath) const
+bool CGUITextureManager::CanLoad(const CStdString &texturePath)
 {
   if (texturePath == "-")
     return false;
@@ -299,7 +299,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
     return emptyTexture;
   }
 
-  for (ilistUnused i = m_unusedTextures.begin(); i != m_unusedTextures.end(); i++)
+  for (ilistUnused i = m_unusedTextures.begin(); i != m_unusedTextures.end(); ++i)
   {
     CTextureMap* pMap = i->first;
     if (pMap->GetName() == strTextureName)
@@ -473,7 +473,7 @@ void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
       i = m_unusedTextures.erase(i);
     }
     else
-      i++;
+      ++i;
   }
 
 #if defined(HAS_GL) || defined(HAS_GLES)

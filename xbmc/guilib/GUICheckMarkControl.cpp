@@ -29,8 +29,8 @@ CGUICheckMarkControl::CGUICheckMarkControl(int parentID, int controlID, float po
     , m_imgCheckMark(posX, posY, checkWidth, checkHeight, textureCheckMark)
     , m_imgCheckMarkNoFocus(posX, posY, checkWidth, checkHeight, textureCheckMarkNF)
     , m_label(posX, posY, width, height, labelInfo)
+    , m_strLabel("")
 {
-  m_strLabel = "";
   m_bSelected = false;
   m_label.GetLabelInfo().align |= XBFONT_CENTER_Y;
   ControlType = GUICONTROL_CHECKMARK;

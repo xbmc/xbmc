@@ -101,7 +101,7 @@ public:
   void ClampToEdge();
 
   static unsigned int PadPow2(unsigned int x);
-  bool SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset=0);
+  static bool SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset=0);
 
 private:
   // no copy constructor

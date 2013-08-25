@@ -46,7 +46,7 @@ namespace Shaders {
     virtual GLuint Handle() = 0;
     virtual void SetSource(const string& src) { m_source = src; }
     virtual bool LoadSource(const string& filename, const string& prefix = "");
-    bool OK() { return m_compiled; }
+    bool OK() const { return m_compiled; }
 
   protected:
     string m_source;
@@ -150,7 +150,7 @@ namespace Shaders {
     virtual void Disable() = 0;
 
     // returns true if shader is compiled and linked
-    bool OK() { return m_ok; }
+    bool OK() const { return m_ok; }
 
     // free resources
     virtual void Free() {}
@@ -189,13 +189,15 @@ namespace Shaders {
     : virtual public CShaderProgram
   {
   public:
-    CGLSLShaderProgram()
+    CGLSLShaderProgram() : 
+      m_validated(false)
       {
         m_pFP = new CGLSLPixelShader();
         m_pVP = new CGLSLVertexShader();
       }
     CGLSLShaderProgram(const std::string& vert
-                     , const std::string& frag)
+                     , const std::string& frag) :
+      m_validated(false)
       {
         m_pFP = new CGLSLPixelShader();
         m_pFP->LoadSource(frag);

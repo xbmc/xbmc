@@ -54,8 +54,8 @@ class CGUIInfoColor
 public:
   CGUIInfoColor(color_t color = 0);
 
-  const CGUIInfoColor &operator=(const CGUIInfoColor &color);
-  const CGUIInfoColor &operator=(color_t color);
+  CGUIInfoColor& operator=(const CGUIInfoColor &color);
+  CGUIInfoColor& operator=(color_t color);
   operator color_t() const { return m_color; };
 
   bool Update();

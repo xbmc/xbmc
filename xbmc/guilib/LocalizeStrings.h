@@ -93,7 +93,7 @@ protected:
    */
   bool LoadXML(const CStdString &filename, CStdString &encoding, uint32_t offset = 0);
 
-  CStdString ToUTF8(const CStdString &encoding, const CStdString &str);
+  static CStdString ToUTF8(const CStdString &encoding, const CStdString &str);
   std::map<uint32_t, LocStr> m_strings;
   typedef std::map<uint32_t, LocStr>::const_iterator ciStrings;
   typedef std::map<uint32_t, LocStr>::iterator       iStrings;

@@ -87,7 +87,7 @@ void CKey::Reset()
   m_held = 0;
 }
 
-const CKey& CKey::operator=(const CKey& key)
+CKey& CKey::operator=(const CKey& key)
 {
   if (&key == this) return * this;
   m_leftTrigger  = key.m_leftTrigger;

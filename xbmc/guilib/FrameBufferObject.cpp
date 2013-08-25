@@ -154,7 +154,7 @@ bool CFrameBufferObject::BeginRender()
 }
 
 // Finish rendering to FBO
-void CFrameBufferObject::EndRender()
+void CFrameBufferObject::EndRender() const
 {
   if (IsValid())
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);

@@ -101,7 +101,7 @@ int CGUIMessage::GetSenderId() const
 }
 
 
-const CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg)
+CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg)
 {
   if (this == &msg) return * this;
 

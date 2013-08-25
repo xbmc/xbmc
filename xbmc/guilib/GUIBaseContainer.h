@@ -161,7 +161,7 @@ protected:
                     // changing around)
 
   void UpdateScrollByLetter();
-  void GetCacheOffsets(int &cacheBefore, int &cacheAfter);
+  void GetCacheOffsets(int &cacheBefore, int &cacheAfter) const;
   int GetCacheCount() const { return m_cacheItems; };
   bool ScrollingDown() const { return m_scroller.IsScrollingDown(); };
   bool ScrollingUp() const { return m_scroller.IsScrollingUp(); };

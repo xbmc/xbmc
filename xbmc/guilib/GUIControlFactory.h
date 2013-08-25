@@ -104,7 +104,7 @@ private:
   static CStdString GetType(const TiXmlElement *pControlNode);
   static bool GetConditionalVisibility(const TiXmlNode* control, CStdString &condition, CStdString &allowHiddenFocus);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);
-  bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
-  bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);
+  static bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
+  static bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);
 };
 #endif

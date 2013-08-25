@@ -106,7 +106,7 @@ protected:
   typedef std::multimap<int, CGUIControl *> LookupMap;
   void AddLookup(CGUIControl *control);
   void RemoveLookup(CGUIControl *control);
-  const LookupMap &GetLookup() { return m_lookup; };
+  const LookupMap &GetLookup() const { return m_lookup; };
   LookupMap m_lookup;
 
   int  m_defaultControl;

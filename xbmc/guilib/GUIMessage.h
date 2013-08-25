@@ -305,7 +305,7 @@ public:
   CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, const CGUIListItemPtr &item);
   CGUIMessage(const CGUIMessage& msg);
   virtual ~CGUIMessage(void);
-  const CGUIMessage& operator = (const CGUIMessage& msg);
+  CGUIMessage& operator = (const CGUIMessage& msg);
 
   int GetControlId() const ;
   int GetMessage() const;
