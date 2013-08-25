@@ -7,4 +7,15 @@
       </group>
     </category>
   </section>
+  <section id="videos">
+    <category id="videoplayer">
+      <group id="2">
+        <setting id="videoplayer.usestagefright" type="boolean" label="13436" help="36260">
+          <requirement>HAVE_LIBSTAGEFRIGHTDECODER</requirement>
+          <level>2</level>
+          <default>true</default>
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>
