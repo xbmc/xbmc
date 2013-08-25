@@ -78,7 +78,7 @@ public:
 
   void SetTextChangeActions(const CGUIAction& textChangeActions) { m_textChangeActions = textChangeActions; };
 
-  bool HasTextChangeActions() { return m_textChangeActions.HasActionsMeetingCondition(); };
+  bool HasTextChangeActions() const { return m_textChangeActions.HasActionsMeetingCondition(); };
 
 protected:
   virtual void ProcessText(unsigned int currentTime);

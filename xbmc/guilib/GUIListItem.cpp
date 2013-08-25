@@ -234,7 +234,7 @@ bool CGUIListItem::IsSelected() const
   return m_bSelected;
 }
 
-const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
+CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
 {
   if (&item == this) return * this;
   m_strLabel2 = item.m_strLabel2;
@@ -264,19 +264,19 @@ void CGUIListItem::Archive(CArchive &ar)
     ar << m_bSelected;
     ar << m_overlayIcon;
     ar << (int)m_mapProperties.size();
-    for (PropertyMap::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
+    for (PropertyMap::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); ++it)
     {
       ar << it->first;
       ar << it->second;
     }
     ar << (int)m_art.size();
-    for (ArtMap::const_iterator i = m_art.begin(); i != m_art.end(); i++)
+    for (ArtMap::const_iterator i = m_art.begin(); i != m_art.end(); ++i)
     {
       ar << i->first;
       ar << i->second;
     }
     ar << (int)m_artFallbacks.size();
-    for (ArtMap::const_iterator i = m_artFallbacks.begin(); i != m_artFallbacks.end(); i++)
+    for (ArtMap::const_iterator i = m_artFallbacks.begin(); i != m_artFallbacks.end(); ++i)
     {
       ar << i->first;
       ar << i->second;
@@ -332,11 +332,11 @@ void CGUIListItem::Serialize(CVariant &value)
   value["strIcon"] = m_strIcon;
   value["selected"] = m_bSelected;
 
-  for (PropertyMap::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
+  for (PropertyMap::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); ++it)
   {
     value["properties"][it->first] = it->second;
   }
-  for (ArtMap::const_iterator it = m_art.begin(); it != m_art.end(); it++)
+  for (ArtMap::const_iterator it = m_art.begin(); it != m_art.end(); ++it)
     value["art"][it->first] = it->second;
 }
 

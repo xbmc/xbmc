@@ -584,7 +584,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         CLog::Log(LOGDEBUG, "Unfocus WindowID: %i, ControlID: %i",GetID(), control->GetID());
       }
       return true;
-    break;
     }
 
   case GUI_MSG_SELCHANGED:
@@ -1073,7 +1072,7 @@ void CGUIWindow::SetID(int id)
 
 bool CGUIWindow::HasID(int controlID) const
 {
-  for (std::vector<int>::const_iterator it = m_idRange.begin(); it != m_idRange.end() ; it++)
+  for (std::vector<int>::const_iterator it = m_idRange.begin(); it != m_idRange.end() ; ++it)
   {
     if (controlID == *it)
       return true;

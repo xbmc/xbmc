@@ -112,13 +112,13 @@ public:
     return stroker;
   };
 
-  void ReleaseFont(FT_Face face)
+  static void ReleaseFont(FT_Face face)
   {
     assert(face);
     FT_Done_Face(face);
   };
   
-  void ReleaseStroker(FT_Stroker stroker)
+  static void ReleaseStroker(FT_Stroker stroker)
   {
     assert(stroker);
     FT_Stroker_Done(stroker);
@@ -353,7 +353,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
     // first compute the size of the text to render in both characters and pixels
     unsigned int lineChars = 0;
     float linePixels = 0;
-    for (vecText::const_iterator pos = text.begin(); pos != text.end(); pos++)
+    for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
     {
       Character *ch = GetCharacter(*pos);
       if (ch)
@@ -367,7 +367,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
   }
   float cursorX = 0; // current position along the line
 
-  for (vecText::const_iterator pos = text.begin(); pos != text.end(); pos++)
+  for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
   {
     // If starting text on a new line, determine justification effects
     // Get the current letter in the CStdString
@@ -486,10 +486,9 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
 
   int low = 0;
   int high = m_numChars - 1;
-  int mid;
   while (low <= high)
   {
-    mid = (low + high) >> 1;
+    int mid = (low + high) >> 1;
     if (ch > m_char[mid].letterAndStyle)
       low = mid + 1;
     else if (ch < m_char[mid].letterAndStyle)

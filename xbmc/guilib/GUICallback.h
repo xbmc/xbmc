@@ -55,27 +55,22 @@ public:
   // Assign an EventHandler (EventHandler's are derived from Event)
   GUIEvent<Cookie> &operator=(GUIEvent<Cookie> &aEvent)
   {
-    if (&aEvent)
+    if (&aEvent != this)
     {
       m_pInstance = aEvent.m_pInstance;
       m_pMethod = aEvent.m_pMethod;
     }
-    else
-    {
-      GUIEvent();
-    }
-
     return *this;
   }
 
   // Are the class instance and method pointers initialised?
-  bool HasAHandler()
+  bool HasAHandler() const
   {
     return (m_pInstance && m_pMethod);
   }
 
   // Execute the associated class method
-  void Fire(Cookie aCookie)
+  void Fire(Cookie aCookie) const
   {
     if (HasAHandler())
     {
@@ -136,27 +131,22 @@ public:
   // Assign a CallbackHandler (CallbackHandler's are derived from Callback)
   Callback<Result, Cookie> &operator=(Callback<Result, Cookie> &aCallback)
   {
-    if (&aCallback)
+    if (&aCallback != this)
     {
       m_pInstance = aCallback.m_pInstance;
       m_pMethod = aCallback.m_pMethod;
     }
-    else
-    {
-      Callback();
-    }
-
     return *this;
   }
 
   // Are the class instance and method pointers initialised?
-  bool HasAHandler()
+  bool HasAHandler() const
   {
     return (m_pInstance && m_pMethod);
   }
 
   // Execute the associated class method and return the result
-  Result Fire(Cookie aCookie)
+  Result Fire(Cookie aCookie) const
   {
     if (HasAHandler())
     {

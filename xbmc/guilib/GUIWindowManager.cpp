@@ -89,7 +89,7 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
       dialog->OnMessage(message);
     }
 
-    for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+    for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); ++it)
     {
       CGUIWindow *pWindow = (*it).second;
       pWindow->OnMessage(message);
@@ -187,7 +187,7 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
   // push back all the windows if there are more than one covered by this class
   CSingleLock lock(g_graphicsContext);
   const vector<int>& idRange = pWindow->GetIDRange();
-  for (vector<int>::const_iterator idIt = idRange.begin(); idIt != idRange.end() ; idIt++)
+  for (vector<int>::const_iterator idIt = idRange.begin(); idIt != idRange.end() ; ++idIt)
   {
     WindowMap::iterator it = m_mapWindows.find(*idIt);
     if (it != m_mapWindows.end())
@@ -227,7 +227,7 @@ void CGUIWindowManager::Remove(int id)
       if(*it2 == it->second)
         it2 = m_activeDialogs.erase(it2);
       else
-        it2++;
+        ++it2;
     }
 
     m_mapWindows.erase(it);
@@ -423,7 +423,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
   // as all messages done in WINDOW_INIT will want to be sent to the new
   // topmost window).  If we are swapping windows, we pop the old window
   // off the history stack
-  if (swappingWindows && m_windowHistory.size())
+  if (swappingWindows && !m_windowHistory.empty())
     m_windowHistory.pop();
   AddToWindowHistory(iWindowID);
 
@@ -435,7 +435,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
 //  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
 }
 
-void CGUIWindowManager::CloseDialogs(bool forceClose)
+void CGUIWindowManager::CloseDialogs(bool forceClose) const
 {
   CSingleLock lock(g_graphicsContext);
   while (m_activeDialogs.size() > 0)
@@ -445,7 +445,7 @@ void CGUIWindowManager::CloseDialogs(bool forceClose)
   }
 }
 
-bool CGUIWindowManager::OnAction(const CAction &action)
+bool CGUIWindowManager::OnAction(const CAction &action) const
 {
   CSingleLock lock(g_graphicsContext);
   unsigned int topMost = m_activeDialogs.size();
@@ -504,14 +504,14 @@ void CGUIWindowManager::Process(unsigned int currentTime)
     pWindow->DoProcess(currentTime, dirtyregions);
 
   // process all dialogs - visibility may change etc.
-  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); ++it)
   {
     CGUIWindow *pWindow = (*it).second;
     if (pWindow && pWindow->IsDialog())
       pWindow->DoProcess(currentTime, dirtyregions);
   }
 
-  for (CDirtyRegionList::iterator itr = dirtyregions.begin(); itr != dirtyregions.end(); itr++)
+  for (CDirtyRegionList::iterator itr = dirtyregions.begin(); itr != dirtyregions.end(); ++itr)
     m_tracker.MarkDirtyRegion(*itr);
 }
 
@@ -525,7 +525,7 @@ void CGUIWindowManager::MarkDirty(const CRect& rect)
   m_tracker.MarkDirtyRegion(rect);
 }
 
-void CGUIWindowManager::RenderPass()
+void CGUIWindowManager::RenderPass() const
 {
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
@@ -569,7 +569,7 @@ bool CGUIWindowManager::Render()
   }
   else
   {
-    for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
+    for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); ++i)
     {
       if (i->IsEmpty())
         continue;
@@ -585,9 +585,9 @@ bool CGUIWindowManager::Render()
   {
     g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
     const CDirtyRegionList &markedRegions  = m_tracker.GetMarkedRegions(); 
-    for (CDirtyRegionList::const_iterator i = markedRegions.begin(); i != markedRegions.end(); i++)
+    for (CDirtyRegionList::const_iterator i = markedRegions.begin(); i != markedRegions.end(); ++i)
       CGUITexture::DrawQuad(*i, 0x0fff0000);
-    for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
+    for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); ++i)
       CGUITexture::DrawQuad(*i, 0x4c00ff00);
   }
 
@@ -619,7 +619,7 @@ void CGUIWindowManager::FrameMove()
   if(m_iNested == 0)
   {
     // delete any windows queued for deletion
-    for(iDialog it = m_deleteWindows.begin(); it != m_deleteWindows.end(); it++)
+    for(iDialog it = m_deleteWindows.begin(); it != m_deleteWindows.end(); ++it)
     {
       // Free any window resources
       (*it)->FreeResources(true);
@@ -675,7 +675,7 @@ void CGUIWindowManager::SetCallback(IWindowManagerCallback& callback)
 void CGUIWindowManager::DeInitialize()
 {
   CSingleLock lock(g_graphicsContext);
-  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); ++it)
   {
     CGUIWindow* pWindow = (*it).second;
     if (IsWindowActive(it->first))
@@ -798,7 +798,7 @@ void CGUIWindowManager::DispatchThreadMessages()
 
   CSingleLock lock(m_critSection);
 
-  for(int msgCount = m_vecThreadMessages.size(); m_vecThreadMessages.size() > 0 && msgCount > 0; --msgCount)
+  for(int msgCount = m_vecThreadMessages.size(); !m_vecThreadMessages.empty() && msgCount > 0; --msgCount)
   {
     // pop up one message per time to make messages be processed by order.
     // this will ensure rule No.2 & No.3
@@ -912,7 +912,7 @@ bool CGUIWindowManager::IsWindowVisible(const CStdString &xmlFile) const
 void CGUIWindowManager::LoadNotOnDemandWindows()
 {
   CSingleLock lock(g_graphicsContext);
-  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); ++it)
   {
     CGUIWindow *pWindow = (*it).second;
     if (pWindow->GetLoadType() == CGUIWindow::LOAD_ON_GUI_INIT)
@@ -926,7 +926,7 @@ void CGUIWindowManager::LoadNotOnDemandWindows()
 void CGUIWindowManager::UnloadNotOnDemandWindows()
 {
   CSingleLock lock(g_graphicsContext);
-  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); ++it)
   {
     CGUIWindow *pWindow = (*it).second;
     if (pWindow->GetLoadType() == CGUIWindow::LOAD_ON_GUI_INIT ||
@@ -963,7 +963,7 @@ void CGUIWindowManager::AddToWindowHistory(int newWindowID)
   // and if so, pop all the other windows off the stack so that we
   // always have a predictable "Back" behaviour for each window
   stack<int> historySave = m_windowHistory;
-  while (historySave.size())
+  while (!historySave.empty())
   {
     if (historySave.top() == newWindowID)
       break;
@@ -1023,7 +1023,7 @@ bool CGUIWindowManager::IsWindowTopMost(const CStdString &xmlFile) const
 
 void CGUIWindowManager::ClearWindowHistory()
 {
-  while (m_windowHistory.size())
+  while (!m_windowHistory.empty())
     m_windowHistory.pop();
 }
 

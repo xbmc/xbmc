@@ -154,6 +154,6 @@ public:
 
   void Release();
 protected:
-  unsigned char getbyte(FILE *fd);
+  static unsigned char getbyte(FILE *fd);
 };
 

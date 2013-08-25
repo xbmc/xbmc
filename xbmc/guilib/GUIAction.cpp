@@ -42,7 +42,7 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID) const
   if (m_actions.size() == 0) return false;
   // take a copy of actions that satisfy our conditions
   vector<CStdString> actions;
-  for (ciActions it = m_actions.begin() ; it != m_actions.end() ; it++)
+  for (ciActions it = m_actions.begin() ; it != m_actions.end() ; ++it)
   {
     if (it->condition.IsEmpty() || g_infoManager.EvaluateBool(it->condition))
     {
@@ -67,7 +67,7 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID) const
 
 int CGUIAction::GetNavigation() const
 {
-  for (ciActions it = m_actions.begin() ; it != m_actions.end() ; it++)
+  for (ciActions it = m_actions.begin() ; it != m_actions.end() ; ++it)
   {
     if (StringUtils::IsInteger(it->action))
     {
@@ -83,7 +83,7 @@ void CGUIAction::SetNavigation(int id)
   if (id == 0) return;
   CStdString strId;
   strId.Format("%i", id);
-  for (iActions it = m_actions.begin() ; it != m_actions.end() ; it++)
+  for (iActions it = m_actions.begin() ; it != m_actions.end() ; ++it)
   {
     if (StringUtils::IsInteger(it->action) && it->condition.IsEmpty())
     {
@@ -98,7 +98,7 @@ void CGUIAction::SetNavigation(int id)
 
 bool CGUIAction::HasActionsMeetingCondition() const
 {
-  for (ciActions it = m_actions.begin() ; it != m_actions.end() ; it++)
+  for (ciActions it = m_actions.begin() ; it != m_actions.end() ; ++it)
   {
     if (it->condition.IsEmpty() || g_infoManager.EvaluateBool(it->condition))
       return true;

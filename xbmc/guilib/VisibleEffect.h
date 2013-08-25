@@ -56,7 +56,7 @@ public:
   CAnimEffect(const CAnimEffect &src);
 
   virtual ~CAnimEffect();
-  const CAnimEffect &operator=(const CAnimEffect &src);
+  CAnimEffect& operator=(const CAnimEffect &src);
 
   void Calculate(unsigned int time, const CPoint &center);
   void ApplyState(ANIMATION_STATE state, const CPoint &center);
@@ -148,7 +148,7 @@ public:
 
   virtual ~CAnimation();
 
-  const CAnimation &operator=(const CAnimation &src);
+  CAnimation& operator=(const CAnimation &src);
 
   static CAnimation CreateFader(float start, float end, unsigned int delay, unsigned int length, ANIMATION_TYPE type = ANIM_TYPE_NONE);
 
@@ -216,7 +216,7 @@ class CScroller
 public:
   CScroller(unsigned int duration = 200, boost::shared_ptr<Tweener> tweener = boost::shared_ptr<Tweener>());
   CScroller(const CScroller& right);
-  const CScroller &operator=(const CScroller &src);
+  CScroller& operator=(const CScroller &src);
   ~CScroller();
 
   /**

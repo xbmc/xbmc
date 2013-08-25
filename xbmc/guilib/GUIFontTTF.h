@@ -118,7 +118,7 @@ protected:
 
   // modifying glyphs
   void EmboldenGlyph(FT_GlyphSlot slot);
-  void ObliqueGlyph(FT_GlyphSlot slot);
+  static void ObliqueGlyph(FT_GlyphSlot slot);
 
   CBaseTexture* m_texture;        // texture that holds our rendered characters (8bit alpha only)
 
@@ -169,6 +169,8 @@ protected:
   CStdString m_strFileName;
 
 private:
+  CGUIFontTTFBase(const CGUIFontTTFBase&);
+  CGUIFontTTFBase& operator=(const CGUIFontTTFBase&);
   int m_referenceCount;
 };
 

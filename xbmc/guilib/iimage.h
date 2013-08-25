@@ -64,12 +64,12 @@ public:
    */
   virtual void ReleaseThumbnailBuffer() {return;}
 
-  unsigned int Width()              { return m_width; }
-  unsigned int Height()             { return m_height; }
-  unsigned int originalWidth()      { return m_originalWidth; }
-  unsigned int originalHeight()     { return m_originalHeight; }
-  unsigned int Orientation()        { return m_orientation; }
-  bool hasAlpha()                   { return m_hasAlpha; }
+  unsigned int Width() const              { return m_width; }
+  unsigned int Height() const             { return m_height; }
+  unsigned int originalWidth() const      { return m_originalWidth; }
+  unsigned int originalHeight() const     { return m_originalHeight; }
+  unsigned int Orientation() const        { return m_orientation; }
+  bool hasAlpha() const                   { return m_hasAlpha; }
 
 protected:
 

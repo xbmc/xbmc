@@ -76,7 +76,7 @@ public:
   void Clear();
   void FreeFontFile(CGUIFontTTFBase *pFont);
 
-  bool IsFontSetUnicode() { return m_fontsetUnicode; }
+  bool IsFontSetUnicode() const { return m_fontsetUnicode; }
   bool IsFontSetUnicode(const CStdString& strFontSet);
   bool GetFirstFontSetUnicode(CStdString& strFontSet);
 
@@ -86,7 +86,7 @@ public:
   static void SettingOptionsFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
 protected:
-  void RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect) const;
+  static void RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect);
   void LoadFonts(const TiXmlNode* fontNode);
   CGUIFontTTFBase* GetFontFile(const CStdString& strFontFile);
   bool OpenFontFile(CXBMCTinyXML& xmlDoc);

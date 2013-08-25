@@ -470,7 +470,7 @@ public:
   CKey(const CKey& key);
 
   virtual ~CKey(void);
-  const CKey& operator=(const CKey& key);
+  CKey& operator=(const CKey& key);
   uint8_t GetLeftTrigger() const;
   uint8_t GetRightTrigger() const;
   float GetLeftThumbX() const;

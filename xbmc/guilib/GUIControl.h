@@ -204,7 +204,7 @@ public:
   bool GetNavigationAction(int direction, CGUIAction& action) const;
   /*! \brief  Start navigating in given direction.
    */
-  bool Navigate(int direction);
+  bool Navigate(int direction) const;
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
@@ -311,7 +311,7 @@ protected:
   virtual bool Animate(unsigned int currentTime);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
-  bool SendWindowMessage(CGUIMessage &message);
+  bool SendWindowMessage(CGUIMessage &message) const;
 
   // navigation and actions
   CGUIAction m_actionLeft;
