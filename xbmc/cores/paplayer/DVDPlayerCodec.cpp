@@ -41,7 +41,7 @@ DVDPlayerCodec::DVDPlayerCodec()
   m_nAudioStream = -1;
   m_audioPos = 0;
   m_pPacket = NULL;
-  m_decoded = NULL;;
+  m_decoded = NULL;
   m_nDecodedLen = 0;
 }
 
@@ -57,7 +57,7 @@ void DVDPlayerCodec::SetContentType(const CStdString &strContent)
 
 bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_decoded = NULL;;
+  m_decoded = NULL;
   m_nDecodedLen = 0;
 
   CStdString strFileToOpen = strFile;
@@ -208,7 +208,7 @@ void DVDPlayerCodec::DeInit()
   }
 
   m_audioPos = 0;
-  m_decoded = NULL;;
+  m_decoded = NULL;
   m_nDecodedLen = 0;
 }
 
@@ -221,7 +221,7 @@ int64_t DVDPlayerCodec::Seek(int64_t iSeekTime)
   m_pDemuxer->SeekTime((int)iSeekTime, false);
   m_pAudioCodec->Reset();
 
-  m_decoded = NULL;;
+  m_decoded = NULL;
   m_nDecodedLen = 0;
 
   return iSeekTime;
