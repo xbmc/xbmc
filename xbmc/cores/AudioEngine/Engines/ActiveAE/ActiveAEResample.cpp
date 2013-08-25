@@ -108,6 +108,45 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
       return false;
     }
   }
+  // stereo upmix
+  else if (m_src_channels == 2 && m_dst_channels > 2)
+  {
+    memset(m_rematrix, 0, sizeof(m_rematrix));
+    for (unsigned int out=0; out<m_dst_channels; out++)
+    {
+      uint64_t out_chan = m_dllAvUtil.av_channel_layout_extract_channel(m_dst_chan_layout, out);
+      switch(out_chan)
+      {
+        case AV_CH_FRONT_LEFT:
+        case AV_CH_BACK_LEFT:
+        case AV_CH_SIDE_LEFT:
+          m_rematrix[out][0] = 1.0;
+          break;
+        case AV_CH_FRONT_RIGHT:
+        case AV_CH_BACK_RIGHT:
+        case AV_CH_SIDE_RIGHT:
+          m_rematrix[out][1] = 1.0;
+          break;
+        case AV_CH_FRONT_CENTER:
+          m_rematrix[out][0] = 0.5;
+          m_rematrix[out][1] = 0.5;
+          break;
+        case AV_CH_LOW_FREQUENCY:
+          m_rematrix[out][0] = 0.5;
+          m_rematrix[out][1] = 0.5;
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (m_dllSwResample.swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
+    {
+      CLog::Log(LOGERROR, "CActiveAEResample::Init - setting channel matrix failed");
+      return false;
+    }
+  }
+
   if(m_dllSwResample.swr_init(m_pContext) < 0)
   {
     CLog::Log(LOGERROR, "CActiveAEResample::Init - init resampler failed");
