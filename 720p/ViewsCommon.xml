@@ -1565,7 +1565,16 @@
 								<height>219</height>
 								<label>$INFO[ListItem.Plot]</label>
 								<animation effect="slide" end="0,-23" time="0" condition="!Container.Content(movies)">Conditional</animation>
-								<visible>![Container.Content(plugincontent) | Container.Content(seasons) | Container.Content(albums) | Container.Content(artists) | Container.Content(tvshows) | Container.Content(songs)]</visible>
+								<visible>![Container.Content(plugincontent) | Container.Content(seasons) | Container.Content(albums) | Container.Content(artists) | Container.Content(tvshows) | Container.Content(songs)] + !ListItem.Type(clip)</visible>
+							</control>
+							<control type="textbox">
+								<description>Plot</description>
+								<posy>-60</posy>
+								<height>67</height>
+								<width>620</width>
+								<label>$INFO[ListItem.Plot]</label>
+								<animation effect="slide" end="0,-23" time="0" condition="!Container.Content(movies)">Conditional</animation>
+								<visible>ListItem.Type(clip)</visible>
 							</control>
 							<control type="textbox">
 								<description>Plot</description>
