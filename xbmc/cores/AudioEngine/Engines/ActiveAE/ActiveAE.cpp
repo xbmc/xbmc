@@ -800,6 +800,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   bool initSink = false;
 
   AEAudioFormat sinkInputFormat, inputFormat;
+  AEAudioFormat oldInternalFormat = m_internalFormat;
   m_mode = MODE_PCM;
 
   if (m_streams.empty())
@@ -1031,10 +1032,13 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   }
 
   // reset gui sounds
-  std::vector<CActiveAESound*>::iterator it;
-  for (it = m_sounds.begin(); it != m_sounds.end(); ++it)
+  if (!CompareFormat(oldInternalFormat, m_internalFormat))
   {
-    (*it)->SetConverted(false);
+    std::vector<CActiveAESound*>::iterator it;
+    for (it = m_sounds.begin(); it != m_sounds.end(); ++it)
+    {
+      (*it)->SetConverted(false);
+    }
   }
 
   ClearDiscardedBuffers();
@@ -2252,7 +2256,11 @@ void CActiveAE::ResampleSounds()
   for (it = m_sounds.begin(); it != m_sounds.end(); ++it)
   {
     if (!(*it)->IsConverted())
+    {
       ResampleSound(*it);
+      // only do one sound, then yield to main loop
+      break;
+    }
   }
 }
 
