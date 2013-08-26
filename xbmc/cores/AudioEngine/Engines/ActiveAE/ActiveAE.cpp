@@ -423,6 +423,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
           stream->m_paused = true;
+          if (m_streams.size() == 1)
+            FlushEngine();
           return;
         case CActiveAEControlProtocol::RESUMESTREAM:
           stream = *(CActiveAEStream**)msg->data;
@@ -1110,31 +1112,36 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
   {
-    if (m_sinkBuffers)
-      m_sinkBuffers->Flush();
-    if (m_vizBuffers)
-      m_vizBuffers->Flush();
+    FlushEngine();
+  }
+}
 
-    // send message to sink
-    Message *reply;
-    if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, 
-                                             &reply, 2000))
+void CActiveAE::FlushEngine()
+{
+  if (m_sinkBuffers)
+    m_sinkBuffers->Flush();
+  if (m_vizBuffers)
+    m_vizBuffers->Flush();
+
+  // send message to sink
+  Message *reply;
+  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH,
+                                           &reply, 2000))
+  {
+    bool success = reply->signal == CSinkControlProtocol::ACC ? true : false;
+    if (!success)
     {
-      bool success = reply->signal == CSinkControlProtocol::ACC ? true : false;
-      if (!success)
-      {
-        CLog::Log(LOGERROR, "ActiveAE::%s - returned error on flush", __FUNCTION__);
-        m_extError = true;
-      }
-      reply->Release();
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "ActiveAE::%s - failed to flush", __FUNCTION__);
+      CLog::Log(LOGERROR, "ActiveAE::%s - returned error on flush", __FUNCTION__);
       m_extError = true;
     }
-    m_stats.Reset(m_sinkFormat.m_sampleRate);
+    reply->Release();
   }
+  else
+  {
+    CLog::Log(LOGERROR, "ActiveAE::%s - failed to flush", __FUNCTION__);
+    m_extError = true;
+  }
+  m_stats.Reset(m_sinkFormat.m_sampleRate);
 }
 
 void CActiveAE::ClearDiscardedBuffers()
