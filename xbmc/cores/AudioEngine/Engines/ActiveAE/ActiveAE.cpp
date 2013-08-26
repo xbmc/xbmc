@@ -1487,6 +1487,7 @@ bool CActiveAE::RunStages()
         }
         (*it)->m_streamDrained = true;
         (*it)->m_streamDraining = false;
+        (*it)->m_streamFading = false;
       }
     }
   }
