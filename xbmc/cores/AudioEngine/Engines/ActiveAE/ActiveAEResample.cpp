@@ -112,7 +112,7 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
   else if (m_src_channels == 2 && m_dst_channels > 2)
   {
     memset(m_rematrix, 0, sizeof(m_rematrix));
-    for (unsigned int out=0; out<m_dst_channels; out++)
+    for (int out=0; out<m_dst_channels; out++)
     {
       uint64_t out_chan = m_dllAvUtil.av_channel_layout_extract_channel(m_dst_chan_layout, out);
       switch(out_chan)
