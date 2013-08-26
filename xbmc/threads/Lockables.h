@@ -63,21 +63,31 @@ namespace XbmcThreads
 
     /**
      * This implements the "exitable" behavior mentioned above.
+     *
+     * This can be used to ALMOST exit, but not quite, by passing
+     *  the number of locks to leave. This is used in the windows
+     *  ConditionVariable which requires that the lock be entered
+     *  only once, and so it backs out ALMOST all the way, but
+     *  leaves one still there.
      */
-    inline unsigned int exit() 
+    inline unsigned int exit(unsigned int leave = 0) 
     { 
       // it's possibe we don't actually own the lock
       // so we will try it.
       unsigned int ret = 0;
       if (try_lock())
       {
-        ret = count - 1;  // The -1 is because we don't want 
-                          //  to count the try_lock increment.
-        // We must NOT compare "count" in this loop since 
-        // as soon as the last unlock is called another thread
-        // can modify it.
-        for (unsigned int i = 0; i <= ret; i++) // This will also unlock the try_lock.
-          unlock();
+        if (leave < (count - 1))
+        {
+          ret = count - 1 - leave;  // The -1 is because we don't want 
+                                    //  to count the try_lock increment.
+          // We must NOT compare "count" in this loop since 
+          // as soon as the last unlock is called another thread
+          // can modify it.
+          for (unsigned int i = 0; i < ret; i++)
+            unlock();
+        }
+        unlock(); // undo the try_lock before returning
       }
 
       return ret; 

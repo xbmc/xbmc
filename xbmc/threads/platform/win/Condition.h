@@ -35,6 +35,16 @@ namespace XbmcThreads
   {
     CONDITION_VARIABLE cond;
 
+    // SleepConditionVarialbeCS requires the condition variable be entered
+    //  only once.
+    struct AlmostExit 
+    {
+      unsigned int count;
+      CCriticalSection& cc;
+      inline AlmostExit(CCriticalSection& pcc) : count(pcc.exit(1)), cc(pcc) { cc.count = 0; }
+      inline ~AlmostExit() { cc.count = 1; cc.restore(count); }
+    };
+
   public:
     inline ConditionVariable() { InitializeConditionVariable(&cond); }
 
@@ -43,12 +53,14 @@ namespace XbmcThreads
 
     inline void wait(CCriticalSection& lock) 
     { 
+      AlmostExit ae(lock);
       // even the windows implementation is capable of spontaneous wakes
       SleepConditionVariableCS(&cond,&lock.get_underlying().mutex,INFINITE);
     }
 
     inline bool wait(CCriticalSection& lock, unsigned long milliseconds) 
     { 
+      AlmostExit ae(lock);
       return SleepConditionVariableCS(&cond,&lock.get_underlying().mutex,milliseconds) ? true : false;
     }
 
