@@ -801,7 +801,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
   AEAudioFormat sinkInputFormat, inputFormat;
   AEAudioFormat oldInternalFormat = m_internalFormat;
-  m_mode = MODE_PCM;
+  bool updateMode = true;
 
   if (m_streams.empty())
   {
@@ -822,6 +822,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   else if (m_streams.size() > 1 && m_silenceBuffers == NULL)
   {
     inputFormat = m_sinkRequestFormat;
+    updateMode = false;
   }
   else
   {
@@ -829,7 +830,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   }
 
   m_sinkRequestFormat = inputFormat;
-  ApplySettingsToFormat(m_sinkRequestFormat, m_settings, true);
+  ApplySettingsToFormat(m_sinkRequestFormat, m_settings, updateMode);
   std::string device = AE_IS_RAW(m_sinkRequestFormat.m_dataFormat) ? m_settings.passthoughdevice : m_settings.device;
   std::string driver;
   CAESinkFactory::ParseDevice(device, driver);
@@ -1210,6 +1211,9 @@ void CActiveAE::ChangeResampleQuality()
 
 void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, bool setmode)
 {
+  if (setmode)
+    m_mode = MODE_PCM;
+
   // raw pass through
   if (m_settings.mode != AUDIO_ANALOG && AE_IS_RAW(format.m_dataFormat))
   {
