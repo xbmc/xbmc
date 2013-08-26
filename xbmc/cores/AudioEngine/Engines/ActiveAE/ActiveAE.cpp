@@ -1492,7 +1492,12 @@ bool CActiveAE::RunStages()
         {
           CActiveAEStream *slave = (CActiveAEStream*)((*it)->m_streamSlave);
           slave->m_paused = false;
-          Configure(&slave->m_format);
+
+          // TODO: find better solution for this
+          // gapless bites audiophile
+          if (g_advancedSettings.m_audioAudiophile)
+            Configure(&slave->m_format);
+
           (*it)->m_streamSlave = NULL;
         }
         (*it)->m_streamDrained = true;
