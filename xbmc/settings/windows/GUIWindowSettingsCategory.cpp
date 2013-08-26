@@ -567,6 +567,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
   {
     if (*groupIt == NULL)
       continue;
+    
+    if (!(*groupIt)->IsVisible())
+      continue;
 
     const SettingList& settings = (*groupIt)->GetSettings(CViewStateSettings::Get().GetSettingLevel());
     if (settings.size() <= 0)
