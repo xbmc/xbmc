@@ -1477,7 +1477,9 @@ bool CActiveAE::RunStages()
     }
     else
     {
-      if ((*it)->m_inputBuffers->m_allSamples.size() == (*it)->m_inputBuffers->m_freeSamples.size())
+      if ((*it)->m_resampleBuffers->m_inputSamples.empty() &&
+          (*it)->m_resampleBuffers->m_outputSamples.empty() &&
+          (*it)->m_processingSamples.empty())
       {
         (*it)->m_streamPort->SendInMessage(CActiveAEDataProtocol::STREAMDRAINED);
         (*it)->m_drain = false;
