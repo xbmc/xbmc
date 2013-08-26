@@ -402,9 +402,9 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   m_BitsPerSample = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
   m_BufferLen     = m_BytesPerSec = m_format.m_sampleRate * (16 >> 3) * m_format.m_channelLayout.Count();
   m_BufferLen     *= AUDIO_BUFFER_SECONDS;
-  // should be big enough that common formats (e.g. 6 channel DTS) fit in a single packet.
-  // we don't mind less common formats being split (e.g. ape/wma output large frames)
-  m_ChunkLen      = 32*1024;
+  // the audio_decode output buffer size is 32K, and typically we convert from
+  // 6 channel 32bpp float to 8 channel 16bpp in, so a full 48K input buffer will fit the outbut buffer
+  m_ChunkLen      = 48*1024;
 
   m_wave_header.Samples.wSamplesPerBlock    = 0;
   m_wave_header.Format.nChannels            = m_format.m_channelLayout.Count();
@@ -458,7 +458,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   port_param.format.audio.eEncoding = m_eEncoding;
 
   port_param.nBufferSize = m_ChunkLen;
-  port_param.nBufferCountActual = std::max((unsigned int)port_param.nBufferCountMin, 6U);
+  port_param.nBufferCountActual = std::max((unsigned int)port_param.nBufferCountMin, 16U);
 
   omx_err = m_omx_decoder.SetParameter(OMX_IndexParamPortDefinition, &port_param);
   if(omx_err != OMX_ErrorNone)
