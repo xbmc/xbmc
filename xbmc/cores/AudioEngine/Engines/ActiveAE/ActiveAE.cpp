@@ -800,7 +800,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   bool initSink = false;
 
   AEAudioFormat sinkInputFormat, inputFormat;
-  m_mode = MODE_PCM;
+  AEAudioFormat oldInternalFormat = m_internalFormat;
+  bool updateMode = true;
 
   if (m_streams.empty())
   {
@@ -821,6 +822,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   else if (m_streams.size() > 1 && m_silenceBuffers == NULL)
   {
     inputFormat = m_sinkRequestFormat;
+    updateMode = false;
   }
   else
   {
@@ -828,7 +830,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   }
 
   m_sinkRequestFormat = inputFormat;
-  ApplySettingsToFormat(m_sinkRequestFormat, m_settings, true);
+  ApplySettingsToFormat(m_sinkRequestFormat, m_settings, updateMode);
   std::string device = AE_IS_RAW(m_sinkRequestFormat.m_dataFormat) ? m_settings.passthoughdevice : m_settings.device;
   std::string driver;
   CAESinkFactory::ParseDevice(device, driver);
@@ -1031,10 +1033,13 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   }
 
   // reset gui sounds
-  std::vector<CActiveAESound*>::iterator it;
-  for (it = m_sounds.begin(); it != m_sounds.end(); ++it)
+  if (!CompareFormat(oldInternalFormat, m_internalFormat))
   {
-    (*it)->SetConverted(false);
+    std::vector<CActiveAESound*>::iterator it;
+    for (it = m_sounds.begin(); it != m_sounds.end(); ++it)
+    {
+      (*it)->SetConverted(false);
+    }
   }
 
   ClearDiscardedBuffers();
@@ -1206,6 +1211,9 @@ void CActiveAE::ChangeResampleQuality()
 
 void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, bool setmode)
 {
+  if (setmode)
+    m_mode = MODE_PCM;
+
   // raw pass through
   if (m_settings.mode != AUDIO_ANALOG && AE_IS_RAW(format.m_dataFormat))
   {
@@ -1469,7 +1477,9 @@ bool CActiveAE::RunStages()
     }
     else
     {
-      if ((*it)->m_inputBuffers->m_allSamples.size() == (*it)->m_inputBuffers->m_freeSamples.size())
+      if ((*it)->m_resampleBuffers->m_inputSamples.empty() &&
+          (*it)->m_resampleBuffers->m_outputSamples.empty() &&
+          (*it)->m_processingSamples.empty())
       {
         (*it)->m_streamPort->SendInMessage(CActiveAEDataProtocol::STREAMDRAINED);
         (*it)->m_drain = false;
@@ -1482,11 +1492,17 @@ bool CActiveAE::RunStages()
         {
           CActiveAEStream *slave = (CActiveAEStream*)((*it)->m_streamSlave);
           slave->m_paused = false;
-          Configure(&slave->m_format);
+
+          // TODO: find better solution for this
+          // gapless bites audiophile
+          if (g_advancedSettings.m_audioAudiophile)
+            Configure(&slave->m_format);
+
           (*it)->m_streamSlave = NULL;
         }
         (*it)->m_streamDrained = true;
         (*it)->m_streamDraining = false;
+        (*it)->m_streamFading = false;
       }
     }
   }
@@ -2251,7 +2267,11 @@ void CActiveAE::ResampleSounds()
   for (it = m_sounds.begin(); it != m_sounds.end(); ++it)
   {
     if (!(*it)->IsConverted())
+    {
       ResampleSound(*it);
+      // only do one sound, then yield to main loop
+      break;
+    }
   }
 }
 
