@@ -232,7 +232,7 @@ public:
    */
   unsigned int GetReadSize()
   {
-    return m_iWritten > m_iRead ? m_iWritten - m_iRead : 0;
+    return m_iWritten - m_iRead;
   }
 
   /**
