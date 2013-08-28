@@ -392,18 +392,17 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_fsize        = framesize << 1;
       m_repeat       = MAX_EAC3_BLOCKS / blocks;
 
-      if (m_sampleRate == 48000 || m_sampleRate == 96000 || m_sampleRate == 192000)
-        m_outputRate = 192000;
-      else
-        m_outputRate = 176400;
+      // sampling rate multiplied with number of channels must equal the value
+      // given by the pack function
+      m_outputRate = 192000;
 
       if (m_dataType == STREAM_TYPE_EAC3 && m_hasSync && skip == 0)
         return 0;
 
       /* if we get here, we can sync */
       m_hasSync        = true;
-      m_outputChannels = 8;
-      m_channelMap     = CAEChannelInfo(OutputMaps[1]);
+      m_outputChannels = 2;
+      m_channelMap     = CAEChannelInfo(OutputMaps[0]);
       m_channels       = 8; /* FIXME: this should be read out of the stream */
       m_syncFunc       = &CAEStreamInfo::SyncAC3;
       m_dataType       = STREAM_TYPE_EAC3;
