@@ -55,7 +55,7 @@ bool CAEFactory::LoadEngine()
 
   bool loaded = false;
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   std::string engine;
   if (getenv("AE_ENGINE"))
   {
