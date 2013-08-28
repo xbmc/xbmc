@@ -172,5 +172,6 @@ private:
   bool              m_doRemap;
   void              Upmix(void *input, unsigned int channelsInput, void *output, unsigned int channelsOutput, unsigned int frames, AEDataFormat dataFormat);
   bool              m_firstInput;
+  bool              m_flushRequested;
 };
 
