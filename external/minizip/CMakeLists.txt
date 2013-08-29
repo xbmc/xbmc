@@ -40,6 +40,8 @@ if (UNIX)
 	# 
 	# see http://stackoverflow.com/questions/1835489/linking-an-application-to-libbz2-so-1-rather-than-libbz2-so-1-0
 	#
+	find_package(BZip2)
+
 	set(BZ2_LIB_NAME bz2)
 	if (NOT APPLE)
 		set(BZ2_LIB_NAME bz2.a)

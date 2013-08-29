@@ -6,6 +6,7 @@
 #ifdef PLATFORM_UNIX
  #include <stdlib.h>
  #include <pwd.h>
+ #include <unistd.h> 
 #endif
 
 #ifdef PLATFORM_WINDOWS
