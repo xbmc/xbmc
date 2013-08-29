@@ -157,20 +157,19 @@ private:
   bool                m_muted;
   CAEChannelInfo      m_chLayout;
   unsigned int        m_frameSize;
+  double              m_frameSizeMul;
 
   /* the sink, its format information, and conversion function */
   AESinkInfoList            m_sinkInfoList;
   IAESink                  *m_sink;
   AEAudioFormat             m_sinkFormat;
   double                    m_sinkFormatSampleRateMul;
-  double                    m_sinkFormatFrameSizeMul;
   unsigned int              m_sinkBlockSize;
   unsigned int              m_sinkBlockTime;
   bool                      m_sinkHandlesVolume;
   AEAudioFormat             m_encoderFormat;
   double                    m_encoderFrameSizeMul;
   double                    m_encoderInitSampleRateMul;
-  double                    m_encoderInitFrameSizeMul;
   unsigned int              m_bytesPerSample;
   CAEConvert::AEConvertFrFn m_convertFn;
 
