@@ -30,27 +30,17 @@ foreach(TEST_FILE ${TEST_FILES})
 endforeach()
 
 # Add unit test binaries
-add_executable(TestUpdateScript
-  TestUpdateScript.cpp
-)
-target_link_libraries(TestUpdateScript
-  updatershared
-)
-add_executable(TestUpdaterOptions
-  TestUpdaterOptions.cpp
-)
-target_link_libraries(TestUpdaterOptions
-  updatershared
-)
-add_executable(TestFileUtils
-  TestFileUtils.cpp
-)
-target_link_libraries(TestFileUtils
-  updatershared
-)
-  
-if (APPLE)
-	set_target_properties(TestUpdateScript PROPERTIES LINK_FLAGS "-framework Security -framework Cocoa")
-	set_target_properties(TestUpdaterOptions PROPERTIES LINK_FLAGS "-framework Security -framework Cocoa")
-endif()
+macro(ADD_UPDATER_TEST CLASS)
+  set(TEST_TARGET ${CLASS})
+  add_executable(${TEST_TARGET} ${CLASS}.cpp)
+  target_link_libraries(${TEST_TARGET} updatershared)
+  add_test(${TEST_TARGET} ${TEST_TARGET})
+  if (APPLE)
+	  set_target_properties(${TEST_TARGET} PROPERTIES LINK_FLAGS "-framework Security -framework Cocoa")
+  endif()
+endmacro()
 
+add_updater_test(TestUpdateScript)
+add_updater_test(TestUpdaterOptions)
+add_updater_test(TestFileUtils)
+  
