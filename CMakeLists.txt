@@ -6,10 +6,12 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 # If the SIGN_UPDATER option is enabled, the updater.exe
 # binary is digitally signed on Windows after it has been built.
-# A script called sign-updater.bat must exist in the PATH or
-# the directory where updater.exe is built.  This will be run
-# with the path of the binary to sign it.
-option(SIGN_UPDATER OFF)
+#
+# The script used to sign the binary is specified by BINARY_SIGNING_TOOL.
+# This tool must take a single argument which is the filename of the
+# binary to sign.
+option(SIGN_UPDATER "Enable signing of the updater binary" OFF)
+set(BINARY_SIGNING_TOOL sign-updater.bat CACHE PATH "Path to the tool used to sign the updater")
 
 include_directories(external)
 include_directories(external/TinyThread/source)

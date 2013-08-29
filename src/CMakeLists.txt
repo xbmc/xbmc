@@ -130,7 +130,7 @@ target_link_libraries(updater
 )
 
 if (SIGN_UPDATER)
-	add_custom_command(TARGET updater POST_BUILD COMMAND sign-updater.bat updater.exe)
+	add_custom_command(TARGET updater POST_BUILD COMMAND ${BINARY_SIGNING_TOOL} $<TARGET_FILE:updater>)
 endif()
 
 install(TARGETS updater RUNTIME DESTINATION bin)
