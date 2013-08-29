@@ -1874,7 +1874,10 @@ msgctxt "#447"
 msgid "Autorun media"
 msgstr ""
 
-#empty string with id 448
+#: system/settings/settings.xml
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#449"
@@ -14371,4 +14374,9 @@ msgstr ""
 #: xbmc/Windows/GUIMediaWindow.cpp
 msgctxt "#37015"
 msgid "Browse Into"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
 msgstr ""
