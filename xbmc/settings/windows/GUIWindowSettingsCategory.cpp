@@ -447,6 +447,10 @@ void CGUIWindowSettingsCategory::SetupControls(bool createSettings /* = true */)
   for (SettingCategoryList::const_iterator category = m_categories.begin(); category != m_categories.end(); ++category)
   {
     CGUIButtonControl *pButton = NULL;
+
+    if (!(*category)->IsVisible())
+      continue;
+
     if (m_pOriginalCategoryButton->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
       pButton = new CGUIToggleButtonControl(*(CGUIToggleButtonControl *)m_pOriginalCategoryButton);
     else
@@ -562,6 +566,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
   for (SettingGroupList::const_iterator groupIt = groups.begin(); groupIt != groups.end(); ++groupIt)
   {
     if (*groupIt == NULL)
+      continue;
+    
+    if (!(*groupIt)->IsVisible())
       continue;
 
     const SettingList& settings = (*groupIt)->GetSettings(CViewStateSettings::Get().GetSettingLevel());
