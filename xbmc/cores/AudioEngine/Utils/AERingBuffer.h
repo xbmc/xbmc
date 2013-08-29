@@ -156,7 +156,7 @@ public:
     unsigned int space = GetReadSize();
 
     //want to read more than we have written?
-    if( space <= 0 )
+    if( space == 0 )
     {
 #ifdef AE_RING_BUFFER_DEBUG
       CLog::Log(LOGDEBUG, "AERingBuffer: Can't read from empty buffer.");

@@ -22,13 +22,13 @@
 #include <samplerate.h>
 #include <list>
 
-#include "CoreAudioRingBuffer.h"
 #include "ICoreAudioSource.h"
 #include "cores/AudioEngine/AEAudioFormat.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
 #include "cores/AudioEngine/Utils/AERemap.h"
 #include "cores/AudioEngine/Utils/AELimiter.h"
+#include "cores/AudioEngine/Utils/AERingBuffer.h"
 
 #if defined(TARGET_DARWIN_IOS)
 # include "CoreAudioAEHALIOS.h"
@@ -36,7 +36,7 @@
 # include "CoreAudioAEHALOSX.h"
 #endif
 
-class CoreAudioRingBuffer;
+class AERingBuffer;
 
 class CCoreAudioAEStream : public IAEStream, public ICoreAudioSource
 {
@@ -139,7 +139,7 @@ private:
 
   CAEConvert::AEConvertToFn m_convertFn;
 
-  CoreAudioRingBuffer    *m_Buffer;
+  AERingBuffer           *m_Buffer;
   float                  *m_convertBuffer;      /* buffer for converted data */
   int                     m_convertBufferSize;
   //float                  *m_resampleBuffer;     /* buffer for resample data */

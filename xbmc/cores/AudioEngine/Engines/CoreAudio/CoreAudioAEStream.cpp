@@ -308,7 +308,7 @@ void CCoreAudioAEStream::Initialize()
   m_AvgBytesPerSec = m_OutputFormat.m_frameSize * m_OutputFormat.m_sampleRate;
 
   delete m_Buffer;
-  m_Buffer = new CoreAudioRingBuffer(m_AvgBytesPerSec);
+  m_Buffer = new AERingBuffer(m_AvgBytesPerSec);
 
   m_fadeRunning = false;
 
