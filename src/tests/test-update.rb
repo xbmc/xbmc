@@ -159,12 +159,15 @@ end
 Dir.mkdir(PACKAGE_SRC_DIR)
 nested_dir_path = "#{PACKAGE_SRC_DIR}/new-dir/new-dir2"
 FileUtils.mkdir_p(nested_dir_path)
+FileUtils::chmod 0755, "#{PACKAGE_SRC_DIR}/new-dir"
+FileUtils::chmod 0755, "#{PACKAGE_SRC_DIR}/new-dir/new-dir2"
 nested_dir_test_file = "#{nested_dir_path}/new-file.txt"
 File.open(nested_dir_test_file,'w') do |file|
 	file.puts "this is a new file in a new nested dir"
 end
-
+FileUtils::chmod 0644, nested_dir_test_file
 FileUtils.cp(NEWAPP_NAME,"#{PACKAGE_SRC_DIR}/#{APP_NAME}")
+FileUtils::chmod 0755, "#{PACKAGE_SRC_DIR}/#{APP_NAME}"
 
 # Create .zip packages from source files
 Dir.mkdir(PACKAGE_DIR)
