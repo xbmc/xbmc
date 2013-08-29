@@ -51,6 +51,7 @@ struct AudioSettings
   int mode;
   int channels;
   bool ac3passthrough;
+  bool eac3passthrough;
   bool dtspassthrough;
   bool aacpassthrough;
   bool truehdpassthrough;
