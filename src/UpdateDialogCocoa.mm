@@ -188,7 +188,7 @@ void UpdateDialogCocoa::releaseAutoreleasePool(void* arg)
 
 void UpdateDialogCocoa::quit()
 {
-	[NSApp stop:nil];
+	[NSApp performSelectorOnMainThread:@selector(stop:) withObject:d->delegate waitUntilDone:false];
 }
 
 
