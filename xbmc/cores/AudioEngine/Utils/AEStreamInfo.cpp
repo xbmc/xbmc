@@ -78,6 +78,7 @@ CAEStreamInfo::CAEStreamInfo() :
   m_dtsBlocks     (0),
   m_dtsPeriod     (0),
   m_fsize         (0),
+  m_fsizeMain     (0),
   m_repeat        (0),
   m_substreams    (0),
   m_dataType      (STREAM_TYPE_NULL),
@@ -287,6 +288,12 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
 {
   unsigned int skip = 0;
 
+  // handle substreams
+  if (m_fsizeMain)
+  {
+    data += m_fsizeMain;
+  }
+
   for (; size - skip > 7; ++skip, ++data)
   {
     /* search for an ac3 sync word */
@@ -335,7 +342,14 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_sampleRate = AC3FSCod[fscod];
 
       /* dont do extensive testing if we have not lost sync */
-      if (m_dataType == STREAM_TYPE_AC3 && skip == 0)
+      /* this may be the main stream of EAC3 */
+      if (m_dataType == STREAM_TYPE_EAC3 && skip == 0)
+      {
+        m_fsizeMain = m_fsize;
+        m_fsize = 0;
+        return 0;
+      }
+      else if (m_dataType == STREAM_TYPE_AC3 && skip == 0)
         return 0;
 
       unsigned int crc_size;
@@ -390,6 +404,14 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       }
 
       m_fsize        = framesize << 1;
+
+      // concatenate substream to independent stream
+      if (strmtyp == 1 && m_fsizeMain)
+      {
+        m_fsize += m_fsizeMain;
+      }
+      m_fsizeMain = 0;
+
       m_repeat       = MAX_EAC3_BLOCKS / blocks;
 
       // sampling rate multiplied with number of channels must equal the value
@@ -407,6 +429,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_syncFunc       = &CAEStreamInfo::SyncAC3;
       m_dataType       = STREAM_TYPE_EAC3;
       m_packFunc       = &CAEPackIEC61937::PackEAC3;
+      m_fsizeMain      = 0;
 
       CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - E-AC3 stream detected (%d channels, %dHz)", m_channels, m_sampleRate);
       return skip;
@@ -416,6 +439,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
   /* if we get here, the entire packet is invalid and we have lost sync */
   CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - AC3 sync lost");
   m_hasSync = false;
+  m_fsizeMain = 0;
   return skip;
 }
 

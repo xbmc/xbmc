@@ -87,6 +87,7 @@ private:
   unsigned int              m_dtsBlocks;
   unsigned int              m_dtsPeriod;        /* used for dtsHD */
   unsigned int              m_fsize;
+  unsigned int              m_fsizeMain;        /* used for EAC3 substreams */
   unsigned int              m_repeat;
   int                       m_substreams;       /* used for TrueHD  */
   AVCRC                     m_crcTrueHD[1024];  /* TrueHD crc table */
