@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Platform.h"
+#include "UpdateDialog.h"
 #include "UpdateMessage.h"
-#include "UpdateObserver.h"
 
 #include "wincore.h"
 #include "controls.h"
