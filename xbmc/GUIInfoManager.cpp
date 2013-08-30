@@ -58,6 +58,9 @@
 #include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
+#if defined(TARGET_DARWIN)
+#include "osx/smc.h"
+#endif
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -4021,10 +4024,15 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
 
 CTemperature CGUIInfoManager::GetGPUTemperature()
 {
+  int  value = 0;
+  char scale = 0;
+
+#if defined(TARGET_DARWIN)
+  value = SMCGetTemperature(SMC_KEY_GPU_TEMP);
+  return CTemperature::CreateFromCelsius(value);
+#else
   CStdString  cmd   = g_advancedSettings.m_gpuTempCmd;
-  int         value = 0,
-              ret   = 0;
-  char        scale = 0;
+  int         ret   = 0;
   FILE        *p    = NULL;
 
   if (cmd.IsEmpty() || !(p = popen(cmd.c_str(), "r")))
@@ -4035,6 +4043,7 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 
   if (ret != 2)
     return CTemperature();
+#endif
 
   if (scale == 'C' || scale == 'c')
     return CTemperature::CreateFromCelsius(value);
