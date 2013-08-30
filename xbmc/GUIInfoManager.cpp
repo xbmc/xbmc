@@ -58,9 +58,6 @@
 #include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
-#if defined(TARGET_DARWIN)
-#include "osx/smc.h"
-#endif
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -87,6 +84,12 @@
 #include "cores/IPlayer.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
+
+#if defined(TARGET_DARWIN)
+#include "osx/smc.h"
+#include "linux/LinuxResourceCounter.h"
+static CLinuxResourceCounter m_resourceCounter;
+#endif
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -4012,7 +4015,9 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
-#if defined(TARGET_DARWIN) || defined(TARGET_WINDOWS)
+#if defined(TARGET_DARWIN)
+      text.Format("%4.2f%%", m_resourceCounter.GetCPUUsage());
+#elif defined(TARGET_WINDOWS)
       text.Format("%d%%", g_cpuInfo.getUsedPercentage());
 #else
       text.Format("%s", g_cpuInfo.GetCoresUsageString());
