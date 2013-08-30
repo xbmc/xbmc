@@ -56,7 +56,7 @@ int main(int argc, char** argv)
             std::string path = iter->substr(inputDir.size()+1);
             std::string content = FileUtils::readFile(iter->c_str());
             LOG(Info, "Adding " + path + " to archive " + archivePath);
-            FileUtils::addToZip(archivePath.c_str(), path.c_str(), content.data(), content.length());
+            FileUtils::addToZip(archivePath.c_str(), path.c_str(), content.data(), static_cast<int>(content.length()));
         }
     }
     catch (const std::exception& ex)

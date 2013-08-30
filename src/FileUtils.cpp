@@ -160,7 +160,7 @@ void FileUtils::addToZip(const char* archivePath, const char* path, const char* 
 	{
 		throw IOException("Unable to add new file to zip archive");
 	}
-	result = zipWriteInFileInZip(archive, content, length);
+	result = zipWriteInFileInZip(archive, content, static_cast<unsigned int>(length));
 	if (result != ZIP_OK)
 	{
 		throw IOException("Unable to write file data to zip archive");
@@ -536,14 +536,14 @@ void FileUtils::writeFile(const char* path, const char* data, int length) throw 
 	stream.write(data,length);
 }
 
-std::string FileUtils::readFile(const char* path)
+std::string FileUtils::readFile(const char* path) throw (IOException)
 {
 	std::ifstream inputFile(path, std::ios::in | std::ios::binary);
 	std::string content;
 	inputFile.seekg(0, std::ios::end);
 	content.resize(static_cast<unsigned int>(inputFile.tellg()));
 	inputFile.seekg(0, std::ios::beg);
-	inputFile.read(&content[0], content.size());
+	inputFile.read(&content[0], static_cast<int>(content.size()));
 	return content;
 }
 

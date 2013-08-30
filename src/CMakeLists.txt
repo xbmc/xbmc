@@ -106,6 +106,12 @@ target_link_libraries(updatershared
   tinythread
 )
 
+if(APPLE)
+  find_library(COCOA_LIBRARY Cocoa)
+  find_library(SECURITY_LIBRARY Security)
+  target_link_libraries(updatershared ${SECURITY_LIBRARY} ${COCOA_LIBRARY})
+endif()
+
 if (UNIX)
   target_link_libraries(updatershared pthread dl)
 endif()
@@ -115,13 +121,6 @@ if (WIN32)
 endif()
 
 add_executable(updater ${EXE_FLAGS} main.cpp)
-
-if(APPLE)
-	set_target_properties(
-		updater
-		PROPERTIES LINK_FLAGS "-framework Security -framework Cocoa"
-	)
-endif()
 
 target_link_libraries(updater
   updatershared
@@ -133,7 +132,7 @@ endif()
 
 install(TARGETS updater RUNTIME DESTINATION bin)
 
-add_executable(zip-tool zip.cpp)
+add_executable(zip-tool zip-tool.cpp)
 target_link_libraries(zip-tool updatershared)
 
 
