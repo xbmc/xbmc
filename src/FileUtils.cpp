@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "minizip/zip.h"
 #include "minizip/unzip.h"
 
 #ifdef PLATFORM_UNIX
@@ -143,6 +144,37 @@ void FileUtils::moveFile(const char* src, const char* dest) throw (IOException)
 		throw IOException("Unable to rename " + std::string(src) + " to " + std::string(dest));
 	}
 #endif
+}
+
+void FileUtils::addToZip(const char* archivePath, const char* path, const char* content, int length) throw (IOException)
+{
+	int result = ZIP_OK;
+
+	int appendMode = fileExists(archivePath) ? APPEND_STATUS_ADDINZIP : APPEND_STATUS_CREATE;
+
+	zipFile archive = zipOpen(archivePath, appendMode);
+	result = zipOpenNewFileInZip(archive, path, 0 /* file attributes */, 0 /* extra field */, 0 /* extra field size */,
+						0/* global extra field */, 0 /* global extra field size */, 0 /* comment */, Z_DEFLATED /* method */,
+						Z_DEFAULT_COMPRESSION /* level */);
+	if (result != ZIP_OK)
+	{
+		throw IOException("Unable to add new file to zip archive");
+	}
+	result = zipWriteInFileInZip(archive, content, length);
+	if (result != ZIP_OK)
+	{
+		throw IOException("Unable to write file data to zip archive");
+	}
+	result = zipCloseFileInZip(archive);
+	if (result != ZIP_OK)
+	{
+		throw IOException("Unable to close file in zip archive");
+	}
+	result = zipClose(archive, 0 /* global comment */);
+	if (result != ZIP_OK)
+	{
+		throw IOException("Unable to close zip archive");
+	}
 }
 
 void FileUtils::extractFromZip(const char* zipFilePath, const char* src, const char* dest) throw (IOException)
@@ -502,6 +534,17 @@ void FileUtils::writeFile(const char* path, const char* data, int length) throw 
 {
 	std::ofstream stream(path,std::ios::binary | std::ios::trunc);
 	stream.write(data,length);
+}
+
+std::string FileUtils::readFile(const char* path)
+{
+	std::ifstream inputFile(path, std::ios::in | std::ios::binary);
+	std::string content;
+	inputFile.seekg(0, std::ios::end);
+	content.resize(static_cast<unsigned int>(inputFile.tellg()));
+	inputFile.seekg(0, std::ios::beg);
+	inputFile.read(&content[0], content.size());
+	return content;
 }
 
 void FileUtils::copyFile(const char* src, const char* dest) throw (IOException)

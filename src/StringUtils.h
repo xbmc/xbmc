@@ -36,7 +36,7 @@ inline const char* notNullString(const char* text)
 inline bool endsWith(const std::string& str, const char* text)
 {
 	size_t length = strlen(text);
-	return str.find(text,str.size() - length) != 0;
+	return str.find(text,str.size() - length) != std::string::npos;
 }
 
 inline bool startsWith(const std::string& str, const char* text)

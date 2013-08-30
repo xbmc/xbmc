@@ -146,7 +146,7 @@ void UpdateDialogWin32::updateFinished()
 
 void UpdateDialogWin32::quit()
 {
-	PostQuitMessage(0);
+	PostThreadMessage(GetWindowThreadProcessId(m_window.GetHwnd(), 0 /* process ID */), WM_QUIT, 0, 0);
 }
 
 LRESULT WINAPI UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam)

@@ -133,3 +133,7 @@ endif()
 
 install(TARGETS updater RUNTIME DESTINATION bin)
 
+add_executable(zip-tool zip.cpp)
+target_link_libraries(zip-tool updatershared)
+
+

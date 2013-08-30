@@ -18,13 +18,13 @@ if IS_WINDOWS
 	NEWAPP_NAME = "newapp.exe"
 	APP_NAME = "app.exe"
 	UPDATER_NAME = "updater.exe"
-	ZIP_TOOL = "C:/Cygwin/bin/zip.exe"
+	ZIP_TOOL = File.expand_path("../zip-tool.exe")
 else
 	OLDAPP_NAME = "oldapp"
 	NEWAPP_NAME = "newapp"
 	APP_NAME = "app"
 	UPDATER_NAME = "updater"
-	ZIP_TOOL = "zip"
+	ZIP_TOOL = File.expand_path("../zip-tool")
 end
 
 file_list_vars = {
@@ -40,13 +40,6 @@ def replace_vars(src_file,dest_file,vars)
 	File.open(dest_file,'w') do |file|
 		file.print content
 	end
-end
-
-def zip_supports_bzip2(zip_tool)
-	# Try making an empty zip file with bzip2 compression, if bzip2 is not
-	# supported, the tool will output an error, otherwise it will output
-	# "Nothing to do"
-	return `#{zip_tool} -Z bzip2 testing-bzip2-support.zip`.strip.include?("Nothing to do")
 end
 
 # Returns true if |src_file| and |dest_file| have the same contents, type
@@ -124,19 +117,6 @@ OptionParser.new do |parser|
 	end
 end.parse!
 
-BZIP2_AVAILABLE = zip_supports_bzip2(ZIP_TOOL)
-if (BZIP2_AVAILABLE)
-	ZIP_FLAGS = "-Z bzip2"
-else
-	ZIP_FLAGS = ""
-end
-
-if (BZIP2_AVAILABLE)
-	puts "Using bzip2 compression"
-else
-	puts "Using plain old deflate compression - the 'zip' tool does not support bzip2"
-end
-
 # Remove the install and package dirs if they
 # already exist
 FileUtils.rm_rf(INSTALL_DIR)
@@ -172,7 +152,7 @@ FileUtils::chmod 0755, "#{PACKAGE_SRC_DIR}/#{APP_NAME}"
 # Create .zip packages from source files
 Dir.mkdir(PACKAGE_DIR)
 Dir.chdir(PACKAGE_SRC_DIR) do
-	if !system("#{ZIP_TOOL} #{ZIP_FLAGS} -r #{PACKAGE_DIR}/app-pkg.zip .")
+	if !system("#{ZIP_TOOL} #{PACKAGE_DIR}/app-pkg.zip .")
 		raise "Unable to create update package"
 	end
 end

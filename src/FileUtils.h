@@ -109,6 +109,9 @@ class FileUtils
 		/** Returns the path to a directory for storing temporary files. */
 		static std::string tempPath();
 
+		/** Add a file to a zip archive, creating it if it does not already exist. */
+		static void addToZip(const char* archivePath, const char* path, const char* content, int length) throw (IOException);
+
 		/** Extract the file @p src from the zip archive @p zipFile and
 		  * write it to @p dest.
 		  */
@@ -134,6 +137,8 @@ class FileUtils
 		static std::string makeAbsolute(const char* path, const char* basePath);
 
 		static void writeFile(const char* path, const char* data, int length) throw (IOException);
+
+		static std::string readFile(const char* path) throw (IOException);
 
 		/** Changes the current working directory to @p path */
 		static void chdir(const char* path) throw (IOException);
