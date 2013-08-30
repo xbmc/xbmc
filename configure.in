@@ -2700,7 +2700,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdcss], [
   ./configure \
     CC="$CC" \
     CXX="$CXX" \
-    CFLAGS="$CFLAGS" \
+    CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64" \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
     --build=$build_alias \
@@ -2712,7 +2712,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdcss], [
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
   ./configure2 \
-    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../libdvdcss/src" \
+    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../libdvdcss/src -D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64" \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
     --build=$build_alias \
@@ -2730,7 +2730,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
   ./configure2 \
-    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../includes" \
+    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../includes -D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64" \
     --extra-ldflags="-L`pwd`/../libdvdread/obj" \
     --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
