@@ -82,8 +82,8 @@ if (LINUX)
 	generate_cpp_resource_file(resource_updatergtk ${CMAKE_CURRENT_BINARY_DIR} ${GTK_UPDATER_LIB} ${GTK_BIN_CPP_FILE})
 	add_dependencies(resource_updatergtk updatergtk)
 
-	set(SOURCES ${SOURCES} UpdateDialogGtkWrapper.cpp ${GTK_BIN_CPP_FILE})
-	set(HEADERS ${HEADERS} UpdateDialogGtkWrapper.h)
+	set(SOURCES ${SOURCES} UpdateDialogGtkFactory.cpp ${GTK_BIN_CPP_FILE})
+	set(HEADERS ${HEADERS} UpdateDialogGtkFactory.h)
 endif()
 
 if (APPLE)

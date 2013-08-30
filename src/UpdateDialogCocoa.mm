@@ -98,7 +98,7 @@ void UpdateDialogCocoa::enableDockIcon()
 	TransformProcessType(&psn,kProcessTransformToForegroundApplication);
 }
 
-void UpdateDialogCocoa::init()
+void UpdateDialogCocoa::init(int /* argc */, char** /* argv */)
 {
 	enableDockIcon();
 	
@@ -183,6 +183,11 @@ void* UpdateDialogCocoa::createAutoreleasePool()
 void UpdateDialogCocoa::releaseAutoreleasePool(void* arg)
 {
 	[(id)arg release];
+}
+
+void UpdateDialogCocoa::quit()
+{
+	[NSApp stop:nil];
 }
 
 

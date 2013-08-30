@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UpdateObserver.h"
+#include "UpdateDialog.h"
 
 #include <fstream>
 #include "tinythread.h"
@@ -11,11 +11,15 @@
   * The 'dialog' consists of an xterm tailing the contents
   * of a file, into which progress messages are written.
   */
-class UpdateDialogAscii : public UpdateObserver
+class UpdateDialogAscii : public UpdateDialog
 {
 	public:
-		void init();
+		// implements UpdateDialog
+		virtual void init(int argc, char** argv);
+		virtual void exec();
+		virtual void quit();
 
+		// implements UpdateObserver
 		virtual void updateError(const std::string& errorMessage);
 		virtual void updateProgress(int percentage);
 		virtual void updateFinished();

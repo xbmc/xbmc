@@ -10,7 +10,7 @@
 #include "tinythread.h"
 
 #if defined(PLATFORM_LINUX)
-  #include "UpdateDialogGtkWrapper.h"
+  #include "UpdateDialogGtkFactory.h"
   #include "UpdateDialogAscii.h"
 #endif
 
@@ -24,8 +24,9 @@
 #endif
 
 #include <iostream>
+#include <memory>
 
-#define UPDATER_VERSION "0.15"
+#define UPDATER_VERSION "0.16"
 
 void runWithUi(int argc, char** argv, UpdateInstaller* installer);
 
@@ -144,6 +145,7 @@ int main(int argc, char** argv)
 	installer.setScript(&script);
 	installer.setWaitPid(options.waitPid);
 	installer.setForceElevated(options.forceElevated);
+	installer.setAutoClose(options.autoClose);
 
 	if (options.mode == UpdateInstaller::Main)
 	{
@@ -161,41 +163,31 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-#ifdef PLATFORM_LINUX
-void runWithUi(int argc, char** argv, UpdateInstaller* installer)
+UpdateDialog* createUpdateDialog()
 {
-	UpdateDialogAscii asciiDialog;
-	UpdateDialogGtkWrapper dialog;
-	bool useGtk = dialog.init(argc,argv);
-	if (useGtk)
+#if defined(PLATFORM_WINDOWS)
+	return new UpdateDialogWin32();
+#elif defined(PLATFORM_MAC)
+	return new UpdateDialogCocoa();
+#elif defined(PLATFORM_LINUX)
+	UpdateDialog* dialog = UpdateDialogGtkFactory::createDialog();
+	if (!dialog)
 	{
-		installer->setObserver(&dialog);
+		dialog = new UpdateDialogAscii();
 	}
-	else
-	{
-		asciiDialog.init();
-		installer->setObserver(&asciiDialog);
-	}
-	tthread::thread updaterThread(runUpdaterThread,installer);
-	if (useGtk)
-	{
-		dialog.exec();
-	}
-	updaterThread.join();
-}
+	return dialog;
 #endif
+}
 
-#ifdef PLATFORM_MAC
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
-	UpdateDialogCocoa dialog;
-	installer->setObserver(&dialog);
-	dialog.init();
-	tthread::thread updaterThread(runUpdaterThread,installer);
-	dialog.exec();
+	std::auto_ptr<UpdateDialog> dialog(createUpdateDialog());
+	dialog->init(argc, argv);
+	installer->setObserver(dialog.get());
+	tthread::thread updaterThread(runUpdaterThread, installer);
+	dialog->exec();
 	updaterThread.join();
 }
-#endif
 
 #ifdef PLATFORM_WINDOWS
 // application entry point under Windows
@@ -208,15 +200,5 @@ int CALLBACK WinMain(HINSTANCE hInstance,
 	char** argv;
 	ProcessUtils::convertWindowsCommandLine(GetCommandLineW(),argc,argv);
 	return main(argc,argv);
-}
-
-void runWithUi(int argc, char** argv, UpdateInstaller* installer)
-{
-	UpdateDialogWin32 dialog;
-	installer->setObserver(&dialog);
-	dialog.init();
-	tthread::thread updaterThread(runUpdaterThread,installer);
-	dialog.exec();
-	updaterThread.join();
 }
 #endif

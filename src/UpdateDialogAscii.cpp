@@ -14,7 +14,7 @@ const char* introMessage =
  "You can fix this by installing the GTK 2 libraries.\n\n"
  "Installing Updates...\n";
 
-void UpdateDialogAscii::init()
+void UpdateDialogAscii::init(int /* argc */, char** /* argv */)
 {
 	const char* path = "/tmp/update-progress";
 	m_output.open(path);
@@ -58,4 +58,11 @@ void UpdateDialogAscii::updateFinished()
 	m_mutex.unlock();
 }
 
+void UpdateDialogAscii::quit()
+{
+}
+
+void UpdateDialogAscii::exec()
+{
+}
 

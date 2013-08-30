@@ -1,17 +1,20 @@
 #pragma once
 
+#include "UpdateDialog.h"
 #include "UpdateObserver.h"
 
 class UpdateDialogPrivate;
 
-class UpdateDialogCocoa : public UpdateObserver
+class UpdateDialogCocoa : public UpdateDialog
 {
 	public:
 		UpdateDialogCocoa();
 		~UpdateDialogCocoa();
 
-		void init();
-		void exec();
+		// implements UpdateDialog
+		virtual void init(int argc, char** argv);
+		virtual void exec();
+		virtual void quit();
 
 		// implements UpdateObserver
 		virtual void updateError(const std::string& errorMessage);

@@ -6,31 +6,9 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-UpdateDialogGtk* update_dialog_gtk_new(int argc, char** argv)
+UpdateDialogGtk* update_dialog_gtk_new()
 {
-	UpdateDialogGtk* dialog = new UpdateDialogGtk;
-	dialog->init(argc,argv);
-	return dialog;
-}
-
-void update_dialog_gtk_exec(UpdateDialogGtk* dialog)
-{
-	dialog->exec();
-}
-
-void update_dialog_gtk_handle_error(UpdateDialogGtk* dialog, const std::string& errorMessage)
-{
-	dialog->updateError(errorMessage);
-}
-
-void update_dialog_gtk_handle_progress(UpdateDialogGtk* dialog, int percentage)
-{
-	dialog->updateProgress(percentage);
-}
-
-void update_dialog_gtk_handle_finished(UpdateDialogGtk* dialog)
-{
-	dialog->updateFinished();
+	return new UpdateDialogGtk();
 }
 
 UpdateDialogGtk::UpdateDialogGtk()
@@ -95,6 +73,12 @@ void UpdateDialogGtk::exec()
 }
 
 void UpdateDialogGtk::finish(GtkWidget* widget, gpointer _dialog)
+{
+	UpdateDialogGtk* dialog = static_cast<UpdateDialogGtk*>(_dialog);
+	dialog->quit();
+}
+
+void UpdateDialogGtk::quit()
 {
 	gtk_main_quit();
 }

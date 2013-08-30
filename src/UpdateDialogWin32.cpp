@@ -83,7 +83,7 @@ UpdateDialogWin32::~UpdateDialogWin32()
 	}
 }
 
-void UpdateDialogWin32::init()
+void UpdateDialogWin32::init(int /* argc */, char** /* argv */)
 {
 	int width = 300;
 	int height = 130;
@@ -143,6 +143,11 @@ void UpdateDialogWin32::updateFinished()
 	SendNotifyMessage(m_window.GetHwnd(),WM_USER,reinterpret_cast<WPARAM>(message),0);
 }
 
+void UpdateDialogWin32::quit()
+{
+	PostQuitMessage(0);
+}
+
 LRESULT WINAPI UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -157,7 +162,7 @@ LRESULT WINAPI UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM w
 		{
 			if (reinterpret_cast<HWND>(lParam) == m_finishButton.GetHwnd())
 			{
-				PostQuitMessage(0);
+				quit();
 			}
 		}
 		break;

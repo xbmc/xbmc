@@ -18,6 +18,7 @@ class UpdaterOptions
 		std::string logFile;
 		bool showVersion;
 		bool forceElevated;
+		bool autoClose;
 
 	private:
 		void parseOldFormatArgs(int argc, char** argv);

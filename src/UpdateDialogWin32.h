@@ -8,14 +8,16 @@
 #include "controls.h"
 #include "stdcontrols.h"
 
-class UpdateDialogWin32 : public UpdateObserver
+class UpdateDialogWin32 : public UpdateDialog
 {
 	public:
 		UpdateDialogWin32();
 		~UpdateDialogWin32();
 
-		void init();
-		void exec();
+		// implements UpdateDialog
+		virtual void init(int argc, char** argv);
+		virtual void exec();
+		virtual void quit();
 
 		// implements UpdateObserver
 		virtual void updateError(const std::string& errorMessage);

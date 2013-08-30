@@ -12,6 +12,7 @@ UpdateInstaller::UpdateInstaller()
 , m_script(0)
 , m_observer(0)
 , m_forceElevated(false)
+, m_autoClose(false)
 {
 }
 
@@ -443,5 +444,10 @@ void UpdateInstaller::postInstallUpdate()
 	// Info.plist file.
 	FileUtils::touch(m_installDir.c_str());
 #endif
+}
+
+void UpdateInstaller::setAutoClose(bool autoClose)
+{
+	m_autoClose = autoClose;
 }
 
