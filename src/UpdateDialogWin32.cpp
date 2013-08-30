@@ -141,6 +141,7 @@ void UpdateDialogWin32::updateFinished()
 {
 	UpdateMessage* message = new UpdateMessage(UpdateMessage::UpdateFinished);
 	SendNotifyMessage(m_window.GetHwnd(),WM_USER,reinterpret_cast<WPARAM>(message),0);
+	UpdateDialog::updateFinished();
 }
 
 void UpdateDialogWin32::quit()

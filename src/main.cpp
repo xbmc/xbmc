@@ -28,7 +28,7 @@
 
 #define UPDATER_VERSION "0.16"
 
-void runWithUi(int argc, char** argv, UpdateInstaller* installer);
+UpdateDialog* createUpdateDialog();
 
 void runUpdaterThread(void* arg)
 {
@@ -149,7 +149,14 @@ int main(int argc, char** argv)
 
 	if (options.mode == UpdateInstaller::Main)
 	{
-		runWithUi(argc,argv,&installer);
+		LOG(Info, "Showing updater UI - auto close? " + intToStr(options.autoClose));
+		std::auto_ptr<UpdateDialog> dialog(createUpdateDialog());
+		dialog->setAutoClose(options.autoClose);
+		dialog->init(argc, argv);
+		installer.setObserver(dialog.get());
+		tthread::thread updaterThread(runUpdaterThread, &installer);
+		dialog->exec();
+		updaterThread.join();
 	}
 	else
 	{
@@ -177,16 +184,6 @@ UpdateDialog* createUpdateDialog()
 	}
 	return dialog;
 #endif
-}
-
-void runWithUi(int argc, char** argv, UpdateInstaller* installer)
-{
-	std::auto_ptr<UpdateDialog> dialog(createUpdateDialog());
-	dialog->init(argc, argv);
-	installer->setObserver(dialog.get());
-	tthread::thread updaterThread(runUpdaterThread, installer);
-	dialog->exec();
-	updaterThread.join();
 }
 
 #ifdef PLATFORM_WINDOWS

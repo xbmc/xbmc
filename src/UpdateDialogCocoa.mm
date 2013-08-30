@@ -173,6 +173,7 @@ void UpdateDialogCocoa::updateFinished()
 	[d->delegate performSelectorOnMainThread:@selector(reportUpdateFinished:)
 	             withObject:nil
 	             waitUntilDone:false];
+	UpdateDialog::updateFinished();
 }
 
 void* UpdateDialogCocoa::createAutoreleasePool()

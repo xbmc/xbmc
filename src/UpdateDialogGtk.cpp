@@ -149,6 +149,7 @@ void UpdateDialogGtk::updateFinished()
 {
 	UpdateMessage* message = new UpdateMessage(this,UpdateMessage::UpdateFinished);
 	g_idle_add(&UpdateDialogGtk::notify,message);
+	UpdateDialog::updateFinished();
 }
 
 

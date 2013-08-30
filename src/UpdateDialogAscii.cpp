@@ -56,6 +56,8 @@ void UpdateDialogAscii::updateFinished()
 	m_mutex.lock();
 	m_output << "\nUpdate Finished.  You can now restart " << AppInfo::appName() << "." << std::endl;
 	m_mutex.unlock();
+
+	UpdateDialog::updateFinished();
 }
 
 void UpdateDialogAscii::quit()

@@ -60,6 +60,10 @@ std::list<std::string> UpdateInstaller::updaterArgs() const
 	args.push_back(m_packageDir);
 	args.push_back("--script");
 	args.push_back(m_script->path());
+	if (m_autoClose)
+	{
+		args.push_back("--auto-close");
+	}
 	return args;
 }
 

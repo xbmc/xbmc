@@ -28,6 +28,7 @@ set (SOURCES
   Log.cpp
   ProcessUtils.cpp
   StandardDirs.cpp
+  UpdateDialog.cpp
   UpdateInstaller.cpp
   UpdateScript.cpp
   UpdaterOptions.cpp

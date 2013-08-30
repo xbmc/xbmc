@@ -192,7 +192,7 @@ install_path = File.expand_path(INSTALL_DIR)
 Dir.chdir(INSTALL_DIR) do
 	flags = "--force-elevated" if force_elevation
 	debug_flags = "gdb --args" if run_in_debugger
-	cmd = "#{debug_flags} #{PACKAGE_DIR}/#{UPDATER_NAME} #{flags} --install-dir \"#{install_path}\" --package-dir \"#{PACKAGE_DIR}\" --script file_list.xml"
+	cmd = "#{debug_flags} #{PACKAGE_DIR}/#{UPDATER_NAME} #{flags} --install-dir \"#{install_path}\" --package-dir \"#{PACKAGE_DIR}\" --script file_list.xml --auto-close"
 	puts "Running '#{cmd}'"
 	system(cmd)
 end
