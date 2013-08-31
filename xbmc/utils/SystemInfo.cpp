@@ -450,7 +450,9 @@ bool CSysInfo::IsOS64bit()
 
 CStdString CSysInfo::GetKernelVersion()
 {
-#if defined (TARGET_POSIX)
+#if defined(TARGET_DARWIN)
+  return g_sysinfo.GetUnameVersion();
+#elif defined (TARGET_POSIX)
   struct utsname un;
   if (uname(&un)==0)
   {
