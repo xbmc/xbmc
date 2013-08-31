@@ -6,7 +6,7 @@ rem http://xbmc.org
 rem Script by chadoe
 rem This script generates nullsoft installer include files for xbmc's languages
 rem and pvr addons
-
+rem 1. Full / 2. Normal  / 3. Minimal
 rem languages
 IF EXIST languages.nsi del languages.nsi > NUL
 IF EXIST xbmc-pvr-addons.nsi del xbmc-pvr-addons.nsi > NUL
@@ -17,7 +17,8 @@ FOR /F "tokens=*" %%S IN ('dir /B /AD BUILD_WIN32\Xbmc\language') DO (
   rem English is already included as default language
   IF "%%S" NEQ "English" (
     ECHO Section "%%S" SecLanguage!Counter! >> languages.nsi
-    ECHO SectionIn 1 #section is in installtype Full >> languages.nsi
+    ECHO SectionIn 1 2 3 #section is in installtype Full/Normal >> languages.nsi
+    ECHO SectionIn RO #section is in installtype Manditory >> languages.nsi
     ECHO SetOutPath "$INSTDIR\language\%%S" >> languages.nsi
     ECHO File /r "${xbmc_root}\Xbmc\language\%%S\*.*" >> languages.nsi
     ECHO SectionEnd >> languages.nsi

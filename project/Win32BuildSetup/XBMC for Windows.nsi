@@ -11,20 +11,25 @@
   !include "nsDialogs.nsh"
   !include "LogicLib.nsh"
   !include "WinVer.nsh"
+  
+;--------------------------------
+;define global used name
+  !define APP_NAME "XBMC"
+
 ;--------------------------------
 ;General
 
   ;Name and file
-  Name "XBMC"
-  OutFile "XBMCSetup-${xbmc_revision}-${xbmc_branch}.exe"
+  Name "${APP_NAME}"
+  OutFile "${APP_NAME}Setup-${xbmc_revision}-${xbmc_branch}.exe"
 
   XPStyle on
   
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\XBMC"
+  InstallDir "$PROGRAMFILES\${APP_NAME}"
 
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\XBMC" ""
+  InstallDirRegKey HKCU "Software\${APP_NAME}" ""
 
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin
@@ -34,7 +39,6 @@
 
   Var StartMenuFolder
   Var PageProfileState
-  Var RunArgs
   Var DirectXSetupError
   Var VSRedistSetupError
   
@@ -50,8 +54,7 @@
   ;!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\webapps\ROOT\RELEASE-NOTES.txt"
   !define MUI_FINISHPAGE_LINK "Please visit http://xbmc.org for more information."
   !define MUI_FINISHPAGE_LINK_LOCATION "http://xbmc.org"
-  !define MUI_FINISHPAGE_RUN "$INSTDIR\XBMC.exe"
-  ;!define MUI_FINISHPAGE_RUN_PARAMETERS $RunArgs
+  !define MUI_FINISHPAGE_RUN "$INSTDIR\${APP_NAME}.exe"
   !define MUI_FINISHPAGE_RUN_NOTCHECKED
   !define MUI_ABORTWARNING  
 ;--------------------------------
@@ -64,7 +67,7 @@
   
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\XBMC" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\${APP_NAME}" 
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
   !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder  
 
@@ -83,15 +86,19 @@
   !insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
-;Installer Sections
+;Install levels
 
-InstType "Full"
-InstType "Minimal" 
+InstType "Full"    ; 1.
+InstType "Normal"  ; 2.
+InstType "Minimal" ; 3.
+
+;--------------------------------
+;Installer Sections
 
 Section "XBMC" SecXBMC
   SetShellVarContext current
   SectionIn RO
-  SectionIn 1 2 #section is in installtype Full and Minimal
+  SectionIn 1 2 3 #section is in install type Normal/Full/Minimal
   ;ADD YOUR OWN FILES HERE...
   SetOutPath "$INSTDIR"
   File "${xbmc_root}\Xbmc\XBMC.exe"
@@ -129,7 +136,7 @@ Section "XBMC" SecXBMC
   ;File /r "${xbmc_root}\Xbmc\web\*.*"
 
   ;Store installation folder
-  WriteRegStr HKCU "Software\XBMC" "" $INSTDIR
+  WriteRegStr HKCU "Software\${APP_NAME}" "" $INSTDIR
 
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -142,41 +149,41 @@ Section "XBMC" SecXBMC
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk"
   
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
-    "" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-    "" "Start XBMC."
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk" "$INSTDIR\Uninstall.exe" \
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\${APP_NAME}.lnk" "$INSTDIR\${APP_NAME}.exe" \
+    "" "$INSTDIR\${APP_NAME}.exe" 0 SW_SHOWNORMAL \
+    "" "Start ${APP_NAME}."
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall ${APP_NAME}.lnk" "$INSTDIR\Uninstall.exe" \
     "" "$INSTDIR\Uninstall.exe" 0 SW_SHOWNORMAL \
-    "" "Uninstall XBMC."
+    "" "Uninstall ${APP_NAME}."
   
-  WriteINIStr "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url" "InternetShortcut" "URL" "http://xbmc.org"
+  WriteINIStr "$SMPROGRAMS\$StartMenuFolder\Visit ${APP_NAME} Online.url" "InternetShortcut" "URL" "http://xbmc.org"
   !insertmacro MUI_STARTMENU_WRITE_END  
   
   ;add entry to add/remove programs
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
-                 "DisplayName" "XBMC"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
+                 "DisplayName" "${APP_NAME}"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "UninstallString" "$INSTDIR\uninstall.exe"
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "NoModify" 1
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "NoRepair" 1
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "InstallLocation" "$INSTDIR"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
-                 "DisplayIcon" "$INSTDIR\XBMC.exe,0"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
+                 "DisplayIcon" "$INSTDIR\${APP_NAME}.exe,0"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "Publisher" "Team XBMC"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "HelpLink" "http://xbmc.org/support"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "URLInfoAbout" "http://xbmc.org"
                  
 SectionEnd
 
 SectionGroup "Language" SecLanguages
 Section "English" SecLanguageEnglish
-  SectionIn 1 2 #section is in installtype Full and Minimal
+  SectionIn 1 2 3 #section is in install type Full/Normal/Minimal
   SectionIn RO
   SetOutPath "$INSTDIR\language\English"
   File /r "${xbmc_root}\Xbmc\language\English\*.*"
@@ -187,7 +194,7 @@ SectionGroupEnd
 
 SectionGroup "Skins" SecSkins
 Section "Confluence" SecSkinConfluence
-  SectionIn 1 2 #section is in installtype Full and Minimal
+  SectionIn 1 2 3 #section is in install type Full/Normal/Minimal
   SectionIn RO
   SetOutPath "$INSTDIR\addons\skin.confluence\"
   File /r "${xbmc_root}\Xbmc\addons\skin.confluence\*.*"
@@ -215,7 +222,7 @@ SectionGroupEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecXBMC ${LANG_ENGLISH} "XBMC"
+  LangString DESC_SecXBMC ${LANG_ENGLISH} "${APP_NAME}"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -231,7 +238,7 @@ Var UnPageProfileCheckbox_State
 Var UnPageProfileEditBox
 
 Function un.UnPageProfile
-    !insertmacro MUI_HEADER_TEXT "Uninstall XBMC" "Remove XBMC's profile folder from your computer."
+    !insertmacro MUI_HEADER_TEXT "Uninstall ${APP_NAME}" "Remove ${APP_NAME}'s profile folder from your computer."
   nsDialogs::Create /NOUNLOAD 1018
   Pop $UnPageProfileDialog
 
@@ -242,7 +249,7 @@ Function un.UnPageProfile
   ${NSD_CreateLabel} 0 0 100% 12u "Do you want to delete the profile folder?"
   Pop $0
 
-  ${NSD_CreateText} 0 13u 100% 12u "$APPDATA\XBMC\"
+  ${NSD_CreateText} 0 13u 100% 12u "$APPDATA\${APP_NAME}\"
   Pop $UnPageProfileEditBox
     SendMessage $UnPageProfileEditBox ${EM_SETREADONLY} 1 0
 
@@ -265,7 +272,7 @@ Section "Uninstall"
   SetShellVarContext current
 
   ;ADD YOUR OWN FILES HERE...
-  Delete "$INSTDIR\XBMC.exe"
+  Delete "$INSTDIR\${APP_NAME}.exe"
   Delete "$INSTDIR\copying.txt"
   Delete "$INSTDIR\known_issues.txt"
   Delete "$INSTDIR\LICENSE.GPL"
@@ -295,7 +302,7 @@ Section "Uninstall"
   ${If} $UnPageProfileCheckbox_State == ${BST_CHECKED}
     RMDir /r "$INSTDIR\userdata"  
     RMDir "$INSTDIR"
-    RMDir /r "$APPDATA\XBMC\"
+    RMDir /r "$APPDATA\${APP_NAME}\"
   ${Else}
 ;Even if userdata is kept in %appdata%\xbmc\userdata, the $INSTDIR\userdata should be cleaned up on uninstall if not used
 ;If guisettings.xml exists in the XBMC\userdata directory, do not delete XBMC\userdata directory
@@ -307,15 +314,15 @@ Section "Uninstall"
 
   
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
-  Delete "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\${APP_NAME}.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Portable).lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk"
-  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk"
-  Delete "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall ${APP_NAME}.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Visit ${APP_NAME} Online.url"
   RMDir "$SMPROGRAMS\$StartMenuFolder"  
-  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC"
+  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
 
-  DeleteRegKey /ifempty HKCU "Software\XBMC"
+  DeleteRegKey /ifempty HKCU "Software\${APP_NAME}"
 
 SectionEnd
 
@@ -324,7 +331,7 @@ SectionEnd
 
 Section "Microsoft Visual C++ 2008/2010 Redistributable Package (x86)" SEC_VCREDIST
 
-  SectionIn 1 2
+  SectionIn 1 2 #section is in install type Full/Normal and when not installed
   
   DetailPrint "Running VS Redist Setup..."
 
@@ -353,7 +360,7 @@ SectionEnd
 
 Section "DirectX Install" SEC_DIRECTX
  
-  SectionIn 1 2
+  SectionIn 1 2 #section is in install type Full/Normal and when not installed
 
   DetailPrint "Running DirectX Setup..."
 
