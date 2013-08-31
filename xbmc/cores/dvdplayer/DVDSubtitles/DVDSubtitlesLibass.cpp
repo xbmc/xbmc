@@ -20,6 +20,7 @@
 
 #include "DVDSubtitlesLibass.h"
 #include "DVDClock.h"
+#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -75,9 +76,14 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   if(!m_renderer)
     return;
 
-  //Setting default font to the Arial in \media\fonts (used if FontConfig fails)
-  strPath = "special://xbmc/media/Fonts/";
+  //Setting default font to the Arial in \media\fonts (used if FontConfig fails)  
+  strPath = "special://home/media/Fonts/";
   strPath += CSettings::Get().GetString("subtitles.font");
+  if (!XFILE::CFile::Exists(strPath))
+  {
+    strPath = "special://xbmc/media/Fonts/";
+    strPath += CSettings::Get().GetString("subtitles.font");
+  }
   int fc = !CSettings::Get().GetBool("subtitles.overrideassfonts");
 
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
