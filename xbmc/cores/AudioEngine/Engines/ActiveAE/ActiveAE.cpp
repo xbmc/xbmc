@@ -1218,6 +1218,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   if (m_settings.mode != AUDIO_ANALOG && AE_IS_RAW(format.m_dataFormat))
   {
     if ((format.m_dataFormat == AE_FMT_AC3 && !settings.ac3passthrough) ||
+        (format.m_dataFormat == AE_FMT_EAC3 && !settings.eac3passthrough) ||
         (format.m_dataFormat == AE_FMT_TRUEHD && !settings.truehdpassthrough) ||
         (format.m_dataFormat == AE_FMT_DTS && !settings.dtspassthrough) ||
         (format.m_dataFormat == AE_FMT_DTSHD && !settings.dtshdpassthrough))
@@ -1903,6 +1904,7 @@ void CActiveAE::LoadSettings()
 
   m_settings.stereoupmix = CSettings::Get().GetBool("audiooutput.stereoupmix");
   m_settings.ac3passthrough = CSettings::Get().GetBool("audiooutput.ac3passthrough");
+  m_settings.eac3passthrough = CSettings::Get().GetBool("audiooutput.eac3passthrough");
   m_settings.truehdpassthrough = CSettings::Get().GetBool("audiooutput.truehdpassthrough");
   m_settings.dtspassthrough = CSettings::Get().GetBool("audiooutput.dtspassthrough");
   m_settings.dtshdpassthrough = CSettings::Get().GetBool("audiooutput.dtshdpassthrough");
@@ -1968,6 +1970,7 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.audiodevice"       ||
       setting == "audiooutput.mode"              ||
       setting == "audiooutput.ac3passthrough"    ||
+      setting == "audiooutput.eac3passthrough"   ||
       setting == "audiooutput.dtspassthrough"    ||
       setting == "audiooutput.passthroughaac"    ||
       setting == "audiooutput.truehdpassthrough" ||

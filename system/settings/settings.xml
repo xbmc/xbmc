@@ -2021,6 +2021,18 @@
             </dependency>
           </dependencies>
         </setting>
+        <setting id="audiooutput.eac3passthrough" type="boolean" parent="audiooutput.mode" label="448" help="37016">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition setting="audiooutput.mode">1</condition> <!-- AUDIO_IEC958 -->
+                <condition setting="audiooutput.mode">2</condition> <!-- AUDIO_HDMI -->
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
         <setting id="audiooutput.dtspassthrough" type="boolean" parent="audiooutput.mode" label="254" help="36366">
           <level>2</level>
           <default>true</default>
