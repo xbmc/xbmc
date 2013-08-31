@@ -47,6 +47,10 @@ extern "C"
     int     wavsize;
 
     wavsize = mywav_data(info->f, &info->fmt);
+
+    if (info->fmt.dwSamplesPerSec == 0 || info->fmt.wChannels == 0)
+        return -1;
+
     if(wavsize >= 0) {
         if(info->fmt.wFormatTag != 0x0069) {
             fseek(info->f,0,SEEK_SET);
