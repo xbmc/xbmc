@@ -85,6 +85,12 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 
+#if defined(TARGET_DARWIN)
+#include "osx/smc.h"
+#include "linux/LinuxResourceCounter.h"
+static CLinuxResourceCounter m_resourceCounter;
+#endif
+
 #define SYSHEATUPDATEINTERVAL 60000
 
 using namespace std;
@@ -4009,7 +4015,9 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
-#if defined(TARGET_DARWIN) || defined(TARGET_WINDOWS)
+#if defined(TARGET_DARWIN)
+      text.Format("%4.2f%%", m_resourceCounter.GetCPUUsage());
+#elif defined(TARGET_WINDOWS)
       text.Format("%d%%", g_cpuInfo.getUsedPercentage());
 #else
       text.Format("%s", g_cpuInfo.GetCoresUsageString());
@@ -4021,10 +4029,15 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
 
 CTemperature CGUIInfoManager::GetGPUTemperature()
 {
+  int  value = 0;
+  char scale = 0;
+
+#if defined(TARGET_DARWIN)
+  value = SMCGetTemperature(SMC_KEY_GPU_TEMP);
+  return CTemperature::CreateFromCelsius(value);
+#else
   CStdString  cmd   = g_advancedSettings.m_gpuTempCmd;
-  int         value = 0,
-              ret   = 0;
-  char        scale = 0;
+  int         ret   = 0;
   FILE        *p    = NULL;
 
   if (cmd.IsEmpty() || !(p = popen(cmd.c_str(), "r")))
@@ -4035,6 +4048,7 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 
   if (ret != 2)
     return CTemperature();
+#endif
 
   if (scale == 'C' || scale == 'c')
     return CTemperature::CreateFromCelsius(value);

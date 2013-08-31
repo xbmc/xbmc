@@ -362,7 +362,7 @@ int DarwinBatteryLevel(void)
     powerSourceVal = CFDictionaryGetValue(powerSource, CFSTR(kIOPSMaxCapacityKey));
     CFNumberGetValue((CFNumberRef)powerSourceVal, kCFNumberSInt32Type, &maxLevel);
 
-    batteryLevel = (int)((double)curLevel/(double)maxLevel);
+    batteryLevel = (double)curLevel/(double)maxLevel;
   }
 #endif
   return batteryLevel * 100;  
