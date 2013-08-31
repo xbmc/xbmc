@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.libretro-win32"
+		name="Libretro Emulators"
+		version="1.0.2"
+		provider-name="garbear">
+	<requires>
+		<import addon="xbmc.addon" version="12.0.0"/>
+		<import addon="xbmc.libretro" version="1.0.0"/>
+	</requires>
+	<extension point="xbmc.addon.repository" name="Libretro Emulators">
+		<info compressed="false">https://raw.github.com/garbear/repository.libretro/master/release/win32/addons.xml</info>
+		<checksum>https://raw.github.com/garbear/repository.libretro/master/release/win32/addons.xml.md5</checksum>
+		<datadir zip="true">https://raw.github.com/garbear/repository.libretro/master/release/win32/</datadir>
+		<hashes>true</hashes>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary>Libretro Emulators</summary>
+		<description>This repository contains emulators for the RetroPlayer branch of XBMC.</description>
+		<disclaimer>The owners and submitters to this repository do not host or distribute any of the content displayed by these addons nor do they have any affiliation with the content providers. Team XBMC did not make all the add-ons on this repository and are not responsible for their content.</disclaimer>
+		<platform>windx wingl</platform>
+		<nofanart>true</nofanart>
+	</extension>
+</addon>
