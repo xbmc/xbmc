@@ -445,7 +445,8 @@ bool CWinRenderer::CreateIntermediateRenderTarget()
   D3DFORMAT format = D3DFMT_X8R8G8B8;
   DWORD usage = D3DUSAGE_RENDERTARGET;
 
-  if      (g_Windowing.IsTextureFormatOk(D3DFMT_A2R10G10B10, usage)) format = D3DFMT_A2R10G10B10;
+  if      (m_renderMethod == RENDER_DXVA)                            format = D3DFMT_X8R8G8B8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A2R10G10B10, usage)) format = D3DFMT_A2R10G10B10;
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_A2B10G10R10, usage)) format = D3DFMT_A2B10G10R10;
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, usage))    format = D3DFMT_A8R8G8B8;
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, usage))    format = D3DFMT_A8B8G8R8;
@@ -525,7 +526,12 @@ void CWinRenderer::SelectPSVideoFilter()
     bool scaleUp = (int)m_sourceHeight < g_graphicsContext.GetHeight() && (int)m_sourceWidth < g_graphicsContext.GetWidth();
     bool scaleFps = m_fps < (g_advancedSettings.m_videoAutoScaleMaxFps + 0.01f);
 
-    if (scaleSD && scaleUp && scaleFps && Supports(VS_SCALINGMETHOD_LANCZOS3_FAST))
+    if (m_renderMethod == RENDER_DXVA)
+    {
+      m_scalingMethod = VS_SCALINGMETHOD_DXVA_HARDWARE;
+      m_bUseHQScaler = false;
+    }
+    else if (scaleSD && scaleUp && scaleFps && Supports(VS_SCALINGMETHOD_LANCZOS3_FAST))
     {
       m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
       m_bUseHQScaler = true;
@@ -573,6 +579,10 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   SAFE_DELETE(m_colorShader);
 
+  // When using DXVA, we are already setup at this point, color shader is not needed
+  if (m_renderMethod == RENDER_DXVA)
+    return;
+
   if (m_bUseHQScaler)
   {
     m_colorShader = new CYUV2RGBShader();
@@ -618,12 +628,9 @@ void CWinRenderer::UpdateVideoFilter()
     break;
 
   case RENDER_PS:
+  case RENDER_DXVA:
     SelectPSVideoFilter();
     UpdatePSVideoFilter();
-    break;
-
-  case RENDER_DXVA:
-    // Everything already setup, nothing to do.
     break;
 
   default:
@@ -635,6 +642,9 @@ void CWinRenderer::Render(DWORD flags)
 {
   if (m_renderMethod == RENDER_DXVA)
   {
+    UpdateVideoFilter();
+    if (m_bUseHQScaler)
+      g_Windowing.FlushGPU();
     CWinRenderer::RenderProcessor(flags);
     return;
   }
@@ -918,19 +928,38 @@ void CWinRenderer::RenderProcessor(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
   HRESULT hr;
+  CRect destRect;
+
+  if (m_bUseHQScaler)
+  {
+    destRect.y1 = 0.0f;
+    destRect.y2 = m_sourceHeight;
+    destRect.x1 = 0.0f;
+    destRect.x2 = m_sourceWidth;
+  }
+  else
+    destRect = m_destRect;
 
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 
   IDirect3DSurface9* target;
-  if(FAILED(hr = g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
+  if (m_bUseHQScaler)
+    m_IntermediateTarget.GetSurfaceLevel(0, &target);
+  else
   {
-    CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get render target. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
-    return;
+    if(FAILED(hr = g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
+    {
+      CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get render target. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
+      return;
+    }
   }
 
-  m_processor.Render(m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect), target, image->id, flags);
+  m_processor.Render(m_sourceRect, g_graphicsContext.StereoCorrection(destRect), target, image->id, flags);
 
   target->Release();
+
+  if (m_bUseHQScaler)
+    Stage2();
 }
 
 bool CWinRenderer::RenderCapture(CRenderCapture* capture)
@@ -1068,17 +1097,14 @@ bool CWinRenderer::Supports(ERENDERFEATURE feature)
 
 bool CWinRenderer::Supports(ESCALINGMETHOD method)
 {
-  if (m_renderMethod == RENDER_DXVA)
+  if (m_renderMethod == RENDER_PS || m_renderMethod == RENDER_DXVA)
   {
-    if(method == VS_SCALINGMETHOD_DXVA_HARDWARE)
+    if(m_renderMethod == RENDER_DXVA && method == VS_SCALINGMETHOD_DXVA_HARDWARE)
       return true;
-    return false;
-  }
-  else if(m_renderMethod == RENDER_PS)
-  {
+
     if(m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0)
     && (   method == VS_SCALINGMETHOD_AUTO
-        || method == VS_SCALINGMETHOD_LINEAR))
+       || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS) ))
         return true;
 
     if(m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(3, 0))
