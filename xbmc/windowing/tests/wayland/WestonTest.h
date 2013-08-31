@@ -19,20 +19,32 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#include <stdint.h>
+#include <boost/scoped_ptr.hpp>
 
-struct wl_surface;
+#include <gtest/gtest.h>
 
-namespace xbmc
-{
-class ICursorManager
+#ifdef UNICODE
+  typedef CStdStringW        CStdString;
+#else
+  typedef CStdStringA        CStdString;
+#endif
+
+typedef int32_t pid_t;
+
+class WestonTest :
+  public ::testing::Test
 {
 public:
 
-  virtual ~ICursorManager() {}
-  virtual void SetCursor(uint32_t serial,
-                         struct wl_surface *surface,
-                         double surfaceX,
-                         double surfaceY) = 0;
+  WestonTest();
+  ~WestonTest();
+  pid_t Pid();
+  const CStdString & TempSocketName();
+  
+  virtual void SetUp();
+
+private:
+
+  class Private;
+  boost::scoped_ptr<Private> priv;
 };
-}

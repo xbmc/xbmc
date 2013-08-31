@@ -1,5 +1,3 @@
-#pragma once
-
 /*
 *      Copyright (C) 2005-2013 Team XBMC
 *      http://www.xbmc.org
@@ -19,20 +17,22 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#include <stdint.h>
+#include <stdlib.h>
 
-struct wl_surface;
+#include "TmpEnv.h"
 
-namespace xbmc
+TmpEnv::TmpEnv(const char *env,
+               const char *val) :
+  m_env(env),
+  m_previous(getenv(env))
 {
-class ICursorManager
-{
-public:
+  setenv(env, val, 1);
+}
 
-  virtual ~ICursorManager() {}
-  virtual void SetCursor(uint32_t serial,
-                         struct wl_surface *surface,
-                         double surfaceX,
-                         double surfaceY) = 0;
-};
+TmpEnv::~TmpEnv()
+{
+  if (m_previous)
+    setenv(m_env, m_previous, 1);
+  else
+    unsetenv(m_env);
 }
