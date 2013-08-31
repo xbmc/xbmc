@@ -175,9 +175,14 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   /* store our stream hints */
   m_streaminfo = hints;
 
-  /* update codec information from what codec gave ut */
-  m_streaminfo.channels = m_pAudioCodec->GetChannels();
-  m_streaminfo.samplerate = m_pAudioCodec->GetSampleRate();
+  /* update codec information from what codec gave out, if any */
+  int channelsFromCodec = m_pAudioCodec->GetChannels();
+  int samplerateFromCodec = m_pAudioCodec->GetEncodedSampleRate();
+
+  if (channelsFromCodec > 0)
+    m_streaminfo.channels = channelsFromCodec;
+  if (samplerateFromCodec > 0)
+    m_streaminfo.samplerate = samplerateFromCodec;
 
   /* check if we only just got sample rate, in which case the previous call
    * to CreateAudioCodec() couldn't have started passthrough */
@@ -312,12 +317,12 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       audioframe.encoded_sample_rate   = m_pAudioCodec->GetEncodedSampleRate();
       audioframe.passthrough           = m_pAudioCodec->NeedPassthrough();
 
-      if (m_streaminfo.samplerate != audioframe.sample_rate)
+      if (m_streaminfo.samplerate != audioframe.encoded_sample_rate)
       {
         // The sample rate has changed or we just got it for the first time
         // for this stream. See if we should enable/disable passthrough due
         // to it.
-        m_streaminfo.samplerate = audioframe.sample_rate;
+        m_streaminfo.samplerate = audioframe.encoded_sample_rate;
         if (!switched && SwitchCodecIfNeeded()) {
           // passthrough has been enabled/disabled, reprocess the packet
           m_decode.data -= len;
