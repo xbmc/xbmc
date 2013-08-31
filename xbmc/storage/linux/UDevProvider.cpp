@@ -151,7 +151,7 @@ void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
     if (removable  &&
       ((bus        && strstr(bus, "usb")) ||
        (cdrom      && strstr(cdrom,"1"))  ||
-       (mountpoint && strstr(mountpoint, "usb"))))
+       (mountpoint && strstr(mountpoint, "/media/"))))
     {
       const char *label = udev_device_get_property_value(device, "ID_FS_LABEL");
       if (!label)
