@@ -117,7 +117,6 @@ protected:
   bool m_extSilence;
 
   CSampleBuffer m_sampleOfSilence;
-  CSampleBuffer m_sampleOfNoise;
   uint8_t *m_convertBuffer;
   int m_convertBufferSampleSize;
   CAEConvert::AEConvertFrFn m_convertFn;
