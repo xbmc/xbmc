@@ -58,9 +58,6 @@
     <ClInclude Include="..\..\xbmc\threads\platform\ThreadImpl.cpp">
       <Filter>platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp">
-      <Filter>platform\win</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\platform\win\Win32Exception.h">
       <Filter>platform\win</Filter>
     </ClInclude>
