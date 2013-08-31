@@ -102,7 +102,6 @@ enum SINK_STATES
   S_TOP_CONFIGURED_IDLE,          // 4
   S_TOP_CONFIGURED_PLAY,          // 5
   S_TOP_CONFIGURED_SILENCE,       // 6
-  S_TOP_CONFIGURED_WARMUP,        // 7
 };
 
 int SINK_parentStates[] = {
@@ -113,7 +112,6 @@ int SINK_parentStates[] = {
     2, //TOP_CONFIGURED_IDLE
     2, //TOP_CONFIGURED_PLAY
     2, //TOP_CONFIGURED_SILENCE
-    2, //TOP_CONFIGURED_WARMUP
 };
 
 void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
@@ -245,8 +243,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             m_extSilence = true;
           if (m_extSilence)
           {
-            m_extCycleCounter = 5;
-            m_state = S_TOP_CONFIGURED_WARMUP;
+            m_state = S_TOP_CONFIGURED_SILENCE;
             m_extTimeout = 0;
           }
           return;
@@ -402,47 +399,13 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkControlProtocol::TIMEOUT:
-          OutputSamples(&m_sampleOfSilence);
-          m_extCycleCounter--;
-          if (m_extError)
-          {
-            m_sink->Deinitialize();
-            delete m_sink;
-            m_sink = NULL;
-            m_state = S_TOP_CONFIGURED_SUSPEND;
-          }
-          else if(m_extCycleCounter <= 0)
-          {
-            m_extCycleCounter = 2;
-            m_state = S_TOP_CONFIGURED_WARMUP;
-          }
-          m_extTimeout = 0;
-          return;
-        default:
-          break;
-        }
-      }
-      break;
-
-    case S_TOP_CONFIGURED_WARMUP:
-      if (port == NULL) // timeout
-      {
-        switch (signal)
-        {
-        case CSinkControlProtocol::TIMEOUT:
           OutputSamples(&m_sampleOfNoise);
-          m_extCycleCounter--;
           if (m_extError)
           {
             m_sink->Deinitialize();
             delete m_sink;
             m_sink = NULL;
             m_state = S_TOP_CONFIGURED_SUSPEND;
-          }
-          else if(m_extCycleCounter <= 0)
-          {
-            m_extCycleCounter = 20;
-            m_state = S_TOP_CONFIGURED_SILENCE;
           }
           m_extTimeout = 0;
           return;
