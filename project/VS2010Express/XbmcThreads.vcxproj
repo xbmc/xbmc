@@ -19,7 +19,6 @@
     <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadImpl.cpp" />
     <ClInclude Include="..\..\xbmc\threads\platform\ThreadImpl.cpp" />
     <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp" />
-    <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp" />
     <ClCompile Include="..\..\xbmc\threads\platform\win\Win32Exception.cpp" />
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
