@@ -49,7 +49,7 @@ namespace ADDON
   const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
 
   /**
-  * Class - IAddonCallback
+  * Class - IAddonMgrCallback
   * This callback should be inherited by any class which manages
   * specific addon types. Could be mostly used for Dll addon types to handle
   * cleanup before restart/removal
