@@ -78,6 +78,8 @@ public:
 
   virtual void Project(float &x, float &y, float &z);
 
+  void FlushGPU();
+
   LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
 
