@@ -266,9 +266,6 @@ void* CAndroidDyload::Open_Internal(string filename, bool checkSystem)
 
   handle = dlopen(path.c_str(), RTLD_LOCAL);
 
-  if (handle == NULL)
-    CXBMCApp::android_printf("xb_dlopen: Error from dlopen(%s): %s", path.c_str(), dlerror());
-
   recursivelibdep dep;
   dep.handle = handle;
   dep.filename = filename.substr(filename.find_last_of('/') +1);
