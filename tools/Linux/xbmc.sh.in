@@ -64,7 +64,10 @@ print_crash_report()
   echo -n " Kernel: " >> $FILE
   uname -rvs >> $FILE
   echo -n " Release: " >> $FILE
-  if which lsb_release > /dev/null; then
+  if [ -f /etc/os-release ]; then
+	  . /etc/os-release
+	  echo $NAME $VERSION >> $FILE
+  elif which lsb_release > /dev/null; then
     echo >> $FILE
     lsb_release -a 2> /dev/null | sed -e 's/^/    /' >> $FILE
   else
@@ -74,6 +77,9 @@ print_crash_report()
   echo >> $FILE
   echo "############### STACK TRACE #################" >> $FILE
   if which gdb >/dev/null 2>&1; then
+    if which systemd-coredumpctl &> /dev/null; then
+      systemd-coredumpctl dump -o core xbmc.bin &> /dev/null
+    fi
     single_stacktrace "$PWD" 1
     # Find in plugins directories
     if [ $XBMC_HOME ]; then
