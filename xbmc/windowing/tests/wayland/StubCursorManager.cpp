@@ -1,5 +1,3 @@
-#pragma once
-
 /*
 *      Copyright (C) 2005-2013 Team XBMC
 *      http://www.xbmc.org
@@ -19,20 +17,12 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#include <stdint.h>
+#include "StubCursorManager.h"
 
-struct wl_surface;
-
-namespace xbmc
+void
+StubCursorManager::SetCursor(uint32_t serial,
+                             struct wl_surface *surface,
+                             double surfaceX,
+                             double surfaceY)
 {
-class ICursorManager
-{
-public:
-
-  virtual ~ICursorManager() {}
-  virtual void SetCursor(uint32_t serial,
-                         struct wl_surface *surface,
-                         double surfaceX,
-                         double surfaceY) = 0;
-};
 }

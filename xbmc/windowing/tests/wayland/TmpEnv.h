@@ -19,20 +19,18 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#include <stdint.h>
+#include <boost/noncopyable.hpp>
 
-struct wl_surface;
-
-namespace xbmc
-{
-class ICursorManager
+class TmpEnv :
+  boost::noncopyable
 {
 public:
 
-  virtual ~ICursorManager() {}
-  virtual void SetCursor(uint32_t serial,
-                         struct wl_surface *surface,
-                         double surfaceX,
-                         double surfaceY) = 0;
+  TmpEnv(const char *env, const char *val);
+  ~TmpEnv();
+
+private:
+
+  const char *m_env;
+  const char *m_previous;
 };
-}

@@ -19,20 +19,52 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#include <stdint.h>
+#include "system.h"
 
-struct wl_surface;
+#include <boost/noncopyable.hpp>
+
+#ifdef UNICODE
+  typedef CStdStringW        CStdString;
+#else
+  typedef CStdStringA        CStdString;
+#endif
+
+typedef int32_t pid_t;
 
 namespace xbmc
 {
-class ICursorManager
+namespace test
+{
+class Process :
+  boost::noncopyable
 {
 public:
 
-  virtual ~ICursorManager() {}
-  virtual void SetCursor(uint32_t serial,
-                         struct wl_surface *surface,
-                         double surfaceX,
-                         double surfaceY) = 0;
+  Process(const CStdString &base,
+          const CStdString &socket);
+  ~Process();
+
+  void WaitForSignal(int signal, int timeout);
+  void WaitForStatus(int status, int timeout);
+
+  void Interrupt();
+  void Terminate();
+  void Kill();
+  
+  pid_t Pid();
+  
+  static const int DefaultProcessWaitTimeout = 3000; // 3000ms
+
+private:
+  
+  void SendSignal(int signal);
+  
+  void Child(const char *program,
+             char * const *options);
+  void ForkError();
+  void Parent();
+  
+  pid_t m_pid;
 };
+}
 }

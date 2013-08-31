@@ -1,5 +1,3 @@
-#pragma once
-
 /*
 *      Copyright (C) 2005-2013 Team XBMC
 *      http://www.xbmc.org
@@ -19,20 +17,46 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#include <stdint.h>
+#include <stdexcept>
 
-struct wl_surface;
+#include "StubEventListener.h"
 
-namespace xbmc
+StubEventListener::StubEventListener() :
+  m_focused(false)
 {
-class ICursorManager
-{
-public:
+}
 
-  virtual ~ICursorManager() {}
-  virtual void SetCursor(uint32_t serial,
-                         struct wl_surface *surface,
-                         double surfaceX,
-                         double surfaceY) = 0;
-};
+XBMC_Event
+StubEventListener::FetchLastEvent()
+{
+  if (m_events.empty())
+    throw std::logic_error("No events left to get!");
+  
+  XBMC_Event ev = m_events.front();
+  m_events.pop();
+  return ev;
+}
+
+bool
+StubEventListener::Focused()
+{
+  return m_focused;
+}
+
+void
+StubEventListener::OnFocused()
+{
+  m_focused = true;
+}
+
+void
+StubEventListener::OnUnfocused()
+{
+  m_focused = false;
+}
+
+void
+StubEventListener::OnEvent(XBMC_Event &ev)
+{
+  m_events.push(ev);
 }

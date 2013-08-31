@@ -19,20 +19,27 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#include <stdint.h>
+#include <queue>
 
-struct wl_surface;
+#include "windowing/wayland/EventListener.h"
 
-namespace xbmc
-{
-class ICursorManager
+class StubEventListener :
+  public xbmc::IEventListener
 {
 public:
 
-  virtual ~ICursorManager() {}
-  virtual void SetCursor(uint32_t serial,
-                         struct wl_surface *surface,
-                         double surfaceX,
-                         double surfaceY) = 0;
+  StubEventListener();
+
+  /* Returns front of event queue, otherwise throws */
+  XBMC_Event FetchLastEvent();
+  bool Focused();
+
+private:
+
+  void OnFocused();
+  void OnUnfocused();
+  void OnEvent(XBMC_Event &);
+
+  bool m_focused;
+  std::queue<XBMC_Event> m_events;
 };
-}

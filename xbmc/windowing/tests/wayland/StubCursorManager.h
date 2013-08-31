@@ -19,20 +19,17 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#include <stdint.h>
+#include <windowing/wayland/CursorManager.h>
 
 struct wl_surface;
 
-namespace xbmc
-{
-class ICursorManager
+class StubCursorManager :
+  public xbmc::ICursorManager
 {
 public:
 
-  virtual ~ICursorManager() {}
-  virtual void SetCursor(uint32_t serial,
-                         struct wl_surface *surface,
-                         double surfaceX,
-                         double surfaceY) = 0;
+  void SetCursor(uint32_t serial,
+                 struct wl_surface *surface,
+                 double surfaceX,
+                 double surfaceY);
 };
-}
