@@ -123,7 +123,8 @@ public:
   bool  IsPassthrough() const;
   bool  IsPlaying() const;
   bool  IsPlayingAudio() const;
-  bool  IsPlayingVideo() const;  bool  IsRecording() const;
+  bool  IsPlayingVideo() const;
+  bool  IsRecording() const;
   void  LoadPage(int p, int sp, unsigned char* buffer);
   bool  OnAction(const CAction &action);
   void  OnNothingToQueueNotify();
