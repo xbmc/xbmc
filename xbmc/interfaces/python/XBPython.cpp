@@ -34,6 +34,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "profiles/ProfilesManager.h"
+#include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
 #include "pythreadstate.h"
 #include "utils/TimeUtils.h"
@@ -42,6 +43,7 @@
 #ifdef TARGET_WINDOWS
 #include "utils/Environment.h"
 #endif
+#include "settings/AdvancedSettings.h"
 
 #include "threads/SystemClock.h"
 #include "addons/Addon.h"
@@ -116,6 +118,8 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
    else if (strcmp(message, "OnScreensaverActivated") == 0)
      OnScreensaverActivated();
   }
+
+  OnNotification(sender, std::string(ANNOUNCEMENT::AnnouncementFlagToString(flag)) + "." + std::string(message), CJSONVariantWriter::Write(data, g_advancedSettings.m_jsonOutputCompact));
 }
 
 // message all registered callbacks that we started playing
@@ -342,6 +346,17 @@ void XBPython::OnAbortRequested(const CStdString &ID)
       else if ((*it)->GetId() == ID)
         (*it)->OnAbortRequested();
     }
+  }
+}
+
+void XBPython::OnNotification(const std::string &sender, const std::string &method, const std::string &data)
+{
+  TRACE;
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
+  {
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnNotification(sender, method, data);
   }
 }
 

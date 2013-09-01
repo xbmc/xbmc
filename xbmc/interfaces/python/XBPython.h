@@ -86,6 +86,7 @@ public:
   void OnDatabaseUpdated(const std::string &database);
   void OnDatabaseScanStarted(const std::string &database);
   void OnAbortRequested(const CStdString &ID="");
+  void OnNotification(const std::string &sender, const std::string &method, const std::string &data);
 
   virtual void Process();
   virtual void Uninitialize();
