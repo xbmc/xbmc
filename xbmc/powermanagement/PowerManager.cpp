@@ -161,7 +161,12 @@ bool CPowerManager::Powerdown()
 
 bool CPowerManager::Suspend()
 {
-  if (CanSuspend() && m_instance->Suspend())
+  if (!CanSuspend())
+    return false;
+
+  OnPrepareSleep();
+
+  if (m_instance->Suspend())
   {
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
     if (dialog)
@@ -175,7 +180,12 @@ bool CPowerManager::Suspend()
 
 bool CPowerManager::Hibernate()
 {
-  if (CanHibernate() && m_instance->Hibernate())
+  if (!CanHibernate())
+    return false;
+
+  OnPrepareSleep();
+
+  if (m_instance->Hibernate())
   {
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
     if (dialog)
@@ -232,6 +242,16 @@ void CPowerManager::ProcessEvents()
   nesting--;
 }
 
+void CPowerManager::OnPrepareSleep()
+{
+  CLog::Log(LOGNOTICE, "%s: Preparing sleep", __FUNCTION__);
+
+  //stop all addon services here
+  //we do this here instead in OnSleep cause according to DBUS specification we only have 1 second of time in OnSleep
+  //so shutdowns that may potentially take longer should be issued in here
+  g_application.StopServiceAddons();
+}
+
 void CPowerManager::OnSleep()
 {
   CAnnouncementManager::Announce(System, "xbmc", "OnSleep");
@@ -254,6 +274,9 @@ void CPowerManager::OnSleep()
 void CPowerManager::OnWake()
 {
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
+
+  //re-start addon services
+  g_application.StartServiceAddons();
 
   // reset out timers
   g_application.ResetShutdownTimers();

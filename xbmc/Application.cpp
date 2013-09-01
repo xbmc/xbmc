@@ -5723,3 +5723,25 @@ void CApplication::CloseNetworkShares()
   CSFTPSessionManager::DisconnectAllSessions();
 #endif
 }
+
+void CApplication::StopServiceAddons()
+{
+  CLog::Log(LOGDEBUG,"CApplication::StopServiceAddons");
+  CAddonMgr::Get().StopServices(false);
+}
+
+void CApplication::StartServiceAddons()
+{
+  CLog::Log(LOGDEBUG,"CApplication::StartServiceAddons - before login services");
+
+  //we start all services that run before login
+  CAddonMgr::Get().StartServices(true);
+
+  //this is meant to find out if we are logged in already
+  //so only start after-login services if we are not seeing the login screen
+  if (g_windowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
+  {
+    CLog::Log(LOGDEBUG,"CApplication::StartServiceAddons - No login screen? So starting after-login-services also");
+    CAddonMgr::Get().StartServices(false);
+  }
+}

@@ -88,6 +88,7 @@ public:
   static void SettingOptionsShutdownStatesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
 
 private:
+  void OnPrepareSleep();
   void OnSleep();
   void OnWake();
 
