@@ -72,7 +72,7 @@ namespace XBMCAddon
       /**
        * onDatabaseUpdated(database) -- onDatabaseUpdated method.\n
        * \n
-       * database - video/music as string\n
+       * database : video/music as string\n
        * \n
        * Will be called when database gets updated and return video or music to indicate which DB has been changed\n
        */
@@ -81,7 +81,7 @@ namespace XBMCAddon
       /**
        * onDatabaseScanStarted(database) -- onDatabaseScanStarted method.\n
        *\n
-       * database - video/music as string\n
+       * database : video/music as string\n
        *\n
        * Will be called when database update starts and return video or music to indicate which DB is being updated\n
        */
@@ -97,9 +97,9 @@ namespace XBMCAddon
       /**
        * onNotification(sender, method, data) -- onNotification method.\n
        *\n
-       * sender - sender of the notification\n
-       * method - name of the notification\n
-       * data - JSON-encoded data of the notification\n
+       * sender : sender of the notification\n
+       * method : name of the notification\n
+       * data   : JSON-encoded data of the notification\n
        *\n
        * Will be called when XBMC receives or sends a notification\n
        */
