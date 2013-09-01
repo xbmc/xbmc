@@ -68,8 +68,11 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   m_info.SetCoreOnly(!bSupportsDTSHDOut);
   m_bufferSize = 0;
 
+  /* 32kHz E-AC-3 passthrough requires 128kHz IEC 60958 stream
+   * which HDMI does not support, and IEC 61937 does not mention
+   * reduced sample rate support, so support only 44.1 and 48 */
   if ((hints.codec == AV_CODEC_ID_AC3 && bSupportsAC3Out) ||
-      (hints.codec == AV_CODEC_ID_EAC3 && bSupportsEAC3Out) ||
+      (hints.codec == AV_CODEC_ID_EAC3 && bSupportsEAC3Out && (hints.samplerate == 44100 || hints.samplerate == 48000)) ||
       (hints.codec == AV_CODEC_ID_DTS && bSupportsDTSOut) ||
       (hints.codec == AV_CODEC_ID_TRUEHD && bSupportsTrueHDOut))
   {

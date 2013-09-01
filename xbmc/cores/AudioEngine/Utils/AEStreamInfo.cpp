@@ -414,9 +414,8 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
 
       m_repeat       = MAX_EAC3_BLOCKS / blocks;
 
-      // sampling rate multiplied with number of channels must equal the value
-      // given by the pack function
-      m_outputRate = 192000;
+      // E-AC-3 rate is 4 times bitstream sample rate as per IEC 61937.
+      m_outputRate = 4 * m_sampleRate;
 
       if (m_dataType == STREAM_TYPE_EAC3 && m_hasSync && skip == 0)
         return 0;
