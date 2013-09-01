@@ -494,10 +494,9 @@ void CAddon::SaveSettings(void)
     return; // no settings to save
 
   // break down the path into directories
-  CStdString strRoot, strAddon;
-  URIUtils::GetDirectory(m_userSettingsPath, strAddon);
+  CStdString strAddon = URIUtils::GetDirectory(m_userSettingsPath);
   URIUtils::RemoveSlashAtEnd(strAddon);
-  URIUtils::GetDirectory(strAddon, strRoot);
+  CStdString strRoot = URIUtils::GetDirectory(strAddon);
   URIUtils::RemoveSlashAtEnd(strRoot);
 
   // create the individual folders

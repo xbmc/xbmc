@@ -1417,8 +1417,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
 
 void CGUIAddonWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
-  CStdString tmpDir;
-  URIUtils::GetDirectory(GetProperty("xmlfile").asString(), tmpDir);
+  CStdString tmpDir = URIUtils::GetDirectory(GetProperty("xmlfile").asString());
   CStdString fallbackMediaPath;
   URIUtils::GetParentPath(tmpDir, fallbackMediaPath);
   URIUtils::RemoveSlashAtEnd(fallbackMediaPath);

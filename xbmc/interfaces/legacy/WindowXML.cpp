@@ -406,8 +406,7 @@ namespace XBMCAddon
     void WindowXML::AllocResources(bool forceLoad /*= FALSE */)
     {
       TRACE;
-      CStdString tmpDir;
-      URIUtils::GetDirectory(ref(window)->GetProperty("xmlfile").asString(), tmpDir);
+      CStdString tmpDir = URIUtils::GetDirectory(ref(window)->GetProperty("xmlfile").asString());
       CStdString fallbackMediaPath;
       URIUtils::GetParentPath(tmpDir, fallbackMediaPath);
       URIUtils::RemoveSlashAtEnd(fallbackMediaPath);

@@ -162,8 +162,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
     }
     else
     {
-      CStdString strPath;
-      URIUtils::GetDirectory(pItem->GetPath(), strPath);
+      CStdString strPath = URIUtils::GetDirectory(pItem->GetPath());
       URIUtils::AddSlashAtEnd(strPath);
       if (strPath!=m_strPrevPath)
       {

@@ -56,8 +56,7 @@ bool SIDCodec::Init(const CStdString &strFile, unsigned int filecache)
     //  The directory we are in, is the file
     //  that contains the bitstream to play,
     //  so extract it
-    CStdString strPath=strFile;
-    URIUtils::GetDirectory(strPath, strFileToLoad);
+    strFileToLoad = URIUtils::GetDirectory(strFile);
     URIUtils::RemoveSlashAtEnd(strFileToLoad); // we want the filename
   }
 

@@ -628,11 +628,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       if (item->m_bIsFolder)
         list.SetPath(URIUtils::GetParentPath(strPath));
       else
-      {
-        CStdString path;
-        URIUtils::GetDirectory(strPath, path);
-        list.SetPath(path);
-      }
+        list.SetPath(URIUtils::GetDirectory(strPath));
 
       int iString=198;
       if (info->Content() == CONTENT_TVSHOWS)
@@ -995,7 +991,7 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
       strDir = item->GetVideoInfoTag()->m_strPath;
     }
     else
-      URIUtils::GetDirectory(item->GetPath(),strDir);
+      strDir = URIUtils::GetDirectory(item->GetPath());
 
     SScanSettings settings;
     bool foundDirectly = false;
@@ -1943,8 +1939,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
   }
   else
   {
-    CStdString strPath;
-    URIUtils::GetDirectory(pSelItem->GetPath(), strPath);
+    CStdString strPath = URIUtils::GetDirectory(pSelItem->GetPath());
 
     Update(strPath);
 

@@ -396,9 +396,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         else if (newItem)
         { // need to remove the disc cache
           CFileItemList items;
-          CStdString path;
-          URIUtils::GetDirectory(newItem->GetPath(), path);
-          items.SetPath(path);
+          items.SetPath(URIUtils::GetDirectory(newItem->GetPath()));
           items.RemoveDiscCache(GetID());
         }
       }
