@@ -95,13 +95,13 @@ namespace XBMCAddon
       virtual void    onAbortRequested() { TRACE; }
 
       /**
-       * onNotification(sender, method, data) -- onNotification method.
-       *
-       * sender - sender of the notification
-       * method - name of the notification
-       * data - JSON-encoded data of the notification
-       *
-       * Will be called when XBMC receives or sends a notification
+       * onNotification(sender, method, data) -- onNotification method.\n
+       *\n
+       * sender - sender of the notification\n
+       * method - name of the notification\n
+       * data - JSON-encoded data of the notification\n
+       *\n
+       * Will be called when XBMC receives or sends a notification\n
        */
       virtual void    onNotification(const String sender, const String method, const String data) { TRACE; }
 
