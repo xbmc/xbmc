@@ -61,6 +61,7 @@ public:
   unsigned int              GetFrameSize     () { return m_fsize         ; }
   unsigned int              GetDTSBlocks     () { return m_dtsBlocks     ; }
   unsigned int              GetDTSPeriod     () { return m_dtsPeriod     ; }
+  unsigned int              GetEAC3BlocksDiv () { return m_repeat        ; }
   enum DataType             GetDataType      () { return m_dataType      ; }
   bool                      IsLittleEndian   () { return m_dataIsLE      ; }
   CAEPackIEC61937::PackFunc GetPackFunc      () { return m_packFunc      ; }
