@@ -1,0 +1,744 @@
+#							-*- Autotest -*-
+
+AT_BANNER([Semantics.])
+
+# Copyright (C) 2000, 2001, 2002, 2004, 2005, 2006, 2007, 2009, 2010
+# Free Software Foundation, Inc.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+## -------------------------------- ##
+## Members of the AC_CHECK family.  ##
+## -------------------------------- ##
+
+
+# AC_CHECK_LIB
+# ------------
+# Well, I can't imagine a system where `cos' is neither in libc, nor
+# in libm.  Nor can I imagine a lib more likely to exists than libm.
+# But there are systems without libm, on which we don't want to have
+# this test fail, so exit successfully if `cos' is in libc.
+AT_CHECK_MACRO([AC_CHECK_LIB],
+[AC_TRY_LINK_FUNC(cos,
+		  [AC_MSG_ERROR([`cos' is in `libc'], 77)])
+
+AC_CHECK_LIB(m, cos,,
+	     [AC_MSG_ERROR([cannot find `cos' in `libm'])])
+
+# No kidding, using variables was broken in 2.50 :(
+ac_sin=sin
+AC_CHECK_LIB(m, $ac_sin,,
+      [AC_MSG_ERROR([cannot find `\$ac_sin' (= `$ac_sin') in `libm'])])
+
+ac_m=m
+AC_CHECK_LIB($ac_m, acos,,
+      [AC_MSG_ERROR([cannot find `acos' in `\$ac_m' (= `$ac_m')])])
+
+ac_asin=asin
+AC_CHECK_LIB($ac_m, $ac_asin,,
+      [AC_MSG_ERROR([cannot find `\$ac_asin' (= `$ac_asin') in `\$ac_m' (= `$ac_m')])])
+
+# But if the bug is in the caching mechanism, then be sure we
+# correctly detect failures.
+
+AC_CHECK_LIB(m, cossack,
+	     [AC_MSG_ERROR([found `cossack' in `libm'])])
+
+# No kidding, using variables was broken in 2.50 :(
+ac_sinner=sinner
+AC_CHECK_LIB(m, $ac_sinner,
+      [AC_MSG_ERROR([found `\$ac_sinner' (= `$ac_sinner') in `libm'])])
+
+ac_m=m
+AC_CHECK_LIB($ac_m, acossack,
+      [AC_MSG_ERROR([found `acossack' in `\$ac_m' (= `$ac_m')])])
+
+ac_asinner=asinner
+AC_CHECK_LIB($ac_m, $ac_asinner,
+      [AC_MSG_ERROR([found `\$ac_asinner' (= `$ac_asinner') in `\$ac_m' (= `$ac_m')])])
+
+])
+
+
+# AC_SEARCH_LIBS
+# --------------
+AT_CHECK_MACRO([AC_SEARCH_LIBS],
+[
+AC_SEARCH_LIBS(cos, oser m ust,,
+	     [AC_MSG_ERROR([cannot find `cos'])])
+
+case "$ac_cv_search_cos" in
+  -loser|-lust) AC_MSG_ERROR([jeez, $ac_cv_search_cos must be a cool library!]) ;;
+esac
+])
+
+
+# AC_SEARCH_LIBS (none needed)
+# ----------------------------
+AT_CHECK_MACRO([AC_SEARCH_LIBS (none needed)],
+[
+AC_SEARCH_LIBS(printf, oser c ust,,
+	     [AC_MSG_ERROR([cannot find `printf'])])
+
+case "$ac_cv_search_printf" in
+  -loser|-lust) AC_MSG_ERROR([jeez, $ac_cv_search_printf must be a cool library!]) ;;
+  -lc) AC_MSG_ERROR([huh, you need to give -lc?])
+esac
+])
+
+
+# AC_CHECK_DECLS
+# --------------
+# Check that it performs the correct actions:
+AT_CHECK_MACRO([AC_CHECK_DECLS],
+[[AC_CHECK_DECLS([yes, no, myenum, mystruct, myfunc, mymacro1, mymacro2],,,
+		 [[int yes = 1;
+		   enum { myenum };
+		   struct { int x[20]; } mystruct;
+		   extern int myfunc();
+		   #define mymacro1(arg) arg
+		   #define mymacro2]])
+  # The difference in space-before-open-paren is intentional.
+  AC_CHECK_DECLS([basenam (char *), dirnam(char *),
+		  [moreargs (char, short, int, long, void *, char [], float, double)]],,,
+		 [[#ifdef __cplusplus
+		   extern "C++" char *basenam (char *);
+		   extern "C++" const char *basenam (const char *);
+		   #else
+		   extern char *basenam (const char *);
+		   #endif
+		   #ifdef __cplusplus
+		   extern "C" {
+		   #endif
+		   extern int moreargs (char, short, int, long, void *,
+					char [], float, double);
+		   #ifdef __cplusplus
+		   }
+		   #endif
+		   ]])
+  AC_CHECK_DECL([declared (char *)],, [AS_EXIT([1])],
+		[[#ifdef __cplusplus
+		  extern "C++" char *declared (char *);
+		  extern "C++" const char *declared (const char *);
+		  #else
+		  extern char *declared (const char *);
+		  #endif
+		]])
+  AC_CHECK_DECL([undeclared (char *)], [AS_EXIT([1])],, [[]])
+]],
+[AT_CHECK_DEFINES(
+[#define HAVE_DECL_BASENAM 1
+#define HAVE_DECL_DIRNAM 0
+#define HAVE_DECL_MOREARGS 1
+#define HAVE_DECL_MYENUM 1
+#define HAVE_DECL_MYFUNC 1
+#define HAVE_DECL_MYMACRO1 1
+#define HAVE_DECL_MYMACRO2 1
+#define HAVE_DECL_MYSTRUCT 1
+#define HAVE_DECL_NO 0
+#define HAVE_DECL_YES 1
+])])
+
+
+# AC_CHECK_FUNCS
+# --------------
+# Check that it performs the correct actions:
+# Must define HAVE_PRINTF, but not HAVE_AUTOCONF_FTNIRP
+AT_CHECK_MACRO([AC_CHECK_FUNCS],
+[AC_CHECK_FUNCS(printf autoconf_ftnirp)],
+[AT_CHECK_DEFINES(
+[/* #undef HAVE_AUTOCONF_FTNIRP */
+#define HAVE_PRINTF 1
+])])
+
+
+# AC_REPLACE_FUNCS
+# ----------------
+# Check that it performs the correct actions: autoconf_ftnirp.c must
+# be compiled, and must define HAVE_PRINTF, but not HAVE_AUTOCONF_FTNIRP
+# FIXME: Maybe check the traces?
+AT_SETUP([AC_REPLACE_FUNCS])
+
+AT_DATA([config.in],
+[@LIBOBJS@
+])
+
+AT_CONFIGURE_AC(
+[AC_CONFIG_FILES([config.libobjs:config.in])
+AC_REPLACE_FUNCS([printf \
+autoconf_ftnirp])
+funcs='fprintf autoconf_ftnirpf'
+AH_TEMPLATE([HAVE_FPRINTF], [])
+AH_TEMPLATE([HAVE_AUTOCONF_FTNIRPF], [])
+AC_REPLACE_FUNCS([\
+$funcs])
+AS_UNSET([funcs])])
+
+AT_CHECK_AUTOCONF([-W obsolete])
+AT_CHECK_AUTOHEADER
+AT_CHECK_CONFIGURE
+AT_CHECK_ENV
+AT_CHECK_DEFINES(
+[/* #undef HAVE_AUTOCONF_FTNIRP */
+/* #undef HAVE_AUTOCONF_FTNIRPF */
+#define HAVE_FPRINTF 1
+#define HAVE_PRINTF 1
+])
+
+AT_CHECK([sed 's/  */ /g;s/^ //;s/ $//' config.libobjs], [],
+	 [${LIBOBJDIR}autoconf_ftnirp$U.o ${LIBOBJDIR}autoconf_ftnirpf$U.o
+])
+
+AT_CLEANUP
+
+
+# AC_CHECK_HEADERS
+# ----------------
+# Check that it performs the correct actions:
+# Must define HAVE_STDIO_H, but not HAVE_AUTOCONF_IO_H.
+AT_SETUP([AC_CHECK_HEADERS])
+
+AT_DATA([autoconf_io.h],
+[blah blah
+])
+
+AT_CONFIGURE_AC([AC_CHECK_HEADERS(stdio.h autoconf_io.h)])
+AT_CHECK_AUTOCONF([-W obsolete])
+AT_CHECK_AUTOHEADER
+AT_CHECK_CONFIGURE([CPPFLAGS=-I.], [0], [ignore],
+[configure: WARNING: autoconf_io.h: present but cannot be compiled
+configure: WARNING: autoconf_io.h:     check for missing prerequisite headers?
+configure: WARNING: autoconf_io.h: see the Autoconf documentation
+configure: WARNING: autoconf_io.h:     section "Present But Cannot Be Compiled"
+configure: WARNING: autoconf_io.h: proceeding with the compiler's result
+])
+AT_CHECK_ENV
+AT_CHECK_DEFINES(
+[/* #undef HAVE_AUTOCONF_IO_H */
+#define HAVE_STDIO_H 1
+])
+
+AT_CLEANUP
+
+
+# AC_CHECK_HEADERS_OLD
+# --------------------
+# Check that it performs the correct actions:
+# Must not check prerequisites, hence define header2.h
+AT_SETUP([AC_CHECK_HEADERS (preprocessor test)])
+
+AT_DATA([header1.h],
+[typedef int foo;
+])
+
+AT_DATA([header2.h],
+[typedef foo bar;
+])
+
+AT_CONFIGURE_AC([AC_CHECK_HEADERS(header2.h, [], [], -)])
+
+AT_CHECK_AUTOCONF([-W obsolete])
+AT_CHECK_AUTOHEADER
+AT_CHECK_CONFIGURE([CPPFLAGS=-I.])
+AT_CHECK_ENV
+AT_CHECK_DEFINES(
+[#define HAVE_HEADER2_H 1
+])
+
+AT_CLEANUP
+
+
+# AC_CHECK_HEADERS_NEW
+# --------------------
+# Check that it performs the correct actions:
+# Must check prerequisites, hence define header2.h but not header3.h
+AT_SETUP([AC_CHECK_HEADERS (compiler test)])
+
+AT_DATA([header1.h],
+[typedef int foo;
+])
+
+AT_DATA([header2.h],
+[typedef foo bar;
+])
+
+AT_DATA([header3.h],
+[typedef bar wow;
+])
+
+AT_CONFIGURE_AC(
+[AC_CHECK_HEADERS(header2.h header3.h, [], [], [[@%:@include "header1.h"]])])
+
+AT_CHECK_AUTOCONF([-W obsolete])
+AT_CHECK_AUTOHEADER
+AT_CHECK_CONFIGURE([CPPFLAGS=-I.])
+AT_CHECK_ENV
+AT_CHECK_DEFINES(
+[#define HAVE_HEADER2_H 1
+/* #undef HAVE_HEADER3_H */
+])
+
+AT_CLEANUP
+
+
+# AC_CHECK_MEMBER
+# ---------------
+# Check that it performs the correct actions.
+# Must define HAVE_STRUCT_YES_S_YES, but not HAVE_STRUCT_YES_S_NO.
+AT_CHECK_MACRO([AC_CHECK_MEMBER],
+[[AC_CHECK_MEMBER([struct yes_s.yes],
+		  [AC_DEFINE([HAVE_STRUCT_YES_S_YES], [1],
+			     [Define to 1 if `yes' is a member of `struct yes_s'.])],,
+		   [struct sub { int x; };
+		    struct yes_s { int yes; struct sub substruct; };])
+  AC_CHECK_MEMBER([struct yes_s.no],
+		  [AC_DEFINE([HAVE_STRUCT_YES_S_NO], [1],
+			     [Define to 1 if `no' is a member of `struct yes_s'.])],,
+		   [struct sub { int x; };
+		    struct yes_s { int yes; struct sub substruct; };])
+  AC_CHECK_MEMBER([struct yes_s.substruct],
+		  [AC_DEFINE([HAVE_STRUCT_YES_S_SUBSTRUCT], [1],
+			     [Define to 1 if `substruct' is a member of `struct yes_s'.])],,
+		   [struct sub { int x; };
+		    struct yes_s { int yes; struct sub substruct; };])]],
+[AT_CHECK_DEFINES(
+[/* #undef HAVE_STRUCT_YES_S_NO */
+#define HAVE_STRUCT_YES_S_SUBSTRUCT 1
+#define HAVE_STRUCT_YES_S_YES 1
+])])
+
+# AC_CHECK_MEMBERS
+# ----------------
+# Check that it performs the correct actions.
+# Must define HAVE_STRUCT_YES_S_YES, but not HAVE_STRUCT_YES_S_NO.
+AT_CHECK_MACRO([AC_CHECK_MEMBERS],
+[[AC_CHECK_MEMBERS([struct yes_s.yes, struct yes_s.no, struct yes_s.substruct],,,
+		   [struct sub { int x; };
+		    struct yes_s { int yes; struct sub substruct; };])]],
+[AT_CHECK_DEFINES(
+[/* #undef HAVE_STRUCT_YES_S_NO */
+#define HAVE_STRUCT_YES_S_SUBSTRUCT 1
+#define HAVE_STRUCT_YES_S_YES 1
+])
+AT_CHECK([grep 'yes.*member of.*yes_s' config.h], [], [ignore])
+])
+
+
+# AC_CHECK_ALIGNOF
+# ----------------
+AT_CHECK_MACRO_CROSS([AC_CHECK_ALIGNOF],
+[[AC_CHECK_ALIGNOF(char)
+AC_CHECK_ALIGNOF(charchar,
+[[#include <stddef.h>
+#include <stdio.h>
+typedef char charchar[2];]])
+AC_CHECK_ALIGNOF(charcharchar)
+]],
+[AT_CHECK_DEFINES(
+[#define ALIGNOF_CHAR 1
+#define ALIGNOF_CHARCHAR 1
+#define ALIGNOF_CHARCHARCHAR 0
+])])
+
+
+# AC_CHECK_ALIGNOF struct
+# -----------------------
+AT_CHECK_MACRO_CROSS([AC_CHECK_ALIGNOF struct],
+[[AC_CHECK_ALIGNOF([struct { char c; }])
+AC_CHECK_ALIGNOF([struct nosuchstruct])
+]],
+[AT_CHECK([[grep "#define ALIGNOF_STRUCT___CHAR_C___ [1-9]" config.h]],
+	 0, ignore)
+AT_CHECK([[grep "#define ALIGNOF_STRUCT_NOSUCHSTRUCT 0" config.h]],
+	 0, ignore)
+])
+
+# AC_CHECK_SIZEOF
+# ---------------
+AT_CHECK_MACRO_CROSS([AC_CHECK_SIZEOF],
+[[AC_CHECK_SIZEOF(char)
+AC_CHECK_SIZEOF(charchar,,
+[[#include <stdio.h>
+typedef char charchar[2];]])
+AC_CHECK_SIZEOF(charcharchar)
+]],
+[AT_CHECK_DEFINES(
+[#define SIZEOF_CHAR 1
+#define SIZEOF_CHARCHAR 2
+#define SIZEOF_CHARCHARCHAR 0
+])])
+
+
+# AC_CHECK_SIZEOF struct
+# ----------------------
+AT_CHECK_MACRO_CROSS([AC_CHECK_SIZEOF struct],
+[[AC_C_CONST
+AC_CHECK_SIZEOF([struct x], [], [struct x { char c; int x; };])
+AC_CHECK_SIZEOF([const struct x], [], [struct x { const char *p; int x; };])
+AC_CHECK_SIZEOF([struct nosuchstruct])
+# Taken from autoconf.texi:Generic Compiler Characteristics.
+AC_CHECK_SIZEOF([int *])
+]],
+[AT_CHECK([[grep "#define SIZEOF_STRUCT_X [1-9]" config.h]],
+	 0, ignore)
+AT_CHECK([[grep "#define SIZEOF_CONST_STRUCT_X [1-9]" config.h]],
+	 0, ignore)
+AT_CHECK([[grep "#define SIZEOF_STRUCT_NOSUCHSTRUCT 0" config.h]],
+	 0, ignore)
+AT_CHECK([[grep "#define SIZEOF_INT_P [1-9]" config.h]],
+	 0, ignore)
+])
+
+
+# AC_CHECK_TYPES
+# --------------
+# Check that it performs the correct actions.
+# Must define HAVE_STRUCT_YES_S, HAVE_INT, but not HAVE_STRUCT_NO_S.
+# `int' and `struct yes_s' are both checked to test both the compiler
+# builtin types, and defined types.
+AT_CHECK_MACRO([AC_CHECK_TYPES],
+[[AC_CHECK_TYPES([int, struct yes_s, struct no_s],,,
+		 [struct yes_s { int yes ;} ;])]],
+[AT_CHECK_DEFINES(
+[#define HAVE_INT 1
+/* #undef HAVE_STRUCT_NO_S */
+#define HAVE_STRUCT_YES_S 1
+])])
+
+
+# AC_CHECK_TYPES
+# --------------
+# Check that we properly dispatch properly to the old implementation
+# or to the new one.
+AT_SETUP([AC_CHECK_TYPES: backward compatibility])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+define([_AC_CHECK_TYPE_NEW], [NEW])
+define([_AC_CHECK_TYPE_OLD], [OLD])
+#(cut-from-here
+AC_CHECK_TYPE(ptrdiff_t)
+AC_CHECK_TYPE(ptrdiff_t, int)
+AC_CHECK_TYPE(quad, long long int)
+AC_CHECK_TYPE(table_42, [int[42]])
+# Nice machine!
+AC_CHECK_TYPE(uint8_t, uint65536_t)
+AC_CHECK_TYPE(a,b,c,d)
+#to-here)
+AC_OUTPUT
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK([[sed -e '/^#(cut-from-here/,/^#to-here)/!d' -e '/^#/d' configure]],
+	 0,
+	 [NEW
+OLD
+OLD
+OLD
+OLD
+NEW
+])
+
+AT_CLEANUP
+
+
+# AC_CHECK_FILES
+# --------------
+# FIXME: To really test HAVE_AC_EXISTS2 and HAVE_AC_MISSING2 we need to
+# open AH_TEMPLATE to `configure.ac', which is not yet the case.
+AT_CHECK_MACRO([AC_CHECK_FILES],
+[touch at-exists1 at-exists2
+ac_exists2=at-exists2
+ac_missing2=at-missing2
+AC_CHECK_FILES(at-exists1 at-missing1 $ac_exists2 $ac_missing2)
+rm at-exists1 at-exists2],
+[AT_CHECK_DEFINES(
+[#define HAVE_AT_EXISTS1 1
+/* #undef HAVE_AT_MISSING1 */
+])])
+
+
+
+## ------------------------------ ##
+## AC_CHECK_PROG & AC_PATH_PROG.  ##
+## ------------------------------ ##
+
+
+# AT_CHECK_PROGS_PREPARE
+# ----------------------
+# Create a sub directory `path' with 6 subdirs which all 7 contain
+# an executable `tool'. `6' contains a `better' tool.
+m4_define([AT_CHECK_PROGS_PREPARE],
+[mkdir path
+
+cat >path/tool <<\EOF
+#! /bin/sh
+exit 0
+EOF
+chmod +x path/tool
+
+for i in 1 2 3 4 5 6
+do
+  mkdir path/$i
+  cp path/tool path/$i
+done
+cp path/tool path/6/better])
+
+
+# -------------------------------- #
+# AC_CHECK_PROG & AC_CHECK_PROGS.  #
+# -------------------------------- #
+
+AT_SETUP([AC_CHECK_PROG & AC_CHECK_PROGS])
+
+AT_CHECK_PROGS_PREPARE
+
+AT_DATA([configure.ac],
+[[AC_INIT
+pwd=`pwd`
+p="1${PATH_SEPARATOR}2${PATH_SEPARATOR}3${PATH_SEPARATOR}4${PATH_SEPARATOR}5${PATH_SEPARATOR}6"
+path=`echo $p | sed -e 's,\([[0-9]]\),'"$pwd"'/path/\1,g'`
+fail=false
+
+AC_CHECK_PROG(TOOL1, tool, found, not-found, $path)
+test "$TOOL1" = found || fail=:
+
+# Yes, the semantics of this macro is weird.
+AC_CHECK_PROG(TOOL2, tool,, not-found, $path)
+test "$TOOL2" = not-found || fail=:
+
+AC_CHECK_PROG(TOOL3, tool, tool, not-found, $path, $pwd/path/1/tool)
+test "$TOOL3" = "$pwd/path/2/tool" || fail=:
+
+AC_CHECK_PROG(TOOL4, better, better, not-found, $path, $pwd/path/1/tool)
+test "$TOOL4" = better || fail=:
+
+# When a tool is not found, and no value is given for not-found,
+# the variable is left empty.
+AC_CHECK_PROGS(TOOL5, missing,, $path)
+test -z "$TOOL5" || fail=:
+
+AC_CHECK_PROGS(TOOL6, missing tool better,, $path)
+test "$TOOL6" = tool || fail=:
+
+# No AC-OUTPUT, we don't need config.status.
+$fail &&
+  AC_MSG_ERROR([[CHECK_PROG failed]])
+AS_EXIT(0)
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+
+## ---------------- ##
+## AC_C_BIGENDIAN.  ##
+## ---------------- ##
+
+AT_SETUP([AC_C_BIGENDIAN])
+AT_KEYWORDS([cross])
+
+# Make sure that AC_C_BIGENDIAN behave the same whether we are
+# cross-compiling or not.
+
+_AT_CHECK_AC_MACRO(
+  [[AC_C_BIGENDIAN(
+      [ac_endian=big],
+      [ac_endian=little],
+      [ac_endian=unknown],
+      [ac_endian=universal])
+   echo $ac_endian > at-endian
+]])
+
+rm -f config.hin  # So that next run of autoheader is quiet.
+_AT_CHECK_AC_MACRO(
+  [[# Force cross compiling.
+   cross_compiling=yes
+   ac_tool_warned=yes
+   AC_C_BIGENDIAN(
+     [ac_endian=big],
+     [ac_endian=little],
+     [ac_endian=unknown],
+     [ac_endian=universal])
+   ac_prevendian=`cat at-endian`
+   # Check that we have found the same result as in the previous run
+   # or unknown (because the cross-compiling check is allowed to fail;
+   # although it might be interesting to suppress this comparison, just
+   # to know on which system it fails if it ever does).
+   if test $ac_endian != $ac_prevendian && test $ac_endian != unknown; then
+     AC_MSG_ERROR([unexpected endianness: first run found '$ac_prevendian' but second run found '$ac_endian'])
+   fi
+]])
+
+# Make sure AC_C_BIGENDIAN with no argument will create a config.h template
+# containing "WORDS_BIGENDIAN".
+AT_CONFIGURE_AC([[AC_C_BIGENDIAN]])
+# --force is necessary, the computer might be too fast.
+AT_CHECK_AUTOHEADER([--force])
+AT_CHECK([grep WORDS_BIGENDIAN config.hin], [], [ignore])
+
+AT_CLEANUP
+
+
+# ------------------------------ #
+# AC_PATH_PROG & AC_PATH_PROGS.  #
+# ------------------------------ #
+
+AT_SETUP([AC_PATH_PROG & AC_PATH_PROGS])
+
+AT_CHECK_PROGS_PREPARE
+
+AT_DATA([configure.ac],
+[[AC_INIT
+pwd=`pwd`
+p="1${PATH_SEPARATOR}2${PATH_SEPARATOR}3${PATH_SEPARATOR}4${PATH_SEPARATOR}5${PATH_SEPARATOR}6"
+path=`echo $p | sed -e 's,\([[0-9]]\),'"$pwd"'/path/\1,g'`
+fail=false
+
+AC_PATH_PROG(TOOL1, tool, not-found, $path)
+test "$TOOL1" = "$pwd/path/1/tool" || fail=:
+
+AC_PATH_PROG(TOOL2, better, not-found, $path)
+test "$TOOL2" = "$pwd/path/6/better" || fail=:
+
+# When a tool is not found, and no value is given for not-found,
+# the variable is left empty.
+AC_PATH_PROGS(TOOL3, missing,, $path)
+test -z "$TOOL3" || fail=:
+
+AC_PATH_PROGS(TOOL4, missing tool better,, $path)
+test "$TOOL4" = "$pwd/path/1/tool" || fail=:
+
+# No AC-OUTPUT, we don't need config.status.
+$fail &&
+  AC_MSG_ERROR([[PATH_PROG failed]])
+AS_EXIT(0)
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+
+# ----------------------------- #
+# AC_PATH_PROGS_FEATURE_CHECK.  #
+# ----------------------------- #
+
+AT_SETUP([AC_PATH_PROGS_FEATURE_CHECK])
+
+# This test doesn't work if `pwd` contains white space
+case `pwd` in
+  *\ * | *\	*) AT_CHECK([exit 77]) ;;
+esac
+
+AT_CHECK_PROGS_PREPARE
+
+AT_DATA([configure.ac],
+[[AC_INIT
+pwd=`pwd`
+p="1${PATH_SEPARATOR}2${PATH_SEPARATOR}3${PATH_SEPARATOR}4${PATH_SEPARATOR}5${PATH_SEPARATOR}6"
+path=`echo $p | sed -e 's,\([[0-9]]\),'"$pwd"'/path/\1,g'`
+fail=false
+
+# Find first candidate and stop search
+AC_PATH_PROGS_FEATURE_CHECK(TOOL1, [tool better],
+  [$ac_path_TOOL1 && ac_cv_path_TOOL1=$ac_path_TOOL1 ac_path_TOOL1_found=:],
+  fail=:, $path)
+test -z "$TOOL1" || fail=:
+test "$ac_cv_path_TOOL1" = "$pwd/path/1/tool" || fail=:
+
+# Keep searching each candidate
+AC_PATH_PROGS_FEATURE_CHECK(TOOL2, [tool better],
+  [$ac_path_TOOL2 && ac_cv_path_TOOL2=$ac_path_TOOL2],
+  fail=:, $path)
+test "$ac_cv_path_TOOL2" = "$pwd/path/6/better" || fail=:
+
+# Only accept better candidate
+AC_PATH_PROGS_FEATURE_CHECK(TOOL3, [tool better],
+  [case "$ac_path_TOOL3" in #(
+    *better) ac_cv_path_TOOL3=$ac_path_TOOL3;;
+  esac],
+  fail=:, $path)
+test "$ac_cv_path_TOOL3" = "$pwd/path/6/better" || fail=:
+
+# When a tool is not found, and no action is given for not-found,
+# the variable is left empty.
+AC_PATH_PROGS_FEATURE_CHECK(TOOL4, missing,
+  [ac_cv_path_TOOL4=$ac_path_TOOL4], [], $path)
+test -z "$ac_cv_path_TOOL4" || fail=:
+
+# Test action when tool is not found
+AC_PATH_PROGS_FEATURE_CHECK(TOOL5, missing, [],
+  [ac_cv_path_TOOL5='not found'], $path)
+test "$ac_cv_path_TOOL5" = "not found" || fail=:
+
+# Test that pre-set tool bypasses feature test
+TOOL6=$pwd/path/6/better
+AC_PATH_PROGS_FEATURE_CHECK(TOOL6, tool, fail=:, fail=:, $path)
+test "$ac_cv_path_TOOL6" = "$pwd/path/6/better" || fail=:
+
+# A blank pre-set does not bypass feature test
+TOOL7=
+AC_PATH_PROGS_FEATURE_CHECK(TOOL7, [tool better],
+  [$ac_path_TOOL7 && ac_cv_path_TOOL7=$ac_path_TOOL7 ac_path_TOOL7_found=:],
+  fail=:, $path)
+test -z "$TOOL7" || fail=:
+test "$ac_cv_path_TOOL7" = "$pwd/path/1/tool" || fail=:
+
+# No AC-OUTPUT, we don't need config.status.
+$fail &&
+  AC_MSG_ERROR([[PATH_PROG failed]])
+AS_EXIT(0)
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+
+
+## -------------- ##
+## AC_PATH_XTRA.  ##
+## -------------- ##
+
+
+AT_SETUP([AC_PATH_XTRA])
+
+_AT_CHECK_AC_MACRO([AC_PATH_XTRA])
+
+# Check X_DISPLAY_MISSING.
+AT_CHECK_CONFIGURE([--without-x])
+AT_CHECK_DEFINES(
+[#define X_DISPLAY_MISSING 1
+])
+
+AT_CLEANUP
+
+
+## ------------------------------- ##
+## Obsolete non-updatable macros.  ##
+## ------------------------------- ##
+
+
+AT_CHECK_MACRO([AC_SYS_RESTARTABLE_SYSCALLS], , ,[-W no-obsolete])
+AT_CHECK_MACRO([AC_FUNC_SETVBUF_REVERSED], , ,[-W no-obsolete])
+AT_CHECK_MACRO([AC_FUNC_WAIT3], , ,[-W no-obsolete])

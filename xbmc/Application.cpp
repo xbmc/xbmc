@@ -5574,9 +5574,9 @@ void CApplication::StartPictureScan(const CStdString &strDirectory, int flags)
     if (!flags)
     { // setup default flags
         if (CSettings::Get().GetBool("picturelibrary.downloadinfo"))
-            flags |= CMusicInfoScanner::SCAN_ONLINE;
+            flags |= CPictureInfoScanner::SCAN_ONLINE;
         if (CSettings::Get().GetBool("picturelibrary.backgroundupdate"))
-            flags |= CMusicInfoScanner::SCAN_BACKGROUND;
+            flags |= CPictureInfoScanner::SCAN_BACKGROUND;
     }
     
     if (!(flags & CPictureInfoScanner::SCAN_BACKGROUND))

@@ -72,13 +72,8 @@ using namespace PICTURE_INFO;
 using namespace PVR;
 using namespace EPG;
 
-/*
-CFileItem::CFileItem(const CStdString &path, const CPictureAlbum& album)
-CFileItem::CFileItem(const CPicture& picture);
-CFileItem::CFileItem(const CFace& face);
-CFileItem::CFileItem(const CLocation& location);
-CFileItem::CFileItem(const PICTURE_INFO::CPictureInfoTag& music);
-*/
+
+
 
 
 CFileItem::CFileItem(const CPicture& picture)
@@ -142,6 +137,26 @@ CFileItem::CFileItem(const CStdString &path, const CPictureAlbum& album)
     URIUtils::AddSlashAtEnd(m_strPath);
     SetFromPictureAlbum(album);
 }
+
+CFileItem::CFileItem(const PICTURE_INFO::CPictureInfoTag& picture)
+{
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_epgInfoTag = NULL;
+  m_pvrChannelInfoTag = NULL;
+  m_pvrRecordingInfoTag = NULL;
+  m_pvrTimerInfoTag = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+  SetLabel(picture.GetTitle());
+  m_strPath = picture.GetURL();
+  m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
+  *GetPictureInfoTag() = picture;
+  FillInDefaultIcon();
+  FillInMimeType(false);
+  
+}
+
 
 CFileItem::CFileItem(const CMusicInfoTag& music)
 {
@@ -1593,10 +1608,7 @@ void CFileItem::SetFromPicture(const CPicture &picture)
     if (!picture.strFileName.empty())
         m_strPath = picture.strFileName;
     GetPictureInfoTag()->SetPicture(picture);
-    m_lStartOffset = picture.iStartOffset;
     m_lStartPartNumber = 1;
-    SetProperty("item_start", picture.iStartOffset);
-    m_lEndOffset = picture.iEndOffset;
     if (!picture.strThumb.empty())
         SetArt("thumb", picture.strThumb);
     FillInMimeType(false);
@@ -2788,7 +2800,7 @@ CStdString CFileItem::GetUserPictureThumb(bool alwaysCheckRemote /* = false */, 
   }
   
   // if a folder, check for folder.jpg
-  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CSettings::Get().GetBool("musicfiles.findremotethumbs")))
+  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CSettings::Get().GetBool("picturefiles.findremotethumbs")))
   {
     CStdStringArray thumbs;
 //    StringUtils::SplitString(g_advancedSettings.m_pictureThumbs, "|", thumbs);

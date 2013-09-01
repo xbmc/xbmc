@@ -1,0 +1,1307 @@
+<includes>
+  <include name="FloorRatingFlagsTV">
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/MPAA_NR_Certificate_US.png</texture>
+      <visible>IsEmpty(ListItem.Mpaa)+!IsEmpty(ListItem.Title)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/TV-G_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-G)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/TV-PG_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-PG)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/TV-14_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-14)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/TV-MA_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-MA)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/tv-y.png</texture>
+      <visible>substring(ListItem.mpaa,TV-Y)+!substring(ListItem.mpaa,TV-Y7)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/tv-y7.png</texture>
+      <visible>substring(ListItem.mpaa,TV-Y7)</visible>
+    </control>
+  </include>
+  <include name="LowListRatingFlagsTV">
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/MPAA_NR_Certificate_US.png</texture>
+      <visible>IsEmpty(ListItem.Mpaa)+!IsEmpty(ListItem.Title)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/TV-G_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-G)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/TV-PG_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-PG)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/TV-14_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-14)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/TV-MA_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-MA)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/tv-y.png</texture>
+      <visible>substring(ListItem.mpaa,TV-Y)+!substring(ListItem.mpaa,TV-Y7)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/tv-y7.png</texture>
+      <visible>substring(ListItem.mpaa,TV-Y7)</visible>
+    </control>
+  </include>
+  <include name="FloorRatingFlags">
+    <!--US-->
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/MPAA_NR_Certificate_US.png</texture>
+      <visible>IsEmpty(ListItem.Mpaa)+!ListItem.IsFolder</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/MPAA_G_Certificate_US.png</texture>
+      <visible>SubString(ListItem.mpaa,US:G) | SubString(ListItem.mpaa,USA:G) | SubString(ListItem.mpaa,Rated G)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/MPAA_PG_Certificate_US.png</texture>
+      <visible>[Substring(ListItem.mpaa,Rated PG) | StringCompare(ListItem.Mpaa,PG)] + !substring(ListItem.mpaa,PG-13)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/MPAA_PG-13_Certificate_US.png</texture>
+      <visible>SubString(ListItem.mpaa,PG-13)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/MPAA_R_Certificate_US.png</texture>
+      <visible>SubString(ListItem.mpaa,US:R) | SubString(ListItem.mpaa,USA:R) | SubString(ListItem.mpaa,Rated R) | StringCompare(ListItem.Mpaa,R)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/MPAA_NC-17_Certificate_US.png</texture>
+      <visible>SubString(ListItem.mpaa,US:NC-17) | SubString(ListItem.mpaa,USA:NC-17) | SubString(ListItem.mpaa,Rated NC-17)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/TV-G_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-G)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/TV-PG_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-PG)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/TV-14_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-14)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/TV-MA_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-MA)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/tv-y.png</texture>
+      <visible>substring(ListItem.mpaa,TV-Y)+!substring(ListItem.mpaa,TV-Y7)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/tv-y7.png</texture>
+      <visible>substring(ListItem.mpaa,TV-Y7)</visible>
+    </control>
+    <!--UK-->
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/BBFC_U_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:U)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/BBFC_PG_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:PG)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/BBFC_12_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:12) + !SubString(ListItem.mpaa,UK:12A)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/BBFC_12A_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:12A)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/BBFC_15_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:15)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/BBFC_18_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:18)</visible>
+    </control>
+    <!--Germany-->
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/FSK-0.png</texture>
+      <visible>SubString(ListItem.mpaa,Germany:0) | SubString(ListItem.mpaa,o.A)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/FSK-6.png</texture>
+      <visible>SubString(ListItem.mpaa,Germany:6) | SubString(ListItem.mpaa,ab 6) | StringCompare(ListItem.mpaa,6)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/FSK-12.png</texture>
+      <visible>[SubString(ListItem.mpaa,Germany:12) | SubString(ListItem.mpaa,ab 12) | SubString(ListItem.mpaa,12)]+!SubString(ListItem.mpaa,UK:12)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/FSK-16.png</texture>
+      <visible>SubString(ListItem.mpaa,Germany:16) | SubString(ListItem.mpaa,ab 16) | StringCompare(ListItem.mpaa,16)</visible>
+    </control>
+    <control type="image">
+      <include>FloorRatingVars</include>
+      <texture>flags/rating/FSK-18.png</texture>
+      <visible>[SubString(ListItem.mpaa,Germany:18) | SubString(ListItem.mpaa,ab 18) | StringCompare(ListItem.mpaa,18)]+!SubString(ListItem.mpaa,UK:18)</visible>
+    </control>
+  </include>
+  <include name="LowListRatingFlags">
+    <!--US-->
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/MPAA_NR_Certificate_US.png</texture>
+      <visible>IsEmpty(ListItem.Mpaa)+!ListItem.IsFolder</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/MPAA_G_Certificate_US.png</texture>
+      <visible>SubString(ListItem.mpaa,US:G) | SubString(ListItem.mpaa,USA:G) | SubString(ListItem.mpaa,Rated G)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/MPAA_PG_Certificate_US.png</texture>
+      <visible>[Substring(ListItem.mpaa,Rated PG) | StringCompare(ListItem.Mpaa,PG)] + !substring(ListItem.mpaa,PG-13)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/MPAA_PG-13_Certificate_US.png</texture>
+      <visible>SubString(ListItem.mpaa,PG-13)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/MPAA_R_Certificate_US.png</texture>
+      <visible>SubString(ListItem.mpaa,US:R) | SubString(ListItem.mpaa,USA:R) | SubString(ListItem.mpaa,Rated R) | StringCompare(ListItem.Mpaa,R)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/MPAA_NC-17_Certificate_US.png</texture>
+      <visible>SubString(ListItem.mpaa,US:NC-17) | SubString(ListItem.mpaa,USA:NC-17) | SubString(ListItem.mpaa,Rated NC-17)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/TV-G_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-G)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/TV-PG_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-PG)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/TV-14_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-14)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/TV-MA_Certificate_US.png</texture>
+      <visible>substring(ListItem.mpaa,TV-MA)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/tv-y.png</texture>
+      <visible>substring(ListItem.mpaa,TV-Y)+!substring(ListItem.mpaa,TV-Y7)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/tv-y7.png</texture>
+      <visible>substring(ListItem.mpaa,TV-Y7)</visible>
+    </control>
+    <!--UK-->
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/BBFC_U_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:U)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/BBFC_PG_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:PG)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/BBFC_12_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:12) + !SubString(ListItem.mpaa,UK:12A)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/BBFC_12A_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:12A)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/BBFC_15_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:15)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/BBFC_18_Certificate_UK.png</texture>
+      <visible>SubString(ListItem.mpaa,UK:18)</visible>
+    </control>
+    <!--Germany-->
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/FSK-0.png</texture>
+      <visible>SubString(ListItem.mpaa,Germany:0) | SubString(ListItem.mpaa,o.A)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/FSK-6.png</texture>
+      <visible>SubString(ListItem.mpaa,Germany:6) | SubString(ListItem.mpaa,ab 6) | StringCompare(ListItem.mpaa,6)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/FSK-12.png</texture>
+      <visible>[SubString(ListItem.mpaa,Germany:12) | SubString(ListItem.mpaa,ab 12) | SubString(ListItem.mpaa,12)]+!SubString(ListItem.mpaa,UK:12)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/FSK-16.png</texture>
+      <visible>SubString(ListItem.mpaa,Germany:16) | SubString(ListItem.mpaa,ab 16) | StringCompare(ListItem.mpaa,16)</visible>
+    </control>
+    <control type="image">
+      <include>OSDRatingVars</include>
+      <texture>flags/rating/FSK-18.png</texture>
+      <visible>[SubString(ListItem.mpaa,Germany:18) | SubString(ListItem.mpaa,ab 18) | StringCompare(ListItem.mpaa,18)]+!SubString(ListItem.mpaa,UK:18)</visible>
+    </control>
+  </include>
+
+  <include name="FloorSourceFlags">
+    <control type="image">
+      <include>AudioFlagsVars</include>
+      <texture>flags/source/sdtv.png</texture>
+      <visible>SubString(ListItem.filename,PDTV) | SubString(ListItem.filename,sdtv)</visible>
+    </control>
+    <control type="image">
+      <include>AudioFlagsVars</include>
+      <texture>flags/source/hdtv.png</texture>
+      <visible>SubString(ListItem.Filename,hdtv)</visible>
+    </control>
+    <control type="image">
+      <include>AudioFlagsVars</include>
+      <texture>flags/source/hddvd.png</texture>
+      <visible>SubString(ListItem.Filename,hddvd) | SubString(ListItem.Filename,hd-dvd)</visible>
+    </control>
+    <control type="image">
+      <include>AudioFlagsVars</include>
+      <texture>flags/source/bluray.png</texture>
+      <visible>SubString(ListItem.Filename,bluray) | SubString(ListItem.Filename,blu-ray) | SubString(ListItem.Filename,bdrip) | SubString(ListItem.Filename,brrip)</visible>
+    </control>
+    <control type="image">
+      <include>AudioFlagsVars</include>
+      <texture>flags/source/dvd.png</texture>
+      <visible>[SubString(ListItem.Filename,dvd) + !SubString(ListItem.Filename,hddvd) + !SubString(ListItem.Filename,hd-dvd) + !SubString(ListItem.Filename,bluray)] | [SubString(ListItem.Filename,.iso,Right) + !SubString(ListItem.Filename,bluray)] | SubString(ListItem.Filename,.ifo,Right)</visible>
+    </control>
+    <control type="image">
+      <include>AudioFlagsVars</include>
+      <texture>flags/source/dvb.png</texture>
+      <visible>SubString(ListItem.Filename,dvb)</visible>
+    </control>
+    <control type="image">
+      <include>AudioFlagsVars</include>
+      <texture>flags/source/web-dl.png</texture>
+      <visible>SubString(ListItem.Filename,web-dl)</visible>
+    </control>
+  </include>
+  <include name="LowListSourceFlags">
+    <control type="image">
+      <include>OSDAudioFlagsVars</include>
+      <texture>flags/source/sdtv.png</texture>
+      <visible>SubString(ListItem.filename,PDTV) | SubString(ListItem.filename,sdtv)</visible>
+    </control>
+    <control type="image">
+      <include>OSDAudioFlagsVars</include>
+      <texture>flags/source/hdtv.png</texture>
+      <visible>SubString(ListItem.Filename,hdtv)</visible>
+    </control>
+    <control type="image">
+      <include>OSDAudioFlagsVars</include>
+      <texture>flags/source/hddvd.png</texture>
+      <visible>SubString(ListItem.Filename,hddvd) | SubString(ListItem.Filename,hd-dvd)</visible>
+    </control>
+    <control type="image">
+      <include>OSDAudioFlagsVars</include>
+      <texture>flags/source/bluray.png</texture>
+      <visible>SubString(ListItem.Filename,bluray) | SubString(ListItem.Filename,blu-ray) | SubString(ListItem.Filename,bdrip) | SubString(ListItem.Filename,brrip)</visible>
+    </control>
+    <control type="image">
+      <include>OSDAudioFlagsVars</include>
+      <texture>flags/source/dvd.png</texture>
+      <visible>[SubString(ListItem.Filename,dvd) + !SubString(ListItem.Filename,hddvd) + !SubString(ListItem.Filename,hd-dvd) + !SubString(ListItem.Filename,bluray)] | [SubString(ListItem.Filename,.iso,Right) + !SubString(ListItem.Filename,bluray)] | SubString(ListItem.Filename,.ifo,Right)</visible>
+    </control>
+    <control type="image">
+      <include>OSDAudioFlagsVars</include>
+      <texture>flags/source/dvb.png</texture>
+      <visible>SubString(ListItem.Filename,dvb)</visible>
+    </control>
+    <control type="image">
+      <include>OSDAudioFlagsVars</include>
+      <texture>flags/source/web-dl.png</texture>
+      <visible>SubString(ListItem.Filename,web-dl)</visible>
+    </control>
+  </include>
+  <include name="StudioGenerator">
+    <control type="group">
+      <include>HiddenObject</include>
+      <control type="image" id="9000090">
+        <texture></texture>
+        <visible>false</visible>
+      </control>
+      <control type="image" id="9000090">
+        <texture>$INFO[ListItem.Studio,flags/studios/,.png]</texture>
+      </control>
+      <control type="image" id="9000091">
+        <texture></texture>
+        <visible>false</visible>
+      </control>
+      <control type="image" id="9000091">
+        <texture>$INFO[ListItem.Studio,flags/studios/,_hd.png]</texture>
+        <visible>[SubString(ListItem.VideoResolution,720) | SubString(ListItem.VideoResolution,1080)]</visible>
+      </control>
+      <control type="label" id="900009">
+        <label>$INFO[Control.GetLabel(9000091)]</label>
+        <visible>!IsEmpty(Control.GetLabel(9000091)) + Control.IsVisible(9000091)</visible>
+      </control>
+      <control type="label" id="900009">
+        <label>$INFO[Control.GetLabel(9000090)]</label>
+        <visible>IsEmpty(Control.GetLabel(9000091)) | !Control.IsVisible(9000091)</visible>
+      </control>
+    </control>
+  </include>
+  <include name="FloorAudioFlags">
+    <control type="image">
+      <include>AudioFlagsVars</include>
+      <texture>$INFO[ListItem.AudioCodec,flags/audio/,.png]</texture>
+      <visible>!substring(ListItem.AudioCodec,ac3,left)</visible>
+    </control>
+    <control type="image">
+      <include>AudioFlagsVars</include>
+      <texture>flags/audio/dolbydigital.png</texture>
+      <visible>substring(ListItem.AudioCodec,ac3,left)+!substring(ListItem.AudioChannels,2)</visible>
+    </control>
+    <control type="image">
+      <include>AudioFlagsVars</include>
+      <texture>flags/audio/dolbypro.png</texture>
+      <visible>substring(ListItem.AudioCodec,ac3,left)+substring(ListItem.AudioChannels,2)</visible>
+    </control>
+  </include>
+  <include name="LowListAudioFlags">
+    <control type="image">
+      <include>OSDAudioFlagsVars</include>
+      <texture>$INFO[ListItem.AudioCodec,flags/audio/,.png]</texture>
+      <visible>!substring(ListItem.AudioCodec,ac3,left)</visible>
+    </control>
+    <control type="image">
+      <include>OSDAudioFlagsVars</include>
+      <texture>flags/audio/dolbydigital.png</texture>
+      <visible>substring(ListItem.AudioCodec,ac3,left)+!substring(ListItem.AudioChannels,2)</visible>
+    </control>
+    <control type="image">
+      <include>OSDAudioFlagsVars</include>
+      <texture>flags/audio/dolbypro.png</texture>
+      <visible>substring(ListItem.AudioCodec,ac3,left)+substring(ListItem.AudioChannels,2)</visible>
+    </control>
+  </include>
+  <include name="FloorRatingVars">
+    <width>90</width>
+    <height>60</height>
+    <aspectratio>keep</aspectratio>
+    <fadetime>IconCrossfadeTime2</fadetime>
+    <colordiffuse>floor</colordiffuse>
+    <animation effect="fade" time="250">VisibleChange</animation>
+  </include>
+  <include name="OSDRatingVars">
+    <width>90</width>
+    <height>60</height>
+    <aspectratio>keep</aspectratio>
+    <fadetime>IconCrossfadeTime2</fadetime>
+    <colordiffuse>FFe1e1e1</colordiffuse>
+    <animation effect="fade" time="250">VisibleChange</animation>
+  </include>
+  <include name="FloorFlags">
+    <include>StudioGenerator</include>
+    <control type="group">
+      <visible>[Control.IsVisible(55)|Control.IsVisible(51)|Control.IsVisible(500)|Control.IsVisible(560)|Control.IsVisible(501)|Control.IsVisible(503)|Control.IsVisible(504)|Control.IsVisible(508)|Control.IsVisible(510)]+!Window.IsActive(programs)</visible>
+      <include>Animation_HideMultiplex</include>
+      <control type="group">
+        <posx>10</posx>
+        <posy>658</posy>
+        <visible>Skin.HasSetting(sourceflags)</visible>
+        <animation effect="slide" start="0" end="70" reversible="false" condition="Skin.HasSetting(nostudioratingflags)">Conditional</animation>
+        <include>FloorSourceFlags</include>
+      </control>
+      <control type="image">
+        <posx>10</posx>
+        <posy>658</posy>
+        <include>AudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoCodec,flags/videocodec/,.png]</texture>
+        <animation effect="slide" start="0" end="70" reversible="false" condition="Skin.HasSetting(nostudioratingflags)">Conditional</animation>
+        <visible>!Skin.HasSetting(sourceflags)|[!SubString(ListItem.filename,PDTV)+!SubString(ListItem.filename,sdtv)+!SubString(ListItem.Filename,hdtv)+!SubString(ListItem.Filename,hddvd)+!SubString(ListItem.Filename,hd-dvd)+!SubString(ListItem.Filename,bluray)+!SubString(ListItem.Filename,blu-ray)+!SubString(ListItem.Filename,bdrip)+!SubString(ListItem.Filename,brrip)+!SubString(ListItem.Filename,dvd)+!SubString(ListItem.Filename,dvb)+!SubString(ListItem.Filename,.iso,Right)+!SubString(ListItem.Filename,.ifo)+!SubString(ListItem.Filename,web-dl)]</visible>
+      </control>
+      <control type="image" id="76">
+        <posx>110</posx>
+        <posy>658</posy>
+        <include>AudioFlagsVars</include>
+        <texture fallback="flags/studios/default-studio.png">$INFO[Control.GetLabel(900009)]</texture>
+        <visible>!IsEmpty(ListItem.Studio)+[!Skin.HasSetting(nostudioratingflags)|Control.IsVisible(512)|Control.IsVisible(514)]+!Container.Content(tvshows)+!SubString(Container.FolderPath,plugin.video)+[!Container.Content(seasons)|IsEmpty(ListItem.TVShowTitle)]</visible>
+      </control>
+      <control type="group">
+        <visible>![Control.IsVisible(503)+!Skin.HasSetting(showcaseinfoontv)+[Container.Content(tvshows)|Container.Content(episodes)]+Skin.HasSetting(landscapelogo)]</visible>
+        <control type="image">
+          <posx>80</posx>
+          <posy>658</posy>
+          <include>AudioFlagsVars</include>
+          <texture fallback="flags/studios/default-studio.png">$INFO[ListItem.Studio,flags/studios/,.png]</texture>
+          <visible>!IsEmpty(ListItem.Studio)+[Container.Content(tvshows)|[Container.Content(seasons)+!IsEmpty(ListItem.TVShowTitle)]]</visible>
+        </control>
+        <control type="group">
+          <description>Rating Flags</description>
+          <posx>1110</posx>
+          <posy>658</posy>
+          <visible>Container.Content(tvshows)|[Container.Content(seasons)+!IsEmpty(ListItem.TVShowTitle)]</visible>
+          <include>FloorRatingFlagsTV</include>
+        </control>
+      </control>
+      <control type="group">
+        <visible>[Control.IsVisible(503)+!Skin.HasSetting(showcaseinfoontv)+[Container.Content(tvshows)|Container.Content(episodes)]+Skin.HasSetting(landscapelogo)]</visible>
+        <control type="image">
+          <posx>80</posx>
+          <posy>658</posy>
+          <include>OSDAudioFlagsVars</include>
+          <texture fallback="flags/studios/default-studio.png">$INFO[ListItem.Studio,flags/studios/,.png]</texture>
+          <visible>!IsEmpty(ListItem.Studio)+[Container.Content(tvshows)|[Container.Content(seasons)+!IsEmpty(ListItem.TVShowTitle)]]</visible>
+        </control>
+        <control type="group">
+          <description>Rating Flags</description>
+          <posx>1110</posx>
+          <posy>658</posy>
+          <visible>Container.Content(tvshows)|[Container.Content(seasons)+!IsEmpty(ListItem.TVShowTitle)]</visible>
+          <include>LowListRatingFlagsTV</include>
+        </control>
+      </control>
+      <control type="group">
+        <description>Rating Flags</description>
+        <posx>210</posx>
+        <posy>658</posy>
+        <visible>[!Skin.HasSetting(nostudioratingflags)|Control.IsVisible(512)|Control.IsVisible(514)]+!Container.Content(tvshows)+!SubString(Container.FolderPath,plugin.video)+[!Container.Content(seasons)|IsEmpty(ListItem.TVShowTitle)]+!Control.IsVisible(516)</visible>
+        <include>FloorRatingFlags</include>
+      </control>
+      <control type="image">
+        <posx>980</posx>
+        <posy>658</posy>
+        <include>AudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]</texture>
+        <animation effect="slide" start="0" end="-800" reversible="false" condition="Skin.HasSetting(nostudioratingflags)">Conditional</animation>
+      </control>
+      <control type="image">
+        <posx>1080</posx>
+        <posy>658</posy>
+        <include>AudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoResolution,flags/resolution/,.png]</texture>
+        <animation effect="slide" start="0" end="-80" reversible="false" condition="Skin.HasSetting(nostudioratingflags)">Conditional</animation>
+      </control>
+      <control type="group">
+        <description>Audio Flags</description>
+        <posx>1180</posx>
+        <posy>658</posy>
+        <animation effect="slide" start="0" end="-70" reversible="false" condition="Skin.HasSetting(nostudioratingflags)">Conditional</animation>
+        <include>FloorAudioFlags</include>
+      </control>
+    </control>
+    <control type="group">
+      <visible>[Control.IsVisible(512)|Control.IsVisible(516)|Control.IsVisible(514)|Control.IsVisible(517)]+!Window.IsActive(programs)</visible>
+      <include>Animation_HideMultiplex</include>
+      <control type="group">
+        <posx>10</posx>
+        <posy>658</posy>
+        <visible>Skin.HasSetting(sourceflags)</visible>
+        <animation effect="slide" start="0" end="70" reversible="false" condition="Skin.HasSetting(nostudioratingflags)+!Control.IsVisible(512)+!Control.IsVisible(514)+!Control.IsVisible(516)">Conditional</animation>
+        <animation effect="slide" start="0" end="38" reversible="true" condition="Control.IsVisible(512)|Control.IsVisible(514)">Conditional</animation>
+        <animation effect="slide" start="0" end="700" reversible="true" condition="Control.IsVisible(516)+!Skin.HasSetting(nostudioratingflags)">Conditional</animation>
+        <animation effect="slide" start="0" end="800" reversible="true" condition="Control.IsVisible(516)+Skin.HasSetting(nostudioratingflags)">Conditional</animation>
+        <include>LowListSourceFlags</include>
+      </control>
+      <control type="image">
+        <posx>10</posx>
+        <posy>658</posy>
+        <include>OSDAudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoCodec,flags/videocodec/,.png]</texture>
+        <animation effect="slide" start="0" end="70" reversible="false" condition="Skin.HasSetting(nostudioratingflags)+!Control.IsVisible(512)+!Control.IsVisible(514)+!Control.IsVisible(516)">Conditional</animation>
+        <animation effect="slide" start="0" end="38" reversible="true" condition="Control.IsVisible(512)|Control.IsVisible(514)">Conditional</animation>
+        <animation effect="slide" start="0" end="700" reversible="true" condition="Control.IsVisible(516)+!Skin.HasSetting(nostudioratingflags)">Conditional</animation>
+        <animation effect="slide" start="0" end="800" reversible="true" condition="Control.IsVisible(516)+Skin.HasSetting(nostudioratingflags)">Conditional</animation>
+        <visible>!Skin.HasSetting(sourceflags)|[!SubString(ListItem.filename,PDTV)+!SubString(ListItem.filename,sdtv)+!SubString(ListItem.Filename,hdtv)+!SubString(ListItem.Filename,hddvd)+!SubString(ListItem.Filename,hd-dvd)+!SubString(ListItem.Filename,bluray)+!SubString(ListItem.Filename,blu-ray)+!SubString(ListItem.Filename,bdrip)+!SubString(ListItem.Filename,brrip)+!SubString(ListItem.Filename,dvd)+!SubString(ListItem.Filename,dvb)+!SubString(ListItem.Filename,.iso,Right)+!SubString(ListItem.Filename,.ifo)+!SubString(ListItem.Filename,web-dl)]</visible>
+      </control>
+      <control type="image" id="76">
+        <posx>110</posx>
+        <posy>658</posy>
+        <include>OSDAudioFlagsVars</include>
+        <texture fallback="flags/studios/default-studio.png">$INFO[Control.GetLabel(900009)]</texture>
+        <animation effect="slide" start="0" end="61" reversible="true" condition="Control.IsVisible(512)|Control.IsVisible(514)">Conditional</animation>
+        <animation effect="slide" start="0" end="700" reversible="true" condition="Control.IsVisible(516)">Conditional</animation>
+        <animation effect="slide" start="0" end="1070" reversible="true" condition="Control.IsVisible(517)">Conditional</animation>
+        <visible>!IsEmpty(ListItem.Studio)+[!Skin.HasSetting(nostudioratingflags)|Control.IsVisible(512)|Control.IsVisible(514)]+!Container.Content(tvshows)+!SubString(Container.FolderPath,plugin.video)+[!Container.Content(seasons)|IsEmpty(ListItem.TVShowTitle)]</visible>
+      </control>
+      <control type="image">
+        <posx>80</posx>
+        <posy>658</posy>
+        <include>OSDAudioFlagsVars</include>
+        <texture fallback="flags/studios/default-studio.png">$INFO[ListItem.Studio,flags/studios/,.png]</texture>
+        <visible>!IsEmpty(ListItem.Studio)+[Container.Content(tvshows)|[Container.Content(seasons)+!IsEmpty(ListItem.TVShowTitle)]]</visible>
+        <animation effect="slide" start="0" end="-32" reversible="true" condition="Control.IsVisible(512)|Control.IsVisible(514)">Conditional</animation>
+        <animation effect="slide" start="0" end="830" reversible="true" condition="Control.IsVisible(516)">Conditional</animation>
+      </control>
+      <control type="group">
+        <description>Rating Flags</description>
+        <posx>1110</posx>
+        <posy>658</posy>
+        <visible>Container.Content(tvshows)|[Container.Content(seasons)+!IsEmpty(ListItem.TVShowTitle)]</visible>
+        <animation effect="slide" start="0" end="-100" reversible="true" condition="Control.IsVisible(516)">Conditional</animation>
+        <animation effect="slide" start="0" end="-939" reversible="true" condition="Control.IsVisible(512)|Control.IsVisible(514)">Conditional</animation>
+        <include>LowListRatingFlagsTV</include>
+      </control>
+      <control type="group">
+        <description>Rating Flags</description>
+        <posx>210</posx>
+        <posy>658</posy>
+        <animation effect="slide" start="0" end="87" reversible="true" condition="Control.IsVisible(512)|Control.IsVisible(514)">Conditional</animation>
+        <animation effect="slide" start="0" end="200" reversible="true" condition="Control.IsVisible(517)">Conditional</animation>
+        <visible>[!Skin.HasSetting(nostudioratingflags)|Control.IsVisible(512)|Control.IsVisible(514)]+!Container.Content(tvshows)+!SubString(Container.FolderPath,plugin.video)+[!Container.Content(seasons)|IsEmpty(ListItem.TVShowTitle)]+!Control.IsVisible(516)</visible>
+        <include>LowListRatingFlags</include>
+      </control>
+      <control type="image">
+        <posx>980</posx>
+        <posy>658</posy>
+        <include>OSDAudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]</texture>
+        <animation effect="slide" start="0" end="-800" reversible="false" condition="Skin.HasSetting(nostudioratingflags)+!Control.IsVisible(512)+!Control.IsVisible(514)+!Control.IsVisible(516)">Conditional</animation>
+        <animation effect="slide" start="0" end="-554" reversible="true" condition="Control.IsVisible(512)|Control.IsVisible(514)">Conditional</animation>
+        <animation effect="slide" start="0" end="-70" reversible="true" condition="Control.IsVisible(516)">Conditional</animation>
+        <animation effect="slide" start="0" end="-870" reversible="true" condition="Control.IsVisible(517)">Conditional</animation>
+      </control>
+      <control type="image">
+        <posx>1080</posx>
+        <posy>658</posy>
+        <include>OSDAudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoResolution,flags/resolution/,.png]</texture>
+        <animation effect="slide" start="0" end="-80" reversible="false" condition="Skin.HasSetting(nostudioratingflags)+!Control.IsVisible(512)+!Control.IsVisible(514)+!Control.IsVisible(516)">Conditional</animation>
+        <animation effect="slide" start="0" end="-528" reversible="true" condition="Control.IsVisible(512)|Control.IsVisible(514)">Conditional</animation>
+        <animation effect="slide" start="0" end="-70" reversible="true" condition="Control.IsVisible(516)">Conditional</animation>
+        <animation effect="slide" start="0" end="-870" reversible="true" condition="Control.IsVisible(517)">Conditional</animation>
+      </control>
+      <control type="group">
+        <description>Audio Flags</description>
+        <posx>1180</posx>
+        <posy>658</posy>
+        <animation effect="slide" start="0" end="-70" reversible="false" condition="Skin.HasSetting(nostudioratingflags)+!Control.IsVisible(512)+!Control.IsVisible(514)+!Control.IsVisible(516)">Conditional</animation>
+        <animation effect="slide" start="0" end="-502" reversible="true" condition="Control.IsVisible(512)|Control.IsVisible(514)">Conditional</animation>
+        <animation effect="slide" start="0" end="-70" reversible="true" condition="Control.IsVisible(516)">Conditional</animation>
+        <animation effect="slide" start="0" end="-870" reversible="true" condition="Control.IsVisible(517)">Conditional</animation>
+        <include>LowListAudioFlags</include>
+      </control>
+    </control>
+  </include>
+  <include name="MusicCodecFlagsVars">
+    <include>Animation_CommonFade</include>
+    <posx>1165</posx>
+    <posy>653</posy>
+    <width>90</width>
+    <height>59</height>
+    <colordiffuse>floor</colordiffuse>
+    <fadetime>IconCrossfadeTime2</fadetime>
+    <visible>Container.Content(Songs) + [Control.IsVisible(50)|Control.IsVisible(509)|Control.IsVisible(513)]</visible>
+    <animation effect="slide" start="0,0" end="-300,-15" time="0" condition="Control.IsVisible(50)">Conditional</animation>
+    <include>Animation_CommonFade</include>
+  </include>
+  <include name="MusicRatingFlagsVars">
+    <include>Animation_CommonFade</include>
+    <posx>5</posx>
+    <posy>653</posy>
+    <width>90</width>
+    <height>59</height>
+    <colordiffuse>floor</colordiffuse>
+    <fadetime>IconCrossfadeTime2</fadetime>
+    <visible>Container.Content(Albums) | Container.Content(Songs)</visible>
+    <visible>Control.IsVisible(509)|  Control.IsVisible(513)|  Control.IsVisible(500)</visible>
+    <animation effect="slide" start="0,0" end="845,-20" time="0" condition="Control.IsVisible(50)">Conditional</animation>
+  </include>
+  <include name="MusicMediaFlags">
+    <control type="group">
+      <visible>!Control.HasFocus(110)</visible>
+      <include>Animation_CommonFade</include>
+      <include>Animation_HideMusic</include>
+      <!-- Rating -->
+      <control type="image" id="5091">
+        <include>MusicRatingFlagsVars</include>
+        <texture>$INFO[ListItem.StarRating,flags/music/rating/]</texture>
+        <visible>!IsEmpty(ListItem.Rating)</visible>
+      </control>
+      <!-- Genre -->
+      <control type="image" id="5092">
+        <include>Animation_CommonFade</include>
+        <posx>100</posx>
+        <posy>653</posy>
+        <width>90</width>
+        <height>59</height>
+        <colordiffuse>floor</colordiffuse>
+        <visible>Container.Content(Albums) | Container.Content(Songs)</visible>
+        <visible>Control.IsVisible(509) | Control.IsVisible(50) | Control.IsVisible(513)|Control.IsVisible(500)</visible>
+        <animation effect="slide" start="0,0" end="990,-20" time="0" condition="Control.IsVisible(50)">Conditional</animation>
+        <texture>flags/music/genre/genre.png</texture>
+        <visible>!IsEmpty(ListItem.Genre)</visible>
+      </control>
+      <control type="label">
+        <include>Animation_CommonFade</include>
+        <posx>135</posx>
+        <posy>669</posy>
+        <width>130</width>
+        <height>59</height>
+        <font>Font_Reg21</font>
+        <textcolor>floor</textcolor>
+        <align>left</align>
+        <visible>[Container.Content(Albums) | Container.Content(Songs)]</visible>
+        <visible>Control.IsVisible(509) | Control.IsVisible(50) | Control.IsVisible(513)|Control.IsVisible(500)</visible>
+        <animation effect="slide" start="0,0" end="990,-20" time="0" condition="Control.IsVisible(50)">Conditional</animation>
+        <label>$INFO[ListItem.Genre]</label>
+      </control>
+      <!-- Year -->
+      <control type="image" id="5093">
+        <include>Animation_CommonFade</include>
+        <posx>1055</posx>
+        <posy>653</posy>
+        <width>90</width>
+        <height>59</height>
+        <colordiffuse>floor</colordiffuse>
+        <visible>Container.Content(Albums) | Container.Content(Songs)</visible>
+        <visible>Control.IsVisible(509) | Control.IsVisible(50) | Control.IsVisible(513)|Control.IsVisible(500)</visible>
+        <animation effect="slide" start="0,0" end="-80,-18" time="0" condition="Control.IsVisible(50)">Conditional</animation>
+        <texture>flags/music/year/year.png</texture>
+        <visible>!IsEmpty(ListItem.Year)</visible>
+      </control>
+      <control type="label">
+        <include>Animation_CommonFade</include>
+        <posx>1055</posx>
+        <posy>669</posy>
+        <width>90</width>
+        <height>59</height>
+        <font>Font_Reg21</font>
+        <textcolor>floor</textcolor>
+        <align>center</align>
+        <visible>Container.Content(Albums) | Container.Content(Songs)</visible>
+        <visible>Control.IsVisible(509) | Control.IsVisible(50) | Control.IsVisible(513)|Control.IsVisible(500)</visible>
+        <visible>!IsEmpty(ListItem.Year)</visible>
+        <animation effect="slide" start="0,0" end="-80,-18" time="0" condition="Control.IsVisible(50)">Conditional</animation>
+        <label>$INFO[ListItem.Year]</label>
+        <fadetime>250</fadetime>
+      </control>
+      <!-- Label -->
+      <control type="image" id="5094">
+        <posx>1165</posx>
+        <posy>653</posy>
+        <width>90</width>
+        <height>59</height>
+        <colordiffuse>floor</colordiffuse>
+        <visible>Container.Content(Albums) + [Control.IsVisible(509) |  Control.IsVisible(50) |  Control.IsVisible(513)|Control.IsVisible(500)] + !IsEmpty(ListItem.Album)</visible>
+        <animation effect="slide" start="0,0" end="-300,-10" time="0" condition="Control.IsVisible(50)">Conditional</animation>
+        <texture fallback="flags/source/defaultsource.png">$INFO[ListItem.Property(Album_Label),flags/music/recordlabel/,.png]</texture>
+        <fadetime>250</fadetime>
+      </control>
+      <!-- Codec -->
+      <control type="group">
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/aac.png</texture>
+          <visible>substring(ListItem.filename,.aac)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/ac3.png</texture>
+          <visible>substring(ListItem.filename,.ac3)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/aif.png</texture>
+          <visible>substring(ListItem.filename,.aif) + ![substring(ListItem.filename,.aifc)  | substring(ListItem.filename,.aiff) ]</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/aifc.png</texture>
+          <visible>substring(ListItem.filename,.aifc)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/aiff.png</texture>
+          <visible>substring(ListItem.filename,.aiff)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/ape.png</texture>
+          <visible>substring(ListItem.filename,.ape)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/cdda.png</texture>
+          <visible>substring(ListItem.filename,.cdda)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/dts.png</texture>
+          <visible>substring(ListItem.filename,.dts)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/flac.png</texture>
+          <visible>substring(ListItem.filename,.flac)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/m4a.png</texture>
+          <visible>substring(ListItem.filename,.m4a)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/mlp.png</texture>
+          <visible>substring(ListItem.filename,.mlp)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/mp2.png</texture>
+          <visible>substring(ListItem.filename,.mp2)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/mp3.png</texture>
+          <visible>substring(ListItem.filename,.mp3)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/mpc.png</texture>
+          <visible>substring(ListItem.filename,.mpc)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/vorbis.png</texture>
+          <visible>substring(ListItem.filename,.ogg)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/RA.png</texture>
+          <visible>substring(ListItem.filename,.ra)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/wav.png</texture>
+          <visible>substring(ListItem.filename,.wav)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/wma.png</texture>
+          <visible>substring(ListItem.filename,.wma)</visible>
+        </control>
+        <control type="image" id="5094">
+          <include>MusicCodecFlagsVars</include>
+          <texture>flags/audio/wavpack.png</texture>
+          <visible>substring(ListItem.filename,.wv)</visible>
+        </control>
+      </control>
+    </control>
+  </include>
+  <include name="FloorFlagsList">
+    <control type="group">
+      <visible>Container.Content(episodes)</visible>
+      <control type="image">
+        <posx>840</posx>
+        <posy>638</posy>
+        <include>AudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoResolution,flags/resolution/,.png]</texture>
+      </control>
+      <control type="group">
+        <description>Audio Flags</description>
+        <posx>940</posx>
+        <posy>638</posy>
+        <include>FloorAudioFlags</include>
+      </control>
+      <control type="group">
+        <description>Rating Flags</description>
+        <posx>1040</posx>
+        <posy>638</posy>
+        <!--US-->
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/MPAA_NR_Certificate_US.png</texture>
+          <visible>IsEmpty(ListItem.Mpaa)+!IsEmpty(ListItem.Title)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/MPAA_G_Certificate_US.png</texture>
+          <visible>SubString(ListItem.mpaa,US:G) | SubString(ListItem.mpaa,USA:G) | SubString(ListItem.mpaa,Rated G)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/MPAA_PG_Certificate_US.png</texture>
+          <visible>[Substring(ListItem.mpaa,Rated PG) | StringCompare(ListItem.Mpaa,PG)] + !substring(ListItem.mpaa,PG-13)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/MPAA_PG-13_Certificate_US.png</texture>
+          <visible>SubString(ListItem.mpaa,PG-13)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/MPAA_R_Certificate_US.png</texture>
+          <visible>SubString(ListItem.mpaa,US:R) | SubString(ListItem.mpaa,USA:R) | SubString(ListItem.mpaa,Rated R) | StringCompare(ListItem.Mpaa,R)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/MPAA_NC-17_Certificate_US.png</texture>
+          <visible>SubString(ListItem.mpaa,US:NC-17) | SubString(ListItem.mpaa,USA:NC-17) | SubString(ListItem.mpaa,Rated NC-17)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/TV-G_Certificate_US.png</texture>
+          <visible>substring(ListItem.mpaa,TV-G)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/TV-PG_Certificate_US.png</texture>
+          <visible>substring(ListItem.mpaa,TV-PG)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/TV-14_Certificate_US.png</texture>
+          <visible>substring(ListItem.mpaa,TV-14)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/TV-MA_Certificate_US.png</texture>
+          <visible>substring(ListItem.mpaa,TV-MA)</visible>
+        </control>
+        <!--UK-->
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/BBFC_U_Certificate_UK.png</texture>
+          <visible>SubString(ListItem.mpaa,UK:U)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/BBFC_PG_Certificate_UK.png</texture>
+          <visible>SubString(ListItem.mpaa,UK:PG)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/BBFC_12_Certificate_UK.png</texture>
+          <visible>SubString(ListItem.mpaa,UK:12) + !SubString(ListItem.mpaa,UK:12A)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/BBFC_12A_Certificate_UK.png</texture>
+          <visible>SubString(ListItem.mpaa,UK:12A)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/BBFC_15_Certificate_UK.png</texture>
+          <visible>SubString(ListItem.mpaa,UK:15)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/BBFC_18_Certificate_UK.png</texture>
+          <visible>SubString(ListItem.mpaa,UK:18)</visible>
+        </control>
+        <!--Germany-->
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/FSK-0.png</texture>
+          <visible>SubString(ListItem.mpaa,Germany:0) | SubString(ListItem.mpaa,o.A)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/FSK-6.png</texture>
+          <visible>SubString(ListItem.mpaa,Germany:6) | SubString(ListItem.mpaa,ab 6) | SubString(ListItem.mpaa,6)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/FSK-12.png</texture>
+          <visible>[SubString(ListItem.mpaa,Germany:12) | SubString(ListItem.mpaa,ab 12) | SubString(ListItem.mpaa,12)]+!SubString(ListItem.mpaa,UK:12)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/FSK-16.png</texture>
+          <visible>SubString(ListItem.mpaa,Germany:16) | SubString(ListItem.mpaa,ab 16) | SubString(ListItem.mpaa,16)</visible>
+        </control>
+        <control type="image">
+          <include>FloorRatingVars</include>
+          <texture>flags/rating/FSK-18.png</texture>
+          <visible>[SubString(ListItem.mpaa,Germany:18) | SubString(ListItem.mpaa,ab 18) | SubString(ListItem.mpaa,18)]+!SubString(ListItem.mpaa,UK:18)</visible>
+        </control>
+      </control>
+      <control type="image">
+        <posx>1140</posx>
+        <posy>638</posy>
+        <include>AudioFlagsVars</include>
+        <texture fallback="flags/studios/default-studio.png">$INFO[ListItem.Studio,flags/studios/,.png]</texture>
+        <visible>!IsEmpty(ListItem.Studio)</visible>
+      </control>
+    </control>
+    <control type="group">
+      <visible>Container.Content(movies)+!Window.isActive(videofiles)</visible>
+      <control type="image">
+        <posx>840</posx>
+        <posy>648</posy>
+        <include>AudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoCodec,flags/videocodec/,.png]</texture>
+      </control>
+      <control type="image">
+        <posx>940</posx>
+        <posy>648</posy>
+        <include>AudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoResolution,flags/resolution/,.png]</texture>
+      </control>
+      <control type="image">
+        <posx>1040</posx>
+        <posy>648</posy>
+        <include>AudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]</texture>
+      </control>
+      <control type="group">
+        <description>Audio Flags</description>
+        <posx>1140</posx>
+        <posy>648</posy>
+        <include>FloorAudioFlags</include>
+      </control>
+    </control>
+  </include>
+  <include name="Furniture_MovieInfoFlagSource">
+    <posx>4</posx>
+    <posy>589</posy>
+    <width>93</width>
+    <height>30</height>
+    <colordiffuse>FF7c7c7c</colordiffuse>
+  </include>
+  <include name="Furniture_MovieInfoFlagSource2">
+    <posx>0</posx>
+    <posy>571</posy>
+    <width>100</width>
+    <height>66</height>
+    <colordiffuse>FF7c7c7c</colordiffuse>
+  </include>
+  <include name="Furniture_MovieInfoFlagSound">
+    <posx>109</posx>
+    <posy>585</posy>
+    <width>141</width>
+    <height>40</height>
+    <colordiffuse>FF7c7c7c</colordiffuse>
+  </include>
+
+  <include name="Furniture_FlagUpright">
+    <posy>581</posy>
+    <width>1</width>
+    <height>47</height>
+    <texture>info/info_flagupright.png</texture>
+  </include>
+
+  <include name="SourceGenerator">
+    <control type="group">
+      <include>HiddenObject</include>
+      <control type="label" id="900011">
+        <label></label>
+        <visible>false</visible>
+      </control>
+      <control type="label" id="900011">
+        <label>flags/info/sdtv.png</label>
+        <visible>SubString(ListItem.filename,PDTV) | SubString(ListItem.filename,sdtv)</visible>
+      </control>
+      <control type="label" id="900011">
+        <label>flags/info/hdtv.png</label>
+        <visible>SubString(ListItem.Filename,hdtv)</visible>
+      </control>
+      <control type="label" id="900011">
+        <label>flags/info/hddvd.png</label>
+        <visible>SubString(ListItem.Filename,hddvd) | SubString(ListItem.Filename,hd-dvd)</visible>
+      </control>
+      <control type="label" id="900011">
+        <label>flags/info/bluray.png</label>
+        <visible>SubString(ListItem.Filename,bluray) | SubString(ListItem.Filename,blu-ray) | SubString(ListItem.Filename,bdrip) | SubString(ListItem.Filename,brrip)</visible>
+      </control>
+      <control type="label" id="900011">
+        <label>flags/info/dvd.png</label>
+        <visible>[SubString(ListItem.Filename,dvd) + !SubString(ListItem.Filename,hddvd) + !SubString(ListItem.Filename,hd-dvd) + !SubString(ListItem.Filename,bluray)] | [SubString(ListItem.Filename,.iso,Right) + !SubString(ListItem.Filename,bluray)] | SubString(ListItem.Filename,.ifo,Right)</visible>
+      </control>
+      <control type="label" id="900011">
+        <label>flags/info/dvb.png</label>
+        <visible>SubString(ListItem.Filename,dvb)</visible>
+      </control>
+      <control type="label" id="900011">
+        <label>flags/info/web-dl.png</label>
+        <visible>SubString(ListItem.Filename,web-dl)</visible>
+      </control>
+      <control type="label" id="900012">
+        <label></label>
+        <visible>false</visible>
+      </control>
+      <control type="label" id="900012">
+        <label>$INFO[Control.GetLabel(900011)]</label>
+        <visible>Skin.HasSetting(sourceflags) + !IsEmpty(Control.GetLabel(900011))</visible>
+      </control>
+      <control type="label" id="900012">
+        <label>$INFO[ListItem.VideoCodec,flags/videocodec/,.png]</label>
+        <visible>!Skin.HasSetting(sourceflags) | IsEmpty(Control.GetLabel(900011))</visible>
+      </control>
+    </control>
+  </include>
+
+  <include name="Furniture_MovieInfoMediaFlags">
+    <control type="group">
+      <control type="image">
+        <posx>104</posx>
+        <include>Furniture_FlagUpright</include>
+        <colordiffuse>AAFFFFFF</colordiffuse>
+      </control>
+      <control type="image">
+        <posx>253</posx>
+        <include>Furniture_FlagUpright</include>
+        <colordiffuse>99FFFFFF</colordiffuse>
+      </control>
+      <control type="image">
+        <posx>339</posx>
+        <include>Furniture_FlagUpright</include>
+        <colordiffuse>88FFFFFF</colordiffuse>
+      </control>
+      <control type="image">
+        <posx>433</posx>
+        <include>Furniture_FlagUpright</include>
+        <colordiffuse>66FFFFFF</colordiffuse>
+      </control>
+      <control type="image">
+        <posx>535</posx>
+        <include>Furniture_FlagUpright</include>
+        <visible>!IsEmpty(ListItem.SubtitleLanguage)</visible>
+        <colordiffuse>44FFFFFF</colordiffuse>
+      </control>
+      <control type="image" id="91">
+        <include>Furniture_MovieInfoFlagSource</include>
+        <texture>$INFO[Control.GetLabel(900012)]</texture>
+        <visible>!IsEmpty(Control.GetLabel(900012))+Skin.HasSetting(sourceflags) + !IsEmpty(Control.GetLabel(900011))</visible>
+      </control>
+      <control type="image" id="91">
+        <include>Furniture_MovieInfoFlagSource2</include>
+        <texture>$INFO[Control.GetLabel(900012)]</texture>
+        <visible>!IsEmpty(Control.GetLabel(900012))+[!Skin.HasSetting(sourceflags) | IsEmpty(Control.GetLabel(900011))]</visible>
+      </control>
+      <control type="image" id="920">
+        <posx>109</posx>
+        <posy>585</posy>
+        <include>Furniture_MovieInfoFlagSound</include>
+        <texture>$INFO[ListItem.AudioCodec,flags/info/]$INFO[ListItem.AudioChannels,,.png]</texture>
+        <aspectratio>keep</aspectratio>
+      </control>
+      <control type="image" id="93">
+        <posx>550</posx>
+        <posy>589</posy>
+        <width>39</width>
+        <height>30</height>
+        <colordiffuse>FF7c7c7c</colordiffuse>
+        <texture>flags/info/cc.png</texture>
+        <visible>!IsEmpty(ListItem.SubtitleLanguage)</visible>
+      </control>
+      <control type="image" id="94">
+        <posx>263</posx>
+        <posy>589</posy>
+        <width>67</width>
+        <height>30</height>
+        <colordiffuse>FF7c7c7c</colordiffuse>
+        <texture>$INFO[ListItem.VideoResolution,flags/info/,.png]</texture>
+      </control>
+      <control type="image" id="95">
+        <posx>345</posx>
+        <posy>574</posy>
+        <width>80</width>
+        <height>60</height>
+        <colordiffuse>FF7c7c7c</colordiffuse>
+        <texture>$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]</texture>
+      </control>
+      <control type="image" id="96">
+        <posx>435</posx>
+        <posy>580</posy>
+        <width>99</width>
+        <height>50</height>
+        <colordiffuse>FF7c7c7c</colordiffuse>
+        <aspectratio>keep</aspectratio>
+        <texture fallback="flags/studios/default-studio.png">$INFO[Control.GetLabel(900009)]</texture>
+        <visible>!StringCompare(ListItem.Label,..)</visible>
+        <visible>Container.Content(movies) | Container.Content(episodes)</visible>
+      </control>
+    </control>
+  </include>
+  <include name="VideoInfoRatingVars">
+    <width>166</width>
+    <height>38</height>
+    <colordiffuse>FF868686</colordiffuse>
+    <aspectratio>keep</aspectratio>
+  </include>
+  <include name="AudioFlagsVars">
+    <width>90</width>
+    <height>60</height>
+    <aspectratio>keep</aspectratio>
+    <colordiffuse>floor</colordiffuse>
+    <fadetime>IconCrossfadeTime2</fadetime>
+    <animation effect="fade" time="250">VisibleChange</animation>
+  </include>
+  <include name="OSDAudioFlagsVars">
+    <width>90</width>
+    <height>60</height>
+    <aspectratio>keep</aspectratio>
+    <colordiffuse>FFe1e1e1</colordiffuse>
+    <fadetime>IconCrossfadeTime2</fadetime>
+    <animation effect="fade" time="250">VisibleChange</animation>
+  </include>
+  <include name="InfoListFlagVars">
+    <width>90</width>
+    <height>60</height>
+    <aspectratio>keep</aspectratio>
+    <colordiffuse>ff2e2e2e</colordiffuse>
+    <fadetime>IconCrossfadeTime2</fadetime>
+    <animation effect="fade" time="250">VisibleChange</animation>
+  </include>
+  <include name="Posters_Furniture">
+    <control type="group">
+      <posy>658</posy>
+      <visible>!Control.HasFocus(70)</visible>
+      <include>Animation_HideMultiplex</include>
+      <control type="image">
+        <posy>1</posy>
+        <width>75</width>
+        <posx>1190</posx>
+        <include>AudioFlagsVars</include>
+        <texture>flags/posters/imdb.png</texture>
+        <visible>[!Container.Content(seasons)|IsEmpty(ListItem.TVShowTitle)]</visible>
+      </control>
+      <control type="label">
+        <posx>1194</posx>
+        <posy>18</posy>
+        <width>90</width>
+        <height>25</height>
+        <align>center</align>
+        <aligny>center</aligny>
+        <font>Font_Bold24</font>
+        <textcolor>floor</textcolor>
+        <label fallback="?">$INFO[ListItem.Rating]</label>
+        <visible>[!Container.Content(seasons)|IsEmpty(ListItem.TVShowTitle)]</visible>
+      </control>
+      <control type="group">
+        <posx>980</posx>
+        <include>FloorAudioFlags</include>
+      </control>
+      <control type="group">
+        <posx>1080</posx>
+        <visible>Skin.HasSetting(sourceflags)</visible>
+        <control type="image">
+          <include>AudioFlagsVars</include>
+          <texture>flags/source/sdtv.png</texture>
+          <visible>SubString(ListItem.filename,PDTV) | SubString(ListItem.filename,sdtv)</visible>
+        </control>
+        <control type="image">
+          <include>AudioFlagsVars</include>
+          <texture>flags/source/hdtv.png</texture>
+          <visible>SubString(ListItem.Filename,hdtv)</visible>
+        </control>
+        <control type="image">
+          <include>AudioFlagsVars</include>
+          <texture>flags/source/hddvd.png</texture>
+          <visible>SubString(ListItem.Filename,hddvd) | SubString(ListItem.Filename,hd-dvd)</visible>
+        </control>
+        <control type="image">
+          <include>AudioFlagsVars</include>
+          <texture>flags/source/bluray.png</texture>
+          <visible>SubString(ListItem.Filename,bluray) | SubString(ListItem.Filename,blu-ray) | SubString(ListItem.Filename,bdrip) | SubString(ListItem.Filename,brrip)</visible>
+        </control>
+        <control type="image">
+          <include>AudioFlagsVars</include>
+          <texture>flags/source/dvd.png</texture>
+          <visible>[SubString(ListItem.Filename,dvd) + !SubString(ListItem.Filename,hddvd) + !SubString(ListItem.Filename,hd-dvd) + !SubString(ListItem.Filename,bluray)] | [SubString(ListItem.Filename,.iso,Right) + !SubString(ListItem.Filename,bluray)] | SubString(ListItem.Filename,.ifo,Right)</visible>
+        </control>
+        <control type="image">
+          <include>AudioFlagsVars</include>
+          <texture>flags/source/dvb.png</texture>
+          <visible>SubString(ListItem.Filename,dvb)</visible>
+        </control>
+        <control type="image">
+          <include>AudioFlagsVars</include>
+          <texture>flags/source/web-dl.png</texture>
+          <visible>SubString(ListItem.Filename,web-dl)</visible>
+        </control>
+      </control>
+      <control type="image">
+        <posx>1080</posx>
+        <include>AudioFlagsVars</include>
+        <texture>$INFO[ListItem.VideoCodec,flags/videocodec/,.png]</texture>
+        <visible>!Skin.HasSetting(sourceflags)|[!SubString(ListItem.filename,PDTV)+!SubString(ListItem.filename,sdtv)+!SubString(ListItem.Filename,hdtv)+!SubString(ListItem.Filename,hddvd)+!SubString(ListItem.Filename,hd-dvd)+!SubString(ListItem.Filename,bluray)+!SubString(ListItem.Filename,blu-ray)+!SubString(ListItem.Filename,bdrip)+!SubString(ListItem.Filename,brrip)+!SubString(ListItem.Filename,dvd)+!SubString(ListItem.Filename,dvb)+!SubString(ListItem.Filename,.iso,Right)+!SubString(ListItem.Filename,.ifo)+!SubString(ListItem.Filename,web-dl)]</visible>
+      </control>
+      <control type="image">
+        <posx>1080</posx>
+        <include>AudioFlagsVars</include>
+        <texture>$INFO[ListItem.Studio,flags/studios/,.png]</texture>
+        <visible>Container.Content(tvshows)</visible>
+      </control>
+      <control type="label">
+        <posx>1260</posx>
+        <posy>18</posy>
+        <width>300</width>
+        <height>25</height>
+        <align>right</align>
+        <aligny>center</aligny>
+        <font>Font_Bold24</font>
+        <textcolor>floor</textcolor>
+        <label>$INFO[ListItem.Label]$INFO[ListItem.Property(WatchedEpisodes), (,/]$INFO[ListItem.Property(TotalEpisodes),,)]</label>
+        <visible>[Container.Content(seasons)+!IsEmpty(ListItem.TVShowTitle)]</visible>
+      </control>
+    </control>
+  </include>
+</includes>

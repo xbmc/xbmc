@@ -130,16 +130,16 @@ bool CPictureDatabase::CreateTables()
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strHash text)\n");
     CLog::Log(LOGINFO, "create picture table");
-    m_pDS->exec("CREATE TABLE picture ( idPicture integer primary key, idAlbum integer, idPath integer, strFaces text, strLocations text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
+    m_pDS->exec("CREATE TABLE picture ( idPicture integer primary key, idAlbum integer, idPath integer, strFaces text, strLocations text, strTitle varchar(512), dwFileNameCRC text, strFileName text, idThumb integer, takenon varchar(20) default NULL, comment text )\n");
     CLog::Log(LOGINFO, "create picture_face table");
     m_pDS->exec("CREATE TABLE picture_face ( idFace integer, idPicture integer, strJoinPhrase text, boolFeatured integer, iOrder integer )\n");
     CLog::Log(LOGINFO, "create picture_location table");
     m_pDS->exec("CREATE TABLE picture_location ( idLocation integer, idPicture integer, iOrder integer )\n");
     
     CLog::Log(LOGINFO, "create albuminfo table");
-    m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, strMoods text, strStyles text, strThemes text, strReview text, strImage text, strLabel text, strType text, iRating integer)\n");
+    m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, strImage text, strLabel text, strType text)\n");
     CLog::Log(LOGINFO, "create albuminfopicture table");
-    m_pDS->exec("CREATE TABLE albuminfopicture ( idAlbumInfoPicture integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)\n");
+    m_pDS->exec("CREATE TABLE albuminfopicture ( idAlbumInfoPicture integer primary key, idAlbumInfo integer, strTitle text)\n");
     CLog::Log(LOGINFO, "create facenfo table");
     m_pDS->exec("CREATE TABLE faceinfo ( idFaceInfo integer primary key, idFace integer, strBorn text, strFormed text, strLocations text, strMoods text, strStyles text, strInstruments text, strBiography text, strDied text, strDisbanded text, strYearsActive text, strImage text, strFanart text)\n");
     CLog::Log(LOGINFO, "create content table");
@@ -176,10 +176,10 @@ bool CPictureDatabase::CreateTables()
     
     CLog::Log(LOGINFO, "create picture index");
     m_pDS->exec("CREATE INDEX idxPicture ON picture(strTitle)");
-    CLog::Log(LOGINFO, "create picture index1");
-    m_pDS->exec("CREATE INDEX idxPicture1 ON picture(iTimesPlayed)");
+//    CLog::Log(LOGINFO, "create picture index1");
+//    m_pDS->exec("CREATE INDEX idxPicture1 ON picture(iPictureCount)");
     CLog::Log(LOGINFO, "create picture index2");
-    m_pDS->exec("CREATE INDEX idxPicture2 ON picture(lastplayed)");
+    m_pDS->exec("CREATE INDEX idxPicture2 ON picture(takenon)");
     CLog::Log(LOGINFO, "create picture index3");
     m_pDS->exec("CREATE INDEX idxPicture3 ON picture(idAlbum)");
     CLog::Log(LOGINFO, "create picture index6");
@@ -219,7 +219,7 @@ bool CPictureDatabase::CreateTables()
     CreateViews();
     
     // Add 'Karaoke' location
-    AddPictureAlbum("Untitled", "Face", "Location", 2012, false);
+    //AddPictureAlbum("Untitled", "Face", "Location", 2012, false);
   }
   catch (...)
   {
@@ -238,6 +238,7 @@ void CPictureDatabase::CreateViews()
   m_pDS->exec("CREATE VIEW pictureview AS SELECT "
               "  picture.idPicture AS idPicture, "
               "  picture.strFaces AS strFaces,"
+              "  picture.takenon AS takenOn,"
               "  picture.strLocations AS strLocations,"
               "  picture.idPath AS idPath,"
               "  picture.idAlbum as idAlbum,"
@@ -255,24 +256,14 @@ void CPictureDatabase::CreateViews()
   CLog::Log(LOGINFO, "create album view");
   m_pDS->exec("DROP VIEW IF EXISTS albumview");
   if (m_sqlite)
-  {
+  {    
     m_pDS->exec("CREATE VIEW albumview AS SELECT "
                 "        album.idAlbum AS idAlbum, "
                 "        strAlbum, "
                 "        GROUP_CONCAT(strFace || strJoinPhrase, '') as strFaces, "
                 "        album.strLocations AS strLocations, "
-                "        album.iYear AS iYear, "
-                "        idAlbumInfo, "
-                "        strMoods, "
-                "        strStyles, "
-                "        strThemes, "
-                "        strReview, "
-                "        strLabel, "
-                "        strType, "
-                "        strImage, "
-                "        iRating, "
-                "        bCompilation, "
-                "        (SELECT MIN(iTimesPlayed) AS iTimesPlayed FROM picture WHERE picture.idAlbum = album.idAlbum)"
+                "        albuminfo.idAlbumInfo AS albumInfo, "
+                "        albuminfo.strImage AS strImage "
                 "   FROM album  "
                 "   LEFT OUTER JOIN "
                 "       albuminfo ON album.idAlbum = albuminfo.idAlbum "
@@ -290,17 +281,8 @@ void CPictureDatabase::CreateViews()
                 "        GROUP_CONCAT(strFace, strJoinPhrase ORDER BY iOrder SEPARATOR '') as strFaces, "
                 "        album.strLocations AS strLocations, "
                 "        album.iYear AS iYear, "
-                "        idAlbumInfo, "
-                "        strMoods, "
-                "        strStyles, "
-                "        strThemes, "
-                "        strReview, "
-                "        strLabel, "
-                "        strType, "
-                "        strImage, "
-                "        iRating, "
-                "        bCompilation, "
-                "        (SELECT MIN(iTimesPlayed) AS iTimesPlayed FROM picture WHERE picture.idAlbum = album.idAlbum)"
+                "        albuminfo.idAlbumInfo AS albumInfo, "
+                "        albuminfo.strImage AS strImage "
                 "   FROM album  "
                 "   LEFT OUTER JOIN "
                 "       albuminfo ON album.idAlbum = albuminfo.idAlbum "
@@ -324,12 +306,7 @@ void CPictureDatabase::CreateViews()
               "    face.idFace = faceinfo.idFace");
 }
 
-int CPictureDatabase::AddPicture(const int idAlbum,
-                                 const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb,
-                                 const std::vector<std::string>& Faces, const std::vector<std::string>& locations,
-                                 int iTrack, int iDuration, int iYear,
-                                 const int iTimesPlayed, int iStartOffset, int iEndOffset,
-                                 const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber)
+int CPictureDatabase::AddPicture(const int idAlbum, const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations,const CStdString& dtTaken)
 {
   int idPicture = -1;
   CStdString strSQL;
@@ -357,21 +334,18 @@ int CPictureDatabase::AddPicture(const int idAlbum,
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      strSQL=PrepareSQL("INSERT INTO picture (idPicture,idAlbum,idPath,strFaces,strLocations,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,iTimesPlayed,iStartOffset,iEndOffset,lastplayed,rating,comment) values (NULL, %i, %i, '%s', '%s', '%s', %i, %i, %i, '%ul', '%s'",
+      strSQL=PrepareSQL("INSERT INTO picture (idPicture,idAlbum,idPath,strFaces,strLocations,strTitle,dwFileNameCRC,strFileName,comment,takenon) values (NULL, %i, %i, '%s', '%s', '%s', '%ul', '%s' ",
                         idAlbum,
                         idPath,
                         StringUtils::Join(Faces, g_advancedSettings.m_pictureItemSeparator).c_str(),
                         StringUtils::Join(locations, g_advancedSettings.m_pictureItemSeparator).c_str(),
                         strTitle.c_str(),
-                        iTrack, iDuration, iYear,
                         crc, strFileName.c_str());
       
-      if (dtLastPlayed.IsValid())
-        strSQL += PrepareSQL(",%i,%i,%i,'%s','%c','%s')",
-                             iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed.GetAsDBDateTime().c_str(), rating, strComment.c_str());
+      if (dtTaken.length())
+        strSQL += PrepareSQL(",'%s','%s')",dtTaken.c_str(), strComment.c_str());
       else
-        strSQL += PrepareSQL(",%i,%i,%i,NULL,'%c','%s')",
-                             iTimesPlayed, iStartOffset, iEndOffset, rating, strComment.c_str());
+        strSQL += PrepareSQL(",NULL,'%s')",strComment.c_str());
       CLog::Log(LOGINFO, strSQL.c_str());
       m_pDS->exec(strSQL.c_str());
       idPicture = (int)m_pDS->lastinsertid();
@@ -380,7 +354,7 @@ int CPictureDatabase::AddPicture(const int idAlbum,
     {
       idPicture = m_pDS->fv("idPicture").get_asInt();
       m_pDS->close();
-      UpdatePicture(idPicture, strTitle, strPathAndFileName, strComment, strThumb, Faces, locations, iTrack, iDuration, iYear, iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed, rating,  iKaraokeNumber);
+      UpdatePicture(idPicture, strTitle, strPathAndFileName, strComment, strThumb, Faces, locations, dtTaken);
     }
     
     if (!strThumb.empty())
@@ -407,12 +381,7 @@ int CPictureDatabase::AddPicture(const int idAlbum,
   return idPicture;
 }
 
-int CPictureDatabase::UpdatePicture(int idPicture,
-                                    const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb,
-                                    const std::vector<std::string>& Faces, const std::vector<std::string>& locations,
-                                    int iTrack, int iDuration, int iYear,
-                                    int iTimesPlayed, int iStartOffset, int iEndOffset,
-                                    const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber)
+int CPictureDatabase::UpdatePicture(int idPicture, const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations, const CStdString& dtTaken)
 {
   CStdString sql;
   if (idPicture < 0)
@@ -426,20 +395,17 @@ int CPictureDatabase::UpdatePicture(int idPicture,
     int idPath = AddPath(strPath);
     DWORD crc = ComputeCRC(strFileName);
     
-    strSQL = PrepareSQL("UPDATE picture SET idPath = %i, strFaces = '%s', strLocations = '%s', strTitle = '%s', iTrack = %i, iDuration = %i, iYear = %i, dwFileNameCRC = '%ul', strFileName = '%s'",
+    strSQL = PrepareSQL("UPDATE picture SET idPath = %i, strFaces = '%s', strLocations = '%s', strTitle = '%s', dwFileNameCRC = '%ul', strFileName = '%s'",
                         idPath,
                         StringUtils::Join(Faces, g_advancedSettings.m_pictureItemSeparator).c_str(),
                         StringUtils::Join(locations, g_advancedSettings.m_pictureItemSeparator).c_str(),
                         strTitle.c_str(),
-                        iTrack, iDuration, iYear,
                         crc, strFileName.c_str());
     
-    if (dtLastPlayed.IsValid())
-      strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = '%s', rating = '%c', comment = '%s'",
-                           iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed.GetAsDBDateTime().c_str(), rating, strComment.c_str());
+    if (dtTaken.length())
+      strSQL += PrepareSQL(",  takenon = '%s',  comment = '%s'", dtTaken.c_str(), strComment.c_str());
     else
-      strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = NULL, rating = '%c', comment = '%s'",
-                           iTimesPlayed, iStartOffset, iEndOffset, rating, strComment.c_str());
+      strSQL += PrepareSQL(", takenon = NULL, comment = '%s'", strComment.c_str());
     strSQL += PrepareSQL(" WHERE idPicture = %i", idPicture);
     m_pDS->exec(strSQL.c_str());
   }
@@ -450,13 +416,14 @@ int CPictureDatabase::UpdatePicture(int idPicture,
   return idPicture;
 }
 
-int CPictureDatabase::AddPictureAlbum(const CStdString& strAlbum, const CStdString& strFace, const CStdString& strLocation, int year, bool bCompilation)
+int CPictureDatabase::AddPictureAlbum(const CStdString& strAlbum, const CStdString& strFace, const CStdString& strLocation)
 {
   CStdString strSQL;
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
+    if(strAlbum.length() <= 0) return -1;
     
     strSQL=PrepareSQL("SELECT * FROM album WHERE strAlbum like '%s'",strAlbum.c_str());
     CLog::Log(LOGINFO, strSQL.c_str());
@@ -467,12 +434,10 @@ int CPictureDatabase::AddPictureAlbum(const CStdString& strAlbum, const CStdStri
       m_pDS->close();
       // doesnt exists, add it
       
-      strSQL=PrepareSQL("insert into album (strAlbum, strFaces, strLocations, iYear, bCompilation) values ( '%s', '%s', '%s', %i, %i)",
+      strSQL=PrepareSQL("insert into album (strAlbum, strFaces, strLocations) values ( '%s', '%s', '%s')",
                         strAlbum.c_str(),
                         strFace.c_str(),
-                        strLocation.c_str(),
-                        year,
-                        bCompilation);
+                        strLocation.c_str());
       
       CLog::Log(LOGINFO, strSQL.c_str());
       m_pDS->exec(strSQL.c_str());
@@ -485,7 +450,7 @@ int CPictureDatabase::AddPictureAlbum(const CStdString& strAlbum, const CStdStri
       // may have changed (there's a reason we're rescanning, afterall!)
       int idAlbum = m_pDS->fv("idAlbum").get_asInt();
       m_pDS->close();
-      strSQL=PrepareSQL("update album set strLocations='%s', iYear=%i where idAlbum=%i", strLocation.c_str(), year, idAlbum);
+      strSQL=PrepareSQL("update album set strLocations='%s'", strLocation.c_str());
       m_pDS->exec(strSQL.c_str());
       // and clear the link tables - these are updated in AddPicture()
       strSQL=PrepareSQL("delete from album_Face where idAlbum=%i", idAlbum);
@@ -870,6 +835,7 @@ int CPictureDatabase::AddPath(const CStdString& strPath1)
 CPicture CPictureDatabase::GetPictureFromDataset(bool bWithPictureDbPath/*=false*/)
 {
   CPicture picture;
+  
   picture.idPicture = m_pDS->fv(picture_idPicture).get_asInt();
   // get the full Face string
   picture.face = StringUtils::Split(m_pDS->fv(picture_strFaces).get_asString(), g_advancedSettings.m_pictureItemSeparator);
@@ -878,24 +844,14 @@ CPicture CPictureDatabase::GetPictureFromDataset(bool bWithPictureDbPath/*=false
   // and the rest...
   picture.strAlbum = m_pDS->fv(picture_strAlbum).get_asString();
   picture.idAlbum = m_pDS->fv(picture_idAlbum).get_asInt();
-  picture.iTrack = m_pDS->fv(picture_iTrack).get_asInt() ;
-  picture.iDuration = m_pDS->fv(picture_iDuration).get_asInt() ;
-  picture.iYear = m_pDS->fv(picture_iYear).get_asInt() ;
   picture.strTitle = m_pDS->fv(picture_strTitle).get_asString();
-  picture.iTimesPlayed = m_pDS->fv(picture_iTimesPlayed).get_asInt();
-  picture.lastPlayed.SetFromDBDateTime(m_pDS->fv(picture_lastplayed).get_asString());
-  picture.iStartOffset = m_pDS->fv(picture_iStartOffset).get_asInt();
-  picture.iEndOffset = m_pDS->fv(picture_iEndOffset).get_asInt();
-  picture.rating = m_pDS->fv(picture_rating).get_asChar();
-  picture.strComment = m_pDS->fv(picture_comment).get_asString();
-  picture.albumFace = StringUtils::Split(m_pDS->fv(picture_strFaces).get_asString(), g_advancedSettings.m_pictureItemSeparator);
+  picture.takenOn.SetFromDBDateTime(m_pDS->fv(picture_takenOn).get_asString());
   
   // Get filename with full path
-  /*
+  
   if (!bWithPictureDbPath)
     picture.strFileName = URIUtils::AddFileToFolder(m_pDS->fv(picture_strPath).get_asString(), m_pDS->fv(picture_strFileName).get_asString());
   else
-   */
   {
     CStdString strFileName = m_pDS->fv(picture_strFileName).get_asString();
     CStdString strExt = URIUtils::GetExtension(strFileName);
@@ -913,24 +869,20 @@ void CPictureDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString&
 void CPictureDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strPictureDBbasePath)
 {
 
-  // get the full Face string
+  // get the full artist string
   item->GetPictureInfoTag()->SetFace(StringUtils::Split(record->at(picture_strFaces).get_asString(), g_advancedSettings.m_pictureItemSeparator));
-  // and the full location string
+  // and the full genre string
   item->GetPictureInfoTag()->SetLocation(record->at(picture_strLocations).get_asString());
-//  item->GetPictureInfoTag()->SetDatabaseId(record->at(picture_idPath).get_asInt());
   // and the rest...
   item->GetPictureInfoTag()->SetAlbum(record->at(picture_strAlbum).get_asString());
   item->GetPictureInfoTag()->SetAlbumId(record->at(picture_idAlbum).get_asInt());
   item->GetPictureInfoTag()->SetDatabaseId(record->at(picture_idPicture).get_asInt(), "picture");
-  SYSTEMTIME stTime;
-//  stTime.wYear = (WORD)record->at(picture_iYear).get_asInt();
   item->GetPictureInfoTag()->SetTitle(record->at(picture_strTitle).get_asString());
   item->SetLabel(record->at(picture_strTitle).get_asString());
-  item->GetPictureInfoTag()->SetComment(record->at(picture_strFileName).get_asString());
   CStdString strRealPath = URIUtils::AddFileToFolder(record->at(picture_strPath).get_asString(), record->at(picture_strFileName).get_asString());
-  item->GetPictureInfoTag()->SetAlbumFace(record->at(picture_strFaces).get_asString());
+  item->GetPictureInfoTag()->SetURL(strRealPath);
+//  item->GetPictureInfoTag()->SetAlbumFace(record->at(picture_strAlbumFaces).get_asString());
   item->GetPictureInfoTag()->SetLoaded(true);
-  
   // Get filename with full path
   if (strPictureDBbasePath.IsEmpty())
     item->SetPath(strRealPath);
@@ -946,7 +898,6 @@ void CPictureDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const r
     itemUrl.AppendPath(path);
     item->SetPath(itemUrl.ToString());
   }
-  
 }
 
 CPictureAlbum CPictureDatabase::GetPictureAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL /* = false*/)
@@ -964,19 +915,9 @@ CPictureAlbum CPictureDatabase::GetPictureAlbumFromDataset(const dbiplus::sql_re
     album.strAlbum = g_localizeStrings.Get(1050);
   album.face = StringUtils::Split(record->at(album_strFaces).get_asString(), g_advancedSettings.m_pictureItemSeparator);
   album.location = StringUtils::Split(record->at(album_strLocations).get_asString(), g_advancedSettings.m_pictureItemSeparator);
-  album.iYear = record->at(album_iYear).get_asInt();
   if (imageURL)
     album.thumbURL.ParseString(record->at(album_strThumbURL).get_asString());
-  album.iRating = record->at(album_iRating).get_asInt();
-  album.iYear = record->at(album_iYear).get_asInt();
-  album.strReview = record->at(album_strReview).get_asString();
-  album.styles = StringUtils::Split(record->at(album_strStyles).get_asString(), g_advancedSettings.m_pictureItemSeparator);
-  album.moods = StringUtils::Split(record->at(album_strMoods).get_asString(), g_advancedSettings.m_pictureItemSeparator);
-  album.themes = StringUtils::Split(record->at(album_strThemes).get_asString(), g_advancedSettings.m_pictureItemSeparator);
-  album.strLabel = record->at(album_strLabel).get_asString();
-  album.strType = record->at(album_strType).get_asString();
-  album.bCompilation = record->at(album_bCompilation).get_asInt() == 1;
-  album.iTimesPlayed = record->at(album_iTimesPlayed).get_asInt();
+//  album.iPictureCount = record->at(album_iPictureCount).get_asInt();
   
   return album;
 }
@@ -1352,9 +1293,6 @@ bool CPictureDatabase::GetPictureAlbumInfoPictures(int idAlbumInfo, VECPICTURES&
     while (!m_pDS2->eof())
     {
       CPicture picture;
-      picture.iTrack = m_pDS2->fv("iTrack").get_asInt();
-      picture.strTitle = m_pDS2->fv("strTitle").get_asString();
-      picture.iDuration = m_pDS2->fv("iDuration").get_asInt();
       
       pictures.push_back(picture);
       m_pDS2->next();
@@ -1380,8 +1318,8 @@ bool CPictureDatabase::GetTop100(const CStdString& strBaseDir, CFileItemList& it
     if (NULL == m_pDS.get()) return false;
     
     CStdString strSQL="select * from pictureview "
-    "where iTimesPlayed>0 "
-    "order by iTimesPlayed desc "
+    "where iPictureCount>0 "
+    "order by iPictureCount desc "
     "limit 100";
     
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -1423,8 +1361,8 @@ bool CPictureDatabase::GetTop100PictureAlbums(VECPICTUREALBUMS& albums)
     // NOTE: The picture.idAlbum is needed for the group by, as for some reason group by albumview.idAlbum doesn't work
     //       consistently - possibly an SQLite bug, as it works fine in SQLiteSpy (v3.3.17)
     CStdString strSQL = "select albumview.* from albumview "
-    "where albumview.iTimesPlayed>0 and albumview.strAlbum != '' "
-    "order by albumview.iTimesPlayed desc "
+    "where albumview.iPictureCount>0 and albumview.strAlbum != '' "
+    "order by albumview.iPictureCount desc "
     "limit 100 ";
     
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -1460,7 +1398,7 @@ bool CPictureDatabase::GetTop100PictureAlbumPictures(const CStdString& strBaseDi
     if (NULL == m_pDS.get()) return false;
     
     CStdString strSQL;
-    strSQL.Format("select * from pictureview join albumview on (pictureview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select picture.idAlbum from picture where picture.iTimesPlayed>0 group by idAlbum order by sum(picture.iTimesPlayed) desc limit 100) order by albumview.idAlbum in (select picture.idAlbum from picture where picture.iTimesPlayed>0 group by idAlbum order by sum(picture.iTimesPlayed) desc limit 100)");
+    strSQL.Format("select * from pictureview join albumview on (pictureview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select picture.idAlbum from picture where picture.iPictureCount>0 group by idAlbum order by sum(picture.iPictureCount) desc limit 100) order by albumview.idAlbum in (select picture.idAlbum from picture where picture.iPictureCount>0 group by idAlbum order by sum(picture.iPictureCount) desc limit 100)");
     CLog::Log(LOGDEBUG,"GetTop100PictureAlbumPictures() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     
@@ -1501,7 +1439,7 @@ bool CPictureDatabase::GetRecentlyPlayedPictureAlbums(VECPICTUREALBUMS& albums)
     if (NULL == m_pDS.get()) return false;
     
     CStdString strSQL;
-    strSQL.Format("select distinct albumview.* from picture join albumview on albumview.idAlbum=picture.idAlbum where picture.lastplayed IS NOT NULL order by picture.lastplayed desc limit %i", RECENTLY_PLAYED_LIMIT);
+    strSQL.Format("select distinct albumview.* from picture join albumview on albumview.idAlbum=picture.idAlbum where picture.takenon IS NOT NULL order by picture.takenon desc limit %i", RECENTLY_PLAYED_LIMIT);
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -1535,7 +1473,7 @@ bool CPictureDatabase::GetRecentlyPlayedPictureAlbumPictures(const CStdString& s
     if (NULL == m_pDS.get()) return false;
     
     CStdString strSQL;
-    strSQL.Format("select * from pictureview join albumview on (pictureview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select distinct albumview.idAlbum from albumview join picture on albumview.idAlbum=picture.idAlbum where picture.lastplayed IS NOT NULL order by picture.lastplayed desc limit %i)", g_advancedSettings.m_iPictureLibraryRecentlyAddedItems);
+    strSQL.Format("select * from pictureview join albumview on (pictureview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select distinct albumview.idAlbum from albumview join picture on albumview.idAlbum=picture.idAlbum where picture.takenon IS NOT NULL order by picture.takenon desc limit %i)", g_advancedSettings.m_iPictureLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedPictureAlbumPictures() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     
@@ -1653,7 +1591,7 @@ void CPictureDatabase::IncrementPlayCount(const CFileItem& item)
     
     int idPicture = GetPictureIDFromPath(item.GetPath());
     
-    CStdString sql=PrepareSQL("UPDATE picture SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idPicture=%i", idPicture);
+    CStdString sql=PrepareSQL("UPDATE picture SET iPictureCount=iPictureCount+1, takenon=CURRENT_TIMESTAMP where idPicture=%i", idPicture);
     m_pDS->exec(sql.c_str());
   }
   catch (...)
@@ -1825,17 +1763,10 @@ int CPictureDatabase::SetPictureAlbumInfo(int idAlbum, const CPictureAlbum& albu
     m_pDS->exec(strSQL.c_str());
     
     // insert the albuminfo
-    strSQL=PrepareSQL("insert into albuminfo (idAlbumInfo,idAlbum,strMoods,strStyles,strThemes,strReview,strImage,strLabel,strType,iRating,iYear) values(NULL,%i,'%s','%s','%s','%s','%s','%s','%s',%i,%i)",
+    strSQL=PrepareSQL("insert into albuminfo (idAlbumInfo,idAlbum,strImage,strLabel) values(NULL,%i,'%s','%s')",
                       idAlbum,
-                      StringUtils::Join(album.moods, g_advancedSettings.m_pictureItemSeparator).c_str(),
-                      StringUtils::Join(album.styles, g_advancedSettings.m_pictureItemSeparator).c_str(),
-                      StringUtils::Join(album.themes, g_advancedSettings.m_pictureItemSeparator).c_str(),
-                      album.strReview.c_str(),
                       album.thumbURL.m_xml.c_str(),
-                      album.strLabel.c_str(),
-                      album.strType.c_str(),
-                      album.iRating,
-                      album.iYear);
+                      album.strLabel.c_str());
     m_pDS->exec(strSQL.c_str());
     int idAlbumInfo = (int)m_pDS->lastinsertid();
     
@@ -1925,11 +1856,9 @@ bool CPictureDatabase::SetPictureAlbumInfoPictures(int idAlbumInfo, const VECPIC
     for (int i = 0; i < (int)pictures.size(); i++)
     {
       CPicture picture = pictures[i];
-      strSQL=PrepareSQL("insert into albuminfopicture (idAlbumInfoPicture,idAlbumInfo,iTrack,strTitle,iDuration) values(NULL,%i,%i,'%s',%i)",
+      strSQL=PrepareSQL("insert into albuminfopicture (idAlbumInfoPicture,idAlbumInfo,strTitle,iDuration) values(NULL,%i,'%s')",
                         idAlbumInfo,
-                        picture.iTrack,
-                        picture.strTitle.c_str(),
-                        picture.iDuration);
+                        picture.strTitle.c_str());
       m_pDS->exec(strSQL.c_str());
     }
     return true;
@@ -4491,7 +4420,6 @@ void CPictureDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML
     {
       CPicture picture = GetPictureFromDataset( false );
       CStdString picturenum;
-      picturenum.Format( "%06d", picture.iKaraokeNumber );
       
       if ( asHTML )
         outdoc = "<tr><td>" + picturenum + "</td><td>" + StringUtils::Join(picture.face, g_advancedSettings.m_pictureItemSeparator) + "</td><td>" + picture.strTitle + "</td></tr>\r\n";
@@ -4771,8 +4699,6 @@ void CPictureDatabase::SetPropertiesFromPictureAlbum(CFileItem& item, const CPic
   item.SetProperty("album_location", StringUtils::Join(album.location, g_advancedSettings.m_pictureItemSeparator));
   item.SetProperty("album_location_array", album.location);
   item.SetProperty("album_title", album.strAlbum);
-  if (album.iRating > 0)
-    item.SetProperty("album_rating", album.iRating);
 }
 
 void CPictureDatabase::SetPropertiesForFileItem(CFileItem& item)
@@ -4838,6 +4764,8 @@ void CPictureDatabase::SetArtForItem(int mediaId, const string &mediaType, const
     CLog::Log(LOGERROR, "%s(%d, '%s', '%s', '%s') failed", __FUNCTION__, mediaId, mediaType.c_str(), artType.c_str(), url.c_str());
   }
 }
+
+//$$$$this is it
 
 bool CPictureDatabase::GetArtForItem(int mediaId, const string &mediaType, map<string, string> &art)
 {
@@ -4995,6 +4923,10 @@ bool CPictureDatabase::GetFilter(CDbUrl &PictureUrl, Filter &filter, SortDescrip
     option = options.find("year");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("albumview.iYear = %i", (int)option->second.asInteger()));
+
+    option = options.find("albumid");
+    if (option != options.end())
+      filter.AppendWhere(PrepareSQL("albumview.idAlbum = %i", (int)option->second.asInteger()));
     
     option = options.find("compilation");
     if (option != options.end())

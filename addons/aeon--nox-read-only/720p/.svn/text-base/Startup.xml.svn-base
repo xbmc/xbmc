@@ -1,0 +1,25 @@
+<window>
+  <defaultcontrol always="true">10</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <include condition="IsEmpty(Skin.String(diffuse))">LoadSpotDiffuseColor</include>
+  <include condition="IsEmpty(Skin.String(diffuse_bar))">LoadTopbarDiffuseColor</include>
+  <include condition="Library.HasContent(tvshows)">LoadTVNextAired</include>
+  <include condition="[Skin.HasSetting(HomeRandomMovies)|Skin.HasSetting(HomeRandomTV)|Skin.HasSetting(HomeRandomMusic)|Skin.HasSetting(HomeRandomPoster)]">LoadRandomItems</include>
+  <controls>
+    <control type="button" id="10">
+      <description>trigger</description>
+      <onfocus>ReplaceWindow(Home)</onfocus>
+      <texturenofocus>-</texturenofocus>
+      <texturefocus>-</texturefocus>
+      <visible>!Skin.HasSetting(Use_Startup_Playlist)</visible>
+    </control>
+    <control type="button" id="10">
+      <description>trigger with startup Playlist</description>
+      <onfocus>XBMC.PlayMedia($INFO[Skin.String(Startup_Playlist_Path)])</onfocus>
+      <onfocus>ReplaceWindow(Home)</onfocus>
+      <texturenofocus>-</texturenofocus>
+      <texturefocus>-</texturefocus>
+      <visible>Skin.HasSetting(Use_Startup_Playlist)</visible>
+    </control>
+  </controls>
+</window>

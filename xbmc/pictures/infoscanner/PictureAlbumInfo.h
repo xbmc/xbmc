@@ -44,7 +44,7 @@ namespace PICTURE_GRABBER
         const CPictureAlbum &GetAlbum() const { return m_album; }
         CPictureAlbum& GetAlbum() { return m_album; }
         void SetAlbum(CPictureAlbum& album);
-        const VECPICTURES &GetSongs() const { return m_album.pictures; }
+        const VECPICTURES &GetPictures() const { return m_album.pictures; }
         const CStdString& GetTitle2() const { return m_strTitle2; }
         void SetTitle(const CStdString& strTitle) { m_album.strAlbum = strTitle; }
         const CScraperUrl& GetAlbumURL() const { return m_albumURL; }

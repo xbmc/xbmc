@@ -1,0 +1,37 @@
+-*- outline -*-
+
+This file lists the bugs you must be aware of.  Be sure to check this
+file before using Autoconf, and especially git versions of Autoconf.
+
+	Copyright (C) 2000, 2001, 2002, 2006, 2007, 2008, 2009, 2010
+	Free Software Foundation, Inc.
+
+	Copying and distribution of this file, with or without
+	modification, are permitted in any medium without royalty provided
+	the copyright notice and this notice are preserved.  This file is
+	offered as-is, without warranty of any kind.
+
+Autoconf must not be used in production if there are ``Serious'' bugs,
+and use with caution an Autoconf with ``Important bugs''.
+
+* Status
+
+                 /*------------------------------------.
+                 | New features need further testing.  |
+                 `------------------------------------*/
+
+* Now that configure depends on shell functions, it is possible that
+  configure scripts may fail to run on old platforms that lack a shell
+  with proper function support.
+
+* Autotest parallel testsuite support is still a work in progress.
+  There are known issues in job handling under dash and some ksh
+  variants, where a parallel testsuite can hang or cause a 100%
+  processor load.  In the current release, the overall autoconf
+  testsuite only exercises parallel autotest under bash and zsh, or if
+  you have defined TEST_PARALLEL_AUTOTEST in the environment.
+  Meanwhile, Cygwin has known problems with named fifos that cause
+  failures when attempting parallel tests in an autotest suite.  It is
+  possible that other difficulties will be encountered, whether with
+  shell or platform limitations; help is appreciated in improving
+  parallel testsuite support.

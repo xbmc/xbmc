@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<window type="dialog" id="1117">
+  <defaultcontrol always="true">450</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="image">
+      <description>Panel</description>
+      <posx>200</posx>
+      <posy>120</posy>
+      <width>881</width>
+      <height>481</height>
+      <texture>osd/osd_settings_back.png</texture>
+    </control>
+    <control type="image">
+      <posx>250</posx>
+      <posy>155</posy>
+      <width>781</width>
+      <height>40</height>
+      <texture>osd/osd_settings_buttonnf.png</texture>
+    </control>
+    <control type="label">
+      <description>Header Label</description>
+      <posx>280</posx>
+      <posy>150</posy>
+      <width>400</width>
+      <height>40</height>
+      <textcolor>white</textcolor>
+      <font>Font_Bold19</font>
+      <label>$LOCALIZE[12006]</label>
+      <align>left</align>
+      <aligny>center</aligny>
+    </control>
+    <control type="grouplist" id="450">
+      <posx>250</posx>
+      <posy>195</posy>
+      <width>781</width>
+      <height>360</height>
+      <itemgap>0</itemgap>
+      <aligny>center</aligny>
+      <pagecontrol>60</pagecontrol>
+      <onleft>60</onleft>
+      <onright>60</onright>
+      <onup>450</onup>
+      <ondown>450</ondown>
+      <control type="radiobutton" id="455">
+        <description>Bigger Top Bar</description>
+        <label>31104</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <radioposx>680</radioposx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+        <onclick>Skin.ToggleSetting(cdartmusicviz)</onclick>
+        <onclick>ReloadSkin()</onclick>
+        <selected>Skin.HasSetting(cdartmusicviz)</selected>
+      </control>
+      <control type="radiobutton" id="451">
+        <description>Bigger Top Bar</description>
+        <label>31124</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <radioposx>680</radioposx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+        <onclick>Skin.ToggleSetting(osdbigtop)</onclick>
+        <selected>Skin.HasSetting(osdbigtop)</selected>
+        <enable>Skin.HasSetting(cdartmusicviz)</enable>
+      </control>
+      <control type="radiobutton" id="456">
+        <description>Bigger Top Bar</description>
+        <label>31267</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <radioposx>680</radioposx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+        <onclick>Skin.ToggleSetting(CDArtinVis)</onclick>
+        <selected>Skin.HasSetting(CDArtinVis)</selected>
+        <enable>!Skin.HasSetting(cdartmusicviz)</enable>
+      </control>
+      <control type="radiobutton" id="461">
+        <description>Bigger Top Bar</description>
+        <label>31148</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <radioposx>680</radioposx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+        <onclick>Skin.ToggleSetting(showtimeonviz)</onclick>
+        <selected>Skin.HasSetting(showtimeonviz)</selected>
+      </control>
+      <control type="radiobutton" id="454">
+        <description>Bigger Top Bar</description>
+        <label>31143</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <radioposx>680</radioposx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+        <onclick>Skin.ToggleSetting(animation_bg)</onclick>
+        <selected>Skin.HasSetting(animation_bg)</selected>
+        <enable>!Skin.HasSetting(nofanartmusicviz)</enable>
+      </control>
+      <control type="radiobutton" id="452">
+        <description>Bigger Top Bar</description>
+        <label>31142</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <radioposx>680</radioposx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+        <onclick>Skin.ToggleSetting(albumlevelfanart)</onclick>
+        <selected>Skin.HasSetting(albumlevelfanart)</selected>
+        <enable>!Skin.HasSetting(nofanartmusicviz)+!Skin.HasSetting(Viz-CDWall)</enable>
+      </control>
+      <control type="radiobutton" id="453">
+        <description>Bigger Top Bar</description>
+        <label>31297</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <radioposx>680</radioposx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+        <onclick>Skin.ToggleSetting(musicfanartslideshow)</onclick>
+        <onclick>Skin.Reset(videofanartslideshow)</onclick>
+        <selected>Skin.HasSetting(musicfanartslideshow)</selected>
+        <enable>!Skin.HasSetting(nofanartmusicviz)+!Skin.HasSetting(Viz-CDWall)</enable>
+      </control>
+      <control type="radiobutton" id="460">
+        <description>Bigger Top Bar</description>
+        <label>31373</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <radioposx>680</radioposx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+        <onclick>Skin.ToggleSetting(videofanartslideshow)</onclick>
+        <onclick>Skin.Reset(musicfanartslideshow)</onclick>
+        <selected>Skin.HasSetting(videofanartslideshow)</selected>
+        <enable>!Skin.HasSetting(nofanartmusicviz)+!Skin.HasSetting(Viz-CDWall)</enable>
+      </control>
+      <control type="radiobutton" id="458">
+        <description>Bigger Top Bar</description>
+        <label>31371</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <radioposx>680</radioposx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+        <onclick>Skin.ToggleSetting(DisableArtistslideshow)</onclick>
+        <selected>!Skin.HasSetting(DisableArtistslideshow)</selected>
+        <visible>System.HasAddon(script.artistslideshow)</visible>
+        <enable>!Skin.HasSetting(Viz-CDWall)</enable>
+      </control>
+      <control type="radiobutton" id="459">
+        <description>Bigger Top Bar</description>
+        <label>31361</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <radioposx>680</radioposx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+        <onclick>Skin.ToggleSetting(nofanartmusicviz)</onclick>
+        <selected>Skin.HasSetting(nofanartmusicviz)</selected>
+      </control>
+      <control type="button" id="457">
+        <description>Bigger Top Bar</description>
+        <label>$LOCALIZE[13012]</label>
+        <width>781</width>
+        <height>40</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <textoffsetx>30</textoffsetx>
+        <texturefocus>osd/osd_settings_buttonf.png</texturefocus>
+        <texturenofocus>osd/osd_settings_buttonnf.png</texturenofocus>
+        <onclick>Dialog.Close(1117)</onclick>
+      </control>
+    </control>
+  </controls>
+</window>

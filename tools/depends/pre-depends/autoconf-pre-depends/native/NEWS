@@ -1,0 +1,2076 @@
+GNU Autoconf NEWS - User visible changes.
+
+* Noteworthy changes in release 2.68 (2010-09-22) [stable]
+  Released by Eric Blake, based on git versions 2.67.*.
+
+** AC_MSG_ERROR (and AS_ERROR) can once again be followed immediately by
+   `dnl'.  Regression introduced in 2.66.
+
+** AC_INIT again allows URLs with '?' for its BUG-REPORT argument.
+   Regression introduced in 2.66.
+
+** AC_REPLACE_FUNCS again allows a non-literal argument, such as a shell
+   variable that expands to a list of functions to check.  Regression
+   introduced in 2.66.
+
+** AT_BANNER() with empty argument will cause visual separation from previous
+   test category.
+
+** The macros AC_PREPROC_IFELSE, AC_COMPILE_IFELSE, AC_LINK_IFELSE, and
+   AC_RUN_IFELSE now warn if the first argument failed to use
+   AC_LANG_SOURCE or AC_LANG_PROGRAM to generate the conftest file
+   contents.  A new macro AC_LANG_DEFINES_PROVIDED exists if you have
+   a compelling reason why you cannot use AC_LANG_SOURCE but must
+   avoid the warning.
+
+** The macro m4_define_default is now documented.
+
+** Symlinked config.cache files are supported; configure now tries to
+   update non-symlinked cache files atomically, so that concurrent configure
+   runs do not leave behind broken cache files.  It is still unspecified
+   which subset or union of results is cached though.
+
+** Autotest testsuites should not contain long text lines any more, and be
+   portable even when very many test groups are used.
+
+** AT_CHECK semantics with respect to the Autotest variable $at_status and
+   shell execution environment of the arguments are documented now.
+
+** AC_FC_LIBRARY_LDFLAGS now tolerates output from newer gfortran.
+
+** Newly obsolete macros
+   The following macros have been marked obsolete.  New programs
+   should use the corresponding Gnulib modules.  Gnulib not only
+   detects a larger set of portability problems with these functions,
+   but also provides complete workarounds.
+
+     AC_FUNC_ERROR_AT_LINE  AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+     AC_FUNC_MKTIME  AC_FUNC_STRTOD
+
+
+* Major changes in Autoconf 2.67 (2010-07-21) [stable]
+  Released by Eric Blake, based on git versions 2.66.*.
+
+** AC_CONFIG_SUBDIRS with more than one subdirectory at a time works again.
+   Regression introduced in 2.66.
+
+** AC_CHECK_SIZEOF of a pointer type works again.  Regression introduced in
+   2.66.
+
+** New macro AC_FC_LINE_LENGTH to accept long Fortran source code lines.
+
+** AC_PREPROC_IFELSE now keeps the preprocessed output in the conftest.i
+   file for inspection by the commands in the ACTION-IF-TRUE argument.
+
+** AC_INIT again allows parentheses and other characters that are literal
+   in single- or double-quoted strings, and in quoted and unquoted
+   here-documents, for its PACKAGE and VERSION arguments.  Regression
+   introduced in 2.66.
+
+** autoreconf passes warning flags to new enough versions of aclocal.
+
+** Running an Autotest testsuite in parallel mode no longer triggers a
+   race condition that could cause the testsuite run to end early,
+   fixing a sporadic failure in autoconf's own testsuite.  Bug present
+   since introduction of parallel tests in 2.63b.
+
+
+* Major changes in Autoconf 2.66 (2010-07-02) [stable]
+  Released by Eric Blake, based on git versions 2.65.*.
+
+** AC_FUNC_MMAP works in C++ mode again.  Regression introduced in 2.65.
+
+** Use of m4_divert without a named diversion now issues a syntax warning,
+   since it is seldom right to change diversions behind autoconf's back.
+
+** The macros AC_TYPE_INT8_T, AC_TYPE_INT16_T, AC_TYPE_INT32_T, and
+   AC_TYPE_INT64_T work again.  Regression introduced in 2.65.
+
+** AC_PROG_INSTALL correctly uses `shtool' again.  Regression introduced
+   in 2.64.
+
+** Autoconf should work on EBCDIC hosts.
+
+** AC_CHECK_DECL and AC_CHECK_DECLS accept optional function argument types
+   for overloaded C++ functions.
+
+** AS_SET_CATFILE accepts nonliterals in its variable name argument now.
+
+** Autotest testsuites accept an option --recheck to rerun tests that
+   failed or passed unexpectedly during the last non-debug testsuite run.
+
+** AC_ARG_ENABLE and AC_ARG_WITH now also accept `+' signs in `--enable-*'
+   and `--with-*' arguments, converting them to underscores for the variable
+   names.
+
+** In configure scripts, loading CONFIG_SITE no longer searches PATH,
+   and problems in loading the configuration site files are diagnosed.
+
+** Autotest testsuites may optionally provide colored test results.
+
+** The previously undocumented Autotest macros AT_ARG_OPTION and
+   AT_ARG_OPTION_ARG have seen bug fixes and are documented now.
+   AT_ARG_OPTION has been changed in that the negative of a long option
+   --OPTION is now --no-OPTION rather than --noOPTION.
+
+** The macro AS_LITERAL_IF is slightly more conservative; text
+   containing shell quotes are no longer treated as literals.
+   Furthermore, a new macro, AS_LITERAL_WORD_IF, adds an additional
+   level of checking that no whitespace occurs in literals.
+
+** The macros AS_TR_SH and AS_TR_CPP no longer expand their results.
+
+** The following macros are now documented:
+   AS_BOX
+
+** New macro AC_FC_FIXEDFORM to accept fixed-form Fortran.
+
+
+* Major changes in Autoconf 2.65 (2009-11-21) [stable]
+  Released by Eric Blake, based on git versions 2.64.*.
+
+** Autoconf is now licensed under the General Public License version 3
+   or later (GPLv3+).  As with earlier versions, the license includes
+   an exception clause so that you may release a configure script
+   generated by autoconf under the license of your own program.
+
+** New macros to support Objective C++.
+   AC_PROG_OBJCXX  AC_PROG_OBJCXXCPP
+
+** The following undocumented autoconf macros, removed in Autoconf 2.64,
+   have been reinstated:
+   AH_CHECK_HEADERS
+
+   These macros are present only for backwards compatibility purposes.
+
+** The macro AC_LANG_COMPILER no longer fails on embedded systems that
+   lack fopen in the C library, such as AVR or RTEMS (regression
+   introduced in 2.64).
+
+** The AC_FC_FREEFORM macro no longer suffers from a whitespace bug that
+   made it fail with some Fortran compilers (regression introduced in
+   2.64).
+
+** The AC_TYPE_UINT64_T and AC_TYPE_INT64_T macros have been fixed to no
+   longer mistakenly select a 32-bit type on some compilers (bug present
+   since macros were introduced in 2.59c).
+
+** The AC_FUNC_MMAP macro has been fixed to be portable to systems like
+   Cygwin (bug present since macro was introduced in 2.0).
+
+** The following documented autotest macros are new:
+   AT_CHECK_EUNIT
+
+** The following m4sugar macros now quote their expansion:
+   m4_toupper  m4_tolower
+
+** The following m4sugar macros are new:
+   m4_escape
+
+** The m4sugar macro m4_text_wrap now copes with embedded quoting without
+   requiring quadrigraphs.  For uses like AC_ARG_VAR([a], [[b c]]),
+   this gives the intuitive behavior of "[b c]" in the output (2.63
+   gave the output of "[b], [c]", and 2.64 encountered a failure).
+
+** The `$tmp' temporary directory used in config.status is documented for
+   public use now.
+
+** config.status now provides a --config option to produce the configuration.
+
+** Many cache variables used by Autoconf's macros are now documented.
+
+** Configure scripts work better on DJGPP by avoiding a bug present in
+   the DJGPP port of bash 2.04 in handling 'return' in a shell
+   function (regression introduced in 2.64).
+
+* Major changes in Autoconf 2.64 (2009-07-26) [stable]
+  Released by Eric Blake, based on git versions 2.63b.*.
+
+** Autoconf now requires GNU M4 1.4.6 or later.  Earlier versions of M4
+   have a bug in regular expression handling that interferes with some
+   of the speedups provided since Autoconf 2.63.  GNU M4 1.4.13 or
+   later is recommended.
+
+** AS_IF and AS_CASE have been taught to avoid syntax errors even when
+   given arguments that expand to just whitespace.
+
+** The following documented autoconf macros are new:
+   AC_ERLANG_SUBST_ERTS_VER
+
+** The autoheader tool now understands m4 macro arguments passed to
+   AC_DEFINE and AC_DEFINE_UNQUOTED.
+
+** Ensure AT_CHECK can support commands that include a # given with
+   proper m4 quoting.  For shell comments, this is a new feature; for
+   non-shell comments, this fixes a regression introduced in 2.63b.
+   Additionally, AT_CHECK correctly supplies shell escapes for
+   metacharacters occurring in m4 macro expansions within the expected
+   stdout and stderr parameters.
+
+** The macro AT_CHECK now understands the concept of hard failure.  If
+   a test exits with an unexpected status 99, cleanup actions for the
+   test are inhibited and the test is treated as a failure regardless
+   of AT_XFAIL_IF.  It also understands the new directives
+   ignore-nolog, stdout-nolog, and stderr-nolog.
+
+** The following documented autotest macros are new:
+   AT_CHECK_UNQUOTED  AT_FAIL_IF  AT_SKIP_IF
+
+** The following documented m4sugar macros are new:
+   m4_argn  m4_copy_force  m4_default_nblank  m4_default_nblank_quoted
+   m4_ifblank  m4_ifnblank  m4_rename_force
+
+** The autoconf testsuite now exercises all Erlang macros.
+
+* Major changes in Autoconf 2.63b (2009-03-31) [beta]
+  Released by Eric Blake, based on git versions 2.63.*.
+
+** The manual is now shipped under the terms of the GNU FDL 1.3.
+
+** AC_REQUIRE now detects the case of an outer macro which first expands
+   then later indirectly requires the same inner macro.  Previously,
+   this case led to silent out-of-order expansion (bug present since
+   2.50); it now issues a syntax warning, and duplicates the expansion
+   of the inner macro to guarantee dependencies have been met.  See
+   the manual for advice on how to refactor macros in order to avoid
+   the bug in earlier autoconf versions and avoid increased script
+   size in the current version.
+
+** AC_DEFUN_ONCE has improved semantics.  Previously, a macro declared
+   with AC_DEFUN_ONCE warned on a second invocation; and out-of-order
+   expansion was still possible.  Now, dependencies are guaranteed,
+   and subsequent invocations are a silent no-op.  This makes
+   AC_DEFUN_ONCE an ideal macro for silencing AC_REQUIRE warnings.
+
+** The following macros are now defined with AC_DEFUN_ONCE.  This means
+   a subtle change in semantics; previously, an AC_DEFUN macro could
+   expand one of these macros multiple times or surround the macro
+   inside shell conditional text to bypass the effects of these
+   macros, but now the macro will expand exactly once, and prior to
+   the start of any enclosing AC_DEFUN macro:
+   AC_CANONICAL_BUILD  AC_CANONICAL_HOST  AC_CANONICAL_TARGET
+   AC_HEADER_ASSERT  AC_PROG_INSTALL  AC_PROG_MKDIR_P
+   AC_USE_SYSTEM_EXTENSIONS
+
+** AC_LANG_ERLANG works once again (regression introduced in 2.61a).
+
+** AC_HEADER_ASSERT is fixed so that './configure --enable-assert' no
+   longer mistakenly disables assertions.
+
+** AC_INIT now takes an optional fifth parameter that can be used to
+   set AC_PACKAGE_URL, a URL for the package's home page; the URL is
+   used in `configure --help' and is also available via AC_DEFINE.
+
+** Autotest testsuites accept an option --jobs[=N] for parallel testing.
+   This feature is still in testing, and may not work on every
+   platform, help in improving it would be appreciated.
+
+** Autotest testsuites do not attempt to write startup error messages
+   to the log file before that is opened (regression introduced in 2.63).
+
+** Configure scripts now use shell functions.  This feature leads to
+   smaller configure files and faster execution.
+
+** Present But Cannot Be Compiled: Autoconf will now proceed with
+   the compiler's result if a header is present but cannot be compiled.
+   The warning is still printed, and you should really fix it by
+   providing a fourth parameter to AC_CHECK_HEADER/AC_CHECK_HEADERS.
+
+** Autoreconf added aclocal to the set of programs affected by the
+   `autoreconf -I dir' option.
+
+** The following documented m4sugar macros are new:
+   m4_chomp  m4_chomp_all  m4_cleardivert  m4_curry  m4_default_quoted
+   m4_esyscmd_s  m4_map_args  m4_map_args_pair  m4_map_args_sep
+   m4_map_args_w  m4_set_map  m4_set_map_sep  m4_stack_foreach
+   m4_stack_foreach_lifo  m4_stack_foreach_sep
+   m4_stack_foreach_sep_lifo
+
+** The following m4sugar macros are documented now, but in some cases
+   with slightly different semantics than what the previous
+   undocumented version had:
+   m4_copy  m4_dumpdefs  m4_rename  m4_version_prereq
+
+** The m4sugar macro m4_expand has been taught to handle unterminated
+   comments and shell case statements.  As a result, it is used
+   internally in more places, such as AC_DEFINE and AT_CHECK.  Most
+   uses of AC_DEFINE and AT_CHECK should not behave any differently;
+   however, it may be necessary to add double-quoting around
+   unbalanced `(' where single-quoting used to be sufficient.
+
+** The following documented m4sh macros are new:
+   AS_INIT_GENERATED  AS_LINENO_PREPARE  AS_ME_PREPARE  AS_SET_STATUS
+   AS_VAR_APPEND  AS_VAR_ARITH  AS_VAR_COPY
+
+** The following m4sh macros are documented now, but in some cases
+   with slightly different semantics than what the previous
+   undocumented version had:
+   AS_ECHO  AS_ECHO_N  AS_ESCAPE  AS_EXIT  AS_LITERAL_IF  AS_UNSET
+   AS_VAR_IF  AS_VAR_POPDEF  AS_VAR_PUSHDEF  AS_VAR_SET  AS_VAR_SET_IF
+   AS_VAR_TEST_SET  AS_VERSION_COMPARE
+
+** The m4sh macros AS_IF and AS_CASE can now be used in shell lists.
+   The responsibility for supplying a trailing newline now belongs to
+   the call site, but since most users did not add dnl, this generally
+   results in fewer empty lines in configure.
+
+
+* Major changes in Autoconf 2.63 (2008-09-09) [stable]
+  Released by Eric Blake, based on git versions 2.62.*.
+
+** AC_C_BIGENDIAN does not mistakenly report "universal" for some
+   bigendian hosts, a regression introduced with universal binary
+   support in 2.62.
+
+** AC_PATH_X now includes /lib64 and /usr/lib64 in its list of default
+   library directories.
+
+** AC_USE_SYSTEM_EXTENSIONS no longer conflicts with an external
+   AC_DEFINE([__EXTENSIONS__]).  This fixes a regression introduced in
+   2.62 when using macros such as AC_AIX that were made obsolete in
+   favor of the more portable AC_USE_SYSTEM_EXTENSIONS.
+
+** AC_CHECK_TARGET_TOOLS is usable in the non-cross-compile case.
+
+** Newly obsolete macros
+   The following macro has been marked obsolete, since current porting
+   targets can safely assume C89 semantics that signal handlers return
+   void.  We have no current plans to remove the macro.
+
+     AC_TYPE_SIGNAL
+
+** The macros m4_map and m4_map_sep now ignore any list elements
+   consisting of just empty quotes, and m4_map_sep now expands its
+   separator.  This fixes a regression in 2.62 when these macros were
+   first documented, for the sake of clients expecting the semantics
+   that these macros had prior to that time.  The new macros m4_mapall
+   and m4_mapall_sep, along with extra quoting of the separator, can
+   be used to get the semantics that m4_map_sep had in 2.62.
+
+** Clients of m4_expand, such as AS_HELP_STRING and AT_SETUP, can now
+   handle properly quoted but otherwise unbalanced parentheses (for
+   some macros, this fixes a regression in 2.62).
+
+** Two new quadrigraphs have been introduced: @{:@ for (, and @:}@ for ),
+   allowing the output of unbalanced parentheses in more contexts.
+
+** The following m4sugar macros are new:
+   m4_cleardivert  m4_joinall  m4_mapall  m4_mapall_sep  m4_reverse
+   m4_set_add  m4_set_add_all  m4_set_contains  m4_set_contents
+   m4_set_delete  m4_set_difference  m4_set_dump  m4_set_empty
+   m4_set_foreach  m4_set_intersection  m4_set_list  m4_set_listc
+   m4_set_remove  m4_set_size  m4_set_union
+
+** The following m4sugar macros now accept multiple arguments, as is the
+   case with underlying m4:
+   m4_defn  m4_popdef  m4_undefine
+
+** The following m4sugar macros now guarantee linear scaling; they
+   previously had linear scaling with m4 1.6 but quadratic scaling
+   when using m4 1.4.x.  All macros built on top of these also gain
+   the scaling improvements.
+   m4_bmatch  m4_bpatsubsts  m4_case  m4_cond  m4_do  m4_dquote_elt
+   m4_foreach  m4_join  m4_list_cmp  m4_map  m4_map_sep  m4_max
+   m4_min  m4_shiftn
+
+** AT_KEYWORDS once again performs expansion on its argument, such that
+   AT_KEYWORDS([m4_if([$1], [], [default])]) no longer complains about
+   the possibly unexpanded m4_if [regression introduced in 2.62].
+
+** Config header templates `#undef UNDEFINED /* comment */' do not lead to
+   nested comments any more; regression introduced in 2.62.
+
+
+* Major changes in Autoconf 2.62 (2008-04-05) [stable]
+  Released by Eric Blake, based on git versions 2.61a.*.
+
+** Many optimizations have been applied to make overall execution faster.
+
+** Autotest now makes use of shell functions.
+
+** config.status now uses awk instead of sed also for config headers.
+
+   - As a side effect, AC_DEFINE and AC_DEFINE_UNQUOTED now handle multi-line
+     values, i.e., backslash-newline combinations are handled correctly.
+     Further, for config headers, the total size of values is not limited by
+     the POSIX length limit of text lines any more, only each single line.
+
+** New config variable `top_build_prefix'.
+
+** New Autoconf macros:
+   AC_AUTOCONF_VERSION  AC_OPENMP  AC_PATH_PROGS_FEATURE_CHECK
+
+** AC_C_BIGENDIAN now supports universal binaries a la Mac OS X.
+
+** AC_C_RESTRICT now prefers to #define 'restrict' to a variant spelling
+   like '__restrict' if the variant spelling is available, as this is
+   more likely to work when mixing C and C++ code.
+
+** AC_CHECK_ALIGNOF's type argument T is now documented better: it must
+   be a string of tokens such that "T y;" is a valid member declaration
+   in a struct.
+
+** AC_CHECK_SIZEOF now accepts objects as well as types: the general rule
+   is that sizeof (X) works, then AC_CHECK_SIZEOF (X) should work.
+
+** AC_CHECK_TYPE and AC_CHECK_TYPES now work on any C type-name; formerly,
+   they did not work for function types.  In C++, they now work on any
+   type-id that can be the operand of sizeof; this is similar to C,
+   except it excludes anonymous struct and union types.  Formerly,
+   some (but not all) C++ types involving anonymous struct and union
+   were accepted, though this was not documented.
+
+** AC_CONFIG_LINKS now prefers to link against files in the build tree
+   if found, and it works to link against a file of the same name in
+   the source tree, even if both trees coincide.
+
+** AC_INIT no longer alters $@; regression introduced in 2.60.
+
+** AC_USE_SYSTEM_EXTENSIONS now defines _ALL_SOURCE for Interix platforms.
+
+** AS_HELP_STRING no longer underquotes its first argument; it also handles
+   the case where the first argument contains single-quoted commas.
+   For example, "AS_HELP_STRING([-a, [--arg[=foo]]], [bar])" produces:
+     "  -a, --arg[=foo]         bar"
+   Additionally, the macro now takes two additional arguments,
+   indent-column and wrap-column; these should not normally be needed,
+   but can be used to fine-tune how the output text is wrapped.
+
+** AC_PROG_INSTALL now requires an install program that can install multiple
+   files into a target directory.
+
+** The command 'autoconf -' now correctly processes a file from stdin.
+
+** 'autoreconf -m' now honors $MAKE.
+
+** For all of the directory arguments for 'configure', such as '--prefix'
+   or '--bindir', trailing slashes are stripped.  As an example, if
+   tab completion in the user's shell appends trailing slashes, the
+   command './configure --prefix=/usr/' will still result in an
+   expanded libdir value of /usr/lib, not /usr//lib.
+
+** `configure --help=recursive' now works in read-only trees and from
+   unconfigured build trees.
+
+** If precious variables differ only in whitespace, then the cache consistency
+   check warns instead of fails, and reuses the old value.
+
+** AT_BANNER is now documented.
+
+** AT_SETUP now handles macro expansions properly when calculating line
+   length.
+
+** Autotest now determines $srcdir correctly.
+
+** Testsuites built by autotest now accept a -C/--directory=DIR option
+   to adjust the working directory prior to creating files.
+
+** Autoconf now requires GNU M4 1.4.5 or later.  Earlier versions of M4 have
+   a bug in macro tracing that interferes with the interaction between
+   Autoconf and Automake.  GNU M4 1.4.11 or later is recommended.  The
+   configure search for a working M4 is improved.
+
+** For portability with the eventual M4 2.0, macros should no longer use
+   anything larger than $9 to refer to arguments.
+
+** Documentation for m4sugar is improved.
+
+   - The following macros were previously available as undocumented
+     interfaces; the macros are now documented as stable interfaces.
+
+     __oline__  m4_assert  m4_bmatch  m4_bpatsubsts  m4_car  m4_case
+     m4_cdr  m4_default  m4_divert_once  m4_divert_pop  m4_divert_push
+     m4_divert_text  m4_do  m4_errprintn  m4_fatal  m4_flatten
+     m4_ifndef  m4_ifset  m4_ifval  m4_ifvaln  m4_location
+     m4_n  m4_shiftn  m4_strip  m4_warn
+
+   - The following macros were previously available as undocumented
+     interfaces, but had bug fixes or semantic changes as part of this
+     release.  Packages that relied on the undocumented behavior
+     should be analyzed to make sure they will still work with the
+     new documented behavior.
+
+     m4_cmp  m4_list_cmp  m4_join  m4_map  m4_map_sep  m4_sign
+     m4_text_box  m4_text_wrap  m4_version_compare
+
+   - The m4_wrap macro used to have unspecified order, but now
+     guarantees FIFO order.  m4_wrap_lifo was added to guarantee LIFO
+     order.
+
+   - Packages using the undocumented m4sugar macro m4_PACKAGE_VERSION
+     should consider using the new AC_AUTOCONF_VERSION instead.
+
+   - m4sugar macros that are not documented in the manual are still
+     deemed experimental, and should not be used outside of Autoconf.
+
+** The m4sugar macros m4_append and m4_append_uniq, first documented in
+   2.60, have been fixed to treat both the string and the separator
+   arguments consistently with regards to quoting.  Prior to this fix,
+   m4_append_uniq could mistakenly duplicate entries if the expansion
+   of the separator resulted in a different string (for example, if it
+   contained quotes, a comma, or a macro name).  However, it means
+   that programs previously using
+     m4_append([name], [string], [[, ]])
+   are now using a four-character separator instead of the intended
+   comma and space.  If you need portability to earlier versions of
+   Autoconf, you can insert the following snippet after AC_INIT but
+   before any other macro expansions, to enforce the new semantics:
+     m4_pushdef([m4_append], [m4_define([$1],
+	   m4_ifdef([$1], [m4_defn([$1])[$3]])[$2])])
+   Additionally, m4_append_uniq now takes optional parameters that can
+   be used to take action depending on whether anything was appended,
+   and warns if a non-empty separator occurs within the string being
+   appended, since that can lead to duplicates.
+
+** The following m4sugar macros are new:
+   m4_append_uniq_w  m4_apply  m4_combine  m4_cond  m4_count
+   m4_dquote_elt  m4_echo  m4_expand  m4_ignore  m4_make_list  m4_max
+   m4_min  m4_newline  m4_shift2  m4_shift3  m4_unquote  m4_wrap_lifo
+
+** Warnings are now generated by default when an installer invokes
+   'configure' with an unknown --enable-* or --with-* option.
+   These warnings can be disabled with the new AC_DISABLE_OPTION_CHECKING
+   macro, or by invoking 'configure' with --disable-option-checking.
+
+** Existing obsolete macros
+   The documentation for the following macros is adjusted to make it
+   more clear that they have previously been marked obsolete, as their
+   functionality can be accomplished by other macros.  We have no
+   current plans to remove them from Autoconf.
+
+     AC_ENABLE  AC_STRUCT_ST_BLKSIZE  AC_STRUCT_ST_RDEV  AC_WITH
+
+** Newly obsolete macros
+   The following macros have been marked obsolete, as they only
+   perform a subset of AC_USE_SYSTEM_EXTENSIONS.  We have no current
+   plans to remove them.
+
+     AC_AIX  AC_GNU_SOURCE  AC_ISC_POSIX  AC_MINIX
+
+** AC_C_LONG_DOUBLE is obsolescent.
+   The documentation now says that AC_C_LONG_DOUBLE is obsolescent: it
+   tests for problems that are so old that it is no longer of
+   practical importance on current systems.  New programs need not use
+   AC_C_LONG_DOUBLE.  We have no current plans to remove it.
+
+** AC_DIAGNOSE, AC_WARNING, and AC_FATAL are obsolescent.
+   The documentation now favors the use of M4sugar macros m4_warn and
+   m4_fatal, since the naming makes it more obvious that the
+   diagnostics are associated with M4 expansion (ie. when running
+   `autoconf'), and offers less confusion with the AC_MSG_ERROR,
+   AC_MSG_FAILURE, and AC_MSG_WARN macros which manage diagnostics
+   when running `configure'.  We have no current plans to remove these
+   macros.
+
+
+* Major changes in Autoconf 2.61a (2006-12-11)
+
+** AC_FUNC_FSEEKO was broken in 2.61; it didn't make fseeko and ftello visible
+   on many platforms.  This has been fixed.
+
+** AC_FUNC_SETVBUF_REVERSED is now obsolete.  It is still defined for backward
+   compatibility but it does nothing.  The macro was already
+   obsolescent, as the last systems to have the problem were those
+   based on SVR2, which became obsolete in 1987.  The macro had bugs
+   on some modern systems and could no longer be maintained reliably
+   due to lack of ancient systems to test it on.
+
+** config.status now uses awk instead of sed for most substitutions, for speed.
+
+   - As a side effect multi-line values of substituted variables no
+     longer have a small limit in total size, though for portability
+     each line should not exceed the POSIX length limit for text lines.
+
+   - It is now documented that Makefile.in should not contain
+     overlapping variable occurrences, e.g., @VAR1@VAR2@.
+     Autoconf's behavior was always iffy in such cases, and the
+     awk implementation has changed the behavior.
+
+** Many uses of 'echo' have been rewritten so that Autoconf-generated
+   scripts have fewer problems with strings or file names containing
+   embedded special characters such as backslash or leading "-".  This
+   was implemented by using `printf '%s\n' "$foo"' instead of `echo
+   "$foo"' when printf works.  Due to the implementation technique
+   used, Autoconf-generated scripts now run considerably more slowly
+   on ancient implementations lacking printf.  However, this should
+   not be a problem, since Autoconf-generated scripts in practice
+   invariably find a more-modern shell these days.
+
+
+* Major changes in Autoconf 2.61 (2006-11-17)
+
+** New macros AC_C_FLEXIBLE_ARRAY_MEMBER, AC_C_VARARRAYS.
+
+** AC_ARG_ENABLE and AC_ARG_WITH now allow '.' in feature and package names.
+
+
+* Major changes in Autoconf 2.60b (2006-10-22)
+
+** BIN_SH
+  Autoconf-generated shell scripts no longer export BIN_SH, due to
+  configuration hassles with this.  Installers who need BIN_SH in
+  their environment should set it before invoking 'configure' and
+  'make'.  As far as we know, this affects only Unixware installations.
+
+** Obsolescent macros
+  The documentation now says that the following macros are obsolescent,
+  as they are superseded by Gnulib:
+
+    AC_FUNC_FNMATCH  AC_FUNC_FNMATCH_GNU  AC_FUNC_GETLOADVG  AC_REPLACE_FNMATCH
+
+  New programs should use the Gnulib counterparts of these macros.
+  We have no current plans to remove them from Autoconf.
+
+** AC_COMPUTE_INT no longer caches or reports results.
+
+** AC_CHECK_DECL now also works with aggregate objects.
+
+** AC_USE_SYSTEM_EXTENSIONS now defines _TANDEM_SOURCE for NonStop platforms.
+
+** GNU M4 1.4.7 or later is now recommended.
+
+** m4_mkstemp
+  New M4sugar macro, which is more secure than the POSIX M4 maketemp.
+
+** m4_maketemp
+  Now an alias for m4_mkstemp.
+
+* Major changes in Autoconf 2.60a (2006-08-25)
+
+** GNU M4 1.4.6 or later is now recommended.
+
+** The check for C99 now tests for varargs macros, as documented.
+  It also tests that the preprocessor supports 64-bit integers.
+
+** Autoconf now uses constructs like "#ifdef HAVE_STDLIB_H" rather than
+  "#if HAVE_STDLIB_H", so that it now works with "gcc -Wundef -Werror".
+
+** The functionality of the undocumented _AC_COMPUTE_INT is now provided
+  by a public and documented macro, AC_COMPUTE_INT.  The parameters to the
+  two macros are different, so autoupdate will not change the old private name
+  to the new one.  _AC_COMPUTE_INT may be removed in a future release.
+
+** AC_TYPE_LONG_LONG_INT and AC_TYPE_UNSIGNED_LONG_LONG_INT now require
+   that long long types be at least 64 bits wide, as C99 and tradition
+   requires.  Formerly, they accepted implementations of any width.
+
+
+* Major changes in Autoconf 2.60
+
+  Released 2006-06-23, by Ralf Wildenhues.
+
+** Autoconf no longer depends on whether m4wrap is FIFO (as Posix requires)
+  or LIFO (as in GNU M4 1.4.x).  GNU M4 2.0 is expected to conform to Posix
+  here, so m4wrap/m4_wrap users should no longer depend on LIFO behavior.
+
+** Provide a way to turn off warnings about the changed directory variables.
+
+* Major changes in Autoconf 2.59d
+
+  Released 2006-06-05, by Ralf Wildenhues.
+
+** GNU make now recommended for VPATH builds
+  INSTALL now suggests VPATH builds (e.g., "sh ../srcdir/configure")
+  only if you use GNU make.  In practice, other 'make' implementations
+  have too many subtle incompatibilities in their support for VPATH.
+  Many packages (including Autoconf itself) are portable to other
+  'make' implementations, but some packages are not, and recommending
+  GNU make keeps the installation instructions simpler.
+
+** Even more safety checks for the new Directory variables:
+  Warn about suspicious `${datarootdir}' found in config files output.
+
+** AC_TRY_COMMAND, AC_TRY_EVAL, ac_config_guess, ac_config_sub, ac_configure
+  These never-documented macros and variables have been marked with
+  comments saying that they may be removed in a future release,
+  because their use can lead to unintended code being executed.
+  If you need functionality that only these macros or variables
+  currently supply, please write bug-autoconf@gnu.org.
+
+** AC_SUBST, AC_DEFINE
+  Literal arguments to these are passed to m4_pattern_allow now.
+
+** AC_PROG_CC_STDC
+  Passing 'ac_cv_prog_cc_stdc=no' to 'configure' now sets ac_cv_prog_cc_c99
+  and ac_cv_prog_cc_c89 to 'no' as well, for backward compatibility with
+  obsolete K&R tests in the Automake test suite.
+
+** AC_PROG_CXX_C_O
+  New macro.
+
+** AC_PROG_MKDIR_P
+  New macro.
+
+** AS_MKDIR_P
+  Now more robust with special characters in file names, or when
+  multiple processes create the same directory at the same time.
+
+** Obsolescent macros
+  The documentation now says that the following macros are obsolescent:
+  they test for problems that are so old that they are no longer of
+  practical importance on current systems.
+
+    AC_C_BACKSLASH_A       AC_FUNC_MEMCMP            AC_HEADER_DIRENT
+    AC_C_CONST             AC_FUNC_SELECT_ARGTYPES   AC_HEADER_STAT
+    AC_C_PROTOTYPES        AC_FUNC_SETPGRP           AC_HEADER_STDC
+    AC_C_STRINGIZE         AC_FUNC_SETVBUF_REVERSED  AC_HEADER_SYS_WAIT
+    AC_C_VOLATILE          AC_FUNC_STAT              AC_HEADER_TIME
+    AC_FUNC_CLOSEDIR_VOID  AC_FUNC_STRFTIME          AC_ISC_POSIX
+    AC_FUNC_GETPGRP        AC_FUNC_UTIME_NULL        AC_PROG_GCC_TRADITIONAL
+    AC_FUNC_LSTAT          AC_FUNC_VPRINTF           AC_STRUCT_TM
+
+  New programs need not use these macros.  We have no current plans to
+  remove them.
+
+** autoreconf
+  For compatibility with future Libtool 2.0, autoreconf will invoke
+  libtoolize with the option `--ltdl' now, if LT_CONFIG_LTDL_DIR is
+  used.
+
+* Major changes in Autoconf 2.59c
+
+  Released 2006-04-12, by Ralf Wildenhues.
+
+** The configure command now redirects standard input from /dev/null,
+  to help avoid problems with subsidiary commands that might mistakenly
+  read standard input.  AS_ORIGINAL_STDIN_FD points to the original
+  standard input before this redirection, if you really want configure to
+  read from standard input.
+
+** Directory variables adjusted to recent changes in the GNU Coding Standards.
+  The following directory variables are new:
+
+    datarootdir   read-only architecture-independent data root [PREFIX/share]
+    localedir     locale-specific message catalogs [DATAROOTDIR/locale]
+    docdir        documentation root [DATAROOTDIR/doc/PACKAGE]
+    htmldir       html documentation [DOCDIR]
+    dvidir        dvi documentation [DOCDIR]
+    pdfdir        pdf documentation [DOCDIR]
+    psdir         ps documentation [DOCDIR]
+
+  The following variables have new default values:
+
+    datadir       read-only architecture-independent data [DATAROOTDIR]
+    infodir       info documentation [DATAROOTDIR/info]
+    mandir        man documentation [DATAROOTDIR/man]
+
+  This means that if you use any of `@datadir@', `@infodir@', or
+  `@mandir@' in a file, you will have to ensure `${datarootdir}' is
+  defined in this file.  As a temporary measure, if any of those are
+  found but no mention of `datarootdir', the substitutions will be
+  replaced with values that do not contain `${datarootdir}', and a
+  warning will be issued.
+
+** @top_builddir@ is now a dir name: it is always nonempty and doesn't have
+  a trailing slash.  Similar change will be made to ac_top_builddir in a
+  future release; the old style value, which matches (../)*, is (and will
+  continue to be) available as ac_top_build_prefix.
+
+** AC_C_TYPEOF
+  New macro to check for support of 'typeof' syntax a la GNU C.
+
+** AC_CHECK_DECLS_ONCE, AC_CHECK_FUNCS_ONCE, AC_CHECK_HEADERS_ONCE
+  New "once-only" variants of commonly-used macros, to make 'configure'
+  smaller and faster in common cases.
+
+** AC_FUNC_STRTOLD
+  New macro to check for strtold with C99 semantics.
+
+** AC_HEADER_ASSERT
+  New macro that lets builder disable assertions at 'configure'-time.
+
+** AC_PATH_X
+  Now checks for X11/Xlib.h and XrmInitialize (X proper) rather than
+  X11/Intrinsic.h and XtMalloc (Xt).
+
+** AC_PRESERVE_HELP_ORDER
+  New macro that causes `configure' to display help strings for AC_ARG_ENABLE
+  and AC_ARG_WITH arguments in one region, in the order defined.  The default
+  behavior is to group options of each classes separately.
+
+** AC_PROG_CC, AC_PROG_CXX
+  No longer automatically arrange to declare the 'exit' function of C,
+  when a C++ compiler is used.  Standard Autoconf macros no longer use
+  'exit', so this is no longer an issue for them.  If you use C++, and
+  want to call 'exit', you'll have to arrange for its declaration
+  yourself.  But we now suggest you return from 'main' instead.
+
+** AC_PROG_CC_C89, AC_PROG_CC_C99
+  New macros for ISO C99 support.  AC_PROG_CC_C89 and AC_PROG_CC_C99
+  check for ANSI C89 and ISO C99 support respectively.
+
+** AC_PROG_CC_STDC
+  Has been unobsoleted, and will check if the compiler supports ISO
+  C99, falling back to ANSI C89 if not.  ac_cv_prog_cc_stdc is
+  retained for backwards compatibility, assuming the value of
+  ac_cv_prog_cc_c99 or ac_cv_prog_cc_c89 (whichever is valid, in
+  that order).
+
+** AC_STRUCT_DIRENT_D_INO, AC_STRUCT_DIRENT_D_TYPE
+  New macros for checking commonly-used members of struct dirent.
+
+** AC_SUBST
+  The substituted value can now contain newlines.
+
+** AC_SUBST_FILE
+  The substitution now occurs only when @variable@ is on a line by itself,
+  optionally surrounded by spaces and tabs.  The whole line is replaced.
+
+** AC_TYPE_LONG_DOUBLE, AC_TYPE_LONG_DOUBLE_WIDER
+  New macros to check for long double, and whether it is wider than double.
+  The old macro AC_C_TYPE_LONG_DOUBLE has been marked as obsolete;
+  applications should switch to the new macro.
+
+** AC_TYPE_INT8_T, AC_TYPE_INT16_T, AC_TYPE_INT32_T, AC_TYPE_INT64_T,
+   AC_TYPE_INTMAX_T, AC_TYPE_INTPTR_T, AC_TYPE_LONG_LONG_INT, AC_TYPE_SSIZE_T,
+   AC_TYPE_UINT8_T, AC_TYPE_UINT16_T, AC_TYPE_UINT32_T, AC_TYPE_UINT64_T,
+   AC_TYPE_UINTMAX_T, AC_TYPE_UINTPTR_T, AC_TYPE_UNSIGNED_LONG_LONG_INT
+  New macros to check for C99 and POSIX types.
+
+** AC_USE_SYSTEM_EXTENSIONS
+  New macro to enable extensions to Posix.
+
+** AH_HEADER
+  New macro which is defined to the name of the first declared config header
+  or undefined if no config headers have been declared yet.
+
+** AS_HELP_STRING
+  The macro correctly handles quadrigraphs now.
+
+** AS_BOURNE_COMPATIBLE, AS_SHELL_SANITIZE, AS_CASE
+  These macros are new or published now.
+
+** AT_COPYRIGHT
+  New macro for copyright notices in testsuite files.
+
+** ALLOCA, LIBOBJS, LTLIBOBJS
+  Object names added to these variables are now prefixed with `${LIBOBJDIR}',
+  as in `${LIBOBJDIR}alloca.o'.  LIBOBJDIR is meant to be defined from
+  `Makefile.in' in case the object files lie in a different directory.
+  The LIBOBJDIR feature is experimental.
+
+** autoreconf
+  Supports --no-recursive now.
+
+** New macros to support Erlang/OTP.
+  New macros for configuring paths to Erlang tools and libraries:
+  AC_ERLANG_PATH_ERLC, AC_ERLANG_NEED_ERLC, AC_ERLANG_PATH_ERL,
+  AC_ERLANG_NEED_ERL, AC_ERLANG_CHECK_LIB, AC_ERLANG_SUBST_ROOT_DIR,
+  AC_ERLANG_SUBST_LIB_DIR.
+
+  New macros for configuring installation of Erlang libraries:
+  AC_ERLANG_SUBST_INSTALL_LIB_DIR, AC_ERLANG_SUBST_INSTALL_LIB_SUBDIR.
+
+** The manual now mentions Gnulib more prominently.
+
+** New macros to support Objective C.
+  AC_PROG_OBJC, AC_PROG_OBJCPP.
+
+* Major changes in Autoconf 2.59b
+
+  Released 2004-08-20, by Paul Eggert.
+
+** AC_CHECK_ALIGNOF
+  New macro that computes the default alignment of a type.
+
+** AC_CHECK_TOOL, AC_PATH_TOOL, AC_CHECK_TOOLS
+  When cross-compiling, these macros will give a warning if the tool
+  is not prefixed.  In the future, unprefixed cross tools will not
+  be detected; please consult the info documentation for information
+  about the reason of this change.
+
+** AC_CHECK_TARGET_TOOL, AC_PATH_TARGET_TOOL, AC_CHECK_TARGET_TOOLS
+  New macros that detect programs whose name is prefixed with the
+  target type, if the build type and target type are different.
+
+** AC_REQUIRE_AUX_FILE
+  New trace macro that declares expected auxiliary files.
+
+** AC_PROG_GREP
+  New macro that tests for a grep program that accepts as a long a line
+  as possible.
+
+** AC_PROG_EGREP, AC_PROG_FGREP
+  These macros now require AC_PROG_GREP, and try EGREP="$GREP -E" and
+  FGREP="$GREP -F" respectively if possible, or else run a path search for
+  a program that accepts as long a line as possible.
+
+** AC_PROG_SED
+  New macro that tests for a sed program that truncates as few characters
+  as possible.
+
+* Major changes in Autoconf 2.59
+
+  Released 2003-11-04, by Akim Demaille
+
+** ac_abs_builddir etc.
+  Absolute file names were actually relative in 2.58.
+
+* Major changes in Autoconf 2.58
+
+  Released 2003-11-04, by Akim Demaille
+
+** core.*
+  core.* files are no longer removed, as they may be valid user files.
+
+** autoreconf and auxiliary directory
+  Autoreconf creates the auxiliary directory if needed.  This is
+  especially useful for initial "bootstrapping" of fresh CVS checkouts.
+
+** AC_CONFIG_MACRO_DIR
+  Use this macro to declare the directory for local M4 macros for aclocal.
+
+** AC_LIBOBJS
+  No longer includes twice the same file in LIBOBJS if invoked
+  multiple times.
+
+** AC_CONFIG_COMMANDS
+  The directory for its first argument is automatically created.  For
+  instance, with
+
+      AC_CONFIG_COMMANDS([src/modules.hh], [...])
+
+  $top_builddir/src/ is created if needed.
+
+** Autotest and local.at
+  The optional file local.at is always included in Autotest test suites.
+
+** Warnings
+  The warnings are always issued, including with cached runs.
+  This became a significant problem since aclocal and automake can
+  run autoconf behind the scene.
+
+** autoheader warnings
+  The warnings of autoheader can be turned off, using --warning.
+  For instance, -Wno-obsolete disables the complaints about acconfig.h
+  and other deprecated constructs.
+
+** New macros
+  AC_C_RESTRICT, AC_INCLUDES_DEFAULT, AC_LANG_ASSERT, AC_LANG_WERROR,
+  AS_SET_CATFILE.
+
+** AC_DECL_SYS_SIGLIST
+  Works again.
+
+** AC_FUNC_MKTIME
+  Now checks that mktime is the inverse of localtime.
+
+** Improve DJGPP portability
+  The Autoconf tools and configure behave better under DJGPP.
+
+** Present But Cannot Be Compiled
+  New FAQ section dedicated to the mystic
+
+    configure: WARNING: pi.h: present but cannot be compiled
+    configure: WARNING: pi.h: check for missing prerequisite headers?
+    configure: WARNING: pi.h: proceeding with the preprocessor's result
+      messages.
+
+** Concurrent executions of autom4te
+  autom4te now locks its internal files, which enables concurrent
+  executions of autom4te, likely to happen if automake, autoconf,
+  autoheader etc. are run simultaneously.
+
+** Libtool
+  Use of Libtool 1.5 and higher is encouraged.  Compatibility with
+  Libtool pre-1.4 is not checked.
+
+** Autotest
+  Testsuites no longer rerun failed tests in verbose mode; instead,
+  failures are logged while the test is run.
+
+  In addition, expected failures can be marked as such.
+
+* Major changes in Autoconf 2.57
+
+  Released 2002-12-03 by Paul Eggert.
+
+Bug fixes for problems with AIX linker, with freestanding C compilers,
+with GNU M4 limitations, and with obsolete copies of GNU documents.
+
+The Free Documentation License has been upgraded from 1.1 to 1.2.
+
+* Major changes in Autoconf 2.56
+
+  Released 2002-11-15 by Akim Demaille.
+
+One packaging problem fixed (config/install-sh was not executable).
+
+* Major changes in Autoconf 2.55
+
+  Released 2002-11-14 by Akim Demaille.
+
+Release tips:
+
+	   Have your configure.ac checked by autoscan ("autoscan").
+	     Try the warning options ("autoreconf -fv -Wall").
+
+** Documentation
+
+- AC_CHECK_HEADER, AC_CHECK_HEADERS
+  More information on proper use.
+
+- Writing Test Programs
+
+  This sections explains how to write good test sources to use with
+  AC_COMPILE_IFELSE etc.  It documents AC_LANG_PROGRAM and so forth.
+
+- AC_FOO_IFELSE vs. AC_TRY_FOO
+
+  Explains why Autoconf moves from AC_TRY_COMPILE etc. to
+  AC_COMPILE_IFELSE and AC_LANG_PROGRAM etc.
+
+** autoreconf
+
+- Is more robust to different Gettext installations.
+
+- Produces messages (when --verbose) to be understood by Emacs'
+  compile mode.
+
+- Supports -W/--warnings.
+
+- -m/--make
+  Once the GNU Build System reinstalled, run `./config.status
+  --recheck && ./config.status && make' if possible.
+
+** autom4te
+
+- Supports --cache, and --no-cache.
+
+- ~/.autom4te.cfg makes it possible to disable the caching mechanism
+  (autom4te.cache).  See `Customizing autom4te' in the documentation.
+
+** config.status
+  Supports --quiet.
+
+** Obsolete options
+
+  Support for the obsoleted options -m, --macrodir, -l, --localdir is
+  dropped in favor of the safer --include/--prepend-include scheme.
+
+** Macros
+
+- New macros
+  AC_COMPILER_IFELSE, AC_FUNC_MBRTOWC, AC_HEADER_STDBOOL,
+  AC_LANG_CONFTEST, AC_LANG_SOURCE, AC_LANG_PROGRAM, AC_LANG_CALL,
+  AC_LANG_FUNC_TRY_LINK, AC_MSG_FAILURE, AC_PREPROC_IFELSE.
+
+- Obsoleted
+  Obsoleted macros are kept for Autoconf backward compatibility, but
+  should be avoided in configure.ac.  Running autoupdate is advised.
+  AC_DECL_SYS_SIGLIST.
+
+- AC_DEFINE/AC_DEFINE_UNQUOTED
+
+  We have to stop using the old compatibility scheme --that tried to
+  avoid useless backslashes-- because Libtool 1.4.3 contains a
+
+  AC_DEFINE([error_t], [int],
+	    [Define to a type to use for \`error_t' if it is not
+	     otherwise available.])
+
+  We have to quote the single quotes and backslashes with \.  The old
+  compatibility scheme saw that ` was backslashed, and therefore did
+  not quote the single quote...  Failure.  Hence, Autoconf 2.54 is not
+  compatible with Libtool.  Autoconf 2.55 is, but in some cases might
+  produce more \ than wanted.
+
+  Please, note that in the future the same problem will happen with
+  AC_MSG_*: use `autoreconf -f -Wall'.
+
+** Bug Fixes
+
+- Portability of the Autoconf package to Solaris.
+
+- Spurious warnings caused by config.status.
+  This bug is benign, but painful: on some systems (typically
+  FreeBSD), warnings such as:
+
+     config.status: creating Makefile
+     mv: Makefile: set owner/group (was: 1357/0): Operation not permitted
+
+  could be issued.  This is fixed.
+
+- Parallel Builds
+  Simultaneous executions of config.status are possible again.
+
+- Precious variables accumulation
+
+  config.status could stack several copies of the precious variables
+  assignments.
+
+
+** Plans for later versions
+
+- ./configure <host>
+
+  The compatibility hooks with the old scheme will be completely
+  removed.  Please, advice/use `--build', `--host', and `--target'
+  only.
+
+- AC_CHECK_HEADER, AC_CHECK_HEADERS
+
+  The tests will be stricter, please make sure your invocations are
+  valid.
+
+- shell functions
+
+  Shell functions will gradually be introduced, probably starting with
+  Autotest.  If you know machines which are in use that you suspect
+  *not* to support shell functions, please run the test suite of
+  Autoconf 2.55 on it, and report the results to
+  bug-autoconf@gnu.org.
+
+- AC_MSG_*
+
+  Special characters in AC_MSG_* need not be quoted.  Currently,
+  Autoconf has heuristics to decide when a string is escaped, or has
+  to be escaped.  This scheme is fragile, and will be removed; the
+  only risk is uglified messages.  Please, run `autoreconf -f -Wall'
+  to find occurrences that will be affected.
+
+* Major changes in Autoconf 2.54
+
+  Released 2002-09-13 by Akim Demaille.
+
+** Executables
+
+- autoreconf no longer changes the version of the gettext/po/intl
+  support files. It now adds the files the correspond to the
+  AM_GNU_GETTEXT_VERSION declared in configure.ac.
+
+  Warning: It now relies on the 'autopoint' program, which is part
+  of GNU gettext 0.11.4 and newer.
+
+  Please note that you need to have a GNU gettext version that
+  corresponds at least to the AM_GNU_GETTEXT_VERSION declared
+  in configure.ac. You can upgrade to newer GNU gettext versions,
+  though, without needing to change configure.ac.
+
+- The -I DIR or --include=DIR option now appends DIR to the include path
+  instead of prepending; this is for consistency with other GNU tools.
+  The new -B DIR or --prepend-include=DIR option has the old behavior.
+
+** Macros
+
+- AC_OUTPUT
+  Now handles all the gory details about LIBOBJS and LTLIBOBJS.
+  Please, remove lines such as
+
+	# This is necessary so that .o files in LIBOBJS are also
+	# built via the ANSI2KNR-filtering rules.
+	LIBOBJS=`echo $LIBOBJS|sed 's/\.o /\$U.o /g;s/\.o$/\$U.o/'`
+
+  and read the `AC_LIBOBJ vs LIBOBJS' section.  Do not define U in
+  your Makefiles either.
+
+- AC_CONFIG_LINKS now makes copies if it can't make links.
+
+- AC_FUNC_FNMATCH now tests only for POSIX compatibility, reverting to
+  Autoconf 2.13 behavior.  The new macro AC_FUNC_FNMATCH_GNU also
+  tests for GNU extensions to fnmatch, and replaces fnmatch if needed.
+
+- AC_FUNC_SETVBUF_REVERSED no longer fails when cross-compiling.
+
+- AC_PROG_CC_STDC is integrated into AC_PROG_CC.
+
+- AC_PROG_F77 default search no longer includes cf77 and cfg77.
+
+- New macros
+
+  AC_C_BACKSLASH_A, AC_CONFIG_LIBOBJ_DIR, AC_GNU_SOURCE,
+  AC_PROG_EGREP, AC_PROG_FGREP, AC_REPLACE_FNMATCH,
+  AC_FUNC_FNMATCH_GNU, AC_FUNC_REALLOC, AC_TYPE_MBSTATE_T.
+
+- AC_FUNC_GETLOADAVG
+  looks for getloadavg.c in the CONFIG_LIBOBJ_DIR.
+
+- AC_FUNC_MALLOC
+  Now defines HAVE_MALLOC to 0 if `malloc' does not work, and asks
+  for an AC_LIBOBJ replacement.
+
+** Bug fixes
+
+- Spurious complaints from `m4_bmatch' about invalid regular
+  expressions are suppressed.
+
+- Empty top_builddirs are properly handled.
+
+- AC_CHECK_MEMBER works correctly when the member is an aggregate.
+
+- AC_PATH_PROG
+  Now colon in the optional path arguments are properly handled.
+
+** Improved portability
+
+- Both Autoconf the package, and the scripts it produces, should run
+  more reliably with Zsh.  Bear in mind it is the default Bourne shell
+  on Darwin.
+
+- Autoconf and the scripts it produces no longer assume the existence of
+  the obsolescent commands egrep and fgrep.
+
+** Documentation
+
+- Limitations of Make
+  More of them.
+
+- GNATS
+  The GNATS base moved to
+  http://bugs.gnu.org/cgi-bin/gnatsweb.pl?database=autoconf
+  (It is no longer available, though.)
+
+** Misc.
+
+- config.log
+  Now contains the list of ouput variables and files (AC_SUBST,
+  AC_SUBST_FILES).
+
+* Major changes in Autoconf 2.53
+
+  Released 2002-03-08 by Akim Demaille.
+
+** Requirements
+
+  Perl 5.005_03 or later is required: autom4te is written in Perl and is
+  needed by autoconf.  autoheader, autoreconf, ifnames, and autoscan are
+  rewritten in Perl.
+
+** Documentation
+
+- AC_INIT
+  Argument requirements, output variables, defined macros.
+- M4sugar, M4sh, Autotest
+  First sketch.
+- Double quoting macros
+  AC_TRY_CPP, AC_TRY_COMPILE, AC_TRY_LINK and AC_TRY_RUN.
+- Licensing
+  The Autoconf manual is now distributed under the terms of the GNU FDL.
+- Section `Hosts and Cross-Compilation'
+  Explains the rationale for the 2.5x changes in the cross-compilation
+  chain, and in the relationships between build, host, and target
+  types.
+  Emphasizes that `cross-compilation' == `--host is given'.
+  If you are working on compilers etc., be sure to read this section.
+- Section `AC_LIBOBJ vs. LIBOBJS'
+  Explains why assigning LIBOBJS directly is now an error.
+  Details how to update the code.
+
+** configure
+
+- $LINENO
+  Now used instead of hard coded line numbers.
+  This eases the comparison of `configure's, and diminishes the
+  pressure over control version archives.
+  Automatic replacement for shells that don't support this feature.
+- New output variables
+  @builddir@, @top_builddir@, @abs_srcdir@, @abs_top_srcdir@, @abs_builddir@,
+  @abs_top_builddir@.
+
+** Emacs
+
+  Autoconf and Autotest modes are provided.
+
+** Executables
+
+- autom4te
+  New, used by the Autoconf suite to cache and speed up most processing.
+- --force, -f
+  Supported by autom4te, autoconf and autoheader.
+- --include, -I
+  Replaces --autoconf-dir and --localdir in autoconf, autoheader,
+  autoupdate, and autoreconf.
+- autoreconf
+  No longer passes --cygnus, --foreign, --gnits, --gnu, --include-deps:
+  automake options are to be given via AUTOMAKE_OPTIONS.
+- autoreconf
+  Runs gettextize and libtoolize when appropriate.
+- autoreconf
+  --m4dir is no longer supported.
+- autoreconf
+  Now runs only in the specified directories, defaulting to `.',
+  but understands AC_CONFIG_SUBDIRS for dependent directories.
+  Before, it used to run on all the `configure.ac' found in the
+  current tree.
+  Independent packages are properly updated.
+
+** Bug fixes
+
+- The top level $prefix is propagated to the AC_CONFIG_SUBDIRS configures.
+- AC_TRY_RUN
+  Under the user pressure, $? is finally available.  Probably a mistake.
+- AC_F77_LIBRARY_LDFLAGS now supports the HP/UX f90 compiler.
+- Precious variables accumulation
+  config.status could stack several copies of the precious variables
+  assignments.
+- AC_PATH_PROG and family.
+  Works properly when given a literal path.
+- AC_FUNC_SETPGRP
+  Somewhere since 2.13, the result had been reversed.
+
+** C Macros
+
+- AC_C_BIGENDIAN supports the cross-compiling case.
+- AC_C_BIGENDIAN accepts ACTION-IF-TRUE, ACTION-IF-FALSE, and
+  ACTION-IF-UNKNOWN arguments.  All are facultative, and the default
+  for ACTION-IF-TRUE is to define WORDS_BIGENDIAN like AC_C_BIGENDIAN
+  always did.
+- AC_C_LONG_DOUBLE now succeeds only if `long double' has more range or
+  precision than `double'.
+
+** Generic macros
+
+- AC_INIT
+  It now defines the preprocessor symbols PACKAGE_NAME,
+  PACKAGE_TARNAME, PACKAGE_VERSION, PACKAGE_STRING, and
+  PACKAGE_BUGREPORT.
+
+- AC_INIT
+  Admits a fourth optional parameter: the tar name.
+
+- AC_CONFIG_COMMANDS, HEADERS, FILES, LINKS.
+  Provide the user with srcdir, ac_srcdir, ac_top_srcdir, ac_builddir,
+  ac_top_builddir, ac_abs_srcdir, ac_abs_top_srcdir, ac_abs_builddir,
+  ac_abs_top_builddir.
+
+- AC_CONFIG_COMMANDS, HEADERS, FILES, LINKS and AC_OUTPUT.
+  Are much less expensive when using long lists of files.
+
+- AC_PREFIX_PROGRAM
+  Works with shell variables, and non alphanumeric names.
+
+** Library macros
+
+- AC_FUNC_STRERROR_R now sets STRERROR_R_CHAR_P, not HAVE_WORKING_STRERROR_R,
+  because POSIX 1003.1-200x draft 7 says strerror_r returns int, not char *.
+
+- AC_FUNC_STRTOD substitutes POW_LIB.
+
+- AC_FUNC_STRNLEN
+  New.
+
+* Major changes in Autoconf 2.52
+
+  Released 2001-07-18 by Akim Demaille.
+
+** Documentation
+- AC_ARG_VAR
+- Quadrigraphs
+  This feature was present in autoconf 2.50 but was not documented.
+  For example, `@<:@' is translated to `[' just before output.  This
+  is useful when writing strings that contain unbalanced quotes, or
+  other hard-to-quote constructs.
+- m4_pattern_forbid, m4_pattern_allow
+- Tips for upgrading from 2.13.
+- Using autoscan to maintain a configure.ac.
+
+** Default includes
+- Now include stdint.h.
+- sys/types.h and sys/stat.h are guarded.
+- strings.h is included if available, and not conflicting with string.h.
+
+** Bug fixes
+- The test suite is more robust and presents less false failures.
+- Invocation of GNU M4 now robust to POSIXLY_CORRECT.
+- configure accepts --prefix='' again.
+- AC_CHECK_LIB works properly when its first argument is not a
+  literal.
+- HAVE_INTTYPES_H is defined only if not conflicting with sys/types.h.
+- build_, host_, and target_alias are AC_SUBST as in 2.13.
+- AC_ARG_VAR properly propagates precious variables inherited from the
+  environment to ./config.status.
+- Using --program-suffix/--program-prefix is portable.
+- Failures to detect the default compiler's output extension are less
+  likely.
+- `config.status foo' works properly when `foo' depends on variables
+  set in an AC_CONFIG_THING INIT-CMD.
+- autoheader is more robust to broken input.
+- Fixed Fortran name-mangling and link tests on a number of systems,
+  e.g. NetBSD; see AC_F77_DUMMY_MAIN, below.
+
+** Generic macros
+- AC_CHECK_HEADER and AC_CHECK_HEADERS support a fourth argument to
+  specify pre-includes.  In this case, the headers are compiled with
+  cc, not merely preprocessed by cpp.  Therefore it is the _usability_
+  of a header which is checked for, not just its availability.
+- AC_ARG_VAR refuses to run configure when precious variables have
+  changed.
+- Versions of compilers are dumped in the logs.
+- AC_CHECK_TYPE recognizes use of `foo_t' as a replacement type.
+
+** Specific Macros
+- AC_PATH_XTRA only adds -ldnet to $LIBS if it's needed to link.
+- AC_FUNC_WAIT3 and AC_SYS_RESTARTABLE_SYSCALLS are obsoleted.
+- AM_FUNC_ERROR_AT_LINE, AM_FUNC_FNMATCH, AM_FUNC_MKTIME,
+  AM_FUNC_OBSTACK, and AM_FUNC_STRTOD are now activated.
+  Be sure to read `Upgrading from Version 2.13' to understand why
+  running `autoupdate' is needed.
+- AC_F77_DUMMY_MAIN, AC_F77_MAIN: new macros to detect whether
+  a main-like routine is required/possible when linking C/C++ with
+  Fortran.  Users of e.g. AC_F77_WRAPPERS should be aware of these.
+- AC_FUNC_GETPGRG behaves better when cross-compiling.
+
+* Major changes in Autoconf 2.51
+There was no release of Autoconf 2.51 since some packagers had used
+this version number without permission to ship intermediary versions
+of 2.50.  The version was skipped to avoid confusion.
+
+* Major changes in Autoconf 2.50
+
+  Released 2001-05-21 by Akim Demaille.
+
+** Lots of bug fixes
+There have been far too many to enumerate them here.  Check out
+ChangeLog if you really want to know more.
+
+** Improved documentation
+In particular, portability issues are better covered.
+
+** Use of Automake
+All the standard GNU Makefile targets are supported.  The layout has
+changed: m4/ holds the M4 extensions Autoconf needs for its
+configuration, doc/ contains the documentation, and tests/ contains
+the test suite.
+
+** Man pages are provided
+For autoconf, autoreconf, autoupdate, autoheader, autoscan, ifnames,
+config.guess, config.sub.
+
+** autoconf
+- --trace
+  Provides a safe and powerful means to trace the macro uses.  This
+  provide the parsing layer for tools which need to `study'
+  configure.in.
+
+- --warnings
+  Specify what category of warnings should be enabled.
+
+- When recursing into subdirectories, try for configure.gnu before
+  configure to adapt for packages not using autoconf on case-insensitive
+  file systems.
+
+- Diagnostics
+  More errors are now caught (circular AC_REQUIRE dependencies,
+  AC_DEFINE in the action part of an AC_CACHE_CHECK, too many pops
+  etc.).  In addition, their location and call stack are given.
+
+** autoupdate
+autoupdate is much more powerful, and is able to provide the glue code
+which might be needed to move from an old macro to its newer
+equivalent.
+
+You are strongly encouraged to use it to modernize both your
+`configure.in' and your .m4 extension files.
+
+** autoheader
+The internal machinery of autoheader has completely changed.  As a
+result, using `acconfig.h' should be considered to be obsoleted, and
+you are encouraged to get rid of it using the AH macros.
+
+** autoreconf
+Extensive overhaul.
+
+** Fortran 77 compilers
+Globally, the support for Fortran 77 is considerably improved.
+
+Support for automatically determining a Fortran 77 compiler's
+name-mangling scheme.  New CPP macros F77_FUNC and F77_FUNC_ are
+provided to wrap C/C++ identifiers, thus making it easier and more
+transparent for C/C++ to call Fortran 77 routines, and Fortran 77 to
+call C/C++ routines.  See the Texinfo documentation for details.
+
+** Test suite
+The test suite no longer uses DejaGNU.  It should be easy to submit
+test cases in this new framework.
+
+** configure
+- --help, --help=long, -hl
+  no longer dumps useless items.
+- --help=short, -hs
+  lists only specific options.
+- --help=recursive, -hr
+  displays the help of all the embedded packages.
+- Remembers environment variables when reconfiguring.
+  The previous scheme to set envvar before running configure was
+    ENV=VAL ./configure
+  what prevented configure from remembering the environment in which
+  it was run, therefore --recheck was run in an inconsistent
+  environment.  Now, one should run
+    ./configure ENV=VAR
+  and then --recheck will work properly.  Variables declared with
+  AC_ARG_VAR are also preserved.
+- cross-compilation
+  $build defaults to `config.guess`, $host to $build, and then $target
+  to $host.
+  Cross-compilation is a global status of the package, it no longer
+  depends upon the current language.
+  Cross compilation is enabled iff the user specified `--host'.
+  `configure' now fails if it can't run the executables it compiles,
+  unless cross-compilation is enabled.
+- Cache file
+  The cache file is disabled by default.  The new options
+  `--config-cache', `-C' set the cache to `config.cache'.
+
+** config.status
+- faster
+  Much faster on most architectures.
+- concurrent executions
+  It is safe to use `make -j' with config.status.
+- human interface improved
+  It is possible to invoke
+    ./config.status foobar
+  instead of the former form (still valid)
+    CONFIG_COMMANDS= CONFIG_HEADERS= CONFIG_LINKS= \
+    CONFIG_FILES=foobar:foo.in:bar.in \
+    ./config.status
+  The same holds for configuration headers and links.
+  You can instantiate unknown files and headers:
+    ./config.status --header foo.h:foo.h.in --file bar:baz
+- has a useful --help
+- accepts special file name "-" for stdin/stdout
+
+
+** Identity Macros
+- AC_COPYRIGHT
+  Specify additional copyright information.
+
+- AC_INIT
+  Now expects the identity of the package as argument.
+
+** General changes.
+- Uniform quotation
+  Most macros, if not all, now strictly follow the `one quotation
+  level' rule.  This results in a more predictable expansion.
+
+- AC_REQUIRE
+  A sly bug in the AC_REQUIRE machinery, which could produce incorrect
+  configure scripts, was fixed by Axel Thimm.
+
+** Setup Macros
+- AC_ARG_VAR
+  Document and ask for the registration of an envvar.
+
+- AC_CONFIG_SRCDIR
+  Specifies the file which `configure' should look for when trying to
+  find the source tree (used to be handled by AC_INIT).
+
+- AC_CONFIG_COMMANDS
+  To add new actions to config.status.  Should be used instead of
+  AC_OUTPUT_COMMANDS.
+
+- AC_CONFIG_LINKS
+  Replaces AC_LINK_FILES.
+
+- AC_CONFIG_HEADERS, AC_CONFIG_COMMANDS, AC_CONFIG_SUBDIRS,
+  AC_CONFIG_LINKS, and AC_CONFIG_FILES
+  They now obey sh: you should no longer use shell variables as
+  argument.  Instead of
+
+	test "$package_foo_enabled" = yes && $my_subdirs="$my_subdirs foo"
+	AC_CONFIG_SUBDIRS($my_subdirs)
+
+  write
+
+	if test "$package_foo_enabled" = yes; then
+	  AC_CONFIG_SUBDIRS(foo)
+	fi
+
+- AC_HELP_STRING
+  To format an Autoconf macro's help string so that it looks pretty
+  when the user executes `configure --help'.
+
+
+** Generic Test Macros
+- AC_CHECK families
+  The interface of the AC_CHECK families of macros (decl, header,
+  type, member, func) is now uniform.  They support the same set of
+  default includes.
+
+- AC_CHECK_DECL, AC_CHECK_DECLS
+  To check whether a symbol is declared.
+
+- AC_CHECK_SIZEOF, AC_C_CHAR_UNSIGNED.
+  No longer need a cross-compilation default.
+
+- AC_CHECK_TYPE
+  The test it performs is much more robust than previously, and makes
+  it possible to test builtin types in addition to typedefs.
+  It is now schizophrenic:
+    - AC_CHECK_TYPE(TYPE, REPLACEMENT)
+      remains for backward compatibility, but its use is discouraged.
+    - AC_CHECK_TYPE(TYPE, IF-FOUND, IF-NOT-FOUND, INCLUDES)
+      behaves exactly like the other AC_CHECK macros.
+
+- AC_CHECK_TYPES
+  Checks whether given types are supported by the system.
+
+- AC_CHECK_MEMBER, AC_CHECK_MEMBERS
+  Check for given members in aggregates (e.g., pw_gecos in struct
+  passwd).
+
+- AC_PROG_CC_STDC
+  Checks if the compiler supports ISO C, included when needs special
+  options.
+
+- AC_PROG_CPP
+  Checking whether the preprocessor indicates missing includes by the
+  error code. stderr is checked by AC_TRY_CPP only as a fallback.
+
+- AC_LANG
+  Takes a language as argument and replaces AC_LANG_C,
+  AC_LANG_CPLUSPLUS and AC_LANG_FORTRAN77.
+
+- AC_LANG_PUSH, AC_LANG_POP
+  Are preferred to AC_LANG_SAVE, AC_LANG_RESTORE.
+
+** Specific Macros
+- AC_FUNC_CHOWN, AC_FUNC_MALLOC, AC_FUNC_STRERROR_R,
+  AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK, AC_FUNC_STAT, AC_FUNC_LSTAT,
+  AC_FUNC_ERROR_AT_LINE, AC_FUNC_OBSTACK, AC_FUNC_STRTOD, AC_FUNC_FSEEKO.
+  New.
+
+- AC_FUNC_GETGROUPS
+  Sets GETGROUPS_LIBS.
+
+- AC_FUNC_GETLOADAVG
+  Defines `HAVE_STRUCT_NLIST_N_UN_N_NAME' instead of `NLIST_NAME_UNION'.
+
+- AC_PROG_LEX
+  Now integrates `AC_DECL_YYTEXT' which is obsoleted.
+
+- AC_SYS_LARGEFILE
+  Arrange for large-file support.
+
+- AC_EXEEXT, AC_OBJEXT
+  You are no longer expected to use them: their computation is
+  performed by default.
+
+** C++ compatibility
+  Every macro has been revisited in order to support at best CC=c++.
+
+Major changes in Autoconf 2.14:
+  There was no release of GNU Autoconf 2.14.
+
+Major changes in Autoconf 2.13:
+
+  Released 1999-05-01 by Ben Elliston.
+
+* Support for building on Win32 systems where the only available C or
+  C++ compiler is the Microsoft Visual C++ command line compiler
+  (`cl').  Additional support for building on Win32 systems which are
+  using the Cygwin or Mingw32 environments.
+* Support for alternative object file and executable file extensions.
+  On Win32, for example, these are .obj and .exe. These are discovered
+  using AC_OBJEXT and AC_EXEEXT, which substitute @OBJEXT@ and
+  @EXEEXT@ in the output, respectively.
+* New macros: AC_CACHE_LOAD, AC_CACHE_SAVE, AC_FUNC_SELECT_ARGTYPES,
+  AC_VALIDATE_CACHED_SYSTEM_TUPLE, AC_SEARCH_LIBS, AC_TRY_LINK_FUNC,
+  AC_C_STRINGIZE, AC_CHECK_FILE(S), AC_PROG_F77 (and friends).
+* AC_DEFINE now has an optional third argument for a description to be
+  placed in the config header input file (e.g. config.h.in).
+* The C++ code fragment compiled for the C++ compiler test had to be
+  improved to include an explicit return type for main(). This was
+  causing failures on systems using recent versions of the EGCS C++
+  compiler.
+* Fixed an important bug in AC_CHECK_TYPE that would cause a configure
+  script to report that `sometype_t' was present when only `type_t'
+  was defined.
+* Merge of the FSF version of config.guess and config.sub to modernize
+  these scripts. Add support for a few new hosts in config.guess.
+  Incorporate latest versions of install-sh, mkinstalldirs and
+  texinfo.tex from the FSF.
+* autoreconf is capable of running automake if necessary (and
+  applicable).
+* Support for Fortran 77. See the Texinfo documentation for details.
+* Bug fixes and workarounds for quirky bugs in vendor utilities.
+
+Major changes in Autoconf 2.12:
+
+  Released 1996-11-26 by David J. MacKenzie
+
+* AC_OUTPUT and AC_CONFIG_HEADER can create output files by
+  concatenating multiple input files separated by colons, like so:
+  AC_CONFIG_HEADER(config.h:conf.pre:config.h.in:conf.post)
+  AC_OUTPUT(Makefile:Makefile.in:Makefile.rules)
+  The arguments may be shell variables, to compute the lists on the fly.
+* AC_LINK_FILES and AC_CONFIG_SUBDIRS may be called multiple times.
+* New macro AC_OUTPUT_COMMANDS adds more commands to run in config.status.
+* Bug fixes.
+
+Major changes in Autoconf 2.11:
+
+  Released November 18th, 1996, by David J. MacKenzie
+
+* AC_PROG_CC and AC_PROG_CXX check whether the compiler works.
+  They also default CFLAGS/CXXFLAGS to "-g -O2" for gcc, instead of "-g -O".
+* AC_REPLACE_FUNCS defines HAVE_foo if the system has the function `foo'.
+* AC_CONFIG_HEADER expands shell variables in its argument.
+* New macros: AC_FUNC_FNMATCH, AC_FUNC_SETPGRP.
+* The "checking..." messages and the source code for test programs that
+  fail are saved in config.log.
+* Another workaround has been added for seds with small command length limits.
+* config.sub and config.guess recognize more system types.
+* Bug fixes.
+
+Major changes in Autoconf 2.10:
+
+  Released May 7th, 1996, by Roland McGrath
+
+* Bug fixes.
+* The cache variable names used by `AC_CHECK_LIB(LIB, FUNC, ...)' has
+  changed: now $ac_cv_lib_LIB_FUNC, previously $ac_cv_lib_LIB.
+
+Major changes in Autoconf 2.9:
+
+  Released March 16th, 1996, by Roland McGrath
+
+* Bug fixes.
+
+Major changes in Autoconf 2.8:
+
+  Released March 8th, 1996, by Roland McGrath
+
+* Bug fixes.
+
+Major changes in Autoconf 2.7:
+
+  Released November 22nd, 1995, by David J. MacKenzie
+
+* Bug fixes.
+
+Major changes in Autoconf 2.6:
+
+  Released November 20th, 1995, by David J. MacKenzie
+
+* Bug fixes.
+
+Major changes in Autoconf 2.5:
+
+  Released November 17th, 1995, by Roland McGrath
+
+* New configure options --bindir, --libdir, --datadir, etc., with
+  corresponding output variables.
+* New macro: AC_CACHE_CHECK, to make using the cache easier.
+* config.log contains the command being run as well as any output from it.
+* AC_CHECK_LIB can check for libraries with "." or "/" or "+" in their name.
+* AC_PROG_INSTALL doesn't cache a name for install-sh, for sharing caches.
+* AC_CHECK_PROG, AC_PATH_PROG, AC_CHECK_PROGS, AC_PATH_PROGS, and
+  AC_CHECK_TOOL can search a path other than $PATH.
+* AC_CHECK_SIZEOF takes an optional size to use when cross-compiling.
+
+Major changes in Autoconf 2.4:
+
+  Released June 14th, 1995, by David J. MacKenzie
+
+* Fix a few bugs found by Emacs testers.
+
+Major changes in Autoconf 2.3:
+
+  Released March 27th, 1995, by David J. MacKenzie
+
+* Fix the cleanup trap in several ways.
+* Handle C compilers that are picky about option placement.
+* ifnames gets the version number from the right directory.
+
+Major changes in Autoconf 2.2:
+
+  Released March 8th, 1995, by David J. MacKenzie
+
+* The ifnames utility is much faster but requires a "new awk" interpreter.
+* AC_CHECK_LIB and AC_HAVE_LIBRARY check and add the new
+  library before existing libs, not after, in case it uses them.
+* New macros: AC_FUNC_GETPGRP, AC_CHECK_TOOL.
+* Lots of bug fixes.
+* Many additions to the TODO file :-)
+
+Major changes in Autoconf 2.1:
+
+  Released November 4th, 1994, by David J. MacKenzie
+
+* Fix C++ problems.
+* More explanations in the manual.
+* Fix a spurious failure in the testsuite.
+* Clarify some warning messages.
+* autoreconf by default only rebuilds configure and config.h.in files
+  that are older than any of their particular input files; there is a
+  --force option to use after installing a new version of Autoconf.
+
+Thanks to everybody who's submitted changes and additions to Autoconf!
+I've incorporated many of them, and am still considering others for
+future releases -- but I didn't want to postpone this release indefinitely.
+
+Caution: don't indiscriminately rebuild configure scripts with
+Autoconf version 2.  Some configure.in files need minor adjustments to
+work with it; the documentation has a chapter on upgrading.  A few
+configure.in files, including those for GNU Emacs and the GNU C
+Library, need major changes because they relied on undocumented
+internals of version 1.  Future releases of those packages will have
+updated configure.in files.
+
+It's best to use GNU M4 1.3 (or later) with Autoconf version 2.
+Autoconf now makes heavy use of M4 diversions, which were implemented
+inefficiently in GNU M4 releases before 1.3.
+
+Major changes in Autoconf 2.0:
+
+  Released October 26th, 1994, by David J. MacKenzie
+
+** New copyright terms:
+* There are no restrictions on distribution or use of configure scripts.
+
+** Documentation:
+* Autoconf manual is reorganized to make information easier to find
+  and has several new indexes.
+* INSTALL is reorganized and clearer and is now made from Texinfo source.
+
+** New utilities:
+* autoscan to generate a preliminary configure.in for a package by
+  scanning its source code for commonly used nonportable functions,
+  programs, and header files.
+* ifnames to list the symbols used in #if and #ifdef directives in a
+  source tree.
+* autoupdate to update a configure.in to use the version 2 macro names.
+* autoreconf to recursively remake configure and configuration header
+  files in a source tree.
+
+** Changed utilities:
+* autoheader can take pieces of acconfig.h to replace config.h.{top,bot}.
+* autoconf and autoheader can look for package-local definition files
+  in an alternate directory.
+
+** New macros:
+* AC_CACHE_VAL to share results of tests between configure runs.
+* AC_DEFUN to define macros, automatically AC_PROVIDE them, and ensure
+  that macros invoked with AC_REQUIRE don't interrupt other macros.
+* AC_CONFIG_AUX_DIR, AC_CANONICAL_SYSTEM, AC_CANONICAL_HOST, AC_LINK_FILES to
+  support deciding unguessable features based on the host and target types.
+* AC_CONFIG_SUBDIRS to recursively configure a source tree.
+* AC_ARG_PROGRAM to use the options --program-prefix,
+  --program-suffix, and --program-transform-name to change the names
+  of programs being installed.
+* AC_PREFIX_DEFAULT to change the default installation prefix.
+* AC_TRY_COMPILE to compile a test program without linking it.
+* AC_CHECK_TYPE to check whether sys/types.h or stdlib.h defines a given type.
+* AC_CHECK_LIB to check for a particular function and library.
+* AC_MSG_CHECKING and AC_MSG_RESULT to print test results, on a single line,
+  whether or not the test succeeds.  They obsolete AC_CHECKING and AC_VERBOSE.
+* AC_SUBST_FILE to insert one file into another.
+* AC_FUNC_MEMCMP to check whether memcmp is 8-bit clean.
+* AC_FUNC_STRFTIME to find strftime even if it's in -lintl.
+* AC_FUNC_GETMNTENT to find getmntent even if it's in -lsun or -lseq.
+* AC_HEADER_SYS_WAIT to check whether sys/wait.h is POSIX.1 compatible.
+
+** Changed macros:
+* Many macros renamed systematically, but old names are accepted for
+  backward compatibility.
+* AC_OUTPUT adds the "automatically generated" comment to
+  non-Makefiles where it finds @configure_input@ in an input file, to
+  support files with various comment syntaxes.
+* AC_OUTPUT does not replace "prefix" and "exec_prefix" in generated
+  files when they are not enclosed in @ signs.
+* AC_OUTPUT allows the optional environment variable CONFIG_STATUS to
+  override the file name "config.status".
+* AC_OUTPUT takes an optional argument for passing variables from
+  configure to config.status.
+* AC_OUTPUT and AC_CONFIG_HEADER allow you to override the input-file names.
+* AC_OUTPUT automatically substitutes the values of CFLAGS, CXXFLAGS,
+  CPPFLAGS, and LDFLAGS from the environment.
+* AC_PROG_CC and AC_PROG_CXX now set CFLAGS and CXXFLAGS, respectively.
+* AC_PROG_INSTALL looks for install-sh or install.sh in the directory
+  specified by AC_CONFIG_AUXDIR, or srcdir or srcdir/.. or
+  srcdir/../.. by default.
+* AC_DEFINE, AC_DEFINE_UNQUOTED, and AC_SUBST are more robust and smaller.
+* AC_DEFINE no longer prints anything, because of the new result reporting
+  mechanism (AC_MSG_CHECKING and AC_MSG_RESULT).
+* AC_VERBOSE pays attention to --quiet/--silent, not --verbose.
+* AC_ARG_ENABLE and AC_ARG_WITH support whitespace in the arguments to
+  --enable- and --with- options.
+* AC_CHECK_FUNCS and AC_CHECK_HEADERS take optional shell commands to
+  execute on success or failure.
+* Checking for C functions in C++ works.
+
+** Removed macros:
+* AC_REMOTE_TAPE and AC_RSH removed; too specific to tar and cpio, and
+  better maintained with them.
+* AC_ARG_ARRAY removed because no one was likely using it.
+* AC_HAVE_POUNDBANG replaced with AC_SYS_INTERPRETER, which doesn't
+  take arguments, for consistency with all of the other specific checks.
+
+** New files:
+* Comes with config.sub and config.guess, and uses them optionally.
+* Uses config.cache to cache test results.  An alternate cache file
+  can be selected with the --cache-file=FILE option.
+* Uses optional shell scripts $prefix/share/config.site and
+  $prefix/etc/config.site to perform site or system specific initializations.
+* configure saves compiler output to ./config.log for debugging.
+* New files autoconf.m4 and autoheader.m4 load the other Autoconf macros.
+* acsite.m4 is the new name for the system-wide aclocal.m4.
+* Has a DejaGnu test suite.
+
+Major changes in Autoconf 1.11:
+
+* AC_PROG_INSTALL calls install.sh with the -c option.
+* AC_SET_MAKE cleans up after itself.
+* AC_OUTPUT sets prefix and exec_prefix if they weren't set already.
+* AC_OUTPUT prevents shells from looking in PATH for config.status.
+
+Plus a few other bug fixes.
+
+Major changes in Autoconf 1.10:
+
+* autoheader uses config.h.bot if present, analogous to config.h.top.
+* AC_PROG_INSTALL looks for install.sh in srcdir or srcdir/.. and
+  never uses cp.
+* AC_PROG_CXX looks for cxx as a C++ compiler.
+
+Plus several bugs fixed.
+
+Major changes in Autoconf 1.9:
+
+* AC_YYTEXT_POINTER replaces AC_DECLARE_YYTEXT.
+* AC_SIZEOF_TYPE generates the cpp symbol name automatically,
+  and autoheader generates entries for those names automatically.
+* AC_FIND_X gets the result from xmkmf correctly.
+* AC_FIND_X assumes no X if --without-x was given.
+* AC_FIND_XTRA adds libraries to the variable X_EXTRA_LIBS.
+* AC_PROG_INSTALL finds OSF/1 installbsd.
+
+Major changes in Autoconf 1.8:
+
+** New macros:
+* New macros AC_LANG_C, AC_LANG_CPLUSPLUS, AC_LANG_SAVE, AC_LANG_RESTORE,
+  AC_PROG_CXX, AC_PROG_CXXCPP, AC_REQUIRE_CPP
+  for checking both C++ and C features in one configure script.
+* New macros AC_CHECKING, AC_VERBOSE, AC_WARN, AC_ERROR for printing messages.
+* New macros AC_FIND_XTRA, AC_MMAP, AC_SIZEOF_TYPE, AC_PREREQ,
+  AC_SET_MAKE, AC_ENABLE.
+
+** Changed macros:
+* AC_FIND_X looks for X in more places.
+* AC_PROG_INSTALL defaults to install.sh instead of cp, if it's in srcdir.
+  install.sh is distributed with Autoconf.
+* AC_DECLARE_YYTEXT has been removed because it can't work, pending
+  a rewrite of quoting in AC_DEFINE.
+* AC_OUTPUT adds its comments in C format when substituting in C files.
+* AC_COMPILE_CHECK protects its ECHO-TEXT argument with double quotes.
+
+** New or changed command line options:
+* configure accepts --enable-FEATURE[=ARG] and --disable-FEATURE options.
+* configure accepts --without-PACKAGE, which sets withval=no.
+* configure accepts --x-includes=DIR and --x-libraries=DIR.
+* Giving --with-PACKAGE no argument sets withval=yes instead of withval=1.
+* configure accepts --help, --version, --silent/--quiet, --no-create options.
+* configure accepts and ignores most other Cygnus configure options, and
+  warns about unknown options.
+* config.status accepts --help, --version options.
+
+** File names and other changes:
+* Relative srcdir values are not made absolute.
+* The values of @prefix@ and @exec_prefix@ and @top_srcdir@ get substituted.
+* Autoconf library files are installed in ${datadir}/autoconf, not ${datadir}.
+* autoheader optionally copies config.h.top to the beginning of config.h.in.
+* The example Makefile dependencies for configure et al. work better.
+* Namespace cleanup: all shell variables used internally by Autoconf
+  have names beginning with `ac_'.
+
+More big improvements are in process for future releases, but have not
+yet been (variously) finished, integrated, tested, or documented enough
+to release yet.
+
+Major changes in Autoconf 1.7:
+
+* New macro AC_OBSOLETE.
+* Bugs in Makefile.in fixed.
+* AC_LONG_FILE_NAMES improved.
+
+Major changes in Autoconf 1.6:
+
+* New macro AC_LONG_64_BITS.
+* Multiple .h files can be created.
+* AC_FIND_X looks for X files directly if it doesn't find xmkmf.
+* AC_ALLOCA defines C_ALLOCA if using alloca.c.
+* --with-NAME can take a value, e.g., --with-targets=sun4,hp300bsd.
+* Unused --no-create option to configure removed.
+* autoheader doesn't change the timestamp of its output file if
+  the file didn't change.
+* All macros that look for libraries now use AC_HAVE_LIBRARY.
+* config.status checks three optional environment variables to
+  modify its behavior.
+* The usual bug fixes.
+
+Major changes in Autoconf 1.5:
+
+* New macros AC_FIND_X, AC_OFF_T, AC_STAT_MACROS_BROKEN, AC_REVISION.
+* autoconf and autoheader scripts have GNU standards conforming
+  --version and --help options (they print their message and exit).
+* Many bug fixes.
+
+Major changes in Autoconf 1.4:
+
+* New macros AC_HAVE_POUNDBANG, AC_TIME_WITH_SYS_TIME, AC_LONG_DOUBLE,
+  AC_GETGROUPS_T, AC_DEFINE_UNQUOTED.
+* autoconf and autoheader use the M4 environment variable to determine the
+  name of the M4 program to use.
+* The --macrodir option to autoconf and autoheader specifies the directory
+  in which acspecific.m4, acgeneral.m4, etc. reside if not the default.
+* autoconf and autoheader can take `-' as their file names, which means to
+  read stdin as input.
+* Resulting configure scripts can take a --verbose option which causes them
+  to print the results of their tests.
+* AC_DEFINE quotes its second argument in such a way that spaces, magic
+  shell characters, etc. will be preserved during various stages of
+  expansion done by the shell.  If you don't want this, use
+  AC_DEFINE_UNQUOTED instead.
+* Much textual processing done with external calls to tr and sed have been
+  internalized with builtin M4 `patsubst' and `translit' calls.
+* AC_OUTPUT doesn't hardwire the file names it outputs.  Instead, you can
+  set the shell variables `gen_files' and `gen_config' to the list of
+  file names to output.
+* AC_DECLARE_YYTEXT does an AC_SUBST of `LEX_OUTPUT_ROOT', which may be
+  "lex.yy" or "lexyy", depending on the system.
+* AC_PROGRAMS_CHECK takes an optional third arg.  If given, it is used as
+  the default value.
+* If AC_ALLOCA chooses alloca.c, it also defines STACK_DIRECTION.
+* AC_CONST works much more reliably on more systems.
+* Many bug fixes.
+
+Major changes in Autoconf 1.3:
+
+configure no longer requires awk for packages that use a config.h.
+Support handling --with-PACKAGE options.
+New `autoheader' script to create `config.h.in' from `configure.in'.
+Ignore troublesome -lucb and -lPW when searching for alloca.
+Rename --exec_prefix to --exec-prefix for GNU standards conformance.
+Improve detection of STDC library.
+Add AC_HAVE_LIBRARY to check for non-default libraries.
+Function checking should work with future GNU libc releases.
+
+Major changes in Autoconf 1.2:
+
+The --srcdir option is now usually unnecessary.
+Add a file containing sample comments describing CPP macros.
+A comment in config.status tells which host it was configured on.
+Substituted variable values can now contain commas.
+Fix bugs in various feature checks.
+
+Major changes in Autoconf 1.1:
+
+Added AC_STRCOLL macro.
+Made AC_GETLOADAVG check for more things.
+AC_OUTPUT argument is now optional.
+Various bug fixes.
+
+-----
+
+Copyright (C) 1993, 1994, 1995, 1996, 1998, 1999, 2000, 2001, 2002,
+2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation,
+Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without warranty of any kind.
+
+Local Variables:
+mode: outline
+End:

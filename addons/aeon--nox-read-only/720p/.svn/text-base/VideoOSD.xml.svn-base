@@ -1,0 +1,252 @@
+<window type="dialog" id="2901">
+	<defaultcontrol>602</defaultcontrol>
+	<controls>
+		<control type="group">
+			<animation effect="slide" start="0,-145" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="0,-145" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="0,0" end="0,-145" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)">Conditional</animation>
+			<control type="image">
+				<description>media info background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>90</height>
+				<texture flipy="true">osd/osd_back.png</texture>
+			</control>
+      <control type="group" id="200">
+				<posx>317</posx>
+				<posy>4</posy>
+				<control type="button" id="700">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>75</width>
+					<height>75</height>
+					<label>298</label>
+					<font>-</font>
+          <aligny>top</aligny>
+          <textoffsety>60</textoffsety>
+          <texturefocus>osd/buttons/OSDBookMarksFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDBookMarksNF.png</texturenofocus>
+					<onleft>705</onleft>
+					<onright>701</onright>
+					<onup>600</onup>
+					<ondown>600</ondown>
+					<onclick>ActivateWindow(125)</onclick>
+				</control>
+				<control type="button" id="701">
+					<posx>50</posx>
+					<posy>0</posy>
+					<width>75</width>
+					<height>75</height>
+					<label>13396</label>
+					<font>-</font>
+					<texturefocus>osd/buttons/OSDAudioFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDAudioNF.png</texturenofocus>
+					<onleft>700</onleft>
+					<onright>702</onright>
+					<onup>600</onup>
+					<ondown>600</ondown>
+					<onclick>ActivateWindow(124)</onclick>
+				</control>
+				<control type="button" id="702">
+					<posx>100</posx>
+					<posy>0</posy>
+					<width>75</width>
+					<height>75</height>
+					<label>13395</label>
+					<font>-</font>
+					<texturefocus>osd/buttons/OSDVideoFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDVideoNF.png</texturenofocus>
+					<onleft>701</onleft>
+					<onright>600</onright>
+					<onup>601</onup>
+					<ondown>601</ondown>
+					<onclick>ActivateWindow(123)</onclick>
+				</control>
+			</control>
+			<control type="group" id="201">
+				<posx>818</posx>
+				<posy>4</posy>
+        <control type="togglebutton" id="703">
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>75</width>
+          <height>75</height>
+          <label>31356</label>
+          <font>-</font>
+          <texturefocus>osd/buttons/OSDSubtitlesFO.png</texturefocus>
+          <texturenofocus>osd/buttons/OSDSubtitlesNF.png</texturenofocus>
+          <alttexturefocus>osd/buttons/OSDSubtitlesFO.png</alttexturefocus>
+          <alttexturenofocus>osd/buttons/OSDSubtitlesNF.png</alttexturenofocus>
+          <onleft>605</onleft>
+          <onright>704</onright>
+          <onup>604</onup>
+          <ondown>604</ondown>
+          <onclick>Close</onclick>
+          <onclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</onclick>
+          <altclick>Skin.SetAddon(SubtitleScript_Path,xbmc.python.subtitles)</altclick>
+          <altclick>Close</altclick>
+          <altclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</altclick>
+          <usealttexture>IsEmpty(Skin.String(SubtitleScript_Path))</usealttexture>
+        </control>
+        <control type="button" id="704">
+					<posx>50</posx>
+					<posy>0</posy>
+					<width>75</width>
+					<height>75</height>
+					<label>31355</label>
+					<font>-</font>
+					<texturefocus>osd/buttons/OSDDvdFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDDvdNF.png</texturenofocus>
+					<onleft>703</onleft>
+					<onright>705</onright>
+					<onup>605</onup>
+					<ondown>605</ondown>
+					<onclick>PlayerControl(ShowVideoMenu)</onclick>
+					<enable>VideoPlayer.HasMenu</enable>
+					<animation effect="fade" start="100" end="50" time="100" condition="!VideoPlayer.HasMenu">Conditional</animation>
+				</control>
+				<control type="button" id="705">
+					<posx>100</posx>
+					<posy>0</posy>
+					<width>75</width>
+					<height>75</height>
+					<label>10004</label>
+					<font>-</font>
+					<texturefocus>osd/buttons/OSDSettingsFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDSettingsNF.png</texturenofocus>
+					<onleft>704</onleft>
+					<onright>700</onright>
+					<onup>605</onup>
+					<ondown>605</ondown>
+					<onclick>XBMC.ActivateWindow(Settings)</onclick>
+				</control>
+			</control>
+			<control type="group" id="100">
+				<posx>490</posx>
+				<posy>4</posy>
+				<control type="button" id="600">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>75</width>
+					<height>75</height>
+					<label>210</label>
+					<font>-</font>
+					<texturefocus>osd/buttons/OSDPrevTrackFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDPrevTrackNF.png</texturenofocus>
+					<onleft>702</onleft>
+					<onright>601</onright>
+					<onup>701</onup>
+					<ondown>701</ondown>
+					<onclick>PlayerControl(Previous)</onclick>
+				</control>
+				<control type="button" id="601">
+					<posx>50</posx>
+					<posy>0</posy>
+					<width>75</width>
+					<height>75</height>
+					<label>31354</label>
+					<font>-</font>
+					<texturefocus>osd/buttons/OSDRewindFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDRewindNF.png</texturenofocus>
+					<onleft>600</onleft>
+					<onright>602</onright>
+					<onup>702</onup>
+					<ondown>702</ondown>
+					<onclick>PlayerControl(Rewind)</onclick>
+				</control>
+				<control type="togglebutton" id="602">
+					<posx>100</posx>
+					<posy>0</posy>
+					<width>75</width>
+					<height>75</height>
+					<label>31351</label>
+					<altlabel>208</altlabel>
+					<font>-</font>
+					<texturefocus>osd/buttons/OSDPauseFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDPauseNF.png</texturenofocus>
+					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+					<alttexturefocus>osd/buttons/OSDPlayFO.png</alttexturefocus>
+					<alttexturenofocus>osd/buttons/OSDPlayNF.png</alttexturenofocus>
+					<onleft>601</onleft>
+					<onright>603</onright>
+					<onup>702</onup>
+					<ondown>702</ondown>
+					<onclick>PlayerControl(Play)</onclick>
+				</control>
+				<control type="button" id="603">
+					<posx>150</posx>
+					<posy>0</posy>
+          <width>75</width>
+          <height>75</height>
+          <label>31352</label>
+					<font>-</font>
+					<texturefocus>osd/buttons/OSDStopFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDStopNF.png</texturenofocus>
+					<onleft>602</onleft>
+					<onright>604</onright>
+					<onup>703</onup>
+					<ondown>703</ondown>
+					<onclick>PlayerControl(Stop)</onclick>
+				</control>
+				<control type="button" id="604">
+					<posx>200</posx>
+					<posy>0</posy>
+          <width>75</width>
+          <height>75</height>
+          <label>31353</label>
+					<font>-</font>
+					<texturefocus>osd/buttons/OSDForwardFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDForwardNF.png</texturenofocus>
+					<onleft>603</onleft>
+					<onright>605</onright>
+					<onup>703</onup>
+					<ondown>703</ondown>
+					<onclick>PlayerControl(Forward)</onclick>
+				</control>
+				<control type="button" id="605">
+					<posx>250</posx>
+					<posy>0</posy>
+          <width>75</width>
+          <height>75</height>
+          <label>209</label>
+					<font>-</font>
+					<texturefocus>osd/buttons/OSDNextTrackFO.png</texturefocus>
+					<texturenofocus>osd/buttons/OSDNextTrackNF.png</texturenofocus>
+					<onleft>604</onleft>
+					<onright>703</onright>
+					<onup>704</onup>
+					<ondown>704</ondown>
+					<onclick>PlayerControl(Next)</onclick>
+				</control>
+			</control>
+			<control type="label">
+				<posx>20</posx>
+				<posy>30</posy>
+				<width>460</width>
+				<height>25</height>
+				<label>$INFO[System.CurrentControl]</label>
+				<scroll>true</scroll>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>Font_Reg20</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+      </control>
+			<control type="label">
+				<posx>1260</posx>
+				<posy>30</posy>
+				<width>460</width>
+				<height>25</height>
+				<label>[UPPERCASE]$INFO[VideoPlayer.Time] - $INFO[VideoPlayer.Duration][/UPPERCASE]</label>
+				<scroll>true</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>Font_Reg20_Caps</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+     
+		</control>
+	</controls>
+</window>

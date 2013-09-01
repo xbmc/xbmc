@@ -1,0 +1,168 @@
+<window id="2006">
+  <defaultcontrol>999</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <controls>
+    <control type="button" id="999">
+      <posx>-10</posx>
+      <posy>-10</posy>
+      <width>1</width>
+      <height>1</height>
+      <onfocus>RunScript(script.artistslideshow)</onfocus>
+      <visible>System.Hasaddon(script.artistslideshow)</visible>
+    </control>
+    <control type="group">
+      <visible>IsEmpty(MusicPlayer.Property(Fanart_Image))+!Skin.HasSetting(nofanartmusicviz)</visible>
+      <animation effect="zoom" start="110" end="130" center="auto" time="15000" tween="linear" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <animation effect="slide" start="-10,-10" end="10,10" time="7500" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <include>CommonMusicBackground</include>
+    </control>
+    <control type="image">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <texture>$INFO[MusicPlayer.Property(Fanart_Image)]</texture>
+      <include>Animation_VisibleChange400</include>
+      <include>Animation_OpenCloseZoom</include>
+      <animation effect="zoom" start="110" end="130" center="auto" time="15000" tween="linear" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <animation effect="slide" start="-10,-10" end="10,10" time="7500" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <visible>!IsEmpty(MusicPlayer.Property(Fanart_Image))+!Skin.HasSetting(nofanartmusicviz)</visible>
+    </control>
+    <control type="image">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <texture>$INFO[Player.FolderPath,,fanart.jpg]</texture>
+      <include>Animation_VisibleChange400</include>
+      <include>Animation_OpenCloseZoom</include>
+      <visible>Skin.HasSetting(albumlevelfanart)</visible>
+      <animation effect="zoom" start="110" end="130" center="auto" time="15000" tween="linear" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <animation effect="slide" start="-10,-10" end="10,10" time="7500" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <visible>!Skin.HasSetting(nofanartmusicviz)</visible>
+    </control>
+    <control type="multiimage">
+      <description>extrafanart</description>
+      <randomize>false</randomize>
+      <include>CommonFanartVars</include>
+      <imagepath background="true">$INFO[Skin.String(ArtistsLogosPath)]$INFO[MusicPlayer.Artist,,/extrafanart]</imagepath>
+      <visible>!Skin.HasSetting(nofanartmusicviz)</visible>
+    </control>
+    <control type="multiimage">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <imagepath fallback="special://skin/backgrounds/music.jpg" background="true">special://profile/Thumbnails/Music/Fanart</imagepath>
+      <timeperimage>10000</timeperimage>
+      <randomize>true</randomize>
+      <fadetime>1000</fadetime>
+      <animation effect="zoom" start="110" end="130" center="auto" time="15000" tween="linear" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <animation effect="slide" start="-10,-10" end="10,10" time="7500" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <visible>Skin.HasSetting(musicfanartslideshow)+!Skin.HasSetting(nofanartmusicviz)</visible>
+    </control>
+    <control type="multiimage">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <imagepath fallback="special://skin/backgrounds/curtains.jpg" background="true">special://profile/Thumbnails/Video/Fanart</imagepath>
+      <timeperimage>10000</timeperimage>
+      <randomize>true</randomize>
+      <fadetime>1000</fadetime>
+      <animation effect="zoom" start="110" end="130" center="auto" time="15000" tween="linear" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <animation effect="slide" start="-10,-10" end="10,10" time="7500" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <visible>Skin.HasSetting(videofanartslideshow)+!Skin.HasSetting(nofanartmusicviz)</visible>
+    </control>
+    <control type="image">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <texture>common/black.png</texture>
+      <visible>System.HasAddon(script.artistslideshow)+!Skin.HasSetting(DisableArtistslideshow)</visible>
+    </control>
+    <control type="multiimage">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <imagepath background="true">$INFO[Window.Property(ArtistSlideshow)]</imagepath>
+      <aspectratio>keep</aspectratio>
+      <timeperimage>5000</timeperimage>
+      <fadetime>2000</fadetime>
+      <randomize>true</randomize>
+      <animation effect="fade" start="0" end="100" time="300">Visible</animation>
+      <animation effect="fade" start="100" end="0" time="300">Hidden</animation>
+      <animation effect="zoom" start="110" end="130" center="auto" time="15000" tween="linear" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <animation effect="slide" start="-10,-10" end="10,10" time="7500" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animation_bg)">Conditional</animation>
+      <visible>IsEmpty(Window.Property(ArtistSlideshowRefresh))+System.HasAddon(script.artistslideshow)+!Skin.HasSetting(DisableArtistslideshow)</visible>
+    </control>
+    <control type="visualisation" id="2">
+      <description>visualisation</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+    </control>
+    <control type="group">
+      <visible>Skin.HasSetting(showtimeonviz)</visible>
+      <animation effect="slide" start="0,0" end="490,0" delay="0" time="300">Hidden</animation>
+      <animation effect="slide" start="490,0" end="0,0" delay="0" time="300">Visible</animation>
+      <animation effect="slide" start="0,0" end="490,0" time="300">WindowClose</animation>
+      <control type="group">
+        <posx>330r</posx>
+        <posy>0</posy>
+        <control type="image">
+          <description>time background</description>
+          <posx>-140</posx>
+          <posy>0</posy>
+          <width>471</width>
+          <height>27</height>
+          <texture flipy="true">home/timepanel_mid.png</texture>
+        </control>
+        <control type="label">
+          <description>time label</description>
+          <posx>320</posx>
+          <posy>-2</posy>
+          <width>400</width>
+          <height>28</height>
+          <align>right</align>
+          <aligny>center</aligny>
+          <font>Font_Info_Caps</font>
+          <textcolor>dcFFFFFF</textcolor>
+          <shadowcolor>-</shadowcolor>
+          <label>[UPPERCASE][COLOR FFe5e5e5]$INFO[System.Date]  |  [/COLOR][COLOR FFcdcdcd]$INFO[System.Time][/COLOR][/UPPERCASE]</label>
+        </control>
+        <control type="group">
+          <posx>-140</posx>
+          <visible>Weather.IsFetched</visible>
+          <control type="image">
+            <description>Weather image</description>
+            <posx>30</posx>
+            <posy>1</posy>
+            <width>25</width>
+            <height>25</height>
+            <aspectratio>keep</aspectratio>
+            <texture>$INFO[Window(weather).Property(Current.ConditionIcon)]</texture>
+          </control>
+          <control type="label">
+            <description>time label</description>
+            <posx>60</posx>
+            <posy>-2</posy>
+            <width>100</width>
+            <height>28</height>
+            <align>left</align>
+            <aligny>center</aligny>
+            <font>Font_Info</font>
+            <textcolor>white</textcolor>
+            <shadowcolor>-</shadowcolor>
+            <label>$INFO[Window(weather).Property(Current.Temperature)] $INFO[System.TemperatureUnits]</label>
+          </control>
+        </control>
+      </control>
+    </control>
+    <include condition="Skin.HasSetting(cdartmusicviz)">Original_Aeon_OSD</include>
+    <include condition="!Skin.HasSetting(cdartmusicviz)">Aeon65_OSD</include>
+  </controls>
+</window>

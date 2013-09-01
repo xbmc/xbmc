@@ -1,0 +1,182 @@
+<window id="4">
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonSettingsBackground</include>
+    <include>CommonMediaPlayingBackground</include>
+    <control type="group">
+      <animation type="WindowOpen" reversible="false" condition="!Window.Previous(10012)+!Window.Previous(10013)+!Window.Previous(10014)+!Window.Previous(10015)+!Window.Previous(10016)+!Window.Previous(10017)+!Window.Previous(10018)+!Window.Previous(10019)+!Window.Previous(1111)+!Window.Previous(10007)">
+        <effect type="zoom" start="150" end="100" center="640,360" time="500" tween="cubic" easing="out"/>
+        <effect type="fade" start="0" end="100" time="500"/>
+      </animation>
+      <animation type="WindowClose" reversible="false" condition="!Window.Next(10012)+!Window.Next(10013)+!Window.Next(10014)+!Window.Next(10015)+!Window.Next(10016)+!Window.Next(10017)+!Window.Next(10018)+!Window.Next(10019)+!Window.Next(1111)+!Window.Next(10007)">
+        <effect type="fade" start="100" end="0" time="300"/>
+        <effect type="zoom" start="100" end="130" center="640,360" time="300" tween="cubic" easing="in"/>
+      </animation>
+      <include>Furniture_SettingsBackPanel</include>
+      <control type="image">
+        <include>Furniture_SettingsInternalBackPanel</include>
+        <include>Animation_SettingsInternalPanel</include>
+      </control>
+
+      <control type="image">
+        <posx>70</posx>
+        <posy>44</posy>
+        <width>180</width>
+        <height>72</height>
+        <texture>XBMC_Logo.png</texture>
+      </control>
+			<control type="list" id="9000">
+        <posx>42</posx>
+        <posy>120</posy>
+        <width>260</width>
+        <height>546</height>
+        <onleft>9000</onleft>
+				<onright>9001</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>300</scrolltime>
+				<itemlayout height="54" width="260">
+					<control type="label">
+            <posx>30</posx>
+            <posy>6</posy>
+            <width>216</width>
+            <height>58</height>
+						<font>Font_Bold22</font>
+						<textcolor>FFf5f5f5</textcolor>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="54" width="260">
+          <control type="image">
+            <posx>2</posx>
+            <posy>3</posy>
+            <width>214</width>
+            <height>64</height>
+            <texture>views/listpanel_selectbar.png</texture>
+          </control>
+          <control type="label">
+            <posx>30</posx>
+            <posy>6</posy>
+            <width>216</width>
+            <height>58</height>
+            <font>Font_Bold22</font>
+            <textcolor>FF262728</textcolor>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="1">
+						<label>480</label>
+						<label2>31400</label2>
+						<onclick>ActivateWindow(AppearanceSettings)</onclick>
+						<icon>special://skin/backgrounds/appearance.jpg</icon>
+					</item>
+					<item id="2">
+						<label>157</label>
+						<label2>31401</label2>
+						<onclick>ActivateWindow(VideosSettings)</onclick>
+						<icon>special://skin/backgrounds/videos.jpg</icon>
+					</item>
+					<item id="3">
+						<label>2</label>
+						<label2>31402</label2>
+						<onclick>ActivateWindow(MusicSettings)</onclick>
+						<icon>special://skin/backgrounds/music.jpg</icon>
+					</item>
+					<item id="4">
+						<label>1</label>
+						<label2>31403</label2>
+						<onclick>ActivateWindow(PicturesSettings)</onclick>
+						<icon>special://skin/backgrounds/pictures.jpg</icon>
+					</item>
+					<item id="5">
+						<label>8</label>
+						<label2>31404</label2>
+						<onclick>ActivateWindow(WeatherSettings)</onclick>
+						<icon>special://skin/backgrounds/weather.jpg</icon>
+					</item>
+					<item id="6">
+						<label>24001</label>
+						<label2>31408</label2>
+						<onclick>ActivateWindow(AddonBrowser)</onclick>
+						<icon>special://skin/backgrounds/addons.jpg</icon>
+					</item>
+					<item id="7">
+						<label>705</label>
+						<label2>31405</label2>
+						<onclick>ActivateWindow(NetworkSettings)</onclick>
+						<icon>special://skin/backgrounds/network.jpg</icon>
+					</item>
+					<item id="8">
+						<label>13000</label>
+						<label2>31406</label2>
+						<onclick>ActivateWindow(SystemSettings)</onclick>
+						<icon>special://skin/backgrounds/system.jpg</icon>
+					</item>
+          <item id="10">
+            <label>13281</label>
+            <label2>31409</label2>
+            <onclick>ActivateWindow(systeminfo)</onclick>
+            <icon>special://skin/backgrounds/systeminfo.jpg</icon>
+          </item>
+					<item id="9">
+						<label>166</label>
+						<label2>31407</label2>
+						<onclick>ActivateWindow(1111)</onclick>
+						<icon>special://skin/backgrounds/skinsetting.jpg</icon>
+					</item>
+				</content>
+			</control>
+
+		
+		
+			<control type="image">
+        <posx>332</posx>
+        <posy>58</posy>
+        <width>840</width>
+        <height>472</height>
+				<aspectratio>stretch</aspectratio>
+				<fadetime>600</fadetime>
+				<texture background="true">$INFO[Container(9000).ListItem.Icon]</texture>
+			</control>
+			
+			<control type="textbox">
+				<description>Appearance Description</description>
+				<posx>370</posx>
+				<posy>565</posy>
+				<width>800</width>
+				<height>100</height>
+				<font>Font_Info</font>
+				<label>$INFO[Container(9000).ListItem.Label2]</label>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+      <control type="image">
+        <!--background image-->
+        <description>background image</description>
+        <posx>42</posx>
+        <posy>28</posy>
+        <width>1196</width>
+        <height>651</height>
+        <texture>settings/settings_panelfront.png</texture>
+      </control>
+      <control type="image">
+        <posx>331</posx>
+        <posy>43</posy>
+        <width>842</width>
+        <height>634</height>
+        <texture>settings/settings_intframe_top.png</texture>
+        <include>Animation_SettingsInternalPanel</include>
+      </control>
+		</control>
+    <include condition="Skin.HasSetting(breadcrumb)">Breadcrumbs</include>
+
+    <include>Furniture_NowPlayingWidget</include>
+    <include condition="Skin.HasSetting(globaltime)">Furniture_Clock</include>
+  </controls>
+</window>

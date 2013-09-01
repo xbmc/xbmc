@@ -1,0 +1,419 @@
+#							-*- Autotest -*-
+
+AT_BANNER([C low level compiling/preprocessing macros.])
+
+# Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2008, 2009,
+# 2010 Free Software Foundation, Inc.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# Since the macros which compile are required by most tests, check
+# them first.  But remember that looking for a compiler is even more
+# primitive, so check those first.
+
+
+## ------------ ##
+## Extensions.  ##
+## ------------ ##
+
+# As far as we know only `foo', `foo.exe' are possible executable,
+# and `foo.o', `foo.obj' are possible object files.  Autoconf must not
+# know that, but it is OK for the test suite to take this into account.
+AT_CHECK_MACRO([Extensions],
+[[AC_PROG_CC
+case $ac_exeext in
+  '' | '.exe' ) ;;
+  * ) AC_MSG_ERROR([suspicious executable suffix: $ac_exeext]);;
+esac
+
+case $ac_objext in
+  'o' | 'obj' ) ;;
+  * ) AC_MSG_ERROR([suspicious object suffix: $ac_objext]);;
+esac
+]])
+
+
+
+## -------------------------- ##
+## Broken/missing compilers.  ##
+## -------------------------- ##
+
+
+# Check that Autoconf correctly diagnoses broken compilers, and in
+# particular, if it does not exit 77, the test suite is in trouble...
+# FIXME: Once a precise message decided, check stderr of configure.
+AT_SETUP([Broken/missing compilers])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+CC=no-such-compiler
+AC_PROG_CC
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([], 77, ignore, ignore)
+
+AT_CLEANUP
+
+
+## ------------ ##
+## C keywords.  ##
+## ------------ ##
+
+# GCC supports `const', `typeof', and `volatile'.
+AT_CHECK_MACRO([C keywords],
+[[AC_PROG_CC
+AC_C_CONST
+AC_C_TYPEOF
+AC_C_VOLATILE
+case $GCC,$ac_cv_c_const,$ac_cv_c_typeof,$ac_cv_c_volatile in
+ yes,*no*)
+   AC_MSG_ERROR([failed to detect `const', `typeof', or `volatile' support]);;
+esac
+]])
+
+
+
+## --------------------------------- ##
+## AC_PROG_CPP requires AC_PROG_CC.  ##
+## --------------------------------- ##
+
+# Must invoke AC_PROG_CC.
+AT_CHECK_MACRO([AC_PROG_CPP requires AC_PROG_CC],
+[[AC_PROG_CPP
+test -z "$CC" &&
+   AC_MSG_ERROR([looked for a C preprocessor without looking for a compiler])
+]])
+
+
+
+## --------------------------- ##
+## AC_PROG_CPP with warnings.  ##
+## --------------------------- ##
+
+
+# It's Ok for strict preprocessors to produce warnings.
+
+AT_SETUP([AC_PROG_CPP with warnings])
+
+AT_DATA([mycpp],
+[[#! /bin/sh
+echo noise >&2
+exec "$@"
+]])
+
+chmod +x mycpp
+
+_AT_CHECK_AC_MACRO(
+[[AC_PROG_CPP
+# If the preprocessor is not strict, just ignore
+test "x$ac_c_preproc_warn_flag" = xyes &&
+  AC_MSG_ERROR([preprocessor has no warning option], 77)
+CPP="./mycpp $CPP"
+
+# Exercise CPP.
+AC_CHECK_HEADERS(stdio.h autoconf_io.h, [], [], [-])]])
+
+AT_CHECK_DEFINES(
+[/* #undef HAVE_AUTOCONF_IO_H */
+#define HAVE_STDIO_H 1
+])
+
+AT_CLEANUP
+
+
+## ------------------------------ ##
+## AC_PROG_CPP without warnings.  ##
+## ------------------------------ ##
+
+AT_SETUP([AC_PROG_CPP without warnings])
+
+# Ignore if /lib/cpp doesn't work
+AT_CHECK([[echo '#include <stdio.h>' | /lib/cpp || exit 77]],
+  [], [ignore], [ignore])
+
+# A cpp which exit status is meaningless.
+AT_DATA([mycpp],
+[[#! /bin/sh
+/lib/cpp "$@"
+exit 0
+]])
+
+chmod +x mycpp
+
+_AT_CHECK_AC_MACRO(
+[[CPP=./mycpp
+AC_PROG_CPP
+test "x$ac_c_preproc_warn_flag" != xyes &&
+  AC_MSG_ERROR([failed to detect preprocessor warning option])
+
+# Exercise CPP.
+AC_CHECK_HEADERS(stdio.h autoconf_io.h, [], [], [-])]])
+
+AT_CHECK_DEFINES(
+[/* #undef HAVE_AUTOCONF_IO_H */
+#define HAVE_STDIO_H 1
+])
+
+AT_CLEANUP
+
+
+
+## -------------------- ##
+## AC_PROG_CPP via CC.  ##
+## -------------------- ##
+
+
+# It's Ok for strict preprocessors to produce warnings.
+
+AT_SETUP([AC_PROG_CPP via CC])
+
+# Ignore if /lib/cpp doesn't work
+AT_CHECK([[echo '#include <stdio.h>' | /lib/cpp || exit 77]],
+  [], [ignore], [ignore])
+
+AT_DATA([mycc],
+[[#! /bin/sh
+echo "Annoying copyright message" >&2
+exec "$@"
+]])
+
+chmod +x mycc
+
+# We go through the following contortions, in order to have the
+# configure script go down the same codepaths as it would during a
+# normal CPP selection check.  If we explicitly set CPP, it goes down
+# a different codepath.
+_AT_CHECK_AC_MACRO(
+[[AC_PROG_CC
+CC="./mycc $CC"
+AC_PROG_CPP
+# The test $CC compiler should have been selected.
+test "$CPP" != "$CC -E" &&
+  AC_MSG_ERROR([error messages on stderr cause the preprocessor selection to fail])
+
+# Exercise CPP.
+AC_CHECK_HEADERS(stdio.h autoconf_io.h, [], [], [-])]])
+
+AT_CHECK_DEFINES(
+[/* #undef HAVE_AUTOCONF_IO_H */
+#define HAVE_STDIO_H 1
+])
+
+AT_CLEANUP
+
+
+## ------------------------------------ ##
+## AC_NO_EXECUTABLES (working linker).  ##
+## ------------------------------------ ##
+
+AT_CHECK_MACRO([AC_NO_EXECUTABLES (working linker)],
+[AC_NO_EXECUTABLES
+AC_PROG_CC
+])
+
+
+## ----------------------------------- ##
+## AC_NO_EXECUTABLES (broken linker).  ##
+## ----------------------------------- ##
+
+AT_CHECK_MACRO([AC_NO_EXECUTABLES (broken linker)],
+[LDFLAGS=-lnosuchlibrary
+AC_NO_EXECUTABLES
+AC_PROG_CC
+])
+
+
+## -------------------------- ##
+## AC_USE_SYSTEM_EXTENSIONS.  ##
+## -------------------------- ##
+
+AT_SETUP([AC_USE_SYSTEM_EXTENSIONS])
+
+# Some existing configure.ac mixed AC_AIX (now an alias for
+# AC_USE_SYSTEM_EXTENSIONS) and AC_DEFINE([__EXTENSIONS__]), which
+# broke autoheader in 2.62.  Test that this is supported.
+
+_AT_CHECK_AC_MACRO(
+[[AC_AIX
+AC_DEFINE([__EXTENSIONS__], [1], [Manually defined for Solaris])
+]])
+
+_AT_CHECK_AC_MACRO(
+[[AC_USE_SYSTEM_EXTENSIONS
+AC_DEFINE([__EXTENSIONS__], [1], [Manually defined for Solaris])
+]])
+
+AT_CLEANUP
+
+
+## ----------------------- ##
+## AC_C_RESTRICT and C++.  ##
+## ----------------------- ##
+
+AT_SETUP([AC_C_RESTRICT and C++])
+
+# In some compiler suites, the left hand doesn't know about everything
+# the right hand does; or the user mixes the C compiler from one suite
+# with the C++ compiler from another.  In this case, Sun WorkShop CC
+# not like the _Restrict accepted by cc.
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_PROG_CC
+AC_PROG_CXX
+AC_C_RESTRICT
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
+]])
+
+AT_DATA([Makefile.in],
+[[CC = @CC@
+CXX = @CXX@
+CFLAGS = @CFLAGS@
+CXXFLAGS = @CXXFLAGS@
+CPPFLAGS = -I. @CPPFLAGS@
+OBJEXT = @OBJEXT@
+all: foo.$(OBJEXT) bar.$(OBJEXT)
+cpp-works:
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c cpp-works.cpp
+foo.$(OBJEXT): foo.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c foo.c
+bar.$(OBJEXT): bar.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c bar.cpp
+]])
+
+AT_DATA([foo.c],
+[[#include <config.h>
+
+int foo (int * restrict i1, int * restrict i2)
+{
+  return i1[0] + i2[0];
+}
+]])
+
+cp foo.c bar.cpp
+
+AT_DATA([cpp-works.cpp],
+[[// This file is just to test whether we have a working C++ compiler at all
+class foo { int x; };
+class foo foobar;
+]])
+
+AT_CHECK([autoconf])
+AT_CHECK([autoheader])
+AT_CHECK([./configure $configure_options], [], [ignore], [ignore])
+AT_CHECK([${MAKE-make} cpp-works || exit 77], [], [ignore], [ignore])
+AT_CHECK([${MAKE-make}], [], [ignore], [ignore])
+
+AT_CLEANUP
+
+
+## ---------------- ##
+## AC_OPENMP and C. ##
+## ---------------- ##
+
+AT_SETUP([AC_OPENMP and C])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_PROG_CC
+AC_OPENMP
+if test "X$ac_cv_prog_c_openmp" = Xunsupported; then
+  AS_EXIT([77])
+fi
+CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+CPPFLAGS="$CPPFLAGS $OPENMP_CFLAGS"
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
+]])
+
+AT_DATA([Makefile.in],
+[[foo@EXEEXT@: foo.@OBJEXT@
+	@CC@ @CFLAGS@ @LDFLAGS@ -o $@ foo.@OBJEXT@
+
+foo.@OBJEXT@: foo.c
+	@CC@ @CPPFLAGS@ @CFLAGS@ -c foo.c
+]])
+
+AT_DATA([foo.c],
+[[#ifdef _OPENMP
+#include <omp.h>
+#endif
+#include <stdio.h>
+
+int main ()
+{
+#ifdef _OPENMP
+#pragma omp parallel
+  {
+    int id = omp_get_thread_num ();
+    printf ("hello omp world from %d\n", id);
+  }
+#endif
+  return 0;
+}
+]])
+
+: "${MAKE=make}"
+AT_CHECK([env ACLOCAL=true autoreconf -vi], [], [ignore], [ignore])
+AT_CHECK([./configure $configure_options], [], [ignore], [ignore])
+AT_CHECK([$MAKE], [], [ignore], [ignore])
+
+AT_CLEANUP
+
+
+## ------------------ ##
+## AC_OPENMP anc C++. ##
+## ------------------ ##
+
+AT_SETUP([AC_OPENMP and C++])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_PROG_CXX
+AC_LANG([C++])
+AC_OPENMP
+if test "X$ac_cv_prog_cxx_openmp" = Xunsupported; then
+  AS_EXIT([77])
+fi
+CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
+CPPFLAGS="$CPPFLAGS $OPENMP_CXXFLAGS"
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
+]])
+
+AT_DATA([Makefile.in],
+[[foo@EXEEXT@: foo.@OBJEXT@
+	@CXX@ @CXXFLAGS@ @LDFLAGS@ -o $@ foo.@OBJEXT@
+
+foo.@OBJEXT@: foo.cpp
+	@CXX@ @CPPFLAGS@ @CXXFLAGS@ -c foo.cpp
+]])
+
+AT_DATA([foo.cpp],
+[[int main ()
+{
+  return 0;
+}
+]])
+
+: "${MAKE=make}"
+AT_CHECK([env ACLOCAL=true autoreconf -vi], [], [ignore], [ignore])
+AT_CHECK([./configure $configure_options], [], [ignore], [ignore])
+AT_CHECK([$MAKE], [], [ignore], [ignore])
+
+AT_CLEANUP

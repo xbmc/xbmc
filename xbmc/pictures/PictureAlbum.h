@@ -36,7 +36,7 @@ class CPictureAlbum
 {
 public:
     CPictureAlbum(const CFileItem& item);
-    CPictureAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; };
+    CPictureAlbum() { idAlbum = 0; iPictureCount = 0; };
     bool operator<(const CPictureAlbum &a) const;
     
     void Reset()
@@ -56,10 +56,8 @@ public:
         strType.Empty();
         strPath.Empty();
         m_strDateOfRelease.Empty();
-        iRating=-1;
-        iYear=-1;
         bCompilation = false;
-        iTimesPlayed = 0;
+        iPictureCount = 0;
         pictures.clear();
     }
     
@@ -91,10 +89,8 @@ public:
     CStdString strType;
     CStdString strPath;
     CStdString m_strDateOfRelease;
-    int iRating;
-    int iYear;
     bool bCompilation;
-    int iTimesPlayed;
+    int iPictureCount;
     VECPICTURES pictures;
 };
 

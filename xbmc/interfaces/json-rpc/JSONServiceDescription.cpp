@@ -98,25 +98,24 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Files.Download",                               CFileOperations::Download },
   
   // Picture Library
-  //    { "PictureLibrary.GetFaces",                      CPictureLibrary::GetFaces },
-  //    { "PictureLibrary.GetFaceDetails",                CPictureLibrary::GetFaceDetails },
+  { "PictureLibrary.GetFaces",                      CPictureLibrary::GetFaces },
+  { "PictureLibrary.GetFaceDetails",                CPictureLibrary::GetFaceDetails },
   { "PictureLibrary.GetPictureAlbums",              CPictureLibrary::GetPictureAlbums },
+  { "PictureLibrary.AddPictureAlbum",              CPictureLibrary::AddPictureAlbum },
+  { "PictureLibrary.AddPicture",              CPictureLibrary::AddPicture },
   { "PictureLibrary.GetPictureAlbumDetails",        CPictureLibrary::GetPictureAlbumDetails },
   { "PictureLibrary.GetPictures",                   CPictureLibrary::GetPictures },
   { "PictureLibrary.GetPictureDetails",             CPictureLibrary::GetPictureDetails },
-/*
-    { "PictureLibrary.GetRecentlyAddedPictureAlbums", CPictureLibrary::GetRecentlyAddedPictureAlbums },
-    { "PictureLibrary.GetRecentlyAddedPictures",      CPictureLibrary::GetRecentlyAddedPictures },
-    { "PictureLibrary.GetRecentlyPlayedPictureAlbums",CPictureLibrary::GetRecentlyPlayedPictureAlbums },
-    { "PictureLibrary.GetRecentlyPlayedPictures",     CPictureLibrary::GetRecentlyPlayedPictures },
-    { "PictureLibrary.GetLocations",                  CPictureLibrary::GetLocations },
-    { "PictureLibrary.SetFaceDetails",                CPictureLibrary::SetFaceDetails },
-    { "PictureLibrary.SetPictureAlbumDetails",        CPictureLibrary::SetPictureAlbumDetails },
-    { "PictureLibrary.SetPictureDetails",             CPictureLibrary::SetPictureDetails },
-    { "PictureLibrary.Scan",                          CPictureLibrary::Scan },
-    { "PictureLibrary.Export",                        CPictureLibrary::Export },
-    { "PictureLibrary.Clean",                         CPictureLibrary::Clean },
- */
+  { "PictureLibrary.GetRecentlyAddedPictureAlbums", CPictureLibrary::GetRecentlyAddedPictureAlbums },
+  { "PictureLibrary.GetRecentlyAddedPictures",      CPictureLibrary::GetRecentlyAddedPictures },
+  { "PictureLibrary.GetLocations",                  CPictureLibrary::GetLocations },
+  { "PictureLibrary.SetFaceDetails",                CPictureLibrary::SetFaceDetails },
+  { "PictureLibrary.SetPictureAlbumDetails",        CPictureLibrary::SetPictureAlbumDetails },
+  { "PictureLibrary.SetPictureDetails",             CPictureLibrary::SetPictureDetails },
+  { "PictureLibrary.Scan",                          CPictureLibrary::Scan },
+  { "PictureLibrary.Export",                        CPictureLibrary::Export },
+  { "PictureLibrary.Clean",                         CPictureLibrary::Clean },
+ 
 // Contact Library
   { "ContactLibrary.GetContacts",                    CContactLibrary::GetContacts },
   { "ContactLibrary.GetContactDetails",              CContactLibrary::GetContactDetails },
@@ -708,11 +707,12 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
       for (unsigned int arrayIndex = 0; arrayIndex < value.size(); arrayIndex++)
       {
         CVariant temp;
+        CLog::Log(LOGINFO, "JSONRPC: Check element at index %u [%s] in type %s", arrayIndex, value[arrayIndex].c_str(), name.c_str());
         JSONRPC_STATUS status = itemType->Check(value[arrayIndex], temp, errorData["property"]);
         outputValue.push_back(temp);
         if (status != OK)
         {
-          CLog::Log(LOGDEBUG, "JSONRPC: Array element at index %u does not match in type %s", arrayIndex, name.c_str());
+          CLog::Log(LOGDEBUG, "JSONRPC: Array element at index %u [%s] does not match in type %s", arrayIndex, value[arrayIndex].c_str(), name.c_str());
           errorMessage.Format("array element at index %u does not match", arrayIndex);
           errorData["message"] = errorMessage.c_str();
           return status;
@@ -813,6 +813,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
     {
       if (value.isMember(propertiesIterator->second->name))
       {
+        CLog::Log(LOGDEBUG, "JSONRPC: Property \"%s\" in type %s", propertiesIterator->second->name.c_str(), name.c_str());
         JSONRPC_STATUS status = propertiesIterator->second->Check(value[propertiesIterator->second->name], outputValue[propertiesIterator->second->name], errorData["property"]);
         if (status != OK)
         {
@@ -1158,6 +1159,8 @@ JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::CJsonSchemaPropertiesMap()
 
 void JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::add(JSONSchemaTypeDefinitionPtr property)
 {
+  CLog::Log(LOGINFO, "JSONRPC: Adding schema %s value %s", property->name.c_str(), property->description.c_str());
+
   CStdString name = property->name;
   name = name.ToLower();
   m_propertiesmap[name] = property;

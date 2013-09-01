@@ -49,7 +49,6 @@ CPictureAlbumInfo::CPictureAlbumInfo(const CStdString& strAlbum, const CStdStrin
 void CPictureAlbumInfo::SetAlbum(CPictureAlbum& album)
 {
     m_album = album;
-    m_album.m_strDateOfRelease.Format("%i", album.iYear);
     m_strTitle2 = "";
     m_bLoaded = true;
 }

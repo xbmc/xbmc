@@ -33,6 +33,7 @@ class CRecentlyAddedJob : public CJob
 public:
   CRecentlyAddedJob(int flag);
   bool UpdateVideo();
+  bool UpdatePicture();
   bool UpdateMusic();
   bool UpdateTotal();
   virtual bool DoWork();

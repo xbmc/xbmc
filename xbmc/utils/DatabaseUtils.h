@@ -120,7 +120,13 @@ typedef enum {
   FieldBorn,
   FieldBandFormed,
   FieldDisbanded,
-  FieldDied
+  FieldDied,
+  
+  FieldTakenOn,
+  FieldPictureCount,
+  FieldPictureAlbum,
+  FieldFace,
+  FieldLocation
 } Field;
 
 typedef std::set<Field> Fields;

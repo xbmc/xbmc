@@ -1,0 +1,202 @@
+<window id="29">
+	<defaultcontrol always="true">52</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+	   <control type="image">
+      <animation effect="fade" time="600">WindowOpen</animation>
+      <animation effect="fade" time="600">WindowClose</animation>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <texture>welcome/login_backdrop.jpg</texture>
+    </control>
+    <control type="image" id="601">
+      <posx>1280</posx>
+      <posy>600</posy>
+      <width>151</width>
+      <height>129</height>
+      <texture>welcome/welcome_xbmclogo.png</texture>
+      <animation type="WindowOpen" reversible="false">
+        <effect type="fade" start="0" end="100" time="1200"/>
+        <effect type="slide" start="0,0" end="-220,0" time="1200" tween="cubic" easing="out"/>
+      </animation>
+      <animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+      <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+    </control>
+    <control type="image" id="601">
+      <posx>-135</posx>
+      <posy>580</posy>
+      <width>100</width>
+      <height>140</height>
+      <texture>welcome/welcome_aeonlogo.png</texture>
+      <animation type="WindowOpen" reversible="false">
+        <effect type="fade" start="0" end="100" time="1200"/>
+        <effect type="slide" start="0,0" end="230,0" time="1200" tween="cubic" easing="out"/>
+      </animation>
+      <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+      <animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+    </control>
+    <control type="list" id="52">
+      <posx>244</posx>
+      <posy>280</posy>
+      <width>792</width>
+      <height>500</height>
+      <focusposition>1</focusposition>
+      <orientation>horizontal</orientation>
+      <onleft>90</onleft>
+      <onright>90</onright>
+      <onup>52</onup>
+      <ondown>98</ondown>
+      <animation effect="slide" start="132,0" end="132,0" time="0" condition="stringcompare(container(52).numitems,2)">Conditional</animation>
+      <include>Animation_OpenCloseZoom</include>
+      <itemlayout height="264" width="264">
+        <control type="image">
+          <posx>18</posx>
+          <posy>18</posy>
+          <width>234</width>
+          <height>234</height>
+          <texture diffuse="thumbs/cdcover_mask.png">common/black.png</texture>
+          <aspectratio scalediffuse="false">scale</aspectratio>
+        </control>
+        <control type="image">
+          <posx>18</posx>
+          <posy>18</posy>
+          <width>234</width>
+          <height>234</height>
+          <texture diffuse="thumbs/cdcover_mask.png">DefaultAudio.png</texture>
+          <aspectratio scalediffuse="false">scale</aspectratio>
+          <info>ListItem.Icon</info>
+        </control>
+        <control type="image">
+          <description>Glass overlay</description>
+          <posx>18</posx>
+          <posy>18</posy>
+          <width>234</width>
+          <height>234</height>
+          <bordertexture border="-18">thumbs/cd_shadow.png</bordertexture>
+          <texture>thumbs/cd_glass_noedge.png</texture>
+        </control>
+        <control type="image">
+          <posx>18</posx>
+          <posy>254</posy>
+          <width>234</width>
+          <height>234</height>
+          <colordiffuse>d0FFFFFF</colordiffuse>
+          <texture flipy="true" diffuse="thumbs/cdcover_mask_reflect.png">common/black.png</texture>
+          <aspectratio scalediffuse="false">scale</aspectratio>
+        </control>
+        <control type="image">
+          <posx>18</posx>
+          <posy>254</posy>
+          <width>234</width>
+          <height>234</height>
+          <colordiffuse>d0FFFFFF</colordiffuse>
+          <texture flipy="true" diffuse="thumbs/cdcover_mask_reflect.png">DefaultAudio.png</texture>
+          <aspectratio scalediffuse="false">scale</aspectratio>
+          <info>ListItem.Icon</info>
+        </control>
+      </itemlayout>
+      <focusedlayout height="264" width="264">
+        <control type="image">
+          <posx>18</posx>
+          <posy>18</posy>
+          <width>234</width>
+          <height>234</height>
+          <texture diffuse="thumbs/cdcover_mask.png">common/black.png</texture>
+          <aspectratio scalediffuse="false">scale</aspectratio>
+          <animation center="132,132" effect="zoom" start="100" end="110" time="600" tween="cubic" easing="out">Focus</animation>
+        </control>
+        <control type="image">
+          <posx>18</posx>
+          <posy>18</posy>
+          <width>234</width>
+          <height>234</height>
+          <texture diffuse="thumbs/cdcover_mask.png">DefaultAudio.png</texture>
+          <aspectratio scalediffuse="false">scale</aspectratio>
+          <info>ListItem.Icon</info>
+          <animation center="132,132" effect="zoom" start="100" end="110" time="600" tween="cubic" easing="out">Focus</animation>
+        </control>
+        <control type="image">
+          <description>Glass overlay</description>
+          <posx>18</posx>
+          <posy>18</posy>
+          <width>234</width>
+          <height>234</height>
+          <bordertexture border="-18">thumbs/cd_shadow.png</bordertexture>
+          <texture>thumbs/cd_glass_noedge.png</texture>
+          <animation center="132,132" effect="zoom" start="100" end="110" time="600" tween="cubic" easing="out">Focus</animation>
+        </control>
+        <control type="image">
+          <posx>18</posx>
+          <posy>254</posy>
+          <width>234</width>
+          <height>234</height>
+          <texture flipy="true" diffuse="thumbs/cdcover_mask_reflect.png">common/black.png</texture>
+          <colordiffuse>d0FFFFFF</colordiffuse>
+          <aspectratio scalediffuse="false">scale</aspectratio>
+          <animation center="132,132" effect="zoom" start="100" end="110" time="600" tween="cubic" easing="out">Focus</animation>
+        </control>
+        <control type="image">
+          <posx>18</posx>
+          <posy>254</posy>
+          <width>234</width>
+          <height>234</height>
+          <colordiffuse>d0FFFFFF</colordiffuse>
+          <texture flipy="true" diffuse="thumbs/cdcover_mask_reflect.png">DefaultAudio.png</texture>
+          <aspectratio scalediffuse="false">scale</aspectratio>
+          <info>ListItem.Icon</info>
+          <animation center="132,132" effect="zoom" start="100" end="110" time="600" tween="cubic" easing="out">Focus</animation>
+        </control>
+      </focusedlayout>
+    </control>
+    <control type="label">
+      <posx>0</posx>
+      <posy>600</posy>
+      <width>1280</width>
+      <height>16</height>
+      <font>Font_Welcome</font>
+      <align>center</align>
+      <textcolor>FFffffff</textcolor>
+      <scroll>true</scroll>
+      <info>ListItem.Label</info>
+       <visible>Control.IsVisible(52)</visible>
+    </control>
+    <control type="label">
+      <posx>0</posx>
+      <posy>630</posy>
+      <width>1280</width>
+      <height>16</height>
+      <font>Font_Welcome</font>
+      <align>center</align>
+      <textcolor>90cbcbcb</textcolor>
+      <info>ListItem.Label2</info>
+       <visible>Control.IsVisible(52)</visible>
+    </control>
+    <control type="button" id="98">
+      <description>ShutDown Button</description>
+      <posx>615</posx>
+      <posy>660</posy>
+      <width>50</width>
+      <height>50</height>
+      <align>right</align>
+      <textcolor>60ffffff</textcolor>
+      <onclick>ActivateWindow(ShutdownMenu)</onclick>
+      <pulseonselect>yes</pulseonselect>
+      <texturefocus>Power.png</texturefocus>
+      <texturenofocus>Power.png</texturenofocus>
+      <onleft>52</onleft>
+      <onright>52</onright>
+      <onup>52</onup>
+      <ondown>52</ondown>
+      <include>Animation_OpenCloseZoom</include>
+          <visible>!Window.IsActive(ProfileSettings) + !Window.IsActive(LockSettings)</visible>
+      <animation center="auto" effect="zoom" start="100" end="110" time="600" tween="cubic" easing="out">Focus</animation>
+    </control>
+	</controls>
+</window>

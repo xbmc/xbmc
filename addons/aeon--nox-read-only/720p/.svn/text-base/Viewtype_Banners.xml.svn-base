@@ -1,0 +1,171 @@
+<includes>
+  <include name="Banners">
+    <control type="group">
+      <visible>Control.IsVisible(508)</visible>
+      <control type="image">
+        <posx>40</posx>
+        <posy>537</posy>
+        <width>33</width>
+        <height>37</height>
+        <texture>views/multiplex_arrow2.png</texture>
+        <include>Animation_HideMultiplex</include>
+        <visible>[IntegerGreaterThan(Container(508).NumItems,10) + !system.getbool(filelists.showparentdiritems)] | [IntegerGreaterThan(Container(508).NumItems,9) + system.getbool(filelists.showparentdiritems)]</visible>
+      </control>
+      <control type="image">
+        <posx>1207</posx>
+        <posy>537</posy>
+        <width>33</width>
+        <height>37</height>
+        <texture flipx="true">views/multiplex_arrow2.png</texture>
+        <include>Animation_HideMultiplex</include>
+        <visible>[IntegerGreaterThan(Container(508).NumItems,10) + !system.getbool(filelists.showparentdiritems)] | [IntegerGreaterThan(Container(508).NumItems,9) + system.getbool(filelists.showparentdiritems)]</visible>
+      </control>
+      <control type="panel" id="508">
+        <posx>78</posx>
+        <posy>415</posy>
+        <width>1125</width>
+        <height>245</height>
+        <onleft>508</onleft>
+        <onright>508</onright>
+        <onup>SetFocus(7000)</onup>
+        <ondown>62</ondown>
+        <orientation>horizontal</orientation>
+        <viewtype label="$LOCALIZE[31236]">wide icon</viewtype>
+        <pagecontrol>62</pagecontrol>
+        <scrolltime>200</scrolltime>
+        <focusposition>2</focusposition>
+        <preloaditems>2</preloaditems>
+        <visible>Container.Content(TVShows)</visible>
+        <animation effect="fade" start="100" end="0" time="400" condition="Control.HasFocus(109)">Conditional</animation>
+        <itemlayout width="375" height="80">
+          <control type="image">
+            <posx>5</posx>
+            <posy>5</posy>
+            <width>365</width>
+            <height>70</height>
+            <aspectratio scalediffuse="false">stretch</aspectratio>
+            <texture background="true" diffuse="thumbs/banner_wall_mask.png">common/black.png</texture>
+          </control>
+          <control type="label">
+            <posx>181</posx>
+            <posy>5</posy>
+            <width>352</width>
+            <height>70</height>
+            <aligny>center</aligny>
+            <align>center</align>
+            <textcolor>white</textcolor>
+            <label>$INFO[ListItem.Label]</label>
+            <font>Font_Bold24</font>
+          </control>
+          <control type="image">
+            <posx>5</posx>
+            <posy>5</posy>
+            <width>365</width>
+            <height>70</height>
+            <aspectratio scalediffuse="false">stretch</aspectratio>
+            <texture background="true" diffuse="thumbs/banner_wall_mask.png" />
+            <info>ListItem.Thumb</info>
+            <visible>!Skin.HasSetting(TVShowsUsePosters)</visible>
+          </control>
+          <control type="image">
+            <posx>5</posx>
+            <posy>5</posy>
+            <width>365</width>
+            <height>70</height>
+            <aspectratio scalediffuse="false">stretch</aspectratio>
+            <texture background="true" diffuse="thumbs/banner_wall_mask.png" />
+            <info>ListItem.Path,,banner.jpg</info>
+            <visible>Skin.HasSetting(TVShowsUsePosters)</visible>
+          </control>
+          <control type="image">
+            <posx>5</posx>
+            <posy>5</posy>
+            <width>365</width>
+            <height>70</height>
+            <colordiffuse>55FFFFFF</colordiffuse>
+            <aspectratio scalediffuse="false">scale</aspectratio>
+            <texture background="true" diffuse="thumbs/banner_wall_mask.png">common/black.png</texture>
+          </control>
+          <control type="image">
+            <posx>330</posx>
+            <posy>5</posy>
+            <width>40</width>
+            <height>40</height>
+            <include>OverlayVisibility0</include>
+          </control>
+        </itemlayout>
+        <focusedlayout width="375" height="80">
+          <control type="group">
+            <animation effect="zoom" center="auto" start="100" end="122" time="600" tween="back" easing="out" reversible="false">Focus</animation>
+            <control type="image">
+              <posx>5</posx>
+              <posy>5</posy>
+              <width>365</width>
+              <height>70</height>
+              <aspectratio scalediffuse="false">stretch</aspectratio>
+              <texture background="true" diffuse="thumbs/banner_wall_mask.png">common/black.png</texture>
+            </control>
+            <control type="label">
+              <posx>181</posx>
+              <posy>5</posy>
+              <width>352</width>
+              <height>70</height>
+              <aligny>center</aligny>
+              <align>center</align>
+              <textcolor>white</textcolor>
+              <label>$INFO[ListItem.Label]</label>
+              <font>Font_Bold24</font>
+            </control>
+            <control type="image">
+              <posx>5</posx>
+              <posy>5</posy>
+              <width>365</width>
+              <height>70</height>
+              <aspectratio scalediffuse="false">stretch</aspectratio>
+              <texture background="true" diffuse="thumbs/banner_wall_mask.png" />
+              <info>ListItem.Thumb</info>
+              <visible>!Skin.HasSetting(TVShowsUsePosters)</visible>
+            </control>
+            <control type="image">
+              <posx>5</posx>
+              <posy>5</posy>
+              <width>365</width>
+              <height>70</height>
+              <aspectratio scalediffuse="false">stretch</aspectratio>
+              <texture background="true" diffuse="thumbs/banner_wall_mask.png" />
+              <info>ListItem.Path,,banner.jpg</info>
+              <visible>Skin.HasSetting(TVShowsUsePosters)</visible>
+            </control>
+            <control type="image">
+              <posx>330</posx>
+              <posy>5</posy>
+              <width>40</width>
+              <height>40</height>
+              <include>OverlayVisibility0</include>
+            </control>
+
+            <control type="image">
+              <posx>-2</posx>
+              <posy>-2</posy>
+              <width>379</width>
+              <height>83</height>
+              <aspectratio>stretch</aspectratio>
+              <texture background="true">thumbs/banner_shadow.png</texture>
+            </control>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="scrollbar" id="62">
+        <visible allowhiddenfocus="true">Control.HasFocus(62)</visible>
+        <onup>508</onup>
+        <ondown>SetFocus(109)</ondown>
+      </control>
+      <control type="group">
+        <visible>!Control.HasFocus(109)+!Control.HasFocus(62)</visible>
+        <include>Animation_HideMultiplex</include>
+        <include>SecondLabelFloor</include>
+        <include>FirstLabelFloor</include>
+      </control>
+    </control>
+  </include>
+</includes>

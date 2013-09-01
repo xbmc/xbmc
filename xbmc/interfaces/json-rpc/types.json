@@ -103,7 +103,7 @@
                   "album", "albumtype", "genre", "country", "year", "rating", "votes", "top250", "programcount",
                   "playlist", "episode", "season", "totalepisodes", "watchedepisodes", "tvshowstatus", "tvshowtitle",
                   "sorttitle", "productioncode", "mpaa", "studio", "dateadded", "lastplayed", "playcount", "listeners",
-                  "bitrate", "random" ]
+                  "bitrate", "random", "picturecount", "face", "location", "takenon" ]
       },
       "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
       "ignorearticle": { "type": "boolean", "default": false }
@@ -428,6 +428,26 @@
       "displayartist": { "type" : "string" }
     }
   },
+  "Picture.Details.Base": {
+    "extends": "Media.Details.Base",
+    "properties": {
+      "location": { "$ref": "Array.String" }
+    }
+  },
+  "Picture.Details.Media": {
+    "extends": "Picture.Details.Base",
+    "properties": {
+      "title": { "type": "string" },
+      "face": { "$ref": "Array.String" },
+      "location": { "type": "string" },
+      "takenon": { "type": "string" },
+      "year": { "type": "integer" },
+      "rating": { "type": "integer" },
+      "locationid": { "$ref": "Array.Integer" },
+      "faceid": { "$ref": "Array.Integer" },
+      "displayartist": { "type" : "string" }
+    }
+  },
   "Audio.Details.Artist": {
     "extends": "Audio.Details.Base",
     "properties": {
@@ -479,6 +499,56 @@
       "albumartistid": { "$ref": "Array.Integer" }
     }
   },
+  "Picture.Details.Picture": {
+    "extends": "Picture.Details.Media",
+    "properties": {
+      "pictureid": { "$ref": "Library.Id", "required": true },
+      "file": { "type": "string" },
+      "albumface": { "$ref": "Array.String" },
+      "album": { "type": "string" },
+      "track": { "type": "integer" },
+      "duration": { "type": "integer" },
+      "comment": { "type": "string" },
+      "lyrics": { "type": "string" },
+      "picturecount": { "type": "integer" },
+      "albumid": { "$ref": "Library.Id" },
+      "takenon": { "type": "string" },
+      "disc": { "type": "integer" },
+      "albumfaceid": { "$ref": "Array.Integer" }
+    }
+  },  
+  "Picture.Fields.Album": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "description": "Requesting the locationid and/or faceid field will result in increased response times",
+      "enum": [ "title", "description", "face", "location",
+               "theme", "mood", "style", "type", "albumlabel",
+               "rating", "year", "fanart", "thumbnail",
+               "picturecount", "locationid", "faceid", "displayartist", "takenon" ]
+    }
+  },
+  "Picture.Fields.Picture": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "description": "Requesting the locationid, faceid and/or albumfaceid field will result in increased response times",
+      "enum": [ "title", "face", "albumface", "location", "year",
+                "rating", "album", "track", "duration", "comment",
+                "lyrics", "picturecount", "fanart", "thumbnail", "file", "albumid",
+                "lastplayed", "disc", "locationid", "faceid", "displayface",
+                "albumfaceid", "takenon" ]
+    }
+  },
+  "Picture.Details.Album": {
+    "extends": "Picture.Details.Media",
+    "properties": {
+      "albumid": { "$ref": "Library.Id", "required": true },
+      "description": { "type": "string" },
+      "face": { "$ref": "Array.String" },
+      "location": { "type": "string" },
+      "albumlabel": { "type": "string" },
+      "picturecount": { "type": "integer" }
+    }
+  },  
   "Video.Fields.Movie": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
@@ -834,6 +904,12 @@
       "field": { "$ref": "List.Filter.Fields.Songs", "required": true }
     }
   },
+  "List.Filter.Rule.Pictures": {
+    "extends": "List.Filter.Rule",
+    "properties": {
+      "field": { "$ref": "List.Filter.Fields.Pictures", "required": true }
+    }
+  },
   "List.Filter.Movies": {
     "type": [
       { "type": "object",
@@ -979,6 +1055,27 @@
         }
       },
       { "$ref": "List.Filter.Rule.Songs" }
+    ]
+  },
+  "List.Filter.Pictures": {
+    "type": [
+      { "type": "object",
+        "properties": {
+          "and": { "type": "array",
+            "items": { "$ref": "List.Filter.Pictures" },
+            "minItems": 1, "required": true
+          }
+        }
+      },
+      { "type": "object",
+        "properties": {
+          "or": { "type": "array",
+            "items": { "$ref": "List.Filter.Pictures" },
+            "minItems": 1, "required": true
+          }
+        }
+      },
+      { "$ref": "List.Filter.Rule.Pictures" }
     ]
   },
   "List.Item.Base": {

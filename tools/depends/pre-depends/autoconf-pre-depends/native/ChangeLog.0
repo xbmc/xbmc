@@ -1,0 +1,362 @@
+Mon Jul 20 01:08:01 1992  David J. MacKenzie  (djm@nutrimat.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_ALLOCA): Don't try -lucb -- it's too often broken.
+
+Sat Jul 18 13:40:46 1992  David J. MacKenzie  (djm@nutrimat.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_MAJOR_HEADER): Add missing "$".
+
+	* acspecific.m4 (AC_ALLOCA): Put -lc before -lucb.
+
+Fri Jul 17 00:00:07 1992  David J. MacKenzie  (djm@nutrimat.gnu.ai.mit.edu)
+
+	* autoconf.sh: Print the lines of the input file where
+	unresolved macros occur.  From Francois Pinard.
+
+	* acspecific.m4 (AC_PROG_INSTALL), acgeneral.m4
+	(AC_PROGRAM_CHECK): Use test -f instead of -s.
+
+	* autoconf.sh: grep for undefined macros in output.
+
+Tue Jul 14 01:19:26 1992  David J. MacKenzie  (djm@apple-gunkies.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_PROGRAM_CHECK): Search PATH manually to
+	avoid "command not found" messages on /dev/tty.  Remove "args
+	for check" argument.
+	(AC_INIT): Don't define checkfor; no longer needed.
+	* acspecific.m4 (AC_PROG_CC, AC_PROG_RANLIB, AC_PROG_YACC,
+	AC_PROG_LEX): Don't pass "args for check" argument.
+
+	* acgeneral.m4 (AC_PROGRAMS_CHECK): New macro.
+	* acspecific.m4 (AC_PROG_AWK): Use it.  Check for mawk, gawk,
+	nawk, and awk.
+	(AC_PROG_YACC): Check for byacc if bison isn't found.
+
+	* acspecific.m4 (AC_PROG_CC): Renamed from AC_PROG_GCC.
+	(AC_PROG_YACC): Renamed from AC_PROG_BISON.
+	(AC_PROG_AWK): Renamed from AC_PROG_GAWK.
+	(AC_PROG_LEX): Renamed from AC_PROG_FLEX.
+
+	* acgeneral.m4 (AC_TEST_PROGRAM): Redirect stderr to /dev/null
+	both inside and outside the subshell to try to prevent core
+	dumped messages.  Who knows, it might even help.
+
+Thu Jul  9 21:37:45 1992  Roland McGrath  (roland@churchy.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_GETLOADAVG): Check for DGUX before SVR4.
+
+Fri Jul  3 01:01:50 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_REMOTE_TAPE): Renamed from AC_MTIO.
+	Define HAVE_SYS_MTIO_H instead of NO_MTIO.
+	(AC_LONG_FILE_NAMES): Renamed from AC_LONG_FILENAMES.
+	(AC_RSH): Define HAVE_NETDB_H instead of USE_REXEC.
+	Above mostly from Richard Stallman.
+
+	* acgeneral.m4 (AC_MISSING_FUNCS): Macro removed.
+	* acspecific.m4 (AC_VPRINTF, AC_WAIT3, AC_UTIME_NULL,
+	AC_TIMEZONE, AC_ST_BLOCKS, AC_ST_BLKSIZE): Change from
+	FOO_MISSING to HAVE_FOO.
+	(AC_WAIT3): Renamed from AC_WAIT3_RUSAGE.
+	(AC_TIMEZONE): Require AC_STRUCT_TM.
+	(AC_STRUCT_TM): Provide itself.
+
+	* acgeneral.m4 (AC_OUTPUT): Add --recheck option to config.status.
+
+	* acspecific.m4 (AC_ST_RDEV, AC_CONST): New macros.
+
+	* acgeneral.m4 (AC_DEFINE): Don't consider an empty value arg to
+	be an omitted arg.
+
+Thu Jul  2 16:05:05 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_GETLOADAVG): New macro.
+
+	* autoconf.sh: Only reject an arg that's not a known option if it
+	is an option.
+
+Tue Jun 30 16:08:04 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_INIT, AC_OUTPUT): Eliminate vpsub.
+
+Thu Jun 25 12:42:10 1992  David J. MacKenzie  (djm@apple-gunkies.gnu.ai.mit.edu)
+
+	* autoconf.sh: Add --version option.
+	* acgeneral.m4: Support it.
+
+Wed Jun 24 14:04:13 1992  David J. MacKenzie  (djm@goldman.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_TIMEZONE): Do the checks unconditionally,
+	not only if strftime.o is in LIBOBJS.
+
+	* acspecific.m4 (AC_DIR_HEADER): Don't assume sys/dir.h exists.
+
+	* acgeneral.m4 (AC_PROGRAM_CHECK): Don't include the program
+	name in the value-if-found.  From Rich Murphey.
+	* acspecific.m4 (AC_PROG_{GCC,RANLIB,GAWK,BISON,FLEX}): Change
+	callers.
+
+	* acgeneral.m4 (AC_OUTPUT): Mention the args given to
+	configure in a comment in config.status.
+
+Fri Jun 19 13:18:12 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_FUNC_CHECK): Use the third arg when it's
+	non-null, not when it's null.  From Ian Lance Taylor.
+
+Thu Jun 18 12:10:27 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_BEFORE): Print message in next-error format.
+	From Franc,ois Pinard.
+
+	* acgeneral.m4 (AC_PROGRAM_CHECK): If args-for-use is empty,
+	don't put a space after the program name.
+
+	* acspecific.m4 (AC_DECLARE_YYTEXT): Move AC_REQUIREs from
+	AC_PROG_FLEX to here, where they belong.
+
+	* acspecific.m4 (AC_MEMORY_H): Look for memchr instead of memcpy.
+	From Karl Berry.
+
+Wed Jun 17 09:56:59 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_BEFORE): New macro.
+	* acspecific.m4 (AC_PROG_GCC, AC_DIR_HEADER, AC_AIX,
+	AC_MINIX, AC_ISC_POSIX): Use it.
+
+Tue Jun 16 14:46:29 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* autoconf.sh: Remove incomplete output file if interrupted.
+
+	* acgeneral.m4 (AC_INIT): Avoid running an extra subshell for pwd.
+	From Franc,ois Pinard.
+
+Mon Jun 15 21:27:49 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_TEST_PROGRAM): Take another arg for
+	cross-compiling.
+	* acspecific.m4 (AC_CROSS_CHECK): New program.
+
+	* acgeneral.m4 (AC_REQUIRE, AC_PROVIDE): New macros.
+	(AC_HEADER_EGREP, AC_PROGRAM_EGREP, AC_TEST_CPP): Use them.
+	* acspecific.m4 (AC_PROG_GCC, AC_GCC_TRADITIONAL, AC_PROG_CPP,
+	AC_PROG_FLEX, AC_INLINE): Ditto.
+
+Sat Jun 13 17:54:24 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_MEMORY_H): echo what it's doing.
+
+Thu Jun 11 14:18:35 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_MINUS_C_MINUS_O, AC_INLINE,
+	AC_SETVBUF_REVERSED): New macros.
+	(AC_ALLOCA): Define HAVE_ALLOCA_H if appropriate.
+
+	* acgeneral.m4 (AC_INIT): Do pwd in the srcdir, not current dir.
+	Scan through "$@" (implicitly) instead of $*.
+	(AC_HEADER_EGREP, AC_PROGRAM_EGREP, AC_COMPILE_CHECK,
+	AC_TEST_PROGRAM, AC_TEST_CPP): Supply a `:' if `true' argument
+	is empty.
+	* acgeneral.m4, acspecific.m4: Omit `:' in callers.
+
+Wed Jun 10 12:03:11 1992  David J. MacKenzie  (djm@churchy.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_HEADER_EGREP, AC_PROGRAM_EGREP, AC_HEADER_CHECK,
+	AC_COMPILE_CHECK, AC_TEST_PROGRAM, AC_TEST_CPP, AC_FUNC_CHECK):
+	Make the last argument (program to run if test fails) optional.
+	(AC_HAVE_FUNCS, AC_HAVE_HEADERS): Don't pass optional last args.
+	* acspecific.m4 (most macros): Likewise.
+
+Mon Jun  8 16:27:10 1992  David J. MacKenzie  (djm@nutrimat.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_VFORK): Get rid of backquotes.
+
+	* acgeneral.m4 (AC_OUTPUT): Exit with 0 status when
+	--no-create was given.
+	Only write to the AC_CONFIG_NAME file if it doesn't exist or is
+	different from what we'd write.  From Ian Lance Taylor.
+
+Thu Jun  4 14:46:22 1992  David J. MacKenzie  (djm@geech.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_UNISTD_H, AC_UID_T, AC_SIZE_T, AC_PID_T,
+	AC_ST_BLKSIZE, AC_STRUCT_TM): Quote the whole macro body.
+
+	* acgeneral.m4 (AC_OUTPUT): Look for config header.in in
+	top_srcdir, not srcdir.  From Garrett Wollman.
+
+	* acgeneral.m4 (AC_OUTPUT): Don't add make .NOEXPORT rule to
+	output files.
+
+	* acgeneral.m4, acspecific.m4: Rename AC_PROG_CHECK to
+	AC_PROGRAM_CHECK, AC_PROG_EGREP to AC_PROGRAM_EGREP,
+	AC_TEST_PROG to AC_TEST_PROGRAM.
+
+Wed Jun  3 14:00:07 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_INIT, AC_OUTPUT): Add --no-create option.
+
+	* acgeneral.m4 (AC_COMPILE_CHECK): Check the C compiler exit
+	status instead of trying to run the test program.
+
+	* acspecific.m4 (AC_RESTARTABLE_SYSCALLS): Use AC_TEST_PROG
+	instead of doing it by hand.
+
+	* acspecific.m4 (AC_PROG_GCC, AC_AIX, AC_XENIX_DIR,
+	AC_SCO_INTL, AC_DYNIX_SEQ): Use AC_PROG_EGREP instead of
+	AC_TEST_PROG.
+
+	* acgeneral.m4 (AC_TEST_PROG): Renamed from AC_TEST_PROGRAM.
+
+	* acgeneral.m4 (AC_INIT): Don't relativize `.'.
+	(AC_OUTPUT): Substitute the subdirectory path, not the top
+	path, for srcdir, unless the top path is `.'.
+
+	* acgeneral.m4 (AC_OUTPUT): Special-case substituting DEFS.
+	From Ian Lance Taylor.
+
+	* acspecific.m4 (AC_GCC_TRADITIONAL): Use CPP instead of
+	compiling a test program.
+
+	* acgeneral.m4 (AC_TEST_CPP): Pass DEFS to CPP.
+	(AC_HEADER_EGREP): Don't echo anything.
+	(AC_PROG_EGREP): New macro.
+
+Tue Jun  2 14:07:27 1992  David J. MacKenzie  (djm@churchy.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_CONFIG_HEADER): Renamed from AC_HEADER_FILE.
+	Rename AC_HEADER_NAME TO AC_CONFIG_NAME.
+	(AC_SUBST): Add the arg variable to a diversion for config.status.
+	(AC_OUTPUT): Write the code to create output files into config.status,
+	then run that.  Always use `awk'; checking for nawk in a subshell
+	doesn't seem to work on 4.3BSD.
+
+	* acgeneral.m4 (AC_HEADER_EGREP): Pass DEFS to CPP.
+
+	* acspecific.m4 (AC_SIZE_T): Define size_t as int, not long.
+	From Ian Lance Taylor.
+
+	* acspecific.m4 (AC_STDC_HEADERS): Also check for stdarg.h.
+	From Garrett Wollman.
+
+Wed May 20 00:34:03 1992  David J. MacKenzie  (djm@churchy.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_OUTPUT): Use nawk if available.
+
+	* acgeneral.m4 (AC_INIT): Make srcdir=`.' absolute.
+
+	* acspecific.m4 (AC_DIR_HEADER): Include sys/types.h before
+	dir header in closedir test.
+
+	* acgeneral.m4, acspecific.m4: AC_LIBTHING_CHECK renamed to
+	AC_COMPILE_CHECK.
+
+	* acspecific.m4 (AC_AIX, AC_XENIX_DIR, AC_SCO_INTL, AC_DYNIX_SEQ):
+	Use the C preprocessor instead of just looking for files.
+
+Mon May 18 20:51:50 1992  David J. MacKenzie  (djm@wookumz.gnu.ai.mit.edu)
+
+	* acspecific.m4 (WORDS_BIGENDIAN): Fix exit expression.
+	(AC_DECLARE_YYTEXT): Eval $CPP.
+	(AC_DIR_HEADER): Compile the test program; don't just
+	preprocess it.  Above all from Karl Berry.
+
+Fri May 15 00:57:01 1992  David J. MacKenzie  (djm@churchy.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_AIX): Don't define _BSD, to avoid getting
+	union wait.
+
+	* acgeneral.m4 (AC_HEADER_EGREP): New macro, replacing AC_IDENT*.
+	* acspecific.m4 (AC_MEMORY_H, AC_RETSIGTYPE, AC_{UID,SIZE,PID}_T):
+	Use it.
+
+	* acgeneral.m4 (AC_TEST_CPP): New macro.
+	(AC_IDENT_{PRESENT,MISSING}): Macros deleted.
+	(AC_HEADER_CHECK): Use AC_TEST_CPP, replaces AC_HEADER_{PRESENT,
+	MISSING}.
+	(AC_LIBTHING_CHECK): Replace AC_LIBTHING_{PRESENT,MISSING}.
+	(AC_FUNC_CHECK): Replace AC_FUNC_PRESENT.
+	(AC_INIT): Don't set INCLUDEDIR.
+	* acspecific.m4 (AC_DIR_HEADER): Use AC_TEST_CPP.
+	* All other macros: Don't refer to INCLUDEDIR; use
+	AC_HEADER_CHECK instead.
+
+	* acspecific.m4 (AC_PROG_CPP): Don't evaluate $CC until called.
+	Try $CC -E before /lib/cpp.
+
+Thu May 14 23:15:02 1992  David J. MacKenzie  (djm@churchy.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_OUTPUT): Remove each file before creating it.
+
+Sat May  9 14:52:57 1992  David J. MacKenzie  (djm@churchy.gnu.ai.mit.edu)
+
+	* acspecific.m4 (AC_WAIT3_RUSAGE): New macro.
+
+	* acgeneral.m4 (AC_INIT, AC_OUTPUT): Use AC_SUBST instead of a
+	special mechanism to substitute for srcdir.
+
+	* acgeneral.m4 (AC_OUTPUT): Substitute for exec_prefix if it
+	was given, even if not substituting for prefix.
+
+	* acgeneral.m4 (AC_INIT, AC_OUTPUT): Remove @VPATH@
+	substitution; use @srcdir@ instead.
+
+Sun May  3 01:21:47 1992  David J. MacKenzie  (djm@geech.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_NOTICE): New macro taken from AC_INIT, to avoid
+	m4 coredump.  From Karl Berry.
+
+	* acgeneral.m4 (AC_OUTPUT): Look for header-file.in in $srcdir,
+	not current dir.
+
+	* acgeneral.m4 (AC_IDENT_{MISSING,PRESENT}): Make them agree
+	with the documentation -- the third arg is a shell command,
+	not an identifier to define.
+	* acspecific.m4 (AC_DIR_HEADER): Change the caller.
+
+Mon Apr 27 09:15:15 1992  David J. MacKenzie  (djm@churchy.gnu.ai.mit.edu)
+
+	* acspecific.m4: Use AC_TEST_PROGRAM wherever $compile was
+	being used directly.
+
+	* acgeneral.m4 (AC_HAVE_HEADERS, AC_HAVE_FUNCS,
+	AC_FUNC_PRESENT, AC_TEST_PROGRAM): New macros from Ian Lance Taylor.
+
+	* acspecific.m4 (AC_PROG_INSTALL): Screen out /usr/sbin/install.
+	(AC_CHAR_UNSIGNED): Don't define __CHAR_UNSIGNED__ if it's
+	predefined.
+
+Fri Apr 24 10:08:21 1992  David J. MacKenzie  (djm@churchy.gnu.ai.mit.edu)
+
+	* acgeneral.m4 (AC_OUTPUT): Make the arg a list of files instead of
+	directories.
+
+	* acspecific.m4 (AC_ALLOCA): Check whether the alternate libraries
+	actually contain alloca.  From Ian Lance Taylor.
+
+	* acspecific.m4 (AC_PROG_CPP): New macro.
+
+	* acgeneral.m4 (AC_OUTPUT): Allow newly defined values to be more
+	than one word for AC_HEADER_FILE.  From Karl Berry.
+
+	* acgeneral.m4 (AC_OUTPUT): Don't substitute DEFS if AC_HEADER_FILE.
+	(AC_LIBTHING{PRESENT,MISSING}): Run conftest in subshell.
+	From Ian Lance Taylor.
+
+
+	-----
+
+	Copyright (C) 1992 Free Software Foundation, Inc.
+
+	This program is free software: you can redistribute it and/or
+	modify it under the terms of the GNU General Public License as
+	published by the Free Software Foundation, either version 3 of the
+	License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see
+	<http://www.gnu.org/licenses/>.

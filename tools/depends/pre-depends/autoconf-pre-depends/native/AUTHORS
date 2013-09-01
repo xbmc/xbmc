@@ -1,0 +1,120 @@
+Authors of GNU Autoconf.
+
+Autoconf was originally written by David MacKenzie, with help from
+François Pinard, Karl Berry, Richard Pixley, Ian Lance Taylor, Roland
+McGrath, Noah Friedman, david d zuhn, and many others.
+
+Ben Elliston next took over the maintenance, facing a huge Autoconf
+backlog that had been piling up since the departure of David.  Other
+maintainers have included Akim Demaille, Jim Meyering, Alexandre
+Oliva, and Tom Tromey, with plenty of contributions from Lars J. Aas,
+Mo DeJong, Steven G. Johnson, Matthew D. Langston, Pavel Roskin.
+
+Today, the primary maintainers are Paul Eggert and Eric Blake, with
+help from Ralf Wildenhues, Stepan Kasal, and Benoit Sigoure.  Many
+other people have contributed, as listed in the THANKS file.
+
+The following contributors have warranted legal paper exchanges with
+the Free Software Foundation for their contributions to GNU Autoconf.
+This list results from searching for AUTOCONF in the file
+/gd/gnuorg/copyright.list on the fencepost.gnu.org machine.
+
+David J. MacKenzie          djm@gnu.org                         1991-07-09
+James L. Avera              ?                                   1993-10-04
+Roland McGrath              roland@gnu.org                      1994-06-24
+Noah Friedman               friedman@gnu.org                    1994-07-15
+Francois Pinard             pinard@iro.umontreal.ca             1997-02-02
+Thomas E. Dickey            dickey@clark.net                    1998-01-11
+Matthew D. Langston         langston@slac.stanford.edu          1998-09-29
+Mark Elbrecht               snowball3@usa.net                   1999-01-11
+Akim Demaille               akim@gnu.org                        1999-02-02
+Pavel Roskin                pavel_roskin@geocities.com          1999-02-24
+Alexandre Oliva             oliva@dcc.unicamp.br                1999-03-26
+Thomas Tanner               tanner@ffii.org                     1999-06-23
+Gary V. Vaughan             gary@gnu.org                        2000-01-10
+Joseph Samuel Myers         jsm28@cam.ac.uk                     2000-03-13
+Lars J. Aas                 larsa@sim.no                        2000-07-07
+Morten Eriksen              mortene@sim.no                      2000-07-07
+Martin Wilck                martin@tropos.de                    2000-07-12
+Paul Eggert                 eggert@twinsun.com                  2000-10-13
+Alexandre Duret-Lutz        duret_g@epita.fr                    2001-02-12
+Tim Van Holder              tim.van.holder@pandora.be           2001-02-13
+Christian Marquardt         marq@gfz-potsdam.de                 2001-02-19
+Derek R. Price              dprice@collab.net                   2001-03-12
+Markus Kuhn                 Markus.Kuhn@cl.cam.ac.uk            2001-07-07
+Erik Lindahl                erik@theophys.kth.se                2001-08-22
+Hans-Peter Nilsson          hp@bitrange.com                     2001-10-24
+Paul Wagland                paul@wagland.net                    2001-10-30
+Paolo Bonzini               bonzini@gnu.org                     2001-11-08
+Nishio Futoshi              fut_nis@d3.dion.ne.jp               2002-01-23
+Federico G. Schwindt        fgsch@openbsd.org                   2002-05-21
+Mark D. Roth                roth@feep.net                       2002-05-28
+Greg McGary                 greg@mcgary.org                     2002-06-05
+Charles Stephen Wilson      cwilson@ece.gatech.edu              2002-07-25
+Robert Bernstein            rocky@panix.com                     2002-08-20
+Assar Westerlund            assar@kth.se                        2002-09-13
+Scott Bambrough             sbambrough@storm.ca                 2002-09-24
+Richard Dawe                rich@phekda.freeserve.co.uk         2003-01-23
+Andreas Buening             andreas.buening@nexgo.de            2003-02-18
+Raja R. Harinath            harinath@acm.org                    2003-02-25
+Ilya Zakharevich            ilya@Math.Berkeley.EDU              2003-03-11
+Kaveh Ghazi                 ghazi@caip.rutgers.edu              2003-03-15
+Felix Lee                   felix.1@canids.net                  2003-03-31
+Nathanael Nerode            neroden@twcny.rr.com                2003-04-04
+Gavin Puche                 user42@zip.com.au                   2003-04-10
+Steven Glenn Johnson        stevenj@alum.mit.edu                2003-07-26
+Bernardo Innocenti          bernie@codewiz.org                  2003-07-31
+Albert Marsden Chin-A-Young china@thewrittenword.com            2003-08-02
+Ralf Corsepius              corsepiu@faw.uni-ulm.de             2003-09-03
+Scott Remnant               scott@netsplit.com                  2003-10-04
+Daniel Jacobowitz           dan@debian.org                      2003-10-17
+Kevin Fleming               kpfleming@backtobasicsmgmt.com      2003-11-17
+John David Anglin           dave.anglin@nrc-cnrc.gc.ca          2004-01-21
+Eric Sunshine               sunshine@sunshineco.com             2004-01-25
+Ralf Wildenhues             Ralf.Wildenhues@gmx.de              2004-02-12
+Noah Jeffrey Misch          noah@cs.caltech.edu                 2004-07-05
+Thorsten Glaser             tg@66h.42h.de                       2004-10-11
+Peter O'Gorman              peter@pogma.com                     2004-11-14
+Toshio Ernie Kuratomi       toshio@tiki-lounge.com              2004-11-17
+Roger Leigh                 rleigh@whinlatter.ukfsn.org         2004-12-09
+Ian Lance Taylor            ian@airs.com                        2004-12-22
+Daniel Manthey              dan_manthey@partech.com             2005-02-14
+Gregorio Guidi              greg_g@gentoo.org                   2005-03-03
+Bruno Haible                bruno@clisp.org                     2005-06-12
+Toby Oliver Hilary White    tow21@cam.ac.uk                     2005-10-18
+Eric Benjamin Blake         ebb9@byu.net                        2006-01-18
+Romain Lenglet              romain.lenglet@laposte.net          2006-02-10
+Markus Duft                 markus.duft@salomon.at              2006-08-03
+Robert Schiele              rschiele@gmail.com                  2006-09-12
+Joel Edward Denny           jdenny@clemson.edu                  2006-09-15
+Helge Deller                deller@gmx.de                       2007-02-01
+Benoit Sigoure              tsuna@lrde.epita.fr                 2007-04-20
+Bob Proulx                  bob@proulx.com                      2007-06-25
+Bruce Korb                  bkorb@gnu.org                       2008-05-06
+Benjamin Pfaff              blp@gnu.org                         2008-09-29
+Peter Breitenlohner         peb@mppmu.mpg.de                    2009-08-18
+Stefano Lattarini           stefano.lattarini@gmail.com         2009-10-01
+Peter Rosin                 peda@lysator.liu.se                 2010-07-21
+
+========================================================================
+
+Local Variables:
+mode: text
+coding: utf-8
+End:
+
+Copyright (C) 1996, 2000, 2001, 2005, 2007, 2008, 2009, 2010 Free
+Software Foundation, Inc.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.

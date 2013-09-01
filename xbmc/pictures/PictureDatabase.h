@@ -117,16 +117,15 @@ public:
      \param iTrack [in] the track number and disc number of the picture
      \param iDuration [in] the duration of the picture
      \param iYear [in] the year of the picture
-     \param iTimesPlayed [in] the number of times the picture has been played
+     \param iPictureCount [in] the number of times the picture has been played
      \param iStartOffset [in] the start offset of the picture (when using a single audio file with a .cue)
      \param iEndOffset [in] the end offset of the picture (when using a single audio file with .cue)
-     \param dtLastPlayed [in] the time the picture was last played
+     \param dtTaken [in] the time the picture was last played
      \param rating [in] a rating for the picture
      \param iKaraokeNumber [in] the karaoke id of the picture
      \return the id of the picture
      */
-    int AddPicture(const int idPictureAlbum, const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations, int iTrack, int iDuration, int iYear, const int iTimesPlayed, int iStartOffset, int iEndOffset, const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber);
-    bool GetPicture(int idPicture, CPicture& picture);
+  int AddPicture(const int idAlbum, const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations,const CStdString& dtTaken);
     
     /*! \brief Update a picture in the database
      \param idPicture [in] the database ID of the picture to update
@@ -140,15 +139,15 @@ public:
      \param iTrack [in] the track number and disc number of the picture
      \param iDuration [in] the duration of the picture
      \param iYear [in] the year of the picture
-     \param iTimesPlayed [in] the number of times the picture has been played
+     \param iPictureCount [in] the number of times the picture has been played
      \param iStartOffset [in] the start offset of the picture (when using a single audio file with a .cue)
      \param iEndOffset [in] the end offset of the picture (when using a single audio file with .cue)
-     \param dtLastPlayed [in] the time the picture was last played
+     \param dtTaken [in] the time the picture was last played
      \param rating [in] a rating for the picture
      \param iKaraokeNumber [in] the karaoke id of the picture
      \return the id of the picture
      */
-    int UpdatePicture(int idPicture, const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations, int iTrack, int iDuration, int iYear, int iTimesPlayed, int iStartOffset, int iEndOffset, const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber);
+    int UpdatePicture(int idPicture, const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations, const CStdString& dtTaken);
     // bool DeletePicture(int idPicture);
     
     //// Misc Picture
@@ -158,7 +157,8 @@ public:
     bool RemovePicturesFromPath(const CStdString &path, MAPPICTURES& pictures, bool exact=true);
     bool SetPictureRating(const CStdString &filePath, char rating);
     int  GetPictureByFaceAndPictureAlbumAndTitle(const CStdString& strFace, const CStdString& strPictureAlbum, const CStdString& strTitle);
-    
+    bool GetPicture(int idPicture, CPicture& picture);
+  
     /////////////////////////////////////////////////
     // PictureAlbum
     /////////////////////////////////////////////////
@@ -167,7 +167,7 @@ public:
      \param pictureIDs [out] the ids of the added pictures
      \return the id of the PictureAlbum
      */
-    int  AddPictureAlbum(const CStdString& strPictureAlbum, const CStdString& strFace, const CStdString& strLocation, int year, bool bCompilation);
+    int  AddPictureAlbum(const CStdString& strPictureAlbum, const CStdString& strFace, const CStdString& strLocation);
     bool GetPictureAlbum(int idPictureAlbum, CPictureAlbum& PictureAlbum);
     int  UpdatePictureAlbum(int idPictureAlbum, const CPictureAlbum &PictureAlbum);
     bool DeletePictureAlbum(int idPictureAlbum);
@@ -454,6 +454,7 @@ private:
     {
         picture_idPicture=0,
         picture_strFaces,
+        picture_takenOn,
         picture_strLocations,
         picture_idPath,
         picture_idAlbum,
@@ -461,17 +462,7 @@ private:
         picture_strTitle,
         picture_strFileName,
         picture_idThumb,
-      picture_strPath,
-      picture_iTimesPlayed,
-      picture_iStartOffset,
-      picture_iEndOffset,
-      picture_lastplayed,
-      picture_rating,
-      picture_comment,
-      picture_iTrack,
-      picture_iDuration,
-      picture_iYear
-      
+      picture_strPath
     } PictureFields;
     
     // Fields should be ordered as they
@@ -482,24 +473,8 @@ private:
         album_strAlbum,
         album_strFaces,
         album_strLocations,
-        album_iYear,
         album_idAlbumInfo,
-        album_strMoods,
-        album_strStyles,
-        album_strThemes,
-        album_strReview,
-        album_strLabel,
-        album_strType,
         album_strThumbURL,
-        album_iRating,
-        album_bCompilation,
-        album_iTimesPlayed,
-        
-        // used for GetPictureAlbumInfo to get the cascaded Face credits
-        album_idFace,
-        album_strFace,
-        album_bFeatured,
-        album_strJoinPhrase
     } PictureAlbumFields;
     
     enum _FaceFields

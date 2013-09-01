@@ -1,0 +1,401 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Измените Ваш</string>
+  <string id="31001">Нравится</string>
+  <string id="31002">Не Нравится</string>
+  <string id="31003">Настройки Питания</string>
+  <string id="31004">Работаю...</string>
+  <string id="31005">Спрятать ИНФОРМАЦИЮ</string>
+
+  <string id="31007">Дополнения</string>
+
+  <string id="31020">Недавно Добавленные</string>
+  <string id="31021">Видео - Файлы</string>
+  <string id="31022">Музыка - Файлы</string>
+  <string id="31023">Проигрывается</string>
+  <string id="31024">Страница</string>
+  <string id="31025">Объекта(ов)</string>
+  <string id="31026">Разные Опции</string>
+  <string id="31027">Расположение</string>
+
+  <!-- View Type labels -->
+  <string id="31030">Полный список</string>
+  <string id="31031">Эскизы Картинок</string>
+  <string id="31032">Уголки на Картинке</string>
+  <string id="31033">Информация</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Сейчас проигрывается</string>
+
+  <string id="31042">ПРОИГРЫВАЕТСЯ</string>
+  <string id="31043">ПАУЗА</string>
+  <string id="31044">ПЕРЕМОТКА ВПЕРЕД</string>
+  <string id="31045">ПЕРЕМОТКА НАЗАД</string>
+  <string id="31046">Аудио Свойства</string>
+  <string id="31047">Текущая Предустановка</string>
+  <string id="31048">Предустановка Визуализации</string>
+  <string id="31049">Время Окончания</string>
+  <string id="31050">Предыдущий</string>
+  <string id="31051">Следующий</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Открыть плейлист</string>
+  <string id="31056">Сохранить плейлист</string>
+  <string id="31057">Закрыть плейлист</string>
+  <string id="31058">Системные музыкальные файлы</string>
+  <string id="31059">Текущий плейлист</string>
+  <string id="31060">Этом файл состоит из нескольких, выберите часть для проигрывания.</string>
+  <string id="31061">Выбранные</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Настройки домашней папки</string>
+  <string id="31102">Фон</string>
+  <string id="31103">Показывать "Пауза" в фото слайдшоу</string>
+  <string id="31106">Различные Опции</string>
+  <string id="31108">Спрятать Кнопки Главного Меню</string>
+  <string id="31109">Фон Медиа</string>
+  <string id="31110">Редактировать Фон для Типов Медиа</string>
+  <string id="31111">Спрятать</string>
+  <string id="31112">Настройки</string>
+  <string id="31113">Одно Изображение</string>
+  <string id="31114">Несколько Изображений</string>
+  <string id="31115">Мастер</string>
+  <string id="31116"></string>
+  <string id="31117">Показывать Недавно Добавленные Видео</string>
+  <string id="31118">Подменю Программ Домашней Страницы</string>
+  <string id="31119">Включить Кнопку Пользовательского Дополнения</string>
+  <string id="31120">Кнопка Метки</string>
+  <string id="31121">Расположение Дополнения</string>
+  <string id="31122">Страница Погоды</string>
+  <string id="31123">Использовать "Постеры" вместо "Баннеров" для Сериалов</string>
+  <string id="31126">Включить Тексты в Экранном Меню Музыки</string>
+  <string id="31127">Расположение Дополнения для Текстов</string>
+  <string id="31128">Тексты</string>
+  <string id="31129">Включить Загрузку Субтитров в в Экранном Меню Видео</string>
+  <string id="31130">Расположение Дополнения Субтитров</string>
+
+  <!-- Script labels -->
+  <string id="31200">Ярлыки</string>
+  <string id="31201">Категории</string>
+  <string id="31202">Show Cast</string>
+  <string id="31203">Выберите Вашу Песню</string>
+  <string id="31204">Section Links</string>
+  <string id="31205">Источник Текстов</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Текущая Температура</string>
+  <string id="31301">Последнее Обновление</string>
+  <string id="31302">Меню</string>
+  <string id="31303"></string>
+  <string id="31304">Фото</string>
+  <string id="31305">Не Обнаружено Дисков с Медиа</string>
+  <string id="31306">Извлечь</string>
+  <string id="31307">Спрятать Фанарт</string>
+  <string id="31308">Подробности Фильма</string>
+  <string id="31309">Памяти Использовано:</string>
+  <string id="31310">Номер Трека</string>
+  <string id="31311">Фанарт [CR][CR]Недоступен[CR][CR] Нажмите кнопку для установки</string>
+  <string id="31312">Текущий Инфо-ресурс</string>
+  <string id="31313">Выбери Инфо-ресурс</string>
+  <string id="31314">Настройки Сканирования Содержимого</string>
+  <string id="31315">Основной</string>
+  <string id="31316"></string>
+  <string id="31317">Установить Местоположение Фанарта</string>
+  <string id="31319">Выбранный Профиль</string>
+  <string id="31320">Последний Вход</string>
+  <string id="31321">Выбор Песен Караоке</string>
+  <string id="31322">Показан</string>
+  <string id="31323">Свежие Фильмы</string>
+  <string id="31324">Свежие Эпизоды</string>
+  <string id="31325">Настройки Плейлиста</string>
+  <string id="31326">Создан</string>
+  <string id="31327">Разрешение</string>
+  <string id="31328">Недавно Добавленный</string>
+  <string id="31329">[B]Таймер установлен![/B] [COLOR=grey2] - Автоматическое выключение системы через[/COLOR]</string>
+  <string id="31330">Нажмите кнопку для воспроизведения[CR][CR]трейлера Фильма</string>
+  <string id="31331">Последний Фильм</string>
+  <string id="31332">Последний Эпизод</string>
+  <string id="31333">Недавний</string>
+  <string id="31334">Последний</string>
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Пауза</string>
+  <string id="31352">Стоп</string>
+  <string id="31353">Перемотка Вперед</string>
+  <string id="31354">Перемотка Назад</string>
+  <string id="31355">Меню Фильма</string>
+  <string id="31356">Скачать Субтитры</string>
+  <string id="31357">
+  </string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Обложка по умолчанию</string>
+  <string id="31391">Светлый</string>
+  <string id="31392">Основанное на Arial</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]НАСТРОЙКА ПАРАМЕТРОВ ВНЕШНЕГО ВИДА[/B][CR][CR]Сменить оформление · Установить язык и регион  · Изменить опции списка файлов[CR]Установить заставку</string>
+  <string id="31401">[B]НАСТРОЙКА ПАРАМЕТРОВ ВИДЕО[/B][CR][CR]Управление вашей видео библиотекой · Настраивайте воспроизведение видео· Изменить опции видео списков[CR]Выберите шрифты для субтитров</string>
+  <string id="31402">[B]НАСТРОЙКА ПАРАМЕТРОВ МУЗЫКИ[/B][CR][CR]Управление вашей музыкальной библиотекой · Настраивайте воспроизведение музыки · Изменить опции список музыки[CR]Выбрать размещение песни · Установите опции караоке</string>
+  <string id="31403">[B]НАСТРОЙКА ПАРАМЕТРОВ ФОТО[/B][CR][CR]Установить опции списков фото · Настройте слайдшоу</string>
+  <string id="31404">[B]НАСТРОЙКА ПАРАМЕТРОВ ПОГОДЫ[/B][CR][CR]Выберите три города для сбора погодной информации</string>
+  <string id="31405">[B]НАСТРОЙКА ПАРАМЕТРОВ СЕТИ[/B][CR][CR]Настройка управления XBMC по UPnP и HTTP · Управление доступом к файлам[CR]Установите настройки доступа сети</string>
+  <string id="31406">[B]НАСТРОЙКА ПАРАМЕТРОВ СИСТЕМЫ[/B][CR][CR]Настройка и калибрование экрана · Установка аудио выхода · Настройка Пульта ДУ[CR]Выбор опций энергосбережения · Включить отладку · Установить мастер ключ</string>
+  <string id="31408">[B]НАСТРОЙКА ПАРАМЕТРОВ ДОПОЛНЕНИЙ[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings</string>
+  
+<string id="31421">Выберите ваш XBMC Профиль[CR] для входа и продолжайте</string>
+  
+  <!--Aeon Nox-->
+  <string id="312573">Нажмите ВВЕРХ для просмотра трейлера </string>
+  <string id="312574">Нажми 'X' для остановки</string>
+  <string id="312575">Нажмите SELECT для просмотра трейлера</string>
+  <string id="312576">Премьера</string>
+  <string id="312577">Инфо недоступно</string>
+  <string id="312581">Н/Д</string>
+  <string id="312578">НАСТРОЙКИ</string>
+  <string id="31201">ИЗМЕНИТЬ</string>
+  <string id="31202">АССИСТЕНТ</string>
+  <string id="312579">ВИЗУАЛИЗАЦИЯ ДОМАШНЕГО ЭКРАНА(ВИДЕО): ВЫКЛ</string>
+  <string id="312580">ВИЗУАЛИЗАЦИЯ ДОМАШНЕГО ЭКРАНА(ВИДЕО): ВКЛ</string>
+  <string id="312030">ВИЗУАЛИЗАЦИЯ ДОМАШНЕГО ЭКРАНА(АУДИО): ВЫКЛ</string>
+  <string id="312040">ВИЗУАЛИЗАЦИЯ ДОМАШНЕГО ЭКРАНА(АУДИО): ВКЛ</string>
+  <string id="31206">ТАЙМЕР ВЫКЛЮЧЕНИЯ</string>
+  <string id="31207">ПЕРЕЗАГРУЗКА</string>
+  <string id="31208">ВЫКЛЮЧЕНИЕ</string>
+  <string id="31209">ВЫХОД</string>
+  <string id="31210">ИЗВЛЕЧЬ</string>
+  <string id="41003">ЗАКРЫТЬ XBMC</string>
+  <string id="31700">КОДЕК</string>
+  <string id="31702">ЧАСТОТА ДИСКРЕТИЗАЦИИ</string>
+  <string id="31703">КАНАЛОВ</string>
+  <string id="31713">ОБЪЕКТЫ В ПЛЕЙЛИСТЕ</string>
+  <string id="31714">ТЕКУЩАЯ ПОЗИЦИЯ</string>
+  <string id="31131">Опустить главное меню во время блока</string>
+  <string id="31140">OSD Музыки</string>
+  <string id="31141">OSD Видео</string>
+  <string id="31143">Анимированный Фанарт в Музыкальной Визуализации</string>
+  <string id="31144">Музыкальный фанарт "Текущий плейлист"</string>
+  <string id="31145">Спрятать Студийные и Рейтинговые значки</string>
+  <string id="31146">Показать 10 треков в плейлисте вместо 5</string>
+  <string id="31147">Показать плейлист</string>
+  <string id="31148">Показать счетчик</string>
+  <string id="31149">Завершение работы XBMC! [CR]Вы уверены?</string>
+  <string id="31407">[B]НАСТРОЙКА ПАРАМЕТРОВ ОБЛОЖКИ[/B][CR][CR]Настройте обложку Aeon Nox · Добавьте или уберите элементы домашнего меню[CR]Изменить фоны обложки</string>
+  <string id="31409">[B]МОНИТОРИНГ ВАШЕЙ СИСТЕМЫ[/B][CR][CR]Проверьте ваше оборудование · Измерьте нагрузку на ЦП[CR] Узнайте номер сборки вашего XBMC</string>
+  <string id="31124">Bigger top bar on music OSD</string>
+  <string id="31125">Показать Фон в "Now Playing" Визуализации</string>
+  <string id="31142">Показать Фанарт Альбомного Уровня	 в Визуализации</string>
+  <string id="31107">Hide Flagging in List View</string>
+  <string id="31104">Использовать оригинальную Aeon Музыка Визуализацию</string>
+  <string id="31105">Блокировать главное меню</string>
+  <string id="31028">Showcase</string>
+  <string id="31029">Showcase2</string>
+  <string id="31150">Landscape</string>
+  <string id="31151">DVD Case</string>
+  <string id="31152">CD Case</string>
+  <string id="31153">Low List</string>
+  <string id="31154">ЗАГРУЗКА</string>
+  <string id="31155">ПОЖАЛУЙСТА ПОДОЖДИТЕ</string>
+  <string id="31156">Режиссер</string>
+  <string id="31157">Written by</string>
+  <string id="31158">Текущее Время</string>
+  <string id="31159">Без Звука</string>
+  <string id="31160">МОДИФИЦИРОВАНО:</string>
+  <string id="31161">СНЯТО:</string>
+  <string id="31162">Трейлеры</string>
+  <string id="31163">Featured</string>
+  <string id="31164">Сортировать</string>
+  <string id="31165">Тонкий список</string>
+  <string id="31166">Инфопанель</string>
+  <string id="31167">- Автоскрытие</string>
+  <string id="31168">No CoverFlow</string>
+  <string id="31169">Тонкая панель</string>
+  <string id="31170">Lower List</string>
+  <string id="31171">Скрипт ТВ Лого</string>
+  <string id="31318">Малый</string>
+  <string id="31172">Показать дополнительную инфу</string>
+  <string id="31173">Получить лого</string>
+  <string id="31174">Включить TvTunes</string>
+  <string id="31175">Добавить Кнопку Видео Плейлиста в Подменю Фильмов</string>
+  <string id="31176">Включить кнопку Плейлистов</string>
+  <string id="31177">Добавить Кнопку Музыкального Плейлиста в Подменю Музыки</string>
+  <string id="31178">Добавить Кнопку Сериального Плейлиста в Подменю Сериалов</string>
+  <string id="31179">Включить Режим Киоска (Отключение Медиа Меню)</string>
+  <string id="31180">Включить Альтернативный Режим Киоска(Скрывает Опции в Медиа Меню)</string>
+  <string id="31181">Добавить Видео Плейлист к Домашнему Меню</string>
+  <string id="31182">Enable Extrathumbs Support in Showcase Views</string>
+  <string id="31183">Enable Shutdown Warning in Home Menu</string>
+  <string id="31184">Show Source Flag Instead of Codec Flag</string>
+  <string id="31185">Viewtype</string>
+  <string id="31186">Установить тайм-аут для авто-скрытия Инфопанели</string>
+  <string id="31187">Тайм-аут для Авто-скрытия Инфопанели (секунды)</string>
+  <string id="31188">Показать Статус</string>
+  <string id="31189">Предыдущий Эпизод</string>
+  <string id="31190">Следующий эпизод</string>
+  <string id="31191">Затенить Фанарт</string>
+  <string id="31192">Сериал - Эскиз</string>
+  <string id="31193">Сериал - Лого</string>
+  <string id="31194">Set Focus Offset of Main Menu (range from -2 to 14)</string>
+  <string id="31195">Add Favourite to Home Menu</string>
+  <string id="31196">Любимый Патч</string>
+  <string id="31197">Включить Избранную Кнопку</string>
+  <string id="31198">Экстраэскизы</string>
+  <string id="31199">Enable Custom Focus Offset of Main Menu on Startup</string>
+  <string id="31217">ПОСЛЕДНЯЯ ПЕСНЯ</string>
+  <string id="31218">ПОСЛЕДНИИ ПЕСНИ</string>
+  <string id="31219">FEATURED EPISODE</string>
+  <string id="31220">FEATURED EPISODES</string>
+  <string id="31221">FEATURED MOVIE</string>
+  <string id="31222">FEATURED MOVIES</string>
+  <string id="31212">- Show Latest Movies Widget</string>
+  <string id="31213">- Show Random Movies Widget</string>
+  <string id="31214">- Show Latest Episodes Widget</string>
+  <string id="31215">- Show Random Episodes Widget</string>
+  <string id="31216">- Show Latest Music Widget</string>
+  <string id="31211">- Show Random Music Widget</string>
+  <string id="31223">- Show Latest Movie Posters Widget</string>
+  <string id="31224">- Show Random Movie Posters Widget</string>
+  <string id="31225">Аудио/Саб</string>
+  <string id="31226">Hide Flags</string>
+  <string id="31227">- Use Vinyl Record as Default in CDArt</string>
+  <string id="31228">Вертикальный</string>
+  <string id="31229">Горизонтальный</string>
+  <string id="31230">Viewtypes</string>
+  <string id="31231">BannerWall</string>
+  <string id="31233">Panel</string>
+  <string id="31234">Wall</string>
+  <string id="31235">Info List</string>
+  <string id="31236">BannerPlex</string>
+  <string id="31237">Нажмите ВЛЕВО для просмотра трейлера</string>
+  <string id="31238">Кнопка Трейлера Trailer Button</string>
+  <string id="31239">-</string>
+  <string id="31240">Показать Новое </string>
+  <string id="31241">Показать Прсмотренное </string>
+  <string id="31242">Submenu of Movies Uses Cinema Experience Script as Default</string>
+  <string id="31243">Рассписание</string>
+  <string id="31244">Enable CDArt in Home Now Playing</string>
+  <string id="31245">Показать Сюжет</string>
+  <string id="31246">Show Plot Outline</string>
+  <string id="31247">Показать Жанр</string>
+  <string id="31248">BD/DVD пачки</string>
+  <string id="31249">Classic</string>
+  <string id="31250">- Transparent</string>
+  <string id="31251">Glass</string>
+  <string id="31252">Add Favorite to Movies Submenu</string>
+  <string id="31253">Add Favorite to Music Submenu</string>
+  <string id="31254">Add Favorite to TV Shows Submenu</string>
+  <string id="31255">- Use Blu-ray Disc as Default in CDArt</string>
+  <string id="31256">Use Wrap List in Landscape and Showcase views</string>
+  <string id="31257">Подробности</string>
+  <string id="31258">Обзор</string>
+  <string id="31259">Нажмите ВПРАВО для просмотра трейлера </string>
+  <string id="31260">Detach Timepanel from Main Menu</string>
+  <string id="31261">Detach Library Stats from Main Menu</string>
+  <string id="31262">Detach RSS Feed from Main Menu</string>
+  <string id="31263">Включить Анимированные Фоны</string>
+  <string id="31264">Enable Background Effect on Panels[I](Can increase CPU usage!)   [/I]</string>
+  <string id="31265">Меньшие по Размеру Всплывающие Сообщения</string>
+  <string id="31266">FORWARD</string>
+  <string id="31267">Enable CDArt in Music Visualization</string>
+  <string id="31268">Enable Breadcrumbs</string>
+  <string id="31269">Enable Background Effect [I](Can increase CPU usage!)   [/I]</string>
+  <string id="31270">Poster Slide</string>
+  <string id="31271">Posters</string>
+  <string id="31272">Layout</string>
+  <string id="31273">Show Overlay</string>
+  <string id="31274">Please Choose a Layout in the Media Menu [CR] (Press Up to Activate Media Menu)</string>
+  <string id="31275">Включить Погодные Фона Основанные на Текущем Состоянии</string>
+  <string id="31276">Use Smaller Now Playing Widget</string>
+  <string id="31277">Wrap List</string>
+  <string id="31278">Fixed List</string>
+  <string id="31279">Проигрывание Трейлеров в Полном Экране во всех видах</string>
+  <string id="31280">Mediaflags</string>
+  <string id="31281">Показывать Видео Информацию при Паузе Плеера</string>
+  <string id="31282">Clear Cases</string>
+  <string id="31283">InfoWall</string>
+  <string id="31284">Cinema</string>
+  <string id="31285">Episode No.</string>
+  <string id="31286">Enable CDArt in List View (only on song level)</string>
+  <string id="31287">4 Thumbs</string>
+  <string id="31288">Disable Trailer Label</string>
+  <string id="31289">Wider Menu Items</string>
+  <string id="31290">TV Schedule</string>
+  <string id="31291">BigFan</string>
+  <string id="31292">Включить Анимированные Погодные Иконки Enable Animated Weather Icons</string>
+  <string id="31293">Square</string>
+  <string id="31293">Square</string>
+  <string id="31296">Animated weather icons</string>
+  <string id="31297">Show fanart slideshow from your music collection</string>
+  <string id="31299">Музыкальная кнопка всегда открывается с "Альбомного" вида</string>
+  <string id="31360">Upcoming</string>
+  <string id="31361">Выключить ФанартDisable fanart</string>
+  <string id="31362">Скругленные Обложки Round Covers</string>
+  <string id="31364">Платформа</string>
+  <string id="31368">Нажмите ВПРАВО для просмотра трейлера</string>
+  <string id="31369">Это заменит большинство настроек вашей Aeon Nox обложки![CR]Вы уверены?</string>
+  <string id="31370">Установить рекомендуемые настройки [I](Ярлыки и местоположения сохраняются нетронутыми)   [/I]</string>
+  <string id="31371">Enable Artist Slideshow fanart</string>
+  <string id="31372">Show Info</string>
+  <string id="31373">Show fanart slideshow from your video collection</string>
+  <string id="31374">Current</string>
+  <string id="31375">Animations</string>
+  <string id="31376">Carousel</string>
+  <string id="31377">CDArt</string>
+  <string id="31378">Set Path to Music Library</string>
+  <string id="31379">- Only on Home window</string>
+
+  <!-- Home Menu -->
+  <string id="31500">ФОТО</string>
+  <string id="31501">МУЗЫКА</string>
+  <string id="31502">ФИЛЬМЫ</string>
+  <string id="31503">СЕРИАЛЫ</string>
+  <string id="31504">ВИДЕО</string>
+  <string id="31505">ПРОГИ</string>
+  <string id="31506">СИСТЕМА</string>
+  <string id="31507">АДДОНЫ</string>
+  <string id="31508">ВЫКЛЮЧЕНИЕ</string>
+  <string id="31509">ИЗБРАННЫЕ</string>
+  <string id="31510">ПОГОДА</string>
+  <string id="31511">ПУСК ДИСКА</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">КАРТЫ</string>
+  <string id="31901">36 ЧАСОВ</string>
+  <string id="31902">ЕЖЕЧАСНО</string>
+  <string id="31903">ВЫХОДНЫЕ</string>
+  <string id="31904">10 ДНЕЙ</string>
+  <string id="31905">ВЫХОДНЫЕ</string>
+  <string id="31906">ТРЕВОГА</string>
+  <string id="31907">ВИДЕО</string>
+
+  <string id="31910">СПУТНИКОВЫЙ &amp; РАДАР</string>
+  <string id="31911">ПРОГНОЗ</string>
+  <string id="31912">УСЛОВИЯ</string>
+  <string id="31913">ВЕТРЕННАЯ ПОГОДА</string>
+  <string id="31914">WEATHER OUTLOOK</string>
+
+  <string id="31923">Average High</string>
+  <string id="31924">Average Low</string>
+  <string id="31925">Record High</string>
+  <string id="31926">Record Low</string>
+  <string id="31927">Observed High</string>
+  <string id="31928">Observed Low</string>
+
+  <string id="31930">Стандартная Вид</string>
+  <string id="31931">Стандартная Карта</string>
+  <string id="31932">Увеличить Карту</string>
+  <string id="31933">Пак Патч Карты</string>
+  <string id="31934">Показать деталиShow Details</string>
+  <string id="31935">Показать RSS</string>
+  <string id="31936">Показывать Ежечасно</string>
+
+  <string id="31940">Давление</string>
+  <string id="31941">Видимость</string>
+  <string id="31943">Статистика</string>
+  <string id="31948">Chance Precip</string>
+
+  <string id="31970">Сбор погодной информации...</string>
+  <string id="31971">Нажмите видео кнопку для воспроизведенияClick video button to play</string>
+
+</strings>

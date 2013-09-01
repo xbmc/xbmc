@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="skin.aeon.nox"
+  version="1.7.0"
+  name="Aeon Nox"
+  provider-name="Big_Noid">
+  <requires>
+    <import addon="xbmc.gui" version="2.11"/>
+    <import addon="script.recentlyadded" version="1.0.4"/>
+    <import addon="script.favourites" version="1.0.3"/>
+    <import addon="script.logo-downloader" version="2.1.3"/>
+    <import addon="script.randomitems" version="1.0.2"/>
+    <import addon="script.tv.show.next.aired" version="2.1.2"/>
+  </requires>
+  <extension
+    point="xbmc.gui.skin"
+    defaultresolution="720p"
+    defaultresolutionwide="720p"
+    defaultthemename="textures.xbt"
+    effectslowdown="0.75"
+    debugging="false"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Aeon Nox by Big_Noid</summary>
+    <summary lang="nl">Aeon Nox door Big_Noid</summary>
+    <summary lang="fr">Aeon Nox par Big_Noid</summary>
+    <description lang="fr">Aeon Nox utilise presque toutes les vues du skin d'origine Aeon, ces mods et les textures du thème Black. Confluence de Jezz_X est la base de ce skin. Tout le mérite aux responsables de ces skins et mods</description>
+    <description lang="en">Aeon Nox started out as a mod of Aeon based on the Confluence skin. Since then it has evolved into a skin with much more views and support for all new add-ons.[CR]Most of Aeon Nox' views are based on the Aeon65 mod by phil65, while other views are original designs or based on views from other skins.[CR]Skins that were a great inspiration for the design of Aeon Nox include:[CR]- Aeon65 by phil65[CR]- Alaska Revisited by Hitcher (Episode view)[CR]- Fusion by Arcanthur (BigFan view)[CR]- reFocus by Jeroen (InfoWall view)[CR]- Xperience by Team Blackbolt (Posters view)[CR]- Simplicity by Team S3 (TV Guide)[CR]- Confluence by Jezz_X (code base)</description>
+    <platform>all</platform>
+  </extension>
+</addon>

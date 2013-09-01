@@ -1,0 +1,88 @@
+<window id="6">
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<views>50,500,501,504,505,511,509,512,560</views>
+	<controls>
+		<include>CommonVideoBackground</include>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<include>backgroundfade</include>
+			<fadetime>FanartCrossfadeTime</fadetime>
+			<visible>!Skin.HasSetting(VideoFilesFanart)</visible>
+      <include condition="Skin.HasSetting(animatedbg)">Animation_Background</include>
+      <include>Animation_OpenCloseZoom</include>		
+		</control>
+    <control type="multiimage">
+      <randomize>false</randomize>
+      <include>CommonFanartVars</include>
+      <imagepath background="true">$INFO[ListItem.Path,,extrafanart]</imagepath>
+      <visible>[Container.Content(movies)+Skin.HasSetting(extrafanartmovies)]|[[Container.Content(tvshows|Container.Content(seasons)]+Skin.HasSetting(extrafanartseries)]</visible>
+    </control>
+    <control type="multiimage">
+      <randomize>false</randomize>
+      <include>CommonFanartVars</include>
+      <imagepath background="true">$INFO[ListItem.Path,,../extrafanart]</imagepath>
+      <visible>Container.Content(episodes)+Skin.HasSetting(extrafanartseries)]</visible>
+    </control>
+    <include>CommonCurtainBackdrop</include>
+    <control type="group">
+      <visible>[Control.IsVisible(512)+Skin.HasSetting(altoverlayinfowall)]</visible>
+      <include>Furniture_WallBackground_Small</include>
+    </control>
+    <control type="group">
+      <visible>Control.IsVisible(512)+!Skin.HasSetting(altoverlayinfowall)</visible>
+      <include>Common_Fanartoverlay</include>
+    </control>
+    <control type="group">
+      <include>Animation_OpenCloseZoom</include>
+      <visible>Control.IsVisible(504)|Control.IsVisible(501)|Control.IsVisible(509)|Control.IsVisible(50)|Control.IsVisible(500)|Control.IsVisible(560)|Control.IsVisible(505)</visible>
+      <include>Furniture_Showcase</include>
+    </control>
+    <control type="group">
+			<include>Animation_OpenCloseZoom</include>		
+			<include>CommonRootView</include> <!-- view id = 50 -->
+      <include>InfoList</include>
+			<include>Showcase</include> --><!-- view id = 501 Showcase -->
+      <include>ShowcaseDVD</include><!-- view id = 504 Showcase DVD-->
+      <include>LowList</include><!-- view id = 511 low List-->
+      <include>Viewtype_Wall</include> --><!-- view id = 500 -->
+      <include>Viewtype_Wall_Movies</include>
+      <include>ShowcaseQuadrate</include>
+      <include>AddonWall</include>
+
+      <!--
+			<include>Banners</include> --><!-- view id = 508 --><!--
+			<include>InfoList</include> --><!-- view id = 505 --><!--
+			<include>AddonInfoListView1</include> --><!-- view id = 550 --><!--
+			<include>LiveTVView1</include> --><!-- view id = 560 -->
+		</control>
+    <control type="button" id="7000">
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onfocus>SetFocus(9000)</onfocus>
+    </control>
+    <control type="group">
+      <visible>Control.IsVisible(512)|Control.IsVisible(50)</visible>
+      <include>VideoWindowPosters</include>
+    </control>
+    <include>ScrollOffsetLabel</include>
+    <control type="group">
+      <include>Animation_OpenCloseZoom</include>
+      <visible>Control.IsVisible(508)|Control.IsVisible(503)|Control.IsVisible(509)|Control.IsVisible(504)|Control.IsVisible(501)|Control.IsVisible(51)|Control.IsVisible(500)|Control.IsVisible(560)</visible>
+      <include>FloorFlags</include>
+    </control>
+    <control type="group">
+      <include>Animation_OpenCloseZoom</include>
+      <visible>Control.IsVisible(508)|Control.IsVisible(503)|Control.IsVisible(509)|Control.IsVisible(504)|Control.IsVisible(501)|Control.IsVisible(500)|Control.IsVisible(560)</visible>
+      <include>Furniture_DarkGradient</include>
+    </control>
+    <include>Media_Menu</include>
+    <include condition="Skin.HasSetting(breadcrumb)">Breadcrumbs</include>
+    <include>Furniture_NowPlayingWidget</include>
+    <include condition="Skin.HasSetting(globaltime)">Furniture_Clock</include>
+  </controls>
+</window>

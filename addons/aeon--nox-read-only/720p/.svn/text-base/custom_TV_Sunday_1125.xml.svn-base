@@ -1,0 +1,1234 @@
+<window id="1125">
+		<defaultcontrol always="true">11000</defaultcontrol>
+	<controls>
+    <control type="group">
+      <control type="multiimage">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <imagepath fallback="special://skin/backgrounds/tvguide.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_TVGuide_Folder)]</imagepath>
+        <timeperimage>10000</timeperimage>
+        <randomize>true</randomize>
+        <fadetime>1000</fadetime>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.1.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.1.airday),Sunday) + Container(11000).HasFocus(1)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.2.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.2.airday),Sunday) + Container(11000).HasFocus(2)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.3.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.3.airday),Sunday) + Container(11000).HasFocus(3)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.4.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.4.airday),Sunday) + Container(11000).HasFocus(4)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.5.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.5.airday),Sunday) + Container(11000).HasFocus(5)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.6.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.6.airday),Sunday) + Container(11000).HasFocus(6)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.7.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.7.airday),Sunday) + Container(11000).HasFocus(7)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.8.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.8.airday),Sunday) + Container(11000).HasFocus(8)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.9.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.9.airday),Sunday) + Container(11000).HasFocus(9)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.10.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.10.airday),Sunday) + Container(11000).HasFocus(10)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.11.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.11.airday),Sunday) + Container(11000).HasFocus(11)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.12.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.12.airday),Sunday) + Container(11000).HasFocus(12)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.13.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.13.airday),Sunday) + Container(11000).HasFocus(13)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.14.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.14.airday),Sunday) + Container(11000).HasFocus(14)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.15.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.15.airday),Sunday) + Container(11000).HasFocus(15)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.16.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.16.airday),Sunday) + Container(11000).HasFocus(16)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.17.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.17.airday),Sunday) + Container(11000).HasFocus(17)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.18.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.18.airday),Sunday) + Container(11000).HasFocus(18)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.19.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.19.airday),Sunday) + Container(11000).HasFocus(19)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.20.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.20.airday),Sunday) + Container(11000).HasFocus(20)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.21.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.21.airday),Sunday) + Container(11000).HasFocus(21)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.22.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.22.airday),Sunday) + Container(11000).HasFocus(22)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.23.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.23.airday),Sunday) + Container(11000).HasFocus(23)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.24.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.24.airday),Sunday) + Container(11000).HasFocus(24)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>$INFO[Window(Home).Property(NextAired.25.Showpath),,fanart.jpg]</texture>
+        <visible>StringCompare(Window(Home).Property(NextAired.25.airday),Sunday) + Container(11000).HasFocus(25)</visible>
+        <include>Animation_CommonFade</include>
+      </control>
+
+      <include>Common_Fanartoverlay</include>
+
+      <control type="group">
+        <include>Animation_CommonFade</include>
+        <include>Animation_OpenCloseZoom</include>
+
+        <control type="label">
+          <posx>125</posx>
+          <posy>35</posy>
+          <width>500</width>
+          <height>30</height>
+          <font>Font_Reg38</font>
+          <textcolor>white</textcolor>
+          <align>left</align>
+          <aligny>center</aligny>
+          <label>17</label>
+          <visible>!Skin.HasSetting(breadcrumb)</visible>
+        </control>
+
+        <!--Posters-->
+        <control type="group">
+          <posx>100</posx>
+          <posy>0</posy>
+          <control type="panel" id="11001">
+            <posx>65</posx>
+            <posy>0</posy>
+            <width>1200</width>
+            <height>600</height>
+            <onleft>11001</onleft>
+            <onright>11001</onright>
+            <onup>-</onup>
+            <ondown>-</ondown>
+            <orientation>horizontal</orientation>
+            <viewtype label="535">list</viewtype>
+            <pagecontrol>-</pagecontrol>
+            <scrolltime>300</scrolltime>
+            <itemlayout height="445" width="941">
+              <control type="image">
+                <posx>20</posx>
+                <posy>105</posy>
+                <width>297</width>
+                <height>445</height>
+                <aspectratio scalediffuse="false">stretch</aspectratio>
+                <texture diffuse="thumbs/movieposter_mask.png" fallback="DefaultVideoBigPoster.png">$INFO[ListItem.Thumb]</texture>
+              </control>
+              <control type="image">
+                <posx>20</posx>
+                <posy>105</posy>
+                <width>297</width>
+                <height>445</height>
+                <aspectratio scalediffuse="false">stretch</aspectratio>
+                <texture diffuse="thumbs/movieposter_mask.png">common/blank.png</texture>
+                <bordertexture border="-90">thumbs/poster_shadow.png</bordertexture>
+              </control>
+              <control type="image">
+                <posx>780</posx>
+                <posy>125</posy>
+                <width>161</width>
+                <height>109</height>
+                <align>right</align>
+                <texture>$INFO[ListItem.ActualIcon]</texture>
+                <include>Animation_CommonFade</include>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>105</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg38</font>
+                <textcolor>white</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$INFO[ListItem.label]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>155</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[31453]: [COLOR=white]$INFO[ListItem.label2][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>195</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[20359]: [COLOR=white]$INFO[ListItem.Property(NextNumber)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>235</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[369]: [COLOR=white]$INFO[ListItem.Property(NextTitle)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>275</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[515]: [COLOR=white]$INFO[ListItem.Property(Genres)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>315</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[312576]: [COLOR=white]$INFO[ListItem.Property(Premiered)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>355</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[31188]: [COLOR=white]$INFO[ListItem.Property(Status)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>395</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[2050]: [COLOR=white]$INFO[ListItem.Property(Runtime),, $LOCALIZE[12391]][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>435</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[31050]: [COLOR=white]$INFO[ListItem.Property(PrevTitle)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>475</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[31322]: [COLOR=white]$INFO[ListItem.Property(PrevDate)][/COLOR]</label>
+              </control>
+            </itemlayout>
+            <focusedlayout height="445" width="941">
+              <control type="image">
+                <posx>20</posx>
+                <posy>105</posy>
+                <width>297</width>
+                <height>445</height>
+                <aspectratio scalediffuse="false">stretch</aspectratio>
+                <texture diffuse="thumbs/movieposter_mask.png" fallback="DefaultVideoBigPoster.png">$INFO[ListItem.Thumb]</texture>
+              </control>
+              <control type="image">
+                <posx>20</posx>
+                <posy>105</posy>
+                <width>297</width>
+                <height>445</height>
+                <aspectratio scalediffuse="false">stretch</aspectratio>
+                <texture diffuse="thumbs/movieposter_mask.png">common/blank.png</texture>
+                <bordertexture border="-90">thumbs/poster_shadow.png</bordertexture>
+              </control>
+              <control type="image">
+                <posx>780</posx>
+                <posy>125</posy>
+                <width>161</width>
+                <height>109</height>
+                <align>right</align>
+                <texture>$INFO[ListItem.ActualIcon]</texture>
+                <include>Animation_CommonFade</include>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>105</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg38</font>
+                <textcolor>white</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$INFO[ListItem.label]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>155</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[31453]: [COLOR=white]$INFO[ListItem.label2][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>195</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[20359]: [COLOR=white]$INFO[ListItem.Property(NextNumber)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>235</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[369]: [COLOR=white]$INFO[ListItem.Property(NextTitle)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>275</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[515]: [COLOR=white]$INFO[ListItem.Property(Genres)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>315</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[312576]: [COLOR=white]$INFO[ListItem.Property(Premiered)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>355</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[31188]: [COLOR=white]$INFO[ListItem.Property(Status)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>395</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[2050]: [COLOR=white]$INFO[ListItem.Property(Runtime),, $LOCALIZE[12391]][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>435</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[31050]: [COLOR=white]$INFO[ListItem.Property(PrevTitle)][/COLOR]</label>
+              </control>
+              <control type="label">
+                <posx>337</posx>
+                <posy>475</posy>
+                <width>482</width>
+                <height>30</height>
+                <font>Font_Reg20</font>
+                <textcolor>grey2</textcolor>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$LOCALIZE[31322]: [COLOR=white]$INFO[ListItem.Property(PrevDate)][/COLOR]</label>
+              </control>
+            </focusedlayout>
+            <content>
+              <item id="1">
+                <label>$INFO[Window(Home).Property(NextAired.1.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.1.NextDate)] @ $INFO[Window(Home).Property(NextAired.1.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.1.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.1.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.1.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.1.Premiered)] on $INFO[Window(Home).Property(NextAired.1.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.1.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.1.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.1.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.1.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.1.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.1.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.1.airday),Sunday) + Container(11000).HasFocus(1)</visible>
+              </item>
+              <item id="2">
+                <label>$INFO[Window(Home).Property(NextAired.2.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.2.NextDate)] @ $INFO[Window(Home).Property(NextAired.2.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.2.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.2.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.2.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.2.Premiered)] on $INFO[Window(Home).Property(NextAired.2.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.2.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.2.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.2.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.2.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.2.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.2.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.2.airday),Sunday) + Container(11000).HasFocus(2)</visible>
+              </item>
+              <item id="3">
+                <label>$INFO[Window(Home).Property(NextAired.3.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.3.NextDate)] @ $INFO[Window(Home).Property(NextAired.3.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.3.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.3.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.3.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.3.Premiered)] on $INFO[Window(Home).Property(NextAired.3.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.3.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.3.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.3.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.3.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.3.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.3.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.3.airday),Sunday) + Container(11000).HasFocus(3)</visible>
+              </item>
+              <item id="4">
+                <label>$INFO[Window(Home).Property(NextAired.4.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.4.NextDate)] @ $INFO[Window(Home).Property(NextAired.4.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.4.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.4.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.4.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.4.Premiered)] on $INFO[Window(Home).Property(NextAired.4.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.4.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.4.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.4.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.4.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.4.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.4.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.4.airday),Sunday) + Container(11000).HasFocus(4)</visible>
+              </item>
+              <item id="5">
+                <label>$INFO[Window(Home).Property(NextAired.5.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.5.NextDate)] @ $INFO[Window(Home).Property(NextAired.5.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.5.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.5.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.5.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.5.Premiered)] on $INFO[Window(Home).Property(NextAired.5.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.5.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.5.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.5.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.5.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.5.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.5.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.5.airday),Sunday) + Container(11000).HasFocus(5)</visible>
+              </item>
+              <item id="6">
+                <label>$INFO[Window(Home).Property(NextAired.6.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.6.NextDate)] @ $INFO[Window(Home).Property(NextAired.6.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.6.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.6.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.6.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.6.Premiered)] on $INFO[Window(Home).Property(NextAired.6.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.6.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.6.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.6.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.6.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.6.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.6.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.6.airday),Sunday) + Container(11000).HasFocus(6)</visible>
+              </item>
+              <item id="7">
+                <label>$INFO[Window(Home).Property(NextAired.7.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.7.NextDate)] @ $INFO[Window(Home).Property(NextAired.7.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.7.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.7.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.7.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.7.Premiered)] on $INFO[Window(Home).Property(NextAired.7.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.7.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.7.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.7.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.7.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.7.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.7.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.7.airday),Sunday) + Container(11000).HasFocus(7)</visible>
+              </item>
+              <item id="8">
+                <label>$INFO[Window(Home).Property(NextAired.8.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.8.NextDate)] @ $INFO[Window(Home).Property(NextAired.8.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.8.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.8.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.8.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.8.Premiered)] on $INFO[Window(Home).Property(NextAired.8.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.8.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.8.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.8.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.8.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.8.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.8.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.8.airday),Sunday) + Container(11000).HasFocus(8)</visible>
+              </item>
+              <item id="9">
+                <label>$INFO[Window(Home).Property(NextAired.9.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.9.NextDate)] @ $INFO[Window(Home).Property(NextAired.9.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.9.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.9.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.9.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.9.Premiered)] on $INFO[Window(Home).Property(NextAired.9.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.9.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.9.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.9.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.9.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.9.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.9.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.9.airday),Sunday) + Container(11000).HasFocus(9)</visible>
+              </item>
+              <item id="10">
+                <label>$INFO[Window(Home).Property(NextAired.10.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.10.NextDate)] @ $INFO[Window(Home).Property(NextAired.10.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.10.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.10.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.10.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.10.Premiered)] on $INFO[Window(Home).Property(NextAired.10.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.10.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.10.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.10.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.10.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.10.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.10.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.10.airday),Sunday) + Container(11000).HasFocus(10)</visible>
+              </item>
+              <item id="11">
+                <label>$INFO[Window(Home).Property(NextAired.11.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.11.NextDate)] @ $INFO[Window(Home).Property(NextAired.11.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.11.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.11.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.11.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.11.Premiered)] on $INFO[Window(Home).Property(NextAired.11.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.11.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.11.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.11.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.11.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.11.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.11.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.11.airday),Sunday) + Container(11000).HasFocus(11)</visible>
+              </item>
+              <item id="12">
+                <label>$INFO[Window(Home).Property(NextAired.12.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.12.NextDate)] @ $INFO[Window(Home).Property(NextAired.12.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.12.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.12.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.12.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.12.Premiered)] on $INFO[Window(Home).Property(NextAired.12.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.12.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.12.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.12.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.12.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.12.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.12.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.12.airday),Sunday) + Container(11000).HasFocus(12)</visible>
+              </item>
+              <item id="13">
+                <label>$INFO[Window(Home).Property(NextAired.13.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.13.NextDate)] @ $INFO[Window(Home).Property(NextAired.13.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.13.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.13.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.13.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.13.Premiered)] on $INFO[Window(Home).Property(NextAired.13.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.13.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.13.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.13.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.13.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.13.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.13.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.13.airday),Sunday) + Container(11000).HasFocus(13)</visible>
+              </item>
+              <item id="14">
+                <label>$INFO[Window(Home).Property(NextAired.14.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.14.NextDate)] @ $INFO[Window(Home).Property(NextAired.14.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.14.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.14.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.14.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.14.Premiered)] on $INFO[Window(Home).Property(NextAired.14.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.14.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.14.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.14.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.14.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.14.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.14.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.14.airday),Sunday) + Container(11000).HasFocus(14)</visible>
+              </item>
+              <item id="15">
+                <label>$INFO[Window(Home).Property(NextAired.15.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.15.NextDate)] @ $INFO[Window(Home).Property(NextAired.15.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.15.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.15.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.15.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.15.Premiered)] on $INFO[Window(Home).Property(NextAired.15.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.15.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.15.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.15.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.15.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.15.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.15.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.15.airday),Sunday) + Container(11000).HasFocus(15)</visible>
+              </item>
+              <item id="16">
+                <label>$INFO[Window(Home).Property(NextAired.16.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.16.NextDate)] @ $INFO[Window(Home).Property(NextAired.16.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.16.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.16.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.16.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.16.Premiered)] on $INFO[Window(Home).Property(NextAired.16.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.16.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.16.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.16.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.16.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.16.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.16.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.16.airday),Sunday) + Container(11000).HasFocus(16)</visible>
+              </item>
+              <item id="17">
+                <label>$INFO[Window(Home).Property(NextAired.17.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.17.NextDate)] @ $INFO[Window(Home).Property(NextAired.17.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.17.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.17.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.17.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.17.Premiered)] on $INFO[Window(Home).Property(NextAired.17.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.17.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.17.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.17.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.17.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.17.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.17.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.17.airday),Sunday) + Container(11000).HasFocus(17)</visible>
+              </item>
+              <item id="18">
+                <label>$INFO[Window(Home).Property(NextAired.18.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.18.NextDate)] @ $INFO[Window(Home).Property(NextAired.18.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.18.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.18.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.18.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.18.Premiered)] on $INFO[Window(Home).Property(NextAired.18.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.18.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.18.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.18.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.18.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.18.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.18.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.18.airday),Sunday) + Container(11000).HasFocus(18)</visible>
+              </item>
+              <item id="19">
+                <label>$INFO[Window(Home).Property(NextAired.19.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.19.NextDate)] @ $INFO[Window(Home).Property(NextAired.19.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.19.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.19.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.19.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.19.Premiered)] on $INFO[Window(Home).Property(NextAired.19.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.19.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.19.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.19.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.19.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.19.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.19.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.19.airday),Sunday) + Container(11000).HasFocus(19)</visible>
+              </item>
+              <item id="20">
+                <label>$INFO[Window(Home).Property(NextAired.20.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.20.NextDate)] @ $INFO[Window(Home).Property(NextAired.20.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.20.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.20.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.20.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.20.Premiered)] on $INFO[Window(Home).Property(NextAired.20.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.20.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.20.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.20.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.20.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.20.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.20.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.20.airday),Sunday) + Container(11000).HasFocus(20)</visible>
+              </item>
+              <item id="21">
+                <label>$INFO[Window(Home).Property(NextAired.21.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.21.NextDate)] @ $INFO[Window(Home).Property(NextAired.21.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.21.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.21.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.21.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.21.Premiered)] on $INFO[Window(Home).Property(NextAired.21.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.21.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.21.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.21.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.21.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.21.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.21.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.21.airday),Sunday) + Container(11000).HasFocus(21)</visible>
+              </item>
+              <item id="22">
+                <label>$INFO[Window(Home).Property(NextAired.22.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.22.NextDate)] @ $INFO[Window(Home).Property(NextAired.22.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.22.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.22.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.22.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.22.Premiered)] on $INFO[Window(Home).Property(NextAired.22.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.22.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.22.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.22.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.22.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.22.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.22.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.22.airday),Sunday) + Container(11000).HasFocus(22)</visible>
+              </item>
+              <item id="23">
+                <label>$INFO[Window(Home).Property(NextAired.23.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.23.NextDate)] @ $INFO[Window(Home).Property(NextAired.23.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.23.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.23.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.23.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.23.Premiered)] on $INFO[Window(Home).Property(NextAired.23.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.23.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.23.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.23.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.23.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.23.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.23.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.23.airday),Sunday) + Container(11000).HasFocus(23)</visible>
+              </item>
+              <item id="24">
+                <label>$INFO[Window(Home).Property(NextAired.24.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.24.NextDate)] @ $INFO[Window(Home).Property(NextAired.24.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.24.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.24.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.24.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.24.Premiered)] on $INFO[Window(Home).Property(NextAired.24.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.24.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.24.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.24.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.24.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.24.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.24.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.24.airday),Sunday) + Container(11000).HasFocus(24)</visible>
+              </item>
+              <item id="25">
+                <label>$INFO[Window(Home).Property(NextAired.25.ShowTitle)]</label>
+                <label2>$INFO[Window(Home).Property(NextAired.25.NextDate)] @ $INFO[Window(Home).Property(NextAired.25.shortime)]</label2>
+                <property name="NextNumber">$INFO[Window(Home).Property(NextAired.25.NextNumber)]</property>
+                <property name="NextTitle">$INFO[Window(Home).Property(NextAired.25.NextTitle)]</property>
+                <property name="Genres">$INFO[Window(Home).Property(NextAired.25.Genres)]</property>
+                <property name="Premiered">$INFO[Window(Home).Property(NextAired.25.Premiered)] on $INFO[Window(Home).Property(NextAired.25.Network)]</property>
+                <property name="Status">$INFO[Window(Home).Property(NextAired.25.Status)]</property>
+                <property name="Runtime">$INFO[Window(Home).Property(NextAired.25.Runtime)]</property>
+                <property name="PrevTitle">$INFO[Window(Home).Property(NextAired.25.LatestTitle)]</property>
+                <property name="PrevDate">$INFO[Window(Home).Property(NextAired.25.LatestDate)]</property>
+                <onclick>-</onclick>
+                <icon>flags/studios/$INFO[Window(Home).Property(NextAired.25.Network),,.png]</icon>
+                <thumb>$INFO[Window(Home).Property(NextAired.25.Showpath),,poster.jpg]</thumb>
+                <visible>StringCompare(Window(Home).Property(NextAired.25.airday),Sunday) + Container(11000).HasFocus(25)</visible>
+              </item>
+            </content>
+          </control>
+        </control>
+      </control>
+
+
+      <!--Logos on buttons-->
+
+      <control type="group">
+        <include>Animation_OpenCloseZoom</include>
+        <posx>0</posx>
+        <posy>0</posy>
+
+        <control type="list" id="11000">
+          <posx>120</posx>
+          <posy>590</posy>
+
+          <width>1040</width>
+          <height>200</height>
+          <align>center</align>
+          <orientation>horizontal</orientation>
+          <onleft>-</onleft>
+          <onright>-</onright>
+          <onup>-</onup>
+          <ondown>-</ondown>
+          <viewtype label="535">list</viewtype>
+          <pagecontrol>-</pagecontrol>
+          <scrolltime>300</scrolltime>
+          <itemlayout height="160" width="260">
+            <control type="image">
+              <posx>15</posx>
+              <posy>15</posy>
+              <width>230</width>
+              <height>70</height>
+              <aspectratio>keep</aspectratio>
+              <texture fallback="tvguide/logo-fallback.png">$INFO[ListItem.Thumb]</texture>
+            </control>
+          </itemlayout>
+          <focusedlayout height="160" width="260">
+            <control type="image">
+              <posx>15</posx>
+              <posy>15</posy>
+              <width>230</width>
+              <height>70</height>
+              <aspectratio>keep</aspectratio>
+              <texture fallback="tvguide/logo-fallback.png">$INFO[ListItem.Thumb]</texture>
+            </control>
+          </focusedlayout>
+          <content>
+            <item id="1">
+              <label>$INFO[Window(Home).Property(NextAired.1.Premiered)] , $INFO[Window(Home).Property(NextAired.1.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.1.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.1.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.1.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.1.airday),Sunday)</visible>
+            </item>
+            <item id="2">
+              <label>$INFO[Window(Home).Property(NextAired.2.Premiered)] , $INFO[Window(Home).Property(NextAired.2.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.2.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.2.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.2.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.2.airday),Sunday)</visible>
+            </item>
+            <item id="3">
+              <label>$INFO[Window(Home).Property(NextAired.3.Premiered)] , $INFO[Window(Home).Property(NextAired.3.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.3.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.3.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.3.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.3.airday),Sunday)</visible>
+            </item>
+            <item id="4">
+              <label>$INFO[Window(Home).Property(NextAired.4.Premiered)] , $INFO[Window(Home).Property(NextAired.4.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.4.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.4.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.4.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.4.airday),Sunday)</visible>
+            </item>
+            <item id="5">
+              <label>$INFO[Window(Home).Property(NextAired.5.Premiered)] , $INFO[Window(Home).Property(NextAired.5.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.5.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.5.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.5.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.5.airday),Sunday)</visible>
+            </item>
+            <item id="6">
+              <label>$INFO[Window(Home).Property(NextAired.6.Premiered)] , $INFO[Window(Home).Property(NextAired.6.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.6.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.6.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.6.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.6.airday),Sunday)</visible>
+            </item>
+            <item id="7">
+              <label>$INFO[Window(Home).Property(NextAired.7.Premiered)] , $INFO[Window(Home).Property(NextAired.7.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.7.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.7.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.7.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.7.airday),Sunday)</visible>
+            </item>
+            <item id="8">
+              <label>$INFO[Window(Home).Property(NextAired.8.Premiered)] , $INFO[Window(Home).Property(NextAired.8.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.8.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.8.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.8.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.8.airday),Sunday)</visible>
+            </item>
+            <item id="9">
+              <label>$INFO[Window(Home).Property(NextAired.9.Premiered)] , $INFO[Window(Home).Property(NextAired.9.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.9.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.9.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.9.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.9.airday),Sunday)</visible>
+            </item>
+            <item id="10">
+              <label>$INFO[Window(Home).Property(NextAired.10.Premiered)] , $INFO[Window(Home).Property(NextAired.10.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.10.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.10.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.10.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.10.airday),Sunday)</visible>
+            </item>
+            <item id="11">
+              <label>$INFO[Window(Home).Property(NextAired.11.Premiered)] , $INFO[Window(Home).Property(NextAired.11.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.11.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.11.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.11.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.11.airday),Sunday)</visible>
+            </item>
+            <item id="12">
+              <label>$INFO[Window(Home).Property(NextAired.12.Premiered)] , $INFO[Window(Home).Property(NextAired.12.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.12.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.12.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.12.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.12.airday),Sunday)</visible>
+            </item>
+            <item id="13">
+              <label>$INFO[Window(Home).Property(NextAired.13.Premiered)] , $INFO[Window(Home).Property(NextAired.13.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.13.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.13.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.13.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.13.airday),Sunday)</visible>
+            </item>
+            <item id="14">
+              <label>$INFO[Window(Home).Property(NextAired.14.Premiered)] , $INFO[Window(Home).Property(NextAired.14.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.14.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.14.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.14.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.14.airday),Sunday)</visible>
+            </item>
+            <item id="15">
+              <label>$INFO[Window(Home).Property(NextAired.15.Premiered)] , $INFO[Window(Home).Property(NextAired.15.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.15.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.15.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.15.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.15.airday),Sunday)</visible>
+            </item>
+            <item id="16">
+              <label>$INFO[Window(Home).Property(NextAired.16.Premiered)] , $INFO[Window(Home).Property(NextAired.16.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.16.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.16.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.16.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.16.airday),Sunday)</visible>
+            </item>
+            <item id="17">
+              <label>$INFO[Window(Home).Property(NextAired.17.Premiered)] , $INFO[Window(Home).Property(NextAired.17.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.17.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.17.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.17.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.17.airday),Sunday)</visible>
+            </item>
+            <item id="18">
+              <label>$INFO[Window(Home).Property(NextAired.18.Premiered)] , $INFO[Window(Home).Property(NextAired.18.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.18.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.18.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.18.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.18.airday),Sunday)</visible>
+            </item>
+            <item id="19">
+              <label>$INFO[Window(Home).Property(NextAired.19.Premiered)] , $INFO[Window(Home).Property(NextAired.19.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.19.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.19.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.19.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.19.airday),Sunday)</visible>
+            </item>
+            <item id="20">
+              <label>$INFO[Window(Home).Property(NextAired.20.Premiered)] , $INFO[Window(Home).Property(NextAired.20.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.20.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.20.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.20.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.20.airday),Sunday)</visible>
+            </item>
+            <item id="21">
+              <label>$INFO[Window(Home).Property(NextAired.21.Premiered)] , $INFO[Window(Home).Property(NextAired.21.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.21.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.21.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.21.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.21.airday),Sunday)</visible>
+            </item>
+            <item id="22">
+              <label>$INFO[Window(Home).Property(NextAired.22.Premiered)] , $INFO[Window(Home).Property(NextAired.22.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.22.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.22.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.22.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.22.airday),Sunday)</visible>
+            </item>
+            <item id="23">
+              <label>$INFO[Window(Home).Property(NextAired.23.Premiered)] , $INFO[Window(Home).Property(NextAired.23.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.23.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.23.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.23.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.23.airday),Sunday)</visible>
+            </item>
+            <item id="24">
+              <label>$INFO[Window(Home).Property(NextAired.24.Premiered)] , $INFO[Window(Home).Property(NextAired.24.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.24.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.24.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.24.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.24.airday),Sunday)</visible>
+            </item>
+            <item id="25">
+              <label>$INFO[Window(Home).Property(NextAired.25.Premiered)] , $INFO[Window(Home).Property(NextAired.25.Genres)]</label>
+              <label2>$INFO[Window(Home).Property(NextAired.25.shortime)]</label2>
+              <onclick>-</onclick>
+              <icon>flags/studios/$INFO[Window(Home).Property(NextAired.25.Network),,.png]</icon>
+              <thumb>$INFO[Window(Home).Property(NextAired.25.Showpath),,logo.png]</thumb>
+              <visible>StringCompare(Window(Home).Property(NextAired.25.airday),Sunday)</visible>
+            </item>
+          </content>
+        </control>
+      </control>
+
+
+      <control type="group">
+        <include>Animation_OpenCloseZoom</include>
+        <posx>0</posx>
+        <posy>0</posy>
+        <control type="image">
+          <posx>30</posx>
+          <posy>627</posy>
+          <width>35</width>
+          <height>35</height>
+          <texture>views/multiplex_arrow2.png</texture>
+          <visible>Container(11000).HasPrevious</visible>
+        </control>
+        <control type="image">
+          <posx>1215</posx>
+          <posy>627</posy>
+          <width>35</width>
+          <height>35</height>
+          <texture>views/multiplex_arrow.png</texture>
+          <visible>Container(11000).HasNext</visible>
+        </control>
+      </control>
+    </control>
+    <include condition="Skin.HasSetting(breadcrumb)">Breadcrumbs</include>
+    <include>Furniture_NowPlayingWidget</include>
+    <include condition="Skin.HasSetting(globaltime)">Furniture_Clock</include>
+	</controls>
+</window>

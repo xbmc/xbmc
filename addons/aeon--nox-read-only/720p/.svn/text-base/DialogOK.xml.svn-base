@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<window id="2002">
+  <defaultcontrol always="true">10</defaultcontrol>
+  <zorder>1</zorder>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="group">
+      <include>SmallerDialogs</include>
+      <include>Dialogs_Group</include>
+      <include>Dialogs_Tablet</include>
+      <include>Dialogs_Exclam</include>
+      <control type="label" id="1">
+        <include>Dialogs_Label1</include>
+      </control>
+      <control type="label" id="2">
+        <include>Dialogs_Label2</include>
+      </control>
+      <control type="label" id="3">
+        <include>Dialogs_Label3</include>
+      </control>
+      <control type="label" id="4">
+        <include>Dialogs_Label4</include>
+      </control>
+    </control>
+    <control type="button" id="10">
+      <description>OK button</description>
+      <include>HiddenObject</include>      
+      <label>186</label>
+      <font>-</font>
+      <textcolor>-</textcolor>
+      <focusedcolor>-</focusedcolor>
+      <align>center</align>
+      <onleft>10</onleft>
+      <onright>10</onright>
+      <onup>10</onup>
+      <ondown>10</ondown>
+    </control>
+  </controls>
+</window>

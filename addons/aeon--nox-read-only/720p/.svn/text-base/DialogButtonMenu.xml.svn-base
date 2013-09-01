@@ -1,0 +1,184 @@
+<window type="buttonMenu" id="111">
+  <defaultcontrol always="true">800</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include>Animation_DialogZoom</include>
+  <controls>
+    <control type="image">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <colordiffuse>AAFFFFFF</colordiffuse>
+      <texture>common/black.png</texture>
+      <animation effect="fade" start="0" end="100" time="3000">WindowOpen</animation>
+      <animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+    </control>
+    <include condition="Skin.HasSetting(effect_bg)">BG_Effect_Home</include>
+    <control type="grouplist" id="800">
+      <posx>486</posx>
+      <posy>0</posy>
+      <width>308</width>
+      <height>720</height>
+      <itemgap>0</itemgap>
+      <onleft>800</onleft>
+      <onright>800</onright>
+      <onup>800</onup>
+      <ondown>800</ondown>
+      <orientation>vertical</orientation>
+      <align>center</align>
+      <control type="image" id="18">
+        <description>Background Top Image</description>
+        <posx>0</posx>
+        <posy>-26</posy>
+        <width>308</width>
+        <height>26</height>
+        <texture>dialogs/context_top.png</texture>
+      </control>
+      <control type="button" id="1">
+        <description>Exit XBMC</description>
+        <label>[UPPERCASE]$LOCALIZE[13012][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>XBMC.Quit()</onclick>
+      </control>
+      <control type="button" id="2">
+        <description>Powerdown XBMC</description>
+        <label>[UPPERCASE]$LOCALIZE[31508][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>XBMC.ShutDown()</onclick>
+      </control>
+      <control type="button" id="3">
+        <description>Shutdown Timer</description>
+        <label>[UPPERCASE]$LOCALIZE[20150][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Powerdown())</onclick>
+        <visible>!System.HasAlarm(shutdowntimer)</visible>
+      </control>
+      <control type="button" id="4">
+        <description>Shutdown Timer</description>
+        <label>[UPPERCASE]$LOCALIZE[20151][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>XBMC.CancelAlarm(shutdowntimer)</onclick>
+        <visible>System.HasAlarm(shutdowntimer)</visible>
+      </control>
+      <control type="button" id="5">
+        <description>Suspend</description>
+        <label>[UPPERCASE]$LOCALIZE[13011][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>XBMC.Suspend()</onclick>
+      </control>
+      <control type="button" id="6">
+        <description>Reboot</description>
+        <label>[UPPERCASE]$LOCALIZE[13013][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>XBMC.Reset()</onclick>
+      </control>
+      <control type="button" id="7">
+        <description>Log Out</description>
+        <label>[UPPERCASE]$INFO[system.profilename,$LOCALIZE[20126] ][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>dialog.close(all,true)</onclick>
+        <onclick>System.LogOff</onclick>
+        <visible>System.HasLoginScreen | IntegerGreaterThan(System.ProfileCount,1)</visible>
+        <visible>System.Loggedon</visible>
+      </control>
+      <control type="togglebutton" id="8">
+        <description>Master mode button</description>
+        <label>[UPPERCASE]$LOCALIZE[20046][/UPPERCASE]</label>
+        <altlabel>[UPPERCASE]$LOCALIZE[20045][/UPPERCASE]</altlabel>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>xbmc.mastermode</onclick>
+        <usealttexture>!System.IsMaster</usealttexture>
+        <visible>System.HasLocks</visible>
+      </control>
+      <control type="button" id="9">
+        <description>Settings</description>
+        <label>312578</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>ActivateWindow(Settings)</onclick>
+      </control>
+      <control type="button" id="10">
+        <description>Now Playing - Audio</description>
+        <label>[UPPERCASE]$LOCALIZE[10517][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>ActivateWindow(musicplaylist)</onclick>
+        <visible>Player.HasAudio|Window.IsActive(musiclibrary)|Window.IsActive(musicfiles)</visible>
+      </control>
+      <control type="button" id="21">
+        <description>Now Playing - Video</description>
+        <label>[UPPERCASE]$LOCALIZE[10522][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>ActivateWindow(videoplaylist)</onclick>
+        <visible>Player.HasVideo|Window.IsActive(videolibrary)|Window.IsActive(videofiles)</visible>
+      </control>
+      <control type="button" id="11">
+        <description>Eject Tray</description>
+        <label>[UPPERCASE]$LOCALIZE[31210][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>EjectTray()</onclick>
+        <visible>System.HasMediaDVD</visible>
+      </control>
+      <control type="button" id="12">
+        <description>File Manager</description>
+        <label>[UPPERCASE]$LOCALIZE[10003][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>ActivateWindow(FileManager)</onclick>
+      </control>
+      <control type="button" id="13">
+        <description>Add-ons</description>
+        <label>[UPPERCASE]$LOCALIZE[24001][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>ActivateWindow(AddonBrowser)</onclick>
+      </control>
+      <control type="button" id="14">
+        <description>Favourites</description>
+        <label>[UPPERCASE]$LOCALIZE[1036][/UPPERCASE]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>ActivateWindow(Favourites)</onclick>
+      </control>
+      <control type="button" id="15">
+        <description>Favourites</description>
+        <label>$LOCALIZE[31428] [B]$INFO[System.Alarmpos][/B]</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>XBMC.CancelAlarm(shutdowntimer)</onclick>
+        <visible>System.HasAlarm(shutdowntimer)</visible>
+      </control>
+      <control type="togglebutton" id="16">
+        <description>Home Visualiser (Video)</description>
+        <label>312580</label>
+        <altlabel>312579</altlabel>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>Skin.Togglesetting(ShowBackgroundVideo)</onclick>
+        <usealttexture>Skin.HasSetting(ShowBackgroundVideo)</usealttexture>
+        <visible>Window.IsActive(home)</visible>
+      </control>
+      <control type="togglebutton" id="17">
+        <description>Home Visualiser (Audio)</description>
+        <label>312040</label>
+        <altlabel>312030</altlabel>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>Skin.Togglesetting(ShowBackgroundVis)</onclick>
+        <usealttexture>Skin.HasSetting(ShowBackgroundVis)</usealttexture>
+        <visible>Window.IsActive(home)</visible>
+      </control>
+      <control type="button" id="20">
+        <description>Favourites</description>
+        <label>31450</label>
+        <include>Objects_ContextMenuButton</include>
+        <onclick>ActivateWindow(1128)</onclick>
+        <visible>Window.IsActive(home)+[Skin.HasSetting(classichome)|Skin.HasSetting(glasshome)]</visible>
+      </control>
+      <control type="image" id="19">
+        <description>Background Bottom Image</description>
+        <posx>0</posx>
+        <posy>466</posy>
+        <width>308</width>
+        <height>27</height>
+        <texture>dialogs/context_bottom.png</texture>
+      </control>
+    </control>
+  </controls>
+</window>

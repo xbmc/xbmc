@@ -1,0 +1,192 @@
+<window id="139">
+  <defaultcontrol always="true">5</defaultcontrol>
+  <include>Animation_CommonFade</include>
+  <controls>
+    <control type="group">
+      <animation effect="slide" start="-508,0" end="0,0" time="400" easing="out" tween="quadratic">WindowOpen</animation>
+      <animation effect="slide" start="0,0" end="-508,0" time="400" easing="out" tween="quadratic">WindowClose</animation>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>508</width>
+        <height>720</height>
+        <texture>common/darkgrey.png</texture>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>83</posy>
+        <width>580</width>
+        <height>637</height>
+        <texture>info/musicinfogradient.png</texture>
+      </control>
+      <control type="group">
+        <posx>55</posx>
+        <animation effect="rotatey" time="0" start="-20" end="-20" center="20,0" condition="true">Conditional</animation>
+        <animation effect="slide" delay="500" start="430" end="0" time="700" tween="cubic" easing="out" >WindowOpen</animation>
+        <control type="image">
+          <description>Cover image</description>
+          <width>370</width>
+          <height>400</height>
+          <posy>160</posy>
+          <texture background="true">$INFO[listitem.thumb]</texture>
+          <bordertexture border="-77">info/musicinfoshadow.png</bordertexture>
+          <aspectratio>scale</aspectratio>
+        </control>
+        <control type="image">
+          <description>Cover image</description>
+          <posy>560</posy>
+          <width>370</width>
+          <height>400</height>
+          <texture background="true" flipy="true" diffuse="thumbs/Thumb_Mask6.png">$INFO[listitem.thumb]</texture>
+          <aspectratio>scale</aspectratio>
+        </control>
+      </control>
+    </control>
+
+    <control type="group">
+      <animation effect="slide" start="772,0" end="0,0" time="400" easing="out" tween="quadratic">WindowOpen</animation>
+      <animation effect="slide" start="0,0" end="772,0" time="400" easing="out" tween="quadratic">WindowClose</animation>
+      <control type="image">
+        <description>background image</description>
+        <posx>508</posx>
+        <posy>0</posy>
+        <width>772</width>
+        <height>720</height>
+        <texture>info/info_rightpanelbottom.png</texture>
+      </control>
+      <control type="image">
+        <posx>508</posx>
+        <posy>0</posy>
+        <width>772</width>
+        <height>720</height>
+        <fadetime>500</fadetime>
+        <texture background="true">$INFO[listitem.thumb]</texture>
+        <aspectratio>scale</aspectratio>
+      </control>
+      <control type="image">
+        <description>background image</description>
+        <posx>508</posx>
+        <posy>0</posy>
+        <width>772</width>
+        <height>720</height>
+        <texture>info/info_rightpaneltop.png</texture>
+      </control>
+      <control type="group">
+        <posx>550</posx>
+        <posy>45</posy>
+        <width>695</width>
+        <height>569</height>
+        <control type="label">
+          <description>header label</description>
+          <posx>0</posx>
+          <posy>15</posy>
+          <width>700</width>
+          <font>Font_ShowcaseMainLabel2_Caps</font>
+          <label>[UPPERCASE]$LOCALIZE[13406][/UPPERCASE]</label>
+          <align>left</align>
+          <aligny>center</aligny>
+          <textcolor>FFececec</textcolor>
+        </control>
+        <control type="list" id="5">
+          <posx>-40</posx>
+          <posy>45</posy>
+          <width>770</width>
+          <height>601</height>
+          <onleft>60</onleft>
+          <onright>60</onright>
+          <onup>5</onup>
+          <ondown>5</ondown>
+          <pagecontrol>60</pagecontrol>
+          <scrolltime>200</scrolltime>
+          <itemlayout height="40">
+            <control type="image">
+              <posx>0</posx>
+              <posy>40</posy>
+              <width>770</width>
+              <height>1</height>
+              <texture>views/listpanel_line.png</texture>
+            </control>
+            <control type="label">
+              <posx>200</posx>
+              <posy>0</posy>
+              <width>160</width>
+              <height>40</height>
+              <font>Font_Bold16</font>
+              <aligny>center</aligny>
+              <include>listcolornofocus</include>
+              <align>right</align>
+              <label>[COLOR=grey2]$INFO[ListItem.Label] : [/COLOR]</label>
+              <textoffsety>15</textoffsety>
+            </control>
+            <control type="label">
+              <posx>200</posx>
+              <posy>0</posy>
+              <width>390</width>
+              <height>40</height>
+              <font>Font_Info</font>
+              <include>listcolornofocus</include>
+              <align>left</align>
+              <aligny>center</aligny>
+              <info>ListItem.Label2</info>
+            </control>
+          </itemlayout>
+          <focusedlayout height="40">
+            <control type="image">
+              <posx>0</posx>
+              <posy>40</posy>
+              <width>770</width>
+              <height>1</height>
+              <texture>views/listpanel_line.png</texture>
+            </control>
+            <control type="image">
+              <posx>0</posx>
+              <posy>-2</posy>
+              <width>770</width>
+              <height>46</height>
+              <visible>Control.HasFocus(5)</visible>
+              <texture>views/listpanel_selectbar.png</texture>
+            </control>
+            <control type="label">
+              <posx>200</posx>
+              <posy>0</posy>
+              <width>160</width>
+              <height>40</height>
+              <font>Font_Bold16</font>
+              <aligny>center</aligny>
+              <include>listcolorfocus</include>
+              <align>right</align>
+              <label>$INFO[ListItem.Label] : </label>
+            </control>
+            <control type="label">
+              <posx>200</posx>
+              <posy>0</posy>
+              <width>390</width>
+              <height>40</height>
+              <font>Font_Info</font>
+              <include>listcolorfocus</include>
+              <align>left</align>
+              <info>ListItem.Label2</info>
+              <aligny>center</aligny>
+            </control>
+          </focusedlayout>
+        </control>
+      </control>
+      <control type="scrollbar" id="60">
+        <posx>1235</posx>
+        <posy>90</posy>
+        <width>25</width>
+        <height>600</height>
+        <texturesliderbackground border="0,14,0,14">views/ScrollBarV.png</texturesliderbackground>
+        <texturesliderbar border="0,14,0,14">views/ScrollBarV_bar.png</texturesliderbar>
+        <texturesliderbarfocus border="0,14,0,14">views/ScrollBarV_bar_focus.png</texturesliderbarfocus>
+        <textureslidernib>views/ScrollBarNib.png</textureslidernib>
+        <textureslidernibfocus>views/ScrollBarNib.png</textureslidernibfocus>
+        <onleft>5</onleft>
+        <onright>5</onright>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <visible allowhiddenfocus="true">Control.HasFocus(60)</visible>
+      </control>
+    </control>
+  </controls>
+</window>

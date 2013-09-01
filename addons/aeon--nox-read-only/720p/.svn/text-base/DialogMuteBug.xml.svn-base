@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<window id="113">
+  <zorder>1</zorder>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="group">
+      <!-- We don't want the volume popup to hide the subtitles -->
+      <animation effect="slide" start="0,0" end="0,-580" time="0" condition="True">Conditional</animation>
+      <include>SmallerDialogs</include>
+      <include>Dialogs_Group</include>
+      <include>Dialogs_Tablet</include>
+      <include>Dialogs_VolumeIcon</include>
+      <control type="label" id="1">
+        <include>Dialogs_Label2</include>
+        <label>13376</label>
+      </control>
+      <control type="label">
+        <include>Dialogs_Label3</include>
+        <label>$LOCALIZE[31159]</label>
+      </control>
+    </control>
+  </controls>
+</window>

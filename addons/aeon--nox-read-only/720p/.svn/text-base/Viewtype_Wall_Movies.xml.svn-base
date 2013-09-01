@@ -1,0 +1,196 @@
+<includes>
+  <include name="BigMovieWallIcons">
+    <control type="image">
+      <include>WallIconMovieDimensionsDVD</include>
+      <aspectratio scalediffuse="false">stretch</aspectratio>
+      <fadetime>IconCrossfadeTime2</fadetime>
+      <texture background="true">wall/boxes/wall_movie_nfborder.png</texture>
+      <visible>!Skin.HasSetting(useclearcasesmoviewall)</visible>
+    </control>
+    <control type="image">
+      <include>WallIconMovieDimensions</include>
+      <texture background="true" diffuse="wall/wall_movie_mask.png">$INFO[ListItem.Icon]</texture>
+      <aspectratio scalediffuse="false">scale</aspectratio>
+      <info>ListItem.Icon</info>
+      <fadetime>500</fadetime>
+    </control>
+    <control type="image">
+      <posx>81</posx>
+      <posy>3</posy>
+      <width>40</width>
+      <height>40</height>
+      <include>OverlayVisibility0</include>
+    </control>
+    <control type="image">
+      <include>WallIconMovieDimensionsDVD</include>
+      <aspectratio scalediffuse="false">stretch</aspectratio>
+      <fadetime>IconCrossfadeTime2</fadetime>
+      <texture background="true">wall/boxes/wall_nfoverlay.png</texture>
+      <visible>!Skin.HasSetting(useclearcasesmoviewall)</visible>
+    </control>
+  </include>
+  <include name="SmallMovieWallIcons">
+    <control type="image">
+      <include>WallIconMovieDimensionsDVDSmall</include>
+      <aspectratio scalediffuse="false">stretch</aspectratio>
+      <fadetime>IconCrossfadeTime2</fadetime>
+      <texture background="true">wall/boxes/wall_movie_nfborder.png</texture>
+      <visible>!Skin.HasSetting(useclearcasesmoviewall)</visible>
+    </control>
+    <control type="image">
+      <include>WallIconMovieDimensionsSmall</include>
+      <texture background="true" diffuse="wall/wall_movie_mask.png">$INFO[ListItem.Icon]</texture>
+      <aspectratio scalediffuse="false">scale</aspectratio>
+      <info>ListItem.Icon</info>
+      <fadetime>500</fadetime>
+    </control>
+    <control type="image">
+      <posx>65</posx>
+      <posy>3</posy>
+      <width>35</width>
+      <height>35</height>
+      <include>OverlayVisibility0</include>
+    </control>
+    <control type="image">
+      <include>WallIconMovieDimensionsDVDSmall</include>
+      <aspectratio scalediffuse="false">stretch</aspectratio>
+      <fadetime>IconCrossfadeTime2</fadetime>
+      <texture background="true">wall/boxes/wall_nfoverlay.png</texture>
+      <visible>!Skin.HasSetting(useclearcasesmoviewall)</visible>
+    </control>
+  </include>
+  <include name="WallMoviesContent">
+    <itemlayout width="123" height="179" condition="!Skin.HasSetting(smallmoviewall)">
+      <include>BigMovieWallIcons</include>
+      <control type="image">
+        <include>WallIconMovieDimensions</include>
+        <bordertexture border="-5">wall/wall_movie_nfborder.png</bordertexture>
+        <texture background="true">wall/wall_nfoverlay.png</texture>
+        <visible>Skin.HasSetting(useclearcasesmoviewall)</visible>
+      </control>
+    </itemlayout>
+    <focusedlayout width="123" height="179" condition="!Skin.HasSetting(smallmoviewall)">
+      <control type="group">
+        <animation type="Focus" condition="Container(560).Row(2)" reversible="false">
+          <effect type="zoom" center="62,135" start="100" end="160" time="400" easing="out" tween="cubic" reversible="false"/>
+        </animation>
+        <animation type="Focus" condition="Container(560).Row(1)|Container(560).Row(0)" reversible="false">
+          <effect type="zoom" center="62,90" start="100" end="160" time="400" easing="out" tween="cubic" reversible="false"/>
+        </animation>
+        <include>BigMovieWallIcons</include>
+        <control type="image">
+          <include>WallIconMovieDimensions</include>
+          <bordertexture border="-12">wall/wall_movie_fborder.png</bordertexture>
+          <texture>common/blank.png</texture>
+          <visible>Skin.HasSetting(useclearcasesmoviewall)</visible>
+        </control>
+      </control>
+    </focusedlayout>
+    <itemlayout width="101" height="146" condition="Skin.HasSetting(smallmoviewall)">
+      <include>SmallMovieWallIcons</include>
+      <control type="image">
+        <include>WallIconMovieDimensionsSmall</include>
+        <bordertexture border="-4">wall/wall_movie_nfborder.png</bordertexture>
+        <texture background="true">wall/wall_nfoverlay.png</texture>
+        <visible>Skin.HasSetting(useclearcasesmoviewall)</visible>
+      </control>
+    </itemlayout>
+    <focusedlayout width="101" height="146" condition="Skin.HasSetting(smallmoviewall)">
+      <control type="group">
+        <animation type="Focus" condition="Container(560).Row(0)" reversible="false">
+          <effect type="zoom" center="44,30" start="100" end="160" time="400" easing="out" tween="cubic" reversible="false"/>
+        </animation>
+        <animation type="Focus" condition="Container(560).Row(1) | Container(560).Row(2)" reversible="false">
+          <effect type="zoom" center="44,71" start="100" end="160" time="400" easing="out" tween="cubic" reversible="false"/>
+        </animation>
+        <animation type="Focus" condition="Container(560).Row(3)" reversible="false">
+          <effect type="zoom" center="44,120" start="100" end="160" time="400" easing="out" tween="cubic" reversible="false"/>
+        </animation>
+        <include>SmallMovieWallIcons</include>
+        <control type="image">
+          <include>WallIconMovieDimensionsSmall</include>
+          <bordertexture border="-9">wall/wall_movie_fborder.png</bordertexture>
+          <texture>common/blank.png</texture>
+          <visible>Skin.HasSetting(useclearcasesmoviewall)</visible>
+        </control>
+      </control>
+    </focusedlayout>
+  </include>
+  <include name="WallMoviesHor">
+    <control type="panel" id="560">
+      <viewtype label="31234">icon</viewtype>
+      <include condition="!Skin.HasSetting(smallmoviewall)">MovieWallBig</include>
+      <include condition="Skin.HasSetting(smallmoviewall)">MovieWallSmall</include>
+      <pagecontrol>72</pagecontrol>
+      <scrolltime>200</scrolltime>
+      <onleft>560</onleft>
+      <onright>560</onright>
+      <onup>SetFocus(9000)</onup>
+      <ondown>72</ondown>
+      <orientation>horizontal</orientation>
+      <visible>Window.IsActive(videoplaylist) | Window.IsActive(programs) |  Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)|Window.IsActive(videofiles)</visible>
+      <include>WallMoviesContent</include>
+    </control>
+    <control type="scrollbar" id="72">
+      <animation effect="fade" start="100" end="0" time="400" condition="Control.HasFocus(560)|ControlGroup(9000).HasFocus|Control.HasFocus(7001)">Conditional</animation>
+      <onup>560</onup>
+      <ondown>9000</ondown>
+    </control>
+  </include>
+  <include name="WallMoviesVert">
+    <control type="panel" id="560">
+      <viewtype label="Wall">icon</viewtype>
+      <include condition="!Skin.HasSetting(smallmoviewall)">MovieWallBigVert</include>
+      <include condition="Skin.HasSetting(smallmoviewall)">MovieWallSmall</include>
+      <pagecontrol>72</pagecontrol>
+      <scrolltime>200</scrolltime>
+      <onleft>9000</onleft>
+      <onright>72</onright>
+      <onup>560</onup>
+      <ondown>560</ondown>
+      <orientation>vertical</orientation>
+      <visible>Window.IsActive(videoplaylist) | Window.IsActive(programs) |  Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)|Window.IsActive(videofiles)</visible>
+      <include>WallMoviesContent</include>
+    </control>
+    <control type="scrollbar" id="72">
+      <posx>1227</posx>
+      <posy>92</posy>
+      <width>65</width>
+      <height>535</height>
+      <animation effect="fade" start="100" end="0" time="400" condition="Control.HasFocus(560)|ControlGroup(9000).HasFocus|Control.HasFocus(7001)">Conditional</animation>
+      <texturesliderbackground>views/scrollbarbacklist.png</texturesliderbackground>
+      <texturesliderbar>-</texturesliderbar>
+      <texturesliderbarfocus>-</texturesliderbarfocus>
+      <textureslidernib>views/scrollbarnub-nofocus.png</textureslidernib>
+      <textureslidernibfocus>views/scrollbarnub-focus.png</textureslidernibfocus>
+      <orientation>vertical</orientation>
+      <showonepage>false</showonepage>
+      <pulseonselect>yes</pulseonselect>
+      <onleft>560</onleft>
+      <onright>9000</onright>
+    </control>
+  </include>
+  <include name="Viewtype_Wall_Movies">
+    <control type="group">
+      <visible>Control.IsVisible(560)</visible>
+      <include condition="!Skin.HasSetting(smallmoviewall)">Furniture_Wall_Movies</include>
+      <include condition="Skin.HasSetting(smallmoviewall)">Furniture_Wall_Movies_Small</include>
+      <include>Furniture_WallVignette</include>
+      <include>WallArrows</include>
+      <include condition="!Skin.HasSetting(WallMoviesVertical)">WallMoviesHor</include>
+      <include condition="Skin.HasSetting(WallMoviesVertical)">WallMoviesVert</include>
+      <control type="image">
+        <posy>170</posy>
+        <include>FullscreenDimensions</include>
+        <texture>wall/Wall_Shadow.png</texture>
+      </control>
+
+
+      <control type="group">
+        <visible>!Control.HasFocus(72)</visible>
+        <include>SecondLabelFloor</include>
+        <include>FirstLabelFloor</include>
+      </control>
+    </control>
+  </include>
+</includes>

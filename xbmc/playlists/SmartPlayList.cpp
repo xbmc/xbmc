@@ -398,7 +398,18 @@ vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
 {
   vector<Field> fields;
   bool isVideo = false;
-  if (type == "songs")
+  if (type == "pictures")
+  {
+    fields.push_back(FieldPictureAlbum);
+    fields.push_back(FieldFace);
+    fields.push_back(FieldLocation);
+    fields.push_back(FieldFilename);
+    fields.push_back(FieldPath);
+    fields.push_back(FieldPictureCount);
+    fields.push_back(FieldComment);
+    fields.push_back(FieldDateAdded);
+  }
+  else if (type == "songs")
   {
     fields.push_back(FieldGenre);
     fields.push_back(FieldAlbum);

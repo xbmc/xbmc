@@ -1,0 +1,48 @@
+# -*- shell-script -*-
+# @configure_input@
+# Configurable variable values for Autoconf test suite.
+
+# Copyright (C) 2000, 2001, 2005, 2008, 2009, 2010 Free Software
+# Foundation, Inc.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+PERL='@PERL@'
+GREP='@GREP@'
+EGREP='@EGREP@'
+SED='@SED@'
+
+# We need to know if sh -n is ok.
+ac_cv_sh_n_works='@ac_cv_sh_n_works@'
+
+# Check whether the underlying system can manage some unusual
+# symbols in file names.
+if test -z '@ac_cv_unsupported_fs_chars@'; then
+  func_sanitize_file_name () { echo "$@"; }
+else
+  func_sanitize_file_name () { echo "$@" | tr -d '@ac_cv_unsupported_fs_chars@'; }
+fi
+
+# Can we create directories with trailing whitespaces in their name?
+ac_cv_dir_trailing_space='@ac_cv_dir_trailing_space@'
+if test "$ac_cv_dir_trailing_space" = yes; then
+  func_sanitize_dir_name () { echo "$@"; }
+else
+  func_sanitize_dir_name () { echo "$@" | sed 's/  *$//'; }
+fi
+
+# AUTOM4TE might be set in the environment.  Override it here so that
+# direct aclocal invocations also use it.
+AUTOM4TE=autom4te
+export AUTOM4TE

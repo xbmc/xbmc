@@ -1,0 +1,1117 @@
+<includes>
+  <!--Shutdown warning-->
+  <include name="NoShutdownWarning">
+    <onclick>Shutdown()</onclick>
+  </include>
+  <include name="ShutdownWarning">
+    <onclick>ActivateWindow(1113)</onclick>
+  </include>
+  <!--Invisible UP button-->
+  <include name="HomeButton10_MenuLow">
+    <control type="button" id="10">
+      <description>Power push button</description>
+      <include>HiddenObject</include>
+      <onfocus>SetFocus(8001)</onfocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onleft>21</onleft>
+      <onright>9000</onright>
+      <onup>9000</onup>
+      <ondown>9000</ondown>
+      <visible>Container(9000).Hasfocus(11)</visible>
+    </control>
+    <control type="button" id="10">
+      <description>Power push button</description>
+      <include>HiddenObject</include>
+      <onfocus>SetFocus(8002)</onfocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onleft>21</onleft>
+      <onright>9000</onright>
+      <onup>9000</onup>
+      <ondown>9000</ondown>
+      <visible>Container(9000).Hasfocus(3)</visible>
+    </control>
+    <control type="button" id="10">
+      <description>Power push button</description>
+      <include>HiddenObject</include>
+      <onfocus>SetFocus(8000)</onfocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onleft>21</onleft>
+      <onright>9000</onright>
+      <onup>9000</onup>
+      <ondown>9000</ondown>
+      <visible>Container(9000).Hasfocus(10)+[Skin.HasSetting(HomeLatestMovies)|Skin.HasSetting(HomeRandomMovies)]</visible>
+    </control>
+    <control type="button" id="10">
+      <description>Power push button</description>
+      <include>HiddenObject</include>
+      <onfocus>SetFocus(8003)</onfocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onleft>21</onleft>
+      <onright>9000</onright>
+      <onup>9000</onup>
+      <ondown>9000</ondown>
+      <visible>Container(9000).Hasfocus(10)+[Skin.HasSetting(HomeRandomPoster)|Skin.HasSetting(HomeLatestPoster)]+!Skin.HasSetting(HomeRandomMovies)+!Skin.HasSetting(HomeLatestMovies)</visible>
+    </control>
+  </include>
+  <include name="HomeButton10_MenuNormal">
+    <control type="button" id="10">
+      <description>Power push button</description>
+      <include>HiddenObject</include>
+      <onfocus>Skin.ToggleSetting(lowermainmenu)</onfocus>
+      <onfocus>SetFocus(9000)</onfocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onleft>21</onleft>
+      <onright>9000</onright>
+      <onup>9000</onup>
+      <ondown>9000</ondown>
+      <visible>![Container(9000).Hasfocus(10)+[Skin.HasSetting(HomeRandomPoster)|Skin.HasSetting(HomeLatestPoster)]]</visible>
+    </control>
+    <control type="button" id="10">
+      <description>Power push button</description>
+      <include>HiddenObject</include>
+      <onfocus>SetFocus(8003)</onfocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onleft>21</onleft>
+      <onright>9000</onright>
+      <onup>9000</onup>
+      <ondown>9000</ondown>
+      <visible>Container(9000).Hasfocus(10)+[Skin.HasSetting(HomeRandomPoster)|Skin.HasSetting(HomeLatestPoster)]</visible>
+    </control>
+  </include>
+  <include name="HomeButton10_MenuLock">
+    <control type="button" id="10">
+      <description>Power push button</description>
+      <include>HiddenObject</include>
+      <onfocus>SetFocus(9000)</onfocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onleft>21</onleft>
+      <onright>9000</onright>
+      <onup>9000</onup>
+      <ondown>9000</ondown>
+      <visible>![Container(9000).Hasfocus(10)+[Skin.HasSetting(HomeRandomPoster)|Skin.HasSetting(HomeLatestPoster)]]+![Container(9000).HasFocus(2)+Skin.HasSetting(HomeMenuNoMovieButton)]+!Container(9000).HasFocus(6)</visible>
+    </control>
+    <control type="button" id="10">
+      <description>Power push button</description>
+      <include>HiddenObject</include>
+      <onfocus>Skin.ToggleSetting(lowerweatherwidget)</onfocus>
+      <onfocus>SetFocus(9000)</onfocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onleft>21</onleft>
+      <onright>9000</onright>
+      <onup>9000</onup>
+      <ondown>9000</ondown>
+      <visible>Container(9000).HasFocus(6)</visible>
+    </control>
+    <control type="button" id="10">
+      <description>Power push button</description>
+      <include>HiddenObject</include>
+      <onfocus>SetFocus(8003)</onfocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onleft>21</onleft>
+      <onright>9000</onright>
+      <onup>9000</onup>
+      <ondown>9000</ondown>
+      <visible>Container(9000).Hasfocus(10)+[Skin.HasSetting(HomeRandomPoster)|Skin.HasSetting(HomeLatestPoster)]</visible>
+    </control>
+  </include>
+  <!--Invisible DOWN button-->
+  <include name="HomeButton340_MenuNormal">
+    <control type="button" id="340">
+      <description>Invisible button: Latest/Random Movies</description>
+      <include>HiddenObject</include>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onfocus>SetFocus(8000)</onfocus>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </control>
+    <control type="button" id="340">
+      <description>Invisible button: Latest/Random TV</description>
+      <include>HiddenObject</include>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onfocus>SetFocus(8001)</onfocus>
+      <visible>Container(9000).HasFocus(11)</visible>
+    </control>
+    <control type="button" id="340">
+      <description>Invisible button: Latest/Random Music</description>
+      <include>HiddenObject</include>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onfocus>SetFocus(8002)</onfocus>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </control>
+    <control type="button" id="340">
+      <description>Invisible button: Latest/Random Music</description>
+      <include>HiddenObject</include>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onfocus>Skin.ToggleSetting(lowerweatherwidget)</onfocus>
+      <onfocus>SetFocus(9000)</onfocus>
+      <visible>Container(9000).HasFocus(6)</visible>
+    </control>
+  </include>
+  <include name="HomeButton340_MenuLow">
+    <control type="button" id="340">
+      <description>Invisible button: Latest/Random Movies</description>
+      <include>HiddenObject</include>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onfocus>SetFocus(9000)</onfocus>
+      <visible>!Container(9000).HasFocus(10)</visible>
+    </control>
+    <control type="button" id="340">
+      <description>Invisible button: Latest/Random Movies</description>
+      <include>HiddenObject</include>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <onfocus>SetFocus(8003)</onfocus>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </control>
+  </include>
+  <!--Programs Submenu-->
+  <include name="CustomSubProgram1">
+    <item id="90151">
+      <description>Button1</description>
+      <label>$INFO[Skin.String(HomeScriptButton1_label)]</label>
+      <onclick>Setfocus(9000)</onclick>
+      <onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton1_Path)])</onclick>
+      <visible>Skin.HasSetting(HomeScriptButton1) + !IsEmpty(Skin.String(HomeScriptButton1_label))</visible>
+      <visible>Container(9000).HasFocus(1) + [[Skin.HasSetting(HomeScriptButton1) + !IsEmpty(Skin.String(HomeScriptButton1_label))] | [Skin.HasSetting(HomeScriptButton2) + !IsEmpty(Skin.String(HomeScriptButton2_label))] | [Skin.HasSetting(HomeScriptButton3) + !IsEmpty(Skin.String(HomeScriptButton3_label))] | [Skin.HasSetting(HomeScriptButton4) + !IsEmpty(Skin.String(HomeScriptButton4_label))] | [Skin.HasSetting(HomeScriptButton5) + !IsEmpty(Skin.String(HomeScriptButton5_label))] | [Skin.HasSetting(HomeScriptButton6) + !IsEmpty(Skin.String(HomeScriptButton6_label))]]</visible>
+    </item>
+  </include>
+  <include name="CustomSubProgram2">
+    <item id="90152">
+      <description>Button2</description>
+      <label>$INFO[Skin.String(HomeScriptButton2_label)]</label>
+      <onclick>Setfocus(9000)</onclick>
+      <onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton2_Path)])</onclick>
+      <visible>Skin.HasSetting(HomeScriptButton2) + !IsEmpty(Skin.String(HomeScriptButton2_label))</visible>
+      <visible>Container(9000).HasFocus(1) + [[Skin.HasSetting(HomeScriptButton1) + !IsEmpty(Skin.String(HomeScriptButton1_label))] | [Skin.HasSetting(HomeScriptButton2) + !IsEmpty(Skin.String(HomeScriptButton2_label))] | [Skin.HasSetting(HomeScriptButton3) + !IsEmpty(Skin.String(HomeScriptButton3_label))] | [Skin.HasSetting(HomeScriptButton4) + !IsEmpty(Skin.String(HomeScriptButton4_label))] | [Skin.HasSetting(HomeScriptButton5) + !IsEmpty(Skin.String(HomeScriptButton5_label))] | [Skin.HasSetting(HomeScriptButton6) + !IsEmpty(Skin.String(HomeScriptButton6_label))]]</visible>
+    </item>
+  </include>
+  <include name="CustomSubProgram3">
+    <item id="90153">
+      <description>Button3</description>
+      <label>$INFO[Skin.String(HomeScriptButton3_label)]</label>
+      <onclick>Setfocus(9000)</onclick>
+      <onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton3_Path)])</onclick>
+      <visible>Skin.HasSetting(HomeScriptButton3) + !IsEmpty(Skin.String(HomeScriptButton3_label))</visible>
+      <visible>Container(9000).HasFocus(1) + [[Skin.HasSetting(HomeScriptButton1) + !IsEmpty(Skin.String(HomeScriptButton1_label))] | [Skin.HasSetting(HomeScriptButton2) + !IsEmpty(Skin.String(HomeScriptButton2_label))] | [Skin.HasSetting(HomeScriptButton3) + !IsEmpty(Skin.String(HomeScriptButton3_label))] | [Skin.HasSetting(HomeScriptButton4) + !IsEmpty(Skin.String(HomeScriptButton4_label))] | [Skin.HasSetting(HomeScriptButton5) + !IsEmpty(Skin.String(HomeScriptButton5_label))] | [Skin.HasSetting(HomeScriptButton6) + !IsEmpty(Skin.String(HomeScriptButton6_label))]]</visible>
+    </item>
+  </include>
+  <include name="CustomSubProgram4">
+    <item id="90154">
+      <description>Button4</description>
+      <label>$INFO[Skin.String(HomeScriptButton4_label)]</label>
+      <onclick>Setfocus(9000)</onclick>
+      <onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton4_Path)])</onclick>
+      <visible>Skin.HasSetting(HomeScriptButton4) + !IsEmpty(Skin.String(HomeScriptButton4_label))</visible>
+      <visible>Container(9000).HasFocus(1) + [[Skin.HasSetting(HomeScriptButton1) + !IsEmpty(Skin.String(HomeScriptButton1_label))] | [Skin.HasSetting(HomeScriptButton2) + !IsEmpty(Skin.String(HomeScriptButton2_label))] | [Skin.HasSetting(HomeScriptButton3) + !IsEmpty(Skin.String(HomeScriptButton3_label))] | [Skin.HasSetting(HomeScriptButton4) + !IsEmpty(Skin.String(HomeScriptButton4_label))] | [Skin.HasSetting(HomeScriptButton5) + !IsEmpty(Skin.String(HomeScriptButton5_label))] | [Skin.HasSetting(HomeScriptButton6) + !IsEmpty(Skin.String(HomeScriptButton6_label))]]</visible>
+    </item>
+  </include>
+  <include name="CustomSubProgram5">
+    <item id="90155">
+      <description>Button5</description>
+      <label>$INFO[Skin.String(HomeScriptButton5_label)]</label>
+      <onclick>Setfocus(9000)</onclick>
+      <onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton5_Path)])</onclick>
+      <visible>Skin.HasSetting(HomeScriptButton5) + !IsEmpty(Skin.String(HomeScriptButton5_label))</visible>
+      <visible>Container(9000).HasFocus(1) + [[Skin.HasSetting(HomeScriptButton1) + !IsEmpty(Skin.String(HomeScriptButton1_label))] | [Skin.HasSetting(HomeScriptButton2) + !IsEmpty(Skin.String(HomeScriptButton2_label))] | [Skin.HasSetting(HomeScriptButton3) + !IsEmpty(Skin.String(HomeScriptButton3_label))] | [Skin.HasSetting(HomeScriptButton4) + !IsEmpty(Skin.String(HomeScriptButton4_label))] | [Skin.HasSetting(HomeScriptButton5) + !IsEmpty(Skin.String(HomeScriptButton5_label))] | [Skin.HasSetting(HomeScriptButton6) + !IsEmpty(Skin.String(HomeScriptButton6_label))]]</visible>
+    </item>
+  </include>
+  <include name="CustomSubProgram6">
+    <item id="90156">
+      <description>Button6</description>
+      <label>$INFO[Skin.String(HomeScriptButton6_label)]</label>
+      <onclick>Setfocus(9000)</onclick>
+      <onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton6_Path)])</onclick>
+      <visible>Skin.HasSetting(HomeScriptButton6) + !IsEmpty(Skin.String(HomeScriptButton6_label))</visible>
+      <visible>Container(9000).HasFocus(1) + [[Skin.HasSetting(HomeScriptButton1) + !IsEmpty(Skin.String(HomeScriptButton1_label))] | [Skin.HasSetting(HomeScriptButton2) + !IsEmpty(Skin.String(HomeScriptButton2_label))] | [Skin.HasSetting(HomeScriptButton3) + !IsEmpty(Skin.String(HomeScriptButton3_label))] | [Skin.HasSetting(HomeScriptButton4) + !IsEmpty(Skin.String(HomeScriptButton4_label))] | [Skin.HasSetting(HomeScriptButton5) + !IsEmpty(Skin.String(HomeScriptButton5_label))] | [Skin.HasSetting(HomeScriptButton6) + !IsEmpty(Skin.String(HomeScriptButton6_label))]]</visible>
+    </item>
+  </include>
+  <!--Music Submenu-->
+  <include name="CustomSubMusic1">
+    <item id="90122">
+      <label>$INFO[Skin.String(HomeMusicPlaylist1_Label)]</label>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeMusicPlaylist1_Path)],return)</onclick>
+      <visible>Container(9000).HasFocus(3)+Skin.HasSetting(HomeMusicPlaylist1)+!IsEmpty(Skin.String(HomeMusicPlaylist1_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubMusic2">
+    <item id="90123">
+      <label>$INFO[Skin.String(HomeMusicPlaylist2_Label)]</label>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeMusicPlaylist2_Path)],return)</onclick>
+      <visible>Container(9000).HasFocus(3)+Skin.HasSetting(HomeMusicPlaylist2)+!IsEmpty(Skin.String(HomeMusicPlaylist2_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubMusic3">
+    <item id="90124">
+      <label>$INFO[Skin.String(HomeMusicPlaylist3_Label)]</label>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeMusicPlaylist3_Path)],return)</onclick>
+      <visible>Container(9000).HasFocus(3)+Skin.HasSetting(HomeMusicPlaylist3)+!IsEmpty(Skin.String(HomeMusicPlaylist3_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubMusic4">
+    <item id="90125">
+      <label>$INFO[Skin.String(HomeMenuSubMusicFavourite1_Label)]</label>
+      <onclick>$INFO[Skin.String(HomeMenuSubMusicFavourite1_Path)]</onclick>
+      <visible>Container(9000).HasFocus(3)+Skin.HasSetting(HomeMenuSubMusicFavourite1)+!IsEmpty(Skin.String(HomeMenuSubMusicFavourite1_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubMusic5">
+    <item id="90126">
+      <label>$INFO[Skin.String(HomeMenuSubMusicFavourite2_Label)]</label>
+      <onclick>$INFO[Skin.String(HomeMenuSubMusicFavourite2_Path)]</onclick>
+      <visible>Container(9000).HasFocus(3)+Skin.HasSetting(HomeMenuSubMusicFavourite2)+!IsEmpty(Skin.String(HomeMenuSubMusicFavourite2_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubMusic6">
+    <item id="90127">
+      <label>$INFO[Skin.String(HomeMenuSubMusicFavourite3_Label)]</label>
+      <onclick>$INFO[Skin.String(HomeMenuSubMusicFavourite3_Path)]</onclick>
+      <visible>Container(9000).HasFocus(3)+Skin.HasSetting(HomeMenuSubMusicFavourite3)+!IsEmpty(Skin.String(HomeMenuSubMusicFavourite3_Label))</visible>
+    </item>
+  </include>
+  <include name="DefaultMusicSubMenu">
+    <item id="90111">
+      <label>133</label>
+      <onclick>ActivateWindow(MusicLibrary,Artists,return)</onclick>
+      <visible>Library.HasContent(Music)</visible>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+    <item id="90112">
+      <label>132</label>
+      <onclick>ActivateWindow(MusicLibrary,Albums,return)</onclick>
+      <visible>Library.HasContent(Music)</visible>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+    <item id="90110">
+      <label>ROOT</label>
+      <onclick>ActivateWindow(MusicLibrary,root)</onclick>
+      <visible>Library.HasContent(Music)</visible>
+      <visible>Container(9000).HasFocus(3)+Skin.HasSetting(musicmenulibrary)</visible>
+    </item>
+    <item id="90113">
+      <label>134</label>
+      <onclick>ActivateWindow(MusicLibrary,Songs,return)</onclick>
+      <visible>Library.HasContent(Music)</visible>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+    <item id="90114">
+      <label>744</label>
+      <onclick>ActivateWindow(MusicFiles)</onclick>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+    <item id="90115=">
+      <label>14022</label>
+      <onclick>ActivateWindow(MusicLibrary)</onclick>
+      <visible>Library.HasContent(Music)</visible>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+    <item id="90116">
+      <label>24001</label>
+      <onclick>ActivateWindow(MusicLibrary,Addons,return)</onclick>
+      <visible>Library.HasContent(Music)</visible>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+    <item id="90117">
+      <label>24001</label>
+      <onclick>ActivateWindow(MusicFiles,Addons,return)</onclick>
+      <visible>!Library.HasContent(Music)</visible>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+    <item id="90118">
+      <label>$LOCALIZE[31040]</label>
+      <onclick>ActivateWindow(500)</onclick>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+    <item id="90119">
+      <label>31334</label>
+      <onclick>XBMC.ActivateWindow(MusicLibrary,RecentlyAddedAlbums)</onclick>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+    <item id="90120">
+      <label>31333</label>
+      <onclick>XBMC.ActivateWindow(MusicLibrary,RecentlyPlayedAlbums)</onclick>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+    <item id="90121">
+      <label>$LOCALIZE[589]</label>
+      <onclick>XBMC.PlayerControl(PartyMode(music))</onclick>
+      <visible>Container(9000).HasFocus(3)</visible>
+    </item>
+  </include>
+  <!--Movies Submenu-->
+  <include name="CinemaSubMenuItem">
+    <item id="90169">
+      <label>CINEMA</label>
+      <include>MovieTitlesCinExp</include>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </item>
+  </include>
+  <include name="TrailerSubMenuItem">
+    <item id="90168">
+      <label>$LOCALIZE[31162]</label>
+      <onclick>XBMC.ActivateWindow(MyVideoLibrary, plugin://plugin.video.apple.movie.trailers.lite/addon.py,return)</onclick>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </item>
+  </include>
+  <include name="DefaultMoviesSubMenu">
+    <item id="90166">
+      <label>31334</label>
+      <include condition="Skin.HasSetting(cinemaexpdefault)">MovieRecentAddedCinExp</include>
+      <include condition="!Skin.HasSetting(cinemaexpdefault)">MovieRecentAddedNoCinExp</include>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </item>
+    <item id="90161">
+      <label>369</label>
+      <include condition="Skin.HasSetting(cinemaexpdefault)">MovieTitlesCinExp</include>
+      <include condition="!Skin.HasSetting(cinemaexpdefault)">MovieTitlesNoCinExp</include>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </item>
+    <item id="90162">
+      <label>135</label>
+      <include condition="Skin.HasSetting(cinemaexpdefault)">MovieGenresCinExp</include>
+      <include condition="!Skin.HasSetting(cinemaexpdefault)">MovieGenresNoCinExp</include>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </item>
+    <item id="90163">
+      <label>652</label>
+      <include condition="Skin.HasSetting(cinemaexpdefault)">MovieYearsCinExp</include>
+      <include condition="!Skin.HasSetting(cinemaexpdefault)">MovieYearsNoCinExp</include>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </item>
+    <item id="90164">
+      <label>344</label>
+      <include condition="Skin.HasSetting(cinemaexpdefault)">MovieActorsCinExp</include>
+      <include condition="!Skin.HasSetting(cinemaexpdefault)">MovieActorsNoCinExp</include>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </item>
+    <item id="90165">
+      <label>20348</label>
+      <include condition="Skin.HasSetting(cinemaexpdefault)">MovieDirectorsCinExp</include>
+      <include condition="!Skin.HasSetting(cinemaexpdefault)">MovieDirectorsNoCinExp</include>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </item>
+    <item id="90167">
+      <label>24069</label>
+      <onclick>UpdateLibrary(video)</onclick>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </item>
+  </include>
+  <include name="RandomMovieScriptButton">
+    <item id="90189">
+      <label>590</label>
+      <onclick>RunScript(script.randommovie, filtergenre=True)</onclick>
+      <visible>Container(9000).HasFocus(10)</visible>
+    </item>
+  </include>
+  <include name="CustomSubMovies1">
+    <item id="90180">
+      <label>$INFO[Skin.String(HomeMoviePlaylist1_Label)]</label>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeMoviePlaylist1_Path)],return)</onclick>
+      <visible>Container(9000).HasFocus(10)+Skin.HasSetting(HomeMoviePlaylist1)+!IsEmpty(Skin.String(HomeMoviePlaylist1_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubMovies2">
+    <item id="90181">
+      <label>$INFO[Skin.String(HomeMoviePlaylist2_Label)]</label>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeMoviePlaylist2_Path)],return)</onclick>
+      <visible>Container(9000).HasFocus(10)+Skin.HasSetting(HomeMoviePlaylist2)+!IsEmpty(Skin.String(HomeMoviePlaylist2_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubMovies3">
+    <item id="90182">
+      <label>$INFO[Skin.String(HomeMoviePlaylist3_Label)]</label>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeMoviePlaylist3_Path)],return)</onclick>
+      <visible>Container(9000).HasFocus(10)+Skin.HasSetting(HomeMoviePlaylist3)+!IsEmpty(Skin.String(HomeMoviePlaylist3_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubMovies4">
+    <item id="90183">
+      <label>$INFO[Skin.String(HomeMenuSubMoviesFavourite1_Label)]</label>
+      <onclick>$INFO[Skin.String(HomeMenuSubMoviesFavourite1_Path)]</onclick>
+      <visible>Container(9000).HasFocus(10)+Skin.HasSetting(HomeMenuSubMoviesFavourite1)+!IsEmpty(Skin.String(HomeMenuSubMoviesFavourite1_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubMovies5">
+    <item id="90184">
+      <label>$INFO[Skin.String(HomeMenuSubMoviesFavourite2_Label)]</label>
+      <onclick>$INFO[Skin.String(HomeMenuSubMoviesFavourite2_Path)]</onclick>
+      <visible>Container(9000).HasFocus(10)+Skin.HasSetting(HomeMenuSubMoviesFavourite2)+!IsEmpty(Skin.String(HomeMenuSubMoviesFavourite2_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubMovies6">
+    <item id="90185">
+      <label>$INFO[Skin.String(HomeMenuSubMoviesFavourite3_Label)]</label>
+      <onclick>$INFO[Skin.String(HomeMenuSubMoviesFavourite3_Path)]</onclick>
+      <visible>Container(9000).HasFocus(10)+Skin.HasSetting(HomeMenuSubMoviesFavourite3)+!IsEmpty(Skin.String(HomeMenuSubMoviesFavourite3_Label))</visible>
+    </item>
+  </include>
+  <include name="MovieTitlesCinExp">
+    <onclick>XBMC.RunScript(script.cinema.experience,movietitles)</onclick>
+  </include>
+  <include name="MovieTitlesNoCinExp">
+    <onclick>ActivateWindow(VideoLibrary,MovieTitles,return)</onclick>
+  </include>
+  <include name="MovieGenresCinExp">
+    <onclick>XBMC.RunScript(script.cinema.experience,moviegenres)</onclick>
+  </include>
+  <include name="MovieGenresNoCinExp">
+    <onclick>ActivateWindow(VideoLibrary,MovieGenres,return)</onclick>
+  </include>
+  <include name="MovieYearsCinExp">
+    <onclick>XBMC.RunScript(script.cinema.experience,movieyears)</onclick>
+  </include>
+  <include name="MovieYearsNoCinExp">
+    <onclick>ActivateWindow(VideoLibrary,MovieYears,return)</onclick>
+  </include>
+  <include name="MovieActorsCinExp">
+    <onclick>XBMC.RunScript(script.cinema.experience,movieactors)</onclick>
+  </include>
+  <include name="MovieActorsNoCinExp">
+    <onclick>ActivateWindow(VideoLibrary,MovieActors,return)</onclick>
+  </include>
+  <include name="MovieDirectorsCinExp">
+    <onclick>XBMC.RunScript(script.cinema.experience,moviedirectors)</onclick>
+  </include>
+  <include name="MovieDirectorsNoCinExp">
+    <onclick>ActivateWindow(VideoLibrary,MovieDirectors,return)</onclick>
+  </include>
+  <include name="MovieRecentAddedCinExp">
+    <onclick>XBMC.RunScript(script.cinema.experience,recentlyaddedmovies)</onclick>
+  </include>
+  <include name="MovieRecentAddedNoCinExp">
+    <onclick>ActivateWindow(VideoLibrary,RecentlyAddedMovies,return)</onclick>
+  </include>
+  <!--TV Shows Submenu-->
+  <include name="CustomSubTV1">
+    <item id="90176">
+      <label>$INFO[Skin.String(HomeTVPlaylist1_Label)]</label>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeTVPlaylist1_Path)],return)</onclick>
+      <visible>Container(9000).HasFocus(11)+Skin.HasSetting(HomeTVPlaylist1)+!IsEmpty(Skin.String(HomeTVPlaylist1_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubTV2">
+    <item id="90177">
+      <label>$INFO[Skin.String(HomeTVPlaylist2_Label)]</label>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeTVPlaylist2_Path)],return)</onclick>
+      <visible>Container(9000).HasFocus(11)+Skin.HasSetting(HomeTVPlaylist2)+!IsEmpty(Skin.String(HomeTVPlaylist2_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubTV3">
+    <item id="90178">
+      <label>$INFO[Skin.String(HomeTVPlaylist3_Label)]</label>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeTVPlaylist3_Path)],return)</onclick>
+      <visible>Container(9000).HasFocus(11)+Skin.HasSetting(HomeTVPlaylist3)+!IsEmpty(Skin.String(HomeTVPlaylist3_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubTV4">
+    <item id="90186">
+      <label>$INFO[Skin.String(HomeMenuSubTVFavourite1_Label)]</label>
+      <onclick>$INFO[Skin.String(HomeMenuSubTVFavourite1_Path)]</onclick>
+      <visible>Container(9000).HasFocus(11)+Skin.HasSetting(HomeMenuSubTVFavourite1)+!IsEmpty(Skin.String(HomeMenuSubTVFavourite1_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubTV5">
+    <item id="90187">
+      <label>$INFO[Skin.String(HomeMenuSubTVFavourite2_Label)]</label>
+      <onclick>$INFO[Skin.String(HomeMenuSubTVFavourite2_Path)]</onclick>
+      <visible>Container(9000).HasFocus(11)+Skin.HasSetting(HomeMenuSubTVFavourite2)+!IsEmpty(Skin.String(HomeMenuSubTVFavourite2_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomSubTV6">
+    <item id="90188">
+      <label>$INFO[Skin.String(HomeMenuSubTVFavourite3_Label)]</label>
+      <onclick>$INFO[Skin.String(HomeMenuSubTVFavourite3_Path)]</onclick>
+      <visible>Container(9000).HasFocus(11)+Skin.HasSetting(HomeMenuSubTVFavourite3)+!IsEmpty(Skin.String(HomeMenuSubTVFavourite3_Label))</visible>
+    </item>
+  </include>
+  <include name="DefaultTVShowsSubMenu">
+    <item id="90171">
+      <label>369</label>
+      <onclick>ActivateWindow(VideoLibrary,TVShowTitles,return)</onclick>
+      <visible>Container(9000).HasFocus(11)</visible>
+    </item>
+    <item id="90172">
+      <label>135</label>
+      <onclick>ActivateWindow(VideoLibrary,TVShowGenres,return)</onclick>
+      <visible>Container(9000).HasFocus(11)</visible>
+    </item>
+    <item id="90175">
+      <label>31334</label>
+      <onclick>ActivateWindow(VideoLibrary,RecentlyAddedEpisodes,return)</onclick>
+      <visible>Container(9000).HasFocus(11)</visible>
+    </item>
+    <item id="90173">
+      <label>652</label>
+      <onclick>ActivateWindow(VideoLibrary,TVShowYears,return)</onclick>
+      <visible>Container(9000).HasFocus(11)</visible>
+    </item>
+    <item id="90174">
+      <label>344</label>
+      <onclick>ActivateWindow(VideoLibrary,TVShowActors,return)</onclick>
+      <visible>Container(9000).HasFocus(11)</visible>
+    </item>
+    <item id="90176">
+      <label>31243</label>
+      <onclick>ActivateWindow(1118)</onclick>
+      <visible>Container(9000).HasFocus(11)+Skin.HasSetting(HomeMenuNoTVGuideButton)</visible>
+    </item>
+  </include>
+  <!--TV Guide Submenu-->
+  <include name="TVguideSubMenu">
+    <item id="90210">
+      <description>Saturday</description>
+      <label>16</label>
+      <onclick>ActivateWindow(1124)</onclick>
+      <visible>Container(9000).HasFocus(25)</visible>
+    </item>
+    <item id="90211">
+      <description>Sunday</description>
+      <label>17</label>
+      <onclick>ActivateWindow(1125)</onclick>
+      <visible>Container(9000).HasFocus(25)</visible>
+    </item>
+    <item id="90212">
+      <description>monday</description>
+      <label>11</label>
+      <onclick>ActivateWindow(1119)</onclick>
+      <visible>Container(9000).HasFocus(25)</visible>
+    </item>
+    <item id="90213">
+      <description>Tuesday</description>
+      <label>12</label>
+      <onclick>ActivateWindow(1120)</onclick>
+      <visible>Container(9000).HasFocus(25)</visible>
+    </item>
+    <item id="90214">
+      <description>Wednesday</description>
+      <label>13</label>
+      <onclick>ActivateWindow(1121)</onclick>
+      <visible>Container(9000).HasFocus(25)</visible>
+    </item>
+    <item id="90215">
+      <description>Thursday</description>
+      <label>14</label>
+      <onclick>ActivateWindow(1122)</onclick>
+      <visible>Container(9000).HasFocus(25)</visible>
+    </item>
+    <item id="90216">
+      <description>Friday</description>
+      <label>15</label>
+      <onclick>ActivateWindow(1123)</onclick>
+      <visible>Container(9000).HasFocus(25)</visible>
+    </item>
+  </include>
+  <!--Videos Submenu-->
+  <include name="DefaultVideosSubMenu">
+    <item id="90109">
+      <label>136</label>
+      <onclick>ActivateWindow(VideoLibrary,Playlists,return)</onclick>
+      <visible>Container(9000).HasFocus(2)</visible>
+    </item>
+    <item id="90101">
+      <label>342</label>
+      <onclick>ActivateWindow(VideoLibrary,MovieTitles,return)</onclick>
+      <visible>Library.HasContent(Movies)</visible>
+      <visible>Container(9000).HasFocus(2)</visible>
+    </item>
+    <item id="90102">
+      <label>20343</label>
+      <onclick>ActivateWindow(VideoLibrary,TvShowTitles,return)</onclick>
+      <visible>Library.HasContent(TVShows)</visible>
+      <visible>Container(9000).HasFocus(2)</visible>
+    </item>
+    <item id="90103">
+      <label>20389</label>
+      <onclick>ActivateWindow(VideoLibrary,MusicVideoTitles,return)</onclick>
+      <visible>Library.HasContent(MusicVideos)</visible>
+      <visible>Container(9000).HasFocus(2)</visible>
+    </item>
+    <item id="90104">
+      <label>744</label>
+      <onclick>ActivateWindow(VideoFiles)</onclick>
+      <visible>Container(9000).HasFocus(2)</visible>
+    </item>
+    <item id="90105">
+      <label>14022</label>
+      <onclick>ActivateWindow(VideoLibrary)</onclick>
+      <visible>Library.HasContent(Video)</visible>
+      <visible>Container(9000).HasFocus(2)</visible>
+    </item>
+    <item id="90106">
+      <label>24001</label>
+      <onclick>ActivateWindow(VideoLibrary,Addons,return)</onclick>
+      <visible>Library.HasContent(Video)</visible>
+      <visible>Container(9000).HasFocus(2)</visible>
+    </item>
+    <item id="90107">
+      <label>24001</label>
+      <onclick>ActivateWindow(VideoFiles,Addons,return)</onclick>
+      <visible>!Library.HasContent(Video)</visible>
+      <visible>Container(9000).HasFocus(2)</visible>
+    </item>
+  </include>
+  <!--System Submenu-->
+  <include name="DefaultSystemSubMenu">
+    <item id="90141">
+      <label>5</label>
+      <onclick>ActivateWindow(Settings)</onclick>
+      <visible>Container(9000).HasFocus(5)</visible>
+    </item>
+    <item id="90146">
+      <label>24001</label>
+      <onclick>ActivateWindow(AddonBrowser)</onclick>
+      <visible>Container(9000).HasFocus(5)</visible>
+    </item>
+    <item id="90142">
+      <label>7</label>
+      <onclick>ActivateWindow(FileManager)</onclick>
+      <visible>Container(9000).HasFocus(5)</visible>
+    </item>
+    <item id="90143">
+      <label>13200</label>
+      <onclick>ActivateWindow(Profiles)</onclick>
+      <visible>Container(9000).HasFocus(5)</visible>
+    </item>
+    <item id="90144">
+      <label>130</label>
+      <onclick>ActivateWindow(SystemInfo)</onclick>
+      <visible>Container(9000).HasFocus(5)</visible>
+    </item>
+    <item id="90145">
+      <label>$LOCALIZE[470]</label>
+      <onclick>ActivateWindow(Credits)</onclick>
+      <visible>False</visible>
+      <visible>Container(9000).HasFocus(5)</visible>
+    </item>
+  </include>
+  <!--Shutdown Submenu-->
+  <include name="DefaultShutdownSubMenu">
+    <item id="90190">
+      <description>Shutdown Timer</description>
+      <label fallback="TIMER">31856</label>
+      <onclick>AlarmClock($LOCALIZE[20144],Shutdown(),)</onclick>
+      <visible>Container(9000).HasFocus(12)</visible>
+    </item>
+    <item id="90191">
+      <description>Restart Button</description>
+      <label>13313</label>
+      <onclick>Reset</onclick>
+      <visible>Container(9000).HasFocus(12)</visible>
+    </item>
+    <item id="90192">
+      <description>Suspend</description>
+      <label>13011</label>
+      <onclick>Suspend</onclick>
+      <visible>Container(9000).HasFocus(12)</visible>
+    </item>
+    <item id="90192">
+      <description>Hibernate</description>
+      <label>13010</label>
+      <onclick>Hibernate</onclick>
+      <visible>Container(9000).HasFocus(12)</visible>
+    </item>
+    <item id="90193">
+      <description>Logout Button</description>
+      <label>20126</label>
+      <onclick>System.LogOff</onclick>
+      <visible>System.HasLoginScreen</visible>
+      <visible>Container(9000).HasFocus(12)</visible>
+    </item>
+    <item id="90194">
+      <description>Quit</description>
+      <label>13009</label>
+      <onclick>Quit</onclick>
+      <visible>Container(9000).HasFocus(12)</visible>
+    </item>
+  </include>
+  <!--Weather Submenu-->
+  <include name="DefaultWeatherSubMenu">
+    <item id="90200">
+      <description>Change fanart</description>
+      <label>33068</label>
+      <onclick>Skin.ToggleSetting(ShowWeatherFanart)</onclick>
+      <visible>Container(9000).HasFocus(6)+!IsEmpty(Skin.String(WeatherFanartDir))</visible>
+    </item>
+    <item id="90201">
+      <description>Toggle widget</description>
+      <label>WIDGET</label>
+      <onclick>Skin.ToggleSetting(homepageWeatherinfo)</onclick>
+      <onclick>ReloadSkin()</onclick>
+      <visible>Container(9000).HasFocus(6)</visible>
+    </item>
+    <item id="90202">
+      <description>Toggle animations</description>
+      <label>31375</label>
+      <onclick>Skin.ToggleSetting(homepageWeatheranimated)</onclick>
+      <onclick>ReloadSkin()</onclick>
+      <visible>Container(9000).HasFocus(6)+!IsEmpty(Skin.String(AnimatedWeatherIconsDir))+!Skin.HasSetting(homepageWeatherinfo)</visible>
+    </item>
+    <item id="90203">
+      <description>Go to weather settings</description>
+      <label>10004</label>
+      <onclick>ActivateWindow(weathersettings)</onclick>
+      <visible>Container(9000).HasFocus(6)</visible>
+    </item>
+  </include>
+  <!--Main Menu Custom Playlists-->
+  <include name="CustomMainSPL1">
+    <item id="15">
+      <label>$INFO[Skin.String(HomeMenuVideoPlaylist1_Label)]</label>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeMenuVideoPlaylist1_Path)],return)</onclick>
+      <icon>special://skin/backgrounds/playlist.jpg</icon>
+      <thumb>$INFO[Skin.String(Home_Custom_Back_Custom1_Folder)]</thumb>
+      <visible>Skin.HasSetting(HomeMenuVideoPlaylist1)+!IsEmpty(Skin.String(HomeMenuVideoPlaylist1_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomMainSPL2">
+    <item id="16">
+      <label>$INFO[Skin.String(HomeMenuVideoPlaylist2_Label)]</label>
+      <icon>special://skin/backgrounds/playlist.jpg</icon>
+      <thumb>$INFO[Skin.String(Home_Custom_Back_Custom2_Folder)]</thumb>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeMenuVideoPlaylist2_Path)],return)</onclick>
+      <visible>Skin.HasSetting(HomeMenuVideoPlaylist2)+!IsEmpty(Skin.String(HomeMenuVideoPlaylist2_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomMainSPL3">
+    <item id="17">
+      <label>$INFO[Skin.String(HomeMenuVideoPlaylist3_Label)]</label>
+      <icon>special://skin/backgrounds/playlist.jpg</icon>
+      <thumb>$INFO[Skin.String(Home_Custom_Back_Custom3_Folder)]</thumb>
+      <onclick>XBMC.ActivateWindow(10025,$INFO[Skin.String(HomeMenuVideoPlaylist3_Path)],return)</onclick>
+      <visible>Skin.HasSetting(HomeMenuVideoPlaylist3)+!IsEmpty(Skin.String(HomeMenuVideoPlaylist3_Label))</visible>
+    </item>
+  </include>
+  <!--Main Menu Custom Favorites-->
+  <include name="CustomMainFav1">
+    <item id="18">
+      <label>$INFO[Skin.String(HomeMenuFavourite1_Label)]</label>
+      <onclick>$INFO[Skin.String(HomeMenuFavourite1_Path)]</onclick>
+      <icon>special://skin/backgrounds/favourites.jpg</icon>
+      <thumb>$INFO[Skin.String(Home_Custom_Back_Favourite1_Folder)]</thumb>
+      <visible>Skin.HasSetting(HomeMenuFavourite1)+!IsEmpty(Skin.String(HomeMenuFavourite1_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomMainFav2">
+    <item id="19">
+      <label>$INFO[Skin.String(HomeMenuFavourite2_Label)]</label>
+      <icon>special://skin/backgrounds/favourites.jpg</icon>
+      <thumb>$INFO[Skin.String(Home_Custom_Back_Favourite2_Folder)]</thumb>
+      <onclick>$INFO[Skin.String(HomeMenuFavourite2_Path)]</onclick>
+      <visible>Skin.HasSetting(HomeMenuFavourite2)+!IsEmpty(Skin.String(HomeMenuFavourite2_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomMainFav3">
+    <item id="20">
+      <label>$INFO[Skin.String(HomeMenuFavourite3_Label)]</label>
+      <icon>special://skin/backgrounds/favourites.jpg</icon>
+      <thumb>$INFO[Skin.String(Home_Custom_Back_Favourite3_Folder)]</thumb>
+      <onclick>$INFO[Skin.String(HomeMenuFavourite3_Path)]</onclick>
+      <visible>Skin.HasSetting(HomeMenuFavourite3)+!IsEmpty(Skin.String(HomeMenuFavourite3_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomMainFav4">
+    <item id="21">
+      <label>$INFO[Skin.String(HomeMenuFavourite4_Label)]</label>
+      <icon>special://skin/backgrounds/favourites.jpg</icon>
+      <thumb>$INFO[Skin.String(Home_Custom_Back_Favourite4_Folder)]</thumb>
+      <onclick>$INFO[Skin.String(HomeMenuFavourite4_Path)]</onclick>
+      <visible>Skin.HasSetting(HomeMenuFavourite4)+!IsEmpty(Skin.String(HomeMenuFavourite4_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomMainFav5">
+    <item id="22">
+      <label>$INFO[Skin.String(HomeMenuFavourite5_Label)]</label>
+      <icon>special://skin/backgrounds/favourites.jpg</icon>
+      <thumb>$INFO[Skin.String(Home_Custom_Back_Favourite5_Folder)]</thumb>
+      <onclick>$INFO[Skin.String(HomeMenuFavourite5_Path)]</onclick>
+      <visible>Skin.HasSetting(HomeMenuFavourite5)+!IsEmpty(Skin.String(HomeMenuFavourite5_Label))</visible>
+    </item>
+  </include>
+  <include name="CustomMainFav6">
+    <item id="23">
+      <label>$INFO[Skin.String(HomeMenuFavourite6_Label)]</label>
+      <icon>special://skin/backgrounds/favourites.jpg</icon>
+      <thumb>$INFO[Skin.String(Home_Custom_Back_Favourite6_Folder)]</thumb>
+      <onclick>$INFO[Skin.String(HomeMenuFavourite6_Path)]</onclick>
+      <visible>Skin.HasSetting(HomeMenuFavourite6)+!IsEmpty(Skin.String(HomeMenuFavourite6_Label))</visible>
+    </item>
+  </include>
+  <!--Main Menu Furniture-->
+  <include name="Furniture_ClassicHomeGradient">
+    <control type="image">
+      <posx>0</posx>
+      <posy>302</posy>
+      <width>1280</width>
+      <height>150</height>
+      <texture>home/homemenu_gradient.png</texture>
+      <include>Animation_CommonFade</include>
+      <colordiffuse>d0FFFFFF</colordiffuse>
+    </control>
+  </include>
+  <include name="Furniture_ClassicHome">
+    <control type="group">
+      <visible>Skin.HasSetting(classichome)</visible>
+      <control type="image">
+        <posx>0</posx>
+        <posy>302</posy>
+        <width>1280</width>
+        <height>150</height>
+        <texture>home/homemenu_back.png</texture>
+        <include>Animation_CommonFade</include>
+        <visible>![Player.HasMedia + System.IdleTime(8)]|Control.HasFocus(8003)</visible>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>342</posy>
+        <width>1280</width>
+        <height>65</height>
+        <texture>osd/fullscreen_bottom.png</texture>
+        <visible>Player.HasMedia + System.IdleTime(8)+!Control.HasFocus(8003)</visible>
+      </control>
+      <!-- Home OSD -->
+      <control type="group">
+        <visible>Player.HasMedia + System.IdleTime(8)+!Control.HasFocus(8003)</visible>
+        <control type="label">
+          <posx>0</posx>
+          <posy>343</posy>
+          <width>1280</width>
+          <height>61</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>Font_MainClassic</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>$INFO[Player.Time]   /   $INFO[Player.Duration]</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>Player.HasDuration</visible>
+        </control>
+        <!-- Same label but for streaming files -->
+        <control type="label">
+          <posx>593</posx>
+          <posy>343</posy>
+          <width>635</width>
+          <height>61</height>
+          <align>right</align>
+          <aligny>center</aligny>
+          <font>Font_MainClassic</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>$INFO[Player.Time]</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>!Player.HasDuration</visible>
+        </control>
+        <control type="label">
+          <posx>0</posx>
+          <posy>343</posy>
+          <width>1280</width>
+          <height>61</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>Font_MainClassic</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>/</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>!Player.HasDuration</visible>
+        </control>
+        <control type="label">
+          <posx>690</posx>
+          <posy>343</posy>
+          <width>1280</width>
+          <height>61</height>
+          <align>left</align>
+          <aligny>center</aligny>
+          <font>Font_MainMenu</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>∞</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>!Player.HasDuration</visible>
+        </control>
+      </control>
+    </control>
+  </include>
+  <include name="Furniture_GlassHome">
+    <control type="group">
+      <visible>Skin.HasSetting(glasshome)</visible>
+      <control type="image">
+        <posx>0</posx>
+        <posy>302</posy>
+        <width>1280</width>
+        <height>150</height>
+        <texture>home/glass_bar_back.png</texture>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <posx>30</posx>
+        <posy>342</posy>
+        <width>1350</width>
+        <height>64</height>
+        <texture>views/showcase_spot.png</texture>
+        <include>Animation_CommonFade</include>
+        <animation effect="fade" start="100" end="35" time="50" condition="true">Conditional</animation>
+        <visible>![Player.HasMedia + System.IdleTime(8)]</visible>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>324</posy>
+        <width>1280</width>
+        <height>100</height>
+        <texture>home/glass_bar.png</texture>
+        <aspectratio scalediffuse="false">stretch</aspectratio>
+        <include>Animation_CommonFade</include>
+        <visible>![Player.HasMedia + System.IdleTime(8)]</visible>
+        <animation effect="fade" start="100" end="80" time="50" condition="true">Conditional</animation>
+      </control>
+      <control type="image">
+        <posx>0</posx>
+        <posy>342</posy>
+        <width>1280</width>
+        <height>65</height>
+        <texture>osd/fullscreen_bottom.png</texture>
+        <visible>Player.HasMedia + System.IdleTime(8)+!Control.HasFocus(8003)</visible>
+      </control>
+      <!-- Home OSD -->
+      <control type="group">
+        <visible>Player.HasMedia + System.IdleTime(8)+!Control.HasFocus(8003)</visible>
+        <control type="label">
+          <posx>0</posx>
+          <posy>343</posy>
+          <width>1280</width>
+          <height>61</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>Font_MainMenu</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>$INFO[Player.Time]   /   $INFO[Player.Duration]</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>Player.HasDuration</visible>
+        </control>
+        <!-- Same label but for streaming files -->
+        <control type="label">
+          <posx>593</posx>
+          <posy>343</posy>
+          <width>635</width>
+          <height>61</height>
+          <align>right</align>
+          <aligny>center</aligny>
+          <font>Font_MainMenu</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>$INFO[Player.Time]</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>!Player.HasDuration</visible>
+        </control>
+        <control type="label">
+          <posx>0</posx>
+          <posy>343</posy>
+          <width>1280</width>
+          <height>61</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>Font_MainMenu</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>/</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>!Player.HasDuration</visible>
+        </control>
+        <control type="label">
+          <posx>690</posx>
+          <posy>343</posy>
+          <width>1280</width>
+          <height>61</height>
+          <align>left</align>
+          <aligny>center</aligny>
+          <font>Font_MainMenu</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>∞</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>!Player.HasDuration</visible>
+        </control>
+      </control>
+    </control>
+  </include>
+  <include name="Furniture_NoxHome">
+    <control type="group">
+      <visible>!Skin.HasSetting(classichome)+!Skin.HasSetting(glasshome)</visible>
+      <control type="image">
+        <posx>0</posx>
+        <posy>340</posy>
+        <width>1280</width>
+        <height>66</height>
+        <texture>osd/osd_back.png</texture>
+        <include>Animation_CommonFade</include>
+      </control>
+      <!-- Home OSD -->
+      <control type="group">
+        <visible>Player.HasMedia + System.IdleTime(8)+!Control.HasFocus(8003)</visible>
+        <control type="label">
+          <posx>0</posx>
+          <posy>343</posy>
+          <width>1280</width>
+          <height>61</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>Font_MainMenu</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>$INFO[Player.Time]   /   $INFO[Player.Duration]</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>Player.HasDuration</visible>
+        </control>
+        <!-- Same label but for streaming files -->
+        <control type="label">
+          <posx>593</posx>
+          <posy>343</posy>
+          <width>635</width>
+          <height>61</height>
+          <align>right</align>
+          <aligny>center</aligny>
+          <font>Font_MainMenu</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>$INFO[Player.Time]</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>!Player.HasDuration</visible>
+        </control>
+        <control type="label">
+          <posx>0</posx>
+          <posy>343</posy>
+          <width>1280</width>
+          <height>61</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>Font_MainMenu</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>/</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>!Player.HasDuration</visible>
+        </control>
+        <control type="label">
+          <posx>690</posx>
+          <posy>343</posy>
+          <width>1280</width>
+          <height>61</height>
+          <align>left</align>
+          <aligny>center</aligny>
+          <font>Font_MainMenu</font>
+          <textcolor>48FFFFFF</textcolor>
+          <label>∞</label>
+          <animation effect="fade"  start="0" end="100" time="1050" condition="Player.HasAudio + System.IdleTime(8)">Conditional</animation>
+          <visible>!Player.HasDuration</visible>
+        </control>
+      </control>
+    </control>
+  </include>
+</includes>
+
+
+
+
+
+

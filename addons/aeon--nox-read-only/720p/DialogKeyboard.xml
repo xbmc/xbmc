@@ -1,0 +1,839 @@
+<?xml version="1.0"?>
+<window id="103">
+  <defaultcontrol>305</defaultcontrol>
+  <zorder>6</zorder>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="image" id="0">
+      <description>Panel</description>
+      <texture>keyboard/keyboard_back.png</texture>
+      <posx>368</posx>
+      <posy>182</posy>
+      <width>545</width>
+      <height>316</height>
+    </control>
+    <control type="label" id="311">
+      <description>Dialog heading</description>
+      <posx>0</posx>
+      <posy>205</posy>
+      <width>1280</width>
+      <height>22</height>
+      <font>Font_Reg19</font>
+      <align>center</align>
+    </control>
+    <control type="group">
+      <posx>368</posx>
+      <posy>216</posy>
+      <width>545</width>
+      <height>289</height>
+      <control type="label" id="310">
+        <description>Edit Text</description>
+        <posx>7</posx>
+        <posy>243</posy>
+        <width>531</width>
+        <height>22</height>
+        <font>Font_Reg21</font>
+        <align>center</align>
+        <onup>49</onup>
+      </control>
+      <control type="group">
+        <posx>7</posx>
+        <posy>7</posy>
+        <!-- Row 1 -->
+        <control type="group">
+          <posy>0</posy>
+          <control type="button">
+            <description>Blank button</description>
+            <posx>0</posx>
+            <onleft>80</onleft>
+            <onright>81</onright>
+            <onup>300</onup>
+            <ondown>303</ondown>
+            <include>Objects_DoubleKeyOff</include>
+          </control>
+          <control type="button" id="49">
+            <description>'1' button</description>
+            <posx>84</posx>
+            <onleft>-</onleft>
+            <onright>50</onright>
+            <onup>32</onup>
+            <ondown>81</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="50">
+            <description>'2' button</description>
+            <posx>126</posx>
+            <onleft>49</onleft>
+            <onright>51</onright>
+            <onup>32</onup>
+            <ondown>87</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="51">
+            <description>'3' button</description>
+            <posx>168</posx>
+            <onleft>50</onleft>
+            <onright>52</onright>
+            <onup>32</onup>
+            <ondown>69</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="52">
+            <description>'4' button</description>
+            <posx>210</posx>
+            <onleft>51</onleft>
+            <onright>53</onright>
+            <onup>32</onup>
+            <ondown>82</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="53">
+            <description>'5' button</description>
+            <posx>252</posx>
+            <onleft>52</onleft>
+            <onright>54</onright>
+            <onup>32</onup>
+            <ondown>84</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="54">
+            <description>'6' button</description>
+            <posx>294</posx>
+            <onleft>53</onleft>
+            <onright>55</onright>
+            <onup>32</onup>
+            <ondown>89</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="55">
+            <description>'7' button</description>
+            <posx>336</posx>
+            <onleft>54</onleft>
+            <onright>56</onright>
+            <onup>305</onup>
+            <ondown>85</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="56">
+            <description>'8' button</description>
+            <posx>378</posx>
+            <onleft>55</onleft>
+            <onright>57</onright>
+            <onup>305</onup>
+            <ondown>73</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="57">
+            <description>'9' button</description>
+            <posx>420</posx>
+            <onleft>56</onleft>
+            <onright>48</onright>
+            <onup>306</onup>
+            <ondown>79</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="48">
+            <description>'0' button</description>
+            <posx>462</posx>
+            <onleft>57</onleft>
+            <onright>49</onright>
+            <onup>306</onup>
+            <ondown>80</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+        </control>
+        <!-- Row 2 -->
+        <control type="group">
+          <posy>42</posy>
+          <control type="button" id="307">
+            <description>Blank button</description>
+            <posx>0</posx>
+            <onleft>80</onleft>
+            <onright>81</onright>
+            <onup>300</onup>
+            <ondown>303</ondown>
+            <label>IP</label>
+            <include>Objects_DoubleKeyOff</include>
+          </control>
+          <control type="button" id="81">
+            <description>'q' button</description>
+            <posx>84</posx>
+            <onleft>307</onleft>
+            <onright>87</onright>
+            <onup>49</onup>
+            <ondown>65</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="87">
+            <description>'w' button</description>
+            <posx>126</posx>
+            <onleft>81</onleft>
+            <onright>69</onright>
+            <onup>50</onup>
+            <ondown>83</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="69">
+            <description>'e' button</description>
+            <posx>168</posx>
+            <onleft>87</onleft>
+            <onright>82</onright>
+            <onup>51</onup>
+            <ondown>68</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="82">
+            <description>'r' button</description>
+            <posx>210</posx>
+            <onleft>69</onleft>
+            <onright>84</onright>
+            <onup>52</onup>
+            <ondown>70</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="84">
+            <description>'t' button</description>
+            <posx>252</posx>
+            <onleft>82</onleft>
+            <onright>89</onright>
+            <onup>53</onup>
+            <ondown>71</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="89">
+            <description>'y' button</description>
+            <posx>294</posx>
+            <onleft>84</onleft>
+            <onright>85</onright>
+            <onup>54</onup>
+            <ondown>72</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="85">
+            <description>'u' button</description>
+            <posx>336</posx>
+            <onleft>89</onleft>
+            <onright>73</onright>
+            <onup>55</onup>
+            <ondown>74</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="73">
+            <description>'i' button</description>
+            <posx>378</posx>
+            <onleft>85</onleft>
+            <onright>79</onright>
+            <onup>56</onup>
+            <ondown>75</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="79">
+            <description>'o' button</description>
+            <posx>420</posx>
+            <onleft>73</onleft>
+            <onright>80</onright>
+            <onup>57</onup>
+            <ondown>76</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="80">
+            <description>'p' button</description>
+            <posx>462</posx>
+            <onleft>79</onleft>
+            <onright>307</onright>
+            <onup>48</onup>
+            <ondown>304</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+        </control>
+        <!-- Row 3 -->
+        <control type="group">
+          <posy>84</posy>
+          <control type="button" id="303">
+            <description>Blank button</description>
+            <posx>0</posx>
+            <onleft>304</onleft>
+            <onright>65</onright>
+            <onup>307</onup>
+            <ondown>302</ondown>
+            <label>CAPS</label>
+            <include>Objects_DoubleKeyOff</include>
+          </control>
+          <control type="button" id="65">
+            <description>'a' button</description>
+            <posx>84</posx>
+            <onleft>303</onleft>
+            <onright>83</onright>
+            <onup>81</onup>
+            <ondown>90</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="83">
+            <description>'s' button</description>
+            <posx>126</posx>
+            <onleft>65</onleft>
+            <onright>68</onright>
+            <onup>87</onup>
+            <ondown>88</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="68">
+            <description>'d' button</description>
+            <posx>168</posx>
+            <onleft>83</onleft>
+            <onright>70</onright>
+            <onup>69</onup>
+            <ondown>67</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="70">
+            <description>'f' button</description>
+            <posx>210</posx>
+            <onleft>68</onleft>
+            <onright>71</onright>
+            <onup>82</onup>
+            <ondown>86</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="71">
+            <description>'g' button</description>
+            <posx>252</posx>
+            <onleft>70</onleft>
+            <onright>72</onright>
+            <onup>84</onup>
+            <ondown>66</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="72">
+            <description>'h' button</description>
+            <posx>294</posx>
+            <onleft>71</onleft>
+            <onright>74</onright>
+            <onup>89</onup>
+            <ondown>78</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="74">
+            <description>'j' button</description>
+            <posx>336</posx>
+            <onleft>72</onleft>
+            <onright>75</onright>
+            <onup>85</onup>
+            <ondown>77</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="75">
+            <description>'k' button</description>
+            <posx>378</posx>
+            <onleft>74</onleft>
+            <onright>76</onright>
+            <onup>73</onup>
+            <ondown>8</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="76">
+            <description>'l' button</description>
+            <posx>420</posx>
+            <onleft>75</onleft>
+            <onright>304</onright>
+            <onup>79</onup>
+            <ondown>8</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="304">
+            <description>'symbol' button</description>
+            <posx>462</posx>
+            <label>@</label>
+            <onleft>76</onleft>
+            <onright>303</onright>
+            <onup>80</onup>
+            <ondown>8</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+        </control>
+        <!-- Row 4 -->
+        <control type="group">
+          <posy>126</posy>
+          <control type="button" id="302">
+            <description>'IP' button</description>
+            <posx>0</posx>
+            <onleft>8</onleft>
+            <onright>90</onright>
+            <onup>303</onup>
+            <ondown>300</ondown>
+            <label>[UPPERCASE]$LOCALIZE[20178][/UPPERCASE]</label>
+            <include>Objects_DoubleKeyOff</include>
+          </control>
+          <control type="button" id="90">
+            <description>'z' button</description>
+            <posx>84</posx>
+            <onleft>302</onleft>
+            <onright>88</onright>
+            <onup>65</onup>
+            <ondown>32</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="88">
+            <description>'x' button</description>
+            <posx>126</posx>
+            <onleft>90</onleft>
+            <onright>67</onright>
+            <onup>83</onup>
+            <ondown>32</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="67">
+            <description>'c' button</description>
+            <posx>168</posx>
+            <onleft>88</onleft>
+            <onright>86</onright>
+            <onup>68</onup>
+            <ondown>32</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="86">
+            <description>'v' button</description>
+            <posx>210</posx>
+            <onleft>67</onleft>
+            <onright>66</onright>
+            <onup>70</onup>
+            <ondown>32</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="66">
+            <description>'b' button</description>
+            <posx>252</posx>
+            <onleft>86</onleft>
+            <onright>78</onright>
+            <onup>71</onup>
+            <ondown>32</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="78">
+            <description>'n' button</description>
+            <posx>294</posx>
+            <onleft>66</onleft>
+            <onright>77</onright>
+            <onup>72</onup>
+            <ondown>32</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="77">
+            <description>'m' button</description>
+            <posx>336</posx>
+            <onleft>78</onleft>
+            <onright>8</onright>
+            <onup>74</onup>
+            <ondown>305</ondown>
+            <include>Objects_SingleKeyOff</include>
+          </control>
+          <control type="button" id="8">
+            <description>'bksp' button</description>
+            <posx>378</posx>
+            <onleft>77</onleft>
+            <onright>302</onright>
+            <onup>304</onup>
+            <ondown>306</ondown>
+            <label>BKSP</label>
+            <posy>0</posy>
+            <width>152</width>
+            <height>68</height>
+            <texturefocus>keyboard/keyboard_triplenf.png</texturefocus>
+            <texturenofocus>keyboard/keyboard_triplenf.png</texturenofocus>
+            <include>Objects_KeyOffVars</include>
+          </control>
+        </control>
+        <!-- Row 5 -->
+        <control type="group">
+          <posy>168</posy>
+          <control type="button" id="300">
+            <description>'done' button</description>
+            <posx>0</posx>
+            <onleft>306</onleft>
+            <onright>32</onright>
+            <onup>302</onup>
+            <ondown>307</ondown>
+            <label>[UPPERCASE]$LOCALIZE[20177][/UPPERCASE]</label>
+            <include>Objects_DoubleKeyOff</include>
+          </control>
+          <control type="button" id="32">
+            <description>'space' button</description>
+            <posx>84</posx>
+            <label>[UPPERCASE]$LOCALIZE[20182][/UPPERCASE]</label>
+            <onleft>300</onleft>
+            <onright>305</onright>
+            <onup>90</onup>
+            <ondown>49</ondown>
+            <posy>0</posy>
+            <width>278</width>
+            <height>68</height>
+            <texturefocus>keyboard/keyboard_spacef.png</texturefocus>
+            <texturenofocus>keyboard/keyboard_spacenf.png</texturenofocus>
+            <include>Objects_KeyOffVars</include>
+          </control>
+          <control type="button" id="305">
+            <description>'back' button</description>
+            <posx>336</posx>
+            <onleft>32</onleft>
+            <onright>306</onright>
+            <onup>8</onup>
+            <ondown>55</ondown>
+            <label>&lt;</label>
+            <include>Objects_DoubleKeyOffSymbol</include>
+          </control>
+          <control type="button" id="306">
+            <description>'forward' button</description>
+            <posx>420</posx>
+            <onleft>305</onleft>
+            <onright>300</onright>
+            <onup>8</onup>
+            <ondown>57</ondown>
+            <label>&gt;</label>
+            <include>Objects_DoubleKeyOffSymbol</include>
+          </control>
+        </control>
+        <!-- FOCUSED BUTTONS -->
+        <!-- Row 1 -->
+        <control type="group">
+          <posy>0</posy>
+          <control type="button">
+            <description>'1' button</description>
+            <posx>84</posx>
+            <label>$INFO[Control.GetLabel(49)]</label>
+            <visible>Control.HasFocus(49)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'2' button</description>
+            <posx>126</posx>
+            <label>$INFO[Control.GetLabel(50)]</label>
+            <visible>Control.HasFocus(50)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'3' button</description>
+            <posx>168</posx>
+            <label>$INFO[Control.GetLabel(51)]</label>
+            <visible>Control.HasFocus(51)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'4' button</description>
+            <posx>210</posx>
+            <label>$INFO[Control.GetLabel(52)]</label>
+            <visible>Control.HasFocus(52)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'5' button</description>
+            <posx>252</posx>
+            <label>$INFO[Control.GetLabel(53)]</label>
+            <visible>Control.HasFocus(53)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'6' button</description>
+            <posx>294</posx>
+            <label>$INFO[Control.GetLabel(54)]</label>
+            <visible>Control.HasFocus(54)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'7' button</description>
+            <posx>336</posx>
+            <label>$INFO[Control.GetLabel(55)]</label>
+            <visible>Control.HasFocus(55)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'8' button</description>
+            <posx>378</posx>
+            <label>$INFO[Control.GetLabel(56)]</label>
+            <visible>Control.HasFocus(56)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'9' button</description>
+            <posx>420</posx>
+            <label>$INFO[Control.GetLabel(57)]</label>
+            <visible>Control.HasFocus(57)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'0' button</description>
+            <posx>462</posx>
+            <label>$INFO[Control.GetLabel(48)]</label>
+            <visible>Control.HasFocus(48)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+        </control>
+        <!-- Row 2 -->
+        <control type="group">
+          <posy>42</posy>
+          <control type="button">
+            <description>'IP' button</description>
+            <label>$INFO[Control.GetLabel(307)]</label>
+            <posx>0</posx>
+            <visible>Control.HasFocus(307)</visible>
+            <include>Objects_DoubleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'1' button</description>
+            <posx>84</posx>
+            <label>$INFO[Control.GetLabel(81)]</label>
+            <visible>Control.HasFocus(81)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'2' button</description>
+            <posx>126</posx>
+            <label>$INFO[Control.GetLabel(87)]</label>
+            <visible>Control.HasFocus(87)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'3' button</description>
+            <posx>168</posx>
+            <label>$INFO[Control.GetLabel(69)]</label>
+            <visible>Control.HasFocus(69)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'4' button</description>
+            <posx>210</posx>
+            <label>$INFO[Control.GetLabel(82)]</label>
+            <visible>Control.HasFocus(82)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'5' button</description>
+            <posx>252</posx>
+            <label>$INFO[Control.GetLabel(84)]</label>
+            <visible>Control.HasFocus(84)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'6' button</description>
+            <posx>294</posx>
+            <label>$INFO[Control.GetLabel(89)]</label>
+            <visible>Control.HasFocus(89)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'7' button</description>
+            <posx>336</posx>
+            <label>$INFO[Control.GetLabel(85)]</label>
+            <visible>Control.HasFocus(85)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'8' button</description>
+            <posx>378</posx>
+            <label>$INFO[Control.GetLabel(73)]</label>
+            <visible>Control.HasFocus(73)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'9' button</description>
+            <posx>420</posx>
+            <label>$INFO[Control.GetLabel(79)]</label>
+            <visible>Control.HasFocus(79)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'0' button</description>
+            <posx>462</posx>
+            <label>$INFO[Control.GetLabel(80)]</label>
+            <visible>Control.HasFocus(80)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+        </control>
+        <!-- Row 3 -->
+        <control type="group">
+          <posy>84</posy>
+          <control type="button">
+            <description>Blank button</description>
+            <posx>0</posx>
+            <label>$INFO[Control.GetLabel(303)]</label>
+            <visible>Control.HasFocus(303)</visible>
+            <include>Objects_DoubleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'1' button</description>
+            <posx>84</posx>
+            <label>$INFO[Control.GetLabel(65)]</label>
+            <visible>Control.HasFocus(65)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'2' button</description>
+            <posx>126</posx>
+            <label>$INFO[Control.GetLabel(83)]</label>
+            <visible>Control.HasFocus(83)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'3' button</description>
+            <posx>168</posx>
+            <label>$INFO[Control.GetLabel(68)]</label>
+            <visible>Control.HasFocus(68)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'4' button</description>
+            <posx>210</posx>
+            <label>$INFO[Control.GetLabel(70)]</label>
+            <visible>Control.HasFocus(70)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'5' button</description>
+            <posx>252</posx>
+            <label>$INFO[Control.GetLabel(71)]</label>
+            <visible>Control.HasFocus(71)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'6' button</description>
+            <posx>294</posx>
+            <label>$INFO[Control.GetLabel(72)]</label>
+            <visible>Control.HasFocus(72)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'7' button</description>
+            <posx>336</posx>
+            <label>$INFO[Control.GetLabel(74)]</label>
+            <visible>Control.HasFocus(74)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'8' button</description>
+            <posx>378</posx>
+            <label>$INFO[Control.GetLabel(75)]</label>
+            <visible>Control.HasFocus(75)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'9' button</description>
+            <posx>420</posx>
+            <label>$INFO[Control.GetLabel(76)]</label>
+            <visible>Control.HasFocus(76)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'0' button</description>
+            <posx>462</posx>
+            <label>$INFO[Control.GetLabel(304)]</label>
+            <visible>Control.HasFocus(304)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+        </control>
+        <!-- Row 4 -->
+        <control type="group">
+          <posy>126</posy>
+          <control type="button">
+            <description>Blank button</description>
+            <posx>0</posx>
+            <label>$INFO[Control.GetLabel(302)]</label>
+            <visible>Control.HasFocus(302)</visible>
+            <include>Objects_DoubleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'1' button</description>
+            <posx>84</posx>
+            <label>$INFO[Control.GetLabel(90)]</label>
+            <visible>Control.HasFocus(90)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'2' button</description>
+            <posx>126</posx>
+            <label>$INFO[Control.GetLabel(88)]</label>
+            <visible>Control.HasFocus(88)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'3' button</description>
+            <posx>168</posx>
+            <label>$INFO[Control.GetLabel(67)]</label>
+            <visible>Control.HasFocus(67)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'4' button</description>
+            <posx>210</posx>
+            <label>$INFO[Control.GetLabel(86)]</label>
+            <visible>Control.HasFocus(86)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'5' button</description>
+            <posx>252</posx>
+            <label>$INFO[Control.GetLabel(66)]</label>
+            <visible>Control.HasFocus(66)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'6' button</description>
+            <posx>294</posx>
+            <label>$INFO[Control.GetLabel(78)]</label>
+            <visible>Control.HasFocus(78)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'7' button</description>
+            <posx>336</posx>
+            <label>$INFO[Control.GetLabel(77)]</label>
+            <visible>Control.HasFocus(77)</visible>
+            <include>Objects_SingleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'bksp' button</description>
+            <posx>378</posx>
+            <label>$INFO[Control.GetLabel(8)]</label>
+            <visible>Control.HasFocus(8)</visible>
+            <include>Objects_TripleKeyOn</include>
+          </control>
+        </control>
+        <!-- Row 5 -->
+        <control type="group">
+          <posy>168</posy>
+          <control type="button">
+            <description>Blank button</description>
+            <posx>0</posx>
+            <label>$INFO[Control.GetLabel(300)]</label>
+            <visible>Control.HasFocus(300)</visible>
+            <include>Objects_DoubleKeyOn</include>
+          </control>
+          <control type="button">
+            <description>'1' button</description>
+            <posx>84</posx>
+            <label>$INFO[Control.GetLabel(32)]</label>
+            <posy>0</posy>
+            <width>278</width>
+            <height>68</height>
+            <texturefocus>keyboard/keyboard_spacef.png</texturefocus>
+            <texturenofocus>keyboard/keyboard_spacef.png</texturenofocus>
+            <include>Objects_KeyOnVars</include>
+            <visible>Control.HasFocus(32)</visible>
+          </control>
+          <control type="button">
+            <description>'2' button</description>
+            <posx>336</posx>
+            <label>$INFO[Control.GetLabel(305)]</label>
+            <include>Objects_DoubleKeyOnSymbol</include>
+            <visible>Control.HasFocus(305)</visible>
+          </control>
+          <control type="button">
+            <description>'3' button</description>
+            <posx>420</posx>
+            <label>$INFO[Control.GetLabel(306)]</label>
+            <include>Objects_DoubleKeyOnSymbol</include>
+            <visible>Control.HasFocus(306)</visible>
+          </control>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

@@ -1,0 +1,1562 @@
+<?xml version="1.0"?>
+<includes>
+	<!-- Cover Mask -->
+	<include name="MusicCoverMaskCD">
+		<texture background="true" diffuse="thumbs/boxes/cdcover_mask.png">DefaultAudio.png</texture>
+	</include>
+	<include name="MusicCoverMaskBlackCD">
+		<texture background="true" diffuse="thumbs/boxes/cdcover_mask.png">common/black.png</texture>
+	</include>
+	<include name="MusicCoverMaskReflectionCD">
+		<texture background="true" flipy="true" diffuse="thumbs/boxes/cdcover_mask_reflect.png">DefaultAudio.png</texture>
+	</include>
+	<include name="MusicCoverMaskReflectionBlackCD">
+		<texture background="true" flipy="true" diffuse="thumbs/boxes/cdcover_mask_reflect.png">common/black.png</texture>
+	</include>
+	<include name="ShowcaseMusicCoverCD">
+		<bordertexture>thumbs/boxes/cd_shadow_light.png</bordertexture>
+		<texture background="true">thumbs/boxes/cd_glass.png</texture>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<!-- Case Dimensions -->
+	<include name="MusicShowcaseThumbDimensionsCD">
+		<posx>18</posx>
+		<posy>34</posy>
+		<width>250</width>
+		<height>228</height>
+	</include>
+	<!-- Cover Dimensions -->
+	<include name="MusicShowcaseThumbDimensionsCDCover">
+		<posx>55</posx>
+		<posy>46</posy>
+		<width>199</width>
+		<height>199</height>
+	</include>
+	<include name="MusicShowcaseThumbReflectionDimensionsCDCover">
+		<posx>55</posx>
+		<posy>261</posy>
+		<width>199</width>
+		<height>199</height>
+	</include>
+	<include name="WatchedOverlayShowCaseDVD">
+		<posx>163</posx>
+		<posy>28</posy>
+		<width>60</width>
+		<height>60</height>
+	</include>
+	<include name="MovieShowcaseThumbDVD">
+		<posx>76</posx>
+		<posy>29</posy>
+		<width>146</width>
+		<height>220</height>
+		<align>center</align>
+		<texture background="true" diffuse="thumbs/boxes/movieposter_mask.png">DefaultVideoBigPoster.png</texture>
+		<aspectratio scalediffuse="false">stretch</aspectratio>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MovieShowcaseThumbMainDVD">
+		<posx>76</posx>
+		<posy>29</posy>
+		<width>146</width>
+		<height>220</height>
+		<align>center</align>
+		<texture background="true" diffuse="thumbs/boxes/movieposter_mask.png">DefaultVideoBigPoster.png</texture>
+		<aspectratio scalediffuse="false">stretch</aspectratio>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MovieShowcaseThumbReflectionMainDVD">
+		<posx>76</posx>
+		<posy>261</posy>
+		<width>146</width>
+		<height>220</height>
+		<colordiffuse>52FFFFFF</colordiffuse>
+		<texture background="true" flipy="true" diffuse="thumbs/boxes/movieposter_mask_reflect.png">DefaultVideoBigPoster.png</texture>
+		<aspectratio scalediffuse="false">stretch</aspectratio>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCover">
+		<posx>76</posx>
+		<posy>261</posy>
+		<width>146</width>
+		<height>220</height>
+		<colordiffuse>d0FFFFFF</colordiffuse>
+		<texture background="true" flipy="true" diffuse="thumbs/boxes/movieposter_mask_reflect.png">DefaultVideoBigPoster.png</texture>
+		<aspectratio scalediffuse="false">stretch</aspectratio>
+		<animation effect="fade" start="70" end="70" time="0" condition="true">Conditional</animation>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVD">
+		<control type="image">
+			<posx>49</posx>
+			<posy>250</posy>
+			<width>184</width>
+			<height>120</height>
+			<colordiffuse>d0FFFFFF</colordiffuse>
+			<bordertexture>thumbs/boxes/poster_shadow_reflect.png</bordertexture>
+			<texture background="true">thumbs/boxes/poster_glass_reflect.png</texture>
+			<aspectratio scalediffuse="false">stretch</aspectratio>
+			<animation effect="fade" start="70" end="70" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<!-- Movie Showcase Variables: Thumb glass overlays -->
+	<include name="MovieShowcaseGlassOverlayDVD">
+		<control type="image">
+			<posx>49</posx>
+			<posy>22</posy>
+			<width>184</width>
+			<height>240</height>
+			<bordertexture>thumbs/boxes/poster_shadow.png</bordertexture>
+			<texture background="true">thumbs/boxes/poster_glass.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseGlassOverlayAngledDVD">
+		<control type="image">
+			<posx>49</posx>
+			<posy>22</posy>
+			<width>184</width>
+			<height>240</height>
+			<bordertexture>thumbs/boxes/poster_shadow.png</bordertexture>
+			<texture background="true">thumbs/boxes/poster_glass.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem-7">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(-7).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem-7">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(-7).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem-7">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility-7</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem-6">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(-6).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem-6">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(-6).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem-6">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility-6</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem-5">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(-5).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem-5">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(-5).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem-5">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility-5</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem-4">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(-4).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem-4">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(-4).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem-4">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility-4</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem-3">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(-3).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem-3">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(-3).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem-3">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility-3</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem-2">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(-2).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem-2">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(-2).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem-2">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility-2</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem-1">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(-1).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem-1">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(-1).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem-1">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility-1</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem0">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(0).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem0">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(0).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem0">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility0</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem1">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(1).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem1">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(1).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem1">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility1</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem2">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(2).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem2">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(2).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem2">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility2</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem3">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(3).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem3">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(3).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem3">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility3</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem4">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(4).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem4">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(4).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem4">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility4</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem5">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(5).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem5">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(5).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem5">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility5</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem6">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(6).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem6">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(6).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem6">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility6</include>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbDVDItem7">
+		<control type="image">
+			<include>MovieShowcaseThumbDVD</include>
+			<info>Container(504).ListItem(7).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionDVDCoverItem7">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionDVDCover</include>
+			<info>Container(504).ListItem(7).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseDVDItem7">
+		<control type="image">
+			<include>WatchedOverlayShowCaseDVD</include>
+			<include>OverlayVisibility7</include>
+		</control>
+	</include>
+	<!-- Music Showcase Variables: Main thumbs -->
+	<include name="MusicShowcaseThumbAspectRatio">
+		<aspectratio scalediffuse="false">scale</aspectratio>
+	</include>
+	<include name="MusicShowcaseThumbDVD">
+		<include>MusicShowcaseThumbDimensionsCDCover</include>
+		<include>MusicCoverMaskCD</include>
+		<include>MusicShowcaseThumbAspectRatio</include>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MusicShowcaseBlackDVD">
+		<control type="image">
+			<include>MusicShowcaseThumbDimensionsCDCover</include>
+			<include>MusicCoverMaskBlackCD</include>
+		</control>
+	</include>
+	<include name="MusicShowcaseBlackReflectionDVD">
+		<control type="image">
+			<include>MusicShowcaseThumbDimensionsCDCover</include>
+			<colordiffuse>d0FFFFFF</colordiffuse>
+			<include>MusicCoverMaskReflectionBlackCD</include>
+			<animation effect="fade" start="50" end="50" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="MusicShowcaseThumbMainDVD">
+		<include>MusicShowcaseThumbDimensionsCDCover</include>
+		<include>MusicCoverMaskCD</include>
+		<include>MusicShowcaseThumbAspectRatio</include>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MusicShowcaseThumbReflectionDVD">
+		<include>MusicShowcaseThumbReflectionDimensionsCDCover</include>
+		<colordiffuse>d0FFFFFF</colordiffuse>
+		<include>MusicCoverMaskReflectionCD</include>
+		<include>MusicShowcaseThumbAspectRatio</include>
+		<animation effect="fade" start="50" end="50" time="0" condition="true">Conditional</animation>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MusicShowcaseThumbReflectionMainDVD">
+		<include>MusicShowcaseThumbReflectionDimensionsCDCover</include>
+		<colordiffuse>52FFFFFF</colordiffuse>
+		<include>MusicCoverMaskReflectionCD</include>
+		<include>MusicShowcaseThumbAspectRatio</include>
+		<animation effect="fade" start="50" end="50" time="0" condition="true">Conditional</animation>
+		<visible>!Container.Content(genres) | Skin.HasSetting(MusicGenreOff)</visible>
+	</include>
+	<include name="MusicShowcaseThumbReflectionCD">
+		<posx>18</posx>
+		<posy>244</posy>
+		<width>250</width>
+		<height>228</height>
+		<colordiffuse>d0FFFFFF</colordiffuse>
+		<bordertexture>thumbs/boxes/cd_shadow_reflect.png</bordertexture>
+		<texture background="true">thumbs/boxes/cd_glass_reflect.png</texture>
+		<include>MusicShowcaseThumbAspectRatio</include>
+		<animation effect="fade" start="50" end="50" time="0" condition="true">Conditional</animation>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MusicShowcaseThumbReflectionCDMain">
+		<posx>18</posx>
+		<posy>244</posy>
+		<width>250</width>
+		<height>228</height>
+		<colordiffuse>52FFFFFF</colordiffuse>
+		<bordertexture>thumbs/boxes/cd_shadow_reflect.png</bordertexture>
+		<texture background="true">thumbs/boxes/cd_glass_reflect.png</texture>
+		<include>MusicShowcaseThumbAspectRatio</include>
+		<animation effect="fade" start="50" end="50" time="0" condition="true">Conditional</animation>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MusicShowcaseGlassOverlayAngledCD">
+		<include>MusicShowcaseThumbDimensionsCD</include>
+		<include>ShowcaseMusicCoverCD</include>
+	</include>
+	<include name="CDCaseItem-6">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(-6).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(-6).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(-6).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem-5">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(-5).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(-5).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(-5).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem-4">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(-4).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(-4).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(-4).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem-3">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(-3).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(-3).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(-3).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem-2">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(-2).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(-2).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(-2).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem-1">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(-1).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(-1).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(-1).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem0">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(0).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(0).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(0).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem1">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(1).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(1).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(1).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem2">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(2).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(2).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(2).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem3">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(3).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(3).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(3).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem4">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(4).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(4).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(4).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem5">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(5).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(5).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(5).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="CDCaseItem6">
+		<control type="group">
+			<visible>!IsEmpty(Container(513).ListItemNoWrap(6).label) | Skin.HasSetting(showcasewrap)</visible>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbDVD</include>
+				<info>Container(513).ListItem(6).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay</description>
+				<include>MusicShowcaseGlassOverlayAngledCD</include>
+			</control>
+			<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+			<control type="image">
+				<include>MusicShowcaseThumbReflectionDVD</include>
+				<info>Container(513).ListItem(6).Icon</info>
+			</control>
+			<control type="image">
+				<description>Glass overlay reflection</description>
+				<include>MusicShowcaseThumbReflectionCD</include>
+			</control>
+		</control>
+	</include>
+	<include name="ShowcaseSquareDVD">
+		<control type="group" id="7005">
+			<posy>387</posy>
+			<camera x="640" y="540" />
+			<visible>Control.IsVisible(513) + Container.OnNext + !Skin.HasSetting(noflowalbumdvd)+!Control.HasFocus(110)</visible>
+			<animation effect="slide" end="-100,0" time="250" reversible="false">Hidden</animation>
+			<control type="group">
+				<posx>50</posx>
+				<visible>Container.OnNext</visible>
+				<animation effect="fade" start="100" end="0" time="250" reversible="false">Hidden</animation>
+				<animation effect="rotatey" center="-50" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem-6</include>
+			</control>
+			<control type="group">
+				<posx>150</posx>
+				<animation effect="rotatey" center="50" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem-5</include>
+			</control>
+			<control type="group">
+				<posx>250</posx>
+				<animation effect="rotatey" center="150" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem-4</include>
+			</control>
+			<control type="group">
+				<posx>350</posx>
+				<animation effect="rotatey" center="250" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem-3</include>
+			</control>
+			<control type="group">
+				<posx>450</posx>
+				<animation effect="rotatey" center="350" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem-2</include>
+			</control>
+			<control type="group">
+				<posx>1060</posx>
+				<visible>!Container.OnNext</visible>
+				<animation effect="fade" start="0" end="100" delay="0" time="250" reversible="false">Visible</animation>
+				<animation effect="rotatey" center="1430" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem5</include>
+			</control>
+			<control type="group">
+				<posx>960</posx>
+				<animation effect="rotatey" center="1330" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem4</include>
+			</control>
+			<control type="group">
+				<posx>860</posx>
+				<animation effect="rotatey" center="1230" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem3</include>
+			</control>
+			<control type="group">
+				<posx>760</posx>
+				<animation effect="rotatey" center="1130" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem2</include>
+			</control>
+			<control type="group">
+				<posx>660</posx>
+				<animation effect="rotatey" center="1030" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem1</include>
+			</control>
+			<control type="group">
+				<visible>Container.OnNext</visible>
+				<animation effect="slide" end="45,0" time="250" reversible="false">Hidden</animation>
+				<control type="group">
+					<posx>560</posx>
+					<visible>Container.OnNext</visible>
+					<animation effect="rotatey" center="930" start="0" end="-65" time="250" reversible="false" tween="quadratic" easing="in">Hidden</animation>
+					<animation effect="rotatey" center="930" start="65" end="65" time="0" condition="true">Conditional</animation>
+					<include>CDCaseItem0</include>
+				</control>
+				<control type="group">
+					<posx>505</posx>
+					<visible>Container.OnNext</visible>
+					<animation effect="rotatey" center="405" start="0" end="-65" time="250" reversible="false" tween="quadratic" easing="out">Hidden</animation>
+					<include>CDCaseItem-1</include>
+				</control>
+			</control>
+		</control>
+		<control type="group" id="7006">
+			<posy>387</posy>
+			<camera x="640" y="540" />
+			<visible>Control.IsVisible(513) + Container.OnPrevious + !Skin.HasSetting(noflowalbumdvd)+!Control.HasFocus(110)</visible>
+			<animation effect="slide" end="100,0" time="250" reversible="false">Hidden</animation>
+			<control type="group">
+				<posx>960</posx>
+				<visible>Container.OnPrevious</visible>
+				<animation effect="fade" start="100" end="0" time="250" reversible="false">Hidden</animation>
+				<animation effect="rotatey" center="1330" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem6</include>
+			</control>
+			<control type="group">
+				<posx>860</posx>
+				<animation effect="rotatey" center="1230" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem5</include>
+			</control>
+			<control type="group">
+				<posx>760</posx>
+				<animation effect="rotatey" center="1130" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem4</include>
+			</control>
+			<control type="group">
+				<posx>660</posx>
+				<animation effect="rotatey" center="1030" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem3</include>
+			</control>
+			<control type="group">
+				<posx>560</posx>
+				<animation effect="rotatey" center="930" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem2</include>
+			</control>
+			<control type="group">
+				<posx>-50</posx>
+				<visible>!Container.OnPrevious</visible>
+				<animation effect="fade" start="0" end="100" time="250" reversible="false">Visible</animation>
+				<animation effect="rotatey" center="-150" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem-5</include>
+			</control>
+			<control type="group">
+				<posx>50</posx>
+				<animation effect="rotatey" center="-50" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem-4</include>
+			</control>
+			<control type="group">
+				<posx>150</posx>
+				<animation effect="rotatey" center="50" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem-3</include>
+			</control>
+			<control type="group">
+				<posx>250</posx>
+				<animation effect="rotatey" center="150" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem-2</include>
+			</control>
+			<control type="group">
+				<posx>350</posx>
+				<animation effect="rotatey" center="250" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<include>CDCaseItem-1</include>
+			</control>
+			<control type="group">
+				<visible>Container.OnPrevious</visible>
+				<animation effect="slide" end="-45,0" time="250" reversible="false">Hidden</animation>
+				<control type="group">
+					<posx>450</posx>
+					<visible>Container.OnPrevious</visible>
+					<animation effect="rotatey" center="350" start="0" end="65" time="250" reversible="false" tween="quadratic" easing="in">Hidden</animation>
+					<animation effect="rotatey" center="350" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+					<include>CDCaseItem0</include>
+				</control>
+				<control type="group">
+					<posx>505</posx>
+					<visible>Container.OnPrevious</visible>
+					<animation effect="rotatey" center="875" start="0" end="65" time="250" reversible="false" tween="quadratic" easing="out">Hidden</animation>
+					<include>CDCaseItem1</include>
+				</control>
+			</control>
+		</control>
+		<control type="button" id="971">
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<visible>!Skin.HasSetting(noflowalbumdvd)</visible>
+			<animation effect="fade" start="100" end="0" time="800">Hidden</animation>
+		</control>
+		<control type="group" id="7004">
+			<posy>387</posy>
+			<camera x="640" y="540" />
+			<animation effect="fade" time="500">WindowOpen</animation>
+			<animation effect="fade" time="200">WindowClose</animation>
+			<visible>Control.IsVisible(513) + !Control.IsVisible(7005) + !Control.IsVisible(7006) + Control.IsVisible(971)+!Control.HasFocus(110)</visible>
+			<control type="group">
+				<posx>50</posx>
+				<animation effect="rotatey" center="-50" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="Skin.HasSetting(noflowalbumdvd)">
+					<effect type="rotatey" center="-50" start="0" end="65" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-795" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>CDCaseItem-5</include>
+			</control>
+			<control type="group">
+				<posx>150</posx>
+				<animation effect="rotatey" center="50" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="Skin.HasSetting(noflowalbumdvd)">
+					<effect type="rotatey" center="50" start="0" end="65" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-645" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>CDCaseItem-4</include>
+			</control>
+			<control type="group">
+				<posx>250</posx>
+				<animation effect="rotatey" center="150" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="Skin.HasSetting(noflowalbumdvd)">
+					<effect type="rotatey" center="150" start="0" end="65" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-495" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>CDCaseItem-3</include>
+			</control>
+			<control type="group">
+				<posx>350</posx>
+				<animation effect="rotatey" center="250" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="Skin.HasSetting(noflowalbumdvd)">
+					<effect type="rotatey" center="250" start="0" end="65" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-345" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>CDCaseItem-2</include>
+			</control>
+			<control type="group">
+				<posx>450</posx>
+				<animation effect="rotatey" center="350" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="Skin.HasSetting(noflowalbumdvd)">
+					<effect type="rotatey" center="350" start="0" end="65" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-195" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>CDCaseItem-1</include>
+			</control>
+			<control type="group">
+				<posx>960</posx>
+				<animation effect="rotatey" center="1330" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="Skin.HasSetting(noflowalbumdvd)">
+					<effect type="rotatey" center="1330" start="0" end="-65" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="795" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>CDCaseItem5</include>
+			</control>
+			<control type="group">
+				<posx>860</posx>
+				<animation effect="rotatey" center="1230" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="Skin.HasSetting(noflowalbumdvd)">
+					<effect type="rotatey" center="1230" start="0" end="-65" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="645" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>CDCaseItem4</include>
+			</control>
+			<control type="group">
+				<posx>760</posx>
+				<animation effect="rotatey" center="1130" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="Skin.HasSetting(noflowalbumdvd)">
+					<effect type="rotatey" center="1130" start="0" end="-65" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="495" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>CDCaseItem3</include>
+			</control>
+			<control type="group">
+				<posx>660</posx>
+				<animation effect="rotatey" center="1030" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="Skin.HasSetting(noflowalbumdvd)">
+					<effect type="rotatey" center="1030" start="0" end="-65" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="345" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>CDCaseItem2</include>
+			</control>
+			<control type="group">
+				<posx>560</posx>
+				<animation effect="rotatey" center="930" start="65" end="65" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="Skin.HasSetting(noflowalbumdvd)">
+					<effect type="rotatey" center="930" start="0" end="-65" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="195" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>CDCaseItem1</include>
+			</control>
+			<control type="group">
+				<posx>505</posx>
+				<control type="group">
+					<visible>!IsEmpty(Container(513).ListItemNoWrap(0).label) | Skin.HasSetting(showcasewrap)</visible>
+					<include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+					<control type="image">
+						<include>MusicShowcaseThumbMainDVD</include>
+						<info>Container(513).ListItem(0).Icon</info>
+					</control>
+					<control type="image">
+						<description>Glass overlay</description>
+						<include>MusicShowcaseGlassOverlayAngledCD</include>
+					</control>
+					<control type="image">
+						<include>MusicShowcaseThumbReflectionMainDVD</include>
+						<info>Container(513).ListItem(0).Icon</info>
+					</control>
+					<include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+					<control type="image">
+						<description>Glass overlay reflection</description>
+						<include>MusicShowcaseThumbReflectionCD</include>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="ShowcaseMoviesDVD">
+		<control type="group" id="6005">
+			<posy>380</posy>
+			<camera x="640" y="540" />
+			<visible>Control.IsVisible(504) + Container.OnNext + ![[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] +!Control.HasFocus(109)</visible>
+			<animation effect="slide" end="-90,0" time="250" reversible="false">Hidden</animation>
+			<control type="group">
+				<posx>10</posx>
+				<visible>Container.OnNext</visible>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-7).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="fade" start="100" end="0" time="250" reversible="false">Hidden</animation>
+				<animation effect="rotatey" center="-90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-7</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-7</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-7</include>
+			</control>
+			<control type="group">
+				<posx>100</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="0" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-6</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-6</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-6</include>
+			</control>
+			<control type="group">
+				<posx>190</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-5</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-5</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-5</include>
+			</control>
+			<control type="group">
+				<posx>280</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="180" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-4</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-4</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-4</include>
+			</control>
+			<control type="group">
+				<posx>370</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="270" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-3</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-3</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-3</include>
+			</control>
+			<control type="group">
+				<posx>460</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="360" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-2</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-2</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-2</include>
+			</control>
+			<control type="group">
+				<posx>1090</posx>
+				<visible>!Container.OnNext</visible>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="fade" start="0" end="100" delay="0" time="250" reversible="false">Visible</animation>
+				<animation effect="rotatey" center="1470" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem6</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem6</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem6</include>
+			</control>
+			<control type="group">
+				<posx>1000</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1380" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem5</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem5</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem5</include>
+			</control>
+			<control type="group">
+				<posx>910</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1290" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem4</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem4</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem4</include>
+			</control>
+			<control type="group">
+				<posx>820</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1200" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem3</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem3</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem3</include>
+			</control>
+			<control type="group">
+				<posx>730</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1110" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem2</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem2</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem2</include>
+			</control>
+			<control type="group">
+				<posx>640</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(1).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1020" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem1</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem1</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem1</include>
+			</control>
+			<control type="group">
+				<visible>Container.OnNext</visible>
+				<animation effect="slide" end="50,0" time="250" reversible="false">Hidden</animation>
+				<control type="group">
+					<posx>550</posx>
+					<visible>!IsEmpty(Container(504).ListItemNoWrap(0).label) | Skin.HasSetting(showcasewrap)</visible>
+					<visible>Container.OnNext</visible>
+					<animation effect="rotatey" center="930" start="0" end="-55" time="250" reversible="false" tween="quadratic" easing="in">Hidden</animation>
+					<animation effect="rotatey" center="930" start="55" end="55" time="0" condition="true">Conditional</animation>
+					<include>MovieShowcaseThumbDVDItem0</include>
+					<include>MovieShowcaseGlassOverlayAngledDVD</include>
+					<include>MovieShowcaseThumbReflectionDVDCoverItem0</include>
+					<include>MovieShowcaseThumbReflectionDVD</include>
+					<include>WatchedOverlayShowCaseDVDItem0</include>
+				</control>
+				<control type="group">
+					<posx>505</posx>
+					<visible>Container.OnNext</visible>
+					<visible>!IsEmpty(Container(504).ListItemNoWrap(-1).label) | Skin.HasSetting(showcasewrap)</visible>
+					<animation effect="rotatey" center="405" start="0" end="-55" time="250" reversible="false" tween="quadratic" easing="out">Hidden</animation>
+					<include>MovieShowcaseThumbDVDItem-1</include>
+					<include>MovieShowcaseGlassOverlayAngledDVD</include>
+					<include>MovieShowcaseThumbReflectionDVDCoverItem-1</include>
+					<include>MovieShowcaseThumbReflectionDVD</include>
+					<include>WatchedOverlayShowCaseDVDItem-1</include>
+				</control>
+			</control>
+		</control>
+		<control type="group" id="6006">
+			<posy>380</posy>
+			<camera x="640" y="540" />
+			<visible>Control.IsVisible(504) + Container.OnPrevious + ![[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] +!Control.HasFocus(109)</visible>
+			<animation effect="slide" end="90,0" time="250" reversible="false">Hidden</animation>
+			<control type="group">
+				<posx>1000</posx>
+				<visible>Container.OnPrevious</visible>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(7).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="fade" start="100" end="0" time="250" reversible="false">Hidden</animation>
+				<animation effect="rotatey" center="1380" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem7</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem7</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem7</include>
+			</control>
+			<control type="group">
+				<posx>910</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1290" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem6</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem6</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem6</include>
+			</control>
+			<control type="group">
+				<posx>820</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1200" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem5</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem5</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem5</include>
+			</control>
+			<control type="group">
+				<posx>730</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1110" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem4</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem4</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem4</include>
+			</control>
+			<control type="group">
+				<posx>640</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1020" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem3</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem3</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem3</include>
+			</control>
+			<control type="group">
+				<posx>550</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="930" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem2</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem2</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem2</include>
+			</control>
+			<control type="group">
+				<posx>-80</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<visible>!Container.OnPrevious</visible>
+				<animation effect="fade" start="0" end="100" time="250" reversible="false">Visible</animation>
+				<animation effect="rotatey" center="-180" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-6</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-6</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-6</include>
+			</control>
+			<control type="group">
+				<posx>10</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="-90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-5</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-5</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-5</include>
+			</control>
+			<control type="group">
+				<posx>100</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="0" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-4</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-4</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-4</include>
+			</control>
+			<control type="group">
+				<posx>190</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-3</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-3</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-3</include>
+			</control>
+			<control type="group">
+				<posx>280</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="180" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-2</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-2</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-2</include>
+			</control>
+			<control type="group">
+				<posx>370</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-1).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="270" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowcaseThumbDVDItem-1</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-1</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-1</include>
+			</control>
+			<control type="group">
+				<visible>Container.OnPrevious</visible>
+				<animation effect="slide" end="-50,0" time="250" reversible="false">Hidden</animation>
+				<control type="group">
+					<posx>460</posx>
+					<visible>Container.OnPrevious</visible>
+					<visible>!IsEmpty(Container(504).ListItemNoWrap(0).label) | Skin.HasSetting(showcasewrap)</visible>
+					<animation effect="rotatey" center="360" start="0" end="55" time="250" reversible="false" tween="quadratic" easing="in">Hidden</animation>
+					<animation effect="rotatey" center="360" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+					<include>MovieShowcaseThumbDVDItem0</include>
+					<include>MovieShowcaseGlassOverlayAngledDVD</include>
+					<include>MovieShowcaseThumbReflectionDVDCoverItem0</include>
+					<include>MovieShowcaseThumbReflectionDVD</include>
+					<include>WatchedOverlayShowCaseDVDItem0</include>
+				</control>
+				<control type="group">
+					<posx>505</posx>
+					<visible>!IsEmpty(Container(504).ListItemNoWrap(1).label) | Skin.HasSetting(showcasewrap)</visible>
+					<visible>Container.OnPrevious</visible>
+					<animation effect="rotatey" center="885" start="0" end="55" time="250" reversible="false" tween="quadratic" easing="out">Hidden</animation>
+					<include>MovieShowcaseThumbDVDItem1</include>
+					<include>MovieShowcaseGlassOverlayAngledDVD</include>
+					<include>MovieShowcaseThumbReflectionDVDCoverItem1</include>
+					<include>MovieShowcaseThumbReflectionDVD</include>
+					<include>WatchedOverlayShowCaseDVDItem1</include>
+				</control>
+			</control>
+		</control>
+		<control type="button" id="961">
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<visible>![[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]]</visible>
+			<animation effect="fade" start="100" end="0" time="800">Hidden</animation>
+		</control>
+		<control type="group" id="6004">
+			<posy>380</posy>
+			<animation effect="fade" time="500">WindowOpen</animation>
+			<animation effect="fade" time="200">WindowClose</animation>
+			<visible>Control.IsVisible(504) + !Control.IsVisible(6005) + !Control.IsVisible(6006) + Control.IsVisible(961)+!Control.HasFocus(109)</visible>
+			<camera x="640" y="540" />
+			<control type="group">
+				<posx>10</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="-90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="-90" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-685" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem-6</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-6</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-6</include>
+			</control>
+			<control type="group">
+				<posx>100</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="0" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="0" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-577" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem-5</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-5</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-5</include>
+			</control>
+			<control type="group">
+				<posx>190</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="90" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-469" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem-4</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-4</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-4</include>
+			</control>
+			<control type="group">
+				<posx>280</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="180" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="180" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-362" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem-3</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-3</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-3</include>
+			</control>
+			<control type="group">
+				<posx>370</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="270" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="270" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-256" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem-2</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-2</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-2</include>
+			</control>
+			<control type="group">
+				<posx>460</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-1).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="360" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="360" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-151" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem-1</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem-1</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem-1</include>
+			</control>
+			<control type="group">
+				<posx>1000</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1380" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="1380" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="685" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem6</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem6</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem6</include>
+			</control>
+			<control type="group">
+				<posx>910</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1290" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="1290" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="577" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem5</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem5</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem5</include>
+			</control>
+			<control type="group">
+				<posx>820</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1200" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="1200" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="469" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem4</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem4</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem4</include>
+			</control>
+			<control type="group">
+				<posx>730</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1110" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="1110" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="362" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem3</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem3</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem3</include>
+			</control>
+			<control type="group">
+				<posx>640</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1020" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="1020" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="256" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem2</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem2</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem2</include>
+			</control>
+			<control type="group">
+				<posx>550</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(1).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="930" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="930" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="151" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowcaseThumbDVDItem1</include>
+				<include>MovieShowcaseGlassOverlayAngledDVD</include>
+				<include>MovieShowcaseThumbReflectionDVDCoverItem1</include>
+				<include>MovieShowcaseThumbReflectionDVD</include>
+				<include>WatchedOverlayShowCaseDVDItem1</include>
+			</control>
+			<control type="group">
+				<posx>505</posx>
+				<control type="group">
+					<visible>!IsEmpty(Container(504).ListItemNoWrap(0).label) | Skin.HasSetting(showcasewrap)</visible>
+					<control type="image">
+						<include>MovieShowcaseThumbMainDVD</include>
+						<info>Container(504).ListItem(0).Thumb</info>
+					</control>
+					<include>MovieShowcaseGlassOverlayDVD</include>
+					<control type="image">
+						<include>MovieShowcaseThumbReflectionMainDVD</include>
+						<info>Container(504).ListItem(0).Thumb</info>
+					</control>
+					<include>MovieShowcaseThumbReflectionDVD</include>
+					<include>WatchedOverlayShowCaseDVDItem0</include>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

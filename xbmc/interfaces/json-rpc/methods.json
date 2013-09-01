@@ -108,6 +108,210 @@
     ],
     "returns": "any"
   },
+  "PictureLibrary.GetPictureAlbums": {
+      "type": "method",
+      "description": "Retrieve all albums from specified face or location",
+      "transport": "Response",
+      "permission": "ReadData",
+      "params": [
+                 { "name": "properties", "$ref": "Picture.Fields.Album" },
+                 { "name": "limits", "$ref": "List.Limits" },
+                 { "name": "sort", "$ref": "List.Sort" },
+                 { "name": "filter",
+                 "type": [
+                          { "type": "object", "properties": { "locationid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "location": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "faceid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "face": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "$ref": "List.Filter.Albums" }
+                          ]
+                 }
+                 ],
+      "returns": {
+          "type": "object",
+          "properties": {
+              "limits": { "$ref": "List.LimitsReturned", "required": true },
+              "albums": { "type": "array",
+                  "items": { "$ref": "Picture.Details.Album" }
+              }
+          }
+      }
+  },
+  "PictureLibrary.GetPictureAlbumDetails": {
+      "type": "method",
+      "description": "Retrieve details about a specific album",
+      "transport": "Response",
+      "permission": "ReadData",
+      "params": [
+                 { "name": "albumid", "$ref": "Library.Id", "required": true },
+                 { "name": "properties", "$ref": "Picture.Fields.Album" }
+                 ],
+      "returns": { "type": "object",
+          "properties": {
+              "albumdetails": { "$ref": "Picture.Details.Album" }
+          }
+      }
+  },
+  "PictureLibrary.AddPictureAlbum": {
+      "type": "method",
+      "description": "Retrieve all albums from specified face or location",
+      "transport": "Response",
+      "permission": "UpdateData",
+      "params": [
+            { "name": "title", "type": "string", "required": true, "description": "Required for album title"},
+                 { "name": "properties", "$ref": "Picture.Fields.Album" },
+                 { "name": "limits", "$ref": "List.Limits" },
+                 { "name": "sort", "$ref": "List.Sort" },
+                 { "name": "filter",
+                 "type": [
+                          { "type": "object", "properties": { "locationid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "location": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "faceid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "face": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "$ref": "List.Filter.Albums" }
+                          ]
+                 }
+                 ],
+      "returns": {
+          "type": "object",
+          "properties": {
+              "limits": { "$ref": "List.LimitsReturned", "required": true },
+              "albums": { "type": "array",
+                  "items": { "$ref": "Picture.Details.Album" }
+              }
+          }
+      }
+  },  
+  "PictureLibrary.AddPicture": {
+    "type": "method",
+    "description": "Add a picture with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+			      { "name": "title", "type": "string", "required": true, "description": "Required for picture title"},
+			      { "name": "album", "type": "string", "required": true, "description": "Required for album title to add to"},
+			      { "name": "comment", "type": "string", "required": false, "description": "Required for album title to add to"},
+			      { "name": "location", "type": "string", "required": false, "description": "Required for album title to add to"},
+			      { "name": "takenon", "type": "string", "required": false, "description": "Required for album title to add to"},
+			      { "name": "faces", "type": "array", "required": false, "description": "Required for album title to add to"},
+                 { "name": "properties", "$ref": "Picture.Fields.Picture" },
+                 { "name": "limits", "$ref": "List.Limits" },
+                 { "name": "sort", "$ref": "List.Sort" },
+                 { "name": "filter",
+                 "type": [
+                          { "type": "object", "properties": { "locationid": { "$ref": "Library.Id", "required": false } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "location": { "type": "string", "minLength": 1, "required": false } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "faceid": { "$ref": "Library.Id", "required": false } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "face": { "type": "string", "minLength": 1, "required": false } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": false } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "title": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "takenon": { "type": "string", "minLength": 1, "required": false } }, "additionalProperties": false },
+                          { "$ref": "List.Filter.Pictures" }
+					      ]
+				}
+    			],
+		  "returns": {
+          "type": "object",
+          "properties": {
+              "limits": { "$ref": "List.LimitsReturned", "required": true },
+              "pictures": { "type": "array",
+                  "items": { "$ref": "Picture.Details.Picture" }
+              }
+          }
+      }
+  },  
+
+  "PictureLibrary.GetPictures": {
+      "type": "method",
+      "description": "Retrieve all pictures from specified album, face or location",
+      "transport": "Response",
+      "permission": "ReadData",
+      "params": [
+                 { "name": "properties", "$ref": "Picture.Fields.Picture" },
+                 { "name": "limits", "$ref": "List.Limits" },
+                 { "name": "sort", "$ref": "List.Sort" },
+                 { "name": "filter",
+                 "type": [
+                          { "type": "object", "properties": { "locationid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "location": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "faceid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "face": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "$ref": "List.Filter.Pictures" }
+                          ]
+                 }
+                 ],
+      "returns": {
+          "type": "object",
+          "properties": {
+              "limits": { "$ref": "List.LimitsReturned", "required": true },
+              "pictures": { "type": "array",
+                  "items": { "$ref": "Picture.Details.Picture" }
+              }
+          }
+      }
+  },
+  "PictureLibrary.GetPictureDetails": {
+      "type": "method",
+      "description": "Retrieve details about a specific picture",
+      "transport": "Response",
+      "permission": "ReadData",
+      "params": [
+                 { "name": "pictureid", "$ref": "Library.Id", "required": true },
+                 { "name": "properties", "$ref": "Picture.Fields.Picture" }
+                 ],
+      "returns": { "type": "object",
+          "properties": {
+              "picturedetails": { "$ref": "Picture.Details.Picture" }
+          }
+      }
+  },	  
+    "ContactLibrary.GetContacts": {
+        "type": "method",
+        "description": "Retrieve all albums from specified artist or genre",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "properties", "$ref": "Audio.Fields.Album" },
+                   { "name": "limits", "$ref": "List.Limits" },
+                   { "name": "sort", "$ref": "List.Sort" },
+                   { "name": "filter",
+                   "type": [
+                            { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                            { "$ref": "List.Filter.Albums" }
+                            ]
+                   }
+                   ],
+        "returns": {
+            "type": "object",
+            "properties": {
+                "limits": { "$ref": "List.LimitsReturned", "required": true },
+                "albums": { "type": "array",
+                    "items": { "$ref": "Audio.Details.Album" }
+                }
+            }
+        }
+    },
+    "ContactLibrary.GetContactDetails": {
+        "type": "method",
+        "description": "Retrieve details about a specific album",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "albumid", "$ref": "Library.Id", "required": true },
+                   { "name": "properties", "$ref": "Audio.Fields.Album" }
+                   ],
+        "returns": { "type": "object",
+            "properties": {
+                "albumdetails": { "$ref": "Audio.Details.Album" }
+            }
+        }
+    },  
   "Player.Open": {
     "type": "method",
     "description": "Start playback of either the playlist with the given ID, a slideshow with the pictures from the given directory or a single file or an item from the database.",
@@ -572,141 +776,352 @@
       }
     }
   },
-  "AudioLibrary.GetArtists": {
-    "type": "method",
-    "description": "Retrieve all artists",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "albumartistsonly", "$ref": "Optional.Boolean", "description": "Whether or not to include artists only appearing in compilations. If the parameter is not passed or is passed as null the GUI setting will be used" },
-      { "name": "properties", "$ref": "Audio.Fields.Artist" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" },
-      { "name": "filter",
-        "type": [
-          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "songid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "$ref": "List.Filter.Artists" }
-        ]
-      }
-    ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "artists": { "type": "array",
-          "items": { "$ref": "Audio.Details.Artist" }
+    "AudioLibrary.GetArtists": {
+        "type": "method",
+        "description": "Retrieve all artists",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "albumartistsonly", "$ref": "Optional.Boolean", "description": "Whether or not to include artists only appearing in compilations. If the parameter is not passed or is passed as null the GUI setting will be used" },
+                   { "name": "properties", "$ref": "Audio.Fields.Artist" },
+                   { "name": "limits", "$ref": "List.Limits" },
+                   { "name": "sort", "$ref": "List.Sort" },
+                   { "name": "filter",
+                   "type": [
+                            { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "songid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                            { "$ref": "List.Filter.Artists" }
+                            ]
+                   }
+                   ],
+        "returns": {
+            "type": "object",
+            "properties": {
+                "limits": { "$ref": "List.LimitsReturned", "required": true },
+                "artists": { "type": "array",
+                    "items": { "$ref": "Audio.Details.Artist" }
+                }
+            }
         }
-      }
-    }
-  },
-  "AudioLibrary.GetArtistDetails": {
-    "type": "method",
-    "description": "Retrieve details about a specific artist",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "artistid", "$ref": "Library.Id", "required": true },
-      { "name": "properties", "$ref": "Audio.Fields.Artist" }
-    ],
-    "returns": { "type": "object",
-      "properties": {
-        "artistdetails": { "$ref": "Audio.Details.Artist" }
-      }
-    }
-  },
-  "AudioLibrary.GetAlbums": {
-    "type": "method",
-    "description": "Retrieve all albums from specified artist or genre",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "properties", "$ref": "Audio.Fields.Album" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" },
-      { "name": "filter",
-        "type": [
-          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "$ref": "List.Filter.Albums" }
-        ]
-      }
-    ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "albums": { "type": "array",
-          "items": { "$ref": "Audio.Details.Album" }
+    },
+    "AudioLibrary.GetArtistDetails": {
+        "type": "method",
+        "description": "Retrieve details about a specific artist",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "artistid", "$ref": "Library.Id", "required": true },
+                   { "name": "properties", "$ref": "Audio.Fields.Artist" }
+                   ],
+        "returns": { "type": "object",
+            "properties": {
+                "artistdetails": { "$ref": "Audio.Details.Artist" }
+            }
         }
-      }
-    }
-  },
-  "AudioLibrary.GetAlbumDetails": {
-    "type": "method",
-    "description": "Retrieve details about a specific album",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "albumid", "$ref": "Library.Id", "required": true },
-      { "name": "properties", "$ref": "Audio.Fields.Album" }
-    ],
-    "returns": { "type": "object",
-      "properties": {
-        "albumdetails": { "$ref": "Audio.Details.Album" }
-      }
-    }
-  },
-  "PictureLibrary.GetPictures": {
-    "type": "method",
-    "description": "Retrieve all albums from specified artist or genre",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "properties", "$ref": "Audio.Fields.Album" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" },
-      { "name": "filter",
-        "type": [
-          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "$ref": "List.Filter.Albums" }
-        ]
-      }
-    ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "albums": { "type": "array",
-          "items": { "$ref": "Audio.Details.Album" }
+    },
+    "AudioLibrary.GetAlbums": {
+        "type": "method",
+        "description": "Retrieve all albums from specified artist or genre",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "properties", "$ref": "Audio.Fields.Album" },
+                   { "name": "limits", "$ref": "List.Limits" },
+                   { "name": "sort", "$ref": "List.Sort" },
+                   { "name": "filter",
+                   "type": [
+                            { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                            { "$ref": "List.Filter.Albums" }
+                            ]
+                   }
+                   ],
+        "returns": {
+            "type": "object",
+            "properties": {
+                "limits": { "$ref": "List.LimitsReturned", "required": true },
+                "albums": { "type": "array",
+                    "items": { "$ref": "Audio.Details.Album" }
+                }
+            }
         }
-      }
-    }
-  },
-  "PictureLibrary.GetPictureDetails": {
-    "type": "method",
-    "description": "Retrieve details about a specific album",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "albumid", "$ref": "Library.Id", "required": true },
-      { "name": "properties", "$ref": "Audio.Fields.Album" }
-    ],
-    "returns": { "type": "object",
-      "properties": {
-        "albumdetails": { "$ref": "Audio.Details.Album" }
-      }
-    }
-  },  
-  "VideoLibrary.GetVideos": {
+    },
+    "AudioLibrary.GetAlbumDetails": {
+        "type": "method",
+        "description": "Retrieve details about a specific album",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "albumid", "$ref": "Library.Id", "required": true },
+                   { "name": "properties", "$ref": "Audio.Fields.Album" }
+                   ],
+        "returns": { "type": "object",
+            "properties": {
+                "albumdetails": { "$ref": "Audio.Details.Album" }
+            }
+        }
+    },
+    "AudioLibrary.GetSongs": {
+        "type": "method",
+        "description": "Retrieve all songs from specified album, artist or genre",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "properties", "$ref": "Audio.Fields.Song" },
+                   { "name": "limits", "$ref": "List.Limits" },
+                   { "name": "sort", "$ref": "List.Sort" },
+                   { "name": "filter",
+                   "type": [
+                            { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                            { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                            { "$ref": "List.Filter.Songs" }
+                            ]
+                   }
+                   ],
+        "returns": {
+            "type": "object",
+            "properties": {
+                "limits": { "$ref": "List.LimitsReturned", "required": true },
+                "songs": { "type": "array",
+                    "items": { "$ref": "Audio.Details.Song" }
+                }
+            }
+        }
+    },
+    "AudioLibrary.GetSongDetails": {
+        "type": "method",
+        "description": "Retrieve details about a specific song",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "songid", "$ref": "Library.Id", "required": true },
+                   { "name": "properties", "$ref": "Audio.Fields.Song" }
+                   ],
+        "returns": { "type": "object",
+            "properties": {
+                "songdetails": { "$ref": "Audio.Details.Song" }
+            }
+        }
+    },
+    "AudioLibrary.GetRecentlyAddedAlbums": {
+        "type": "method",
+        "description": "Retrieve recently added albums",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "properties", "$ref": "Audio.Fields.Album" },
+                   { "name": "limits", "$ref": "List.Limits" },
+                   { "name": "sort", "$ref": "List.Sort" }
+                   ],
+        "returns": {
+            "type": "object",
+            "properties": {
+                "limits": { "$ref": "List.LimitsReturned", "required": true },
+                "albums": { "type": "array",
+                    "items": { "$ref": "Audio.Details.Album" }
+                }
+            }
+        }
+    },
+    "AudioLibrary.GetRecentlyAddedSongs": {
+        "type": "method",
+        "description": "Retrieve recently added songs",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "albumlimit", "$ref": "List.Amount", "description": "The amount of recently added albums from which to return the songs" },
+                   { "name": "properties", "$ref": "Audio.Fields.Song" },
+                   { "name": "limits", "$ref": "List.Limits" },
+                   { "name": "sort", "$ref": "List.Sort" }
+                   ],
+        "returns": {
+            "type": "object",
+            "properties": {
+                "limits": { "$ref": "List.LimitsReturned", "required": true },
+                "songs": { "type": "array",
+                    "items": { "$ref": "Audio.Details.Song" }
+                }
+            }
+        }
+    },
+    "AudioLibrary.GetRecentlyPlayedAlbums": {
+        "type": "method",
+        "description": "Retrieve recently played albums",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "properties", "$ref": "Audio.Fields.Album" },
+                   { "name": "limits", "$ref": "List.Limits" },
+                   { "name": "sort", "$ref": "List.Sort" }
+                   ],
+        "returns": {
+            "type": "object",
+            "properties": {
+                "limits": { "$ref": "List.LimitsReturned", "required": true },
+                "albums": { "type": "array",
+                    "items": { "$ref": "Audio.Details.Album" }
+                }
+            }
+        }
+    },
+    "AudioLibrary.GetRecentlyPlayedSongs": {
+        "type": "method",
+        "description": "Retrieve recently played songs",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "properties", "$ref": "Audio.Fields.Song" },
+                   { "name": "limits", "$ref": "List.Limits" },
+                   { "name": "sort", "$ref": "List.Sort" }
+                   ],
+        "returns": {
+            "type": "object",
+            "properties": {
+                "limits": { "$ref": "List.LimitsReturned", "required": true },
+                "songs": { "type": "array",
+                    "items": { "$ref": "Audio.Details.Song" }
+                }
+            }
+        }
+    },
+    "AudioLibrary.GetGenres": {
+        "type": "method",
+        "description": "Retrieve all genres",
+        "transport": "Response",
+        "permission": "ReadData",
+        "params": [
+                   { "name": "properties", "$ref": "Library.Fields.Genre" },
+                   { "name": "limits", "$ref": "List.Limits" },
+                   { "name": "sort", "$ref": "List.Sort" }
+                   ],
+        "returns": {
+            "type": "object",
+            "properties": {
+                "limits": { "$ref": "List.LimitsReturned", "required": true },
+                "genres": { "type": "array", "required": true,
+                    "items": { "$ref": "Library.Details.Genre" }
+                }
+            }
+        }
+    },
+    "AudioLibrary.SetArtistDetails": {
+        "type": "method",
+        "description": "Update the given artist with the given details",
+        "transport": "Response",
+        "permission": "UpdateData",
+        "params": [
+                   { "name": "artistid", "$ref": "Library.Id", "required": true },
+                   { "name": "artist", "$ref": "Optional.String" },
+                   { "name": "instrument", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "style", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "mood", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "born", "$ref": "Optional.String" },
+                   { "name": "formed", "$ref": "Optional.String" },
+                   { "name": "description", "$ref": "Optional.String" },
+                   { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "died", "$ref": "Optional.String" },
+                   { "name": "disbanded", "$ref": "Optional.String" },
+                   { "name": "yearsactive", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
+                   ],
+        "returns": "string"
+    },
+    "AudioLibrary.SetAlbumDetails": {
+        "type": "method",
+        "description": "Update the given album with the given details",
+        "transport": "Response",
+        "permission": "UpdateData",
+        "params": [
+                   { "name": "albumid", "$ref": "Library.Id", "required": true },
+                   { "name": "title", "$ref": "Optional.String" },
+                   { "name": "artist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "description", "$ref": "Optional.String" },
+                   { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "theme", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "mood", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "style", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "type", "$ref": "Optional.String" },
+                   { "name": "albumlabel", "$ref": "Optional.String" },
+                   { "name": "rating", "$ref": "Optional.Integer" },
+                   { "name": "year", "$ref": "Optional.Integer" }
+                   ],
+        "returns": "string"
+    },
+    "AudioLibrary.SetSongDetails": {
+        "type": "method",
+        "description": "Update the given song with the given details",
+        "transport": "Response",
+        "permission": "UpdateData",
+        "params": [
+                   { "name": "songid", "$ref": "Library.Id", "required": true },
+                   { "name": "title", "$ref": "Optional.String" },
+                   { "name": "artist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "albumartist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+                   { "name": "year", "$ref": "Optional.Integer" },
+                   { "name": "rating", "$ref": "Optional.Integer" },
+                   { "name": "album", "$ref": "Optional.String" },
+                   { "name": "track", "$ref": "Optional.Integer" },
+                   { "name": "disc", "$ref": "Optional.Integer" },
+                   { "name": "duration", "$ref": "Optional.Integer" },
+                   { "name": "comment", "$ref": "Optional.String" },
+                   { "name": "musicbrainztrackid", "$ref": "Optional.String" },
+                   { "name": "musicbrainzartistid", "$ref": "Optional.String" },
+                   { "name": "musicbrainzalbumid", "$ref": "Optional.String" },
+                   { "name": "musicbrainzalbumartistid", "$ref": "Optional.String" }
+                   ],
+        "returns": "string"
+    },
+    "AudioLibrary.Scan": {
+        "type": "method",
+        "description": "Scans the audio sources for new library items",
+        "transport": "Response",
+        "permission": "UpdateData",
+        "params": [
+                   { "name": "directory", "type": "string", "default": "" }
+                   ],
+        "returns": "string"
+    },
+    "AudioLibrary.Export": {
+        "type": "method",
+        "description": "Exports all items from the audio library",
+        "transport": "Response",
+        "permission": "WriteFile",
+        "params": [
+                   { "name": "options", "type": [
+                                                 { "type": "object", "required": true, "additionalProperties": false,
+                                                 "properties": {
+                                                 "path": { "type": "string", "required": true, "minLength": 1, "description": "Path to the directory to where the data should be exported" }
+                                                 }
+                                                 },
+                                                 { "type": "object", "required": true, "additionalProperties": false,
+                                                 "properties": {
+                                                 "overwrite": { "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
+                                                 "images": { "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" }
+                                                 }
+                                                 }
+                                                 ]
+                   }
+                   ],
+        "returns": "string"
+    },
+    "AudioLibrary.Clean": {
+        "type": "method",
+        "description": "Cleans the audio library from non-existent items",
+        "transport": "Response",
+        "permission": "RemoveData",
+        "params": [ ],
+        "returns": "string"
+    },
+    "VideoLibrary.GetVideos": {
     "type": "method",
     "description": "Retrieve all movies",
     "transport": "Response",
@@ -805,307 +1220,6 @@
         "moviedetails": { "$ref": "Video.Details.Movie" }
       }
     }
-  },
-  "ContactLibrary.GetContacts": {
-    "type": "method",
-    "description": "Retrieve all albums from specified artist or genre",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "properties", "$ref": "Audio.Fields.Album" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" },
-      { "name": "filter",
-        "type": [
-          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "$ref": "List.Filter.Albums" }
-        ]
-      }
-    ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "albums": { "type": "array",
-          "items": { "$ref": "Audio.Details.Album" }
-        }
-      }
-    }
-  },
-  "ContactLibrary.GetContactDetails": {
-    "type": "method",
-    "description": "Retrieve details about a specific album",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "albumid", "$ref": "Library.Id", "required": true },
-      { "name": "properties", "$ref": "Audio.Fields.Album" }
-    ],
-    "returns": { "type": "object",
-      "properties": {
-        "albumdetails": { "$ref": "Audio.Details.Album" }
-      }
-    }
-  },  
-
-  
-  "AudioLibrary.GetSongs": {
-    "type": "method",
-    "description": "Retrieve all songs from specified album, artist or genre",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "properties", "$ref": "Audio.Fields.Song" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" },
-      { "name": "filter",
-        "type": [
-          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "$ref": "List.Filter.Songs" }
-        ]
-      }
-    ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "songs": { "type": "array",
-          "items": { "$ref": "Audio.Details.Song" }
-        }
-      }
-    }
-  },
-  "AudioLibrary.GetSongDetails": {
-    "type": "method",
-    "description": "Retrieve details about a specific song",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "songid", "$ref": "Library.Id", "required": true },
-      { "name": "properties", "$ref": "Audio.Fields.Song" }
-    ],
-    "returns": { "type": "object",
-      "properties": {
-        "songdetails": { "$ref": "Audio.Details.Song" }
-      }
-    }
-  },
-  "AudioLibrary.GetRecentlyAddedAlbums": {
-    "type": "method",
-    "description": "Retrieve recently added albums",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "properties", "$ref": "Audio.Fields.Album" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" }
-    ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "albums": { "type": "array",
-          "items": { "$ref": "Audio.Details.Album" }
-        }
-      }
-    }
-  },
-  "AudioLibrary.GetRecentlyAddedSongs": {
-    "type": "method",
-    "description": "Retrieve recently added songs",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "albumlimit", "$ref": "List.Amount", "description": "The amount of recently added albums from which to return the songs" },
-      { "name": "properties", "$ref": "Audio.Fields.Song" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" }
-    ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "songs": { "type": "array",
-          "items": { "$ref": "Audio.Details.Song" }
-        }
-      }
-    }
-  },
-    "AudioLibrary.GetRecentlyPlayedAlbums": {
-    "type": "method",
-    "description": "Retrieve recently played albums",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "properties", "$ref": "Audio.Fields.Album" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" }
-    ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "albums": { "type": "array",
-          "items": { "$ref": "Audio.Details.Album" }
-        }
-      }
-    }
-  },
-  "AudioLibrary.GetRecentlyPlayedSongs": {
-    "type": "method",
-    "description": "Retrieve recently played songs",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "properties", "$ref": "Audio.Fields.Song" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" }
-    ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "songs": { "type": "array",
-          "items": { "$ref": "Audio.Details.Song" }
-        }
-      }
-    }
-  },
-  "AudioLibrary.GetGenres": {
-    "type": "method",
-    "description": "Retrieve all genres",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "properties", "$ref": "Library.Fields.Genre" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" }
-    ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "genres": { "type": "array", "required": true,
-          "items": { "$ref": "Library.Details.Genre" }
-        }
-      }
-    }
-  },
-  "AudioLibrary.SetArtistDetails": {
-    "type": "method",
-    "description": "Update the given artist with the given details",
-    "transport": "Response",
-    "permission": "UpdateData",
-    "params": [
-      { "name": "artistid", "$ref": "Library.Id", "required": true },
-      { "name": "artist", "$ref": "Optional.String" },
-      { "name": "instrument", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "style", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "mood", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "born", "$ref": "Optional.String" },
-      { "name": "formed", "$ref": "Optional.String" },
-      { "name": "description", "$ref": "Optional.String" },
-      { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "died", "$ref": "Optional.String" },
-      { "name": "disbanded", "$ref": "Optional.String" },
-      { "name": "yearsactive", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
-    ],
-    "returns": "string"
-  },
-  "AudioLibrary.SetAlbumDetails": {
-    "type": "method",
-    "description": "Update the given album with the given details",
-    "transport": "Response",
-    "permission": "UpdateData",
-    "params": [
-      { "name": "albumid", "$ref": "Library.Id", "required": true },
-      { "name": "title", "$ref": "Optional.String" },
-      { "name": "artist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "description", "$ref": "Optional.String" },
-      { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "theme", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "mood", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "style", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "type", "$ref": "Optional.String" },
-      { "name": "albumlabel", "$ref": "Optional.String" },
-      { "name": "rating", "$ref": "Optional.Integer" },
-      { "name": "year", "$ref": "Optional.Integer" }
-    ],
-    "returns": "string"
-  },
-  "AudioLibrary.SetSongDetails": {
-    "type": "method",
-    "description": "Update the given song with the given details",
-    "transport": "Response",
-    "permission": "UpdateData",
-    "params": [
-      { "name": "songid", "$ref": "Library.Id", "required": true },
-      { "name": "title", "$ref": "Optional.String" },
-      { "name": "artist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "albumartist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "year", "$ref": "Optional.Integer" },
-      { "name": "rating", "$ref": "Optional.Integer" },
-      { "name": "album", "$ref": "Optional.String" },
-      { "name": "track", "$ref": "Optional.Integer" },
-      { "name": "disc", "$ref": "Optional.Integer" },
-      { "name": "duration", "$ref": "Optional.Integer" },
-      { "name": "comment", "$ref": "Optional.String" },
-      { "name": "musicbrainztrackid", "$ref": "Optional.String" },
-      { "name": "musicbrainzartistid", "$ref": "Optional.String" },
-      { "name": "musicbrainzalbumid", "$ref": "Optional.String" },
-      { "name": "musicbrainzalbumartistid", "$ref": "Optional.String" }
-    ],
-    "returns": "string"
-  },
-  "AudioLibrary.Scan": {
-    "type": "method",
-    "description": "Scans the audio sources for new library items",
-    "transport": "Response",
-    "permission": "UpdateData",
-    "params": [
-      { "name": "directory", "type": "string", "default": "" }
-    ],
-    "returns": "string"
-  },
-  "AudioLibrary.Export": {
-    "type": "method",
-    "description": "Exports all items from the audio library",
-    "transport": "Response",
-    "permission": "WriteFile",
-    "params": [
-      { "name": "options", "type": [
-          { "type": "object", "required": true, "additionalProperties": false,
-            "properties": {
-              "path": { "type": "string", "required": true, "minLength": 1, "description": "Path to the directory to where the data should be exported" }
-            }
-          },
-          { "type": "object", "required": true, "additionalProperties": false,
-            "properties": {
-              "overwrite": { "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
-              "images": { "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" }
-            }
-          }
-        ]
-      }
-    ],
-    "returns": "string"
-  },
-  "AudioLibrary.Clean": {
-    "type": "method",
-    "description": "Cleans the audio library from non-existent items",
-    "transport": "Response",
-    "permission": "RemoveData",
-    "params": [ ],
-    "returns": "string"
   },
   "VideoLibrary.GetMovies": {
     "type": "method",

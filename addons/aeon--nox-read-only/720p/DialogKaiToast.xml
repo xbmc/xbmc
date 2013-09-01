@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<window id="107">
+  <zorder>1</zorder>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="group">
+      <include>Dialogs_Group</include>
+      <include>Dialogs_Tablet</include>
+      <animation effect="slide" start="0,0" end="0,-580" time="0" condition="VideoPlayer.IsFullscreen|[Window.IsActive(home)+[Skin.HasSetting(lowermainmenu)|Skin.HasSetting(Lockhomemenulow)]]">Conditional</animation>
+      <include>SmallerDialogs</include>
+      <control type="image" id="400">
+        <posx>9</posx>
+        <posy>9</posy>
+        <width>73</width>
+        <height>73</height>
+        <texture>dialogs/exclam_icon.png</texture>
+        <animation effect="fade" start="40" time="700" condition="true" pulse="true">Conditional</animation>
+      </control>
+      <control type="label" id="401">
+        <include>Dialogs_Label2</include>
+      </control>
+      <control type="label" id="402">
+        <include>Dialogs_Label3</include>
+      </control>
+    </control>
+  </controls>
+</window>

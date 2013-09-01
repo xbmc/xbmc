@@ -1,0 +1,270 @@
+<?xml version="1.0"?>
+<window id="10140">
+  <defaultcontrol always="true">2</defaultcontrol>
+  <zorder>1</zorder>
+  <coordinates>
+    <system>1</system>
+    <posx>160</posx>
+    <posy>55</posy>
+  </coordinates>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="image">
+      <description>background image</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>960</width>
+      <height>610</height>
+      <texture>settings/settings_panelback.png</texture>
+    </control>
+    <control type="label" id="20">
+      <description>header label</description>
+      <posx>200</posx>
+      <posy>30</posy>
+      <width>700</width>
+      <posx>72</posx>
+      <posy>70</posy>
+      <width>936</width>
+      <height>49</height>
+      <textcolor>FFbec0c2</textcolor>
+      <font>Font_ShowcaseMainLabel2</font>
+      <include>Animation_CommonFade</include>
+      <label>-</label>
+      <align>center</align>
+    </control>
+    <control type="grouplist" id="2">
+      <description>control settings area</description>
+      <posx>183</posx>
+      <posy>80</posy>
+      <width>710</width>
+      <height>445</height>
+      <itemgap>0</itemgap>
+      <pagecontrol>61</pagecontrol>
+      <onup>10</onup>
+      <ondown>10</ondown>
+      <onleft>9</onleft>
+      <onright>61</onright>
+    </control>
+    <control type="grouplist" id="9">
+      <description>control section area</description>
+      <posx>15</posx>
+      <posy>80</posy>
+      <width>168</width>
+      <height>445</height>
+      <itemgap>0</itemgap>
+      <pagecontrol>61</pagecontrol>
+      <onup>9</onup>
+      <ondown>9</ondown>
+      <onleft>2</onleft>
+      <onright>2</onright>
+    </control>
+    <control type="scrollbar" id="61">
+      <description>Scrollbar</description>
+      <posx>910</posx>
+      <posy>80</posy>
+      <width>22</width>
+      <height>453</height>
+      <texturesliderbackground>views/scrollbarbacklist.png</texturesliderbackground>
+      <texturesliderbar>views/ScrollBarV_bar_focus.png</texturesliderbar>
+      <texturesliderbarfocus>views/ScrollBarV_bar_focus.png</texturesliderbarfocus>
+      <textureslidernib>views/ScrollBarNib.png</textureslidernib>
+      <textureslidernibfocus>views/ScrollBarNib.png</textureslidernibfocus>
+      <onleft>2</onleft>
+      <onright>10</onright>
+      <showonepage>false</showonepage>
+      <orientation>vertical</orientation>
+    </control>
+    <control type="button" id="13">
+      <description>Default Section Button</description>
+      <posx>3</posx>
+      <posy>3</posy>
+      <width>213</width>
+      <height>64</height>
+      <texturefocus>views/listpanel_selectbar.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <font>Font_Bold16</font>
+      <textcolor>FFf5f5f5</textcolor>
+      <focusedcolor>FF262728</focusedcolor>
+      <selectedcolor>FF262728</selectedcolor>
+      <textoffsety>3</textoffsety>
+      <textoffsetx>15</textoffsetx>
+      <align>left</align>
+      <aligny>top</aligny>
+      <pulseonselect>no</pulseonselect>  
+    </control>
+    <control type="label">
+      <description>Default Section Button Focused Subtitle</description>
+      <posy>116</posy>
+      <label>24002</label>
+      <textoffsetx>25</textoffsetx>
+      <font>Font_Info</font>
+      <textcolor>FF262728</textcolor>
+      <focusedcolor>FF262728</focusedcolor>
+      <selectedcolor>FF262728</selectedcolor>
+      <posx>203</posx>
+      <width>216</width>
+      <height>58</height>
+      <font>Font_Info</font>
+      <aligny>top</aligny>
+      <align>right</align>
+    </control>
+    <control type="button" id="3">
+      <description>Dialog Button</description>
+      <font>Font_Info</font>
+      <textoffsetx>20</textoffsetx>
+      <description>Default Settings Button</description>
+      <texturefocus>settings/settings_radiobuttonofffocus.png</texturefocus>
+      <texturenofocus>settings/settings_radiobuttonoff.png</texturenofocus>
+    </control>
+    <control type="radiobutton" id="4">
+      <description>Default RadioButton</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>280</width>
+      <height>41</height>
+      <font>Font_Info</font>
+      <texturefocus>settings/settings_radiobuttonofffocus.png</texturefocus>
+      <texturenofocus>settings/settings_radiobuttonoff.png</texturenofocus>
+      <textcolor>FF939597</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <pulseonselect>false</pulseonselect>
+      <radiowidth>94</radiowidth>
+      <radioposx>630</radioposx>
+      <radioheight>65</radioheight>
+      <textoffsetx>20</textoffsetx>
+      <aligny>center</aligny>
+      <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+      <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+    </control>
+    <control type="spincontrolex" id="5">
+      <description>Default spincontrolex</description>
+      <height>41</height>
+      <texturefocus>settings/settings_radiobuttonofffocus.png</texturefocus>
+      <texturenofocus>settings/settings_radiobuttonoff.png</texturenofocus>
+      <textureup>settings/spin-up.png</textureup>
+      <texturedown>settings/spin-down.png</texturedown>
+      <textureupfocus>settings/spin-up-focus.png</textureupfocus>
+      <texturedownfocus>settings/spin-down-focus.png</texturedownfocus>
+      <font>Font_Info</font>
+      <textcolor>FF939597</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <pulseonselect>false</pulseonselect>
+      <spinposx>-8</spinposx>
+      <spinwidth>42</spinwidth>
+      <spinheight>65</spinheight>
+      <textoffsetx>20</textoffsetx>
+      <aligny>center</aligny>
+      <alignx>center</alignx>
+      <reverse>yes</reverse>
+      <subtype>text</subtype>
+    </control>
+    <control type="image" id="6">
+      <description>Default Seperator</description>
+      <height>1</height>
+                <texture>home/nowplaying/nowplayline.png</texture>
+    </control>
+    <control type="label" id="7">
+      <description>separator label / headline</description>
+      <height>34</height>
+      <textoffsety>14</textoffsety>
+      <textoffsetx>20</textoffsetx>
+      <label/>
+    </control>
+    <control type="sliderex" id="8">
+      <description>Default Slider</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>380</width>
+      <height>40</height>
+      <align>left</align>
+      <font>Font_Info</font>
+      <textoffsetx>20</textoffsetx>
+      <texturefocus>settings/settings_radiobuttonofffocus.png</texturefocus>
+      <texturenofocus>settings/settings_radiobuttonoff.png</texturenofocus>
+      <texturesliderbar>osd/osd_slider_bg_settings.png</texturesliderbar>
+      <textureslidernib>osd/osd_slider_nib_nf.png</textureslidernib>
+      <textureslidernibfocus>osd/osd_slider_nib.png</textureslidernibfocus>
+    </control>
+
+    <control type="group" id="9001">
+      <control type="button" id="10">
+        <description>OK Button</description>
+        <posx>235</posx>
+        <posy>535</posy>
+        <width>200</width>
+        <height>40</height>
+        <align>center</align>
+        <aligny>center</aligny>
+        <label>186</label>
+        <width>216</width>
+        <height>58</height>
+        <texturenofocus border="5">dialogs/context_nofocus.png</texturenofocus>
+        <texturefocus border="5">dialogs/context_highlight.png</texturefocus>
+        <font>Font_Bold22</font>
+        <textcolor>FFf5f5f5</textcolor>
+        <focusedcolor>FF262728</focusedcolor>
+        <selectedcolor>FF262728</selectedcolor>
+        <textoffsety>12</textoffsety>
+        <textoffsetx>27</textoffsetx>
+        <aligny>center</aligny>
+        <pulseonselect>no</pulseonselect>
+        <onleft>12</onleft>
+        <onright>11</onright>
+        <onup>2</onup>
+        <ondown>2</ondown>
+      </control>
+      <control type="button" id="11">
+        <description>Cancel Button</description>
+        <posx>462</posx>
+        <posy>535</posy>
+        <width>200</width>
+        <height>40</height>
+        <align>center</align>
+        <aligny>center</aligny>
+        <label>222</label>
+        <width>216</width>
+        <height>58</height>
+        <texturenofocus border="5">dialogs/context_nofocus.png</texturenofocus>
+        <texturefocus border="5">dialogs/context_highlight.png</texturefocus>
+        <font>Font_Bold22</font>
+        <textcolor>FFf5f5f5</textcolor>
+        <focusedcolor>FF262728</focusedcolor>
+        <selectedcolor>FF262728</selectedcolor>
+        <textoffsety>12</textoffsety>
+        <textoffsetx>27</textoffsetx>
+        <aligny>center</aligny>
+        <pulseonselect>no</pulseonselect>
+        <onleft>10</onleft>
+        <onright>12</onright>
+        <onup>2</onup>
+        <ondown>2</ondown>
+      </control>
+      <control type="button" id="12">
+        <description>Defaults Button</description>
+        <posx>689</posx>
+        <posy>535</posy>
+        <width>200</width>
+        <height>40</height>
+        <align>center</align>
+        <aligny>center</aligny>
+        <label>409</label>
+        <width>216</width>
+        <height>58</height>
+        <texturenofocus border="5">dialogs/context_nofocus.png</texturenofocus>
+        <texturefocus border="5">dialogs/context_highlight.png</texturefocus>
+        <font>Font_Bold22</font>
+        <textcolor>FFf5f5f5</textcolor>
+        <focusedcolor>FF262728</focusedcolor>
+        <selectedcolor>FF262728</selectedcolor>
+        <textoffsety>12</textoffsety>
+        <textoffsetx>27</textoffsetx>
+        <aligny>center</aligny>
+        <pulseonselect>no</pulseonselect>
+        <onleft>11</onleft>
+        <onright>10</onright>
+        <onup>2</onup>
+        <ondown>2</ondown>
+      </control>
+    </control>
+  </controls>
+</window>

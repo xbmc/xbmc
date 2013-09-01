@@ -1341,6 +1341,7 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
       string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
       if (!thumb.empty())
       {
+        CLog::Log(LOGINFO, "Finding thumb for album %s", thumb.c_str());
         CTextureCache::Get().BackgroundCacheImage(thumb);
         m_musicDatabase.SetArtForItem(id, "album", "thumb", thumb);
       }

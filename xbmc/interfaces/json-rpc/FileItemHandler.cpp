@@ -1,4 +1,4 @@
-/*
+  /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://www.xbmc.org
  *
@@ -24,6 +24,7 @@
 #include "FileItemHandler.h"
 #include "PlaylistOperations.h"
 #include "AudioLibrary.h"
+#include "PictureLibrary.h"
 #include "VideoLibrary.h"
 #include "FileOperations.h"
 #include "utils/URIUtils.h"
@@ -38,6 +39,7 @@
 #include "TextureCache.h"
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
+#include "pictures/PictureThumbLoader.h"
 #include "Util.h"
 #include "pvr/channels/PVRChannel.h"
 
@@ -113,13 +115,14 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
     if (field == "thumbnail")
     {
       if (thumbLoader != NULL && !item->HasArt("thumb") && !fetchedArt &&
-        ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
+        ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)
+         || (item->HasPictureInfoTag() && item->GetPictureInfoTag()->GetDatabaseId() > -1)) )
       {
         thumbLoader->FillLibraryArt(*item);
         fetchedArt = true;
       }
       else if (item->HasPictureInfoTag() && !item->HasArt("thumb"))
-        item->SetArt("thumb", CTextureCache::GetWrappedThumbURL(item->GetPath()));
+        item->SetArt("thumb", CTextureCache::GetWrappedImageURL(item->GetPath()));
       
       if (item->HasArt("thumb"))
         result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetArt("thumb"));
@@ -220,6 +223,8 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
       thumbLoader = new CVideoThumbLoader();
     else if (items.Get(start)->HasMusicInfoTag())
       thumbLoader = new CMusicThumbLoader();
+    else if (items.Get(start)->HasPictureInfoTag())
+      thumbLoader = new CPictureThumbLoader();
 
     if (thumbLoader != NULL)
       thumbLoader->Initialize();
@@ -269,6 +274,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
             object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
         if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
           object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
+        if (item->HasPictureInfoTag() && !item->GetPictureInfoTag()->GetURL().IsEmpty())
+          object["file"] = item->GetPictureInfoTag()->GetURL().c_str();
 
         if (!object.isMember("file"))
           object["file"] = item->GetPath().c_str();
@@ -328,6 +335,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
         thumbLoader = new CVideoThumbLoader();
       else if (item->HasMusicInfoTag())
         thumbLoader = new CMusicThumbLoader();
+      else if (item->HasPictureInfoTag())
+        thumbLoader = new CPictureThumbLoader();
 
       if (thumbLoader != NULL)
       {
@@ -368,6 +377,7 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
 {
   CAudioLibrary::FillFileItemList(parameterObject, list);
   CVideoLibrary::FillFileItemList(parameterObject, list);
+  CPictureLibrary::FillFileItemList(parameterObject, list);
   CFileOperations::FillFileItemList(parameterObject, list);
 
   CStdString file = parameterObject["file"].asString();

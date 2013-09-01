@@ -1,0 +1,125 @@
+<window>
+  <allowoverlay>no</allowoverlay>
+
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+
+  <controls>
+    <control type="image" id="101">
+      <description>Background</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <texture>pstvSolid.png</texture>
+      <colordiffuse>FF000000</colordiffuse>
+    </control>
+
+    <control type="image" id="103">
+      <description>Channel Bug</description>
+      <posx>220r</posx>
+      <posy>120r</posy>
+      <width>150</width>
+      <height>100</height>
+      <aspectratio>keep</aspectratio>
+      <texture></texture>
+      <!--<colordiffuse>FF000000</colordiffuse>-->
+      <animation effect="fade" start="40" end="40" condition="True">Conditional</animation>
+    </control>
+
+    <control type="group" id="102">
+      <animation type="Visible">
+        <effect type="fade" time="400" start="0" end="100" />
+        <effect type="slide" time="400" start="0,-134" end="0,0" easing="out" tween="cubic" />
+      </animation>
+      <animation type="Hidden">
+        <effect type="fade" time="400" start="100" end="0" />
+        <effect type="slide" time="400" start="0,0" end="0,-134" easing="in" tween="cubic" />
+      </animation>
+      <animation type="WindowOpen">
+        <effect type="fade" time="400" start="0" end="100" />
+        <effect type="slide" time="400" start="0,-134" end="0,0" easing="out" tween="cubic" />
+      </animation>
+      <animation type="WindowClose">
+        <effect type="fade" time="400" start="100" end="0" />
+        <effect type="slide" time="400" start="0,0" end="0,-134" easing="in" tween="cubic" />
+      </animation>
+      <control type="image">
+        <description>Info Background</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>134</height>
+        <texture flipy="true">osd/osd_back.png</texture>
+      </control>
+      <control type="grouplist">
+        <posx>140</posx>
+        <posy>20</posy>
+        <width>850</width>
+        <height>30</height>
+        <orientation>horizontal</orientation>
+        <itemgap>6</itemgap>
+        <control type="label" id="502">
+          <description>Show Name Label</description>
+          <width min="40" max="600">auto</width>
+          <height>30</height>
+          <label>Now watching</label>
+          <font>Font_Reg20</font>
+          <align>left</align>
+          <textcolor>selected</textcolor>
+        </control>
+        <control type="label" id="503">
+          <description>Show Name Label</description>
+          <width min="40" max="600">auto</width>
+          <height>30</height>
+          <label>Show Name</label>
+          <font>Font_Reg20</font>
+          <align>left</align>
+          <textcolor>FFFFFFFF</textcolor>
+        </control>
+        <control type="label">
+          <description>Show Name Label</description>
+          <width min="10" max="50">auto</width>
+          <height>30</height>
+          <label>•</label>
+          <font>Font_Reg20</font>
+          <align>left</align>
+          <textcolor>FFFFFFFF</textcolor>
+          <visible>!IsEmpty(Control.Getlabel(504))</visible>
+        </control>
+        <control type="label" id="504">
+          <description>Show Title Label</description>
+          <width min="40" max="900">auto</width>
+          <height>30</height>
+          <label>Show Title</label>
+          <font>Font_Reg20</font>
+          <align>left</align>
+          <textcolor>FFFFFFFF</textcolor>
+        </control>
+      </control>
+      <control type="label" id="505">
+        <posx>140</posx>
+        <posy>50</posy>
+        <width>850</width>
+        <height>50</height>
+        <align>left</align>
+        <aligny>top</aligny>
+        <label>Show Description</label>
+        <textcolor>d0FFFFFF</textcolor>
+        <font>Font_Info</font>
+        <wrapmultiline>true</wrapmultiline>
+      </control>
+      <control type="image" id="506">
+        <description>Channel Logo</description>
+        <posx>1010</posx>
+        <posy>20</posy>
+        <width>130</width>
+        <height>75</height>
+        <aspectratio>scale</aspectratio>
+      </control>
+    </control>
+  </controls>
+</window>

@@ -1,0 +1,1345 @@
+<?xml version="1.0"?>
+<includes>
+  <!--Max: 1692-->
+  <include name="VideoFilesButtons">
+    <control type="radiobutton" id="101">
+      <description>Library button</description>
+      <label>$LOCALIZE[29800]</label>
+      <onclick>ReplaceWindow(VideoLibrary)</onclick>
+      <selected>Window.IsVisible(VideoLibrary)</selected>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <visible>Window.IsActive(VideoFiles)</visible>
+    </control>
+    <control type="button" id="6">
+      <description>Library button</description>
+      <label>341</label>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <enable>System.HasMediadvd</enable>
+    </control>
+    <control type="radiobutton" id="7">
+      <description>Library button</description>
+      <label></label>
+      <include>Objects_MediaMenuButtonAlt</include>
+    </control>
+    <control type="radiobutton" id="8">
+      <description>Library button</description>
+      <label>13352</label>
+      <include>Objects_MediaMenuButtonAlt</include>
+    </control>
+    <control type="button" id="13">
+      <description>Library button</description>
+      <label>10028</label>
+      <include>Objects_MediaMenuButtonAlt</include>
+    </control>
+  </include>
+  <include name="MusicPlaylistButtons">
+    <control type="radiobutton" id="20">
+      <description>Shuffle button</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>191</label>
+      <visible>Window.IsActive(musicplaylist)</visible>
+    </control>
+    <control type="button" id="26">
+      <description>Repeat button</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>-</label>
+      <visible>Window.IsActive(musicplaylist)</visible>
+    </control>
+    <control type="button" id="21">
+      <description>Save button</description>
+      <label>190</label>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <visible>Window.IsActive(musicplaylist)</visible>
+    </control>
+    <control type="button" id="22">
+      <description>Clear button</description>
+      <label>192</label>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <visible>Window.IsActive(musicplaylist)</visible>
+    </control>
+  </include>
+  <include name="VideoPlaylistButtons">
+    <control type="radiobutton" id="20">
+      <description>Shuffle button</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>191</label>
+      <visible>Window.IsActive(videoplaylist)</visible>
+    </control>
+    <control type="button" id="26">
+      <description>Repeat button</description>
+      <label>$LOCALIZE[486]</label>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <visible>Window.IsActive(videoplaylist)</visible>
+    </control>
+    <control type="button" id="21">
+      <description>Save button</description>
+      <label>190</label>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <visible>Window.IsActive(videoplaylist)</visible>
+    </control>
+    <control type="button" id="22">
+      <description>Clear button</description>
+      <label>192</label>
+      <onclick>ReplaceWindow(video)</onclick>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <visible>Window.IsActive(videoplaylist)</visible>
+    </control>
+  </include>
+  <include name="AddonBrowserButtons">
+    <control type="radiobutton" id ="5">
+      <description>Enable auto-updates</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>24063</label>
+      <visible>Window.IsActive(Addonbrowser)</visible>
+    </control>
+    <control type="radiobutton" id ="6">
+      <description>No notifications</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>25000</label>
+      <visible>Window.IsActive(Addonbrowser)</visible>
+    </control>
+  </include>
+  <include name="MusicInfoPanelMediaMenu">
+    <control type="button" id="1677">
+      <description>Infopanel options label</description>
+      <textcolor>selected</textcolor>
+      <disabledcolor>selected</disabledcolor>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31166] [LOWERCASE]$LOCALIZE[33063][/LOWERCASE]</label>
+      <visible>[Control.IsVisible(509)|Control.IsVisible(513)]+[Container.Content(albums)|Container.Content(artists)]+!Skin.HasSetting(hideoptions)</visible>
+      <enable>no</enable>
+    </control>
+    <control type="radiobutton" id="1679">
+      <description>Toggle Dark</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31385]</label>
+      <onclick>Skin.ToggleSetting(infopanelmusic)</onclick>
+      <selected>!Skin.HasSetting(infopanelmusic)</selected>
+      <visible>[Control.IsVisible(509)|Control.IsVisible(513)]+[Container.Content(albums)|Container.Content(artists)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1680">
+      <description>Toggle Fanart</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31386]</label>
+      <onclick>Skin.ToggleSetting(infopaneautomusic)</onclick>
+      <selected>Skin.HasSetting(infopaneautomusic)</selected>
+      <visible>[Control.IsVisible(509)|Control.IsVisible(513)]+[Container.Content(albums)|Container.Content(artists)]+!Skin.HasSetting(hideoptions)</visible>
+      <enable>Skin.HasSetting(infopanelmusic)</enable>
+    </control>
+    <control type="radiobutton" id="1681">
+      <description>Cases</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31250]</label>
+      <onclick>Skin.ToggleSetting(lightinfopanel)</onclick>
+      <selected>Skin.HasSetting(lightinfopanel)</selected>
+      <visible>[Control.IsVisible(509)|Control.IsVisible(513)]+[Container.Content(albums)|Container.Content(artists)]+!Skin.HasSetting(hideoptions)</visible>
+      <enable>Skin.HasSetting(infopanelmusic)</enable>
+    </control>
+  </include>
+
+  <include name="MusicLibraryButtons_Left">
+    <control type="radiobutton" id="16">
+      <description>PartyMode</description>
+      <label>589</label>
+      <include>Objects_MediaMenuButtonAlt</include>
+    </control>
+    <control type="edit" id="19">
+      <description>Filter</description>
+      <hinttext>[COLOR 3cFFFFFF]$LOCALIZE[31382][/COLOR]</hinttext>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>587</label>
+    </control>
+    <control type="button" id="8">
+      <description>Search</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>137</label>
+    </control>
+    <control type="radiobutton" id="100">
+      <description>Library button</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[29800]</label>
+      <onclick>ReplaceWindow(MusicFiles)</onclick>
+      <selected>Window.IsVisible(MusicLibrary)</selected>
+      <visible>Window.IsActive(MusicLibrary)</visible>
+    </control>
+    <control type="button" id="17">
+      <description>Manually enter artist and album name to lookup the artist and album information on the internet</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>527</label>
+    </control>
+  </include>
+  <include name="VideoLibraryAltButtons_Left">
+    <control type="radiobutton" id="16">
+      <description>Start party mode (randomly play musicvideos from your collection)</description>
+      <label>589</label>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <visible>Container.Content(musicvideos)</visible>
+    </control>
+    <control type="radiobutton" id="17">
+      <description>Flatten library (hide sub-catagories, like genres, studios, years, etc...)</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>20411</label>
+      <visible>!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="edit" id="19">
+      <description>Filter the media files to only show items that include the specified string in the name</description>
+      <label>587</label>
+      <hinttext>[COLOR 3cFFFFFF]$LOCALIZE[31382][/COLOR]</hinttext>
+      <include>Objects_MediaMenuButtonAlt</include>
+    </control>
+    <control type="button" id="8">
+      <description>Search for a string anywhere in the XBMC video database</description>
+      <label>137</label>
+      <include>Objects_MediaMenuButtonAlt</include>
+    </control>
+    <control type="button" id="10">
+      <description>Show only watched, unwatched or all videos </description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>-</label>
+      <visible>!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="99">
+      <description>Library button</description>
+      <label>$LOCALIZE[29800]</label>
+      <onclick>ReplaceWindow(VideoFiles)</onclick>
+      <selected>Window.IsVisible(VideoLibrary)</selected>
+      <include>Objects_MediaMenuButtonAlt</include>
+    </control>
+    <control type="radiobutton" id="11">
+      <description>Unlock Shares</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>20336</label>
+      <onclick>xbmc.mastermode</onclick>
+      <selected>system.ismaster</selected>
+      <visible>system.haslocks</visible>
+    </control>
+    <control type="button" id="1646">
+      <description>Logo downloader</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31171]</label>
+      <onclick>XBMC.RunScript(script.logo-downloader,mode=bulk,clearart=True,logo=True,showthumb=landscape.jpg,banner=banner.jpg,poster=poster.jpg)</onclick>
+      <visible>Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)</visible>
+    </control>
+  </include>
+  <include name="InfoPanelMediaMenuButtons">
+    <!--Info panel options-->
+    <control type="button" id="1609">
+      <description>Infopanel options label</description>
+      <textcolor>selected</textcolor>
+      <disabledcolor>selected</disabledcolor>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31166] [LOWERCASE]$LOCALIZE[33063][/LOWERCASE]</label>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(503)|Control.IsVisible(508)|[Control.IsVisible(510)+Skin.HasSetting(posterslide)]|Control.IsVisible(55)|Control.IsVisible(517)]+!Skin.HasSetting(hideoptions)</visible>
+      <enable>no</enable>
+    </control>
+    <control type="radiobutton" id="1610">
+      <description>Infopanel Movies</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>31385</label>
+      <onclick>Skin.ToggleSetting(showcaseinfoon)</onclick>
+      <selected>!Skin.HasSetting(showcaseinfoon)</selected>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.isVisible(503)|[Control.IsVisible(510)+Skin.HasSetting(posterslide)]]+Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1611">
+      <description>Infopanel Series</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>31385</label>
+      <onclick>Skin.ToggleSetting(showcaseinfoontv)</onclick>
+      <selected>!Skin.HasSetting(showcaseinfoontv)</selected>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(503)|Control.IsVisible(508)|[Control.IsVisible(510)+Skin.HasSetting(posterslide)]]+[Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1612">
+      <description>Infopanel Episodes</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>31385</label>
+      <onclick>Skin.ToggleSetting(showcaseinfoonep)</onclick>
+      <selected>!Skin.HasSetting(showcaseinfoonep)</selected>
+      <visible>Control.IsVisible(503)+Container.Content(episodes)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1613">
+      <description>Infopanel Movies</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>351</label>
+      <onclick>Skin.ToggleSetting(InfoPopUp)</onclick>
+      <selected>!Skin.HasSetting(InfoPopUp)</selected>
+      <visible>[Control.IsVisible(55)|Control.IsVisible(517)]+Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1614">
+      <description>Infopanel Series</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>351</label>
+      <onclick>Skin.ToggleSetting(InfoPopUpTV)</onclick>
+      <selected>!Skin.HasSetting(InfoPopUpTV)</selected>
+      <visible>Control.IsVisible(55)+[Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1615">
+      <description>Infopanel Episodes</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>351</label>
+      <onclick>Skin.ToggleSetting(InfoPopUpEpisode)</onclick>
+      <selected>!Skin.HasSetting(InfoPopUpEpisode)</selected>
+      <visible>Control.IsVisible(517)+Container.Content(episodes)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1616">
+      <description>Infopanel Auto Movies</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>31386</label>
+      <onclick>Skin.ToggleSetting(infopaneauto)</onclick>
+      <onclick condition="Skin.HasSetting(infopaneauto)">ActivateWindow(1114)</onclick>
+      <selected>Skin.HasSetting(infopaneauto)</selected>
+      <enable>Skin.HasSetting(showcaseinfoon)</enable>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.isVisible(503)|[Control.IsVisible(510)+Skin.HasSetting(posterslide)]]+Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1617">
+      <description>Infopanel Auto Series</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>31386</label>
+      <onclick>Skin.ToggleSetting(infopaneautotv)</onclick>
+      <onclick condition="Skin.HasSetting(infopaneautotv)">ActivateWindow(1114)</onclick>
+      <selected>Skin.HasSetting(infopaneautotv)</selected>
+      <enable>Skin.HasSetting(showcaseinfoontv)</enable>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.isVisible(503)|Control.IsVisible(508)|[Control.IsVisible(510)+Skin.HasSetting(posterslide)]]+[Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1618">
+      <description>Infopanel Auto Episodes</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>31386</label>
+      <onclick>Skin.ToggleSetting(infopaneautoep)</onclick>
+      <onclick condition="Skin.HasSetting(infopaneautoep)">ActivateWindow(1114)</onclick>
+      <selected>Skin.HasSetting(infopaneautoep)</selected>
+      <enable>Skin.HasSetting(showcaseinfoonep)</enable>
+      <visible>Control.isVisible(503)+Container.Content(episodes)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1619">
+      <description>Infopanel Auto Movies</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>31386</label>
+      <onclick>Skin.ToggleSetting(InfoPopUpAuto)</onclick>
+      <onclick condition="Skin.HasSetting(InfoPopUpAuto)">ActivateWindow(1114)</onclick>
+      <selected>Skin.HasSetting(InfoPopUpAuto)</selected>
+      <enable>Skin.HasSetting(InfoPopUp)</enable>
+      <visible>[Control.IsVisible(55)|Control.IsVisible(517)]+Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1620">
+      <description>Infopanel Auto Series</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>31386</label>
+      <onclick>Skin.ToggleSetting(InfoPopUpAutoTV)</onclick>
+      <onclick condition="Skin.HasSetting(InfoPopUpAutoTV)">ActivateWindow(1114)</onclick>
+      <selected>Skin.HasSetting(InfoPopUpAutoTV)</selected>
+      <enable>Skin.HasSetting(InfoPopUpTV)</enable>
+      <visible>Control.IsVisible(55)+[Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1621">
+      <description>Infopanel Auto Episodes</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>31386</label>
+      <onclick>Skin.ToggleSetting(InfoPopUpAutoEpisode)</onclick>
+      <onclick condition="!Skin.HasSetting(InfoPopUpAutoEpisode)">ActivateWindow(1114)</onclick>
+      <selected>Skin.HasSetting(InfoPopUpAutoEpisode)</selected>
+      <enable>Skin.HasSetting(InfoPopUpEpisode)</enable>
+      <visible>Control.IsVisible(517)+Container.Content(episodes)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1622">
+      <description>Infopanel Transparent Episodes</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31250]</label>
+      <onclick>Skin.ToggleSetting(lightinfopanel)</onclick>
+      <selected>Skin.HasSetting(lightinfopanel)</selected>
+      <visible>[Container.Content(movies)|Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)]+[Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(503)|Control.IsVisible(508)|[Control.IsVisible(510)+Skin.HasSetting(posterslide)]]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="button" id="1624">
+      <description>Layout</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>31272</label>
+      <onclick>SetFocus(9010)</onclick>
+      <onleft>SetFocus(9010)</onleft>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(503)]+Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="togglebutton" id="1625">
+      <description>Toggle Extrathumbs/Poster</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31272]: [B]$LOCALIZE[31198][/B]</label>
+      <aligny>center</aligny>
+      <altlabel>$LOCALIZE[31272]: [B]$LOCALIZE[31271][/B]</altlabel>
+      <onclick>Skin.ToggleSetting(InfoPopUpNoExtrathumbs)</onclick>
+      <usealttexture>Skin.HasSetting(InfoPopUpNoExtrathumbs)</usealttexture>
+      <visible>[Control.IsVisible(55)|Control.IsVisible(517)]+Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="togglebutton" id="1638">
+      <description>Prefer Subtitle over country</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[202]: [B]$LOCALIZE[31429][/B]</label>
+      <altlabel>$LOCALIZE[202]: [B]$LOCALIZE[351][/B]</altlabel>
+      <onclick>Skin.ToggleSetting(infopaneltagline)</onclick>
+      <usealttexture>Skin.HasSetting(infopaneltagline)</usealttexture>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(503)|[Control.IsVisible(510)+Skin.HasSetting(posterslide)]]+Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="togglebutton" id="1640">
+      <description>Prefer Plot over PlotOutline</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[207]: [B]$LOCALIZE[31426][/B]</label>
+      <altlabel>$LOCALIZE[207]: [B]$LOCALIZE[31427][/B]</altlabel>
+      <onclick>Skin.ToggleSetting(preferplot)</onclick>
+      <usealttexture>!Skin.HasSetting(preferplot)</usealttexture>
+      <visible>[[[Skin.HasSetting(fourthumbs)+Control.IsVisible(501)]|[Skin.HasSetting(fourthumbs503)+Control.IsVisible(503)]|[Skin.HasSetting(fourthumbs504)+Control.IsVisible(504)]]|[[Skin.HasSetting(fanartinfopane)+Control.IsVisible(501)]|[Skin.HasSetting(fanartinfopane503)+Control.IsVisible(503)]|[Skin.HasSetting(fanartinfopane504)+Control.IsVisible(504)]|[Control.IsVisible(510)+Skin.HasSetting(posterslide)]]]+Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="togglebutton" id="1667">
+      <description>Toggle Overlay</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31272]: [B]$LOCALIZE[21371][/B]</label>
+      <altlabel>$LOCALIZE[31272]: [B]$LOCALIZE[20445][/B]</altlabel>
+      <onclick>Skin.ToggleSetting(LandscapeThumb)</onclick>
+      <usealttexture>!Skin.HasSetting(LandscapeThumb)</usealttexture>
+      <visible>[Control.IsVisible(503)+Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+  </include>
+  <include name="VideoLibraryMediaMenuButtons">
+    <!--InfoList Options-->
+    <control type="radiobutton" id="1608">
+      <description>Slim Info List</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31165]</label>
+      <onclick>Skin.ToggleSetting(sliminfolist)</onclick>
+      <selected>Skin.HasSetting(sliminfolist)</selected>
+      <enable>![Skin.HasSetting(bannerinfolist)+Container.Content(tvshows)]+!SubString(Container.FolderPath,addons://)</enable>
+      <visible>Control.IsVisible(505)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1635">
+      <description>Show plot only instead of media flags</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31226]</label>
+      <onclick>Skin.ToggleSetting(infolistplotonly)</onclick>
+      <selected>Skin.HasSetting(infolistplotonly)</selected>
+      <visible>Control.IsVisible(505)+!SubString(Container.FolderPath,addons://)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1687">
+      <description>Show plot only instead of media flags</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31396]</label>
+      <onclick>Skin.ToggleSetting(bannerinfolist)</onclick>
+      <selected>Skin.HasSetting(bannerinfolist)</selected>
+      <visible>Control.IsVisible(505)+Container.Content(tvshows)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--Showcase/DVDCase options-->
+    <control type="radiobutton" id="1626">
+      <description>No Flow Movies</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31168]</label>
+      <onclick>Skin.ToggleSetting(noflow)</onclick>
+      <selected>Skin.HasSetting(noflow)</selected>
+      <visible>Control.IsVisible(501)+![Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1627">
+      <description>No Flow Series</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31168]</label>
+      <onclick>Skin.ToggleSetting(noflowtv)</onclick>
+      <selected>Skin.HasSetting(noflowtv)</selected>
+      <visible>Control.IsVisible(501)+[Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1628">
+      <description>No Flow Movies DVD</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31168]</label>
+      <onclick>Skin.ToggleSetting(noflowdvd)</onclick>
+      <selected>Skin.HasSetting(noflowdvd)</selected>
+      <visible>Control.IsVisible(504)+![Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1629">
+      <description>No Flow Series DVD</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31168]</label>
+      <onclick>Skin.ToggleSetting(noflowdvdtv)</onclick>
+      <selected>Skin.HasSetting(noflowdvdtv)</selected>
+      <visible>Control.IsVisible(504)+[Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1641">
+      <description>Cases</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31248]</label>
+      <onclick>Skin.ToggleSetting(usecases)</onclick>
+      <onclick>XBMC.ReloadSkin()</onclick>
+      <selected>Skin.HasSetting(usecases)</selected>
+      <visible>Control.IsVisible(504)+[Container.Content(movies)|Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--LowList Options-->
+    <control type="radiobutton" id="1630">
+      <description>Toggle Lower List</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31170]</label>
+      <onclick>Skin.ToggleSetting(highlist)</onclick>
+      <selected>Skin.HasSetting(highlist)</selected>
+      <visible>Control.IsVisible(511)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1631">
+      <description>Trailer Button</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31238]</label>
+      <onclick>Skin.ToggleSetting(bigtrailerbutton)</onclick>
+      <selected>Skin.HasSetting(bigtrailerbutton)</selected>
+      <visible>[Control.IsVisible(511)|Control.IsVisible(50)]+Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1632">
+      <description>Show plot only instead of extra info</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31372]</label>
+      <onclick>Skin.ToggleSetting(LowListPlotOnly)</onclick>
+      <selected>Skin.HasSetting(LowListPlotOnly)</selected>
+      <enable>!Skin.HasSetting(highlist)</enable>
+      <visible>[Control.IsVisible(511)]+[Container.Content(movies)|Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1686">
+      <description>Show plot only instead of extra info</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31248]</label>
+      <onclick>Skin.ToggleSetting(usecaseslowlist)</onclick>
+      <selected>Skin.HasSetting(usecaseslowlist)</selected>
+      <visible>[Control.IsVisible(511)]+[Container.Content(movies)|Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--Landscape Options-->
+    <control type="togglebutton" id="1633">
+      <description>Toggle Logo</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31193]</label>
+      <altlabel>$LOCALIZE[31192]</altlabel>
+      <onclick>Skin.ToggleSetting(landscapelogo)</onclick>
+      <usealttexture>!Skin.HasSetting(landscapelogo)</usealttexture>
+      <visible>Container.Content(tvshows)+Control.IsVisible(503)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1692">
+      <description>Toggle Watchcount</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31451]</label>
+      <onclick>Skin.ToggleSetting(logowatchcount)</onclick>
+      <selected>!Skin.HasSetting(logowatchcount)</selected>
+      <enable>Skin.HasSetting(landscapelogo)+Container.Content(tvshows)</enable>
+      <visible>Container.Content(tvshows)+Control.IsVisible(503)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1634">
+      <description>Show episode number in itemlayout</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31285]</label>
+      <onclick>Skin.ToggleSetting(disableepno)</onclick>
+      <selected>!Skin.HasSetting(disableepno)</selected>
+      <visible>Control.IsVisible(503)+Container.Content(episodes)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--Watched/New Overlay-->
+    <control type="radiobutton" id="1636">
+      <description>Toggle Logo</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31240]</label>
+      <onclick>Skin.ToggleSetting(newstatus)</onclick>
+      <selected>Skin.HasSetting(newstatus)</selected>
+      <enable>![Skin.HasSetting(landscapelogo)+Container.Content(tvshows)+!Skin.HasSetting(showcaseinfoontv)]+Skin.HasSetting(homepageHideRecentlyAdded)</enable>
+      <visible>[Control.IsVisible(51)|Control.IsVisible(514)|Control.IsVisible(508)|Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(55)|Control.IsVisible(510)|Control.IsVisible(503)|Control.IsVisible(508)|Control.IsVisible(512)|Control.IsVisible(560)|Control.IsVisible(516)]+[Container.Content(movies)|Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1637">
+      <description>Toggle Logo</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31241]</label>
+      <onclick>Skin.ToggleSetting(watchedoverlay)</onclick>
+      <selected>Skin.HasSetting(watchedoverlay)</selected>
+      <enable>![Skin.HasSetting(landscapelogo)+Container.Content(tvshows)+!Skin.HasSetting(showcaseinfoontv)]</enable>
+      <visible>[Control.IsVisible(51)|Control.IsVisible(514)|Control.IsVisible(508)|Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(55)|Control.IsVisible(510)|Control.IsVisible(503)|Control.IsVisible(508)|Control.IsVisible(512)|Control.IsVisible(560)|Control.IsVisible(516)]+[Container.Content(movies)|Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--InfoWall Options-->
+    <control type="radiobutton" id="1642">
+      <description>Cases</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31248]</label>
+      <onclick>Skin.ToggleSetting(usecasesinfowall)</onclick>
+      <onclick>Skin.Reset(useclearcasesinfowall)</onclick>
+      <selected>Skin.HasSetting(usecasesinfowall)</selected>
+      <visible>Control.IsVisible(512)+[Container.Content(movies)|Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1643">
+      <description>Clear Cases</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31282]</label>
+      <onclick>Skin.ToggleSetting(useclearcasesinfowall)</onclick>
+      <onclick>Skin.Reset(usecasesinfowall)</onclick>
+      <selected>Skin.HasSetting(useclearcasesinfowall)</selected>
+      <visible>Control.IsVisible(512)+[Container.Content(movies)|Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1644">
+      <description>Show MediaFlags</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31280]</label>
+      <onclick>Skin.ToggleSetting(infowallflags)</onclick>
+      <selected>!Skin.HasSetting(infowallflags)</selected>
+      <visible>Control.IsVisible(512)+[Container.Content(movies)|Container.Content(tvshows)|Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1645">
+      <description>Toggle aspect of thumbs</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31150]</label>
+      <onclick>Skin.ToggleSetting(TVInfoWallLandscape)</onclick>
+      <selected>Skin.HasSetting(TVInfoWallLandscape)</selected>
+      <visible>Control.IsVisible(512)+Container.Content(tvshows)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--Posters Options-->
+    <control type="radiobutton" id="1647">
+      <description>Poster Slide</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31270]</label>
+      <onclick>Skin.ToggleSetting(posterslide)</onclick>
+      <onclick>XBMC.ReloadSkin()</onclick>
+      <selected>!Skin.HasSetting(posterslide)</selected>
+      <visible>Control.IsVisible(510)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="togglebutton" id="1648">
+      <description>Toggle Wrap/Fixed list</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31277]</label>
+      <altlabel>$LOCALIZE[31278]</altlabel>
+      <onclick>Skin.ToggleSetting(posterwrap)</onclick>
+      <onclick>XBMC.ReloadSkin()</onclick>
+      <usealttexture>!Skin.HasSetting(posterwrap)</usealttexture>
+      <visible>Control.IsVisible(510)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--Floor Label Options-->
+    <control type="togglebutton" id="1649">
+      <description>Toggle Info</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31388] [B]$LOCALIZE[515][/B]</label>
+      <altlabel>$LOCALIZE[31388] [B]$LOCALIZE[31172][/B]</altlabel>
+      <onclick>Skin.ToggleSetting(wallgenre)</onclick>
+      <usealttexture>!Skin.HasSetting(wallgenre)</usealttexture>
+      <visible>[[[Control.IsVisible(510)+Skin.HasSetting(posterslide)]|Control.IsVisible(560)|Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(51)|Control.IsVisible(508)|Control.IsVisible(55)]+Container.Content(movies)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="togglebutton" id="1650">
+      <description>Toggle Info</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31388] [B]$LOCALIZE[515][/B]</label>
+      <altlabel>$LOCALIZE[31388] [B]$LOCALIZE[31172][/B]</altlabel>
+      <onclick>Skin.ToggleSetting(wallgenretv)</onclick>
+      <usealttexture>!Skin.HasSetting(wallgenretv)</usealttexture>
+      <visible>[[Control.IsVisible(510)+Skin.HasSetting(posterslide)]|Control.IsVisible(560)|Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(51)|Control.IsVisible(508)|Control.IsVisible(55)]+[Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--Wall Options-->
+    <control type="radiobutton" id="1651">
+      <description>Toggle Small Wall</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31318]</label>
+      <onclick>Skin.ToggleSetting(smallmoviewall)</onclick>
+      <onclick>XBMC.ReloadSkin()</onclick>
+      <selected>Skin.HasSetting(smallmoviewall)</selected>
+      <visible>Control.IsVisible(560)+[Container.Content(movies)|Container.Content(seasons)|Container.Content(tvshows)|Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="togglebutton" id="1652">
+      <description>Toggle Vertical/Horizontal wall</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31228]</label>
+      <altlabel>$LOCALIZE[31229]</altlabel>
+      <onclick>Skin.ToggleSetting(WallMoviesVertical)</onclick>
+      <onclick>XBMC.ReloadSkin()</onclick>
+      <usealttexture>Skin.HasSetting(WallMoviesVertical)</usealttexture>
+      <visible>Control.IsVisible(560)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1688">
+      <description>Toggle Small Wall</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31282]</label>
+      <onclick>Skin.ToggleSetting(useclearcasesmoviewall)</onclick>
+      <selected>!Skin.HasSetting(useclearcasesmoviewall)</selected>
+      <visible>Control.IsVisible(560)+[Container.Content(movies)|Container.Content(seasons)|Container.Content(tvshows)|Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--BannerWall Options-->
+    <control type="togglebutton" id="1653">
+      <description>Toggle Logo</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31228]</label>
+      <altlabel>$LOCALIZE[31229]</altlabel>
+      <onclick>Skin.ToggleSetting(BannerwallVertical)</onclick>
+      <onclick>XBMC.ReloadSkin()</onclick>
+      <usealttexture>Skin.HasSetting(BannerwallVertical)</usealttexture>
+      <visible>Control.IsVisible(51)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--List Options-->
+    <control type="radiobutton" id="1655">
+      <description>Cases</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31248]</label>
+      <onclick>Skin.ToggleSetting(usecaseslist)</onclick>
+      <selected>Skin.HasSetting(usecaseslist)</selected>
+      <visible>Control.IsVisible(50)+[Container.Content(movies)|Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1656">
+      <description>Rounded covers</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31362]</label>
+      <onclick>Skin.ToggleSetting(roundedcovers)</onclick>
+      <selected>Skin.HasSetting(roundedcovers)</selected>
+      <enable>!Skin.HasSetting(usecaseslist)</enable>
+      <visible>Control.IsVisible(50)+[Container.Content(movies)|Container.Content(tvshows)|Container.Content(seasons)]+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <!--Panel Options-->
+    <control type="togglebutton" id="1657">
+      <description>Toggle Logo</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31272]: [B]$LOCALIZE[31257][/B]</label>
+      <altlabel>$LOCALIZE[31272]: [B]$LOCALIZE[31258][/B]</altlabel>
+      <onclick>Skin.ToggleSetting(paneldetail)</onclick>
+      <usealttexture>!Skin.HasSetting(paneldetail)</usealttexture>
+      <visible>Control.IsVisible(550)+Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+  </include>
+  <include name="MusicFilesButtons">
+    <control type="button" id="7">
+      <description>Switch to the playlists section</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>136</label>
+    </control>
+    <control type="button" id="9">
+      <description>Scan the selected item to the library</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+    </control>
+    <control type="button" id="10">
+      <description>Record button</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+    </control>
+    <control type="radiobutton" id="102">
+      <description>Library button</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[29800]</label>
+      <onclick>ReplaceWindow(MusicLibrary)</onclick>
+      <selected>Window.IsVisible(MusicLibrary)</selected>
+      <visible>Window.IsActive(MusicFiles)</visible>
+    </control>
+    <control type="button" id="11">
+      <description>Rip button (used for ripping cd's)</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>600</label>
+    </control>
+  </include>
+  <include name="PicturesButtons">
+    <control type="button" id="6">
+      <description>Start a picture slideshow</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>13317</label>
+    </control>
+    <control type="button" id="7">
+      <description>Start a recursive picture slideshow</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>13318</label>
+    </control>
+    <control type="radiobutton" id="9">
+      <description>Randomize the picture slideshow</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>13319</label>
+    </control>
+  </include>
+  <include name="ALAInfoPanelMediaMenu">
+    <control type="button" id="1673">
+      <description>Infopanel options label</description>
+      <textcolor>selected</textcolor>
+      <disabledcolor>selected</disabledcolor>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31166] [LOWERCASE]$LOCALIZE[33063][/LOWERCASE]</label>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(509)]+Substring(Container.FolderPath,advanced.launcher)+!Skin.HasSetting(hideoptions)</visible>
+      <enable>no</enable>
+    </control>
+    <control type="radiobutton" id="1670">
+      <description>Toggle MoviesFanart</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31385]</label>
+      <onclick>Skin.ToggleSetting(infopanellauncher)</onclick>
+      <selected>Skin.HasSetting(infopanellauncher)</selected>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(509)]+Substring(Container.FolderPath,advanced.launcher)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1671">
+      <description>Toggle Fanart</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31386]</label>
+      <onclick>Skin.ToggleSetting(infopaneautolauncher)</onclick>
+      <selected>Skin.HasSetting(infopaneautolauncher)</selected>
+      <enable>!Skin.HasSetting(infopanellauncher)</enable>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(509)]+Substring(Container.FolderPath,advanced.launcher)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+    <control type="radiobutton" id="1672">
+      <description>Cases</description>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31250]</label>
+      <onclick>Skin.ToggleSetting(lightinfopanel)</onclick>
+      <selected>Skin.HasSetting(lightinfopanel)</selected>
+      <enable>!Skin.HasSetting(infopanellauncher)</enable>
+      <visible>[Control.IsVisible(501)|Control.IsVisible(504)|Control.IsVisible(509)]+Substring(Container.FolderPath,advanced.launcher)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+  </include>
+  <include name="ProgramButtons">
+    <control type="togglebutton" id="1669">
+      <description>Toggle Logo</description>
+      <pulseonselect>yes</pulseonselect>
+      <include>Objects_MediaMenuButtonAlt</include>
+      <label>$LOCALIZE[31272]: [B]$LOCALIZE[31293][/B]</label>
+      <altlabel>$LOCALIZE[31272]: [B]$LOCALIZE[31271][/B]</altlabel>
+      <onclick>Skin.ToggleSetting(InfoWallSquare)</onclick>
+      <usealttexture>!Skin.HasSetting(InfoWallSquare)</usealttexture>
+      <visible>Control.IsVisible(512)+!Skin.HasSetting(hideoptions)</visible>
+    </control>
+  </include>
+
+  <include name="Media_Menu">
+    <control type="group" id="9000">
+      <enable>!Skin.HasSetting(kioskmode)</enable>
+      <visible>!Skin.HasSetting(kioskmode)</visible>
+      <posy>25</posy>
+      <control type="group" >
+        <description>Second Panel</description>
+        <animation type="Conditional" condition="!Control.HasFocus(9010)">
+          <effect type="fade" start="100" end="0" time="400" reversible="false"/>
+          <effect type="rotatey" start="0" end="-130" time="700" center="-20,0" tween="cubic" easing="in"/>
+        </animation>
+        <control type="image">
+          <posx>0</posx>
+          <posy>190</posy>
+          <width>680</width>
+          <height>300</height>
+          <texture background="true">views/listpanel_black.png</texture>
+          <animation effect="rotate" center="auto" start="0" end="-90" time="100" condition="true">Conditional</animation>
+          <include>Animation_MediaMenuSlide</include>
+        </control>
+        <control type="image">
+          <posx>0</posx>
+          <posy>190</posy>
+          <width>680</width>
+          <height>300</height>
+          <texture background="true">views/listpanel_back_noreflect.png</texture>
+          <animation effect="rotate" center="auto" start="0" end="-90" time="100" condition="true">Conditional</animation>
+          <include>Animation_MediaMenuSlide</include>
+        </control>
+      </control>
+
+      <control type="group">
+        <description>First Panel</description>
+        <control type="image">
+          <posx>-215</posx>
+          <posy>190</posy>
+          <width>680</width>
+          <height>300</height>
+          <texture background="true">views/listpanel_black.png</texture>
+          <animation effect="rotate" center="auto" start="0" end="-90" time="100" condition="true">Conditional</animation>
+          <include>Animation_MediaMenuSlide</include>
+        </control>
+        <control type="image">
+          <posx>-215</posx>
+          <posy>190</posy>
+          <width>680</width>
+          <height>300</height>
+          <texture background="true">views/listpanel_back_noreflect.png</texture>
+          <animation effect="rotate" center="auto" start="0" end="-90" time="100" condition="true">Conditional</animation>
+          <include>Animation_MediaMenuSlide</include>
+        </control>
+        <control type="grouplist" id="9003">
+          <posx>0</posx>
+          <posy>15</posy>
+          <width>300</width>
+          <height>650</height>
+          <itemgap>0</itemgap>
+          <orientation>vertical</orientation>
+          <scroll>true</scroll>
+          <onleft>50</onleft>
+          <onright>50</onright>
+          <onup>9003</onup>
+          <ondown>9003</ondown>
+          <onback>50</onback>
+          <include>Animation_MediaMenuSlide2</include>
+
+          <control type="selectbutton" id="2">
+            <description>View As button</description>
+            <textureleft>views/multiplex_arrow2.png</textureleft>
+            <textureright>views/multiplex_arrow.png</textureright>
+            <textureleftfocus>views/multiplex_arrowfocus2.png</textureleftfocus>
+            <texturerightfocus>views/multiplex_arrowfocus.png</texturerightfocus>
+            <pulseonselect>yes</pulseonselect>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>-</label>
+          </control>
+          <control type="button" id="1600">
+            <description>General options label</description>
+            <textcolor>selected</textcolor>
+            <disabledcolor>selected</disabledcolor>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[128] [LOWERCASE]$LOCALIZE[33063][/LOWERCASE]</label>
+            <enable>no</enable>
+          </control>
+          <control type="button" id="3">
+            <description>Sort by button</description>
+            <pulseonselect>yes</pulseonselect>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>103</label>
+          </control>
+          <control type="togglebutton" id="4">
+            <description>Sort asc</description>
+            <label>$LOCALIZE[31164]: $LOCALIZE[584]</label>
+            <altlabel>$LOCALIZE[31164]: $LOCALIZE[585]</altlabel>
+            <pulseonselect>yes</pulseonselect>
+            <include>Objects_MediaMenuButtonAlt</include>
+          </control>
+          <include condition="Window.IsActive(videolibrary)">VideoLibraryAltButtons_Left</include>
+          <include condition="Window.IsActive(VideoFiles)">VideoFilesButtons</include>
+          <include condition="Window.IsActive(AddonBrowser)">AddonBrowserButtons</include>
+          <include condition="Window.IsActive(MusicLibrary)">MusicLibraryButtons_Left</include>
+          <include condition="Window.IsActive(MusicFiles)">MusicFilesButtons</include>
+          <include condition="Window.IsActive(musicplaylist)">MusicPlaylistButtons</include>
+          <include condition="Window.IsActive(videoplaylist)">VideoPlaylistButtons</include>
+          <include condition="Window.IsActive(pictures)">PicturesButtons</include>
+
+          <control type="button" id="1601">
+            <description>Backdrop options label</description>
+            <textcolor>selected</textcolor>
+            <disabledcolor>selected</disabledcolor>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31383] [LOWERCASE]$LOCALIZE[33063][/LOWERCASE]</label>
+            <enable>no</enable>
+          </control>
+          <control type="radiobutton" id="1602">
+            <description>Hide Movie Fanart</description>
+            <label>$LOCALIZE[31307]</label>
+            <onclick>Skin.ToggleSetting(VideoLibraryMovieFanart)</onclick>
+            <selected>Skin.HasSetting(VideoLibraryMovieFanart)</selected>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <visible>Container.Content(movies)</visible>
+          </control>
+          <control type="radiobutton" id="1603">
+            <description>Hide Series Fanart</description>
+            <label>$LOCALIZE[31307]</label>
+            <onclick>Skin.ToggleSetting(VideoLibraryTVFanart)</onclick>
+            <selected>Skin.HasSetting(VideoLibraryTVFanart)</selected>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <visible>Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)</visible>
+          </control>
+          <control type="radiobutton" id="1604">
+            <description>Hide Music Video Fanart</description>
+            <label>$LOCALIZE[31307]</label>
+            <onclick>Skin.ToggleSetting(VideoLibraryMusicVideoFanart)</onclick>
+            <selected>Skin.HasSetting(VideoLibraryMusicVideoFanart)</selected>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <visible>Container.Content(musicvideos)</visible>
+          </control>
+          <control type="radiobutton" id="1674">
+            <description>Toggle Fanart</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>31307</label>
+            <onclick>Skin.ToggleSetting(MusicLibraryFanart)</onclick>
+            <selected>Skin.HasSetting(MusicLibraryFanart)</selected>
+            <visible>!Control.IsVisible(500)+!Skin.HasSetting(hideoptions)+[Window.IsActive(musiclibrary)|Window.IsActive(musicplaylist)]</visible>
+          </control>
+          <control type="radiobutton" id="1675">
+            <description>Toggle Extrafanart</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>31395</label>
+            <onclick>Skin.ToggleSetting(musicextrafanart)</onclick>
+            <selected>!Skin.HasSetting(musicextrafanart)</selected>
+            <visible>!Skin.HasSetting(hideoptions)+Window.IsActive(musiclibrary)</visible>
+            <visible>!IsEmpty(Skin.String(ArtistsLogosPath))</visible>
+          </control>
+          <control type="radiobutton" id="1605">
+            <description>Curtain Backdrop</description>
+            <label>31384</label>
+            <onclick>Skin.ToggleSetting(CurtainBackdrop)</onclick>
+            <selected>Skin.HasSetting(CurtainBackdrop)</selected>
+            <include>Objects_MediaMenuButtonAlt</include>
+          </control>
+          <control type="radiobutton" id="1623">
+            <description>Darken Backdrop</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>31387</label>
+            <onclick>Skin.ToggleSetting(darkinfopane)</onclick>
+            <selected>Skin.HasSetting(darkinfopane)</selected>
+            <visible>[Container.Content(movies)|Container.Content(tvshows)|Container.Content(episodes)]+[Control.IsVisible(501)|Control.IsVisible(508)|Control.IsVisible(504)|Control.IsVisible(503)|[Control.IsVisible(510)+Skin.HasSetting(posterslide)]]+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1678">
+            <description>Toggle MoviesFanart</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>31387</label>
+            <onclick>Skin.ToggleSetting(darkinfopanemusic)</onclick>
+            <selected>Skin.HasSetting(darkinfopanemusic)</selected>
+            <visible>[Control.IsVisible(509)|Control.IsVisible(513)|Control.IsVisible(501)|Control.IsVisible(504)]+[Container.Content(albums)|Container.Content(artists)|[Window.IsActive(1)+Substring(Container.FolderPath,advanced.launcher)]]+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1654">
+            <description>Toggle Dark</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31387]</label>
+            <onclick>Skin.ToggleSetting(bannerwalldark)</onclick>
+            <selected>Skin.HasSetting(bannerwalldark)</selected>
+            <visible>Control.IsVisible(51)+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1663">
+            <description>Toggle Dark</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31387]</label>
+            <onclick>Skin.ToggleSetting(darklist)</onclick>
+            <selected>Skin.HasSetting(darklist)</selected>
+            <visible>[Control.IsVisible(50)|Control.IsVisible(505)]+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1684">
+            <description>Toggle Dark</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31387]</label>
+            <onclick>Skin.ToggleSetting(transparentwall)</onclick>
+            <selected>!Skin.HasSetting(transparentwall)</selected>
+            <visible>[Control.IsVisible(500)|Control.IsVisible(560)]+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1690">
+            <description>Toggle Dark</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31395]</label>
+            <onclick>Skin.ToggleSetting(extrafanartmovies)</onclick>
+            <selected>Skin.HasSetting(extrafanartmovies)</selected>
+            <visible>Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1691">
+            <description>Toggle Dark</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31395]</label>
+            <onclick>Skin.ToggleSetting(extrafanartseries)</onclick>
+            <selected>Skin.HasSetting(extrafanartseries)</selected>
+            <visible>[Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)]+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="togglebutton" id="1666">
+            <description>Toggle Overlay</description>
+            <pulseonselect>yes</pulseonselect>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31102] [B]1[/B]</label>
+            <aligny>center</aligny>
+            <altlabel>$LOCALIZE[31102] [B]2[/B]</altlabel>
+            <onclick>Skin.ToggleSetting(altoverlayinfowall)</onclick>
+            <usealttexture>Skin.HasSetting(altoverlayinfowall)</usealttexture>
+            <visible>[Control.IsVisible(512)|Control.IsVisible(514)]+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <include condition="Window.IsActive(videolibrary)">InfoPanelMediaMenuButtons</include>
+          <include condition="Window.IsActive(programs)">ALAInfoPanelMediaMenu</include>
+          <include condition="Window.IsActive(musiclibrary)">MusicInfoPanelMediaMenu</include>
+          <control type="button" id="1606">
+            <description>Viewtype options label</description>
+            <textcolor>selected</textcolor>
+            <disabledcolor>selected</disabledcolor>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31185] [LOWERCASE]$LOCALIZE[33063][/LOWERCASE]</label>
+            <enable>no</enable>
+          </control>
+          <include condition="Window.IsActive(videolibrary)">VideoLibraryMediaMenuButtons</include>
+          <include condition="Window.IsActive(programs)">ProgramButtons</include>
+          <control type="radiobutton" id="1658">
+            <description>No Flow Album Showcase</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31168]</label>
+            <onclick>Skin.ToggleSetting(noflowalbum)</onclick>
+            <selected>Skin.HasSetting(noflowalbum)</selected>
+            <visible>Control.IsVisible(509)+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1659">
+            <description>No Flow CD Case</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31168]</label>
+            <onclick>Skin.ToggleSetting(noflowalbumdvd)</onclick>
+            <selected>Skin.HasSetting(noflowalbumdvd)</selected>
+            <visible>Control.IsVisible(513)+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1660">
+            <description>Toggle Listpanel thin</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31170]</label>
+            <onclick>Skin.ToggleSetting(lowlist)</onclick>
+            <selected>Skin.HasSetting(lowlist)</selected>
+            <visible>Control.IsVisible(506)+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1683">
+            <description>Toggle Listpanel thin</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31169]</label>
+            <onclick>Skin.ToggleSetting(listpanelthin)</onclick>
+            <selected>Skin.HasSetting(listpanelthin)</selected>
+            <visible>[Control.IsVisible(50)|Control.IsVisible(505)|Control.IsVisible(511)|Control.IsVisible(506)]+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1661">
+            <description>Toggle Small Wall</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31318]</label>
+            <onclick>Skin.ToggleSetting(smallmusicwall)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <selected>Skin.HasSetting(smallmusicwall)</selected>
+            <visible>Control.IsVisible(500)+[Container.Content(albums)|Container.Content(songs)|Container.Content(addons)]+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1662">
+            <description>Toggle Dark</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31165]</label>
+            <onclick>Skin.ToggleSetting(slimlist)</onclick>
+            <selected>Skin.HasSetting(slimlist)</selected>
+            <visible>Control.IsVisible(50)+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1676">
+            <description>CD Art</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31377]</label>
+            <onclick>Skin.ToggleSetting(cdartlowlist)</onclick>
+            <selected>!Skin.HasSetting(cdartlowlist)</selected>
+            <visible>Container.Content(songs)</visible>
+            <visible>Control.IsVisible(506)+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1682">
+            <description>CD Art</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31377]</label>
+            <onclick>Skin.ToggleSetting(cdartfliplist)</onclick>
+            <selected>!Skin.HasSetting(cdartfliplist)</selected>
+            <visible>Control.IsVisible(50)+Container.Content(songs)+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="togglebutton" id="1665">
+            <description>Toggle Logo</description>
+            <pulseonselect>yes</pulseonselect>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>$LOCALIZE[31228]</label>
+            <aligny>center</aligny>
+            <altlabel>$LOCALIZE[31229]</altlabel>
+            <onclick>Skin.ToggleSetting(WallMusicVertical)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <usealttexture>Skin.HasSetting(WallMusicVertical)</usealttexture>
+            <visible>Control.IsVisible(500)+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="radiobutton" id="1668">
+            <description>Toggle Widescreen</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>21377</label>
+            <onclick>Skin.ToggleSetting(StripshowWS)</onclick>
+            <onclick>ReloadSkin()</onclick>
+            <selected>Skin.HasSetting(StripshowWS)</selected>
+            <visible>Control.IsVisible(517)+Window.IsActive(pictures)+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="button" id="1664">
+            <description>Set spot color</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>31298</label>
+            <onclick>SetFocus(50)</onclick>
+            <onclick>ActivateWindow(1126)</onclick>
+            <visible>[Control.IsVisible(500)|Control.IsVisible(560)|Control.IsVisible(55)|Control.IsVisible(508)|Control.IsVisible(503)|Control.IsVisible(509)|Control.IsVisible(504)|Control.IsVisible(501)|Control.IsVisible(510)|Control.IsVisible(50)]+!Skin.HasSetting(hideoptions)</visible>
+          </control>
+          <control type="button" id="1685">
+            <description>Set topbar color</description>
+            <include>Objects_MediaMenuButtonAlt</include>
+            <label>31389</label>
+            <onclick>SetFocus(50)</onclick>
+            <onclick>ActivateWindow(1128)</onclick>
+            <visible>!Skin.HasSetting(hideoptions)</visible>
+          </control>
+        </control>
+
+      </control>
+      <control type="panel" id="9010">
+        <posx>280</posx>
+        <posy>50</posy>
+        <width>300</width>
+        <height>680</height>
+        <itemgap>0</itemgap>
+        <orientation>vertical</orientation>
+        <onleft>SetFocus(1624)</onleft>
+        <onup>9010</onup>
+        <ondown>9010</ondown>
+        <onright>50</onright>
+        <onback>9003</onback>
+        <visible>Container.Content(movies)+!Skin.HasSetting(hideoptions)</visible>
+        <animation type="Conditional" condition="!Control.HasFocus(9010)">
+          <effect type="fade" start="100" end="0" time="400" reversible="false"/>
+          <effect type="rotatey" start="0" end="-130" time="700" center="-20,0" tween="cubic" easing="in"/>
+        </animation>
+        <itemlayout width="300" height="150">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>186</width>
+            <height>126</height>
+            <info>ListItem.ActualIcon</info>
+          </control>
+          <control type="label">
+            <posx>93</posx>
+            <posy>120</posy>
+            <width>186</width>
+            <height>20</height>
+            <align>center</align>
+            <aligny>center</aligny>
+            <font>Font_Reg19</font>
+            <textcolor>60FFFFFF</textcolor>
+            <info>ListItem.Label</info>
+          </control>
+        </itemlayout>
+        <focusedlayout width="300" height="150">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>186</width>
+            <height>126</height>
+            <info>ListItem.Thumb</info>
+          </control>
+          <control type="label">
+            <posx>93</posx>
+            <posy>120</posy>
+            <width>186</width>
+            <height>20</height>
+            <align>center</align>
+            <aligny>center</aligny>
+            <font>Font_Reg19</font>
+            <textcolor>white</textcolor>
+            <info>ListItem.Label</info>
+          </control>
+        </focusedlayout>
+        <content>
+          <item id="1">
+            <label>$LOCALIZE[31198]</label>
+            <icon>views/extrathumbs.png</icon>
+            <thumb>views/extrathumbs_focus.png</thumb>
+            <onclick>Skin.SetBool(extrathumbs)</onclick>
+            <onclick>Skin.Reset(fanartinfopane)</onclick>
+            <onclick>Skin.Reset(posterinfopane)</onclick>
+            <onclick>Skin.Reset(fourthumbs)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(501)</visible>
+          </item>
+          <item id="2">
+            <label>$LOCALIZE[20445]</label>
+            <icon>views/fanart.png</icon>
+            <thumb>views/fanart_focus.png</thumb>
+            <onclick>Skin.SetBool(fanartinfopane)</onclick>
+            <onclick>Skin.Reset(extrathumbs)</onclick>
+            <onclick>Skin.Reset(posterinfopane)</onclick>
+            <onclick>Skin.Reset(fourthumbs)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(501)</visible>
+          </item>
+          <item id="3">
+            <label>$LOCALIZE[31271]</label>
+            <icon>views/poster.png</icon>
+            <thumb>views/poster_focus.png</thumb>
+            <onclick>Skin.SetBool(posterinfopane)</onclick>
+            <onclick>Skin.Reset(extrathumbs)</onclick>
+            <onclick>Skin.Reset(fanartinfopane)</onclick>
+            <onclick>Skin.Reset(fourthumbs)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(501)</visible>
+          </item>
+          <item id="4">
+            <label>$LOCALIZE[31287]</label>
+            <icon>views/fourthumbs.png</icon>
+            <thumb>views/fourthumbs_focus.png</thumb>
+            <onclick>Skin.SetBool(fourthumbs)</onclick>
+            <onclick>Skin.Reset(extrathumbs)</onclick>
+            <onclick>Skin.Reset(fanartinfopane)</onclick>
+            <onclick>Skin.Reset(posterinfopane)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(501)</visible>
+          </item>
+          <item id="5">
+            <label>$LOCALIZE[31198]</label>
+            <icon>views/extrathumbs.png</icon>
+            <thumb>views/extrathumbs_focus.png</thumb>
+            <onclick>Skin.SetBool(extrathumbs503)</onclick>
+            <onclick>Skin.Reset(fanartinfopane503)</onclick>
+            <onclick>Skin.Reset(posterinfopane503)</onclick>
+            <onclick>Skin.Reset(fourthumbs503)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(503)</visible>
+          </item>
+          <item id="6">
+            <label>$LOCALIZE[20445]</label>
+            <icon>views/fanart.png</icon>
+            <thumb>views/fanart_focus.png</thumb>
+            <onclick>Skin.SetBool(fanartinfopane503)</onclick>
+            <onclick>Skin.Reset(extrathumbs503)</onclick>
+            <onclick>Skin.Reset(posterinfopane503)</onclick>
+            <onclick>Skin.Reset(fourthumbs503)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(503)</visible>
+          </item>
+          <item id="7">
+            <label>$LOCALIZE[31271]</label>
+            <icon>views/poster.png</icon>
+            <thumb>views/poster_focus.png</thumb>
+            <onclick>Skin.SetBool(posterinfopane503)</onclick>
+            <onclick>Skin.Reset(extrathumbs503)</onclick>
+            <onclick>Skin.Reset(fanartinfopane503)</onclick>
+            <onclick>Skin.Reset(fourthumbs503)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(503)</visible>
+          </item>
+          <item id="8">
+            <label>$LOCALIZE[31287]</label>
+            <icon>views/fourthumbs.png</icon>
+            <thumb>views/fourthumbs_focus.png</thumb>
+            <onclick>Skin.SetBool(fourthumbs503)</onclick>
+            <onclick>Skin.Reset(extrathumbs503)</onclick>
+            <onclick>Skin.Reset(fanartinfopane503)</onclick>
+            <onclick>Skin.Reset(posterinfopane503)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(503)</visible>
+          </item>
+          <item id="9">
+            <label>$LOCALIZE[31198]</label>
+            <icon>views/extrathumbs.png</icon>
+            <thumb>views/extrathumbs_focus.png</thumb>
+            <onclick>Skin.SetBool(extrathumbs504)</onclick>
+            <onclick>Skin.Reset(fanartinfopane504)</onclick>
+            <onclick>Skin.Reset(posterinfopane504)</onclick>
+            <onclick>Skin.Reset(fourthumbs504)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(504)</visible>
+          </item>
+          <item id="10">
+            <label>$LOCALIZE[20445]</label>
+            <icon>views/fanart.png</icon>
+            <thumb>views/fanart_focus.png</thumb>
+            <onclick>Skin.SetBool(fanartinfopane504)</onclick>
+            <onclick>Skin.Reset(extrathumbs504)</onclick>
+            <onclick>Skin.Reset(posterinfopane504)</onclick>
+            <onclick>Skin.Reset(fourthumbs504)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(504)</visible>
+          </item>
+          <item id="11">
+            <label>$LOCALIZE[31271]</label>
+            <icon>views/poster.png</icon>
+            <thumb>views/poster_focus.png</thumb>
+            <onclick>Skin.SetBool(posterinfopane504)</onclick>
+            <onclick>Skin.Reset(extrathumbs504)</onclick>
+            <onclick>Skin.Reset(fanartinfopane504)</onclick>
+            <onclick>Skin.Reset(fourthumbs504)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(504)</visible>
+          </item>
+          <item id="12">
+            <label>$LOCALIZE[31287]</label>
+            <icon>views/fourthumbs.png</icon>
+            <thumb>views/fourthumbs_focus.png</thumb>
+            <onclick>Skin.SetBool(fourthumbs504)</onclick>
+            <onclick>Skin.Reset(extrathumbs504)</onclick>
+            <onclick>Skin.Reset(fanartinfopane504)</onclick>
+            <onclick>Skin.Reset(posterinfopane504)</onclick>
+            <onclick>XBMC.ReloadSkin()</onclick>
+            <visible>Control.IsVisible(504)</visible>
+          </item>
+        </content>
+      </control>
+
+    </control>
+    <control type="button" id="9000">
+      <include>HiddenObject</include>
+      <enable>Skin.HasSetting(kioskmode)</enable>
+      <visible>Skin.HasSetting(kioskmode)</visible>
+      <onfocus>SetFocus(50)</onfocus>
+    </control>
+  </include>
+</includes>

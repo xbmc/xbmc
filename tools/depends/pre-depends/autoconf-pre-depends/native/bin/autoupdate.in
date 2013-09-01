@@ -1,0 +1,1064 @@
+#! @PERL@ -w
+# -*- perl -*-
+# @configure_input@
+
+# autoupdate - modernize an Autoconf file.
+# Copyright (C) 1994, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
+# 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Originally written by David MacKenzie <djm@gnu.ai.mit.edu>.
+# Rewritten by Akim Demaille <akim@freefriends.org>.
+
+eval 'case $# in 0) exec @PERL@ -S "$0";; *) exec @PERL@ -S "$0" "$@";; esac'
+    if 0;
+
+BEGIN
+{
+  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
+  unshift @INC, $pkgdatadir;
+
+  # Override SHELL.  On DJGPP SHELL may not be set to a shell
+  # that can handle redirection and quote arguments correctly,
+  # e.g.: COMMAND.COM.  For DJGPP always use the shell that configure
+  # has detected.
+  $ENV{'SHELL'} = '@SHELL@' if ($^O eq 'dos');
+}
+
+use Autom4te::ChannelDefs;
+use Autom4te::Channels;
+use Autom4te::Configure_ac;
+use Autom4te::FileUtils;
+use Autom4te::General;
+use Autom4te::XFile;
+use File::Basename;
+use strict;
+
+# Lib files.
+my $autom4te = $ENV{'AUTOM4TE'} || '@bindir@/@autom4te-name@';
+my $autoconf = "$autom4te --language=autoconf";
+# We need to find m4sugar.
+my @prepend_include;
+my @include = ('@pkgdatadir@');
+my $force = 0;
+# m4.
+my $m4 = $ENV{"M4"} || '@M4@';
+
+
+# $HELP
+# -----
+$help = "Usage: $0 [OPTION]... [TEMPLATE-FILE]...
+
+Update each TEMPLATE-FILE if given, or `configure.ac' if present,
+or else `configure.in', to the syntax of the current version of
+Autoconf.  The original files are backed up.
+
+Operation modes:
+  -h, --help                 print this help, then exit
+  -V, --version              print version number, then exit
+  -v, --verbose              verbosely report processing
+  -d, --debug                don't remove temporary files
+  -f, --force                consider all files obsolete
+
+Library directories:
+  -B, --prepend-include=DIR  prepend directory DIR to search path
+  -I, --include=DIR          append directory DIR to search path
+
+Report bugs to <bug-autoconf\@gnu.org>.
+GNU Autoconf home page: <http://www.gnu.org/software/autoconf/>.
+General help using GNU software: <http://www.gnu.org/gethelp/>.
+";
+
+# $VERSION
+# --------
+$version = "autoupdate (@PACKAGE_NAME@) @VERSION@
+Copyright (C) @RELEASE_YEAR@ Free Software Foundation, Inc.
+License GPLv3+/Autoconf: GNU GPL version 3 or later
+<http://gnu.org/licenses/gpl.html>, <http://gnu.org/licenses/exceptions.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by David J. MacKenzie and Akim Demaille.
+";
+
+## ---------- ##
+## Routines.  ##
+## ---------- ##
+
+
+# parse_args ()
+# -------------
+# Process any command line arguments.
+sub parse_args ()
+{
+  my $srcdir;
+
+  getopt ('I|include=s'         => \@include,
+	  'B|prepend-include=s' => \@prepend_include,
+	  'f|force'             => \$force);
+
+  if (! @ARGV)
+    {
+      my $configure_ac = require_configure_ac;
+      push @ARGV, $configure_ac;
+    }
+}
+
+
+
+# ----------------- #
+# Autoconf macros.  #
+# ----------------- #
+
+my (%ac_macros, %au_macros, %m4_builtins);
+
+# HANDLE_AUTOCONF_MACROS ()
+# -------------------------
+# @M4_BUILTINS -- M4 builtins and a useful comment.
+sub handle_autoconf_macros ()
+{
+  # Get the builtins.
+  xsystem ("echo dumpdef | $m4 2>" . shell_quote ("$tmp/m4.defs") . " >/dev/null");
+  my $m4_defs = new Autom4te::XFile "< " . open_quote ("$tmp/m4.defs");
+  while ($_ = $m4_defs->getline)
+    {
+      $m4_builtins{$1} = 1
+	if /^(\w+):/;
+    }
+  $m4_defs->close;
+
+  my $macros = new Autom4te::XFile ("$autoconf"
+				    . " --trace AU_DEFINE:'AU:\$f:\$1'"
+				    . " --trace define:'AC:\$f:\$1'"
+				    . " --melt /dev/null |");
+  while ($_ = $macros->getline)
+    {
+      chomp;
+      my ($domain, $file, $macro) = /^(AC|AU):(.*):([^:]*)$/ or next;
+      if ($domain eq "AU")
+	{
+	  $au_macros{$macro} = 1;
+	}
+      elsif ($file =~ /(^|\/)m4sugar\/(m4sugar|version)\.m4$/)
+	{
+	  # Add the m4sugar macros to m4_builtins.
+	  $m4_builtins{$macro} = 1;
+	}
+      else
+	{
+	  # Autoconf, aclocal, and m4sh macros.
+	  $ac_macros{$macro} = 1;
+	}
+    }
+  $macros->close;
+
+
+  # Don't keep AU macros in @AC_MACROS.
+  delete $ac_macros{$_}
+    foreach (keys %au_macros);
+  # Don't keep M4sugar macros which are redefined by Autoconf,
+  # such as `builtin', `changequote' etc.  See autoconf/autoconf.m4.
+  delete $ac_macros{$_}
+    foreach (keys %m4_builtins);
+  error "no current Autoconf macros found"
+    unless keys %ac_macros;
+  error "no obsolete Autoconf macros found"
+    unless keys %au_macros;
+
+  if ($debug)
+    {
+      print STDERR "Current Autoconf macros:\n";
+      print STDERR join (' ', sort keys %ac_macros) . "\n\n";
+      print STDERR "Obsolete Autoconf macros:\n";
+      print STDERR join (' ', sort keys %au_macros) . "\n\n";
+    }
+
+  # ac.m4 -- autoquoting definitions of the AC macros (M4sugar excluded).
+  # unac.m4 -- undefine the AC macros.
+  my $ac_m4 = new Autom4te::XFile "> " . open_quote ("$tmp/ac.m4");
+  print $ac_m4 "# ac.m4 -- autoquoting definitions of the AC macros.\n";
+  my $unac_m4 = new Autom4te::XFile "> " . open_quote ("$tmp/unac.m4");
+  print $unac_m4 "# unac.m4 -- undefine the AC macros.\n";
+  foreach (sort keys %ac_macros)
+    {
+      print $ac_m4   "_au_m4_define([$_], [m4_if(\$#, 0, [[\$0]], [[\$0(\$\@)]])])\n";
+      print $unac_m4 "_au_m4_undefine([$_])\n";
+    }
+
+  # m4save.m4 -- save the m4 builtins.
+  # unm4.m4 -- disable the m4 builtins.
+  # m4.m4 -- enable the m4 builtins.
+  my $m4save_m4 = new Autom4te::XFile "> " . open_quote ("$tmp/m4save.m4");
+  print $m4save_m4 "# m4save.m4 -- save the m4 builtins.\n";
+  my $unm4_m4 = new Autom4te::XFile "> " . open_quote ("$tmp/unm4.m4");
+  print $unm4_m4 "# unm4.m4 -- disable the m4 builtins.\n";
+  my $m4_m4 = new Autom4te::XFile "> " . open_quote ("$tmp/m4.m4");
+  print $m4_m4 "# m4.m4 -- enable the m4 builtins.\n";
+  foreach (sort keys %m4_builtins)
+    {
+      print $m4save_m4 "_au__save([$_])\n";
+      print $unm4_m4   "_au__undefine([$_])\n";
+      print $m4_m4     "_au__restore([$_])\n";
+    }
+}
+
+
+## -------------- ##
+## Main program.  ##
+## -------------- ##
+
+parse_args;
+$autoconf .= " --debug" if $debug;
+$autoconf .= " --force" if $force;
+$autoconf .= " --verbose" if $verbose;
+$autoconf .= join (' --include=', '', map { shell_quote ($_) } @include);
+$autoconf .= join (' --prepend-include=', '', map { shell_quote ($_) } @prepend_include);
+
+mktmpdir ('au');
+handle_autoconf_macros;
+
+# $au_changequote -- enable the quote `[', `]' right before any AU macro.
+my $au_changequote =
+  's/\b(' . join ('|', keys %au_macros) . ')\b/_au_m4_changequote([,])$1/g';
+
+# au.m4 -- definitions the AU macros.
+xsystem ("$autoconf --trace AU_DEFINE:'_au_defun(\@<:\@\$1\@:>\@,
+\@<:\@\$2\@:>\@)' --melt /dev/null "
+	. ">" . shell_quote ("$tmp/au.m4"));
+
+
+
+## ------------------- ##
+## Process the files.  ##
+## ------------------- ##
+
+foreach my $file (@ARGV)
+  {
+    # We need an actual file.
+    if ($file eq '-')
+      {
+	$file = "$tmp/stdin";
+	system "cat >" . shell_quote ($file);
+      }
+    elsif (! -r "$file")
+      {
+	die "$me: $file: No such file or directory";
+      }
+
+    # input.m4 -- m4 program to produce the updated file.
+    # Load the values, the dispatcher, neutralize m4, and the prepared
+    # input file.
+    my $input_m4 = <<\EOF;
+      divert(-1)                                            -*- Autoconf -*-
+      changequote([,])
+
+      # Define our special macros:
+      define([_au__defn], defn([defn]))
+      define([_au__divert], defn([divert]))
+      define([_au__ifdef], defn([ifdef]))
+      define([_au__include], defn([include]))
+      define([_au___undefine], defn([undefine]))
+      define([_au__undefine], [_au__ifdef([$1], [_au___undefine([$1])])])
+      define([_au__save], [m4_ifdef([$1],
+	[m4_define([_au_$1], _m4_defn([$1]))])])
+      define([_au__restore],
+	[_au_m4_ifdef([_au_$1],
+	  [_au_m4_define([$1], _au__defn([_au_$1]))])])
+
+      # Set up m4sugar.
+      include(m4sugar/m4sugar.m4)
+
+      # Redefine __file__ to make warnings nicer; $file is replaced below.
+      m4_define([__file__], [$file])
+
+      # Redefine m4_location to fix the line number.
+      m4_define([m4_location], [__file__:m4_eval(__line__ - _au__first_line)])
+
+      # Move all the builtins into the `_au_' pseudo namespace
+      m4_include([m4save.m4])
+
+      # _au_defun(NAME, BODY)
+      # ---------------------
+      # Define NAME to BODY, plus AU activation/deactivation.
+      _au_m4_define([_au_defun],
+      [_au_m4_define([$1],
+      [_au_enable()dnl
+      $2[]dnl
+      _au_disable()])])
+
+      # Import the definition of the obsolete macros.
+      _au__include([au.m4])
+
+
+      ## ------------------------ ##
+      ## _au_enable/_au_disable.  ##
+      ## ------------------------ ##
+
+      # They work by pair: each time an AU macro is activated, it runs
+      # _au_enable, and at its end its runs _au_disable (see _au_defun
+      # above).  AU macros might use AU macros, which should
+      # enable/disable only for the outer AU macros.
+      #
+      # `_au_enabled' is used to this end, determining whether we really
+      # enable/disable.
+
+
+      # __au_enable
+      # -----------
+      # Reenable the builtins, m4sugar, and the autoquoting AC macros.
+      _au_m4_define([__au_enable],
+      [_au__divert(-1)
+      # Enable special characters.
+      _au_m4_changecom([#])
+
+      _au__include([m4.m4])
+      _au__include([ac.m4])
+
+      _au__divert(0)])
+
+      # _au_enable
+      # ----------
+      # Called at the beginning of all the obsolete macros.  If this is the
+      # outermost level, call __au_enable.
+      _au_m4_define([_au_enable],
+      [_au_m4_ifdef([_au_enabled],
+		 [],
+		 [__au_enable()])_au_dnl
+      _au_m4_pushdef([_au_enabled])])
+
+
+      # __au_disable
+      # ------------
+      # Disable the AC autoquoting macros, m4sugar, and m4.
+      _au_m4_define([__au_disable],
+      [_au__divert(-1)
+      _au__include([unac.m4])
+      _au__include([unm4.m4])
+
+      # Disable special characters.
+      _au_m4_changequote()
+      _au_m4_changecom()
+
+      _au__divert(0)])
+
+      # _au_disable
+      # -----------
+      # Called at the end of all the obsolete macros.  If we are at the
+      # outermost level, call __au_disable.
+      _au_m4_define([_au_disable],
+      [_au_m4_popdef([_au_enabled])_au_dnl
+      _au_m4_ifdef([_au_enabled],
+		[],
+		[__au_disable()])])
+
+
+      ## ------------------------------- ##
+      ## Disable, and process the file.  ##
+      ## ------------------------------- ##
+      # The AC autoquoting macros are not loaded yet, hence invoking
+      # `_au_disable' would be wrong.
+      _au__include([unm4.m4])
+
+      # Disable special characters, and set the first line number.
+      _au_m4_changequote()
+      _au_m4_changecom()
+
+      _au_m4_define(_au__first_line, _au___line__)_au__divert(0)_au_dnl
+EOF
+
+    $input_m4 =~ s/^      //mg;
+    $input_m4 =~ s/\$file/$file/g;
+
+    # prepared input -- input, but reenables the quote before each AU macro.
+    open INPUT_M4, "> " . open_quote ("$tmp/input.m4")
+       or error "cannot open: $!";
+    open FILE, "< " . open_quote ($file)
+       or error "cannot open: $!";
+    print INPUT_M4 "$input_m4";
+    while (<FILE>)
+       {
+	 eval $au_changequote;
+	 print INPUT_M4;
+       }
+    close FILE
+       or error "cannot close $file: $!";
+    close INPUT_M4
+       or error "cannot close $tmp/input.m4: $!";
+
+    # Now ask m4 to perform the update.
+    xsystem ("$m4 --include=" . shell_quote ($tmp)
+	     . join (' --include=', '', map { shell_quote ($_) } reverse (@prepend_include))
+	     . join (' --include=', '', map { shell_quote ($_) } @include)
+	     . " " . shell_quote ("$tmp/input.m4") . " > " . shell_quote ("$tmp/updated"));
+    update_file ("$tmp/updated",
+		 "$file" eq "$tmp/stdin" ? '-' : "$file");
+  }
+exit 0;
+
+
+#		  ## ---------------------------- ##
+#		  ## How `autoupdate' functions.  ##
+#		  ## ---------------------------- ##
+#
+# The task of `autoupdate' is not trivial: the biggest difficulty being
+# that you must limit the changes to the parts that really need to be
+# updated.  Finding a satisfying implementation proved to be quite hard,
+# as this is the fifth implementation of `autoupdate'.
+#
+# Below, we will use a simple example of an obsolete macro:
+#
+#     AU_DEFUN([OLD], [NEW([$1, $2], m4_eval([$1 + $2]))])
+#     AC_DEFUN([NEW], [echo "sum($1) = $2"])
+#
+# the input file contains
+#
+#     dnl The Unbelievable Truth
+#     OLD(1, 2)
+#     NEW([0, 0], [0])
+#
+# Of course the expected output is
+#
+#     dnl The Unbelievable Truth
+#     NEW([1, 2], [3])
+#     NEW([0, 0], [0])
+#
+#
+# # First implementation: sed
+# # =========================
+#
+# The first implementation was only able to change the name of obsolete
+# macros.
+#
+# The file `acoldnames.m4' defined the old names based on the new names.
+# It was simple then to produce a sed script such as:
+#
+#     s/OLD/NEW/g
+#
+# Updating merely consisted in running this script on the file to
+# update.
+#
+# This scheme suffers from an obvious limitation: that `autoupdate' was
+# unable to cope with new macros that just swap some of its arguments
+# compared to the old macro.  Fortunately, that was enough to upgrade
+# from Autoconf 1 to Autoconf 2.  (But I have no idea whether the
+# changes in Autoconf 2 were precisely limited by this constraint.)
+#
+#
+# # Second implementation: hooks
+# # ============================
+#
+# The version 2.15 of Autoconf brought a vast number of changes compared
+# to 2.13, so a solution was needed.  One could think of extending the
+# `sed' scripts with specialized code for complex macros.  However, this
+# approach is of course full of flaws:
+#
+# a. the Autoconf maintainers have to write these snippets, which we
+#    just don't want to,
+#
+# b. I really don't think you'll ever manage to handle the quoting of
+#    m4 with a sed script.
+#
+# To satisfy a., let's remark that the code which implements the old
+# features in term of the new feature is exactly the code which should
+# replace the old code.
+#
+# To answer point b, as usual in the history of Autoconf, the answer, at
+# least on the paper, is simple: m4 is the best tool to parse m4, so
+# let's use m4.
+#
+# Therefore the specification is:
+#
+#     I want to be able to tell Autoconf, well, m4, that the macro I
+#     am currently defining is an obsolete macro (so that the user is
+#     warned), and its code is the code to use when running autoconf,
+#     but that the very same code has to be used when running
+#     autoupdate.  To summarize, the interface I want is
+#     `AU_DEFUN(OLD-NAME, NEW-CODE)'.
+#
+#
+# Now for the technical details.
+#
+# When running autoconf, except for the warning, AU_DEFUN is basically
+# AC_DEFUN.
+#
+# When running autoupdate, we want *only* OLD-NAMEs to be expanded.
+# This obviously means that acgeneral.m4 and acspecific.m4 must not be
+# loaded.  Nonetheless, because we want to use a rich set of m4
+# features, m4sugar.m4 is needed.  Please note that the fact that
+# Autoconf's macros are not loaded is positive on two points:
+#
+# - we do get an updated `configure.ac', not a `configure'!
+#
+# - the old macros are replaced by *calls* to the new-macros, not the
+#   body of the new macros, since their body is not defined!!!
+#   (Whoa, that's really beautiful!).
+#
+# Additionally we need to disable the quotes when reading the input for
+# two reasons: first because otherwise `m4' will swallow the quotes of
+# other macros:
+#
+#     NEW([1, 2], 3)
+#     => NEW(1, 2, 3)
+#
+# and second, because we want to update the macro calls which are
+# quoted, i.e., we want
+#
+#     FOO([OLD(1, 2)])
+#     => FOO([NEW([1, 2], [3])])
+#
+# If we don't disable the quotes, only the macros called at the top
+# level would be updated.
+#
+# So, let's disable the quotes.
+#
+# Well, not quite: m4sugar.m4 still needs to use quotes for some macros.
+# Well, in this case, when running in autoupdate code, each macro first
+# reestablishes the quotes, expands itself, and disables the quotes.
+#
+# Thinking a bit more, you realize that in fact, people may use `define',
+# `ifelse' etc. in their files, and you certainly don't want to process
+# them.  Another example is `dnl': you don't want to remove the
+# comments.  You then realize you don't want exactly to import m4sugar:
+# you want to specify when it is enabled (macros active), and disabled.
+# m4sugar provides m4_disable/m4_enable to this end.
+#
+# You're getting close to it.  Now remains one task: how to handle
+# twofold definitions?
+#
+# Remember that the same AU_DEFUN must be understood in two different
+# ways, the AC way, and the AU way.
+#
+# One first solution is to check whether acgeneral.m4 was loaded.  But
+# that's definitely not cute.  Another is simply to install `hooks',
+# that is to say, to keep in some place m4 knows, late `define' to be
+# triggered *only* in AU mode.
+#
+# You first think of designing AU_DEFUN like this:
+#
+# 1. AC_DEFUN(OLD-NAME,
+#	      [Warn the user OLD-NAME is obsolete.
+#	       NEW-CODE])
+#
+# 2. Store for late AU binding([define(OLD_NAME,
+#				[Reestablish the quotes.
+#				 NEW-CODE
+#				 Disable the quotes.])])
+#
+# but this will not work: NEW-CODE probably uses $1, $2 etc. and these
+# guys will be replaced with the argument of `Store for late AU binding'
+# when you call it.
+#
+# I don't think there is a means to avoid this using this technology
+# (remember that $1 etc. are *always* expanded in m4).  You may also try
+# to replace them with $[1] to preserve them for a later evaluation, but
+# if `Store for late AU binding' is properly written, it will remain
+# quoted till the end...
+#
+# You have to change technology.  Since the problem is that `$1'
+# etc. should be `consumed' right away, one solution is to define now a
+# second macro, `AU_OLD-NAME', and to install a hook than binds OLD-NAME
+# to AU_OLD-NAME.  Then, autoupdate.m4 just need to run the hooks.  By
+# the way, the same method was used in autoheader.
+#
+#
+# # Third implementation: m4 namespaces by m4sugar
+# # ==============================================
+#
+# Actually, this implementation was just a clean up of the previous
+# implementation: instead of defining hooks by hand, m4sugar was equipped
+# with `namespaces'.  What are they?
+#
+# Sometimes we want to disable some *set* of macros, and restore them
+# later.  We provide support for this via namespaces.
+#
+# There are basically three characters playing this scene: defining a
+# macro in a namespace, disabling a namespace, and restoring a namespace
+# (i.e., all the definitions it holds).
+#
+# Technically, to define a MACRO in NAMESPACE means to define the macro
+# named `NAMESPACE::MACRO' to the VALUE.  At the same time, we append
+# `undefine(NAME)' in the macro named `m4_disable(NAMESPACE)', and
+# similarly a binding of NAME to the value of `NAMESPACE::MACRO' in
+# `m4_enable(NAMESPACE)'.  These mechanisms allow to bind the macro of
+# NAMESPACE and to unbind them at will.
+#
+# Of course this implementation is really inefficient: m4 has to grow
+# strings which can become quickly huge, which slows it significantly.
+#
+# In particular one should avoid as much as possible to use `define' for
+# temporaries.  Now that `define' has quite a complex meaning, it is an
+# expensive operations that should be limited to macros.  Use
+# `m4_define' for temporaries.
+#
+# Private copies of the macros we used in entering / exiting the m4sugar
+# namespace.  It is much more convenient than fighting with the renamed
+# version of define etc.
+#
+#
+#
+# Those two implementations suffered from serious problems:
+#
+# - namespaces were really expensive, and incurred a major performance
+#   loss on `autoconf' itself, not only `autoupdate'.  One solution
+#   would have been the limit the use of namespaces to `autoupdate', but
+#   that's again some complications on m4sugar, which really doesn't need
+#   this.  So we wanted to get rid of the namespaces.
+#
+# - since the quotes were disabled, autoupdate was sometimes making
+#   wrong guesses, for instance on:
+#
+#     foo([1, 2])
+#
+#   m4 saw 2 arguments: `[1'and `2]'.  A simple solution, somewhat
+#   fragile, is to reestablish the quotes right before all the obsolete
+#   macros, i.e., to use sed so that the previous text becomes
+#
+#     changequote([, ])foo([1, 2])
+#
+#   To this end, one wants to trace the definition of obsolete macros.
+#
+# It was there that the limitations of the namespace approach became
+# painful: because it was a complex machinery playing a lot with the
+# builtins of m4 (hence, quite fragile), tracing was almost impossible.
+#
+#
+# So this approach was dropped.
+#
+#
+# # The fourth implementation: two steps
+# # ====================================
+#
+# If you drop the uses of namespaces, you no longer can compute the
+# updated value, and replace the old call with it simultaneously.
+#
+# Obviously you will use m4 to compute the updated values, but you may
+# use some other tool to achieve the replacement.  Personally, I trust
+# nobody but m4 to parse m4, so below, m4 will perform the two tasks.
+#
+# How can m4 be used to replace *some* macros calls with newer values.
+# Well, that's dead simple: m4 should learn the definitions of obsolete
+# macros, forget its builtins, disable the quotes, and then run on the
+# input file, which amounts to doing this:
+#
+#     divert(-1)dnl
+#     changequote([, ])
+#     define([OLD], [NEW([$1, $2], m4_eval([$1 + $2]))changequote()])
+#     undefine([dnl])
+#     undefine([m4_eval])
+#     # Some more undefines...
+#     changequote()
+#     divert(0)dnl
+#     dnl The Unbelievable Truth
+#     changequote([, ])OLD(1, 2)
+#     NEW([0, 0],
+#	  0)
+#
+# which will result in
+#
+#     dnl The Unbelievable Truth
+#     NEW(1, 2, m4_eval(1 + 2))
+#     NEW([0, 0],
+#	  0)
+#
+# Grpmh.  Two problems.  A minor problem: it would have been much better
+# to have the `m4_eval' computed, and a major problem: you lost the
+# quotation in the result.
+#
+# Let's address the big problem first.  One solution is to define any
+# modern macro to rewrite its calls with the proper quotation, thanks to
+# `$@'.  Again, tracing the `define's makes it possible to know which
+# are these macros, so you input is:
+#
+#     divert(-1)dnl
+#     changequote([, ])
+#     define([OLD], [NEW([$1, $2], m4_eval([$1 + $2]))changequote()])
+#     define([NEW], [[NEW($@)]changequote()])
+#     undefine([dnl])
+#     undefine([m4_eval])
+#     # Some more undefines...
+#     changequote()
+#     divert(0)dnl
+#     dnl The Unbelievable Truth
+#     changequote([, ])OLD(1, 2)
+#     changequote([, ])NEW([0, 0],
+#	  0)
+#
+# which results in
+#
+#     dnl The Unbelievable Truth
+#     NEW([1, 2],[m4_eval(1 + 2)])
+#     NEW([0, 0],[0])
+#
+# Our problem is solved, i.e., the first call to `NEW' is properly
+# quoted, but introduced another problem: we changed the layout of the
+# second calls, which can be a drama in the case of huge macro calls
+# (think of `AC_TRY_RUN' for instance).  This example didn't show it,
+# but we also introduced parens to macros which did not have some:
+#
+#     AC_INIT
+#     => AC_INIT()
+#
+# No big deal for the semantics (unless the macro depends upon $#, which
+# is bad), but the users would not be happy.
+#
+# Additionally, we introduced quotes that were not there before, which is
+# OK in most cases, but could change the semantics of the file.
+#
+# Cruel dilemma: we do want the auto-quoting definition of `NEW' when
+# evaluating `OLD', but we don't when we evaluate the second `NEW'.
+# Back to namespaces?
+#
+# No.
+#
+#
+# # Second step: replacement
+# # ------------------------
+#
+# No, as announced above, we will work in two steps: in a first step we
+# compute the updated values, and in a second step we replace them.  Our
+# goal is something like this:
+#
+#     divert(-1)dnl
+#     changequote([, ])
+#     define([OLD], [NEW([1, 2], [3])changequote()])
+#     undefine([dnl])
+#     undefine([m4_eval])
+#     # Some more undefines...
+#     changequote()
+#     divert(0)dnl
+#     dnl The Unbelievable Truth
+#     changequote([, ])OLD(1, 2)
+#     NEW([0, 0],
+#	  0)
+#
+# i.e., the new value of `OLD' is precomputed using the auto-quoting
+# definition of `NEW' and the m4 builtins.  We'll see how afterwards,
+# let's finish with the replacement.
+#
+# Of course the solution above is wrong: if there were other calls to
+# `OLD' with different values, we would smash them to the same value.
+# But it is quite easy to generalize the scheme above:
+#
+#     divert(-1)dnl
+#     changequote([, ])
+#     define([OLD([1],[2])], [NEW([1, 2], [3])])
+#     define([OLD], [defn([OLD($@)])changequote()])
+#     undefine([dnl])
+#     undefine([m4_eval])
+#     # Some more undefines...
+#     changequote()
+#     divert(0)dnl
+#     dnl The Unbelievable Truth
+#     changequote([, ])OLD(1, 2)
+#     NEW([0, 0],
+#	  0)
+#
+# i.e., for each call to obsolete macros, we build an array `call =>
+# value', and use a macro to dispatch these values.  This results in:
+#
+#     dnl The Unbelievable Truth
+#     NEW([1, 2], [3])
+#     NEW([0, 0],
+#	  0)
+#
+# In French, we say `Youpi !', which you might roughly translate as
+# `Yippee!'.
+#
+#
+# # First step: computation
+# # -----------------------
+#
+# Let's study the anatomy of the file, and name its sections:
+#
+# prologue
+#     divert(-1)dnl
+#     changequote([, ])
+# values
+#     define([OLD([1],[2])], [NEW([1, 2], [3])])
+# dispatcher
+#     define([OLD], [defn([OLD($@)])changequote()])
+# disabler
+#     undefine([dnl])
+#     undefine([m4_eval])
+#     # Some more undefines...
+#     changequote()
+#     divert(0)dnl
+# input
+#     dnl The Unbelievable Truth
+#     changequote([, ])OLD(1, 2)
+#     NEW([0, 0],
+#	  0)
+#
+#
+# # Computing the `values' section
+# # ..............................
+#
+# First we need to get the list of all the AU macro uses.  To this end,
+# first get the list of all the AU macros names by tracing `AU_DEFUN' in
+# the initialization of autoconf.  This list is computed in the file
+# `au.txt' below.
+#
+# Then use this list to trace all the AU macro uses in the input.  The
+# goal is obtain in the case of our example:
+#
+#     [define([OLD([1],[2])],]@<<@OLD([1],[2])@>>@[)]
+#
+# This is the file `values.in' below.
+#
+# We want to evaluate this with only the builtins (in fact m4sugar), the
+# auto-quoting definitions of the new macros (`new.m4'), and the
+# definition of the old macros (`old.m4').  Computing these last two
+# files is easy: it's just a matter of using the right `--trace' option.
+#
+# So the content of `values.in' is:
+#
+#     include($autoconf_dir/m4sugar.m4)
+#     m4_include(new.m4)
+#     m4_include(old.m4)
+#     divert(0)dnl
+#     [define([OLD([1],[2])],]@<<@OLD([1],[2])@>>@[)]
+#
+# We run m4 on it, which yields:
+#
+#     define([OLD([1],[2])],@<<@NEW([1, 2], [3])@>>@)
+#
+# Transform `@<<@' and `@>>@' into quotes and we get
+#
+#     define([OLD([1],[2])],[NEW([1, 2], [3])])
+#
+# This is `values.m4'.
+#
+#
+# # Computing the `dispatcher' section
+# # ..................................
+#
+# The `prologue', and the `disabler' are simple and need no commenting.
+#
+# To compute the `dispatcher' (`dispatch.m4'), again, it is a simple
+# matter of using the right `--trace'.
+#
+# Finally, the input is not exactly the input file, rather it is the
+# input file with the added `changequote'.  To this end, we build
+# `quote.sed'.
+#
+#
+# # Putting it all together
+# # .......................
+#
+# We build the file `input.m4' which contains:
+#
+#     divert(-1)dnl
+#     changequote([, ])
+#     include(values.m4)
+#     include(dispatch.m4)
+#     undefine([dnl])
+#     undefine([eval])
+#     # Some more undefines...
+#     changequote()
+#     divert(0)dnl
+#     dnl The Unbelievable Truth
+#     changequote([, ])OLD(1, 2)
+#     NEW([0, 0],
+#	  0)
+#
+# And we just run m4 on it.  Et voila`, Monsieur !  Mais oui, mais oui.
+#
+# Well, there are a few additional technicalities.  For instance, we
+# rely on `changequote', `ifelse' and `defn', but we don't want to
+# interpret the changequotes of the user, so we simply use another name:
+# `_au_changequote' etc.
+#
+#
+# # Failure of the fourth approach
+# # ------------------------------
+#
+# This approach is heavily based on traces, but then there is an obvious
+# problem: non expanded code will never be seen.  In particular, the body
+# of a `define' definition is not seen, so on the input
+#
+#	  define([idem], [OLD(0, [$1])])
+#
+# autoupdate would never see the `OLD', and wouldn't have updated it.
+# Worse yet, if `idem(0)' was used later, then autoupdate sees that
+# `OLD' is used, computes the result for `OLD(0, 0)' and sets up a
+# dispatcher for `OLD'.  Since there was no computed value for `OLD(0,
+# [$1])', the dispatcher would have replaced with... nothing, leading
+# to
+#
+#	  define([idem], [])
+#
+# With some more thinking, you see that the two step approach is wrong,
+# the namespace approach was much saner.
+#
+# But you learned a lot, in particular you realized that using traces
+# can make it possible to simulate namespaces!
+#
+#
+#
+# # The fifth implementation: m4 namespaces by files
+# # ================================================
+#
+# The fourth implementation demonstrated something unsurprising: you
+# cannot precompute, i.e., the namespace approach was the right one.
+# Still, we no longer want them, they're too expensive.  Let's have a
+# look at the way it worked.
+#
+# When updating
+#
+#     dnl The Unbelievable Truth
+#     OLD(1, 2)
+#     NEW([0, 0], [0])
+#
+# you evaluate `input.m4':
+#
+#     divert(-1)
+#     changequote([, ])
+#     define([OLD],
+#     [m4_enable()NEW([$1, $2], m4_eval([$1 + $2]))m4_disable()])
+#     ...
+#     m4_disable()
+#     dnl The Unbelievable Truth
+#     OLD(1, 2)
+#     NEW([0, 0], [0])
+#
+# where `m4_disable' undefines the m4 and m4sugar, and disables the quotes
+# and comments:
+#
+#     define([m4_disable],
+#     [undefine([__file__])
+#     ...
+#     changecom(#)
+#     changequote()])
+#
+# `m4_enable' does the converse: reestablish quotes and comments
+# --easy--, reestablish m4sugar --easy: just load `m4sugar.m4' again-- and
+# reenable the builtins.  This later task requires that you first save
+# the builtins.  And BTW, the definition above of `m4_disable' cannot
+# work: you undefined `changequote' before using it!  So you need to use
+# your privates copies of the builtins.  Let's introduce three files for
+# this:
+#
+#  `m4save.m4'
+#    moves the m4 builtins into the `_au_' pseudo namespace,
+#  `unm4.m4'
+#    undefines the builtins,
+#  `m4.m4'
+#    restores them.
+#
+# So `input.m4' is:
+#
+#     divert(-1)
+#     changequote([, ])
+#
+#     include([m4save.m4])
+#
+#     # Import AU.
+#     define([OLD],
+#     [m4_enable()NEW([$1, $2], m4_eval([$1 + $2]))m4_disable()])
+#
+#     define([_au_enable],
+#     [_au_changecom([#])
+#     _au_include([m4.m4])
+#     _au_include(m4sugar.m4)])
+#
+#     define([_au_disable],
+#     [# Disable m4sugar.
+#     # Disable the m4 builtins.
+#     _au_include([unm4.m4])
+#     # 1. Disable special characters.
+#     _au_changequote()
+#     _au_changecom()])
+#
+#     m4_disable()
+#     dnl The Unbelievable Truth
+#     OLD(1, 2)
+#     NEW([0, 0], [0])
+#
+# Based on what we learned in the fourth implementation we know that we
+# have to enable the quotes *before* any AU macro, and we know we need
+# to build autoquoting versions of the AC macros.  But the autoquoting
+# AC definitions must be disabled in the rest of the file, and enabled
+# inside AU macros.
+#
+# Using `autoconf --trace' it is easy to build the files
+#
+#   `ac.m4'
+#     define the autoquoting AC fake macros
+#   `disable.m4'
+#     undefine the m4sugar and AC autoquoting macros.
+#   `au.m4'
+#     definitions of the AU macros (such as `OLD' above).
+#
+# Now, `input.m4' is:
+#
+#     divert(-1)
+#     changequote([, ])
+#
+#     include([m4save.m4])
+#     # Import AU.
+#     include([au.m4])
+#
+#     define([_au_enable],
+#     [_au_changecom([#])
+#     _au_include([m4.m4])
+#     _au_include(m4sugar.m4)
+#     _au_include(ac.m4)])
+#
+#     define([_au_disable],
+#     [_au_include([disable.m4])
+#     _au_include([unm4.m4])
+#     # 1. Disable special characters.
+#     _au_changequote()
+#     _au_changecom()])
+#
+#     m4_disable()
+#     dnl The Unbelievable Truth
+#     _au_changequote([, ])OLD(1, 2)
+#     NEW([0, 0], [0])
+#
+# Finally, version V is ready.
+#
+# Well... almost.
+#
+# There is a slight problem that remains: if an AU macro OUTER includes
+# an AU macro INNER, then _au_enable will be run when entering OUTER
+# and when entering INNER (not good, but not too bad yet).  But when
+# getting out of INNER, _au_disable will disable everything while we
+# were still in OUTER.  Badaboom.
+#
+# Therefore _au_enable and _au_disable have to be written to work by
+# pairs: each _au_enable pushdef's _au_enabled, and each _au_disable
+# popdef's _au_enabled.  And of course _au_enable and _au_disable are
+# effective when _au_enabled is *not* defined.
+#
+# Finally, version V' is ready.  And there is much rejoicing.  (And I
+# have free time again.  I think.  Yeah, right.)
+
+### Setup "GNU" style for perl-mode and cperl-mode.
+## Local Variables:
+## perl-indent-level: 2
+## perl-continued-statement-offset: 2
+## perl-continued-brace-offset: 0
+## perl-brace-offset: 0
+## perl-brace-imaginary-offset: 0
+## perl-label-offset: -2
+## cperl-indent-level: 2
+## cperl-brace-offset: 0
+## cperl-continued-brace-offset: 0
+## cperl-label-offset: -2
+## cperl-extra-newline-before-brace: t
+## cperl-merge-trailing-else: nil
+## cperl-continued-statement-offset: 2
+## End:

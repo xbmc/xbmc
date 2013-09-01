@@ -1,0 +1,112 @@
+<includes>
+  <include name="contents501list">
+    <visible>[Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Window.IsVisible(VideoFiles) | Window.IsActive(1)]+!stringcompare(Container.FolderPath,addons://sources/video/)|Container.Content(genres)</visible>
+    <posx>-83</posx>
+    <posy>380</posy>
+    <width>1446</width>
+    <height>350</height>
+    <onleft>501</onleft>
+    <onright>501</onright>
+    <onup>7000</onup>
+    <ondown>61</ondown>
+    <viewtype label="31028">bigwrap</viewtype>
+    <pagecontrol>61</pagecontrol>
+    <scrolltime>200</scrolltime>
+    <focusposition>3</focusposition>
+    <orientation>horizontal</orientation>
+    <preloaditems>4</preloaditems>
+    <animation effect="fade" start="100" end="0" time="400" condition="Control.HasFocus(109)">Conditional</animation>
+    <itemlayout height="350" width="196">
+      <control type="group">
+        <visible>[[Skin.HasSetting(noflow)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] +!Control.IsVisible(6000)</visible>
+        <control type="image">
+          <include>MovieShowcaseThumb</include>
+          <info>ListItem.Thumb</info>
+          <visible>!Container.COntent(genres)</visible>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseThumbGenre</include>
+          <texture background="true" diffuse="thumbs/movieposter_mask.png" fallback="special://skin/extras/genre/video/icons/default.jpg">$INFO[ListItem.Label,special://skin/extras/genre/video/icons/,.jpg]</texture>
+          <visible>Container.COntent(genres)</visible>
+        </control>
+        <include>MovieShowcaseGlassOverlayAngled</include>
+        <control type="image">
+          <include>MovieShowcaseThumbReflection</include>
+          <info>ListItem.Thumb</info>
+          <visible>!Container.COntent(genres)</visible>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseThumbReflectionGenre</include>
+          <texture background="true" diffuse="thumbs/movieposter_mask_reflect.png" fallback="special://skin/extras/genre/video/icons/default.jpg">$INFO[ListItem.Label,special://skin/extras/genre/video/icons/,.jpg]</texture>
+          <visible>Container.COntent(genres)</visible>
+        </control>
+        <include>WatchedOverlayShowCaseItem0</include>
+      </control>
+    </itemlayout>
+    <focusedlayout height="350" width="196">
+      <control type="group">
+        <visible>[[Skin.HasSetting(noflow)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] +!Control.IsVisible(6000)</visible>
+        <animation effect="zoom" start="100" end="120" center="135,230" time="400" easing="out" reversible="false" tween="cubic">Focus</animation>
+        <animation effect="zoom" start="120" end="100" center="135,230" time="400" easing="out" reversible="false" tween="cubic">Unfocus</animation>
+        <control type="image">
+          <include>MovieShowcaseThumbMain</include>
+          <info>ListItem.Thumb</info>
+          <visible>!Container.COntent(genres)</visible>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseThumbMainGenre</include>
+          <texture background="true" diffuse="thumbs/movieposter_mask.png" fallback="special://skin/extras/genre/video/icons/default.jpg">$INFO[ListItem.Label,special://skin/extras/genre/video/icons/,.jpg]</texture>
+          <visible>Container.COntent(genres)</visible>
+        </control>  
+        <control type="group">
+          <description>Glass overlay</description>
+          <include>MovieShowcaseGlassOverlayAngled</include>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseThumbReflectionMain</include>
+          <info>ListItem.Thumb</info>
+          <visible>!Container.COntent(genres)</visible>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseThumbReflectionMainGenre</include>
+          <texture background="true" diffuse="thumbs/movieposter_mask_reflect.png" fallback="special://skin/extras/genre/video/icons/default.jpg">$INFO[ListItem.Label,special://skin/extras/genre/video/icons/,.jpg]</texture>
+          <visible>Container.COntent(genres)</visible>
+        </control>
+        <control type="group">
+          <include>WatchedOverlayShowCaseItem0</include>
+        </control>
+      </control>
+    </focusedlayout>
+  </include>
+  <include name="scmfixed">
+    <control type="fixedlist" id="501">
+      <include>contents501list</include>
+    </control>
+  </include>
+  <include name="scmwrap">
+    <control type="wraplist" id="501">
+      <include>contents501list</include>
+    </control>
+  </include>
+  <include name="Showcase">
+    <control type="group">
+      <visible>Control.IsVisible(501)</visible>
+      <control type="group">
+        <include>ShowcaseMovies</include>
+      </control>
+      <include condition="!Skin.HasSetting(showcasewrap)">scmfixed</include>
+      <include condition="Skin.HasSetting(showcasewrap)">scmwrap</include>
+      <control type="scrollbar" id="61">
+        <visible allowhiddenfocus="true">Control.IsVisible(501)+Control.HasFocus(61)</visible>
+        <onup>501</onup>
+        <ondown>SetFocus(109)</ondown>
+      </control>
+      <control type="group">
+        <visible>!Control.HasFocus(109)+!Control.HasFocus(61)</visible>
+        <include>Animation_HideMultiplex</include>
+        <include>SecondLabelFloor</include>
+        <include>FirstLabelFloor</include>
+      </control>
+    </control>
+  </include>
+</includes>

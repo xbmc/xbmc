@@ -1,0 +1,73 @@
+<window id="147">
+	<defaultcontrol>61</defaultcontrol>
+	<controls>
+		<control type="group">
+      <include>Animation_DialogPopup</include>
+      <control type="image">
+        <description>background image</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>720</height>
+        <texture>common/black.png</texture>
+        <colordiffuse>CCFFFFFF</colordiffuse>
+      </control>
+			<control type="group">
+				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+        <control type="label">
+          <posx>1200</posx>
+          <posy>14</posy>
+          <height>25</height>
+          <label>$INFO[System.Time]</label>
+          <font>Font_Reg24</font>
+          <textcolor>d0FFFFFF</textcolor>
+          <align>right</align>
+          <aligny>center</aligny>
+        </control>
+				<control type="label" id="1">
+					<description>header label</description>
+					<posx>0</posx>
+					<posy>50</posy>
+					<width>1280</width>
+					<height>30</height>
+					<font>Font_OSDTitle2</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="textbox" id="5">
+					<description>textarea</description>
+					<posx>100</posx>
+					<posy>90</posy>
+					<width>1080</width>
+					<height>600</height>
+					<label>-</label>
+					<font>Font_Reg20</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<pagecontrol>61</pagecontrol>
+				</control>
+				<control type="scrollbar" id="61">
+					<posx>1215</posx>
+					<posy>90</posy>
+					<width>25</width>
+					<height>600</height>
+					<texturesliderbackground border="0,14,0,14">views/ScrollBarV.png</texturesliderbackground>
+					<texturesliderbar border="0,14,0,14">views/ScrollBarV_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="0,14,0,14">views/ScrollBarV_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>views/ScrollBarNib.png</textureslidernib>
+					<textureslidernibfocus>views/ScrollBarNib.png</textureslidernibfocus>
+					<onleft>61</onleft>
+					<onright>61</onright>
+					<ondown>61</ondown>
+					<onup>61</onup>
+					<showonepage>true</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

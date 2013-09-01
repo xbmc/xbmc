@@ -1,0 +1,1836 @@
+#							-*- Autotest -*-
+
+# Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
+# 2009, 2010 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+AT_BANNER([[Testing config.status.]])
+
+
+## ---------------------------------------- ##
+## AC_CONFIG_COMMANDS with empty commands.  ##
+## ---------------------------------------- ##
+
+AT_CHECK_MACRO([AC_CONFIG_COMMANDS with empty commands],
+[[AC_CONFIG_COMMANDS([foo], [], [:])
+]])
+
+
+## --------------------------------------------- ##
+## AC_CONFIG_COMMANDS with temporary directory.  ##
+## --------------------------------------------- ##
+
+AT_CHECK_MACRO([AC_CONFIG_COMMANDS with temporary directory],
+[[AC_CONFIG_COMMANDS([foo], [
+case $ACTION in
+  use)
+    echo "$tmp" > tmpdir
+    test -d "$tmp" || AC_MSG_ERROR([No $tmp directory])
+    echo garbage-in > "$tmp/garbage-out"
+    ;;
+  corrupt)
+    echo "$tmp" > tmpdir
+    tmp=./nosuch
+    ;;
+  *) ;;
+esac
+])
+]], [
+AT_CHECK([test ! -f tmpdir])
+AT_CHECK([ACTION=use ./config.status], [], [ignore])
+AT_CHECK([test -s tmpdir && test ! -d "`cat tmpdir`"])
+AT_CHECK([ACTION=corrupt ./config.status], [], [ignore])
+AT_CHECK([test -s tmpdir && test ! -d "`cat tmpdir`"])
+])
+
+
+## -------------------------- ##
+## Multiple AC_CONFIG_FILES.  ##
+## -------------------------- ##
+
+AT_SETUP([Multiple AC_CONFIG_FILES])
+
+AT_CONFIGURE_AC([[AC_CONFIG_FILES([foo foo])]])
+AT_CHECK_AUTOCONF([], 1, [], [ignore])
+
+AT_CLEANUP
+
+
+## ------------------------------- ##
+## parameterized AC_CONFIG_FILES.  ##
+## ------------------------------- ##
+
+AT_SETUP([Parameterized AC_CONFIG_FILES])
+
+AT_CONFIGURE_AC([[
+files="foo
+bar"
+AC_CONFIG_FILES([$files])]])
+AT_CHECK_AUTOCONF([], [], [], [ignore])
+touch foo.in bar.in config.hin
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+
+## ------------ ##
+## AC_ARG_VAR.  ##
+## ------------ ##
+
+# AT_CHECK_AC_ARG_VAR(FIRST-VALUE, SECOND-VALUE, [STATUS = 1])
+# ------------------------------------------------------------
+# Check that AC_ARG_VAR caches the latest values, diagnoses
+# inconsistencies, and arms config.status.  Check that recheck
+# returns STATUS, save configure output in files 'stdout' and 'stderr'
+# for further inspection.
+m4_define([AT_CHECK_AC_ARG_VAR],
+[rm -f config.cache
+
+# Initial value.
+m4_ifval([$1],
+	 [precious='m4_bpatsubst([$1], [[']], ['\\''])'; export precious],
+	 [unset precious])
+AT_CHECK_CONFIGURE([--config-cache -q])
+AT_CHECK([cat file], [], [`$1'
+])
+
+# Testing --recheck: 1. have the environment `forget' about PRECIOUS.
+unset precious
+# 2. Rerun config.status to recreate `file'.
+AT_CHECK([./config.status --recheck], [], [ignore])
+AT_CHECK([./config.status], [], [ignore])
+# 3. Check that file contains the old value of PRECIOUS.
+AT_CHECK([cat file], [], [`$1'
+])
+
+# Second value: we should issue an error here: the value
+# has changed!
+m4_ifval([$2],
+	 [precious='$2'; export precious],
+	 [unset precious])
+AT_CHECK_CONFIGURE([--config-cache], [m4_default([$3], [1])], [stdout], [stderr])
+
+])# AT_CHECK_AC_ARG_VAR
+
+
+AT_SETUP([AC_ARG_VAR])
+
+# We don't want to run this test if this shell doesn't support
+# `unset'.
+AT_CHECK([
+if (FOO=FOO; unset FOO) >/dev/null 2>&1; then
+  exit 0
+else
+  exit 77
+fi
+])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_ARG_VAR([precious], [this variable costs a lot])
+echo "precious:$precious"
+AC_OUTPUT(file)
+]])
+
+AT_DATA([file.in],
+[[`@precious@'
+]])
+
+AT_CHECK_AUTOCONF
+
+# Set a precious variable
+AT_CHECK_AC_ARG_VAR([], [apple of my eye])
+
+# Unset a precious variable
+AT_CHECK_AC_ARG_VAR([apple of my eye], [])
+
+# Change a precious variable
+AT_CHECK_AC_ARG_VAR([apple of my eye], [orange of my eye])
+
+# Change a precious variable that contains braces
+AT_CHECK_AC_ARG_VAR([apple of my {eye}], [orange of my eye])
+
+# Change a precious variable that contains all kinds of fun
+AT_CHECK_AC_ARG_VAR(['p  r	ec"iou$], [orange of my eye])
+dnl restore font-lock: "
+
+# Warn (but do not fail) about a whitespace-only change
+AT_CHECK_AC_ARG_VAR([	 apple  of	 my eye	 ], [apple of my eye],
+		    [0], ["has whitespace changes"])
+mv stdout configure-output
+AT_CHECK([grep "ignoring whitespace changes" stderr], [], [ignore])
+AT_CHECK([grep "precious:	 apple" configure-output], [], [ignore])
+
+AT_CLEANUP
+
+
+
+
+## ---------------------------------------------- ##
+## AC_CONFIG_FILES, HEADERS, LINKS and COMMANDS.  ##
+## ---------------------------------------------- ##
+
+AT_SETUP([[AC_CONFIG_FILES, HEADERS, LINKS and COMMANDS]])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_PROG_FGREP
+rm -f -r header var-header file var-file link var-link command var-command
+echo 'OK' >input
+
+# Be sure to also stress the associated INIT-CMDS.
+case $what_to_test in
+ header)
+   AC_CONFIG_HEADERS(header:input);;
+ var-header)
+   AC_CONFIG_HEADERS(var-header:$header_in, [], [header_in=input]);;
+
+ file)
+   AC_CONFIG_FILES(file:input);;
+ var-file)
+   AC_CONFIG_FILES(var-file:$file_in, [], [file_in=input]);;
+
+ command)
+   AC_CONFIG_COMMANDS(command,
+		      [cp input command]);;
+ var-command)
+   AC_CONFIG_COMMANDS(var-command,
+		      [cp $command_in var-command], [command_in=input]);;
+
+ link)
+   AC_CONFIG_LINKS(link:input);;
+ var-link)
+   AC_CONFIG_LINKS(var-link:$link_in, [], [link_in=input]);;
+esac
+AC_OUTPUT
+]])
+
+AT_CHECK_AUTOCONF
+
+
+# AT_CHECK_CONFIG_CREATION(THING = (header | link | file | command))
+# ------------------------------------------------------------------
+# Check that THING and var-THING (which uses variables in AC_CONFIG_THING)
+# are properly created, with the right content.
+# Use `grep OK' instead of a simple `cat' to avoid banners such as in
+# AC_CONFIG_HEADERS.
+m4_define([AT_CHECK_CONFIG_CREATION],
+[AT_CHECK_CONFIGURE([what_to_test=$1])
+AT_CHECK([ls header var-header file var-file command var-command link var-link 2>/dev/null],
+	 [ignore], [$1
+])
+AT_CHECK([grep OK $1], [], [OK
+])
+
+AT_CHECK_CONFIGURE([what_to_test=var-$1 --no-create])
+# config.status might be stupidly expecting data on stdin, if it's
+# really broken...
+AT_CHECK([./config.status var-$1 </dev/null], [], [ignore])
+AT_CHECK([ls header var-header file var-file command var-command link var-link 2>/dev/null],
+	 [ignore], [var-$1
+])
+AT_CHECK([grep OK var-$1], [], [OK
+])
+])# AT_CHECK_CONFIG_CREATION
+
+
+# AT_CHECK_CONFIG_CREATION_NOWRITE(THING = (header | link | file | command))
+# --------------------------------------------------------------------------
+# Check that THING and var-THING (which uses variables in AC_CONFIG_THING)
+# are properly created, with the right content.
+# Use `grep OK' instead of a simple `cat' to avoid banners such as in
+# AC_CONFIG_HEADERS.
+m4_define([AT_CHECK_CONFIG_CREATION_NOWRITE],
+[AT_CHECK_CONFIGURE([what_to_test=$1])
+AT_CHECK([ls header var-header file var-file command var-command link var-link 2>/dev/null],
+	 [ignore], [$1
+])
+AT_CHECK([grep OK $1], [], [OK
+])
+
+AT_CHECK_CONFIGURE([what_to_test=var-$1 --no-create])
+# config.status might be stupidly expecting data on stdin, if it's
+# really broken...
+# Skip check if user can rename files into a read-only directory (when
+# run by root or on w32).
+touch t
+chmod a-w .
+mv t t1 >/dev/null 2>&1 \
+  || AT_CHECK([./config.status var-$1 </dev/null || exit 1],
+   [1], [ignore], [ignore])
+chmod u+w .
+rm -rf t t1
+])# AT_CHECK_CONFIG_CREATION_NOWRITE
+
+
+# Create a file
+AT_CHECK_CONFIG_CREATION(file)
+
+# Create a header
+AT_CHECK_CONFIG_CREATION(header)
+
+# Execute a command
+AT_CHECK_CONFIG_CREATION(command)
+
+# Create a link
+AT_CHECK_CONFIG_CREATION(link)
+
+# Now check for write errors
+
+# Create a file
+AT_CHECK_CONFIG_CREATION_NOWRITE(file)
+# Create a file with bits from stdin
+AT_CHECK([echo from-stdin | ./config.status --file=file:-],
+	 [0], [ignore])
+AT_CHECK([grep from-stdin file], [], [from-stdin
+])
+# Force write error creating a file on stdout
+if test -w /dev/full && test -c /dev/full; then
+  AT_CHECK([./config.status --file=-:input </dev/null >/dev/full || exit 1],
+	   [1], [ignore], [ignore])
+fi
+
+# Validate that --file requires an argument
+AT_CHECK([./config.status --file], [1], [ignore], [stderr])
+AT_CHECK([grep 'missing file argument' stderr], [0], [ignore])
+AT_CHECK([./config.status --file=], [1], [ignore], [stderr])
+AT_CHECK([grep 'missing file argument' stderr], [0], [ignore])
+
+# Create a header
+AT_CHECK_CONFIG_CREATION_NOWRITE(header)
+# Create a header on stdout
+AT_CHECK([./config.status --header=-:input </dev/null],
+	 [0], [stdout], [ignore])
+AT_CHECK([grep OK stdout], [], [OK
+])
+# Force write error creating a header on stdout
+if test -w /dev/full && test -c /dev/full; then
+  AT_CHECK([./config.status --header=-:input </dev/null >/dev/full || exit 1],
+	   [1], [ignore], [ignore])
+fi
+
+# Execute a command
+AT_CHECK_CONFIG_CREATION_NOWRITE(command)
+
+# Create a link
+AT_CHECK_CONFIG_CREATION_NOWRITE(link)
+
+# Check that no use of `ac_write_fail' escaped into config.status
+AT_CHECK([grep ac_write_fail config.status], [1])
+
+# Check that --file and --header accept funny file names
+AT_DATA([fgrep.in],
+[[FGREP="@FGREP@"
+]])
+./config.status --file=fgrep:fgrep.in
+. ./fgrep
+
+x=
+export x
+for file in \
+  'with  funny '\'' $x & #! name' \
+  'file with  funny \ '\'' \'\'' $ & #!*? name' \
+  'with  funny \ '\'' \'\'' " | <a >b & * ? name ' # "restore font-lock
+do
+  # The function func_sanitize_file_name comes from tools.at
+  file=`func_sanitize_file_name "$file"`
+  cat >"$file.in" <<'END'
+@configure_input@
+END
+  AT_CHECK([./config.status "--file=$file:$file.in"],
+	   [0], [ignore])
+  AT_CHECK([$FGREP "$file" "$file"], [0], [ignore])
+  AT_CHECK([./config.status "--header=$file:$file.in"],
+	   [0], [ignore])
+  # Run the same test a 2nd time to see that config.status does not recreate
+  # the header (regression test)
+  AT_CHECK_UNQUOTED([./config.status "--header=$file:$file.in"],
+		    [0], [config.status: creating $file
+config.status: $file is unchanged
+])
+  AT_CHECK_UNQUOTED([grep ' & ' "$file"], [],
+[/* $file.  Generated from $file.in by configure.  */
+])
+  AT_CHECK([$FGREP "$file" "$file"], [0], [ignore])
+done
+AT_CLEANUP
+
+
+
+## ---------------------------------------- ##
+## Macro calls in AC_CONFIG_COMMANDS tags.  ##
+## ---------------------------------------- ##
+
+AT_SETUP([Macro calls in AC_CONFIG_COMMANDS tags])
+
+AT_DATA_M4SUGAR([configure.ac],
+[[AC_INIT
+AC_CONFIG_COMMANDS([m4_if(1,1,mytag)])
+AC_OUTPUT
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+
+## ------------------- ##
+## Missing templates.  ##
+## ------------------- ##
+
+# Check that config.status detects missing input files
+AT_SETUP([Missing templates])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_CONFIG_FILES([nonexistent])
+AC_OUTPUT
+]])
+
+AT_CHECK_AUTOCONF
+mkdir build
+AT_CAPTURE_FILE([build/config.log])[]dnl
+cd build
+AT_CHECK([../configure], [1], [ignore],
+[[config.status: error: cannot find input file: `nonexistent.in'
+]])
+# Make sure that the output file doesn't exist
+AT_CHECK([test -f nonexistent], 1)
+cd ..
+AT_CHECK_CONFIGURE([], [1], [],
+[[config.status: error: cannot find input file: `nonexistent.in'
+]])
+# Make sure that the output file doesn't exist
+AT_CHECK([test -f nonexistent], 1)
+
+AT_CLEANUP
+
+
+
+
+## ---------------------- ##
+## configure invocation.  ##
+## ---------------------- ##
+
+# Check that `configure' and `config.status' honor their interface.
+#
+# We run `./configure one=val1 --enable-two=val2 --with-three=val3'
+# and verify that (i) `configure' correctly receives the arguments,
+# (ii) correctly passes them to `config.status', which we check by
+# running `config.status --recheck', (iii) correctly passes them
+# to sub-configure scripts, and (iv) correctly reproduces them with
+# `config.status --config'.
+
+AT_SETUP([configure invocation])
+
+mkdir sub
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_CONFIG_SUBDIRS([sub])
+echo "result=$one$enable_two$with_three"
+AC_OUTPUT
+]])
+
+AT_DATA([sub/configure.ac],
+[[AC_INIT
+echo "result=$one$enable_two$with_three"
+AC_OUTPUT
+]])
+
+echo fake install-sh script >install-sh
+
+AT_CHECK_AUTOCONF
+cd sub
+AT_CHECK_AUTOCONF
+cd ..
+
+AT_CHECK_CONFIGURE([one=one --enable-two=two --with-three=three |
+		     sed -n -e 's/^result=//p'], 0,
+		   [m4_do([onetwothree
+],			  [onetwothree
+])])
+AT_CHECK([./config.status --recheck | sed -n 's/^result=//p'], 0,
+	 [onetwothree
+])
+AT_CHECK([args=`./config.status --config` && eval ./configure \$configure_options "$args" |
+	    sed -n -e 's/^result=//p'], 0,
+	 [m4_do([onetwothree
+],		[onetwothree
+])])
+
+AT_CHECK_CONFIGURE([one="\"'$ " --enable-two="\" '  $" --with-three="	\"'$"|
+		      sed -n -e 's/^result=//p'], 0,
+		   [m4_do(["'$ " '  $	"'$
+],			  ["'$ " '  $	"'$
+])])
+AT_CHECK([./config.status --recheck | sed -n 's/^result=//p'], 0,
+	 ["'$ " '  $	"'$
+])
+dnl restore font-lock: "
+AT_CHECK([args=`./config.status --config` && eval ./configure \$configure_options "$args" |
+	    sed -n -e 's/^result=//p'], 0,
+	 [m4_do(["'$ " '  $	"'$
+],		["'$ " '  $	"'$
+])])
+
+AT_CLEANUP
+
+
+
+## -------------------------------------------- ##
+## Check that `#define' templates are honored.  ##
+## -------------------------------------------- ##
+
+# Use various forms of `#define' templates, and make sure there are no
+# problems when a symbol is prefix of another.
+
+AT_SETUP([@%:@define header templates])
+AT_KEYWORDS([AC@&t@_DEFINE])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_CONFIG_HEADERS(config.h:config.hin)
+
+# I18n of dummy variables: their French translations.
+AC_DEFINE(foo, toto)
+AC_DEFINE(bar, tata)
+AC_DEFINE(baz, titi)
+AC_DEFINE(fubar, tutu)
+
+# Symbols which are prefixes of another.
+AC_DEFINE(a, A)
+AC_DEFINE(aaa, AAA)
+AC_DEFINE(aa, AA)
+
+# backslash-newline combinations
+AC_DEFINE([multiline], [line1\
+line2\
+line3 \
+line4])
+AC_DEFINE([multiline_args(ARG1, ARG2)], [ARG2 \
+ARG1])
+AC_CONFIG_FILES(defs)
+
+# underquoted #
+AC_DEFINE([paste(a,b)], [a##b])
+
+# Things included in confdefs.h, but which make no sense in
+# config.h, nor in $DEFS.
+cat <<\EOF >>confdefs.h
+/* Hi Mum! Look, I am doing C++! */
+#ifdef __cplusplus
+void exit (int status);
+#endif
+EOF
+
+# In addition of config.h output a full DEFS
+AC_OUTPUT_MAKE_DEFS
+DEFS_SAVED=$DEFS
+AC_SUBST(DEFS_SAVED)
+AC_OUTPUT
+]])
+
+AT_DATA([defs.in],
+[[@DEFS_SAVED@
+]])
+
+AT_DATA([config.hin],
+[[#define foo   0
+#  define bar bar
+#  define baz   "Archimedes was sinking in his baz"
+  #  define fubar				tutu
+#define a B
+ #define aa BB
+ #  define aaa BBB
+#undef a
+ #  undef aa
+#undef aaa
+#define aaa(a, aa) aa a
+#define aaab
+#define aaac(a, aa) aa a
+#undef multiline
+#  undef multiline_args
+#define paste(a,b) a##b
+/* an ugly one: */
+#define str(define) \
+#define
+#define stringify(arg) str(arg)
+#undef aaa /* with comments */
+#undef not_substed /* with comments */
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_DATA([expout],
+[[/* config.h.  Generated from config.hin by configure.  */
+#define foo toto
+#  define bar tata
+#  define baz titi
+  #  define fubar tutu
+#define a A
+ #define aa AA
+ #  define aaa AAA
+#define a A
+ #  define aa AA
+#define aaa AAA
+#define aaa AAA
+#define aaab
+#define aaac(a, aa) aa a
+#define multiline line1\
+line2\
+line3 \
+line4
+#  define multiline_args(ARG1, ARG2) ARG2 \
+ARG1
+#define paste(a,b) a##b
+/* an ugly one: */
+#define str(define) \
+#define
+#define stringify(arg) str(arg)
+#define aaa AAA
+/* #undef not_substed */
+]])
+AT_CHECK([cat config.h], 0, expout)
+
+# Check the value of DEFS.
+AT_DATA([expout],
+[[-DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -Dfoo=toto -Dbar=tata -Dbaz=titi -Dfubar=tutu -Da=A -Daaa=AAA -Daa=AA -Dmultiline=line1line2line3\ line4 -Dmultiline_args\(ARG1,\ ARG2\)=ARG2\ ARG1 -Dpaste\(a,b\)=a\#\#b
+]])
+
+# Because we strip trailing spaces in `testsuite' we can't leave one in
+# expout, hence nuke the one left by AC_OUTPUT_MAKE_DEFS.
+AT_CHECK([sed -e 's/ $//' defs], 0, expout)
+
+AT_CLEANUP
+
+
+
+## ------------------------- ##
+## Torturing config.status.  ##
+## ------------------------- ##
+
+## Require 100 AC_DEFINE and AC_SUBST and AC_SUBST_FILE with a significantly
+## big value.  This is mostly to check that Autoconf produces portable sed
+## scripts in config.status.  sed is used to skip the first two lines
+## `Generated by ...'.
+
+# We use m4_for many times.
+m4_pattern_allow([^m4_for$])
+
+AT_SETUP([Torturing config.status])
+
+dnl The value used as a big value for AC_DEFINE.
+dnl Don't use sh active chars here, below it is also used in a sh
+dnl assignment.
+m4_define([AT_BIG_VALUE],
+[This value should be long enough to torture the various limits of sed and other tools used by Autoconf.])
+
+m4_define([AT_DESCRIPTION],
+[Define to a long string if your `Autoconf' works properly.])
+
+
+# AT_DUMMY_VAR(NUMBER)
+# --------------------
+# Build a name used for AC_SUBST and AC_DEFINE.  Put ac_ in it
+# so that the check for user name space invasion does not complain
+# of the new variables defined.
+#
+# Note that you should not use the name ac_dummy, because it will be
+# turned into ac_uummy during the construction of config.status.  Yes,
+# this is admittedly a bug, but it would be too hard to fix this.
+# There is really no point in AC_DEFINE a var named ac_d.*.
+m4_pattern_allow([^m4_bpatsubst$])
+m4_define([AT_DUMMY_VAR],
+[ac_Dummy_[]m4_bpatsubst([000$1], [.*\(...\)$], [\1])])
+
+
+
+AT_DATA([dummy.in],
+[m4_for([AT_Count], 1, 100, 1,
+[@AT_DUMMY_VAR(AT_Count)@
+@[f]AT_Count@
+])])
+
+
+i=1
+while test $i != 101; do
+  echo "content of file $i" > file_$i
+  AS_VAR_ARITH([i], [$i + 1])
+done
+
+
+# ------------ #
+# configure.ac #
+# ------------ #
+
+m4_pattern_allow([^m4_(define|defun)$])
+AT_DATA([configure.ac],
+dnl The following lines transfer AT_DUMMY_VAR, AT_DESCRIPTION, and
+dnl AT_BIG_VALUE into the configure.ac as AC_DUMMY_VAR etc.
+[[m4_define([AC_DUMMY_VAR],]
+m4_dquote(m4_defn([AT_DUMMY_VAR]))[)]]
+
+[[m4_define([AC_DESCRIPTION],]
+m4_dquote(m4_defn([AT_DESCRIPTION]))[)]]
+
+[[m4_define([AC_BIG_VALUE],]
+m4_dquote(m4_defn([AT_BIG_VALUE]))[)]]
+
+[[# AC_DEFUBST(NAME)
+# ----------------
+# Related VALUE to NAME both with AC_SUBST and AC_DEFINE.  This is
+# used in the torture tests.
+m4_defun([AC_DEFUBST],
+[AC_DUMMY_VAR($1)="AC_BIG_VALUE"
+AC_DEFINE_UNQUOTED(AC_DUMMY_VAR($1), "$AC_DUMMY_VAR($1) $AC_DUMMY_VAR($1)",
+		   AC_DESCRIPTION)
+AC_SUBST(AC_DUMMY_VAR($1))
+AC_SUBST_FILE([f]$1)
+f$1=file_$1
+])
+
+AC_INIT
+AC_CONFIG_HEADERS(config.h:config.hin)
+AC_CONFIG_FILES(dummy)
+m4_for(AC_Count, 1, 100, 1,
+       [AC_DEFUBST(AC_Count)])
+AC_PROG_AWK
+AC_OUTPUT
+]])# configure.ac
+
+AT_CHECK_AUTOCONF
+AT_CHECK_AUTOHEADER
+# Check both awk and the result of AC_PROG_AWK.
+# Quote the first word in the for list for Solaris sh.
+for awk_arg in "FOO=" AWK=awk; do
+  AT_CHECK_CONFIGURE([$awk_arg])
+
+  # Checking that AC_DEFINE worked properly.
+  AT_DATA([expout],
+[/* Define to the address where bug reports for this package should be sent. */
+#define PACKAGE_BUGREPORT ""
+
+/* Define to the full name of this package. */
+#define PACKAGE_NAME ""
+
+/* Define to the full name and version of this package. */
+#define PACKAGE_STRING ""
+
+/* Define to the one symbol short name of this package. */
+#define PACKAGE_TARNAME ""
+
+/* Define to the home page for this package. */
+#define PACKAGE_URL ""
+
+/* Define to the version of this package. */
+#define PACKAGE_VERSION ""
+m4_for(AT_Count, 1, 100, 1,
+[
+/* AT_DESCRIPTION */
+[#define] AT_DUMMY_VAR(AT_Count) "AT_BIG_VALUE AT_BIG_VALUE"
+])])
+
+  AT_CHECK([sed -n '4,$ p' config.h], 0, expout)
+
+  # Checking that AC_SUBST worked properly.
+  AT_DATA([expout],
+[m4_for(AT_Count, 1, 100, 1,
+[AT_BIG_VALUE
+content of file AT_Count
+])])
+
+  AT_CHECK([cat dummy], 0, expout)
+done
+
+AT_CLEANUP
+
+
+## ------------------------------- ##
+## Substitute a 2000-byte string.  ##
+## ------------------------------- ##
+
+# Solaris 9 /usr/ucb/sed that rejects commands longer than 4000 bytes.  HP/UX
+# sed dumps core around 8 KiB.  However, POSIX says that sed need not
+# handle lines longer than 2048 bytes (including the trailing newline).
+# So we'll just test a 2000-byte value, and for awk, we test a line with
+# almost 1000 words, and one variable with 5 lines of 2000 bytes each:
+# multi-line values should allow to get around the limitations.
+# We also test runs of around 148 backslashes: they need to be escaped,
+# and 148 is the portable limit for awk string literals.  config.status
+# uses concatenation to generate longer strings.
+
+AT_SETUP([Substitute a 2000-byte string])
+
+AT_DATA([Foo.in], [@foo@
+])
+AT_DATA([Bar.in], [@bar@
+])
+AT_DATA([Baz.in], [@baz@
+])
+AT_DATA([Boo.in], [@b147@
+@b148@
+@b149@
+@b295@
+@b296@
+@b297@
+])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_SUBST([foo], ]m4_for([n], 1, 100,, ....................)[)
+AC_SUBST([bar], "]m4_for([n], 1, 100,, @ @ @ @ @ @ @ @ @ @@)[")
+baz="]m4_for([m], 1, 100,, ... ... ... ... ....)[
+"
+baz=$baz$baz$baz$baz$baz
+AC_SUBST([baz])
+b29='\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+b147=$b29$b29$b29$b29$b29'\\'
+b148=$b147'\'
+b149=$b148'\'
+b295=$b147$b147'\'
+b296=$b295'\'
+b297=$b296'\'
+AC_SUBST([b147])
+AC_SUBST([b148])
+AC_SUBST([b149])
+AC_SUBST([b295])
+AC_SUBST([b296])
+AC_SUBST([b297])
+AC_PROG_AWK
+AC_CONFIG_FILES([Foo Bar Baz Boo])
+AC_OUTPUT
+]])
+
+cp "$abs_top_srcdir/build-aux/install-sh" .
+
+b29='\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+b147=$b29$b29$b29$b29$b29'\\'
+b295=$b147$b147'\'
+cat >Boo-exp <<EOF
+$b147
+$b147\\
+$b147\\\\
+$b295
+$b295\\
+$b295\\\\
+EOF
+
+AT_CHECK_AUTOCONF
+# Check both awk and the result of AC_PROG_AWK
+# Quote the first word in the for list for Solaris sh.
+for awk_arg in "Foo=" AWK=awk; do
+  AT_CHECK_CONFIGURE([$awk_arg])
+  AT_CHECK([cat Foo], 0, m4_for([n], 1, 100,, ....................)
+)
+  AT_CHECK([cat Bar], 0, m4_for([n], 1, 100,, @ @ @ @ @ @ @ @ @ @@)
+)
+  AT_DATA([stdout],
+  [m4_for([n], 1, 5,, m4_for([m], 1, 100,, ... ... ... ... ....)
+)])
+  AT_CHECK([cat Baz], 0, [stdout])
+  AT_CHECK([diff Boo-exp Boo])
+done
+AT_CLEANUP
+
+
+## ------------------------------ ##
+## Define to a 2000-byte string.  ##
+## ------------------------------ ##
+
+AT_SETUP([Define to a 2000-byte string])
+AT_KEYWORDS([AC@&t@_DEFINE AC@&t@_DEFINE_UNQUOTED])
+
+AT_CONFIGURE_AC(
+[[
+AC_DEFINE_UNQUOTED([foo], ]m4_for([n], 1, 100,, ....................)[, [desc])
+AC_DEFINE([fooq], ]m4_for([n], 1, 100,, ....................)[, [desc])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_AUTOHEADER
+AT_CHECK_CONFIGURE
+AT_CHECK_DEFINES([@%:@define foo m4_for([n], 1, 100,, ....................)
+@%:@define fooq m4_for([n], 1, 100,, ....................)
+])
+AT_CLEANUP
+
+
+## ------------------------------------------ ##
+## Substitute and define special characters.  ##
+## ------------------------------------------ ##
+
+# Use characters special to the shell, sed, awk, and M4.
+
+AT_SETUP([Substitute and define special characters])
+AT_KEYWORDS([AC@&t@_DEFINE AC@&t@_DEFINE_UNQUOTED])
+
+AT_XFAIL_IF([byte=\\200s; dnl
+test `{ printf $byte; echo; } | sed -n '/^./p' | wc -l` = 0])
+
+AT_DATA([Foo.in], [@foo@
+@bar@@notsubsted@@baz@ stray @ and more@@@baz@
+abc@bar@baz@baz
+abc@bar@@baz@baz
+abc@bar@@baz@baz@
+abc@bar @baz@baz
+abc@bar @baz@baz@
+abc@bar @baz@@baz@
+@file@
+	 @file@
+X@file@
+@file@X
+])
+
+AT_DATA([File],
+[@foo@@bar@
+])
+
+AT_DATA([Zardoz.in], [@zardoz@
+])
+
+AT_CONFIGURE_AC(
+[[foo="AS@&t@_ESCAPE([[X*'[]+ ", & &`\($foo \& \\& \\\& \\\\& \ \\ \\\ !]])"
+#"
+bar="@foo@ @baz@"
+baz=bla
+( for i in 0 1 2 3; do
+    for j in 0 1 2 3 4 5 6 7; do
+      for k in 0 1 2 3 4 5 6 7; do
+	case $i$j$k in #(
+	000 | 015 | 377) ;; # MinGW awk dislikes 0xFF, and the test does
+			    # the wrong thing for CR on MinGW.
+			    #(
+	*) printf \\$i$j$k's' ;; # The 's' works around a Solaris 8 /bin/bash bug.
+	esac
+      done
+    done
+  done
+  printf \\n
+) >allowed-chars
+zardoz=`cat allowed-chars`
+AC_SUBST([foo])
+AC_SUBST([bar])
+AC_SUBST([baz])
+AC_SUBST([zardoz])
+file=File
+AC_SUBST_FILE([file])
+AC_DEFINE([fooq], [[X*'[]+ ", & &`\($foo !]], [Awful value.])
+AC_DEFINE([barq], [[%!_!# X]], [Value that is used as special delimiter.])
+AC_DEFINE_UNQUOTED([foo], [[X*'[]+ ", & &\`\\(\$foo !]], [Awful value.])
+AC_DEFINE_UNQUOTED([bar], [[%!_!# X]], [Value that is used as special delimiter.])
+AC_DEFINE_UNQUOTED([unq1], [$baz], [unquoted, test 1])
+AC_DEFINE_UNQUOTED([unq2], [\$baz], [unquoted, test 2])
+AC_DEFINE_UNQUOTED([unq3], ["$baz"], [unquoted, test 3])
+AC_DEFINE_UNQUOTED([unq4], [${baz+set}], [unquoted, test 4])
+AC_DEFINE_UNQUOTED([unq5], ["${baz+`echo "a "' b'`}"], [unquoted, test 5])
+AC_DEFINE_UNQUOTED([unq6], [`echo hi`], [unquoted, test 6])
+AC_DEFINE_UNQUOTED([unq7], ['\\"'], [unquoted, test 7])
+AC_PROG_AWK
+AC_CONFIG_FILES([Foo Zardoz])]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_AUTOHEADER
+# Check both awk and the result of AC_PROG_AWK
+# Quote the first word in the for list for Solaris sh.
+for awk_arg in "FOO=" AWK=awk; do
+  AT_CHECK_CONFIGURE([$awk_arg])
+  AT_CHECK([cat Foo], 0, [[X*'[]+ ", & &`\($foo \& \\& \\\& \\\\& \ \\ \\\ !
+@foo@ @baz@@notsubsted@bla stray @ and more@@bla
+abc@foo@ @baz@baz@baz
+abc@foo@ @baz@blabaz
+abc@foo@ @baz@blabaz@
+abc@bar blabaz
+abc@bar blabaz@
+abc@bar blabla
+@foo@@bar@
+@foo@@bar@
+X@file@
+@file@X
+]])
+  AT_CHECK([cmp allowed-chars Zardoz])
+  AT_CHECK_DEFINES([[#define bar %!_!# X
+#define barq %!_!# X
+#define foo X*'[]+ ", & &`\($foo !
+#define fooq X*'[]+ ", & &`\($foo !
+#define unq1 bla
+#define unq2 $baz
+#define unq3 "bla"
+#define unq4 set
+#define unq5 "a  b"
+#define unq6 hi
+#define unq7 '\"'
+]])
+done
+AT_CLEANUP
+
+
+## ---------------------- ##
+## Substitute a newline.  ##
+## ---------------------- ##
+
+AT_SETUP([Substitute a newline])
+
+AT_DATA([Foo.in],
+[@foo@
+@bar@
+])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+foo='one
+two'
+bar='%!_!# ''
+x'
+AC_SUBST([foo])
+AC_SUBST([bar])
+AC_CONFIG_FILES([Foo])
+AC_PROG_AWK
+AC_OUTPUT
+]])
+
+cp "$abs_top_srcdir/build-aux/install-sh" .
+
+echo 'one
+two
+%!_!# ''
+x' >expout
+
+AT_CHECK_AUTOCONF
+# Check both awk and the result of AC_PROG_AWK
+# Quote the first word in the for list for Solaris sh.
+for awk_arg in "FOO=" AWK=awk; do
+  AT_CHECK_CONFIGURE([$awk_arg])
+  AT_CHECK([cat Foo], 0, [expout])
+done
+AT_CLEANUP
+
+
+## ------------------ ##
+## Define a newline.  ##
+## ------------------ ##
+
+AT_SETUP([Define a newline])
+AT_KEYWORDS([AC@&t@_DEFINE AC@&t@_DEFINE_UNQUOTED])
+AT_CONFIGURE_AC([[AC_DEFINE([foo], [one
+two], [This spans two lines.])
+]])
+AT_CHECK_AUTOCONF([], [], [], [stderr])
+dnl Older versions of m4 report error at line 5 (end of macro);
+dnl newer versions report it at line 4 (start of macro).
+AT_CHECK([[sed 's/^configure.ac:[45]: //' stderr]], [],
+[[warning: AC_DEFINE: `one
+two' is not a valid preprocessor define value
+]])
+AT_CHECK_AUTOHEADER([], [], [], [stderr])
+AT_CHECK([[sed 's/^configure.ac:[45]: //' stderr]], [],
+[[warning: AC_DEFINE: `one
+two' is not a valid preprocessor define value
+]])
+AT_CHECK_CONFIGURE
+AT_CHECK_DEFINES([[#define foo one
+]])
+
+AT_CONFIGURE_AC([[AC_DEFINE_UNQUOTED([foo], [one
+two], [This spans two lines.])
+]])
+AT_CHECK_AUTOCONF([], [], [], [stderr])
+AT_CHECK([[sed 's/^configure.ac:[45]: //' stderr]], [],
+[[warning: AC_DEFINE_UNQUOTED: `one
+two' is not a valid preprocessor define value
+]])
+AT_CHECK_AUTOHEADER([], [], [], [stderr])
+AT_CHECK([[sed 's/^configure.ac:[45]: //' stderr]], [],
+[[warning: AC_DEFINE_UNQUOTED: `one
+two' is not a valid preprocessor define value
+]])
+AT_CHECK_CONFIGURE
+AT_CHECK_DEFINES([[#define foo one
+]])
+
+AT_CLEANUP
+
+
+## ------------------------------------ ##
+## AC_SUBST: variable name validation.  ##
+## ------------------------------------ ##
+
+AT_SETUP([AC_SUBST: variable name validation])
+
+AT_CONFIGURE_AC([[AC_SUBST(, [])
+AC_CONFIG_FILES([Makefile])
+]])
+AT_DATA([Makefile.in], [[
+]])
+mv -f configure.ac configure.tmpl
+
+# Invalid names.
+for var in ['' ab\~ ab\( ab[] ab\' ab\" ab\\\\]; do
+  sed ["s/AC_SUBST(/&[$var]/"] <configure.tmpl >configure.ac
+  AT_CHECK_AUTOCONF([], [1], [], [ignore])
+done
+
+# Valid names.
+for var in ab a4 'a@@&t@\&t@b'; do
+  sed ["s/AC_SUBST(/&[$var]/"] <configure.tmpl >configure.ac
+  AT_CHECK_AUTOCONF
+  AT_CHECK_AUTOHEADER
+  AT_CHECK_CONFIGURE
+done
+
+AT_CLEANUP
+
+
+## ------------------------ ##
+## datarootdir workaround.  ##
+## ------------------------ ##
+
+AT_SETUP([datarootdir workaround])
+
+AT_DATA([Foo.in],
+[@datadir@
+@docdir@
+@infodir@
+@localedir@
+@mandir@
+])
+
+AT_DATA([Bar.in],
+[@mydatadir@
+])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+d@&t@nl The following line silences the warnings, if uncommented:
+d@&t@nl AC_DEFUN([AC_DATAROOTDIR_CHECKED])
+
+# This substitution is wrong and bogus!  Don't use it in your own code!
+# Read `info Autoconf "Defining Directories"'!
+AC_SUBST([mydatadir], [${datadir}/my])
+
+AC_CONFIG_FILES([Foo Bar])
+AC_OUTPUT
+]])
+
+cp "$abs_top_srcdir/build-aux/install-sh" .
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([], [], [],
+  [config.status: WARNING:  'Foo.in' seems to ignore the --datarootdir setting
+config.status: WARNING: Bar contains a reference to the variable `datarootdir'
+which seems to be undefined.  Please make sure it is defined
+])
+AT_CHECK([grep datarootdir Foo], 1, [])
+
+rm configure
+sed '/AC_DEFUN/s/^d@&t@nl //' configure.ac >t
+mv t configure.ac
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+## -------- ##
+## srcdir.  ##
+## -------- ##
+
+AT_SETUP([srcdir])
+
+rm -f -r at-dir
+mkdir at-dir
+: >at-dir/bar.in
+: >foo.in
+
+AT_DATA([configure.ac],
+[[AC_INIT
+
+AC_CONFIG_FILES([foo at-dir/bar])
+
+# Use quotes in the INIT-COMMANDS to accommodate a value of $srcdir
+# containing e.g., spaces or shell meta-characters.
+# Use *single* quotes because the context is an unquoted here-doc.
+AC_CONFIG_COMMANDS([report],
+[test -f "$srcdir/configure.ac" ||
+   AC_MSG_ERROR([cannot find $srcdir/configure.ac])],
+		   [srcdir='$srcdir'])
+
+AC_OUTPUT
+rm -f -r foo at-dir/bar
+]])
+
+AT_CHECK_AUTOCONF
+
+# In place.
+AT_CHECK([./configure $configure_options], [], [ignore])
+
+# Relative name.
+AT_CHECK([cd at-dir && ../configure $configure_options], [], [ignore])
+
+# Absolute name.
+at_here=`pwd`
+AT_CHECK([cd at-dir && "$at_here/configure" $configure_options], [], [ignore])
+
+AT_CLEANUP
+
+
+## ------- ##
+## VPATH.  ##
+## ------- ##
+
+AT_SETUP([VPATH])
+
+dirs='at paren brace space'
+for dir in $dirs; do
+  mkdir $dir $dir/s1 $dir/s2
+  touch $dir/f $dir/s1/f1 $dir/s2/f2
+done
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_CONFIG_FILES([at/Makefile paren/Makefile brace/Makefile space/Makefile])
+AC_OUTPUT
+]])
+
+AT_DATA([at/Makefile.in],
+[[# This is what you should use in order to be portable to old makes.
+srcdir = @srcdir@
+VPATH = @srcdir@/s1:@srcdir@:@srcdir@/s2
+all: f f1 f2
+	@echo ok
+]])
+
+AT_DATA([paren/Makefile.in],
+[[# This works with some makes but not with old ones.
+srcdir = @srcdir@
+VPATH = $(srcdir)/s1:$(srcdir):$(srcdir)/s2
+all: f f1 f2
+	@echo ok
+]])
+
+AT_DATA([brace/Makefile.in],
+[[# This works with some makes but not with old ones.
+srcdir = @srcdir@
+VPATH = ${srcdir}/s1:${srcdir}:${srcdir}/s2
+all: f f1 f2
+	@echo ok
+]])
+
+AT_DATA([space/Makefile.in],
+[[# This fails with FreeBSD make, for example.
+srcdir = @srcdir@
+VPATH = @srcdir@/s1 @srcdir@ @srcdir@/s2
+all: f f1 f2
+	@echo ok
+]])
+
+AT_CHECK_AUTOCONF
+
+: "${MAKE=make}"
+
+# In place.
+AT_CHECK([./configure $configure_options], [], [ignore])
+# Treat BSD make separately, afterwards, for maximal coverage.
+dirs='at paren brace'
+for dir in $dirs; do
+  AT_CHECK([cd $dir && $MAKE], [], [ignore], [ignore])
+done
+
+rm -f config.status
+mkdir build absbuild
+
+# Relative name.
+AT_CHECK([cd build && ../configure $configure_options], [], [ignore])
+for dir in $dirs; do
+  AT_CHECK([cd build/$dir && $MAKE], [], [ignore], [ignore])
+done
+
+# Absolute name.
+at_here=`pwd`
+AT_CHECK([cd absbuild && "$at_here/configure" $configure_options], [], [ignore])
+for dir in $dirs; do
+  AT_CHECK([cd absbuild/$dir && $MAKE], [], [ignore], [ignore])
+done
+
+# These will not pass with BSD make.
+AT_CHECK([cd space && { $MAKE || exit 77; }], [], [ignore], [ignore])
+AT_CHECK([cd build/space && $MAKE], [], [ignore], [ignore])
+AT_CHECK([cd absbuild/space && $MAKE], [], [ignore], [ignore])
+
+AT_CLEANUP
+
+
+## ----------------- ##
+## Signal handling.  ##
+## ----------------- ##
+
+AT_SETUP([Signal handling])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+kill -2 $$
+exit 77
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([], 1, ignore, ignore)
+
+AT_CLEANUP
+
+
+## ----------------- ##
+## AC_CONFIG_LINKS.  ##
+## ----------------- ##
+
+AT_SETUP([AC_CONFIG_LINKS])
+
+AT_DATA([configure.ac],
+[[AC_INIT([config links to config files test], [1.0])
+AC_CONFIG_SRCDIR([sub1/file1.in])
+AC_CONFIG_FILES([sub1/file1 file2])
+AC_CONFIG_LINKS([file1:sub1/file1 sub2/file2:file2])
+AC_OUTPUT
+]])
+
+mkdir sub1
+
+AT_DATA([sub1/file1.in],
+[[/* @configure_input@ */
+#define PACKAGE_STRING "@PACKAGE_STRING@"
+]])
+
+AT_DATA([file2.in],
+[[/* @configure_input@ */
+#define PACKAGE_STRING "@PACKAGE_STRING@"
+]])
+
+mkdir build
+AT_CHECK_AUTOCONF
+cd build
+AT_CHECK([../configure && ../configure], 0, [ignore])
+AT_CHECK([cat sub1/file1 sub2/file2 | grep -c "config links"], 0, [2
+])
+AT_CHECK([../configure && ../configure], 0, [ignore])
+AT_CHECK([cat sub1/file1 sub2/file2 | grep -c "config links"], 0, [2
+])
+cd ..
+rm -rf build
+mkdir build
+cd build
+cwd=`pwd`
+AT_CHECK(["$cwd"/../configure && "$cwd"/../configure], 0, [ignore])
+AT_CHECK([cat sub1/file1 sub2/file2 | grep -c "config links"], 0, [2
+])
+cd ..
+AT_CHECK([./configure && ./configure], 0, [ignore], [stderr])
+AT_CHECK([cat sub1/file1 sub2/file2 | grep -c "config links"], 0, [2
+])
+cwd=`pwd`
+AT_CHECK(["$cwd"/configure && "$cwd"/configure], 0, [ignore], [ignore])
+AT_CHECK([cat sub1/file1 sub2/file2 | grep -c "config links"], 0, [2
+])
+
+AT_CLEANUP
+
+
+## ------------------------------------- ##
+## AC_CONFIG_LINKS and identical files.  ##
+## ------------------------------------- ##
+AT_SETUP([AC_CONFIG_LINKS and identical files])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_CONFIG_LINKS([src/s:src/s])
+test "$srcdir" != '.' && AC_CONFIG_LINKS([src/t:src/t])
+AC_OUTPUT
+]])
+
+mkdir src build
+echo file1 > src/s
+echo file2 > src/t
+AT_CHECK_AUTOCONF
+cd build
+AT_CHECK([../configure $configure_options && ../configure $configure_options],
+	 0, [ignore])
+AT_CHECK([cat src/s src/t], 0, [file1
+file2
+])
+
+cd ..
+rm -rf build
+mkdir build
+cd build
+cwd=`pwd`
+AT_CHECK(["$cwd"/../configure], 0, [ignore])
+AT_CHECK([cat src/s src/t], 0, [file1
+file2
+])
+AT_CHECK(["$cwd"/../configure], 0, [ignore])
+AT_CHECK([cat src/s src/t], 0, [file1
+file2
+])
+cd ..
+AT_CHECK([./configure $configure_options && ./configure $configure_options],
+	 0, [ignore], [stderr])
+AT_CHECK([grep src/t stderr], 1)
+AT_CHECK([cat src/s src/t], 0, [file1
+file2
+])
+cwd=`pwd`
+AT_CHECK(["$cwd"/configure && "$cwd"/configure], 0, [ignore], [ignore])
+AT_CHECK([cat src/s src/t], 0, [file1
+file2
+])
+
+AT_CLEANUP
+
+
+AT_BANNER([autoreconf.])
+
+## ---------------------------- ##
+## Configuring subdirectories.  ##
+## ---------------------------- ##
+
+# .
+# |-- builddir
+# |   |-- config.log
+# |   |-- config.status
+# |   `-- inner
+# |       |-- config.log
+# |       |-- config.status
+# |       `-- innermost
+# |           `-- config
+# |-- configure
+# |-- configure.ac
+# |-- inner
+# |   |-- configure
+# |   |-- configure.ac
+# |   `-- innermost
+# |       `-- config.in
+# `-- install-sh
+#
+AT_SETUP([Configuring subdirectories])
+AT_KEYWORDS(autoreconf)
+
+# We use aclocal (via autoreconf).
+AT_CHECK([aclocal --version || exit 77], [], [stdout], [ignore])
+AT_CHECK([[grep '[1-9]\.[0-9]' stdout || exit 77]], [], [ignore])
+
+# It should understand configure.ac.
+AT_CHECK([[grep '[^0-9]1\.[01234][^0-9]' stdout && exit 77]], [1], [ignore])
+
+# Set CONFIG_SITE to a nonexistent file, so that there are
+# no worries about nonstandard values for 'prefix'.
+CONFIG_SITE=no-such-file
+export CONFIG_SITE
+
+# The contents of `inner/', and `inner/innermost/'.
+AS_MKDIR_P([inner/innermost])
+
+# We have to use configure.in, not configure.ac, if we still want to
+# be compatible with Automake 1.4: aclocal (run by autoreconf) would
+# die because it can't find configure.in.
+AT_DATA([inner/configure.in],
+[[AC_INIT(GNU Inner, 1.0)
+AC_CONFIG_SRCDIR([innermost/config.in])
+AC_ARG_VAR([INNER], [an inner variable])
+AC_SUBST([INNER])
+if test "x$INNER" = x; then
+  INNER=inner
+fi
+AC_CONFIG_FILES([innermost/config])
+AC_OUTPUT
+]])
+
+AT_DATA([inner/innermost/config.in],
+[INNER=@INNER@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+])
+
+# The contents of `.'
+AT_DATA([install-sh], [])
+
+# nonexistent is allowed not to exist.
+AT_DATA([configure.in],
+[[AC_INIT(GNU Outer, 1.0)
+AC_ARG_VAR([OUTER], [an outer variable])
+if false; then
+  AC_CONFIG_SUBDIRS([nonexistent])
+fi
+AC_CONFIG_SUBDIRS([inner])
+AC_OUTPUT
+]])
+
+# If there are improperly quoted AC_DEFUN installed in share/aclocal,
+# they trigger warnings from aclocal 1.8, so ignore stderr.
+AT_CHECK([autoreconf], [], [], [ignore])
+AT_CHECK([test -f inner/configure])
+
+# Running the outer configure recursively should provide the innermost
+# help strings.
+chmod a-w inner/innermost inner .
+AT_CHECK([{ ./configure $configure_options --help=recursive; chmod u+w .; } | grep INNER], 0,
+	 [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod u+w . inner inner/innermost
+
+# Running the outer configure should trigger the inner.
+AT_CHECK_CONFIGURE
+AT_CHECK([cat inner/innermost/config], 0,
+[INNER=inner
+srcdir=.
+top_srcdir=..
+prefix=/usr/local
+])
+
+# The same, but from a builddir.
+AS_MKDIR_P([builddir])
+AT_CHECK([cd builddir && ../configure $configure_options], 0, [ignore])
+AT_CHECK([cat builddir/inner/innermost/config], 0,
+[INNER=inner
+srcdir=../../../inner/innermost
+top_srcdir=../../../inner
+prefix=/usr/local
+])
+
+# Make sure precious variables and command line options are properly
+# passed, even when there are duplicates.
+AT_CHECK([cd builddir && ../configure $configure_options --prefix /bad --prefix /good INNER=bad INNER=good],
+	 0, [ignore])
+AT_CHECK([cat builddir/inner/innermost/config], 0,
+[INNER=good
+srcdir=../../../inner/innermost
+top_srcdir=../../../inner
+prefix=/good
+])
+
+# Make sure --prefix is properly quoted
+AT_CHECK([cd builddir && ../configure --prefix "/a  b c$ 'd"], 0, [ignore])
+AT_CHECK([cat builddir/inner/innermost/config], 0,
+[INNER=inner
+srcdir=../../../inner/innermost
+top_srcdir=../../../inner
+prefix=/a  b c$ 'd
+])
+
+# Make sure --silent is properly passed...
+AT_CHECK([cd builddir && ../configure $configure_options --silent], 0, [])
+# ...but not stored in config.status.
+AT_CHECK([cd builddir && ./config.status --recheck], 0, [stdout])
+AT_CHECK([grep 'creating \./config.status' stdout], 0, [ignore])
+
+# --cache-file is adjusted for subdirectories, so the cache is shared.
+AT_CHECK([cd builddir && ../configure $configure_options --config-cache],
+	 [], [stdout])
+AT_CHECK([grep 'loading .*\.\./config.cache' stdout], [], [ignore])
+
+# Make sure we can run autoreconf on a subdirectory
+rm -f configure configure.in
+AT_CHECK([autoreconf inner], [], [], [ignore])
+
+# Make sure we can pass a configure.ac name
+AT_CHECK([cd inner && autoreconf configure.in], [], [], [ignore])
+AT_CHECK([autoreconf inner/configure.in], [], [], [ignore])
+
+AT_CLEANUP
+
+
+
+## -------------- ##
+## Deep Package.  ##
+## -------------- ##
+
+AT_SETUP([Deep Package])
+AT_KEYWORDS(autoreconf)
+
+# We use aclocal (via autoreconf).
+AT_CHECK([aclocal --version || exit 77], [], [ignore], [ignore])
+
+# The contents of `.'
+AT_DATA([install-sh], [])
+AT_DATA([configure.in],
+[[AC_INIT(GNU Outer, 1.0)
+AC_ARG_VAR([OUTER], [an outer variable])
+AC_CONFIG_SUBDIRS([
+  inner
+  inner2
+])
+AC_OUTPUT
+]])
+
+# The contents of `inner/', and `inner/innermost/'.
+AS_MKDIR_P([inner/innermost])
+AS_MKDIR_P([inner2])
+
+AT_DATA([inner/configure.in],
+[[AC_INIT(GNU Inner, 1.0)
+AC_ARG_VAR([INNER], [an inner variable])
+AC_CONFIG_SUBDIRS(innermost)
+AC_OUTPUT
+]])
+
+AT_DATA([inner/innermost/configure.in],
+[[AC_INIT(GNU Innermost, 1.0)
+AC_ARG_VAR([INNERMOST], [an innermost variable])
+AC_CONFIG_HEADERS(config.h:config.hin)
+AC_DEFINE_UNQUOTED([INNERMOST], [$INNERMOST], [an innermost variable])
+if test -n "$innermost_error"; then
+  AC_MSG_FAILURE([error in $PACKAGE_NAME])
+fi
+AC_OUTPUT
+]])
+
+AT_DATA([inner2/configure.in],
+[[AC_INIT(GNU Inner 2, 1.0)
+AC_ARG_VAR([INNER2], [an inner2 variable])
+AC_OUTPUT
+]])
+
+AT_CHECK([autoreconf -Wall -v], [0], [ignore], [stderr])
+# We should not warn about nonliteral argument to AC_CONFIG_SUBDIRS here.
+AT_CHECK([grep 'AC_CONFIG_SUBDIRS:.*literals' stderr], [1])
+AT_CHECK([test -f inner/configure])
+AT_CHECK([test -f inner/innermost/configure])
+AT_CHECK([test -f inner/innermost/config.hin])
+AT_CHECK([test -f inner2/configure])
+
+# Running the outer configure recursively should provide the innermost
+# help strings.
+chmod a-w inner/innermost inner
+AT_CHECK([{ ./configure $configure_options --help=recursive; chmod u+w .; } | grep " INNER "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod a-w .
+AT_CHECK([{ ./configure $configure_options --help=recursive; chmod u+w .; } | grep " INNER2 "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod a-w .
+AT_CHECK([{ ./configure $configure_options --help=recursive; chmod u+w .; } | grep " INNERMOST "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod a-w .
+AT_CHECK([{ /bin/sh ./configure $configure_options --help=recursive; chmod u+w .; } | grep " INNERMOST "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod a-w .
+AT_CHECK([PATH=.$PATH_SEPARATOR$PATH; export PATH; { /bin/sh configure $configure_options --help=recursive; chmod +w .; } | grep " INNERMOST "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod a-w .
+AT_CHECK([PATH=.$PATH_SEPARATOR$PATH; export PATH; { configure $configure_options --help=recursive; chmod u+w .; } | grep " INNERMOST "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod u+w inner inner/innermost
+
+# Running the outer configure should trigger the inner.
+AT_CHECK_CONFIGURE([INNERMOST=tsomrenni])
+AT_CHECK([grep INNERMOST inner/innermost/config.h], 0,
+[[#define INNERMOST tsomrenni
+]])
+
+# Ensure we point to the right config.log file for errors.
+AT_CHECK_CONFIGURE([innermost_error=:], [1], [], [stderr])
+AT_CHECK([grep 'inner/innermost' stderr], [], [ignore])
+cd inner
+AT_CHECK_CONFIGURE([innermost_error=:], [1], [], [stderr])
+AT_CHECK([grep 'innermost' stderr], [], [ignore])
+cd ..
+
+# The same, but from a builddir.
+AS_MKDIR_P([builddir])
+chmod a-w builddir inner/innermost inner
+AT_CHECK([cd builddir && { ../configure $configure_options --help=recursive; chmod u+w .; } | grep " INNER "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod a-w builddir
+AT_CHECK([cd builddir && { ../configure $configure_options --help=recursive; chmod u+w .; } | grep " INNER2 "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod a-w builddir
+AT_CHECK([cd builddir && { ../configure $configure_options --help=recursive; chmod u+w .; } | grep " INNERMOST "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod a-w builddir
+AT_CHECK([cd builddir && { /bin/sh ../configure $configure_options --help=recursive; chmod u+w .; } | grep " INNERMOST "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod a-w builddir
+# Not all shells search $PATH for scripts.
+if (cd builddir && PATH=`pwd`/..$PATH_SEPARATOR$PATH /bin/sh configure $configure_options --help) >/dev/null 2>&1; then
+  AT_CHECK([cd builddir && PATH=`pwd`/..$PATH_SEPARATOR$PATH /bin/sh configure $configure_options --help=recursive | grep " INNERMOST "], 0, [ignore])
+fi
+AT_CHECK([PATH=`pwd`$PATH_SEPARATOR$PATH; export PATH; cd builddir && { configure $configure_options --help=recursive; chmod u+w .; } | grep " INNERMOST "],
+	 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'rerun with a POSIX shell' stderr], [], [ignore])])
+chmod u+w builddir inner inner/innermost
+AT_CHECK([cd builddir && ../configure $configure_options INNERMOST=build/tsomrenni], 0, [ignore])
+AT_CHECK([grep INNERMOST builddir/inner/innermost/config.h], 0,
+[[#define INNERMOST build/tsomrenni
+]])
+
+AT_CLEANUP
+
+
+
+## -------------------------------- ##
+## Non-Autoconf AC_CONFIG_SUBDIRS.  ##
+## -------------------------------- ##
+
+AT_SETUP([Non-Autoconf AC_CONFIG_SUBDIRS])
+AT_KEYWORDS([autoreconf])
+
+# We use aclocal (via autoreconf).
+AT_CHECK([aclocal --version || exit 77], [], [ignore], [ignore])
+
+AT_DATA([install-sh], [])
+AT_DATA([configure.in],
+[[AC_INIT(GNU Outer, 1.0)
+AC_CONFIG_SUBDIRS([inner])
+AC_OUTPUT
+]])
+
+AS_MKDIR_P([inner])
+
+AT_DATA([inner/configure],
+[[#! /bin/sh
+case "$*" in
+    *--help*) echo 'No Autoconf here, folks!' ;;
+    *)        echo got_it >myfile ;;
+esac
+exit 0
+]])
+chmod +x inner/configure
+
+AT_CHECK([autoreconf -Wall -v], 0, [ignore], [ignore])
+
+# Running the outer configure recursively should provide the innermost
+# help strings.
+AT_CHECK([./configure $configure_options --help=recursive | grep "folks"], 0, [ignore])
+
+# Running the outer configure should trigger the inner.
+AT_CHECK([./configure $configure_options], 0, [ignore])
+AT_CHECK([test -f inner/myfile], 0)
+
+AT_CLEANUP
+
+
+## ------------------------------- ##
+## Non-literal AC_CONFIG_SUBDIRS.  ##
+## ------------------------------- ##
+
+AT_SETUP([Non-literal AC_CONFIG_SUBDIRS])
+AT_KEYWORDS([autoreconf])
+
+AT_DATA([install-sh], [])
+AT_DATA([configure.in],
+[[AC_INIT(GNU Outer, 1.0)
+
+my_subdirs=
+# Taken from autoconf.texi:Subdirectories.
+if test "x$package_foo_enabled" = xyes; then
+  my_subdirs="$my_subdirs foo"
+fi
+AC_CONFIG_SUBDIRS([$my_subdirs])
+AC_OUTPUT
+]])
+
+# Hand-written aclocal.m4, so we don't invoke `aclocal -Werror' which
+# could barf over warnings in third-party macro files, or fail over
+# warnings with older aclocal which didn't yet understand -W*.
+AT_DATA([aclocal.m4])
+
+AS_MKDIR_P([foo])
+
+AT_DATA([foo/configure],
+[[#! /bin/sh
+touch innerfile
+exit 0
+]])
+chmod +x foo/configure
+
+# autoreconf should warn without -Wno-syntax, but should not fail without -Werror.
+AT_CHECK([autoreconf -Werror -v], [1], [ignore], [stderr])
+AT_CHECK([grep 'AC_CONFIG_SUBDIRS:.*literals' stderr], [0], [ignore])
+AT_CHECK([autoreconf -v], [0], [ignore], [stderr])
+AT_CHECK([grep 'AC_CONFIG_SUBDIRS:.*literals' stderr], [0], [ignore])
+AT_CHECK([autoreconf -v --force -Wno-syntax], 0, [ignore], [stderr])
+AT_CHECK([grep 'AC_CONFIG_SUBDIRS:.*literals' stderr], [1])
+
+AT_CHECK([./configure $configure_options], [0], [ignore])
+AT_CHECK([test ! -f foo/innerfile])
+# Running the outer configure should trigger the inner.
+AT_CHECK([./configure $configure_options package_foo_enabled=yes], [0], [ignore])
+AT_CHECK([test -f foo/innerfile])
+
+AT_CLEANUP
+
+
+## ----------------- ##
+## Empty directory.  ##
+## ----------------- ##
+
+AT_SETUP([Empty directory])
+AT_KEYWORDS([autoreconf])
+
+# We use aclocal (via autoreconf).
+AT_CHECK([aclocal --version || exit 77], [], [ignore], [ignore])
+
+# The test group directory is not necessarily _empty_, but it does not contain
+# files meaningful to `autoreconf'.
+
+AT_CHECK([autoreconf -Wall -v], 1, [ignore], [ignore])
+
+AT_CLEANUP
+
+
+
+## ------------------------------ ##
+## Unusual Automake input files.  ##
+## ------------------------------ ##
+
+# This parallels gnumake.test in Automake.
+
+AT_SETUP([Unusual Automake input files])
+AT_KEYWORDS([autoreconf])
+
+# We use aclocal and automake via autoreconf.
+AT_CHECK([automake --version || exit 77], [], [stdout], [ignore])
+AT_CHECK([[grep '[1-9]\.[0-9]' stdout || exit 77]], [], [ignore])
+
+AT_DATA([configure.in],
+[[AC_INIT(GNU foo, 1.0)
+AM_INIT_AUTOMAKE
+AC_CONFIG_FILES([HeeHee])
+AC_OUTPUT
+]])
+
+AT_DATA([HeeHee.am],
+[[# Humans do no worse than `GNUmakefile.am'.
+AUTOMAKE_OPTIONS = foreign 1.8
+]])
+
+AT_CHECK([autoreconf -Wall -v -i], 0, [ignore], [stderr],
+	 [AT_CHECK([grep 'require.*1\.8' stderr && exit 77], [1])])
+AT_CHECK([test -f HeeHee.in])
+
+AT_CLEANUP

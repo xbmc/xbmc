@@ -1,0 +1,209 @@
+<window id="12">
+  <defaultcontrol>3</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <controls>
+    <control type="group">
+      <visible>!Window.Previous(Weather) + !Window.Previous(VideoFiles) + !Window.Previous(VideoLibrary) + !Window.Previous(MusicFiles) + !Window.Previous(MusicLibrary) + !Window.Previous(Pictures) + !Window.Previous(Programs)</visible>
+      <include>CommonSettingsBackground</include>
+    </control>
+    <control type="group">
+      <visible>Window.Previous(Weather)</visible>
+      <include>CommonWeatherBackground</include>
+    </control>
+    <control type="group">
+      <visible>Window.Previous(Programs)</visible>
+      <include>CommonProgramsBackground</include>
+    </control>
+    <control type="group">
+      <visible>Window.Previous(VideoFiles) | Window.Previous(VideoLibrary)</visible>
+      <include>CommonVideoBackground</include>
+    </control>
+    <control type="group">
+      <visible>Window.Previous(MusicFiles) | Window.Previous(MusicLibrary) | Window.Previous(Pictures)</visible>
+      <include>CommonMusicBackground</include>
+    </control>
+    <control type="group">
+      <visible>Window.Previous(Pictures)</visible>
+      <include>CommonPictureBackground</include>
+    </control>
+    <include>CommonMediaPlayingBackground</include>
+    <control type="group">
+      <animation type="WindowOpen" reversible="false" condition="!Window.Previous(10004)">
+        <effect type="zoom" start="150" end="100" center="640,360" time="900" tween="cubic" easing="out"/>
+        <effect type="fade" start="0" end="100" time="900"/>
+      </animation>
+      <animation type="WindowClose" reversible="false" condition="!Window.Next(10004)">
+        <effect type="fade" start="100" end="0" time="300"/>
+        <effect type="zoom" start="100" end="130" center="640,360" time="300" tween="cubic" easing="in"/>
+      </animation>
+      <include>Furniture_SettingsBackPanel</include>
+
+      <control type="group">
+        <include>Animation_CommonFade</include>
+        <control type="image">
+          <posx>70</posx>
+          <posy>44</posy>
+          <width>180</width>
+          <height>72</height>
+          <texture>XBMC_Logo.png</texture>
+        </control>
+        <control type="grouplist" id="3">
+          <description>button area</description>
+          <posx>44</posx>
+          <posy>120</posy>
+          <width>217</width>
+          <height>720</height>
+          <itemgap>0</itemgap>
+          <onleft>60</onleft>
+          <onright>5</onright>
+          <onup>3</onup>
+          <ondown>3</ondown>
+        </control>
+
+        <control type="label">
+          <description>header label</description>
+          <posx>239</posx>
+          <posy>80</posy>
+          <width>994</width>
+          <textcolor>white</textcolor>
+          <font>Font_ShowcaseMainLabel2_Caps</font>
+          <include>Animation_CommonFade</include>
+          <label>[UPPERCASE]$INFO[Control.GetLabel(2)] - $LOCALIZE[5][/UPPERCASE]</label>
+          <align>center</align>
+          <aligny>center</aligny>
+        </control>
+        <control type="grouplist" id="5">
+          <description>control area</description>
+          <posx>258</posx>
+          <posy>120</posy>
+          <width>936</width>
+          <height>494</height>
+          <itemgap>0</itemgap>
+          <pagecontrol>60</pagecontrol>
+          <onleft>3</onleft>
+          <onright>60</onright>
+          <onup>5</onup>
+          <ondown>5</ondown>
+        </control>
+        <control type="scrollbar" id="60">
+          <posx>1185</posx>
+          <posy>120</posy>
+          <width>65</width>
+          <height>530</height>
+          <texturesliderbackground>views/scrollbarbacklist.png</texturesliderbackground>
+          <texturesliderbar>-</texturesliderbar>
+          <texturesliderbarfocus>-</texturesliderbarfocus>
+          <textureslidernib>views/scrollbarnub-nofocus.png</textureslidernib>
+          <textureslidernibfocus>views/scrollbarnub-focus.png</textureslidernibfocus>
+          <onleft>5</onleft>
+          <onright>3</onright>
+          <showonepage>false</showonepage>
+          <orientation>vertical</orientation>
+        </control>
+        <control type="image">
+          <!-- background-->
+          <description>background image</description>
+          <posx>42</posx>
+          <posy>28</posy>
+          <width>1196</width>
+          <height>651</height>
+          <texture>settings/settings_panelfront.png</texture>
+        </control>
+      </control>
+
+      <control type="button" id="10">
+        <description>Default Category Button</description>
+        <posx>2</posx>
+        <posy>3</posy>
+        <width>214</width>
+        <height>64</height>
+        <texturefocus>views/listpanel_selectbar.png</texturefocus>
+        <texturenofocus>-</texturenofocus>
+        <font>Font_Bold22</font>
+        <textcolor>FFf5f5f5</textcolor>
+        <focusedcolor>FF262728</focusedcolor>
+        <selectedcolor>FF262728</selectedcolor>
+        <textoffsety>12</textoffsety>
+        <textoffsetx>27</textoffsetx>
+        <aligny>center</aligny>
+        <pulseonselect>no</pulseonselect>
+      </control>
+      <control type="button" id="7">
+        <description>Default Button</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>936</width>
+        <height>49</height>
+        <font>Font_Reg20</font>
+        <texturefocus>settings/settings_radiobuttonofffocus.png</texturefocus>
+        <texturenofocus>settings/settings_radiobuttonoff.png</texturenofocus>
+        <textcolor>FFbbbbbb</textcolor>
+        <focusedcolor>FFFFFFFF</focusedcolor>
+        <pulseonselect>false</pulseonselect>
+        <textoffsetx>50</textoffsetx>
+        <aligny>center</aligny>
+      </control>
+      <control type="radiobutton" id="8">
+        <description>Default RadioButton</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>936</width>
+        <height>49</height>
+        <font>Font_Reg20</font>
+        <textcolor>grey2</textcolor>
+        <focusedcolor>white</focusedcolor>
+        <texturefocus>settings/settings_radiobuttonofffocus.png</texturefocus>
+        <texturenofocus>settings/settings_radiobuttonoff.png</texturenofocus>
+        <radiowidth>94</radiowidth>
+        <radioposx>850</radioposx>
+        <radioheight>65</radioheight>
+        <textoffsetx>50</textoffsetx>
+        <aligny>center</aligny>
+        <textureradiofocus>settings/settings_radiobuttononfocus.png</textureradiofocus>
+        <textureradionofocus>settings/settings_radiobuttonon.png</textureradionofocus>
+      </control>
+      <control type="spincontrolex" id="9">
+        <description>Default SpinControlex</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>936</width>
+        <height>49</height>
+        <font>Font_Reg20</font>
+        <texturefocus>settings/settings_radiobuttonofffocus.png</texturefocus>
+        <texturenofocus>settings/settings_radiobuttonoff.png</texturenofocus>
+        <textcolor>FFbbbbbb</textcolor>
+        <focusedcolor>FFFFFFFF</focusedcolor>
+        <textureup>settings/spin-up.png</textureup>
+        <texturedown>settings/spin-down.png</texturedown>
+        <textureupfocus>settings/spin-up-focus.png</textureupfocus>
+        <texturedownfocus>settings/spin-down-focus.png</texturedownfocus>
+        <disabledcolor>60d0d0d0</disabledcolor>
+        <aligny>center</aligny>
+        <spinposx>-2</spinposx>
+        <spinwidth>40</spinwidth>
+        <spinheight>65</spinheight>
+        <textoffsetx>50</textoffsetx>
+        <reverse>yes</reverse>
+      </control>
+      <control type="image" id="11">
+        <description>separator image</description>
+        <height>1</height>
+        <texture>home/nowplaying/nowplayline.png</texture>
+      </control>
+      <control type="label" id="2">
+        <description>Fake Label so we can pass it value down to the one below</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>0</width>
+        <height>0</height>
+        <font>-</font>
+        <visible>false</visible>
+      </control>
+    </control>
+
+    <include condition="Skin.HasSetting(breadcrumb)">Breadcrumbs</include>
+
+    <include>Furniture_NowPlayingWidget</include>
+    <include condition="Skin.HasSetting(globaltime)">Furniture_Clock</include>
+  </controls>
+</window>

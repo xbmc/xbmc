@@ -254,19 +254,13 @@ void CPictureInfoTag::Archive(CArchive& ar)
         ar << m_strAlbum;
         ar << m_albumFace;
         ar << m_location;
-        ar << m_iDuration;
-        ar << m_iTrack;
         ar << m_bLoaded;
-        ar << m_dwReleaseDate;
-        ar << m_lastPlayed;
+        ar << m_takenOn;
         ar << m_strComment;
-        ar << m_rating;
-        ar << m_iTimesPlayed;
         ar << m_iAlbumId;
         ar << m_iDbId;
         ar << m_type;
         ar << m_strLyrics;
-        ar << m_bCompilation;
         ar << m_listeners;
     }
     else
@@ -277,19 +271,13 @@ void CPictureInfoTag::Archive(CArchive& ar)
         ar >> m_strAlbum;
         ar >> m_albumFace;
         ar >> m_location;
-        ar >> m_iDuration;
-        ar >> m_iTrack;
         ar >> m_bLoaded;
-        ar >> m_dwReleaseDate;
-        ar >> m_lastPlayed;
+        ar >> m_takenOn;
         ar >> m_strComment;
-        ar >> m_rating;
-        ar >> m_iTimesPlayed;
         ar >> m_iAlbumId;
         ar >> m_iDbId;
         ar >> m_type;
         ar >> m_strLyrics;
-        ar >> m_bCompilation;
         ar >> m_listeners;
     }
 }
@@ -299,17 +287,12 @@ void CPictureInfoTag::ToSortable(SortItem& sortable)
 {
     
     sortable[FieldTitle] = m_strTitle;
-//    sortable[FieldFace] = m_face;
+    sortable[FieldFace] = m_face;
     sortable[FieldAlbum] = m_strAlbum;
 //    sortable[FieldAlbumFace] = FieldAlbumFace;
-//    sortable[FieldLocation] = m_location;
-    sortable[FieldTime] = m_iDuration;
-    sortable[FieldTrackNumber] = m_iTrack;
-    sortable[FieldYear] = m_dwReleaseDate.wYear;
+    sortable[FieldLocation] = m_location;
     sortable[FieldComment] = m_strComment;
-    sortable[FieldRating] = (float)(m_rating - '0');
-    sortable[FieldPlaycount] = m_iTimesPlayed;
-    sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
+    sortable[FieldTakenOn] = m_takenOn.IsValid() ? m_takenOn.GetAsDBDateTime() : StringUtils::EmptyString;
     sortable[FieldListeners] = m_listeners;
     sortable[FieldId] = (int64_t)m_iDbId;
     
@@ -724,24 +707,13 @@ const CPictureInfoTag& CPictureInfoTag::operator =(const CPictureInfoTag& tag)
     m_strTitle = tag.m_strTitle;
     m_strComment = tag.m_strComment;
     m_strLyrics = tag.m_strLyrics;
-    m_lastPlayed = tag.m_lastPlayed;
-    m_bCompilation = tag.m_bCompilation;
-    m_iDuration = tag.m_iDuration;
-    m_iTrack = tag.m_iTrack;
+    m_takenOn = tag.m_takenOn;
     m_bLoaded = tag.m_bLoaded;
-    m_rating = tag.m_rating;
     m_listeners = tag.m_listeners;
-    m_iTimesPlayed = tag.m_iTimesPlayed;
     m_iDbId = tag.m_iDbId;
     m_type = tag.m_type;
     m_iAlbumId = tag.m_iAlbumId;
-    m_iTrackGain = tag.m_iTrackGain;
-    m_iAlbumGain = tag.m_iAlbumGain;
-    m_fTrackPeak = tag.m_fTrackPeak;
-    m_fAlbumPeak = tag.m_fAlbumPeak;
-    m_iHasGainInfo = tag.m_iHasGainInfo;
-    
-    memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
+  
     m_coverArt = tag.m_coverArt;
 
     if (this == &tag) return * this;
@@ -760,34 +732,13 @@ bool CPictureInfoTag::operator !=(const CPictureInfoTag& tag) const
     if (this == &tag) return false;
     if (m_strURL != tag.m_strURL) return true;
     if (m_strTitle != tag.m_strTitle) return true;
-    if (m_bCompilation != tag.m_bCompilation) return true;
     if (m_face != tag.m_face) return true;
     if (m_albumFace != tag.m_albumFace) return true;
     if (m_strAlbum != tag.m_strAlbum) return true;
-    if (m_iDuration != tag.m_iDuration) return true;
-    if (m_iTrack != tag.m_iTrack) return true;
     return false;
 }
 
-int CPictureInfoTag::GetTrackNumber() const
-{
-    return (m_iTrack & 0xffff);
-}
 
-int CPictureInfoTag::GetDiscNumber() const
-{
-    return (m_iTrack >> 16);
-}
-
-int CPictureInfoTag::GetTrackAndDiskNumber() const
-{
-    return m_iTrack;
-}
-
-int CPictureInfoTag::GetDuration() const
-{
-    return m_iDuration;
-}
 
 const CStdString& CPictureInfoTag::GetTitle() const
 {
@@ -804,17 +755,17 @@ const std::vector<std::string>& CPictureInfoTag::GetFace() const
     return m_face;
 }
 
-const CStdString& CPictureInfoTag::GetAlbum() const
+const CStdString& CPictureInfoTag::GetPictureAlbum() const
 {
     return m_strAlbum;
 }
 
-int CPictureInfoTag::GetAlbumId() const
+int CPictureInfoTag::GetPictureAlbumId() const
 {
     return m_iAlbumId;
 }
 
-const std::vector<std::string>& CPictureInfoTag::GetAlbumFace() const
+const std::vector<std::string>& CPictureInfoTag::GetPictureAlbumFace() const
 {
     return m_albumFace;
 }
@@ -824,92 +775,37 @@ const std::vector<std::string>& CPictureInfoTag::GetLocation() const
     return m_location;
 }
 
-void CPictureInfoTag::GetReleaseDate(SYSTEMTIME& dateTime) const
-{
-    memcpy(&dateTime, &m_dwReleaseDate, sizeof(m_dwReleaseDate) );
-}
-
-int CPictureInfoTag::GetYear() const
-{
-    return m_dwReleaseDate.wYear;
-}
 
 const std::string &CPictureInfoTag::GetType() const
 {
     return m_type;
 }
 
-CStdString CPictureInfoTag::GetYearString() const
-{
-    CStdString strReturn;
-    strReturn.Format("%i", m_dwReleaseDate.wYear);
-    return m_dwReleaseDate.wYear ? strReturn : "";
-}
 
 const CStdString &CPictureInfoTag::GetComment() const
 {
     return m_strComment;
 }
 
-const CStdString &CPictureInfoTag::GetLyrics() const
-{
-    return m_strLyrics;
-}
 
-char CPictureInfoTag::GetRating() const
-{
-    return m_rating;
-}
 
 int CPictureInfoTag::GetListeners() const
 {
     return m_listeners;
 }
 
-int CPictureInfoTag::GetPlayCount() const
+
+const CDateTime &CPictureInfoTag::GetTakenOn() const
 {
-    return m_iTimesPlayed;
+    return m_takenOn;
 }
 
-const CDateTime &CPictureInfoTag::GetLastPlayed() const
-{
-    return m_lastPlayed;
-}
-
-bool CPictureInfoTag::GetCompilation() const
-{
-    return m_bCompilation;
-}
 
 const EmbeddedArtInfo &CPictureInfoTag::GetCoverArtInfo() const
 {
     return m_coverArt;
 }
 
-int CPictureInfoTag::GetReplayGainTrackGain() const
-{
-    return m_iTrackGain;
-}
-
-int CPictureInfoTag::GetReplayGainAlbumGain() const
-{
-    return m_iAlbumGain;
-}
-
-float CPictureInfoTag::GetReplayGainTrackPeak() const
-{
-    return m_fTrackPeak;
-}
-
-float CPictureInfoTag::GetReplayGainAlbumPeak() const
-{
-    return m_fAlbumPeak;
-}
-
-int CPictureInfoTag::HasReplayGainInfo() const
-{
-    return m_iHasGainInfo;
-}
 
 void CPictureInfoTag::SetURL(const CStdString& strURL)
 {
@@ -970,11 +866,6 @@ void CPictureInfoTag::SetLocation(const std::vector<std::string>& locations)
     m_location = locations;
 }
 
-void CPictureInfoTag::SetYear(int year)
-{
-    memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
-    m_dwReleaseDate.wYear = year;
-}
 
 void CPictureInfoTag::SetDatabaseId(long id, const std::string &type)
 {
@@ -982,70 +873,30 @@ void CPictureInfoTag::SetDatabaseId(long id, const std::string &type)
     m_type = type;
 }
 
-void CPictureInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
-{
-    memcpy(&m_dwReleaseDate, &dateTime, sizeof(m_dwReleaseDate) );
-}
-
-void CPictureInfoTag::SetTrackNumber(int iTrack)
-{
-    m_iTrack = (m_iTrack & 0xffff0000) | (iTrack & 0xffff);
-}
-
-void CPictureInfoTag::SetPartOfSet(int iPartOfSet)
-{
-    m_iTrack = (m_iTrack & 0xffff) | (iPartOfSet << 16);
-}
-
-void CPictureInfoTag::SetTrackAndDiskNumber(int iTrackAndDisc)
-{
-    m_iTrack=iTrackAndDisc;
-}
-
-void CPictureInfoTag::SetDuration(int iSec)
-{
-    m_iDuration = iSec;
-}
 
 void CPictureInfoTag::SetComment(const CStdString& comment)
 {
     m_strComment = comment;
 }
 
-void CPictureInfoTag::SetLyrics(const CStdString& lyrics)
-{
-    m_strLyrics = lyrics;
-}
 
-void CPictureInfoTag::SetRating(char rating)
-{
-    m_rating = rating;
-}
 
 void CPictureInfoTag::SetListeners(int listeners)
 {
     m_listeners = listeners;
 }
 
-void CPictureInfoTag::SetPlayCount(int playcount)
+
+void CPictureInfoTag::SetTakenOn(const CStdString& takenond)
 {
-    m_iTimesPlayed = playcount;
+    m_takenOn.SetFromDBDateTime(takenond);
 }
 
-void CPictureInfoTag::SetLastPlayed(const CStdString& lastplayed)
+void CPictureInfoTag::SetTakenOn(const CDateTime& takenond)
 {
-    m_lastPlayed.SetFromDBDateTime(lastplayed);
+    m_takenOn = takenond;
 }
 
-void CPictureInfoTag::SetLastPlayed(const CDateTime& lastplayed)
-{
-    m_lastPlayed = lastplayed;
-}
-
-void CPictureInfoTag::SetCompilation(bool compilation)
-{
-    m_bCompilation = compilation;
-}
 
 void CPictureInfoTag::SetLoaded(bool bOnOff)
 {
@@ -1063,29 +914,6 @@ void CPictureInfoTag::SetCoverArtInfo(size_t size, const std::string &mimeType)
     m_coverArt.set(size, mimeType);
 }
 
-void CPictureInfoTag::SetReplayGainTrackGain(int trackGain)
-{
-    m_iTrackGain = trackGain;
-    //m_iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
-}
-
-void CPictureInfoTag::SetReplayGainAlbumGain(int albumGain)
-{
-    m_iAlbumGain = albumGain;
-    //m_iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
-}
-
-void CPictureInfoTag::SetReplayGainTrackPeak(float trackPeak)
-{
-    m_fTrackPeak = trackPeak;
-    //m_iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
-}
-
-void CPictureInfoTag::SetReplayGainAlbumPeak(float albumPeak)
-{
-    m_fAlbumPeak = albumPeak;
-    //m_iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
-}
 
 void CPictureInfoTag::SetFace(const CFace& face)
 {
@@ -1105,12 +933,7 @@ void CPictureInfoTag::SetAlbum(const CPictureAlbum& album)
     SetTitle(album.strAlbum);
     SetAlbumFace(album.face);
     SetLocation(album.location);
-    SetRating('0' + album.iRating);
-    SetCompilation(album.bCompilation);
     SYSTEMTIME stTime;
-    stTime.wYear = album.iYear;
-    SetReleaseDate(stTime);
-    m_iTimesPlayed = album.iTimesPlayed;
     m_iDbId = album.idAlbum;
     m_type = "album";
     m_bLoaded = true;
@@ -1124,19 +947,12 @@ void CPictureInfoTag::SetPicture(const CPicture& picture)
     SetAlbum(picture.strAlbum);
     SetAlbumFace(picture.albumFace);
     SetComment(picture.strComment);
-    SetPlayCount(picture.iTimesPlayed);
-    SetLastPlayed(picture.lastPlayed);
-    m_rating = picture.rating;
+    SetTakenOn(picture.takenOn);
     m_strURL = picture.strFileName;
     SYSTEMTIME stTime;
-    stTime.wYear = picture.iYear;
-    SetReleaseDate(stTime);
-    m_iTrack = picture.iTrack;
-    m_iDuration = picture.iDuration;
     m_iDbId = picture.idPicture;
     m_type = "picture";
     m_bLoaded = true;
-    m_iTimesPlayed = picture.iTimesPlayed;
     m_iAlbumId = picture.idAlbum;
 }
 
@@ -1216,18 +1032,11 @@ void CPictureInfoTag::Serialize(CVariant& value) const
     value["album"] = m_strAlbum;
     value["albumface"] = m_albumFace;
     value["location"] = m_location;
-    value["duration"] = m_iDuration;
-    value["track"] = GetTrackNumber();
-    value["disc"] = GetDiscNumber();
     value["loaded"] = m_bLoaded;
-    value["year"] = m_dwReleaseDate.wYear;
     value["comment"] = m_strComment;
-    value["rating"] = (int)(m_rating - '0');
-    value["playcount"] = m_iTimesPlayed;
-    value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
+    value["takenon"] = m_takenOn.IsValid() ? m_takenOn.GetAsDBDateTime() : StringUtils::EmptyString;
     value["lyrics"] = m_strLyrics;
     value["albumid"] = m_iAlbumId;
-    value["compilationface"] = m_bCompilation;
 }
 
 void CPictureInfoTag::Clear()
@@ -1238,24 +1047,13 @@ void CPictureInfoTag::Clear()
     m_albumFace.clear();
     m_location.clear();
     m_strTitle.Empty();
-    m_iDuration = 0;
-    m_iTrack = 0;
     m_bLoaded = false;
-    m_lastPlayed.Reset();
-    m_bCompilation = false;
+    m_takenOn.Reset();
     m_strComment.Empty();
-    m_rating = '0';
     m_iDbId = -1;
     m_type.clear();
-    m_iTimesPlayed = 0;
-    memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
     m_iAlbumId = -1;
     m_coverArt.clear();
-    m_iTrackGain = 0;
-    m_iAlbumGain = 0;
-    m_fTrackPeak = 0.0f;
-    m_fAlbumPeak = 0.0f;
-    m_iHasGainInfo = 0;
 }
 
 void CPictureInfoTag::AppendFace(const CStdString &face)

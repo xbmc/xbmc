@@ -1,0 +1,466 @@
+#							-*- Autotest -*-
+
+AT_BANNER([Low level compiling/preprocessing macros.])
+
+# Copyright (C) 2000, 2001, 2003, 2005, 2006, 2007, 2008, 2009, 2010
+# Free Software Foundation, Inc.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# Since the macros which compile are required by most tests, check
+# them first.  But remember that looking for a compiler is even more
+# primitive, so check those first.
+
+
+## ------------------------------------- ##
+## AC_LANG, AC_LANG_PUSH & AC_LANG_POP.  ##
+## ------------------------------------- ##
+
+AT_SETUP([[AC_LANG, AC_LANG_PUSH & AC_LANG_POP]])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+# C
+AC_LANG([C])
+# C
+AC_LANG_PUSH([C])
+# C C
+AC_LANG_PUSH([C++])
+# C++ C C
+AC_LANG([C++])
+# C++ C C
+AC_LANG_PUSH([Erlang])
+# Erlang C++ C C
+AC_LANG_PUSH([Fortran 77])
+# F77 Erlang C++ C C
+AC_LANG_POP([Fortran 77])
+# Erlang C++ C C
+AC_LANG_POP([Erlang])
+# C++ C C
+AC_LANG([C++])
+# C++ C C
+AC_LANG_POP([C++])
+# C C
+AC_LANG_POP([C])
+# C
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK([sed -n 's/^ac_ext=//p' configure], 0,
+[c
+c
+c
+cpp
+cpp
+erl
+f
+erl
+cpp
+cpp
+c
+c
+])
+
+AT_CLEANUP
+
+
+## ---------------------- ##
+## AC_REQUIRE & AC_LANG.  ##
+## ---------------------- ##
+
+AT_SETUP([AC_REQUIRE & AC_LANG])
+
+AT_DATA([configure.ac],
+[[AC_DEFUN([AC_F77_1],
+[AC_LANG_PUSH([Fortran 77])
+if test $ac_ext != f; then
+  AC_MSG_ERROR([F77_1: current shell language is $ac_ext, expected Fortran])
+fi
+AC_LANG_POP
+])
+
+
+AC_DEFUN([AC_F77_2],
+[AC_LANG_PUSH([Fortran 77])
+AC_REQUIRE([AC_F77_1])
+if test $ac_ext != f; then
+  AC_MSG_ERROR([F77_2: current shell language is $ac_ext, expected Fortran])
+fi
+AC_LANG_POP
+])
+
+AC_INIT
+AC_F77_2
+AS_EXIT(0)
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+## ---------------- ##
+## AC_LANG_SOURCE.  ##
+## ---------------- ##
+
+AT_SETUP([AC_LANG_SOURCE])
+
+AT_DATA([configure.ac],
+[[AC_INIT([pkg], [1.0])
+AC_PROG_CC
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[#ifndef PACKAGE_NAME
+choke me
+#endif
+int main ()
+{
+  return 0;
+}
+]], [], [AC_MSG_FAILURE([confdefs not included])])])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+## --------------------- ##
+## AC_LANG_SOURCE(C++).  ##
+## --------------------- ##
+
+AT_SETUP([AC_LANG_SOURCE(C++)])
+
+AT_DATA([configure.ac],
+[[AC_INIT([pkg], [1.0])
+AC_PROG_CXX
+AC_LANG([C++])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[#ifndef PACKAGE_NAME
+choke me
+#endif
+int main ()
+{
+  return 0;
+}
+]], [], [AC_MSG_FAILURE([confdefs not included])])])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+## ------------------------ ##
+## AC_LANG_SOURCE example.  ##
+## ------------------------ ##
+
+AT_SETUP([AC_LANG_SOURCE example])
+
+# Set CONFIG_SITE to a nonexistent file, so that there are
+# no worries about configure output caused by sourcing a config.site.
+CONFIG_SITE=no-such-file
+export CONFIG_SITE
+
+AT_DATA([configure.ac],
+[[# Taken from autoconf.texi:Generating Sources.
+# The only change is to not fail if gcc doesn't work.
+AC_INIT([Hello], [1.0], [bug-hello@example.org], [],
+        [http://www.example.org/])
+AC_DEFINE([HELLO_WORLD], ["Hello, World\n"],
+  [Greetings string.])
+AC_LANG([C])
+AC_LANG_CONFTEST(
+   [AC_LANG_SOURCE([[const char hw[] = "Hello, World\n";]])])
+gcc -E -dD conftest.c || AS_EXIT([77])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([], [], [stdout])
+# Taken from autoconf.texi:Generating Sources.
+# Note that the output may contain more defines and lines matching
+#   # 1 "conftest.c"
+# so delete everything before the interesting output.
+AT_CHECK([sed -n '/#define PACKAGE/,$p' stdout], [],
+[[#define PACKAGE_NAME "Hello"
+#define PACKAGE_TARNAME "hello"
+#define PACKAGE_VERSION "1.0"
+#define PACKAGE_STRING "Hello 1.0"
+#define PACKAGE_BUGREPORT "bug-hello@example.org"
+#define PACKAGE_URL "http://www.example.org/"
+#define HELLO_WORLD "Hello, World\n"
+
+const char hw[] = "Hello, World\n";
+]])
+
+AT_CLEANUP
+
+
+## ------------------------- ##
+## AC_LANG_PROGRAM example.  ##
+## ------------------------- ##
+
+AT_SETUP([AC_LANG_PROGRAM example])
+
+# Set CONFIG_SITE to a nonexistent file, so that there are
+# no worries about configure output caused by sourcing a config.site.
+CONFIG_SITE=no-such-file
+export CONFIG_SITE
+
+AT_DATA([configure.ac],
+[[# Taken from autoconf.texi:Generating Sources.
+# The only change is to not fail if gcc doesn't work.
+AC_INIT([Hello], [1.0], [bug-hello@example.org], [],
+        [http://www.example.org/])
+AC_DEFINE([HELLO_WORLD], ["Hello, World\n"],
+  [Greetings string.])
+AC_LANG_CONFTEST(
+[AC_LANG_PROGRAM([[const char hw[] = "Hello, World\n";]],
+                 [[fputs (hw, stdout);]])])
+gcc -E -dD conftest.c || AS_EXIT([77])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([], [], [stdout])
+# Taken from autoconf.texi:Generating Sources.
+# Note that the output may contain more defines and lines matching
+#   # 1 "conftest.c"
+# so delete everything before the interesting output.
+AT_CHECK([sed -n '/#define PACKAGE/,$p' stdout], [],
+[[#define PACKAGE_NAME "Hello"
+#define PACKAGE_TARNAME "hello"
+#define PACKAGE_VERSION "1.0"
+#define PACKAGE_STRING "Hello 1.0"
+#define PACKAGE_BUGREPORT "bug-hello@example.org"
+#define PACKAGE_URL "http://www.example.org/"
+#define HELLO_WORLD "Hello, World\n"
+
+const char hw[] = "Hello, World\n";
+int
+main ()
+{
+fputs (hw, stdout);
+  ;
+  return 0;
+}
+]])
+
+AT_CLEANUP
+
+
+## ------------------- ##
+## AC_COMPILE_IFELSE.  ##
+## ------------------- ##
+
+AT_SETUP([AC_COMPILE_IFELSE])
+AT_KEYWORDS([AC_LANG_DEFINES_PROVIDED])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_COMPILE_IFELSE([int main () { return 0; }], [],
+  [AC_MSG_ERROR([compiling trivial program failed])])
+]])
+
+AT_CHECK_AUTOCONF([], [], [], [stderr])
+AT_CHECK([grep 'no AC_LANG_SOURCE call detected in body' stderr], [], [ignore])
+AT_CHECK_AUTOCONF([-W no-syntax])
+AT_CHECK_CONFIGURE([-q])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_COMPILE_IFELSE([AC_LANG_DEFINES_PROVIDED()int main () { return 0; }], [],
+  [AC_MSG_ERROR([compiling trivial program failed])])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([-q])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [return 0])],
+	      [],
+	      [AC_MSG_ERROR([compiling `return 0' failed])])
+
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [return 2])],
+	      [],
+	      [AC_MSG_ERROR([compiling `return 2' failed])])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([-q])
+
+AT_CLEANUP
+
+## --------------- ##
+## AC_RUN_IFELSE.  ##
+## --------------- ##
+
+AT_SETUP([AC_RUN_IFELSE])
+AT_KEYWORDS([AC_TRY_RUN])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+
+AC_RUN_IFELSE([AC_LANG_PROGRAM([], [return 0])],
+	      [],
+	      [AC_MSG_ERROR([saw `return 0' as a failure])])
+
+AC_RUN_IFELSE([AC_LANG_PROGRAM([], [return 2])],
+	      [AC_MSG_ERROR([saw `return 2' as a success])],
+	      [estatus=$?
+test $estatus != 2 &&
+  AC_MSG_ERROR([did not get as 2 exit status: $estatus])])
+
+# The old stinky one.
+AC_TRY_RUN([int main () { return 3; }],
+	   [AC_MSG_ERROR([saw `return 3' as a success])],
+	   [estatus=$?
+test $estatus != 3 &&
+  AC_MSG_ERROR([did not get 3 as exit status: $estatus])])
+
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([-q])
+
+AT_CLEANUP
+
+## --------------------------  ##
+## Order of `rm' and actions.  ##
+## --------------------------  ##
+
+AT_SETUP([Order of user actions and cleanup])
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_PROG_CC
+
+AC_PREPROC_IFELSE([AC_LANG_PROGRAM([int grepme;], [])],
+		  [{ test -f conftest.err && grep grepme conftest.i; } || AS_EXIT([1])],
+		  [AS_EXIT([1])])
+AC_PREPROC_IFELSE([AC_LANG_PROGRAM([#define 12 34 /*], [])],
+		  [AS_EXIT([1])],
+		  [test -f conftest.err || AS_EXIT([1])])
+
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([int ok;], [])],
+		  [test -f conftest.$ac_objext || AS_EXIT([1])],
+		  [AS_EXIT([1])])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([int bad bad;], [])],
+		  [AS_EXIT([1])],
+		  [test -f conftest.err || AS_EXIT([1])])
+
+AC_LINK_IFELSE([AC_LANG_PROGRAM([int ok;], [])],
+	       [test -f conftest$ac_exeext || AS_EXIT([1])],
+	       [AS_EXIT([1])])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([int bad bad;], [])],
+	       [AS_EXIT([1])],
+	       [test -f conftest.err || AS_EXIT([1])])
+
+AC_RUN_IFELSE([AC_LANG_PROGRAM([int ok;], [])],
+	      [./conftest$ac_exeext || AS_EXIT([1])],
+	      [AS_EXIT([1])])
+
+d@&t@nl conftest.err not generated by AC_RUN_IFELSE?
+AC_RUN_IFELSE([AC_LANG_PROGRAM([int bad bad;], [])],
+	      [AS_EXIT([1])],
+	      [])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([-q])
+
+AT_CLEANUP
+
+
+## ------------------ ##
+## AC_TRY_LINK_FUNC.  ##
+## ------------------ ##
+
+AT_CHECK_MACRO([AC_TRY_LINK_FUNC],
+[AC_TRY_LINK_FUNC(printf,,
+		  [AC_MSG_ERROR([cannot find `printf'])])
+AC_TRY_LINK_FUNC(Be_doomed_if_your_libc_has_a_function_named_like_this,
+		 [AC_MSG_ERROR([found a nonexistent function])])])
+
+## -------------------- ##
+## Multiple languages.  ##
+## -------------------- ##
+
+AT_SETUP([Multiple languages])
+
+# This test should be skipped if the C compiler is a C++ compiler.
+AT_DATA([configure.ac],
+[[AC_INIT
+
+AC_PROG_CC
+AC_COMPILE_IFELSE([
+  AC_LANG_PROGRAM([[
+    #ifdef __cplusplus
+    choke me
+    #endif
+  ]])], [], AS_EXIT([77]))
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+# This test should be skipped on systems without a C++ compiler.
+AT_DATA([configure.ac],
+[[AC_INIT
+
+AC_PROG_CXX
+AC_LANG_PUSH([C++])
+AC_COMPILE_IFELSE([
+  AC_LANG_PROGRAM([[
+    #ifndef __cplusplus
+    choke me
+    #endif
+  ]])], [], AS_EXIT([77]))
+AC_LANG_POP([C++])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_DATA([configure.ac],
+[[AC_INIT
+
+AC_PROG_CC
+AC_PROG_CXX
+
+AC_LANG_PUSH([C])
+AC_MSG_CHECKING([a simple C program that is not valid C++])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([enum a { A, B, C };
+				    enum a f(enum a in) { return in++; }], [])],
+		  [AC_MSG_RESULT([ok])],
+		  [AC_MSG_RESULT([failed])
+		   AC_MSG_ERROR([could not compile test program])])
+AC_LANG_POP([C])
+
+AC_LANG_PUSH([C++])
+AC_MSG_CHECKING([a simple C++ program that is not valid C])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([class A {};], [])],
+		  [AC_MSG_RESULT([ok])],
+		  [AC_MSG_RESULT([failed])
+		   AC_MSG_ERROR([could not compile test program])])
+
+AC_CHECK_HEADER([cstring])
+AC_LANG_POP([C++])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([-q])
+
+AT_CLEANUP
+

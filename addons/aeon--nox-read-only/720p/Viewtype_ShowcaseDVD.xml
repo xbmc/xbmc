@@ -1,0 +1,167 @@
+<includes>
+  <include name="SourceCases">
+    <itemlayout height="350" width="196" condition="Window.IsActive(28) | Window.IsActive(24) | [Window.IsActive(25) + !Container.Content(episodes)] | Window.IsActive(1)">
+      <control type="group">
+        <visible>[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] +!Control.IsVisible(6004)</visible>
+        <control type="image">
+          <include>MovieShowcaseBackVarsCases</include>
+          <texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/movies/$INFO[ListItem.VideoResolution]p.png</texture>
+          <visible>![Container.Content(tvshows)|Container.Content(seasons)]</visible>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseBackVarsCases</include>
+          <texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/tvshows/$INFO[ListItem.VideoResolution]p.png</texture>
+          <visible>Container.Content(tvshows)|Container.Content(seasons)</visible>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseThumbMainCases</include>
+          <info>ListItem.Thumb</info>
+        </control>
+        <include>MovieShowcaseGlassOverlayCases</include>
+        <control type="image">
+          <include>MovieShowcaseBackReflectionVarsCases</include>
+          <texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/movies/$INFO[ListItem.VideoResolution]p.png</texture>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseThumbReflectionCasesCover</include>
+          <info>ListItem.Thumb</info>
+        </control>
+        <include>WatchedOverlayShowCaseCasesItem0</include>
+      </control>
+    </itemlayout>
+    <focusedlayout height="350" width="196" condition="Window.IsActive(28) | Window.IsActive(24) | [Window.IsActive(25) + !Container.Content(episodes)] | Window.IsActive(1)">
+      <control type="group">
+        <visible>[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] +!Control.IsVisible(6004)</visible>
+        <animation effect="zoom" start="100" end="120" center="135,230" time="400" easing="out" reversible="false" tween="cubic">Focus</animation>
+        <animation effect="zoom" start="120" end="100" center="135,230" time="400" easing="out" reversible="false" tween="cubic">Unfocus</animation>
+        <control type="image">
+          <include>MovieShowcaseBackVarsCases</include>
+          <texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/movies/$INFO[ListItem.VideoResolution]p.png</texture>
+          <visible>![Container.Content(tvshows)|Container.Content(seasons)]</visible>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseBackVarsCases</include>
+          <texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/tvshows/$INFO[ListItem.VideoResolution]p.png</texture>
+          <visible>Container.Content(tvshows)|Container.Content(seasons)</visible>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseThumbMainCases</include>
+          <info>ListItem.Thumb</info>
+        </control>
+        <control type="group">
+          <description>Glass overlay</description>
+          <include>MovieShowcaseGlassOverlayCases</include>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseBackReflectionVarsCases</include>
+          <texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/movies/$INFO[ListItem.VideoResolution]p.png</texture>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseThumbReflectionMainCases</include>
+          <info>ListItem.Thumb</info>
+        </control>
+        <control type="group">
+          <include>WatchedOverlayShowCaseCasesItem0</include>
+        </control>
+      </control>
+    </focusedlayout>
+  </include>
+
+  <include name="ClearCases">
+    <itemlayout height="350" width="196" condition="Window.IsActive(28) | Window.IsActive(24) | [Window.IsActive(25) + !Container.Content(episodes)] | Window.IsActive(1)">
+      <control type="group">
+        <visible>[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] +!Control.IsVisible(6004)</visible>
+        <control type="image">
+          <include>MovieShowcaseThumbMainDVD</include>
+          <info>ListItem.Thumb</info>
+        </control>
+        <include>MovieShowcaseGlassOverlayAngledDVD</include>
+        <control type="image">
+          <include>MovieShowcaseThumbReflectionDVDCover</include>
+          <info>ListItem.Thumb</info>
+        </control>
+        <include>MovieShowcaseThumbReflectionDVD</include>
+        <include>WatchedOverlayShowCaseDVDItem0</include>
+      </control>
+    </itemlayout>
+    <focusedlayout height="350" width="196" condition="Window.IsActive(28) | Window.IsActive(24) | [Window.IsActive(25) + !Container.Content(episodes)] | Window.IsActive(1)">
+      <control type="group">
+        <visible>[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] +!Control.IsVisible(6004)</visible>
+        <animation effect="zoom" start="100" end="120" center="135,230" time="400" easing="out" reversible="false" tween="cubic">Focus</animation>
+        <animation effect="zoom" start="120" end="100" center="135,230" time="400" easing="out" reversible="false" tween="cubic">Unfocus</animation>
+        <control type="image">
+          <include>MovieShowcaseThumbMainDVD</include>
+          <info>ListItem.Thumb</info>
+        </control>
+        <control type="group">
+          <description>Glass overlay</description>
+          <include>MovieShowcaseGlassOverlayAngledDVD</include>
+        </control>
+        <control type="image">
+          <include>MovieShowcaseThumbReflectionMainDVD</include>
+          <info>ListItem.Thumb</info>
+        </control>
+        <control type="group">
+          <include>MovieShowcaseThumbReflectionDVD</include>
+        </control>
+        <control type="group">
+          <include>WatchedOverlayShowCaseDVDItem0</include>
+        </control>
+      </control>
+    </focusedlayout>
+  </include>
+  <include name="contents504list">
+    <visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Window.IsVisible(VideoFiles)| Window.IsActive(1)</visible>
+    <visible>!Container.Content(LiveTV)</visible>
+    <posx>-83</posx>
+    <posy>380</posy>
+    <width>1446</width>
+    <height>350</height>
+    <onleft>504</onleft>
+    <onright>504</onright>
+    <onup>SetFocus(7000)</onup>
+    <ondown>64</ondown>
+    <viewtype label="$LOCALIZE[31151]">bigwrap</viewtype>
+    <pagecontrol>64</pagecontrol>
+    <scrolltime>200</scrolltime>
+    <focusposition>3</focusposition>
+    <orientation>horizontal</orientation>
+    <preloaditems>4</preloaditems>
+    <animation effect="fade" start="100" end="0" time="400" condition="Control.HasFocus(109)">Conditional</animation>
+    <include condition="Skin.HasSetting(usecases)">SourceCases</include>
+    <include condition="!Skin.HasSetting(usecases)">ClearCases</include>
+  </include>
+  <include name="scdfixed">
+    <control type="fixedlist" id="504">
+      <include>contents504list</include>
+    </control>
+  </include>
+  <include name="scdwrap">
+    <control type="wraplist" id="504">
+      <include>contents504list</include>
+    </control>
+  </include>
+  <include name="ShowcaseDVD">
+    <control type="group">
+      <visible>Control.IsVisible(504)</visible>
+      <control type="group">
+        <!--<animation effect="slide" end="0,30"  time="400" easing="inout" tween="cubic" condition="Skin.HasSetting(showcaseinfoon)+Container.Content(movies)|Skin.HasSetting(showcaseinfoontv)+Container.Content(tvshows)|!Skin.HasSetting(showcaseextrainfo)">Conditional</animation>-->
+        <include condition="!Skin.HasSetting(usecases)">ShowcaseMoviesDVD</include>
+        <include condition="Skin.HasSetting(usecases)">ShowcaseMoviesCases</include>
+      </control>
+      <include condition="!Skin.HasSetting(showcasewrap)">scdfixed</include>
+      <include condition="Skin.HasSetting(showcasewrap)">scdwrap</include>
+      <control type="scrollbar" id="64">
+        <visible allowhiddenfocus="true">Control.HasFocus(64)+Control.IsVisible(504)</visible>
+        <onup>504</onup>
+        <ondown>SetFocus(109)</ondown>
+      </control>
+      <control type="group">
+        <visible>!Control.HasFocus(109)+!Control.HasFocus(64)</visible>
+        <include>Animation_HideMultiplex</include>
+        <include>SecondLabelFloor</include>
+        <include>FirstLabelFloor</include>
+      </control>
+    </control>
+  </include>
+</includes>

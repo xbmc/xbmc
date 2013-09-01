@@ -1,0 +1,836 @@
+<includes>
+  <include name="NextAiredNextEpisodeLabelVars">
+    <posx>235</posx>
+    <posy>115</posy>
+    <height>13</height>
+    <width>200</width>
+    <font>Font_Info</font>
+    <textcolor>white</textcolor>
+  </include>
+  <include name="NextAiredLastEpisodeLabelVars">
+    <posx>0</posx>
+    <posy>115</posy>
+    <height>13</height>
+    <width>200</width>
+    <font>Font_Info</font>
+    <textcolor>white</textcolor>
+  </include>
+  <include name="NextAiredShowStatusLabelVars">
+    <posx>235</posx>
+    <posy>17</posy>
+    <height>13</height>
+    <width>200</width>
+    <font>Font_Info</font>
+    <textcolor>white</textcolor>
+  </include>
+  <include name="NextAired_NextEpisode">
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.1.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.2.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.3.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.4.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.5.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.6.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.7.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.8.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.9.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.10.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.11.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.12.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.13.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.14.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.15.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.16.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.17.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.18.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.19.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.20.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.21.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.22.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.23.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.24.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.25.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.26.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.27.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.28.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.29.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.30.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars</include>
+      <label>$LOCALIZE[312581]</label>
+      <visible>![StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.Label)]</visible>
+      <visible>!Container.Content(seasons)</visible>
+    </control>
+  </include>
+  <include name="NextAired_LastEpisode">
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.1.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.2.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.3.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.4.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.5.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.6.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.7.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.8.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.9.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.10.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.11.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.12.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.13.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.14.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.15.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.16.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.17.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.18.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.19.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.20.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.21.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.22.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.23.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.24.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.25.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.26.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.27.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.28.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.29.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.30.LatestDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredLastEpisodeLabelVars</include>
+      <label>$LOCALIZE[312581]</label>
+      <visible>![StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.Label)]</visible>
+      <visible>!Container.Content(seasons)</visible>
+    </control>
+  </include>
+  <include name="NextAiredShowStatus">
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.1.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.2.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.3.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.4.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.5.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.6.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.7.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.8.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.9.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.10.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.11.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.12.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.13.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.14.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.15.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.16.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.17.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.18.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.19.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.20.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.21.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.22.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.23.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.24.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.25.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.26.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.27.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.28.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.29.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$INFO[Window(Home).Property(NextAired.30.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars</include>
+      <label>$LOCALIZE[31397]</label>
+      <visible>![StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.Label)]</visible>
+      <visible>!Container.Content(seasons)</visible>
+    </control>
+  </include>
+  <include name="NextAiredNextEpisodeLabelVars_InfoList">
+    <posx>890</posx>
+    <posy>450</posy>
+    <width>360</width>
+    <height>12</height>
+    <align>left</align>
+    <aligny>center</aligny>
+    <font>Font_Info</font>
+    <scroll>true</scroll>
+    <textcolor>white</textcolor>
+  </include>
+  <include name="NextAiredShowStatusLabelVars_InfoList">
+    <posx>890</posx>
+    <posy>430</posy>
+    <width>360</width>
+    <height>12</height>
+    <align>left</align>
+    <aligny>center</aligny>
+    <font>Font_Info</font>
+    <scroll>true</scroll>
+    <textcolor>white</textcolor>
+  </include>
+  <include name="NextAired_NextEpisode_InfoList">
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.1.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.2.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.3.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.4.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.5.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.6.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.7.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.8.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.9.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.10.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.11.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.12.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.13.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.14.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.15.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.16.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.17.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.18.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.19.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.20.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.21.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.22.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.23.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.24.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.25.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.26.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.27.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.28.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.29.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.30.NextDate)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredNextEpisodeLabelVars_InfoList</include>
+      <label>$LOCALIZE[312581]</label>
+      <visible>![StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.Label)]</visible>
+    </control>
+  </include>
+  <include name="NextAiredShowStatus_InfoList">
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.1.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.2.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.3.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.4.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.5.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.6.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.7.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.8.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.9.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.10.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.11.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.12.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.13.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.14.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.15.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.16.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.17.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.18.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.19.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.20.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.21.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.22.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.23.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.24.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.25.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.26.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.27.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.28.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.29.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$INFO[Window(Home).Property(NextAired.30.Status)]</label>
+      <visible>StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.Label)|StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.TVShowTitle)</visible>
+    </control>
+    <control type="label">
+      <include>NextAiredShowStatusLabelVars_InfoList</include>
+      <label>$LOCALIZE[31397]</label>
+      <visible>![StringCompare(Window(Home).Property(NextAired.1.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.2.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.3.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.4.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.5.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.6.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.7.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.8.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.9.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.10.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.11.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.12.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.13.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.14.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.15.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.16.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.17.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.18.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.19.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.20.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.21.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.22.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.23.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.24.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.25.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.26.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.27.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.28.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.29.ShowTitle),ListItem.Label) | StringCompare(Window(Home).Property(NextAired.30.ShowTitle),ListItem.Label)]</visible>
+    </control>
+  </include>
+</includes>

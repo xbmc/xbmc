@@ -1,0 +1,230 @@
+<includes>
+  <include name="LandscapeThumbVars">
+    <posx>-5</posx>
+    <posy>41</posy>
+    <width>340</width>
+    <height>198</height>
+    <fadetime>IconCrossfadeTime2</fadetime>
+    <aspectratio scalediffuse="false">scale</aspectratio>
+    <texture background="true" diffuse="thumbs/multiplex_tvmask.png">DefaultEpisode.png</texture>
+    <bordertexture border="9">thumbs/multiplex_tvborder.png</bordertexture>
+    <bordersize>9</bordersize>
+  </include>
+  <include name="LandscapeThumbReflectionVars">
+    <posx>-5</posx>
+    <posy>222</posy>
+    <width>340</width>
+    <height>198</height>
+    <fadetime>IconCrossfadeTime2</fadetime>
+    <aspectratio scalediffuse="false">scale</aspectratio>
+    <texture flipy="true" background="true" diffuse="thumbs/multiplex_tvmaskreflect.png">DefaultEpisode.png</texture>
+    <colordiffuse>aaFFFFFF</colordiffuse>
+    <bordersize>9</bordersize>
+  </include>
+  <include name="LandscapeThumbs">
+    <control type="group">
+      <visible>Container.Content(episodes)|Container.Content(seasons)</visible>
+      <control type="image">
+        <include>LandscapeThumbVars</include>
+        <info>ListItem.Icon</info>
+      </control>
+      <control type="image">
+        <include>LandscapeThumbReflectionVars</include>
+        <info>ListItem.Icon</info>
+      </control>
+    </control>
+    <control type="group">
+      <visible>Container.Content(movies)</visible>
+      <control type="image">
+        <include>LandscapeThumbVars</include>
+        <info>ListItem.property(fanart_image)</info>
+      </control>
+      <control type="image">
+        <include>LandscapeThumbReflectionVars</include>
+        <info>ListItem.property(fanart_image)</info>
+      </control>
+    </control>
+    <control type="group">
+      <visible>Container.Content(tvshows)</visible>
+      <control type="image">
+        <include>LandscapeThumbVars</include>
+        <visible>!Skin.HasSetting(landscapelogo)+Container.Content(tvshows)</visible>
+        <info>ListItem.Path,,landscape.jpg</info>
+      </control>
+      <control type="image">
+        <posx>4</posx>
+        <posy>105</posy>
+        <width>322</width>
+        <height>125</height>
+        <aspectratio aligny="bottom">keep</aspectratio>
+        <texture fallback="fallback.png">$INFO[ListItem.Path,,logo.png]</texture>
+        <visible>Skin.HasSetting(landscapelogo)+Container.Content(tvshows)</visible>
+      </control>
+      <control type="image">
+        <include>LandscapeThumbReflectionVars</include>
+        <visible>!Skin.HasSetting(landscapelogo)+Container.Content(tvshows)</visible>
+        <info>ListItem.Path,,landscape.jpg</info>
+      </control>
+      <control type="image">
+        <posx>4</posx>
+        <posy>230</posy>
+        <width>322</width>
+        <height>125</height>
+        <aspectratio aligny="top">keep</aspectratio>
+        <texture flipy="true" fallback="fallback.png">$INFO[ListItem.Path,,logo.png]</texture>
+        <animation effect="fade" start="10" end="10" time="200" tween="cubic" easing="inout" condition="true">Conditional</animation>
+        <visible>Skin.HasSetting(landscapelogo)+Container.Content(tvshows)</visible>
+      </control>
+    </control>
+    <!--<control type="image">
+      <posx>-5</posx>
+      <posy>41</posy>
+      <width>340</width>
+      <height>198</height>
+      <fadetime>IconCrossfadeTime2</fadetime>
+      <aspectratio scalediffuse="false">scale</aspectratio>
+      <texture diffuse="thumbs/multiplex_tvmask.png">thumbs/multiplex_tvglass.png</texture>
+      <bordersize>9</bordersize>
+    </control>-->
+    <control type="group">
+      <visible>Container.Content(episodes)+!IsEmpty(ListItem.Title)+!Skin.HasSetting(disableepno)</visible>
+      <animation effect="fade" start="100" end="0" time="200" easing="out" tween="cubic" reversible="true">Focus</animation>
+      <control type="image">
+        <posx>73</posx>
+        <posy>212</posy>
+        <width>185</width>
+        <height>60</height>
+        <aspectratio scalediffuse="false">scale</aspectratio>
+        <texture background="true">thumbs/multiplex_labelblock.png</texture>
+      </control>
+      <control type="label">
+        <posx>166</posx>
+        <posy>200</posy>
+        <width>250</width>
+        <height>60</height>
+        <align>center</align>
+        <aligny>center</aligny>
+        <font>Font_Reg18_Caps</font>
+        <textcolor>white2</textcolor>
+        <label>[UPPERCASE]$INFO[ListItem.Episode,$LOCALIZE[20359] ][/UPPERCASE]</label>
+      </control>
+    </control>
+    <control type="image">
+      <posx>266</posx>
+      <posy>50</posy>
+      <width>60</width>
+      <height>60</height>
+      <include>RecentVisibiltyEpisodes</include>
+      <visible>![Skin.HasSetting(landscapelogo)+Container.Content(tvshows)]</visible>
+    </control>
+  </include>
+  <include name="contents503list">
+    <posx>-220</posx>
+    <posy>405</posy>
+    <width>1700</width>
+    <height>400</height>
+    <onleft>503</onleft>
+    <onright>503</onright>
+    <onup>SetFocus(7000)</onup>
+    <ondown>63</ondown>
+    <orientation>horizontal</orientation>
+    <viewtype label="$LOCALIZE[31150]">BigWrap</viewtype>
+    <pagecontrol>63</pagecontrol>
+    <scrolltime>200</scrolltime>
+    <focusposition>2</focusposition>
+    <preloaditems>1</preloaditems>
+    <visible>[Container.Content(TVShows) |  Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(Movies)]</visible>
+    <animation effect="fade" start="100" end="0" time="400" condition="Control.HasFocus(109)">Conditional</animation>
+    <itemlayout width="330" height="300">
+      <include>LandscapeThumbs</include>
+    </itemlayout>
+    <focusedlayout width="400" height="300">
+      <control type="group">
+        <animation effect="zoom" center="auto" start="100" end="122" time="600" tween="back" easing="out" reversible="false">Focus</animation>
+        <animation effect="zoom" center="auto" start="122" end="100" time="200" tween="back" easing="out" reversible="false">UnFocus</animation>
+        <animation effect="zoom" center="auto" start="100" end="122" time="600" tween="back" easing="out" reversible="false" condition="Control.HasFocus(7001)|Control.HasFocus(7000)">Conditional</animation>
+        <posx>38.5</posx>
+        <include>LandscapeThumbs</include>
+      </control>
+    </focusedlayout>
+  </include>
+  <include name="lsfixed">
+    <control type="fixedlist" id="503">
+      <include>contents503list</include>
+    </control>
+  </include>
+  <include name="lswrap">
+    <control type="wraplist" id="503">
+      <include>contents503list</include>
+    </control>
+  </include>
+  <include name="MediaListView3">
+    <control type="group">
+      <visible>Control.IsVisible(503)</visible>
+      <include condition="!Skin.HasSetting(showcasewrap)">lsfixed</include>
+      <include condition="Skin.HasSetting(showcasewrap)">lswrap</include>
+      <control type="scrollbar" id="63">
+        <visible allowhiddenfocus="true">Control.HasFocus(63)</visible>
+        <onup>503</onup>
+        <ondown>SetFocus(109)</ondown>
+      </control>
+      <control type="group">
+        <visible>!Control.HasFocus(109)</visible>
+        <control type="label">
+          <posx>340</posx>
+          <posy>693</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_ShowcaseMainLabel2_Caps</font>
+          <scroll>true</scroll>
+          <scrollspeed>50</scrollspeed>
+          <textcolor>floor</textcolor>
+          <shadowcolor>floorshadow</shadowcolor>
+          <label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+          <visible>!Control.HasFocus(63)+![ControlGroup(9000).HasFocus+!Skin.HasSetting(breadcrumb)]+![Skin.HasSetting(landscapelogo)+Container.Content(tvshows)]</visible>
+        </control>
+        <control type="label">
+          <posx>340</posx>
+          <posy>693</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_Info</font>
+          <textcolor>FFe1e1e1</textcolor>
+          <shadowcolor>black</shadowcolor>
+          <label>$INFO[ListItem.Label2][LOWERCASE]$INFO[ListItem.Property(UnWatchedEpisodes), ($LOCALIZE[16101]: ,)][/LOWERCASE]</label>
+          <visible>Skin.HasSetting(landscapelogo)+Container.Content(tvshows)+!Skin.HasSetting(showcaseinfoontv)+!Control.HasFocus(63)+!Skin.HasSetting(logowatchcount)</visible>
+        </control>
+        <control type="label">
+          <posx>340</posx>
+          <posy>693</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_Info</font>
+          <textcolor>floor</textcolor>
+          <shadowcolor>floorshadow</shadowcolor>
+          <label>$INFO[ListItem.Label2][LOWERCASE]$INFO[ListItem.Property(UnWatchedEpisodes), ($LOCALIZE[16101]: ,)][/LOWERCASE]</label>
+          <visible>Skin.HasSetting(landscapelogo)+Container.Content(tvshows)+Skin.HasSetting(showcaseinfoontv)+!Control.HasFocus(63)+!Skin.HasSetting(logowatchcount)</visible>
+        </control>
+        <control type="label">
+          <posx>340</posx>
+          <posy>693</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_ShowcaseMainLabel2_Caps</font>
+          <textcolor>floor</textcolor>
+          <shadowcolor>floorshadow</shadowcolor>
+          <label>[UPPERCASE]$INFO[Container.NumItems] $LOCALIZE[31025] | $LOCALIZE[31024] $INFO[Container.CurrentPage]/$INFO[Container.NumPages][/UPPERCASE]</label>
+          <visible>ControlGroup(9000).HasFocus+!Skin.HasSetting(breadcrumb)</visible>
+        </control>
+      </control>
+    </control>
+  </include>
+</includes>

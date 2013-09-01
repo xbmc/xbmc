@@ -1,0 +1,433 @@
+@c This file is included by autoconf.texi and is used to produce
+@c the INSTALL file.
+
+@ifclear autoconf
+@firstparagraphindent insert
+
+@unnumbered Installation Instructions
+
+Copyright @copyright{} 1994, 1995, 1996, 1999, 2000, 2001, 2002, 2004,
+2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification, are
+permitted in any medium without royalty provided the copyright notice
+and this notice are preserved.  This file is offered as-is, without
+warranty of any kind.
+
+@end ifclear
+
+@node Basic Installation
+@section Basic Installation
+
+Briefly, the shell commands @samp{./configure; make; make install}
+should configure, build, and install this package.  The following
+more-detailed instructions are generic; see the @file{README} file for
+instructions specific to this package.
+@ifclear autoconf
+Some packages provide this @file{INSTALL} file but do not implement all
+of the features documented below.  The lack of an optional feature in a
+given package is not necessarily a bug.
+@end ifclear
+More recommendations for @acronym{GNU} packages can be found in
+@ref{Makefile Conventions, , Makefile Conventions, standards,
+@acronym{GNU} Coding Standards}.
+
+The @command{configure} shell script attempts to guess correct values
+for various system-dependent variables used during compilation.  It uses
+those values to create a @file{Makefile} in each directory of the
+package.  It may also create one or more @file{.h} files containing
+system-dependent definitions.  Finally, it creates a shell script
+@file{config.status} that you can run in the future to recreate the
+current configuration, and a file @file{config.log} containing compiler
+output (useful mainly for debugging @command{configure}).
+
+It can also use an optional file (typically called @file{config.cache}
+and enabled with @option{--cache-file=config.cache} or simply
+@option{-C}) that saves the results of its tests to speed up
+reconfiguring.  Caching is disabled by default to prevent problems with
+accidental use of stale cache files.
+
+If you need to do unusual things to compile the package, please try to
+figure out how @command{configure} could check whether to do them, and
+mail diffs or instructions to the address given in the @file{README} so
+they can be considered for the next release.  If you are using the
+cache, and at some point @file{config.cache} contains results you don't
+want to keep, you may remove or edit it.
+
+The file @file{configure.ac} (or @file{configure.in}) is used to create
+@file{configure} by a program called @command{autoconf}.  You need
+@file{configure.ac} if you want to change it or regenerate
+@file{configure} using a newer version of @command{autoconf}.
+
+The simplest way to compile this package is:
+
+@enumerate
+@item
+@command{cd} to the directory containing the package's source code and type
+@samp{./configure} to configure the package for your system.
+
+Running @command{configure} might take a while.  While running, it prints some
+messages telling which features it is checking for.
+
+@item
+Type @samp{make} to compile the package.
+
+@item
+Optionally, type @samp{make check} to run any self-tests that come with
+the package, generally using the just-built uninstalled binaries.
+
+@item
+Type @samp{make install} to install the programs and any data files and
+documentation.  When installing into a prefix owned by root, it is
+recommended that the package be configured and built as a regular user,
+and only the @samp{make install} phase executed with root privileges.
+
+@item
+Optionally, type @samp{make installcheck} to repeat any self-tests, but
+this time using the binaries in their final installed location.  This
+target does not install anything.  Running this target as a regular
+user, particularly if the prior @samp{make install} required root
+privileges, verifies that the installation completed correctly.
+
+@item
+You can remove the program binaries and object files from the source
+code directory by typing @samp{make clean}.  To also remove the files
+that @command{configure} created (so you can compile the package for a
+different kind of computer), type @samp{make distclean}.  There is also
+a @samp{make maintainer-clean} target, but that is intended mainly for
+the package's developers.  If you use it, you may have to get all sorts
+of other programs in order to regenerate files that came with the
+distribution.
+
+@item
+Often, you can also type @samp{make uninstall} to remove the installed
+files again.  In practice, not all packages have tested that
+uninstallation works correctly, even though it is required by the
+@acronym{GNU} Coding Standards.
+
+@item
+Some packages, particularly those that use Automake, provide @samp{make
+distcheck}, which can by used by developers to test that all other
+targets like @samp{make install} and @samp{make uninstall} work
+correctly.  This target is generally not run by end users.
+@end enumerate
+
+@node Compilers and Options
+@section Compilers and Options
+
+Some systems require unusual options for compilation or linking that the
+@command{configure} script does not know about.  Run @samp{./configure
+--help} for details on some of the pertinent environment variables.
+
+You can give @command{configure} initial values for configuration
+parameters by setting variables in the command line or in the environment.
+Here is an example:
+
+@example
+./configure CC=c99 CFLAGS=-g LIBS=-lposix
+@end example
+
+@xref{Defining Variables}, for more details.
+
+
+@node Multiple Architectures
+@section Compiling For Multiple Architectures
+
+You can compile the package for more than one kind of computer at the
+same time, by placing the object files for each architecture in their
+own directory.  To do this, you can use @acronym{GNU} @command{make}.
+@command{cd} to the directory where you want the object files and
+executables to go and run the @command{configure} script.
+@command{configure} automatically checks for the source code in the
+directory that @command{configure} is in and in @file{..}.  This is
+known as a @dfn{VPATH} build.
+
+With a non-@acronym{GNU} @command{make},
+it is safer to compile the package for one
+architecture at a time in the source code directory.  After you have
+installed the package for one architecture, use @samp{make distclean}
+before reconfiguring for another architecture.
+
+On MacOS X 10.5 and later systems, you can create libraries and
+executables that work on multiple system types---known as @dfn{fat} or
+@dfn{universal} binaries---by specifying multiple @option{-arch} options
+to the compiler but only a single @option{-arch} option to the
+preprocessor.  Like this:
+
+@example
+./configure CC="gcc -arch i386 -arch x86_64 -arch ppc -arch ppc64" \
+            CXX="g++ -arch i386 -arch x86_64 -arch ppc -arch ppc64" \
+            CPP="gcc -E" CXXCPP="g++ -E"
+@end example
+
+This is not guaranteed to produce working output in all cases, you may
+have to build one architecture at a time and combine the results
+using the @command{lipo} tool if you have problems.
+
+@node Installation Names
+@section Installation Names
+
+By default, @samp{make install} installs the package's commands under
+@file{/usr/local/bin}, include files under @file{/usr/local/include}, etc.
+You can specify an
+installation prefix other than @file{/usr/local} by giving
+@command{configure} the option @option{--prefix=@var{prefix}}, where
+@var{prefix} must be an absolute file name.
+
+You can specify separate installation prefixes for architecture-specific
+files and architecture-independent files.  If you pass the option
+@option{--exec-prefix=@var{prefix}} to @command{configure}, the
+package uses @var{prefix} as the prefix for installing programs and
+libraries.  Documentation and other data files still use the
+regular prefix.
+
+In addition, if you use an unusual directory layout you can give options
+like @option{--bindir=@var{dir}} to specify different values for
+particular kinds of files.  Run @samp{configure --help} for a list of
+the directories you can set and what kinds of files go in them.  In
+general, the default for these options is expressed in terms of
+@samp{$@{prefix@}}, so that specifying just @option{--prefix} will
+affect all of the other directory specifications that were not
+explicitly provided.
+
+The most portable way to affect installation locations is to pass the
+correct locations to @command{configure}; however, many packages provide
+one or both of the following shortcuts of passing variable assignments
+to the @samp{make install} command line to change installation locations
+without having to reconfigure or recompile.
+
+The first method involves providing an override variable for each
+affected directory.  For example, @samp{make install
+prefix=/alternate/directory} will choose an alternate location for all
+directory configuration variables that were expressed in terms of
+@samp{$@{prefix@}}.  Any directories that were specified during
+@command{configure}, but not in terms of @samp{$@{prefix@}}, must each be
+overridden at install time for the entire
+installation to be relocated.  The approach of makefile variable
+overrides for each directory variable is required by the @acronym{GNU}
+Coding Standards, and ideally causes no recompilation.  However, some
+platforms have known limitations with the semantics of shared libraries
+that end up requiring recompilation when using this method, particularly
+noticeable in packages that use @acronym{GNU} Libtool.
+
+The second method involves providing the @samp{DESTDIR} variable.  For
+example, @samp{make install DESTDIR=/alternate/directory} will prepend
+@samp{/alternate/directory} before all installation names.  The approach
+of @samp{DESTDIR} overrides is not required by the @acronym{GNU} Coding
+Standards, and does not work on platforms that have drive letters.  On
+the other hand, it does better at avoiding recompilation issues, and
+works well even when some directory options were not specified in terms
+of @samp{$@{prefix@}} at @command{configure} time.
+
+@node Optional Features
+@section Optional Features
+
+If the package supports it, you can cause programs to be installed with
+an extra prefix or suffix on their names by giving @command{configure}
+the option @option{--program-prefix=@var{PREFIX}} or
+@option{--program-suffix=@var{SUFFIX}}.
+
+Some packages pay attention to @option{--enable-@var{feature}} options
+to @command{configure}, where @var{feature} indicates an optional part
+of the package.  They may also pay attention to
+@option{--with-@var{package}} options, where @var{package} is something
+like @samp{gnu-as} or @samp{x} (for the X Window System).  The
+@file{README} should mention any @option{--enable-} and @option{--with-}
+options that the package recognizes.
+
+For packages that use the X Window System, @command{configure} can
+usually find the X include and library files automatically, but if it
+doesn't, you can use the @command{configure} options
+@option{--x-includes=@var{dir}} and @option{--x-libraries=@var{dir}} to
+specify their locations.
+
+Some packages offer the ability to configure how verbose the execution
+of @command{make} will be.  For these packages, running
+@samp{./configure --enable-silent-rules} sets the default to minimal
+output, which can be overridden with @code{make V=1}; while running
+@samp{./configure --disable-silent-rules} sets the default to verbose,
+which can be overridden with @code{make V=0}.
+
+@node Particular Systems
+@section Particular systems
+
+On HP-UX, the default C compiler is not ANSI C compatible.  If GNU CC is
+not installed, it is recommended to use the following options in order to
+use an ANSI C compiler:
+
+@example
+./configure CC="cc -Ae -D_XOPEN_SOURCE=500"
+@end example
+
+@noindent
+and if that doesn't work, install pre-built binaries of GCC for HP-UX.
+
+On OSF/1 a.k.a.@: Tru64, some versions of the default C compiler cannot
+parse its @code{<wchar.h>} header file.  The option @option{-nodtk} can be
+used as a workaround.  If GNU CC is not installed, it is therefore
+recommended to try
+
+@example
+./configure CC="cc"
+@end example
+
+@noindent
+and if that doesn't work, try
+
+@example
+./configure CC="cc -nodtk"
+@end example
+
+On Solaris, don't put @code{/usr/ucb} early in your @env{PATH}.  This
+directory contains several dysfunctional programs; working variants
+of these programs are available in @code{/usr/bin}.  So, if you need
+@code{/usr/ucb} in your @env{PATH}, put it @emph{after} @code{/usr/bin}.
+
+On Haiku, software installed for all users goes in @file{/boot/common},
+not @file{/usr/local}.  It is recommended to use the following options:
+
+@example
+./configure --prefix=/boot/common
+@end example
+
+@node System Type
+@section Specifying the System Type
+
+There may be some features @command{configure} cannot figure out
+automatically, but needs to determine by the type of machine the package
+will run on.  Usually, assuming the package is built to be run on the
+@emph{same} architectures, @command{configure} can figure that out, but
+if it prints a message saying it cannot guess the machine type, give it
+the @option{--build=@var{type}} option.  @var{type} can either be a
+short name for the system type, such as @samp{sun4}, or a canonical name
+which has the form:
+
+@example
+@var{cpu}-@var{company}-@var{system}
+@end example
+
+@noindent
+where @var{system} can have one of these forms:
+
+@example
+@var{os}
+@var{kernel}-@var{os}
+@end example
+
+See the file @file{config.sub} for the possible values of each field.
+If @file{config.sub} isn't included in this package, then this package
+doesn't need to know the machine type.
+
+If you are @emph{building} compiler tools for cross-compiling, you
+should use the option @option{--target=@var{type}} to select the type of
+system they will produce code for.
+
+If you want to @emph{use} a cross compiler, that generates code for a
+platform different from the build platform, you should specify the
+@dfn{host} platform (i.e., that on which the generated programs will
+eventually be run) with @option{--host=@var{type}}.
+
+@node Sharing Defaults
+@section Sharing Defaults
+
+If you want to set default values for @command{configure} scripts to
+share, you can create a site shell script called @file{config.site} that
+gives default values for variables like @code{CC}, @code{cache_file},
+and @code{prefix}.  @command{configure} looks for
+@file{@var{prefix}/share/config.site} if it exists, then
+@file{@var{prefix}/etc/config.site} if it exists.  Or, you can set the
+@code{CONFIG_SITE} environment variable to the location of the site
+script.  A warning: not all @command{configure} scripts look for a site
+script.
+
+@node Defining Variables
+@section Defining Variables
+
+Variables not defined in a site shell script can be set in the
+environment passed to @command{configure}.  However, some packages may
+run configure again during the build, and the customized values of these
+variables may be lost.  In order to avoid this problem, you should set
+them in the @command{configure} command line, using @samp{VAR=value}.
+For example:
+
+@example
+./configure CC=/usr/local2/bin/gcc
+@end example
+
+@noindent
+causes the specified @command{gcc} to be used as the C compiler (unless it is
+overridden in the site shell script).
+
+@noindent
+Unfortunately, this technique does not work for @env{CONFIG_SHELL} due
+to an Autoconf bug.  Until the bug is fixed you can use this
+workaround:
+
+@example
+CONFIG_SHELL=/bin/bash /bin/bash ./configure CONFIG_SHELL=/bin/bash
+@end example
+
+@node configure Invocation
+@section @command{configure} Invocation
+
+@command{configure} recognizes the following options to control how it
+operates.
+
+@table @option
+@item --help
+@itemx -h
+Print a summary of all of the options to @command{configure}, and exit.
+
+@item --help=short
+@itemx --help=recursive
+Print a summary of the options unique to this package's
+@command{configure}, and exit.  The @code{short} variant lists options
+used only in the top level, while the @code{recursive} variant lists
+options also present in any nested packages.
+
+@item --version
+@itemx -V
+Print the version of Autoconf used to generate the @command{configure}
+script, and exit.
+
+@item --cache-file=@var{file}
+@cindex Cache, enabling
+Enable the cache: use and save the results of the tests in @var{file},
+traditionally @file{config.cache}.  @var{file} defaults to
+@file{/dev/null} to disable caching.
+
+@item --config-cache
+@itemx -C
+Alias for @option{--cache-file=config.cache}.
+
+@item --quiet
+@itemx --silent
+@itemx -q
+Do not print messages saying which checks are being made.  To suppress
+all normal output, redirect it to @file{/dev/null} (any error messages
+will still be shown).
+
+@item --srcdir=@var{dir}
+Look for the package's source code in directory @var{dir}.  Usually
+@command{configure} can determine that directory automatically.
+
+@item --prefix=@var{dir}
+Use @var{dir} as the installation prefix.  @ref{Installation Names}
+for more details, including other options available for fine-tuning
+the installation locations.
+
+@item --no-create
+@itemx -n
+Run the configure checks, but stop before creating any output files.
+@end table
+
+@noindent
+@command{configure} also accepts some other, not widely useful, options.
+Run @samp{configure --help} for more details.
+
+@c Local Variables:
+@c fill-column: 72
+@c ispell-local-dictionary: "american"
+@c indent-tabs-mode: nil
+@c whitespace-check-buffer-indent: nil
+@c End:

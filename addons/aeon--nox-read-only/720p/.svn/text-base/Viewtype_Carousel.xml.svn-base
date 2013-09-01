@@ -1,0 +1,465 @@
+<includes>
+  <include name="CarouselThumbDimensions">
+    <posx>0</posx>
+    <posy>0</posy>
+    <width>240</width>
+    <height>342</height>
+  </include>
+  <include name="CarouselThumb">
+    <include>CarouselThumbDimensions</include>
+    <texture background="true" diffuse="thumbs/movieposter_mask.png">DefaultVideoBigPoster.png</texture>
+    <bordertexture border="18">thumbs/poster_shadow.png</bordertexture>
+    <bordersize>18</bordersize>
+    <aspectratio scalediffuse="false">stretch</aspectratio>
+  </include>
+  <include name="CarouselThumbReflection">
+    <posx>0</posx>
+    <posy>308</posy>
+    <width>240</width>
+    <height>360</height>
+    <texture background="true" flipy="true" diffuse="thumbs/movieposter_mask_reflect.png">DefaultVideoBigPoster.png</texture>
+    <bordersize>18</bordersize>
+    <aspectratio scalediffuse="false">stretch</aspectratio>
+  </include>
+  
+  <include name="CarouselOverlay">
+    <posx>162</posx>
+    <posy>18</posy>
+    <width>60</width>
+    <height>60</height>
+  </include>
+  <include name="CarouselItem-4">
+    <control type="image">
+      <include>CarouselThumb</include>
+      <info>Container(55).ListItem(-4).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselThumbReflection</include>
+      <info>Container(55).ListItem(-4).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselOverlay</include>
+      <include>OverlayVisibility-4</include>
+    </control>
+  </include>
+  <include name="CarouselItem-3">
+    <control type="image">
+      <include>CarouselThumb</include>
+      <info>Container(55).ListItem(-3).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselThumbReflection</include>
+      <info>Container(55).ListItem(-3).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselOverlay</include>
+      <include>OverlayVisibility-3</include>
+    </control>
+  </include>
+  <include name="CarouselItem-2">
+    <control type="image">
+      <include>CarouselThumb</include>
+      <info>Container(55).ListItem(-2).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselThumbReflection</include>
+      <info>Container(55).ListItem(-2).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselOverlay</include>
+      <include>OverlayVisibility-2</include>
+    </control>
+  </include>
+  <include name="CarouselItem-1">
+    <control type="image">
+      <include>CarouselThumb</include>
+      <info>Container(55).ListItem(-1).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselThumbReflection</include>
+      <info>Container(55).ListItem(-1).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselOverlay</include>
+      <include>OverlayVisibility-1</include>
+    </control>
+  </include>
+  <include name="CarouselItem0">
+    <control type="image">
+      <include>CarouselThumb</include>
+      <info>Container(55).ListItem(0).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselThumbReflection</include>
+      <info>Container(55).ListItem(0).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselOverlay</include>
+      <include>OverlayVisibility0</include>
+    </control>
+  </include>
+  <include name="CarouselItem1">
+    <control type="image">
+      <include>CarouselThumb</include>
+      <info>Container(55).ListItem(1).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselThumbReflection</include>
+      <info>Container(55).ListItem(1).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselOverlay</include>
+      <include>OverlayVisibility1</include>
+    </control>
+  </include>
+  <include name="CarouselItem2">
+    <control type="image">
+      <include>CarouselThumb</include>
+      <info>Container(55).ListItem(2).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselThumbReflection</include>
+      <info>Container(55).ListItem(2).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselOverlay</include>
+      <include>OverlayVisibility2</include>
+    </control>
+  </include>
+  <include name="CarouselItem3">
+    <control type="image">
+      <include>CarouselThumb</include>
+      <info>Container(55).ListItem(3).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselThumbReflection</include>
+      <info>Container(55).ListItem(3).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselOverlay</include>
+      <include>OverlayVisibility3</include>
+    </control>
+  </include>
+  <include name="CarouselItem4">
+    <control type="image">
+      <include>CarouselThumb</include>
+      <info>Container(55).ListItem(4).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselThumbReflection</include>
+      <info>Container(55).ListItem(4).Thumb</info>
+    </control>
+    <control type="image">
+      <include>CarouselOverlay</include>
+      <include>OverlayVisibility4</include>
+    </control>
+  </include>
+  <include name="Carousel">
+    <control type="group">
+      <visible>Control.IsVisible(55)</visible>
+
+      <control type="group" id="6020">
+        <posx>1170</posx>
+        <posy>293</posy>
+        <description>right side</description>
+        <camera x="740" y="540" />
+        <visible>Container.OnNext+!Skin.HasSetting(carouselflow)</visible>
+        <animation effect="rotatey" center="1140,540" start="90" end="45" tween="cubic" easing="inout" time="0" condition="true">Conditional</animation>
+        <animation effect="slide" end="-220,0" time="250" reversible="false">Hidden</animation>
+        <control type="group">
+          <posx>-80</posx>
+          <animation type="Conditional" condition="true">
+            <effect type="rotatey" center="60,190" start="0" end="-45" time="250" tween="cubic" easing="inout" delay="250" />
+            <effect type="slide" start="0" end="-167,0" time="250" tween="cubic" easing="inout" delay="250"/>
+          </animation>
+          <include>CarouselItem0</include>
+        </control>
+        <control type="group">
+          <posx>140</posx>
+          <include>CarouselItem1</include>
+        </control>
+        <control type="group">
+          <posx>360</posx>
+          <include>CarouselItem2</include>
+        </control>
+        <control type="group">
+          <posx>580</posx>
+          <include>CarouselItem3</include>
+        </control>
+      </control>
+
+      <control type="group" id="6021">
+        <posx>1170</posx>
+        <posy>293</posy>
+        <description>right side</description>
+        <camera x="740" y="540" />
+        <visible>Container.OnPrevious+!Skin.HasSetting(carouselflow)</visible>
+        <animation effect="rotatey" center="1140,540" start="90" end="45" tween="cubic" easing="inout" time="0" condition="true">Conditional</animation>
+        <animation effect="slide" end="220,0" time="250" reversible="false">Hidden</animation>
+        <control type="group">
+          <posx>360</posx>
+          <include>CarouselItem4</include>
+        </control>
+        <control type="group">
+          <posx>140</posx>
+          <include>CarouselItem3</include>
+        </control>
+        <control type="group">
+          <posx>-80</posx>
+          <include>CarouselItem2</include>
+        </control>
+        <control type="group">
+          <posx>-300</posx>
+          <include>CarouselItem1</include>
+        </control>
+      </control>
+
+      <control type="group" id="6022">
+        <posx>-400</posx>
+        <posy>293</posy>
+        <description>left side</description>
+        <camera x="540" y="540" />
+        <visible>Container.OnPrevious+!Skin.HasSetting(carouselflow)</visible>
+        <animation effect="rotatey" center="140,540" start="-90" end="-45" tween="cubic" easing="inout" time="0" condition="true">Conditional</animation>
+        <animation effect="slide" end="220,0" time="250" reversible="false">Hidden</animation>
+        <control type="group">
+          <posx>350</posx>
+          <animation type="Conditional" condition="true">
+            <effect type="rotatey" center="440,190" start="0" end="45" time="250" tween="cubic" easing="inout" delay="250" />
+            <effect type="slide" start="0" end="167" time="250" tween="cubic" easing="inout" delay="250"/>
+          </animation>
+          <include>CarouselItem0</include>
+        </control>
+        <control type="group">
+          <posx>130</posx>
+          <include>CarouselItem-1</include>
+        </control>
+        <control type="group">
+          <posx>-90</posx>
+          <include>CarouselItem-2</include>
+        </control>
+        <control type="group">
+          <posx>-310</posx>
+          <include>CarouselItem-3</include>
+        </control>
+      </control>
+
+      <control type="group" id="6023">
+        <posx>-400</posx>
+        <posy>293</posy>
+        <description>left side</description>
+        <camera x="540" y="540" />
+        <visible>Container.OnNext+!Skin.HasSetting(carouselflow)</visible>
+        <animation effect="rotatey" center="140,540" start="-90" end="-45" tween="cubic" easing="inout" time="0" condition="true">Conditional</animation>
+        <animation effect="slide" end="-220,0" time="250" reversible="false">Hidden</animation>
+        <control type="group">
+          <posx>-90</posx>
+          <include>CarouselItem-4</include>
+        </control>
+        <control type="group">
+          <posx>130</posx>
+          <include>CarouselItem-3</include>
+        </control>
+        <control type="group">
+          <posx>350</posx>
+          <include>CarouselItem-2</include>
+        </control>
+        <control type="group">
+          <posx>570</posx>
+          <animation type="Conditional" condition="true">
+            <effect type="rotatey" center="550,190" start="45" end="0" time="250" tween="cubic" easing="inout" delay="250" />
+            <effect type="slide" start="200" end="0" time="250" tween="cubic" easing="inout" delay="250"/>
+          </animation>
+          <include>CarouselItem-1</include>
+        </control>
+      </control>
+
+      <control type="button" id="801">
+        <include>HiddenObject</include>
+        <visible>!Skin.HasSetting(carouselflow)</visible>
+        <animation effect="fade" start="100" end="0" time="1600">Hidden</animation>
+      </control>
+
+      <control type="group" id="6024">
+        <posx>-400</posx>
+        <posy>293</posy>
+        <description>left side</description>
+        <visible>!Control.isVisible(6022)+!Control.IsVisible(6023)+!Control.isVisible(6021)+!Control.IsVisible(6020)+Control.IsVisible(801)</visible>
+        <camera x="540" y="540" />
+        <animation effect="rotatey" center="140,540" start="-90" end="-45" tween="cubic" easing="inout" time="0" condition="true">Conditional</animation>
+        <control type="group">
+          <posx>350</posx>
+          <animation type="Conditional" condition="Skin.HasSetting(carouselflow)">
+            <effect type="rotatey" center="650,190" start="0" end="45" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="380" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="-234" time="800" delay="800" tween="cubic" easing="inout" />
+          </animation>
+          <include>CarouselItem-1</include>
+        </control>
+        <control type="group">
+          <posx>130</posx>
+          <animation type="Conditional" condition="Skin.HasSetting(carouselflow)">
+            <effect type="rotatey" center="650,190" start="0" end="45" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="600" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="-459" time="800" delay="800" tween="cubic" easing="inout" />
+          </animation>
+          <include>CarouselItem-2</include>
+        </control>
+        <control type="group">
+          <posx>-90</posx>
+          <animation type="Conditional" condition="Skin.HasSetting(carouselflow)">
+            <effect type="rotatey" center="650,190" start="0" end="45" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="820" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="-684" time="800" delay="800" tween="cubic" easing="inout" />
+          </animation>
+          <include>CarouselItem-3</include>
+        </control>
+      </control>
+
+      <control type="group" id="6025">
+        <posx>1170</posx>
+        <posy>293</posy>
+        <description>right side</description>
+        <camera x="740" y="540" />
+        <visible>!Control.isVisible(6022)+!Control.IsVisible(6023)+!Control.isVisible(6021)+!Control.IsVisible(6020)+Control.IsVisible(801)</visible>
+        <animation effect="rotatey" center="1140,540" start="90" end="45" tween="cubic" easing="inout" time="0" condition="true">Conditional</animation>
+        <control type="group">
+          <posx>-80</posx>
+          <animation type="Conditional" condition="Skin.HasSetting(carouselflow)">
+            <effect type="rotatey" center="-150,194" start="0" end="-45" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="-388" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="244" time="800" delay="800" tween="cubic" easing="inout" />
+          </animation>
+          <include>CarouselItem1</include>
+        </control>
+        <control type="group">
+          <posx>140</posx>
+          <animation type="Conditional" condition="Skin.HasSetting(carouselflow)">
+            <effect type="rotatey" center="-150,194" start="0" end="-45" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="-608" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="471" time="800" delay="800" tween="cubic" easing="inout" />
+          </animation>
+          <include>CarouselItem2</include>
+        </control>
+        <control type="group">
+          <posx>360</posx>
+          <animation type="Conditional" condition="Skin.HasSetting(carouselflow)">
+            <effect type="rotatey" center="-150,194" start="0" end="-45" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="-828" time="800" tween="cubic" easing="inout" />
+            <effect type="slide" start="0" end="698" time="800" delay="800" tween="cubic" easing="inout" />
+          </animation>
+          <include>CarouselItem3</include>
+        </control>
+        <control type="group">
+          <posx>-300</posx>
+          <animation type="Conditional" condition="true">
+            <effect type="rotatey" center="-160,190" start="0" end="-45" time="250" tween="cubic" easing="inout" delay="250" />
+            <effect type="slide" start="0" end="-167,0" time="250" tween="cubic" easing="inout" delay="250"/>
+          </animation>
+          <include>CarouselItem0</include>
+        </control>
+      </control>
+
+      <control type="fixedlist" id="55">
+        <posx>0</posx>
+        <posy>342</posy>
+        <height>615</height>
+        <width>1280</width>
+        <onleft>55</onleft>
+        <onright>55</onright>
+        <onup>7000</onup>
+        <ondown>73</ondown>
+        <scrolltime>250</scrolltime>
+        <preloaditems>2</preloaditems>
+        <pagecontrol>73</pagecontrol>
+        <orientation>horizontal</orientation>
+        <focusposition>3</focusposition>
+        <viewtype label="$LOCALIZE[31376]">list</viewtype>
+        <visible>Container.Content(movies)|[Container.Content(tvshows)+Skin.HasSetting(TVShowsUsePosters)]|Container.Content(seasons)|[Window.IsActive(programs)+Substring(Container.FolderPath,advanced.launcher)]</visible>
+        <itemlayout width="180" height="245">
+          <control type="group">
+            <visible>Skin.HasSetting(carouselflow)+!Control.IsVisible(6025)+!Control.IsVisible(6024)</visible>
+            <control type="image">
+              <posx>-9</posx>
+              <posy>-3</posy>
+              <width>198</width>
+              <height>280</height>
+              <texture background="true" diffuse="thumbs/movieposter_mask.png">DefaultVideoBigPoster.png</texture>
+              <bordertexture border="18">thumbs/poster_shadow.png</bordertexture>
+              <bordersize>18</bordersize>
+              <aspectratio scalediffuse="false">stretch</aspectratio>
+              <info>ListItem.Thumb</info>
+            </control>
+            <control type="image">
+              <posx>-5</posx>
+              <posy>247</posy>
+              <width>190</width>
+              <height>272</height>
+              <texture background="true" flipy="true" diffuse="thumbs/movieposter_mask_reflect.png">DefaultVideoBigPoster.png</texture>
+              <bordersize>14</bordersize>
+              <aspectratio scalediffuse="false">stretch</aspectratio>
+              <info>ListItem.Thumb</info>
+            </control>
+            <control type="image">
+              <posx>124</posx>
+              <posy>15</posy>
+              <width>47</width>
+              <height>47</height>
+              <include>OverlayVisibility0</include>
+            </control>
+          </control>
+        </itemlayout>
+        <focusedlayout width="200" height="515">
+          <control type="group">
+            <visible>Skin.HasSetting(carouselflow)+!Control.IsVisible(6025)+!Control.IsVisible(6024)</visible>
+            <animation effect="zoom" center="97,70" start="100" end="115" time="250" tween="cubic" easing="inout" condition="[Skin.HasSetting(InfoPopUp)+Container.Content(movies)]|[Skin.HasSetting(InfoPopUpTV)+[Container.Content(tvshows)|Container.Content(seasons)]]|Player.HasVideo">Focus</animation>
+            <animation effect="zoom" center="97,70" start="115" end="100" time="250" tween="cubic" easing="inout" condition="[Skin.HasSetting(InfoPopUp)+Container.Content(movies)]|[Skin.HasSetting(InfoPopUpTV)+[Container.Content(tvshows)|Container.Content(seasons)]]|Player.HasVideo">Unfocus</animation>
+            <animation effect="zoom" start="100" end="150" center="97,176" time="250" easing="out" reversible="false" tween="back" condition="![[Skin.HasSetting(InfoPopUp)+Container.Content(movies)]|[Skin.HasSetting(InfoPopUpTV)+[Container.Content(tvshows)|Container.Content(seasons)]]|Player.HasVideo]">Focus</animation>
+            <animation effect="zoom" start="150" end="100" center="97,176" time="250" easing="out" reversible="false" tween="back" condition="![[Skin.HasSetting(InfoPopUp)+Container.Content(movies)]|[Skin.HasSetting(InfoPopUpTV)+[Container.Content(tvshows)|Container.Content(seasons)]]|Player.HasVideo]">Focus</animation>
+            <control type="image">
+              <posx>2</posx>
+              <posy>0</posy>
+              <width>196</width>
+              <height>276</height>
+              <texture background="true" diffuse="thumbs/movieposter_mask.png">DefaultVideoBigPoster.png</texture>
+              <bordertexture border="18">thumbs/poster_shadow.png</bordertexture>
+              <bordersize>18</bordersize>
+              <aspectratio scalediffuse="false">stretch</aspectratio>
+              <info>ListItem.Thumb</info>
+            </control>
+            <control type="image">
+              <posx>6</posx>
+              <posy>246</posy>
+              <width>188</width>
+              <height>269</height>
+              <texture background="true" flipy="true" diffuse="thumbs/movieposter_mask_reflect.png">DefaultVideoBigPoster.png</texture>
+              <bordersize>14</bordersize>
+              <aspectratio scalediffuse="false">stretch</aspectratio>
+              <info>ListItem.Thumb</info>
+            </control>
+            <control type="image">
+              <posx>133</posx>
+              <posy>18</posy>
+              <width>47</width>
+              <height>47</height>
+              <include>OverlayVisibility0</include>
+            </control>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="scrollbar" id="73">
+        <visible allowhiddenfocus="true">Control.HasFocus(73)</visible>
+        <onup>55</onup>
+        <showonepage>true</showonepage>
+        <ondown>Skin.ToggleSetting(carouselflow)</ondown>
+      </control>
+
+      <control type="group">
+        <visible>!Control.HasFocus(109)+!Control.HasFocus(73)</visible>
+        <include>Animation_HideMultiplex</include>
+        <include>SecondLabelFloor</include>
+        <include>FirstLabelFloor</include>
+      </control>
+    </control>
+  </include>
+</includes>

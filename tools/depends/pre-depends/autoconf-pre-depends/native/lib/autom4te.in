@@ -1,0 +1,164 @@
+# Definition of Autom4te option sets.                     -*- Makefile -*-
+#
+# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+# 2010 Free Software Foundation, Inc.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+## -------------------------- ##
+## Autoheader preselections.  ##
+## -------------------------- ##
+
+begin-language: "Autoheader-preselections"
+args: --preselect AC_CONFIG_HEADERS
+args: --preselect AH_OUTPUT
+args: --preselect AC_DEFINE_TRACE_LITERAL
+end-language: "Autoheader-preselections"
+
+
+## ------------------------ ##
+## Automake-preselections.  ##
+## ------------------------ ##
+
+begin-language: "Automake-preselections"
+args: --preselect AC_CANONICAL_BUILD
+args: --preselect AC_CANONICAL_HOST
+# AC_CANONICAL_SYSTEM was traced from Automake 1.7 to Automake 1.9.
+# Later versions trace AC_CANONICAL_TARGET instead.
+args: --preselect AC_CANONICAL_SYSTEM
+args: --preselect AC_CANONICAL_TARGET
+args: --preselect AC_CONFIG_AUX_DIR
+args: --preselect AC_CONFIG_FILES
+args: --preselect AC_CONFIG_HEADERS
+args: --preselect AC_CONFIG_LIBOBJ_DIR
+args: --preselect AC_CONFIG_LINKS
+args: --preselect AC_FC_FREEFORM
+args: --preselect AC_FC_SRCEXT
+args: --preselect AC_INIT
+args: --preselect AC_LIBSOURCE
+args: --preselect AC_REQUIRE_AUX_FILE
+# Automake < 1.10 traces AC_SUBST.  Automake >= 1.10 traces AC_SUBST_TRACE.
+args: --preselect AC_SUBST
+args: --preselect AC_SUBST_TRACE
+args: --preselect AM_AUTOMAKE_VERSION
+args: --preselect AM_CONDITIONAL
+args: --preselect AM_ENABLE_MULTILIB
+args: --preselect AM_GNU_GETTEXT
+args: --preselect AM_GNU_GETTEXT_INTL_SUBDIR
+args: --preselect AM_INIT_AUTOMAKE
+args: --preselect AM_MAKEFILE_INCLUDE
+args: --preselect AM_MAINTAINER_MODE
+args: --preselect AM_NLS
+args: --preselect AM_POT_TOOLS
+args: --preselect AM_PATH_GUILE
+args: --preselect AM_PROG_AR
+args: --preselect AM_PROG_CC_C_O
+args: --preselect AM_PROG_CXX_C_O
+args: --preselect AM_PROG_F77_C_O
+args: --preselect AM_PROG_FC_C_O
+args: --preselect AM_PROG_MOC
+args: --preselect AM_SILENT_RULES
+args: --preselect AM_XGETTEXT_OPTION
+args: --preselect _AM_MAKEFILE_INCLUDE
+args: --preselect _AM_SUBST_NOTMAKE
+args: --preselect _AM_COND_IF
+args: --preselect _AM_COND_ELSE
+args: --preselect _AM_COND_ENDIF
+args: --preselect LT_SUPPORTED_TAG
+args: --preselect _LT_AC_TAGCONFIG
+args: --preselect m4_include
+args: --preselect m4_sinclude
+end-language: "Automake-preselections"
+
+
+## -------------------------- ##
+## Autoreconf-preselections.  ##
+## -------------------------- ##
+
+begin-language: "Autoreconf-preselections"
+args: --preselect AC_CONFIG_AUX_DIR
+args: --preselect AC_CONFIG_HEADERS
+args: --preselect AC_CONFIG_SUBDIRS
+args: --preselect AC_INIT
+args: --preselect AC_PROG_LIBTOOL
+args: --preselect LT_INIT
+args: --preselect LT_CONFIG_LTDL_DIR
+args: --preselect AM_GNU_GETTEXT
+end-language: "Autoreconf-preselections"
+
+
+## ----------------------------- ##
+## Autoconf without aclocal.m4.  ##
+## ----------------------------- ##
+
+# This intermediate language is used by aclocal to build aclocal.m4.
+
+begin-language: "Autoconf-without-aclocal-m4"
+args: --prepend-include '@pkgdatadir@'
+args: --cache=autom4te.cache
+args: autoconf/autoconf.m4f
+args: acsite.m4?
+args: --mode 777
+args: --language M4sh
+end-language: "Autoconf-without-aclocal-m4"
+
+
+## ---------- ##
+## Autoconf.  ##
+## ---------- ##
+
+begin-language: "Autoconf"
+args: --language Autoheader-preselections
+args: --language Automake-preselections
+args: --language Autoreconf-preselections
+args: --language Autoconf-without-aclocal-m4
+args: aclocal.m4?
+end-language: "Autoconf"
+
+
+## -------- ##
+## Autotest ##
+## -------- ##
+
+begin-language: "Autotest"
+args: --prepend-include '@pkgdatadir@'
+args: autotest/autotest.m4f
+args: package.m4?
+args: local.at?
+args: --mode 777
+args: --language M4sh
+end-language: "Autotest"
+
+
+## ---- ##
+## M4sh ##
+## ---- ##
+
+begin-language: "M4sh"
+args: --prepend-include '@pkgdatadir@'
+args: m4sugar/m4sh.m4f
+args: --mode 777
+args: --language M4sugar
+end-language: "M4sh"
+
+
+## ------- ##
+## M4sugar ##
+## ------- ##
+
+begin-language: "M4sugar"
+args: --prepend-include '@pkgdatadir@'
+args: m4sugar/m4sugar.m4f
+args: --warnings syntax
+end-language: "M4sugar"

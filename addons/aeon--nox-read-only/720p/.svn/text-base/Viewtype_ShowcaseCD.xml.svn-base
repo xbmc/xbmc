@@ -1,0 +1,137 @@
+<includes>
+  <include name="contents513list">
+    <visible>[Window.IsActive(501)|Window.IsActive(502)|Window.IsActive(1)|Window.IsActive(pictures)]+!Container.Content(genres)</visible>
+    <posx>-245</posx>
+    <posy>387</posy>
+    <width>1770</width>
+    <height>350</height>
+    <onleft>513</onleft>
+    <onright>513</onright>
+    <onup>7000</onup>
+    <ondown>60</ondown>
+    <viewtype label="$LOCALIZE[31152]">bigwrap</viewtype>
+    <pagecontrol>60</pagecontrol>
+    <scrolltime>200</scrolltime>
+    <focusposition>3</focusposition>
+    <orientation>horizontal</orientation>
+    <preloaditems>4</preloaditems>
+    <animation effect="fade" start="100" end="0" time="400" condition="Control.HasFocus(110)">Conditional</animation>
+    <itemlayout height="350" width="250">
+      <control type="group">
+        <visible>Skin.HasSetting(noflowalbumdvd)+!Control.IsVisible(7004)</visible>
+        <include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+        <control type="image">
+          <include>MusicShowcaseThumbDVD</include>
+          <info>ListItem.Icon</info>
+        </control>
+        <control type="image">
+          <description>Glass overlay</description>
+          <include>MusicShowcaseGlassOverlayAngledCD</include>
+        </control>
+        <include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+        <control type="image">
+          <include>MusicShowcaseThumbReflectionDVD</include>
+          <info>ListItem.Icon</info>
+        </control>
+        <control type="image">
+          <description>Glass overlay reflection</description>
+          <include>MusicShowcaseThumbReflectionCD</include>
+        </control>
+      </control>
+    </itemlayout>
+    <focusedlayout height="350" width="250">
+      <control type="group">
+        <visible>Skin.HasSetting(noflowalbumdvd)+!Control.IsVisible(7004)</visible>
+        <animation effect="zoom" start="100" end="110" center="135,230" time="400" easing="out" reversible="false" tween="cubic">Focus</animation>
+        <animation effect="zoom" start="110" end="100" center="135,230" time="400" easing="out" reversible="false" tween="cubic">Unfocus</animation>
+        <include condition="Window.IsActive(pictures)">MusicShowcaseBlackDVD</include>
+        <control type="image">
+          <include>MusicShowcaseThumbMainDVD</include>
+          <info>ListItem.Icon</info>
+        </control>
+        <control type="image">
+          <description>Glass overlay</description>
+          <include>MusicShowcaseGlassOverlayAngledCD</include>
+        </control>
+        <include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflectionDVD</include>
+        <control type="image">
+          <include>MusicShowcaseThumbReflectionMainDVD</include>
+          <info>ListItem.Icon</info>
+        </control>
+        <control type="image">
+          <description>Glass overlay reflection</description>
+          <include>MusicShowcaseThumbReflectionCD</include>
+        </control>
+      </control>
+    </focusedlayout>
+  </include>
+  <include name="sccfixed">
+    <control type="fixedlist" id="513">
+      <include>contents513list</include>
+    </control>
+  </include>
+  <include name="sccwrap">
+    <control type="wraplist" id="513">
+      <include>contents513list</include>
+    </control>
+  </include>
+  <include name="ShowcaseCD">
+    <control type="group">
+      <visible>Control.IsVisible(513)</visible>
+      <include>Animation_OpenCloseZoom</include>
+      <include>ShowcaseSquareDVD</include>
+      <include condition="!Skin.HasSetting(showcasewrap)">sccfixed</include>
+      <include condition="Skin.HasSetting(showcasewrap)">sccwrap</include>
+      <control type="group">
+        <visible>!Control.HasFocus(110)</visible>
+        <control type="label">
+          <posx>340</posx>
+          <posy>670</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_Info_Caps</font>
+          <textcolor>floor</textcolor>
+          <shadowcolor>floorshadow</shadowcolor>
+          <label>[UPPERCASE]$INFO[ListItem.Label2][/UPPERCASE]</label>
+          <visible>!Control.HasFocus(60)+!ControlGroup(9000).HasFocus+!SubString(ListItem.Label,..)</visible>
+        </control>
+        <control type="label">
+          <posx>340</posx>
+          <posy>693</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_ShowcaseMainLabel2_Caps</font>
+          <scroll>true</scroll>
+          <scrollspeed>50</scrollspeed>
+          <textcolor>floor</textcolor>
+          <shadowcolor>floorshadow</shadowcolor>
+          <label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+          <visible>!Control.HasFocus(60)+!ControlGroup(9000).HasFocus</visible>
+        </control>
+        <control type="label">
+          <posx>340</posx>
+          <posy>693</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_ShowcaseMainLabel2_Caps</font>
+          <textcolor>floor</textcolor>
+          <shadowcolor>floorshadow</shadowcolor>
+          <label>[UPPERCASE]$INFO[Container.NumItems] $LOCALIZE[31025] | $LOCALIZE[31024] $INFO[Container.CurrentPage]/$INFO[Container.NumPages][/UPPERCASE]</label>
+          <visible>ControlGroup(9000).HasFocus</visible>
+        </control>
+        <control type="scrollbar" id="60">
+          <visible allowhiddenfocus="true">Control.HasFocus(60)</visible>
+          <onup>513</onup>
+          <ondown>110</ondown>
+          <visible>Control.IsVisible(513)</visible>
+        </control>
+      </control>
+    </control>
+  </include>
+</includes>

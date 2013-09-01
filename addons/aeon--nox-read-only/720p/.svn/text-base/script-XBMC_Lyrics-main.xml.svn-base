@@ -1,0 +1,342 @@
+﻿<!-- vim: ts=2
+-->
+<window>
+	<allowoverlay>no</allowoverlay>
+	<defaultcontrol always="false">101</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+				<animation type="Conditional" condition="Player.ShowInfo + !Window.IsActive(120)+!Skin.HasSetting(osdbigtop)+Skin.HasSetting(cdartmusicviz)">
+          <effect type="slide" time="400" start="0,0" end="0,46" easing="out" tween="cubic"/>
+        </animation>
+      <animation type="Conditional" condition="Player.ShowInfo + !Window.IsActive(120)+Skin.HasSetting(osdbigtop)+Skin.HasSetting(cdartmusicviz)">
+        <effect type="slide" time="400" start="0,0" end="0,127" easing="out" tween="cubic"/>
+      </animation>
+      <control type="image">
+			  <posx>0</posx>
+			<posy>-134</posy>
+			  <texture>common/black.png</texture>
+        <colordiffuse>99ffffff</colordiffuse>
+        <width>1280</width>
+				<height>134</height>
+				<visible>!Player.ShowInfo | Window.IsActive(120)</visible>
+      </control>
+        <control type="image">
+			  <posx>0</posx>
+			<posy>0</posy>
+			  <texture flipy="true">views/lowlist_panelback.png</texture>
+        <width>1280</width>
+        <height>390</height>
+			  <animation effect="slide" start="0,-326" end="0,0" time="500" tween="cubic" easing="out" delay="200">windowopen</animation>
+          <animation effect="fade" start="100" end="80" time="50" condition="true">Conditional</animation>
+        </control>
+			<control type="label">
+				<description>header label</description>
+				<posx>55</posx>
+				<posy>10</posy>
+				<width>1169</width>
+				<height>30</height>
+				<font>Font_Reg38</font>
+        <textcolor>d0FFFFFF</textcolor>
+				<label>LYRICS</label>
+				<align>center</align>
+				<aligny>center</aligny>
+		    <animation effect="fade" time="1000">WindowOpen</animation>
+		    <animation effect="fade" time="200">WindowClose</animation>
+			</control>
+			<!-- ** Required ** Do not change <id> or <type> (Text box for lyrics) -->
+			<control type="textbox" id="100">
+				<description>textarea</description>
+				<posx>55</posx>
+				<posy>100</posy>
+				<width>1169</width>
+				<height>319</height>
+				<align>center</align>
+				<font>Font_Reg20</font>
+				<onup>100</onup>
+				<ondown>100</ondown>
+				<onleft>101</onleft>
+				<onright>101</onright>
+				<pagecontrol>101</pagecontrol>
+				<animation effect="fade" time="1000" delay="400">WindowOpen</animation>
+		    <animation effect="fade" time="200">WindowClose</animation>
+			</control>
+			<control type="spincontrolex" id="101">
+				<posx>950</posx>
+				<posy>4</posy>
+				<height>41</height>
+				<textureup>settings/spin-up.png</textureup>
+				<texturedown>settings/spin-down.png</texturedown>
+				<textureupfocus>settings/spin-up-focus.png</textureupfocus>
+				<texturedownfocus>settings/spin-down-focus.png</texturedownfocus>
+				<font>Font_Reg18</font>
+				<textcolor>FF929191</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<pulseonselect>false</pulseonselect>
+				<spinposx>-4</spinposx>
+				<spinwidth>42</spinwidth>
+				<spinheight>65</spinheight>
+				<textoffsetx>0</textoffsetx>
+				<aligny>center</aligny>
+				<reverse>yes</reverse>
+				<subtype>page</subtype>
+				<onleft>130</onleft>
+				<onright>130</onright>
+				<ondown>101</ondown>
+				<onup>101</onup>
+				<showonepage>true</showonepage>
+				<visible>Control.IsVisible(100)</visible>
+				<animation effect="fade" time="1000">WindowOpen</animation>
+		    <animation effect="fade" time="200">WindowClose</animation>
+			</control>
+			<!-- ** Required ** Do not change <id> or <type> (Smooth scrolling list for lyrics) -->
+			<control type="list" id="110">
+				<posx>55</posx>
+				<posy>60</posy>
+				<width>1169</width>
+				<height>300</height>
+				<onleft>130</onleft>
+				<onright>111</onright>
+				<onup>110</onup>
+				<ondown>110</ondown>
+				<pagecontrol>111</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<animation effect="fade" time="1000">WindowOpen</animation>
+		    <animation effect="fade" time="200">WindowClose</animation>
+				<itemlayout height="25">
+					<control type="label">
+						<posx>585</posx>
+						<posy>0</posy>
+						<width>1169</width>
+						<height>25</height>
+						<font>Font_Reg20</font>
+						<aligny>center</aligny>
+						<align>center</align>
+						<textcolor>FF929191</textcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="25">
+					  <control type="label">
+						<posx>585</posx>
+						<posy>0</posy>
+						<width>1169</width>
+						<height>25</height>
+						<font>Font_Reg20</font>
+						<aligny>center</aligny>
+						<align>center</align>
+						<textcolor>FF929191</textcolor>
+						<align>left</align>
+						<label>$INFO[ListItem.Label]</label>
+						<visible>!Control.HasFocus(110)</visible>
+					</control>
+					<control type="label">
+						<posx>585</posx>
+						<posy>0</posy>
+						<width>1169</width>
+						<height>25</height>
+						<font>Font_Reg20</font>
+						<aligny>center</aligny>
+						<align>center</align>
+						<textcolor>FF929191</textcolor>
+						<align>left</align>
+						<label fallback="--">$INFO[ListItem.Label]</label>
+						<visible>Control.HasFocus(110)</visible>
+            <animation type="Focus" reversible="false">
+              <effect type="fade" start="0" end="100" time="300"/>
+            </animation>
+            <animation type="UnFocus" reversible="false">
+              <effect type="fade" start="100" end="0" time="200"/>
+            </animation>
+					</control>
+					<control type="label">
+						<posx>585</posx>
+						<posy>0</posy>
+						<width>1169</width>
+						<height>25</height>
+						<font>Font_Reg20</font>
+						<aligny>center</aligny>
+						<align>center</align>
+						<textcolor>FFFFFFFF</textcolor>
+						<align>left</align>
+						<label fallback="--">$INFO[ListItem.Label]</label>
+						<visible>Control.HasFocus(110)</visible>
+            <animation type="Focus" reversible="false">
+              <effect type="fade" start="0" end="100" time="300"/>
+            </animation>
+            <animation type="UnFocus" reversible="false">
+              <effect type="fade" start="100" end="0" time="200"/>
+            </animation>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="spincontrolex" id="111">
+				<description>Default spincontrolex</description>
+				<posx>950</posx>
+				<posy>4</posy>
+				<height>41</height>
+				<textureup>settings/spin-up.png</textureup>
+				<texturedown>settings/spin-down.png</texturedown>
+				<textureupfocus>settings/spin-up-focus.png</textureupfocus>
+				<texturedownfocus>settings/spin-down-focus.png</texturedownfocus>
+				<font>Font_Reg18</font>
+				<textcolor>FF929191</textcolor>
+				<focusedcolor>FFFFFFFF</focusedcolor>
+				<pulseonselect>false</pulseonselect>
+				<spinposx>-4</spinposx>
+				<spinwidth>42</spinwidth>
+				<spinheight>65</spinheight>
+				<textoffsetx>0</textoffsetx>
+				<aligny>center</aligny>
+				<reverse>yes</reverse>
+				<subtype>page</subtype>
+				<onleft>110</onleft>
+				<onright>130</onright>
+				<ondown>110</ondown>
+				<onup>110</onup>
+				<showonepage>true</showonepage>
+				<visible>Control.IsVisible(110)</visible>
+				<animation effect="fade" time="1000">WindowOpen</animation>
+		    <animation effect="fade" time="200">WindowClose</animation>
+			</control>
+			<control type="label" id="2">
+				<description>Pick label</description>
+				<posx>55</posx>
+				<posy>100</posy>
+				<width>1169</width>
+				<height>319</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>Font_Reg38</font>
+				<label>CHOOSE SONG</label>
+				<textcolor>FFFFFFFF</textcolor>
+				<visible>Control.IsVisible(120) + ![Control.IsVisible(100) | Control.IsVisible(110)]</visible>
+			</control>
+			<!-- ** Required ** Do not change <id> or <type> (Song Chooser if it gets it wrong) -->
+			<control type="list" id="120">
+				<posx>55</posx>
+				<posy>60</posy>
+				<width>1169</width>
+				<height>300</height>
+				<onleft>121</onleft>
+				<onright>121</onright>
+				<onup>120</onup>
+				<ondown>120</ondown>
+				<pagecontrol>121</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<animation effect="fade" time="1000">WindowOpen</animation>
+		    <animation effect="fade" time="200">WindowClose</animation>
+					<itemlayout height="40">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>1169</width>
+						<height>41</height>
+						<texture>dialogs/setcontent_button_nofocus.png</texture>
+					</control>
+					<control type="label">
+						<posx>35</posx>
+						<posy>0</posy>
+						<width>1149</width>
+						<height>40</height>
+				    <font>Font_Reg38</font>
+						<align>left</align>
+						<aligny>center</aligny>
+			    	<textcolor>FFFFFFFF</textcolor>
+						<info>ListItem.Label</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="40">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>1169</width>
+						<height>41</height>
+						<visible>!Control.HasFocus(120)</visible>
+						<texture>dialogs/setcontent_button_nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>1169</width>
+						<height>41</height>
+						<visible>Control.HasFocus(120)</visible>
+						<texture>dialogs/setcontent_button_focus.png</texture>
+					</control>
+					<control type="label">
+						<posx>35</posx>
+						<posy>0</posy>
+						<width>1149</width>
+						<height>40</height>
+				    <font>Font_Reg38</font>
+						<align>left</align>
+						<aligny>center</aligny>
+				   <textcolor>FFFFFFFF</textcolor>
+						<info>ListItem.Label</info>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="spincontrolex" id="121">
+				<description>Default spincontrolex</description>
+				<posx>950</posx>
+				<posy>4</posy>
+				<height>41</height>
+				<textureup>settings/spin-up.png</textureup>
+				<texturedown>settings/spin-down.png</texturedown>
+				<textureupfocus>settings/spin-up-focus.png</textureupfocus>
+				<texturedownfocus>settings/spin-down-focus.png</texturedownfocus>
+				<font>Font_Reg18</font>
+				<textcolor>FF929191</textcolor>
+				<focusedcolor>FFFFFFFF</focusedcolor>
+				<pulseonselect>false</pulseonselect>
+				<spinposx>-4</spinposx>
+				<spinwidth>42</spinwidth>
+				<spinheight>65</spinheight>
+				<textoffsetx>0</textoffsetx>
+				<aligny>center</aligny>
+				<reverse>yes</reverse>
+				<subtype>page</subtype>
+				<onleft>130</onleft>
+				<onright>130</onright>
+				<ondown>120</ondown>
+				<onup>120</onup>
+				<showonepage>true</showonepage>
+				<visible>Control.IsVisible(120)</visible>
+				<animation effect="fade" time="1000">WindowOpen</animation>
+		    <animation effect="fade" time="200">WindowClose</animation>
+			</control>
+			<control type="button" id="130">
+				<description>Scraper label</description>
+				<posx>50</posx>
+				<posy>10</posy>
+				<width>400</width>
+				<height>30</height>
+        <texturefocus>-</texturefocus>
+        <texturenofocus>-</texturenofocus>
+        <focusedcolor>selected</focusedcolor>
+				<label>[UPPERCASE][COLOR=FF929191]$INFO[Skin.String(LyricScript_Path)][/COLOR] - [COLOR=FFFFFFFF]$INFO[Control.GetLabel(200)][/COLOR][/UPPERCASE]</label>
+				<onleft>101</onleft>
+				<onright>110</onright>
+        <onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
+				<font>Font_Bold20_Caps</font>
+				<align>left</align>
+				<aligny>center</aligny>
+        <textoffsetx>20</textoffsetx>
+				<animation effect="fade" time="1000">WindowOpen</animation>
+		    <animation effect="fade" time="200">WindowClose</animation>
+			</control>
+			<control type="label" id="200">
+        <include>HiddenObject</include>
+				<description>Scraper label</description>
+				<visible>true</visible>
+			</control>
+		</control>
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<!-- ** Required ** Do not change <id> or <type> -->
+	</controls>
+</window>

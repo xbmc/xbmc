@@ -108,8 +108,8 @@ public:
     /*
   CFileItem(const CFace& face);
   CFileItem(const CLocation& location);
-  CFileItem(const PICTURE_INFO::CPictureInfoTag& music);
      */
+  CFileItem(const PICTURE_INFO::CPictureInfoTag& picture);
   CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
   CFileItem(const EPG::CEpgInfoTag& tag);

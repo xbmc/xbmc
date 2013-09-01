@@ -42,12 +42,15 @@ bool CPictureInfoTagLoaderJPG::Load(const CStdString& strFileName, CPictureInfoT
     if (strExtension.IsEmpty())
       return false;
 
+    tag.Load(strFileName);
     tag.SetTitle(URIUtils::GetFileName(strFileName));
-    if (!tag.GetTitle().IsEmpty() || !tag.GetAlbum().IsEmpty())
+    if (!tag.GetTitle().IsEmpty() || !tag.GetPictureAlbum().IsEmpty())
       tag.SetLoaded();
     else
       tag.SetLoaded();
+    
     tag.SetURL(strFileName);
+
         
     return true;
     

@@ -1,0 +1,1085 @@
+<?xml version="1.0"?>
+<includes>
+	<include name="WatchedOverlayShowCaseCases">
+		<posx>154</posx>
+		<posy>29</posy>
+		<width>60</width>
+		<height>60</height>
+	</include>
+	<include name="MovieShowcaseBackVarsCases">
+		<posx>49</posx>
+		<posy>0</posy>
+		<width>175</width>
+		<height>275</height>
+		<aspectratio scalediffuse="false">stretch</aspectratio>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MovieShowcaseBackReflectionVarsCases">
+		<posx>49</posx>
+		<posy>260</posy>
+		<width>175</width>
+		<height>275</height>
+		<aspectratio scalediffuse="false">stretch</aspectratio>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MovieShowcaseThumbCases">
+		<posx>53</posx>
+		<posy>29</posy>
+		<width>161</width>
+		<height>227</height>
+		<texture background="true" diffuse="thumbs/boxes/case_mask.png">DefaultVideoBigPoster.png</texture>
+		<aspectratio scalediffuse="false">stretch</aspectratio>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MovieShowcaseThumbMainCases">
+		<posx>53</posx>
+		<posy>29</posy>
+		<width>161</width>
+		<height>227</height>
+		<texture background="true" diffuse="thumbs/boxes/case_mask.png">DefaultVideoBigPoster.png</texture>
+		<aspectratio scalediffuse="false">stretch</aspectratio>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MovieShowcaseThumbReflectionMainCases">
+		<posx>53</posx>
+		<posy>278</posy>
+		<width>161</width>
+		<height>227</height>
+		<colordiffuse>52FFFFFF</colordiffuse>
+		<texture background="true" flipy="true" diffuse="thumbs/boxes/movieposter_mask_reflect.png">DefaultVideoBigPoster.png</texture>
+		<aspectratio scalediffuse="false">stretch</aspectratio>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCover">
+		<posx>53</posx>
+		<posy>278</posy>
+		<width>161</width>
+		<height>227</height>
+		<colordiffuse>d0FFFFFF</colordiffuse>
+		<texture background="true" flipy="true" diffuse="thumbs/boxes/movieposter_mask_reflect.png">DefaultVideoBigPoster.png</texture>
+		<aspectratio scalediffuse="false">stretch</aspectratio>
+		<animation effect="fade" start="70" end="70" time="0" condition="true">Conditional</animation>
+		<visible>!Container.Content(genres)</visible>
+	</include>
+	<!-- Movie Showcase Variables: Thumb glass overlays -->
+	<include name="MovieShowcaseGlassOverlayCases">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true">thumbs/boxes/Overlay.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseGlassOverlayAngledCases">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true">thumbs/boxes/Overlay.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem-7">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-7).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem-7">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(-7).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem-7">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-7).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem-7">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(-7).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem-7">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility-7</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem-6">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-6).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem-6">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(-6).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem-6">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-6).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem-6">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(-6).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem-6">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility-6</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem-5">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-5).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem-5">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(-5).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem-5">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-5).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem-5">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(-5).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem-5">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility-5</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem-4">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-4).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem-4">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(-4).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem-4">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-4).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem-4">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(-4).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem-4">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility-4</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem-3">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-3).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem-3">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(-3).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem-3">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-3).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem-3">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(-3).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem-3">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility-3</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem-2">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-2).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem-2">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(-2).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem-2">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-2).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem-2">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(-2).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem-2">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility-2</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem-1">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-1).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem-1">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(-1).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem-1">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(-1).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem-1">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(-1).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem-1">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility-1</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem0">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(0).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem0">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(0).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem0">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(0).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem0">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(0).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem0">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility0</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem1">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(1).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem1">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(1).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem1">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(1).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem1">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(1).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem1">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility1</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem2">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(2).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem2">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(2).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem2">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(2).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem2">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(2).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem2">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility2</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem3">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(3).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem3">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(3).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem3">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(3).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem3">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(3).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem3">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility3</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem4">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(4).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem4">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(4).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem4">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(4).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem4">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(4).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem4">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility4</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem5">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(5).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem5">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(5).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem5">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(5).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem5">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(5).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem5">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility5</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem6">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(6).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem6">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(6).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem6">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(6).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem6">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(6).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem6">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility6</include>
+		</control>
+	</include>
+	<include name="MovieShowCaseBackCasesItem7">
+		<control type="image">
+			<include>MovieShowcaseBackVarsCases</include>
+			<texture background="true" fallback="thumbs/boxes/default_case.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(7).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbCasesItem7">
+		<control type="image">
+			<include>MovieShowcaseThumbCases</include>
+			<info>Container(504).ListItem(7).Thumb</info>
+		</control>
+	</include>
+	<include name="MovieShowcaseBackReflectionItem7">
+		<control type="image">
+			<include>MovieShowcaseBackReflectionVarsCases</include>
+			<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(7).VideoResolution]p.png</texture>
+		</control>
+	</include>
+	<include name="MovieShowcaseThumbReflectionCasesCoverItem7">
+		<control type="image">
+			<include>MovieShowcaseThumbReflectionCasesCover</include>
+			<info>Container(504).ListItem(7).Thumb</info>
+		</control>
+	</include>
+	<include name="WatchedOverlayShowCaseCasesItem7">
+		<control type="image">
+			<include>WatchedOverlayShowCaseCases</include>
+			<include>OverlayVisibility7</include>
+		</control>
+	</include>
+	<include name="ShowcaseMoviesCases">
+		<control type="group" id="6005">
+			<posy>380</posy>
+			<camera x="640" y="540" />
+			<visible>control.IsVisible(504) + Container.OnNext + ![[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] +!control.HasFocus(109)</visible>
+			<animation effect="slide" end="-90,0" time="250" reversible="false">Hidden</animation>
+			<control type="group">
+				<posx>10</posx>
+				<visible>Container.OnNext</visible>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-7).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="fade" start="100" end="0" time="250" reversible="false">Hidden</animation>
+				<animation effect="rotatey" center="-90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-7</include>
+				<include>MovieShowcaseThumbCasesItem-7</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-7</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-7</include>
+				<include>WatchedOverlayShowCaseCasesItem-7</include>
+			</control>
+			<control type="group">
+				<posx>100</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="0" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-6</include>
+				<include>MovieShowcaseThumbCasesItem-6</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-6</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-6</include>
+				<include>WatchedOverlayShowCaseCasesItem-6</include>
+			</control>
+			<control type="group">
+				<posx>190</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-5</include>
+				<include>MovieShowcaseThumbCasesItem-5</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-5</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-5</include>
+				<include>WatchedOverlayShowCaseCasesItem-5</include>
+			</control>
+			<control type="group">
+				<posx>280</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="180" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-4</include>
+				<include>MovieShowcaseThumbCasesItem-4</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-4</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-4</include>
+				<include>WatchedOverlayShowCaseCasesItem-4</include>
+			</control>
+			<control type="group">
+				<posx>370</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="270" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-3</include>
+				<include>MovieShowcaseThumbCasesItem-3</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-3</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-3</include>
+				<include>WatchedOverlayShowCaseCasesItem-3</include>
+			</control>
+			<control type="group">
+				<posx>460</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="360" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-2</include>
+				<include>MovieShowcaseThumbCasesItem-2</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-2</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-2</include>
+				<include>WatchedOverlayShowCaseCasesItem-2</include>
+			</control>
+			<control type="group">
+				<posx>1090</posx>
+				<visible>!Container.OnNext</visible>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="fade" start="0" end="100" delay="0" time="250" reversible="false">Visible</animation>
+				<animation effect="rotatey" center="1470" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem6</include>
+				<include>MovieShowcaseThumbCasesItem6</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem6</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem6</include>
+				<include>WatchedOverlayShowCaseCasesItem6</include>
+			</control>
+			<control type="group">
+				<posx>1000</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1380" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem5</include>
+				<include>MovieShowcaseThumbCasesItem5</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem5</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem5</include>
+				<include>WatchedOverlayShowCaseCasesItem5</include>
+			</control>
+			<control type="group">
+				<posx>910</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1290" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem4</include>
+				<include>MovieShowcaseThumbCasesItem4</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem4</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem4</include>
+				<include>WatchedOverlayShowCaseCasesItem4</include>
+			</control>
+			<control type="group">
+				<posx>820</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1200" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem3</include>
+				<include>MovieShowcaseThumbCasesItem3</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem3</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem3</include>
+				<include>WatchedOverlayShowCaseCasesItem3</include>
+			</control>
+			<control type="group">
+				<posx>730</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1110" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem2</include>
+				<include>MovieShowcaseThumbCasesItem2</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem2</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem2</include>
+				<include>WatchedOverlayShowCaseCasesItem2</include>
+			</control>
+			<control type="group">
+				<posx>640</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(1).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1020" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem1</include>
+				<include>MovieShowcaseThumbCasesItem1</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem1</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem1</include>
+				<include>WatchedOverlayShowCaseCasesItem1</include>
+			</control>
+			<control type="group">
+				<visible>Container.OnNext</visible>
+				<animation effect="slide" end="50,0" time="250" reversible="false">Hidden</animation>
+				<control type="group">
+					<posx>550</posx>
+					<visible>Container.OnNext</visible>
+					<visible>!IsEmpty(Container(504).ListItemNoWrap(0).label) | Skin.HasSetting(showcasewrap)</visible>
+					<animation effect="rotatey" center="930" start="0" end="-55" time="250" reversible="false" tween="quadratic" easing="in">Hidden</animation>
+					<animation effect="rotatey" center="930" start="55" end="55" time="0" condition="true">Conditional</animation>
+					<include>MovieShowCaseBackCasesItem0</include>
+					<include>MovieShowcaseThumbCasesItem0</include>
+					<include>MovieShowcaseGlassOverlayAngledCases</include>
+					<include>MovieShowcaseBackReflectionItem0</include>
+					<include>MovieShowcaseThumbReflectionCasesCoverItem0</include>
+					<include>WatchedOverlayShowCaseCasesItem0</include>
+				</control>
+				<control type="group">
+					<posx>505</posx>
+					<visible>Container.OnNext</visible>
+					<visible>!IsEmpty(Container(504).ListItemNoWrap(-1).label) | Skin.HasSetting(showcasewrap)</visible>
+					<animation effect="rotatey" center="405" start="0" end="-55" time="250" reversible="false" tween="quadratic" easing="out">Hidden</animation>
+					<include>MovieShowCaseBackCasesItem-1</include>
+					<include>MovieShowcaseThumbCasesItem-1</include>
+					<include>MovieShowcaseGlassOverlayAngledCases</include>
+					<include>MovieShowcaseBackReflectionItem-1</include>
+					<include>MovieShowcaseThumbReflectionCasesCoverItem-1</include>
+					<include>WatchedOverlayShowCaseCasesItem-1</include>
+				</control>
+			</control>
+		</control>
+		<control type="group" id="6006">
+			<posy>380</posy>
+			<camera x="640" y="540" />
+			<visible>control.IsVisible(504) + Container.OnPrevious + ![[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] +!control.HasFocus(109)</visible>
+			<animation effect="slide" end="90,0" time="250" reversible="false">Hidden</animation>
+			<control type="group">
+				<posx>1000</posx>
+				<visible>Container.OnPrevious</visible>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(7).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="fade" start="100" end="0" time="250" reversible="false">Hidden</animation>
+				<animation effect="rotatey" center="1380" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem7</include>
+				<include>MovieShowcaseThumbCasesItem7</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem7</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem7</include>
+				<include>WatchedOverlayShowCaseCasesItem7</include>
+			</control>
+			<control type="group">
+				<posx>910</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1290" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem6</include>
+				<include>MovieShowcaseThumbCasesItem6</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem6</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem6</include>
+				<include>WatchedOverlayShowCaseCasesItem6</include>
+			</control>
+			<control type="group">
+				<posx>820</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1200" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem5</include>
+				<include>MovieShowcaseThumbCasesItem5</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem5</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem5</include>
+				<include>WatchedOverlayShowCaseCasesItem5</include>
+			</control>
+			<control type="group">
+				<posx>730</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1110" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem4</include>
+				<include>MovieShowcaseThumbCasesItem4</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem4</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem4</include>
+				<include>WatchedOverlayShowCaseCasesItem4</include>
+			</control>
+			<control type="group">
+				<posx>640</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1020" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem3</include>
+				<include>MovieShowcaseThumbCasesItem3</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem3</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem3</include>
+				<include>WatchedOverlayShowCaseCasesItem3</include>
+			</control>
+			<control type="group">
+				<posx>550</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="930" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem2</include>
+				<include>MovieShowcaseThumbCasesItem2</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem2</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem2</include>
+				<include>WatchedOverlayShowCaseCasesItem2</include>
+			</control>
+			<control type="group">
+				<posx>-80</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<visible>!Container.OnPrevious</visible>
+				<animation effect="fade" start="0" end="100" time="250" reversible="false">Visible</animation>
+				<animation effect="rotatey" center="-180" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-6</include>
+				<include>MovieShowcaseThumbCasesItem-6</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-6</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-6</include>
+				<include>WatchedOverlayShowCaseCasesItem-6</include>
+			</control>
+			<control type="group">
+				<posx>10</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="-90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-5</include>
+				<include>MovieShowcaseThumbCasesItem-5</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-5</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-5</include>
+				<include>WatchedOverlayShowCaseCasesItem-5</include>
+			</control>
+			<control type="group">
+				<posx>100</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="0" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-4</include>
+				<include>MovieShowcaseThumbCasesItem-4</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-4</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-4</include>
+				<include>WatchedOverlayShowCaseCasesItem-4</include>
+			</control>
+			<control type="group">
+				<posx>190</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-3</include>
+				<include>MovieShowcaseThumbCasesItem-3</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-3</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-3</include>
+				<include>WatchedOverlayShowCaseCasesItem-3</include>
+			</control>
+			<control type="group">
+				<posx>280</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="180" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-2</include>
+				<include>MovieShowcaseThumbCasesItem-2</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-2</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-2</include>
+				<include>WatchedOverlayShowCaseCasesItem-2</include>
+			</control>
+			<control type="group">
+				<posx>370</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-1).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="270" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<include>MovieShowCaseBackCasesItem-1</include>
+				<include>MovieShowcaseThumbCasesItem-1</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-1</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-1</include>
+				<include>WatchedOverlayShowCaseCasesItem-1</include>
+			</control>
+			<control type="group">
+				<visible>Container.OnPrevious</visible>
+				<animation effect="slide" end="-50,0" time="250" reversible="false">Hidden</animation>
+				<control type="group">
+					<posx>460</posx>
+					<visible>Container.OnPrevious</visible>
+					<visible>!IsEmpty(Container(504).ListItemNoWrap(0).label) | Skin.HasSetting(showcasewrap)</visible>
+					<animation effect="rotatey" center="360" start="0" end="55" time="250" reversible="false" tween="quadratic" easing="in">Hidden</animation>
+					<animation effect="rotatey" center="360" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+					<include>MovieShowCaseBackCasesItem0</include>
+					<include>MovieShowcaseThumbCasesItem0</include>
+					<include>MovieShowcaseGlassOverlayAngledCases</include>
+					<include>MovieShowcaseBackReflectionItem0</include>
+					<include>MovieShowcaseThumbReflectionCasesCoverItem0</include>
+					<include>WatchedOverlayShowCaseCasesItem0</include>
+				</control>
+				<control type="group">
+					<posx>505</posx>
+					<visible>!IsEmpty(Container(504).ListItemNoWrap(1).label) | Skin.HasSetting(showcasewrap)</visible>
+					<visible>Container.OnPrevious</visible>
+					<animation effect="rotatey" center="885" start="0" end="55" time="250" reversible="false" tween="quadratic" easing="out">Hidden</animation>
+					<include>MovieShowCaseBackCasesItem1</include>
+					<include>MovieShowcaseThumbCasesItem1</include>
+					<include>MovieShowcaseGlassOverlayAngledCases</include>
+					<include>MovieShowcaseBackReflectionItem1</include>
+					<include>MovieShowcaseThumbReflectionCasesCoverItem1</include>
+					<include>WatchedOverlayShowCaseCasesItem1</include>
+				</control>
+			</control>
+		</control>
+		<control type="button" id="961">
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<visible>![[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] </visible>
+			<animation effect="fade" start="100" end="0" time="800">Hidden</animation>
+		</control>
+		<control type="group" id="6004">
+			<posy>380</posy>
+			<animation effect="fade" time="500">WindowOpen</animation>
+			<animation effect="fade" time="200">WindowClose</animation>
+			<visible>control.IsVisible(504) + !control.IsVisible(6005) + !control.IsVisible(6006) + control.IsVisible(961)+!control.HasFocus(109)</visible>
+			<camera x="640" y="540" />
+			<control type="group">
+				<posx>10</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="-90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="-90" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-685" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem-6</include>
+				<include>MovieShowcaseThumbCasesItem-6</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-6</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-6</include>
+				<include>WatchedOverlayShowCaseCasesItem-6</include>
+			</control>
+			<control type="group">
+				<posx>100</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="0" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="0" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-577" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem-5</include>
+				<include>MovieShowcaseThumbCasesItem-5</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-5</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-5</include>
+				<include>WatchedOverlayShowCaseCasesItem-5</include>
+			</control>
+			<control type="group">
+				<posx>190</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="90" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="90" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-469" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem-4</include>
+				<include>MovieShowcaseThumbCasesItem-4</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-4</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-4</include>
+				<include>WatchedOverlayShowCaseCasesItem-4</include>
+			</control>
+			<control type="group">
+				<posx>280</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="180" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="180" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-362" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem-3</include>
+				<include>MovieShowcaseThumbCasesItem-3</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-3</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-3</include>
+				<include>WatchedOverlayShowCaseCasesItem-3</include>
+			</control>
+			<control type="group">
+				<posx>370</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="270" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="270" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-256" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem-2</include>
+				<include>MovieShowcaseThumbCasesItem-2</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-2</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-2</include>
+				<include>WatchedOverlayShowCaseCasesItem-2</include>
+			</control>
+			<control type="group">
+				<posx>460</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(-1).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="360" start="-55" end="-55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="360" start="0" end="55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="-151" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem-1</include>
+				<include>MovieShowcaseThumbCasesItem-1</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem-1</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem-1</include>
+				<include>WatchedOverlayShowCaseCasesItem-1</include>
+			</control>
+			<control type="group">
+				<posx>1000</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(6).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1380" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="1380" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="685" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem6</include>
+				<include>MovieShowcaseThumbCasesItem6</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem6</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem6</include>
+				<include>WatchedOverlayShowCaseCasesItem6</include>
+			</control>
+			<control type="group">
+				<posx>910</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(5).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1290" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="1290" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="577" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem5</include>
+				<include>MovieShowcaseThumbCasesItem5</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem5</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem5</include>
+				<include>WatchedOverlayShowCaseCasesItem5</include>
+			</control>
+			<control type="group">
+				<posx>820</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(4).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1200" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="1200" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="469" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem4</include>
+				<include>MovieShowcaseThumbCasesItem4</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem4</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem4</include>
+				<include>WatchedOverlayShowCaseCasesItem4</include>
+			</control>
+			<control type="group">
+				<posx>730</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(3).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1110" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="1110" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="362" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem3</include>
+				<include>MovieShowcaseThumbCasesItem3</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem3</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem3</include>
+				<include>WatchedOverlayShowCaseCasesItem3</include>
+			</control>
+			<control type="group">
+				<posx>640</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(2).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="1020" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="1020" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="256" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem2</include>
+				<include>MovieShowcaseThumbCasesItem2</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem2</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem2</include>
+				<include>WatchedOverlayShowCaseCasesItem2</include>
+			</control>
+			<control type="group">
+				<posx>550</posx>
+				<visible>!IsEmpty(Container(504).ListItemNoWrap(1).label) | Skin.HasSetting(showcasewrap)</visible>
+				<animation effect="rotatey" center="930" start="55" end="55" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" condition="[[Skin.HasSetting(noflowdvd)+![Container.Content(tvshows)|Container.Content(seasons)]]|[Skin.HasSetting(noflowdvdtv)+[Container.Content(tvshows)|Container.Content(seasons)]]] ">
+					<effect type="rotatey" center="930" start="0" end="-55" time="800" tween="cubic" easing="inout" />
+					<effect type="slide" start="0" end="151" time="800" tween="cubic" easing="inout" />
+				</animation>
+				<include>MovieShowCaseBackCasesItem1</include>
+				<include>MovieShowcaseThumbCasesItem1</include>
+				<include>MovieShowcaseGlassOverlayAngledCases</include>
+				<include>MovieShowcaseBackReflectionItem1</include>
+				<include>MovieShowcaseThumbReflectionCasesCoverItem1</include>
+				<include>WatchedOverlayShowCaseCasesItem1</include>
+			</control>
+			<control type="group">
+				<posx>505</posx>
+				<control type="group">
+					<visible>!IsEmpty(Container(504).ListItemNoWrap(0).label) | Skin.HasSetting(showcasewrap)</visible>
+					<include>MovieShowCaseBackCasesItem0</include>
+					<control type="image">
+						<include>MovieShowcaseThumbMainCases</include>
+						<info>Container(504).ListItem(0).Thumb</info>
+					</control>
+					<include>MovieShowcaseGlassOverlayCases</include>
+					<control type="image">
+						<include>MovieShowcaseBackReflectionVarsCases</include>
+						<texture background="true" flipy="true" fallback="thumbs/boxes/default_case.png" diffuse="thumbs/boxes/movieposter_mask_reflect.png">thumbs/boxes/$INFO[Control.GetLabel(54321)]/$INFO[Container(504).ListItem(0).VideoResolution]p.png</texture>
+					</control>
+					<control type="image">
+						<include>MovieShowcaseThumbReflectionMainCases</include>
+						<info>Container(504).ListItem(0).Thumb</info>
+					</control>
+					<include>WatchedOverlayShowCaseCasesItem0</include>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

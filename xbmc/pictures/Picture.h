@@ -69,7 +69,6 @@ public:
     {
         if (strFileName < song.strFileName) return true;
         if (strFileName > song.strFileName) return false;
-        if (iTrack < song.iTrack) return true;
         return false;
     }
     
@@ -127,22 +126,8 @@ public:
     std::vector<std::string> location;
     CStdString strThumb;
     PICTURE_INFO::EmbeddedArtInfo embeddedArt;
-    CStdString strPictureBrainzTrackID;
     CStdString strComment;
-    char rating;
-    int iTrack;
-    int iDuration;
-    int iYear;
-    int iTimesPlayed;
-    CDateTime lastPlayed;
-    int iStartOffset;
-    int iEndOffset;
-    bool bCompilation;
-    
-    // Karaoke-specific information
-    long       iKaraokeNumber;        //! Karaoke song number to "select by number". 0 for non-karaoke
-    CStdString strKaraokeLyrEncoding; //! Karaoke song lyrics encoding if known. Empty if unknown.
-    int        iKaraokeDelay;         //! Karaoke song lyrics-music delay in 1/10 seconds.
+    CDateTime takenOn;
 };
 
 

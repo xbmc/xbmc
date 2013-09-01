@@ -1,0 +1,279 @@
+<includes>
+  <include name="Viewtype_Episode">
+    <control type="group">
+      <visible>Control.IsVisible(514)</visible>
+      <include>Animation_OpenCloseZoom</include>
+      <!-- Browser -->
+      <control type="fixedlist" id="514">
+        <viewtype label="20359">list</viewtype>
+        <posx>367</posx>
+        <posy>130</posy>
+        <width>933</width>
+        <height>467</height>
+        <scrolltime>0</scrolltime>
+        <orientation>vertical</orientation>
+        <movement>3</movement>
+        <focusposition>2</focusposition>
+        <onup>514</onup>
+        <ondown>514</ondown>
+        <onleft>9000</onleft>
+        <onright>61</onright>
+        <pagecontrol>61</pagecontrol>
+        <visible>Window.IsActive(videolibrary) + Container.Content(episodes)</visible>
+        <animation effect="slide" end="-100,0" delay="1200" condition="true">Conditional</animation>
+        <animation effect="slide" end="0,10" time="200" condition="Container(514).Row(0)">Conditional</animation>
+        <animation effect="slide" end="0,5" time="200" condition="Container(514).Row(1)">Conditional</animation>
+        <animation effect="slide" end="0,0" time="200" condition="Container(514).Row(2)">Conditional</animation>
+        <animation effect="slide" end="0,-5" time="200" condition="Container(514).Row(3)">Conditional</animation>
+        <animation effect="slide" end="0,-10" time="200" condition="Container(514).Row(4)">Conditional</animation>
+        <animation effect="slide" end="0,-15" time="200" condition="Container(514).Row(5)">Conditional</animation>
+        <itemlayout width="633" height="60">
+          <control type="label">
+            <posx>104</posx>
+            <posy>0</posy>
+            <width>84</width>
+            <height>60</height>
+            <align>right</align>
+            <aligny>center</aligny>
+            <label>$INFO[ListItem.Episode]</label>
+            <font>Font_OSDTitle2</font>
+            <include>listcolornofocus</include>          
+          </control>
+          <control type="label">
+            <posx>125</posx>
+            <posy>5</posy>
+            <width>633</width>
+            <height>60</height>
+            <align>left</align>
+            <label>$INFO[ListItem.Label]</label>
+            <font>Font_Bold24</font>
+            <include>listcolornofocus</include>
+            <visible>IsEmpty(ListItem.Title)</visible>
+          </control>
+          <control type="label">
+            <posx>125</posx>
+            <posy>5</posy>
+            <width>633</width>
+            <height>60</height>
+            <align>left</align>
+            <label>[UPPERCASE]$INFO[ListItem.Title][/UPPERCASE]</label>
+            <font>Font_Reg25_Caps</font>
+            <include>listcolornofocus</include>
+            <visible>!IsEmpty(ListItem.Title)</visible>
+          </control>
+          <control type="label">
+            <posx>125</posx>
+            <posy>33</posy>
+            <width>633</width>
+            <height>60</height>
+            <align>left</align>
+            <label>$INFO[ListItem.TVShowTitle]$INFO[ListItem.Season, • $LOCALIZE[20373] ]</label>
+            <font>Font_Reg18</font>
+            <textcolor>ffaaaaaa</textcolor>
+            <visible>SubString(Container.FolderPath,videodb://5/)+!SubString(ListItem.Episode,S)</visible>
+          </control>
+          <control type="label">
+            <posx>125</posx>
+            <posy>33</posy>
+            <width>633</width>
+            <height>60</height>
+            <align>left</align>
+            <label>$INFO[ListItem.TVShowTitle,, • $LOCALIZE[20381]]</label>
+            <font>Font_Reg18</font>
+            <textcolor>ffaaaaaa</textcolor>
+            <visible>SubString(Container.FolderPath,videodb://5/)+SubString(ListItem.Episode,S)</visible>
+          </control>
+          <control type="label">
+            <posx>125</posx>
+            <posy>33</posy>
+            <width>633</width>
+            <height>60</height>
+            <align>left</align>
+            <label>$INFO[ListItem.Date]$INFO[ListItem.Rating, • ]</label>
+            <font>Font_Reg18</font>
+            <textcolor>ffaaaaaa</textcolor>
+            <visible>!SubString(Container.FolderPath,videodb://5/)</visible>
+          </control>
+          <control type="image">
+            <posx>260</posx>
+            <posy>28</posy>
+            <width>28</width>
+            <height>28</height>
+            <visible>!IsEmpty(ListItem.Overlay)</visible>
+            <info>ListItem.Overlay,thumbs/Alt</info>
+          </control>
+        </itemlayout>
+        <focusedlayout width="633" height="164">
+          <control type="image">
+            <posx>13</posx>
+            <posy>13</posy>
+            <width>253</width>
+            <height>139</height>
+            <texture background="true" diffuse="thumbs/multiplex_tvmask.png">$INFO[ListItem.Icon]</texture>
+            <aspectratio scalediffuse="false">scale</aspectratio>
+            <animation type="Focus" reversible="false">
+              <effect type="zoom" center="127,70" start="50" end="100" time="200" tween="cubic" easing="out" />
+            </animation>
+            <visible>IsEmpty(ListItem.Title)</visible>
+          </control>
+          <control type="image">
+            <posx>13</posx>
+            <posy>13</posy>
+            <width>253</width>
+            <height>139</height>
+            <texture background="true" diffuse="thumbs/multiplex_tvmask.png">$INFO[ListItem.Icon]</texture>
+            <aspectratio scalediffuse="false">scale</aspectratio>
+            <animation type="Focus" reversible="false">
+              <effect type="zoom" center="127,70" start="50" end="100" time="200" tween="cubic" easing="out" />
+            </animation>
+            <visible>!IsEmpty(ListItem.Title)</visible>
+          </control>
+          <control type="image">
+            <posx>13</posx>
+            <posy>13</posy>
+            <width>253</width>
+            <height>139</height>
+            <texture background="true">common/blank.png</texture>
+            <bordertexture border="-16">thumbs/multiplex_tvborder.png</bordertexture>
+            <animation type="Focus" reversible="false">
+              <effect type="zoom" center="127,70" start="50" end="100" time="200" tween="cubic" easing="out" />
+              <effect type="fade" start="0" end="100" time="200" />
+            </animation>
+          </control>
+          <control type="image">
+            <posx>216</posx>
+            <posy>13</posy>
+            <width>50</width>
+            <height>50</height>
+            <texture>thumbs/OverlayWatched.png</texture>
+            <visible>StringCompare(ListItem.Overlay,OverlayWatched.png)+Skin.HasSetting(watchedoverlay)+!IsEmpty(ListItem.Overlay)</visible>
+            <animation type="Focus" reversible="false">
+              <effect type="zoom" center="127,70" start="50" end="100" time="200" tween="cubic" easing="out" />
+              <effect type="fade" start="0" end="100" time="200" />
+            </animation>
+          </control>
+          <control type="image">
+            <posx>217</posx>
+            <posy>11</posy>
+            <width>50</width>
+            <height>50</height>
+            <texture>thumbs/UnWatched.png</texture>
+            <visible>!StringCompare(ListItem.Overlay,OverlayWatched.png)+Skin.HasSetting(newstatus)+!IsEmpty(ListItem.Overlay)</visible>
+            <include>RecentVisibilityAll</include>
+            <animation type="Focus" reversible="false">
+              <effect type="zoom" center="127,70" start="50" end="100" time="200" tween="cubic" easing="out" />
+              <effect type="fade" start="0" end="100" time="200" />
+            </animation>
+          </control>
+          
+          <control type="label">
+            <posx>292</posx>
+            <posy>15</posy>
+            <width>633</width>
+            <scrollout>false</scrollout>
+            <pauseatend>1800</pauseatend>
+            <scrollspeed>40</scrollspeed>
+            <label>[UPPERCASE]$INFO[ListItem.Episode,,. ]$INFO[ListItem.Title][/UPPERCASE]</label>
+            <font>Font_ShowcaseMainLabel2_Caps</font>
+            <include>listcolornofocus</include>
+            <animation type="Focus" reversible="false">
+              <effect type="fade" start="0" end="100" time="200" />
+            </animation>
+            <visible>!IsEmpty(ListItem.Title)</visible>
+          </control>
+          <control type="label">
+            <posx>292</posx>
+            <posy>130</posy>
+            <width>633</width>
+            <height>60</height>
+            <align>left</align>
+            <label>$INFO[ListItem.Date]$INFO[ListItem.Rating, • ]</label>
+            <font>Font_Reg18</font>
+            <textcolor>ffaaaaaa</textcolor>
+            <visible>!IsEmpty(ListItem.Title)</visible>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="textbox">
+        <posx>661</posx>
+        <posy>188</posy>
+        <width>628</width>
+        <height>66</height>
+        <align>left</align>
+        <info>Container(514).ListItem.Plot</info>
+        <font>Font_Reg18</font>
+        <include>listcolornofocus</include>
+        <animation effect="slide" end="0,60" time="0" condition="Container(514).Row(1)">Conditional</animation>
+        <animation effect="slide" end="0,120" time="0" condition="Container(514).Row(2)">Conditional</animation>
+        <animation effect="slide" end="0,180" time="0" condition="Container(514).Row(3)">Conditional</animation>
+        <animation effect="slide" end="0,240" time="0" condition="Container(514).Row(4)">Conditional</animation>
+        <animation effect="slide" end="0,300" time="0" condition="Container(514).Row(5)">Conditional</animation>
+        <animation effect="slide" end="0,10" time="200" condition="Container(514).Row(0)">Conditional</animation>
+        <animation effect="slide" end="0,5" time="200" condition="Container(514).Row(1)">Conditional</animation>
+        <animation effect="slide" end="0,0" time="200" condition="Container(514).Row(2)">Conditional</animation>
+        <animation effect="slide" end="0,-5" time="200" condition="Container(514).Row(3)">Conditional</animation>
+        <animation effect="slide" end="0,-10" time="200" condition="Container(514).Row(4)">Conditional</animation>
+        <animation effect="slide" end="0,-15" time="200" condition="Container(514).Row(5)">Conditional</animation>
+        <animation effect="slide" end="-100,0" delay="1200" condition="true">Conditional</animation>
+        <animation type="Conditional" reversible="false" condition="Control.HasFocus(514) + [!Container(514).OnNext + !Container(514).OnPrevious]">
+          <effect type="fade" start="0" end="100" time="200" />
+        </animation>
+        <autoscroll time="3600" delay="6000" repeat="6000">Skin.HasSetting(AutoScroll)</autoscroll>
+      </control>
+      <control type="scrollbar" id="61">
+        <posx>1227</posx>
+        <posy>85</posy>
+        <width>65</width>
+        <height>548</height>
+        <visible allowhiddenfocus="true">Control.IsVisible(61)</visible>
+        <texturesliderbackground>views/scrollbarbacklist.png</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib>views/scrollbarnub-nofocus.png</textureslidernib>
+        <textureslidernibfocus>views/scrollbarnub-focus.png</textureslidernibfocus>
+        <orientation>vertical</orientation>
+        <showonepage>false</showonepage>
+        <pulseonselect>yes</pulseonselect>
+        <onleft>514</onleft>
+        <onright>9000</onright>
+      </control>
+      <control type="group">
+        <visible>!Skin.HasSetting(breadcrumb)</visible>
+        <control type="label">
+          <posx>10</posx>
+          <posy>0</posy>
+          <width>500</width>
+          <height>50</height>
+          <font>Font_Reg38</font>
+          <textcolor>d0FFFFFF</textcolor>
+          <align>left</align>
+          <aligny>center</aligny>
+          <label>$INFO[ListItem.TVShowTitle]</label>
+        </control>
+        <control type="label">
+          <posx>1270</posx>
+          <posy>0</posy>
+          <width>500</width>
+          <height>25</height>
+          <font>Font_Reg24</font>
+          <textcolor>d0FFFFFF</textcolor>
+          <align>right</align>
+          <aligny>center</aligny>
+          <label>$INFO[ListItem.Season,$LOCALIZE[20373] ]</label>
+        </control>
+        <control type="label">
+          <posx>1270</posx>
+          <posy>25</posy>
+          <width>500</width>
+          <height>25</height>
+          <font>Font_Reg24</font>
+          <textcolor>d0FFFFFF</textcolor>
+          <align>right</align>
+          <aligny>center</aligny>
+          <label>$INFO[Container(514).NumItems,, [LOWERCASE]$LOCALIZE[20360][/LOWERCASE]]</label>
+        </control>
+      </control>
+
+    </control>
+  </include>
+</includes>

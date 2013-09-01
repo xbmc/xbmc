@@ -1,0 +1,34 @@
+<window id="2009">
+  <controls>
+    <control type="karvisualisation" id="1">
+      <description>visualisation</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <visibility>false</visibility>
+    </control>
+    <control type="image" id="2">
+      <description>fullscreen image</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <visibility>false</visibility>
+    </control>
+    <control type="group">
+      <visible>MusicPlayer.Offset(number).Exists + !IntegerGreaterThan(Player.TimeRemaining,20)</visible>
+      <include>Animation_DialogPopup</include>
+      <include>Dialogs_Group</include>
+      <include>Dialogs_Tablet</include>
+      <include>Dialogs_Exclam</include>
+      <animation effect="slide" start="0,0" end="0,-580" time="0" condition="true">Conditional</animation>
+      <include>SmallerDialogs</include>
+      <control type="label">
+        <include>Dialogs_Label1</include>
+        <label>$INFO[MusicPlayer.offset(1).Title,$LOCALIZE[209] :]</label>
+        <animation effect="slide" start="0,0" end="-20,0" time="0" condition="false">Conditional</animation>
+      </control>
+    </control>
+  </controls>
+</window>

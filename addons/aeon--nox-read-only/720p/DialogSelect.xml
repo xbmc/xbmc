@@ -1,0 +1,282 @@
+<window type="dialog" id="2000">
+  <defaultcontrol always="true">6</defaultcontrol>
+  <zorder>4</zorder>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include>Animation_DialogPopup2</include>
+  <controls>
+    <control type="image">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <colordiffuse>AAFFFFFF</colordiffuse>
+      <texture>common/black.png</texture>
+      <animation effect="fade" start="0" end="100" time="3000">WindowOpen</animation>
+      <animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+    </control>
+    <include condition="Skin.HasSetting(effect_bg)">BG_Effect_Home</include>
+    <control type="image">
+      <description>Panel</description>
+      <posx>200</posx>
+      <posy>120</posy>
+      <width>881</width>
+      <height>481</height>
+      <texture>osd/osd_settings_back.png</texture>
+    </control>
+    <control type="image">
+      <posx>250</posx>
+      <posy>155</posy>
+      <width>781</width>
+      <height>40</height>
+      <texture>osd/osd_settings_buttonnf.png</texture>
+    </control>
+    <!--<control type="image">
+      <posx>250</posx>
+      <posy>515</posy>
+      <width>781</width>
+      <height>40</height>
+      <texture>osd/osd_settings_buttonnf.png</texture>
+    </control>-->
+    <control type="label" id="1">
+      <description>Header Label</description>
+      <posx>280</posx>
+      <posy>150</posy>
+      <width>400</width>
+      <height>40</height>
+      <textcolor>white</textcolor>
+      <font>Font_Bold19</font>
+      <label>$LOCALIZE[13406]</label>
+      <align>left</align>
+      <aligny>center</aligny>
+    </control>
+    <control type="button" id="5">
+      <description>Manual Button</description>
+      <posx>800</posx>
+      <posy>150</posy>
+      <width>210</width>
+      <height>40</height>
+      <label>186</label>
+      <texturefocus border="5">-</texturefocus>
+      <texturenofocus border="5">-</texturenofocus>
+      <textcolor>grey2</textcolor>
+      <focusedcolor>white</focusedcolor>
+      <font>Font_Bold19</font>
+      <align>right</align>
+      <label>$LOCALIZE[368]</label>
+      <onleft>3</onleft>
+      <onright>3</onright>
+      <onup>3</onup>
+      <ondown>3</ondown>
+    </control>
+    <control type="label">
+      <description>number of files/pages in list text label</description>
+      <posx>1009</posx>
+      <posy>561</posy>
+      <width>210</width>
+      <height>40</height>
+      <font>Font_Reg14</font>
+      <align>right</align>
+      <textcolor>grey2</textcolor>
+      <label>$INFO[Container(3).NumItems,, $LOCALIZE[31025]]$INFO[Container(3).CurrentPage, - $LOCALIZE[31024] (]$INFO[Container(3).NumPages,/,)]</label>
+      <visible>Control.IsVisible(3)</visible>
+    </control>
+    <control type="label">
+      <description>number of files/pages in list text label</description>
+      <posx>1009</posx>
+      <posy>561</posy>
+      <width>210</width>
+      <height>40</height>
+      <font>Font_Reg14</font>
+      <align>right</align>
+      <textcolor>grey2</textcolor>
+      <label>$INFO[Container(6).NumItems,, $LOCALIZE[31025]]$INFO[Container(6).CurrentPage, - $LOCALIZE[31024] (]$INFO[Container(6).NumPages,/,)]</label>
+      <visible>Control.IsVisible(6)</visible>
+    </control>
+    <control type="list" id="3">
+      <posx>250</posx>
+      <posy>195</posy>
+      <width>781</width>
+      <height>360</height>
+      <onleft>61</onleft>
+      <onright>5</onright>
+      <onup>3</onup>
+      <ondown>3</ondown>
+      <scrolltime>200</scrolltime>
+      <pagecontrol>61</pagecontrol>
+      <itemlayout height="40">
+        <control type="image">
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>781</width>
+          <height>40</height>
+          <texture>osd/osd_settings_buttonnf.png</texture>
+        </control>
+        <control type="label">
+          <posx>30</posx>
+          <posy>0</posy>
+          <width>721</width>
+          <height>40</height>
+          <textcolor>grey2</textcolor>
+          <aligny>center</aligny>
+          <font>Font_Reg19</font>
+          <info>ListItem.Label</info>
+        </control>
+      </itemlayout>
+      <focusedlayout height="40">
+        <control type="image">
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>781</width>
+          <height>40</height>
+          <texture>osd/osd_settings_buttonf.png</texture>
+        </control>
+        <control type="label">
+          <posx>30</posx>
+          <posy>0</posy>
+          <width>721</width>
+          <height>40</height>
+          <textcolor>white</textcolor>
+          <aligny>center</aligny>
+          <font>Font_Reg19</font>
+          <info>ListItem.Label</info>
+        </control>
+      </focusedlayout>
+    </control>
+    <control type="list" id="6">
+      <posx>250</posx>
+      <posy>195</posy>
+      <width>781</width>
+      <height>360</height>
+      <onup>6</onup>
+      <ondown>6</ondown>
+      <onleft>61</onleft>
+      <onright>5</onright>
+      <pagecontrol>61</pagecontrol>
+      <scrolltime>200</scrolltime>
+      <animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(61)">Conditional</animation>
+      <itemlayout height="80" width="550">
+        <control type="image">
+          <posx>0</posx>
+          <posy>40</posy>
+          <width>741</width>
+          <height>40</height>
+          <texture>osd/osd_settings_buttonnf.png</texture>
+        </control>
+        <control type="label">
+          <posx>30</posx>
+          <posy>0</posy>
+          <width>280</width>
+          <height>40</height>
+          <textcolor>grey2</textcolor>
+          <aligny>center</aligny>
+          <font>Font_Reg19</font>
+          <info>ListItem.Label</info>
+        </control>
+        <control type="label">
+          <posx>30</posx>
+          <posy>40</posy>
+          <width>280</width>
+          <height>40</height>
+          <textcolor>grey2</textcolor>
+          <aligny>center</aligny>
+          <font>Font_Reg19</font>
+          <info>ListItem.Label2</info>
+        </control>
+        <control type="image">
+          <posx>550</posx>
+          <posy>2</posy>
+          <width>120</width>
+          <height>76</height>
+          <texture>$INFO[Listitem.Icon]</texture>
+        </control>
+        <control type="textbox">
+          <posx>320</posx>
+          <posy>5</posy>
+          <width>220</width>
+          <height>70</height>
+          <font>Font_Reg19</font>
+          <textcolor>grey2</textcolor>
+          <selectedcolor>FFAAAAAA</selectedcolor>
+          <align>left</align>
+          <label>$INFO[ListItem.Property(Addon.Summary)]</label>
+        </control>
+      </itemlayout>
+      <focusedlayout height="80" width="550">
+        <control type="image">
+          <posx>-8</posx>
+          <posy>1</posy>
+          <width>756</width>
+          <height>78.5</height>
+          <texture>osd/osd_settings_buttonf_large.png</texture>
+        </control>
+        <control type="image">
+          <posx>0</posx>
+          <posy>40</posy>
+          <width>741</width>
+          <height>40</height>
+          <texture>osd/osd_settings_buttonnf.png</texture>
+        </control>
+        <control type="label">
+          <posx>30</posx>
+          <posy>0</posy>
+          <width>280</width>
+          <height>40</height>
+          <textcolor>white</textcolor>
+          <aligny>center</aligny>
+          <font>Font_Reg19</font>
+          <info>ListItem.Label</info>
+        </control>
+        <control type="label">
+          <posx>30</posx>
+          <posy>40</posy>
+          <width>280</width>
+          <height>40</height>
+          <textcolor>grey2</textcolor>
+          <aligny>center</aligny>
+          <font>Font_Reg19</font>
+          <info>ListItem.Label2</info>
+        </control>
+        <control type="image">
+          <posx>550</posx>
+          <posy>2</posy>
+          <width>120</width>
+          <height>76</height>
+          <texture>$INFO[Listitem.Icon]</texture>
+        </control>
+        <control type="textbox">
+          <posx>320</posx>
+          <posy>5</posy>
+          <width>220</width>
+          <height>70</height>
+          <font>Font_Reg19</font>
+          <textcolor>white</textcolor>
+          <selectedcolor>FFAAAAAA</selectedcolor>
+          <align>left</align>
+          <label>$INFO[ListItem.Property(Addon.Summary)]</label>
+        </control>
+      </focusedlayout>
+    </control>
+    <control type="scrollbar" id="61">
+      <description>Scrollbar</description>
+      <posx>230</posx>
+      <posy>190</posy>
+      <width>28</width>
+      <height>360</height>
+      <texturesliderbackground>views/scrollbarbacklist.png</texturesliderbackground>
+      <texturesliderbar>-</texturesliderbar>
+      <texturesliderbarfocus>-</texturesliderbarfocus>
+      <textureslidernib>views/scrollbarnub-nofocus.png</textureslidernib>
+      <textureslidernibfocus>views/scrollbarnub-focus.png</textureslidernibfocus>
+      <onleft>5</onleft>
+      <onright>3</onright>
+      <ondown>61</ondown>
+      <onup>61</onup>
+      <showonepage>false</showonepage>
+      <orientation>vertical</orientation>
+    </control>
+  </controls>
+</window>

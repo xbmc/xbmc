@@ -1,0 +1,431 @@
+<window id="503">
+	<defaultcontrol allways="true">6</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonMusicBackground</include>
+    <control type="image">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <colordiffuse>AAFFFFFF</colordiffuse>
+      <texture>common/black.png</texture>
+    </control>
+		<control type="group">
+			<posy>10</posy>
+			<include>Animation_OpenCloseZoom</include>
+			<control type="label">
+				<posx>475</posx>
+				<posy>45</posy>
+				<width>330</width>
+				<height>30</height>
+				<font>Font_Bold20_Caps</font>
+				<textcolor>grey2</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>[UPPERCASE]$LOCALIZE[31061][/UPPERCASE]</label>
+			</control>
+			<control type="group" id="9000">
+				<posx>475</posx>
+				<posy>550</posy>
+				<control type="button" id="6">
+					<description>Open Button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>330</width>
+					<label>31055</label>
+					<align>center</align>
+					<include>ButtonInfoDialogsCommonValues</include>
+					<onleft>50</onleft>
+					<onright>100</onright>
+					<onup>8</onup>
+					<ondown>7</ondown>
+				</control>
+				<control type="button" id="7">
+					<description>Save Button</description>
+					<posx>0</posx>
+					<posy>40</posy>
+					<width>330</width>
+					<label>31056</label>
+					<align>center</align>
+					<include>ButtonInfoDialogsCommonValues</include>
+					<onleft>50</onleft>
+					<onright>100</onright>
+					<onup>6</onup>
+					<ondown>8</ondown>
+				</control>
+				<control type="button" id="8">
+					<description>Clear button</description>
+					<posx>0</posx>
+					<posy>80</posy>
+					<width>330</width>
+					<label>31057</label>
+					<align>center</align>
+					<include>ButtonInfoDialogsCommonValues</include>
+					<onleft>50</onleft>
+					<onright>100</onright>
+					<onup>7</onup>
+					<ondown>6</ondown>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Control.HasFocus(50)</visible>
+				<include>VisibleFadeEffect</include>
+				<control type="image">
+					<posx>480</posx>
+					<posy>90</posy>
+					<width>320</width>
+					<height>200</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true">$INFO[Container(50).ListItem.Icon]</texture>
+				</control>
+				<control type="textbox">
+					<posx>480</posx>
+					<posy>300</posy>
+					<width>320</width>
+					<height>220</height>
+					<font>Font_Reg15</font>
+					<align>center</align>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<pagecontrol>-</pagecontrol>
+					<label>$INFO[Container(50).ListItem.Title,[COLOR=grey2]$LOCALIZE[556]:[/COLOR] ,[CR]]$INFO[Container(50).ListItem.Artist,[COLOR=grey2]$LOCALIZE[557]:[/COLOR] ,[CR]]$INFO[Container(50).ListItem.Album,[COLOR=grey2]$LOCALIZE[558]:[/COLOR] ,[CR]]$INFO[Container(50).ListItem.Duration,[COLOR=grey2]$LOCALIZE[555]:[/COLOR] ,[CR]]$INFO[Container(50).ListItem.TrackNumber,[COLOR=grey2]$LOCALIZE[554]:[/COLOR] ,[CR]]$INFO[Container(50).ListItem.Genre,[COLOR=grey2]$LOCALIZE[515]:[/COLOR] ,[CR]]</label>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Control.HasFocus(100)</visible>
+				<include>VisibleFadeEffect</include>
+				<control type="image">
+					<posx>465</posx>
+					<posy>90</posy>
+					<width>350</width>
+					<height>200</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true">$INFO[Container(100).ListItem.Icon]</texture>
+				</control>
+				<control type="textbox">
+					<posx>465</posx>
+					<posy>300</posy>
+					<width>350</width>
+					<height>220</height>
+					<font>Font_Reg15</font>
+					<align>center</align>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<pagecontrol>-</pagecontrol>
+					<label>$INFO[Container(100).ListItem.Title,[COLOR=grey2]$LOCALIZE[556]:[/COLOR] ,[CR]]$INFO[Container(100).ListItem.Artist,[COLOR=grey2]$LOCALIZE[557]:[/COLOR] ,[CR]]$INFO[Container(100).ListItem.Album,[COLOR=grey2]$LOCALIZE[558]:[/COLOR] ,[CR]]$INFO[Container(100).ListItem.Duration,[COLOR=grey2]$LOCALIZE[555]:[/COLOR] ,[CR]]$INFO[Container(100).ListItem.TrackNumber,[COLOR=grey2]$LOCALIZE[554]:[/COLOR] ,[CR]]$INFO[Container(100).ListItem.Genre,[COLOR=grey2]$LOCALIZE[515]:[/COLOR] ,[CR]]</label>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+      <animation effect="slide" start="-480,0" end="0,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
+      <animation effect="slide" end="-480,0" start="0,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
+      <control type="group">
+        <posx>20</posx>
+        <posy>50</posy>
+        <width>620</width>
+        <height>647</height>
+        <control type="image">
+          <width>450</width>
+          <height>647</height>
+          <posx>0</posx>
+          <posy>0</posy>
+          <texture background="true">views/listpanel_black.png</texture>
+        </control>
+        <control type="image">
+          <width>450</width>
+          <height>647</height>
+          <posx>0</posx>
+          <posy>0</posy>
+          <texture>views/listpanel_back_noreflect.png</texture>
+        </control>
+
+      </control>
+        <control type="label">
+				<posx>30</posx>
+				<posy>53</posy>
+				<width>410</width>
+				<height>30</height>
+				<font>Font_OSDSeek2</font>
+				<textcolor>white</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>31058</label>
+			</control>
+			<control type="label">
+				<description>number of files/pages in left list text label</description>
+				<posx>40</posx>
+				<posy>60r</posy>
+				<width>410</width>
+				<font>Font_Reg15</font>
+				<align>left</align>
+				<scroll>true</scroll>
+				<textcolor>grey2</textcolor>
+				<label>$INFO[Container(50).NumItems] $LOCALIZE[31025] - $LOCALIZE[31024] $INFO[Container(50).CurrentPage]/$INFO[Container(50).NumPages]</label>
+			</control>
+			<control type="scrollbar" id="30">
+				<posx>-3</posx>
+				<posy>100</posy>
+				<width>25</width>
+				<height>540</height>
+				<texturesliderbackground border="0,14,0,14">views/ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">views/ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">views/ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>views/ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>views/ScrollBarNib.png</textureslidernibfocus>
+				<onleft>31</onleft>
+				<onright>50</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="list" id="50">
+				<posx>25</posx>
+				<posy>100</posy>
+				<width>450</width>
+				<height>540</height>
+				<onleft>30</onleft>
+				<onright>9000</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<viewtype label="">list</viewtype>
+				<pagecontrol>30</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="30" width="440">
+          <control type="image">
+            <posx>0</posx>
+            <posy>29</posy>
+            <height>1</height>
+            <width>440</width>
+            <texture>views/listpanel_line.png</texture>
+          </control>				
+          <control type="label">
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>380</width>
+						<height>30</height>
+						<font>Font_Reg18</font>
+            <include>listcolornofocus</include>
+            <align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>435</posx>
+						<posy>0</posy>
+						<width>440</width>
+						<height>30</height>
+            <font>Font_Reg18</font>
+            <include>listcolornofocus</include>
+            <align>right</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label2</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="30" width="450">
+          <control type="image">
+            <posx>0</posx>
+            <posy>29</posy>
+            <height>1</height>
+            <width>440</width>
+            <texture>views/listpanel_line.png</texture>
+          </control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>-3</posy>
+						<width>440</width>
+						<height>35</height>
+            <texture>views/listpanel_selectbar.png</texture>
+            <animation effect="fade" time="200" start="100" end="50" reversible="false" condition="!Control.HasFocus(50)">Conditional</animation>
+            <include>VisibleFadeEffect</include>
+					</control>
+					<control type="label">
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>380</width>
+						<height>30</height>
+            <font>Font_Reg18</font>
+            <include>listcolorfocus</include>            
+            <align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>435</posx>
+						<posy>0</posy>
+						<width>440</width>
+						<height>30</height>
+            <font>Font_Reg18</font>
+            <include>listcolorfocus</include>
+            <align>right</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+    <control type="group">
+      <animation effect="slide" start="480,0" end="0,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
+      <animation effect="slide" end="480,0" start="0,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
+      <posx>800</posx>
+      <control type="group">
+        <posx>10</posx>
+        <posy>50</posy>
+        <width>620</width>
+        <height>647</height>
+      <control type="image">
+        <width>450</width>
+        <height>647</height>
+        <posx>0</posx>
+        <posy>0</posy>
+        <texture background="true">views/listpanel_black.png</texture>
+      </control>
+      <control type="image">
+        <width>450</width>
+        <height>647</height>
+        <posx>0</posx>
+        <posy>0</posy>
+        <texture>views/listpanel_back_noreflect.png</texture>
+      </control>
+      <control type="image">
+        <posx>525</posx>
+        <posy>64</posy>
+        <width>85</width>
+        <height>555</height>
+        <texture>views/listpanel_detailwide.png</texture>
+      </control>
+      </control>
+
+      <control type="label">
+				<posx>30</posx>
+				<posy>53</posy>
+				<width>410</width>
+				<height>30</height>
+				<font>Font_OSDSeek2</font>
+				<textcolor>white</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>31059</label>
+			</control>
+			<control type="label">
+				<description>Page Count Label</description>
+				<posx>440</posx>
+				<posy>60r</posy>
+				<width>300</width>
+				<height>20</height>
+				<font>Font_Reg15</font>
+				<textcolor>grey2</textcolor>
+				<scroll>false</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[Container(100).NumItems] $LOCALIZE[31025] - $LOCALIZE[31024] $INFO[Container(100).CurrentPage]/$INFO[Container(100).NumPages]</label>
+			</control>
+			<control type="scrollbar" id="31">
+				<posx>450</posx>
+				<posy>100</posy>
+				<width>25</width>
+				<height>550</height>
+				<texturesliderbackground border="0,14,0,14">views/ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">views/ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">views/ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>views/ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>views/ScrollBarNib.png</textureslidernibfocus>
+				<onleft>100</onleft>
+				<onright>30</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="list" id="100">
+				<posx>15</posx>
+				<posy>100</posy>
+				<width>440</width>
+				<height>550</height>
+				<onleft>9000</onleft>
+				<onright>31</onright>
+				<onup>100</onup>
+				<ondown>100</ondown>
+				<viewtype label="">list</viewtype>
+				<pagecontrol>31</pagecontrol>
+				<scrolltime>200</scrolltime>
+        <itemlayout height="30" width="440">
+          <control type="image">
+            <posx>0</posx>
+            <posy>29</posy>
+            <height>1</height>
+            <width>440</width>
+            <texture>views/listpanel_line.png</texture>
+          </control>
+          <control type="label">
+            <posx>5</posx>
+            <posy>0</posy>
+            <width>380</width>
+            <height>30</height>
+            <font>Font_Reg18</font>
+            <include>listcolornofocus</include>
+            <align>left</align>
+            <aligny>center</aligny>
+            <info>ListItem.Label</info>
+          </control>
+          <control type="label">
+            <posx>435</posx>
+            <posy>0</posy>
+            <width>440</width>
+            <height>30</height>
+            <font>Font_Reg18</font>
+            <include>listcolornofocus</include>
+            <align>right</align>
+            <aligny>center</aligny>
+            <info>ListItem.Label2</info>
+          </control>
+        </itemlayout>
+        <focusedlayout height="30" width="450">
+          <control type="image">
+            <posx>0</posx>
+            <posy>29</posy>
+            <height>1</height>
+            <width>440</width>
+            <texture>views/listpanel_line.png</texture>
+          </control>
+          <control type="image">
+            <posx>0</posx>
+            <posy>-3</posy>
+            <width>440</width>
+            <height>35</height>
+            <texture>views/listpanel_selectbar.png</texture>
+            <animation effect="fade" time="200" start="100" end="50" reversible="false" condition="!Control.HasFocus(100)">Conditional</animation>
+            <include>VisibleFadeEffect</include>
+          </control>
+          <control type="label">
+            <posx>5</posx>
+            <posy>0</posy>
+            <width>380</width>
+            <height>30</height>
+            <font>Font_Reg18</font>
+            <include>listcolorfocus</include>
+            <align>left</align>
+            <aligny>center</aligny>
+            <info>ListItem.Label</info>
+          </control>
+          <control type="label">
+            <posx>435</posx>
+            <posy>0</posy>
+            <width>440</width>
+            <height>30</height>
+            <font>Font_Reg18</font>
+            <include>listcolorfocus</include>
+            <align>right</align>
+            <aligny>center</aligny>
+            <info>ListItem.Label2</info>
+          </control>
+        </focusedlayout>
+			</control>
+		</control>
+    <include>ScrollOffsetLabel</include>
+    <include>Media_Menu</include>
+    <include condition="Skin.HasSetting(breadcrumb)">Breadcrumbs</include>
+    <include>Furniture_NowPlayingWidget</include>
+    <include condition="Skin.HasSetting(globaltime)">Furniture_Clock</include> 
+    </controls>
+</window>

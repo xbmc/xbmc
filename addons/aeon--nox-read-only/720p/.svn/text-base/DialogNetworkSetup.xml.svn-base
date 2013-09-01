@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<window id="128">
+  <defaultcontrol>10</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <zorder>4</zorder>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="group">
+      <posx>206</posx>
+      <posy>202</posy>
+      <width>869</width>
+      <height>317</height>
+      <control type="image">
+        <description>background image</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>869</width>
+        <height>317</height>
+        <texture>dialogs/scrapersettings_back.png</texture>
+      </control>
+      <control type="spincontrolex" id="10">
+        <description>protocol spincontrol</description>
+        <posx>12</posx>
+        <posy>35</posy>
+        <width>677</width>
+        <height>41</height>
+        <font>Font_Reg18</font>
+        <texturefocus>dialogs/setcontent_button_focus.png</texturefocus>
+        <texturenofocus>dialogs/setcontent_button_nofocus.png</texturenofocus>
+        <textureup>settings/spin-up.png</textureup>
+        <texturedown>settings/spin-down.png</texturedown>
+        <textureupfocus>settings/spin-up-focus.png</textureupfocus>
+        <texturedownfocus>settings/spin-down-focus.png</texturedownfocus>
+        <textcolor>FF939597</textcolor>
+        <focusedcolor>FFFFFFFF</focusedcolor>
+        <onright>12</onright>
+        <ondown>11</ondown>
+        <pulseonselect>false</pulseonselect>
+        <spinposx>-4</spinposx>
+        <spinwidth>40</spinwidth>
+        <spinheight>65</spinheight>
+        <textoffsetx>20</textoffsetx>
+        <aligny>center</aligny>
+        <reverse>yes</reverse>
+      </control>
+      <control type="button" id="11">
+        <description>Server Address Button</description>
+        <posx>12</posx>
+        <posy>76</posy>
+        <width>677</width>
+        <height>41</height>
+        <font>Font_Reg18</font>
+        <textcolor>FF939597</textcolor>
+        <focusedcolor>FFFFFFFF</focusedcolor>
+        <textoffsetx>20</textoffsetx>
+        <aligny>center</aligny>
+        <ondown>16</ondown>
+        <onup>10</onup>
+        <onright>12</onright>
+        <texturefocus>dialogs/setcontent_button_focus.png</texturefocus>
+        <texturenofocus>dialogs/setcontent_button_nofocus.png</texturenofocus>
+      </control>
+      <control type="button" id="16">
+        <description>Remote Path Button</description>
+        <posx>12</posx>
+        <posy>117</posy>
+        <width>677</width>
+        <height>41</height>
+        <font>Font_Reg18</font>
+        <textcolor>FF939597</textcolor>
+        <focusedcolor>FFFFFFFF</focusedcolor>
+        <textoffsetx>20</textoffsetx>
+        <aligny>center</aligny>
+        <onup>11</onup>
+        <ondown>13</ondown>
+        <onright>12</onright>
+        <texturefocus>dialogs/setcontent_button_focus.png</texturefocus>
+        <texturenofocus>dialogs/setcontent_button_nofocus.png</texturenofocus>
+      </control>
+      <control type="button" id="13">
+        <description>Port Button</description>
+        <posx>12</posx>
+        <posy>158</posy>
+        <width>677</width>
+        <height>41</height>
+        <onup>16</onup>
+        <ondown>14</ondown>
+        <onright>12</onright>
+        <font>Font_Reg18</font>
+        <textcolor>FF939597</textcolor>
+        <focusedcolor>FFFFFFFF</focusedcolor>
+        <textoffsetx>20</textoffsetx>
+        <aligny>center</aligny>
+        <texturefocus>dialogs/setcontent_button_focus.png</texturefocus>
+        <texturenofocus>dialogs/setcontent_button_nofocus.png</texturenofocus>
+      </control>
+      <control type="button" id="14">
+        <description>Username Button</description>
+        <posx>12</posx>
+        <posy>199</posy>
+        <width>677</width>
+        <height>41</height>
+        <font>Font_Reg18</font>
+        <textcolor>FF939597</textcolor>
+        <focusedcolor>FFFFFFFF</focusedcolor>
+        <textoffsetx>20</textoffsetx>
+        <aligny>center</aligny>
+        <label>1203</label>
+        <texturefocus>dialogs/setcontent_button_focus.png</texturefocus>
+        <texturenofocus>dialogs/setcontent_button_nofocus.png</texturenofocus>
+        <onright>18</onright>
+        <onup>13</onup>
+        <ondown>15</ondown>
+      </control>
+      <control type="button" id="15">
+        <description>Enter Password button</description>
+        <posx>12</posx>
+        <posy>240</posy>
+        <width>677</width>
+        <height>41</height>
+        <font>Font_Reg18</font>
+        <label>1204</label>
+        <textcolor>FF939597</textcolor>
+        <focusedcolor>FFFFFFFF</focusedcolor>
+        <textoffsetx>20</textoffsetx>
+        <aligny>center</aligny>
+        <texturefocus>dialogs/setcontent_button_focus.png</texturefocus>
+        <texturenofocus>dialogs/setcontent_button_nofocus.png</texturenofocus>
+        <ondown>10</ondown>
+        <onright>18</onright>
+        <onup>14</onup>
+        <ondown>10</ondown>
+      </control>
+      <control type="group" id="9001">
+        <control type="button" id="12">
+          <description>settings button</description>
+          <posx>689</posx>
+          <posy>158</posy>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Reg19</font>
+          <label>1024</label>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <onleft>10</onleft>
+          <onright>10</onright>
+          <onup>18</onup>
+          <ondown>19</ondown>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+        </control>
+        <control type="button" id="18">
+          <description>ok button</description>
+          <posx>689</posx>
+          <posy>240</posy>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Reg19</font>
+          <label>186</label>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <onleft>10</onleft>
+          <onright>10</onright>
+          <onup>19</onup>
+          <ondown>12</ondown>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+        </control>
+        <control type="button" id="19">
+          <description>cancel button</description>
+          <posx>689</posx>
+          <posy>199</posy>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Reg19</font>
+          <label>222</label>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <onleft>10</onleft>
+          <onright>10</onright>
+          <onup>12</onup>
+          <ondown>18</ondown>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+        </control>
+      </control>
+      <control type="image">
+        <description>foreground image</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>869</width>
+        <height>317</height>
+        <texture>dialogs/setcontent_front.png</texture>
+      </control>
+    </control>
+  </controls>
+</window>

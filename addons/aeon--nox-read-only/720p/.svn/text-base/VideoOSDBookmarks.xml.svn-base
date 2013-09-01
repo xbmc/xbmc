@@ -1,0 +1,224 @@
+<window id="125">
+	<defaultcontrol always="true">2</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+    <posx>200</posx>
+    <posy>120</posy>
+  </coordinates>
+  <include>Animation_DialogPopup2</include>
+  <controls>
+    <control type="image">
+      <description>Panel</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>881</width>
+      <height>481</height>
+      <texture>osd/osd_settings_back.png</texture>
+    </control>
+    <control type="image">
+      <posx>50</posx>
+      <posy>35</posy>
+      <width>781</width>
+      <height>40</height>
+      <texture>osd/osd_settings_buttonnf.png</texture>
+    </control>
+    <control type="image">
+      <posx>50</posx>
+      <posy>385</posy>
+      <width>781</width>
+      <height>40</height>
+      <texture>osd/osd_settings_buttonnf.png</texture>
+    </control>
+    <control type="label">
+			<description>header label</description>
+      <posx>80</posx>
+      <posy>30</posy>
+      <width>881</width>
+      <height>30</height>
+      <font>Font_Bold19</font>
+			<label>$LOCALIZE[298]</label>
+      <align>left</align>
+      <aligny>center</aligny>
+      <textcolor>white</textcolor>
+      <shadowcolor>black</shadowcolor>
+    </control>
+    <control type="button" id="3">
+      <description>Clear all bookmarks</description>
+      <posx>600</posx>
+      <posy>30</posy>
+      <width>210</width>
+      <height>40</height>
+      <label>296</label>
+      <texturefocus border="5">-</texturefocus>
+      <texturenofocus border="5">-</texturenofocus>
+      <textcolor>grey2</textcolor>
+      <focusedcolor>white</focusedcolor>
+      <font>Font_Bold19</font>
+      <align>right</align>
+      <aligny>center</aligny>
+      <onleft>11</onleft>
+      <onright>2</onright>
+      <onup>2</onup>
+      <ondown>11</ondown>
+    </control>
+    <control type="button" id="2">
+      <description>Add a video bookmark</description>
+      <posx>80</posx>
+      <posy>425</posy>
+      <width>210</width>
+      <height>40</height>
+      <label>294</label>
+      <texturefocus border="5">-</texturefocus>
+      <texturenofocus border="5">-</texturenofocus>
+      <textcolor>grey2</textcolor>
+      <focusedcolor>white</focusedcolor>
+      <textoffsetx>0</textoffsetx>
+      <font>Font_Bold19</font>
+      <align>left</align>
+      <aligny>center</aligny>
+      <onleft>61</onleft>
+      <onright>4</onright>
+      <onup>11</onup>
+      <ondown>3</ondown>
+    </control>
+    <control type="button" id="4">
+      <description>Use the currently selected video bookmark as the episode thumbnail</description>
+      <posx>290</posx>
+      <posy>425</posy>
+      <width>210</width>
+      <height>40</height>
+      <label>20406</label>
+      <texturefocus border="5">-</texturefocus>
+      <texturenofocus border="5">-</texturenofocus>
+      <textcolor>grey2</textcolor>
+      <focusedcolor>white</focusedcolor>
+      <textoffsetx>0</textoffsetx>
+      <font>Font_Bold19</font>
+      <align>left</align>
+      <aligny>center</aligny>
+      <onleft>61</onleft>
+      <onright>4</onright>
+      <onup>11</onup>
+      <ondown>3</ondown>
+    </control>
+    <control type="label">
+      <description>number of files/pages in list text label</description>
+      <posx>809</posx>
+      <posy>441</posy>
+      <width>210</width>
+      <height>40</height>
+      <font>Font_Reg14</font>
+      <align>right</align>
+      <textcolor>grey2</textcolor>
+      <label>$INFO[Container(11).NumItems,, $LOCALIZE[31025]]$INFO[Container(11).CurrentPage, - $LOCALIZE[31024] (]$INFO[Container(11).NumPages,/,)]</label>
+    </control>
+    <control type="panel" id="11">
+			<posx>83</posx>
+			<posy>70</posy>
+			<width>720</width>
+			<height>350</height>
+			<onleft>61</onleft>
+			<onright>3</onright>
+			<ondown>2</ondown>
+			<onup>3</onup>
+			<scrolltime>200</scrolltime>
+			<viewtype label="536">icon</viewtype>
+			<pagecontrol>61</pagecontrol>
+			<itemlayout height="175" width="240">
+				<control type="image">
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>234</width>
+          <height>154</height>
+          <aspectratio aligny="center">keep</aspectratio>
+          <info>ListItem.Icon</info>
+          <bordertexture border="7">thumbs/thumbshadow.png</bordertexture>
+          <bordersize>7</bordersize>
+        </control>
+				<control type="label">
+					<posx>112</posx>
+					<posy>150</posy>
+					<width>225</width>
+					<height>15</height>
+					<font>Font_OSDSettings</font>
+					<selectedcolor>selected</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="175" width="240">
+				<control type="image">
+          <posx>3</posx>
+          <posy>3</posy>
+          <width>228</width>
+          <height>148</height>
+          <aspectratio aligny="center">keep</aspectratio>
+          <info>ListItem.Icon</info>
+          <bordertexture border="4">thumbs/bordershadow.png</bordertexture>
+          <bordersize>4</bordersize>
+        </control>
+				<control type="label">
+					<posx>112</posx>
+					<posy>150</posy>
+					<width>225</width>
+					<height>15</height>
+					<font>Font_OSDSettings</font>
+					<selectedcolor>selected</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+    <control type="scrollbar" id="61">
+      <description>Scrollbar</description>
+      <posx>30</posx>
+      <posy>70</posy>
+      <width>28</width>
+      <height>360</height>
+      <texturesliderbackground>views/scrollbarbacklist.png</texturesliderbackground>
+      <texturesliderbar>-</texturesliderbar>
+      <texturesliderbarfocus>-</texturesliderbarfocus>
+      <textureslidernib>views/scrollbarnub-nofocus.png</textureslidernib>
+      <textureslidernibfocus>views/scrollbarnub-focus.png</textureslidernibfocus>
+      <onleft>2</onleft>
+      <onright>11</onright>
+      <ondown>61</ondown>
+      <onup>61</onup>
+      <showonepage>false</showonepage>
+      <orientation>vertical</orientation>
+    </control>
+    <!--<control type="grouplist" id="9000">
+			<posx>20</posx>
+			<posy>425</posy>
+			<width>760</width>
+			<itemgap>2</itemgap>
+			<align>center</align>
+			<orientation>horizontal</orientation>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<onup>11</onup>
+			<ondown>11</ondown>
+			<control type="button" id="2">
+				<description>Create Bookmark button</description>
+				<label>294</label>
+				<width>250</width>
+        <include>Objects_FSInfoButton</include>
+			</control>
+			<control type="button" id="3">
+				<description>Clear Bookmark button</description>
+				<label>296</label>
+				<width>250</width>
+        <include>Objects_FSInfoButton</include>
+			</control>
+			<control type="button" id="4">
+				<description>Clear Bookmark button</description>
+				<label>20406</label>
+				<width>250</width>
+        <include>Objects_FSInfoButton</include>
+				<visible>videoplayer.content(episodes)</visible>
+			</control>
+		</control>-->
+	</controls>
+</window>

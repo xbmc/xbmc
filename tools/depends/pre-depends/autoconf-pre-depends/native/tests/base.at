@@ -1,0 +1,709 @@
+#							-*- Autotest -*-
+
+AT_BANNER([Autoconf base layer.])
+
+# Copyright (C) 2000, 2001, 2003, 2005, 2006, 2007, 2008, 2009, 2010
+# Free Software Foundation, Inc.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+## ------------------------------- ##
+## AC_REQUIRE: topological sort..  ##
+## ------------------------------- ##
+
+# Check that dependencies are always properly honored.
+
+AT_SETUP([AC_REQUIRE: topological sort])
+AT_KEYWORDS([m4@&t@_require])
+
+AT_DATA([configure.ac],
+[[define([REQUIRE_AND_CHECK],
+[AC_REQUIRE([$1])
+test -z "$m4@&t@_translit([$1], [A-Z], [a-z])" && AS_EXIT(1)])
+
+AC_DEFUN([TEST1],
+[REQUIRE_AND_CHECK([TEST2a])
+REQUIRE_AND_CHECK([TEST2b])
+test1=set])
+
+AC_DEFUN([TEST2a],
+[test2a=set])
+
+AC_DEFUN([TEST2b],
+[REQUIRE_AND_CHECK([TEST3])
+test2b=set])
+
+AC_DEFUN([TEST3],
+[REQUIRE_AND_CHECK([TEST2a])
+test3=set])
+
+AS@&t@_INIT
+
+TEST1
+test -z "$test1" &&
+  AC_MSG_ERROR([\$test1 is empty])
+AS_EXIT(0)
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+## --------------------------- ##
+## AC_REQUIRE: error message.  ##
+## --------------------------- ##
+
+# Check that the message mentions AC_DEFUN, not m4_defun.
+
+AT_SETUP([AC_REQUIRE: error message])
+AT_KEYWORDS([m4@&t@_require])
+AT_DATA([configure.ac],
+[[AC_REQUIRE([AC_PROG_CC])
+]])
+
+AT_CHECK_AUTOCONF([], [1], [],
+[[configure.ac:1: error: AC_REQUIRE(AC_PROG_CC): cannot be used outside of an AC_DEFUN'd macro
+configure.ac:1: the top level
+autom4te: m4 failed with exit status: 1
+]])
+AT_CLEANUP
+
+
+## ----------------------------------------------- ##
+## AC_REQUIRE and AC_DEFUN_ONCE: Require, expand.  ##
+## ----------------------------------------------- ##
+
+AT_SETUP([AC_REQUIRE & AC_DEFUN_ONCE: [Require, expand]])
+AT_KEYWORDS([m4@&t@_require m4@&t@_require_once])
+
+AT_DATA([configure.ac],
+[[AC_DEFUN([TEST],
+[AC_REQUIRE([MULTI_TEST])
+AC_REQUIRE([SINGLE_TEST])])
+
+AC_DEFUN([MULTI_TEST],
+[multi_test=".$multi_test"])
+
+AC_DEFUN_ONCE([SINGLE_TEST],
+[single_test=".$single_test"])
+
+AS@&t@_INIT
+
+TEST
+TEST
+MULTI_TEST
+MULTI_TEST
+SINGLE_TEST
+SINGLE_TEST
+
+case $multi_test:$single_test in
+  ...:. ) AS_EXIT(0);;
+  ...:* ) AC_MSG_ERROR([DEFUN_ONCE is broken]);;
+  *:.   ) AC_MSG_ERROR([DEFUN is broken (Wow, congrats!)]);;
+esac
+]])
+
+AT_CHECK_AUTOCONF([], 0, [])
+
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+
+## ----------------------------------------------- ##
+## AC_REQUIRE and AC_DEFUN_ONCE: Expand, require.  ##
+## ----------------------------------------------- ##
+
+AT_SETUP([AC_REQUIRE & AC_DEFUN_ONCE: [Expand, require]])
+AT_KEYWORDS([m4@&t@_require m4@&t@_require_once])
+
+AT_DATA([configure.ac],
+[[AC_DEFUN([TEST],
+[AC_REQUIRE([MULTI_TEST])
+AC_REQUIRE([SINGLE_TEST])])
+
+AC_DEFUN([MULTI_TEST],
+[multi_test=".$multi_test"])
+
+AC_DEFUN_ONCE([SINGLE_TEST],
+[single_test=".$single_test"])
+
+AS@&t@_INIT
+
+MULTI_TEST
+MULTI_TEST
+SINGLE_TEST
+SINGLE_TEST
+TEST
+TEST
+
+case $multi_test:$single_test in
+  ..:. ) AS_EXIT(0);;
+  ..:* ) AC_MSG_ERROR([DEFUN_ONCE is broken]);;
+  *:.  ) AC_MSG_ERROR([DEFUN is broken (Wow, congrats!)]);;
+     * ) AC_MSG_ERROR([received `$multi_test:$single_test']);;
+esac
+]])
+
+AT_CHECK_AUTOCONF([], 0, [])
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+
+## ------------------------- ##
+## AC_REQUIRE & AC_PROVIDE.  ##
+## ------------------------- ##
+
+AT_SETUP([AC_REQUIRE & AC_PROVIDE])
+AT_KEYWORDS([m4@&t@_require])
+
+AT_DATA([configure.ac],
+[[AC_DEFUN([TEST],
+[AC_REQUIRE([INNER_TEST])])
+
+AC_DEFUN([INNER_TEST],
+[inner_test=".$inner_test"])
+
+AS@&t@_INIT
+
+AC_PROVIDE([INNER_TEST])
+TEST
+
+case $inner_test in
+  "" ) AS_EXIT(0);;
+  *  ) AC_MSG_ERROR([received `$inner_test']);;
+esac
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+## -------- ##
+## AC_INIT. ##
+## -------- ##
+
+# Make sure AC_INIT sets PACKAGE_TARNAME properly.
+
+AT_SETUP([AC_INIT])
+
+AT_DATA([configure.ac],
+[[AC_INIT([GNU fu], [1.0], [bug-fu@gnu.org])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([-q])
+
+# Ensure we get the expected definition:
+AT_CHECK([grep "^PACKAGE_TARNAME='fu'\$" configure], [], [ignore])
+
+AT_CLEANUP
+
+
+## ------------------------------------- ##
+## AC_INIT with unusual version strings. ##
+## ------------------------------------- ##
+
+AT_SETUP([AC_INIT with unusual version strings])
+
+AT_DATA([configure.ac],
+[[AC_INIT([GNU String++ with  spaces (foo)],
+	  [2.48++  (2010-07-03)], [[http://example.com/?a=b&c=d#e]], [clisp])
+AC_OUTPUT
+]])
+
+if echo 'ab*c' | grep -F 'ab*c' >/dev/null 2>&1; then
+  FGREP="grep -F"
+else
+  FGREP=fgrep
+fi
+
+AT_CHECK_AUTOCONF([-Werror])
+AT_CHECK_CONFIGURE([-q])
+AT_CHECK_CONFIGURE([--help], [], [stdout])
+AT_CHECK([[$FGREP 'com/?a=b&c=d#e' stdout]], [], [ignore])
+AT_CHECK_CONFIGURE([--version], [], [stdout])
+AT_CHECK([$FGREP 'GNU String++ with  spaces (foo)' stdout], [], [ignore])
+AT_CHECK([$FGREP '2.48++  (2010-07-03)' stdout], [], [ignore])
+
+AT_CHECK([./config.status --help], [], [stdout])
+AT_CHECK([[$FGREP 'com/?a=b&c=d#e' stdout]], [], [ignore])
+AT_CHECK([./config.status --version], [], [stdout])
+AT_CHECK([$FGREP 'GNU String++ with  spaces (foo)' stdout], [], [ignore])
+AT_CHECK([$FGREP '2.48++  (2010-07-03)' stdout], [], [ignore])
+
+AT_DATA([configure.ac],
+[[AC_INIT([GNU "String++"],
+	  [2.48], [http://example.com/], [clisp])
+AC_OUTPUT
+]])
+
+AT_CHECK_AUTOCONF([-Werror], [1], [ignore], [stderr])
+AT_CHECK([grep 'AC_INIT: not a literal: ' stderr], [], [ignore])
+
+AT_DATA([configure.ac],
+[[AC_INIT([GNU String++],
+	  ['codename' 2.48], [http://example.com/], [clisp])
+AC_OUTPUT
+]])
+
+AT_CHECK_AUTOCONF([-Werror], [1], [ignore], [stderr])
+AT_CHECK([grep 'AC_INIT: not a literal: ' stderr], [], [ignore])
+
+AT_DATA([configure.ac],
+[[AC_INIT([GNU
+String++], [2.48], [http://example.com/], [clisp])
+AC_OUTPUT
+]])
+
+AT_CHECK_AUTOCONF([-Werror], [1], [ignore], [stderr])
+AT_CHECK([grep 'AC_INIT: not a literal: ' stderr], [], [ignore])
+
+AT_CLEANUP
+
+
+## -------------- ##
+## AC_COPYRIGHT.  ##
+## -------------- ##
+
+# Ensure the FSF notice as well as the user-provided one are present
+# in the head of the testsuite as well as the --version output.
+
+AT_SETUP([AC@&t@_COPYRIGHT])
+
+AT_DATA([configure.ac],
+[[AC_INIT([GNU fu], [1.0])
+AC_COPYRIGHT([[This is just a test notice, not a real one, so let's avoid
+words that may be matched by scanners for legal things,
+causing extra work for distributors.
+Multi-line values should be supported.
+]])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([--version], [], [stdout])
+AT_CHECK([grep 'Copyright.*Free Software Foundation' stdout], [], [ignore])
+AT_CHECK([grep 'This is just a test notice' stdout], [], [ignore])
+AT_CHECK([sed -ne 50q -e '/Copyright/{' -e N -e N -e N -e N -e 's/#//g' ]dnl
+	 [    -e 's/\n//g' -e p -e '}' configure ]dnl
+         [  | grep 'Copyright.*Free Software Foundation'],
+	 [], [ignore])
+AT_CHECK([sed 50q configure | grep 'This is just a test notice'], [], [ignore])
+
+AT_CLEANUP
+
+
+## ---------------- ##
+## AC_CACHE_CHECK.  ##
+## ---------------- ##
+
+# Make sure AC_CACHE_CHECK is silent with -q.
+# Also make sure we warn about cache id's not named with `_cv_'.
+
+AT_SETUP([AC_CACHE_CHECK])
+AT_KEYWORDS([CONFIG_SITE])
+
+# Don't let a config.site file affect this test.
+AS_UNSET([CONFIG_SITE])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+# m4_define([ac_nothing], [ac_cv_absolutely_nothing])
+AC_CACHE_CHECK([for nothing],
+	       [ac_nothing],
+	       [ac_nothing=found])
+
+AC_MSG_CHECKING([for some other variable])
+commands_to_set_it_was_run=false
+AC_CACHE_VAL([my_cv_variable], [
+# FOO
+commands_to_set_it_was_run=true
+my_cv_variable=true
+])
+AC_MSG_RESULT([$my_cv_variable])
+
+# Ensure that the result is available at this point.
+if test ${my_cv_variable+set} != set; then
+  AC_MSG_ERROR([AC@&@&t@t@_CACHE_VAL did not ensure that the cache variable was set])
+fi
+
+# AC_CACHE_SAVE should be enough here, no need for AC_OUTPUT.
+AC_CACHE_SAVE
+]])
+
+AT_CHECK_AUTOCONF([], [], [], [stderr])
+AT_CHECK([grep 'must contain _cv_ to be cached' stderr], [], [ignore])
+
+# Do not warn about defines:
+sed 's/^# m4_define/m4_define/' configure.ac > t
+mv -f t configure.ac
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([-q])
+
+sed '/m4_define/d; s/ac_nothing/ac_cv_nothing/' configure.ac > t
+mv -f t configure.ac
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([-q])
+
+# Print a message saying that the result was cached, iff it was cached.
+AT_CHECK_CONFIGURE([], [], [stdout])
+AT_CHECK([grep 'cached' stdout], [1])
+AT_CHECK_CONFIGURE([my_cv_variable='yes it is set'], [], [stdout])
+AT_CHECK([grep 'cached.*yes it is set' stdout], [], [ignore])
+
+# --cache-file is honored and has caching semantics.
+AT_CHECK_CONFIGURE([--cache-file=foobar.cache], [], [stdout])
+AT_CHECK([grep 'cached' stdout], [1])
+AT_CHECK([test ! -f config.cache])
+AT_CHECK([grep 'my_cv_variable.*true' foobar.cache], [], [ignore])
+AT_CHECK_CONFIGURE([--cache-file=foobar.cache], [], [stdout])
+AT_CHECK([grep 'some other variable.*cached.*true' stdout], [], [ignore])
+
+# A setting on the command line overrides the cache.
+AT_CHECK_CONFIGURE([--cache-file=foobar.cache my_cv_variable='override'], [], [stdout])
+AT_CHECK([grep 'cached.*override' stdout], [], [ignore])
+AT_CHECK([grep 'my_cv_variable.*override' foobar.cache], [], [ignore])
+
+# Values containing braces need special internal treatment.
+AT_CHECK_CONFIGURE([-C ac_cv_nothing='{' my_cv_variable='contains } brace'],
+		   [], [stdout])
+AT_CHECK([grep 'ac_cv_nothing.*{' config.cache], [], [ignore])
+AT_CHECK([grep 'my_cv_variable.*contains } brace' config.cache], [], [ignore])
+AT_CHECK_CONFIGURE([-C], [], [stdout])
+AT_CHECK([grep 'nothing.*{' stdout], [], [ignore])
+AT_CHECK([grep 'some other variable.*contains } brace' stdout], [], [ignore])
+rm -f config.cache
+
+# Diagnose common side-effects that are errors in COMMANDS-TO-SET-IT:
+sed 's/^# FOO/AC_DEFINE([some-define], [1], [oooh.])/' configure.ac > t
+mv -f t configure.ac
+AT_CHECK_AUTOCONF([], [], [], [stderr])
+AT_CHECK([grep 'suspicious.*AC_DEFINE' stderr], [], [ignore])
+
+sed 's/^AC_DEFINE.*/AC_SUBST([some_substitution], [oooh.])/' configure.ac > t
+mv -f t configure.ac
+AT_CHECK_AUTOCONF([], [], [], [stderr])
+AT_CHECK([grep 'suspicious.*AC_SUBST' stderr], [], [ignore])
+
+# Ensure the examples from the manual work as intended.
+# Taken from autoconf.texi:Caching Results
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_DEFUN([AC_SHELL_TRUE],
+[AC_CACHE_CHECK([whether true(1) works], [my_cv_shell_true_works],
+                [my_cv_shell_true_works=no
+                 (true) 2>/dev/null && my_cv_shell_true_works=yes
+                 if test "x$my_cv_shell_true_works" = xyes; then
+                   AC_DEFINE([TRUE_WORKS], [1],
+                             [Define if `true(1)' works properly.])
+                 fi])
+])
+AC_SHELL_TRUE
+]])
+AT_CHECK_AUTOCONF([-Werror], [1], [], [stderr])
+AT_CHECK([grep 'suspicious.*AC_DEFINE' stderr], [], [ignore])
+
+# Taken from autoconf.texi:Caching Results
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_DEFUN([AC_SHELL_TRUE],
+[AC_CACHE_CHECK([whether true(1) works], [my_cv_shell_true_works],
+                [my_cv_shell_true_works=no
+                 (true) 2>/dev/null && my_cv_shell_true_works=yes])
+ if test "x$my_cv_shell_true_works" = xyes; then
+   AC_DEFINE([TRUE_WORKS], [1],
+             [Define if `true(1)' works properly.])
+ fi
+])
+AC_SHELL_TRUE
+AC_OUTPUT
+]])
+AT_CHECK_AUTOCONF([-Werror])
+AT_CHECK_CONFIGURE([-C], [], [stdout])
+AT_CHECK([grep my_cv_shell_true_works config.cache], [], [ignore])
+AT_CHECK([grep 'true.*works.*yes' stdout], [], [ignore])
+
+AT_CHECK_CONFIGURE([--config-cache], [], [stdout])
+AT_CHECK([grep 'true.*works.*cached.*yes' stdout], [], [ignore])
+
+# config.status only pays attention to the cache file with --recheck.
+AT_CHECK([./config.status], [], [stdout])
+AT_CHECK([grep cache stdout], [1])
+AT_CHECK([./config.status --recheck], [], [stdout])
+AT_CHECK([grep cache stdout], [0], [ignore])
+
+# By default, configure uses no cache file, neither loading nor updating it.
+: > a-stamp-file
+AT_CHECK_CONFIGURE([], [], [stdout])
+AT_CHECK([grep cache stdout], [1])
+AT_CHECK([LC_ALL=C ls -t config.cache a-stamp-file | sed 1q | grep config.cache], [1])
+
+# Using a symlinked cache file works.
+: > cache
+rm -f config.cache
+AS_LN_S([cache], [config.cache])
+AT_CHECK_CONFIGURE([-C])
+# Either the system does not support symlinks, or the symlinked-to file
+# should be updated.
+AT_CHECK([test -s cache || test ! -h config.cache])
+
+# config.site can specify a site-wide cache, accumulating information.
+# Also test that we don't run afoul of sourcing a file with leading -.
+AT_DATA([-config.site],
+[[cache_file=sitecache
+]])
+AT_DATA([sitecache],
+[[my_cv_some_preset_cache_var=yes
+]])
+CONFIG_SITE=-config.site
+export CONFIG_SITE
+AT_CHECK_CONFIGURE
+AT_CHECK([grep my_cv_some_preset_cache_var sitecache], [], [ignore])
+AT_CHECK([grep my_cv_shell_true_works sitecache], [], [ignore])
+AT_CHECK_CONFIGURE([], [], [stdout])
+AT_CHECK([grep 'whether true.*works.*cached' stdout], [], [ignore])
+
+dnl Until we can find a way to avoid catastrophic failure,
+dnl skip the rest of this test on such shells.
+echo 'if' > syntax
+AT_CHECK([${CONFIG_SHELL-$SHELL} -c 'case `. ./syntax; echo $?` in
+            0|"") exit 77;; esac'], [0], [ignore], [ignore])
+
+# Check that config cache scripts must be well-formed.
+AT_DATA([bad.site],
+[[fi
+]])
+CONFIG_SITE=$PWD/bad.site
+AT_CHECK_CONFIGURE([], [1], [ignore], [stderr])
+AT_CHECK([grep 'failed to load site script' stderr], [], [ignore])
+
+# However, a missing file is ignored.
+CONFIG_SITE=./no-such-file
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+## --------------- ##
+## AC_CACHE_LOAD.  ##
+## --------------- ##
+
+# Test AC_CACHE_LOAD.
+
+AT_SETUP([AC_CACHE_LOAD])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+$some_test_code
+AC_CACHE_LOAD
+AC_MSG_NOTICE([some_cv_variable is $some_cv_variable])
+AC_OUTPUT
+]])
+AT_CHECK_AUTOCONF
+AS_UNSET([some_test_code])
+AT_DATA([new-cache],
+[[some_cv_variable=value-from-new-cache
+]])
+AT_CHECK_CONFIGURE([some_test_code='eval cache_file=new-cache'], [], [stdout])
+AT_CHECK([grep 'some_cv_variable.*value-from-new-cache' stdout], [], [ignore])
+
+AT_CLEANUP
+
+
+## ---------------- ##
+## AC_COMPUTE_INT.  ##
+## ---------------- ##
+
+# Make sure AC_COMPUTE_INT fails properly.
+
+AT_SETUP([AC_COMPUTE_INT])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_COMPUTE_INT([invalid_expression],
+	       [**0**],
+	       [],
+	       [invalid_expression=failed])
+test "$invalid_expression" = failed ||
+  AC_MSG_ERROR([**0** evaluated to $invalid_expression instead of failing])
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE
+
+AT_CLEANUP
+
+
+## ---------------- ##
+## AC_TRY_COMMAND.  ##
+## ---------------- ##
+
+AT_SETUP([AC_TRY_COMMAND])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+
+if AC_TRY_COMMAND([(echo "The Cat in the Hat";
+		    echo "The Hat in the Cat" >&2) |
+		   grep \^The\ Cat\ in\ the\ Hat\$ >/dev/null]); then
+  :
+else
+  AC_MSG_ERROR([didn't see the Cat in the Hat])
+fi
+
+if AC_TRY_COMMAND([(echo "The Cat in the Hat";
+		    echo "The Hat in the Cat" >&2) |
+		   grep \^The\ Hat\ in\ the\ Cat\$ >/dev/null]); then
+  AC_MSG_ERROR([saw the Hat in the Cat])
+fi
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([-q])
+
+AT_CLEANUP
+
+
+## ------------ ##
+## Input/Output ##
+## ------------ ##
+
+AT_SETUP([Input/Output])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+cat <&AS@&t@_ORIGINAL_STDIN_FD >&AS@&t@_MESSAGE_FD
+]])
+AT_CHECK_AUTOCONF
+AT_CHECK([echo Hello | CONFIG_SITE=/dev/null ./configure $configure_options | grep -v 'configure: loading site script '],, [Hello
+])
+AT_CHECK([echo Hello | CONFIG_SITE=/dev/null ./configure $configure_options --silent])
+
+AT_CLEANUP
+
+
+## ------------------- ##
+## configure arguments ##
+## ------------------- ##
+
+AT_SETUP([configure arguments])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+echo "$@"
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([FOO=bar --enable-baz --without-zork --silent], [0], [stdout], [ignore])
+AT_CHECK([grep 'FOO=bar --enable-baz --without-zork --silent' stdout], [0], [ignore], [ignore])
+
+dnl check that syntax error is detected
+AT_CHECK_CONFIGURE([=], [1], [], [ignore], [ignore])
+AT_CHECK_CONFIGURE([1=2], [1], [], [ignore], [ignore])
+
+AT_CLEANUP
+
+
+## ------------------------------ ##
+## AC_ARG_ENABLE and AC_ARG_WITH. ##
+## ------------------------------ ##
+
+AT_SETUP([AC_ARG_ENABLE and AC_ARG_WITH])
+
+AT_DATA_M4SH([configure.ac],
+[[AC_INIT
+# Taken from autoconf.texi:Pretty Help Strings.
+AC_ARG_WITH([foo],
+  [AS_HELP_STRING([--with-foo],
+     [use foo (default is no)])],
+  [use_foo=$withval],
+  [use_foo=no])
+AC_ARG_WITH([c++],
+  [AS_HELP_STRING([--with-c++],
+     [with c++])],
+  [choice_with=$withval])
+AC_ARG_ENABLE([c++],
+  [AS_HELP_STRING([--enable-c++],
+     [enable c++])],
+  [choice_enable=$enableval])
+echo "use_foo: $use_foo"
+echo "with_c++: $with_c__, $choice_with"
+echo "enable_c++: $enable_c__, $choice_enable"
+]])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_CONFIGURE([--help | grep foo], [0],
+[[  --with-foo              use foo (default is no)
+]], [ignore])
+AT_CHECK_CONFIGURE([--with-foo=yes --with-c++ --disable-c++],
+  [], [stdout], [ignore])
+AT_CHECK([grep 'use_foo: yes' stdout], [], [ignore])
+AT_CHECK([grep 'with_c++: yes, yes' stdout], [], [ignore])
+AT_CHECK([grep 'enable_c++: no, no' stdout], [], [ignore])
+AT_CHECK([grep 'unrecognized option' stdout], [1])
+AT_CHECK_CONFIGURE([--without-foo --with-c++=no --enable-c++=maybe],
+  [], [stdout], [ignore])
+AT_CHECK([grep 'use_foo: no' stdout], [], [ignore])
+AT_CHECK([grep 'with_c++: no, no' stdout], [], [ignore])
+AT_CHECK([grep 'enable_c++: maybe, maybe' stdout], [], [ignore])
+AT_CHECK([grep 'unrecognized option' stdout], [1])
+AT_CHECK_CONFIGURE([], [], [stdout], [ignore])
+AT_CHECK([grep 'use_foo: no' stdout], [], [ignore])
+AT_CHECK([grep 'with_c++: , $' stdout], [], [ignore])
+AT_CHECK([grep 'enable_c++: , $' stdout], [], [ignore])
+AT_CHECK([grep 'unrecognized option' stdout], [1])
+
+AT_CLEANUP
+
+
+## --------------------- ##
+## configure directories ##
+## --------------------- ##
+
+AT_SETUP([configure directories])
+
+AT_DATA([foo.in],
+[[prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+]])
+
+AT_DATA([configure.ac],
+[[AC_INIT
+AC_CONFIG_FILES([foo])
+AC_OUTPUT
+]])
+
+AT_CHECK_AUTOCONF
+dnl check that relative paths are rejected
+AT_CHECK_CONFIGURE([--libdir=.], [1], [ignore], [stderr])
+AT_CHECK([grep 'expected an absolute directory name for --libdir: \.' stderr],
+	 [0], [ignore])
+
+dnl check that extra slashes are stripped, and that defaults are not expanded
+AT_CHECK_CONFIGURE([--prefix=/usr//])
+AT_CHECK([cat foo], [0], [[prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+]])
+
+AT_CLEANUP

@@ -1,0 +1,167 @@
+<includes>
+  <include name="contents509list">
+    <visible>Window.IsActive(501)|Window.IsActive(502)|Window.IsActive(1)|Window.IsActive(pictures) | stringcompare(Container.FolderPath,addons://sources/video/) | Window.IsActive(addonbrowser)</visible>
+    <posx>-245</posx>
+    <posy>387</posy>
+    <width>1770</width>
+    <height>350</height>
+    <onleft>509</onleft>
+    <onright>509</onright>
+    <onup>7000</onup>
+    <ondown>60</ondown>
+    <viewtype label="31029">bigwrap</viewtype>
+    <pagecontrol>60</pagecontrol>
+    <scrolltime>200</scrolltime>
+    <focusposition>3</focusposition>
+    <orientation>horizontal</orientation>
+    <preloaditems>4</preloaditems>
+    <animation effect="fade" time="10" delay="750" end="100" condition="Skin.HasSetting(noflowalbum)">Conditional</animation>
+    <animation effect="fade" start="100" end="0" time="400" condition="Control.HasFocus(110)">Conditional</animation>
+    <itemlayout height="350" width="250">
+      <control type="group">
+        <visible>Skin.HasSetting(noflowalbum)+!Control.IsVisible(7003)</visible>
+        <include condition="Window.IsActive(pictures)">MusicShowcaseBlack</include>
+        <control type="image">
+          <include>MusicShowcaseThumb</include>
+          <info>ListItem.Icon</info>
+          <visible>!Container.Content(genres)</visible>
+        </control>
+        <control type="image">
+          <include>MusicShowcaseThumbGenre</include>
+          <texture background="true" fallback="special://skin/extras/genre/music/icons/default.jpg" diffuse="thumbs/cdcover_mask.png">$INFO[ListItem.Label,special://skin/extras/genre/music/icons/,.jpg]</texture>
+          <visible>Container.Content(genres)</visible>
+        </control>
+        <control type="image">
+          <description>Glass overlay</description>
+          <include>MusicShowcaseGlassOverlay</include>
+        </control>
+        <include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflection</include>
+        <control type="image">
+          <include>MusicShowcaseThumbReflection</include>
+          <info>ListItem.Icon</info>
+          <visible>!Container.Content(genres)</visible>
+        </control>
+        <control type="image">
+          <include>MusicShowcaseThumbReflectionGenre</include>
+          <texture background="true" flipy="true" fallback="special://skin/extras/genre/music/icons/default.jpg" diffuse="thumbs/cdcover_mask_reflect.png">$INFO[ListItem.Label,special://skin/extras/genre/music/icons/,.jpg]</texture>
+          <visible>Container.Content(genres)</visible>
+        </control>
+      </control>
+    </itemlayout>
+    <focusedlayout height="350" width="250">
+      <control type="group">
+        <visible>Skin.HasSetting(noflowalbum)+!Control.IsVisible(7003)</visible>
+        <animation effect="zoom" start="100" end="110" center="135,120" time="400" easing="out" reversible="false" tween="cubic">Focus</animation>
+        <animation effect="zoom" start="110" end="100" center="135,120" time="400" easing="out" reversible="false" tween="cubic">Unfocus</animation>
+        <include condition="Window.IsActive(pictures)">MusicShowcaseBlack</include>
+        <control type="image">
+          <include>MusicShowcaseThumb</include>
+          <info>ListItem.Icon</info>
+          <visible>!Container.Content(genres)</visible>
+        </control>
+        <control type="image">
+          <include>MusicShowcaseThumbGenre</include>
+          <texture background="true" fallback="special://skin/extras/genre/music/icons/default.jpg" diffuse="thumbs/cdcover_mask.png">$INFO[ListItem.Label,special://skin/extras/genre/music/icons/,.jpg]</texture>
+          <visible>Container.Content(genres)</visible>
+        </control>
+        <control type="image">
+          <description>Glass overlay</description>
+          <include>MusicShowcaseGlassOverlay</include>
+        </control>
+        <include condition="Window.IsActive(pictures)">MusicShowcaseBlackReflection</include>
+        <control type="image">
+          <include>MusicShowcaseThumbReflection</include>
+          <info>ListItem.Icon</info>
+          <visible>!Container.Content(genres)</visible>
+        </control>
+        <control type="image">
+          <include>MusicShowcaseThumbReflectionGenre</include>
+          <texture background="true" flipy="true" fallback="special://skin/extras/genre/music/icons/default.jpg" diffuse="thumbs/cdcover_mask_reflect.png">$INFO[ListItem.Label,special://skin/extras/genre/music/icons/,.jpg]</texture>
+          <visible>Container.Content(genres)</visible>
+        </control>
+      </control>
+    </focusedlayout>
+  </include>
+  <include name="scqfixed">
+    <control type="fixedlist" id="509">
+      <include>contents509list</include>
+    </control>
+  </include>
+  <include name="scqwrap">
+    <control type="wraplist" id="509">
+      <include>contents509list</include>
+    </control>
+  </include>
+  <include name="ShowcaseQuadrate">
+    <control type="group">
+      <visible>Control.IsVisible(509)</visible>
+      <include>ShowcaseSquare</include>
+      <include condition="!Skin.HasSetting(showcasewrap)">scqfixed</include>
+      <include condition="Skin.HasSetting(showcasewrap)">scqwrap</include>
+      <control type="group">
+        <visible>!Control.HasFocus(110)</visible>
+        <control type="label">
+          <posx>340</posx>
+          <posy>670</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_Info_Caps</font>
+          <textcolor>floor</textcolor>
+          <shadowcolor>floorshadow</shadowcolor>
+          <label>[UPPERCASE]$INFO[ListItem.Label2][/UPPERCASE]</label>
+          <visible>!Control.HasFocus(60)+!ControlGroup(9000).HasFocus</visible>
+        </control>
+        <control type="label">
+          <posx>340</posx>
+          <posy>670</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_Info_Caps</font>
+          <textcolor>floor</textcolor>
+          <shadowcolor>floorshadow</shadowcolor>
+          <label>[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</label>
+          <visible>!Control.HasFocus(60)+!ControlGroup(9000).HasFocus+[Window.IsActive(1)+Substring(Container.FolderPath,advanced.launcher)]</visible>
+        </control>
+        <control type="label">
+          <posx>340</posx>
+          <posy>693</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_ShowcaseMainLabel2_Caps</font>
+          <textcolor>floor</textcolor>
+          <scroll>true</scroll>
+          <scrollspeed>50</scrollspeed>
+          <shadowcolor>floorshadow</shadowcolor>
+          <label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+          <visible>!Control.HasFocus(60)+!ControlGroup(9000).HasFocus</visible>
+        </control>
+        <control type="label">
+          <posx>340</posx>
+          <posy>693</posy>
+          <width>600</width>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>Animation_CommonFade</include>
+          <font>Font_ShowcaseMainLabel2_Caps</font>
+          <textcolor>floor</textcolor>
+          <shadowcolor>floorshadow</shadowcolor>
+          <label>[UPPERCASE]$INFO[Container.NumItems] $LOCALIZE[31025] | $LOCALIZE[31024] $INFO[Container.CurrentPage]/$INFO[Container.NumPages][/UPPERCASE]</label>
+          <visible>ControlGroup(9000).HasFocus</visible>
+        </control>
+        <control type="scrollbar" id="60">
+          <visible allowhiddenfocus="true">Control.HasFocus(60)</visible>
+          <onup>509</onup>
+          <ondown>110</ondown>
+          <visible>Control.IsVisible(509)</visible>
+          <enable>Control.IsVisible(509)</enable>
+        </control>
+      </control>
+    </control>
+  </include>
+</includes>

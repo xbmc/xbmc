@@ -160,15 +160,10 @@ public:
     const CStdString& GetTitle() const;
     const CStdString& GetURL() const;
     const std::vector<std::string>& GetFace() const;
-    const CStdString& GetAlbum() const;
-    int GetAlbumId() const;
-    const std::vector<std::string>& GetAlbumFace() const;
+    const CStdString& GetPictureAlbum() const;
+    int GetPictureAlbumId() const;
+    const std::vector<std::string>& GetPictureAlbumFace() const;
     const std::vector<std::string>& GetLocation() const;
-    int GetTrackNumber() const;
-    int GetDiscNumber() const;
-    int GetTrackAndDiskNumber() const;
-    int GetDuration() const;  // may be set even if Loaded() returns false
-    int GetYear() const;
     int GetDatabaseId() const;
     const std::string &GetType() const;
     
@@ -176,17 +171,9 @@ public:
     CStdString GetYearString() const;
     const CStdString& GetComment() const;
     const CStdString& GetLyrics() const;
-    const CDateTime& GetLastPlayed() const;
-    bool  GetCompilation() const;
-    char  GetRating() const;
+    const CDateTime& GetTakenOn() const;
     int  GetListeners() const;
-    int  GetPlayCount() const;
     const EmbeddedArtInfo &GetCoverArtInfo() const;
-    int   GetReplayGainTrackGain() const;
-    int   GetReplayGainAlbumGain() const;
-    float GetReplayGainTrackPeak() const;
-    float GetReplayGainAlbumPeak() const;
-    int   HasReplayGainInfo() const;
     
     void SetURL(const CStdString& strURL);
     void SetTitle(const CStdString& strTitle);
@@ -198,31 +185,18 @@ public:
     void SetAlbumFace(const std::vector<std::string>& albumFaces);
     void SetLocation(const CStdString& strLocation);
     void SetLocation(const std::vector<std::string>& locations);
-    void SetYear(int year);
     void SetDatabaseId(long id, const std::string &type);
-    void SetReleaseDate(SYSTEMTIME& dateTime);
-    void SetTrackNumber(int iTrack);
     void SetPartOfSet(int m_iPartOfSet);
-    void SetTrackAndDiskNumber(int iTrackAndDisc);
-    void SetDuration(int iSec);
     void SetLoaded(bool bOnOff = true);
     void SetFace(const CFace& face);
     void SetAlbum(const CPictureAlbum& album);
     void SetPicture(const CPicture& picture);
     void SetComment(const CStdString& comment);
-    void SetLyrics(const CStdString& lyrics);
-    void SetRating(char rating);
     void SetListeners(int listeners);
-    void SetPlayCount(int playcount);
-    void SetLastPlayed(const CStdString& strLastPlayed);
-    void SetLastPlayed(const CDateTime& strLastPlayed);
-    void SetCompilation(bool compilation);
+    void SetTakenOn(const CStdString& strTakenOn);
+    void SetTakenOn(const CDateTime& strTakenOn);
     void SetCoverArtInfo(size_t size, const std::string &mimeType);
-    void SetReplayGainTrackGain(int trackGain);
-    void SetReplayGainAlbumGain(int albumGain);
-    void SetReplayGainTrackPeak(float trackPeak);
-    void SetReplayGainAlbumPeak(float albumPeak);
-    
+  
     /*! \brief Append a unique face to the face list
      Checks if we have this face already added, and if not adds it to the pictures face list.
      \param value face to add.
@@ -258,25 +232,13 @@ protected:
     std::vector<std::string> m_location;
     CStdString m_strComment;
     CStdString m_strLyrics;
-    CDateTime m_lastPlayed;
-    bool m_bCompilation;
-    int m_iDuration;
-    int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
+    CDateTime m_takenOn;
     int m_iDbId;
     std::string m_type; ///< item type "picture", "album", "face"
     bool m_bLoaded;
-    char m_rating;
     int m_listeners;
-    int m_iTimesPlayed;
     int m_iAlbumId;
-    SYSTEMTIME m_dwReleaseDate;
-    
-    // ReplayGain
-    int m_iTrackGain; // measured in milliBels
-    int m_iAlbumGain;
-    float m_fTrackPeak; // 1.0 == full digital scale
-    float m_fAlbumPeak;
-    int m_iHasGainInfo;   // valid info
+  
     EmbeddedArtInfo m_coverArt; ///< art information
 };
 }

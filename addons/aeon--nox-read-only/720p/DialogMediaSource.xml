@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+<window id="129">
+  <defaultcontrol>11</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="group">
+      <posx>217</posx>
+      <posy>196</posy>
+      <width>847</width>
+      <height>328</height>
+      <control type="image">
+        <description>background image</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>847</width>
+        <height>328</height>
+        <texture>dialogs/addsource_back.png</texture>
+      </control>
+      <control type="list" id="10">
+        <description>path list control</description>
+        <posx>40</posx>
+        <posy>53</posy>
+        <width>605</width>
+        <height>164</height>
+        <onup>12</onup>
+        <ondown>12</ondown>
+        <onleft>-</onleft>
+        <onright>11</onright>
+        <scrolltime>0</scrolltime>
+        <itemlayout height="41">
+          <control type="label">
+            <posx>5</posx>
+            <posy>0</posy>
+            <width>605</width>
+            <height>32</height>
+            <font>Font_Info</font>
+            <aligny>center</aligny>
+            <textcolor>9bFFFFFF</textcolor>
+            <selectedcolor>9b3cd2fd</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+          </control>
+        </itemlayout>
+        <focusedlayout height="41">
+          <control type="label">
+            <posx>5</posx>
+            <posy>0</posy>
+            <width>605</width>
+            <height>32</height>
+            <font>Font_Info</font>
+            <aligny>center</aligny>
+            <textcolor>d0FFFFFF</textcolor>
+            <selectedcolor>9b3cd2fd</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="image">
+        <posx>18</posx>
+        <posy>46</posy>
+        <width>653</width>
+        <height>174</height>
+        <texture>dialogs/addsource_highlighttop.png</texture>
+        <include>Animation_CommonFade</include>
+        <visible>Control.HasFocus(10)</visible>
+      </control>
+      <control type="label" id="0">
+        <description>Path Label</description>
+        <posx>10</posx>
+        <posy>8</posy>
+        <width>673</width>
+        <height>28</height>
+        <align>center</align>
+        <aligny>center</aligny>
+        <textcolor>FFcbcbcb</textcolor>
+        <font>Font_Reg20</font>
+        <label>1021</label>
+        <animation effect="fade" start="100" end="60" time="300" condition="!Control.HasFocus(10)">Conditional</animation>
+      </control>
+      <control type="label" id="0">
+        <description>Name Label</description>
+        <posx>10</posx>
+        <posy>222</posy>
+        <width>673</width>
+        <height>28</height>
+        <align>center</align>
+        <aligny>center</aligny>
+        <textcolor>FFcbcbcb</textcolor>
+        <font>Font_Reg20</font>
+        <label>1022</label>
+        <animation effect="fade" start="100" end="60" time="300" condition="!Control.HasFocus(12)">Conditional</animation>
+      </control>
+      <control type="button" id="12">
+        <description>Name Button</description>
+        <posx>18</posx>
+        <posy>257</posy>
+        <width>653</width>
+        <height>44</height>
+        <font>Font_Reg20</font>
+        <align>center</align>
+        <aligny>center</aligny>
+        <texturefocus>-</texturefocus>
+        <texturenofocus>-</texturenofocus>
+        <textcolor>FF6a6565</textcolor>
+        <selectedcolor>FFe4ec06</selectedcolor>
+        <focusedcolor>FFFFFFFF</focusedcolor>
+        <label>-</label>
+        <onup>10</onup>
+        <onleft>19</onleft>
+        <onright>19</onright>
+        <ondown>10</ondown>
+      </control>
+      <control type="image">
+        <posx>18</posx>
+        <posy>255</posy>
+        <width>653</width>
+        <height>51</height>
+        <texture>dialogs/addsource_highlight.png</texture>
+        <include>Animation_CommonFade</include>
+        <visible>Control.HasFocus(12)</visible>
+      </control>
+      <control type="group" id="9000">
+        <posx>382</posx>
+        <posy>97</posy>
+        <control type="button" id="20">
+          <description>Set Content Button</description>
+          <posy>-41</posy>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Reg20</font>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <onleft>10</onleft>
+          <onright>10</onright>
+          <onup>18</onup>
+          <ondown>11</ondown>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+          <label>20333</label>
+        </control>
+        <control type="button" id="11">
+          <description>Button: Browse</description>
+          <posy>0</posy>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Reg20</font>
+          <label>1024</label>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <onleft>10</onleft>
+          <onright>10</onright>
+          <onup>20</onup>
+          <ondown>13</ondown>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+        </control>
+        <control type="button" id="13">
+          <description>Button: Add</description>
+          <posy>41</posy>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Reg20</font>
+          <label>15019</label>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <onleft>10</onleft>
+          <onright>10</onright>
+          <onup>11</onup>
+          <ondown>14</ondown>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+        </control>
+        <control type="button" id="14">
+          <description>Button: Remove</description>
+          <posy>82</posy>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Reg20</font>
+          <label>1210</label>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <onleft>10</onleft>
+          <onright>10</onright>
+          <onup>13</onup>
+          <ondown>19</ondown>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+        </control>
+        <control type="button" id="19">
+          <description>Button: Cancel</description>
+          <posy>123</posy>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Reg20</font>
+          <label>222</label>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <onleft>12</onleft>
+          <onright>12</onright>
+          <onup>14</onup>
+          <ondown>18</ondown>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+        </control>
+        <control type="button" id="18">
+          <description>Button: OK</description>
+          <posy>164</posy>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Reg20</font>
+          <label>186</label>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <onleft>12</onleft>
+          <onright>12</onright>
+          <onup>19</onup>
+          <ondown>11</ondown>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+        </control>
+      </control>
+      <control type="image">
+        <description>background image</description>
+        <posx>1</posx>
+        <posy>0</posy>
+        <width>847</width>
+        <height>328</height>
+        <texture>dialogs/addsource_front.png</texture>
+      </control>
+    </control>
+  </controls>
+</window>

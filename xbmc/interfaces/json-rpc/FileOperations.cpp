@@ -21,6 +21,7 @@
 #include "FileOperations.h"
 #include "VideoLibrary.h"
 #include "AudioLibrary.h"
+#include "PictureLibrary.h"
 #include "MediaSource.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -244,6 +245,8 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItemPt
       status = CVideoLibrary::FillFileItem(strFilename, item, parameterObject);
     else if (media.Equals("music"))
       status = CAudioLibrary::FillFileItem(strFilename, item, parameterObject);
+    else if (media.Equals("picture"))
+      status = CPictureLibrary::FillFileItem(strFilename, item, parameterObject);
 
     if (status && item->GetLabel().empty())
     {
@@ -324,7 +327,8 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
           if (items[i]->m_bIsFolder)
             filteredDirectories.Add(items[i]);
           else if ((media == "video" && items[i]->HasVideoInfoTag()) ||
-                   (media == "music" && items[i]->HasMusicInfoTag()))
+                   (media == "music" && items[i]->HasMusicInfoTag()) ||
+                   (media == "pictures" && items[i]->HasPictureInfoTag()))
             list.Add(items[i]);
           else
           {

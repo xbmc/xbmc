@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<window>
+  <id>123</id>
+  <defaultcontrol>2</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <animation type="WindowOpen" reversible="false">
+    <effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300"/>
+    <effect type="fade" start="0" end="100" time="300"/>
+  </animation>
+  <animation type="WindowClose" reversible="false">
+    <effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300"/>
+    <effect type="fade" start="100" end="0" time="300"/>
+  </animation>
+  <controls>
+    <control type="image">
+      <description>Panel</description>
+      <posx>200</posx>
+      <posy>120</posy>
+      <width>881</width>
+      <height>481</height>
+      <texture>osd/osd_settings_back.png</texture>
+    </control>
+    <control type="label" id="3">
+      <description>Header Label</description>
+      <posx>280</posx>
+      <posy>150</posy>
+      <width>400</width>
+      <height>40</height>
+      <textcolor>white</textcolor>
+      <font>Font_Info</font>
+      <label>$LOCALIZE[13406]</label>
+      <align>left</align>
+      <aligny>center</aligny>
+    </control>
+    <control type="label" id="4">
+        <description>No Presets Label</description>
+        <posx>250</posx>
+        <posy>75</posy>
+        <width>781</width>
+        <height>400</height>
+        <align>center</align>
+        <aligny>center</aligny>
+        <label>13390</label>
+        <font>Font_Info</font>
+      </control>
+      <control type="list" id="2">
+        <posx>250</posx>
+        <posy>195</posy>
+        <width>781</width>
+        <height>360</height>
+        <onleft>60</onleft>
+        <onright>60</onright>
+        <onup>2</onup>
+        <ondown>2</ondown>
+        <scrolltime>200</scrolltime>
+        <pagecontrol>60</pagecontrol>
+        <itemlayout height="40">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>781</width>
+            <height>40</height>
+            <texture>osd/osd_settings_buttonnf.png</texture>
+          </control>
+          <control type="label">
+            <posx>30</posx>
+            <posy>0</posy>
+            <width>721</width>
+            <height>40</height>
+            <textcolor>FF929191</textcolor>
+            <aligny>center</aligny>
+            <font>Font_Info</font>
+            <info>ListItem.Label</info>
+          </control>
+        </itemlayout>
+        <focusedlayout height="40">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>781</width>
+            <height>40</height>
+            <texture>osd/osd_settings_buttonf.png</texture>
+          </control>
+          <control type="label">
+            <posx>30</posx>
+            <posy>0</posy>
+            <width>721</width>
+            <height>40</height>
+            <textcolor>white</textcolor>
+            <aligny>center</aligny>
+            <font>Font_Info</font>
+            <info>ListItem.Label</info>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="scrollbar" id="60">
+        <posx>230</posx>
+        <posy>190</posy>
+        <width>28</width>
+        <height>360</height>
+        <texturesliderbackground>views/scrollbarbacklist.png</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib>views/scrollbarnub-nofocus.png</textureslidernib>
+        <textureslidernibfocus>views/scrollbarnub-focus.png</textureslidernibfocus>
+        <onleft>2</onleft>
+        <onright>2</onright>
+        <ondown>60</ondown>
+        <onup>60</onup>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+      </control>
+      <control type="label">
+        <description>number of files/pages in list text label</description>
+        <posx>1009</posx>
+        <posy>561</posy>
+        <width>210</width>
+        <height>40</height>
+        <font>Font_Reg14</font>
+        <align>right</align>
+        <textcolor>FF929191</textcolor>
+        <label>$INFO[Container(2).NumItems,, $LOCALIZE[31025]]$INFO[Container(2).CurrentPage, - $LOCALIZE[31024] (]$INFO[Container(2).NumPages,/,)]</label>
+      </control>
+  </controls>
+</window>

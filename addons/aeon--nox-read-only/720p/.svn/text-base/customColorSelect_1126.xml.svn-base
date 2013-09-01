@@ -1,0 +1,183 @@
+<window id="1126" type="dialog">
+  <defaultcontrol>10</defaultcontrol>
+  <zorder>4</zorder>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="group">
+      <include>Dialogs_Group</include>
+      <include>Dialogs_Tablet</include>
+      <include>Dialogs_Exclam</include>
+      <include>SmallerDialogs</include>
+      <animation effect="slide" start="0,0" end="0,-580" time="0" condition="true">Conditional</animation>
+      <control type="wraplist" id="10">
+        <posx>100</posx>
+        <posy>3</posy>
+        <width>392</width>
+        <height>200</height>
+        <orientation>horizontal</orientation>
+        <focusposition>3</focusposition>
+        <scrolltime>200</scrolltime>
+        <itemlayout height="50" width="50">
+          <control type="image">
+            <description>left arrow</description>
+            <posx>0</posx>
+            <posy>10</posy>
+            <width>40</width>
+            <height>40</height>
+            <texture>$INFO[ListItem.Icon]</texture>
+            <include>Animation_CommonFade</include>
+          </control>
+        </itemlayout>
+        <focusedlayout height="50" width="50">
+          <control type="image">
+            <description>left arrow</description>
+            <posx>0</posx>
+            <posy>10</posy>
+            <width>40</width>
+            <height>40</height>
+            <texture>$INFO[ListItem.Icon]</texture>
+            <include>Animation_CommonFade</include>
+          </control>
+        </focusedlayout>
+        <content>
+          <item id="2">
+            <label>Light blue</label>
+            <label2>-</label2>
+            <icon>common/lightblue.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FF6db9e5)</onclick>
+          </item>
+          <item id="3">
+            <label>Yellow</label>
+            <label2>-</label2>
+            <icon>common/yellow.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FFffff00)</onclick>
+          </item>
+          <item id="4">
+            <label>Green</label>
+            <label2>-</label2>
+            <icon>common/green.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FF00ff00)</onclick>
+          </item>
+          <item id="1">
+            <label>Default</label>
+            <label2>-</label2>
+            <icon>common/default.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FFFFFFFF)</onclick>
+          </item>
+          <item id="5">
+            <label>Blue</label>
+            <label2>-</label2>
+            <icon>common/blue.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FF0000ff)</onclick>
+          </item>
+          <item id="6">
+            <label>Red</label>
+            <label2>-</label2>
+            <icon>common/red.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FFff0000)</onclick>
+          </item>
+          <item id="7">
+            <label>Purple</label>
+            <label2>-</label2>
+            <icon>common/purple.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FFff00ff)</onclick>
+          </item>
+          <item id="8">
+            <label>Light green</label>
+            <label2>-</label2>
+            <icon>common/lightgreen.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FF6cf884)</onclick>
+          </item>
+          <item id="9">
+            <label>White</label>
+            <label2>-</label2>
+            <icon>common/white.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FFa65961)</onclick>
+          </item>
+          <item id="10">
+            <label>Pink</label>
+            <label2>-</label2>
+            <icon>common/pink.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FFfa98e0)</onclick>
+          </item>
+          <item id="11">
+            <label>Ocean</label>
+            <label2>-</label2>
+            <icon>common/ocean.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FF69f5ee)</onclick>
+          </item>
+          <item id="12">
+            <label>Orange</label>
+            <label2>-</label2>
+            <icon>common/orange.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FFFA6305)</onclick>
+          </item>
+          <item id="13">
+            <label>Lime</label>
+            <label2>-</label2>
+            <icon>common/lime.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FFc5fa05)</onclick>
+          </item>
+          <item id="14">
+            <label>Neon</label>
+            <label2>-</label2>
+            <icon>common/neon.png</icon>
+            <thumb>-</thumb>
+            <onclick>Skin.SetString(diffuse,FF03F2FF)</onclick>
+          </item>
+          <item id="15">
+            <label>13012</label>
+            <label2>-</label2>
+            <icon>close.png</icon>
+            <thumb>-</thumb>
+            <onclick>Dialog.Close(1126)</onclick>
+          </item>
+        </content>
+      </control>
+      <control type="label">
+        <posx>80</posx>
+        <posy>60</posy>
+        <align>center</align>
+        <include>Dialogs_Label3</include>
+        <label>$INFO[Container(10).ListItem.Label]</label>
+        <animation effect="slide" start="0,0" end="-20,0" time="0" condition="false">Conditional</animation>
+      </control>
+      <control type="image">
+        <description>left arrow</description>
+        <posx>195</posx>
+        <posy>62</posy>
+        <width>20</width>
+        <height>20</height>
+        <texture>views/multiplex_arrow2.png</texture>
+        <include>Animation_CommonFade</include>
+      </control>
+      <control type="image">
+        <description>right arrow</description>
+        <posx>322</posx>
+        <posy>62</posy>
+        <width>20</width>
+        <height>20</height>
+        <texture>views/multiplex_arrow.png</texture>
+        <include>Animation_CommonFade</include>
+      </control>
+    </control>
+  </controls>
+</window>

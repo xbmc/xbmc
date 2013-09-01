@@ -34,13 +34,10 @@ CPictureAlbum::CPictureAlbum(const CFileItem& item)
     Reset();
     const CPictureInfoTag& tag = *item.GetPictureInfoTag();
     SYSTEMTIME stTime;
-    tag.GetReleaseDate(stTime);
-    strAlbum = tag.GetAlbum();
+    strAlbum = tag.GetPictureAlbum();
     location = tag.GetLocation();
-    face = tag.GetAlbumFace();
-    iYear = stTime.wYear;
-    bCompilation = tag.GetCompilation();
-    iTimesPlayed = 0;
+    face = tag.GetFace();
+    iPictureCount = 0;
      
 }
 
@@ -80,20 +77,6 @@ bool CPictureAlbum::Load(const TiXmlElement *PictureAlbum, bool append, bool pri
     XMLUtils::GetString(PictureAlbum,"releasedate",m_strDateOfRelease);
     XMLUtils::GetString(PictureAlbum,"label",strLabel);
     XMLUtils::GetString(PictureAlbum,"type",strType);
-    
-    XMLUtils::GetInt(PictureAlbum,"year",iYear);
-    const TiXmlElement* rElement = PictureAlbum->FirstChildElement("rating");
-    if (rElement)
-    {
-        float rating = 0;
-        float max_rating = 5;
-        XMLUtils::GetFloat(PictureAlbum, "rating", rating);
-        if (rElement->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating>=1)
-            rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 5
-        if (rating > 5.f)
-            rating = 5.f;
-        iRating = MathUtils::round_int(rating);
-    }
     
     size_t iThumbCount = thumbURL.m_url.size();
     CStdString xmlAdd = thumbURL.m_xml;
@@ -231,8 +214,6 @@ bool CPictureAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdStrin
     }
     XMLUtils::SetString(PictureAlbum,        "path", strPath);
     
-    XMLUtils::SetInt(PictureAlbum,         "rating", iRating);
-    XMLUtils::SetInt(PictureAlbum,           "year", iYear);
     /*
     for( VECFACECREDITS::const_iterator faceCredit = faceCredits.begin();faceCredit != faceCredits.end();++faceCredit)
     {

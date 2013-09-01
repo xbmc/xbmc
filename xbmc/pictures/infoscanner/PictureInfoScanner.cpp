@@ -455,8 +455,8 @@ bool CPictureInfoScanner::DoScan(const CStdString& strDirectory)
 
 INFO_RET CPictureInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& scannedItems)
 {
-    CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
-    
+  CStdStringArray regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+  
     for (int i = 0; i < items.Size(); ++i)
     {
         if (m_bStop)
@@ -479,7 +479,11 @@ INFO_RET CPictureInfoScanner::ScanTags(const CFileItemList& items, CFileItemList
             if (NULL != pLoader.get())
                 pLoader->Load(pItem->GetPath(), tag);
         }
-        
+      CStdString a = tag.GetInfo(SLIDE_EXIF_GPS_LATITUDE);
+      CStdString b = tag.GetInfo(SLIDE_EXIF_GPS_LONGITUDE);
+      CStdString c = tag.GetInfo(SLIDE_EXIF_GPS_ALTITUDE);
+      CLog::Log(LOGINFO, "SLIDE_EXIF_GPS_LATITUDE %s SLIDE_EXIF_GPS_LONGITUDE %s SLIDE_EXIF_GPS_ALTITUDE %s",a.c_str(),b.c_str(),c.c_str());
+
         if (m_handle && m_itemCount>0)
             m_handle->SetPercentage(m_currentItem/(float)m_itemCount*100);
         
@@ -508,10 +512,7 @@ void CPictureInfoScanner::FileItemsToAlbums(CFileItemList& items, VECPICTUREALBU
             MAPPICTURES::iterator it = picturesMap->find(pItem->GetPath());
             if (it != picturesMap->end())
             {
-                picture.iTimesPlayed = it->second.iTimesPlayed;
-                picture.lastPlayed = it->second.lastPlayed;
-                picture.iKaraokeNumber = it->second.iKaraokeNumber;
-                if (picture.rating == '0')    picture.rating = it->second.rating;
+                picture.takenOn = it->second.takenOn;
                 if (picture.strThumb.empty()) picture.strThumb = it->second.strThumb;
             }
         }
@@ -529,7 +530,7 @@ void CPictureInfoScanner::FileItemsToAlbums(CFileItemList& items, VECPICTUREALBU
         bool found = false;
         for (VECPICTUREALBUMS::iterator it = albums.begin(); it != albums.end(); ++it)
         {
-            if (it->strAlbum == tag.GetAlbum() )
+            if (it->strAlbum == tag.GetPictureAlbum() )
             {
                 it->pictures.push_back(picture);
                 found = true;
@@ -539,13 +540,13 @@ void CPictureInfoScanner::FileItemsToAlbums(CFileItemList& items, VECPICTUREALBU
         {
             CPictureAlbum album(*pItem.get());
             {
-                for (vector<string>::const_iterator it = tag.GetAlbumFace().begin(); it != tag.GetAlbumFace().end(); ++it)
+                for (vector<string>::const_iterator it = tag.GetFace().begin(); it != tag.GetFace().end(); ++it)
                 {
-                    CStdString strJoinPhrase = (it == --tag.GetAlbumFace().end() ? "" : g_advancedSettings.m_pictureItemSeparator);
+                    CStdString strJoinPhrase = (it == --tag.GetFace().end() ? "" : g_advancedSettings.m_pictureItemSeparator);
                     CFaceCredit nonmbface(*it, strJoinPhrase);
                     album.faceCredits.push_back(nonmbface);
                 }
-                album.face = tag.GetAlbumFace();
+                album.face = tag.GetFace();
             }
             album.pictures.push_back(picture);
             albums.push_back(album);
@@ -587,35 +588,11 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
         {
             // No - download the information
             CPictureAlbumInfo albumInfo;
-            /*
-            if (albumDownloadStatus == INFO_ADDED || albumDownloadStatus == INFO_HAVE_ALREADY)
-            {
-                CPictureAlbum &downloadedAlbum = albumInfo.GetAlbum();
-                downloadedAlbum.idAlbum = m_pictureDatabase.AddPictureAlbum(downloadedAlbum.strAlbum,
-                                                                   downloadedAlbum.strPictureBrainzAlbumID,
-                                                                   downloadedAlbum.GetFaceString(),
-                                                                   downloadedAlbum.GetLocationString(),
-                                                                   downloadedAlbum.iYear,
-                                                                   downloadedAlbum.bCompilation);
-                m_pictureDatabase.SetPictureAlbumInfo(downloadedAlbum.idAlbum,
-                                             downloadedAlbum,
-                                             downloadedAlbum.pictures);
-                m_pictureDatabase.SetArtForItem(downloadedAlbum.idAlbum,
-                                              "album", album->art);
-                GetAlbumArtwork(downloadedAlbum.idAlbum, downloadedAlbum);
-                m_albumCache.insert(make_pair(*album, albumInfo.GetAlbum()));
-            }
-            else if (albumDownloadStatus == INFO_CANCELLED)
-                break;
-            else
-             */
-            {
+
                 // No download info, fallback to already gathered (eg. local) information/art (if any)
                 album->idAlbum = m_pictureDatabase.AddPictureAlbum(album->strAlbum,
                                                           album->GetFaceString(),
-                                                          album->GetLocationString(),
-                                                          album->iYear,
-                                                          album->bCompilation);
+                                                          album->GetLocationString());
                 if (!album->art.empty())
                     m_pictureDatabase.SetArtForItem(album->idAlbum,
                                                   "album", album->art);
@@ -625,8 +602,6 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
             // Update the cache pointer with our newly created info
             cachedAlbum = m_albumCache.find(*album);
              
-        }
-        
         if (m_bStop)
             break;
         /*
@@ -684,7 +659,7 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
                                            faceCredit == album->faceCredits.begin() ? false : true,
                                            std::distance(cachedAlbum->second.faceCredits.begin(), faceCredit));
         }
-*/        
+        */
         if (m_bStop)
             break;
         
@@ -695,13 +670,9 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
                                                    picture->strTitle,
                                                    picture->strFileName, picture->strComment,
                                                    picture->strThumb,
-                                                   picture->face, picture->location,
-                                                   picture->iTrack, picture->iDuration, picture->iYear,
-                                                   picture->iTimesPlayed, picture->iStartOffset,
-                                                   picture->iEndOffset,
-                                                   picture->lastPlayed,
-                                                   picture->rating,
-                                                   picture->iKaraokeNumber);
+                                                   picture->face,
+                                                   picture->location,
+                                                   picture->takenOn.GetAsDBDate().c_str());
             for (VECFACECREDITS::iterator faceCredit = picture->faceCredits.begin(); faceCredit != picture->faceCredits.end(); ++faceCredit)
             {
                 if (m_bStop)
@@ -774,10 +745,6 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
     return numAdded;
 }
 
-static bool SortPicturesByTrack(const CPicture& picture, const CPicture& picture2)
-{
-    return picture.iTrack < picture2.iTrack;
-}
 
 void CPictureInfoScanner::FixupAlbums(VECPICTUREALBUMS &albums)
 {
@@ -797,8 +764,7 @@ void CPictureInfoScanner::FixupAlbums(VECPICTUREALBUMS &albums)
         
         VECPICTURES &pictures = album->pictures;
         // sort the pictures by tracknumber to identify duplicate track numbers
-        sort(pictures.begin(), pictures.end(), SortPicturesByTrack);
-        
+      
         // map the pictures to their primary faces
         bool tracksOverlap = false;
         bool hasAlbumFace = false;
@@ -807,13 +773,6 @@ void CPictureInfoScanner::FixupAlbums(VECPICTUREALBUMS &albums)
         map<string, vector<CPicture *> > faces;
         for (VECPICTURES::iterator picture = pictures.begin(); picture != pictures.end(); ++picture)
         {
-            // test for picture overlap
-            if (picture != pictures.begin() && picture->iTrack == (picture - 1)->iTrack)
-                tracksOverlap = true;
-            
-            if (!picture->bCompilation)
-                isCompilation = false;
-            
             // get primary face
             string primary;
             if (!picture->albumFace.empty())
@@ -901,8 +860,6 @@ void CPictureInfoScanner::FixupAlbums(VECPICTUREALBUMS &albums)
                 if (album->location.empty())
                     album->location = (*k)->location;
                 //       in addition, we may want to use year as discriminating for albums
-                if (album->iYear == 0)
-                    album->iYear = (*k)->iYear;
             }
         }
     }

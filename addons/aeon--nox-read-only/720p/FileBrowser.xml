@@ -1,0 +1,313 @@
+<window id="126">
+  <defaultcontrol always="true">451</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <zorder>4</zorder>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <animation type="WindowOpen" reversible="false">
+    <effect type="zoom" start="80" end="100" center="640,360" delay="200" easing="out" tween="back" time="300"/>
+    <effect type="fade" delay="200" start="0" end="100" time="300"/>
+  </animation>
+  <animation type="WindowClose" reversible="false">
+    <effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300"/>
+    <effect type="fade" start="100" end="0" time="300"/>
+  </animation>
+  <controls>
+    <control type="group">
+      <width>406</width>
+      <height>556</height>
+      <animation effect="slide" start="-410,0" end="0,0" time="400" delay="500" tween="cubic" easing="out">WindowOpen</animation>
+      <control type="image">
+        <posx>809</posx>
+        <posy>103</posy>
+        <width>406</width>
+        <height>556</height>
+        <texture>views/filebrowser_sidecar.png</texture>
+      </control>
+      <control type="image">
+        <width>286</width>
+        <height>286</height>
+        <posx>867</posx>
+        <posy>167</posy>
+        <fadetime>400</fadetime>
+        <texture background="true">$INFO[ListItem.Icon]</texture>
+        <aspectratio aligny="bottom">keep</aspectratio>
+      </control>
+      <control type="image">
+        <width>286</width>
+        <height>286</height>
+        <posx>867</posx>
+        <posy>453</posy>
+        <fadetime>400</fadetime>
+        <texture background="true" flipy="true" diffuse="thumbs/diffuse_mirror3.png">$INFO[ListItem.Icon]</texture>
+        <aspectratio aligny="top">keep</aspectratio>
+      </control>
+      <control type="label" id="412">
+        <posx>817</posx>
+        <posy>540</posy>
+        <width>386</width>
+        <align>center</align>
+        <font>Font_Reg15</font>
+      </control>
+    </control>
+    <control type="image">
+      <posx>60</posx>
+      <posy>73</posy>
+      <width>759</width>
+      <height>647</height>
+      <texture background="true">views/listpanel_black.png</texture>
+    </control>
+    <control type="image">
+      <posx>60</posx>
+      <posy>73</posy>
+      <width>759</width>
+      <height>647</height>
+      <texture>views/listpanel_back_browser.png</texture>
+    </control>
+    <control type="image">
+      <posx>669</posx>
+      <posy>137</posy>
+      <width>97</width>
+      <height>450</height>
+      <texture>views/listpanel_detailwide.png</texture>
+    </control>
+    <control type="image">
+      <posx>60</posx>
+      <posy>600</posy>
+      <width>759</width>
+      <height>88</height>
+      <texture>views/list_filebrowser_buttons.png</texture>
+      <visible>Window.IsActive(604)</visible>
+    </control>
+    <control type="image">
+      <posx>60</posx>
+      <posy>600</posy>
+      <width>759</width>
+      <height>88</height>
+      <texture>views/list_filebrowser_3buttons.png</texture>
+      <visible>!Window.IsActive(604)</visible>
+    </control>
+    <control type="label" id="411">
+      <posx>105</posx>
+      <posy>94</posy>
+      <width>771</width>
+      <font>Font_Bold28</font>
+      <textcolor>AAFFFFFF</textcolor>
+    </control>
+
+    <control type="list" id="451">
+      <viewtype label="List">list</viewtype>
+      <posx>60</posx>
+      <posy>139</posy>
+      <width>771</width>
+      <height>457</height>
+      <pagecontrol>60</pagecontrol>
+      <scrolltime>0</scrolltime>
+      <onleft>60</onleft>
+      <onright>413</onright>
+      <onup>451</onup>
+      <ondown>451</ondown>
+      <animation effect="fade" start="100" end="50" time="200" condition="!Control.HasFocus(451)">Conditional</animation>
+      <itemlayout height="65">
+        <control type="image">
+          <posx>12</posx>
+          <posy>64</posy>
+          <height>1</height>
+          <width>739</width>
+          <texture>views/listpanel_line.png</texture>
+        </control>
+        <control type="image">
+          <posx>22</posx>
+          <posy>2</posy>
+          <width>60</width>
+          <height>60</height>
+          <aspectratio>scale</aspectratio>
+          <info>ListItem.Icon</info>
+        </control>
+        <control type="label">
+          <posx>105</posx>
+          <posy>12</posy>
+          <width>480</width>
+          <height>41</height>
+          <font>Font_Reg22</font>
+          <aligny>center</aligny>
+          <include>listcolornofocus</include>
+          <info>ListItem.Label</info>
+        </control>
+        <control type="label">
+          <posx>656</posx>
+          <posy>12</posy>
+          <width>85</width>
+          <height>41</height>
+          <font>Font_Reg15</font>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>listcolornofocus</include>
+          <label>$INFO[ListItem.Label2]</label>
+        </control>
+      </itemlayout>
+      <focusedlayout height="65">
+        <control type="image">
+          <posx>12</posx>
+          <posy>64</posy>
+          <height>1</height>
+          <width>739</width>
+          <texture>views/listpanel_line.png</texture>
+        </control>
+        <control type="image">
+          <posx>7</posx>
+          <posy>-5</posy>
+          <width>743</width>
+          <height>75</height>
+          <texture>views/listpanel_selectbar.png</texture>
+        </control>
+        <control type="image">
+          <posx>22</posx>
+          <posy>2</posy>
+          <width>60</width>
+          <height>60</height>
+          <aspectratio>scale</aspectratio>
+          <info>ListItem.Icon</info>
+        </control>
+        <control type="fadelabel">
+          <posx>105</posx>
+          <posy>12</posy>
+          <width>480</width>
+          <height>41</height>
+          <font>Font_Reg22</font>
+          <aligny>center</aligny>
+          <include>listcolorfocus</include>
+          <info>ListItem.Label</info>
+        </control>
+        <control type="label">
+          <posx>656</posx>
+          <posy>12</posy>
+          <width>85</width>
+          <height>41</height>
+          <font>Font_Reg15</font>
+          <align>center</align>
+          <aligny>center</aligny>
+          <include>listcolorfocus</include>
+          <label>$INFO[ListItem.Label2]</label>
+        </control>
+      </focusedlayout>
+    </control>
+    <control type="label">
+      <posx>105</posx>
+      <posy>636</posy>
+      <width>180</width>
+      <height>41</height>
+      <font>Font_Reg15</font>
+      <align>left</align>
+      <aligny>center</aligny>
+      <textcolor>ff969696</textcolor>
+      <label>$INFO[Container(451).NumItems,, $LOCALIZE[31025]]</label>
+    </control>
+    <control type="button" id="413">
+      <posx>68</posx>
+      <posy>601</posy>
+      <width>132</width>
+      <height>77</height>
+      <texturefocus>views/filebrowser_button2down.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <font>Font_Reg22</font>
+      <label>186</label>
+      <align>center</align>
+      <aligny>top</aligny>
+      <textoffsety>11</textoffsety>
+      <textcolor>FFb3b3b3</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <selectedcolor>FF262728</selectedcolor>
+      <disabledcolor>FF5a5a5a</disabledcolor>
+      <onleft>451</onleft>
+      <onright>414</onright>
+      <onup>451</onup>
+      <ondown>451</ondown>
+    </control>
+    <control type="button" id="414">
+      <posx>201</posx>
+      <posy>601</posy>
+      <width>133</width>
+      <height>77</height>
+      <texturefocus>views/filebrowser_button2down.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <font>Font_Reg22</font>
+      <label>222</label>
+      <align>center</align>
+      <aligny>top</aligny>
+      <textoffsety>11</textoffsety>
+      <textcolor>FFb3b3b3</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <selectedcolor>FF262728</selectedcolor>
+      <disabledcolor>FF5a5a5a</disabledcolor>
+      <onleft>413</onleft>
+      <onright>415</onright>
+      <onup>451</onup>
+      <ondown>451</ondown>
+    </control>
+    <control type="button" id="415">
+      <posx>335</posx>
+      <posy>601</posy>
+      <width>133</width>
+      <height>77</height>
+      <texturefocus>views/filebrowser_button2down.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <font>Font_Reg22</font>
+      <label>119</label>
+      <align>center</align>
+      <aligny>top</aligny>
+      <textoffsety>11</textoffsety>
+      <textcolor>FFb3b3b3</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <selectedcolor>FF262728</selectedcolor>
+      <disabledcolor>FF5a5a5a</disabledcolor>
+      <onleft>414</onleft>
+      <onright>416</onright>
+      <onup>451</onup>
+      <ondown>451</ondown>
+    </control>
+    <control type="button" id="416">
+      <posx>469</posx>
+      <posy>601</posy>
+      <width>150</width>
+      <height>77</height>
+      <texturefocus>views/filebrowser_button2down.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <font>Font_Reg22</font>
+      <label>749</label>
+      <align>center</align>
+      <aligny>top</aligny>
+      <textoffsety>11</textoffsety>
+      <textcolor>FFb3b3b3</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <selectedcolor>FF7b7b7b</selectedcolor>
+      <disabledcolor>FF5a5a5a</disabledcolor>
+      <onleft>415</onleft>
+      <onright>451</onright>
+      <onup>451</onup>
+      <ondown>451</ondown>
+    </control>
+    <control type="scrollbar" id="60">
+      <posx>15</posx>
+      <posy>108</posy>
+      <width>65</width>
+      <height>545</height>
+      <texturesliderbackground>views/scrollbarbacklist.png</texturesliderbackground>
+      <texturesliderbar>-</texturesliderbar>
+      <texturesliderbarfocus>-</texturesliderbarfocus>
+      <textureslidernib>views/scrollbarnub-nofocus.png</textureslidernib>
+      <textureslidernibfocus>views/scrollbarnub-focus.png</textureslidernibfocus>
+      <pulseonselect/>
+      <orientation>vertical</orientation>
+      <showonepage>false</showonepage>
+      <onup>60</onup>
+      <ondown>60</ondown>
+      <onleft>413</onleft>
+      <onright>451</onright>
+      <include>Animation_CommonFade</include>
+    </control>
+  </controls>
+</window>

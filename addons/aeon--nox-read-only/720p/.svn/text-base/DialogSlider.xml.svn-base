@@ -1,0 +1,65 @@
+<window id="145">
+  <defaultcontrol>11</defaultcontrol>
+  <animation effect="fade" time="200">WindowOpen</animation>
+  <animation effect="fade" time="200">WindowClose</animation>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>4</posy>
+  </coordinates>
+  <controls>
+    <control type="group">
+      <include>SmallerDialogs</include>
+      <posx>384</posx>
+      <posy>4</posy>
+      <include>Dialogs_Group</include>
+      <include>Dialogs_Tablet</include>
+      <control type="image">
+        <posx>5</posx>
+        <posy>5</posy>
+        <width>82</width>
+        <height>82</height>
+        <texture>dialogs/settings_icon.png</texture>
+      </control>
+      <control type="label" id="10">
+        <description>Dialog header</description>
+        <posy>8</posy>
+        <posx>105</posx>
+        <width>376</width>
+        <height>21</height>
+        <textcolor>abFFFFFF</textcolor>
+        <align>left</align>
+        <font>Font_ProgressLabel</font>
+        <scroll>true</scroll>
+        <aligny>center</aligny>
+      </control>
+      <control type="label" id="12">
+        <description>Slider Value</description>
+        <posx>105</posx>
+        <width>390</width>
+        <height>21</height>
+        <textcolor>FFF5F5F5</textcolor>
+        <font>Font_Info</font>
+        <posy>26</posy>
+        <align>center</align>
+        <aligny>center</aligny>
+      </control>
+      <control type="slider" id="11">
+        <description>Slider</description>
+        <posy>48</posy>
+        <posx>135</posx>
+        <width>320</width>
+        <height>20</height>
+        <align>center</align>
+        <texturesliderbar>osd/osd_slider_bg.png</texturesliderbar>
+        <textureslidernib>osd/osd_slider_nib_nf.png</textureslidernib>
+        <textureslidernibfocus>osd/osd_slider_nib.png</textureslidernibfocus>
+        <onup>11</onup>
+        <ondown>11</ondown>
+        <onleft>11</onleft>
+        <onright>11</onright>
+      </control>
+
+    </control>
+  </controls>
+</window>

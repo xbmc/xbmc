@@ -1,0 +1,520 @@
+# M4 macros used in building Autoconf test suites.        -*- Autotest -*-
+
+# Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
+# 2009, 2010 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+m4_version_prereq([2.57])
+
+# Used in many tests.
+m4_pattern_allow([^AS_EXIT$])
+m4_pattern_allow([^m4_(define|shift)$])
+
+# Programs this package provides
+AT_TESTED([autom4te autoconf autoheader autoupdate autoreconf ifnames])
+
+# Enable colored test output.
+AT_COLOR_TESTS
+
+## ---------------- ##
+## Utility macros.  ##
+## ---------------- ##
+
+# AT_CMP(FILE-1, FILE-2)
+# ----------------------
+# Check FILE-1 and FILE-2 for equality, like `cmp FILE-1 FILE-2'.
+m4_define([AT_CMP],
+[m4_ifval([$2],, [m4_fatal([AT_CMP takes two arguments.])])[]dnl
+AT_CHECK([$at_diff "$1" "$2"])
+])# AT_CMP
+
+
+## ---------------- ##
+## Testing syntax.  ##
+## ---------------- ##
+
+# AT_CHECK_SHELL_SYNTAX(PROGRAM)
+# ------------------------------
+# If the shell handles `-n' well, use it to check the syntax of PROGRAM;
+# otherwise, do nothing.
+m4_define([AT_CHECK_SHELL_SYNTAX],
+[AT_SKIP_IF([test "$ac_cv_sh_n_works" != yes])
+AT_CHECK([/bin/sh -n $1])])
+
+m4_define([AT_CHECK_PERL_SYNTAX],
+[AT_CHECK([autom4te_perllibdir=$abs_top_srcdir/lib $PERL -c "$abs_top_builddir"/bin/$1],
+          0, [], [ignore])])
+
+## ------------------ ##
+## Testing autom4te.  ##
+## ------------------ ##
+
+
+# AT_CHECK_M4(COMMAND, [EXIT-STATUS = 0], STDOUT, STDERR)
+# -------------------------------------------------------
+# If stderr is specified, normalize the observed stderr.
+# This (using GNU M4 1.4.6)
+#
+#  /usr/local/bin/m4:script.4s:1: cannot open `foo': No such file or directory
+#  autom4te: /usr/local/bin/m4 failed with exit status: 1
+#
+# or this (GNU M4 1.4.11)
+#
+#  /usr/local/bin/m4:script.4s:1: include: cannot open `foo': No such file or directory
+#  autom4te: /usr/local/bin/m4 failed with exit status: 1
+#
+# or this (GNU M4 1.4 installed as gm4)
+#
+#  script.4s:1: /usr/local/bin/gm4: Cannot open foo: No such file or directory
+#  autom4te: /usr/local/bin/gm4 failed with exit status: 1
+#
+# or this (GNU M4 1.4.13 installed as m4-1.4.13):
+#
+#  /usr/bin/m4-1.4.13:script.4s:1: include: cannot open `foo': No such file or directory
+#  autom4te: /usr/bin/m4-1.4.13 failed with exit status: 1
+#
+# becomes
+#
+#  m4:script.4s:1: cannot open `foo': No such file or directory
+#  autom4te: m4 failed with exit status: 1
+#
+# We use the following sed patterns:
+#
+#     (m4): ?(file): ?(line):
+# or  (file): ?(line): ?(m4):
+# to  m4:(file):(line):
+#
+# and
+#     m4:(file):(line): Cannot open foo:
+# or  m4:(file):(line): include: cannot open `foo':
+# to  m4:(file):(line): cannot open `foo':
+#
+# and
+#     autom4te: [^ ]m4
+# or  autom4te: [^ ]m4.exe
+# to  autom4te: m4
+#
+# Moreover, DJGPP error messages include the error code in brackets;
+# remove the error code during normalization.
+#
+m4_define([AT_CHECK_M4],
+[AT_CHECK([$1], [$2], [$3],
+          m4_case([$4], [], [], [ignore], [ignore], [stderr]))
+m4_case([$4], [], [], [ignore], [],
+[AT_CHECK([[sed 's/^[^:]*m4[-.ex0-9]*: *\([^:]*:\) *\([0-9][0-9]*: \)/m4:\1\2/
+	s/^\([^:]*:\) *\([0-9][0-9]*:\)[^:]*m4[-.ex0-9]*: /m4:\1\2 /
+	s/: C\(annot open \)\([^`:]*\):/: c\1`\2'\'':/
+	s/: include:\( cannot open\)/:\1/
+	s/^autom4te: [^ ]*m4[.ex]* /autom4te: m4 /
+	s/ (E[A-Z]*)$//
+    ' stderr >&2]], [0], [], [$4])])
+])
+
+# AT_CHECK_AUTOM4TE(FLAGS, [EXIT-STATUS = 0], STDOUT, STDERR)
+# -----------------------------------------------------------
+m4_define([AT_CHECK_AUTOM4TE],
+[AT_CHECK_M4([autom4te $1], [$2], [$3], [$4])])
+
+
+
+## ----------------- ##
+## Testing M4sugar.  ##
+## ----------------- ##
+
+
+# AT_DATA_M4SUGAR(FILE-NAME, CONTENTS)
+# ------------------------------------
+# Escape the invalid tokens with @&t@.
+m4_define([AT_DATA_M4SUGAR],
+[AT_DATA([$1],
+[m4_bpatsubst([$2], [\(@.\)\(.@\)\|\(m4\)\(_\)\|\(d\)\(nl\)],
+              [\1\3\5@&t@\2\4\6])])])
+
+
+# AT_CHECK_M4SUGAR(FLAGS, [EXIT-STATUS = 0], STDOUT, STDERR)
+# ----------------------------------------------------------
+m4_define([AT_CHECK_M4SUGAR],
+[AT_KEYWORDS([m4sugar])
+AT_CHECK_AUTOM4TE([--language=m4sugar script.4s -o script $1],
+	           [$2], [$3], [$4])])
+
+
+
+## -------------- ##
+## Testing M4sh.  ##
+## -------------- ##
+
+
+# AT_DATA_M4SH(FILE-NAME, CONTENTS)
+# ---------------------------------
+# Escape the invalid tokens with @&t@.
+m4_define([AT_DATA_M4SH],
+[AT_DATA([$1],
+[m4_bpatsubst([$2], [\(@.\)\(.@\)\|\(m4\|AS\)\(_\)\|\(d\)\(nl\)],
+              [\1\3\5@&t@\2\4\6])])])
+
+
+# AT_CHECK_M4SH(FLAGS, [EXIT-STATUS = 0], STDOUT, STDERR)
+# -------------------------------------------------------
+m4_define([AT_CHECK_M4SH],
+[AT_CHECK_AUTOM4TE([--language=m4sh script.as -o script $1],
+	           [$2], [$3], [$4])])
+
+
+
+## ------------------ ##
+## Testing Autoconf.  ##
+## ------------------ ##
+
+
+# AT_DATA_AUTOCONF(FILE-NAME, CONTENTS)
+# -------------------------------------
+# Escape the invalid tokens with @&t@.
+m4_define([AT_DATA_AUTOCONF],
+[AT_DATA([$1],
+[m4_bpatsubst([$2], [\(@.\)\(.@\)\|\(m4\|AS\|AC\)\(_\)\|\(d\)\(nl\)],
+              [\1\3\5@&t@\2\4\6])])])
+
+
+
+# AT_CONFIGURE_AC(BODY)
+# ---------------------
+# Create a full configure.ac running BODY, with a config header set up,
+# AC_OUTPUT, and environment checking hooks.
+m4_define([AT_CONFIGURE_AC],
+[AT_DATA([configure.ac],
+[[AC_INIT
+AC_CONFIG_HEADERS(config.h:config.hin)
+AC_STATE_SAVE(before)]
+$1
+[AC_OUTPUT
+AC_STATE_SAVE(after)
+]])
+cp "$abs_top_srcdir/build-aux/install-sh" \
+   "$abs_top_srcdir/build-aux/config.guess" \
+   "$abs_top_srcdir/build-aux/config.sub" .
+cp "$abs_top_srcdir/tests/statesave.m4" aclocal.m4
+])# AT_CONFIGURE_AC
+
+
+# AT_CHECK_AUTOCONF(ARGS, [EXIT-STATUS = 0], STDOUT, STDERR)
+# ----------------------------------------------------------
+# We always use "--force", to prevent problems with timestamps if the testsuite
+# were running too fast.
+m4_define([AT_CHECK_AUTOCONF],
+[AT_CHECK_M4([autoconf --force $1], [$2], [$3], [$4])
+if test -s configure && test "$ac_cv_sh_n_works" = yes; then
+  AT_CHECK_SHELL_SYNTAX([configure])
+fi
+])
+
+
+# AT_CHECK_AUTOHEADER(ARGS, [EXIT-STATUS = 0], STDOUT, STDERR)
+# ------------------------------------------------------------
+m4_define([AT_CHECK_AUTOHEADER],
+[AT_CHECK([autoheader $1], [$2], [$3], [$4])
+])
+
+
+# AT_CHECK_CONFIGURE(END-COMMAND,
+#                    [EXIT-STATUS = 0],
+#                    [STDOUT = IGNORE], STDERR)
+# ---------------------------------------------
+# `abs_top_srcdir' is needed so that `./configure' finds install-sh.
+# Using --srcdir is more expensive.
+m4_define([AT_CHECK_CONFIGURE],
+[AT_CAPTURE_FILE([config.log])[]dnl
+ AT_CHECK([./configure $configure_options $1],
+	  [$2],
+	  m4_default([$3], [ignore]), [$4])])
+
+
+# AT_CHECK_ENV
+# ------------
+# Check that the full configure run remained in its variable name space,
+# and cleaned up tmp files.
+#
+# Perhaps grep -E is not supported, or perhaps it chokes on such a big regex.
+# In this case just don't pay attention to the env.  It would be great
+# to keep the error message but we can't: that would break AT_CHECK.
+#
+# FreeBSD sh may intermingle the trace output from the egrep and grep
+# commands in the pipe, so turn off tracing for these.
+#
+# Some tests might exit prematurely when they find a problem, in
+# which case `env-after' is probably missing.  Don't check it then.
+#
+# Here are the variables `configure' may modify during execution:
+# - ^as_
+#   M4sh's shell name space.
+# - ^ac_
+#   Autoconf's shell name space.
+# - prefix and exec_prefix
+#   are kept undefined (NONE) until AC_OUTPUT which then sets them to
+#   `/usr/local' and `${prefix}' for make.
+# - (host|build|target)(_(alias|cpu|vendor|os))?
+#   Set by AC_CANONICAL_(HOST|BUILD|TARGET).
+# - cross_compiling
+#   Set by AC_INIT.
+# - interpval
+#   Set by AC_SYS_INTERPRETER.
+# - CONFIG_STATUS and DEFS
+#   Set by AC_OUTPUT.
+# - AC_SUBST'ed variables
+#   (FIXME: Generate a list of these automatically.)
+# - _|@|.[*#?$].|argv|ARGC|LINENO|OLDPWD|PIPESTATUS|RANDOM|SECONDS
+#   Some variables some shells use and change.
+#   `.[*#?$].' catches `$#' etc. which are displayed like this:
+#      | '!'=18186
+#      | '#'=0
+#      | '$'=6908
+#
+m4_define([AT_CHECK_ENV],
+[m4_divert_once([PREPARE_TESTS], [_AT_CHECK_ENV])dnl
+AT_CHECK([at_check_env])])
+m4_define([_AT_CHECK_ENV],
+[AS_FUNCTION_DESCRIBE([at_check_env], [],
+[Compare the directory and environment state both before and after a run,
+and return non-zero status if they differ inappropriately.])
+at_check_env ()
+{
+# Compare directory listings.
+test -f state-ls.before ||
+  AS_ERROR([state-ls.before not present])
+test -f state-ls.after \
+  && { $at_diff state-ls.before state-ls.after || return 1; }
+# Compare variable space dumps.
+if test -f state-env.before && test -f state-env.after; then
+  set +x
+  for act_file in state-env.before state-env.after
+  do
+    $EGREP -v '^(m4_join([|],
+      [a[cs]_.*],
+      [(exec_)?prefix|DEFS|CONFIG_STATUS],
+      [CC|CFLAGS|CPP|GCC|CXX|CXXFLAGS|CXXCPP|GXX|F77|FFLAGS|FLIBS|G77],
+      [ERL|ERLC|ERLCFLAGS|ERLANG_PATH_ERL|ERLANG_ROOT_DIR|ERLANG_LIB_DIR],
+      [ERLANG_LIB_DIR_.*|ERLANG_LIB_VER_.*|ERLANG_INSTALL_LIB_DIR],
+      [ERLANG_INSTALL_LIB_DIR_.*|ERLANG_ERTS_VER|OBJC|OBJCPP|OBJCFLAGS],
+      [OBJCXX|OBJCXXCPP|OBJCXXFLAGS],
+      [OPENMP_CFLAGS],
+      [LIBS|LIB@&t@OBJS|LTLIBOBJS|LDFLAGS],
+      [INSTALL(_(DATA|PROGRAM|SCRIPT))?],
+      [CYGWIN|ISC|MINGW32|MINIX|EMXOS2|XENIX|EXEEXT|OBJEXT],
+      [X_(CFLAGS|(EXTRA_|PRE_)?LIBS)|x_(includes|libraries)|(have|no)_x],
+      [(host|build|target)(_(alias|cpu|vendor|os))?],
+      [cross_compiling|U],
+      [interpval|PATH_SEPARATOR],
+      [F77_DUMMY_MAIN|f77_(case|underscore)],
+      [FC(_DUMMY_MAIN|FLAGS|LIBS|FLAGS_f)?],
+      [ALLOCA|GETLOADAVG_LIBS|KMEM_GROUP|NEED_SETGID|POW_LIB],
+      [AWK|LEX|LEXLIB|LEX_OUTPUT_ROOT|LN_S|M4|MKDIR_P|RANLIB|SET_MAKE|YACC],
+      [GREP|[EF]GREP|SED],
+      [[_@]|.[*#?$].],
+      [argv|ARGC|LINENO|OLDPWD|PIPESTATUS|RANDOM|SECONDS]))=' \
+     $act_file 2>/dev/null |
+      # There may be variables spread on several lines; remove latter lines.
+      $GREP '^m4_defn([m4_re_word])=' >clean-$act_file
+  done
+  $at_traceon
+  $at_diff clean-state-env.before clean-state-env.after
+fi
+} [#]at_check_env])
+
+
+# AT_CONFIG_CMP(VAR-FILE-A, VAR-FILE-B)
+# -------------------------------------
+# Check the outcomes of two configure runs for equality by comparing dumps of
+# their shell variables.  VAR-FILE-A and VAR-FILE-B are two `set'-style shell
+# variable space dumps.
+#
+# We permit variance between runs in the following shell variables:
+# - ^as_
+#   M4sh's shell name space.
+# - ^ac_, excluding ^ac_cv_
+#   Autoconf's private shell name space.
+# - PPID [bash, zsh]
+# - RANDOM [zsh]
+# - SECONDS [zsh]
+# - '$' [zsh]
+# - argv [zsh]
+# - ARGC [zsh]
+#
+# Furthermore, it is okay for a non-cache variable initialized to empty in one
+# run to be unset in another run.  This happens when, for example, cache update
+# code tries a number of values in LIBS and eventually restores LIBS to its
+# original value. If LIBS was previously unset, it will have become set and
+# empty.  (OTOH, cache variables indicate the result of the test even if they
+# are empty, so we have to be strict about them.)
+#
+# Lines that do not look like `foo=bar' are probably latter lines of
+# multiline values; trim them.
+#
+m4_define([AT_CONFIG_CMP],
+[for act_file in $1 $2
+do
+  $SED '/^ac_cv_/ b
+	/^m4_defn([m4_re_word])=./ !d
+	/^[[^=]]*='\'''\''$/ d
+	/^a[[cs]]_/ d
+	/^PPID=/ d
+	/^RANDOM=/ d
+	/^SECONDS=/ d
+	/'\'\\\$\''=/ d
+	/^argv=/ d
+	/^ARGC=/ d
+	' $act_file >at_config_vars-$act_file
+done
+AT_CMP([at_config_vars-$1], [at_config_vars-$2])[]dnl
+])# AT_CONFIG_CMP
+
+
+# AT_CHECK_DEFINES(CONTENT)
+# -------------------------
+# Verify that config.h, once stripped, is CONTENT.
+# Stripping consists of keeping CPP lines (i.e. containing a hash),
+# but those of automatically checked features (STDC_HEADERS etc.)
+# and symbols (PACKAGE_...).
+# AT_CHECK_HEADER is a better name, but too close from AC_CHECK_HEADER.
+m4_define([AT_CHECK_DEFINES],
+[AT_CHECK([[sed '/#/!d
+/INTTYPES/d
+/MEMORY/d
+/PACKAGE_/d
+/STDC_HEADERS/d
+/STDINT/d
+/STDLIB/d
+/STRING/d
+/SYS_STAT/d
+/SYS_TYPES/d
+/UNISTD/d' config.h]],,
+	  [$1])])
+
+
+# AT_CHECK_AUTOUPDATE
+# -------------------
+m4_define([AT_CHECK_AUTOUPDATE],
+[AT_CHECK([autoupdate $1], [$2], [$3], [$4])
+])
+
+
+# _AT_CHECK_AC_MACRO(AC-BODY, PRE-TESTS)
+# --------------------------------------
+# Create a minimalist configure.ac running the macro named
+# NAME-OF-THE-MACRO, check that autoconf runs on that script,
+# and that the shell runs correctly the configure.
+m4_define([_AT_CHECK_AC_MACRO],
+[AT_CONFIGURE_AC([$1])
+$2
+AT_CHECK_AUTOCONF
+AT_CHECK_AUTOHEADER
+AT_CHECK_CONFIGURE
+AT_CHECK_ENV
+])# _AT_CHECK_AC_MACRO
+
+
+# AT_CHECK_MACRO(MACRO, [MACRO-USE], [ADDITIONAL-CMDS],
+#                [AUTOCONF-FLAGS = -W obsolete])
+# -----------------------------------------------------
+# Create a minimalist configure.ac running the macro named
+# NAME-OF-THE-MACRO, check that autoconf runs on that script,
+# and that the shell runs correctly the configure.
+#
+# We run `configure' twice, both times with a cache, and compare
+# the environment after each run to detect inconsistencies.
+#
+# New macros are not expected to depend upon obsolete macros.
+m4_define([AT_CHECK_MACRO],
+[AT_SETUP([$1])
+
+AT_CONFIGURE_AC([m4_default([$2], [$1])])
+
+AT_CHECK_AUTOCONF([m4_default([$4], [-W obsolete])])
+AT_CHECK_AUTOHEADER
+
+for at_run in r1 r2
+do
+    AT_CHECK_CONFIGURE([-C])
+    cp -f state-env.after state-env.$at_run
+    cp -f config.h config-h.$at_run
+    AT_CHECK_ENV
+done
+
+AT_CMP([config-h.r1], [config-h.r2])
+AT_CONFIG_CMP([state-env.r1], [state-env.r2])
+
+$3
+
+AT_CLEANUP[]dnl
+])# AT_CHECK_MACRO
+
+
+# AT_CHECK_MACRO_CROSS(MACRO, [MACRO-USE], [ADDITIONAL-CMDS],
+#                      [AUTOCONF-FLAGS = -W obsolete])
+# -----------------------------------------------------------
+# Like the previous one, but creates two checks: for native
+# compile and for cross-compile.
+m4_define([AT_CHECK_MACRO_CROSS],
+[AT_CHECK_MACRO($@)
+AT_CHECK_MACRO([$1 (cross compile)],
+  [AT_KEYWORDS([cross])
+  # Exercise the code used when cross-compiling.
+  cross_compiling=yes
+  ac_tool_warned=yes
+  m4_default([$2], [$1])],
+  [$3], [$4])
+])
+
+
+# AT_CHECK_AU_MACRO(MACRO)
+# ------------------------
+# Create a minimalist configure.ac running the macro named
+# NAME-OF-THE-MACRO, autoupdate this script, check that autoconf runs
+# on that script, and that the shell runs correctly the configure.
+#
+# Updated configure.ac shall not depend upon obsolete macros, which votes
+# in favor of `-W obsolete', but since many of these macros leave a message
+# to be removed by the user once her code is adjusted, let's not check.
+#
+# Remove config.hin to avoid `autoheader: config.hin is unchanged'.
+m4_define([AT_CHECK_AU_MACRO],
+[AT_SETUP([$1])
+AT_KEYWORDS([autoupdate])
+
+AT_CONFIGURE_AC([$1])
+
+AT_CHECK_AUTOCONF
+AT_CHECK_AUTOHEADER
+AT_CHECK_CONFIGURE
+AT_CHECK_ENV
+
+rm config.hin
+AT_CHECK_AUTOUPDATE([], 0, [], ignore)
+AT_CHECK([grep '^$1$' configure.ac], 1)
+
+AT_CHECK_AUTOCONF
+AT_CHECK_AUTOHEADER
+AT_CHECK_CONFIGURE
+AT_CHECK_ENV
+
+AT_CLEANUP[]dnl
+])# AT_CHECK_AU_MACRO
+
+
+
+## ----------------------- ##
+## Launch the test suite.  ##
+## ----------------------- ##
+
+AT_INIT

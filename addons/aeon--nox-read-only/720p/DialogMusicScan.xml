@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<window id="112">
+  <zorder>1</zorder>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include condition="Skin.HasSetting(homepageHideRecentlyAdded)">UnLoadRecentAdded</include>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="group">
+      <animation effect="zoom" start="100" end="60" time="800" easing="inout" tween="circle" condition="Skin.HasSetting(smallerdialogs)">Conditional</animation>
+      <animation effect="slide" end="280,-10" time="800" easing="inout" tween="circle" condition="[Window.IsMedia |  Window.IsActive(settings) |Window.IsActive(home) | Window.IsActive(appearancesettings) | Window.IsActive(picturessettings) | Window.IsActive(videossettings) | Window.IsActive(networksettings) | Window.IsActive(systemsettings) | Window.IsActive(videossettings) | Window.IsActive(musicsettings) | Window.IsActive(weathersettings) | Window.IsActive(programssettings) | Window.IsActive(1111)| Window.IsActive(7)]+Skin.HasSetting(smallerdialogs)">Conditional</animation>
+      <animation effect="slide" end="0,-600" time="400" easing="inout" tween="circle" condition="Window.IsVisible(fullscreenvideo) | Window.IsVisible(visualisation) | Window.IsVisible(slideshow)">Conditional</animation>
+      <animation effect="fade" start="100" end="0" time="200" condition="Window.Next(videolibrary) | Window.Next(musiclibrary) | Window.Next(videofiles) |  Window.Next(musicfiles) | Window.Next(pictures) | Window.Next(scripts) | Window.Next(musicplaylist) | Window.Next(videoplaylist) | Window.Next(programs) |  Window.Next(home) |  [Window.Next(settings) + Window.IsActive(home)]" reversible="false">Conditional</animation>
+      <posx>760</posx>
+      <posy>38</posy>
+      <width>509</width>
+      <height>91</height>
+      <include>Dialogs_Tablet</include>
+      <include>Dialogs_HardDrive</include>
+      <control type="label" id="401">
+        <posy>20</posy>
+        <include>Dialogs_LabelVars</include>
+      </control>
+      <control type="label" id="402">
+        <posy>38</posy>
+        <include>Dialogs_LabelVars</include>
+      </control>
+      <control type="progress" id="403">
+        <description>progress control</description>
+        <include>Dialogs_Progress</include>
+      </control>
+    </control>
+  </controls>
+</window>

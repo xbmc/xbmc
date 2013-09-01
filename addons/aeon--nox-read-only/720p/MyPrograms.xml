@@ -1,0 +1,103 @@
+<window id="1">
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<views>50,509,501,504,505,512</views>
+	<controls>
+		<include>CommonProgramsBackground</include>
+    <control type="image">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+      <include>backgroundfade</include>
+      <fadetime>FanartCrossfadeTime</fadetime>
+      <include condition="Skin.HasSetting(animatedbg)">Animation_Background</include>
+    </control>
+    <control type="group">
+      <visible>Control.IsVisible(500)|[Control.IsVisible(512)+Skin.HasSetting(altoverlayinfowall)]</visible>
+      <include>Furniture_WallBackground</include>
+      <include>Furniture_WallBackground_Small</include>
+    </control>
+    <control type="group">
+      <visible>Control.IsVisible(512)+!Skin.HasSetting(altoverlayinfowall)</visible>
+      <include>Common_Fanartoverlay</include>
+    </control>
+    <control type="group">
+      <include>Animation_OpenCloseZoom</include>
+      <visible>Control.IsVisible(509)|Control.IsVisible(504)|Control.IsVisible(501)|Control.IsVisible(50)|Control.IsVisible(505)</visible>
+      <include>Furniture_Showcase</include>
+    </control>
+    <control type="image" id="199">
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>0</width>
+      <height>0</height>
+      <texture>-</texture>
+      <visible>[!Container.OnNext + !Container.OnPrevious + [Window.IsActive(1)+Substring(Container.FolderPath,advanced.launcher)]+Skin.HasSetting(infopaneautolauncher)]|[!Skin.HasSetting(infopaneautolauncher)+[Window.IsActive(1)+Substring(Container.FolderPath,advanced.launcher)]]</visible>
+      <animation effect="fade" start="0" end="100" time="150" delay="1000" condition="Skin.HasSetting(1sec)">Visible</animation>
+      <animation effect="fade" start="0" end="100" time="150" delay="2000" condition="Skin.HasSetting(2sec)">Visible</animation>
+      <animation effect="fade" start="0" end="100" time="150" delay="3000" condition="Skin.HasSetting(3sec)">Visible</animation>
+      <animation effect="fade" start="0" end="100" time="150" delay="4000" condition="Skin.HasSetting(4sec)">Visible</animation>
+      <animation effect="fade" start="0" end="100" time="150" delay="5000" condition="Skin.HasSetting(5sec)">Visible</animation>
+    </control>
+    <control type="group">
+      <include>Animation_OpenCloseZoom</include>
+      <visible>Control.IsVisible(501)|Control.IsVisible(509)|Control.IsVisible(504)</visible>
+      <include>ShowcaseInfoPaneMusic</include>
+    </control>
+    <control type="group">
+			<include>Animation_OpenCloseZoom</include>		
+			<include>CommonRootView</include> <!-- view id = 50 -->
+      <include>InfoList</include>
+      <include>ShowcaseQuadrate</include> <!-- view id = 51 -->
+			<include>Showcase</include>       <!-- view id = 500 -->
+      <include>AddonWall</include>
+      <include>ShowcaseDVD</include>
+        <!-- view id = 550 -->
+		</control>
+    <control type="button" id="7000">
+      <include>HiddenObject</include>
+      <onup>SetFocus(9000)</onup>
+      <onleft>Control.Move(509,-1)</onleft>
+      <onright>Control.Move(509,1)</onright>
+      <ondown>SetFocus(50)</ondown>
+      <visible>Skin.HasSetting(infopanellauncher)+Control.IsVisible(509)</visible>
+    </control>
+    <control type="button" id="7000">
+      <include>HiddenObject</include>
+      <onup>SetFocus(9000)</onup>
+      <onleft>Control.Move(501,-1)</onleft>
+      <onright>Control.Move(501,1)</onright>
+      <ondown>SetFocus(50)</ondown>
+      <visible>Skin.HasSetting(infopanellauncher)+Control.IsVisible(501)</visible>
+    </control>
+    <control type="button" id="7000">
+      <include>HiddenObject</include>
+      <onup>SetFocus(9000)</onup>
+      <onleft>Control.Move(504,-1)</onleft>
+      <onright>Control.Move(504,1)</onright>
+      <ondown>SetFocus(50)</ondown>
+      <visible>Skin.HasSetting(infopanellauncher)+Control.IsVisible(504)</visible>
+    </control>
+    <control type="button" id="7000">
+      <include>HiddenObject</include>
+      <onfocus>SetFocus(9000)</onfocus>
+      <visible>!Skin.HasSetting(infopanellauncher)+[Control.IsVisible(509)|Control.IsVisible(501)|Control.IsVisible(504)]|Control.IsVisible(55)</visible>
+    </control>
+    <control type="group">
+      <include>Animation_OpenCloseZoom</include>
+      <visible>Control.IsVisible(509)|Control.IsVisible(504)|Control.IsVisible(501)</visible>
+      <include>Furniture_DarkGradient</include>
+    </control>
+    <control type="group">
+      <visible>Control.IsVisible(512)|Control.IsVisible(50)</visible>
+      <include>VideoWindowPosters</include>
+    </control>
+    <include>ScrollOffsetLabel</include>
+    <include>Media_Menu</include>
+    <include condition="Skin.HasSetting(breadcrumb)">Breadcrumbs</include>
+    <include condition="Skin.HasSetting(globaltime)">Furniture_Clock</include>
+    <include>Furniture_NowPlayingWidget</include>
+	</controls>
+</window>

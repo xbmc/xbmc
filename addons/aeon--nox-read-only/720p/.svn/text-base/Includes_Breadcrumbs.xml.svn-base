@@ -1,0 +1,1323 @@
+<includes>
+  <include name="Breadcrumbs_Videolibrary">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>stretch</aspectratio>
+        <texture>common/logo_movies.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[20342]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Container.Content(movies)+!substring(Container.FolderPath,videodb://4)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[20343]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Container.Content(tvshows)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[20314]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>!Container.Content(movies)+!Container.Content(tvshows)+!Container.Content(seasons)+!Container.Content(episodes)+!Container.Content(musicvideos)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[20386]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://4)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[20387]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://5)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[135]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://1/1)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[556]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://1/2)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[562]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://1/3)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $INFO[Container.FolderName]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://1/3/19)|substring(Container.FolderPath,videodb://1/3/20)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[344]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://1/4)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[20348]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://1/5)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[20388]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://1/6)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[20434]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://1/7)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[20451]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://1/8)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>• $LOCALIZE[20390]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,videodb://6)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$INFO[ListItem.TVShowTitle]</label>
+        <textcolor>white2</textcolor>
+        <scroll>true</scroll>
+        <align>left</align>
+        <visible>[Container.Content(seasons)|Container.Content(episodes)]+!substring(Container.FolderPath,videodb://5)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $INFO[ListItem.Season,$LOCALIZE[20373] ]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Container.Content(episodes)+!IsEmpty(ListItem.Season)+!substring(Container.FolderPath,videodb://5)+!SubString(ListItem.Episode,S)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[20381]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Container.Content(episodes)+!IsEmpty(ListItem.Season)+!substring(Container.FolderPath,videodb://5)+SubString(ListItem.Episode,S)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[1037]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,addons://)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[136]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,special://videoplaylists/)</visible>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Videofiles">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>stretch</aspectratio>
+        <texture>common/logo_movies.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[31021]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>IsEmpty(Container.FolderPath)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$INFO[Container.Property(addoncategory)]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$INFO[Container.FolderPath]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Pictures">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>stretch</aspectratio>
+        <texture>common/logo_pics.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[1213]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[1039]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,addons://)</visible>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Programs">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>keep</aspectratio>
+        <texture>common/logo_games.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[10001]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Musiclibrary">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>keep</aspectratio>
+        <texture>common/logo_music.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[10516]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[135]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>stringcompare(Container.FolderPath,musicdb://1/)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[133]</label>$INFO[Container.FolderPath]
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>stringcompare(Container.FolderPath,musicdb://2/)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[132]</label>$INFO[Container.FolderPath]
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>stringcompare(Container.FolderPath,musicdb://3/)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[652]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>stringcompare(Container.FolderPath,musicdb://9/)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[134]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Container.Content(songs)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[1038]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,addons://)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[136]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>substring(Container.FolderPath,special://musicplaylists/)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[271]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>stringcompare(Container.FolderPath,musicdb://5/)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[359]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>stringcompare(Container.FolderPath,musicdb://6/)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[517]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>stringcompare(Container.FolderPath,musicdb://7/)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[521]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>stringcompare(Container.FolderPath,musicdb://8/)</visible>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Musicfiles">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>stretch</aspectratio>
+        <texture>common/logo_music.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[31022]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>IsEmpty(Container.FolderPath)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$INFO[Container.FolderPath]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Addonbrowser">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>keep</aspectratio>
+        <texture>common/puzzle_icon.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[24001]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>IsEmpty(Container.Property(reponame))+IsEmpty(Container.Property(addoncategory))</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <haspath>true</haspath>
+        <label>$INFO[Container.Property(reponame)]$INFO[Container.Property(addoncategory), / ]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Weather">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>keep</aspectratio>
+        <texture>common/logo_pics.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[8]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <haspath>true</haspath>
+        <label>$INFO[Container.FolderPath]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Settings">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>23</height>
+        <aspectratio>keep</aspectratio>
+        <texture>common/settings_logo.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0,0" end="-6,1" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[5]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$INFO[Control.GetLabel(2), / ]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(12)|Window.IsVisible(13)|Window.IsVisible(14)|Window.IsVisible(15)|Window.IsVisible(16)|Window.IsVisible(17)|Window.IsVisible(18)|Window.IsVisible(19)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[130]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(systeminfo)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[20077]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(1111)</visible>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Videoplaylist">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>keep</aspectratio>
+        <texture>common/logo_movies.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[10522]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Musicplaylist">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>keep</aspectratio>
+        <texture>common/logo_music.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[10517]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Musicplaylisteditor">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>25</height>
+        <aspectratio>keep</aspectratio>
+        <texture>common/logo_music.png</texture>
+        <animation effect="slide" start="0" end="-6" time="0" condition="true">Conditional</animation>
+        <colordiffuse>white2</colordiffuse>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[10503]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_TVSchedule">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>32</height>
+        <aspectratio>keep</aspectratio>
+        <texture>common/tv_icon.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0,0" end="-6,1" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[31290]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[31360]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(1118)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[11]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(1119)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[12]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(1120)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[13]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(1121)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[14]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(1122)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[15]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(1123)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[16]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(1124)</visible>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label> / $LOCALIZE[17]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+        <visible>Window.IsVisible(1125)</visible>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs_Filemanager">
+    <control type="grouplist">
+      <posx>15</posx>
+      <posy>0</posy>
+      <width>500</width>
+      <align>left</align>
+      <visible></visible>
+      <itemgap>0</itemgap>
+
+      <orientation>horizontal</orientation>
+      <control type="image">
+        <description>Items Icon</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>36</width>
+        <height>15</height>
+        <aspectratio>keep</aspectratio>
+        <texture>breadcrumbs/items.png</texture>
+        <colordiffuse>white2</colordiffuse>
+        <animation effect="slide" start="0,0" end="-6,6" time="0" condition="true">Conditional</animation>
+      </control>
+      <control type="label">
+        <posx>0</posx>
+        <posy>0</posy>
+        <height>25</height>
+        <aligny>center</aligny>
+        <width min="10" max="1280">auto</width>
+        <font>Font_Reg17</font>
+        <label>$LOCALIZE[10003]</label>
+        <textcolor>white2</textcolor>
+        <scroll>false</scroll>
+        <align>left</align>
+      </control>
+    </control>
+  </include>
+  <include name="Breadcrumbs">
+    <control type="group">
+      <include>Animation_WidgetZoom</include>
+      <visible>!Control.HasFocus(109)+!Control.HasFocus(110)</visible>
+      <control type="image">
+        <posx>0</posx>
+        <posy>-36</posy>
+        <width>1280</width>
+        <height>79</height>
+        <texture flipy="true">home/glass_bar.png</texture>
+        <colordiffuse>CCFFFFFF</colordiffuse>
+      </control>
+      <include>Neon_Topbar</include>
+      <control type="grouplist">
+        <visible>true</visible>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1255</width>
+        <align>right</align>
+        <aligny>center</aligny>
+        <orientation>horizontal</orientation>
+        <!--<control type="label">
+          <posx>0</posx>
+          <posy>0</posy>
+          <height>25</height>
+          <aligny>center</aligny>
+          <width min="10" max="1280">auto</width>
+          <font>Font_Reg17</font>
+          <textcolor>white2</textcolor>
+          <label>$INFO[Container(50).ListItem.FolderName]</label>
+        </control>-->
+        <control type="label">
+          <posx>0</posx>
+          <posy>0</posy>
+          <height>25</height>
+          <aligny>center</aligny>
+          <width min="10" max="1280">auto</width>
+          <font>Font_Reg17</font>
+          <textcolor>white2</textcolor>
+          <label>[COLOR white2]$INFO[System.Date]  |  [/COLOR][COLOR=ffaaaaaa]$INFO[System.Time][/COLOR]       </label>
+        </control>
+      </control>
+      <control type="grouplist">
+        <posx>0</posx>
+        <posy>6</posy>
+        <width>1280</width>
+        <align>center</align>
+        <aligny>center</aligny>
+        <itemgap>10</itemgap>
+        <visible>!IsEmpty(Container.NumItems)</visible>
+        <orientation>horizontal</orientation>
+        <animation effect="fade" time="400" delay="400">Visible</animation>
+        <animation effect="fade" time="400">Hidden</animation>
+        <control type="label">
+          <posx>0</posx>
+          <posy>0</posy>
+          <height>25</height>
+          <aligny>center</aligny>
+          <width min="10" max="1280">auto</width>
+          <font>Font_Reg17</font>
+          <label>$LOCALIZE[312573]</label>
+          <textcolor>white2</textcolor>
+          <scroll>false</scroll>
+          <animation effect="slide" start="0,0" end="0,-6" time="0" condition="true">Conditional</animation>
+          <visible>[[Control.IsVisible(510)|Control.IsVisible(55)|Control.IsVisible(517)|Control.IsVisible(516)|Control.IsVisible(501)|Control.IsVisible(503)|Control.IsVisible(504)]+Container.Content(movies)]+!IsEmpty(ListItem.Trailer)+ !Player.HasVideo + !Control.HasFocus(7001)</visible>
+        </control>
+        <control type="label">
+          <posx>0</posx>
+          <posy>0</posy>
+          <height>25</height>
+          <aligny>center</aligny>
+          <width min="10" max="1280">auto</width>
+          <font>Font_Reg17</font>
+          <label>$LOCALIZE[31237]</label>
+          <textcolor>white2</textcolor>
+          <scroll>false</scroll>
+          <animation effect="slide" start="0,0" end="0,-6" time="0" condition="true">Conditional</animation>
+          <visible>[Control.IsVisible(511)+Container.Content(movies)]+!IsEmpty(ListItem.Trailer)+ !Player.HasVideo + !Control.HasFocus(7001)</visible>
+        </control>
+        <control type="label">
+          <posx>0</posx>
+          <posy>0</posy>
+          <height>25</height>
+          <aligny>center</aligny>
+          <width min="10" max="1280">auto</width>
+          <font>Font_Reg17</font>
+          <label>$LOCALIZE[31368]</label>
+          <textcolor>white2</textcolor>
+          <scroll>false</scroll>
+          <animation effect="slide" start="0,0" end="0,-6" time="0" condition="true">Conditional</animation>
+          <visible>[Control.IsVisible(50)+Container.Content(movies)]+!IsEmpty(ListItem.Trailer)+ !Player.HasVideo + !Control.HasFocus(7001)</visible>
+        </control>
+        <control type="label">
+          <posx>0</posx>
+          <posy>0</posy>
+          <height>25</height>
+          <aligny>center</aligny>
+          <width min="10" max="1280">auto</width>
+          <font>Font_Reg17</font>
+          <label>$LOCALIZE[312575]</label>
+          <textcolor>white2</textcolor>
+          <scroll>false</scroll>
+          <animation effect="slide" start="0,0" end="0,-6" time="0" condition="true">Conditional</animation>
+          <visible>[[Control.IsVisible(511)|Control.IsVisible(55)|Control.IsVisible(517)|Control.IsVisible(50)|Control.IsVisible(510)|Control.IsVisible(516)|Control.IsVisible(501)|Control.IsVisible(503)|Control.IsVisible(504)]+Container.Content(movies)]+!IsEmpty(ListItem.Trailer)+ !Player.HasVideo + Control.HasFocus(7001)</visible>
+        </control>
+        <control type="image">
+          <description>Items Icon</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>20</width>
+          <height>15</height>
+          <aspectratio>stretch</aspectratio>
+          <texture>breadcrumbs/items.png</texture>
+          <colordiffuse>60ffffff</colordiffuse>
+        </control>
+        <control type="label">
+          <posx>0</posx>
+          <posy>0</posy>
+          <height>25</height>
+          <aligny>center</aligny>
+          <width min="10" max="1280">auto</width>
+          <font>Font_Reg17</font>
+          <label>$INFO[Container.NumItems] $LOCALIZE[31025]</label>
+          <textcolor>white2</textcolor>
+          <scroll>false</scroll>
+          <animation effect="slide" start="0,0" end="0,-6" time="0" condition="true">Conditional</animation>
+        </control>
+        <control type="image">
+          <description>Items Icon</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>20</width>
+          <height>15</height>
+          <aspectratio>stretch</aspectratio>
+          <texture>breadcrumbs/pages.png</texture>
+          <colordiffuse>60ffffff</colordiffuse>
+          <animation effect="fade" time="400" delay="400">Visible</animation>
+          <animation effect="fade" time="400">Hidden</animation>
+        </control>
+        <control type="label">
+          <posx>0</posx>
+          <posy>0</posy>
+          <height>25</height>
+          <aligny>center</aligny>
+          <width min="10" max="1280">auto</width>
+          <font>Font_Reg17</font>
+          <label>$LOCALIZE[31024] $INFO[Container.CurrentPage]/$INFO[Container.NumPages]</label>
+          <textcolor>white2</textcolor>
+          <scroll>false</scroll>
+          <align>left</align>
+          <animation effect="slide" start="0,0" end="0,-6" time="0" condition="true">Conditional</animation>
+        </control>
+      </control>
+      <control type="group">
+        <visible>!Player.HasMedia|SubString(Window(videolibrary).Property(tvtunesIsAlive),True)</visible>
+        <include condition="Window.IsActive(videolibrary)">Breadcrumbs_Videolibrary</include>
+        <include condition="Window.IsActive(videofiles)">Breadcrumbs_Videofiles</include>
+        <include condition="Window.IsActive(pictures)">Breadcrumbs_Pictures</include>
+        <include condition="Window.IsActive(programs)">Breadcrumbs_Programs</include>
+        <include condition="Window.IsActive(musiclibrary)">Breadcrumbs_Musiclibrary</include>
+        <include condition="Window.IsActive(musicfiles)">Breadcrumbs_Musicfiles</include>
+        <include condition="Window.IsActive(addonbrowser)">Breadcrumbs_Addonbrowser</include>
+        <include condition="Window.IsActive(weather)">Breadcrumbs_Weather</include>
+        <include condition="Window.IsActive(settings)|Window.IsActive(12)|Window.IsActive(13)|Window.IsActive(14)|Window.IsActive(15)|Window.IsActive(16)|Window.IsActive(17)|Window.IsActive(18)|Window.IsActive(19)|Window.IsActive(systeminfo)|Window.IsActive(1111)">Breadcrumbs_Settings</include>
+        <include condition="Window.IsActive(videoplaylist)">Breadcrumbs_Videoplaylist</include>
+        <include condition="Window.IsActive(musicplaylist)">Breadcrumbs_Musicplaylist</include>
+        <include condition="Window.IsActive(musicplaylisteditor)">Breadcrumbs_Musicplaylisteditor</include>
+        <include condition="Window.IsActive(1118)|Window.IsActive(1119)|Window.IsActive(1120)|Window.IsActive(1121)|Window.IsActive(1122)|Window.IsActive(1123)|Window.IsActive(1124)|Window.IsActive(1125)">Breadcrumbs_TVSchedule</include>
+        <include condition="Window.IsActive(filemanager)">Breadcrumbs_Filemanager</include>
+      </control>
+      <control type="group">
+        <!--clock-->
+        <posx>1240</posx>
+        <posy>0</posy>
+        <width>26</width>
+        <height>26</height>
+        <control type="image">
+          <description>Clock Icon</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>26</width>
+          <height>26</height>
+          <texture>breadcrumbs/clock/clock_panel.png</texture>
+        </control>
+        <control type="image">
+          <description>Clock Second</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>26</width>
+          <height>26</height>
+          <texture>breadcrumbs/clock/seconds/$INFO[System.Time(ss)].png</texture>
+        </control>
+        <control type="image">
+          <description>Clock Minute</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>26</width>
+          <height>26</height>
+          <texture>breadcrumbs/clock/minutes/$INFO[System.Time(mm)].png</texture>
+        </control>
+        <control type="image">
+          <description>Clock Hour</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>26</width>
+          <height>26</height>
+          <texture>breadcrumbs/clock/hours/$INFO[System.Time(hh)].png</texture>
+        </control>
+        <control type="image">
+          <description>Clock Cap</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>26</width>
+          <height>26</height>
+          <texture>breadcrumbs/clock/clock_cap.png</texture>
+        </control>
+      </control>
+    </control>
+
+  </include>
+</includes>

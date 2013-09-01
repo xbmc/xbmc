@@ -31,10 +31,13 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "video/VideoThumbLoader.h"
+#include "pictures/tags/PictureInfoTagLoaderFactory.h"
 
 using namespace XFILE;
 using namespace std;
+using namespace PICTURE_INFO;
 
+#ifdef _USE_OLD_LOADER_
 CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader(1), CJobQueue(true)
 {
   m_regenerateThumbs = false;
@@ -114,11 +117,13 @@ void CPictureThumbLoader::OnLoaderFinish()
   m_regenerateThumbs = false;
 }
 
+
+#else
 void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
 {
   if (pItem->HasArt("thumb"))
     return;
-
+  
   CTextureDatabase db;
   db.Open();
   if (pItem->IsCBR() || pItem->IsCBZ())
@@ -162,9 +167,9 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     {
       // we load the directory, grab 4 random thumb files (if available) and then generate
       // the thumb.
-
+      
       CFileItemList items;
-
+      
       CDirectory::GetDirectory(strPath, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
       
       // create the folder thumb by choosing 4 random thumbs within the folder and putting
@@ -179,7 +184,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         else
           i++;
       }
-
+      
       if (items.IsEmpty())
       {
         if (pItem->IsCBZ() || pItem->IsCBR())
@@ -199,10 +204,10 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         }
         return; // no images in this folder
       }
-
+      
       // randomize them
       items.Randomize();
-
+      
       if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
       { // less than 4 items, so just grab the first thumb
         items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
@@ -237,3 +242,162 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     pItem->FillInDefaultIcon();
   }
 }
+
+CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader(1)
+{
+  m_database = new CPictureDatabase;
+}
+
+CPictureThumbLoader::~CPictureThumbLoader()
+{
+  delete m_database;
+}
+
+void CPictureThumbLoader::Initialize()
+{
+  m_database->Open();
+  m_albumArt.clear();
+}
+
+void CPictureThumbLoader::Deinitialize()
+{
+  m_database->Close();
+  m_albumArt.clear();
+}
+
+void CPictureThumbLoader::OnLoaderStart()
+{
+  Initialize();
+}
+
+void CPictureThumbLoader::OnLoaderFinish()
+{
+  Deinitialize();
+}
+
+bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
+{
+  if (pItem->m_bIsShareOrDrive)
+    return true;
+  
+  if (pItem->HasPictureInfoTag() && pItem->GetArt().empty())
+  {
+    if (FillLibraryArt(*pItem))
+      return true;
+    if (pItem->GetPictureInfoTag()->GetType() == "face")
+      return true; // no fallback
+  }
+  
+  if (pItem->HasVideoInfoTag() && pItem->GetArt().empty())
+  { // music video
+    CVideoThumbLoader loader;
+    if (loader.LoadItem(pItem))
+      return true;
+  }
+  
+  if (!pItem->HasArt("fanart"))
+  {
+    if (pItem->HasPictureInfoTag() && !pItem->GetPictureInfoTag()->GetFace().empty())
+    {
+      std::string face = pItem->GetPictureInfoTag()->GetFace()[0];
+      m_database->Open();
+      int idFace = m_database->GetFaceByName(face);
+      if (idFace >= 0)
+      {
+        string fanart = m_database->GetArtForItem(idFace, "face", "fanart");
+        if (!fanart.empty())
+        {
+          pItem->SetArt("face.fanart", fanart);
+          pItem->SetArtFallback("fanart", "face.fanart");
+        }
+      }
+      m_database->Close();
+    }
+  }
+  
+  if (!pItem->HasArt("thumb"))
+  {
+    // Look for embedded art
+    if (pItem->HasPictureInfoTag() && !pItem->GetPictureInfoTag()->GetCoverArtInfo().empty())
+    {
+      // The item has got embedded art but user thumbs overrule, so check for those first
+      if (!FillThumb(*pItem, false)) // Check for user thumbs but ignore folder thumbs
+      {
+        // No user thumb, use embedded art
+        CStdString thumb = CTextureCache::GetWrappedImageURL(pItem->GetPath(), "music");
+        pItem->SetArt("thumb", thumb);
+      }
+    }
+    else
+    {
+      // Check for user thumbs
+      FillThumb(*pItem, true);
+    }
+  }
+  
+  return true;
+}
+
+bool CPictureThumbLoader::FillThumb(CFileItem &item, bool folderThumbs /* = true */)
+{
+  if (item.HasArt("thumb"))
+    return true;
+  CStdString thumb = GetCachedImage(item, "thumb");
+  if (thumb.IsEmpty())
+  {
+    thumb = item.GetUserPictureThumb(false, folderThumbs);
+    if (!thumb.IsEmpty())
+      SetCachedImage(item, "thumb", thumb);
+  }
+  item.SetArt("thumb", thumb);
+  return !thumb.IsEmpty();
+}
+
+bool CPictureThumbLoader::FillLibraryArt(CFileItem &item)
+{
+  CPictureInfoTag &tag = *item.GetPictureInfoTag();
+  if (tag.GetDatabaseId() > -1 && !tag.GetType().empty())
+  {
+    m_database->Open();
+    map<string, string> artwork;
+    if (m_database->GetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork))
+      item.SetArt(artwork);
+    else if (tag.GetType() == "picture")
+    { // no art for the song, try the album
+      ArtCache::const_iterator i = m_albumArt.find(tag.GetPictureAlbumId());
+      if (i == m_albumArt.end())
+      {
+        m_database->GetArtForItem(tag.GetPictureAlbumId(), "album", artwork);
+        i = m_albumArt.insert(make_pair(tag.GetPictureAlbumId(), artwork)).first;
+      }
+      if (i != m_albumArt.end())
+      {
+        item.AppendArt(i->second, "album");
+        for (map<string, string>::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
+          item.SetArtFallback(j->first, "album." + j->first);
+      }
+    }
+    if (tag.GetType() == "picture" || tag.GetType() == "album")
+    { // fanart from the face
+      string fanart = m_database->GetFaceArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart");
+      if (!fanart.empty())
+      {
+        item.SetArt("face.fanart", fanart);
+        item.SetArtFallback("fanart", "face.fanart");
+      }
+    }
+    m_database->Close();
+  }
+  return !item.GetArt().empty();
+}
+
+bool CPictureThumbLoader::GetEmbeddedThumb(const std::string &path, EmbeddedArt &art)
+{
+  auto_ptr<IPictureInfoTagLoader> pLoader (CPictureInfoTagLoaderFactory::CreateLoader(path));
+  CPictureInfoTag tag;
+  if (NULL != pLoader.get())
+    pLoader->Load(path, tag, &art);
+  
+  return !art.empty();
+}
+#endif

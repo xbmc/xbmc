@@ -1,0 +1,77 @@
+# Validation suite for Autoconf                           -*- Autotest -*-
+
+# Copyright (C) 2000, 2001, 2003, 2004, 2005, 2009, 2010 Free Software
+# Foundation, Inc.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Run the tests from the lowest level to the highest level, and from
+# the most selective to the easiest.
+
+# The executables.
+# Even the tests on M4sugar and M4sh use `autoconf', so check it first.
+m4_include([tools.at])
+
+# M4sugar.
+m4_include([m4sugar.at])
+
+# M4sh.m4.
+m4_include([m4sh.at])
+
+# Autotest.
+m4_include([autotest.at])
+
+# Autoconf base macros.
+m4_include([base.at])
+
+# Testing config.status
+# ---------------------
+# Actually should be named config.status.at but I fear problems with
+# the name.  Does no `checking ...' at all, but exercises only code
+# which following section use too.  Hence, run it first.
+m4_include([torture.at])
+
+# Checking AC_PROG_CC, AC_COMPILE_IFELSE etc.
+m4_include([compile.at])
+
+# Language support.
+m4_include([aclang.at])
+m4_include([c.at])
+m4_include([acc.at])
+m4_include([fortran.at])
+m4_include([acfortran.at])
+m4_include([erlang.at])
+
+# Checking that AC_CHECK_FOO macros work properly.
+m4_include([semantics.at])
+
+# Blind testing the macros.
+# Include them as is suggested for a `configure.ac', as looking for
+# for types requires looking for headers etc.
+m4_include([acgeneral.at])
+m4_include([acstatus.at])
+m4_include([acautoheader.at])
+m4_include([acautoupdate.at])
+m4_include([acspecific.at])
+m4_include([acprograms.at])
+m4_include([acheaders.at])
+m4_include([actypes.at])
+m4_include([acfunctions.at])
+m4_include([aclibs.at])
+
+# Compatibility with foreign tools.
+m4_include([foreign.at])
+
+# Autoscan test
+m4_include([autoscan.at])

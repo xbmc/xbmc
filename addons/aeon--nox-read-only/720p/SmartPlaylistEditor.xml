@@ -1,0 +1,402 @@
+<?xml version="1.0"?>
+<window id="129">
+  <defaultcontrol always="true">22</defaultcontrol>
+  <include>Animation_DialogPopup</include>
+  <controls>
+    <control type="image">
+      <description>Darken screen</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>720</height>
+      <texture>common/black.png</texture>
+      <colordiffuse>e7FFFFFF</colordiffuse>
+      <include>Animation_CommonFade</include>
+    </control>
+    <control type="group">
+      <visible>!Window.IsVisible(smartplaylistrule)</visible>
+      <control type="image">
+        <description>Panel</description>
+        <posx>208</posx>
+        <posy>40</posy>
+        <width>875</width>
+        <height>481</height>
+        <texture border="10">dialogs/scrapersettings_back.png</texture>
+      </control>
+      <!-- EDIT SMART PLAYLIST -->
+      <control type="label">
+        <description>heading label</description>
+        <posx>220</posx>
+        <posy>30</posy>
+        <width>690</width>
+        <align>center</align>
+        <font>Font_Reg22_Caps</font>
+        <label>[UPPERCASE]$LOCALIZE[21432][/UPPERCASE]</label>
+      </control>
+      <control type="group" id="9002">
+        <!-- TYPE -->
+        <control type="spincontrolex" id="22">
+          <description>Set Playlist type</description>
+          <posx>225</posx>
+          <posy>90</posy>
+          <width>675</width>
+          <label>467</label>
+          <height>41</height>
+          <font>Font_Reg18</font>
+          <texturefocus>views/listpanel_selectbar.png</texturefocus>
+          <texturenofocus>dialogs/setcontent_button_nofocus.png</texturenofocus>
+          <textureup>settings/spin-up.png</textureup>
+          <texturedown>settings/spin-down.png</texturedown>
+          <textureupfocus>settings/spin-up-focus.png</textureupfocus>
+          <texturedownfocus>settings/spin-down-focus.png</texturedownfocus>
+          <textcolor>FF939597</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <pulseonselect>false</pulseonselect>
+          <spinposx>-4</spinposx>
+          <spinwidth>40</spinwidth>
+          <spinheight>65</spinheight>
+          <textoffsetx>20</textoffsetx>
+          <aligny>center</aligny>
+          <reverse>yes</reverse>
+          <onright>22</onright>
+          <onleft>22</onleft>
+          <onup>18</onup>
+          <ondown>12</ondown>
+        </control>
+        <!-- NAME OF PLAYLIST -->
+        <control type="label" id="0">
+          <description>Name Label</description>
+          <posx>240</posx>
+          <posy>140</posy>
+          <width>420</width>
+          <font>Font_Reg18</font>
+          <label>21433</label>
+        </control>
+        <!-- TEXT BOX FOR NAME OF PLAYLIST -->
+        <control type="button" id="12">
+          <description>Name Button</description>
+          <posx>225</posx>
+          <posy>170</posy>
+          <width>675</width>
+          <height>32</height>
+          <textwidth>380</textwidth>
+          <aligny>center</aligny>
+          <label>-</label>
+          <onup>22</onup>
+          <onleft>12</onleft>
+          <onright>12</onright>
+          <ondown>10</ondown>
+          <font>Font_Reg18</font>
+          <textcolor>FF939597</textcolor>
+          <focusedcolor>FFFFFFFF</focusedcolor>
+          <textoffsetx>20</textoffsetx>
+          <texturefocus>-</texturefocus>
+          <texturenofocus>-</texturenofocus>
+          <aligny>center</aligny>
+        </control>
+        <control type="image">
+          <posx>235</posx>
+          <posy>170</posy>
+          <width>660</width>
+          <height>36</height>
+          <texture>dialogs/addsource_highlight.png</texture>
+          <include>Animation_CommonFade</include>
+          <visible>Control.HasFocus(12)</visible>
+        </control>
+        <!-- FIND ITEMS WHERE -->
+        <control type="label">
+          <description>rules label</description>
+          <posx>240</posx>
+          <posy>210</posy>
+          <width>420</width>
+          <align>left</align>
+          <font>Font_Reg18</font>
+          <label>21434</label>
+        </control>
+        <control type="list" id="10">
+          <description>Rules List Control</description>
+          <posx>215</posx>
+          <posy>230</posy>
+          <width>695</width>
+          <height>123</height>
+          <onup>12</onup>
+          <onleft>10</onleft>
+          <onright>9000</onright>
+          <ondown>16</ondown>
+          <itemlayout height="40">
+            <control type="image">
+              <posx>12</posx>
+              <posy>41</posy>
+              <height>1</height>
+              <width>739</width>
+              <texture>views/listpanel_line.png</texture>
+            </control>
+            <control type="label">
+              <posx>45</posx>
+              <posy>0</posy>
+              <height>39</height>
+              <width>675</width>
+              <font>Font_Reg18</font>
+              <aligny>center</aligny>
+              <textcolor>white</textcolor>
+              <focusedcolor>FFFFFFFF</focusedcolor>
+              <info>ListItem.Label</info>
+            </control>
+          </itemlayout>
+          <focusedlayout height="40">
+            <control type="image">
+              <posx>12</posx>
+              <posy>41</posy>
+              <height>1</height>
+              <width>675</width>
+              <texture>views/listpanel_line.png</texture>
+            </control>
+            <control type="image">
+              <posx>10</posx>
+              <posy>-5</posy>
+              <width>675</width>
+              <height>50</height>
+              <texture>views/listpanel_selectbar.png</texture>
+              <visible>Control.HasFocus(10) | Control.HasFocus(14) | Control.HasFocus(15) | Control.HasFocus(13)</visible>
+            </control>
+            <control type="label">
+              <posx>45</posx>
+              <posy>0</posy>
+              <width>675</width>
+              <height>39</height>
+              <font>Font_Reg18</font>
+              <aligny>center</aligny>             
+              <include>listcolorfocus</include>
+              <info>ListItem.Label</info>
+            </control>
+          </focusedlayout>
+        </control>
+        <!-- ITEMS MUST MATCH ... -->
+        <control type="spincontrolex" id="16">
+          <description>Set Playlist type</description>
+          <posx>225</posx>
+          <posy>360</posy>
+          <width>675</width>
+          <label>21424</label>
+          <height>41</height>
+          <font>Font_Reg18</font>
+          <texturefocus>views/listpanel_selectbar.png</texturefocus>
+          <texturenofocus>dialogs/setcontent_button_nofocus.png</texturenofocus>
+          <textureup>settings/spin-up.png</textureup>
+          <texturedown>settings/spin-down.png</texturedown>
+          <textureupfocus>settings/spin-up-focus.png</textureupfocus>
+          <texturedownfocus>settings/spin-down-focus.png</texturedownfocus>
+          <textcolor>FF939597</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <pulseonselect>false</pulseonselect>
+          <spinposx>-4</spinposx>
+          <spinwidth>40</spinwidth>
+          <spinheight>65</spinheight>
+          <textoffsetx>20</textoffsetx>
+          <aligny>center</aligny>
+          <reverse>yes</reverse>
+          <onright>9001</onright>
+          <onleft>16</onleft>
+          <onup>10</onup>
+          <ondown>17</ondown>
+        </control>
+        <!-- LIMIT TO -->
+        <control type="spincontrolex" id="17">
+          <description>Limit to</description>
+          <posx>225</posx>
+          <posy>400</posy>
+          <width>675</width>
+          <label>21427</label>
+          <height>41</height>
+          <font>Font_Reg18</font>
+          <texturefocus>views/listpanel_selectbar.png</texturefocus>
+          <texturenofocus>dialogs/setcontent_button_nofocus.png</texturenofocus>
+          <textureup>settings/spin-up.png</textureup>
+          <texturedown>settings/spin-down.png</texturedown>
+          <textureupfocus>settings/spin-up-focus.png</textureupfocus>
+          <texturedownfocus>settings/spin-down-focus.png</texturedownfocus>
+          <textcolor>FF939597</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <pulseonselect>false</pulseonselect>
+          <spinposx>-4</spinposx>
+          <spinwidth>40</spinwidth>
+          <spinheight>65</spinheight>
+          <textoffsetx>20</textoffsetx>
+          <aligny>center</aligny>
+          <reverse>yes</reverse>
+          <onright>9001</onright>
+          <onleft>17</onleft>
+          <onup>16</onup>
+          <ondown>18</ondown>
+        </control>
+        <!-- ORDER BY -->
+        <control type="spincontrolex" id="18">
+          <description>Order By</description>
+          <posx>225</posx>
+          <posy>440</posy>
+          <width>476</width>
+          <label>21429</label>
+          <height>46</height>
+          <font>Font_Reg18</font>
+          <texturefocus>views/listpanel_selectbar.png</texturefocus>
+          <texturenofocus>dialogs/setcontent_button_nofocus.png</texturenofocus>
+          <textureup>settings/spin-up.png</textureup>
+          <texturedown>settings/spin-down.png</texturedown>
+          <textureupfocus>settings/spin-up-focus.png</textureupfocus>
+          <texturedownfocus>settings/spin-down-focus.png</texturedownfocus>
+          <textcolor>FF939597</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <pulseonselect>false</pulseonselect>
+          <spinposx>-4</spinposx>
+          <spinwidth>40</spinwidth>
+          <spinheight>65</spinheight>
+          <textoffsetx>20</textoffsetx>
+          <aligny>center</aligny>
+          <reverse>yes</reverse>
+          <onright>19</onright>
+          <onleft>19</onleft>
+          <onup>17</onup>
+          <ondown>22</ondown>
+        </control>
+        <!-- ASCENDING / DESCENDING -->
+        <control type="togglebutton" id="19">
+          <posx>700</posx>
+          <posy>440</posy>
+          <label>21431</label>
+          <altlabel>21430</altlabel>
+          <height>46</height>
+          <width>200</width>
+          <texturenofocus>views/menudivider.png</texturenofocus>
+          <texturefocus>views/listpanel_selectbar.png</texturefocus>
+          <alttexturenofocus>views/menudivider.png</alttexturenofocus>
+          <alttexturefocus>views/listpanel_selectbar.png</alttexturefocus>
+          <pulseonselect>false</pulseonselect>
+          <textcolor>FF939597</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <disabledcolor>3cFFFFFF</disabledcolor>
+          <textoffsetx>0</textoffsetx>
+          <align>center</align>
+          <aligny>center</aligny>
+          <font>Font_Reg18</font>
+          <include>Animation_CommonFade</include>
+          <onright>9001</onright>
+          <onleft>18</onleft>
+          <onup>17</onup>
+          <ondown>22</ondown>
+        </control>
+      </control>
+      <!-- GROUP 9002 END -->
+      <control type="group" id="9000">
+        <defaultcontrol always="true">13</defaultcontrol>
+        <!-- ADD -->
+        <control type="button" id="13">
+          <description>Button: Add</description>
+          <posy>195</posy>
+          <posx>900</posx>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Bold22</font>
+          <label>15019</label>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <onup>21</onup>
+          <onleft>9002</onleft>
+          <onright>13</onright>
+          <ondown>14</ondown>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+        </control>
+        <!--REMOVE-->
+        <control type="button" id="14">
+          <description>Remove Rule Button</description>
+          <posy>236</posy>
+          <posx>900</posx>
+          <width>156</width>
+          <height>41</height>
+          <font>Font_Bold22</font>
+          <label>1210</label>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+          <onup>13</onup>
+          <onleft>9002</onleft>
+          <onright>14</onright>
+          <ondown>15</ondown>
+        </control>
+        <!-- EDIT -->
+        <control type="button" id="15">
+          <description>Edit Rule Button</description>
+          <posx>900</posx>
+          <posy>277</posy>
+          <height>41</height>
+          <width>156</width>
+          <font>Font_Bold20</font>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+          <label>21435</label>
+          <onup>14</onup>
+          <onleft>9002</onleft>
+          <onright>15</onright>
+          <ondown>9001</ondown>
+        </control>
+      </control>
+      <control type="group" id="9001">
+        <defaultcontrol always="true">20</defaultcontrol>
+        <!-- OK -->
+        <control type="button" id="20">
+          <description>Ok Button</description>
+          <posx>900</posx>
+          <posy>360</posy>
+          <height>41</height>
+          <width>156</width>
+          <font>Font_Bold20</font>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+          <label>186</label>
+          <onup>9000</onup>
+          <onleft>9002</onleft>
+          <onright>20</onright>
+          <ondown>21</ondown>
+        </control>
+        <!-- CANCEL -->
+        <control type="button" id="21">
+          <description>Cancel Button</description>
+          <posx>900</posx>
+          <posy>400</posy>
+          <height>41</height>
+          <width>156</width>
+          <font>Font_Bold20</font>
+          <align>left</align>
+          <textcolor>FFf5f5f5</textcolor>
+          <focusedcolor>FF262728</focusedcolor>
+          <selectedcolor>FF262728</selectedcolor>
+          <textoffsetx>20</textoffsetx>
+          <texturenofocus>-</texturenofocus>
+          <texturefocus>dialogs/setcontent_rightmenu_highlight.png</texturefocus>
+          <label>222</label>
+          <onup>20</onup>
+          <onleft>9002</onleft>
+          <onright>21</onright>
+          <ondown>13</ondown>
+        </control>
+      </control>
+    </control>
+  </controls>
+</window>

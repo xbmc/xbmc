@@ -1,0 +1,153 @@
+#! @PERL@ -w
+# -*- perl -*-
+# @configure_input@
+
+eval 'case $# in 0) exec @PERL@ -S "$0";; *) exec @PERL@ -S "$0" "$@";; esac'
+    if 0;
+
+# ifnames - print the identifiers used in C preprocessor conditionals
+
+# Copyright (C) 1994, 1995, 1999, 2000, 2001, 2002, 2003, 2005, 2006,
+# 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Reads from stdin if no files are given.
+# Writes to stdout.
+
+# Written by David MacKenzie <djm@gnu.ai.mit.edu>
+# and Paul Eggert <eggert@twinsun.com>.
+
+BEGIN
+{
+  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
+  unshift @INC, $pkgdatadir;
+
+  # Override SHELL.  On DJGPP SHELL may not be set to a shell
+  # that can handle redirection and quote arguments correctly,
+  # e.g.: COMMAND.COM.  For DJGPP always use the shell that configure
+  # has detected.
+  $ENV{'SHELL'} = '@SHELL@' if ($^O eq 'dos');
+}
+
+use Autom4te::General;
+use Autom4te::XFile;
+use Autom4te::FileUtils;
+
+# $HELP
+# -----
+$help = "Usage: $0 [OPTION]... [FILE]...
+
+Scan all of the C source FILES (or the standard input, if none are
+given) and write to the standard output a sorted list of all the
+identifiers that appear in those files in `#if', `#elif', `#ifdef', or
+`#ifndef' directives.  Print each identifier on a line, followed by a
+space-separated list of the files in which that identifier occurs.
+
+  -h, --help      print this help, then exit
+  -V, --version   print version number, then exit
+
+Report bugs to <bug-autoconf\@gnu.org>.
+GNU Autoconf home page: <http://www.gnu.org/software/autoconf/>.
+General help using GNU software: <http://www.gnu.org/gethelp/>.
+";
+
+
+# $VERSION
+# --------
+$version = "ifnames (@PACKAGE_NAME@) @VERSION@
+Copyright (C) @RELEASE_YEAR@ Free Software Foundation, Inc.
+License GPLv3+/Autoconf: GNU GPL version 3 or later
+<http://gnu.org/licenses/gpl.html>, <http://gnu.org/licenses/exceptions.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by David J. MacKenzie and Paul Eggert.
+";
+
+
+# &parse_args ()
+# --------------
+# Process any command line arguments.
+sub parse_args ()
+{
+  getopt ();
+}
+
+
+# %OCCURRENCE
+# -----------
+my %occurrence;
+
+
+# &scan_file ($FILE-NAME)
+# -----------------------
+sub scan_file ($)
+{
+  my ($file_name) = @_;
+  my $file = new Autom4te::XFile ("< " . open_quote ($file_name));
+  while ($_ = $file->getline)
+    {
+      # Continuation lines.
+      $_ .= $file->getline
+	while (s/\\$//);
+
+      # Preprocessor directives.
+      if (s/^\s*\#\s*(if|ifdef|ifndef|elif)\s+//)
+	{
+	  # Remove comments.  Not perfect, but close enough.
+	  s(/\*.*?\*/)();
+	  s(/\*.*)();
+	  s(//.*)();
+	  foreach my $word (split (/\W+/))
+	    {
+	      next
+		if $word eq 'defined' || $word !~ /^[a-zA-Z_]/;
+	      $occurrence{$word}{$file_name} = 1;
+	    }
+	}
+    }
+}
+
+
+## ------ ##
+## Main.  ##
+## ------ ##
+
+parse_args();
+foreach (@ARGV)
+  {
+    scan_file ($_);
+  }
+foreach (sort keys %occurrence)
+  {
+    print "$_ ", join (' ', sort keys %{$occurrence{$_}}), "\n";
+  }
+
+### Setup "GNU" style for perl-mode and cperl-mode.
+## Local Variables:
+## perl-indent-level: 2
+## perl-continued-statement-offset: 2
+## perl-continued-brace-offset: 0
+## perl-brace-offset: 0
+## perl-brace-imaginary-offset: 0
+## perl-label-offset: -2
+## cperl-indent-level: 2
+## cperl-brace-offset: 0
+## cperl-continued-brace-offset: 0
+## cperl-label-offset: -2
+## cperl-extra-newline-before-brace: t
+## cperl-merge-trailing-else: nil
+## cperl-continued-statement-offset: 2
+## End:

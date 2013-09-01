@@ -1,0 +1,136 @@
+#							-*- Autotest -*-
+
+AT_BANNER([Erlang low level compiling and utility macros.])
+
+# Copyright (C) 2009, 2010 Free Software Foundation, Inc.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+
+# Since the macros which compile are required by most tests, check
+# them first.  But remember that looking for a compiler is even more
+# primitive, so check those first.
+
+
+## ----------------- ##
+## Erlang Compiler.  ##
+## ----------------- ##
+
+AT_CHECK_MACRO([Erlang],
+[[AC_ERLANG_PATH_ERL([no])
+AC_ERLANG_PATH_ERLC([no])
+if test "$ERL" = "no" || test "$ERLC" = "no"; then AS_EXIT([77]); fi
+AC_LANG([Erlang])
+## Can't compile, but can run an Erlang module:
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [halt(0)])],
+		  [AC_MSG_RESULT([ok])
+		   AC_MSG_ERROR([compiling Erlang program should fail])],
+		  [AC_MSG_RESULT([failed])])
+AC_RUN_IFELSE([AC_LANG_PROGRAM([], [halt(0)])],
+	      [AC_MSG_RESULT([ok])],
+	      [AC_MSG_RESULT([failed])
+	       AC_MSG_ERROR([could not run test program])])
+]],
+[AT_KEYWORDS([Erlang])])
+
+
+## ---------------------- ##
+## Erlang lib detection.  ##
+## ---------------------- ##
+
+AT_CHECK_MACRO([AC_ERLANG_CHECK_LIB],
+[[AC_ERLANG_PATH_ERL([no])
+AC_ERLANG_PATH_ERLC([no])
+if test "$ERL" = "no" || test "$ERLC" = "no"; then AS_EXIT([77]); fi
+AC_ERLANG_CHECK_LIB([stdlib],
+		    [AC_MSG_RESULT([ok])],
+		    [AC_MSG_RESULT([failed])])
+## Test that the lib path detection really detected a directory:
+if test "$ERLANG_LIB_DIR_stdlib" != "not found" \
+  && test ! -d "$ERLANG_LIB_DIR_stdlib"; then
+	AC_MSG_ERROR([incorrect ERLANG_LIB_DIR_stdlib variable])
+fi
+]],
+[AT_KEYWORDS([Erlang])])
+
+
+## --------------------------- ##
+## Erlang root dir detection.  ##
+## --------------------------- ##
+
+AT_CHECK_MACRO([AC_ERLANG_SUBST_ROOT_DIR],
+[[AC_ERLANG_PATH_ERL([no])
+AC_ERLANG_PATH_ERLC([no])
+if test "$ERL" = "no" || test "$ERLC" = "no"; then AS_EXIT([77]); fi
+AC_ERLANG_SUBST_ROOT_DIR
+## Test that the root path detection really detected a directory:
+if test ! -d "$ERLANG_ROOT_DIR"; then
+	AC_MSG_ERROR([incorrect ERLANG_ROOT_DIR variable])
+fi
+]],
+[AT_KEYWORDS([Erlang])])
+
+
+## -------------------------- ##
+## Erlang lib dir detection.  ##
+## -------------------------- ##
+
+AT_CHECK_MACRO([AC_ERLANG_SUBST_LIB_DIR],
+[[AC_ERLANG_PATH_ERL([no])
+AC_ERLANG_PATH_ERLC([no])
+if test "$ERL" = "no" || test "$ERLC" = "no"; then AS_EXIT([77]); fi
+AC_ERLANG_SUBST_LIB_DIR
+## Test that the lib path detection really detected a directory:
+if test ! -d "$ERLANG_LIB_DIR"; then
+	AC_MSG_ERROR([incorrect ERLANG_LIB_DIR variable])
+fi
+]],
+[AT_KEYWORDS([Erlang])])
+
+
+## ----------------------------------- ##
+## Erlang install base dir detection.  ##
+## ----------------------------------- ##
+
+AT_CHECK_MACRO([AC_ERLANG_SUBST_INSTALL_LIB_DIR],
+	       [AT_KEYWORDS([Erlang])])
+
+
+## ---------------------------------- ##
+## Erlang install lib dir detection.  ##
+## ---------------------------------- ##
+
+AT_CHECK_MACRO([AC_ERLANG_SUBST_INSTALL_LIB_SUBDIR],
+[[AC_ERLANG_SUBST_INSTALL_LIB_SUBDIR([test_blah], [1.24-b])
+## Test that the generated directory name is well-formed:
+if test `echo "$ERLANG_INSTALL_LIB_DIR_test_blah" | sed -e 's/^.*\///'` != "test_blah-1.24-b"; then
+	AC_MSG_ERROR([incorrect ERLANG_INSTALL_LIB_DIR_test_blah variable])
+fi
+]],
+[AT_KEYWORDS([Erlang])])
+
+
+## -------------------------- ##
+## Erlang version detection.  ##
+## -------------------------- ##
+
+AT_CHECK_MACRO([AC_ERLANG_SUBST_ERTS_VER],
+[[AC_ERLANG_PATH_ERL([no])
+AC_ERLANG_PATH_ERLC([no])
+if test "$ERL" = "no" || test "$ERLC" = "no"; then AS_EXIT([77]); fi
+AC_ERLANG_SUBST_ERTS_VER
+]],
+[AT_KEYWORDS([Erlang])])

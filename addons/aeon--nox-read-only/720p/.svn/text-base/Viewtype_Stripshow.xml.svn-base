@@ -1,0 +1,393 @@
+<includes>
+  <include name="Button195Pictures">
+    <control type="button" id="195">
+      <include>HiddenObject</include>
+      <onleft>517</onleft>
+      <onright>517</onright>
+      <onup>517</onup>
+      <ondown>517</ondown>
+      <onclick>SlideShow($INFO[ListItem.Path],notrandom)</onclick>
+    </control>
+  </include>
+  <include name="Button195NoPictures">
+    <control type="button" id="195">
+      <include>HiddenObject</include>
+      <onfocus>SetFocus(9000)</onfocus>
+    </control>
+  </include>
+	<include name="PictureInfo">
+		<control type="image">
+			<posx>20</posx>
+			<posy>466</posy>
+			<width>19</width>
+			<height>221</height>
+			<texture flipx="true">views/stripshow_arrow.png</texture>
+			<animation effect="slide" start="-100" end="0" delay="800" time="400" easing="out" tween="cubic">WindowOpen</animation>
+			<include>Animation_CommonFade</include>
+      <visible>!Skin.HasSetting(StripshowWS)</visible>
+		</control>
+		<control type="image">
+			<posx>1241</posx>
+			<posy>466</posy>
+			<width>19</width>
+			<height>221</height>
+			<texture>views/stripshow_arrow.png</texture>
+			<animation effect="slide" start="100" end="0" delay="800" time="400" easing="out" tween="cubic">WindowOpen</animation>
+			<include>Animation_CommonFade</include>
+      <visible>!Skin.HasSetting(StripshowWS)</visible>
+    </control>
+		<control type="group">
+			<posx>0</posx>
+			<posy>660</posy>
+			<visible>!ListItem.IsFolder</visible>
+			<control type="label">
+				<posx>1260</posx>
+				<posy>0</posy>
+				<height>38</height>
+				<width>620</width>
+				<font>Font_Reg17</font>
+				<textcolor>white</textcolor>
+				<aligny>center</aligny>
+				<align>right</align>
+				<label fallback="312577">$INFO[ListItem.PictureResolution,[COLOR abFFFFFF]$LOCALIZE[21805]: [/COLOR]]</label>
+			</control>
+			<control type="label">
+				<posx>1260</posx>
+				<posy>20</posy>
+				<height>38</height>
+				<width>620</width>
+				<font>Font_Reg17</font>
+				<textcolor>white</textcolor>
+				<aligny>center</aligny>
+				<align>right</align>
+				<label fallback="312577">$INFO[ListItem.PictureDateTime,[COLOR abFFFFFF]$LOCALIZE[21803]: [/COLOR]]</label>
+			</control>
+			<control type="label">
+				<posx>20</posx>
+				<posy>0</posy>
+				<height>38</height>
+				<width>620</width>
+				<font>Font_Reg17</font>
+				<textcolor>white</textcolor>
+				<aligny>center</aligny>
+				<align>left</align>
+				<label fallback="312577">$INFO[ListItem.Label,[COLOR abFFFFFF]$LOCALIZE[21800]: [/COLOR]]</label>
+			</control>
+			<control type="label">
+				<posx>20</posx>
+				<posy>20</posy>
+				<height>38</height>
+				<width>620</width>
+				<font>Font_Reg17</font>
+				<textcolor>white</textcolor>
+				<aligny>center</aligny>
+				<align>left</align>
+				<label fallback="312577">$INFO[ListItem.Size,[COLOR abFFFFFF]$LOCALIZE[21802]: [/COLOR]]</label>
+			</control>
+		</control>
+		<control type="group">
+			<posx>0</posx>
+			<posy>660</posy>
+			<visible>ListItem.IsFolder</visible>
+			<control type="label">
+				<posx>20</posx>
+				<posy>0</posy>
+				<height>38</height>
+				<width>620</width>
+				<font>Font_Reg17</font>
+				<textcolor>white</textcolor>
+				<aligny>center</aligny>
+				<align>left</align>
+				<label fallback="312577">$INFO[ListItem.Label]</label>
+			</control>
+		</control>
+	</include>
+	<include name="PictureListContent">
+		<posx>60</posx>
+		<posy>494</posy>
+		<width>1157</width>
+		<height>169</height>
+		<focusposition>4</focusposition>
+		<visible>Window.IsActive(pictures)</visible>
+		<itemlayout width="129" height="129">
+			<control type="image">
+				<posx>0</posx>
+				<posy>20</posy>
+				<width>129</width>
+				<height>129</height>
+				<texture>DefaultPicture.png</texture>
+				<aspectratio scalediffuse="false">scale</aspectratio>
+				<info>ListItemNoWrap.Icon</info>
+				<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+			</control>
+		</itemlayout>
+		<focusedlayout width="129" height="129">
+			<control type="image">
+				<posx>-7</posx>
+				<posy>13</posy>
+				<width>143</width>
+				<height>143</height>
+				<texture>DefaultPicture.png</texture>
+				<aspectratio scalediffuse="false">scale</aspectratio>
+				<info>ListItemNoWrap.Icon</info>
+				<bordertexture border="7">thumbs/bordershadow2.png</bordertexture>
+				<bordersize>7</bordersize>
+				<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+				<animation effect="zoom" center="64,75" start="100" end="120" time="400" easing="out" tween="cubic" reversible="false">Focus</animation>
+			</control>
+		</focusedlayout>
+	</include>
+	<include name="StripshowVideoInfo">
+		<control type="group">
+			<description>Video Info</description>
+			<posx>0</posx>
+			<posy>660</posy>
+			<animation effect="slide" start="0" end="100" reversible="true" condition="Skin.HasSetting(nostudioratingflags)">Conditional</animation>
+			<control type="group">
+				<description>Episode Info</description>
+				<visible>Container.Content(episodes)</visible>
+				<control type="label">
+					<posx>1160</posx>
+					<posy>0</posy>
+					<height>38</height>
+					<width>620</width>
+					<font>Font_Reg17</font>
+					<textcolor>white</textcolor>
+					<aligny>center</aligny>
+					<align>right</align>
+					<label>$INFO[ListItem.Label,[COLOR abFFFFFF][/COLOR]]</label>
+				</control>
+				<control type="label">
+					<posx>1160</posx>
+					<posy>20</posy>
+					<height>38</height>
+					<width>620</width>
+					<font>Font_Reg17</font>
+					<textcolor>abFFFFFF</textcolor>
+					<aligny>center</aligny>
+					<align>right</align>
+					<label>$INFO[ListItem.Rating]$INFO[ListItem.Duration, | , $LOCALIZE[12391] ]$INFO[ListItem.Premiered, | ]</label>
+					<visible>!Skin.HasSetting(InfoPopUpEpisode)</visible>
+				</control>
+				<control type="label">
+					<posx>1160</posx>
+					<posy>20</posy>
+					<height>38</height>
+					<width>620</width>
+					<font>Font_Reg17</font>
+					<textcolor>abFFFFFF</textcolor>
+					<aligny>center</aligny>
+					<align>right</align>
+					<label>$INFO[ListItem.TVShowTitle]</label>
+					<visible>Skin.HasSetting(InfoPopUpEpisode)</visible>
+				</control>
+			</control>
+			<control type="group">
+				<description>Episode Info</description>
+				<visible>Container.Content(movies)</visible>
+				<control type="label">
+					<posx>1160</posx>
+					<posy>0</posy>
+					<height>38</height>
+					<width>620</width>
+					<font>Font_Reg17</font>
+					<textcolor>white</textcolor>
+					<aligny>center</aligny>
+					<align>right</align>
+					<label>$INFO[ListItem.Label,[COLOR abFFFFFF][/COLOR]]</label>
+				</control>
+				<control type="label">
+					<posx>1160</posx>
+					<posy>22</posy>
+					<height>38</height>
+					<width>620</width>
+					<font>Font_Reg17</font>
+					<textcolor>abFFFFFF</textcolor>
+					<aligny>center</aligny>
+					<align>right</align>
+					<label>$INFO[ListItem.Year]$INFO[ListItem.Duration, | , $LOCALIZE[12391] ]$INFO[ListItem.RatingAndVotes, | ]$INFO[ListItem.Top250, | Top 250 #]</label>
+					<visible>!Skin.HasSetting(InfoPopUp)</visible>
+				</control>
+				<control type="label">
+					<posx>1160</posx>
+					<posy>22</posy>
+					<height>38</height>
+					<width>620</width>
+					<font>Font_Reg17</font>
+					<textcolor>abFFFFFF</textcolor>
+					<aligny>center</aligny>
+					<align>right</align>
+					<label>$INFO[ListItem.Tagline]</label>
+					<visible>Skin.HasSetting(InfoPopUp)</visible>
+					<scroll>true</scroll>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="StripshowTVThumbsVars">
+		<posx>-5.5</posx>
+		<posy>-4</posy>
+		<width>171</width>
+		<height>105</height>
+		<bordersize>9</bordersize>
+		<aspectratio scalediffuse="false">scale</aspectratio>
+	</include>
+	<include name="StripshowTVThumbs">
+		<control type="group">
+			<visible>Container.Content(episodes)|[Window.IsActive(pictures)+Skin.HasSetting(StripshowWS)]</visible>
+      <posx>-50</posx>
+			<control type="image">
+				<include>StripshowTVThumbsVars</include>
+				<texture diffuse="thumbs/multiplex_tvmask.png">DefaultEpisode.png</texture>
+				<bordertexture border="9">thumbs/multiplex_tvborder.png</bordertexture>
+				<info>ListItem.Icon</info>
+			</control>
+			<control type="group">
+				<animation effect="fade" start="100" end="0" time="400" easing="out" tween="cubic" reversible="true">Focus</animation>
+				<visible>Container.Content(episodes)</visible>
+				<control type="image">
+					<posx>3.5</posx>
+					<posy>58</posy>
+					<width>153</width>
+					<height>34</height>
+					<texture>thumbs/multiwall_label.png</texture>
+				</control>
+				<control type="label">
+					<posx>79</posx>
+					<posy>71</posy>
+					<width>144</width>
+					<align>center</align>
+					<font>Font_Reg14</font>
+					<label>$INFO[ListItem.Season,$LOCALIZE[20359] ]$INFO[ListItem.Episode,.]</label>
+				</control>
+			</control>
+			<control type="image">
+				<include>StripshowTVThumbsVars</include>
+				<texture diffuse="thumbs/multiplex_tvmask.png">thumbs/multiplex_tvglass.png</texture>
+			</control>
+			<control type="image">
+				<posx>126.5</posx>
+				<posy>5</posy>
+				<width>30</width>
+				<height>30</height>
+				<include>RecentVisibiltyEpisodes</include>
+			</control>
+		</control>
+	</include>
+	<include name="StripshowPosterThumbs">
+		<control type="group">
+			<visible>Container.Content(movies)</visible>
+      <animation effect="slide" start="0,0" end="0,-55" time="0" tween="cubic" easing="in" reversible="true" condition="Container.Content(movies)">Conditional</animation>
+      <control type="image">
+				<posx>32</posx>
+				<posy>3</posy>
+				<width>97</width>
+				<height>142</height>
+				<texture background="true" diffuse="wall/wall_movie_mask.png">DefaultVideoBigPoster.png</texture>
+				<aspectratio scalediffuse="false">scale</aspectratio>
+				<info>ListItem.Icon</info>
+				<fadetime>500</fadetime>
+			</control>
+			<control type="image">
+				<posx>32</posx>
+				<posy>3</posy>
+				<width>97</width>
+				<height>142</height>
+				<texture background="true">wall/wall_nfoverlay.png</texture>
+				<bordertexture border="-4">wall/wall_movie_nfborder.png</bordertexture>
+			</control>
+      <control type="image">
+        <posx>99</posx>
+        <posy>3</posy>
+        <width>30</width>
+        <height>30</height>
+        <include>OverlayVisibility0</include>
+      </control>
+    </control>
+	</include>
+	<include name="VideoListContent">
+		<posx>0</posx>
+		<posy>560</posy>
+		<width>1400</width>
+		<height>146</height>
+		<focusposition>4</focusposition>
+		<visible>Container.Content(episodes)|Container.Content(movies)|[Window.IsActive(pictures)+Skin.HasSetting(StripshowWS)]</visible>
+		<itemlayout width="160" height="150" condition="Container.Content(episodes)|[Window.IsActive(pictures)+Skin.HasSetting(StripshowWS)]">
+			<include>StripshowTVThumbs</include>
+		</itemlayout>
+		<focusedlayout width="160" height="150" condition="Container.Content(episodes)|[Window.IsActive(pictures)+Skin.HasSetting(StripshowWS)]">
+			<control type="group">
+				<animation effect="zoom" center="77,44" start="100" end="155" time="400" easing="out" tween="cubic" reversible="false">Focus</animation>
+				<animation effect="zoom" center="77,44" start="155" end="100" time="200" easing="out" tween="cubic" reversible="false">UnFocus</animation>
+				<include>StripshowTVThumbs</include>
+			</control>
+		</focusedlayout>
+		<itemlayout width="140" height="150" condition="Container.Content(movies)">
+			<include>StripshowPosterThumbs</include>
+		</itemlayout>
+		<focusedlayout width="140" height="150" condition="Container.Content(movies)">
+			<control type="group">
+        <animation effect="zoom" center="80,16" start="100" end="155" time="400" easing="out" tween="cubic" reversible="false">Focus</animation>
+        <animation effect="zoom" center="80,16" start="155" end="100" time="400" easing="out" tween="cubic" reversible="false">UnFocus</animation>
+        <include>StripshowPosterThumbs</include>
+			</control>
+		</focusedlayout>
+	</include>
+	<include name="Stripshow">
+		<control type="group">
+			<visible>Control.IsVisible(517)</visible>
+			<include>Animation_OpenCloseZoom</include>
+			<include>Animation_HideStripShow</include>
+      <control type="scrollbar" id="60">
+        <posx>0</posx>
+        <posy>661</posy>
+        <width>1280</width>
+        <height>59</height>
+        <animation effect="fade" start="100" end="0" time="400" condition="Control.HasFocus(517)|ControlGroup(9000).HasFocus|Control.HasFocus(7001)">Conditional</animation>
+        <include>Animation_HideStripShow</include>
+        <texturesliderbackground>osd/osd_progress_clear.png</texturesliderbackground>
+        <texturesliderbar>osd/osd_progress_clear.png</texturesliderbar>
+        <texturesliderbarfocus>osd/osd_progressmid.png</texturesliderbarfocus>
+        <textureslidernib>views/scrollBarNib.png</textureslidernib>
+        <textureslidernibfocus>views/scrollBarNib.png</textureslidernibfocus>
+        <pulseonselect>yes</pulseonselect>
+        <onup>517</onup>
+        <ondown>195</ondown>
+        <showonepage>false</showonepage>
+        <orientation>horizontal</orientation>
+      </control>
+      <control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<texture background="true">views/stripshow_background.png</texture>
+				<visible>[Window.IsActive(pictures)+!Skin.HasSetting(StripshowWS)]|Container.Content(movies)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<texture background="true">views/stripshow_background_tvshows.png</texture>
+				<visible>Container.Content(episodes)|[Window.IsActive(pictures)+Skin.HasSetting(StripshowWS)]</visible>
+			</control>
+			<include condition="Window.isActive(videolibrary)">StripshowVideoInfo</include>
+			<include condition="Window.IsActive(pictures)">PictureInfo</include>
+			<control type="wraplist" id="517">
+				<viewtype label="31380">bigwrap</viewtype>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<onleft>517</onleft>
+				<onright>517</onright>
+        <onup>7000</onup>
+        <ondown>60</ondown>
+				<orientation>horizontal</orientation>
+				<include condition="Window.IsActive(pictures)+!Skin.HasSetting(StripshowWS)">PictureListContent</include>
+				<include condition="Window.IsActive(videolibrary)|[Window.IsActive(pictures)+Skin.HasSetting(StripshowWS)]">VideoListContent</include>
+			</control>
+      <include condition="Window.IsActive(pictures)">Button195Pictures</include>
+      <include condition="!Window.IsActive(pictures)">Button195NoPictures</include>
+		</control>
+	</include>
+</includes>

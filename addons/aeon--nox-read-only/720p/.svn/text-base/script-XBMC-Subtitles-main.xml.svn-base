@@ -1,0 +1,369 @@
+<window>
+  <allowoverlay>no</allowoverlay>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <include>Animation_DialogPopup2</include>
+  <controls>
+    <control type="group">
+      <control type="group" id="250">
+        <animation type="Conditional" condition="Control.HasFocus(150)" reversible="true">
+          <effect type="slide" end="-60,0" time="400" />
+        </animation>
+        <control type="image">
+          <description>Panel</description>
+          <posx>200</posx>
+          <posy>120</posy>
+          <width>881</width>
+          <height>481</height>
+          <texture>osd/osd_settings_back.png</texture>
+        </control>
+        <control type="image">
+          <posx>250</posx>
+          <posy>155</posy>
+          <width>781</width>
+          <height>40</height>
+          <texture>osd/osd_settings_buttonnf.png</texture>
+        </control>
+        <control type="label">
+          <description>Header Label</description>
+          <posx>280</posx>
+          <posy>150</posy>
+          <width>400</width>
+          <height>40</height>
+          <textcolor>white</textcolor>
+          <font>Font_Bold19</font>
+          <label>XBMC SUBTITLES</label>
+          <align>left</align>
+          <aligny>center</aligny>
+        </control>
+        <control type="label">
+          <description>number of files/pages in list text label</description>
+          <posx>1009</posx>
+          <posy>561</posy>
+          <width>210</width>
+          <height>40</height>
+          <font>Font_Reg14</font>
+          <align>right</align>
+          <textcolor>grey2</textcolor>
+          <label>$INFO[Container(120).NumItems,, $LOCALIZE[31025]]$INFO[Container(120).CurrentPage, - $LOCALIZE[31024] (]$INFO[Container(120).NumPages,/,)]</label>
+        </control>
+        <control type="label" id="100">
+          <description>number subtitles found</description>
+          <posx>280</posx>
+          <posy>561</posy>
+          <width>600</width>
+          <height>40</height>
+          <font>Font_Reg14</font>
+          <align>left</align>
+          <textcolor>grey2</textcolor>
+        </control>
+
+        <control type="image">
+          <posx>1100</posx>
+          <posy>345</posy>
+          <width>32</width>
+          <height>24</height>
+          <include>Animation_CommonFade</include>
+          <texture>subtitles/nav-right.png</texture>
+          <visible>!Control.HasFocus(150)</visible>
+        </control>
+        <!-- ** Required ** Do not change <id>or<type>-->
+        <control type="group">
+          <posx>0</posx>
+          <posy>0</posy>
+          <control type="image" id="110">
+            <description>Service Logo</description>
+            <posx>800</posx>
+            <posy>150</posy>
+            <width>230</width>
+            <height>40</height>
+            <aspectratio align="right">keep</aspectratio>
+          </control>
+          <control type="group" id="111">
+            <control type="grouplist">
+              <posx>460</posx>
+              <posy>150</posy>
+              <width>305</width>
+              <height>40</height>
+              <align>right</align>
+              <orientation>horizontal</orientation>
+              <itemgap>5</itemgap>
+              <control type="image">
+                <width>40</width>
+                <height>40</height>
+                <texture>subtitles/default_icon_info.png</texture>
+              </control>
+              <control type="label">
+                <description>notification</description>
+                <width min="10" max="260">auto</width>
+                <height>40</height>
+                <font>Font_Reg20</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <label>$LOCALIZE[SCRIPT655]</label>
+                <aligny>center</aligny>
+                <wrapmultiline>true</wrapmultiline>
+              </control>
+            </control>
+          </control>
+        </control>
+        <!-- ** Required ** Do not change <id>or<type>-->
+        <control type="list" id="120">
+          <posx>250</posx>
+          <posy>195</posy>
+          <width>781</width>
+          <height>360</height>
+          <onleft>121</onleft>
+          <onright>150</onright>
+          <onup>120</onup>
+          <ondown>120</ondown>
+          <viewtype label="535">list</viewtype>
+          <pagecontrol>121</pagecontrol>
+          <scrolltime>200</scrolltime>
+          <itemlayout width="780" height="40">
+            <control type="image">
+              <posx>0</posx>
+              <posy>0</posy>
+              <width>781</width>
+              <height>40</height>
+              <texture>osd/osd_settings_buttonnf.png</texture>
+            </control>
+            <control type="image">
+              <posx>20</posx>
+              <posy>11.5</posy>
+              <width>26</width>
+              <height>17</height>
+              <texture>$INFO[Listitem.Thumb,subtitles/]</texture>
+            </control>
+            <control type="label">
+              <posx>50</posx>
+              <posy>0</posy>
+              <width>70</width>
+              <height>36</height>
+              <textcolor>grey2</textcolor>
+              <aligny>center</aligny>
+              <font>Font_Reg19</font>
+              <info>ListItem.Label</info>
+            </control>
+            <control type="image">
+              <posx>130</posx>
+              <posy>14</posy>
+              <width>40</width>
+              <height>12</height>
+              <texture>subtitles/icon_sync.png</texture>
+              <visible>ListItem.property(sync)</visible>
+            </control>
+            <control type="label">
+              <posx>180</posx>
+              <posy>0</posy>
+              <width>500</width>
+              <height>36</height>
+              <font>Font_Reg19</font>
+              <aligny>center</aligny>
+              <textcolor>grey2</textcolor>
+              <selectedcolor>selected</selectedcolor>
+              <align>left</align>
+              <info>ListItem.Label2</info>
+            </control>
+            <control type="image">
+              <posx>680</posx>
+              <posy>11</posy>
+              <width>90</width>
+              <height>17</height>
+              <texture>$INFO[ListItem.ActualIcon,stars/,.png]</texture>
+              <colordiffuse>grey2</colordiffuse>
+            </control>
+          </itemlayout>
+          <focusedlayout width="780" height="40">
+            <control type="image">
+              <posx>0</posx>
+              <posy>0</posy>
+              <width>781</width>
+              <height>40</height>
+              <texture>osd/osd_settings_buttonf.png</texture>
+            </control>
+            <control type="label">
+              <posx>50</posx>
+              <posy>0</posy>
+              <width>70</width>
+              <height>36</height>
+              <textcolor>white</textcolor>
+              <aligny>center</aligny>
+              <font>Font_Reg19</font>
+              <info>ListItem.Label</info>
+            </control>
+            <control type="image">
+              <posx>20</posx>
+              <posy>11.5</posy>
+              <width>26</width>
+              <height>17</height>
+              <texture>$INFO[Listitem.Thumb,subtitles/]</texture>
+            </control>
+            <control type="image">
+              <posx>130</posx>
+              <posy>14</posy>
+              <width>40</width>
+              <height>12</height>
+              <texture>subtitles/icon_sync.png</texture>
+              <visible>ListItem.property(sync)</visible>
+            </control>
+            <control type="label">
+              <posx>180</posx>
+              <posy>0</posy>
+              <width>500</width>
+              <height>36</height>
+              <font>Font_Reg19</font>
+              <aligny>center</aligny>
+              <textcolor>white</textcolor>
+              <align>left</align>
+              <info>ListItem.Label2</info>
+            </control>
+            <control type="image">
+              <posx>680</posx>
+              <posy>11</posy>
+              <width>90</width>
+              <height>17</height>
+              <texture>$INFO[ListItem.ActualIcon,stars/,.png]</texture>
+            </control>
+          </focusedlayout>
+        </control>
+      </control>
+      <control type="group" id="250">
+        <posx>240</posx>
+        <posy>115</posy>
+        <animation effect="slide" start="0,0" end="-260,0" time="400" reversible="true" condition="Control.HasFocus(150)|Control.HasFocus(122)">Conditional</animation>
+        <control type="image">
+          <description>background image</description>
+          <posx>1025</posx>
+          <posy>115</posy>
+          <width>294</width>
+          <height>308</height>
+          <texture flipy="true">keyboard/numeric_back.png</texture>
+        </control>
+        <control type="label">
+          <description>XBMC Subtitles label</description>
+          <posx>1025</posx>
+          <posy>150</posy>
+          <width>294</width>
+          <height>20</height>
+          <label>[B]$LOCALIZE[SCRIPT760][/B]</label>
+          <font>Font_Info</font>
+          <align>center</align>
+          <textcolor>grey2</textcolor>
+          <shadowcolor>AA000000</shadowcolor>
+        </control>
+        <control type="list" id="150">
+          <posx>1055</posx>
+          <posy>178</posy>
+          <width>250</width>
+          <height>220</height>
+          <onleft>120</onleft>
+          <onright>120</onright>
+          <onup>150</onup>
+          <ondown>150</ondown>
+          <viewtype label="535">list</viewtype>
+          <scrolltime>200</scrolltime>
+          <itemlayout width="400" height="36">
+            <control type="image">
+              <posx>0</posx>
+              <posy>35</posy>
+              <width>230</width>
+              <height>1</height>
+              <texture>views/listpanel_line.png</texture>
+            </control>
+            <control type="label">
+              <posx>20</posx>
+              <posy>0</posy>
+              <width>210</width>
+              <height>38</height>
+              <font>Font_Reg17</font>
+              <aligny>center</aligny>
+              <textcolor>white</textcolor>
+              <selectedcolor>green</selectedcolor>
+              <align>left</align>
+              <info>ListItem.Label</info>
+              <visible>!ListItem.property(man)</visible>
+            </control>
+            <control type="label">
+              <posx>20</posx>
+              <posy>0</posy>
+              <width>210</width>
+              <height>38</height>
+              <font>font10</font>
+              <aligny>center</aligny>
+              <textcolor>FF009CFF</textcolor>
+              <selectedcolor>green</selectedcolor>
+              <align>left</align>
+              <info>ListItem.Label</info>
+              <visible>ListItem.property(man)</visible>
+            </control>
+          </itemlayout>
+          <focusedlayout width="400" height="36">
+            <control type="image">
+              <posx>0</posx>
+              <posy>35</posy>
+              <width>230</width>
+              <height>1</height>
+              <texture>views/listpanel_line.png</texture>
+            </control>
+            <control type="image">
+              <posx>1</posx>
+              <posy>-2</posy>
+              <width>229</width>
+              <height>40</height>
+              <texture>views/listpanel_selectbar.png</texture>
+              <visible>Control.HasFocus(150)</visible>
+            </control>
+            <control type="label">
+              <posx>20</posx>
+              <posy>0</posy>
+              <width>210</width>
+              <height>38</height>
+              <font>Font_Reg17</font>
+              <aligny>center</aligny>
+              <include>listcolorfocus</include>
+              <align>left</align>
+              <info>ListItem.Label</info>
+              <visible>!ListItem.property(man)</visible>
+            </control>
+            <control type="label">
+              <posx>20</posx>
+              <posy>0</posy>
+              <width>210</width>
+              <height>38</height>
+              <font>font10</font>
+              <aligny>center</aligny>
+              <include>listcolorfocus</include>
+              <align>left</align>
+              <info>ListItem.Label</info>
+              <visible>ListItem.property(man)</visible>
+            </control>
+          </focusedlayout>
+        </control>
+      </control>
+      <control type="scrollbar" id="121">
+        <description>Scrollbar</description>
+        <posx>230</posx>
+        <posy>190</posy>
+        <width>28</width>
+        <height>360</height>
+        <texturesliderbackground>views/scrollbarbacklist.png</texturesliderbackground>
+        <texturesliderbar>-</texturesliderbar>
+        <texturesliderbarfocus>-</texturesliderbarfocus>
+        <textureslidernib>views/scrollbarnub-nofocus.png</textureslidernib>
+        <textureslidernibfocus>views/scrollbarnub-focus.png</textureslidernibfocus>
+        <onleft>150</onleft>
+        <onright>120</onright>
+        <ondown>120</ondown>
+        <onup>120</onup>
+        <showonepage>false</showonepage>
+        <orientation>vertical</orientation>
+        <animation type="Conditional" condition="Control.HasFocus(150)" reversible="true">
+          <effect type="slide" end="-60,0" time="400" />
+        </animation>
+      </control>
+    </control>
+  </controls>
+</window>

@@ -445,27 +445,16 @@ CPicture::CPicture(CFileItem& item)
     
     CPictureInfoTag& tag = *item.GetPictureInfoTag();
     SYSTEMTIME stTime;
-    tag.GetReleaseDate(stTime);
     strTitle = tag.GetTitle();
     location = tag.GetLocation();
     face = tag.GetFace();
-    strAlbum = tag.GetAlbum();
-    albumFace = tag.GetAlbumFace();
+    strAlbum = tag.GetPictureAlbum();
+    albumFace = tag.GetPictureAlbumFace();
     strComment = tag.GetComment();
-    rating = tag.GetRating();
-    iYear = stTime.wYear;
-    iTrack = tag.GetTrackAndDiskNumber();
-    iDuration = tag.GetDuration();
-    bCompilation = tag.GetCompilation();
     embeddedArt = tag.GetCoverArtInfo();
     strFileName = tag.GetURL().IsEmpty() ? item.GetPath() : tag.GetURL();
     strThumb = item.GetUserPictureThumb(true);
-    iStartOffset = item.m_lStartOffset;
-    iEndOffset = item.m_lEndOffset;
     idPicture = -1;
-    iTimesPlayed = 0;
-    iKaraokeNumber = 0;
-    iKaraokeDelay = 0;         //! Karaoke song lyrics-picture delay in 1/10 seconds.
     idAlbum = -1;
      
 }
@@ -483,15 +472,8 @@ void CPicture::Serialize(CVariant& value) const
     value["album"] = strAlbum;
     value["albumface"] = albumFace;
     value["location"] = location;
-    value["duration"] = iDuration;
-    value["track"] = iTrack;
-    value["year"] = iYear;
-    value["picturebrainztrackid"] = strPictureBrainzTrackID;
     value["comment"] = strComment;
-    value["rating"] = rating;
-    value["timesplayed"] = iTimesPlayed;
-    value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
-    value["karaokenumber"] = (int64_t) iKaraokeNumber;
+    value["takenon"] = takenOn.IsValid() ? takenOn.GetAsDBDateTime() : "";
     value["albumid"] = idAlbum;
 }
 
@@ -504,35 +486,19 @@ void CPicture::Clear()
     albumFace.clear();
     location.clear();
     strThumb.Empty();
-    strPictureBrainzTrackID.Empty();
     strComment.Empty();
-    rating = '0';
-    iTrack = 0;
-    iDuration = 0;
-    iYear = 0;
-    iStartOffset = 0;
-    iEndOffset = 0;
     idPicture = -1;
-    iTimesPlayed = 0;
-    lastPlayed.Reset();
-    iKaraokeNumber = 0;
-    strKaraokeLyrEncoding.Empty();
-    iKaraokeDelay = 0;
+    takenOn.Reset();
     idAlbum = -1;
-    bCompilation = false;
-//    embeddedArt.clear();
 }
 
 bool CPicture::HasArt() const
 {
     if (!strThumb.empty()) return true;
-//    if (!embeddedArt.empty()) return true;
     return false;
 }
 
 bool CPicture::ArtMatches(const CPicture &right) const
 {
-    return false;
- //   return (right.strThumb == strThumb &&
-//            embeddedArt.matches(right.embeddedArt));
+   return (right.strThumb == strThumb );
 }
