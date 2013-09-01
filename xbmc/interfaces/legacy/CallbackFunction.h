@@ -153,6 +153,33 @@ namespace XBMCAddon
   };
 
 
+  /**
+   * This is the template to carry a callback to a member function
+   *  that returns 'void' (has no return) and takes three parameters.
+   */
+  template<class M, typename P1, typename P2, typename P3> class CallbackFunction<M,P1,P2,P3, cb_null_type, cb_null_type> : public Callback
+  {
+  public:
+    typedef void (M::*MemberFunction)(P1,P2,P3);
+
+  protected:
+    MemberFunction meth;
+    M* obj;
+    P1 param1;
+    P2 param2;
+    P3 param3;
+
+  public:
+    CallbackFunction(M* object, MemberFunction method, P1 parameter, P2 parameter2, P3 parameter3) : 
+      Callback(object, "CallbackFunction<M,P1,P2,P3>"), meth(method), obj(object),
+      param1(parameter), param2(parameter2), param3(parameter3) {}
+
+    virtual ~CallbackFunction() { deallocating(); }
+
+    virtual void executeCallback() { TRACE; ((*obj).*(meth))(param1,param2,param3); }
+  };
+
+
 }
 
 
