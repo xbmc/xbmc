@@ -215,6 +215,10 @@ IF %comp%==vs2010 (
   Echo addons\visualization.fishbmc\>>exclude.txt
   Echo addons\visualization.projectm\>>exclude.txt
   Echo addons\visualization.glspectrum\>>exclude.txt
+  rem Exclude skins if not present
+  IF NOT EXIST  addons\skin.touched\addon.xml (
+    Echo addons\skin.touched\>>exclude.txt
+  )
   rem other platform stuff
   Echo lib-osx>>exclude.txt
   Echo players\mplayer>>exclude.txt
@@ -249,10 +253,14 @@ IF %comp%==vs2010 (
   cd ..\..\addons\skin.confluence
   call build.bat > NUL
   cd %build_path%
-  ECHO Building Touched Skin...
-  cd ..\..\addons\skin.touched
-  call build.bat > NUL
-  cd %build_path%
+  
+  IF EXIST  ..\..\addons\skin.touched\build.bat (
+    ECHO Building Touched Skin...
+    cd ..\..\addons\skin.touched
+    call build.bat > NUL
+    cd %build_path%
+  )
+  
   rem restore color and title, some scripts mess these up
   COLOR 1B
   TITLE XBMC for Windows Build Script
