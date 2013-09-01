@@ -85,7 +85,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_OSX)
 #include "osx/smc.h"
 #include "linux/LinuxResourceCounter.h"
 static CLinuxResourceCounter m_resourceCounter;
@@ -4015,9 +4015,9 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_OSX)
       text.Format("%4.2f%%", m_resourceCounter.GetCPUUsage());
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_DARWIN) || defined(TARGET_WINDOWS)
       text.Format("%d%%", g_cpuInfo.getUsedPercentage());
 #else
       text.Format("%s", g_cpuInfo.GetCoresUsageString());
@@ -4032,7 +4032,7 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
   int  value = 0;
   char scale = 0;
 
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_OSX)
   value = SMCGetTemperature(SMC_KEY_GPU_TEMP);
   return CTemperature::CreateFromCelsius(value);
 #else
