@@ -69,6 +69,7 @@ public:
 
 private:
   void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
+  inline bool IsValidSubNumber(int iSub) const;
 
   PCRE::pcre* m_re;
   static const int OVECCOUNT=(m_MaxNumOfBackrefrences + 1) * 3;

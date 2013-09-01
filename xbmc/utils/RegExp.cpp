@@ -304,6 +304,11 @@ void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
   CLog::Log(iLog, "regexp ovector=%s", str.c_str());
 }
 
+inline bool CRegExp::IsValidSubNumber(int iSub) const
+{
+  return iSub >= 0 && iSub <= m_iMatchCount && iSub <= m_MaxNumOfBackrefrences;
+}
+
 bool CRegExp::IsUtf8Supported(void)
 {
   if (m_Utf8Supported == -1)
