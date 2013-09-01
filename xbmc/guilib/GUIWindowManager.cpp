@@ -1049,3 +1049,19 @@ void CGUIWindowManager::DumpTextureUse()
   }
 }
 #endif
+
+void CGUIWindowManager::OnSleep()
+{
+    CLog::Log(LOGNOTICE, "%s: Going to sleep up", __FUNCTION__);
+
+    CGUIMessage msg(GUI_MSG_SLEEP, 0, 0);
+    this->SendMessage(msg);
+}
+
+void CGUIWindowManager::OnWake()
+{
+    CLog::Log(LOGNOTICE, "%s: Woke up", __FUNCTION__);
+
+    CGUIMessage msg(GUI_MSG_WAKE, 0, 0);
+    this->SendMessage(msg);
+}
