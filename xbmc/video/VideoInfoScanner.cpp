@@ -473,8 +473,7 @@ namespace VIDEO
       idTvShow = m_database.GetTvShowId(pItem->GetPath());
     else
     {
-      CStdString strPath;
-      URIUtils::GetDirectory(pItem->GetPath(),strPath);
+      CStdString strPath = URIUtils::GetDirectory(pItem->GetPath());
       idTvShow = m_database.GetTvShowId(strPath);
     }
     if (idTvShow > -1 && (fetchEpisodes || !pItem->m_bIsFolder))
@@ -747,8 +746,7 @@ namespace VIDEO
     {
       if (items[i]->m_bIsFolder)
         continue;
-      CStdString strPath;
-      URIUtils::GetDirectory(items[i]->GetPath(), strPath);
+      CStdString strPath = URIUtils::GetDirectory(items[i]->GetPath());
       URIUtils::RemoveSlashAtEnd(strPath); // want no slash for the test that follows
 
       if (URIUtils::GetFileName(strPath).Equals("sample"))
@@ -1281,8 +1279,7 @@ namespace VIDEO
             thumb.find("/") == string::npos &&
             thumb.find("\\") == string::npos)
         {
-          CStdString strPath;
-          URIUtils::GetDirectory(pItem->GetPath(), strPath);
+          CStdString strPath = URIUtils::GetDirectory(pItem->GetPath());
           thumb = URIUtils::AddFileToFolder(strPath, thumb);
         }
       }
@@ -1506,15 +1503,13 @@ namespace VIDEO
       {
         CFileItem item2(*item);
         CURL url(item->GetPath());
-        CStdString strPath;
-        URIUtils::GetDirectory(url.GetHostName(), strPath);
+        CStdString strPath = URIUtils::GetDirectory(url.GetHostName());
         item2.SetPath(URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(item->GetPath())));
         return GetnfoFile(&item2, bGrabAny);
       }
 
       // grab the folder path
-      CStdString strPath;
-      URIUtils::GetDirectory(item->GetPath(), strPath);
+      CStdString strPath = URIUtils::GetDirectory(item->GetPath());
 
       if (bGrabAny && !item->IsStack())
       { // looking up by folder name - movie.nfo takes priority - but not for stacked items (handled below)
@@ -1578,9 +1573,12 @@ namespace VIDEO
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;
       CDirectory dir;
-      CStdString strPath = item->GetPath();
-      if (!item->m_bIsFolder)
-        URIUtils::GetDirectory(item->GetPath(), strPath);
+      CStdString strPath;
+      if (item->m_bIsFolder)
+        strPath = item->GetPath();
+      else
+        strPath = URIUtils::GetDirectory(item->GetPath());
+
       if (dir.GetDirectory(strPath, items, ".nfo") && items.Size())
       {
         int numNFO = -1;
@@ -1917,8 +1915,7 @@ namespace VIDEO
     if (item.IsStack())
       strCheck = CStackDirectory::GetFirstStackedFile(item.GetPath());
 
-    CStdString strDirectory;
-    URIUtils::GetDirectory(strCheck, strDirectory);
+    CStdString strDirectory = URIUtils::GetDirectory(strCheck);
     if (URIUtils::IsInRAR(strCheck))
     {
       CStdString strPath=strDirectory;
@@ -1929,7 +1926,7 @@ namespace VIDEO
       strCheck = strDirectory;
       URIUtils::RemoveSlashAtEnd(strCheck);
       if (URIUtils::GetFileName(strCheck).size() == 3 && URIUtils::GetFileName(strCheck).Left(2).Equals("cd"))
-        URIUtils::GetDirectory(strCheck, strDirectory);
+        strDirectory = URIUtils::GetDirectory(strCheck);
     }
     return strDirectory;
   }

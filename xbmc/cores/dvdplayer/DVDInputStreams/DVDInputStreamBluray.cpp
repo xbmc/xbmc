@@ -270,18 +270,18 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   }
   else
   {
-    URIUtils::GetDirectory(strPath,strPath);
+    strPath = URIUtils::GetDirectory(strPath);
     URIUtils::RemoveSlashAtEnd(strPath);
 
     if(URIUtils::GetFileName(strPath) == "PLAYLIST")
     {
-      URIUtils::GetDirectory(strPath,strPath);
+      strPath = URIUtils::GetDirectory(strPath);
       URIUtils::RemoveSlashAtEnd(strPath);
     }
 
     if(URIUtils::GetFileName(strPath) == "BDMV")
     {
-      URIUtils::GetDirectory(strPath,strPath);
+      strPath = URIUtils::GetDirectory(strPath);
       URIUtils::RemoveSlashAtEnd(strPath);
     }
     root     = strPath;

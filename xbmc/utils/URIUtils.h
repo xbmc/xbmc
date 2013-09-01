@@ -30,9 +30,7 @@ public:
   virtual ~URIUtils(void);
   static bool IsInPath(const CStdString &uri, const CStdString &baseURI);
 
-  static void GetDirectory(const CStdString& strFilePath,
-                           CStdString& strDirectoryPath);
-  static CStdString GetDirectory(const CStdString &filePath);
+  static CStdString GetDirectory(const CStdString &strFilePath);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);
 
   static CStdString GetExtension(const CStdString& strFileName);

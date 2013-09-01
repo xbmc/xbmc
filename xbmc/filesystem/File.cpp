@@ -95,8 +95,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     if (URIUtils::IsHD(strDest)) // create possible missing dirs
     {
       vector<CStdString> tokens;
-      CStdString strDirectory;
-      URIUtils::GetDirectory(strDest,strDirectory);
+      CStdString strDirectory = URIUtils::GetDirectory(strDest);
       URIUtils::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {

@@ -248,8 +248,7 @@ void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
   if (!HasSlashAtEnd(strParent))
   {
-    // currently GetDirectory() removes trailing slashes
-    GetDirectory(strParent.Mid(0), strParent);
+    strParent = GetDirectory(strParent);
     AddSlashAtEnd(strParent);
   }
 }
@@ -302,14 +301,14 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CStackDirectory dir;
     CFileItemList items;
     dir.GetDirectory(strPath,items);
-    GetDirectory(items[0]->GetPath(),items[0]->m_strDVDLabel);
+    items[0]->m_strDVDLabel = GetDirectory(items[0]->GetPath());
     if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
-      GetDirectory(items[i]->GetPath(),items[i]->m_strDVDLabel);
+      items[i]->m_strDVDLabel = GetDirectory(items[i]->GetPath());
       if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
         items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
       else
@@ -974,39 +973,20 @@ CStdString URIUtils::AddFileToFolder(const CStdString& strFolder,
   return strResult;
 }
 
-CStdString URIUtils::GetDirectory(const CStdString &filePath)
-{
-  CStdString directory;
-  GetDirectory(filePath, directory);
-  return directory;
-}
-
-void URIUtils::GetDirectory(const CStdString& strFilePath,
-                            CStdString& strDirectoryPath)
+CStdString URIUtils::GetDirectory(const CStdString &strFilePath)
 {
   // Will from a full filename return the directory the file resides in.
-  // Keeps the final slash at end
+  // Keeps the final slash at end and possible |option=foo options.
 
-  int iPos1 = strFilePath.ReverseFind('/');
-  int iPos2 = strFilePath.ReverseFind('\\');
+  size_t iPosSlash = strFilePath.find_last_of("/\\");
+  if (iPosSlash == string::npos)
+    return ""; // No slash, so no path (ignore any options)
 
-  if (iPos2 > iPos1)
-  {
-    iPos1 = iPos2;
-  }
+  size_t iPosBar = strFilePath.rfind('|');
+  if (iPosBar == string::npos)
+    return strFilePath.Left(iPosSlash + 1); // Only path
 
-  if (iPos1 > 0)
-  {
-    strDirectoryPath = strFilePath.Left(iPos1 + 1); // include the slash
-
-    // Keep possible |option=foo options for certain paths
-    iPos2 = strFilePath.ReverseFind('|');
-    if (iPos2 > 0)
-    {
-      strDirectoryPath += strFilePath.Mid(iPos2);
-    }
-
-  }
+  return strFilePath.Left(iPosSlash + 1) + strFilePath.Mid(iPosBar); // Path + options
 }
 
 void URIUtils::CreateArchivePath(CStdString& strUrlPath,

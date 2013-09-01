@@ -167,8 +167,7 @@ void CGUIDialogSongInfo::OnInitWindow()
   // no known db info - check if parent dir is an album
   if (m_song->GetMusicInfoTag()->GetDatabaseId() == -1)
   {
-    CStdString path;
-    URIUtils::GetDirectory(m_song->GetPath(),path);
+    CStdString path = URIUtils::GetDirectory(m_song->GetPath());
     m_albumId = db.GetAlbumIdByPath(path);
   }
   else

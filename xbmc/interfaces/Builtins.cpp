@@ -516,10 +516,10 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("extract") && params.size())
   {
-    // Detects if file is zip or zip then extracts
-    CStdString strDestDirect = "";
+    // Detects if file is zip or rar then extracts
+    CStdString strDestDirect;
     if (params.size() < 2)
-      URIUtils::GetDirectory(params[0],strDestDirect);
+      strDestDirect = URIUtils::GetDirectory(params[0]);
     else
       strDestDirect = params[1];
 

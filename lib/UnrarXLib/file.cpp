@@ -165,8 +165,7 @@ bool File::Create(const char *Name,const wchar *NameW)
 #else
   hFile=fopen(Name,CREATEBINARY);
 #endif*/
-  CStdString strPath;
-  URIUtils::GetDirectory(Name,strPath);
+  CStdString strPath = URIUtils::GetDirectory(Name);
   CUtil::CreateDirectoryEx(strPath);
   m_File.OpenForWrite(Name,true);
   NewFile=true;

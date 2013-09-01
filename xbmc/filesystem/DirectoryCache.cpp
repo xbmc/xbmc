@@ -117,9 +117,7 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
 
 void CDirectoryCache::ClearFile(const CStdString& strFile)
 {
-  CStdString strPath;
-  URIUtils::GetDirectory(strFile, strPath);
-  ClearDirectory(strPath);
+  ClearDirectory(URIUtils::GetDirectory(strFile));
 }
 
 void CDirectoryCache::ClearDirectory(const CStdString& strPath)
@@ -156,8 +154,7 @@ void CDirectoryCache::AddFile(const CStdString& strFile)
 {
   CSingleLock lock (m_cs);
 
-  CStdString strPath;
-  URIUtils::GetDirectory(strFile, strPath);
+  CStdString strPath = URIUtils::GetDirectory(strFile);
   URIUtils::RemoveSlashAtEnd(strPath);
 
   ciCache i = m_cache.find(strPath);
@@ -177,8 +174,7 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 
   CStdString strPath(strFile);
   URIUtils::RemoveSlashAtEnd(strPath);
-  CStdString storedPath;
-  URIUtils::GetDirectory(strPath, storedPath);
+  CStdString storedPath = URIUtils::GetDirectory(strPath);
   URIUtils::RemoveSlashAtEnd(storedPath);
 
   ciCache i = m_cache.find(storedPath);

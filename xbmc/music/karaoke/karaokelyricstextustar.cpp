@@ -157,9 +157,8 @@ bool CKaraokeLyricsTextUStar::Load()
       m_artist = value;
     else if ( key == "VIDEO" )
     {
-      CStdString videopath;
-      URIUtils::GetDirectory( m_lyricsFile, videopath );
-      m_videoFile = videopath + value;
+      m_videoFile = URIUtils::GetDirectory(m_lyricsFile);
+      m_videoFile = URIUtils::AddFileToFolder(m_videoFile, value);
 
       if ( !XFILE::CFile::Exists( m_videoFile ) )
       {
