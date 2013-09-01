@@ -481,6 +481,11 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_Mouse.HandleEvent(newEvent);
       g_application.ProcessMouse();
       break;
+    case XBMC_JOYBUTTONDOWN:
+      g_application.ProcessJoystickEvent("", newEvent.jbutton.button, false, newEvent.jbutton.holdTime);
+      break;
+    case XBMC_JOYBUTTONUP:
+      break;
     case XBMC_VIDEORESIZE:
       if (!g_application.m_bInitializing &&
           !g_advancedSettings.m_fullScreen)
