@@ -4950,8 +4950,13 @@ void CApplication::ProcessSlow()
   }
 #endif
 
-  // Resume low priority jobs when current item is not video
-  if (!CurrentFileItem().IsVideo())
+  // Temporarely pause pausable jobs when viewing video/picture
+  int currentWindow = g_windowManager.GetActiveWindow();
+  if (CurrentFileItem().IsVideo() || CurrentFileItem().IsPicture() || currentWindow == WINDOW_FULLSCREEN_VIDEO || currentWindow == WINDOW_SLIDESHOW)
+  {
+    CJobManager::GetInstance().PauseJobs();
+  }
+  else
   {
     CJobManager::GetInstance().UnPauseJobs();
   }
