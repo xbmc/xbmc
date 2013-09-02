@@ -1031,6 +1031,7 @@ if test "$gcrypt_headers_available" = "yes"; then
    AC_CHECK_LIB([gcrypt],[gcry_control],, AC_MSG_ERROR($missing_library))
    AC_DEFINE([HAVE_GCRYPT],[1],[Define if we have gcrypt])
 fi
+PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes], AC_MSG_WARN("gnutls not found, ffmpeg TLS support disabled"))
 
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
@@ -2639,6 +2640,9 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
     else
       ffmpg_config="$ffmpg_config --disable-libvorbis"
     fi
+    if test "$have_gnutls" = "yes"; then
+      ffmpg_config="$ffmpg_config --enable-gnutls"
+    fi
 
     # handle individual enables
     ffmpg_config="$ffmpg_config --enable-gpl"
@@ -2713,6 +2717,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "x$use_vaapi" != "xno"; then echo --enable-vaapi; else echo --disable-vaapi; fi` \
       `if test "$use_optimizations" != "no"; then echo --enable-optimizations; else echo --disable-optimizations; fi` \
       --enable-protocol=http \
+      `if test "$have_gnutls" = "yes"; then echo --enable-gnutls; fi` \
       --enable-pthreads \
       --enable-runtime-cpudetect \
       `if test "$use_hardcoded_tables" = "yes"; then echo --enable-hardcoded-tables; else echo --disable-hardcoded-tables; fi`\
