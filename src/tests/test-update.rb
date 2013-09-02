@@ -117,6 +117,12 @@ OptionParser.new do |parser|
 	end
 end.parse!
 
+# copy 'src' to 'dest', preserving the attributes
+# of 'src'
+def copy_file(src, dest)
+	FileUtils.cp src, dest, :preserve => true
+end
+
 # Remove the install and package dirs if they
 # already exist
 FileUtils.rm_rf(INSTALL_DIR)
@@ -125,7 +131,7 @@ FileUtils.rm_rf(PACKAGE_SRC_DIR)
 
 # Create the install directory with the old app
 Dir.mkdir(INSTALL_DIR)
-FileUtils.cp(OLDAPP_NAME,"#{INSTALL_DIR}/#{APP_NAME}")
+copy_file OLDAPP_NAME, "#{INSTALL_DIR}/#{APP_NAME}"
 
 # Create a dummy file to uninstall
 uninstall_test_file = create_test_file("#{INSTALL_DIR}/file-to-uninstall.txt", "this file should be removed after the update")
@@ -146,7 +152,7 @@ File.open(nested_dir_test_file,'w') do |file|
 	file.puts "this is a new file in a new nested dir"
 end
 FileUtils::chmod 0644, nested_dir_test_file
-FileUtils.cp(NEWAPP_NAME,"#{PACKAGE_SRC_DIR}/#{APP_NAME}")
+copy_file NEWAPP_NAME, "#{PACKAGE_SRC_DIR}/#{APP_NAME}"
 FileUtils::chmod 0755, "#{PACKAGE_SRC_DIR}/#{APP_NAME}"
 
 # Create .zip packages from source files
@@ -160,7 +166,7 @@ end
 # Copy the install script and updater to the target
 # directory
 replace_vars("file_list.xml","#{PACKAGE_DIR}/file_list.xml",file_list_vars)
-FileUtils.cp("../#{UPDATER_NAME}","#{PACKAGE_DIR}/#{UPDATER_NAME}")
+copy_file "../#{UPDATER_NAME}", "#{PACKAGE_DIR}/#{UPDATER_NAME}"
 
 # Run the updater using the new syntax
 #
