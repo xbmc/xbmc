@@ -187,7 +187,9 @@ void CPlexSectionFanout::Refresh()
       
       if (m_sectionType != SECTION_TYPE_ALBUM)
         trueUrl.SetOption("unwatched", "1");
-      //trueUrl.SetOption("stack", "1");
+      
+      if (m_sectionType == SECTION_TYPE_SHOW)
+        trueUrl.SetOption("stack", "1");
       PlexUtils::AppendPathToURL(trueUrl, "recentlyAdded");
       
       m_outstandingJobs.push_back(LoadSection(trueUrl.Get(), CONTENT_LIST_RECENTLY_ADDED));
