@@ -106,6 +106,7 @@
 #include "Client/PlexMediaServerClient.h"
 #include "ApplicationMessenger.h"
 #include "Client/PlexTranscoderClient.h"
+#include "PlexApplication.h"
 /* END PLEX */
 
 using namespace std;
@@ -1409,9 +1410,9 @@ void CDVDPlayer::Process()
   // We're done, if we transcoded we need to stop that now
   if (m_item.GetProperty("plexDidTranscode").asBoolean())
   {
-    CPlexServerPtr server = g_plexServerManager.FindByUUID(m_item.GetProperty("plexserver").asString());
+    CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(m_item.GetProperty("plexserver").asString());
     if (server)
-      g_plexMediaServerClient.StopTranscodeSession(server);
+      g_plexApplication.mediaServerClient->StopTranscodeSession(server);
   }
   /* END PLEX */
 }
@@ -2883,7 +2884,7 @@ void CDVDPlayer::SetSubtitle(int iStream)
 
   // Send the change to the Media Server.
   CFileItemPtr item = g_application.CurrentFileItemPtr();
-  g_plexMediaServerClient.SelectStream(item, GetPlexMediaPartID(), g_settings.m_currentVideoSettings.m_SubtitleOn ? s.plexID : 0, -1);
+  g_plexApplication.mediaServerClient->SelectStream(item, GetPlexMediaPartID(), g_settings.m_currentVideoSettings.m_SubtitleOn ? s.plexID : 0, -1);
   /* END PLEX */
 }
 
@@ -2914,7 +2915,7 @@ void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 
   // Don't send the message over if we're just hiding the initial sub.
   if (m_hidingSub == false)
-    g_plexMediaServerClient.SelectStream(item, partID, g_settings.m_currentVideoSettings.m_SubtitleOn ? subtitleStreamID : 0, -1);
+    g_plexApplication.mediaServerClient->SelectStream(item, partID, g_settings.m_currentVideoSettings.m_SubtitleOn ? subtitleStreamID : 0, -1);
   /* END PLEX */
 }
 
@@ -2953,7 +2954,7 @@ void CDVDPlayer::SetAudioStream(int iStream)
 
   // Notify the Plex Media Server.
   CFileItemPtr item = g_application.CurrentFileItemPtr();
-  g_plexMediaServerClient.SelectStream(item, GetPlexMediaPartID(), -1, GetAudioStreamPlexID());
+  g_plexApplication.mediaServerClient->SelectStream(item, GetPlexMediaPartID(), -1, GetAudioStreamPlexID());
   /* END PLEX */
 }
 

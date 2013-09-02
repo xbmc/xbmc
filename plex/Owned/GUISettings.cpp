@@ -421,8 +421,13 @@ void CGUISettings::Initialize()
 
   AddString(0, "myplex.token", 99999, "", EDIT_CONTROL_INPUT);
   AddString(myPlex, "myplex.status", 15000, "", EDIT_CONTROL_INPUT, true);
-  SetString("myplex.status", g_localizeStrings.Get(g_myplexManager.IsSignedIn() ? 44011 : 44010));
-  AddString(myPlex, "myplex.signin", g_myplexManager.IsSignedIn() ? 44002 : 44100, "", BUTTON_CONTROL_STANDARD);
+  
+  bool isSignedIn = false;
+  if (g_plexApplication.myPlexManager && g_plexApplication.myPlexManager->IsSignedIn())
+    isSignedIn = true;
+  
+  SetString("myplex.status", g_localizeStrings.Get(isSignedIn ? 44011 : 44010));
+  AddString(myPlex, "myplex.signin", isSignedIn ? 44002 : 44100, "", BUTTON_CONTROL_STANDARD);
   AddBool(myPlex, "myplex.searchsharedlibraries", 13143, true);
   
   AddSeparator(myPlex, "myplex.sep1");

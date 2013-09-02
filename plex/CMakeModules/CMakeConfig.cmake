@@ -69,6 +69,7 @@ endif(TARGET_POSIX)
 
 ############ global definitions set for all platforms
 add_definitions(-D__PLEX__ -D__PLEX__XBMC__ -DPLEX_TARGET_NAME="${EXECUTABLE_NAME}" -DPLEX_VERSION="${PLEX_VERSION_STRING_SHORT_BUILD}" -DENABLE_DVDINPUTSTREAM_STACK)
+set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG "_DEBUG")
 
 include(CheckFFmpegIncludes)
 include(CheckCrystalHDInclude)

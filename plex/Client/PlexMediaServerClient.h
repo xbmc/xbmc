@@ -12,7 +12,6 @@
 #include "JobManager.h"
 #include "Client/PlexServer.h"
 #include "FileItem.h"
-#include "GlobalsHandling.h"
 #include "guilib/GUIMessage.h"
 #include "Remote/PlexRemoteSubscriberManager.h"
 
@@ -68,8 +67,5 @@ private:
   CStdString m_lastItemKey;
   MediaState m_lastItemState;
 };
-
-XBMC_GLOBAL_REF(CPlexMediaServerClient, g_plexMediaServerClient);
-#define g_plexMediaServerClient XBMC_GLOBAL_USE(CPlexMediaServerClient)
 
 #endif /* defined(__Plex_Home_Theater__PlexMediaServerClient__) */

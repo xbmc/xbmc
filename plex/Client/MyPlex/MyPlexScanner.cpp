@@ -12,12 +12,13 @@
 #include "FileSystem/PlexFile.h"
 #include "FileSystem/PlexDirectory.h"
 #include "utils/StringUtils.h"
+#include "PlexApplication.h"
 
 #define DEFAULT_PORT 32400
 
 bool CMyPlexScanner::DoScan()
 {
-  CPlexServerPtr myplex = g_plexServerManager.FindByUUID("myplex");
+  CPlexServerPtr myplex = g_plexApplication.serverManager->FindByUUID("myplex");
   CURL url = myplex->BuildPlexURL("pms/servers");
 
   XFILE::CPlexDirectory dir;
@@ -77,7 +78,7 @@ bool CMyPlexScanner::DoScan()
     }
   }
 
-  g_plexServerManager.UpdateFromConnectionType(serverList, CPlexConnection::CONNECTION_MYPLEX);
+  g_plexApplication.serverManager->UpdateFromConnectionType(serverList, CPlexConnection::CONNECTION_MYPLEX);
 
   /* now we need to store away the thumbnails */
   CURL sectionsURL = myplex->BuildPlexURL("pms/system/library/sections");
@@ -110,7 +111,7 @@ bool CMyPlexScanner::DoScan()
     }
   }
 
-  g_myplexManager.SetSectionMap(sectionMap);
+  g_plexApplication.myPlexManager->SetSectionMap(sectionMap);
 
   return true;
 }

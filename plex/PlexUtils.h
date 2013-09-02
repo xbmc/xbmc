@@ -29,6 +29,8 @@ namespace PlexUtils
   void SetSelectedStream(CFileItemPtr mediaPart, int streamType, int id);
 
   bool CurrentSkinHasPreplay();
+  
+  std::string GetPlexCrashPath();
 }
 
 #ifdef _WIN32

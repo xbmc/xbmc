@@ -32,6 +32,7 @@
 #include "GUIViewState.h"
 
 #include "PlexJobs.h"
+#include "PlexApplication.h"
 
 using namespace XFILE;
 
@@ -603,13 +604,13 @@ bool CPlexDirectory::IsFolder(const CFileItemPtr& item, TiXmlElement* element)
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
 {
-  CFileItemListPtr sharedSections = g_plexServerDataLoader.GetAllSharedSections();
-  CMyPlexSectionMap sectionMap = g_myplexManager.GetSectionMap();
+  CFileItemListPtr sharedSections = g_plexApplication.dataLoader->GetAllSharedSections();
+  CMyPlexSectionMap sectionMap = g_plexApplication.myPlexManager->GetSectionMap();
 
   for (int i = 0 ; i < sharedSections->Size(); i++)
   {
     CFileItemPtr sectionItem = sharedSections->Get(i);
-    CPlexServerPtr server = g_plexServerManager.FindByUUID(sectionItem->GetProperty("serverUUID").asString());
+    CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(sectionItem->GetProperty("serverUUID").asString());
     if (!server) continue;
     
     CFileItemPtr item(CFileItemPtr(new CFileItem()));
@@ -647,7 +648,7 @@ bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
 {
-  CFileItemListPtr channels = g_plexServerDataLoader.GetAllChannels();
+  CFileItemListPtr channels = g_plexApplication.dataLoader->GetAllChannels();
   for (int i = 0; i < channels->Size(); i ++)
   {
     CFileItemPtr channel = channels->Get(i);
@@ -675,8 +676,8 @@ bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
     channel->SetProperty("channelType", type);
     
     CStdString serverUUID = channel->GetProperty("plexserver").asString();
-    if (g_plexServerManager.FindByUUID(serverUUID))
-      channel->SetLabel2(g_plexServerManager.FindByUUID(serverUUID)->GetName());
+    if (g_plexApplication.serverManager->FindByUUID(serverUUID))
+      channel->SetLabel2(g_plexApplication.serverManager->FindByUUID(serverUUID)->GetName());
     
     items.Add(channel);
   }
@@ -689,10 +690,10 @@ bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
 {
-  if (!g_plexServerManager.GetBestServer())
+  if (!g_plexApplication.serverManager->GetBestServer())
     return false;
 
-  CURL newURL = g_plexServerManager.GetBestServer()->BuildPlexURL("/system/appstore");
+  CURL newURL = g_plexApplication.serverManager->GetBestServer()->BuildPlexURL("/system/appstore");
   bool success = CPlexDirectory::GetDirectory(newURL.Get(), items);
   if (success)
     items.SetPath("plexserver://channeldirectory");

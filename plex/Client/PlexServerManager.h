@@ -3,8 +3,6 @@
 #include <map>
 #include <vector>
 
-#include "GlobalsHandling.h"
-
 #include "PlexServer.h"
 #include "PlexConnection.h"
 #include "JobManager.h"
@@ -20,16 +18,15 @@ typedef std::pair<CStdString, CPlexServerPtr> PlexServerPair;
 class CPlexServerReachabilityThread : public CThread
 {
   public:
-    CPlexServerReachabilityThread(CPlexServerPtr server, bool force)
-      : CThread("ServerReachability: " + server->GetName()), m_server(server), m_force(force)
+    CPlexServerReachabilityThread(CPlexServerPtr server)
+      : CThread("ServerReachability: " + server->GetName()), m_server(server)
     {
-      Create(true);
+      Create(false);
     }
 
     void Process();
 
     CPlexServerPtr m_server;
-    bool m_force;
 };
 
 class CPlexServerManager
@@ -65,23 +62,29 @@ public:
   void ServerRefreshComplete(int connectionType);
   void UpdateReachability(bool force = false);
 
-  void ServerReachabilityDone(CPlexServerPtr server, bool success);
+  void ServerReachabilityDone(CPlexServerPtr server, bool success=false);
 
   void save();
   void load();
+  
+  void Stop();
+  
+  bool IsRunningReachabilityTests() const { return m_reachabilityThreads.size() > 0; }
   
   CPlexManualServerManager m_manualServerManager;
 
 private:
   CPlexServerPtr _myPlexServer;
   CPlexServerPtr _localServer;
+  bool m_stopped;
 
   void NotifyAboutServer(CPlexServerPtr server, bool added = true);
 
   CCriticalSection m_serverManagerLock;
   CPlexServerPtr m_bestServer;
   PlexServerMap m_serverMap;
+  
+  CEvent m_reachabilityTestEvent;
+  
+  std::map<CStdString, CPlexServerReachabilityThread*> m_reachabilityThreads;
 };
-
-XBMC_GLOBAL_REF(CPlexServerManager, g_plexServerManager);
-#define g_plexServerManager XBMC_GLOBAL_USE(CPlexServerManager)

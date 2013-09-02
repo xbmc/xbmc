@@ -18,6 +18,7 @@
 #include "filesystem/StackDirectory.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
+#include "PlexApplication.h"
 
 bool CPlexMediaDecisionEngine::BlockAndResolve(const CFileItem &item, CFileItem &resolvedItem)
 {
@@ -257,7 +258,7 @@ void CPlexMediaDecisionEngine::ChooseMedia()
   if (m_choosenMedia.IsPlexMediaServerLibrary())
   {
     /* find the server for the item */
-    CPlexServerPtr server = g_plexServerManager.FindByUUID(m_choosenMedia.GetProperty("plexserver").asString());
+    CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(m_choosenMedia.GetProperty("plexserver").asString());
     if (server && CPlexTranscoderClient::ShouldTranscode(server, m_choosenMedia))
     {
       CLog::Log(LOGDEBUG, "CPlexMediaDecisionEngine::ChooseMedia Item should be transcoded");

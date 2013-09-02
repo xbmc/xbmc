@@ -50,7 +50,7 @@ void CrashSubmitter::UploadCrashReports()
 void CrashSubmitter::Upload()
 {
   // If the directory isn't there, we're done.
-  CStdString p = GetPlexCrashPath();
+  CStdString p = PlexUtils::GetPlexCrashPath();
   if (!XFILE::CFile::Exists(p))
     return;
 

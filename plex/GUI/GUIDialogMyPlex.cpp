@@ -27,6 +27,8 @@
 #include "guilib/GUITextBox.h"
 #include "guilib/GUIEditControl.h"
 
+#include "PlexApplication.h"
+
 void
 CGUIDialogMyPlex::ShowAndGetInput()
 {
@@ -54,7 +56,7 @@ void CGUIDialogMyPlex::ShowManualInput()
   m_manual = true;
 
   /* make sure that we stop polling the pin updates */
-  g_myplexManager.StopPinLogin();
+  g_plexApplication.myPlexManager->StopPinLogin();
 
   SET_CONTROL_HIDDEN(ID_PIN_NR);
   SET_CONTROL_HIDDEN(ID_SPINNER);
@@ -83,7 +85,7 @@ void CGUIDialogMyPlex::ShowPinInput()
 
   SET_CONTROL_LABEL(ID_BUTTON_MANUAL, g_localizeStrings.Get(413));
 
-  g_myplexManager.StartPinLogin();
+  g_plexApplication.myPlexManager->StartPinLogin();
 }
 
 void CGUIDialogMyPlex::ShowSuccess()
@@ -138,7 +140,7 @@ void CGUIDialogMyPlex::HandleMyPlexState(int state, int errorCode)
       {
         SET_CONTROL_HIDDEN(ID_SPINNER);
         SET_CONTROL_LABEL(ID_DESC_TEXT, g_localizeStrings.Get(44101) + " " + g_localizeStrings.Get(44103));
-        const CMyPlexPinInfo pinInfo = g_myplexManager.GetCurrentPinInfo();
+        const CMyPlexPinInfo pinInfo = g_plexApplication.myPlexManager->GetCurrentPinInfo();
 
         /* Spaces between the numbers to show it properly in the skin */
         std::string codeWithSpace = pinInfo.code;
@@ -214,7 +216,7 @@ CGUIDialogMyPlex::OnMessage(CGUIMessage &message)
         }
 
         SET_CONTROL_VISIBLE(ID_SPINNER);
-        g_myplexManager.Login(ustr, pstr);
+        g_plexApplication.myPlexManager->Login(ustr, pstr);
 
       }
       else if (message.GetSenderId() == ID_BUTTON_CANCEL)

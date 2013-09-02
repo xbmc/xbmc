@@ -7,6 +7,8 @@
 #include <boost/foreach.hpp>
 #include <string>
 
+#include "PlexApplication.h"
+
 using namespace XFILE;
 using namespace std;
 
@@ -34,8 +36,8 @@ vector<stringPair> CPlexFile::GetHeaderList()
   hdrs.push_back(stringPair("X-Plex-Device", "PC"));
 #endif
   
-  if (g_myplexManager.IsSignedIn())
-    hdrs.push_back(stringPair("X-Plex-Username", g_myplexManager.GetCurrentUserInfo().username));
+  if (g_plexApplication.myPlexManager->IsSignedIn())
+    hdrs.push_back(stringPair("X-Plex-Username", g_plexApplication.myPlexManager->GetCurrentUserInfo().username));
 
   return hdrs;
 }
@@ -59,13 +61,13 @@ CPlexFile::BuildHTTPURL(CURL& url)
 
   if (PlexUtils::IsValidIP(url.GetHostName()))
   {
-    server = g_plexServerManager.FindByHostAndPort(url.GetHostName(), url.GetPort());
+    server = g_plexApplication.serverManager->FindByHostAndPort(url.GetHostName(), url.GetPort());
     key = url.GetHostName() + ":" + boost::lexical_cast<CStdString>(url.GetPort());
   }
   else
   {
     key = url.GetHostName();
-    server = g_plexServerManager.FindByUUID(key);
+    server = g_plexApplication.serverManager->FindByUUID(key);
   }
 
   if (!server)

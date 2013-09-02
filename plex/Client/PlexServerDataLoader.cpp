@@ -19,12 +19,17 @@ CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIOR
 {
   m_refreshTimer = new CTimer(this);
   m_refreshTimer->Start(SECTION_REFRESH_INTERVAL, true);
+  m_stopped = false;
 }
 
 void
 CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
 {
+  if (m_stopped)
+    return;
+
   CSingleLock lk(m_serverLock);
+  
   if (m_servers.find(server->GetUUID()) == m_servers.end())
   {
     m_servers[server->GetUUID()] = server;
@@ -37,7 +42,11 @@ CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
 
 void CPlexServerDataLoader::RemoveServer(const CPlexServerPtr &server)
 {
+  if (m_stopped)
+    return;
+
   CSingleLock lk(m_dataLock);
+  
   if (m_sectionMap.find(server->GetUUID()) != m_sectionMap.end())
   {
     CLog::Log(LOG_LEVEL_DEBUG, "CPlexServerDataLoader::RemoveServer from sectionMap %s", server->GetName().c_str());
@@ -69,7 +78,7 @@ CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job
 {
   CPlexServerDataLoaderJob *j = (CPlexServerDataLoaderJob*)job;
   CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnJobComplete (%s) %s", j->m_server->GetName().c_str(), success ? "success" : "failed");
-  if (success)
+  if (success && !m_stopped)
   {
     CSingleLock lk(m_dataLock);
     if (j->m_sectionList) {
@@ -224,4 +233,12 @@ void CPlexServerDataLoader::OnTimeout()
   std::pair<CStdString, CPlexServerPtr> p;
   BOOST_FOREACH(p, m_servers)
     AddJob(new CPlexServerDataLoaderJob(p.second));
+}
+
+void CPlexServerDataLoader::Stop()
+{
+  CancelJobs();
+  
+  m_refreshTimer->Stop();
+  m_stopped = true;
 }

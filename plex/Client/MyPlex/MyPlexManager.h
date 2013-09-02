@@ -23,7 +23,8 @@ class CMyPlexManager : public CThread
       STATE_TRY_LOGIN, // -> can progress to loggedin or not_loggedin
       STATE_FETCH_PIN, // -> can progress to wait_pin or not_loggedin
       STATE_WAIT_PIN, // -> can progress to loggedin or not loggedin (after timeout)
-      STATE_LOGGEDIN
+      STATE_LOGGEDIN,
+      STATE_EXIT
     };
 
     enum EMyPlexError
@@ -53,6 +54,7 @@ class CMyPlexManager : public CThread
     CStdString GetAuthToken() const;
 
     void Poke() { m_wakeEvent.Set(); }
+    void Stop();
 
   protected:
     virtual void Process();
@@ -92,6 +94,3 @@ class CMyPlexManager : public CThread
 
     CXBMCTinyXML m_doc;
 };
-
-XBMC_GLOBAL_REF(CMyPlexManager, g_myplexManager);
-#define g_myplexManager XBMC_GLOBAL_USE(CMyPlexManager)

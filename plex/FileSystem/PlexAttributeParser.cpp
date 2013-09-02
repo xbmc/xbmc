@@ -20,6 +20,7 @@
 #include "Client/PlexServerManager.h"
 #include "StringUtils.h"
 #include "URL.h"
+#include "PlexApplication.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 void CPlexAttributeParserBase::Process(const CURL& url, const CStdString& key, const CStdString& value, CFileItem *item)
@@ -89,7 +90,7 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
 
   if (mediaUrl.GetHostName() == "myplex")
   {
-    CPlexServerPtr bestServer = g_plexServerManager.GetBestServer();
+    CPlexServerPtr bestServer = g_plexApplication.serverManager->GetBestServer();
     if (bestServer)
       mediaUrl.SetHostName(bestServer->GetUUID());
   }

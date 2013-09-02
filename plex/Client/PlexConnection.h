@@ -9,6 +9,8 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "PlexApplication.h"
+
 class CPlexConnection;
 typedef boost::shared_ptr<CPlexConnection> CPlexConnectionPtr;
 
@@ -101,7 +103,7 @@ class CMyPlexConnection : public CPlexConnection
 
     virtual CStdString GetAccessToken() const
     {
-      return g_myplexManager.GetAuthToken();
+      return g_plexApplication.myPlexManager->GetAuthToken();
     }
 
     virtual CStdString GetAccessTokenParameter() const

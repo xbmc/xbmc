@@ -12,6 +12,7 @@
 #include "PlexJobs.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
+#include "PlexApplication.h"
 
 #include <boost/lexical_cast.hpp>
 
@@ -31,7 +32,7 @@ void CPlexManualServerManager::checkManualServersAsync()
   }
   else
     /* remove all manually added servers */
-    g_plexServerManager.UpdateFromConnectionType(PlexServerList(), CPlexConnection::CONNECTION_MANUAL);
+    g_plexApplication.serverManager->UpdateFromConnectionType(PlexServerList(), CPlexConnection::CONNECTION_MANUAL);
 }
 
 void CPlexManualServerManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
@@ -54,7 +55,7 @@ void CPlexManualServerManager::OnJobComplete(unsigned int jobID, bool success, C
       {
         CPlexServerPtr server = CPlexServerPtr(new CPlexServer(uuid, name, true));
         server->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, httpJob->m_url.GetHostName(), httpJob->m_url.GetPort())));
-        g_plexServerManager.UpdateFromDiscovery(server);
+        g_plexApplication.serverManager->UpdateFromDiscovery(server);
         list.push_back(server);
       }
     }
@@ -62,5 +63,5 @@ void CPlexManualServerManager::OnJobComplete(unsigned int jobID, bool success, C
   else
     CLog::Log(LOGWARNING, "CPlexManualServerManager::OnJobComplete failed to find a server on %s", httpJob->m_url.Get().c_str());
   
-  g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
+  g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
 }

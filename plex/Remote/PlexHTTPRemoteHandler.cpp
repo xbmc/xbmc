@@ -23,6 +23,7 @@
 #include "PlexRemoteSubscriberManager.h"
 
 #include <boost/asio/detail/socket_ops.hpp>
+#include "PlexApplication.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexHTTPRemoteHandler::CheckHTTPRequest(const HTTPRequest &request)
@@ -111,7 +112,7 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   if (arguments.find("machineIdentifier") != arguments.end())
   {
     std::string uuid = arguments.find("machineIdentifier")->second;
-    server = g_plexServerManager.FindByUUID(uuid);
+    server = g_plexApplication.serverManager->FindByUUID(uuid);
     if (arguments.find("containerKey") != arguments.end())
       containerPath = arguments.find("containerKey")->second;
   }
@@ -125,7 +126,7 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     }
     /* look up via host and port, this is not super reliable, but it will probably work
      * most of the time */
-    server = g_plexServerManager.FindByHostAndPort(serverURL.GetHostName(), serverURL.GetPort());
+    server = g_plexApplication.serverManager->FindByHostAndPort(serverURL.GetHostName(), serverURL.GetPort());
     containerPath = serverURL.GetFileName();
   }
   else
@@ -428,13 +429,13 @@ void CPlexHTTPRemoteHandler::sendVKey(const ArgMap &arguments)
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::subscribe(const HTTPRequest &request, const ArgMap &arguments)
 {
-  g_plexRemoteSubscriberManager.addSubscriber(getSubFromRequest(request, arguments));
+  g_plexApplication.remoteSubscriberManager->addSubscriber(getSubFromRequest(request, arguments));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::unsubscribe(const HTTPRequest &request, const ArgMap &arguments)
 {
-  g_plexRemoteSubscriberManager.removeSubscriber(getSubFromRequest(request, arguments));
+  g_plexApplication.remoteSubscriberManager->removeSubscriber(getSubFromRequest(request, arguments));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

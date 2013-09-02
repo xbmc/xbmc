@@ -45,12 +45,6 @@ public:
   void Dump();
 };
 
-#include "filesystem/SpecialProtocol.h"
-
-static std::string GetPlexCrashPath()
-{
-  return CSpecialProtocol::TranslatePath("special://temp/CrashReports");
-}
 #endif
 
 #endif

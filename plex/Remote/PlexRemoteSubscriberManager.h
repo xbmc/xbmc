@@ -15,7 +15,6 @@
 #include "threads/Timer.h"
 #include "URL.h"
 #include "FileItem.h"
-#include "utils/GlobalsHandling.h"
 #include "Utility/PlexTimer.h"
 
 class CPlexRemoteSubscriber;
@@ -67,8 +66,5 @@ class CPlexRemoteSubscriberManager : public ITimerCallback
     CTimer m_refreshTimer;
     SubscriberMap m_map;
 };
-
-XBMC_GLOBAL_REF(CPlexRemoteSubscriberManager, g_plexRemoteSubscriberManager);
-#define g_plexRemoteSubscriberManager XBMC_GLOBAL_USE(CPlexRemoteSubscriberManager)
 
 #endif /* defined(__Plex_Home_Theater__PlexRemoteSubscriberManager__) */

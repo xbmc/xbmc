@@ -133,6 +133,7 @@
 #include "Client/PlexServerManager.h"
 #include "Client/PlexTranscoderClient.h"
 #include "Client/PlexServerDataLoader.h"
+#include "Client/PlexNetworkServiceBrowser.h"
 /* END PLEX */
 
 using namespace std;
@@ -1084,7 +1085,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("myplex.signin"))
     {
-      int label = g_myplexManager.IsSignedIn() ? 44003 : 44100;
+      int label = g_plexApplication.myPlexManager->IsSignedIn() ? 44003 : 44100;
 
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       if (pControl)
@@ -1107,9 +1108,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("backgroundmusic.bgmusicenabled"))
     {
       if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
-        g_backgroundMusicPlayer.PlayElevatorMusic();
+        g_plexApplication.backgroundMusicPlayer->PlayElevatorMusic();
       else
-        g_backgroundMusicPlayer.Die();
+        g_plexApplication.backgroundMusicPlayer->Die();
     }
     else if (strSetting.Equals("updates.checknow"))
     {
@@ -2142,13 +2143,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     CGUIButtonControl* pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
     CSettingString*    pSettingString = (CSettingString* )pSettingControl->GetSetting();
 
-    if (!g_myplexManager.IsSignedIn())
+    if (!g_plexApplication.myPlexManager->IsSignedIn())
     {
       CGUIDialogMyPlex::ShowAndGetInput();
     }
     else
     {
-      g_myplexManager.Logout();
+      g_plexApplication.myPlexManager->Logout();
       pControl->SetLabel(g_localizeStrings.Get(44003));
       pSettingString->SetLabel(44003);
     }
@@ -2160,7 +2161,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Equals("plexmediaserver.localqualitystr"))
   {
-    CPlexServerPtr server = g_plexServerManager.GetBestServer();
+    CPlexServerPtr server = g_plexApplication.serverManager->GetBestServer();
     if (server)
     {
       int quality = CPlexTranscoderClient::SelectATranscoderQuality(server, g_guiSettings.GetInt("plexmediaserver.localquality"));
@@ -2173,7 +2174,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Equals("plexmediaserver.remotequalitystr"))
   {
-    CPlexServerPtr server = g_plexServerManager.GetBestServer();
+    CPlexServerPtr server = g_plexApplication.serverManager->GetBestServer();
     if (server)
     {
       int quality = CPlexTranscoderClient::SelectATranscoderQuality(server, g_guiSettings.GetInt("plexmediaserver.remotequality"));
@@ -2187,22 +2188,22 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   // Check manual server.
   else if (strSetting.Equals("plexmediaserver.manualaddress") || strSetting.Equals("plexmediaserver.address"))
   {
-    g_plexServerManager.m_manualServerManager.checkManualServersAsync();
+    g_plexApplication.serverManager->m_manualServerManager.checkManualServersAsync();
   }
   else if (strSetting.Equals("plexmediaserver.port"))
   {
     ValidatePortNumber(pSettingControl, "32400", "32400", false);
-    g_plexServerManager.m_manualServerManager.checkManualServersAsync();
+    g_plexApplication.serverManager->m_manualServerManager.checkManualServersAsync();
   }
   else if (strSetting.Equals("myplex.enablequeueandrec"))
   {
-    CPlexServerPtr myPlex = g_plexServerManager.FindByUUID("myplex");
+    CPlexServerPtr myPlex = g_plexApplication.serverManager->FindByUUID("myplex");
     if (myPlex)
     {
       if (g_guiSettings.GetBool(strSetting))
-        g_plexServerDataLoader.LoadDataFromServer(myPlex);
+        g_plexApplication.dataLoader->LoadDataFromServer(myPlex);
       else
-        g_plexServerDataLoader.RemoveServer(myPlex);
+        g_plexApplication.dataLoader->RemoveServer(myPlex);
     }
   }
   else if (strSetting.Equals("services.plexplayer"))

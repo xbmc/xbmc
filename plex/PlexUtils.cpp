@@ -326,3 +326,11 @@ bool PlexUtils::CurrentSkinHasPreplay()
 {
   return g_SkinInfo->HasSkinFile("PlexPreplayVideo.xml");
 }
+
+////////////////////////////////////////////////////////////////////////////////////////
+#include "filesystem/SpecialProtocol.h"
+
+std::string PlexUtils::GetPlexCrashPath()
+{
+  return CSpecialProtocol::TranslatePath("special://temp/CrashReports");
+}

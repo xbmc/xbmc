@@ -60,6 +60,7 @@
 
 /* PLEX */
 #include "plex/PlexTypes.h"
+#include "PlexApplication.h"
 /* END PLEX */
 
 using namespace std;
@@ -3542,7 +3543,7 @@ bool CFileItemList::IsPlexMediaServerMusic() const
 //Add Mark a Title as watched
 void CFileItem::MarkAsWatched()
 {
-  g_plexMediaServerClient.SetItemWatched(shared_from_this());
+  g_plexApplication.mediaServerClient->SetItemWatched(shared_from_this());
 
   // Change the item.
   SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
@@ -3565,7 +3566,7 @@ void CFileItem::MarkAsWatched()
 
 void CFileItem::MarkAsUnWatched()
 {
-  g_plexMediaServerClient.SetItemUnWatched(shared_from_this());
+  g_plexApplication.mediaServerClient->SetItemUnWatched(shared_from_this());
   SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
   if (GetVideoInfoTag())
   {

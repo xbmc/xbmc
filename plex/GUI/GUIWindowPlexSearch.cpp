@@ -39,6 +39,7 @@
 #include "Util.h"
 #include "PlexUtils.h"
 #include "input/XBMC_vkeys.h"
+#include "PlexApplication.h"
 
 #define CTL_LABEL_EDIT       310
 #define CTL_BUTTON_BACKSPACE 8
@@ -458,9 +459,9 @@ void CGUIWindowPlexSearch::StartSearch(const string& search)
   }
   else
   {
-    if (g_plexServerManager.GetBestServer())
+    if (g_plexApplication.serverManager->GetBestServer())
     {
-      m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(g_plexServerManager.GetBestServer(), search), 0);
+      m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(g_plexApplication.serverManager->GetBestServer(), search), 0);
     }
     else
     {
@@ -473,7 +474,7 @@ void CGUIWindowPlexSearch::StartSearch(const string& search)
     // If we have shared servers, search them too.
     if (g_guiSettings.GetBool("myplex.searchsharedlibraries"))
     {
-      PlexServerList sharedServers = g_plexServerManager.GetAllServers(CPlexServerManager::SERVER_SHARED);
+      PlexServerList sharedServers = g_plexApplication.serverManager->GetAllServers(CPlexServerManager::SERVER_SHARED);
       
       BOOST_FOREACH(CPlexServerPtr server, sharedServers)
         m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(server, search), 0);

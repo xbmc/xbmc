@@ -22,6 +22,8 @@
 
 #include "dialogs/GUIDialogKaiToast.h"
 
+#include "PlexApplication.h"
+
 
 #define FAILURE_TMOUT 3600
 #define SUCCESS_TMOUT 60 * 3
@@ -30,9 +32,9 @@ void
 CMyPlexManager::Process()
 {
   m_secToSleep = SUCCESS_TMOUT;
-  m_myplex = g_plexServerManager.FindByUUID("myplex");
+  m_myplex = g_plexApplication.serverManager->FindByUUID("myplex");
 
-  while (!m_bStop)
+  while (true)
   {
     /* bye bye */
     if (m_bStop)
@@ -58,6 +60,8 @@ CMyPlexManager::Process()
       case STATE_LOGGEDIN:
         m_secToSleep = DoScanMyPlex();
         break;
+      case STATE_EXIT:
+        return;
     }
 
     CLog::Log(LOGDEBUG, "CMyPlexManager::Process after a run our state is %d, will now sleep for %d seconds", m_state, m_secToSleep);
@@ -212,7 +216,7 @@ int CMyPlexManager::DoFetchWaitPin()
 int CMyPlexManager::DoScanMyPlex()
 {
   if (g_guiSettings.GetBool("myplex.enablequeueandrec"))
-    g_plexServerDataLoader.LoadDataFromServer(m_myplex);
+    g_plexApplication.dataLoader->LoadDataFromServer(m_myplex);
 
   if (!CMyPlexScanner::DoScan())
   {
@@ -267,8 +271,8 @@ int CMyPlexManager::DoRefreshUserInfo()
 int CMyPlexManager::DoRemoveAllServers()
 {
   PlexServerList list;
-  g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MYPLEX);
-  g_plexServerDataLoader.RemoveServer(m_myplex);
+  g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MYPLEX);
+  g_plexApplication.dataLoader->RemoveServer(m_myplex);
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Lost connection to myPlex", "You need to relogin");
 
@@ -327,4 +331,11 @@ CStdString CMyPlexManager::GetAuthToken() const
 
   /* Failing all that, we need to check the settings ... */
   return g_guiSettings.GetString("myplex.token");
+}
+
+void CMyPlexManager::Stop()
+{
+  m_state = STATE_EXIT;
+  m_wakeEvent.Set();
+  StopThread(true);
 }

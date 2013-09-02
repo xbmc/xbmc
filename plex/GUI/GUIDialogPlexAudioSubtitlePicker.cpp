@@ -12,6 +12,7 @@
 #include <string>
 
 #include "PlexUtils.h"
+#include "PlexApplication.h"
 
 CGUIDialogPlexAudioSubtitlePicker::CGUIDialogPlexAudioSubtitlePicker()
   : CGUIDialogSelect()
@@ -118,7 +119,7 @@ CGUIDialogPlexAudioSubtitlePicker::UpdateStreamSelection(CFileItemPtr &fileItem)
   
   for (int i = 0; i < fileItem->m_mediaParts.size(); i ++)
   {
-    g_plexMediaServerClient.SelectStream(fileItem, fileItem->m_mediaParts[i]->GetProperty("id").asInteger(), subtitleId, audioId);
+    g_plexApplication.mediaServerClient->SelectStream(fileItem, fileItem->m_mediaParts[i]->GetProperty("id").asInteger(), subtitleId, audioId);
 
     PlexUtils::SetSelectedStream(fileItem->m_mediaParts[i], streamType, streamId);
   }

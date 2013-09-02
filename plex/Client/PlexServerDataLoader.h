@@ -59,8 +59,11 @@ public:
   bool HasChannels() const { return m_channelMap.size() > 0; }
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  
+  void Stop();
 
 private:
+  bool m_stopped;
   void OnTimeout();
 
   CTimer *m_refreshTimer;
@@ -75,6 +78,3 @@ private:
 
   ServerDataMap m_sharedSectionsMap;
 };
-
-XBMC_GLOBAL_REF(CPlexServerDataLoader, g_plexServerDataLoader);
-#define g_plexServerDataLoader XBMC_GLOBAL_USE(CPlexServerDataLoader)

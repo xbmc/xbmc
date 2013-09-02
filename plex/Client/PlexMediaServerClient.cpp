@@ -26,6 +26,7 @@
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "PlexApplication.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJob *job)
@@ -85,9 +86,9 @@ void CPlexMediaServerClient::ReportItemProgress(const CFileItemPtr &item, CPlexM
       item->SetProperty("lastTimelineUpdate", (int64_t)now);
     }
     
-    if (now - lastUpdated >= 1 && g_plexRemoteSubscriberManager.hasSubscribers())
+    if (now - lastUpdated >= 1 && g_plexApplication.remoteSubscriberManager->hasSubscribers())
     {
-      std::vector<CURL> subs = g_plexRemoteSubscriberManager.getSubscriberURL();
+      std::vector<CURL> subs = g_plexApplication.remoteSubscriberManager->getSubscriberURL();
       BOOST_FOREACH(CURL su, subs)
         ReportItemProgressToSubscriber(su, item, state, currentPosition);
       
@@ -100,7 +101,7 @@ void CPlexMediaServerClient::ReportItemProgress(const CFileItemPtr &item, CPlexM
     AddJob(new CPlexMediaServerClientJob(u));
     
     /* notify any subscribers as well */
-    std::vector<CURL> subs = g_plexRemoteSubscriberManager.getSubscriberURL();
+    std::vector<CURL> subs = g_plexApplication.remoteSubscriberManager->getSubscriberURL();
     BOOST_FOREACH(CURL su, subs)
       ReportItemProgressToSubscriber(su, item, state, currentPosition);
     

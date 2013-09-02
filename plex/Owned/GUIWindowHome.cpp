@@ -73,6 +73,7 @@
 #include "Client/PlexServerManager.h"
 #include "Client/PlexServerDataLoader.h"
 #include "PlexJobs.h"
+#include "PlexApplication.h"
 
 using namespace std;
 using namespace XFILE;
@@ -128,11 +129,11 @@ int CPlexSectionFanout::LoadSection(const CURL &url, int contentType)
 //////////////////////////////////////////////////////////////////////////////
 CStdString CPlexSectionFanout::GetBestServerUrl(const CStdString& extraUrl)
 {
-  CPlexServerPtr server = g_plexServerManager.GetBestServer();
+  CPlexServerPtr server = g_plexApplication.serverManager->GetBestServer();
   if (server)
     return server->BuildPlexURL(extraUrl).Get();
 
-  CPlexServerPtr local = g_plexServerManager.FindByUUID("local");
+  CPlexServerPtr local = g_plexApplication.serverManager->FindByUUID("local");
   return local->BuildPlexURL(extraUrl).Get();
 }
 
@@ -505,7 +506,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         RefreshSection("global://art/", SECTION_TYPE_GLOBAL_FANART);
 
       if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
-        g_backgroundMusicPlayer.PlayElevatorMusic();
+        g_plexApplication.backgroundMusicPlayer->PlayElevatorMusic();
 
     }
 
@@ -675,7 +676,7 @@ void CGUIWindowHome::UpdateSections()
 
   vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
 
-  CFileItemListPtr sections = g_plexServerDataLoader.GetAllSections();
+  CFileItemListPtr sections = g_plexApplication.dataLoader->GetAllSections();
   vector<CGUIListItemPtr> newList;
   vector<CGUIListItemPtr> newSections;
 
@@ -752,7 +753,7 @@ void CGUIWindowHome::UpdateSections()
   }
 
 
-  if (g_plexServerDataLoader.HasChannels() && !haveChannels)
+  if (g_plexApplication.dataLoader->HasChannels() && !haveChannels)
   {
     /* We need the channel button as well */
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
@@ -768,7 +769,7 @@ void CGUIWindowHome::UpdateSections()
     AddSection("plexserver://channels/", SECTION_TYPE_CHANNELS);
   }
 
-  CFileItemListPtr sharedSections = g_plexServerDataLoader.GetAllSharedSections();
+  CFileItemListPtr sharedSections = g_plexApplication.dataLoader->GetAllSharedSections();
 
   if (sharedSections->Size() > 0 && !haveShared)
   {

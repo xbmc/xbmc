@@ -17,6 +17,7 @@
 #include "PlexJobs.h"
 
 #include "Client/PlexMediaServerClient.h"
+#include "PlexApplication.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 CPlexRemoteSubscriber::CPlexRemoteSubscriber(const std::string &uuid, const std::string &ipaddress, int port)
@@ -79,7 +80,7 @@ void CPlexRemoteSubscriberManager::addSubscriber(CPlexRemoteSubscriberPtr subscr
     else
       state = CPlexMediaServerClient::MEDIA_STATE_STOPPED;
     
-    g_plexMediaServerClient.ReportItemProgressToSubscriber(subscriber->getURL(), item, state, g_application.GetTime());
+    g_plexApplication.mediaServerClient->ReportItemProgressToSubscriber(subscriber->getURL(), item, state, g_application.GetTime());
   }
   
   if (!m_refreshTimer.IsRunning())

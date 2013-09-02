@@ -80,6 +80,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "filesystem/CurlFile.h"
 #include "Client/PlexServerManager.h"
+#include "plex/PlexApplication.h"
 /* END PLEX */
 
 #define CONTROL_BTNVIEWASICONS       2
@@ -530,7 +531,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 #endif
 
       /* PLEX */
-      g_plexMediaServerClient.SetViewMode(*m_vecItems, viewMode);
+      g_plexApplication.mediaServerClient->SetViewMode(*m_vecItems, viewMode);
       m_vecItems->SetProperty("viewMode", viewMode);
       /* END PLEX */
 
@@ -1783,7 +1784,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
   if (!CGUIDialogYesNo::ShowAndGetInput(122, 125, 0, 0))
     return;
   
-  g_plexMediaServerClient.deleteItem(item);
+  g_plexApplication.mediaServerClient->deleteItem(item);
 
 }
 #endif
@@ -1877,7 +1878,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
       (item->GetProperty("type") == "episode" || item->GetProperty("type") == "movie" ||
        item->GetProperty("type") == "track"   || item->GetProperty("type") == "photo"))
   {
-    CPlexServerPtr server = g_plexServerManager.FindByUUID(item->GetProperty("plexserver").asString());
+    CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item->GetProperty("plexserver").asString());
     if (server && server->SupportsDeletion())
       buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
   }
@@ -1973,7 +1974,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
     if (newRating >= 0 && newRating <= 10)
     {
-      g_plexMediaServerClient.SetItemRating(item, float(newRating));
+      g_plexApplication.mediaServerClient->SetItemRating(item, float(newRating));
       item->SetProperty("userRating", newRating);
     }
 

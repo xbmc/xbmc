@@ -15,6 +15,8 @@
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/system/error_code.hpp>
 
+#include "PlexServerManager.h"
+
 ///
 /// Plex specific service browser.
 ///
@@ -36,7 +38,7 @@ private:
   void SetAddTimer();
   void HandleAddTimeout(const boost::system::error_code& e);
   CCriticalSection m_serversSection;
-  PlexServerMap m_discoveredServers;
+  std::map<CStdString, CPlexServerPtr> m_discoveredServers;
   boost::asio::deadline_timer m_addTimer;
 };
 
@@ -53,10 +55,14 @@ public:
 
   void Process();
 
-  void OnExit()
+  void Stop()
   {
     StopAdvertisement();
+    
+    m_pmsBrowser.reset();
     m_ioService.stop();
+    
+    StopThread(true);
   }
 
   void StopAdvertisement()

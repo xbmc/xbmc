@@ -17,14 +17,31 @@
 #include "AdvancedSettings.h"
 #include "plex/CrashReporter/CrashSubmitter.h"
 
+#include "Client/PlexServerManager.h"
+#include "Client/PlexServerDataLoader.h"
+#include "Remote/PlexRemoteSubscriberManager.h"
+#include "Client/PlexMediaServerClient.h"
+#include "PlexApplication.h"
+#include "interfaces/AnnouncementManager.h"
+
+#include "AutoUpdate/PlexAutoUpdate.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 void
 PlexApplication::Start()
 {
+  dataLoader = new CPlexServerDataLoader;
+  serverManager = new CPlexServerManager;
+  myPlexManager = new CMyPlexManager;
+  remoteSubscriberManager = new CPlexRemoteSubscriberManager;
+  mediaServerClient = new CPlexMediaServerClient;
+  backgroundMusicPlayer = new BackgroundMusicPlayer;
+  
+  ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
   m_autoUpdater = new CPlexAutoUpdate("http://plexapp.com/appcast/plexht/appcast.xml");
 
-  g_plexServerManager.load();
+  serverManager->load();
 
   new CrashSubmitter;
 
@@ -40,17 +57,11 @@ PlexApplication::Start()
       PlexServerList list;
       CPlexServerPtr server = CPlexServerPtr(new CPlexServer("", address, 32400));
       list.push_back(server);
-      g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
+      g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
     }
   }
 
-  g_myplexManager.Create();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-PlexApplication::~PlexApplication()
-{
-  delete m_autoUpdater;
+  myPlexManager->Create();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -70,7 +81,7 @@ bool PlexApplication::OnMessage(CGUIMessage& message)
     }
     case GUI_MSG_BG_MUSIC_THEME_UPDATED:
     {
-      g_backgroundMusicPlayer.SetTheme(message.GetStringParam());
+      g_plexApplication.backgroundMusicPlayer->SetTheme(message.GetStringParam());
       return true;
     }
   }
@@ -97,11 +108,49 @@ void PlexApplication::OnWakeUp()
 {
   /* Scan servers */
   m_serviceListener->ScanNow();
-  g_myplexManager.Poke();
+  myPlexManager->Poke();
   
 #ifdef TARGET_DARWIN_OSX
   CRemoteRestartThread* hack = new CRemoteRestartThread;
   hack->Create(true);
 #endif
 
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+void PlexApplication::ForceVersionCheck()
+{
+  m_autoUpdater->ForceCheckInBackground();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  if (flag == ANNOUNCEMENT::System && stricmp(sender, "xbmc") == 0 && stricmp(message, "onQuit") == 0)
+  {
+    CLog::Log(LOGINFO, "CPlexApplication shutting down!");
+    
+    m_serviceListener->Stop();
+    m_serviceListener.reset();
+    
+    myPlexManager->Stop();
+    delete myPlexManager;
+    
+    dataLoader->Stop();
+    delete dataLoader;
+    
+    serverManager->Stop();
+    delete serverManager;
+    
+    mediaServerClient->CancelJobs();
+    delete mediaServerClient;
+    mediaServerClient = NULL;
+    
+    delete remoteSubscriberManager;
+    
+    backgroundMusicPlayer->Die();
+    delete backgroundMusicPlayer;
+    
+    delete m_autoUpdater;
+  }
 }

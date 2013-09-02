@@ -15,21 +15,17 @@
 #include "Stopwatch.h"
 #include "settings/GUISettings.h"
 
+#include "PlexApplication.h"
+
 using namespace std;
 
 void
 CPlexServerReachabilityThread::Process()
 {
-  if (m_force == true ||
-      !m_server->GetActiveConnection())
-  {
-    if (m_server->UpdateReachability())
-      g_plexServerManager.ServerReachabilityDone(m_server, true);
-    else
-      g_plexServerManager.ServerReachabilityDone(m_server, false);
-  }
-
-  
+  if (m_server->UpdateReachability())
+    g_plexApplication.serverManager->ServerReachabilityDone(m_server, true);
+  else
+    g_plexApplication.serverManager->ServerReachabilityDone(m_server, false);
 }
 
 CPlexServerManager::CPlexServerManager()
@@ -108,6 +104,8 @@ CPlexServerManager::MarkServersAsRefreshing()
 void
 CPlexServerManager::UpdateFromConnectionType(PlexServerList servers, int connectionType)
 {
+  if (m_stopped) return;
+  
   CSingleLock lk(m_serverManagerLock);
 
   MarkServersAsRefreshing();
@@ -122,6 +120,8 @@ CPlexServerManager::UpdateFromConnectionType(PlexServerList servers, int connect
 void
 CPlexServerManager::UpdateFromDiscovery(CPlexServerPtr server)
 {
+  if (m_stopped) return;
+  
   CSingleLock lk(m_serverManagerLock);
 
   MergeServer(server);
@@ -174,14 +174,27 @@ CPlexServerManager::UpdateReachability(bool force)
   CSingleLock lk(m_serverManagerLock);
 
   CLog::Log(LOGDEBUG, "CPlexServerManager::UpdateReachability Updating reachability (force=%s)", force ? "YES" : "NO");
+  if (m_reachabilityThreads.size() > 0)
+  {
+    CLog::Log(LOGWARNING, "CPlexServerManager::UpdateReachability WOW, BAD we are already running reachability tests. We can't do it twice, mmmkey?");
+    return;
+  }
+
+  m_reachabilityTestEvent.Reset();
 
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
-    new CPlexServerReachabilityThread(p.second, force);
+  {
+    if (!p.second->GetActiveConnection() || force)
+      m_reachabilityThreads[p.second->GetUUID()] = new CPlexServerReachabilityThread(p.second);
+  }
 }
 
 void
 CPlexServerManager::SetBestServer(CPlexServerPtr server, bool force)
 {
+  if (!server)
+    return;
+  
   CSingleLock lk(m_serverManagerLock);
   if (!m_bestServer || force || m_bestServer == server)
   {
@@ -201,6 +214,13 @@ CPlexServerManager::ClearBestServer()
 
 void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool success)
 {
+  CPlexServerReachabilityThread* rt = NULL;
+  if (m_reachabilityThreads.find(server->GetUUID()) != m_reachabilityThreads.end())
+  {
+    rt = m_reachabilityThreads[server->GetUUID()];
+    m_reachabilityThreads.erase(server->GetUUID());
+  }
+  
   if (success)
   {
     if (server->GetOwned() &&
@@ -212,9 +232,23 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
   {
     if (m_bestServer==server)
       ClearBestServer();
-
+    
     NotifyAboutServer(server, false);
   }
+
+  if (m_reachabilityThreads.size() == 0)
+  {
+    CLog::Log(LOGINFO, "CPlexServerManager::ServerRechabilityDone All servers have done their thing. have a nice day now.");
+    m_reachabilityTestEvent.Set();
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "CPlexServerManager::ServerRechabilityDone still %ld server checking reachability", m_reachabilityThreads.size());
+  }
+  
+  if (rt)
+    delete rt;
+
 }
 
 void
@@ -225,9 +259,9 @@ CPlexServerManager::NotifyAboutServer(CPlexServerPtr server, bool added)
   g_windowManager.SendThreadMessage(msg);
 
   if (added)
-    g_plexServerDataLoader.LoadDataFromServer(server);
+    g_plexApplication.dataLoader->LoadDataFromServer(server);
   else
-    g_plexServerDataLoader.RemoveServer(server);
+    g_plexApplication.dataLoader->RemoveServer(server);
 }
 
 void CPlexServerManager::save()
@@ -294,4 +328,12 @@ void CPlexServerManager::load()
 
     CLog::Log(LOGDEBUG, "CPlexServerManager::load Got %ld servers from plexservermanager.xml", m_serverMap.size());
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServerManager::Stop()
+{
+  m_stopped = true;
+  if (IsRunningReachabilityTests())
+    m_reachabilityTestEvent.Wait();
 }

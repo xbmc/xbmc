@@ -1,4 +1,5 @@
 #include "PlexNetworkServiceBrowser.h"
+#include "PlexApplication.h"
 
 #include <vector>
 
@@ -22,7 +23,7 @@ CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr &service)
   server->AddConnection(conn);
   server->UpdateReachability();
 
-  g_plexServerManager.UpdateFromDiscovery(server);
+  g_plexApplication.serverManager->UpdateFromDiscovery(server);
 
   CSingleLock lk(m_serversSection);
   m_discoveredServers[server->GetUUID()] = server;
@@ -44,7 +45,7 @@ CPlexNetworkServiceBrowser::handleServiceDeparture(NetworkServicePtr &service)
   BOOST_FOREACH(PlexServerPair p, m_discoveredServers)
     list.push_back(p.second);
 
-  g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+  g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
 
   SetAddTimer();
 }
@@ -67,7 +68,7 @@ CPlexNetworkServiceBrowser::HandleAddTimeout(const boost::system::error_code &e)
   BOOST_FOREACH(PlexServerPair p, m_discoveredServers)
     list.push_back(p.second);
 
-  g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+  g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
 }
 
 void

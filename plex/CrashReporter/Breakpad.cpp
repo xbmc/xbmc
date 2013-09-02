@@ -9,6 +9,7 @@
 
 #include "Breakpad.h"
 #include "filesystem/Directory.h"
+#include "PlexUtils.h"
 
 #include <string>
 
@@ -105,18 +106,18 @@ static inline bool BreakPad_MinidumpCallback(const char *dump_dir, const char *m
 BreakpadScope::BreakpadScope(const std::string& processName)
 #ifdef __linux__
 : m_processName(processName)
-, m_descriptor(new google_breakpad::MinidumpDescriptor(GetPlexCrashPath()))
+, m_descriptor(new google_breakpad::MinidumpDescriptor(PlexUtils::GetPlexCrashPath()))
 , m_eh(new google_breakpad::ExceptionHandler(*m_descriptor, NULL, BreakPad_MinidumpCallback, (void*)m_processName.c_str(), true, -1))
 #endif
 #ifdef _WIN32
-: m_eh(new google_breakpad::ExceptionHandler(utf8to16(GetPlexCrashPath().c_str()).c_str(), NULL, BreakPad_MinidumpCallback, NULL, google_breakpad::ExceptionHandler::HANDLER_ALL))
+: m_eh(new google_breakpad::ExceptionHandler(utf8to16(PlexUtils::GetPlexCrashPath().c_str()).c_str(), NULL, BreakPad_MinidumpCallback, NULL, google_breakpad::ExceptionHandler::HANDLER_ALL))
 #endif
 #ifdef __APPLE__
 : m_processName(processName)
-, m_eh(new google_breakpad::ExceptionHandler(GetPlexCrashPath(), NULL, BreakPad_MinidumpCallback, (void*)m_processName.c_str(), true, NULL))
+, m_eh(new google_breakpad::ExceptionHandler(PlexUtils::GetPlexCrashPath(), NULL, BreakPad_MinidumpCallback, (void*)m_processName.c_str(), true, NULL))
 #endif
 {
-  fprintf(stderr, "Breakpad setup crashreports goes to %s\n", CSpecialProtocol::TranslatePath("special://temp/CrashReports").c_str());
+  fprintf(stderr, "Breakpad setup crashreports goes to %s\n", PlexUtils::GetPlexCrashPath().c_str());
   XFILE::CDirectory::Create("special://temp/CrashReports");
 }
 

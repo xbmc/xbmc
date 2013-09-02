@@ -87,7 +87,3 @@ private:
   CFileItemList m_bgPlaylist;
   int m_position;
 };
-
-XBMC_GLOBAL_REF(BackgroundMusicPlayer, g_backgroundMusicPlayer);
-#define g_backgroundMusicPlayer XBMC_GLOBAL_USE(BackgroundMusicPlayer)
-
