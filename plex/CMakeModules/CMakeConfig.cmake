@@ -1,6 +1,8 @@
 
-include(CheckSystemIncludes)
-include(CheckSystemFunctions)
+if(NOT WIN32)
+  include(CheckSystemIncludes)
+  include(CheckSystemFunctions)
+endif(NOT WIN32)
 
 set(PLEX_TARGET_NAME PlexHomeTheater)
 
@@ -68,12 +70,6 @@ endif(TARGET_POSIX)
 ############ global definitions set for all platforms
 add_definitions(-D__PLEX__ -D__PLEX__XBMC__ -DPLEX_TARGET_NAME="${EXECUTABLE_NAME}" -DPLEX_VERSION="${PLEX_VERSION_STRING_SHORT_BUILD}" -DENABLE_DVDINPUTSTREAM_STACK)
 
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-  add_definitions(-DDEBUG)
-else()
-  add_definitions(-DNDEBUG)
-endif()
-
 include(CheckFFmpegIncludes)
 include(CheckCrystalHDInclude)
 include(CheckLibshairportConfig)
@@ -93,8 +89,12 @@ if(ENABLE_DVD_DRIVE)
 endif(ENABLE_DVD_DRIVE)
 
 configure_file(${root}/xbmc/DllPaths_generated.h.in ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h)
-configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)
-set_source_files_properties(xbmc/config.h PROPERTIES GENERATED TRUE)
+
+# this file is not needed on windows
+if(NOT WIN32)
+  configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)
+  set_source_files_properties(xbmc/config.h PROPERTIES GENERATED TRUE)
+endif(NOT WIN32)
 
 find_package(SSE)
 if(NOT TARGET_WIN32)

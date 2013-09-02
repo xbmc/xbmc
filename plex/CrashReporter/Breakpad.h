@@ -16,6 +16,13 @@
 #endif
 #ifdef _WIN32
 #include "client/windows/handler/exception_handler.h"
+
+#ifdef _DEBUG
+#pragma comment(lib, "breakpad-d.lib")
+#else
+#pragma comment(lib, "breakpad.lib")
+#endif
+
 #endif
 #ifdef __APPLE__
 #include "client/mac/handler/exception_handler.h"

@@ -10,6 +10,8 @@
 #include "Breakpad.h"
 #include "filesystem/Directory.h"
 
+#include <string>
+
 #ifdef HAVE_BREAKPAD
 
 //
@@ -21,7 +23,6 @@
 #ifdef __linux__
 #include <linux/limits.h>
 #include <stdio.h>
-#include <string>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 static inline bool BreakPad_MinidumpCallback(const google_breakpad::MinidumpDescriptor& desc, void *context, bool succeeded)
@@ -44,6 +45,25 @@ static inline bool BreakPad_MinidumpCallback(const google_breakpad::MinidumpDesc
 #ifdef _WIN32
 
 /////////////////////////////////////////////////////////////////////////////////////////
+std::wstring utf8to16(LPCSTR utf8)
+{
+  if (!utf8)
+    return L"";
+
+  int len = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8, -1, NULL, 0);
+  if (len)
+  {
+    LPWSTR utf16 = (LPWSTR)_alloca(len * sizeof(WCHAR));
+    len = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8, -1, utf16, len);
+    if (len)
+    {
+      return utf16;
+    }
+  }
+  return L""; // Keep the compiler happy
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
 bool BreakPad_MinidumpCallback(const wchar_t* dump_path,
                                const wchar_t* minidump_id,
                                void* context,
@@ -54,8 +74,8 @@ bool BreakPad_MinidumpCallback(const wchar_t* dump_path,
   if (dump_path && minidump_id)
   {
     // Rename the file, best effort
-    wstring dumpPath = (wstring)dump_path + L"\\" + minidump_id + L".dmp";
-    wstring newDumpPath = (wstring)dump_path + L"\\" + minidump_id + L"-v-" + utf8to16(PLEX_MEDIA_SERVER_VERSION) + L".dmp";
+    std::wstring dumpPath = (std::wstring)dump_path + L"\\" + minidump_id + L".dmp";
+	  std::wstring newDumpPath = (std::wstring)dump_path + L"\\" + minidump_id + L"-v-" + utf8to16(PLEX_VERSION) + L".dmp";
     MoveFileW(dumpPath.c_str(), newDumpPath.c_str());
   }
   return succeeded;

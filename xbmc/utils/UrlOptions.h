@@ -24,8 +24,6 @@
 #include "utils/Variant.h"
 
 /* PLEX */
-#include "xbmc/config.h"
-
 #if defined(HAVE_STRINGS_H) && !defined(TARGET_WINDOWS)
 #include <strings.h>
 #endif

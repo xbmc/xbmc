@@ -931,12 +931,11 @@ bool CApplication::CreateGUI()
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
 
-  /* PLEX - We don't want SDL signal handler */
+#ifdef HAS_SDL
+    /* PLEX - We don't want SDL signal handler */
   sdlFlags |= SDL_INIT_NOPARACHUTE;
   /* END PLEX */
 
-
-#ifdef HAS_SDL
   if (SDL_Init(sdlFlags) != 0)
   {
     CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());

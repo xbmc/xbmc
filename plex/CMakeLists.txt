@@ -17,6 +17,12 @@ include_directories(
   ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
+if(TARGET_WIN32)
+  # disable safe seh
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /DELAYLOAD:dnssd.dll /DELAYLOAD:dwmapi.dll /DELAYLOAD:libmicrohttpd-5.dll /DELAYLOAD:sqlite3.dll /DELAYLOAD:libsamplerate-0.dll")
+endif(TARGET_WIN32)
+
+
 add_subdirectory(CrashReporter)
 add_subdirectory(Client)
 add_subdirectory(FileSystem)
@@ -27,7 +33,6 @@ add_subdirectory(Players)
 add_subdirectory(Utility)
 add_subdirectory(AutoUpdate)
 add_subdirectory(Remote)
-
 
 include(BreakpadSymbols)
 
@@ -78,7 +83,9 @@ set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NA
 add_dependencies(${PLEX_TARGET_NAME} git_revision.h)
 target_link_libraries(${PLEX_TARGET_NAME} xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 if(HAVE_BREAKPAD)
-  target_link_libraries(${PLEX_TARGET_NAME} ${LIBBREAKPAD_CLIENT})
+  if(NOT TARGET_WIN32)
+   target_link_libraries(${PLEX_TARGET_NAME} ${LIBBREAKPAD_CLIENT})
+  endif(NOT TARGET_WIN32)
 endif(HAVE_BREAKPAD)
 
 if(ENABLE_PYTHON)
@@ -92,12 +99,6 @@ file(GLOB MEDIA_IMAGES_PLEX_SKIN ${root}/addons/skin.plex/Media/*.png ${root}/ad
 
 if(COMPRESS_TEXTURES)
   # Build the packed textures
-  if(DEFINED USING_XCODE)
-    set(TEXTURE_PACKER_BIN ${CMAKE_BINARY_DIR}/tools/TexturePacker/Debug/TexturePacker)
-  else()
-    set(TEXTURE_PACKER_BIN ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker)
-  endif()
-
   if(WIN32)
     set(WORKDIR ${root}/tools/TexturePacker)
   else(WIN32)
@@ -106,7 +107,7 @@ if(COMPRESS_TEXTURES)
 
   add_custom_command(
     OUTPUT Textures_MediaStream.xbt
-    COMMAND ${TEXTURE_PACKER_BIN} -input ${root}/addons/skin.mediastream/Media -output ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt
+    COMMAND $<TARGET_FILE:TexturePacker> -input ${root}/addons/skin.mediastream/Media -output ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt
     MAIN_DEPENDENCY ${MEDIA_IMAGES_MEDIASTREAM}
     DEPENDS TexturePacker
     WORKING_DIRECTORY ${WORKDIR}

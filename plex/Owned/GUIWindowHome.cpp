@@ -591,6 +591,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       m_lastSelectedItem = GetCurrentItemName();
 
+      //int *p = NULL;
+      //*p = 1;
+
+
       int iAction = message.GetParam1();
       if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_PLAYER_PLAY)
       {

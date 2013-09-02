@@ -1,7 +1,4 @@
 find_program(BZIP2 bzip2 HINTS /usr/bin)
-if(BZIP2 MATCHES "-NOTFOUND")
-  message(FATAL_ERROR "Need bzip2")
-endif(BZIP2 MATCHES "-NOTFOUND")
 
 function(GENERATE_DSYMS TGT)
   add_custom_command(
@@ -23,10 +20,20 @@ function(GENERATE_BREAKPAD_SYMBOLS APP)
     set(TARGETFILE ${APP}.dSYM)
   endif(APPLE)
 
-  add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.bz2
-    COMMAND ${PROJECT_SOURCE_DIR}/plex/scripts/dump_syms.sh "${DUMP_SYMS}" "${BZIP2}" "${TARGETFILE}" "${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.bz2"
-    DEPENDS ${DEPENDENCY}
-  )
-  add_custom_target(${APP}_symbols DEPENDS ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.bz2)
+  if(NOT WIN32)
+    add_custom_command(
+      OUTPUT ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.bz2
+      COMMAND ${PROJECT_SOURCE_DIR}/plex/scripts/dump_syms.sh "${DUMP_SYMS}" "${BZIP2}" "${TARGETFILE}" "${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.bz2"
+      DEPENDS ${DEPENDENCY}
+    )
+	add_custom_target(${APP}_symbols DEPENDS ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.bz2)
+  else(NOT WIN32)
+    find_program(SZIP 7za HINTS ${PROJECT_SOURCE_DIR}/project/Win32BuildSetup/tools/7z)
+    add_custom_command(
+	  OUTPUT ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.7z
+	  COMMAND ${PROJECT_SOURCE_DIR}/plex/scripts/dump_syms.cmd "${DUMP_SYMS}" "${SZIP}" "${TARGETFILE}" "${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols"
+	  DEPENDS ${DEPENDENCY}
+	)
+	add_custom_target(${APP}_symbols DEPENDS ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.7z)
+  endif(NOT WIN32)
 endfunction(GENERATE_BREAKPAD_SYMBOLS APP)

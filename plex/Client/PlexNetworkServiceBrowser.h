@@ -13,6 +13,7 @@
 #include "threads/Thread.h"
 
 #include <boost/asio/deadline_timer.hpp>
+#include <boost/system/error_code.hpp>
 
 ///
 /// Plex specific service browser.

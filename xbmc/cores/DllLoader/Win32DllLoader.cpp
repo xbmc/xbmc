@@ -125,7 +125,9 @@ Export win32_exports[] =
   { "signal",                     -1, (void*)dll_signal,                    NULL },
 
   // reading/writing from stdin/stdout needs this
+  /* PLEX figure out why this is acting up in windows later.
   { "_iob",                       -1, (void*)&_iob,                         NULL },
+  END PLEX */
 
   // libdvdnav + python need this (due to us using dll_putenv() to put stuff only?)
   { "getenv",                     -1, (void*)dll_getenv,                    NULL },
