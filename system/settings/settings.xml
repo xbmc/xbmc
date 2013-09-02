@@ -2010,8 +2010,8 @@
           <default>false</default>
         </setting>
         <setting id="audiooutput.ac3passthrough" type="boolean" parent="audiooutput.mode" label="364" help="36365">
-          <level>1</level>
-          <default>true</default>
+          <level>2</level>
+          <default>false</default>
           <dependencies>
             <dependency type="enable">
               <or>
@@ -2022,8 +2022,8 @@
           </dependencies>
         </setting>
         <setting id="audiooutput.eac3passthrough" type="boolean" parent="audiooutput.mode" label="448" help="37016">
-          <level>1</level>
-          <default>true</default>
+          <level>2</level>
+          <default>false</default>
           <dependencies>
             <dependency type="enable">
               <or>
@@ -2034,8 +2034,8 @@
           </dependencies>
         </setting> 
         <setting id="audiooutput.dtspassthrough" type="boolean" parent="audiooutput.mode" label="254" help="36366">
-          <level>1</level>
-          <default>true</default>
+          <level>2</level>
+          <default>false</default>
           <dependencies>
             <dependency type="enable">
               <or>
@@ -2058,22 +2058,22 @@
           </dependencies>
         </setting>
         <setting id="audiooutput.multichannellpcm" type="boolean" parent="audiooutput.mode" label="348" help="36368">
-          <level>1</level>
+          <level>2</level>
           <default>true</default>
           <dependencies>
             <dependency type="enable" setting="audiooutput.mode">2</dependency> <!-- AUDIO_HDMI -->
           </dependencies>
         </setting>
         <setting id="audiooutput.truehdpassthrough" type="boolean" parent="audiooutput.mode" label="349" help="36369">
-          <level>1</level>
-          <default>true</default>
+          <level>2</level>
+          <default>false</default>
           <dependencies>
             <dependency type="enable" setting="audiooutput.mode">2</dependency> <!-- AUDIO_HDMI -->
           </dependencies>
         </setting>
         <setting id="audiooutput.dtshdpassthrough" type="boolean" parent="audiooutput.mode" label="347" help="36370">
-          <level>1</level>
-          <default>true</default>
+          <level>2</level>
+          <default>false</default>
           <dependencies>
             <dependency type="enable">
               <and>
@@ -2099,7 +2099,7 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
-          <level>1</level>
+          <level>2</level>
           <default>Default</default> <!-- will be properly set on startup -->
           <constraints>
             <options>audiodevicespassthrough</options>
