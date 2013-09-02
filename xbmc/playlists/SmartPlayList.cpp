@@ -400,6 +400,7 @@ vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
   bool isVideo = false;
   if (type == "pictures")
   {
+    fields.push_back(FieldPictureAlbumId);
     fields.push_back(FieldPictureAlbum);
     fields.push_back(FieldFace);
     fields.push_back(FieldLocation);
@@ -1621,6 +1622,7 @@ void CSmartPlaylist::GetAvailableFields(const std::string &type, std::vector<std
   {
     for (unsigned int i = 0; i < NUM_FIELDS; i++)
     {
+      CLog::Log(LOGINFO, "Adding filter %s", fields[i].string);
       if (*field == fields[i].field)
         fieldList.push_back(fields[i].string);
     }

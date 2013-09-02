@@ -101,6 +101,8 @@ bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
     return true;
   else if (StringUtils::StartsWith(realPath, "musicdb://"))
     return true;
+  else if (StringUtils::StartsWith(realPath, "picturedb://"))
+    return true;
   else if (StringUtils::StartsWith(realPath, "videodb://"))
     return true;
   else if (StringUtils::StartsWith(realPath, "library://video"))

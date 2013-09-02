@@ -125,6 +125,7 @@ typedef enum {
   FieldTakenOn,
   FieldPictureCount,
   FieldPictureAlbum,
+  FieldPictureAlbumId,
   FieldFace,
   FieldLocation
 } Field;

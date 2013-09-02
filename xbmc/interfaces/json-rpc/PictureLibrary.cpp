@@ -36,6 +36,7 @@
 #include "utils/log.h"
 #include "pictures/infoscanner/PictureAlbumInfo.h"
 #include "TextureCache.h"
+#include "settings/MediaSourceSettings.h"
 
 using namespace PICTURE_INFO;
 using namespace JSONRPC;
@@ -268,19 +269,13 @@ JSONRPC_STATUS CPictureLibrary::AddPicture(const CStdString &method, ITransportL
   CStdString strLocation = parameterObject["location"].c_str();
   CStdString strTaken = parameterObject["takenon"].c_str();
   
-  //HARD CODED
-  CStdString strFilePath = "/Users/ashokjaiswal/Pictures/";
-  /*
-   std::set<std::string> pathsToScan;
-   picturedatabase.GetPaths(pathsToScan);
-   for (std::set<std::string>::const_iterator it = pathsToScan.begin(); it != pathsToScan.end(); it++)
-   {
-   strFilePath = *it;
-   }
-   */
+  //take the first source as the path
+  VECSOURCES *shares = CMediaSourceSettings::Get().GetSources("pictures");
+  if( !shares )
+    return InternalError;
   
   //create the thumbnail and pass it in
-  CStdString strThumb = strFilePath + strTitle;
+  CStdString strPicturePath = shares->at(0).strPath + strTitle;
   CStdString strFaces = parameterObject["faces"].c_str();
   int idAlbum = picturedatabase.GetPictureAlbumByName(strAlbum);
   
@@ -291,24 +286,13 @@ JSONRPC_STATUS CPictureLibrary::AddPicture(const CStdString &method, ITransportL
     CPictureAlbum album;
     album.idAlbum = idAlbum;
     album.strLabel = strAlbum;
-    album.thumbURL.m_xml = strThumb;
+    album.thumbURL.m_xml = strPicturePath;
     CPicture pic;
-    pic.strFileName = strThumb;
-    //    album.pictures.insert(0, &pic);
+    pic.strFileName = strPicturePath;
     
     picturedatabase.SetPictureAlbumInfo(album.idAlbum,
                                         album,
                                         album.pictures);
-    
-    
-    if (picturedatabase.GetArtForItem(idAlbum, "album", "thumb").empty())
-    {
-      CTextureCache::Get().BackgroundCacheImage(strThumb);
-      picturedatabase.SetArtForItem(idAlbum, "album", "thumb", strThumb);
-    }
-    
-    CTextureCache::Get().BackgroundCacheImage(strThumb);
-
   }
   
   std::vector<std::string> vecLocations;
@@ -317,10 +301,20 @@ JSONRPC_STATUS CPictureLibrary::AddPicture(const CStdString &method, ITransportL
   std::vector<std::string> vecFaces;
   vecFaces.push_back(strFaces);
   
-  int idPicture = picturedatabase.AddPicture(idAlbum, strTitle, strFilePath, strComment, strThumb, vecFaces, vecLocations, strTaken);
+  int idPicture = picturedatabase.AddPicture(idAlbum, strTitle, strPicturePath, strComment, strPicturePath, vecFaces, vecLocations, strTaken);
   
   if( idPicture <=0 )
     return InternalError;
+  
+  // set the thumbnail for photo
+  CTextureCache::Get().BackgroundCacheImage(strPicturePath);
+  picturedatabase.SetArtForItem(idPicture, "picture", "thumb", strPicturePath);
+  
+  //set the latest added photo as the thumbnail for the album
+  CTextureCache::Get().BackgroundCacheImage(strPicturePath);
+  picturedatabase.SetArtForItem(idAlbum, "album", "thumb", strPicturePath);
+  CTextureCache::Get().BackgroundCacheImage(strPicturePath);
+  picturedatabase.SetArtForItem(idAlbum, "album", "fanart", strPicturePath);
   
   
   return GetPictures(method, transport, client, parameterObject, result);
