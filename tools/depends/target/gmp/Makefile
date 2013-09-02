@@ -9,14 +9,14 @@ ARCHIVE=$(SOURCE).tar.bz2
 
 # ABI selection
 ifeq (,$(findstring x86_64,$(HOST)))
-  ABI=32
-else
-  ABI=64
+ifneq ($(OS),android)
+  ABI=ABI=32
+endif
 endif
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared ABI=$(ABI)
+          ./configure --prefix=$(PREFIX) --disable-shared $(ABI)
 
 LIBDYLIB=$(PLATFORM)/src/.libs/$(LIBNAME).a
 
