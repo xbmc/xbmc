@@ -96,7 +96,7 @@ CEpg &CEpg::operator =(const CEpg &right)
   m_pvrChannel        = right.m_pvrChannel;
 
   for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = right.m_tags.begin(); it != right.m_tags.end(); it++)
-    m_tags.insert(make_pair(it->first, new CEpgInfoTag(*it->second)));
+    m_tags.insert(make_pair(it->first, CEpgInfoTagPtr(new CEpgInfoTag(*it->second))));
 
   return *this;
 }
@@ -354,7 +354,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   infoTag->m_pvrChannel   = m_pvrChannel;
 
   if (bUpdateDatabase)
-    m_changedTags.insert(make_pair<int, CEpgInfoTagPtr>(infoTag->UniqueBroadcastID(), infoTag));
+    m_changedTags.insert(make_pair(infoTag->UniqueBroadcastID(), infoTag));
 
   return true;
 }
@@ -617,7 +617,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
     {
       // delete the current tag. it's completely overlapped
       if (bUpdateDb)
-        m_deletedTags.insert(make_pair<int, CEpgInfoTagPtr>(currentTag->UniqueBroadcastID(), currentTag));
+        m_deletedTags.insert(make_pair(currentTag->UniqueBroadcastID(), currentTag));
 
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
@@ -629,7 +629,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
     {
       currentTag->SetStartFromUTC(previousTag->EndAsUTC());
       if (bUpdateDb)
-        m_changedTags.insert(make_pair<int, CEpgInfoTagPtr>(currentTag->UniqueBroadcastID(), currentTag));
+        m_changedTags.insert(make_pair(currentTag->UniqueBroadcastID(), currentTag));
 
       previousTag = it->second;
     }
@@ -649,8 +649,8 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
 
       if (bUpdateDb)
       {
-        m_changedTags.insert(make_pair<int, CEpgInfoTagPtr>(currentTag->UniqueBroadcastID(), currentTag));
-        m_changedTags.insert(make_pair<int, CEpgInfoTagPtr>(previousTag->UniqueBroadcastID(), previousTag));
+        m_changedTags.insert(make_pair(currentTag->UniqueBroadcastID(), currentTag));
+        m_changedTags.insert(make_pair(previousTag->UniqueBroadcastID(), previousTag));
       }
 
       previousTag = it->second;

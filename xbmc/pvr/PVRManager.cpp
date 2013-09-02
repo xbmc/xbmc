@@ -116,7 +116,7 @@ void CPVRManager::MarkAsOutdated(const std::string& strAddonId, const std::strin
   if (IsStarted() && g_settings.m_bAddonAutoUpdate)
   {
     CSingleLock lock(m_critSection);
-    m_outdatedAddons.insert(make_pair<string, string>(strAddonId, strReferer));
+    m_outdatedAddons.insert(make_pair(strAddonId, strReferer));
   }
 }
 
