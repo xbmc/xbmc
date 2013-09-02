@@ -45,7 +45,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
    , m_polled(polled)
   {
     // Add a timer which we'll use to send out search requests.
-    try { m_timer.async_wait(boost::bind(&NetworkServiceBrowser::handleTimeout, this)); }
+    try { m_timer.async_wait(boost::bind(&NetworkServiceBrowser::handleTimeout, this, boost::asio::placeholders::error)); }
     catch (std::exception&) { eprintf("Unable to create timer."); }
   }
   
@@ -330,14 +330,17 @@ class NetworkServiceBrowser : public NetworkServiceBase
   }
   
   /// Handle the timer.
-  void handleTimeout()
+  void handleTimeout(const boost::system::error_code &ec)
   {
+    if (ec == boost::asio::error::operation_aborted)
+      return;
+
     // Send a new request.
     sendSearch();
     
     // Wait again.
     m_timer.expires_at(m_timer.expires_at() + boost::posix_time::milliseconds(m_refreshTime));
-    m_timer.async_wait(boost::bind(&NetworkServiceBrowser::handleTimeout, this));
+    m_timer.async_wait(boost::bind(&NetworkServiceBrowser::handleTimeout, this, boost::asio::placeholders::error));
   }
   
   ///////////////////////////////////////////////////////////////////////////////////////////////////

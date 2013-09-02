@@ -143,8 +143,13 @@ class NetworkServiceAdvertiser : public NetworkServiceBase
         }
       }
     }
-    
-    if (error)
+
+    if (error && error.value() == 995)
+    {
+      iprintf("Network service: socket shutdown or aborted. bye!");
+      return;
+    }
+    else if (error)
     {
       eprintf("Network Service: Error in advertiser handle read: %d (%s) socket=%d", error.value(), error.message().c_str(), m_socket->native());
       usleep(1000 * 100);
