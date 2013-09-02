@@ -401,7 +401,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
     if (bufSize > 0)
     {
       wchar_t * buf = new wchar_t[bufSize];
-      if (GetFullPathNameW(strPathW, bufSize, buf, NULL) == bufSize-1)
+      if (GetFullPathNameW(strPathW, bufSize, buf, NULL) <= bufSize-1)
         g_charsetConverter.wToUTF8(buf, strPath);
 
       delete [] buf;
