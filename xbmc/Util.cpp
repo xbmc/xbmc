@@ -397,8 +397,8 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
     //expand potential relative path to full path
     CStdStringW strPathW;
     g_charsetConverter.utf8ToW(strPath, strPathW, false);
-    const int bufSize = GetFullPathNameW(strPathW, 0, NULL, NULL);
-    if (bufSize > 0)
+    const unsigned int bufSize = GetFullPathNameW(strPathW, 0, NULL, NULL);
+    if (bufSize != 0)
     {
       wchar_t * buf = new wchar_t[bufSize];
       if (GetFullPathNameW(strPathW, bufSize, buf, NULL) <= bufSize-1)
