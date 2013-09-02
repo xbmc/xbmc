@@ -7,7 +7,7 @@ endif
 DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
-	openssl libssh2 curl \
+	openssl gmp nettle gnutls libssh2 curl \
 	libjpeg-turbo tiff jasper libpng \
 	libogg libvorbis libflac libmad fribidi libmpeg2 \
 	libass libsamplerate \
@@ -87,6 +87,8 @@ libzip: $(ZLIB)
 libmp3lame: $(ICONV)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
+gnutls: nettle $(ZLIB)
+nettle: gmp
 pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python26
 libsdl: $(LINUX_SYSTEM_LIBS)
 
