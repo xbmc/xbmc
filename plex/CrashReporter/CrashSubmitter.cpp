@@ -20,6 +20,12 @@
 
 using namespace std;
 
+#ifdef _WIN32
+#include "config.h"
+#include <process.h>
+#define getpid _getpid
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CrashSubmitter::Process()
 {
@@ -65,7 +71,11 @@ void CrashSubmitter::Upload()
       /* skip directories */
       if (XFILE::CFile::Stat(file->GetPath(), &st) == 0)
       {
+#ifdef TARGET_WINDOWS
+		    if (st.st_mode & S_IFDIR)
+#else
         if (S_ISDIR(st.st_mode))
+#endif
           continue;
       }
       else
@@ -78,6 +88,8 @@ void CrashSubmitter::Upload()
 
       if (UploadFile(fname) == false)
         XFILE::CFile::Rename(fname, file->GetPath());
+      else
+        XFILE::CFile::Delete(fname);
     }
   }
 
