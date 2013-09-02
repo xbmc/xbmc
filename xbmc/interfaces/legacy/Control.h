@@ -41,38 +41,37 @@ namespace XBMCAddon
   namespace xbmcgui
   {
 
-    /**
-     * Parent for control classes. The problem here is that Python uses 
-     * references to this class in a dynamic typing way. For example,
-     * you will find this type of python code frequently:
-     *
-     * window.getControl( 100 ).setLabel( "Stupid Dynamic Type")
-     *
-     * Notice that the 'getControl' call returns a 'Control' object.
-     * In a dynamically typed language, the subsequent call to setLabel
-     * works if the specific type of control has the method. The script
-     * writer is often in a position to know more than the code about
-     * the specific Control type (in the example, that control id 100
-     * is a 'ControlLabel') where the C++ code is not.
-     *
-     * SWIG doesn't support this type of dynamic typing. The 'Control'
-     * wrapper that's returned will wrap a ControlLabel but will not
-     * have the 'setLabel' method on it. The only way to handle this is
-     * to add all possible subclass methods to the parent class. This is
-     * ugly but the alternative is nearly as ugly. It's particularly ugly
-     * here because the majority of the methods are unique to the 
-     * particular subclass.
-     *
-     * If anyone thinks they have a solution then let me know. The alternative
-     * would be to have a set of 'getContol' methods, each one coresponding
-     * to a type so that the downcast can be done in the native code. IOW
-     * rather than a simple 'getControl' there would be a 'getControlLabel',
-     * 'getControlRadioButton', 'getControlButton', etc.
-     *
-     * TODO:This later solution should be implemented for future scripting 
-     * languages while the former will remain as deprecated functionality 
-     * for Python. 
-     */
+    // Parent for control classes. The problem here is that Python uses 
+    // references to this class in a dynamic typing way. For example,
+    // you will find this type of python code frequently:
+    //
+    // window.getControl( 100 ).setLabel( "Stupid Dynamic Type")
+    //
+    // Notice that the 'getControl' call returns a 'Control' object.
+    // In a dynamically typed language, the subsequent call to setLabel
+    // works if the specific type of control has the method. The script
+    // writer is often in a position to know more than the code about
+    // the specific Control type (in the example, that control id 100
+    // is a 'ControlLabel') where the C++ code is not.
+    //
+    // SWIG doesn't support this type of dynamic typing. The 'Control'
+    // wrapper that's returned will wrap a ControlLabel but will not
+    // have the 'setLabel' method on it. The only way to handle this is
+    // to add all possible subclass methods to the parent class. This is
+    // ugly but the alternative is nearly as ugly. It's particularly ugly
+    // here because the majority of the methods are unique to the 
+    // particular subclass.
+    //
+    // If anyone thinks they have a solution then let me know. The alternative
+    // would be to have a set of 'getContol' methods, each one coresponding
+    // to a type so that the downcast can be done in the native code. IOW
+    // rather than a simple 'getControl' there would be a 'getControlLabel',
+    // 'getControlRadioButton', 'getControlButton', etc.
+    //
+    // TODO:This later solution should be implemented for future scripting 
+    // languages while the former will remain as deprecated functionality 
+    // for Python. 
+    //
     // We don't need the SWIGHIDDENVIRTUAL since this is not a director.
     class Control : public AddonClass
     {

@@ -115,21 +115,20 @@ namespace XBMCAddon
 #endif
     };
 
-    /**
-     * Ideally what we want here is a Dialog/Media Window. The problem is that these
-     *  are two orthogonal discriminations of CGUIWindow and there wasn't a previous
-     *  accounting for this possibility through the use of making CGUIWindow a 
-     *  virtual base class of the pertinent subclasses. So now we're left with
-     *  no good solution.
-     *
-     * <strike>So here we're going to have the 'main' hierarchy (the one visible to SWIG)
-     *  go the way intended - through WindowXML, but we're going to borrow dialog 
-     *  functionality from CGUIDialog by using it as a Mixin.</strike>
-     *
-     * jmarshall says that this class has no reason to inherit from CGUIMediaWindow.
-     *  At some point this entire hierarchy needs to be reworked. The XML handling
-     *  routines should be put in a mixin.
-     */
+    // Ideally what we want here is a Dialog/Media Window. The problem is that these
+    //  are two orthogonal discriminations of CGUIWindow and there wasn't a previous
+    //  accounting for this possibility through the use of making CGUIWindow a 
+    //  virtual base class of the pertinent subclasses. So now we're left with
+    //  no good solution.
+    //
+    // <strike>So here we're going to have the 'main' hierarchy (the one visible to SWIG)
+    //  go the way intended - through WindowXML, but we're going to borrow dialog 
+    //  functionality from CGUIDialog by using it as a Mixin.</strike>
+    //
+    // jmarshall says that this class has no reason to inherit from CGUIMediaWindow.
+    //  At some point this entire hierarchy needs to be reworked. The XML handling
+    //  routines should be put in a mixin.
+
     class WindowXMLDialog : public WindowXML, private WindowDialogMixin
     {
     public:

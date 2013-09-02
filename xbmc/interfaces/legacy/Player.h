@@ -49,12 +49,13 @@ namespace XBMCAddon
      *          - xbmc.PLAYER_CORE_DVDPLAYER
      *          - xbmc.PLAYER_CORE_MPLAYER
      *          - xbmc.PLAYER_CORE_PAPLAYER
-     *
-     * This class is a merge of what was previously in xbmcmodule/player.h
-     *  and xbmcmodule/PythonPlayer.h without the python references. The
-     *  queuing and handling of asynchronous callbacks is done internal to
-     *  this class.
      */
+
+    // This class is a merge of what was previously in xbmcmodule/player.h
+    //  and xbmcmodule/PythonPlayer.h without the python references. The
+    //  queuing and handling of asynchronous callbacks is done internal to
+    //  this class.
+
     class Player : public AddonCallback, public IPlayerCallback
     {
     private:
