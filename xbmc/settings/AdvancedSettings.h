@@ -134,7 +134,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_audioAudiophile;
     bool m_allChannelStereo;
     bool m_streamSilence;
-    int m_audioSinkBufferDurationMsec;
     CStdString m_audioTranscodeTo;
     float m_limiterHold;
     float m_limiterRelease;
