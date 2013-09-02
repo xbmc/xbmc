@@ -192,7 +192,7 @@
 				<control type="image" id="9109">
 					<description>Info List Thumb</description>
 					<texture>ViewThumbInfoList.png</texture>
-					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(912) + !Control.IsVisible(561)</visible>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(912)</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9109">

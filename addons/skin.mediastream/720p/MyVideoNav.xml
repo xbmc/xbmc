@@ -101,5 +101,10 @@
 		</control>
 		<include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>
 		<include>CommonSortLetters</include>
+		<control type="group">
+			<visible>Player.HasAudio</visible>
+			<include>MusicOverlayNowPlayingDims</include>
+			<include>MusicNowPlaying</include>
+		</control>
 	</controls>
 </window>

@@ -3553,7 +3553,7 @@
 		<!-- generic -->
 		<control type="group">
 			<posy>0</posy>
-			<visible>[!Skin.HasSetting(HideNowPlayingMusicInfo) | Window.IsActive(PlayerControls)] + ![Window.IsActive(NowPlaying) | Window.IsActive(0)]</visible>
+			<visible>[!Skin.HasSetting(HideNowPlayingMusicInfo) | Window.IsActive(PlayerControls)] + ![Window.IsActive(NowPlaying) | Window.IsActive(0)] + !Control.IsVisible(51)</visible>
 			<include>MusicNowPlayingSlideLeft</include>
 			<include>MusicNowPlayingHomeSlideAnim</include>
 			<control type="image">

@@ -47,5 +47,10 @@
 		</control>
 		<include>MediaCount</include>
 		<include>OptionsMenu</include>
+		<control type="group">
+			<visible>Player.HasAudio</visible>
+			<include>MusicOverlayNowPlayingDims</include>
+			<include>MusicNowPlaying</include>
+		</control>
 	</controls>
 </window>

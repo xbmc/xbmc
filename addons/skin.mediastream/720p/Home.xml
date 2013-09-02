@@ -1569,7 +1569,7 @@
 							</control>
 							<!-- tv show episode when both lists are visible -->
 							<control type="group">
-								<visible>ListItem.Type(episode) + Control.IsVisible(11001)</visible>
+								<visible>[ListItem.Type(episode) | ListItem.Type(season)] + Control.IsVisible(11001)</visible>
 								<posy>144</posy>
 								<!-- drop shadow -->
 								<control type="image">
@@ -1587,6 +1587,16 @@
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
+									<visible>ListItem.Type(episode)</visible>
+								</control>
+								<control type="image">
+									<posx>37</posx>
+									<posy>8</posy>
+									<width>116</width>
+									<height>176</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<visible>ListItem.Type(season)</visible>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -1621,7 +1631,21 @@
 									<font>SearchResultSmaller</font>
 									<textcolor>FFffffff</textcolor>
 									<wrapmultiline>false</wrapmultiline>
-									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)] + ListItem.Type(episode)</visible>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>170</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$LOCALIZE[31141] $INFO[ListItem.Season]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFffffff</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>ListItem.Type(season)</visible>
 									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
 								</control>
 								<control type="label">
@@ -1641,7 +1665,7 @@
 							</control>
 							<!-- tv show episode when only this list is visible -->
 							<control type="group">
-								<visible>ListItem.Type(episode) + !Control.IsVisible(11001)</visible>
+								<visible>[ListItem.Type(episode) | ListItem.Type(season)] + !Control.IsVisible(11001)</visible>
 								<posy>44</posy>
 								<!-- drop shadow -->
 								<control type="image">
@@ -1659,6 +1683,16 @@
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
+									<visible>ListItem.Type(episode)</visible>
+								</control>
+								<control type="image">
+									<posx>37</posx>
+									<posy>8</posy>
+									<width>116</width>
+									<height>176</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<visible>ListItem.Type(season)</visible>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -1693,7 +1727,21 @@
 									<font>SearchResultSmaller</font>
 									<textcolor>FFffffff</textcolor>
 									<wrapmultiline>false</wrapmultiline>
-									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)] + ListItem.Type(episode)</visible>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>170</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$LOCALIZE[31141] $INFO[ListItem.Season]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFffffff</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>ListItem.Type(season)</visible>
 									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
 								</control>
 								<control type="label">
@@ -1867,7 +1915,7 @@
 							</control>
 							<!-- tv show episode when both lists are visible -->
 							<control type="group">
-								<visible>ListItem.Type(episode) + Control.IsVisible(11001)</visible>
+								<visible>[ListItem.Type(episode) | ListItem.Type(season)] + Control.IsVisible(11001)</visible>
 								<posy>144</posy>
 								<!-- drop shadow -->
 								<control type="image">
@@ -1887,6 +1935,18 @@
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
+									<visible>ListItem.Type(episode)</visible>
+								</control>
+								<control type="image">
+									<posx>34</posx>
+									<posy>5</posy>
+									<width>122</width>
+									<height>182</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
+									<visible>ListItem.Type(season)</visible>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -1921,7 +1981,21 @@
 									<font>SearchResultSmaller</font>
 									<textcolor>FFffffff</textcolor>
 									<wrapmultiline>false</wrapmultiline>
-									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)] + ListItem.Type(episode)</visible>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>170</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$LOCALIZE[31141] $INFO[ListItem.Season]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFffffff</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>ListItem.Type(season)</visible>
 									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
 								</control>
 								<control type="label">
@@ -1941,7 +2015,7 @@
 							</control>
 							<!-- tv show episode when  only this list is visible -->
 							<control type="group">
-								<visible>ListItem.Type(episode) + !Control.IsVisible(11001)</visible>
+								<visible>[ListItem.Type(episode) | ListItem.Type(season)] + !Control.IsVisible(11001)</visible>
 								<posy>44</posy>
 								<!-- drop shadow -->
 								<control type="image">
@@ -1961,6 +2035,18 @@
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
+									<visible>ListItem.Type(episode)</visible>
+								</control>
+								<control type="image">
+									<posx>34</posx>
+									<posy>5</posy>
+									<width>122</width>
+									<height>182</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
+									<visible>ListItem.Type(season)</visible>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -1995,7 +2081,21 @@
 									<font>SearchResultSmaller</font>
 									<textcolor>FFffffff</textcolor>
 									<wrapmultiline>false</wrapmultiline>
-									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)] + ListItem.Type(episode)</visible>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>170</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$LOCALIZE[31141] $INFO[ListItem.Season]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFffffff</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>ListItem.Type(season)</visible>
 									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
 								</control>
 								<control type="label">
