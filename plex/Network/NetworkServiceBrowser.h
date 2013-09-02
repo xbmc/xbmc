@@ -50,7 +50,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
   }
   
   // Destructor.
-  virtual ~NetworkServiceBrowser() {}
+  virtual ~NetworkServiceBrowser() { m_timer.cancel(); }
   
   /// Notify of a new service.
   virtual void handleServiceArrival(NetworkServicePtr& service) 
