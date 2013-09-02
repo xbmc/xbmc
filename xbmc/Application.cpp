@@ -3739,7 +3739,7 @@ void CApplication::Stop(int exitCode)
 #ifndef __PLEX__
     SaveFileState(true);
 #else
-    UpdateFileState("stop");
+    UpdateFileState("stopped");
 #endif
     
     /* PLEX */
@@ -3750,12 +3750,6 @@ void CApplication::Stop(int exitCode)
     
     if (m_pLaunchHost)
       m_pLaunchHost->OnShutdown();
-
-#ifdef TARGET_WINDOWS
-    ExitProcess(exitCode);
-#else
-    _exit(exitCode);
-#endif
     /* END PLEX */
 
     // cancel any jobs from the jobmanager
@@ -6334,8 +6328,10 @@ void CApplication::UpdateFileState(const string& aState)
     state = CPlexMediaServerClient::MEDIA_STATE_PLAYING;
   else if (aState == "buffering")
     state = CPlexMediaServerClient::MEDIA_STATE_BUFFERING;
-  else if (aState == "stopped")
+  else if (aState == "stopped" )
     state = CPlexMediaServerClient::MEDIA_STATE_STOPPED;
+  else
+    return;
   
   if (aState.empty())
     state = IsBuffering() ? CPlexMediaServerClient::MEDIA_STATE_BUFFERING : IsPaused() ? CPlexMediaServerClient::MEDIA_STATE_PAUSED : CPlexMediaServerClient::MEDIA_STATE_PLAYING;
