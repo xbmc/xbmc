@@ -108,13 +108,13 @@ Section "XBMC" SecXBMC
   File /r /x *.so "${xbmc_root}\Xbmc\media\*.*"
   SetOutPath "$INSTDIR\sounds"
   File /r /x *.so "${xbmc_root}\Xbmc\sounds\*.*"
-  SetOutPath "$INSTDIR\system"
 
   RMDir /r $INSTDIR\addons
   SetOutPath "$INSTDIR\addons"
   File /r /x skin.touched ${xbmc_root}\Xbmc\addons\*.*
 
   ; delete system/python if its there
+  SetOutPath "$INSTDIR\system"
   IfFileExists $INSTDIR\system\python 0 +2
     RMDir /r $INSTDIR\system\python
   
