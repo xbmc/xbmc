@@ -54,6 +54,13 @@
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <LocalDebuggerEnvironment Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">XBMC_HOME=$(SolutionDir)..\..</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">XBMC_HOME=$(SolutionDir)..\..</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">XBMC_HOME=$(SolutionDir)..\..</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">XBMC_HOME=$(SolutionDir)..\..</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">XBMC_HOME=$(SolutionDir)..\..</LocalDebuggerEnvironment>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
