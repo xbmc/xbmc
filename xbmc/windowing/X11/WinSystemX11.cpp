@@ -721,7 +721,7 @@ void CWinSystemX11::NotifyXRREvent(bool poll)
   if (poll)
   {
     CStdString output = CSettings::Get().GetString("videoscreen.monitor");
-    if (output.Equals(m_currentOutput) || m_userOutput.Equals("Default"))
+    if (output.Equals(m_currentOutput) || output.Equals("Default"))
       return;
 
     int numScreens = XScreenCount(m_dpy);
