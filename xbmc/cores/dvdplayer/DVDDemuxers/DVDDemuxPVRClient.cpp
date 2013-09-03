@@ -325,7 +325,7 @@ void CDVDDemuxPVRClient::RequestStreams()
   if (!g_PVRManager.IsStarted())
     return;
 
-  PVR_STREAM_PROPERTIES props;
+  PVR_STREAM_PROPERTIES props = {};
   m_pvrClient->GetStreamProperties(&props);
   unsigned int i;
 
