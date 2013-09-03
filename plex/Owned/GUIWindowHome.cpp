@@ -424,7 +424,6 @@ bool CGUIWindowHome::OnPopupMenu()
     CGUIListItemPtr item = container->GetListItem(0);
     if (item->IsFileItem())
     {
-      bool updateFanOut = false;
       CFileItemPtr fileItem = boost::static_pointer_cast<CFileItem>(item);
       CContextButtons buttons;
       EPlexDirectoryType type = (EPlexDirectoryType)fileItem->GetPlexDirectoryType();
@@ -465,19 +464,18 @@ bool CGUIWindowHome::OnPopupMenu()
       else if (choice == CONTEXT_BUTTON_MARK_UNWATCHED)
       {
         fileItem->MarkAsUnWatched();
-        updateFanOut = true;
       }
       else if (choice == CONTEXT_BUTTON_MARK_WATCHED)
       {
         fileItem->MarkAsWatched();
-        updateFanOut = true;
-      }
-
-      if (updateFanOut)
-      {
-        CFileItemPtr item = GetCurrentListItem();
-        RefreshSection(item->GetProperty("sectionPath").asString(),
-                       CGUIWindowHome::GetSectionTypeFromDirectoryType(item->GetPlexDirectoryType()));
+        if (controlId == CONTENT_LIST_ON_DECK || controlId == CONTENT_LIST_RECENTLY_ADDED)
+        {
+          /* marking as watched and is on the on deck list, we need to remove it then */
+          std::vector<CGUIListItemPtr> items = container->GetItems();
+          int idx = std::distance(items.begin(), std::find(items.begin(), items.end(), fileItem));
+          CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), controlId, idx+1, 0);
+          OnMessage(msg);
+        }
       }
 
     }
