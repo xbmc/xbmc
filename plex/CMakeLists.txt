@@ -74,13 +74,13 @@ else()
   add_executable(${PLEX_TARGET_NAME} WIN32 ${PLEX_ALL_SRCS})
 endif()
 
+# Set the correct binary name
+set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})
+
 if(ENABLE_DUMP_SYMBOLS)
   GENERATE_BREAKPAD_SYMBOLS(${PLEX_TARGET_NAME})
   add_custom_target(symbols DEPENDS ${PLEX_TARGET_NAME}_symbols)
 endif(ENABLE_DUMP_SYMBOLS)
-
-# Set the correct binary name
-set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})
 
 add_dependencies(${PLEX_TARGET_NAME} git_revision.h)
 target_link_libraries(${PLEX_TARGET_NAME} xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
