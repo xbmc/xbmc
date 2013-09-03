@@ -896,19 +896,12 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     {
       outputFormat = inputFormat;
       outputFormat.m_dataFormat = AE_FMT_FLOATP;
+      outputFormat.m_sampleRate = 48000;
 
       if (g_advancedSettings.m_audioResample)
       {
         outputFormat.m_sampleRate = g_advancedSettings.m_audioResample;
         CLog::Log(LOGINFO, "CActiveAE::Configure - Forcing samplerate to %d", inputFormat.m_sampleRate);
-      }
-
-      // check for valid sampling rates
-      if (inputFormat.m_sampleRate != 48000 &&
-          inputFormat.m_sampleRate != 44100 &&
-          inputFormat.m_sampleRate != 32000)
-      {
-        outputFormat.m_sampleRate = 48000;
       }
 
       // setup encoder
