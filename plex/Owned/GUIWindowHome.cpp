@@ -667,7 +667,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
             return true;
           }
           
-          PlayFileFromContainer(container);
+          if (item->GetProperty("type").asString() == "season" && iAction == ACTION_SELECT_ITEM)
+          {
+            CBuiltins::Execute("XBMC.ActivateWindow(MyVideos," + item->GetProperty("key").asString() + ",return)");
+          } else {
+            PlayFileFromContainer(container);
+          }
           return true;
         }
       }
