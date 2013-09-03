@@ -95,6 +95,7 @@ using namespace boost;
 #define SLIDESHOW_MULTIIMAGE 10101
 
 typedef std::pair<CStdString, CPlexSectionFanout*> nameSectionPair;
+static CPlexThumbCacher thumbCacher;
 
 //////////////////////////////////////////////////////////////////////////////
 CPlexSectionFanout::CPlexSectionFanout(const CStdString &url, SectionTypes sectionType)
@@ -229,7 +230,7 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
     
     /* Pre-cache stuff */
     if (type != CONTENT_LIST_FANART)
-      m_videoThumb.Load(*newList);
+      thumbCacher.Load(*newList);
   }
 
   m_age.restart();

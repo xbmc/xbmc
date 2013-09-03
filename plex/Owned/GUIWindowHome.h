@@ -92,9 +92,6 @@ class CPlexSectionFanout : public IJobCallback
     CPlexTimer m_age;
     CCriticalSection m_critical;
     std::vector<int> m_outstandingJobs;
-  
-    /* Thumb loaders, we pre-cache posters to make the fanouts quick and nice */
-    CVideoThumbLoader m_videoThumb;
 };
 
 class CGUIWindowHome : public CGUIWindow,

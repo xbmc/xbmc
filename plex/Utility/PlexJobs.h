@@ -15,6 +15,7 @@
 #include "FileItem.h"
 #include "guilib/GUIMessage.h"
 
+////////////////////////////////////////////////////////////////////////////////////////
 class CPlexHTTPFetchJob : public CJob
 {
   public:
@@ -28,6 +29,7 @@ class CPlexHTTPFetchJob : public CJob
     CURL m_url;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////
 class CPlexDirectoryFetchJob : public CJob
 {
 public:
@@ -49,6 +51,7 @@ public:
   CURL m_url;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////
 class CPlexSectionFetchJob : public CPlexDirectoryFetchJob
 {
 public:
@@ -56,6 +59,7 @@ public:
   int m_contentType;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////
 class CPlexMediaServerClientJob : public CJob
 {
 public:
@@ -79,5 +83,21 @@ public:
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////////////
+class CPlexVideoThumbLoaderJob : public CJob
+{
+public:
+  CPlexVideoThumbLoaderJob(CFileItemPtr item) : m_item(item) {}
+
+  virtual bool DoWork();
+
+  virtual bool operator==(const CJob* job) const
+  {
+    CPlexVideoThumbLoaderJob *ljob = (CPlexVideoThumbLoaderJob*)job;
+    return m_item == ljob->m_item;
+  }
+
+  CFileItemPtr m_item;
+};
 
 #endif /* defined(__Plex_Home_Theater__PlexJobs__) */

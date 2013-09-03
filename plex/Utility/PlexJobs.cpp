@@ -11,6 +11,8 @@
 
 #include "FileSystem/PlexFile.h"
 
+#include "TextureCache.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexHTTPFetchJob::DoWork()
 {
@@ -32,8 +34,7 @@ bool CPlexDirectoryFetchJob::DoWork()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool
-CPlexMediaServerClientJob::DoWork()
+bool CPlexMediaServerClientJob::DoWork()
 {
   XFILE::CPlexFile file;
   bool success = false;
@@ -48,3 +49,27 @@ CPlexMediaServerClientJob::DoWork()
   return success;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexVideoThumbLoaderJob::DoWork()
+{
+  if (!m_item->IsPlexMediaServer())
+    return false;
+
+  if (m_item->HasArt("thumb") &&
+      !CTextureCache::Get().HasCachedImage(m_item->GetArt("thumb")))
+    CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("thumb"));
+
+  if (m_item->HasArt("fanart") &&
+      !CTextureCache::Get().HasCachedImage(m_item->GetArt("fanart")))
+    CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("fanart"));
+
+  if (m_item->HasArt("grandParentThumb") &&
+      !CTextureCache::Get().HasCachedImage(m_item->GetArt("grandParentThumb")))
+    CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("grandParentThumb"));
+
+  if (m_item->HasArt("bigPoster") &&
+      !CTextureCache::Get().HasCachedImage(m_item->GetArt("bigPoster")))
+    CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("bigPoster"));
+
+  return true;
+}

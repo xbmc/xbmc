@@ -23,6 +23,7 @@
 #include "ThumbLoader.h"
 #include "utils/JobManager.h"
 #include "FileItem.h"
+#include "PlexJobs.h"
 
 #define kJobTypeMediaFlags "mediaflags"
 
@@ -48,4 +49,19 @@ public:
 private:
   virtual void OnLoaderStart();
   virtual void OnLoaderFinish();
+};
+
+class CPlexThumbCacher : public CJobQueue
+{
+public:
+  CPlexThumbCacher() : CJobQueue(true, 5, CJob::PRIORITY_LOW) {};
+  void Load(const CFileItemList &list)
+  {
+    for (int i = 0; i < list.Size(); i++)
+    {
+      CFileItemPtr item = list.Get(i);
+      if (item->IsPlexMediaServer())
+        AddJob(new CPlexVideoThumbLoaderJob(item));
+    }
+  }
 };
