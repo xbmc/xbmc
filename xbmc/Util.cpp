@@ -1498,6 +1498,30 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   return true;
 }
 
+#ifdef TARGET_WINDOWS
+bool CUtil::AddExtraLongPathPrefix(std::wstring& path)
+{
+  const wchar_t* const str = path.c_str();
+  if (path.length() < 4 || str[0] != L'\\' || str[1] != L'\\' || str[3] != L'\\' || str[2] != L'?')
+  {
+    path.insert(0, L"\\\\?\\");
+    return true;
+  }
+  return false;
+}
+
+bool CUtil::RemoveExtraLongPathPrefix(std::wstring& path)
+{
+  const wchar_t* const str = path.c_str();
+  if (path.length() >= 4 && str[0] == L'\\' && str[1] == L'\\' && str[3] == L'\\' && str[2] == L'?')
+  {
+    path.erase(0, 4);
+    return true;
+  }
+  return false;
+}
+#endif // TARGET_WINDOWS
+
 bool CUtil::SupportsWriteFileOperations(const CStdString& strPath)
 {
   // currently only hd, smb, nfs, afp and dav support delete and rename
