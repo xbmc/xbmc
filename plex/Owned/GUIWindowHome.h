@@ -137,5 +137,7 @@ public:
   std::map<CStdString, CPlexSectionFanout*> m_sections;
   
   CStdString                 m_lastSelectedItem;
+  CStdString                 m_currentFanArt;
+  CStdString                 m_lastSelectedSubItem;
 };
 

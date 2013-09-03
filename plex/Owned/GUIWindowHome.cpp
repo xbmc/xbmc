@@ -325,8 +325,10 @@ bool CGUIWindowHome::OnAction(const CAction &action)
   
   bool ret = CGUIWindow::OnAction(action);
   
+  int focusedControl = GetFocusedControlID();
+
   // See what's focused.
-  if (GetFocusedControl() && GetFocusedControl()->GetID() == MAIN_MENU)
+  if (focusedControl == MAIN_MENU)
   {
     CGUIBaseContainer* pControl = (CGUIBaseContainer*)GetFocusedControl();
     if (pControl)
@@ -335,6 +337,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
       if (pItem)
       {
         m_lastSelectedItem = GetCurrentItemName();
+        m_lastSelectedSubItem.Empty();
         if (!ShowSection(pItem->GetProperty("sectionPath").asString()) && !m_globalArt)
         {
           HideAllLists();
@@ -343,6 +346,23 @@ bool CGUIWindowHome::OnAction(const CAction &action)
       }
     }
   }
+  else if (focusedControl == CONTENT_LIST_ON_DECK ||
+           focusedControl == CONTENT_LIST_RECENTLY_ADDED ||
+           focusedControl == CONTENT_LIST_QUEUE ||
+           focusedControl == CONTENT_LIST_RECOMMENDATIONS ||
+           focusedControl == CONTENT_LIST_RECENTLY_ACCESSED)
+  {
+    CGUIBaseContainer* pControl = (CGUIBaseContainer*)GetFocusedControl();
+    if (pControl)
+    {
+      CGUIListItemPtr pItem = pControl->GetListItem(0);
+      if (pItem)
+      {
+        m_lastSelectedSubItem = pItem->GetProperty("key").asString();
+      }
+    }
+  }
+
   
   return ret;
 }
@@ -547,7 +567,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
       if (type == CONTENT_LIST_FANART)
       {
-        if (url == sectionToLoad || url == "global://art/")
+        if (url != m_currentFanArt && (url == sectionToLoad || url == "global://art/"))
         {
           CFileItemList list;
           if (GetContentListFromSection(url, CONTENT_LIST_FANART, list))
@@ -557,6 +577,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
             CLog::Log(LOGDEBUG, "GUIWindowHome:OnMessage activating global fanart with %d photos", list.Size());
             CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), SLIDESHOW_MULTIIMAGE, 0, 0, &list);
             OnMessage(msg);
+            m_currentFanArt = url;
           }
           else
             CLog::Log(LOGDEBUG, "CGUIWindowHome::OnMessage GetContentListFromSection returned empty list");
@@ -577,7 +598,19 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
               GetContentListFromSection(url, p, list);
               if(list.Size() > 0)
               {
-                CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), p, 0, 0, &list);
+                int selectedItem = 0;
+                if (!m_lastSelectedSubItem.empty())
+                {
+                  for (int i = 0; i < list.Size(); i ++)
+                  {
+                    if (list.Get(i)->GetPath() == m_lastSelectedSubItem)
+                    {
+                      selectedItem = i;
+                    }
+                  }
+                }
+
+                CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), p, selectedItem, 0, &list);
                 OnMessage(msg);
                 SET_CONTROL_VISIBLE(p);
               }
