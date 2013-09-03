@@ -392,7 +392,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
   strPath = CEnvironment::getenv(strTarget);
 
 #ifdef TARGET_WINDOWS
-  if (!strPath.IsEmpty())
+  if (strPath.find("..") != std::string::npos)
   {
     //expand potential relative path to full path
     CStdStringW strPathW;
