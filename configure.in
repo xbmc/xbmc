@@ -1964,6 +1964,9 @@ if test "$cross_compiling" = "yes"; then
     CFLAGS_FOR_BUILD="$CFLAGS_FOR_BUILD -I$NATIVE_ROOT/include"
     CXXFLAGS_FOR_BUILD="$CXXFLAGS_FOR_BUILD -I$NATIVE_ROOT/include"
     LDFLAGS_FOR_BUILD="$LDFLAGS_FOR_BUILD -L$NATIVE_ROOT/lib"
+    if test "$host_vendor" != "apple" ; then
+      LDFLAGS_FOR_BUILD="$LDFLAGS_FOR_BUILD -Wl,-rpath=$NATIVE_ROOT/lib"
+    fi
     final_message="$final_message\n  Native Root:\t$NATIVE_ROOT"
   fi
 else

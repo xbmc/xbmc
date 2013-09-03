@@ -520,7 +520,7 @@ else
 	$(SILENT_LD) $(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11 -lm
 endif
 
-tools/TexturePacker/TexturePacker: lib/libsquish/libsquish.a xbmc/guilib/XBTF.h
+tools/TexturePacker/TexturePacker: xbmc/guilib/XBTF.h
 	$(MAKE) -C tools/TexturePacker/
 
 
