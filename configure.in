@@ -695,7 +695,7 @@ case $host in
 esac
 AC_SUBST([ARCH])
 
-check_sdl_arch=[`file $USE_TEXTUREPACKER_NATIVE_ROOT/lib/libSDL_image.dylib | awk '{print $NF}'`]
+check_sdl_arch=[`file $NATIVE_ROOT/lib/libSDL_image.dylib | awk '{print $NF}'`]
 if test "x$check_sdl_arch" = "xi386" ; then
   DARWIN_NATIVE_ARCH=-m32
 elif test "x$check_sdl_arch" = "xx86_64" ; then
@@ -1960,6 +1960,12 @@ AC_C_BIGENDIAN
 
 if test "$cross_compiling" = "yes"; then
   final_message="$final_message\n  Crosscomp.:\tYes"
+  if [[ -d "$NATIVE_ROOT" ]]; then
+    CFLAGS_FOR_BUILD="$CFLAGS_FOR_BUILD -I$NATIVE_ROOT/include"
+    CXXFLAGS_FOR_BUILD="$CXXFLAGS_FOR_BUILD -I$NATIVE_ROOT/include"
+    LDFLAGS_FOR_BUILD="$LDFLAGS_FOR_BUILD -L$NATIVE_ROOT/lib"
+    final_message="$final_message\n  Native Root:\t$NATIVE_ROOT"
+  fi
 else
   final_message="$final_message\n  Crosscomp.:\tNo"
 fi
@@ -2103,8 +2109,8 @@ if test "x$use_texturepacker" != "xno"; then
   USE_TEXTUREPACKER=1
   if test "x$use_texturepacker_native" = "xyes"; then
     USE_TEXTUREPACKER_NATIVE=1
-    if [[ ! -d "$USE_TEXTUREPACKER_NATIVE_ROOT" ]]; then 
-      USE_TEXTUREPACKER_NATIVE_ROOT= 
+    if [[ ! -d "$NATIVE_ROOT" ]]; then
+      NATIVE_ROOT=
     fi
   fi
 else
@@ -2517,7 +2523,7 @@ AC_SUBST(USE_XRANDR)
 AC_SUBST(USE_ALSA)
 AC_SUBST(USE_TEXTUREPACKER)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE)
-AC_SUBST(USE_TEXTUREPACKER_NATIVE_ROOT)
+AC_SUBST(NATIVE_ROOT)
 AC_SUBST(USE_AIRTUNES)
 AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
