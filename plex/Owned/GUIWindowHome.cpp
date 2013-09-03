@@ -445,6 +445,10 @@ bool CGUIWindowHome::OnPopupMenu()
           buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
       }
 
+      CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(fileItem->GetProperty("plexserver").asString());
+      if (server && server->SupportsDeletion())
+        buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
+
       int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
 
       if (choice == CONTEXT_BUTTON_INFO)
@@ -477,7 +481,21 @@ bool CGUIWindowHome::OnPopupMenu()
           OnMessage(msg);
         }
       }
+      else if (choice == CONTEXT_BUTTON_DELETE)
+      {
+        // Confirm.
+        if (!CGUIDialogYesNo::ShowAndGetInput(122, 125, 0, 0))
+          return true;
 
+        g_plexApplication.mediaServerClient->deleteItem(fileItem);
+
+        /* marking as watched and is on the on deck list, we need to remove it then */
+        std::vector<CGUIListItemPtr> items = container->GetItems();
+        int idx = std::distance(items.begin(), std::find(items.begin(), items.end(), fileItem));
+        CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), controlId, idx+1, 0);
+        OnMessage(msg);
+      }
+      return true;
     }
   }
   return false;
