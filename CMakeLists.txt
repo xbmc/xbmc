@@ -2,7 +2,7 @@ project(updater)
 
 cmake_minimum_required(VERSION 2.6)
 enable_testing()
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 
 # If the SIGN_UPDATER option is enabled, the updater.exe
 # binary is digitally signed on Windows after it has been built.
