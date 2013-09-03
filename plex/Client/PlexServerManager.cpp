@@ -61,6 +61,9 @@ CPlexServerManager::FindByUUID(const CStdString &uuid)
 {
   CSingleLock lk(m_serverManagerLock);
 
+  if (m_stopped)
+    return CPlexServerPtr();
+
   if (uuid.Equals("myplex"))
     return _myPlexServer;
 
