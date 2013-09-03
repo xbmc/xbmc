@@ -6318,11 +6318,10 @@ void CApplication::UpdateFileState(const string& aState)
     state = CPlexMediaServerClient::MEDIA_STATE_BUFFERING;
   else if (aState == "stopped" )
     state = CPlexMediaServerClient::MEDIA_STATE_STOPPED;
+  else if (aState.empty())
+    state = IsBuffering() ? CPlexMediaServerClient::MEDIA_STATE_BUFFERING : IsPaused() ? CPlexMediaServerClient::MEDIA_STATE_PAUSED : CPlexMediaServerClient::MEDIA_STATE_PLAYING;
   else
     return;
-  
-  if (aState.empty())
-    state = IsBuffering() ? CPlexMediaServerClient::MEDIA_STATE_BUFFERING : IsPaused() ? CPlexMediaServerClient::MEDIA_STATE_PAUSED : CPlexMediaServerClient::MEDIA_STATE_PLAYING;
 
   if (!m_itemCurrentFile->HasProperty("duration"))
     m_itemCurrentFile->SetProperty("duration", GetTotalTime());
