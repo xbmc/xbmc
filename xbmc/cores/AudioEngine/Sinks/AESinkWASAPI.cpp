@@ -1182,11 +1182,7 @@ initialize:
 
   REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
 
-  /* Get m_audioSinkBufferSizeMsec from advancedsettings.xml */
-  audioSinkBufferDurationMsec = (REFERENCE_TIME)g_advancedSettings.m_audioSinkBufferDurationMsec * 10000;
-
-  /* Use advancedsetting value for buffer size as long as it's over minimum set above */
-  audioSinkBufferDurationMsec = (REFERENCE_TIME)std::max(audioSinkBufferDurationMsec, (REFERENCE_TIME)500000);
+  audioSinkBufferDurationMsec = (REFERENCE_TIME)500000;
   audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
 
   if (AE_IS_RAW(format.m_dataFormat))
