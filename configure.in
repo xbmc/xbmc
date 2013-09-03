@@ -5,6 +5,8 @@ AC_PREREQ(2.59)
 AC_INIT([xbmc], [12.9.8], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
+m4_include([m4/ax_prog_cc_for_build.m4])
+m4_include([m4/ax_prog_cxx_for_build.m4])
 m4_include([m4/ax_python_devel.m4])
 m4_include([m4/xbmc_arch.m4])
 
@@ -579,13 +581,15 @@ if test "x$host_vendor" != "xapple"; then
 fi
 
 # Checks for programs.
-PASSED_CXXFLAGS=$CXXFLAGS # Hack to override autoconf default values
-AC_PROG_CXX
-CXXFLAGS="$PASSED_CXXFLAGS $DEFAULT_COMPILE_FLAGS"
 PASSED_CFLAGS=$CFLAGS # Hack to override autoconf default values
 AC_PROG_CC
-AC_PROG_LIBTOOL
+AX_PROG_CC_FOR_BUILD
 CFLAGS="$PASSED_CFLAGS $DEFAULT_COMPILE_FLAGS"
+PASSED_CXXFLAGS=$CXXFLAGS # Hack to override autoconf default values
+AC_PROG_CXX
+AX_PROG_CXX_FOR_BUILD
+CXXFLAGS="$PASSED_CXXFLAGS $DEFAULT_COMPILE_FLAGS"
+AC_PROG_LIBTOOL
 AC_PROG_AWK
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -633,7 +637,6 @@ case $host in
      use_dvdcss=no
      use_gles=yes
      use_cpu=cortex-a8
-     use_texturepacker_native=yes
      ARCH="arm-osx"
      use_arch="arm"
      PYTHON_VERSION="2.6"
@@ -645,7 +648,6 @@ case $host in
   *86*-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
-     use_texturepacker_native=yes
      ARCH="x86-osx"
      ;;
   powerpc-apple-darwin*)
@@ -662,7 +664,6 @@ case $host in
      ARCH="powerpc64-linux"
      ;;
   arm*-*-linux-gnu*)
-     use_texturepacker=no
      ARCH="arm"
      use_arch="arm"
      ffmpeg_target_os=linux
@@ -691,7 +692,7 @@ case $host in
 esac
 AC_SUBST([ARCH])
 
-check_sdl_arch=[`file $USE_TEXTUREPACKER_NATIVE_ROOT/lib/libSDL_image.dylib | awk '{print $NF}'`]
+check_sdl_arch=[`file $NATIVE_ROOT/lib/libSDL_image.dylib | awk '{print $NF}'`]
 if test "x$check_sdl_arch" = "xi386" ; then
   DARWIN_NATIVE_ARCH=-m32
 elif test "x$check_sdl_arch" = "xx86_64" ; then
@@ -701,7 +702,6 @@ AC_SUBST([DARWIN_NATIVE_ARCH])
 
 if test "$target_platform" = "target_android" ; then
   USE_ANDROID=1
-  use_texturepacker_native=yes
   webserver_checkdepends=yes
   CFLAGS="$CFLAGS -Wno-psabi"
   CXXFLAGS="$CXXFLAGS -Wno-psabi"
@@ -712,8 +712,6 @@ case $use_platform in
   raspberry-pi)
      target_platform=target_raspberry_pi
      use_neon=no
-     use_texturepacker=yes
-     use_texturepacker_native=yes
      use_arch="arm"
      use_cpu=arm1176jzf-s
      use_hardcoded_tables="yes"
@@ -1956,6 +1954,15 @@ AC_C_BIGENDIAN
 
 if test "$cross_compiling" = "yes"; then
   final_message="$final_message\n  Crosscomp.:\tYes"
+  if [[ -d "$NATIVE_ROOT" ]]; then
+    CFLAGS_FOR_BUILD="$CFLAGS_FOR_BUILD -I$NATIVE_ROOT/include"
+    CXXFLAGS_FOR_BUILD="$CXXFLAGS_FOR_BUILD -I$NATIVE_ROOT/include"
+    LDFLAGS_FOR_BUILD="$LDFLAGS_FOR_BUILD -L$NATIVE_ROOT/lib"
+    if test "$host_vendor" != "apple" ; then
+      LDFLAGS_FOR_BUILD="$LDFLAGS_FOR_BUILD -Wl,-rpath=$NATIVE_ROOT/lib"
+    fi
+    final_message="$final_message\n  Native Root:\t$NATIVE_ROOT"
+  fi
 else
   final_message="$final_message\n  Crosscomp.:\tNo"
 fi
@@ -2093,16 +2100,9 @@ else
   final_message="$final_message\n  Bluray:\tNo"
 fi
 
-USE_TEXTUREPACKER_NATIVE=0
 if test "x$use_texturepacker" != "xno"; then
   final_message="$final_message\n  TexturePacker:Yes"
   USE_TEXTUREPACKER=1
-  if test "x$use_texturepacker_native" = "xyes"; then
-    USE_TEXTUREPACKER_NATIVE=1
-    if [[ ! -d "$USE_TEXTUREPACKER_NATIVE_ROOT" ]]; then 
-      USE_TEXTUREPACKER_NATIVE_ROOT= 
-    fi
-  fi
 else
   final_message="$final_message\n  TexturePacker:No"
   USE_TEXTUREPACKER=0
@@ -2467,6 +2467,11 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
 AC_SUBST(LDFLAGS)
+AC_SUBST(CXX_FOR_BUILD)
+AC_SUBST(CC_FOR_BUILD)
+AC_SUBST(CFLAGS_FOR_BUILD)
+AC_SUBST(CXXFLAGS_FOR_BUILD)
+AC_SUBST(LDFLAGS_FOR_BUILD)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(DISABLE_WAVEFORM)
@@ -2507,8 +2512,6 @@ AC_SUBST(USE_PULSE)
 AC_SUBST(USE_XRANDR)
 AC_SUBST(USE_ALSA)
 AC_SUBST(USE_TEXTUREPACKER)
-AC_SUBST(USE_TEXTUREPACKER_NATIVE)
-AC_SUBST(USE_TEXTUREPACKER_NATIVE_ROOT)
 AC_SUBST(USE_AIRTUNES)
 AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
