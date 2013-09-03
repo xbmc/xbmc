@@ -19,7 +19,7 @@ include_directories(
 
 if(TARGET_WIN32)
   # disable safe seh
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /DELAYLOAD:dnssd.dll /DELAYLOAD:dwmapi.dll /DELAYLOAD:libmicrohttpd-5.dll /DELAYLOAD:sqlite3.dll /DELAYLOAD:libsamplerate-0.dll")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /DELAYLOAD:dnssd.dll /DELAYLOAD:dwmapi.dll /DELAYLOAD:libmicrohttpd-5.dll /DELAYLOAD:sqlite3.dll /DELAYLOAD:libsamplerate-0.dll /MANIFEST:NO")
 endif(TARGET_WIN32)
 
 
@@ -89,6 +89,14 @@ if(HAVE_BREAKPAD)
    target_link_libraries(${PLEX_TARGET_NAME} ${LIBBREAKPAD_CLIENT})
   endif(NOT TARGET_WIN32)
 endif(HAVE_BREAKPAD)
+
+if(TARGET_WIN32)
+  add_custom_command(
+    TARGET ${PLEX_TARGET_NAME}
+	POST_BUILD
+	COMMAND "mt.exe" -manifest "${plexdir}/Resources/pht.manifest" -outputresource:"$<TARGET_FILE:${PLEX_TARGET_NAME}>"
+	COMMENT "Embedding manifest")
+endif(TARGET_WIN32)
 
 if(ENABLE_PYTHON)
   target_link_libraries(${PLEX_TARGET_NAME} addons_python)
