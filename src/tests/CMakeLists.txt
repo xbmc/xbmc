@@ -31,7 +31,7 @@ endforeach()
 
 # Add unit test binaries
 macro(ADD_UPDATER_TEST CLASS)
-  set(TEST_TARGET ${CLASS})
+  set(TEST_TARGET updater_${CLASS})
   add_executable(${TEST_TARGET} ${CLASS}.cpp)
   target_link_libraries(${TEST_TARGET} updatershared)
   add_test(${TEST_TARGET} ${TEST_TARGET})
@@ -47,5 +47,5 @@ add_updater_test(TestFileUtils)
 # Add updater that that performs a complete update install
 # and checks the result
 find_program(RUBY_BIN ruby)
-add_test(TestUpdateInstall ${RUBY_BIN} test-update.rb)
+add_test(updater_TestUpdateInstall ${RUBY_BIN} test-update.rb)
   
