@@ -5,6 +5,8 @@ AC_PREREQ(2.59)
 AC_INIT([xbmc], [12.9.8], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
+m4_include([m4/ax_prog_cc_for_build.m4])
+m4_include([m4/ax_prog_cxx_for_build.m4])
 m4_include([m4/ax_python_devel.m4])
 m4_include([m4/xbmc_arch.m4])
 
@@ -579,13 +581,15 @@ if test "x$host_vendor" != "xapple"; then
 fi
 
 # Checks for programs.
-PASSED_CXXFLAGS=$CXXFLAGS # Hack to override autoconf default values
-AC_PROG_CXX
-CXXFLAGS="$PASSED_CXXFLAGS $DEFAULT_COMPILE_FLAGS"
 PASSED_CFLAGS=$CFLAGS # Hack to override autoconf default values
 AC_PROG_CC
-AC_PROG_LIBTOOL
+AX_PROG_CC_FOR_BUILD
 CFLAGS="$PASSED_CFLAGS $DEFAULT_COMPILE_FLAGS"
+PASSED_CXXFLAGS=$CXXFLAGS # Hack to override autoconf default values
+AC_PROG_CXX
+AX_PROG_CXX_FOR_BUILD
+CXXFLAGS="$PASSED_CXXFLAGS $DEFAULT_COMPILE_FLAGS"
+AC_PROG_LIBTOOL
 AC_PROG_AWK
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -2467,6 +2471,11 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
 AC_SUBST(LDFLAGS)
+AC_SUBST(CXX_FOR_BUILD)
+AC_SUBST(CC_FOR_BUILD)
+AC_SUBST(CFLAGS_FOR_BUILD)
+AC_SUBST(CXXFLAGS_FOR_BUILD)
+AC_SUBST(LDFLAGS_FOR_BUILD)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(DISABLE_WAVEFORM)
