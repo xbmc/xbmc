@@ -134,8 +134,6 @@ if (SIGN_UPDATER)
 	add_custom_command(TARGET updater POST_BUILD COMMAND ${BINARY_SIGNING_TOOL} $<TARGET_FILE:updater>)
 endif()
 
-install(TARGETS updater RUNTIME DESTINATION bin)
-
 add_executable(zip-tool zip-tool.cpp)
 target_link_libraries(zip-tool updatershared)
 
