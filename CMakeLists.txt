@@ -17,16 +17,19 @@ include_directories(external)
 include_directories(external/TinyThread/source)
 
 if (WIN32)
-include_directories(external/zlib/)
-include_directories(external/bzip2)
-include_directories(external/win32cpp/include)
+    include_directories(external/zlib/)
+    include_directories(external/bzip2)
+    include_directories(external/win32cpp/include)
 
-# Link the updater binary statically with the Visual C++ runtime
-# so that the executable can function standalone
-set(CMAKE_CXX_FLAGS_RELEASE "/MT /O2 /Ob2 /D NDEBUG")
-set(CMAKE_C_FLAGS_RELEASE "/MT /O2 /Ob2 /D NDEBUG")
-remove_definitions(-DUNICODE -D_UNICODE)
+    # Link the updater binary statically with the Visual C++ runtime
+    # so that the executable can function standalone
+    set(CMAKE_CXX_FLAGS_DEBUG "/MT")
+    set(CMAKE_C_FLAGS_DEBUG "/MT")
 
+    set(CMAKE_CXX_FLAGS_RELEASE "/MT /O2 /Ob2 /D NDEBUG")
+    set(CMAKE_C_FLAGS_RELEASE "/MT /O2 /Ob2 /D NDEBUG")
+
+    remove_definitions(-DUNICODE -D_UNICODE)
 else()
 	# optimize for reduced code size
 	set(CMAKE_CXX_FLAGS_RELEASE "-Os")
