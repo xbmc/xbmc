@@ -5,6 +5,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "PlexConnection.h"
+#include "Utility/PlexTimer.h"
 
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
@@ -20,26 +21,17 @@ CPlexServerConnTestThread::CPlexServerConnTestThread(CPlexConnectionPtr conn, CP
 void
 CPlexServerConnTestThread::Process()
 {
-  bool success = false;
-  boost::timer t;
+  CPlexTimer t;
   CPlexConnection::ConnectionState state = m_conn->TestReachability(m_server);
 
   if (state == CPlexConnection::CONNECTION_STATE_REACHABLE)
-  {
-    CLog::Log(LOGDEBUG, "CPlexServerConnTestJob:DoWork took %f sec, Connection SUCCESS %s ~ localConn: %s conn: %s",
+    CLog::Log(LOGDEBUG, "CPlexServerConnTestJob:DoWork took %lld sec, Connection SUCCESS %s ~ localConn: %s conn: %s",
               t.elapsed(), m_server->GetName().c_str(), m_conn->IsLocal() ? "YES" : "NO", m_conn->GetAddress().Get().c_str());
-    success = true;
-  }
   else
-  {
-    CLog::Log(LOGDEBUG, "CPlexServerConnTestJob:DoWork took %f sec, Connection FAILURE %s ~ localConn: %s conn: %s",
+    CLog::Log(LOGDEBUG, "CPlexServerConnTestJob:DoWork took %lld sec, Connection FAILURE %s ~ localConn: %s conn: %s",
               t.elapsed(), m_server->GetName().c_str(), m_conn->IsLocal() ? "YES" : "NO", m_conn->GetAddress().Get().c_str());
-  }
 
-  m_server->OnConnectionTest(m_conn, success);
-  
-  m_conn.reset();
-  m_server.reset();
+  m_server->OnConnectionTest(m_conn, state);
 }
 
 bool
@@ -189,17 +181,24 @@ CPlexServer::UpdateReachability()
   return (bool)m_bestConnection;
 }
 
-void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, bool success)
+void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, int state)
 {
   CSingleLock lk(m_testingLock);
-  if (success)
+  if (state == CPlexConnection::CONNECTION_STATE_REACHABLE)
   {
     if (!m_bestConnection)
     {
+      CLog::Log(LOGDEBUG, "CPlexServer::OnConnectionTest setting bestConnection on %s to %s", GetName().c_str(), conn->GetAddress().Get().c_str());
       m_bestConnection = conn;
+
+      if (!m_complete)
+        m_testEvent.Set();
     }
     else if (conn->IsLocal() && !m_bestConnection->IsLocal())
+    {
+      CLog::Log(LOGDEBUG, "CPlexServer::OnConnectionTest found better connection on %s to %s", GetName().c_str(), conn->GetAddress().Get().c_str());
       m_activeConnection = conn;
+    }
   }
 
   if (--m_connectionsLeft == 0 && m_complete == false)

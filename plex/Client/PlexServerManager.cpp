@@ -28,7 +28,7 @@ CPlexServerReachabilityThread::Process()
     g_plexApplication.serverManager->ServerReachabilityDone(m_server, false);
 }
 
-CPlexServerManager::CPlexServerManager()
+CPlexServerManager::CPlexServerManager() : m_stopped(false)
 {
   _myPlexServer = CPlexServerPtr(new CPlexServer("myplex", "myPlex", true));
   _myPlexServer->AddConnection(CPlexConnectionPtr(new CMyPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "my.plexapp.com", 443)));

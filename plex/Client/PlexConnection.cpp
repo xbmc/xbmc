@@ -126,7 +126,6 @@ void CPlexConnection::save(TiXmlNode* server)
   conn.SetAttribute("port", m_url.GetPort());
   conn.SetAttribute("state", m_state);
   conn.SetAttribute("token", m_token.c_str());
-  conn.SetAttribute("refreshed", m_refreshed);
   conn.SetAttribute("type", m_type);
 
   server->InsertEndChild(conn);
@@ -154,8 +153,6 @@ CPlexConnectionPtr CPlexConnection::load(TiXmlElement *element)
   int state;
   if (element->QueryIntAttribute("state", &state) == TIXML_SUCCESS)
     connection->m_state = (CPlexConnection::ConnectionState)state;
-
-  element->QueryBoolAttribute("refreshed", &connection->m_refreshed);
 
   return connection;
 }
