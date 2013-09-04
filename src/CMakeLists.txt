@@ -106,6 +106,10 @@ target_link_libraries(updatershared
   tinythread
 )
 
+if(LINUX)
+  add_dependencies(updatershared resource_updatergtk)
+endif()
+
 if(APPLE)
   find_library(COCOA_LIBRARY Cocoa)
   find_library(SECURITY_LIBRARY Security)
