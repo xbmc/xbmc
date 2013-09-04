@@ -129,7 +129,7 @@ void CPlexAnalytics::sendTrackingRequest(const CUrlOptions &request)
 
   CLog::Log(LOGDEBUG, "CPlexAnalytics::sendTrackingRequest sending %s", j->m_data.c_str());
 
-#ifdef _DEBUG //don't send analytics for test builds
+#ifndef _DEBUG //don't send analytics for test builds
   CJobManager::GetInstance().AddJob(j, NULL, CJob::PRIORITY_LOW);
 #endif
 }
