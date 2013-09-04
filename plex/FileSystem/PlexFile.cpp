@@ -22,7 +22,7 @@ vector<stringPair> CPlexFile::GetHeaderList()
 
   hdrs.push_back(stringPair("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid")));
   hdrs.push_back(stringPair("X-Plex-Provides", "player"));
-  hdrs.push_back(stringPair("X-Plex-Product", "Plex for Home Theater"));
+  hdrs.push_back(stringPair("X-Plex-Product", "Plex Home Theater"));
   hdrs.push_back(stringPair("X-Plex-Device-Name", g_guiSettings.GetString("services.devicename")));
   
   hdrs.push_back(stringPair("X-Plex-Platform", "Plex Home Theater"));

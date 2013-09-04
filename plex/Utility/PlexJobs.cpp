@@ -45,6 +45,8 @@ bool CPlexMediaServerClientJob::DoWork()
     success = file.Get(m_url.Get(), m_data);
   else if (m_verb == "DELETE")
     success = file.Delete(m_url.Get(), m_data);
+  else if (m_verb == "POST")
+    success = file.Post(m_url.Get(), m_postData, m_data);
   
   return success;
 }

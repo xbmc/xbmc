@@ -33,7 +33,7 @@ int64_t CPlexTimer::elapsedMs() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-int CPlexTimer::elapsed() const
+int64_t CPlexTimer::elapsed() const
 {
   return elapsedMs() / 1000.0;
 }

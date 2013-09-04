@@ -27,6 +27,7 @@ class CPlexMediaServerClient;
 class CPlexServerDataLoader;
 class CPlexAutoUpdate;
 class BackgroundMusicPlayer;
+class CPlexAnalytics;
 
 class CPlexServiceListener;
 typedef boost::shared_ptr<CPlexServiceListener> CPlexServiceListenerPtr;
@@ -58,6 +59,7 @@ public:
   CPlexMediaServerClient *mediaServerClient;
   CPlexServerDataLoader *dataLoader;
   BackgroundMusicPlayer *backgroundMusicPlayer;
+  CPlexAnalytics *analytics;
       
 private:
   /// Members

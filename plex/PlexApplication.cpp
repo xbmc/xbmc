@@ -23,6 +23,7 @@
 #include "Client/PlexMediaServerClient.h"
 #include "PlexApplication.h"
 #include "interfaces/AnnouncementManager.h"
+#include "PlexAnalytics.h"
 
 #include "AutoUpdate/PlexAutoUpdate.h"
 
@@ -36,6 +37,7 @@ PlexApplication::Start()
   remoteSubscriberManager = new CPlexRemoteSubscriberManager;
   mediaServerClient = new CPlexMediaServerClient;
   backgroundMusicPlayer = new BackgroundMusicPlayer;
+  analytics = new CPlexAnalytics;
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 

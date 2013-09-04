@@ -17,7 +17,7 @@ class CPlexTimer
     CPlexTimer();
     void restart();
     int64_t elapsedMs() const;
-    int elapsed() const;
+    int64_t elapsed() const;
   
   private:
     boost::posix_time::ptime m_started;

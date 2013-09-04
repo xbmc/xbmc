@@ -72,6 +72,7 @@ public:
   std::string m_verb;
   CStdString m_data;
   CGUIMessage m_msg;
+  CStdString m_postData;
   int m_errorMsg;
   
   virtual bool operator==(const CJob* job) const
