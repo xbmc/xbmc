@@ -8,10 +8,14 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
 # ABI selection
-ifeq (,$(findstring x86_64,$(HOST)))
-ifneq ($(OS),android)
-  ABI=ABI=32
-endif
+ifeq ($(OS),linux)
+  ifeq (i686,$(findstring i686,$(HOST)))
+    ABI=ABI=32
+  else
+  ifeq (i386,$(findstring i386,$(HOST)))
+    ABI=ABI=32
+  endif
+  endif
 endif
 
 # configuration settings
