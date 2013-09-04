@@ -24,7 +24,7 @@
 		<aligny>top</aligny>
 		<textoffsety>1</textoffsety>
 		<texturefocus border="5">plex-orange-button.png</texturefocus>
-		<texturenofocus>-</texturenofocus>
+		<texturenofocus border="5">plex-grey-button.png</texturenofocus>
 	</default>
 	<default type="togglebutton">
 		<description>Default Togglebutton</description>
