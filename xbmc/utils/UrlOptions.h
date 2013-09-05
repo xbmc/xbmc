@@ -24,9 +24,12 @@
 #include "utils/Variant.h"
 
 /* PLEX */
+#ifndef TARGET_WINDOWS
+#include "config.h"
 #if defined(HAVE_STRINGS_H) && !defined(TARGET_WINDOWS)
 #include <strings.h>
 #endif
+#endif /* TARGET_WINDOWS */
 
 struct PlexUrlComp : std::binary_function<std::string, std::string, bool>
 {
