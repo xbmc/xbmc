@@ -35,7 +35,7 @@ extern "C"
 const std::string PresetLoader::PROJECTM_FILE_EXTENSION(".prjm");
 const std::string PresetLoader::MILKDROP_FILE_EXTENSION(".milk");
 
-PresetLoader::PresetLoader(std::string dirname = std::string()) :m_dirname(dirname), m_dir(0), m_ratingsSum(0)
+PresetLoader::PresetLoader(std::string dirname) :m_dirname(dirname), m_dir(0), m_ratingsSum(0)
 {
   // Do one scan
 	if (m_dirname != std::string())
