@@ -6,10 +6,10 @@ if "%WORKSPACE%"=="" (
 
 set DEPENDDIR="%WORKSPACE%\plex\build\dependencies"
 
-if not exist %DEPENDDIR%\vcredist\2010 mkdir %DEPENDDIR%\vcredist\2010
-if not exist %DEPENDDIR%\vcredist\2010\vcredist_x86.exe (
-  echo Downloading vc100 redist...
-  %WORKSPACE%\Project\BuildDependencies\bin\wget -nv -O %DEPENDDIR%\vcredist\2010\vcredist_x86.exe http://mirrors.xbmc.org/build-deps/win32/vcredist/2010/vcredist_x86.exe
+if not exist %DEPENDDIR%\vcredist\2012 mkdir %DEPENDDIR%\vcredist\2012
+if not exist %DEPENDDIR%\vcredist\2012\vcredist_x86.exe (
+  echo Downloading vc110 redist...
+  %WORKSPACE%\Project\BuildDependencies\bin\wget -nv -O %DEPENDDIR%\vcredist\2012\vcredist_x86.exe http://nightlies.plexapp.com/plex-dependencies/plex-home-theater-dependencies/win32/vcredist_x86.exe
 )
 
 if not exist %DEPENDDIR%\dxsetup mkdir %DEPENDDIR%\dxsetup
