@@ -376,6 +376,8 @@ protected:
   OMXClock m_av_clock;
 
   bool m_stepped;
+  int m_video_fifo;
+  int m_audio_fifo;
 
   CDVDOverlayContainer m_overlayContainer;
 
