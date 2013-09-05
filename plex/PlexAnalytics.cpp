@@ -80,7 +80,11 @@ void CPlexAnalytics::setCustomDimensions(CUrlOptions &options)
       options.AddOption("cd1", pair.second);
     if (pair.first == "X-Plex-Client-Identifier")
       options.AddOption("cd2", pair.second);
-    if (pair.first == "X-Plex-Platform")
+    /* Instead of sending X-Plex-Platform in cd3, that is always set to
+     * Plex Home Theater for PHT, we are going to send the OS since this
+     * make much more sense for us to track.
+     */
+    if (pair.first == "X-Plex-Model")
       options.AddOption("cd3", pair.second);
     if (pair.first == "X-Plex-Platform-Version")
       options.AddOption("cd4", pair.second);
@@ -88,8 +92,6 @@ void CPlexAnalytics::setCustomDimensions(CUrlOptions &options)
       options.AddOption("cd5", pair.second);
     if (pair.first == "X-Plex-Version")
       options.AddOption("cd6", pair.second);
-    if (pair.first == "X-Plex-Username")
-      options.AddOption("cd7", "1");
   }
 }
 
