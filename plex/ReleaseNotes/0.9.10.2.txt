@@ -1,0 +1,32 @@
+Upstream changes:
+* OSX audio went bad after 46, 62 or 180 minutes.
+* Race fixes for shutdown
+
+PHT new:
+* PHT can now play multi-part media, both channels and locally merged files.
+* Persist ServerManager on disk, will ensure faster startup and correct tokens used from start.
+* Rewritten remote protocol. iOS/Android apps should work so much better now.
+* Added automatic crash-reporting tool
+* Windows build is now built with Visual Studio 2012
+* Codec info dialog now gives some good Plex information as well
+* Queue and Recommendations on home window are now consolidated
+* RecentlyAdded for TV Shows are now stacked as on iOS and Android
+* When home window reloads it now remembers your position in the fan out.
+* You can now delete files from the fan out (use the context menu)
+
+PHT fixes:
+* Truely fix FLAC on Linux (Thanks MarkW)
+* Fix OpenELEC linking (Thanks MarkW)
+* Pass fanart/pictures/library art via the photo transcoder, fixes lot of crashes.
+* Reword confusing myPlex notification
+* Fix manual server connections
+* Fix file deletion
+* Better channel playback (especially HLS ones)
+* Really fix history problems in channels and TV shows
+* Fix tons of problems with home window reloading
+* Shutdown is now not "cheating" anymore. It will take longer to quit the app,
+  but it should work with things like restart and shutdown on windows.
+* Connectivity fixes
+* Fix a few crash-on-start problems
+* Fix coordinate system on windows when set in High DPI mode
+* Some skin fixes, including faded fanart
