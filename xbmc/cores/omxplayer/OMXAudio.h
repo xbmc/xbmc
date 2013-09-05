@@ -127,6 +127,7 @@ private:
   uint8_t       *m_vizRemapBuffer;
   CAERemap      m_vizRemap;
   bool          m_submitted_eos;
+  bool          m_failed_eos;
   typedef struct {
     int num_samples;
     float samples[VIS_PACKET_SIZE];

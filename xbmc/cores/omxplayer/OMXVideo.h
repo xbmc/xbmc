@@ -97,6 +97,7 @@ protected:
   ResolutionUpdateCallBackFn m_res_callback;
   void              *m_res_ctx;
   bool              m_submitted_eos;
+  bool              m_failed_eos;
   OMX_DISPLAYTRANSFORMTYPE m_transform;
   bool              m_settings_changed;
   static bool NaluFormatStartCodes(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize);
