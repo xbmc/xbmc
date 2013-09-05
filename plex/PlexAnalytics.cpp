@@ -123,11 +123,11 @@ void CPlexAnalytics::sendPing()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexAnalytics::sendTrackingRequest(const CUrlOptions &request)
 {
-  CURL u("http://analytics.google.com/collect");
+  CURL u("http://www.google-analytics.com/collect");
   CPlexMediaServerClientJob *j = new CPlexMediaServerClientJob(u, "POST");
   j->m_postData = request.GetOptionsString();
 
-  CLog::Log(LOGDEBUG, "CPlexAnalytics::sendTrackingRequest sending %s", j->m_data.c_str());
+  CLog::Log(LOGDEBUG, "CPlexAnalytics::sendTrackingRequest sending %s", j->m_postData.c_str());
 
 #ifndef _DEBUG //don't send analytics for test builds
   CJobManager::GetInstance().AddJob(j, NULL, CJob::PRIORITY_LOW);
