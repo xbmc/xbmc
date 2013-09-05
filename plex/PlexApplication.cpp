@@ -137,12 +137,12 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
     
     myPlexManager->Stop();
     delete myPlexManager;
-    
-    dataLoader->Stop();
-    delete dataLoader;
-    
+
     serverManager->Stop();
     delete serverManager;
+
+    dataLoader->Stop();
+    delete dataLoader;
     
     mediaServerClient->CancelJobs();
     delete mediaServerClient;
