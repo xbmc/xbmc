@@ -182,7 +182,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     return true; //empty strings are easy
 
   //input buffer for iconv() is the buffer from strSource
-  size_t      inBufSize  = (strSource.length() + 1) * sizeof(strSource[0]);
+  size_t      inBufSize  = (strSource.length() + 1) * sizeof(typename INPUT::value_type);
   const char* inBuf      = (const char*)strSource.c_str();
 
   //allocate output buffer for iconv()
