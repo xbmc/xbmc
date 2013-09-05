@@ -185,9 +185,6 @@ void OMXClock::OMXStateIdle(bool lock /* = true */)
   if(lock)
     Lock();
 
-  if(m_omx_clock.GetState() == OMX_StateExecuting)
-    m_omx_clock.SetStateForComponent(OMX_StatePause);
-
   if(m_omx_clock.GetState() != OMX_StateIdle)
     m_omx_clock.SetStateForComponent(OMX_StateIdle);
 
