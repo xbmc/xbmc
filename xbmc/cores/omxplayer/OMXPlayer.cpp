@@ -472,6 +472,8 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
   m_HasVideo          = false;
   m_HasAudio          = false;
   m_stepped           = false;
+  m_video_fifo        = 0;
+  m_audio_fifo        = 0;
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
 
@@ -1136,6 +1138,9 @@ void COMXPlayer::Process()
       current_deinterlace = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
     }
 
+    m_video_fifo = (int)(100.0*(m_omxPlayerVideo.GetDecoderBufferSize()-m_omxPlayerVideo.GetDecoderFreeSpace())/m_omxPlayerVideo.GetDecoderBufferSize());
+    m_audio_fifo = (int)(100.0*audio_fifo/m_omxPlayerAudio.GetCacheTotal());
+
     #ifdef _DEBUG
     static unsigned count;
     if ((count++ & 15) == 0)
@@ -1143,12 +1148,12 @@ void COMXPlayer::Process()
       char response[80];
       if (m_omxPlayerVideo.GetDecoderBufferSize() && m_omxPlayerAudio.GetCacheTotal())
         vc_gencmd(response, sizeof response, "render_bar 4 video_fifo %d %d %d %d",
-            (int)(100.0*(m_omxPlayerVideo.GetDecoderBufferSize()-m_omxPlayerVideo.GetDecoderFreeSpace())/m_omxPlayerVideo.GetDecoderBufferSize()),
+            m_video_fifo,
             (int)(100.0*video_fifo/m_omxPlayerAudio.GetCacheTotal()),
             0, 100);
       if (m_omxPlayerAudio.GetCacheTotal())
         vc_gencmd(response, sizeof response, "render_bar 5 audio_fifo %d %d %d %d",
-            (int)(100.0*audio_fifo/m_omxPlayerAudio.GetCacheTotal()),
+            m_audio_fifo,
             (int)(100.0*m_omxPlayerAudio.GetDelay()/m_omxPlayerAudio.GetCacheTotal()),
             0, 100);
       vc_gencmd(response, sizeof response, "render_bar 6 video_queue %d %d %d %d",
@@ -2849,8 +2854,6 @@ void COMXPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 {
   if (!m_bStop)
   {
-    double dDelay = m_omxPlayerVideo.GetDelay() / DVD_TIME_BASE - g_renderManager.GetDisplayLatency();
-
     double apts = m_omxPlayerAudio.GetCurrentPts();
     double vpts = m_omxPlayerVideo.GetCurrentPts();
     double dDiff = 0;
@@ -2872,16 +2875,16 @@ void COMXPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
         strBuf.AppendFormat(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
     }
 
-    strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s, omx vb:%8d ad:% 6.3f )"
-                         , dDelay
+    strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% )"
+                         , m_omxPlayerAudio.GetDelay()
                          , dDiff
                          , strEDL.c_str()
                          , (int)(CThread::GetRelativeUsage()*100)
                          , (int)(m_omxPlayerAudio.GetRelativeUsage()*100)
                          , (int)(m_omxPlayerVideo.GetRelativeUsage()*100)
                          , strBuf.c_str()
-                         , m_omxPlayerVideo.GetFreeSpace()
-                         , m_omxPlayerAudio.GetDelay());
+                         , m_audio_fifo
+                         , m_video_fifo);
 
   }
 }
