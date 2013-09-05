@@ -132,6 +132,11 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
     height = "1080";
     propertyName = "fanart";
   }
+  else if (key == "picture")
+  {
+    width = "1920";
+    height = "1080";
+  }
 
   mediaUrl.SetOption("width", width);
   mediaUrl.SetOption("height", height);

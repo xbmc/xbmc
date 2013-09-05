@@ -7,10 +7,17 @@
 //
 
 #include "PlexDirectoryTypeParserPicture.h"
+#include "PlexAttributeParser.h"
 
 void CPlexDirectoryTypeParserPicture::Process(CFileItem &item, CFileItem &mediaContainer, TiXmlElement *itemElement)
 {
   ParseMediaNodes(item, itemElement);
   if (item.m_mediaItems.size() > 0 && item.m_mediaItems[0]->m_mediaParts.size() > 0)
-    item.SetPath(item.m_mediaItems[0]->m_mediaParts[0]->GetPath());
+  {
+    /* Pass the path URL via the transcoder, because XBMC raw file reader sucks */
+    CPlexAttributeParserMediaUrl mUrl;
+    mUrl.Process(item.GetPath(), "picture", item.m_mediaItems[0]->m_mediaParts[0]->GetProperty("unprocessed_key").asString(), &item);
+    item.SetPath(item.GetArt("picture"));
+    CLog::Log(LOGDEBUG, "CPlexDirectoryTypeParserPicture: setting key = %s", item.GetPath().c_str());
+  }
 }
