@@ -51,7 +51,8 @@ using namespace std;
 using namespace TagLib;
 using namespace MUSIC_INFO;
 
-class TagStringHandler : public ID3v2::Latin1StringHandler
+template<class T>
+class TagStringHandler : public T
 {
 public:
   TagStringHandler() {}
@@ -65,7 +66,8 @@ public:
   }
 };
 
-static const TagStringHandler StringHandler;
+static const TagStringHandler<ID3v1::StringHandler> ID3v1StringHandler;
+static const TagStringHandler<ID3v2::Latin1StringHandler> ID3v2StringHandler;
 
 CTagLoaderTagLib::CTagLoaderTagLib()
 {
@@ -110,7 +112,8 @@ bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, c
     return false;
   }
   
-  ID3v2::Tag::setLatin1StringHandler(&StringHandler);
+  ID3v1::Tag::setStringHandler(&ID3v1StringHandler);
+  ID3v2::Tag::setLatin1StringHandler(&ID3v2StringHandler);
   TagLib::File*              file = NULL;
   TagLib::APE::File*         apeFile = NULL;
   TagLib::ASF::File*         asfFile = NULL;
