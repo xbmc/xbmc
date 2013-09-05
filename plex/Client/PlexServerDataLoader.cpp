@@ -152,19 +152,17 @@ CPlexServerDataLoaderJob::DoWork()
   }
   else
   {
-    m_sectionList = FetchList("/pms/playlists");
-    if (m_sectionList)
+    CFileItemListPtr recList = FetchList("/pms/playlists/recommendations/all");
+    CFileItemListPtr qList = FetchList("/pms/playlists/queue/all");
+    if (recList && qList && (recList->Size() > 0 || qList->Size() > 0))
     {
-      m_sectionList->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
-      for (int i = 0; i < m_sectionList->Size(); i ++)
-      {
-        CFileItemPtr item = m_sectionList->Get(i);
-        if (item->GetPath() == "plexserver://myplex/pms/playlists/recommendations")
-          item->SetLabel(g_localizeStrings.Get(44022));
-        else if (item->GetPath() == "plexserver://myplex/pms/playlists/queue")
-          item->SetLabel(g_localizeStrings.Get(44021));
-        item->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
-      }
+      m_sectionList = CFileItemListPtr(new CFileItemList);
+      CFileItemPtr myPlexSection = CFileItemPtr(new CFileItem("plexserver://myplex/pms/playlists"));
+      myPlexSection->SetProperty("serverName", "myPlex");
+      myPlexSection->SetPath("plexserver://myplex/pms/playlists");
+      myPlexSection->SetLabel(g_localizeStrings.Get(44021));
+      myPlexSection->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
+      m_sectionList->Add(myPlexSection);
     }
   }
   return true;

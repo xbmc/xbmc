@@ -163,8 +163,11 @@ void CPlexSectionFanout::Refresh()
   {
     if (!g_advancedSettings.m_bHideFanouts)
     {
-      PlexUtils::AppendPathToURL(trueUrl, "unwatched");
-      LoadSection(trueUrl, CONTENT_LIST_QUEUE);
+      PlexUtils::AppendPathToURL(trueUrl, "queue/unwatched");
+      m_outstandingJobs.push_back(LoadSection(trueUrl, CONTENT_LIST_QUEUE));
+      trueUrl = CURL(m_url);
+      PlexUtils::AppendPathToURL(trueUrl, "recommendations/unwatched");
+      m_outstandingJobs.push_back(LoadSection(trueUrl, CONTENT_LIST_RECOMMENDATIONS));
     }
   }
   else if (m_sectionType == SECTION_TYPE_CHANNELS)
