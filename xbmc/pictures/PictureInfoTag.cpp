@@ -328,7 +328,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
     // Ascii, Unicode (UCS2), JIS (X208-1990), Unknown (application specific)
     if (m_exifInfo.CommentsCharset == EXIF_COMMENT_CHARSET_UNICODE)
     {
-      g_charsetConverter.ucs2ToUTF8(CStdString16((uint16_t*)m_exifInfo.Comments), value);
+      g_charsetConverter.ucs2ToUTF8(std::u16string((char16_t*)m_exifInfo.Comments), value);
     }
     else
     {
