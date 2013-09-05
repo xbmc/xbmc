@@ -64,7 +64,7 @@ echo "***** Building libdvdnav *****"
       --disable-shared \
       --enable-static \
       --extra-cflags="-D_XBMC -DNDEBUG -I`pwd`/../includes" \
-      --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
+      --with-dvdread-config="`pwd`/../dvdread-config" \
       --disable-debug
 mkdir -p ../includes/dvdnav
 cp ../libdvdnav/src/dvdnav/*.h ../includes/dvdnav
