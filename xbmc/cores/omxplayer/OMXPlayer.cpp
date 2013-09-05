@@ -4439,6 +4439,8 @@ void COMXPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)
 {
   renderFeatures.push_back(RENDERFEATURE_STRETCH);
   renderFeatures.push_back(RENDERFEATURE_CROP);
+  renderFeatures.push_back(RENDERFEATURE_PIXEL_RATIO);
+  renderFeatures.push_back(RENDERFEATURE_ZOOM);
 }
 
 void COMXPlayer::GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
