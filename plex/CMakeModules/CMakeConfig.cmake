@@ -91,12 +91,6 @@ endif(ENABLE_DVD_DRIVE)
 
 configure_file(${root}/xbmc/DllPaths_generated.h.in ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h)
 
-# this file is not needed on windows
-if(NOT WIN32)
-  configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)
-  set_source_files_properties(xbmc/config.h PROPERTIES GENERATED TRUE)
-endif(NOT WIN32)
-
 find_package(SSE)
 if(NOT TARGET_WIN32)
   if(SSSE3_FOUND)
@@ -115,6 +109,15 @@ if(HAVE_BREAKPAD)
   include_directories(${BREAKPAD_INC_DIR})
   add_definitions(-DHAVE_BREAKPAD)
 endif(HAVE_BREAKPAD)
+
+# check some compiler Intrinsics
+find_package(Intrinsics)
+
+# this file is not needed on windows
+if(NOT WIN32)
+  configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)
+  set_source_files_properties(xbmc/config.h PROPERTIES GENERATED TRUE)
+endif(NOT WIN32)
 
 message(STATUS "-- Configuration Summary:")
 message(STATUS "Enable DVD drive: " ${ENABLE_DVD_DRIVE})
