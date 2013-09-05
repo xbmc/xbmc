@@ -19,9 +19,27 @@
  *
  */
 #include "Addon.h"
+#include "AddonDatabase.h"
 
 namespace ADDON
 {
+  /**
+   * Class CServiceManager - lightweight service manager. Responisbilities are
+   * to start/stop service add-ons when they are enabled/disabled in the add-on
+   * database.
+   */
+  class CServiceManager: public IAddonDatabaseCallback
+  {
+  protected:
+    CServiceManager();
+    virtual ~CServiceManager();
+
+  public:
+    static CServiceManager &Get();
+
+    virtual void AddonDisabled(ADDON::AddonPtr addon);
+    virtual void AddonEnabled(ADDON::AddonPtr addon, bool bDisabled);
+  };
 
   class CService: public CAddon
   {

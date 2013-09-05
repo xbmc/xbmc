@@ -20,15 +20,17 @@
 
 #include "AddonDatabase.h"
 #include "addons/AddonManager.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "XBDateTime.h"
-#include "addons/Service.h"
 #include "dbwrappers/dataset.h"
-#include "pvr/PVRManager.h"
 
 using namespace ADDON;
 using namespace std;
+
+map<TYPE, IAddonDatabaseCallback*> CAddonDatabase::m_observers;
+CCriticalSection                   CAddonDatabase::m_critSection;
 
 CAddonDatabase::CAddonDatabase()
 {
@@ -41,6 +43,33 @@ CAddonDatabase::~CAddonDatabase()
 bool CAddonDatabase::Open()
 {
   return CDatabase::Open();
+}
+
+IAddonDatabaseCallback* CAddonDatabase::GetCallbackForType(TYPE type)
+{
+  CSingleLock lock(m_critSection);
+  if (m_observers.find(type) == m_observers.end())
+    return NULL;
+  else
+    return m_observers[type];
+}
+
+bool CAddonDatabase::RegisterAddonDatabaseCallback(const TYPE type, IAddonDatabaseCallback* cb)
+{
+  if (cb == NULL)
+    return false;
+
+  CSingleLock lock(m_critSection);
+  m_observers.erase(type);
+  m_observers[type] = cb;
+
+  return true;
+}
+
+void CAddonDatabase::UnregisterAddonDatabaseCallback(TYPE type)
+{
+  CSingleLock lock(m_critSection);
+  m_observers.erase(type);
 }
 
 bool CAddonDatabase::CreateTables()
@@ -572,18 +601,8 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
         m_pDS->exec(sql);
 
         AddonPtr addon;
-        // If the addon is a service, stop it
-        if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false) && addon)
-        {
-          boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
-          if (service)
-            service->Stop();
-        }
-        // restart the pvr manager when disabling a pvr add-on with the pvr manager enabled
-        else if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon &&
-            PVR::CPVRManager::Get().IsStarted())
-          PVR::CPVRManager::Get().Start(true);
-
+        if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_UNKNOWN, false))
+          OnDisable(addon);
         return true;
       }
       return false; // already disabled or failed query
@@ -595,16 +614,8 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
       m_pDS->exec(sql);
 
       AddonPtr addon;
-      // If the addon is a service, start it
-      if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false) && addon && disabled)
-      {
-        boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
-        if (service)
-          service->Start();
-      }
-      // (re)start the pvr manager when enabling a pvr add-on
-      else if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon)
-        PVR::CPVRManager::Get().Start(true);
+      if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_UNKNOWN, false))
+        OnEnable(addon, disabled);
     }
     return true;
   }
@@ -613,6 +624,26 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
     CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
   }
   return false;
+}
+
+void CAddonDatabase::OnEnable(const ADDON::AddonPtr &addon, bool bDisabled)
+{
+  if (!addon)
+    return;
+  
+  IAddonDatabaseCallback *cb = GetCallbackForType(addon->Type());
+  if (cb)
+    cb->AddonEnabled(addon, bDisabled);
+}
+
+void CAddonDatabase::OnDisable(const ADDON::AddonPtr &addon)
+{
+  if (!addon)
+    return;
+  
+  IAddonDatabaseCallback *cb = GetCallbackForType(addon->Type());
+  if (cb)
+    cb->AddonDisabled(addon);
 }
 
 bool CAddonDatabase::BreakAddon(const CStdString &addonID, const CStdString& reason)
