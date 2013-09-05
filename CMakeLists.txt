@@ -21,13 +21,14 @@ if (WIN32)
     include_directories(external/bzip2)
     include_directories(external/win32cpp/include)
 
-    # Link the updater binary statically with the Visual C++ runtime
-    # so that the executable can function standalone
+    # - Link the updater binary statically with the Visual C++ runtime
+    #   so that the executable can function standalone.
+    # - Enable PDB generation for release builds
     set(CMAKE_CXX_FLAGS_DEBUG "/MT")
     set(CMAKE_C_FLAGS_DEBUG "/MT")
 
-    set(CMAKE_CXX_FLAGS_RELEASE "/MT /O2 /Ob2 /D NDEBUG")
-    set(CMAKE_C_FLAGS_RELEASE "/MT /O2 /Ob2 /D NDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "/MT /Zi /O2 /Ob2 /D NDEBUG")
+    set(CMAKE_C_FLAGS_RELEASE "/MT /Zi /O2 /Ob2 /D NDEBUG")
 
     remove_definitions(-DUNICODE -D_UNICODE)
 else()
