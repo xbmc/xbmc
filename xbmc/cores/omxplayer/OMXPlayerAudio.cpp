@@ -577,7 +577,6 @@ bool OMXPlayerAudio::OpenDecoder()
 
   /* setup audi format for audio render */
   m_format.m_sampleRate    = m_hints.samplerate;
-  m_format.m_channelLayout = m_pAudioCodec->GetChannelMap(); 
   /* GetDataFormat is setting up evrything */
   m_format.m_dataFormat = GetDataFormat(m_hints);
 
@@ -588,6 +587,20 @@ bool OMXPlayerAudio::OpenDecoder()
   else
     device = "local";
 
+  m_format.m_channelLayout.Reset();
+  if (m_pAudioCodec && !m_passthrough)
+    m_format.m_channelLayout = m_pAudioCodec->GetChannelMap();
+  else if (m_passthrough)
+  {
+    // we just want to get the channel count right to stop OMXAudio.cpp rejecting stream
+    // the actual layout is not used
+    if (m_nChannels > 0 ) m_format.m_channelLayout += AE_CH_FL;
+    if (m_nChannels > 1 ) m_format.m_channelLayout += AE_CH_FR;
+    if (m_nChannels > 2 ) m_format.m_channelLayout += AE_CH_FC;
+    if (m_nChannels > 3 ) m_format.m_channelLayout += AE_CH_LFE;
+    if (m_nChannels > 4 ) m_format.m_channelLayout += AE_CH_BL;
+    if (m_nChannels > 5 ) m_format.m_channelLayout += AE_CH_BR;
+  }
   bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, device, m_av_clock, m_hints, m_passthrough, m_hw_decode);
 
   m_codec_name = "";
