@@ -292,7 +292,6 @@ static void logicalToVisualBiDi(const std::string& strSource, std::string& strDe
   strDest.clear();
   vector<std::string> lines = StringUtils::Split(strSource, "\n");
   std::string resultString;
-  CStdString strTmp;
 
   if (bWasFlipped)
     *bWasFlipped = false;
@@ -303,10 +302,23 @@ static void logicalToVisualBiDi(const std::string& strSource, std::string& strDe
 
     // Convert from the selected charset to Unicode
     FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
+    if (logical == NULL)
+    {
+      CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
+      return;
+    }
     int len = fribidi_charset_to_unicode(fribidiCharset, (char*) lines[i].c_str(), sourceLen, logical);
 
     FriBidiChar* visual = (FriBidiChar*) malloc((len + 1) * sizeof(FriBidiChar));
     FriBidiLevel* levels = (FriBidiLevel*) malloc((len + 1) * sizeof(FriBidiLevel));
+    if (levels == NULL || visual == NULL)
+    {
+      free(logical);
+      free(visual);
+      free(levels);
+      CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
+      return;
+    }
 
     if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, levels))
     {
@@ -316,14 +328,13 @@ static void logicalToVisualBiDi(const std::string& strSource, std::string& strDe
       // Apperently a string can get longer during this transformation
       // so make sure we allocate the maximum possible character utf8
       // can generate atleast, should cover all bases
-      char* result = strTmp.GetBuffer(len*4);
+      char* result = new char[len*4];
 
       // Convert back from Unicode to the charset
       int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
       ASSERT(len2 <= len*4);
-      strTmp.ReleaseBuffer();
-
-      resultString += strTmp;
+      resultString += result;
+      delete[] result;
 
       // Check whether the string was flipped if one of the embedding levels is greater than 0
       if (bWasFlipped && !*bWasFlipped)
