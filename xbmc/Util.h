@@ -144,10 +144,6 @@ public:
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
-#ifdef TARGET_WINDOWS
-  static bool AddExtraLongPathPrefix(std::wstring& path);
-  static bool RemoveExtraLongPathPrefix(std::wstring& path);
-#endif // TARGET_WINDOWS
   /*! \brief Checks wether the supplied path supports Write file operations (e.g. Rename, Delete, ...)
 
    \param strPath the path to be checked
