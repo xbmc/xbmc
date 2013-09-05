@@ -86,6 +86,8 @@ public:
   bool fromW(const std::wstring& wStringSrc, std::string& stringDst, const std::string& enc);
 
   static void SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current);
+private:
+  static const int m_Utf8CharMinSize, m_Utf8CharMaxSize;
 };
 
 XBMC_GLOBAL(CCharsetConverter,g_charsetConverter);

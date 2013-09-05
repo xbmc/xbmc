@@ -138,7 +138,9 @@ static struct SCharsetMapping
 };
 
 
-#define UTF8_DEST_MULTIPLIER 6
+/* single symbol sizes in chars */
+const int CCharsetConverter::m_Utf8CharMinSize = 1;
+const int CCharsetConverter::m_Utf8CharMaxSize = 6;
 
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
@@ -187,7 +189,7 @@ static bool convert(iconv_t& type, int multiplier, const std::string& strFromCha
   const char* inBuf      = (const char*)strSource.c_str();
 
   //allocate output buffer for iconv()
-  size_t      outBufSize = (strSource.length() + 1) * multiplier;
+  size_t      outBufSize = (strSource.length() + 1) * sizeof(typename OUTPUT::value_type) * multiplier;
   char*       outBuf     = (char*)malloc(outBufSize);
   if (outBuf == NULL)
   {
@@ -461,12 +463,12 @@ bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& 
     FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
     logicalToVisualBiDi(utf8StringSrc, strFlipped, FRIBIDI_UTF8, charset, bWasFlipped);
     CSingleLock lock(m_critSection);
-    return convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wStringDst);
+    return convert(m_iconvUtf8toW,1,UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wStringDst);
   }
   else
   {
     CSingleLock lock(m_critSection);
-    return convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,utf8StringSrc,wStringDst);
+    return convert(m_iconvUtf8toW,1,UTF8_SOURCE,WCHAR_CHARSET,utf8StringSrc,wStringDst);
   }
 }
 
@@ -474,7 +476,7 @@ bool CCharsetConverter::subtitleCharsetToW(const std::string& stringSrc, std::ws
 {
   // No need to flip hebrew/arabic as mplayer does the flipping
   CSingleLock lock(m_critSection);
-  return convert(m_iconvSubtitleCharsetToW,sizeof(wchar_t),g_langInfo.GetSubtitleCharSet(),WCHAR_CHARSET,stringSrc,wStringDst);
+  return convert(m_iconvSubtitleCharsetToW,1,g_langInfo.GetSubtitleCharSet(),WCHAR_CHARSET,stringSrc,wStringDst);
 }
 
 bool CCharsetConverter::fromW(const std::wstring& wStringSrc,
@@ -482,7 +484,7 @@ bool CCharsetConverter::fromW(const std::wstring& wStringSrc,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  const bool result = convert(iconvString,4,WCHAR_CHARSET,enc,wStringSrc,stringDst);
+  const bool result = convert(iconvString,m_Utf8CharMaxSize,WCHAR_CHARSET,enc,wStringSrc,stringDst);
   iconv_close(iconvString);
   return result;
 }
@@ -492,7 +494,7 @@ bool CCharsetConverter::toW(const std::string& stringSrc,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  const bool result = convert(iconvString,sizeof(wchar_t),enc,WCHAR_CHARSET,stringSrc,wStringDst);
+  const bool result = convert(iconvString,1,enc,WCHAR_CHARSET,stringSrc,wStringDst);
   iconv_close(iconvString);
   return result;
 }
@@ -513,7 +515,7 @@ bool CCharsetConverter::stringCharsetToUtf8(const std::string& strSourceCharset,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  const bool result = convert(iconvString,UTF8_DEST_MULTIPLIER,strSourceCharset,"UTF-8",stringSrc,utf8StringDst);
+  const bool result = convert(iconvString,m_Utf8CharMaxSize,strSourceCharset,"UTF-8",stringSrc,utf8StringDst);
   iconv_close(iconvString);
   return result;
 }
@@ -527,7 +529,7 @@ bool CCharsetConverter::utf8To(const std::string& strDestCharset, const std::str
   }
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  const bool result = convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,utf8StringSrc,stringDst);
+  const bool result = convert(iconvString,1,UTF8_SOURCE,strDestCharset,utf8StringSrc,stringDst);
   iconv_close(iconvString);
   return result;
 }
@@ -536,7 +538,7 @@ bool CCharsetConverter::utf8To(const std::string& strDestCharset, const std::str
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  const bool result = convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,utf8StringSrc,utf16StringDst);
+  const bool result = convert(iconvString,1,UTF8_SOURCE,strDestCharset,utf8StringSrc,utf16StringDst);
   iconv_close(iconvString);
   return result;
 }
@@ -545,7 +547,7 @@ bool CCharsetConverter::utf8To(const std::string& strDestCharset, const std::str
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  const bool result = convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,utf8StringSrc,utf32StringDst);
+  const bool result = convert(iconvString,1,UTF8_SOURCE,strDestCharset,utf8StringSrc,utf32StringDst);
   iconv_close(iconvString);
   return result;
 }
@@ -565,38 +567,38 @@ bool CCharsetConverter::unknownToUTF8(const std::string& stringSrc, std::string&
     return true;
   }
   CSingleLock lock(m_critSection);
-  return convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", stringSrc, utf8StringDst);
+  return convert(m_iconvStringCharsetToUtf8, m_Utf8CharMaxSize, g_langInfo.GetGuiCharSet(), "UTF-8", stringSrc, utf8StringDst);
 }
 
 bool CCharsetConverter::wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst)
 {
   CSingleLock lock(m_critSection);
-  return convert(m_iconvWtoUtf8,UTF8_DEST_MULTIPLIER,WCHAR_CHARSET,"UTF-8",wStringSrc,utf8StringDst);
+  return convert(m_iconvWtoUtf8,m_Utf8CharMaxSize,WCHAR_CHARSET,"UTF-8",wStringSrc,utf8StringDst);
 }
 
 bool CCharsetConverter::utf16BEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst)
 {
   CSingleLock lock(m_critSection);
-  return convert(m_iconvUtf16BEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16BE","UTF-8",utf16StringSrc,utf8StringDst);
+  return convert(m_iconvUtf16BEtoUtf8,m_Utf8CharMaxSize,"UTF-16BE","UTF-8",utf16StringSrc,utf8StringDst);
 }
 
 bool CCharsetConverter::utf16LEtoUTF8(const std::u16string& utf16StringSrc,
                                       std::string& utf8StringDst)
 {
   CSingleLock lock(m_critSection);
-  return convert(m_iconvUtf16LEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16LE","UTF-8",utf16StringSrc,utf8StringDst);
+  return convert(m_iconvUtf16LEtoUtf8,m_Utf8CharMaxSize,"UTF-16LE","UTF-8",utf16StringSrc,utf8StringDst);
 }
 
 bool CCharsetConverter::ucs2ToUTF8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst)
 {
   CSingleLock lock(m_critSection);
-  return convert(m_iconvUcs2CharsetToUtf8,UTF8_DEST_MULTIPLIER,"UCS-2LE","UTF-8",ucs2StringSrc,utf8StringDst);
+  return convert(m_iconvUcs2CharsetToUtf8,m_Utf8CharMaxSize,"UCS-2LE","UTF-8",ucs2StringSrc,utf8StringDst);
 }
 
 bool CCharsetConverter::utf16LEtoW(const std::u16string& utf16String, std::wstring& wString)
 {
   CSingleLock lock(m_critSection);
-  return convert(m_iconvUtf16LEtoW,sizeof(wchar_t),"UTF-16LE",WCHAR_CHARSET,utf16String,wString);
+  return convert(m_iconvUtf16LEtoW,1,"UTF-16LE",WCHAR_CHARSET,utf16String,wString);
 }
 
 bool CCharsetConverter::ucs2CharsetToStringCharset(const std::u16string& ucs2StringSrc, std::string& stringDst, bool swap /*= false*/)
@@ -617,7 +619,7 @@ bool CCharsetConverter::ucs2CharsetToStringCharset(const std::u16string& ucs2Str
     }
   }
   CSingleLock lock(m_critSection);
-  return convert(m_iconvUcs2CharsetToStringCharset,4,"UTF-16LE",
+  return convert(m_iconvUcs2CharsetToStringCharset,1,"UTF-16LE",
           g_langInfo.GetGuiCharSet(),strCopy,stringDst);
 }
 
