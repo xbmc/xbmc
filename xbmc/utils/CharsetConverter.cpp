@@ -284,19 +284,19 @@ static bool convert(iconv_t& type, int multiplier, const std::string& strFromCha
 
 using namespace std;
 
-static void logicalToVisualBiDi(const std::string& stringSrc, std::string& stringDst, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped =NULL)
+static bool logicalToVisualBiDi(const std::string& stringSrc, std::string& stringDst, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped =NULL)
 {
-  // libfribidi is not threadsafe, so make sure we make it so
-  CSingleLock lock(m_critSection);
-
   stringDst.clear();
   vector<std::string> lines = StringUtils::Split(stringSrc, "\n");
-  std::string resultString;
 
   if (bWasFlipped)
     *bWasFlipped = false;
 
-  for (unsigned int i = 0; i < lines.size(); i++)
+  // libfribidi is not threadsafe, so make sure we make it so
+  CSingleLock lock(m_critSection);
+
+  const size_t numLines = lines.size();
+  for (size_t i = 0; i < numLines; i++)
   {
     int sourceLen = lines[i].length();
 
@@ -305,7 +305,7 @@ static void logicalToVisualBiDi(const std::string& stringSrc, std::string& strin
     if (logical == NULL)
     {
       CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
-      return;
+      return false;
     }
     int len = fribidi_charset_to_unicode(fribidiCharset, (char*) lines[i].c_str(), sourceLen, logical);
 
@@ -317,7 +317,7 @@ static void logicalToVisualBiDi(const std::string& stringSrc, std::string& strin
       free(visual);
       free(levels);
       CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
-      return;
+      return false;
     }
 
     if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, levels))
@@ -333,7 +333,7 @@ static void logicalToVisualBiDi(const std::string& stringSrc, std::string& strin
       // Convert back from Unicode to the charset
       int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
       ASSERT(len2 <= len*4);
-      resultString += result;
+      stringDst += result;
       delete[] result;
 
       // Check whether the string was flipped if one of the embedding levels is greater than 0
@@ -355,7 +355,7 @@ static void logicalToVisualBiDi(const std::string& stringSrc, std::string& strin
     free(levels);
   }
 
-  stringDst = resultString;
+  return true;
 }
 
 CCharsetConverter::CCharsetConverter()
