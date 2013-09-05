@@ -268,14 +268,14 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
   }
   //we're done
 
-  size_t bytesWritten = outBufSize - outBytesAvail;
-  char*  dest         = (char*)strDest.GetBuffer(bytesWritten);
+  const typename OUTPUT::size_type sizeInChars = (typename OUTPUT::size_type) (outBufSize - outBytesAvail) / sizeof(typename OUTPUT::value_type);
+  typename OUTPUT::const_pointer strPtr = (typename OUTPUT::const_pointer) outBuf;
+  /* Make sure that all buffer is assigned and string is stopped at end of buffer */
+  if (strPtr[sizeInChars-1] == 0)
+    strDest.assign(strPtr, sizeInChars-1);
+  else
+    strDest.assign(strPtr, sizeInChars);
 
-  //copy the output from iconv() into the CStdString
-  memcpy(dest, outBuf, bytesWritten);
-
-  strDest.ReleaseBuffer();
-  
   free(outBuf);
 
   return true;
