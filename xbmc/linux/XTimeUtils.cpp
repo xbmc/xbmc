@@ -90,10 +90,22 @@ BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileT
   return true;
 }
 
+#ifdef __PLEX__
+/* thread-safe version of timegm() */
+time_t plex_timegm(struct tm *tm)
+{
+    mktime(tm);
+    time_t ret = tm->tm_sec + tm->tm_min*60 + tm->tm_hour*3600 + tm->tm_yday*86400;
+    ret += ((time_t)31536000) * (tm->tm_year-70);
+    ret += ((tm->tm_year-69)/4)*86400 - ((tm->tm_year-1)/100)*86400 + ((tm->tm_year+299)/400)*86400;
+    return ret;
+}
+#endif
+
 BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime)
 {
   static const int dayoffset[12] = {0, 31, 59, 90, 120, 151, 182, 212, 243, 273, 304, 334};
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN) && !defined(__PLEX__)
   static long timegm_lock = 0;
 #endif
 
@@ -112,14 +124,18 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   if (IsLeapYear(lpSystemTime->wYear) && (sysTime.tm_yday > 58))
     sysTime.tm_yday++;
 
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN) && !defined(__PLEX__)
   CAtomicSpinLock lock(timegm_lock);
 #endif
 
+#ifndef __PLEX__
 #if defined(__ANDROID__)
   time64_t t = timegm64(&sysTime);
 #else
   time_t t = timegm(&sysTime);
+#endif
+#else
+  time_t t = plex_timegm(&sysTime);
 #endif
 
   LARGE_INTEGER result;
