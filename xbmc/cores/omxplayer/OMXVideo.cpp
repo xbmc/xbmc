@@ -80,6 +80,7 @@ COMXVideo::COMXVideo() : m_video_codec_name("")
   m_res_callback      = NULL;
   m_res_ctx           = NULL;
   m_submitted_eos     = false;
+  m_failed_eos        = false;
   m_settings_changed  = false;
   m_setStartTime      = false;
   m_transform         = OMX_DISPLAY_ROT0;
@@ -356,6 +357,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
 
   m_hdmi_clock_sync = hdmi_clock_sync;
   m_submitted_eos = false;
+  m_failed_eos    = false;
 
   if(!m_decoded_width || !m_decoded_height)
     return false;
@@ -866,13 +868,15 @@ void COMXVideo::SubmitEOS()
     return;
 
   m_submitted_eos = true;
+  m_failed_eos = false;
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-  OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer();
+  OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer(1000);
   
   if(omx_buffer == NULL)
   {
     CLog::Log(LOGERROR, "%s::%s - buffer error 0x%08x", CLASSNAME, __func__, omx_err);
+    m_failed_eos = true;
     return;
   }
   
@@ -895,7 +899,7 @@ bool COMXVideo::IsEOS()
 {
   if(!m_is_open)
     return true;
-  if (!m_omx_render.IsEOS())
+  if (!m_failed_eos && !m_omx_render.IsEOS())
     return false;
   if (m_submitted_eos)
   {
