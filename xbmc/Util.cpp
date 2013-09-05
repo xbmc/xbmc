@@ -392,17 +392,22 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
   strPath = CEnvironment::getenv(strTarget);
 
 #ifdef TARGET_WINDOWS
-  if (!strPath.IsEmpty())
+  if (strPath.find("..") != std::string::npos)
   {
     //expand potential relative path to full path
     CStdStringW strPathW;
     g_charsetConverter.utf8ToW(strPath, strPathW, false);
-    const int bufSize = GetFullPathNameW(strPathW, 0, NULL, NULL);
-    if (bufSize > 0)
+    AddExtraLongPathPrefix(strPathW);
+    const unsigned int bufSize = GetFullPathNameW(strPathW, 0, NULL, NULL);
+    if (bufSize != 0)
     {
       wchar_t * buf = new wchar_t[bufSize];
-      if (GetFullPathNameW(strPathW, bufSize, buf, NULL) == bufSize-1)
-        g_charsetConverter.wToUTF8(buf, strPath);
+      if (GetFullPathNameW(strPathW, bufSize, buf, NULL) <= bufSize-1)
+      {
+        std::wstring expandedPathW(buf);
+        RemoveExtraLongPathPrefix(expandedPathW);
+        g_charsetConverter.wToUTF8(expandedPathW, strPath);
+      }
 
       delete [] buf;
     }
@@ -1497,6 +1502,30 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   StrOutput = StrInput;
   return true;
 }
+
+#ifdef TARGET_WINDOWS
+bool CUtil::AddExtraLongPathPrefix(std::wstring& path)
+{
+  const wchar_t* const str = path.c_str();
+  if (path.length() < 4 || str[0] != L'\\' || str[1] != L'\\' || str[3] != L'\\' || str[2] != L'?')
+  {
+    path.insert(0, L"\\\\?\\");
+    return true;
+  }
+  return false;
+}
+
+bool CUtil::RemoveExtraLongPathPrefix(std::wstring& path)
+{
+  const wchar_t* const str = path.c_str();
+  if (path.length() >= 4 && str[0] == L'\\' && str[1] == L'\\' && str[3] == L'\\' && str[2] == L'?')
+  {
+    path.erase(0, 4);
+    return true;
+  }
+  return false;
+}
+#endif // TARGET_WINDOWS
 
 bool CUtil::SupportsWriteFileOperations(const CStdString& strPath)
 {
