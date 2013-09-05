@@ -63,6 +63,11 @@
 #include "linux/LinuxResourceCounter.h"
 #endif
 
+/* PLEX */
+#include "PlexApplication.h"
+#include "Client/PlexServerManager.h"
+/* END PLEX */
+
 using namespace PVR;
 
 #define BLUE_BAR                          0
@@ -919,10 +924,24 @@ void CGUIWindowFullScreen::FrameMove()
                        , clockspeed - 100.0
                        , g_renderManager.GetVSyncState().c_str());
 
-      strGeneralFPS.Format("%s\nW( fps:%02.2f %s ) %s"
+      /* PLEX */
+      CStdString plexInfo;
+      CFileItemPtr f = g_application.CurrentFileItemPtr();
+      if (f)
+      {
+        CStdString transcodeInfo = "direct-play";
+        if (f->GetProperty("plexDidTranscode").asBoolean())
+          transcodeInfo.Format("transcoded");
+        CPlexServerPtr s = g_plexApplication.serverManager->FindByUUID(f->GetProperty("plexserver").asString());
+        plexInfo.Format("P( server:%s %s )", s->GetName().c_str(), transcodeInfo);
+      }
+
+      /*END PLEX*/
+
+      strGeneralFPS.Format("%s\nW( fps:%02.2f %s ) %s %s"
                          , strGeneral.c_str()
                          , g_infoManager.GetFPS()
-                         , strCores.c_str(), strClock.c_str() );
+                         , strCores.c_str(), plexInfo.c_str(), strClock.c_str() );
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strGeneralFPS);
