@@ -53,9 +53,9 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
            path.Equals("/player/application/sendKey"))
     sendVKey(argumentMap);
   else if (path.Equals("/player/playback/bigStepForward") ||
-           path.Equals("/player/playback/bigStepBackward") ||
+           path.Equals("/player/playback/bigStepBack") ||
            path.Equals("/player/playback/stepForward") ||
-           path.Equals("/player/playback/stepBackward"))
+           path.Equals("/player/playback/stepBack"))
     stepFunction(request.url, argumentMap);
   else if (path.Equals("/player/playback/skipNext"))
     skipNext(argumentMap);
@@ -229,11 +229,11 @@ void CPlexHTTPRemoteHandler::stepFunction(const CStdString &url, const ArgMap &a
   
   if (url.Equals("/player/playback/bigStepForward"))
     CBuiltins::Execute("playercontrol(bigskipforward)");
-  else if (url.Equals("/player/playback/bigStepBackwards"))
+  else if (url.Equals("/player/playback/bigStepBack"))
     CBuiltins::Execute("playercontrol(bigskipbackward)");
   else if (url.Equals("/player/playback/stepForward"))
     CBuiltins::Execute("playercontrol(smallskipforward)");
-  else if (url.Equals("/player/playback/stepBackward"))
+  else if (url.Equals("/player/playback/stepBack"))
     CBuiltins::Execute("playercontrol(smallskipbackward)");
 }
 
