@@ -20,6 +20,7 @@
 
 
 RELEASEV=${RELEASEV:-"auto"}
+VERSION_PREFIX=${VERSION_PREFIX:-""}
 TAG=${TAG}
 REPO_DIR=${WORKSPACE:-$(cd "$(dirname $0)/../../../" ; pwd)}
 [[ $(which lsb_release) ]] && DISTS=${DISTS:-$(lsb_release -cs)} || DISTS=${DISTS:-"stable"}
@@ -41,7 +42,7 @@ function usage {
 function checkEnv {
     echo "#------ build environment ------#"
     echo "REPO_DIR: $REPO_DIR"
-    [[ $RELEASEV == "auto" ]] && getVersion
+    getVersion
     echo "RELEASEV: $RELEASEV"
     [[ -n $TAG ]] && echo "TAG: $TAG"
     echo "DISTS: $DISTS"
@@ -69,9 +70,22 @@ function checkEnv {
 }
 
 function getVersion {
-    local MAJORVER=$(grep VERSION_MAJOR $REPO_DIR/xbmc/GUIInfoManager.h | awk '{ print $3 }')
-    local MINORVER=$(grep VERSION_MINOR $REPO_DIR/xbmc/GUIInfoManager.h | awk '{ print $3 }')
-    RELEASEV=${MAJORVER}.${MINORVER}
+    getGitRev
+    if [[ $RELEASEV == "auto" ]]
+    then 
+        local MAJORVER=$(grep VERSION_MAJOR $REPO_DIR/xbmc/GUIInfoManager.h | awk '{ print $3 }')
+        local MINORVER=$(grep VERSION_MINOR $REPO_DIR/xbmc/GUIInfoManager.h | awk '{ print $3 }')
+        RELEASEV=${MAJORVER}.${MINORVER}
+    else
+        PACKAGEVERSION="${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
+    fi
+
+    if [[ -n ${VERSION_PREFIX} ]]
+    then
+        PACKAGEVERSION="${VERSION_PREFIX}:${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
+    else
+        PACKAGEVERSION="${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
+    fi
 }
 
 function getGitRev {
@@ -84,7 +98,6 @@ function getGitRev {
 function archiveRepo {
     cd $REPO_DIR || exit 1
     git clean -xfd
-    getGitRev
     echo $REV > VERSION
     DEST="xbmc-${RELEASEV}~git$(date '+%Y%m%d.%H%M')-${TAG}"
     [[ -d debian ]] && rm -rf debian
@@ -115,7 +128,7 @@ function getDebian {
 function buildDebianPackages {
     archiveRepo
     cd $REPO_DIR || exit 1
-    sed -e "s/#PACKAGEVERSION#/${DEST#xbmc-}/g" -e "s/#TAGREV#/${TAGREV}/g" debian/changelog.in > debian/changelog.tmp
+    sed -e "s/#PACKAGEVERSION#/${PACKAGEVERSION}/g" -e "s/#TAGREV#/${TAGREV}/g" debian/changelog.in > debian/changelog.tmp
     [ "$Configuration" == "Debug" ] && sed -i "s/XBMC_RELEASE = yes/XBMC_RELEASE = no/" debian/rules
 
     for dist in $DISTS
