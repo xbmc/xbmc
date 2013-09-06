@@ -38,6 +38,11 @@ class CRegExp
 {
 public:
   static const int m_MaxNumOfBackrefrences = 20;
+  /**
+   * @param caseless (optional) Matching will be case insensitive if set to true
+   *                            or case sensitive if set to false
+   * @param utf8 (optional) If set to true all string will be processed as UTF-8 strings 
+   */
   CRegExp(bool caseless = false, bool utf8 = false);
   CRegExp(const CRegExp& re);
   ~CRegExp();
