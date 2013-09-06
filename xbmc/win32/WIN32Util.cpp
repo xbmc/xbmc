@@ -495,6 +495,28 @@ CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
   return strRetPath;
 }
 
+bool CWIN32Util::AddExtraLongPathPrefix(std::wstring& path)
+{
+  const wchar_t* const str = path.c_str();
+  if (path.length() < 4 || str[0] != L'\\' || str[1] != L'\\' || str[3] != L'\\' || str[2] != L'?')
+  {
+    path.insert(0, L"\\\\?\\");
+    return true;
+  }
+  return false;
+}
+
+bool CWIN32Util::RemoveExtraLongPathPrefix(std::wstring& path)
+{
+  const wchar_t* const str = path.c_str();
+  if (path.length() >= 4 && str[0] == L'\\' && str[1] == L'\\' && str[3] == L'\\' && str[2] == L'?')
+  {
+    path.erase(0, 4);
+    return true;
+  }
+  return false;
+}
+
 void CWIN32Util::ExtendDllPath()
 {
   CStdString strEnv;
