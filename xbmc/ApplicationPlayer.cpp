@@ -38,11 +38,11 @@ boost::shared_ptr<IPlayer> CApplicationPlayer::GetInternal() const
 
 void CApplicationPlayer::ClosePlayer()
 {
-  CSingleLock lock(m_player_lock);
-  if (m_pPlayer)
+  boost::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
   {
     CloseFile();
-    m_pPlayer.reset();
+    player.reset();
   }
 }
 
@@ -661,6 +661,10 @@ void CApplicationPlayer::GetScalingMethods(std::vector<int> &scalingMethods)
 
 void CApplicationPlayer::SetPlaySpeed(int iSpeed, bool bApplicationMuted)
 {
+  boost::shared_ptr<IPlayer> player = GetInternal();
+  if (!player)
+    return;
+
   if (!IsPlayingAudio() && !IsPlayingVideo())
     return ;
   if (m_iPlaySpeed == iSpeed)
@@ -687,13 +691,13 @@ void CApplicationPlayer::SetPlaySpeed(int iSpeed, bool bApplicationMuted)
   {
     if (m_iPlaySpeed == 1)
     { // restore volume
-      m_pPlayer->SetVolume(VOLUME_MAXIMUM);
+      player->SetVolume(VOLUME_MAXIMUM);
     }
     else
     { // mute volume
-      m_pPlayer->SetVolume(VOLUME_MINIMUM);
+      player->SetVolume(VOLUME_MINIMUM);
     }
-    m_pPlayer->SetMute(bApplicationMuted);
+    player->SetMute(bApplicationMuted);
   }
 }
 
