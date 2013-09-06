@@ -233,6 +233,12 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         }
       }
     }
+  case GUI_MSG_SLEEP:
+    m_musicdatabase.Close();
+    break;
+  case GUI_MSG_WAKE:
+    m_musicdatabase.Open();
+    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }

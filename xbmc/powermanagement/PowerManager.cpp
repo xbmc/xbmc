@@ -248,12 +248,15 @@ void CPowerManager::OnSleep()
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
   g_application.CloseNetworkShares();
+  g_windowManager.OnSleep();
   CAEFactory::Suspend();
 }
 
 void CPowerManager::OnWake()
 {
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
+
+  g_windowManager.OnWake();
 
   // reset out timers
   g_application.ResetShutdownTimers();

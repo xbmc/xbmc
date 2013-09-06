@@ -238,6 +238,12 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_SEARCH:
     OnSearch();
     break;
+  case GUI_MSG_SLEEP:
+    m_database.Close();
+    break;
+  case GUI_MSG_WAKE:
+    m_database.Open();
+    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }
