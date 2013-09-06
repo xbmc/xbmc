@@ -396,7 +396,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SILENCEMODE, &silence, sizeof(bool));
           }
           LoadSettings();
-          ChangeResampleQuality();
+          ChangeResamplers();
           if (!NeedReconfigureBuffers() && !NeedReconfigureSink())
             return;
           m_state = AE_TOP_RECONFIGURING;
@@ -977,7 +977,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       if (!(*it)->m_resampleBuffers)
       {
         (*it)->m_resampleBuffers = new CActiveAEBufferPoolResample((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
-        (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false);
+        (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix);
       }
       if (m_mode == MODE_TRANSCODE || m_streams.size() > 1)
         (*it)->m_resampleBuffers->m_fillPackets = true;
@@ -1001,7 +1001,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         vizFormat.m_dataFormat = AE_FMT_FLOAT;
         m_vizBuffers = new CActiveAEBufferPoolResample(m_internalFormat, vizFormat, m_settings.resampleQuality);
         // TODO use cache of sync + water level
-        m_vizBuffers->Create(2000, false);
+        m_vizBuffers->Create(2000, false, false);
         m_vizInitialized = false;
       }
     }
@@ -1017,7 +1017,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   if (!m_sinkBuffers)
   {
     m_sinkBuffers = new CActiveAEBufferPoolResample(sinkInputFormat, m_sinkFormat, m_settings.resampleQuality);
-    m_sinkBuffers->Create(MAX_WATER_LEVEL*1000, true);
+    m_sinkBuffers->Create(MAX_WATER_LEVEL*1000, true, false);
   }
 
   // reset gui sounds
@@ -1186,14 +1186,19 @@ void CActiveAE::DiscardSound(CActiveAESound *sound)
   }
 }
 
-void CActiveAE::ChangeResampleQuality()
+void CActiveAE::ChangeResamplers()
 {
   std::list<CActiveAEStream*>::iterator it;
   for(it=m_streams.begin(); it!=m_streams.end(); ++it)
   {
-    if ((*it)->m_resampleBuffers && (*it)->m_resampleBuffers->m_resampler && ((*it)->m_resampleBuffers->m_resampleQuality != m_settings.resampleQuality))
+    if ((*it)->m_resampleBuffers && (*it)->m_resampleBuffers->m_resampler &&
+        (((*it)->m_resampleBuffers->m_resampleQuality != m_settings.resampleQuality) ||
+        ((*it)->m_resampleBuffers->m_stereoUpmix != m_settings.stereoupmix)))
+    {
       (*it)->m_resampleBuffers->m_changeResampler = true;
+    }
     (*it)->m_resampleBuffers->m_resampleQuality = m_settings.resampleQuality;
+    (*it)->m_resampleBuffers->m_stereoUpmix = m_settings.stereoupmix;
   }
 }
 
@@ -1232,23 +1237,20 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   else
   {
     format.m_dataFormat = AE_FMT_FLOAT;
-    if ((format.m_channelLayout.Count() > 2) || settings.stereoupmix)
+    switch (settings.channels)
     {
-      switch (settings.channels)
-      {
-        default:
-        case  0: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
-        case  1: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
-        case  2: format.m_channelLayout = AE_CH_LAYOUT_2_1; break;
-        case  3: format.m_channelLayout = AE_CH_LAYOUT_3_0; break;
-        case  4: format.m_channelLayout = AE_CH_LAYOUT_3_1; break;
-        case  5: format.m_channelLayout = AE_CH_LAYOUT_4_0; break;
-        case  6: format.m_channelLayout = AE_CH_LAYOUT_4_1; break;
-        case  7: format.m_channelLayout = AE_CH_LAYOUT_5_0; break;
-        case  8: format.m_channelLayout = AE_CH_LAYOUT_5_1; break;
-        case  9: format.m_channelLayout = AE_CH_LAYOUT_7_0; break;
-        case 10: format.m_channelLayout = AE_CH_LAYOUT_7_1; break;
-      }
+      default:
+      case  0: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
+      case  1: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
+      case  2: format.m_channelLayout = AE_CH_LAYOUT_2_1; break;
+      case  3: format.m_channelLayout = AE_CH_LAYOUT_3_0; break;
+      case  4: format.m_channelLayout = AE_CH_LAYOUT_3_1; break;
+      case  5: format.m_channelLayout = AE_CH_LAYOUT_4_0; break;
+      case  6: format.m_channelLayout = AE_CH_LAYOUT_4_1; break;
+      case  7: format.m_channelLayout = AE_CH_LAYOUT_5_0; break;
+      case  8: format.m_channelLayout = AE_CH_LAYOUT_5_1; break;
+      case  9: format.m_channelLayout = AE_CH_LAYOUT_7_0; break;
+      case 10: format.m_channelLayout = AE_CH_LAYOUT_7_1; break;
     }
 
     if (m_settings.mode == AUDIO_IEC958 && format.m_sampleRate > 48000)
@@ -2297,6 +2299,7 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
                   orig_config.sample_rate,
                   orig_config.fmt,
                   orig_config.bits_per_sample,
+                  false,
                   NULL,
                   AE_QUALITY_MID);
 

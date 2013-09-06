@@ -145,6 +145,7 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
   m_resampleRatio = 1.0;
   m_resampleQuality = quality;
   m_changeResampler = false;
+  m_stereoUpmix = false;
 }
 
 CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
@@ -152,7 +153,7 @@ CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
   delete m_resampler;
 }
 
-bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap)
+bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, bool upmix)
 {
   CActiveAEBufferPool::Create(totaltime);
 
@@ -171,12 +172,15 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap)
                                 m_inputFormat.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_inputFormat.m_dataFormat),
                                 CAEUtil::DataFormatToUsedBits(m_inputFormat.m_dataFormat),
+                                upmix,
                                 remap ? &m_format.m_channelLayout : NULL,
                                 m_resampleQuality);
   }
 
   // store output sampling rate, needed when ratio gets changed
   m_outSampleRate = m_format.m_sampleRate;
+
+  m_stereoUpmix = upmix;
 
   return true;
 }
@@ -198,6 +202,7 @@ void CActiveAEBufferPoolResample::ChangeResampler()
                                 m_inputFormat.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_inputFormat.m_dataFormat),
                                 CAEUtil::DataFormatToUsedBits(m_inputFormat.m_dataFormat),
+                                m_stereoUpmix,
                                 NULL,
                                 m_resampleQuality);
 
