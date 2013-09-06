@@ -146,7 +146,8 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_flush           = false;
   m_nChannels       = 0;
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
-  m_use_passthrough = (CSettings::Get().GetInt("audiooutput.mode") == AUDIO_HDMI) ? true : false ;
+  m_use_passthrough = (CSettings::Get().GetInt("audiooutput.mode") == AUDIO_HDMI &&
+                      !CSettings::Get().GetBool("audiooutput.dualaudio")) ? true : false ;
   m_use_hw_decode   = g_advancedSettings.m_omxHWAudioDecode;
   m_format.m_dataFormat    = GetDataFormat(m_hints);
   m_format.m_sampleRate    = 0;
@@ -580,13 +581,6 @@ bool OMXPlayerAudio::OpenDecoder()
   /* GetDataFormat is setting up evrything */
   m_format.m_dataFormat = GetDataFormat(m_hints);
 
-  std::string device = "";
-  
-  if(CSettings::Get().GetInt("audiooutput.mode") == AUDIO_HDMI)
-    device = "hdmi";
-  else
-    device = "local";
-
   m_format.m_channelLayout.Reset();
   if (m_pAudioCodec && !m_passthrough)
     m_format.m_channelLayout = m_pAudioCodec->GetChannelMap();
@@ -601,7 +595,7 @@ bool OMXPlayerAudio::OpenDecoder()
     if (m_nChannels > 4 ) m_format.m_channelLayout += AE_CH_BL;
     if (m_nChannels > 5 ) m_format.m_channelLayout += AE_CH_BR;
   }
-  bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, device, m_av_clock, m_hints, m_passthrough, m_hw_decode);
+  bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, m_av_clock, m_hints, m_passthrough, m_hw_decode);
 
   m_codec_name = "";
   m_bad_state  = !bAudioRenderOpen;
