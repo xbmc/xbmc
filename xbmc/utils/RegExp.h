@@ -52,9 +52,25 @@ public:
   CRegExp(const CRegExp& re);
   ~CRegExp();
 
+  /**
+   * Compile (prepare) regular expression
+   * @param re          The regular expression
+   * @param study (optional) Controls study of expression, useful if expression will be used 
+   *                         several times
+   * @return true on success, false on any error
+   */
   bool RegComp(const char *re, studyMode study = NoStudy);
+
+  /**
+   * Compile (prepare) regular expression
+   * @param re          The regular expression
+   * @param study (optional) Controls study of expression, useful if expression will be used
+   *                         several times
+   * @return true on success, false on any error
+   */
   bool RegComp(const std::string& re, studyMode study = NoStudy)
   { return RegComp(re.c_str(), study); }
+
   int RegFind(const char* str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
   int RegFind(const std::string& str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1)
   { return PrivateRegFind(str.length(), str.c_str(), startoffset, maxNumberOfCharsToTest); }
