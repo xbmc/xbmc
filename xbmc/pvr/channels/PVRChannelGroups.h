@@ -163,6 +163,12 @@ namespace PVR
     bool DeleteGroup(const CPVRChannelGroup &group);
 
     /*!
+     * @brief Create EPG tags for all channels of the internal group.
+     * @return True if EPG tags where created successfully, false if not.
+     */
+    bool CreateChannelEpgs(void);
+
+    /*!
      * @brief Remove a channel from all non-system groups.
      * @param channel The channel to remove.
      */

@@ -282,3 +282,10 @@ bool CPVRChannelGroupsContainer::CreateChannel(const CPVRChannel &channel)
 {
   return GetGroupAll(channel.IsRadio())->AddNewChannel(channel);
 }
+
+
+bool CPVRChannelGroupsContainer::CreateChannelEpgs(void)
+{
+  return m_groupsRadio->CreateChannelEpgs() &&
+         m_groupsTV->CreateChannelEpgs();
+}

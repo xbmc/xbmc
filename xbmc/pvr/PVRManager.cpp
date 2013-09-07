@@ -74,6 +74,7 @@ CPVRManager::CPVRManager(void) :
     m_currentFile(NULL),
     m_database(NULL),
     m_bFirstStart(true),
+    m_bEpgsCreated(false),
     m_progressHandle(NULL),
     m_managerState(ManagerStateStopped),
     m_bOpenPVRWindow(false)
@@ -261,12 +262,6 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   return false;
 }
 
-bool CPVRManager::WaitUntilInitialised(void)
-{
-  return m_initialisedEvent.Wait() &&
-      IsStarted();
-}
-
 void CPVRManager::Cleanup(void)
 {
   CSingleLock lock(m_critSection);
@@ -284,12 +279,12 @@ void CPVRManager::Cleanup(void)
   m_bIsSwitchingChannels  = false;
   m_outdatedAddons.clear();
   m_bOpenPVRWindow = false;
+  m_bEpgsCreated = false;
 
   for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
     delete m_pendingUpdates.at(iJobPtr);
   m_pendingUpdates.clear();
 
-  m_initialisedEvent.Reset();
   SetState(ManagerStateStopped);
 }
 
@@ -352,8 +347,6 @@ void CPVRManager::Start(bool bAsync /* = false */, bool bOpenPVRWindow /* = fals
     m_database = new CPVRDatabase;
   m_database->Open();
 
-  g_EpgContainer.Start();
-
   /* create the supervisor thread to do all background activities */
   StartUpdateThreads();
 }
@@ -368,7 +361,6 @@ void CPVRManager::Stop(void)
   SetState(ManagerStateStopping);
 
   /* stop the EPG updater, since it might be using the pvr add-ons */
-  m_initialisedEvent.Set();
   g_EpgContainer.Stop();
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
@@ -408,6 +400,8 @@ void CPVRManager::SetState(ManagerState state)
 
 void CPVRManager::Process(void)
 {
+  g_EpgContainer.Stop();
+
   /* load the pvr data from the db and clients if it's not already loaded */
   while (!Load() && GetState() == ManagerStateStarting)
   {
@@ -425,7 +419,7 @@ void CPVRManager::Process(void)
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
-  m_initialisedEvent.Set();
+  g_EpgContainer.Start();
 
   if (m_bOpenPVRWindow)
   {
@@ -914,6 +908,11 @@ CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
   return CPVRChannelGroupPtr();
 }
 
+bool CPVREpgsCreateJob::DoWork(void)
+{
+  return g_PVRManager.CreateChannelEpgs();
+}
+
 bool CPVRRecordingsUpdateJob::DoWork(void)
 {
   g_PVRRecordings->Update();
@@ -1349,6 +1348,12 @@ bool CPVRManager::IsStarted(void) const
   return GetState() == ManagerStateStarted;
 }
 
+bool CPVRManager::EpgsCreated(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bEpgsCreated;
+}
+
 bool CPVRManager::IsPlayingTV(void) const
 {
   return IsStarted() && m_addons && m_addons->IsPlayingTV();
@@ -1395,6 +1400,18 @@ bool CPVRManager::IsJobPending(const char *strJobName) const
   }
 
   return bReturn;
+}
+
+void CPVRManager::TriggerEpgsCreate(void)
+{
+  CSingleLock lock(m_critSectionTriggers);
+  if (IsJobPending("pvr-create-epgs"))
+    return;
+
+  m_pendingUpdates.push_back(new CPVREpgsCreateJob());
+
+  lock.Leave();
+  m_triggerEvent.Set();
 }
 
 void CPVRManager::TriggerRecordingsUpdate(void)
@@ -1539,4 +1556,14 @@ bool CPVRChannelSwitchJob::DoWork(void)
   }
 
   return true;
+}
+
+bool CPVRManager::CreateChannelEpgs(void)
+{
+  if (EpgsCreated())
+    return true;
+
+  CSingleLock lock(m_critSection);
+  m_bEpgsCreated = m_channelGroups->CreateChannelEpgs();
+  return m_bEpgsCreated;
 }

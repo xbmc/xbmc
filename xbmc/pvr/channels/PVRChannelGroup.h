@@ -415,6 +415,13 @@ namespace PVR
     bool RemoveDeletedChannels(const CPVRChannelGroup &channels);
 
     /*!
+     * @brief Create an EPG table for each channel.
+     * @brief bForce Create the tables, even if they already have been created before.
+     * @return True if all tables were created successfully, false otherwise.
+     */
+    virtual bool CreateChannelEpgs(bool bForce = false);
+
+    /*!
      * @brief Remove invalid channels from this container.
      */
     void RemoveInvalidChannels(void);
