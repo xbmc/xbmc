@@ -2875,7 +2875,7 @@ void COMXPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
         strBuf.AppendFormat(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
     }
 
-    strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% )"
+    strGeneralInfo.Format("C( ad:% 6.3f a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% amp:% 5.2f )"
                          , m_omxPlayerAudio.GetDelay()
                          , dDiff
                          , strEDL.c_str()
@@ -2884,7 +2884,8 @@ void COMXPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
                          , (int)(m_omxPlayerVideo.GetRelativeUsage()*100)
                          , strBuf.c_str()
                          , m_audio_fifo
-                         , m_video_fifo);
+                         , m_video_fifo
+                         , m_omxPlayerAudio.GetDynamicRangeAmplification());
 
   }
 }
@@ -4464,6 +4465,7 @@ void COMXPlayer::GetAudioCapabilities(std::vector<int> &audioCaps)
   audioCaps.push_back(IPC_AUD_OFFSET);
   audioCaps.push_back(IPC_AUD_SELECT_STREAM);
   audioCaps.push_back(IPC_AUD_SELECT_OUTPUT);
+  audioCaps.push_back(IPC_AUD_AMP);
 }
 
 void COMXPlayer::GetSubtitleCapabilities(std::vector<int> &subCaps)

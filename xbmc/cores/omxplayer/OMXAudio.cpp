@@ -89,6 +89,19 @@ const float downmixing_coefficients_8[OMX_AUDIO_MAXCHANNELS] = {
   /* Rr */  0,      0.7071
 };
 
+// 7.1 downmixing coefficients with boosted centre channel
+const float downmixing_coefficients_8_boostcentre[OMX_AUDIO_MAXCHANNELS] = {
+  //        L       R
+  /* L */   0.7071, 0,
+  /* R */   0,      0.7071,
+  /* C */   1,      1,
+  /* LFE */ 0.7071, 0.7071,
+  /* Ls */  0.7071, 0,
+  /* Rs */  0,      0.7071,
+  /* Lr */  0.7071, 0,
+  /* Rr */  0,      0.7071
+};
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -106,6 +119,10 @@ COMXAudio::COMXAudio() :
   m_ChunkLen        (0      ),
   m_OutputChannels  (0      ),
   m_BitsPerSample   (0      ),
+  m_maxLevel        (0.0f   ),
+  m_amplification   (1.0f   ),
+  m_attenuation     (1.0f   ),
+  m_desired_attenuation(1.0f),
   m_omx_clock       (NULL   ),
   m_av_clock        (NULL   ),
   m_settings_changed(false  ),
@@ -200,6 +217,7 @@ bool COMXAudio::PortSettingsChanged()
       return false;
   }
 
+  SetDynamicRangeCompression((long)(CMediaSettings::Get().GetCurrentVideoSettings().m_VolumeAmplification * 100));
   ApplyVolume();
 
   if( m_omx_mixer.IsInitialized() )
@@ -518,7 +536,10 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   memset(&m_wave_header, 0x0, sizeof(m_wave_header));
 
   for(int i = 0; i < OMX_AUDIO_MAXCHANNELS; i++)
+  {
     m_pcm_input.eChannelMapping[i] = OMX_AUDIO_ChannelNone;
+    m_input_channels[i] = OMX_AUDIO_ChannelMax;
+  }
 
   m_output_channels[0] = OMX_AUDIO_ChannelLF;
   m_output_channels[1] = OMX_AUDIO_ChannelRF;
@@ -846,6 +867,10 @@ void COMXAudio::Flush()
 //***********************************************************************************************
 void COMXAudio::SetDynamicRangeCompression(long drc)
 {
+  CSingleLock lock (m_critSection);
+  m_amplification = powf(10.0f, (float)drc / 2000.0f);
+  if (m_settings_changed)
+    ApplyVolume();
 }
 
 //***********************************************************************************************
@@ -876,87 +901,68 @@ bool COMXAudio::ApplyVolume(void)
 
   float fVolume = m_Mute ? VOLUME_MINIMUM : m_CurrentVolume;
 
+  // the analogue volume is too quiet for some. Allow use of an advancedsetting to boost this (at risk of distortion) (deprecated)
   double gain = pow(10, (g_advancedSettings.m_ac3Gain - 12.0f) / 20.0);
+  double r = 1.0;
+  const float* coeff = downmixing_coefficients_8;
 
-  if (m_format.m_channelLayout.Count() > 2)
+  // alternate coffeciciants that boost centre channel more
+  if(!CSettings::Get().GetBool("audiooutput.boostcentre"))
+    coeff = downmixing_coefficients_8_boostcentre;
+
+  // normally we normalise the levels, can be skipped (boosted) at risk of distortion
+  if(!CSettings::Get().GetBool("audiooutput.normalizelevels"))
   {
-    double r = fVolume;
-    const float* coeff = downmixing_coefficients_8;
-
-    // normally we normalalise the levels, can be skipped (boosted) at risk of distortion
-    if(!CSettings::Get().GetBool("audiooutput.normalizelevels"))
+    double sum_L = 0;
+    double sum_R = 0;
+    for(size_t i = 0; i < OMX_AUDIO_MAXCHANNELS; ++i)
     {
-      double sum_L = 0;
-      double sum_R = 0;
-
-      for(size_t i = 0; i < OMX_AUDIO_MAXCHANNELS; ++i)
-      {
-        if (m_input_channels[i] == OMX_AUDIO_ChannelMax)
-          break;
-        if(i & 1)
-          sum_R += coeff[i];
-        else
-          sum_L += coeff[i];
-      }
-
-      r /= max(sum_L, sum_R);
+      if (m_input_channels[i] == OMX_AUDIO_ChannelMax)
+        break;
+      if(i & 1)
+        sum_R += coeff[i];
+      else
+        sum_L += coeff[i];
     }
 
-    // the analogue volume is too quiet for some. Allow use of an advancedsetting to boost this (at risk of distortion)
-    r *= gain;
+    r /= max(sum_L, sum_R);
+  }
+  r *= gain;
 
-    OMX_CONFIG_BRCMAUDIODOWNMIXCOEFFICIENTS mix;
-    OMX_INIT_STRUCTURE(mix);
-    mix.nPortIndex = m_omx_mixer.GetInputPort();
+  OMX_CONFIG_BRCMAUDIODOWNMIXCOEFFICIENTS mix;
+  OMX_INIT_STRUCTURE(mix);
+  OMX_ERRORTYPE omx_err;
 
-    assert(sizeof(mix.coeff)/sizeof(mix.coeff[0]) == 16);
+  assert(sizeof(mix.coeff)/sizeof(mix.coeff[0]) == 16);
 
+  // reduce scaling so overflow can be seen
+  for(size_t i = 0; i < 16; ++i)
+    mix.coeff[i] = static_cast<unsigned int>(0x10000 * (coeff[i] * r * 0.01f));
+
+  mix.nPortIndex = m_omx_decoder.GetInputPort();
+  omx_err = m_omx_decoder.SetConfig(OMX_IndexConfigBrcmAudioDownmixCoefficients, &mix);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s - error setting decoder OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x\n",
+              CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  if (m_amplification != 1.0)
+  {
     for(size_t i = 0; i < 16; ++i)
-      mix.coeff[i] = static_cast<unsigned int>(0x10000 * (coeff[i] * r));
+      mix.coeff[i] = static_cast<unsigned int>(0x10000 * (coeff[i] * r * fVolume * m_amplification * m_attenuation));
 
-    OMX_ERRORTYPE omx_err =
-      m_omx_mixer.SetConfig(OMX_IndexConfigBrcmAudioDownmixCoefficients, &mix);
-
+    mix.nPortIndex = m_omx_mixer.GetInputPort();
+    omx_err = m_omx_mixer.SetConfig(OMX_IndexConfigBrcmAudioDownmixCoefficients, &mix);
     if(omx_err != OMX_ErrorNone)
     {
-      CLog::Log(LOGERROR, "%s::%s - error setting OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x\n",
+      CLog::Log(LOGERROR, "%s::%s - error setting mixer OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x\n",
                 CLASSNAME, __func__, omx_err);
       return false;
     }
   }
-  else
-  {
-    OMX_AUDIO_CONFIG_VOLUMETYPE volume;
-    OMX_INIT_STRUCTURE(volume);
-
-    volume.bLinear    = OMX_TRUE;
-    float hardwareVolume = fVolume * gain * 100.0f;
-    volume.sVolume.nValue = (int)(hardwareVolume + 0.5f);
-
-    if(m_omx_render_analog.IsInitialized())
-    {
-      volume.nPortIndex = m_omx_render_analog.GetInputPort();
-      OMX_ERRORTYPE omx_err = m_omx_render_analog.SetConfig(OMX_IndexConfigAudioVolume, &volume);
-      if(omx_err != OMX_ErrorNone)
-      {
-        CLog::Log(LOGERROR, "%s::%s - error setting OMX_IndexConfigAudioVolume, error 0x%08x\n",
-                CLASSNAME, __func__, omx_err);
-        return false;
-      }
-    }
-    if(m_omx_render_hdmi.IsInitialized())
-    {
-      volume.nPortIndex = m_omx_render_hdmi.GetInputPort();
-      OMX_ERRORTYPE omx_err = m_omx_render_hdmi.SetConfig(OMX_IndexConfigAudioVolume, &volume);
-      if(omx_err != OMX_ErrorNone)
-      {
-        CLog::Log(LOGERROR, "%s::%s - error setting OMX_IndexConfigAudioVolume, error 0x%08x\n",
-                CLASSNAME, __func__, omx_err);
-        return false;
-      }
-    }
-  }
-  CLog::Log(LOGINFO, "%s::%s - Volume=%.2f\n", CLASSNAME, __func__, fVolume);
+  CLog::Log(LOGINFO, "%s::%s - Volume=%.2f (* %.2f * %.2f)\n", CLASSNAME, __func__, fVolume, m_amplification, m_attenuation);
   return true;
 }
 
@@ -1171,6 +1177,27 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     }
   }
 
+  if (m_amplification != 1.0)
+  {
+    double level_pts = 0.0;
+    float level = GetMaxLevel(level_pts);
+    if (level_pts != 0.0)
+    {
+      float alpha_h = -1.0f/(0.025f*log10f(0.999f));
+      float alpha_r = -1.0f/(0.100f*log10f(0.900f));
+      float hold    = powf(10.0f, -1.0f / (alpha_h * g_advancedSettings.m_limiterHold));
+      float release = powf(10.0f, -1.0f / (alpha_r * g_advancedSettings.m_limiterRelease));
+      m_maxLevel = level > m_maxLevel ? level : hold * m_maxLevel + (1.0f-hold) * level;
+
+      float amp = m_amplification * m_desired_attenuation;
+
+      // want m_maxLevel * amp -> 1.0
+      m_desired_attenuation = std::min(1.0f, std::max(m_desired_attenuation / (amp * m_maxLevel), 1.0f/m_amplification));
+      m_attenuation = release * m_attenuation + (1.0f-release) * m_desired_attenuation;
+
+      ApplyVolume();
+    }
+  }
   return len;
 }
 
@@ -1267,6 +1294,33 @@ unsigned int COMXAudio::GetAudioRenderingLatency()
   }
 
   return param.nU32;
+}
+
+float COMXAudio::GetMaxLevel(double &pts)
+{
+  CSingleLock lock (m_critSection);
+
+  if(!m_Initialized)
+    return 0;
+
+  OMX_CONFIG_BRCMAUDIOMAXSAMPLE param;
+  OMX_INIT_STRUCTURE(param);
+
+  if(m_omx_decoder.IsInitialized())
+  {
+    param.nPortIndex = m_omx_decoder.GetInputPort();
+
+    OMX_ERRORTYPE omx_err = m_omx_decoder.GetConfig(OMX_IndexConfigBrcmAudioMaxSample, &param);
+
+    if(omx_err != OMX_ErrorNone)
+    {
+      CLog::Log(LOGERROR, "%s::%s - error getting OMX_IndexConfigBrcmAudioMaxSample error 0x%08x\n",
+        CLASSNAME, __func__, omx_err);
+      return 0;
+    }
+  }
+  pts = FromOMXTime(param.nTimeStamp);
+  return (float)param.nMaxSample * (100.0f / (1<<15));
 }
 
 void COMXAudio::SubmitEOS()
