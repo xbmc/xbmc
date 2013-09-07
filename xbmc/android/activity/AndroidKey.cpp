@@ -172,7 +172,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent* event)
   }
   
   // check if this is a key we don't want to handle
-  if (sym == XBMCK_LAST)
+  if (sym == XBMCK_LAST || sym == XBMCK_UNKNOWN)
     return false;
 
   uint16_t modifiers = 0;
