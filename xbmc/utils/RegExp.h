@@ -78,7 +78,23 @@ public:
   bool RegComp(const std::string& re, studyMode study = NoStudy)
   { return RegComp(re.c_str(), study); }
 
+  /**
+   * Find first match of regular expression in given string
+   * @param str         The string to match against regular expression
+   * @param startoffset (optional) The string offset to start matching
+   * @param maxNumberOfCharsToTest (optional) The maximum number of characters to test (match) in 
+   *                                          string. If set to -1 string checked up to the end.
+   * @return staring position of match in string, negative value in case of error or no match
+   */
   int RegFind(const char* str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
+  /**
+   * Find first match of regular expression in given string
+   * @param str         The string to match against regular expression
+   * @param startoffset (optional) The string offset to start matching
+   * @param maxNumberOfCharsToTest (optional) The maximum number of characters to test (match) in
+   *                                          string. If set to -1 string checked up to the end.
+   * @return staring position of match in string, negative value in case of error or no match
+   */
   int RegFind(const std::string& str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1)
   { return PrivateRegFind(str.length(), str.c_str(), startoffset, maxNumberOfCharsToTest); }
   std::string GetReplaceString(const std::string& sReplaceExp) const;
