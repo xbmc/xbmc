@@ -51,7 +51,7 @@ public:
   int GetGpuMem() { return m_gpu_mem; }
   void GetDisplaySize(int &width, int &height);
   // stride can be null for packed output
-  unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue);
+  unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue, bool video_only = true);
 
 private:
   DllBcmHost *m_DllBcmHost;
