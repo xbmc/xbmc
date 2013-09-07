@@ -616,6 +616,7 @@ int  CStageFrightVideo::Decode(uint8_t *pData, int iSize, double dts, double pts
   Frame *frame;
   int demuxer_bytes = iSize;
   uint8_t *demuxer_content = pData;
+  int ret = 0;
 
   if (demuxer_content)
   {
@@ -628,12 +629,21 @@ int  CStageFrightVideo::Decode(uint8_t *pData, int iSize, double dts, double pts
       frame->pts = (dts != DVD_NOPTS_VALUE) ? pts_dtoi(dts) : ((pts != DVD_NOPTS_VALUE) ? pts_dtoi(pts) : 0);
     else
       frame->pts = (pts != DVD_NOPTS_VALUE) ? pts_dtoi(pts) : ((dts != DVD_NOPTS_VALUE) ? pts_dtoi(dts) : 0);
+
+    // No valid pts? libstagefright asserts on this.
+    if (frame->pts < 0)
+    {
+      free(frame);
+      return ret;
+    }
+
     frame->medbuf = p->getBuffer(demuxer_bytes);
     if (!frame->medbuf)
     {
       free(frame);
       return VC_ERROR;
     }
+
     fast_memcpy(frame->medbuf->data(), demuxer_content, demuxer_bytes);
     frame->medbuf->meta_data()->clear();
     frame->medbuf->meta_data()->setInt64(kKeyTime, frame->pts);
@@ -645,7 +655,6 @@ int  CStageFrightVideo::Decode(uint8_t *pData, int iSize, double dts, double pts
     p->in_mutex.unlock();
   }
 
-  int ret = 0;
   if (p->inputBufferAvailable() && p->in_queue.size() < INBUFCOUNT)
     ret |= VC_BUFFER;
   else
