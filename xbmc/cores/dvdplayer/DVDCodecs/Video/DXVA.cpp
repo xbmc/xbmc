@@ -447,14 +447,6 @@ static bool CheckCompatibility(AVCodecContext *avctx)
     return false;
   }
 
-  // DXVA has this as a max resolution
-  if(avctx->width  > 1920
-  || avctx->height > 1088)
-  {
-    CLog::Log(LOGDEBUG, "DXVA - frame size (%dx%d) too large - disallowing", avctx->width, avctx->height);
-    return false;
-  }
-
 
   // Check for hardware limited to H264 L4.1 (ie Bluray).
 
