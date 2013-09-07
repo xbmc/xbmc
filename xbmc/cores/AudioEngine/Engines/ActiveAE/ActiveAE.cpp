@@ -396,7 +396,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SILENCEMODE, &silence, sizeof(bool));
           }
           LoadSettings();
-          ChangeResampleQuality();
+          ChangeResamplers();
           if (!NeedReconfigureBuffers() && !NeedReconfigureSink())
             return;
           m_state = AE_TOP_RECONFIGURING;
@@ -423,8 +423,9 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
           stream->m_paused = true;
-          if (m_streams.size() == 1)
+          if (stream->m_paused != true && m_streams.size() == 1)
             FlushEngine();
+          stream->m_paused = true;
           return;
         case CActiveAEControlProtocol::RESUMESTREAM:
           stream = *(CActiveAEStream**)msg->data;
@@ -898,12 +899,6 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       outputFormat.m_dataFormat = AE_FMT_FLOATP;
       outputFormat.m_sampleRate = 48000;
 
-      if (g_advancedSettings.m_audioResample)
-      {
-        outputFormat.m_sampleRate = g_advancedSettings.m_audioResample;
-        CLog::Log(LOGINFO, "CActiveAE::Configure - Forcing samplerate to %d", inputFormat.m_sampleRate);
-      }
-
       // setup encoder
       if (!m_encoder)
       {
@@ -982,7 +977,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       if (!(*it)->m_resampleBuffers)
       {
         (*it)->m_resampleBuffers = new CActiveAEBufferPoolResample((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
-        (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false);
+        (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix);
       }
       if (m_mode == MODE_TRANSCODE || m_streams.size() > 1)
         (*it)->m_resampleBuffers->m_fillPackets = true;
@@ -1006,7 +1001,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         vizFormat.m_dataFormat = AE_FMT_FLOAT;
         m_vizBuffers = new CActiveAEBufferPoolResample(m_internalFormat, vizFormat, m_settings.resampleQuality);
         // TODO use cache of sync + water level
-        m_vizBuffers->Create(2000, false);
+        m_vizBuffers->Create(2000, false, false);
         m_vizInitialized = false;
       }
     }
@@ -1022,7 +1017,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   if (!m_sinkBuffers)
   {
     m_sinkBuffers = new CActiveAEBufferPoolResample(sinkInputFormat, m_sinkFormat, m_settings.resampleQuality);
-    m_sinkBuffers->Create(MAX_WATER_LEVEL*1000, true);
+    m_sinkBuffers->Create(MAX_WATER_LEVEL*1000, true, false);
   }
 
   // reset gui sounds
@@ -1191,14 +1186,19 @@ void CActiveAE::DiscardSound(CActiveAESound *sound)
   }
 }
 
-void CActiveAE::ChangeResampleQuality()
+void CActiveAE::ChangeResamplers()
 {
   std::list<CActiveAEStream*>::iterator it;
   for(it=m_streams.begin(); it!=m_streams.end(); ++it)
   {
-    if ((*it)->m_resampleBuffers && (*it)->m_resampleBuffers->m_resampler && ((*it)->m_resampleBuffers->m_resampleQuality != m_settings.resampleQuality))
+    if ((*it)->m_resampleBuffers && (*it)->m_resampleBuffers->m_resampler &&
+        (((*it)->m_resampleBuffers->m_resampleQuality != m_settings.resampleQuality) ||
+        ((*it)->m_resampleBuffers->m_stereoUpmix != m_settings.stereoupmix)))
+    {
       (*it)->m_resampleBuffers->m_changeResampler = true;
+    }
     (*it)->m_resampleBuffers->m_resampleQuality = m_settings.resampleQuality;
+    (*it)->m_resampleBuffers->m_stereoUpmix = m_settings.stereoupmix;
   }
 }
 
@@ -1237,7 +1237,9 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   else
   {
     format.m_dataFormat = AE_FMT_FLOAT;
-    if ((format.m_channelLayout.Count() > 2) || settings.stereoupmix)
+    if ((format.m_channelLayout.Count() > 2) ||
+         settings.stereoupmix ||
+         !g_advancedSettings.m_audioAudiophile)
     {
       switch (settings.channels)
       {
@@ -2302,6 +2304,7 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
                   orig_config.sample_rate,
                   orig_config.fmt,
                   orig_config.bits_per_sample,
+                  false,
                   NULL,
                   AE_QUALITY_MID);
 

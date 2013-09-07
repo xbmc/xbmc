@@ -261,7 +261,7 @@ protected:
   void ClearDiscardedBuffers();
   void SStopSound(CActiveAESound *sound);
   void DiscardSound(CActiveAESound *sound);
-  void ChangeResampleQuality();
+  void ChangeResamplers();
 
   bool RunStages();
   bool HasWork();

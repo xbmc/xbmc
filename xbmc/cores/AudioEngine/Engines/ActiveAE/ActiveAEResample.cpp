@@ -36,7 +36,7 @@ CActiveAEResample::~CActiveAEResample()
   m_dllSwResample.Unload();
 }
 
-bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, CAEChannelInfo *remapLayout, AEQuality quality)
+bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, bool upmix, CAEChannelInfo *remapLayout, AEQuality quality)
 {
   if (!m_dllAvUtil.Load() || !m_dllSwResample.Load())
     return false;
@@ -109,7 +109,7 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
     }
   }
   // stereo upmix
-  else if (m_src_channels == 2 && m_dst_channels > 2)
+  else if (upmix && m_src_channels == 2 && m_dst_channels > 2)
   {
     memset(m_rematrix, 0, sizeof(m_rematrix));
     for (int out=0; out<m_dst_channels; out++)
