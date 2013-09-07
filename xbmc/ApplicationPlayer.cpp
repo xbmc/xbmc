@@ -42,7 +42,9 @@ void CApplicationPlayer::ClosePlayer()
   if (player)
   {
     CloseFile();
-    player.reset();
+    // we need to do this directly on the member
+    CSingleLock lock(m_player_lock);
+    m_pPlayer.reset();
   }
 }
 
