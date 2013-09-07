@@ -27,14 +27,26 @@
 
 using namespace PCRE;
 
+#ifdef PCRE_CONFIG_JIT
+#define PCRE_HAS_JIT_CODE 1
+#endif
+
+#ifndef PCRE_STUDY_JIT_COMPILE
+#define PCRE_STUDY_JIT_COMPILE 0
+#endif
+#ifndef PCRE_HAS_JIT_CODE
+#define pcre_free_study(x) pcre_free((x))
+#endif
 
 int CRegExp::m_Utf8Supported = -1;
 int CRegExp::m_UcpSupported  = -1;
+int CRegExp::m_JitSupported  = -1;
 
 
 CRegExp::CRegExp(bool caseless /*= false*/, bool utf8 /*= false*/)
 {
   m_re          = NULL;
+  m_sd          = NULL;
   m_offset      = 0;
   m_iOptions    = PCRE_DOTALL | PCRE_NEWLINE_ANY;
   if(caseless)
@@ -56,6 +68,7 @@ CRegExp::CRegExp(bool caseless /*= false*/, bool utf8 /*= false*/)
 CRegExp::CRegExp(const CRegExp& re)
 {
   m_re = NULL;
+  m_sd = NULL;
   m_iOptions = re.m_iOptions;
   *this = re;
 }
@@ -320,6 +333,21 @@ void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
   CLog::Log(iLog, "regexp ovector=%s", str.c_str());
 }
 
+void CRegExp::Cleanup()
+{
+  if (m_re)
+  {
+    PCRE::pcre_free(m_re); 
+    m_re = NULL; 
+  }
+
+  if (m_sd)
+  {
+    pcre_free_study(m_sd);
+    m_sd = NULL;
+  }
+}
+
 inline bool CRegExp::IsValidSubNumber(int iSub) const
 {
   return iSub >= 0 && iSub <= m_iMatchCount && iSub <= m_MaxNumOfBackrefrences;
@@ -345,4 +373,17 @@ bool CRegExp::AreUnicodePropertiesSupported(void)
   }
 
   return m_UcpSupported != 0;
+}
+
+bool CRegExp::IsJitSupported(void)
+{
+  if (m_JitSupported == -1)
+  {
+#ifdef PCRE_HAS_JIT_CODE
+    if (pcre_config(PCRE_CONFIG_JIT, &m_JitSupported) != 0)
+#endif
+      m_JitSupported = 0;
+  }
+
+  return m_JitSupported != 0;
 }
