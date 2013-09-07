@@ -47,7 +47,28 @@ public:
   CRegExp(const CRegExp& re);
   ~CRegExp();
 
+  /**
+   * Compile (prepare) regular expression
+   * @param re          The regular expression
+   * @param study (optional) If set to true expression will be additionally studied, useful if
+   *                         expression will be used several times
+   * @param jitCompile (optional) Heavyweight expression optimization, longer compilation but 
+   *                              much faster matching. Ignored if study==false or PCRE lack
+   *                              support for JIT compiling
+   * @return true on success, false on any error
+   */
   bool RegComp(const char *re, bool study = false, bool jitCompile = true);
+
+  /**
+   * Compile (prepare) regular expression
+   * @param re          The regular expression
+   * @param study (optional) If set to true expression will be additionally studied, useful if
+   *                         expression will be used several times
+   * @param jitCompile (optional) Heavyweight expression optimization, longer compilation but
+   *                              much faster matching. Ignored if study==false or PCRE lack
+   *                              support for JIT compiling
+   * @return true on success, false on any error
+   */
   bool RegComp(const std::string& re, bool study = false, bool jitCompile = false)
   { return RegComp(re.c_str(), study, jitCompile); }
   /**
