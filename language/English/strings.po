@@ -14337,6 +14337,11 @@ msgctxt "#36542"
 msgid "Output to both analogue (headphones) and HDMI"
 msgstr ""
 
+#: system/settings/rbp.xml
+msgctxt "#36543"
+msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr ""
+
 #reserved strings 365XX
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
@@ -14389,4 +14394,9 @@ msgstr ""
 #: system/settings/rbp.xml
 msgctxt "#37017"
 msgid "Dual audio output"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#37018"
+msgid "Boost centre channel when downmixing"
 msgstr ""

@@ -72,6 +72,7 @@ public:
   void SetVolume(float nVolume);
   void SetMute(bool bOnOff);
   void SetDynamicRangeCompression(long drc);
+  float GetDynamicRangeAmplification() { return 20.0f * log10f(m_amplification * m_attenuation); }
   bool ApplyVolume();
   int SetPlaySpeed(int iSpeed);
   void SubmitEOS();
@@ -94,6 +95,7 @@ public:
 
   bool BadState() { return !m_Initialized; };
   unsigned int GetAudioRenderingLatency();
+  float GetMaxLevel(double &pts);
   void VizPacket(const void* data, unsigned int len, double pts);
 
 private:
@@ -109,6 +111,10 @@ private:
   unsigned int  m_ChunkLen;
   unsigned int  m_OutputChannels;
   unsigned int  m_BitsPerSample;
+  float         m_maxLevel;
+  float         m_amplification;
+  float         m_attenuation;
+  float         m_desired_attenuation;
   COMXCoreComponent *m_omx_clock;
   OMXClock       *m_av_clock;
   bool          m_settings_changed;
