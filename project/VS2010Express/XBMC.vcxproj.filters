@@ -46,9 +46,6 @@
     <Filter Include="cores\DllLoader\exports">
       <UniqueIdentifier>{aa32e9d0-5753-42d5-889b-3938ce6703a0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\DllLoader\exports\emu_socket">
-      <UniqueIdentifier>{280834b5-e3ce-48ec-a304-ec6c315beffe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cores\DllLoader\exports\util">
       <UniqueIdentifier>{111c81df-dc5e-4b93-a21f-c2171434952b}</UniqueIdentifier>
     </Filter>
@@ -617,15 +614,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.cpp">
       <Filter>cores\DllLoader\exports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_aton.c">
-      <Filter>cores\DllLoader\exports\emu_socket</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_ntop.c">
-      <Filter>cores\DllLoader\exports\emu_socket</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_pton.c">
-      <Filter>cores\DllLoader\exports\emu_socket</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.cpp">
       <Filter>cores\DllLoader\exports\util</Filter>
@@ -3515,9 +3503,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.h">
       <Filter>cores\DllLoader\exports</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\emu_socket\emu_socket.h">
-      <Filter>cores\DllLoader\exports\emu_socket</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.h">
       <Filter>cores\DllLoader\exports\util</Filter>
