@@ -26,6 +26,8 @@
 #include <vector>
 
 namespace PCRE {
+struct real_pcre_jit_stack; // forward declaration for PCRE without JIT
+typedef struct real_pcre_jit_stack pcre_jit_stack;
 #ifdef TARGET_WINDOWS
 #define PCRE_STATIC 1
 #ifdef _DEBUG
@@ -115,6 +117,7 @@ private:
   int         m_iOptions;
   bool        m_jitCompiled;
   bool        m_bMatched;
+  PCRE::pcre_jit_stack* m_jitStack;
   std::string m_subject;
   std::string m_pattern;
   static int  m_Utf8Supported;

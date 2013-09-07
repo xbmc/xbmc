@@ -70,6 +70,7 @@ CRegExp::CRegExp(bool caseless /*= false*/, bool utf8 /*= false*/)
   m_jitCompiled = false;
   m_bMatched    = false;
   m_iMatchCount = 0;
+  m_jitStack    = NULL;
 
   memset(m_iOvector, 0, sizeof(m_iOvector));
 }
@@ -78,6 +79,7 @@ CRegExp::CRegExp(const CRegExp& re)
 {
   m_re = NULL;
   m_sd = NULL;
+  m_jitStack = NULL;
   m_iOptions = re.m_iOptions;
   *this = re;
 }
@@ -192,6 +194,17 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
     CLog::Log(LOGERROR, "%s: startoffset is beyond end of string to match", __FUNCTION__);
     return -1;
   }
+
+#ifdef PCRE_HAS_JIT_CODE
+  if (m_jitCompiled && !m_jitStack)
+  {
+    m_jitStack = pcre_jit_stack_alloc(32*1024, 512*1024);
+    if (m_jitStack == NULL)
+      CLog::Log(LOGWARNING, "%s: can't allocate address space for JIT stack", __FUNCTION__);
+
+    pcre_assign_jit_stack(m_sd, NULL, m_jitStack);
+  }
+#endif
 
   if (maxNumberOfCharsToTest >= 0)
     bufferLen = std::min<size_t>(bufferLen, startoffset + maxNumberOfCharsToTest);
@@ -381,6 +394,14 @@ void CRegExp::Cleanup()
     pcre_free_study(m_sd);
     m_sd = NULL;
   }
+
+#ifdef PCRE_HAS_JIT_CODE
+  if (m_jitStack)
+  {
+    pcre_jit_stack_free(m_jitStack);
+    m_jitStack = NULL;
+  }
+#endif
 }
 
 inline bool CRegExp::IsValidSubNumber(int iSub) const
