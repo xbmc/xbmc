@@ -74,14 +74,16 @@ public:
   static bool IsUtf8Supported(void);
   static bool AreUnicodePropertiesSupported(void);
   static bool LogCheckUtf8Support(void);
+  static bool IsJitSupported(void);
 
 private:
   int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
 
-  void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
+  void Cleanup();
   inline bool IsValidSubNumber(int iSub) const;
 
   PCRE::pcre* m_re;
+  PCRE::pcre_extra* m_sd;
   static const int OVECCOUNT=(m_MaxNumOfBackrefrences + 1) * 3;
   unsigned int m_offset;
   int         m_iOvector[OVECCOUNT];
@@ -90,8 +92,9 @@ private:
   bool        m_bMatched;
   std::string m_subject;
   std::string m_pattern;
-  static int  m_Utf8Supported;     
+  static int  m_Utf8Supported;
   static int  m_UcpSupported;
+  static int  m_JitSupported;
 };
 
 typedef std::vector<CRegExp> VECCREGEXP;
