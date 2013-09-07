@@ -1237,20 +1237,25 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   else
   {
     format.m_dataFormat = AE_FMT_FLOAT;
-    switch (settings.channels)
+    if ((format.m_channelLayout.Count() > 2) ||
+         settings.stereoupmix ||
+         !g_advancedSettings.m_audioAudiophile)
     {
-      default:
-      case  0: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
-      case  1: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
-      case  2: format.m_channelLayout = AE_CH_LAYOUT_2_1; break;
-      case  3: format.m_channelLayout = AE_CH_LAYOUT_3_0; break;
-      case  4: format.m_channelLayout = AE_CH_LAYOUT_3_1; break;
-      case  5: format.m_channelLayout = AE_CH_LAYOUT_4_0; break;
-      case  6: format.m_channelLayout = AE_CH_LAYOUT_4_1; break;
-      case  7: format.m_channelLayout = AE_CH_LAYOUT_5_0; break;
-      case  8: format.m_channelLayout = AE_CH_LAYOUT_5_1; break;
-      case  9: format.m_channelLayout = AE_CH_LAYOUT_7_0; break;
-      case 10: format.m_channelLayout = AE_CH_LAYOUT_7_1; break;
+      switch (settings.channels)
+      {
+        default:
+        case  0: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
+        case  1: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
+        case  2: format.m_channelLayout = AE_CH_LAYOUT_2_1; break;
+        case  3: format.m_channelLayout = AE_CH_LAYOUT_3_0; break;
+        case  4: format.m_channelLayout = AE_CH_LAYOUT_3_1; break;
+        case  5: format.m_channelLayout = AE_CH_LAYOUT_4_0; break;
+        case  6: format.m_channelLayout = AE_CH_LAYOUT_4_1; break;
+        case  7: format.m_channelLayout = AE_CH_LAYOUT_5_0; break;
+        case  8: format.m_channelLayout = AE_CH_LAYOUT_5_1; break;
+        case  9: format.m_channelLayout = AE_CH_LAYOUT_7_0; break;
+        case 10: format.m_channelLayout = AE_CH_LAYOUT_7_1; break;
+      }
     }
 
     if (m_settings.mode == AUDIO_IEC958 && format.m_sampleRate > 48000)
