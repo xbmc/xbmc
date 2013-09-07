@@ -60,7 +60,7 @@ bool CPVRChannelGroupInternal::Load(void)
   if (CPVRChannelGroup::Load())
   {
     UpdateChannelPaths();
-    CreateChannelEpgs();
+    g_PVRManager.TriggerEpgsCreate();
     return true;
   }
 
@@ -369,6 +369,8 @@ void CPVRChannelGroupInternal::CreateChannelEpg(CPVRChannelPtr channel, bool bFo
 
 bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 {
+  if (!g_EpgContainer.IsStarted())
+    return false;
   {
     CSingleLock lock(m_critSection);
     for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)

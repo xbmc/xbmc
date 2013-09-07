@@ -519,3 +519,16 @@ void CPVRChannelGroups::FillGroupsGUI(int iWindowId, int iControlId) const
   CGUIMessage msgSel(GUI_MSG_ITEM_SELECT, iWindowId, iControlId, iSelectedGroupPtr);
   g_windowManager.SendMessage(msgSel);
 }
+
+bool CPVRChannelGroups::CreateChannelEpgs(void)
+{
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
+  for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); it++)
+  {
+    /* Only create EPGs for the internatl groups */
+    if ((*it)->IsInternalGroup())
+      bReturn = (*it)->CreateChannelEpgs();
+  }
+  return bReturn;
+}
