@@ -126,6 +126,12 @@ public:
   bool GetNamedSubPattern(const char* strName, std::string& strMatch) const;
   int GetNamedSubPatternNumber(const char* strName) const;
   void DumpOvector(int iLog);
+  /**
+   * Check is RegExp object is ready for matching
+   * @return true if RegExp object is ready for matching, false otherwise
+   */
+  inline bool IsCompiled(void)
+  { return !m_pattern.empty(); }
   const CRegExp& operator= (const CRegExp& re);
   static bool IsUtf8Supported(void);
   static bool AreUnicodePropertiesSupported(void);
