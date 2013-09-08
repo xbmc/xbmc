@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm> 
 #include "RegExp.h"
 #include "StdString.h"
 #include "log.h"
@@ -33,6 +34,7 @@ CRegExp::CRegExp(bool caseless)
   if(caseless)
     m_iOptions |= PCRE_CASELESS;
 
+  m_offset      = 0;
   m_bMatched    = false;
   m_iMatchCount = 0;
 
@@ -59,6 +61,7 @@ const CRegExp& CRegExp::operator=(const CRegExp& re)
       {
         memcpy(m_re, re.m_re, size);
         memcpy(m_iOvector, re.m_iOvector, OVECCOUNT*sizeof(int));
+        m_offset = re.m_offset;
         m_iMatchCount = re.m_iMatchCount;
         m_bMatched = re.m_bMatched;
         m_subject = re.m_subject;
@@ -81,6 +84,7 @@ bool CRegExp::RegComp(const char *re)
   if (!re)
     return false;
 
+  m_offset           = 0;
   m_bMatched         = false;
   m_iMatchCount      = 0;
   const char *errMsg = NULL;
@@ -102,8 +106,14 @@ bool CRegExp::RegComp(const char *re)
   return true;
 }
 
-int CRegExp::RegFind(const char* str, int startoffset)
+int CRegExp::RegFind(const char *str, unsigned int startoffset /*= 0*/, int maxNumberOfCharsToTest /*= -1*/)
 {
+  return PrivateRegFind(strlen(str), str, startoffset, maxNumberOfCharsToTest);
+}
+
+int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset /* = 0*/, int maxNumberOfCharsToTest /*= -1*/)
+{
+  m_offset      = 0;
   m_bMatched    = false;
   m_iMatchCount = 0;
 
@@ -117,10 +127,19 @@ int CRegExp::RegFind(const char* str, int startoffset)
   {
     CLog::Log(LOGERROR, "PCRE: Called without a string to match");
     return -1;
+  } 
+
+  if (startoffset > bufferLen)
+  {
+    CLog::Log(LOGERROR, "%s: startoffset is beyond end of string to match", __FUNCTION__);
+    return -1;
   }
 
-  m_subject = str;
-  int rc = pcre_exec(m_re, NULL, str, strlen(str), startoffset, 0, m_iOvector, OVECCOUNT);
+  if (maxNumberOfCharsToTest >= 0)
+    bufferLen = std::min<size_t>(bufferLen, startoffset + maxNumberOfCharsToTest);
+
+  m_subject.assign(str + startoffset, bufferLen - startoffset);
+  int rc = pcre_exec(m_re, NULL, m_subject.c_str(), m_subject.length(), 0, 0, m_iOvector, OVECCOUNT);
 
   if (rc<1)
   {
@@ -138,9 +157,10 @@ int CRegExp::RegFind(const char* str, int startoffset)
       return -1;
     }
   }
+  m_offset = startoffset;
   m_bMatched = true;
   m_iMatchCount = rc;
-  return m_iOvector[0];
+  return m_iOvector[0] + m_offset;
 }
 
 int CRegExp::GetCaptureTotal() const
@@ -239,7 +259,7 @@ int CRegExp::GetSubStart(int iSub) const
   if (!IsValidSubNumber(iSub))
     return -1;
 
-  return m_iOvector[iSub*2];
+  return m_iOvector[iSub*2] + m_offset;
 }
 
 int CRegExp::GetSubStart(const std::string& subName) const
