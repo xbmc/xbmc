@@ -89,6 +89,7 @@ typedef struct {
   SMCBytes_t              bytes;
 } SMCKeyData_t;
 
+typedef const char        UInt32ConstChar_t[5];
 typedef char              UInt32Char_t[5];
 
 typedef struct {
@@ -104,7 +105,7 @@ extern "C"
 #endif
 
 // prototypes
-double SMCGetTemperature(char *key);
+double SMCGetTemperature(const char *key);
 
 #ifdef __cplusplus
 }

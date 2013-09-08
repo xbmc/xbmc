@@ -25,7 +25,7 @@
 
 static io_connect_t conn;
 
-UInt32 _strtoul(char *str, int size, int base)
+UInt32 _strtoul(const char *str, int size, int base)
 {
   UInt32 total = 0;
   int i;
@@ -116,7 +116,7 @@ kern_return_t SMCCall(int index, SMCKeyData_t *inputStructure, SMCKeyData_t *out
   
 }
 
-kern_return_t SMCReadKey(UInt32Char_t key, SMCVal_t *val)
+kern_return_t SMCReadKey(UInt32ConstChar_t key, SMCVal_t *val)
 {
   kern_return_t result;
   SMCKeyData_t  inputStructure;
@@ -147,7 +147,7 @@ kern_return_t SMCReadKey(UInt32Char_t key, SMCVal_t *val)
   return kIOReturnSuccess;
 }
 
-double SMCGetTemperature(char *key)
+double SMCGetTemperature(const char *key)
 {
   SMCVal_t val;
   kern_return_t result;
