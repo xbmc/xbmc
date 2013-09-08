@@ -235,6 +235,8 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     RESOLUTION oldRes = GetCurrentResolution();
     RESOLUTION newRes = GetResolutionFromString(((CSettingString*)setting)->GetValue());
 
+    if (oldRes == newRes)
+      return true;
     SetCurrentResolution(newRes, false);
     g_graphicsContext.SetVideoResolution(newRes);
 
