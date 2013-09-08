@@ -44,8 +44,9 @@ public:
 
   bool RegComp(const char *re);
   bool RegComp(const std::string& re) { return RegComp(re.c_str()); }
-  int RegFind(const char *str, int startoffset = 0);
-  int RegFind(const std::string& str, int startoffset = 0) { return RegFind(str.c_str(), startoffset); }
+  int RegFind(const char* str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
+  int RegFind(const std::string& str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1)
+  { return PrivateRegFind(str.length(), str.c_str(), startoffset, maxNumberOfCharsToTest); }
   std::string GetReplaceString( const char* sReplaceExp ) const;
   int GetFindLen() const
   {
@@ -71,11 +72,14 @@ public:
   static bool AreUnicodePropertiesSupported(void);
 
 private:
+  int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
+
   void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
   inline bool IsValidSubNumber(int iSub) const;
 
   PCRE::pcre* m_re;
   static const int OVECCOUNT=(m_MaxNumOfBackrefrences + 1) * 3;
+  unsigned int m_offset;
   int         m_iOvector[OVECCOUNT];
   int         m_iMatchCount;
   int         m_iOptions;
