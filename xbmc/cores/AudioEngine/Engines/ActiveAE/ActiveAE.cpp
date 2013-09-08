@@ -1249,21 +1249,27 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
          settings.stereoupmix ||
          !g_advancedSettings.m_audioAudiophile)
     {
+      CAEChannelInfo stdLayout;
       switch (settings.channels)
       {
         default:
-        case  0: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
-        case  1: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
-        case  2: format.m_channelLayout = AE_CH_LAYOUT_2_1; break;
-        case  3: format.m_channelLayout = AE_CH_LAYOUT_3_0; break;
-        case  4: format.m_channelLayout = AE_CH_LAYOUT_3_1; break;
-        case  5: format.m_channelLayout = AE_CH_LAYOUT_4_0; break;
-        case  6: format.m_channelLayout = AE_CH_LAYOUT_4_1; break;
-        case  7: format.m_channelLayout = AE_CH_LAYOUT_5_0; break;
-        case  8: format.m_channelLayout = AE_CH_LAYOUT_5_1; break;
-        case  9: format.m_channelLayout = AE_CH_LAYOUT_7_0; break;
-        case 10: format.m_channelLayout = AE_CH_LAYOUT_7_1; break;
+        case  0: stdLayout = AE_CH_LAYOUT_2_0; break;
+        case  1: stdLayout = AE_CH_LAYOUT_2_0; break;
+        case  2: stdLayout = AE_CH_LAYOUT_2_1; break;
+        case  3: stdLayout = AE_CH_LAYOUT_3_0; break;
+        case  4: stdLayout = AE_CH_LAYOUT_3_1; break;
+        case  5: stdLayout = AE_CH_LAYOUT_4_0; break;
+        case  6: stdLayout = AE_CH_LAYOUT_4_1; break;
+        case  7: stdLayout = AE_CH_LAYOUT_5_0; break;
+        case  8: stdLayout = AE_CH_LAYOUT_5_1; break;
+        case  9: stdLayout = AE_CH_LAYOUT_7_0; break;
+        case 10: stdLayout = AE_CH_LAYOUT_7_1; break;
       }
+
+      if (g_advancedSettings.m_audioAudiophile)
+        format.m_channelLayout.ResolveChannels(stdLayout);
+      else
+        format.m_channelLayout = stdLayout;
     }
 
     if (m_settings.mode == AUDIO_IEC958 && format.m_sampleRate > 48000)
@@ -1283,9 +1289,6 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     {
       format.m_channelLayout = AE_CH_LAYOUT_2_0;
     }
-
-    CAEChannelInfo stdLayout = format.m_channelLayout;
-    format.m_channelLayout.ResolveChannels(stdLayout);
   }
 }
 
