@@ -53,6 +53,11 @@ int CRegExp::m_JitSupported  = -1;
 
 CRegExp::CRegExp(bool caseless /*= false*/, bool utf8 /*= false*/)
 {
+  InitValues(caseless, utf8);
+}
+
+void CRegExp::InitValues(bool caseless /*= false*/, bool utf8 /*= false*/)
+{
   m_re          = NULL;
   m_sd          = NULL;
   m_iOptions    = PCRE_DOTALL | PCRE_NEWLINE_ANY;
@@ -73,6 +78,12 @@ CRegExp::CRegExp(bool caseless /*= false*/, bool utf8 /*= false*/)
   m_jitStack    = NULL;
 
   memset(m_iOvector, 0, sizeof(m_iOvector));
+}
+
+CRegExp::CRegExp(bool caseless, bool utf8, const char *re, studyMode study /*= NoStudy*/)
+{
+  InitValues(caseless, utf8);
+  RegComp(re, study);
 }
 
 CRegExp::CRegExp(const CRegExp& re)

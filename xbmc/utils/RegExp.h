@@ -56,6 +56,18 @@ public:
    * @param utf8 (optional) If set to true all string will be processed as UTF-8 strings 
    */
   CRegExp(bool caseless = false, bool utf8 = false);
+  /**
+   * Create new CRegExp object and compile regexp expression in one step
+   * @warning Use only with hardcoded regexp when you're sure that regexp is compiled without errors
+   * @param caseless    Matching will be case insensitive if set to true 
+   *                    or case sensitive if set to false
+   * @param utf8        If set to true all string will be processed as UTF-8 strings
+   * @param re          The regular expression
+   * @param study (optional) Controls study of expression, useful if expression will be used
+   *                         several times
+   */
+  CRegExp(bool caseless, bool utf8, const char *re, studyMode study = NoStudy);
+
   CRegExp(const CRegExp& re);
   ~CRegExp();
 
@@ -125,6 +137,7 @@ public:
 
 private:
   int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
+  void InitValues(bool caseless = false, bool utf8 = false);
 
   void Cleanup();
   inline bool IsValidSubNumber(int iSub) const;
