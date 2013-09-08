@@ -2774,6 +2774,12 @@ bool CApplication::OnAction(const CAction &action)
     ShowVolumeBar(&action);
     return true;
   }
+
+  if (action.GetID() == ACTION_TOGGLE_STEREO_UPMIX)
+  {
+    return CSettings::Get().ToggleBool("audiooutput.stereoupmix");
+  }
+
   // Check for global seek control
   if (m_pPlayer->IsPlaying() && action.GetAmount() && (action.GetID() == ACTION_ANALOG_SEEK_FORWARD || action.GetID() == ACTION_ANALOG_SEEK_BACK))
   {

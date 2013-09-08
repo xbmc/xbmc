@@ -156,6 +156,7 @@ static const ActionMapping actions[] =
         {"reloadkeymaps"     , ACTION_RELOAD_KEYMAPS},
         {"volumeup"          , ACTION_VOLUME_UP},
         {"volumedown"        , ACTION_VOLUME_DOWN},
+        {"ToggleStereoUpmix" , ACTION_TOGGLE_STEREO_UPMIX},
         {"mute"              , ACTION_MUTE},
         {"backspace"         , ACTION_BACKSPACE},
         {"scrollup"          , ACTION_SCROLL_UP},

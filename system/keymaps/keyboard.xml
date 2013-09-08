@@ -70,6 +70,7 @@
       <minus>VolumeDown</minus>
       <plus>VolumeUp</plus>
       <equals>VolumeUp</equals>
+      <u mod="alt">ToggleStereoUpmix</u>
       <zero>Number0</zero>
       <one>Number1</one>
       <two>Number2</two>
