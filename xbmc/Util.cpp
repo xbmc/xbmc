@@ -252,8 +252,8 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   {
     if (reYear.RegFind(strTitleAndYear.c_str()) >= 0)
     {
-      strTitleAndYear = reYear.GetReplaceString("\\1");
-      strYear = reYear.GetReplaceString("\\2");
+      strTitleAndYear = reYear.GetMatch(1);
+      strYear = reYear.GetMatch(2);
     }
   }
 

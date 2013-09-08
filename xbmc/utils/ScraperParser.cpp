@@ -279,7 +279,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         int i2=reg2.RegFind(strCurOutput.c_str());
         while (i2 > -1)
         {
-          std::string szRemove = reg2.GetReplaceString("\\2");
+          std::string szRemove = reg2.GetMatch(2);
           int iRemove = szRemove.size();
           int i3 = strCurOutput.find(szRemove);
           if (!szParam.empty())
@@ -500,7 +500,7 @@ void CScraperParser::ConvertJSON(CStdString &string)
   while (reg.RegFind(string.c_str()) > -1)
   {
     int pos = reg.GetSubStart(1);
-    std::string szReplace = reg.GetReplaceString("\\1");
+    std::string szReplace = reg.GetMatch(1);
 
     CStdString replace;
     replace.Format("&#x%s;", szReplace.c_str());
@@ -513,7 +513,7 @@ void CScraperParser::ConvertJSON(CStdString &string)
   {
     int pos1 = reg2.GetSubStart(1);
     int pos2 = reg2.GetSubStart(2);
-    std::string szHexValue = reg2.GetReplaceString("\\1");
+    std::string szHexValue = reg2.GetMatch(1);
 
     CStdString replace;
     replace.Format("%c", strtol(szHexValue.c_str(), NULL, 16));

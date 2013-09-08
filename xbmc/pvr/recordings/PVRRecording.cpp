@@ -316,7 +316,7 @@ CStdString CPVRRecording::GetTitleFromURL(const CStdString &url)
       "(19[0-9][0-9]|20[0-9][0-9])[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9].pvr"))
   {
     if (reg.RegFind(url.c_str()) >= 0)
-      return reg.GetReplaceString("\\2");
+      return reg.GetMatch(2);
   }
   return StringUtils::EmptyString;
 }
