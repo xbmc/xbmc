@@ -819,7 +819,7 @@ void CActiveAESink::GenerateNoise()
     }
     while(R1 == 0.0f);
     
-    noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001;
+    noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001f;
   }
 
   AEDataFormat fmt = CActiveAEResample::GetAESampleFormat(m_sampleOfSilence.pkt->config.fmt, m_sampleOfSilence.pkt->config.bits_per_sample);
