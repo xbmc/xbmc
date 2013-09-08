@@ -4482,21 +4482,22 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::Scraper
       {
         strSQL = PrepareSQL("select * from content where strPath='musicdb://albums/%i/'",params.GetAlbumId());
         m_pDS->query(strSQL.c_str());
+        if (m_pDS->eof()) // general albums setting
+        {
+          strSQL = PrepareSQL("select * from content where strPath='musicdb://albums/'");
+          m_pDS->query(strSQL.c_str());
+        }
       }
       if (m_pDS->eof() && params.GetArtistId() != -1) // check artist
       {
         strSQL = PrepareSQL("select * from content where strPath='musicdb://artists/%i/'",params.GetArtistId());
         m_pDS->query(strSQL.c_str());
-      }
-      if (m_pDS->eof()) // general albums setting
-      {
-        strSQL = PrepareSQL("select * from content where strPath='musicdb://albums/'");
-        m_pDS->query(strSQL.c_str());
-      }
-      if (m_pDS->eof()) // general artist setting
-      {
-        strSQL = PrepareSQL("select * from content where strPath='musicdb://artists/'");
-        m_pDS->query(strSQL.c_str());
+
+        if (m_pDS->eof()) // general artist setting
+        {
+          strSQL = PrepareSQL("select * from content where strPath='musicdb://artists/'");
+          m_pDS->query(strSQL.c_str());
+        }
       }
     }
 
