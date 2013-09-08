@@ -252,8 +252,9 @@ protected:
   void LoadSettings();
   bool NeedReconfigureBuffers();
   bool NeedReconfigureSink();
-  void ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, bool setmode = false);
+  void ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, int *mode = NULL);
   void Configure(AEAudioFormat *desiredFmt = NULL);
+  AEAudioFormat GetInputFormat(AEAudioFormat *desiredFmt = NULL);
   CActiveAEStream* CreateStream(MsgStreamNew *streamMsg);
   void DiscardStream(CActiveAEStream *stream);
   void SFlushStream(CActiveAEStream *stream);
@@ -297,6 +298,7 @@ protected:
   AEAudioFormat m_sinkRequestFormat;
   AEAudioFormat m_encoderFormat;
   AEAudioFormat m_internalFormat;
+  AEAudioFormat m_inputFormat;
   AudioSettings m_settings;
   CEngineStats m_stats;
   IAEEncoder *m_encoder;
