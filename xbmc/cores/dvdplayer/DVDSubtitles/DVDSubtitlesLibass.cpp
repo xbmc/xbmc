@@ -24,6 +24,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
 
@@ -76,14 +77,10 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   if(!m_renderer)
     return;
 
-  //Setting default font to the Arial in \media\fonts (used if FontConfig fails)  
-  strPath = "special://home/media/Fonts/";
-  strPath += CSettings::Get().GetString("subtitles.font");
+  //Setting default font to the Arial in \media\fonts (used if FontConfig fails)
+  strPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", CSettings::Get().GetString("subtitles.font"));
   if (!XFILE::CFile::Exists(strPath))
-  {
-    strPath = "special://xbmc/media/Fonts/";
-    strPath += CSettings::Get().GetString("subtitles.font");
-  }
+    strPath = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", CSettings::Get().GetString("subtitles.font"));
   int fc = !CSettings::Get().GetBool("subtitles.overrideassfonts");
 
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
