@@ -3067,6 +3067,9 @@
     <ClCompile Include="..\..\xbmc\settings\SettingRequirement.cpp">
       <Filter>settings</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\AddonPythonInvoker.cpp">
+      <Filter>interfaces\python</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6021,6 +6024,9 @@
     <ClInclude Include="..\..\xbmc\ApplicationPlayer.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingRequirement.h">
       <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\python\AddonPythonInvoker.h">
+      <Filter>interfaces\python</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
