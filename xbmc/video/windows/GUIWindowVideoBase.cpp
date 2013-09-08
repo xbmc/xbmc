@@ -1063,9 +1063,15 @@ bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
   if (item->m_lStartOffset)
     return true;
 
-  if (item->IsBDFile())
+  CStdString path;
+  if (item->IsVideoDb())
+    path = item->GetVideoInfoTag()->m_strFileNameAndPath;
+  else
+    path = item->GetPath();
+
+  if (URIUtils::GetFileName(path) == "index.bdmv")
   {
-    CStdString root = URIUtils::GetParentPath(item->GetPath());
+    CStdString root = URIUtils::GetParentPath(path);
     URIUtils::RemoveSlashAtEnd(root);
     if(URIUtils::GetFileName(root) == "BDMV")
     {
@@ -1075,7 +1081,7 @@ bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
     }
   }
 
-  if (URIUtils::HasExtension(item->GetPath(), ".iso|.img"))
+  if (URIUtils::HasExtension(path, ".iso|.img"))
   {
     CURL url2("udf://");
     url2.SetHostName(item->GetPath());
