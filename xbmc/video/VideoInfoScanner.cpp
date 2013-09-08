@@ -907,7 +907,7 @@ namespace VIDEO
 
       // Grab the remainder from first regexp run
       // as second run might modify or empty it.
-      std::string remainder = reg.GetReplaceString("\\3");
+      std::string remainder(reg.GetMatch(3));
 
       /*
        * Check if the files base path is a dedicated folder that contains
@@ -957,13 +957,13 @@ namespace VIDEO
                       g_advancedSettings.m_tvshowMultiPartEnumRegExp.c_str());
 
             episodeList.push_back(episode);
-            remainder = reg.GetReplaceString("\\3");
+            remainder = reg.GetMatch(3);
             offset = 0;
           }
           else if (((regexp2pos < regexppos) && regexp2pos != -1) ||
                    (regexp2pos >= 0 && regexppos == -1))
           {
-            episode.iEpisode = atoi(reg2.GetReplaceString("\\1").c_str());
+            episode.iEpisode = atoi(reg2.GetMatch(1).c_str());
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode %u [%s]",
                       episode.iEpisode, g_advancedSettings.m_tvshowMultiPartEnumRegExp.c_str());
             episodeList.push_back(episode);
@@ -978,8 +978,8 @@ namespace VIDEO
 
   bool CVideoInfoScanner::GetEpisodeAndSeasonFromRegExp(CRegExp &reg, EPISODE &episodeInfo, int defaultSeason)
   {
-    std::string season = reg.GetReplaceString("\\1");
-    std::string episode = reg.GetReplaceString("\\2");
+    std::string season(reg.GetMatch(1));
+    std::string episode(reg.GetMatch(2));
 
     if (!season.empty() || !episode.empty())
     {
@@ -1015,9 +1015,9 @@ namespace VIDEO
 
   bool CVideoInfoScanner::GetAirDateFromRegExp(CRegExp &reg, EPISODE &episodeInfo)
   {
-    std::string param1 = reg.GetReplaceString("\\1");
-    std::string param2 = reg.GetReplaceString("\\2");
-    std::string param3 = reg.GetReplaceString("\\3");
+    std::string param1(reg.GetMatch(1));
+    std::string param2(reg.GetMatch(2));
+    std::string param3(reg.GetMatch(3));
 
     if (!param1.empty() && !param2.empty() && !param3.empty())
     {
@@ -1709,7 +1709,7 @@ namespace VIDEO
         CStdString name = URIUtils::GetFileName(items[i]->GetPath());
         if (reg.RegFind(name) > -1)
         {
-          int season = atoi(reg.GetReplaceString("\\1").c_str());
+          int season = atoi(reg.GetMatch(1).c_str());
           if (season > maxSeasons)
             maxSeasons = season;
         }
