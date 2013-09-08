@@ -288,6 +288,9 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     filename = URIUtils::GetFileName(strFile);
   }
 
+  // root should not have trailing slash
+  URIUtils::RemoveSlashAtEnd(root);
+
   if (!m_dll)
     return false;
 

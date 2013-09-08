@@ -146,6 +146,7 @@ bool CBlurayDirectory::GetDirectory(const CStdString& path, CFileItemList &items
   CStdString root = m_url.GetHostName();
   CStdString file = m_url.GetFileName();
   URIUtils::RemoveSlashAtEnd(file);
+  URIUtils::RemoveSlashAtEnd(root);
 
   m_dll = new DllLibbluray();
   if (!m_dll->Load())
