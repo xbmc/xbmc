@@ -16,6 +16,10 @@ ifeq ($(OS),ios)
   NATIVE += dpkg-native xz-native tar-native
 endif
 
+ifeq ($(OS),osx)
+  NATIVE += xz-native tar-native
+endif
+
 .PHONY: $(NATIVE) native
 
 all: native
