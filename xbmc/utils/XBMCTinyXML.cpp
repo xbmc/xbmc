@@ -122,8 +122,7 @@ const char *CXBMCTinyXML::Parse(CStdString &data, TiXmlParsingData *prevData, Ti
   re.RegComp("^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
   while ((pos = data.find("&", pos)) != CStdString::npos)
   {
-    CStdString tmp = data.substr(pos, MAX_ENTITY_LENGTH);
-    if (re.RegFind(tmp) < 0)
+    if (re.RegFind(data, pos, MAX_ENTITY_LENGTH) < 0)
       data.insert(pos + 1, "amp;");
     pos++;
   }
