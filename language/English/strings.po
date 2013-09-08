@@ -690,7 +690,11 @@ msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr ""
 
-#empty string with id 171
+#: xbmc/playlists/SmartPlayList.cpp
+#: xbmc/utils/SortUtils.cpp
+msgctxt "#171"
+msgid "Sort title"
+msgstr ""
 
 msgctxt "#172"
 msgid "Release date"
