@@ -156,10 +156,11 @@ private:
   unsigned int      m_lastSampleRate;
   unsigned int      m_chLayoutCount;
   bool              m_rawPassthrough;
+  bool              m_transcode;
 
   enum AEStdChLayout m_stdChLayout;
 
-  bool              OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AEDataFormat rawDataFormat);
+  bool              OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AEDataFormat rawDataFormat, bool forceTranscode);
   void              Deinitialize();
   void              Start();
   void              Stop();
