@@ -14,6 +14,7 @@
 #include "filesystem/CurlFile.h"
 #include "FileItem.h"
 #include "guilib/GUIMessage.h"
+#include "Client/PlexMediaServerClient.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 class CPlexHTTPFetchJob : public CJob
@@ -64,7 +65,7 @@ class CPlexMediaServerClientJob : public CJob
 {
 public:
   CPlexMediaServerClientJob(CURL command, const std::string verb = "GET", const CGUIMessage &msg = CGUIMessage(0, 0, 0, 0), int error = 0) :
-  m_url(command), m_verb(verb), m_msg(msg), m_errorMsg(error) {}
+    m_url(command), m_verb(verb), m_msg(msg), m_errorMsg(error) {}
   
   virtual bool DoWork();
   
@@ -74,7 +75,11 @@ public:
   CGUIMessage m_msg;
   CStdString m_postData;
   int m_errorMsg;
-  
+
+  /* set this to the shared ptr if we are calling this from the
+   * mediaServerClient, otherwise just don't bother */
+  CPlexMediaServerClientPtr m_mediaServerClient;
+
   virtual bool operator==(const CJob* job) const
   {
     CPlexMediaServerClientJob *oJob = (CPlexMediaServerClientJob*)job;

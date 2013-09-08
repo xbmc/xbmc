@@ -18,28 +18,7 @@ typedef std::map<CStdString, CFileItemListPtr> ServerDataMap;
 typedef std::pair<CStdString, CFileItemListPtr> ServerDataPair;
 typedef std::map<CStdString, CPlexServerPtr> ServerMap;
 
-class CPlexServerDataLoaderJob : public CJob
-{
-public:
-  CPlexServerDataLoaderJob(const CPlexServerPtr& server) : m_server(server) {}
-
-  bool DoWork();
-  CFileItemListPtr FetchList(const CStdString& path);
-
-  CPlexServerPtr m_server;
-  CFileItemListPtr m_sectionList;
-  CFileItemListPtr m_channelList;
-
-  virtual bool operator==(const CJob* job) const
-  {
-    CPlexServerDataLoaderJob *oJob = (CPlexServerDataLoaderJob*)job;
-    if (oJob->m_server == m_server)
-      return true;
-    return false;
-  }
-};
-
-class CPlexServerDataLoader : public CJobQueue, public ITimerCallback
+class CPlexServerDataLoader : public CJobQueue, public ITimerCallback, public boost::enable_shared_from_this<CPlexServerDataLoader>
 {
 public:
   CPlexServerDataLoader();
@@ -77,4 +56,30 @@ private:
   ServerDataMap m_channelMap;
 
   ServerDataMap m_sharedSectionsMap;
+};
+
+typedef boost::shared_ptr<CPlexServerDataLoader> CPlexServerDataLoaderPtr;
+
+class CPlexServerDataLoaderJob : public CJob
+{
+public:
+  CPlexServerDataLoaderJob(const CPlexServerPtr& server, const CPlexServerDataLoaderPtr &loader) : m_server(server), m_loader(loader) {}
+
+  bool DoWork();
+  CFileItemListPtr FetchList(const CStdString& path);
+
+  CPlexServerPtr m_server;
+  CFileItemListPtr m_sectionList;
+  CFileItemListPtr m_channelList;
+
+  /* we retain this so it won't go away from under us */
+  CPlexServerDataLoaderPtr m_loader;
+
+  virtual bool operator==(const CJob* job) const
+  {
+    CPlexServerDataLoaderJob *oJob = (CPlexServerDataLoaderJob*)job;
+    if (oJob->m_server == m_server)
+      return true;
+    return false;
+  }
 };

@@ -531,7 +531,7 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
   }
   else
     CLog::Log(LOGWARNING, "CPlexDirectory::DoAugmentation failed to get augmentation URL");
-  
+
   /* clean up */
   BOOST_FOREACH(CFileItemList* item, m_augmentationItems)
     delete item;

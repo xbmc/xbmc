@@ -15,7 +15,7 @@
 #include "guilib/GUIMessage.h"
 #include "Remote/PlexRemoteSubscriberManager.h"
 
-class CPlexMediaServerClient : public CJobQueue
+class CPlexMediaServerClient : public CJobQueue, public boost::enable_shared_from_this<CPlexMediaServerClient>
 {
 public:
   enum MediaState {
@@ -67,5 +67,7 @@ private:
   CStdString m_lastItemKey;
   MediaState m_lastItemState;
 };
+
+typedef boost::shared_ptr<CPlexMediaServerClient> CPlexMediaServerClientPtr;
 
 #endif /* defined(__Plex_Home_Theater__PlexMediaServerClient__) */

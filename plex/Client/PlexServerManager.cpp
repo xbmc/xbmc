@@ -59,10 +59,10 @@ CPlexServerManager::FindByHostAndPort(const CStdString &host, int port)
 CPlexServerPtr
 CPlexServerManager::FindByUUID(const CStdString &uuid)
 {
-  CSingleLock lk(m_serverManagerLock);
-
   if (m_stopped)
     return CPlexServerPtr();
+
+  CSingleLock lk(m_serverManagerLock);
 
   if (uuid.Equals("myplex"))
     return _myPlexServer;
@@ -188,7 +188,7 @@ CPlexServerManager::UpdateReachability(bool force)
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
   {
     if (!p.second->GetActiveConnection() || force)
-      m_reachabilityThreads[p.second->GetUUID()] = new CPlexServerReachabilityThread(p.second);
+      m_reachabilityThreads[p.second->GetUUID()] = new CPlexServerReachabilityThread(shared_from_this(), p.second);
   }
 }
 

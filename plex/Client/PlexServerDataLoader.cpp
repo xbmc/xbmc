@@ -34,7 +34,7 @@ CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
   {
     m_servers[server->GetUUID()] = server;
     CLog::Log(LOGDEBUG, "CPlexServerDataLoader::LoadDataFromServer loading data for server %s", server->GetName().c_str());
-    AddJob(new CPlexServerDataLoaderJob(server));
+    AddJob(new CPlexServerDataLoaderJob(server, shared_from_this()));
     
     m_refreshTimer->Restart();
   }
@@ -230,13 +230,13 @@ void CPlexServerDataLoader::OnTimeout()
 
   std::pair<CStdString, CPlexServerPtr> p;
   BOOST_FOREACH(p, m_servers)
-    AddJob(new CPlexServerDataLoaderJob(p.second));
+    AddJob(new CPlexServerDataLoaderJob(p.second, shared_from_this()));
 }
 
 void CPlexServerDataLoader::Stop()
 {
-  CancelJobs();
-  
   m_refreshTimer->Stop();
   m_stopped = true;
+
+  CancelJobs();
 }

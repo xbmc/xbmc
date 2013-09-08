@@ -15,21 +15,9 @@ typedef std::pair<CStdString, CPlexServerPtr> PlexServerPair;
 #define PLEX_SERVER_MANAGER_XML_FORMAT_VERSION 1
 #define PLEX_SERVER_MANAGER_XML_FILE "special://profile/plexservermanager.xml"
 
-class CPlexServerReachabilityThread : public CThread
-{
-  public:
-    CPlexServerReachabilityThread(CPlexServerPtr server)
-      : CThread("ServerReachability: " + server->GetName()), m_server(server)
-    {
-      Create(false);
-    }
+class CPlexServerReachabilityThread;
 
-    void Process();
-
-    CPlexServerPtr m_server;
-};
-
-class CPlexServerManager
+class CPlexServerManager : public boost::enable_shared_from_this<CPlexServerManager>
 {
 public:
   enum CPlexServerOwnedModifier
@@ -88,3 +76,21 @@ private:
   
   std::map<CStdString, CPlexServerReachabilityThread*> m_reachabilityThreads;
 };
+
+typedef boost::shared_ptr<CPlexServerManager> CPlexServerManagerPtr;
+
+class CPlexServerReachabilityThread : public CThread
+{
+  public:
+    CPlexServerReachabilityThread(CPlexServerManagerPtr serverManager, CPlexServerPtr server)
+      : CThread("ServerReachability: " + server->GetName()), m_server(server), m_serverManager(serverManager)
+    {
+      Create(false);
+    }
+
+    void Process();
+
+    CPlexServerPtr m_server;
+    CPlexServerManagerPtr m_serverManager;
+};
+

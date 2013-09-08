@@ -21,10 +21,18 @@
 #endif
 
 class CMyPlexManager;
+
 class CPlexServerManager;
+typedef boost::shared_ptr<CPlexServerManager> CPlexServerManagerPtr;
+
 class CPlexRemoteSubscriberManager;
+
 class CPlexMediaServerClient;
+typedef boost::shared_ptr<CPlexMediaServerClient> CPlexMediaServerClientPtr;
+
 class CPlexServerDataLoader;
+typedef boost::shared_ptr<CPlexServerDataLoader> CPlexServerDataLoaderPtr;
+
 class CPlexAutoUpdate;
 class BackgroundMusicPlayer;
 class CPlexAnalytics;
@@ -38,7 +46,7 @@ typedef boost::shared_ptr<CPlexServiceListener> CPlexServiceListenerPtr;
 class PlexApplication : public IMsgTargetCallback, public ANNOUNCEMENT::IAnnouncer
 {
 public:
-  PlexApplication() : myPlexManager(NULL), serverManager(NULL), remoteSubscriberManager(NULL), mediaServerClient(NULL), dataLoader(NULL), backgroundMusicPlayer(NULL) {};
+  PlexApplication() : myPlexManager(NULL), remoteSubscriberManager(NULL), backgroundMusicPlayer(NULL) {};
   void Start();
 
   /// Destructor
@@ -54,10 +62,10 @@ public:
   
   
   CMyPlexManager *myPlexManager;
-  CPlexServerManager *serverManager;
+  CPlexServerManagerPtr serverManager;
   CPlexRemoteSubscriberManager *remoteSubscriberManager;
-  CPlexMediaServerClient *mediaServerClient;
-  CPlexServerDataLoader *dataLoader;
+  CPlexMediaServerClientPtr mediaServerClient;
+  CPlexServerDataLoaderPtr dataLoader;
   BackgroundMusicPlayer *backgroundMusicPlayer;
   CPlexAnalytics *analytics;
       

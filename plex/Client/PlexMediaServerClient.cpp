@@ -81,7 +81,8 @@ void CPlexMediaServerClient::ReportItemProgress(const CFileItemPtr &item, CPlexM
       item->SetProperty("viewOffset", currentPosition);
       /* report to the server */
       CURL u = constructTimelineRequest(item, state, currentPosition, false);
-      AddJob(new CPlexMediaServerClientJob(u));
+      CPlexMediaServerClientJob *job = new CPlexMediaServerClientJob(u);
+      job->m_mediaServerClient = shared_from_this();
       
       item->SetProperty("lastTimelineUpdate", (int64_t)now);
     }

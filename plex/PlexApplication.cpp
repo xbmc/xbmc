@@ -31,11 +31,11 @@
 void
 PlexApplication::Start()
 {
-  dataLoader = new CPlexServerDataLoader;
-  serverManager = new CPlexServerManager;
+  dataLoader = CPlexServerDataLoaderPtr(new CPlexServerDataLoader);
+  serverManager = CPlexServerManagerPtr(new CPlexServerManager);
   myPlexManager = new CMyPlexManager;
   remoteSubscriberManager = new CPlexRemoteSubscriberManager;
-  mediaServerClient = new CPlexMediaServerClient;
+  mediaServerClient = CPlexMediaServerClientPtr(new CPlexMediaServerClient);
   backgroundMusicPlayer = new BackgroundMusicPlayer;
   analytics = new CPlexAnalytics;
   
@@ -139,14 +139,13 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
     delete myPlexManager;
 
     serverManager->Stop();
-    delete serverManager;
+    serverManager.reset();
 
     dataLoader->Stop();
-    delete dataLoader;
+    dataLoader.reset();
     
     mediaServerClient->CancelJobs();
-    delete mediaServerClient;
-    mediaServerClient = NULL;
+    mediaServerClient.reset();
     
     delete remoteSubscriberManager;
     
