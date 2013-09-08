@@ -34,6 +34,10 @@ using namespace PCRE;
 #ifndef PCRE_STUDY_JIT_COMPILE
 #define PCRE_STUDY_JIT_COMPILE 0
 #endif
+#ifndef PCRE_INFO_JIT
+// some unused number
+#define PCRE_INFO_JIT 2048
+#endif
 #ifndef PCRE_HAS_JIT_CODE
 #define pcre_free_study(x) pcre_free((x))
 #endif
@@ -59,6 +63,7 @@ CRegExp::CRegExp(bool caseless /*= false*/, bool utf8 /*= false*/)
       m_iOptions |= PCRE_UCP;
   }
 
+  m_jitCompiled = false;
   m_bMatched    = false;
   m_iMatchCount = 0;
 
@@ -77,6 +82,7 @@ const CRegExp& CRegExp::operator=(const CRegExp& re)
 {
   size_t size;
   Cleanup();
+  m_jitCompiled = false;
   m_pattern = re.m_pattern;
   if (re.m_re)
   {
@@ -104,12 +110,13 @@ CRegExp::~CRegExp()
   Cleanup();
 }
 
-bool CRegExp::RegComp(const char *re)
+bool CRegExp::RegComp(const char *re, bool study /*= false*/, bool jitCompile /*= true*/)
 {
   if (!re)
     return false;
 
   m_offset           = 0;
+  m_jitCompiled      = false;
   m_bMatched         = false;
   m_iMatchCount      = 0;
   const char *errMsg = NULL;
@@ -127,6 +134,27 @@ bool CRegExp::RegComp(const char *re)
   }
 
   m_pattern = re;
+
+  if (study)
+  {
+    const int studyOptions = (jitCompile && IsJitSupported()) ? PCRE_STUDY_JIT_COMPILE : 0;
+  
+    m_sd = pcre_study(m_re, studyOptions, &errMsg);
+    if (errMsg != NULL)
+    {
+      CLog::Log(LOGWARNING, "%s: PCRE error \"%s\" while studing expression", __FUNCTION__, errMsg);
+      if (m_sd != NULL)
+      {
+        pcre_free_study(m_sd);
+        m_sd = NULL;
+      }
+    }
+    else if (jitCompile && IsJitSupported())
+    {
+      int jitPresent;
+      m_jitCompiled = (pcre_fullinfo(m_re, m_sd, PCRE_INFO_JIT, &jitPresent) == 0 && jitPresent == 1);
+    }
+  }
 
   return true;
 }

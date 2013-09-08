@@ -47,8 +47,9 @@ public:
   CRegExp(const CRegExp& re);
   ~CRegExp();
 
-  bool RegComp(const char *re);
-  bool RegComp(const std::string& re) { return RegComp(re.c_str()); }
+  bool RegComp(const char *re, bool study = false, bool jitCompile = true);
+  bool RegComp(const std::string& re, bool study = false, bool jitCompile = false)
+  { return RegComp(re.c_str(), study, jitCompile); }
   /**
    * Find first match of regular expression in given string
    * @param str         The string to match against regular expression
@@ -106,6 +107,7 @@ private:
   int         m_iOvector[OVECCOUNT];
   int         m_iMatchCount;
   int         m_iOptions;
+  bool        m_jitCompiled;
   bool        m_bMatched;
   std::string m_subject;
   std::string m_pattern;
