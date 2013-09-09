@@ -37,7 +37,7 @@ CTextureCache &CTextureCache::Get()
   return s_cache;
 }
 
-CTextureCache::CTextureCache()
+CTextureCache::CTextureCache() : CJobQueue(false, 1, CJob::PRIORITY_LOW_PAUSABLE)
 {
 }
 

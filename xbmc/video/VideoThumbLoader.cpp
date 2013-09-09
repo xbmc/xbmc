@@ -143,7 +143,7 @@ bool CThumbExtractor::DoWork()
 }
 
 CVideoThumbLoader::CVideoThumbLoader() :
-  CThumbLoader(), CJobQueue(true)
+  CThumbLoader(), CJobQueue(true, 1, CJob::PRIORITY_LOW_PAUSABLE)
 {
   m_videoDatabase = new CVideoDatabase();
 }
