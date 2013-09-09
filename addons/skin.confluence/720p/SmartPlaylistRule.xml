@@ -132,6 +132,7 @@
 			<height>40</height>
 			<font>font13</font>
 			<aligny>center</aligny>
+			<invalidcolor>invalid</invalidcolor>
 			<texturefocus border="3">button-focus2.png</texturefocus>
 			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 			<label>-</label>

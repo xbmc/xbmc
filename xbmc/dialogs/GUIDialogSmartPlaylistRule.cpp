@@ -84,6 +84,10 @@ bool CGUIDialogSmartPlaylistRule::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+
+  case GUI_MSG_VALIDITY_CHANGED:
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, message.GetParam1());
+    break;
   }
   return CGUIDialog::OnMessage(message);
 }
@@ -496,6 +500,10 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
     OnMessage(msg);
   }
   UpdateButtons();
+
+  CGUIEditControl *editControl = (CGUIEditControl*)GetControl(CONTROL_VALUE);
+  if (editControl != NULL)
+    editControl->SetInputValidation(CSmartPlaylistRule::Validate, &m_rule);
 }
 
 void CGUIDialogSmartPlaylistRule::OnDeinitWindow(int nextWindowID)

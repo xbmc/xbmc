@@ -58,6 +58,7 @@ SRCS += Stopwatch.cpp
 SRCS += StreamDetails.cpp
 SRCS += StreamUtils.cpp
 SRCS += StringUtils.cpp
+SRCS += StringValidation.cpp
 SRCS += SystemInfo.cpp
 SRCS += TextSearch.cpp
 SRCS += TimeSmoother.cpp

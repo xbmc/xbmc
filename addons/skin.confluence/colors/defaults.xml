@@ -6,4 +6,5 @@
 	<color name="black">FF000000</color>
 	<color name="blue">FF0084ff</color>
 	<color name="selected">FFEB9E17</color>
+	<color name="invalid">FFFF0000</color>
 </colors>

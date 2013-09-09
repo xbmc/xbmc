@@ -78,6 +78,8 @@ color_t CGUILabel::GetColor() const
       return m_label.disabledColor;
     case COLOR_FOCUSED:
       return m_label.focusedColor ? m_label.focusedColor : m_label.textColor;
+    case COLOR_INVALID:
+      return m_label.invalidColor ? m_label.invalidColor : m_label.textColor;
     default:
       break;
   }
