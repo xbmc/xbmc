@@ -106,6 +106,7 @@ static CDisplayPtr GetGlobalDisplay()
 
   bool deinterlace = true;
   int major, minor, micro;
+  bool support_4k = true;
   if(sscanf(vendor,  "Intel i965 driver - %d.%d.%d", &major, &minor, &micro) == 3)
   {
     /* older version will crash and burn */
@@ -114,9 +115,16 @@ static CDisplayPtr GetGlobalDisplay()
       CLog::Log(LOGDEBUG, "VAAPI - deinterlace not support on this intel driver version");
       deinterlace = false;
     }
+    // do the same check for 4K decoding: version < 1.2.0 (stable) and 1.0.21 (staging)
+    // cannot decode 4K and will crash the GPU
+    if((compare_version(major, minor, micro, 1, 2, 0) < 0) && (compare_version(major, minor, micro, 1, 0, 21) < 0))
+    {
+      support_4k = false;
+    }
   }
 
   display = CDisplayPtr(new CDisplay(disp, deinterlace));
+  display->support_4k(support_4k);
   display_global = display;
   return display;
 }
@@ -266,13 +274,6 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 
   CLog::Log(LOGDEBUG, "VAAPI - attempting to open codec %d with profile %d at level %d with %d reference frames", avctx->codec_id, avctx->profile, avctx->level, avctx->refs);
 
-  if(avctx->width  > 1920
-  || avctx->height > 1088)
-  {
-    CLog::Log(LOGDEBUG, "VAAPI - frame size (%dx%d) too large - disallowing", avctx->width, avctx->height);
-    return false;
-  }
-
   vector<VAProfile> accepted;
   switch (avctx->codec_id) {
     case AV_CODEC_ID_MPEG2VIDEO:
@@ -314,6 +315,12 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   m_display = GetGlobalDisplay();
   if(!m_display)
     return false;
+
+  if(!m_display->support_4k() && (avctx->width > 1920 || avctx->height > 1088))
+  {
+    CLog::Log(LOGDEBUG, "VAAPI - frame size (%dx%d) too large - disallowing", avctx->width, avctx->height);
+    return false;
+  }
 
   int num_display_attrs = 0;
   scoped_array<VADisplayAttribute> display_attrs(new VADisplayAttribute[vaMaxNumDisplayAttributes(m_display->get())]);
