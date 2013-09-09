@@ -103,6 +103,59 @@ string StringUtils::FormatV(const char *fmt, va_list args)
   return "";
 }
 
+wstring StringUtils::Format(const wchar_t *fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  wstring str = FormatV(fmt, args);
+  va_end(args);
+  
+  return str;
+}
+
+wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
+{
+  if (fmt == NULL)
+    return L"";
+  
+  int size = FORMAT_BLOCK_SIZE;
+  va_list argCopy;
+  
+  wchar_t *cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
+  if (cstr == NULL)
+    return L"";
+  
+  while (1)
+  {
+    va_copy(argCopy, args);
+    
+    int nActual = vswprintf(cstr, size, fmt, argCopy);
+    va_end(argCopy);
+    
+    if (nActual > -1 && nActual < size) // We got a valid result
+    {
+      wstring str(cstr, nActual);
+      free(cstr);
+      return str;
+    }
+    if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
+      size = nActual + 1;
+    else                                // Let's try to double the size (glibc 2.0)
+      size *= 2;
+    
+    wchar_t *new_cstr = reinterpret_cast<wchar_t*>(realloc(cstr, sizeof(wchar_t) * size));
+    if (new_cstr == NULL)
+    {
+      free(cstr);
+      return L"";
+    }
+    
+    cstr = new_cstr;
+  }
+  
+  return L"";
+}
+
 void StringUtils::ToUpper(string &str)
 {
   transform(str.begin(), str.end(), str.begin(), ::toupper);
