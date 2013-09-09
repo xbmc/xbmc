@@ -17,6 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#if HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#if !defined(HAVE_GNUTLS)
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -278,9 +283,6 @@ getline (char **lineptr, size_t *n, FILE *stream)
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.  */
 
-#if HAVE_CONFIG_H
-# include <config.h>
-#endif
 
 #include <string.h>
 #include <ctype.h>
@@ -386,3 +388,4 @@ strverscmp (const char *s1, const char *s2)
       return state;
     }
 }
+#endif
