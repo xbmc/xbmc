@@ -235,11 +235,10 @@ public:
 
   /*!
    \brief Checks to see if any jobs of a specific type are currently processing.
-   \param pausedType Job type to search for
+   \param type Job type to search for
    \return Number of matching jobs
-   \sa Pause(), UnPause(), IsPaused()
    */
-  int IsProcessing(const std::string &pausedType) const;
+  int IsProcessing(const std::string &type) const;
 
   /*!
    \brief Suspends queueing of jobs with priority PRIORITY_LOW_PAUSABLE until unpaused

@@ -315,13 +315,13 @@ bool CJobManager::IsProcessing(const CJob::PRIORITY &priority) const
   return false;
 }
 
-int CJobManager::IsProcessing(const std::string &pausedType) const
+int CJobManager::IsProcessing(const std::string &type) const
 {
   int jobsMatched = 0;
   CSingleLock lock(m_section);
   for(Processing::const_iterator it = m_processing.begin(); it < m_processing.end(); it++)
   {
-    if (pausedType == std::string(it->m_job->GetType()))
+    if (type == std::string(it->m_job->GetType()))
       jobsMatched++;
   }
   return jobsMatched;
