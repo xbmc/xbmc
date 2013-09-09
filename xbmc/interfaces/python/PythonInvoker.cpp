@@ -47,6 +47,7 @@
 #include "utils/CharsetConverter.h"
 #endif // defined(TARGET_WINDOWS)
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 #ifdef TARGET_WINDOWS
@@ -72,6 +73,10 @@ extern "C"
   int xbp_chdir(const char *dirname);
   char* dll_getenv(const char* szKey);
 }
+
+#define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)
+
+CCriticalSection CPythonInvoker::s_critical;
 
 static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook>& languageHook)
 {
@@ -177,7 +182,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook> languageHook(new XBMCAddon::Python::LanguageHook(state->interp));
   languageHook->RegisterMe();
 
-  g_pythonParser.InitializeInterpreter(m_addon);
+  onInitialization();
   setState(InvokerStateInitialized);
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): the source file to load is %s", GetId(), m_source, m_source);
@@ -256,18 +261,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
         PyObject *f = PyString_FromString(CSpecialProtocol::TranslatePath(m_source).c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
 
-        if (m_addon.get() != NULL)
-        {
-          PyObject *pyaddonid = PyString_FromString(m_addon->ID().c_str());
-          PyDict_SetItemString(moduleDict, "__xbmcaddonid__", pyaddonid);
-
-          CStdString version = ADDON::GetXbmcApiVersionDependency(m_addon);
-          PyObject *pyxbmcapiversion = PyString_FromString(version.c_str());
-          PyDict_SetItemString(moduleDict, "__xbmcapiversion__", pyxbmcapiversion);
-
-          CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): instantiating addon using automatically obtained id of \"%s\" dependent on version %s of the xbmc.python api",
-            GetId(), m_source, m_addon->ID().c_str(), version.c_str());
-        }
+        onPythonModuleInitialization(moduleDict);
 
         Py_DECREF(f);
         setState(InvokerStateRunning);
@@ -296,12 +290,14 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   {
     CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): script successfully run", GetId(), m_source);
     setState(InvokerStateDone);
+    onSuccess();
   }
   else if (PyErr_ExceptionMatches(PyExc_SystemExit))
   {
     systemExitThrown = true;
     CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): script aborted", GetId(), m_source);
     setState(InvokerStateFailed);
+    onAbort();
   }
   else
   {
@@ -314,33 +310,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
       e.LogThrowMessage();
     }
 
-    {
-      CPyThreadState releaseGil;
-      CSingleLock gc(g_graphicsContext);
-
-      CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-      if (pDlgToast != NULL)
-      {
-        CStdString desc;
-        CStdString script;
-        if (m_addon.get() != NULL)
-          script = m_addon->Name();
-        else
-        {
-          CStdString path;
-          URIUtils::Split(m_source, path, script);
-          if (script.Equals("default.py"))
-          {
-            CStdString path2;
-            URIUtils::RemoveSlashAtEnd(path);
-            URIUtils::Split(path, path2, script);
-          }
-        }
-
-        desc.Format(g_localizeStrings.Get(2100), script);
-        pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), desc);
-      }
-    }
+    onError();
   }
 
   // no need to do anything else because the script has already stopped
@@ -391,7 +361,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   PyEval_AcquireLock();
   PyThreadState_Swap(state);
 
-  g_pythonParser.DeInitializeInterpreter();
+  onDeinitialization();
 
   // run the gc before finishing
   //
@@ -505,7 +475,7 @@ bool CPythonInvoker::stop(bool abort)
   return true;
 }
 
-void CPythonInvoker::onError()
+void CPythonInvoker::onExectuionFailed()
 {
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
@@ -516,7 +486,106 @@ void CPythonInvoker::onError()
   CSingleLock lock(m_critical);
   m_threadState = NULL;
 
-  ILanguageInvoker::onError();
+  ILanguageInvoker::onExectuionFailed();
+}
+
+std::map<std::string, CPythonInvoker::PythonModuleInitialization> CPythonInvoker::getModules() const
+{
+  static std::map<std::string, PythonModuleInitialization> modules;
+  return modules;
+}
+
+void CPythonInvoker::onInitialization()
+{
+  TRACE;
+  {
+    GilSafeSingleLock lock(s_critical);
+    initializeModules(getModules());
+  }
+
+  // get a possible initialization script
+  const char* runscript = getInitializationScript();
+  if (runscript!= NULL && strlen(runscript) > 0)
+  {
+    // redirecting default output to debug console
+    if (PyRun_SimpleString(runscript) == -1)
+      CLog::Log(LOGFATAL, "CPythonInvoker(%d, %s): initialize error", GetId(), m_source);
+  }
+}
+
+void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
+{
+  if (m_addon.get() == NULL || moduleDict == NULL)
+    return;
+
+  PyObject *moduleDictionary = (PyObject *)moduleDict;
+
+  PyObject *pyaddonid = PyString_FromString(m_addon->ID().c_str());
+  PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__", pyaddonid);
+
+  CStdString version = ADDON::GetXbmcApiVersionDependency(m_addon);
+  PyObject *pyxbmcapiversion = PyString_FromString(version.c_str());
+  PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
+
+  CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): instantiating addon using automatically obtained id of \"%s\" dependent on version %s of the xbmc.python api",
+            GetId(), m_source, m_addon->ID().c_str(), version.c_str());
+}
+
+void CPythonInvoker::onDeinitialization()
+{
+  TRACE;
+}
+
+void CPythonInvoker::onError()
+{
+  CPyThreadState releaseGil;
+  CSingleLock gc(g_graphicsContext);
+
+  CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+  if (pDlgToast != NULL)
+  {
+    CStdString desc;
+    CStdString script;
+    if (m_addon.get() != NULL)
+      script = m_addon->Name();
+    else
+    {
+      CStdString path;
+      URIUtils::Split(m_source, path, script);
+      if (script.Equals("default.py"))
+      {
+        CStdString path2;
+        URIUtils::RemoveSlashAtEnd(path);
+        URIUtils::Split(path, path2, script);
+      }
+    }
+
+    desc.Format(g_localizeStrings.Get(2100), script);
+    pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), desc);
+  }
+}
+
+const char* CPythonInvoker::getInitializationScript() const
+{
+  return NULL;
+}
+
+void CPythonInvoker::initializeModules(const std::map<std::string, PythonModuleInitialization> &modules)
+{
+  for (std::map<std::string, PythonModuleInitialization>::const_iterator module = modules.begin(); module != modules.end(); ++module)
+  {
+    if (!initializeModule(module->second))
+      CLog::Log(LOGWARNING, "CPythonInvoker(%d, %s): unable to initialize python module \"%s\"", module->first.c_str(), GetId(), m_source);
+  }
+}
+
+bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
+{
+  if (module == NULL)
+    return false;
+
+  module();
+  return true;
 }
 
 void CPythonInvoker::addPath(const std::string path)
