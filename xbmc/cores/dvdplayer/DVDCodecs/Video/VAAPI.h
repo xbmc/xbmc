@@ -42,6 +42,7 @@ struct CDisplay
     : m_display(display)
     , m_lost(false)
     , m_deinterlace(deinterlace)
+    , m_support_4k(true)
   {}
  ~CDisplay();
 
@@ -49,10 +50,13 @@ struct CDisplay
   bool      lost()          { return m_lost; }
   void      lost(bool lost) { m_lost = lost; }
   bool      support_deinterlace() { return m_deinterlace; };
+  bool      support_4k() { return m_support_4k; };
+  void      support_4k(bool support_4k) { m_support_4k = support_4k; };
 private:
   VADisplay m_display;
   bool      m_lost;
   bool      m_deinterlace;
+  bool      m_support_4k;
 };
 
 typedef boost::shared_ptr<CDisplay> CDisplayPtr;
