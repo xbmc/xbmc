@@ -141,7 +141,12 @@ static KeyMap keyMap[] = {
   { AKEYCODE_FORWARD_DEL     , XBMCK_DELETE },
   { AKEYCODE_CTRL_LEFT       , XBMCK_LCTRL },
   { AKEYCODE_CTRL_RIGHT      , XBMCK_RCTRL },
-  { AKEYCODE_CAPS_LOCK       , XBMCK_CAPSLOCK }
+  { AKEYCODE_CAPS_LOCK       , XBMCK_CAPSLOCK },
+  { AKEYCODE_SCROLL_LOCK     , XBMCK_SCROLLOCK },
+  { AKEYCODE_INSERT          , XBMCK_INSERT },
+  { AKEYCODE_FORWARD         , XBMCK_FASTFORWARD },
+  { AKEYCODE_MEDIA_PLAY      , XBMCK_MEDIA_PLAY_PAUSE },
+  { AKEYCODE_MEDIA_EJECT     , XBMCK_EJECT },
 };
 
 bool CAndroidKey::onKeyboardEvent(AInputEvent* event)
@@ -167,7 +172,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent* event)
   }
   
   // check if this is a key we don't want to handle
-  if (sym == XBMCK_LAST)
+  if (sym == XBMCK_LAST || sym == XBMCK_UNKNOWN)
     return false;
 
   uint16_t modifiers = 0;
