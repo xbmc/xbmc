@@ -575,7 +575,7 @@ void CPythonInvoker::initializeModules(const std::map<std::string, PythonModuleI
   for (std::map<std::string, PythonModuleInitialization>::const_iterator module = modules.begin(); module != modules.end(); ++module)
   {
     if (!initializeModule(module->second))
-      CLog::Log(LOGWARNING, "CPythonInvoker(%s, %i): unable to initialize python module \"%s\"", module->first.c_str(), GetId(), m_source);
+      CLog::Log(LOGWARNING, "CPythonInvoker(%d, %s): unable to initialize python module \"%s\"", GetId(), m_source, module->first.c_str());
   }
 }
 
