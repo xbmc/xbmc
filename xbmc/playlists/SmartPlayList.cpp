@@ -933,10 +933,12 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     else if (strType == "tvshows")
     {
       if (m_field == FieldInProgress)
-        return GetField(FieldId, strType) + negate + " IN (select " + GetField(FieldId, strType) + " from tvshowview where "
-               "(watchedcount > 0 AND watchedcount < totalCount) OR "
-               "(watchedcount = 0 AND " + GetField(FieldId, strType) + " IN "
-               "(select episodeview.idShow from episodeview WHERE episodeview.idShow = " + GetField(FieldId, strType) + " AND episodeview.resumeTimeInSeconds > 0)))";
+        return negate + " ("
+            "(tvshowview.watchedcount > 0 AND tvshowview.watchedcount < tvshowview.totalCount) OR "
+            "(tvshowview.watchedcount = 0 AND EXISTS "
+              "(SELECT 1 FROM episodeview WHERE episodeview.idShow = " + GetField(FieldId, strType) + " AND episodeview.resumeTimeInSeconds > 0)"
+            ")"
+          ")";
     }
   }
 
@@ -1074,9 +1076,9 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       else if (m_field == FieldActor)
         query = GetField(FieldId, strType) + negate + " IN (SELECT idShow FROM actorlinktvshow JOIN actors ON actors.idActor=actorlinktvshow.idActor WHERE actors.strActor" + parameter + ")";
       else if (m_field == FieldStudio)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT idShow FROM tvshowview WHERE " + GetField(m_field, strType) + parameter + ")";
+        query = negate + " (" + GetField(m_field, strType) + parameter + ")";
       else if (m_field == FieldMPAA)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT idShow FROM tvshowview WHERE " + GetField(m_field, strType) + parameter + ")";
+        query = negate + " (" + GetField(m_field, strType) + parameter + ")";
       else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
         query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
       else if (m_field == FieldPlaycount)
@@ -1099,9 +1101,9 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
         query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
       else if (m_field == FieldStudio)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT idEpisode FROM episodeview WHERE strStudio" + parameter + ")";
+        query = negate + " (" + GetField(FieldId, strType) + parameter + ")";
       else if (m_field == FieldMPAA)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT idEpisode FROM episodeview WHERE mpaa" + parameter + ")";
+        query = negate + " (" + GetField(FieldId, strType) +  parameter + ")";
     }
     if (m_field == FieldVideoResolution)
       query = table + ".idFile" + negate + GetVideoResolutionQuery(*it);
