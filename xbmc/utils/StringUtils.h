@@ -52,6 +52,8 @@ public:
   */
   static std::string Format(const char *fmt, ...);
   static std::string FormatV(const char *fmt, va_list args);
+  static std::wstring Format(const wchar_t *fmt, ...);
+  static std::wstring FormatV(const wchar_t *fmt, va_list args);
   static void ToUpper(std::string &str);
   static void ToLower(std::string &str);
   static bool EqualsNoCase(const std::string &str1, const std::string &str2);
