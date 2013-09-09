@@ -188,6 +188,7 @@
 		<font>font13</font>
 		<textcolor>white</textcolor>
 		<disabledcolor>grey3</disabledcolor>
+		<invalidcolor>invalid</invalidcolor>
 		<textoffsetx>7</textoffsetx>
 		<aligny>center</aligny>
 		<pulseonselect>no</pulseonselect>

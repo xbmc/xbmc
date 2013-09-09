@@ -66,6 +66,9 @@ void CGUIEditControl::DefaultConstructor()
   m_label.SetAlign(m_label.GetLabelInfo().align & XBFONT_CENTER_Y); // left align
   m_label2.GetLabelInfo().offsetX = 0;
   m_isMD5 = false;
+  m_invalidInput = false;
+  m_inputValidator = NULL;
+  m_inputValidatorData = NULL;
 }
 
 CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
@@ -335,6 +338,8 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
   m_smsTimer.Stop();
   if (sendUpdate)
   {
+    ValidateInput();
+
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 
     m_textChangeActions.ExecuteActions(GetID(), GetParentID());
@@ -471,6 +476,15 @@ void CGUIEditControl::RenderText()
   }
 }
 
+CGUILabel::COLOR CGUIEditControl::GetTextColor() const
+{
+  CGUILabel::COLOR color = CGUIButtonControl::GetTextColor();
+  if (color != CGUILabel::COLOR_DISABLED && HasInvalidInput())
+    return CGUILabel::COLOR_INVALID;
+
+  return color;
+}
+
 void CGUIEditControl::SetHint(const CGUIInfoLabel& hint)
 {
   m_hintInfo = hint;
@@ -508,6 +522,7 @@ void CGUIEditControl::SetLabel2(const std::string &text)
     m_isMD5 = (m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW);
     m_text2 = newText;
     m_cursorPos = m_text2.size();
+    ValidateInput();
     SetInvalid();
   }
 }
@@ -596,5 +611,42 @@ void CGUIEditControl::OnPasteClipboard()
     m_text2.append(right_end);
     m_cursorPos += unicode_text.length();
     UpdateText();
+  }
+}
+
+void CGUIEditControl::SetInputValidation(StringValidation::Validator inputValidator, void *data /* = NULL */)
+{
+  if (m_inputValidator == inputValidator)
+    return;
+  
+  m_inputValidator = inputValidator;
+  m_inputValidatorData = data;
+  // the input validator has changed, so re-validate the current data
+  ValidateInput();
+}
+
+bool CGUIEditControl::ValidateInput(const CStdStringW &data) const
+{
+  if (m_inputValidator == NULL)
+    return true;
+
+  return m_inputValidator(GetLabel2(), (void*)(m_inputValidatorData != NULL ? m_inputValidatorData : this));
+}
+
+void CGUIEditControl::ValidateInput()
+{
+  // validate the input
+  bool invalid = !ValidateInput(m_text2);
+  // nothing to do if still valid/invalid
+  if (invalid != m_invalidInput)
+  {
+    // the validity state has changed so we need to update the control
+    m_invalidInput = invalid;
+
+    // let the window/dialog know that the validity has changed
+    CGUIMessage msg(GUI_MSG_VALIDITY_CHANGED, GetID(), GetID(), m_invalidInput ? 0 : 1);
+    SendWindowMessage(msg);
+
+    SetInvalid();
   }
 }

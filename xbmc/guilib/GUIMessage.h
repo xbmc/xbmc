@@ -133,6 +133,8 @@
 
 #define GUI_MSG_WINDOW_LOAD 43
 
+#define GUI_MSG_VALIDITY_CHANGED  44
+
 #define GUI_MSG_USER         1000
 
 /*!
