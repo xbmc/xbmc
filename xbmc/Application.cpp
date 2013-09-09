@@ -337,7 +337,6 @@
 
 /* PLEX */
 #include "plex/PlexApplication.h"
-#include "plex/Players/PlexMediaServerPlayer.h"
 #include "Client/PlexMediaServerClient.h"
 #include "plex/Client/PlexServerManager.h"
 #include "plex/Helper/PlexHTHelper.h"
@@ -6399,10 +6398,7 @@ void CApplication::RestartWithNewPlayer(CGUIDialogCache* cacheDlg, const CStdStr
   // See if we're passing along the cache dialog.
   if (cacheDlg)
   {
-    if (eNewCore == EPC_PMSPLAYER)
-      ((CPlexMediaServerPlayer* )m_pPlayer)->SetCacheDialog(cacheDlg);
-    else
-      cacheDlg->Close();
+    cacheDlg->Close();
   }
 
   PlayFile(*m_itemCurrentFile, false);

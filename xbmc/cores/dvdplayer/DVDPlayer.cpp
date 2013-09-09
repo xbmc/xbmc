@@ -98,10 +98,7 @@
 #include "FileSystem/PlexDirectory.h"
 #include "Client/PlexServerManager.h"
 
-#include "hmac_sha2.h"
-
 #include <boost/lexical_cast.hpp>
-#include "Utility/Base64.h"
 
 #include "Client/PlexMediaServerClient.h"
 #include "ApplicationMessenger.h"

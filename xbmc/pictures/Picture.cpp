@@ -40,7 +40,6 @@
 
 /* PLEX */
 #include <boost/lexical_cast.hpp>
-#include "sha.h"
 #include "threads/Thread.h"
 #include "PlexUtils.h"
 #include "URL.h"

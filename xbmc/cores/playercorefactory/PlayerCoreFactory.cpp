@@ -37,7 +37,6 @@
 #include "guilib/LocalizeStrings.h"
 
 /* PLEX */
-#include "Players/PlexMediaServerPlayer.h"
 #include "PlexTypes.h"
 /* END PLEX */
 

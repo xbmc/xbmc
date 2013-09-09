@@ -52,7 +52,6 @@
 /* PLEX */
 #include "filesystem/StackDirectory.h"
 #include "FileSystem/PlexDirectory.h"
-#include "HTTP.h"
 #include "PlexUtils.h"
 #include "pictures/Picture.h"
 #include "filesystem/CurlFile.h"
@@ -977,11 +976,7 @@ string CGUIDialogVideoInfo::OnGetMedia(const string& mediaType, const string& cu
   finalURL.SetProtocol("http");
   finalURL.SetPort(32400);
 
-  CHTTP set;
   CStdString strData;
-  set.Open(finalURL.Get(), "PUT", 0);
-  set.ReadData(strData);
-  set.Close();
 
   // Compute the new URL.
   finalURL.SetFileName(strData.substr(1));
