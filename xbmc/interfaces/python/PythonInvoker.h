@@ -42,7 +42,7 @@ protected:
   // implementation of ILanguageInvoker
   virtual bool execute(const std::string &script, const std::vector<std::string> &arguments);
   virtual bool stop(bool abort);
-  virtual void onExectuionFailed();
+  virtual void onExecutionFailed();
 
   // custom virtual methods
   virtual std::map<std::string, PythonModuleInitialization> getModules() const;

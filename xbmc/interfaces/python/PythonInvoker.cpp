@@ -475,7 +475,7 @@ bool CPythonInvoker::stop(bool abort)
   return true;
 }
 
-void CPythonInvoker::onExectuionFailed()
+void CPythonInvoker::onExecutionFailed()
 {
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
@@ -486,7 +486,7 @@ void CPythonInvoker::onExectuionFailed()
   CSingleLock lock(m_critical);
   m_threadState = NULL;
 
-  ILanguageInvoker::onExectuionFailed();
+  ILanguageInvoker::onExecutionFailed();
 }
 
 std::map<std::string, CPythonInvoker::PythonModuleInitialization> CPythonInvoker::getModules() const
