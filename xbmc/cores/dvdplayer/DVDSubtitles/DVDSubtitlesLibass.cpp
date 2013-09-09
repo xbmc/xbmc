@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
+#include "guilib/GraphicContext.h"
 
 using namespace std;
 
@@ -159,7 +160,9 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, dou
     return NULL;
   }
 
+  double storage_aspact = (double)imageWidth / imageHeight;
   m_dll.ass_set_frame_size(m_renderer, imageWidth, imageHeight);
+  m_dll.ass_set_aspect_ratio(m_renderer, storage_aspact / g_graphicsContext.GetResInfo().fPixelRatio, storage_aspact);
   return m_dll.ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), changes);
 }
 
