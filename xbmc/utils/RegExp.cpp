@@ -171,87 +171,54 @@ int CRegExp::GetCaptureTotal() const
   return c;
 }
 
-std::string CRegExp::GetReplaceString( const char* sReplaceExp ) const
+std::string CRegExp::GetReplaceString(const std::string& sReplaceExp) const
 {
-  char *src = (char *)sReplaceExp;
-  char *buf;
-  char c;
-  int no;
-  size_t len;
+  if (!m_bMatched || sReplaceExp.empty())
+    return "";
 
-  if( sReplaceExp == NULL || !m_bMatched )
-    return std::string();
+  const char* const expr = sReplaceExp.c_str();
 
-  // First compute the length of the string
-  int replacelen = 0;
-  while ((c = *src++) != '\0')
+  size_t pos = sReplaceExp.find_first_of("\\&");
+  std::string result(sReplaceExp, 0, pos);
+  result.reserve(sReplaceExp.size()); // very rough estimate
+
+  while(pos != std::string::npos)
   {
-    if (c == '&')
-      no = 0;
-    else if (c == '\\' && isdigit(*src))
-      no = *src++ - '0';
+    if (expr[pos] == '\\')
+    {
+      // string is null-terminated and current char isn't null, so it's safe to advance to next char
+      pos++; // advance to next char
+      const char nextChar = expr[pos];
+      if (nextChar == '&' || nextChar == '\\')
+      { // this is "\&" or "\\" combination
+        result.push_back(nextChar); // add '&' or '\' to result 
+        pos++; 
+      }
+      else if (isdigit(nextChar))
+      { // this is "\0" - "\9" combination
+        int subNum = nextChar - '0';
+        pos++; // advance to second next char
+        const char secondNextChar = expr[pos];
+        if (isdigit(secondNextChar))
+        { // this is "\00" - "\99" combination
+          subNum = subNum * 10 + (secondNextChar - '0');
+          pos++;
+        }
+        result.append(GetMatch(subNum));
+      }
+    }
     else
-      no = -1;
+    { // '&' char
+      result.append(GetMatch(0));
+      pos++;
+    }
 
-    if (no < 0)
-    {
-      // Ordinary character.
-      if (c == '\\' && (*src == '\\' || *src == '&'))
-        c = *src++;
-      replacelen++;
-    }
-    else if (no < m_iMatchCount && (m_iOvector[no*2]>=0))
-    {
-      // Get tagged expression
-      len = m_iOvector[no*2+1] - m_iOvector[no*2];
-      replacelen += len;
-    }
+    const size_t nextPos = sReplaceExp.find_first_of("\\&", pos);
+    result.append(sReplaceExp, pos, nextPos - pos);
+    pos = nextPos;
   }
 
-  // Now allocate buf
-  buf = (char *)malloc((replacelen + 1)*sizeof(char));
-  if( buf == NULL )
-  {
-    CLog::Log(LOGSEVERE, "%s: Failed to allocate memory", __FUNCTION__);
-    return std::string();
-  }
-
-  char* sReplaceStr = buf;
-
-  // Add null termination
-  buf[replacelen] = '\0';
-
-  // Now we can create the string
-  src = (char *)sReplaceExp;
-  while ((c = *src++) != '\0')
-  {
-    if (c == '&')
-      no = 0;
-    else if (c == '\\' && isdigit(*src))
-      no = *src++ - '0';
-    else
-      no = -1;
-
-    if (no < 0)
-    {
-      // Ordinary character.
-      if (c == '\\' && (*src == '\\' || *src == '&'))
-        c = *src++;
-      *buf++ = c;
-    }
-    else if (no < m_iMatchCount && (m_iOvector[no*2]>=0))
-    {
-      // Get tagged expression
-      len = m_iOvector[no*2+1] - m_iOvector[no*2];
-      strncpy(buf, m_subject.c_str()+m_iOvector[no*2], len);
-      buf += len;
-    }
-  }
-
-  std::string replaceStr(sReplaceStr);
-  free(sReplaceStr);
-
-  return replaceStr;
+  return result;
 }
 
 int CRegExp::GetSubStart(int iSub) const

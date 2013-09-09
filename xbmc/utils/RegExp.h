@@ -50,7 +50,7 @@ public:
   int RegFind(const char* str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
   int RegFind(const std::string& str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1)
   { return PrivateRegFind(str.length(), str.c_str(), startoffset, maxNumberOfCharsToTest); }
-  std::string GetReplaceString( const char* sReplaceExp ) const;
+  std::string GetReplaceString(const std::string& sReplaceExp) const;
   int GetFindLen() const
   {
     if (!m_re || !m_bMatched)
