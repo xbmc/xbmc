@@ -3950,7 +3950,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
      */
     if (item.IsVideo())
     {
-      CJobManager::GetInstance().Pause(CJob::PRIORITY_LOW); // Pause any low priority jobs
+      CJobManager::GetInstance().PauseJobs();
     }
 
     // don't hold graphicscontext here since player
@@ -4953,7 +4953,7 @@ void CApplication::ProcessSlow()
   // Resume low priority jobs when current item is not video
   if (!CurrentFileItem().IsVideo())
   {
-    CJobManager::GetInstance().UnPause(CJob::PRIORITY_LOW);
+    CJobManager::GetInstance().UnPauseJobs();
   }
 
   // Store our file state for use on close()

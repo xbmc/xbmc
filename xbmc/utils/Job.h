@@ -106,7 +106,8 @@ public:
    \sa CJobManager
    */
   enum PRIORITY {
-    PRIORITY_LOW = 0,
+    PRIORITY_LOW_PAUSABLE = 0,
+    PRIORITY_LOW,
     PRIORITY_NORMAL,
     PRIORITY_HIGH
   };
