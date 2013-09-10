@@ -812,7 +812,7 @@ void CSmartPlaylistRule::SetParameter(const std::vector<CStdString> &values)
 
 CStdString CSmartPlaylistRule::GetVideoResolutionQuery(const CStdString &parameter) const
 {
-  CStdString retVal(" in (select distinct idFile from streamdetails where iVideoWidth ");
+  CStdString retVal(" IN (SELECT DISTINCT idFile FROM streamdetails WHERE iVideoWidth ");
   int iRes = (int)strtol(parameter.c_str(), NULL, 10);
 
   int min, max;
@@ -824,21 +824,22 @@ CStdString CSmartPlaylistRule::GetVideoResolutionQuery(const CStdString &paramet
   switch (m_operator)
   {
     case OPERATOR_EQUALS:
-      retVal.AppendFormat(">= %i and iVideoWidth <= %i)", min, max);
+      retVal.AppendFormat(">= %i AND iVideoWidth <= %i", min, max);
       break;
     case OPERATOR_DOES_NOT_EQUAL:
-      retVal.AppendFormat("< %i or iVideoWidth > %i)", min, max);
+      retVal.AppendFormat("< %i OR iVideoWidth > %i", min, max);
       break;
     case OPERATOR_LESS_THAN:
-      retVal.AppendFormat("< %i)", min);
+      retVal.AppendFormat("< %i", min);
       break;
     case OPERATOR_GREATER_THAN:
-      retVal.AppendFormat("> %i)", max);
+      retVal.AppendFormat("> %i", max);
       break;
     default:
-      retVal += ")";
       break;
   }
+
+  retVal += ")";
   return retVal;
 }
 
@@ -921,14 +922,14 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     if (strType == "movies")
     {
       if (m_field == FieldInProgress)
-        return "movieview.idFile " + negate + " IN (select idFile from bookmark where type = 1)";
+        return "movieview.idFile " + negate + " IN (SELECT idFile FROM bookmark WHERE type = 1)";
       else if (m_field == FieldTrailer)
         return negate + GetField(m_field, strType) + "!= ''";
     }
     else if (strType == "episodes")
     {
       if (m_field == FieldInProgress)
-        return "episodeview.idFile " + negate + " IN (select idFile from bookmark where type = 1)";
+        return "episodeview.idFile " + negate + " IN (SELECT idFile FROM bookmark WHERE type = 1)";
     }
     else if (strType == "tvshows")
     {
