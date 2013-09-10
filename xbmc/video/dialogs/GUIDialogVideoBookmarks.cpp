@@ -310,7 +310,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   if( g_application.m_pPlayer->HasPlayer() )
     bookmark.playerState = g_application.m_pPlayer->GetPlayerState();
   else
-    bookmark.playerState.Empty();
+    bookmark.playerState.clear();
 
   bookmark.player = CPlayerCoreFactory::Get().GetPlayerName(g_application.GetCurrentPlayer());
 
@@ -343,7 +343,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
         bookmark.thumbNailImage = URIUtils::AddFileToFolder(CProfilesManager::Get().GetBookmarksThumbFolder(), bookmark.thumbNailImage);
         if (!CPicture::CreateThumbnailFromSurface(thumbnail->GetPixels(), width, height, thumbnail->GetWidth() * 4,
                                             bookmark.thumbNailImage))
-          bookmark.thumbNailImage.Empty();
+          bookmark.thumbNailImage.clear();
       }
       else
         CLog::Log(LOGERROR,"CGUIDialogVideoBookmarks: failed to create thumbnail");

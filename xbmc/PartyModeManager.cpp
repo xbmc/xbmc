@@ -46,8 +46,8 @@ CPartyModeManager::CPartyModeManager(void)
 {
   m_bIsVideo = false;
   m_bEnabled = false;
-  m_strCurrentFilterMusic.Empty();
-  m_strCurrentFilterVideo.Empty();
+  m_strCurrentFilterMusic.clear();
+  m_strCurrentFilterVideo.clear();
   ClearState();
 }
 
@@ -91,8 +91,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   }
   else
   {
-    m_strCurrentFilterMusic.Empty();
-    m_strCurrentFilterVideo.Empty();
+    m_strCurrentFilterMusic.clear();
+    m_strCurrentFilterVideo.clear();
     m_type = m_bIsVideo ? "musicvideos" : "songs";
   }
 

@@ -304,7 +304,7 @@ bool CCueDocument::ReadNextLine(CStdString &szLine)
 ////////////////////////////////////////////////////////////////////////////////////
 bool CCueDocument::ExtractQuoteInfo(const CStdString &line, CStdString &quote)
 {
-  quote.Empty();
+  quote.clear();
   int left = line.Find('\"');
   if (left < 0) return false;
   int right = line.Find('\"', left + 1);

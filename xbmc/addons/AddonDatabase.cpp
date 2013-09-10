@@ -412,7 +412,7 @@ int CAddonDatabase::GetRepoChecksum(const CStdString& id, CStdString& checksum)
   {
     CLog::Log(LOGERROR, "%s failed on repo '%s'", __FUNCTION__, id.c_str());
   }
-  checksum.Empty();
+  checksum.clear();
   return -1;
 }
 

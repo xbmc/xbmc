@@ -117,5 +117,5 @@ void CGUIDialogPictureInfo::OnDeinitWindow(int nextWindowID)
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PICTURE_INFO);
   OnMessage(msgReset);
   m_pictureInfo->Clear();
-  m_currentPicture.Empty();
+  m_currentPicture.clear();
 }

@@ -266,7 +266,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
 {
   if (strHTML.size() == 0)
   {
-    strStripped.Empty();
+    strStripped.clear();
     return ;
   }
   int iPos = 0;

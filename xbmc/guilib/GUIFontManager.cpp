@@ -498,7 +498,7 @@ bool GUIFontManager::OpenFontFile(CXBMCTinyXML& xmlDoc)
 
 bool GUIFontManager::GetFirstFontSetUnicode(CStdString& strFontSet)
 {
-  strFontSet.Empty();
+  strFontSet.clear();
 
   // Load our font file
   CXBMCTinyXML xmlDoc;

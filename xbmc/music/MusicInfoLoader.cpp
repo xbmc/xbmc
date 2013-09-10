@@ -67,7 +67,7 @@ void CMusicInfoLoader::OnLoaderStart()
     m_mapFileItems->SetFastLookup(true);
   }
 
-  m_strPrevPath.Empty();
+  m_strPrevPath.clear();
 
   m_databaseHits = m_tagReads = 0;
 

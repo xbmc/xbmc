@@ -160,12 +160,12 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         }
 
         if (bFool && !CDirectory::Exists(m_selectedPath))
-          m_selectedPath.Empty();
+          m_selectedPath.clear();
       }
       else
       {
         if (!CFile::Exists(m_selectedPath) && !CDirectory::Exists(m_selectedPath))
-            m_selectedPath.Empty();
+            m_selectedPath.clear();
       }
 
       // find the parent folder if we are a file browser (don't do this for folders)

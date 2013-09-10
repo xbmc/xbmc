@@ -434,9 +434,9 @@ void CCurlFile::Close()
   delete m_oldState;
   m_oldState = NULL;
 
-  m_url.Empty();
-  m_referer.Empty();
-  m_cookie.Empty();
+  m_url.clear();
+  m_referer.clear();
+  m_cookie.clear();
 
   m_opened = false;
   m_forWrite = false;
@@ -696,7 +696,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
 
     /* TODO: create a tokenizer that doesn't skip empty's */
     CUtil::Tokenize(filename, array, "/");
-    filename.Empty();
+    filename.clear();
     for(CStdStringArray::iterator it = array.begin(); it != array.end(); it++)
     {
       if(it != array.begin())

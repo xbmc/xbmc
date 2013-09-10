@@ -130,7 +130,7 @@ const CStdString GetIcon(const ADDON::TYPE& type)
   { \
     CStdString fan=CAddonMgr::Get().GetExtValue(metadata->configuration, x); \
     if (fan.Equals("true")) \
-      y.Empty(); \
+      y.clear(); \
   }
 
 AddonProps::AddonProps(const cp_extension_t *ext)

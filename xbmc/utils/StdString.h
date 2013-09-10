@@ -2720,11 +2720,6 @@ public:
     return GetLength();
   }
 
-  void Empty()
-  {
-    this->erase();
-  }
-
   int Find(CT ch) const
   {
     MYSIZE nIdx  = this->find_first_of(ch);

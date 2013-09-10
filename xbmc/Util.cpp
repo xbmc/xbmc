@@ -1120,7 +1120,7 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
           }
         }
         parameters.push_back(parameter);
-        parameter.Empty();
+        parameter.clear();
         whiteSpacePos = 0;
         continue;
       }

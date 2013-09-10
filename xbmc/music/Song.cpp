@@ -94,15 +94,15 @@ void CSong::Serialize(CVariant& value) const
 
 void CSong::Clear()
 {
-  strFileName.Empty();
-  strTitle.Empty();
+  strFileName.clear();
+  strTitle.clear();
   artist.clear();
-  strAlbum.Empty();
+  strAlbum.clear();
   albumArtist.clear();
   genre.clear();
-  strThumb.Empty();
-  strMusicBrainzTrackID.Empty();
-  strComment.Empty();
+  strThumb.clear();
+  strMusicBrainzTrackID.clear();
+  strComment.clear();
   rating = '0';
   iTrack = 0;
   iDuration = 0;
@@ -113,7 +113,7 @@ void CSong::Clear()
   iTimesPlayed = 0;
   lastPlayed.Reset();
   iKaraokeNumber = 0;
-  strKaraokeLyrEncoding.Empty();
+  strKaraokeLyrEncoding.clear();
   iKaraokeDelay = 0;
   idAlbum = -1;
   bCompilation = false;

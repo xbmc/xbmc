@@ -238,7 +238,7 @@ bool XMLUtils::GetEncoding(const CXBMCTinyXML* pDoc, CStdString& strEncoding)
   const TiXmlDeclaration* pDecl=pNode->ToDeclaration();
   if (!pDecl) return false;
   strEncoding=pDecl->Encoding();
-  if (strEncoding.Equals("UTF-8") || strEncoding.Equals("UTF8")) strEncoding.Empty();
+  if (strEncoding.Equals("UTF-8") || strEncoding.Equals("UTF8")) strEncoding.clear();
   strEncoding.MakeUpper();
   return !strEncoding.IsEmpty(); // Other encoding then UTF8?
 }
@@ -272,7 +272,7 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
       CURL::Decode(strStringValue);
     return true;
   }
-  strStringValue.Empty();
+  strStringValue.clear();
   return false;
 }
 

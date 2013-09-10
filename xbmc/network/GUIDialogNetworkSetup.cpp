@@ -65,10 +65,10 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_PROTOCOL)
       {
-        m_server.Empty();
-        m_path.Empty();
-        m_username.Empty();
-        m_password.Empty();
+        m_server.clear();
+        m_path.clear();
+        m_username.clear();
+        m_password.clear();
         OnProtocolChange();
       }
       else if (iControl == CONTROL_SERVER_BROWSE)

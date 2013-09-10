@@ -259,7 +259,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
 
   if (!profile)
   { // defaults
-    dialog->m_strName.Empty();
+    dialog->m_strName.clear();
     dialog->m_iDbMode = 2;
     dialog->m_iSourcesMode = 2;
     dialog->m_locks = CProfile::CLock();
@@ -269,8 +269,8 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_locks.settings = (bLock) ? LOCK_LEVEL::ALL : LOCK_LEVEL::NONE;
     dialog->m_locks.files = bLock;
 
-    dialog->m_strDirectory.Empty();
-    dialog->m_strThumb.Empty();
+    dialog->m_strDirectory.clear();
+    dialog->m_strThumb.clear();
     // prompt for a name
     if (!CGUIKeyboardFactory::ShowAndGetInput(dialog->m_strName,g_localizeStrings.Get(20093),false) || dialog->m_strName.IsEmpty())
       return false;
