@@ -25,6 +25,9 @@ CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr &service)
 
   g_plexApplication.serverManager->UpdateFromDiscovery(server);
 
+  if (!server || server->GetUUID().empty())
+    return;
+
   CSingleLock lk(m_serversSection);
   m_discoveredServers[server->GetUUID()] = server;
   dprintf("CPlexNetworkServiceBrowser::handleServiceArrival %s arrived", service->address().to_string().c_str());
