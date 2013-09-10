@@ -27,6 +27,7 @@
 #include "FileItem.h"
 #include "File.h"
 #include "storage/MediaManager.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;
@@ -70,13 +71,11 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       continue;
 
     // Format standard cdda item label
-    CStdString strLabel;
-    strLabel.Format("Track %02.2i", i);
+    CStdString strLabel = StringUtils::Format("Track %02.2i", i);
 
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->m_bIsFolder = false;
-    CStdString path;
-    path.Format("cdda://local/%02.2i.cdda", i);
+    CStdString path = StringUtils::Format("cdda://local/%02.2i.cdda", i);
     pItem->SetPath(path);
 
     struct __stat64 s64;

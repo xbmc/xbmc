@@ -21,6 +21,7 @@
 #include "GUIControlProfiler.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 
 bool CGUIControlProfiler::m_bIsRunning = false;
 
@@ -163,16 +164,14 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     xmlControl->SetAttribute("type", lpszType);
   if (m_controlID != 0)
   {
-    CStdString str;
-    str.Format("%u", m_controlID);
+    CStdString str = StringUtils::Format("%u", m_controlID);
     xmlControl->SetAttribute("id", str.c_str());
   }
 
   float pct = (float)GetTotalTime() / (float)m_pProfiler->GetTotalTime();
   if (pct > 0.01f)
   {
-    CStdString str;
-    str.Format("%.0f", pct * 100.0f);
+    CStdString str = StringUtils::Format("%.0f", pct * 100.0f);
     xmlControl->SetAttribute("percent", str.c_str());
   }
 
@@ -192,13 +191,13 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     CStdString val;
     TiXmlElement *elem = new TiXmlElement("rendertime");
     xmlControl->LinkEndChild(elem);
-    val.Format("%u", rend);
+    val = StringUtils::Format("%u", rend);
     TiXmlText *text = new TiXmlText(val.c_str());
     elem->LinkEndChild(text);
 
     elem = new TiXmlElement("visibletime");
     xmlControl->LinkEndChild(elem);
-    val.Format("%u", vis);
+    val = StringUtils::Format("%u", vis);
     text = new TiXmlText(val.c_str());
     elem->LinkEndChild(text);
   }
@@ -344,8 +343,7 @@ bool CGUIControlProfiler::SaveResults(void)
   doc.InsertEndChild(decl);
 
   TiXmlElement *root = new TiXmlElement("guicontrolprofiler");
-  CStdString str;
-  str.Format("%d", m_iFrameCount);
+  CStdString str = StringUtils::Format("%d", m_iFrameCount);
   root->SetAttribute("framecount", str.c_str());
   root->SetAttribute("timeunit", "ms");
   doc.LinkEndChild(root);

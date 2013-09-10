@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 
@@ -76,8 +77,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       bIsBouquet = false; //On Empty is Bouquet
       if (enigma2)
       {
-        CStdString strPort;
-        strPort.Format(":%i",url.GetPort());
+        CStdString strPort = StringUtils::Format(":%i",url.GetPort());
         if (strRoot.Right(strPort.GetLength()) != strPort) // If not root dir, enable Channels
           strFilter = "e2"; // Disable Bouquets for Enigma2
 
@@ -189,8 +189,8 @@ void CTuxBoxDirectory::GetRootAndChildStringEnigma2(CStdString& strBQRequest, CS
 {
   // Allways take getallservices for Enigma2
   strBQRequest = "web/getallservices"; //Bouquets and Channels
-  strXMLRootString.Format("e2servicelistrecursive");
-  strXMLChildString.Format("e2bouquet");
+  strXMLRootString = StringUtils::Format("e2servicelistrecursive");
+  strXMLChildString = StringUtils::Format("e2bouquet");
 }
 
 bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
@@ -200,8 +200,8 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
   {
     CLog::Log(LOGDEBUG, "%s - Default defined RootMenu : (3) Movies", __FUNCTION__);
     strBQRequest = "xml/services?mode=3&submode=4";
-    strXMLRootString.Format("movies");
-    strXMLChildString.Format("service");
+    strXMLRootString = StringUtils::Format("movies");
+    strXMLChildString = StringUtils::Format("service");
   }
   else if(g_advancedSettings.m_iTuxBoxDefaultRootMenu <= 0 || g_advancedSettings.m_iTuxBoxDefaultRootMenu == 1 ||
     g_advancedSettings.m_iTuxBoxDefaultRootMenu > 4 )
@@ -232,8 +232,8 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
         if(strBQRequest.IsEmpty())
         {
           strBQRequest = "xml/services?mode=0&submode=4"; //Bouquets
-          strXMLRootString.Format("bouquets");
-          strXMLChildString.Format("bouquet");
+          strXMLRootString = StringUtils::Format("bouquets");
+          strXMLChildString = StringUtils::Format("bouquet");
         }
       }
     }
@@ -244,29 +244,29 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (1) Services", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=1"; //Services
-        strXMLRootString.Format("services");
-        strXMLChildString.Format("service");
+        strXMLRootString = StringUtils::Format("services");
+        strXMLChildString = StringUtils::Format("service");
       }
       else if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 2)
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (2) Satellites", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=2"; //Satellites
-        strXMLRootString.Format("satellites");
-        strXMLChildString.Format("satellite");
+        strXMLRootString = StringUtils::Format("satellites");
+        strXMLChildString = StringUtils::Format("satellite");
       }
       else if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 3)
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (3) Providers", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=3"; //Providers
-        strXMLRootString.Format("providers");
-        strXMLChildString.Format("provider");
+        strXMLRootString = StringUtils::Format("providers");
+        strXMLChildString = StringUtils::Format("provider");
       }
       else
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (4) Bouquets", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=4"; //Bouquets
-        strXMLRootString.Format("bouquets");
-        strXMLChildString.Format("bouquet");
+        strXMLRootString = StringUtils::Format("bouquets");
+        strXMLChildString = StringUtils::Format("bouquet");
       }
     }
   }

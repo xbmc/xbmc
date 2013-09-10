@@ -24,6 +24,7 @@
 #include "threads/SingleLock.h"
 #include "log.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -65,9 +66,9 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
     strStarted = g_localizeStrings.Get(13210);
   }
 
-  CStdString strMessage;
-
-  strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60,static_cast<int>(event.m_fSecs)%60);
+  CStdString strMessage = StringUtils::Format(strStarted.c_str(),
+                                              static_cast<int>(event.m_fSecs)/60,
+                                              static_cast<int>(event.m_fSecs)%60);
 
   if(!bSilent)
      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
@@ -104,7 +105,9 @@ void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
   {
     float remaining = static_cast<float>(iter->second.m_fSecs-iter->second.watch.GetElapsedSeconds());
     CStdString strStarted = g_localizeStrings.Get(13212);
-    strMessage.Format(strStarted.c_str(),static_cast<int>(remaining)/60,static_cast<int>(remaining)%60);
+    strMessage = StringUtils::Format(strStarted.c_str(),
+                                     static_cast<int>(remaining)/60,
+                                     static_cast<int>(remaining)%60);
   }
   if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
   {

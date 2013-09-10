@@ -591,8 +591,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
   int labelNumber = 0;
   if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
   {
-    CStdString label;
-    label.Format("%i", labelNumber);
+    CStdString label = StringUtils::Format("%i", labelNumber);
     infoLabels.push_back(CGUIInfoLabel(label));
     return; // done
   }
@@ -615,8 +614,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
     {
       if (infoNode->FirstChild())
       {
-        CStdString info;
-        info.Format("$INFO[%s]", infoNode->FirstChild()->Value());
+        CStdString info = StringUtils::Format("$INFO[%s]", infoNode->FirstChild()->Value());
         infoLabels.push_back(CGUIInfoLabel(info, fallback, parentID));
       }
       infoNode = infoNode->NextSibling("info");

@@ -27,6 +27,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
 
@@ -251,10 +252,8 @@ CStdString CTextureCache::GetCacheFile(const CStdString &url)
 {
   Crc32 crc;
   crc.ComputeFromLowerCase(url);
-  CStdString hex;
-  hex.Format("%08x", (unsigned int)crc);
-  CStdString hash;
-  hash.Format("%c/%s", hex[0], hex.c_str());
+  CStdString hex = StringUtils::Format("%08x", (unsigned int)crc);
+  CStdString hash = StringUtils::Format("%c/%s", hex[0], hex.c_str());
   return hash;
 }
 

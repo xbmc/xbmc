@@ -20,6 +20,7 @@
 
 #include "GUIDialogGamepad.h"
 #include "utils/md5.h"
+#include "utils/StringUtils.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
@@ -231,7 +232,7 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdString& strPassword, const CStd
   if (0 < iRetries)
   {
     // Show a string telling user they have iRetries retries left
-    strLine2.Format("%s %i %s", g_localizeStrings.Get(12342).c_str(), iRetries, g_localizeStrings.Get(12343).c_str());
+    strLine2 = StringUtils::Format("%s %i %s", g_localizeStrings.Get(12342).c_str(), iRetries, g_localizeStrings.Get(12343).c_str());
   }
 
   // make a copy of strPassword to prevent from overwriting it later

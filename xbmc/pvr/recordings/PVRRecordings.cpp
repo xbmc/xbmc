@@ -29,6 +29,8 @@
 #include "video/VideoDatabase.h"
 
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
+
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
@@ -139,9 +141,9 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 
     CStdString strFilePath;
     if(strUseBase.empty())
-      strFilePath.Format("pvr://recordings/%s/", strCurrent.c_str());
+      strFilePath = StringUtils::Format("pvr://recordings/%s/", strCurrent.c_str());
     else
-      strFilePath.Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
+      strFilePath = StringUtils::Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
 
     if (!results->Contains(strFilePath))
     {
@@ -186,8 +188,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 
   if (bAutoSkip && results->Size() == 1 && files.Size() == 0)
   {
-    CStdString strGetPath;
-    strGetPath.Format("%s/%s/", strUseBase.c_str(), results->Get(0)->GetLabel());
+    CStdString strGetPath = StringUtils::Format("%s/%s/", strUseBase.c_str(), results->Get(0)->GetLabel().c_str());
 
     results->Clear();
 
@@ -208,7 +209,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
     if(strUseBase.empty())
       strAllPath = "pvr://recordings";
     else
-      strAllPath.Format("pvr://recordings/%s", strUseBase.c_str());
+      strAllPath = StringUtils::Format("pvr://recordings/%s", strUseBase.c_str());
     pItem->SetPath(AddAllRecordingsPathExtension(strAllPath));
     pItem->SetSpecialSort(SortSpecialOnTop);
     pItem->SetLabelPreformated(true);

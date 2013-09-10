@@ -127,8 +127,7 @@ void CVideoDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory
   Crc32 crc;
   crc.ComputeFromLowerCase(path);
 
-  CStdString strFileName;
-  strFileName.Format("special://temp/%08x.fi", (unsigned __int32) crc);
+  CStdString strFileName = StringUtils::Format("special://temp/%08x.fi", (unsigned __int32) crc);
   CFile::Delete(strFileName);
 }
 
@@ -175,8 +174,7 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   // get year
   if (params.GetYear() != -1)
   {
-    CStdString strTemp;
-    strTemp.Format("%i",params.GetYear());
+    CStdString strTemp = StringUtils::Format("%i",params.GetYear());
     if (!strLabel.IsEmpty())
       strLabel += " / ";
     strLabel += strTemp;

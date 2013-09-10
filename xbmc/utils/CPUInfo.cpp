@@ -737,9 +737,9 @@ CStdString CCPUInfo::GetCoresUsageString() const
     CStdString strCore;
 #ifdef TARGET_WINDOWS
     // atm we get only the average over all cores
-    strCore.Format("CPU %d core(s) average: %3.1f%% ",m_cpuCount, iter->second.m_fPct);
+    strCore = StringUtils::Format("CPU %d core(s) average: %3.1f%% ", m_cpuCount, iter->second.m_fPct);
 #else
-    strCore.Format("CPU%d: %3.1f%% ",iter->first, iter->second.m_fPct);
+    strCore = StringUtils::Format("CPU%d: %3.1f%% ", iter->first, iter->second.m_fPct);
 #endif
     strCores+=strCore;
     iter++;

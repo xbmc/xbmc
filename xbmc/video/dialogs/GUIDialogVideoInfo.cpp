@@ -168,8 +168,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           if (iItem < 0 || iItem >= m_castList->Size())
             break;
           CStdString strItem = m_castList->Get(iItem)->GetLabel();
-          CStdString strFind;
-          strFind.Format(" %s ",g_localizeStrings.Get(20347));
+          CStdString strFind = StringUtils::Format(" %s ",g_localizeStrings.Get(20347).c_str());
           int iPos = strItem.Find(strFind);
           if (iPos == -1)
             iPos = strItem.size();
@@ -272,7 +271,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       if (it->strRole.IsEmpty())
         character = it->strName;
       else
-        character.Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
+        character = StringUtils::Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
       CFileItemPtr item(new CFileItem(it->strName));
       if (!it->thumb.IsEmpty())
         item->SetArt("thumb", it->thumb);
@@ -574,8 +573,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
 {
   if (!m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.IsEmpty())
   {
-    CStdString strPath;
-    strPath.Format("videodb://tvshows/titles/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
+    CStdString strPath = StringUtils::Format("videodb://tvshows/titles/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
     Close();
     g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
     return;
@@ -699,8 +697,7 @@ void CGUIDialogVideoInfo::OnGetArt()
 
     for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
-      CStdString strItemPath;
-      strItemPath.Format("thumb://Remote%i", i);
+      CStdString strItemPath = StringUtils::Format("thumb://Remote%i", i);
       CFileItemPtr item(new CFileItem(strItemPath, false));
       item->SetArt("thumb", thumbs[i]);
       item->SetIconImage("DefaultPicture.png");
@@ -796,8 +793,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   // Grab the thumbnails from the web
   for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
   {
-    CStdString strItemPath;
-    strItemPath.Format("fanart://Remote%i",i);
+    CStdString strItemPath = StringUtils::Format("fanart://Remote%i",i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     CStdString thumb = m_movieItem->GetVideoInfoTag()->m_fanart.GetPreviewURL(i);
     item->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(thumb));
@@ -879,7 +875,9 @@ void CGUIDialogVideoInfo::PlayTrailer()
   item.SetPath(m_movieItem->GetVideoInfoTag()->m_strTrailer);
   *item.GetVideoInfoTag() = *m_movieItem->GetVideoInfoTag();
   item.GetVideoInfoTag()->m_streamDetails.Reset();
-  item.GetVideoInfoTag()->m_strTitle.Format("%s (%s)",m_movieItem->GetVideoInfoTag()->m_strTitle.c_str(),g_localizeStrings.Get(20410));
+  item.GetVideoInfoTag()->m_strTitle = StringUtils::Format("%s (%s)",
+                                                           m_movieItem->GetVideoInfoTag()->m_strTitle.c_str(),
+                                                           g_localizeStrings.Get(20410).c_str());
   CVideoThumbLoader::SetArt(item, m_movieItem->GetArt());
   item.GetVideoInfoTag()->m_iDbId = -1;
   item.GetVideoInfoTag()->m_iFileId = -1;
@@ -1139,9 +1137,8 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
   if (!videodb.Open())
     return false;
 
-  CStdString strHeading; strHeading.Format(g_localizeStrings.Get(20457));
-  CStdString baseDir;
-  baseDir.Format("videodb://movies/sets/%d", setItem->GetVideoInfoTag()->m_iDbId);
+  CStdString strHeading = StringUtils::Format(g_localizeStrings.Get(20457));
+  CStdString baseDir = StringUtils::Format("videodb://movies/sets/%d", setItem->GetVideoInfoTag()->m_iDbId);
 
   if (!CDirectory::GetDirectory(baseDir, originalMovies) || originalMovies.Size() <= 0) // keep a copy of the original members of the set
     return false;
@@ -1209,12 +1206,12 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
   if (currentSetId > 0)
   {
     // add clear item
-    CStdString strClear; strClear.Format(g_localizeStrings.Get(20467), currentSetLabel);
+    CStdString strClear = StringUtils::Format(g_localizeStrings.Get(20467), currentSetLabel.c_str());
     CFileItemPtr clearItem(new CFileItem(strClear));
     clearItem->GetVideoInfoTag()->m_iDbId = -1; // -1 will be used to clear set
     listItems.AddFront(clearItem, 0);
     // add keep current set item
-    CStdString strKeep; strKeep.Format(g_localizeStrings.Get(20469), currentSetLabel);
+    CStdString strKeep = StringUtils::Format(g_localizeStrings.Get(20469), currentSetLabel.c_str());
     CFileItemPtr keepItem(new CFileItem(strKeep));
     keepItem->GetVideoInfoTag()->m_iDbId = currentSetId;
     listItems.AddFront(keepItem, 1);
@@ -1224,8 +1221,7 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
   if (dialog == NULL)
     return false;
 
-  CStdString strHeading; 
-  strHeading.Format(g_localizeStrings.Get(20466));
+  CStdString strHeading = StringUtils::Format(g_localizeStrings.Get(20466));
   dialog->Reset();
   dialog->SetHeading(strHeading);
   dialog->SetItems(&listItems);

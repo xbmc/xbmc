@@ -54,7 +54,7 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
 
     if (m_strKeymap.IsEmpty())
     {
-      m_strKeymap.Format("v%sp%s", VendorIdAsString(), ProductIdAsString());
+      m_strKeymap = StringUtils::Format("v%sp%s", VendorIdAsString(), ProductIdAsString());
       SetSetting("keymap", m_strKeymap);
     }
 

@@ -699,7 +699,7 @@ bool CDVDPlayer::OpenInputStream()
 
     // find any upnp subtitles
     CStdString key("upnp:subtitle:1");
-    for(unsigned s = 1; m_item.HasProperty(key); key.Format("upnp:subtitle:%u", ++s))
+    for(unsigned s = 1; m_item.HasProperty(key); key = StringUtils::Format("upnp:subtitle:%u", ++s))
       filenames.push_back(m_item.GetProperty(key).asString());
 
     for(unsigned int i=0;i<filenames.size();i++)
@@ -2697,7 +2697,7 @@ bool CDVDPlayer::SeekScene(bool bPlus)
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   { CSingleLock lock(m_StateSection);
-    strAudioInfo.Format("D(%s)", m_StateInput.demux_audio.c_str());
+    strAudioInfo = StringUtils::Format("D(%s)", m_StateInput.demux_audio.c_str());
   }
   strAudioInfo.AppendFormat("\nP(%s)", m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
@@ -2705,7 +2705,7 @@ void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
   { CSingleLock lock(m_StateSection);
-    strVideoInfo.Format("D(%s)", m_StateInput.demux_video.c_str());
+    strVideoInfo = StringUtils::Format("D(%s)", m_StateInput.demux_video.c_str());
   }
   strVideoInfo.AppendFormat("\nP(%s)", m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
@@ -2737,14 +2737,14 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
         strBuf.AppendFormat(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
     }
 
-    strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s )"
-                         , dDelay
-                         , dDiff
-                         , strEDL.c_str()
-                         , (int)(CThread::GetRelativeUsage()*100)
-                         , (int)(m_dvdPlayerAudio.GetRelativeUsage()*100)
-                         , (int)(m_dvdPlayerVideo.GetRelativeUsage()*100)
-                         , strBuf.c_str());
+    strGeneralInfo = StringUtils::Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s )"
+                                         , dDelay
+                                         , dDiff
+                                         , strEDL.c_str()
+                                         , (int)(CThread::GetRelativeUsage()*100)
+                                         , (int)(m_dvdPlayerAudio.GetRelativeUsage()*100)
+                                         , (int)(m_dvdPlayerVideo.GetRelativeUsage()*100)
+                                         , strBuf.c_str());
 
   }
 }

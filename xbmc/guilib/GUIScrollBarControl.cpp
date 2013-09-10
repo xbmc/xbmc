@@ -20,6 +20,7 @@
 
 #include "GUIScrollBarControl.h"
 #include "Key.h"
+#include "utils/StringUtils.h"
 
 #define MIN_NIB_SIZE 4.0f
 
@@ -361,9 +362,7 @@ EVENT_RESULT CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent 
 
 CStdString CGUIScrollBar::GetDescription() const
 {
-  CStdString description;
-  description.Format("%i/%i", m_offset, m_numItems);
-  return description;
+  return StringUtils::Format("%i/%i", m_offset, m_numItems);
 }
 
 bool CGUIScrollBar::UpdateColors()

@@ -21,7 +21,7 @@
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "Temperature.h"
-
+#include "utils/StringUtils.h"
 
 CTemperature::CTemperature()
 {
@@ -488,8 +488,5 @@ CStdString CTemperature::ToString() const
   if (!IsValid())
     return g_localizeStrings.Get(13205); // "Unknown"
 
-  CStdString str;
-  str.Format("%2.0f%s", ToLocale(), g_langInfo.GetTempUnitString().c_str());
-
-  return str;
+  return StringUtils::Format("%2.0f%s", ToLocale(), g_langInfo.GetTempUnitString().c_str());
 }

@@ -21,6 +21,7 @@
 #include "GUIViewControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIInfoManager.h"
@@ -303,8 +304,7 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
   {
     IGUIContainer *view = (IGUIContainer *)m_visibleViews[i];
     CGUIMessage msg(GUI_MSG_LABEL_ADD, m_parentWindow, m_viewAsControl, i);
-    CStdString label;
-    label.Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
+    CStdString label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
     msg.SetLabel(label);
     g_windowManager.SendMessage(msg, m_parentWindow);
   }
@@ -312,8 +312,7 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
   g_windowManager.SendMessage(msgSelect, m_parentWindow);
 
   // otherwise it's just a normal button
-  CStdString label;
-  label.Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
+  CStdString label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
   CGUIMessage msgSet(GUI_MSG_LABEL_SET, m_parentWindow, m_viewAsControl);
   msgSet.SetLabel(label);
   g_windowManager.SendMessage(msgSet, m_parentWindow);

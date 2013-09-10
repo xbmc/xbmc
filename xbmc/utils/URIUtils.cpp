@@ -1104,7 +1104,7 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
   strUrlPath += "?cache=";
   strUrlPath += strBuffer;
 
-  strBuffer.Format("%i", wOptions);
+  strBuffer = StringUtils::Format("%i", wOptions);
   strUrlPath += "&flags=";
   strUrlPath += strBuffer;
 #endif

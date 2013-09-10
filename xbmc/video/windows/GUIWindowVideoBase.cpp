@@ -524,8 +524,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
     if (!hasDetails && (scrUrl.m_url.size() == 0 || needsRefresh))
     {
       // 4a. show dialog that we're busy querying www.imdb.com
-      CStdString strHeading;
-      strHeading.Format(g_localizeStrings.Get(197),info->Name().c_str());
+      CStdString strHeading = StringUtils::Format(g_localizeStrings.Get(197),info->Name().c_str());
       pDlgProgress->SetHeading(strHeading);
       pDlgProgress->SetLine(0, movieName);
       pDlgProgress->SetLine(1, "");
@@ -1027,11 +1026,10 @@ CStdString CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
   GetResumeItemOffset(&item, startOffset, startPart);
   if (startOffset > 0)
   {
-    resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(startOffset/75).c_str());
+    resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(startOffset/75).c_str());
     if (startPart > 0)
     {
-      CStdString partString;
-      partString.Format(g_localizeStrings.Get(23051).c_str(), startPart);
+      CStdString partString = StringUtils::Format(g_localizeStrings.Get(23051).c_str(), startPart);
       resumeString += " (" + partString + ")";
     }
   }
@@ -1850,7 +1848,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   // everything is ok, so add to database
   m_database.Open();
   int idMovie = m_database.AddMovie(pItem->GetPath());
-  movie.m_strIMDBNumber.Format("xx%08i", idMovie);
+  movie.m_strIMDBNumber = StringUtils::Format("xx%08i", idMovie);
   m_database.SetDetailsForMovie(pItem->GetPath(), movie, pItem->GetArt());
   m_database.Close();
 

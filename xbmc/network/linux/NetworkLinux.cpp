@@ -63,6 +63,7 @@
 #include "Util.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -71,13 +72,13 @@ CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdStrin
 {
    m_network = network;
    m_interfaceName = interfaceName;
-   m_interfaceMacAdr.Format("%02X:%02X:%02X:%02X:%02X:%02X",
-                  (uint8_t)interfaceMacAddrRaw[0],
-                  (uint8_t)interfaceMacAddrRaw[1],
-                  (uint8_t)interfaceMacAddrRaw[2],
-                  (uint8_t)interfaceMacAddrRaw[3],
-                  (uint8_t)interfaceMacAddrRaw[4],
-                  (uint8_t)interfaceMacAddrRaw[5]);
+   m_interfaceMacAdr = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
+                                           (uint8_t)interfaceMacAddrRaw[0],
+                                           (uint8_t)interfaceMacAddrRaw[1],
+                                           (uint8_t)interfaceMacAddrRaw[2],
+                                           (uint8_t)interfaceMacAddrRaw[3],
+                                           (uint8_t)interfaceMacAddrRaw[4],
+                                           (uint8_t)interfaceMacAddrRaw[5]);
    memcpy(m_interfaceMacAddrRaw, interfaceMacAddrRaw, sizeof(m_interfaceMacAddrRaw));
 }
 
@@ -601,8 +602,8 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, CStdString
           
           u_char *cp = (u_char*)LLADDR(sdl);
           
-          mac.Format("%02X:%02X:%02X:%02X:%02X:%02X",
-                     cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]);
+          mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
+                                    cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]);
           ret = true;
           break;
         }
@@ -639,7 +640,7 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, CStdString
   }
 
   struct sockaddr* res = &areq.arp_ha;
-  mac.Format("%02X:%02X:%02X:%02X:%02X:%02X", 
+  mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
     (uint8_t) res->sa_data[0], (uint8_t) res->sa_data[1], (uint8_t) res->sa_data[2], 
     (uint8_t) res->sa_data[3], (uint8_t) res->sa_data[4], (uint8_t) res->sa_data[5]);
 
@@ -793,7 +794,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
                result.push_back(NetworkAccessPoint(essId, macAddress, signalLevel, encryption, channel));
             unsigned char* mac = (unsigned char*)iwe->u.ap_addr.sa_data;
             // macAddress is big-endian, write in byte chunks
-            macAddress.Format("%02x-%02x-%02x-%02x-%02x-%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+            macAddress = StringUtils::Format("%02x-%02x-%02x-%02x-%02x-%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
             // Reset the remaining fields
             essId = "";
             encryption = ENC_NONE;

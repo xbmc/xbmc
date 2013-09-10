@@ -28,6 +28,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 
 extern "C" {
 #include "libhts/htsmsg.h"
@@ -386,7 +387,7 @@ bool CHTSPDirectory::GetChannels( const CURL &base
     CHTSPSession::ParseItem(it->second, tag, event, *item);
     item->m_bIsFolder = false;
     item->SetLabel(item->m_strTitle);
-    item->m_strTitle.Format("%d", it->second.num);
+    item->m_strTitle = StringUtils::Format("%d", it->second.num);
 
     items.Add(item);
   }
@@ -439,8 +440,8 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     CStdString filename, label;
     for(STags::iterator it = tags.begin(); it != tags.end(); it++)
     {
-      filename.Format("tags/%d/", it->second.id);
-      label.Format("Tag: %s", it->second.name);
+      filename = StringUtils::Format("tags/%d/", it->second.id);
+      label = StringUtils::Format("Tag: %s", it->second.name.c_str());
 
       item.reset(new CFileItem("", true));
       url.SetFileName(filename);

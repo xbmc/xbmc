@@ -378,7 +378,7 @@ CFileItem::CFileItem(const CMediaSource& share)
     URIUtils::AddSlashAtEnd(m_strPath);
   CStdString label = share.strName;
   if (!share.strStatus.IsEmpty())
-    label.Format("%s (%s)", share.strName.c_str(), share.strStatus.c_str());
+    label = StringUtils::Format("%s (%s)", share.strName.c_str(), share.strStatus.c_str());
   SetLabel(label);
   m_iLockMode = share.m_iLockMode;
   m_strLockCode = share.m_strLockCode;
@@ -2640,17 +2640,17 @@ CStdString CFileItemList::GetDiscFileCache(int windowID) const
 
   CStdString cacheFile;
   if (IsCDDA() || IsOnDVD())
-    cacheFile.Format("special://temp/r-%08x.fi", (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/r-%08x.fi", (unsigned __int32)crc);
   else if (IsMusicDb())
-    cacheFile.Format("special://temp/mdb-%08x.fi", (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/mdb-%08x.fi", (unsigned __int32)crc);
   else if (IsVideoDb())
-    cacheFile.Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
   else if (IsSmartPlayList())
-    cacheFile.Format("special://temp/sp-%08x.fi", (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/sp-%08x.fi", (unsigned __int32)crc);
   else if (windowID)
-    cacheFile.Format("special://temp/%i-%08x.fi", windowID, (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/%i-%08x.fi", windowID, (unsigned __int32)crc);
   else
-    cacheFile.Format("special://temp/%08x.fi", (unsigned __int32)crc);
+    cacheFile = StringUtils::Format("special://temp/%08x.fi", (unsigned __int32)crc);
   return cacheFile;
 }
 
@@ -3053,8 +3053,7 @@ bool CFileItem::LoadMusicTag()
       CStdString strText = g_localizeStrings.Get(554); // "Track"
       if (strText.GetAt(strText.size() - 1) != ' ')
         strText += " ";
-      CStdString strTrack;
-      strTrack.Format(strText + "%i", iTrack);
+      CStdString strTrack = StringUtils::Format(strText + "%i", iTrack);
       GetMusicInfoTag()->SetTitle(strTrack);
       GetMusicInfoTag()->SetLoaded(true);
       return true;

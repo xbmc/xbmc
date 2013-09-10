@@ -1529,16 +1529,16 @@ CStdString CGUIEPGGridContainer::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_NUM_PAGES:
-    label.Format("%u", (m_channels + m_channelsPerPage - 1) / m_channelsPerPage);
+    label = StringUtils::Format("%u", (m_channels + m_channelsPerPage - 1) / m_channelsPerPage);
     break;
   case CONTAINER_CURRENT_PAGE:
-    label.Format("%u", 1 + (m_channelCursor + m_channelOffset) / m_channelsPerPage );
+    label = StringUtils::Format("%u", 1 + (m_channelCursor + m_channelOffset) / m_channelsPerPage );
     break;
   case CONTAINER_POSITION:
-    label.Format("%i", 1 + m_channelCursor + m_channelOffset);
+    label = StringUtils::Format("%i", 1 + m_channelCursor + m_channelOffset);
     break;
   case CONTAINER_NUM_ITEMS:
-    label.Format("%u", m_channels);
+    label = StringUtils::Format("%u", m_channels);
     break;
   default:
       break;

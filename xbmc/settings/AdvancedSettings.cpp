@@ -1367,8 +1367,7 @@ void CAdvancedSettings::SetExtraLogsFromAddon(ADDON::IAddon* addon)
   m_extraLogLevels = 0;
   for (int i=LOGMASKBIT;i<31;++i)
   {
-    CStdString str;
-    str.Format("bit%i", i-LOGMASKBIT+1);
+    CStdString str = StringUtils::Format("bit%i", i-LOGMASKBIT+1);
     if (addon->GetSetting(str) == "true")
       m_extraLogLevels |= (1 << i);
   }

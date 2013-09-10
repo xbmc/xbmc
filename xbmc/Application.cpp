@@ -765,8 +765,7 @@ bool CApplication::Create()
   CStdString strLanguage = CSettings::Get().GetString("locale.language");
   strLanguage[0] = toupper(strLanguage[0]);
 
-  CStdString strLangInfoPath;
-  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
+  CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
 
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
@@ -5757,8 +5756,7 @@ bool CApplication::SetLanguage(const CStdString &strLanguage)
   CStdString strNewLanguage = strLanguage;
   if (strNewLanguage != strPreviousLanguage)
   {
-    CStdString strLangInfoPath;
-    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strNewLanguage.c_str());
+    CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strNewLanguage.c_str());
     if (!g_langInfo.Load(strLangInfoPath))
       return false;
 

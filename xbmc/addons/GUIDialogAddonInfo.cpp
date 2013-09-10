@@ -169,8 +169,7 @@ void CGUIDialogAddonInfo::UpdateControls()
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  CStdString referer;
-  referer.Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().c_str());
+  CStdString referer = StringUtils::Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().c_str());
   CAddonInstaller::Get().Install(m_addon->ID(), true, referer); // force install
   Close();
 }

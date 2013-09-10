@@ -689,11 +689,11 @@ CStdString StringUtils::SizeToString(int64_t size)
   }
 
   if (!i)
-    strLabel.Format("%.0lf %cB ", s, prefixes[i]);
+    strLabel = StringUtils::Format("%.0lf %cB ", s, prefixes[i]);
   else if (s >= 100.0)
-    strLabel.Format("%.1lf %cB", s, prefixes[i]);
+    strLabel = StringUtils::Format("%.1lf %cB", s, prefixes[i]);
   else
-    strLabel.Format("%.2lf %cB", s, prefixes[i]);
+    strLabel = StringUtils::Format("%.2lf %cB", s, prefixes[i]);
 
   return strLabel;
 }

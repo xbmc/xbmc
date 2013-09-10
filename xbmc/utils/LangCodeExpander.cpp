@@ -22,6 +22,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "LangInfo.h"
 #include "utils/log.h" 
+#include "utils/StringUtils.h"
 
 #define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
 #define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
@@ -197,7 +198,7 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
   {
     for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
     {
-      if (strCharCode.Equals(g_iso639_2[i].name))
+      if (StringUtils::EqualsNoCase(strCharCode, g_iso639_2[i].name))
       {
         CodeToString(g_iso639_2[i].code, strThreeCharCode);
         return true;

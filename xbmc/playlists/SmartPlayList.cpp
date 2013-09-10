@@ -602,9 +602,7 @@ bool CSmartPlaylistRule::CanGroupMix(Field group)
 
 CStdString CSmartPlaylistRule::GetLocalizedRule() const
 {
-  CStdString rule;
-  rule.Format("%s %s %s", GetLocalizedField(m_field).c_str(), GetLocalizedOperator(m_operator).c_str(), GetParameter().c_str());
-  return rule;
+  return StringUtils::Format("%s %s %s", GetLocalizedField(m_field).c_str(), GetLocalizedOperator(m_operator).c_str(), GetParameter().c_str());
 }
 
 CStdString CSmartPlaylistRule::GetVideoResolutionQuery(const CStdString &parameter) const
@@ -686,7 +684,7 @@ CStdString CSmartPlaylistRule::FormatParameter(const CStdString &operatorString,
   // special-casing
   if (m_field == FieldTime)
   { // translate time to seconds
-    CStdString seconds; seconds.Format("%i", StringUtils::TimeStringToSeconds(param));
+    CStdString seconds = StringUtils::Format("%i", StringUtils::TimeStringToSeconds(param));
     return db.PrepareSQL(operatorString.c_str(), seconds.c_str());
   }
   return CDatabaseQueryRule::FormatParameter(operatorString, param, db, strType);
@@ -889,7 +887,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
           if (playlist.GetType().Equals(strType))
           {
             if ((*it)->m_operator == CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL)
-              currentRule.Format("NOT (%s)", playlistQuery.c_str());
+              currentRule = StringUtils::Format("NOT (%s)", playlistQuery.c_str());
             else
               currentRule = playlistQuery;
           }

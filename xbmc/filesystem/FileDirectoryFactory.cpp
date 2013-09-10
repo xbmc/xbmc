@@ -186,10 +186,9 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
         // need this crap to avoid making mistakes - yeyh for the new rar naming scheme :/
         struct __stat64 stat;
         int digits = token.size()-4;
-        CStdString strNumber, strFormat;
-        strFormat.Format("part%%0%ii",digits);
-        strNumber.Format(strFormat.c_str(),1);
-        CStdString strPath2=strPath;
+        CStdString strFormat = StringUtils::Format("part%%0%ii", digits);
+        CStdString strNumber = StringUtils::Format(strFormat.c_str(), 1);
+        CStdString strPath2 = strPath;
         strPath2.Replace(token,strNumber);
         if (atoi(token.substr(4).c_str()) > 1 && CFile::Stat(strPath2,&stat) == 0)
         {

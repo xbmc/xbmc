@@ -999,7 +999,10 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   {
     CStdString strFileName = m_pDS->fv(song_strFileName).get_asString();
     CStdString strExt = URIUtils::GetExtension(strFileName);
-    song.strFileName.Format("musicdb://albums/%ld/%ld%s", m_pDS->fv(song_idAlbum).get_asInt(), m_pDS->fv(song_idSong).get_asInt(), strExt.c_str());
+    song.strFileName = StringUtils::Format("musicdb://albums/%ld/%ld%s",
+                                           m_pDS->fv(song_idAlbum).get_asInt(),
+                                           m_pDS->fv(song_idSong).get_asInt(),
+                                           strExt.c_str());
   }
 
   return song;
@@ -1048,7 +1051,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
     CMusicDbUrl itemUrl = baseUrl;
     CStdString strFileName = record->at(song_strFileName).get_asString();
     CStdString strExt = URIUtils::GetExtension(strFileName);
-    CStdString path; path.Format("%ld%s", record->at(song_idSong).get_asInt(), strExt.c_str());
+    CStdString path = StringUtils::Format("%ld%s", record->at(song_idSong).get_asInt(), strExt.c_str());
     itemUrl.AppendPath(path);
     item->SetPath(itemUrl.ToString());
   }
@@ -1284,13 +1287,11 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
     CStdString artistLabel(g_localizeStrings.Get(557)); // Artist
     while (!m_pDS->eof())
     {
-      CStdString path;
-      path.Format("musicdb://artists/%ld/", m_pDS->fv(0).get_asInt());
+      CStdString path = StringUtils::Format("musicdb://artists/%ld/", m_pDS->fv(0).get_asInt());
       CFileItemPtr pItem(new CFileItem(path, true));
-      CStdString label;
-      label.Format("[%s] %s", artistLabel.c_str(), m_pDS->fv(1).get_asString());
+      CStdString label = StringUtils::Format("[%s] %s", artistLabel.c_str(), m_pDS->fv(1).get_asString().c_str());
       pItem->SetLabel(label);
-      label.Format("A %s", m_pDS->fv(1).get_asString()); // sort label is stored in the title tag
+      label = StringUtils::Format("A %s", m_pDS->fv(1).get_asString().c_str()); // sort label is stored in the title tag
       pItem->GetMusicInfoTag()->SetTitle(label);
       pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv(0).get_asInt(), "artist");
       artists.Add(pItem);
@@ -1565,8 +1566,7 @@ bool CMusicDatabase::GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItem
     if (!strBaseDir.empty() && baseUrl.FromString(strBaseDir))
       return false;
 
-    CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idAlbum order by sum(song.iTimesPlayed) desc limit 100) order by albumview.idAlbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idAlbum order by sum(song.iTimesPlayed) desc limit 100)");
+    CStdString strSQL = StringUtils::Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idAlbum order by sum(song.iTimesPlayed) desc limit 100) order by albumview.idAlbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idAlbum order by sum(song.iTimesPlayed) desc limit 100)");
     CLog::Log(LOGDEBUG,"GetTop100AlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1606,8 +1606,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL;
-    strSQL.Format("select distinct albumview.* from song join albumview on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i", RECENTLY_PLAYED_LIMIT);
+    CStdString strSQL = StringUtils::Format("select distinct albumview.* from song join albumview on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i", RECENTLY_PLAYED_LIMIT);
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -1644,8 +1643,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (!strBaseDir.empty() && !baseUrl.FromString(strBaseDir))
       return false;
 
-    CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select distinct albumview.idAlbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    CStdString strSQL = StringUtils::Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select distinct albumview.idAlbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1685,8 +1683,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limi
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL;
-    strSQL.Format("select * from albumview where strAlbum != '' order by idAlbum desc limit %u", limit ? limit : g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    CStdString strSQL = StringUtils::Format("select * from albumview where strAlbum != '' order by idAlbum desc limit %u", limit ? limit : g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -1904,13 +1901,11 @@ bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &album
     while (!m_pDS->eof())
     {
       CAlbum album = GetAlbumFromDataset(m_pDS.get());
-      CStdString path;
-      path.Format("musicdb://albums/%ld/", album.idAlbum);
+      CStdString path = StringUtils::Format("musicdb://albums/%ld/", album.idAlbum);
       CFileItemPtr pItem(new CFileItem(path, album));
-      CStdString label;
-      label.Format("[%s] %s", albumLabel.c_str(), album.strAlbum);
+      CStdString label = StringUtils::Format("[%s] %s", albumLabel.c_str(), album.strAlbum.c_str());
       pItem->SetLabel(label);
-      label.Format("B %s", album.strAlbum); // sort label is stored in the title tag
+      label = StringUtils::Format("B %s", album.strAlbum.c_str()); // sort label is stored in the title tag
       pItem->GetMusicInfoTag()->SetTitle(label);
       albums.Add(pItem);
       m_pDS->next();
@@ -2505,8 +2500,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   //  Delete old info if any
   if (bRequery)
   {
-    CStdString strFile;
-    strFile.Format("%x.cddb", pCdInfo->GetCddbDiscId());
+    CStdString strFile = StringUtils::Format("%x.cddb", pCdInfo->GetCddbDiscId());
     CFile::Delete(URIUtils::AddFileToFolder(CProfilesManager::Get().GetCDDBFolder(), strFile));
   }
 
@@ -2578,8 +2572,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
       {
         pCdInfo->SetNoCDDBInfo();
         // ..no, an error occured, display it to the user
-        CStdString strErrorText;
-        strErrorText.Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
+        CStdString strErrorText = StringUtils::Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
         CGUIDialogOK::ShowAndGetInput(255, 257, strErrorText, 0);
       }
     } // if ( !cddb.queryCDinfo( pCdInfo ) )
@@ -2657,8 +2650,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     {
       if (it->second == strSelectedAlbum)
       {
-        CStdString strFile;
-        strFile.Format("%x.cddb", it->first);
+        CStdString strFile = StringUtils::Format("%x.cddb", it->first);
         CFile::Delete(URIUtils::AddFileToFolder(CProfilesManager::Get().GetCDDBFolder(), strFile));
         break;
       }
@@ -2774,7 +2766,7 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv("genre.idGenre").get_asInt(), "genre");
 
       CMusicDbUrl itemUrl = musicUrl;
-      CStdString strDir; strDir.Format("%ld/", m_pDS->fv("genre.idGenre").get_asInt());
+      CStdString strDir = StringUtils::Format("%ld/", m_pDS->fv("genre.idGenre").get_asInt());
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
@@ -2836,7 +2828,7 @@ bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       pItem->GetMusicInfoTag()->SetReleaseDate(stTime);
 
       CMusicDbUrl itemUrl = musicUrl;
-      CStdString strDir; strDir.Format("%ld/", m_pDS->fv("iYear").get_asInt());
+      CStdString strDir = StringUtils::Format("%ld/", m_pDS->fv("iYear").get_asInt());
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
@@ -2927,7 +2919,7 @@ bool CMusicDatabase::GetCommonNav(const CStdString &strBaseDir, const CStdString
       CFileItemPtr pItem(new CFileItem(labelValue));
       
       CMusicDbUrl itemUrl = musicUrl;
-      CStdString strDir; strDir.Format("%s/", labelValue.c_str());
+      CStdString strDir = StringUtils::Format("%s/", labelValue.c_str());
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
       
@@ -3098,7 +3090,7 @@ bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const Filte
         CFileItemPtr pItem(new CFileItem(artist));
 
         CMusicDbUrl itemUrl = musicUrl;
-        CStdString path; path.Format("%ld/", artist.idArtist);
+        CStdString path = StringUtils::Format("%ld/", artist.idArtist);
         itemUrl.AppendPath(path);
         pItem->SetPath(itemUrl.ToString());
 
@@ -3259,7 +3251,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const Filter &f
       try
       {
         CMusicDbUrl itemUrl = musicUrl;
-        CStdString path; path.Format("%ld/", record->at(album_idAlbum).get_asInt());
+        CStdString path = StringUtils::Format("%ld/", record->at(album_idAlbum).get_asInt());
         itemUrl.AppendPath(path);
 
         CFileItemPtr pItem(new CFileItem(itemUrl.ToString(), GetAlbumFromDataset(record)));
@@ -4618,10 +4610,7 @@ CStdString CMusicDatabase::GetItemById(const CStdString &itemType, int id)
   if (itemType.Equals("genres"))
     return GetGenreById(id);
   else if (itemType.Equals("years"))
-  {
-    CStdString tmp; tmp.Format("%d", id);
-    return tmp;
-  }
+    return StringUtils::Format("%d", id);
   else if (itemType.Equals("artists"))
     return GetArtistById(id);
   else if (itemType.Equals("albums"))
@@ -5029,8 +5018,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     while (!m_pDS->eof())
     {
       CSong song = GetSongFromDataset( false );
-      CStdString songnum;
-      songnum.Format( "%06d", song.iKaraokeNumber );
+      CStdString songnum = StringUtils::Format("%06d", song.iKaraokeNumber);
 
       if ( asHTML )
         outdoc = "<tr><td>" + songnum + "</td><td>" + StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) + "</td><td>" + song.strTitle + "</td></tr>\r\n";

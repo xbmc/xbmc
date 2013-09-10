@@ -365,8 +365,7 @@ void CGUIWindowMusicNav::UpdateButtons()
       StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
-  CStdString items;
-  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  CStdString items = StringUtils::Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   // set the filter label
@@ -570,7 +569,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         long idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
         if (idArtist == -1)
           return false;
-        CStdString path; path.Format("musicdb://artists/%ld/", idArtist);
+        CStdString path = StringUtils::Format("musicdb://artists/%ld/", idArtist);
         CArtist artist;
         m_musicdatabase.GetArtistInfo(idArtist,artist,false);
         *item = CFileItem(artist);
@@ -587,7 +586,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         long idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
         if (idAlbum == -1)
           return false;
-        CStdString path; path.Format("musicdb://albums/%ld/", idAlbum);
+        CStdString path = StringUtils::Format("musicdb://albums/%ld/", idAlbum);
         CAlbum album;
         m_musicdatabase.GetAlbumInfo(idAlbum,album,NULL);
         *item = CFileItem(path,album);
@@ -630,7 +629,8 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strPath;
       CVideoDatabase database;
       database.Open();
-      strPath.Format("videodb://musicvideos/artists/%ld/",database.GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator)));
+      strPath = StringUtils::Format("videodb://musicvideos/artists/%ld/",
+                                    database.GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator)));
       g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
       return true;
     }
@@ -685,10 +685,10 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CDirectoryNode::GetDatabaseInfo(item->GetPath(), params);
       CONTENT_TYPE content = CONTENT_ALBUMS;
       if (params.GetAlbumId() != -1)
-        path.Format("musicdb://albums/%i/",params.GetAlbumId());
+        path = StringUtils::Format("musicdb://albums/%i/",params.GetAlbumId());
       else if (params.GetArtistId() != -1)
       {
-        path.Format("musicdb://artists/%i/",params.GetArtistId());
+        path = StringUtils::Format("musicdb://artists/%i/",params.GetArtistId());
         content = CONTENT_ARTISTS;
       }
 

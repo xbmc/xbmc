@@ -22,6 +22,7 @@
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #define SECONDS_PER_DAY 86400UL
 #define SECONDS_PER_HOUR 3600UL
@@ -843,10 +844,7 @@ CStdString CDateTime::GetAsDBDate() const
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
-  CStdString date;
-  date.Format("%04i-%02i-%02i", st.wYear, st.wMonth, st.wDay);
-
-  return date;
+  return StringUtils::Format("%04i-%02i-%02i", st.wYear, st.wMonth, st.wDay);
 }
 
 CStdString CDateTime::GetAsDBDateTime() const
@@ -854,10 +852,7 @@ CStdString CDateTime::GetAsDBDateTime() const
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
-  CStdString date;
-  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-
-  return date;
+  return StringUtils::Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 }
 
 CStdString CDateTime::GetAsSaveString() const
@@ -865,10 +860,7 @@ CStdString CDateTime::GetAsSaveString() const
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
-  CStdString date;
-  date.Format("%04i%02i%02i_%02i%02i%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-
-  return date;
+  return StringUtils::Format("%04i%02i%02i_%02i%02i%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);;
 }
 
 void CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
@@ -1110,9 +1102,9 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
       // Format hour string with the length of the mask
       CStdString str;
       if (partLength==1)
-        str.Format("%d", hour);
+        str = StringUtils::Format("%d", hour);
       else
-        str.Format("%02d", hour);
+        str = StringUtils::Format("%02d", hour);
 
       strOut+=str;
     }
@@ -1137,9 +1129,9 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
       // Format minute string with the length of the mask
       CStdString str;
       if (partLength==1)
-        str.Format("%d", dateTime.wMinute);
+        str = StringUtils::Format("%d", dateTime.wMinute);
       else
-        str.Format("%02d", dateTime.wMinute);
+        str = StringUtils::Format("%02d", dateTime.wMinute);
 
       strOut+=str;
     }
@@ -1166,9 +1158,9 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
         // Format seconds string with the length of the mask
         CStdString str;
         if (partLength==1)
-          str.Format("%d", dateTime.wSecond);
+          str = StringUtils::Format("%d", dateTime.wSecond);
         else
-          str.Format("%02d", dateTime.wSecond);
+          str = StringUtils::Format("%02d", dateTime.wSecond);
 
         strOut+=str;
       }
@@ -1258,9 +1250,9 @@ CStdString CDateTime::GetAsLocalizedDate(const CStdString &strFormat, bool withS
       // Format string with the length of the mask
       CStdString str;
       if (partLength==1) // single-digit number
-        str.Format("%d", dateTime.wDay);
+        str = StringUtils::Format("%d", dateTime.wDay);
       else if (partLength==2) // two-digit number
-        str.Format("%02d", dateTime.wDay);
+        str = StringUtils::Format("%02d", dateTime.wDay);
       else // Day of week string
       {
         int wday = dateTime.wDayOfWeek;
@@ -1290,9 +1282,9 @@ CStdString CDateTime::GetAsLocalizedDate(const CStdString &strFormat, bool withS
       // Format string with the length of the mask
       CStdString str;
       if (partLength==1) // single-digit number
-        str.Format("%d", dateTime.wMonth);
+        str = StringUtils::Format("%d", dateTime.wMonth);
       else if (partLength==2) // two-digit number
-        str.Format("%02d", dateTime.wMonth);
+        str = StringUtils::Format("%02d", dateTime.wMonth);
       else // Month string
       {
         int wmonth = dateTime.wMonth;
@@ -1320,8 +1312,7 @@ CStdString CDateTime::GetAsLocalizedDate(const CStdString &strFormat, bool withS
       }
 
       // Format string with the length of the mask
-      CStdString str;
-      str.Format("%d", dateTime.wYear); // four-digit number
+      CStdString str = StringUtils::Format("%d", dateTime.wYear); // four-digit number
       if (partLength<=2)
         str.Delete(0, 2); // two-digit number
 
@@ -1366,8 +1357,7 @@ CStdString CDateTime::GetAsRFC1123DateTime() const
   if (month != time.GetMonth())
     CLog::Log(LOGWARNING, "Invalid month %d in %s", time.GetMonth(), time.GetAsDBDateTime().c_str());
 
-  CStdString result;
-  result.Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[weekDay], time.GetDay(), MONTH_NAMES[month - 1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
+  CStdString result = StringUtils::Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[weekDay], time.GetDay(), MONTH_NAMES[month - 1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
   return result;
 }
 

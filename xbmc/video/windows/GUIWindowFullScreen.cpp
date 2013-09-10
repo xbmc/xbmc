@@ -51,6 +51,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "XBDateTime.h"
 #include "input/ButtonTranslator.h"
 #include "pvr/PVRManager.h"
@@ -250,8 +251,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         else
         {
           int autoCloseTime = CSettings::Get().GetBool("pvrplayback.confirmchannelswitch") ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
-          CStdString strChannel;
-          strChannel.Format("%i", action.GetID() - REMOTE_0);
+          CStdString strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
           if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
             iChannelNumber = atoi(strChannel.c_str());
         }
@@ -569,7 +569,7 @@ void CGUIWindowFullScreen::FrameMove()
       // We show CPU usage for the entire process, as it's arguably more useful.
       double dCPU = m_resourceCounter.GetCPUUsage();
       CStdString strCores;
-      strCores.Format("cpu:%.0f%%", dCPU);
+      strCores = StringUtils::Format("cpu:%.0f%%", dCPU);
 #else
       CStdString strCores = g_cpuInfo.GetCoresUsageString();
 #endif
@@ -579,16 +579,16 @@ void CGUIWindowFullScreen::FrameMove()
       CStdString strClock;
 
       if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
-        strClock.Format("S( refresh:%i missed:%i speed:%+.3f%% %s )"
-                       , refreshrate
-                       , missedvblanks
-                       , clockspeed - 100.0
-                       , g_renderManager.GetVSyncState().c_str());
+        strClock = StringUtils::Format("S( refresh:%i missed:%i speed:%+.3f%% %s )"
+                                       , refreshrate
+                                       , missedvblanks
+                                       , clockspeed - 100.0
+                                       , g_renderManager.GetVSyncState().c_str());
 
-      strGeneralFPS.Format("%s\nW( fps:%02.2f %s ) %s"
-                         , strGeneral.c_str()
-                         , g_infoManager.GetFPS()
-                         , strCores.c_str(), strClock.c_str() );
+      strGeneralFPS = StringUtils::Format("%s\nW( fps:%02.2f %s ) %s"
+                                          , strGeneral.c_str()
+                                          , g_infoManager.GetFPS()
+                                          , strCores.c_str(), strClock.c_str() );
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strGeneralFPS);
@@ -610,8 +610,7 @@ void CGUIWindowFullScreen::FrameMove()
       // get the "View Mode" string
       CStdString strTitle = g_localizeStrings.Get(629);
       CStdString strMode = g_localizeStrings.Get(630 + CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
-      CStdString strInfo;
-      strInfo.Format("%s : %s", strTitle.c_str(), strMode.c_str());
+      CStdString strInfo = StringUtils::Format("%s : %s", strTitle.c_str(), strMode.c_str());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
       msg.SetLabel(strInfo);
       OnMessage(msg);
@@ -624,12 +623,15 @@ void CGUIWindowFullScreen::FrameMove()
       float xscale = (float)res.iScreenWidth  / (float)res.iWidth;
       float yscale = (float)res.iScreenHeight / (float)res.iHeight;
 
-      CStdString strSizing;
-      strSizing.Format(g_localizeStrings.Get(245),
-                       (int)info.SrcRect.Width(), (int)info.SrcRect.Height(),
-                       (int)(info.DestRect.Width() * xscale), (int)(info.DestRect.Height() * yscale),
-                       CDisplaySettings::Get().GetZoomAmount(), info.videoAspectRatio*CDisplaySettings::Get().GetPixelRatio(),
-                       CDisplaySettings::Get().GetPixelRatio(), CDisplaySettings::Get().GetVerticalShift());
+      CStdString strSizing = StringUtils::Format(g_localizeStrings.Get(245),
+                                                 (int)info.SrcRect.Width(),
+                                                 (int)info.SrcRect.Height(),
+                                                 (int)(info.DestRect.Width() * xscale),
+                                                 (int)(info.DestRect.Height() * yscale),
+                                                 CDisplaySettings::Get().GetZoomAmount(),
+                                                 info.videoAspectRatio*CDisplaySettings::Get().GetPixelRatio(),
+                                                 CDisplaySettings::Get().GetPixelRatio(),
+                                                 CDisplaySettings::Get().GetVerticalShift());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
       msg.SetLabel(strSizing);
       OnMessage(msg);
@@ -638,14 +640,18 @@ void CGUIWindowFullScreen::FrameMove()
     {
       CStdString strStatus;
       if (g_Windowing.IsFullScreen())
-        strStatus.Format("%s %ix%i@%.2fHz - %s",
-          g_localizeStrings.Get(13287), res.iScreenWidth,
-          res.iScreenHeight, res.fRefreshRate,
-          g_localizeStrings.Get(244));
+        strStatus = StringUtils::Format("%s %ix%i@%.2fHz - %s",
+                                        g_localizeStrings.Get(13287).c_str(),
+                                        res.iScreenWidth,
+                                        res.iScreenHeight,
+                                        res.fRefreshRate,
+                                        g_localizeStrings.Get(244).c_str());
       else
-        strStatus.Format("%s %ix%i - %s",
-          g_localizeStrings.Get(13287), res.iScreenWidth,
-          res.iScreenHeight, g_localizeStrings.Get(242));
+        strStatus = StringUtils::Format("%s %ix%i - %s",
+                                        g_localizeStrings.Get(13287).c_str(),
+                                        res.iScreenWidth,
+                                        res.iScreenHeight,
+                                        g_localizeStrings.Get(242).c_str());
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);

@@ -37,6 +37,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "Autorun.h"
 #include "cdrip/CDDARipper.h"
 #include "cores/IPlayer.h"
@@ -279,8 +280,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   // Update object count label
-  CStdString items;
-  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
+  CStdString items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 

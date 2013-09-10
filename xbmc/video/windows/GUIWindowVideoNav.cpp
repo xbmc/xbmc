@@ -504,8 +504,7 @@ void CGUIWindowVideoNav::UpdateButtons()
       StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
-  CStdString items;
-  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  CStdString items = StringUtils::Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   // set the filter label
@@ -679,8 +678,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     pDialog->SetHeading(432);
-    CStdString strLabel;
-    strLabel.Format(g_localizeStrings.Get(433),pItem->GetLabel());
+    CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(433),pItem->GetLabel().c_str());
     pDialog->SetLine(1, strLabel);
     pDialog->SetLine(2, "");;
     pDialog->DoModal();
@@ -701,8 +699,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     pDialog->SetHeading(432);
-    CStdString strLabel;
-    strLabel.Format(g_localizeStrings.Get(433), pItem->GetLabel());
+    CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(433), pItem->GetLabel().c_str());
     pDialog->SetLine(1, strLabel);
     pDialog->SetLine(2, "");
     pDialog->DoModal();
@@ -796,8 +793,7 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
   }
   else
   {
-    CStdString strLine;
-    strLine.Format(g_localizeStrings.Get(433),pItem->GetLabel());
+    CStdString strLine = StringUtils::Format(g_localizeStrings.Get(433), pItem->GetLabel().c_str());
     pDialog->SetLine(0, strLine);
     pDialog->SetLine(1, "");
     pDialog->SetLine(2, "");;
@@ -976,8 +972,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           {
             std::string mediaType = videoUrl.GetItemType();
 
-            CStdString strLabelAdd; strLabelAdd.Format(g_localizeStrings.Get(20460), GetLocalizedType(videoUrl.GetItemType()).c_str());
-            CStdString strLabelRemove; strLabelRemove.Format(g_localizeStrings.Get(20461), GetLocalizedType(videoUrl.GetItemType()).c_str());
+            CStdString strLabelAdd = StringUtils::Format(g_localizeStrings.Get(20460), GetLocalizedType(videoUrl.GetItemType()).c_str());
+            CStdString strLabelRemove = StringUtils::Format(g_localizeStrings.Get(20461), GetLocalizedType(videoUrl.GetItemType()).c_str());
             buttons.Add(CONTEXT_BUTTON_TAGS_ADD_ITEMS, strLabelAdd);
             buttons.Add(CONTEXT_BUTTON_TAGS_REMOVE_ITEMS, strLabelRemove);
             buttons.Add(CONTEXT_BUTTON_DELETE, 646);
@@ -1131,8 +1127,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
         for (unsigned int i = 0; i < thumbs.size(); i++)
         {
-          CStdString strItemPath;
-          strItemPath.Format("thumb://Remote%i",i);
+          CStdString strItemPath = StringUtils::Format("thumb://Remote%i",i);
           CFileItemPtr item(new CFileItem(strItemPath, false));
           item->SetArt("thumb", thumbs[i]);
           item->SetIconImage("DefaultPicture.png");
@@ -1234,7 +1229,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       CFileItemList items;
       CStdString localizedType = GetLocalizedType(mediaType);
-      CStdString strLabel; strLabel.Format(g_localizeStrings.Get(20464), localizedType.c_str());
+      CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20464), localizedType.c_str());
       if (!GetItemsForTag(strLabel, mediaType, items, item->GetVideoInfoTag()->m_iDbId))
         return true;
 
@@ -1266,7 +1261,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       CFileItemList items;
       CStdString localizedType = GetLocalizedType(mediaType);
-      CStdString strLabel; strLabel.Format(g_localizeStrings.Get(20464), localizedType.c_str());
+      CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20464), localizedType.c_str());
       if (!GetItemsForTag(strLabel, mediaType, items, item->GetVideoInfoTag()->m_iDbId, false))
         return true;
 
@@ -1329,7 +1324,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strPath;
       CMusicDatabase database;
       database.Open();
-      strPath.Format("musicdb://artists/%ld/",database.GetArtistByName(StringUtils::Join(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator)));
+      strPath = StringUtils::Format("musicdb://artists/%ld/",
+                                    database.GetArtistByName(StringUtils::Join(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator)));
       g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
       return true;
     }
@@ -1338,7 +1334,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strPath;
       CMusicDatabase database;
       database.Open();
-      strPath.Format("musicdb://albums/%ld/",database.GetAlbumByName(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_strAlbum));
+      strPath = StringUtils::Format("musicdb://albums/%ld/",
+                                    database.GetAlbumByName(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_strAlbum));
       g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
       return true;
     }
@@ -1459,14 +1456,14 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
 
     if (!videodb.GetSingleValue("tag", "tag.idTag", videodb.PrepareSQL("tag.strTag = '%s' AND tag.idTag IN (SELECT taglinks.idTag FROM taglinks WHERE taglinks.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
     {
-      CStdString strError; strError.Format(g_localizeStrings.Get(20463), strTag.c_str());
+      CStdString strError = StringUtils::Format(g_localizeStrings.Get(20463), strTag.c_str());
       CGUIDialogOK::ShowAndGetInput(20462, "", strError, "");
       return true;
     }
 
     int idTag = videodb.AddTag(strTag);
     CFileItemList items;
-    CStdString strLabel; strLabel.Format(g_localizeStrings.Get(20464), localizedType.c_str());
+    CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20464), localizedType.c_str());
     if (GetItemsForTag(strLabel, mediaType, items, idTag))
     {
       for (int index = 0; index < items.Size(); index++)

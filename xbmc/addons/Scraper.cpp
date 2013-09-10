@@ -739,13 +739,13 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl, const CStdStr
         CStdString sArtist;
         CStdString sAlbumName;
         if (XMLUtils::GetString(pxeAlbum, "artist", sArtist) && !sArtist.empty())
-          sAlbumName.Format("%s - %s", sArtist.c_str(), sTitle.c_str());
+          sAlbumName = StringUtils::Format("%s - %s", sArtist.c_str(), sTitle.c_str());
         else
           sAlbumName = sTitle;
 
         CStdString sYear;
         if (XMLUtils::GetString(pxeAlbum, "year", sYear) && !sYear.empty())
-          sAlbumName.Format("%s (%s)", sAlbumName.c_str(), sYear.c_str());
+          sAlbumName = StringUtils::Format("%s (%s)", sAlbumName.c_str(), sYear.c_str());
 
         // if no URL is provided, use the URL we got back from CreateAlbumSearchUrl
         // (e.g., in case we only got one result back and were sent to the detail page)

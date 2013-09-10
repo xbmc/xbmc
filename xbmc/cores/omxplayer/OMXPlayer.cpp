@@ -750,7 +750,7 @@ bool COMXPlayer::OpenInputStream()
 
     // find any upnp subtitles
     CStdString key("upnp:subtitle:1");
-    for(unsigned s = 1; m_item.HasProperty(key); key.Format("upnp:subtitle:%u", ++s))
+    for(unsigned s = 1; m_item.HasProperty(key); key = StringUtils::Format("upnp:subtitle:%u", ++s))
       filenames.push_back(m_item.GetProperty(key).asString());
 
     for(unsigned int i=0;i<filenames.size();i++)
@@ -2941,7 +2941,7 @@ bool COMXPlayer::SeekScene(bool bPlus)
 void COMXPlayer::GetAudioInfo(CStdString &strAudioInfo)
 {
   { CSingleLock lock(m_StateSection);
-    strAudioInfo.Format("D(%s)", m_StateInput.demux_audio.c_str());
+    strAudioInfo = StringUtils::Format("D(%s)", m_StateInput.demux_audio.c_str());
   }
   strAudioInfo.AppendFormat("\nP(%s)", m_omxPlayerAudio.GetPlayerInfo().c_str());
 }
@@ -2949,7 +2949,7 @@ void COMXPlayer::GetAudioInfo(CStdString &strAudioInfo)
 void COMXPlayer::GetVideoInfo(CStdString &strVideoInfo)
 {
   { CSingleLock lock(m_StateSection);
-    strVideoInfo.Format("D(%s)", m_StateInput.demux_video.c_str());
+    strVideoInfo = StringUtils::Format("D(%s)", m_StateInput.demux_video.c_str());
   }
   strVideoInfo.AppendFormat("\nP(%s)", m_omxPlayerVideo.GetPlayerInfo().c_str());
 }
@@ -2979,7 +2979,7 @@ void COMXPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
         strBuf.AppendFormat(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
     }
 
-    strGeneralInfo.Format("C( ad:% 6.3f a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% amp:% 5.2f )"
+    strGeneralInfo = StringUtils::Format("C( ad:% 6.3f a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% amp:% 5.2f )"
                          , m_omxPlayerAudio.GetDelay()
                          , dDiff
                          , strEDL.c_str()

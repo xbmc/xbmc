@@ -187,11 +187,11 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
         if (g_PVRManager.IsStarted())
         {
           CStdString strMessage;
-          strMessage.Format("%s: '%s'",
-              (timer->EndAsUTC() <= CDateTime::GetCurrentDateTime().GetAsUTCDateTime()) ?
-                  g_localizeStrings.Get(19227) :
-                  g_localizeStrings.Get(19228),
-                  timer->m_strTitle.c_str());
+          strMessage = StringUtils::Format("%s: '%s'",
+                                           (timer->EndAsUTC() <= CDateTime::GetCurrentDateTime().GetAsUTCDateTime()) ?
+                                           g_localizeStrings.Get(19227).c_str() :
+                                           g_localizeStrings.Get(19228).c_str(),
+                                           timer->m_strTitle.c_str());
           timerNotifications.push_back(strMessage);
         }
 
@@ -485,12 +485,12 @@ bool CPVRTimers::InstantTimer(const CPVRChannel &channel)
     newTimer->m_bIsRadio          = channel.IsRadio();
 
     /* generate summary string */
-    newTimer->m_strSummary.Format("%s %s %s %s %s",
-        newTimer->StartAsLocalTime().GetAsLocalizedDate(),
-        g_localizeStrings.Get(19159),
-        newTimer->StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false),
-        g_localizeStrings.Get(19160),
-        newTimer->EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
+    newTimer->m_strSummary = StringUtils::Format("%s %s %s %s %s",
+                                                 newTimer->StartAsLocalTime().GetAsLocalizedDate().c_str(),
+                                                 g_localizeStrings.Get(19159).c_str(),
+                                                 newTimer->StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str(),
+                                                 g_localizeStrings.Get(19160).c_str(),
+                                                 newTimer->EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false).c_str());
   }
 
   CDateTime startTime(0);

@@ -22,6 +22,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -74,7 +75,7 @@ void CGUIDialogPVRTimerSettings::AddChannelNames(CFileItemList &channelsList, SE
     CStdString string;
     CFileItemPtr item = channelsList[i];
     const CPVRChannel *channel = item->GetPVRChannelInfoTag();
-    string.Format("%i %s", channel->ChannelNumber(), channel->ChannelName().c_str());
+    string = StringUtils::Format("%i %s", channel->ChannelNumber(), channel->ChannelName().c_str());
     channelNames.push_back(string);
     if (channel->ChannelID() == timerChannelID)
       m_selectedChannelEntry = entry;

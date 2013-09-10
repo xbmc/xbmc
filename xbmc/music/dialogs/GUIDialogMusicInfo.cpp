@@ -354,7 +354,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
   for (unsigned int i = 0; i < thumbs.size(); ++i)
   {
     CStdString strItemPath;
-    strItemPath.Format("thumb://Remote%i", i);
+    strItemPath = StringUtils::Format("thumb://Remote%i", i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetArt("thumb", thumbs[i]);
     item->SetIconImage("DefaultPicture.png");
@@ -455,8 +455,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   // Grab the thumbnails from the web
   for (unsigned int i = 0; i < m_artist.fanart.GetNumFanarts(); i++)
   {
-    CStdString strItemPath;
-    strItemPath.Format("fanart://Remote%i",i);
+    CStdString strItemPath = StringUtils::Format("fanart://Remote%i",i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     CStdString thumb = m_artist.fanart.GetPreviewURL(i);
     item->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(thumb));

@@ -204,8 +204,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
   if (action.GetID() >= ACTION_FILTER_SMS2 && action.GetID() <= ACTION_FILTER_SMS9)
   {
-    CStdString filter;
-    filter.Format("%i", (int)(action.GetID() - ACTION_FILTER_SMS2 + 2));
+    CStdString filter = StringUtils::Format("%i", (int)(action.GetID() - ACTION_FILTER_SMS2 + 2));
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
     message.SetStringParam(filter);
     OnMessage(message);
@@ -550,13 +549,12 @@ void CGUIMediaWindow::UpdateButtons()
     else
       CONTROL_ENABLE(CONTROL_BTNSORTBY);
 
-    CStdString sortLabel;
-    sortLabel.Format(g_localizeStrings.Get(550).c_str(), g_localizeStrings.Get(m_guiState->GetSortMethodLabel()).c_str());
+    CStdString sortLabel = StringUtils::Format(g_localizeStrings.Get(550).c_str(),
+                                               g_localizeStrings.Get(m_guiState->GetSortMethodLabel()).c_str());
     SET_CONTROL_LABEL(CONTROL_BTNSORTBY, sortLabel);
   }
 
-  CStdString items;
-  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
+  CStdString items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter").asString());
@@ -1220,7 +1218,9 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
   {
     // Could be a cue item, all items of a cue share the same filename
     // so add the offsets to build the history string
-    strHistoryString.Format("%ld%ld", pItem->m_lStartOffset, pItem->m_lEndOffset);
+    strHistoryString = StringUtils::Format("%ld%ld",
+                                           pItem->m_lStartOffset,
+                                           pItem->m_lEndOffset);
     strHistoryString += pItem->GetPath();
   }
   else
@@ -1520,11 +1520,11 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   CStdString action;
   for (int i = CONTEXT_BUTTON_USER1; i <= CONTEXT_BUTTON_USER10; i++)
   {
-    label.Format("contextmenulabel(%i)", i - CONTEXT_BUTTON_USER1);
+    label = StringUtils::Format("contextmenulabel(%i)", i - CONTEXT_BUTTON_USER1);
     if (item->GetProperty(label).empty())
       break;
 
-    action.Format("contextmenuaction(%i)", i - CONTEXT_BUTTON_USER1);
+    action = StringUtils::Format("contextmenuaction(%i)", i - CONTEXT_BUTTON_USER1);
     if (item->GetProperty(action).empty())
       break;
 
@@ -1591,8 +1591,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_USER9:
   case CONTEXT_BUTTON_USER10:
     {
-      CStdString action;
-      action.Format("contextmenuaction(%i)", button - CONTEXT_BUTTON_USER1);
+      CStdString action = StringUtils::Format("contextmenuaction(%i)", button - CONTEXT_BUTTON_USER1);
       CApplicationMessenger::Get().ExecBuiltIn(m_vecItems->Get(itemNumber)->GetProperty(action).asString());
       return true;
     }

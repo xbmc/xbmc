@@ -1546,9 +1546,7 @@ void CCurlFile::SetRequestHeader(CStdString header, CStdString value)
 
 void CCurlFile::SetRequestHeader(CStdString header, long value)
 {
-  CStdString buffer;
-  buffer.Format("%ld", value);
-  m_requestheaders[header] = buffer;
+  m_requestheaders[header] = StringUtils::Format("%ld", value);
 }
 
 std::string CCurlFile::GetServerReportedCharset(void)

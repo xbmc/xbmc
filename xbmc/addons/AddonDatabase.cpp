@@ -22,6 +22,7 @@
 #include "addons/AddonManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 #include "XBDateTime.h"
 #include "addons/Service.h"
 #include "dbwrappers/dataset.h"
@@ -546,8 +547,7 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
   pItem->SetProperty("Addon.Creator", addon->Author());
   pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
   pItem->SetProperty("Addon.Rating", addon->Stars());
-  CStdString starrating;
-  starrating.Format("rating%d.png", addon->Stars());
+  CStdString starrating = StringUtils::Format("rating%d.png", addon->Stars());
   pItem->SetProperty("Addon.StarRating",starrating);
   pItem->SetProperty("Addon.Path", addon->Path());
   if (addon->Props().broken == "DEPSNOTMET")

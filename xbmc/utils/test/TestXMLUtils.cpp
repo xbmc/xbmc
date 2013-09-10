@@ -19,6 +19,7 @@
  */
 
 #include "utils/XMLUtils.h"
+#include "utils/StringUtils.h"
 #include "XBDateTime.h"
 
 #include "gtest/gtest.h"
@@ -82,7 +83,7 @@ TEST(TestXMLUtils, GetDouble)
   EXPECT_TRUE(XMLUtils::GetDouble(a.RootElement(), "node", val));
 
   refstr = "1000.100000";
-  valstr.Format("%f", val);
+  valstr = StringUtils::Format("%f", val);
   EXPECT_STREQ(refstr.c_str(), valstr.c_str());
 }
 

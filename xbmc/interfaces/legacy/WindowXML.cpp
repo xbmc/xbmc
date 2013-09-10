@@ -27,6 +27,7 @@
 #include "addons/Skin.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "addons/Addon.h"
 
 // These #defs are for WindowXML

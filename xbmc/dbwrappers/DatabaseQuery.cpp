@@ -390,7 +390,7 @@ CStdString CDatabaseQueryRule::FormatWhereClause(const CStdString &negate, const
     else if (GetFieldType(m_field) == SECONDS_FIELD)
       fmt = "CAST(%s as INTEGER)";
 
-    query.Format(fmt.c_str(), GetField(m_field,strType).c_str());
+    query = StringUtils::Format(fmt.c_str(), GetField(m_field,strType).c_str());
     query += negate + parameter;
   }
 

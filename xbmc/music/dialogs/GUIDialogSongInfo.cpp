@@ -110,8 +110,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
         if (window)
         {
           CFileItem item(*m_song);
-          CStdString path;
-          path.Format("musicdb://albums/%li",m_albumId);
+          CStdString path = StringUtils::Format("musicdb://albums/%li",m_albumId);
           item.SetPath(path);
           item.m_bIsFolder = true;
           window->OnInfo(&item, true);

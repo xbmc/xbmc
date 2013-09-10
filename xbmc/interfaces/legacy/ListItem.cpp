@@ -190,12 +190,12 @@ namespace XBMCAddon
       if (lowerKey.CompareNoCase("startoffset") == 0)
       { // special case for start offset - don't actually store in a property,
         // we store it in item.m_lStartOffset instead
-        value.Format("%f", item->m_lStartOffset / 75.0);
+        value = StringUtils::Format("%f", item->m_lStartOffset / 75.0);
       }
       else if (lowerKey.CompareNoCase("totaltime") == 0)
-        value.Format("%f", item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+        value = StringUtils::Format("%f", item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
       else if (lowerKey.CompareNoCase("resumetime") == 0)
-        value.Format("%f", item->GetVideoInfoTag()->m_resumePoint.timeInSeconds);
+        value = StringUtils::Format("%f", item->GetVideoInfoTag()->m_resumePoint.timeInSeconds);
       else if (lowerKey.CompareNoCase("fanart_image") == 0)
         value = item->GetArt("fanart");
       else
@@ -544,10 +544,10 @@ namespace XBMCAddon
 
         LOCKGUI;
         CStdString property;
-        property.Format("contextmenulabel(%i)", itemCount);
+        property = StringUtils::Format("contextmenulabel(%i)", itemCount);
         item->SetProperty(property, uText);
 
-        property.Format("contextmenuaction(%i)", itemCount);
+        property = StringUtils::Format("contextmenuaction(%i)", itemCount);
         item->SetProperty(property, uAction);
       }
 

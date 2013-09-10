@@ -21,6 +21,7 @@
 #include "DNSNameCache.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -47,7 +48,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
 
   if (address != INADDR_NONE)
   {
-    strIpAddress.Format("%d.%d.%d.%d", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );
+    strIpAddress = StringUtils::Format("%d.%d.%d.%d", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );
     return true;
   }
 
@@ -86,7 +87,11 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
   struct hostent *host = gethostbyname(strHostName.c_str());
   if (host && host->h_addr_list[0])
   {
-    strIpAddress.Format("%d.%d.%d.%d", (unsigned char)host->h_addr_list[0][0], (unsigned char)host->h_addr_list[0][1], (unsigned char)host->h_addr_list[0][2], (unsigned char)host->h_addr_list[0][3]);
+    strIpAddress = StringUtils::Format("%d.%d.%d.%d",
+                                       (unsigned char)host->h_addr_list[0][0],
+                                       (unsigned char)host->h_addr_list[0][1],
+                                       (unsigned char)host->h_addr_list[0][2],
+                                       (unsigned char)host->h_addr_list[0][3]);
     g_DNSCache.Add(strHostName, strIpAddress);
     return true;
   }

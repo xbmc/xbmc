@@ -320,7 +320,7 @@ bool CPVRClient::GetAddonProperties(void)
   catch (exception &e) { LogException(e, "GetConnectionString()"); return false;  }
 
   /* display name = backend name:connection string */
-  strFriendlyName.Format("%s:%s", strBackendName.c_str(), strConnectionString.c_str());
+  strFriendlyName = StringUtils::Format("%s:%s", strBackendName.c_str(), strConnectionString.c_str());
 
   /* backend version number */
   try { strBackendVersion = m_pStruct->GetBackendVersion(); }

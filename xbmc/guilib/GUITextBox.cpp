@@ -22,6 +22,7 @@
 #include "GUIInfoManager.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -354,10 +355,10 @@ CStdString CGUITextBox::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_NUM_PAGES:
-    label.Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
+    label = StringUtils::Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
     break;
   case CONTAINER_CURRENT_PAGE:
-    label.Format("%u", GetCurrentPage());
+    label = StringUtils::Format("%u", GetCurrentPage());
     break;
   default:
     break;

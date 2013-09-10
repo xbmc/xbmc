@@ -295,7 +295,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
   switch (info)
   {
   case SLIDE_RESOLUTION:
-    value.Format("%d x %d", m_exifInfo.Width, m_exifInfo.Height);
+    value = StringUtils::Format("%d x %d", m_exifInfo.Width, m_exifInfo.Height);
     break;
   case SLIDE_COLOUR:
     value = m_exifInfo.IsColor ? "Colour" : "Black and White";
@@ -369,7 +369,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
 //    value = m_exifInfo.Software;
   case SLIDE_EXIF_APERTURE:
     if (m_exifInfo.ApertureFNumber)
-      value.Format("%3.1f", m_exifInfo.ApertureFNumber);
+      value = StringUtils::Format("%3.1f", m_exifInfo.ApertureFNumber);
     break;
   case SLIDE_EXIF_ORIENTATION:
     switch (m_exifInfo.Orientation)
@@ -387,7 +387,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
   case SLIDE_EXIF_FOCAL_LENGTH:
     if (m_exifInfo.FocalLength)
     {
-      value.Format("%4.2fmm", m_exifInfo.FocalLength);
+      value = StringUtils::Format("%4.2fmm", m_exifInfo.FocalLength);
       if (m_exifInfo.FocalLength35mmEquiv != 0)
         value.AppendFormat("  (35mm Equivalent = %umm)", m_exifInfo.FocalLength35mmEquiv);
     }
@@ -396,7 +396,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
     if (m_exifInfo.Distance < 0)
       value = "Infinite";
     else if (m_exifInfo.Distance > 0)
-      value.Format("%4.2fm", m_exifInfo.Distance);
+      value = StringUtils::Format("%4.2fm", m_exifInfo.Distance);
     break;
   case SLIDE_EXIF_EXPOSURE:
     switch (m_exifInfo.ExposureProgram)
@@ -415,16 +415,16 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
     if (m_exifInfo.ExposureTime)
     {
       if (m_exifInfo.ExposureTime < 0.010f)
-        value.Format("%6.4fs", m_exifInfo.ExposureTime);
+        value = StringUtils::Format("%6.4fs", m_exifInfo.ExposureTime);
       else
-        value.Format("%5.3fs", m_exifInfo.ExposureTime);
+        value = StringUtils::Format("%5.3fs", m_exifInfo.ExposureTime);
       if (m_exifInfo.ExposureTime <= 0.5)
         value.AppendFormat(" (1/%d)", (int)(0.5 + 1/m_exifInfo.ExposureTime));
     }
     break;
   case SLIDE_EXIF_EXPOSURE_BIAS:
     if (m_exifInfo.ExposureBias != 0)
-      value.Format("%4.2f EV", m_exifInfo.ExposureBias);
+      value = StringUtils::Format("%4.2f EV", m_exifInfo.ExposureBias);
     break;
   case SLIDE_EXIF_EXPOSURE_MODE:
     switch (m_exifInfo.ExposureMode)
@@ -491,15 +491,15 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
     break;
   case SLIDE_EXIF_ISO_EQUIV:
     if (m_exifInfo.ISOequivalent)
-      value.Format("%2d", m_exifInfo.ISOequivalent);
+      value = StringUtils::Format("%2d", m_exifInfo.ISOequivalent);
     break;
   case SLIDE_EXIF_DIGITAL_ZOOM:
     if (m_exifInfo.DigitalZoomRatio)
-      value.Format("%1.3fx", m_exifInfo.DigitalZoomRatio);
+      value = StringUtils::Format("%1.3fx", m_exifInfo.DigitalZoomRatio);
     break;
   case SLIDE_EXIF_CCD_WIDTH:
     if (m_exifInfo.CCDWidth)
-      value.Format("%4.2fmm", m_exifInfo.CCDWidth);
+      value = StringUtils::Format("%4.2fmm", m_exifInfo.CCDWidth);
     break;
   case SLIDE_EXIF_GPS_LATITUDE:
     value = m_exifInfo.GpsLat;

@@ -400,8 +400,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
   // construct subtitle path
   URIUtils::RemoveExtension(strFileName);
-  CStdString strSubName;
-  strSubName.Format("%s.%s%s", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
+  CStdString strSubName = StringUtils::Format("%s.%s%s", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
   CStdString strSubPath = URIUtils::AddFileToFolder(strDestPath, strSubName);
 
   // and copy the file across

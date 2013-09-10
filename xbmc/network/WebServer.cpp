@@ -543,8 +543,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     {
       getData = false;
 
-      CStdString contentLength;
-      contentLength.Format("%" PRId64, fileLength);
+      CStdString contentLength = StringUtils::Format("%" PRId64, fileLength);
 
       response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
       if (response == NULL)

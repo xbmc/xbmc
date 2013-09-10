@@ -28,6 +28,7 @@
 #ifdef HAS_SYSINFO
 #include "utils/SystemInfo.h"
 #endif
+#include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
 
 #define CONTROL_BT_STORAGE  94
@@ -197,7 +198,6 @@ void CGUIWindowSystemInfo::ResetLabels()
 
 void CGUIWindowSystemInfo::SetControlLabel(int id, const char *format, int label, int info)
 {
-  CStdString tmpStr;
-  tmpStr.Format(format, g_localizeStrings.Get(label).c_str(), g_infoManager.GetLabel(info).c_str());
+  CStdString tmpStr = StringUtils::Format(format, g_localizeStrings.Get(label).c_str(), g_infoManager.GetLabel(info).c_str());
   SET_CONTROL_LABEL(id, tmpStr);
 }

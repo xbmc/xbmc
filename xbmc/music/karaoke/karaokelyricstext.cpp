@@ -34,6 +34,7 @@
 #include "addons/Skin.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 typedef struct
 {
@@ -74,7 +75,7 @@ CKaraokeLyricsText::CKaraokeLyricsText()
 
   m_colorLyrics = gLyricColors[coloridx].text;
   m_colorLyricsOutline = gLyricColors[coloridx].outline;
-  m_colorSinging.Format( "%08X", gLyricColors[coloridx].active );
+  m_colorSinging = StringUtils::Format("%08X", gLyricColors[coloridx].active);
 
   m_delayAfter = 50; // 5 seconds
   m_showLyricsBeforeStart = 50; // 7.5 seconds
@@ -705,8 +706,10 @@ void CKaraokeLyricsText::saveLyrics()
 
   for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
   {
-    CStdString timing;
-    timing.Format( "%02d:%02d.%d", m_lyrics[i].timing / 600, (m_lyrics[i].timing % 600) / 10, (m_lyrics[i].timing % 10) );
+    CStdString timing = StringUtils::Format("%02d:%02d.%d",
+                                            m_lyrics[i].timing / 600,
+                                            (m_lyrics[i].timing % 600) / 10,
+                                            (m_lyrics[i].timing % 10));
 
     if ( (m_lyrics[i].flags & LYRICS_NEW_PARAGRAPH) != 0 )
       out += "\n\n";

@@ -25,6 +25,7 @@
 #include "PlatformDefs.h"
 #endif
 #include "utils/StdString.h"
+#include "utils/StringUtils.h"
 
 class CSetting;
 
@@ -182,7 +183,7 @@ namespace PERIPHERALS
       if (iVal > 65536)
         iVal = 65536;
 
-      strHexString.Format("%04X", iVal);
+      strHexString = StringUtils::Format("%04X", iVal);
     };
   };
 

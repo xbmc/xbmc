@@ -242,7 +242,7 @@ void CAirPlayServer::AnnounceToClients(int state)
     if (reverseHeader.size() > 0 && m_reverseSockets.find(it->m_sessionId) != m_reverseSockets.end())
     {
       //search the reverse socket to this sessionid
-      response.Format("POST /event HTTP/1.1\r\n");
+      response = StringUtils::Format("POST /event HTTP/1.1\r\n");
       reverseSocket = m_reverseSockets[it->m_sessionId]; //that is our reverse socket
       response += reverseHeader;
     }
@@ -467,7 +467,7 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
     const time_t ltime = time(NULL);
     char *date = asctime(gmtime(&ltime)); //Fri, 17 Dec 2010 11:18:01 GMT;
     date[strlen(date) - 1] = '\0'; // remove \n
-    response.Format("HTTP/1.1 %d %s\nDate: %s\r\n", status, statusMsg.c_str(), date);
+    response = StringUtils::Format("HTTP/1.1 %d %s\nDate: %s\r\n", status, statusMsg.c_str(), date);
     if (responseHeader.size() > 0)
     {
       response += responseHeader;
@@ -475,7 +475,7 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
 
     if (responseBody.size() > 0)
     {
-      response.Format("%sContent-Length: %d\r\n", response.c_str(), responseBody.size());
+      response = StringUtils::Format("%sContent-Length: %d\r\n", response.c_str(), responseBody.size());
     }
     response += "\r\n";
 
@@ -534,24 +534,23 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( CStdString& reverseHeader,
       case EVENT_LOADING:
       case EVENT_PAUSED:
       case EVENT_STOPPED:      
-        reverseBody.Format(EVENT_INFO, m_sessionCounter, eventStrings[state]);
+        reverseBody = StringUtils::Format(EVENT_INFO, m_sessionCounter, eventStrings[state]);
         CLog::Log(LOGDEBUG, "AIRPLAY: sending event: %s", eventStrings[state]);
         break;
     }
     reverseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
-    reverseHeader.Format("%sContent-Length: %d\r\n",reverseHeader.c_str(),reverseBody.size());
-    reverseHeader.Format("%sx-apple-session-id: %s\r\n",reverseHeader.c_str(),m_sessionId.c_str());
+    reverseHeader = StringUtils::Format("%sContent-Length: %d\r\n",reverseHeader.c_str(), reverseBody.size());
+    reverseHeader = StringUtils::Format("%sx-apple-session-id: %s\r\n",reverseHeader.c_str(), m_sessionId.c_str());
     m_lastEvent = state;
   }
 }
 
 void CAirPlayServer::CTCPClient::ComposeAuthRequestAnswer(CStdString& responseHeader, CStdString& responseBody)
 {
-  CStdString randomStr;
   int16_t random=rand();
-  randomStr.Format("%i", random);
+  CStdString randomStr = StringUtils::Format("%i", random);
   m_authNonce=XBMC::XBMC_MD5::GetMD5(randomStr);
-  responseHeader.Format(AUTH_REQUIRED,m_authNonce);
+  responseHeader = StringUtils::Format(AUTH_REQUIRED, m_authNonce.c_str());
   responseBody.clear();
 }
 
@@ -887,7 +886,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       if (g_application.m_pPlayer->GetTotalTime())
       {
         float position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
-        responseBody.Format("duration: %.6f\r\nposition: %.6f\r\n", (float)g_application.m_pPlayer->GetTotalTime() / 1000, position);
+        responseBody = StringUtils::Format("duration: %.6f\r\nposition: %.6f\r\n", (float)g_application.m_pPlayer->GetTotalTime() / 1000, position);
       }
       else 
       {
@@ -991,7 +990,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         cachePosition = position + (duration * g_application.m_pPlayer->GetCachePercentage() / 100.0f);
       }
 
-      responseBody.Format(PLAYBACK_INFO, duration, cachePosition, position, (playing ? 1 : 0), duration);
+      responseBody = StringUtils::Format(PLAYBACK_INFO, duration, cachePosition, position, (playing ? 1 : 0), duration);
       responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
 
       if (g_application.m_pPlayer->IsCaching())
@@ -1001,7 +1000,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     }
     else
     {
-      responseBody.Format(PLAYBACK_INFO_NOT_READY, duration, cachePosition, position, (playing ? 1 : 0), duration);
+      responseBody = StringUtils::Format(PLAYBACK_INFO_NOT_READY, duration, cachePosition, position, (playing ? 1 : 0), duration);
       responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";     
     }
   }
@@ -1009,7 +1008,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   else if (uri == "/server-info")
   {
     CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
-    responseBody.Format(SERVER_INFO, g_application.getNetwork().GetFirstConnectedInterface()->GetMacAddress());
+    responseBody = StringUtils::Format(SERVER_INFO, g_application.getNetwork().GetFirstConnectedInterface()->GetMacAddress().c_str());
     responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
   }
 

@@ -44,6 +44,7 @@
 #include "TextureCache.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "URL.h"
+#include "utils/StringUtils.h"
 
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
@@ -565,7 +566,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       // password entry and re-entry succeeded, write out the lock data
       share->m_iHasLock = 2;
       CMediaSourceSettings::Get().UpdateSource(type, share->strName, "lockcode", strNewPassword);
-      strNewPassword.Format("%i",share->m_iLockMode);
+      strNewPassword = StringUtils::Format("%i", share->m_iLockMode);
       CMediaSourceSettings::Get().UpdateSource(type, share->strName, "lockmode", strNewPassword);
       CMediaSourceSettings::Get().UpdateSource(type, share->strName, "badpwdcount", "0");
       CMediaSourceSettings::Get().Save();
@@ -624,7 +625,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       CStdString strNewPW;
       CStdString strNewLockMode;
       if (CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW))
-        strNewLockMode.Format("%i",share->m_iLockMode);
+        strNewLockMode = StringUtils::Format("%i",share->m_iLockMode);
       else
         return false;
       // password ReSet and re-entry succeeded, write out the lock data

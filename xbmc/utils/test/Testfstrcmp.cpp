@@ -20,6 +20,7 @@
 
 #include "utils/fstrcmp.h"
 #include "utils/StdString.h"
+#include "utils/StringUtils.h"
 
 #include "gtest/gtest.h"
 
@@ -31,16 +32,16 @@ TEST(Testfstrcmp, General)
 
   /* NOTE: Third parameter is not used at all in fstrcmp. */
   refresult = "1.000000";
-  varresult.Format("%.6f", fstrcmp(refstr.c_str(), varstr.c_str(), 0.0));
+  varresult = StringUtils::Format("%.6f", fstrcmp(refstr.c_str(), varstr.c_str(), 0.0));
   EXPECT_STREQ(refresult.c_str(), varresult.c_str());
 
   varstr = "Testfstrcmp_test_string";
   refresult = "0.913043";
-  varresult.Format("%.6f", fstrcmp(refstr.c_str(), varstr.c_str(), 0.0));
+  varresult = StringUtils::Format("%.6f", fstrcmp(refstr.c_str(), varstr.c_str(), 0.0));
   EXPECT_STREQ(refresult.c_str(), varresult.c_str());
 
   varstr = "";
   refresult = "0.000000";
-  varresult.Format("%.6f", fstrcmp(refstr.c_str(), varstr.c_str(), 0.0));
+  varresult = StringUtils::Format("%.6f", fstrcmp(refstr.c_str(), varstr.c_str(), 0.0));
   EXPECT_STREQ(refresult.c_str(), varresult.c_str());
 }

@@ -22,6 +22,7 @@
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "Util.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
@@ -318,8 +319,7 @@ void CURL::Parse(const CStdString& strURL1)
   {
     if (m_strHostName != "" && m_strFileName != "")
     {
-      CStdString strFileName = m_strFileName;
-      m_strFileName.Format("%s/%s", m_strHostName.c_str(), strFileName.c_str());
+      m_strFileName = StringUtils::Format("%s/%s", m_strHostName.c_str(), m_strFileName.c_str());
       m_strHostName = "";
     }
     else
@@ -664,8 +664,7 @@ CStdString CURL::GetWithoutFilename() const
       strURL += m_strHostName;
     if (HasPort())
     {
-      CStdString strPort;
-      strPort.Format("%i", m_iPort);
+      CStdString strPort = StringUtils::Format("%i", m_iPort);
       strURL += ":";
       strURL += strPort;
     }
@@ -763,8 +762,7 @@ void CURL::Encode(CStdString& strURLData)
     }
     else
     {
-      CStdString strTmp;
-      strTmp.Format("%%%02.2x", kar);
+      CStdString strTmp = StringUtils::Format("%%%02.2x", kar);
       strResult += strTmp;
     }
   }

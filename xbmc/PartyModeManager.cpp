@@ -33,6 +33,7 @@
 #include "playlists/PlayList.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "Application.h"
 #include "interfaces/AnnouncementManager.h"
 
@@ -605,8 +606,7 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
 
     for (vector< pair<int,int> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
     {
-      CStdString song;
-      song.Format("%i,", it->second);
+      CStdString song = StringUtils::Format("%i,", it->second);
       if (it->first == 1)
         sqlWhereMusic += song;
       if (it->first == 2)
@@ -660,8 +660,7 @@ pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
 
     for (unsigned int i = 0; i < m_history.size(); i++)
     {
-      CStdString number;
-      number.Format("%i,", m_history[i].second);
+      CStdString number = StringUtils::Format("%i,", m_history[i].second);
       if (m_history[i].first == 1)
         historyWhereMusic += number;
       if (m_history[i].first == 2)

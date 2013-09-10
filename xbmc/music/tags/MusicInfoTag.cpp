@@ -210,9 +210,7 @@ const std::string &CMusicInfoTag::GetType() const
 
 CStdString CMusicInfoTag::GetYearString() const
 {
-  CStdString strReturn;
-  strReturn.Format("%i", m_dwReleaseDate.wYear);
-  return m_dwReleaseDate.wYear ? strReturn : "";
+  return m_dwReleaseDate.wYear ? StringUtils::Format("%i", m_dwReleaseDate.wYear) : StringUtils::Empty;
 }
 
 const CStdString &CMusicInfoTag::GetComment() const

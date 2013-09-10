@@ -26,6 +26,7 @@
 #include "guilib/Key.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "filesystem/Directory.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/PVRDirectory.h"
@@ -151,7 +152,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
           break;
       }
       if (i < pShares->size()) // found a match -  try next
-        strName.Format("%s (%i)",dialog->m_name,j++);
+        strName = StringUtils::Format("%s (%i)", dialog->m_name.c_str(), j++);
       else
         bConfirmed = true;
     }
@@ -203,7 +204,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
           break;
       }
       if (i < pShares->size() && (*pShares)[i].strName != strOldName) // found a match -  try next
-        strName.Format("%s (%i)",dialog->m_name,j++);
+        strName = StringUtils::Format("%s (%i)", dialog->m_name.c_str(), j++);
       else
         bConfirmed = true;
     }
@@ -469,7 +470,7 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
   else // if (type == "files");
     typeStringID = 744;  // "Files"
   CStdString format;
-  format.Format(g_localizeStrings.Get(editNotAdd ? 1028 : 1020).c_str(), g_localizeStrings.Get(typeStringID).c_str());
+  format = StringUtils::Format(g_localizeStrings.Get(editNotAdd ? 1028 : 1020).c_str(), g_localizeStrings.Get(typeStringID).c_str());
   SET_CONTROL_LABEL(CONTROL_HEADING, format);
 }
 

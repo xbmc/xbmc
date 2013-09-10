@@ -612,9 +612,8 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
   if (repo)
   {
     CFileItemList dummy;
-    CStdString s;
-    s.Format("plugin://%s/?action=install"
-             "&package=%s&version=%s", repo->ID().c_str(),
+    CStdString s = StringUtils::Format("plugin://%s/?action=install"
+                                       "&package=%s&version=%s", repo->ID().c_str(),
                                        m_addon->ID().c_str(),
                                        m_addon->Version().c_str());
     if (!CDirectory::GetDirectory(s, dummy))
@@ -645,8 +644,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
     // resolve dependencies
     CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
     ADDONDEPS deps = addon->GetDeps();
-    CStdString referer;
-    referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
+    CStdString referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
     for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
     {
       if (it->first.Equals("xbmc.metadata"))
@@ -803,9 +801,8 @@ bool CAddonUnInstallJob::DoWork()
   if (therepo && !therepo->Props().libname.IsEmpty())
   {
     CFileItemList dummy;
-    CStdString s;
-    s.Format("plugin://%s/?action=uninstall"
-             "&package=%s", therepo->ID().c_str(), m_addon->ID().c_str());
+    CStdString s = StringUtils::Format("plugin://%s/?action=uninstall"
+                                       "&package=%s", therepo->ID().c_str(), m_addon->ID().c_str());
     if (!CDirectory::GetDirectory(s, dummy))
       return false;
   }

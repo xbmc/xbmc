@@ -126,8 +126,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
     CheckFont(strPath,"special://xbmc/media/Fonts",file);
 
   // check if we already have this font file loaded (font object could differ only by color or style)
-  CStdString TTFfontName;
-  TTFfontName.Format("%s_%f_%f%s", strFilename, newSize, aspect, border ? "_border" : "");
+  CStdString TTFfontName = StringUtils::Format("%s_%f_%f%s", strFilename.c_str(), newSize, aspect, border ? "_border" : "");
 
   CGUIFontTTFBase* pFontFile = GetFontFile(TTFfontName);
   if (!pFontFile)
@@ -220,8 +219,7 @@ void GUIFontManager::ReloadTTFFonts(void)
 
     RescaleFontSizeAndAspect(&newSize, &aspect, fontInfo.sourceRes, fontInfo.preserveAspect);
 
-    CStdString TTFfontName;
-    TTFfontName.Format("%s_%f_%f%s", strFilename, newSize, aspect, fontInfo.border ? "_border" : "");
+    CStdString TTFfontName = StringUtils::Format("%s_%f_%f%s", strFilename.c_str(), newSize, aspect, fontInfo.border ? "_border" : "");
     CGUIFontTTFBase* pFontFile = GetFontFile(TTFfontName);
     if (!pFontFile)
     {

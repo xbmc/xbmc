@@ -60,6 +60,7 @@
 #ifdef TARGET_DARWIN_OSX
 #include "VDA.h"
 #endif
+#include "utils/StringUtils.h"
 
 using namespace boost;
 
@@ -730,16 +731,14 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
   AVFilter* srcFilter = m_dllAvFilter.avfilter_get_by_name("buffer");
   AVFilter* outFilter = m_dllAvFilter.avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
 
-  CStdString args;
-
-  args.Format("%d:%d:%d:%d:%d:%d:%d",
-    m_pCodecContext->width,
-    m_pCodecContext->height,
-    m_pCodecContext->pix_fmt,
-    m_pCodecContext->time_base.num,
-    m_pCodecContext->time_base.den,
-    m_pCodecContext->sample_aspect_ratio.num,
-    m_pCodecContext->sample_aspect_ratio.den);
+  CStdString args = StringUtils::Format("%d:%d:%d:%d:%d:%d:%d",
+                                        m_pCodecContext->width,
+                                        m_pCodecContext->height,
+                                        m_pCodecContext->pix_fmt,
+                                        m_pCodecContext->time_base.num,
+                                        m_pCodecContext->time_base.den,
+                                        m_pCodecContext->sample_aspect_ratio.num,
+                                        m_pCodecContext->sample_aspect_ratio.den);
 
   if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterIn, srcFilter, "src", args, NULL, m_pFilterGraph)) < 0)
   {

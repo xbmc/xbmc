@@ -25,6 +25,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "addons/Skin.h"
 #ifdef _DEBUG
 #include "utils/TimeUtils.h"
@@ -173,8 +174,7 @@ void CTextureMap::Dump() const
   if (!m_referenceCount)
     return;   // nothing to see here
 
-  CStdString strLog;
-  strLog.Format("  texture:%s has %i frames %i refcount\n", m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
+  CStdString strLog = StringUtils::Format("  texture:%s has %i frames %i refcount\n", m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
   OutputDebugString(strLog.c_str());
 }
 
@@ -511,8 +511,7 @@ void CGUITextureManager::Cleanup()
 
 void CGUITextureManager::Dump() const
 {
-  CStdString strLog;
-  strLog.Format("total texturemaps size:%i\n", m_vecTextures.size());
+  CStdString strLog = StringUtils::Format("total texturemaps size:%i\n", m_vecTextures.size());
   OutputDebugString(strLog.c_str());
 
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)

@@ -52,7 +52,7 @@
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
-
+#include "utils/StringUtils.h"
 #include "CallbackHandler.h"
 #include "AddonUtils.h"
 
@@ -372,9 +372,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       Crc32 crc;
       crc.ComputeFromLowerCase(path);
-      CStdString strPath;
-      strPath.Format("%08x.tbn", (unsigned __int32)crc);
-      return strPath;
+      return StringUtils::Format("%08x.tbn", (unsigned __int32)crc);;
     }
 
     String makeLegalFilename(const String& filename, bool fatX)
@@ -442,7 +440,9 @@ namespace XBMCAddon
           result.Replace("xx", "%p");
         }
       else if (strcmpi(id, "meridiem") == 0)
-        result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
+        result = StringUtils::Format("%s/%s",
+                                     g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM).c_str(),
+                                     g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM).c_str());
 
       return result;
     }

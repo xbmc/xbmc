@@ -25,6 +25,7 @@
 #include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -429,8 +430,7 @@ bool CSlingboxFile::SelectChannel(unsigned int uiChannel)
   else if (uiButtonsWithCode == 10)
   {
     // Prepare variables
-    CStdString strDigits;
-    strDigits.Format("%u", uiChannel);
+    CStdString strDigits = StringUtils::Format("%u", uiChannel);
     unsigned int uiNumberOfDigits = strDigits.GetLength();
 
     // Change the channel using IR commands

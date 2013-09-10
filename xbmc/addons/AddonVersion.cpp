@@ -25,6 +25,7 @@
 
 #include "AddonVersion.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 
 namespace ADDON
 {
@@ -125,9 +126,7 @@ namespace ADDON
 
   CStdString AddonVersion::Print() const
   {
-    CStdString out;
-    out.Format("%s %s", g_localizeStrings.Get(24051), m_originalVersion); // "Version <str>"
-    return CStdString(out);
+    return StringUtils::Format("%s %s", g_localizeStrings.Get(24051).c_str(), m_originalVersion.c_str());
   }
 
   bool AddonVersion::SplitFileName(CStdString& ID, CStdString& version,

@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "guilib/gui3d.h"
 #include "linux/DllBCM.h"
+#include "utils/StringUtils.h"
 
 #ifndef __VIDEOCORE4__
 #define __VIDEOCORE4__
@@ -412,11 +413,11 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
       m_desktopRes.fPixelRatio  = get_display_aspect_ratio((SDTV_ASPECT_T)tv_state.display.sdtv.display_options.aspect) / ((float)m_desktopRes.iScreenWidth / (float)m_desktopRes.iScreenHeight);
     }
 
-    m_desktopRes.strMode.Format("%dx%d", m_desktopRes.iScreenWidth, m_desktopRes.iScreenHeight);
+    m_desktopRes.strMode = StringUtils::Format("%dx%d", m_desktopRes.iScreenWidth, m_desktopRes.iScreenHeight);
 
     if((int)m_desktopRes.fRefreshRate > 1)
     {
-      m_desktopRes.strMode.Format("%dx%d @ %.2f%s - Full Screen", m_desktopRes.iScreenWidth, m_desktopRes.iScreenHeight, m_desktopRes.fRefreshRate,
+      m_desktopRes.strMode = StringUtils::Format("%dx%d @ %.2f%s - Full Screen", m_desktopRes.iScreenWidth, m_desktopRes.iScreenHeight, m_desktopRes.fRefreshRate,
         m_desktopRes.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
     }
     m_initDesktopRes = false;
@@ -541,7 +542,7 @@ void CEGLNativeTypeRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::v
       res.iWidth = gui_width;
       res.iHeight = gui_height;
 
-      res.strMode.Format("%dx%d @ %.2f%s - Full Screen", res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
+      res.strMode = StringUtils::Format("%dx%d @ %.2f%s - Full Screen", res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
         res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
       CLog::Log(LOGDEBUG, "EGL mode %d: %s (%.2f) %s%s:%x\n", i, res.strMode.c_str(), res.fPixelRatio,
@@ -558,8 +559,7 @@ void CEGLNativeTypeRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::v
         res2.dwFlags |= D3DPRESENTFLAG_MODE3DSBS;
         res2.fPixelRatio    = get_display_aspect_ratio((HDMI_ASPECT_T)tv->aspect_ratio) / ((float)res2.iScreenWidth / (float)res2.iScreenHeight);
         res2.fPixelRatio   *= 2.0f;
-        res2.strMode.Format("%dx%d", res2.iScreenWidth, res2.iScreenHeight);
-        res2.strMode.Format("%dx%d @ %.2f%s - Full Screen", res2.iScreenWidth, res2.iScreenHeight, res2.fRefreshRate,
+        res2.strMode = StringUtils::Format("%dx%d @ %.2f%s - Full Screen", res2.iScreenWidth, res2.iScreenHeight, res2.fRefreshRate,
             res2.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
         CLog::Log(LOGDEBUG, "EGL mode %d: %s (%.2f) SBS\n", i, res2.strMode.c_str(), res2.fPixelRatio);
 
@@ -573,8 +573,7 @@ void CEGLNativeTypeRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::v
         res2.dwFlags |= D3DPRESENTFLAG_MODE3DTB;
         res2.fPixelRatio    = get_display_aspect_ratio((HDMI_ASPECT_T)tv->aspect_ratio) / ((float)res2.iScreenWidth / (float)res2.iScreenHeight);
         res2.fPixelRatio   *= 0.5f;
-        res2.strMode.Format("%dx%d", res2.iScreenWidth, res2.iScreenHeight);
-        res2.strMode.Format("%dx%d @ %.2f%s - Full Screen", res2.iScreenWidth, res2.iScreenHeight, res2.fRefreshRate,
+        res2.strMode = StringUtils::Format("%dx%d @ %.2f%s - Full Screen", res2.iScreenWidth, res2.iScreenHeight, res2.fRefreshRate,
             res2.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
         CLog::Log(LOGDEBUG, "EGL mode %d: %s (%.2f) TAB\n", i, res2.strMode.c_str(), res2.fPixelRatio);
 

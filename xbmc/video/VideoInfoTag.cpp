@@ -544,9 +544,9 @@ const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   {
     CStdString character;
     if (it->strRole.IsEmpty() || !bIncludeRole)
-      character.Format("%s\n", it->strName.c_str());
+      character = StringUtils::Format("%s\n", it->strName.c_str());
     else
-      character.Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
+      character = StringUtils::Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
     strLabel += character;
   }
   return strLabel.TrimRight("\n");

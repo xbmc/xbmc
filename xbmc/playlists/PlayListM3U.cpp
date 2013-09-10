@@ -163,19 +163,18 @@ void CPlayListM3U::Save(const CStdString& strFileName) const
     CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());
     return;
   }
-  CStdString strLine;
-  strLine.Format("%s\n",M3U_START_MARKER);
+  CStdString strLine = StringUtils::Format("%s\n",M3U_START_MARKER);
   file.Write(strLine.c_str(),strLine.size());
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
     CStdString strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
-    strLine.Format( "%s:%i,%s\n", M3U_INFO_MARKER, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
+    strLine = StringUtils::Format( "%s:%i,%s\n", M3U_INFO_MARKER, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
     file.Write(strLine.c_str(),strLine.size());
     CStdString strFileName = ResolveURL(item);
     g_charsetConverter.utf8ToStringCharset(strFileName);
-    strLine.Format("%s\n",strFileName.c_str());
+    strLine = StringUtils::Format("%s\n",strFileName.c_str());
     file.Write(strLine.c_str(),strLine.size());
   }
   file.Close();

@@ -44,6 +44,7 @@
 #include "utils/log.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/JobManager.h"
+#include "utils/StringUtils.h"
 #include "AutorunMediaJob.h"
 
 #include "FileItem.h"
@@ -325,7 +326,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
   if(bReturnAsDevice == false)
     strDevice.Replace("\\\\.\\","");
   else if(!strDevice.empty() && strDevice[1]==':')
-    strDevice.Format("\\\\.\\%c:", strDevice[0]);
+    strDevice = StringUtils::Format("\\\\.\\%c:", strDevice[0]);
 
   URIUtils::RemoveSlashAtEnd(strDevice);
 #endif
@@ -530,7 +531,7 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
     pathVideoTS = g_mediaManager.TranslateDevicePath(""); 
 
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Trying to retrieve ID for path %s", pathVideoTS.c_str());
-  CStdString strID;
+
 
   CDVDInputStreamNavigator dvdNavigator(NULL);
   dvdNavigator.Open(pathVideoTS, "");
@@ -539,7 +540,7 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
   CStdString serialString;
   dvdNavigator.GetDVDSerialString(serialString);
 
-  strID.Format("removable://%s_%s", labelString.c_str(), serialString.c_str());
+  CStdString strID = StringUtils::Format("removable://%s_%s", labelString.c_str(), serialString.c_str());
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for DVD disk", strID.c_str());
 
   return strID;

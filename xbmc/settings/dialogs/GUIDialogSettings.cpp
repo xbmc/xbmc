@@ -27,6 +27,7 @@
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "guilib/GUIKeyboardFactory.h"
 
 #define CONTROL_GROUP_LIST          5
@@ -215,8 +216,7 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
   {
     CGUIEditControl *pControl = (CGUIEditControl *)GetControl(controlID);
     if (pControl && setting.data) {
-      CStdString strIndex;
-      strIndex.Format("%i", *(int *)setting.data);
+      CStdString strIndex = StringUtils::Format("%i", *(int *)setting.data);
       pControl->SetLabel2(strIndex);
     }
   }
@@ -389,8 +389,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     pControl->SetWidth(width);
     ((CGUIEditControl *)pControl)->SetInputType(CGUIEditControl::INPUT_TYPE_NUMBER, 0);
     if (setting.data) {
-        CStdString strIndex;
-        strIndex.Format("%i", *(int *)setting.data);
+        CStdString strIndex = StringUtils::Format("%i", *(int *)setting.data);
         ((CGUIEditControl *)pControl)->SetLabel2(strIndex);
     }
   }
@@ -585,7 +584,7 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsig
     if (i == min && minLabel)
       format = minLabel;
     else
-      format.Format("%i", i);
+      format = StringUtils::Format("%i", i);
     setting.entry.push_back(make_pair(i, format));
   }
   m_settings.push_back(setting);

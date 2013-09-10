@@ -246,7 +246,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
     if ( m_iDiscNumber > 0 )  
       song.iTrack |= (m_iDiscNumber << 16); // see CMusicInfoTag::GetDiscNumber()
     if (m_Track[i].strTitle.length() == 0) // No track information for this track!
-      song.strTitle.Format("Track %2d", i + 1);
+      song.strTitle = StringUtils::Format("Track %2d", i + 1);
     else
       song.strTitle = m_Track[i].strTitle;
     song.strFileName =  m_Track[i].strFile;

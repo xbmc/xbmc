@@ -103,7 +103,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
       if(pos == CStdString::npos)
         continue;
 
-      line2.Format("%d,%s,%s", m_order++, layer.get(), line.Mid(pos+1));
+      line2 = StringUtils::Format("%d,%s,%s", m_order++, layer.get(), line.Mid(pos+1).c_str());
 
       m_libass->DecodeDemuxPkt((char*)line2.c_str(), line2.length(), beg, end - beg);
 

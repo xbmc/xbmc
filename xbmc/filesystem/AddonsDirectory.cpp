@@ -32,6 +32,7 @@
 #include "File.h"
 #include "SpecialProtocol.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 
 using namespace ADDON;
@@ -247,7 +248,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CS
 
   CStdString strLabel(addon->Name());
   if (url.GetHostName().Equals("search"))
-    strLabel.Format("%s - %s", TranslateType(addon->Type(), true), addon->Name());
+    strLabel = StringUtils::Format("%s - %s", TranslateType(addon->Type(), true).c_str(), addon->Name().c_str());
 
   item->SetLabel(strLabel);
 
@@ -304,8 +305,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
     if (plugin->ProvidesSeveral())
     {
       CURL url = item->GetAsUrl();
-      CStdString opt;
-      opt.Format("?content_type=%s",content.c_str());
+      CStdString opt = StringUtils::Format("?content_type=%s",content.c_str());
       url.SetOptions(opt);
       item->SetPath(url.Get());
     }

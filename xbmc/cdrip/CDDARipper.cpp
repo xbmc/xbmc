@@ -244,8 +244,8 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   if (strAlbumDir.Find("%B") != -1)
   {
     CStdString strAlbum = infoTag.GetAlbum();
-    if (strAlbum.IsEmpty()) 
-      strAlbum.Format("Unknown Album %s", CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime().c_str());
+    if (strAlbum.IsEmpty())
+      strAlbum = StringUtils::Format("Unknown Album %s", CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime().c_str());
     else
       strAlbum.Replace('/', '_');
     strAlbumDir.Replace("%B", strAlbum);
@@ -300,7 +300,7 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item)
   // grab the label to use it as our ripped filename
   CStdString track = destItem.GetLabel();
   if (track.IsEmpty())
-    track.Format("%s%02i", "Track-", trackNumber);
+    track = StringUtils::Format("%s%02i", "Track-", trackNumber);
   track += GetExtension(CSettings::Get().GetInt("audiocds.encoder"));
 
   return track;

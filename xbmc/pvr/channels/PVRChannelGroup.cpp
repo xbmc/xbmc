@@ -265,7 +265,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     CStdString strIconPath = strBasePath + strSanitizedChannelName;
     CStdString strIconPathLower = strBasePath + strSanitizedChannelName.ToLower();
     CStdString strIconPathUid;
-    strIconPathUid.Format("%08d", groupMember.channel->UniqueID());
+    strIconPathUid = StringUtils::Format("%08d", groupMember.channel->UniqueID());
     strIconPathUid = URIUtils::AddFileToFolder(strBasePath, strIconPathUid);
 
     SetChannelIconPath(groupMember.channel, strIconPath      + ".tbn") ||
