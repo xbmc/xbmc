@@ -1002,11 +1002,11 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       table = "songview";
 
       if (m_field == FieldGenre)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idSong FROM song_genre, genre WHERE song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM song_genre, genre WHERE song_genre.idSong = " + GetField(FieldId, strType) + " AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
       else if (m_field == FieldArtist)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idSong FROM song_artist, artist WHERE song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM song_artist, artist WHERE song_artist.idSong = " + GetField(FieldId, strType) + " AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
       else if (m_field == FieldAlbumArtist)
-        query = table + ".idAlbum" + negate + " IN (SELECT DISTINCT idAlbum FROM album_artist, artist WHERE album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM album_artist, artist WHERE album_artist.idAlbum = " + table + "idAlbum AND album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
       else if (m_field == FieldLastPlayed && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
         query = GetField(m_field, strType) + " is NULL or " + GetField(m_field, strType) + parameter;
     }
@@ -1015,67 +1015,67 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       table = "albumview";
 
       if (m_field == FieldGenre)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT song.idAlbum FROM song, song_genre, genre WHERE song.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM song, song_genre, genre WHERE song.idAlbum = " + GetField(FieldId, strType) + " AND song.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
       else if (m_field == FieldArtist)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT song.idAlbum FROM song, song_artist, artist WHERE song.idSong = song_artist.idSong AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM song, song_artist, artist WHERE song.idAlbum = " + GetField(FieldId, strType) + " AND song.idSong = song_artist.idSong AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
       else if (m_field == FieldAlbumArtist)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT album_artist.idAlbum FROM album_artist, artist WHERE album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM album_artist, artist WHERE album_artist.idAlbum = " + GetField(FieldId, strType) + " AND album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
     }
     else if (strType == "artists")
     {
       table = "artistview";
 
       if (m_field == FieldGenre)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT song_artist.idArtist FROM song_artist, song_genre, genre WHERE song_artist.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
+        query = negate + " EXISTS (SELECT DISTINCT song_artist.idArtist FROM song_artist, song_genre, genre WHERE song_artist.idArtist = " + GetField(FieldId, strType) + " AND song_artist.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
     }
     else if (strType == "movies")
     {
       table = "movieview";
 
       if (m_field == FieldGenre)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMovie FROM genrelinkmovie JOIN genre ON genre.idGenre=genrelinkmovie.idGenre WHERE genre.strGenre" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM genrelinkmovie JOIN genre ON genre.idGenre=genrelinkmovie.idGenre WHERE genrelinkmovie.idMovie = " + GetField(FieldId, strType) + " AND genre.strGenre" + parameter + ")";
       else if (m_field == FieldDirector)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMovie FROM directorlinkmovie JOIN actors ON actors.idActor=directorlinkmovie.idDirector WHERE actors.strActor" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM directorlinkmovie JOIN actors ON actors.idActor=directorlinkmovie.idDirector WHERE directorlinkmovie.idMovie = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
       else if (m_field == FieldActor)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMovie FROM actorlinkmovie JOIN actors ON actors.idActor=actorlinkmovie.idActor WHERE actors.strActor" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM actorlinkmovie JOIN actors ON actors.idActor=actorlinkmovie.idActor WHERE actorlinkmovie.idMovie = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
       else if (m_field == FieldWriter)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMovie FROM writerlinkmovie JOIN actors ON actors.idActor=writerlinkmovie.idWriter WHERE actors.strActor" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM writerlinkmovie JOIN actors ON actors.idActor=writerlinkmovie.idWriter WHERE writerlinkmovie.idMovie = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
       else if (m_field == FieldStudio)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMovie FROM studiolinkmovie JOIN studio ON studio.idStudio=studiolinkmovie.idStudio WHERE studio.strStudio" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM studiolinkmovie JOIN studio ON studio.idStudio=studiolinkmovie.idStudio WHERE studiolinkmovie.idMovie = " + GetField(FieldId, strType) + " AND studio.strStudio" + parameter + ")";
       else if (m_field == FieldCountry)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMovie FROM countrylinkmovie JOIN country ON country.idCountry=countrylinkmovie.idCountry WHERE country.strCountry" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM countrylinkmovie JOIN country ON country.idCountry=countrylinkmovie.idCountry WHERE countrylinkmovie.idMovie = " + GetField(FieldId, strType) + " AND country.strCountry" + parameter + ")";
       else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
         query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
       else if (m_field == FieldTag)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMedia FROM taglinks JOIN tag ON tag.idTag = taglinks.idTag WHERE tag.strTag" + parameter + " AND taglinks.media_type = 'movie')";
+        query = negate + " EXISTS (SELECT 1 FROM taglinks JOIN tag ON tag.idTag = taglinks.idTag WHERE taglinks.idMedia = " + GetField(FieldId, strType) + " AND tag.strTag" + parameter + " AND taglinks.media_type = 'movie')";
     }
     else if (strType == "musicvideos")
     {
       table = "musicvideoview";
 
       if (m_field == FieldGenre)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMVideo FROM genrelinkmusicvideo JOIN genre ON genre.idGenre=genrelinkmusicvideo.idGenre WHERE genre.strGenre" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM genrelinkmusicvideo JOIN genre ON genre.idGenre=genrelinkmusicvideo.idGenre WHERE genrelinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND genre.strGenre" + parameter + ")";
       else if (m_field == FieldArtist)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMVideo FROM artistlinkmusicvideo JOIN actors ON actors.idActor=artistlinkmusicvideo.idArtist WHERE actors.strActor" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM artistlinkmusicvideo JOIN actors ON actors.idActor=artistlinkmusicvideo.idArtist WHERE artistlinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
       else if (m_field == FieldStudio)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMVideo FROM studiolinkmusicvideo JOIN studio ON studio.idStudio=studiolinkmusicvideo.idStudio WHERE studio.strStudio" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM studiolinkmusicvideo JOIN studio ON studio.idStudio=studiolinkmusicvideo.idStudio WHERE studiolinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND studio.strStudio" + parameter + ")";
       else if (m_field == FieldDirector)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMVideo FROM directorlinkmusicvideo JOIN actors ON actors.idActor=directorlinkmusicvideo.idDirector WHERE actors.strActor" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM directorlinkmusicvideo JOIN actors ON actors.idActor=directorlinkmusicvideo.idDirector WHERE directorlinkmusicvideo.idMVideo = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
       else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
         query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
       else if (m_field == FieldTag)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMedia FROM taglinks JOIN tag ON tag.idTag = taglinks.idTag WHERE tag.strTag" + parameter + " AND taglinks.media_type = 'musicvideo')";
+        query = negate + " EXISTS (SELECT 1 FROM taglinks JOIN tag ON tag.idTag = taglinks.idTag WHERE taglinks.idMedia = " + GetField(FieldId, strType) + " AND tag.strTag" + parameter + " AND taglinks.media_type = 'musicvideo')";
     }
     else if (strType == "tvshows")
     {
       table = "tvshowview";
 
       if (m_field == FieldGenre)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idShow FROM genrelinktvshow JOIN genre ON genre.idGenre=genrelinktvshow.idGenre WHERE genre.strGenre" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM genrelinktvshow JOIN genre ON genre.idGenre=genrelinktvshow.idGenre WHERE genrelinktvshow.idShow = " + GetField(FieldId, strType) + " AND genre.strGenre" + parameter + ")";
       else if (m_field == FieldDirector)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idShow FROM directorlinktvshow JOIN actors ON actors.idActor=directorlinktvshow.idDirector WHERE actors.strActor" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM directorlinktvshow JOIN actors ON actors.idActor=directorlinktvshow.idDirector WHERE directorlinktvshow.idShow = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
       else if (m_field == FieldActor)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idShow FROM actorlinktvshow JOIN actors ON actors.idActor=actorlinktvshow.idActor WHERE actors.strActor" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM actorlinktvshow JOIN actors ON actors.idActor=actorlinktvshow.idActor WHERE actorlinktvshow.idShow = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
       else if (m_field == FieldStudio)
         query = negate + " (" + GetField(m_field, strType) + parameter + ")";
       else if (m_field == FieldMPAA)
@@ -1085,20 +1085,20 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       else if (m_field == FieldPlaycount)
         query = "CASE WHEN COALESCE(" + GetField(FieldNumberOfEpisodes, strType) + " - " + GetField(FieldNumberOfWatchedEpisodes, strType) + ", 0) > 0 THEN 0 ELSE 1 END " + parameter;
       else if (m_field == FieldTag)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idMedia FROM taglinks JOIN tag ON tag.idTag = taglinks.idTag WHERE tag.strTag" + parameter + " AND taglinks.media_type = 'tvshow')";
+        query = negate + " EXISTS (SELECT 1 FROM taglinks JOIN tag ON tag.idTag = taglinks.idTag WHERE taglinks.idMedia = " + GetField(FieldId, strType) + " AND tag.strTag" + parameter + " AND taglinks.media_type = 'tvshow')";
     }
     else if (strType == "episodes")
     {
       table = "episodeview";
 
       if (m_field == FieldGenre)
-        query = table + ".idShow" + negate + " IN (SELECT DISTINCT idShow FROM genrelinktvshow JOIN genre ON genre.idGenre=genrelinktvshow.idGenre WHERE genre.strGenre" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM genrelinktvshow JOIN genre ON genre.idGenre=genrelinktvshow.idGenre WHERE genrelinktvshow.idShow = " + table + ".idShow AND genre.strGenre" + parameter + ")";
       else if (m_field == FieldDirector)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idEpisode FROM directorlinkepisode JOIN actors ON actors.idActor=directorlinkepisode.idDirector WHERE actors.strActor" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM directorlinkepisode JOIN actors ON actors.idActor=directorlinkepisode.idDirector WHERE directorlinkepisode.idEpisode = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
       else if (m_field == FieldActor)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idEpisode FROM actorlinkepisode JOIN actors ON actors.idActor=actorlinkepisode.idActor WHERE actors.strActor" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM actorlinkepisode JOIN actors ON actors.idActor=actorlinkepisode.idActor WHERE actorlinkepisode.idEpisode = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
       else if (m_field == FieldWriter)
-        query = GetField(FieldId, strType) + negate + " IN (SELECT DISTINCT idEpisode FROM writerlinkepisode JOIN actors ON actors.idActor=writerlinkepisode.idWriter WHERE actors.strActor" + parameter + ")";
+        query = negate + " EXISTS (SELECT 1 FROM writerlinkepisode JOIN actors ON actors.idActor=writerlinkepisode.idWriter WHERE writerlinkepisode.idEpisode = " + GetField(FieldId, strType) + " AND actors.strActor" + parameter + ")";
       else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
         query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
       else if (m_field == FieldStudio)
@@ -1109,17 +1109,17 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     if (m_field == FieldVideoResolution)
       query = table + ".idFile" + negate + GetVideoResolutionQuery(*it);
     else if (m_field == FieldAudioChannels)
-      query = table + ".idFile" + negate + " IN (SELECT DISTINCT idFile FROM streamdetails WHERE iAudioChannels " + parameter + ")";
+      query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND iAudioChannels " + parameter + ")";
     else if (m_field == FieldVideoCodec)
-      query = table + ".idFile" + negate + " IN (SELECT DISTINCT idFile FROM streamdetails WHERE strVideoCodec " + parameter + ")";
+      query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strVideoCodec " + parameter + ")";
     else if (m_field == FieldAudioCodec)
-      query = table + ".idFile" + negate + " IN (SELECT DISTINCT idFile FROM streamdetails WHERE strAudioCodec " + parameter + ")";
+      query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strAudioCodec " + parameter + ")";
     else if (m_field == FieldAudioLanguage)
-      query = table + ".idFile" + negate + " IN (SELECT DISTINCT idFile FROM streamdetails WHERE strAudioLanguage " + parameter + ")";
+      query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strAudioLanguage " + parameter + ")";
     else if (m_field == FieldSubtitleLanguage)
-      query = table + ".idFile" + negate + " IN (SELECT DISTINCT idFile FROM streamdetails WHERE strSubtitleLanguage " + parameter + ")";
+      query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strSubtitleLanguage " + parameter + ")";
     else if (m_field == FieldVideoAspectRatio)
-      query = table + ".idFile" + negate + " IN (SELECT DISTINCT idFile FROM streamdetails WHERE fVideoAspect " + parameter + ")";
+      query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND fVideoAspect " + parameter + ")";
     if (m_field == FieldPlaycount && strType != "songs" && strType != "albums" && strType != "tvshows")
     { // playcount IS stored as NULL OR number IN video db
       if ((m_operator == OPERATOR_EQUALS && it->Equals("0")) ||
