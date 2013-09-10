@@ -865,6 +865,24 @@ std::string CSysInfo::GetBuildTargetPlatformVersion(void)
 #endif
 }
 
+std::string CSysInfo::GetBuildTargetCpuFamily(void)
+{
+#if defined(__thumb__) || defined(_M_ARMT) 
+  return "ARM (Thumb)";
+#elif defined(__arm__) || defined(_M_ARM) || defined (__aarch64__)
+  return "ARM";
+#elif defined(__mips__) || defined(mips) || defined(__mips)
+  return "MIPS";
+#elif defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64) || \
+   defined(i386) || defined(__i386) || defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86) || defined(_X86_)
+  return "x86";
+#elif defined(__powerpc) || defined(__powerpc__) || defined(__powerpc64__) || defined(__ppc__) || defined(__ppc64__) || defined(_M_PPC)
+  return "PowerPC";
+#else
+  return "unknown CPU family";
+#endif
+}
+
 
 CJob *CSysInfo::GetJob() const
 {

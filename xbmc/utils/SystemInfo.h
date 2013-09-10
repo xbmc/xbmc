@@ -136,6 +136,7 @@ public:
 
   static std::string GetBuildTargetPlatformName(void);
   static std::string GetBuildTargetPlatformVersion(void);
+  static std::string GetBuildTargetCpuFamily(void);
 
 protected:
   virtual CJob *GetJob() const;
