@@ -26,7 +26,7 @@ CXXFLAGS="@platform_cxxflags@ @platform_includes@ -I@prefix@/@deps_dir@/include 
 CPPFLAGS="@platform_cflags@ @platform_includes@ -I@prefix@/@deps_dir@/include $CPPFLAGS"
 
 export PKG_CONFIG=@prefix@/@tool_dir@/bin/pkg-config
-export PKG_CONFIG_PATH=@prefix@/@deps_dir@/lib/pkgconfig
+export PKG_CONFIG_LIBDIR=@prefix@/@deps_dir@/lib/pkgconfig
 export YASM=@prefix@/@tool_dir@/bin/yasm
 export NASM=@prefix@/@tool_dir@/bin/yasm
 export MYSQL_CONFIG=@prefix@/@deps_dir@/bin/mysql_config

@@ -15,7 +15,7 @@ CPPFLAGS="-I@prefix@/@tool_dir@/include $CPPFLAGS"
 CXXFLAGS="-I@prefix@/@tool_dir@/include $CXXFLAGS"
 
 PKG_CONFIG=@prefix@/@tool_dir@/bin/pkg-config
-export PKG_CONFIG_PATH=@prefix@/@tool_dir@/lib/pkgconfig
+export PKG_CONFIG_LIBDIR=@prefix@/@tool_dir@/lib/pkgconfig
 
 PATH=@prefix@/@tool_dir@/bin:$PATH
 if test -n "@use_build_toolchain@"; then
