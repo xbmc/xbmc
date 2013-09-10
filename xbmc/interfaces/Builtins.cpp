@@ -45,10 +45,12 @@
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "interfaces/AnnouncementManager.h"
 #include "network/NetworkServices.h"
 #include "utils/log.h"
 #include "storage/MediaManager.h"
 #include "utils/RssManager.h"
+#include "utils/JSONVariantParser.h"
 #include "PartyModeManager.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/DisplaySettings.h"
@@ -138,6 +140,7 @@ const BUILT_IN commands[] = {
 #endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
   { "RunAddon",                   true,   "Run the specified plugin/script" },
+  { "NotifyAll",                  true,   "Notify all connected clients" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
@@ -586,6 +589,19 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       CLog::Log(LOGERROR, "XBMC.RunAddon called with no arguments.");
     }
+  }
+  else if (execute.Equals("notifyall"))
+  {
+    if (params.size() > 1)
+    {
+      CVariant data;
+      if (params.size() > 2)
+        data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
+
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, params[0], params[1], data);
+    }
+    else
+      CLog::Log(LOGERROR, "XBMC.NotifyAll needs two parameters");
   }
   else if (execute.Equals("playmedia"))
   {
