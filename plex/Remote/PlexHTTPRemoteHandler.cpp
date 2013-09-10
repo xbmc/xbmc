@@ -127,6 +127,17 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     /* look up via host and port, this is not super reliable, but it will probably work
      * most of the time */
     server = g_plexApplication.serverManager->FindByHostAndPort(serverURL.GetHostName(), serverURL.GetPort());
+
+    if (!server)
+    {
+      server = CPlexServerPtr(new CPlexServer());
+      CStdString token("");
+
+      if (serverURL.HasOption("X-Plex-Token"))
+        token = serverURL.GetOption("X-Plex-Token");
+      server->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED, serverURL.GetHostName(), serverURL.GetPort(), token)));
+    }
+
     containerPath = serverURL.GetFileName();
   }
   else
