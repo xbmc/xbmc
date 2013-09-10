@@ -3921,7 +3921,7 @@ bool CMusicDatabase::GetAlbumPath(int idAlbum, CStdString& path)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false;
 
-    path.Empty();
+    path.clear();
 
     CStdString strSQL=PrepareSQL("select strPath from song join path on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
     if (!m_pDS2->query(strSQL.c_str())) return false;
@@ -3996,7 +3996,7 @@ bool CMusicDatabase::GetArtistPath(int idArtist, CStdString &basePath)
     }
 
     // find the common path (if any) to these albums
-    basePath.Empty();
+    basePath.clear();
     while (!m_pDS2->eof())
     {
       CStdString path = m_pDS2->fv("strPath").get_asString();

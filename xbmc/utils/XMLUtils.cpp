@@ -240,7 +240,7 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
       CURL::Decode(strStringValue);
     return true;
   }
-  strStringValue.Empty();
+  strStringValue.clear();
   return false;
 }
 

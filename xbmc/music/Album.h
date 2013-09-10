@@ -42,8 +42,8 @@ public:
   void Reset()
   {
     idAlbum = -1;
-    strAlbum.Empty();
-    strMusicBrainzAlbumID.Empty();
+    strAlbum.clear();
+    strMusicBrainzAlbumID.clear();
     artist.clear();
     artistCredits.clear();
     genre.clear();
@@ -52,11 +52,11 @@ public:
     styles.clear();
     themes.clear();
     art.clear();
-    strReview.Empty();
-    strLabel.Empty();
-    strType.Empty();
-    strPath.Empty();
-    m_strDateOfRelease.Empty();
+    strReview.clear();
+    strLabel.clear();
+    strType.clear();
+    strPath.clear();
+    m_strDateOfRelease.clear();
     iRating=-1;
     iYear=-1;
     bCompilation = false;

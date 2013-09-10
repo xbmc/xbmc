@@ -378,7 +378,7 @@ void CPlayListPlayer::SetCurrentPlaylist(int iPlaylist)
 void CPlayListPlayer::ClearPlaylist(int iPlaylist)
 {
   // clear our applications playlist file
-  g_application.m_strPlayListFile.Empty();
+  g_application.m_strPlayListFile.clear();
 
   CPlayList& playlist = GetPlaylist(iPlaylist);
   playlist.Clear();

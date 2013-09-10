@@ -113,10 +113,10 @@ void CRarFileExtractThread::Process()
 
 CRarFile::CRarFile()
 {
-  m_strCacheDir.Empty();
-  m_strRarPath.Empty();
-  m_strPassword.Empty();
-  m_strPathInRar.Empty();
+  m_strCacheDir.clear();
+  m_strRarPath.clear();
+  m_strPassword.clear();
+  m_strPathInRar.clear();
   m_bFileOptions = 0;
 #ifdef HAS_FILESYSTEM_RAR
   m_pArc = NULL;

@@ -325,7 +325,7 @@ void CGUITextLayout::Filter(CStdString &text)
   vecColors colors;
   vecText parsedText;
   ParseText(utf16, 0, 0xffffffff, colors, parsedText);
-  utf16.Empty();
+  utf16.clear();
   for (unsigned int i = 0; i < parsedText.size(); i++)
     utf16 += (wchar_t)(0xffff & parsedText[i]);
   g_charsetConverter.wToUTF8(utf16, text);
@@ -667,7 +667,7 @@ void CGUITextLayout::AppendToUTF32(const CStdString &utf8, character_t colStyle,
 void CGUITextLayout::Reset()
 {
   m_lines.clear();
-  m_lastText.Empty();
+  m_lastText.clear();
   m_textWidth = m_textHeight = 0;
 }
 

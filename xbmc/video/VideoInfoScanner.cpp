@@ -1553,7 +1553,7 @@ namespace VIDEO
 
       // test file existence
       if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
-        nfoFile.Empty();
+        nfoFile.clear();
 
       if (nfoFile.IsEmpty()) // final attempt - strip off any cd1 folders
       {

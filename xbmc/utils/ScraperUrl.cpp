@@ -65,7 +65,7 @@ void CScraperUrl::Clear()
 bool CScraperUrl::Parse()
 {
   CStdString strToParse = m_xml;
-  m_xml.Empty();
+  m_xml.clear();
   return ParseString(strToParse);
 }
 

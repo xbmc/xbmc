@@ -415,7 +415,7 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
 
 void CLangCodeExpander::CodeToString(long code, CStdString& ret)
 {
-  ret.Empty();
+  ret.clear();
   for (unsigned int j = 0 ; j < 4 ; j++)
   {
     char c = (char) code & 0xFF;

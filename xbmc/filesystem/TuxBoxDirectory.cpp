@@ -139,7 +139,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
       if( strXMLRootString.Equals(root->Value()) && bIsBouquet)
       {
-        data.Empty();
+        data.clear();
         if (enigma2)
           result = g_tuxbox.ParseBouquetsEnigma2(root, items, url, strFilter, strXMLChildString);
         else
@@ -147,7 +147,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
       else if( strXMLRootString.Equals(root->Value()) && !strFilter.IsEmpty() )
       {
-        data.Empty();
+        data.clear();
         if (enigma2)
           result = g_tuxbox.ParseChannelsEnigma2(root, items, url, strFilter, strXMLChildString);
         else
@@ -157,7 +157,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       {
         CLog::Log(LOGERROR, "%s - Invalid root xml element for TuxBox", __FUNCTION__);
         CLog::Log(LOGERROR, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
-        data.Empty();
+        data.clear();
         result = false;
       }
     }

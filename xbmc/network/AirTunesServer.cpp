@@ -524,7 +524,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
 
   if (!usePassword)
   {
-    pw.Empty();
+    pw.clear();
   }
 
   ServerInstance = new CAirTunesServer(port, nonlocal);

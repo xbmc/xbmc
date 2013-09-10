@@ -85,7 +85,7 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_strFile.Empty();
+  m_strFile.clear();
 }
 
 bool CScraperParser::Load(const CStdString& strXMLFile)

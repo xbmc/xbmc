@@ -536,16 +536,16 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 
 void CFileItem::Reset()
 {
-  m_strLabel2.Empty();
+  m_strLabel2.clear();
   SetLabel("");
   m_bLabelPreformated=false;
   FreeIcons();
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_bSelected = false;
   m_bIsAlbum = false;
-  m_strDVDLabel.Empty();
-  m_strTitle.Empty();
-  m_strPath.Empty();
+  m_strDVDLabel.clear();
+  m_strTitle.clear();
+  m_strPath.clear();
   m_dwSize = 0;
   m_bIsFolder = false;
   m_bIsParentFolder=false;
@@ -577,7 +577,7 @@ void CFileItem::Reset()
   m_pvrTimerInfoTag=NULL;
   delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
-  m_extrainfo.Empty();
+  m_extrainfo.clear();
   m_specialSort = SortSpecialNone;
   ClearProperties();
   SetInvalid();
@@ -1638,7 +1638,7 @@ void CFileItemList::Clear()
   m_cacheToDisc = CACHE_IF_SLOW;
   m_sortDetails.clear();
   m_replaceListing = false;
-  m_content.Empty();
+  m_content.clear();
 }
 
 void CFileItemList::ClearItems()
@@ -2368,7 +2368,7 @@ void CFileItemList::StackFolders()
           {
             dvdPath = URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS");
             path = URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO");
-            dvdPath.Empty();
+            dvdPath.clear();
             if (CFile::Exists(path))
               dvdPath = path;
           }
@@ -2382,7 +2382,7 @@ void CFileItemList::StackFolders()
             {
               dvdPath = URIUtils::AddFileToFolder(item->GetPath(), "BDMV");
               path = URIUtils::AddFileToFolder(dvdPath, "index.bdmv");
-              dvdPath.Empty();
+              dvdPath.clear();
               if (CFile::Exists(path))
                 dvdPath = path;
             }

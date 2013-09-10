@@ -245,7 +245,7 @@ bool CBuiltins::HasCommand(const CStdString& execString)
 
 void CBuiltins::GetHelp(CStdString &help)
 {
-  help.Empty();
+  help.clear();
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
     help += commands[i].command;

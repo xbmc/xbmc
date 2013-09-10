@@ -672,23 +672,23 @@ void CMusicInfoTag::Archive(CArchive& ar)
 
 void CMusicInfoTag::Clear()
 {
-  m_strURL.Empty();
+  m_strURL.clear();
   m_artist.clear();
-  m_strAlbum.Empty();
+  m_strAlbum.clear();
   m_albumArtist.clear();
   m_genre.clear();
-  m_strTitle.Empty();
-  m_strMusicBrainzTrackID.Empty();
+  m_strTitle.clear();
+  m_strMusicBrainzTrackID.clear();
   m_musicBrainzArtistID.clear();
-  m_strMusicBrainzAlbumID.Empty();
+  m_strMusicBrainzAlbumID.clear();
   m_musicBrainzAlbumArtistID.clear();
-  m_strMusicBrainzTRMID.Empty();
+  m_strMusicBrainzTRMID.clear();
   m_iDuration = 0;
   m_iTrack = 0;
   m_bLoaded = false;
   m_lastPlayed.Reset();
   m_bCompilation = false;
-  m_strComment.Empty();
+  m_strComment.clear();
   m_rating = '0';
   m_iDbId = -1;
   m_type.clear();

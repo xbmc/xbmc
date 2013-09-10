@@ -241,10 +241,10 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
     return;
   }
 
-  masks.m_strLabelFile.Empty();
-  masks.m_strLabel2File.Empty();
-  masks.m_strLabelFolder.Empty();
-  masks.m_strLabel2Folder.Empty();
+  masks.m_strLabelFile.clear();
+  masks.m_strLabel2File.clear();
+  masks.m_strLabelFolder.clear();
+  masks.m_strLabel2Folder.clear();
   return;
 }
 

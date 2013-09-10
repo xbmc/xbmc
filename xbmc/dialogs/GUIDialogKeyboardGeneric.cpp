@@ -311,8 +311,8 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
 
 void CGUIDialogKeyboardGeneric::SetText(const CStdString& aTextString)
 {
-  m_strEdit.Empty();
-  m_strEditing.Empty();
+  m_strEdit.clear();
+  m_strEditing.clear();
   m_iEditingOffset = 0;
   g_charsetConverter.utf8ToW(aTextString, m_strEdit);
   UpdateLabel();
@@ -325,7 +325,7 @@ void CGUIDialogKeyboardGeneric::InputText(const CStdString& aTextString)
   g_charsetConverter.utf8ToW(aTextString, newStr);
   if (!newStr.IsEmpty())
   {
-    m_strEditing.Empty();
+    m_strEditing.clear();
     m_iEditingOffset = 0;
     m_strEdit.Insert(GetCursorPos(), newStr);
     UpdateLabel();
@@ -335,7 +335,7 @@ void CGUIDialogKeyboardGeneric::InputText(const CStdString& aTextString)
 
 void CGUIDialogKeyboardGeneric::InputTextEditing(const CStdString& aTextString, int start, int length)
 {
-  m_strEditing.Empty();
+  m_strEditing.clear();
   m_iEditingOffset = start;
   m_iEditingLength = length;
   g_charsetConverter.utf8ToW(aTextString, m_strEditing);
@@ -354,7 +354,7 @@ CStdString CGUIDialogKeyboardGeneric::GetText() const
 void CGUIDialogKeyboardGeneric::Character(WCHAR ch)
 {
   if (!ch) return;
-  m_strEditing.Empty();
+  m_strEditing.clear();
   m_iEditingOffset = 0;
   // TODO: May have to make this routine take a WCHAR for the symbols?
   m_strEdit.Insert(GetCursorPos(), ch);
@@ -384,7 +384,7 @@ void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice 
     pEdit->SetSelection(0, 0);
     if (m_hiddenInput)
     { // convert to *'s
-      edit.Empty();
+      edit.clear();
       if (m_lastRemoteClickTime + REMOTE_SMS_DELAY > CTimeUtils::GetFrameTime() && m_iCursorPos > 0)
       { // using the remove to input, so display the last key input
         edit.append(m_iCursorPos - 1, L'*');

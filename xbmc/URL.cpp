@@ -386,7 +386,7 @@ void CURL::SetProtocol(const CStdString& strProtocol)
 
 void CURL::SetOptions(const CStdString& strOptions)
 {
-  m_strOptions.Empty();
+  m_strOptions.clear();
   m_options.Clear();
   if( strOptions.length() > 0)
   {
@@ -402,7 +402,7 @@ void CURL::SetOptions(const CStdString& strOptions)
 
 void CURL::SetProtocolOptions(const CStdString& strOptions)
 {
-  m_strProtocolOptions.Empty();
+  m_strProtocolOptions.clear();
   m_protocolOptions.Clear();
   if (strOptions.length() > 0)
   {
