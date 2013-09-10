@@ -86,6 +86,7 @@
 #include "Util.h"
 #include "LangInfo.h"
 #include "URL.h"
+#include "utils/LangCodeExpander.h"
 
 using namespace std;
 using namespace PVR;
@@ -145,8 +146,8 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
   if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.audiolanguage"), "original"))
   {
     CStdString audio_language = g_langInfo.GetAudioLanguage();
-    PREDICATE_RETURN(audio_language.Equals(lh.language.c_str())
-                   , audio_language.Equals(rh.language.c_str()));
+    PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(audio_language, lh.language)
+                   , g_LangCodeExpander.CompareLangCodes(audio_language, rh.language));
   }
 
   PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
@@ -174,8 +175,8 @@ static bool PredicateSubtitlePriority(const SelectionStream& lh, const Selection
   CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
   if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
   {
-    PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && subtitle_language.Equals(lh.language.c_str())
-                   , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && subtitle_language.Equals(rh.language.c_str()));
+    PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
+                   , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
   }
 
   PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
@@ -186,8 +187,8 @@ static bool PredicateSubtitlePriority(const SelectionStream& lh, const Selection
 
   if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
   {
-    PREDICATE_RETURN(subtitle_language.Equals(lh.language.c_str())
-                   , subtitle_language.Equals(rh.language.c_str()));
+    PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
+                   , g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
   }
 
   PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
@@ -325,7 +326,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       DVDNavStreamInfo info;
       nav->GetAudioStreamInfo(i, info);
       s.name     = info.name;
-      s.language = info.language;
+      s.language = g_LangCodeExpander.ConvertToISO6392T(info.language);
       s.channels = info.channels;
       Update(s);
     }
@@ -344,7 +345,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       DVDNavStreamInfo info;
       nav->GetSubtitleStreamInfo(i, info);
       s.name     = info.name;
-      s.language = info.language;
+      s.language = g_LangCodeExpander.ConvertToISO6392T(info.language);
       Update(s);
     }
   }
@@ -369,15 +370,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       s.source   = source;
       s.type     = stream->type;
       s.id       = stream->iId;
-      s.language = stream->language;
-
-      if (s.language.length() == 2)
-      {
-        CStdString lang;
-        g_LangCodeExpander.ConvertToThreeCharCode(lang, stream->language);
-        s.language = lang;
-      }
-
+      s.language = g_LangCodeExpander.ConvertToISO6392T(stream->language);
       s.flags    = stream->flags;
       s.filename = demuxer->GetFileName();
       stream->GetStreamName(s.name);
