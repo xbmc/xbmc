@@ -87,7 +87,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData.reserve(16384);
     va_list va;
     va_start(va, format);
-    strData.FormatV(format,va);
+    strData = StringUtils::FormatV(format,va);
     va_end(va);
 
     if (m_repeatLogLevel == loglevel && m_repeatLine == strData)

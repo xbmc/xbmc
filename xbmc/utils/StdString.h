@@ -2614,66 +2614,6 @@ public:
   }
 
   // -------------------------------------------------------------------------
-  // FUNCTION:  FormatV
-  //    void FormatV(PCSTR szFormat, va_list, argList);
-  //
-  // DESCRIPTION:
-  //    This function formats the string with sprintf style format-specs.
-  //    It makes a general guess at required buffer size and then tries
-  //    successively larger buffers until it finds one big enough or a
-  //    threshold (MAX_FMT_TRIES) is exceeded.
-  //
-  // PARAMETERS:
-  //    szFormat - a PCSTR holding the format of the output
-  //    argList - a Microsoft specific va_list for variable argument lists
-  //
-  // RETURN VALUE:
-  // -------------------------------------------------------------------------
-
-  // NOTE: Changed by JM to actually function under non-win32,
-  //       and to remove the upper limit on size.
-  void FormatV(const CT* szFormat, va_list argList)
-  {
-    // try and grab a sufficient buffersize
-    int nChars = FMT_BLOCK_SIZE;
-    va_list argCopy;
-
-    CT *p = reinterpret_cast<CT*>(malloc(sizeof(CT)*nChars));
-    if (!p) return;
-
-    while (1)
-    {
-      va_copy(argCopy, argList);
-
-      int nActual = ssvsprintf(p, nChars, szFormat, argCopy);
-      /* If that worked, return the string. */
-      if (nActual > -1 && nActual < nChars)
-      { /* make sure it's NULL terminated */
-        p[nActual] = '\0';
-        this->assign(p, nActual);
-        free(p);
-        va_end(argCopy);
-        return;
-      }
-      /* Else try again with more space. */
-      if (nActual > -1)        /* glibc 2.1 */
-        nChars = nActual + 1;  /* precisely what is needed */
-      else                     /* glibc 2.0 */
-        nChars *= 2;           /* twice the old size */
-
-      CT *np = reinterpret_cast<CT*>(realloc(p, sizeof(CT)*nChars));
-      if (np == NULL)
-      {
-        free(p);
-        va_end(argCopy);
-        return;   // failed :(
-      }
-      p = np;
-      va_end(argCopy);
-    }
-  }
-
-  // -------------------------------------------------------------------------
   // CString Facade Functions:
   //
   // The following methods are intended to allow you to use this class as a
