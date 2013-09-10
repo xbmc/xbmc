@@ -62,7 +62,7 @@ bool CScreenshotSurface::capture()
 {
 #if defined(TARGET_RASPBERRY_PI)
   g_RBP.GetDisplaySize(m_width, m_height);
-  m_buffer = g_RBP.CaptureDisplay(m_width, m_height, &m_stride, true);
+  m_buffer = g_RBP.CaptureDisplay(m_width, m_height, &m_stride, true, false);
   if (!m_buffer)
     return false;
 #elif defined(HAS_DX)

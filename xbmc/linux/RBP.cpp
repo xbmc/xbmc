@@ -89,7 +89,7 @@ void CRBP::GetDisplaySize(int &width, int &height)
   vc_dispmanx_display_close(display );
 }
 
-unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool swap_red_blue)
+unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool swap_red_blue, bool video_only)
 {
   DISPMANX_DISPLAY_HANDLE_T display;
   DISPMANX_RESOURCE_HANDLE_T resource;
@@ -97,6 +97,14 @@ unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool sw
   unsigned char *image = NULL;
   uint32_t vc_image_ptr;
   int stride;
+  uint32_t flags = 0;
+
+  if (video_only)
+    flags |= DISPMANX_SNAPSHOT_NO_RGB|DISPMANX_SNAPSHOT_FILL;
+  if (swap_red_blue)
+    flags |= DISPMANX_SNAPSHOT_SWAP_RED_BLUE;
+  if (!pstride)
+    flags |= DISPMANX_SNAPSHOT_PACK;
 
   display = vc_dispmanx_display_open( 0 /*screen*/ );
   stride = ((width + 15) & ~15) * 4;
@@ -106,37 +114,12 @@ unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool sw
   {
     resource = vc_dispmanx_resource_create( VC_IMAGE_RGBA32, width, height, &vc_image_ptr );
 
-    vc_dispmanx_snapshot(display, resource, (DISPMANX_TRANSFORM_T)0);
+    vc_dispmanx_snapshot(display, resource, (DISPMANX_TRANSFORM_T)flags);
 
     vc_dispmanx_rect_set(&rect, 0, 0, width, height);
     vc_dispmanx_resource_read_data(resource, &rect, image, stride);
     vc_dispmanx_resource_delete( resource );
     vc_dispmanx_display_close(display );
-
-    // we need to save in BGRA order so Swap RGBA -> BGRA
-    if (swap_red_blue)
-    {
-      for (int y = 0; y < height; y++)
-      {
-        unsigned char *p = image + y * stride;
-        for (int x = 0; x < width; x++, p+=4)
-        {
-          unsigned char t = p[0];
-          p[0] = p[2];
-          p[2] = t;
-        }
-      }
-    }
-    // assume we need to pack image if caller doesn't want stride
-    if (!pstride && stride > width*4)
-    {
-      for (int y = 0; y < height; y++)
-      {
-        unsigned char *in  = image + y * stride;
-        unsigned char *out = image + y * width * 4;
-        memmove(out, in, width*4);
-      }
-    }
   }
   if (pstride)
     *pstride = stride;

@@ -1421,6 +1421,14 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   if (!m_bValidated)
     return false;
 
+  // If rendered directly by the hardware
+  if (m_renderMethod & RENDER_BYPASS)
+  {
+    capture->BeginRender();
+    capture->EndRender();
+    return true;
+  }
+
   // save current video rect
   CRect saveSize = m_destRect;
   saveRotatedCoords();//backup current m_rotatedDestCoords
