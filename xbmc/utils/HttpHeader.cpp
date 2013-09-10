@@ -71,7 +71,7 @@ void CHttpHeader::Parse(CStdString strData)
 
       m_params[strParam] = strValue;
     }
-    else if (m_protoLine.IsEmpty())
+    else if (m_protoLine.empty())
       m_protoLine = strData;
 
 

@@ -964,7 +964,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       StringUtils::SplitString(*it, ",", split);
       for (CStdStringArray::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
       {
-        if (!parameter.IsEmpty())
+        if (!parameter.empty())
           parameter += ",";
         parameter += db.PrepareSQL("'%s'", (*itIn).Trim().c_str());
       }
@@ -1126,7 +1126,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       }
     }
 
-    if (query.IsEmpty() && m_field != FieldNone)
+    if (query.empty() && m_field != FieldNone)
     {
       string fmt = "%s";
       if (GetFieldType(m_field) == NUMERIC_FIELD)
@@ -1188,7 +1188,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
     if (it->m_field == FieldPlaylist)
     {
       CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(it->m_parameter.at(0), strType);
-      if (!playlistFile.IsEmpty() && referencedPlaylists.find(playlistFile) == referencedPlaylists.end())
+      if (!playlistFile.empty() && referencedPlaylists.find(playlistFile) == referencedPlaylists.end())
       {
         referencedPlaylists.insert(playlistFile);
         CSmartPlaylist playlist;
@@ -1196,7 +1196,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
         {
           CStdString playlistQuery;
           // only playlists of same type will be part of the query
-          if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().IsEmpty())
+          if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().empty())
           {
             playlist.SetType(strType);
             playlistQuery = playlist.GetWhereClause(db, referencedPlaylists);
@@ -1214,7 +1214,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
     else
       currentRule = (*it).GetWhereClause(db, strType);
     // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
-    if (currentRule.IsEmpty())
+    if (currentRule.empty())
       currentRule = m_type == CombinationAnd ? "'1'" : "'0'";
     rule += currentRule;
     rule += ")";

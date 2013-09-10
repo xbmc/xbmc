@@ -32,7 +32,7 @@ namespace ADDON
   AddonVersion::AddonVersion(const CStdString& version)
   {
     m_originalVersion = version;
-    if (m_originalVersion.IsEmpty())
+    if (m_originalVersion.empty())
       m_originalVersion = "0.0.0";
     const char *epoch_end = strchr(m_originalVersion.c_str(), ':');
     if (epoch_end != NULL)

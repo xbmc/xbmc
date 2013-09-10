@@ -88,7 +88,7 @@ bool CGUIInfoColor::Update()
 
   // Expand the infolabel, and then convert it to a color
   CStdString infoLabel(g_infoManager.GetLabel(m_info));
-  color_t color = !infoLabel.IsEmpty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
+  color_t color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
   if (m_color != color)
   {
     m_color = color;
@@ -148,9 +148,9 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdStri
       CStdString infoLabel;
       if (preferImage)
         infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow, fallback);
-      if (infoLabel.IsEmpty())
+      if (infoLabel.empty())
         infoLabel = g_infoManager.GetLabel(portion.m_info, contextWindow, fallback);
-      if (!infoLabel.IsEmpty())
+      if (!infoLabel.empty())
         label += portion.GetLabel(infoLabel);
     }
     else
@@ -158,7 +158,7 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdStri
       label += portion.m_prefix;
     }
   }
-  if (label.IsEmpty())  // empty label, use the fallback
+  if (label.empty())  // empty label, use the fallback
     return m_fallback;
   return label;
 }
@@ -177,7 +177,7 @@ CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImag
         infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion.m_info, fallback);
       else
         infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion.m_info, fallback);
-      if (!infoLabel.IsEmpty())
+      if (!infoLabel.empty())
         label += portion.GetLabel(infoLabel);
     }
     else
@@ -185,7 +185,7 @@ CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImag
       label += portion.m_prefix;
     }
   }
-  if (label.IsEmpty())
+  if (label.empty())
     return m_fallback;
   return label;
 }
@@ -335,7 +335,7 @@ void CGUIInfoLabel::Parse(const CStdString &label, int context)
   }
   while (format != NONE);
 
-  if (!work.IsEmpty())
+  if (!work.empty())
     m_info.push_back(CInfoPortion(0, work, ""));
 }
 

@@ -317,7 +317,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
 
   // TODO: FIX BETTER DAAP SUPPORT
   // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS, RSS, HTSP, VTP, TUXBOX, DAV or DAVS
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.IsEmpty() || !(m_protocol == NET_PROTOCOL_FTP ||
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.empty() || !(m_protocol == NET_PROTOCOL_FTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTPS ||
                                                                               m_protocol == NET_PROTOCOL_DAV ||
@@ -368,13 +368,13 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   else if (m_protocol == NET_PROTOCOL_AFP)
     url.SetProtocol("afp");
     
-  if (!m_username.IsEmpty())
+  if (!m_username.empty())
   {
     url.SetUserName(m_username);
-    if (!m_password.IsEmpty())
+    if (!m_password.empty())
       url.SetPassword(m_password);
   }
-  if(!m_server.IsEmpty())
+  if(!m_server.empty())
     url.SetHostName(m_server);
   if (((m_protocol == NET_PROTOCOL_FTP) ||
        (m_protocol == NET_PROTOCOL_HTTP) ||
@@ -382,18 +382,18 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_DAV) ||
        (m_protocol == NET_PROTOCOL_DAVS) ||
        (m_protocol == NET_PROTOCOL_RSS) ||
-       (m_protocol == NET_PROTOCOL_DAAP && !m_server.IsEmpty()) ||
+       (m_protocol == NET_PROTOCOL_DAAP && !m_server.empty()) ||
        (m_protocol == NET_PROTOCOL_HTSP) ||
        (m_protocol == NET_PROTOCOL_VTP) ||
        (m_protocol == NET_PROTOCOL_MYTH) ||
        (m_protocol == NET_PROTOCOL_TUXBOX) ||
        (m_protocol == NET_PROTOCOL_SFTP) ||
        (m_protocol == NET_PROTOCOL_NFS))
-      && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
+      && !m_port.empty() && atoi(m_port.c_str()) > 0)
   {
     url.SetPort(atoi(m_port));
   }
-  if (!m_path.IsEmpty())
+  if (!m_path.empty())
     url.SetFileName(m_path);
   return url.Get();
 }

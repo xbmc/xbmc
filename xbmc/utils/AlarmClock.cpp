@@ -109,7 +109,7 @@ void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
                                      static_cast<int>(remaining)/60,
                                      static_cast<int>(remaining)%60);
   }
-  if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
+  if (iter->second.m_strCommand.empty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
   {
     if(!bSilent)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);

@@ -349,7 +349,7 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
   else
     return false;
 #else
-  if(URIUtils::IsDVD(devicePath) || devicePath.IsEmpty())
+  if(URIUtils::IsDVD(devicePath) || devicePath.empty())
     return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();   // TODO: switch all ports to use auto sources
   else
     return true; // Assume other paths to be mounted already
@@ -384,7 +384,7 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
 bool CMediaManager::HasOpticalDrive()
 {
 #ifdef HAS_DVD_DRIVE
-  if (!m_strFirstAvailDrive.IsEmpty())
+  if (!m_strFirstAvailDrive.empty())
     return true;
 #endif
   return false;
@@ -504,17 +504,17 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
   if (pInfo == NULL)
     return "";
 
-  if (mediaPath.IsEmpty() && pInfo->IsAudio(1))
+  if (mediaPath.empty() && pInfo->IsAudio(1))
     mediaPath = "cdda://local/";
 
-  if (mediaPath.IsEmpty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
+  if (mediaPath.empty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
     mediaPath = "iso9660://";
 
-  if (mediaPath.IsEmpty())
+  if (mediaPath.empty())
     mediaPath = devicePath;
 
 #ifdef TARGET_WINDOWS
-  if (mediaPath.IsEmpty() || mediaPath.CompareNoCase("iso9660://") == 0)
+  if (mediaPath.empty() || mediaPath.CompareNoCase("iso9660://") == 0)
   {
     mediaPath = g_mediaManager.TranslateDevicePath("");
     URIUtils::AddSlashAtEnd(mediaPath);

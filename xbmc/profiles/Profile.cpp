@@ -37,10 +37,10 @@ CProfile::CLock::CLock(LockType type, const CStdString &password)
 
 void CProfile::CLock::Validate()
 {
-  if (mode != LOCK_MODE_EVERYONE && (code == "-" || code.IsEmpty()))
+  if (mode != LOCK_MODE_EVERYONE && (code == "-" || code.empty()))
     mode = LOCK_MODE_EVERYONE;
   
-  if (code.IsEmpty() || mode == LOCK_MODE_EVERYONE)
+  if (code.empty() || mode == LOCK_MODE_EVERYONE)
     code = "-";
 }
 
@@ -63,7 +63,7 @@ void CProfile::setDate()
 {
   CStdString strDate = g_infoManager.GetDate(true);
   CStdString strTime = g_infoManager.GetTime();
-  if (strDate.IsEmpty() || strTime.IsEmpty())
+  if (strDate.empty() || strTime.empty())
     setDate("-");
   else
     setDate(strDate+" - "+strTime);

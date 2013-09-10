@@ -456,7 +456,7 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
     CFileItemList items;
     CPVRChannel *channel = item->GetPVRChannelInfoTag();
 
-    if (!channel->IconPath().IsEmpty())
+    if (!channel->IconPath().empty())
     {
       /* add the current thumb, if available */
       CFileItemPtr current(new CFileItem("thumb://Current", false));

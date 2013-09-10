@@ -63,7 +63,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   bool playlistLoaded;
 
   m_bIsVideo = context == PARTYMODECONTEXT_VIDEO;
-  if (!strXspPath.IsEmpty()) //if a path to a smartplaylist is supplied use it
+  if (!strXspPath.empty()) //if a path to a smartplaylist is supplied use it
     partyModePath = strXspPath;
   else if (m_bIsVideo)
     partyModePath = CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp");
@@ -649,11 +649,11 @@ pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
   // now add this on to the normal where clause
   if (m_history.size())
   {
-    if (m_strCurrentFilterMusic.IsEmpty())
+    if (m_strCurrentFilterMusic.empty())
       historyWhereMusic = "songview.idSong not in (";
     else
       historyWhereMusic = m_strCurrentFilterMusic + " and songview.idSong not in (";
-    if (m_strCurrentFilterVideo.IsEmpty())
+    if (m_strCurrentFilterVideo.empty())
       historyWhereVideo = "idMVideo not in (";
     else
       historyWhereVideo = m_strCurrentFilterVideo + " and idMVideo not in (";

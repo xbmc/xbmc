@@ -442,7 +442,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
 
   CStdString strCmd = "mount -t cifs " + smbPath + " " + strMountPoint +
     " -o rw,nobrl,directio";
-  if (!strUser.IsEmpty())
+  if (!strUser.empty())
     strCmd += ",user=" + strUser + ",password=" + strPass;
   else
     strCmd += ",guest";

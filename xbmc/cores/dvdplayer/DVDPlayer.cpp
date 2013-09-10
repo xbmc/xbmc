@@ -3740,7 +3740,7 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   else
     m_lastSub = strSubtitle;
 
-  return !strSubtitle.IsEmpty();
+  return !strSubtitle.empty();
 }
 
 CStdString CDVDPlayer::GetPlayerState()

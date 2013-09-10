@@ -104,7 +104,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_bEPGCreated             = false;
   m_bChanged                = false;
 
-  if (m_strChannelName.IsEmpty())
+  if (m_strChannelName.empty())
     m_strChannelName = StringUtils::Format("%s %d", g_localizeStrings.Get(19029).c_str(), m_iUniqueId);
 
   UpdateEncryptionName();
@@ -209,9 +209,9 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   SetClientChannelName(channel.ClientChannelName());
 
   CSingleLock lock(m_critSection);
-  if (m_strChannelName.IsEmpty())
+  if (m_strChannelName.empty())
     SetChannelName(channel.ClientChannelName());
-  if (m_strIconPath.IsEmpty()||(!m_strIconPath.Equals(channel.IconPath()) && !IsUserSetIcon()))
+  if (m_strIconPath.empty()||(!m_strIconPath.Equals(channel.IconPath()) && !IsUserSetIcon()))
     SetIconPath(channel.IconPath());
 
   return m_bChanged;
@@ -312,7 +312,7 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon
 
     /* did the user change the icon? */
     if (bIsUserSetIcon)
-      m_bIsUserSetIcon = !m_strIconPath.IsEmpty();
+      m_bIsUserSetIcon = !m_strIconPath.empty();
 	  
     return true;
   }
@@ -324,7 +324,7 @@ bool CPVRChannel::SetChannelName(const CStdString &strChannelName)
 {
   CStdString strName(strChannelName);
 
-  if (strName.IsEmpty())
+  if (strName.empty())
     strName = StringUtils::Format(g_localizeStrings.Get(19085).c_str(), ClientChannelNumber());
 
   CSingleLock lock(m_critSection);
@@ -378,8 +378,8 @@ bool CPVRChannel::SetLastWatched(time_t iLastWatched)
 bool CPVRChannel::IsEmpty() const
 {
   CSingleLock lock(m_critSection);
-  return (m_strFileNameAndPath.IsEmpty() ||
-          m_strStreamURL.IsEmpty());
+  return (m_strFileNameAndPath.empty() ||
+          m_strStreamURL.empty());
 }
 
 /********** Client related channel methods **********/
@@ -684,7 +684,7 @@ bool CPVRChannel::SetEPGScraper(const CStdString &strScraper)
 
   if (m_strEPGScraper != strScraper)
   {
-    bool bCleanEPG = !m_strEPGScraper.IsEmpty() || strScraper.IsEmpty();
+    bool bCleanEPG = !m_strEPGScraper.empty() || strScraper.empty();
 
     /* update the scraper name */
     m_strEPGScraper = StringUtils::Format("%s", strScraper.c_str());

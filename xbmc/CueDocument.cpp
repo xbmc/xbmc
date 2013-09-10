@@ -133,7 +133,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
         // lets manage tracks titles without quotes
         CStdString titleNoQuote = strLine.Mid(5);
         titleNoQuote.TrimLeft();
-        if (!titleNoQuote.IsEmpty())
+        if (!titleNoQuote.empty())
         {
           g_charsetConverter.unknownToUTF8(titleNoQuote);
           m_Track[m_iTotalTracks].strTitle = titleNoQuote;
@@ -194,7 +194,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
       {
         CStdString genreNoQuote = strLine.Mid(9);
         genreNoQuote.TrimLeft();
-        if (!genreNoQuote.IsEmpty())
+        if (!genreNoQuote.empty())
         {
           g_charsetConverter.unknownToUTF8(genreNoQuote);
           m_strGenre = genreNoQuote;
@@ -326,7 +326,7 @@ int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
   // Get rid of the index number and any whitespace
   CStdString numberTime = index.Mid(5);
   numberTime.TrimLeft();
-  while (!numberTime.IsEmpty())
+  while (!numberTime.empty())
   {
     if (!isdigit(numberTime[0]))
       break;
@@ -354,7 +354,7 @@ int CCueDocument::ExtractNumericInfo(const CStdString &info)
 {
   CStdString number(info);
   number.TrimLeft();
-  if (number.IsEmpty() || !isdigit(number[0]))
+  if (number.empty() || !isdigit(number[0]))
     return -1;
   return atoi(number.c_str());
 }

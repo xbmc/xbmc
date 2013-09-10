@@ -265,7 +265,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 
-  if( !drive.IsEmpty() && !drive.Equals("*") )
+  if( !drive.empty() && !drive.Equals("*") )
   {
 #ifdef TARGET_WINDOWS
     UINT uidriveType = GetDriveType(( drive + ":\\" ));
@@ -650,7 +650,7 @@ CStdString CSysInfo::GetLinuxDistro()
 
     fclose(os_release);
 
-    if (!result.IsEmpty())
+    if (!result.empty())
       return result;
   }
 
@@ -660,12 +660,12 @@ CStdString CSysInfo::GetLinuxDistro()
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
       result = buffer;
     pclose(pipe);
-    if (!result.IsEmpty())
+    if (!result.empty())
       return result.Trim();
   }
 
   FILE* file = NULL;
-  for (int i = 0; result.IsEmpty() && release_file[i]; i++)
+  for (int i = 0; result.empty() && release_file[i]; i++)
   {
     file = fopen(release_file[i], "r");
     if (file)
@@ -673,7 +673,7 @@ CStdString CSysInfo::GetLinuxDistro()
       if (fgets(buffer, sizeof(buffer), file))
       {
         result = buffer;
-        if (!result.IsEmpty())
+        if (!result.empty())
           return result.Trim();
       }
       fclose(file);

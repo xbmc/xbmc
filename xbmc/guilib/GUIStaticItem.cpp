@@ -62,7 +62,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     {
       CStdString name = property->Attribute("name");
       CGUIInfoLabel prop;
-      if (!name.IsEmpty() && CGUIControlFactory::GetInfoLabelFromElement(property, prop, parentID))
+      if (!name.empty() && CGUIControlFactory::GetInfoLabelFromElement(property, prop, parentID))
       {
         SetProperty(name, prop.GetLabel(parentID, true).c_str());
         if (!prop.IsConstant())

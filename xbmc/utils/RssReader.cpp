@@ -182,7 +182,7 @@ void CRssReader::Process()
       }
       http.Cancel();
     }
-    if (!strXML.IsEmpty() && m_pObserver)
+    if (!strXML.empty() && m_pObserver)
     {
       // erase any <content:encoded> tags (also unsupported by tinyxml)
       int iStart = strXML.Find("<content:encoded>");

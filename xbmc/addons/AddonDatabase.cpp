@@ -625,7 +625,7 @@ bool CAddonDatabase::BreakAddon(const CStdString &addonID, const CStdString& rea
     CStdString sql = PrepareSQL("delete from broken where addonID='%s'", addonID.c_str());
     m_pDS->exec(sql);
 
-    if (!reason.IsEmpty())
+    if (!reason.empty())
     { // broken
       sql = PrepareSQL("insert into broken(id, addonID, reason) values(NULL, '%s', '%s')", addonID.c_str(),reason.c_str());
       m_pDS->exec(sql);
@@ -644,7 +644,7 @@ bool CAddonDatabase::HasAddon(const CStdString &addonID)
   CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
   CStdString strHasAddon = GetSingleValue("addon", "id", strWhereClause);
   
-  return !strHasAddon.IsEmpty();
+  return !strHasAddon.empty();
 }
 
 bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
@@ -672,7 +672,7 @@ bool CAddonDatabase::IsSystemPVRAddonEnabled(const CStdString &addonID)
   CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
   CStdString strEnabled = GetSingleValue("pvrenabled", "id", strWhereClause);
 
-  return !strEnabled.IsEmpty();
+  return !strEnabled.empty();
 }
 
 CStdString CAddonDatabase::IsAddonBroken(const CStdString &addonID)
@@ -740,7 +740,7 @@ bool CAddonDatabase::IsAddonBlacklisted(const CStdString& addonID,
                                         const CStdString& version)
 {
   CStdString where = PrepareSQL("addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
-  return !GetSingleValue("blacklist","addonID",where).IsEmpty();
+  return !GetSingleValue("blacklist","addonID",where).empty();
 }
 
 bool CAddonDatabase::RemoveAddonFromBlacklist(const CStdString& addonID,

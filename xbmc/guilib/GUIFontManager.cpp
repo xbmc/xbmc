@@ -296,7 +296,7 @@ CGUIFont* GUIFontManager::GetFont(const CStdString& strFontName, bool fallback /
       return pFont;
   }
   // fall back to "font13" if we have none
-  if (fallback && !strFontName.IsEmpty() && !strFontName.Equals("-") && !strFontName.Equals("font13"))
+  if (fallback && !strFontName.empty() && !strFontName.Equals("-") && !strFontName.Equals("font13"))
     return GetFont("font13");
   return NULL;
 }
@@ -373,7 +373,7 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
 
         const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
 
-        if (foundTTF.IsEmpty() && idAttr != NULL && unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
+        if (foundTTF.empty() && idAttr != NULL && unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
           foundTTF = idAttr;
 
         // Check if this is the fontset that we want
@@ -400,7 +400,7 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
     if (pChild == NULL)
     {
       CLog::Log(LOGWARNING, "file doesnt have <fontset> with name '%s', defaulting to first fontset", strFontSet.c_str());
-      if (!foundTTF.IsEmpty())
+      if (!foundTTF.empty())
         LoadFonts(foundTTF);
     }
   }
@@ -542,7 +542,7 @@ bool GUIFontManager::GetFirstFontSetUnicode(CStdString& strFontSet)
     CLog::Log(LOGERROR, "file doesnt have <fontset> in <fonts>, but rather %s", strValue.c_str());
   }
 
-  return !strFontSet.IsEmpty();
+  return !strFontSet.empty();
 }
 
 bool GUIFontManager::IsFontSetUnicode(const CStdString& strFontSet)

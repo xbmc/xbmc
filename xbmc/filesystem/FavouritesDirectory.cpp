@@ -159,7 +159,7 @@ bool CFavouritesDirectory::AddOrRemove(CFileItem *item, int contextWindow)
   else
   { // create our new favourite item
     CFileItemPtr favourite(new CFileItem(item->GetLabel()));
-    if (item->GetLabel().IsEmpty())
+    if (item->GetLabel().empty())
       favourite->SetLabel(CUtil::GetTitleFromPath(item->GetPath(), item->m_bIsFolder));
     favourite->SetArt("thumb", item->GetArt("thumb"));
     favourite->SetPath(executePath);

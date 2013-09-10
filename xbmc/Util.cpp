@@ -146,7 +146,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   {
     CRSSDirectory dir;
     CFileItemList items;
-    if(dir.GetDirectory(strFileNameAndPath, items) && !items.m_strTitle.IsEmpty())
+    if(dir.GetDirectory(strFileNameAndPath, items) && !items.m_strTitle.empty())
       return items.m_strTitle;
   }
 
@@ -161,9 +161,9 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   }
 
   // Windows SMB Network (SMB)
-  else if (url.GetProtocol() == "smb" && strFilename.IsEmpty())
+  else if (url.GetProtocol() == "smb" && strFilename.empty())
   {
-    if (url.GetHostName().IsEmpty())
+    if (url.GetHostName().empty())
     {
       strFilename = g_localizeStrings.Get(20171);
     }
@@ -173,11 +173,11 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     }
   }
   // iTunes music share (DAAP)
-  else if (url.GetProtocol() == "daap" && strFilename.IsEmpty())
+  else if (url.GetProtocol() == "daap" && strFilename.empty())
     strFilename = g_localizeStrings.Get(20174);
 
   // HDHomerun Devices
-  else if (url.GetProtocol() == "hdhomerun" && strFilename.IsEmpty())
+  else if (url.GetProtocol() == "hdhomerun" && strFilename.empty())
     strFilename = "HDHomerun Devices";
 
   // Slingbox Devices
@@ -201,7 +201,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     strFilename = g_localizeStrings.Get(20258);
 
   // SAP Streams
-  else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
+  else if (url.GetProtocol() == "sap" && strFilename.empty())
     strFilename = "SAP Streams";
 
   // Root file views
@@ -216,7 +216,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   else if (path.Left(24).Equals("special://videoplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
-  else if (URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFilename.IsEmpty())
+  else if (URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFilename.empty())
     strFilename = URIUtils::GetFileName(url.GetHostName());
 
   // now remove the extension if needed
@@ -297,7 +297,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   strTitle = strTitleAndYear.Trim();
 
   // append year
-  if (!strYear.IsEmpty())
+  if (!strYear.empty())
     strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
@@ -309,7 +309,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 {
   // Check if the filename is a fully qualified URL such as protocol://path/to/file
   CURL plItemUrl(strFilename);
-  if (!plItemUrl.GetProtocol().IsEmpty())
+  if (!plItemUrl.GetProtocol().empty())
     return;
 
   // If the filename starts "x:", "\\" or "/" it's already fully qualified so return
@@ -413,7 +413,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
   }
 #endif
 
-  if (strPath.IsEmpty())
+  if (strPath.empty())
   {
     CStdString strHomePath = ResolveExecutablePath();
 #if defined(TARGET_DARWIN)
@@ -512,7 +512,7 @@ bool CUtil::IsPicture(const CStdString& strFile)
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
 {
-  if (strFileOrFolder.IsEmpty())
+  if (strFileOrFolder.empty())
     return false;
 
   CRegExp regExExcludes(true);  // case insensitive regex
@@ -1133,7 +1133,7 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
     // whitespace handling - we skip any whitespace at the left or right of an unquoted parameter
     if (ch == ' ' && !inQuotes)
     {
-      if (parameter.IsEmpty()) // skip whitespace on left
+      if (parameter.empty()) // skip whitespace on left
         continue;
       if (!whiteSpacePos) // make a note of where whitespace starts on the right
         whiteSpacePos = parameter.size();
@@ -1159,13 +1159,13 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
       parameter.Delete(quotaPos);
     }
   }
-  if (!parameter.IsEmpty() || parameters.size())
+  if (!parameter.empty() || parameters.size())
     parameters.push_back(parameter);
 }
 
 int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES, bool& bIsSourceName)
 {
-  if (strPath1.IsEmpty())
+  if (strPath1.empty())
     return -1;
 
   // copy as we may change strPath
@@ -1304,7 +1304,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
 CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
 {
-  if (!strSpecial.IsEmpty() && strSpecial[0] == '$')
+  if (!strSpecial.empty() && strSpecial[0] == '$')
   {
     if (strSpecial.Left(5).Equals("$HOME"))
       return URIUtils::AddFileToFolder("special://home/", strSpecial.Mid(5));
@@ -1430,7 +1430,7 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
   strAlbum.MakeLower();
   double fAlbumPercentage = fstrcmp(strAlbumTemp, strAlbum, 0.0f);
   double fArtistPercentage = 0.0f;
-  if (!strArtist1.IsEmpty())
+  if (!strArtist1.empty())
   {
     CStdString strArtistTemp = strArtistTemp1;
     strArtistTemp.MakeLower();

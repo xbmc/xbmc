@@ -308,7 +308,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 }
 
 
-                if (item->GetLabel().IsEmpty()) {
+                if (item->GetLabel().empty()) {
                     /* if no label try to grab it from node type */
                     CStdString label;
                     if (CMusicDatabaseDirectory::GetLabel((const char*)path, label)) {
@@ -347,13 +347,13 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 }
 
                 // try to grab title from tag
-                if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty()) {
+                if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.empty()) {
                     item->SetLabel(item->GetVideoInfoTag()->m_strTitle);
                     item->SetLabelPreformated(true);
                 }
 
                 // try to grab it from the folder
-                if (item->GetLabel().IsEmpty()) {
+                if (item->GetLabel().empty()) {
                     CStdString label;
                     if (CVideoDatabaseDirectory::GetLabel((const char*)path, label)) {
                         item->SetLabel(label);
@@ -1192,7 +1192,7 @@ bool
 CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
 {
   CStdString criteria(sort_criteria);
-  if (criteria.IsEmpty()) {
+  if (criteria.empty()) {
     return false;
   }
 

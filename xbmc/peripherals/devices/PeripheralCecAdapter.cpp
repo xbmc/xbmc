@@ -233,9 +233,9 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
   if (feature == FEATURE_CEC && !m_bStarted && GetSettingBool("enabled"))
   {
     // hide settings that have an override set
-    if (!GetSettingString("wake_devices_advanced").IsEmpty())
+    if (!GetSettingString("wake_devices_advanced").empty())
       SetSettingVisible("wake_devices", false);
-    if (!GetSettingString("standby_devices_advanced").IsEmpty())
+    if (!GetSettingString("standby_devices_advanced").empty())
       SetSettingVisible("standby_devices", false);
 
     SetConfigurationFromSettings();
@@ -600,7 +600,7 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char *strLanguage)
   else if (!strcmp(strLanguage, "tur"))
     strGuiLanguage = "Turkish";
 
-  if (!strGuiLanguage.IsEmpty())
+  if (!strGuiLanguage.empty())
   {
     CApplicationMessenger::Get().SetGUILanguage(strGuiLanguage);
     CLog::Log(LOGDEBUG, "%s - language set to '%s'", __FUNCTION__, strGuiLanguage.c_str());
@@ -1315,7 +1315,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   // read the devices to wake when starting
   CStdString strWakeDevices = CStdString(GetSettingString("wake_devices_advanced")).Trim();
   m_configuration.wakeDevices.Clear();
-  if (!strWakeDevices.IsEmpty())
+  if (!strWakeDevices.empty())
     ReadLogicalAddresses(strWakeDevices, m_configuration.wakeDevices);
   else
     ReadLogicalAddresses(GetSettingInt("wake_devices"), m_configuration.wakeDevices);
@@ -1323,7 +1323,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   // read the devices to power off when stopping
   CStdString strStandbyDevices = CStdString(GetSettingString("standby_devices_advanced")).Trim();
   m_configuration.powerOffDevices.Clear();
-  if (!strStandbyDevices.IsEmpty())
+  if (!strStandbyDevices.empty())
     ReadLogicalAddresses(strStandbyDevices, m_configuration.powerOffDevices);
   else
     ReadLogicalAddresses(GetSettingInt("standby_devices"), m_configuration.powerOffDevices);
@@ -1349,7 +1349,7 @@ void CPeripheralCecAdapter::ReadLogicalAddresses(const CStdString &strString, ce
   for (size_t iPtr = 0; iPtr < strString.size(); iPtr++)
   {
     CStdString strDevice = CStdString(strString.substr(iPtr, 1)).Trim();
-    if (!strDevice.IsEmpty())
+    if (!strDevice.empty())
     {
       int iDevice(0);
       if (sscanf(strDevice.c_str(), "%x", &iDevice) == 1 && iDevice >= 0 && iDevice <= 0xF)
@@ -1384,7 +1384,7 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
   bool bChanged(false);
 
   // only update the advanced setting if it was set by the user
-  if (!GetSettingString(strAdvancedSettingName).IsEmpty())
+  if (!GetSettingString(strAdvancedSettingName).empty())
   {
     CStdString strPowerOffDevices;
     for (unsigned int iPtr = CECDEVICE_TV; iPtr <= CECDEVICE_BROADCAST; iPtr++)

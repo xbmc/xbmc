@@ -79,7 +79,7 @@ void InfoExpression::Parse(const CStdString &expression)
     if (GetOperator(expression[i]))
     {
       // cleanup any operand, translate and put into our expression list
-      if (!operand.IsEmpty())
+      if (!operand.empty())
       {
         unsigned int info = g_infoManager.Register(operand, m_context);
         if (info)

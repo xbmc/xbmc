@@ -672,7 +672,7 @@ void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 
 void CDateTime::SetFromDateString(const CStdString &date)
 {
-  if (date.IsEmpty())
+  if (date.empty())
   {
     SetValid(false);
     return;
@@ -691,7 +691,7 @@ void CDateTime::SetFromDateString(const CStdString &date)
     iDayPos = 0;
 
   CStdString strMonth = date.Mid(iDayPos,iPos-iDayPos);
-  if (strMonth.IsEmpty()) // assume dbdate format
+  if (strMonth.empty()) // assume dbdate format
   {
     SetFromDBDate(date);
     return;
@@ -1028,7 +1028,7 @@ void CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
 CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeconds) const
 {
   CStdString strOut;
-  const CStdString& strFormat = format.IsEmpty() ? g_langInfo.GetTimeFormat() : format;
+  const CStdString& strFormat = format.empty() ? g_langInfo.GetTimeFormat() : format;
 
   SYSTEMTIME dateTime;
   GetAsSystemTime(dateTime);

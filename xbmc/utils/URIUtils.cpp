@@ -228,11 +228,11 @@ CStdStringArray URIUtils::SplitPath(const CStdString& strPath)
   // we start with the root path
   CStdString dir = url.GetWithoutFilename();
   
-  if (!dir.IsEmpty())
+  if (!dir.empty())
     dirs.insert(dirs.begin(), dir);
 
   // we don't need empty token on the end
-  if (dirs.size() > 1 && dirs.back().IsEmpty())
+  if (dirs.size() > 1 && dirs.back().empty())
     dirs.erase(dirs.end() - 1);
 
   return dirs;
@@ -291,7 +291,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   CURL url(strPath);
   CStdString strFile = url.GetFileName();
-  if ( URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFile.IsEmpty())
+  if ( URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFile.empty())
   {
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
@@ -325,19 +325,19 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
   else if (url.GetProtocol() == "plugin")
   {
-    if (!url.GetOptions().IsEmpty())
+    if (!url.GetOptions().empty())
     {
       url.SetOptions("");
       strParent = url.Get();
       return true;
     }
-    if (!url.GetFileName().IsEmpty())
+    if (!url.GetFileName().empty())
     {
       url.SetFileName("");
       strParent = url.Get();
       return true;
     }
-    if (!url.GetHostName().IsEmpty())
+    if (!url.GetHostName().empty())
     {
       url.SetHostName("");
       strParent = url.Get();
@@ -541,7 +541,7 @@ bool URIUtils::IsHD(const CStdString& strFileName)
   if (ProtocolHasParentInHostname(url.GetProtocol()))
     return IsHD(url.GetHostName());
 
-  return url.GetProtocol().IsEmpty() || url.GetProtocol() == "file";
+  return url.GetProtocol().empty() || url.GetProtocol() == "file";
 }
 
 bool URIUtils::IsDVD(const CStdString& strFile)
@@ -716,7 +716,7 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
 {
   CStdString strProtocol = url.GetProtocol();
   
-  if (strProtocol.IsEmpty())
+  if (strProtocol.empty())
     return false;
 
   // there's nothing to stop internet streams from being stacked
@@ -877,7 +877,7 @@ void URIUtils::AddSlashAtEnd(CStdString& strFolder)
   {
     CURL url(strFolder);
     CStdString file = url.GetFileName();
-    if(!file.IsEmpty() && file != strFolder)
+    if(!file.empty() && file != strFolder)
     {
       AddSlashAtEnd(file);
       url.SetFileName(file);
@@ -902,7 +902,7 @@ bool URIUtils::HasSlashAtEnd(const CStdString& strFile, bool checkURL /* = false
   {
     CURL url(strFile);
     CStdString file = url.GetFileName();
-    return file.IsEmpty() || HasSlashAtEnd(file, false);
+    return file.empty() || HasSlashAtEnd(file, false);
   }
   char kar = strFile.c_str()[strFile.size() - 1];
 
@@ -918,14 +918,14 @@ void URIUtils::RemoveSlashAtEnd(CStdString& strFolder)
   {
     CURL url(strFolder);
     CStdString file = url.GetFileName();
-    if (!file.IsEmpty() && file != strFolder)
+    if (!file.empty() && file != strFolder)
     {
       RemoveSlashAtEnd(file);
       url.SetFileName(file);
       strFolder = url.Get();
       return;
     }
-    if(url.GetHostName().IsEmpty())
+    if(url.GetHostName().empty())
       return;
   }
 
@@ -955,7 +955,7 @@ CStdString URIUtils::AddFileToFolder(const CStdString& strFolder,
   }
 
   CStdString strResult = strFolder;
-  if (!strResult.IsEmpty())
+  if (!strResult.empty())
     AddSlashAtEnd(strResult);
 
   // Remove any slash at the start of the file
@@ -999,7 +999,7 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
 
   strUrlPath = strType+"://";
 
-  if( !strPwd.IsEmpty() )
+  if( !strPwd.empty() )
   {
     strBuffer = strPwd;
     CURL::Encode(strBuffer);

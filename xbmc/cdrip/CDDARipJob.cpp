@@ -70,7 +70,7 @@ bool CCDDARipJob::DoWork()
   if (file.IsRemote())
     m_output = SetupTempFile();
   
-  if (m_output.IsEmpty())
+  if (m_output.empty())
   {
     CLog::Log(LOGERROR, "CCDDARipper: Error opening file");
     return false;

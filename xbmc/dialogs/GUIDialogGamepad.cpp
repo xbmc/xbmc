@@ -180,7 +180,7 @@ bool CGUIDialogGamepad::ShowAndGetInput(CStdString& aTextString, const CStdStrin
     return false;
   }
 
-  if (strUserInput.IsEmpty())
+  if (strUserInput.empty())
     // user canceled out
     return false;
 
@@ -204,7 +204,7 @@ bool CGUIDialogGamepad::ShowAndVerifyNewPassword(CStdString& strNewPassword)
     return false;
   }
 
-  if (strUserInput.IsEmpty())
+  if (strUserInput.empty())
     // user canceled out
     return false;
 
@@ -243,7 +243,7 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdString& strPassword, const CStd
     return 0;
   }
 
-  if (strPassTemp.IsEmpty())
+  if (strPassTemp.empty())
     // user canceled out
     return -1;
 

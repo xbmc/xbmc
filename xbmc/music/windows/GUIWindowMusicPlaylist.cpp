@@ -447,10 +447,10 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
     CStdString strTrackLeft=CSettings::Get().GetString("musicfiles.nowplayingtrackformat");
-    if (strTrackLeft.IsEmpty())
+    if (strTrackLeft.empty())
       strTrackLeft = CSettings::Get().GetString("musicfiles.trackformat");
     CStdString strTrackRight=CSettings::Get().GetString("musicfiles.nowplayingtrackformatright");
-    if (strTrackRight.IsEmpty())
+    if (strTrackRight.empty())
       strTrackRight = CSettings::Get().GetString("musicfiles.trackformatright");
     CLabelFormatter formatter(strTrackLeft, strTrackRight);
     formatter.FormatLabels(pItem);
@@ -486,7 +486,7 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory, bool update
   if (!CGUIWindowMusicBase::Update(strDirectory, updateFilterPath))
     return false;
 
-  if (m_vecItems->GetContent().IsEmpty())
+  if (m_vecItems->GetContent().empty())
     m_vecItems->SetContent("songs");
 
   m_musicInfoLoader.Load(*m_vecItems);

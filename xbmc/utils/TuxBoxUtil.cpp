@@ -110,9 +110,9 @@ void CTuxBoxService::Process()
     if(g_tuxbox.GetHttpXML(url,"currentservicedata"))
     {
       CLog::Log(LOGDEBUG, "%s - receive current service data was successful", __FUNCTION__);
-      if(!strCurrentServiceName.IsEmpty()&&
+      if(!strCurrentServiceName.empty()&&
         !strCurrentServiceName.Equals("NULL") &&
-        !g_tuxbox.sCurSrvData.service_name.IsEmpty() &&
+        !g_tuxbox.sCurSrvData.service_name.empty() &&
         !g_tuxbox.sCurSrvData.service_name.Equals("-") &&
         !g_tuxbox.vVideoSubChannel.mode)
       {
@@ -174,7 +174,7 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
     CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__, strChild.c_str());
     return false;
   }
-  if (strFilter.IsEmpty())
+  if (strFilter.empty())
   {
     pNode = pRootElement->FirstChild(strChild.c_str());
     if (!pNode)
@@ -233,7 +233,7 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
     CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__, strChild.c_str());
     return false;
   }
-  if (strFilter.IsEmpty())
+  if (strFilter.empty())
   {
     pNode = pRootElement->FirstChildElement("e2bouquet");
     if (!pNode)
@@ -279,7 +279,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
     CLog::Log(LOGWARNING, "%s - No %ss found", __FUNCTION__,strChild.c_str());
     return false;
   }
-  if(!strFilter.IsEmpty())
+  if(!strFilter.empty())
   {
     pNode = pRootElement->FirstChild(strChild.c_str());
     if (!pNode)
@@ -365,7 +365,7 @@ bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items,
     CLog::Log(LOGWARNING, "%s - No %ss found", __FUNCTION__,strChild.c_str());
     return false;
   }
-  if(!strFilter.IsEmpty())
+  if(!strFilter.empty())
   {
     pNode = pRootElement->FirstChild(strChild.c_str());
     if (!pNode)
@@ -523,7 +523,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
 {
   CURL url(strPath);
   CStdString strOptions = url.GetOptions();
-  if (strOptions.IsEmpty())
+  if (strOptions.empty())
     return false;
 
   if (url.HasOption("path"))
@@ -724,7 +724,7 @@ bool CTuxBoxUtil::SetAudioChannel( const CStdString& strPath, const AUDIOCHANNEL
 bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
 {
   // Check and Set URL Request Option
-  if(!strRequestType.IsEmpty())
+  if(!strRequestType.empty())
   {
     if(strRequestType.Equals("streaminfo"))
     {
@@ -1509,7 +1509,7 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
     CLog::Log(LOGDEBUG, "%s PictureIcon Detection is Disabled! Using default icon", __FUNCTION__);
     return "";
   }
-  if (strServiceName.IsEmpty())
+  if (strServiceName.empty())
   {
     CLog::Log(LOGDEBUG, "%s Service Name is Empty! Can not detect a PictureIcon. Using default icon!", __FUNCTION__);
     return "";

@@ -101,19 +101,19 @@ bool CProgramThumbLoader::FillThumb(CFileItem &item)
   // no need to do anything if we already have a thumb set
   CStdString thumb = item.GetArt("thumb");
 
-  if (thumb.IsEmpty())
+  if (thumb.empty())
   { // see whether we have a cached image for this item
     CProgramThumbLoader loader;
     thumb = loader.GetCachedImage(item, "thumb");
-    if (thumb.IsEmpty())
+    if (thumb.empty())
     {
       thumb = GetLocalThumb(item);
-      if (!thumb.IsEmpty())
+      if (!thumb.empty())
         loader.SetCachedImage(item, "thumb", thumb);
     }
   }
 
-  if (!thumb.IsEmpty())
+  if (!thumb.empty())
   {
     CTextureCache::Get().BackgroundCacheImage(thumb);
     item.SetArt("thumb", thumb);

@@ -158,7 +158,7 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
     CStdString language;
     language = CAddonMgr::Get().GetExtValue(metadata->configuration, "language");
-    if (!language.IsEmpty())
+    if (!language.empty())
       extrainfo.insert(make_pair("language",language));
     broken = CAddonMgr::Get().GetExtValue(metadata->configuration, "broken");
     EMPTY_IF("nofanart",fanart)
@@ -276,7 +276,7 @@ CAddon::CAddon(const cp_plugin_info_t *plugin)
 CAddon::CAddon(const AddonProps &props)
   : m_props(props)
 {
-  if (props.libname.IsEmpty()) BuildLibName();
+  if (props.libname.empty()) BuildLibName();
   else m_strLibName = props.libname;
   BuildProfilePath();
   m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");

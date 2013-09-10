@@ -1322,7 +1322,7 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel
   {
     CLog::Log(LOGDEBUG, "add-on '%s' can not play channel '%s'", GetFriendlyName().c_str(), channel.ChannelName().c_str());
   }
-  else if (!channel.StreamURL().IsEmpty())
+  else if (!channel.StreamURL().empty())
   {
     CLog::Log(LOGDEBUG, "opening live stream on url '%s'", channel.StreamURL().c_str());
     bReturn = true;

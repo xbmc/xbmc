@@ -280,7 +280,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
 
 void CPVRRecording::UpdatePath(void)
 {
-  if (!m_strStreamURL.IsEmpty())
+  if (!m_strStreamURL.empty())
   {
     m_strFileNameAndPath = m_strStreamURL;
   }
@@ -292,9 +292,9 @@ void CPVRRecording::UpdatePath(void)
     CStdString strChannel;
     strTitle.Replace('/',' ');
 
-    if (!m_strDirectory.IsEmpty())
+    if (!m_strDirectory.empty())
       strDirectory = StringUtils::Format("%s/", m_strDirectory.c_str());
-    if (!m_strChannelName.IsEmpty())
+    if (!m_strChannelName.empty())
       strChannel = StringUtils::Format(" (%s)", m_strChannelName.c_str());
     m_strFileNameAndPath = StringUtils::Format("pvr://recordings/%s%s, TV%s, %s.pvr", strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
   }

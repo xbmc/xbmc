@@ -352,7 +352,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
 
       buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
     }
-    if (!GetDefaultShareNameByType(type).IsEmpty())
+    if (!GetDefaultShareNameByType(type).empty())
       buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
 
     buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
@@ -454,7 +454,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     if (CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
     { // check default before we delete, as deletion will kill the share object
       CStdString defaultSource(GetDefaultShareNameByType(type));
-      if (!defaultSource.IsEmpty())
+      if (!defaultSource.empty())
       {
         if (share->strName.Equals(defaultSource))
           ClearDefault(type);
@@ -493,7 +493,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       CFileItemList items;
 
       // add the current thumb, if available
-      if (!share->m_strThumbnailImage.IsEmpty())
+      if (!share->m_strThumbnailImage.empty())
       {
         CFileItemPtr current(new CFileItem("thumb://Current", false));
         current->SetArt("thumb", share->m_strThumbnailImage);
@@ -542,7 +542,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         CMediaSourceSettings::Get().UpdateSource(type,share->strName,"thumbnail",strThumb);
         CMediaSourceSettings::Get().Save();
       }
-      else if (!strThumb.IsEmpty())
+      else if (!strThumb.empty())
       { // this is some sort of an auto-share, so store in the texture database
         CTextureDatabase db;
         if (db.Open())

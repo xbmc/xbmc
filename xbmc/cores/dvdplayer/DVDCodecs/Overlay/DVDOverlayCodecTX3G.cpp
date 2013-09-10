@@ -230,7 +230,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   free(bgnStyle);
   free(endStyle);
     
-  if (strUTF8.IsEmpty())
+  if (strUTF8.empty())
     return OC_BUFFER;
 
   if (strUTF8[strUTF8.size()-1] == '\n')

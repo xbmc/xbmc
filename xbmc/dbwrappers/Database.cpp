@@ -214,7 +214,7 @@ bool CDatabase::DeleteValues(const CStdString &strTable, const CStdString &strWh
   bool bReturn = true;
 
   CStdString strQueryBase = "DELETE FROM %s";
-  if (!strWhereClause.IsEmpty())
+  if (!strWhereClause.empty())
     strQueryBase.AppendFormat(" WHERE %s", strWhereClause.c_str());
 
   CStdString strQuery = FormatSQL(strQueryBase, strTable.c_str());
@@ -268,7 +268,7 @@ bool CDatabase::ResultQuery(const CStdString &strQuery)
 
 bool CDatabase::QueueInsertQuery(const CStdString &strQuery)
 {
-  if (strQuery.IsEmpty())
+  if (strQuery.empty())
     return false;
 
   if (!m_bMultiWrite)
@@ -342,8 +342,8 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
   if ( dbSettings.type.Equals("mysql") )
   {
     // check we have all information before we cancel the fallback
-    if ( ! (dbSettings.host.IsEmpty() ||
-            dbSettings.user.IsEmpty() || dbSettings.pass.IsEmpty()) )
+    if ( ! (dbSettings.host.empty() ||
+            dbSettings.user.empty() || dbSettings.pass.empty()) )
       m_sqlite = false;
     else
       CLog::Log(LOGINFO, "Essential mysql database information is missing. Require at least host, user and pass defined.");
@@ -355,12 +355,12 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
 #endif
   {
     dbSettings.type = "sqlite3";
-    if (dbSettings.host.IsEmpty())
+    if (dbSettings.host.empty())
       dbSettings.host = CSpecialProtocol::TranslatePath(CProfilesManager::Get().GetDatabaseFolder());
   }
 
   // use separate, versioned database
-  if (dbSettings.name.IsEmpty())
+  if (dbSettings.name.empty())
     dbSettings.name = GetBaseDBName();
 }
 
@@ -453,13 +453,13 @@ bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSett
   // host name is always required
   m_pDB->setHostName(dbSettings.host.c_str());
 
-  if (!dbSettings.port.IsEmpty())
+  if (!dbSettings.port.empty())
     m_pDB->setPort(dbSettings.port.c_str());
 
-  if (!dbSettings.user.IsEmpty())
+  if (!dbSettings.user.empty())
     m_pDB->setLogin(dbSettings.user.c_str());
 
-  if (!dbSettings.pass.IsEmpty())
+  if (!dbSettings.pass.empty())
     m_pDB->setPasswd(dbSettings.pass.c_str());
 
   // database name is always required

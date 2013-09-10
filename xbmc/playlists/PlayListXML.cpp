@@ -117,14 +117,14 @@ bool CPlayListXML::Load( const CStdString& strFileName )
     CStdString lockpass = GetString( pSet, "lockpassword" );
 
     // If url is empty, it doesn't make any sense
-    if ( !url.IsEmpty() )
+    if ( !url.empty() )
     {
        // If the name is empty, use url
-       if ( name.IsEmpty() )
+       if ( name.empty() )
          name = url;
 
        // Append language to the name, and also set as metadata
-       if ( !lang.IsEmpty() )
+       if ( !lang.empty() )
          name += " [" + lang + "]";
 
        CStdString info = name;
@@ -132,21 +132,21 @@ bool CPlayListXML::Load( const CStdString& strFileName )
        newItem->SetPath(url);
 
        // Set language as metadata
-       if ( !lang.IsEmpty() )
+       if ( !lang.empty() )
          newItem->SetProperty("language", lang.c_str() );
 
        // Set category as metadata
-       if ( !category.IsEmpty() )
+       if ( !category.empty() )
          newItem->SetProperty("category", category.c_str() );
 
        // Set channel as extra info and as metadata
-       if ( !channel.IsEmpty() )
+       if ( !channel.empty() )
        {
          newItem->SetProperty("remotechannel", channel.c_str() );
          newItem->SetExtraInfo( "Channel: " + channel );
        }
 
-       if ( !lockpass.IsEmpty() )
+       if ( !lockpass.empty() )
        {
          newItem->m_strLockCode = lockpass;
          newItem->m_iHasLock = 2;

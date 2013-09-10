@@ -48,7 +48,7 @@ CLibraryDirectory::~CLibraryDirectory(void)
 bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString libNode = GetNode(strPath);
-  if (libNode.IsEmpty())
+  if (libNode.empty())
     return false;
 
   if (URIUtils::HasExtension(libNode, ".xml"))
@@ -62,7 +62,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
         CSmartPlaylist playlist;
         CStdString type, label;
         XMLUtils::GetString(node, "content", type);
-        if (type.IsEmpty())
+        if (type.empty())
         {
           CLog::Log(LOGERROR, "<content> tag must not be empty for type=\"filter\" node '%s'", libNode.c_str());
           return false;
@@ -120,7 +120,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       { // folder type - grab our path
         CStdString path;
         XMLUtils::GetPath(node, "path", path);
-        if (path.IsEmpty())
+        if (path.empty())
         {
           CLog::Log(LOGERROR, "<path> tag must be not be empty for type=\"folder\" node '%s'", xml.c_str());
           continue;
@@ -134,7 +134,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
         item.reset(new CFileItem(URIUtils::AddFileToFolder(strPath, folder), true));
       }
       item->SetLabel(label);
-      if (!icon.IsEmpty() && g_TextureManager.HasTexture(icon))
+      if (!icon.empty() && g_TextureManager.HasTexture(icon))
         item->SetIconImage(icon);
       item->m_iprogramCount = order;
       items.Add(item);
@@ -158,7 +158,7 @@ TiXmlElement *CLibraryDirectory::LoadXML(const CStdString &xmlFile)
 
   // check the condition
   CStdString condition = xml->Attribute("visible");
-  if (condition.IsEmpty() || g_infoManager.EvaluateBool(condition))
+  if (condition.empty() || g_infoManager.EvaluateBool(condition))
     return xml;
 
   return NULL;
@@ -166,7 +166,7 @@ TiXmlElement *CLibraryDirectory::LoadXML(const CStdString &xmlFile)
 
 bool CLibraryDirectory::Exists(const char* strPath)
 {
-  return !GetNode(strPath).IsEmpty();
+  return !GetNode(strPath).empty();
 }
 
 CStdString CLibraryDirectory::GetNode(const CStdString &path)

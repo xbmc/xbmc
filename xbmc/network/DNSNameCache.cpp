@@ -76,7 +76,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
     pclose(fp);
   }
 
-  if (!strIpAddress.IsEmpty())
+  if (!strIpAddress.empty())
   {
     g_DNSCache.Add(strHostName, strIpAddress);
     return true;

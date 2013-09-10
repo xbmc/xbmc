@@ -68,7 +68,7 @@ void CKaraokeWindowBackground::Init(CGUIWindow * wnd)
   // Init visialisation variables
   CStdString defBkgType = g_advancedSettings.m_karaokeDefaultBackgroundType;
 
-  if ( defBkgType.IsEmpty() || defBkgType == "none" )
+  if ( defBkgType.empty() || defBkgType == "none" )
   {
     CLog::Log( LOGDEBUG, "Karaoke default background is set to none" );
     m_defaultMode = BACKGROUND_NONE;
@@ -78,13 +78,13 @@ void CKaraokeWindowBackground::Init(CGUIWindow * wnd)
     CLog::Log( LOGDEBUG, "Karaoke default background is visualisation" );
     m_defaultMode = BACKGROUND_VISUALISATION;
   }
-  else if ( defBkgType == "image" && !g_advancedSettings.m_karaokeDefaultBackgroundFilePath.IsEmpty() )
+  else if ( defBkgType == "image" && !g_advancedSettings.m_karaokeDefaultBackgroundFilePath.empty() )
   {
     CLog::Log( LOGDEBUG, "Karaoke default background is image %s", g_advancedSettings.m_karaokeDefaultBackgroundFilePath.c_str() );
     m_defaultMode = BACKGROUND_IMAGE;
     m_path = g_advancedSettings.m_karaokeDefaultBackgroundFilePath;
   }
-  else if ( defBkgType == "video" && !g_advancedSettings.m_karaokeDefaultBackgroundFilePath.IsEmpty() )
+  else if ( defBkgType == "video" && !g_advancedSettings.m_karaokeDefaultBackgroundFilePath.empty() )
   {
     CLog::Log( LOGDEBUG, "Karaoke default background is video %s", g_advancedSettings.m_karaokeDefaultBackgroundFilePath.c_str() );
     m_defaultMode = BACKGROUND_VIDEO;

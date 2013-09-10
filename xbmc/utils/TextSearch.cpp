@@ -42,7 +42,7 @@ bool CTextSearch::IsValid(void) const
 
 bool CTextSearch::Search(const CStdString &strHaystack) const
 {
-  if (strHaystack.IsEmpty() || !IsValid())
+  if (strHaystack.empty() || !IsValid())
     return false;
 
   CStdString strSearch(strHaystack);

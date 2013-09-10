@@ -169,7 +169,7 @@ bool CHTSPDirectorySession::Open(const CURL& url)
     return false;
   }
 
-  if(!url.GetUserName().IsEmpty())
+  if(!url.GetUserName().empty())
     m_session.Auth(url.GetUserName(), url.GetPassWord());
 
   if(!m_session.SendEnableAsync())
@@ -423,7 +423,7 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return false;
 
 
-  if(url.GetFileName().IsEmpty())
+  if(url.GetFileName().empty())
   {
     CFileItemPtr item;
 

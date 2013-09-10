@@ -591,7 +591,7 @@ void CGUISliderControl::SetInfo(int iInfo)
 
 CStdString CGUISliderControl::GetDescription() const
 {
-  if (!m_textValue.IsEmpty())
+  if (!m_textValue.empty())
     return m_textValue;
   CStdString description;
   if (m_iType == SPIN_CONTROL_TYPE_FLOAT)

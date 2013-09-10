@@ -690,7 +690,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   int status = AIRPLAY_STATUS_OK;
   bool needAuth = false;
   
-  if (m_sessionId.IsEmpty())
+  if (m_sessionId.empty())
     m_sessionId = "00000000-0000-0000-0000-000000000000";
 
   if (ServerInstance->m_usePassword && !m_bAuthenticated)

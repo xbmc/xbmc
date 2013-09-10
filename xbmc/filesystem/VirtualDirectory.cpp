@@ -76,11 +76,11 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   int flags = m_flags;
   if (!bUseFileDirectories)
     flags |= DIR_FLAG_NO_FILE_DIRS;
-  if (!strPath.IsEmpty() && strPath != "files://")
+  if (!strPath.empty() && strPath != "files://")
     return CDirectory::GetDirectory(strPath, items, m_strFileMask, flags, m_allowThreads);
 
   // if strPath is blank, clear the list (to avoid parent items showing up)
-  if (strPath.IsEmpty())
+  if (strPath.empty())
     items.Clear();
 
   // return the root listing

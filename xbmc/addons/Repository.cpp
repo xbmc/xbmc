@@ -85,7 +85,7 @@ CRepository::~CRepository()
 
 CStdString CRepository::Checksum()
 {
-  if (!m_checksum.IsEmpty())
+  if (!m_checksum.empty())
     return FetchChecksum(m_checksum);
   return "";
 }
@@ -130,7 +130,7 @@ CStdString CRepository::GetAddonHash(const AddonPtr& addon)
 
 #define SET_IF_NOT_EMPTY(x,y) \
   { \
-    if (!x.IsEmpty()) \
+    if (!x.empty()) \
        x = y; \
   }
 
@@ -146,7 +146,7 @@ VECADDONS CRepository::Parse()
   {
     CURL url(m_info);
     CStdString opts = url.GetProtocolOptions();
-    if (!opts.IsEmpty())
+    if (!opts.empty())
       opts += "&";
     url.SetProtocolOptions(opts+"Encoding=gzip");
     file = url.Get();
@@ -242,9 +242,9 @@ bool CRepositoryUpdateJob::DoWork()
                                               addon->Name(),TOAST_DISPLAY_TIME,false,TOAST_DISPLAY_TIME);
       }
     }
-    if (!addons[i]->Props().broken.IsEmpty())
+    if (!addons[i]->Props().broken.empty())
     {
-      if (database.IsAddonBroken(addons[i]->ID()).IsEmpty())
+      if (database.IsAddonBroken(addons[i]->ID()).empty())
       {
         if (addon && CGUIDialogYesNo::ShowAndGetInput(addons[i]->Name(),
                                              g_localizeStrings.Get(24096),

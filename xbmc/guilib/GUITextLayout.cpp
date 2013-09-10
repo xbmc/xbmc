@@ -281,7 +281,7 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadi
       character_t style = *it & 0xffff0000;
       if (style != sectionStyle)
       {
-        if (!sectionText.IsEmpty())
+        if (!sectionText.empty())
         { // style has changed, bidi flip text
           CStdStringW sectionFlipped = BidiFlip(sectionText, forceLTRReadingOrder);
           for (unsigned int j = 0; j < sectionFlipped.size(); j++)
@@ -294,7 +294,7 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadi
     }
 
     // handle the last section
-    if (!sectionText.IsEmpty())
+    if (!sectionText.empty())
     {
       CStdStringW sectionFlipped = BidiFlip(sectionText, forceLTRReadingOrder);
       for (unsigned int j = 0; j < sectionFlipped.size(); j++)

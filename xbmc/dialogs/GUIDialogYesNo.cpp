@@ -123,11 +123,11 @@ bool CGUIDialogYesNo::ShowAndGetInput(const CStdString& heading, const CStdStrin
   dialog->SetLine(1, line1);
   dialog->SetLine(2, line2);
   dialog->m_bCanceled = false;
-  if (!noLabel.IsEmpty())
+  if (!noLabel.empty())
     dialog->SetChoice(0,noLabel);
   else
     dialog->SetChoice(0,106);
-  if (!yesLabel.IsEmpty())
+  if (!yesLabel.empty())
     dialog->SetChoice(1,yesLabel);
   else
     dialog->SetChoice(1,107);

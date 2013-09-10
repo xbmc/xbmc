@@ -349,13 +349,13 @@ int CBuiltins::Execute(const CStdString& execString)
       if (params.size() >= 2)
         sync = params[1].Equals("sync");
 
-      if (!strSaveToPath.IsEmpty())
+      if (!strSaveToPath.empty())
       {
         if (CDirectory::Exists(strSaveToPath))
         {
           CStdString file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strSaveToPath, "screenshot%03d.png"), 999);
 
-          if (!file.IsEmpty())
+          if (!file.empty())
           {
             CScreenShot::TakeScreenshot(file, sync);
           }
@@ -1458,7 +1458,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if (params.size() > 2)
       path=params[2];
-    if (singleFile || !path.IsEmpty() ||
+    if (singleFile || !path.empty() ||
         CGUIDialogFileBrowser::ShowAndGetDirectory(shares,
 				  g_localizeStrings.Get(661), path, true))
     {

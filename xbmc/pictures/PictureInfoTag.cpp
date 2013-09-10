@@ -52,7 +52,7 @@ bool CPictureInfoTag::Load(const CStdString &path)
   m_isLoaded = false;
 
   DllLibExif exifDll;
-  if (path.IsEmpty() || !exifDll.Load())
+  if (path.empty() || !exifDll.Load())
     return false;
 
   if (exifDll.process_jpeg(path.c_str(), &m_exifInfo, &m_iptcInfo))
@@ -281,7 +281,7 @@ void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t le
   CStdString temp;
   ar >> temp;
   length = min((size_t)temp.GetLength(), length - 1);
-  if (!temp.IsEmpty())
+  if (!temp.empty())
     memcpy(string, temp.c_str(), length);
   string[length] = 0;
 }

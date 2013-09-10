@@ -116,7 +116,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
   // render the skin debug info
   if (g_SkinInfo->IsDebugging())
   {
-    if (!info.IsEmpty())
+    if (!info.empty())
       info += "\n";
     CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
     CGUIWindow *pointer = g_windowManager.GetWindow(WINDOW_DIALOG_POINTER);
@@ -126,7 +126,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     if (window)
     {
       CStdString windowName = CButtonTranslator::TranslateWindow(window->GetID());
-      if (!windowName.IsEmpty())
+      if (!windowName.empty())
         windowName += " (" + CStdString(window->GetProperty("xmlfile").asString()) + ")";
       else
         windowName = window->GetProperty("xmlfile").asString();

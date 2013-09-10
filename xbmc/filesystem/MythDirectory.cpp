@@ -133,11 +133,11 @@ bool CMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
       url.SetFileName("guide/" + number);
       CFileItemPtr item(new CFileItem(url.Get(), true));
       item->m_strTitle = number;
-      if (!name.IsEmpty())
+      if (!name.empty())
         item->m_strTitle += " - " + name; // e.g. 3 - TV3
 
       CStdString icon = GetValue(m_dll->channel_icon(channel));
-      if (!icon.IsEmpty())
+      if (!icon.empty())
       {
         url.SetFileName("files/channels/" + URIUtils::GetFileName(icon)); // e.g. files/channels/tv3.jpg
         item->SetArt("thumb", url.Get());
@@ -192,7 +192,7 @@ bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &i
       item->m_strTitle = StringUtils::Format("%s - %s",
                                              localstart.GetAsLocalizedTime("HH:mm", false).c_str(),
                                              title.c_str()); // e.g. 20:30 - Mythbusters
-      if (!subtitle.IsEmpty())
+      if (!subtitle.empty())
         item->m_strTitle     += " - \"" + subtitle + "\""; // e.g. 20:30 - Mythbusters - "The Pirate Special"
       item->m_dateTime        = localstart;
 
@@ -201,7 +201,7 @@ bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &i
        */
       CVideoInfoTag* tag      = item->GetVideoInfoTag();
       tag->m_strTitle         = title;
-      if (!subtitle.IsEmpty())
+      if (!subtitle.empty())
         tag->m_strTitle      += " - \"" + subtitle + "\""; // e.g. Mythbusters - "The Pirate Special"
       tag->m_strShowTitle     = title;
       tag->m_strOriginalTitle = title;

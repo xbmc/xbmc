@@ -2847,11 +2847,6 @@ public:
     return GetLength();
   }
 
-  bool IsEmpty() const
-  {
-    return this->empty();
-  }
-
   MYTYPE Left(int nCount) const
   {
         // Range check the count.

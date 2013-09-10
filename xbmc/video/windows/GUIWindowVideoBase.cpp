@@ -925,7 +925,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
       }
 
       CStdString resumeString = GetResumeString(*item);
-      if (!resumeString.IsEmpty())
+      if (!resumeString.empty())
       {
         choices.Add(SELECT_ACTION_RESUME, resumeString);
         choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
@@ -985,7 +985,7 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
     CStdString strDir;
     if (item->IsVideoDb()       &&
         item->HasVideoInfoTag() &&
-        !item->GetVideoInfoTag()->m_strPath.IsEmpty())
+        !item->GetVideoInfoTag()->m_strPath.empty())
     {
       strDir = item->GetVideoInfoTag()->m_strPath;
     }
@@ -1040,7 +1040,7 @@ bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
   if (!item.m_bIsFolder && !item.IsLiveTV())
   {
     CStdString resumeString = GetResumeString(item);
-    if (!resumeString.IsEmpty())
+    if (!resumeString.empty())
     { // prompt user whether they wish to resume
       CContextButtons choices;
       choices.Add(1, resumeString);
@@ -1162,7 +1162,7 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
 
   CStdString resumeString = GetResumeString(*item);
 
-  if (!resumeString.IsEmpty())
+  if (!resumeString.empty())
   {
     CContextButtons choices;
     choices.Add(SELECT_ACTION_RESUME, resumeString);
@@ -1201,7 +1201,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
 
-        if (!m_vecItems->GetPath().IsEmpty() && !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->GetPath().Left(9).Equals("newtag://")
+        if (!m_vecItems->GetPath().empty() && !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->GetPath().Left(9).Equals("newtag://")
             && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
@@ -1287,7 +1287,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     {
       CStdString resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile - 1].get()));
       stack->m_lStartOffset = 0;
-      if (!resumeString.IsEmpty()) 
+      if (!resumeString.empty()) 
       {
         CContextButtons choices;
         choices.Add(SELECT_ACTION_RESUME, resumeString);
@@ -1328,7 +1328,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_SET_CONTENT:
     {
-      OnAssignContent(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.IsEmpty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath());
+      OnAssignContent(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.empty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath());
       return true;
     }
   case CONTEXT_BUTTON_PLAY_PART:
@@ -1389,7 +1389,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       SScanSettings settings;
       GetScraperForItem(item.get(), info, settings);
       CStdString strPath = item->GetPath();
-      if (item->IsVideoDb() && (!item->m_bIsFolder || item->GetVideoInfoTag()->m_strPath.IsEmpty()))
+      if (item->IsVideoDb() && (!item->m_bIsFolder || item->GetVideoInfoTag()->m_strPath.empty()))
         return false;
 
       if (item->IsVideoDb())
@@ -1482,7 +1482,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
 
     /* For recordings we check here for a available stream URL */
     CFileItemPtr tag = g_PVRRecordings->GetByPath(item.GetPath());
-    if (tag && tag->HasPVRRecordingInfoTag() && !tag->GetPVRRecordingInfoTag()->m_strStreamURL.IsEmpty())
+    if (tag && tag->HasPVRRecordingInfoTag() && !tag->GetPVRRecordingInfoTag()->m_strStreamURL.empty())
     {
       CStdString stream = tag->GetPVRRecordingInfoTag()->m_strStreamURL;
 
@@ -1831,12 +1831,12 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     return;
 
   // enter new genre string
-  if (strGenre.IsEmpty())
+  if (strGenre.empty())
   {
     strGenre = g_localizeStrings.Get(532); // Manual Addition
     if (!CGUIKeyboardFactory::ShowAndGetInput(strGenre, g_localizeStrings.Get(533), false)) // Enter Genre
       return; // user backed out
-    if (strGenre.IsEmpty())
+    if (strGenre.empty())
       return; // no genre string
   }
 
@@ -1985,7 +1985,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
   }
 
   bool foundDirectly = false;
-  info = m_database.GetScraperForPath(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.IsEmpty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath(), settings, foundDirectly);
+  info = m_database.GetScraperForPath(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.empty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath(), settings, foundDirectly);
   return foundDirectly ? 1 : 0;
 }
 

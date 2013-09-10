@@ -63,7 +63,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   strExtension.ToLower();
   strExtension.TrimLeft('.');
 
-  if (strExtension.IsEmpty())
+  if (strExtension.empty())
     return NULL;
 
   if (strExtension == "aac" ||

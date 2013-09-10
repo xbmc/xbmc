@@ -290,7 +290,7 @@ CStdString   PipesManager::GetUniquePipeName()
 XFILE::Pipe *PipesManager::CreatePipe(const CStdString &name, int nMaxPipeSize)
 {
   CStdString pName = name;
-  if (pName.IsEmpty())
+  if (pName.empty())
     pName = GetUniquePipeName();
   
   CSingleLock lock(m_lock);

@@ -143,7 +143,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
   CStdString title        = GetValue(m_dll->proginfo_title(program)); // e.g. Mythbusters
   CStdString subtitle     = GetValue(m_dll->proginfo_subtitle(program)); // e.g. The Pirate Special
   item.m_strTitle         = title;
-  if (!subtitle.IsEmpty())
+  if (!subtitle.empty())
     item.m_strTitle      += " - \"" + subtitle + "\""; // e.g. Mythbusters - "The Pirate Special"
   item.m_dateTime         = GetValue(m_dll->proginfo_rec_start(program));
   item.m_dwSize           = m_dll->proginfo_length(program); // size in bytes
@@ -162,7 +162,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
    * subtitle to the start of the plot if not already as it used to? Seems strange, should be
    * handled by skin?
    *
-  if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
+  if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.empty())
     tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
    */
   tag->m_genre            = StringUtils::Split(GetValue(m_dll->proginfo_category(program)), g_advancedSettings.m_videoItemSeparator); // e.g. Sports
@@ -209,7 +209,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
      * within the OSD.
      */
     CStdString name = GetValue(m_dll->proginfo_chansign(program));
-    if (!name.IsEmpty())
+    if (!name.empty())
       tag->m_strTitle += " - " + name;
 
     /*
@@ -226,13 +226,13 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
      * Update the path and channel icon for LiveTV in case the channel has changed through
      * NextChannel(), PreviousChannel() or SetChannel().
      */
-    if (!number.IsEmpty())
+    if (!number.empty())
     {
       url.SetFileName("channels/" + number + ".ts"); // e.g. channels/3.ts
       item.SetPath(url.Get());
     }
     CStdString chanicon = GetValue(m_dll->proginfo_chanicon(program));
-    if (!chanicon.IsEmpty())
+    if (!chanicon.empty())
     {
       url.SetFileName("files/channels/" + URIUtils::GetFileName(chanicon)); // e.g. files/channels/tv3.jpg
       item.SetArt("thumb", url.Get());
@@ -277,8 +277,8 @@ void CMythSession::SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *sea
   *season  = 0;
   *episode = 0;
   
-  if (programid.IsEmpty() // Can't do anything if the program ID is empty
-  ||  seriesid.IsEmpty()) // Can't figure out the end parsing if the series ID is empty  {
+  if (programid.empty() // Can't do anything if the program ID is empty
+  ||  seriesid.empty()) // Can't figure out the end parsing if the series ID is empty  {
     return;
   
   CStdString category = programid.Left(2); // Valid for both XMLTV and SchedulesDirect sources
