@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.1.7"
+  version="2.2.0"
   name="Confluence"
   provider-name="Jezz_X, Team XBMC">
   <requires>
-    <import addon="xbmc.gui" version="4.0.0"/>
+    <import addon="xbmc.gui" version="5.0.0"/>
   </requires>
   <extension
     point="xbmc.gui.skin"
