@@ -45,6 +45,7 @@ if (APPLE)
 
 	# Build the updater so that it works on OS X 10.5 and above.
 	set(MIN_OSX_VERSION 10.5)
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmacosx-version-min=${MIN_OSX_VERSION}")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${MIN_OSX_VERSION}")
 endif()
 
