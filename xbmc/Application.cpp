@@ -2803,7 +2803,11 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 {
   MEASURE_FUNCTION;
 
+  // windows needs the call to MessagePump in order to receive window messages
+  // calling MessagePump before or after the loop gives undesired behavior
+#if !defined(TARGET_WINDOWS)
   if (processEvents)
+#endif
   {
     // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
     float frameTime = m_frameTime.GetElapsedSeconds();
