@@ -22,6 +22,7 @@
 #include "GUIWindowMusicPlaylistEditor.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "Autorun.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "filesystem/PlaylistFileDirectory.h"
@@ -175,8 +176,7 @@ void CGUIWindowMusicPlaylistEditor::UpdateButtons()
   CGUIWindowMusicBase::UpdateButtons();
 
   // Update object count label
-  CStdString items;
-  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str()); // " 14 Objects"
+  CStdString items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str()); // " 14 Objects"
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 
@@ -254,8 +254,7 @@ void CGUIWindowMusicPlaylistEditor::UpdatePlaylist()
   OnMessage(msg);
 
   // indicate how many songs we have
-  CStdString items;
-  items.Format("%i %s", m_playlist->Size(), g_localizeStrings.Get(134).c_str()); // "123 Songs"
+  CStdString items = StringUtils::Format("%i %s", m_playlist->Size(), g_localizeStrings.Get(134).c_str()); // "123 Songs"
   SET_CONTROL_LABEL(CONTROL_LABEL_PLAYLIST, items);
 
   m_playlistThumbLoader.Load(*m_playlist);

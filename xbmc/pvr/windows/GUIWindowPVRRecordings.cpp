@@ -99,7 +99,7 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
 
     // Suppress resume from 0
     if (positionInSeconds > 0)
-      resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(positionInSeconds).c_str());
+      resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(positionInSeconds).c_str());
   }
   return resumeString;
 }

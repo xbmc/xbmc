@@ -29,6 +29,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -126,8 +127,7 @@ void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory
   Crc32 crc;
   crc.ComputeFromLowerCase(path);
 
-  CStdString strFileName;
-  strFileName.Format("special://temp/%08x.fi", (unsigned __int32) crc);
+  CStdString strFileName = StringUtils::Format("special://temp/%08x.fi", (unsigned __int32) crc);
   CFile::Delete(strFileName);
 }
 

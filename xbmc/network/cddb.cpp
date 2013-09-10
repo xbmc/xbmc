@@ -967,7 +967,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   {
   case 200: //Found exact match
     strtok((char *)recv_buffer.c_str(), " ");
-    read_buffer.Format("cddb read %s %08x", strtok(NULL, " "), discid);
+    read_buffer = StringUtils::Format("cddb read %s %08x", strtok(NULL, " "), discid);
     break;
 
   case 210: //Found exact matches, list follows (until terminating marker)
@@ -1071,7 +1071,7 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
 CStdString Xcddb::GetCacheFile(uint32_t disc_id) const
 {
   CStdString strFileName;
-  strFileName.Format("%x.cddb", disc_id);
+  strFileName = StringUtils::Format("%x.cddb", disc_id);
   return URIUtils::AddFileToFolder(cCacheDir, strFileName);
 }
 

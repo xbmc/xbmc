@@ -308,7 +308,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
     }
 
     if (errno == ENODEV || errno == ENOENT)
-      cError.Format(g_localizeStrings.Get(770).c_str(),errno);
+      cError = StringUtils::Format(g_localizeStrings.Get(770).c_str(),errno);
     else
       cError = strerror(errno);
 

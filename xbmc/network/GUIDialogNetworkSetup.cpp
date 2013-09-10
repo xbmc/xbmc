@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIEditControl.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
 
@@ -437,7 +438,7 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_SMB;  // default to smb
   m_username = url.GetUserName();
   m_password = url.GetPassWord();
-  m_port.Format("%i", url.GetPort());
+  m_port = StringUtils::Format("%i", url.GetPort());
   m_server = url.GetHostName();
   m_path = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(m_path);

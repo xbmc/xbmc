@@ -26,6 +26,7 @@
 #include "addons/Scraper.h"
 #include "URL.h"
 #include "Util.h"
+#include "utils/StringUtils.h"
 #include "log.h"
 #include "CharsetConverter.h"
 
@@ -152,9 +153,8 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   int iIndex;
   for (int i=MAX_SCRAPER_BUFFERS-1; i>=0; i--)
   {
-    CStdString temp;
     iIndex = 0;
-    temp.Format("$$%i",i+1);
+    CStdString temp = StringUtils::Format("$$%i",i+1);
     while ((size_t)(iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
     {
       strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+temp.GetLength(),m_param[i]);
@@ -502,8 +502,7 @@ void CScraperParser::ConvertJSON(CStdString &string)
     int pos = reg.GetSubStart(1);
     std::string szReplace = reg.GetReplaceString("\\1");
 
-    CStdString replace;
-    replace.Format("&#x%s;", szReplace.c_str());
+    CStdString replace = StringUtils::Format("&#x%s;", szReplace.c_str());
     string.replace(string.begin()+pos-2, string.begin()+pos+4, replace);
   }
 
@@ -515,8 +514,7 @@ void CScraperParser::ConvertJSON(CStdString &string)
     int pos2 = reg2.GetSubStart(2);
     std::string szHexValue = reg2.GetReplaceString("\\1");
 
-    CStdString replace;
-    replace.Format("%c", strtol(szHexValue.c_str(), NULL, 16));
+    CStdString replace = StringUtils::Format("%c", strtol(szHexValue.c_str(), NULL, 16));
     string.replace(string.begin()+pos1-2, string.begin()+pos2+reg2.GetSubLength(2), replace);
   }
 

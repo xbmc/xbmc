@@ -20,6 +20,7 @@
 
 #include "PipesManager.h"
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
 
 #ifndef min
 #define min(a,b) ((a) < (b) ? (a) : (b))
@@ -283,9 +284,7 @@ PipesManager &PipesManager::GetInstance()
 CStdString   PipesManager::GetUniquePipeName()
 {
   CSingleLock lock(m_lock);
-  CStdString id;
-  id.Format("pipe://%d/",m_nGenIdHelper++);
-  return id;
+  return StringUtils::Format("pipe://%d/", m_nGenIdHelper++);
 }
 
 XFILE::Pipe *PipesManager::CreatePipe(const CStdString &name, int nMaxPipeSize)

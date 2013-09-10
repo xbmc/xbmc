@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 
 #define CONTROL_HEADING       1
 #define CONTROL_LIST          3
@@ -323,8 +324,7 @@ void CGUIDialogSelect::OnInitWindow()
   }
   m_viewControl.SetCurrentView(m_useDetails ? CONTROL_DETAILS : CONTROL_LIST);
 
-  CStdString items;
-  items.Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
+  CStdString items = StringUtils::Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_NUMBEROFFILES, items);
   
   if (m_multiSelection)

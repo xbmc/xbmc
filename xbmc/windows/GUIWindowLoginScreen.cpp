@@ -33,6 +33,7 @@
 #endif
 #include "interfaces/Builtins.h"
 #include "utils/Weather.h"
+#include "utils/StringUtils.h"
 #include "network/Network.h"
 #include "addons/Skin.h"
 #include "guilib/GUIMessage.h"
@@ -158,8 +159,7 @@ void CGUIWindowLoginScreen::FrameMove()
   if (GetFocusedControlID() == CONTROL_BIG_LIST && g_windowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
-  CStdString strLabel;
-  strLabel.Format(g_localizeStrings.Get(20114),m_iSelectedItem+1, CProfilesManager::Get().GetNumberOfProfiles());
+  CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20114), m_iSelectedItem+1, CProfilesManager::Get().GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }
@@ -202,7 +202,7 @@ void CGUIWindowLoginScreen::Update()
     if (profile->getDate().IsEmpty())
       strLabel = g_localizeStrings.Get(20113);
     else
-      strLabel.Format(g_localizeStrings.Get(20112), profile->getDate());
+      strLabel = StringUtils::Format(g_localizeStrings.Get(20112).c_str(), profile->getDate().c_str());
     item->SetLabel2(strLabel);
     item->SetArt("thumb", profile->getThumb());
     if (profile->getThumb().IsEmpty() || profile->getThumb().Equals("-"))

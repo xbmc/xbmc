@@ -129,8 +129,7 @@ bool CMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
 
       CLog::Log(LOGDEBUG, "%s - Adding channel number %d: %s", __FUNCTION__, channum, name.c_str());
 
-      CStdString number;
-      number.Format("%d", channum); // CStdString easier for string manipulation than int.
+      CStdString number = StringUtils::Format("%d", channum); // CStdString easier for string manipulation than int.
       url.SetFileName("guide/" + number);
       CFileItemPtr item(new CFileItem(url.Get(), true));
       item->m_strTitle = number;
@@ -190,7 +189,9 @@ bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &i
       CDateTime localstart;
       if (program[i].starttime)
         localstart = CTimeUtils::GetLocalTime(program[i].starttime);
-      item->m_strTitle.Format("%s - %s", localstart.GetAsLocalizedTime("HH:mm", false), title); // e.g. 20:30 - Mythbusters
+      item->m_strTitle = StringUtils::Format("%s - %s",
+                                             localstart.GetAsLocalizedTime("HH:mm", false).c_str(),
+                                             title.c_str()); // e.g. 20:30 - Mythbusters
       if (!subtitle.IsEmpty())
         item->m_strTitle     += " - \"" + subtitle + "\""; // e.g. 20:30 - Mythbusters - "The Pirate Special"
       item->m_dateTime        = localstart;

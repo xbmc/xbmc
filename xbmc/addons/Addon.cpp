@@ -588,7 +588,7 @@ TiXmlElement* CAddon::GetSettingsXML()
 
 void CAddon::BuildProfilePath()
 {
-  m_profile.Format("special://profile/addon_data/%s/", ID().c_str());
+  m_profile = StringUtils::Format("special://profile/addon_data/%s/", ID().c_str());
 }
 
 const CStdString CAddon::Icon() const

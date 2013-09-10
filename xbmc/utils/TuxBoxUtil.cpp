@@ -153,8 +153,7 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
       CLog::Log(LOGDEBUG, "%s ---------------------------------------------------------", __FUNCTION__);
       CLog::Log(LOGDEBUG, "%s - WARNING: Zaping Failed no Zap Point found!", __FUNCTION__);
       CLog::Log(LOGDEBUG, "%s ---------------------------------------------------------", __FUNCTION__);
-      CStdString strText;
-      strText.Format(g_localizeStrings.Get(21334).c_str(), item.GetLabel());
+      CStdString strText = StringUtils::Format(g_localizeStrings.Get(21334).c_str(), item.GetLabel().c_str());
       CGUIDialogOK::ShowAndGetInput(21331, strText, 21333, 0);
     }
   }
@@ -567,13 +566,23 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
           }
           CLog::Log(LOGDEBUG, "%s - Sending all audio pids: %s%s", __FUNCTION__, strAudioChannelPid.c_str(), strAPids.c_str());
 
-          strVideoStream.Format("0,%s,%s,%s%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), strAPids.c_str());
+          strVideoStream = StringUtils::Format("0,%s,%s,%s%s",
+                                               sStrmInfo.pmt.Left(4).c_str(),
+                                               sStrmInfo.vpid.Left(4).c_str(),
+                                               sStrmInfo.apid.Left(4).c_str(),
+                                               strAPids.c_str());
         }
         else
-          strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str());
+          strVideoStream = StringUtils::Format("0,%s,%s,%s",
+                                               sStrmInfo.pmt.Left(4).c_str(),
+                                               sStrmInfo.vpid.Left(4).c_str(),
+                                               sStrmInfo.apid.Left(4).c_str());
       }
       else
-        strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str());
+        strVideoStream = StringUtils::Format("0,%s,%s,%s",
+                                             sStrmInfo.pmt.Left(4).c_str(),
+                                             sStrmInfo.vpid.Left(4).c_str(),
+                                             strAudioChannelPid.Left(4).c_str());
 
       CURL streamURL;
       streamURL.SetProtocol("http");
@@ -605,13 +614,19 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       if (g_application.m_pPlayer->IsPlaying() && !g_tuxbox.sZapstream.available)
         CApplicationMessenger::Get().MediaStop();
 
-      strLabel.Format("%s: %s %s-%s",items.GetLabel().c_str(), sCurSrvData.current_event_date.c_str(),sCurSrvData.current_event_start.c_str(), sCurSrvData.current_event_start.c_str());
-      strLabel2.Format("%s", sCurSrvData.current_event_description.c_str());
+      strLabel = StringUtils::Format("%s: %s %s-%s",
+                                     items.GetLabel().c_str(),
+                                     sCurSrvData.current_event_date.c_str(),
+                                     sCurSrvData.current_event_start.c_str(),
+                                     sCurSrvData.current_event_start.c_str());
+      strLabel2 = StringUtils::Format("%s", sCurSrvData.current_event_description.c_str());
 
       // Set Event details
       CStdString strGenre, strTitle;
-      strGenre.Format("%s %s  -  (%s: %s)",g_localizeStrings.Get(143),sCurSrvData.current_event_description, g_localizeStrings.Get(209),sCurSrvData.next_event_description);
-      strTitle.Format("%s",sCurSrvData.current_event_details);
+      strGenre = StringUtils::Format("%s %s  -  (%s: %s)",
+                                     g_localizeStrings.Get(143).c_str(), sCurSrvData.current_event_description.c_str(),
+                                     g_localizeStrings.Get(209).c_str(), sCurSrvData.next_event_description.c_str());
+      strTitle = StringUtils::Format("%s", sCurSrvData.current_event_details.c_str());
       int iDuration = atoi(sCurSrvData.current_event_duration.c_str());
 
       items.GetVideoInfoTag()->m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);  // VIDEOPLAYER_GENRE: current_event_description (Film Name)
@@ -1530,14 +1545,14 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
     while(pService)
     {
       if(pService->Attribute("name"))
-        strName.Format("%s",pService->Attribute("name"));
+        strName = StringUtils::Format("%s", pService->Attribute("name"));
 
       if(pService->Attribute("png"))
-        strPng.Format("%s",pService->Attribute("png"));
+        strPng = StringUtils::Format("%s", pService->Attribute("png"));
 
       if(strName.Equals(strServiceName))
       {
-        strPng.Format("%s%s",piconPath.c_str(), strPng.c_str());
+        strPng = StringUtils::Format("%s%s", piconPath.c_str(), strPng.c_str());
         strPng.ToLower();
         CLog::Log(LOGDEBUG, "%s %s: Path is: %s", __FUNCTION__,strServiceName.c_str(), strPng.c_str());
         return strPng;
@@ -1561,9 +1576,9 @@ CStdString CTuxBoxUtil::GetSubMode(int iMode, CStdString& strXMLRootString, CStd
 
   if(iMode <0 || iMode >4)
   {
-    strSubMode.Format("xml/services?mode=0&submode=4");
-    strXMLRootString.Format("bouquets");
-    strXMLChildString.Format("bouquet");
+    strSubMode = StringUtils::Format("xml/services?mode=0&submode=4");
+    strXMLRootString = StringUtils::Format("bouquets");
+    strXMLChildString = StringUtils::Format("bouquet");
     return strSubMode;
   }
 
@@ -1579,26 +1594,26 @@ CStdString CTuxBoxUtil::GetSubMode(int iMode, CStdString& strXMLRootString, CStd
   int iSubMode = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (iSubMode == 1)
   {
-    strXMLRootString.Format("services");
-    strXMLChildString.Format("service");
+    strXMLRootString = StringUtils::Format("services");
+    strXMLChildString = StringUtils::Format("service");
   }
   else if (iSubMode == 2)
   {
-    strXMLRootString.Format("satellites");
-    strXMLChildString.Format("satellite");
+    strXMLRootString = StringUtils::Format("satellites");
+    strXMLChildString = StringUtils::Format("satellite");
   }
   else if (iSubMode == 3)
   {
-    strXMLRootString.Format("providers");
-    strXMLChildString.Format("provider");
+    strXMLRootString = StringUtils::Format("providers");
+    strXMLChildString = StringUtils::Format("provider");
   }
   else // if (iSubMode == 4 || iSubMode < 0)
   {
     iSubMode = 4;
-    strXMLRootString.Format("bouquets");
-    strXMLChildString.Format("bouquet");
+    strXMLRootString = StringUtils::Format("bouquets");
+    strXMLChildString = StringUtils::Format("bouquet");
   }
-  strSubMode.Format("xml/services?mode=%i&submode=%i",iMode,iSubMode);
+  strSubMode = StringUtils::Format("xml/services?mode=%i&submode=%i",iMode,iSubMode);
   return strSubMode;
 }
 //Input: url/path of share/item file/folder
@@ -1618,23 +1633,23 @@ CStdString CTuxBoxUtil::DetectSubMode(CStdString strSubMode, CStdString& strXMLR
     strTemp = strSubMode.GetAt(ipointSubMode+9);
     if(strTemp.Equals("1"))
     {
-      strXMLRootString.Format("unknowns");
-      strXMLChildString.Format("unknown");
+      strXMLRootString = StringUtils::Format("unknowns");
+      strXMLChildString = StringUtils::Format("unknown");
     }
     else if(strTemp.Equals("2"))
     {
-      strXMLRootString.Format("satellites");
-      strXMLChildString.Format("satellite");
+      strXMLRootString = StringUtils::Format("satellites");
+      strXMLChildString = StringUtils::Format("satellite");
     }
     else if(strTemp.Equals("3"))
     {
-      strXMLRootString.Format("providers");
-      strXMLChildString.Format("provider");
+      strXMLRootString = StringUtils::Format("providers");
+      strXMLChildString = StringUtils::Format("provider");
     }
     else if(strTemp.Equals("4"))
     {
-      strXMLRootString.Format("bouquets");
-      strXMLChildString.Format("bouquet");
+      strXMLRootString = StringUtils::Format("bouquets");
+      strXMLChildString = StringUtils::Format("bouquet");
     }
 
   }

@@ -29,6 +29,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -289,8 +290,7 @@ void CDummyVideoPlayer::Render()
     int mins = (int)(m_clock / 60000);
     int secs = (int)((m_clock / 1000) % 60);
     int ms = (int)(m_clock % 1000);
-    CStdString currentTime;
-    currentTime.Format("Video goes here %02i:%02i:%03i", mins, secs, ms);
+    CStdString currentTime = StringUtils::Format("Video goes here %02i:%02i:%03i", mins, secs, ms);
     float posX = (vw.x1 + vw.x2) * 0.5f;
     float posY = (vw.y1 + vw.y2) * 0.5f;
     CGUITextLayout::DrawText(font, posX, posY, 0xffffffff, 0, currentTime, XBFONT_CENTER_X | XBFONT_CENTER_Y);

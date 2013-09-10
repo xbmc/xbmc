@@ -42,6 +42,7 @@
 #include "SpecialProtocol.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 using namespace XCURL;
@@ -1556,9 +1557,7 @@ void CCurlFile::SetRequestHeader(CStdString header, CStdString value)
 
 void CCurlFile::SetRequestHeader(CStdString header, long value)
 {
-  CStdString buffer;
-  buffer.Format("%ld", value);
-  m_requestheaders[header] = buffer;
+  m_requestheaders[header] = StringUtils::Format("%ld", value);
 }
 
 /* STATIC FUNCTIONS */

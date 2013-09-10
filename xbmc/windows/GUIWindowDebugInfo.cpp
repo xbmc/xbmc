@@ -32,6 +32,7 @@
 #include "guilib/GUIControlProfiler.h"
 #include "GUIInfoManager.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 
 #include <climits>
 
@@ -103,12 +104,12 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
 #if !defined(TARGET_POSIX)
-    info.Format("LOG: %sxbmc.log\nMEM: %"PRIu64"/%"PRIu64" KB - FPS: %2.1f fps\nCPU: %s%s", g_advancedSettings.m_logFolder.c_str(),
-                stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
+    info = StringUtils::Format("LOG: %sxbmc.log\nMEM: %"PRIu64"/%"PRIu64" KB - FPS: %2.1f fps\nCPU: %s%s", g_advancedSettings.m_logFolder.c_str(),
+                               stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("LOG: %sxbmc.log\nMEM: %"PRIu64"/%"PRIu64" KB - FPS: %2.1f fps\nCPU: %s (CPU-XBMC %4.2f%%%s)", g_advancedSettings.m_logFolder.c_str(),
-                stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
+    info = StringUtils::Format("LOG: %sxbmc.log\nMEM: %"PRIu64"/%"PRIu64" KB - FPS: %2.1f fps\nCPU: %s (CPU-XBMC %4.2f%%%s)", g_advancedSettings.m_logFolder.c_str(),
+                               stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
   }
 

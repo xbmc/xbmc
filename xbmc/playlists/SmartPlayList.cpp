@@ -789,9 +789,7 @@ bool CSmartPlaylistRule::CanGroupMix(Field group)
 
 CStdString CSmartPlaylistRule::GetLocalizedRule() const
 {
-  CStdString rule;
-  rule.Format("%s %s %s", GetLocalizedField(m_field).c_str(), GetLocalizedOperator(m_operator).c_str(), GetParameter().c_str());
-  return rule;
+  return StringUtils::Format("%s %s %s", GetLocalizedField(m_field).c_str(), GetLocalizedOperator(m_operator).c_str(), GetParameter().c_str());
 }
 
 CStdString CSmartPlaylistRule::GetParameter() const
@@ -988,7 +986,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     }
     else if (m_field == FieldTime)
     { // translate time to seconds
-      CStdString seconds; seconds.Format("%i", StringUtils::TimeStringToSeconds(*it));
+      CStdString seconds = StringUtils::Format("%i", StringUtils::TimeStringToSeconds(*it));
       parameter = db.PrepareSQL(operatorString.c_str(), seconds.c_str());
     }
 
@@ -1136,7 +1134,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       else if (GetFieldType(m_field) == SECONDS_FIELD)
         fmt = "CAST(%s as INTEGER)";
 
-      query.Format(fmt.c_str(), GetField(m_field,strType).c_str());
+      query = StringUtils::Format(fmt.c_str(), GetField(m_field,strType).c_str());
       query += negate + parameter;
     }
     
@@ -1206,7 +1204,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
           if (playlist.GetType().Equals(strType))
           {
             if (it->m_operator == CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL)
-              currentRule.Format("NOT (%s)", playlistQuery.c_str());
+              currentRule = StringUtils::Format("NOT (%s)", playlistQuery.c_str());
             else
               currentRule = playlistQuery;
           }

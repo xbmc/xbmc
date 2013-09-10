@@ -411,9 +411,9 @@ void CGUIWindowFileManager::UpdateItemCounts()
     }
     CStdString items;
     if (selectedCount > 0)
-      items.Format("%i/%i %s (%s)", selectedCount, totalCount, g_localizeStrings.Get(127).c_str(), StringUtils::SizeToString(selectedSize).c_str());
+      items = StringUtils::Format("%i/%i %s (%s)", selectedCount, totalCount, g_localizeStrings.Get(127).c_str(), StringUtils::SizeToString(selectedSize).c_str());
     else
-      items.Format("%i %s", totalCount, g_localizeStrings.Get(127).c_str());
+      items = StringUtils::Format("%i %s", totalCount, g_localizeStrings.Get(127).c_str());
     SET_CONTROL_LABEL(CONTROL_NUMFILES_LEFT + i, items);
   }
 }

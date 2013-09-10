@@ -1210,8 +1210,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, ADDON::Scrape
           if (pDialog)
           {
             // set the label to [relevance]  album - artist
-            CStdString strTemp;
-            strTemp.Format("[%0.2f]  %s", relevance, info.GetTitle2());
+            CStdString strTemp = StringUtils::Format("[%0.2f]  %s", relevance, info.GetTitle2().c_str());
             CFileItem item(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper
             pDlg->Add(&item);
@@ -1406,7 +1405,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, ADDON::Scr
             {
               CStdString genres = StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, g_advancedSettings.m_musicItemSeparator);
               if (!genres.empty())
-                strTemp.Format("[%s] %s", genres.c_str(), strTemp.c_str());
+                strTemp = StringUtils::Format("[%s] %s", genres.c_str(), strTemp.c_str());
             }
             item.SetLabel(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper

@@ -406,7 +406,7 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
   for (unsigned int i = 0; i < sizeof(limits) / sizeof(int); i++)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIMIT, limits[i]);
-    CStdString label; label.Format(g_localizeStrings.Get(21436).c_str(), limits[i]);
+    CStdString label = StringUtils::Format(g_localizeStrings.Get(21436).c_str(), limits[i]);
     msg.SetLabel(label);
     OnMessage(msg);
   }

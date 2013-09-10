@@ -406,8 +406,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
 
   // Update object count label
-  CStdString items;
-  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
+  CStdString items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   MarkPlaying();
@@ -473,7 +472,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       // No music info and it's not CDDA so we'll just show the filename
       CStdString str;
       str = CUtil::GetTitleFromPath(pItem->GetPath());
-      str.Format("%02.2i. %s ", pItem->m_iprogramCount, str);
+      str = StringUtils::Format("%02.2i. %s ", pItem->m_iprogramCount, str.c_str());
       pItem->SetLabel(str);
     }
   }

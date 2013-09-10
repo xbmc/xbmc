@@ -23,6 +23,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIPassword.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderFlags.h"
@@ -269,15 +270,11 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
 
 CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum)
 {
-  CStdString text;
-  text.Format("%i", MathUtils::round_int(value));
-  return text;
+  return StringUtils::Format("%i", MathUtils::round_int(value));
 }
 
 CStdString CGUIDialogVideoSettings::FormatFloat(float value, float minimum)
 {
-  CStdString text;
-  text.Format("%2.2f", value);
-  return text;
+  return StringUtils::Format("%2.2f", value);
 }
 

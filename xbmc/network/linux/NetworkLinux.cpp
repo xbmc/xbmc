@@ -62,6 +62,7 @@
 #include "NetworkLinux.h"
 #include "Util.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -70,13 +71,13 @@ CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdStrin
 {
    m_network = network;
    m_interfaceName = interfaceName;
-   m_interfaceMacAdr.Format("%02X:%02X:%02X:%02X:%02X:%02X",
-                  (uint8_t)interfaceMacAddrRaw[0],
-                  (uint8_t)interfaceMacAddrRaw[1],
-                  (uint8_t)interfaceMacAddrRaw[2],
-                  (uint8_t)interfaceMacAddrRaw[3],
-                  (uint8_t)interfaceMacAddrRaw[4],
-                  (uint8_t)interfaceMacAddrRaw[5]);
+   m_interfaceMacAdr = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
+                                           (uint8_t)interfaceMacAddrRaw[0],
+                                           (uint8_t)interfaceMacAddrRaw[1],
+                                           (uint8_t)interfaceMacAddrRaw[2],
+                                           (uint8_t)interfaceMacAddrRaw[3],
+                                           (uint8_t)interfaceMacAddrRaw[4],
+                                           (uint8_t)interfaceMacAddrRaw[5]);
    memcpy(m_interfaceMacAddrRaw, interfaceMacAddrRaw, sizeof(m_interfaceMacAddrRaw));
 }
 
@@ -599,8 +600,8 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, CStdString
           
           u_char *cp = (u_char*)LLADDR(sdl);
           
-          mac.Format("%02X:%02X:%02X:%02X:%02X:%02X",
-                     cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]);
+          mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
+                                    cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]);
           ret = true;
           break;
         }

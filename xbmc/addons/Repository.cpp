@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/JobManager.h"
+#include "utils/StringUtils.h"
 #include "addons/AddonInstaller.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -159,11 +160,10 @@ VECADDONS CRepository::Parse()
       AddonPtr addon = *i;
       if (m_zipped)
       {
-        CStdString file;
-        file.Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().c_str());
+        CStdString file = StringUtils::Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().c_str());
         addon->Props().path = URIUtils::AddFileToFolder(m_datadir,file);
         SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/icon.png"))
-        file.Format("%s/changelog-%s.txt", addon->ID().c_str(), addon->Version().c_str());
+        file = StringUtils::Format("%s/changelog-%s.txt", addon->ID().c_str(), addon->Version().c_str());
         SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(m_datadir,file))
         SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/fanart.jpg"))
       }
@@ -227,7 +227,7 @@ bool CRepositoryUpdateJob::DoWork()
       {
         CStdString referer;
         if (URIUtils::IsInternetStream(addons[i]->Path()))
-          referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
+          referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
 
         if (addons[i]->Type() == ADDON_PVRDLL &&
             !PVR::CPVRManager::Get().InstallAddonAllowed(addons[i]->ID()))
@@ -281,8 +281,7 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
       if (!repo->Props().libname.empty())
       {
         CFileItemList dummy;
-        CStdString s;
-        s.Format("plugin://%s/?action=update", repo->ID());
+        CStdString s = StringUtils::Format("plugin://%s/?action=update", repo->ID().c_str());
         add = CDirectory::GetDirectory(s, dummy);
       }
       if (add)

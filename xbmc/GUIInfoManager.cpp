@@ -1341,7 +1341,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     strLabel = strLabel.Trim();
     break;
   case WEATHER_TEMPERATURE:
-    strLabel.Format("%s%s", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP), g_langInfo.GetTempUnitString().c_str());
+    strLabel = StringUtils::Format("%s%s",
+                                   g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP).c_str(),
+                                   g_langInfo.GetTempUnitString().c_str());
     break;
   case WEATHER_LOCATION:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_LOCATION);
@@ -1357,24 +1359,24 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     strLabel = GetDate();
     break;
   case SYSTEM_FPS:
-    strLabel.Format("%02.2f", m_fps);
+    strLabel = StringUtils::Format("%02.2f", m_fps);
     break;
   case PLAYER_VOLUME:
-    strLabel.Format("%2.1f dB", CAEUtil::PercentToGain(g_application.GetVolume(false)));
+    strLabel = StringUtils::Format("%2.1f dB", CAEUtil::PercentToGain(g_application.GetVolume(false)));
     break;
   case PLAYER_SUBTITLE_DELAY:
-    strLabel.Format("%2.3f s", CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay);
+    strLabel = StringUtils::Format("%2.3f s", CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay);
     break;
   case PLAYER_AUDIO_DELAY:
-    strLabel.Format("%2.3f s", CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
+    strLabel = StringUtils::Format("%2.3f s", CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
     break;
   case PLAYER_CHAPTER:
     if(g_application.m_pPlayer->IsPlaying())
-      strLabel.Format("%02d", g_application.m_pPlayer->GetChapter());
+      strLabel = StringUtils::Format("%02d", g_application.m_pPlayer->GetChapter());
     break;
   case PLAYER_CHAPTERCOUNT:
     if(g_application.m_pPlayer->IsPlaying())
-      strLabel.Format("%02d", g_application.m_pPlayer->GetChapterCount());
+      strLabel = StringUtils::Format("%02d", g_application.m_pPlayer->GetChapterCount());
     break;
   case PLAYER_CHAPTERNAME:
     if(g_application.m_pPlayer->IsPlaying())
@@ -1384,7 +1386,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     {
       int iLevel = 0;
       if(g_application.m_pPlayer->IsPlaying() && GetInt(iLevel, PLAYER_CACHELEVEL) && iLevel >= 0)
-        strLabel.Format("%i", iLevel);
+        strLabel = StringUtils::Format("%i", iLevel);
     }
     break;
   case PLAYER_TIME:
@@ -1545,7 +1547,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     if(g_application.m_pPlayer->IsPlaying())
     {
       UpdateAVInfo();
-      strLabel.Format("%i", m_audioInfo.channels);
+      strLabel = StringUtils::Format("%i", m_audioInfo.channels);
     }
     break;
   case VIDEOPLAYER_STEREOSCOPIC_MODE:
@@ -1598,16 +1600,18 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
 
   case SYSTEM_SCREEN_RESOLUTION:
     if(g_Windowing.IsFullScreen())
-      strLabel.Format("%ix%i@%.2fHz - %s (%02.2f fps)",
+      strLabel = StringUtils::Format("%ix%i@%.2fHz - %s (%02.2f fps)",
         CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth,
         CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight,
         CDisplaySettings::Get().GetCurrentResolutionInfo().fRefreshRate,
-        g_localizeStrings.Get(244), GetFPS());
+        g_localizeStrings.Get(244).c_str(),
+        GetFPS());
     else
-      strLabel.Format("%ix%i - %s (%02.2f fps)",
+      strLabel = StringUtils::Format("%ix%i - %s (%02.2f fps)",
         CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth,
         CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight,
-        g_localizeStrings.Get(242), GetFPS());
+        g_localizeStrings.Get(242).c_str(),
+        GetFPS());
     return strLabel;
     break;
 
@@ -1711,31 +1715,31 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
       int iMemPercentUsed = 100 - iMemPercentFree;
 
       if (info == SYSTEM_FREE_MEMORY)
-        strLabel.Format("%luMB", (ULONG)(stat.ullAvailPhys/MB));
+        strLabel = StringUtils::Format("%luMB", (ULONG)(stat.ullAvailPhys/MB));
       else if (info == SYSTEM_FREE_MEMORY_PERCENT)
-        strLabel.Format("%i%%", iMemPercentFree);
+        strLabel = StringUtils::Format("%i%%", iMemPercentFree);
       else if (info == SYSTEM_USED_MEMORY)
-        strLabel.Format("%luMB", (ULONG)((stat.ullTotalPhys - stat.ullAvailPhys)/MB));
+        strLabel = StringUtils::Format("%luMB", (ULONG)((stat.ullTotalPhys - stat.ullAvailPhys)/MB));
       else if (info == SYSTEM_USED_MEMORY_PERCENT)
-        strLabel.Format("%i%%", iMemPercentUsed);
+        strLabel = StringUtils::Format("%i%%", iMemPercentUsed);
       else if (info == SYSTEM_TOTAL_MEMORY)
-        strLabel.Format("%luMB", (ULONG)(stat.ullTotalPhys/MB));
+        strLabel = StringUtils::Format("%luMB", (ULONG)(stat.ullTotalPhys/MB));
     }
     break;
   case SYSTEM_SCREEN_MODE:
     strLabel = g_graphicsContext.GetResInfo().strMode;
     break;
   case SYSTEM_SCREEN_WIDTH:
-    strLabel.Format("%i", g_graphicsContext.GetResInfo().iScreenWidth);
+    strLabel = StringUtils::Format("%i", g_graphicsContext.GetResInfo().iScreenWidth);
     break;
   case SYSTEM_SCREEN_HEIGHT:
-    strLabel.Format("%i", g_graphicsContext.GetResInfo().iScreenHeight);
+    strLabel = StringUtils::Format("%i", g_graphicsContext.GetResInfo().iScreenHeight);
     break;
   case SYSTEM_CURRENT_WINDOW:
     return g_localizeStrings.Get(g_windowManager.GetFocusedWindow());
     break;
   case SYSTEM_STARTUP_WINDOW:
-    strLabel.Format("%i", CSettings::Get().GetInt("lookandfeel.startupwindow"));
+    strLabel = StringUtils::Format("%i", CSettings::Get().GetInt("lookandfeel.startupwindow"));
     break;
   case SYSTEM_CURRENT_CONTROL:
     {
@@ -1760,16 +1764,16 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     {
       double fTime = g_alarmClock.GetRemaining("shutdowntimer");
       if (fTime > 60.f)
-        strLabel.Format(g_localizeStrings.Get(13213).c_str(),g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+        strLabel = StringUtils::Format(g_localizeStrings.Get(13213).c_str(), g_alarmClock.GetRemaining("shutdowntimer")/60.f);
       else
-        strLabel.Format(g_localizeStrings.Get(13214).c_str(),g_alarmClock.GetRemaining("shutdowntimer"));
+        strLabel = StringUtils::Format(g_localizeStrings.Get(13214).c_str(), g_alarmClock.GetRemaining("shutdowntimer"));
     }
     break;
   case SYSTEM_PROFILENAME:
     strLabel = CProfilesManager::Get().GetCurrentProfile().getName();
     break;
   case SYSTEM_PROFILECOUNT:
-    strLabel.Format("%i", CProfilesManager::Get().GetNumberOfProfiles());
+    strLabel = StringUtils::Format("%i", CProfilesManager::Get().GetNumberOfProfiles());
     break;
   case SYSTEM_PROFILEAUTOLOGIN:
     {
@@ -1788,14 +1792,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     {
       int percent;
       if (GetInt(percent, SYSTEM_PROGRESS_BAR) && percent > 0)
-        strLabel.Format("%i", percent);
+        strLabel = StringUtils::Format("%i", percent);
     }
     break;
   case SYSTEM_FRIENDLY_NAME:
     {
       CStdString friendlyName = CSettings::Get().GetString("services.devicename");
       if (friendlyName.Equals("XBMC"))
-        strLabel.Format("%s (%s)", friendlyName.c_str(), g_application.getNetwork().GetHostName().c_str());
+        strLabel = StringUtils::Format("%s (%s)", friendlyName.c_str(), g_application.getNetwork().GetHostName().c_str());
       else
         strLabel = friendlyName;
     }
@@ -1803,7 +1807,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case SYSTEM_STEREOSCOPIC_MODE:
     {
       int stereoMode = CSettings::Get().GetInt("videoscreen.stereoscopicmode");
-      strLabel.Format("%i", stereoMode);
+      strLabel = StringUtils::Format("%i", stereoMode);
     }
     break;
 
@@ -3043,7 +3047,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   {
     CStdString strTime;
     if (g_application.m_pPlayer->GetPlaySpeed() != 1)
-      strTime.Format("%s (%ix)", GetCurrentPlayTime((TIME_FORMAT)info.GetData1()).c_str(), g_application.m_pPlayer->GetPlaySpeed());
+      strTime = StringUtils::Format("%s (%ix)", GetCurrentPlayTime((TIME_FORMAT)info.GetData1()).c_str(), g_application.m_pPlayer->GetPlaySpeed());
     else
       strTime = GetCurrentPlayTime();
     return strTime;
@@ -3103,8 +3107,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   }
   else if (info.m_info == SYSTEM_GET_CORE_USAGE)
   {
-    CStdString strCpu;
-    strCpu.Format("%4.2f", g_cpuInfo.GetCoreInfo(atoi(m_stringParameters[info.GetData1()].c_str())).m_fPct);
+    CStdString strCpu = StringUtils::Format("%4.2f", g_cpuInfo.GetCoreInfo(atoi(m_stringParameters[info.GetData1()].c_str())).m_fPct);
     return strCpu;
   }
   else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_ALBUM_ARTIST)
@@ -3353,8 +3356,7 @@ CStdString CGUIInfoManager::GetMusicPartyModeLabel(int item)
     }
     if (iSongs < 0)
       return "";
-    CStdString strLabel;
-    strLabel.Format("%i", iSongs);
+    CStdString strLabel = StringUtils::Format("%i", iSongs);
     return strLabel;
   }
   return "";
@@ -3391,8 +3393,7 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
   }
   if (info.m_info == MUSICPLAYER_PLAYLISTPOS)
   {
-    CStdString strPosition = "";
-    strPosition.Format("%i", index + 1);
+    CStdString strPosition = StringUtils::Format("%i", index + 1);
     return strPosition;
   }
   else if (info.m_info == MUSICPLAYER_COVER)
@@ -3408,15 +3409,11 @@ CStdString CGUIInfoManager::GetPlaylistLabel(int item) const
   {
   case PLAYLIST_LENGTH:
     {
-      CStdString strLength = "";
-      strLength.Format("%i", g_playlistPlayer.GetPlaylist(iPlaylist).size());
-      return strLength;
+      return StringUtils::Format("%i", g_playlistPlayer.GetPlaylist(iPlaylist).size());;
     }
   case PLAYLIST_POSITION:
     {
-      CStdString strPosition = "";
-      strPosition.Format("%i", g_playlistPlayer.GetCurrentSong() + 1);
-      return strPosition;
+      return StringUtils::Format("%i", g_playlistPlayer.GetCurrentSong() + 1);
     }
   case PLAYLIST_RANDOM:
     {
@@ -3462,7 +3459,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     {
       CStdString strBitrate = "";
       if (m_audioInfo.bitrate > 0)
-        strBitrate.Format("%i", MathUtils::round_int((double)m_audioInfo.bitrate / 1000.0));
+        strBitrate = StringUtils::Format("%i", MathUtils::round_int((double)m_audioInfo.bitrate / 1000.0));
       return strBitrate;
     }
     break;
@@ -3471,7 +3468,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       CStdString strChannels = "";
       if (m_audioInfo.channels > 0)
       {
-        strChannels.Format("%i", m_audioInfo.channels);
+        strChannels = StringUtils::Format("%i", m_audioInfo.channels);
       }
       return strChannels;
     }
@@ -3481,7 +3478,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       CStdString strBitsPerSample = "";
       if (g_application.m_pPlayer->GetBitsPerSample() > 0)
       {
-        strBitsPerSample.Format("%i", g_application.m_pPlayer->GetBitsPerSample());
+        strBitsPerSample = StringUtils::Format("%i", g_application.m_pPlayer->GetBitsPerSample());
       }
       return strBitsPerSample;
     }
@@ -3491,16 +3488,14 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       CStdString strSampleRate = "";
       if (g_application.m_pPlayer->GetSampleRate() > 0)
       {
-        strSampleRate.Format("%.5g", ((double)g_application.m_pPlayer->GetSampleRate() / 1000.0));
+        strSampleRate = StringUtils::Format("%.5g", ((double)g_application.m_pPlayer->GetSampleRate() / 1000.0));
       }
       return strSampleRate;
     }
     break;
   case MUSICPLAYER_CODEC:
     {
-      CStdString strCodec;
-      strCodec.Format("%s", m_audioInfo.audioCodecName);
-      return strCodec;
+      return StringUtils::Format("%s", m_audioInfo.audioCodecName.c_str());
     }
     break;
   case MUSICPLAYER_LYRICS:
@@ -3541,8 +3536,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
       CStdString strTrack;
       if (tag.Loaded() && tag.GetTrackNumber() > 0)
       {
-        strTrack.Format("%02i", tag.GetTrackNumber());
-        return strTrack;
+        return StringUtils::Format("%02i", tag.GetTrackNumber());
       }
     }
     break;
@@ -3566,9 +3560,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
       CPVRChannel* channeltag = m_currentFile->GetPVRChannelInfoTag();
       if (channeltag)
       {
-        CStdString strNumber;
-        strNumber.Format("%i", channeltag->ChannelNumber());
-        return strNumber;
+        return StringUtils::Format("%i", channeltag->ChannelNumber());
       }
     }
     break;
@@ -3661,7 +3653,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString rating;
         if (tag->GetEPGNow(epgTag) && epgTag.ParentalRating() > 0)
-          rating.Format("%i", epgTag.ParentalRating());
+          rating = StringUtils::Format("%i", epgTag.ParentalRating());
         return rating;
       }
       break;
@@ -3671,9 +3663,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return tag->ChannelName();
     case VIDEOPLAYER_CHANNEL_NUMBER:
       {
-        CStdString strNumber;
-        strNumber.Format("%i", tag->ChannelNumber());
-        return strNumber;
+        return StringUtils::Format("%i", tag->ChannelNumber());;
       }
     case VIDEOPLAYER_CHANNEL_GROUP:
       {
@@ -3699,7 +3689,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strRating;
         if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
-          strRating.Format("%.1f", m_currentFile->GetVideoInfoTag()->m_fRating);
+          strRating = StringUtils::Format("%.1f", m_currentFile->GetVideoInfoTag()->m_fRating);
         return strRating;
       }
       break;
@@ -3709,9 +3699,13 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
         if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
         {
           if (m_currentFile->GetVideoInfoTag()->m_strVotes.IsEmpty())
-            strRatingAndVotes.Format("%.1f", m_currentFile->GetVideoInfoTag()->m_fRating);
+            strRatingAndVotes = StringUtils::Format("%.1f",
+                                                    m_currentFile->GetVideoInfoTag()->m_fRating);
           else
-            strRatingAndVotes.Format("%.1f (%s %s)", m_currentFile->GetVideoInfoTag()->m_fRating, m_currentFile->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+            strRatingAndVotes = StringUtils::Format("%.1f (%s %s)",
+                                                    m_currentFile->GetVideoInfoTag()->m_fRating,
+                                                    m_currentFile->GetVideoInfoTag()->m_strVotes.c_str(),
+                                                    g_localizeStrings.Get(20350).c_str());
         }
         return strRatingAndVotes;
       }
@@ -3722,7 +3716,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iYear > 0)
-          strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iYear);
+          strYear = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iYear);
         return strYear;
       }
       break;
@@ -3750,18 +3744,16 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strEpisode;
         if (m_currentFile->GetVideoInfoTag()->m_iSeason == 0) // prefix episode with 'S'
-          strEpisode.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
+          strEpisode = StringUtils::Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         else 
-          strEpisode.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
+          strEpisode = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         return strEpisode;
       }
       break;
     case VIDEOPLAYER_SEASON:
       if (m_currentFile->GetVideoInfoTag()->m_iSeason > 0)
       {
-        CStdString strSeason;
-        strSeason.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSeason);
-        return strSeason;
+        return StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iSeason);
       }
       break;
     case VIDEOPLAYER_TVSHOW:
@@ -3777,7 +3769,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strTop250;
         if (m_currentFile->GetVideoInfoTag()->m_iTop250 > 0)
-          strTop250.Format("%i", m_currentFile->GetVideoInfoTag()->m_iTop250);
+          strTop250 = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iTop250);
         return strTop250;
       }
       break;
@@ -3803,7 +3795,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strPlayCount;
         if (m_currentFile->GetVideoInfoTag()->m_playCount > 0)
-          strPlayCount.Format("%i", m_currentFile->GetVideoInfoTag()->m_playCount);
+          strPlayCount = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_playCount);
         return strPlayCount;
       }
     }
@@ -4012,15 +4004,15 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       return m_gpuTemp.IsValid() ? m_gpuTemp.ToString() : "?";
       break;
     case SYSTEM_FAN_SPEED:
-      text.Format("%i%%", m_fanSpeed * 2);
+      text = StringUtils::Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
 #if defined(TARGET_DARWIN_OSX)
-      text.Format("%4.2f%%", m_resourceCounter.GetCPUUsage());
+      text = StringUtils::Format("%4.2f%%", m_resourceCounter.GetCPUUsage());
 #elif defined(TARGET_DARWIN) || defined(TARGET_WINDOWS)
-      text.Format("%d%%", g_cpuInfo.getUsedPercentage());
+      text = StringUtils::Format("%d%%", g_cpuInfo.getUsedPercentage());
 #else
-      text.Format("%s", g_cpuInfo.GetCoresUsageString());
+      text = StringUtils::Format("%s", g_cpuInfo.GetCoresUsageString());
 #endif
       break;
   }
@@ -4063,17 +4055,15 @@ CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp;
   if (GetXbmcGitRevision())
-    tmp.Format("%d.%d%s Git:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, GetXbmcGitRevision());
+    tmp = StringUtils::Format("%d.%d%s Git:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, GetXbmcGitRevision());
   else
-    tmp.Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
+    tmp = StringUtils::Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
   return tmp;
 }
 
 CStdString CGUIInfoManager::GetBuild()
 {
-  CStdString tmp;
-  tmp.Format("%s", __DATE__);
-  return tmp;
+  return StringUtils::Format("%s", __DATE__);
 }
 
 void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut, int seekOffset)
@@ -4292,9 +4282,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     {
       CStdString strPlayCount;
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount > 0)
-        strPlayCount.Format("%i", item->GetVideoInfoTag()->m_playCount);
+        strPlayCount = StringUtils::Format("%i", item->GetVideoInfoTag()->m_playCount);
       if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetPlayCount() > 0)
-        strPlayCount.Format("%i", item->GetMusicInfoTag()->GetPlayCount());
+        strPlayCount = StringUtils::Format("%i", item->GetMusicInfoTag()->GetPlayCount());
       return strPlayCount;
     }
   case LISTITEM_LASTPLAYED:
@@ -4313,7 +4303,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     {
       CStdString track;
       if (item->HasMusicInfoTag())
-        track.Format("%i", item->GetMusicInfoTag()->GetTrackNumber());
+        track = StringUtils::Format("%i", item->GetMusicInfoTag()->GetTrackNumber());
 
       return track;
     }
@@ -4321,7 +4311,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     {
       CStdString disc;
       if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDiscNumber() > 0)
-        disc.Format("%i", item->GetMusicInfoTag()->GetDiscNumber());
+        disc = StringUtils::Format("%i", item->GetMusicInfoTag()->GetDiscNumber());
       return disc;
     }
   case LISTITEM_ARTIST:
@@ -4349,7 +4339,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     {
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iYear > 0)
-        strResult.Format("%i",item->GetVideoInfoTag()->m_iYear);
+        strResult = StringUtils::Format("%i",item->GetVideoInfoTag()->m_iYear);
       return strResult;
     }
     if (item->HasMusicInfoTag())
@@ -4426,7 +4416,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     {
       CStdString rating;
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
-        rating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
+        rating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
       { // song rating.  Images will probably be better than numbers for this in the long run
         rating = item->GetMusicInfoTag()->GetRating();
@@ -4439,9 +4429,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       {
         CStdString strRatingAndVotes;
         if (item->GetVideoInfoTag()->m_strVotes.IsEmpty())
-          strRatingAndVotes.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
+          strRatingAndVotes = StringUtils::Format("%.1f",
+                                                  item->GetVideoInfoTag()->m_fRating);
         else
-          strRatingAndVotes.Format("%.1f (%s %s)", item->GetVideoInfoTag()->m_fRating, item->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+          strRatingAndVotes = StringUtils::Format("%.1f (%s %s)",
+                                                  item->GetVideoInfoTag()->m_fRating,
+                                                  item->GetVideoInfoTag()->m_strVotes.c_str(),
+                                                  g_localizeStrings.Get(20350).c_str());
         return strRatingAndVotes;
       }
     }
@@ -4452,9 +4446,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     break;
   case LISTITEM_PROGRAM_COUNT:
     {
-      CStdString count;
-      count.Format("%i", item->m_iprogramCount);
-      return count;
+      return StringUtils::Format("%i", item->m_iprogramCount);;
     }
   case LISTITEM_DURATION:
     {
@@ -4480,7 +4472,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       else if (item->HasVideoInfoTag())
       {
         if (item->GetVideoInfoTag()->GetDuration() > 0)
-          duration.Format("%d", item->GetVideoInfoTag()->GetDuration() / 60);
+          duration = StringUtils::Format("%d", item->GetVideoInfoTag()->GetDuration() / 60);
       }
       else if (item->HasMusicInfoTag())
       {
@@ -4532,18 +4524,16 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     {
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iSeason == 0) // prefix episode with 'S'
-        strResult.Format("S%d",item->GetVideoInfoTag()->m_iEpisode);
+        strResult = StringUtils::Format("S%d",item->GetVideoInfoTag()->m_iEpisode);
       else
-        strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
+        strResult = StringUtils::Format("%d",item->GetVideoInfoTag()->m_iEpisode);
       return strResult;
     }
     break;
   case LISTITEM_SEASON:
     if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iSeason > 0)
     {
-      CStdString strResult;
-      strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
-      return strResult;
+      return StringUtils::Format("%d",item->GetVideoInfoTag()->m_iSeason);;
     }
     break;
   case LISTITEM_TVSHOW:
@@ -4651,7 +4641,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     {
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iTop250 > 0)
-        strResult.Format("%i",item->GetVideoInfoTag()->m_iTop250);
+        strResult = StringUtils::Format("%i",item->GetVideoInfoTag()->m_iTop250);
       return strResult;
     }
     break;
@@ -4686,7 +4676,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       CStdString strResult;
       int iChannels = item->GetVideoInfoTag()->m_streamDetails.GetAudioChannels();
       if (iChannels > -1)
-        strResult.Format("%i", iChannels);
+        strResult = StringUtils::Format("%i", iChannels);
       return strResult;
     }
     break;
@@ -4766,11 +4756,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     {
       CStdString number;
       if (item->HasPVRChannelInfoTag())
-        number.Format("%i", item->GetPVRChannelInfoTag()->ChannelNumber());
+        number = StringUtils::Format("%i", item->GetPVRChannelInfoTag()->ChannelNumber());
       if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
-        number.Format("%i", item->GetEPGInfoTag()->PVRChannelNumber());
+        number = StringUtils::Format("%i", item->GetEPGInfoTag()->PVRChannelNumber());
       if (item->HasPVRTimerInfoTag())
-        number.Format("%i", item->GetPVRTimerInfoTag()->ChannelNumber());
+        number = StringUtils::Format("%i", item->GetPVRTimerInfoTag()->ChannelNumber());
 
       return number;
     }
@@ -4861,7 +4851,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     {
       CStdString rating;
       if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->ParentalRating() > 0)
-        rating.Format("%i", item->GetEPGInfoTag()->ParentalRating());
+        rating = StringUtils::Format("%i", item->GetEPGInfoTag()->ParentalRating());
       return rating;
     }
     break;
@@ -4870,9 +4860,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       int val;
       if (GetItemInt(val, item, info))
       {
-        CStdString str;
-        str.Format("%d", val);
-        return str;
+        return StringUtils::Format("%d", val);;
       }
       break;
     }
@@ -4887,15 +4875,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
   case LISTITEM_DBID:
     if (item->HasVideoInfoTag())
       {
-        CStdString dbid;
-        dbid.Format("%i", item->GetVideoInfoTag()->m_iDbId);
-        return dbid;
+        return StringUtils::Format("%i", item->GetVideoInfoTag()->m_iDbId);;
       }
     if (item->HasMusicInfoTag())
       {
-        CStdString dbid;
-        dbid.Format("%i", item->GetMusicInfoTag()->GetDatabaseId());
-        return dbid;
+        return StringUtils::Format("%i", item->GetMusicInfoTag()->GetDatabaseId());;
       }
     break;
   }
@@ -4911,11 +4895,9 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info, CStdSt
   {
   case LISTITEM_RATING:  // old song rating format
     {
-      CStdString rating;
       if (item->HasMusicInfoTag())
       {
-        rating.Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
-        return rating;
+        return StringUtils::Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
       }
     }
     break;
@@ -4924,11 +4906,11 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info, CStdSt
       CStdString rating;
       if (item->HasVideoInfoTag())
       { // rating for videos is assumed 0..10, so convert to 0..5
-        rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
+        rating = StringUtils::Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
       }
       else if (item->HasMusicInfoTag())
       { // song rating.
-        rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
+        rating = StringUtils::Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
       }
       return rating;
     }
@@ -5058,12 +5040,12 @@ void CGUIInfoManager::UpdateFromTuxBox()
     g_tuxbox.sCurSrvData.current_event_duration.Replace("(","");
     g_tuxbox.sCurSrvData.current_event_duration.Replace(")","");
 
-    m_currentMovieDuration.Format("%s: %s %s (%s - %s)",
-      g_localizeStrings.Get(180),
-      g_tuxbox.sCurSrvData.current_event_duration,
-      g_localizeStrings.Get(12391),
-      g_tuxbox.sCurSrvData.current_event_time,
-      g_tuxbox.sCurSrvData.next_event_time);
+    m_currentMovieDuration = StringUtils::Format("%s: %s %s (%s - %s)",
+                                                 g_localizeStrings.Get(180).c_str(),
+                                                 g_tuxbox.sCurSrvData.current_event_duration.c_str(),
+                                                 g_localizeStrings.Get(12391).c_str(),
+                                                 g_tuxbox.sCurSrvData.current_event_time.c_str(),
+                                                 g_tuxbox.sCurSrvData.next_event_time.c_str());
   }
 
   //Set strVideoGenre
@@ -5072,12 +5054,11 @@ void CGUIInfoManager::UpdateFromTuxBox()
     !g_tuxbox.sCurSrvData.current_event_description.Equals("-") &&
     !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
   {
-    CStdString genre;
-    genre.Format("%s %s  -  (%s: %s)",
-      g_localizeStrings.Get(143),
-      g_tuxbox.sCurSrvData.current_event_description,
-      g_localizeStrings.Get(209),
-      g_tuxbox.sCurSrvData.next_event_description);
+    CStdString genre = StringUtils::Format("%s %s  -  (%s: %s)",
+                                           g_localizeStrings.Get(143).c_str(),
+                                           g_tuxbox.sCurSrvData.current_event_description.c_str(),
+                                           g_localizeStrings.Get(209).c_str(),
+                                           g_tuxbox.sCurSrvData.next_event_description.c_str());
     m_currentFile->GetVideoInfoTag()->m_genre = StringUtils::Split(genre, g_advancedSettings.m_videoItemSeparator);
   }
 
@@ -5107,9 +5088,7 @@ CStdString CGUIInfoManager::GetPictureLabel(int info)
     CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (slideshow && slideshow->NumSlides())
     {
-      CStdString index;
-      index.Format("%d/%d", slideshow->CurrentSlide(), slideshow->NumSlides());
-      return index;
+      return StringUtils::Format("%d/%d", slideshow->CurrentSlide(), slideshow->NumSlides());
     }
   }
   if (m_currentSlide->HasPictureInfoTag())

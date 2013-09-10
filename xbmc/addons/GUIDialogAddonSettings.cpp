@@ -203,8 +203,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
       return false;
 
     // Set the heading
-    CStdString heading;
-    heading.Format("$LOCALIZE[10004] - %s", addon->Name().c_str()); // "Settings - AddonName"
+    CStdString heading = StringUtils::Format("$LOCALIZE[10004] - %s", addon->Name().c_str()); // "Settings - AddonName"
     pDialog->m_strHeading = heading;
 
     pDialog->m_changed = false;
@@ -318,7 +317,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (iSelected >= 0)
             {
               if (setting->Attribute("lvalues"))
-                value.Format("%i", iSelected);
+                value = StringUtils::Format("%i", iSelected);
               else
                 value = valuesVec[iSelected];
               ((CGUIButtonControl*) control)->SetLabel2(valuesVec[iSelected]);
@@ -447,7 +446,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           }
           if (CGUIDialogNumeric::ShowAndGetTime(timedate, label))
           {
-            value.Format("%02d:%02d", timedate.wHour, timedate.wMinute);
+            value = StringUtils::Format("%02d:%02d", timedate.wHour, timedate.wMinute);
             ((CGUIButtonControl*) control)->SetLabel2(value);
           }
         }
@@ -522,15 +521,15 @@ void CGUIDialogAddonSettings::UpdateFromControls()
           if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
             value = ((CGUISpinControlEx*) control)->GetLabel();
           else
-            value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
+            value = StringUtils::Format("%i", ((CGUISpinControlEx*) control)->GetValue());
           break;
         case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
           {
             CStdString option = setting->Attribute("option");
             if (option.size() == 0 || option.CompareNoCase("float") == 0)
-              value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
+              value = StringUtils::Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
             else
-              value.Format("%i", ((CGUISettingsSliderControl *)control)->GetIntValue());
+              value = StringUtils::Format("%i", ((CGUISettingsSliderControl *)control)->GetIntValue());
           }
           break;
         default:
@@ -837,9 +836,9 @@ void CGUIDialogAddonSettings::CreateControls()
         {
           CStdString valuestring;
           if (elements < 2)
-            valuestring.Format(valueformat.c_str(), rangestart);
+            valuestring = StringUtils::Format(valueformat.c_str(), rangestart);
           else
-            valuestring.Format(valueformat.c_str(), rangestart+(rangeend-rangestart)/(elements-1)*i);
+            valuestring = StringUtils::Format(valueformat.c_str(), rangestart+(rangeend-rangestart)/(elements-1)*i);
           ((CGUISpinControlEx *)pControl)->AddLabel(valuestring, i);
         }
         ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings[id]));
@@ -1033,7 +1032,7 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
         if (((CGUISpinControlEx*) control2)->GetFloatValue() > 0.0f)
           value = ((CGUISpinControlEx*) control2)->GetLabel();
         else
-          value.Format("%i", ((CGUISpinControlEx*) control2)->GetValue());
+          value = StringUtils::Format("%i", ((CGUISpinControlEx*) control2)->GetValue());
         break;
       default:
         break;

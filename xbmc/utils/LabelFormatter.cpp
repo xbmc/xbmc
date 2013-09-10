@@ -158,13 +158,13 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   {
   case 'N':
     if (music && music->GetTrackNumber() > 0)
-      value.Format("%02.2i", music->GetTrackNumber());
+      value = StringUtils::Format("%02.2i", music->GetTrackNumber());
     if (movie&& movie->m_iTrack > 0)
-      value.Format("%02.2i", movie->m_iTrack);
+      value = StringUtils::Format("%02.2i", movie->m_iTrack);
     break;
   case 'S':
     if (music && music->GetDiscNumber() > 0)
-      value.Format("%02.2i", music->GetDiscNumber());
+      value = StringUtils::Format("%02.2i", music->GetDiscNumber());
     break;
   case 'A':
     if (music && music->GetArtist().size())
@@ -204,7 +204,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       else if (movie->m_premiered.IsValid())
         value = movie->m_premiered.GetAsLocalizedDate();
       else if (movie->m_iYear > 0)
-        value.Format("%i",movie->m_iYear);
+        value = StringUtils::Format("%i", movie->m_iYear);
     }
     break;
   case 'F': // filename
@@ -247,25 +247,27 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     if (music && music->GetRating() != '0')
       value = music->GetRating();
     else if (movie && movie->m_fRating != 0.f)
-      value.Format("%.1f", movie->m_fRating);
+      value = StringUtils::Format("%.1f", movie->m_fRating);
     break;
   case 'C': // programs count
-    value.Format("%i", item->m_iprogramCount);
+    value = StringUtils::Format("%i", item->m_iprogramCount);
     break;
   case 'K':
     value = item->m_strTitle;
     break;
   case 'M':
     if (movie && movie->m_iEpisode > 0)
-      value.Format("%i %s", movie->m_iEpisode,g_localizeStrings.Get(movie->m_iEpisode == 1 ? 20452 : 20453));
+      value = StringUtils::Format("%i %s",
+                                  movie->m_iEpisode,
+                                  g_localizeStrings.Get(movie->m_iEpisode == 1 ? 20452 : 20453).c_str());
     break;
   case 'E':
     if (movie && movie->m_iEpisode > 0)
     { // episode number
       if (movie->m_iSeason == 0)
-        value.Format("S%02.2i", movie->m_iEpisode);
+        value = StringUtils::Format("S%02.2i", movie->m_iEpisode);
       else
-        value.Format("%02.2i", movie->m_iEpisode);
+        value = StringUtils::Format("%02.2i", movie->m_iEpisode);
     }
     break;
   case 'P':
@@ -276,9 +278,9 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     if (movie && movie->m_iEpisode > 0)
     { // season*100+episode number
       if (movie->m_iSeason == 0)
-        value.Format("S%02.2i", movie->m_iEpisode);
+        value = StringUtils::Format("S%02.2i", movie->m_iEpisode);
       else
-        value.Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
+        value = StringUtils::Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
     }
     break;
   case 'O':
@@ -295,17 +297,19 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     break;
   case 'V': // Playcount
     if (music)
-      value.Format("%i", music->GetPlayCount());
+      value = StringUtils::Format("%i", music->GetPlayCount());
     if (movie)
-      value.Format("%i", movie->m_playCount);
+      value = StringUtils::Format("%i", movie->m_playCount);
     break;
   case 'X': // Bitrate
     if( !item->m_bIsFolder && item->m_dwSize != 0 )
-      value.Format("%i kbps", item->m_dwSize);
+      value = StringUtils::Format("%i kbps", item->m_dwSize);
     break;
    case 'W': // Listeners
     if( !item->m_bIsFolder && music && music->GetListeners() != 0 )
-     value.Format("%i %s", music->GetListeners(), g_localizeStrings.Get(music->GetListeners() == 1 ? 20454 : 20455));
+     value = StringUtils::Format("%i %s",
+                                 music->GetListeners(),
+                                 g_localizeStrings.Get(music->GetListeners() == 1 ? 20454 : 20455).c_str());
     break;
   case 'a': // Date Added
     if (movie && movie->m_dateAdded.IsValid())

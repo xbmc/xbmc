@@ -540,7 +540,7 @@ void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
   if (URIUtils::IsDVD(strURL)) return ;
 
   CURL url(strURL);
-  strDir.Format("%s://%s", url.GetProtocol().c_str(), url.GetFileName().c_str());
+  strDir = StringUtils::Format("%s://%s", url.GetProtocol().c_str(), url.GetFileName().c_str());
 }
 
 int CUtil::GetDVDIfoTitle(const CStdString& strFile)
@@ -706,9 +706,7 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 
   CStdString searchPath = URIUtils::GetDirectory(fn_template);
   CStdString mask = URIUtils::GetExtension(fn_template);
-
-  CStdString name;
-  name.Format(fn_template.c_str(), 0);
+  CStdString name = StringUtils::Format(fn_template.c_str(), 0);
 
   CFileItemList items;
   if (!CDirectory::GetDirectory(searchPath, items, mask, DIR_FLAG_NO_FILE_DIRS))
@@ -717,8 +715,7 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
   items.SetFastLookup(true);
   for (int i = 0; i <= max; i++)
   {
-    CStdString name;
-    name.Format(fn_template.c_str(), i);
+    CStdString name = StringUtils::Format(fn_template.c_str(), i);
     if (!items.Get(name))
       return name;
   }
@@ -732,8 +729,7 @@ CStdString CUtil::GetNextPathname(const CStdString &path_template, int max)
   
   for (int i = 0; i <= max; i++)
   {
-    CStdString name;
-    name.Format(path_template.c_str(), i);
+    CStdString name = StringUtils::Format(path_template.c_str(), i);
     if (!CFile::Exists(name))
       return name;
   }
@@ -1483,8 +1479,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
     iStrInputSize = StrInput.size();
   }
   // replace any additional /../../ with just /../ if necessary
-  CStdString replaceDots;
-  replaceDots.Format("..%c..", cDelim);
+  CStdString replaceDots = StringUtils::Format("..%c..", cDelim);
   while (StrInput.size() > (unsigned int)iTextMaxLength)
     if (!StrInput.Replace(replaceDots, ".."))
       break;
@@ -1964,8 +1959,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   iSize = strLookInPaths.size();
   for (int i=0;i<9;++i) // 9 cd's
   {
-    CStdString cdDir;
-    cdDir.Format("cd%i",i+1);
+    CStdString cdDir = StringUtils::Format("cd%i",i+1);
     for (int i=0;i<iSize;++i)
     {
       CStdString strPath2 = URIUtils::AddFileToFolder(strLookInPaths[i],cdDir);
@@ -2059,7 +2053,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
         {
           for (unsigned int k = 0; k < TagConv.m_Langclass.size(); k++)
           {
-            strDest.Format("special://temp/subtitle.%s.%d.smi", TagConv.m_Langclass[k].Name, i);
+            strDest = StringUtils::Format("special://temp/subtitle.%s.%d.smi", TagConv.m_Langclass[k].Name.c_str(), i);
             if (CFile::Cache(vecSubtitles[i], strDest))
             {
               CLog::Log(LOGINFO, " cached subtitle %s->%s\n", vecSubtitles[i].c_str(), strDest.c_str());

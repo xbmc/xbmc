@@ -1068,7 +1068,7 @@ namespace VIDEO
 
     if (showInfo && content == CONTENT_TVSHOWS)
     {
-      strTitle.Format("%s - %ix%i - %s", showInfo->m_strTitle.c_str(), movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle.c_str());
+      strTitle = StringUtils::Format("%s - %ix%i - %s", showInfo->m_strTitle.c_str(), movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle.c_str());
     }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to %s:%s", TranslateContent(content).c_str(), pItem->GetPath().c_str());
@@ -1683,11 +1683,7 @@ namespace VIDEO
       if (!time)
         time = buffer.st_ctime;
       if (time)
-      {
-        CStdString hash;
-        hash.Format("fast%"PRId64, time);
-        return hash;
-      }
+        return StringUtils::Format("fast%"PRId64, time);
     }
     return "";
   }

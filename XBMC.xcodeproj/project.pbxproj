@@ -533,12 +533,12 @@
 		DFCA6ACB152245CD000BFAAE /* IHTTPRequestHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6AC3152245CD000BFAAE /* IHTTPRequestHandler.cpp */; };
 		DFD5812516C828500008EEA0 /* DAVCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812116C8284F0008EEA0 /* DAVCommon.cpp */; };
 		DFD5812616C828500008EEA0 /* DAVFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812316C828500008EEA0 /* DAVFile.cpp */; };
-		DFD882F617DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
-		DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
-		DFD882F817DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
 		DFD882E717DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
 		DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
 		DFD882E917DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
+		DFD882F617DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
+		DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
+		DFD882F817DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
 		DFD928F316384B6800709DAE /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD928F116384B6800709DAE /* Timer.cpp */; };
 		DFDA3153160E34230047A626 /* DVDOverlayCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDA3152160E34230047A626 /* DVDOverlayCodec.cpp */; };
 		DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFE4095917417FDF00473BD9 /* LegacyPathTranslation.cpp */; };
@@ -3818,6 +3818,7 @@
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
 		AE84CB5C15A5B8BA00A3810E /* TagLibVFSStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLibVFSStream.h; sourceTree = "<group>"; };
+		AE89627117DE2F760097625D /* StdString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StdString.h; sourceTree = "<group>"; };
 		AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxBXA.cpp; sourceTree = "<group>"; };
 		AE89ACA51621DAB800E17DBC /* DVDDemuxBXA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxBXA.h; sourceTree = "<group>"; };
 		AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLoaderTagLib.cpp; sourceTree = "<group>"; };
@@ -4241,10 +4242,10 @@
 		DFD5812216C8284F0008EEA0 /* DAVCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVCommon.h; sourceTree = "<group>"; };
 		DFD5812316C828500008EEA0 /* DAVFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAVFile.cpp; sourceTree = "<group>"; };
 		DFD5812416C828500008EEA0 /* DAVFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVFile.h; sourceTree = "<group>"; };
-		DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonPythonInvoker.cpp; path = python/AddonPythonInvoker.cpp; sourceTree = "<group>"; };
-		DFD882F517DD1A5B001516FE /* AddonPythonInvoker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonPythonInvoker.h; path = python/AddonPythonInvoker.h; sourceTree = "<group>"; };
 		DFD882E517DD189E001516FE /* StringValidation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringValidation.cpp; sourceTree = "<group>"; };
 		DFD882E617DD189E001516FE /* StringValidation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringValidation.h; sourceTree = "<group>"; };
+		DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonPythonInvoker.cpp; path = python/AddonPythonInvoker.cpp; sourceTree = "<group>"; };
+		DFD882F517DD1A5B001516FE /* AddonPythonInvoker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonPythonInvoker.h; path = python/AddonPythonInvoker.h; sourceTree = "<group>"; };
 		DFD928F116384B6800709DAE /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
 		DFD928F216384B6800709DAE /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		DFDA3152160E34230047A626 /* DVDOverlayCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodec.cpp; sourceTree = "<group>"; };
@@ -8668,6 +8669,7 @@
 				7C4458BC161E203800A905F6 /* Screenshot.h */,
 				7C1A492115A962EE004AF4A4 /* SeekHandler.cpp */,
 				7C1A492215A962EE004AF4A4 /* SeekHandler.h */,
+				AE89627117DE2F760097625D /* StdString.h */,
 				36A9443F15821E7C00727135 /* SortUtils.cpp */,
 				36A9444015821E7C00727135 /* SortUtils.h */,
 				E38E1E7F0D25F9FD00618676 /* Splash.cpp */,

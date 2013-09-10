@@ -337,8 +337,7 @@ void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
   unsigned int percent;
   if (CAddonInstaller::Get().GetProgress(item->GetProperty("Addon.ID").asString(), percent))
   {
-    CStdString progress;
-    progress.Format(g_localizeStrings.Get(24042).c_str(), percent);
+    CStdString progress = StringUtils::Format(g_localizeStrings.Get(24042).c_str(), percent);
     item->SetProperty("Addon.Status", progress);
     item->SetProperty("Addon.Downloading", true);
   }

@@ -269,8 +269,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
       CLog::Log(LOGERROR, g_localizeStrings.Get(36040).c_str(), m_cecAdapter ? m_configuration.serverVersion : -1, CEC_LIB_SUPPORTED_VERSION);
 
       // display warning: incompatible libCEC
-      CStdString strMessage;
-      strMessage.Format(g_localizeStrings.Get(36040).c_str(), m_cecAdapter ? m_configuration.serverVersion : -1, CEC_LIB_SUPPORTED_VERSION);
+      CStdString strMessage = StringUtils::Format(g_localizeStrings.Get(36040).c_str(), m_cecAdapter ? m_configuration.serverVersion : -1, CEC_LIB_SUPPORTED_VERSION);
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), strMessage);
       m_bError = true;
       if (m_cecAdapter)
@@ -295,7 +294,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
 
 void CPeripheralCecAdapter::SetVersionInfo(const libcec_configuration &configuration)
 {
-  m_strVersionInfo.Format("libCEC %s - firmware v%d", m_cecAdapter->ToString((cec_server_version)configuration.serverVersion), configuration.iFirmwareVersion);
+  m_strVersionInfo = StringUtils::Format("libCEC %s - firmware v%d", m_cecAdapter->ToString((cec_server_version)configuration.serverVersion), configuration.iFirmwareVersion);
 
   // append firmware build date
   if (configuration.iFirmwareBuildDate != CEC_FW_BUILD_UNKNOWN)
@@ -320,8 +319,7 @@ bool CPeripheralCecAdapter::OpenConnection(void)
   CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, m_strComPort.c_str());
 
   // scanning the CEC bus takes about 5 seconds, so display a notification to inform users that we're busy
-  CStdString strMessage;
-  strMessage.Format(g_localizeStrings.Get(21336), g_localizeStrings.Get(36000));
+  CStdString strMessage = StringUtils::Format(g_localizeStrings.Get(21336).c_str(), g_localizeStrings.Get(36000).c_str());
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), strMessage);
 
   bool bConnectionFailedDisplayed(false);
@@ -1217,7 +1215,7 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
       m_configuration.iHDMIPort > CEC_MAX_HDMI_PORTNUMBER))
   {
     m_configuration.iPhysicalAddress = config.iPhysicalAddress;
-    strPhysicalAddress.Format("%x", config.iPhysicalAddress);
+    strPhysicalAddress = StringUtils::Format("%x", config.iPhysicalAddress);
   }
   bChanged |= SetSetting("physical_address", strPhysicalAddress);
 
@@ -1538,7 +1536,7 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
   // request the OSD name of the TV
   CStdString strNotification;
   cec_osd_name tvName = m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_TV);
-  strNotification.Format("%s: %s", g_localizeStrings.Get(36016), tvName.name);
+  strNotification = StringUtils::Format("%s: %s", g_localizeStrings.Get(36016).c_str(), tvName.name);
 
   CStdString strAmpName = UpdateAudioSystemStatus();
   if (!strAmpName.empty())

@@ -38,6 +38,7 @@
 #include "URL.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 #include "playlists/PlayList.h"
 #include "GUIUserMessages.h"
 
@@ -274,10 +275,10 @@ CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *m
 
         CStdString buffer;
 
-        buffer.Format("%ld", data["volume"].asInteger());
+        buffer = StringUtils::Format("%ld", data["volume"].asInteger());
         rct->SetStateVariable("Volume", buffer.c_str());
 
-        buffer.Format("%ld", 256 * (data["volume"].asInteger() * 60 - 60) / 100);
+        buffer = StringUtils::Format("%ld", 256 * (data["volume"].asInteger() * 60 - 60) / 100);
         rct->SetStateVariable("VolumeDb", buffer.c_str());
 
         rct->SetStateVariable("Mute", data["muted"].asBoolean() ? "1" : "0");
@@ -333,9 +334,9 @@ CUPnPRenderer::UpdateState()
         if (slideshow)
         {
           CStdString index;
-          index.Format("%d", slideshow->NumSlides());
+          index = StringUtils::Format("%d", slideshow->NumSlides());
           avt->SetStateVariable("NumberOfTracks", index.c_str());
-          index.Format("%d", slideshow->CurrentSlide());
+          index = StringUtils::Format("%d", slideshow->CurrentSlide());
           avt->SetStateVariable("CurrentTrack", index.c_str());
 
         }

@@ -27,7 +27,7 @@
 #include "GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "utils/md5.h"
-
+#include "utils/StringUtils.h"
 
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #if defined(TARGET_DARWIN_IOS)
@@ -190,7 +190,10 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CS
   if (1 > iRetries && strHeading.size())
     strHeadingTemp = strHeading;
   else
-    strHeadingTemp.Format("%s - %i %s", g_localizeStrings.Get(12326).c_str(), CSettings::Get().GetInt("masterlock.maxretries") - iRetries, g_localizeStrings.Get(12343).c_str());
+    strHeadingTemp = StringUtils::Format("%s - %i %s",
+                                         g_localizeStrings.Get(12326).c_str(),
+                                         CSettings::Get().GetInt("masterlock.maxretries") - iRetries,
+                                         g_localizeStrings.Get(12343).c_str());
 
   CStdString strUserInput = "";
   if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true, autoCloseMs))  //bool hiddenInput = false/true ? TODO: GUI Setting to enable disable this feature y/n?

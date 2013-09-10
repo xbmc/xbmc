@@ -30,6 +30,7 @@
 #include "FileItem.h"
 #include "network/Network.h"
 #include "utils/CharsetConverter.h"
+#include "utils/StringUtils.h"
 #include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
 
 using namespace XFILE;
@@ -111,8 +112,7 @@ void CAddonCallbacksAddon::AddOnLog(void *addonData, const addon_log_t addonLogL
         break;
     }
 
-    CStdString strXbmcMessage;
-    strXbmcMessage.Format("AddOnLog: %s: %s", addonHelper->m_addon->Name().c_str(), strMessage);
+    CStdString strXbmcMessage = StringUtils::Format("AddOnLog: %s: %s", addonHelper->m_addon->Name().c_str(), strMessage);
     CLog::Log(xbmcLogLevel, "%s", strXbmcMessage.c_str());
   }
   catch (std::exception &e)

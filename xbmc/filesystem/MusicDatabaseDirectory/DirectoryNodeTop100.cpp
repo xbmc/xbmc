@@ -21,6 +21,7 @@
 #include "DirectoryNodeTop100.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
@@ -58,8 +59,7 @@ bool CDirectoryNodeTop100::GetContent(CFileItemList& items) const
   for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
   {
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(Top100Children[i].label)));
-    CStdString strDir;
-    strDir.Format("%s/", Top100Children[i].id);
+    CStdString strDir = StringUtils::Format("%s/", Top100Children[i].id.c_str());
     pItem->SetPath(BuildPath() + strDir);
     pItem->m_bIsFolder = true;
     items.Add(pItem);

@@ -76,6 +76,7 @@
 #include <dlfcn.h>
 #endif
 #include "utils/Environment.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -204,8 +205,9 @@ extern "C" void __stdcall update_emu_environ()
     if (!CSettings::Get().GetString("network.httpproxyusername").empty() &&
         !CSettings::Get().GetString("network.httpproxypassword").empty())
     {
-      strProxy.Format("%s:%s@", CSettings::Get().GetString("network.httpproxyusername").c_str(),
-                                CSettings::Get().GetString("network.httpproxypassword").c_str());
+      strProxy = StringUtils::Format("%s:%s@",
+                                     CSettings::Get().GetString("network.httpproxyusername").c_str(),
+                                     CSettings::Get().GetString("network.httpproxypassword").c_str());
     }
 
     strProxy += CSettings::Get().GetString("network.httpproxyserver");

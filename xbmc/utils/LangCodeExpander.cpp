@@ -22,6 +22,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "LangInfo.h"
 #include "utils/log.h" 
+#include "utils/StringUtils.h"
 
 #define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
 #define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
@@ -213,8 +214,7 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
   }
   else if (strCharCode.size() > 3)
   {
-    CStdString strLangInfoPath;
-    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strCharCode.c_str());
+    CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strCharCode.c_str());
     CLangInfo langInfo;
     if (!langInfo.Load(strLangInfoPath))
       return false;
@@ -315,8 +315,7 @@ bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString&
   }
 
   // try xbmc specific language names
-  CStdString strLangInfoPath;
-  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", lang.c_str());
+  CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", lang.c_str());
   CLangInfo langInfo;
   if (!langInfo.Load(strLangInfoPath))
     return false;

@@ -23,6 +23,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/Key.h"
+#include "utils/StringUtils.h"
 
 CAutorunMediaJob::CAutorunMediaJob(const CStdString &label, const CStdString &path)
 {
@@ -53,8 +54,7 @@ bool CAutorunMediaJob::DoWork()
   int selection = pDialog->GetSelectedLabel();
   if (selection >= 0)
   {
-    CStdString strAction;
-    strAction.Format("ActivateWindow(%s, %s)", GetWindowString(selection), m_path.c_str());
+    CStdString strAction = StringUtils::Format("ActivateWindow(%s, %s)", GetWindowString(selection), m_path.c_str());
     CBuiltins::Execute(strAction);
   }
 

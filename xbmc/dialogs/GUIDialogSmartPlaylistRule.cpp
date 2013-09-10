@@ -31,6 +31,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/LabelFormatter.h"
+#include "utils/StringUtils.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
@@ -329,8 +330,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
   pDialog->SetItems(&items);
-  CStdString strHeading;
-  strHeading.Format(g_localizeStrings.Get(13401),g_localizeStrings.Get(iLabel));
+  CStdString strHeading = StringUtils::Format(g_localizeStrings.Get(13401).c_str(), g_localizeStrings.Get(iLabel).c_str());
   pDialog->SetHeading(strHeading);
   pDialog->SetMultiSelection(m_rule.m_field != FieldPlaylist && m_rule.m_field != FieldVirtualFolder);
 

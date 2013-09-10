@@ -183,17 +183,17 @@ CStdString CFavouritesDirectory::GetExecutePath(const CFileItem *item, int conte
   CStdString execute;
   if (item->m_bIsFolder && (g_advancedSettings.m_playlistAsFolders ||
                             !(item->IsSmartPlayList() || item->IsPlayList())))
-    execute.Format("ActivateWindow(%i,%s)", contextWindow, StringUtils::Paramify(item->GetPath()).c_str());
+    execute = StringUtils::Format("ActivateWindow(%i,%s)", contextWindow, StringUtils::Paramify(item->GetPath()).c_str());
   else if (item->IsScript())
-    execute.Format("RunScript(%s)", StringUtils::Paramify(item->GetPath().Mid(9)).c_str());
+    execute = StringUtils::Format("RunScript(%s)", StringUtils::Paramify(item->GetPath().Mid(9)).c_str());
   else if (item->IsAndroidApp())
-    execute.Format("StartAndroidActivity(%s)", StringUtils::Paramify(item->GetPath().Mid(26)).c_str());
+    execute = StringUtils::Format("StartAndroidActivity(%s)", StringUtils::Paramify(item->GetPath().Mid(26)).c_str());
   else  // assume a media file
   {
     if (item->IsVideoDb() && item->HasVideoInfoTag())
-      execute.Format("PlayMedia(%s)", StringUtils::Paramify(item->GetVideoInfoTag()->m_strFileNameAndPath).c_str());
+      execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item->GetVideoInfoTag()->m_strFileNameAndPath).c_str());
     else
-      execute.Format("PlayMedia(%s)", StringUtils::Paramify(item->GetPath()).c_str());
+      execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item->GetPath()).c_str());
   }
   return execute;
 }

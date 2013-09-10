@@ -562,22 +562,22 @@ int CBuiltins::Execute(const CStdString& execString)
         if (plugin && addon->Type() == ADDON_PLUGIN)
         {
           if (plugin->Provides(CPluginSource::VIDEO))
-            cmd.Format("ActivateWindow(Video,plugin://%s,return)",params[0]);
+            cmd = StringUtils::Format("ActivateWindow(Video,plugin://%s,return)", params[0].c_str());
           else if (plugin->Provides(CPluginSource::AUDIO))
-            cmd.Format("ActivateWindow(Music,plugin://%s,return)",params[0]);
+            cmd = StringUtils::Format("ActivateWindow(Music,plugin://%s,return)", params[0].c_str());
           else if (plugin->Provides(CPluginSource::EXECUTABLE))
-            cmd.Format("ActivateWindow(Programs,plugin://%s,return)",params[0]);
+            cmd = StringUtils::Format("ActivateWindow(Programs,plugin://%s,return)", params[0].c_str());
           else if (plugin->Provides(CPluginSource::IMAGE))
-            cmd.Format("ActivateWindow(Pictures,plugin://%s,return)",params[0]);
+            cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://%s,return)", params[0].c_str());
           else
             // Pass the script name (params[0]) and all the parameters
             // (params[1] ... params[x]) separated by a comma to RunPlugin
-            cmd.Format("RunPlugin(%s)", StringUtils::JoinString(params, ","));
+            cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::JoinString(params, ",").c_str());
         }
         else if (addon->Type() >= ADDON_SCRIPT && addon->Type() <= ADDON_SCRIPT_LYRICS)
           // Pass the script name (params[0]) and all the parameters
           // (params[1] ... params[x]) separated by a comma to RunScript
-          cmd.Format("RunScript(%s)", StringUtils::JoinString(params, ","));
+          cmd = StringUtils::Format("RunScript(%s)", StringUtils::JoinString(params, ",").c_str());
 
         return Execute(cmd);
       }

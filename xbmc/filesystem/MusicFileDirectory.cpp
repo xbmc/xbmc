@@ -22,6 +22,7 @@
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -48,10 +49,9 @@ bool CMusicFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList
 
   for (int i=0; i<iStreams; ++i)
   {
-    CStdString strLabel;
-    strLabel.Format("%s - %s %02.2i", strFileName.c_str(),g_localizeStrings.Get(554).c_str(),i+1);
+    CStdString strLabel = StringUtils::Format("%s - %s %02.2i", strFileName.c_str(), g_localizeStrings.Get(554).c_str(), i+1);
     CFileItemPtr pItem(new CFileItem(strLabel));
-    strLabel.Format("%s%s-%i.%s", strPath.c_str(),strFileName.c_str(),i+1,m_strExt.c_str());
+    strLabel = StringUtils::Format("%s%s-%i.%s", strPath.c_str(), strFileName.c_str(), i+1, m_strExt.c_str());
     pItem->SetPath(strLabel);
 
     if (m_tag.Loaded())
