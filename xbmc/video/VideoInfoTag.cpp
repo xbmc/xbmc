@@ -346,9 +346,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strPlot;
     ar >> m_strPictureURL.m_spoof;
     ar >> m_strPictureURL.m_xml;
-    m_strPictureURL.Parse();
     ar >> m_fanart.m_xml;
-    m_fanart.Unpack();
     ar >> m_strTitle;
     ar >> m_strSortTitle;
     ar >> m_strVotes;
@@ -356,6 +354,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strTrailer;
     int iCastSize;
     ar >> iCastSize;
+    m_cast.reserve(iCastSize);
     for (int i=0;i<iCastSize;++i)
     {
       SActorInfo info;
