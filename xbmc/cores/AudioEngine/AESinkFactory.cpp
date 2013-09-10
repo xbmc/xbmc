@@ -101,7 +101,7 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
 
 
 #if defined(TARGET_WINDOWS)
-  if ((driver.empty() && g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista) ||
+  if ((driver.empty() ||
     driver == "WASAPI") && !g_advancedSettings.m_audioForceDirectSound)
     TRY_SINK(WASAPI)
   else
@@ -141,7 +141,7 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
 {
 #if defined(TARGET_WINDOWS)
   ENUMERATE_SINK(DirectSound, force);
-  if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista) && !g_advancedSettings.m_audioForceDirectSound)
+  if (!g_advancedSettings.m_audioForceDirectSound)
     ENUMERATE_SINK(WASAPI, force);
 #elif defined(TARGET_ANDROID)
     ENUMERATE_SINK(AUDIOTRACK, force);
