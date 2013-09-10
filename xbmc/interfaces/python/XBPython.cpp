@@ -563,6 +563,11 @@ void XBPython::Finalize()
 
 void XBPython::Uninitialize()
 {
+  // don't handle any more announcements as most scripts are probably already
+  // stopped and executing a callback on one of their already destroyed classes
+  // would lead to a crash
+  CAnnouncementManager::RemoveAnnouncer(this);
+
   LOCK_AND_COPY(std::vector<PyElem>,tmpvec,m_vecPyList);
   m_vecPyList.clear();
   m_vecPyList.hadSomethingRemoved = true;
