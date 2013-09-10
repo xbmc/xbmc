@@ -50,6 +50,7 @@
 #include "utils/log.h"
 #include "storage/MediaManager.h"
 #include "utils/RssManager.h"
+#include "utils/JSONVariantParser.h"
 #include "PartyModeManager.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/DisplaySettings.h"
@@ -139,7 +140,7 @@ const BUILT_IN commands[] = {
 #endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
   { "RunAddon",                   true,   "Run the specified plugin/script" },
-  { "NotifyAll",                  true,   "Notify all JSONRPC connected clients" },
+  { "NotifyAll",                  true,   "Notify all connected clients" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
@@ -593,7 +594,12 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     if(params.size()>1)
     {
-      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, params[0], params[1]);
+		CVariant data;
+		
+		if(params.size()>2)
+			data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
+
+		ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, params[0], params[1], data);
     }
     else
     {
