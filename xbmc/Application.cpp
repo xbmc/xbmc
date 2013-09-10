@@ -4483,17 +4483,14 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
-    if (m_screenSaver->ID() == "visualization")
-    {
-      // we can just continue as usual from vis mode
-      return false;
-    }
-    else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black" || m_screenSaver->ID().empty())
+    if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black" || m_screenSaver->ID().empty())
       return true;
     else if (!m_screenSaver->ID().IsEmpty())
     { // we're in screensaver window
-      if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
+      if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER
+          || g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
         g_windowManager.PreviousWindow();  // show the previous window
+
       if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
         CApplicationMessenger::Get().SendAction(CAction(ACTION_STOP), WINDOW_SLIDESHOW);
     }
@@ -4587,7 +4584,9 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     else if (m_pPlayer->IsPlayingAudio() && CSettings::Get().GetBool("screensaver.usemusicvisinstead") && !CSettings::Get().GetString("musicplayer.visualisation").empty())
     { // activate the visualisation
       m_screenSaver.reset(new CScreenSaver("visualization"));
-      g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+      // prevent music info popup if vis is already running
+      if (g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+        g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
       return;
     }
   }
