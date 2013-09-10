@@ -77,8 +77,7 @@ std::string CEnvironment::win32ConvertWToUtf8(const std::wstring &text, bool *re
   if (resultSuccessful != NULL)
     *resultSuccessful = false;
 
-  static const DWORD convFlags = (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista)) ?
-    /*WC_ERR_INVALID_CHARS*/ 0x80 : 0;
+  static const DWORD convFlags = /*WC_ERR_INVALID_CHARS*/ 0x80;
   int bufSize = WideCharToMultiByte(CP_UTF8,  convFlags, text.c_str(), -1, NULL, 0, NULL, NULL);
   if (bufSize == 0)
     return "";
