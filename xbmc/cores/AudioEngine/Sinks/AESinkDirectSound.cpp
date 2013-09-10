@@ -243,9 +243,6 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 /** Better position accuracy */
                   | DSBCAPS_GLOBALFOCUS;         /** Allows background playing */
 
-  if (!g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista))
-    dsbdesc.dwFlags |= DSBCAPS_LOCHARDWARE;     /** Needed for 5.1 on emu101k, fails by design on Vista */
-
   dsbdesc.dwBufferBytes = m_dwBufferLen;
   dsbdesc.lpwfxFormat = (WAVEFORMATEX *)&wfxex;
 
@@ -511,55 +508,6 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
   HRESULT                hr;
 
   std::string strDD = GetDefaultDevice();
-
-  /* See if we are on Windows XP */
-  if (!g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista))
-  {
-    /* We are on XP - WASAPI not supported - enumerate using DS devices */
-    LPGUID deviceGUID = NULL;
-    RPC_CSTR cszGUID;
-    std::string szGUID;
-    std::list<DSDevice> DSDeviceList;
-    DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
-
-    for(std::list<DSDevice>::iterator itt = DSDeviceList.begin(); itt != DSDeviceList.end(); ++itt)
-    {
-      if (UuidToString((*itt).lpGuid, &cszGUID) != RPC_S_OK)
-        continue;  /* could not convert GUID to string - skip device */
-
-      deviceInfo.m_channels.Reset();
-      deviceInfo.m_dataFormats.clear();
-      deviceInfo.m_sampleRates.clear();
-
-      szGUID = (LPSTR)cszGUID;
-
-      deviceInfo.m_deviceName = "{" + szGUID + "}";
-      deviceInfo.m_displayName = (*itt).name;
-      deviceInfo.m_displayNameExtra = std::string("DirectSound: ") + (*itt).name;
-
-      deviceInfo.m_deviceType = AE_DEVTYPE_PCM;
-      deviceInfo.m_channels   = layoutsByChCount[2];
-
-      deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_FLOAT));
-      deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_AC3));
-
-      deviceInfo.m_sampleRates.push_back((DWORD) 96000);
-
-      deviceInfoList.push_back(deviceInfo);
-
-      // add the default device with m_deviceName = default
-      if(strDD == deviceInfo.m_deviceName)
-      {
-        deviceInfo.m_deviceName = std::string("default");
-        deviceInfo.m_displayName = std::string("default");
-        deviceInfo.m_displayNameExtra = std::string("");
-        deviceInfoList.push_back(deviceInfo);
-      }
-    }
-
-    RpcStringFree(&cszGUID);
-    return;
-  }
 
   /* Windows Vista or later - supporting WASAPI device probing */
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);

@@ -100,7 +100,7 @@ bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
 
-  m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista) && LoadD3D9Ex());
+  m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && LoadD3D9Ex());
   m_pD3D = NULL;
 
   if (m_useD3D9Ex)
