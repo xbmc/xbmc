@@ -141,7 +141,7 @@ bool CFanart::ParseColors(const CStdString &colorsIn, CStdString &colorsOut)
   // Essentially we read the colors in using the proper format, and store them in our own fixed temporary format (3 DWORDS), and then
   // write them back in in the specified format.
 
-  if (colorsIn.IsEmpty())
+  if (colorsIn.empty())
     return false;
 
   // check for the TVDB RGB triplets "|68,69,59|69,70,58|78,78,68|"

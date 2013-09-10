@@ -419,7 +419,7 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
 
   if (m_bAbortRequest) return false;
 
-  BOOL ret = CreateProcessW(WstrPath.IsEmpty() ? NULL : WstrPath.c_str(),
+  BOOL ret = CreateProcessW(WstrPath.empty() ? NULL : WstrPath.c_str(),
                             (LPWSTR) WstrSwitches.c_str(), NULL, NULL, FALSE, NULL,
                             NULL, NULL, &si, &m_processInfo);
 
@@ -738,7 +738,7 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
       XMLUtils::GetString(pReplacer,"pat",strPat);
       XMLUtils::GetString(pReplacer,"rep",strRep);
 
-      if (!strPat.IsEmpty() && !strRep.IsEmpty())
+      if (!strPat.empty() && !strRep.empty())
       {
         CLog::Log(LOGDEBUG,"  Registering replacer:");
         CLog::Log(LOGDEBUG,"    Match:[%s] Pattern:[%s] Replacement:[%s]", strMatch.c_str(), strPat.c_str(), strRep.c_str());
@@ -757,7 +757,7 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
       else
       {
         // error message about missing tag
-        if (strPat.IsEmpty())
+        if (strPat.empty())
           CLog::Log(LOGERROR,"  Missing <Pat> tag");
         else
           CLog::Log(LOGERROR,"  Missing <Rep> tag");

@@ -302,7 +302,7 @@ void CGUIDialogMusicInfo::Update()
 
 void CGUIDialogMusicInfo::SetLabel(int iControl, const CStdString& strLabel)
 {
-  if (strLabel.IsEmpty())
+  if (strLabel.empty())
   {
     SET_CONTROL_LABEL(iControl, (iControl == CONTROL_TEXTAREA) ? (m_bArtistInfo?547:414) : 416);
   }
@@ -474,7 +474,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   database.GetArtistPath(m_artist.idArtist,strArtistPath);
   CFileItem item(strArtistPath,true);
   CStdString strLocal = item.GetLocalFanart();
-  if (!strLocal.IsEmpty())
+  if (!strLocal.empty())
   {
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
     itemLocal->SetArt("thumb", strLocal);
@@ -569,7 +569,7 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
   else
     itemDir = item.GetPath();
 
-  if (!itemDir.IsEmpty() && CDirectory::Exists(itemDir))
+  if (!itemDir.empty() && CDirectory::Exists(itemDir))
   {
     CMediaSource itemSource;
     itemSource.strName = g_localizeStrings.Get(36041);

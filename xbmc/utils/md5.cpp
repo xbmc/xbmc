@@ -66,7 +66,7 @@ void XBMC::XBMC_MD5::getDigest(CStdString& digest)
 
 CStdString XBMC::XBMC_MD5::GetMD5(const CStdString &text)
 {
-  if (text.IsEmpty())
+  if (text.empty())
     return "";
   XBMC_MD5 state;
   CStdString digest;

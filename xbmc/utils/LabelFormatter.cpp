@@ -122,12 +122,12 @@ CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item
   for (unsigned int i = 0; i < m_dynamicContent[label].size(); i++)
   {
     dynamicRight = GetMaskContent(m_dynamicContent[label][i], item);
-    if ((i == 0 || !dynamicLeft.IsEmpty()) && !dynamicRight.IsEmpty())
+    if ((i == 0 || !dynamicLeft.empty()) && !dynamicRight.empty())
       strLabel += m_staticContent[label][i];
     strLabel += dynamicRight;
     dynamicLeft = dynamicRight;
   }
-  if (!dynamicLeft.IsEmpty())
+  if (!dynamicLeft.empty())
     strLabel += m_staticContent[label][m_dynamicContent[label].size()];
 
   return strLabel;
@@ -136,7 +136,7 @@ CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item
 void CLabelFormatter::FormatLabel(CFileItem *item) const
 {
   CStdString maskedLabel = GetContent(0, item);
-  if (!maskedLabel.IsEmpty())
+  if (!maskedLabel.empty())
     item->SetLabel(maskedLabel);
   else if (!item->m_bIsFolder && m_hideFileExtensions)
     item->RemoveExtension();
@@ -179,7 +179,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       value = movie->m_strTitle;
     break;
   case 'Z':
-    if (movie && !movie->m_strShowTitle.IsEmpty())
+    if (movie && !movie->m_strShowTitle.empty())
       value = movie->m_strShowTitle;
     break;
   case 'B':
@@ -324,7 +324,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       value = pic->GetDateTimeTaken().GetAsLocalizedDate();
     break;
   }
-  if (!value.IsEmpty())
+  if (!value.empty())
     return mask.m_prefix + value + mask.m_postfix;
   return "";
 }

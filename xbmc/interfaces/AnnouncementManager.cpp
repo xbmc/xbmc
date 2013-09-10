@@ -142,7 +142,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       item->SetProperty(LOOKUP_PROPERTY, false);
 
       CStdString title = item->GetVideoInfoTag()->m_strTitle;
-      if (title.IsEmpty())
+      if (title.empty())
         title = item->GetLabel();
       object["item"]["title"] = title;
 
@@ -198,7 +198,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       item->SetProperty(LOOKUP_PROPERTY, false);
 
       CStdString title = item->GetMusicInfoTag()->GetTitle();
-      if (title.IsEmpty())
+      if (title.empty())
         title = item->GetLabel();
       object["item"]["title"] = title;
 

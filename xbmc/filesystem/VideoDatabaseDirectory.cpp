@@ -60,7 +60,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
     if (item->m_bIsFolder && !item->HasIcon() && !item->HasArt("thumb"))
     {
       CStdString strImage = GetIcon(item->GetPath());
-      if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))
+      if (!strImage.empty() && g_TextureManager.HasTexture(strImage))
         item->SetIconImage(strImage);
     }
   }
@@ -144,7 +144,7 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
 
   CStdString path = CLegacyPathTranslation::TranslateVideoDbPath(strDirectory);
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
-  if (!pNode.get() || path.IsEmpty())
+  if (!pNode.get() || path.empty())
     return false;
 
   // first see if there's any filter criteria
@@ -175,12 +175,12 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   if (params.GetYear() != -1)
   {
     CStdString strTemp = StringUtils::Format("%i",params.GetYear());
-    if (!strLabel.IsEmpty())
+    if (!strLabel.empty())
       strLabel += " / ";
     strLabel += strTemp;
   }
 
-  if (strLabel.IsEmpty())
+  if (strLabel.empty())
   {
     switch (pNode->GetChildType())
     {

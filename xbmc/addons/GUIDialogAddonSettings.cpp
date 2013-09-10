@@ -296,7 +296,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
                 if (i == (unsigned int)atoi(value))
                   selected = i;
                 CStdString localized = m_addon->GetString(atoi(valuesVec[i].c_str()));
-                if (localized.IsEmpty())
+                if (localized.empty())
                   localized = g_localizeStrings.Get(atoi(valuesVec[i].c_str()));
                 valuesVec[i] = localized;
               }
@@ -411,7 +411,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         else if (strcmpi(type, "action") == 0)
         {
           CStdString action = setting->Attribute("action");
-          if (!action.IsEmpty())
+          if (!action.empty())
           {
             // replace $CWD with the url of plugin/script
             action.Replace("$CWD", m_addon->Path());
@@ -424,7 +424,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         else if (strcmp(type, "date") == 0)
         {
           CDateTime date;
-          if (!value.IsEmpty())
+          if (!value.empty())
             date.SetFromDBDate(value);
           SYSTEMTIME timedate;
           date.GetAsSystemTime(timedate);
@@ -438,7 +438,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         else if (strcmp(type, "time") == 0)
         {
           SYSTEMTIME timedate;
-          if (!value.IsEmpty())
+          if (!value.empty())
           {
             // assumes HH:MM
             timedate.wHour = atoi(value.Left(2));
@@ -603,7 +603,7 @@ void CGUIDialogAddonSettings::CreateSections()
     CGUIButtonControl *button = originalButton ? originalButton->Clone() : NULL;
 
     CStdString label = GetString(category->Attribute("label"));
-    if (label.IsEmpty())
+    if (label.empty())
       label = g_localizeStrings.Get(128);
 
     // add the category button
@@ -753,7 +753,7 @@ void CGUIDialogAddonSettings::CreateControls()
         if (!pControl) return;
         ((CGUISpinControlEx *)pControl)->SetText(label);
 
-        if (!lvalues.IsEmpty())
+       if (!lvalues.empty())
           StringUtils::Tokenize(lvalues, valuesVec, "|");
         else if (values.Equals("$HOURS"))
         {
@@ -765,7 +765,7 @@ void CGUIDialogAddonSettings::CreateControls()
         }
         else
           StringUtils::Tokenize(values, valuesVec, "|");
-        if (!entries.IsEmpty())
+        if (!entries.empty())
           StringUtils::Tokenize(entries, entryVec, "|");
 
         if(bSort && strcmpi(type, "labelenum") == 0)
@@ -776,10 +776,10 @@ void CGUIDialogAddonSettings::CreateControls()
           int iAdd = i;
           if (entryVec.size() > i)
             iAdd = atoi(entryVec[i].c_str());
-          if (!lvalues.IsEmpty())
+          if (!lvalues.empty())
           {
             CStdString replace = m_addon->GetString(atoi(valuesVec[i].c_str()));
-            if (replace.IsEmpty())
+            if (replace.empty())
               replace = g_localizeStrings.Get(atoi(valuesVec[i].c_str()));
             ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
           }
@@ -921,7 +921,7 @@ CStdString CGUIDialogAddonSettings::GetAddonNames(const CStdString& addonIDslist
   StringUtils::SplitString(addonIDslist, ",", addons);
   for (CStdStringArray::const_iterator it = addons.begin(); it != addons.end() ; it ++)
   {
-    if (!retVal.IsEmpty())
+    if (!retVal.empty())
       retVal += ", ";
     AddonPtr addon;
     if (CAddonMgr::Get().GetAddon(*it ,addon))
@@ -945,7 +945,7 @@ vector<std::string> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString 
   bool hideExtensions = (options.CompareNoCase("hideext") == 0);
   // fetch directory
   CFileItemList items;
-  if (!mask.IsEmpty())
+  if (!mask.empty())
     CDirectory::GetDirectory(fullPath, items, mask, XFILE::DIR_FLAG_NO_FILE_DIRS);
   else
     CDirectory::GetDirectory(fullPath, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
@@ -992,7 +992,7 @@ void CGUIDialogAddonSettings::EnableControls()
 
 bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const int controlId)
 {
-  if (condition.IsEmpty()) return true;
+  if (condition.empty()) return true;
 
   bool bCondition = true;
   bool bCompare = true;

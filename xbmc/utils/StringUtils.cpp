@@ -630,9 +630,9 @@ CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
   else if (format & TIME_FORMAT_H)
     strHMS.AppendFormat("%i", hh);
   if (format & TIME_FORMAT_MM)
-    strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", mm);
+    strHMS.AppendFormat(strHMS.empty() ? "%02.2i" : ":%02.2i", mm);
   if (format & TIME_FORMAT_SS)
-    strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", ss);
+    strHMS.AppendFormat(strHMS.empty() ? "%02.2i" : ":%02.2i", ss);
   return strHMS;
 }
 

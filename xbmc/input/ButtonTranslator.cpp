@@ -1190,7 +1190,7 @@ CStdString CButtonTranslator::TranslateWindow(int windowID)
 int CButtonTranslator::TranslateWindow(const CStdString &window)
 {
   CStdString strWindow(window);
-  if (strWindow.IsEmpty()) 
+  if (strWindow.empty()) 
     return WINDOW_INVALID;
   strWindow.ToLower();
   // eliminate .xml

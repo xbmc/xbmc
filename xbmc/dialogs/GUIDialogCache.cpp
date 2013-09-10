@@ -74,7 +74,7 @@ void CGUIDialogCache::OpenDialog()
 {
   if (m_pDlg)
   {
-    if (m_strHeader.IsEmpty())
+    if (m_strHeader.empty())
       m_pDlg->SetHeading(438);
     else
       m_pDlg->SetHeading(m_strHeader);

@@ -247,7 +247,7 @@ int CAPKFile::Stat(const CURL& url, struct __stat64* buffer)
     for (int i = 0; i < numFiles; i++)
     {
       CStdString name = zip_get_name(zip_archive, i, zip_flags);
-      if (!name.IsEmpty() && name.Left(path.size()).Equals(path))
+      if (!name.empty() && name.Left(path.size()).Equals(path))
       {
         buffer->st_gid  = 0;
         buffer->st_mode = _S_IFDIR;

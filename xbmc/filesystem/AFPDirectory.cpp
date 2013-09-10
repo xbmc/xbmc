@@ -127,7 +127,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CURL url(strPath);
   CAfpConnection::afpConnnectError afpError = gAfpConnection.Connect(url);
 
-  if (afpError != CAfpConnection::AfpOk || (!url.GetShareName().IsEmpty() && !gAfpConnection.GetVolume()))
+  if (afpError != CAfpConnection::AfpOk || (!url.GetShareName().empty() && !gAfpConnection.GetVolume()))
   {
     if (afpError == CAfpConnection::AfpAuth)
     {
@@ -145,7 +145,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   struct afp_file_info *curDirPtr = NULL;
 
   // if no share name in url - try to fetch the volumes on the server and treat them like folders
-  if (url.GetShareName().IsEmpty())
+  if (url.GetShareName().empty())
   {
     bListVolumes = true;
     struct afp_server *serv = gAfpConnection.GetServer();

@@ -199,13 +199,13 @@ void CGUIWindowLoginScreen::Update()
     const CProfile *profile = CProfilesManager::Get().GetProfile(i);
     CFileItemPtr item(new CFileItem(profile->getName()));
     CStdString strLabel;
-    if (profile->getDate().IsEmpty())
+    if (profile->getDate().empty())
       strLabel = g_localizeStrings.Get(20113);
     else
       strLabel = StringUtils::Format(g_localizeStrings.Get(20112).c_str(), profile->getDate().c_str());
     item->SetLabel2(strLabel);
     item->SetArt("thumb", profile->getThumb());
-    if (profile->getThumb().IsEmpty() || profile->getThumb().Equals("-"))
+    if (profile->getThumb().empty() || profile->getThumb().Equals("-"))
       item->SetArt("thumb", "unknown-user.png");
     item->SetLabelPreformated(true);
     m_vecItems->Add(item);

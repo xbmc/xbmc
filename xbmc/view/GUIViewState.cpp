@@ -397,7 +397,7 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
     CMediaSource source;
     source.strPath = "addons://sources/" + content + "/";    
     source.strName = label;
-    if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+    if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
       source.m_strThumbnailImage = thumb;
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     source.m_ignore = true;
@@ -415,7 +415,7 @@ void CGUIViewState::AddAndroidSource(const CStdString &content, const CStdString
     CMediaSource source;
     source.strPath = "androidapp://sources/" + content + "/";
     source.strName = label;
-    if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+    if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
       source.m_strThumbnailImage = thumb;
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     source.m_ignore = true;

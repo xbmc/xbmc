@@ -41,7 +41,7 @@ CLocalizeStrings::~CLocalizeStrings(void)
 
 CStdString CLocalizeStrings::ToUTF8(const CStdString& strEncoding, const CStdString& str)
 {
-  if (strEncoding.IsEmpty())
+  if (strEncoding.empty())
     return str;
 
   CStdString ret;
@@ -113,7 +113,7 @@ bool CLocalizeStrings::LoadPO(const CStdString &filename, CStdString &encoding,
 
       if (bSourceLanguage && !PODoc.GetMsgid().empty())
       {
-        if (bStrInMem && (m_strings[id + offset].strOriginal.IsEmpty() ||
+        if (bStrInMem && (m_strings[id + offset].strOriginal.empty() ||
             PODoc.GetMsgid() == m_strings[id + offset].strOriginal))
           continue;
         else if (bStrInMem)

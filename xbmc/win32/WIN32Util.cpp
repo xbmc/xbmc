@@ -314,7 +314,7 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   CStdString strWorkingDir;
 
   strCommand.Trim();
-  if (strCommand.IsEmpty())
+  if (strCommand.empty())
   {
     return false;
   }
@@ -559,7 +559,7 @@ void CWIN32Util::ExtendDllPath()
   CStdString strEnv;
   CStdStringArray vecEnv;
   strEnv = CEnvironment::getenv("PATH");
-  if (strEnv.IsEmpty())
+  if (strEnv.empty())
     CLog::Log(LOGWARNING, "Can get system env PATH or PATH is empty");
 
   StringUtils::SplitString(DLL_ENV_PATH, ";", vecEnv);
@@ -912,7 +912,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
             share.strName = StringUtils::Format( "%s (%s)", share.strPath.c_str(), g_localizeStrings.Get(218).c_str());
             break;
           case DRIVE_REMOVABLE:
-            if(share.strName.IsEmpty())
+            if(share.strName.empty())
               share.strName = StringUtils::Format( "%s (%s)", g_localizeStrings.Get(437).c_str(), share.strPath.c_str());
             break;
           case DRIVE_UNKNOWN:

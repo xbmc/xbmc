@@ -115,7 +115,7 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
   }
 
   // Use the label for Line 1 if not defined
-  if (strLine1.IsEmpty())
+  if (strLine1.empty())
     strLine1 = item.GetLabel();
 
   // Setup dialog parameters

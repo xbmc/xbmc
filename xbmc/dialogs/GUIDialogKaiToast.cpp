@@ -136,7 +136,7 @@ bool CGUIDialogKaiToast::DoWork()
     {
       CStdString strTypeImage = toast.imagefile;
 
-      if (strTypeImage.IsEmpty())
+      if (strTypeImage.empty())
       {
         CGUIImage *typeImage = NULL;
 

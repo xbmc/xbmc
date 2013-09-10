@@ -160,13 +160,13 @@ namespace XFILE
         items.SetProperty(PROPERTY_PATH_DB, videoUrl.ToString());
       }
     }
-    else if (playlist.IsMusicType() || playlist.GetType().IsEmpty())
+    else if (playlist.IsMusicType() || playlist.GetType().empty())
     {
       CMusicDatabase db;
       if (db.Open())
       {
         CSmartPlaylist plist(playlist);
-        if (playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
+        if (playlist.GetType().Equals("mixed") || playlist.GetType().empty())
           plist.SetType("songs");
 
         MediaType mediaType = DatabaseUtils::MediaTypeFromString(plist.GetType());

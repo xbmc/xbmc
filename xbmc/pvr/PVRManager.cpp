@@ -472,7 +472,7 @@ bool CPVRManager::SetWakeupCommand(void)
     return false;
 
   const CStdString strWakeupCommand = CSettings::Get().GetString("pvrpowermanagement.setwakeupcmd");
-  if (!strWakeupCommand.IsEmpty() && m_timers)
+  if (!strWakeupCommand.empty() && m_timers)
   {
     time_t iWakeupTime;
     const CDateTime nextEvent = m_timers->GetNextEventTime();

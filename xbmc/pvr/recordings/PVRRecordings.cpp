@@ -69,7 +69,7 @@ const CStdString CPVRRecordings::GetDirectoryFromPath(const CStdString &strPath,
   CStdString strUseBase = TrimSlashes(strBase);
 
   /* strip the base or return an empty value if it doesn't fit or match */
-  if (!strUseBase.IsEmpty())
+  if (!strUseBase.empty())
   {
     /* adding "/" to make sure that base matches the complete folder name and not only parts of it */
     if (strUsePath.GetLength() <= strUseBase.GetLength() || strUsePath.Left(strUseBase.GetLength() + 1) != strUseBase + "/")
@@ -111,13 +111,13 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
 
-    if (!current->m_strIconPath.IsEmpty())
+    if (!current->m_strIconPath.empty())
       pFileItem->SetIconImage(current->m_strIconPath);
 
-    if (!current->m_strThumbnailPath.IsEmpty())
+    if (!current->m_strThumbnailPath.empty())
       pFileItem->SetArt("thumb", current->m_strThumbnailPath);
 
-    if (!current->m_strFanartPath.IsEmpty())
+    if (!current->m_strFanartPath.empty())
       pFileItem->SetArt("fanart", current->m_strFanartPath);
 
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
@@ -136,7 +136,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
   {
     CPVRRecording *current = m_recordings.at(iRecordingPtr);
     const CStdString strCurrent = GetDirectoryFromPath(current->m_strDirectory, strUseBase);
-    if (strCurrent.IsEmpty())
+    if (strCurrent.empty())
       continue;
 
     CStdString strFilePath;

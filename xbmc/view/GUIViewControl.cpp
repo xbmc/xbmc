@@ -191,7 +191,7 @@ void CGUIViewControl::SetSelectedItem(int item)
 
 void CGUIViewControl::SetSelectedItem(const CStdString &itemPath)
 {
-  if (!m_fileItems || itemPath.IsEmpty())
+  if (!m_fileItems || itemPath.empty())
     return;
 
   CStdString comparePath(itemPath);

@@ -99,7 +99,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else if (path.GetHostName().Equals("search"))
   {
     CStdString search(path.GetFileName());
-    if (search.IsEmpty() && !GetKeyboardInput(16017, search))
+    if (search.empty() && !GetKeyboardInput(16017, search))
       return false;
 
     items.SetProperty("reponame",g_localizeStrings.Get(283));
@@ -131,7 +131,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     items.SetLabel(addon->Name());
   }
 
-  if (path.GetFileName().IsEmpty())
+  if (path.GetFileName().empty())
   {
     if (!path.GetHostName().Equals("repos"))
     {
@@ -145,7 +145,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
             item->SetPath(URIUtils::AddFileToFolder(strPath,TranslateType((TYPE)i,false)));
             item->m_bIsFolder = true;
             CStdString thumb = GetIcon((TYPE)i);
-            if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+            if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
               item->SetArt("thumb", thumb);
             items.Add(item);
             break;

@@ -65,7 +65,7 @@ CStdString CAlbum::GetGenreString() const
 
 bool CAlbum::operator<(const CAlbum &a) const
 {
-  if (strMusicBrainzAlbumID.IsEmpty() && a.strMusicBrainzAlbumID.IsEmpty())
+  if (strMusicBrainzAlbumID.empty() && a.strMusicBrainzAlbumID.empty())
   {
     if (strAlbum < a.strAlbum) return true;
     if (strAlbum > a.strAlbum) return false;

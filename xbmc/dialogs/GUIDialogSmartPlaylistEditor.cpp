@@ -161,7 +161,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 void CGUIDialogSmartPlaylistEditor::OnOK()
 {
   // save our playlist
-  if (m_path.IsEmpty())
+  if (m_path.empty())
   {
     CStdString filename(CUtil::MakeLegalFileName(m_playlist.m_playlistName));
     CStdString path;

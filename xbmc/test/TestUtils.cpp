@@ -114,7 +114,7 @@ bool CXBMCTestUtils::SetReferenceFileBasePath()
 {
   CStdString xbmcPath;
   CUtil::GetHomePath(xbmcPath);
-  if (xbmcPath.IsEmpty())
+  if (xbmcPath.empty())
     return false;
 
   /* Set xbmc path and xbmcbin path */

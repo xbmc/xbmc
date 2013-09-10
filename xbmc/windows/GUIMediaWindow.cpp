@@ -488,7 +488,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       CStdString dir = message.GetStringParam(0);
       const CStdString &ret = message.GetStringParam(1);
       bool returning = ret.CompareNoCase("return") == 0;
-      if (!dir.IsEmpty())
+      if (!dir.empty())
       {
         m_history.ClearPathHistory();
         // ensure our directory is valid
@@ -657,7 +657,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
-  if (!strDirectory.IsEmpty() && cachedItems.Load(GetID()))
+  if (!strDirectory.empty() && cachedItems.Load(GetID()))
   {
     items.Assign(cachedItems);
   }
@@ -665,7 +665,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   {
     unsigned int time = XbmcThreads::SystemClockMillis();
 
-    if (strDirectory.IsEmpty())
+    if (strDirectory.empty())
       SetupShares();
 
     if (!m_rootDir.GetDirectory(strDirectory, items))
@@ -680,7 +680,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       m_history.RemoveParentPath();
   }
 
-  if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().IsEmpty())
+  if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().empty())
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(strParentPath);
@@ -765,7 +765,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     return false;
   }
 
-  if (items.GetLabel().IsEmpty())
+  if (items.GetLabel().empty())
     items.SetLabel(CUtil::GetTitleFromPath(items.GetPath(), true));
   
   ClearFileItems();
@@ -776,12 +776,12 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     
   // if we're getting the root source listing
   // make sure the path history is clean
-  if (strDirectory.IsEmpty())
+  if (strDirectory.empty())
     m_history.ClearPathHistory();
 
   int iWindow = GetID();
   int showLabel = 0;
-  if (strDirectory.IsEmpty())
+  if (strDirectory.empty())
   {
     if (iWindow == WINDOW_PICTURES)
       showLabel = 997;
@@ -965,7 +965,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     {
       const CStdString& strLockType=m_guiState->GetLockType();
       if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
-        if (!strLockType.IsEmpty() && !g_passwordManager.IsItemUnlocked(pItem.get(), strLockType))
+        if (!strLockType.empty() && !g_passwordManager.IsItemUnlocked(pItem.get(), strLockType))
             return true;
 
       if (!HaveDiscOrConnection(pItem->GetPath(), pItem->m_iDriveType))
@@ -1114,7 +1114,7 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
   CURL url(pItem->GetPath());
   const CStdString& strHostName = url.GetHostName();
 
-  if (url.GetProtocol() == "smb" && strHostName.IsEmpty()) //  smb workgroup
+  if (url.GetProtocol() == "smb" && strHostName.empty()) //  smb workgroup
     idMessageText = 15303; // Workgroup not found
   else if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_REMOTE || URIUtils::IsRemote(pItem->GetPath()))
     idMessageText = 15301; // Could not connect to network server
@@ -1138,7 +1138,7 @@ void CGUIMediaWindow::GoParentFolder()
   // in case the path history is messed up and the current folder is on
   // the stack more than once, keep going until there's nothing left or they
   // dont match anymore.
-  while (!strParent.IsEmpty())
+  while (!strParent.empty())
   {
     URIUtils::AddSlashAtEnd(strParent);
     if (strParent.Equals(strPath))
@@ -1243,7 +1243,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
 {
   // Make sure our shares are configured
   SetupShares();
-  if (!strDirectory.IsEmpty())
+  if (!strDirectory.empty())
   {
     // Build the directory history for default path
     CStdString strPath, strParentPath;
@@ -1795,7 +1795,7 @@ bool CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &
   CStdString trimmedFilter(filter);
   trimmedFilter.TrimLeft().ToLower();
   
-  if (trimmedFilter.IsEmpty())
+  if (trimmedFilter.empty())
     return result;
 
   CFileItemList filteredItems(items.GetPath()); // use the original path - it'll likely be relied on for other things later.

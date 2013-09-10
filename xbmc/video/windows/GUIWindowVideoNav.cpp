@@ -372,7 +372,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     else if (!items.IsVirtualDirectoryRoot())
     { // load info from the database
       CStdString label;
-      if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("video"), &label)) 
+      if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("video"), &label)) 
         items.SetLabel(label);
       if (!items.IsSourcesPath())
         LoadVideoInfo(items);
@@ -401,15 +401,15 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
 {
   // TODO: this could possibly be threaded as per the music info loading,
   //       we could also cache the info
-  if (!items.GetContent().IsEmpty() && !items.IsPlugin())
+  if (!items.GetContent().empty() && !items.IsPlugin())
     return; // don't load for listings that have content set and weren't created from plugins
 
   CStdString content = items.GetContent();
   // determine content only if it isn't set
-  if (content.IsEmpty())
+  if (content.empty())
   {
     content = database.GetContentForPath(items.GetPath());
-    items.SetContent(content.IsEmpty() ? "files" : content);
+    items.SetContent(content.empty() ? "files" : content);
   }
 
   /*
@@ -430,7 +430,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
   /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
            we won't need the fetchedPlayCounts code, and can "simply" do this directly on absense of content. */
   bool fetchedPlayCounts = false;
-  if (!content.IsEmpty())
+  if (!content.empty())
   {
     database.GetItemsForPath(content, items.GetPath(), dbItems);
     dbItems.SetFastLookup(true);
@@ -440,7 +440,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
   {
     CFileItemPtr pItem = items[i];
     CFileItemPtr match;
-    if (!content.IsEmpty()) /* optical media will be stacked down, so it's path won't match the base path */
+    if (!content.empty()) /* optical media will be stacked down, so it's path won't match the base path */
       match = dbItems.Get(pItem->IsOpticalMediaFile() ? pItem->GetLocalMetadataPath() : pItem->GetPath());
     if (match)
     {
@@ -757,7 +757,7 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
     return false;
 
   VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.empty())
     iType = VIDEODB_CONTENT_TVSHOWS;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
     iType = VIDEODB_CONTENT_EPISODES;
@@ -808,7 +808,7 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
   database.Open();
 
   database.GetFilePathById(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
-  if (path.IsEmpty())
+  if (path.empty())
     return false;
   if (iType == VIDEODB_CONTENT_MOVIES)
     database.DeleteMovie(path);
@@ -1102,7 +1102,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         else if ((artType == "poster" || artType == "banner") && currentArt.find("thumb") != currentArt.end())
           currentThumb = currentArt["thumb"];
       }
-      if (!currentThumb.IsEmpty())
+      if (!currentThumb.empty())
       {
         CFileItemPtr item(new CFileItem("thumb://Current", false));
         item->SetArt("thumb", currentThumb);
@@ -1398,7 +1398,7 @@ void CGUIWindowVideoNav::OnChooseFanart(const CFileItem &videoItem)
 
   if (result.Equals("fanart://None") || !CFile::Exists(result))
     result.clear();
-  if (!result.IsEmpty() && flip)
+  if (!result.empty() && flip)
     result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");
 
   // update the db

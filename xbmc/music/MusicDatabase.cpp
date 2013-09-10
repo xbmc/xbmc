@@ -348,7 +348,7 @@ int CMusicDatabase::AddSong(const int idAlbum,
   try
   {
     // We need at least the title
-    if (strTitle.IsEmpty())
+    if (strTitle.empty())
       return -1;
 
     if (NULL == m_pDB.get()) return -1;
@@ -389,7 +389,7 @@ int CMusicDatabase::AddSong(const int idAlbum,
                     iTrack, iDuration, iYear,
                     crc, strFileName.c_str());
 
-      if (strMusicBrainzTrackID.IsEmpty())
+      if (strMusicBrainzTrackID.empty())
         strSQL += PrepareSQL(",NULL");
       else
         strSQL += PrepareSQL(",'%s'", strMusicBrainzTrackID.c_str());
@@ -470,7 +470,7 @@ int CMusicDatabase::UpdateSong(int idSong,
                         strTitle.c_str(),
                         iTrack, iDuration, iYear,
                         crc, strFileName.c_str());
-    if (strMusicBrainzTrackID.IsEmpty())
+    if (strMusicBrainzTrackID.empty())
       strSQL += PrepareSQL(", strMusicBrainzTrackID = NULL");
     else
       strSQL += PrepareSQL(", strMusicBrainzTrackID = '%s'", strMusicBrainzTrackID.c_str());
@@ -513,7 +513,7 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum, const CStdString& strMu
     {
       m_pDS->close();
       // doesnt exists, add it
-      if (strMusicBrainzAlbumID.IsEmpty())
+      if (strMusicBrainzAlbumID.empty())
         strSQL=PrepareSQL("insert into album (idAlbum, strAlbum, strMusicBrainzAlbumID, strArtists, strGenres, iYear, bCompilation) values( NULL, '%s', NULL, '%s', '%s', %i, %i)",
                           strAlbum.c_str(),
                           strArtist.c_str(),
@@ -564,7 +564,7 @@ int CMusicDatabase::AddGenre(const CStdString& strGenre1)
     CStdString strGenre = strGenre1;
     strGenre.Trim();
 
-    if (strGenre.IsEmpty())
+    if (strGenre.empty())
       strGenre=g_localizeStrings.Get(13205); // Unknown
 
     if (NULL == m_pDB.get()) return -1;
@@ -1067,7 +1067,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   CAlbum album;
   album.idAlbum = record->at(album_idAlbum).get_asInt();
   album.strAlbum = record->at(album_strAlbum).get_asString();
-  if (album.strAlbum.IsEmpty())
+  if (album.strAlbum.empty())
     album.strAlbum = g_localizeStrings.Get(1050);
   album.strMusicBrainzAlbumID = record->at(album_strMusicBrainzAlbumID).get_asString();
   album.artist = StringUtils::Split(record->at(album_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
@@ -2091,7 +2091,7 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
     }
     m_pDS->close();
 
-    if ( ! strSongsToDelete.IsEmpty() )
+    if ( ! strSongsToDelete.empty() )
     {
       strSongsToDelete = "(" + strSongsToDelete.TrimRight(",") + ")";
       // ok, now delete these songs + all references to them from the linked tables
@@ -2229,7 +2229,7 @@ bool CMusicDatabase::CleanupPaths()
     }
     m_pDS->close();
 
-    if ( ! deleteSQL.IsEmpty() )
+    if ( ! deleteSQL.empty() )
     {
       deleteSQL = "DELETE FROM path WHERE idPath IN (" + deleteSQL.TrimRight(',') + ")";
       // do the deletion, and drop our temp table
@@ -2545,7 +2545,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
           if (strTitle == "") break;
 
           CStdString strArtist = cddb.getInexactArtist(i);
-          if (!strArtist.IsEmpty())
+          if (!strArtist.empty())
             strTitle += " - " + strArtist;
 
           pDlgSelect->Add(strTitle);
@@ -2624,7 +2624,7 @@ void CMusicDatabase::DeleteCDDBInfo()
       cddb.getDiskArtist(strDiskArtist);
 
       CStdString str;
-      if (strDiskArtist.IsEmpty())
+      if (strDiskArtist.empty())
         str = strDiskTitle;
       else
         str = strDiskTitle + " - " + strDiskArtist;
@@ -4000,7 +4000,7 @@ bool CMusicDatabase::GetArtistPath(int idArtist, CStdString &basePath)
     while (!m_pDS2->eof())
     {
       CStdString path = m_pDS2->fv("strPath").get_asString();
-      if (basePath.IsEmpty())
+      if (basePath.empty())
         basePath = path;
       else
         URIUtils::GetCommonPath(basePath,path);
@@ -4056,7 +4056,7 @@ int CMusicDatabase::GetAlbumByName(const CStdString& strAlbum, const CStdString&
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    if (strArtist.IsEmpty())
+    if (strArtist.empty())
       strSQL=PrepareSQL("SELECT idAlbum FROM album WHERE album.strAlbum LIKE '%s'", strAlbum.c_str());
     else
       strSQL=PrepareSQL("SELECT album.idAlbum FROM album WHERE album.strAlbum LIKE '%s' AND album.strArtists LIKE '%s'", strAlbum.c_str(),strArtist.c_str());
@@ -4206,7 +4206,7 @@ bool CMusicDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    if (hash.IsEmpty())
+    if (hash.empty())
     { // this is an empty folder - we need only add it to the path table
       // if the path actually exists
       if (!CDirectory::Exists(path))
@@ -4376,7 +4376,7 @@ bool CMusicDatabase::SetSongRating(const CStdString &filePath, char rating)
 {
   try
   {
-    if (filePath.IsEmpty()) return false;
+    if (filePath.empty()) return false;
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 

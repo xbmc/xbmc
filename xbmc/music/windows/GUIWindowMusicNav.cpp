@@ -105,7 +105,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       m_rootDir.AllowNonLocalSources(false);
 
       // is this the first time the window is opened?
-      if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
+      if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
         message.SetStringParam(CSettings::Get().GetString("mymusic.defaultlibview"));
       
       DisplayEmptyDatabaseMessage(false); // reset message state
@@ -294,7 +294,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   if (m_bDisplayEmptyDatabaseMessage)
     return true;
 
-  if (strDirectory.IsEmpty())
+  if (strDirectory.empty())
     AddSearchFolder();
 
   bool bResult = CGUIWindowMusicBase::GetDirectory(strDirectory, items);
@@ -597,7 +597,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         return true;
       }
 
-      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty())
+      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.empty())
       {
         CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
         if (pWindow)
@@ -768,7 +768,7 @@ void CGUIWindowMusicNav::OnSearchUpdate()
 {
   CStdString search(GetProperty("search").asString());
   CURL::Encode(search);
-  if (!search.IsEmpty())
+  if (!search.empty())
   {
     CStdString path = "musicsearch://" + search + "/";
     m_history.ClearSearchHistory();

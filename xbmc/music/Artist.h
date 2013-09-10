@@ -36,7 +36,7 @@ public:
   long idArtist;
   bool operator<(const CArtist& a) const
   {
-    if (strMusicBrainzArtistID.IsEmpty() && a.strMusicBrainzArtistID.IsEmpty())
+    if (strMusicBrainzArtistID.empty() && a.strMusicBrainzArtistID.empty())
     {
       if (strArtist < a.strArtist) return true;
       if (strArtist > a.strArtist) return false;

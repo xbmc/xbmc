@@ -479,7 +479,7 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
 
   /* check if the recording tag is valid */
   CPVRRecording *recTag = (CPVRRecording *) item->GetPVRRecordingInfoTag();
-  if (!recTag || recTag->m_strRecordingId.IsEmpty())
+  if (!recTag || recTag->m_strRecordingId.empty())
     return bReturn;
 
   /* show a confirmation dialog */
@@ -707,7 +707,7 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
       if (channel && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
          (channel->IsRadio() == g_PVRManager.IsPlayingRadio()))
       {
-        if (channel->StreamURL().IsEmpty())
+        if (channel->StreamURL().empty())
           bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(*channel);
       }
 

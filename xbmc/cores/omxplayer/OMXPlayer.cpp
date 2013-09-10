@@ -3296,7 +3296,7 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
     // for music file, don't open artwork as video
     bool disabled = false;
     CStdString extension = URIUtils::GetExtension(m_filename);
-    if (!extension.IsEmpty() && g_advancedSettings.m_musicExtensions.Find(extension.ToLower()) != -1)
+    if (!extension.empty() && g_advancedSettings.m_musicExtensions.Find(extension.ToLower()) != -1)
     {
       CLog::Log(LOGWARNING, "%s - Ignoring video in audio filetype:%s", __FUNCTION__, m_filename.c_str());
       disabled = true;

@@ -51,7 +51,7 @@ bool CHomeRunDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
   CURL url(strPath);
 
-  if(url.GetHostName().IsEmpty())
+  if(url.GetHostName().empty())
   {
     // no hostname, list all available devices
     int target_ip = 0;

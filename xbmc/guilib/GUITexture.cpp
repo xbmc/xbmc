@@ -289,7 +289,7 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
 
 bool CGUITextureBase::AllocResources()
 {
-  if (m_info.filename.IsEmpty())
+  if (m_info.filename.empty())
     return false;
 
   if (m_texture.size())
@@ -349,7 +349,7 @@ bool CGUITextureBase::AllocResources()
   m_frameHeight = (float)m_texture.m_height;
 
   // load the diffuse texture (if necessary)
-  if (!m_info.diffuse.IsEmpty())
+  if (!m_info.diffuse.empty())
   {
     m_diffuse = g_TextureManager.Load(m_info.diffuse);
   }

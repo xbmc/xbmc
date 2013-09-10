@@ -520,10 +520,10 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
 
   temperature.SetState(CTemperature::invalid);
 
-  if (cmd.IsEmpty() && m_fProcTemperature == NULL)
+  if (cmd.empty() && m_fProcTemperature == NULL)
     return false;
 
-  if (!cmd.IsEmpty())
+  if (!cmd.empty())
   {
     p = popen (cmd.c_str(), "r");
     if (p)

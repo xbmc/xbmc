@@ -76,10 +76,10 @@ void CGUIDialogLockSettings::CreateSettings()
   if (m_bGetUser)
   {
     AddButton(1,20142);
-    if (!m_strUser.IsEmpty())
+    if (!m_strUser.empty())
       m_settings[0].name = StringUtils::Format("%s (%s)",g_localizeStrings.Get(20142).c_str(),m_strUser.c_str());
     AddButton(2,12326);
-    if (!m_locks.code.IsEmpty())
+    if (!m_locks.code.empty())
       m_settings[1].name = StringUtils::Format("%s (%s)",g_localizeStrings.Get(12326).c_str(),g_localizeStrings.Get(20141).c_str());
     if (m_saveUserDetails)
       AddBool(3, 13423, m_saveUserDetails);

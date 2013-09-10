@@ -474,7 +474,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_COOKIEJAR, strCookieFile.c_str());
 
   // Set custom cookie if requested
-  if (!m_cookie.IsEmpty())
+  if (!m_cookie.empty())
     g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, m_cookie.c_str());
 
   g_curlInterface.easy_setopt(h, CURLOPT_COOKIELIST, "FLUSH");
@@ -512,7 +512,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   }
 
   // setup Referer header if needed
-  if (!m_referer.IsEmpty())
+  if (!m_referer.empty())
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
   else
   {
@@ -660,7 +660,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   ||  strProtocol.Equals("ftps") )
   {
     // we was using url optons for urls, keep the old code work and warning
-    if (!url2.GetOptions().IsEmpty())
+    if (!url2.GetOptions().empty())
     {
       CLog::Log(LOGWARNING, "%s: ftp url option is deprecated, please switch to use protocol option (change '?' to '|'), url: [%s]", __FUNCTION__, url2.GetRedacted().c_str());
       url2.SetProtocolOptions(url2.GetOptions().Mid(1));
@@ -703,14 +703,14 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     if (url2.HasProtocolOption("auth"))
     {
       m_ftpauth = url2.GetProtocolOption("auth");
-      if(m_ftpauth.IsEmpty())
+      if(m_ftpauth.empty())
         m_ftpauth = "any";
     }
     m_ftpport = "";
     if (url2.HasProtocolOption("active"))
     {
       m_ftpport = url2.GetProtocolOption("active");
-      if(m_ftpport.IsEmpty())
+      if(m_ftpport.empty())
         m_ftpport = "-";
     }
     m_ftppasvip = url2.HasProtocolOption("pasvip") && url2.GetProtocolOption("pasvip") != "0";
@@ -721,11 +721,11 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     if (CSettings::Get().GetBool("network.usehttpproxy")
         && !CSettings::Get().GetString("network.httpproxyserver").empty()
         && CSettings::Get().GetInt("network.httpproxyport") > 0
-        && m_proxy.IsEmpty())
+        && m_proxy.empty())
     {
       m_proxy = CSettings::Get().GetString("network.httpproxyserver");
       m_proxy.AppendFormat(":%d", CSettings::Get().GetInt("network.httpproxyport"));
-      if (CSettings::Get().GetString("network.httpproxyusername").length() > 0 && m_proxyuserpass.IsEmpty())
+      if (CSettings::Get().GetString("network.httpproxyusername").length() > 0 && m_proxyuserpass.empty())
       {
         m_proxyuserpass = CSettings::Get().GetString("network.httpproxyusername");
         m_proxyuserpass += ":" + CSettings::Get().GetString("network.httpproxypassword");
@@ -754,7 +754,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         if(name.Equals("auth"))
         {
           m_httpauth = value;
-          if(m_httpauth.IsEmpty())
+          if(m_httpauth.empty())
             m_httpauth = "any";
         }
         else if (name.Equals("Referer"))
@@ -1580,7 +1580,7 @@ bool CCurlFile::GetHttpHeader(const CURL &url, CHttpHeader &headers)
 bool CCurlFile::GetMimeType(const CURL &url, CStdString &content, CStdString useragent)
 {
   CCurlFile file;
-  if (!useragent.IsEmpty())
+  if (!useragent.empty())
     file.SetUserAgent(useragent);
 
   struct __stat64 buffer;

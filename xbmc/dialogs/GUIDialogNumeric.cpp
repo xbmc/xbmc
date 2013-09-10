@@ -208,7 +208,7 @@ void CGUIDialogNumeric::OnBackSpace()
   }
   if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   { // just go back one character
-    if (!m_number.IsEmpty())
+    if (!m_number.empty())
       m_number.Delete(m_number.GetLength() - 1);
   }
   else if (m_mode == INPUT_IP_ADDRESS)
@@ -705,7 +705,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(CStdString& strNewPassword)
     return false;
   }
 
-  if (strUserInput.IsEmpty())
+  if (strUserInput.empty())
     // user canceled out
     return false;
 
@@ -739,7 +739,7 @@ int CGUIDialogNumeric::ShowAndVerifyPassword(CStdString& strPassword, const CStd
   CStdString strPassTemp = strPassword;
   if (ShowAndVerifyInput(strPassTemp, strTempHeading, true))
     return 0;   // user entered correct password
-  if (strPassTemp.IsEmpty()) return -1;   // user canceled out
+  if (strPassTemp.empty()) return -1;   // user canceled out
   return 1; // user must have entered an incorrect password
 }
 

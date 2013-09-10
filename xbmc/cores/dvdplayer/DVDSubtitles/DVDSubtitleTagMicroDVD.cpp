@@ -150,7 +150,7 @@ void CDVDSubtitleTagMicroDVD::ConvertLine(CDVDOverlayText* pOverlay, const char*
     }
   }
     
-  if (strUTF8.IsEmpty())
+  if (strUTF8.empty())
     return;
 
   if( strUTF8[strUTF8.size()-1] == '\n' )

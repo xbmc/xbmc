@@ -75,7 +75,7 @@ namespace XFILE
       return false;
 
     vector<std::string> baseTokens;
-    if (!strPathInZip.IsEmpty())
+    if (!strPathInZip.empty())
       StringUtils::Tokenize(strPathInZip,baseTokens,"/");
 
     for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)

@@ -552,7 +552,7 @@ void Xcddb::parseData(const char *buffer)
     {
       CStdString strExtd(strValue);
 
-      if (m_strYear.IsEmpty())
+      if (m_strYear.empty())
       {
         // Extract Year from extended info
         // as a fallback
@@ -561,7 +561,7 @@ void Xcddb::parseData(const char *buffer)
           g_charsetConverter.unknownToUTF8(strExtd.Mid(iPos + 6, 4), m_strYear);
       }
 
-      if (m_strGenre.IsEmpty())
+      if (m_strGenre.empty())
       {
         // Extract ID3 Genre
         // as a fallback

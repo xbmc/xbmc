@@ -490,7 +490,7 @@ bool CAddonInstallJob::DoWork()
 {
   AddonPtr repoPtr = GetRepoForAddon(m_addon);
   CStdString installFrom;
-  if (!repoPtr || repoPtr->Props().libname.IsEmpty())
+  if (!repoPtr || repoPtr->Props().libname.empty())
   {
     // Addons are installed by downloading the .zip package on the server to the local
     // packages folder, then extracting from the local .zip package into the addons folder
@@ -508,7 +508,7 @@ bool CAddonInstallJob::DoWork()
     {
       // zip passed in - download + extract
       CStdString path(m_addon->Path());
-      if (!m_referer.IsEmpty() && URIUtils::IsInternetStream(path))
+      if (!m_referer.empty() && URIUtils::IsInternetStream(path))
       {
         CURL url(path);
         url.SetProtocolOptions(m_referer);
@@ -759,7 +759,7 @@ void CAddonInstallJob::ReportInstallError(const CStdString& addonID,
 
 bool CAddonInstallJob::CheckHash(const CStdString& zipFile)
 {
-  if (m_hash.IsEmpty())
+  if (m_hash.empty())
     return true;
   CStdString md5 = CUtil::GetFileMD5(zipFile);
   if (!md5.Equals(m_hash))
@@ -798,7 +798,7 @@ bool CAddonUnInstallJob::DoWork()
 
   AddonPtr repoPtr = CAddonInstallJob::GetRepoForAddon(m_addon);
   RepositoryPtr therepo = boost::dynamic_pointer_cast<CRepository>(repoPtr);
-  if (therepo && !therepo->Props().libname.IsEmpty())
+  if (therepo && !therepo->Props().libname.empty())
   {
     CFileItemList dummy;
     CStdString s = StringUtils::Format("plugin://%s/?action=uninstall"

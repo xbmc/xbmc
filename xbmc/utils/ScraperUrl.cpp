@@ -118,7 +118,7 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
 
 bool CScraperUrl::ParseString(CStdString strUrl)
 {
-  if (strUrl.IsEmpty())
+  if (strUrl.empty())
     return false;
 
   CXBMCTinyXML doc;
@@ -201,7 +201,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
   if (scrURL.m_isgz)
     http.SetContentEncoding("gzip");
 
-  if (!scrURL.m_cache.IsEmpty())
+  if (!scrURL.m_cache.empty())
   {
     strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath,
                               "scrapers/" + cacheContext + "/" + scrURL.m_cache);
@@ -255,7 +255,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
       strHTML = converted;
   }
 
-  if (!scrURL.m_cache.IsEmpty())
+  if (!scrURL.m_cache.empty())
   {
     CStdString strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath,
                               "scrapers/" + cacheContext + "/" + scrURL.m_cache);
@@ -271,7 +271,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
 // <TAG><url>...</url>...</TAG> (parsed by ParseElement) or <url>...</url> (ditto)
 bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
 {
-  if (strUrls.IsEmpty())
+  if (strUrls.empty())
     return false;
 
   // ok, now parse the xml file
@@ -297,7 +297,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
 
 CStdString CScraperUrl::GetThumbURL(const CScraperUrl::SUrlEntry &entry)
 {
-  if (entry.m_spoof.IsEmpty())
+  if (entry.m_spoof.empty())
     return entry.m_url;
   CStdString spoof = entry.m_spoof;
   CURL::Encode(spoof);

@@ -356,9 +356,9 @@ CStdString CEdenVideoArtUpdater::GetCachedEpisodeThumb(const CFileItem &item)
 
 CStdString CEdenVideoArtUpdater::GetCachedVideoThumb(const CFileItem &item)
 {
-  if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.IsEmpty())
+  if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.empty())
     return GetThumb(item.GetVideoInfoTag()->m_strPath, CProfilesManager::Get().GetVideoThumbFolder(), true);
-  else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+  else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.empty())
   {
     CStdString path = item.GetVideoInfoTag()->m_strFileNameAndPath;
     if (URIUtils::IsStack(path))

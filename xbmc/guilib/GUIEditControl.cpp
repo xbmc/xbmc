@@ -451,7 +451,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     }
 
     changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);
-    if (text.IsEmpty())
+    if (text.empty())
       changed |= m_label2.SetText(m_hintInfo.GetLabel(GetParentID()));
     else
       changed |= m_label2.SetTextW(text);

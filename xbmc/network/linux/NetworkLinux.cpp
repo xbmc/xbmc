@@ -790,7 +790,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
          case SIOCGIWAP:
          {
             // This event marks a new access point, so push back the old information
-            if (!macAddress.IsEmpty())
+            if (!macAddress.empty())
                result.push_back(NetworkAccessPoint(essId, macAddress, signalLevel, encryption, channel));
             unsigned char* mac = (unsigned char*)iwe->u.ap_addr.sa_data;
             // macAddress is big-endian, write in byte chunks
@@ -878,7 +878,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
       pos += iwe->len;
    }
 
-   if (!macAddress.IsEmpty())
+   if (!macAddress.empty())
       result.push_back(NetworkAccessPoint(essId, macAddress, signalLevel, encryption, channel));
 
    free(res_buf);

@@ -129,7 +129,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
   }
   else if (action.GetID() == ACTION_CURSOR_RIGHT)
   {
-    if (m_strEditing.IsEmpty() && (unsigned int) GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
+    if (m_strEditing.empty() && (unsigned int) GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
     { // add a space
       Character(L' ');
     }
@@ -154,7 +154,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
   }
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
-    if (!m_strEditing.IsEmpty())
+    if (!m_strEditing.empty())
       return handled;
     uint8_t b = action.GetID() & 0xFF;
     if (b == XBMCVK_HOME)
@@ -323,7 +323,7 @@ void CGUIDialogKeyboardGeneric::InputText(const CStdString& aTextString)
 {
   CStdStringW newStr;
   g_charsetConverter.utf8ToW(aTextString, newStr);
-  if (!newStr.IsEmpty())
+  if (!newStr.empty())
   {
     m_strEditing.clear();
     m_iEditingOffset = 0;
@@ -393,7 +393,7 @@ void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice 
       else
         edit.append(m_strEdit.size(), L'*');
     }
-    else if (!m_strEditing.IsEmpty())
+    else if (!m_strEditing.empty())
     {
       edit.Insert(m_iCursorPos, m_strEditing);
       pEdit->SetHighlight(m_iCursorPos, m_iCursorPos + m_strEditing.size());
@@ -413,7 +413,7 @@ void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice 
     if (m_pCharCallback)
     {
       // do not send editing text comes from system input method
-      if (!m_hiddenInput && !m_strEditing.IsEmpty())
+      if (!m_hiddenInput && !m_strEditing.empty())
         g_charsetConverter.wToUTF8(m_strEdit, utf8Edit);
       m_pCharCallback(this, utf8Edit);
     }
@@ -611,7 +611,7 @@ void CGUIDialogKeyboardGeneric::OnDeinitWindow(int nextWindowID)
 
 void CGUIDialogKeyboardGeneric::MoveCursor(int iAmount)
 {
-  if (!m_strEditing.IsEmpty())
+  if (!m_strEditing.empty())
     return;
   SetCursorPos(GetCursorPos() + iAmount);
 }

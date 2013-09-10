@@ -345,7 +345,7 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     CFileItemPtr pItem = items[i];
     pItem->LoadMusicTag();
     if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded() &&
-       !pItem->GetMusicInfoTag()->GetAlbum().IsEmpty())
+       !pItem->GetMusicInfoTag()->GetAlbum().empty())
     {
       if (m_dlgProgress && bShowInfo)
         m_dlgProgress->Close();
@@ -1029,7 +1029,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
   // Save this thumb as the directory thumb if it's the only album in the folder (files view nicety)
   // We do this by grabbing all the songs in the folder, and checking to see whether they come
   // from the same album.
-  if (saveDirThumb && CFile::Exists(albumThumb) && !albumPath.IsEmpty() && !URIUtils::IsCDDA(albumPath))
+  if (saveDirThumb && CFile::Exists(albumThumb) && !albumPath.empty() && !URIUtils::IsCDDA(albumPath))
   {
     CFileItemList items;
     GetDirectory(albumPath, items);

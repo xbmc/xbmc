@@ -56,7 +56,7 @@ CSong::CSong(CFileItem& item)
   iDuration = tag.GetDuration();
   bCompilation = tag.GetCompilation();
   embeddedArt = tag.GetCoverArtInfo();
-  strFileName = tag.GetURL().IsEmpty() ? item.GetPath() : tag.GetURL();
+  strFileName = tag.GetURL().empty() ? item.GetPath() : tag.GetURL();
   strThumb = item.GetUserMusicThumb(true);
   iStartOffset = item.m_lStartOffset;
   iEndOffset = item.m_lEndOffset;

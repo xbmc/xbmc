@@ -87,7 +87,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       url.SetFileName(strBQRequest);
     }
   }
-  if(strFilter.IsEmpty())
+  if(strFilter.empty())
   {
     url.SetOptions("");
     url.SetFileName(strBQRequest);
@@ -145,7 +145,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
         else
           result = g_tuxbox.ParseBouquets(root, items, url, strFilter, strXMLChildString);
       }
-      else if( strXMLRootString.Equals(root->Value()) && !strFilter.IsEmpty() )
+      else if( strXMLRootString.Equals(root->Value()) && !strFilter.empty() )
       {
         data.clear();
         if (enigma2)
@@ -229,7 +229,7 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
       {
         //PopUp Context and Request SubMode with root and child string
         strBQRequest = g_tuxbox.GetSubMode(g_advancedSettings.m_iTuxBoxDefaultRootMenu, strXMLRootString, strXMLChildString);
-        if(strBQRequest.IsEmpty())
+        if(strBQRequest.empty())
         {
           strBQRequest = "xml/services?mode=0&submode=4"; //Bouquets
           strXMLRootString = StringUtils::Format("bouquets");
@@ -270,7 +270,7 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
       }
     }
   }
-  if(strBQRequest.IsEmpty() || strXMLRootString.IsEmpty() || strXMLChildString.IsEmpty())
+  if(strBQRequest.empty() || strXMLRootString.empty() || strXMLChildString.empty())
     return false;
   else
     return true;

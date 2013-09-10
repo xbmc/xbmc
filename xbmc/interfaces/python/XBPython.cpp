@@ -332,7 +332,7 @@ void XBPython::OnAbortRequested(const CStdString &ID)
   {
     if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
     {
-      if (ID.IsEmpty())
+      if (ID.empty())
         (*it)->OnAbortRequested();
       else if ((*it)->GetId() == ID)
         (*it)->OnAbortRequested();
@@ -450,7 +450,7 @@ bool XBPython::InitializeEngine()
          was used to compile the various Python object files (i.e. .pyo,
          .pyc, etc.). */
         // check if we are running as real xbmc.app or just binary
-      if (!CUtil::GetFrameworksPath(true).IsEmpty())
+      if (!CUtil::GetFrameworksPath(true).empty())
       {
         // using external python, it's build looking for xxx/lib/python2.6
         // so point it to frameworks which is where python2.6 is located

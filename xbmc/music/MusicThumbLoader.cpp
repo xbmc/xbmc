@@ -178,14 +178,14 @@ bool CMusicThumbLoader::FillThumb(CFileItem &item, bool folderThumbs /* = true *
   if (item.HasArt("thumb"))
     return true;
   CStdString thumb = GetCachedImage(item, "thumb");
-  if (thumb.IsEmpty())
+  if (thumb.empty())
   {
     thumb = item.GetUserMusicThumb(false, folderThumbs);
-    if (!thumb.IsEmpty())
+    if (!thumb.empty())
       SetCachedImage(item, "thumb", thumb);
   }
   item.SetArt("thumb", thumb);
-  return !thumb.IsEmpty();
+  return !thumb.empty();
 }
 
 bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)

@@ -798,7 +798,7 @@ bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    if (hash.IsEmpty())
+    if (hash.empty())
     { // this is an empty folder - we need only add it to the path table
       // if the path actually exists
       if (!CDirectory::Exists(path))
@@ -1340,14 +1340,14 @@ int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& thumb
       idActor = m_pDS->fv("idActor").get_asInt();
       m_pDS->close();
       // update the thumb url's
-      if (!thumbURLs.IsEmpty())
+      if (!thumbURLs.empty())
       {
         strSQL=PrepareSQL("update actors set strThumb='%s' where idActor=%i",thumbURLs.c_str(),idActor);
         m_pDS->exec(strSQL.c_str());
       }
     }
     // add artwork
-    if (!thumb.IsEmpty())
+    if (!thumb.empty())
       SetArtForItem(idActor, "actor", "thumb", thumb);
     return idActor;
   }
@@ -1710,7 +1710,7 @@ void CVideoDatabase::GetMusicVideosByArtist(const CStdString& strArtist, CFileIt
     if (NULL == m_pDS.get()) return ;
 
     CStdString strSQL;
-    if (strArtist.IsEmpty())  // TODO: SMARTPLAYLISTS what is this here for???
+    if (strArtist.empty())  // TODO: SMARTPLAYLISTS what is this here for???
       strSQL=PrepareSQL("select distinct * from musicvideoview join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo=musicvideoview.idMVideo join actors on actors.idActor=artistlinkmusicvideo.idArtist");
     else
       strSQL=PrepareSQL("select * from musicvideoview join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo=musicvideoview.idMVideo join actors on actors.idActor=artistlinkmusicvideo.idArtist where actors.strActor='%s'", strArtist.c_str());
@@ -2342,7 +2342,7 @@ int CVideoDatabase::GetSeasonId(int showID, int season)
 {
   CStdString sql = PrepareSQL("idShow=%i AND season=%i", showID, season);
   CStdString id = GetSingleValue("seasons", "idSeason", sql);
-  if (id.IsEmpty())
+  if (id.empty())
     return -1;
   return strtol(id.c_str(), NULL, 10);
 }
@@ -5271,7 +5271,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
 
       for (it=mapAlbums.begin();it != mapAlbums.end();++it)
       {
-        if (!it->second.first.IsEmpty())
+        if (!it->second.first.empty())
         {
           CFileItemPtr pItem(new CFileItem(it->second.first));
 
@@ -6377,7 +6377,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
               pItem->GetVideoInfoTag()->m_lastPlayed = jItem->GetVideoInfoTag()->m_lastPlayed;
 
             // check for fanart if not already set
-            if (strFanArt.IsEmpty())
+            if (strFanArt.empty())
               strFanArt = jItem->GetArt("fanart");
 
             // remove duplicate entry
@@ -6392,7 +6392,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
         {
           pItem->GetVideoInfoTag()->m_playCount = (pItem->GetVideoInfoTag()->m_iEpisode == (int)pItem->GetProperty("watchedepisodes").asInteger()) ? 1 : 0;
           pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
-          if (!strFanArt.IsEmpty())
+          if (!strFanArt.empty())
             pItem->SetArt("fanart", strFanArt);
         }
         // increment i to j which is the next item
@@ -6459,7 +6459,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
                 iPlayCount += jTag->m_playCount;
 
                 // episodes dont have fanart yet
-                //if (strFanArt.IsEmpty())
+                //if (strFanArt.empty())
                 //  strFanArt = jItem->GetArt("fanart");
 
                 paths.push_back(jFileNameAndPath);
@@ -6485,7 +6485,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
           pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
 
           // episodes dont have fanart yet
-          //if (!strFanArt.IsEmpty())
+          //if (!strFanArt.empty())
           //  pItem->SetArt("fanart", strFanArt);
         }
         // increment i to j which is the next item
@@ -6785,7 +6785,7 @@ int CVideoDatabase::GetSeasonForEpisode(int idEpisode)
   char column[5];
   sprintf(column, "c%0d", VIDEODB_ID_EPISODE_SEASON);
   CStdString id = GetSingleValue("episode", column, PrepareSQL("idEpisode=%i", idEpisode));
-  if (id.IsEmpty())
+  if (id.empty())
     return -1;
   return atoi(id.c_str());
 }
@@ -6867,7 +6867,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
   foundDirectly = false;
   try
   {
-    if (strPath.IsEmpty() || !m_pDB.get() || !m_pDS.get()) return ScraperPtr();
+    if (strPath.empty() || !m_pDB.get() || !m_pDS.get()) return ScraperPtr();
 
     ScraperPtr scraper;
     CStdString strPath2;
@@ -7239,7 +7239,7 @@ void CVideoDatabase::GetMusicVideoArtistsByName(const CStdString& strSearch, CFi
     if (NULL == m_pDS.get()) return;
 
     CStdString strLike;
-    if (!strSearch.IsEmpty())
+    if (!strSearch.empty())
       strLike = "and actors.strActor like '%%%s%%'";
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
       strSQL=PrepareSQL("select actors.idActor,actors.strActor,path.strPath from artistlinkmusicvideo,actors,musicvideo,files,path where actors.idActor=artistlinkmusicvideo.idArtist and artistlinkmusicvideo.idMVideo=musicvideo.idMVideo and files.idFile=musicvideo.idFile and files.idPath=path.idPath "+strLike,strSearch.c_str());
@@ -7320,7 +7320,7 @@ void CVideoDatabase::GetMusicVideoAlbumsByName(const CStdString& strSearch, CFil
     if (NULL == m_pDS.get()) return;
 
     CStdString strLike;
-    if (!strSearch.IsEmpty())
+    if (!strSearch.empty())
     {
       strLike = StringUtils::Format("and musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_ALBUM);
       strLike += "like '%%s%%%'";
@@ -7329,7 +7329,7 @@ void CVideoDatabase::GetMusicVideoAlbumsByName(const CStdString& strSearch, CFil
       strSQL=PrepareSQL("select distinct musicvideo.c%02d,musicvideo.idMVideo,path.strPath from musicvideo,files,path where files.idFile=musicvideo.idFile and files.idPath=path.idPath"+strLike,VIDEODB_ID_MUSICVIDEO_ALBUM,strSearch.c_str());
     else
     {
-      if (!strLike.IsEmpty())
+      if (!strLike.empty())
         strLike = "where "+strLike.Mid(4);
       strSQL=PrepareSQL("select distinct musicvideo.c%02d,musicvideo.idMVideo from musicvideo"+strLike,VIDEODB_ID_MUSICVIDEO_ALBUM,strSearch.c_str());
     }
@@ -7562,7 +7562,7 @@ int CVideoDatabase::GetMatchingMusicVideo(const CStdString& strArtist, const CSt
     if (NULL == m_pDS.get()) return -1;
 
     CStdString strSQL;
-    if (strAlbum.IsEmpty() && strTitle.IsEmpty())
+    if (strAlbum.empty() && strTitle.empty())
     { // we want to return matching artists only
       if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
         strSQL=PrepareSQL("select distinct actors.idActor,path.strPath from artistlinkmusicvideo,actors,musicvideo,files,path where actors.idActor=artistlinkmusicvideo.idArtist and artistlinkmusicvideo.idMVideo=musicvideo.idMVideo and files.idFile=musicvideo.idFile and files.idPath=path.idPath and actors.strActor like '%s'",strArtist.c_str());
@@ -8095,7 +8095,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
     m_pDS->close();
 
-    if ( ! filesToDelete.IsEmpty() )
+    if ( ! filesToDelete.empty() )
     {
       filesToDelete.TrimRight(",");
       // now grab them movies
@@ -8137,7 +8137,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       progress->Progress();
     }
 
-    if ( ! filesToDelete.IsEmpty() )
+    if ( ! filesToDelete.empty() )
     {
       filesToDelete = "(" + filesToDelete + ")";
       CLog::Log(LOGDEBUG, "%s: Cleaning files table", __FUNCTION__);
@@ -8161,7 +8161,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       m_pDS->exec(sql.c_str());
     }
 
-    if ( ! moviesToDelete.IsEmpty() )
+    if ( ! moviesToDelete.empty() )
     {
       moviesToDelete = "(" + moviesToDelete.TrimRight(",") + ")";
 
@@ -8194,7 +8194,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       m_pDS->exec(sql.c_str());
     }
 
-    if ( ! episodesToDelete.IsEmpty() )
+    if ( ! episodesToDelete.empty() )
     {
       episodesToDelete = "(" + episodesToDelete.TrimRight(",") + ")";
 
@@ -8226,7 +8226,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       m_pDS->next();
     }
     m_pDS->close();
-    if (!strIds.IsEmpty())
+    if (!strIds.empty())
     {
       strIds.TrimRight(",");
       sql = PrepareSQL("delete from path where idPath in (%s)",strIds.c_str());
@@ -8256,7 +8256,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       m_pDS->next();
     }
     m_pDS->close();
-    if (!showsToDelete.IsEmpty())
+    if (!showsToDelete.empty())
     {
       sql = "delete from tvshow where idShow in (" + showsToDelete.TrimRight(",") + ")";
       m_pDS->exec(sql.c_str());
@@ -8288,7 +8288,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     sql = "delete from movielinktvshow where idMovie not in (select distinct idMovie from movie)";
     m_pDS->exec(sql.c_str());
 
-    if ( ! musicVideosToDelete.IsEmpty() )
+    if ( ! musicVideosToDelete.empty() )
     {
       musicVideosToDelete = "(" + musicVideosToDelete.TrimRight(",") + ")";
 
@@ -8964,7 +8964,7 @@ void CVideoDatabase::ExportActorThumbs(const CStdString &strDir, const CVideoInf
   {
     CFileItem item;
     item.SetLabel(iter->strName);
-    if (!iter->thumb.IsEmpty())
+    if (!iter->thumb.empty())
     {
       CStdString thumbFile(GetSafeFile(strPath, iter->strName));
       CTextureCache::Get().Export(iter->thumb, thumbFile, overwrite);
@@ -9075,7 +9075,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       {
         info.Load(movie);
         CFileItem item(info);
-        bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.GetPath()) : false;
+        bool useFolders = info.m_basePath.empty() ? LookupByFolders(item.GetPath()) : false;
         CStdString filename = info.m_strTitle;
         if (info.m_iYear > 0)
           filename.AppendFormat("_%i", info.m_iYear);
@@ -9090,7 +9090,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       {
         info.Load(movie);
         CFileItem item(info);
-        bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.GetPath()) : false;
+        bool useFolders = info.m_basePath.empty() ? LookupByFolders(item.GetPath()) : false;
         CStdString filename = StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle;
         if (info.m_iYear > 0)
           filename.AppendFormat("_%i", info.m_iYear);
@@ -9109,7 +9109,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         URIUtils::AddSlashAtEnd(info.m_strPath);
         DeleteTvShow(info.m_strPath);
         CFileItem showItem(info);
-        bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(showItem.GetPath(), true) : false;
+        bool useFolders = info.m_basePath.empty() ? LookupByFolders(showItem.GetPath(), true) : false;
         CFileItem artItem(showItem);
         CStdString artPath(GetSafeFile(tvshowsDir, info.m_strTitle));
         artItem.SetPath(artPath);

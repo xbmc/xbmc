@@ -273,7 +273,7 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
 
 CStdString CGUILabelControl::ShortenPath(const CStdString &path)
 {
-  if (m_width == 0 || path.IsEmpty())
+  if (m_width == 0 || path.empty())
     return path;
 
   char cDelim = '\0';

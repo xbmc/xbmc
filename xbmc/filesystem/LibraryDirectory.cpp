@@ -62,7 +62,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
         CSmartPlaylist playlist;
         CStdString type, label;
         XMLUtils::GetString(node, "content", type);
-        if (type.IsEmpty())
+        if (type.empty())
         {
           CLog::Log(LOGERROR, "<content> tag must not be empty for type=\"filter\" node '%s'", libNode.c_str());
           return false;
@@ -83,7 +83,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       {
         CStdString path;
         XMLUtils::GetPath(node, "path", path);
-        if (!path.IsEmpty())
+        if (!path.empty())
         {
           URIUtils::AddSlashAtEnd(path);
           return CDirectory::GetDirectory(path, items, m_strFileMask, m_flags);
@@ -132,7 +132,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       CFileItemPtr item(new CFileItem(URIUtils::AddFileToFolder(strPath, folder), true));
 
       item->SetLabel(label);
-      if (!icon.IsEmpty() && g_TextureManager.HasTexture(icon))
+      if (!icon.empty() && g_TextureManager.HasTexture(icon))
         item->SetIconImage(icon);
       item->m_iprogramCount = order;
       items.Add(item);

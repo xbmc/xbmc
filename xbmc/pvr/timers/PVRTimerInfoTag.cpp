@@ -333,7 +333,7 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
   m_iGenreSubType     = tag.m_iGenreSubType;
   m_strSummary        = tag.m_strSummary;
 
-  if (m_strSummary.IsEmpty())
+  if (m_strSummary.empty())
     UpdateSummary();
 
   return true;
@@ -549,7 +549,7 @@ void CPVRTimerInfoTag::QueueNotification(void) const
     CStdString strMessage;
     GetNotificationText(strMessage);
 
-    if (!strMessage.IsEmpty())
+    if (!strMessage.empty())
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
   }
 }

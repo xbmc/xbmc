@@ -155,10 +155,10 @@ bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState 
 
     CStdString path1(path);
     URIUtils::AddSlashAtEnd(path1);
-    if (path1.IsEmpty()) path1 = "root://";
+    if (path1.empty()) path1 = "root://";
 
     CStdString sql;
-    if (skin.IsEmpty())
+    if (skin.empty())
       sql = PrepareSQL("select * from view where window = %i and path='%s'", window, path1.c_str());
     else
       sql = PrepareSQL("select * from view where window = %i and path='%s' and skin='%s'", window, path1.c_str(), skin.c_str());
@@ -191,7 +191,7 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
 
     CStdString path1(path);
     URIUtils::AddSlashAtEnd(path1);
-    if (path1.IsEmpty()) path1 = "root://";
+    if (path1.empty()) path1 = "root://";
 
     CStdString sql = PrepareSQL("select idView from view where window = %i and path='%s' and skin='%s'", window, path1.c_str(), skin.c_str());
     m_pDS->query(sql.c_str());

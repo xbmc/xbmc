@@ -132,7 +132,7 @@ CScraper::CScraper(const cp_extension_t *ext) : CAddon(ext), m_fLoaded(false)
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "@language");
     m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"@requiressettings").Equals("true");
     CStdString persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "@cachepersistence");
-    if (!persistence.IsEmpty())
+    if (!persistence.empty())
       m_persistence.SetFromTimeString(persistence);
   }
   switch (Type())
@@ -183,7 +183,7 @@ bool CScraper::SetPathSettings(CONTENT_TYPE content, const CStdString& xml)
   if (!LoadSettings())
     return false;
 
-  if (xml.IsEmpty())
+  if (xml.empty())
     return true;
 
   CXBMCTinyXML doc;
@@ -246,7 +246,7 @@ vector<CStdString> CScraper::Run(const CStdString& function,
     throw CScraperError();
 
   CStdString strXML = InternalRun(function,scrURL,http,extras);
-  if (strXML.IsEmpty())
+  if (strXML.empty())
   {
     if (function != "NfoUrl" && function != "ResolveIDToUrl")
       CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
@@ -577,7 +577,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
   vector<CStdString> vcsIn(1);
   g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
   CURL::Encode(vcsIn[0]);
-  if (!sYear.IsEmpty())
+  if (!sYear.empty())
     vcsIn.push_back(sYear);
 
   // request a search URL from the title/filename/etc.

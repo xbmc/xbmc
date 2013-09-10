@@ -83,7 +83,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       // the window translator does it by using a virtual window id (5)
 
       // is this the first time the window is opened?
-      if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
+      if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
         message.SetStringParam(CMediaSourceSettings::Get().GetDefaultSource("music"));
 
       return CGUIWindowMusicBase::OnMessage(message);
@@ -203,7 +203,7 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
   items.FilterCueItems();
 
   CStdString label;
-  if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("music"), &label)) 
+  if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("music"), &label)) 
     items.SetLabel(label);
 
   return true;
@@ -471,7 +471,7 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory, bool updateFil
   if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
-  if (m_vecItems->GetContent().IsEmpty())
+  if (m_vecItems->GetContent().empty())
     m_vecItems->SetContent("files");
   m_thumbLoader.Load(*m_vecItems);
 

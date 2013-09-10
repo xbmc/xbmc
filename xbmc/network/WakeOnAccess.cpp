@@ -333,7 +333,7 @@ void CWakeOnAccess::WakeUpHost(const CURL& url)
 {
   CStdString hostName = url.GetHostName();
 
-  if (!hostName.IsEmpty())
+  if (!hostName.empty())
     WakeUpHost (hostName, url.Get());
 }
 
@@ -474,7 +474,7 @@ static void AddHost (const CStdString& host, vector<string>& hosts)
     if (host.Equals((*it).c_str()))
       return; // allready there ..
 
-  if (!host.IsEmpty())
+  if (!host.empty())
     hosts.push_back(host);
 }
 

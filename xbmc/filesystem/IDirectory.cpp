@@ -138,7 +138,7 @@ bool IDirectory::ProcessRequirements()
 
 bool IDirectory::GetKeyboardInput(const CVariant &heading, CStdString &input)
 {
-  if (!CStdString(m_requirements["input"].asString()).IsEmpty())
+  if (!m_requirements["input"].asString().empty())
   {
     input = m_requirements["input"].asString();
     return true;

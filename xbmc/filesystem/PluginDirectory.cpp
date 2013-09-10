@@ -418,7 +418,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
 bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 {
   CURL url(strPath);
-  if (url.GetHostName().IsEmpty()) // called with no script - should never happen
+  if (url.GetHostName().empty()) // called with no script - should never happen
     return false;
 
   AddonPtr addon;

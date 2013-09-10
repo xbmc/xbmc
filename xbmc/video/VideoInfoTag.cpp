@@ -105,11 +105,11 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   if (!movie) return false;
 
   XMLUtils::SetString(movie, "title", m_strTitle);
-  if (!m_strOriginalTitle.IsEmpty())
+  if (!m_strOriginalTitle.empty())
     XMLUtils::SetString(movie, "originaltitle", m_strOriginalTitle);
-  if (!m_strShowTitle.IsEmpty())
+  if (!m_strShowTitle.empty())
     XMLUtils::SetString(movie, "showtitle", m_strShowTitle);
-  if (!m_strSortTitle.IsEmpty())
+  if (!m_strSortTitle.empty())
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::SetFloat(movie, "rating", m_fRating);
   XMLUtils::SetFloat(movie, "epbookmark", m_fEpBookmark);
@@ -160,7 +160,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
     XMLUtils::SetString(movie, "basepath", m_basePath);
   }
-  if (!m_strEpisodeGuide.IsEmpty())
+  if (!m_strEpisodeGuide.empty())
   {
     CXBMCTinyXML doc;
     doc.Parse(m_strEpisodeGuide);
@@ -432,7 +432,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
     actor["name"] = m_cast[i].strName;
     actor["role"] = m_cast[i].strRole;
     actor["order"] = m_cast[i].order;
-    if (!m_cast[i].thumb.IsEmpty())
+    if (!m_cast[i].thumb.empty())
       actor["thumbnail"] = CTextureUtils::GetWrappedImageURL(m_cast[i].thumb);
     value["cast"].push_back(actor);
   }
@@ -543,7 +543,7 @@ const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
   {
     CStdString character;
-    if (it->strRole.IsEmpty() || !bIncludeRole)
+    if (it->strRole.empty() || !bIncludeRole)
       character = StringUtils::Format("%s\n", it->strName.c_str());
     else
       character = StringUtils::Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
@@ -782,9 +782,9 @@ bool CVideoInfoTag::HasStreamDetails() const
 
 bool CVideoInfoTag::IsEmpty() const
 {
-  return (m_strTitle.IsEmpty() &&
-          m_strFile.IsEmpty() &&
-          m_strPath.IsEmpty());
+  return (m_strTitle.empty() &&
+          m_strFile.empty() &&
+          m_strPath.empty());
 }
 
 unsigned int CVideoInfoTag::GetDuration() const

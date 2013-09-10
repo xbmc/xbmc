@@ -395,7 +395,7 @@ void CGUIDialogPVRTimerSettings::OnOkay()
   CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
 
   // Set the timer's title to the channel name if it's 'New Timer' or empty
-  if (tag->m_strTitle == g_localizeStrings.Get(19056) || tag->m_strTitle.IsEmpty())
+  if (tag->m_strTitle == g_localizeStrings.Get(19056) || tag->m_strTitle.empty())
   {
     CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(tag->m_iClientChannelUid, tag->m_iClientId);
     if (channel)

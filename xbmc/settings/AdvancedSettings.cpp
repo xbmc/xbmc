@@ -439,7 +439,7 @@ bool CAdvancedSettings::Load()
   ParseSettingsFile(CProfilesManager::Get().GetUserDataItem("advancedsettings.xml"));
 
   // Add the list of disc stub extensions (if any) to the list of video extensions
-  if (!m_discStubExtensions.IsEmpty())
+  if (!m_discStubExtensions.empty())
     m_videoExtensions += "|" + m_discStubExtensions;
 
   return true;
@@ -1015,7 +1015,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
       if (pTo)
         strTo = pTo->FirstChild()->Value();
 
-      if (!strFrom.IsEmpty() && !strTo.IsEmpty())
+      if (!strFrom.empty() && !strTo.empty())
       {
         CLog::Log(LOGDEBUG,"  Registering substition pair:");
         CLog::Log(LOGDEBUG,"    From: [%s]", strFrom.c_str());
@@ -1025,7 +1025,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
       else
       {
         // error message about missing tag
-        if (strFrom.IsEmpty())
+        if (strFrom.empty())
           CLog::Log(LOGERROR,"  Missing <from> tag");
         else
           CLog::Log(LOGERROR,"  Missing <to> tag");

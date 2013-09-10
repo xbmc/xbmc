@@ -386,7 +386,7 @@ void CKaraokeLyricsText::Render()
   m_karaokeLayout->GetTextExtent(textWidth, textHeight);
   m_karaokeLayout->RenderOutline(x, y, 0, m_colorLyricsOutline, XBFONT_CENTER_X, maxWidth);
 
-  if ( !m_currentPreamble.IsEmpty() )
+  if ( !m_currentPreamble.empty() )
   {
     float pretextWidth, pretextHeight;
     m_preambleLayout->GetTextExtent(pretextWidth, pretextHeight);
@@ -577,7 +577,7 @@ void CKaraokeLyricsText::rescanLyrics()
   }
 
   // Prepare a new first lyric entry with song name and artist.
-  if ( m_songName.IsEmpty() )
+  if ( m_songName.empty() )
   {
     m_songName = URIUtils::GetFileName( getSongFile() );
     URIUtils::RemoveExtension( m_songName );
@@ -595,7 +595,7 @@ void CKaraokeLyricsText::rescanLyrics()
     ltitle.timing = 0;
     ltitle.text = m_songName;
 
-    if ( !m_artist.IsEmpty() )
+    if ( !m_artist.empty() )
       ltitle.text += "[CR][CR]" + m_artist;
 
     newlyrics.push_back( ltitle );
@@ -736,7 +736,7 @@ bool CKaraokeLyricsText::HasBackground()
 
 bool CKaraokeLyricsText::HasVideo()
 {
-  return m_videoFile.IsEmpty() ? false : true;
+  return m_videoFile.empty() ? false : true;
 }
 
 void CKaraokeLyricsText::GetVideoParameters(CStdString & path, int64_t & offset)

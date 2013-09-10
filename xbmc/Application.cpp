@@ -1034,7 +1034,7 @@ bool CApplication::InitDirectoriesLinux()
   CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
   xbmcPath = getenv("XBMC_HOME");
 
-  if (xbmcPath.IsEmpty())
+  if (xbmcPath.empty())
   {
     xbmcPath = xbmcBinPath;
     /* Check if xbmc binaries and arch independent data files are being kept in
@@ -1402,7 +1402,7 @@ bool CApplication::Initialize()
 
     if (CSettings::Get().GetBool("masterlock.startuplock") &&
         CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-       !CProfilesManager::Get().GetMasterProfile().getLockCode().IsEmpty())
+       !CProfilesManager::Get().GetMasterProfile().getLockCode().empty())
     {
        g_passwordManager.CheckStartUpLock();
     }
@@ -2127,7 +2127,7 @@ float CApplication::GetDimScreenSaverLevel() const
        !m_screenSaver->ID().empty()))
     return 0;
 
-  if (!m_screenSaver->GetSetting("level").IsEmpty())
+  if (!m_screenSaver->GetSetting("level").empty())
     return 100.0f - (float)atof(m_screenSaver->GetSetting("level"));
   return 100.0f;
 }
@@ -4519,7 +4519,7 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
 
     if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black" || m_screenSaver->ID().empty())
       return true;
-    else if (!m_screenSaver->ID().IsEmpty())
+    else if (!m_screenSaver->ID().empty())
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER
           || g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
@@ -4628,7 +4628,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     return;
   else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
     return;
-  else if (!m_screenSaver->ID().IsEmpty())
+  else if (!m_screenSaver->ID().empty())
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
 
@@ -5703,7 +5703,7 @@ void CApplication::SaveCurrentFileSettings()
 bool CApplication::AlwaysProcess(const CAction& action)
 {
   // check if this button is mapped to a built-in function
-  if (!action.GetName().IsEmpty())
+  if (!action.GetName().empty())
   {
     CStdString builtInFunction;
     vector<CStdString> params;

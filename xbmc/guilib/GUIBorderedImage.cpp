@@ -41,7 +41,7 @@ CGUIBorderedImage::~CGUIBorderedImage(void)
 void CGUIBorderedImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   CGUIImage::Process(currentTime, dirtyregions);
-  if (!m_borderImage.GetFileName().IsEmpty() && m_texture.ReadyToRender())
+  if (!m_borderImage.GetFileName().empty() && m_texture.ReadyToRender())
   {
     CRect rect = CRect(m_texture.GetXPosition(), m_texture.GetYPosition(), m_texture.GetXPosition() + m_texture.GetWidth(), m_texture.GetYPosition() + m_texture.GetHeight());
     rect.Intersect(m_texture.GetRenderRect());
@@ -56,7 +56,7 @@ void CGUIBorderedImage::Process(unsigned int currentTime, CDirtyRegionList &dirt
 
 void CGUIBorderedImage::Render()
 {
-  if (!m_borderImage.GetFileName().IsEmpty() && m_texture.ReadyToRender())
+  if (!m_borderImage.GetFileName().empty() && m_texture.ReadyToRender())
     m_borderImage.Render();
   CGUIImage::Render();
 }

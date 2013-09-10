@@ -246,7 +246,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         bool audio = true;
         bool image = true;
         m_strFileMask.TrimLeft("/");
-        if (!m_strFileMask.IsEmpty()) {
+        if (!m_strFileMask.empty()) {
             video = m_strFileMask.Find(".wmv") >= 0;
             audio = m_strFileMask.Find(".wma") >= 0;
             image = m_strFileMask.Find(".jpg") >= 0;

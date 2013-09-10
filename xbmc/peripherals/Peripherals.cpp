@@ -470,7 +470,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
   {
     CSetting *setting = NULL;
     CStdString strKey(currentNode->Attribute("key"));
-    if (strKey.IsEmpty())
+    if (strKey.empty())
       continue;
 
     CStdString strSettingsType(currentNode->Attribute("type"));
@@ -506,7 +506,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
     else if (strSettingsType.Equals("enum"))
     {
       CStdString strEnums(currentNode->Attribute("lvalues"));
-      if (!strEnums.IsEmpty())
+      if (!strEnums.empty())
       {
         vector< pair<int,int> > enums;
         vector<std::string> valuesVec;

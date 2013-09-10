@@ -713,7 +713,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
   if (m_pFilterGraph)
     FilterClose();
 
-  if (filters.IsEmpty() && !scale)
+  if (filters.empty() && !scale)
     return 0;
 
   if (m_pHardware)

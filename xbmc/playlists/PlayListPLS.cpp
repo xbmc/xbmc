@@ -106,7 +106,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       break;
 
     // if there is something else before playlist marker, this isn't a pls file
-    if(!strLine.IsEmpty())
+    if(!strLine.empty())
       return false;
   }
 
@@ -364,7 +364,7 @@ bool CPlayListASX::LoadData(istream& stream)
           value = pRef->Attribute("href");
           if (value != "")
           {
-            if(title.IsEmpty())
+            if(title.empty())
               title = value;
 
             CLog::Log(LOGINFO, "Adding element %s, %s", title.c_str(), value.c_str());

@@ -176,7 +176,7 @@ bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
       bResult = true;
       strTemp = node->FirstChild()->Value();
       const char* clear=node->Attribute("clear");
-      if (strStringValue.IsEmpty() || (clear && strcasecmp(clear,"true")==0))
+      if (strStringValue.empty() || (clear && strcasecmp(clear,"true")==0))
         strStringValue = strTemp;
       else
         strStringValue += strSeparator+strTemp;
@@ -272,7 +272,7 @@ void XMLUtils::SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const
 {
   CStdStringArray list;
   StringUtils::SplitString(strValue,strSeparator,list);
-  for (unsigned int i=0;i<list.size() && !list[i].IsEmpty();++i)
+  for (unsigned int i=0;i<list.size() && !list[i].empty();++i)
     SetString(pRootNode,strTag,list[i]);
 }
 

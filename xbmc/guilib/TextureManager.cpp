@@ -272,7 +272,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
   if (path)
     *path = fullPath;
 
-  return !fullPath.IsEmpty();
+  return !fullPath.empty();
 }
 
 const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleOnly /*= false */)
@@ -564,7 +564,7 @@ void CGUITextureManager::SetTexturePath(const CStdString &texturePath)
 void CGUITextureManager::AddTexturePath(const CStdString &texturePath)
 {
   CSingleLock lock(m_section);
-  if (!texturePath.IsEmpty())
+  if (!texturePath.empty())
     m_texturePaths.push_back(texturePath);
 }
 

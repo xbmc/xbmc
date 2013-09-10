@@ -139,7 +139,7 @@ extern "C" void __stdcall init_emu_environ()
 #endif
 
   // check if we are running as real xbmc.app or just binary
-  if (!CUtil::GetFrameworksPath(true).IsEmpty())
+  if (!CUtil::GetFrameworksPath(true).empty())
   {
     // using external python, it's build looking for xxx/lib/python2.6
     // so point it to frameworks which is where python2.6 is located

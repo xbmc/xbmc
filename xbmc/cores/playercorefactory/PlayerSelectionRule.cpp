@@ -38,7 +38,7 @@ CPlayerSelectionRule::~CPlayerSelectionRule()
 void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
 {
   m_name = pRule->Attribute("name");
-  if (!m_name || m_name.IsEmpty())
+  if (!m_name || m_name.empty())
     m_name = "un-named";
 
   CLog::Log(LOGDEBUG, "CPlayerSelectionRule::Initialize: creating rule: %s", m_name.c_str());

@@ -500,7 +500,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
       CStdString strURL = "";
       if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
       {
-        if (!strURL.IsEmpty())
+        if (!strURL.empty())
         {
           CPVRChannel *newchannel = new CPVRChannel(m_bIsRadio);
           newchannel->SetChannelName(g_localizeStrings.Get(19204));

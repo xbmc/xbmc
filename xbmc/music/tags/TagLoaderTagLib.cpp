@@ -97,10 +97,10 @@ bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, c
   strExtension.ToLower();
   strExtension.TrimLeft('.');
 
-  if (strExtension.IsEmpty())
+  if (strExtension.empty())
   {
     strExtension = fallbackFileExtension;
-    if (strExtension.IsEmpty())
+    if (strExtension.empty())
       return false;
     strExtension.ToLower();
   }
@@ -237,7 +237,7 @@ bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, c
   if (flacFile)
     SetFlacArt(flacFile, art, tag);
 
-  if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().empty() || !tag.GetAlbum().IsEmpty())
+  if (!tag.GetTitle().empty() || !tag.GetArtist().empty() || !tag.GetAlbum().empty())
     tag.SetLoaded();
   tag.SetURL(strFileName);
 

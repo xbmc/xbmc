@@ -567,7 +567,7 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
     return false;
 
   CStdString label = element->FirstChild()->Value();
-  if (label.IsEmpty() || label == "-")
+  if (label.empty() || label == "-")
     return false;
 
   CStdString fallback = element->Attribute("fallback");
@@ -1288,7 +1288,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       texture.useLarge = true;
 
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
-    if (borderTexture.filename.IsEmpty() && borderStr.IsEmpty())
+    if (borderTexture.filename.empty() && borderStr.empty())
       control = new CGUIImage(
         parentID, id, posX, posY, width, height, texture);
     else

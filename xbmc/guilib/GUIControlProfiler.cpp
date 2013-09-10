@@ -175,7 +175,7 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     xmlControl->SetAttribute("percent", str.c_str());
   }
 
-  if (!m_strDescription.IsEmpty())
+  if (!m_strDescription.empty())
   {
     TiXmlElement *elem = new TiXmlElement("description");
     xmlControl->LinkEndChild(elem);
@@ -335,7 +335,7 @@ void CGUIControlProfiler::EndFrame(void)
 
 bool CGUIControlProfiler::SaveResults(void)
 {
-  if (m_strOutputFile.IsEmpty())
+  if (m_strOutputFile.empty())
     return false;
 
   CXBMCTinyXML doc;

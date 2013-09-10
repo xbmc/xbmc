@@ -69,7 +69,7 @@ bool CTextureCacheJob::DoWork()
   // check whether we need cache the job anyway
   bool needsRecaching = false;
   CStdString path(CTextureCache::Get().CheckCachedImage(m_url, false, needsRecaching));
-  if (!path.IsEmpty() && !needsRecaching)
+  if (!path.empty() && !needsRecaching)
     return false;
   return CacheTexture();
 }
@@ -98,7 +98,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
     m_details.file = m_cachePath + ".jpg";
     if (out_texture)
       *out_texture = LoadImage(CTextureCache::GetCachedPath(m_details.file), width, height, additional_info);
-    CLog::Log(LOGDEBUG, "Fast %s image '%s' to '%s': %p", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str(), out_texture);
+    CLog::Log(LOGDEBUG, "Fast %s image '%s' to '%s': %p", m_oldHash.empty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str(), out_texture);
     return true;
   }
 #endif
@@ -110,7 +110,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
     else
       m_details.file = m_cachePath + ".jpg";
 
-    CLog::Log(LOGDEBUG, "%s image '%s' to '%s':", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str());
+    CLog::Log(LOGDEBUG, "%s image '%s' to '%s':", m_oldHash.empty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str());
 
     if (CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(m_details.file)))
     {

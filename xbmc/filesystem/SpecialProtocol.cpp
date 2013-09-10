@@ -162,7 +162,7 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
            RootDir.Equals("frameworks"))
   {
     CStdString basePath = GetPath(RootDir);
-    if (!basePath.IsEmpty())
+    if (!basePath.empty())
       translatedPath = URIUtils::AddFileToFolder(basePath, FileName);
     else
       translatedPath.clear();
@@ -250,7 +250,7 @@ void CSpecialProtocol::LogPaths()
   CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetPath("home").c_str());
   CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetPath("temp").c_str());
   //CLog::Log(LOGNOTICE, "special://userhome/ is mapped to: %s", GetPath("userhome").c_str());
-  if (!CUtil::GetFrameworksPath().IsEmpty())
+  if (!CUtil::GetFrameworksPath().empty())
     CLog::Log(LOGNOTICE, "special://frameworks/ is mapped to: %s", GetPath("frameworks").c_str());
 }
 

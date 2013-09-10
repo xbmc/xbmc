@@ -141,7 +141,7 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
 bool CGUIWindowMusicPlaylistEditor::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   items.Clear();
-  if (strDirectory.IsEmpty())
+  if (strDirectory.empty())
   { // root listing - list files:// and musicdb://
     CFileItemPtr files(new CFileItem("files://", true));
     files->SetLabel(g_localizeStrings.Get(744));

@@ -154,7 +154,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   }
   else if (name == "title")
   {
-    if(text.IsEmpty())
+    if(text.empty())
       return;
 
     if(text.length() > item->m_strTitle.length())
@@ -162,7 +162,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   }
   else if(name == "description")
   {
-    if(text.IsEmpty())
+    if(text.empty())
       return;
 
     CStdString description = text;
@@ -172,7 +172,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   }
   else if(name == "category")
   {
-    if(text.IsEmpty())
+    if(text.empty())
       return;
 
     CStdString scheme = item_child->Attribute("scheme");
@@ -530,7 +530,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
       item->m_bIsFolder = false;
   }
 
-  if(!item->m_strTitle.IsEmpty())
+  if(!item->m_strTitle.empty())
     item->SetLabel(item->m_strTitle);
 
   if(item->HasVideoInfoTag())
@@ -540,10 +540,10 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
     if(item->HasProperty("duration")    && !vtag->GetDuration())
       vtag->m_duration = StringUtils::TimeStringToSeconds(item->GetProperty("duration").asString());
 
-    if(item->HasProperty("description") && vtag->m_strPlot.IsEmpty())
+    if(item->HasProperty("description") && vtag->m_strPlot.empty())
       vtag->m_strPlot = item->GetProperty("description").asString();
 
-    if(vtag->m_strPlotOutline.IsEmpty() && !vtag->m_strPlot.IsEmpty())
+    if(vtag->m_strPlotOutline.empty() && !vtag->m_strPlot.empty())
     {
       int pos = vtag->m_strPlot.Find('\n');
       if(pos >= 0)
@@ -609,7 +609,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
     if (!item->HasArt("thumb") && items.HasArt("thumb"))
       item->SetArt("thumb", items.GetArt("thumb"));
 
-    if (!item->GetPath().IsEmpty())
+    if (!item->GetPath().empty())
       items.Add(item);
   }
 

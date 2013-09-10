@@ -771,7 +771,7 @@ void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector<Prope
     }
     else if (infoString[i] == '.' && !parentheses)
     {
-      if (!property.IsEmpty()) // add our property and parameters
+      if (!property.empty()) // add our property and parameters
         info.push_back(Property(property.ToLower(), param));
       property.clear();
       param.clear();
@@ -784,7 +784,7 @@ void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector<Prope
   }
   if (parentheses)
     CLog::Log(LOGERROR, "unmatched parentheses in %s", infoString.c_str());
-  if (!property.IsEmpty())
+  if (!property.empty())
     info.push_back(Property(property.ToLower(), param));
 }
 
@@ -1138,7 +1138,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       if (prop.name == "property" && prop.num_params() == 1)
       { // TODO: this doesn't support foo.xml
-        int winID = cat.param().IsEmpty() ? 0 : CButtonTranslator::TranslateWindow(cat.param());
+        int winID = cat.param().empty() ? 0 : CButtonTranslator::TranslateWindow(cat.param());
         if (winID != WINDOW_INVALID)
           return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, ConditionalStringParameter(prop.param())));
       }
@@ -1148,7 +1148,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         { // TODO: The parameter for these should really be on the first not the second property
           if (prop.param().Find("xml") >= 0)
             return AddMultiInfo(GUIInfo(window_bools[i].val, 0, ConditionalStringParameter(prop.param())));
-          int winID = prop.param().IsEmpty() ? 0 : CButtonTranslator::TranslateWindow(prop.param());
+          int winID = prop.param().empty() ? 0 : CButtonTranslator::TranslateWindow(prop.param());
           if (winID != WINDOW_INVALID)
             return AddMultiInfo(GUIInfo(window_bools[i].val, winID, 0));
           return 0;
@@ -1293,7 +1293,7 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
 
 TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
 {
-  if (format.IsEmpty()) return TIME_FORMAT_GUESS;
+  if (format.empty()) return TIME_FORMAT_GUESS;
   else if (format.Equals("hh")) return TIME_FORMAT_HH;
   else if (format.Equals("mm")) return TIME_FORMAT_MM;
   else if (format.Equals("ss")) return TIME_FORMAT_SS;
@@ -1453,7 +1453,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
         strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
       else if (m_currentFile->HasVideoInfoTag())
         strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
-      if (strLabel.IsEmpty())
+      if (strLabel.empty())
         strLabel = m_currentFile->GetPath();
     }
     if (info == PLAYER_PATH)
@@ -1480,22 +1480,22 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
                      StringUtils::EmptyString :
                      g_localizeStrings.Get(19055); // no information available
         }
-        if (m_currentFile->HasPVRRecordingInfoTag() && !m_currentFile->GetPVRRecordingInfoTag()->m_strTitle.IsEmpty())
+        if (m_currentFile->HasPVRRecordingInfoTag() && !m_currentFile->GetPVRRecordingInfoTag()->m_strTitle.empty())
           return m_currentFile->GetPVRRecordingInfoTag()->m_strTitle;
-        if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
+        if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.empty())
           return m_currentFile->GetVideoInfoTag()->m_strTitle;
-        if (m_currentFile->HasMusicInfoTag() && !m_currentFile->GetMusicInfoTag()->GetTitle().IsEmpty())
+        if (m_currentFile->HasMusicInfoTag() && !m_currentFile->GetMusicInfoTag()->GetTitle().empty())
           return m_currentFile->GetMusicInfoTag()->GetTitle();
         // don't have the title, so use dvdplayer, label, or drop down to title from path
-        if (!g_application.m_pPlayer->GetPlayingTitle().IsEmpty())
+        if (!g_application.m_pPlayer->GetPlayingTitle().empty())
           return g_application.m_pPlayer->GetPlayingTitle();
-        if (!m_currentFile->GetLabel().IsEmpty())
+        if (!m_currentFile->GetLabel().empty())
           return m_currentFile->GetLabel();
         return CUtil::GetTitleFromPath(m_currentFile->GetPath());
       }
       else
       {
-        if (!g_application.m_pPlayer->GetPlayingTitle().IsEmpty())
+        if (!g_application.m_pPlayer->GetPlayingTitle().empty())
           return g_application.m_pPlayer->GetPlayingTitle();
       }
     }
@@ -2114,7 +2114,7 @@ unsigned int CGUIInfoManager::Register(const CStdString &expression, int context
   condition.TrimLeft(" \t\r\n");
   condition.TrimRight(" \t\r\n");
 
-  if (condition.IsEmpty())
+  if (condition.empty())
     return 0;
 
   CSingleLock lock(m_critInfo);
@@ -2685,9 +2685,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case STRING_IS_EMPTY:
         // note: Get*Image() falls back to Get*Label(), so this should cover all of them
         if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-          bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).IsEmpty();
+          bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).empty();
         else
-          bReturn = GetImage(info.GetData1(), contextWindow).IsEmpty();
+          bReturn = GetImage(info.GetData1(), contextWindow).empty();
         break;
       case STRING_COMPARE:
         {
@@ -2893,7 +2893,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             else if (window->GetID() == WINDOW_DIALOG_VIDEO_INFO)
               content = ((CGUIDialogVideoInfo *)window)->CurrentDirectory().GetContent();
           }
-          if (content.IsEmpty())
+          if (content.empty())
           {
             window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
             if (window)
@@ -3313,7 +3313,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
   else if (info == SYSTEM_PROFILETHUMB)
   {
     CStdString thumb = CProfilesManager::Get().GetCurrentProfile().getThumb();
-    if (thumb.IsEmpty())
+    if (thumb.empty())
       thumb = "unknown-user.png";
     return thumb;
   }
@@ -3339,7 +3339,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
     if (!g_application.m_pPlayer->IsPlayingVideo()) return "";
     if (fallback)
       *fallback = "DefaultVideoCover.png";
-    if(m_currentMovieThumb.IsEmpty())
+    if(m_currentMovieThumb.empty())
       return m_currentFile->HasArt("thumb") ? m_currentFile->GetArt("thumb") : "DefaultVideoCover.png";
     else return m_currentMovieThumb;
   }
@@ -3433,7 +3433,7 @@ CStdString CGUIInfoManager::GetDuration(TIME_FORMAT format) const
     if (tag.GetDuration() > 0)
       return StringUtils::SecondsToTimeString(tag.GetDuration(), format);
   }
-  if (g_application.m_pPlayer->IsPlayingVideo() && !m_currentMovieDuration.IsEmpty())
+  if (g_application.m_pPlayer->IsPlayingVideo() && !m_currentMovieDuration.empty())
     return m_currentMovieDuration;  // for tuxbox
   unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
   if (iTotal > 0)
@@ -3826,7 +3826,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
         CStdString strRatingAndVotes;
         if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
         {
-          if (m_currentFile->GetVideoInfoTag()->m_strVotes.IsEmpty())
+          if (m_currentFile->GetVideoInfoTag()->m_strVotes.empty())
             strRatingAndVotes = StringUtils::Format("%.1f",
                                                     m_currentFile->GetVideoInfoTag()->m_fRating);
           else
@@ -4027,7 +4027,7 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   *m_currentFile = item;
 
   m_currentFile->LoadMusicTag();
-  if (m_currentFile->GetMusicInfoTag()->GetTitle().IsEmpty())
+  if (m_currentFile->GetMusicInfoTag()->GetTitle().empty())
   {
     // No title in tag, show filename only
     m_currentFile->GetMusicInfoTag()->SetTitle(CUtil::GetTitleFromPath(m_currentFile->GetPath()));
@@ -4037,7 +4037,7 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   // find a thumb for this file.
   if (m_currentFile->IsInternetStream())
   {
-    if (!g_application.m_strPlayListFile.IsEmpty())
+    if (!g_application.m_strPlayListFile.empty())
     {
       CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
       CFileItem streamingItem(g_application.m_strPlayListFile,false);
@@ -4096,7 +4096,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     }
 
     // else its a video
-    if (!g_application.m_strPlayListFile.IsEmpty())
+    if (!g_application.m_strPlayListFile.empty())
     {
       CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
       CFileItem thumbItem(g_application.m_strPlayListFile,false);
@@ -4160,7 +4160,7 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
   int         ret   = 0;
   FILE        *p    = NULL;
 
-  if (cmd.IsEmpty() || !(p = popen(cmd.c_str(), "r")))
+  if (cmd.empty() || !(p = popen(cmd.c_str(), "r")))
     return CTemperature();
 
   ret = fscanf(p, "%d %c", &value, &scale);
@@ -4556,7 +4556,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
       {
         CStdString strRatingAndVotes;
-        if (item->GetVideoInfoTag()->m_strVotes.IsEmpty())
+        if (item->GetVideoInfoTag()->m_strVotes.empty())
           strRatingAndVotes = StringUtils::Format("%.1f",
                                                   item->GetVideoInfoTag()->m_fRating);
         else
@@ -4624,7 +4624,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       return item->GetPVRRecordingInfoTag()->m_strPlot;
     if (item->HasVideoInfoTag())
     {
-      if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
+      if (!(!item->GetVideoInfoTag()->m_strShowTitle.empty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
         if (item->GetVideoInfoTag()->m_playCount == 0 && !CSettings::Get().GetBool("videolibrary.showunwatchedplots"))
           return g_localizeStrings.Get(20370);
 
@@ -4679,7 +4679,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
   case LISTITEM_ICON:
     {
       CStdString strThumb = item->GetArt("thumb");
-      if (strThumb.IsEmpty())
+      if (strThumb.empty())
         strThumb = item->GetIconImage();
       if (fallback)
         *fallback = item->GetIconImage();
@@ -5067,9 +5067,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   {
     if (item->HasProperty("playlistposition"))
       return (int)item->GetProperty("playlisttype").asInteger() == g_playlistPlayer.GetCurrentPlaylist() && (int)item->GetProperty("playlistposition").asInteger() == g_playlistPlayer.GetCurrentSong();
-    else if (item->IsFileItem() && !m_currentFile->GetPath().IsEmpty())
+    else if (item->IsFileItem() && !m_currentFile->GetPath().empty())
     {
-      if (!g_application.m_strPlayListFile.IsEmpty())
+      if (!g_application.m_strPlayListFile.empty())
       {
         //playlist file that is currently playing or the playlistitem that is currently playing.
         return g_application.m_strPlayListFile.Equals(((const CFileItem *)item)->GetPath()) || m_currentFile->IsSamePath((const CFileItem *)item);
@@ -5175,8 +5175,8 @@ void CGUIInfoManager::UpdateFromTuxBox()
     m_currentFile->GetVideoInfoTag()->m_strTitle = g_tuxbox.vVideoSubChannel.current_name;
 
   // Set m_currentMovieDuration
-  if(!g_tuxbox.sCurSrvData.current_event_duration.IsEmpty() &&
-    !g_tuxbox.sCurSrvData.next_event_description.IsEmpty() &&
+  if(!g_tuxbox.sCurSrvData.current_event_duration.empty() &&
+    !g_tuxbox.sCurSrvData.next_event_description.empty() &&
     !g_tuxbox.sCurSrvData.current_event_duration.Equals("-") &&
     !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
   {
@@ -5192,8 +5192,8 @@ void CGUIInfoManager::UpdateFromTuxBox()
   }
 
   //Set strVideoGenre
-  if (!g_tuxbox.sCurSrvData.current_event_description.IsEmpty() &&
-    !g_tuxbox.sCurSrvData.next_event_description.IsEmpty() &&
+  if (!g_tuxbox.sCurSrvData.current_event_description.empty() &&
+    !g_tuxbox.sCurSrvData.next_event_description.empty() &&
     !g_tuxbox.sCurSrvData.current_event_description.Equals("-") &&
     !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
   {
@@ -5207,7 +5207,7 @@ void CGUIInfoManager::UpdateFromTuxBox()
 
   //Set m_currentMovie.m_director
   if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") &&
-    !g_tuxbox.sCurSrvData.current_event_details.IsEmpty())
+    !g_tuxbox.sCurSrvData.current_event_details.empty())
   {
     m_currentFile->GetVideoInfoTag()->m_director = StringUtils::Split(g_tuxbox.sCurSrvData.current_event_details, g_advancedSettings.m_videoItemSeparator);
   }

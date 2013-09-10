@@ -71,7 +71,7 @@ void CIrssMessage::SetDataAsBytes(char* data, int size)
 
 void CIrssMessage::SetDataAsString(const CStdString& data)
 {
-  if (!data || data.IsEmpty())
+  if (!data || data.empty())
   {
     FreeData();
   }

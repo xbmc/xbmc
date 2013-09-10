@@ -131,7 +131,7 @@ void CWeatherJob::LocalizeOverviewToken(CStdString &token)
 {
   // This routine is case-insensitive. 
   CStdString strLocStr = "";
-  if (!token.IsEmpty())
+  if (!token.empty())
   {
     ilocalizedTokens i;
     i = m_localizedTokens.find(token);
@@ -299,7 +299,7 @@ void CWeatherJob::LoadLocalizedToken()
             (LOCALIZED_TOKEN_FIRSTID4 <= id && id <= LOCALIZED_TOKEN_LASTID4))
         {
           CStdString utf8Label(pChild->FirstChild()->Value());
-          if (!utf8Label.IsEmpty())
+          if (!utf8Label.empty())
             m_localizedTokens.insert(make_pair(utf8Label, id));
         }
       }
@@ -433,7 +433,7 @@ bool CWeather::IsFetched()
 {
   // call GetInfo() to make sure that we actually start up
   GetInfo(0);
-  return !m_info.lastUpdateTime.IsEmpty();
+  return !m_info.lastUpdateTime.empty();
 }
 
 const day_forecast &CWeather::GetForecast(int day) const

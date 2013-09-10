@@ -76,7 +76,7 @@ bool CTextureCache::HasCachedImage(const CStdString &url)
 {
   CTextureDetails details;
   CStdString cachedImage(GetCachedImage(url, details));
-  return (!cachedImage.IsEmpty() && cachedImage != url);
+  return (!cachedImage.empty() && cachedImage != url);
 }
 
 CStdString CTextureCache::GetCachedImage(const CStdString &image, CTextureDetails &details, bool trackUsage)
@@ -106,7 +106,7 @@ CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS
   CTextureDetails details;
   CStdString path(GetCachedImage(url, details, true));
   needsRecaching = !details.hash.empty();
-  if (!path.IsEmpty())
+  if (!path.empty())
   {
     if (!needsRecaching && returnDDS && !URIUtils::IsInPath(url, "special://skin/")) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
     { // check for dds version
@@ -125,7 +125,7 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
 {
   CTextureDetails details;
   CStdString path(GetCachedImage(url, details));
-  if (!path.IsEmpty() && details.hash.empty())
+  if (!path.empty() && details.hash.empty())
     return; // image is already cached and doesn't need to be checked further
 
   // needs (re)caching
@@ -317,7 +317,7 @@ bool CTextureCache::Export(const CStdString &image, const CStdString &destinatio
 {
   CTextureDetails details;
   CStdString cachedImage(GetCachedImage(image, details));
-  if (!cachedImage.IsEmpty())
+  if (!cachedImage.empty())
   {
     CStdString dest = destination + URIUtils::GetExtension(cachedImage);
     if (overwrite || !CFile::Exists(dest))
@@ -334,7 +334,7 @@ bool CTextureCache::Export(const CStdString &image, const CStdString &destinatio
 {
   CTextureDetails details;
   CStdString cachedImage(GetCachedImage(image, details));
-  if (!cachedImage.IsEmpty())
+  if (!cachedImage.empty())
   {
     if (CFile::Cache(cachedImage, destination))
       return true;

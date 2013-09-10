@@ -180,7 +180,7 @@ bool CGUIMultiSelectTextControl::OnAction(const CAction &action)
         selected++;
       }
     }
-    if (!clickAction.IsEmpty())
+    if (!clickAction.empty())
     { // have a click action -> perform it
       CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
       message.SetStringParam(clickAction);
@@ -335,7 +335,7 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
 
 void CGUIMultiSelectTextControl::AddString(const CStdString &text, bool selectable, const CStdString &clickAction)
 {
-  if (!text.IsEmpty())
+  if (!text.empty())
     m_items.push_back(CSelectableString(m_label.font, text, selectable, clickAction));
 }
 

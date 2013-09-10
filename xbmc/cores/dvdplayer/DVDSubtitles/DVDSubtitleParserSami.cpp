@@ -71,7 +71,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
     }
   }
   const char *lang = NULL;
-  if (!strClassID.IsEmpty())
+  if (!strClassID.empty())
     lang = strClassID.c_str();
 
   CDVDOverlayText* pOverlay = NULL;

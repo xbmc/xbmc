@@ -79,7 +79,7 @@ bool CVTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if(!m_session->Open(url.GetHostName(), url.GetPort()))
     return false;
 
-  if(url.GetFileName().IsEmpty())
+  if(url.GetFileName().empty())
   {
     CFileItemPtr item;
 

@@ -178,7 +178,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
       pos = del_start;
       m_flag[FLAG_LANGUAGE] = false;
     }
-    else if (fullTag == "<br>" && !strUTF8.IsEmpty())
+    else if (fullTag == "<br>" && !strUTF8.empty())
     {
       strUTF8.Insert(pos, "\n");
       pos += 1;
@@ -188,7 +188,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
   if(m_flag[FLAG_LANGUAGE])
     strUTF8.erase(del_start);
 
-  if (strUTF8.IsEmpty())
+  if (strUTF8.empty())
     return;
 
   if( strUTF8[strUTF8.size()-1] == '\n' )

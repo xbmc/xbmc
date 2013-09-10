@@ -342,7 +342,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   {
     if (item < m_paths->Size()) // if the skin does funky things, m_paths may have been cleared
       m_paths->Get(item)->SetPath(path);
-    if (!m_bNameChanged || m_name.IsEmpty())
+    if (!m_bNameChanged || m_name.empty())
     {
       CURL url(path);
       m_name = url.GetWithoutUserDetails();
@@ -364,7 +364,7 @@ void CGUIDialogMediaSource::OnPath(int item)
   CGUIKeyboardFactory::ShowAndGetInput(path, g_localizeStrings.Get(1021), false);
   m_paths->Get(item)->SetPath(path);
 
-  if (!m_bNameChanged || m_name.IsEmpty())
+  if (!m_bNameChanged || m_name.empty())
   {
     CURL url(m_paths->Get(item)->GetPath());
     m_name = url.GetWithoutUserDetails();
@@ -413,8 +413,8 @@ void CGUIDialogMediaSource::UpdateButtons()
   if (!m_paths->Size()) // sanity
     return;
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, !m_paths->Get(0)->GetPath().IsEmpty() && !m_name.IsEmpty());
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_ADD, !m_paths->Get(0)->GetPath().IsEmpty());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, !m_paths->Get(0)->GetPath().empty() && !m_name.empty());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_ADD, !m_paths->Get(0)->GetPath().empty());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_REMOVE, m_paths->Size() > 1);
   // name
   SET_CONTROL_LABEL2(CONTROL_NAME, m_name);
@@ -428,7 +428,7 @@ void CGUIDialogMediaSource::UpdateButtons()
     CStdString path;
     CURL url(item->GetPath());
     path = url.GetWithoutUserDetails();
-    if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
+    if (path.empty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
     item->SetLabel(path);
   }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PATH, 0, 0, m_paths);
@@ -527,7 +527,7 @@ vector<CStdString> CGUIDialogMediaSource::GetPaths()
   vector<CStdString> paths;
   for (int i = 0; i < m_paths->Size(); i++)
   {
-    if (!m_paths->Get(i)->GetPath().IsEmpty())
+    if (!m_paths->Get(i)->GetPath().empty())
     { // strip off the user and password for smb paths (anything that the password manager can auth)
       // and add the user/pass to the password manager - note, we haven't confirmed that it works
       // at this point, but if it doesn't, the user will get prompted anyway in SMBDirectory.

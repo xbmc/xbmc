@@ -324,7 +324,7 @@ void CURL::Parse(const CStdString& strURL1)
     }
     else
     {
-      if (!m_strHostName.IsEmpty() && strURL[iEnd-1]=='/')
+      if (!m_strHostName.empty() && strURL[iEnd-1]=='/')
         m_strFileName = m_strHostName + "/";
       else
         m_strFileName = m_strHostName;
@@ -491,7 +491,7 @@ const CStdString CURL::GetFileNameWithoutPath() const
   if ((m_strProtocol == "rar"  || 
        m_strProtocol == "zip"  ||
        m_strProtocol == "apk") &&
-       m_strFileName.IsEmpty())
+       m_strFileName.empty())
     return URIUtils::GetFileName(m_strHostName);
 
   // otherwise, we've already got the filepath, so just grab the filename portion
@@ -686,7 +686,7 @@ std::string CURL::GetRedacted(const std::string& path)
 
 bool CURL::IsLocal() const
 {
-  return (IsLocalHost() || m_strProtocol.IsEmpty());
+  return (IsLocalHost() || m_strProtocol.empty());
 }
 
 bool CURL::IsLocalHost() const

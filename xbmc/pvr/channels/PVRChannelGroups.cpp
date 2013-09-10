@@ -61,7 +61,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
 
 bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
 {
-  if (group.GroupName().IsEmpty() && group.GroupID() <= 0)
+  if (group.GroupName().empty() && group.GroupID() <= 0)
     return true;
 
   CPVRChannelGroupPtr updateGroup;

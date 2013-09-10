@@ -400,9 +400,9 @@ bool CPeripheral::SetSetting(const CStdString &strKey, const CStdString &strValu
       }
     }
     else if ((*it).second->GetType() == SettingTypeInteger)
-      bChanged = SetSetting(strKey, (int) (strValue.IsEmpty() ? 0 : atoi(strValue.c_str())));
+      bChanged = SetSetting(strKey, (int) (strValue.empty() ? 0 : atoi(strValue.c_str())));
     else if ((*it).second->GetType() == SettingTypeNumber)
-      bChanged = SetSetting(strKey, (float) (strValue.IsEmpty() ? 0 : atof(strValue.c_str())));
+      bChanged = SetSetting(strKey, (float) (strValue.empty() ? 0 : atof(strValue.c_str())));
     else if ((*it).second->GetType() == SettingTypeBool)
       bChanged = SetSetting(strKey, strValue.Equals("1"));
   }

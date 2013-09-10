@@ -116,7 +116,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar program */
     buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Play this recording */
     CStdString resumeString = GetResumeString(*pItem);
-    if (!resumeString.IsEmpty())
+    if (!resumeString.empty())
     {
       buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
     }
@@ -277,7 +277,7 @@ bool CGUIWindowPVRRecordings::OnClickList(CGUIMessage &message)
     {
       int choice = CONTEXT_BUTTON_PLAY_ITEM;
       CStdString resumeString = GetResumeString(*pItem);
-      if (!resumeString.IsEmpty())
+      if (!resumeString.empty())
       {
         CContextButtons choices;
         choices.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);

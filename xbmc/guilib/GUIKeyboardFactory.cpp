@@ -103,7 +103,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
 
   if (confirmed)
   {
-    if (!allowEmptyResult && aTextString.IsEmpty())
+    if (!allowEmptyResult && aTextString.empty())
       confirmed = false;
   }
 
@@ -199,7 +199,7 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CS
   if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true, autoCloseMs))  //bool hiddenInput = false/true ? TODO: GUI Setting to enable disable this feature y/n?
     return -1; // user canceled out
 
-  if (!strPassword.IsEmpty())
+  if (!strPassword.empty())
   {
     if (strPassword == strUserInput)
       return 0;
@@ -214,7 +214,7 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CS
   }
   else
   {
-    if (!strUserInput.IsEmpty())
+    if (!strUserInput.empty())
     {
       XBMC::XBMC_MD5 md5state;
       md5state.append(strUserInput);
