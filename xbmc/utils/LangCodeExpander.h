@@ -41,6 +41,22 @@ public:
   bool Lookup(CStdString& desc, const CStdString& code);
   bool Lookup(CStdString& desc, const int code);
 
+  /** \brief Determines if two english language names represent the same language.
+  *   \param[in] lang1 The first language string to compare given as english language name.
+  *   \param[in] lang2 The second language string to compare given as english language name.
+  *   \return true if the two language strings represent the same language, false otherwise.
+  *   For example "Abkhaz" and "Abkhazian" represent the same language.
+  */ 
+  bool CompareFullLangNames(const CStdString& lang1, const CStdString& lang2);
+
+  /** \brief Determines if two languages given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B codes represent the same language.
+  *   \param[in] code1 The first language to compare given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B code.
+  *   \param[in] code2 The second language to compare given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B code.
+  *   \return true if the two language codes represent the same language, false otherwise.
+  *   For example "ger", "deu" and "de" represent the same language.
+  */ 
+  bool CompareLangCodes(const CStdString& code1, const CStdString& code2);
+
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
   *          or full english name string to a 2-Char (ISO 639-1) code.  
@@ -49,6 +65,14 @@ public:
   *   \return true if the conversion succeeded, false otherwise. 
   */ 
   bool ConvertToTwoCharCode(CStdString& code, const CStdString& lang);
+
+  /** \brief Converts a language given as 2-Char (ISO 639-1),
+  *          3-Char (ISO 639-2/T or ISO 639-2/B),
+  *          or full english name string to a 3-Char ISO 639-2/T code.
+  *   \param[in] lang The language that should be converted.
+  *   \return The 3-Char ISO 639-2/T code of lang if that code exists, lang otherwise.
+  */
+  CStdString ConvertToISO6392T(const CStdString& lang);
 #ifdef TARGET_WINDOWS
   bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack = false);
   bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool localeHack = false);
