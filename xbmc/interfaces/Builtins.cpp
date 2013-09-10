@@ -45,6 +45,7 @@
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "interfaces/AnnouncementManager.h"
 #include "network/NetworkServices.h"
 #include "utils/log.h"
 #include "storage/MediaManager.h"
@@ -138,6 +139,7 @@ const BUILT_IN commands[] = {
 #endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
   { "RunAddon",                   true,   "Run the specified plugin/script" },
+  { "NotifyAll",                  true,   "Notify all JSONRPC connected clients" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
@@ -585,6 +587,17 @@ int CBuiltins::Execute(const CStdString& execString)
     else
     {
       CLog::Log(LOGERROR, "XBMC.RunAddon called with no arguments.");
+    }
+  }
+  else if (execute.Equals("notifyall"))
+  {
+    if(params.size()>1)
+    {
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, params[0], params[1]);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "XBMC.NotifyAll needs two parameters");
     }
   }
   else if (execute.Equals("playmedia"))
