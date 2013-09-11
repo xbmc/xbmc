@@ -76,6 +76,11 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   CStdString data;
   bool httpSuccess;
 
+  if (m_url.HasProtocolOption("containerSize"))
+    m_url.SetOption("X-Plex-Container-Size", m_url.GetProtocolOption("containerSize"));
+  if (m_url.HasProtocolOption("containerStart"))
+    m_url.SetOption("X-Plex-Container-Start", m_url.GetProtocolOption("containerStart"));
+
   if (m_body.empty())
     httpSuccess = m_file.Get(m_url.Get(), data);
   else
@@ -168,6 +173,7 @@ static DirectoryTypeMap g_typeMap = boost::assign::list_of<DirectoryTypeMap::rel
                                     (PLEX_DIR_TYPE_DIRECTOR, "director")
                                     (PLEX_DIR_TYPE_THUMB, "thumb")
                                     (PLEX_DIR_TYPE_IMAGE, "image")
+                                    (PLEX_DIR_TYPE_CHANNELS, "plugin")
                                     ;
 
 
@@ -243,6 +249,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("content", g_parserType)
 
                                      ("title", g_parserLabel)
+                                     ("title1", g_parserLabel)
                                      ("name", g_parserLabel)
 
                                      ("originallyAvailableAt", g_parserDateTime)
@@ -455,6 +462,12 @@ CStdString CPlexDirectory::GetContentFromType(EPlexDirectoryType typeNr)
       break;
     case PLEX_DIR_TYPE_SECONDARY:
       content = "secondary";
+      break;
+    case PLEX_DIR_TYPE_CHANNEL:
+      content = "channel";
+      break;
+    case PLEX_DIR_TYPE_CHANNELS:
+      content = "channels";
       break;
     default:
       CLog::Log(LOGWARNING, "CPlexDirectory::GetContentFromType oopes, no Content for Type %s", CPlexDirectory::GetDirectoryTypeString(typeNr).c_str());
@@ -673,7 +686,8 @@ bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
     }
     
     channel->SetProperty("mediaWindow", window);
-    channel->SetProperty("channelType", type);
+    channel->SetProperty("type", type);
+    channel->SetPlexDirectoryType(GetDirectoryType(type));
     
     CStdString serverUUID = channel->GetProperty("plexserver").asString();
     if (g_plexApplication.serverManager->FindByUUID(serverUUID))
