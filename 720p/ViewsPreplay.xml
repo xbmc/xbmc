@@ -411,11 +411,11 @@
 						<height>30</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<label>$LOCALIZE[593]</label>
+						<label>[UPPERCASE]$LOCALIZE[593][/UPPERCASE]</label>
 						<font>CondensedBold-26</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
-						<visible>ListItem.Type(allEpisodes)</visible>
+						<visible>IsEmpty(ListItem.Season)</visible>
 					</control>
 					<control type="label">
 						<posy>250</posy>
@@ -450,11 +450,11 @@
 						<height>30</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<label>$LOCALIZE[593]</label>
+						<label>[UPPERCASE]$LOCALIZE[593][/UPPERCASE]</label>
 						<font>CondensedBold-26</font>
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
-						<visible>ListItem.Type(allEpisodes)</visible>
+						<visible>IsEmpty(ListItem.Season)</visible>
 					</control>
 					<control type="label">
 						<posy>250</posy>
@@ -510,7 +510,7 @@
 					<posy>13</posy>
 					<width>182</width>
 					<height>274</height>
-					<texture background="true" diffuse="library-poster-mask.png">$INFO[Container.SeasonThumb]</texture>
+					<texture background="true" diffuse="library-poster-mask.png">$INFO[Container.Art(thumb)]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				</control>
 			</control>
