@@ -25,7 +25,7 @@
 #include "system.h"
 #include "threads/CriticalSection.h"
 
-#include "../AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 typedef std::pair<std::string, std::string> AEDevice;
 typedef std::vector<AEDevice> AEDeviceList;

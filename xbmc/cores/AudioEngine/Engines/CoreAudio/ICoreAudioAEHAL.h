@@ -19,7 +19,7 @@
  *
  */
 
-#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "ICoreAudioSource.h"
 

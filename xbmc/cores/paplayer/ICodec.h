@@ -24,7 +24,7 @@
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
 
-#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 #define READ_EOF      -1
 #define READ_SUCCESS   0

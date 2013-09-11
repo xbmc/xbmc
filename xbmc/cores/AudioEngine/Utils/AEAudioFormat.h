@@ -19,7 +19,7 @@
  *
  */
 
-#include "Utils/AEChannelInfo.h"
+#include "AEChannelInfo.h"
 
 /**
  * The various data formats
