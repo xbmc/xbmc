@@ -291,7 +291,11 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   else
   {
     m_format.m_sampleRate       = sampleRate;
+#ifndef __PLEX__
     m_format.m_channelLayout    = CAEChannelInfo(m_stdChLayout);
+#else
+    m_format.m_channelLayout    = CAEChannelInfo(AE_CH_LAYOUT_2_0);
+#endif
     m_format.m_dataFormat       = AE_FMT_FLOAT;
   }
 
