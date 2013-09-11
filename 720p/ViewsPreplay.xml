@@ -494,7 +494,7 @@
 			</control>
 			<!-- poster -->
 			<control type="group">
-				<posx>80</posx>
+				<posx>82</posx>
 				<posy>74</posy>
 				<control type="image">
 					<posx>0</posx>
@@ -516,7 +516,7 @@
 			</control>
 			<!-- Infos Left -->
 			<control type="group">
-				<posy>71</posy>
+				<posy>80</posy>
 				<posx>302</posx>
 				<!-- Titles -->
 				<control type="label">
@@ -540,7 +540,7 @@
 				</control>
 				<!-- Genre -->
 				<control type="grouplist">
-					<posy>193</posy>
+					<posy>221</posy>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
 					<control type="label">
@@ -563,7 +563,7 @@
 					</control>
 				</control>
 				<!-- Creator -->
-				<control type="grouplist">
+				<!--><control type="grouplist">
 					<posy>221</posy>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
@@ -579,13 +579,12 @@
 					<control type="label">
 						<width min="29" max="330">auto</width>
 						<height>15</height>
-						<!--><label>$INFO[ListItem.Cast]</label>-->
 						<label>Creator placeholder</label>
 						<font>Condensed-18</font>
 						<include>White2</include>
 						<visible>true</visible>
 					</control>
-				</control>
+				</control>-->
 				<!-- Cast -->
 				<control type="grouplist">
 					<posy>249</posy>
