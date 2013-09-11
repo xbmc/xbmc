@@ -187,7 +187,10 @@ void BackgroundMusicPlayer::PlayCurrentTheme()
 void BackgroundMusicPlayer::OnQueueNextItem()
 {
   if (!g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
+  {
+    m_player->OnNothingToQueueNotify();
     return;
+  }
   
   if (m_position + 1 < m_bgPlaylist.Size())
     m_position ++;
