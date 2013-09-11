@@ -89,6 +89,10 @@
   #define HAS_UPNP
 #endif
 
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_LINUX_JOYSTICK)
+  #define HAS_JOYSTICK
+#endif
+
 #if defined(HAVE_LIBMDNSEMBEDDED)
   #define HAS_ZEROCONF
   #define HAS_MDNS
@@ -112,7 +116,7 @@
  *****************/
 
 #if defined(TARGET_WINDOWS)
-#define HAS_SDL_JOYSTICK
+#define HAS_JOYSTICK
 #define HAS_DVD_DRIVE
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE

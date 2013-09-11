@@ -25,7 +25,7 @@
 
 #include <map>
 #include <vector>
-#include "system.h" // for HAS_EVENT_SERVER, HAS_SDL_JOYSTICK, HAS_LIRC
+#include "system.h" // for HAS_EVENT_SERVER, HAS_JOYSTICK, HAS_LIRC
 
 #ifdef HAS_EVENT_SERVER
 #include "network/EventClient.h"
@@ -75,6 +75,8 @@ public:
 
   CAction GetAction(int window, const CKey &key, bool fallback = true);
 
+  static bool IsAnalog(int actionID);
+
   /*! \brief Translate between a window name and it's id
    \param window name of the window
    \return id of the window, or WINDOW_INVALID if not found
@@ -92,7 +94,7 @@ public:
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   int TranslateLircRemoteString(const char* szDevice, const char *szButton);
 #endif
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#if defined(HAS_JOYSTICK) || defined(HAS_EVENT_SERVER)
   bool TranslateJoystickString(int window, const char* szDevice, int id,
                                short inputType, int& action, CStdString& strAction,
                                bool &fullrange);
@@ -110,7 +112,7 @@ private:
 
   int GetActionCode(int window, int action);
   int GetActionCode(int window, const CKey &key, CStdString &strAction) const;
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#if defined(HAS_JOYSTICK) || defined(HAS_EVENT_SERVER)
   typedef std::map<int, std::map<int, std::string> > JoystickMap; // <window, <button/axis, action> >
   int GetActionCode(int window, int id, const JoystickMap &wmap, CStdString &strAction, bool &fullrange) const;
 #endif
@@ -141,7 +143,7 @@ private:
   std::map<CStdString, lircButtonMap*> lircRemotesMap;
 #endif
 
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#if defined(HAS_JOYSTICK) || defined(HAS_EVENT_SERVER)
   void MapJoystickActions(int windowID, TiXmlNode *pJoystick);
 
   std::map<std::string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>

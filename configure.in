@@ -2031,6 +2031,9 @@ else
   final_message="$final_message\n  Joystick:\tNo"
 fi
 
+# --enable-joystick is for SDL joysticks, use joystick.h for Linux Joystick API
+AC_CHECK_HEADER([linux/joystick.h], AC_DEFINE([HAS_LINUX_JOYSTICK],[1],[Define if we have linux/joystick.h]),)
+
 if test "$use_xrandr" = "yes"; then
   final_message="$final_message\n  XRandR:\tYes"
   USE_XRANDR=1

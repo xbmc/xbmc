@@ -41,11 +41,9 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/MouseStat.h"
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK)
-#include "input/SDLJoystick.h"
-#endif // defined(HAS_SDL_JOYSTICK)
+#if defined(HAS_JOYSTICK)
+#include "input/JoystickManager.h"
+#endif // defined(HAS_JOYSTICK)
 #if defined(TARGET_POSIX)
 #include "linux/LinuxTimezone.h"
 #endif // defined(TARGET_POSIX)
@@ -60,6 +58,7 @@
 #include "osx/DarwinUtils.h"
 #endif
 #include "peripherals/Peripherals.h"
+#include "peripherals/devices/PeripheralImon.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRManager.h"
@@ -120,6 +119,11 @@ bool CheckPVRParentalPin(const std::string &condition, const std::string &value,
 bool HasPeripherals(const std::string &condition, const std::string &value, const std::string &settingId)
 {
   return PERIPHERALS::g_peripherals.GetNumberOfPeripherals() > 0;
+}
+
+bool HasImonsConflict(const std::string &condition, const std::string &value, const std::string &settingId)
+{
+  return PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() != 0;
 }
 
 bool IsFullscreen(const std::string &condition, const std::string &value, const std::string &settingId)
@@ -403,8 +407,8 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&g_charsetConverter);
   m_settingsManager->UnregisterCallback(&g_graphicsContext);
   m_settingsManager->UnregisterCallback(&g_langInfo);
-#if defined(TARGET_WINDOWS) || defined(HAS_SDL_JOYSTICK)
-  m_settingsManager->UnregisterCallback(&g_Joystick);
+#if defined(HAS_JOYSTICK)
+  m_settingsManager->UnregisterCallback(&JOYSTICK::CJoystickManager::Get());
 #endif
   m_settingsManager->UnregisterCallback(&g_Mouse);
   m_settingsManager->UnregisterCallback(&CNetworkServices::Get());
@@ -723,8 +727,8 @@ void CSettings::InitializeConditions()
 #ifdef HAS_KARAOKE
   m_settingsManager->AddCondition("has_karaoke");
 #endif
-#ifdef HAS_SDL_JOYSTICK
-  m_settingsManager->AddCondition("has_sdl_joystick");
+#ifdef HAS_JOYSTICK
+  m_settingsManager->AddCondition("has_joystick");
 #endif
 #ifdef HAS_SKIN_TOUCHED
   m_settingsManager->AddCondition("has_skin_touched");
@@ -784,6 +788,7 @@ void CSettings::InitializeConditions()
   m_settingsManager->AddCondition("checkmasterlock", CheckMasterLock);
   m_settingsManager->AddCondition("checkpvrparentalpin", CheckPVRParentalPin);
   m_settingsManager->AddCondition("hasperipherals", HasPeripherals);
+  m_settingsManager->AddCondition("hasimonsconflict", HasImonsConflict);
   m_settingsManager->AddCondition("isfullscreen", IsFullscreen);
   m_settingsManager->AddCondition("ismasteruser", IsMasterUser);
   m_settingsManager->AddCondition("isusingttfsubtitles", IsUsingTTFSubtitles);
@@ -917,10 +922,10 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("locale.country");
   m_settingsManager->RegisterCallback(&g_langInfo, settingSet);
 
-#if defined(HAS_SDL_JOYSTICK)
+#if defined(HAS_JOYSTICK)
   settingSet.clear();
   settingSet.insert("input.enablejoystick");
-  m_settingsManager->RegisterCallback(&g_Joystick, settingSet);
+  m_settingsManager->RegisterCallback(&JOYSTICK::CJoystickManager::Get(), settingSet);
 #endif
 
   settingSet.clear();

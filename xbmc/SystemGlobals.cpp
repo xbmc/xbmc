@@ -37,11 +37,6 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) 
-#include "input/SDLJoystick.h"
-#endif
 
 #if defined(HAS_FILESYSTEM_RAR)
 #include "filesystem/RarManager.h"
@@ -63,9 +58,6 @@
   CGUITextureManager g_TextureManager;
   CGUILargeTextureManager g_largeTextureManager;
   CMouseStat         g_Mouse;
-#if defined(HAS_SDL_JOYSTICK) 
-  CJoystick          g_Joystick; 
-#endif
   CGUIPassword       g_passwordManager;
   CGUIInfoManager    g_infoManager;
 
