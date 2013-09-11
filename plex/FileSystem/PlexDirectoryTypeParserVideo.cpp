@@ -71,6 +71,8 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   {
     videoTag.m_iEpisode = item.GetProperty("index").asInteger();
     videoTag.m_iSeason = item.GetProperty("parentIndex").asInteger();
+    if (videoTag.m_iEpisode == 0)
+      item.SetProperty("allepisodes", 1);
   }
   else if (dirType == PLEX_DIR_TYPE_SEASON)
   {
