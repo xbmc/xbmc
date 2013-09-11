@@ -1104,8 +1104,7 @@
 				</control>
 			</control>
 			<!-- Audio & Subtitles buttons -->
-			<control type="group" id="999">
-				<defaultcontrol always="true">19101</defaultcontrol>
+			<control type="group">
 				<!-- Audio -->
 				<control type="grouplist">
 					<posy>306</posy>

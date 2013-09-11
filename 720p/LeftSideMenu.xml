@@ -257,37 +257,39 @@
 				<control type="button" id="102">
 					<texturefocus>b-pp-play.png</texturefocus>
 					<texturenofocus>b-pp-play.png</texturenofocus>
-					<onup>107</onup>
-					<ondown>19101</ondown>
-					<visible>Control.HasFocus(102)</visible>
+					<onclick>Plex.PlayWith(VideoDefaultPlayer)</onclick>
+					<onup>109</onup>
+					<ondown>103</ondown><visible allowhiddenfocus="true">Control.HasFocus(102)</visible>
 					<include>leftMenuPreplayButton</include>
 				</control>
 				<!-- Audio -->
 				<control type="image">
 					<texture>b-pp-audio.png</texture>
-					<visible>!Control.HasFocus(19101)</visible>
+					<visible>!Control.HasFocus(103)</visible>
 					<include>leftMenuPreplayIcon</include>
 				</control>
-				<control type="button" id="19101">
+				<control type="button" id="103">
 					<texturefocus>b-pp-audio.png</texturefocus>
 					<texturenofocus>b-pp-audio.png</texturenofocus>
+					<onclick>ActivateWindow(1024)</onclick>
 					<onup>102</onup>
-					<ondown>19102</ondown>
-					<visible>Control.HasFocus(19101)</visible>
+					<ondown>104</ondown>
+					<visible>Control.HasFocus(103)</visible>
 					<include>leftMenuPreplayButton</include>
 				</control>
 				<!-- Subtitles -->
 				<control type="image">
 					<texture>b-pp-subtitles.png</texture>
-					<visible>!Control.HasFocus(19102)</visible>
+					<visible>!Control.HasFocus(104)</visible>
 					<include>leftMenuPreplayIcon</include>
 				</control>
-				<control type="button" id="19102">
+				<control type="button" id="104">
 					<texturefocus>b-pp-subtitles.png</texturefocus>
 					<texturenofocus>b-pp-subtitles.png</texturenofocus>
-					<onup>19101</onup>
-					<ondown>103</ondown>
-					<visible>Control.HasFocus(19102)</visible>
+					<onclick>ActivateWindow(1025)</onclick>
+					<onup>103</onup>
+					<ondown>105</ondown>
+					<visible>Control.HasFocus(104)</visible>
 					<include>leftMenuPreplayButton</include>
 				</control>
 				<!-- Rate -->
@@ -296,11 +298,11 @@
 					<visible>!Control.HasFocus(103)</visible>
 					<include>leftMenuPreplayIcon</include>
 				</control>
-				<control type="button" id="103">
+				<control type="button" id="105">
 					<texturefocus>b-pp-rate.png</texturefocus>
 					<texturenofocus>b-pp-rate.png</texturenofocus>
-					<onup>19102</onup>
-					<ondown>104</ondown>
+					<onup>104</onup>
+					<ondown>106</ondown>
 					<visible>Control.HasFocus(103)</visible>
 					<include>leftMenuPreplayButton</include>
 				</control>
@@ -310,11 +312,11 @@
 					<visible>!Control.HasFocus(104)</visible>
 					<include>leftMenuPreplayIcon</include>
 				</control>
-				<control type="button" id="104">
+				<control type="button" id="106">
 					<texturefocus>b-pp-recommend.png</texturefocus>
 					<texturenofocus>b-pp-recommed.png</texturenofocus>
-					<onup>103</onup>
-					<ondown>105</ondown>
+					<onup>105</onup>
+					<ondown>107</ondown>
 					<visible>Control.HasFocus(104)</visible>
 					<include>leftMenuPreplayButton</include>
 				</control>
@@ -324,11 +326,11 @@
 					<visible>!Control.HasFocus(9096)</visible>
 					<include>leftMenuPreplayIcon</include>
 				</control>
-				<control type="button" id="105">
+				<control type="button" id="107">
 					<texturefocus>b-pp-share.png</texturefocus>
 					<texturenofocus>b-pp-share.png</texturenofocus>
-					<onup>104</onup>
-					<ondown>106</ondown>
+					<onup>106</onup>
+					<ondown>108</ondown>
 					<visible>Control.HasFocus(105)</visible>
 					<include>leftMenuPreplayButton</include>
 				</control>
@@ -338,11 +340,11 @@
 					<visible>!Control.HasFocus(106)</visible>
 					<include>leftMenuPreplayIcon</include>
 				</control>
-				<control type="button" id="106">
+				<control type="button" id="108">
 					<texturefocus>b-pp-watched.png</texturefocus>
 					<texturenofocus>b-pp-watched.png</texturenofocus>
-					<onup>105</onup>
-					<ondown>107</ondown>
+					<onup>107</onup>
+					<ondown>109</ondown>
 					<visible>Control.HasFocus(106)</visible>
 					<include>leftMenuPreplayButton</include>
 				</control>
@@ -352,11 +354,11 @@
 					<visible>!Control.HasFocus(107)</visible>
 					<include>leftMenuPreplayIcon</include>
 				</control>
-				<control type="button" id="107">
+				<control type="button" id="109">
 					<texturefocus>b-pp-unwatched.png</texturefocus>
 					<texturenofocus>b-pp-unwatched.png</texturenofocus>
-					<onup>106</onup>
-					<ondown>101</ondown>
+					<onup>108</onup>
+					<ondown>102</ondown>
 					<visible>Control.HasFocus(107)</visible>
 					<include>leftMenuPreplayButton</include>
 				</control>
