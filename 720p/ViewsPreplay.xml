@@ -908,20 +908,15 @@
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
-					<control type="button" id="19101">
+					<control type="label">
 						<textoffsetx>0</textoffsetx>
 						<!-- NOTE: NEED STRING FOR THIS -->
 						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
 						<label>[UPPERCASE]Audio[/UPPERCASE]</label>
 						<include>LeftInfoFormatGrey</include>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<onleft>-</onleft>
-						<onright>-</onright>
-						<onup>-</onup>
-						<ondown>19102</ondown>
 					</control>
-					<control type="label" id="19111">
+					<control type="label">
+						<label>$INFO[ListItem.Property(SelectedAudioStream)]</label>
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
@@ -931,20 +926,15 @@
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
-					<control type="button" id="19102">
+					<control type="label">
 						<textoffsetx>0</textoffsetx>
 						<!-- NOTE: NEED STRING FOR THIS -->
 						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
 						<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
 						<include>LeftInfoFormatGrey</include>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<onleft>-</onleft>
-						<onright>-</onright>
-						<onup>19101</onup>
-						<ondown>-</ondown>
 					</control>
-					<control type="label" id="19112">
+					<control type="label">
+						<label>$INFO[ListItem.Property(SelectedSubtitleStream)]</label>
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
