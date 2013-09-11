@@ -33,6 +33,7 @@
 
 // Include joystick APIs
 #if defined(TARGET_WINDOWS)
+#include "input/windows/WINJoystickXInput.h"
 #include "input/windows/WINJoystickDX.h"
 #endif
 
@@ -91,6 +92,7 @@ void CJoystickManager::Initialize()
   
   // Initialize joystick APIs
 #if defined(TARGET_WINDOWS)
+  CJoystickXInput::Initialize(m_joysticks);
   CJoystickDX::Initialize(m_joysticks);
 #endif
 
@@ -110,6 +112,7 @@ void CJoystickManager::DeInitialize()
 {
   // De-initialize joystick APIs
 #if defined(TARGET_WINDOWS)
+  CJoystickXInput::DeInitialize(m_joysticks);
   CJoystickDX::DeInitialize(m_joysticks);
 #endif
 
