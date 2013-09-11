@@ -57,6 +57,7 @@ extern HWND g_hWnd;
 #endif
 
 using namespace ANNOUNCEMENT;
+using namespace JOYSTICK;
 
 CPowerManager g_powerManager;
 
