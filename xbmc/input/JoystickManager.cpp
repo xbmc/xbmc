@@ -37,7 +37,9 @@
 #include "input/windows/WINJoystickDX.h"
 #endif
 
-#if defined(HAS_SDL_JOYSTICK)
+#if defined(HAS_LINUX_JOYSTICK)
+#include "input/linux/LinuxJoystick.h"
+#elif defined(HAS_SDL_JOYSTICK)
 #include "input/linux/LinuxJoystickSDL.h"
 #endif
 
@@ -96,7 +98,9 @@ void CJoystickManager::Initialize()
   CJoystickDX::Initialize(m_joysticks);
 #endif
 
-#if defined(HAS_SDL_JOYSTICK)
+#if defined(HAS_LINUX_JOYSTICK)
+  CLinuxJoystick::Initialize(m_joysticks);
+#elif defined(HAS_SDL_JOYSTICK)
   CLinuxJoystickSDL::Initialize(m_joysticks);
 #endif
 
@@ -116,7 +120,9 @@ void CJoystickManager::DeInitialize()
   CJoystickDX::DeInitialize(m_joysticks);
 #endif
 
-#if defined(HAS_SDL_JOYSTICK)
+#if defined(HAS_LINUX_JOYSTICK)
+  CLinuxJoystick::DeInitialize(m_joysticks);
+#elif defined(HAS_SDL_JOYSTICK)
   CLinuxJoystickSDL::DeInitialize(m_joysticks);
 #endif
 

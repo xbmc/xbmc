@@ -89,7 +89,7 @@
   #define HAS_UPNP
 #endif
 
-#if defined(HAS_SDL_JOYSTICK)
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_LINUX_JOYSTICK)
   #define HAS_JOYSTICK
 #endif
 
