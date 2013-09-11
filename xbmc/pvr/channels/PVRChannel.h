@@ -43,7 +43,7 @@ namespace PVR
   typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 
   /** PVR Channel class */
-  class CPVRChannel : public Observable, public ISerializable
+  class CPVRChannel : public Observable, public ISerializable, public ISortable
   {
     friend class CPVRDatabase;
     friend class CPVRChannelGroupInternal;
@@ -320,7 +320,7 @@ namespace PVR
      */
     CStdString Path(void) const;
 
-    void ToSortable(SortItem& sortable) const;
+    virtual void ToSortable(SortItem& sortable, Field field) const;
 
     /*!
      * @brief Update the path after the channel number in the internal group changed.

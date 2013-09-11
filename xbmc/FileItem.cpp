@@ -699,45 +699,57 @@ void CFileItem::Serialize(CVariant& value) const
     (*m_pictureInfoTag).Serialize(value["pictureInfoTag"]);
 }
 
-void CFileItem::ToSortable(SortItem &sortable)
+void CFileItem::ToSortable(SortItem &sortable, Field field) const
 {
-  sortable[FieldPath] = m_strPath;
-  sortable[FieldDate] = (m_dateTime.IsValid()) ? m_dateTime.GetAsDBDateTime() : "";
-  sortable[FieldSize] = m_dwSize;
-  sortable[FieldDriveType] = m_iDriveType;
-  sortable[FieldStartOffset] = m_lStartOffset;
-  sortable[FieldEndOffset] = m_lEndOffset;
-  sortable[FieldProgramCount] = m_iprogramCount;
-  sortable[FieldBitrate] = m_dwSize;
-  sortable[FieldTitle] = m_strTitle;
-  sortable[FieldSortSpecial] = m_specialSort;
-  sortable[FieldFolder] = m_bIsFolder;
-
+  switch (field)
+  {
+  case FieldPath:         sortable[FieldPath] = m_strPath; break;
+  case FieldDate:         sortable[FieldDate] = (m_dateTime.IsValid()) ? m_dateTime.GetAsDBDateTime() : ""; break;
+  case FieldSize:         sortable[FieldSize] = m_dwSize; break;
+  case FieldDriveType:    sortable[FieldDriveType] = m_iDriveType; break;
+  case FieldStartOffset:  sortable[FieldStartOffset] = m_lStartOffset; break;
+  case FieldEndOffset:    sortable[FieldEndOffset] = m_lEndOffset; break;
+  case FieldProgramCount: sortable[FieldProgramCount] = m_iprogramCount; break;
+  case FieldBitrate:      sortable[FieldBitrate] = m_dwSize; break;
+  case FieldTitle:        sortable[FieldTitle] = m_strTitle; break;
+  case FieldSortSpecial:  sortable[FieldSortSpecial] = m_specialSort; break;
+  case FieldFolder:       sortable[FieldFolder] = m_bIsFolder; break;
   // If there's ever a need to convert more properties from CGUIListItem it might be
   // worth to make CGUIListItem  implement ISortable as well and call it from here
-  sortable[FieldLabel] = GetLabel();
+  default: break;
+  }
 
   if (HasMusicInfoTag())
-    GetMusicInfoTag()->ToSortable(sortable);
-    
+    GetMusicInfoTag()->ToSortable(sortable, field);
+
   if (HasVideoInfoTag())
   {
-    GetVideoInfoTag()->ToSortable(sortable);
+    GetVideoInfoTag()->ToSortable(sortable, field);
 
     if (GetVideoInfoTag()->m_type == "tvshow")
     {
-      if (HasProperty("totalepisodes"))
+      if (field == FieldNumberOfEpisodes && HasProperty("totalepisodes"))
         sortable[FieldNumberOfEpisodes] = GetProperty("totalepisodes");
-      if (HasProperty("unwatchedepisodes"))
+      if (field == FieldNumberOfWatchedEpisodes && HasProperty("unwatchedepisodes"))
         sortable[FieldNumberOfWatchedEpisodes] = GetProperty("unwatchedepisodes");
     }
   }
-    
+
   if (HasPictureInfoTag())
-    GetPictureInfoTag()->ToSortable(sortable);
+    GetPictureInfoTag()->ToSortable(sortable, field);
 
   if (HasPVRChannelInfoTag())
-    GetPVRChannelInfoTag()->ToSortable(sortable);
+    GetPVRChannelInfoTag()->ToSortable(sortable, field);
+}
+
+void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
+{
+  Fields::const_iterator it;
+  for (it = fields.begin(); it != fields.end(); it++)
+    ToSortable(sortable, *it);
+
+  /* It seems SortUtils assumes we have this one even when we're not sorting by it */
+  sortable[FieldLabel] = GetLabel();
 }
 
 bool CFileItem::Exists(bool bUseCache /* = true */) const
@@ -1887,11 +1899,12 @@ void CFileItemList::Sort(SortDescription sortDescription)
   if (m_sortIgnoreFolders)
     sortDescription.sortAttributes = (SortAttribute)((int)sortDescription.sortAttributes | SortAttributeIgnoreFolders);
 
+  const Fields fields = SortUtils::GetFieldsForSorting(sortDescription.sortBy);
   SortItems sortItems((size_t)Size());
   for (int index = 0; index < Size(); index++)
   {
     sortItems[index] = boost::shared_ptr<SortItem>(new SortItem);
-    m_items[index]->ToSortable(*sortItems[index]);
+    m_items[index]->ToSortable(*sortItems[index], fields);
     (*sortItems[index])[FieldId] = index;
   }
 

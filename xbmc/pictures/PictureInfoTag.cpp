@@ -269,9 +269,9 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["imagetype"] = CStdString(m_iptcInfo.ImageType);
 }
 
-void CPictureInfoTag::ToSortable(SortItem& sortable)
+void CPictureInfoTag::ToSortable(SortItem& sortable, Field field) const
 {
-  if (m_dateTimeTaken.IsValid())
+  if (field == FieldDateTaken && m_dateTimeTaken.IsValid())
     sortable[FieldDateTaken] = m_dateTimeTaken.GetAsDBDateTime();
 }
 
