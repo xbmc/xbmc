@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<window id="99">
+	<defaultcontrol>777</defaultcontrol>
+	<views>70</views>
+	<allowoverlay>yes</allowoverlay>
+	<onunload>SetFocus(777)</onunload>
+	<backgroundcolor>0</backgroundcolor>
+	<controls>
+		<!-- bg's (Backgrounds.xml) -->
+		<include>BGGrainy</include>
+		<include>BGFanart</include>
+		<include>BGOverlay</include>
+		<!-- views (ViewsChannels.xml) -->
+		<!-- Channels ID 70 -->
+		<include>Channels</include>
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
+		<include>LeftSideMenu</include>
+		<include>TopBar</include>
+		<include>debugInfos</include>
+		<include>Grid</include>
+		<include>WindowFade</include>
+	</controls>
+</window>
