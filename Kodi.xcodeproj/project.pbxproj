@@ -335,6 +335,8 @@
 		68D77D0F1CD1C672004C1735 /* PeripheralBusApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D0C1CD1C672004C1735 /* PeripheralBusApplication.cpp */; };
 		68D77D121CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D101CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp */; };
 		68D77D131CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D101CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp */; };
+		68D77D171CD1C6D9004C1735 /* GameInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D151CD1C6D9004C1735 /* GameInfoTag.cpp */; };
+		68D77D181CD1C6D9004C1735 /* GameInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D151CD1C6D9004C1735 /* GameInfoTag.cpp */; };
 		761170901C8B85F8006C6366 /* AddonGUIRenderingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708C1C8B85F8006C6366 /* AddonGUIRenderingControl.cpp */; };
 		761170911C8B85F8006C6366 /* AddonGUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708E1C8B85F8006C6366 /* AddonGUIWindow.cpp */; };
 		76AEFB361C8F79BD00EF2EC0 /* AddonInterfaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */; };
@@ -2875,6 +2877,8 @@
 		68D77D0D1CD1C672004C1735 /* PeripheralBusApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusApplication.h; sourceTree = "<group>"; };
 		68D77D101CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralJoystickEmulation.cpp; sourceTree = "<group>"; };
 		68D77D111CD1C68A004C1735 /* PeripheralJoystickEmulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralJoystickEmulation.h; sourceTree = "<group>"; };
+		68D77D151CD1C6D9004C1735 /* GameInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameInfoTag.cpp; path = games/tags/GameInfoTag.cpp; sourceTree = "<group>"; };
+		68D77D161CD1C6D9004C1735 /* GameInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameInfoTag.h; path = games/tags/GameInfoTag.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
 		6E97BDC10DA2B620003A2A89 /* EventServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventServer.h; sourceTree = "<group>"; };
@@ -6271,6 +6275,7 @@
 			isa = PBXGroup;
 			children = (
 				68AE5BFA1C92433900C4D527 /* controllers */,
+				68D77D141CD1C6C7004C1735 /* tags */,
 				68D77CFD1CD1C5E4004C1735 /* GameSettings.cpp */,
 				68D77CFE1CD1C5E4004C1735 /* GameSettings.h */,
 			);
@@ -6375,6 +6380,15 @@
 				68D77D071CD1C64C004C1735 /* JoystickEmulation.h */,
 			);
 			name = generic;
+			sourceTree = "<group>";
+		};
+		68D77D141CD1C6C7004C1735 /* tags */ = {
+			isa = PBXGroup;
+			children = (
+				68D77D151CD1C6D9004C1735 /* GameInfoTag.cpp */,
+				68D77D161CD1C6D9004C1735 /* GameInfoTag.h */,
+			);
+			name = tags;
 			sourceTree = "<group>";
 		};
 		76F4C37B1C8E927A00A1E64B /* InputStream */ = {
@@ -10314,6 +10328,7 @@
 				F52B063B11869862004B1D66 /* Skin.cpp in Sources */,
 				F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */,
 				F50FE04E11A3411A00C8B8CD /* EncoderFFmpeg.cpp in Sources */,
+				68D77D171CD1C6D9004C1735 /* GameInfoTag.cpp in Sources */,
 				183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */,
 				F58E293911FFC103006F4D46 /* DVDInputStreamBluray.cpp in Sources */,
 				F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */,
@@ -11131,6 +11146,7 @@
 				E4991202174E5D4500741B6D /* VideoPlayerTeletext.cpp in Sources */,
 				E4991203174E5D4500741B6D /* VideoPlayerVideo.cpp in Sources */,
 				E4991204174E5D4500741B6D /* DVDStreamInfo.cpp in Sources */,
+				68D77D181CD1C6D9004C1735 /* GameInfoTag.cpp in Sources */,
 				E4991205174E5D4500741B6D /* DVDTSCorrection.cpp in Sources */,
 				E4991206174E5D4500741B6D /* Edl.cpp in Sources */,
 				E4991207174E5D4A00741B6D /* ExternalPlayer.cpp in Sources */,

@@ -60,6 +60,10 @@ namespace PVR
   typedef std::shared_ptr<PVR::CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
 }
 class CPictureInfoTag;
+namespace GAME
+{
+  class CGameInfoTag;
+}
 
 class CAlbum;
 class CArtist;
@@ -182,6 +186,7 @@ public:
    */
   bool IsAudio() const;
 
+  bool IsGame() const;
   bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsPlayList() const;
@@ -357,6 +362,18 @@ public:
   bool HasAddonInfo() const { return m_addonInfo != nullptr; }
   const std::shared_ptr<const ADDON::IAddon> GetAddonInfo() const { return m_addonInfo; }
 
+  inline bool HasGameInfoTag() const
+  {
+    return m_gameInfoTag != NULL;
+  }
+
+  GAME::CGameInfoTag* GetGameInfoTag();
+
+  inline const GAME::CGameInfoTag* GetGameInfoTag() const
+  {
+    return m_gameInfoTag;
+  }
+
   CPictureInfoTag* GetPictureInfoTag();
 
   /*!
@@ -427,6 +444,7 @@ public:
   std::string FindTrailer() const;
 
   virtual bool LoadMusicTag();
+  virtual bool LoadGameTag();
 
   /* Returns the content type of this item if known */
   const std::string& GetMimeType() const { return m_mimetype; }
@@ -547,6 +565,7 @@ private:
   PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   std::shared_ptr<const ADDON::IAddon> m_addonInfo;
+  GAME::CGameInfoTag* m_gameInfoTag;
   EventPtr m_eventLogEntry;
   bool m_bIsAlbum;
 
