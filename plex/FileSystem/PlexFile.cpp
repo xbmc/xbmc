@@ -59,6 +59,9 @@ CPlexFile::BuildHTTPURL(CURL& url)
   if (url.GetProtocol() != "plexserver")
     return true;
 
+  if (!g_plexApplication.serverManager)
+    return false;
+
   if (PlexUtils::IsValidIP(url.GetHostName()))
   {
     server = g_plexApplication.serverManager->FindByHostAndPort(url.GetHostName(), url.GetPort());
