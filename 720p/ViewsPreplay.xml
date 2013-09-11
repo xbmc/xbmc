@@ -132,6 +132,7 @@
 			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
+	<!-- all episodes are from the same season -->
 	<include name="EpisodeThumbOverlayTitle">
 		<posy>83</posy>
 		<posx>20</posx>
@@ -140,6 +141,18 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>E$INFO[ListItem.Episode]</label>
+		<font>CondensedBold-26</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>
+	<!-- episodes are mixed from different seasons -->
+	<include name="EpisodeThumbOverlayTitle2">
+		<posy>83</posy>
+		<posx>20</posx>
+		<width>180</width>
+		<height>30</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>S$INFO[ListItem.Season]&#xB7;E$INFO[ListItem.Episode]</label>
 		<font>CondensedBold-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
@@ -657,6 +670,12 @@
 					<control type="label">
 						<include>EpisodeThumbOverlayTitle</include>
 						<textcolor>white</textcolor>
+						<visible>IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label">
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>white</textcolor>
+						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 					</control>
 					<control type="image">
 						<posx>182</posx>
@@ -676,6 +695,12 @@
 					<control type="label">
 						<include>EpisodeThumbOverlayTitle</include>
 						<textcolor>orangeLight</textcolor>
+						<visible>IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label">
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>orangeLight</textcolor>
+						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 					</control>
 					<control type="image">
 						<posx>182</posx>
