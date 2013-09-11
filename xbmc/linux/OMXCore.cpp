@@ -46,13 +46,13 @@
 
 static void add_timespecs(struct timespec &time, long millisecs)
 {
-   time.tv_sec  += millisecs / 1000;
-   time.tv_nsec += (millisecs % 1000) * 1000000;
-   if (time.tv_nsec > 1000000000)
+   long long nsec = time.tv_nsec + (long long)millisecs * 1000000;
+   while (nsec > 1000000000)
    {
-      time.tv_sec  += 1;
-      time.tv_nsec -= 1000000000;
+      time.tv_sec += 1;
+      nsec -= 1000000000;
    }
+   time.tv_nsec = nsec;
 }
 
 
