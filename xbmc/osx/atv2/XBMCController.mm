@@ -184,9 +184,11 @@ typedef enum {
 
   kBREventRemoteActionTouchHold = 46,
 
+  // keypresses, for originator kBREventOriginatorKeyboard
   kBREventRemoteActionKeyPress  = 47,
   kBREventRemoteActionKeyPress42,
-  
+
+  kBREventRemoteActionKeyTab    = 53,
 
   // Custom remote actions for old remote actions
   kBREventRemoteActionHoldLeft = 0xfeed0001,
@@ -194,6 +196,22 @@ typedef enum {
   kBREventRemoteActionHoldUp,
   kBREventRemoteActionHoldDown,
 } BREventRemoteAction;
+
+typedef enum {
+  kBREventModifierCommandLeft   = 0x10000,
+  kBREventModifierShiftLeft     = 0x20000,
+  kBREventModifierOptionLeft    = 0x80000,
+  kBREventModifierCtrlLeft      = 0x100000,
+  kBREventModifierShiftRight    = 0x200000,
+  kBREventModifierOptionRight   = 0x400000,
+  kBREventModifierCommandRight  = 0x1000000,
+}BREventModifier;
+
+typedef enum {
+  kBREventOriginatorRemote    = 1,
+  kBREventOriginatorKeyboard  = 2,
+  kBREventOriginatorGesture   = 3,
+}BREventOriginiator;
 
 
 XBMCController *g_xbmcController;
@@ -420,7 +438,8 @@ static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _
     return;
 
   int remoteAction = [f_event remoteAction];
-  CLog::Log(LOGDEBUG,"XBMCPureController: Button press remoteAction = %i", remoteAction);
+  unsigned int originator = [f_event originator];
+  CLog::Log(LOGDEBUG,"XBMCPureController: Button press remoteAction = %i originator = %i", remoteAction, originator);
   *isRepeatable = false;
   *isPressed = false;
 
@@ -481,7 +500,10 @@ static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _
     // tap play
     case kBREventRemoteActionPlay:
     case 65673:
-      *result = ATV_BUTTON_PLAY;
+      if (originator == kBREventOriginatorKeyboard) // on bt keyboard play == return!
+        *result = ATV_BTKEYPRESS;
+      else
+        *result = ATV_BUTTON_PLAY;
       return ;
     
     // hold play
@@ -489,19 +511,28 @@ static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _
     case kBREventRemoteActionCenterHold:
     case kBREventRemoteActionCenterHold42:
     case 65668:
-      *result = ATV_BUTTON_PLAY_H;
+      if (originator == kBREventOriginatorKeyboard) // invalid on bt keyboard
+        *result = ATV_INVALID_BUTTON;
+      else
+        *result = ATV_BUTTON_PLAY_H;
       return ;
     
     // menu
     case kBREventRemoteActionMenu:
     case 65670:
-      *result = ATV_BUTTON_MENU;
+      if (originator == kBREventOriginatorKeyboard) // on bt keyboard menu == esc!
+        *result = ATV_BTKEYPRESS;
+      else
+        *result = ATV_BUTTON_MENU;
       return ;
     
     // hold menu
     case kBREventRemoteActionMenuHold:
     case 786496:
-      *result = ATV_BUTTON_MENU_H;
+      if (originator == kBREventOriginatorKeyboard) // invalid on bt keyboard
+        *result = ATV_INVALID_BUTTON;
+      else
+        *result = ATV_BUTTON_MENU_H;
       return ;
     
     // learned play
@@ -542,14 +573,29 @@ static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _
     // tap play on new Al IR remote
     case kBREventRemoteActionALPlay:
     case 786637:
-      *result = ATV_ALUMINIUM_PLAY;
+      if (originator == kBREventOriginatorKeyboard) // on bt keyboard alplay == space!
+        *result = ATV_BTKEYPRESS;
+      else
+        *result = ATV_ALUMINIUM_PLAY;
       return ;
 
     case kBREventRemoteActionKeyPress:
     case kBREventRemoteActionKeyPress42:
-      *result = ATV_BTKEYPRESS;
+      *isRepeatable = true;
+      if (originator == kBREventOriginatorKeyboard) // only valid on bt keyboard
+        *result = ATV_BTKEYPRESS;
+      else
+        *result = ATV_INVALID_BUTTON;
       return ;
-    
+
+    case kBREventRemoteActionKeyTab:
+      *isRepeatable = true;
+      if (originator == kBREventOriginatorKeyboard) // only valid on bt keyboard
+        *result = ATV_BTKEYPRESS;
+      else
+        *result = ATV_INVALID_BUTTON;
+      return ;
+      
     // PageUp
     case kBREventRemoteActionPageUp:
       *result = ATV_BUTTON_PAGEUP;
@@ -685,6 +731,33 @@ static void XBMCController$setUserEvent(XBMCController* self, SEL _cmd, int even
   CWinEventsIOS::MessagePush(&newEvent);
 }
 
+static unsigned int XBMCController$appleModKeyToXbmcModKey(XBMCController* self, SEL _cmd, unsigned int appleModifier)
+{
+  unsigned int xbmcModifier = XBMCKMOD_NONE;
+  // shift left
+  if (appleModifier & kBREventModifierShiftLeft)
+    xbmcModifier |= XBMCKMOD_LSHIFT;
+  // shift right
+  if (appleModifier & kBREventModifierShiftRight)
+    xbmcModifier |= XBMCKMOD_RSHIFT;
+  // left ctrl
+  if (appleModifier & kBREventModifierCtrlLeft)
+    xbmcModifier |= XBMCKMOD_LCTRL;
+  // left alt/option
+  if (appleModifier & kBREventModifierOptionLeft)
+    xbmcModifier |= XBMCKMOD_LALT;
+  // right alt/altgr/option
+  if (appleModifier & kBREventModifierOptionRight)
+    xbmcModifier |= XBMCKMOD_RALT;
+  // left command
+  if (appleModifier & kBREventModifierCommandLeft)
+    xbmcModifier |= XBMCKMOD_LMETA;
+  // right command
+  if (appleModifier & kBREventModifierCommandRight)
+    xbmcModifier |= XBMCKMOD_RMETA;
+
+  return xbmcModifier;
+}
 
 static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent* event) 
 {
@@ -703,14 +776,16 @@ static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent
 
     if ( xbmc_ir_key != ATV_INVALID_BUTTON )
     {
-      if (xbmc_ir_key == ATV_BTKEYPRESS && [event value] == 1)
+      if (xbmc_ir_key == ATV_BTKEYPRESS)
       {
         XBMC_Event newEvent;
         memset(&newEvent, 0, sizeof(newEvent));
 
         NSDictionary *dict = [event eventDictionary];
         NSString *key_nsstring = [dict objectForKey:@"kBRKeyEventCharactersKey"];
-        
+        unsigned int modifier = [[dict objectForKey:@"kBRKeyEventModifiersKey"] unsignedIntValue];
+        bool fireTheKey = false;
+
         if (key_nsstring != nil && [key_nsstring length] == 1)
         {
           //ns_string contains the letter you want to input
@@ -719,7 +794,7 @@ static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent
           const char* wstr = [key_nsstring cStringUsingEncoding:NSUTF16StringEncoding];
           //NSLog(@"%s, key: wstr[0] = %d, wstr[1] = %d", __PRETTY_FUNCTION__, wstr[0], wstr[1]);
 
-          if (wstr[0] != 92) 
+          if (wstr[0] != 92)
           {
             if (wstr[0] == 62 && wstr[1] == -9)
             {
@@ -732,13 +807,48 @@ static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent
               newEvent.key.keysym.sym = (XBMCKey)wstr[0];
               newEvent.key.keysym.unicode = wstr[0] | (wstr[1] << 8);
             }
-            newEvent.type = XBMC_KEYDOWN;
-            CWinEventsIOS::MessagePush(&newEvent);
-
-            newEvent.type = XBMC_KEYUP;
-            CWinEventsIOS::MessagePush(&newEvent);
-            is_handled = TRUE;
+            fireTheKey = true;
           }
+        }
+        else // this must be one of those duped functions when using the bt keyboard
+        {
+          int remoteAction = [event remoteAction];
+          fireTheKey = true;
+          switch (remoteAction)
+          {
+            case kBREventRemoteActionALPlay:// play maps to space
+            case 786637:
+              newEvent.key.keysym.sym = XBMCK_SPACE;
+              newEvent.key.keysym.unicode = XBMCK_SPACE;
+              break;
+            case kBREventRemoteActionMenu:// menu maps to escape!
+            case 65670:
+              newEvent.key.keysym.sym = XBMCK_ESCAPE;
+              newEvent.key.keysym.unicode = XBMCK_ESCAPE;
+              break;
+            case kBREventRemoteActionKeyTab:
+              newEvent.key.keysym.sym = XBMCK_TAB;
+              newEvent.key.keysym.unicode = XBMCK_TAB;
+              break;
+            case kBREventRemoteActionPlay:// play maps to return
+            case 65673:
+              newEvent.key.keysym.sym = XBMCK_RETURN;
+              newEvent.key.keysym.unicode = XBMCK_RETURN;
+              break;
+            default: // unsupported duped function
+              fireTheKey = false;
+              break;
+          }
+        }
+
+        if (fireTheKey && (!isRepeatable || [event value] == 1)) // some keys might be repeatable - only fire once here
+        {
+          newEvent.key.keysym.mod = (XBMCMod)[self appleModKeyToXbmcModKey:modifier];
+          newEvent.type = XBMC_KEYDOWN;
+          CWinEventsIOS::MessagePush(&newEvent);
+          newEvent.type = XBMC_KEYUP;
+          CWinEventsIOS::MessagePush(&newEvent);
+          is_handled = TRUE;
         }
       }
       else
@@ -1271,6 +1381,8 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   class_addMethod(XBMCControllerCls, @selector(presentFramebuffer), (IMP)&XBMCController$presentFramebuffer, "B@:");
   // XBMCController::setUserEvent
   class_addMethod(XBMCControllerCls, @selector(setUserEvent:withHoldTime:), (IMP)&XBMCController$setUserEvent, "v@:iI");  
+  // XBMCController::appleModKeyToXbmcModKey
+  class_addMethod(XBMCControllerCls, @selector(appleModKeyToXbmcModKey:), (IMP)&XBMCController$appleModKeyToXbmcModKey, "I@:I");
   // XBMCController::startKeyPressTimer
   class_addMethod(XBMCControllerCls, @selector(startKeyPressTimer:), (IMP)&XBMCController$startKeyPressTimer, "v@:i");  
   // XBMCController::stopKeyPressTimer
