@@ -41,7 +41,7 @@ void CGUIDialogFilterSort::SetFilter(CPlexFilterPtr filter)
 
   CGUILabelControl* headerLabel = (CGUILabelControl*)GetControl(FILTER_SUBLIST_LABEL);
   if (headerLabel)
-    headerLabel->SetLabel(filter->GetFilterString());
+    headerLabel->SetLabel(filter->GetFilterTitle());
 
   for (int i = 0; i < sublist.Size(); i++)
   {
@@ -52,7 +52,7 @@ void CGUIDialogFilterSort::SetFilter(CPlexFilterPtr filter)
     sublistItem->AllocResources();
     sublistItem->SetID(FILTER_SUBLIST_BUTTONS_START + i);
 
-    if (filter->HasCurrentValue(item->GetProperty("unprocessedKey").asString()))
+    if (filter->HasCurrentValue(item->GetProperty("unprocessed_key").asString()))
       sublistItem->SetSelected(true);
 
     m_filterIdMap[FILTER_SUBLIST_BUTTONS_START + i] = sublistItem;
@@ -74,9 +74,9 @@ bool CGUIDialogFilterSort::OnMessage(CGUIMessage &message)
         CGUIRadioButtonControl *filterCtrl = m_filterIdMap[senderId];
         CFileItemPtr item = m_itemIdMap[senderId];
         if (filterCtrl->IsSelected())
-          m_filter->AddCurrentValue(item->GetProperty("unprocessedKey").asString());
+          m_filter->AddCurrentValue(item->GetProperty("unprocessed_key").asString());
         else
-          m_filter->RemoveCurrentValue(item->GetProperty("unprocessedKey").asString());
+          m_filter->RemoveCurrentValue(item->GetProperty("unprocessed_key").asString());
 
         if (m_helper)
           m_helper->ApplyFilterFromDialog(m_filter);

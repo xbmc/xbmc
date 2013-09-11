@@ -22,25 +22,21 @@
 class CPlexFilter
 {
   public:
-    CPlexFilter(const CStdString& filterString, const CStdString& filterName, const CStdString& filterType, const CStdString& key)
-      : m_filterName(filterName)
-      , m_filterType(filterType)
-      , m_filterString(filterString)
-      , m_key(key)
+    CPlexFilter(CFileItemPtr filterItem) : m_filterItem(filterItem)
     {
       m_filterControl = NULL;
     }
 
     CGUIButtonControl* NewFilterControl(CGUIButtonControl *parent, int id)
     {
-      if (IsBooleanType() || m_filterType.empty())
+      if (IsBooleanType() || !m_filterItem->HasProperty("filterType"))
         m_filterControl = new CGUIRadioButtonControl(*(CGUIRadioButtonControl*)parent);
       else
       {
         m_filterControl = new CGUIButtonControl(*parent);
       }
 
-      m_filterControl->SetLabel(m_filterString);
+      m_filterControl->SetLabel(m_filterItem->GetLabel());
       m_filterControl->AllocResources();
       m_filterControl->SetID(id);
       m_filterControl->SetVisible(true);
@@ -50,13 +46,13 @@ class CPlexFilter
 
     CGUIButtonControl* GetFilterControl() const { return m_filterControl; }
 
-    bool IsStringType() const { return m_filterType == "string"; }
-    bool IsIntegerType() const { return m_filterType == "integer"; }
-    bool IsBooleanType() const { return m_filterType == "boolean"; }
+    bool IsStringType() const { return m_filterItem->GetProperty("filterType").asString() == "string"; }
+    bool IsIntegerType() const { return m_filterItem->GetProperty("filterType").asString() == "integer"; }
+    bool IsBooleanType() const { return m_filterItem->GetProperty("filterType").asString() == "boolean"; }
     bool IsActive() const { return !m_currentValue.empty(); }
 
-    CStdString GetFilterName() const { return m_filterName; }
-    CStdString GetFilterString() const { return m_filterString; }
+    CStdString GetFilterName() const { return m_filterItem->GetProperty("filter").asString(); }
+    CStdString GetFilterTitle() const { return m_filterItem->GetLabel(); }
 
     int GetControlID() const
     {
@@ -68,22 +64,21 @@ class CPlexFilter
 
     CStdString GetFilterValue() const
     {
-      CStdString filterStr;
+      CStdString filterValue;
       if (IsBooleanType())
       {
         CGUIRadioButtonControl* radio = (CGUIRadioButtonControl*)m_filterControl;
         if (radio->IsSelected())
-          filterStr.Format("%s=1", m_filterName);
+          filterValue = "1";
       }
       else
       {
         if (m_currentValue.empty())
           return "";
-        CStdString values = StringUtils::Join(m_currentValue, ",");
-        filterStr.Format("%s=%s", m_filterName, values);
+        filterValue = StringUtils::Join(m_currentValue, ",");
       }
 
-      return filterStr;
+      return filterValue;
     }
 
     bool GetSublist(CFileItemList& sublist)
@@ -99,10 +94,10 @@ class CPlexFilter
 
     void UpdateLabel()
     {
-      CStdString newLabel(m_filterString);
+      CStdString newLabel(GetFilterTitle());
       if (m_currentValue.size() > 0)
       {
-        newLabel = "[B]" + m_filterString;
+        newLabel = "[B]" + GetFilterTitle();
 
         CStdString primaryKey = m_currentValue[0];
         CFileItemList list;
@@ -111,7 +106,7 @@ class CPlexFilter
           for (int i = 0; i < list.Size(); i ++)
           {
             CFileItemPtr item = list.Get(i);
-            if (item->GetProperty("unprocessedKey").asString() == primaryKey)
+            if (item->GetProperty("unprocessed_key").asString() == primaryKey)
             {
               newLabel += ": " + item->GetLabel();
               break;
@@ -147,9 +142,9 @@ class CPlexFilter
       UpdateLabel();
     }
 
-    void SetFilterUrl(const CStdString& filterUrl)
+    void SetAppliedFilters(const std::map<CStdString, CStdString> &filters)
     {
-      m_filterUrl = filterUrl;
+      m_appliedFilters = filters;
       m_sublist.Clear();
     }
 
@@ -171,26 +166,19 @@ class CPlexFilter
     bool FetchSublist()
     {
       XFILE::CPlexDirectory dir;
-      CStdString url(m_key);
+      CURL url(m_filterItem->GetProperty("key").asString());
 
-      if (!m_filterUrl.empty())
-      {
-        if (url.Find('?') == -1)
-          url += m_filterUrl;
-        else
-          url += "&" + m_filterUrl.substr(1);
-      }
-
+      std::pair<CStdString, CStdString> f;
+      BOOST_FOREACH(f, m_appliedFilters)
+        url.SetOption(f.first, f.second);
+      
       return dir.GetDirectory(url, m_sublist);
     }
 
     CGUIButtonControl* m_filterControl;
-    CStdString m_filterName;
-    CStdString m_filterString;
-    CStdString m_filterType;
     std::vector<std::string> m_currentValue;
-    CStdString m_key;
-    CStdString m_filterUrl;
+    CFileItemPtr m_filterItem;
+    std::map<CStdString, CStdString> m_appliedFilters;
 
     CFileItemList m_sublist;
 };

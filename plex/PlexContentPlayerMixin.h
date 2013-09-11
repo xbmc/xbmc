@@ -67,7 +67,7 @@ class PlexContentPlayerMixin
             for (int i=0; i < fileItems.Size(); ++i)
             {
               CFileItemPtr fileItem = fileItems[i];
-              if (fileItem->GetProperty("unprocessedKey") == file->GetProperty("unprocessedKey"))
+              if (fileItem->GetProperty("unprocessed_key") == file->GetProperty("unprocessed_key"))
               {
                 itemIndex = i;
                 break;

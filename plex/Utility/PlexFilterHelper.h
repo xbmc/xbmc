@@ -34,10 +34,9 @@ class CPlexFilterHelper
       m_mediaWindow = mediaWindow;
     }
 
-    CStdString GetRealDirectoryUrl(const CStdString& strDirectory, bool& secondary);
+    CURL GetRealDirectoryUrl(const CStdString& strDirectory, bool& secondary);
     void ClearFilters();
-    bool FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list);
-    void BuildFilters(const CStdString& baseUrl, EPlexDirectoryType = PLEX_DIR_TYPE_UNKNOWN);
+    void BuildFilters(const CURL& baseUrl, EPlexDirectoryType = PLEX_DIR_TYPE_UNKNOWN);
 
     bool ApplyFilter(int ctrlId);
     bool ApplySort(int ctrlId);
@@ -45,24 +44,27 @@ class CPlexFilterHelper
 
     void ApplyFilterFromDialog(CPlexFilterPtr filter);
 
-    CStdString GetFilterUrl(const CStdString& exclude="", const CStdString& baseUrl="") const;
+    CURL GetFilterUrl(const CStdString& exclude="", const CURL& baseUrl=CURL()) const;
 
     int GetWindowID() const { return m_mediaWindow->GetID(); }
 
     void SetSectionUrl(const CStdString& url) { m_sectionUrl = url; }
-    CStdString GetSectionUrl() const { return m_sectionUrl; }
+    CURL GetSectionUrl() const { return m_sectionUrl; }
 
   private:
     std::map<CStdString, CPlexFilterPtr> m_filters;
     std::map<CStdString, CPlexFilterPtr> m_sorts;
-    std::map<CStdString, std::string> m_appliedFilters;
+  
+    /* name = value */
+    std::map<CStdString, CStdString> m_appliedFilters;
+  
     CStdString m_appliedSort;
     bool m_sortDirectionAsc;
     CPlexFilterPtr m_openFilter;
     EPlexDirectoryType m_filterType;
 
-    CStdString m_sectionUrl;
-    CStdString m_mapToSection;
+    CURL m_sectionUrl;
+    CURL m_mapToSection;
 
     CGUIMediaWindow* m_mediaWindow;
 };

@@ -50,7 +50,7 @@ class PlexLibrarySectionManager
     // Add all the sections to the map.
     BOOST_FOREACH(CFileItemPtr& section, sections)
     {
-      string key = uuid + "://" + string(section->GetProperty("unprocessedKey").c_str());
+      string key = uuid + "://" + string(section->GetProperty("unprocessed_key").c_str());
       CLog::Log(LOGDEBUG, "Adding local owned section %s -> %s (%s)", key.c_str(), section->GetLabel().c_str(), section->GetPath().c_str());
       map[key] = section;
     }
@@ -147,7 +147,7 @@ class PlexLibrarySectionManager
     map.clear();
     BOOST_FOREACH(const CFileItemPtr& section, sections)
     {
-      string key = section->GetProperty("unprocessedKey").asString();
+      string key = section->GetProperty("unprocessed_key").asString();
       size_t lastSlash = key.rfind('/');
       key = key.substr(lastSlash+1);
       key = string(section->GetProperty("machineIdentifier").c_str()) + "://" + key;

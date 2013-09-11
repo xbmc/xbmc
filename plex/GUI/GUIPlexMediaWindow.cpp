@@ -32,16 +32,12 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       bool update = false;
       int ctrlId = message.GetSenderId();
       if (ctrlId < 0 && ctrlId >= FILTER_BUTTONS_START)
-      {
         update = m_filterHelper.ApplyFilter(ctrlId);
-      }
       else if (ctrlId < FILTER_BUTTONS_START && ctrlId >= SORT_BUTTONS_START)
-      {
         update = m_filterHelper.ApplySort(ctrlId);
-      }
 
       if (update)
-        Update(m_filterHelper.GetSectionUrl(), true, false);
+        Update(m_filterHelper.GetSectionUrl().Get(), true, false);
     }
       break;
 
@@ -58,7 +54,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     {
       /* If this is a reload event we must make sure to get the filters back */
       if (m_returningFromSkinLoad)
-        Update(m_filterHelper.GetSectionUrl(), true);
+        Update(m_filterHelper.GetSectionUrl().Get(), true);
       else
         BuildFilter(m_filterHelper.GetSectionUrl());
       m_returningFromSkinLoad = false;
@@ -75,7 +71,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 
     case GUI_MSG_UPDATE_FILTERS:
     {
-      Update(m_filterHelper.GetSectionUrl(), true, false);
+      Update(m_filterHelper.GetSectionUrl().Get(), true, false);
       break;
     }
 
@@ -84,9 +80,9 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
   return ret;
 }
 
-void CGUIPlexMediaWindow::BuildFilter(const CStdString& strDirectory)
+void CGUIPlexMediaWindow::BuildFilter(const CURL& strDirectory)
 {
-  if (strDirectory.empty())
+  if (strDirectory.Get().empty())
     return;
 
   m_filterHelper.BuildFilters(strDirectory, m_vecItems->GetPlexDirectoryType());
@@ -100,16 +96,16 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters)
 {
   bool isSecondary = false;
-  CStdString newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, isSecondary);
+  CURL newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, isSecondary);
 
-  bool ret = CGUIWindowVideoNav::Update(newUrl, updateFilterPath);
+  bool ret = CGUIWindowVideoNav::Update(newUrl.Get(), updateFilterPath);
 
   if (isSecondary)
   {
     /* Kill the history */
     m_history.ClearPathHistory();
-    m_history.AddPath(newUrl);
-    m_startDirectory = newUrl;
+    m_history.AddPath(newUrl.Get());
+    m_startDirectory = newUrl.Get();
 
 
     if (updateFilters)
@@ -117,7 +113,7 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
   }
   else
   {
-    m_history.AddPath(newUrl);
+    m_history.AddPath(newUrl.Get());
   }
 
   return ret;

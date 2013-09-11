@@ -62,7 +62,7 @@ void CPlexFilterHelper::ApplyFilterFromDialog(CPlexFilterPtr filter)
     m_appliedFilters[filter->GetFilterName()] = filter->GetFilterValue();
 
   BOOST_FOREACH(name_filter_pair p, m_filters)
-    p.second->SetFilterUrl(GetFilterUrl(p.second->GetFilterName()));
+    p.second->SetAppliedFilters(m_appliedFilters);
 }
 
 bool CPlexFilterHelper::ApplyFilter(int ctrlId)
@@ -98,20 +98,7 @@ bool CPlexFilterHelper::ApplyFilter(int ctrlId)
   return update;
 }
 
-bool CPlexFilterHelper::FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list)
-{
-  CStdString filterUrl;
-  CStdString typeStr;
-  typeStr.Format("?type=%d", type);
-
-  filterUrl = PlexUtils::AppendPathToURL(url, filterSort);
-  filterUrl = PlexUtils::AppendPathToURL(filterUrl, typeStr);
-
-  CPlexDirectory fdir;
-  return fdir.GetDirectory(filterUrl, list);
-}
-
-void CPlexFilterHelper::BuildFilters(const CStdString& baseUrl, EPlexDirectoryType type)
+void CPlexFilterHelper::BuildFilters(const CURL& baseUrl, EPlexDirectoryType type)
 {
   CGUIControlGroupList *filterGroup = (CGUIControlGroupList*)m_mediaWindow->GetControl(FILTER_LIST);
   CGUIControlGroupList *sortGroup = (CGUIControlGroupList*)m_mediaWindow->GetControl(SORT_LIST);
@@ -137,9 +124,16 @@ void CPlexFilterHelper::BuildFilters(const CStdString& baseUrl, EPlexDirectoryTy
     return;
   sortButton->SetVisible(false);
 
+  CURL filterUrl(baseUrl);
+  PlexUtils::AppendPathToURL(filterUrl, "filters");
+  filterUrl.SetOption("type", boost::lexical_cast<std::string>(type));
+
   /* Fetch Filters */
   CFileItemList filterItems;
-  FetchFilterSortList(baseUrl, "filters", type, filterItems);
+  CPlexDirectory dir;
+  if (!dir.GetDirectory(filterUrl, filterItems))
+    return;
+  
   std::map<CStdString, CPlexFilterPtr> newFilters;
 
   for(int i = 0; i < filterItems.Size(); i++)
@@ -149,7 +143,7 @@ void CPlexFilterHelper::BuildFilters(const CStdString& baseUrl, EPlexDirectoryTy
     CStdString filterName = item->GetProperty("filter").asString();
     if (m_filters.find(filterName) == m_filters.end())
       /* No such filter yet */
-      filter = CPlexFilterPtr(new CPlexFilter(item->GetLabel(), filterName, item->GetProperty("filterType").asString(), item->GetProperty("key").asString()));
+      filter = CPlexFilterPtr(new CPlexFilter(item));
     else
       filter = m_filters[filterName];
 
@@ -162,17 +156,23 @@ void CPlexFilterHelper::BuildFilters(const CStdString& baseUrl, EPlexDirectoryTy
 
   /* Fetch sorts */
   newFilters.clear();
+  CURL sortUrl(baseUrl);
+  PlexUtils::AppendPathToURL(sortUrl, "sort");
+  sortUrl.SetOption("type", boost::lexical_cast<std::string>(type));
+  
+  /* Fetch Filters */
   CFileItemList sortItems;
-  FetchFilterSortList(baseUrl, "sorts", type, sortItems);
+  if (!dir.GetDirectory(sortUrl, sortItems))
+    return;
 
   for(int i = 0; i < sortItems.Size(); i++)
   {
     CFileItemPtr item = sortItems.Get(i);
     CPlexFilterPtr filter;
-    CStdString sortName = item->GetProperty("unprocessedKey").asString();
+    CStdString sortName = item->GetProperty("unprocessed_key").asString();
     if (m_sorts.find(sortName) == m_sorts.end())
       /* No such filter yet */
-      filter = CPlexFilterPtr(new CPlexFilter(item->GetLabel(), sortName, "", sortName));
+      filter = CPlexFilterPtr(new CPlexFilter(item));
     else
       filter = m_sorts[sortName];
 
@@ -183,27 +183,20 @@ void CPlexFilterHelper::BuildFilters(const CStdString& baseUrl, EPlexDirectoryTy
   m_sorts = newFilters;
 }
 
-CStdString CPlexFilterHelper::GetFilterUrl(const CStdString& exclude, const CStdString& baseUrl) const
+CURL CPlexFilterHelper::GetFilterUrl(const CStdString& exclude, const CURL& baseUrl) const
 {
-  CStdString url(baseUrl);
-
   if (m_appliedFilters.size() > 0)
   {
-    vector<string> filterValues;
+    CURL filterUrl(baseUrl);
     pair<CStdString, string> stpair;
     BOOST_FOREACH(stpair, m_appliedFilters)
     {
       if (!stpair.first.Equals(exclude))
-        filterValues.push_back(stpair.second);
+        filterUrl.SetOption(stpair.first, stpair.second);
     }
-
-    CStdString optionList = StringUtils::Join(filterValues, "&");
-    if (url.Find('?') == -1)
-      url += "?" + optionList;
-    else
-      url += "&" + optionList;
+    return filterUrl;
   }
-  return url;
+  return baseUrl;
 }
 
 void CPlexFilterHelper::ClearFilters()
@@ -213,60 +206,47 @@ void CPlexFilterHelper::ClearFilters()
   m_sorts.clear();
 }
 
-CStdString CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& url_, bool& secondary)
+CURL CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& url_, bool& secondary)
 {
   CFileItemList tmpItems;
   CPlexDirectory dir;
-  CStdString strDirectory(url_);
+  CURL dirUrl(url_);
 
   if (!SkinHasFilters())
     return url_;
 
   secondary = false;
 
-  if (m_mapToSection == strDirectory)
-    strDirectory = m_sectionUrl;
+  if (m_mapToSection.Get() == dirUrl.Get())
+    dirUrl = m_sectionUrl;
 
-  CStdString containerUrl(strDirectory);
-
-  /* we just request the header to see if this is a "secondary" list */
-  CStdString offset ="X-Plex-Container-Start=0&X-Plex-Container-Size=1";
-  if (containerUrl.Find('?') == -1)
-    containerUrl += "?" + offset;
-  else
-    containerUrl += "&" + offset;
-  tmpItems.SetPath(containerUrl);
+  dirUrl.SetProtocolOption("containerSize", "1");
+  dirUrl.SetProtocolOption("containerStart", "0");
+  tmpItems.SetPath(dirUrl.Get());
 
   /* A bit stupidity here, but we need to request the container twice. Fortunately it's really fast
    * to do it with the offset stuff above */
-  if (dir.GetDirectory(containerUrl, tmpItems))
+  if (dir.GetDirectory(dirUrl, tmpItems))
   {
+    dirUrl.SetProtocolOptions("");
     if (tmpItems.IsPlexMediaServer() && tmpItems.GetContent() == "secondary")
     {
-      if (m_sectionUrl != strDirectory)
+      if (m_sectionUrl.Get() != dirUrl.Get())
       {
-        m_sectionUrl = strDirectory;
+        m_sectionUrl = dirUrl;
         ClearFilters();
       }
 
-      CStdString url;
+      CURL url(dirUrl);
       if (tmpItems.GetProperty("HomeVideoSection").asBoolean())
-        url = PlexUtils::AppendPathToURL(strDirectory, "folder");
+        PlexUtils::AppendPathToURL(url, "folder");
       else
-        url = PlexUtils::AppendPathToURL(strDirectory, "all");
+        PlexUtils::AppendPathToURL(url, "all");
 
       url = GetFilterUrl("", url);
 
       if (!m_appliedSort.empty())
-      {
-        CStdString sortStr;
-        sortStr.Format("sort=%s:%s", m_appliedSort, m_sortDirectionAsc ? "asc" : "desc");
-
-        if (url.Find('?') != -1)
-          url += "&" + sortStr;
-        else
-          url += "?" + sortStr;
-      }
+        url.SetOption("sort", m_appliedSort + ":" + m_sortDirectionAsc ? "asc" : "desc");
 
       /* Save this */
       m_mapToSection = url;
@@ -284,5 +264,5 @@ CStdString CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& url_, bool& 
       }
     }
   }
-  return strDirectory;
+  return dirUrl;
 }

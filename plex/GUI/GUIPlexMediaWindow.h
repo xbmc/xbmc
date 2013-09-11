@@ -25,7 +25,7 @@ class CGUIPlexMediaWindow : public CGUIWindowVideoNav
   protected:
     bool Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters);
     bool Update(const CStdString &strDirectory, bool updateFilterPath);
-    void BuildFilter(const CStdString &strDirectory);
+    void BuildFilter(const CURL &strDirectory);
 
   private:
     CPlexFilterHelper m_filterHelper;

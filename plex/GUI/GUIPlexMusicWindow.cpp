@@ -32,7 +32,7 @@ bool CGUIPlexMusicWindow::OnMessage(CGUIMessage &message)
       }
 
       if (update)
-        Update(m_filterHelper.GetSectionUrl(), true, false);
+        Update(m_filterHelper.GetSectionUrl().Get(), true, false);
     }
       break;
 
@@ -49,7 +49,7 @@ bool CGUIPlexMusicWindow::OnMessage(CGUIMessage &message)
     {
       /* If this is a reload event we must make sure to get the filters back */
       if (m_returningFromSkinLoad)
-        Update(m_filterHelper.GetSectionUrl(), true);
+        Update(m_filterHelper.GetSectionUrl().Get(), true);
       else
         BuildFilters(m_filterHelper.GetSectionUrl());
       m_returningFromSkinLoad = false;
@@ -66,7 +66,7 @@ bool CGUIPlexMusicWindow::OnMessage(CGUIMessage &message)
 
     case GUI_MSG_UPDATE_FILTERS:
     {
-      Update(m_filterHelper.GetSectionUrl(), true, false);
+      Update(m_filterHelper.GetSectionUrl().Get(), true, false);
       break;
     }
 
@@ -75,9 +75,9 @@ bool CGUIPlexMusicWindow::OnMessage(CGUIMessage &message)
   return ret;
 }
 
-void CGUIPlexMusicWindow::BuildFilters(const CStdString& strDirectory)
+void CGUIPlexMusicWindow::BuildFilters(const CURL& strDirectory)
 {
-  if (strDirectory.empty())
+  if (strDirectory.Get().empty())
     return;
   m_filterHelper.BuildFilters(strDirectory, m_vecItems->GetPlexDirectoryType());
 }
@@ -90,23 +90,23 @@ bool CGUIPlexMusicWindow::Update(const CStdString &strDirectory, bool updateFilt
 bool CGUIPlexMusicWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters)
 {
   bool isSecondary;
-  CStdString newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, isSecondary);
+  CURL newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, isSecondary);
 
-  bool ret = CGUIWindowMusicSongs::Update(newUrl, updateFilterPath);
+  bool ret = CGUIWindowMusicSongs::Update(newUrl.Get(), updateFilterPath);
 
   if (isSecondary)
   {
     /* Kill the history */
     m_history.ClearPathHistory();
-    m_history.AddPath(newUrl);
-    m_startDirectory = newUrl;
+    m_history.AddPath(newUrl.Get());
+    m_startDirectory = newUrl.Get();
 
     if (updateFilters)
       BuildFilters(strDirectory);
   }
   else
   {
-    m_history.AddPath(newUrl);
+    m_history.AddPath(newUrl.Get());
   }
 
   return ret;
