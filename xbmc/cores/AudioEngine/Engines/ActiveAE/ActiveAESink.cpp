@@ -629,10 +629,12 @@ void CActiveAESink::OpenSink()
 
     // WARNING: this changes format and does not use passthrough
     m_sinkFormat = m_requestedFormat;
+    CLog::Log(LOGDEBUG, "CActiveAE::OpenSink - trying to open device %s", m_device.c_str());
     m_sink = CAESinkFactory::Create(m_device, m_sinkFormat, passthrough);
 
     if (!m_sink)
     {
+      CLog::Log(LOGERROR, "CActiveAE::OpenSink - no sink was returned");
       m_extError = true;
       return;
     }
