@@ -129,12 +129,12 @@ public:
     OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBufferHeader);
 
   // OMXCore decoder callback routines.
-  OMX_ERRORTYPE DecoderEventHandler(OMX_HANDLETYPE hComponent, OMX_PTR pAppData,
+  OMX_ERRORTYPE DecoderEventHandler(OMX_HANDLETYPE hComponent,
     OMX_EVENTTYPE eEvent, OMX_U32 nData1, OMX_U32 nData2, OMX_PTR pEventData);
   OMX_ERRORTYPE DecoderEmptyBufferDone(
-    OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBuffer);
+    OMX_HANDLETYPE hComponent, OMX_BUFFERHEADERTYPE* pBuffer);
   OMX_ERRORTYPE DecoderFillBufferDone(
-    OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBuffer);
+    OMX_HANDLETYPE hComponent, OMX_BUFFERHEADERTYPE* pBuffer);
 
   void TransitionToStateLoaded();
 
