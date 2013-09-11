@@ -102,6 +102,10 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
       }
     }
 
+    m_dst_chan_layout = m_dllAvUtil.av_get_default_channel_layout(m_dst_channels);
+    m_dllAvUtil.av_opt_set_int(m_pContext, "out_channel_count", m_dst_channels, 0);
+    m_dllAvUtil.av_opt_set_int(m_pContext, "out_channel_layout", m_dst_chan_layout, 0);
+
     if (m_dllSwResample.swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
     {
       CLog::Log(LOGERROR, "CActiveAEResample::Init - setting channel matrix failed");
