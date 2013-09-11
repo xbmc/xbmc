@@ -592,6 +592,8 @@
     <ClCompile Include="..\..\xbmc\filesystem\ZipDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ZipFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ZipManager.cpp" />
+    <ClCompile Include="..\..\xbmc\games\tags\GameInfoTag.cpp" />
+    <ClCompile Include="..\..\xbmc\games\tags\GameInfoTagLoader.cpp" />
     <ClCompile Include="..\..\xbmc\GitRevision.cpp" />
     <ClCompile Include="..\..\xbmc\GUIInfoManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUILargeTextureManager.cpp" />
@@ -1099,6 +1101,8 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Retrieving the git revision</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Retrieving the git revision</Message>
     </CustomBuild>
+    <ClInclude Include="..\..\xbmc\games\tags\GameInfoTag.h" />
+    <ClInclude Include="..\..\xbmc\games\tags\GameInfoTagLoader.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
