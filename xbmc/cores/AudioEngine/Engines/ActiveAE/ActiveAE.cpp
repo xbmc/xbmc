@@ -796,13 +796,9 @@ void CActiveAE::Process()
   }
 }
 
-void CActiveAE::Configure(AEAudioFormat *desiredFmt)
+AEAudioFormat CActiveAE::GetInputFormat(AEAudioFormat *desiredFmt)
 {
-  bool initSink = false;
-
-  AEAudioFormat sinkInputFormat, inputFormat;
-  AEAudioFormat oldInternalFormat = m_internalFormat;
-  bool updateMode = true;
+  AEAudioFormat inputFormat;
 
   if (m_streams.empty())
   {
@@ -822,16 +818,28 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   // keep format when having multiple streams
   else if (m_streams.size() > 1 && m_silenceBuffers == NULL)
   {
-    inputFormat = m_sinkRequestFormat;
-    updateMode = false;
+    inputFormat = m_inputFormat;
   }
   else
   {
     inputFormat = m_streams.front()->m_format;
+    m_inputFormat = inputFormat;
   }
 
+  return inputFormat;
+}
+
+void CActiveAE::Configure(AEAudioFormat *desiredFmt)
+{
+  bool initSink = false;
+
+  AEAudioFormat sinkInputFormat, inputFormat;
+  AEAudioFormat oldInternalFormat = m_internalFormat;
+
+  inputFormat = GetInputFormat(desiredFmt);
+
   m_sinkRequestFormat = inputFormat;
-  ApplySettingsToFormat(m_sinkRequestFormat, m_settings, updateMode);
+  ApplySettingsToFormat(m_sinkRequestFormat, m_settings, (int*)&m_mode);
   std::string device = AE_IS_RAW(m_sinkRequestFormat.m_dataFormat) ? m_settings.passthoughdevice : m_settings.device;
   std::string driver;
   CAESinkFactory::ParseDevice(device, driver);
@@ -855,6 +863,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   if (m_streams.empty())
   {
     inputFormat = m_sinkFormat;
+    inputFormat.m_channelLayout = m_sinkRequestFormat.m_channelLayout;
+    inputFormat.m_channelLayout.ResolveChannels(m_sinkFormat.m_channelLayout);
     inputFormat.m_dataFormat = AE_FMT_FLOAT;
     inputFormat.m_frameSize = inputFormat.m_channelLayout.Count() *
                               (CAEUtil::DataFormatToBits(inputFormat.m_dataFormat) >> 3);
@@ -1202,10 +1212,10 @@ void CActiveAE::ChangeResamplers()
   }
 }
 
-void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, bool setmode)
+void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, int *mode)
 {
-  if (setmode)
-    m_mode = MODE_PCM;
+  if (mode)
+    *mode = MODE_PCM;
 
   // raw pass through
   if (m_settings.mode != AUDIO_ANALOG && AE_IS_RAW(format.m_dataFormat))
@@ -1218,8 +1228,8 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     {
       CLog::Log(LOGERROR, "CActiveAE::ApplySettingsToFormat - input audio format is wrong");
     }
-    if (setmode)
-      m_mode = MODE_RAW;
+    if (mode)
+      *mode = MODE_RAW;
   }
   // transcode
   else if (m_settings.mode != AUDIO_ANALOG && 
@@ -1231,8 +1241,8 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     format.m_dataFormat = AE_FMT_AC3;
     format.m_sampleRate = 48000;
     format.m_channelLayout = AE_CH_LAYOUT_2_0;
-    if (setmode)
-      m_mode = MODE_TRANSCODE;
+    if (mode)
+      *mode = MODE_TRANSCODE;
   }
   else
   {
@@ -1241,21 +1251,27 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
          settings.stereoupmix ||
          !g_advancedSettings.m_audioAudiophile)
     {
+      CAEChannelInfo stdLayout;
       switch (settings.channels)
       {
         default:
-        case  0: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
-        case  1: format.m_channelLayout = AE_CH_LAYOUT_2_0; break;
-        case  2: format.m_channelLayout = AE_CH_LAYOUT_2_1; break;
-        case  3: format.m_channelLayout = AE_CH_LAYOUT_3_0; break;
-        case  4: format.m_channelLayout = AE_CH_LAYOUT_3_1; break;
-        case  5: format.m_channelLayout = AE_CH_LAYOUT_4_0; break;
-        case  6: format.m_channelLayout = AE_CH_LAYOUT_4_1; break;
-        case  7: format.m_channelLayout = AE_CH_LAYOUT_5_0; break;
-        case  8: format.m_channelLayout = AE_CH_LAYOUT_5_1; break;
-        case  9: format.m_channelLayout = AE_CH_LAYOUT_7_0; break;
-        case 10: format.m_channelLayout = AE_CH_LAYOUT_7_1; break;
+        case  0: stdLayout = AE_CH_LAYOUT_2_0; break;
+        case  1: stdLayout = AE_CH_LAYOUT_2_0; break;
+        case  2: stdLayout = AE_CH_LAYOUT_2_1; break;
+        case  3: stdLayout = AE_CH_LAYOUT_3_0; break;
+        case  4: stdLayout = AE_CH_LAYOUT_3_1; break;
+        case  5: stdLayout = AE_CH_LAYOUT_4_0; break;
+        case  6: stdLayout = AE_CH_LAYOUT_4_1; break;
+        case  7: stdLayout = AE_CH_LAYOUT_5_0; break;
+        case  8: stdLayout = AE_CH_LAYOUT_5_1; break;
+        case  9: stdLayout = AE_CH_LAYOUT_7_0; break;
+        case 10: stdLayout = AE_CH_LAYOUT_7_1; break;
       }
+
+      if (g_advancedSettings.m_audioAudiophile)
+        format.m_channelLayout.ResolveChannels(stdLayout);
+      else
+        format.m_channelLayout = stdLayout;
     }
 
     if (m_settings.mode == AUDIO_IEC958 && format.m_sampleRate > 48000)
@@ -1275,15 +1291,12 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     {
       format.m_channelLayout = AE_CH_LAYOUT_2_0;
     }
-
-    CAEChannelInfo stdLayout = format.m_channelLayout;
-    format.m_channelLayout.ResolveChannels(stdLayout);
   }
 }
 
 bool CActiveAE::NeedReconfigureBuffers()
 {
-  AEAudioFormat newFormat = m_sinkRequestFormat;
+  AEAudioFormat newFormat = GetInputFormat();
   ApplySettingsToFormat(newFormat, m_settings);
 
   if (newFormat.m_dataFormat != m_sinkRequestFormat.m_dataFormat ||
@@ -1296,7 +1309,7 @@ bool CActiveAE::NeedReconfigureBuffers()
 
 bool CActiveAE::NeedReconfigureSink()
 {
-  AEAudioFormat newFormat = m_sinkRequestFormat;
+  AEAudioFormat newFormat = GetInputFormat();
   ApplySettingsToFormat(newFormat, m_settings);
 
   std::string device = AE_IS_RAW(newFormat.m_dataFormat) ? m_settings.passthoughdevice : m_settings.device;
