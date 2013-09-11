@@ -51,7 +51,13 @@ class CPlexFilter
     bool IsBooleanType() const { return m_filterItem->GetProperty("filterType").asString() == "boolean"; }
     bool IsActive() const { return !m_currentValue.empty(); }
 
-    CStdString GetFilterName() const { return m_filterItem->GetProperty("filter").asString(); }
+    CStdString GetFilterName() const
+    {
+      if (m_filterItem->HasProperty("filter"))
+        return m_filterItem->GetProperty("filter").asString();
+      else
+        return m_filterItem->GetProperty("unprocessed_key").asString();
+    }
     CStdString GetFilterTitle() const { return m_filterItem->GetLabel(); }
 
     int GetControlID() const

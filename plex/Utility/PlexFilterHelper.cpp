@@ -157,7 +157,7 @@ void CPlexFilterHelper::BuildFilters(const CURL& baseUrl, EPlexDirectoryType typ
   /* Fetch sorts */
   newFilters.clear();
   CURL sortUrl(baseUrl);
-  PlexUtils::AppendPathToURL(sortUrl, "sort");
+  PlexUtils::AppendPathToURL(sortUrl, "sorts");
   sortUrl.SetOption("type", boost::lexical_cast<std::string>(type));
   
   /* Fetch Filters */
@@ -246,7 +246,7 @@ CURL CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& url_, bool& second
       url = GetFilterUrl("", url);
 
       if (!m_appliedSort.empty())
-        url.SetOption("sort", m_appliedSort + ":" + m_sortDirectionAsc ? "asc" : "desc");
+        url.SetOption("sort", m_appliedSort + ":" + (m_sortDirectionAsc ? "asc" : "desc"));
 
       /* Save this */
       m_mapToSection = url;
