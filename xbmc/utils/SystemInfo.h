@@ -121,6 +121,7 @@ public:
   static bool IsWindowsVersionAtLeast(WindowsVersion ver);
   static WindowsVersion GetWindowsVersion();
   static bool IsOS64bit();
+  static int GetXbmcBitness(void);
   static CStdString GetKernelVersion();
   CStdString GetCPUModel();
   CStdString GetCPUBogoMips();
