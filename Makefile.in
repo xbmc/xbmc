@@ -50,6 +50,8 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
                    xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
                    xbmc/filesystem/filesystem.a \
+                   xbmc/games/games.a \
+                   xbmc/games/libretro/libretro.a \
                    xbmc/games/tags/gameinfotags.a \
                    xbmc/guilib/guilib.a \
                    xbmc/input/input.a \
@@ -300,11 +302,13 @@ GTEST_INCLUDES = -I$(GTEST_DIR)/include
 GTEST_LIBS = $(GTEST_DIR)/lib/.libs/libgtest.a
 
 CHECK_DIRS = xbmc/filesystem/test \
+             xbmc/games/test \
              xbmc/utils/test \
              xbmc/threads/test \
              xbmc/interfaces/python/test \
              xbmc/test
 CHECK_LIBS = xbmc/filesystem/test/filesystemTest.a \
+             xbmc/games/test/gamesTest.a \
              xbmc/utils/test/utilsTest.a \
              xbmc/threads/test/threadTest.a \
              xbmc/interfaces/python/test/pythonSwigTest.a \

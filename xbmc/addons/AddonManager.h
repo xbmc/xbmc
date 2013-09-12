@@ -115,6 +115,12 @@ namespace ADDON
     void FindAddons();
     void RemoveAddon(const CStdString& ID);
 
+    /*!
+     * After cpluff initializes addons, allow CGameManager to track the
+     * properties of game client addons.
+     */
+    void RegisterGameClientAddons();
+
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
 

@@ -1542,6 +1542,44 @@
       </group>
     </category>
   </section>
+  <section id="games" label="15016" help="36450">
+    <category id="gamesgeneral" label="16000" help="36451">
+      <group id="1">
+        <setting id="gamesgeneral.enablerewind" type="boolean" label="15021" help="36452">
+          <level>0</level>
+          <default>true</default>
+        </setting>
+        <setting id="gamesgeneral.rewindtime" type="integer" label="15022" help="36453">
+          <level>2</level>
+          <default>60</default>
+          <constraints>
+            <minimum>10</minimum>
+            <step>10</step>
+            <maximum>600</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="gamesgeneral.enablerewind">true</dependency>
+          </dependencies>
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="gamesgeneral.manageaddons" type="action" label="24025" help="36454">
+          <level>0</level>
+        </setting>
+      </group>
+    </category>
+    <category id="gamesdebug" label="14092" help="36455">
+      <group id="1">
+        <setting id="gamesdebug.prefervfs" type="boolean" label="15018" help="36455">
+          <level>2</level>
+          <default>true</default>
+        </setting>
+      </group>
+    </category>
+  </section>
   <section id="pictures" label="1" help="36304">
     <category id="pictures" label="14081" help="36305">
       <group id="1">

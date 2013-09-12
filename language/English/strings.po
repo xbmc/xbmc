@@ -6381,17 +6381,65 @@ msgctxt "#15015"
 msgid "Remove"
 msgstr ""
 
+#: system/settings/settings.xml
 msgctxt "#15016"
 msgid "Games"
 msgstr ""
 
-#empty strings from id 15017 to 15018
+#empty string with id 15017
+
+#: system/settings/settings.xml
+msgctxt "#15018"
+msgid "Prefer loading games from memory"
+msgstr ""
 
 msgctxt "#15019"
 msgid "Add"
 msgstr ""
 
-#empty strings from id 15020 to 15051
+#empty string with id 15020
+
+#: system/settings/settings.xml
+msgctxt "#15021"
+msgid "Enable rewind if supported"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#15022"
+msgid "Maximum rewind time"
+msgstr ""
+
+#: xbmc/games/GameManager.cpp
+msgctxt "#15023"
+msgid "Error loading DLL"
+msgstr ""
+
+#: xbmc/games/GameFileAutoLauncher.cpp
+msgctxt "#15024"
+msgid "A compatible emulator was installed for:"
+msgstr ""
+
+#: xbmc/games/GameClient.cpp
+msgctxt "#15025"
+msgid "Emulator setup"
+msgstr ""
+
+#: xbmc/games/GameClient.cpp
+msgctxt "#15026"
+msgid "External system directory"
+msgstr ""
+
+#: xbmc/games/libretro/LibretroEnvironment.cpp
+msgctxt "#15027"
+msgid "Choose system directory"
+msgstr ""
+
+#: xbmc/games/libretro/LibretroEnvironment.cpp
+msgctxt "#15028"
+msgid "Skip and try game directory"
+msgstr ""
+
+#empty strings from id 15029 to 15051
 
 msgctxt "#15052"
 msgid "Password"
@@ -8587,6 +8635,7 @@ msgctxt "#20012"
 msgid "Video playlists"
 msgstr ""
 
+#: xbmc/games/GameFileAutoLauncher.cpp
 msgctxt "#20013"
 msgid "Do you wish to launch the game?"
 msgstr ""
@@ -11355,7 +11404,18 @@ msgctxt "#24023"
 msgid "Add-on disabled"
 msgstr ""
 
-#empty strings from id 24024 to 24026
+#: xbmc/addons/Addon.cpp
+msgctxt "#24024"
+msgid "Emulators"
+msgstr ""
+
+#: system/settings/settings.xml
+#: xbmc/games/GameFileAutoLauncher.cpp
+msgctxt "#24025"
+msgid "Manage emulators..."
+msgstr ""
+
+#empty string with id 24026
 
 #: xbmc/addons/addon.cpp
 msgctxt "#24027"
@@ -14182,8 +14242,39 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr ""
 
-#empty strings from id 36421 to 36499
-#end reservation
+#empty strings from id 36421 to 36449
+
+#: system/settings/settings.xml
+msgctxt "#36450"
+msgid "ALL YOUR BASE ARE BELONG[CR]TO US"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36451"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36452"
+msgid "Enable real-time rewinding during game play, if supported. Press rewind or manually seek backwards using the seek bar."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36453"
+msgid "Maximum time possible to rewind, if supported. Large rewind histories can use a lot of RAM."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36454"
+msgid "Install, remove and manage emulators in the Add-on Manager."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36455"
+msgid "Some emulators can only load game files on the local hard drive. If the emulator also supports loading files from memory, this is the tie-breaker."
+msgstr ""
+
+#reserved strings for games 36456 - 36499
 
 #: system/settings/settings.xml
 msgctxt "#36500"

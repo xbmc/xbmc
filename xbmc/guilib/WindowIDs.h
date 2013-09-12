@@ -45,6 +45,7 @@
 
 #define WINDOW_SCRIPTS                    10020 // virtual window for backward compatibility
 #define WINDOW_SETTINGS_MYPVR             10021
+#define WINDOW_SETTINGS_MYGAMES           10022
 
 #define WINDOW_VIDEO_FILES                10024
 #define WINDOW_VIDEO_NAV                  10025

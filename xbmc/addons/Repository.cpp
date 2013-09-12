@@ -34,9 +34,11 @@
 #include "URL.h"
 #include "pvr/PVRManager.h"
 #include "filesystem/PluginDirectory.h"
+#include "games/GameManager.h"
 
 using namespace XFILE;
 using namespace ADDON;
+using namespace GAMES;
 
 AddonPtr CRepository::Clone() const
 {
@@ -196,6 +198,13 @@ bool CRepositoryUpdateJob::DoWork()
   }
   if (addons.empty())
     return false;
+
+  // Allow game manager to update its cache of valid game extensions
+  // TODO: Create a callback interface for the Repository Updated action
+  // We must call this so that the game manager's knowledge of file extensions
+  // (which it uses to determine whether files are games) contains the extensions
+  // supported by the game clients of new repositories.
+  CGameManager::Get().UpdateRemoteAddons(addons);
 
   // check for updates
   CAddonDatabase database;

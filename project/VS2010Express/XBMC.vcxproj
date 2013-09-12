@@ -592,8 +592,21 @@
     <ClCompile Include="..\..\xbmc\filesystem\ZipDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ZipFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ZipManager.cpp" />
+    <ClCompile Include="..\..\xbmc\games\GameClient.cpp" />
+    <ClCompile Include="..\..\xbmc\games\GameFileAutoLauncher.cpp" />
+    <ClCompile Include="..\..\xbmc\games\GameFileLoader.cpp" />
+    <ClCompile Include="..\..\xbmc\games\GameManager.cpp" />
+    <ClCompile Include="..\..\xbmc\games\GameSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\games\libretro\LibretroEnvironment.cpp" />
+    <ClCompile Include="..\..\xbmc\games\SerialState.cpp" />
     <ClCompile Include="..\..\xbmc\games\tags\GameInfoTag.cpp" />
     <ClCompile Include="..\..\xbmc\games\tags\GameInfoTagLoader.cpp" />
+    <ClCompile Include="..\..\xbmc\games\test\TestGameFileLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\GitRevision.cpp" />
     <ClCompile Include="..\..\xbmc\GUIInfoManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUILargeTextureManager.cpp" />
@@ -1101,6 +1114,17 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Retrieving the git revision</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Retrieving the git revision</Message>
     </CustomBuild>
+    <ClInclude Include="..\..\xbmc\games\GameClient.h" />
+    <ClInclude Include="..\..\xbmc\games\GameClientDLL.h" />
+    <ClInclude Include="..\..\xbmc\games\GameFileAutoLauncher.h" />
+    <ClInclude Include="..\..\xbmc\games\GameFileLoader.h" />
+    <ClInclude Include="..\..\xbmc\games\GameManager.h" />
+    <ClInclude Include="..\..\xbmc\games\GameSettings.h" />
+    <ClInclude Include="..\..\xbmc\games\libretro\libretro.h" />
+    <ClInclude Include="..\..\xbmc\games\libretro\LibretroCallbacks.h" />
+    <ClInclude Include="..\..\xbmc\games\libretro\LibretroEnvironment.h" />
+    <ClInclude Include="..\..\xbmc\games\libretro\libretro_wrapped.h" />
+    <ClInclude Include="..\..\xbmc\games\SerialState.h" />
     <ClInclude Include="..\..\xbmc\games\tags\GameInfoTag.h" />
     <ClInclude Include="..\..\xbmc\games\tags\GameInfoTagLoader.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />

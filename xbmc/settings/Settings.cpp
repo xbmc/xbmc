@@ -35,6 +35,7 @@
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
+#include "games/GameSettings.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIFontManager.h"
@@ -414,6 +415,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&CNetworkServices::Get());
   m_settingsManager->UnregisterCallback(&g_passwordManager);
   m_settingsManager->UnregisterCallback(&PVR::g_PVRManager);
+  m_settingsManager->UnregisterCallback(&GAMES::CGameSettings::Get());
   m_settingsManager->UnregisterCallback(&CRssManager::Get());
 #if defined(TARGET_LINUX)
   m_settingsManager->UnregisterCallback(&g_timezone);
@@ -968,6 +970,10 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("epg.resetepg");
   settingSet.insert("pvrparental.enabled");
   m_settingsManager->RegisterCallback(&PVR::g_PVRManager, settingSet);
+
+  settingSet.clear();
+  settingSet.insert("gamesgeneral.manageaddons");
+  m_settingsManager->RegisterCallback(&GAMES::CGameSettings::Get(), settingSet);
 
   settingSet.clear();
   settingSet.insert("lookandfeel.rssedit");

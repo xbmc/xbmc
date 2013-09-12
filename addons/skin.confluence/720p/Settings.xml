@@ -147,24 +147,30 @@
 						<icon>-</icon>
 					</item>
 					<item id="6">
+						<label>15016</label>
+						<label2>31407</label2>
+						<onclick>ActivateWindow(GamesSettings)</onclick>
+						<icon>-</icon>
+					</item>
+					<item id="7">
 						<label>8</label>
 						<label2>31404</label2>
 						<onclick>ActivateWindow(WeatherSettings)</onclick>
 						<icon>-</icon>
 					</item>
-					<item id="7">
+					<item id="8">
 						<label>24001</label>
 						<label2>31408</label2>
 						<onclick>ActivateWindow(AddonBrowser)</onclick>
 						<icon>-</icon>
 					</item>
-					<item id="8">
+					<item id="9">
 						<label>14036</label>
 						<label2>31410</label2>
 						<onclick>ActivateWindow(ServiceSettings)</onclick>
 						<icon>-</icon>
 					</item>
-					<item id="9">
+					<item id="10">
 						<label>13000</label>
 						<label2>31406</label2>
 						<onclick>ActivateWindow(SystemSettings)</onclick>
