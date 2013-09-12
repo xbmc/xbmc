@@ -434,8 +434,9 @@ private:
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL=false);
   CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, bool imageURL=false);
   CArtistCredit GetAlbumArtistCreditFromDataset(const dbiplus::sql_record* const record);
-  void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
-  void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath);
+  void ParseBaseUrl(const CStdString &strMusicDBbasePath, CMusicDbUrl &baseUrl, CMusicDbUrl *&pBaseUrl);
+  void DuplicateUrl(const CMusicDbUrl *pBaseUrl, CMusicDbUrl &itemUrl, CMusicDbUrl *&pItemUrl);
+  void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath, CMusicDbUrl *itemUrl);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath, CMusicDbUrl *itemUrl);
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);

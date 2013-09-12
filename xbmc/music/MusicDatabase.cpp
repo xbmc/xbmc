@@ -1005,23 +1005,28 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   return song;
 }
 
-void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath)
+void CMusicDatabase::ParseBaseUrl(const CStdString &strMusicDBbasePath, CMusicDbUrl &baseUrl, CMusicDbUrl *&pBaseUrl)
 {
-  return GetFileItemFromDataset(m_pDS->get_sql_record(), item, strMusicDBbasePath);
+  if (strMusicDBbasePath.IsEmpty() || !baseUrl.FromString(strMusicDBbasePath))
+    pBaseUrl = NULL;
+  else
+    pBaseUrl = &baseUrl;
 }
 
-void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath)
+void CMusicDatabase::DuplicateUrl(const CMusicDbUrl *pBaseUrl, CMusicDbUrl &itemUrl, CMusicDbUrl *&pItemUrl)
 {
-  if (strMusicDBbasePath.IsEmpty())
-    return GetFileItemFromDataset(record, item, strMusicDBbasePath, NULL);
-  else
+  if (pBaseUrl)
   {
-    CMusicDbUrl itemUrl;
-    if (!itemUrl.FromString(strMusicDBbasePath))
-      return GetFileItemFromDataset(record, item, strMusicDBbasePath, NULL);
-    else
-      return GetFileItemFromDataset(record, item, strMusicDBbasePath, &itemUrl);
+    itemUrl = *pBaseUrl;
+    pItemUrl = &itemUrl;
   }
+  else
+    pItemUrl = NULL;
+}
+
+void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath, CMusicDbUrl *itemUrl)
+{
+  return GetFileItemFromDataset(m_pDS->get_sql_record(), item, strMusicDBbasePath, itemUrl);
 }
 
 void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath, CMusicDbUrl *itemUrl)
@@ -1503,11 +1508,14 @@ bool CMusicDatabase::GetTop100(const CStdString& strBaseDir, CFileItemList& item
       m_pDS->close();
       return true;
     }
+    CMusicDbUrl baseUrl, itemUrl, *pBaseUrl, *pItemUrl;
+    ParseBaseUrl(strBaseDir, baseUrl, pBaseUrl);
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
+      DuplicateUrl(pBaseUrl, itemUrl, pItemUrl);
       CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), strBaseDir);
+      GetFileItemFromDataset(item.get(), strBaseDir, pItemUrl);
       items.Add(item);
       m_pDS->next();
     }
@@ -1583,11 +1591,14 @@ bool CMusicDatabase::GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItem
     }
 
     // get data from returned rows
+    CMusicDbUrl baseUrl, itemUrl, *pBaseUrl, *pItemUrl;
+    ParseBaseUrl(strBaseDir, baseUrl, pBaseUrl);
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
+      DuplicateUrl(pBaseUrl, itemUrl, pItemUrl);
       CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), strBaseDir);
+      GetFileItemFromDataset(item.get(), strBaseDir, pItemUrl);
       items.Add(item);
       m_pDS->next();
     }
@@ -1658,11 +1669,14 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     }
 
     // get data from returned rows
+    CMusicDbUrl baseUrl, itemUrl, *pBaseUrl, *pItemUrl;
+    ParseBaseUrl(strBaseDir, baseUrl, pBaseUrl);
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
+      DuplicateUrl(pBaseUrl, itemUrl, pItemUrl);
       CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), strBaseDir);
+      GetFileItemFromDataset(item.get(), strBaseDir, pItemUrl);
       items.Add(item);
       m_pDS->next();
     }
@@ -1735,11 +1749,14 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     }
 
     // get data from returned rows
+    CMusicDbUrl baseUrl, itemUrl, *pBaseUrl, *pItemUrl;
+    ParseBaseUrl(strBaseDir, baseUrl, pBaseUrl);
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
+      DuplicateUrl(pBaseUrl, itemUrl, pItemUrl);
       CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), strBaseDir);
+      GetFileItemFromDataset(item.get(), strBaseDir, pItemUrl);
       items.Add(item);
       m_pDS->next();
     }
@@ -1859,10 +1876,14 @@ bool CMusicDatabase::SearchSongs(const CStdString& search, CFileItemList &items)
     if (m_pDS->num_rows() == 0) return false;
 
     CStdString songLabel = g_localizeStrings.Get(179); // Song
+    const CStdString strBaseDir = "musicdb://songs/";
+    CMusicDbUrl baseUrl, itemUrl, *pBaseUrl, *pItemUrl;
+    ParseBaseUrl(strBaseDir, baseUrl, pBaseUrl);
     while (!m_pDS->eof())
     {
+      DuplicateUrl(pBaseUrl, itemUrl, pItemUrl);
       CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), "musicdb://songs/");
+      GetFileItemFromDataset(item.get(), strBaseDir, pItemUrl);
       items.Add(item);
       m_pDS->next();
     }
@@ -4153,7 +4174,7 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const Filter &f
       m_pDS->close();
       return false;
     }
-    GetFileItemFromDataset(item, "");
+    GetFileItemFromDataset(item, "", NULL);
     idSong = m_pDS->fv("songview.idSong").get_asInt();
     m_pDS->close();
     return true;
