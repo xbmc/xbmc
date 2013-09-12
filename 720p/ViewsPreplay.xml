@@ -1107,7 +1107,8 @@
 						<label>[UPPERCASE]Audio[/UPPERCASE]</label>
 						<include>LeftInfoFormatGrey</include>
 					</control>
-					<control type="label" id="19111">
+					<control type="label">
+						<label>$INFO[ListItem.Property(SelectedAudioStream)]</label>
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
@@ -1124,7 +1125,8 @@
 						<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
 						<include>LeftInfoFormatGrey</include>
 					</control>
-					<control type="label" id="19112">
+					<control type="label">
+						<label>$INFO[ListItem.Property(SelectedAudioStream)]</label>
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
