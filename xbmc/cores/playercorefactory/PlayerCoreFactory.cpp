@@ -116,9 +116,9 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
 
   // Process defaults
 
-  // Set video default player. Check whether it's video first (overrule audio check)
-  // Also push these players in case it is NOT audio either
-  if (item.IsVideo() || !item.IsAudio())
+  // Set video default player. Check whether it's video first (overrule audio and
+  // game check). Also push these players in case it is NOT audio or game either.
+  if (item.IsVideo() || (!item.IsAudio() && !item.IsGame()))
   {
     int idx = GetPlayerIndex("videodefaultplayer");
     if (idx > -1)
@@ -144,6 +144,12 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
     }
     GetPlayers(players, true, false); // Audio-only players
     GetPlayers(players, true, true);  // Audio & video players
+  }
+
+  if (item.IsGame())
+  {
+    CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding retroplayer");
+    players.push_back("RetroPlayer");
   }
 
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: added %" PRIuS" players", players.size());
@@ -323,6 +329,9 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", "music", nullptr);
     paplayer->m_bPlaysAudio = true;
     m_vecPlayerConfigs.push_back(paplayer);
+
+    CPlayerCoreConfig* retroPlayer = new CPlayerCoreConfig("RetroPlayer", "game", nullptr);
+    m_vecPlayerConfigs.push_back(retroPlayer);
   }
 
   if (!pConfig || strcmpi(pConfig->Value(), "playercorefactory") != 0)

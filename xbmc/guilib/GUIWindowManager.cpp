@@ -678,6 +678,15 @@ void CGUIWindowManager::PreviousWindow()
 
   // ok to go to the previous window now
 
+  // pause game when leaving fullscreen or resume game when entering fullscreen
+  if (g_application.m_pPlayer->IsPlayingGame())
+  {
+    if (previousWindow == WINDOW_FULLSCREEN_VIDEO && g_application.m_pPlayer->IsPaused())
+      g_application.OnAction(ACTION_PAUSE);
+    else if (currentWindow == WINDOW_FULLSCREEN_VIDEO && !g_application.m_pPlayer->IsPaused())
+      g_application.OnAction(ACTION_PAUSE);
+  }
+
   // tell our info manager which window we are going to
   g_infoManager.SetNextWindow(previousWindow);
 
@@ -788,6 +797,15 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
     CLog::Log(LOGINFO, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
     g_audioManager.PlayActionSound(CAction(ACTION_ERROR));
     return;
+  }
+
+  // pause game when leaving fullscreen or resume game when entering fullscreen
+  if (g_application.m_pPlayer->IsPlayingGame())
+  {
+    if (GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO && !g_application.m_pPlayer->IsPaused())
+      g_application.OnAction(ACTION_PAUSE);
+    else if (iWindowID == WINDOW_FULLSCREEN_VIDEO && g_application.m_pPlayer->IsPaused())
+      g_application.OnAction(ACTION_PAUSE);
   }
 
   g_infoManager.SetNextWindow(iWindowID);
@@ -1406,6 +1424,9 @@ int CGUIWindowManager::GetActiveWindowID()
     // special casing for numeric seek
     else if (CSeekHandler::GetInstance().HasTimeCode())
       iWin = WINDOW_VIDEO_TIME_SEEK;
+    // check if a game is playing
+    else if (g_application.m_pPlayer->IsPlayingGame())
+      iWin = WINDOW_FULLSCREEN_GAME;
   }
   if (iWin == WINDOW_VISUALISATION)
   {

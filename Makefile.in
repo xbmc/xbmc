@@ -41,6 +41,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/cores/DllLoader/exports/exports.a \
                    xbmc/cores/DllLoader/exports/util/exports_utils.a \
                    xbmc/cores/ExternalPlayer/ExternalPlayer.a \
+                   xbmc/cores/RetroPlayer/retroplayer.a \
                    xbmc/cores/VideoPlayer/VideoRenderers/VideoRenderer.a \
                    xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/VideoShaders.a \
                    xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/HwDecRender.a \
