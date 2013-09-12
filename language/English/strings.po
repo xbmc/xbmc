@@ -5820,7 +5820,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13504"
-msgid "Maximum resample amount (%)"
+msgid "Maximum speedup/slowdown amount (%)"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12928,7 +12928,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36168"
-msgid "No info available yet."
+msgid "Maximum video speed adjust to match actual screen refresh rate."
 msgstr ""
 
 #: system/settings/settings.xml
