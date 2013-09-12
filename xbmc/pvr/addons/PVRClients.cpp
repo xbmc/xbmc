@@ -1432,3 +1432,42 @@ bool CPVRClients::IsEncrypted(void) const
     return client->IsPlayingEncryptedChannel();
   return false;
 }
+
+time_t CPVRClients::GetPlayingTime() const
+{
+  PVR_CLIENT client;
+  time_t time = 0;
+
+  if (GetPlayingClient(client))
+  {
+     time = client->GetPlayingTime();
+  }
+
+  return time;
+}
+
+time_t CPVRClients::GetBufferTimeStart() const
+{
+  PVR_CLIENT client;
+  time_t time = 0;
+
+  if (GetPlayingClient(client))
+  {
+    time = client->GetBufferTimeStart();
+  }
+
+  return time;
+}
+
+time_t CPVRClients::GetBufferTimeEnd() const
+{
+  PVR_CLIENT client;
+  time_t time = 0;
+
+  if (GetPlayingClient(client))
+  {
+    time = client->GetBufferTimeEnd();
+  }
+
+  return time;
+}

@@ -562,6 +562,10 @@ namespace PVR
 
     bool GetPlayingClient(PVR_CLIENT &client) const;
 
+    time_t GetPlayingTime() const;
+    time_t GetBufferTimeStart() const;
+    time_t GetBufferTimeEnd() const;
+
   private:
     /*!
      * @brief Update add-ons from the AddonManager
