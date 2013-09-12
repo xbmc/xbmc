@@ -22,6 +22,7 @@
 #if defined(HAS_JOYSTICK)
 
 #include "JoystickManager.h"
+#include "IInputHandler.h"
 #include "Application.h"
 #include "ButtonTranslator.h"
 #include "guilib/Key.h"
@@ -166,6 +167,8 @@ void CJoystickManager::ProcessStateChanges()
 
 void CJoystickManager::ProcessButtonPresses(Joystick &oldState, const Joystick &newState, unsigned int joyID)
 {
+  IInputHandler *inputHandler = g_application.m_pPlayer->GetInputHandler();
+
   for (unsigned int i = 0; i < newState.buttons.size(); i++)
   {
     if (oldState.buttons[i] == newState.buttons[i])
@@ -192,12 +195,28 @@ void CJoystickManager::ProcessButtonPresses(Joystick &oldState, const Joystick &
     if (!Wakeup() && newState.buttons[i])
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_application.ExecuteInputAction(action);
-      // Track the button press for deferred repeated execution
-      m_actionTracker.Track(action);
+
+      if (IsGameControl(actionID))
+      {
+        if (inputHandler)
+          inputHandler->ProcessButtonDown(joyID, i, action);
+        m_actionTracker.Reset(); // Don't track game control actions
+      }
+      else
+      {
+        g_application.ExecuteInputAction(action);
+        // Track the button press for deferred repeated execution
+        m_actionTracker.Track(action);
+      }
     }
     else if (!newState.buttons[i])
     {
+      if (IsGameControl(actionID))
+      {
+        // Allow game input to record button release
+        if (inputHandler)
+          inputHandler->ProcessButtonUp(joyID, i);
+      }
       m_actionTracker.Reset(); // If a button was released, reset the tracker
     }
   }
@@ -205,6 +224,8 @@ void CJoystickManager::ProcessButtonPresses(Joystick &oldState, const Joystick &
 
 void CJoystickManager::ProcessHatPresses(Joystick &oldState, const Joystick &newState, unsigned int joyID)
 {
+  IInputHandler *inputHandler = g_application.m_pPlayer->GetInputHandler();
+
   for (unsigned int i = 0; i < newState.hats.size(); i++)
   {
     Hat &oldHat = oldState.hats[i];
@@ -240,12 +261,28 @@ void CJoystickManager::ProcessHatPresses(Joystick &oldState, const Joystick &new
       if (!Wakeup() && newHat[j])
       {
         CAction action(actionID, 1.0f, 0.0f, actionName);
-        g_application.ExecuteInputAction(action);
-        // Track the hat press for deferred repeated execution
-        m_actionTracker.Track(action);
+
+        if (IsGameControl(actionID))
+        {
+          if (inputHandler)
+            inputHandler->ProcessHatDown(joyID, i, j, action);
+          m_actionTracker.Reset(); // Don't track game control actions
+        }
+        else
+        {
+          g_application.ExecuteInputAction(action);
+          // Track the hat press for deferred repeated execution
+          m_actionTracker.Track(action);
+        }
       }
       else if (!newHat[j])
       {
+        if (IsGameControl(actionID))
+        {
+          // Allow game input to record hat release
+          if (inputHandler)
+            inputHandler->ProcessHatUp(joyID, i, j);
+        }
         // If a hat was released, reset the tracker
         m_actionTracker.Reset();
       }
@@ -255,6 +292,8 @@ void CJoystickManager::ProcessHatPresses(Joystick &oldState, const Joystick &new
 
 void CJoystickManager::ProcessAxisMotion(Joystick &oldState, const Joystick &newState, unsigned int joyID)
 {
+  IInputHandler *inputHandler = g_application.m_pPlayer->GetInputHandler();
+
   for (unsigned int i = 0; i < newState.axes.size(); i++)
   {
     // Absolute magnitude
@@ -303,11 +342,33 @@ void CJoystickManager::ProcessAxisMotion(Joystick &oldState, const Joystick &new
 
       if (!Wakeup() && absAxis >= AXIS_DIGITAL_DEADZONE)
       {
-        g_application.ExecuteInputAction(action);
-        m_actionTracker.Track(action);
+        if (IsGameControl(actionID))
+        {
+          // Because an axis's direction can reverse and the button ID
+          // (joyID + 1000) will be given a different action, record the button
+          // up event first.
+          if (inputHandler)
+          {
+            // Use decimal mask because it's easier to recover from logs
+            inputHandler->ProcessButtonUp(joyID, i + 1000);
+            inputHandler->ProcessButtonDown(joyID, i + 1000, action);
+          }
+          m_actionTracker.Reset(); // Don't track game control actions
+        }
+        else
+        {
+          g_application.ExecuteInputAction(action);
+          m_actionTracker.Track(action);
+        }
       }
       else if (absAxis < AXIS_DIGITAL_DEADZONE)
       {
+        if (IsGameControl(actionID))
+        {
+          // Use decimal mask because it's easier to recover from logs
+          if (inputHandler)
+            inputHandler->ProcessButtonUp(joyID, i + 1000);
+        }
         m_actionTracker.Reset();
       }
     }
@@ -319,7 +380,12 @@ void CJoystickManager::ProcessAxisMotion(Joystick &oldState, const Joystick &new
       if (Wakeup())
         continue;
 
-      if (newState.axes[i] != 0.0f)
+      if (IsGameControl(actionID))
+      {
+        if (inputHandler)
+          inputHandler->ProcessAxis(joyID, i, action);
+      }
+      else if (newState.axes[i] != 0.0f)
         g_application.ExecuteInputAction(action);
 
       // The presence of analog actions disables others from being tracked
@@ -369,6 +435,11 @@ void CJoystickManager::OnSettingChanged(const CSetting *setting)
   {
     SetEnabled(((CSettingBool*)setting)->GetValue() && CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
   }
+}
+
+inline bool CJoystickManager::IsGameControl(int actionID)
+{
+  return ACTION_GAME_CONTROL_START <= actionID && actionID <= ACTION_GAME_CONTROL_END;
 }
 
 #endif // defined(HAS_JOYSTICK)

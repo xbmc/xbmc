@@ -23,6 +23,7 @@
 #include "system.h" // until we get sane int types used here
 #include "IAudioCallback.h"
 #include "IPlayerCallback.h"
+#include "input/IInputHandler.h"
 #include "utils/StdString.h"
 #include "guilib/Geometry.h"
 
@@ -243,6 +244,8 @@ public:
    \brief define the subtitle capabilities of the player
    */
   virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) { subCaps.assign(1,IPC_SUBS_ALL); };
+
+  virtual IInputHandler *GetInputHandler() { return NULL; }
 
 protected:
   IPlayerCallback& m_callback;

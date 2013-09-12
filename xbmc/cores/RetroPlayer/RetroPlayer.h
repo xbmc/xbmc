@@ -21,6 +21,7 @@
 #pragma once
 
 #include "RetroPlayerAudio.h"
+#include "RetroPlayerInput.h"
 #include "RetroPlayerVideo.h"
 #include "cores/IPlayer.h"
 #include "FileItem.h"
@@ -48,6 +49,8 @@ public:
 
   virtual bool HasVideo() const { return true; }
   virtual bool HasAudio() const { return true; }
+
+  virtual IInputHandler *GetInputHandler() { return &m_input; }
 
   virtual void GetAudioInfo(CStdString& strAudioInfo) { strAudioInfo = "CRetroPlayer:GetAudioInfo"; }
   virtual void GetVideoInfo(CStdString& strVideoInfo) { strVideoInfo = "CRetroPlayer:GetVideoInfo"; }
@@ -128,6 +131,7 @@ private:
 
   CRetroPlayerVideo    m_video;
   CRetroPlayerAudio    m_audio;
+  CRetroPlayerInput    m_input;
 
   CFileItemPtr         m_file;
   GAMES::GameClientPtr m_gameClient;

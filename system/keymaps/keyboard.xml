@@ -244,6 +244,26 @@
       <pagedown>SkipPrevious</pagedown>
     </keyboard>
   </FullscreenVideo>
+  <FullscreenGame>
+    <keyboard>
+      <escape>Fullscreen</escape>
+      <backspace>Stop</backspace>
+      <return>JoypadStart</return>
+      <enter>JoypadStart</enter>
+      <return mod="ctrl">JoypadSelect</return>
+      <enter mod="ctrl">JoypadSelect</enter>
+      <up>JoypadUp</up>
+      <down>JoypadDown</down>
+      <left>JoypadLeft</left>
+      <right>JoypadRight</right>
+      <x>JoypadA</x>
+      <z>JoypadB</z>
+      <c>JoypadX</c>
+      <d>JoypadY</d>
+      <a>JoypadL</a>
+      <s>JoypadR</s>
+    </keyboard>
+  </FullscreenGame>
   <VideoTimeSeek>
     <keyboard>
       <return>Select</return>
@@ -436,6 +456,11 @@
       <d>MoveItemDown</d>
     </keyboard>
   </MyVideoPlaylist>
+  <MyGames>
+    <keyboard>
+      <delete>Delete</delete>
+    </keyboard>
+  </MyGames>
   <MyPictures>
     <keyboard>
       <delete>Delete</delete>

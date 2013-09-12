@@ -311,7 +311,7 @@ size_t CRetroPlayer::AudioSampleBatch(const int16_t *data, size_t frames)
 
 int16_t CRetroPlayer::GetInputState(unsigned port, unsigned device, unsigned index, unsigned id)
 {
-  return 0;
+  return m_input.GetInput(port, device, index, id);
 }
 
 void CRetroPlayer::SetPixelFormat(LIBRETRO::retro_pixel_format pixelFormat)
