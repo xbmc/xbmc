@@ -25,6 +25,7 @@
 #include <fcntl.h>
 #include <string>
 
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 
 int aml_set_sysfs_str(const char *path, const char *val)
@@ -70,7 +71,7 @@ int aml_set_sysfs_int(const char *path, const int val)
 
 int aml_get_sysfs_int(const char *path)
 {
-  int val = 0;
+  int val = -1;
   int fd = open(path, O_RDONLY);
   if (fd >= 0)
   {
@@ -87,10 +88,13 @@ bool aml_present()
   static int has_aml = -1;
   if (has_aml == -1)
   {
-    if (aml_get_sysfs_int("/sys/class/audiodsp/digital_raw") != -1)
+    int rtn = aml_get_sysfs_int("/sys/class/audiodsp/digital_raw");
+    if (rtn != -1)
       has_aml = 1;
     else
       has_aml = 0;
+    if (has_aml)
+      CLog::Log(LOGNOTICE, "aml_present, rtn(%d)", rtn);
   }
   return has_aml;
 }
