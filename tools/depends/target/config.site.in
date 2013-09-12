@@ -32,7 +32,7 @@ export NASM=@prefix@/@tool_dir@/bin/yasm
 export MYSQL_CONFIG=@prefix@/@deps_dir@/bin/mysql_config
 
 PATH=@prefix@/@tool_dir@/bin:@use_toolchain@/usr/bin:@use_toolchain@/bin:$PATH
-LD_LIBRARY_PATH=@prefix@/@deps_dir@/lib:$LD_LIBRARY_PATH
+LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
 
 PYTHON_VERSION=2.6
 PYTHON_LDFLAGS="-L@prefix@/@deps_dir@/lib -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lutil -lssl -lcrypto"
