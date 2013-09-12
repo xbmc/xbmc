@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<window id="10205">
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
+	<controls>
+	</controls>
+</window>

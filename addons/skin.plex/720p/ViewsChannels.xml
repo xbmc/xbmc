@@ -201,13 +201,13 @@
 	<!-- top level of any channels section -->
 	<include name="Channels">
 		<control type="group" id="777">
-			<visible>Container.Content(plugins)</visible>
+			<visible>Container.Content(channels)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- main list -->
 			<control type="panel" id="70">
 				<viewtype label="Channels">panel</viewtype>
-				<visible>Container.Content(plugins)</visible>
+				<visible>Container.Content(channels)</visible>
 				<posy>56</posy>
 				<posx>105</posx>
 				<width>1200</width>
@@ -239,7 +239,7 @@
 	<!-- Photo Channel (MyPics.xml) -->
 	<include name="ChannelPhoto">
 		<control type="group">
-			<visible>Container.content(plugincontent)</visible>
+			<visible>Container.content(channel)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<include>ChannelPlotBG</include>
@@ -249,7 +249,7 @@
 			<control type="group" id="777">
 				<control type="panel" id="72">
 					<viewtype label="ChannelPhoto">panel</viewtype>
-					<visible>Container.content(plugincontent)</visible>
+					<visible>Container.content(channel)</visible>
 					<onup>72</onup>
 					<ondown>72</ondown>
 					<onright>72</onright>
@@ -283,7 +283,7 @@
 	<!-- Music Channel (MyMusicSongs.xml) -->
 	<include name="ChannelMusic">
 		<control type="group">
-			<visible>Container.content(plugincontent)</visible>
+			<visible>Container.content(channel)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<include>ChannelPlotBG</include>
@@ -293,7 +293,7 @@
 			<control type="group" id="777">
 				<control type="panel" id="73">
 					<viewtype label="ChannelMusic">panel</viewtype>
-					<visible>Container.content(plugincontent)</visible>
+					<visible>Container.content(channel)</visible>
 					<onup>73</onup>
 					<ondown>73</ondown>
 					<onright>73</onright>

@@ -132,6 +132,7 @@
 			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
+	<!-- all episodes are from the same season -->
 	<include name="EpisodeThumbOverlayTitle">
 		<posy>83</posy>
 		<posx>20</posx>
@@ -140,6 +141,18 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>E$INFO[ListItem.Episode]</label>
+		<font>CondensedBold-26</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>
+	<!-- episodes are mixed from different seasons -->
+	<include name="EpisodeThumbOverlayTitle2">
+		<posy>83</posy>
+		<posx>20</posx>
+		<width>180</width>
+		<height>30</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>S$INFO[ListItem.Season]&#xB7;E$INFO[ListItem.Episode]</label>
 		<font>CondensedBold-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
@@ -243,13 +256,13 @@
 			</control>
 			<!-- Infos Left -->
 			<control type="group">
-				<posy>71</posy>
+				<posy>82</posy>
 				<posx>302</posx>
 				<!-- Title -->
 				<control type="label">
 					<width>360</width>
 					<height>40</height>
-					<!--><label>$INFO[Container.SecondTitle]</label>-->
+					<label>$INFO[Container.SecondTitle]</label>
 					<label>Seasons view</label>
 					<font>CondensedBold-36</font>
 					<textcolor>white</textcolor>
@@ -258,7 +271,7 @@
 				</control>
 				<!-- Genre -->
 				<control type="grouplist">
-					<posy>193</posy>
+					<posy>221</posy>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
 					<control type="label">
@@ -273,15 +286,14 @@
 					<control type="label">
 						<width min="29" max="600">auto</width>
 						<height>15</height>
-						<!--><label>$INFO[ListItem.Genre]</label>-->
-						<label>Genre placeholder</label>
+						<label>$INFO[ListItem.Genre]</label>
 						<font>Condensed-18</font>
 						<include>White2</include>
 						<visible>true</visible>
 					</control>
 				</control>
 				<!-- Creator -->
-				<control type="grouplist">
+				<!--><control type="grouplist">
 					<posy>221</posy>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
@@ -297,13 +309,12 @@
 					<control type="label">
 						<width min="29" max="330">auto</width>
 						<height>15</height>
-						<!--><label>$INFO[ListItem.Cast]</label>-->
 						<label>Creator placeholder</label>
 						<font>Condensed-18</font>
 						<include>White2</include>
 						<visible>true</visible>
 					</control>
-				</control>
+				</control>-->
 				<!-- Cast -->
 				<control type="grouplist">
 					<posy>249</posy>
@@ -400,10 +411,24 @@
 						<height>30</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<label>S $INFO[ListItem.Season]</label>
+						<label>[UPPERCASE]$LOCALIZE[593][/UPPERCASE]</label>
 						<font>CondensedBold-26</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
+						<visible>IsEmpty(ListItem.Season)</visible>
+					</control>
+					<control type="label">
+						<posy>250</posy>
+						<posx>23</posx>
+						<width>180</width>
+						<height>30</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>S$INFO[ListItem.Season]</label>
+						<font>CondensedBold-26</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<visible>ListItem.Type(season)</visible>
 					</control>
 					<!--><control type="image">
 					<description>Overlay</description>
@@ -425,10 +450,24 @@
 						<height>30</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<label>S $INFO[ListItem.Season]</label>
+						<label>[UPPERCASE]$LOCALIZE[593][/UPPERCASE]</label>
 						<font>CondensedBold-26</font>
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
+						<visible>IsEmpty(ListItem.Season)</visible>
+					</control>
+					<control type="label">
+						<posy>250</posy>
+						<posx>23</posx>
+						<width>180</width>
+						<height>30</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>S$INFO[ListItem.Season]</label>
+						<font>CondensedBold-26</font>
+						<textcolor>orangeLight</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<visible>ListItem.Type(season)</visible>
 					</control>
 					<!--><control type="image">
 					<description>Overlay</description>
@@ -455,7 +494,7 @@
 			</control>
 			<!-- poster -->
 			<control type="group">
-				<posx>80</posx>
+				<posx>82</posx>
 				<posy>74</posy>
 				<control type="image">
 					<posx>0</posx>
@@ -471,13 +510,13 @@
 					<posy>13</posy>
 					<width>182</width>
 					<height>274</height>
-					<texture background="true" diffuse="library-poster-mask.png">$INFO[Container.SeasonThumb]</texture>
+					<texture background="true" diffuse="library-poster-mask.png">$INFO[Container.Art(thumb)]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				</control>
 			</control>
 			<!-- Infos Left -->
 			<control type="group">
-				<posy>71</posy>
+				<posy>80</posy>
 				<posx>302</posx>
 				<!-- Titles -->
 				<control type="label">
@@ -493,8 +532,7 @@
 					<posy>40</posy>
 					<width>360</width>
 					<height>40</height>
-					<!--><label>$INFO[Container.SecondTitle]</label>-->
-					<label>Episodes view</label>
+					<label>$INFO[Container.SecondTitle]</label>
 					<font>CondensedBold-36</font>
 					<include>Grey1</include>
 					<shadowcolor>ff333333</shadowcolor>
@@ -502,7 +540,7 @@
 				</control>
 				<!-- Genre -->
 				<control type="grouplist">
-					<posy>193</posy>
+					<posy>221</posy>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
 					<control type="label">
@@ -525,7 +563,7 @@
 					</control>
 				</control>
 				<!-- Creator -->
-				<control type="grouplist">
+				<!--><control type="grouplist">
 					<posy>221</posy>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
@@ -541,13 +579,12 @@
 					<control type="label">
 						<width min="29" max="330">auto</width>
 						<height>15</height>
-						<!--><label>$INFO[ListItem.Cast]</label>-->
 						<label>Creator placeholder</label>
 						<font>Condensed-18</font>
 						<include>White2</include>
 						<visible>true</visible>
 					</control>
-				</control>
+				</control>-->
 				<!-- Cast -->
 				<control type="grouplist">
 					<posy>249</posy>
@@ -657,6 +694,12 @@
 					<control type="label">
 						<include>EpisodeThumbOverlayTitle</include>
 						<textcolor>white</textcolor>
+						<visible>IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label">
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>white</textcolor>
+						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 					</control>
 					<control type="image">
 						<posx>182</posx>
@@ -676,6 +719,12 @@
 					<control type="label">
 						<include>EpisodeThumbOverlayTitle</include>
 						<textcolor>orangeLight</textcolor>
+						<visible>IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label">
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>orangeLight</textcolor>
+						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 					</control>
 					<control type="image">
 						<posx>182</posx>
@@ -774,9 +823,8 @@
 				<!-- Season, Episode -->
 				<control type="label">
 					<width>600</width>
-					<height>30</height>
-					<!--><label>$LOCALIZE[31074,,]$INFO[ListItem.Date, &#xB7; ]</label>-->
-					<label>$LOCALIZE[31114,,]$INFO[ListItem.Date, &#xB7; ]</label>
+					<height>25</height>
+					<label>$LOCALIZE[31141] $INFO[ListItem.Season]$INFO[ListItem.Date, &#xB7; ]</label>
 					<font>Condensed-18</font>
 					<textcolor>white</textcolor>
 					<visible>true</visible>
@@ -860,20 +908,15 @@
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
-					<control type="button" id="19101">
+					<control type="label">
 						<textoffsetx>0</textoffsetx>
 						<!-- NOTE: NEED STRING FOR THIS -->
 						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
 						<label>[UPPERCASE]Audio[/UPPERCASE]</label>
 						<include>LeftInfoFormatGrey</include>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<onleft>-</onleft>
-						<onright>-</onright>
-						<onup>-</onup>
-						<ondown>19102</ondown>
 					</control>
-					<control type="label" id="19111">
+					<control type="label">
+						<label>$INFO[ListItem.Property(SelectedAudioStream)]</label>
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
@@ -883,20 +926,15 @@
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
-					<control type="button" id="19102">
+					<control type="label">
 						<textoffsetx>0</textoffsetx>
 						<!-- NOTE: NEED STRING FOR THIS -->
 						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
 						<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
 						<include>LeftInfoFormatGrey</include>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<onleft>-</onleft>
-						<onright>-</onright>
-						<onup>19101</onup>
-						<ondown>-</ondown>
 					</control>
-					<control type="label" id="19112">
+					<control type="label">
+						<label>$INFO[ListItem.Property(SelectedSubtitleStream)]</label>
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
@@ -1056,8 +1094,7 @@
 				</control>
 			</control>
 			<!-- Audio & Subtitles buttons -->
-			<control type="group" id="999">
-				<defaultcontrol always="true">19101</defaultcontrol>
+			<control type="group">
 				<!-- Audio -->
 				<control type="grouplist">
 					<posy>306</posy>
