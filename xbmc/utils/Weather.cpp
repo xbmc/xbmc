@@ -155,7 +155,7 @@ void CWeatherJob::LocalizeOverview(CStdString &str)
     LocalizeOverviewToken(words[i]);
     str += words[i] + " ";
   }
-  str.TrimRight(" ");
+  StringUtils::TrimRight(str);
 }
 
 // input param must be kmh

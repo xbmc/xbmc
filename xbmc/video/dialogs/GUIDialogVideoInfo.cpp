@@ -368,7 +368,7 @@ void CGUIDialogVideoInfo::Update()
     if (m_movieItem->GetVideoInfoTag()->m_playCount == 0 && !CSettings::Get().GetBool("videolibrary.showunwatchedplots"))
       strTmp = g_localizeStrings.Get(20370);
 
-  strTmp.Trim();
+  StringUtils::Trim(strTmp);
   SetLabel(CONTROL_TEXTAREA, strTmp);
 
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_castList);

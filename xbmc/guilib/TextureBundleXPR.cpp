@@ -34,6 +34,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/EndianSwap.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib,"liblzo2.lib")
@@ -509,7 +510,8 @@ void CTextureBundleXPR::SetThemeBundle(bool themeBundle)
 CStdString CTextureBundleXPR::Normalize(const CStdString &name)
 {
   CStdString newName(name);
-  newName.Normalize();
+  StringUtils::Trim(newName);
+  StringUtils::ToLower(newName);
   newName.Replace('/','\\');
   return newName;
 }

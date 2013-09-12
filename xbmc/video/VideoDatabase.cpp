@@ -1908,45 +1908,45 @@ void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details
 
 CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const
 {
-  CStdString sql;
+  std::vector<std::string> conditions;
   for (int i = min + 1; i < max; ++i)
   {
     switch (offsets[i].type)
     {
     case VIDEODB_TYPE_STRING:
-      sql += PrepareSQL("c%02d='%s',", i, ((CStdString*)(((char*)&details)+offsets[i].offset))->c_str());
+      conditions.push_back(PrepareSQL("c%02d='%s',", i, ((CStdString*)(((char*)&details)+offsets[i].offset))->c_str()));
       break;
     case VIDEODB_TYPE_INT:
-      sql += PrepareSQL("c%02d='%i',", i, *(int*)(((char*)&details)+offsets[i].offset));
+      conditions.push_back(PrepareSQL("c%02d='%i',", i, *(int*)(((char*)&details)+offsets[i].offset)));
       break;
     case VIDEODB_TYPE_COUNT:
       {
         int value = *(int*)(((char*)&details)+offsets[i].offset);
         if (value)
-          sql += PrepareSQL("c%02d=%i,", i, value);
+          conditions.push_back(PrepareSQL("c%02d=%i,", i, value));
         else
-          sql += PrepareSQL("c%02d=NULL,", i);
+          conditions.push_back(PrepareSQL("c%02d=NULL,", i));
       }
       break;
     case VIDEODB_TYPE_BOOL:
-      sql += PrepareSQL("c%02d='%s',", i, *(bool*)(((char*)&details)+offsets[i].offset)?"true":"false");
+      conditions.push_back(PrepareSQL("c%02d='%s',", i, *(bool*)(((char*)&details)+offsets[i].offset)?"true":"false"));
       break;
     case VIDEODB_TYPE_FLOAT:
-      sql += PrepareSQL("c%02d='%f',", i, *(float*)(((char*)&details)+offsets[i].offset));
+      conditions.push_back(PrepareSQL("c%02d='%f',", i, *(float*)(((char*)&details)+offsets[i].offset)));
       break;
     case VIDEODB_TYPE_STRINGARRAY:
-      sql += PrepareSQL("c%02d='%s',", i, StringUtils::Join(*((std::vector<std::string>*)(((char*)&details)+offsets[i].offset)), g_advancedSettings.m_videoItemSeparator).c_str());
+      conditions.push_back(PrepareSQL("c%02d='%s',", i, StringUtils::Join(*((std::vector<std::string>*)(((char*)&details)+offsets[i].offset)),
+                                                                          g_advancedSettings.m_videoItemSeparator).c_str()));
       break;
     case VIDEODB_TYPE_DATE:
-      sql += PrepareSQL("c%02d='%s',", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDate().c_str());
+      conditions.push_back(PrepareSQL("c%02d='%s',", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDate().c_str()));
       break;
     case VIDEODB_TYPE_DATETIME:
-      sql += PrepareSQL("c%02d='%s',", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDateTime().c_str());
+      conditions.push_back(PrepareSQL("c%02d='%s',", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDateTime().c_str()));
       break;
     }
   }
-  sql.TrimRight(',');
-  return sql;
+  return StringUtils::Join(conditions, ", ");
 }
 
 //********************************************************************************************************************************
@@ -2300,7 +2300,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
       for (unsigned int i = 0; i < details.m_artist.size(); i++)
       {
         CStdString artist = details.m_artist[i];
-        artist.Trim();
+        StringUtils::Trim(artist);
         int idArtist = AddActor(artist,"");
         AddArtistToMusicVideo(idMVideo, idArtist);
       }
@@ -7990,9 +7990,9 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
     m_pDS->close();
 
-    if ( ! filesToDelete.empty() )
+    if (!filesToDelete.empty())
     {
-      filesToDelete.TrimRight(",");
+      StringUtils::TrimRight(filesToDelete, ",");
       // now grab them movies
       sql = PrepareSQL("select idMovie from movie where idFile in (%s)",filesToDelete.c_str());
       m_pDS->query(sql.c_str());
@@ -8058,7 +8058,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     if ( ! moviesToDelete.empty() )
     {
-      moviesToDelete = "(" + moviesToDelete.TrimRight(",") + ")";
+      moviesToDelete = "(" + StringUtils::TrimRight(moviesToDelete, ",") + ")";
 
       CLog::Log(LOGDEBUG, "%s: Cleaning movie table", __FUNCTION__);
       sql = "delete from movie where idMovie in " + moviesToDelete;
@@ -8091,7 +8091,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     if ( ! episodesToDelete.empty() )
     {
-      episodesToDelete = "(" + episodesToDelete.TrimRight(",") + ")";
+      episodesToDelete = "(" + StringUtils::TrimRight(episodesToDelete, ",") + ")";
 
       CLog::Log(LOGDEBUG, "%s: Cleaning episode table", __FUNCTION__);
       sql = "delete from episode where idEpisode in " + episodesToDelete;
@@ -8123,7 +8123,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     m_pDS->close();
     if (!strIds.empty())
     {
-      strIds.TrimRight(",");
+      StringUtils::TrimRight(strIds, ",");
       sql = PrepareSQL("delete from path where idPath in (%s)",strIds.c_str());
       m_pDS->exec(sql.c_str());
       sql = PrepareSQL("delete from tvshowlinkpath where idPath in (%s)",strIds.c_str());
@@ -8153,7 +8153,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     m_pDS->close();
     if (!showsToDelete.empty())
     {
-      sql = "delete from tvshow where idShow in (" + showsToDelete.TrimRight(",") + ")";
+      sql = "delete from tvshow where idShow in (" + StringUtils::TrimRight(showsToDelete, ",") + ")";
       m_pDS->exec(sql.c_str());
     }
 
@@ -8185,7 +8185,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     if ( ! musicVideosToDelete.empty() )
     {
-      musicVideosToDelete = "(" + musicVideosToDelete.TrimRight(",") + ")";
+      musicVideosToDelete = "(" + StringUtils::TrimRight(musicVideosToDelete, ",") + ")";
 
       CLog::Log(LOGDEBUG, "%s: Cleaning musicvideo table", __FUNCTION__);
       sql = "delete from musicvideo where idMVideo in " + musicVideosToDelete;

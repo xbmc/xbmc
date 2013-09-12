@@ -127,7 +127,7 @@ CStdString CMythSession::GetValue(char *str)
   {
     result = str;
     m_dll->ref_release(str);
-    result.Trim();
+    StringUtils::Trim(result);
   }
   return result;
 }

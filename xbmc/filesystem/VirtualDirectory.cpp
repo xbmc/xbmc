@@ -23,6 +23,7 @@
 #include "DirectoryFactory.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "Directory.h"
 #include "DirectoryCache.h"
 #include "SourcesDirectory.h"
@@ -103,8 +104,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 bool CVirtualDirectory::IsSource(const CStdString& strPath, VECSOURCES *sources, CStdString *name) const
 {
   CStdString strPathCpy = strPath;
-  strPathCpy.TrimRight("/");
-  strPathCpy.TrimRight("\\");
+  StringUtils::TrimRight(strPathCpy, "/\\");
 
   // just to make sure there's no mixed slashing in share/default defines
   // ie. f:/video and f:\video was not be recognised as the same directory,
@@ -121,8 +121,7 @@ bool CVirtualDirectory::IsSource(const CStdString& strPath, VECSOURCES *sources,
   {
     const CMediaSource& share = shares.at(i);
     CStdString strShare = share.strPath;
-    strShare.TrimRight("/");
-    strShare.TrimRight("\\");
+    StringUtils::TrimRight(strShare, "/\\");
     if(URIUtils::IsDOSPath(strShare))
       strShare.Replace("/", "\\");
     if (strShare == strPathCpy)

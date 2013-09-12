@@ -2458,13 +2458,6 @@ public:
     return *this;
   }
 
-
-  MYTYPE& Normalize()
-  {
-    return Trim().ToLower();
-  }
-
-
   // -------------------------------------------------------------------------
   // CStdStr -- Direct access to character buffer.  In the MS' implementation,
   // the at() function that we use here also calls _Freeze() providing us some
@@ -3012,65 +3005,6 @@ public:
   }
 
 #endif
-
-
-  // -------------------------------------------------------------------------
-  // Trim and its variants
-  // -------------------------------------------------------------------------
-  MYTYPE& Trim()
-  {
-    return TrimLeft().TrimRight();
-  }
-
-  MYTYPE& TrimLeft()
-  {
-    this->erase(this->begin(),
-      std::find_if(this->begin(), this->end(), NotSpace<CT>()));
-
-    return *this;
-  }
-
-  MYTYPE&  TrimLeft(CT tTrim)
-  {
-    this->erase(0, this->find_first_not_of(tTrim));
-    return *this;
-  }
-
-  MYTYPE&  TrimLeft(PCMYSTR szTrimChars)
-  {
-    this->erase(0, this->find_first_not_of(szTrimChars));
-    return *this;
-  }
-
-  MYTYPE& TrimRight()
-  {
-    // NOTE:  When comparing reverse_iterators here (MYRITER), I avoid using
-    // operator!=.  This is because namespace rel_ops also has a template
-    // operator!= which conflicts with the global operator!= already defined
-    // for reverse_iterator in the header <utility>.
-    // Thanks to John James for alerting me to this.
-
-    MYRITER it = std::find_if(this->rbegin(), this->rend(), NotSpace<CT>());
-    if ( !(this->rend() == it) )
-      this->erase(this->rend() - it);
-
-    this->erase(!(it == this->rend()) ? this->find_last_of(*it) + 1 : 0);
-    return *this;
-  }
-
-  MYTYPE&  TrimRight(CT tTrim)
-  {
-    MYSIZE nIdx  = this->find_last_not_of(tTrim);
-    this->erase(MYBASE::npos == nIdx ? 0 : ++nIdx);
-    return *this;
-  }
-
-  MYTYPE&  TrimRight(PCMYSTR szTrimChars)
-  {
-    MYSIZE nIdx  = this->find_last_not_of(szTrimChars);
-    this->erase(MYBASE::npos == nIdx ? 0 : ++nIdx);
-    return *this;
-  }
 
   void      FreeExtra()
   {

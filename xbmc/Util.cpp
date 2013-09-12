@@ -294,7 +294,8 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
     }
   }
 
-  strTitle = strTitleAndYear.Trim();
+  StringUtils::Trim(strTitleAndYear);
+  strTitle = strTitleAndYear;
 
   // append year
   if (!strYear.empty())
@@ -927,8 +928,7 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
     result.Replace('<', '_');
     result.Replace('>', '_');
     result.Replace('|', '_');
-    result.TrimRight(".");
-    result.TrimRight(" ");
+    StringUtils::TrimRight(result, ". ");
   }
   return result;
 }
@@ -1061,7 +1061,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
     function = execString;
 
   // remove any whitespace, and the standard prefix (if it exists)
-  function.Trim();
+  StringUtils::Trim(function);
   if( function.Left(5).Equals("xbmc.", false) )
     function.Delete(0, 5);
 
@@ -1581,26 +1581,24 @@ void CUtil::InitRandomSeed()
 bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
 {
   CStdStringArray args;
-
   StringUtils::SplitString(cmdLine, ",", args);
 
   // Strip quotes and whitespace around the arguments, or exec will fail.
   // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
   // But it's still limited, for example quotes inside the strings are not expanded, etc.
   // TODO: Maybe some python library routine can parse this more properly ?
-  for (size_t i=0; i<args.size(); i++)
+  for (CStdStringArray::iterator it = args.begin(); it != args.end(); ++it)
   {
-    CStdString &s = args[i];
-    CStdString stripd = s.Trim();
-    if (stripd[0] == '"' || stripd[0] == '\'')
+    size_t pos;
+    pos = it->find_first_not_of(" \t\n\"");
+    if (pos != std::string::npos)
     {
-      s = s.TrimLeft();
-      s = s.Right(s.size() - 1);
+      it->erase(0, pos);
     }
-    if (stripd[stripd.size() - 1] == '"' || stripd[stripd.size() - 1] == '\'')
+
+    pos = it->find_last_not_of(" \t\n\"");
     {
-      s = s.TrimRight();
-      s = s.Left(s.size() - 1);
+      it->erase(++pos, it->size());
     }
   }
 

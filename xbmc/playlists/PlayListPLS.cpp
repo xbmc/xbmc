@@ -100,8 +100,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       return size() > 0;
     }
     strLine = szLine;
-    strLine.TrimLeft(" \t");
-    strLine.TrimRight(" \n\r");
+    StringUtils::Trim(strLine);
     if(strLine.Equals(START_PLAYLIST_MARKER))
       break;
 

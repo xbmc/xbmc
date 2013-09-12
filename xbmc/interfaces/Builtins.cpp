@@ -832,15 +832,17 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (parameter.Left(14).Equals("seekpercentage"))
     {
-      CStdString offset = "";
-      if (parameter.size() == 14)
+      std::string offset = parameter.substr(14);
+      size_t first = offset.find_first_not_of("(");
+      size_t last = offset.rfind(")");
+      size_t length = last - first;
+      if (first == offset.npos || last == offset.npos)
         CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with no argument");
-      else if (parameter.size() < 17) // arg must be at least "(N)"
+      else if (first != 1 || last + 1 != offset.size() || length <= 0) // arg must be at least "(N)"
         CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", parameter.Mid(14).c_str());
       else
       {
-        // Don't bother checking the argument: an invalid arg will do seek(0)
-        offset = parameter.Mid(15).TrimRight(")");
+        offset = parameter.substr(first, last - first);
         float offsetpercent = (float) atof(offset.c_str());
         if (offsetpercent < 0 || offsetpercent > 100)
           CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) argument, %f, must be 0-100", offsetpercent);
@@ -860,19 +862,22 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (parameter.Left(9).Equals("partymode"))
     {
-      CStdString strXspPath = "";
+      std::string strXspPath = parameter.substr(9);
+      size_t first = strXspPath.find_first_not_of("(");
+      size_t last = strXspPath.rfind(")");
+      size_t length = last - first;
+
       //empty param=music, "music"=music, "video"=video, else xsp path
       PartyModeContext context = PARTYMODECONTEXT_MUSIC;
-      if (parameter.size() > 9)
-      {
-        if (parameter.Mid(10).Equals("video)"))
-          context = PARTYMODECONTEXT_VIDEO;
-        else if (!parameter.Mid(10).Equals("music)"))
-        {
-          strXspPath = parameter.Mid(10).TrimRight(")");
-          context = PARTYMODECONTEXT_UNKNOWN;
-        }
-      }
+      if (first == strXspPath.npos || last == strXspPath.npos || length == 0)
+        context = PARTYMODECONTEXT_MUSIC;
+      else if (strXspPath.compare(first, length, "music", 0, 5) == 0)
+        context = PARTYMODECONTEXT_MUSIC;
+      else if (strXspPath.compare(first, length, "video", 0, 5) == 0)
+        context = PARTYMODECONTEXT_VIDEO;
+      else
+        context = PARTYMODECONTEXT_UNKNOWN;
+
       if (g_partyModeManager.IsEnabled())
         g_partyModeManager.Disable();
       else

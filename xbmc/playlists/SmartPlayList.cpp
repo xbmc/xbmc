@@ -966,7 +966,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       {
         if (!parameter.empty())
           parameter += ",";
-        parameter += db.PrepareSQL("'%s'", (*itIn).Trim().c_str());
+        StringUtils::Trim(*itIn);
+        parameter += db.PrepareSQL("'%s'", itIn->c_str());
       }
       parameter = " IN (" + parameter + ")";
     }

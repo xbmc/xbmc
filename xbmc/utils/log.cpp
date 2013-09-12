@@ -116,16 +116,8 @@ void CLog::Log(int loglevel, const char *format, ... )
     m_repeatLine      = strData;
     m_repeatLogLevel  = loglevel;
 
-    unsigned int length = 0;
-    while ( length != strData.length() )
-    {
-      length = strData.length();
-      strData.TrimRight(" ");
-      strData.TrimRight('\n');
-      strData.TrimRight("\r");
-    }
-
-    if (!length)
+    StringUtils::TrimRight(strData);
+    if (strData.empty())
       return;
     
     OutputDebugString(strData);

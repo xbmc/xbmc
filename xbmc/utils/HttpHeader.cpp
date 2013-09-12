@@ -19,6 +19,7 @@
  */
 
 #include "HttpHeader.h"
+#include "utils/StringUtils.h"
 
 CHttpHeader::CHttpHeader()
 {
@@ -50,24 +51,10 @@ void CHttpHeader::Parse(CStdString strData)
       strParam = strData.substr(iIter, iValueStart - iIter);
       strValue = strData.substr(iValueStart + 1, iValueEnd - iValueStart - 1);
 
-      /*
-      CUtil::Lower(strParam.c_str()
-      // trim left and right
-      {
-        string::size_type pos = strValue.find_last_not_of(' ');
-        if(pos != string::npos)
-        {
-          strValue.erase(pos + 1);
-          pos = strValue.find_first_not_of(' ');
-          if(pos != string::npos) strValue.erase(0, pos);
-        }
-        else strValue.erase(strValue.begin(), strValue.end());
-      }*/
-      strParam.Trim();
-      strParam.ToLower();
+      StringUtils::Trim(strParam);
+      StringUtils::ToLower(strParam);
 
-      strValue.Trim();
-
+      StringUtils::Trim(strValue);
 
       m_params[strParam] = strValue;
     }

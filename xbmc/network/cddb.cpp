@@ -499,7 +499,7 @@ void Xcddb::parseData(const char *buffer)
       if (s != NULL)
       {
         CStdString strKeyword(line, s - line);
-        strKeyword.TrimRight(" ");
+        StringUtils::TrimRight(strKeyword);
 
         CStdString strValue(s+1);
         strValue.Replace("\\n", "\n"); 
@@ -569,7 +569,7 @@ void Xcddb::parseData(const char *buffer)
         if (iPos > -1)
         {
           CStdString strGenre = strExtd.Mid(iPos + 5, 4);
-          strGenre.TrimLeft(' ');
+          StringUtils::TrimLeft(strGenre);
           if (StringUtils::IsNaturalNumber(strGenre))
           {
             int iGenre = strtol(strGenre, NULL, 10);
@@ -1078,7 +1078,7 @@ CStdString Xcddb::GetCacheFile(uint32_t disc_id) const
 CStdString Xcddb::TrimToUTF8(const CStdString &untrimmedText)
 {
   CStdString text(untrimmedText);
-  text.Trim();
+  StringUtils::Trim(text);
   // You never know if you really get UTF-8 strings from cddb
   g_charsetConverter.unknownToUTF8(text);
   return text;

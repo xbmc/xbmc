@@ -64,10 +64,6 @@ private:
   void ParseExpression(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend);
   void ParseNext(TiXmlElement* element);
   void Clean(CStdString& strDirty);
-  /*! \brief Remove spaces, tabs, and newlines from a string
-   \param string the string in question, which will be modified.
-   */
-  void RemoveWhiteSpace(CStdString &string);
   void ConvertJSON(CStdString &string);
   void ClearBuffers();
   void GetBufferParams(bool* result, const char* attribute, bool defvalue);

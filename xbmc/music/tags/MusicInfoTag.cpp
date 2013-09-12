@@ -303,7 +303,9 @@ void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists)
 
 void CMusicInfoTag::SetAlbum(const CStdString& strAlbum)
 {
-  m_strAlbum = Trim(strAlbum);
+  std::string trimmedValue(strAlbum);
+  StringUtils::Trim(trimmedValue);
+  m_strAlbum = trimmedValue;
 }
 
 void CMusicInfoTag::SetAlbumId(const int iAlbumId)
@@ -735,7 +737,5 @@ void CMusicInfoTag::AppendGenre(const CStdString &genre)
 CStdString CMusicInfoTag::Trim(const CStdString &value) const
 {
   CStdString trimmedValue(value);
-  trimmedValue.TrimLeft(' ');
-  trimmedValue.TrimRight(" \n\r");
   return trimmedValue;
 }

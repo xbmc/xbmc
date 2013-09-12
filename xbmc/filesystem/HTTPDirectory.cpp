@@ -83,7 +83,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       if(strLink[0] == '/')
         strLink = strLink.Mid(1);
 
-      CStdString strNameTemp = strName.Trim();
+      CStdString strNameTemp = StringUtils::Trim(strName);
 
       CStdStringW wName, wLink, wConverted;
       g_charsetConverter.unknownToUTF8(strNameTemp);

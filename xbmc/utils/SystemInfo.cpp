@@ -710,7 +710,7 @@ CStdString CSysInfo::GetUnameVersion()
     {
       result = buffer;
 #if defined(TARGET_DARWIN)
-      result.Trim();
+      StringUtils::Trim(result);
       result += ", "; 
       result += GetDarwinVersionString();
 #endif
@@ -721,7 +721,7 @@ CStdString CSysInfo::GetUnameVersion()
   }
 #endif//else !TARGET_ANDROID
 
-  return result.Trim();
+  return StringUtils::Trim(result);
 }
 #endif
 
