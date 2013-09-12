@@ -135,6 +135,28 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   /* PHT can render subtitles itself no need to include them in the transcoded video */
   tURL.SetOption("skipSubtitles", "1");
   
+  CStdString extraAudioFormats;
+  int audioMode = g_guiSettings.GetInt("audiooutput.mode");
+  
+  if (AUDIO_IS_BITSTREAM(audioMode))
+  {
+    if (g_guiSettings.GetBool("audiooutput.ac3passthrough"))
+    {
+      extraAudioFormats += "add-transcode-target-audio-codec(type=videoProfile&context=streaming&protocol=hls&audioCodec=ac3)";
+      extraAudioFormats += "+add-transcode-target-audio-codec(type=videoProfile&context=streaming&protocol=hls&audioCodec=eac3)";
+    }
+    
+    if (g_guiSettings.GetBool("audiooutput.dtspassthrough"))
+    {
+      if (!extraAudioFormats.empty())
+        extraAudioFormats+="+";
+      extraAudioFormats += "add-transcode-target-audio-codec(type=videoProfile&context=streaming&protocol=hls&audioCodec=dca)";
+    }
+    
+    if (!extraAudioFormats.empty())
+      tURL.SetProtocolOption("X-Plex-Client-Profile-Extra", extraAudioFormats);
+  }
+  
   /* since we are passing the URL to FFMPEG we need to pass our 
    * headers as well */
   std::vector<stringPair> hdrs = XFILE::CPlexFile::GetHeaderList();
