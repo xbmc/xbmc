@@ -1126,7 +1126,7 @@
 						<include>LeftInfoFormatGrey</include>
 					</control>
 					<control type="label">
-						<label>$INFO[ListItem.Property(SelectedAudioStream)]</label>
+						<label>$INFO[ListItem.Property(SelectedSubtitleStream)]</label>
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
