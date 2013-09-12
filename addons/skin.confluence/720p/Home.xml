@@ -788,6 +788,13 @@
 					<visible>Container(9000).HasFocus(4)</visible>
 					<include>HomeSubMenuPictures</include> <!-- Buttons for the grouplist -->
 				</control>
+				<control type="grouplist" id="9016">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9016</onleft>
+					<onright>9016</onright>
+					<visible>Container(9000).HasFocus(13)</visible>
+					<include>HomeSubMenuGames</include> <!-- Buttons for the grouplist -->
+				</control>
 			</control>
 			<control type="image">
 				<posx>-100</posx>
@@ -935,6 +942,13 @@
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>
+					</item>
+					<item id="13">
+						<label>[UPPERCASE]$LOCALIZE[15016][/UPPERCASE]</label>
+						<onclick>ActivateWindow(Games)</onclick>
+						<icon>-</icon>
+						<thumb>-</thumb>
+						<visible>!Skin.HasSetting(HomeMenuNoGamesButton)</visible>
 					</item>
 					<item id="1">
 						<label>31957</label>

@@ -328,6 +328,7 @@ static const ActionMapping windows[] =
         {"music"                    , WINDOW_MUSIC},
         {"video"                    , WINDOW_VIDEOS},
         {"videos"                   , WINDOW_VIDEO_NAV},
+        {"games"                    , WINDOW_GAMES},
         {"tv"                       , WINDOW_PVR}, // backward compat
         {"pvr"                      , WINDOW_PVR},
         {"pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO},
