@@ -224,7 +224,7 @@ class CVdpauRenderPicture
   friend class COutput;
 public:
   CVdpauRenderPicture(CCriticalSection &section)
-    : renderPicSection(section), refCount(0) { fence = None; }
+    : refCount(0), renderPicSection(section) { fence = None; }
   void Sync();
   DVDVideoPicture DVDPic;
   int texWidth, texHeight;
