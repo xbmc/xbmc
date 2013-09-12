@@ -39,6 +39,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/cores/DllLoader/exports/exports.a \
                    xbmc/cores/DllLoader/exports/util/exports_utils.a \
                    xbmc/cores/ExternalPlayer/ExternalPlayer.a \
+                   xbmc/cores/RetroPlayer/retroplayer.a \
                    xbmc/cores/VideoRenderers/VideoRenderer.a \
                    xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a \
                    xbmc/cores/cores.a \

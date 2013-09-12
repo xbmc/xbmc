@@ -322,6 +322,9 @@
     <Filter Include="games\libretro">
       <UniqueIdentifier>{536b4439-d8cb-40e6-b8cc-c0f5c43c77ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\RetroPlayer">
+      <UniqueIdentifier>{7c1ec2e2-f324-4955-a4d8-5929210761e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3129,6 +3132,21 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\games\libretro\LibretroEnvironment.cpp">
       <Filter>games\libretro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\RetroPlayer\RetroPlayer.cpp">
+      <Filter>cores\RetroPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\RetroPlayer\RetroPlayerAudio.cpp">
+      <Filter>cores\RetroPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\RetroPlayer\RetroPlayerBuffer.cpp">
+      <Filter>cores\RetroPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\RetroPlayer\RetroPlayerDialogs.cpp">
+      <Filter>cores\RetroPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\RetroPlayer\RetroPlayerVideo.cpp">
+      <Filter>cores\RetroPlayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6138,6 +6156,21 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\games\libretro\LibretroCallbacks.h">
       <Filter>games\libretro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\RetroPlayer\RetroPlayer.h">
+      <Filter>cores\RetroPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\RetroPlayer\RetroPlayerAudio.h">
+      <Filter>cores\RetroPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\RetroPlayer\RetroPlayerBuffer.h">
+      <Filter>cores\RetroPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\RetroPlayer\RetroPlayerDialogs.h">
+      <Filter>cores\RetroPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\RetroPlayer\RetroPlayerVideo.h">
+      <Filter>cores\RetroPlayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

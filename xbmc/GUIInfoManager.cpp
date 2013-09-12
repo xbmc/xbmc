@@ -38,6 +38,7 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
+#include "games/tags/GameInfoTag.h"
 #include "guilib/IGUIContainer.h"
 #include "guilib/GUIWindowManager.h"
 #include "playlists/PlayList.h"
@@ -163,6 +164,7 @@ typedef struct
 const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },           // bools from here
                                   { "hasaudio",         PLAYER_HAS_AUDIO },
                                   { "hasvideo",         PLAYER_HAS_VIDEO },
+                                  { "hasgame",          PLAYER_HAS_GAME },
                                   { "playing",          PLAYER_PLAYING },
                                   { "paused",           PLAYER_PAUSED },
                                   { "rewinding",        PLAYER_REWINDING },
@@ -2350,6 +2352,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case PLAYER_HAS_VIDEO:
       bReturn = g_application.m_pPlayer->IsPlayingVideo();
       break;
+    case PLAYER_HAS_GAME:
+      bReturn = g_application.m_pPlayer->IsPlayingGame();
+      break;
     case PLAYER_PLAYING:
       bReturn = !g_application.m_pPlayer->IsPausedPlayback() && (g_application.m_pPlayer->GetPlaySpeed() == 1);
       break;
@@ -3868,6 +3873,8 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
 
   if (item.IsAudio())
     SetCurrentSong(item);
+  else if (item.IsGame())
+    SetCurrentGame(item);
   else
     SetCurrentMovie(item);
 
@@ -3983,6 +3990,22 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
   item.FillInDefaultIcon();
   m_currentMovieThumb = item.GetArt("thumb");
+}
+
+void CGUIInfoManager::SetCurrentGame(CFileItem &item)
+{
+  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentGame(%s)", item.GetPath().c_str());
+  *m_currentFile = item;
+
+  m_currentFile->LoadGameTag();
+  if (m_currentFile->GetGameInfoTag()->GetTitle().empty())
+  {
+    // No title in tag, show filename only
+    m_currentFile->GetGameInfoTag()->SetTitle(CUtil::GetTitleFromPath(m_currentFile->GetPath()));
+  }
+  m_currentFile->GetGameInfoTag()->SetLoaded(true);
+
+  m_currentFile->FillInDefaultIcon();
 }
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
