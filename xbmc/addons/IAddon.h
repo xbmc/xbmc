@@ -54,6 +54,7 @@ namespace ADDON
     ADDON_VIDEO, // virtual addon types
     ADDON_AUDIO,
     ADDON_IMAGE,
+    ADDON_GAME,
     ADDON_EXECUTABLE,
     ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
     ADDON_SCRAPER_LIBRARY,

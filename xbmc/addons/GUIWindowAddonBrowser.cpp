@@ -413,6 +413,8 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStd
       CAddonsDirectory::GetScriptsAndPlugins("image",addons);
     else if (*it == ADDON_VIDEO)
       CAddonsDirectory::GetScriptsAndPlugins("video",addons);
+    else if (*it == ADDON_GAME)
+      CAddonsDirectory::GetScriptsAndPlugins("game",addons);
     else
       CAddonMgr::Get().GetAddons(*it, addons);
     for (ADDON::IVECADDONS it2 = addons.begin() ; it2 != addons.end() ; ++it2)

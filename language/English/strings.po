@@ -3433,7 +3433,12 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr ""
 
-#empty strings from id 1052 to 1179
+#: xbmc/addons/Addon.cpp
+msgctxt "#1052"
+msgid "Game Add-ons"
+msgstr ""
+
+#empty strings from id 1053 to 1179
 
 #: system/settings/settings.xml
 msgctxt "#1180"

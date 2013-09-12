@@ -60,6 +60,9 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const CStdString &method, ITransport
     case ADDON_IMAGE:
       content = CPluginSource::IMAGE;
       break;
+    case ADDON_GAME:
+      content = CPluginSource::GAME;
+      break;
     case ADDON_EXECUTABLE:
       content = CPluginSource::EXECUTABLE;
       break;

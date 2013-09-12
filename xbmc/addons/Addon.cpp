@@ -86,6 +86,7 @@ static const TypeMapping types[] =
    {"xbmc.addon.video",                  ADDON_VIDEO,                1037, "DefaultAddonVideo.png" },
    {"xbmc.addon.audio",                  ADDON_AUDIO,                1038, "DefaultAddonMusic.png" },
    {"xbmc.addon.image",                  ADDON_IMAGE,                1039, "DefaultAddonPicture.png" },
+   {"xbmc.addon.game",                   ADDON_GAME,                 1052, "DefaultAddonGame.png" },
    {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043, "DefaultAddonProgram.png" },
    {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" }};
 
