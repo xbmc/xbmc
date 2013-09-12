@@ -88,7 +88,7 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
   /* reset the options to not bust cache stuff */
   mediaUrl.SetOptions("");
 
-  if (mediaUrl.GetHostName() == "myplex")
+  if (mediaUrl.GetHostName() == "myplex" && g_plexApplication.serverManager)
   {
     CPlexServerPtr bestServer = g_plexApplication.serverManager->GetBestServer();
     if (bestServer)
