@@ -9,3 +9,4 @@ xbmc/games/controllers/windows     games/controllers/windows
 xbmc/games/dialogs                 games/dialogs
 xbmc/games/ports                   games/ports
 xbmc/games/tags                    games/tags
+xbmc/games/windows                 games/windows

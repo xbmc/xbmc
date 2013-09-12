@@ -149,6 +149,7 @@
 
 /* Game related include files */
 #include "games/controllers/windows/GUIControllerWindow.h"
+#include "games/windows/GUIWindowGames.h"
 
 using namespace PVR;
 using namespace PERIPHERALS;
@@ -301,6 +302,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowEventLog);
 
   Add(new GAME::CGUIControllerWindow);
+  Add(new GAME::CGUIWindowGames);
 }
 
 bool CGUIWindowManager::DestroyWindows()
@@ -405,6 +407,7 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_PICTURES);
     Delete(WINDOW_WEATHER);
     Delete(WINDOW_DIALOG_GAME_CONTROLLERS);
+    Delete(WINDOW_GAMES);
 
     Remove(WINDOW_SETTINGS_SERVICE);
     Remove(WINDOW_SETTINGS_MYPVR);

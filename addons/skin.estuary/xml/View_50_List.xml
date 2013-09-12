@@ -68,7 +68,7 @@
 			<onup>$PARAM[list_id]</onup>
 			<ondown>$PARAM[list_id]</ondown>
 			<viewtype label="$PARAM[viewtype_label]">list</viewtype>
-			<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Window.IsActive(MyPlaylist.xml)</visible>
+			<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(games) | Window.IsActive(MyPlaylist.xml)</visible>
 			<focusedlayout height="list_item_height" width="list_width">
 				<control type="image">
 					<left>0</left>

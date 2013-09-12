@@ -154,7 +154,7 @@
 						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/bookmarks.png"/>
 						</include>
-						<onclick>ActivateWindow(videobookmarks)</onclick>
+						<onclick>ActivateWindow(VideoBookmarks)</onclick>
 						<visible>!VideoPlayer.Content(livetv)</visible>
 					</control>
 					<control type="radiobutton" id="703">

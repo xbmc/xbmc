@@ -66,6 +66,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/games/games.a \
                    xbmc/games/ports/gameports.a \
                    xbmc/games/tags/gameinfotags.a \
+                   xbmc/games/windows/gamewindows.a \
                    xbmc/guilib/guilib.a \
                    xbmc/input/input.a \
                    xbmc/interfaces/builtins/builtins.a \

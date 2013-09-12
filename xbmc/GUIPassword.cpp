@@ -404,6 +404,9 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
     case WINDOW_PICTURES:       // Pictures
       bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().picturesLocked();
       break;
+    case WINDOW_GAMES:          // Games
+      bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().gamesLocked();
+      break;
     case WINDOW_SETTINGS_PROFILES:
       bCheckPW = true;
       break;
@@ -442,8 +445,8 @@ bool CGUIPassword::LockSource(const std::string& strType, const std::string& str
 void CGUIPassword::LockSources(bool lock)
 {
   // lock or unlock all sources (those with locks)
-  const char* strType[5] = {"programs","music","video","pictures","files"};
-  for (int i=0;i<5;++i)
+  const char* strType[] = {"programs", "music", "video", "pictures", "files", "games"};
+  for (unsigned int i = 0; i < sizeof(strType) / sizeof(*strType); ++i)
   {
     VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType[i]);
     for (IVECSOURCES it=shares->begin();it != shares->end();++it)
@@ -457,8 +460,8 @@ void CGUIPassword::LockSources(bool lock)
 void CGUIPassword::RemoveSourceLocks()
 {
   // remove lock from all sources
-  const char* strType[5] = {"programs","music","video","pictures","files"};
-  for (int i=0;i<5;++i)
+  const char* strType[] = {"programs", "music", "video", "pictures", "files", "games"};
+  for (unsigned int i = 0; i < sizeof(strType) / sizeof(*strType); ++i)
   {
     VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType[i]);
     for (IVECSOURCES it=shares->begin();it != shares->end();++it)

@@ -27,6 +27,7 @@
 #include "pictures/GUIViewStatePictures.h"
 #include "profiles/ProfilesManager.h"
 #include "programs/GUIViewStatePrograms.h"
+#include "games/windows/GUIViewStateWindowGames.h"
 #include "PlayListPlayer.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
@@ -165,7 +166,10 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId == WINDOW_PROGRAMS)
     return new CGUIViewStateWindowPrograms(items);
-  
+
+  if (windowId == WINDOW_GAMES)
+    return new GAME::CGUIViewStateWindowGames(items);
+
   if (windowId == WINDOW_ADDON_BROWSER)
     return new CGUIViewStateAddonBrowser(items);
 

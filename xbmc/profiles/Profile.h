@@ -46,6 +46,7 @@ public:
     bool files;
     bool pictures;
     bool programs;
+    bool games;
   };
 
   CProfile(const std::string &directory = "", const std::string &name = "", const int id = -1);
@@ -78,6 +79,7 @@ public:
   bool picturesLocked() const { return m_locks.pictures; }
   bool filesLocked() const { return m_locks.files; }
   bool programsLocked() const { return m_locks.programs; }
+  bool gamesLocked() const { return m_locks.games; }
   const CLock &GetLocks() const { return m_locks; }
 
   void setName(const std::string& name) {m_name = name;}
