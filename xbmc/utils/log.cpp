@@ -67,7 +67,7 @@ void CLog::Log(int loglevel, const char *format, ... )
   CSingleLock waitLock(critSec);
   int extras = (loglevel >> LOGMASKBIT) << LOGMASKBIT;
   loglevel = loglevel & LOGMASK;
-#if !(defined(_DEBUG) || defined(PROFILE))
+#if 0
   if (m_logLevel > LOG_LEVEL_NORMAL ||
      (m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
 #endif
