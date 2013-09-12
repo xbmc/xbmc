@@ -33,6 +33,11 @@
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 
+#if defined(TARGET_ANDROID)
+#include "android/activity/AndroidFeatures.h"
+#include "utils/BitstreamConverter.h"
+#endif
+
 #include <unistd.h>
 #include <queue>
 #include <vector>
@@ -47,6 +52,22 @@
 extern "C" {
 #include <amcodec/codec.h>
 }  // extern "C"
+
+typedef struct {
+  bool          noblock;
+  int           video_pid;
+  int           video_type;
+  stream_type_t stream_type;
+  unsigned int  format;
+  unsigned int  width;
+  unsigned int  height;
+  unsigned int  rate;
+  unsigned int  extra;
+  unsigned int  status;
+  unsigned int  ratio;
+  unsigned long long ratio64;
+  void *param;
+} aml_generic_param;
 
 class DllLibamCodecInterface
 {
@@ -125,6 +146,87 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
 
     RESOLVE_METHOD(av_d2q)
   END_METHOD_RESOLVE()
+
+public:
+  void codec_init_para(aml_generic_param *p_in, codec_para_t *p_out)
+  {
+    memset(p_out, 0x00, sizeof(codec_para_t));
+
+#ifdef TARGET_ANDROID
+    bits_writer_t bs = {0};
+
+    // we are always as large as codec_para_t from headers.
+    CBitstreamConverter::init_bits_writer(&bs, (uint8_t*)p_out, sizeof(codec_para_t), 1);
+
+    // order matters, so pay attention
+    // to codec_para_t in codec_types.h
+    CBitstreamConverter::skip_bits( &bs, 32);                      // CODEC_HANDLE handle
+    CBitstreamConverter::skip_bits( &bs, 32);                      // CODEC_HANDLE cntl_handle
+    CBitstreamConverter::skip_bits( &bs, 32);                      // CODEC_HANDLE sub_handle
+
+    // added in JellyBean 4.2
+    if (CAndroidFeatures::GetVersion() > 16)
+      CBitstreamConverter::skip_bits(&bs, 32);                     // CODEC_HANDLE audio_utils_handle
+
+    CBitstreamConverter::write_bits(&bs, 32, p_in->stream_type);   // stream_type_t stream_type
+
+    // watch these, using bit fields (which is stupid)
+    CBitstreamConverter::write_bits(&bs,  1, 1);                   // unsigned int has_video:1
+    CBitstreamConverter::skip_bits( &bs,  1);                      // unsigned int has_audio:1
+    CBitstreamConverter::skip_bits( &bs,  1);                      // unsigned int has_sub:1
+    unsigned int value =  p_in->noblock > 0 ? 1:0;
+    CBitstreamConverter::write_bits(&bs,  1, value);               // unsigned int noblock:1
+    CBitstreamConverter::skip_bits( &bs,  28);                     // align back to word boundary
+
+    CBitstreamConverter::write_bits(&bs, 32, p_in->video_type);    // int video_type
+    CBitstreamConverter::skip_bits( &bs, 32);                      // int audio_type
+    CBitstreamConverter::skip_bits( &bs, 32);                      // int sub_type
+
+    CBitstreamConverter::write_bits(&bs, 32, p_in->video_pid);     // int video_pid
+    CBitstreamConverter::skip_bits( &bs, 32);                      // int audio_pid
+    CBitstreamConverter::skip_bits( &bs, 32);                      // int sub_pid
+
+    CBitstreamConverter::skip_bits( &bs, 32);                      // int audio_channels
+    CBitstreamConverter::skip_bits( &bs, 32);                      // int audio_samplerate
+    CBitstreamConverter::skip_bits( &bs, 32);                      // int vbuf_size
+    CBitstreamConverter::skip_bits( &bs, 32);                      // int abuf_size
+
+    CBitstreamConverter::write_bits(&bs, 32, p_in->format);        // am_sysinfo, unsigned int format
+    CBitstreamConverter::write_bits(&bs, 32, p_in->width);         // am_sysinfo, unsigned int width
+    CBitstreamConverter::write_bits(&bs, 32, p_in->height);        // am_sysinfo, unsigned int height
+    CBitstreamConverter::write_bits(&bs, 32, p_in->rate);          // am_sysinfo, unsigned int rate
+    CBitstreamConverter::write_bits(&bs, 32, p_in->extra);         // am_sysinfo, unsigned int extra
+    CBitstreamConverter::write_bits(&bs, 32, p_in->status);        // am_sysinfo, unsigned int status
+    CBitstreamConverter::write_bits(&bs, 32, p_in->ratio);         // am_sysinfo, unsigned int ratio
+    CBitstreamConverter::write_bits(&bs, 32, (unsigned int)p_in->param); // am_sysinfo, unsigned int param
+    unsigned int lo = 0x00000000ffffffff & p_in->ratio64;
+    unsigned int hi = p_in->ratio64 >> 32;
+    CBitstreamConverter::write_bits(&bs, 32, lo);                  // am_sysinfo, unsigned long long ratio64
+    CBitstreamConverter::write_bits(&bs, 32, hi);                  // am_sysinfo, unsigned long long ratio64
+
+    // we do not care about the rest, flush and go.
+    // FYI there are 4.0 to 4.1 differences here.
+    CBitstreamConverter::flush_bits(&bs);
+    //CLog::MemDump((char*)p_out, sizeof(codec_para_t));
+#else
+    // direct struct usage, we do not know which flavor
+    // so just use what we get from headers and pray.
+    p_out->has_video          = 1;
+    p_out->noblock            = p_in->noblock;
+    p_out->video_pid          = p_in->video_pid;
+    p_out->video_type         = p_in->video_type;
+    p_out->stream_type        = p_in->stream_type;
+    p_out->am_sysinfo.format  = p_in->format;
+    p_out->am_sysinfo.width   = p_in->width;
+    p_out->am_sysinfo.height  = p_in->height;
+    p_out->am_sysinfo.rate    = p_in->rate;
+    p_out->am_sysinfo.extra   = p_in->extra;
+    p_out->am_sysinfo.status  = p_in->status;
+    p_out->am_sysinfo.ratio   = p_in->ratio;
+    p_out->am_sysinfo.ratio64 = p_in->ratio64;
+    p_out->am_sysinfo.param   = p_in->param;
+#endif
+  }
 };
 
 //-----------------------------------------------------------------------------------
@@ -205,6 +307,7 @@ typedef enum {
 typedef struct am_private_t
 {
   am_packet_t       am_pkt;
+  aml_generic_param gcodec;
   codec_para_t      vcodec;
 
   pstream_type      stream_type;
@@ -1303,7 +1406,8 @@ CAMLCodec::~CAMLCodec()
 
 bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 {
-  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder");
+  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder, android version %d", CAndroidFeatures::GetVersion());
+
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_1st_pts = 0;
   m_cur_pts = 0;
@@ -1421,33 +1525,32 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     hints.orientation, hints.forced_aspect, hints.extrasize);
 
   // default video codec params
-  am_private->vcodec.has_video   = 1;
-  am_private->vcodec.noblock     = 0;
-  am_private->vcodec.video_pid   = am_private->video_pid;
-  am_private->vcodec.video_type  = am_private->video_format;
-  am_private->vcodec.stream_type = STREAM_TYPE_ES_VIDEO;
-  am_private->vcodec.am_sysinfo.format  = am_private->video_codec_type;
-  am_private->vcodec.am_sysinfo.width   = am_private->video_width;
-  am_private->vcodec.am_sysinfo.height  = am_private->video_height;
-  am_private->vcodec.am_sysinfo.rate    = am_private->video_rate;
-  am_private->vcodec.am_sysinfo.ratio   = am_private->video_ratio;
-  am_private->vcodec.am_sysinfo.ratio64 = am_private->video_ratio64;
-  am_private->vcodec.am_sysinfo.param   = NULL;
+  am_private->gcodec.noblock     = 0;
+  am_private->gcodec.video_pid   = am_private->video_pid;
+  am_private->gcodec.video_type  = am_private->video_format;
+  am_private->gcodec.stream_type = STREAM_TYPE_ES_VIDEO;
+  am_private->gcodec.format      = am_private->video_codec_type;
+  am_private->gcodec.width       = am_private->video_width;
+  am_private->gcodec.height      = am_private->video_height;
+  am_private->gcodec.rate        = am_private->video_rate;
+  am_private->gcodec.ratio       = am_private->video_ratio;
+  am_private->gcodec.ratio64     = am_private->video_ratio64;
+  am_private->gcodec.param       = NULL;
 
   switch(am_private->video_format)
   {
     default:
       break;
     case VFORMAT_MPEG4:
-      am_private->vcodec.am_sysinfo.param = (void*)EXTERNAL_PTS;
+      am_private->gcodec.param = (void*)EXTERNAL_PTS;
       break;
     case VFORMAT_H264:
     case VFORMAT_H264MVC:
-      am_private->vcodec.am_sysinfo.format = VIDEO_DEC_FORMAT_H264;
-      am_private->vcodec.am_sysinfo.param  = (void*)EXTERNAL_PTS;
+      am_private->gcodec.format = VIDEO_DEC_FORMAT_H264;
+      am_private->gcodec.param  = (void*)EXTERNAL_PTS;
       // h264 in an avi file
       if (m_hints.ptsinvalid)
-        am_private->vcodec.am_sysinfo.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
+        am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       break;
     case VFORMAT_REAL:
       am_private->stream_type = AM_STREAM_RM;
@@ -1459,26 +1562,29 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
         static unsigned short tbl[9] = {0};
         if (VIDEO_DEC_FORMAT_REAL_8 == am_private->video_codec_type)
         {
-          am_private->vcodec.am_sysinfo.extra = am_private->extradata[1] & 7;
-          tbl[0] = (((am_private->vcodec.am_sysinfo.width  >> 2) - 1) << 8)
-                 | (((am_private->vcodec.am_sysinfo.height >> 2) - 1) & 0xff);
+          am_private->gcodec.extra = am_private->extradata[1] & 7;
+          tbl[0] = (((am_private->gcodec.width  >> 2) - 1) << 8)
+                 | (((am_private->gcodec.height >> 2) - 1) & 0xff);
           unsigned int j;
-          for (unsigned int i = 1; i <= am_private->vcodec.am_sysinfo.extra; i++)
+          for (unsigned int i = 1; i <= am_private->gcodec.extra; i++)
           {
             j = 2 * (i - 1);
             tbl[i] = ((am_private->extradata[8 + j] - 1) << 8) | ((am_private->extradata[8 + j + 1] - 1) & 0xff);
           }
         }
-        am_private->vcodec.am_sysinfo.param = &tbl;
+        am_private->gcodec.param = &tbl;
       }
       break;
     case VFORMAT_VC1:
       // vc1 in an avi file
       if (m_hints.ptsinvalid)
-        am_private->vcodec.am_sysinfo.param = (void*)EXTERNAL_PTS;
+        am_private->gcodec.param = (void*)EXTERNAL_PTS;
       break;
   }
-  am_private->vcodec.am_sysinfo.param = (void *)((unsigned int)am_private->vcodec.am_sysinfo.param | (am_private->video_rotation_degree << 16));
+  am_private->gcodec.param = (void *)((unsigned int)am_private->gcodec.param | (am_private->video_rotation_degree << 16));
+
+  // translate from generic to firemware version dependent
+  m_dll->codec_init_para(&am_private->gcodec, &am_private->vcodec);
 
   int ret = m_dll->codec_init(&am_private->vcodec);
   if (ret != CODEC_ERROR_NONE)
