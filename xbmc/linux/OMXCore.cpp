@@ -32,6 +32,7 @@
 #include "utils/log.h"
 
 #include "OMXClock.h"
+#include "xbmc/linux/RBP.h"
 
 #ifdef TARGET_LINUX
 #include "XMemUtils.h"
@@ -64,22 +65,12 @@ COMXCoreTunel::COMXCoreTunel()
   m_dst_port            = 0;
   m_portSettingsChanged = false;
   m_tunnel_set          = false;
-  m_DllOMX              = new DllOMX();
-
-  if(m_DllOMX)
-    m_DllOMXOpen        = m_DllOMX->Load();
-  else
-    m_DllOMXOpen        = false;
-
+  m_DllOMX              = g_RBP.GetDllOMX();
   pthread_mutex_init(&m_lock, NULL);
 }
 
 COMXCoreTunel::~COMXCoreTunel()
 {
-  if(m_DllOMXOpen)
-    m_DllOMX->Unload();
-  delete m_DllOMX;
-
   pthread_mutex_destroy(&m_lock);
 }
 
@@ -95,8 +86,6 @@ void COMXCoreTunel::UnLock()
 
 void COMXCoreTunel::Initialize(COMXCoreComponent *src_component, unsigned int src_port, COMXCoreComponent *dst_component, unsigned int dst_port)
 {
-  if(!m_DllOMXOpen)
-    return;
   m_src_component  = src_component;
   m_src_port    = src_port;
   m_dst_component  = dst_component;
@@ -110,7 +99,7 @@ bool COMXCoreTunel::IsInitialized()
 
 OMX_ERRORTYPE COMXCoreTunel::Flush()
 {
-  if(!m_DllOMXOpen || !m_src_component || !m_dst_component || !m_tunnel_set || !IsInitialized())
+  if(!m_src_component || !m_dst_component || !m_tunnel_set || !IsInitialized())
     return OMX_ErrorUndefined;
 
   Lock();
@@ -149,9 +138,6 @@ OMX_ERRORTYPE COMXCoreTunel::Flush()
 
 OMX_ERRORTYPE COMXCoreTunel::Deestablish(bool noWait)
 {
-  if(!m_DllOMXOpen)
-    return OMX_ErrorUndefined;
-
   if(!m_src_component || !m_dst_component || !IsInitialized())
     return OMX_ErrorUndefined;
 
@@ -211,9 +197,6 @@ OMX_ERRORTYPE COMXCoreTunel::Deestablish(bool noWait)
 
 OMX_ERRORTYPE COMXCoreTunel::Establish(bool portSettingsChanged, bool enable_ports /* = true */)
 {
-  if(!m_DllOMXOpen)
-    return OMX_ErrorUndefined;
-
   Lock();
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
@@ -384,12 +367,7 @@ COMXCoreComponent::COMXCoreComponent()
   m_omx_input_use_buffers  = false;
   m_omx_output_use_buffers = false;
 
-  m_DllOMX = new DllOMX();
-
-  if(m_DllOMX)
-    m_DllOMXOpen = m_DllOMX->Load();
-  else
-    m_DllOMXOpen = false;
+  m_DllOMX = g_RBP.GetDllOMX();
 
   pthread_mutex_init(&m_lock, NULL);
 }
@@ -407,10 +385,6 @@ COMXCoreComponent::~COMXCoreComponent()
   pthread_cond_destroy(&m_omx_event_cond);
 
   pthread_mutex_destroy(&m_lock);
-
-  if(m_DllOMXOpen)
-    m_DllOMX->Unload();
-  delete m_DllOMX;
 }
 
 void COMXCoreComponent::Lock()
@@ -1473,9 +1447,6 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
 {
   OMX_ERRORTYPE omx_err;
 
-  if(!m_DllOMXOpen)
-    return false;
-
   m_resource_error = false;
   m_componentName = component_name;
   
@@ -1495,8 +1466,8 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
       return false;
     }
 
-    CLog::Log(LOGDEBUG, "COMXCoreComponent::Initialize : %s handle %p dllopen : %d\n", 
-          m_componentName.c_str(), m_handle, m_DllOMXOpen);
+    CLog::Log(LOGDEBUG, "COMXCoreComponent::Initialize : %s handle %p\n",
+          m_componentName.c_str(), m_handle);
   }
 
   OMX_PORT_PARAM_TYPE port_param;
@@ -1559,7 +1530,7 @@ bool COMXCoreComponent::Deinitialize(bool free_component /* = false */)
   m_flush_input   = true;
   m_flush_output  = true;
 
-  if(m_handle && m_DllOMXOpen)
+  if(m_handle)
   {
     FlushAll();
 
@@ -1570,8 +1541,8 @@ bool COMXCoreComponent::Deinitialize(bool free_component /* = false */)
 
     if(free_component)
     {
-      CLog::Log(LOGDEBUG, "COMXCoreComponent::Deinitialize : %s handle %p dllopen : %d\n", 
-          m_componentName.c_str(), m_handle, m_DllOMXOpen);
+      CLog::Log(LOGDEBUG, "COMXCoreComponent::Deinitialize : %s handle %p\n",
+          m_componentName.c_str(), m_handle);
       omx_err = m_DllOMX->OMX_FreeHandle(m_handle);
       if (omx_err != OMX_ErrorNone)
       {
