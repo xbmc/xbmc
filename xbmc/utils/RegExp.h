@@ -27,11 +27,14 @@
 
 namespace PCRE {
 #ifdef TARGET_WINDOWS
-#define PCRE_STATIC
-#include "lib/win32/pcre/pcre.h"
-#else
+#define PCRE_STATIC 1
+#ifdef _DEBUG
+#pragma comment(lib, "pcred.lib")
+#else  // ! _DEBUG
+#pragma comment(lib, "pcre.lib")
+#endif // ! _DEBUG
+#endif // TARGET_WINDOWS
 #include <pcre.h>
-#endif
 }
 
 // maximum of 20 backreferences
