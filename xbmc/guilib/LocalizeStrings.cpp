@@ -175,7 +175,7 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
     const char* attrId=pChild->Attribute("id");
     if (attrId && !pChild->NoChildren())
     {
-      int id = atoi(attrId) + offset;
+      uint32_t id = atoi(attrId) + offset;
       if (m_strings.find(id) == m_strings.end())
         m_strings[id].strTranslated = ToUTF8(encoding, pChild->FirstChild()->Value());
     }
