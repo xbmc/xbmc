@@ -75,6 +75,8 @@ int swr_set_channel_mapping(struct SwrContext *s, const int *channel_map);
 
 int swr_set_matrix(struct SwrContext *s, const double *matrix, int stride);
 
+int swr_set_compensation(struct SwrContext *s, int sample_delta, int compensation_distance);
+
 // libavfilter
 
 #define LIBAVFILTER_AVFRAME_BASED

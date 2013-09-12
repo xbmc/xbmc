@@ -73,3 +73,8 @@ int swr_set_matrix(struct SwrContext *s, const double *matrix, int stride)
 {
     return avresample_set_matrix(s, matrix, stride);
 }
+
+int swr_set_compensation(struct SwrContext *s, int sample_delta, int compensation_distance)
+{
+    return avresample_set_compensation(s, sample_delta, compensation_distance);
+}
