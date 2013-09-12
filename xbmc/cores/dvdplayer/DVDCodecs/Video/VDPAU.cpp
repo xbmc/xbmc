@@ -3251,7 +3251,7 @@ void COutput::ReleaseBufferPool()
 
   // wait for all fences
   XbmcThreads::EndTime timeout(1000);
-  for (int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
+  for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
   {
     CVdpauRenderPicture *pic = m_bufferPool.allRenderPics[i];
     if (pic->usefence)
