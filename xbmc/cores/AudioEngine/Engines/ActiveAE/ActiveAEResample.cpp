@@ -159,8 +159,19 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
   return true;
 }
 
-int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples)
+int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, double ratio)
 {
+  if (ratio != 1.0)
+  {
+    if (m_dllSwResample.swr_set_compensation(m_pContext,
+                                            (dst_samples*ratio-dst_samples)*m_dst_rate/m_src_rate,
+                                             dst_samples*m_dst_rate/m_src_rate) < 0)
+    {
+      CLog::Log(LOGERROR, "CActiveAEResample::Resample - set compensation failed");
+      return 0;
+    }
+  }
+
   int ret = m_dllSwResample.swr_convert(m_pContext, dst_buffer, dst_samples, (const uint8_t**)src_buffer, src_samples);
   if (ret < 0)
   {
