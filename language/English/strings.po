@@ -1251,7 +1251,7 @@ msgid "Audio output"
 msgstr ""
 
 msgctxt "#338"
-msgid "Analogue"
+msgid "Analog"
 msgstr ""
 
 msgctxt "#339"
@@ -2755,7 +2755,7 @@ msgid "Grey"
 msgstr ""
 
 #empty strings from id 768 to 769
-#strings 768 and 769 reserved for more subtitle colours
+#strings 768 and 769 reserved for more subtitle colors
 
 msgctxt "#770"
 msgid "Error %i: share not available"
@@ -3718,17 +3718,17 @@ msgstr ""
 #empty strings from id 10035 to 10039
 
 msgctxt "#10040"
-msgid "Add-on browser"
+msgid "Addon browser"
 msgstr ""
 
 #empty strings from id 10041 to 10099
 
 msgctxt "#10100"
-msgid "Yes/No dialogue"
+msgid "Yes/No dialog"
 msgstr ""
 
 msgctxt "#10101"
-msgid "Progress dialogue"
+msgid "Progress dialog"
 msgstr ""
 
 #empty strings from id 10102 to 10209
@@ -3830,7 +3830,7 @@ msgstr ""
 #empty strings from id 10525 to 11999
 
 msgctxt "#12000"
-msgid "Select dialogue"
+msgid "Select dialog"
 msgstr ""
 
 msgctxt "#12001"
@@ -3838,7 +3838,7 @@ msgid "Music/Info"
 msgstr ""
 
 msgctxt "#12002"
-msgid "Dialogue OK"
+msgid "Dialog OK"
 msgstr ""
 
 msgctxt "#12003"
@@ -3860,7 +3860,7 @@ msgstr ""
 #empty string with id 12007
 
 msgctxt "#12008"
-msgid "File stacking dialogue"
+msgid "File stacking dialog"
 msgstr ""
 
 msgctxt "#12009"
@@ -4237,7 +4237,7 @@ msgid "Reboot"
 msgstr ""
 
 msgctxt "#13014"
-msgid "Minimise"
+msgid "Minimize"
 msgstr ""
 
 msgctxt "#13015"
@@ -4433,7 +4433,7 @@ msgid "Primary DNS"
 msgstr ""
 
 msgctxt "#13162"
-msgid "Initialise failed"
+msgid "Initialize failed"
 msgstr ""
 
 #empty strings from id 13163 to 13169
@@ -4707,7 +4707,7 @@ msgid "Recursive slideshow"
 msgstr ""
 
 msgctxt "#13319"
-msgid "Randomise"
+msgid "Randomize"
 msgstr ""
 
 msgctxt "#13320"
@@ -5730,7 +5730,7 @@ msgid "Please update XBMC"
 msgstr ""
 
 msgctxt "#15206"
-msgid "Bad authorisation: Check username and password"
+msgid "Bad authorization: Check username and password"
 msgstr ""
 
 msgctxt "#15207"
@@ -5762,7 +5762,7 @@ msgid "Play using..."
 msgstr ""
 
 msgctxt "#15214"
-msgid "Use smoothed A/V synchronisation"
+msgid "Use smoothed A/V synchronization"
 msgstr ""
 
 msgctxt "#15215"
@@ -6134,7 +6134,7 @@ msgid "No matching songs in the library."
 msgstr ""
 
 msgctxt "#16032"
-msgid "Could not initialise database."
+msgid "Could not initialize database."
 msgstr ""
 
 msgctxt "#16033"
@@ -6292,7 +6292,7 @@ msgid "Inverse Telecine"
 msgstr ""
 
 msgctxt "#16315"
-msgid "Lanczos3 optimised"
+msgid "Lanczos3 optimized"
 msgstr ""
 
 msgctxt "#16316"
@@ -6324,7 +6324,7 @@ msgid "Spline36"
 msgstr ""
 
 msgctxt "#16323"
-msgid "Spline36 optimised"
+msgid "Spline36 optimized"
 msgstr ""
 
 msgctxt "#16324"
@@ -6332,7 +6332,7 @@ msgid "Software Blend"
 msgstr ""
 
 msgctxt "#16325"
-msgid "Auto - ION Optimised"
+msgid "Auto - ION Optimized"
 msgstr ""
 
 #empty strings from id 16326 to 16399
@@ -7016,7 +7016,7 @@ msgid "Timeout when starting playback"
 msgstr ""
 
 msgctxt "#19171"
-msgid "Start playback minimised"
+msgid "Start playback minimized"
 msgstr ""
 
 msgctxt "#19172"
@@ -7090,7 +7090,7 @@ msgid "Continue last channel on startup"
 msgstr ""
 
 msgctxt "#19190"
-msgid "Minimised"
+msgid "Minimized"
 msgstr ""
 
 msgctxt "#19191"
@@ -7266,7 +7266,7 @@ msgid "Display a notification on timer updates"
 msgstr ""
 
 msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR add-on)"
+msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
 msgstr ""
 
 msgctxt "#19235"
@@ -10161,7 +10161,7 @@ msgid "Guide"
 msgstr ""
 
 msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimise black bars"
+msgid "Allowed error in aspect ratio to minimize black bars"
 msgstr ""
 
 msgctxt "#22022"
@@ -10696,7 +10696,7 @@ msgstr ""
 #strings 30000 thru 30999 reserved for plugins and plugin settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
-#strings 33000 thru 33999 reserved for common strings used in add-ons
+#strings 33000 thru 33999 reserved for common strings used in addons
 
 msgctxt "#33001"
 msgid "Trailer quality"
@@ -11145,7 +11145,7 @@ msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr ""
 
 msgctxt "#34402"
-msgid "Failed to initialise audio device"
+msgid "Failed to initialize audio device"
 msgstr ""
 
 msgctxt "#34403"
