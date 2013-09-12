@@ -7969,9 +7969,6 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     int total = m_pDS->num_rows();
     int current = 0;
 
-    bool bIsSource;
-    VECSOURCES *pShares = CMediaSourceSettings::Get().GetSources("video");
-
     while (!m_pDS->eof())
     {
       CStdString path = m_pDS->fv("path.strPath").get_asString();
@@ -7983,19 +7980,9 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       if (URIUtils::IsStack(fullPath))
         fullPath = CStackDirectory::GetFirstStackedFile(fullPath);
 
-      // check if we have a internet related file that is part of a media source
-      if (URIUtils::IsInternetStream(fullPath, true) && CUtil::GetMatchingSource(fullPath, *pShares, bIsSource) > -1)
-      {
-        if (!CFile::Exists(fullPath, false))
-          filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
-      }
-      else
-      {
-        // remove optical, internet related and non-existing files
-        // note: this will also remove entries from previously existing media sources
-        if (URIUtils::IsOnDVD(fullPath) || URIUtils::IsInternetStream(fullPath, true) || !CFile::Exists(fullPath, false))
-          filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
-      }
+      // remove optical, non-existing files
+      if (URIUtils::IsOnDVD(fullPath) || !CFile::Exists(fullPath, false))
+        filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
 
       if (!handle)
       {
