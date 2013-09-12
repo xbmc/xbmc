@@ -1382,7 +1382,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#338"
-msgid "Analog"
+msgid "Analogue"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -3013,7 +3013,7 @@ msgid "Grey"
 msgstr ""
 
 #empty strings from id 768 to 769
-#strings 768 and 769 reserved for more subtitle colors
+#strings 768 and 769 reserved for more subtitle colours
 
 msgctxt "#770"
 msgid "Error %i: share not available"
@@ -4128,7 +4128,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10040"
-msgid "Addon browser"
+msgid "Add-on browser"
 msgstr ""
 
 msgctxt "#10041"
@@ -4151,12 +4151,12 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10100"
-msgid "Yes/No dialog"
+msgid "Yes/No dialogue"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10101"
-msgid "Progress dialog"
+msgid "Progress dialogue"
 msgstr ""
 
 #empty strings from id 10102 to 10125
@@ -4340,7 +4340,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12000"
-msgid "Select dialog"
+msgid "Select dialogue"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -4350,7 +4350,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12002"
-msgid "Dialog OK"
+msgid "Dialogue OK"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -4376,7 +4376,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12008"
-msgid "File stacking dialog"
+msgid "File stacking dialogue"
 msgstr ""
 
 #. Does not match window ID description
@@ -4795,7 +4795,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13014"
-msgid "Minimize"
+msgid "Minimise"
 msgstr ""
 
 msgctxt "#13015"
@@ -5056,7 +5056,7 @@ msgid "Primary DNS"
 msgstr ""
 
 msgctxt "#13162"
-msgid "Initialize failed"
+msgid "Initialise failed"
 msgstr ""
 
 #empty strings from id 13163 to 13169
@@ -5342,7 +5342,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13319"
-msgid "Randomize"
+msgid "Randomise"
 msgstr ""
 
 msgctxt "#13320"
@@ -6490,7 +6490,7 @@ msgid "Play using..."
 msgstr ""
 
 msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
+msgid "Use smoothed A/V synchronisation"
 msgstr ""
 
 msgctxt "#15215"
@@ -6660,7 +6660,7 @@ msgid "No matching songs in the library."
 msgstr ""
 
 msgctxt "#16032"
-msgid "Could not initialize database."
+msgid "Could not initialise database."
 msgstr ""
 
 msgctxt "#16033"
@@ -6834,7 +6834,7 @@ msgid "Inverse Telecine"
 msgstr ""
 
 msgctxt "#16315"
-msgid "Lanczos3 optimized"
+msgid "Lanczos3 optimised"
 msgstr ""
 
 msgctxt "#16316"
@@ -6866,7 +6866,7 @@ msgid "Spline36"
 msgstr ""
 
 msgctxt "#16323"
-msgid "Spline36 optimized"
+msgid "Spline36 optimised"
 msgstr ""
 
 msgctxt "#16324"
@@ -6874,7 +6874,7 @@ msgid "Software Blend"
 msgstr ""
 
 msgctxt "#16325"
-msgid "Auto - ION Optimized"
+msgid "Auto - ION Optimised"
 msgstr ""
 
 #empty strings from id 16326 to 16399
@@ -7584,7 +7584,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19171"
-msgid "Start playback minimized"
+msgid "Start playback minimised"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -7673,7 +7673,7 @@ msgid "Continue last channel on startup"
 msgstr ""
 
 msgctxt "#19190"
-msgid "Minimized"
+msgid "Minimised"
 msgstr ""
 
 msgctxt "#19191"
@@ -7857,7 +7857,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
+msgid "Use backend channels numbers (only works with 1 enabled PVR add-on)"
 msgstr ""
 
 msgctxt "#19235"
@@ -11088,7 +11088,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
+msgid "Allowed error in aspect ratio to minimise black bars"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11694,7 +11694,7 @@ msgstr ""
 #strings 30000 thru 30999 reserved for plugins and plugin settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
-#strings 33000 thru 33999 reserved for common strings used in addons
+#strings 33000 thru 33999 reserved for common strings used in add-ons
 
 msgctxt "#33001"
 msgid "Trailer quality"
@@ -12240,7 +12240,7 @@ msgstr ""
 
 #: xbmc/cores/audioengine/sinks/aesinknull.cpp
 msgctxt "#34402"
-msgid "Failed to initialize audio device"
+msgid "Failed to initialise audio device"
 msgstr ""
 
 #: xbmc/cores/audioengine/sinks/aesinknull.cpp
@@ -12291,7 +12291,7 @@ msgstr ""
 
 #: xbmc/pheripherals/devices/PeripheralNIC.cpp
 msgctxt "#35002"
-msgid "Generic network adapter"
+msgid "Generic network adaptor"
 msgstr ""
 
 #: xbmc/pheripherals/devices/PeripheralDisk.cpp
@@ -12374,7 +12374,7 @@ msgstr ""
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
+msgid "Pulse-Eight CEC adaptor"
 msgstr ""
 
 msgctxt "#36001"
@@ -12402,7 +12402,7 @@ msgid "Enable switch side commands"
 msgstr ""
 
 msgctxt "#36006"
-msgid "Could not open the adapter"
+msgid "Could not open the adaptor"
 msgstr ""
 
 #: system/peripherals.xml
@@ -12431,7 +12431,7 @@ msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
+msgid "Could not initialise the CEC adaptor. Please check your settings."
 msgstr ""
 
 #empty strings from id 36013 to 36014
@@ -12449,7 +12449,7 @@ msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
+msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
 msgstr ""
 
 #: system/peripherals.xml
@@ -12522,12 +12522,12 @@ msgstr ""
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
+msgid "This user does not have permissions to open the CEC adaptor"
 msgstr ""
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
+msgid "The port is busy. Only one program can access the CEC adaptor"
 msgstr ""
 
 #: system/peripherals.xml
@@ -12733,7 +12733,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12913,7 +12913,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36166"
-msgid "Synchronize the video to the refresh rate of the monitor."
+msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13568,7 +13568,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36297"
-msgid "Select the font color used during karoake."
+msgid "Select the font colour used during karoake."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13853,7 +13853,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36354"
-msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimizing other applications. Uses a bit more resources and playback may be slightly less smooth."
+msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimising other applications. Uses a bit more resources and playback may be slightly less smooth."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14058,7 +14058,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36395"
-msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
+msgid "Open the Master Lock dialogue, where you can configure your Master Lock options."
 msgstr ""
 
 #: system/settings/settings.xml
