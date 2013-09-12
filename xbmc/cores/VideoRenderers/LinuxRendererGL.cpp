@@ -2387,7 +2387,6 @@ bool CLinuxRendererGL::UploadVDPAUTexture(int index)
 #ifdef HAVE_LIBVDPAU
   VDPAU::CVdpauRenderPicture *vdpau = m_buffers[index].vdpau;
 
-  unsigned int flipindex = m_buffers[index].flipindex;
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANE &plane = fields[FIELD_FULL][0];
@@ -2477,7 +2476,6 @@ bool CLinuxRendererGL::UploadVDPAUTexture420(int index)
   VDPAU::CVdpauRenderPicture *vdpau = m_buffers[index].vdpau;
   YV12Image &im = m_buffers[index].image;
 
-  unsigned int flipindex = m_buffers[index].flipindex;
   YUVFIELDS &fields = m_buffers[index].fields;
 
   if (!vdpau || !vdpau->valid)
