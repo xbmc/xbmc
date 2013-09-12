@@ -39,12 +39,11 @@
 
 class CRenderCapture;
 
-class CVDPAU;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 namespace VAAPI   { struct CHolder; }
-
+namespace VDPAU   { class CVdpauRenderPicture; }
 
 #undef ALIGN
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
@@ -143,7 +142,7 @@ public:
   virtual unsigned int GetProcessorSize();
 
 #ifdef HAVE_LIBVDPAU
-  virtual void         AddProcessor(CVDPAU* vdpau, int index);
+  virtual void         AddProcessor(VDPAU::CVdpauRenderPicture* vdpau, int index);
 #endif
 #ifdef HAVE_LIBVA
   virtual void         AddProcessor(VAAPI::CHolder& holder, int index);
@@ -178,35 +177,39 @@ protected:
   void UpdateVideoFilter();
 
   // textures
-  void (CLinuxRendererGL::*m_textureUpload)(int index);
+  bool (CLinuxRendererGL::*m_textureUpload)(int index);
   void (CLinuxRendererGL::*m_textureDelete)(int index);
   bool (CLinuxRendererGL::*m_textureCreate)(int index);
 
-  void UploadYV12Texture(int index);
+  bool UploadYV12Texture(int index);
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
 
-  void UploadNV12Texture(int index);
+  bool UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
   
-  void UploadVDPAUTexture(int index);
+  bool UploadVDPAUTexture(int index);
   void DeleteVDPAUTexture(int index);
   bool CreateVDPAUTexture(int index);
 
-  void UploadVAAPITexture(int index);
+  bool UploadVDPAUTexture420(int index);
+  void DeleteVDPAUTexture420(int index);
+  bool CreateVDPAUTexture420(int index);
+
+  bool UploadVAAPITexture(int index);
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
 
-  void UploadCVRefTexture(int index);
+  bool UploadCVRefTexture(int index);
   void DeleteCVRefTexture(int index);
   bool CreateCVRefTexture(int index);
 
-  void UploadYUV422PackedTexture(int index);
+  bool UploadYUV422PackedTexture(int index);
   void DeleteYUV422PackedTexture(int index);
   bool CreateYUV422PackedTexture(int index);
 
-  void UploadRGBTexture(int index);
+  bool UploadRGBTexture(int index);
   void ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsigned flipIndexBuf);
   void ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, unsigned flipIndexPlaneBot, unsigned flipIndexBuf);
   void SetupRGBBuffer();
@@ -214,12 +217,12 @@ protected:
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
-  void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
-  void RenderToFBO(int renderBuffer, int field);
+  void RenderToFBO(int renderBuffer, int field, bool weave = false);
   void RenderFromFBO();
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
+  void RenderProgressiveWeave(int renderBuffer, int field); // render using vdpau hardware
   void RenderVAAPI(int renderBuffer, int field);      // render using vdpau hardware
 
   struct
@@ -280,7 +283,7 @@ protected:
     GLuint    pbo[MAX_PLANES];
 
 #ifdef HAVE_LIBVDPAU
-    CVDPAU*   vdpau;
+    VDPAU::CVdpauRenderPicture *vdpau;
 #endif
 #ifdef HAVE_LIBVA
     VAAPI::CHolder& vaapi;
