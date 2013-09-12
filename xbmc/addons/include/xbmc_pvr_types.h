@@ -395,6 +395,9 @@ extern "C" {
     bool         (__cdecl* CanSeekStream)(void);
     bool         (__cdecl* SeekTime)(int, bool, double*);
     void         (__cdecl* SetSpeed)(int);
+    time_t       (__cdecl* GetPlayingTime)(void);
+    time_t       (__cdecl* GetBufferTimeStart)(void);
+    time_t       (__cdecl* GetBufferTimeEnd)(void);
   } PVRClient;
 
 #ifdef __cplusplus
