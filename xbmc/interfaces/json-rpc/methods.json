@@ -1692,7 +1692,7 @@
     "params": [
       { "name": "properties", "$ref": "Profiles.Fields.Profile" }
     ],
-	"returns":  { "$ref": "Profiles.Details.Profile", "required": true }
+    "returns":  { "$ref": "Profiles.Details.Profile", "required": true }
   },
   "Profiles.LoadProfile": {
     "type": "method",
