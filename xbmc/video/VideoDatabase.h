@@ -746,17 +746,18 @@ public:
    If the path is already in the database, we simply return its id.
    \param strPath the path to add
    \param parentPath the parent path of the path to add. If empty, URIUtils::GetParentPath() will determine the path.
-   \param strDateAdded datetime when the path was added to the filesystem/database
+   \param dateAdded datetime when the path was added to the filesystem/database
    \return id of the file, -1 if it could not be added.
    */
-  int AddPath(const std::string& strPath, const std::string &parentPath = "", const std::string &strDateAdded = "");
+  int AddPath(const std::string& strPath, const std::string &parentPath = "", const CDateTime& dateAdded = CDateTime());
 
   /*! \brief Updates the dateAdded field in the files table for the file
    with the given idFile and the given path based on the files modification date
    \param idFile id of the file in the files table
    \param strFileNameAndPath path to the file
+   \param dateAdded datetime when the file was added to the filesystem/database
    */
-  void UpdateFileDateAdded(int idFile, const std::string& strFileNameAndPath);
+  void UpdateFileDateAdded(int idFile, const std::string& strFileNameAndPathh, const CDateTime& dateAdded = CDateTime());
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
   void ExportActorThumbs(const std::string &path, const CVideoInfoTag& tag, bool singleFiles, bool overwrite=false);
@@ -863,9 +864,10 @@ protected:
    \param idShow the id of the show.
    \param path the path to add.
    \param parentPath the parent path of the path to add.
+   \param dateAdded date/time when the path was added
    \return true if successfully added, false otherwise.
    */
-  bool AddPathToTvShow(int idShow, const std::string &path, const std::string &parentPath);
+  bool AddPathToTvShow(int idShow, const std::string &path, const std::string &parentPath, const CDateTime& dateAdded = CDateTime());
 
   /*! \brief Check whether a show is already in the library.
    Matches on unique identifier or matching title and premiered date.
