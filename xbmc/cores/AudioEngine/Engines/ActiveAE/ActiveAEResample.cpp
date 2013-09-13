@@ -93,8 +93,10 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
     // remapLayout is the layout of the sink, if the channel is in our src layout
     // the channel is mapped by setting coef 1.0
     memset(m_rematrix, 0, sizeof(m_rematrix));
+    m_dst_chan_layout = 0;
     for (unsigned int out=0; out<remapLayout->Count(); out++)
     {
+      m_dst_chan_layout += (1 << out);
       int idx = GetAVChannelIndex((*remapLayout)[out], m_src_chan_layout);
       if (idx >= 0)
       {
@@ -102,7 +104,6 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
       }
     }
 
-    m_dst_chan_layout = m_dllAvUtil.av_get_default_channel_layout(m_dst_channels);
     m_dllAvUtil.av_opt_set_int(m_pContext, "out_channel_count", m_dst_channels, 0);
     m_dllAvUtil.av_opt_set_int(m_pContext, "out_channel_layout", m_dst_chan_layout, 0);
 
