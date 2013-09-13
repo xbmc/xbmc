@@ -458,12 +458,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           par = (MsgStreamParameter*)msg->data;
           if (par->stream->m_resampleBuffers)
           {
-            if ((unsigned int)(par->stream->m_resampleBuffers->m_format.m_sampleRate * par->parameter.double_par) != par->stream->m_resampleBuffers->m_outSampleRate)
-            {
-              par->stream->m_resampleBuffers->m_resampleRatio = par->parameter.double_par;
-              par->stream->m_resampleBuffers->m_resampleQuality = AE_QUALITY_LOW;
-              par->stream->m_resampleBuffers->m_changeResampler = true;
-            }
+            par->stream->m_resampleBuffers->m_resampleRatio = par->parameter.double_par;
           }
           return;
         case CActiveAEControlProtocol::STREAMFADE:
@@ -2333,7 +2328,8 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
   }
   int samples = resampler->Resample(dst_buffer, dst_samples,
                                     sound->GetSound(true)->data,
-                                    sound->GetSound(true)->nb_samples);
+                                    sound->GetSound(true)->nb_samples,
+                                    1.0);
 
   sound->GetSound(false)->nb_samples = samples;
 

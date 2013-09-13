@@ -107,7 +107,6 @@ public:
   bool m_changeResampler;
   double m_resampleRatio;
   AEQuality m_resampleQuality;
-  unsigned int m_outSampleRate;
   bool m_stereoUpmix;
 };
 
