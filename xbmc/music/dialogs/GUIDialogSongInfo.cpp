@@ -209,7 +209,7 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
     db.GetArtistsBySong(item->GetMusicInfoTag()->GetDatabaseId(), true, artists);
     for (std::vector<int>::const_iterator artistId = artists.begin(); artistId != artists.end(); ++artistId)
     {
-      std::string thumb = db.GetArtForItem(*artistId, "artist", "thumb");
+      std::string thumb = db.GetArtForItem(*artistId, MediaTypeArtist, "thumb");
       if (!thumb.empty())
         artistthumbs.push_back(thumb);
     }
@@ -222,7 +222,7 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   else if (m_song->HasMusicInfoTag() && !m_song->GetMusicInfoTag()->GetArtist().empty())
   {
     int idArtist = db.GetArtistByName(m_song->GetMusicInfoTag()->GetArtist()[0]);
-    std::string thumb = db.GetArtForItem(idArtist, "artist", "thumb");
+    std::string thumb = db.GetArtForItem(idArtist, MediaTypeArtist, "thumb");
     if (!thumb.empty())
       m_song->SetProperty("artistthumb", thumb);
   }

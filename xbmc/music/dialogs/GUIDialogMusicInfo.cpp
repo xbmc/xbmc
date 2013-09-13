@@ -159,7 +159,7 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
   m_albumItem->GetMusicInfoTag()->SetLoaded(true);
   m_albumItem->GetMusicInfoTag()->SetRating('0' + m_album.iRating);
   m_albumItem->GetMusicInfoTag()->SetGenre(m_album.genre);
-  m_albumItem->GetMusicInfoTag()->SetDatabaseId(m_album.idAlbum, "album");
+  m_albumItem->GetMusicInfoTag()->SetDatabaseId(m_album.idAlbum, MediaTypeAlbum);
   CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem,m_album);
 
   CMusicThumbLoader loader;
@@ -171,7 +171,7 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
     CMusicDatabase db;
     db.Open();
     map<string, string> artwork;
-    if (db.GetArtistArtForItem(m_album.idAlbum, "album", artwork))
+    if (db.GetArtistArtForItem(m_album.idAlbum, MediaTypeAlbum, artwork))
     {
       if (artwork.find("thumb") != artwork.end())
         m_albumItem->SetProperty("artistthumb", artwork["thumb"]);
@@ -194,7 +194,7 @@ void CGUIDialogMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem->GetMusicInfoTag()->SetArtist(m_artist.strArtist);
   m_albumItem->GetMusicInfoTag()->SetLoaded(true);
   m_albumItem->GetMusicInfoTag()->SetGenre(m_artist.genre);
-  m_albumItem->GetMusicInfoTag()->SetDatabaseId(m_artist.idArtist, "artist");
+  m_albumItem->GetMusicInfoTag()->SetDatabaseId(m_artist.idArtist, MediaTypeArtist);
   CMusicDatabase::SetPropertiesFromArtist(*m_albumItem,m_artist);
 
   CMusicThumbLoader loader;
@@ -242,7 +242,7 @@ void CGUIDialogMusicInfo::SetDiscography()
     }
 
     if (idAlbum != -1) // we need this slight stupidity to get correct case for the album name
-      item->SetArt("thumb", database.GetArtForItem(idAlbum, "album", "thumb"));
+      item->SetArt("thumb", database.GetArtForItem(idAlbum, MediaTypeAlbum, "thumb"));
     else
       item->SetArt("thumb", "DefaultAlbumCover.png");
 
@@ -577,7 +577,7 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
 {
   CStdString itemDir;
 
-  if (item.HasMusicInfoTag() && item.GetMusicInfoTag()->GetType() == "song")
+  if (item.HasMusicInfoTag() && item.GetMusicInfoTag()->GetType() == MediaTypeSong)
     itemDir = URIUtils::GetParentPath(item.GetMusicInfoTag()->GetURL());
   else
     itemDir = item.GetPath();

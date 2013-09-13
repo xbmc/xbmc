@@ -125,7 +125,7 @@ bool CRecentlyAddedJob::UpdateVideo()
 
       std::string seasonThumb;
       if (item->GetVideoInfoTag()->m_iIdSeason > 0)
-        seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, "season", "thumb");
+        seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, MediaTypeSeason, "thumb");
 
       home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetArt("thumb"));
       home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("tvshow.thumb"));
@@ -269,8 +269,8 @@ bool CRecentlyAddedJob::UpdateMusic()
     {
       CAlbum&    album=albums[i];
       CStdString value = StringUtils::Format("%i", i + 1);
-      CStdString strThumb = musicdatabase.GetArtForItem(album.idAlbum, "album", "thumb");
-      CStdString strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, "album", "fanart");
+      CStdString strThumb = musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
+      CStdString strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, MediaTypeAlbum, "fanart");
       CStdString strDBpath = StringUtils::Format("musicdb://albums/%i/", album.idAlbum);
       CStdString strSQLAlbum = StringUtils::Format("idAlbum=%i", album.idAlbum);
       CStdString strArtist = musicdatabase.GetSingleValue("albumview", "strArtists", strSQLAlbum);

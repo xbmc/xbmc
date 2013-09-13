@@ -269,12 +269,12 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
       *file_path = tag.m_strFileNameAndPath;
 
     if (tag.m_iDbId != -1 ) {
-        if (tag.m_type == "musicvideo") {
+        if (tag.m_type == MediaTypeMusicVideo) {
           object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
           object.m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator);
           object.m_Title = tag.m_strTitle;
           object.m_ReferenceID = NPT_String::Format("videodb://musicvideos/titles/%i", tag.m_iDbId);
-        } else if (tag.m_type == "movie") {
+        } else if (tag.m_type == MediaTypeMovie) {
           object.m_ObjectClass.type = "object.item.videoItem.movie";
           object.m_Title = tag.m_strTitle;
           object.m_Date = CDateTime(tag.m_iYear, 0, 0, 0, 0, 0).GetAsW3CDate();
@@ -657,7 +657,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
 
     if(!object.m_Recorded.program_title.IsEmpty())
     {
-        tag.m_type = "episode";
+        tag.m_type = MediaTypeEpisode;
         int episode;
         int season;
         int title = object.m_Recorded.program_title.Find(" : ");
@@ -673,18 +673,18 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
         tag.m_firstAired = date;
     }
     else if (!object.m_Recorded.series_title.IsEmpty()) {
-        tag.m_type= "season";
+        tag.m_type= MediaTypeSeason;
         tag.m_strTitle = object.m_Title; // because could be TV show Title, or Season 1 etc
         tag.m_iSeason  = object.m_Recorded.episode_number / 100;
         tag.m_iEpisode = object.m_Recorded.episode_number % 100;
         tag.m_premiered = date;
     }
     else if(object.m_ObjectClass.type == "object.item.videoItem.musicVideoClip") {
-        tag.m_type = "musicvideo";
+        tag.m_type = MediaTypeMusicVideo;
     }
     else
     {
-        tag.m_type         = "movie";
+        tag.m_type         = MediaTypeMovie;
         tag.m_strTitle     = object.m_Title;
         tag.m_premiered    = date;
     }
@@ -825,14 +825,14 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry)
     int played   = pItem->GetVideoInfoTag()->m_playCount;
     const std::string& type = pItem->GetVideoInfoTag()->m_type;
     bool watched(false);
-    if (type == "tvshow" || type == "season") {
+    if (type == MediaTypeTvShow || type == MediaTypeSeason) {
       pItem->SetProperty("totalepisodes", episodes);
       pItem->SetProperty("numepisodes", episodes);
       pItem->SetProperty("watchedepisodes", played);
       pItem->SetProperty("unwatchedepisodes", episodes - played);
       watched = (episodes && played == episodes);
     }
-    else if (type == "episode" || type == "movie")
+    else if (type == MediaTypeEpisode || type == MediaTypeMovie)
       watched = (played > 0);
     pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watched);
   }

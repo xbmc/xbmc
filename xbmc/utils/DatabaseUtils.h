@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 
+#include "media/MediaType.h"
+
 class CVariant;
 
 namespace dbiplus
@@ -130,20 +132,6 @@ typedef std::set<Field> Fields;
 typedef std::vector<Field> FieldList;
 
 typedef enum {
-  MediaTypeNone = 0,
-  MediaTypeMusic,
-  MediaTypeArtist,
-  MediaTypeAlbum,
-  MediaTypeSong,
-  MediaTypeVideo,
-  MediaTypeVideoCollection,
-  MediaTypeMusicVideo,
-  MediaTypeMovie,
-  MediaTypeTvShow,
-  MediaTypeEpisode
-} MediaType;
-
-typedef enum {
   DatabaseQueryPartSelect,
   DatabaseQueryPartWhere,
   DatabaseQueryPartOrderBy,
@@ -155,20 +143,18 @@ typedef std::vector<DatabaseResult> DatabaseResults;
 class DatabaseUtils
 {
 public:
-  static std::string MediaTypeToString(MediaType mediaType);
-  static MediaType MediaTypeFromString(const std::string &strMediaType);
   static MediaType MediaTypeFromVideoContentType(int videoContentType);
 
-  static std::string GetField(Field field, MediaType mediaType, DatabaseQueryPart queryPart);
-  static int GetField(Field field, MediaType mediaType);
-  static int GetFieldIndex(Field field, MediaType mediaType);
-  static bool GetSelectFields(const Fields &fields, MediaType mediaType, FieldList &selectFields);
+  static std::string GetField(Field field, const MediaType &mediaType, DatabaseQueryPart queryPart);
+  static int GetField(Field field, const MediaType &mediaType);
+  static int GetFieldIndex(Field field, const MediaType &mediaType);
+  static bool GetSelectFields(const Fields &fields, const MediaType &mediaType, FieldList &selectFields);
   
   static bool GetFieldValue(const dbiplus::field_value &fieldValue, CVariant &variantValue);
-  static bool GetDatabaseResults(MediaType mediaType, const FieldList &fields, const std::auto_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results);
+  static bool GetDatabaseResults(const MediaType &mediaType, const FieldList &fields, const std::auto_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results);
 
   static std::string BuildLimitClause(int end, int start = 0);
 
 private:
-  static int GetField(Field field, MediaType mediaType, bool asIndex);
+  static int GetField(Field field, const MediaType &mediaType, bool asIndex);
 };

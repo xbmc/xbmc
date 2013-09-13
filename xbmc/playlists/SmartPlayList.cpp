@@ -838,7 +838,7 @@ CStdString CSmartPlaylistRule::FormatWhereClause(const CStdString &negate, const
 CStdString CSmartPlaylistRule::GetField(int field, const CStdString &type) const
 {
   if (field >= FieldUnknown && field < FieldMax)
-    return DatabaseUtils::GetField((Field)field, DatabaseUtils::MediaTypeFromString(type), DatabaseQueryPartWhere);
+    return DatabaseUtils::GetField((Field)field, MediaTypes::FromString(type), DatabaseQueryPartWhere);
   return "";
 }
 

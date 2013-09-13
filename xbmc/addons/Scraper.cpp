@@ -931,7 +931,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl
 {
   CLog::Log(LOGDEBUG, "%s: Reading %s '%s' using %s scraper "
     "(file: '%s', content: '%s', version: '%s')", __FUNCTION__,
-    fMovie ? "movie" : "episode", scurl.m_url[0].m_url.c_str(), Name().c_str(), Path().c_str(),
+    fMovie ? MediaTypeMovie : MediaTypeEpisode, scurl.m_url[0].m_url.c_str(), Name().c_str(), Path().c_str(),
     ADDON::TranslateContent(Content()).c_str(), Version().c_str());
 
   video.Reset();

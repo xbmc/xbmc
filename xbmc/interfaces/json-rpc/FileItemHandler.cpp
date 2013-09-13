@@ -312,15 +312,15 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
         else if (item->HasMusicInfoTag())
         {
           std::string type = item->GetMusicInfoTag()->GetType();
-          if (type == "album" || type == "song" || type == "artist")
+          if (type == MediaTypeAlbum || type == MediaTypeSong || type == MediaTypeArtist)
             object["type"] = type;
           else if (!item->m_bIsFolder)
-            object["type"] = "song";
+            object["type"] = MediaTypeSong;
         }
         else if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_type.empty())
         {
           std::string type = item->GetVideoInfoTag()->m_type;
-          if (type == "movie" || type == "tvshow" || type == "episode" || type == "musicvideo")
+          if (type == MediaTypeMovie || type == MediaTypeTvShow || type == MediaTypeEpisode || type == MediaTypeMusicVideo)
             object["type"] = type;
         }
         else if (item->HasPictureInfoTag())
