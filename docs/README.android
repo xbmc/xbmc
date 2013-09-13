@@ -89,20 +89,7 @@ specifies where the resulting toolchain should be installed (your choice).
      --toolchain=arm-linux-androideabi-4.7
 
 Make sure to pick a toolchain for your desired architecture. Currently only
-gcc 4.7 toolchains are supported, anything else will likely fail to build.
-
-ATTENTION FOR X86 BUILDS - THIS DOES NOT APPLY TO 99% OF BUILDS:
-If you want to build for the x86 platform there is a flaw in the mentioned
-NDK. See http://code.google.com/p/android/issues/detail?id=19851 which results
-in linker errors mentioning "sigsetjmp and siglongjmp".
-In that case you have to download the libc.tar.bz2 from that google issue
-entry:
-
-http://android.googlecode.com/issues/attachment?aid=198510003000&name=libc.tar.bz2&token=6uNpHc1v8ixmVOTq3y6-ohUfb0o%3A1341156659947
-
-And extract it to <android-toolchain>/android-<x>/sysroot/usr/lib/ and overwrite
-the libc.so there. (where <android-toolchain>/android-<x>/ is the path you have given on the
---install-dir option above)
+gcc 4.7 and gcc 4.8 toolchains are supported, anything else will likely fail to build.
 
 --------------------------------------------------------------------
 3.4. Create a (new) debug key to sign debug APKs

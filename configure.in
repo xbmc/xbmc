@@ -606,13 +606,19 @@ ffmpeg_target_os=$(tolower $(uname -s))
 
 # host detection and setup
 case $host in
-  i*86*-android-linux-gnu*)
+  i*86*-linux-android*)
      target_platform=target_android
      ARCH="i486-linux"
      use_arch="x86"
      use_cpu="i686"
      ffmpeg_target_os=linux
-     ;;
+     use_joystick=no
+     use_gles=yes
+     use_optical_drive=no
+     use_sdl=no
+     use_x11=no
+     build_shared_lib=yes    
+    ;;
   i*86*-linux-gnu*)
      ARCH="i486-linux"
      ;;
