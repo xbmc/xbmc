@@ -147,7 +147,7 @@
   "Playlist.Item": {
     "type": [
       { "type": "object", "properties": { "file": { "type": "string", "description": "Path to a file (not a directory) to be added to the playlist", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "directory": { "type": "string", "required": true }, "recursive": { "type": "boolean", "default": false }, "media": { "$ref": "Files.Media" } }, "additionalProperties": false },
+      { "type": "object", "properties": { "directory": { "type": "string", "required": true }, "recursive": { "type": "boolean", "default": false }, "media": { "$ref": "Files.Media", "default": "files" } }, "additionalProperties": false },
       { "type": "object", "properties": { "movieid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
       { "type": "object", "properties": { "episodeid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
       { "type": "object", "properties": { "musicvideoid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
