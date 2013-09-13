@@ -84,7 +84,7 @@ public:
   virtual int64_t swr_get_delay(struct SwrContext *s, int64_t base) { return ::swr_get_delay(s, base); }
   virtual int swr_set_channel_mapping (struct SwrContext *s, const int *channel_map) { return ::swr_set_channel_mapping(s, channel_map); }
   virtual int swr_set_matrix(struct SwrContext *s, const double *matrix, int stride) { return ::swr_set_matrix(s, matrix, stride); }
-  virtual int swr_set_compensation(struct SwrContext *s, int sample_delta, int compensation_distance) { return ::int swr_set_compensation(s, sample_delta, compensation_distance); }
+  virtual int swr_set_compensation(struct SwrContext *s, int sample_delta, int compensation_distance) { return ::swr_set_compensation(s, sample_delta, compensation_distance); }
 };
 
 #else
