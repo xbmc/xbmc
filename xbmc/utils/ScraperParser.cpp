@@ -246,7 +246,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     int iCompare = -1;
     pExpression->QueryIntAttribute("compare",&iCompare);
     if (iCompare > -1)
-      m_param[iCompare-1].ToLower();
+      StringUtils::ToLower(m_param[iCompare-1]);
     CStdString curInput = input;
     for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
     {
@@ -307,7 +307,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         if (iCompare > -1)
         {
           CStdString strResultNoCase = strResult;
-          strResultNoCase.ToLower();
+          StringUtils::ToLower(strResultNoCase);
           if (strResultNoCase.Find(m_param[iCompare-1]) != -1)
             dest += strResult;
         }

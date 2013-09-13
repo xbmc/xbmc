@@ -40,7 +40,7 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
 {
   // make lower case so that lookups are case-insensitive
   CStdString lowerName(strName);
-  lowerName.ToLower();
+  StringUtils::ToLower(lowerName);
   Stop(lowerName);
   SAlarmClockEvent event;
   event.m_fSecs = n_secs;
@@ -84,7 +84,7 @@ void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
   CSingleLock lock(m_events);
 
   CStdString lowerName(strName);
-  lowerName.ToLower();          // lookup as lowercase only
+  StringUtils::ToLower(lowerName);          // lookup as lowercase only
   map<CStdString,SAlarmClockEvent>::iterator iter = m_event.find(lowerName);
 
   if (iter == m_event.end())

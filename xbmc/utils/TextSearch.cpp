@@ -47,7 +47,7 @@ bool CTextSearch::Search(const CStdString &strHaystack) const
 
   CStdString strSearch(strHaystack);
   if (!m_bCaseSensitive)
-    strSearch = strSearch.ToLower();
+    StringUtils::ToLower(strSearch);
 
   /* check whether any of the NOT terms matches and return false if there's a match */
   for (unsigned int iNotPtr = 0; iNotPtr < m_NOT.size(); iNotPtr++)
@@ -109,7 +109,7 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
   StringUtils::Trim(strParsedSearchTerm);
 
   if (!m_bCaseSensitive)
-    strParsedSearchTerm = strParsedSearchTerm.ToLower();
+    StringUtils::ToLower(strParsedSearchTerm);
 
   bool bNextAND(defaultSearchMode == SEARCH_DEFAULT_AND);
   bool bNextOR(defaultSearchMode == SEARCH_DEFAULT_OR);

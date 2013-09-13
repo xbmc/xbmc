@@ -321,7 +321,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
   start = CurrentHostCounter();
 #endif
 
-  if (strPath.Right(4).ToLower() == ".gif")
+  if (StringUtils::EqualsNoCase(strPath.Right(4), ".gif"))
   {
     CTextureMap* pMap;
 

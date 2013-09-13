@@ -57,7 +57,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
   {
     // Parse Tags
     CStdString fullTag = m_tags->GetMatch(0);
-    fullTag.ToLower();
+    StringUtils::ToLower(fullTag);
     strUTF8.erase(pos, fullTag.length());
     if (fullTag == "<b>" || fullTag == "{\\b1}")
     {

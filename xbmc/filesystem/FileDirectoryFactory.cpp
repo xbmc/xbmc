@@ -67,7 +67,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     return NULL;
 
   CStdString strExtension=URIUtils::GetExtension(strPath);
-  strExtension.MakeLower();
+  StringUtils::ToLower(strExtension);
 
 #ifdef HAS_FILESYSTEM
   if ((strExtension.Equals(".ogg") || strExtension.Equals(".oga")) && CFile::Exists(strPath))

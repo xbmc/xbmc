@@ -5618,17 +5618,16 @@ bool CApplication::AlwaysProcess(const CAction& action)
     CStdString builtInFunction;
     vector<CStdString> params;
     CUtil::SplitExecFunction(action.GetName(), builtInFunction, params);
-    builtInFunction.ToLower();
 
     // should this button be handled normally or just cancel the screensaver?
-    if (   builtInFunction.Equals("powerdown")
-        || builtInFunction.Equals("reboot")
-        || builtInFunction.Equals("restart")
-        || builtInFunction.Equals("restartapp")
-        || builtInFunction.Equals("suspend")
-        || builtInFunction.Equals("hibernate")
-        || builtInFunction.Equals("quit")
-        || builtInFunction.Equals("shutdown"))
+    if (   StringUtils::EqualsNoCase(builtInFunction, "powerdown")
+        || StringUtils::EqualsNoCase(builtInFunction, "reboot")
+        || StringUtils::EqualsNoCase(builtInFunction, "restart")
+        || StringUtils::EqualsNoCase(builtInFunction, "restartapp")
+        || StringUtils::EqualsNoCase(builtInFunction, "suspend")
+        || StringUtils::EqualsNoCase(builtInFunction, "hibernate")
+        || StringUtils::EqualsNoCase(builtInFunction, "quit")
+        || StringUtils::EqualsNoCase(builtInFunction, "shutdown"))
     {
       return true;
     }

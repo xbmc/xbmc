@@ -1435,7 +1435,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
       if (strlen(fourcc) == 4)
       {
         strName = fourcc;
-        strName.MakeLower();
+        StringUtils::ToLower(strName);
         return;
       }
     }

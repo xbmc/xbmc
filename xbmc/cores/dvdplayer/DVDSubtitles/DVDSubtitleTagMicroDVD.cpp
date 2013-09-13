@@ -21,6 +21,7 @@
 #include "DVDSubtitleTagMicroDVD.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "utils/StdString.h"
+#include "utils/StringUtils.h"
 
 void CDVDSubtitleTagMicroDVD::ConvertLine(CDVDOverlayText* pOverlay, const char* line, int len)
 {
@@ -46,7 +47,7 @@ void CDVDSubtitleTagMicroDVD::ConvertLine(CDVDOverlayText* pOverlay, const char*
         {
           CStdString tagName = strUTF8.substr(pos + 1, pos2 - pos - 1);
           CStdString tagValue = strUTF8.substr(pos2 + 1, pos3 - pos2 - 1);
-          tagValue.ToLower();
+          StringUtils::ToLower(tagValue);
           strUTF8.erase(pos, pos3 - pos + 1);
           if ((tagName == "Y") || (tagName == "y"))
           {

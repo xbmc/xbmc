@@ -68,7 +68,7 @@ void CHttpHeader::Parse(CStdString strData)
 
 CStdString CHttpHeader::GetValue(CStdString strParam) const
 {
-  strParam.ToLower();
+  StringUtils::ToLower(strParam);
 
   std::map<CStdString,CStdString>::const_iterator pIter = m_params.find(strParam);
   if (pIter != m_params.end()) return pIter->second;

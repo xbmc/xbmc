@@ -33,7 +33,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITranspo
   for (unsigned int i = 0; i < parameterObject["labels"].size(); i++)
   {
    CStdString field = parameterObject["labels"][i].asString();
-    field = field.ToLower();
+    StringUtils::ToLower(field);
 
     info.push_back(parameterObject["labels"][i].asString());
   }
@@ -61,7 +61,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITrans
   for (unsigned int i = 0; i < parameterObject["booleans"].size(); i++)
   {
     CStdString field = parameterObject["booleans"][i].asString();
-    field = field.ToLower();
+    StringUtils::ToLower(field);
 
     // Need to override power management of whats in infomanager since jsonrpc
     // have a security layer aswell.

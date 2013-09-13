@@ -163,7 +163,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword, cons
     XBMC::XBMC_MD5 md5state;
     md5state.append(userInput);
     md5state.getDigest(newPassword);
-    newPassword.ToLower();
+    StringUtils::ToLower(newPassword);
     return true;
   }
   CGUIDialogOK::ShowAndGetInput(12341, 12344, 0, 0);
@@ -219,7 +219,7 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CS
       XBMC::XBMC_MD5 md5state;
       md5state.append(strUserInput);
       md5state.getDigest(strPassword);
-      strPassword.ToLower();
+      StringUtils::ToLower(strPassword);
       return 0; // user entered correct password
     }
     else return 1;

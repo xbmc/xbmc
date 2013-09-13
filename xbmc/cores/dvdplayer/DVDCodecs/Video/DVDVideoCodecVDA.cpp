@@ -32,6 +32,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "settings/Settings.h"
 
@@ -242,7 +243,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     }
 
     CStdString rendervendor = g_Windowing.GetRenderVendor();
-    rendervendor.MakeLower();
+    StringUtils::ToLower(rendervendor);
     if (rendervendor.find("nvidia") != std::string::npos)
     {
       // Nvidia gpu's are all powerful and work the way god intended

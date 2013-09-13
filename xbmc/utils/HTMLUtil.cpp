@@ -35,8 +35,8 @@ int CHTMLUtil::FindTag(const CStdString& strHTML, const CStdString& strTag, CStd
 {
   CStdString strHTMLLow = strHTML;
   CStdString strTagLow = strTag;
-  strHTMLLow.ToLower();
-  strTagLow.ToLower();
+  StringUtils::ToLower(strHTMLLow);
+  StringUtils::ToLower(strTagLow);
   strtagFound = "";
   int iStart = strHTMLLow.Find(strTag, iPos);
   if (iStart < 0) return -1;
@@ -50,8 +50,8 @@ int CHTMLUtil::FindClosingTag(const CStdString& strHTML, const CStdString& strTa
 {
   CStdString strHTMLLow = strHTML;
   CStdString strTagLow = strTag;
-  strHTMLLow.ToLower();
-  strTagLow.ToLower();
+  StringUtils::ToLower(strHTMLLow);
+  StringUtils::ToLower(strTagLow);
   strtagFound = "";
   int iStart = strHTMLLow.Find("</" + strTag, iPos);
   if (iStart < 0) return -1;

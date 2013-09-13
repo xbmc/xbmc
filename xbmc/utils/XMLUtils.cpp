@@ -112,7 +112,7 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
   CStdString strEnabled = pNode->FirstChild()->Value();
-  strEnabled.ToLower();
+  StringUtils::ToLower(strEnabled);
   if (strEnabled == "off" || strEnabled == "no" || strEnabled == "disabled" || strEnabled == "false" || strEnabled == "0" )
     bBoolValue = false;
   else
@@ -238,8 +238,8 @@ bool XMLUtils::GetEncoding(const CXBMCTinyXML* pDoc, CStdString& strEncoding)
   const TiXmlDeclaration* pDecl=pNode->ToDeclaration();
   if (!pDecl) return false;
   strEncoding=pDecl->Encoding();
-  if (strEncoding.Equals("UTF-8") || strEncoding.Equals("UTF8")) strEncoding.clear();
-  strEncoding.MakeUpper();
+  if (StringUtils::EqualsNoCase(strEncoding, "UTF-8") || StringUtils::EqualsNoCase(strEncoding, "UTF8")) strEncoding.clear();
+  StringUtils::ToUpper(strEncoding);
   return !strEncoding.empty(); // Other encoding then UTF8?
 }
 
@@ -250,7 +250,7 @@ bool XMLUtils::GetEncoding(const CXBMCTinyXML* pDoc, CStdString& strEncoding)
 bool XMLUtils::HasUTF8Declaration(const CStdString &strXML)
 {
   CStdString test = strXML;
-  test.ToLower();
+  StringUtils::ToLower(test);
   // test for the encoding="utf-8" string
   if (test.Find("encoding=\"utf-8\"") >= 0)
     return true;

@@ -569,8 +569,11 @@ CStdString calcResponse(const CStdString& username,
 
   HA1 = XBMC::XBMC_MD5::GetMD5(username + ":" + realm + ":" + password);
   HA2 = XBMC::XBMC_MD5::GetMD5(method + ":" + digestUri);
-  response = XBMC::XBMC_MD5::GetMD5(HA1.ToLower() + ":" + nonce + ":" + HA2.ToLower());
-  return response.ToLower();
+  StringUtils::ToLower(HA1);
+  StringUtils::ToLower(HA2);
+  response = XBMC::XBMC_MD5::GetMD5(HA1 + ":" + nonce + ":" + HA2);
+  StringUtils::ToLower(response);
+  return response;
 }
 
 //helper function

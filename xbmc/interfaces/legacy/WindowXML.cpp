@@ -462,7 +462,9 @@ namespace XBMCAddon
       TRACE;
       // load our window
       XFILE::CFile file;
-      if (!file.Open(strPath) && !file.Open(CStdString(strPath).ToLower()) && !file.Open(strLowerPath))
+      std::string strPathLower = strPath;
+      StringUtils::ToLower(strPathLower);
+      if (!file.Open(strPath) && !file.Open(strPathLower) && !file.Open(strLowerPath))
       {
         // fail - can't load the file
         CLog::Log(LOGERROR, "%s: Unable to load skin file %s", __FUNCTION__, strPath.c_str());

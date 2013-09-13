@@ -437,9 +437,9 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, c
     { // we have a new style or a new color, so format up the previous segment
       CStdStringW subText = text.Mid(startPos, endPos - startPos);
       if (currentStyle & FONT_STYLE_UPPERCASE)
-        subText.ToUpper();
+        StringUtils::ToUpper(subText);
       if (currentStyle & FONT_STYLE_LOWERCASE)
-        subText.ToLower();
+        StringUtils::ToLower(subText);
       AppendToUTF32(subText, ((currentStyle & 3) << 24) | (currentColor << 16), parsedText);
       if (newLine)
         parsedText.push_back(L'\n');
@@ -457,9 +457,9 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, c
   // now grab the remainder of the string
   CStdStringW subText = text.Mid(startPos, text.GetLength() - startPos);
   if (currentStyle & FONT_STYLE_UPPERCASE)
-    subText.ToUpper();
+    StringUtils::ToUpper(subText);
   if (currentStyle & FONT_STYLE_LOWERCASE)
-    subText.ToLower();
+    StringUtils::ToLower(subText);
   AppendToUTF32(subText, ((currentStyle & 3) << 24) | (currentColor << 16), parsedText);
 }
 

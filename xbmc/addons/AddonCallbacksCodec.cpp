@@ -23,6 +23,7 @@
 #include "AddonCallbacksCodec.h"
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
+#include "utils/StringUtils.h"
 
 namespace ADDON
 {
@@ -43,7 +44,10 @@ public:
     if (strlen(strCodecName) == 0)
       return retVal;
 
-    std::map<std::string, xbmc_codec_t>::const_iterator it = m_lookup.find(CStdString(strCodecName).ToUpper());
+    std::string strUpperCodecName = strCodecName;
+    StringUtils::ToUpper(strUpperCodecName);
+
+    std::map<std::string, xbmc_codec_t>::const_iterator it = m_lookup.find(strUpperCodecName);
     if (it != m_lookup.end())
       retVal = it->second;
 
@@ -73,7 +77,11 @@ private:
       {
         tmp.codec_type = (xbmc_codec_type_t)codec->type;
         tmp.codec_id   = codec->id;
-        m_lookup.insert(std::make_pair(CStdString(codec->name).ToUpper(), tmp));
+
+        std::string strUpperCodecName = codec->name;
+        StringUtils::ToUpper(strUpperCodecName);
+
+        m_lookup.insert(std::make_pair(strUpperCodecName, tmp));
       }
     }
 

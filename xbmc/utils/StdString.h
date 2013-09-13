@@ -2398,66 +2398,6 @@ public:
     }
   #endif
 
-
-  // -------------------------------------------------------------------------
-  // Case changing functions
-  // -------------------------------------------------------------------------
-
-    MYTYPE& ToUpper(const std::locale& loc=std::locale())
-  {
-    // Note -- if there are any MBCS character sets in which the lowercase
-    // form a character takes up a different number of bytes than the
-    // uppercase form, this would probably not work...
-
-    std::transform(this->begin(),
-             this->end(),
-             this->begin(),
-#ifdef SS_NO_LOCALE
-             SSToUpper<CT>());
-#else
-             std::bind2nd(SSToUpper<CT>(), loc));
-#endif
-
-    // ...but if it were, this would probably work better.  Also, this way
-    // seems to be a bit faster when anything other then the "C" locale is
-    // used...
-
-//    if ( !empty() )
-//    {
-//      ssupr(this->GetBuf(), this->size(), loc);
-//      this->RelBuf();
-//    }
-
-    return *this;
-  }
-
-  MYTYPE& ToLower(const std::locale& loc=std::locale())
-  {
-    // Note -- if there are any MBCS character sets in which the lowercase
-    // form a character takes up a different number of bytes than the
-    // uppercase form, this would probably not work...
-
-    std::transform(this->begin(),
-             this->end(),
-             this->begin(),
-#ifdef SS_NO_LOCALE
-             SSToLower<CT>());
-#else
-             std::bind2nd(SSToLower<CT>(), loc));
-#endif
-
-    // ...but if it were, this would probably work better.  Also, this way
-    // seems to be a bit faster when anything other then the "C" locale is
-    // used...
-
-//    if ( !empty() )
-//    {
-//      sslwr(this->GetBuf(), this->size(), loc);
-//      this->RelBuf();
-//    }
-    return *this;
-  }
-
   // -------------------------------------------------------------------------
   // CStdStr -- Direct access to character buffer.  In the MS' implementation,
   // the at() function that we use here also calls _Freeze() providing us some
@@ -2795,19 +2735,9 @@ public:
   }
 #endif
 
-  void MakeLower()
-  {
-    ToLower();
-  }
-
   void MakeReverse()
   {
     std::reverse(this->begin(), this->end());
-  }
-
-  void MakeUpper()
-  {
-    ToUpper();
   }
 
   MYTYPE Mid(int nFirst) const

@@ -777,7 +777,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   if (!bVerifyInput)
   {
     strToVerify = md5pword2;
-    strToVerify.ToLower();
+    StringUtils::ToLower(strToVerify);
     return true;
   }
 

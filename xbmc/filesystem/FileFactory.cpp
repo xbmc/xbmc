@@ -94,6 +94,7 @@
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "network/WakeOnAccess.h"
 
 using namespace XFILE;
@@ -117,7 +118,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   CWakeOnAccess::Get().WakeUpHost(url);
 
   CStdString strProtocol = url.GetProtocol();
-  strProtocol.MakeLower();
+  StringUtils::ToLower(strProtocol);
 
 #if defined(TARGET_ANDROID)
   if (strProtocol == "apk") return new CAPKFile();

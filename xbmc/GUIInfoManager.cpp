@@ -763,8 +763,13 @@ void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector<Prope
     }
     else if (infoString[i] == '.' && !parentheses)
     {
+      StringUtils::ToLower(property);
       if (!property.empty()) // add our property and parameters
-        info.push_back(Property(property.ToLower(), param));
+      {
+        StringUtils::ToLower(property);
+        info.push_back(Property(property, param));
+      }
+
       property.clear();
       param.clear();
       continue;
@@ -776,8 +781,12 @@ void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector<Prope
   }
   if (parentheses)
     CLog::Log(LOGERROR, "unmatched parentheses in %s", infoString.c_str());
+
   if (!property.empty())
-    info.push_back(Property(property.ToLower(), param));
+  {
+    StringUtils::ToLower(property);
+    info.push_back(Property(property, param));
+  }
 }
 
 /// \brief Translates a string as given by the skin into an int that we use for more
@@ -810,7 +819,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (info2 > 0)
         return AddMultiInfo(GUIInfo(STRING_COMPARE, info, -info2));
       // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
-      CStdString label = CGUIInfoLabel::GetLabel(cat.param(1)).ToLower();
+      CStdString label = CGUIInfoLabel::GetLabel(cat.param(1));
+      StringUtils::ToLower(label);
       int compareString = ConditionalStringParameter(label);
       return AddMultiInfo(GUIInfo(STRING_COMPARE, info, compareString));
     }
@@ -823,7 +833,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (cat.name == "substring" && cat.num_params() >= 2)
     {
       int info = TranslateSingleString(cat.param(0));
-      CStdString label = CGUIInfoLabel::GetLabel(cat.param(1)).ToLower();
+      CStdString label = CGUIInfoLabel::GetLabel(cat.param(1));
+      StringUtils::ToLower(label);
       int compareString = ConditionalStringParameter(label);
       if (cat.num_params() > 2)
       {
@@ -917,7 +928,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           int infoLabel = TranslateSingleString(param);
           if (infoLabel > 0)
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, infoLabel, 0));
-          CStdString label = CGUIInfoLabel::GetLabel(param).ToLower();
+          CStdString label = CGUIInfoLabel::GetLabel(param);
+          StringUtils::ToLower(label);
           return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, ConditionalStringParameter(label), 1));
         }
         else if (prop.name == "addonicon")
@@ -925,7 +937,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           int infoLabel = TranslateSingleString(param);
           if (infoLabel > 0)
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, infoLabel, 0));
-          CStdString label = CGUIInfoLabel::GetLabel(param).ToLower();
+          CStdString label = CGUIInfoLabel::GetLabel(param);
+          StringUtils::ToLower(label);
           return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, ConditionalStringParameter(label), 1));
         }
         else if (prop.name == "idletime")
@@ -969,7 +982,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       else if (prop.name == "isscanningmusic") return LIBRARY_IS_SCANNING_MUSIC;
       else if (prop.name == "hascontent" && prop.num_params())
       {
-        CStdString cat = prop.param(0); cat.ToLower();
+        CStdString cat = prop.param(0);
+        StringUtils::ToLower(cat);
         if (cat == "music") return LIBRARY_HAS_MUSIC;
         else if (cat == "video") return LIBRARY_HAS_VIDEO;
         else if (cat == "movies") return LIBRARY_HAS_MOVIES;
@@ -2585,7 +2599,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case SKIN_HAS_THEME:
         {
           CStdString theme = CSettings::Get().GetString("lookandfeel.skintheme");
-          theme.ToLower();
+          StringUtils::ToLower(theme);
           URIUtils::RemoveExtension(theme);
           bReturn = theme.Equals(m_stringParameters[info.GetData1()]);
         }
@@ -2650,9 +2664,16 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           // as CStdString::Find() is case sensitive
           CStdString label;
           if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-            label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
+          {
+            label = GetItemImage((const CFileItem *)item, info.GetData1());
+            StringUtils::ToLower(label);
+          }
           else
-            label = GetImage(info.GetData1(), contextWindow).ToLower();
+          {
+            label = GetImage(info.GetData1(), contextWindow);
+            StringUtils::ToLower(label);
+          }
+
           if (condition == STRING_STR_LEFT)
             bReturn = label.Find(compare) == 0;
           else if (condition == STRING_STR_RIGHT)
@@ -4646,7 +4667,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
   case LISTITEM_SORT_LETTER:
     {
       CStdString letter;
-      g_charsetConverter.wToUTF8(item->GetSortLabel().Left(1).ToUpper(), letter);
+      std::wstring character = item->GetSortLabel().substr(0, 1);
+      StringUtils::ToUpper(character);
+      g_charsetConverter.wToUTF8(character, letter);
       return letter;
     }
     break;

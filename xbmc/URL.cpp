@@ -381,7 +381,7 @@ void CURL::SetPassword(const CStdString& strPassword)
 void CURL::SetProtocol(const CStdString& strProtocol)
 {
   m_strProtocol = strProtocol;
-  m_strProtocol.ToLower();
+  StringUtils::ToLower(m_strProtocol);
 }
 
 void CURL::SetOptions(const CStdString& strOptions)
