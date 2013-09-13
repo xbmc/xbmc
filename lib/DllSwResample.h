@@ -57,6 +57,7 @@ public:
   virtual int64_t swr_get_delay(struct SwrContext *s, int64_t base) = 0;
   virtual int swr_set_channel_mapping(struct SwrContext *s, const int *channel_map) = 0;
   virtual int swr_set_matrix(struct SwrContext *s, const double *matrix, int stride) = 0;
+  virtual int swr_set_compensation(struct SwrContext *s, int sample_delta, int compensation_distance) = 0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
@@ -83,6 +84,7 @@ public:
   virtual int64_t swr_get_delay(struct SwrContext *s, int64_t base) { return ::swr_get_delay(s, base); }
   virtual int swr_set_channel_mapping (struct SwrContext *s, const int *channel_map) { return ::swr_set_channel_mapping(s, channel_map); }
   virtual int swr_set_matrix(struct SwrContext *s, const double *matrix, int stride) { return ::swr_set_matrix(s, matrix, stride); }
+  virtual int swr_set_compensation(struct SwrContext *s, int sample_delta, int compensation_distance) { return ::int swr_set_compensation(s, sample_delta, compensation_distance); }
 };
 
 #else
@@ -100,6 +102,7 @@ class DllSwResample : public DllDynamic, DllSwResampleInterface
   DEFINE_METHOD2(int64_t, swr_get_delay, (struct SwrContext *p1, int64_t p2))
   DEFINE_METHOD2(int, swr_set_channel_mapping, (struct SwrContext *p1, const int *p2))
   DEFINE_METHOD3(int, swr_set_matrix, (struct SwrContext *p1, const double *p2, int p3))
+  DEFINE_METHOD3(int, swr_set_compensation, (struct SwrContext *p1, int p2, int p3))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(swr_alloc_set_opts)
@@ -109,6 +112,7 @@ class DllSwResample : public DllDynamic, DllSwResampleInterface
     RESOLVE_METHOD(swr_get_delay)
     RESOLVE_METHOD(swr_set_channel_mapping)
     RESOLVE_METHOD(swr_set_matrix)
+    RESOLVE_METHOD(swr_set_compensation)
   END_METHOD_RESOLVE()
 
   /* dependencies of libavformat */
