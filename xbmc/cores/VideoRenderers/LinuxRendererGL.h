@@ -33,7 +33,6 @@
 #include "RenderFormats.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
-#include "RenderFormats.h"
 
 #include "threads/Event.h"
 

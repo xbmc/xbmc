@@ -43,7 +43,6 @@
 #include "utils/StringUtils.h"
 #include "AddonDatabase.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
 #include "LangInfo.h"
 #include "guilib/Key.h"

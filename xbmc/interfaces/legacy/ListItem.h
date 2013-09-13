@@ -35,7 +35,6 @@
 #include "Tuple.h"
 #include "commons/Exception.h"
 
-#include <map>
 
 namespace XBMCAddon
 {

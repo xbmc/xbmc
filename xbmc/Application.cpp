@@ -92,7 +92,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SkinSettings.h"
-#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 #include "utils/RssManager.h"
@@ -316,11 +315,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Weather.h"
 #include "DatabaseManager.h"
-
-#include "settings/DisplaySettings.h"
-#include "settings/MediaSettings.h"
-#include "settings/SkinSettings.h"
-#include "view/ViewStateSettings.h"
 
 #ifdef TARGET_POSIX
 #include "XHandle.h"

@@ -29,7 +29,6 @@
 #include "swighelper.h"
 #include "WindowException.h"
 
-#include "ListItem.h"
 
 // hardcoded offsets for button controls (and controls that use button controls)
 // ideally they should be dynamically read in as with all the other properties.
