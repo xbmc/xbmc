@@ -260,7 +260,7 @@
 				<control type="button" id="103">
 					<texturefocus>b-pp-audio-s.png</texturefocus>
 					<texturenofocus>b-pp-audio.png</texturenofocus>
-					<onclick>ActivateWindow(10204)</onclick>
+					<onclick>ActivateWindow(10205)</onclick>
 					<onup>102</onup>
 					<ondown>104</ondown>
 					<include>leftMenuPreplayButton</include>
@@ -269,7 +269,7 @@
 				<control type="button" id="104">
 					<texturefocus>b-pp-subtitles-s.png</texturefocus>
 					<texturenofocus>b-pp-subtitles.png</texturenofocus>
-					<onclick>ActivateWindow(10205)</onclick>
+					<onclick>ActivateWindow(10204)</onclick>
 					<onup>103</onup>
 					<ondown>105</ondown>
 					<include>leftMenuPreplayButton</include>
