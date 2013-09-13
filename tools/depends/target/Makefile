@@ -37,6 +37,11 @@ ifeq ($(OS),android)
   DEPENDS += mdnsresponder android-sources-ics
 endif
 
+ifeq ($(OS),linux)
+  DEPENDS += libsdl
+endif
+
+
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
 
 ZLIB=
