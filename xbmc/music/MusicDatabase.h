@@ -434,10 +434,9 @@ private:
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL=false);
   CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, bool imageURL=false);
   CArtistCredit GetAlbumArtistCreditFromDataset(const dbiplus::sql_record* const record);
-  void ParseBaseUrl(const CStdString &strMusicDBbasePath, CMusicDbUrl &baseUrl, CMusicDbUrl *&pBaseUrl);
-  void DuplicateUrl(const CMusicDbUrl *pBaseUrl, CMusicDbUrl &itemUrl, CMusicDbUrl *&pItemUrl);
-  void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath, CMusicDbUrl *itemUrl);
-  void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath, CMusicDbUrl *itemUrl);
+  void ParseBaseUrl(const CStdString &strMusicDBbasePath, CMusicDbUrl &baseUrl, const CMusicDbUrl *&pBaseUrl);
+  void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath, const CMusicDbUrl *baseUrl);
+  void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath, const CMusicDbUrl *baseUrl);
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);
   bool CleanupPaths();
