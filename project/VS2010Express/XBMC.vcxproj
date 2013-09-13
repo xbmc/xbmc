@@ -715,6 +715,7 @@
     <ClCompile Include="..\..\xbmc\listproviders\DirectoryProvider.cpp" />
     <ClCompile Include="..\..\xbmc\listproviders\StaticProvider.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
+    <ClCompile Include="..\..\xbmc\media\MediaType.cpp" />
     <ClCompile Include="..\..\xbmc\music\Album.cpp" />
     <ClCompile Include="..\..\xbmc\music\Artist.cpp" />
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicInfo.cpp" />
@@ -1087,6 +1088,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\PyContext.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\PythonInvoker.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\pythreadstate.h" />
+    <ClInclude Include="..\..\xbmc\media\MediaType.h" />
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
     <ClInclude Include="..\..\xbmc\network\NetworkServices.h" />
     <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.h" />
