@@ -901,6 +901,121 @@ uint32_t CBitstreamConverter::get_bits( bits_reader_t *br, int nbits )
   return ret;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+void CBitstreamConverter::init_bits_writer(bits_writer_t *s, uint8_t *buffer, int buffer_size, int writer_le)
+{
+  if (buffer_size < 0)
+  {
+    buffer_size = 0;
+    buffer      = NULL;
+  }
+
+  s->size_in_bits = 8 * buffer_size;
+  s->buf          = buffer;
+  s->buf_end      = s->buf + buffer_size;
+  s->buf_ptr      = s->buf;
+  s->bit_left     = 32;
+  s->bit_buf      = 0;
+  s->writer_le    = writer_le;
+}
+
+void CBitstreamConverter::write_bits(bits_writer_t *s, int n, unsigned int value)
+{
+  // Write up to 32 bits into a bitstream.
+  unsigned int bit_buf;
+  int bit_left;
+
+  if (n == 32)
+  {
+    // Write exactly 32 bits into a bitstream.
+    // danger, recursion in play.
+    int lo = value & 0xffff;
+    int hi = value >> 16;
+    if (s->writer_le)
+    {
+      write_bits(s, 16, lo);
+      write_bits(s, 16, hi);
+    }
+    else
+    {
+      write_bits(s, 16, hi);
+      write_bits(s, 16, lo);
+    }
+    return;
+  }
+
+  bit_buf  = s->bit_buf;
+  bit_left = s->bit_left;
+
+  if (s->writer_le)
+  {
+    bit_buf |= value << (32 - bit_left);
+    if (n >= bit_left) {
+      BS_WL32(s->buf_ptr, bit_buf);
+      s->buf_ptr += 4;
+      bit_buf     = (bit_left == 32) ? 0 : value >> bit_left;
+      bit_left   += 32;
+    }
+    bit_left -= n;
+  }
+  else
+  {
+    if (n < bit_left) {
+      bit_buf     = (bit_buf << n) | value;
+      bit_left   -= n;
+    } else {
+      bit_buf   <<= bit_left;
+      bit_buf    |= value >> (n - bit_left);
+      BS_WB32(s->buf_ptr, bit_buf);
+      s->buf_ptr += 4;
+      bit_left   += 32 - n;
+      bit_buf     = value;
+    }
+  }
+
+  s->bit_buf  = bit_buf;
+  s->bit_left = bit_left;
+}
+
+void CBitstreamConverter::skip_bits(bits_writer_t *s, int n)
+{
+  // Skip the given number of bits.
+  // Must only be used if the actual values in the bitstream do not matter.
+  // If n is 0 the behavior is undefined.
+  s->bit_left -= n;
+  s->buf_ptr  -= 4 * (s->bit_left >> 5);
+  s->bit_left &= 31;
+}
+
+void CBitstreamConverter::flush_bits(bits_writer_t *s)
+{
+  if (!s->writer_le)
+  {
+    if (s->bit_left < 32)
+      s->bit_buf <<= s->bit_left;
+  }
+  while (s->bit_left < 32)
+  {
+
+    if (s->writer_le)
+    {
+      *s->buf_ptr++ = s->bit_buf;
+      s->bit_buf  >>= 8;
+    }
+    else
+    {
+      *s->buf_ptr++ = s->bit_buf >> 24;
+      s->bit_buf  <<= 8;
+    }
+    s->bit_left  += 8;
+  }
+  s->bit_left = 32;
+  s->bit_buf  = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence)
 {
   // parse nal's until a sequence_header_code is found
