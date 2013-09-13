@@ -209,6 +209,9 @@ int StringUtils::Replace(string &str, char oldChar, char newChar)
 
 int StringUtils::Replace(std::string &str, const std::string &oldStr, const std::string &newStr)
 {
+  if (oldStr.empty())
+    return 0;
+
   int replacedChars = 0;
   size_t index = 0;
   
