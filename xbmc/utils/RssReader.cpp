@@ -18,7 +18,6 @@
  *
  */
 
-#include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "RssReader.h"
 #include "utils/HTMLUtil.h"

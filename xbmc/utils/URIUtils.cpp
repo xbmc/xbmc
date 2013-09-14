@@ -18,7 +18,6 @@
  *
  */
 
-#include "network/Network.h"
 #include "URIUtils.h"
 #include "Application.h"
 #include "FileItem.h"
@@ -523,6 +522,7 @@ bool URIUtils::IsHostOnLAN(const CStdString& host, bool offLineCheck)
       address = ntohl(inet_addr(ip.c_str()));
   }
 
+/*
   if(address != INADDR_NONE)
   {
     if (offLineCheck) // check if in private range, ref https://en.wikipedia.org/wiki/Private_network
@@ -541,6 +541,7 @@ bool URIUtils::IsHostOnLAN(const CStdString& host, bool offLineCheck)
     if (g_application.getNetwork().HasInterfaceForIP(address))
       return true;
   }
+*/
 
   return false;
 }

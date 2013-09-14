@@ -609,6 +609,7 @@ lib/cmyth/Makefile
 # /xbmc/network/
 /xbmc/network/Makefile
 /xbmc/network/upnp/Makefile
+/xbmc/network/linux/Makefile
 
 # /xbmc/osx/
 /xbmc/osx/Makefile

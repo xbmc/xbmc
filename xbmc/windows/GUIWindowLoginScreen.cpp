@@ -33,7 +33,6 @@
 #endif
 #include "interfaces/Builtins.h"
 #include "utils/Weather.h"
-#include "network/Network.h"
 #include "addons/Skin.h"
 #include "guilib/GUIMessage.h"
 #include "GUIUserMessages.h"
@@ -281,7 +280,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   if (profile != 0 || !CProfilesManager::Get().IsMasterProfile())
   {
-    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    g_application.getNetwork().NetworkMessage(CNetworkManager::SERVICES_DOWN,1);
     CProfilesManager::Get().LoadProfile(profile);
   }
   else
@@ -290,7 +289,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     if (pWindow)
       pWindow->ResetControlStates();
   }
-  g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
+  g_application.getNetwork().NetworkMessage(CNetworkManager::SERVICES_UP,1);
 
   CProfilesManager::Get().UpdateCurrentProfileDate();
   CProfilesManager::Get().Save();

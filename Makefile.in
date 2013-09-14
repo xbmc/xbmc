@@ -84,6 +84,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/pvr/timers/pvrtimers.a \
                    xbmc/pvr/windows/pvrwindows.a \
                    xbmc/rendering/rendering.a \
+                   xbmc/security/security.a \
                    xbmc/settings/settings.a \
                    xbmc/settings/dialogs/settings_dialogs.a \
                    xbmc/settings/windows/settings_windows.a \

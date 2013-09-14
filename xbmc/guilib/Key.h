@@ -331,6 +331,8 @@
 #define ACTION_SETTINGS_RESET         240
 #define ACTION_SETTINGS_LEVEL_CHANGE  241
 
+#define ACTION_CONNECTIONS_REFRESH    300
+
 // touch actions
 #define ACTION_TOUCH_TAP              401
 #define ACTION_TOUCH_TAP_TEN          410

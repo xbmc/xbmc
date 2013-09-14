@@ -26,7 +26,6 @@
 #include "GUIDialogContextMenu.h"
 #include "storage/MediaManager.h"
 #include "AutoSwitch.h"
-#include "network/Network.h"
 #include "GUIPassword.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"

@@ -58,6 +58,8 @@ class CPlayerController;
 #ifdef TARGET_WINDOWS
 #include "win32/WIN32Util.h"
 #endif
+#include "network/NetworkManager.h"
+#include "security/KeyringManager.h"
 #include "utils/Stopwatch.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
@@ -252,7 +254,9 @@ public:
 
   static bool OnEvent(XBMC_Event& newEvent);
 
-  CNetwork& getNetwork();
+  CNetworkManager& getNetwork();
+  CKeyringManager& getKeyringManager();
+
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
 #endif
@@ -459,7 +463,8 @@ protected:
   CSeekHandler *m_seekHandler;
   CPlayerController *m_playerController;
   CInertialScrollingHandler *m_pInertialScrollingHandler;
-  CNetwork    *m_network;
+  CNetworkManager m_network;
+  CKeyringManager m_keyringManager;
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats m_perfStats;
 #endif

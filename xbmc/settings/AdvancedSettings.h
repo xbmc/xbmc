@@ -207,6 +207,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_extraLogLevels;
     CStdString m_cddbAddress;
 
+    // network manager
+    bool m_enableNetworkManager;
+    bool m_showNetworkPassPhrase;
+
     //airtunes + airplay
     bool m_logEnableAirtunes;
     int m_airTunesPort;

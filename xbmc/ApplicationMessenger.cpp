@@ -28,7 +28,6 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "interfaces/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "network/Network.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -664,7 +663,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
     case TMSG_NETWORKMESSAGE:
       {
-        g_application.getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, (int)pMsg->dwParam2);
+        g_application.getNetwork().NetworkMessage((CNetworkManager::EMESSAGE)pMsg->dwParam1, (int)pMsg->dwParam2);
       }
       break;
 

@@ -22,6 +22,7 @@
 #include <list>
 #include <vector>
 
+#include "PlatformDefs.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/IRssObserver.h"

@@ -18,7 +18,6 @@
  *
  */
 
-#include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "MusicDatabase.h"

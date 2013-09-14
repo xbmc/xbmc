@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "network/Network.h"
+
 #include "UPnPRenderer.h"
 #include "UPnP.h"
 #include "UPnPInternal.h"
@@ -397,10 +397,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
 
         thumb = CTextureCache::GetWrappedImageURL(thumb);
 
-        NPT_String ip;
-        if (g_application.getNetwork().GetFirstConnectedInterface()) {
-            ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
-        }
+        NPT_String ip = g_application.getNetwork().GetDefaultConnectionAddress().c_str();
         // build url, use the internal device http server to serv the image
         NPT_HttpUrlQuery query;
         query.AddField("path", thumb.c_str());
