@@ -861,6 +861,6 @@ void CURL::SetProtocolOption(const CStdString &key, const CStdString &value)
 
 void CURL::RemoveProtocolOption(const CStdString &key)
 {
-  m_options.RemoveOption(key);
+  m_protocolOptions.RemoveOption(key);
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);
 }
