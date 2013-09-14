@@ -309,7 +309,7 @@ void CGUIDialogMediaFilter::CreateSettings()
 
       case SettingInfo::RANGE:
       {
-        float min, interval, max;
+        float min = 0, interval = 0, max = 0;
         RANGEFORMATFUNCTION format;
         GetRange(filter, min, interval, max, format);
 
