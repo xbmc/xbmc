@@ -724,10 +724,7 @@ unsigned int CJpegIO::GetExifOrientation(unsigned char* exif_data, unsigned int 
     orientation = exif_data[offset+8];
   }
   if (orientation > 8)
-  {
     orientation = 0;
-    return 0;
-  }
 
   return orientation;//done
 }
