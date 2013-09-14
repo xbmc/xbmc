@@ -181,6 +181,9 @@ void CPlexDirectoryTypeParserVideo::ParseMediaParts(CFileItem &mediaItem, TiXmlE
     if ((mediaPart->HasProperty("exists") && !mediaPart->GetProperty("exists").asBoolean()) ||
         (mediaPart->HasProperty("accessible") && !mediaPart->GetProperty("accessible").asBoolean()))
       mediaItem.SetProperty("unavailable", true);
+    
+    if (mediaPart->IsDVDImage() || mediaPart->IsDVD() || mediaPart->IsDVDFile())
+      mediaItem.SetProperty("isdvd", true);
 
     mediaItem.m_mediaParts.push_back(mediaPart);
   }

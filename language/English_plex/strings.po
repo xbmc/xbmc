@@ -904,6 +904,10 @@ msgctxt "#52011"
 msgid "Plex Home Theater is not able to play this channel content"
 msgstr "Plex Home Theater is not able to play this channel content"
 
+msgctxt "#52012"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "Plex Home Theater is not able to play ISO files"
+
 msgctxt "#52100"
 msgid "Select Audio Track"
 msgstr "Select Audio Track"

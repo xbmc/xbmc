@@ -49,15 +49,24 @@ class PlexContentPlayerMixin
   
   static void PlayPlexItem(const CFileItemPtr file, CGUIBaseContainer* container=NULL)
   {
+    /* something went wrong ... */
     if (file->HasProperty("unavailable") && file->GetProperty("unavailable").asBoolean())
     {
       CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(52000), g_localizeStrings.Get(52010), "", "");
       return;
     }
     
+    /* webkit can't be played by PHT */
     if (file->HasProperty("protocol") && file->GetProperty("protocol").asString() == "webkit")
     {
       CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(52000), g_localizeStrings.Get(52011), "", "");
+      return;
+    }
+    
+    /* and we defintely not playing isos. */
+    if (file->HasProperty("isdvd") && file->GetProperty("isdvd").asBoolean())
+    {
+      CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(52000), g_localizeStrings.Get(52012), "", "");
       return;
     }
     
