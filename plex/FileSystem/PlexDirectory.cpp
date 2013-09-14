@@ -74,6 +74,9 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     augmentUrl.SetFileName(newFile);
     AddAugmentation(augmentUrl);
   }
+  
+  if (boost::contains(m_url.GetFileName(), "library/metadata"))
+    m_url.SetOption("checkFiles", "1");
 
   CStdString data;
   bool httpSuccess;

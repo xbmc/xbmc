@@ -95,7 +95,7 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
     item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
   else
     item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, videoTag.m_playCount > 0);
-
+  
   /* for directories with leafCount and viewLeafCount */
   if (item.HasProperty("leafCount") && item.HasProperty("viewedLeafCount"))
   {
@@ -177,6 +177,10 @@ void CPlexDirectoryTypeParserVideo::ParseMediaParts(CFileItem &mediaItem, TiXmlE
     CFileItemPtr mediaPart = CPlexDirectory::NewPlexElement(part, mediaItem, mediaItem.GetPath());
 
     ParseMediaStreams(*mediaPart, part);
+    
+    if (!mediaPart->GetProperty("exists").asBoolean() ||
+        !mediaPart->GetProperty("accessible").asBoolean())
+      mediaItem.SetProperty("unavailable", true);
 
     mediaItem.m_mediaParts.push_back(mediaPart);
   }
