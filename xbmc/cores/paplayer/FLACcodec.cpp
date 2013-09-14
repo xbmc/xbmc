@@ -311,17 +311,19 @@ void FLACCodec::DecoderMetadataCallback(const FLAC__StreamDecoder *decoder, cons
 
   if (metadata->type==FLAC__METADATA_TYPE_STREAMINFO)
   {
-    static enum AEChannel map[6][7] = {
+    static enum AEChannel map[8][9] = {
       {AE_CH_FC, AE_CH_NULL},
       {AE_CH_FL, AE_CH_FR, AE_CH_NULL},
       {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_NULL},
       {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_NULL},
       {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_BL, AE_CH_BR, AE_CH_NULL},
-      {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_NULL}
+      {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_NULL}, // 6 channels
+      {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BC, AE_CH_BL, AE_CH_BR, AE_CH_NULL}, // 7 channels
+      {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL} // 8 channels
     };
 
     /* channel counts greater then 6 are undefined */
-    if (metadata->data.stream_info.channels > 6)
+    if (metadata->data.stream_info.channels > 8)
       pThis->m_ChannelInfo = CAEUtil::GuessChLayout(metadata->data.stream_info.channels);
     else
       pThis->m_ChannelInfo = CAEChannelInfo(map[metadata->data.stream_info.channels - 1]);

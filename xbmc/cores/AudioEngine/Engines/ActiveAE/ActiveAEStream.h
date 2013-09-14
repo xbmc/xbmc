@@ -92,6 +92,8 @@ protected:
   IAEStream *m_streamSlave;
   CAEConvert::AEConvertToFn m_convertFn;
   CCriticalSection m_streamLock;
+  uint8_t *m_leftoverBuffer;
+  int m_leftoverBytes;
 
   // only accessed by engine
   CActiveAEBufferPool *m_inputBuffers;
