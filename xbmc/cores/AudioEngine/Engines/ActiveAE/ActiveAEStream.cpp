@@ -53,10 +53,13 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_streamIsBuffering = true;
   m_streamSlave = NULL;
   m_convertFn = NULL;
+  m_leftoverBuffer = new uint8_t[m_format.m_frameSize];
+  m_leftoverBytes = 0;
 }
 
 CActiveAEStream::~CActiveAEStream()
 {
+  delete [] m_leftoverBuffer;
 }
 
 void CActiveAEStream::IncFreeBuffers()
@@ -88,10 +91,28 @@ unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
   Message *msg;
   unsigned int copied = 0;
   int bytesToCopy = size;
+  uint8_t *buf = (uint8_t*)data;
+
   while(copied < size)
   {
+    buf = (uint8_t*)data;
+    bytesToCopy = size - copied;
+
     if (m_currentBuffer)
     {
+      // fill leftover buffer and copy it first
+      if (m_leftoverBytes && bytesToCopy >= (m_format.m_frameSize - m_leftoverBytes))
+      {
+        int fillbytes = m_format.m_frameSize - m_leftoverBytes;
+        memcpy(m_leftoverBuffer+m_leftoverBytes, (uint8_t*)data, fillbytes);
+        data = (uint8_t*)data + fillbytes;
+        size -= fillbytes;
+        // leftover buffer will be copied on next cycle
+        buf = m_leftoverBuffer;
+        bytesToCopy = m_format.m_frameSize;
+        m_leftoverBytes = 0;
+      }
+
       int start = m_currentBuffer->pkt->nb_samples *
                   m_currentBuffer->pkt->bytes_per_sample *
                   m_currentBuffer->pkt->config.channels /
@@ -99,20 +120,29 @@ unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
 
       int freeSamples = m_currentBuffer->pkt->max_nb_samples - m_currentBuffer->pkt->nb_samples;
       int availableSamples = bytesToCopy / m_format.m_frameSize;
+
+      // if we don't have a full frame, copy to leftover buffer
+      if (!availableSamples && bytesToCopy)
+      {
+        memcpy(m_leftoverBuffer+m_leftoverBytes, buf+copied, bytesToCopy);
+        m_leftoverBytes = bytesToCopy;
+        copied += bytesToCopy;
+      }
+
       int samples = std::min(freeSamples, availableSamples);
       int bytes = samples * m_format.m_frameSize;
+
       //TODO: handle planar formats
       if (m_convertFn)
-        m_convertFn((uint8_t*)data+copied, samples*m_currentBuffer->pkt->config.channels, (float*)(m_currentBuffer->pkt->data[0] + start));
+        m_convertFn(buf+copied, samples*m_currentBuffer->pkt->config.channels, (float*)(m_currentBuffer->pkt->data[0] + start));
       else
-        memcpy(m_currentBuffer->pkt->data[0] + start, (uint8_t*)data+copied, bytes);
+        memcpy(m_currentBuffer->pkt->data[0] + start, buf+copied, bytes);
       {
         CSingleLock lock(*m_statsLock);
         m_currentBuffer->pkt->nb_samples += samples;
         m_bufferedTime += (double)samples / m_currentBuffer->pkt->config.sample_rate;
       }
       copied += bytes;
-      bytesToCopy -= bytes;
       if (m_currentBuffer->pkt->nb_samples == m_currentBuffer->pkt->max_nb_samples)
       {
         MsgStreamSample msgData;
@@ -249,6 +279,7 @@ bool CActiveAEStream::IsDrained()
 void CActiveAEStream::Flush()
 {
   m_currentBuffer = NULL;
+  m_leftoverBytes = 0;
   AE.FlushStream(this);
   ResetFreeBuffers();
 }
