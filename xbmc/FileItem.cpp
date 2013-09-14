@@ -3469,9 +3469,9 @@ bool CFileItem::IsPlexMediaServerLibrary() const
   if (IsPlexMediaServer() == false)
     return false;
 
-  if (m_strPath.Find("/library/parts/") != -1 ||
-      m_strPath.Find("/library/metadata/") != -1 ||
-      m_strPath.Find("/library/sections/") != -1)
+  if (GetProperty("unprocessed_key").asString().find("/library/parts/") != std::string::npos ||
+      GetProperty("unprocessed_key").asString().find("/library/metadata/") != std::string::npos ||
+      GetProperty("unprocessed_key").asString().find("/library/sections/") != std::string::npos)
   {
     return true;
   }

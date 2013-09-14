@@ -220,15 +220,16 @@ CURL CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& url_, bool& second
   if (m_mapToSection.Get() == dirUrl.Get())
     dirUrl = m_sectionUrl;
 
-  dirUrl.SetProtocolOption("containerSize", "1");
-  dirUrl.SetProtocolOption("containerStart", "0");
+  CURL tempURL(dirUrl);
+  tempURL.SetProtocolOption("containerSize", "1");
+  tempURL.SetProtocolOption("containerStart", "0");
+  
   tmpItems.SetPath(dirUrl.Get());
 
   /* A bit stupidity here, but we need to request the container twice. Fortunately it's really fast
    * to do it with the offset stuff above */
-  if (dir.GetDirectory(dirUrl, tmpItems))
+  if (dir.GetDirectory(tempURL, tmpItems))
   {
-    dirUrl.SetProtocolOptions("");
     if (tmpItems.IsPlexMediaServer() && tmpItems.GetContent() == "secondary")
     {
       if (m_sectionUrl.Get() != dirUrl.Get())

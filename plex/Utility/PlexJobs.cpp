@@ -29,8 +29,7 @@ bool CPlexHTTPFetchJob::operator==(const CJob* job) const
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectoryFetchJob::DoWork()
 {
-  XFILE::CPlexDirectory dir;
-  return dir.GetDirectory(m_url.Get(), m_items);
+  return m_dir.GetDirectory(m_url.Get(), m_items);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

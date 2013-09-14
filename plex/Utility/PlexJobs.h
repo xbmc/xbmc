@@ -15,6 +15,7 @@
 #include "FileItem.h"
 #include "guilib/GUIMessage.h"
 #include "Client/PlexMediaServerClient.h"
+#include "FileSystem/PlexDirectory.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 class CPlexHTTPFetchJob : public CJob
@@ -48,6 +49,7 @@ public:
   
   virtual bool DoWork();
   
+  XFILE::CPlexDirectory m_dir;
   CFileItemList m_items;
   CURL m_url;
 };

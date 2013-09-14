@@ -67,6 +67,8 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
      * path to get more information for the path we want to navigate
      * to */
     CURL augmentUrl = m_url;
+    augmentUrl.SetProtocolOptions("");
+    
     CStdString newFile = m_url.GetFileName();
     boost::replace_last(newFile, "/children", "");
     augmentUrl.SetFileName(newFile);
@@ -77,9 +79,15 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   bool httpSuccess;
 
   if (m_url.HasProtocolOption("containerSize"))
+  {
     m_url.SetOption("X-Plex-Container-Size", m_url.GetProtocolOption("containerSize"));
+    m_url.RemoveProtocolOption("containerSize");
+  }
   if (m_url.HasProtocolOption("containerStart"))
+  {
     m_url.SetOption("X-Plex-Container-Start", m_url.GetProtocolOption("containerStart"));
+    m_url.RemoveProtocolOption("containerStart");
+  }
 
   if (m_body.empty())
     httpSuccess = m_file.Get(m_url.Get(), data);
@@ -543,7 +551,11 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
     }
   }
   else
-    CLog::Log(LOGWARNING, "CPlexDirectory::DoAugmentation failed to get augmentation URL");
+  {
+    CLog::Log(LOGWARNING, "CPlexDirectory::DoAugmentation timed out");
+    BOOST_FOREACH(int id, m_augmentationJobs)
+      CJobManager::GetInstance().CancelJob(id);
+  }
 
   /* clean up */
   BOOST_FOREACH(CFileItemList* item, m_augmentationItems)

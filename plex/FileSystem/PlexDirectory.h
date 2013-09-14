@@ -87,6 +87,7 @@ namespace XFILE
         CSingleLock lk(m_augmentationLock);
         BOOST_FOREACH(int id, m_augmentationJobs)
           CJobManager::GetInstance().CancelJob(id);
+        m_augmentationEvent.Set();
       }
 
       CCriticalSection m_augmentationLock;

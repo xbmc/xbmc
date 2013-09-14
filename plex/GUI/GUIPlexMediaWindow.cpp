@@ -107,12 +107,12 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
     m_history.AddPath(newUrl.Get());
     m_startDirectory = newUrl.Get();
 
-
     if (updateFilters)
       BuildFilter(m_filterHelper.GetSectionUrl());
   }
   else
   {
+    newUrl.SetProtocolOptions("");
     m_history.AddPath(newUrl.Get());
   }
 
