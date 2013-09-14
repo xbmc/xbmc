@@ -4,13 +4,32 @@
 
 #include "dialogs/GUIDialogBoxBase.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "PlexTypes.h"
 
-class CGUIDialogPlexAudioSubtitlePicker : public CGUIDialogSelect
+class CGUIDialogPlexPicker : public CGUIDialogSelect
 {
 public:
-  CGUIDialogPlexAudioSubtitlePicker();
-  void SetFileItem(CFileItemPtr &fileItem, bool audio=true);
-  static bool ShowAndGetInput(CFileItemPtr &fileItem, bool audio=true);
-  static CStdString GetPresentationString(CFileItemPtr& fileItem, bool audio=true);
-  void UpdateStreamSelection(CFileItemPtr &fileItem);
+  CGUIDialogPlexPicker(int id, const CStdString &xml, bool audio=true);
+  void SetFileItem(CFileItemPtr &fileItem);
+  void UpdateStreamSelection();
+  
+  static bool ShowAndGetInput(CFileItemPtr &fileItem, bool audio);
+  
+  virtual bool OnMessage(CGUIMessage &msg);
+  
+private:
+  bool m_audio;
+  CFileItemPtr m_fileItem;
+};
+
+class CGUIDialogPlexAudioPicker : public CGUIDialogPlexPicker
+{
+public:
+  CGUIDialogPlexAudioPicker() : CGUIDialogPlexPicker(WINDOW_DIALOG_PLEX_AUDIO_PICKER, "DialogSelect.xml", true) {}
+};
+
+class CGUIDialogPlexSubtitlePicker : public CGUIDialogPlexPicker
+{
+public:
+  CGUIDialogPlexSubtitlePicker() : CGUIDialogPlexPicker(WINDOW_DIALOG_PLEX_SUBTITLE_PICKER, "DialogSelect.xml", false) {}
 };

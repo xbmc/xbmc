@@ -44,9 +44,9 @@ void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJo
 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,
-                                     int partID,
-                                     int subtitleStreamID,
-                                     int audioStreamID)
+                                          int partID,
+                                          int subtitleStreamID,
+                                          int audioStreamID)
 {
   CURL u(item->GetPath());
   

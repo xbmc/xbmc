@@ -13,133 +13,110 @@
 
 #include "PlexUtils.h"
 #include "PlexApplication.h"
+#include "Application.h"
 
-CGUIDialogPlexAudioSubtitlePicker::CGUIDialogPlexAudioSubtitlePicker()
-  : CGUIDialogSelect()
+CGUIDialogPlexPicker::CGUIDialogPlexPicker(int id, const CStdString& xml, bool audio)
+  : CGUIDialogSelect(id, xml)
 {
+  m_audio = audio;
+}
+
+bool
+CGUIDialogPlexPicker::OnMessage(CGUIMessage &msg)
+{
+  if (msg.GetMessage() == GUI_MSG_WINDOW_INIT)
+  {
+    if (g_application.IsPlaying() && g_application.CurrentFileItemPtr())
+      SetFileItem(g_application.CurrentFileItemPtr());
+    else if (g_plexApplication.m_preplayItem)
+      SetFileItem(g_plexApplication.m_preplayItem);
+  }
+  
+  bool ret = CGUIDialogSelect::OnMessage(msg);
+
+  if (msg.GetMessage() == GUI_MSG_CLICKED)
+  {
+    if (msg.GetParam1() == ACTION_SELECT_ITEM)
+    {
+      UpdateStreamSelection();
+    }
+  }
+
+  return ret;
 }
 
 void
-CGUIDialogPlexAudioSubtitlePicker::SetFileItem(CFileItemPtr& fileItem, bool audio)
+CGUIDialogPlexPicker::SetFileItem(CFileItemPtr& fileItem)
 {
-  if (!audio)
+  m_fileItem = fileItem;
+  
+  if (!m_audio)
   {
     // Subtitles must always have a None entry as well.
     CFileItem* noneItem = new CFileItem;
     
     noneItem->SetLabel(g_localizeStrings.Get(231));
-    noneItem->SetProperty("streamId", "-1");
+    noneItem->SetProperty("id", -1);
     noneItem->SetProperty("streamType", boost::lexical_cast<std::string>(PLEX_STREAM_SUBTITLE));
+    noneItem->Select(false);
     
     Add(noneItem);
-    
-    SetSelected(0);
   }
+  
+  if (!fileItem || fileItem->m_mediaItems.size() < 1 ||
+      fileItem->m_mediaItems[0]->m_mediaParts.size() < 1)
+    return;
 
-  CFileItemPtr part = fileItem->m_mediaParts[0];
+  CFileItemPtr part = fileItem->m_mediaItems[0]->m_mediaParts[0];
   int index = 0;
+  bool hasSelection = false;
   for (int y = 0; y < part->m_mediaPartStreams.size(); y ++)
   {
     CFileItemPtr stream = part->m_mediaPartStreams[y];
     int streamType = stream->GetProperty("streamType").asInteger();
-    if (stream && ((audio && streamType == PLEX_STREAM_AUDIO) ||
-                   (!audio && streamType == PLEX_STREAM_SUBTITLE)))
+    if (stream && ((m_audio && streamType == PLEX_STREAM_AUDIO) ||
+                   (!m_audio && streamType == PLEX_STREAM_SUBTITLE)))
     {
+      if (stream->IsSelected())
+        hasSelection = true;
       Add(stream.get());
-      
-      if (stream->GetProperty("selected").asBoolean())
-        SetSelected(index);
-      
       index++;
     }
   }
+  
+  if (!hasSelection && !m_audio)
+    m_vecList->Get(0)->Select(true);
 }
 
-CStdString
-CGUIDialogPlexAudioSubtitlePicker::GetPresentationString(CFileItemPtr& fileItem, bool audio)
+void CGUIDialogPlexPicker::UpdateStreamSelection()
 {
-  CStdString lang;
-  int numStreams = 0;
-  
-  if (fileItem->m_mediaParts.size() < 1)
-    return "None";
-
-  CFileItemPtr part = fileItem->m_mediaParts[0];
-  for (int y = 0; y < part->m_mediaPartStreams.size(); y ++)
+  CFileItemPtr selectedStream;
+  for (int i = 0; i < m_vecList->Size() ; i ++)
   {
-    CFileItemPtr stream = part->m_mediaPartStreams[y];
-    int64_t streamType = stream->GetProperty("streamType").asInteger();
-    if ((audio && streamType == PLEX_STREAM_AUDIO) ||
-        (!audio && streamType == PLEX_STREAM_SUBTITLE))
-    {
-      if (stream->GetProperty("selected").asBoolean())
-      {
-        lang = stream->GetProperty("language").asString();
-        boost::to_upper(lang);
-      }
-      
-      numStreams ++;
-    }
+    if (m_vecList->Get(i)->IsSelected())
+      selectedStream = m_vecList->Get(i);
   }
-
-  if (!lang.empty())
-  {
-    if (numStreams > 1)
-      lang += " (" + boost::lexical_cast<std::string>(numStreams - 1) + " more)";
-  }
-  else if (numStreams > 0)
-    lang = "Unknown";
-  else
-    lang = "None";
   
-  return lang;
-}
-
-void
-CGUIDialogPlexAudioSubtitlePicker::UpdateStreamSelection(CFileItemPtr &fileItem)
-{
-  CFileItemPtr selectedStream = GetSelectedItem();
-  int streamType = selectedStream->GetProperty("streamType").asInteger();
-  int streamId = selectedStream->GetProperty("streamId").asInteger();
-
-  int subtitleId, audioId;
-
-  CFileItemPtr subtitleStream = PlexUtils::GetSelectedStreamOfType(fileItem->m_mediaParts[0], PLEX_STREAM_SUBTITLE);
-  if (subtitleStream)
-    subtitleId = subtitleStream->GetProperty("id").asInteger();
-
-  CFileItemPtr audioStream = PlexUtils::GetSelectedStreamOfType(fileItem->m_mediaParts[0], PLEX_STREAM_AUDIO);
-  if (audioStream)
-    audioId = audioStream->GetProperty("id").asInteger();
-
-  if (streamType == PLEX_STREAM_AUDIO)
-    audioId = streamId;
-  else if (streamType == PLEX_STREAM_SUBTITLE)
-    subtitleId = streamId;
+  if (!selectedStream)
+    return;
   
-  for (int i = 0; i < fileItem->m_mediaParts.size(); i ++)
-  {
-    g_plexApplication.mediaServerClient->SelectStream(fileItem, fileItem->m_mediaParts[i]->GetProperty("id").asInteger(), subtitleId, audioId);
-
-    PlexUtils::SetSelectedStream(fileItem->m_mediaParts[i], streamType, streamId);
-  }
-
+  PlexUtils::SetSelectedStream(m_fileItem, selectedStream);
 }
 
 bool
-CGUIDialogPlexAudioSubtitlePicker::ShowAndGetInput(CFileItemPtr& fileItem, bool audio)
+CGUIDialogPlexPicker::ShowAndGetInput(CFileItemPtr& fileItem, bool audio)
 {
-  CGUIDialogPlexAudioSubtitlePicker *dialog = (CGUIDialogPlexAudioSubtitlePicker*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogPlexPicker *dialog = (CGUIDialogPlexPicker*)g_windowManager.GetWindow(audio ? WINDOW_DIALOG_PLEX_AUDIO_PICKER : WINDOW_DIALOG_PLEX_SUBTITLE_PICKER);
   if (!dialog) return false;
   
   dialog->Reset();
   
   //dialog->SetButtonText(g_localizeStrings.Get(222));
   dialog->SetHeading(g_localizeStrings.Get(audio ? 52100 : 52101));
-  dialog->SetFileItem(fileItem, audio);
+  dialog->SetFileItem(fileItem);
   dialog->DoModal();
   if (dialog->m_bConfirmed)
-    dialog->UpdateStreamSelection(fileItem);
+    dialog->UpdateStreamSelection();
   
   return dialog->m_bConfirmed;
 }

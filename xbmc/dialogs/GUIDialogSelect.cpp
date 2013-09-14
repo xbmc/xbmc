@@ -29,6 +29,21 @@
 #define CONTROL_BUTTON        5
 #define CONTROL_DETAILS       6
 
+/* PLEX */
+CGUIDialogSelect::CGUIDialogSelect(int id, const CStdString &xml)
+    : CGUIDialogBoxBase(id, xml)
+{
+  m_bButtonEnabled = false;
+  m_buttonString = -1;
+  m_useDetails = false;
+  m_vecList = new CFileItemList;
+  m_selectedItems = new CFileItemList;
+  m_multiSelection = false;
+  m_iSelected = -1;
+  m_loadType = KEEP_IN_MEMORY;
+}
+/* END PLEX */
+
 CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {

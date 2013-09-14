@@ -14,6 +14,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "AdvancedSettings.h"
+#include "guilib/LocalizeStrings.h"
 
 #include <boost/foreach.hpp>
 
@@ -121,7 +122,10 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
     /* also forward art, this is the mediaTags */
     item.AppendArt(firstMedia->GetArt());
   }
-
+  
+  item.SetProperty("selectedAudioStream", PlexUtils::GetPrettyStreamName(item, true));
+  item.SetProperty("selectedSubtitleStream", PlexUtils::GetPrettyStreamName(item, false));
+  
   //DebugPrintVideoItem(item);
 }
 
@@ -185,7 +189,7 @@ void CPlexDirectoryTypeParserVideo::ParseMediaStreams(CFileItem &mediaPart, TiXm
     CFileItemPtr mediaStream = CPlexDirectory::NewPlexElement(stream, mediaPart, mediaPart.GetPath());
 
     /* Set a sensible Label so we can use this in dialogs */
-    CStdString streamName = !mediaStream->HasProperty("language") ? mediaStream->GetProperty("language").asString() : "Unknown";
+    CStdString streamName = mediaStream->HasProperty("language") ? mediaStream->GetProperty("language").asString() : CStdString(g_localizeStrings.Get(1446));
     if (mediaStream->GetProperty("streamType").asInteger() == PLEX_STREAM_AUDIO)
       streamName += " (" + PlexUtils::GetStreamCodecName(mediaStream) + " " + boost::to_upper_copy(PlexUtils::GetStreamChannelName(mediaStream)) + ")";
     else if (mediaStream->GetProperty("streamType").asInteger() == PLEX_STREAM_VIDEO)
@@ -201,7 +205,10 @@ void CPlexDirectoryTypeParserVideo::ParseMediaStreams(CFileItem &mediaPart, TiXm
 
     if (!mediaStream->HasProperty("index"))
       mediaStream->SetProperty("index", -1);
-
+    
+    if (mediaStream->HasProperty("selected"))
+      mediaStream->Select(mediaStream->GetProperty("selected").asBoolean());
+    
     mediaPart.m_mediaPartStreams.push_back(mediaStream);
   }
 

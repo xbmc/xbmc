@@ -25,12 +25,14 @@ namespace PlexUtils
   std::string GetStreamCodecName(CFileItemPtr item);
   std::string GetStreamChannelName(CFileItemPtr item);
 
+  bool PlexMediaStreamCompare(CFileItemPtr stream1, CFileItemPtr stream2);
   CFileItemPtr GetSelectedStreamOfType(CFileItemPtr mediaPart, int streamType);
-  void SetSelectedStream(CFileItemPtr mediaPart, int streamType, int id);
+  void SetSelectedStream(CFileItemPtr item, CFileItemPtr stream);
 
   bool CurrentSkinHasPreplay();
   
   std::string GetPlexCrashPath();
+  CStdString GetPrettyStreamName(const CFileItem& fileItem, bool audio);
 }
 
 #ifdef _WIN32

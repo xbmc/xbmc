@@ -60,6 +60,8 @@ public:
   void ForceVersionCheck();
   CPlexServiceListenerPtr GetServiceListener() const { return m_serviceListener; }
   
+  CFileItemPtr m_preplayItem;
+  
   
   CMyPlexManager *myPlexManager;
   CPlexServerManagerPtr serverManager;

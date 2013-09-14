@@ -31,6 +31,9 @@ class CGUIDialogSelect :
       public CGUIDialogBoxBase
 {
 public:
+  /* PLEX */
+  CGUIDialogSelect(int id, const CStdString &xml="DialogSelect.xml");
+  /* END PLEX */
   CGUIDialogSelect(void);
   virtual ~CGUIDialogSelect(void);
   virtual bool OnMessage(CGUIMessage& message);

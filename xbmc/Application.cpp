@@ -358,6 +358,7 @@
 #include "plex/Remote/PlexHTTPRemoteHandler.h"
 #include "plex/Remote/PlexRemoteSubscriberManager.h"
 #include "plex/CrashReporter/Breakpad.h"
+#include "plex/GUI/GUIDialogPlexAudioSubtitlePicker.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -1520,6 +1521,8 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogMyPlex);
     g_windowManager.Add(new CGUIDialogPlexPluginSettings);
     g_windowManager.Add(new CGUIWindowPlexMyChannels);
+    g_windowManager.Add(new CGUIDialogPlexAudioPicker);
+    g_windowManager.Add(new CGUIDialogPlexSubtitlePicker);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
@@ -3555,6 +3558,8 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_TIMER);
     g_windowManager.Delete(WINDOW_DIALOG_RATING);
     g_windowManager.Delete(WINDOW_DIALOG_FILTER_SORT);
+    g_windowManager.Delete(WINDOW_DIALOG_PLEX_AUDIO_PICKER);
+    g_windowManager.Delete(WINDOW_DIALOG_PLEX_SUBTITLE_PICKER);
     /* END PLEX */
 
     g_windowManager.Delete(WINDOW_MUSIC_PLAYLIST);
