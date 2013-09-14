@@ -895,7 +895,10 @@ void CGUIEPGGridContainer::UpdateItems()
         CGUIListItemPtr item = m_programmeItems[progIdx];
         const CEpgInfoTag* tag = ((CFileItem *)item.get())->GetEPGInfoTag();
         if (tag == NULL)
+        {
           progIdx++;
+          continue;
+        }
 
         if (tag->EpgID() != iEpgId)
           break;
