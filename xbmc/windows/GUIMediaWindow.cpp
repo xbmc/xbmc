@@ -1478,7 +1478,13 @@ void CGUIMediaWindow::OnInitWindow()
 {
   // initial fetch is done unthreaded to ensure the items are setup prior to skin animations kicking off
   m_rootDir.SetAllowThreads(false);
+
+  // the start directory may change during Refresh
+  bool updateStartDirectory = (m_startDirectory == m_vecItems->GetPath());
   Refresh();
+  if (updateStartDirectory)
+    m_startDirectory = m_vecItems->GetPath();
+
   m_rootDir.SetAllowThreads(true);
 
   if (m_iSelectedItem > -1)
