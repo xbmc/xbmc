@@ -270,7 +270,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITranspor
   if (ret != OK)
     return ret;
 
-  HandleFileItem("songid", false, "songdetails", items[0], parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("songid", true, "songdetails", items[0], parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
 
