@@ -61,7 +61,6 @@ class CPlexFilterHelper
     CStdString m_appliedSort;
     bool m_sortDirectionAsc;
     CPlexFilterPtr m_openFilter;
-    EPlexDirectoryType m_filterType;
 
     CURL m_sectionUrl;
     CURL m_mapToSection;

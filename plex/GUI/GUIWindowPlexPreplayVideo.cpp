@@ -10,6 +10,7 @@
 #include "guilib/GUILabelControl.h"
 #include "ApplicationMessenger.h"
 #include "PlexApplication.h"
+#include "PlexContentPlayerMixin.h"
 
 CGUIWindowPlexPreplayVideo::CGUIWindowPlexPreplayVideo(void)
  : CGUIMediaWindow(WINDOW_PLEX_PREPLAY_VIDEO, "PlexPreplayVideo.xml")
@@ -45,7 +46,7 @@ CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_PLAYER_PLAY)
   {
-    CApplicationMessenger::Get().PlayFile(*m_vecItems->Get(0));
+    PlexContentPlayerMixin::PlayPlexItem(g_plexApplication.m_preplayItem);
     return true;
   }
   
