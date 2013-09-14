@@ -1626,8 +1626,10 @@
       { "name": "addonid", "type": "string", "required": true },
       { "name": "params", "type": [
           { "type": "object", "additionalProperties": { "type": "string" } },
-          { "type": "array", "items": { "type": "string" } }
-        ]
+          { "type": "array", "items": { "type": "string" } },
+          { "type": "string", "description": "URL path (must start with / or ?" }
+        ],
+        "default": ""
       },
       { "name": "wait", "type": "boolean", "default": false }
     ],

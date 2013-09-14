@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.12.0";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.12.1";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -3019,8 +3019,10 @@ namespace JSONRPC
         "{ \"name\": \"addonid\", \"type\": \"string\", \"required\": true },"
         "{ \"name\": \"params\", \"type\": ["
             "{ \"type\": \"object\", \"additionalProperties\": { \"type\": \"string\" } },"
-            "{ \"type\": \"array\", \"items\": { \"type\": \"string\" } }"
-          "]"
+            "{ \"type\": \"array\", \"items\": { \"type\": \"string\" } },"
+            "{ \"type\": \"string\", \"description\": \"URL path (must start with / or ?\" }"
+          "],"
+          "\"default\": \"\""
         "},"
         "{ \"name\": \"wait\", \"type\": \"boolean\", \"default\": false }"
       "],"

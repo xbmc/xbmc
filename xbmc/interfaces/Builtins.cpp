@@ -566,14 +566,26 @@ int CBuiltins::Execute(const CStdString& execString)
         CStdString cmd;
         if (plugin && addon->Type() == ADDON_PLUGIN)
         {
+          CStdString addonid = params[0];
+          CStdString urlParameters;
+          CStdStringArray parameters;
+          if (params.size() == 2 &&
+             (StringUtils::StartsWith(params[1], "/") || StringUtils::StartsWith(params[1], "?")))
+            urlParameters = params[1];
+          else if (params.size() > 1)
+          {
+            parameters.insert(parameters.begin(), params.begin() + 1, params.end());
+            urlParameters = "?" + StringUtils::JoinString(parameters, "&");
+          }
+
           if (plugin->Provides(CPluginSource::VIDEO))
-            cmd.Format("ActivateWindow(Video,plugin://%s,return)",params[0]);
+            cmd.Format("ActivateWindow(Video,plugin://%s%s,return)", addonid, urlParameters);
           else if (plugin->Provides(CPluginSource::AUDIO))
-            cmd.Format("ActivateWindow(Music,plugin://%s,return)",params[0]);
+            cmd.Format("ActivateWindow(Music,plugin://%s%s,return)", addonid, urlParameters);
           else if (plugin->Provides(CPluginSource::EXECUTABLE))
-            cmd.Format("ActivateWindow(Programs,plugin://%s,return)",params[0]);
+            cmd.Format("ActivateWindow(Programs,plugin://%s%s,return)", addonid, urlParameters);
           else if (plugin->Provides(CPluginSource::IMAGE))
-            cmd.Format("ActivateWindow(Pictures,plugin://%s,return)",params[0]);
+            cmd.Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid, urlParameters);
           else
             // Pass the script name (params[0]) and all the parameters
             // (params[1] ... params[x]) separated by a comma to RunPlugin
