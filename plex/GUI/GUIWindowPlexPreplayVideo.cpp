@@ -49,6 +49,13 @@ CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
     PlexContentPlayerMixin::PlayPlexItem(g_plexApplication.m_preplayItem);
     return true;
   }
+  else if (action.GetID() == ACTION_TOGGLE_WATCHED)
+  {
+    if (m_vecItems->Get(0)->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_WATCHED)
+      m_vecItems->Get(0)->MarkAsUnWatched();
+    else
+      m_vecItems->Get(0)->MarkAsWatched();
+  }
   
   return CGUIMediaWindow::OnAction(action);
 }

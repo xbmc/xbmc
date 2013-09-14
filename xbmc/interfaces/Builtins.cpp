@@ -1656,6 +1656,10 @@ int CBuiltins::Execute(const CStdString& execString)
     g_graphicsContext.UpdateDisplayBlanking();
     //g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
   }
+  else if (execute.Equals("togglewatched"))
+  {
+    g_application.OnAction(CAction(ACTION_TOGGLE_WATCHED));
+  }
 #endif
   /* PLEX */
   else
