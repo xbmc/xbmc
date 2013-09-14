@@ -52,7 +52,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     return false;
 
   if (URIUtils::HasExtension(libNode, ".xml"))
-  { // a filter node
+  { // a filter or folder node
     TiXmlElement *node = LoadXML(libNode);
     if (node)
     {
@@ -77,6 +77,13 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
           items.SetProperty("library.filter", "true");
           return true;
         }
+      }
+      else if (type == "folder")
+      {
+        CStdString path;
+        XMLUtils::GetPath(node, "path", path);
+        if (!path.IsEmpty())
+          return CDirectory::GetDirectory(path, items, m_strFileMask, m_flags);
       }
     }
     return false;
@@ -112,27 +119,14 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       if (XMLUtils::GetString(node, "label", label))
         label = CGUIControlFactory::FilterLabel(label);
       XMLUtils::GetString(node, "icon", icon);
-      CStdString type = node->Attribute("type");
       int order = 0;
       node->Attribute("order", &order);
-      CFileItemPtr item;
-      if (type == "folder")
-      { // folder type - grab our path
-        CStdString path;
-        XMLUtils::GetPath(node, "path", path);
-        if (path.IsEmpty())
-        {
-          CLog::Log(LOGERROR, "<path> tag must be not be empty for type=\"folder\" node '%s'", xml.c_str());
-          continue;
-        }
-        item.reset(new CFileItem(path, true));
-      }
-      else
-      { // virtual folder or filter
-        URIUtils::RemoveSlashAtEnd(xml);
-        CStdString folder = URIUtils::GetFileName(xml);
-        item.reset(new CFileItem(URIUtils::AddFileToFolder(strPath, folder), true));
-      }
+
+      // create item
+      URIUtils::RemoveSlashAtEnd(xml);
+      CStdString folder = URIUtils::GetFileName(xml);
+      CFileItemPtr item(new CFileItem(URIUtils::AddFileToFolder(strPath, folder), true));
+
       item->SetLabel(label);
       if (!icon.IsEmpty() && g_TextureManager.HasTexture(icon))
         item->SetIconImage(icon);
