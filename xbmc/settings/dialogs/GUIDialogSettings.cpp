@@ -599,6 +599,8 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, vecto
   setting.type = SettingInfo::SPIN;
   setting.data = current;
   setting.entry = values;
+  if (values.size() <= 1)
+    setting.enabled = false;
   m_settings.push_back(setting);
 }
 
@@ -664,6 +666,15 @@ void CGUIDialogSettings::OnInitWindow()
   SetupPage();
   // set the default focus control
   m_lastControlID = CONTROL_START;
+
+  for (unsigned int i = 0; i < m_settings.size(); i++)
+  {
+    if (m_settings.at(i).enabled)
+    {
+      m_lastControlID = CONTROL_START + i;
+      break;
+    }
+  }
   CGUIDialog::OnInitWindow();
 }
 
