@@ -61,7 +61,8 @@ void CGUIControlBaseSetting::Update()
     return;
 
   control->SetEnabled(IsEnabled());
-  control->SetVisible(m_pSetting->IsVisible());
+  if (m_pSetting)
+    control->SetVisible(m_pSetting->IsVisible());
 }
 
 CGUIControlRadioButtonSetting::CGUIControlRadioButtonSetting(CGUIRadioButtonControl *pRadioButton, int id, CSetting *pSetting)
