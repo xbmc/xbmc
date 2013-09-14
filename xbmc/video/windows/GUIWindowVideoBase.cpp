@@ -1231,11 +1231,6 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  /* PLEX */
-  if (PlexContentPlayerMixin::ProcessMediaChoice(item.get()) == false)
-    return false;
-  /* END PLEX */
-
   if (item->m_bIsFolder)
   {
     // resuming directories isn't supported yet. play.
@@ -1243,6 +1238,7 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
     return true;
   }
 
+#ifndef __PLEX__
   CStdString resumeString = GetResumeString(*item);
 
   if (!resumeString.IsEmpty())
@@ -1255,6 +1251,7 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
       return true;
     return OnFileAction(iItem, value);
   }
+#endif
 
   return OnFileAction(iItem, SELECT_ACTION_PLAY);
 }

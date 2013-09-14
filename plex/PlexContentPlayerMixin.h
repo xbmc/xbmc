@@ -47,13 +47,20 @@ class PlexContentPlayerMixin
   
  public:
   
-  static void PlayPlexItem(CFileItemPtr file, CGUIBaseContainer* container=NULL)
+  static void PlayPlexItem(const CFileItemPtr file, CGUIBaseContainer* container=NULL)
   {
     if (file->HasProperty("unavailable") && file->GetProperty("unavailable").asBoolean())
     {
       CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(52000), g_localizeStrings.Get(52010), "", "");
       return;
     }
+    
+    if (file->HasProperty("protocol") && file->GetProperty("protocol").asString() == "webkit")
+    {
+      CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(52000), g_localizeStrings.Get(52011), "", "");
+      return;
+    }
+    
     // Now see what to do with it.
     std::string type = file->GetProperty("type").asString();
     if (type == "show" || type == "person")

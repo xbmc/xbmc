@@ -18,6 +18,7 @@
 #include "guilib/GUILabelControl.h"
 #include "GUI/GUIDialogFilterSort.h"
 #include "GUIWindowManager.h"
+#include "PlexContentPlayerMixin.h"
 
 #include "LocalizeStrings.h"
 
@@ -78,6 +79,12 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
   }
 
   return ret;
+}
+
+void CGUIPlexMediaWindow::PlayMovie(const CFileItem *item)
+{
+  CFileItemPtr file = CFileItemPtr(new CFileItem(*item));
+  PlexContentPlayerMixin::PlayPlexItem(file);
 }
 
 void CGUIPlexMediaWindow::BuildFilter(const CURL& strDirectory)

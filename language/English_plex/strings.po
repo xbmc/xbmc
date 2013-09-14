@@ -900,6 +900,10 @@ msgctxt "#52010"
 msgid "Please check that this file exists and the necessary drive is mounted"
 msgstr "Please check that this file exists and the necessary drive is mounted"
 
+msgctxt "#52011"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "Plex Home Theater is not able to play this channel content"
+
 msgctxt "#52100"
 msgid "Select Audio Track"
 msgstr "Select Audio Track"

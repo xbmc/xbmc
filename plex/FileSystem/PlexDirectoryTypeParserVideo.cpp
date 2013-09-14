@@ -178,8 +178,8 @@ void CPlexDirectoryTypeParserVideo::ParseMediaParts(CFileItem &mediaItem, TiXmlE
 
     ParseMediaStreams(*mediaPart, part);
     
-    if (!mediaPart->GetProperty("exists").asBoolean() ||
-        !mediaPart->GetProperty("accessible").asBoolean())
+    if ((mediaPart->HasProperty("exists") && !mediaPart->GetProperty("exists").asBoolean()) ||
+        (mediaPart->HasProperty("accessible") && !mediaPart->GetProperty("accessible").asBoolean()))
       mediaItem.SetProperty("unavailable", true);
 
     mediaItem.m_mediaParts.push_back(mediaPart);

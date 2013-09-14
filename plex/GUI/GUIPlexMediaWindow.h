@@ -21,7 +21,8 @@ class CGUIPlexMediaWindow : public CGUIWindowVideoNav
   public:
     CGUIPlexMediaWindow() : CGUIWindowVideoNav(), m_returningFromSkinLoad(false), m_filterHelper(this) {};
     bool OnMessage(CGUIMessage &message);
-
+    void PlayMovie(const CFileItem *item);
+  
   protected:
     bool Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters);
     bool Update(const CStdString &strDirectory, bool updateFilterPath);
