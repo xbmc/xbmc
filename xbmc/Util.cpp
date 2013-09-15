@@ -77,7 +77,6 @@
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSettings.h"
 #ifdef HAS_IRSERVERSUITE
   #include "input/windows/IRServerSuite.h"
 #endif

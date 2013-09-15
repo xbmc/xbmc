@@ -32,7 +32,6 @@
 #include "threads/Thread.h"
 
 #include "DVDDemuxers/DVDDemux.h"
-#include "DVDStreamInfo.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDOverlayContainer.h"
 #include "DVDMessageQueue.h"

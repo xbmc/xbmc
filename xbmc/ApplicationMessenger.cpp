@@ -61,7 +61,6 @@
 #include "threads/SingleLock.h"
 
 #include "playlists/PlayList.h"
-#include "FileItem.h"
 
 #include "pvr/PVRManager.h"
 #include "windows/GUIWindowLoginScreen.h"
