@@ -422,7 +422,6 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::PAUSESTREAM:
           CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
-          stream->m_paused = true;
           if (stream->m_paused != true && m_streams.size() == 1)
             FlushEngine();
           stream->m_paused = true;
