@@ -3,8 +3,8 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 rem ----Usage----
 rem BuildSetup [gl|dx] [clean|noclean]
 rem vs2010 for compiling with visual studio 2010
-rem gl for opengl build (default)
-rem dx for directx build
+rem gl for opengl build
+rem dx for directx build (default)
 rem clean to force a full rebuild
 rem noclean to force a build without clean
 rem noprompt to avoid all prompts
