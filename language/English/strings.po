@@ -1021,7 +1021,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#250"
-msgid "Visualization"
+msgid "Visualisation"
 msgstr ""
 
 msgctxt "#251"
@@ -1382,7 +1382,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#338"
-msgid "Analogue"
+msgid "Analog"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -1847,7 +1847,7 @@ msgid "Cache"
 msgstr ""
 
 msgctxt "#440"
-msgid "Harddisk"
+msgid "Hard disk"
 msgstr ""
 
 msgctxt "#441"
@@ -2109,7 +2109,7 @@ msgstr ""
 #empty strings from id 508 to 509
 
 msgctxt "#510"
-msgid "Enable visualizations"
+msgid "Enable visualisations"
 msgstr ""
 
 msgctxt "#511"
@@ -4151,12 +4151,12 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10100"
-msgid "Yes/No dialogue"
+msgid "Yes/No dialog"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10101"
-msgid "Progress dialogue"
+msgid "Progress dialog"
 msgstr ""
 
 #empty strings from id 10102 to 10125
@@ -4340,7 +4340,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12000"
-msgid "Select dialogue"
+msgid "Select dialog"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -4350,7 +4350,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12002"
-msgid "Dialogue OK"
+msgid "Dialog OK"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -4369,14 +4369,14 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12006"
-msgid "Audio visualization"
+msgid "Audio visualisation"
 msgstr ""
 
 #empty string with id 12007
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12008"
-msgid "File stacking dialogue"
+msgid "File stacking dialog"
 msgstr ""
 
 #. Does not match window ID description
@@ -4988,7 +4988,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
+msgid "VDPAU Studio level colour conversion"
 msgstr ""
 
 #empty strings from id 13123 to 13129
@@ -5569,11 +5569,11 @@ msgid "Preset"
 msgstr ""
 
 msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
+msgid "There are no presets available\nfor this visualisation"
 msgstr ""
 
 msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
+msgid "There are no settings available\nfor this visualisation"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
@@ -5584,7 +5584,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13392"
-msgid "Use visualization if playing audio"
+msgid "Use visualisation if playing audio"
 msgstr ""
 
 #: xbmc/windows/GUIWindowFileManager.cpp
@@ -6053,7 +6053,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
+msgid "Video/Audio/DVD cache - Hard disk"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8862,11 +8862,11 @@ msgid "Show system info"
 msgstr ""
 
 msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
+msgid "Show available disk space C: E: F:"
 msgstr ""
 
 msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
+msgid "Show available disk space E: F: G:"
 msgstr ""
 
 msgctxt "#20088"
@@ -9908,7 +9908,7 @@ msgid "Get fanart"
 msgstr ""
 
 msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
+msgid "Show fanart in video and music libraries"
 msgstr ""
 
 msgctxt "#20415"
@@ -11299,7 +11299,7 @@ msgstr ""
 
 #: xbmc/addons/addon.cpp
 msgctxt "#24010"
-msgid "Visualization"
+msgid "Visualisation"
 msgstr ""
 
 #: xbmc/addons/addon.cpp
@@ -12585,7 +12585,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36042"
-msgid "Use limited color range (16-235)"
+msgid "Use limited colour range (16-235)"
 msgstr ""
 
 #empty strings from id 36043 to 36100
@@ -12738,7 +12738,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12753,7 +12753,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12948,7 +12948,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13423,7 +13423,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36267"
-msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
+msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13453,7 +13453,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36273"
-msgid "Select the visualization that will be displayed while listening to music."
+msgid "Select the visualisation that will be displayed while listening to music."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14063,7 +14063,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36395"
-msgid "Open the Master Lock dialogue, where you can configure your Master Lock options."
+msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14348,7 +14348,7 @@ msgstr ""
 
 #: system/settings/rbp.xml
 msgctxt "#36542"
-msgid "Output to both analogue (headphones) and HDMI"
+msgid "Output to both analog (headphones) and HDMI"
 msgstr ""
 
 #: system/settings/rbp.xml
