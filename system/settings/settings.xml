@@ -2098,6 +2098,10 @@
           <requirement>audiosupportsdrain</requirement>
           <default>true</default>
         </setting>
+        <setting id="audiooutput.audiophile" type="boolean" label="458" help="34112">
+          <level>2</level>
+          <default>false</default>
+        </setting>
       </group>
       <group id="2">
         <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
