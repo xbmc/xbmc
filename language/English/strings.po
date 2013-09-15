@@ -1920,7 +1920,10 @@ msgctxt "#457"
 msgid "Switch view"
 msgstr ""
 
-#empty string with id 458
+#: system/settings/settings.xml
+msgctxt "#458"
+msgid "Adjust output configuration to match audio"
+msgstr ""
 
 msgctxt "#459"
 msgid "Subs"
@@ -12168,8 +12171,13 @@ msgctxt "#34111"
 msgid "When activated silence is output in order to keep alive receiver, otherwise sink is drained in idle state"
 msgstr ""
 
+#: system/settings/settings.xml
+msgctxt "#34112"
+msgid "Attempts to output audio in its original format and samplerate when possible. This can result in more frequent audio switching. If the audio switch happens during video playback you will notice a temporary video stutter and audio dropout. Gapless music playback will only work between tracks having the same samplerate and channel configuration."
+msgstr ""
+
 #empty strings from id 34112 to 34119
-#34112-34119 reserved for future use
+#34113-34119 reserved for future use
 
 #: system/settings/settings.xml
 msgctxt "#34120"
