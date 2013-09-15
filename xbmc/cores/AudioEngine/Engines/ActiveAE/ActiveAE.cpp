@@ -1244,7 +1244,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     format.m_dataFormat = AE_FMT_FLOAT;
     if ((format.m_channelLayout.Count() > 2) ||
          settings.stereoupmix ||
-         !g_advancedSettings.m_audioAudiophile)
+         !m_settings.audiophile)
     {
       CAEChannelInfo stdLayout;
       switch (settings.channels)
@@ -1263,7 +1263,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
         case 10: stdLayout = AE_CH_LAYOUT_7_1; break;
       }
 
-      if (g_advancedSettings.m_audioAudiophile)
+      if (m_settings.audiophile)
         format.m_channelLayout.ResolveChannels(stdLayout);
       else
         format.m_channelLayout = stdLayout;
@@ -1499,7 +1499,7 @@ bool CActiveAE::RunStages()
 
           // TODO: find better solution for this
           // gapless bites audiophile
-          if (g_advancedSettings.m_audioAudiophile)
+          if (m_settings.audiophile)
             Configure(&slave->m_format);
 
           (*it)->m_streamSlave = NULL;
@@ -1901,6 +1901,7 @@ void CActiveAE::LoadSettings()
 {
   m_settings.device = CSettings::Get().GetString("audiooutput.audiodevice");
   m_settings.passthoughdevice = CSettings::Get().GetString("audiooutput.passthroughdevice");
+  m_settings.audiophile = CSettings::Get().GetBool("audiooutput.audiophile");
 
   m_settings.mode = CSettings::Get().GetInt("audiooutput.mode");
   m_settings.channels = CSettings::Get().GetInt("audiooutput.channels");
@@ -1982,6 +1983,7 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.multichannellpcm"  ||
       setting == "audiooutput.stereoupmix"       ||
       setting == "audiooutput.streamsilence"     ||
+      setting == "audiooutput.audiophile"        ||
       setting == "audiooutput.processquality")
   {
     m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);

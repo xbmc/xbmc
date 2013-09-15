@@ -58,6 +58,7 @@ struct AudioSettings
   bool dtshdpassthrough;
   bool multichannellpcm;
   bool stereoupmix;
+  bool audiophile;
   AEQuality resampleQuality;
 };
 
