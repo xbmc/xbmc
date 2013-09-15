@@ -615,9 +615,17 @@ case $host in
      ;;
   i*86*-linux-gnu*)
      ARCH="i486-linux"
+     if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
+        use_arch="x86"
+        use_cpu="i686"
+     fi
      ;;
   x86_64-*-linux-gnu*)
      ARCH="x86_64-linux"
+     if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
+        use_arch="x86_64"
+        use_cpu="x86_64"
+     fi
      ;;
   i386-*-freebsd*)
      ARCH="x86-freebsd"
