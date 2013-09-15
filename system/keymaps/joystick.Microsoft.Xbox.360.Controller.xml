@@ -132,6 +132,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="1">Select</button>
       <button id="2">Back</button>
       <button id="3">ContextMenu</button>
@@ -192,6 +193,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="8">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
     </joystick>
   </Home>
@@ -224,6 +226,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="6">Highlight</button>
     </joystick>
   </MyFiles>
@@ -256,6 +259,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="5">Delete</button>
     </joystick>
   </MyMusicPlaylist>
@@ -322,6 +326,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">OSD</button>
@@ -380,6 +385,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="12">PreviousChannelGroup</button>
       <button id="13">NextChannelGroup</button>
       <button id="14">ChannelUp</button>
@@ -423,6 +429,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">Close</button>
       <button id="3">OSD</button>
       <button id="8">Close</button>
@@ -461,6 +468,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="3">Close</button>
       <button id="10">Close</button>
       <button id="11">Close</button>
@@ -510,6 +518,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">XBMC.ActivateWindow(MusicOSD)</button>
@@ -558,6 +567,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="3">Close</button>
       <button id="6">Info</button>
     </joystick>
@@ -591,6 +601,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">Close</button>
     </joystick>
   </VisualisationSettings>
@@ -623,6 +634,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">Close</button>
     </joystick>
   </VisualisationPresetList>
@@ -671,6 +683,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="4">ZoomNormal</button>
@@ -721,6 +734,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
@@ -757,6 +771,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
@@ -791,6 +806,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="3">Close</button>
     </joystick>
   </VideoOSD>
@@ -826,6 +842,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">Stop</button>
       <button id="3">OSD</button>
       <button id="5">AspectRatio</button>
@@ -862,6 +879,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
@@ -896,6 +914,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
@@ -929,6 +948,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="5">Delete</button>
     </joystick>
   </VideoBookmarks>
@@ -965,6 +985,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="5">Delete</button>
     </joystick>
   </MyVideoPlaylist>
@@ -1002,6 +1023,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">BackSpace</button>
       <button id="4">Symbols</button>
       <button id="5">Shift</button>
@@ -1040,6 +1062,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">Close</button>
       <button id="3">Close</button>
     </joystick>
@@ -1073,6 +1096,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="3">Info</button>
     </joystick>
   </Scripts>
@@ -1105,6 +1129,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">PreviousMenu</button>
     </joystick>
   </Settings>
@@ -1137,6 +1162,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">Close</button>
     </joystick>
   </AddonInformation>
@@ -1169,6 +1195,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">Close</button>
     </joystick>
   </AddonSettings>
@@ -1201,6 +1228,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">Close</button>
     </joystick>
   </TextViewer>
@@ -1234,6 +1262,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">PreviousMenu</button>
       <button id="10">PreviousMenu</button>
     </joystick>
@@ -1267,6 +1296,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">PreviousMenu</button>
     </joystick>
   </submenu>
@@ -1299,6 +1329,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">Close</button>
     </joystick>
   </MusicInformation>
@@ -1331,6 +1362,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">Close</button>
     </joystick>
   </MovieInformation>
@@ -1364,6 +1396,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">BackSpace</button>
       <button id="10">Enter</button>
     </joystick>
@@ -1397,6 +1430,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="11">Stop</button>
     </joystick>
   </GamepadInput>
@@ -1430,6 +1464,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">PreviousMenu</button>
       <button id="11">Close</button>
     </joystick>
@@ -1464,6 +1499,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
+      <altname>Xbox 360 Wireless Receiver (XBOX)</altname>
       <button id="2">PreviousMenu</button>
       <button id="11">Close</button>
     </joystick>
