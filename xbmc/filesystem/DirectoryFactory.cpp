@@ -258,7 +258,9 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   if (strProtocol == "iso9660") return new CISO9660Directory();
 #endif
   if (strProtocol == "udf") return new CUDFDirectory();
-
+  /* PLEX - fix the "Now Playing" videoplaylist queue */
+  if (strProtocol == "playlistvideo") return new CPlaylistDirectory();
+  /* END PLEX */
 
   if( g_application.getNetwork().IsAvailable(true) )  // true to wait for the network (if possible)
   {
