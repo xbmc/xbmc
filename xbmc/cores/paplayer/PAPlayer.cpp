@@ -277,7 +277,11 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
 void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
 {
-  m_upcomingCrossfadeMS = m_defaultCrossfadeMS = CSettings::Get().GetInt("musicplayer.crossfade") * 1000;
+  // we explicitely disable crossfading for audio cds
+  if(file.IsCDDA())
+   m_upcomingCrossfadeMS = 0;
+  else
+    m_upcomingCrossfadeMS = m_defaultCrossfadeMS = CSettings::Get().GetInt("musicplayer.crossfade") * 1000;
   if (m_upcomingCrossfadeMS)
   {
     if (m_streams.size() == 0 ||
