@@ -90,7 +90,7 @@ unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
 {
   Message *msg;
   unsigned int copied = 0;
-  int bytesToCopy = size;
+  unsigned int bytesToCopy = size;
   uint8_t *buf = (uint8_t*)data;
 
   while(copied < size)
