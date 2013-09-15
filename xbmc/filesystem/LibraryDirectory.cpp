@@ -75,6 +75,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
             CSmartPlaylistDirectory::GetDirectory(playlist, items))
         {
           items.SetProperty("library.filter", "true");
+          items.SetPath(items.GetProperty("path.db").asString());
           return true;
         }
       }
