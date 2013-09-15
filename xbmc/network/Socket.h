@@ -32,9 +32,6 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-#ifdef TARGET_FREEBSD
-#include <netinet/in.h>
-#endif
 #ifdef TARGET_POSIX
 typedef int SOCKET;
 #endif

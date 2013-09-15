@@ -26,7 +26,6 @@
 #include "utils/ISortable.h"
 #include "utils/StreamDetails.h"
 #include "video/Bookmark.h"
-#include "XBDateTime.h"
 
 class CArchive;
 class TiXmlNode;
