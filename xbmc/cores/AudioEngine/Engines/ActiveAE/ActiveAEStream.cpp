@@ -142,7 +142,8 @@ unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
         m_currentBuffer->pkt->nb_samples += samples;
         m_bufferedTime += (double)samples / m_currentBuffer->pkt->config.sample_rate;
       }
-      copied += bytes;
+      if (buf != m_leftoverBuffer)
+        copied += bytes;
       if (m_currentBuffer->pkt->nb_samples == m_currentBuffer->pkt->max_nb_samples)
       {
         MsgStreamSample msgData;
