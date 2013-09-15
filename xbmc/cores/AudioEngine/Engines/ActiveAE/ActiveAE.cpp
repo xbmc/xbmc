@@ -1242,9 +1242,15 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   else
   {
     format.m_dataFormat = AE_FMT_FLOAT;
+    // consider user channel layout for those cases
+    // 1. input stream is multichannel
+    // 2. stereo upmix is selected
+    // 3. already playing > 2 channels and "audiophile" is not set
+    //    this is the case if e.g. a stream changes config from 5.1 to 2.0
+    //    which would cause a short audio drop-out if we changed the sink
     if ((format.m_channelLayout.Count() > 2) ||
          settings.stereoupmix ||
-         !g_advancedSettings.m_audioAudiophile)
+         (m_stats.GetWaterLevel() > 0 && m_internalFormat.m_channelLayout.Count() > 2 && !g_advancedSettings.m_audioAudiophile))
     {
       CAEChannelInfo stdLayout;
       switch (settings.channels)
