@@ -19,10 +19,10 @@
  */
 
 precision mediump float;
-varying lowp vec4 m_colour;
+uniform lowp vec4 m_unicol;
 
 // SM_DEFAULT shader
 void main ()
 {
-  gl_FragColor = m_colour;
+  gl_FragColor = m_unicol;
 }

@@ -879,31 +879,29 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     v2 = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
   }
 
-  GLubyte col[4][4];
+  GLubyte col[4];
   GLfloat ver[4][3];
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
-  GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
+  GLint uniColLoc= g_Windowing.GUIShaderGetUniCol();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, 0, col);
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
 
   glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
+
+  // Setup Colour values
+  col[0] = (GLubyte)GET_R(color);
+  col[1] = (GLubyte)GET_G(color);
+  col[2] = (GLubyte)GET_B(color);
+  col[3] = (GLubyte)GET_A(color);
 
   for (int i=0; i<4; i++)
   {
-    // Setup Colour values
-    col[i][0] = (GLubyte)GET_R(color);
-    col[i][1] = (GLubyte)GET_G(color);
-    col[i][2] = (GLubyte)GET_B(color);
-    col[i][3] = (GLubyte)GET_A(color);
-
     // Setup vertex position values
     ver[i][0] = x[i];
     ver[i][1] = y[i];
@@ -915,10 +913,10 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   tex[1][0] = tex[2][0] = u2;
   tex[2][1] = tex[3][1] = v2;
 
+  glUniform4f(uniColLoc,(col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f), (col[3] / 255.0f));
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
   glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
   g_Windowing.DisableGUIShader();

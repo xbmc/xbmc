@@ -47,19 +47,16 @@ void CGUITextureGLES::Begin(color_t color)
   texture->BindToUnit(0);
 
   // Setup Colors
-  for (int i = 0; i < 4; i++)
-  {
-    m_col[i][0] = (GLubyte)GET_R(color);
-    m_col[i][1] = (GLubyte)GET_G(color);
-    m_col[i][2] = (GLubyte)GET_B(color);
-    m_col[i][3] = (GLubyte)GET_A(color);
-  }
+  m_col[0] = (GLubyte)GET_R(color);
+  m_col[1] = (GLubyte)GET_G(color);
+  m_col[2] = (GLubyte)GET_B(color);
+  m_col[3] = (GLubyte)GET_A(color);
 
-  bool hasAlpha = m_texture.m_textures[m_currentFrame]->HasAlpha() || m_col[0][3] < 255;
+  bool hasAlpha = m_texture.m_textures[m_currentFrame]->HasAlpha() || m_col[3] < 255;
 
   if (m_diffuse.size())
   {
-    if (m_col[0][0] == 255 && m_col[0][1] == 255 && m_col[0][2] == 255 && m_col[0][3] == 255 )
+    if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255 )
     {
       g_Windowing.EnableGUIShader(SM_MULTI);
     }
@@ -72,13 +69,10 @@ void CGUITextureGLES::Begin(color_t color)
 
     m_diffuse.m_textures[0]->BindToUnit(1);
 
-    GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
-    glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
-    glEnableVertexAttribArray(tex1Loc);
   }
   else
   {
-    if (m_col[0][0] == 255 && m_col[0][1] == 255 && m_col[0][2] == 255 && m_col[0][3] == 255)
+    if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255)
     {
       g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
     }
@@ -87,20 +81,6 @@ void CGUITextureGLES::Begin(color_t color)
       g_Windowing.EnableGUIShader(SM_TEXTURE);
     }
   }
-
-  GLint posLoc  = g_Windowing.GUIShaderGetPos();
-  GLint colLoc  = g_Windowing.GUIShaderGetCol();
-  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
-
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, m_vert);
-  if(colLoc >= 0)
-    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, m_col);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, m_tex0);
-
-  glEnableVertexAttribArray(posLoc);
-  if(colLoc >= 0)
-    glEnableVertexAttribArray(colLoc);
-  glEnableVertexAttribArray(tex0Loc);
 
   if ( hasAlpha )
   {
@@ -111,21 +91,41 @@ void CGUITextureGLES::Begin(color_t color)
   {
     glDisable(GL_BLEND);
   }
+  m_packedVertices.clear();
 }
 
 void CGUITextureGLES::End()
 {
+  GLint posLoc  = g_Windowing.GUIShaderGetPos();
+  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
+  GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
+  GLint uniColLoc = g_Windowing.GUIShaderGetUniCol();
+
+  if(uniColLoc >= 0)
+  {
+    glUniform4f(uniColLoc,(m_col[0] / 255.0f), (m_col[1] / 255.0f), (m_col[2] / 255.0f), (m_col[3] / 255.0f));
+  }
+
+  if(m_diffuse.size())
+  {
+    glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, u2));
+    glEnableVertexAttribArray(tex1Loc);
+  }
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, x));
+  glEnableVertexAttribArray(posLoc);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, u1));
+  glEnableVertexAttribArray(tex0Loc);
+
+  glDrawElements(GL_TRIANGLES, m_packedVertices.size()*6 / 4, GL_UNSIGNED_SHORT, m_idx.data());
+
   if (m_diffuse.size())
   {
-    glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord1());
+    glDisableVertexAttribArray(tex1Loc);
     glActiveTexture(GL_TEXTURE0);
   }
 
-  glDisableVertexAttribArray(g_Windowing.GUIShaderGetPos());
-  GLint colLoc  = g_Windowing.GUIShaderGetCol();
-  if(colLoc >= 0)
-    glDisableVertexAttribArray(g_Windowing.GUIShaderGetCol());
-  glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord0());
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(tex0Loc);
 
   glEnable(GL_BLEND);
   g_Windowing.DisableGUIShader();
@@ -133,79 +133,88 @@ void CGUITextureGLES::End()
 
 void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
 {
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
-
-  // Setup vertex position values
-  for (int i=0; i<4; i++)
-  {
-    m_vert[i][0] = x[i];
-    m_vert[i][1] = y[i];
-    m_vert[i][2] = z[i];
-  }
+  PackedVertex vertices[4];
 
   // Setup texture coordinates
   //TopLeft
-  m_tex0[0][0] = texture.x1;
-  m_tex0[0][1] = texture.y1;
+  vertices[0].u1 = texture.x1;
+  vertices[0].v1 = texture.y1;
   //TopRight
   if (orientation & 4)
   {
-    m_tex0[1][0] = texture.x1;
-    m_tex0[1][1] = texture.y2;
+    vertices[1].u1 = texture.x1;
+    vertices[1].v1 = texture.y2;
   }
   else
   {
-    m_tex0[1][0] = texture.x2;
-    m_tex0[1][1] = texture.y1;
+    vertices[1].u1 = texture.x2;
+    vertices[1].v1 = texture.y1;
   }
   //BottomRight
-  m_tex0[2][0] = texture.x2;
-  m_tex0[2][1] = texture.y2;
+  vertices[2].u1 = texture.x2;
+  vertices[2].v1 = texture.y2;
   //BottomLeft
   if (orientation & 4)
   {
-    m_tex0[3][0] = texture.x2;
-    m_tex0[3][1] = texture.y1;
+    vertices[3].u1 = texture.x2;
+    vertices[3].v1 = texture.y1;
   }
   else
   {
-    m_tex0[3][0] = texture.x1;
-    m_tex0[3][1] = texture.y2;
+    vertices[3].u1 = texture.x1;
+    vertices[3].v1 = texture.y2;
   }
 
   if (m_diffuse.size())
   {
     //TopLeft
-    m_tex1[0][0] = diffuse.x1;
-    m_tex1[0][1] = diffuse.y1;
+    vertices[0].u2 = diffuse.x1;
+    vertices[0].v2 = diffuse.y1;
     //TopRight
     if (m_info.orientation & 4)
     {
-      m_tex1[1][0] = diffuse.x1;
-      m_tex1[1][1] = diffuse.y2;
+      vertices[1].u2 = diffuse.x1;
+      vertices[1].v2 = diffuse.y2;
     }
     else
     {
-      m_tex1[1][0] = diffuse.x2;
-      m_tex1[1][1] = diffuse.y1;
+      vertices[1].u2 = diffuse.x2;
+      vertices[1].v2 = diffuse.y1;
     }
     //BottomRight
-    m_tex1[2][0] = diffuse.x2;
-    m_tex1[2][1] = diffuse.y2;
+    vertices[2].u2 = diffuse.x2;
+    vertices[2].v2 = diffuse.y2;
     //BottomLeft
     if (m_info.orientation & 4)
     {
-      m_tex1[3][0] = diffuse.x2;
-      m_tex1[3][1] = diffuse.y1;
+      vertices[3].u2 = diffuse.x2;
+      vertices[3].v2 = diffuse.y1;
     }
     else
     {
-      m_tex1[3][0] = diffuse.x1;
-      m_tex1[3][1] = diffuse.y2;
+      vertices[3].u2 = diffuse.x1;
+      vertices[3].v2 = diffuse.y2;
     }
   }
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  for (int i=0; i<4; i++)
+  {
+    vertices[i].x = x[i];
+    vertices[i].y = y[i];
+    vertices[i].z = z[i];
+    m_packedVertices.push_back(vertices[i]);
+  }
+
+  if ((m_packedVertices.size() / 4) > (m_idx.size() / 6))
+  {
+    size_t i = m_packedVertices.size() - 4;
+    m_idx.push_back(i+0);
+    m_idx.push_back(i+1);
+    m_idx.push_back(i+2);
+    m_idx.push_back(i+2);
+    m_idx.push_back(i+3);
+    m_idx.push_back(i+0);
+  }
 }
 
 void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
@@ -221,7 +230,7 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
 
   VerifyGLState();
 
-  GLubyte col[4][4];
+  GLubyte col[4];
   GLfloat ver[4][3];
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
@@ -232,29 +241,24 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
     g_Windowing.EnableGUIShader(SM_DEFAULT);
 
   GLint posLoc   = g_Windowing.GUIShaderGetPos();
-  GLint colLoc   = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc  = g_Windowing.GUIShaderGetCoord0();
+  GLint uniColLoc= g_Windowing.GUIShaderGetUniCol();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
-  if(colLoc >= 0)
-    glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, 0, col);
   if (texture)
     glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
 
   glEnableVertexAttribArray(posLoc);
   if (texture)
     glEnableVertexAttribArray(tex0Loc);
-  if(colLoc >= 0)
-    glEnableVertexAttribArray(colLoc);
 
-  for (int i=0; i<4; i++)
-  {
-    // Setup Colour Values
-    col[i][0] = (GLubyte)GET_R(color);
-    col[i][1] = (GLubyte)GET_G(color);
-    col[i][2] = (GLubyte)GET_B(color);
-    col[i][3] = (GLubyte)GET_A(color);
-  }
+  // Setup Colors
+  col[0] = (GLubyte)GET_R(color);
+  col[1] = (GLubyte)GET_G(color);
+  col[2] = (GLubyte)GET_B(color);
+  col[3] = (GLubyte)GET_A(color);
+
+  glUniform4f(uniColLoc, col[0] / 255.0f, col[1] / 255.0f, col[2] / 255.0f, col[3] / 255.0f);
 
   // Setup vertex position values
   #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
@@ -282,8 +286,6 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
   glDisableVertexAttribArray(posLoc);
-  if(colLoc >= 0)
-    glDisableVertexAttribArray(colLoc);
   if (texture)
     glDisableVertexAttribArray(tex0Loc);
 
