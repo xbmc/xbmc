@@ -20,7 +20,7 @@
  */
 
 #include <stdint.h>
-#include "../AEAudioFormat.h"
+#include "AEAudioFormat.h"
 
 class CAEConvert{
 private:

@@ -83,7 +83,7 @@ public:
   CAEChannelInfo& operator+=(const enum AEChannel& rhs);
   CAEChannelInfo& operator-=(const enum AEChannel& rhs);
   const enum AEChannel operator[](unsigned int i) const;
-  operator std::string();
+  operator std::string() const;
 
   /* remove any channels that dont exist in the provided info */
   void ResolveChannels(const CAEChannelInfo& rhs);

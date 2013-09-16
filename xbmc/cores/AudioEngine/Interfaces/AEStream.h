@@ -19,7 +19,7 @@
  *
  */
 
-#include "../AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/IAudioCallback.h"
 #include <stdint.h>
 

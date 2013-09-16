@@ -26,7 +26,7 @@
 #include "utils/EndianSwap.h"
 
 #include "AEFactory.h"
-#include "AEAudioFormat.h"
+#include "Utils/AEAudioFormat.h"
 
 #include "SoftAE.h"
 #include "SoftAESound.h"

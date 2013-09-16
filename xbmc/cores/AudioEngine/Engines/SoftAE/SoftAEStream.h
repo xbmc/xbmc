@@ -24,7 +24,7 @@
 
 #include "threads/SharedSection.h"
 
-#include "AEAudioFormat.h"
+#include "Utils/AEAudioFormat.h"
 #include "Interfaces/AEStream.h"
 #include "Utils/AEConvert.h"
 #include "Utils/AERemap.h"

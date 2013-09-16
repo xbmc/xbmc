@@ -28,7 +28,7 @@
 #include "DVDStreamInfo.h"
 #include "utils/BitstreamStats.h"
 
-#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 #include <list>
 #include <queue>

@@ -23,7 +23,7 @@
 
 #if defined(TARGET_DARWIN_OSX)
 
-#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 #include <CoreAudio/CoreAudio.h>
 

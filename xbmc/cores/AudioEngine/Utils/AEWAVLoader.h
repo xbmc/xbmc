@@ -20,7 +20,7 @@
  */
 
 #include "utils/StdString.h"
-#include "cores/AudioEngine/AEAudioFormat.h"
+#include "AEAudioFormat.h"
 
 class CAEWAVLoader
 {

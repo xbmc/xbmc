@@ -20,7 +20,7 @@
  *
  */
 
-#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
 #include "DllAvUtil.h"

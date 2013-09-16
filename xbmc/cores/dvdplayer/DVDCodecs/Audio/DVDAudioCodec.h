@@ -21,7 +21,7 @@
  */
 
 #include "system.h"
-#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
