@@ -38,12 +38,13 @@ namespace XBMCAddon
      * 
      * Addon(id) -- Creates a new Addon class.
      * 
-     * id          : string - id of the addon. Optional, leave empty for current addon.
+     * id          : string - id of the addon (optional). Call without parameters for current addon.
      * 
      * *Note, You can use the above as a keyword.
      * 
-     * example:
-     *  - self.Addon = xbmcaddon.Addon(id='script.recentlyadded')
+     * examples:
+     *  - self.Addon = xbmcaddon.Addon()
+     *  - otheraddon = xbmcaddon.Addon(id='script.recentlyadded')
      */
     class Addon : public AddonClass
     {
@@ -59,7 +60,7 @@ namespace XBMCAddon
        * 
        * Addon(id) -- Creates a new Addon class.
        * 
-       * id          : string - id of the addon. Optional, leave empty for current addon.
+       * id          : string - id of the addon (optional). Call without parameters for current addon.
        * 
        * example:
        *  - self.Addon = xbmcaddon.Addon(id='script.recentlyadded')
