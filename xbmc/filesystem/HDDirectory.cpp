@@ -31,6 +31,10 @@
 #include "utils/CharsetConverter.h"
 #endif
 
+#ifdef TARGET_WINDOWS
+#include "win32/WIN32Util.h"
+#endif
+
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)
 #endif
@@ -80,8 +84,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
 #ifdef TARGET_WINDOWS
   CStdStringW strSearchMask;
-  g_charsetConverter.utf8ToW(strRoot, strSearchMask, false);
-  strSearchMask.Insert(0, L"\\\\?\\");
+  CWIN32Util::AddExtraLongPathPrefix(strRoot, strSearchMask);
   strSearchMask += "*.*";
 #else
   CStdString strSearchMask = strRoot;
@@ -153,9 +156,7 @@ bool CHDDirectory::Create(const char* strPath)
   if (strPath1.size() == 3 && strPath1[1] == ':')
     return Exists(strPath);  // A drive - we can't "create" a drive
   CStdStringW strWPath1;
-  strPath1.Replace("/", "\\");
-  g_charsetConverter.utf8ToW(strPath1, strWPath1, false);
-  strWPath1.Insert(0, L"\\\\?\\");
+  CWIN32Util::AddExtraLongPathPrefix(strPath1, strWPath1);
   if(::CreateDirectoryW(strWPath1, NULL))
 #else
   if(::CreateDirectory(strPath1.c_str(), NULL))
@@ -171,9 +172,7 @@ bool CHDDirectory::Remove(const char* strPath)
 {
 #ifdef TARGET_WINDOWS
   CStdStringW strWPath;
-  g_charsetConverter.utf8ToW(strPath, strWPath, false);
-  strWPath.Replace(L"/", L"\\");
-  strWPath.Insert(0, L"\\\\?\\");
+  CWIN32Util::AddExtraLongPathPrefix(strPath, strWPath);
   return (::RemoveDirectoryW(strWPath) || GetLastError() == ERROR_PATH_NOT_FOUND) ? true : false;
 #else
   return ::RemoveDirectory(strPath) ? true : false;
@@ -187,10 +186,8 @@ bool CHDDirectory::Exists(const char* strPath)
   CStdString strReplaced=strPath;
 #ifdef TARGET_WINDOWS
   CStdStringW strWReplaced;
-  strReplaced.Replace("/","\\");
   URIUtils::AddSlashAtEnd(strReplaced);
-  g_charsetConverter.utf8ToW(strReplaced, strWReplaced, false);
-  strWReplaced.Insert(0, L"\\\\?\\");
+  CWIN32Util::AddExtraLongPathPrefix(strReplaced, strWReplaced);
   DWORD attributes = GetFileAttributesW(strWReplaced);
 #else
   DWORD attributes = GetFileAttributes(strReplaced.c_str());
