@@ -748,7 +748,7 @@ void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
   for (it = fields.begin(); it != fields.end(); it++)
     ToSortable(sortable, *it);
 
-  /* It seems SortUtils assumes we have this one even when we're not sorting by it */
+  /* FieldLabel is used as a fallback by all sorters and therefore has to be present as well */
   sortable[FieldLabel] = GetLabel();
 }
 

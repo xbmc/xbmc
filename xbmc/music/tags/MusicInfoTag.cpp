@@ -597,7 +597,7 @@ void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldTitle:       sortable[FieldTitle] = m_strTitle; break;
   case FieldArtist:      sortable[FieldArtist] = m_artist; break;
   case FieldAlbum:       sortable[FieldAlbum] = m_strAlbum; break;
-  case FieldAlbumArtist: sortable[FieldAlbumArtist] = FieldAlbumArtist; break;
+  case FieldAlbumArtist: sortable[FieldAlbumArtist] = m_albumArtist; break;
   case FieldGenre:       sortable[FieldGenre] = m_genre; break;
   case FieldTime:        sortable[FieldTime] = m_iDuration; break;
   case FieldTrackNumber: sortable[FieldTrackNumber] = m_iTrack; break;
