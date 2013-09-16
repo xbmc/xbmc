@@ -1359,21 +1359,6 @@ extern "C" {
 }
 
 
-bool CWIN32Util::Is64Bit()
-{
-  bool bRet= false;
-  typedef VOID (WINAPI *LPFN_GETNATIVESYSTEMINFO) (LPSYSTEM_INFO);
-  LPFN_GETNATIVESYSTEMINFO fnGetNativeSystemInfo= ( LPFN_GETNATIVESYSTEMINFO ) GetProcAddress( GetModuleHandle( TEXT( "kernel32" ) ), "GetNativeSystemInfo" );
-  SYSTEM_INFO sSysInfo;
-  memset( &sSysInfo, 0, sizeof( sSysInfo ) );
-  if (fnGetNativeSystemInfo != NULL)
-  {
-    fnGetNativeSystemInfo(&sSysInfo);
-    if (sSysInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) bRet= true;
-  }
-  return bRet;
-}
-
 LONG CWIN32Util::UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd )
 {
   DWORD dwSize;
