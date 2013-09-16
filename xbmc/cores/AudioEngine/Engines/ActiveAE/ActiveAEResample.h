@@ -22,7 +22,7 @@
 #include "DllAvUtil.h"
 #include "DllSwResample.h"
 #include "Utils/AEChannelInfo.h"
-#include "AEAudioFormat.h"
+#include "Utils/AEAudioFormat.h"
 #include "ActiveAEBuffer.h"
 #include "Interfaces/AE.h"
 

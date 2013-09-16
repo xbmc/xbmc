@@ -21,7 +21,7 @@
 
 #include "DllAvUtil.h"
 #include "DllSwResample.h"
-#include "AEAudioFormat.h"
+#include "Utils/AEAudioFormat.h"
 #include "Interfaces/AE.h"
 #include <deque>
 

@@ -25,7 +25,7 @@
 #include "CoreAudioAE.h"
 #include "threads/SingleLock.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Interfaces/AESound.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
 #include "cores/AudioEngine/Utils/AERemap.h"

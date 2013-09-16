@@ -20,7 +20,7 @@
  */
 
 #include <algorithm>
-#include "cores/AudioEngine/AEAudioFormat.h"
+#include "AEAudioFormat.h"
 
 class CAELimiter
 {

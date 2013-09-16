@@ -19,7 +19,7 @@
  *
  */
 
-#include "cores/AudioEngine/AEAudioFormat.h"
+#include "AEAudioFormat.h"
 
 class CAERemap {
 public:

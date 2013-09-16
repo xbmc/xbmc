@@ -19,8 +19,8 @@
  *
  */
 
-#include "AEAudioFormat.h"
 #include "Interfaces/AEStream.h"
+#include "Utils/AEAudioFormat.h"
 #include "Utils/AELimiter.h"
 #include "Utils/AEConvert.h"
 
