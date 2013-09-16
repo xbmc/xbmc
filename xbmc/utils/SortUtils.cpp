@@ -617,6 +617,7 @@ map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByEpisodeNumber].insert(FieldTitle);
   sortingFields[SortByEpisodeNumber].insert(FieldSortTitle);
   sortingFields[SortBySeason].insert(FieldSeason);
+  sortingFields[SortBySeason].insert(FieldSeasonSpecialSort);
   sortingFields[SortByNumberOfEpisodes].insert(FieldNumberOfEpisodes);
   sortingFields[SortByNumberOfWatchedEpisodes].insert(FieldNumberOfWatchedEpisodes);
   sortingFields[SortByTvShowStatus].insert(FieldTvShowStatus);
