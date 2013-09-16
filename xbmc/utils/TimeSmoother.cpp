@@ -83,8 +83,12 @@ unsigned int CTimeSmoother::GetNextFrameTime(unsigned int currentTime)
     // ensure we jump at least 1 period ahead of the last time we were called
     if (frameTime < m_lastFrameTime + m_period)
       frameTime = m_lastFrameTime + m_period;
+    // Return an unsigned int in ms, so wrap into that, and round.
+    // Don't use MathUtils::round_int as that's restricted to -2^30..2^30
+    if (frameTime >= UINT_MAX)
+      frameTime = fmod(frameTime, UINT_MAX);
     m_lastFrameTime = frameTime;
-    return MathUtils::round_int(frameTime);
+    return (unsigned int)floor(frameTime + 0.5);
   }
   return currentTime;
 }
