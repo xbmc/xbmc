@@ -36,14 +36,17 @@ namespace XBMCAddon
     /**
      * Addon class.
      * 
-     * Addon(id) -- Creates a new Addon class.
+     * Addon([id]) -- Creates a new Addon class.
      * 
-     * id          : string - id of the addon.
+     * id          : [opt] string - id of the addon as specified in addon.xml
      * 
-     * *Note, You can use the above as a keyword.
+     * *Note, specifying the addon id is not needed.\n
+     *  Important however is that the addon folder has the same name as the addon id provided in addon.xml.\n
+     *  You can optionally specify the addon id from another installed addon to retrieve settings from it.
      * 
      * example:
-     *  - self.Addon = xbmcaddon.Addon(id='script.recentlyadded')
+     *  - self.Addon = xbmcaddon.Addon()
+     *  - self.Addon = xbmcaddon.Addon('script.foo.bar')
      */
     class Addon : public AddonClass
     {
@@ -57,12 +60,17 @@ namespace XBMCAddon
       /**
        * Addon class.
        * 
-       * Addon(id) -- Creates a new Addon class.
+       * Addon([id]) -- Creates a new Addon class.
        * 
-       * id          : string - id of the addon.
+       * id          : [opt] string - id of the addon as specified in addon.xml\n
+       * 
+       * *Note, specifying the addon id is not needed.\n
+       *  Important however is that the addon folder has the same name as the addon id provided in addon.xml.\n
+       *  You can optionally specify the addon id from another installed addon to retrieve settings from it.
        * 
        * example:
-       *  - self.Addon = xbmcaddon.Addon(id='script.recentlyadded')
+       *  - self.Addon = xbmcaddon.Addon()
+       *  - self.Addon = xbmcaddon.Addon('script.foo.bar')
        */
       Addon(const char* id = NULL) throw (AddonException);
 
@@ -71,10 +79,10 @@ namespace XBMCAddon
       /**
        * getLocalizedString(id) -- Returns an addon's localized 'unicode string'.
        * 
-       * id             : integer - id# for string you want to localize.
+       * id        : integer - id# for string you want to localize.
        * 
        * example:
-       *   - locstr = self.Addon.getLocalizedString(id=6)
+       *   - locstr = self.Addon.getLocalizedString(32000)
        */
       String getLocalizedString(int id);
 
