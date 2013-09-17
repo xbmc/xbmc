@@ -96,15 +96,15 @@ bool CLangCodeExpander::Lookup(CStdString& desc, const CStdString& code)
   if (iSplit > 0)
   {
     CStdString strLeft, strRight;
-    const bool bLeft = Lookup(strLeft, code.Left(iSplit));
-    const bool bRight = Lookup(strRight, code.Mid(iSplit + 1));
+    const bool bLeft = Lookup(strLeft, code.substr(0, iSplit));
+    const bool bRight = Lookup(strRight, code.substr(iSplit + 1));
     if (bLeft || bRight)
     {
       desc = "";
       if (strLeft.length() > 0)
         desc = strLeft;
       else
-        desc = code.Left(iSplit);
+        desc = code.substr(0, iSplit);
 
       if (strRight.length() > 0)
       {
@@ -114,7 +114,7 @@ bool CLangCodeExpander::Lookup(CStdString& desc, const CStdString& code)
       else
       {
         desc += " - ";
-        desc += code.Mid(iSplit + 1);
+        desc += code.substr(iSplit + 1);
       }
       return true;
     }

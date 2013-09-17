@@ -1059,16 +1059,16 @@ bool CGUIMediaWindow::OnClick(int iItem)
       g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
       return true;
     }
-    else if (pItem->GetPath().Left(19).Equals("newsmartplaylist://"))
+    else if (StringUtils::StartsWith(pItem->GetPath(), "newsmartplaylist://"))
     {
       m_vecItems->RemoveDiscCache(GetID());
-      if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->GetPath().Mid(19)))
+      if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->GetPath().substr(19)))
         Refresh();
       return true;
     }
-    else if (pItem->GetPath().Left(14).Equals("addons://more/"))
+    else if (StringUtils::StartsWith(pItem->GetPath(), "addons://more/"))
     {
-      CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->GetPath().Mid(14) + ",return)");
+      CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->GetPath().substr(14) + ",return)");
       return true;
     }
 

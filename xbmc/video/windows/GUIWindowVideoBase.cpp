@@ -776,12 +776,9 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       {
         CStdString strPath = items[i]->GetPath();
         URIUtils::RemoveSlashAtEnd(strPath);
-        StringUtils::ToLower(strPath);
-        if (strPath.size() > 6)
+        if (StringUtils::EndsWith(strPath, "sample")) // skip sample folders
         {
-          CStdString strSub = strPath.substr(strPath.size()-6);
-          if (strPath.Mid(strPath.size()-6).Equals("sample")) // skip sample folders
-            continue;
+          continue;
         }
       }
       else if (items[i]->HasVideoInfoTag() &&

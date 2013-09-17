@@ -111,7 +111,7 @@ const CStdString CFanart::GetColor(unsigned int index) const
     return "FFFFFFFF";
 
   // format is AARRGGBB,AARRGGBB etc.
-  return m_fanart[0].strColors.Mid(index*9, 8);
+  return m_fanart[0].strColors.substr(index*9, 8);
 }
 
 bool CFanart::SetPrimaryFanart(unsigned int index)

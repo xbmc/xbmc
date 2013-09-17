@@ -532,8 +532,8 @@ void Xcddb::parseData(const char *buffer)
       {
         if (strValue[i] == ' ' && strValue[i + 1] == '/' && strValue[i + 2] == ' ')
         {
-          m_strDisk_artist = TrimToUTF8(strValue.Left(i));
-          m_strDisk_title = TrimToUTF8(strValue.Mid(i+3));
+          m_strDisk_artist = TrimToUTF8(strValue.substr(0, i));
+          m_strDisk_title = TrimToUTF8(strValue.substr(i+3));
           found = true;
           break;
         }
@@ -558,7 +558,7 @@ void Xcddb::parseData(const char *buffer)
         // as a fallback
         int iPos = strExtd.Find("YEAR:");
         if (iPos > -1) // You never know if you really get UTF-8 strings from cddb
-          g_charsetConverter.unknownToUTF8(strExtd.Mid(iPos + 6, 4), m_strYear);
+          g_charsetConverter.unknownToUTF8(strExtd.substr(iPos + 6, 4), m_strYear);
       }
 
       if (m_strGenre.empty())
@@ -568,7 +568,7 @@ void Xcddb::parseData(const char *buffer)
         int iPos = strExtd.Find("ID3G:");
         if (iPos > -1)
         {
-          CStdString strGenre = strExtd.Mid(iPos + 5, 4);
+          CStdString strGenre = strExtd.substr(iPos + 5, 4);
           StringUtils::TrimLeft(strGenre);
           if (StringUtils::IsNaturalNumber(strGenre))
           {

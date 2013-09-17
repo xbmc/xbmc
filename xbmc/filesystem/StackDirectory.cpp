@@ -166,7 +166,7 @@ namespace XFILE
       URIUtils::Split(strPath, folder, file); // single filed stacks - should really not happen
 
     // remove "stack://" from the folder
-    folder = folder.Mid(8);
+    folder = folder.substr(8);
     file.Replace(",,", ",");
 
     return URIUtils::AddFileToFolder(folder, file);
@@ -179,7 +179,7 @@ namespace XFILE
     // filenames with commas are double escaped (ie replaced with ,,), thus the " , " separator used.
     CStdString path = strPath;
     // remove stack:// from the beginning
-    path = path.Mid(8);
+    path = path.substr(8);
     
     vecPaths.clear();
     StringUtils::SplitString(path, " , ", vecPaths);

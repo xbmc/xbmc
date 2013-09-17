@@ -302,17 +302,17 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
 
   // add the first unclickable block
   if (startClickable != CStdString::npos)
-    AddString(text.Mid(startUnclickable, startClickable - startUnclickable), false);
+    AddString(text.substr(startUnclickable, startClickable - startUnclickable), false);
   else
-    AddString(text.Mid(startUnclickable), false);
+    AddString(text.substr(startUnclickable), false);
   while (startClickable != CStdString::npos)
   {
     // grep out the action and the end of the string
-    size_t endAction = text.Find(']', startClickable + 8);
-    size_t endClickable = text.Find("[/ONCLICK]", startClickable + 8);
-    if (endAction != CStdString::npos && endClickable != CStdString::npos)
+    size_t endAction = text.find(']', startClickable + 8);
+    size_t endClickable = text.find("[/ONCLICK]", startClickable + 8);
+    if (endAction != std::string::npos && endClickable != std::string::npos)
     { // success - add the string, and move the start of our next unclickable portion along
-      AddString(text.Mid(endAction + 1, endClickable - endAction - 1), true, text.Mid(startClickable + 8, endAction - startClickable - 8));
+      AddString(text.substr(endAction + 1, endClickable - endAction - 1), true, text.substr(startClickable + 8, endAction - startClickable - 8));
       startUnclickable = endClickable + 10;
     }
     else
@@ -320,12 +320,12 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
       CLog::Log(LOGERROR, "Invalid multiselect string %s", text.c_str());
       break;
     }
-    startClickable = text.Find("[ONCLICK", startUnclickable);
+    startClickable = text.find("[ONCLICK", startUnclickable);
     // add the unclickable portion
     if (startClickable != CStdString::npos)
-      AddString(text.Mid(startUnclickable, startClickable - startUnclickable), false);
+      AddString(text.substr(startUnclickable, startClickable - startUnclickable), false);
     else
-      AddString(text.Mid(startUnclickable), false);
+      AddString(text.substr(startUnclickable), false);
   }
 
   m_oldText = text;

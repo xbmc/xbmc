@@ -466,7 +466,9 @@ int CVideoDatabase::GetPathId(const CStdString& strPath)
     if (NULL == m_pDS.get()) return -1;
 
     CStdString strPath1(strPath);
-    if (URIUtils::IsStack(strPath) || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
+    if (URIUtils::IsStack(strPath) ||
+        StringUtils::StartsWith(strPath, "rar://") ||
+        StringUtils::StartsWith(strPath, "zip://"))
       URIUtils::GetParentPath(strPath,strPath1);
 
     URIUtils::AddSlashAtEnd(strPath1);
@@ -634,7 +636,9 @@ int CVideoDatabase::AddPath(const CStdString& strPath, const CStdString &strDate
     if (NULL == m_pDS.get()) return -1;
 
     CStdString strPath1(strPath);
-    if (URIUtils::IsStack(strPath) || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
+    if (URIUtils::IsStack(strPath) ||
+        StringUtils::StartsWith(strPath, "rar://") ||
+        StringUtils::StartsWith(strPath, "zip://"))
       URIUtils::GetParentPath(strPath,strPath1);
 
     URIUtils::AddSlashAtEnd(strPath1);
@@ -1656,11 +1660,13 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath, int idTvS
     // remove all info other than the id
     // we do this due to the way we have the link between the file + movie tables.
 
-    strSQL = "update tvshow set ";
+    std::vector<string> ids;
     for (int iType = VIDEODB_ID_TV_MIN + 1; iType < VIDEODB_ID_TV_MAX; iType++)
-      strSQL += StringUtils::Format("c%02d=NULL,", iType);
+      ids.push_back(StringUtils::Format("c%02d=NULL", iType));
 
-    strSQL = strSQL.Mid(0, strSQL.size() - 1) + PrepareSQL(" where idShow=%i", idTvShow);
+    strSQL = "update tvshow set ";
+    strSQL += StringUtils::Join(ids, ", ");
+    strSQL += StringUtils::Format(" where idShow=%i", idTvShow);
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -7212,7 +7218,7 @@ void CVideoDatabase::GetMusicVideoAlbumsByName(const CStdString& strSearch, CFil
     else
     {
       if (!strLike.empty())
-        strLike = "where "+strLike.Mid(4);
+        strLike = "where " + strLike.substr(4);
       strSQL=PrepareSQL("select distinct musicvideo.c%02d,musicvideo.idMVideo from musicvideo"+strLike,VIDEODB_ID_MUSICVIDEO_ALBUM,strSearch.c_str());
     }
     m_pDS->query( strSQL.c_str() );
@@ -7889,7 +7895,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       CStdString strPaths;
       for (std::set<int>::const_iterator i = paths->begin(); i != paths->end(); ++i)
         strPaths += StringUtils::Format(",%i",*i);
-      sql = PrepareSQL("select * from files,path where files.idPath=path.idPath and path.idPath in (%s)",strPaths.Mid(1).c_str());
+      sql = PrepareSQL("select * from files, path where files.idPath=path.idPath and path.idPath in (%s)", strPaths.substr(1).c_str());
     }
     else
       sql = "select * from files, path where files.idPath = path.idPath";
@@ -8393,8 +8399,9 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
     {
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS, true);
       // strip paths to make them relative
-      if (movie.m_strTrailer.Mid(0,movie.m_strPath.size()).Equals(movie.m_strPath))
-        movie.m_strTrailer = movie.m_strTrailer.Mid(movie.m_strPath.size());
+      if (StringUtils::StartsWith(movie.m_strTrailer, movie.m_strPath))
+        movie.m_strTrailer = movie.m_strTrailer.substr(movie.m_strPath.size());
+
       map<string, string> artwork;
       if (GetArtForItem(movie.m_iDbId, movie.m_type, artwork) && !singleFiles)
       {
@@ -9082,7 +9089,9 @@ void CVideoDatabase::ConstructPath(CStdString& strDest, const CStdString& strPat
 
 void CVideoDatabase::SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
-  if (URIUtils::IsStack(strFileNameAndPath) || strFileNameAndPath.Mid(0,6).Equals("rar://") || strFileNameAndPath.Mid(0,6).Equals("zip://"))
+  if (URIUtils::IsStack(strFileNameAndPath) ||
+      StringUtils::StartsWith(strFileNameAndPath, "rar://") ||
+      StringUtils::StartsWith(strFileNameAndPath, "zip://"))
   {
     URIUtils::GetParentPath(strFileNameAndPath,strPath);
     strFileName = strFileNameAndPath;

@@ -664,13 +664,13 @@ void CGUIDialogKeyboardGeneric::OnIPAddress()
   if (start > -1)
   {
     length = reg.GetSubLength(0);
-    ip = utf8String.Mid(start, length);
+    ip = utf8String.substr(start, length);
   }
   else
     start = utf8String.size();
   if (CGUIDialogNumeric::ShowAndGetIPAddress(ip, g_localizeStrings.Get(14068)))
   {
-    utf8String = utf8String.Left(start) + ip + utf8String.Mid(start + length);
+    utf8String = utf8String.substr(0, start) + ip.c_str() + utf8String.substr(start + length);
     g_charsetConverter.utf8ToW(utf8String, m_strEdit);
     UpdateLabel();
     CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));

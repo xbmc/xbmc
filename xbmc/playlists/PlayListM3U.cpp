@@ -94,16 +94,18 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
     if (strLine.Left( (int)strlen(M3U_INFO_MARKER) ) == M3U_INFO_MARKER)
     {
       // start of info
-      int iColon = (int)strLine.find(":");
-      int iComma = (int)strLine.find(",");
-      if (iColon >= 0 && iComma >= 0 && iComma > iColon)
+      size_t iColon = strLine.find(":");
+      size_t iComma = strLine.find(",");
+      if (iColon != std::string::npos &&
+          iComma != std::string::npos &&
+          iComma > iColon)
       {
         // Read the info and duration
         iColon++;
-        CStdString strLength = strLine.Mid(iColon, iComma - iColon);
+        CStdString strLength = strLine.substr(iColon, iComma - iColon);
         lDuration = atoi(strLength.c_str());
         iComma++;
-        strInfo = strLine.Right((int)strLine.size() - iComma);
+        strInfo = strLine.substr(iComma);
         g_charsetConverter.unknownToUTF8(strInfo);
       }
     }

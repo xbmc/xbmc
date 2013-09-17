@@ -217,9 +217,9 @@ namespace XBMCAddon
           if (!defaultt.empty() && defaultt.size() == 10)
           {
             CStdString sDefault = defaultt;
-            timedate.wDay = atoi(sDefault.Left(2));
-            timedate.wMonth = atoi(sDefault.Mid(3,4));
-            timedate.wYear = atoi(sDefault.Right(4));
+            timedate.wDay = atoi(sDefault.substr(0, 2).c_str());
+            timedate.wMonth = atoi(sDefault.substr(3, 4).c_str());
+            timedate.wYear = atoi(sDefault.substr(sDefault.size() - 4).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
             value = StringUtils::Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
@@ -304,9 +304,9 @@ namespace XBMCAddon
             if (!defaultt.empty() && defaultt.size() == 10)
             {
               CStdString sDefault = defaultt;
-              timedate.wDay = atoi(sDefault.Left(2));
-              timedate.wMonth = atoi(sDefault.Mid(3,4));
-              timedate.wYear = atoi(sDefault.Right(4));
+              timedate.wDay = atoi(sDefault.substr(0, 2).c_str());
+              timedate.wMonth = atoi(sDefault.substr(3, 4).c_str());
+              timedate.wYear = atoi(sDefault.substr(sDefault.size() - 4).c_str());
             }
             if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
               value = StringUtils::Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);

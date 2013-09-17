@@ -546,7 +546,7 @@ void CRarFile::InitFromUrl(const CURL& url)
   m_strPathInRar = url.GetFileName();
 
   vector<CStdString> options;
-  CUtil::Tokenize(url.GetOptions().Mid(1), options, "&");
+  CUtil::Tokenize(url.GetOptions().substr(1), options, "&");
 
   m_bFileOptions = 0;
 
@@ -555,12 +555,12 @@ void CRarFile::InitFromUrl(const CURL& url)
     int iEqual = (*it).Find('=');
     if( iEqual >= 0 )
     {
-      CStdString strOption = (*it).Left(iEqual);
-      CStdString strValue = (*it).Mid(iEqual+1);
+      CStdString strOption = (*it).substr(0, iEqual);
+      CStdString strValue = (*it).substr(iEqual + 1);
 
       if( strOption.Equals("flags") )
         m_bFileOptions = atoi(strValue.c_str());
-      else if( strOption.Equals("cache") )
+      else if(strOption.Equals("cache"))
         m_strCacheDir = strValue;
     }
   }

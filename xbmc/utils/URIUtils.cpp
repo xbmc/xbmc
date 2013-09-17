@@ -302,14 +302,16 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CFileItemList items;
     dir.GetDirectory(strPath,items);
     items[0]->m_strDVDLabel = GetDirectory(items[0]->GetPath());
-    if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+    if (StringUtils::StartsWith(items[0]->m_strDVDLabel, "rar://") ||
+        StringUtils::StartsWith(items[0]->m_strDVDLabel, "zip://"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
       items[i]->m_strDVDLabel = GetDirectory(items[i]->GetPath());
-      if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+      if (StringUtils::StartsWith(items[0]->m_strDVDLabel, "rar://") ||
+          StringUtils::StartsWith(items[0]->m_strDVDLabel,"zip://"))
         items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
       else
         items[i]->SetPath(items[i]->m_strDVDLabel);
@@ -401,7 +403,7 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath)
     if (strncmp(strPath.c_str(), i->first.c_str(), HasSlashAtEnd(i->first.c_str()) ? i->first.size()-1 : i->first.size()) == 0)
     {
       if (strPath.size() > i->first.size())
-        return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+        return URIUtils::AddFileToFolder(i->second, strPath.substr(i->first.size()));
       else
         return i->second;
     }
@@ -578,7 +580,7 @@ bool URIUtils::IsRAR(const CStdString& strFile)
 {
   CStdString strExtension = GetExtension(strFile);
 
-  if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
+  if (strExtension.Equals(".001") && !StringUtils::EndsWith(strFile, ".ts.001"))
     return true;
 
   if (strExtension.CompareNoCase(".cbr") == 0)
@@ -960,7 +962,7 @@ CStdString URIUtils::AddFileToFolder(const CStdString& strFolder,
 
   // Remove any slash at the start of the file
   if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
-    strResult += strFile.Mid(1);
+    strResult += strFile.substr(1);
   else
     strResult += strFile;
 
@@ -986,7 +988,7 @@ CStdString URIUtils::GetDirectory(const CStdString &strFilePath)
   if (iPosBar == string::npos)
     return strFilePath.Left(iPosSlash + 1); // Only path
 
-  return strFilePath.Left(iPosSlash + 1) + strFilePath.Mid(iPosBar); // Path + options
+  return strFilePath.substr(0, iPosSlash + 1) + strFilePath.substr(iPosBar); // Path + options
 }
 
 void URIUtils::CreateArchivePath(CStdString& strUrlPath,

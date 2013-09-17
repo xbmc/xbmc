@@ -42,7 +42,7 @@ int CHTMLUtil::FindTag(const CStdString& strHTML, const CStdString& strTag, CStd
   if (iStart < 0) return -1;
   int iEnd = strHTMLLow.Find(">", iStart);
   if (iEnd < 0) iEnd = (int)strHTMLLow.size();
-  strtagFound = strHTMLLow.Mid(iStart, (iEnd + 1) - iStart);
+  strtagFound = strHTMLLow.substr(iStart, (iEnd + 1) - iStart);
   return iStart;
 }
 
@@ -64,7 +64,7 @@ int CHTMLUtil::FindClosingTag(const CStdString& strHTML, const CStdString& strTa
 
   int iEnd = strHTMLLow.Find(">", iStart);
   if (iEnd < 0) iEnd = (int)strHTMLLow.size();
-  strtagFound = strHTMLLow.Mid(iStart, (iEnd + 1) - iStart);
+  strtagFound = strHTMLLow.substr(iStart, (iEnd + 1) - iStart);
   return iStart;
 }
 
@@ -78,7 +78,7 @@ void CHTMLUtil::getValueOfTag(const CStdString& strTagAndValue, CStdString& strV
   if (iStart >= 0 && iEnd >= 0)
   {
     iStart++;
-    strValue = strTagAndValue.Mid(iStart, iEnd - iStart);
+    strValue = strTagAndValue.substr(iStart, iEnd - iStart);
   }
 }
 
@@ -95,7 +95,7 @@ void CHTMLUtil::getAttributeOfTag(const CStdString& strTagAndValue, const CStdSt
   while (strTagAndValue[iEnd] != 0x27 && strTagAndValue[iEnd] != 0x20 && strTagAndValue[iEnd] != 34 && strTagAndValue[iEnd] != '>') iEnd++;
   if (iStart >= 0 && iEnd >= 0)
   {
-    strValue = strTagAndValue.Mid(iStart, iEnd - iStart);
+    strValue = strTagAndValue.substr(iStart, iEnd - iStart);
   }
 }
 
@@ -295,7 +295,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
            (base==16?iswxdigit(strStripped[iPos]):iswdigit(strStripped[iPos])))
       iPos++; 
 
-    num = strStripped.Mid(i,iPos-i);
+    num = strStripped.substr(i, iPos-i);
     wchar_t val = (wchar_t)wcstol(num.c_str(),NULL,base);
     if (base == 10)
       num = StringUtils::Format(L"&#%ls;", num.c_str());

@@ -630,7 +630,7 @@ int CBuiltins::Execute(const CStdString& execString)
         askToResume = false;
       }
       else if (params[i].Left(11).Equals("playoffset=")) {
-        playOffset = atoi(params[i].Mid(11)) - 1;
+        playOffset = atoi(params[i].substr(11).c_str()) - 1;
         item.SetProperty("playlist_starting_track", playOffset);
       }
     }
@@ -729,8 +729,8 @@ int CBuiltins::Execute(const CStdString& execString)
           flags |= 4;
         else if (params[i].Equals("pause"))
           flags |= 8;
-        else if (params[i].Left(11).Equals("beginslide="))
-          beginSlidePath = params[i].Mid(11);
+        else if (StringUtils::StartsWith(params[i], "beginslide="))
+          beginSlidePath = params[i].substr(11);
       }
     }
 
@@ -839,7 +839,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (first == offset.npos || last == offset.npos)
         CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with no argument");
       else if (first != 1 || last + 1 != offset.size() || length <= 0) // arg must be at least "(N)"
-        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", parameter.Mid(14).c_str());
+        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", parameter.substr(14).c_str());
       else
       {
         offset = parameter.substr(first, last - first);
@@ -1250,7 +1250,7 @@ int CBuiltins::Execute(const CStdString& execString)
         CStdString replace;
         if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
         {
-          if (replace.Mid(0,9).Equals("addons://"))
+          if (StringUtils::StartsWith(replace, "addons://"))
             CSkinSettings::Get().SetString(string, URIUtils::GetFileName(replace));
           else
             CSkinSettings::Get().SetString(string, replace);

@@ -486,11 +486,10 @@ namespace XBMCAddon
         {
           // replace the occurences of SCRIPT### with offset+###
           // not particularly efficient, but it works
-          int pos = xml.Find("SCRIPT");
-          while (pos != (int)CStdString::npos)
+          size_t pos = xml.find("SCRIPT");
+          while (pos != std::string::npos)
           {
-            CStdString num = xml.Mid(pos + 6, 4);
-            int number = atol(num.c_str());
+            int number = atol(xml.substr(pos + 6, 4).c_str());
             CStdString oldNumber = StringUtils::Format("SCRIPT%d", number);
             CStdString newNumber = StringUtils::Format("%lu", offset + number);
             xml.Replace(oldNumber, newNumber);

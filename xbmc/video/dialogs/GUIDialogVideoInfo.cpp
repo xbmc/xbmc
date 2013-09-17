@@ -213,12 +213,12 @@ void CGUIDialogVideoInfo::OnInitWindow()
     database.Close();
   }
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx") && scraper);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWith(m_movieItem->GetVideoInfoTag()->m_strIMDBNumber, "xx") && scraper);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWith(m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.substr(2), "plugin"));
 
   VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)m_movieItem->GetVideoContentType();
   if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
-    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWith(m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.substr(2), "plugin"));
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
@@ -734,9 +734,9 @@ void CGUIDialogVideoInfo::OnGetArt()
         result != "thumb://Current") // user didn't choose the one they have
     {
       CStdString newThumb;
-      if (result.Left(14) == "thumb://Remote")
+      if (StringUtils::StartsWith(result, "thumb://Remote"))
       {
-        int number = atoi(result.Mid(14));
+        int number = atoi(result.substr(14).c_str());
         newThumb = thumbs[number];
       }
       else if (result == "thumb://Thumb")
@@ -837,7 +837,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
 
   if (result.Left(15) == "fanart://Remote")
   {
-    int iFanart = atoi(result.Mid(15).c_str());
+    int iFanart = atoi(result.substr(15).c_str());
     // set new primary fanart, and update our database accordingly
     m_movieItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
     CVideoDatabase db;

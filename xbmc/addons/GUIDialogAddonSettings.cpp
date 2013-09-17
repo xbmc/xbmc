@@ -1083,14 +1083,14 @@ bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strConditi
   StringUtils::ToLower(strTest);
   StringUtils::Trim(strTest);
 
-  int pos1 = strTest.Find("(");
-  int pos2 = strTest.Find(",");
-  int pos3 = strTest.Find(")");
-  if (pos1 >= 0 && pos2 > pos1 && pos3 > pos2)
+  size_t pos1 = strTest.find("(");
+  size_t pos2 = strTest.find(",");
+  size_t pos3 = strTest.find(")");
+  if (pos1 != std::string::npos && pos2 > pos1 && pos3 > pos2)
   {
-    condVec.push_back(strTest.Left(pos1));
-    condVec.push_back(strTest.Mid(pos1 + 1, pos2 - pos1 - 1));
-    condVec.push_back(strTest.Mid(pos2 + 1, pos3 - pos2 - 1));
+    condVec.push_back(strTest.substr(0, pos1));
+    condVec.push_back(strTest.substr(pos1 + 1, pos2 - pos1 - 1));
+    condVec.push_back(strTest.substr(pos2 + 1, pos3 - pos2 - 1));
     return true;
   }
   return false;

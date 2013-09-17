@@ -1199,7 +1199,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       // new thumbnail
       if (result.Left(14) == "thumb://Remote")
       {
-        int number = atoi(result.Mid(14));
+        int number = atoi(result.substr(14).c_str());
         result = thumbs[number];
       }
       else if (result == "thumb://None")
@@ -1434,7 +1434,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     m_viewControl.SetSelectedItem(iItem);
     return true;
   }
-  else if (item->GetPath().Left(9).Equals("newtag://"))
+  else if (StringUtils::StartsWith(item->GetPath(), "newtag://"))
   {
     // dont allow update while scanning
     if (g_application.IsVideoScanning())
@@ -1453,8 +1453,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
       return true;
 
     // get the media type and convert from plural to singular (by removing the trailing "s")
-    CStdString mediaType = item->GetPath().Mid(9);
-    mediaType = mediaType.Left(mediaType.size() - 1);
+    CStdString mediaType = item->GetPath().substr(9, mediaType.size() - 10);
     CStdString localizedType = GetLocalizedType(mediaType);
     if (localizedType.empty())
       return true;

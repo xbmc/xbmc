@@ -68,7 +68,7 @@ bool CVTPFile::Open(const CURL& url2)
   if (path.Left(9) == "channels/")
   {
 
-    CStdString channel = path.Mid(9);
+    CStdString channel = path.substr(9);
     if(!URIUtils::HasExtension(channel, ".ts"))
     {
       CLog::Log(LOGERROR, "%s - invalid channel url %s", __FUNCTION__, channel.c_str());

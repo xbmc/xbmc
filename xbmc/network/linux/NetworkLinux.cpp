@@ -208,7 +208,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
     {
       tmpStr = buffer;
-      result = tmpStr.Mid(11);
+      result = tmpStr.substr(11);
     }
     else
     {
@@ -481,7 +481,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
     {
       tmpStr = buffer;
-      result.push_back(tmpStr.Mid(17));
+      result.push_back(tmpStr.substr(17));
     }
     else
     {

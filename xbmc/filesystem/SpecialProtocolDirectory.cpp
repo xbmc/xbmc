@@ -45,7 +45,7 @@ bool CSpecialProtocolDirectory::GetDirectory(const CStdString& strPath, CFileIte
     {
       CFileItemPtr item = items[i];
       if (strnicmp(item->GetPath().c_str(), translatedPath.c_str(), translatedPath.GetLength()) == 0)
-        item->SetPath(URIUtils::AddFileToFolder(untranslatedPath, item->GetPath().Mid(translatedPath.GetLength())));
+        item->SetPath(URIUtils::AddFileToFolder(untranslatedPath, item->GetPath().substr(translatedPath.GetLength())));
     }
     return true;
   }

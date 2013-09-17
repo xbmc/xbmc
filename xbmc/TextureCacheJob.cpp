@@ -130,7 +130,7 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
 
     image = thumbURL.GetHostName();
 
-    CStdString optionString = thumbURL.GetOptions().Mid(1);
+    CStdString optionString = thumbURL.GetOptions().substr(1);
     StringUtils::TrimRight(optionString, "/"); // In case XBMC adds a slash.
 
     std::vector<CStdString> options;
@@ -138,11 +138,11 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
     for (std::vector<CStdString>::iterator i = options.begin(); i != options.end(); i++)
     {
       CStdString option, value;
-      int pos = i->Find('=');
-      if (pos != -1)
+      size_t pos = i->find('=');
+      if (pos != std::string::npos)
       {
-        option = i->Left(pos);
-        value  = i->Mid(pos + 1);
+        option = i->substr(0, pos);
+        value  = i->substr(pos + 1);
       }
       else
       {

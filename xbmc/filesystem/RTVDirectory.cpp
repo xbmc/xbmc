@@ -186,17 +186,17 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           CStdString strRecorded = recordedNode->FirstChild()->Value();
           int iYear, iMonth, iDay;
 
-          iYear = atoi(strRecorded.Left(4).c_str());
-          iMonth = atoi(strRecorded.Mid(5, 2).c_str());
-          iDay = atoi(strRecorded.Mid(8, 2).c_str());
+          iYear = atoi(strRecorded.substr(0, 4).c_str());
+          iMonth = atoi(strRecorded.substr(5, 2).c_str());
+          iDay = atoi(strRecorded.substr(8, 2).c_str());
           dtDateTime.wYear = iYear;
           dtDateTime.wMonth = iMonth;
           dtDateTime.wDay = iDay;
 
           int iHour, iMin, iSec;
-          iHour = atoi(strRecorded.Mid(11, 2).c_str());
-          iMin = atoi(strRecorded.Mid(14, 2).c_str());
-          iSec = atoi(strRecorded.Mid(17, 2).c_str());
+          iHour = atoi(strRecorded.substr(11, 2).c_str());
+          iMin = atoi(strRecorded.substr(14, 2).c_str());
+          iSec = atoi(strRecorded.substr(17, 2).c_str());
           dtDateTime.wHour = iHour;
           dtDateTime.wMinute = iMin;
           dtDateTime.wSecond = iSec;

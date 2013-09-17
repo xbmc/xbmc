@@ -1184,14 +1184,14 @@ int CButtonTranslator::TranslateWindow(const CStdString &window)
     return WINDOW_INVALID;
   StringUtils::ToLower(strWindow);
   // eliminate .xml
-  if (strWindow.Mid(strWindow.GetLength() - 4) == ".xml" )
-    strWindow = strWindow.Mid(0, strWindow.GetLength() - 4);
+  if (StringUtils::EndsWith(strWindow, ".xml"))
+    strWindow = strWindow.substr(0, strWindow.size() - 4);
 
   // window12345, for custom window to be keymapped
-  if (strWindow.length() > 6 && strWindow.Left(6).Equals("window"))
-    strWindow = strWindow.Mid(6);
-  if (strWindow.Left(2) == "my")  // drop "my" prefix
-    strWindow = strWindow.Mid(2);
+  if (StringUtils::StartsWith(strWindow, "window"))
+    strWindow.substr(6).swap(strWindow);
+  if (StringUtils::StartsWith(strWindow, "my"))  // drop "my" prefix
+    strWindow.substr(2).swap(strWindow);
   if (StringUtils::IsNaturalNumber(strWindow))
   {
     // allow a full window id or a delta id
