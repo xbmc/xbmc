@@ -286,19 +286,19 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             pDlg->Reset();
 
             int selected = -1;
-            vector<CStdString> valuesVec;
+            vector<std::string> valuesVec;
             if (setting->Attribute("values"))
-              CUtil::Tokenize(setting->Attribute("values"), valuesVec, "|");
+              StringUtils::Tokenize(setting->Attribute("values"), valuesVec, "|");
             else if (setting->Attribute("lvalues"))
             { // localize
-              CUtil::Tokenize(setting->Attribute("lvalues"), valuesVec, "|");
+              StringUtils::Tokenize(setting->Attribute("lvalues"), valuesVec, "|");
               for (unsigned int i = 0; i < valuesVec.size(); i++)
               {
                 if (i == (unsigned int)atoi(value))
                   selected = i;
-                CStdString localized = m_addon->GetString(atoi(valuesVec[i]));
+                CStdString localized = m_addon->GetString(atoi(valuesVec[i].c_str()));
                 if (localized.IsEmpty())
-                  localized = g_localizeStrings.Get(atoi(valuesVec[i]));
+                  localized = g_localizeStrings.Get(atoi(valuesVec[i].c_str()));
                 valuesVec[i] = localized;
               }
             }
@@ -310,7 +310,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             for (unsigned int i = 0; i < valuesVec.size(); i++)
             {
               pDlg->Add(valuesVec[i]);
-              if (selected == (int)i || (selected < 0 && valuesVec[i].Equals(value)))
+              if (selected == (int)i || (selected < 0 && StringUtils::EqualsNoCase(valuesVec[i], value)))
                 pDlg->SetSelected(i); // FIXME: the SetSelected() does not select "i", it always defaults to the first position
             }
             pDlg->DoModal();
@@ -747,15 +747,15 @@ void CGUIDialogAddonSettings::CreateControls()
       }
       else if (strcmpi(type, "enum") == 0 || strcmpi(type, "labelenum") == 0)
       {
-        vector<CStdString> valuesVec;
-        vector<CStdString> entryVec;
+        vector<std::string> valuesVec;
+        vector<std::string> entryVec;
 
         pControl = new CGUISpinControlEx(*pOriginalSpin);
         if (!pControl) return;
         ((CGUISpinControlEx *)pControl)->SetText(label);
 
         if (!lvalues.IsEmpty())
-          CUtil::Tokenize(lvalues, valuesVec, "|");
+          StringUtils::Tokenize(lvalues, valuesVec, "|");
         else if (values.Equals("$HOURS"))
         {
           for (unsigned int i = 0; i < 24; i++)
@@ -765,9 +765,9 @@ void CGUIDialogAddonSettings::CreateControls()
           }
         }
         else
-          CUtil::Tokenize(values, valuesVec, "|");
+          StringUtils::Tokenize(values, valuesVec, "|");
         if (!entries.IsEmpty())
-          CUtil::Tokenize(entries, entryVec, "|");
+          StringUtils::Tokenize(entries, entryVec, "|");
 
         if(bSort && strcmpi(type, "labelenum") == 0)
           std::sort(valuesVec.begin(), valuesVec.end(), sortstringbyname());
@@ -776,12 +776,12 @@ void CGUIDialogAddonSettings::CreateControls()
         {
           int iAdd = i;
           if (entryVec.size() > i)
-            iAdd = atoi(entryVec[i]);
+            iAdd = atoi(entryVec[i].c_str());
           if (!lvalues.IsEmpty())
           {
-            CStdString replace = m_addon->GetString(atoi(valuesVec[i]));
+            CStdString replace = m_addon->GetString(atoi(valuesVec[i].c_str()));
             if (replace.IsEmpty())
-              replace = g_localizeStrings.Get(atoi(valuesVec[i]));
+              replace = g_localizeStrings.Get(atoi(valuesVec[i].c_str()));
             ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
           }
           else
@@ -802,11 +802,11 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUISpinControlEx *)pControl)->SetText(label);
         ((CGUISpinControlEx *)pControl)->SetFloatValue(1.0f);
 
-        vector<CStdString> items = GetFileEnumValues(values, setting->Attribute("mask"), setting->Attribute("option"));
+        vector<std::string> items = GetFileEnumValues(values, setting->Attribute("mask"), setting->Attribute("option"));
         for (unsigned int i = 0; i < items.size(); ++i)
         {
           ((CGUISpinControlEx *)pControl)->AddLabel(items[i], i);
-          if (items[i].Equals(m_settings[id]))
+          if (StringUtils::EqualsNoCase(items[i], m_settings[id]))
             ((CGUISpinControlEx *)pControl)->SetValue(i);
         }
       }
@@ -933,7 +933,7 @@ CStdString CGUIDialogAddonSettings::GetAddonNames(const CStdString& addonIDslist
   return retVal;
 }
 
-vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &path, const CStdString &mask, const CStdString &options) const
+vector<std::string> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &path, const CStdString &mask, const CStdString &options) const
 {
   // Create our base path, used for type "fileenum" settings
   // replace $PROFILE with the profile path of the plugin/script
@@ -951,7 +951,7 @@ vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &
   else
     CDirectory::GetDirectory(fullPath, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
 
-  vector<CStdString> values;
+  vector<std::string> values;
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
@@ -998,15 +998,15 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
   bool bCondition = true;
   bool bCompare = true;
   bool bControlDependend = false;//flag if the condition depends on another control
-  vector<CStdString> conditionVec;
+  vector<std::string> conditionVec;
 
   if (condition.Find("+") >= 0)
-    CUtil::Tokenize(condition, conditionVec, "+");
+    StringUtils::Tokenize(condition, conditionVec, "+");
   else
   {
     bCondition = false;
     bCompare = false;
-    CUtil::Tokenize(condition, conditionVec, "|");
+    StringUtils::Tokenize(condition, conditionVec, "|");
   }
 
   for (unsigned int i = 0; i < conditionVec.size(); i++)

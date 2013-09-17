@@ -93,9 +93,9 @@ CStdString CWIN32Util::URLEncode(const CURL &url)
   flat += url.GetHostName();
 
   /* okey sadly since a slash is an invalid name we have to tokenize */
-  std::vector<CStdString> parts;
-  std::vector<CStdString>::iterator it;
-  CUtil::Tokenize(url.GetFileName(), parts, "/");
+  std::vector<std::string> parts;
+  std::vector<std::string>::iterator it;
+  StringUtils::Tokenize(url.GetFileName(), parts, "/");
   for( it = parts.begin(); it != parts.end(); it++ )
   {
     flat += "/";
