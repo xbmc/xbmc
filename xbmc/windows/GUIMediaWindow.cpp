@@ -1914,6 +1914,9 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
   }
 #endif
+  /* PLEX */
+  buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+  /* END PLEX */
 }
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
