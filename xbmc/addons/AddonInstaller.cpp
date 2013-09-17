@@ -698,14 +698,13 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
     if (reloadAddon || (!m_update && CGUIDialogYesNo::ShowAndGetInput(m_addon->Name(),
                                                         g_localizeStrings.Get(24099),"","")))
     {
-      CSettings::Get().SetString("lookandfeel.skin",m_addon->ID().c_str());
       CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
       if (toast)
       {
         toast->ResetTimer();
         toast->Close(true);
       }
-      CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin");
+      CSettings::Get().SetString("lookandfeel.skin",m_addon->ID().c_str());
     }
   }
 
