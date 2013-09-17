@@ -262,9 +262,9 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
           continue;
         }
       }
-      else if (strFields[i].Left(1) == "#") // #12345 format for frame number
+      else if (strFields[i][0] == '#') // #12345 format for frame number
       {
-        iCutStartEnd[i] = (int64_t)(atol(strFields[i].Mid(1)) / fFramesPerSecond * 1000); // frame number to ms
+        iCutStartEnd[i] = (int64_t)(atol(strFields[i].substr(1).c_str()) / fFramesPerSecond * 1000); // frame number to ms
       }
       else // Plain old seconds in float format, e.g. 123.45
       {

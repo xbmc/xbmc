@@ -288,10 +288,10 @@ void CMythSession::SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *sea
   &&  category != "SP") // Sports
     return;
   
-  if (programid.Mid(category.length(), seriesid.length()) != seriesid) // Series ID does not follow the category
+  if (programid.substr(category.length(), seriesid.length()) != seriesid) // Series ID does not follow the category
     return;
   
-  CStdString remainder = programid.Mid(category.length() + seriesid.length()); // Whatever is after series ID
+  CStdString remainder = programid.substr(category.length() + seriesid.length()); // Whatever is after series ID
   
   /*
    * All SchedulesDirect remainders appear to be 4 characters and start with a 0. If the assumption
@@ -330,7 +330,7 @@ void CMythSession::SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *sea
       *season = atoi(remainder.Right(2));
       *episode = atoi(remainder.Left(1));
     }
-    else if (remainder.Mid(2, 1) == "0") // e.g. 203. Can't have a season start with 0. Must be end of episode.
+    else if (remainder.substr(2, 1) == "0") // e.g. 203. Can't have a season start with 0. Must be end of episode.
     {
       *season = atoi(remainder.Right(1)); // TODO: Fix for base 36 in Myth 0.24. Assume season < 10
       *episode = atoi(remainder.Left(2));

@@ -135,9 +135,9 @@ namespace ADDON
     int dpos = filename.rfind("-");
     if (dpos < 0)
       return false;
-    ID = filename.Mid(0,dpos);
-    version = filename.Mid(dpos+1);
-    version = version.Mid(0,version.size()-4);
+    ID = filename.substr(0, dpos);
+    version = filename.substr(dpos + 1);
+    version = version.substr(0, version.size() - 4);
 
     return true;
   }

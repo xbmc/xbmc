@@ -107,7 +107,7 @@ void CGUIInfoColor::Parse(const CStdString &label, int context)
 
   if (StringUtils::StartsWithNoCase(label, "$var"))
   {
-    label2 = label.Mid(5, label.length() - 6);
+    label2 = label.substr(5, label.length() - 6);
     m_info = g_infoManager.TranslateSkinVariableString(label2, context);
     if (!m_info)
       m_info = g_infoManager.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(label2, context));
@@ -115,7 +115,7 @@ void CGUIInfoColor::Parse(const CStdString &label, int context)
   }
 
   if (StringUtils::StartsWithNoCase(label, "$info"))
-    label2 = label.Mid(6, label.length()-7);
+    label2 = label.substr(6, label.length()-7);
 
   m_info = g_infoManager.TranslateString(label2);
   if (!m_info)
@@ -204,17 +204,17 @@ CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
 {
   CStdString work(label);
   // Replace all $LOCALIZE[number] with the real string
-  int pos1 = work.Find("$LOCALIZE[");
-  while (pos1 >= 0)
+  size_t pos1 = work.find("$LOCALIZE[");
+  while (pos1 != std::string::npos)
   {
-    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 10);
+    size_t pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 10);
     if (pos2 > pos1)
     {
-      CStdString left = work.Left(pos1);
-      CStdString right = work.Mid(pos2 + 1);
-      CStdString replace = g_localizeStringsTemp.Get(atoi(work.Mid(pos1 + 10).c_str()));
+      CStdString left = work.substr(0, pos1);
+      CStdString right = work.substr(pos2 + 1);
+      CStdString replace = g_localizeStringsTemp.Get(atoi(work.substr(pos1 + 10).c_str()));
       if (replace == "")
-         replace = g_localizeStrings.Get(atoi(work.Mid(pos1 + 10).c_str()));
+         replace = g_localizeStrings.Get(atoi(work.substr(pos1 + 10).c_str()));
       work = left + replace + right;
     }
     else
@@ -232,17 +232,17 @@ CStdString CGUIInfoLabel::ReplaceAddonStrings(const CStdString &label)
   CStdString work(label);
   //FIXME why not use RE here?
   // Replace all $ADDON[id number] with the real string
-  int pos1 = work.Find("$ADDON[");
-  while (pos1 >= 0)
+  size_t pos1 = work.find("$ADDON[");
+  while (pos1 != std::string::npos)
   {
-    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 7);
+    size_t pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 7);
     if (pos2 > pos1)
     {
-      CStdString left = work.Left(pos1);
-      CStdString right = work.Mid(pos2 + 1);
-      int length = work.Find(" ", pos1 + 7) - (pos1 + 7);
-      CStdString id = work.substr(pos1+7, length);
-      int stringid = atoi(work.substr(pos1+7+id.length()+1, 5).c_str());
+      CStdString left = work.substr(0, pos1);
+      CStdString right = work.substr(pos2 + 1);
+      size_t length = work.find(" ", pos1 + 7) - (pos1 + 7);
+      CStdString id = work.substr(pos1 + 7, length);
+      int stringid = atoi(work.substr(pos1 + 7 + id.length() + 1, 5).c_str());
       CStdString replace = CAddonMgr::Get().GetString(id, stringid);
       work = left + replace + right;
     }
@@ -280,13 +280,13 @@ void CGUIInfoLabel::Parse(const CStdString &label, int context)
   do
   {
     format = NONE;
-    int pos1 = work.size();
-    int pos2;
-    int len = 0;
+    size_t pos1 = work.size();
+    size_t pos2;
+    size_t len = 0;
     for (size_t i = 0; i < sizeof(infoformatmap) / sizeof(infoformat); i++)
     {
       pos2 = work.Find(infoformatmap[i].str);
-      if (pos2 != (int)string::npos && pos2 < pos1)
+      if (pos2 != string::npos && pos2 < pos1)
       {
         pos1 = pos2;
         len = strlen(infoformatmap[i].str);
@@ -303,7 +303,7 @@ void CGUIInfoLabel::Parse(const CStdString &label, int context)
       if (pos2 > pos1)
       {
         // decipher the block
-        CStdString block = work.Mid(pos1 + len, pos2 - pos1 - len);
+        CStdString block = work.substr(pos1 + len, pos2 - pos1 - len);
         CStdStringArray params;
         StringUtils::SplitString(block, ",", params);
         int info;
@@ -324,7 +324,7 @@ void CGUIInfoLabel::Parse(const CStdString &label, int context)
           postfix = params[2];
         m_info.push_back(CInfoPortion(info, prefix, postfix, format == FORMATESCINFO));
         // and delete it from our work string
-        work = work.Mid(pos2 + 1);
+        work = work.substr(pos2 + 1);
       }
       else
       {

@@ -305,7 +305,7 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vec
     CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder && !StringUtils::EqualsNoCase(pItem->GetLabel(), "defaults.xml"))
     { // not the default one
-      vecColors.push_back(pItem->GetLabel().Mid(0, pItem->GetLabel().size() - 4));
+      vecColors.push_back(pItem->GetLabel().substr(0, pItem->GetLabel().size() - 4));
     }
   }
   sort(vecColors.begin(), vecColors.end(), sortstringbyname());

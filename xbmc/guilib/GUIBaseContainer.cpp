@@ -574,15 +574,15 @@ void CGUIBaseContainer::OnJumpSMS(int letter)
 
   // now switch to the next letter
   CStdString current = m_letterOffsets[currentLetter].second;
-  int startPos = (letters.Find(current) + 1) % letters.size();
+  size_t startPos = (letters.find(current) + 1) % letters.size();
   // now jump to letters[startPos], or another one in the same range if possible
-  int pos = startPos;
+  size_t pos = startPos;
   while (true)
   {
     // check if we can jump to this letter
-    for (unsigned int i = 0; i < m_letterOffsets.size(); i++)
+    for (size_t i = 0; i < m_letterOffsets.size(); i++)
     {
-      if (m_letterOffsets[i].second == letters.Mid(pos, 1))
+      if (m_letterOffsets[i].second == letters.substr(pos, 1))
       {
         SelectItem(m_letterOffsets[i].first);
         return;

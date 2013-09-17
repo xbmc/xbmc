@@ -131,7 +131,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
       else if (!ExtractQuoteInfo(strLine, m_Track[m_iTotalTracks].strTitle))
       {
         // lets manage tracks titles without quotes
-        CStdString titleNoQuote = strLine.Mid(5);
+        CStdString titleNoQuote = strLine.substr(5);
         StringUtils::TrimLeft(titleNoQuote);
         if (!titleNoQuote.empty())
         {
@@ -149,7 +149,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     }
     else if (StringUtils::StartsWithNoCase(strLine,"TRACK"))
     {
-      int iTrackNumber = ExtractNumericInfo(strLine.Mid(5));
+      int iTrackNumber = ExtractNumericInfo(strLine.substr(5));
 
       m_iTotalTracks++;
 
@@ -166,7 +166,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     }
     else if (StringUtils::StartsWithNoCase(strLine,"REM DISCNUMBER"))
     {
-      int iDiscNumber = ExtractNumericInfo(strLine.Mid(14));
+      int iDiscNumber = ExtractNumericInfo(strLine.substr(14));
       if (iDiscNumber > 0)
         m_iDiscNumber = iDiscNumber;
     }
@@ -184,7 +184,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     }
     else if (StringUtils::StartsWithNoCase(strLine,"REM DATE"))
     {
-      int iYear = ExtractNumericInfo(strLine.Mid(8));
+      int iYear = ExtractNumericInfo(strLine.substr(8));
       if (iYear > 0)
         m_iYear = iYear;
     }
@@ -192,7 +192,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     {
       if (!ExtractQuoteInfo(strLine, m_strGenre))
       {
-        CStdString genreNoQuote = strLine.Mid(9);
+        CStdString genreNoQuote = strLine.substr(9);
         StringUtils::TrimLeft(genreNoQuote);
         if (!genreNoQuote.empty())
         {
@@ -202,13 +202,13 @@ bool CCueDocument::Parse(const CStdString &strFile)
       }
     }
     else if (StringUtils::StartsWithNoCase(strLine,"REM REPLAYGAIN_ALBUM_GAIN"))
-      m_replayGainAlbumGain = (float)atof(strLine.Mid(26));
+      m_replayGainAlbumGain = (float)atof(strLine.substr(26).c_str());
     else if (StringUtils::StartsWithNoCase(strLine,"REM REPLAYGAIN_ALBUM_PEAK"))
-      m_replayGainAlbumPeak = (float)atof(strLine.Mid(26));
+      m_replayGainAlbumPeak = (float)atof(strLine.substr(26).c_str());
     else if (StringUtils::StartsWithNoCase(strLine,"REM REPLAYGAIN_TRACK_GAIN") && m_iTotalTracks >= 0)
-      m_Track[m_iTotalTracks].replayGainTrackGain = (float)atof(strLine.Mid(26));
+      m_Track[m_iTotalTracks].replayGainTrackGain = (float)atof(strLine.substr(26).c_str());
     else if (StringUtils::StartsWithNoCase(strLine,"REM REPLAYGAIN_TRACK_PEAK") && m_iTotalTracks >= 0)
-      m_Track[m_iTotalTracks].replayGainTrackPeak = (float)atof(strLine.Mid(26));
+      m_Track[m_iTotalTracks].replayGainTrackPeak = (float)atof(strLine.substr(26).c_str());
   }
 
   // reset track counter to 0, and fill in the last tracks end time
@@ -309,7 +309,7 @@ bool CCueDocument::ExtractQuoteInfo(const CStdString &line, CStdString &quote)
   if (left < 0) return false;
   int right = line.Find('\"', left + 1);
   if (right < 0) return false;
-  quote = line.Mid(left + 1, right - left - 1);
+  quote = line.substr(left + 1, right - left - 1);
   g_charsetConverter.unknownToUTF8(quote);
   return true;
 }
@@ -324,7 +324,7 @@ bool CCueDocument::ExtractQuoteInfo(const CStdString &line, CStdString &quote)
 int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
 {
   // Get rid of the index number and any whitespace
-  CStdString numberTime = index.Mid(5);
+  CStdString numberTime = index.substr(5);
   StringUtils::TrimLeft(numberTime);
   while (!numberTime.empty())
   {

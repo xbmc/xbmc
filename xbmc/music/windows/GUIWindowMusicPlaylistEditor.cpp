@@ -391,8 +391,8 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
 {
   // saves playlist to the playlist folder
   CStdString name = URIUtils::GetFileName(m_strLoadedPlaylist);
-  CStdString strExt = URIUtils::GetExtension(name);
-  name = name.Mid(0,name.size()-strExt.size());
+  URIUtils::RemoveExtension(name);
+
   if (CGUIKeyboardFactory::ShowAndGetInput(name, g_localizeStrings.Get(16012), false))
   { // save playlist as an .m3u
     PLAYLIST::CPlayListM3U playlist;

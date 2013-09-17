@@ -1088,9 +1088,9 @@ bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strConditi
   int pos3 = strTest.Find(")");
   if (pos1 >= 0 && pos2 > pos1 && pos3 > pos2)
   {
-    condVec.push_back(strTest.Left(pos1));
-    condVec.push_back(strTest.Mid(pos1 + 1, pos2 - pos1 - 1));
-    condVec.push_back(strTest.Mid(pos2 + 1, pos3 - pos2 - 1));
+    condVec.push_back(strTest.substr(0, pos1));
+    condVec.push_back(strTest.substr(pos1 + 1, pos2 - pos1 - 1));
+    condVec.push_back(strTest.substr(pos2 + 1, pos3 - pos2 - 1));
     return true;
   }
   return false;

@@ -270,7 +270,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
     }
     int j=0;
     if ((j=reTags.RegFind(strTitleAndYear.c_str())) > 0)
-      strTitleAndYear = strTitleAndYear.Mid(0, j);
+      strTitleAndYear = strTitleAndYear.substr(0, j);
   }
 
   // final cleanup - special characters used instead of spaces:
@@ -337,14 +337,14 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   while ((pos = strFilename.Find("/../")) > 0)
   {
     CStdString basePath = strFilename.Left(pos+1);
-    strFilename = strFilename.Mid(pos+4);
+    strFilename.erase(0, pos + 4);
     basePath = URIUtils::GetParentPath(basePath);
     strFilename = URIUtils::AddFileToFolder(basePath, strFilename);
   }
   while ((pos = strFilename.Find("\\..\\")) > 0)
   {
     CStdString basePath = strFilename.Left(pos+1);
-    strFilename = strFilename.Mid(pos+4);
+    strFilename.erase(0, pos + 4);
     basePath = URIUtils::GetParentPath(basePath);
     strFilename = URIUtils::AddFileToFolder(basePath, strFilename);
   }
@@ -552,7 +552,7 @@ int CUtil::GetDVDIfoTitle(const CStdString& strFile)
   CStdString strFilename = URIUtils::GetFileName(strFile);
   if (strFilename.Equals("video_ts.ifo")) return 0;
   //VTS_[TITLE]_0.IFO
-  return atoi(strFilename.Mid(4, 2).c_str());
+  return atoi(strFilename.substr(4, 2).c_str());
 }
 
 CStdString CUtil::GetFileMD5(const CStdString& strPath)
@@ -1038,7 +1038,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
   int iPos2 = execString.ReverseFind(")");
   if (iPos > 0 && iPos2 > 0)
   {
-    paramString = execString.Mid(iPos + 1, iPos2 - iPos - 1);
+    paramString = execString.substr(iPos + 1, iPos2 - iPos - 1);
     function = execString.Left(iPos);
   }
   else
@@ -1092,7 +1092,7 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
           parameter = parameter.Left(whiteSpacePos);
         // trim off start and end quotes
         if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
-          parameter = parameter.Mid(1,parameter.GetLength() - 2);
+          parameter = parameter.substr(1,parameter.GetLength() - 2);
         else if (parameter.GetLength() > 3 && parameter[parameter.GetLength() - 1] == '"')
         {
           // check name="value" style param.
@@ -1132,7 +1132,7 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
     parameter = parameter.Left(whiteSpacePos);
   // trim off start and end quotes
   if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
-    parameter = parameter.Mid(1,parameter.GetLength() - 2);
+    parameter = parameter.substr(1,parameter.GetLength() - 2);
   else if (parameter.GetLength() > 3 && parameter[parameter.GetLength() - 1] == '"')
   {
     // check name="value" style param.
@@ -1191,7 +1191,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       // "Name (Drive Status/Disc Name)"
       int iPos = strName.ReverseFind('(');
       if (iPos > 1)
-        strName = strName.Mid(0, iPos - 1);
+        strName = strName.substr(0, iPos - 1);
     }
     if (strPath.Equals(strName))
     {
@@ -1291,28 +1291,28 @@ CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
   if (!strSpecial.empty() && strSpecial[0] == '$')
   {
     if (StringUtils::StartsWithNoCase(strSpecial, "$home"))
-      return URIUtils::AddFileToFolder("special://home/", strSpecial.Mid(5));
+      return URIUtils::AddFileToFolder("special://home/", strSpecial.substr(5));
     else if (StringUtils::StartsWithNoCase(strSpecial, "$subtitles"))
-      return URIUtils::AddFileToFolder("special://subtitles/", strSpecial.Mid(10));
+      return URIUtils::AddFileToFolder("special://subtitles/", strSpecial.substr(10));
     else if (StringUtils::StartsWithNoCase(strSpecial, "$userdata"))
-      return URIUtils::AddFileToFolder("special://userdata/", strSpecial.Mid(9));
+      return URIUtils::AddFileToFolder("special://userdata/", strSpecial.substr(9));
     else if (StringUtils::StartsWithNoCase(strSpecial, "$database"))
-      return URIUtils::AddFileToFolder("special://database/", strSpecial.Mid(9));
+      return URIUtils::AddFileToFolder("special://database/", strSpecial.substr(9));
     else if (StringUtils::StartsWithNoCase(strSpecial, "$thumbnails"))
-      return URIUtils::AddFileToFolder("special://thumbnails/", strSpecial.Mid(11));
+      return URIUtils::AddFileToFolder("special://thumbnails/", strSpecial.substr(11));
     else if (StringUtils::StartsWithNoCase(strSpecial, "$recordings"))
-      return URIUtils::AddFileToFolder("special://recordings/", strSpecial.Mid(11));
+      return URIUtils::AddFileToFolder("special://recordings/", strSpecial.substr(11));
     else if (StringUtils::StartsWithNoCase(strSpecial, "$screenshots"))
-      return URIUtils::AddFileToFolder("special://screenshots/", strSpecial.Mid(12));
+      return URIUtils::AddFileToFolder("special://screenshots/", strSpecial.substr(12));
     else if (StringUtils::StartsWithNoCase(strSpecial, "$musicplaylists"))
-      return URIUtils::AddFileToFolder("special://musicplaylists/", strSpecial.Mid(15));
+      return URIUtils::AddFileToFolder("special://musicplaylists/", strSpecial.substr(15));
     else if (StringUtils::StartsWithNoCase(strSpecial, "$videoplaylists"))
-      return URIUtils::AddFileToFolder("special://videoplaylists/", strSpecial.Mid(15));
+      return URIUtils::AddFileToFolder("special://videoplaylists/", strSpecial.substr(15));
     else if (StringUtils::StartsWithNoCase(strSpecial, "$cdrips"))
-      return URIUtils::AddFileToFolder("special://cdrips/", strSpecial.Mid(7));
+      return URIUtils::AddFileToFolder("special://cdrips/", strSpecial.substr(7));
     // this one will be removed post 2.0
     else if (StringUtils::StartsWithNoCase(strSpecial, "$playlists"))
-      return URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), strSpecial.Mid(10));
+      return URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), strSpecial.substr(10));
   }
   return strSpecial;
 }
@@ -1544,7 +1544,7 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
           (strExtension == ".xbt" && pItem->GetLabel().CompareNoCase("Textures.xbt")))
       {
         CStdString strLabel = pItem->GetLabel();
-        vecTheme.push_back(strLabel.Mid(0, strLabel.size() - 4));
+        vecTheme.push_back(strLabel.substr(0, strLabel.size() - 4));
       }
     }
   }
@@ -2131,7 +2131,7 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
 
   // we check left part - if it's same as video base name - strip it
   if (toParse.Left(videoBaseName.length()).Equals(videoBaseName))
-    toParse = toParse.Mid(videoBaseName.length());
+    toParse = toParse.substr(videoBaseName.length());
 
   // trim any non-alphanumeric char in the begining
   std::string::iterator result = std::find_if(toParse.begin(), toParse.end(), ::isalnum);
@@ -2208,7 +2208,7 @@ bool CUtil::FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const C
         CURL::Decode(strSubDirectory);
       if (URIUtils::HasExtension(strSubFile, ".sub") &&
           (URIUtils::ReplaceExtension(strIdxFile,"").Equals(URIUtils::ReplaceExtension(strSubFile,"")) ||
-           strSubDirectory.Mid(6, strSubDirectory.length()-11).Equals(URIUtils::ReplaceExtension(strIdxPath,""))))
+           StringUtils::EqualsNoCase(strSubDirectory.substr(6, strSubDirectory.length()-11), URIUtils::ReplaceExtension(strIdxPath,""))))
       {
         strSubPath = vecSubtitles[j];
         return true;
@@ -2236,7 +2236,7 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
       URIUtils::Split(vecSubtitles[j], strIdxDirectory, strIdxFile);
       if (URIUtils::HasExtension(strIdxFile, ".idx") &&
           (URIUtils::ReplaceExtension(strIdxFile,"").Equals(URIUtils::ReplaceExtension(strSubFile,"")) ||
-           strSubDirectory.Mid(6, strSubDirectory.length()-11).Equals(URIUtils::ReplaceExtension(vecSubtitles[j],""))))
+           StringUtils::EqualsNoCase(strSubDirectory.substr(6, strSubDirectory.length()-11), URIUtils::ReplaceExtension(vecSubtitles[j],""))))
         return true;
     }
   }

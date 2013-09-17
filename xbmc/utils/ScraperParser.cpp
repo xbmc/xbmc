@@ -151,12 +151,12 @@ bool CScraperParser::LoadFromXML()
 void CScraperParser::ReplaceBuffers(CStdString& strDest)
 {
   // insert buffers
-  int iIndex;
+  size_t iIndex;
   for (int i=MAX_SCRAPER_BUFFERS-1; i>=0; i--)
   {
     iIndex = 0;
     CStdString temp = StringUtils::Format("$$%i",i+1);
-    while ((size_t)(iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
+    while ((iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
     {
       strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+temp.GetLength(),m_param[i]);
       iIndex += m_param[i].length();
@@ -164,10 +164,10 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   }
   // insert settings
   iIndex = 0;
-  while ((size_t)(iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos)
+  while ((iIndex = strDest.find("$INFO[", iIndex)) != CStdString::npos)
   {
-    int iEnd = strDest.Find("]",iIndex);
-    CStdString strInfo = strDest.Mid(iIndex+6,iEnd-iIndex-6);
+    size_t iEnd = strDest.find("]", iIndex);
+    CStdString strInfo = strDest.substr(iIndex+6, iEnd - iIndex - 6);
     CStdString strReplace;
     if (m_scraper)
       strReplace = m_scraper->GetSetting(strInfo);
@@ -176,10 +176,10 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   }
   // insert localize strings
   iIndex = 0;
-  while ((size_t)(iIndex = strDest.find("$LOCALIZE[",iIndex)) != CStdString::npos)
+  while ((iIndex = strDest.find("$LOCALIZE[", iIndex)) != CStdString::npos)
   {
-    int iEnd = strDest.Find("]",iIndex);
-    CStdString strInfo = strDest.Mid(iIndex+10,iEnd-iIndex-10);
+    size_t iEnd = strDest.find("]", iIndex);
+    CStdString strInfo = strDest.substr(iIndex+10, iEnd - iIndex - 10);
     CStdString strReplace;
     if (m_scraper)
       strReplace = m_scraper->GetString(strtol(strInfo.c_str(),NULL,10));
@@ -187,7 +187,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
     iIndex += strReplace.length();
   }
   iIndex = 0;
-  while ((size_t)(iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
+  while ((iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+2,"\n");
 }
 

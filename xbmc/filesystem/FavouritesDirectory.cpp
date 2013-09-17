@@ -193,9 +193,9 @@ CStdString CFavouritesDirectory::GetExecutePath(const CFileItem &item, const std
       execute = StringUtils::Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
   }
   else if (item.IsScript())
-    execute = StringUtils::Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().Mid(9)).c_str());
+    execute = StringUtils::Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().substr(9)).c_str());
   else if (item.IsAndroidApp())
-    execute = StringUtils::Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().Mid(26)).c_str());
+    execute = StringUtils::Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().substr(26)).c_str());
   else  // assume a media file
   {
     if (item.IsVideoDb() && item.HasVideoInfoTag())

@@ -841,19 +841,21 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     {
       CAirPlayServer::m_isPlaying++;        
       // Get URL to play
-      int start = body.Find("Content-Location: ");
-      if (start == -1)
+      std::string contentLocation = "Content-Location: ";
+      size_t start = body.find(contentLocation);
+      if (start == std::string::npos)
         return AIRPLAY_STATUS_NOT_IMPLEMENTED;
-      start += strlen("Content-Location: ");
-      int end = body.Find('\n', start);
-      location = body.Mid(start, end - start);
+      start += contentLocation.size();
+      int end = body.find('\n', start);
+      location = body.substr(start, end - start);
 
-      start = body.Find("Start-Position");
-      if (start != -1)
+      std::string startPosition = "Start-Position: ";
+      start = body.find(startPosition);
+      if (start != std::string::npos)
       {
-        start += strlen("Start-Position: ");
-        int end = body.Find('\n', start);
-        CStdString positionStr = body.Mid(start, end - start);
+        start += startPosition.size();
+        int end = body.find('\n', start);
+        std::string positionStr = body.substr(start, end - start);
         position = (float)atof(positionStr.c_str());
       }
     }

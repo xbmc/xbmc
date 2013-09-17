@@ -734,9 +734,9 @@ void CGUIDialogVideoInfo::OnGetArt()
         result != "thumb://Current") // user didn't choose the one they have
     {
       CStdString newThumb;
-      if (result.Left(14) == "thumb://Remote")
+      if (StringUtils::StartsWith(result, "thumb://Remote"))
       {
-        int number = atoi(result.Mid(14));
+        int number = atoi(result.substr(14).c_str());
         newThumb = thumbs[number];
       }
       else if (result == "thumb://Thumb")
@@ -837,7 +837,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
 
   if (result.Left(15) == "fanart://Remote")
   {
-    int iFanart = atoi(result.Mid(15).c_str());
+    int iFanart = atoi(result.substr(15).c_str());
     // set new primary fanart, and update our database accordingly
     m_movieItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
     CVideoDatabase db;

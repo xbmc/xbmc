@@ -643,12 +643,12 @@ void CPictureInfoTag::ConvertDateTime()
   if (strlen(m_exifInfo.DateTime) >= 19 && m_exifInfo.DateTime[0] != ' ')
   {
     CStdString dateTime = m_exifInfo.DateTime;
-    int year  = atoi(dateTime.Mid(0, 4).c_str());
-    int month = atoi(dateTime.Mid(5, 2).c_str());
-    int day   = atoi(dateTime.Mid(8, 2).c_str());
-    int hour  = atoi(dateTime.Mid(11,2).c_str());
-    int min   = atoi(dateTime.Mid(14,2).c_str());
-    int sec   = atoi(dateTime.Mid(17,2).c_str());
+    int year  = atoi(dateTime.substr(0, 4).c_str());
+    int month = atoi(dateTime.substr(5, 2).c_str());
+    int day   = atoi(dateTime.substr(8, 2).c_str());
+    int hour  = atoi(dateTime.substr(11,2).c_str());
+    int min   = atoi(dateTime.substr(14,2).c_str());
+    int sec   = atoi(dateTime.substr(17,2).c_str());
     m_dateTimeTaken.SetDateTime(year, month, day, hour, min, sec);
   }
 }

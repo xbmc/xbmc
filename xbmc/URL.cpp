@@ -163,7 +163,7 @@ void CURL::Parse(const CStdString& strURL1)
     m_strProtocol.Equals("special")
     )
   {
-    SetFileName(strURL.Mid(iPos));
+    SetFileName(strURL.substr(iPos));
     return;
   }
 
@@ -227,7 +227,7 @@ void CURL::Parse(const CStdString& strURL1)
     if (iAlphaSign >= 0 && iAlphaSign < iEnd && (iAlphaSign < iSlash || iSlash < 0))
     {
       // username/password found
-      CStdString strUserNamePassword = strURL.Mid(iPos, iAlphaSign - iPos);
+      CStdString strUserNamePassword = strURL.substr(iPos, iAlphaSign - iPos);
 
       // first extract domain, if protocol is smb
       if (m_strProtocol.Equals("smb"))
@@ -266,7 +266,7 @@ void CURL::Parse(const CStdString& strURL1)
   // detect hostname:port/
   if (iSlash < 0)
   {
-    CStdString strHostNameAndPort = strURL.Mid(iPos, iEnd - iPos);
+    CStdString strHostNameAndPort = strURL.substr(iPos, iEnd - iPos);
     int iColon = strHostNameAndPort.Find(":");
     if (iColon >= 0)
     {
@@ -283,7 +283,7 @@ void CURL::Parse(const CStdString& strURL1)
   }
   else
   {
-    CStdString strHostNameAndPort = strURL.Mid(iPos, iSlash - iPos);
+    CStdString strHostNameAndPort = strURL.substr(iPos, iSlash - iPos);
     int iColon = strHostNameAndPort.Find(":");
     if (iColon >= 0)
     {
@@ -299,7 +299,7 @@ void CURL::Parse(const CStdString& strURL1)
     iPos = iSlash + 1;
     if (iEnd > iPos)
     {
-      m_strFileName = strURL.Mid(iPos, iEnd - iPos);
+      m_strFileName = strURL.substr(iPos, iEnd - iPos);
 
       iSlash = m_strFileName.Find("/");
       if(iSlash < 0)
@@ -408,7 +408,7 @@ void CURL::SetProtocolOptions(const CStdString& strOptions)
   if (strOptions.length() > 0)
   {
     if (strOptions[0] == '|')
-      m_strProtocolOptions = strOptions.Mid(1);
+      m_strProtocolOptions = strOptions.substr(1);
     else
       m_strProtocolOptions = strOptions;
     m_protocolOptions.AddOptions(m_strProtocolOptions);

@@ -660,7 +660,7 @@ int CBuiltins::Execute(const CStdString& execString)
         askToResume = false;
       }
       else if (StringUtils::StartsWithNoCase(params[i], "playoffset=")) {
-        playOffset = atoi(params[i].Mid(11)) - 1;
+        playOffset = atoi(params[i].substr(11).c_str()) - 1;
         item.SetProperty("playlist_starting_track", playOffset);
       }
     }
@@ -760,7 +760,7 @@ int CBuiltins::Execute(const CStdString& execString)
         else if (params[i].Equals("pause"))
           flags |= 8;
         else if (StringUtils::StartsWithNoCase(params[i], "beginslide="))
-          beginSlidePath = params[i].Mid(11);
+          beginSlidePath = params[i].substr(11);
       }
     }
 
@@ -866,11 +866,11 @@ int CBuiltins::Execute(const CStdString& execString)
       if (parameter.size() == 14)
         CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with no argument");
       else if (parameter.size() < 17) // arg must be at least "(N)"
-        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", parameter.Mid(14).c_str());
+        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", parameter.substr(14).c_str());
       else
       {
         // Don't bother checking the argument: an invalid arg will do seek(0)
-        offset = parameter.Mid(15);
+        offset = parameter.substr(15);
         StringUtils::TrimRight(offset, ")");
         float offsetpercent = (float) atof(offset.c_str());
         if (offsetpercent < 0 || offsetpercent > 100)
@@ -900,7 +900,7 @@ int CBuiltins::Execute(const CStdString& execString)
           context = PARTYMODECONTEXT_VIDEO;
         else if (parameter.size() != 16 || !StringUtils::EndsWithNoCase(parameter, "music)"))
         {
-          strXspPath = parameter.Mid(10);
+          strXspPath = parameter.substr(10);
           StringUtils::TrimRight(strXspPath, ")");
           context = PARTYMODECONTEXT_UNKNOWN;
         }

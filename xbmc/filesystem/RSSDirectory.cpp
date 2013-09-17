@@ -522,7 +522,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
 
     /* handling of mimetypes fo directories are sub optimal at best */
     if(best->mime == "application/rss+xml" && StringUtils::StartsWithNoCase(item->GetPath(), "http://"))
-      item->SetPath("rss://" + item->GetPath().Mid(7));
+      item->SetPath("rss://" + item->GetPath().substr(7));
 
     if(StringUtils::StartsWithNoCase(item->GetPath(), "rss://"))
       item->m_bIsFolder = true;

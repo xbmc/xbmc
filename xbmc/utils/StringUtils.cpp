@@ -483,7 +483,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
       if ( i == numFound )
         s = input;
       else
-        s = input.Mid( i, positions[i] );
+        s = input.substr(i, positions[i]);
     }
     else
     {
@@ -491,9 +491,9 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
       if ( offset < isize )
       {
         if ( i == numFound )
-          s = input.Mid(offset);
+          s = input.substr(offset);
         else if ( i > 0 )
-          s = input.Mid( positions[i - 1] + sizeS2,
+          s = input.substr( positions[i - 1] + sizeS2,
                          positions[i] - positions[i - 1] - sizeS2 );
       }
     }

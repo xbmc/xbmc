@@ -658,7 +658,7 @@ void CKaraokeLyricsText::rescanLyrics()
         l.flags = 0;
       l.timing = (unsigned int) MathUtils::round_int( m_lyrics[ i ].timing + j * time_per_char );
 
-      g_charsetConverter.wToUTF8( utf16.Mid( j, 1 ), l.text );
+      g_charsetConverter.wToUTF8( utf16.substr(j, 1), l.text);
 
       if ( l.text == " " )
       {

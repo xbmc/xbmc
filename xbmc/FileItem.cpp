@@ -802,7 +802,7 @@ bool CFileItem::IsVideo() const
   CStdString extension;
   if( StringUtils::StartsWithNoCase(m_mimetype, "application/") )
   { /* check for some standard types */
-    extension = m_mimetype.Mid(12);
+    extension = m_mimetype.substr(12);
     if( extension.Equals("ogg")
      || extension.Equals("mp4")
      || extension.Equals("mxf") )
@@ -860,7 +860,7 @@ bool CFileItem::IsAudio() const
 
   if( StringUtils::StartsWithNoCase(m_mimetype, "application/") )
   { /* check for some standard types */
-    CStdString extension = m_mimetype.Mid(12);
+    CStdString extension = m_mimetype.substr(12);
     if( extension.Equals("ogg")
      || extension.Equals("mp4")
      || extension.Equals("mxf") )

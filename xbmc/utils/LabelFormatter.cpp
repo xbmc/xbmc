@@ -341,7 +341,7 @@ void CLabelFormatter::SplitMask(unsigned int label, const CStdString &mask)
     m_staticContent[label].push_back(work.Left(findStart));
     m_dynamicContent[label].push_back(CMaskString("", 
           reg.GetMatch(1)[0], ""));
-    work = work.Mid(findStart + reg.GetFindLen());
+    work = work.substr(findStart + reg.GetFindLen());
   }
   m_staticContent[label].push_back(work);
 }
@@ -367,7 +367,7 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
             reg.GetMatch(2),
             reg.GetMatch(4)[0],
             reg.GetMatch(5)));
-    work = work.Mid(findStart + reg.GetFindLen());
+    work = work.substr(findStart + reg.GetFindLen());
   }
   SplitMask(label, work);
   assert(m_staticContent[label].size() == m_dynamicContent[label].size() + 1);
@@ -385,7 +385,7 @@ bool CLabelFormatter::FillMusicTag(const CStdString &fileName, CMusicInfoTag *ta
     if (pos2 == (int)CStdString::npos)
       return false;
     // found static content - thus we have the dynamic content surrounded
-    FillMusicMaskContent(m_dynamicContent[0][i - 1].m_content, fileName.Mid(pos1, pos2 - pos1), tag);
+    FillMusicMaskContent(m_dynamicContent[0][i - 1].m_content, fileName.substr(pos1, pos2 - pos1), tag);
     pos1 = pos2 + m_staticContent[0][i].size();
   }
   return true;

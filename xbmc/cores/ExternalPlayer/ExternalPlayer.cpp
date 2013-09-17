@@ -212,7 +212,7 @@ void CExternalPlayer::Process()
         while ((iStart = regExp.RegFind(mainFile, iStart)) > -1)
         {
           int iLength = regExp.GetFindLen();
-          mainFile = mainFile.Left(iStart) + regExp.GetReplaceString(strRep).c_str() + mainFile.Mid(iStart + iLength);
+          mainFile = mainFile.substr(0, iStart) + regExp.GetReplaceString(strRep) + mainFile.substr(iStart + iLength);
           if (!bGlobal)
             break;
         }

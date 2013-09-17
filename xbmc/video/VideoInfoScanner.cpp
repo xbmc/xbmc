@@ -1562,9 +1562,9 @@ namespace VIDEO
       {
         URIUtils::RemoveSlashAtEnd(strPath); // need no slash for the check that follows
         CFileItem item2;
-        if (strPath.Mid(strPath.size()-3).Equals("cd1"))
+        if (StringUtils::EndsWithNoCase(strPath, "cd1"))
         {
-          strPath = strPath.Mid(0,strPath.size()-3);
+          strPath.erase(strPath.size() - 3);
           item2.SetPath(URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(item->GetPath())));
           return GetnfoFile(&item2, bGrabAny);
         }

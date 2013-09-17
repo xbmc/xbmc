@@ -160,6 +160,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 
 void CGUIDialogSmartPlaylistEditor::OnOK()
 {
+  std::string systemPlaylistsPath = CSettings::Get().GetString("system.playlistspath");
   // save our playlist
   if (m_path.empty())
   {
@@ -167,7 +168,7 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     CStdString path;
     if (CGUIKeyboardFactory::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
-      path = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"),m_playlist.GetSaveLocation());
+      path = URIUtils::AddFileToFolder(systemPlaylistsPath, m_playlist.GetSaveLocation());
       path = URIUtils::AddFileToFolder(path, CUtil::MakeLegalFileName(filename));
     }
     else
@@ -182,14 +183,14 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
   {
     // check if we need to actually change the save location for this playlist
     // this occurs if the user switches from music video <> songs <> mixed
-    if (StringUtils::EqualsNoCase(m_path.Left(CSettings::Get().GetString("system.playlistspath").size()), CSettings::Get().GetString("system.playlistspath"))) // fugly, well aware
+    if (StringUtils::StartsWith(m_path, systemPlaylistsPath))
     {
       CStdString filename = URIUtils::GetFileName(m_path);
-      CStdString strFolder = m_path.Mid(CSettings::Get().GetString("system.playlistspath").size(),m_path.size()-filename.size()-CSettings::Get().GetString("system.playlistspath").size()-1);
+      CStdString strFolder = m_path.substr(systemPlaylistsPath.size(), m_path.size() - filename.size() - systemPlaylistsPath.size() - 1);
       if (strFolder != m_playlist.GetSaveLocation())
       { // move to the correct folder
         XFILE::CFile::Delete(m_path);
-        m_path = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"),m_playlist.GetSaveLocation());
+        m_path = URIUtils::AddFileToFolder(systemPlaylistsPath, m_playlist.GetSaveLocation());
         m_path = URIUtils::AddFileToFolder(m_path, filename);
       }
     }

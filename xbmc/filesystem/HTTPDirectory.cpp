@@ -89,7 +89,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       strName = reItem.GetMatch(2);
 
       if(strLink[0] == '/')
-        strLink = strLink.Mid(1);
+        strLink = strLink.substr(1);
 
       CStdString strNameTemp = StringUtils::Trim(strName);
 
@@ -107,7 +107,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       // split link with url options
       int pos = strLinkBase.Find('?');
       if (pos != -1) {
-        strLinkOptions = strLinkBase.Mid(pos);
+        strLinkOptions = strLinkBase.substr(pos);
         strLinkBase.erase(pos);
       }
       CStdString strLinkTemp = strLinkBase;

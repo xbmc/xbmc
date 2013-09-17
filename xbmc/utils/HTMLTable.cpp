@@ -55,7 +55,7 @@ void CHTMLRow::Parse(const CStdString& strTable)
       if (iTableRowEnd < -1)
         break;
 
-      CStdString strRow = strTable.Mid(iTableRowStart, 1 + iTableRowEnd - iTableRowStart);
+      CStdString strRow = strTable.substr(iTableRowStart, 1 + iTableRowEnd - iTableRowStart);
       m_vecColums.push_back(strRow);
 
       iTableRowStart = iTableRowEnd + 1;
@@ -96,7 +96,7 @@ void CHTMLTable::Parse(const CStdString& strHTML)
       iPosEnd = (int)strHTML.size();
     }
 
-    CStdString strTable = strHTML.Mid(iPosStart, 1 + iPosEnd - iPosStart);
+    CStdString strTable = strHTML.substr(iPosStart, 1 + iPosEnd - iPosStart);
     int iTableRowStart = 0;
     do
     {
@@ -108,7 +108,7 @@ void CHTMLTable::Parse(const CStdString& strHTML)
         if (iTableRowEnd < 0)
           break;
 
-        CStdString strRow = strTable.Mid(iTableRowStart, 1 + iTableRowEnd - iTableRowStart);
+        CStdString strRow = strTable.substr(iTableRowStart, 1 + iTableRowEnd - iTableRowStart);
         CHTMLRow row;
         row.Parse(strRow);
         m_vecRows.push_back(row);

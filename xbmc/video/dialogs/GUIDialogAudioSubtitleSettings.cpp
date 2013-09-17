@@ -138,8 +138,8 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
   {
     CStdString strAudioInfo;
     g_application.m_pPlayer->GetAudioInfo(strAudioInfo);
-    int iNumChannels = atoi(strAudioInfo.Right(strAudioInfo.size() - strAudioInfo.Find("chns:") - 5).c_str());
-    CStdString strAudioCodec = strAudioInfo.Mid(7, strAudioInfo.Find(") VBR") - 5);
+    int iNumChannels = atoi(strAudioInfo.substr(strAudioInfo.find("chns:") + 5).c_str());
+    CStdString strAudioCodec = strAudioInfo.substr(7, strAudioInfo.find(") VBR") - 5);
     bool bDTS = strstr(strAudioCodec.c_str(), "DTS") != 0;
     bool bAC3 = strstr(strAudioCodec.c_str(), "AC3") != 0;
     if (iNumChannels == 2 && !(bDTS || bAC3))

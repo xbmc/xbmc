@@ -663,7 +663,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     if (!url2.GetOptions().empty())
     {
       CLog::Log(LOGWARNING, "%s: ftp url option is deprecated, please switch to use protocol option (change '?' to '|'), url: [%s]", __FUNCTION__, url2.GetRedacted().c_str());
-      url2.SetProtocolOptions(url2.GetOptions().Mid(1));
+      url2.SetProtocolOptions(url2.GetOptions().substr(1));
       /* ftp has no options */
       url2.SetOptions("");
     }

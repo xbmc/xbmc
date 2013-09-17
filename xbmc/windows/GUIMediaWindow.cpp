@@ -1032,13 +1032,13 @@ bool CGUIMediaWindow::OnClick(int iItem)
     else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://"))
     {
       m_vecItems->RemoveDiscCache(GetID());
-      if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->GetPath().Mid(19)))
+      if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->GetPath().substr(19)))
         Refresh();
       return true;
     }
     else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "addons://more/"))
     {
-      CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->GetPath().Mid(14) + ",return)");
+      CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->GetPath().substr(14) + ",return)");
       return true;
     }
 

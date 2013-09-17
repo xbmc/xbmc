@@ -2715,36 +2715,6 @@ public:
     std::reverse(this->begin(), this->end());
   }
 
-  MYTYPE Mid(int nFirst) const
-  {
-    return Mid(nFirst, this->GetLength()-nFirst);
-  }
-
-  MYTYPE Mid(int nFirst, int nCount) const
-  {
-    // CString does range checking here.  Since we're trying to emulate it,
-    // we must check too.
-
-    if ( nFirst < 0 )
-      nFirst = 0;
-    if ( nCount < 0 )
-      nCount = 0;
-
-    int nSize = static_cast<int>(this->size());
-
-    if ( nFirst + nCount > nSize )
-      nCount = nSize - nFirst;
-
-    if ( nFirst > nSize )
-      return MYTYPE();
-
-    ASSERT(nFirst >= 0);
-    ASSERT(nFirst + nCount <= nSize);
-
-    return this->substr(static_cast<MYSIZE>(nFirst),
-              static_cast<MYSIZE>(nCount));
-  }
-
   void ReleaseBuffer(int nNewLen=-1)
   {
     RelBuf(nNewLen);

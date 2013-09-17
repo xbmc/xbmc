@@ -370,7 +370,12 @@ namespace XBMCAddon
           else if (key == "date")
           {
             if (value.length() == 10)
-              item->m_dateTime.SetDate(atoi(value.Right(4).c_str()), atoi(value.Mid(3,4).c_str()), atoi(value.Left(2).c_str()));
+            {
+              int year = atoi(value.substr(value.size() - 4).c_str());
+              int month = atoi(value.substr(3, 4).c_str());
+              int day = atoi(value.substr(0, 2).c_str());
+              item->m_dateTime.SetDate(year, month, day);
+            }
             else
               CLog::Log(LOGERROR,"NEWADDON Invalid Date Format \"%s\"",value.c_str());
           }
@@ -431,7 +436,11 @@ namespace XBMCAddon
           else if (key == "date")
           {
             if (strlen(value) == 10)
-              item->m_dateTime.SetDate(atoi(value.Right(4)), atoi(value.Mid(3,4)), atoi(value.Left(2)));
+            {
+              int year = atoi(value.substr(value.size() - 4).c_str());
+              int month = atoi(value.substr(3, 4).c_str());
+              int day = atoi(value.substr(0, 2).c_str());
+              item->m_dateTime.SetDate(year, month, day);            }
           }
           else
             CLog::Log(LOGERROR,"NEWADDON Unknown Music Info Key \"%s\"", key.c_str());
@@ -460,13 +469,18 @@ namespace XBMCAddon
           else if (key == "date")
           {
             if (strlen(value) == 10)
-              item->m_dateTime.SetDate(atoi(value.Right(4)), atoi(value.Mid(3,4)), atoi(value.Left(2)));
+            {
+              int year = atoi(value.substr(value.size() - 4).c_str());
+              int month = atoi(value.substr(3, 4).c_str());
+              int day = atoi(value.substr(0, 2).c_str());
+              item->m_dateTime.SetDate(year, month, day);
+            }
           }
           else
           {
             const CStdString& exifkey = key;
             if (!StringUtils::StartsWithNoCase(exifkey, "exif:") || exifkey.length() < 6) continue;
-            int info = CPictureInfoTag::TranslateString(exifkey.Mid(5));
+            int info = CPictureInfoTag::TranslateString(exifkey.substr(5));
             item->GetPictureInfoTag()->SetInfo(info, value);
           }
         }

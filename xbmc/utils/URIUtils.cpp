@@ -415,7 +415,7 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath, bool reverse /* =
       if (strncmp(strPath.c_str(), i->first.c_str(), HasSlashAtEnd(i->first.c_str()) ? i->first.size()-1 : i->first.size()) == 0)
       {
         if (strPath.size() > i->first.size())
-          return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+          return URIUtils::AddFileToFolder(i->second, strPath.substr(i->first.size()));
         else
           return i->second;
       }
@@ -425,7 +425,7 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath, bool reverse /* =
       if (strncmp(strPath.c_str(), i->second.c_str(), HasSlashAtEnd(i->second.c_str()) ? i->second.size()-1 : i->second.size()) == 0)
       {
         if (strPath.size() > i->second.size())
-          return URIUtils::AddFileToFolder(i->first, strPath.Mid(i->second.size()));
+          return URIUtils::AddFileToFolder(i->first, strPath.substr(i->second.size()));
         else
           return i->first;
       }
@@ -469,7 +469,7 @@ bool URIUtils::IsRemote(const CStdString& strFile)
 bool URIUtils::IsOnDVD(const CStdString& strFile)
 {
 #ifdef TARGET_WINDOWS
-  if (strFile.Mid(1,1) == ":")
+  if (strFile.substr(1,1) == ":")
     return (GetDriveType(strFile.Left(3)) == DRIVE_CDROM);
 #endif
 
@@ -602,8 +602,8 @@ bool URIUtils::IsDVD(const CStdString& strFile)
   if (StringUtils::StartsWithNoCase(strFile, "dvd://"))
     return true;
 
-  if(strFile.Mid(1) != ":\\"
-  && strFile.Mid(1) != ":")
+  if(strFile.substr(1) != ":\\"
+  && strFile.substr(1) != ":")
     return false;
 
   if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
@@ -625,7 +625,7 @@ bool URIUtils::IsRAR(const CStdString& strFile)
 {
   CStdString strExtension = GetExtension(strFile);
 
-  if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
+  if (strExtension.Equals(".001") && !StringUtils::EndsWithNoCase(strFile, ".ts.001"))
     return true;
 
   if (strExtension.CompareNoCase(".cbr") == 0)
@@ -1038,7 +1038,7 @@ CStdString URIUtils::AddFileToFolder(const CStdString& strFolder,
 
   // Remove any slash at the start of the file
   if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
-    strResult += strFile.Mid(1);
+    strResult += strFile.substr(1);
   else
     strResult += strFile;
 
@@ -1064,7 +1064,7 @@ CStdString URIUtils::GetDirectory(const CStdString &strFilePath)
   if (iPosBar == string::npos)
     return strFilePath.Left(iPosSlash + 1); // Only path
 
-  return strFilePath.Left(iPosSlash + 1) + strFilePath.Mid(iPosBar); // Path + options
+  return strFilePath.substr(0, iPosSlash + 1) + strFilePath.substr(iPosBar); // Path + options
 }
 
 void URIUtils::CreateArchivePath(CStdString& strUrlPath,
