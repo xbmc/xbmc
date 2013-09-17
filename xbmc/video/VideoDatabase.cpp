@@ -8006,7 +8006,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
       CStdString strPaths;
       for (std::set<int>::const_iterator i = paths->begin(); i != paths->end(); ++i)
-        strPaths.AppendFormat(",%i",*i);
+        strPaths += StringUtils::Format(",%i",*i);
       sql = PrepareSQL("select * from files,path where files.idPath=path.idPath and path.idPath in (%s)",strPaths.Mid(1).c_str());
     }
     else
@@ -8222,7 +8222,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     while (!m_pDS->eof())
     {
       if (!CDirectory::Exists(m_pDS->fv("path.strPath").get_asString()))
-        strIds.AppendFormat("%i,", m_pDS->fv("path.idPath").get_asInt());
+        strIds += StringUtils::Format("%i,", m_pDS->fv("path.idPath").get_asInt());
       m_pDS->next();
     }
     m_pDS->close();
@@ -8579,7 +8579,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         {
           CStdString strFileName(movie.m_strTitle);
           if (movie.m_iYear > 0)
-            strFileName.AppendFormat("_%i", movie.m_iYear);
+            strFileName += StringUtils::Format("_%i", movie.m_iYear);
           item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
         }
         for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
@@ -8676,7 +8676,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         {
           CStdString strFileName(StringUtils::Join(movie.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + movie.m_strTitle);
           if (movie.m_iYear > 0)
-            strFileName.AppendFormat("_%i", movie.m_iYear);
+            strFileName += StringUtils::Format("_%i", movie.m_iYear);
           item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
         }
         for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
@@ -9078,7 +9078,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         bool useFolders = info.m_basePath.empty() ? LookupByFolders(item.GetPath()) : false;
         CStdString filename = info.m_strTitle;
         if (info.m_iYear > 0)
-          filename.AppendFormat("_%i", info.m_iYear);
+          filename += StringUtils::Format("_%i", info.m_iYear);
         CFileItem artItem(item);
         artItem.SetPath(GetSafeFile(moviesDir, filename) + ".avi");
         scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);
@@ -9093,7 +9093,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         bool useFolders = info.m_basePath.empty() ? LookupByFolders(item.GetPath()) : false;
         CStdString filename = StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle;
         if (info.m_iYear > 0)
-          filename.AppendFormat("_%i", info.m_iYear);
+          filename += StringUtils::Format("_%i", info.m_iYear);
         CFileItem artItem(item);
         artItem.SetPath(GetSafeFile(musicvideosDir, filename) + ".avi");
         scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);

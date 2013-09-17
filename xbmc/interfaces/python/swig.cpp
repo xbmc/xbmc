@@ -161,9 +161,9 @@ namespace PythonBindings
       {
           PyObject *tracebackModule;
 
-          msg.AppendFormat("Error Type: %s\n", PyString_AsString(pystring));
+          msg += StringUtils::Format("Error Type: %s\n", PyString_AsString(pystring));
           if (PyObject_Str(exc_value))
-            msg.AppendFormat("Error Contents: %s\n", PyString_AsString(PyObject_Str(exc_value)));
+            msg += StringUtils::Format("Error Contents: %s\n", PyString_AsString(PyObject_Str(exc_value)));
 
           tracebackModule = PyImport_ImportModule((char*)"traceback");
           if (tracebackModule != NULL)

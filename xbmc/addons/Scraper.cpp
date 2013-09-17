@@ -657,11 +657,11 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
 
         // reconstruct a title for the user
         if (!sCompareYear.empty())
-          scurlMovie.strTitle.AppendFormat(" (%s)", sCompareYear.c_str());
+          scurlMovie.strTitle += StringUtils::Format(" (%s)", sCompareYear.c_str());
 
         CStdString sLanguage;
         if (XMLUtils::GetString(pxeMovie, "language", sLanguage) && !sLanguage.empty())
-          scurlMovie.strTitle.AppendFormat(" (%s)", sLanguage.c_str());
+          scurlMovie.strTitle += StringUtils::Format(" (%s)", sLanguage.c_str());
 
         // filter for dupes from naughty scrapers
         if (stsDupeCheck.insert(scurlMovie.m_url[0].m_url + " " + scurlMovie.strTitle).second)

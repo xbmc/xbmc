@@ -23,6 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #include "PVRManager.h"
 #include "channels/PVRChannelGroupsContainer.h"
@@ -578,7 +579,7 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const 
     CStdString strWhereClause;
 
     for (unsigned int iChannelPtr = 0; iChannelPtr + iDeletedChannels < channelsToDelete.size() && iChannelPtr < 50; iChannelPtr++)
-      strChannelsToDelete.AppendFormat(", %d", channelsToDelete.at(iDeletedChannels + iChannelPtr));
+      strChannelsToDelete += StringUtils::Format(", %d", channelsToDelete.at(iDeletedChannels + iChannelPtr));
 
     if (!strChannelsToDelete.empty())
     {

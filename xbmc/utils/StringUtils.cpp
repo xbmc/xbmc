@@ -649,13 +649,13 @@ CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
     format = (hh >= 1) ? TIME_FORMAT_HH_MM_SS : TIME_FORMAT_MM_SS;
   CStdString strHMS;
   if (format & TIME_FORMAT_HH)
-    strHMS.AppendFormat("%02.2i", hh);
+    strHMS += StringUtils::Format("%02.2i", hh);
   else if (format & TIME_FORMAT_H)
-    strHMS.AppendFormat("%i", hh);
+    strHMS += StringUtils::Format("%i", hh);
   if (format & TIME_FORMAT_MM)
-    strHMS.AppendFormat(strHMS.empty() ? "%02.2i" : ":%02.2i", mm);
+    strHMS += StringUtils::Format(strHMS.empty() ? "%02.2i" : ":%02.2i", mm);
   if (format & TIME_FORMAT_SS)
-    strHMS.AppendFormat(strHMS.empty() ? "%02.2i" : ":%02.2i", ss);
+    strHMS += StringUtils::Format(strHMS.empty() ? "%02.2i" : ":%02.2i", ss);
   return strHMS;
 }
 

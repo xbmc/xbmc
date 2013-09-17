@@ -216,10 +216,10 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
     return;
   }
   CStdString write;
-  write.AppendFormat("%s\n", START_PLAYLIST_MARKER);
+  write += StringUtils::Format("%s\n", START_PLAYLIST_MARKER);
   CStdString strPlayListName=m_strPlayListName;
   g_charsetConverter.utf8ToStringCharset(strPlayListName);
-  write.AppendFormat("PlaylistName=%s\n", strPlayListName.c_str() );
+  write += StringUtils::Format("PlaylistName=%s\n", strPlayListName.c_str() );
 
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
@@ -228,13 +228,13 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
     g_charsetConverter.utf8ToStringCharset(strFileName);
     CStdString strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
-    write.AppendFormat("File%i=%s\n", i + 1, strFileName.c_str() );
-    write.AppendFormat("Title%i=%s\n", i + 1, strDescription.c_str() );
-    write.AppendFormat("Length%i=%u\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000 );
+    write += StringUtils::Format("File%i=%s\n", i + 1, strFileName.c_str() );
+    write += StringUtils::Format("Title%i=%s\n", i + 1, strDescription.c_str() );
+    write += StringUtils::Format("Length%i=%u\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000 );
   }
 
-  write.AppendFormat("NumberOfEntries=%i\n", m_vecItems.size());
-  write.AppendFormat("Version=2\n");
+  write += StringUtils::Format("NumberOfEntries=%i\n", m_vecItems.size());
+  write += StringUtils::Format("Version=2\n");
   file.Write(write.c_str(), write.size());
   file.Close();
 }

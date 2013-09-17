@@ -616,7 +616,7 @@ void CPVRChannel::UpdateEncryptionName(void)
     strName = "Griffin";
 
   if (m_iClientEncryptionSystem >= 0)
-    strName.AppendFormat(" (%04X)", m_iClientEncryptionSystem);
+    strName += StringUtils::Format(" (%04X)", m_iClientEncryptionSystem);
 
   m_strClientEncryptionName = strName;
 }

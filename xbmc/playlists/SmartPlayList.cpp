@@ -619,16 +619,16 @@ CStdString CSmartPlaylistRule::GetVideoResolutionQuery(const CStdString &paramet
   switch (m_operator)
   {
     case OPERATOR_EQUALS:
-      retVal.AppendFormat(">= %i AND iVideoWidth <= %i", min, max);
+      retVal += StringUtils::Format(">= %i AND iVideoWidth <= %i", min, max);
       break;
     case OPERATOR_DOES_NOT_EQUAL:
-      retVal.AppendFormat("< %i OR iVideoWidth > %i", min, max);
+      retVal += StringUtils::Format("< %i OR iVideoWidth > %i", min, max);
       break;
     case OPERATOR_LESS_THAN:
-      retVal.AppendFormat("< %i", min);
+      retVal += StringUtils::Format("< %i", min);
       break;
     case OPERATOR_GREATER_THAN:
-      retVal.AppendFormat("> %i", max);
+      retVal += StringUtils::Format("> %i", max);
       break;
     default:
       break;

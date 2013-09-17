@@ -137,12 +137,12 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
       point.y *= g_graphicsContext.GetGUIScaleY();
       g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
     }
-    info.AppendFormat("Mouse: (%d,%d)  ", (int)point.x, (int)point.y);
+    info += StringUtils::Format("Mouse: (%d,%d)  ", (int)point.x, (int)point.y);
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();
       if (control)
-        info.AppendFormat("Focused: %i (%s)", control->GetID(), CGUIControlFactory::TranslateControlType(control->GetControlType()).c_str());
+        info += StringUtils::Format("Focused: %i (%s)", control->GetID(), CGUIControlFactory::TranslateControlType(control->GetControlType()).c_str());
     }
   }
 

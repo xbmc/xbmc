@@ -724,7 +724,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         && m_proxy.empty())
     {
       m_proxy = CSettings::Get().GetString("network.httpproxyserver");
-      m_proxy.AppendFormat(":%d", CSettings::Get().GetInt("network.httpproxyport"));
+      m_proxy += StringUtils::Format(":%d", CSettings::Get().GetInt("network.httpproxyport"));
       if (CSettings::Get().GetString("network.httpproxyusername").length() > 0 && m_proxyuserpass.empty())
       {
         m_proxyuserpass = CSettings::Get().GetString("network.httpproxyusername");

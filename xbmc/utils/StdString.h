@@ -2521,31 +2521,6 @@ public:
 
 #endif  // #ifdef SS_ANSI
 
-  void AppendFormat(const CT* szFmt, ...)
-  {
-    va_list argList;
-    va_start(argList, szFmt);
-    AppendFormatV(szFmt, argList);
-    va_end(argList);
-  }
-
-  #define MAX_FMT_TRIES    5   // #of times we try
-  #define FMT_BLOCK_SIZE    2048 // # of bytes to increment per try
-  #define BUFSIZE_1ST  256
-  #define BUFSIZE_2ND 512
-  #define STD_BUF_SIZE    1024
-
-  // an efficient way to add formatted characters to the string.  You may only
-  // add up to STD_BUF_SIZE characters at a time, though
-  void AppendFormatV(const CT* szFmt, va_list argList)
-  {
-    CT szBuf[STD_BUF_SIZE];
-    int nLen = ssnprintf(szBuf, STD_BUF_SIZE-1, szFmt, argList);
-
-    if ( 0 < nLen )
-      this->append(szBuf, nLen);
-  }
-
   // -------------------------------------------------------------------------
   // CString Facade Functions:
   //

@@ -835,7 +835,7 @@ bool CVideoReferenceClock::SetupD3D()
     //build up a string of measured rates
     CStdString StrRates;
     for (list<double>::iterator it = Measures.begin(); it != Measures.end(); it++)
-      StrRates.AppendFormat("%.2f ", *it);
+      StrRates += StringUtils::Format("%.2f ", *it);
 
     //get the top half of the measured rates
     Measures.sort();

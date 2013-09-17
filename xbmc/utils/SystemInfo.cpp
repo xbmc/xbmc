@@ -792,7 +792,7 @@ CStdString CSysInfo::GetUAWindowsVersion()
 
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
-    strVersion.AppendFormat(" %d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion);
+    strVersion += StringUtils::Format(" %d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion);
   }
 
   SYSTEM_INFO si = {};

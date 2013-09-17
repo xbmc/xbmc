@@ -300,7 +300,7 @@ void CPeripheralCecAdapter::SetVersionInfo(const libcec_configuration &configura
   if (configuration.iFirmwareBuildDate != CEC_FW_BUILD_UNKNOWN)
   {
     CDateTime dt((time_t)configuration.iFirmwareBuildDate);
-    m_strVersionInfo.AppendFormat(" (%s)", dt.GetAsDBDate().c_str());
+    m_strVersionInfo += StringUtils::Format(" (%s)", dt.GetAsDBDate().c_str());
   }
 }
 
@@ -726,7 +726,7 @@ int CPeripheralCecAdapter::CecAlert(void *cbParam, const libcec_alert alert, con
   {
     CStdString strLog(g_localizeStrings.Get(iAlertString));
     if (data.paramType == CEC_PARAMETER_TYPE_STRING && data.paramData)
-      strLog.AppendFormat(" - %s", (const char *)data.paramData);
+      strLog += StringUtils::Format(" - %s", (const char *)data.paramData);
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), strLog);
   }
 
@@ -1392,7 +1392,7 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
     CStdString strPowerOffDevices;
     for (unsigned int iPtr = CECDEVICE_TV; iPtr <= CECDEVICE_BROADCAST; iPtr++)
       if (addresses[iPtr])
-        strPowerOffDevices.AppendFormat(" %X", iPtr);
+        strPowerOffDevices += StringUtils::Format(" %X", iPtr);
     StringUtils::Trim(strPowerOffDevices);
     bChanged = SetSetting(strAdvancedSettingName, strPowerOffDevices);
   }
@@ -1502,7 +1502,7 @@ CStdString CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
     // request the OSD name of the amp
     cec_osd_name ampName = m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM);
     CLog::Log(LOGDEBUG, "%s - CEC capable amplifier found (%s). volume will be controlled on the amp", __FUNCTION__, ampName.name);
-    strAmpName.AppendFormat("%s", ampName.name);
+    strAmpName += StringUtils::Format("%s", ampName.name);
 
     // set amp present
     m_adapter->SetAudioSystemConnected(true);
@@ -1544,7 +1544,7 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
 
   CStdString strAmpName = UpdateAudioSystemStatus();
   if (!strAmpName.empty())
-    strNotification.AppendFormat("- %s", strAmpName.c_str());
+    strNotification += StringUtils::Format("- %s", strAmpName.c_str());
 
   m_adapter->m_bIsReady = true;
 
