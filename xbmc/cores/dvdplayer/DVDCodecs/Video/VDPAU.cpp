@@ -330,7 +330,7 @@ int CDecoder::Check(AVCodecContext* avctx)
   if (state == VDPAU_LOST)
   {
     CLog::Log(LOGNOTICE,"CVDPAU::Check waiting for display reset event");
-    if (!m_DisplayEvent.WaitMSec(2000))
+    if (!m_DisplayEvent.WaitMSec(4000))
     {
       CLog::Log(LOGERROR, "CVDPAU::Check - device didn't reset in reasonable time");
       state = VDPAU_RESET;
