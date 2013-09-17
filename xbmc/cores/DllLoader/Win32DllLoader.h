@@ -32,7 +32,7 @@ public:
   {
   public:
     void *table;
-    DWORD function;
+    void *function;
   };
 
   Win32DllLoader(const char *dll);
