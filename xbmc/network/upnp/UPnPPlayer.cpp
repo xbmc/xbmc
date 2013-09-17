@@ -415,7 +415,7 @@ void CUPnPPlayer::SeekPercentage(float percent)
     SeekTime((int64_t)(tot * percent / 100));
 }
 
-void CUPnPPlayer::Seek(bool bPlus, bool bLargeStep)
+void CUPnPPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 }
 

@@ -105,8 +105,8 @@
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
       <dpadleft>StepBack</dpadleft>
       <dpadright>StepForward</dpadright>
-      <dpadup>BigStepForward</dpadup>
-      <dpaddown>BigStepBack</dpaddown>
+      <dpadup>ChapterOrBigStepForward</dpadup>
+      <dpaddown>ChapterOrBigStepBack</dpaddown>
     </gamepad>
   </FullscreenVideo>
   <FullscreenLiveTV>

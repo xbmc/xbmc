@@ -887,7 +887,7 @@ bool PAPlayer::CanSeek()
   return m_playerGUIData.m_canSeek;
 }
 
-void PAPlayer::Seek(bool bPlus, bool bLargeStep)
+void PAPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
   if (!CanSeek()) return;
 

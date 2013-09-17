@@ -197,6 +197,9 @@
 #define ACTION_CREATE_EPISODE_BOOKMARK 95 //Creates an episode bookmark on the currently playing video file containing more than one episode
 #define ACTION_CREATE_BOOKMARK         96 //Creates a bookmark of the currently playing video file
 
+#define ACTION_CHAPTER_OR_BIG_STEP_FORWARD       97 // Goto the next chapter, if not available perform a big step forward
+#define ACTION_CHAPTER_OR_BIG_STEP_BACK          98 // Goto the previous chapter, if not available perform a big step back
+
 #define ACTION_MOUSE_START            100
 #define ACTION_MOUSE_LEFT_CLICK       100
 #define ACTION_MOUSE_RIGHT_CLICK      101

@@ -305,8 +305,8 @@
       <button id="7">SmallStepBack</button>
       <button id="8">Info</button>
       <button id="10">AudioNextLanguage</button>
-      <button id="11">BigStepForward</button>
-      <button id="12">BigStepBack</button>
+      <button id="11">ChapterOrBigStepForward</button>
+      <button id="12">ChapterOrBigStepBack</button>
       <button id="13">StepBack</button>
       <button id="14">StepForward</button>
       <!-- D-pad does what you'd expect. Triggers fast forward and rewind. Left stick scans forward and back. -->
@@ -339,8 +339,8 @@
       <button id="11">AudioNextLanguage</button>  <!-- right stick -->
       <button id="12">StepBack</button>
       <button id="13">StepForward</button>
-      <button id="14">BigStepForward</button>
-      <button id="15">BigStepBack</button>
+      <button id="14">ChapterOrBigStepForward</button>
+      <button id="15">ChapterOrBigStepBack</button>
       <axis id="6" limit="-1">AnalogRewind</axis>
       <axis id="6" limit="+1">AnalogFastForward</axis>
       <hat id="1" position="up">BigStepForward</hat>

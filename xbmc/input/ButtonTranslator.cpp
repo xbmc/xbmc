@@ -81,6 +81,8 @@ static const ActionMapping actions[] =
         {"stepback"          , ACTION_STEP_BACK},
         {"bigstepforward"    , ACTION_BIG_STEP_FORWARD},
         {"bigstepback"       , ACTION_BIG_STEP_BACK},
+        {"chapterorbigstepforward", ACTION_CHAPTER_OR_BIG_STEP_FORWARD},
+        {"chapterorbigstepback"   , ACTION_CHAPTER_OR_BIG_STEP_BACK},
         {"osd"               , ACTION_SHOW_OSD},
         {"showsubtitles"     , ACTION_SHOW_SUBTITLES},
         {"nextsubtitle"      , ACTION_NEXT_SUBTITLE},
