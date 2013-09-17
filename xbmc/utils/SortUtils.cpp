@@ -124,7 +124,7 @@ string ByAlbum(SortAttribute attributes, const SortItem &values)
 
   const CVariant &track = values.at(FieldTrackNumber);
   if (!track.isNull())
-    label.AppendFormat(" %i", (int)track.asInteger());
+    label += StringUtils::Format(" %i", (int)track.asInteger());
 
   return label;
 }
@@ -141,7 +141,7 @@ string ByArtist(SortAttribute attributes, const SortItem &values)
   const CVariant &year = values.at(FieldYear);
   if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear &&
       !year.isNull())
-    label.AppendFormat(" %i", (int)year.asInteger());
+    label += StringUtils::Format(" %i", (int)year.asInteger());
 
   const CVariant &album = values.at(FieldAlbum);
   if (!album.isNull())
@@ -149,7 +149,7 @@ string ByArtist(SortAttribute attributes, const SortItem &values)
 
   const CVariant &track = values.at(FieldTrackNumber);
   if (!track.isNull())
-    label.AppendFormat(" %i", (int)track.asInteger());
+    label += StringUtils::Format(" %i", (int)track.asInteger());
 
   return label;
 }
@@ -198,7 +198,7 @@ string ByYear(SortAttribute attributes, const SortItem &values)
   if (!airDate.isNull())
     label = airDate.asString() + " ";
 
-  label.AppendFormat("%i %s", (int)values.at(FieldYear).asInteger(), ByLabel(attributes, values).c_str());
+  label += StringUtils::Format("%i %s", (int)values.at(FieldYear).asInteger(), ByLabel(attributes, values).c_str());
  
   return label;
 }

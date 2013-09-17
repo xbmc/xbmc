@@ -389,7 +389,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
     {
       value = StringUtils::Format("%4.2fmm", m_exifInfo.FocalLength);
       if (m_exifInfo.FocalLength35mmEquiv != 0)
-        value.AppendFormat("  (35mm Equivalent = %umm)", m_exifInfo.FocalLength35mmEquiv);
+        value += StringUtils::Format("  (35mm Equivalent = %umm)", m_exifInfo.FocalLength35mmEquiv);
     }
     break;
   case SLIDE_EXIF_FOCUS_DIST:
@@ -419,7 +419,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
       else
         value = StringUtils::Format("%5.3fs", m_exifInfo.ExposureTime);
       if (m_exifInfo.ExposureTime <= 0.5)
-        value.AppendFormat(" (1/%d)", (int)(0.5 + 1/m_exifInfo.ExposureTime));
+        value += StringUtils::Format(" (1/%d)", (int)(0.5 + 1/m_exifInfo.ExposureTime));
     }
     break;
   case SLIDE_EXIF_EXPOSURE_BIAS:

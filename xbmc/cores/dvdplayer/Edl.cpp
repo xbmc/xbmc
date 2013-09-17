@@ -794,7 +794,7 @@ bool CEdl::WriteMPlayerEdl()
      *
      * Write out mutes (1) directly. Treat commercial breaks as cuts (everything other than MUTES = 0).
      */
-    strBuffer.AppendFormat("%.3f\t%.3f\t%i\n", (float)(m_vecCuts[i].start / 1000),
+    strBuffer += StringUtils::Format("%.3f\t%.3f\t%i\n", (float)(m_vecCuts[i].start / 1000),
                                                (float)(m_vecCuts[i].end / 1000),
                                                m_vecCuts[i].action == MUTE ? 1 : 0);
   }
@@ -887,14 +887,14 @@ CStdString CEdl::GetInfo()
       }
     }
     if (cutCount > 0)
-      strInfo.AppendFormat("c%i", cutCount);
+      strInfo += StringUtils::Format("c%i", cutCount);
     if (muteCount > 0)
-      strInfo.AppendFormat("m%i", muteCount);
+      strInfo += StringUtils::Format("m%i", muteCount);
     if (commBreakCount > 0)
-      strInfo.AppendFormat("b%i", commBreakCount);
+      strInfo += StringUtils::Format("b%i", commBreakCount);
   }
   if (HasSceneMarker())
-    strInfo.AppendFormat("s%i", m_vecSceneMarkers.size());
+    strInfo += StringUtils::Format("s%i", m_vecSceneMarkers.size());
 
   return strInfo.empty() ? "-" : strInfo;
 }
@@ -966,7 +966,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneM
 CStdString CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
 {
   CStdString strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
-  strTimeString.AppendFormat(".%03i", iMilliseconds % 1000);
+  strTimeString += StringUtils::Format(".%03i", iMilliseconds % 1000);
   return strTimeString;
 }
 

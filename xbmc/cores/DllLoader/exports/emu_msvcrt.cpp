@@ -211,7 +211,7 @@ extern "C" void __stdcall update_emu_environ()
     }
 
     strProxy += CSettings::Get().GetString("network.httpproxyserver");
-    strProxy.AppendFormat(":%d", CSettings::Get().GetInt("network.httpproxyport"));
+    strProxy += StringUtils::Format(":%d", CSettings::Get().GetInt("network.httpproxyport"));
 
     CEnvironment::setenv( "HTTP_PROXY", "http://" + strProxy, true );
     CEnvironment::setenv( "HTTPS_PROXY", "http://" + strProxy, true );

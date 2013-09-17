@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "sqlitedataset.h"
 #include "DatabaseManager.h"
 #include "DbUrl.h"
@@ -215,7 +216,7 @@ bool CDatabase::DeleteValues(const CStdString &strTable, const CStdString &strWh
 
   CStdString strQueryBase = "DELETE FROM %s";
   if (!strWhereClause.empty())
-    strQueryBase.AppendFormat(" WHERE %s", strWhereClause.c_str());
+    strQueryBase += StringUtils::Format(" WHERE %s", strWhereClause.c_str());
 
   CStdString strQuery = FormatSQL(strQueryBase, strTable.c_str());
 
@@ -330,7 +331,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   InitSettings(dbSettings);
 
   CStdString dbName = dbSettings.name;
-  dbName.AppendFormat("%d", GetMinVersion());
+  dbName += StringUtils::Format("%d", GetMinVersion());
   return Connect(dbName, dbSettings, false);
 }
 
@@ -371,13 +372,13 @@ bool CDatabase::Update(const DatabaseSettings &settings)
 
   int version = GetMinVersion();
   CStdString latestDb = dbSettings.name;
-  latestDb.AppendFormat("%d", version);
+  latestDb += StringUtils::Format("%d", version);
 
   while (version >= 0)
   {
     CStdString dbName = dbSettings.name;
     if (version)
-      dbName.AppendFormat("%d", version);
+      dbName += StringUtils::Format("%d", version);
 
     if (Connect(dbName, dbSettings, false))
     {

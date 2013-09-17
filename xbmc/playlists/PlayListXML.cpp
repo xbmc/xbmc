@@ -176,31 +176,31 @@ void CPlayListXML::Save(const CStdString& strFileName) const
     return ;
   }
   CStdString write;
-  write.AppendFormat("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-  write.AppendFormat("<streams>\n");
+  write += StringUtils::Format("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+  write += StringUtils::Format("<streams>\n");
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
-    write.AppendFormat("  <stream>\n" );
-    write.AppendFormat("    <url>%s</url>", item->GetPath().c_str() );
-    write.AppendFormat("    <name>%s</name>", item->GetLabel().c_str() );
+    write += StringUtils::Format("  <stream>\n" );
+    write += StringUtils::Format("    <url>%s</url>", item->GetPath().c_str() );
+    write += StringUtils::Format("    <name>%s</name>", item->GetLabel().c_str() );
 
     if ( !item->GetProperty("language").empty() )
-      write.AppendFormat("    <lang>%s</lang>", item->GetProperty("language").c_str() );
+      write += StringUtils::Format("    <lang>%s</lang>", item->GetProperty("language").c_str() );
 
     if ( !item->GetProperty("category").empty() )
-      write.AppendFormat("    <category>%s</category>", item->GetProperty("category").c_str() );
+      write += StringUtils::Format("    <category>%s</category>", item->GetProperty("category").c_str() );
 
     if ( !item->GetProperty("remotechannel").empty() )
-      write.AppendFormat("    <channel>%s</channel>", item->GetProperty("remotechannel").c_str() );
+      write += StringUtils::Format("    <channel>%s</channel>", item->GetProperty("remotechannel").c_str() );
 
     if ( item->m_iHasLock > 0 )
-      write.AppendFormat("    <lockpassword>%s<lockpassword>", item->m_strLockCode.c_str() );
+      write += StringUtils::Format("    <lockpassword>%s<lockpassword>", item->m_strLockCode.c_str() );
 
-    write.AppendFormat("  </stream>\n\n" );
+    write += StringUtils::Format("  </stream>\n\n" );
   }
 
-  write.AppendFormat("</streams>\n");
+  write += StringUtils::Format("</streams>\n");
   file.Write(write.c_str(), write.size());
   file.Close();
 }
