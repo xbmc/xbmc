@@ -115,17 +115,17 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
 {
   // Create the dump file where the xbmc.exe resides
   bool returncode = false;
-  CStdString dumpFileName;
+  std::string dumpFileName;
   CStdStringW dumpFileNameW;
   SYSTEMTIME stLocalTime;
   GetLocalTime(&stLocalTime);
 
-  dumpFileName.Format("xbmc_crashlog-%s-%04d%02d%02d-%02d%02d%02d.dmp",
+  dumpFileName = StringUtils::Format("xbmc_crashlog-%s-%04d%02d%02d-%02d%02d%02d.dmp",
                       mVersion.c_str(),
                       stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
                       stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
 
-  dumpFileName.Format("%s\\%s", CWIN32Util::GetProfilePath().c_str(), CUtil::MakeLegalFileName(dumpFileName));
+  dumpFileName = StringUtils::Format("%s\%s", CWIN32Util::SmbToUnc(CWIN32Util::GetProfilePath()).c_str(), CUtil::MakeLegalFileName(dumpFileName).c_str());
 
   g_charsetConverter.utf8ToW(dumpFileName, dumpFileNameW, false);
   HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
@@ -225,7 +225,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
                                       stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
                                       stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
 
-  dumpFileName = StringUtils::Format("%s\\%s", CWIN32Util::GetProfilePath().c_str(), CUtil::MakeLegalFileName(dumpFileName));
+  dumpFileName = StringUtils::Format("%s\%s", CWIN32Util::SmbToUnc(CWIN32Util::GetProfilePath()).c_str(), CUtil::MakeLegalFileName(dumpFileName).c_str());
 
   g_charsetConverter.utf8ToW(dumpFileName, dumpFileNameW, false);
   HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
