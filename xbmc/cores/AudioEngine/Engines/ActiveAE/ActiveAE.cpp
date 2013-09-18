@@ -1291,6 +1291,12 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     {
       format.m_channelLayout = AE_CH_LAYOUT_2_0;
     }
+
+    // sinks may not support mono
+    if (format.m_channelLayout.Count() == 1)
+    {
+      format.m_channelLayout = AE_CH_LAYOUT_2_0;
+    }
   }
 }
 
