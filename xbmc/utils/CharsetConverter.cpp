@@ -512,7 +512,7 @@ bool CCharsetConverter::utf8ToStringCharset(std::string& stringSrcDst)
   return utf8ToStringCharset(strSrc, stringSrcDst);
 }
 
-bool CCharsetConverter::stringCharsetToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst)
+bool CCharsetConverter::ToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst)
 {
   if (strSourceCharset == "UTF-8")
   { // simple case - no conversion necessary

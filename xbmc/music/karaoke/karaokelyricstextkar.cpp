@@ -603,7 +603,7 @@ CStdString CKaraokeLyricsTextKAR::convertText( const char * data )
   if ( g_charsetConverter.isValidUtf8(data) || CSettings::Get().GetString("karaoke.charset") == "DEFAULT" )
     strUTF8 = data;
   else
-    g_charsetConverter.stringCharsetToUtf8( CSettings::Get().GetString("karaoke.charset"), data, strUTF8 );
+    g_charsetConverter.ToUtf8( CSettings::Get().GetString("karaoke.charset"), data, strUTF8 );
 
   if ( strUTF8.size() == 0 )
     strUTF8 = " ";

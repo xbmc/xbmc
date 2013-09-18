@@ -317,7 +317,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 {
   CStdString flippedStrSource, strSourceUtf8;
 
-  g_charsetConverter.stringCharsetToUtf8(m_encoding, strSource, strSourceUtf8);
+  g_charsetConverter.ToUtf8(m_encoding, strSource, strSourceUtf8);
   if (m_rtlText)
     g_charsetConverter.utf8logicalToVisualBiDi(strSourceUtf8, flippedStrSource);
   else

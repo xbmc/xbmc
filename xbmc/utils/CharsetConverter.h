@@ -59,7 +59,7 @@ public:
   bool utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u16string& utf16StringDst);
   bool utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u32string& utf32StringDst);
 
-  bool stringCharsetToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst);
+  bool ToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst);
 
   bool isValidUtf8(const std::string& str);
 
