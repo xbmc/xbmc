@@ -317,7 +317,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
 
   // check if we advance a track of a CUE sheet
   // if this is the case we don't need to open a new stream
-  if (file.GetPath().Equals(m_FileItem->GetPath()) &&
+  if (file.GetMusicInfoTag()->GetURL().Equals(m_FileItem->GetMusicInfoTag()->GetURL()) &&
       file.m_lStartOffset &&
       file.m_lStartOffset == m_FileItem->m_lEndOffset &&
       m_currentStream && m_currentStream->m_prepareTriggered)
