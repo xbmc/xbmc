@@ -65,8 +65,6 @@ public:
 
   bool isValidUtf8(const char* buf, unsigned int len);
 
-  bool ucs2CharsetToStringCharset(const std::u16string& ucs2StringSrc, std::string& stringDst, bool swap = false);
-
   bool wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
   bool utf16BEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
   bool utf16LEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);

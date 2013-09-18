@@ -60,7 +60,6 @@ static iconv_t m_iconvStringCharsetToFontCharset = (iconv_t)-1;
 static iconv_t m_iconvSubtitleCharsetToW         = (iconv_t)-1;
 static iconv_t m_iconvUtf8ToStringCharset        = (iconv_t)-1;
 static iconv_t m_iconvStringCharsetToUtf8        = (iconv_t)-1;
-static iconv_t m_iconvUcs2CharsetToStringCharset = (iconv_t)-1;
 static iconv_t m_iconvUtf32ToStringCharset       = (iconv_t)-1;
 static iconv_t m_iconvWtoUtf8                    = (iconv_t)-1;
 static iconv_t m_iconvUtf16LEtoW                 = (iconv_t)-1;
@@ -429,7 +428,6 @@ void CCharsetConverter::reset(void)
   ICONV_SAFE_CLOSE(m_iconvStringCharsetToFontCharset);
   ICONV_SAFE_CLOSE(m_iconvUtf8ToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvStringCharsetToUtf8);
-  ICONV_SAFE_CLOSE(m_iconvUcs2CharsetToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToW);
   ICONV_SAFE_CLOSE(m_iconvWtoUtf8);
   ICONV_SAFE_CLOSE(m_iconvUtf16BEtoUtf8);
@@ -605,28 +603,6 @@ bool CCharsetConverter::utf16LEtoW(const std::u16string& utf16String, std::wstri
 {
   CSingleLock lock(m_critSection);
   return convert(m_iconvUtf16LEtoW,1,"UTF-16LE",WCHAR_CHARSET,utf16String,wString);
-}
-
-bool CCharsetConverter::ucs2CharsetToStringCharset(const std::u16string& ucs2StringSrc, std::string& stringDst, bool swap /*= false*/)
-{
-  std::u16string strCopy = ucs2StringSrc;
-  if (swap)
-  {
-    char* s = (char*) strCopy.c_str();
-
-    while (*s || *(s + 1))
-    {
-      char c = *s;
-      *s = *(s + 1);
-      *(s + 1) = c;
-
-      s++;
-      s++;
-    }
-  }
-  CSingleLock lock(m_critSection);
-  return convert(m_iconvUcs2CharsetToStringCharset,1,"UTF-16LE",
-          g_langInfo.GetGuiCharSet(),strCopy,stringDst);
 }
 
 bool CCharsetConverter::utf32ToStringCharset(const std::u32string& utf32StringSrc, std::string& stringDst)
