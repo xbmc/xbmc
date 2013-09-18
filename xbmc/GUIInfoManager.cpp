@@ -464,6 +464,9 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "viewmode",         CONTAINER_VIEWMODE },
                                   { "totaltime",        CONTAINER_TOTALTIME },
                                   { "hasthumb",         CONTAINER_HAS_THUMB },
+                                  /* PLEX */
+                                  { "thumb",            CONTAINER_THUMB },
+                                  /* END PLEX */
                                   { "sortmethod",       CONTAINER_SORT_METHOD },
                                   { "showplot",         CONTAINER_SHOWPLOT }};
 
@@ -3362,6 +3365,14 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
     if (window)
       return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt("season.thumb");
   }
+  /* PLEX */
+  else if (info == CONTAINER_THUMB)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt("thumb");
+  }
+  /* END PLEX */
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING ||
           (info >= LISTITEM_THUMB0 && info <= LISTITEM_THUMB4)) /* PLEX added thumbs */
@@ -4015,11 +4026,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_COUNTRY:
       return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_country, g_advancedSettings.m_videoItemSeparator);
     case VIDEOPLAYER_MPAA:
-#ifndef __PLEX__
       return m_currentFile->GetVideoInfoTag()->m_strMPAARating;
-#else
-      return m_currentFile->GetProperty("contentRating").asString();
-#endif
     case VIDEOPLAYER_TOP250:
       {
         CStdString strTop250;
@@ -4037,11 +4044,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_ALBUM:
       return m_currentFile->GetVideoInfoTag()->m_strAlbum;
     case VIDEOPLAYER_WRITER:
-#ifndef __PLEX__
       return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
-#else
-      return m_currentFile->GetProperty("writer").asString();
-#endif
     case VIDEOPLAYER_TAGLINE:
       return m_currentFile->GetVideoInfoTag()->m_strTagLine;
     case VIDEOPLAYER_LASTPLAYED:
@@ -4629,12 +4632,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       return StringUtils::Join(item->GetMusicInfoTag()->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
     break;
   case LISTITEM_DIRECTOR:
-#ifndef __PLEX__
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
-#else
-    return item->GetProperty("director").asString();
-#endif
     break;
   case LISTITEM_ALBUM:
     if (item->HasVideoInfoTag())
@@ -4963,32 +4962,20 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       return StringUtils::Join(item->GetVideoInfoTag()->m_country, g_advancedSettings.m_videoItemSeparator);
     break;
   case LISTITEM_MPAA:
-#ifndef __PLEX__
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strMPAARating;
-#endif
-    return item->GetProperty("contentRating").asString();
-
     break;
   case LISTITEM_CAST:
-#ifndef __PLEX__
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->GetCast();
-#else
-    return item->GetProperty("role").asString();
-#endif
     break;
   case LISTITEM_CAST_AND_ROLE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->GetCast(true);
     break;
   case LISTITEM_WRITER:
-#ifndef __PLEX__
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
-#else
-    return item->GetProperty("writer").asString();
-#endif
     break;
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())

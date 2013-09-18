@@ -322,6 +322,9 @@ namespace INFO
 #define CONTAINER_CONTENT           362
 #define CONTAINER_HAS_THUMB         363
 #define CONTAINER_SORT_METHOD       364
+/* PLEX */
+#define CONTAINER_THUMB               365
+/* END PLEX */
 
 #define CONTAINER_HAS_FOCUS         367
 #define CONTAINER_ROW               368

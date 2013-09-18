@@ -546,7 +546,11 @@ const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   {
     CStdString character;
     if (it->strRole.IsEmpty() || !bIncludeRole)
+#ifndef __PLEX__
       character.Format("%s\n", it->strName.c_str());
+#else
+      character.Format("%s, ", it->strName.c_str());
+#endif
     else
       character.Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
     strLabel += character;

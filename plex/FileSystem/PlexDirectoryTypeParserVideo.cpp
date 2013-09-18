@@ -89,6 +89,9 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
     videoTag.m_strShowTitle = videoTag.m_strTitle;
   }
 
+  if (item.HasProperty("contentRating"))
+    videoTag.m_strMPAARating = item.GetProperty("contentRating").asString();
+
   item.SetFromVideoInfoTag(videoTag);
   
   if (item.HasProperty("viewOffset") && item.GetProperty("viewOffset").asInteger() > 0)

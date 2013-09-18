@@ -235,6 +235,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("key", g_parserKey)
                                      ("theme", g_parserKey)
                                      ("parentKey", g_parserKey)
+                                     ("parentRatingKey", g_parserKey)
                                      ("grandparentKey", g_parserKey)
 
                                      ("thumb", g_parserMediaUrl)
@@ -362,7 +363,6 @@ CPlexDirectory::ReadChildren(TiXmlElement* root, CFileItemList& container)
 
     if (!item->HasArt(PLEX_ART_THUMB) && container.HasArt(PLEX_ART_THUMB))
       item->SetArt(PLEX_ART_THUMB, container.GetArt(PLEX_ART_THUMB));
-
     
     item->m_bIsFolder = IsFolder(item, element);
 
@@ -410,6 +410,14 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
       mediaContainer.SetPlexDirectoryType(mediaContainer.Get(1)->GetPlexDirectoryType());
     else
       mediaContainer.SetPlexDirectoryType(mediaContainer.Get(0)->GetPlexDirectoryType());
+  }
+
+  if (mediaContainer.GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE &&
+      mediaContainer.Size() == 1)
+  {
+    CFileItemPtr firstItem = mediaContainer.Get(0);
+    if (firstItem && firstItem->HasProperty("parentKey"))
+      AddAugmentation(CURL(firstItem->GetProperty("parentKey").asString()));
   }
 
   /* now we need to set content to something that XBMC expects */
@@ -504,29 +512,41 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
             augItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW)
         {
           /* Augmentation of seasons works like this:
-         * We load metadata/XX/children as our main url
-         * then we load metadata/XX as augmentation, then we
-         * augment our main CFileItem with information from the
-         * first subitem from the augmentation URL.
-         */
+           * We load metadata/XX/children as our main url
+           * then we load metadata/XX as augmentation, then we
+           * augment our main CFileItem with information from the
+           * first subitem from the augmentation URL.
+           */
 
-          std::pair<CStdString, CVariant> p;
-          BOOST_FOREACH(p, augItem->m_mapProperties)
+          if (augItem->HasProperty("summary"))
+            fileItems.SetProperty("showplot", augItem->GetProperty("summary"));
+
+          for (int i = 0; i < fileItems.Size(); i++)
           {
-            /* we only insert the properties if they are not available */
-            if (fileItems.m_mapProperties.find(p.first) == fileItems.m_mapProperties.end())
+            CFileItemPtr item = fileItems.Get(i);
+
+            std::pair<CStdString, CVariant> p;
+            BOOST_FOREACH(p, augItem->m_mapProperties)
             {
-              fileItems.m_mapProperties[p.first] = p.second;
+              /* we only insert the properties if they are not available */
+              if (item->m_mapProperties.find(p.first) == item->m_mapProperties.end())
+              {
+                item->m_mapProperties[p.first] = p.second;
+              }
             }
-          }
 
-          fileItems.AppendArt(augItem->GetArt());
+            //item->AppendArt(augItem->GetArt());
 
-          if (fileItems.HasVideoInfoTag() && augItem->HasVideoInfoTag())
-          {
-            CVideoInfoTag* infoTag = fileItems.GetVideoInfoTag();
-            CVideoInfoTag* infoTag2 = augItem->GetVideoInfoTag();
-            infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(), infoTag2->m_genre.end());
+            if (augItem->HasVideoInfoTag())
+            {
+              CVideoInfoTag* infoTag = item->GetVideoInfoTag();
+              CVideoInfoTag* infoTag2 = augItem->GetVideoInfoTag();
+
+              infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(), infoTag2->m_genre.end());
+              infoTag->m_cast.insert(infoTag->m_cast.end(), infoTag2->m_cast.begin(), infoTag2->m_cast.end());
+              infoTag->m_writingCredits.insert(infoTag->m_writingCredits.end(), infoTag2->m_writingCredits.begin(), infoTag2->m_writingCredits.end());
+              infoTag->m_director.insert(infoTag->m_director.end(), infoTag2->m_director.begin(), infoTag2->m_director.end());
+            }
           }
         }
         else if (fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_ARTIST)
@@ -734,7 +754,9 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
 void CPlexDirectory::AddAugmentation(const CURL &url)
 {
   CSingleLock lk(m_augmentationLock);
+  CLog::Log(LOGDEBUG, "CPlexDirectory::AddAugmentation adding %s", url.Get().c_str());
   int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
   m_augmentationJobs.push_back(id);
   m_isAugmented = true;
+  m_augmentationEvent.Reset();
 }
