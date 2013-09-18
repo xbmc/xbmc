@@ -220,8 +220,8 @@ static bool convert(iconv_t& type, int multiplier, const std::string& strFromCha
         char* newBuf  = (char*)realloc(outBuf, outBufSize);
         if (!newBuf)
         {
-          CLog::Log(LOGERROR, "%s realloc failed with buffer=%p size=%zu errno=%d(%s)",
-                    __FUNCTION__, outBuf, outBufSize, errno, strerror(errno));
+          CLog::Log(LOGSEVERE, "%s realloc failed with errno=%d(%s)",
+                    __FUNCTION__, errno, strerror(errno));
           break;
         }
         outBuf = newBuf;
