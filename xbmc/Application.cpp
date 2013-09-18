@@ -1586,7 +1586,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == "lookandfeel.skinzoom")
     g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
-  else if (StringUtils::StartsWith(settingId, "audiooutput."))
+  else if (StringUtils::StartsWithNoCase(settingId, "audiooutput."))
   {
     if (settingId == "audiooutput.guisoundmode")
     {
@@ -2225,13 +2225,13 @@ bool CApplication::OnKey(const CKey& key)
   m_idleTimer.StartZero();
   bool processKey = AlwaysProcess(action);
 
-  if (StringUtils::StartsWith(action.GetName(),"CECToggleState") || StringUtils::StartsWith(action.GetName(),"CECStandby"))
+  if (StringUtils::StartsWithNoCase(action.GetName(),"CECToggleState") || StringUtils::StartsWithNoCase(action.GetName(),"CECStandby"))
   {
     bool ret = true;
 
     CLog::Log(LOGDEBUG, "%s: action %s [%d], toggling state of playing device", __FUNCTION__, action.GetName().c_str(), action.GetID());
     // do not wake up the screensaver right after switching off the playing device
-    if (StringUtils::StartsWith(action.GetName(),"CECToggleState"))
+    if (StringUtils::StartsWithNoCase(action.GetName(),"CECToggleState"))
       ret = CApplicationMessenger::Get().CECToggleState();
     else
       ret = CApplicationMessenger::Get().CECStandby();

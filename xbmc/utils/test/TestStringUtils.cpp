@@ -175,28 +175,28 @@ TEST(TestStringUtils, StartsWith)
 {
   std::string refstr = "test";
   
-  EXPECT_FALSE(StringUtils::StartsWith(refstr, "x"));
+  EXPECT_FALSE(StringUtils::StartsWithNoCase(refstr, "x"));
   
-  EXPECT_TRUE(StringUtils::StartsWith(refstr, "te", true));
-  EXPECT_TRUE(StringUtils::StartsWith(refstr, "test", true));
-  EXPECT_FALSE(StringUtils::StartsWith(refstr, "Te", true));
+  EXPECT_TRUE(StringUtils::StartsWith(refstr, "te"));
+  EXPECT_TRUE(StringUtils::StartsWith(refstr, "test"));
+  EXPECT_FALSE(StringUtils::StartsWith(refstr, "Te"));
   
-  EXPECT_TRUE(StringUtils::StartsWith(refstr, "Te", false));
-  EXPECT_TRUE(StringUtils::StartsWith(refstr, "TesT", false));
+  EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, "Te"));
+  EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, "TesT"));
 }
 
 TEST(TestStringUtils, EndsWith)
 {
   std::string refstr = "test";
   
-  EXPECT_FALSE(StringUtils::EndsWith(refstr, "x"));
+  EXPECT_FALSE(StringUtils::EndsWithNoCase(refstr, "x"));
   
-  EXPECT_TRUE(StringUtils::EndsWith(refstr, "st", true));
-  EXPECT_TRUE(StringUtils::EndsWith(refstr, "test", true));
-  EXPECT_FALSE(StringUtils::EndsWith(refstr, "sT", true));
+  EXPECT_TRUE(StringUtils::EndsWith(refstr, "st"));
+  EXPECT_TRUE(StringUtils::EndsWith(refstr, "test"));
+  EXPECT_FALSE(StringUtils::EndsWith(refstr, "sT"));
   
-  EXPECT_TRUE(StringUtils::EndsWith(refstr, "sT", false));
-  EXPECT_TRUE(StringUtils::EndsWith(refstr, "TesT", false));
+  EXPECT_TRUE(StringUtils::EndsWithNoCase(refstr, "sT"));
+  EXPECT_TRUE(StringUtils::EndsWithNoCase(refstr, "TesT"));
 }
 
 TEST(TestStringUtils, JoinString)

@@ -965,7 +965,7 @@ int64_t CWebServer::ParseRangeHeader(const std::string &rangeHeaderValue, int64_
   firstPosition = 0;
   lastPosition = totalLength - 1;
 
-  if (rangeHeaderValue.empty() || !StringUtils::StartsWith(rangeHeaderValue, "bytes="))
+  if (rangeHeaderValue.empty() || !StringUtils::StartsWithNoCase(rangeHeaderValue, "bytes="))
     return totalLength;
 
   int64_t rangesLength = 0;

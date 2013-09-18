@@ -1154,7 +1154,7 @@ bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 
 bool CGUIWindowMusicBase::CanContainFilter(const CStdString &strDirectory) const
 {
-  return StringUtils::StartsWith(strDirectory, "musicdb://");
+  return StringUtils::StartsWithNoCase(strDirectory, "musicdb://");
 }
 
 void CGUIWindowMusicBase::OnInitWindow()
