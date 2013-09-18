@@ -81,6 +81,53 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
   return ret;
 }
 
+#define DEFAULT_PAGE_SIZE 15
+
+bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+{
+  CURL u(strDirectory);
+  u.SetProtocolOption("containerStart", "0");
+  u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(DEFAULT_PAGE_SIZE));
+  
+  bool ret = CGUIWindowVideoNav::GetDirectory(u.Get(), items);
+  
+  if (items.HasProperty("totalSize"))
+  {
+    if (items.GetProperty("totalSize").asInteger() > DEFAULT_PAGE_SIZE)
+    {
+      for (int i=0; i < (items.GetProperty("totalSize").asInteger()) - DEFAULT_PAGE_SIZE; i++)
+      {
+        CFileItemPtr item = CFileItemPtr(new CFileItem);
+        item->SetLabel("loading");
+        items.Add(item);
+      }
+      
+      u.SetProtocolOption("containerStart", boost::lexical_cast<std::string>(DEFAULT_PAGE_SIZE));
+      u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(items.GetProperty("totalSize").asInteger() - DEFAULT_PAGE_SIZE));
+      
+      CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(u), this);
+    }
+  }
+  
+  return ret;
+}
+
+void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  if (success)
+  {
+    CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
+    int itemsToRemove = m_vecItems->Size() - DEFAULT_PAGE_SIZE;
+    for (int i = 0; i < itemsToRemove; i ++)
+      m_vecItems->Remove(DEFAULT_PAGE_SIZE);
+    
+    for (int i = 0; i < fjob->m_items.Size(); i ++)
+      m_vecItems->Add(fjob->m_items.Get(i));
+    
+    m_viewControl.SetItems(*m_vecItems);
+  }
+}
+
 void CGUIPlexMediaWindow::PlayMovie(const CFileItem *item)
 {
   CFileItemPtr file = CFileItemPtr(new CFileItem(*item));

@@ -34,10 +34,12 @@ CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
       m_vecItems->SetContent("episode");
     
     g_plexApplication.m_preplayItem = m_vecItems->Get(0);
-  } else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
+  }
+  else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
+  {
     g_plexApplication.m_preplayItem.reset();
-  
-  
+  }
+
   return ret;
 }
 

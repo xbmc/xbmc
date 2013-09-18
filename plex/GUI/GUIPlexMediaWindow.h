@@ -14,14 +14,15 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "StringUtils.h"
 #include "Utility/PlexFilterHelper.h"
+#include "JobManager.h"
 
-
-class CGUIPlexMediaWindow : public CGUIWindowVideoNav
+class CGUIPlexMediaWindow : public CGUIWindowVideoNav, public IJobCallback
 {    
   public:
     CGUIPlexMediaWindow() : CGUIWindowVideoNav(), m_returningFromSkinLoad(false), m_filterHelper(this) {};
     bool OnMessage(CGUIMessage &message);
     void PlayMovie(const CFileItem *item);
+    virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   
   protected:
     bool Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters);
@@ -29,6 +30,7 @@ class CGUIPlexMediaWindow : public CGUIWindowVideoNav
     void BuildFilter(const CURL &strDirectory);
 
   private:
+    virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
     CPlexFilterHelper m_filterHelper;
     bool m_returningFromSkinLoad;
 };
