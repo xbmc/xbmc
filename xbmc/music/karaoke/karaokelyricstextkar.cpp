@@ -315,11 +315,11 @@ void CKaraokeLyricsTextKAR::parseMIDI()
             // Keywords
             if ( tempbuf[0] == '@' && tempbuf[1] == 'T' && strlen( tempbuf + 2 ) > 0 )
             {
-              if ( m_songName.IsEmpty() )
+              if ( m_songName.empty() )
                 m_songName = convertText( tempbuf + 2 );
               else
               {
-                if ( !m_artist.IsEmpty() )
+                if ( !m_artist.empty() )
                   m_artist += "[CR]";
 
                 m_artist += convertText( tempbuf + 2 );

@@ -27,6 +27,7 @@
 #include "addons/Skin.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "addons/Addon.h"
 
 // These #defs are for WindowXML
@@ -461,7 +462,9 @@ namespace XBMCAddon
       TRACE;
       // load our window
       XFILE::CFile file;
-      if (!file.Open(strPath) && !file.Open(CStdString(strPath).ToLower()) && !file.Open(strLowerPath))
+      std::string strPathLower = strPath;
+      StringUtils::ToLower(strPathLower);
+      if (!file.Open(strPath) && !file.Open(strPathLower) && !file.Open(strLowerPath))
       {
         // fail - can't load the file
         CLog::Log(LOGERROR, "%s: Unable to load skin file %s", __FUNCTION__, strPath.c_str());
@@ -483,14 +486,12 @@ namespace XBMCAddon
         {
           // replace the occurences of SCRIPT### with offset+###
           // not particularly efficient, but it works
-          int pos = xml.Find("SCRIPT");
-          while (pos != (int)CStdString::npos)
+          size_t pos = xml.find("SCRIPT");
+          while (pos != std::string::npos)
           {
-            CStdString num = xml.Mid(pos + 6, 4);
-            int number = atol(num.c_str());
-            CStdString oldNumber, newNumber;
-            oldNumber.Format("SCRIPT%d", number);
-            newNumber.Format("%lu", offset + number);
+            int number = atol(xml.substr(pos + 6, 4).c_str());
+            CStdString oldNumber = StringUtils::Format("SCRIPT%d", number);
+            CStdString newNumber = StringUtils::Format("%lu", offset + number);
             xml.Replace(oldNumber, newNumber);
             pos = xml.Find("SCRIPT", pos + 6);
           }

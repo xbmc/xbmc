@@ -105,7 +105,7 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
   StringUtils::ToUpper(searchString);
 
   CStdString tag( g_advancedSettings.m_stereoscopicflags_sbs );
-  if (stereoMode.empty() && !tag.IsEmpty())
+  if (stereoMode.empty() && !tag.empty())
   {
     StringUtils::ToUpper(tag);
     StringUtils::SplitString(tag, "|", tags);
@@ -114,7 +114,7 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
   }
 
   tag = g_advancedSettings.m_stereoscopicflags_tab;
-  if (stereoMode.empty() && !tag.IsEmpty())
+  if (stereoMode.empty() && !tag.empty())
   {
     StringUtils::ToUpper(tag);
     StringUtils::SplitString(tag, "|", tags);
@@ -163,7 +163,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const CStdSt
 
   CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDlgSelect->Reset();
-  if (heading.IsEmpty())
+  if (heading.empty())
     pDlgSelect->SetHeading(g_localizeStrings.Get(36528).c_str());
   else
     pDlgSelect->SetHeading(heading.c_str());
@@ -199,7 +199,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeOfPlayingVideo(void)
   RENDER_STEREO_MODE mode = RENDER_STEREO_MODE_OFF;
 
   CStdString playerMode = g_infoManager.GetLabel(VIDEOPLAYER_STEREOSCOPIC_MODE);
-  if (!playerMode.IsEmpty())
+  if (!playerMode.empty())
     mode = (RENDER_STEREO_MODE) ConvertVideoToGuiStereoMode(playerMode);
 
   CLog::Log(LOGDEBUG, "StereoscopicsManager: autodetected GUI stereo mode for movie mode %s is: %s", playerMode.c_str(), GetLabelForStereoMode(mode).c_str());

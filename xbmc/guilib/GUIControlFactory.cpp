@@ -476,7 +476,7 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
     return false;
 
   CStdString label = element->FirstChild()->Value();
-  if (label.IsEmpty() || label == "-")
+  if (label.empty() || label == "-")
     return false;
 
   CStdString fallback = element->Attribute("fallback");
@@ -502,8 +502,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
   int labelNumber = 0;
   if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
   {
-    CStdString label;
-    label.Format("%i", labelNumber);
+    CStdString label = StringUtils::Format("%i", labelNumber);
     infoLabels.push_back(CGUIInfoLabel(label));
     return; // done
   }
@@ -526,8 +525,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
     {
       if (infoNode->FirstChild())
       {
-        CStdString info;
-        info.Format("$INFO[%s]", infoNode->FirstChild()->Value());
+        CStdString info = StringUtils::Format("$INFO[%s]", infoNode->FirstChild()->Value());
         infoLabels.push_back(CGUIInfoLabel(info, fallback, parentID));
       }
       infoNode = infoNode->NextSibling("info");
@@ -551,7 +549,7 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTa
   if (!XMLUtils::GetString(pRootNode, strTag, text))
     return false;
   if (text == "-")
-    text.Empty();
+    text.clear();
   if (StringUtils::IsNaturalNumber(text))
     text = g_localizeStrings.Get(atoi(text.c_str()));
   else
@@ -837,7 +835,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
   {
-    strSubType.ToLower();
+    StringUtils::ToLower(strSubType);
 
     if ( strSubType == "int")
       iType = SPIN_CONTROL_TYPE_INT;
@@ -888,7 +886,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
   {
-    if (strTmp.ToLower() == "horizontal")
+    StringUtils::ToLower(strTmp);
+    if (strTmp == "horizontal")
       orientation = HORIZONTAL;
   }
   XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
@@ -1197,7 +1196,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       texture.useLarge = true;
 
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
-    if (borderTexture.filename.IsEmpty() && borderStr.IsEmpty())
+    if (borderTexture.filename.empty() && borderStr.empty())
       control = new CGUIImage(
         parentID, id, posX, posY, width, height, texture);
     else

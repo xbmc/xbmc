@@ -74,7 +74,7 @@ namespace XFILE
       return false;
 
     vector<CStdString> baseTokens;
-    if (!strPathInZip.IsEmpty())
+    if (!strPathInZip.empty())
       CUtil::Tokenize(strPathInZip,baseTokens,"/");
 
     for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)

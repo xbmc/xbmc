@@ -132,7 +132,7 @@ CScraper::CScraper(const cp_extension_t *ext) : CAddon(ext), m_fLoaded(false)
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "@language");
     m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"@requiressettings").Equals("true");
     CStdString persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "@cachepersistence");
-    if (!persistence.IsEmpty())
+    if (!persistence.empty())
       m_persistence.SetFromTimeString(persistence);
   }
   switch (Type())
@@ -183,7 +183,7 @@ bool CScraper::SetPathSettings(CONTENT_TYPE content, const CStdString& xml)
   if (!LoadSettings())
     return false;
 
-  if (xml.IsEmpty())
+  if (xml.empty())
     return true;
 
   CXBMCTinyXML doc;
@@ -246,7 +246,7 @@ vector<CStdString> CScraper::Run(const CStdString& function,
     throw CScraperError();
 
   CStdString strXML = InternalRun(function,scrURL,http,extras);
-  if (strXML.IsEmpty())
+  if (strXML.empty())
   {
     if (function != "NfoUrl" && function != "ResolveIDToUrl")
       CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
@@ -575,12 +575,12 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
   if (!fFirst)
     sTitle.Replace("-"," ");
 
-  sTitle.ToLower();
+  StringUtils::ToLower(sTitle);
 
   vector<CStdString> vcsIn(1);
   g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
   CURL::Encode(vcsIn[0]);
-  if (!sYear.IsEmpty())
+  if (!sYear.empty())
     vcsIn.push_back(sYear);
 
   // request a search URL from the title/filename/etc.
@@ -639,9 +639,9 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
 
         // calculate the relavance of this hit
         CStdString sCompareTitle = scurlMovie.strTitle;
-        sCompareTitle.ToLower();
+        StringUtils::ToLower(sCompareTitle);
         CStdString sMatchTitle = sTitle;
-        sMatchTitle.ToLower();
+        StringUtils::ToLower(sMatchTitle);
 
         /*
          * Identify the best match by performing a fuzzy string compare on the search term and
@@ -660,11 +660,11 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
 
         // reconstruct a title for the user
         if (!sCompareYear.empty())
-          scurlMovie.strTitle.AppendFormat(" (%s)", sCompareYear.c_str());
+          scurlMovie.strTitle += StringUtils::Format(" (%s)", sCompareYear.c_str());
 
         CStdString sLanguage;
         if (XMLUtils::GetString(pxeMovie, "language", sLanguage) && !sLanguage.empty())
-          scurlMovie.strTitle.AppendFormat(" (%s)", sLanguage.c_str());
+          scurlMovie.strTitle += StringUtils::Format(" (%s)", sLanguage.c_str());
 
         // filter for dupes from naughty scrapers
         if (stsDupeCheck.insert(scurlMovie.m_url[0].m_url + " " + scurlMovie.strTitle).second)
@@ -742,13 +742,13 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl, const CStdStr
         CStdString sArtist;
         CStdString sAlbumName;
         if (XMLUtils::GetString(pxeAlbum, "artist", sArtist) && !sArtist.empty())
-          sAlbumName.Format("%s - %s", sArtist.c_str(), sTitle.c_str());
+          sAlbumName = StringUtils::Format("%s - %s", sArtist.c_str(), sTitle.c_str());
         else
           sAlbumName = sTitle;
 
         CStdString sYear;
         if (XMLUtils::GetString(pxeAlbum, "year", sYear) && !sYear.empty())
-          sAlbumName.Format("%s (%s)", sAlbumName.c_str(), sYear.c_str());
+          sAlbumName = StringUtils::Format("%s (%s)", sAlbumName.c_str(), sYear.c_str());
 
         // if no URL is provided, use the URL we got back from CreateAlbumSearchUrl
         // (e.g., in case we only got one result back and were sent to the detail page)
@@ -900,7 +900,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
         CScraperUrl &scurlEp(ep.cScraperUrl);
         int dot = strEpNum.Find(".");
         ep.iEpisode = atoi(strEpNum.c_str());
-        ep.iSubepisode = (dot > -1) ? atoi(strEpNum.Mid(dot + 1).c_str()) : 0;
+        ep.iSubepisode = (dot > -1) ? atoi(strEpNum.substr(dot + 1).c_str()) : 0;
         if (!XMLUtils::GetString(pxeMovie, "title", scurlEp.strTitle) || scurlEp.strTitle.empty() )
             scurlEp.strTitle = g_localizeStrings.Get(416);
         XMLUtils::GetString(pxeMovie, "id", scurlEp.strId);

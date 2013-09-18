@@ -22,6 +22,7 @@
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #define SECONDS_PER_DAY 86400UL
 #define SECONDS_PER_HOUR 3600UL
@@ -174,8 +175,8 @@ void CDateTimeSpan::SetDateTimeSpan(int day, int hour, int minute, int second)
 
 void CDateTimeSpan::SetFromTimeString(const CStdString& time) // hh:mm
 {
-  int hour    = atoi(time.Mid(0,2).c_str());
-  int minutes = atoi(time.Mid(3,2).c_str());
+  int hour    = atoi(time.substr(0, 2).c_str());
+  int minutes = atoi(time.substr(3, 2).c_str());
   SetDateTimeSpan(0,hour,minutes,0);
 }
 
@@ -215,10 +216,10 @@ void CDateTimeSpan::SetFromPeriod(const CStdString &period)
 {
   long days = atoi(period.c_str());
   // find the first non-space and non-number
-  int pos = period.find_first_not_of("0123456789 ", 0);
-  if (pos >= 0)
+  size_t pos = period.find_first_not_of("0123456789 ", 0);
+  if (pos != std::string::npos)
   {
-    CStdString units = period.Mid(pos, 3);
+    CStdString units = period.substr(pos, 3);
     if (units.CompareNoCase("wee") == 0)
       days *= 7;
     else if (units.CompareNoCase("mon") == 0)
@@ -671,7 +672,7 @@ void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 
 void CDateTime::SetFromDateString(const CStdString &date)
 {
-  if (date.IsEmpty())
+  if (date.empty())
   {
     SetValid(false);
     return;
@@ -689,16 +690,16 @@ void CDateTime::SetFromDateString(const CStdString &date)
   else
     iDayPos = 0;
 
-  CStdString strMonth = date.Mid(iDayPos,iPos-iDayPos);
-  if (strMonth.IsEmpty()) // assume dbdate format
+  CStdString strMonth = date.substr(iDayPos, iPos - iDayPos);
+  if (strMonth.empty()) // assume dbdate format
   {
     SetFromDBDate(date);
     return;
   }
 
   int iPos2 = date.Find(",");
-  CStdString strDay = date.Mid(iPos,iPos2-iPos);
-  CStdString strYear = date.Mid(date.Find(" ",iPos2)+1);
+  CStdString strDay = date.substr(iPos, iPos2-iPos);
+  CStdString strYear = date.substr(date.find(" ", iPos2) + 1);
   while (months[j] && stricmp(strMonth.c_str(),months[j]) != 0)
     j++;
   if (!months[j])
@@ -835,10 +836,7 @@ CStdString CDateTime::GetAsDBDate() const
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
-  CStdString date;
-  date.Format("%04i-%02i-%02i", st.wYear, st.wMonth, st.wDay);
-
-  return date;
+  return StringUtils::Format("%04i-%02i-%02i", st.wYear, st.wMonth, st.wDay);
 }
 
 CStdString CDateTime::GetAsDBDateTime() const
@@ -846,10 +844,7 @@ CStdString CDateTime::GetAsDBDateTime() const
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
-  CStdString date;
-  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-
-  return date;
+  return StringUtils::Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 }
 
 CStdString CDateTime::GetAsSaveString() const
@@ -857,10 +852,7 @@ CStdString CDateTime::GetAsSaveString() const
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
-  CStdString date;
-  date.Format("%04i%02i%02i_%02i%02i%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-
-  return date;
+  return StringUtils::Format("%04i%02i%02i_%02i%02i%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);;
 }
 
 void CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
@@ -914,17 +906,17 @@ void CDateTime::SetFromW3CDate(const CStdString &dateTime)
 {
   CStdString date, time, zone;
 
-  int posT = dateTime.Find("T");
-  if(posT >= 0)
+  size_t posT = dateTime.find("T");
+  if(posT != std::string::npos)
   {
-    date = dateTime.Left(posT);
+    date = dateTime.substr(0, posT);
     CStdString::size_type posZ = dateTime.find_first_of("+-Z", posT);
     if(posZ == CStdString::npos)
-      time = dateTime.Mid(posT+1);
+      time = dateTime.substr(posT + 1);
     else
     {
-      time = dateTime.Mid(posT+1, posZ-posT-1);
-      zone = dateTime.Mid(posZ);
+      time = dateTime.substr(posT + 1, posZ - posT - 1);
+      zone = dateTime.substr(posZ);
     }
   }
   else
@@ -933,22 +925,22 @@ void CDateTime::SetFromW3CDate(const CStdString &dateTime)
   int year = 0, month = 1, day = 1, hour = 0, min = 0, sec = 0;
 
   if (date.size() >= 4)
-    year  = atoi(date.Mid(0,4).c_str());
+    year  = atoi(date.substr(0, 4).c_str());
 
   if (date.size() >= 10)
   {
-    month = atoi(date.Mid(5,2).c_str());
-    day   = atoi(date.Mid(8,2).c_str());
+    month = atoi(date.substr(5, 2).c_str());
+    day   = atoi(date.substr(8, 2).c_str());
   }
 
   if (time.length() >= 5)
   {
-    hour = atoi(time.Mid(0,2).c_str());
-    min  = atoi(time.Mid(3,2).c_str());
+    hour = atoi(time.substr(0, 2).c_str());
+    min  = atoi(time.substr(3, 2).c_str());
   }
 
   if (time.length() >= 8)
-    sec  = atoi(time.Mid(6,2).c_str());
+    sec  = atoi(time.substr(6, 2).c_str());
 
   SetDateTime(year, month, day, hour, min, sec);
 }
@@ -958,12 +950,12 @@ void CDateTime::SetFromDBDateTime(const CStdString &dateTime)
   // assumes format YYYY-MM-DD HH:MM:SS
   if (dateTime.size() == 19)
   {
-    int year  = atoi(dateTime.Mid(0,4).c_str());
-    int month = atoi(dateTime.Mid(5,2).c_str());
-    int day   = atoi(dateTime.Mid(8,2).c_str());
-    int hour  = atoi(dateTime.Mid(11,2).c_str());
-    int min   = atoi(dateTime.Mid(14,2).c_str());
-    int sec   = atoi(dateTime.Mid(17,2).c_str());
+    int year  = atoi(dateTime.substr(0, 4).c_str());
+    int month = atoi(dateTime.substr(5, 2).c_str());
+    int day   = atoi(dateTime.substr(8, 2).c_str());
+    int hour  = atoi(dateTime.substr(11, 2).c_str());
+    int min   = atoi(dateTime.substr(14, 2).c_str());
+    int sec   = atoi(dateTime.substr(17, 2).c_str());
     SetDateTime(year, month, day, hour, min, sec);
   }
 }
@@ -975,15 +967,15 @@ void CDateTime::SetFromDBDate(const CStdString &date)
   int year = 0, month = 0, day = 0;
   if (date.size() > 2 && (date[2] == '-' || date[2] == '.'))
   {
-    day = atoi(date.Mid(0,2).c_str());
-    month = atoi(date.Mid(3,2).c_str());
-    year = atoi(date.Mid(6,4).c_str());
+    day = atoi(date.substr(0, 2).c_str());
+    month = atoi(date.substr(3, 2).c_str());
+    year = atoi(date.substr(6, 4).c_str());
   }
   else
   {
-    year = atoi(date.Mid(0,4).c_str());
-    month = atoi(date.Mid(5,2).c_str());
-    day = atoi(date.Mid(8,2).c_str());
+    year = atoi(date.substr(0, 4).c_str());
+    month = atoi(date.substr(5, 2).c_str());
+    day = atoi(date.substr(8, 2).c_str());
   }
   SetDate(year, month, day);
 }
@@ -994,9 +986,9 @@ void CDateTime::SetFromDBTime(const CStdString &time)
   // HH:MM:SS
   int hour, minute, second;
 
-  hour   = atoi(time.Mid(0,2).c_str());
-  minute = atoi(time.Mid(3,2).c_str());
-  second = atoi(time.Mid(6,2).c_str());
+  hour   = atoi(time.substr(0, 2).c_str());
+  minute = atoi(time.substr(3, 2).c_str());
+  second = atoi(time.substr(6, 2).c_str());
 
   SetTime(hour, minute, second);
 }
@@ -1004,14 +996,14 @@ void CDateTime::SetFromDBTime(const CStdString &time)
 void CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
 {
   CStdString date = dateTime;
-  date.Trim();
+  StringUtils::Trim(date);
 
   if (date.size() != 29)
     return;
 
-  int day  = strtol(date.Mid(5, 2).c_str(), NULL, 10);
+  int day  = strtol(date.substr(5, 2).c_str(), NULL, 10);
 
-  CStdString strMonth = date.Mid(8, 3);
+  CStdString strMonth = date.substr(8, 3);
   int month = 0;
   for (unsigned int index = 0; index < 12; index++)
   {
@@ -1025,10 +1017,10 @@ void CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
   if (month < 1)
     return;
 
-  int year = strtol(date.Mid(12, 4).c_str(), NULL, 10);
-  int hour = strtol(date.Mid(17, 2).c_str(), NULL, 10);
-  int min  = strtol(date.Mid(20, 2).c_str(), NULL, 10);
-  int sec  = strtol(date.Mid(23, 2).c_str(), NULL, 10);
+  int year = strtol(date.substr(12, 4).c_str(), NULL, 10);
+  int hour = strtol(date.substr(17, 2).c_str(), NULL, 10);
+  int min  = strtol(date.substr(20, 2).c_str(), NULL, 10);
+  int sec  = strtol(date.substr(23, 2).c_str(), NULL, 10);
 
   SetDateTime(year, month, day, hour, min, sec);
 }
@@ -1036,7 +1028,7 @@ void CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
 CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeconds) const
 {
   CStdString strOut;
-  const CStdString& strFormat = format.IsEmpty() ? g_langInfo.GetTimeFormat() : format;
+  const CStdString& strFormat = format.empty() ? g_langInfo.GetTimeFormat() : format;
 
   SYSTEMTIME dateTime;
   GetAsSystemTime(dateTime);
@@ -1059,12 +1051,12 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
       if (pos>-1)
       {
         // Extract string between ' '
-        strPart=strFormat.Mid(i+1, pos-i-1);
+        strPart=strFormat.substr(i + 1, pos - i - 1);
         i=pos;
       }
       else
       {
-        strPart=strFormat.Mid(i+1, length-i-1);
+        strPart=strFormat.substr(i + 1, length - i - 1);
         i=length;
       }
 
@@ -1102,9 +1094,9 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
       // Format hour string with the length of the mask
       CStdString str;
       if (partLength==1)
-        str.Format("%d", hour);
+        str = StringUtils::Format("%d", hour);
       else
-        str.Format("%02d", hour);
+        str = StringUtils::Format("%02d", hour);
 
       strOut+=str;
     }
@@ -1129,9 +1121,9 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
       // Format minute string with the length of the mask
       CStdString str;
       if (partLength==1)
-        str.Format("%d", dateTime.wMinute);
+        str = StringUtils::Format("%d", dateTime.wMinute);
       else
-        str.Format("%02d", dateTime.wMinute);
+        str = StringUtils::Format("%02d", dateTime.wMinute);
 
       strOut+=str;
     }
@@ -1158,9 +1150,9 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
         // Format seconds string with the length of the mask
         CStdString str;
         if (partLength==1)
-          str.Format("%d", dateTime.wSecond);
+          str = StringUtils::Format("%d", dateTime.wSecond);
         else
-          str.Format("%02d", dateTime.wSecond);
+          str = StringUtils::Format("%02d", dateTime.wSecond);
 
         strOut+=str;
       }
@@ -1202,120 +1194,120 @@ CStdString CDateTime::GetAsLocalizedDate(const CStdString &strFormat, bool withS
   SYSTEMTIME dateTime;
   GetAsSystemTime(dateTime);
 
-  int length=strFormat.GetLength();
-
-  for (int i=0; i<length; ++i)
+  size_t length = strFormat.size();
+  for (size_t i = 0; i < length; ++i)
   {
     char c=strFormat[i];
     if (c=='\'')
     {
       // To be able to display a "'" in the string,
       // find the last "'" that doesn't follow a "'"
-      int pos=i+1;
-      while(((pos=strFormat.Find(c,pos+1))>-1 && pos<strFormat.GetLength()) && strFormat[pos+1]=='\'') {}
+      size_t pos = i + 1;
+      while(((pos = strFormat.find(c, pos + 1)) != std::string::npos &&
+             pos < strFormat.size()) &&
+            strFormat[pos + 1] == '\'') {}
 
       CStdString strPart;
-      if (pos>-1)
+      if (pos != std::string::npos)
       {
         // Extract string between ' '
-        strPart=strFormat.Mid(i+1, pos-i-1);
-        i=pos;
+        strPart = strFormat.substr(i + 1, pos - i - 1);
+        i = pos;
       }
       else
       {
-        strPart=strFormat.Mid(i+1, length-i-1);
-        i=length;
+        strPart = strFormat.substr(i + 1, length - i - 1);
+        i = length;
       }
-      strPart.Replace("''", "'");
+      StringUtils::Replace(strPart, "''", "'");
       strOut+=strPart;
     }
     else if (c=='D' || c=='d') // parse days
     {
-      int partLength=0;
+      size_t partLength=0;
 
-      int pos=strFormat.find_first_not_of(c,i+1);
-      if (pos>-1)
+      size_t pos = strFormat.find_first_not_of(c, i+1);
+      if (pos != std::string::npos)
       {
         // Get length of the day mask, eg. DDDD
-        partLength=pos-i;
-        i=pos-1;
+        partLength = pos-i;
+        i = pos - 1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=length-i;
-        i=length;
+        partLength = length-i;
+        i = length;
       }
 
       // Format string with the length of the mask
       CStdString str;
-      if (partLength==1) // single-digit number
-        str.Format("%d", dateTime.wDay);
-      else if (partLength==2) // two-digit number
-        str.Format("%02d", dateTime.wDay);
+      if (partLength == 1) // single-digit number
+        str = StringUtils::Format("%d", dateTime.wDay);
+      else if (partLength == 2) // two-digit number
+        str = StringUtils::Format("%02d", dateTime.wDay);
       else // Day of week string
       {
         int wday = dateTime.wDayOfWeek;
         if (wday < 1 || wday > 7) wday = 7;
         str = g_localizeStrings.Get(((withShortNames || c =='d') ? 40 : 10) + wday);
       }
-      strOut+=str;
+      strOut += str;
     }
     else if (c=='M' || c=='m') // parse month
     {
-      int partLength=0;
+      size_t partLength=0;
 
-      int pos=strFormat.find_first_not_of(c,i+1);
-      if (pos>-1)
+      size_t pos=strFormat.find_first_not_of(c,i+1);
+      if (pos != std::string::npos)
       {
         // Get length of the month mask, eg. MMMM
-        partLength=pos-i;
-        i=pos-1;
+        partLength = pos - i;
+        i = pos - 1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=length-i;
-        i=length;
+        partLength = length - i;
+        i = length;
       }
 
       // Format string with the length of the mask
       CStdString str;
-      if (partLength==1) // single-digit number
-        str.Format("%d", dateTime.wMonth);
-      else if (partLength==2) // two-digit number
-        str.Format("%02d", dateTime.wMonth);
+      if (partLength == 1) // single-digit number
+        str = StringUtils::Format("%d", dateTime.wMonth);
+      else if (partLength == 2) // two-digit number
+        str = StringUtils::Format("%02d", dateTime.wMonth);
       else // Month string
       {
         int wmonth = dateTime.wMonth;
         if (wmonth < 1 || wmonth > 12) wmonth = 12;
         str = g_localizeStrings.Get(((withShortNames || c =='m') ? 50 : 20) + wmonth);
       }
-      strOut+=str;
+      strOut += str;
     }
     else if (c=='Y' || c =='y') // parse year
     {
-      int partLength=0;
+      size_t partLength = 0;
 
-      int pos=strFormat.find_first_not_of(c,i+1);
-      if (pos>-1)
+      size_t pos = strFormat.find_first_not_of(c,i+1);
+      if (pos != std::string::npos)
       {
         // Get length of the year mask, eg. YYYY
-        partLength=pos-i;
-        i=pos-1;
+        partLength = pos - i;
+        i = pos - 1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=length-i;
-        i=length;
+        partLength = length - i;
+        i = length;
       }
 
       // Format string with the length of the mask
-      CStdString str;
-      str.Format("%d", dateTime.wYear); // four-digit number
-      if (partLength<=2)
-        str.Delete(0, 2); // two-digit number
+      CStdString str = StringUtils::Format("%d", dateTime.wYear); // four-digit number
+      if (partLength <= 2)
+        str.erase(0, 2); // two-digit number
 
       strOut+=str;
     }
@@ -1358,8 +1350,7 @@ CStdString CDateTime::GetAsRFC1123DateTime() const
   if (month != time.GetMonth())
     CLog::Log(LOGWARNING, "Invalid month %d in %s", time.GetMonth(), time.GetAsDBDateTime().c_str());
 
-  CStdString result;
-  result.Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[weekDay], time.GetDay(), MONTH_NAMES[month - 1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
+  CStdString result = StringUtils::Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[weekDay], time.GetDay(), MONTH_NAMES[month - 1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
   return result;
 }
 

@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/JobManager.h"
+#include "utils/StringUtils.h"
 #include "addons/AddonInstaller.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -84,7 +85,7 @@ CRepository::~CRepository()
 
 CStdString CRepository::Checksum()
 {
-  if (!m_checksum.IsEmpty())
+  if (!m_checksum.empty())
     return FetchChecksum(m_checksum);
   return "";
 }
@@ -129,7 +130,7 @@ CStdString CRepository::GetAddonHash(const AddonPtr& addon)
 
 #define SET_IF_NOT_EMPTY(x,y) \
   { \
-    if (!x.IsEmpty()) \
+    if (!x.empty()) \
        x = y; \
   }
 
@@ -145,7 +146,7 @@ VECADDONS CRepository::Parse()
   {
     CURL url(m_info);
     CStdString opts = url.GetProtocolOptions();
-    if (!opts.IsEmpty())
+    if (!opts.empty())
       opts += "&";
     url.SetProtocolOptions(opts+"Encoding=gzip");
     file = url.Get();
@@ -159,11 +160,10 @@ VECADDONS CRepository::Parse()
       AddonPtr addon = *i;
       if (m_zipped)
       {
-        CStdString file;
-        file.Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().c_str());
+        CStdString file = StringUtils::Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().c_str());
         addon->Props().path = URIUtils::AddFileToFolder(m_datadir,file);
         SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/icon.png"))
-        file.Format("%s/changelog-%s.txt", addon->ID().c_str(), addon->Version().c_str());
+        file = StringUtils::Format("%s/changelog-%s.txt", addon->ID().c_str(), addon->Version().c_str());
         SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(m_datadir,file))
         SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/fanart.jpg"))
       }
@@ -227,7 +227,7 @@ bool CRepositoryUpdateJob::DoWork()
       {
         CStdString referer;
         if (URIUtils::IsInternetStream(addons[i]->Path()))
-          referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
+          referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
 
         if (addons[i]->Type() == ADDON_PVRDLL &&
             !PVR::CPVRManager::Get().InstallAddonAllowed(addons[i]->ID()))
@@ -242,9 +242,9 @@ bool CRepositoryUpdateJob::DoWork()
                                               addon->Name(),TOAST_DISPLAY_TIME,false,TOAST_DISPLAY_TIME);
       }
     }
-    if (!addons[i]->Props().broken.IsEmpty())
+    if (!addons[i]->Props().broken.empty())
     {
-      if (database.IsAddonBroken(addons[i]->ID()).IsEmpty())
+      if (database.IsAddonBroken(addons[i]->ID()).empty())
       {
         if (addon && CGUIDialogYesNo::ShowAndGetInput(addons[i]->Name(),
                                              g_localizeStrings.Get(24096),
@@ -281,8 +281,7 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
       if (!repo->Props().libname.empty())
       {
         CFileItemList dummy;
-        CStdString s;
-        s.Format("plugin://%s/?action=update", repo->ID());
+        CStdString s = StringUtils::Format("plugin://%s/?action=update", repo->ID().c_str());
         add = CDirectory::GetDirectory(s, dummy);
       }
       if (add)

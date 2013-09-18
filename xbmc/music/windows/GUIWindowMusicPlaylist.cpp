@@ -406,8 +406,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
 
   // Update object count label
-  CStdString items;
-  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
+  CStdString items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   MarkPlaying();
@@ -448,10 +447,10 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
     CStdString strTrackLeft=CSettings::Get().GetString("musicfiles.nowplayingtrackformat");
-    if (strTrackLeft.IsEmpty())
+    if (strTrackLeft.empty())
       strTrackLeft = CSettings::Get().GetString("musicfiles.trackformat");
     CStdString strTrackRight=CSettings::Get().GetString("musicfiles.nowplayingtrackformatright");
-    if (strTrackRight.IsEmpty())
+    if (strTrackRight.empty())
       strTrackRight = CSettings::Get().GetString("musicfiles.trackformatright");
     CLabelFormatter formatter(strTrackLeft, strTrackRight);
     formatter.FormatLabels(pItem);
@@ -473,7 +472,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       // No music info and it's not CDDA so we'll just show the filename
       CStdString str;
       str = CUtil::GetTitleFromPath(pItem->GetPath());
-      str.Format("%02.2i. %s ", pItem->m_iprogramCount, str);
+      str = StringUtils::Format("%02.2i. %s ", pItem->m_iprogramCount, str.c_str());
       pItem->SetLabel(str);
     }
   }
@@ -487,7 +486,7 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory, bool update
   if (!CGUIWindowMusicBase::Update(strDirectory, updateFilterPath))
     return false;
 
-  if (m_vecItems->GetContent().IsEmpty())
+  if (m_vecItems->GetContent().empty())
     m_vecItems->SetContent("songs");
 
   m_musicInfoLoader.Load(*m_vecItems);

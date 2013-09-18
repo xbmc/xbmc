@@ -758,8 +758,7 @@ bool CApplication::Create()
   CStdString strLanguage = CSettings::Get().GetString("locale.language");
   strLanguage[0] = toupper(strLanguage[0]);
 
-  CStdString strLangInfoPath;
-  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
+  CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
 
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
@@ -1028,7 +1027,7 @@ bool CApplication::InitDirectoriesLinux()
   CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
   xbmcPath = getenv("XBMC_HOME");
 
-  if (xbmcPath.IsEmpty())
+  if (xbmcPath.empty())
   {
     xbmcPath = xbmcBinPath;
     /* Check if xbmc binaries and arch independent data files are being kept in
@@ -1395,7 +1394,7 @@ bool CApplication::Initialize()
 
     if (CSettings::Get().GetBool("masterlock.startuplock") &&
         CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-       !CProfilesManager::Get().GetMasterProfile().getLockCode().IsEmpty())
+       !CProfilesManager::Get().GetMasterProfile().getLockCode().empty())
     {
        g_passwordManager.CheckStartUpLock();
     }
@@ -2057,7 +2056,7 @@ float CApplication::GetDimScreenSaverLevel() const
        !m_screenSaver->ID().empty()))
     return 0;
 
-  if (!m_screenSaver->GetSetting("level").IsEmpty())
+  if (!m_screenSaver->GetSetting("level").empty())
     return 100.0f - (float)atof(m_screenSaver->GetSetting("level"));
   return 100.0f;
 }
@@ -4280,7 +4279,7 @@ void CApplication::UpdateFileState()
         // Update bookmark for save
         m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::Get().GetPlayerName(m_pPlayer->GetCurrentPlayer());
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-        m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
+        m_progressTrackingVideoResumeBookmark.thumbNailImage.clear();
 
         if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
             GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * GetTotalTime())
@@ -4447,7 +4446,7 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
     }
     else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black" || m_screenSaver->ID().empty())
       return true;
-    else if (!m_screenSaver->ID().IsEmpty())
+    else if (!m_screenSaver->ID().empty())
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         g_windowManager.PreviousWindow();  // show the previous window
@@ -4552,7 +4551,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     return;
   else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
     return;
-  else if (!m_screenSaver->ID().IsEmpty())
+  else if (!m_screenSaver->ID().empty())
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
 
@@ -5614,22 +5613,21 @@ void CApplication::SaveCurrentFileSettings()
 bool CApplication::AlwaysProcess(const CAction& action)
 {
   // check if this button is mapped to a built-in function
-  if (!action.GetName().IsEmpty())
+  if (!action.GetName().empty())
   {
     CStdString builtInFunction;
     vector<CStdString> params;
     CUtil::SplitExecFunction(action.GetName(), builtInFunction, params);
-    builtInFunction.ToLower();
 
     // should this button be handled normally or just cancel the screensaver?
-    if (   builtInFunction.Equals("powerdown")
-        || builtInFunction.Equals("reboot")
-        || builtInFunction.Equals("restart")
-        || builtInFunction.Equals("restartapp")
-        || builtInFunction.Equals("suspend")
-        || builtInFunction.Equals("hibernate")
-        || builtInFunction.Equals("quit")
-        || builtInFunction.Equals("shutdown"))
+    if (   StringUtils::EqualsNoCase(builtInFunction, "powerdown")
+        || StringUtils::EqualsNoCase(builtInFunction, "reboot")
+        || StringUtils::EqualsNoCase(builtInFunction, "restart")
+        || StringUtils::EqualsNoCase(builtInFunction, "restartapp")
+        || StringUtils::EqualsNoCase(builtInFunction, "suspend")
+        || StringUtils::EqualsNoCase(builtInFunction, "hibernate")
+        || StringUtils::EqualsNoCase(builtInFunction, "quit")
+        || StringUtils::EqualsNoCase(builtInFunction, "shutdown"))
     {
       return true;
     }
@@ -5667,8 +5665,7 @@ bool CApplication::SetLanguage(const CStdString &strLanguage)
   CStdString strNewLanguage = strLanguage;
   if (strNewLanguage != strPreviousLanguage)
   {
-    CStdString strLangInfoPath;
-    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strNewLanguage.c_str());
+    CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strNewLanguage.c_str());
     if (!g_langInfo.Load(strLangInfoPath))
       return false;
 

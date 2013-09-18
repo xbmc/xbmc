@@ -29,6 +29,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/EndianSwap.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "XBTF.h"
 #include <lzo/lzo1x.h>
 
@@ -59,7 +60,7 @@ bool CTextureBundleXBT::OpenBundle()
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
     CStdString theme = CSettings::Get().GetString("lookandfeel.skintheme");
-    if (!theme.IsEmpty() && theme.CompareNoCase("SKINDEFAULT"))
+    if (!theme.empty() && theme.CompareNoCase("SKINDEFAULT"))
     {
       CStdString themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));
       strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
@@ -260,7 +261,9 @@ void CTextureBundleXBT::SetThemeBundle(bool themeBundle)
 CStdString CTextureBundleXBT::Normalize(const CStdString &name)
 {
   CStdString newName(name);
-  newName.Normalize();
+  
+  StringUtils::Trim(newName);
+  StringUtils::ToLower(newName);
   newName.Replace('\\','/');
 
   return newName;

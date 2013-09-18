@@ -50,8 +50,8 @@ using namespace std;
 
 static CStdString CorrectPath(const CStdString path)
 {
-  if(path == "~" || path.Left(2) == "~/")
-    return "./" + path.Mid(2);
+  if(path == "~" || path.substr(0, 2) == "~/")
+    return "./" + path.substr(2);
   else
     return "/" + path;
 }

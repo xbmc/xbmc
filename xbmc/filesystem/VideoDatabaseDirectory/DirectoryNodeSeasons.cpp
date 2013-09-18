@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
@@ -56,8 +57,7 @@ CStdString CDirectoryNodeSeasons::GetLocalizedName() const
     return "";
   }
   default:
-    CStdString season;
-    season.Format(g_localizeStrings.Get(20358), GetID()); // Season <season>
+    CStdString season = StringUtils::Format(g_localizeStrings.Get(20358), GetID()); // Season <season>
     return season;
   }
 }

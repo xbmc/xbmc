@@ -94,6 +94,7 @@
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "network/WakeOnAccess.h"
 
 using namespace XFILE;
@@ -117,7 +118,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   CWakeOnAccess::Get().WakeUpHost(url);
 
   CStdString strProtocol = url.GetProtocol();
-  strProtocol.MakeLower();
+  StringUtils::ToLower(strProtocol);
 
 #if defined(TARGET_ANDROID)
   if (strProtocol == "apk") return new CAPKFile();
@@ -136,7 +137,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "special") return new CSpecialProtocolFile();
   else if (strProtocol == "multipath") return new CMultiPathFile();
   else if (strProtocol == "image") return new CImageFile();
-  else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CHDFile();
+  else if (strProtocol == "file" || strProtocol.empty()) return new CHDFile();
   else if (strProtocol == "filereader") return new CFileReaderFile();
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   else if (strProtocol == "cdda") return new CFileCDDA();

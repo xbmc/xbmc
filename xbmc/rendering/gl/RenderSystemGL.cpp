@@ -32,6 +32,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
@@ -74,7 +75,7 @@ void CRenderSystemGL::CheckOpenGLQuirks()
   }
 #endif
 #endif
-  if (m_RenderVendor.ToLower() == "nouveau")
+  if (StringUtils::EqualsNoCase(m_RenderVendor, "nouveau"))
     m_renderQuirks |= RENDER_QUIRKS_YV12_PREFERED;
 
   if (m_RenderVendor.Equals("Tungsten Graphics, Inc.")

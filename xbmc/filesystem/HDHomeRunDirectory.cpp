@@ -22,6 +22,7 @@
 #include "URL.h"
 #include "FileItem.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "DllHDHomeRun.h"
 
 using namespace XFILE;
@@ -50,7 +51,7 @@ bool CHomeRunDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
   CURL url(strPath);
 
-  if(url.GetHostName().IsEmpty())
+  if(url.GetHostName().empty())
   {
     // no hostname, list all available devices
     int target_ip = 0;
@@ -61,12 +62,11 @@ bool CHomeRunDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
     for(int i=0;i<count;i++)
     {
-      CStdString device, ip;
       CFileItemPtr item;
       unsigned int ip_addr = result_list[i].ip_addr;
 
-      device.Format("%x", result_list[i].device_id);
-      ip.Format("%u.%u.%u.%u",
+      CStdString device = StringUtils::Format("%x", result_list[i].device_id);
+      CStdString ip = StringUtils::Format("%u.%u.%u.%u",
             (unsigned int)(ip_addr >> 24) & 0xFF, (unsigned int)(ip_addr >> 16) & 0xFF,
             (unsigned int)(ip_addr >> 8) & 0xFF, (unsigned int)(ip_addr >> 0) & 0xFF);
 
@@ -99,9 +99,9 @@ bool CHomeRunDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
     CStdString label;
     if(status.signal_present)
-      label.Format("Current Stream: N/A");
+      label = StringUtils::Format("Current Stream: N/A");
     else
-      label.Format("Current Stream: Channel %s, SNR %d", status.channel, status.signal_to_noise_quality);
+      label = StringUtils::Format("Current Stream: Channel %s, SNR %d", status.channel, status.signal_to_noise_quality);
 
     CStdString path = "hdhomerun://" + url.GetHostName() + "/" + url.GetFileName();
     URIUtils::RemoveSlashAtEnd(path);

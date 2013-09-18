@@ -93,7 +93,7 @@ void IDirectory::SetMask(const CStdString& strMask)
 {
   m_strFileMask = strMask;
   // ensure it's completed with a | so that filtering is easy.
-  m_strFileMask.ToLower();
+  StringUtils::ToLower(m_strFileMask);
   if (m_strFileMask.size() && m_strFileMask[m_strFileMask.size() - 1] != '|')
     m_strFileMask += '|';
 }
@@ -138,7 +138,7 @@ bool IDirectory::ProcessRequirements()
 
 bool IDirectory::GetKeyboardInput(const CVariant &heading, CStdString &input)
 {
-  if (!CStdString(m_requirements["input"].asString()).IsEmpty())
+  if (!CStdString(m_requirements["input"].asString()).empty())
   {
     input = m_requirements["input"].asString();
     return true;

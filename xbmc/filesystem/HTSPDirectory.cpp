@@ -28,6 +28,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 
 extern "C" {
 #include "libhts/htsmsg.h"
@@ -168,7 +169,7 @@ bool CHTSPDirectorySession::Open(const CURL& url)
     return false;
   }
 
-  if(!url.GetUserName().IsEmpty())
+  if(!url.GetUserName().empty())
     m_session.Auth(url.GetUserName(), url.GetPassWord());
 
   if(!m_session.SendEnableAsync())
@@ -384,7 +385,7 @@ bool CHTSPDirectory::GetChannels( const CURL &base
     CHTSPSession::ParseItem(it->second, tag, event, *item);
     item->m_bIsFolder = false;
     item->SetLabel(item->m_strTitle);
-    item->m_strTitle.Format("%d", it->second.num);
+    item->m_strTitle = StringUtils::Format("%d", it->second.num);
 
     items.Add(item);
   }
@@ -403,7 +404,7 @@ bool CHTSPDirectory::GetTag(const CURL &base, CFileItemList &items)
 {
   CURL url(base);
 
-  int id = atoi(url.GetFileName().Mid(5));
+  int id = atoi(url.GetFileName().substr(5).c_str());
 
   SChannels channels = m_session->GetChannels(id);
   if(channels.empty())
@@ -422,7 +423,7 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return false;
 
 
-  if(url.GetFileName().IsEmpty())
+  if(url.GetFileName().empty())
   {
     CFileItemPtr item;
 
@@ -437,8 +438,8 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     CStdString filename, label;
     for(STags::iterator it = tags.begin(); it != tags.end(); it++)
     {
-      filename.Format("tags/%d/", it->second.id);
-      label.Format("Tag: %s", it->second.name);
+      filename = StringUtils::Format("tags/%d/", it->second.id);
+      label = StringUtils::Format("Tag: %s", it->second.name.c_str());
 
       item.reset(new CFileItem("", true));
       url.SetFileName(filename);

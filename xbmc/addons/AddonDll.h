@@ -93,7 +93,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
     m_bIsChild(false)
 {
   // if library attribute isn't present, look for a system-dependent one
-  if (ext && m_strLibName.IsEmpty())
+  if (ext && m_strLibName.empty())
   {
 #if defined(TARGET_ANDROID)
   m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_android");

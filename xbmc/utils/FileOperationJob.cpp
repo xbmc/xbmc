@@ -28,6 +28,7 @@
 #include "log.h"
 #include "Util.h"
 #include "URIUtils.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
@@ -179,7 +180,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
       }
 
       CStdString strnewDestFile;
-      if(!strDestFile.IsEmpty()) // only do this if we have a destination
+      if(!strDestFile.empty()) // only do this if we have a destination
         strnewDestFile = URIUtils::AddFileToFolder(strDestFile, strFileName);
 
       if (pItem->m_bIsFolder)
@@ -333,15 +334,16 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
   double current = data->current + ((double)ipercent * data->opWeight * (double)m_time)/ 100.0;
 
   if (avgSpeed > 1000000.0f)
-    data->base->m_avgSpeed.Format("%.1f MB/s", avgSpeed / 1000000.0f);
+    data->base->m_avgSpeed = StringUtils::Format("%.1f MB/s", avgSpeed / 1000000.0f);
   else
-    data->base->m_avgSpeed.Format("%.1f KB/s", avgSpeed / 1000.0f);
+    data->base->m_avgSpeed = StringUtils::Format("%.1f KB/s", avgSpeed / 1000.0f);
 
   if (data->base->m_handle)
   {
     CStdString line;
-    line.Format("%s (%s)", data->base->GetCurrentFile().c_str(),
-                           data->base->GetAverageSpeed().c_str());
+    line = StringUtils::Format("%s (%s)",
+                               data->base->GetCurrentFile().c_str(),
+                               data->base->GetAverageSpeed().c_str());
     data->base->m_handle->SetText(line);
     data->base->m_handle->SetPercentage((float)current);
   }

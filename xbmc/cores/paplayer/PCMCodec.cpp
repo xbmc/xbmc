@@ -112,11 +112,13 @@ void PCMCodec::SetMimeParams(const CStdString& strMimeParams)
     {
       if (thisParam[0] == "rate")
       {
-        m_SampleRate = atoi(thisParam[1].Trim());
+        StringUtils::Trim(thisParam[1]);
+        m_SampleRate = atoi(thisParam[1]);
       }
       else if (thisParam[0] == "channels")
       {
-        m_Channels = atoi(thisParam[1].Trim());
+        StringUtils::Trim(thisParam[1]);
+        m_Channels = atoi(thisParam[1]);
       }
     }
   }

@@ -33,6 +33,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #ifdef TARGET_POSIX
 #include "config.h"
@@ -266,5 +267,5 @@ void CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)
       }
     }
   }
-  strSubtitle.TrimRight('\n');
+  StringUtils::TrimRight(strSubtitle, "\n");
 }

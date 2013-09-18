@@ -20,6 +20,7 @@
 
 #include "GUIDialogGamepad.h"
 #include "utils/md5.h"
+#include "utils/StringUtils.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
@@ -179,7 +180,7 @@ bool CGUIDialogGamepad::ShowAndGetInput(CStdString& aTextString, const CStdStrin
     return false;
   }
 
-  if (strUserInput.IsEmpty())
+  if (strUserInput.empty())
     // user canceled out
     return false;
 
@@ -203,7 +204,7 @@ bool CGUIDialogGamepad::ShowAndVerifyNewPassword(CStdString& strNewPassword)
     return false;
   }
 
-  if (strUserInput.IsEmpty())
+  if (strUserInput.empty())
     // user canceled out
     return false;
 
@@ -231,7 +232,7 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdString& strPassword, const CStd
   if (0 < iRetries)
   {
     // Show a string telling user they have iRetries retries left
-    strLine2.Format("%s %i %s", g_localizeStrings.Get(12342).c_str(), iRetries, g_localizeStrings.Get(12343).c_str());
+    strLine2 = StringUtils::Format("%s %i %s", g_localizeStrings.Get(12342).c_str(), iRetries, g_localizeStrings.Get(12343).c_str());
   }
 
   // make a copy of strPassword to prevent from overwriting it later
@@ -242,7 +243,7 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdString& strPassword, const CStd
     return 0;
   }
 
-  if (strPassTemp.IsEmpty())
+  if (strPassTemp.empty())
     // user canceled out
     return -1;
 
@@ -299,7 +300,7 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
     XBMC::XBMC_MD5 md5state;
     md5state.append(pDialog->m_strUserInput);
     md5state.getDigest(strToVerify);
-    strToVerify.ToLower();
+    StringUtils::ToLower(strToVerify);
     pDialog->m_strUserInput = "";
   }
 

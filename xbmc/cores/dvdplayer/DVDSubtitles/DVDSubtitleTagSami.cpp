@@ -22,6 +22,7 @@
 #include "DVDSubtitleStream.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 
 CDVDSubtitleTagSami::~CDVDSubtitleTagSami()
 {
@@ -48,7 +49,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
 {
   CStdStringA strUTF8;
   strUTF8.assign(line, len);
-  strUTF8.Trim();
+  StringUtils::Trim(strUTF8);
 
   int pos = 0;
   int del_start = 0;
@@ -56,7 +57,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
   {
     // Parse Tags
     CStdString fullTag = m_tags->GetMatch(0);
-    fullTag.ToLower();
+    StringUtils::ToLower(fullTag);
     strUTF8.erase(pos, fullTag.length());
     if (fullTag == "<b>" || fullTag == "{\\b1}")
     {
@@ -178,7 +179,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
       pos = del_start;
       m_flag[FLAG_LANGUAGE] = false;
     }
-    else if (fullTag == "<br>" && !strUTF8.IsEmpty())
+    else if (fullTag == "<br>" && !strUTF8.empty())
     {
       strUTF8.Insert(pos, "\n");
       pos += 1;
@@ -188,7 +189,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
   if(m_flag[FLAG_LANGUAGE])
     strUTF8.erase(del_start);
 
-  if (strUTF8.IsEmpty())
+  if (strUTF8.empty())
     return;
 
   if( strUTF8[strUTF8.size()-1] == '\n' )
@@ -243,9 +244,9 @@ void CDVDSubtitleTagSami::LoadHead(CDVDSubtitleStream* samiStream)
           lc.Name = reg.GetMatch(2);
           lc.Lang = reg.GetMatch(3);
           lc.SAMIType = reg.GetMatch(4);
-          lc.Name.Trim();
-          lc.Lang.Trim();
-          lc.SAMIType.Trim();
+          StringUtils::Trim(lc.Name);
+          StringUtils::Trim(lc.Lang);
+          StringUtils::Trim(lc.SAMIType);
           m_Langclass.push_back(lc);
         }
       }

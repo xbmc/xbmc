@@ -560,7 +560,7 @@ void CPythonInvoker::onError()
       }
     }
 
-    desc.Format(g_localizeStrings.Get(2100), script);
+    desc = StringUtils::Format(g_localizeStrings.Get(2100), script.c_str());
     pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), desc);
   }
 }

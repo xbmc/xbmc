@@ -24,7 +24,7 @@
 #include <vector>
 #include <string.h>
 #include <stdint.h>
-
+#include "utils/StringUtils.h"
 #include "MediaSource.h"
 
 // A list of filesystem types for LegalPath/FileName
@@ -47,8 +47,8 @@ struct sortstringbyname
   {
     CStdString strLine1 = strItem1;
     CStdString strLine2 = strItem2;
-    strLine1 = strLine1.ToLower();
-    strLine2 = strLine2.ToLower();
+    StringUtils::ToLower(strLine1);
+    StringUtils::ToLower(strLine2);
     return strcmp(strLine1.c_str(), strLine2.c_str()) < 0;
   }
 };

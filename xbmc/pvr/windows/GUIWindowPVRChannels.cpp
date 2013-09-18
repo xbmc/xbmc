@@ -223,9 +223,9 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
   SetSelectedGroup(currentGroup);
 
   CStdString strPath;
-  strPath.Format("pvr://channels/%s/%s/",
+  strPath = StringUtils::Format("pvr://channels/%s/%s/",
       m_bRadio ? "radio" : "tv",
-      m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName());
+      m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName().c_str());
 
   m_parent->m_vecItems->SetPath(strPath);
   m_parent->Update(m_parent->m_vecItems->GetPath());
@@ -412,7 +412,7 @@ bool CGUIWindowPVRChannels::OnContextButtonMove(CFileItem *item, CONTEXT_BUTTON 
       return bReturn;
 
     CStdString strIndex;
-    strIndex.Format("%i", channel->ChannelNumber());
+    strIndex = StringUtils::Format("%i", channel->ChannelNumber());
     CGUIDialogNumeric::ShowAndGetNumber(strIndex, g_localizeStrings.Get(19052));
     int newIndex = atoi(strIndex.c_str());
 
@@ -456,7 +456,7 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
     CFileItemList items;
     CPVRChannel *channel = item->GetPVRChannelInfoTag();
 
-    if (!channel->IconPath().IsEmpty())
+    if (!channel->IconPath().empty())
     {
       /* add the current thumb, if available */
       CFileItemPtr current(new CFileItem("thumb://Current", false));
@@ -575,8 +575,7 @@ bool CGUIWindowPVRChannels::OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BU
 
     bReturn = UpdateEpgForChannel(item);
 
-    CStdString strMessage;
-    strMessage.Format("%s: '%s'", g_localizeStrings.Get(bReturn ? 19253 : 19254), channel->ChannelName());
+    CStdString strMessage = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(bReturn ? 19253 : 19254).c_str(), channel->ChannelName().c_str());
     CGUIDialogKaiToast::QueueNotification(bReturn ? CGUIDialogKaiToast::Info : CGUIDialogKaiToast::Error,
         g_localizeStrings.Get(19166),
         strMessage);

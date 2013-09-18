@@ -22,7 +22,7 @@
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
-
+#include "utils/StringUtils.h"
 #include <cstdlib>
 #include <cstdio>
 
@@ -48,8 +48,8 @@ bool ModplugCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   // set correct codec name
   m_CodecName = URIUtils::GetExtension(strFile);
-  m_CodecName.erase(0,1);
-  m_CodecName.ToUpper();
+  StringUtils::TrimLeft(m_CodecName, ".");
+  StringUtils::ToUpper(m_CodecName);
 
   // Read our file to memory so it can be passed to ModPlug_Load()
   CFile file;

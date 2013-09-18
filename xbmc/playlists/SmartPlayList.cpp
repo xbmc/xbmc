@@ -789,9 +789,7 @@ bool CSmartPlaylistRule::CanGroupMix(Field group)
 
 CStdString CSmartPlaylistRule::GetLocalizedRule() const
 {
-  CStdString rule;
-  rule.Format("%s %s %s", GetLocalizedField(m_field).c_str(), GetLocalizedOperator(m_operator).c_str(), GetParameter().c_str());
-  return rule;
+  return StringUtils::Format("%s %s %s", GetLocalizedField(m_field).c_str(), GetLocalizedOperator(m_operator).c_str(), GetParameter().c_str());
 }
 
 CStdString CSmartPlaylistRule::GetParameter() const
@@ -824,16 +822,16 @@ CStdString CSmartPlaylistRule::GetVideoResolutionQuery(const CStdString &paramet
   switch (m_operator)
   {
     case OPERATOR_EQUALS:
-      retVal.AppendFormat(">= %i and iVideoWidth <= %i)", min, max);
+      retVal += StringUtils::Format(">= %i and iVideoWidth <= %i)", min, max);
       break;
     case OPERATOR_DOES_NOT_EQUAL:
-      retVal.AppendFormat("< %i or iVideoWidth > %i)", min, max);
+      retVal += StringUtils::Format("< %i or iVideoWidth > %i)", min, max);
       break;
     case OPERATOR_LESS_THAN:
-      retVal.AppendFormat("< %i)", min);
+      retVal += StringUtils::Format("< %i)", min);
       break;
     case OPERATOR_GREATER_THAN:
-      retVal.AppendFormat("> %i)", max);
+      retVal += StringUtils::Format("> %i)", max);
       break;
     default:
       retVal += ")";
@@ -966,9 +964,10 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       StringUtils::SplitString(*it, ",", split);
       for (CStdStringArray::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
       {
-        if (!parameter.IsEmpty())
+        if (!parameter.empty())
           parameter += ",";
-        parameter += db.PrepareSQL("'%s'", (*itIn).Trim().c_str());
+        StringUtils::Trim(*itIn);
+        parameter += db.PrepareSQL("'%s'", itIn->c_str());
       }
       parameter = " IN (" + parameter + ")";
     }
@@ -988,7 +987,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     }
     else if (m_field == FieldTime)
     { // translate time to seconds
-      CStdString seconds; seconds.Format("%i", StringUtils::TimeStringToSeconds(*it));
+      CStdString seconds = StringUtils::Format("%i", StringUtils::TimeStringToSeconds(*it));
       parameter = db.PrepareSQL(operatorString.c_str(), seconds.c_str());
     }
 
@@ -1128,7 +1127,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       }
     }
 
-    if (query.IsEmpty() && m_field != FieldNone)
+    if (query.empty() && m_field != FieldNone)
     {
       string fmt = "%s";
       if (GetFieldType(m_field) == NUMERIC_FIELD)
@@ -1136,7 +1135,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       else if (GetFieldType(m_field) == SECONDS_FIELD)
         fmt = "CAST(%s as INTEGER)";
 
-      query.Format(fmt.c_str(), GetField(m_field,strType).c_str());
+      query = StringUtils::Format(fmt.c_str(), GetField(m_field,strType).c_str());
       query += negate + parameter;
     }
     
@@ -1190,7 +1189,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
     if (it->m_field == FieldPlaylist)
     {
       CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(it->m_parameter.at(0), strType);
-      if (!playlistFile.IsEmpty() && referencedPlaylists.find(playlistFile) == referencedPlaylists.end())
+      if (!playlistFile.empty() && referencedPlaylists.find(playlistFile) == referencedPlaylists.end())
       {
         referencedPlaylists.insert(playlistFile);
         CSmartPlaylist playlist;
@@ -1198,7 +1197,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
         {
           CStdString playlistQuery;
           // only playlists of same type will be part of the query
-          if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().IsEmpty())
+          if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().empty())
           {
             playlist.SetType(strType);
             playlistQuery = playlist.GetWhereClause(db, referencedPlaylists);
@@ -1206,7 +1205,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
           if (playlist.GetType().Equals(strType))
           {
             if (it->m_operator == CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL)
-              currentRule.Format("NOT (%s)", playlistQuery.c_str());
+              currentRule = StringUtils::Format("NOT (%s)", playlistQuery.c_str());
             else
               currentRule = playlistQuery;
           }
@@ -1216,7 +1215,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
     else
       currentRule = (*it).GetWhereClause(db, strType);
     // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
-    if (currentRule.IsEmpty())
+    if (currentRule.empty())
       currentRule = m_type == CombinationAnd ? "'1'" : "'0'";
     rule += currentRule;
     rule += ")";

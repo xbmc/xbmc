@@ -34,6 +34,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/EndianSwap.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib,"liblzo2.lib")
@@ -130,7 +131,7 @@ bool CTextureBundleXPR::OpenBundle()
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
     CStdString theme = CSettings::Get().GetString("lookandfeel.skintheme");
-    if (!theme.IsEmpty() && theme.CompareNoCase("SKINDEFAULT"))
+    if (!theme.empty() && theme.CompareNoCase("SKINDEFAULT"))
     {
       CStdString themeXPR(URIUtils::ReplaceExtension(theme, ".xpr"));
       strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
@@ -509,7 +510,8 @@ void CTextureBundleXPR::SetThemeBundle(bool themeBundle)
 CStdString CTextureBundleXPR::Normalize(const CStdString &name)
 {
   CStdString newName(name);
-  newName.Normalize();
+  StringUtils::Trim(newName);
+  StringUtils::ToLower(newName);
   newName.Replace('/','\\');
   return newName;
 }

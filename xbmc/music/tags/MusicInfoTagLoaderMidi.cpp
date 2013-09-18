@@ -55,10 +55,10 @@ bool CMusicInfoTagLoaderMidi::Load(const CStdString & strFileName, CMusicInfoTag
 
   URIUtils::RemoveSlashAtEnd(path );
 
-  if ( !path.IsEmpty() )
+  if ( !path.empty() )
   {
     CStdString artist = URIUtils::GetFileName( path );
-    if ( !artist.IsEmpty() )
+    if ( !artist.empty() )
       tag.SetArtist( artist );
   }
 

@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "sqlitedataset.h"
 #include "DatabaseManager.h"
 #include "DbUrl.h"
@@ -214,8 +215,8 @@ bool CDatabase::DeleteValues(const CStdString &strTable, const CStdString &strWh
   bool bReturn = true;
 
   CStdString strQueryBase = "DELETE FROM %s";
-  if (!strWhereClause.IsEmpty())
-    strQueryBase.AppendFormat(" WHERE %s", strWhereClause.c_str());
+  if (!strWhereClause.empty())
+    strQueryBase += StringUtils::Format(" WHERE %s", strWhereClause.c_str());
 
   CStdString strQuery = FormatSQL(strQueryBase, strTable.c_str());
 
@@ -268,7 +269,7 @@ bool CDatabase::ResultQuery(const CStdString &strQuery)
 
 bool CDatabase::QueueInsertQuery(const CStdString &strQuery)
 {
-  if (strQuery.IsEmpty())
+  if (strQuery.empty())
     return false;
 
   if (!m_bMultiWrite)
@@ -330,7 +331,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   InitSettings(dbSettings);
 
   CStdString dbName = dbSettings.name;
-  dbName.AppendFormat("%d", GetMinVersion());
+  dbName += StringUtils::Format("%d", GetMinVersion());
   return Connect(dbName, dbSettings, false);
 }
 
@@ -342,8 +343,8 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
   if ( dbSettings.type.Equals("mysql") )
   {
     // check we have all information before we cancel the fallback
-    if ( ! (dbSettings.host.IsEmpty() ||
-            dbSettings.user.IsEmpty() || dbSettings.pass.IsEmpty()) )
+    if ( ! (dbSettings.host.empty() ||
+            dbSettings.user.empty() || dbSettings.pass.empty()) )
       m_sqlite = false;
     else
       CLog::Log(LOGINFO, "Essential mysql database information is missing. Require at least host, user and pass defined.");
@@ -355,12 +356,12 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
 #endif
   {
     dbSettings.type = "sqlite3";
-    if (dbSettings.host.IsEmpty())
+    if (dbSettings.host.empty())
       dbSettings.host = CSpecialProtocol::TranslatePath(CProfilesManager::Get().GetDatabaseFolder());
   }
 
   // use separate, versioned database
-  if (dbSettings.name.IsEmpty())
+  if (dbSettings.name.empty())
     dbSettings.name = GetBaseDBName();
 }
 
@@ -371,13 +372,13 @@ bool CDatabase::Update(const DatabaseSettings &settings)
 
   int version = GetMinVersion();
   CStdString latestDb = dbSettings.name;
-  latestDb.AppendFormat("%d", version);
+  latestDb += StringUtils::Format("%d", version);
 
   while (version >= 0)
   {
     CStdString dbName = dbSettings.name;
     if (version)
-      dbName.AppendFormat("%d", version);
+      dbName += StringUtils::Format("%d", version);
 
     if (Connect(dbName, dbSettings, false))
     {
@@ -453,13 +454,13 @@ bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSett
   // host name is always required
   m_pDB->setHostName(dbSettings.host.c_str());
 
-  if (!dbSettings.port.IsEmpty())
+  if (!dbSettings.port.empty())
     m_pDB->setPort(dbSettings.port.c_str());
 
-  if (!dbSettings.user.IsEmpty())
+  if (!dbSettings.user.empty())
     m_pDB->setLogin(dbSettings.user.c_str());
 
-  if (!dbSettings.pass.IsEmpty())
+  if (!dbSettings.pass.empty())
     m_pDB->setPasswd(dbSettings.pass.c_str());
 
   // database name is always required

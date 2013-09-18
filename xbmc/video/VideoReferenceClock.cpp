@@ -290,7 +290,7 @@ bool CVideoReferenceClock::SetupGLX()
   }
 
   CStdString Vendor = g_Windowing.GetRenderVendor();
-  Vendor.ToLower();
+  StringUtils::ToLower(Vendor);
   if (Vendor.compare(0, 3, "ati") == 0)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GL_VENDOR: %s, using ati workaround", Vendor.c_str());
@@ -410,7 +410,7 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
   }
 
   CStdString Vendor = VendorPtr;
-  Vendor.ToLower();
+  StringUtils::ToLower(Vendor);
   if (Vendor.find("nvidia") == std::string::npos)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GL_VENDOR:%s, not using nvidia-settings", Vendor.c_str());

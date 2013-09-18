@@ -27,7 +27,7 @@
 #include "GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "utils/md5.h"
-
+#include "utils/StringUtils.h"
 
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #if defined(TARGET_DARWIN_IOS)
@@ -103,7 +103,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
 
   if (confirmed)
   {
-    if (!allowEmptyResult && aTextString.IsEmpty())
+    if (!allowEmptyResult && aTextString.empty())
       confirmed = false;
   }
 
@@ -163,7 +163,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword, cons
     XBMC::XBMC_MD5 md5state;
     md5state.append(userInput);
     md5state.getDigest(newPassword);
-    newPassword.ToLower();
+    StringUtils::ToLower(newPassword);
     return true;
   }
   CGUIDialogOK::ShowAndGetInput(12341, 12344, 0, 0);
@@ -190,13 +190,16 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CS
   if (1 > iRetries && strHeading.size())
     strHeadingTemp = strHeading;
   else
-    strHeadingTemp.Format("%s - %i %s", g_localizeStrings.Get(12326).c_str(), CSettings::Get().GetInt("masterlock.maxretries") - iRetries, g_localizeStrings.Get(12343).c_str());
+    strHeadingTemp = StringUtils::Format("%s - %i %s",
+                                         g_localizeStrings.Get(12326).c_str(),
+                                         CSettings::Get().GetInt("masterlock.maxretries") - iRetries,
+                                         g_localizeStrings.Get(12343).c_str());
 
   CStdString strUserInput = "";
   if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true, autoCloseMs))  //bool hiddenInput = false/true ? TODO: GUI Setting to enable disable this feature y/n?
     return -1; // user canceled out
 
-  if (!strPassword.IsEmpty())
+  if (!strPassword.empty())
   {
     if (strPassword == strUserInput)
       return 0;
@@ -211,12 +214,12 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CS
   }
   else
   {
-    if (!strUserInput.IsEmpty())
+    if (!strUserInput.empty())
     {
       XBMC::XBMC_MD5 md5state;
       md5state.append(strUserInput);
       md5state.getDigest(strPassword);
-      strPassword.ToLower();
+      StringUtils::ToLower(strPassword);
       return 0; // user entered correct password
     }
     else return 1;

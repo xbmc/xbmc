@@ -26,6 +26,7 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/StringUtils.h"
 #include "FileItem.h"
 
 using namespace XFILE;
@@ -93,22 +94,18 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     }
     else
     {
-      CStdString strURL, strRTV;
-      int pos;
-
       // Isolate the IP from the URL and replace the "*" with the real IP
       // of the ReplayTV.  E.g., rtv://*/Video/192.168.1.100/ becomes
       // rtv://192.168.1.100/Video/ .  This trickery makes things work.
-      strURL = strRoot.TrimRight('/');
-      pos = strURL.ReverseFind('/');
-      strRTV = strURL.Left(pos + 1);
-      strRTV.Replace("*", strURL.Mid(pos + 1));
-      CURL tmpURL(strRTV);
-
-      // Force the newly constructed share into the right variables to
-      // be further processed by the remainder of GetDirectory.
-      url = tmpURL;
-      strRoot = strRTV;
+      size_t length = strRoot.size();
+      size_t star = strRoot.find("*");
+      size_t first = strRoot.rfind("/");
+      size_t second = strRoot.rfind("/", first - 1);
+      ++second;
+      std::string host = strRoot.substr(second, first - second);
+      strRoot.erase(second, length - second);
+      strRoot.replace(star, 1, host);
+      url.Parse(strRoot);
     }
   }
 
@@ -117,10 +114,8 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   strHostAndPort = url.GetHostName();
   if (url.HasPort())
   {
-    char buffer[10];
-    sprintf(buffer,"%i",url.GetPort());
     strHostAndPort += ':';
-    strHostAndPort += buffer;
+    strHostAndPort += StringUtils::Format("%i", url.GetPort());
   }
 
   // No path given, list shows from ReplayGuide
@@ -191,17 +186,17 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           CStdString strRecorded = recordedNode->FirstChild()->Value();
           int iYear, iMonth, iDay;
 
-          iYear = atoi(strRecorded.Left(4).c_str());
-          iMonth = atoi(strRecorded.Mid(5, 2).c_str());
-          iDay = atoi(strRecorded.Mid(8, 2).c_str());
+          iYear = atoi(strRecorded.substr(0, 4).c_str());
+          iMonth = atoi(strRecorded.substr(5, 2).c_str());
+          iDay = atoi(strRecorded.substr(8, 2).c_str());
           dtDateTime.wYear = iYear;
           dtDateTime.wMonth = iMonth;
           dtDateTime.wDay = iDay;
 
           int iHour, iMin, iSec;
-          iHour = atoi(strRecorded.Mid(11, 2).c_str());
-          iMin = atoi(strRecorded.Mid(14, 2).c_str());
-          iSec = atoi(strRecorded.Mid(17, 2).c_str());
+          iHour = atoi(strRecorded.substr(11, 2).c_str());
+          iMin = atoi(strRecorded.substr(14, 2).c_str());
+          iSec = atoi(strRecorded.substr(17, 2).c_str());
           dtDateTime.wHour = iHour;
           dtDateTime.wMinute = iMin;
           dtDateTime.wSecond = iSec;

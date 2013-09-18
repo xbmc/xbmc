@@ -240,7 +240,7 @@ bool CBuiltins::HasCommand(const CStdString& execString)
 
 void CBuiltins::GetHelp(CStdString &help)
 {
-  help.Empty();
+  help.clear();
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
     help += commands[i].command;
@@ -256,7 +256,7 @@ int CBuiltins::Execute(const CStdString& execString)
   CStdString execute;
   vector<CStdString> params;
   CUtil::SplitExecFunction(execString, execute, params);
-  execute.ToLower();
+  StringUtils::ToLower(execute);
   CStdString parameter = params.size() ? params[0] : "";
   CStdString strParameterCaseIntact = parameter;
 
@@ -349,13 +349,13 @@ int CBuiltins::Execute(const CStdString& execString)
       if (params.size() >= 2)
         sync = params[1].Equals("sync");
 
-      if (!strSaveToPath.IsEmpty())
+      if (!strSaveToPath.empty())
       {
         if (CDirectory::Exists(strSaveToPath))
         {
           CStdString file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strSaveToPath, "screenshot%03d.png"), 999);
 
-          if (!file.IsEmpty())
+          if (!file.empty())
           {
             CScreenShot::TakeScreenshot(file, sync);
           }
@@ -562,22 +562,22 @@ int CBuiltins::Execute(const CStdString& execString)
         if (plugin && addon->Type() == ADDON_PLUGIN)
         {
           if (plugin->Provides(CPluginSource::VIDEO))
-            cmd.Format("ActivateWindow(Video,plugin://%s,return)",params[0]);
+            cmd = StringUtils::Format("ActivateWindow(Video,plugin://%s,return)", params[0].c_str());
           else if (plugin->Provides(CPluginSource::AUDIO))
-            cmd.Format("ActivateWindow(Music,plugin://%s,return)",params[0]);
+            cmd = StringUtils::Format("ActivateWindow(Music,plugin://%s,return)", params[0].c_str());
           else if (plugin->Provides(CPluginSource::EXECUTABLE))
-            cmd.Format("ActivateWindow(Programs,plugin://%s,return)",params[0]);
+            cmd = StringUtils::Format("ActivateWindow(Programs,plugin://%s,return)", params[0].c_str());
           else if (plugin->Provides(CPluginSource::IMAGE))
-            cmd.Format("ActivateWindow(Pictures,plugin://%s,return)",params[0]);
+            cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://%s,return)", params[0].c_str());
           else
             // Pass the script name (params[0]) and all the parameters
             // (params[1] ... params[x]) separated by a comma to RunPlugin
-            cmd.Format("RunPlugin(%s)", StringUtils::JoinString(params, ","));
+            cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::JoinString(params, ",").c_str());
         }
         else if (addon->Type() >= ADDON_SCRIPT && addon->Type() <= ADDON_SCRIPT_LYRICS)
           // Pass the script name (params[0]) and all the parameters
           // (params[1] ... params[x]) separated by a comma to RunScript
-          cmd.Format("RunScript(%s)", StringUtils::JoinString(params, ","));
+          cmd = StringUtils::Format("RunScript(%s)", StringUtils::JoinString(params, ",").c_str());
 
         return Execute(cmd);
       }
@@ -630,7 +630,7 @@ int CBuiltins::Execute(const CStdString& execString)
         askToResume = false;
       }
       else if (params[i].Left(11).Equals("playoffset=")) {
-        playOffset = atoi(params[i].Mid(11)) - 1;
+        playOffset = atoi(params[i].substr(11).c_str()) - 1;
         item.SetProperty("playlist_starting_track", playOffset);
       }
     }
@@ -729,8 +729,8 @@ int CBuiltins::Execute(const CStdString& execString)
           flags |= 4;
         else if (params[i].Equals("pause"))
           flags |= 8;
-        else if (params[i].Left(11).Equals("beginslide="))
-          beginSlidePath = params[i].Mid(11);
+        else if (StringUtils::StartsWith(params[i], "beginslide="))
+          beginSlidePath = params[i].substr(11);
       }
     }
 
@@ -832,15 +832,17 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (parameter.Left(14).Equals("seekpercentage"))
     {
-      CStdString offset = "";
-      if (parameter.size() == 14)
+      std::string offset = parameter.substr(14);
+      size_t first = offset.find_first_not_of("(");
+      size_t last = offset.rfind(")");
+      size_t length = last - first;
+      if (first == offset.npos || last == offset.npos)
         CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with no argument");
-      else if (parameter.size() < 17) // arg must be at least "(N)"
-        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", parameter.Mid(14).c_str());
+      else if (first != 1 || last + 1 != offset.size() || length <= 0) // arg must be at least "(N)"
+        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", parameter.substr(14).c_str());
       else
       {
-        // Don't bother checking the argument: an invalid arg will do seek(0)
-        offset = parameter.Mid(15).TrimRight(")");
+        offset = parameter.substr(first, last - first);
         float offsetpercent = (float) atof(offset.c_str());
         if (offsetpercent < 0 || offsetpercent > 100)
           CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) argument, %f, must be 0-100", offsetpercent);
@@ -860,19 +862,22 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (parameter.Left(9).Equals("partymode"))
     {
-      CStdString strXspPath = "";
+      std::string strXspPath = parameter.substr(9);
+      size_t first = strXspPath.find_first_not_of("(");
+      size_t last = strXspPath.rfind(")");
+      size_t length = last - first;
+
       //empty param=music, "music"=music, "video"=video, else xsp path
       PartyModeContext context = PARTYMODECONTEXT_MUSIC;
-      if (parameter.size() > 9)
-      {
-        if (parameter.Mid(10).Equals("video)"))
-          context = PARTYMODECONTEXT_VIDEO;
-        else if (!parameter.Mid(10).Equals("music)"))
-        {
-          strXspPath = parameter.Mid(10).TrimRight(")");
-          context = PARTYMODECONTEXT_UNKNOWN;
-        }
-      }
+      if (first == strXspPath.npos || last == strXspPath.npos || length == 0)
+        context = PARTYMODECONTEXT_MUSIC;
+      else if (strXspPath.compare(first, length, "music", 0, 5) == 0)
+        context = PARTYMODECONTEXT_MUSIC;
+      else if (strXspPath.compare(first, length, "video", 0, 5) == 0)
+        context = PARTYMODECONTEXT_VIDEO;
+      else
+        context = PARTYMODECONTEXT_UNKNOWN;
+
       if (g_partyModeManager.IsEnabled())
         g_partyModeManager.Disable();
       else
@@ -1227,7 +1232,7 @@ int CBuiltins::Execute(const CStdString& execString)
       // if browsing for addons, required param[1] is addontype string, with optional param[2]
       // as contenttype string see IAddon.h & ADDON::TranslateXX
       CStdString strMask = (params.size() > 1) ? params[1] : "";
-      strMask.ToLower();
+      StringUtils::ToLower(strMask);
       ADDON::TYPE type;
       if ((type = TranslateType(strMask)) != ADDON_UNKNOWN)
       {
@@ -1237,7 +1242,7 @@ int CBuiltins::Execute(const CStdString& execString)
         url.SetFileName(strMask+"/");
         localShares.clear();
         CStdString content = (params.size() > 2) ? params[2] : "";
-        content.ToLower();
+        StringUtils::ToLower(content);
         url.SetPassword(content);
         CStdString strMask;
         if (type == ADDON_SCRIPT)
@@ -1245,7 +1250,7 @@ int CBuiltins::Execute(const CStdString& execString)
         CStdString replace;
         if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
         {
-          if (replace.Mid(0,9).Equals("addons://"))
+          if (StringUtils::StartsWith(replace, "addons://"))
             CSkinSettings::Get().SetString(string, URIUtils::GetFileName(replace));
           else
             CSkinSettings::Get().SetString(string, replace);
@@ -1458,7 +1463,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if (params.size() > 2)
       path=params[2];
-    if (singleFile || !path.IsEmpty() ||
+    if (singleFile || !path.empty() ||
         CGUIDialogFileBrowser::ShowAndGetDirectory(shares,
 				  g_localizeStrings.Get(661), path, true))
     {

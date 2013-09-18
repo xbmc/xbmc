@@ -24,6 +24,7 @@
 #include "DAAPFile.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include <sys/stat.h>
 
 #include "lib/libXDAAP/private.h"
@@ -169,7 +170,7 @@ bool CDAAPFile::Open(const CURL& url)
   CLog::Log(LOGDEBUG, "CDAAPFile::Open(%s)", url.GetFileName().c_str());
   CStdString host = url.GetHostName();
   if (url.HasPort())
-    host.Format("%s:%i",url.GetHostName(),url.GetPort());
+    host = StringUtils::Format("%s:%i", url.GetHostName().c_str(), url.GetPort());
   m_thisHost = g_DaapClient.GetHost(host);
   if (!m_thisHost)
     return false;

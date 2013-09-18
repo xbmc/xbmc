@@ -117,14 +117,14 @@ bool CPlayListXML::Load( const CStdString& strFileName )
     CStdString lockpass = GetString( pSet, "lockpassword" );
 
     // If url is empty, it doesn't make any sense
-    if ( !url.IsEmpty() )
+    if ( !url.empty() )
     {
        // If the name is empty, use url
-       if ( name.IsEmpty() )
+       if ( name.empty() )
          name = url;
 
        // Append language to the name, and also set as metadata
-       if ( !lang.IsEmpty() )
+       if ( !lang.empty() )
          name += " [" + lang + "]";
 
        CStdString info = name;
@@ -132,21 +132,21 @@ bool CPlayListXML::Load( const CStdString& strFileName )
        newItem->SetPath(url);
 
        // Set language as metadata
-       if ( !lang.IsEmpty() )
+       if ( !lang.empty() )
          newItem->SetProperty("language", lang.c_str() );
 
        // Set category as metadata
-       if ( !category.IsEmpty() )
+       if ( !category.empty() )
          newItem->SetProperty("category", category.c_str() );
 
        // Set channel as extra info and as metadata
-       if ( !channel.IsEmpty() )
+       if ( !channel.empty() )
        {
          newItem->SetProperty("remotechannel", channel.c_str() );
          newItem->SetExtraInfo( "Channel: " + channel );
        }
 
-       if ( !lockpass.IsEmpty() )
+       if ( !lockpass.empty() )
        {
          newItem->m_strLockCode = lockpass;
          newItem->m_iHasLock = 2;
@@ -176,31 +176,31 @@ void CPlayListXML::Save(const CStdString& strFileName) const
     return ;
   }
   CStdString write;
-  write.AppendFormat("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-  write.AppendFormat("<streams>\n");
+  write += StringUtils::Format("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+  write += StringUtils::Format("<streams>\n");
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
-    write.AppendFormat("  <stream>\n" );
-    write.AppendFormat("    <url>%s</url>", item->GetPath().c_str() );
-    write.AppendFormat("    <name>%s</name>", item->GetLabel().c_str() );
+    write += StringUtils::Format("  <stream>\n" );
+    write += StringUtils::Format("    <url>%s</url>", item->GetPath().c_str() );
+    write += StringUtils::Format("    <name>%s</name>", item->GetLabel().c_str() );
 
     if ( !item->GetProperty("language").empty() )
-      write.AppendFormat("    <lang>%s</lang>", item->GetProperty("language").c_str() );
+      write += StringUtils::Format("    <lang>%s</lang>", item->GetProperty("language").c_str() );
 
     if ( !item->GetProperty("category").empty() )
-      write.AppendFormat("    <category>%s</category>", item->GetProperty("category").c_str() );
+      write += StringUtils::Format("    <category>%s</category>", item->GetProperty("category").c_str() );
 
     if ( !item->GetProperty("remotechannel").empty() )
-      write.AppendFormat("    <channel>%s</channel>", item->GetProperty("remotechannel").c_str() );
+      write += StringUtils::Format("    <channel>%s</channel>", item->GetProperty("remotechannel").c_str() );
 
     if ( item->m_iHasLock > 0 )
-      write.AppendFormat("    <lockpassword>%s<lockpassword>", item->m_strLockCode.c_str() );
+      write += StringUtils::Format("    <lockpassword>%s<lockpassword>", item->m_strLockCode.c_str() );
 
-    write.AppendFormat("  </stream>\n\n" );
+    write += StringUtils::Format("  </stream>\n\n" );
   }
 
-  write.AppendFormat("</streams>\n");
+  write += StringUtils::Format("</streams>\n");
   file.Write(write.c_str(), write.size());
   file.Close();
 }

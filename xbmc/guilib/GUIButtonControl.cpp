@@ -125,7 +125,7 @@ void CGUIButtonControl::ProcessText(unsigned int currentTime)
   CStdString label2(m_info2.GetLabel(m_parentID));
   changed |= m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
   changed |= m_label2.SetText(label2);
-  if (!label2.IsEmpty())
+  if (!label2.empty())
   {
     changed |= m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
     changed |= m_label2.SetScrolling(HasFocus());

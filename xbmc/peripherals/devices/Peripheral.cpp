@@ -46,7 +46,10 @@ CPeripheral::CPeripheral(const PeripheralScanResult& scanResult) :
 {
   PeripheralTypeTranslator::FormatHexString(scanResult.m_iVendorId, m_strVendorId);
   PeripheralTypeTranslator::FormatHexString(scanResult.m_iProductId, m_strProductId);
-  m_strFileLocation.Format(scanResult.m_iSequence > 0 ? "peripherals://%s/%s_%d.dev" : "peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType), scanResult.m_strLocation.c_str(), scanResult.m_iSequence);
+  m_strFileLocation = StringUtils::Format(scanResult.m_iSequence > 0 ? "peripherals://%s/%s_%d.dev" : "peripherals://%s/%s.dev",
+                                          PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType),
+                                          scanResult.m_strLocation.c_str(),
+                                          scanResult.m_iSequence);
 }
 
 CPeripheral::~CPeripheral(void)
@@ -122,7 +125,10 @@ bool CPeripheral::Initialise(void)
     return bReturn;
 
   g_peripherals.GetSettingsFromMapping(*this);
-  m_strSettingsFile.Format("special://profile/peripheral_data/%s_%s_%s.xml", PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId.c_str(), m_strProductId.c_str());
+  m_strSettingsFile = StringUtils::Format("special://profile/peripheral_data/%s_%s_%s.xml",
+                                          PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
+                                          m_strVendorId.c_str(),
+                                          m_strProductId.c_str());
   LoadPersistedSettings();
 
   for (unsigned int iFeaturePtr = 0; iFeaturePtr < m_features.size(); iFeaturePtr++)
@@ -394,9 +400,9 @@ bool CPeripheral::SetSetting(const CStdString &strKey, const CStdString &strValu
       }
     }
     else if ((*it).second->GetType() == SettingTypeInteger)
-      bChanged = SetSetting(strKey, (int) (strValue.IsEmpty() ? 0 : atoi(strValue.c_str())));
+      bChanged = SetSetting(strKey, (int) (strValue.empty() ? 0 : atoi(strValue.c_str())));
     else if ((*it).second->GetType() == SettingTypeNumber)
-      bChanged = SetSetting(strKey, (float) (strValue.IsEmpty() ? 0 : atof(strValue.c_str())));
+      bChanged = SetSetting(strKey, (float) (strValue.empty() ? 0 : atof(strValue.c_str())));
     else if ((*it).second->GetType() == SettingTypeBool)
       bChanged = SetSetting(strKey, strValue.Equals("1"));
   }
@@ -426,21 +432,21 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
       {
         CSettingInt *intSetting = (CSettingInt *) (*itr).second;
         if (intSetting)
-          strValue.Format("%d", intSetting->GetValue());
+          strValue = StringUtils::Format("%d", intSetting->GetValue());
       }
       break;
     case SettingTypeNumber:
       {
         CSettingNumber *floatSetting = (CSettingNumber *) (*itr).second;
         if (floatSetting)
-          strValue.Format("%.2f", floatSetting->GetValue());
+          strValue = StringUtils::Format("%.2f", floatSetting->GetValue());
       }
       break;
     case SettingTypeBool:
       {
         CSettingBool *boolSetting = (CSettingBool *) (*itr).second;
         if (boolSetting)
-          strValue.Format("%d", boolSetting->GetValue() ? 1:0);
+          strValue = StringUtils::Format("%d", boolSetting->GetValue() ? 1:0);
       }
       break;
     default:

@@ -122,12 +122,12 @@ CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item
   for (unsigned int i = 0; i < m_dynamicContent[label].size(); i++)
   {
     dynamicRight = GetMaskContent(m_dynamicContent[label][i], item);
-    if ((i == 0 || !dynamicLeft.IsEmpty()) && !dynamicRight.IsEmpty())
+    if ((i == 0 || !dynamicLeft.empty()) && !dynamicRight.empty())
       strLabel += m_staticContent[label][i];
     strLabel += dynamicRight;
     dynamicLeft = dynamicRight;
   }
-  if (!dynamicLeft.IsEmpty())
+  if (!dynamicLeft.empty())
     strLabel += m_staticContent[label][m_dynamicContent[label].size()];
 
   return strLabel;
@@ -136,7 +136,7 @@ CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item
 void CLabelFormatter::FormatLabel(CFileItem *item) const
 {
   CStdString maskedLabel = GetContent(0, item);
-  if (!maskedLabel.IsEmpty())
+  if (!maskedLabel.empty())
     item->SetLabel(maskedLabel);
   else if (!item->m_bIsFolder && m_hideFileExtensions)
     item->RemoveExtension();
@@ -158,13 +158,13 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   {
   case 'N':
     if (music && music->GetTrackNumber() > 0)
-      value.Format("%02.2i", music->GetTrackNumber());
+      value = StringUtils::Format("%02.2i", music->GetTrackNumber());
     if (movie&& movie->m_iTrack > 0)
-      value.Format("%02.2i", movie->m_iTrack);
+      value = StringUtils::Format("%02.2i", movie->m_iTrack);
     break;
   case 'S':
     if (music && music->GetDiscNumber() > 0)
-      value.Format("%02.2i", music->GetDiscNumber());
+      value = StringUtils::Format("%02.2i", music->GetDiscNumber());
     break;
   case 'A':
     if (music && music->GetArtist().size())
@@ -179,7 +179,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       value = movie->m_strTitle;
     break;
   case 'Z':
-    if (movie && !movie->m_strShowTitle.IsEmpty())
+    if (movie && !movie->m_strShowTitle.empty())
       value = movie->m_strShowTitle;
     break;
   case 'B':
@@ -204,7 +204,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       else if (movie->m_premiered.IsValid())
         value = movie->m_premiered.GetAsLocalizedDate();
       else if (movie->m_iYear > 0)
-        value.Format("%i",movie->m_iYear);
+        value = StringUtils::Format("%i", movie->m_iYear);
     }
     break;
   case 'F': // filename
@@ -247,25 +247,27 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     if (music && music->GetRating() != '0')
       value = music->GetRating();
     else if (movie && movie->m_fRating != 0.f)
-      value.Format("%.1f", movie->m_fRating);
+      value = StringUtils::Format("%.1f", movie->m_fRating);
     break;
   case 'C': // programs count
-    value.Format("%i", item->m_iprogramCount);
+    value = StringUtils::Format("%i", item->m_iprogramCount);
     break;
   case 'K':
     value = item->m_strTitle;
     break;
   case 'M':
     if (movie && movie->m_iEpisode > 0)
-      value.Format("%i %s", movie->m_iEpisode,g_localizeStrings.Get(movie->m_iEpisode == 1 ? 20452 : 20453));
+      value = StringUtils::Format("%i %s",
+                                  movie->m_iEpisode,
+                                  g_localizeStrings.Get(movie->m_iEpisode == 1 ? 20452 : 20453).c_str());
     break;
   case 'E':
     if (movie && movie->m_iEpisode > 0)
     { // episode number
       if (movie->m_iSeason == 0)
-        value.Format("S%02.2i", movie->m_iEpisode);
+        value = StringUtils::Format("S%02.2i", movie->m_iEpisode);
       else
-        value.Format("%02.2i", movie->m_iEpisode);
+        value = StringUtils::Format("%02.2i", movie->m_iEpisode);
     }
     break;
   case 'P':
@@ -276,9 +278,9 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     if (movie && movie->m_iEpisode > 0)
     { // season*100+episode number
       if (movie->m_iSeason == 0)
-        value.Format("S%02.2i", movie->m_iEpisode);
+        value = StringUtils::Format("S%02.2i", movie->m_iEpisode);
       else
-        value.Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
+        value = StringUtils::Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
     }
     break;
   case 'O':
@@ -295,17 +297,19 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     break;
   case 'V': // Playcount
     if (music)
-      value.Format("%i", music->GetPlayCount());
+      value = StringUtils::Format("%i", music->GetPlayCount());
     if (movie)
-      value.Format("%i", movie->m_playCount);
+      value = StringUtils::Format("%i", movie->m_playCount);
     break;
   case 'X': // Bitrate
     if( !item->m_bIsFolder && item->m_dwSize != 0 )
-      value.Format("%i kbps", item->m_dwSize);
+      value = StringUtils::Format("%i kbps", item->m_dwSize);
     break;
    case 'W': // Listeners
     if( !item->m_bIsFolder && music && music->GetListeners() != 0 )
-     value.Format("%i %s", music->GetListeners(), g_localizeStrings.Get(music->GetListeners() == 1 ? 20454 : 20455));
+     value = StringUtils::Format("%i %s",
+                                 music->GetListeners(),
+                                 g_localizeStrings.Get(music->GetListeners() == 1 ? 20454 : 20455).c_str());
     break;
   case 'a': // Date Added
     if (movie && movie->m_dateAdded.IsValid())
@@ -320,7 +324,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       value = pic->GetDateTimeTaken().GetAsLocalizedDate();
     break;
   }
-  if (!value.IsEmpty())
+  if (!value.empty())
     return mask.m_prefix + value + mask.m_postfix;
   return "";
 }
@@ -337,7 +341,7 @@ void CLabelFormatter::SplitMask(unsigned int label, const CStdString &mask)
     m_staticContent[label].push_back(work.Left(findStart));
     m_dynamicContent[label].push_back(CMaskString("", 
           reg.GetReplaceString("\\1")[0], ""));
-    work = work.Mid(findStart + reg.GetFindLen());
+    work = work.substr(findStart + reg.GetFindLen());
   }
   m_staticContent[label].push_back(work);
 }
@@ -363,7 +367,7 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
             reg.GetReplaceString("\\2"),
             reg.GetReplaceString("\\4")[0],
             reg.GetReplaceString("\\5")));
-    work = work.Mid(findStart + reg.GetFindLen());
+    work = work.substr(findStart + reg.GetFindLen());
   }
   SplitMask(label, work);
   assert(m_staticContent[label].size() == m_dynamicContent[label].size() + 1);
@@ -381,7 +385,7 @@ bool CLabelFormatter::FillMusicTag(const CStdString &fileName, CMusicInfoTag *ta
     if (pos2 == (int)CStdString::npos)
       return false;
     // found static content - thus we have the dynamic content surrounded
-    FillMusicMaskContent(m_dynamicContent[0][i - 1].m_content, fileName.Mid(pos1, pos2 - pos1), tag);
+    FillMusicMaskContent(m_dynamicContent[0][i - 1].m_content, fileName.substr(pos1, pos2 - pos1), tag);
     pos1 = pos2 + m_staticContent[0][i].size();
   }
   return true;

@@ -42,12 +42,12 @@ bool CTextSearch::IsValid(void) const
 
 bool CTextSearch::Search(const CStdString &strHaystack) const
 {
-  if (strHaystack.IsEmpty() || !IsValid())
+  if (strHaystack.empty() || !IsValid())
     return false;
 
   CStdString strSearch(strHaystack);
   if (!m_bCaseSensitive)
-    strSearch = strSearch.ToLower();
+    StringUtils::ToLower(strSearch);
 
   /* check whether any of the NOT terms matches and return false if there's a match */
   for (unsigned int iNotPtr = 0; iNotPtr < m_NOT.size(); iNotPtr++)
@@ -106,10 +106,10 @@ void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNe
 void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearchDefault defaultSearchMode)
 {
   CStdString strParsedSearchTerm(strSearchTerm);
-  strParsedSearchTerm = strParsedSearchTerm.Trim();
+  StringUtils::Trim(strParsedSearchTerm);
 
   if (!m_bCaseSensitive)
-    strParsedSearchTerm = strParsedSearchTerm.ToLower();
+    StringUtils::ToLower(strParsedSearchTerm);
 
   bool bNextAND(defaultSearchMode == SEARCH_DEFAULT_AND);
   bool bNextOR(defaultSearchMode == SEARCH_DEFAULT_OR);
@@ -117,7 +117,7 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
 
   while (strParsedSearchTerm.length() > 0)
   {
-    strParsedSearchTerm = strParsedSearchTerm.TrimLeft();
+    StringUtils::TrimLeft(strParsedSearchTerm);
 
     if (strParsedSearchTerm.Left(1).Equals("!") || strParsedSearchTerm.Left(3).Equals("NOT"))
     {
@@ -160,6 +160,6 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
       bNextNOT = (defaultSearchMode == SEARCH_DEFAULT_NOT);
     }
 
-    strParsedSearchTerm = strParsedSearchTerm.TrimLeft();
+    StringUtils::TrimLeft(strParsedSearchTerm);
   }
 }

@@ -341,23 +341,24 @@ CStdString CEdenVideoArtUpdater::GetCachedSeasonThumb(int season, const CStdStri
   else if (season == 0)
     label = g_localizeStrings.Get(20381);
   else
-    label.Format(g_localizeStrings.Get(20358), season);
+    label = StringUtils::Format(g_localizeStrings.Get(20358), season);
   return GetThumb("season" + path + label, CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 
 CStdString CEdenVideoArtUpdater::GetCachedEpisodeThumb(const CFileItem &item)
 {
   // get the locally cached thumb
-  CStdString strCRC;
-  strCRC.Format("%sepisode%i", item.GetVideoInfoTag()->m_strFileNameAndPath.c_str(), item.GetVideoInfoTag()->m_iEpisode);
+  CStdString strCRC = StringUtils::Format("%sepisode%i",
+                                          item.GetVideoInfoTag()->m_strFileNameAndPath.c_str(),
+                                          item.GetVideoInfoTag()->m_iEpisode);
   return GetThumb(strCRC, CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 
 CStdString CEdenVideoArtUpdater::GetCachedVideoThumb(const CFileItem &item)
 {
-  if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.IsEmpty())
+  if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.empty())
     return GetThumb(item.GetVideoInfoTag()->m_strPath, CProfilesManager::Get().GetVideoThumbFolder(), true);
-  else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+  else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.empty())
   {
     CStdString path = item.GetVideoInfoTag()->m_strFileNameAndPath;
     if (URIUtils::IsStack(path))
@@ -386,12 +387,11 @@ CStdString CEdenVideoArtUpdater::GetThumb(const CStdString &path, const CStdStri
   CStdString thumb;
   if (split)
   {
-    CStdString hex;
-    hex.Format("%08x", (__int32)crc);
-    thumb.Format("%c\\%08x.tbn", hex[0], (unsigned __int32)crc);
+    CStdString hex = StringUtils::Format("%08x", (__int32)crc);
+    thumb = StringUtils::Format("%c\\%08x.tbn", hex[0], (unsigned __int32)crc);
   }
   else
-    thumb.Format("%08x.tbn", (unsigned __int32)crc);
+    thumb = StringUtils::Format("%08x.tbn", (unsigned __int32)crc);
 
   return URIUtils::AddFileToFolder(path2, thumb);
 }

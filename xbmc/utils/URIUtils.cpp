@@ -123,7 +123,7 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
   if (iPos > 0)
   {
     CStdString strExtension = GetExtension(strFileName);
-    strExtension.ToLower();
+    StringUtils::ToLower(strExtension);
     strExtension += "|";
 
     CStdString strFileMask;
@@ -228,11 +228,11 @@ CStdStringArray URIUtils::SplitPath(const CStdString& strPath)
   // we start with the root path
   CStdString dir = url.GetWithoutFilename();
   
-  if (!dir.IsEmpty())
+  if (!dir.empty())
     dirs.insert(dirs.begin(), dir);
 
   // we don't need empty token on the end
-  if (dirs.size() > 1 && dirs.back().IsEmpty())
+  if (dirs.size() > 1 && dirs.back().empty())
     dirs.erase(dirs.end() - 1);
 
   return dirs;
@@ -291,7 +291,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   CURL url(strPath);
   CStdString strFile = url.GetFileName();
-  if ( URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFile.IsEmpty())
+  if ( URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFile.empty())
   {
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
@@ -302,14 +302,16 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CFileItemList items;
     dir.GetDirectory(strPath,items);
     items[0]->m_strDVDLabel = GetDirectory(items[0]->GetPath());
-    if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+    if (StringUtils::StartsWith(items[0]->m_strDVDLabel, "rar://") ||
+        StringUtils::StartsWith(items[0]->m_strDVDLabel, "zip://"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
       items[i]->m_strDVDLabel = GetDirectory(items[i]->GetPath());
-      if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+      if (StringUtils::StartsWith(items[0]->m_strDVDLabel, "rar://") ||
+          StringUtils::StartsWith(items[0]->m_strDVDLabel,"zip://"))
         items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
       else
         items[i]->SetPath(items[i]->m_strDVDLabel);
@@ -325,19 +327,19 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
   else if (url.GetProtocol() == "plugin")
   {
-    if (!url.GetOptions().IsEmpty())
+    if (!url.GetOptions().empty())
     {
       url.SetOptions("");
       strParent = url.Get();
       return true;
     }
-    if (!url.GetFileName().IsEmpty())
+    if (!url.GetFileName().empty())
     {
       url.SetFileName("");
       strParent = url.Get();
       return true;
     }
-    if (!url.GetHostName().IsEmpty())
+    if (!url.GetHostName().empty())
     {
       url.SetHostName("");
       strParent = url.Get();
@@ -401,7 +403,7 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath)
     if (strncmp(strPath.c_str(), i->first.c_str(), HasSlashAtEnd(i->first.c_str()) ? i->first.size()-1 : i->first.size()) == 0)
     {
       if (strPath.size() > i->first.size())
-        return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+        return URIUtils::AddFileToFolder(i->second, strPath.substr(i->first.size()));
       else
         return i->second;
     }
@@ -541,13 +543,13 @@ bool URIUtils::IsHD(const CStdString& strFileName)
   if (ProtocolHasParentInHostname(url.GetProtocol()))
     return IsHD(url.GetHostName());
 
-  return url.GetProtocol().IsEmpty() || url.GetProtocol() == "file";
+  return url.GetProtocol().empty() || url.GetProtocol() == "file";
 }
 
 bool URIUtils::IsDVD(const CStdString& strFile)
 {
   CStdString strFileLow = strFile;
-  strFileLow.MakeLower();
+  StringUtils::ToLower(strFileLow);
   if (strFileLow.Find("video_ts.ifo") != -1 && IsOnDVD(strFile))
     return true;
 
@@ -578,7 +580,7 @@ bool URIUtils::IsRAR(const CStdString& strFile)
 {
   CStdString strExtension = GetExtension(strFile);
 
-  if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
+  if (strExtension.Equals(".001") && !StringUtils::EndsWith(strFile, ".ts.001"))
     return true;
 
   if (strExtension.CompareNoCase(".cbr") == 0)
@@ -716,7 +718,7 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
 {
   CStdString strProtocol = url.GetProtocol();
   
-  if (strProtocol.IsEmpty())
+  if (strProtocol.empty())
     return false;
 
   // there's nothing to stop internet streams from being stacked
@@ -877,7 +879,7 @@ void URIUtils::AddSlashAtEnd(CStdString& strFolder)
   {
     CURL url(strFolder);
     CStdString file = url.GetFileName();
-    if(!file.IsEmpty() && file != strFolder)
+    if(!file.empty() && file != strFolder)
     {
       AddSlashAtEnd(file);
       url.SetFileName(file);
@@ -902,7 +904,7 @@ bool URIUtils::HasSlashAtEnd(const CStdString& strFile, bool checkURL /* = false
   {
     CURL url(strFile);
     CStdString file = url.GetFileName();
-    return file.IsEmpty() || HasSlashAtEnd(file, false);
+    return file.empty() || HasSlashAtEnd(file, false);
   }
   char kar = strFile.c_str()[strFile.size() - 1];
 
@@ -918,14 +920,14 @@ void URIUtils::RemoveSlashAtEnd(CStdString& strFolder)
   {
     CURL url(strFolder);
     CStdString file = url.GetFileName();
-    if (!file.IsEmpty() && file != strFolder)
+    if (!file.empty() && file != strFolder)
     {
       RemoveSlashAtEnd(file);
       url.SetFileName(file);
       strFolder = url.Get();
       return;
     }
-    if(url.GetHostName().IsEmpty())
+    if(url.GetHostName().empty())
       return;
   }
 
@@ -955,12 +957,12 @@ CStdString URIUtils::AddFileToFolder(const CStdString& strFolder,
   }
 
   CStdString strResult = strFolder;
-  if (!strResult.IsEmpty())
+  if (!strResult.empty())
     AddSlashAtEnd(strResult);
 
   // Remove any slash at the start of the file
   if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
-    strResult += strFile.Mid(1);
+    strResult += strFile.substr(1);
   else
     strResult += strFile;
 
@@ -986,7 +988,7 @@ CStdString URIUtils::GetDirectory(const CStdString &strFilePath)
   if (iPosBar == string::npos)
     return strFilePath.Left(iPosSlash + 1); // Only path
 
-  return strFilePath.Left(iPosSlash + 1) + strFilePath.Mid(iPosBar); // Path + options
+  return strFilePath.substr(0, iPosSlash + 1) + strFilePath.substr(iPosBar); // Path + options
 }
 
 void URIUtils::CreateArchivePath(CStdString& strUrlPath,
@@ -999,7 +1001,7 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
 
   strUrlPath = strType+"://";
 
-  if( !strPwd.IsEmpty() )
+  if( !strPwd.empty() )
   {
     strBuffer = strPwd;
     CURL::Encode(strBuffer);
@@ -1013,8 +1015,8 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
   strUrlPath += strBuffer;
 
   strBuffer = strFilePathInArchive;
-  strBuffer.Replace('\\', '/');
-  strBuffer.TrimLeft('/');
+  StringUtils::Replace(strBuffer, '\\', '/');
+  StringUtils::TrimLeft(strBuffer, "/");
 
   strUrlPath += "/";
   strUrlPath += strBuffer;

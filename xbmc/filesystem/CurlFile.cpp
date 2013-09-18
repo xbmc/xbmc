@@ -42,6 +42,7 @@
 #include "SpecialProtocol.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 using namespace XCURL;
@@ -433,9 +434,9 @@ void CCurlFile::Close()
   delete m_oldState;
   m_oldState = NULL;
 
-  m_url.Empty();
-  m_referer.Empty();
-  m_cookie.Empty();
+  m_url.clear();
+  m_referer.clear();
+  m_cookie.clear();
 
   m_opened = false;
   m_forWrite = false;
@@ -488,7 +489,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_COOKIEJAR, strCookieFile.c_str());
 
   // Set custom cookie if requested
-  if (!m_cookie.IsEmpty())
+  if (!m_cookie.empty())
     g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, m_cookie.c_str());
 
   g_curlInterface.easy_setopt(h, CURLOPT_COOKIELIST, "FLUSH");
@@ -526,7 +527,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   }
 
   // setup Referer header if needed
-  if (!m_referer.IsEmpty())
+  if (!m_referer.empty())
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
   else
   {
@@ -646,17 +647,17 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
 {
   CHttpHeader& h = state->m_httpheader;
   /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
-  if( h.GetMimeType().IsEmpty() )
+  if( h.GetMimeType().empty() )
   {
-    if( !h.GetValue("icy-notice1").IsEmpty()
-    || !h.GetValue("icy-name").IsEmpty()
-    || !h.GetValue("icy-br").IsEmpty() )
+    if( !h.GetValue("icy-notice1").empty()
+    || !h.GetValue("icy-name").empty()
+    || !h.GetValue("icy-br").empty() )
     h.Parse("Content-Type: audio/mpeg\r\n");
   }
 
   /* hack for google video */
   if ( h.GetMimeType().Equals("text/html")
-  &&  !h.GetValue("Content-Disposition").IsEmpty() )
+  &&  !h.GetValue("Content-Disposition").empty() )
   {
     CStdString strValue = h.GetValue("Content-Disposition");
     if (strValue.Find("filename=") > -1 && strValue.Find(".flv") > -1)
@@ -673,10 +674,10 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   ||  strProtocol.Equals("ftps") )
   {
     // we was using url optons for urls, keep the old code work and warning
-    if (!url2.GetOptions().IsEmpty())
+    if (!url2.GetOptions().empty())
     {
       CLog::Log(LOGWARNING, "%s: ftp url option is deprecated, please switch to use protocol option (change '?' to '|'), url: [%s]", __FUNCTION__, url2.Get().c_str());
-      url2.SetProtocolOptions(url2.GetOptions().Mid(1));
+      url2.SetProtocolOptions(url2.GetOptions().substr(1));
       /* ftp has no options */
       url2.SetOptions("");
     }
@@ -695,7 +696,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
 
     /* TODO: create a tokenizer that doesn't skip empty's */
     CUtil::Tokenize(filename, array, "/");
-    filename.Empty();
+    filename.clear();
     for(CStdStringArray::iterator it = array.begin(); it != array.end(); it++)
     {
       if(it != array.begin())
@@ -716,14 +717,14 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     if (url2.HasProtocolOption("auth"))
     {
       m_ftpauth = url2.GetProtocolOption("auth");
-      if(m_ftpauth.IsEmpty())
+      if(m_ftpauth.empty())
         m_ftpauth = "any";
     }
     m_ftpport = "";
     if (url2.HasProtocolOption("active"))
     {
       m_ftpport = url2.GetProtocolOption("active");
-      if(m_ftpport.IsEmpty())
+      if(m_ftpport.empty())
         m_ftpport = "-";
     }
     m_ftppasvip = url2.HasProtocolOption("pasvip") && url2.GetProtocolOption("pasvip") != "0";
@@ -734,11 +735,11 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     if (CSettings::Get().GetBool("network.usehttpproxy")
         && !CSettings::Get().GetString("network.httpproxyserver").empty()
         && CSettings::Get().GetInt("network.httpproxyport") > 0
-        && m_proxy.IsEmpty())
+        && m_proxy.empty())
     {
       m_proxy = CSettings::Get().GetString("network.httpproxyserver");
-      m_proxy.AppendFormat(":%d", CSettings::Get().GetInt("network.httpproxyport"));
-      if (CSettings::Get().GetString("network.httpproxyusername").length() > 0 && m_proxyuserpass.IsEmpty())
+      m_proxy += StringUtils::Format(":%d", CSettings::Get().GetInt("network.httpproxyport"));
+      if (CSettings::Get().GetString("network.httpproxyusername").length() > 0 && m_proxyuserpass.empty())
       {
         m_proxyuserpass = CSettings::Get().GetString("network.httpproxyusername");
         m_proxyuserpass += ":" + CSettings::Get().GetString("network.httpproxypassword");
@@ -767,7 +768,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         if(name.Equals("auth"))
         {
           m_httpauth = value;
-          if(m_httpauth.IsEmpty())
+          if(m_httpauth.empty())
             m_httpauth = "any";
         }
         else if (name.Equals("Referer"))
@@ -924,9 +925,9 @@ bool CCurlFile::Open(const CURL& url)
 
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
   // shoutcast streams should be handled by FileShoutcast.
-  if ((m_state->m_httpheader.GetProtoLine().Left(3) == "ICY" || !m_state->m_httpheader.GetValue("icy-notice1").IsEmpty()
-     || !m_state->m_httpheader.GetValue("icy-name").IsEmpty()
-     || !m_state->m_httpheader.GetValue("icy-br").IsEmpty()) && !m_skipshout)
+  if ((m_state->m_httpheader.GetProtoLine().Left(3) == "ICY" || !m_state->m_httpheader.GetValue("icy-notice1").empty()
+     || !m_state->m_httpheader.GetValue("icy-name").empty()
+     || !m_state->m_httpheader.GetValue("icy-br").empty()) && !m_skipshout)
   {
     CLog::Log(LOGDEBUG,"CCurlFile::Open - File <%s> is a shoutcast stream. Re-opening", m_url.c_str());
     throw new CRedirectException(new CShoutcastFile);
@@ -1556,9 +1557,7 @@ void CCurlFile::SetRequestHeader(CStdString header, CStdString value)
 
 void CCurlFile::SetRequestHeader(CStdString header, long value)
 {
-  CStdString buffer;
-  buffer.Format("%ld", value);
-  m_requestheaders[header] = buffer;
+  m_requestheaders[header] = StringUtils::Format("%ld", value);
 }
 
 /* STATIC FUNCTIONS */
@@ -1584,7 +1583,7 @@ bool CCurlFile::GetHttpHeader(const CURL &url, CHttpHeader &headers)
 bool CCurlFile::GetMimeType(const CURL &url, CStdString &content, CStdString useragent)
 {
   CCurlFile file;
-  if (!useragent.IsEmpty())
+  if (!useragent.empty())
     file.SetUserAgent(useragent);
 
   struct __stat64 buffer;

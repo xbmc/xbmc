@@ -62,7 +62,7 @@ public:
     XMLUtils::GetEncoding(&doc, encoding);
 
     CStdString strUtf8(strDoc);
-    if (encoding.IsEmpty())
+    if (encoding.empty())
       g_charsetConverter.unknownToUTF8(strUtf8);
     else
       g_charsetConverter.stringCharsetToUtf8(encoding, strDoc, strUtf8);

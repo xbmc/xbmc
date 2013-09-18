@@ -40,6 +40,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
+#include "utils/StringUtils.h"
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5
@@ -114,9 +115,9 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
         unsigned int iNewSelect = bMoveUp ? m_iSelected - 1 : m_iSelected + 1;
         if (m_channelItems->Get(iNewSelect)->GetProperty("Number").asString() != "-")
         {
-          strNumber.Format("%i", m_iSelected+1);
+          strNumber = StringUtils::Format("%i", m_iSelected+1);
           m_channelItems->Get(iNewSelect)->SetProperty("Number", strNumber);
-          strNumber.Format("%i", iNewSelect+1);
+          strNumber = StringUtils::Format("%i", iNewSelect+1);
           m_channelItems->Get(m_iSelected)->SetProperty("Number", strNumber);
         }
         m_channelItems->Swap(iNewSelect, m_iSelected);
@@ -499,7 +500,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
       CStdString strURL = "";
       if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
       {
-        if (!strURL.IsEmpty())
+        if (!strURL.empty())
         {
           CPVRChannel *newchannel = new CPVRChannel(m_bIsRadio);
           newchannel->SetChannelName(g_localizeStrings.Get(19204));
@@ -721,8 +722,7 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile->SetProperty("Icon", channel->IconPath());
     channelFile->SetProperty("EPGSource", (int)0);
     channelFile->SetProperty("ParentalLocked", channel->IsLocked());
-    CStdString number; number.Format("%i", channel->ChannelNumber());
-    channelFile->SetProperty("Number", number);
+    channelFile->SetProperty("Number", StringUtils::Format("%i", channel->ChannelNumber()));
 
     if (channel->IsVirtual())
     {
@@ -834,7 +834,7 @@ void CGUIDialogPVRChannelManager::Renumber(void)
     pItem = m_channelItems->Get(iChannelPtr);
     if (pItem->GetProperty("ActiveChannel").asBoolean())
     {
-      strNumber.Format("%i", ++iNextChannelNumber);
+      strNumber = StringUtils::Format("%i", ++iNextChannelNumber);
       pItem->SetProperty("Number", strNumber);
     }
     else

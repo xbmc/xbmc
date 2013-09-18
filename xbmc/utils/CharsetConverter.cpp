@@ -176,7 +176,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     }
   }
 
-  if (strSource.IsEmpty())
+  if (strSource.empty())
   {
     strDest.clear(); //empty strings are easy
     return true;

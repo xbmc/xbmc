@@ -29,6 +29,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "ModuleXbmcgui.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "utils/StringUtils.h"
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 
@@ -216,12 +217,12 @@ namespace XBMCAddon
           if (!defaultt.empty() && defaultt.size() == 10)
           {
             CStdString sDefault = defaultt;
-            timedate.wDay = atoi(sDefault.Left(2));
-            timedate.wMonth = atoi(sDefault.Mid(3,4));
-            timedate.wYear = atoi(sDefault.Right(4));
+            timedate.wDay = atoi(sDefault.substr(0, 2).c_str());
+            timedate.wMonth = atoi(sDefault.substr(3, 4).c_str());
+            timedate.wYear = atoi(sDefault.substr(sDefault.size() - 4).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
-            value.Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
+            value = StringUtils::Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
           else
             return emptyString;
         }
@@ -234,7 +235,7 @@ namespace XBMCAddon
             timedate.wMinute = atoi(sDefault.Right(2));
           }
           if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
-            value.Format("%2d:%02d", timedate.wHour, timedate.wMinute);
+            value = StringUtils::Format("%2d:%02d", timedate.wHour, timedate.wMinute);
           else
             return emptyString;
         }
@@ -303,12 +304,12 @@ namespace XBMCAddon
             if (!defaultt.empty() && defaultt.size() == 10)
             {
               CStdString sDefault = defaultt;
-              timedate.wDay = atoi(sDefault.Left(2));
-              timedate.wMonth = atoi(sDefault.Mid(3,4));
-              timedate.wYear = atoi(sDefault.Right(4));
+              timedate.wDay = atoi(sDefault.substr(0, 2).c_str());
+              timedate.wMonth = atoi(sDefault.substr(3, 4).c_str());
+              timedate.wYear = atoi(sDefault.substr(sDefault.size() - 4).c_str());
             }
             if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
-              value.Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
+              value = StringUtils::Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
             else
               value = emptyString;
           }
@@ -322,7 +323,7 @@ namespace XBMCAddon
               timedate.wMinute = atoi(sDefault.Right(2));
             }
             if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
-              value.Format("%2d:%02d", timedate.wHour, timedate.wMinute);
+              value = StringUtils::Format("%2d:%02d", timedate.wHour, timedate.wMinute);
             else
               value = emptyString;
           }

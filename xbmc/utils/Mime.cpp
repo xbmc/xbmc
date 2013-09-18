@@ -528,9 +528,9 @@ string CMime::GetMimeType(const string &extension)
 string CMime::GetMimeType(const CFileItem &item)
 {
   CStdString path = item.GetPath();
-  if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->GetPath().IsEmpty())
+  if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->GetPath().empty())
     path = item.GetVideoInfoTag()->GetPath();
-  else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().IsEmpty())
+  else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().empty())
     path = item.GetMusicInfoTag()->GetURL();
 
   return GetMimeType(URIUtils::GetExtension(path));

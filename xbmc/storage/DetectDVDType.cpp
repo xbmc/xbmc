@@ -294,7 +294,7 @@ void CDetectDVDMedia::DetectMediaType()
   else
   {
     strLabel = m_pCdInfo->GetDiscLabel();
-    strLabel.TrimRight(" ");
+    StringUtils::TrimRight(strLabel);
   }
 
   SetNewDVDShareUrl( strNewUrl , bCDDA, strLabel);

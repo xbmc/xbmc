@@ -52,15 +52,21 @@ public:
   */
   static std::string Format(const char *fmt, ...);
   static std::string FormatV(const char *fmt, va_list args);
+  static std::wstring Format(const wchar_t *fmt, ...);
+  static std::wstring FormatV(const wchar_t *fmt, va_list args);
   static void ToUpper(std::string &str);
+  static void ToUpper(std::wstring &str);
   static void ToLower(std::string &str);
+  static void ToLower(std::wstring &str);
   static bool EqualsNoCase(const std::string &str1, const std::string &str2);
   static std::string Left(const std::string &str, size_t count);
   static std::string Mid(const std::string &str, size_t first, size_t count = std::string::npos);
   static std::string Right(const std::string &str, size_t count);
   static std::string& Trim(std::string &str);
   static std::string& TrimLeft(std::string &str);
+  static std::string& TrimLeft(std::string &str, const std::string &chars);
   static std::string& TrimRight(std::string &str);
+  static std::string& TrimRight(std::string &str, const std::string &chars);
   static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
   static int Replace(std::string &str, char oldChar, char newChar);
   static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);

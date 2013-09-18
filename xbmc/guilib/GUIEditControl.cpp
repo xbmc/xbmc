@@ -451,7 +451,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     }
 
     changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);
-    if (text.IsEmpty())
+    if (text.empty())
       changed |= m_label2.SetText(m_hintInfo.GetLabel(GetParentID()));
     else
       changed |= m_label2.SetTextW(text);
@@ -541,7 +541,7 @@ bool CGUIEditControl::ClearMD5()
   if (!(m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW) || !m_isMD5)
     return false;
   
-  m_text2.Empty();
+  m_text2.clear();
   m_cursorPos = 0;
   if (m_inputType != INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
     m_isMD5 = false;

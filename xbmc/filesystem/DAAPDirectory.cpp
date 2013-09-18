@@ -27,6 +27,7 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 namespace XFILE
 {
@@ -67,7 +68,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   CStdString host = url.GetHostName();
   if (url.HasPort())
-    host.Format("%s:%i",url.GetHostName(),url.GetPort());
+    host = StringUtils::Format("%s:%i", url.GetHostName().c_str(), url.GetPort());
   m_thisHost = g_DaapClient.GetHost(host);
   if (!m_thisHost)
     return false;
@@ -179,23 +180,23 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
               CStdString path;
               if( m_thisHost->version_major != 3 )
               {
-                path.Format(REQUEST42,
-                                        m_thisHost->host,
-                                        g_DaapClient.m_iDatabase,
-                                        m_currentSongItems[idx].id,
-                                        m_currentSongItems[idx].songformat,
-                                        m_thisHost->sessionid,
-                                        m_thisHost->revision_number);
+                path = StringUtils::Format(REQUEST42,
+                                           m_thisHost->host,
+                                           g_DaapClient.m_iDatabase,
+                                           m_currentSongItems[idx].id,
+                                           m_currentSongItems[idx].songformat,
+                                           m_thisHost->sessionid,
+                                           m_thisHost->revision_number);
 
               }
               else
               {
-                path.Format(REQUEST45,
-                                        m_thisHost->host,
-                                        g_DaapClient.m_iDatabase,
-                                        m_currentSongItems[idx].id,
-                                        m_currentSongItems[idx].songformat,
-                                        m_thisHost->sessionid);
+                path = StringUtils::Format(REQUEST45,
+                                           m_thisHost->host,
+                                           g_DaapClient.m_iDatabase,
+                                           m_currentSongItems[idx].id,
+                                           m_currentSongItems[idx].songformat,
+                                           m_thisHost->sessionid);
               }
 
               pItem->SetPath(path);
@@ -267,23 +268,23 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             CStdString path;
             if( m_thisHost->version_major != 3 )
             {
-              path.Format(REQUEST42,
-                                      m_thisHost->host,
-                                      g_DaapClient.m_iDatabase,
-                                      m_currentSongItems[c].id,
-                                      m_currentSongItems[c].songformat,
-                                      m_thisHost->sessionid,
-                                      m_thisHost->revision_number);
+              path = StringUtils::Format(REQUEST42,
+                                         m_thisHost->host,
+                                         g_DaapClient.m_iDatabase,
+                                         m_currentSongItems[c].id,
+                                         m_currentSongItems[c].songformat,
+                                         m_thisHost->sessionid,
+                                         m_thisHost->revision_number);
 
             }
             else
             {
-              path.Format(REQUEST45,
-                                      m_thisHost->host,
-                                      g_DaapClient.m_iDatabase,
-                                      m_currentSongItems[c].id,
-                                      m_currentSongItems[c].songformat,
-                                      m_thisHost->sessionid);
+              path = StringUtils::Format(REQUEST45,
+                                         m_thisHost->host,
+                                         g_DaapClient.m_iDatabase,
+                                         m_currentSongItems[c].id,
+                                         m_currentSongItems[c].songformat,
+                                         m_thisHost->sessionid);
             }
 
             pItem->SetPath(path);

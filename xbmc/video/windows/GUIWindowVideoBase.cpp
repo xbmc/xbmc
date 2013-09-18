@@ -523,8 +523,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
     if (!hasDetails && (scrUrl.m_url.size() == 0 || needsRefresh))
     {
       // 4a. show dialog that we're busy querying www.imdb.com
-      CStdString strHeading;
-      strHeading.Format(g_localizeStrings.Get(197),info->Name().c_str());
+      CStdString strHeading = StringUtils::Format(g_localizeStrings.Get(197),info->Name().c_str());
       pDlgProgress->SetHeading(strHeading);
       pDlgProgress->SetLine(0, movieName);
       pDlgProgress->SetLine(1, "");
@@ -777,12 +776,9 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       {
         CStdString strPath = items[i]->GetPath();
         URIUtils::RemoveSlashAtEnd(strPath);
-        strPath.ToLower();
-        if (strPath.size() > 6)
+        if (StringUtils::EndsWith(strPath, "sample")) // skip sample folders
         {
-          CStdString strSub = strPath.substr(strPath.size()-6);
-          if (strPath.Mid(strPath.size()-6).Equals("sample")) // skip sample folders
-            continue;
+          continue;
         }
       }
       else if (items[i]->HasVideoInfoTag() &&
@@ -926,7 +922,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
       }
 
       CStdString resumeString = GetResumeString(*item);
-      if (!resumeString.IsEmpty())
+      if (!resumeString.empty())
       {
         choices.Add(SELECT_ACTION_RESUME, resumeString);
         choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
@@ -986,7 +982,7 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
     CStdString strDir;
     if (item->IsVideoDb()       &&
         item->HasVideoInfoTag() &&
-        !item->GetVideoInfoTag()->m_strPath.IsEmpty())
+        !item->GetVideoInfoTag()->m_strPath.empty())
     {
       strDir = item->GetVideoInfoTag()->m_strPath;
     }
@@ -1026,11 +1022,10 @@ CStdString CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
   GetResumeItemOffset(&item, startOffset, startPart);
   if (startOffset > 0)
   {
-    resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(startOffset/75).c_str());
+    resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(startOffset/75).c_str());
     if (startPart > 0)
     {
-      CStdString partString;
-      partString.Format(g_localizeStrings.Get(23051).c_str(), startPart);
+      CStdString partString = StringUtils::Format(g_localizeStrings.Get(23051).c_str(), startPart);
       resumeString += " (" + partString + ")";
     }
   }
@@ -1042,7 +1037,7 @@ bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
   if (!item.m_bIsFolder && !item.IsLiveTV())
   {
     CStdString resumeString = GetResumeString(item);
-    if (!resumeString.IsEmpty())
+    if (!resumeString.empty())
     { // prompt user whether they wish to resume
       CContextButtons choices;
       choices.Add(1, resumeString);
@@ -1164,7 +1159,7 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
 
   CStdString resumeString = GetResumeString(*item);
 
-  if (!resumeString.IsEmpty())
+  if (!resumeString.empty())
   {
     CContextButtons choices;
     choices.Add(SELECT_ACTION_RESUME, resumeString);
@@ -1203,7 +1198,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
 
-        if (!m_vecItems->GetPath().IsEmpty() && !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->GetPath().Left(9).Equals("newtag://")
+        if (!m_vecItems->GetPath().empty() && !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->GetPath().Left(9).Equals("newtag://")
             && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
@@ -1289,7 +1284,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     {
       CStdString resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile - 1].get()));
       stack->m_lStartOffset = 0;
-      if (!resumeString.IsEmpty()) 
+      if (!resumeString.empty()) 
       {
         CContextButtons choices;
         choices.Add(SELECT_ACTION_RESUME, resumeString);
@@ -1330,7 +1325,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_SET_CONTENT:
     {
-      OnAssignContent(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.IsEmpty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath());
+      OnAssignContent(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.empty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath());
       return true;
     }
   case CONTEXT_BUTTON_PLAY_PART:
@@ -1391,7 +1386,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       SScanSettings settings;
       GetScraperForItem(item.get(), info, settings);
       CStdString strPath = item->GetPath();
-      if (item->IsVideoDb() && (!item->m_bIsFolder || item->GetVideoInfoTag()->m_strPath.IsEmpty()))
+      if (item->IsVideoDb() && (!item->m_bIsFolder || item->GetVideoInfoTag()->m_strPath.empty()))
         return false;
 
       if (item->IsVideoDb())
@@ -1484,7 +1479,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
 
     /* For recordings we check here for a available stream URL */
     CFileItemPtr tag = g_PVRRecordings->GetByPath(item.GetPath());
-    if (tag && tag->HasPVRRecordingInfoTag() && !tag->GetPVRRecordingInfoTag()->m_strStreamURL.IsEmpty())
+    if (tag && tag->HasPVRRecordingInfoTag() && !tag->GetPVRRecordingInfoTag()->m_strStreamURL.empty())
     {
       CStdString stream = tag->GetPVRRecordingInfoTag()->m_strStreamURL;
 
@@ -1833,12 +1828,12 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     return;
 
   // enter new genre string
-  if (strGenre.IsEmpty())
+  if (strGenre.empty())
   {
     strGenre = g_localizeStrings.Get(532); // Manual Addition
     if (!CGUIKeyboardFactory::ShowAndGetInput(strGenre, g_localizeStrings.Get(533), false)) // Enter Genre
       return; // user backed out
-    if (strGenre.IsEmpty())
+    if (strGenre.empty())
       return; // no genre string
   }
 
@@ -1849,7 +1844,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   // everything is ok, so add to database
   m_database.Open();
   int idMovie = m_database.AddMovie(pItem->GetPath());
-  movie.m_strIMDBNumber.Format("xx%08i", idMovie);
+  movie.m_strIMDBNumber = StringUtils::Format("xx%08i", idMovie);
   m_database.SetDetailsForMovie(pItem->GetPath(), movie, pItem->GetArt());
   m_database.Close();
 
@@ -1867,7 +1862,7 @@ void CGUIWindowVideoBase::OnSearch()
   if (!CGUIKeyboardFactory::ShowAndGetInput(strSearch, g_localizeStrings.Get(16017), false))
     return ;
 
-  strSearch.ToLower();
+  StringUtils::ToLower(strSearch);
   if (m_dlgProgress)
   {
     m_dlgProgress->SetHeading(194);
@@ -1987,7 +1982,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
   }
 
   bool foundDirectly = false;
-  info = m_database.GetScraperForPath(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.IsEmpty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath(), settings, foundDirectly);
+  info = m_database.GetScraperForPath(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.empty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath(), settings, foundDirectly);
   return foundDirectly ? 1 : 0;
 }
 

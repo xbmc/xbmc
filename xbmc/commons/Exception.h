@@ -23,7 +23,8 @@
 //---------------------------------------------------------
 // This include should be moved to commons but even as it is,
 // it wont cause a linker circular dependency since it's just
-// a header. 
+// a header.
+#include "utils/StringUtils.h"
 #include "utils/StdString.h"
 //---------------------------------------------------------
 #include "ilog.h"
@@ -72,7 +73,7 @@ namespace XbmcCommons
      */
     inline void Set(const char* fmt, va_list& argList)
     {
-      message.FormatV(fmt, argList);
+      message = StringUtils::FormatV(fmt, argList);
     }
 
     /**

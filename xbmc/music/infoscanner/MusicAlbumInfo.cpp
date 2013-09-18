@@ -49,7 +49,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& s
 void CMusicAlbumInfo::SetAlbum(CAlbum& album)
 {
   m_album = album;
-  m_album.m_strDateOfRelease.Format("%i", album.iYear);
+  m_album.m_strDateOfRelease = StringUtils::Format("%i", album.iYear);
   m_strTitle2 = "";
   m_bLoaded = true;
 }

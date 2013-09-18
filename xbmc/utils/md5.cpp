@@ -19,6 +19,7 @@
  */
 
 #include "md5.h"
+#include "utils/StringUtils.h"
 
 typedef unsigned char md5byte;
 
@@ -55,16 +56,17 @@ void XBMC::XBMC_MD5::getDigest(CStdString& digest)
 {
   unsigned char szBuf[16] = {'\0'};
   getDigest(szBuf);
-  digest.Format("%02X%02X%02X%02X%02X%02X%02X%02X"\
-      "%02X%02X%02X%02X%02X%02X%02X%02X", szBuf[0], szBuf[1], szBuf[2],
-      szBuf[3], szBuf[4], szBuf[5], szBuf[6], szBuf[7], szBuf[8],
-      szBuf[9], szBuf[10], szBuf[11], szBuf[12], szBuf[13], szBuf[14],
-      szBuf[15]);
+  digest = StringUtils::Format("%02X%02X%02X%02X%02X%02X%02X%02X"\
+                               "%02X%02X%02X%02X%02X%02X%02X%02X",
+                               szBuf[0], szBuf[1], szBuf[2],
+                               szBuf[3], szBuf[4], szBuf[5], szBuf[6], szBuf[7], szBuf[8],
+                               szBuf[9], szBuf[10], szBuf[11], szBuf[12], szBuf[13], szBuf[14],
+                               szBuf[15]);
 }
 
 CStdString XBMC::XBMC_MD5::GetMD5(const CStdString &text)
 {
-  if (text.IsEmpty())
+  if (text.empty())
     return "";
   XBMC_MD5 state;
   CStdString digest;

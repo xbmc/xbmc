@@ -152,7 +152,7 @@ bool CGUIDialogKaiToast::DoWork()
     CGUIImage *image = (CGUIImage *)GetControl(POPUP_ICON);
     if (image)
     {
-      if (!toast.imagefile.IsEmpty())
+      if (!toast.imagefile.empty())
         image->SetFileName(toast.imagefile);
       else
         image->SetFileName(m_defaultIcon);

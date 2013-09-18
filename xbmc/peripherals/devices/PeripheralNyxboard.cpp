@@ -49,7 +49,7 @@ bool CPeripheralNyxboard::LookupSymAndUnicode(XBMC_keysym &keysym, uint8_t *key,
     strCommand = GetSettingString("flip_remote");
   }
 
-  if (!strCommand.IsEmpty())
+  if (!strCommand.empty())
   {
     CLog::Log(LOGDEBUG, "%s - executing command '%s'", __FUNCTION__, strCommand.c_str());
     if (g_application.ExecuteXBMCAction(strCommand))

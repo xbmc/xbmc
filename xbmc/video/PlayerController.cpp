@@ -36,6 +36,7 @@
 #endif
 #include "Application.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/StringUtils.h"
 
 CPlayerController::CPlayerController()
 {
@@ -71,7 +72,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (info.name.length() == 0)
           sub = lang;
         else
-          sub.Format("%s - %s", lang.c_str(), info.name.c_str());
+          sub = StringUtils::Format("%s - %s", lang.c_str(), info.name.c_str());
       }
       else
         sub = g_localizeStrings.Get(1223);
@@ -116,7 +117,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (info.name.length() == 0)
           sub = lang;
         else
-          sub.Format("%s - %s", lang.c_str(), info.name.c_str());
+          sub = StringUtils::Format("%s - %s", lang.c_str(), info.name.c_str());
       }
       else
         sub = g_localizeStrings.Get(1223);
@@ -213,7 +214,7 @@ bool CPlayerController::OnAction(const CAction &action)
       if (info.name.empty())
         aud = lan;
       else
-        aud.Format("%s - %s", lan.c_str(), info.name.c_str());
+        aud = StringUtils::Format("%s - %s", lan.c_str(), info.name.c_str());
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(460), aud, DisplTime, false, MsgTime);
       return true;
     }
@@ -403,8 +404,7 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
       m_sliderAction == ACTION_VSHIFT_UP || m_sliderAction == ACTION_VSHIFT_DOWN ||
       m_sliderAction == ACTION_SUBTITLE_VSHIFT_UP || m_sliderAction == ACTION_SUBTITLE_VSHIFT_DOWN)
   {
-    CStdString strValue;
-    strValue.Format("%1.2f",slider->GetFloatValue());
+    CStdString strValue = StringUtils::Format("%1.2f",slider->GetFloatValue());
     slider->SetTextValue(strValue);
   }
   else if (m_sliderAction == ACTION_VOLAMP_UP || m_sliderAction == ACTION_VOLAMP_DOWN)

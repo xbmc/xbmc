@@ -94,15 +94,15 @@ bool CTagLoaderTagLib::Load(const CStdString& strFileName, MUSIC_INFO::CMusicInf
 bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, const CStdString& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art /* = NULL */)
 {  
   CStdString strExtension = URIUtils::GetExtension(strFileName);
-  strExtension.ToLower();
-  strExtension.TrimLeft('.');
+  StringUtils::ToLower(strExtension);
+  StringUtils::TrimLeft(strExtension, ".");
 
-  if (strExtension.IsEmpty())
+  if (strExtension.empty())
   {
     strExtension = fallbackFileExtension;
-    if (strExtension.IsEmpty())
+    if (strExtension.empty())
       return false;
-    strExtension.ToLower();
+    StringUtils::ToLower(strExtension);
   }
 
   TagLibVFSStream*           stream = new TagLibVFSStream(strFileName, true);
@@ -237,7 +237,7 @@ bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, c
   if (flacFile)
     SetFlacArt(flacFile, art, tag);
 
-  if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().empty() || !tag.GetAlbum().IsEmpty())
+  if (!tag.GetTitle().empty() || !tag.GetArtist().empty() || !tag.GetAlbum().empty())
     tag.SetLoaded();
   tag.SetURL(strFileName);
 

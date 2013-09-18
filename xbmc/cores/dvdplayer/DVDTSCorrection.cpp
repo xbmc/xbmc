@@ -22,7 +22,7 @@
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "utils/log.h"
-
+#include "utils/StringUtils.h"
 #include <cmath>
 
 #define MAXERR DVD_MSEC_TO_TIME(2.5)
@@ -321,9 +321,9 @@ CStdString CPullupCorrection::GetPatternStr()
   CStdString patternstr;
 
   for (unsigned int i = 0; i < m_pattern.size(); i++)
-    patternstr.AppendFormat("%.2f ", m_pattern[i]);
+    patternstr += StringUtils::Format("%.2f ", m_pattern[i]);
 
-  patternstr.Trim();
+  StringUtils::Trim(patternstr);
 
   return patternstr;
 }

@@ -29,6 +29,8 @@
 #include "video/VideoDatabase.h"
 
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
+
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
@@ -66,7 +68,7 @@ const CStdString CPVRRecordings::GetDirectoryFromPath(const CStdString &strPath,
   CStdString strUseBase = TrimSlashes(strBase);
 
   /* strip the base or return an empty value if it doesn't fit or match */
-  if (!strUseBase.IsEmpty())
+  if (!strUseBase.empty())
   {
     /* adding "/" to make sure that base matches the complete folder name and not only parts of it */
     if (strUsePath.GetLength() <= strUseBase.GetLength() || strUsePath.Left(strUseBase.GetLength() + 1) != strUseBase + "/")
@@ -108,13 +110,13 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
 
-    if (!current->m_strIconPath.IsEmpty())
+    if (!current->m_strIconPath.empty())
       pFileItem->SetIconImage(current->m_strIconPath);
 
-    if (!current->m_strThumbnailPath.IsEmpty())
+    if (!current->m_strThumbnailPath.empty())
       pFileItem->SetArt("thumb", current->m_strThumbnailPath);
 
-    if (!current->m_strFanartPath.IsEmpty())
+    if (!current->m_strFanartPath.empty())
       pFileItem->SetArt("fanart", current->m_strFanartPath);
 
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
@@ -133,14 +135,14 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
   {
     CPVRRecording *current = m_recordings.at(iRecordingPtr);
     const CStdString strCurrent = GetDirectoryFromPath(current->m_strDirectory, strUseBase);
-    if (strCurrent.IsEmpty())
+    if (strCurrent.empty())
       continue;
 
     CStdString strFilePath;
     if(strUseBase.empty())
-      strFilePath.Format("pvr://recordings/%s/", strCurrent.c_str());
+      strFilePath = StringUtils::Format("pvr://recordings/%s/", strCurrent.c_str());
     else
-      strFilePath.Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
+      strFilePath = StringUtils::Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
 
     if (!results->Contains(strFilePath))
     {
@@ -185,8 +187,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 
   if (bAutoSkip && results->Size() == 1 && files.Size() == 0)
   {
-    CStdString strGetPath;
-    strGetPath.Format("%s/%s/", strUseBase.c_str(), results->Get(0)->GetLabel());
+    CStdString strGetPath = StringUtils::Format("%s/%s/", strUseBase.c_str(), results->Get(0)->GetLabel().c_str());
 
     results->Clear();
 
@@ -207,7 +208,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
     if(strUseBase.empty())
       strAllPath = "pvr://recordings";
     else
-      strAllPath.Format("pvr://recordings/%s", strUseBase.c_str());
+      strAllPath = StringUtils::Format("pvr://recordings/%s", strUseBase.c_str());
     pItem->SetPath(AddAllRecordingsPathExtension(strAllPath));
     pItem->SetSpecialSort(SortSpecialOnTop);
     pItem->SetLabelPreformated(true);

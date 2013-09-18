@@ -22,6 +22,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "LangInfo.h"
 #include "utils/log.h" 
+#include "utils/StringUtils.h"
 
 #define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
 #define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
@@ -81,7 +82,7 @@ void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
       {
         sShort = pShort->FirstChild()->Value();
         sLong = pLong->FirstChild()->Value();
-        sShort.ToLower();
+        StringUtils::ToLower(sShort);
         m_mapUser[sShort] = sLong;
       }
       pLangCode = pLangCode->NextSibling();
@@ -95,15 +96,15 @@ bool CLangCodeExpander::Lookup(CStdString& desc, const CStdString& code)
   if (iSplit > 0)
   {
     CStdString strLeft, strRight;
-    const bool bLeft = Lookup(strLeft, code.Left(iSplit));
-    const bool bRight = Lookup(strRight, code.Mid(iSplit + 1));
+    const bool bLeft = Lookup(strLeft, code.substr(0, iSplit));
+    const bool bRight = Lookup(strRight, code.substr(iSplit + 1));
     if (bLeft || bRight)
     {
       desc = "";
       if (strLeft.length() > 0)
         desc = strLeft;
       else
-        desc = code.Left(iSplit);
+        desc = code.substr(0, iSplit);
 
       if (strRight.length() > 0)
       {
@@ -113,7 +114,7 @@ bool CLangCodeExpander::Lookup(CStdString& desc, const CStdString& code)
       else
       {
         desc += " - ";
-        desc += code.Mid(iSplit + 1);
+        desc += code.substr(iSplit + 1);
       }
       return true;
     }
@@ -150,9 +151,8 @@ bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, 
   if ( strTwoCharCode.length() == 2 )
   {
     CStdString strTwoCharCodeLower( strTwoCharCode );
-    strTwoCharCodeLower.MakeLower();
-    strTwoCharCodeLower.TrimLeft();
-    strTwoCharCodeLower.TrimRight();
+    StringUtils::ToLower(strTwoCharCodeLower);
+    StringUtils::Trim(strTwoCharCodeLower);
 
     for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
     {
@@ -213,8 +213,7 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
   }
   else if (strCharCode.size() > 3)
   {
-    CStdString strLangInfoPath;
-    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strCharCode.c_str());
+    CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strCharCode.c_str());
     CLangInfo langInfo;
     if (!langInfo.Load(strLangInfoPath))
       return false;
@@ -233,9 +232,8 @@ bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const CStdString& strTw
     return false;
 
   CStdString strLower( strTwoCharCode );
-  strLower.MakeLower();
-  strLower.TrimLeft();
-  strLower.TrimRight();
+  StringUtils::ToLower(strLower);
+  StringUtils::Trim(strLower);
   for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
   {
     if (strLower.Equals(RegionCode2To3[index].old))
@@ -254,7 +252,7 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
     return false;
 
   CStdString strLower(strWindowsCharCode);
-  strLower.MakeLower();
+  StringUtils::ToLower(strLower);
   for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
   {
     if ((CharCode2To3[index].win_id && strLower.Equals(CharCode2To3[index].win_id)) ||
@@ -315,8 +313,7 @@ bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString&
   }
 
   // try xbmc specific language names
-  CStdString strLangInfoPath;
-  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", lang.c_str());
+  CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", lang.c_str());
   CLangInfo langInfo;
   if (!langInfo.Load(strLangInfoPath))
     return false;
@@ -327,7 +324,7 @@ bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString&
 bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
 {
   CStdString descTmp(desc);
-  descTmp.Trim();
+  StringUtils::Trim(descTmp);
   STRINGLOOKUPTABLE::iterator it;
   for (it = m_mapUser.begin(); it != m_mapUser.end() ; it++)
   {
@@ -361,9 +358,9 @@ bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
   STRINGLOOKUPTABLE::iterator it;
   //Make sure we convert to lowercase before trying to find it
   CStdString sCode(code);
-  sCode.MakeLower();
-  sCode.TrimLeft();
-  sCode.TrimRight();
+  StringUtils::ToLower(sCode);
+  StringUtils::Trim(sCode);
+
   it = m_mapUser.find(sCode);
   if (it != m_mapUser.end())
   {
@@ -377,9 +374,9 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
 {
   long longcode;
   CStdString sCode(code);
-  sCode.MakeLower();
-  sCode.TrimLeft();
-  sCode.TrimRight();
+  StringUtils::ToLower(sCode);
+  StringUtils::Trim(sCode);
+
   if(sCode.length() == 2)
   {
     longcode = MAKECODE('\0', '\0', sCode[0], sCode[1]);
@@ -409,7 +406,7 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
 
 void CLangCodeExpander::CodeToString(long code, CStdString& ret)
 {
-  ret.Empty();
+  ret.clear();
   for (unsigned int j = 0 ; j < 4 ; j++)
   {
     char c = (char) code & 0xFF;

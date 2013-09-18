@@ -479,7 +479,7 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
 
   /* check if the recording tag is valid */
   CPVRRecording *recTag = (CPVRRecording *) item->GetPVRRecordingInfoTag();
-  if (!recTag || recTag->m_strRecordingId.IsEmpty())
+  if (!recTag || recTag->m_strRecordingId.empty())
     return bReturn;
 
   /* show a confirmation dialog */
@@ -540,8 +540,7 @@ bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
 
   if (ret == PLAYBACK_FAIL)
   {
-    CStdString msg;
-    msg.Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
+    CStdString msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
     CGUIDialogOK::ShowAndGetInput(19033, 0, msg, 0);
   }
 
@@ -708,7 +707,7 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
       if (channel && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
          (channel->IsRadio() == g_PVRManager.IsPlayingRadio()))
       {
-        if (channel->StreamURL().IsEmpty())
+        if (channel->StreamURL().empty())
           bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(*channel);
       }
 
@@ -721,11 +720,10 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
 
     if (!bSwitchSuccessful)
     {
-      CStdString msg;
       CStdString channelName = g_localizeStrings.Get(19029); // Channel
       if (channel)
         channelName = channel->ChannelName();
-      msg.Format(g_localizeStrings.Get(19035).c_str(), channelName.c_str()); // CHANNELNAME could not be played. Check the log for details.
+      CStdString msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channelName.c_str()); // CHANNELNAME could not be played. Check the log for details.
 
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
               g_localizeStrings.Get(19166), // PVR information

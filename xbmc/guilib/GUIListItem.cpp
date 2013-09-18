@@ -69,7 +69,7 @@ void CGUIListItem::SetLabel(const CStdString& strLabel)
   if (m_strLabel == strLabel)
     return;
   m_strLabel = strLabel;
-  if (m_sortLabel.IsEmpty())
+  if (m_sortLabel.empty())
     SetSortLabel(strLabel);
   SetInvalid();
 }

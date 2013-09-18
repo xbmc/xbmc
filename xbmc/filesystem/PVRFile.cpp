@@ -220,7 +220,7 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
     if (channel && channel->HasPVRChannelInfoTag())
     {
       CStdString stream = channel->GetPVRChannelInfoTag()->StreamURL();
-      if(!stream.IsEmpty())
+      if(!stream.empty())
       {
         if (stream.compare(6, 7, "stream/") == 0)
         {

@@ -43,7 +43,7 @@ using namespace XFILE;
 
 CFileInfo::CFileInfo()
 {
-  m_strCachedPath.Empty();
+  m_strCachedPath.clear();
   m_bAutoDel = true;
   m_iUsed = 0;
   m_iIsSeekable = -1;
@@ -139,7 +139,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   CStdString strCachedPath = URIUtils::AddFileToFolder(strDir + "rarfolder%04d",
                                            URIUtils::GetFileName(strPathInRar));
   strCachedPath = CUtil::GetNextPathname(strCachedPath, 9999);
-  if (strCachedPath.IsEmpty())
+  if (strCachedPath.empty())
   {
     CLog::Log(LOGWARNING, "Could not cache file %s", (strRarPath + strPathInRar).c_str());
     return false;
@@ -254,7 +254,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
 
   ArchiveList_struct* pIterator;
   CStdString strCompare = strPathInRar;
-  if (!URIUtils::HasSlashAtEnd(strCompare) && !strCompare.IsEmpty())
+  if (!URIUtils::HasSlashAtEnd(strCompare) && !strCompare.empty())
     strCompare += '/';
   for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
   {

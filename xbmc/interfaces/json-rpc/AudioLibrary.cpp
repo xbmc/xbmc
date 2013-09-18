@@ -287,8 +287,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const CStdString &method, I
   CFileItemList items;
   for (unsigned int index = 0; index < albums.size(); index++)
   {
-    CStdString path;
-    path.Format("musicdb://recentlyaddedalbums/%i/", albums[index].idAlbum);
+    CStdString path = StringUtils::Format("musicdb://recentlyaddedalbums/%i/", albums[index].idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(albums[index], path, item);
@@ -338,8 +337,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedAlbums(const CStdString &method, 
   CFileItemList items;
   for (unsigned int index = 0; index < albums.size(); index++)
   {
-    CStdString path;
-    path.Format("musicdb://recentlyplayedalbums/%i/", albums[index].idAlbum);
+    CStdString path = StringUtils::Format("musicdb://recentlyplayedalbums/%i/", albums[index].idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(albums[index], path, item);
@@ -526,7 +524,7 @@ JSONRPC_STATUS CAudioLibrary::Scan(const CStdString &method, ITransportLayer *tr
   if (directory.empty())
     cmd = "updatelibrary(music)";
   else
-    cmd.Format("updatelibrary(music, %s)", StringUtils::Paramify(directory).c_str());
+    cmd = StringUtils::Format("updatelibrary(music, %s)", StringUtils::Paramify(directory).c_str());
 
   CApplicationMessenger::Get().ExecBuiltIn(cmd);
   return ACK;
@@ -536,11 +534,11 @@ JSONRPC_STATUS CAudioLibrary::Export(const CStdString &method, ITransportLayer *
 {
   CStdString cmd;
   if (parameterObject["options"].isMember("path"))
-    cmd.Format("exportlibrary(music, false, %s)", StringUtils::Paramify(parameterObject["options"]["path"].asString()));
+    cmd = StringUtils::Format("exportlibrary(music, false, %s)", StringUtils::Paramify(parameterObject["options"]["path"].asString()).c_str());
   else
-    cmd.Format("exportlibrary(music, true, %s, %s)",
-      parameterObject["options"]["images"].asBoolean() ? "true" : "false",
-      parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false");
+    cmd = StringUtils::Format("exportlibrary(music, true, %s, %s)",
+                              parameterObject["options"]["images"].asBoolean() ? "true" : "false",
+                              parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false");
 
   CApplicationMessenger::Get().ExecBuiltIn(cmd);
   return ACK;

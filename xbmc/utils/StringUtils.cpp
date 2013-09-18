@@ -102,14 +102,77 @@ string StringUtils::FormatV(const char *fmt, va_list args)
   return "";
 }
 
+wstring StringUtils::Format(const wchar_t *fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  wstring str = FormatV(fmt, args);
+  va_end(args);
+  
+  return str;
+}
+
+wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
+{
+  if (fmt == NULL)
+    return L"";
+  
+  int size = FORMAT_BLOCK_SIZE;
+  va_list argCopy;
+  
+  wchar_t *cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
+  if (cstr == NULL)
+    return L"";
+  
+  while (1)
+  {
+    va_copy(argCopy, args);
+    
+    int nActual = vswprintf(cstr, size, fmt, argCopy);
+    va_end(argCopy);
+    
+    if (nActual > -1 && nActual < size) // We got a valid result
+    {
+      wstring str(cstr, nActual);
+      free(cstr);
+      return str;
+    }
+    if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
+      size = nActual + 1;
+    else                                // Let's try to double the size (glibc 2.0)
+      size *= 2;
+    
+    wchar_t *new_cstr = reinterpret_cast<wchar_t*>(realloc(cstr, sizeof(wchar_t) * size));
+    if (new_cstr == NULL)
+    {
+      free(cstr);
+      return L"";
+    }
+    
+    cstr = new_cstr;
+  }
+  
+  return L"";
+}
+
 void StringUtils::ToUpper(string &str)
 {
   transform(str.begin(), str.end(), str.begin(), ::toupper);
 }
 
+void StringUtils::ToUpper(wstring &str)
+{
+  transform(str.begin(), str.end(), str.begin(), ::towupper);
+}
+
 void StringUtils::ToLower(string &str)
 {
   transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+
+void StringUtils::ToLower(wstring &str)
+{
+  transform(str.begin(), str.end(), str.begin(), ::towlower);
 }
 
 bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
@@ -159,9 +222,23 @@ std::string& StringUtils::TrimLeft(std::string &str)
   return str;
 }
 
+std::string& StringUtils::TrimLeft(std::string &str, const std::string& chars)
+{
+  size_t nidx = str.find_first_not_of(chars);
+  str.substr(nidx == str.npos ? 0 : nidx).swap(str);
+  return str;
+}
+
 std::string& StringUtils::TrimRight(std::string &str)
 {
   str.erase(::find_if(str.rbegin(), str.rend(), ::not1(::ptr_fun<int, int>(::isspace))).base(), str.end());
+  return str;
+}
+
+std::string& StringUtils::TrimRight(std::string &str, const std::string& chars)
+{
+  size_t nidx = str.find_last_not_of(chars);
+  str.erase(str.npos == nidx ? 0 : ++nidx);
   return str;
 }
 
@@ -314,7 +391,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
       if ( i == numFound )
         s = input;
       else
-        s = input.Mid( i, positions[i] );
+        s = input.substr(i, positions[i]);
     }
     else
     {
@@ -322,9 +399,9 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
       if ( offset < isize )
       {
         if ( i == numFound )
-          s = input.Mid(offset);
+          s = input.substr(offset);
         else if ( i > 0 )
-          s = input.Mid( positions[i - 1] + sizeS2,
+          s = input.substr( positions[i - 1] + sizeS2,
                          positions[i] - positions[i - 1] - sizeS2 );
       }
     }
@@ -449,8 +526,7 @@ int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
 long StringUtils::TimeStringToSeconds(const CStdString &timeString)
 {
   CStdString strCopy(timeString);
-  strCopy.TrimLeft(" \n\r\t");
-  strCopy.TrimRight(" \n\r\t");
+  StringUtils::Trim(strCopy);
   if(strCopy.Right(4).Equals(" min"))
   {
     // this is imdb format of "XXX min"
@@ -481,13 +557,13 @@ CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
     format = (hh >= 1) ? TIME_FORMAT_HH_MM_SS : TIME_FORMAT_MM_SS;
   CStdString strHMS;
   if (format & TIME_FORMAT_HH)
-    strHMS.AppendFormat("%02.2i", hh);
+    strHMS += StringUtils::Format("%02.2i", hh);
   else if (format & TIME_FORMAT_H)
-    strHMS.AppendFormat("%i", hh);
+    strHMS += StringUtils::Format("%i", hh);
   if (format & TIME_FORMAT_MM)
-    strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", mm);
+    strHMS += StringUtils::Format(strHMS.empty() ? "%02.2i" : ":%02.2i", mm);
   if (format & TIME_FORMAT_SS)
-    strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", ss);
+    strHMS += StringUtils::Format(strHMS.empty() ? "%02.2i" : ":%02.2i", ss);
   return strHMS;
 }
 
@@ -544,11 +620,11 @@ CStdString StringUtils::SizeToString(int64_t size)
   }
 
   if (!i)
-    strLabel.Format("%.0lf %cB ", s, prefixes[i]);
+    strLabel = StringUtils::Format("%.0lf %cB ", s, prefixes[i]);
   else if (s >= 100.0)
-    strLabel.Format("%.1lf %cB", s, prefixes[i]);
+    strLabel = StringUtils::Format("%.1lf %cB", s, prefixes[i]);
   else
-    strLabel.Format("%.2lf %cB", s, prefixes[i]);
+    strLabel = StringUtils::Format("%.2lf %cB", s, prefixes[i]);
 
   return strLabel;
 }
@@ -649,7 +725,7 @@ int StringUtils::FindEndBracket(const CStdString &str, char opener, char closer,
 void StringUtils::WordToDigits(CStdString &word)
 {
   static const char word_to_letter[] = "22233344455566677778889999";
-  word.ToLower();
+  StringUtils::ToLower(word);
   for (unsigned int i = 0; i < word.size(); ++i)
   { // NB: This assumes ascii, which probably needs extending at some  point.
     char letter = word[i];

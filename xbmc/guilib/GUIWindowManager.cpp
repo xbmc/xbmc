@@ -326,7 +326,7 @@ void CGUIWindowManager::PreviousWindow()
 void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strPath)
 {
   vector<CStdString> params;
-  if (!strPath.IsEmpty())
+  if (!strPath.empty())
     params.push_back(strPath);
   ActivateWindow(newWindow, params, true);
 }
@@ -334,7 +334,7 @@ void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strP
 void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 {
   vector<CStdString> params;
-  if (!strPath.IsEmpty())
+  if (!strPath.empty())
     params.push_back(strPath);
   ActivateWindow(iWindowID, params, false);
 }

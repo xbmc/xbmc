@@ -34,6 +34,7 @@
 #include "addons/Skin.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 typedef struct
 {
@@ -74,7 +75,7 @@ CKaraokeLyricsText::CKaraokeLyricsText()
 
   m_colorLyrics = gLyricColors[coloridx].text;
   m_colorLyricsOutline = gLyricColors[coloridx].outline;
-  m_colorSinging.Format( "%08X", gLyricColors[coloridx].active );
+  m_colorSinging = StringUtils::Format("%08X", gLyricColors[coloridx].active);
 
   m_delayAfter = 50; // 5 seconds
   m_showLyricsBeforeStart = 50; // 7.5 seconds
@@ -383,7 +384,7 @@ void CKaraokeLyricsText::Render()
   m_karaokeLayout->GetTextExtent(textWidth, textHeight);
   m_karaokeLayout->RenderOutline(x, y, 0, m_colorLyricsOutline, XBFONT_CENTER_X, maxWidth);
 
-  if ( !m_currentPreamble.IsEmpty() )
+  if ( !m_currentPreamble.empty() )
   {
     float pretextWidth, pretextHeight;
     m_preambleLayout->GetTextExtent(pretextWidth, pretextHeight);
@@ -499,7 +500,7 @@ void CKaraokeLyricsText::rescanLyrics()
       else
       {
         CStdString lower = m_lyrics[i].text;
-        lower.ToLower();
+        StringUtils::ToLower(lower);
         ld.upper_start = (m_lyrics[i].text == lower);
       }
 
@@ -574,7 +575,7 @@ void CKaraokeLyricsText::rescanLyrics()
   }
 
   // Prepare a new first lyric entry with song name and artist.
-  if ( m_songName.IsEmpty() )
+  if ( m_songName.empty() )
   {
     m_songName = URIUtils::GetFileName( getSongFile() );
     URIUtils::RemoveExtension( m_songName );
@@ -592,7 +593,7 @@ void CKaraokeLyricsText::rescanLyrics()
     ltitle.timing = 0;
     ltitle.text = m_songName;
 
-    if ( !m_artist.IsEmpty() )
+    if ( !m_artist.empty() )
       ltitle.text += "[CR][CR]" + m_artist;
 
     newlyrics.push_back( ltitle );
@@ -653,9 +654,9 @@ void CKaraokeLyricsText::rescanLyrics()
         l.flags = m_lyrics[i].flags;
       else
         l.flags = 0;
-      l.timing = (unsigned int) MathUtils::round_int( m_lyrics[ i ].timing + j * time_per_char );
+      l.timing = (unsigned int) MathUtils::round_int( m_lyrics[ i ].timing + j * time_per_char);
 
-      g_charsetConverter.wToUTF8( utf16.Mid( j, 1 ), l.text );
+      g_charsetConverter.wToUTF8( utf16.substr(j, 1), l.text);
 
       if ( l.text == " " )
       {
@@ -703,8 +704,10 @@ void CKaraokeLyricsText::saveLyrics()
 
   for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
   {
-    CStdString timing;
-    timing.Format( "%02d:%02d.%d", m_lyrics[i].timing / 600, (m_lyrics[i].timing % 600) / 10, (m_lyrics[i].timing % 10) );
+    CStdString timing = StringUtils::Format("%02d:%02d.%d",
+                                            m_lyrics[i].timing / 600,
+                                            (m_lyrics[i].timing % 600) / 10,
+                                            (m_lyrics[i].timing % 10));
 
     if ( (m_lyrics[i].flags & LYRICS_NEW_PARAGRAPH) != 0 )
       out += "\n\n";
@@ -731,7 +734,7 @@ bool CKaraokeLyricsText::HasBackground()
 
 bool CKaraokeLyricsText::HasVideo()
 {
-  return m_videoFile.IsEmpty() ? false : true;
+  return m_videoFile.empty() ? false : true;
 }
 
 void CKaraokeLyricsText::GetVideoParameters(CStdString & path, int64_t & offset)

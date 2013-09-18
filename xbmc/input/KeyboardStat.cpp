@@ -214,8 +214,8 @@ CStdString CKeyboardStat::GetKeyName(int KeyID)
   if (KeyTableLookupVKeyName(keyid, &keytable))
     keyname.append(keytable.keyname);
   else
-    keyname.AppendFormat("%i", keyid);
-  keyname.AppendFormat(" (0x%02x)", KeyID);
+    keyname += StringUtils::Format("%i", keyid);
+  keyname += StringUtils::Format(" (0x%02x)", KeyID);
 
   return keyname;
 }
