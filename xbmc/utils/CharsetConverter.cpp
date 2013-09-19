@@ -32,30 +32,52 @@
 #include <iconv.h>
 
 #if defined(TARGET_DARWIN)
-#ifdef __POWERPC__
-  #define WCHAR_CHARSET "UTF-32BE"
-#else
-  #define WCHAR_CHARSET "UTF-32LE"
-#endif
+  #define WCHAR_IS_UTF32 1
+  #undef WCHAR_IS_UTF16
+  #ifdef __POWERPC__
+    #define WCHAR_CHARSET "UTF-32BE"
+  #else
+    #define WCHAR_CHARSET "UTF-32LE"
+  #endif
   #define UTF8_SOURCE "UTF-8-MAC"
 #elif defined(TARGET_WINDOWS)
+  #undef WCHAR_IS_UTF32
+  #define WCHAR_IS_UTF16 1
   #define WCHAR_CHARSET "UTF-16LE"
   #define UTF8_SOURCE "UTF-8"
   #pragma comment(lib, "libfribidi.lib")
   #pragma comment(lib, "libiconv.lib")
 #elif defined(TARGET_ANDROID)
+  #define WCHAR_IS_UTF32 1
+  #undef WCHAR_IS_UTF16
   #define UTF8_SOURCE "UTF-8"
-#ifdef __BIG_ENDIAN__
-  #define WCHAR_CHARSET "UTF-32BE"
-#else
-  #define WCHAR_CHARSET "UTF-32LE"
-#endif
+  #ifdef __BIG_ENDIAN__
+    #define WCHAR_CHARSET "UTF-32BE"
+  #else
+    #define WCHAR_CHARSET "UTF-32LE"
+  #endif
 #else
   #define WCHAR_CHARSET "WCHAR_T"
   #define UTF8_SOURCE "UTF-8"
+  #ifdef HAVE_CONFIG_H
+    #include "config.h"
+  #endif // HAVE_CONFIG_H
+  #undef WCHAR_IS_UTF32
+  #undef WCHAR_IS_UTF16
+  #ifdef SIZEOF_WCHAR_T
+    #if SIZEOF_WCHAR_T == 4
+      #define WCHAR_IS_UTF32 1
+    #elif SIZEOF_WCHAR_T == 2
+      #define WCHAR_IS_UTF16 1
+    #endif
+  #endif
 #endif
 
 
+static iconv_t m_iconvUtf8ToUtf32                = (iconv_t)-1;
+static iconv_t m_iconvUtf32ToUtf8                = (iconv_t)-1;
+static iconv_t m_iconvUtf32ToW                   = (iconv_t)-1;
+static iconv_t m_iconvWToUtf32                   = (iconv_t)-1;
 static iconv_t m_iconvSubtitleCharsetToW         = (iconv_t)-1;
 static iconv_t m_iconvUtf8ToStringCharset        = (iconv_t)-1;
 static iconv_t m_iconvStringCharsetToUtf8        = (iconv_t)-1;
@@ -424,6 +446,10 @@ void CCharsetConverter::reset(void)
 {
   CSingleLock lock(m_critSection);
 
+  ICONV_SAFE_CLOSE(m_iconvUtf8ToUtf32);
+  ICONV_SAFE_CLOSE(m_iconvUtf32ToUtf8);
+  ICONV_SAFE_CLOSE(m_iconvUtf32ToW);
+  ICONV_SAFE_CLOSE(m_iconvWToUtf32);
   ICONV_SAFE_CLOSE(m_iconvUtf8ToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvStringCharsetToUtf8);
   ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToW);
@@ -446,6 +472,64 @@ void CCharsetConverter::reset(void)
       break;
     }
   }
+}
+
+bool CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)
+{
+  CSingleLock lock(m_critSection);
+  return convert(m_iconvUtf8ToUtf32, 1, UTF8_SOURCE, "UTF-32", utf8StringSrc, utf32StringDst, failOnBadChar);
+}
+
+bool CCharsetConverter::utf8ToUtf32Visual(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool bVisualBiDiFlip /*= false*/, bool forceLTRReadingOrder /*= false*/, bool failOnBadChar /*= false*/)
+{
+  if (bVisualBiDiFlip)
+  {
+    std::string strFlipped;
+    if (!logicalToVisualBiDi(utf8StringSrc, strFlipped, FRIBIDI_UTF8, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF))
+      return false;
+    CSingleLock lock(m_critSection);
+    return convert(m_iconvUtf8ToUtf32, 1, UTF8_SOURCE, "UTF-32", strFlipped, utf32StringDst, failOnBadChar);
+  }
+  CSingleLock lock(m_critSection);
+  return convert(m_iconvUtf8ToUtf32, 1, UTF8_SOURCE, "UTF-32", utf8StringSrc, utf32StringDst, failOnBadChar);
+}
+
+bool CCharsetConverter::utf32ToUtf8(const std::u32string& utf32StringSrc, std::string& utf8StringDst, bool failOnBadChar /*= true*/)
+{
+  CSingleLock lock(m_critSection);
+  return convert(m_iconvUtf32ToUtf8, m_Utf8CharMaxSize, "UTF-32", "UTF-8", utf32StringSrc, utf8StringDst, failOnBadChar);
+}
+
+bool CCharsetConverter::utf32ToW(const std::u32string& utf32StringSrc, std::wstring& wStringDst, bool failOnBadChar /*= true*/)
+{
+#ifdef WCHAR_IS_UTF32
+  wStringDst.assign((const wchar_t*)utf32StringSrc.c_str(), utf32StringSrc.length());
+  return true;
+#else // !WCHAR_IS_UTF32
+  CSingleLock lock(m_critSection);
+  return convert(m_iconvUtf32ToW, 1, "UTF-32", WCHAR_CHARSET, utf32StringSrc, wStringDst, failOnBadChar);
+#endif // !WCHAR_IS_UTF32
+}
+
+bool CCharsetConverter::utf32logicalToVisualBiDi(const std::u32string& logicalStringSrc, std::u32string& visualStringDst, bool forceLTRReadingOrder /*= false*/)
+{
+  visualStringDst.clear();
+  std::string utf8Str;
+  if (!utf32ToUtf8(logicalStringSrc, utf8Str, false))
+    return false;
+
+  return utf8ToUtf32Visual(utf8Str, visualStringDst, true, forceLTRReadingOrder);
+}
+
+bool CCharsetConverter::wToUtf32(const std::wstring& wStringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)
+{
+#ifdef WCHAR_IS_UTF32
+  utf32StringDst.assign((const char32_t*)wStringSrc.c_str(), wStringSrc.length());
+  return true;
+#else // !WCHAR_IS_UTF32
+  CSingleLock lock(m_critSection);
+  return convert(m_iconvWToUtf32, 1, WCHAR_CHARSET, "UTF-32", wStringSrc, utf32StringDst, failOnBadChar);
+#endif // !WCHAR_IS_UTF32
 }
 
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
