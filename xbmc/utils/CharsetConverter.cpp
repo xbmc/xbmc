@@ -56,7 +56,6 @@
 #endif
 
 
-static iconv_t m_iconvStringCharsetToFontCharset = (iconv_t)-1;
 static iconv_t m_iconvSubtitleCharsetToW         = (iconv_t)-1;
 static iconv_t m_iconvUtf8ToStringCharset        = (iconv_t)-1;
 static iconv_t m_iconvStringCharsetToUtf8        = (iconv_t)-1;
@@ -425,7 +424,6 @@ void CCharsetConverter::reset(void)
 {
   CSingleLock lock(m_critSection);
 
-  ICONV_SAFE_CLOSE(m_iconvStringCharsetToFontCharset);
   ICONV_SAFE_CLOSE(m_iconvUtf8ToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvStringCharsetToUtf8);
   ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToW);
