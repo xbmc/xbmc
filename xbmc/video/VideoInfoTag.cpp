@@ -500,7 +500,10 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   sortable[FieldTime] = GetDuration();
   sortable[FieldFilename] = m_strFile;
   sortable[FieldMPAA] = m_strMPAARating;
-  sortable[FieldPath] = m_strFileNameAndPath;
+  if (!m_basePath.IsEmpty())
+    sortable[FieldPath] = m_basePath;
+  else if (!m_strFileNameAndPath.IsEmpty())
+    sortable[FieldPath] = m_strFileNameAndPath;
   sortable[FieldSortTitle] = m_strSortTitle;
   sortable[FieldTvShowStatus] = m_strStatus;
   sortable[FieldProductionCode] = m_strProductionCode;
