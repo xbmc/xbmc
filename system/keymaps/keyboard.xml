@@ -242,6 +242,8 @@
       <down mod="ctrl">SubtitleShiftDown</down>
       <pageup>SkipNext</pageup>
       <pagedown>SkipPrevious</pagedown>
+      <w>PlayerControl(Random,Notify)</w>
+      <y>PlayerControl(Repeat,Notify)</y>
     </keyboard>
   </FullscreenVideo>
   <VideoTimeSeek>
