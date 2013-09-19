@@ -2616,12 +2616,12 @@ msgid "Custom"
 msgstr ""
 
 msgctxt "#637"
-msgid "Replay gain"
+msgid "ReplayGain"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#638"
-msgid "Replaygain volume adjustments"
+msgid "ReplayGain volume adjustments"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -2636,17 +2636,17 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
+msgid "PreAmp Level - ReplayGained files"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
+msgid "PreAmp Level - Non ReplayGained files"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
+msgid "Avoid clipping on ReplayGained files"
 msgstr ""
 
 msgctxt "#644"
@@ -13423,7 +13423,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36267"
-msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr ""
 
 #: system/settings/settings.xml
