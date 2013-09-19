@@ -32,6 +32,10 @@
 #include "DatabaseManager.h"
 #include "DbUrl.h"
 
+#ifdef TARGET_WINDOWS
+#include "win32util.h"
+#endif
+
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
 #endif
@@ -355,8 +359,22 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
 #endif
   {
     dbSettings.type = "sqlite3";
+	std::string host;
+
     if (dbSettings.host.IsEmpty())
-      dbSettings.host = CSpecialProtocol::TranslatePath(CProfilesManager::Get().GetDatabaseFolder());
+	{
+		host = CSpecialProtocol::TranslatePath(CProfilesManager::Get().GetDatabaseFolder());
+	}
+	else
+	{
+		host = dbSettings.host;
+	}
+
+#ifdef TARGET_WINDOWS
+	// Required for if the appdata is redirected to a UNC path. 
+	host = CWIN32Util::SmbToUnc(host);
+#endif
+      dbSettings.host = host; 
   }
 
   // use separate, versioned database
