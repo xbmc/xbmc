@@ -1382,7 +1382,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#338"
-msgid "Analog"
+msgid "Analogue"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -4151,12 +4151,12 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10100"
-msgid "Yes/No dialog"
+msgid "Yes/No dialogue"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10101"
-msgid "Progress dialog"
+msgid "Progress dialogue"
 msgstr ""
 
 #empty strings from id 10102 to 10125
@@ -4340,7 +4340,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12000"
-msgid "Select dialog"
+msgid "Select dialogue"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -4350,7 +4350,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12002"
-msgid "Dialog OK"
+msgid "Dialogue OK"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -4376,7 +4376,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12008"
-msgid "File stacking dialog"
+msgid "File stacking dialogue"
 msgstr ""
 
 #. Does not match window ID description
@@ -12738,7 +12738,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14063,7 +14063,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36395"
-msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
+msgid "Open the Master Lock dialogue, where you can configure your Master Lock options."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14348,7 +14348,7 @@ msgstr ""
 
 #: system/settings/rbp.xml
 msgctxt "#36542"
-msgid "Output to both analog (headphones) and HDMI"
+msgid "Output to both analogue (headphones) and HDMI"
 msgstr ""
 
 #: system/settings/rbp.xml
