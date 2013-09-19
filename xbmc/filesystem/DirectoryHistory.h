@@ -68,4 +68,5 @@ private:
   typedef std::map<CStdString, CHistoryItem> HistoryMap;
   HistoryMap m_vecHistory;
   std::vector<CPathHistoryItem> m_vecPathHistory; ///< History of traversed directories
+  static bool IsMusicSearchUrl(CPathHistoryItem &i);
 };
