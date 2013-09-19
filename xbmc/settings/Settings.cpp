@@ -416,6 +416,9 @@ void CSettings::Uninitialize()
 #endif // defined(TARGET_LINUX)
   m_settingsManager->UnregisterCallback(&g_weatherManager);
   m_settingsManager->UnregisterCallback(&PERIPHERALS::CPeripherals::Get());
+#if defined(TARGET_DARWIN_OSX)
+  m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
+#endif
 
   // unregister ISubSettings implementations
   m_settingsManager->UnregisterSubSettings(&g_application);
