@@ -380,7 +380,7 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   }
 
   /* common attributes */
-  mediaContainer.SetPath(m_url.Get());
+  mediaContainer.SetPath(m_url.GetUrlWithoutOptions());
   mediaContainer.SetProperty("plex", true);
   mediaContainer.SetProperty("plexserver", m_url.GetHostName());
   
