@@ -756,6 +756,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
       si->m_prepareTriggered = false;
       si->m_playNextAtFrame = 0;
       si->m_playNextTriggered = false;
+      si->m_seekNextAtFrame = 0;
 
       //update the current stream to start playing the next track at the correct frame.
       UpdateStreamInfoPlayNextAtFrame(m_currentStream, m_upcomingCrossfadeMS);
