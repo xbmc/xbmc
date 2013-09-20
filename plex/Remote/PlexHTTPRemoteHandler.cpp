@@ -25,10 +25,12 @@
 #include <boost/asio/detail/socket_ops.hpp>
 #include "PlexApplication.h"
 
+#include "settings/GUISettings.h"
+
 ////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexHTTPRemoteHandler::CheckHTTPRequest(const HTTPRequest &request)
 {
-  return boost::starts_with(request.url, "/player");
+  return boost::starts_with(request.url, "/player") || boost::starts_with(request.url, "/device");;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -81,6 +83,16 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     unsubscribe(request, argumentMap);
   else if (path.Equals("/player/setStreams"))
     setStreams(argumentMap);
+  else if (boost::starts_with(path, "/device"))
+  {
+    m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", "text/xml"));
+    m_data.Format("<MediaContainer machineIdentifier=\"%s\" version=\"%s\" types=\"plex/media-player\" friendlyName=\"%s\" platform=\"%s\" platfromVersion=\"%s\" />\n",
+                  g_guiSettings.GetString("system.uuid"),
+                  PLEX_VERSION,
+                  g_guiSettings.GetString("services.devicename"),
+                  PlexUtils::GetMachinePlatform(),
+                  PlexUtils::GetMachinePlatformVersion());
+  }
   else
   {
     m_responseCode = MHD_HTTP_NOT_IMPLEMENTED;
