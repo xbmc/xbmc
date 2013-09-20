@@ -31,7 +31,8 @@ class PlexNetworkServiceAdvertiser : public NetworkServiceAdvertiser
     headers["Version"] = g_infoManager.GetVersion();
     headers["Product"] = PLEX_TARGET_NAME;
     headers["Protocol"] = "plex";
-    headers["Protocol-Version"] = "2";
+    headers["Protocol-Version"] = "1";
+    headers["Protocol-Capabilities"] = "navigation";
     headers["Device-Class"] = "HTPC";
   }
   
