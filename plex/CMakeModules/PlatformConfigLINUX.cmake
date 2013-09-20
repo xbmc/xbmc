@@ -8,8 +8,9 @@ if(UNIX)
   set(CMAKE_REQUIRED_FLAGS "-D__LINUX_USER__")
 endif()
 
+option(USE_INTERNAL_FFMPEG "" ON)
+
 set(LINK_PKG
-  FFmpeg
   Freetype
   SDL
   SDL_image
@@ -38,6 +39,13 @@ set(LINK_PKG
   DBUS
 )
 
+if(NOT USE_INTERNAL_FFMPEG)
+  list(APPEND LINK_PKG FFmpeg)
+else()
+  set(FFMPEG_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/lib/ffmpeg)
+  include_directories(${FFMPEG_INCLUDE_DIRS})
+endif()
+
 foreach(l ${LINK_PKG})
   plex_find_package(${l} 1 1)
 endforeach()
@@ -61,7 +69,6 @@ set(INSTALL_LIB
   RTMP
   PLIST
   ShairPort
-  CEC
   VAAPI
   VDPAU
 )
@@ -69,6 +76,8 @@ set(INSTALL_LIB
 foreach(l ${INSTALL_LIB})
   plex_find_package(${l} 1 0)
 endforeach()
+
+plex_find_package(CEC 0 0)
 
 plex_find_package(Threads 1 0)
 if(CMAKE_USE_PTHREADS_INIT)
