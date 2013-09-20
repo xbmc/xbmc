@@ -39,7 +39,9 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   /* defaults */
   m_responseType = HTTPMemoryDownloadNoFreeCopy;
   m_responseCode = MHD_HTTP_OK;
-  
+  m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", "text/xml"));
+  m_data = "<Response code=\"200\" status=\"OK\" />";
+
   ArgMap argumentMap;
   CStdString path(request.url);
   
@@ -85,7 +87,6 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     setStreams(argumentMap);
   else if (boost::starts_with(path, "/device"))
   {
-    m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", "text/xml"));
     m_data.Format("<MediaContainer machineIdentifier=\"%s\" version=\"%s\" types=\"plex/media-player\" friendlyName=\"%s\" platform=\"%s\" platfromVersion=\"%s\" />\n",
                   g_guiSettings.GetString("system.uuid"),
                   PLEX_VERSION,
@@ -95,8 +96,8 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   }
   else
   {
-    m_responseCode = MHD_HTTP_NOT_IMPLEMENTED;
-    m_responseType = HTTPError;
+    m_responseCode = MHD_HTTP_INTERNAL_SERVER_ERROR;
+    m_data.Format("<Response code=\"500\" status=\"not implemented\" />");
   }
   
   return MHD_YES;

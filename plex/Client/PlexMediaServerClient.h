@@ -51,10 +51,9 @@ public:
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   
   static std::string StateToString(CPlexMediaServerClient::MediaState state);
+  static CURL constructTimelineRequest(CFileItemPtr item, MediaState state, int64_t currentPosition = 0, bool includeSystemVars = false);
 
 private:
-  CURL constructTimelineRequest(CFileItemPtr item, MediaState state, int64_t currentPosition = 0, bool includeSystemVars = false);
-  
   CStdString GetPrefix(const CFileItemPtr& item) const
   {
     CStdString prefix = "/:/";
