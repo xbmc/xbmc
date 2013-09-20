@@ -434,6 +434,11 @@ bool CAdvancedSettings::Load()
   for (unsigned int i = 0; i < m_settingsFiles.size(); i++)
     ParseSettingsFile(m_settingsFiles[i]);
   ParseSettingsFile(CProfilesManager::Get().GetUserDataItem("advancedsettings.xml"));
+
+  // Add the list of disc stub extensions (if any) to the list of video extensions
+  if (!m_discStubExtensions.IsEmpty())
+    m_videoExtensions += "|" + m_discStubExtensions;
+
   return true;
 }
 
@@ -953,10 +958,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pExts = pRootElement->FirstChildElement("discstubextensions");
   if (pExts)
     GetCustomExtensions(pExts, m_discStubExtensions);
-
-  // Add the list of disc stub extensions (if any) to the list of video extensions
-  if (!m_discStubExtensions.IsEmpty())
-    m_videoExtensions += "|" + m_discStubExtensions;
 
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
