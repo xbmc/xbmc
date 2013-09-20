@@ -385,7 +385,7 @@ if !updater_binary_input_path
 	exit(1)
 end
 
-FileUtils.cp(updater_binary_input_path,"#{output_dir}/#{File.basename(updater_binary_input_path)}")
+FileUtils.cp updater_binary_input_path, "#{output_dir}/#{File.basename(updater_binary_input_path)}", :preserve => true
 
 # output the file_list.xml file
 update_script = UpdateScriptGenerator.new(target_version,target_platform,input_dir,
