@@ -317,7 +317,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
 
   // check if we advance a track of a CUE sheet
   // if this is the case we don't need to open a new stream
-  if (file.GetPath().Equals(m_FileItem->GetPath()) &&
+  if (file.GetMusicInfoTag()->GetURL().Equals(m_FileItem->GetMusicInfoTag()->GetURL()) &&
       file.m_lStartOffset &&
       file.m_lStartOffset == m_FileItem->m_lEndOffset &&
       m_currentStream && m_currentStream->m_prepareTriggered)
@@ -707,6 +707,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
       si->m_framesSent = (int)(si->m_seekFrame - ((float)si->m_startOffset * (float)si->m_sampleRate) / 1000.0f);
       si->m_seekFrame  = -1;
       m_playerGUIData.m_time = time; //update for GUI
+      si->m_seekNextAtFrame = 0;
     }
     /* if its FF/RW */
     else
@@ -720,7 +721,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
     if (time < si->m_startOffset || si->m_framesSent < 0)
     {
       time = si->m_startOffset;
-      si->m_framesSent      = (int)(si->m_startOffset * si->m_sampleRate / 1000);
+      si->m_framesSent      = 0;
       si->m_seekNextAtFrame = 0;
       ToFFRW(1);
     }
@@ -756,6 +757,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
       si->m_prepareTriggered = false;
       si->m_playNextAtFrame = 0;
       si->m_playNextTriggered = false;
+      si->m_seekNextAtFrame = 0;
 
       //update the current stream to start playing the next track at the correct frame.
       UpdateStreamInfoPlayNextAtFrame(m_currentStream, m_upcomingCrossfadeMS);
