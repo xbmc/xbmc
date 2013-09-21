@@ -32,14 +32,6 @@ static CCriticalSection g_inputCond;
 
 static std::list<XBMC_Event> events;
 
-void CWinEventsIOS::DeInit()
-{
-}
-
-void CWinEventsIOS::Init()
-{
-}
-
 void CWinEventsIOS::MessagePush(XBMC_Event *newEvent)
 {
   CSingleLock lock(g_inputCond);

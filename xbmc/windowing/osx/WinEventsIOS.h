@@ -28,8 +28,6 @@
 class CWinEventsIOS : public IWinEvents
 {
 public:
-  static void Init();
-  static void DeInit();
   void MessagePush(XBMC_Event *newEvent);
   bool MessagePump();
   virtual size_t  GetQueueSize();
