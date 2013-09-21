@@ -368,8 +368,6 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
     CThread::Sleep(1);
   }
 
-  UpdateCrossfadeTime(file);
-
   /* init the streaminfo struct */
   si->m_decoder.GetDataFormat(&si->m_channelInfo, &si->m_sampleRate, &si->m_encodedSampleRate, &si->m_dataFormat);
   si->m_startOffset        = file.m_lStartOffset * 1000 / 75;
@@ -398,10 +396,22 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
       si->m_prepareNextAtFrame = (int)((streamTotalTime - TIME_TO_CACHE_NEXT_FILE - m_defaultCrossfadeMS) * si->m_sampleRate / 1000.0f);
   }
 
-  si->m_prepareTriggered = false;
+  if (m_currentStream && (AE_IS_RAW(m_currentStream->m_dataFormat) || AE_IS_RAW(si->m_dataFormat)))
+  {
+    m_currentStream->m_prepareTriggered = false;
+    m_currentStream->m_waitOnDrain = true;
+    m_currentStream->m_prepareNextAtFrame = 0;
+    si->m_decoder.Destroy();
+    delete si;
+    return false;
+  }
 
+  UpdateCrossfadeTime(file);
+
+  si->m_prepareTriggered = false;
   si->m_playNextAtFrame = 0;
   si->m_playNextTriggered = false;
+  si->m_waitOnDrain = false;
 
   if (!PrepareStream(si))
   {
@@ -606,6 +616,11 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
     {
       if (!si->m_prepareTriggered)
       {
+        if (si->m_waitOnDrain)
+        {
+          si->m_stream->Drain(true);
+          si->m_waitOnDrain = false;
+        }
         si->m_prepareTriggered = true;
         m_callback.OnQueueNextItem();
       }
@@ -621,6 +636,11 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
           /* if it didnt trigger the next queue item */
           if (!si->m_prepareTriggered)
           {
+            if (si->m_waitOnDrain)
+            {
+              si->m_stream->Drain(true);
+              si->m_waitOnDrain = false;
+            }
             m_callback.OnQueueNextItem();
             si->m_prepareTriggered = true;
           }
