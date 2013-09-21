@@ -81,7 +81,7 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
    * back frame markers. However, this doesn't seem possible for MythTV.
    */
   float fFramesPerSecond;
-  if (int(fFrameRate * 100) == 5994) // 59.940 fps = NTSC or 60i content
+  if (iHeight <= 480 && int(fFrameRate * 100) == 5994) // 59.940 fps = NTSC or 60i content except for 1280x720/60
   {
     fFramesPerSecond = fFrameRate / 2; // ~29.97f - division used to retain accuracy of original.
     CLog::Log(LOGDEBUG, "%s - Assuming NTSC or 60i interlaced content. Adjusted frames per second from %.3f (~59.940 fps) to %.3f",
