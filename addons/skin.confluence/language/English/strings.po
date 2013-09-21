@@ -45,7 +45,7 @@ msgid "Settings Options"
 msgstr ""
 
 msgctxt "#31008"
-msgid "Fullscreen"
+msgid "Full screen"
 msgstr ""
 
 msgctxt "#31009"
@@ -139,7 +139,7 @@ msgstr ""
 #empty string with id 31047
 
 msgctxt "#31048"
-msgid "Visualization Presets"
+msgid "Visualisation Presets"
 msgstr ""
 
 msgctxt "#31049"
@@ -245,7 +245,7 @@ msgid "Show Recently added Videos"
 msgstr ""
 
 msgctxt "#31118"
-msgid "Home Page Programs Submenu"
+msgid "Home Page Programs Sub-menu"
 msgstr ""
 
 msgctxt "#31119"
@@ -259,7 +259,7 @@ msgid "Show Background \"Now Playing\" Video"
 msgstr ""
 
 msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
+msgid "Show Background \"Now Playing\" Visualisation"
 msgstr ""
 
 msgctxt "#31126"
@@ -275,7 +275,7 @@ msgid "Lyrics"
 msgstr ""
 
 msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
+msgid "Hide Fanart in full screen visualisation"
 msgstr ""
 
 #empty strings from id 31130 to 31131
@@ -289,15 +289,15 @@ msgid "Subtitle Add-on"
 msgstr ""
 
 msgctxt "#31134"
-msgid "Home Page Videos Submenu"
+msgid "Home Page Videos Sub-menu"
 msgstr ""
 
 msgctxt "#31135"
-msgid "Home Page Music Submenu"
+msgid "Home Page Music Sub-menu"
 msgstr ""
 
 msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
+msgid "Home Page Pictures Sub-menu"
 msgstr ""
 
 #empty strings from id 31137 to 31139
@@ -537,7 +537,7 @@ msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse f
 msgstr ""
 
 msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr ""
 
 msgctxt "#31410"
