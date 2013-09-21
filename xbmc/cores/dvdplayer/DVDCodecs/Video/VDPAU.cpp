@@ -80,6 +80,151 @@ static float studioCSCKCoeffs709[3] = {0.2126, 0.7152, 0.0722}; //BT709 {Kr, Kg,
 void* CDecoder::dl_handle;
 
 //-----------------------------------------------------------------------------
+// VDPAU Video Surface states
+//-----------------------------------------------------------------------------
+
+#define SURFACE_USED_FOR_REFERENCE 0x01
+#define SURFACE_USED_FOR_RENDER    0x02
+
+void CVideoSurfaces::AddSurface(VdpVideoSurface surf)
+{
+  CSingleLock lock(m_section);
+  m_state[surf] = SURFACE_USED_FOR_REFERENCE;
+}
+
+void CVideoSurfaces::ClearReference(VdpVideoSurface surf)
+{
+  CSingleLock lock(m_section);
+  if (m_state.find(surf) == m_state.end())
+  {
+    CLog::Log(LOGWARNING, "CVideoSurfaces::ClearReference - surface invalid");
+    return;
+  }
+  m_state[surf] &= ~SURFACE_USED_FOR_REFERENCE;
+  if (m_state[surf] == 0)
+  {
+    m_freeSurfaces.push_back(surf);
+  }
+}
+
+bool CVideoSurfaces::MarkRender(VdpVideoSurface surf)
+{
+  CSingleLock lock(m_section);
+  if (m_state.find(surf) == m_state.end())
+  {
+    CLog::Log(LOGWARNING, "CVideoSurfaces::MarkRender - surface invalid");
+    return false;
+  }
+  std::list<VdpVideoSurface>::iterator it;
+  it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+  if (it != m_freeSurfaces.end())
+  {
+    m_freeSurfaces.erase(it);
+  }
+  m_state[surf] |= SURFACE_USED_FOR_RENDER;
+  return true;
+}
+
+void CVideoSurfaces::ClearRender(VdpVideoSurface surf)
+{
+  CSingleLock lock(m_section);
+  if (m_state.find(surf) == m_state.end())
+  {
+    CLog::Log(LOGWARNING, "CVideoSurfaces::ClearRender - surface invalid");
+    return;
+  }
+  m_state[surf] &= ~SURFACE_USED_FOR_RENDER;
+  if (m_state[surf] == 0)
+  {
+    m_freeSurfaces.push_back(surf);
+  }
+}
+
+bool CVideoSurfaces::IsValid(VdpVideoSurface surf)
+{
+  CSingleLock lock(m_section);
+  if (m_state.find(surf) != m_state.end())
+    return true;
+  else
+    return false;
+}
+
+VdpVideoSurface CVideoSurfaces::GetFree(VdpVideoSurface surf)
+{
+  CSingleLock lock(m_section);
+  if (m_state.find(surf) != m_state.end())
+  {
+    std::list<VdpVideoSurface>::iterator it;
+    it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+    if (it == m_freeSurfaces.end())
+    {
+      CLog::Log(LOGWARNING, "CVideoSurfaces::GetFree - surface not free");
+    }
+    else
+    {
+      m_freeSurfaces.erase(it);
+      m_state[surf] = SURFACE_USED_FOR_REFERENCE;
+      return surf;
+    }
+  }
+
+  if (!m_freeSurfaces.empty())
+  {
+    VdpVideoSurface freeSurf = m_freeSurfaces.front();
+    m_freeSurfaces.pop_front();
+    m_state[freeSurf] = SURFACE_USED_FOR_REFERENCE;
+    return freeSurf;
+  }
+
+  return VDP_INVALID_HANDLE;
+}
+
+VdpVideoSurface CVideoSurfaces::GetAtIndex(int idx)
+{
+  if (idx >= m_state.size())
+    return VDP_INVALID_HANDLE;
+
+  std::map<VdpVideoSurface, int>::iterator it = m_state.begin();
+  for(int i = 0; i < idx; i++)
+    ++it;
+  return it->first;
+}
+
+VdpVideoSurface CVideoSurfaces::RemoveNext(bool skiprender)
+{
+  CSingleLock lock(m_section);
+  VdpVideoSurface surf;
+  std::map<VdpVideoSurface, int>::iterator it;
+  for(it = m_state.begin(); it != m_state.end(); ++it)
+  {
+    if (skiprender && it->second & SURFACE_USED_FOR_RENDER)
+      continue;
+    surf = it->first;
+    m_state.erase(surf);
+
+    std::list<VdpVideoSurface>::iterator it2;
+    it2 = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
+    if (it2 != m_freeSurfaces.end())
+      m_freeSurfaces.erase(it2);
+    return surf;
+  }
+  return VDP_INVALID_HANDLE;
+}
+
+void CVideoSurfaces::Reset()
+{
+  CSingleLock lock(m_section);
+  m_freeSurfaces.clear();
+  m_state.clear();
+}
+
+int CVideoSurfaces::Size()
+{
+  CSingleLock lock(m_section);
+  return m_state.size();
+}
+
+//-----------------------------------------------------------------------------
 // CVDPAU
 //-----------------------------------------------------------------------------
 
@@ -87,7 +232,6 @@ CDecoder::CDecoder() : m_vdpauOutput(&m_inMsgEvent)
 {
   m_vdpauConfig.vdpDevice = VDP_INVALID_HANDLE;
   m_vdpauConfig.videoSurfaces = &m_videoSurfaces;
-  m_vdpauConfig.videoSurfaceSec = &m_videoSurfaceSec;
 
   m_vdpauConfigured = false;
   m_hwContext.bitstream_buffers_allocated = 0;
@@ -164,6 +308,7 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int 
     m_hwContext.render = CDecoder::Render;
     m_hwContext.bitstream_buffers_allocated = 0;
     avctx->get_buffer      = CDecoder::FFGetBuffer;
+    avctx->reget_buffer    = CDecoder::FFGetBuffer;
     avctx->release_buffer  = CDecoder::FFReleaseBuffer;
     avctx->draw_horiz_band = CDecoder::FFDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
@@ -192,16 +337,6 @@ void CDecoder::Close()
   FiniVDPAUOutput();
   FiniVDPAUProcs();
   m_vdpauOutput.Dispose();
-
-  while (!m_videoSurfaces.empty())
-  {
-    vdpau_render_state *render = m_videoSurfaces.back();
-    m_videoSurfaces.pop_back();
-    if (render->bitstream_buffers_allocated)
-      m_dllAvUtil.av_freep(&render->bitstream_buffers);
-    render->bitstream_buffers_allocated = 0;
-    free(render);
-  }
 
   if (m_hwContext.bitstream_buffers_allocated)
   {
@@ -239,14 +374,10 @@ long CDecoder::Release()
       m_DisplayState = VDPAU_ERROR;
     }
 
-    for(unsigned int i = 0; i < m_videoSurfaces.size(); ++i)
+    VdpVideoSurface surf;
+    while((surf = m_videoSurfaces.RemoveNext(true)) != VDP_INVALID_HANDLE)
     {
-      vdpau_render_state *render = m_videoSurfaces[i];
-      if (render->surface != VDP_INVALID_HANDLE && !(render->state & FF_VDPAU_STATE_USED_FOR_RENDER))
-      {
-        m_vdpauConfig.vdpProcs.vdp_video_surface_destroy(render->surface);
-        render->surface = VDP_INVALID_HANDLE;
-      }
+      m_vdpauConfig.vdpProcs.vdp_video_surface_destroy(surf);
     }
   }
   return IHardwareDecoder::Release();
@@ -514,20 +645,16 @@ void CDecoder::FiniVDPAUOutput()
     return;
   m_vdpauConfig.vdpDecoder = VDP_INVALID_HANDLE;
 
-  CSingleLock lock(m_videoSurfaceSec);
-  CLog::Log(LOGDEBUG, "CVDPAU::FiniVDPAUOutput destroying %d video surfaces", (int)m_videoSurfaces.size());
+  CLog::Log(LOGDEBUG, "CVDPAU::FiniVDPAUOutput destroying %d video surfaces", m_videoSurfaces.Size());
 
-  for(unsigned int i = 0; i < m_videoSurfaces.size(); ++i)
+  VdpVideoSurface surf;
+  while((surf = m_videoSurfaces.RemoveNext()) != VDP_INVALID_HANDLE)
   {
-    vdpau_render_state *render = m_videoSurfaces[i];
-    if (render->surface != VDP_INVALID_HANDLE)
-    {
-      vdp_st = m_vdpauConfig.vdpProcs.vdp_video_surface_destroy(render->surface);
-      render->surface = VDP_INVALID_HANDLE;
-    }
+    m_vdpauConfig.vdpProcs.vdp_video_surface_destroy(surf);
     if (CheckStatus(vdp_st, __LINE__))
       return;
   }
+  m_videoSurfaces.Reset();
 }
 
 void CDecoder::ReadFormatOf( AVCodecID codec
@@ -696,33 +823,6 @@ void CDecoder::SpewHardwareAvailable()  //CopyrighVDPAUt (c) 2008 Wladimir J. va
 
 }
 
-bool CDecoder::IsSurfaceValid(vdpau_render_state *render)
-{
-  // find render state in queue
-  bool found(false);
-  unsigned int i;
-  for(i = 0; i < m_videoSurfaces.size(); ++i)
-  {
-    if(m_videoSurfaces[i] == render)
-    {
-      found = true;
-      break;
-    }
-  }
-  if (!found)
-  {
-    CLog::Log(LOGERROR,"%s - video surface not found", __FUNCTION__);
-    return false;
-  }
-  if (m_videoSurfaces[i]->surface == VDP_INVALID_HANDLE)
-  {
-    m_videoSurfaces[i]->state = 0;
-    return false;
-  }
-
-  return true;
-}
-
 int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
@@ -738,63 +838,38 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     return -1;
   }
 
-  vdpau_render_state * render = NULL;
-
-  // find unused surface
-  { CSingleLock lock(vdp->m_videoSurfaceSec);
-    for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); i++)
-    {
-      if(!(vdp->m_videoSurfaces[i]->state & (FF_VDPAU_STATE_USED_FOR_REFERENCE | FF_VDPAU_STATE_USED_FOR_RENDER)))
-      {
-        render = vdp->m_videoSurfaces[i];
-        render->state = 0;
-        break;
-      }
-    }
-  }
+  VdpVideoSurface surf = (VdpVideoSurface)(uintptr_t)pic->data[3];
+  surf = vdp->m_videoSurfaces.GetFree(surf != 0 ? surf : VDP_INVALID_HANDLE);
 
   VdpStatus vdp_st = VDP_STATUS_ERROR;
-  if (render == NULL)
+  if (surf == VDP_INVALID_HANDLE)
   {
     // create a new surface
     VdpDecoderProfile profile;
     ReadFormatOf(avctx->codec_id, profile, vdp->m_vdpauConfig.vdpChromaType);
-    render = (vdpau_render_state*)calloc(sizeof(vdpau_render_state), 1);
-    if (render == NULL)
-    {
-      CLog::Log(LOGWARNING, "CVDPAU::FFGetBuffer - calloc failed");
-      return -1;
-    }
-    CSingleLock lock(vdp->m_videoSurfaceSec);
-    render->surface = VDP_INVALID_HANDLE;
-    vdp->m_videoSurfaces.push_back(render);
-  }
 
-  if (render->surface == VDP_INVALID_HANDLE)
-  {
     vdp_st = vdp->m_vdpauConfig.vdpProcs.vdp_video_surface_create(vdp->m_vdpauConfig.vdpDevice,
                                          vdp->m_vdpauConfig.vdpChromaType,
                                          avctx->coded_width,
                                          avctx->coded_height,
-                                         &render->surface);
+                                         &surf);
     vdp->CheckStatus(vdp_st, __LINE__);
     if (vdp_st != VDP_STATUS_OK)
     {
-      free(render);
       CLog::Log(LOGERROR, "CVDPAU::FFGetBuffer - No Video surface available could be created");
       return -1;
     }
+    vdp->m_videoSurfaces.AddSurface(surf);
   }
 
   pic->data[1] = pic->data[2] = NULL;
-  pic->data[0] = (uint8_t*)render;
-  pic->data[3] = (uint8_t*)(uintptr_t)render->surface;
+  pic->data[0] = (uint8_t*)(uintptr_t)surf;
+  pic->data[3] = (uint8_t*)(uintptr_t)surf;
 
   pic->linesize[0] = pic->linesize[1] =  pic->linesize[2] = 0;
 
   pic->type= FF_BUFFER_TYPE_USER;
 
-  render->state |= FF_VDPAU_STATE_USED_FOR_REFERENCE;
   pic->reordered_opaque= avctx->reordered_opaque;
   return 0;
 }
@@ -805,31 +880,17 @@ void CDecoder::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CDecoder*             vdp        = (CDecoder*)ctx->GetHardware();
 
-  vdpau_render_state  * render;
+  VdpVideoSurface surf;
   unsigned int i;
 
   CSingleLock lock(vdp->m_DecoderSection);
 
-  render=(vdpau_render_state*)pic->data[0];
-  if(!render)
-  {
-    CLog::Log(LOGERROR, "CVDPAU::FFReleaseBuffer - invalid context handle provided");
-    return;
-  }
+  surf = (VdpVideoSurface)(uintptr_t)pic->data[3];
 
-  CSingleLock vLock(vdp->m_videoSurfaceSec);
-  render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;
+  vdp->m_videoSurfaces.ClearReference(surf);
+
   for(i=0; i<4; i++)
     pic->data[i]= NULL;
-
-  // find render state in queue
-  if (!vdp->IsSurfaceValid(render))
-  {
-    CLog::Log(LOGDEBUG, "CVDPAU::FFReleaseBuffer - ignoring invalid buffer");
-    return;
-  }
-
-  render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;
 }
 
 VdpStatus CDecoder::Render( VdpDecoder decoder, VdpVideoSurface target,
@@ -861,17 +922,10 @@ void CDecoder::FFDrawSlice(struct AVCodecContext *s,
   }
 
   VdpStatus vdp_st;
-  vdpau_render_state * render;
-
-  render = (vdpau_render_state*)src->data[0];
-  if(!render)
-  {
-    CLog::Log(LOGERROR, "CVDPAU::FFDrawSlice - invalid context handle provided");
-    return;
-  }
+  VdpVideoSurface surf = (VdpVideoSurface)(uintptr_t)src->data[3];
 
   // ffmpeg vc-1 decoder does not flush, make sure the data buffer is still valid
-  if (!vdp->IsSurfaceValid(render))
+  if (!vdp->m_videoSurfaces.IsValid(surf))
   {
     CLog::Log(LOGWARNING, "CVDPAU::FFDrawSlice - ignoring invalid buffer");
     return;
@@ -893,7 +947,7 @@ void CDecoder::FFDrawSlice(struct AVCodecContext *s,
   uint16_t decoded, processed, rend;
   vdp->m_bufferStats.Get(decoded, processed, rend);
   vdp_st = vdp->m_vdpauConfig.vdpProcs.vdp_decoder_render(vdp->m_vdpauConfig.vdpDecoder,
-                                   render->surface,
+                                   surf,
                                    (VdpPictureInfo const *)&(vdp->m_hwContext.info),
                                    vdp->m_hwContext.bitstream_buffers_used,
                                    vdp->m_hwContext.bitstream_buffers);
@@ -919,29 +973,20 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   if(pFrame)
   { // we have a new frame from decoder
 
-    vdpau_render_state * render = (vdpau_render_state*)pFrame->data[0];
-    if(!render)
-    {
-      CLog::Log(LOGERROR, "CVDPAU::Decode: no valid frame");
-      return VC_ERROR;
-    }
-
+    VdpVideoSurface surf = (VdpVideoSurface)(uintptr_t)pFrame->data[3];
     // ffmpeg vc-1 decoder does not flush, make sure the data buffer is still valid
-    if (!IsSurfaceValid(render))
+    if (!m_videoSurfaces.IsValid(surf))
     {
       CLog::Log(LOGWARNING, "CVDPAU::Decode - ignoring invalid buffer");
       return VC_BUFFER;
     }
-
-    CSingleLock lock(m_videoSurfaceSec);
-    render->state |= FF_VDPAU_STATE_USED_FOR_RENDER;
-    lock.Leave();
+    m_videoSurfaces.MarkRender(surf);
 
     // send frame to output for processing
     CVdpauDecodedPicture pic;
     memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
     ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
-    pic.render = render;
+    pic.videoSurface = surf;
     pic.DVDPic.color_matrix = avctx->colorspace;
     m_bufferStats.IncDecoded();
     m_vdpauOutput.m_dataPort.SendOutMessage(COutputDataProtocol::NEWFRAME, &pic, sizeof(pic));
@@ -2128,17 +2173,13 @@ void CMixer::Flush()
   {
     CVdpauDecodedPicture pic = m_mixerInput.back();
     m_mixerInput.pop_back();
-    CSingleLock lock(*m_config.videoSurfaceSec);
-    if (pic.render)
-      pic.render->state &= ~FF_VDPAU_STATE_USED_FOR_RENDER;
+    m_config.videoSurfaces->ClearRender(pic.videoSurface);
   }
   while (!m_decodedPics.empty())
   {
     CVdpauDecodedPicture pic = m_decodedPics.front();
     m_decodedPics.pop();
-    CSingleLock lock(*m_config.videoSurfaceSec);
-    if (pic.render)
-      pic.render->state &= ~FF_VDPAU_STATE_USED_FOR_RENDER;
+    m_config.videoSurfaces->ClearRender(pic.videoSurface);
   }
   Message *msg;
   while (m_dataPort.ReceiveOutMessage(&msg))
@@ -2146,9 +2187,7 @@ void CMixer::Flush()
     if (msg->signal == CMixerDataProtocol::FRAME)
     {
       CVdpauDecodedPicture pic = *(CVdpauDecodedPicture*)msg->data;
-      CSingleLock lock(*m_config.videoSurfaceSec);
-      if (pic.render)
-        pic.render->state &= ~FF_VDPAU_STATE_USED_FOR_RENDER;
+      m_config.videoSurfaces->ClearRender(pic.videoSurface);
     }
     else if (msg->signal == CMixerDataProtocol::BUFFER)
     {
@@ -2269,7 +2308,7 @@ void CMixer::InitCycle()
   }
 
   m_processPicture.DVDPic = m_mixerInput[1].DVDPic;
-  m_processPicture.render = m_mixerInput[1].render;
+  m_processPicture.videoSurface = m_mixerInput[1].videoSurface;
 }
 
 void CMixer::FiniCycle()
@@ -2277,10 +2316,9 @@ void CMixer::FiniCycle()
   while (m_mixerInput.size() > 3)
   {
     CVdpauDecodedPicture &tmp = m_mixerInput.back();
-    if (tmp.render && m_processPicture.DVDPic.format != RENDER_FMT_VDPAU_420)
+    if (m_processPicture.DVDPic.format != RENDER_FMT_VDPAU_420)
     {
-      CSingleLock lock(*m_config.videoSurfaceSec);
-      tmp.render->state &= ~FF_VDPAU_STATE_USED_FOR_RENDER;
+      m_config.videoSurfaces->ClearRender(tmp.videoSurface);
     }
     m_mixerInput.pop_back();
 //    m_config.stats->DecDecoded();
@@ -2312,10 +2350,10 @@ void CMixer::ProcessPicture()
     // use only 2 past 1 future for progressive/weave
     // (only used for postproc anyway eg noise reduction)
     if (m_mixerInput.size() > 3)
-      past_surfaces[1] = m_mixerInput[3].render->surface;
+      past_surfaces[1] = m_mixerInput[3].videoSurface;
     if (m_mixerInput.size() > 2)
-      past_surfaces[0] = m_mixerInput[2].render->surface;
-    futu_surfaces[0] = m_mixerInput[0].render->surface;
+      past_surfaces[0] = m_mixerInput[2].videoSurface;
+    futu_surfaces[0] = m_mixerInput[0].videoSurface;
     pastCount = 2;
     futuCount = 1;
   }
@@ -2325,31 +2363,31 @@ void CMixer::ProcessPicture()
     { // first field
       if (m_mixerInput.size() > 3)
       {
-        past_surfaces[3] = m_mixerInput[3].render->surface;
-        past_surfaces[2] = m_mixerInput[3].render->surface;
+        past_surfaces[3] = m_mixerInput[3].videoSurface;
+        past_surfaces[2] = m_mixerInput[3].videoSurface;
       }
       if (m_mixerInput.size() > 2)
       {
-        past_surfaces[1] = m_mixerInput[2].render->surface;
-        past_surfaces[0] = m_mixerInput[2].render->surface;
+        past_surfaces[1] = m_mixerInput[2].videoSurface;
+        past_surfaces[0] = m_mixerInput[2].videoSurface;
       }
-      futu_surfaces[0] = m_mixerInput[1].render->surface;
-      futu_surfaces[1] = m_mixerInput[0].render->surface;;
+      futu_surfaces[0] = m_mixerInput[1].videoSurface;
+      futu_surfaces[1] = m_mixerInput[0].videoSurface;
     }
     else
     { // second field
       if (m_mixerInput.size() > 3)
       {
-        past_surfaces[3] = m_mixerInput[3].render->surface;
+        past_surfaces[3] = m_mixerInput[3].videoSurface;
       }
       if (m_mixerInput.size() > 2)
       {
-        past_surfaces[2] = m_mixerInput[2].render->surface;
-        past_surfaces[1] = m_mixerInput[2].render->surface;
+        past_surfaces[2] = m_mixerInput[2].videoSurface;
+        past_surfaces[1] = m_mixerInput[2].videoSurface;
       }
-      past_surfaces[0] = m_mixerInput[1].render->surface;
-      futu_surfaces[0] = m_mixerInput[1].render->surface;
-      futu_surfaces[1] = m_mixerInput[1].render->surface;
+      past_surfaces[0] = m_mixerInput[1].videoSurface;
+      futu_surfaces[0] = m_mixerInput[1].videoSurface;
+      futu_surfaces[1] = m_mixerInput[1].videoSurface;
 
       if (m_mixerInput[0].DVDPic.pts != DVD_NOPTS_VALUE &&
           m_mixerInput[1].DVDPic.pts != DVD_NOPTS_VALUE)
@@ -2384,7 +2422,7 @@ void CMixer::ProcessPicture()
                                 m_mixerfield,
                                 pastCount,
                                 past_surfaces,
-                                m_mixerInput[1].render->surface,
+                                m_mixerInput[1].videoSurface,
                                 futuCount,
                                 futu_surfaces,
                                 &sourceRect,
@@ -2858,9 +2896,7 @@ void COutput::Flush()
       CVdpauProcessedPicture pic = *(CVdpauProcessedPicture*)msg->data;
       if (pic.DVDPic.format == RENDER_FMT_VDPAU_420)
       {
-        CSingleLock lock(*m_config.videoSurfaceSec);
-        if (pic.render)
-          pic.render->state &= ~FF_VDPAU_STATE_USED_FOR_RENDER;
+        m_config.videoSurfaces->ClearRender(pic.videoSurface);
       }
     }
     msg->Release();
@@ -2871,9 +2907,7 @@ void COutput::Flush()
     if (msg->signal == COutputDataProtocol::NEWFRAME)
     {
       CVdpauDecodedPicture pic = *(CVdpauDecodedPicture*)msg->data;
-      CSingleLock lock(*m_config.videoSurfaceSec);
-      if (pic.render)
-        pic.render->state &= ~FF_VDPAU_STATE_USED_FOR_RENDER;
+      m_config.videoSurfaces->ClearRender(pic.videoSurface);
     }
     else if (msg->signal == COutputDataProtocol::RETURNPIC)
     {
@@ -2908,9 +2942,7 @@ void COutput::Flush()
         CLog::Log(LOGDEBUG, "COutput::Flush - gl surface not found");
         continue;
       }
-      vdpau_render_state *render = it2->second.sourceVuv;
-      if (render)
-        render->state |= FF_VDPAU_STATE_USED_FOR_RENDER;
+      m_config.videoSurfaces->MarkRender(it2->second.sourceVuv);
     }
   }
 }
@@ -3004,9 +3036,9 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
     {
       m_config.useInteropYuv = true;
       GLMapSurfaces();
-      retPic->sourceIdx = procPic.render->surface;
+      retPic->sourceIdx = procPic.videoSurface;
       for (unsigned int i=0; i<4; ++i)
-        retPic->texture[i] = m_bufferPool.glVideoSurfaceMap[procPic.render->surface].texture[i];
+        retPic->texture[i] = m_bufferPool.glVideoSurfaceMap[procPic.videoSurface].texture[i];
       retPic->texWidth = m_config.surfaceWidth;
       retPic->texHeight = m_config.surfaceHeight;
       retPic->crop.x1 = 0;
@@ -3123,9 +3155,8 @@ void COutput::ProcessReturnPicture(CVdpauRenderPicture *pic)
       CLog::Log(LOGDEBUG, "COutput::ProcessReturnPicture - gl surface not found");
       return;
     }
-    vdpau_render_state *render = it->second.sourceVuv;
-    CSingleLock lock(*m_config.videoSurfaceSec);
-    render->state &= ~FF_VDPAU_STATE_USED_FOR_RENDER;
+    VdpVideoSurface surf = it->second.sourceVuv;
+    m_config.videoSurfaces->ClearRender(surf);
   }
   else if (pic->DVDPic.format == RENDER_FMT_VDPAU)
   {
@@ -3531,17 +3562,19 @@ void COutput::GLMapSurfaces()
   if (m_config.useInteropYuv)
   {
     VdpauBufferPool::GLVideoSurface glSurface;
-    if (m_config.videoSurfaces->size() != m_bufferPool.glVideoSurfaceMap.size())
+    VdpVideoSurface surf;
+    if (m_config.videoSurfaces->Size() != m_bufferPool.glVideoSurfaceMap.size())
     {
-      CSingleLock lock(*m_config.videoSurfaceSec);
-      for (unsigned int i = 0; i < m_config.videoSurfaces->size(); i++)
+      for (unsigned int i = 0; i < m_config.videoSurfaces->Size(); i++)
       {
-        if ((*m_config.videoSurfaces)[i]->surface == VDP_INVALID_HANDLE)
+        surf = m_config.videoSurfaces->GetAtIndex(i);
+
+        if (surf == VDP_INVALID_HANDLE)
           continue;
 
-        if (m_bufferPool.glVideoSurfaceMap.find((*m_config.videoSurfaces)[i]->surface) == m_bufferPool.glVideoSurfaceMap.end())
+        if (m_bufferPool.glVideoSurfaceMap.find(surf) == m_bufferPool.glVideoSurfaceMap.end())
         {
-          glSurface.sourceVuv = (*m_config.videoSurfaces)[i];
+          glSurface.sourceVuv = surf;
           while (glGetError() != GL_NO_ERROR) ;
           glGenTextures(4, glSurface.texture);
           if (glGetError() != GL_NO_ERROR)
@@ -3549,7 +3582,7 @@ void COutput::GLMapSurfaces()
              CLog::Log(LOGERROR, "VDPAU::COutput error creating texture");
              m_vdpError = true;
           }
-          glSurface.glVdpauSurface = glVDPAURegisterVideoSurfaceNV(reinterpret_cast<void*>((*m_config.videoSurfaces)[i]->surface),
+          glSurface.glVdpauSurface = glVDPAURegisterVideoSurfaceNV(reinterpret_cast<void*>(surf),
                                                     GL_TEXTURE_2D, 4, glSurface.texture);
 
           if (glGetError() != GL_NO_ERROR)
@@ -3569,7 +3602,7 @@ void COutput::GLMapSurfaces()
             CLog::Log(LOGERROR, "VDPAU::COutput error mapping surface");
             m_vdpError = true;
           }
-          m_bufferPool.glVideoSurfaceMap[(*m_config.videoSurfaces)[i]->surface] = glSurface;
+          m_bufferPool.glVideoSurfaceMap[surf] = glSurface;
           if (m_vdpError)
             return;
           CLog::Log(LOGNOTICE, "VDPAU::COutput registered surface");
@@ -3621,7 +3654,7 @@ void COutput::GLUnmapSurfaces()
   if (m_config.usePixmaps)
     return;
 
-  { CSingleLock lock(*m_config.videoSurfaceSec);
+  {
     std::map<VdpVideoSurface, VdpauBufferPool::GLVideoSurface>::iterator it;
     for (it = m_bufferPool.glVideoSurfaceMap.begin(); it != m_bufferPool.glVideoSurfaceMap.end(); ++it)
     {

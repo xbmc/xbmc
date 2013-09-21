@@ -60,6 +60,7 @@
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
+#include <list>
 
 using namespace Actor;
 
@@ -167,6 +168,8 @@ private:
  *  for init.
  */
 
+class CVideoSurfaces;
+
 struct CVdpauConfig
 {
   int surfaceWidth;
@@ -184,8 +187,7 @@ struct CVdpauConfig
   int featureCount;
   int upscale;
   VdpVideoMixerFeature vdpFeatures[14];
-  std::vector<vdpau_render_state*> *videoSurfaces;
-  CCriticalSection *videoSurfaceSec;
+  CVideoSurfaces *videoSurfaces;
   bool usePixmaps;
   int numRenderBuffers;
   uint32_t maxReferences;
@@ -199,7 +201,7 @@ struct CVdpauConfig
 struct CVdpauDecodedPicture
 {
   DVDVideoPicture DVDPic;
-  vdpau_render_state *render;
+  VdpVideoSurface videoSurface;
 };
 
 /**
@@ -208,7 +210,7 @@ struct CVdpauDecodedPicture
 struct CVdpauProcessedPicture
 {
   DVDVideoPicture DVDPic;
-  vdpau_render_state *render;
+  VdpVideoSurface videoSurface;
   VdpOutputSurface outputSurface;
 };
 
@@ -381,7 +383,7 @@ struct VdpauBufferPool
 #ifdef GL_NV_vdpau_interop
     GLvdpauSurfaceNV glVdpauSurface;
 #endif
-    vdpau_render_state *sourceVuv;
+    VdpVideoSurface sourceVuv;
     VdpOutputSurface sourceRgb;
   };
   std::vector<CVdpauRenderPicture*> allRenderPics;
@@ -511,6 +513,29 @@ protected:
 };
 
 //-----------------------------------------------------------------------------
+// VDPAU Video Surface states
+//-----------------------------------------------------------------------------
+
+class CVideoSurfaces
+{
+public:
+  void AddSurface(VdpVideoSurface surf);
+  void ClearReference(VdpVideoSurface surf);
+  bool MarkRender(VdpVideoSurface surf);
+  void ClearRender(VdpVideoSurface surf);
+  bool IsValid(VdpVideoSurface surf);
+  VdpVideoSurface GetFree(VdpVideoSurface surf);
+  VdpVideoSurface GetAtIndex(int idx);
+  VdpVideoSurface RemoveNext(bool skiprender = false);
+  void Reset();
+  int Size();
+protected:
+  std::map<VdpVideoSurface, int> m_state;
+  std::list<VdpVideoSurface> m_freeSurfaces;
+  CCriticalSection m_section;
+};
+
+//-----------------------------------------------------------------------------
 // VDPAU decoder
 //-----------------------------------------------------------------------------
 
@@ -570,7 +595,6 @@ protected:
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
   bool CheckStatus(VdpStatus vdp_st, int line);
-  bool IsSurfaceValid(vdpau_render_state *render);
   void InitVDPAUProcs();
   void FiniVDPAUProcs();
   void FiniVDPAUOutput();
@@ -603,9 +627,8 @@ protected:
   ThreadIdentifier m_decoderThread;
   bool          m_vdpauConfigured;
   CVdpauConfig  m_vdpauConfig;
-  std::vector<vdpau_render_state*> m_videoSurfaces;
+  CVideoSurfaces m_videoSurfaces;
   AVVDPAUContext m_hwContext;
-  CCriticalSection m_videoSurfaceSec;
 
   COutput       m_vdpauOutput;
   CVdpauBufferStats m_bufferStats;
