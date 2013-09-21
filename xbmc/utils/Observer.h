@@ -21,6 +21,7 @@
  */
 
 #include "threads/CriticalSection.h"
+#include <vector>
 
 class Observable;
 class ObservableMessageJob;

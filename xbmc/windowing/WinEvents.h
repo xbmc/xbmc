@@ -23,7 +23,6 @@
 
 #pragma once
 
-#include "utils/StdString.h"
 #include "XBMC_events.h"
 
 typedef bool (* PHANDLE_EVENT_FUNC)(XBMC_Event& newEvent);
