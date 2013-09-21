@@ -723,7 +723,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   // or if we are still on the same display - it might be only a refreshrate/resolution
   // change request.
   // Recurse to reset fullscreen mode and then continue.
-  if (was_fullscreen && fullScreen && lastDisplayNr != res.iScreen)
+  if (was_fullscreen && fullScreen)
   {
     needtoshowme = false;
     ShowHideNSWindow([last_view window], needtoshowme);
