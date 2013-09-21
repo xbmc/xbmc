@@ -317,7 +317,9 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
 
   // check if we advance a track of a CUE sheet
   // if this is the case we don't need to open a new stream
-  if (file.GetMusicInfoTag()->GetURL().Equals(m_FileItem->GetMusicInfoTag()->GetURL()) &&
+  std::string newURL = file.GetMusicInfoTag() ? file.GetMusicInfoTag()->GetURL() : file.GetPath();
+  std::string oldURL = m_FileItem->GetMusicInfoTag() ? m_FileItem->GetMusicInfoTag()->GetURL() : m_FileItem->GetPath();
+  if (newURL.compare(oldURL) == 0 &&
       file.m_lStartOffset &&
       file.m_lStartOffset == m_FileItem->m_lEndOffset &&
       m_currentStream && m_currentStream->m_prepareTriggered)
