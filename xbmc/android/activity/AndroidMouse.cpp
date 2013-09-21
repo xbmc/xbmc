@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "windowing/WinEvents.h"
+#include "input/MouseStat.h"
 
 CAndroidMouse::CAndroidMouse()
 {
@@ -73,7 +74,7 @@ void CAndroidMouse::MouseMove(float x, float y)
   newEvent.motion.y = y;
   newEvent.motion.xrel = 0;
   newEvent.motion.yrel = 0;
-  CWinEventsAndroid::MessagePush(&newEvent);
+  CWinEvents::MessagePush(&newEvent);
 }
 
 void CAndroidMouse::MouseButton(float x, float y, int32_t action)
@@ -89,5 +90,5 @@ void CAndroidMouse::MouseButton(float x, float y, int32_t action)
   newEvent.button.x = x;
   newEvent.button.y = y;
   newEvent.button.button = XBMC_BUTTON_LEFT;
-  CWinEventsAndroid::MessagePush(&newEvent);
+  CWinEvents::MessagePush(&newEvent);
 }

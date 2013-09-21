@@ -255,10 +255,10 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void) sendKeypressEvent: (XBMC_Event) event
 {
   event.type = XBMC_KEYDOWN;
-  CWinEventsIOS::MessagePush(&event);
+  CWinEvents::MessagePush(&event);
 
   event.type = XBMC_KEYUP;
-  CWinEventsIOS::MessagePush(&event);
+  CWinEvents::MessagePush(&event);
 }
 
 // START OF UIKeyInput protocol
@@ -666,7 +666,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   newEvent.motion.y = point.y;
   newEvent.motion.xrel = 0;
   newEvent.motion.yrel = 0;
-  CWinEventsIOS::MessagePush(&newEvent);
+  CWinEvents::MessagePush(&newEvent);
 }
 //--------------------------------------------------------------
 - (IBAction)handleSingleFingerSingleTap:(UIGestureRecognizer *)sender 
