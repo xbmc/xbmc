@@ -13,13 +13,6 @@
 		<datadir zip="true">http://mirrors.xbmc.org/addons/frodo</datadir>
 		<hashes>true</hashes>
 	</extension>
-	<extension point="xbmc.addon.repository"
-		name="XBMC.org Gotham Repository">
-		<info compressed="true">http://mirrors.xbmc.org/addons/gotham/addons.xml</info>
-		<checksum>http://mirrors.xbmc.org/addons/gotham/addons.xml.md5</checksum>
-		<datadir zip="true">http://mirrors.xbmc.org/addons/gotham</datadir>
-		<hashes>true</hashes>
-	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="af">Installeer Byvoegsels vanaf XBMC.org</summary>
 		<summary lang="am">ከ XBMC.org ተጨማ-ሪዎች መግጠሚያ </summary>
