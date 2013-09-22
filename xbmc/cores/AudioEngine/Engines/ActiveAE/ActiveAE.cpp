@@ -1041,10 +1041,20 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
 {
   // we only can handle a single pass through stream
-  if (!m_streams.empty())
+  bool hasRawStream = false;
+  bool hasStream = false;
+  std::list<CActiveAEStream*>::iterator it;
+  for(it = m_streams.begin(); it != m_streams.end(); ++it)
   {
-    if (AE_IS_RAW(m_streams.front()->m_format.m_dataFormat) || AE_IS_RAW(streamMsg->format.m_dataFormat))
-      return NULL;
+    if((*it)->IsDrained())
+      continue;
+    if(AE_IS_RAW((*it)->m_format.m_dataFormat))
+      hasRawStream = true;
+    hasStream = true;
+  }
+  if (hasRawStream || (hasStream && AE_IS_RAW(streamMsg->format.m_dataFormat)))
+  {
+    return NULL;
   }
 
   // create the stream
