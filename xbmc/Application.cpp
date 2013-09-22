@@ -1567,7 +1567,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
   if (settingId == "lookandfeel.skin" ||
       settingId == "lookandfeel.font" ||
       settingId == "lookandfeel.skincolors")
-    ReloadSkin();
+    CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin");
   else if (settingId == "lookandfeel.skintheme")
   {
     // also set the default color theme
@@ -1582,7 +1582,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     if (!StringUtils::EqualsNoCase(colorTheme, CSettings::Get().GetString("lookandfeel.skincolors")))
       CSettings::Get().SetString("lookandfeel.skincolors", colorTheme);
     else
-      ReloadSkin();
+      CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin");
   }
   else if (settingId == "lookandfeel.skinzoom")
     g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
@@ -1768,7 +1768,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   if (!skin)
   {
     CLog::Log(LOGERROR, "failed to load requested skin, fallback to \"%s\" skin", defaultSkin.c_str());
-    CSettings::Get().SetString("lookandfeel.skin", defaultSkin);
+    CSettings::Get().GetSetting("lookandfeel.skin")->Reset();
     return ;
   }
 
@@ -1780,8 +1780,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
     if (strcmpi(skin->ID().c_str(), defaultSkin.c_str()) != 0)
     {
       CLog::Log(LOGERROR, "home.xml doesn't exist in skin: %s, fallback to \"%s\" skin", skin->ID().c_str(), defaultSkin.c_str());
-      CSettings::Get().SetString("lookandfeel.skin", defaultSkin);
-      LoadSkin(defaultSkin);
+      CSettings::Get().GetSetting("lookandfeel.skin")->Reset();
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24102), g_localizeStrings.Get(24103));
       return ;
     }
