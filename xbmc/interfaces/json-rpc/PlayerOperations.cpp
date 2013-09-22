@@ -713,7 +713,6 @@ JSONRPC_STATUS CPlayerOperations::SetRepeat(const CStdString &method, ITransport
       if (parameterObject["repeat"].asString() == "cycle")
       {
         REPEAT_STATE repeatPrev = g_playlistPlayer.GetRepeat(playlistid);
-        repeat = repeatPrev;
         if (repeatPrev == REPEAT_NONE)
           repeat = REPEAT_ALL;
         else if (repeatPrev == REPEAT_ALL)

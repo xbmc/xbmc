@@ -256,8 +256,8 @@ char* Cocoa_MountPoint2DeviceName(char *path)
         break;
       }
     }
-    free(strDVDDevice);
   }
+  free(strDVDDevice);
   return path;
 }
 
