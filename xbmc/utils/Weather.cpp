@@ -306,7 +306,7 @@ void CWeatherJob::LoadLocalizedToken()
           if (strEncoding.IsEmpty()) // Is language file utf8?
             utf8Label=pChild->FirstChild()->Value();
           else
-            g_charsetConverter.stringCharsetToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8Label);
+            g_charsetConverter.ToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8Label);
 
           if (!utf8Label.IsEmpty())
             m_localizedTokens.insert(make_pair(utf8Label, id));

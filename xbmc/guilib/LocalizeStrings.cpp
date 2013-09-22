@@ -45,7 +45,7 @@ CStdString CLocalizeStrings::ToUTF8(const CStdString& strEncoding, const CStdStr
     return str;
 
   CStdString ret;
-  g_charsetConverter.stringCharsetToUtf8(strEncoding, str, ret);
+  g_charsetConverter.ToUtf8(strEncoding, str, ret);
   return ret;
 }
 

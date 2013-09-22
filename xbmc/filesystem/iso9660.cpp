@@ -701,7 +701,7 @@ bool iso9660::FindClose( HANDLE szLocalFolder )
 string iso9660::GetThinText(BYTE* strTxt, int iLen )
 {
   // convert from "fat" text (UTF-16BE) to "thin" text (UTF-8)
-  CStdString16 strTxtUnicode((uint16_t*)strTxt, iLen / 2);
+  std::u16string strTxtUnicode((char16_t*)strTxt, iLen / 2);
   CStdString utf8String;
 
   g_charsetConverter.utf16BEtoUTF8(strTxtUnicode, utf8String);
