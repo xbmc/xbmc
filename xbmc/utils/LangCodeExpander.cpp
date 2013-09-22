@@ -271,6 +271,9 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
 
 bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString& lang)
 {
+  if (lang.empty())
+    return false;
+
   if (lang.length() == 2)
   {
     CStdString tmp;
@@ -326,6 +329,9 @@ bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString&
 
 bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
 {
+  if (desc.empty())
+    return false;
+
   CStdString descTmp(desc);
   descTmp.Trim();
   STRINGLOOKUPTABLE::iterator it;
@@ -358,6 +364,9 @@ bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
 
 bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
 {
+  if (code.empty())
+    return false;
+
   STRINGLOOKUPTABLE::iterator it;
   //Make sure we convert to lowercase before trying to find it
   CStdString sCode(code);
@@ -375,6 +384,9 @@ bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
 
 bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
 {
+  if (code.empty())
+    return false;
+
   long longcode;
   CStdString sCode(code);
   sCode.MakeLower();
@@ -481,6 +493,9 @@ bool CLangCodeExpander::CompareLangCodes(const CStdString& code1, const CStdStri
 
 CStdString CLangCodeExpander::ConvertToISO6392T(const CStdString& lang)
 {
+  if (lang.empty())
+    return lang;
+
   CStdString two, three;
   if (ConvertToTwoCharCode(two, lang))
   {
