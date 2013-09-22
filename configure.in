@@ -916,6 +916,12 @@ if test "x$have_builtin_sync_val_compare_and_swap" = "xyes"; then
         [Define to 1 if your compiler supports the __sync_val_compare_and_swap() intrinsic.])
 fi
 
+# Check for u16string/u32string declarations
+AC_LANG_PUSH([C++])
+AC_CHECK_TYPES([std::u16string, std::u32string], [], [], [[#include <string>]])
+AC_CHECK_TYPES([char16_t, char32_t])
+AC_LANG_POP([C++])
+
 # Add top source directory for all builds so we can use config.h
 INCLUDES="-I\$(abs_top_srcdir) $INCLUDES" 
 

@@ -24,8 +24,9 @@
 #include "settings/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
-#include "utils/StdString.h"
+#include "utils/uXstrings.h"
 
+#include <string>
 #include <vector>
 
 class CSetting;
@@ -35,60 +36,62 @@ class CCharsetConverter : public ISettingCallback
 public:
   CCharsetConverter();
 
-  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingChanged(const CSetting* setting);
 
   void reset();
 
   void clear();
 
-  void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true, bool forceLTRReadingOrder=false, bool* bWasFlipped=NULL);
+  bool utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst,
+                bool bVisualBiDiFlip = true, bool forceLTRReadingOrder = false,
+                bool failOnBadChar = false, bool* bWasFlipped = NULL);
 
-  void utf16LEtoW(const CStdString16& utf16String, CStdStringW &wString);
+  bool utf16LEtoW(const std::u16string& utf16String, std::wstring& wString);
 
-  void subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest);
+  bool subtitleCharsetToW(const std::string& stringSrc, std::wstring& wStringDst);
 
-  void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
+  bool utf8ToStringCharset(const std::string& utf8StringSrc, std::string& stringDst);
 
-  void utf8ToStringCharset(CStdStringA& strSourceDest);
-  void utf8ToSystem(CStdStringA& strSourceDest);
+  bool utf8ToStringCharset(std::string& stringSrcDst);
+  bool utf8ToSystem(std::string& stringSrcDst, bool failOnBadChar = false);
 
-  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
-  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdString16& strDest);
-  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdString32& strDest);
+  bool utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::string& stringDst);
+  bool utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u16string& utf16StringDst);
+  bool utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u32string& utf32StringDst);
 
-  void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
+  bool ToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst);
 
-  bool isValidUtf8(const CStdString& str);
+  bool isValidUtf8(const std::string& str);
 
-  bool isValidUtf8(const char *buf, unsigned int len);
+  bool isValidUtf8(const char* buf, unsigned int len);
 
-  void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
+  bool wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
+  bool utf16BEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
+  bool utf16LEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
+  bool ucs2ToUTF8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst);
 
-  void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
-  void utf16BEtoUTF8(const CStdString16& strSource, CStdStringA &strDest);
-  void utf16LEtoUTF8(const CStdString16& strSource, CStdStringA &strDest);
-  void ucs2ToUTF8(const CStdString16& strSource, CStdStringA& strDest);
+  bool utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst);
 
-  void utf8logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest);
+  bool utf32ToStringCharset(const std::u32string& utf32StringSrc, std::string& stringDst);
 
-  void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
+  std::vector<std::string> getCharsetLabels();
+  std::string getCharsetLabelByName(const std::string& charsetName);
+  std::string getCharsetNameByLabel(const std::string& charsetLabel);
+  bool isBidiCharset(const std::string& charset);
 
-  std::vector<CStdString> getCharsetLabels();
-  CStdString getCharsetLabelByName(const CStdString& charsetName);
-  CStdString getCharsetNameByLabel(const CStdString& charsetLabel);
-  bool isBidiCharset(const CStdString& charset);
+  bool unknownToUTF8(std::string& stringSrcDst);
+  bool unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
 
-  void unknownToUTF8(CStdStringA &sourceDest);
-  void unknownToUTF8(const CStdStringA &source, CStdStringA &dest);
+  bool toW(const std::string& stringSrc, std::wstring& wStringDst, const std::string& enc);
+  bool fromW(const std::wstring& wStringSrc, std::string& stringDst, const std::string& enc);
 
-  void toW(const CStdStringA& source, CStdStringW& dest, const CStdStringA& enc);
-  void fromW(const CStdStringW& source, CStdStringA& dest, const CStdStringA& enc);
-
-  static void SettingOptionsCharsetsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
+  static void SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current);
+private:
+  static const int m_Utf8CharMinSize, m_Utf8CharMaxSize;
 };
 
 XBMC_GLOBAL(CCharsetConverter,g_charsetConverter);
 
-size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft);
+size_t iconv_const (void* cd, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft);
 
 #endif

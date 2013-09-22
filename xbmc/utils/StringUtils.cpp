@@ -341,7 +341,7 @@ CStdStringArray StringUtils::SplitString(const CStdString& input, const CStdStri
   return result;
 }
 
-vector<string> StringUtils::Split(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings /* = 0 */)
+vector<string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings /* = 0 */)
 {
   CStdStringArray result;
   SplitString(input, delimiter, result, iMaxStrings);
