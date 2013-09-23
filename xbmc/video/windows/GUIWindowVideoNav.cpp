@@ -931,9 +931,11 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
         if (!item->IsPlugin() && !item->IsScript() && !item->IsLiveTV() && !item->IsAddonsPath() &&
-            item->GetPath() != "sources://video/" && item->GetPath() != "special://videoplaylists/" &&
-            item->GetPath().Left(19) != "newsmartplaylist://" && item->GetPath().Left(14) != "newplaylist://" &&
-            item->GetPath().Left(9) != "newtag://")
+            item->GetPath() != "sources://video/" &&
+            item->GetPath() != "special://videoplaylists/" &&
+            !StringUtils::StartsWith(item->GetPath(), "newsmartplaylist://") &&
+            !StringUtils::StartsWith(item->GetPath(), "newplaylist://") &&
+            !StringUtils::StartsWith(item->GetPath(), "newtag://"))
         {
           if (item->m_bIsFolder)
           {
@@ -1192,7 +1194,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       // delete the thumbnail if that's what the user wants, else overwrite with the
       // new thumbnail
-      if (result.Left(14) == "thumb://Remote")
+      if (StringUtils::StartsWith(result, "thumb://Remote"))
       {
         int number = atoi(result.substr(14).c_str());
         result = thumbs[number];

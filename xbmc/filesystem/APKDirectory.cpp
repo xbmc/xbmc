@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 #include <zip.h>
@@ -59,7 +60,7 @@ bool CAPKDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     test_name = zip_get_name(zip_archive, zip_index, zip_flags);
 
     // check for non matching path.
-    if (!test_name.Left(path.size()).Equals(path))
+    if (!StringUtils::StartsWith(test_name, path))
       continue;
 
     // libzip does not index folders, only filenames. We search for a /,
@@ -70,7 +71,7 @@ bool CAPKDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     if (dir_marker > 0)
     {
       // return items relative to path
-      test_name=test_name.Left(dir_marker);
+      test_name=test_name.substr(0, dir_marker);
 
       if (items.Contains(host + "/" + test_name))
         continue;
@@ -86,7 +87,7 @@ bool CAPKDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       pItem->m_dateTime  = sb.mtime;    
       pItem->m_bIsFolder = dir_marker > 0 ;
       pItem->SetPath(host + "/" + test_name);
-      pItem->SetLabel(test_name.Right(test_name.size() - path.size()));
+      pItem->SetLabel(test_name.substr(path.size()));
       items.Add(pItem);      
     }
   }

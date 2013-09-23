@@ -338,7 +338,7 @@ void CLabelFormatter::SplitMask(unsigned int label, const CStdString &mask)
   int findStart = -1;
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match
-    m_staticContent[label].push_back(work.Left(findStart));
+    m_staticContent[label].push_back(work.substr(0, findStart));
     m_dynamicContent[label].push_back(CMaskString("", 
           reg.GetMatch(1)[0], ""));
     work = work.substr(findStart + reg.GetFindLen());
@@ -362,7 +362,7 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match for a pre/postfixed string
     // send anything
-    SplitMask(label, work.Left(findStart) + reg.GetMatch(1).c_str());
+    SplitMask(label, work.substr(0, findStart) + reg.GetMatch(1));
     m_dynamicContent[label].push_back(CMaskString(
             reg.GetMatch(2),
             reg.GetMatch(4)[0],

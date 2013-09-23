@@ -694,7 +694,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     }
 
     /* make sure we keep slashes */
-    if(url2.GetFileName().Right(1) == "/")
+    if(StringUtils::EndsWith(url2.GetFileName(), "/"))
       filename += "/";
 
     url2.SetFileName(filename);

@@ -420,7 +420,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           else if (message.GetParam2() == 2)
           { // delete
             if (filter.size())
-              filter = filter.Left(filter.size() - 1);
+              filter.erase(filter.size() - 1);
           }
           else
             filter = message.GetStringParam();
@@ -493,7 +493,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         m_history.ClearPathHistory();
         // ensure our directory is valid
         dir = GetStartFolder(dir);
-        if (!returning || m_vecItems->GetPath().Left(dir.GetLength()) != dir)
+        if (!returning || !StringUtils::StartsWith(m_vecItems->GetPath(), dir))
         { // we're not returning to the same path, so set our directory to the requested path
           m_vecItems->SetPath(dir);
         }
@@ -865,7 +865,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);
 
-  if (iWindow != WINDOW_PVR || (iWindow == WINDOW_PVR && m_vecItems->GetPath().Left(17) == "pvr://recordings/"))
+  if (iWindow != WINDOW_PVR ||
+      (iWindow == WINDOW_PVR && StringUtils::StartsWith(m_vecItems->GetPath(), "pvr://recordings/")))
     m_history.AddPath(m_vecItems->GetPath(), m_strFilterPath);
 
   //m_history.DumpPathHistory();

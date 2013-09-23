@@ -583,7 +583,7 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const 
 
     if (!strChannelsToDelete.empty())
     {
-      strChannelsToDelete = strChannelsToDelete.Right(strChannelsToDelete.length() - 2);
+      strChannelsToDelete.erase(0, 2);
       strWhereClause = FormatSQL("idGroup = %u AND idChannel IN (%s)", group.GroupID(), strChannelsToDelete.c_str());
       bDelete = DeleteValues("map_channelgroups_channels", strWhereClause) && bDelete;
     }

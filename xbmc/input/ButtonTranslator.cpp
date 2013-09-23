@@ -1200,7 +1200,7 @@ int CButtonTranslator::TranslateWindow(const CStdString &window)
   // window12345, for custom window to be keymapped
   if (strWindow.length() > 6 && StringUtils::StartsWithNoCase(strWindow, "window"))
     strWindow = strWindow.substr(6);
-  if (strWindow.Left(2) == "my")  // drop "my" prefix
+  if (StringUtils::StartsWithNoCase(strWindow, "my"))  // drop "my" prefix
     strWindow = strWindow.substr(2);
   if (StringUtils::IsNaturalNumber(strWindow))
   {

@@ -181,7 +181,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
           return NULL;
       }
       CStdString token = tokens[tokens.size()-2];
-      if (token.Left(4).CompareNoCase("part") == 0) // only list '.part01.rar'
+      if (StringUtils::StartsWithNoCase(token, "part")) // only list '.part01.rar'
       {
         // need this crap to avoid making mistakes - yeyh for the new rar naming scheme :/
         struct __stat64 stat;

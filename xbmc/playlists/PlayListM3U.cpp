@@ -91,7 +91,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
     strLine = szLine;
     StringUtils::Trim(strLine);
 
-    if (strLine.Left( (int)strlen(M3U_INFO_MARKER) ) == M3U_INFO_MARKER)
+    if (StringUtils::StartsWith(strLine, M3U_INFO_MARKER))
     {
       // start of info
       size_t iColon = strLine.find(":");
@@ -109,7 +109,9 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
         g_charsetConverter.unknownToUTF8(strInfo);
       }
     }
-    else if (strLine != M3U_START_MARKER && strLine.Left(strlen(M3U_ARTIST_MARKER)) != M3U_ARTIST_MARKER && strLine.Left(strlen(M3U_ALBUM_MARKER)) != M3U_ALBUM_MARKER )
+    else if (strLine != M3U_START_MARKER &&
+             !StringUtils::StartsWith(strLine, M3U_ARTIST_MARKER) &&
+             !StringUtils::StartsWith(strLine, M3U_ALBUM_MARKER))
     {
       CStdString strFileName = strLine;
 
@@ -224,7 +226,7 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
     // skip the first line
     if (strLine == M3U_START_MARKER)
         continue;
-    else if (strLine.Left(strlen(M3U_STREAM_MARKER)) == M3U_STREAM_MARKER)
+    else if (StringUtils::StartsWith(strLine, M3U_STREAM_MARKER))
     {
       // parse the line so we can pull out the bandwidth
       std::map< CStdString, CStdString > params = ParseStreamLine(strLine);

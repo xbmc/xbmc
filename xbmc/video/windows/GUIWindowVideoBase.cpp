@@ -894,7 +894,9 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 
   CStdString path = item->GetPath();
   if (!item->m_bIsFolder && path != "add" && path != "addons://more/video" &&
-      path.Left(19) != "newsmartplaylist://" && path.Left(14) != "newplaylist://" && path.Left(9) != "newtag://")
+      !StringUtils::StartsWith(path, "newsmartplaylist://") &&
+      !StringUtils::StartsWith(path, "newplaylist://") &&
+      !StringUtils::StartsWith(path, "newtag://"))
     return OnFileAction(iItem, CSettings::Get().GetInt("myvideos.selectaction"));
 
   return CGUIMediaWindow::OnSelect(iItem);
@@ -1473,7 +1475,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   }
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(item.GetPath()).c_str());
 
-  if (item.GetPath().Left(17) == "pvr://recordings/")
+  if (StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
   {
     if (!g_PVRManager.IsStarted())
       return false;

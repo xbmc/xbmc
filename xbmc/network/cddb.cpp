@@ -546,7 +546,7 @@ void Xcddb::parseData(const char *buffer)
       m_strYear = TrimToUTF8(strValue);
     else if (strKeyword== "DGENRE")
       m_strGenre = TrimToUTF8(strValue);
-    else if (strKeyword.Left(6) == "TTITLE")
+    else if (StringUtils::StartsWith(strKeyword, "TTITLE"))
       addTitle(strKeyword + "=" + strValue);
     else if (strKeyword == "EXTD")
     {
@@ -578,7 +578,7 @@ void Xcddb::parseData(const char *buffer)
         }
       }
     }
-    else if (strKeyword.Left(4) == "EXTT")
+    else if (StringUtils::StartsWith(strKeyword, "EXTT"))
       addExtended(strKeyword + "=" + strValue);
   }
 
@@ -875,8 +875,8 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   //##########################################################
   // Send the Hello message
   CStdString version = g_infoManager.GetLabel(SYSTEM_BUILD_VERSION);
-  if (version.Find(" ") >= 0) 
-    version = version.Left(version.Find(" "));
+  if (version.find(" ") >= 0) 
+    version = version.substr(0, version.find(" "));
   CStdString strGreeting = "cddb hello xbmc xbmc.org XBMC " + version;
   if ( ! Send(strGreeting.c_str()) )
   {

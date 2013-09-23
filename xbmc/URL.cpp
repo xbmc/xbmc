@@ -118,7 +118,7 @@ void CURL::Parse(const CStdString& strURL1)
         return ;
       }
       iPos += extLen + 1;
-      CStdString archiveName = strURL.Left(iPos);
+      std::string archiveName = strURL.substr(0, iPos);
       struct __stat64 s;
       if (XFILE::CFile::Stat(archiveName, &s) == 0)
       {
@@ -131,12 +131,12 @@ void CURL::Parse(const CStdString& strURL1)
           Encode(archiveName);
           if (is_apk)
           {
-            CURL c((CStdString)"apk" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+            CURL c("apk://" + archiveName + "/" + strURL.substr(iPos + 1));
             *this = c;
           }
           else
           {
-            CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+            CURL c("zip://" + archiveName + "/" + strURL.substr(iPos + 1));
             *this = c;
           }
           return;
@@ -146,7 +146,7 @@ void CURL::Parse(const CStdString& strURL1)
   }
   else
   {
-    SetProtocol(strURL.Left(iPos));
+    SetProtocol(strURL.substr(0, iPos));
     iPos += 3;
   }
 
@@ -236,7 +236,7 @@ void CURL::Parse(const CStdString& strURL1)
 
         if (iSemiColon >= 0)
         {
-          m_strDomain = strUserNamePassword.Left(iSemiColon);
+          m_strDomain = strUserNamePassword.substr(0, iSemiColon);
           strUserNamePassword.Delete(0, iSemiColon + 1);
         }
       }
@@ -245,9 +245,8 @@ void CURL::Parse(const CStdString& strURL1)
       int iColon = strUserNamePassword.Find(":");
       if (iColon >= 0)
       {
-        m_strUserName = strUserNamePassword.Left(iColon);
-        iColon++;
-        m_strPassword = strUserNamePassword.Right(strUserNamePassword.size() - iColon);
+        m_strUserName = strUserNamePassword.substr(0, iColon);
+        m_strPassword = strUserNamePassword.substr(iColon + 1);
       }
       // username
       else
@@ -270,10 +269,8 @@ void CURL::Parse(const CStdString& strURL1)
     int iColon = strHostNameAndPort.Find(":");
     if (iColon >= 0)
     {
-      m_strHostName = strHostNameAndPort.Left(iColon);
-      iColon++;
-      CStdString strPort = strHostNameAndPort.Right(strHostNameAndPort.size() - iColon);
-      m_iPort = atoi(strPort.c_str());
+      m_strHostName = strHostNameAndPort.substr(0, iColon);
+      m_iPort = atoi(strHostNameAndPort.substr(iColon + 1).c_str());
     }
     else
     {
@@ -287,10 +284,8 @@ void CURL::Parse(const CStdString& strURL1)
     int iColon = strHostNameAndPort.Find(":");
     if (iColon >= 0)
     {
-      m_strHostName = strHostNameAndPort.Left(iColon);
-      iColon++;
-      CStdString strPort = strHostNameAndPort.Right(strHostNameAndPort.size() - iColon);
-      m_iPort = atoi(strPort.c_str());
+      m_strHostName = strHostNameAndPort.substr(0, iColon);
+      m_iPort = atoi(strHostNameAndPort.substr(iColon + 1).c_str());
     }
     else
     {
@@ -305,7 +300,7 @@ void CURL::Parse(const CStdString& strURL1)
       if(iSlash < 0)
         m_strShareName = m_strFileName;
       else
-        m_strShareName = m_strFileName.Left(iSlash);
+        m_strShareName = m_strFileName.substr(0, iSlash);
     }
   }
 
@@ -315,7 +310,7 @@ void CURL::Parse(const CStdString& strURL1)
     || m_strProtocol.CompareNoCase("videodb") == 0
     || m_strProtocol.CompareNoCase("sources") == 0
     || m_strProtocol.CompareNoCase("pvr") == 0
-    || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
+    || StringUtils::StartsWith(m_strProtocol, "mem"))
   {
     if (m_strHostName != "" && m_strFileName != "")
     {

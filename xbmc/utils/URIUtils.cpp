@@ -139,7 +139,7 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
     strFileMask += "|";
 
     if (strFileMask.Find(strExtension) >= 0)
-      strFileName = strFileName.Left(iPos);
+      strFileName.erase(iPos);
   }
 }
 
@@ -256,7 +256,7 @@ void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   unsigned int j = 1;
   while (j <= min(strParent.size(), strPath.size()) && strnicmp(strParent.c_str(), strPath.c_str(), j) == 0)
     j++;
-  strParent = strParent.Left(j - 1);
+  strParent.erase(j - 1);
   // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
   if (!HasSlashAtEnd(strParent))
   {
@@ -359,8 +359,8 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
   else if (url.GetProtocol() == "special")
   {
-    if (HasSlashAtEnd(strFile) )
-      strFile = strFile.Left(strFile.size() - 1);
+    if (HasSlashAtEnd(strFile))
+      strFile.erase(strFile.size() - 1);
     if(strFile.ReverseFind('/') < 0)
       return false;
   }
@@ -379,7 +379,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   if (HasSlashAtEnd(strFile) )
   {
-    strFile = strFile.Left(strFile.size() - 1);
+    strFile.erase(strFile.size() - 1);
   }
 
   int iPos = strFile.ReverseFind('/');
@@ -396,7 +396,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     return true;
   }
 
-  strFile = strFile.Left(iPos);
+  strFile.erase(iPos);
 
   AddSlashAtEnd(strFile);
 
@@ -470,19 +470,19 @@ bool URIUtils::IsOnDVD(const CStdString& strFile)
 {
 #ifdef TARGET_WINDOWS
   if (strFile.substr(1,1) == ":")
-    return (GetDriveType(strFile.Left(3)) == DRIVE_CDROM);
+    return (GetDriveType(strFile.substr(0, 3).c_str()) == DRIVE_CDROM);
 #endif
 
-  if (strFile.Left(4).CompareNoCase("dvd:") == 0)
+  if (StringUtils::StartsWith(strFile, "dvd:"))
     return true;
 
-  if (strFile.Left(4).CompareNoCase("udf:") == 0)
+  if (StringUtils::StartsWith(strFile, "udf:"))
     return true;
 
-  if (strFile.Left(8).CompareNoCase("iso9660:") == 0)
+  if (StringUtils::StartsWith(strFile, "iso9660:"))
     return true;
 
-  if (strFile.Left(5).CompareNoCase("cdda:") == 0)
+  if (StringUtils::StartsWith(strFile, "cdda:"))
     return true;
 
   return false;
@@ -1062,7 +1062,7 @@ CStdString URIUtils::GetDirectory(const CStdString &strFilePath)
 
   size_t iPosBar = strFilePath.rfind('|');
   if (iPosBar == string::npos)
-    return strFilePath.Left(iPosSlash + 1); // Only path
+    return strFilePath.substr(0, iPosSlash + 1); // Only path
 
   return strFilePath.substr(0, iPosSlash + 1) + strFilePath.substr(iPosBar); // Path + options
 }

@@ -22,6 +22,7 @@
 #include "URL.h"
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
@@ -174,7 +175,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
   {
     return GetGroupsDirectory(&results, true);
   }
-  else if (fileName.Left(12) == "channels/tv/")
+  else if (StringUtils::StartsWith(fileName, "channels/tv/"))
   {
     CStdString strGroupName(fileName.substr(12));
     URIUtils::RemoveSlashAtEnd(strGroupName);
@@ -185,7 +186,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
       group->GetMembers(results, !StringUtils::EndsWithNoCase(fileName, ".hidden"));
     return true;
   }
-  else if (fileName.Left(15) == "channels/radio/")
+  else if (StringUtils::StartsWith(fileName, "channels/radio/"))
   {
     CStdString strGroupName(fileName.substr(15));
     URIUtils::RemoveSlashAtEnd(strGroupName);

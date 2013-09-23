@@ -454,7 +454,7 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
     return true;
   }
-  else if(url.GetFileName().Left(5) == "tags/")
+  else if (StringUtils::StartsWith(url.GetFileName(), "tags/"))
     return GetTag(url, items);
   return false;
 }

@@ -4792,7 +4792,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
   case LISTITEM_SORT_LETTER:
     {
       CStdString letter;
-      std::wstring character = item->GetSortLabel().Left(1);
+      std::wstring character(1, item->GetSortLabel()[0]);
       StringUtils::ToUpper(character);
       g_charsetConverter.wToUTF8(character, letter);
       return letter;

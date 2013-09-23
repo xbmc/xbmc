@@ -225,7 +225,7 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   if (pos < 0)
     return ""; // no directory
   
-  strAlbumDir = strAlbumDir.Left(pos);
+  strAlbumDir = strAlbumDir.substr(0, pos);
 
   // replace %A with album artist name
   if (strAlbumDir.Find("%A") != -1)
@@ -290,9 +290,7 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item)
   CStdString strFormat = CSettings::Get().GetString("audiocds.trackpathformat");
   int pos = max(strFormat.ReverseFind('/'), strFormat.ReverseFind('\\'));
   if (pos != -1)
-  {
-    strFormat = strFormat.Right(strFormat.GetLength() - pos - 1);
-  }
+    strFormat.erase(0, pos+1);
 
   CLabelFormatter formatter(strFormat, "");
   formatter.FormatLabel(&destItem);

@@ -257,7 +257,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size()) return false;
 
   CFileItemPtr item = m_vecItems->Get(iItem);
-  if (item->GetPath().Left(14) == "musicsearch://")
+  if (StringUtils::StartsWith(item->GetPath(), "musicsearch://"))
   {
     if (m_searchWithEdit)
       OnSearchUpdate();

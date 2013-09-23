@@ -848,8 +848,8 @@ bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::strin
     protocol = "http";
     string url;
     CStdString strPath = path;
-    if (strPath.Left(8) == "image://" ||
-       (strPath.Left(10) == "special://" && strPath.Right(4) == ".tbn"))
+    if (StringUtils::StartsWith(strPath, "image://") ||
+       (StringUtils::StartsWith(strPath, "special://") && StringUtils::EndsWith(strPath, ".tbn")))
       url = "image/";
     else
       url = "vfs/";

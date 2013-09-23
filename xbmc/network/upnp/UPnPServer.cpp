@@ -744,9 +744,9 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     }
 
     // this isn't pretty but needed to properly hide the addons node from clients
-    if (items.GetPath().Left(7) == "library") {
+    if (StringUtils::StartsWith(items.GetPath(), "library")) {
         for (int i=0; i<items.Size(); i++) {
-            if (items[i]->GetPath().Left(6) == "addons")
+            if (StringUtils::StartsWith(items[i]->GetPath(), "addons"))
                 items.Remove(i);
         }
     }

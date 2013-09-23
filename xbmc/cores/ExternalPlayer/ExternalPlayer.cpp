@@ -233,7 +233,7 @@ void CExternalPlayer::Process()
   CStdString strFArgs;
 #if defined(TARGET_WINDOWS)
   // W32 batch-file handline
-  if (m_filename.Right(4) == ".bat" || m_filename.Right(4) == ".cmd")
+  if (StringUtils::EndsWith(m_filename, ".bat") || StringUtils::EndsWith(m_filename, ".cmd"))
   {
     // MSDN says you just need to do this, but cmd's handing of spaces and
     // quotes is soo broken it seems to work much better if you just omit
@@ -653,7 +653,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   {
 #ifdef TARGET_WINDOWS
     // Default depends on whether player is a batch file
-    m_hideconsole = m_filename.Right(4) == ".bat";
+    m_hideconsole = StringUtils::EndsWith(m_filename, ".bat");
 #endif
   }
 

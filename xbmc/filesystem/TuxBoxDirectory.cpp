@@ -78,7 +78,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       if (enigma2)
       {
         CStdString strPort = StringUtils::Format(":%i",url.GetPort());
-        if (strRoot.Right(strPort.GetLength()) != strPort) // If not root dir, enable Channels
+        if (!StringUtils::EndsWith(strRoot, strPort)) // If not root dir, enable Channels
           strFilter = "e2"; // Disable Bouquets for Enigma2
 
         GetRootAndChildStringEnigma2(strBQRequest, strXMLRootString, strXMLChildString);

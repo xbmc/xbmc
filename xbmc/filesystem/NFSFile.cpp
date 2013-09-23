@@ -29,6 +29,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "network/DNSNameCache.h"
 #include "threads/SystemClock.h"
 
@@ -259,9 +260,9 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
           //in that case we don't want to stripp off to
           //much from the path
           if( exportPath == "/" )
-            relativePath = "//" + path.Right((path.length()) - exportPath.length());
+            relativePath = "//" + path.substr(exportPath.length());
           else
-            relativePath = "//" + path.Right((path.length()-1) - exportPath.length());
+            relativePath = "//" + path.substr(exportPath.length()+1);
           ret = true;
           break;          
         }
@@ -845,8 +846,8 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
 bool CNFSFile::IsValidFile(const CStdString& strFileName)
 {
   if (strFileName.Find('/') == -1 || /* doesn't have sharename */
-      strFileName.Right(2) == "/." || /* not current folder */
-      strFileName.Right(3) == "/..")  /* not parent folder */
+      StringUtils::EndsWith(strFileName, "/.") || /* not current folder */
+      StringUtils::EndsWith(strFileName, "/.."))  /* not parent folder */
     return false;
   return true;
 }

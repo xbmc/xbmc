@@ -102,7 +102,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       // rtv://192.168.1.100/Video/ .  This trickery makes things work.
       strURL = StringUtils::TrimRight(strRoot, "/");
       pos = strURL.ReverseFind('/');
-      strRTV = strURL.Left(pos + 1);
+      strRTV = strURL.substr(0, pos + 1);
       strRTV.Replace("*", strURL.substr(pos + 1).c_str());
       CURL tmpURL(strRTV);
 

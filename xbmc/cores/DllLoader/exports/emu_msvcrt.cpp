@@ -827,7 +827,7 @@ extern "C"
     else if (url.GetFileName().Find("*.") != string::npos)
     {
       strMask = URIUtils::GetExtension(url.GetFileName());
-      url.SetFileName(url.GetFileName().Left(url.GetFileName().Find("*.")));
+      url.SetFileName(url.GetFileName().substr(0, url.GetFileName().Find("*.")));
     }
     else if (url.GetFileName().Find("*") != string::npos)
     {

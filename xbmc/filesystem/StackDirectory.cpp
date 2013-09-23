@@ -161,7 +161,7 @@ namespace XFILE
     CStdString file, folder;
     int pos = strPath.Find(" , ");
     if (pos > 0)
-      URIUtils::Split(strPath.Left(pos), folder, file);
+      URIUtils::Split((CStdString)strPath.substr(0, pos), folder, file);
     else
       URIUtils::Split(strPath, folder, file); // single filed stacks - should really not happen
 

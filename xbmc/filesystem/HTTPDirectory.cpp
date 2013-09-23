@@ -120,8 +120,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
       g_charsetConverter.wToUTF8(wConverted, strLinkTemp);
 
-      if (StringUtils::EndsWith(strNameTemp, "..>") && 
-          strLinkTemp.Left(strNameTemp.GetLength()-3).Equals(strNameTemp.Left(strNameTemp.GetLength()-3)))
+      if (StringUtils::EndsWith(strNameTemp, "..>") &&
+          StringUtils::StartsWith(strLinkTemp, strNameTemp.substr(0, strNameTemp.length() - 3)))
         strName = strNameTemp = strLinkTemp;
 
       // we detect http directory items by its display name and its stripped link

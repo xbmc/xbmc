@@ -297,7 +297,7 @@ void CGUIInfoLabel::Parse(const CStdString &label, int context)
     if (format != NONE)
     {
       if (pos1 > 0)
-        m_info.push_back(CInfoPortion(0, work.Left(pos1), ""));
+        m_info.push_back(CInfoPortion(0, work.substr(0, pos1), ""));
 
       pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + len);
       if (pos2 > pos1)

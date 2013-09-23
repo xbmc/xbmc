@@ -410,7 +410,7 @@ int CDAAPDirectory::GetCurrLevel(CStdString strPath)
 
   intSPos = strPath.Find("://");
   if (intSPos > -1)
-    strJustPath = strPath.Right(strPath.size() - (intSPos + 3));
+    strJustPath = strPath.substr(intSPos + 3);
   else
     strJustPath = strPath;
 

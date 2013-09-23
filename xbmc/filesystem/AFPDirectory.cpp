@@ -84,7 +84,7 @@ bool CAFPDirectory::ResolveSymlink( const CStdString &dirName, const CStdString 
       //and just can't change the global nfs context here
       //without destroying something...    
       fullpath = resolvedLink;
-      fullpath = fullpath.Right(fullpath.length()-1);
+      fullpath.erase(0, 1);
       resolvedUrl.SetFileName(fullpath);     
       ret = gAfpConnection.stat(resolvedUrl, stat);
       if(ret < 0)

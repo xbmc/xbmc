@@ -124,8 +124,8 @@ void CDatabase::Split(const CStdString& strFileNameAndPath, CStdString& strPath,
     if (ch == ':' || ch == '/' || ch == '\\') break;
     else i--;
   }
-  strPath = strFileNameAndPath.Left(i);
-  strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
+  strPath = strFileNameAndPath.substr(0, i);
+  strFileName = strFileNameAndPath.substr(i);
 }
 
 uint32_t CDatabase::ComputeCRC(const CStdString &text)

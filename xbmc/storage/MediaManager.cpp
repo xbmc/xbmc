@@ -315,7 +315,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
   CStdString strDevice = devicePath;
   // fallback for cdda://local/ and empty devicePath
 #ifdef HAS_DVD_DRIVE
-  if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
+  if(devicePath.empty() || StringUtils::StartsWith(devicePath, "cdda://local"))
     strDevice = m_strFirstAvailDrive;
 #endif
 
@@ -527,7 +527,8 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
     return ""; // return empty
 
   // correct the filename if needed 
-  if (pathVideoTS.Left(6).CompareNoCase("dvd://") == 0 || pathVideoTS.Left(10).CompareNoCase("iso9660://") == 0)
+  if (StringUtils::StartsWith(pathVideoTS, "dvd://") ||
+      StringUtils::StartsWith(pathVideoTS, "iso9660://"))
     pathVideoTS = g_mediaManager.TranslateDevicePath(""); 
 
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Trying to retrieve ID for path %s", pathVideoTS.c_str());

@@ -24,6 +24,7 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
 
 using namespace XFILE;
@@ -65,7 +66,7 @@ bool CVTPFile::Open(const CURL& url2)
 
   CStdString path(url.GetFileName());
 
-  if (path.Left(9) == "channels/")
+  if (StringUtils::StartsWith(path, "channels/"))
   {
 
     CStdString channel = path.substr(9);

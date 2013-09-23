@@ -762,8 +762,8 @@ void CGUIDialogKeyboardGeneric::OnPasteClipboard(void)
     g_charsetConverter.utf8ToW(utf8_text, unicode_text);
 
     int i = GetCursorPos();
-    CStdStringW left_end = m_strEdit.Left(i);
-    CStdStringW right_end = m_strEdit.Right(m_strEdit.length() - i);
+    CStdStringW left_end = m_strEdit.substr(0, i);
+    CStdStringW right_end = m_strEdit.substr(i);
 
     m_strEdit = left_end;
     m_strEdit.append(unicode_text);

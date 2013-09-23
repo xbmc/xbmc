@@ -262,7 +262,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   }
 
   CStdString strShow = StringUtils::Format("%s - ", g_localizeStrings.Get(20364).c_str());
-  if (m_strPlotOutline.Left(strShow.size()).Equals(strShow))
+  if (StringUtils::StartsWithNoCase(m_strPlotOutline, strShow))
   {
     CStdString strEpisode = m_strPlotOutline;
     CStdString strTitle = m_strDirectory;

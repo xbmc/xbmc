@@ -172,7 +172,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           int iPos = strItem.Find(strFind);
           if (iPos == -1)
             iPos = strItem.size();
-          CStdString tmp = strItem.Left(iPos);
+          CStdString tmp = strItem.substr(0, iPos);
           OnSearch(tmp);
         }
       }
@@ -835,7 +835,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   if (result.Equals("fanart://Local"))
     result = strLocal;
 
-  if (result.Left(15) == "fanart://Remote")
+  if (StringUtils::StartsWith(result, "fanart://Remote"))
   {
     int iFanart = atoi(result.substr(15).c_str());
     // set new primary fanart, and update our database accordingly

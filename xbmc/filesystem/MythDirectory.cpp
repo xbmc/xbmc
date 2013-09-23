@@ -71,7 +71,7 @@ DIR_CACHE_TYPE CMythDirectory::GetCacheType(const CStdString& strPath) const
   if (fileName == "recordings"
   ||  fileName == "guide"
   ||  fileName == "movies"
-  ||  fileName.Left(7) == "tvshows")
+  ||  StringUtils::StartsWith(fileName, "tvshows"))
     return DIR_CACHE_ALWAYS;
 
   return DIR_CACHE_ONCE;
@@ -531,7 +531,7 @@ bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return GetChannels(base, items);
   else if (fileName == "guide")
     return GetGuide(base, items);
-  else if (fileName.Left(6) == "guide/")
+  else if (StringUtils::StartsWith(fileName, "guide/"))
     return GetGuideForChannel(base, items, atoi(fileName.substr(6).c_str()));
   else if (fileName == "movies")
     return GetRecordings(base, items, MOVIES);
@@ -539,7 +539,7 @@ bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return GetRecordings(base, items);
   else if (fileName == "tvshows")
     return GetTvShowFolders(base, items);
-  else if (fileName.Left(8) == "tvshows/")
+  else if (StringUtils::StartsWith(fileName, "tvshows/"))
     return GetRecordings(base, items, TV_SHOWS, fileName.substr(8).c_str());
   return false;
 }
@@ -558,11 +558,11 @@ bool CMythDirectory::Exists(const char* strPath)
   if (fileName == ""
   ||  fileName == "channels"
   ||  fileName == "guide"
-  ||  fileName.Left(6) == "guide/"
+  ||  StringUtils::StartsWith(fileName, "guide/")
   ||  fileName == "movies"
   ||  fileName == "recordings"
   ||  fileName == "tvshows"
-  ||  fileName.Left(8) == "tvshows/")
+  ||  StringUtils::StartsWith(fileName, "tvshows/"))
     return true;
 
   return false;
@@ -607,10 +607,10 @@ bool CMythDirectory::IsMovie(const cmyth_proginfo_t program)
 
   const int iMovieLength = g_advancedSettings.m_iMythMovieLength; // Minutes
   if (iMovieLength > 0) // Use hack to identify movie based on length (used if EPG is dubious).
-    return GetValue(m_dll->proginfo_programid(program)).Left(2) == "MV"
+    return StringUtils::StartsWith(GetValue(m_dll->proginfo_programid(program)), "MV")
         || m_dll->proginfo_length_sec(program) > iMovieLength * 60; // Minutes to seconds
   else
-    return GetValue(m_dll->proginfo_programid(program)).Left(2) == "MV";
+    return StringUtils::StartsWith(GetValue(m_dll->proginfo_programid(program)), "MV");
 }
 
 bool CMythDirectory::IsTvShow(const cmyth_proginfo_t program)
@@ -635,13 +635,13 @@ bool CMythDirectory::SupportsWriteFileOperations(const CStdString& strPath)
    * TV Shows directory has sub-folders so extra check is included so only files get the file
    * operations.
    */
-  return filename.Left(11) == "recordings/" ||
-         filename.Left(7)  == "movies/" ||
-        (filename.Left(8)  == "tvshows/" && URIUtils::HasExtension(filename));
+  return StringUtils::StartsWith(filename, "recordings/") ||
+         StringUtils::StartsWith(filename, "movies/") ||
+        (StringUtils::StartsWith(filename, "tvshows/") && URIUtils::HasExtension(filename));
 }
 
 bool CMythDirectory::IsLiveTV(const CStdString& strPath)
 {
   CURL url(strPath);
-  return url.GetFileName().Left(9) == "channels/";
+  return StringUtils::StartsWith(url.GetFileName(), "channels/");
 }

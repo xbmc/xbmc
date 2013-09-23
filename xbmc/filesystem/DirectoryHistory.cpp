@@ -120,7 +120,7 @@ void CDirectoryHistory::ClearPathHistory()
 
 bool CDirectoryHistory::IsMusicSearchUrl(CPathHistoryItem &i)
 {
-  return i.GetPath().Left(14) == "musicsearch://";
+  return StringUtils::StartsWith(i.GetPath(), "musicsearch://");
 }
 
 void CDirectoryHistory::ClearSearchHistory()

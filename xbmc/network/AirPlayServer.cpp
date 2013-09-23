@@ -704,7 +704,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   int startQs = uri.Find('?');
   if (startQs != -1)
   {
-    uri = uri.Left(startQs);
+    uri.erase(startQs);
   }
 
   // This is the socket which will be used for reverse HTTP

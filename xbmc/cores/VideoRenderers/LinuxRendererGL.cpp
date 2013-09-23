@@ -1000,7 +1000,7 @@ void CLinuxRendererGL::LoadShaders(int field)
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
        //with render method set to auto, don't try glsl on ati if we're on linux
        //it seems to be broken in a random way with every new driver release
-       tryGlsl = g_Windowing.GetRenderVendor().Left(3).CompareNoCase("ati") != 0;
+       tryGlsl = !StringUtils::StartsWithNoCase(g_Windowing.GetRenderVendor(), "ati");
 #endif
       
       case RENDER_METHOD_GLSL:

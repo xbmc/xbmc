@@ -153,7 +153,8 @@ bool CVirtualDirectory::IsInSource(const CStdString &path) const
     for (unsigned int i = 0; i < shares.size(); i++)
     {
       CMediaSource &share = shares[i];
-      if (URIUtils::IsOnDVD(share.strPath) && share.strPath.Equals(path.Left(share.strPath.GetLength())))
+      if (URIUtils::IsOnDVD(share.strPath) &&
+          StringUtils::StartsWith(path, share.strPath))
         return true;
     }
     return false;

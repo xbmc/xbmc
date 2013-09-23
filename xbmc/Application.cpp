@@ -2019,7 +2019,7 @@ bool CApplication::LoadUserWindows()
         if (items[i]->m_bIsFolder)
           continue;
         CStdString skinFile = URIUtils::GetFileName(items[i]->GetPath());
-        if (skinFile.Left(6).CompareNoCase("custom") == 0)
+        if (StringUtils::StartsWithNoCase(skinFile, "custom"))
         {
           CXBMCTinyXML xmlDoc;
           if (!xmlDoc.LoadFile(items[i]->GetPath()))

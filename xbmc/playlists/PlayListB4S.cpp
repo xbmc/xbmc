@@ -83,7 +83,7 @@ bool CPlayListB4S::LoadData(istream& stream)
     if (iColon > 0)
     {
       iColon++;
-      strFileName = strFileName.Right((int)strFileName.size() - iColon);
+      strFileName.erase(0, iColon);
     }
     if (strFileName.size())
     {

@@ -662,7 +662,7 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
     }
     // paths match, what about share name - only match the leftmost
     // characters as the label may contain other info (status for instance)
-    if (item->GetLabel().Left(testShare.strName.size()).Equals(testShare.strName))
+    if (StringUtils::StartsWithNoCase(item->GetLabel(), testShare.strName))
     {
       return &testShare;
     }

@@ -54,7 +54,7 @@ void CPVRRecordings::UpdateFromClients(void)
 CStdString CPVRRecordings::TrimSlashes(const CStdString &strOrig) const
 {
   CStdString strReturn(strOrig);
-  while (strReturn.Left(1) == "/")
+  while (strReturn[0] == '/')
     strReturn.erase(0, 1);
 
   URIUtils::RemoveSlashAtEnd(strReturn);
@@ -72,7 +72,7 @@ const CStdString CPVRRecordings::GetDirectoryFromPath(const CStdString &strPath,
   if (!strUseBase.empty())
   {
     /* adding "/" to make sure that base matches the complete folder name and not only parts of it */
-    if (strUsePath.GetLength() <= strUseBase.GetLength() || strUsePath.Left(strUseBase.GetLength() + 1) != strUseBase + "/")
+    if (strUsePath.GetLength() <= strUseBase.GetLength() || !StringUtils::StartsWith(strUsePath, strUseBase + "/"))
       return strReturn;
     strUsePath.erase(0, strUseBase.GetLength());
   }
@@ -80,7 +80,7 @@ const CStdString CPVRRecordings::GetDirectoryFromPath(const CStdString &strPath,
   /* check for more occurences */
   int iDelimiter = strUsePath.Find('/');
   if (iDelimiter > 0)
-    strReturn = strUsePath.Left(iDelimiter);
+    strReturn = strUsePath.substr(0, iDelimiter);
   else
     strReturn = strUsePath;
 
@@ -92,7 +92,7 @@ bool CPVRRecordings::IsDirectoryMember(const CStdString &strDirectory, const CSt
   CStdString strUseDirectory = TrimSlashes(strDirectory);
   CStdString strUseEntryDirectory = TrimSlashes(strEntryDirectory);
 
-  return strUseEntryDirectory.Left(strUseDirectory.GetLength()).Equals(strUseDirectory) &&
+  return StringUtils::StartsWith(strUseEntryDirectory, strUseDirectory) &&
       (!bDirectMember || strUseEntryDirectory.Equals(strUseDirectory));
 }
 
@@ -235,7 +235,7 @@ bool CPVRRecordings::HasAllRecordingsPathExtension(const CStdString &strDirector
   if (strUseDir.GetLength() == strAllRecordingsPathExtension.GetLength())
     return strUseDir.Equals(strAllRecordingsPathExtension);
 
-  return strUseDir.Right(strAllRecordingsPathExtension.GetLength() + 1).Equals("/" + strAllRecordingsPathExtension);
+  return StringUtils::EndsWith(strUseDir, "/" + strAllRecordingsPathExtension);
 }
 
 CStdString CPVRRecordings::AddAllRecordingsPathExtension(const CStdString &strDirectory)
@@ -255,7 +255,7 @@ CStdString CPVRRecordings::RemoveAllRecordingsPathExtension(const CStdString &st
   if (!HasAllRecordingsPathExtension(strDirectory))
     return strDirectory;
 
-  return strDirectory.Left(strDirectory.GetLength() - strlen(PVR_ALL_RECORDINGS_PATH_EXTENSION) - 1);
+  return strDirectory.substr(0, strDirectory.GetLength() - strlen(PVR_ALL_RECORDINGS_PATH_EXTENSION) - 1);
 }
 
 int CPVRRecordings::Load(void)
@@ -398,7 +398,7 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
     CStdString strFileName = url.GetFileName();
     URIUtils::RemoveSlashAtEnd(strFileName);
 
-    if (strFileName.Left(10) == "recordings")
+    if (StringUtils::StartsWith(strFileName, "recordings"))
     {
       strFileName.erase(0, 10);
       GetSubDirectories(strFileName, &items, true);
@@ -453,7 +453,7 @@ CFileItemPtr CPVRRecordings::GetByPath(const CStdString &path)
 
   CSingleLock lock(m_critSection);
 
-  if (fileName.Left(11) == "recordings/")
+  if (StringUtils::StartsWith(fileName, "recordings/"))
   {
     for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
     {

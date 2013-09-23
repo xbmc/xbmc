@@ -2695,14 +2695,6 @@ public:
     return GetLength();
   }
 
-  MYTYPE Left(int nCount) const
-  {
-        // Range check the count.
-
-    nCount = SSMIN(SSMAX(0, nCount), static_cast<int>(this->size()));
-    return this->substr(0, static_cast<MYSIZE>(nCount));
-  }
-
 #ifndef SS_ANSI
   bool LoadString(UINT nId)
   {
@@ -2805,14 +2797,6 @@ public:
     //MYSIZE nIdx  = this->rfind(0 == szFind ? MYTYPE() : szFind, pos);
     MYSIZE nIdx  = this->rfind(0 == szFind ? "" : szFind, pos);
     return static_cast<int>(MYBASE::npos == nIdx ? -1 : nIdx);
-  }
-
-  MYTYPE Right(int nCount) const
-  {
-        // Range check the count.
-
-    nCount = SSMAX(0, SSMIN(nCount, static_cast<int>(this->size())));
-    return this->substr(this->size()-static_cast<MYSIZE>(nCount));
   }
 
   void SetAt(int nIndex, CT ch)

@@ -93,7 +93,7 @@ void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNe
   int iNextPos = strSearchTerm.Find(strFindNext);
   if (iNextPos != -1)
   {
-    strNextTerm = strSearchTerm.Left(iNextPos);
+    strNextTerm = strSearchTerm.substr(0, iNextPos);
     strSearchTerm.erase(0, iNextPos + 1);
   }
   else

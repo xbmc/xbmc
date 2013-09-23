@@ -156,7 +156,7 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
       int pos = i->Find('=');
       if (pos != -1)
       {
-        option = i->Left(pos);
+        option = i->substr(0, pos);
         value  = i->substr(pos + 1);
       }
       else

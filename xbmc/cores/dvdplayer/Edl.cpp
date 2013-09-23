@@ -252,7 +252,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
           }
           else if (fieldParts[1].length() > 3)
           {
-            fieldParts[1] = fieldParts[1].Left(3);
+            fieldParts[1] = fieldParts[1].substr(0, 3);
           }
           iCutStartEnd[i] = (int64_t)StringUtils::TimeStringToSeconds(fieldParts[0]) * 1000 + atoi(fieldParts[1]); // seconds to ms
         }

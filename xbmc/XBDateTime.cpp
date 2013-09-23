@@ -917,7 +917,7 @@ void CDateTime::SetFromW3CDate(const CStdString &dateTime)
   int posT = dateTime.Find("T");
   if(posT >= 0)
   {
-    date = dateTime.Left(posT);
+    date = dateTime.substr(0, posT);
     CStdString::size_type posZ = dateTime.find_first_of("+-Z", posT);
     if(posZ == CStdString::npos)
       time = dateTime.substr(posT + 1);

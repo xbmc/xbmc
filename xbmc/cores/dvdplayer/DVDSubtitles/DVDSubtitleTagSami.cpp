@@ -89,12 +89,13 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
       strUTF8.insert(pos, "[/COLOR]");
       pos += 8;
     }
-    else if (fullTag.Left(5) == "{\\c&h" || fullTag.Left(6) == "{\\1c&h")
+    else if (StringUtils::StartsWith(fullTag, "{\\c&h") ||
+             StringUtils::StartsWith(fullTag, "{\\1c&h"))
     {
       m_flag[FLAG_COLOR] = true;
       CStdString tempColorTag = "[COLOR FF";
       CStdString tagOptionValue;
-      if (fullTag.Left(5) == "{\\c&h")
+      if (StringUtils::StartsWith(fullTag, "{\\c&h"))
          tagOptionValue = fullTag.substr(5,6);
       else
          tagOptionValue = fullTag.substr(6,6);
@@ -105,7 +106,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
       strUTF8.insert(pos, tempColorTag);
       pos += tempColorTag.length();
     }
-    else if (fullTag.Left(5) == "<font")
+    else if (StringUtils::StartsWith(fullTag, "<font"))
     {
       int pos2 = 5;
       while ((pos2 = m_tagOptions->RegFind(fullTag.c_str(), pos2)) >= 0)
@@ -145,7 +146,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
         }
       }
     }
-    else if (lang && (fullTag.Left(3) == "<p "))
+    else if (lang && (StringUtils::StartsWith(fullTag, "<p ")))
     {
       int pos2 = 3;
       while ((pos2 = m_tagOptions->RegFind(fullTag.c_str(), pos2)) >= 0)

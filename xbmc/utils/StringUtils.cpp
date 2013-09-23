@@ -693,10 +693,7 @@ bool StringUtils::IsInteger(const CStdString& str)
 
 void StringUtils::RemoveCRLF(CStdString& strLine)
 {
-  while ( strLine.size() && (strLine.Right(1) == "\n" || strLine.Right(1) == "\r") )
-  {
-    strLine = strLine.Left(std::max(0, (int)strLine.size() - 1));
-  }
+  StringUtils::TrimRight(strLine, "\n\r");
 }
 
 CStdString StringUtils::SizeToString(int64_t size)

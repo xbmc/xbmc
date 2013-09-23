@@ -336,14 +336,14 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   int pos;
   while ((pos = strFilename.Find("/../")) > 0)
   {
-    CStdString basePath = strFilename.Left(pos+1);
+    CStdString basePath = strFilename.substr(0, pos + 1);
     strFilename.erase(0, pos + 4);
     basePath = URIUtils::GetParentPath(basePath);
     strFilename = URIUtils::AddFileToFolder(basePath, strFilename);
   }
   while ((pos = strFilename.Find("\\..\\")) > 0)
   {
-    CStdString basePath = strFilename.Left(pos+1);
+    CStdString basePath = strFilename.substr(0, pos + 1);
     strFilename.erase(0, pos + 4);
     basePath = URIUtils::GetParentPath(basePath);
     strFilename = URIUtils::AddFileToFolder(basePath, strFilename);
@@ -450,7 +450,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 #endif
     size_t last_sep = strHomePath.find_last_of(PATH_SEPARATOR_CHAR);
     if (last_sep != string::npos)
-      strPath = strHomePath.Left(last_sep);
+      strPath = strHomePath.substr(0, last_sep);
     else
       strPath = strHomePath;
   }
@@ -581,17 +581,14 @@ CStdString CUtil::GetFileMD5(const CStdString& strPath)
 bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescription)
 {
   CStdString strFName = URIUtils::GetFileName(strFileName);
-  strDescription = strFileName.Left(strFileName.size() - strFName.size());
+  strDescription = URIUtils::GetDirectory(strFileName);
   URIUtils::RemoveSlashAtEnd(strDescription);
 
   int iPos = strDescription.ReverseFind("\\");
   if (iPos < 0)
     iPos = strDescription.ReverseFind("/");
   if (iPos >= 0)
-  {
-    CStdString strTmp = strDescription.Right(strDescription.size()-iPos-1);
-    strDescription = strTmp;//strDescription.Right(strDescription.size() - iPos - 1);
-  }
+    strDescription = strDescription.substr(iPos + 1);
   else if (strDescription.size() <= 0)
     strDescription = strFName;
   return true;
@@ -1039,7 +1036,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
   if (iPos > 0 && iPos2 > 0)
   {
     paramString = execString.substr(iPos + 1, iPos2 - iPos - 1);
-    function = execString.Left(iPos);
+    function = execString.substr(0, iPos);
   }
   else
     function = execString;
@@ -1089,11 +1086,11 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
       if (!inFunction && ch == ',')
       { // not in a function, so a comma signfies the end of this parameter
         if (whiteSpacePos)
-          parameter = parameter.Left(whiteSpacePos);
+          parameter = parameter.substr(0, whiteSpacePos);
         // trim off start and end quotes
-        if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
-          parameter = parameter.substr(1,parameter.GetLength() - 2);
-        else if (parameter.GetLength() > 3 && parameter[parameter.GetLength() - 1] == '"')
+        if (parameter.length() > 1 && parameter[0] == '"' && parameter[parameter.length() - 1] == '"')
+          parameter = parameter.substr(1, parameter.length() - 2);
+        else if (parameter.length() > 3 && parameter[parameter.length() - 1] == '"')
         {
           // check name="value" style param.
           int quotaPos = parameter.Find('"');
@@ -1129,7 +1126,7 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
   if (inFunction || inQuotes)
     CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, paramString.c_str());
   if (whiteSpacePos)
-    parameter = parameter.Left(whiteSpacePos);
+    parameter.erase(whiteSpacePos);
   // trim off start and end quotes
   if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
     parameter = parameter.substr(1,parameter.GetLength() - 2);
@@ -1357,7 +1354,7 @@ void CUtil::DeleteDirectoryCache(const CStdString &prefix)
     if (items[i]->m_bIsFolder)
       continue;
     CStdString fileName = URIUtils::GetFileName(items[i]->GetPath());
-    if (fileName.Left(prefix.GetLength()) == prefix)
+    if (StringUtils::StartsWith(fileName, prefix))
       XFILE::CFile::Delete(items[i]->GetPath());
   }
 }
@@ -1474,7 +1471,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   // "smb://../Playboy Swimsuit Cal.."
   if (iTextMaxLength > 2 && StrInput.size() > (unsigned int)iTextMaxLength)
   {
-    StrInput = StrInput.Left(iTextMaxLength - 2);
+    StrInput.erase(iTextMaxLength - 2);
     StrInput += "..";
   }
   StrOutput = StrInput;
@@ -1899,7 +1896,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     CMediaSettings::Get().SetAdditionalSubtitleDirectoryChecked(1);
   }
   
-  if (strMovie.Left(6) == "rar://") // <--- if this is found in main path then ignore it!
+  if (StringUtils::StartsWith(strMovie, "rar://")) // <--- if this is found in main path then ignore it!
   {
     CURL url(strMovie);
     CStdString strArchive = url.GetHostName();
@@ -2130,7 +2127,7 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
   URIUtils::RemoveExtension(toParse);
 
   // we check left part - if it's same as video base name - strip it
-  if (toParse.Left(videoBaseName.length()).Equals(videoBaseName))
+  if (StringUtils::StartsWithNoCase(toParse, videoBaseName))
     toParse = toParse.substr(videoBaseName.length());
 
   // trim any non-alphanumeric char in the begining

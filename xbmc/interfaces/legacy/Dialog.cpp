@@ -230,8 +230,8 @@ namespace XBMCAddon
           if (!defaultt.empty() && defaultt.size() == 5)
           {
             CStdString sDefault = defaultt;
-            timedate.wHour = atoi(sDefault.Left(2));
-            timedate.wMinute = atoi(sDefault.Right(2));
+            timedate.wHour = atoi(sDefault.substr(0, 2).c_str());
+            timedate.wMinute = atoi(sDefault.substr(3, 2).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
             value = StringUtils::Format("%2d:%02d", timedate.wHour, timedate.wMinute);
@@ -318,8 +318,8 @@ namespace XBMCAddon
             if (!defaultt.empty() && defaultt.size() == 5)
             {
               CStdString sDefault = defaultt;
-              timedate.wHour = atoi(sDefault.Left(2));
-              timedate.wMinute = atoi(sDefault.Right(2));
+              timedate.wHour = atoi(sDefault.substr(0, 2).c_str());
+              timedate.wMinute = atoi(sDefault.substr(3, 2).c_str());
             }
             if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
               value = StringUtils::Format("%2d:%02d", timedate.wHour, timedate.wMinute);

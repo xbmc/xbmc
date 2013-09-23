@@ -361,8 +361,8 @@ void CGUIEditControl::RecalcLabelPosition()
 
   CStdStringW text = GetDisplayedText();
   m_textWidth = m_label.CalcTextWidth(text + L'|');
-  float beforeCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos));
-  float afterCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos) + L'|');
+  float beforeCursorWidth = m_label.CalcTextWidth(text.substr(0, m_cursorPos));
+  float afterCursorWidth = m_label.CalcTextWidth(text.substr(0, m_cursorPos) + L'|');
   float leftTextWidth = m_label.GetRenderRect().Width();
   float maxTextWidth = m_label.GetMaxWidth();
   if (leftTextWidth > 0)
@@ -603,8 +603,8 @@ void CGUIEditControl::OnPasteClipboard()
   // Insert the pasted text at the current cursor position.
   if (unicode_text.length() > 0)
   {
-    CStdStringW left_end = m_text2.Left(m_cursorPos);
-    CStdStringW right_end = m_text2.Right(m_text2.length() - m_cursorPos);
+    CStdStringW left_end = m_text2.substr(0, m_cursorPos);
+    CStdStringW right_end = m_text2.substr(m_cursorPos);
 
     m_text2 = left_end;
     m_text2.append(unicode_text);
