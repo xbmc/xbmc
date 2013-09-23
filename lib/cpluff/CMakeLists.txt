@@ -56,7 +56,7 @@ include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR} libcpluff)
 
 if(TARGET_WIN32)
   add_definitions(-DCP_C_API=CP_EXPORT -DWIN32 -D_DEBUG -D_WINDOWS -D_USRDLL -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)
-  include_directories(lBEFORE ibcpluff/win32)
+  include_directories(lBEFORE libcpluff/win32)
 else(TARGET_WIN32)
   add_definitions(-DCP_C_API=CP_EXPORT -DCP_HOST="${CP_HOST}" -DHAVE_CONFIG_H)
   configure_file(libcpluff/cpluffdef.h.in ${root}/lib/cpluff/libcpluff/cpluffdef.h)
