@@ -32,7 +32,7 @@ typedef struct LCENTRY
   const char *name;
 } LCENTRY;
 
-extern const struct LCENTRY g_iso639_1[144];
+extern const struct LCENTRY g_iso639_1[145];
 extern const struct LCENTRY g_iso639_2[537];
 
 struct CharCodeConvertionWithHack
@@ -505,7 +505,7 @@ CStdString CLangCodeExpander::ConvertToISO6392T(const CStdString& lang)
   return lang;
 }
 
-extern const LCENTRY g_iso639_1[144] =
+extern const LCENTRY g_iso639_1[145] =
 {
   { MAKECODE('\0','\0','c','c'), "Closed Caption" },
   { MAKECODE('\0','\0','a','a'), "Afar" },
@@ -529,20 +529,20 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','c','o'), "Corsican" },
   { MAKECODE('\0','\0','c','s'), "Czech" },
   { MAKECODE('\0','\0','c','y'), "Welsh" },
-  { MAKECODE('\0','\0','d','a'), "Dansk" },
+  { MAKECODE('\0','\0','d','a'), "Danish" },
   { MAKECODE('\0','\0','d','e'), "German" },
   { MAKECODE('\0','\0','d','z'), "Bhutani" },
   { MAKECODE('\0','\0','e','l'), "Greek" },
   { MAKECODE('\0','\0','e','n'), "English" },
   { MAKECODE('\0','\0','e','o'), "Esperanto" },
-  { MAKECODE('\0','\0','e','s'), "Espanol" },
+  { MAKECODE('\0','\0','e','s'), "Spanish" },
   { MAKECODE('\0','\0','e','t'), "Estonian" },
   { MAKECODE('\0','\0','e','u'), "Basque" },
   { MAKECODE('\0','\0','f','a'), "Persian" },
   { MAKECODE('\0','\0','f','i'), "Finnish" },
   { MAKECODE('\0','\0','f','j'), "Fiji" },
   { MAKECODE('\0','\0','f','o'), "Faroese" },
-  { MAKECODE('\0','\0','f','r'), "Francais" },
+  { MAKECODE('\0','\0','f','r'), "French" },
   { MAKECODE('\0','\0','f','y'), "Frisian" },
   { MAKECODE('\0','\0','g','a'), "Irish" },
   { MAKECODE('\0','\0','g','d'), "Scots Gaelic" },
@@ -552,7 +552,7 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','h','a'), "Hausa" },
   { MAKECODE('\0','\0','h','e'), "Hebrew" },
   { MAKECODE('\0','\0','h','i'), "Hindi" },
-  { MAKECODE('\0','\0','h','r'), "Hrvatski" },
+  { MAKECODE('\0','\0','h','r'), "Croatian" },
   { MAKECODE('\0','\0','h','u'), "Hungarian" },
   { MAKECODE('\0','\0','h','y'), "Armenian" },
   { MAKECODE('\0','\0','i','a'), "Interlingua" },
@@ -560,8 +560,8 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','i','e'), "Interlingue" },
   { MAKECODE('\0','\0','i','k'), "Inupiak" },
   { MAKECODE('\0','\0','i','n'), "Indonesian" },
-  { MAKECODE('\0','\0','i','s'), "Islenska" },
-  { MAKECODE('\0','\0','i','t'), "Italiano" },
+  { MAKECODE('\0','\0','i','s'), "Icelandic" },
+  { MAKECODE('\0','\0','i','t'), "Italian" },
   { MAKECODE('\0','\0','i','u'), "Inuktitut" },
   { MAKECODE('\0','\0','i','w'), "Hebrew" },
   { MAKECODE('\0','\0','j','a'), "Japanese" },
@@ -593,9 +593,10 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','m','y'), "Burmese" },
   { MAKECODE('\0','\0','n','a'), "Nauru" },
   { MAKECODE('\0','\0','n','e'), "Nepali" },
-  { MAKECODE('\0','\0','n','l'), "Nederlands" },
-  { MAKECODE('\0','\0','n','o'), "Norsk" },
+  { MAKECODE('\0','\0','n','l'), "Dutch" },
+  { MAKECODE('\0','\0','n','o'), "Norwegian" },
   { MAKECODE('\0','\0','o','c'), "Occitan" },
+  { MAKECODE('\0','\0','o','s'), "Ossetic" },
   { MAKECODE('\0','\0','o','m'), "(Afan) Oromo" },
   { MAKECODE('\0','\0','o','r'), "Oriya" },
   { MAKECODE('\0','\0','p','a'), "Punjabi" },
@@ -623,7 +624,7 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','s','s'), "Siswati" },
   { MAKECODE('\0','\0','s','t'), "Sesotho" },
   { MAKECODE('\0','\0','s','u'), "Sundanese" },
-  { MAKECODE('\0','\0','s','v'), "Svenska" },
+  { MAKECODE('\0','\0','s','v'), "Swedish" },
   { MAKECODE('\0','\0','s','w'), "Swahili" },
   { MAKECODE('\0','\0','t','a'), "Tamil" },
   { MAKECODE('\0','\0','t','e'), "Telugu" },
