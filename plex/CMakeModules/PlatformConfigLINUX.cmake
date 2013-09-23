@@ -42,8 +42,7 @@ set(LINK_PKG
 if(NOT USE_INTERNAL_FFMPEG)
   list(APPEND LINK_PKG FFmpeg)
 else()
-  set(FFMPEG_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/lib/ffmpeg)
-  include_directories(${FFMPEG_INCLUDE_DIRS})
+  set(FFMPEG_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/lib/ffmpeg ${CMAKE_BINARY_DIR}/lib/ffmpeg/ffmpeg/src/ffmpeg-build)
 endif()
 
 foreach(l ${LINK_PKG})

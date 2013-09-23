@@ -14,6 +14,10 @@ if(TARGET_WIN32)
   list(APPEND subdirs win32)
 endif(TARGET_WIN32)
 
+if(USE_INTERNAL_FFMPEG)
+  include_directories(${FFMPEG_INCLUDE_DIRS})
+endif(USE_INTERNAL_FFMPEG)
+
 foreach(dir ${subdirs})
   add_subdirectory(${dir})
 endforeach()

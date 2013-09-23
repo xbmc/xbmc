@@ -8,7 +8,7 @@ set(CP_VERSION_MAJOR "0")
 set(CP_VERSION_MINOR "1")
 set(CP_VERSION_REV "3")
 
-include_directories(${dependdir}/include)
+include_directories(BEFORE ${dependdir}/include)
 
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
@@ -52,11 +52,11 @@ if(TARGET_POSIX)
   endif(TARGET_COMMON_DARWIN)
 endif(TARGET_POSIX)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} libcpluff)
+include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR} libcpluff)
 
 if(TARGET_WIN32)
   add_definitions(-DCP_C_API=CP_EXPORT -DWIN32 -D_DEBUG -D_WINDOWS -D_USRDLL -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)
-  include_directories(libcpluff/win32)
+  include_directories(lBEFORE ibcpluff/win32)
 else(TARGET_WIN32)
   add_definitions(-DCP_C_API=CP_EXPORT -DCP_HOST="${CP_HOST}" -DHAVE_CONFIG_H)
   configure_file(libcpluff/cpluffdef.h.in ${root}/lib/cpluff/libcpluff/cpluffdef.h)
