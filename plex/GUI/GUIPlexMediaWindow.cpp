@@ -23,6 +23,7 @@
 #include "LocalizeStrings.h"
 
 #define DEFAULT_PAGE_SIZE 50
+#define XMIN(a,b) ((a)<(b)?(a):(b))
 
 bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 {
@@ -176,7 +177,7 @@ void CGUIPlexMediaWindow::LoadPage(int start, int numberOfItems)
   
   CURL u(m_vecItems->GetPath());
   
-  int pageSize = MIN(numberOfItems, m_vecItems->GetProperty("totalSize").asInteger() - start);
+  int pageSize = XMIN(numberOfItems, m_vecItems->GetProperty("totalSize").asInteger() - start);
   
   u.SetProtocolOption("containerStart", boost::lexical_cast<std::string>(start));
   u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(pageSize));
