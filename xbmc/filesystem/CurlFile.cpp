@@ -708,7 +708,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     }
 
     /* make sure we keep slashes */
-    if(url2.GetFileName().Right(1) == "/")
+    if(StringUtils::EndsWith(url2.GetFileName(), "/"))
       filename += "/";
 
     url2.SetFileName(filename);
@@ -925,9 +925,10 @@ bool CCurlFile::Open(const CURL& url)
 
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
   // shoutcast streams should be handled by FileShoutcast.
-  if ((m_state->m_httpheader.GetProtoLine().Left(3) == "ICY" || !m_state->m_httpheader.GetValue("icy-notice1").empty()
-     || !m_state->m_httpheader.GetValue("icy-name").empty()
-     || !m_state->m_httpheader.GetValue("icy-br").empty()) && !m_skipshout)
+  if ((StringUtils::StartsWith(m_state->m_httpheader.GetProtoLine(), "ICY", true) ||
+       !m_state->m_httpheader.GetValue("icy-notice1").empty() ||
+       !m_state->m_httpheader.GetValue("icy-name").empty() ||
+       !m_state->m_httpheader.GetValue("icy-br").empty()) && !m_skipshout)
   {
     CLog::Log(LOGDEBUG,"CCurlFile::Open - File <%s> is a shoutcast stream. Re-opening", m_url.c_str());
     throw new CRedirectException(new CShoutcastFile);
@@ -1100,7 +1101,7 @@ bool CCurlFile::Exists(const CURL& url)
   {
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
     // nocwd is less standard, will return empty list for non-existed remote dir on some ftp server, avoid it.
-    if (url2.GetFileName().Right(1).Equals("/"))
+    if (StringUtils::EndsWith(url2.GetFileName(), "/"))
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_SINGLECWD);
     else
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
@@ -1251,7 +1252,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   if(url2.GetProtocol() == "ftp")
   {
     // nocwd is less standard, will return empty list for non-existed remote dir on some ftp server, avoid it.
-    if (url2.GetFileName().Right(1).Equals("/"))
+    if (StringUtils::EndsWith(url2.GetFileName(), "/"))
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_SINGLECWD);
     else
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);

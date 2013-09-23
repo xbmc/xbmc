@@ -407,7 +407,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
     return;   // user chose the one they have
 
   CStdString newThumb;
-  if (result.Left(14) == "thumb://Remote")
+  if (StringUtils::StartsWith(result, "thumb://Remote"))
   {
     int number = atoi(result.substr(14).c_str());
     newThumb = thumbs[number];

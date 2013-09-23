@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "LangInfo.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
@@ -255,7 +256,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   CStdString filename;
   CStdString root;
 
-  if(strPath.Left(7).Equals("bluray:"))
+  if(StringUtils::StartsWith(strPath, "bluray:"))
   {
     CURL url(strPath);
     root     = url.GetHostName();

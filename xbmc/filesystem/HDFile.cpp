@@ -72,7 +72,7 @@ CStdString CHDFile::GetLocal(const CURL &url)
 
     if(host.size() > 0)
     {
-      if(host.Right(1) == ":")
+      if(StringUtils::EndsWith(host, ":"))
         path = host + "/" + path;
       else
         path = host + ":/" + path;

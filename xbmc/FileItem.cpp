@@ -867,7 +867,7 @@ bool CFileItem::IsKaraoke() const
 
 bool CFileItem::IsPicture() const
 {
-  if( m_mimetype.Left(6).Equals("image/") )
+  if(StringUtils::StartsWith(m_mimetype, "image/"))
     return true;
 
   if (HasPictureInfoTag()) return true;
@@ -989,12 +989,17 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
   if (bIfos)
   {
     if (strFileName.Equals("video_ts.ifo")) return true;
-    if (strFileName.Left(4).Equals("vts_") && strFileName.Right(6).Equals("_0.ifo") && strFileName.length() == 12) return true;
+    if (StringUtils::StartsWith(strFileName, "vts_") &&
+        StringUtils::EndsWith(strFileName, "_0.ifo") &&
+        strFileName.length() == 12)
+      return true;
   }
   if (bVobs)
   {
     if (strFileName.Equals("video_ts.vob")) return true;
-    if (strFileName.Left(4).Equals("vts_") && strFileName.Right(4).Equals(".vob")) return true;
+    if (StringUtils::StartsWith(strFileName, "vts_") &&
+        StringUtils::EndsWith(strFileName, ".vob"))
+      return true;
   }
 
   return false;
@@ -1033,7 +1038,8 @@ bool CFileItem::IsCBR() const
 
 bool CFileItem::IsRSS() const
 {
-  return m_strPath.Left(6).Equals("rss://") || URIUtils::HasExtension(m_strPath, ".rss")
+  return StringUtils::StartsWith(m_strPath, "rss://") ||
+          URIUtils::HasExtension(m_strPath, ".rss")
       || m_mimetype == "application/rss+xml";
 }
 
@@ -1368,9 +1374,9 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
       m_mimetype = "x-directory/normal";
     else if( m_pvrChannelInfoTag )
       m_mimetype = m_pvrChannelInfoTag->InputFormat();
-    else if( m_strPath.Left(8).Equals("shout://")
-          || m_strPath.Left(7).Equals("http://")
-          || m_strPath.Left(8).Equals("https://"))
+    else if(StringUtils::StartsWith(m_strPath, "shout://") ||
+            StringUtils::StartsWith(m_strPath, "http://") ||
+            StringUtils::StartsWith(m_strPath, "https://"))
     {
       // If lookup is false, bail out early to leave mime type empty
       if (!lookup)
@@ -1381,14 +1387,14 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
       // try to get mime-type again but with an NSPlayer User-Agent
       // in order for server to provide correct mime-type.  Allows us
       // to properly detect an MMS stream
-      if (m_mimetype.Left(11).Equals("video/x-ms-"))
+      if (StringUtils::StartsWith(m_mimetype, "video/x-ms-"))
         CCurlFile::GetMimeType(GetAsUrl(), m_mimetype, "NSPlayer/11.00.6001.7000");
 
       // make sure there are no options set in mime-type
       // mime-type can look like "video/x-ms-asf ; charset=utf8"
-      int i = m_mimetype.Find(';');
-      if(i>=0)
-        m_mimetype.Delete(i, m_mimetype.length() - i);
+      size_t i = m_mimetype.find(';');
+      if(i != std::string::npos)
+        m_mimetype.erase(i, m_mimetype.length() - i);
       StringUtils::Trim(m_mimetype);
     }
     else
@@ -1400,8 +1406,9 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
   }
 
   // change protocol to mms for the following mime-type.  Allows us to create proper FileMMS.
-  if( m_mimetype.Left(32).Equals("application/vnd.ms.wms-hdr.asfv1") || m_mimetype.Left(24).Equals("application/x-mms-framed") )
-    m_strPath.Replace("http:", "mms:");
+  if (StringUtils::StartsWith(m_mimetype, "application/vnd.ms.wms-hdr.asfv1") ||
+      StringUtils::StartsWith(m_mimetype, "application/x-mms-framed"))
+    StringUtils::Replace(m_strPath, "http:", "mms:");
 }
 
 bool CFileItem::IsSamePath(const CFileItem *item) const
@@ -2654,17 +2661,17 @@ bool CFileItemList::AlwaysCache() const
 
 CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bool fallbackToFolder /* = false */) const
 {
-  if (m_strPath.empty()
-   || m_strPath.Left(19).Equals("newsmartplaylist://")
-   || m_strPath.Left(14).Equals("newplaylist://")
-   || m_bIsShareOrDrive
-   || IsInternetStream()
-   || URIUtils::IsUPnP(m_strPath)
-   || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
-   || IsPlugin()
-   || IsAddonsPath()
-   || IsParentFolder()
-   || IsMusicDb())
+  if (m_strPath.empty() ||
+      StringUtils::StartsWith(m_strPath, "newsmartplaylist://") ||
+      StringUtils::StartsWith(m_strPath, "newplaylist://") ||
+      m_bIsShareOrDrive ||
+      IsInternetStream() ||
+      URIUtils::IsUPnP(m_strPath) ||
+      (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs) ||
+      IsPlugin() ||
+      IsAddonsPath() ||
+      IsParentFolder() ||
+      IsMusicDb())
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
@@ -2748,8 +2755,8 @@ CStdString CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) c
 {
   // ignore a bunch that are meaningless
   if (m_strPath.empty()
-   || m_strPath.Left(19).Equals("newsmartplaylist://")
-   || m_strPath.Left(14).Equals("newplaylist://")
+   || StringUtils::StartsWith(m_strPath, "newsmartplaylist://")
+   || StringUtils::StartsWith(m_strPath, "newplaylist://")
    || m_bIsShareOrDrive
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)

@@ -384,13 +384,16 @@ void CGUIDialogMediaSource::OnOK()
   VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(m_type);
   if (shares)
     shares->push_back(share);
-  if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
+  if (StringUtils::StartsWith(share.strPath, "plugin://") ||
+      CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) ||
+      CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
   {
     m_confirmed = true;
     Close();
-    if (m_type == "video" && !URIUtils::IsLiveTV(share.strPath) && 
-        !share.strPath.Left(6).Equals("rss://") &&
-        !share.strPath.Left(7).Equals("upnp://"))
+    if (m_type == "video" &&
+        !URIUtils::IsLiveTV(share.strPath) &&
+        !StringUtils::StartsWith(share.strPath, "rss://") &&
+        !StringUtils::StartsWith(share.strPath, "upnp://"))
     {
       CGUIWindowVideoBase::OnAssignContent(share.strPath);
     }

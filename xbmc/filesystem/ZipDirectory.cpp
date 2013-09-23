@@ -45,7 +45,7 @@ namespace XFILE
     CStdString strPath;
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
-    if( !strPathOrig.Left(6).Equals("zip://") )
+    if(!StringUtils::StartsWith(strPathOrig, "zip://"))
       URIUtils::CreateArchivePath(strPath, "zip", strPathOrig, "");
     else
       strPath = strPathOrig;

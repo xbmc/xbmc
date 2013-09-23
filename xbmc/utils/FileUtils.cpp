@@ -79,7 +79,7 @@ bool CFileUtils::RenameFile(const CStdString &strFile)
   CStdString strFileAndPath(strFile);
   URIUtils::RemoveSlashAtEnd(strFileAndPath);
   CStdString strFileName = URIUtils::GetFileName(strFileAndPath);
-  CStdString strPath = strFile.Left(strFileAndPath.size() - strFileName.size());
+  CStdString strPath = URIUtils::GetDirectory(strFileAndPath);
   if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
   {
     strPath += strFileName;

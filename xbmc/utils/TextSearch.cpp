@@ -84,7 +84,7 @@ void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNe
 {
   CStdString strFindNext(" ");
 
-  if (strSearchTerm.Left(1).Equals("\""))
+  if (StringUtils::StartsWith(strSearchTerm, "\""))
   {
     strSearchTerm.erase(0, 1);
     strFindNext = "\"";
@@ -93,7 +93,7 @@ void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNe
   int iNextPos = strSearchTerm.Find(strFindNext);
   if (iNextPos != -1)
   {
-    strNextTerm = strSearchTerm.Left(iNextPos);
+    strNextTerm = strSearchTerm.substr(0, iNextPos);
     strSearchTerm.erase(0, iNextPos + 1);
   }
   else
@@ -119,19 +119,19 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
   {
     StringUtils::TrimLeft(strParsedSearchTerm);
 
-    if (strParsedSearchTerm.Left(1).Equals("!") || strParsedSearchTerm.Left(3).Equals("NOT"))
+    if (StringUtils::StartsWith(strParsedSearchTerm, "!") || StringUtils::StartsWith(strParsedSearchTerm, "NOT"))
     {
       CStdString strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
       bNextNOT = true;
     }
-    else if (strParsedSearchTerm.Left(1).Equals("+") || strParsedSearchTerm.Left(3).Equals("AND"))
+    else if (StringUtils::StartsWith(strParsedSearchTerm, "+") || StringUtils::StartsWith(strParsedSearchTerm, "AND"))
     {
       CStdString strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
       bNextAND = true;
     }
-    else if (strParsedSearchTerm.Left(1).Equals("|") || strParsedSearchTerm.Left(2).Equals("OR"))
+    else if (StringUtils::StartsWith(strParsedSearchTerm, "|") || StringUtils::StartsWith(strParsedSearchTerm, "OR"))
     {
       CStdString strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);

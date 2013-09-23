@@ -110,7 +110,7 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const CStdString &strPath) const
   {
     // check if the path matches
     strCheckPath = StringUtils::Format("channels/%s/%s/", (*it)->IsRadio() ? "radio" : "tv", (*it)->GroupName().c_str());
-    if (strFileName.Left(strCheckPath.length()) == strCheckPath)
+    if (StringUtils::StartsWith(strFileName, strCheckPath))
     {
       strFileName.erase(0, strCheckPath.length());
       return (*it)->GetByIndex(atoi(strFileName.c_str()));

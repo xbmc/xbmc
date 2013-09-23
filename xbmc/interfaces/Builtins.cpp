@@ -629,7 +629,8 @@ int CBuiltins::Execute(const CStdString& execString)
         // force the item to start at the beginning (m_lStartOffset is initialized to 0)
         askToResume = false;
       }
-      else if (params[i].Left(11).Equals("playoffset=")) {
+      else if (StringUtils::StartsWith(params[i], "playoffset="))
+      {
         playOffset = atoi(params[i].substr(11).c_str()) - 1;
         item.SetProperty("playlist_starting_track", playOffset);
       }
@@ -830,7 +831,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(true, false);
     }
-    else if (parameter.Left(14).Equals("seekpercentage"))
+    else if (StringUtils::StartsWith(parameter, "seekpercentage"))
     {
       std::string offset = parameter.substr(14);
       size_t first = offset.find_first_not_of("(");
@@ -860,7 +861,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if( g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->CanRecord())
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
     }
-    else if (parameter.Left(9).Equals("partymode"))
+    else if (StringUtils::StartsWith(parameter, "partymode"))
     {
       std::string strXspPath = parameter.substr(9);
       size_t first = strXspPath.find_first_not_of("(");
@@ -916,7 +917,7 @@ int CBuiltins::Execute(const CStdString& execString)
       g_windowManager.SendThreadMessage(msg);
 
     }
-    else if (parameter.Left(6).Equals("repeat"))
+    else if (StringUtils::StartsWith(parameter, "repeat"))
     {
       // get current playlist
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();

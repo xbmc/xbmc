@@ -164,15 +164,19 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
           OnMessage(msg);
+
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= m_castList->Size())
             break;
+
           CStdString strItem = m_castList->Get(iItem)->GetLabel();
           CStdString strFind = StringUtils::Format(" %s ",g_localizeStrings.Get(20347).c_str());
-          int iPos = strItem.Find(strFind);
-          if (iPos == -1)
+
+          size_t iPos = strItem.find(strFind);
+          if (iPos == std::string::npos)
             iPos = strItem.size();
-          CStdString tmp = strItem.Left(iPos);
+
+          CStdString tmp = strItem.substr(0, iPos);
           OnSearch(tmp);
         }
       }
@@ -835,7 +839,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   if (result.Equals("fanart://Local"))
     result = strLocal;
 
-  if (result.Left(15) == "fanart://Remote")
+  if (StringUtils::StartsWith(result, "fanart://Remote"))
   {
     int iFanart = atoi(result.substr(15).c_str());
     // set new primary fanart, and update our database accordingly

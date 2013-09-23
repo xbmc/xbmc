@@ -118,9 +118,9 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
     return;
   }
 
-  int iPos = strFileName.ReverseFind(".");
+  size_t iPos = strFileName.rfind(".");
   // Extension found
-  if (iPos > 0)
+  if (iPos != std::string::npos)
   {
     CStdString strExtension = GetExtension(strFileName);
     StringUtils::ToLower(strExtension);
@@ -137,8 +137,8 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
 #endif
     strFileMask += "|";
 
-    if (strFileMask.Find(strExtension) >= 0)
-      strFileName = strFileName.Left(iPos);
+    if (strFileMask.find(strExtension) != std::string::npos)
+      strFileName.erase(iPos);
   }
 }
 
@@ -210,8 +210,8 @@ void URIUtils::Split(const CStdString& strFileNameAndPath,
   if (i == 0)
     i--;
 
-  strPath = strFileNameAndPath.Left(i + 1);
-  strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
+  strPath = strFileNameAndPath.substr(0, i);
+  strFileName = strFileNameAndPath.substr(i + 1);
 }
 
 CStdStringArray URIUtils::SplitPath(const CStdString& strPath)
@@ -244,7 +244,7 @@ void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   unsigned int j = 1;
   while (j <= min(strParent.size(), strPath.size()) && strnicmp(strParent.c_str(), strPath.c_str(), j) == 0)
     j++;
-  strParent = strParent.Left(j - 1);
+  strParent.erase(j - 1);
   // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
   if (!HasSlashAtEnd(strParent))
   {
@@ -349,9 +349,9 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
   else if (url.GetProtocol() == "special")
   {
-    if (HasSlashAtEnd(strFile) )
-      strFile = strFile.Left(strFile.size() - 1);
-    if(strFile.ReverseFind('/') < 0)
+    if (HasSlashAtEnd(strFile))
+      strFile.erase(strFile.size() - 1);
+    if(strFile.rfind('/') == std::string::npos)
       return false;
   }
   else if (strFile.size() == 0)
@@ -369,14 +369,14 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   if (HasSlashAtEnd(strFile) )
   {
-    strFile = strFile.Left(strFile.size() - 1);
+    strFile.erase(strFile.size() - 1);
   }
 
   int iPos = strFile.ReverseFind('/');
 #ifndef TARGET_POSIX
   if (iPos < 0)
   {
-    iPos = strFile.ReverseFind('\\');
+    iPos = strFile.rfind('\\');
   }
 #endif
   if (iPos < 0)
@@ -386,7 +386,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     return true;
   }
 
-  strFile = strFile.Left(iPos);
+  strFile.erase(iPos);
 
   AddSlashAtEnd(strFile);
 
@@ -446,20 +446,20 @@ bool URIUtils::IsRemote(const CStdString& strFile)
 bool URIUtils::IsOnDVD(const CStdString& strFile)
 {
 #ifdef TARGET_WINDOWS
-  if (strFile.Mid(1,1) == ":")
-    return (GetDriveType(strFile.Left(3)) == DRIVE_CDROM);
+  if (strFile.substr(1,1) == ":")
+    return (GetDriveType(strFile.substr(0, 3)) == DRIVE_CDROM);
 #endif
 
-  if (strFile.Left(4).CompareNoCase("dvd:") == 0)
+  if (StringUtils::StartsWith(strFile, "dvd:"))
     return true;
 
-  if (strFile.Left(4).CompareNoCase("udf:") == 0)
+  if (StringUtils::StartsWith(strFile, "udf:"))
     return true;
 
-  if (strFile.Left(8).CompareNoCase("iso9660:") == 0)
+  if (StringUtils::StartsWith(strFile, "iso9660:"))
     return true;
 
-  if (strFile.Left(5).CompareNoCase("cdda:") == 0)
+  if (StringUtils::StartsWith(strFile, "cdda:"))
     return true;
 
   return false;
@@ -527,7 +527,7 @@ bool URIUtils::IsOnLAN(const CStdString& strPath)
 
 bool URIUtils::IsMultiPath(const CStdString& strPath)
 {
-  return strPath.Left(10).Equals("multipath:");
+  return StringUtils::StartsWith(strPath, "multipath:");
 }
 
 bool URIUtils::IsHD(const CStdString& strFileName)
@@ -554,7 +554,7 @@ bool URIUtils::IsDVD(const CStdString& strFile)
     return true;
 
 #if defined(TARGET_WINDOWS)
-  if (strFile.Left(6).Equals("dvd://"))
+  if (StringUtils::StartsWith(strFile, "dvd://"))
     return true;
 
   if(strFile.Mid(1) != ":\\"
@@ -573,7 +573,7 @@ bool URIUtils::IsDVD(const CStdString& strFile)
 
 bool URIUtils::IsStack(const CStdString& strFile)
 {
-  return strFile.Left(6).Equals("stack:");
+  return StringUtils::StartsWith(strFile, "stack:");
 }
 
 bool URIUtils::IsRAR(const CStdString& strFile)
@@ -640,7 +640,7 @@ bool URIUtils::IsSpecial(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return strFile2.Left(8).Equals("special:");
+  return StringUtils::StartsWith(strFile2, "special:");
 }
 
 bool URIUtils::IsPlugin(const CStdString& strFile)
@@ -669,12 +669,12 @@ bool URIUtils::IsSourcesPath(const CStdString& strPath)
 
 bool URIUtils::IsCDDA(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("cdda:");
+  return StringUtils::StartsWith(strFile, "cdda:");
 }
 
 bool URIUtils::IsISO9660(const CStdString& strFile)
 {
-  return strFile.Left(8).Equals("iso9660:");
+  return StringUtils::StartsWith(strFile, "iso9660:");
 }
 
 bool URIUtils::IsSmb(const CStdString& strFile)
@@ -684,7 +684,7 @@ bool URIUtils::IsSmb(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return strFile2.Left(4).Equals("smb:");
+  return StringUtils::StartsWith(strFile2, "smb:");
 }
 
 bool URIUtils::IsURL(const CStdString& strFile)
@@ -699,8 +699,8 @@ bool URIUtils::IsFTP(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return strFile2.Left(4).Equals("ftp:")  ||
-         strFile2.Left(5).Equals("ftps:");
+  return StringUtils::StartsWith(strFile2, "ftp:")  ||
+         StringUtils::StartsWith(strFile2, "ftps:");
 }
 
 bool URIUtils::IsDAV(const CStdString& strFile)
@@ -710,8 +710,8 @@ bool URIUtils::IsDAV(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return strFile2.Left(4).Equals("dav:")  ||
-         strFile2.Left(5).Equals("davs:");
+  return StringUtils::StartsWith(strFile2, "dav:")  ||
+         StringUtils::StartsWith(strFile2, "davs:");
 }
 
 bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */)
@@ -747,42 +747,42 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
 
 bool URIUtils::IsDAAP(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("daap:");
+  return StringUtils::StartsWith(strFile, "daap:");
 }
 
 bool URIUtils::IsUPnP(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("upnp:");
+  return StringUtils::StartsWith(strFile, "upnp:");
 }
 
 bool URIUtils::IsTuxBox(const CStdString& strFile)
 {
-  return strFile.Left(7).Equals("tuxbox:");
+  return StringUtils::StartsWith(strFile, "tuxbox:");
 }
 
 bool URIUtils::IsMythTV(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("myth:");
+  return StringUtils::StartsWith(strFile, "myth:");
 }
 
 bool URIUtils::IsHDHomeRun(const CStdString& strFile)
 {
-  return strFile.Left(10).Equals("hdhomerun:");
+  return StringUtils::StartsWith(strFile, "hdhomerun:");
 }
 
 bool URIUtils::IsSlingbox(const CStdString& strFile)
 {
-  return strFile.Left(6).Equals("sling:");
+  return StringUtils::StartsWith(strFile, "sling:");
 }
 
 bool URIUtils::IsVTP(const CStdString& strFile)
 {
-  return strFile.Left(4).Equals("vtp:");
+  return StringUtils::StartsWith(strFile, "vtp:");
 }
 
 bool URIUtils::IsHTSP(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("htsp:");
+  return StringUtils::StartsWith(strFile, "htsp:");
 }
 
 bool URIUtils::IsLiveTV(const CStdString& strFile)
@@ -795,8 +795,8 @@ bool URIUtils::IsLiveTV(const CStdString& strFile)
   || IsHDHomeRun(strFile)
   || IsSlingbox(strFile)
   || IsHTSP(strFile)
-  || strFile.Left(4).Equals("sap:")
-  ||(strFileWithoutSlash.Right(4).Equals(".pvr") && !strFileWithoutSlash.Left(16).Equals("pvr://recordings")))
+  || StringUtils::StartsWith(strFile, "sap:")
+  ||(StringUtils::EndsWith(strFileWithoutSlash, ".pvr") && !StringUtils::StartsWith(strFileWithoutSlash, "pvr://recordings")))
     return true;
 
   if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
@@ -810,13 +810,13 @@ bool URIUtils::IsPVRRecording(const CStdString& strFile)
   CStdString strFileWithoutSlash(strFile);
   RemoveSlashAtEnd(strFileWithoutSlash);
 
-  return strFileWithoutSlash.Right(4).Equals(".pvr") &&
-         strFile.Left(16).Equals("pvr://recordings");
+  return StringUtils::EndsWith(strFileWithoutSlash, ".pvr") &&
+         StringUtils::StartsWith(strFile, "pvr://recordings");
 }
 
 bool URIUtils::IsMusicDb(const CStdString& strFile)
 {
-  return strFile.Left(8).Equals("musicdb:");
+  return StringUtils::StartsWith(strFile, "musicdb:");
 }
 
 bool URIUtils::IsNfs(const CStdString& strFile)
@@ -826,7 +826,7 @@ bool URIUtils::IsNfs(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
   
-  return strFile2.Left(4).Equals("nfs:");
+  return StringUtils::StartsWith(strFile2, "nfs:");
 }
 
 bool URIUtils::IsAfp(const CStdString& strFile)
@@ -836,23 +836,23 @@ bool URIUtils::IsAfp(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
   
-  return strFile2.Left(4).Equals("afp:");
+  return StringUtils::StartsWith(strFile2, "afp:");
 }
 
 
 bool URIUtils::IsVideoDb(const CStdString& strFile)
 {
-  return strFile.Left(8).Equals("videodb:");
+  return StringUtils::StartsWith(strFile, "videodb:");
 }
 
 bool URIUtils::IsBluray(const CStdString& strFile)
 {
-  return strFile.Left(7).Equals("bluray:");
+  return StringUtils::StartsWith(strFile, "bluray:");
 }
 
 bool URIUtils::IsAndroidApp(const CStdString &path)
 {
-  return path.Left(11).Equals("androidapp:");
+  return StringUtils::StartsWith(path, "androidapp:");
 }
 
 bool URIUtils::IsLibraryFolder(const CStdString& strFile)
@@ -986,7 +986,7 @@ CStdString URIUtils::GetDirectory(const CStdString &strFilePath)
 
   size_t iPosBar = strFilePath.rfind('|');
   if (iPosBar == string::npos)
-    return strFilePath.Left(iPosSlash + 1); // Only path
+    return strFilePath.substr(0, iPosSlash + 1); // Only path
 
   return strFilePath.substr(0, iPosSlash + 1) + strFilePath.substr(iPosBar); // Path + options
 }

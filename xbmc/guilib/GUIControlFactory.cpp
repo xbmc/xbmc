@@ -701,10 +701,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   // Convert these from relative coords
   CStdString pos;
   XMLUtils::GetString(pControlNode, "posx", pos);
-  if (pos.Right(1) == "r")
+  if (StringUtils::EndsWith(pos, "r", true))
     posX = rect.Width() - posX;
   XMLUtils::GetString(pControlNode, "posy", pos);
-  if (pos.Right(1) == "r")
+  if (StringUtils::EndsWith(pos, "r", true))
     posY = rect.Height() - posY;
 
   GetDimension(pControlNode, "width", width, minWidth);

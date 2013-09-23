@@ -180,7 +180,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
     return false;
 
   // don't allow the view state to change these
-  if (strDirectory.Left(9).Equals("addons://"))
+  if (StringUtils::StartsWith(strDirectory, "addons://"))
   {
     for (int i=0;i<items.Size();++i)
     {

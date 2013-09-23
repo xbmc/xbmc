@@ -400,7 +400,7 @@ static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* e
   else if (name == "broadcasts")
   {
     CURL url(path);
-    if(url.GetFileName().Left(3) == "v1/")
+    if(StringUtils::StartsWith(url.GetFileName(), "v1/"))
     {
       SResource res;
       res.tag  = "svtplay:broadcasts";
@@ -417,11 +417,11 @@ static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root
   {
     CStdString name = child->Value();
     CStdString xmlns;
-    int pos = name.Find(':');
-    if(pos >= 0)
+    size_t pos = name.find(':');
+    if(pos != std::string::npos)
     {
-      xmlns = name.Left(pos);
-      name.Delete(0, pos+1);
+      xmlns = name.substr(0, pos);
+      name.erase(0, pos+1);
     }
 
     if      (xmlns == "media")
@@ -445,7 +445,7 @@ static bool FindMime(SResources resources, CStdString mime)
 {
   for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
   {
-    if(it->mime.Left(mime.length()).Equals(mime))
+    if(StringUtils::StartsWith(it->mime, mime))
       return true;
   }
   return false;
@@ -477,7 +477,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
   {
     for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
     {
-      if(it->mime.Left(mime.length()) != mime)
+      if(!StringUtils::StartsWith(it->mime, mime))
         continue;
 
       if(it->tag == *type)
@@ -545,9 +545,9 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
 
     if(vtag->m_strPlotOutline.empty() && !vtag->m_strPlot.empty())
     {
-      int pos = vtag->m_strPlot.Find('\n');
-      if(pos >= 0)
-        vtag->m_strPlotOutline = vtag->m_strPlot.Left(pos);
+      size_t pos = vtag->m_strPlot.find('\n');
+      if(pos != std::string::npos)
+        vtag->m_strPlotOutline = vtag->m_strPlot.substr(0, pos);
       else
         vtag->m_strPlotOutline = vtag->m_strPlot;
     }

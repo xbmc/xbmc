@@ -474,7 +474,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else
     {
-      if (item && !item->GetPath().Left(14).Equals("addons://more/"))
+      if (item && !StringUtils::StartsWith(item->GetPath(), "addons://more/"))
       {
         if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
           buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info

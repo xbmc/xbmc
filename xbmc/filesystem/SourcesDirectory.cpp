@@ -65,7 +65,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
   {
     const CMediaSource& share = sources[i];
     CFileItemPtr pItem(new CFileItem(share));
-    if (pItem->GetPath().Left(14).Equals("musicsearch://"))
+    if (StringUtils::StartsWith(pItem->GetPath(), "musicsearch://"))
       pItem->SetCanQueue(false);
     
     CStdString strIcon;
@@ -78,7 +78,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       if (XFILE::CFile::Exists(strThumb))
         pItem->SetArt("thumb", strThumb);
     }
-    else if (pItem->GetPath().Left(9) == "addons://")
+    else if (StringUtils::StartsWith(pItem->GetPath(), "addons://"))
       strIcon = "DefaultHardDisk.png";
     else if (   pItem->IsVideoDb()
              || pItem->IsMusicDb()

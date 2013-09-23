@@ -40,7 +40,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CURL url(strPath);
 
   CStdString path = url.GetFileName();
-  if( !path.empty() && !path.Right(1).Equals("/") )
+  if(!path.empty() && !path[path.size()] == '/')
   {
     path += "/";
     url.SetFileName(path);

@@ -479,7 +479,7 @@ namespace XBMCAddon
           else
           {
             const CStdString& exifkey = key;
-            if (!exifkey.Left(5).Equals("exif:") || exifkey.length() < 6) continue;
+            if (!StringUtils::StartsWith(exifkey, "exif:") || exifkey.length() < 6) continue;
             int info = CPictureInfoTag::TranslateString(exifkey.substr(5));
             item->GetPictureInfoTag()->SetInfo(info, value);
           }

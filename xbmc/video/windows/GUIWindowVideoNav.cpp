@@ -496,12 +496,16 @@ void CGUIWindowVideoNav::UpdateButtons()
     for (int i = 0; i <= (iItems>=2 ? 1 : 0); i++)
     {
       CFileItemPtr pItem = m_vecItems->Get(i);
-      if (pItem->IsParentFolder()) iItems--;
-      if (pItem->GetPath().Left(4).Equals("/-1/")) iItems--;
+
+      if (pItem->IsParentFolder())
+        iItems--;
+
+      if (StringUtils::StartsWith(pItem->GetPath(), "/-1/"))
+        iItems--;
     }
     // or the last item
     if (m_vecItems->Size() > 2 &&
-      m_vecItems->Get(m_vecItems->Size()-1)->GetPath().Left(4).Equals("/-1/"))
+      StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
   CStdString items = StringUtils::Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
@@ -670,7 +674,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     if (!pItem->GetPath().Equals("newsmartplaylist://video") &&
         !pItem->GetPath().Equals("special://videoplaylists/") &&
         !pItem->GetPath().Equals("sources://video/") &&
-        !pItem->GetPath().Left(9).Equals("newtag://"))
+        !StringUtils::StartsWith(pItem->GetPath(), "newtag://"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
   else if (StringUtils::StartsWith(pItem->GetPath(), "videodb://movies/sets/") &&
@@ -731,7 +735,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     if (URIUtils::GetFileName(strDeletePath).Equals("VIDEO_TS.IFO"))
     {
       strDeletePath = URIUtils::GetDirectory(strDeletePath);
-      if (strDeletePath.Right(9).Equals("VIDEO_TS/"))
+      if (StringUtils::EndsWith(strDeletePath, "VIDEO_TS/"))
       {
         URIUtils::RemoveSlashAtEnd(strDeletePath);
         strDeletePath = URIUtils::GetDirectory(strDeletePath);
@@ -936,9 +940,11 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
         if (!item->IsPlugin() && !item->IsScript() && !item->IsLiveTV() && !item->IsAddonsPath() &&
-            item->GetPath() != "sources://video/" && item->GetPath() != "special://videoplaylists/" &&
-            item->GetPath().Left(19) != "newsmartplaylist://" && item->GetPath().Left(14) != "newplaylist://" &&
-            item->GetPath().Left(9) != "newtag://")
+            item->GetPath() != "sources://video/" &&
+            item->GetPath() != "special://videoplaylists/" &&
+            !StringUtils::StartsWith(item->GetPath(), "newsmartplaylist://") &&
+            !StringUtils::StartsWith(item->GetPath(), "newplaylist://") &&
+            !StringUtils::StartsWith(item->GetPath(), "newtag://"))
         {
           if (item->m_bIsFolder)
           {
@@ -1197,7 +1203,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       // delete the thumbnail if that's what the user wants, else overwrite with the
       // new thumbnail
-      if (result.Left(14) == "thumb://Remote")
+      if (StringUtils::StartsWith(result, "thumb://Remote"))
       {
         int number = atoi(result.substr(14).c_str());
         result = thumbs[number];

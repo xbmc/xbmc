@@ -209,11 +209,11 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     strFilename = g_localizeStrings.Get(744);
 
   // Music Playlists
-  else if (path.Left(24).Equals("special://musicplaylists"))
+  else if (StringUtils::StartsWith(path, "special://musicplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
   // Video Playlists
-  else if (path.Left(24).Equals("special://videoplaylists"))
+  else if (StringUtils::StartsWith(path, "special://videoplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
   else if (URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFilename.empty())
@@ -447,7 +447,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 #endif
     size_t last_sep = strHomePath.find_last_of(PATH_SEPARATOR_CHAR);
     if (last_sep != string::npos)
-      strPath = strHomePath.Left(last_sep);
+      strPath = strHomePath.substr(0, last_sep);
     else
       strPath = strHomePath;
   }
@@ -474,24 +474,24 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 
 bool CUtil::IsPVR(const CStdString& strFile)
 {
-  return strFile.Left(4).Equals("pvr:");
+  return StringUtils::StartsWith(strFile, "pvr:");
 }
 
 bool CUtil::IsHTSP(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("htsp:");
+  return StringUtils::StartsWith(strFile, "htsp:");
 }
 
 bool CUtil::IsLiveTV(const CStdString& strFile)
 {
-  if (strFile.Left(14).Equals("pvr://channels"))
+  if (StringUtils::StartsWith(strFile, "pvr://channels"))
     return true;
 
   if(URIUtils::IsTuxBox(strFile)
   || URIUtils::IsVTP(strFile)
   || URIUtils::IsHDHomeRun(strFile)
   || URIUtils::IsHTSP(strFile)
-  || strFile.Left(4).Equals("sap:"))
+  || StringUtils::StartsWith(strFile, "sap:"))
     return true;
 
   if (URIUtils::IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
@@ -502,7 +502,7 @@ bool CUtil::IsLiveTV(const CStdString& strFile)
 
 bool CUtil::IsTVRecording(const CStdString& strFile)
 {
-  return strFile.Left(15).Equals("pvr://recording");
+  return StringUtils::StartsWith(strFile, "pvr://recording");
 }
 
 bool CUtil::IsPicture(const CStdString& strFile)
@@ -578,17 +578,12 @@ CStdString CUtil::GetFileMD5(const CStdString& strPath)
 bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescription)
 {
   CStdString strFName = URIUtils::GetFileName(strFileName);
-  strDescription = strFileName.Left(strFileName.size() - strFName.size());
+  strDescription = URIUtils::GetDirectory(strFileName);
   URIUtils::RemoveSlashAtEnd(strDescription);
 
-  int iPos = strDescription.ReverseFind("\\");
-  if (iPos < 0)
-    iPos = strDescription.ReverseFind("/");
-  if (iPos >= 0)
-  {
-    CStdString strTmp = strDescription.Right(strDescription.size()-iPos-1);
-    strDescription = strTmp;//strDescription.Right(strDescription.size() - iPos - 1);
-  }
+  size_t iPos = strDescription.find_last_of("/\\");
+  if (iPos != std::string::npos)
+    strDescription.substr(iPos + 1).swap(strDescription);
   else if (strDescription.size() <= 0)
     strDescription = strFName;
   return true;
@@ -965,12 +960,12 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
   // recurse and crash XBMC
   if (URIUtils::IsURL(path) && 
      (path.Find('%') >= 0 ||
-      path.Left(4).Equals("apk:") ||
-      path.Left(4).Equals("zip:") ||
-      path.Left(4).Equals("rar:") ||
-      path.Left(6).Equals("stack:") ||
-      path.Left(7).Equals("bluray:") ||
-      path.Left(10).Equals("multipath:") ))
+      StringUtils::StartsWith(path, "apk:") ||
+      StringUtils::StartsWith(path, "zip:") ||
+      StringUtils::StartsWith(path, "rar:") ||
+      StringUtils::StartsWith(path, "stack:") ||
+      StringUtils::StartsWith(path, "bluray:") ||
+      StringUtils::StartsWith(path, "multipath:") ))
     return result;
 
   // check the path for incorrect slashes
@@ -1050,20 +1045,20 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
 {
   CStdString paramString;
 
-  int iPos = execString.Find("(");
-  int iPos2 = execString.ReverseFind(")");
-  if (iPos > 0 && iPos2 > 0)
+  size_t iPos = execString.find("(");
+  size_t iPos2 = execString.rfind(")");
+  if (iPos != std::string::npos && iPos2 != std::string::npos)
   {
     paramString = execString.substr(iPos + 1, iPos2 - iPos - 1);
-    function = execString.Left(iPos);
+    function = execString.substr(0, iPos);
   }
   else
     function = execString;
 
   // remove any whitespace, and the standard prefix (if it exists)
   StringUtils::Trim(function);
-  if( function.Left(5).Equals("xbmc.", false) )
-    function.Delete(0, 5);
+  if(StringUtils::StartsWith(function, "xbmc."))
+    function.erase(0, 5);
 
   SplitParams(paramString, parameters);
 }
@@ -1089,34 +1084,40 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
       }
     }
     else
-    { // not in a quote, so check if we should be starting one
+    {
+      // not in a quote, so check if we should be starting one
       if (ch == '"' && !escaped)
       { // start of quote - no need to add the quote to our string
         inQuotes = true;
       }
+
       if (inFunction && ch == ')')
       { // end of a function
         inFunction--;
       }
+
       if (ch == '(')
       { // start of function
         inFunction++;
       }
+
       if (!inFunction && ch == ',')
-      { // not in a function, so a comma signfies the end of this parameter
+      {
+        // not in a function, so a comma signfies the end of this parameter
         if (whiteSpacePos)
-          parameter = parameter.Left(whiteSpacePos);
+          parameter.substr(0, whiteSpacePos).swap(parameter);
+
         // trim off start and end quotes
-        if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
-          parameter = parameter.substr(1,parameter.GetLength() - 2);
-        else if (parameter.GetLength() > 3 && parameter[parameter.GetLength() - 1] == '"')
+        if (parameter.length() > 1 && parameter[0] == '"' && parameter[parameter.length() - 1] == '"')
+          parameter.substr(1, parameter.length() - 2).swap(parameter);
+        else if (parameter.length() > 3 && parameter[parameter.length() - 1] == '"')
         {
           // check name="value" style param.
-          int quotaPos = parameter.Find('"');
-          if (quotaPos > 1 && quotaPos < parameter.GetLength() - 1 && parameter[quotaPos - 1] == '=')
+          size_t quotaPos = parameter.find('"');
+          if (quotaPos > 1 && quotaPos < parameter.length() - 1 && parameter[quotaPos - 1] == '=')
           {
-            parameter.Delete(parameter.GetLength() - 1);
-            parameter.Delete(quotaPos);
+            parameter.erase(parameter.length() - 1);
+            parameter.erase(quotaPos);
           }
         }
         parameters.push_back(parameter);
@@ -1126,10 +1127,12 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
       }
     }
     if ((ch == '"' || ch == '\\') && escaped)
-    { // escaped quote or backslash
+    {
+      // escaped quote or backslash
       parameter[parameter.size()-1] = ch;
       continue;
     }
+
     // whitespace handling - we skip any whitespace at the left or right of an unquoted parameter
     if (ch == ' ' && !inQuotes)
     {
@@ -1142,23 +1145,27 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
       whiteSpacePos = 0;
     parameter += ch;
   }
+
   if (inFunction || inQuotes)
     CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, paramString.c_str());
+
   if (whiteSpacePos)
-    parameter = parameter.Left(whiteSpacePos);
+    parameter.erase(whiteSpacePos + 1);
+
   // trim off start and end quotes
-  if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
-    parameter = parameter.substr(1,parameter.GetLength() - 2);
-  else if (parameter.GetLength() > 3 && parameter[parameter.GetLength() - 1] == '"')
+  if (parameter.length() > 1 && parameter[0] == '"' && parameter[parameter.length() - 1] == '"')
+    parameter = parameter.substr(1,parameter.length() - 2);
+  else if (parameter.length() > 3 && parameter[parameter.length() - 1] == '"')
   {
     // check name="value" style param.
-    int quotaPos = parameter.Find('"');
-    if (quotaPos > 1 && quotaPos < parameter.GetLength() - 1 && parameter[quotaPos - 1] == '=')
+    size_t quotaPos = parameter.Find('"');
+    if (quotaPos > 1 && quotaPos < parameter.length() - 1 && parameter[quotaPos - 1] == '=')
     {
-      parameter.Delete(parameter.GetLength() - 1);
-      parameter.Delete(quotaPos);
+      parameter.erase(parameter.length() - 1);
+      parameter.erase(quotaPos);
     }
   }
+
   if (!parameter.empty() || parameters.size())
     parameters.push_back(parameter);
 }
@@ -1176,7 +1183,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
   // stack://
   if (checkURL.GetProtocol() == "stack")
-    strPath.Delete(0, 8); // remove the stack protocol
+    strPath.erase(0, 8); // remove the stack protocol
 
   if (checkURL.GetProtocol() == "shout")
     strPath = checkURL.GetHostName();
@@ -1189,7 +1196,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
   bIsSourceName = false;
   int iIndex = -1;
-  int iLength = -1;
+
   // we first test the NAME of a source
   for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
@@ -1224,16 +1231,18 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   urlDest.SetOptions("");
   CStdString strDest = urlDest.GetWithoutUserDetails();
   ForceForwardSlashes(strDest);
+
   if (!URIUtils::HasSlashAtEnd(strDest))
     strDest += "/";
-  int iLenPath = strDest.size();
 
+  size_t iLength = std::string::npos;
+  size_t iLenPath = strDest.size();
   for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
     CMediaSource share = VECSOURCES.at(i);
 
     // does it match a source name?
-    if (share.strPath.substr(0,8) == "shout://")
+    if (StringUtils::StartsWith(share.strPath, "shout://"))
     {
       CURL url(share.strPath);
       if (strPath.Equals(url.GetHostName()))
@@ -1259,11 +1268,14 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       urlShare.SetOptions("");
       CStdString strShare = urlShare.GetWithoutUserDetails();
       ForceForwardSlashes(strShare);
+
       if (!URIUtils::HasSlashAtEnd(strShare))
         strShare += "/";
-      int iLenShare = strShare.size();
 
-      if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
+      size_t iLenShare = strShare.size();
+      if (iLenPath >= iLenShare &&
+          StringUtils::StartsWith(strDest, strShare)
+          && iLenShare > iLength)
       {
         // if exact match, return it immediately
         if (iLenPath == iLenShare)
@@ -1287,7 +1299,8 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
     // rar:// and zip://
     // if archive wasn't mounted, look for a matching share for the archive instead
-    if( strPath.Left(6).Equals("rar://") || strPath.Left(6).Equals("zip://") )
+    if(StringUtils::StartsWith(strPath, "rar://") ||
+       StringUtils::StartsWith(strPath, "zip://"))
     {
       // get the hostname portion of the url since it contains the archive file
       strPath = checkURL.GetHostName();
@@ -1373,7 +1386,7 @@ void CUtil::DeleteDirectoryCache(const CStdString &prefix)
     if (items[i]->m_bIsFolder)
       continue;
     CStdString fileName = URIUtils::GetFileName(items[i]->GetPath());
-    if (fileName.Left(prefix.GetLength()) == prefix)
+    if (StringUtils::StartsWith(fileName, prefix, true))
       XFILE::CFile::Delete(items[i]->GetPath());
   }
 }
@@ -1442,55 +1455,59 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
   return fRelevance;
 }
 
-bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength)
+bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, size_t iTextMaxLength)
 {
-  int iStrInputSize = StrInput.size();
-  if((iStrInputSize <= 0) || (iTextMaxLength >= iStrInputSize))
+  size_t iStrInputSize = StrInput.size();
+  if(iStrInputSize <= 0 || iTextMaxLength >= iStrInputSize)
     return false;
 
   char cDelim = '\0';
   size_t nGreaterDelim, nPos;
 
   nPos = StrInput.find_last_of( '\\' );
-  if ( nPos != CStdString::npos )
+  if (nPos != std::string::npos)
     cDelim = '\\';
   else
   {
     nPos = StrInput.find_last_of( '/' );
-    if ( nPos != CStdString::npos )
+    if (nPos != std::string::npos)
       cDelim = '/';
   }
-  if ( cDelim == '\0' )
+
+  if (cDelim == '\0')
     return false;
 
   if (nPos == StrInput.size() - 1)
   {
     StrInput.erase(StrInput.size() - 1);
-    nPos = StrInput.find_last_of( cDelim );
+    nPos = StrInput.find_last_of(cDelim);
   }
-  while( iTextMaxLength < iStrInputSize )
+
+  while(iTextMaxLength < iStrInputSize)
   {
     nPos = StrInput.find_last_of( cDelim, nPos );
     nGreaterDelim = nPos;
-    if ( nPos != CStdString::npos )
+    if ( nPos != std::string::npos )
       nPos = StrInput.find_last_of( cDelim, nPos - 1 );
-    if ( nPos == CStdString::npos ) break;
+    if ( nPos == std::string::npos ) break;
     if ( nGreaterDelim > nPos ) StrInput.replace( nPos + 1, nGreaterDelim - nPos - 1, ".." );
     iStrInputSize = StrInput.size();
   }
+
   // replace any additional /../../ with just /../ if necessary
   CStdString replaceDots = StringUtils::Format("..%c..", cDelim);
+
   while (StrInput.size() > (unsigned int)iTextMaxLength)
     if (!StrInput.Replace(replaceDots, ".."))
       break;
+
   // finally, truncate our string to force inside our max text length,
   // replacing the last 2 characters with ".."
-
   // eg end up with:
   // "smb://../Playboy Swimsuit Cal.."
   if (iTextMaxLength > 2 && StrInput.size() > (unsigned int)iTextMaxLength)
   {
-    StrInput = StrInput.Left(iTextMaxLength - 2);
+    StrInput.erase(iTextMaxLength - 2);
     StrInput += "..";
   }
   StrOutput = StrInput;
@@ -1914,7 +1931,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     CMediaSettings::Get().SetAdditionalSubtitleDirectoryChecked(1);
   }
   
-  if (strMovie.Left(6) == "rar://") // <--- if this is found in main path then ignore it!
+  if (StringUtils::StartsWith(strMovie, "rar://")) // <--- if this is found in main path then ignore it!
   {
     CURL url(strMovie);
     CStdString strArchive = url.GetHostName();
@@ -1931,7 +1948,9 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
       StringUtils::SplitString( strLookInPaths[i], "\\", directories );
 
     // if it's inside a cdX dir, add parent path
-    if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && directories[directories.size()-2].Left(2).Equals("cd")) // SplitString returns empty token as last item, hence size-2
+    if (directories.size() >= 2 &&
+        directories[directories.size()-2].size() == 3 &&
+        StringUtils::StartsWith(directories[directories.size()-2], "cd")) // SplitString returns empty token as last item, hence size-2
     {
       CStdString strPath2;
       URIUtils::GetParentPath(strLookInPaths[i], strPath2);
@@ -1996,16 +2015,16 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
       CFileItemList items;
       
       CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip",DIR_FLAG_NO_FILE_DIRS);
-      int fnl = strMovieFileNameNoExt.size();
       
       for (int j = 0; j < items.Size(); j++)
       {
         URIUtils::Split(items[j]->GetPath(), strPath, strItem);
         
-        if (strItem.Left(fnl).Equals(strMovieFileNameNoExt))
+        if (StringUtils::StartsWith(strItem, strMovieFileNameNoExt))
         {
           // is this a rar or zip-file
-          if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
+          if (URIUtils::IsRAR(strItem) ||
+              URIUtils::IsZIP(strItem))
           {
             // zip-file name equals strMovieFileNameNoExt, don't check in zip-file
             ScanArchiveForSubtitles( items[j]->GetPath(), "", vecSubtitles );
@@ -2110,9 +2129,8 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
    // done checking if this is a rar-in-rar
 
    // check that the found filename matches the movie filename
-   int fnl = strMovieFileNameNoExt.size();
-   if (fnl && !URIUtils::GetFileName(strPathInRar).Left(fnl).Equals(strMovieFileNameNoExt))
-     continue;
+   if (!StringUtils::StartsWith(URIUtils::GetFileName(strPathInRar), strMovieFileNameNoExt))
+    continue;
 
    int iPos=0;
     while (sub_exts[iPos])

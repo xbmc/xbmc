@@ -23,6 +23,7 @@
 #include "filesystem/Directory.h"
 #include "utils/URIUtils.h"
 #include "utils/JobManager.h"
+#include "utils/StringUtils.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "Key.h"
@@ -298,7 +299,7 @@ bool CGUIMultiImage::CMultiImageJob::DoWork()
   // check to see if we have a single image or a folder of images
   CFileItem item(m_path, false);
   item.FillInMimeType();
-  if (item.IsPicture() || item.GetMimeType().Left(6).Equals("image/"))
+  if (item.IsPicture() || StringUtils::StartsWith(item.GetMimeType(), "image/"))
   {
     m_files.push_back(m_path);
   }
@@ -316,7 +317,7 @@ bool CGUIMultiImage::CMultiImageJob::DoWork()
     for (int i=0; i < items.Size(); i++)
     {
       CFileItem* pItem = items[i].get();
-      if (pItem && (pItem->IsPicture() || pItem->GetMimeType().Left(6).Equals("image/")))
+      if (pItem && (pItem->IsPicture() || StringUtils::StartsWith(pItem->GetMimeType(), "image/")))
         m_files.push_back(pItem->GetPath());
     }
   }

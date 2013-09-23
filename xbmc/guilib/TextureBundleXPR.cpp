@@ -260,11 +260,11 @@ void CTextureBundleXPR::GetTexturesFromPath(const CStdString &path, std::vector<
   CStdString testPath = Normalize(path);
   if (!URIUtils::HasSlashAtEnd(testPath))
     testPath += "\\";
-  int testLength = testPath.GetLength();
+
   std::map<CStdString, FileHeader_t>::iterator it;
   for (it = m_FileHeaders.begin(); it != m_FileHeaders.end(); ++it)
   {
-    if (it->first.Left(testLength).Equals(testPath))
+    if (StringUtils::StartsWith(it->first, testPath))
       textures.push_back(it->first);
   }
 }

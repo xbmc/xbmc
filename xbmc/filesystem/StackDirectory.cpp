@@ -159,15 +159,15 @@ namespace XFILE
     // the stacked files are always in volume order, so just get up to the first filename
     // occurence of " , "
     CStdString file, folder;
-    int pos = strPath.Find(" , ");
-    if (pos > 0)
-      URIUtils::Split(strPath.Left(pos), folder, file);
+    size_t pos = strPath.find(" , ");
+    if (pos != std::string::npos)
+      URIUtils::Split(strPath.substr(0, pos), folder, file);
     else
       URIUtils::Split(strPath, folder, file); // single filed stacks - should really not happen
 
     // remove "stack://" from the folder
     folder = folder.substr(8);
-    file.Replace(",,", ",");
+    StringUtils::Replace(file, ",,", ",");
 
     return URIUtils::AddFileToFolder(folder, file);
   }

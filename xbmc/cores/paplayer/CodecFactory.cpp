@@ -40,6 +40,7 @@
 #include "URL.h"
 #include "DVDPlayerCodec.h"
 #include "PCMCodec.h"
+#include "utils/StringUtils.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -119,13 +120,13 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   ||  strContent.Equals("audio/mpeg3")
   ||  strContent.Equals("audio/mp3") )
     return new MP3Codec();
-  else if (strContent.Left(9).Equals("audio/l16"))
+  else if (StringUtils::StartsWith(strContent, "audio/l16"))
   {
     PCMCodec * pcm_codec = new PCMCodec();
     pcm_codec->SetMimeParams(strContent);
     return pcm_codec;
   }
-  else if( strContent.Equals("audio/aac")
+  else if(strContent.Equals("audio/aac")
     || strContent.Equals("audio/aacp") )
   {
     DVDPlayerCodec *pCodec = new DVDPlayerCodec;

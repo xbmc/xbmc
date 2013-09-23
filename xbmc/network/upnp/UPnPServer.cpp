@@ -744,9 +744,9 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     }
 
     // this isn't pretty but needed to properly hide the addons node from clients
-    if (items.GetPath().Left(7) == "library") {
+    if (StringUtils::StartsWith(items.GetPath(), "library")) {
         for (int i=0; i<items.Size(); i++) {
-            if (items[i]->GetPath().Left(6) == "addons")
+          if (StringUtils::StartsWith(items[i]->GetPath(), "addons"))
                 items.Remove(i);
         }
     }
@@ -1203,7 +1203,7 @@ CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
 
     SortDescription sorting;
     /* Platinum guarantees 1st char is - or + */
-    sorting.sortOrder = itr->Left(1).Equals("+") ? SortOrderAscending : SortOrderDescending;
+    sorting.sortOrder = StringUtils::StartsWith(*itr, "+") ? SortOrderAscending : SortOrderDescending;
 
     /* resource specific */
     if (method.Equals("res@duration"))

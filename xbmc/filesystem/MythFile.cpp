@@ -120,9 +120,9 @@ bool CMythFile::SetupConnection(const CURL& url, bool control, bool event, bool 
 
 bool CMythFile::SetupRecording(const CURL& url)
 {
-  if (url.GetFileName().Left(11) != "recordings/" &&
-      url.GetFileName().Left(7)  != "movies/" &&
-      url.GetFileName().Left(8)  != "tvshows/")
+  if (!StringUtils::StartsWith(url.GetFileName(), "recordings/", true) &&
+      !StringUtils::StartsWith(url.GetFileName(), "movies/", true) &&
+      !StringUtils::StartsWith(url.GetFileName(), "tvshows/", true))
     return false;
 
   if(!SetupConnection(url, true, false, false))
@@ -188,7 +188,7 @@ bool CMythFile::SetupRecording(const CURL& url)
 
 bool CMythFile::SetupLiveTV(const CURL& url)
 {
-  if (url.GetFileName().Left(9) != "channels/")
+  if (!StringUtils::StartsWith(url.GetFileName(), "channels/", true))
     return false;
 
   if(!SetupConnection(url, true, true, true))
@@ -301,16 +301,16 @@ bool CMythFile::Open(const CURL& url)
 
   CStdString path(url.GetFileName());
 
-  if (path.Left(11) == "recordings/" ||
-      path.Left(7)  == "movies/" ||
-      path.Left(8)  == "tvshows/")
+  if (StringUtils::StartsWith(path, "recordings/", true) ||
+      StringUtils::StartsWith(path, "movies/", true) ||
+      StringUtils::StartsWith(path, "tvshows/", true))
   {
     if(!SetupRecording(url))
       return false;
 
     CLog::Log(LOGDEBUG, "%s - file: size %"PRIu64", start %"PRIu64", ", __FUNCTION__,  (int64_t)m_dll->file_length(m_file), (int64_t)m_dll->file_start(m_file));
   }
-  else if (path.Left(9) == "channels/")
+  else if (StringUtils::StartsWith(path, "channels/", true))
   {
 
     if(!SetupLiveTV(url))
@@ -318,7 +318,7 @@ bool CMythFile::Open(const CURL& url)
 
     CLog::Log(LOGDEBUG, "%s - recorder has started on filename %s", __FUNCTION__, m_filename.c_str());
   }
-  else if (path.Left(6) == "files/")
+  else if (StringUtils::StartsWith(path, "files/", true))
   {
     if(!SetupFile(url))
       return false;
@@ -394,9 +394,9 @@ bool CMythFile::Exists(const CURL& url)
    * (*.mpg.png or *.nuv.png) and channel icons, which are an arbitrary image format, are requested
    * through the files/ path.
    */
-  if ((path.Left(11) == "recordings/"
-    || path.Left(7)  == "movies/"
-    || path.Left(8)  == "tvshows/")
+  if ((StringUtils::StartsWith(path, "recordings/", true)
+    || StringUtils::StartsWith(path, "movies/", true)
+    || StringUtils::StartsWith(path, "tvshows/", true))
     && (URIUtils::HasExtension(path, ".mpg|.nuv")))
   {
     if(!SetupConnection(url, true, false, false))
@@ -411,7 +411,7 @@ bool CMythFile::Exists(const CURL& url)
     }
     return true;
   }
-  else if(path.Left(6) == "files/")
+  else if(StringUtils::StartsWith(path, "files/", true))
     return true;
 
   return false;
@@ -421,9 +421,9 @@ bool CMythFile::Delete(const CURL& url)
 {
   CStdString path(url.GetFileName());
 
-  if (path.Left(11) == "recordings/" ||
-      path.Left(7)  == "movies/" ||
-      path.Left(8)  == "tvshows/")
+  if (StringUtils::StartsWith(path, "recordings/", true) ||
+      StringUtils::StartsWith(path, "movies/", true) ||
+      StringUtils::StartsWith(path, "tvshows/", true))
   {
     /* this will setup all interal variables */
     if(!Exists(url))
@@ -437,7 +437,7 @@ bool CMythFile::Delete(const CURL& url)
       return false;
     }
 
-    if (path.Left(8) == "tvshows/")
+    if (StringUtils::StartsWith(path, "tvshows/", true))
     {
       /*
        * Clear the directory cache for the TV Shows folder so the listing is accurate if this was

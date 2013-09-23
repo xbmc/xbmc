@@ -79,11 +79,11 @@ bool CPlayListB4S::LoadData(istream& stream)
   while (pEntryElement)
   {
     CStdString strFileName = pEntryElement->Attribute("Playstring");
-    int iColon = strFileName.Find(":");
-    if (iColon > 0)
+    size_t iColon = strFileName.find(":");
+    if (iColon != std::string::npos)
     {
       iColon++;
-      strFileName = strFileName.Right((int)strFileName.size() - iColon);
+      strFileName.erase(0, iColon);
     }
     if (strFileName.size())
     {

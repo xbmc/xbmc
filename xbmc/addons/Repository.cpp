@@ -122,8 +122,8 @@ CStdString CRepository::GetAddonHash(const AddonPtr& addon)
   {
     checksum = FetchChecksum(addon->Path()+".md5");
     size_t pos = checksum.find_first_of(" \n");
-    if (pos != CStdString::npos)
-      return checksum.Left(pos);
+    if (pos != std::string::npos)
+      return checksum.substr(0, pos);
   }
   return checksum;
 }

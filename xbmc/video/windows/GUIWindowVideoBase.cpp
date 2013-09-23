@@ -892,8 +892,12 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
 
   CStdString path = item->GetPath();
-  if (!item->m_bIsFolder && path != "add" && path != "addons://more/video" &&
-      path.Left(19) != "newsmartplaylist://" && path.Left(14) != "newplaylist://" && path.Left(9) != "newtag://")
+  if (!item->m_bIsFolder &&
+      path != "add" &&
+      path != "addons://more/video" &&
+      StringUtils::StartsWith(path, "newsmartplaylist://") &&
+      StringUtils::StartsWith(path, "newplaylist://") &&
+      StringUtils::StartsWith(path, "newtag://"))
     return OnFileAction(iItem, CSettings::Get().GetInt("myvideos.selectaction"));
 
   return CGUIMediaWindow::OnSelect(iItem);
@@ -1198,7 +1202,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
 
-        if (!m_vecItems->GetPath().empty() && !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->GetPath().Left(9).Equals("newtag://")
+        if (!m_vecItems->GetPath().empty() && !StringUtils::StartsWith(item->GetPath(), "newsmartplaylist://") && !StringUtils::StartsWith(item->GetPath(), "newtag://")
             && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
@@ -1472,7 +1476,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   }
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, item.GetPath().c_str());
 
-  if (item.GetPath().Left(17) == "pvr://recordings/")
+  if (StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
   {
     if (!g_PVRManager.IsStarted())
       return false;

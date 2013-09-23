@@ -527,7 +527,7 @@ long StringUtils::TimeStringToSeconds(const CStdString &timeString)
 {
   CStdString strCopy(timeString);
   StringUtils::Trim(strCopy);
-  if(strCopy.Right(4).Equals(" min"))
+  if(StringUtils::EndsWith(strCopy, " min"))
   {
     // this is imdb format of "XXX min"
     return 60 * atoi(strCopy.c_str());
@@ -601,9 +601,9 @@ bool StringUtils::IsInteger(const CStdString& str)
 
 void StringUtils::RemoveCRLF(CStdString& strLine)
 {
-  while ( strLine.size() && (strLine.Right(1) == "\n" || strLine.Right(1) == "\r") )
+  while (strLine.size() && (strLine[strLine.size() - 1] == '\n' || strLine[strLine.size() - 1] == '\r'))
   {
-    strLine = strLine.Left(std::max(0, (int)strLine.size() - 1));
+    strLine.erase(std::max(0, (int)strLine.size() - 1));
   }
 }
 

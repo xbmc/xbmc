@@ -416,7 +416,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, const CStdString &pathOption)
   CStdString strZapUrl, strPostUrl, strZapName, strFilter;
   //Extract the ZAP to Service String
   //Remove the ".ts"
-  strFilter = pathOption.Left(pathOption.size()-3);
+  strFilter = pathOption.substr(0, pathOption.size() - 3);
   //Get the Service Name
 
   // Create ZAP URL
@@ -562,27 +562,27 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
           for (vector<sAudioChannel>::iterator sChannel = sCurSrvData.audio_channels.begin(); sChannel!=sCurSrvData.audio_channels.end(); ++sChannel)
           {
             if (sChannel->pid != sRequestedAudioChannel.pid)
-              strAPids += "," + sChannel->pid.Right(4);
+              strAPids += "," + sChannel->pid.substr(sChannel->pid.size() - 4);
           }
           CLog::Log(LOGDEBUG, "%s - Sending all audio pids: %s%s", __FUNCTION__, strAudioChannelPid.c_str(), strAPids.c_str());
 
           strVideoStream = StringUtils::Format("0,%s,%s,%s%s",
-                                               sStrmInfo.pmt.Left(4).c_str(),
-                                               sStrmInfo.vpid.Left(4).c_str(),
-                                               sStrmInfo.apid.Left(4).c_str(),
+                                               sStrmInfo.pmt.substr(0, 4).c_str(),
+                                               sStrmInfo.vpid.substr(0, 4).c_str(),
+                                               sStrmInfo.apid.substr(0, 4).c_str(),
                                                strAPids.c_str());
         }
         else
           strVideoStream = StringUtils::Format("0,%s,%s,%s",
-                                               sStrmInfo.pmt.Left(4).c_str(),
-                                               sStrmInfo.vpid.Left(4).c_str(),
-                                               sStrmInfo.apid.Left(4).c_str());
+                                               sStrmInfo.pmt.substr(0, 4).c_str(),
+                                               sStrmInfo.vpid.substr(0, 4).c_str(),
+                                               sStrmInfo.apid.substr(0, 4).c_str());
       }
       else
         strVideoStream = StringUtils::Format("0,%s,%s,%s",
-                                             sStrmInfo.pmt.Left(4).c_str(),
-                                             sStrmInfo.vpid.Left(4).c_str(),
-                                             strAudioChannelPid.Left(4).c_str());
+                                             sStrmInfo.pmt.substr(0, 4).c_str(),
+                                             sStrmInfo.vpid.substr(0, 4).c_str(),
+                                             strAudioChannelPid.substr(0, 4).c_str());
 
       CURL streamURL;
       streamURL.SetProtocol("http");

@@ -113,19 +113,10 @@ CDatabase::~CDatabase(void)
   Close();
 }
 
+//FIXME: unused
 void CDatabase::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
-  strFileName = "";
-  strPath = "";
-  int i = strFileNameAndPath.size() - 1;
-  while (i > 0)
-  {
-    char ch = strFileNameAndPath[i];
-    if (ch == ':' || ch == '/' || ch == '\\') break;
-    else i--;
-  }
-  strPath = strFileNameAndPath.Left(i);
-  strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
+  URIUtils::Split(strFileNameAndPath, strPath, strFileName);
 }
 
 uint32_t CDatabase::ComputeCRC(const CStdString &text)

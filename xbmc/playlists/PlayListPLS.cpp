@@ -64,7 +64,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
   Clear();
 
   bool bShoutCast = false;
-  if( strFileName.Left(8).Equals("shout://") )
+  if(StringUtils::StartsWith(strFileName, "shout://"))
   {
     strFileName.Delete(0, 8);
     strFileName.Insert(0, "http://");
@@ -114,21 +114,20 @@ bool CPlayListPLS::Load(const CStdString &strFile)
   {
     strLine = szLine;
     StringUtils::RemoveCRLF(strLine);
-    int iPosEqual = strLine.Find("=");
-    if (iPosEqual > 0)
+    size_t iPosEqual = strLine.find("=");
+    if (iPosEqual != std::string::npos)
     {
-      CStdString strLeft = strLine.Left(iPosEqual);
+      CStdString strLeft = strLine.substr(0, iPosEqual);
       iPosEqual++;
-      CStdString strValue = strLine.Right(strLine.size() - iPosEqual);
+      CStdString strValue = strLine.substr(iPosEqual + 1);
       StringUtils::ToLower(strLeft);
-      while (strLeft[0] == ' ' || strLeft[0] == '\t')
-        strLeft.erase(0,1);
+      StringUtils::TrimLeft(strLeft);
 
       if (strLeft == "numberofentries")
       {
         m_vecItems.reserve(atoi(strValue.c_str()));
       }
-      else if (strLeft.Left(4) == "file")
+      else if (StringUtils::StartsWith(strLeft, "file", true))
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 4);
         if (!Resize(idx))
@@ -152,7 +151,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
         g_charsetConverter.unknownToUTF8(strValue);
         m_vecItems[idx - 1]->SetPath(strValue);
       }
-      else if (strLeft.Left(5) == "title")
+      else if (StringUtils::StartsWith(strLeft, "title", true))
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 5);
         if (!Resize(idx))
@@ -163,7 +162,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
         g_charsetConverter.unknownToUTF8(strValue);
         m_vecItems[idx - 1]->SetLabel(strValue);
       }
-      else if (strLeft.Left(6) == "length")
+      else if (StringUtils::StartsWith(strLeft, "length", true))
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 6);
         if (!Resize(idx))

@@ -441,8 +441,8 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           if (!value.empty())
           {
             // assumes HH:MM
-            timedate.wHour = atoi(value.Left(2));
-            timedate.wMinute = atoi(value.Right(2));
+            timedate.wHour = atoi(value.substr(0, 2).c_str());
+            timedate.wMinute = atoi(value.substr(3, 2).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetTime(timedate, label))
           {
