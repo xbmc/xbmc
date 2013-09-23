@@ -17,7 +17,7 @@ set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PLEX_TARGET_NAME}-${PLEX_VERSION_STRING}-s
 
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "Plex Home Theater")
 set(CPACK_COMPONENT_QDXSETUP_DISPLAY_NAME "DirectX Installer")
-set(CPACK_COMPONENT_VCREDIST_DISPLAY_NAME "Visual Studio 2010 redistribution installer")
+set(CPACK_COMPONENT_VCREDIST_DISPLAY_NAME "Visual Studio redistribution installer")
 set(CPACK_COMPONENT_MCE_DISPLAY_NAME "Microsoft Media Center Integration")
 set(CPACK_COMPONENT_RUNTIME_DISPLAY_NAME "Plex for Home Theater")
 set(CPACK_COMPONENT_RUNTIME_REQUIRED 1)
@@ -33,8 +33,10 @@ set(CPACK_RESOURCE_FILE_LICENSE ${root}/LICENSE.GPL)
 set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
 
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
-  "IfFileExists \\\"$INSTDIR\\\\Dependencies\\\\vcredist_x86.exe\\\" 0 +2
-   ExecWait \\\"$INSTDIR\\\\Dependencies\\\\vcredist_x86.exe /q /norestart\\\"
+  "IfFileExists \\\"$INSTDIR\\\\Dependencies\\\\vcredist_2012_x86.exe\\\" 0 +2
+   ExecWait \\\"$INSTDIR\\\\Dependencies\\\\vcredist_2012_x86.exe /q /norestart\\\"
+   IfFileExists \\\"$INSTDIR\\\\Dependencies\\\\vcredist_2010_x86.exe\\\" 0 +2
+   ExecWait \\\"$INSTDIR\\\\Dependencies\\\\vcredist_2010_x86.exe /q /norestart\\\"
    IfFileExists \\\"$INSTDIR\\\\Dependencies\\\\dxsetup\\\\dxsetup.exe\\\" 0 +2
    ExecWait \\\"$INSTDIR\\\\Dependencies\\\\dxsetup\\\\dxsetup.exe /silent\\\"
    RMDir /r \\\"$INSTDIR\\\\Dependencies\\\"")
