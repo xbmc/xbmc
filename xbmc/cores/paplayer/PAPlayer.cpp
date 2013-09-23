@@ -302,7 +302,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
     CExclusiveLock lock(m_streamsLock);
     m_jobCounter++;
   }
-  CJobManager::GetInstance().AddJob(new CQueueNextFileJob(file, *this), this);
+  CJobManager::GetInstance().AddJob(new CQueueNextFileJob(file, *this), this, CJob::PRIORITY_NORMAL);
   return true;
 }
 
