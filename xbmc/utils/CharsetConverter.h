@@ -169,6 +169,7 @@ public:
   static void SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current);
 private:
   static const int m_Utf8CharMinSize, m_Utf8CharMaxSize;
+  class CInnerConverter;
 };
 
 XBMC_GLOBAL(CCharsetConverter,g_charsetConverter);
