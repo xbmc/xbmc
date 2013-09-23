@@ -1175,12 +1175,20 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       }
     }
   }
-  else if (info.size() == 3)
+  else if (info.size() == 3 || info.size() == 4)
   {
     if (info[0].name == "system" && info[1].name == "platform")
     { // TODO: replace with a single system.platform
       CStdString platform = info[2].name;
-      if (platform == "linux") return SYSTEM_PLATFORM_LINUX;
+      if (platform == "linux")
+      {
+        if (info.size() == 4)
+        {
+          CStdString device = info[3].name;
+          if (device == "raspberrypi") return SYSTEM_PLATFORM_LINUX_RASPBERRY_PI;
+        }
+        else return SYSTEM_PLATFORM_LINUX;
+      }
       else if (platform == "windows") return SYSTEM_PLATFORM_WINDOWS;
       else if (platform == "darwin")  return SYSTEM_PLATFORM_DARWIN;
       else if (platform == "osx")  return SYSTEM_PLATFORM_DARWIN_OSX;
@@ -2172,6 +2180,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #endif
   else if (condition == SYSTEM_PLATFORM_ANDROID)
 #if defined(TARGET_ANDROID)
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_LINUX_RASPBERRY_PI)
+#if defined(TARGET_RASPBERRY_PI)
     bReturn = true;
 #else
     bReturn = false;
