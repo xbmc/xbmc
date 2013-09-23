@@ -126,9 +126,10 @@ if(COMPRESS_TEXTURES)
   if(ENABLE_NEW_SKIN)
     add_custom_command(
       OUTPUT Textures_Plex.xbt
-      COMMAND $<TARGET_FILE:TexturePacker> -input ${root}/addons/skin.plex/Media -output Textures_Plex.xbt
+      COMMAND $<TARGET_FILE:TexturePacker> -input ${root}/addons/skin.plex/Media -output ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt
       MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX_SKIN}
       DEPENDS TexturePacker
+      WORKING_DIRECTORY ${WORKDIR}
     )
     add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt Textures_Plex.xbt)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/addons/skin.plex/Media RENAME Textures.xbt COMPONENT RUNTIME)
