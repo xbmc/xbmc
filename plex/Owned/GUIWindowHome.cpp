@@ -298,6 +298,7 @@ bool CPlexSectionFanout::NeedsRefresh()
 //////////////////////////////////////////////////////////////////////////////
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(false), m_lastSelectedItem("Search")
 {
+  m_loadType = LOAD_ON_GUI_INIT;
   AddSection("global://art/", SECTION_TYPE_GLOBAL_FANART);
 }
 
@@ -541,34 +542,34 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
-      if (!m_lastSelectedItem.empty())
-        HideAllLists();
+      RestoreSection();
 
       if (m_lastSelectedItem == "Search")
         RefreshSection("global://art/", SECTION_TYPE_GLOBAL_FANART);
+      
+      RefreshAllSections(false);
 
       if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
         g_plexApplication.backgroundMusicPlayer->PlayElevatorMusic();
-
+      
+      break;
     }
 
     case GUI_MSG_PLEX_BEST_SERVER_UPDATED:
-    case GUI_MSG_WINDOW_RESET:
+    {
+      RefreshAllSections(true);
+      break;
+    }
+      
     case GUI_MSG_PLEX_SERVER_DATA_LOADED:
     case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
     {
       UpdateSections();
-
-      if (message.GetMessage() != GUI_MSG_PLEX_SERVER_DATA_LOADED ||
-          message.GetMessage() != GUI_MSG_PLEX_SERVER_DATA_UNLOADED)
-      {
-        RefreshAllSections(false);
-      }
       
-      if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
-      {
+      if (message.GetMessage() == GUI_MSG_WINDOW_RESET)
+        RefreshAllSections(false);
+      else if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
         RefreshSectionsForServer(message.GetStringParam());
-      }
     }
       break;
 
