@@ -126,7 +126,7 @@ if(COMPRESS_TEXTURES)
   if(ENABLE_NEW_SKIN)
     add_custom_command(
       OUTPUT Textures_Plex.xbt
-      COMMAND ${TEXTURE_PACKER_BIN} -input ${root}/addons/skin.plex/Media -output Textures_Plex.xbt
+      COMMAND $<TARGET_FILE:TexturePacker> -input ${root}/addons/skin.plex/Media -output Textures_Plex.xbt
       MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX_SKIN}
       DEPENDS TexturePacker
     )
