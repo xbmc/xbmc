@@ -641,6 +641,7 @@ public:
   void ClearSortState();
 
   /* PLEX */
+  void Insert(int iIndex, CFileItemPtr pItem);
   virtual bool IsPlexMediaServerMusic() const;
   bool m_wasListingCancelled;
   bool m_displayMessage;

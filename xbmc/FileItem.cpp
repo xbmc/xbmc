@@ -3584,4 +3584,15 @@ void CFileItem::MarkAsUnWatched()
   }
 }
 
+void CFileItemList::Insert(int iIndex, CFileItemPtr pItem)
+{
+  CSingleLock lock(m_lock);
+  
+  m_items.insert(m_items.begin() + iIndex, pItem);
+  if (m_fastLookup)
+  {
+    m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
+  }
+}
+
 /* END PLEX */
