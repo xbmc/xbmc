@@ -407,9 +407,9 @@ bool CSmbFile::Open(const CURL& url)
     // write error to logfile
 #ifdef TARGET_WINDOWS
     int nt_error = smb.ConvertUnixToNT(errno);
-    CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
+    CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", CURL::GetRedacted(strFileName).c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
 #else
-    CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' error : '%s'", strFileName.c_str(), errno, strerror(errno));
+    CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' error : '%s'", CURL::GetRedacted(strFileName).c_str(), errno, strerror(errno));
 #endif
     return false;
   }

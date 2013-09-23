@@ -61,6 +61,8 @@ public:
                                      const CStdString& strNewExtension);
   static void Split(const CStdString& strFileNameAndPath, 
                     CStdString& strPath, CStdString& strFileName);
+  static void Split(const std::string& strFileNameAndPath, 
+                    std::string& strPath, std::string& strFileName);
   static CStdStringArray SplitPath(const CStdString& strPath);
 
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);

@@ -2586,10 +2586,9 @@ bool CFileItemList::Load(int windowID)
   CFile file;
   if (file.Open(GetDiscFileCache(windowID)))
   {
-    CLog::Log(LOGDEBUG,"Loading fileitems [%s]",GetPath().c_str());
     CArchive ar(&file, CArchive::load);
     ar >> *this;
-    CLog::Log(LOGDEBUG,"  -- items: %i, directory: %s sort method: %i, ascending: %s", Size(), GetPath().c_str(), m_sortDescription.sortBy,
+    CLog::Log(LOGDEBUG,"Loading items: %i, directory: %s sort method: %i, ascending: %s", Size(), CURL::GetRedacted(GetPath()).c_str(), m_sortDescription.sortBy,
       m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
     ar.Close();
     file.Close();
@@ -2605,7 +2604,7 @@ bool CFileItemList::Save(int windowID)
   if (iSize <= 0)
     return false;
 
-  CLog::Log(LOGDEBUG,"Saving fileitems [%s]",GetPath().c_str());
+  CLog::Log(LOGDEBUG,"Saving fileitems [%s]", CURL::GetRedacted(GetPath()).c_str());
 
   CFile file;
   if (file.OpenForWrite(GetDiscFileCache(windowID), true)) // overwrite always

@@ -163,7 +163,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 {
   CURL url(item.GetPath());
 
-  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", item.GetPath().c_str());
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", CURL::GetRedacted(item.GetPath()).c_str());
 
   // Process rules
   for(unsigned int i = 0; i < m_vecCoreSelectionRules.size(); i++)

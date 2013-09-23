@@ -653,8 +653,9 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 
   CStdString strParentPath = m_history.GetParentPath();
 
-  CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
-  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
+  CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)",
+            CURL::GetRedacted(strDirectory).c_str());
+  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", CURL::GetRedacted(strParentPath).c_str());
 
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
@@ -755,7 +756,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   CFileItemList items;
   if (!GetDirectory(directory, items))
   {
-    CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
+    CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", url.GetRedacted().c_str());
     // Try to return to the previous directory, if not the same
     // else fallback to root
     if (strDirectory.Equals(strCurrentDirectory) || !Update(m_history.RemoveParentPath()))
@@ -1306,7 +1307,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   CFileItemPtr pItem=m_vecItems->Get(iItem);
 
-  CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, pItem->GetPath().c_str());
+  CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()).c_str());
 
   bool bResult = false;
   if (pItem->IsInternetStream() || pItem->IsPlayList())
