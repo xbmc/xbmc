@@ -299,6 +299,8 @@ static bool logicalToVisualBiDi(const std::string& stringSrc, std::string& strin
   for (size_t i = 0; i < numLines; i++)
   {
     int sourceLen = lines[i].length();
+    if (sourceLen == 0)
+      continue;
 
     // Convert from the selected charset to Unicode
     FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
