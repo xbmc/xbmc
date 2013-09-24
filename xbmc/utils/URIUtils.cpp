@@ -372,14 +372,14 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     strFile.erase(strFile.size() - 1);
   }
 
-  int iPos = strFile.ReverseFind('/');
+  size_t iPos = strFile.rfind('/');
 #ifndef TARGET_POSIX
-  if (iPos < 0)
+  if (iPos == std::string::npos)
   {
     iPos = strFile.rfind('\\');
   }
 #endif
-  if (iPos < 0)
+  if (iPos == std::string::npos)
   {
     url.SetFileName("");
     strParent = url.Get();
@@ -550,15 +550,15 @@ bool URIUtils::IsDVD(const CStdString& strFile)
 {
   CStdString strFileLow = strFile;
   StringUtils::ToLower(strFileLow);
-  if (strFileLow.Find("video_ts.ifo") != -1 && IsOnDVD(strFile))
+  if (strFileLow.find("video_ts.ifo") != std::string::npos && IsOnDVD(strFile))
     return true;
 
 #if defined(TARGET_WINDOWS)
   if (StringUtils::StartsWith(strFile, "dvd://"))
     return true;
 
-  if(strFile.Mid(1) != ":\\"
-  && strFile.Mid(1) != ":")
+  if(strFile.substr(1) != ":\\"
+  && strFile.substr(1) != ":")
     return false;
 
   if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
@@ -689,7 +689,7 @@ bool URIUtils::IsSmb(const CStdString& strFile)
 
 bool URIUtils::IsURL(const CStdString& strFile)
 {
-  return strFile.Find("://") >= 0;
+  return strFile.find("://") != std::string::npos;
 }
 
 bool URIUtils::IsFTP(const CStdString& strFile)

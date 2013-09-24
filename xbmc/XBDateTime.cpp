@@ -680,12 +680,12 @@ void CDateTime::SetFromDateString(const CStdString &date)
 
   const char* months[] = {"january","february","march","april","may","june","july","august","september","october","november","december",NULL};
   int j=0;
-  int iDayPos = date.Find("day");
-  int iPos = date.Find(" ");
-  if (iDayPos < iPos && iDayPos > -1)
+  size_t iDayPos = date.find("day");
+  size_t iPos = date.find(" ");
+  if (iDayPos < iPos && iDayPos != std::string::npos)
   {
-    iDayPos = iPos+1;
-    iPos = date.Find(" ",iPos+1);
+    iDayPos = iPos + 1;
+    iPos = date.find(" ", iPos+1);
   }
   else
     iDayPos = 0;
@@ -697,7 +697,7 @@ void CDateTime::SetFromDateString(const CStdString &date)
     return;
   }
 
-  int iPos2 = date.Find(",");
+  size_t iPos2 = date.find(",");
   CStdString strDay = date.substr(iPos, iPos2-iPos);
   CStdString strYear = date.substr(date.find(" ", iPos2) + 1);
   while (months[j] && stricmp(strMonth.c_str(),months[j]) != 0)
@@ -1036,19 +1036,20 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
   // Prefetch meridiem symbol
   const CStdString& strMeridiem=g_langInfo.GetMeridiemSymbol(dateTime.wHour > 11 ? CLangInfo::MERIDIEM_SYMBOL_PM : CLangInfo::MERIDIEM_SYMBOL_AM);
 
-  int length=strFormat.GetLength();
-  for (int i=0; i<length; ++i)
+  size_t length = strFormat.size();
+  for (size_t i=0; i < length; ++i)
   {
     char c=strFormat[i];
     if (c=='\'')
     {
       // To be able to display a "'" in the string,
       // find the last "'" that doesn't follow a "'"
-      int pos=i+1;
-      while(((pos=strFormat.Find(c,pos+1))>-1 && pos<strFormat.GetLength()) && strFormat[pos+1]=='\'') {}
+      size_t pos=i + 1;
+      while(((pos = strFormat.find(c, pos + 1)) != std::string::npos &&
+             pos<strFormat.size()) && strFormat[pos+1]=='\'') {}
 
       CStdString strPart;
-      if (pos>-1)
+      if (pos != std::string::npos)
       {
         // Extract string between ' '
         strPart=strFormat.substr(i + 1, pos - i - 1);

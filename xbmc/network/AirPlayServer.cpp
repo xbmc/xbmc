@@ -588,7 +588,7 @@ CStdString getFieldFromString(const CStdString &str, const char* field)
 
   for(unsigned int i = 0;i<tmpAr1.size();i++)
   {
-    if (tmpAr1[i].Find(field) != -1)
+    if (tmpAr1[i].find(field) != -1)
     {
       if (StringUtils::SplitString(tmpAr1[i], "=", tmpAr2) == 2)
       {

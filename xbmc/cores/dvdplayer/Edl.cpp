@@ -229,7 +229,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
     int64_t iCutStartEnd[2];
     for (int i = 0; i < 2; i++)
     {
-      if (strFields[i].Find(":") != -1) // HH:MM:SS.sss format
+      if (strFields[i].find(":") != std::string::npos) // HH:MM:SS.sss format
       {
         CStdStringArray fieldParts;
         StringUtils::SplitString(strFields[i], ".", fieldParts);

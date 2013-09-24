@@ -493,7 +493,7 @@ namespace XBMCAddon
             CStdString oldNumber = StringUtils::Format("SCRIPT%d", number);
             CStdString newNumber = StringUtils::Format("%lu", offset + number);
             xml.Replace(oldNumber, newNumber);
-            pos = xml.Find("SCRIPT", pos + 6);
+            pos = xml.find("SCRIPT", pos + 6);
           }
         }
       }

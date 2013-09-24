@@ -278,7 +278,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   if (bCleanChars)
   {
     bool initialDots = true;
-    bool alreadyContainsSpace = (strTitleAndYear.Find(' ') >= 0);
+    bool alreadyContainsSpace = (strTitleAndYear.find(' ') != std::string::npos);
 
     for (int i = 0; i < (int)strTitleAndYear.size(); i++)
     {
@@ -338,7 +338,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
     strFilename.erase(0, pos + 4);
     strFilename = URIUtils::AddFileToFolder(basePath, strFilename);
   }
-  while ((pos = strFilename.Find("\\..\\")) > 0)
+  while ((pos = strFilename.find("\\..\\")) != std::string::npos)
   {
     CStdString basePath = strFilename.substr(0, pos + 1);
     basePath = URIUtils::GetParentPath(basePath);
@@ -657,7 +657,8 @@ void CUtil::ClearSubtitles()
   {
     if (!items[i]->m_bIsFolder)
     {
-      if ( items[i]->GetPath().Find("subtitle") >= 0 || items[i]->GetPath().Find("vobsub_queue") >= 0 )
+      if (items[i]->GetPath().find("subtitle") != std::string::npos ||
+          items[i]->GetPath().find("vobsub_queue") != std::string::npos)
       {
         CLog::Log(LOGDEBUG, "%s - Deleting temporary subtitle %s", __FUNCTION__, items[i]->GetPath().c_str());
         CFile::Delete(items[i]->GetPath());
@@ -697,7 +698,7 @@ int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
 
 CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 {
-  if (!fn_template.Find("%03d"))
+  if (fn_template.find("%03d") == std::string::npos)
     return "";
 
   CStdString searchPath = URIUtils::GetDirectory(fn_template);
@@ -720,7 +721,7 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 
 CStdString CUtil::GetNextPathname(const CStdString &path_template, int max)
 {
-  if (!path_template.Find("%04d"))
+  if (path_template.find("%04d") == std::string::npos)
     return "";
   
   for (int i = 0; i <= max; i++)
@@ -959,7 +960,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
   // filenames. NOTE: Don't use IsInZip or IsInRar here since it will infinitely
   // recurse and crash XBMC
   if (URIUtils::IsURL(path) && 
-     (path.Find('%') >= 0 ||
+     (path.find('%') != std::string::npos ||
       StringUtils::StartsWith(path, "apk:") ||
       StringUtils::StartsWith(path, "zip:") ||
       StringUtils::StartsWith(path, "rar:") ||
@@ -1158,7 +1159,7 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
   else if (parameter.length() > 3 && parameter[parameter.length() - 1] == '"')
   {
     // check name="value" style param.
-    size_t quotaPos = parameter.Find('"');
+    size_t quotaPos = parameter.find('"');
     if (quotaPos > 1 && quotaPos < parameter.length() - 1 && parameter[quotaPos - 1] == '=')
     {
       parameter.erase(parameter.length() - 1);
@@ -1424,11 +1425,11 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
 
 void CUtil::ForceForwardSlashes(CStdString& strPath)
 {
-  int iPos = strPath.ReverseFind('\\');
+  size_t iPos = strPath.rfind('\\');
   while (iPos > 0)
   {
     strPath.at(iPos) = '/';
-    iPos = strPath.ReverseFind('\\');
+    iPos = strPath.rfind('\\');
   }
 }
 

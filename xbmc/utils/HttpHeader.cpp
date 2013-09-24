@@ -33,18 +33,18 @@ CHttpHeader::~CHttpHeader()
 void CHttpHeader::Parse(CStdString strData)
 {
   unsigned int iIter = 0;
-  int iValueStart = 0;
-  int iValueEnd = 0;
+  size_t iValueStart = 0;
+  size_t iValueEnd = 0;
 
   CStdString strParam;
   CStdString strValue;
 
   while (iIter < strData.size())
   {
-    iValueStart = strData.Find(":", iIter);
-    iValueEnd = strData.Find("\r\n", iIter);
+    iValueStart = strData.find(":", iIter);
+    iValueEnd = strData.find("\r\n", iIter);
 
-    if (iValueEnd < 0) break;
+    if (iValueEnd == std::string::npos) break;
 
     if (iValueStart > 0)
     {

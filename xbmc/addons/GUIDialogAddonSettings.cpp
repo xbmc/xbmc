@@ -938,7 +938,7 @@ vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &
   // Create our base path, used for type "fileenum" settings
   // replace $PROFILE with the profile path of the plugin/script
   CStdString fullPath = path;
-  if (fullPath.Find("$PROFILE") >= 0)
+  if (fullPath.find("$PROFILE") != std::string::npos)
     fullPath.Replace("$PROFILE", m_addon->Profile());
   else
     fullPath = URIUtils::AddFileToFolder(m_addon->Path(), path);
@@ -1000,7 +1000,7 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
   bool bControlDependend = false;//flag if the condition depends on another control
   vector<CStdString> conditionVec;
 
-  if (condition.Find("+") >= 0)
+  if (condition.find("+") != std::string::npos)
     CUtil::Tokenize(condition, conditionVec, "+");
   else
   {

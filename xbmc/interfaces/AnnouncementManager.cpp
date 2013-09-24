@@ -122,7 +122,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       {
         CStdString path = item->GetPath();
         CStdString videoInfoTagPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
-        if (videoInfoTagPath.Find("removable://") == 0)
+        if (StringUtils::StartsWith(videoInfoTagPath, "removable://"))
           path = videoInfoTagPath;
         if (videodatabase.LoadVideoInfo(path, *item->GetVideoInfoTag()))
           id = item->GetVideoInfoTag()->m_iDbId;

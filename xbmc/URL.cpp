@@ -385,7 +385,10 @@ void CURL::SetOptions(const CStdString& strOptions)
   m_options.Clear();
   if( strOptions.length() > 0)
   {
-    if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' || strOptions.Find("xml") >=0 )
+    if(strOptions[0] == '?' ||
+       strOptions[0] == '#' ||
+       strOptions[0] == ';' ||
+       strOptions.find("xml") != std::string::npos)
     {
       m_strOptions = strOptions;
       m_options.AddOptions(m_strOptions);
@@ -676,7 +679,7 @@ bool CURL::IsFileOnly(const CStdString &url)
 bool CURL::IsFullPath(const CStdString &url)
 {
   if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
-  if (url.Find("://") >= 0) return true;                 //   foo://bar.ext
+  if (url.find("://") != std::string::npos) return true;                 //   foo://bar.ext
   if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
   if (url.compare(0,2,"\\\\") == 0) return true;    //   \\UNC\path\to\file
   return false;

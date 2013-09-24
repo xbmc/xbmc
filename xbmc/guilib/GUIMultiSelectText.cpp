@@ -297,7 +297,7 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
 
   // parse our text into clickable blocks
   // format is [ONCLICK <action>] [/ONCLICK]
-  size_t startClickable = text.Find("[ONCLICK");
+  size_t startClickable = text.find("[ONCLICK");
   size_t startUnclickable = 0;
 
   // add the first unclickable block

@@ -241,7 +241,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
       for(it=m_exportList.begin();it!=m_exportList.end();it++)
       {
         //if path starts with the current export path
-        if( path.Find(*it) ==  0 )
+        if(StringUtils::StartsWith(path, *it))
         {
           exportPath = *it;
           //handle special case where root is exported

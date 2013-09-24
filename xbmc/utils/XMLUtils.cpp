@@ -252,7 +252,7 @@ bool XMLUtils::HasUTF8Declaration(const CStdString &strXML)
   CStdString test = strXML;
   StringUtils::ToLower(test);
   // test for the encoding="utf-8" string
-  if (test.Find("encoding=\"utf-8\"") >= 0)
+  if (test.find("encoding=\"utf-8\"") != std::string::npos)
     return true;
   // TODO: test for plain UTF8 here?
   return false;

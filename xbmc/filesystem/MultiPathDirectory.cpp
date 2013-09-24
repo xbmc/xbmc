@@ -148,7 +148,7 @@ bool CMultiPathDirectory::Remove(const char* strPath)
 
 CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
 {
-  int pos = strPath.Find("/", 12);
+  size_t pos = strPath.find("/", 12);
   if (pos >= 0)
   {
     CStdString firstPath = strPath.substr(12, pos - 12);

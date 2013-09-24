@@ -137,7 +137,7 @@ bool CCDDARipper::RipCD()
     CStdString strFile = URIUtils::AddFileToFolder(strDirectory, CUtil::MakeLegalFileName(GetTrackName(item.get()), legalType));
 
     // don't rip non cdda items
-    if (item->GetPath().Find(".cdda") < 0)
+    if (item->GetPath().find(".cdda") != std::string::npos)
       continue;
 
     bool eject = CSettings::Get().GetBool("audiocds.ejectonrip") && 

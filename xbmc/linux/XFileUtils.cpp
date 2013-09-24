@@ -79,7 +79,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
     closedir(testDir);
   }
 
-  int nFilePos = strPath.ReverseFind(XBMC_FILE_SEP);
+  size_t nFilePos = strPath.rfind(XBMC_FILE_SEP);
 
   CStdString strDir = ".";
   CStdString strFiles = strPath;

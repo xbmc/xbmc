@@ -660,7 +660,8 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
   &&  !h.GetValue("Content-Disposition").empty() )
   {
     CStdString strValue = h.GetValue("Content-Disposition");
-    if (strValue.Find("filename=") > -1 && strValue.Find(".flv") > -1)
+    if (strValue.find("filename=") != std::string::npos &&
+        strValue.find(".flv") != std::string::npos)
       h.Parse("Content-Type: video/flv\r\n");
   }
 }
@@ -938,7 +939,7 @@ bool CCurlFile::Open(const CURL& url)
   if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
   {
     m_multisession = true;
-    if(m_state->m_httpheader.GetValue("Server").Find("Portable SDK for UPnP devices") >= 0)
+    if(m_state->m_httpheader.GetValue("Server").find("Portable SDK for UPnP devices") != std::string::npos)
     {
       CLog::Log(LOGWARNING, "CCurlFile::Open - Disabling multi session due to broken libupnp server");
       m_multisession = false;

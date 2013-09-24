@@ -229,7 +229,7 @@ void CSMB::Purge()
 void CSMB::PurgeEx(const CURL& url)
 {
   CSingleLock lock(*this);
-  CStdString strShare = url.GetFileName().substr(0, url.GetFileName().Find('/'));
+  CStdString strShare = url.GetFileName().substr(0, url.GetFileName().find('/'));
 
 #ifdef TARGET_WINDOWS
   if (m_strLastShare.length() > 0 && (m_strLastShare != strShare || m_strLastHost != url.GetHostName()))
