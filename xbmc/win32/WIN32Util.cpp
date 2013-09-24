@@ -318,14 +318,14 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   {
     return false;
   }
-  int iIndex = -1;
+  size_t iIndex = std::string::npos;
   char split = ' ';
   if (strCommand[0] == '\"')
   {
     split = '\"';
   }
-  iIndex = strCommand.Find(split, 1);
-  if (iIndex != -1)
+  iIndex = strCommand.find(split, 1);
+  if (iIndex != std::string::npos)
   {
     strExe = strCommand.substr(0, iIndex + 1);
     strParams = strCommand.substr(iIndex + 1);
@@ -334,8 +334,8 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   strExe.Replace("\"","");
 
   strWorkingDir = strExe;
-  iIndex = strWorkingDir.ReverseFind('\\');
-  if(iIndex != -1)
+  iIndex = strWorkingDir.rfind('\\');
+  if(iIndex != std::string::npos)
   {
     strWorkingDir[iIndex+1] = '\0';
   }

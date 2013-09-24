@@ -137,7 +137,7 @@ bool CCDDARipper::RipCD()
     CStdString strFile = URIUtils::AddFileToFolder(strDirectory, CUtil::MakeLegalFileName(GetTrackName(item.get()), legalType));
 
     // don't rip non cdda items
-    if (item->GetPath().Find(".cdda") < 0)
+    if (item->GetPath().find(".cdda") == std::string::npos)
       continue;
 
     bool eject = CSettings::Get().GetBool("audiocds.ejectonrip") && 
@@ -221,14 +221,14 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   // directory name where CD tracks will be stored,
   // use only format part ending at the last '/'
   strAlbumDir = CSettings::Get().GetString("audiocds.trackpathformat");
-  int pos = max(strAlbumDir.ReverseFind('/'), strAlbumDir.ReverseFind('\\'));
-  if (pos < 0)
+  size_t pos = strAlbumDir.find_last_of("/\\");
+  if (pos == std::string::npos)
     return ""; // no directory
   
   strAlbumDir = strAlbumDir.substr(0, pos);
 
   // replace %A with album artist name
-  if (strAlbumDir.Find("%A") != -1)
+  if (strAlbumDir.find("%A") != std::string::npos)
   {
     CStdString strAlbumArtist = StringUtils::Join(infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
     if (strAlbumArtist.empty())
@@ -241,7 +241,7 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   }
 
   // replace %B with album title
-  if (strAlbumDir.Find("%B") != -1)
+  if (strAlbumDir.find("%B") != std::string::npos)
   {
     CStdString strAlbum = infoTag.GetAlbum();
     if (strAlbum.empty())
@@ -252,7 +252,7 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   }
 
   // replace %G with genre
-  if (strAlbumDir.Find("%G") != -1)
+  if (strAlbumDir.find("%G") != std::string::npos)
   {
     CStdString strGenre = StringUtils::Join(infoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator);
     if (strGenre.empty())
@@ -263,7 +263,7 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   }
 
   // replace %Y with year
-  if (strAlbumDir.Find("%Y") != -1)
+  if (strAlbumDir.find("%Y") != std::string::npos)
   {
     CStdString strYear = infoTag.GetYearString();
     if (strYear.empty())
@@ -288,8 +288,8 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item)
   // get track file name format from audiocds.trackpathformat setting,
   // use only format part starting from the last '/'
   CStdString strFormat = CSettings::Get().GetString("audiocds.trackpathformat");
-  int pos = max(strFormat.ReverseFind('/'), strFormat.ReverseFind('\\'));
-  if (pos != -1)
+  size_t pos = strFormat.find_last_of("/\\");
+  if (pos != std::string::npos)
     strFormat.erase(0, pos+1);
 
   CLabelFormatter formatter(strFormat, "");

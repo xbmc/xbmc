@@ -153,8 +153,8 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
     for (std::vector<CStdString>::iterator i = options.begin(); i != options.end(); i++)
     {
       CStdString option, value;
-      int pos = i->Find('=');
-      if (pos != -1)
+      size_t pos = i->find('=');
+      if (pos != std::string::npos)
       {
         option = i->substr(0, pos);
         value  = i->substr(pos + 1);

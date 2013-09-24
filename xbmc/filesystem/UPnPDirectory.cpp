@@ -248,9 +248,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         bool image = true;
         StringUtils::TrimLeft(m_strFileMask, "/");
         if (!m_strFileMask.empty()) {
-            video = m_strFileMask.Find(".wmv") >= 0;
-            audio = m_strFileMask.Find(".wma") >= 0;
-            image = m_strFileMask.Find(".jpg") >= 0;
+            video = m_strFileMask.find(".wmv") != std::string::npos;
+            audio = m_strFileMask.find(".wma") != std::string::npos;
+            image = m_strFileMask.find(".jpg") != std::string::npos;
         }
 
         // special case for Windows Media Connect and WMP11 when looking for root

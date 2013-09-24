@@ -553,8 +553,8 @@ void CRarFile::InitFromUrl(const CURL& url)
 
   for( vector<std::string>::iterator it = options.begin();it != options.end(); it++)
   {
-    int iEqual = (*it).find('=');
-    if( iEqual >= 0 )
+    size_t iEqual = (*it).find('=');
+    if(iEqual != std::string::npos)
     {
       CStdString strOption = StringUtils::Left((*it), iEqual);
       CStdString strValue = StringUtils::Mid((*it), iEqual+1);

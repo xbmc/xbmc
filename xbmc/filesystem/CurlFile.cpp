@@ -646,7 +646,8 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
   &&  !h.GetValue("Content-Disposition").empty() )
   {
     CStdString strValue = h.GetValue("Content-Disposition");
-    if (strValue.Find("filename=") > -1 && strValue.Find(".flv") > -1)
+    if (strValue.find("filename=") != std::string::npos &&
+        strValue.find(".flv") != std::string::npos)
       h.AddParam("Content-Type", "video/flv");
   }
 }

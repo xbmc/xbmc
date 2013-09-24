@@ -938,7 +938,7 @@ vector<std::string> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString 
   // Create our base path, used for type "fileenum" settings
   // replace $PROFILE with the profile path of the plugin/script
   CStdString fullPath = path;
-  if (fullPath.Find("$PROFILE") >= 0)
+  if (fullPath.find("$PROFILE") != std::string::npos)
     fullPath.Replace("$PROFILE", m_addon->Profile());
   else
     fullPath = URIUtils::AddFileToFolder(m_addon->Path(), path);
@@ -1000,7 +1000,7 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
   bool bControlDependend = false;//flag if the condition depends on another control
   vector<std::string> conditionVec;
 
-  if (condition.Find("+") >= 0)
+  if (condition.find("+") != std::string::npos)
     StringUtils::Tokenize(condition, conditionVec, "+");
   else
   {
@@ -1083,10 +1083,10 @@ bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strConditi
   StringUtils::ToLower(strTest);
   StringUtils::Trim(strTest);
 
-  int pos1 = strTest.Find("(");
-  int pos2 = strTest.Find(",");
-  int pos3 = strTest.Find(")");
-  if (pos1 >= 0 && pos2 > pos1 && pos3 > pos2)
+  size_t pos1 = strTest.find("(");
+  size_t pos2 = strTest.find(",");
+  size_t pos3 = strTest.find(")");
+  if (pos1 != std::string::npos && pos2 > pos1 && pos3 > pos2)
   {
     condVec.push_back(strTest.substr(0, pos1));
     condVec.push_back(strTest.substr(pos1 + 1, pos2 - pos1 - 1));

@@ -118,9 +118,9 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
     return;
   }
 
-  int iPos = strFileName.ReverseFind(".");
+  size_t iPos = strFileName.rfind('.');
   // Extension found
-  if (iPos > 0)
+  if (iPos != std::string::npos)
   {
     CStdString strExtension = GetExtension(strFileName);
     StringUtils::ToLower(strExtension);
@@ -138,7 +138,7 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
 #endif
     strFileMask += "|";
 
-    if (strFileMask.Find(strExtension) >= 0)
+    if (strFileMask.find(strExtension) != std::string::npos)
       strFileName.erase(iPos);
   }
 }
@@ -178,17 +178,8 @@ const CStdString URIUtils::GetFileName(const CStdString& strFileNameAndPath)
     return GetFileName(url.GetFileName());
   }
 
-  /* find any slashes */
-  const int slash1 = strFileNameAndPath.find_last_of('/');
-  const int slash2 = strFileNameAndPath.find_last_of('\\');
-
-  /* select the last one */
-  int slash;
-  if(slash2>slash1)
-    slash = slash2;
-  else
-    slash = slash1;
-
+  /* find the last slash */
+  const size_t slash = strFileNameAndPath.find_last_of("/\\");
   return strFileNameAndPath.substr(slash+1);
 }
 
@@ -361,7 +352,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   {
     if (HasSlashAtEnd(strFile))
       strFile.erase(strFile.size() - 1);
-    if(strFile.ReverseFind('/') < 0)
+    if(strFile.rfind('/') == std::string::npos)
       return false;
   }
   else if (strFile.size() == 0)
@@ -382,14 +373,14 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     strFile.erase(strFile.size() - 1);
   }
 
-  int iPos = strFile.ReverseFind('/');
+  size_t iPos = strFile.rfind('/');
 #ifndef TARGET_POSIX
-  if (iPos < 0)
+  if (iPos == std::string::npos)
   {
-    iPos = strFile.ReverseFind('\\');
+    iPos = strFile.rfind('\\');
   }
 #endif
-  if (iPos < 0)
+  if (iPos == std::string::npos)
   {
     url.SetFileName("");
     strParent = url.Get();
@@ -595,7 +586,7 @@ bool URIUtils::IsDVD(const CStdString& strFile)
 {
   CStdString strFileLow = strFile;
   StringUtils::ToLower(strFileLow);
-  if (strFileLow.Find("video_ts.ifo") != -1 && IsOnDVD(strFile))
+  if (strFileLow.find("video_ts.ifo") != std::string::npos && IsOnDVD(strFile))
     return true;
 
 #if defined(TARGET_WINDOWS)
@@ -734,7 +725,7 @@ bool URIUtils::IsSmb(const CStdString& strFile)
 
 bool URIUtils::IsURL(const CStdString& strFile)
 {
-  return strFile.Find("://") >= 0;
+  return strFile.find("://") != std::string::npos;
 }
 
 bool URIUtils::IsFTP(const CStdString& strFile)

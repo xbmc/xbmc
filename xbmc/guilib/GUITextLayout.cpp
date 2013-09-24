@@ -452,7 +452,7 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, c
       else
         currentStyle &= ~newStyle;
     }
-    pos = text.Find(L'[',pos);
+    pos = text.find(L'[', pos);
   }
   // now grab the remainder of the string
   CStdStringW subText = text.substr(startPos);

@@ -43,7 +43,7 @@ bool CAPKDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CStdString host = url.GetHostName();
   URIUtils::AddSlashAtEnd(path);
 
-  int zip_flags = 0, zip_error = 0, dir_marker = 0;
+  int zip_flags = 0, zip_error = 0;
   struct zip *zip_archive;
   zip_archive = zip_open(host.c_str(), zip_flags, &zip_error);
   if (!zip_archive || zip_error)
@@ -67,8 +67,8 @@ bool CAPKDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     // add it if it's not in our list already, and hope that no one has
     // any "file/name.exe" files in a zip.
 
-    dir_marker = test_name.Find('/', path.size() + 1);
-    if (dir_marker > 0)
+    size_t dir_marker = test_name.find('/', path.size() + 1);
+    if (dir_marker != std::string::npos)
     {
       // return items relative to path
       test_name=test_name.substr(0, dir_marker);

@@ -376,13 +376,13 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
 bool CLabelFormatter::FillMusicTag(const CStdString &fileName, CMusicInfoTag *tag) const
 {
   // run through and find static content to split the string up
-  int pos1 = fileName.Find(m_staticContent[0][0], 0);
-  if (pos1 == (int)CStdString::npos)
+  size_t pos1 = fileName.find(m_staticContent[0][0], 0);
+  if (pos1 == std::string::npos)
     return false;
   for (unsigned int i = 1; i < m_staticContent[0].size(); i++)
   {
-    int pos2 = m_staticContent[0][i].size() ? fileName.Find(m_staticContent[0][i], pos1) : fileName.size();
-    if (pos2 == (int)CStdString::npos)
+    size_t pos2 = m_staticContent[0][i].size() ? fileName.find(m_staticContent[0][i], pos1) : fileName.size();
+    if (pos2 == std::string::npos)
       return false;
     // found static content - thus we have the dynamic content surrounded
     FillMusicMaskContent(m_dynamicContent[0][i - 1].m_content, fileName.substr(pos1, pos2 - pos1), tag);

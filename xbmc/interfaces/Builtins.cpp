@@ -1067,7 +1067,7 @@ int CBuiltins::Execute(const CStdString& execString)
     float seconds = 0;
     if (params.size() > 2)
     {
-      if (params[2].Find(':') == -1)
+      if (params[2].find(':') == std::string::npos)
         seconds = static_cast<float>(atoi(params[2].c_str())*60);
       else
         seconds = (float)StringUtils::TimeStringToSeconds(params[2]);

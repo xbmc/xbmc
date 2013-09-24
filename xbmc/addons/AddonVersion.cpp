@@ -132,8 +132,8 @@ namespace ADDON
   bool AddonVersion::SplitFileName(CStdString& ID, CStdString& version,
                                    const CStdString& filename)
   {
-    int dpos = filename.rfind("-");
-    if (dpos < 0)
+    size_t dpos = filename.rfind("-");
+    if (dpos == std::string::npos)
       return false;
     ID = filename.substr(0, dpos);
     version = filename.substr(dpos + 1);

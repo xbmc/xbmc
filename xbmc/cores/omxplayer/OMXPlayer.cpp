@@ -698,8 +698,8 @@ bool COMXPlayer::OpenInputStream()
 
   // correct the filename if needed
   CStdString filename(m_filename);
-  if (filename.Find("dvd://") == 0
-  ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
+  if (StringUtils::StartsWith(filename, "dvd://")
+  ||  StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo") == 0)
   {
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
@@ -3295,7 +3295,7 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
     // for music file, don't open artwork as video
     bool disabled = false;
     CStdString extension = URIUtils::GetExtension(m_filename);
-    if (!extension.empty() && g_advancedSettings.m_musicExtensions.Find(StringUtils::ToLower(extension) != -1)
+    if (!extension.empty() && g_advancedSettings.m_musicExtensions.find(StringUtils::ToLower(extension) != std::string::npos)
     {
       CLog::Log(LOGWARNING, "%s - Ignoring video in audio filetype:%s", __FUNCTION__, m_filename.c_str());
       disabled = true;

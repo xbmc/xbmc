@@ -831,7 +831,7 @@ void CAddonUnInstallJob::OnPostUnInstall()
   XFILE::CFavouritesDirectory::Load(items);
   for (int i=0; i < items.Size(); ++i)
   {
-    if (items[i]->GetPath().Find(m_addon->ID()) > -1)
+    if (items[i]->GetPath().find(m_addon->ID()) != std::string::npos)
     {
       items.Remove(items[i].get());
       bSave = true;

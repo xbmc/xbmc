@@ -267,11 +267,11 @@ void CPVRRecording::Update(const CPVRRecording &tag)
     CStdString strEpisode = m_strPlotOutline;
     CStdString strTitle = m_strDirectory;
     
-    int pos = strTitle.ReverseFind('/');
+    size_t pos = strTitle.rfind('/');
     strTitle.erase(0, pos + 1);
     strEpisode.erase(0, strShow.size());
     m_strTitle = StringUtils::Format("%s - %s", strTitle.c_str(), strEpisode.c_str());
-    pos = strEpisode.Find('-');
+    pos = strEpisode.find('-');
     strEpisode.erase(0, pos + 2);
     m_strPlotOutline = strEpisode;
   }

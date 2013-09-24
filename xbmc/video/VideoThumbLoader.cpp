@@ -180,7 +180,7 @@ static void SetupRarOptions(CFileItem& item, const CStdString& path)
     path2 = item.GetVideoInfoTag()->m_strFileNameAndPath;
   CURL url(path2);
   CStdString opts = url.GetOptions();
-  if (opts.Find("flags") > -1)
+  if (opts.find("flags") != std::string::npos)
     return;
   if (opts.size())
     opts += "&flags=8";

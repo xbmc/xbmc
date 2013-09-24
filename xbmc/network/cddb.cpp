@@ -556,8 +556,8 @@ void Xcddb::parseData(const char *buffer)
       {
         // Extract Year from extended info
         // as a fallback
-        int iPos = strExtd.Find("YEAR:");
-        if (iPos > -1) // You never know if you really get UTF-8 strings from cddb
+        size_t iPos = strExtd.find("YEAR:");
+        if (iPos != std::string::npos) // You never know if you really get UTF-8 strings from cddb
           g_charsetConverter.unknownToUTF8(strExtd.substr(iPos + 6, 4), m_strYear);
       }
 
@@ -565,8 +565,8 @@ void Xcddb::parseData(const char *buffer)
       {
         // Extract ID3 Genre
         // as a fallback
-        int iPos = strExtd.Find("ID3G:");
-        if (iPos > -1)
+        size_t iPos = strExtd.find("ID3G:");
+        if (iPos != std::string::npos)
         {
           CStdString strGenre = strExtd.substr(iPos + 5, 4);
           StringUtils::TrimLeft(strGenre);
@@ -875,7 +875,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   //##########################################################
   // Send the Hello message
   CStdString version = g_infoManager.GetLabel(SYSTEM_BUILD_VERSION);
-  if (version.find(" ") >= 0) 
+  if (version.find(" ") != std::string::npos)
     version = version.substr(0, version.find(" "));
   CStdString strGreeting = "cddb hello xbmc xbmc.org XBMC " + version;
   if ( ! Send(strGreeting.c_str()) )

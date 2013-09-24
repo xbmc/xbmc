@@ -164,8 +164,8 @@ void CGUIWindowWeather::UpdateLocations()
     CStdString strLabel = g_weatherManager.GetLocation(i);
     if (strLabel.size() > 1) //got the location string yet?
     {
-      int iPos = strLabel.ReverseFind(", ");
-      if (iPos)
+      size_t iPos = strLabel.rfind(", ");
+      if (iPos != std::string::npos)
       {
         CStdString strLabel2(strLabel);
         strLabel = strLabel2.substr(0,iPos);
@@ -250,8 +250,8 @@ void CGUIWindowWeather::SetLocation(int loc)
     ClearProperties();
     g_weatherManager.SetArea(loc);
     CStdString strLabel = g_weatherManager.GetLocation(loc);
-    int iPos = strLabel.ReverseFind(", ");
-    if (iPos)
+    size_t iPos = strLabel.rfind(", ");
+    if (iPos != std::string::npos)
       strLabel = strLabel.substr(0, iPos);
     SET_CONTROL_LABEL(CONTROL_SELECTLOCATION, strLabel);
   }

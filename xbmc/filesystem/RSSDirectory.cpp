@@ -417,8 +417,8 @@ static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root
   {
     CStdString name = child->Value();
     CStdString xmlns;
-    int pos = name.Find(':');
-    if(pos >= 0)
+    size_t pos = name.find(':');
+    if(pos != std::string::npos)
     {
       xmlns = name.substr(0, pos);
       name.erase(0, pos+1);
@@ -545,8 +545,8 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
 
     if(vtag->m_strPlotOutline.empty() && !vtag->m_strPlot.empty())
     {
-      int pos = vtag->m_strPlot.Find('\n');
-      if(pos >= 0)
+      size_t pos = vtag->m_strPlot.find('\n');
+      if(pos != std::string::npos)
         vtag->m_strPlotOutline = vtag->m_strPlot.substr(0, pos);
       else
         vtag->m_strPlotOutline = vtag->m_strPlot;

@@ -95,13 +95,13 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     else
     {
       CStdString strURL, strRTV;
-      int pos;
+      size_t pos;
 
       // Isolate the IP from the URL and replace the "*" with the real IP
       // of the ReplayTV.  E.g., rtv://*/Video/192.168.1.100/ becomes
       // rtv://192.168.1.100/Video/ .  This trickery makes things work.
       strURL = StringUtils::TrimRight(strRoot, "/");
-      pos = strURL.ReverseFind('/');
+      pos = strURL.rfind('/');
       strRTV = strURL.substr(0, pos + 1);
       strRTV.Replace("*", strURL.substr(pos + 1).c_str());
       CURL tmpURL(strRTV);

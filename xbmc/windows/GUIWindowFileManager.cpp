@@ -844,9 +844,11 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
       // and use as history string, m_strPath
       // can change for new discs
       CStdString strLabel = pItem->GetLabel();
-      int nPosOpen = strLabel.Find('(');
-      int nPosClose = strLabel.ReverseFind(')');
-      if (nPosOpen > -1 && nPosClose > -1 && nPosClose > nPosOpen)
+      size_t nPosOpen = strLabel.find('(');
+      size_t nPosClose = strLabel.rfind(')');
+      if (nPosOpen != std::string::npos &&
+          nPosClose != std::string::npos &&
+          nPosClose > nPosOpen)
       {
         strLabel.Delete(nPosOpen + 1, (nPosClose) - (nPosOpen + 1));
         strHistoryString = strLabel;

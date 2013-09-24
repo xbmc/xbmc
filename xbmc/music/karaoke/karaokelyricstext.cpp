@@ -444,7 +444,7 @@ void CKaraokeLyricsText::rescanLyrics()
   // and time difference between one line ends and second starts
   for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
   {
-    if ( m_lyrics[i].text.Find( " " ) != -1 )
+    if (m_lyrics[i].text.find(" ") != std::string::npos)
       spaces++;
 
     if ( m_lyrics[i].flags & LYRICS_NEW_LINE )

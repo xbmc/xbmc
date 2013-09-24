@@ -818,18 +818,18 @@ extern "C"
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
     CStdString strMask;
-    if (url.GetFileName().Find("*.*") != string::npos)
+    if (url.GetFileName().find("*.*") != string::npos)
     {
       CStdString strReplaced = url.GetFileName();
       strReplaced.Replace("*.*","");
       url.SetFileName(strReplaced);
     }
-    else if (url.GetFileName().Find("*.") != string::npos)
+    else if (url.GetFileName().find("*.") != string::npos)
     {
       strMask = URIUtils::GetExtension(url.GetFileName());
-      url.SetFileName(url.GetFileName().substr(0, url.GetFileName().Find("*.")));
+      url.SetFileName(url.GetFileName().substr(0, url.GetFileName().find("*.")));
     }
-    else if (url.GetFileName().Find("*") != string::npos)
+    else if (url.GetFileName().find("*") != string::npos)
     {
       CStdString strReplaced = url.GetFileName();
       strReplaced.Replace("*","");

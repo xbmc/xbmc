@@ -141,7 +141,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
   {
     CStdString actionName = action.GetName();
     StringUtils::ToLower(actionName);
-    if (actionName.Find("shutdown") != -1)
+    if (actionName.find("shutdown") != std::string::npos)
       CBuiltins::Execute(action.GetName());
     return true;
   }

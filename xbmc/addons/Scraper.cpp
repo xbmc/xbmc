@@ -895,9 +895,9 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
         XMLUtils::GetString(pxeMovie, "epnum", strEpNum) && !strEpNum.empty())
       {
         CScraperUrl &scurlEp(ep.cScraperUrl);
-        int dot = strEpNum.Find(".");
+        size_t dot = strEpNum.find(".");
         ep.iEpisode = atoi(strEpNum.c_str());
-        ep.iSubepisode = (dot > -1) ? atoi(strEpNum.substr(dot + 1).c_str()) : 0;
+        ep.iSubepisode = (dot != std::string::npos) ? atoi(strEpNum.substr(dot + 1).c_str()) : 0;
         if (!XMLUtils::GetString(pxeMovie, "title", scurlEp.strTitle) || scurlEp.strTitle.empty() )
             scurlEp.strTitle = g_localizeStrings.Get(416);
         XMLUtils::GetString(pxeMovie, "id", scurlEp.strId);

@@ -309,7 +309,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         {
           CStdString strResultNoCase = strResult;
           StringUtils::ToLower(strResultNoCase);
-          if (strResultNoCase.Find(m_param[iCompare-1]) != -1)
+          if (strResultNoCase.find(m_param[iCompare-1]) != std::string::npos)
             dest += strResult;
         }
         else
@@ -417,12 +417,12 @@ const CStdString CScraperParser::Parse(const CStdString& strTag,
 
 void CScraperParser::Clean(CStdString& strDirty)
 {
-  int i=0;
+  size_t i = 0;
   CStdString strBuffer;
-  while ((i=strDirty.Find("!!!CLEAN!!!",i)) != -1)
+  while ((i = strDirty.find("!!!CLEAN!!!",i)) != std::string::npos)
   {
-    int i2;
-    if ((i2=strDirty.Find("!!!CLEAN!!!",i+11)) != -1)
+    size_t i2;
+    if ((i2 = strDirty.find("!!!CLEAN!!!",i+11)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
       CStdString strConverted(strBuffer);
@@ -436,10 +436,10 @@ void CScraperParser::Clean(CStdString& strDirty)
       break;
   }
   i=0;
-  while ((i=strDirty.Find("!!!TRIM!!!",i)) != -1)
+  while ((i = strDirty.find("!!!TRIM!!!",i)) != std::string::npos)
   {
-    int i2;
-    if ((i2=strDirty.Find("!!!TRIM!!!",i+10)) != -1)
+    size_t i2;
+    if ((i2 = strDirty.find("!!!TRIM!!!",i+10)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
       StringUtils::Trim(strBuffer);
@@ -451,10 +451,10 @@ void CScraperParser::Clean(CStdString& strDirty)
       break;
   }
   i=0;
-  while ((i=strDirty.Find("!!!FIXCHARS!!!",i)) != -1)
+  while ((i = strDirty.find("!!!FIXCHARS!!!",i)) != std::string::npos)
   {
-    int i2;
-    if ((i2=strDirty.Find("!!!FIXCHARS!!!",i+14)) != -1)
+    size_t i2;
+    if ((i2 = strDirty.find("!!!FIXCHARS!!!",i+14)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+14,i2-i-14);
       CStdStringW wbuffer;
@@ -472,10 +472,10 @@ void CScraperParser::Clean(CStdString& strDirty)
       break;
   }
   i=0;
-  while ((i=strDirty.Find("!!!ENCODE!!!",i)) != -1)
+  while ((i=strDirty.find("!!!ENCODE!!!",i)) != std::string::npos)
   {
-    int i2;
-    if ((i2=strDirty.Find("!!!ENCODE!!!",i+12)) != -1)
+    size_t i2;
+    if ((i2 = strDirty.find("!!!ENCODE!!!",i+12)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+12,i2-i-12);
       CURL::Encode(strBuffer);
@@ -544,8 +544,8 @@ void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* tok
 {
   char temp[4];
   sprintf(temp,"\\%i",buf);
-  int i2=0;
-  while ((i2 = strOutput.Find(temp,i2)) != -1)
+  size_t i2=0;
+  while ((i2 = strOutput.find(temp,i2)) != std::string::npos)
   {
     strOutput.Insert(i2,token);
     i2 += strlen(token);

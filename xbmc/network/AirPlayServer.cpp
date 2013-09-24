@@ -588,7 +588,7 @@ CStdString getFieldFromString(const CStdString &str, const char* field)
 
   for(unsigned int i = 0;i<tmpAr1.size();i++)
   {
-    if (tmpAr1[i].Find(field) != -1)
+    if (tmpAr1[i].find(field) != std::string::npos)
     {
       if (StringUtils::SplitString(tmpAr1[i], "=", tmpAr2) == 2)
       {
@@ -701,8 +701,8 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     needAuth = true;
   }
 
-  int startQs = uri.Find('?');
-  if (startQs != -1)
+  size_t startQs = uri.find('?');
+  if (startQs != std::string::npos)
   {
     uri.erase(startQs);
   }

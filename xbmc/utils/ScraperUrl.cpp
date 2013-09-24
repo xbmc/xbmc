@@ -235,7 +235,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
   strHTML = strHTML1;
   std::string fileCharset(http.GetServerReportedCharset());
 
-  if (scrURL.m_url.Find(".zip") > -1 )
+  if (scrURL.m_url.find(".zip") != std::string::npos)
   {
     XFILE::CZipFile file;
     CStdString strBuffer;

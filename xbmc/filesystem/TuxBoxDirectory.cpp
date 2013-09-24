@@ -219,7 +219,7 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
       // DeActivated: Timing Problems, bug in TuxBox.. etc.!
       bool bReqMoRe = true;
       // Detect the RootMode !
-      if (strPath.Find("?mode=")>=0)
+      if (strPath.find("?mode=") != std::string::npos)
       {
         CStdString strMode;
         bReqMoRe=false;

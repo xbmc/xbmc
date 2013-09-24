@@ -184,7 +184,7 @@ void CExternalPlayer::Process()
 
       CStdString strMatch = vecSplit[0];
       strMatch.Replace(",,",",");
-      bool bCaseless = vecSplit[3].Find('i') > -1;
+      bool bCaseless = vecSplit[3].find('i') != std::string::npos;
       CRegExp regExp(bCaseless, true);
 
       if (!regExp.RegComp(strMatch.c_str()))
@@ -206,8 +206,8 @@ void CExternalPlayer::Process()
 
         CStdString strRep = vecSplit[2];
         strRep.Replace(",,",",");
-        bool bGlobal = vecSplit[3].Find('g') > -1;
-        bool bStop = vecSplit[3].Find('s') > -1;
+        bool bGlobal = vecSplit[3].find('g') != std::string::npos;
+        bool bStop = vecSplit[3].find('s') != std::string::npos;
         int iStart = 0;
         while ((iStart = regExp.RegFind(mainFile, iStart)) > -1)
         {

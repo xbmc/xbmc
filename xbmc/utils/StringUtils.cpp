@@ -445,28 +445,28 @@ CStdString StringUtils::Join(const vector<string> &strings, const CStdString& de
 // added MaxStrings parameter to restrict the number of returned substrings (like perl and python)
 int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results, unsigned int iMaxStrings /* = 0 */)
 {
-  int iPos = -1;
-  int newPos = -1;
-  int sizeS2 = delimiter.GetLength();
-  int isize = input.GetLength();
+  size_t iPos = std::string::npos;
+  size_t newPos = std::string::npos;
+  size_t sizeS2 = delimiter.size();
+  size_t isize = input.size();
 
   results.clear();
 
   vector<unsigned int> positions;
 
-  newPos = input.Find (delimiter, 0);
+  newPos = input.find(delimiter, 0);
 
-  if ( newPos < 0 )
+  if (newPos == std::string::npos)
   {
     results.push_back(input);
     return 1;
   }
 
-  while ( newPos > iPos )
+  while (newPos != std::string::npos)
   {
     positions.push_back(newPos);
     iPos = newPos;
-    newPos = input.Find (delimiter, iPos + sizeS2);
+    newPos = input.find(delimiter, iPos + sizeS2);
   }
 
   // numFound is the number of delimiters which is one less
@@ -487,7 +487,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
     }
     else
     {
-      int offset = positions[i - 1] + sizeS2;
+      size_t offset = positions[i - 1] + sizeS2;
       if ( offset < isize )
       {
         if ( i == numFound )
@@ -525,12 +525,12 @@ vector<string> StringUtils::Split(const std::string& input, const std::string& d
 // returns the number of occurrences of strFind in strInput.
 int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFind)
 {
-  int pos = strInput.Find(strFind, 0);
+  size_t pos = strInput.find(strFind, 0);
   int numfound = 0;
-  while (pos >= 0)
+  while (pos != std::string::npos)
   {
     numfound++;
-    pos = strInput.Find(strFind, pos + 1);
+    pos = strInput.find(strFind, pos + 1);
   }
   return numfound;
 }

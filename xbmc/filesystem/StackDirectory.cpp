@@ -159,8 +159,8 @@ namespace XFILE
     // the stacked files are always in volume order, so just get up to the first filename
     // occurence of " , "
     CStdString file, folder;
-    int pos = strPath.Find(" , ");
-    if (pos > 0)
+    size_t pos = strPath.find(" , ");
+    if (pos != std::string::npos)
       URIUtils::Split((CStdString)strPath.substr(0, pos), folder, file);
     else
       URIUtils::Split(strPath, folder, file); // single filed stacks - should really not happen

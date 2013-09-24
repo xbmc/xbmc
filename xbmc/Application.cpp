@@ -3912,7 +3912,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
         options.starttime = 0.0f;
         CBookmark bookmark;
         CStdString path = item.GetPath();
-        if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_strFileNameAndPath.Find("removable://") == 0)
+        if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
           path = item.GetVideoInfoTag()->m_strFileNameAndPath;
         else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
           path = item.GetProperty("original_listitem_url").asString();

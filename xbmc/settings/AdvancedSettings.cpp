@@ -1318,8 +1318,8 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
     StringUtils::SplitString(extraExtensions,"|",exts);
     for (unsigned int i=0;i<exts.size();++i)
     {
-      int iPos = extensions.Find(exts[i]);
-      if (iPos == -1)
+      size_t iPos = extensions.find(exts[i]);
+      if (iPos == std::string::npos)
         continue;
       extensions.erase(iPos,exts[i].size()+1);
     }

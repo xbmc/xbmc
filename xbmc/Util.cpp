@@ -281,7 +281,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   if (bCleanChars)
   {
     bool initialDots = true;
-    bool alreadyContainsSpace = (strTitleAndYear.Find(' ') >= 0);
+    bool alreadyContainsSpace = (strTitleAndYear.find(' ') != std::string::npos);
 
     for (int i = 0; i < (int)strTitleAndYear.size(); i++)
     {
@@ -333,15 +333,15 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   strFilename.Replace("/./", "/");
 
   // now find any "\\..\\" and remove them via GetParentPath
-  int pos;
-  while ((pos = strFilename.Find("/../")) > 0)
+  size_t pos;
+  while ((pos = strFilename.find("/../")) != std::string::npos)
   {
     CStdString basePath = strFilename.substr(0, pos + 1);
     strFilename.erase(0, pos + 4);
     basePath = URIUtils::GetParentPath(basePath);
     strFilename = URIUtils::AddFileToFolder(basePath, strFilename);
   }
-  while ((pos = strFilename.Find("\\..\\")) > 0)
+  while ((pos = strFilename.find("\\..\\")) != std::string::npos)
   {
     CStdString basePath = strFilename.substr(0, pos + 1);
     strFilename.erase(0, pos + 4);
@@ -584,10 +584,8 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
   strDescription = URIUtils::GetDirectory(strFileName);
   URIUtils::RemoveSlashAtEnd(strDescription);
 
-  int iPos = strDescription.ReverseFind("\\");
-  if (iPos < 0)
-    iPos = strDescription.ReverseFind("/");
-  if (iPos >= 0)
+  size_t iPos = strDescription.find_last_of("/\\");
+  if (iPos != std::string::npos)
     strDescription = strDescription.substr(iPos + 1);
   else if (strDescription.size() <= 0)
     strDescription = strFName;
@@ -662,7 +660,8 @@ void CUtil::ClearSubtitles()
   {
     if (!items[i]->m_bIsFolder)
     {
-      if ( items[i]->GetPath().Find("subtitle") >= 0 || items[i]->GetPath().Find("vobsub_queue") >= 0 )
+      if (items[i]->GetPath().find("subtitle") != std::string::npos ||
+          items[i]->GetPath().find("vobsub_queue") != std::string::npos)
       {
         CLog::Log(LOGDEBUG, "%s - Deleting temporary subtitle %s", __FUNCTION__, items[i]->GetPath().c_str());
         CFile::Delete(items[i]->GetPath());
@@ -702,7 +701,7 @@ int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
 
 CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 {
-  if (!fn_template.Find("%03d"))
+  if (fn_template.find("%03d") == std::string::npos)
     return "";
 
   CStdString searchPath = URIUtils::GetDirectory(fn_template);
@@ -725,7 +724,7 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 
 CStdString CUtil::GetNextPathname(const CStdString &path_template, int max)
 {
-  if (!path_template.Find("%04d"))
+  if (path_template.find("%04d") == std::string::npos)
     return "";
   
   for (int i = 0; i <= max; i++)
@@ -945,7 +944,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
   // filenames. NOTE: Don't use IsInZip or IsInRar here since it will infinitely
   // recurse and crash XBMC
   if (URIUtils::IsURL(path) && 
-     (path.Find('%') >= 0 ||
+      (path.find('%') != std::string::npos ||
       StringUtils::StartsWithNoCase(path, "apk:") ||
       StringUtils::StartsWithNoCase(path, "zip:") ||
       StringUtils::StartsWithNoCase(path, "rar:") ||
@@ -973,7 +972,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
       }
     }
   }
-  else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
+  else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif
   {
     result.Replace('\\', '/');
@@ -1031,9 +1030,9 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
 {
   CStdString paramString;
 
-  int iPos = execString.Find("(");
-  int iPos2 = execString.ReverseFind(")");
-  if (iPos > 0 && iPos2 > 0)
+  size_t iPos = execString.find("(");
+  size_t iPos2 = execString.rfind(")");
+  if (iPos != std::string::npos && iPos2 != std::string::npos)
   {
     paramString = execString.substr(iPos + 1, iPos2 - iPos - 1);
     function = execString.substr(0, iPos);
@@ -1093,8 +1092,8 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
         else if (parameter.length() > 3 && parameter[parameter.length() - 1] == '"')
         {
           // check name="value" style param.
-          int quotaPos = parameter.Find('"');
-          if (quotaPos > 1 && quotaPos < parameter.GetLength() - 1 && parameter[quotaPos - 1] == '=')
+          size_t quotaPos = parameter.find('"');
+          if (quotaPos > 1 && quotaPos < parameter.length() - 1 && parameter[quotaPos - 1] == '=')
           {
             parameter.Delete(parameter.GetLength() - 1);
             parameter.Delete(quotaPos);
@@ -1133,8 +1132,8 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
   else if (parameter.GetLength() > 3 && parameter[parameter.GetLength() - 1] == '"')
   {
     // check name="value" style param.
-    int quotaPos = parameter.Find('"');
-    if (quotaPos > 1 && quotaPos < parameter.GetLength() - 1 && parameter[quotaPos - 1] == '=')
+    size_t quotaPos = parameter.find('"');
+    if (quotaPos > 1 && quotaPos < parameter.length() - 1 && parameter[quotaPos - 1] == '=')
     {
       parameter.Delete(parameter.GetLength() - 1);
       parameter.Delete(quotaPos);
@@ -1170,7 +1169,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
   bIsSourceName = false;
   int iIndex = -1;
-  int iLength = -1;
+
   // we first test the NAME of a source
   for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
@@ -1186,7 +1185,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       // not a path, so we need to modify the source name
       // since we add the drive status and disc name to the source
       // "Name (Drive Status/Disc Name)"
-      int iPos = strName.ReverseFind('(');
+      size_t iPos = strName.rfind('(');
       if (iPos > 1)
         strName = strName.substr(0, iPos - 1);
     }
@@ -1207,8 +1206,9 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   ForceForwardSlashes(strDest);
   if (!URIUtils::HasSlashAtEnd(strDest))
     strDest += "/";
-  int iLenPath = strDest.size();
 
+  size_t iLength = std::string::npos;
+  size_t iLenPath = strDest.size();
   for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
     CMediaSource share = VECSOURCES.at(i);
@@ -1242,7 +1242,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       ForceForwardSlashes(strShare);
       if (!URIUtils::HasSlashAtEnd(strShare))
         strShare += "/";
-      int iLenShare = strShare.size();
+      size_t iLenShare = strShare.size();
 
       if ((iLenPath >= iLenShare) && StringUtils::StartsWithNoCase(strDest, strShare) && (iLenShare > iLength))
       {
@@ -1392,11 +1392,11 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
 
 void CUtil::ForceForwardSlashes(CStdString& strPath)
 {
-  int iPos = strPath.ReverseFind('\\');
+  size_t iPos = strPath.rfind('\\');
   while (iPos > 0)
   {
     strPath.at(iPos) = '/';
-    iPos = strPath.ReverseFind('\\');
+    iPos = strPath.rfind('\\');
   }
 }
 
@@ -1423,22 +1423,22 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
   return fRelevance;
 }
 
-bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength)
+bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, size_t iTextMaxLength)
 {
-  int iStrInputSize = StrInput.size();
-  if((iStrInputSize <= 0) || (iTextMaxLength >= iStrInputSize))
+  size_t iStrInputSize = StrInput.size();
+  if(iStrInputSize <= 0 || iTextMaxLength >= iStrInputSize)
     return false;
 
   char cDelim = '\0';
   size_t nGreaterDelim, nPos;
 
   nPos = StrInput.find_last_of( '\\' );
-  if ( nPos != CStdString::npos )
+  if (nPos != std::string::npos)
     cDelim = '\\';
   else
   {
     nPos = StrInput.find_last_of( '/' );
-    if ( nPos != CStdString::npos )
+    if (nPos != std::string::npos)
       cDelim = '/';
   }
   if ( cDelim == '\0' )
@@ -1447,13 +1447,13 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   if (nPos == StrInput.size() - 1)
   {
     StrInput.erase(StrInput.size() - 1);
-    nPos = StrInput.find_last_of( cDelim );
+    nPos = StrInput.find_last_of(cDelim);
   }
   while( iTextMaxLength < iStrInputSize )
   {
     nPos = StrInput.find_last_of( cDelim, nPos );
     nGreaterDelim = nPos;
-    if ( nPos != CStdString::npos )
+    if ( nPos != std::string::npos )
       nPos = StrInput.find_last_of( cDelim, nPos - 1 );
     if ( nPos == CStdString::npos ) break;
     if ( nGreaterDelim > nPos ) StrInput.replace( nPos + 1, nGreaterDelim - nPos - 1, ".." );

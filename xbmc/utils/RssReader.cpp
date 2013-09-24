@@ -184,17 +184,17 @@ void CRssReader::Process()
     if (!strXML.empty() && m_pObserver)
     {
       // erase any <content:encoded> tags (also unsupported by tinyxml)
-      int iStart = strXML.Find("<content:encoded>");
-      int iEnd = 0;
-      while (iStart > 0)
+      size_t iStart = strXML.find("<content:encoded>");
+      size_t iEnd = 0;
+      while (iStart != std::string::npos)
       {
         // get <content:encoded> end position
-        iEnd = strXML.Find("</content:encoded>", iStart) + 18;
+        iEnd = strXML.find("</content:encoded>", iStart) + 18;
 
         // erase the section
         strXML = strXML.erase(iStart, iEnd - iStart);
 
-        iStart = strXML.Find("<content:encoded>");
+        iStart = strXML.find("<content:encoded>");
       }
 
       if (Parse(strXML, iFeed, fileCharset))
@@ -332,7 +332,8 @@ bool CRssReader::Parse(int iFeed)
   TiXmlElement* rssXmlNode = NULL;
 
   CStdString strValue = rootXmlNode->Value();
-  if (strValue.Find("rss") >= 0 || strValue.Find("rdf") >= 0)
+  if (strValue.find("rss") != std::string::npos ||
+      strValue.find("rdf") != std::string::npos)
     rssXmlNode = rootXmlNode;
   else
   {

@@ -2568,38 +2568,6 @@ public:
     return GetLength();
   }
 
-  int Find(CT ch) const
-  {
-    MYSIZE nIdx  = this->find_first_of(ch);
-    return static_cast<int>(MYBASE::npos == nIdx  ? -1 : nIdx);
-  }
-
-  int Find(PCMYSTR szSub) const
-  {
-    MYSIZE nIdx  = this->find(szSub);
-    return static_cast<int>(MYBASE::npos == nIdx ? -1 : nIdx);
-  }
-
-  int Find(CT ch, int nStart) const
-  {
-    // CString::Find docs say add 1 to nStart when it's not zero
-    // CString::Find code doesn't do that however.  We'll stick
-    // with what the code does
-
-    MYSIZE nIdx  = this->find_first_of(ch, static_cast<MYSIZE>(nStart));
-    return static_cast<int>(MYBASE::npos == nIdx ? -1 : nIdx);
-  }
-
-  int Find(PCMYSTR szSub, int nStart) const
-  {
-    // CString::Find docs say add 1 to nStart when it's not zero
-    // CString::Find code doesn't do that however.  We'll stick
-    // with what the code does
-
-    MYSIZE nIdx  = this->find(szSub, static_cast<MYSIZE>(nStart));
-    return static_cast<int>(MYBASE::npos == nIdx ? -1 : nIdx);
-  }
-
   int FindOneOf(PCMYSTR szCharSet) const
   {
     MYSIZE nIdx = this->find_first_of(szCharSet);
@@ -2782,21 +2750,6 @@ public:
     }
 
     return nReplaced;
-  }
-
-  int ReverseFind(CT ch) const
-  {
-    MYSIZE nIdx  = this->find_last_of(ch);
-    return static_cast<int>(MYBASE::npos == nIdx ? -1 : nIdx);
-  }
-
-  // ReverseFind overload that's not in CString but might be useful
-  int ReverseFind(PCMYSTR szFind, MYSIZE pos=MYBASE::npos) const
-  {
-    //yuvalt - this does not compile with g++ since MYTTYPE() is different type
-    //MYSIZE nIdx  = this->rfind(0 == szFind ? MYTYPE() : szFind, pos);
-    MYSIZE nIdx  = this->rfind(0 == szFind ? "" : szFind, pos);
-    return static_cast<int>(MYBASE::npos == nIdx ? -1 : nIdx);
   }
 
   void SetAt(int nIndex, CT ch)

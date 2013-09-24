@@ -305,10 +305,10 @@ bool CCueDocument::ReadNextLine(CStdString &szLine)
 bool CCueDocument::ExtractQuoteInfo(const CStdString &line, CStdString &quote)
 {
   quote.clear();
-  int left = line.Find('\"');
-  if (left < 0) return false;
-  int right = line.Find('\"', left + 1);
-  if (right < 0) return false;
+  size_t left = line.find('\"');
+  if (left == std::string::npos) return false;
+  size_t right = line.find('\"', left + 1);
+  if (right == std::string::npos) return false;
   quote = line.substr(left + 1, right - left - 1);
   g_charsetConverter.unknownToUTF8(quote);
   return true;

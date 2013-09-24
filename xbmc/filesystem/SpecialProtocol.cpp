@@ -183,7 +183,7 @@ CStdString CSpecialProtocol::TranslatePathConvertCase(const CStdString& path)
   CStdString translatedPath = TranslatePath(path);
 
 #ifdef TARGET_POSIX
-  if (translatedPath.Find("://") > 0)
+  if (translatedPath.find("://") != std::string::npos)
     return translatedPath;
 
   // If the file exists with the requested name, simply return it

@@ -677,7 +677,7 @@ bool CTuxBoxUtil::InitZapstream(const CStdString& strPath)
       CHttpHeader h = http.GetHttpHeader();
       CStdString strValue = h.GetValue("server");
 
-      if (strValue.Find("zapstream") >= 0 )
+      if (strValue.find("zapstream") != std::string::npos)
       {
         CLog::Log(LOGDEBUG, "%s - Zapstream is available on port %i.", __FUNCTION__, g_advancedSettings.m_iTuxBoxZapstreamPort);
         return g_tuxbox.sZapstream.available = true;
@@ -1622,15 +1622,15 @@ CStdString CTuxBoxUtil::DetectSubMode(CStdString strSubMode, CStdString& strXMLR
 {
   //strSubMode = "xml/services?mode=0&submode=1"
   CStdString strFilter;
-  int ipointMode = strSubMode.Find("?mode=");
-  int ipointSubMode = strSubMode.Find("&submode=");
-  if (ipointMode >=0)
-    strFilter = strSubMode.GetAt(ipointMode+6);
+  size_t ipointMode = strSubMode.find("?mode=");
+  size_t ipointSubMode = strSubMode.find("&submode=");
+  if (ipointMode != std::string::npos)
+    strFilter = strSubMode.at(ipointMode + 6);
 
-  if (ipointSubMode >=0)
+  if (ipointSubMode != std::string::npos)
   {
     CStdString strTemp;
-    strTemp = strSubMode.GetAt(ipointSubMode+9);
+    strTemp = strSubMode.at(ipointSubMode + 9);
     if(strTemp.Equals("1"))
     {
       strXMLRootString = StringUtils::Format("unknowns");

@@ -253,7 +253,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
       for(it=m_exportList.begin();it!=m_exportList.end();it++)
       {
         //if path starts with the current export path
-        if( path.Find(*it) ==  0 )
+        if(StringUtils::StartsWith(path, *it))
         {
           exportPath = *it;
           //handle special case where root is exported
@@ -845,7 +845,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
 bool CNFSFile::IsValidFile(const CStdString& strFileName)
 {
-  if (strFileName.Find('/') == -1 || /* doesn't have sharename */
+  if (strFileName.find('/') == std::string::npos || /* doesn't have sharename */
       StringUtils::EndsWith(strFileName, "/.") || /* not current folder */
       StringUtils::EndsWith(strFileName, "/.."))  /* not parent folder */
     return false;

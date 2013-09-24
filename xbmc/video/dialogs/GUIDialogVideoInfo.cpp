@@ -169,8 +169,8 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
             break;
           CStdString strItem = m_castList->Get(iItem)->GetLabel();
           CStdString strFind = StringUtils::Format(" %s ",g_localizeStrings.Get(20347).c_str());
-          int iPos = strItem.Find(strFind);
-          if (iPos == -1)
+          size_t iPos = strItem.find(strFind);
+          if (iPos == std::string::npos)
             iPos = strItem.size();
           CStdString tmp = strItem.substr(0, iPos);
           OnSearch(tmp);

@@ -1157,7 +1157,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       {
         if (prop.name == window_bools[i].str)
         { // TODO: The parameter for these should really be on the first not the second property
-          if (prop.param().Find("xml") >= 0)
+          if (prop.param().find("xml") != std::string::npos)
             return AddMultiInfo(GUIInfo(window_bools[i].val, 0, ConditionalStringParameter(prop.param())));
           int winID = prop.param().empty() ? 0 : CButtonTranslator::TranslateWindow(prop.param());
           if (winID != WINDOW_INVALID)
@@ -2762,11 +2762,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             StringUtils::ToLower(label);
           }
           if (condition == STRING_STR_LEFT)
-            bReturn = label.Find(compare) == 0;
+            bReturn = StringUtils::StartsWith(label, compare);
           else if (condition == STRING_STR_RIGHT)
-            bReturn = label.Find(compare) == (int)(label.size()-compare.size());
+            bReturn = StringUtils::EndsWith(label, compare);
           else
-            bReturn = label.Find(compare) > -1;
+            bReturn = label.find(compare) != std::string::npos;
         }
         break;
       case SYSTEM_ALARM_LESS_OR_EQUAL:
@@ -3406,7 +3406,7 @@ CStdString CGUIInfoManager::GetTime(TIME_FORMAT format) const
 CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT format) const
 {
   const CStdString timeFormat = g_langInfo.GetTimeFormat();
-  bool use12hourclock = timeFormat.Find('h') != -1;
+  bool use12hourclock = timeFormat.find('h') != std::string::npos;
   switch (format)
   {
   case TIME_FORMAT_GUESS:
@@ -4087,7 +4087,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     {
       CStdString path = item.GetPath();
       CStdString videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
-      if (videoInfoTagPath.Find("removable://") == 0)
+      if (videoInfoTagPath.find("removable://") == 0)
         path = videoInfoTagPath;
       dbs.LoadVideoInfo(path, *m_currentFile->GetVideoInfoTag());
       dbs.Close();

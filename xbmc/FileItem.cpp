@@ -1399,9 +1399,9 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
 
       // make sure there are no options set in mime-type
       // mime-type can look like "video/x-ms-asf ; charset=utf8"
-      int i = m_mimetype.Find(';');
-      if(i>=0)
-        m_mimetype.Delete(i, m_mimetype.length() - i);
+      size_t i = m_mimetype.find(';');
+      if(i != std::string::npos)
+        m_mimetype.erase(i, m_mimetype.length() - i);
       StringUtils::Trim(m_mimetype);
     }
     else

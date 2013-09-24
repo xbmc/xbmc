@@ -105,8 +105,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       CStdString strLinkOptions;
 
       // split link with url options
-      int pos = strLinkBase.Find('?');
-      if (pos != -1) {
+      size_t pos = strLinkBase.find('?');
+      if (pos != std::string::npos) {
         strLinkOptions = strLinkBase.substr(pos);
         strLinkBase.erase(pos);
       }
