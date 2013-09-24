@@ -44,7 +44,7 @@
 	</include>
 	<include name="MovieTVUnwatchedOverlay">
 		<control type="image">
-			<visible>[Container.Content(movies) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+			<visible>[Container.Content(movies) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 			<posx>174</posx>
 			<posy>262</posy>
 			<info>ListItem.Overlay</info>

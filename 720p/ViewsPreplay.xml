@@ -429,15 +429,11 @@
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>ListItem.Type(season)</visible>
 					</control>
-					<!--><control type="image">
-					<description>Overlay</description>
-					<posx>20</posx>
-					<posy>173</posy>
-					<include>WtchUnwtchOverlayDims</include>
-					<info>ListItem.Overlay</info>
-					<colordiffuse>FF999999</colordiffuse>
-					<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
-				</control>-->
+					<control type="group">
+						<posy>-7</posy>
+						<posx>-10</posx>
+						<include>MovieTVUnwatchedOverlay</include>
+					</control>
 				</itemlayout>
 				<focusedlayout width="223" height="315">
 					<include>TVPoster</include>
@@ -468,14 +464,11 @@
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>ListItem.Type(season)</visible>
 					</control>
-					<!--><control type="image">
-					<description>Overlay</description>
-					<posx>20</posx>
-					<posy>175</posy>
-					<include>WtchUnwtchOverlayDims</include>
-					<info>ListItem.Overlay</info>
-					<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
-				</control>-->
+					<control type="group">
+						<posy>-7</posy>
+						<posx>-10</posx>
+						<include>MovieTVUnwatchedOverlay</include>
+					</control>
 				</focusedlayout>
 			</control>
 		</control>
