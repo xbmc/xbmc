@@ -27,7 +27,6 @@ vector<stringPair> CPlexFile::GetHeaderList()
   
   hdrs.push_back(stringPair("X-Plex-Platform", "Plex Home Theater"));
   hdrs.push_back(stringPair("X-Plex-Model", PlexUtils::GetMachinePlatform()));
-  hdrs.push_back(stringPair("X-Plex-Capabilities", "ehls,rtmp,multipart"));
 #ifdef TARGET_RPI
   hdrs.push_back(stringPair("X-Plex-Device", "RaspberryPi"));
 #elif defined(TARGET_DARWIN_IOS)
@@ -35,6 +34,21 @@ vector<stringPair> CPlexFile::GetHeaderList()
 #else
   hdrs.push_back(stringPair("X-Plex-Device", "PC"));
 #endif
+  
+  // Build a description of what we support, this is old school, but needed when
+  // want PMS to select the correct audio track for us.
+  CStdString protocols = "protocols=shoutcast,http-video;videoDecoders=h264{profile:high&resolution:1080&level:51};audioDecoders=mp3,aac";
+  
+  if (AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")))
+  {
+    if (g_guiSettings.GetBool("audiooutput.dtspassthrough"))
+      protocols += ",dts{bitrate:800000&channels:8}";
+    
+    if (g_guiSettings.GetBool("audiooutput.ac3passthrough"))
+      protocols += ",ac3{bitrate:800000&channels:8}";
+  }
+  
+  hdrs.push_back(stringPair("X-Plex-Client-Capabilities", protocols));
   
   if (g_plexApplication.myPlexManager->IsSignedIn())
     hdrs.push_back(stringPair("X-Plex-Username", g_plexApplication.myPlexManager->GetCurrentUserInfo().username));
