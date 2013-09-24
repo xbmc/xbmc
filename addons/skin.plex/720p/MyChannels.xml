@@ -4,7 +4,7 @@
 	<views>70</views>
 	<allowoverlay>yes</allowoverlay>
 	<onunload>SetFocus(777)</onunload>
-	<backgroundcolor>0</backgroundcolor>
+	<backgroundcolor>black</backgroundcolor>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>
