@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <window id="50">
-	<backgroundcolor>0</backgroundcolor>
+	<backgroundcolor>black</backgroundcolor>
 	<controls>
 	<include>NowPlaying</include>	
 	<include>Grid</include>
