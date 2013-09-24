@@ -100,7 +100,9 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
     item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, videoTag.m_playCount > 0);
   
   /* for directories with leafCount and viewLeafCount */
-  if (item.HasProperty("leafCount") && item.HasProperty("viewedLeafCount"))
+  if ((item.GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW ||
+      item.GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON) &&
+      (item.HasProperty("leafCount") && item.HasProperty("viewedLeafCount")))
   {
     int numeps = item.GetProperty("leafCount").asInteger();
     int watchedeps = item.GetProperty("viewedLeafCount").asInteger();
@@ -108,10 +110,12 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
     item.SetEpisodeData(numeps, watchedeps);
     item.GetVideoInfoTag()->m_iEpisode = numeps;
     item.GetVideoInfoTag()->m_playCount = watchedeps;
-    if (numeps == watchedeps)
-      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
+    if (watchedeps == numeps)
+      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
+    else if (watchedeps == 0)
+      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
     else if (watchedeps > 0)
-      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS, true);
+      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
   }
   
   ParseMediaNodes(item, itemElement);
