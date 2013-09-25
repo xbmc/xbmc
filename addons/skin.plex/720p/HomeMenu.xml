@@ -165,6 +165,11 @@
 						<onclick>Plex.Powerdown</onclick>
 						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + Skin.HasSetting(ShowShutDown)</visible>
 					</item>
+					<item id="114">
+						<description>test</description>
+						<label>Wizard</label>
+						<onclick>Plex.ActivateWindow(4999)</onclick>
+					</item>
 				</content>
 			</control>
 		</control>		

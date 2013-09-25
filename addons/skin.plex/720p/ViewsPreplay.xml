@@ -350,8 +350,7 @@
 					<width>200</width>
 					<height>40</height>
 					<align>right</align>
-					<!--><label>$INFO[ListItem.Year]</label>-->
-					<label> 2009</label>
+					<label>$INFO[ListItem.Year]</label>
 					<font>CondensedBold-36</font>
 					<include>White1</include>
 					<visible>true</visible>
@@ -361,8 +360,7 @@
 					<posy>55</posy>
 					<width>200</width>
 					<height>17</height>
-					<label>$INFO[ListItem.MPAA]</label>
-					<texture>PG-13.png</texture>
+					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
@@ -373,8 +371,7 @@
 					<posy>78</posy>
 					<width>200</width>
 					<height>20</height>
-					<!--><label>$INFO[ListItem.StarRating]</texture>-->
-					<texture>rating10-big.png</texture>
+					<texture>$INFO[ListItem.StarRating]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					<visible>true</visible>
@@ -429,15 +426,11 @@
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>ListItem.Type(season)</visible>
 					</control>
-					<!--><control type="image">
-					<description>Overlay</description>
-					<posx>20</posx>
-					<posy>173</posy>
-					<include>WtchUnwtchOverlayDims</include>
-					<info>ListItem.Overlay</info>
-					<colordiffuse>FF999999</colordiffuse>
-					<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
-				</control>-->
+					<control type="group">
+						<posy>-7</posy>
+						<posx>-10</posx>
+						<include>MovieTVUnwatchedOverlay</include>
+					</control>
 				</itemlayout>
 				<focusedlayout width="223" height="315">
 					<include>TVPoster</include>
@@ -468,14 +461,11 @@
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>ListItem.Type(season)</visible>
 					</control>
-					<!--><control type="image">
-					<description>Overlay</description>
-					<posx>20</posx>
-					<posy>175</posy>
-					<include>WtchUnwtchOverlayDims</include>
-					<info>ListItem.Overlay</info>
-					<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
-				</control>-->
+					<control type="group">
+						<posy>-7</posy>
+						<posx>-10</posx>
+						<include>MovieTVUnwatchedOverlay</include>
+					</control>
 				</focusedlayout>
 			</control>
 		</control>
@@ -616,8 +606,7 @@
 					<posy>21</posy>
 					<width>200</width>
 					<height>17</height>
-					<label>$INFO[ListItem.MPAA]</label>
-					<texture>PG-13.png</texture>
+					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
@@ -630,8 +619,7 @@
 					<width>200</width>
 					<height>40</height>
 					<align>right</align>
-					<!--><label>$INFO[ListItem.Year]</label>-->
-					<label> 2009</label>
+					<label>$INFO[ListItem.Year]</label>
 					<font>CondensedBold-36</font>
 					<include>White1</include>
 					<visible>true</visible>
@@ -641,8 +629,7 @@
 					<posy>98</posy>
 					<width>200</width>
 					<height>20</height>
-					<!--><label>$INFO[ListItem.StarRating]</texture>-->
-					<texture>rating10-big.png</texture>
+					<texture>$INFO[ListItem.StarRating]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					<visible>true</visible>
@@ -828,7 +815,7 @@
 					<posx>140r</posx>
 					<width>100</width>
 					<height>17</height>
-					<label>$INFO[ListItem.MPAA]</label>
+					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
@@ -852,7 +839,7 @@
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
-					<label>$INFO[ListItem.StarRating]</label>
+					<texture>$INFO[ListItem.StarRating]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					<visible>true</visible>
@@ -1034,7 +1021,7 @@
 					<posx>140r</posx>
 					<width>100</width>
 					<height>17</height>
-					<label>$INFO[ListItem.MPAA]</label>
+					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
 					<visible>true</visible>
@@ -1045,7 +1032,7 @@
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
-					<label>$INFO[ListItem.StarRating]</label>
+					<texture>$INFO[ListItem.StarRating]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<visible>true</visible>
 				</control>

@@ -179,7 +179,7 @@
 				<posx>140r</posx>
 				<width>100</width>
 				<height>50</height>
-				<texture>$INFO[Listitem.Art(mediaTag::Studio)]</texture>
+				<texture>$INFO[Listitem.Art(mediaTag::studio)]</texture>
 				<aspectratio align="right" aligny="center">keep</aspectratio>
 				<colordiffuse>FF999999</colordiffuse>
 				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
