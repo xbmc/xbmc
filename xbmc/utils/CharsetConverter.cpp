@@ -278,6 +278,7 @@ enum StdConversionType /* Keep it in sync with CCharsetConverter::CInnerConverte
   Utf16BEtoUtf8,
   Utf16LEtoUtf8,
   Utf8toW,
+  Utf8ToSystem,
   Ucs2CharsetToUtf8,
   NumberOfStdConversionTypes /* Dummy sentinel entry */
 };
@@ -320,6 +321,7 @@ CConverterType CCharsetConverter::CInnerConverter::m_stdConversion[NumberOfStdCo
   /* Utf16BEtoUtf8 */       CConverterType("UTF-16BE",      "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
   /* Utf16LEtoUtf8 */       CConverterType("UTF-16LE",      "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
   /* Utf8toW */             CConverterType(UTF8_SOURCE,     WCHAR_CHARSET),
+  /* Utf8ToSystem */        CConverterType(UTF8_SOURCE,     SystemCharset),
   /* Ucs2CharsetToUtf8 */   CConverterType("UCS-2LE",       "UTF-8", CCharsetConverter::m_Utf8CharMaxSize)
 };
 
@@ -902,7 +904,7 @@ bool CCharsetConverter::utf32ToStringCharset(const std::u32string& utf32StringSr
 bool CCharsetConverter::utf8ToSystem(std::string& stringSrcDst, bool failOnBadChar /*= false*/)
 {
   std::string strSrc(stringSrcDst);
-  return utf8To("", strSrc, stringSrcDst);
+  return CInnerConverter::stdConvert(Utf8ToSystem, strSrc, stringSrcDst, failOnBadChar);
 }
 
 // Taken from RFC2640
