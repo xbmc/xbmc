@@ -366,40 +366,12 @@ bool CCharsetConverter::CInnerConverter::customConvert(const std::string& source
 
 
 #if defined(FRIBIDI_CHAR_SET_NOT_FOUND)
-static FriBidiCharSet m_stringFribidiCharset     = FRIBIDI_CHAR_SET_NOT_FOUND;
 #define FRIBIDI_UTF8 FRIBIDI_CHAR_SET_UTF8
-#define FRIBIDI_NOTFOUND FRIBIDI_CHAR_SET_NOT_FOUND
 #else /* compatibility to older version */
-static FriBidiCharSet m_stringFribidiCharset     = FRIBIDI_CHARSET_NOT_FOUND;
 #define FRIBIDI_UTF8 FRIBIDI_CHARSET_UTF8
-#define FRIBIDI_NOTFOUND FRIBIDI_CHARSET_NOT_FOUND
 #endif
 
 static CCriticalSection            m_critSection;
-
-static struct SFribidMapping
-{
-  FriBidiCharSet name;
-  const char*    charset;
-} g_fribidi[] = {
-#if defined(FRIBIDI_CHAR_SET_NOT_FOUND)
-  { FRIBIDI_CHAR_SET_ISO8859_6, "ISO-8859-6"   }
-, { FRIBIDI_CHAR_SET_ISO8859_8, "ISO-8859-8"   }
-, { FRIBIDI_CHAR_SET_CP1255   , "CP1255"       }
-, { FRIBIDI_CHAR_SET_CP1255   , "Windows-1255" }
-, { FRIBIDI_CHAR_SET_CP1256   , "CP1256"       }
-, { FRIBIDI_CHAR_SET_CP1256   , "Windows-1256" }
-, { FRIBIDI_CHAR_SET_NOT_FOUND, NULL           }
-#else /* compatibility to older version */
-  { FRIBIDI_CHARSET_ISO8859_6, "ISO-8859-6"   }
-, { FRIBIDI_CHARSET_ISO8859_8, "ISO-8859-8"   }
-, { FRIBIDI_CHARSET_CP1255   , "CP1255"       }
-, { FRIBIDI_CHARSET_CP1255   , "Windows-1255" }
-, { FRIBIDI_CHARSET_CP1256   , "CP1256"       }
-, { FRIBIDI_CHARSET_CP1256   , "Windows-1256" }
-, { FRIBIDI_CHARSET_NOT_FOUND, NULL           }
-#endif
-};
 
 static struct SCharsetMapping
 {
@@ -682,16 +654,6 @@ std::string CCharsetConverter::getCharsetNameByLabel(const std::string& charsetL
   }
 
   return "";
-}
-
-bool CCharsetConverter::isBidiCharset(const std::string& charset)
-{
-  for(SFribidMapping* c = g_fribidi; c->charset; c++)
-  {
-    if (StringUtils::EqualsNoCase(charset, c->charset))
-      return true;
-  }
-  return false;
 }
 
 void CCharsetConverter::reset(void)

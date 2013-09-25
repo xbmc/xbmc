@@ -160,7 +160,6 @@ public:
   static std::vector<std::string> getCharsetLabels();
   static std::string getCharsetLabelByName(const std::string& charsetName);
   static std::string getCharsetNameByLabel(const std::string& charsetLabel);
-  static bool isBidiCharset(const std::string& charset);
 
   static bool unknownToUTF8(std::string& stringSrcDst);
   static bool unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
