@@ -530,12 +530,15 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
             {
               /* we only insert the properties if they are not available */
               if (item->m_mapProperties.find(p.first) == item->m_mapProperties.end())
-              {
                 item->m_mapProperties[p.first] = p.second;
-              }
             }
 
-            //item->AppendArt(augItem->GetArt());
+            std::pair<CStdString, CStdString> sP;
+            BOOST_FOREACH(sP, augItem->GetArt())
+            {
+              if (!item->HasArt(sP.first))
+                item->SetArt(sP.first, sP.second);
+            }
 
             if (augItem->HasVideoInfoTag())
             {
