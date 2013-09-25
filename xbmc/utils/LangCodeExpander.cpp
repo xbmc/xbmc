@@ -213,6 +213,15 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
   }
   else if (strCharCode.size() > 3)
   {
+    for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+    {
+      if (strCharCode.Equals(g_iso639_2[i].name))
+      {
+        CodeToString(g_iso639_2[i].code, strThreeCharCode);
+        return true;
+      }
+    }
+
     CStdString strLangInfoPath;
     strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strCharCode.c_str());
     CLangInfo langInfo;
