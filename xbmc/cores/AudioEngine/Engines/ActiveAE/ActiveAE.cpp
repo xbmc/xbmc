@@ -981,6 +981,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       if (!(*it)->m_resampleBuffers)
       {
         (*it)->m_resampleBuffers = new CActiveAEBufferPoolResample((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
+        (*it)->m_resampleBuffers->m_changeResampler = (*it)->m_forceResampler;
         (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix);
       }
       if (m_mode == MODE_TRANSCODE || m_streams.size() > 1)
@@ -1072,6 +1073,9 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
 
   if (streamMsg->options & AESTREAM_PAUSED)
     stream->m_paused = true;
+
+  if (streamMsg->options & AESTREAM_FORCE_RESAMPLE)
+    stream->m_forceResampler = true;
 
   m_streams.push_back(stream);
 
