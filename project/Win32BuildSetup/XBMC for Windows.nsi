@@ -118,7 +118,7 @@ Section "XBMC" SecXBMC
   IfFileExists $INSTDIR\system\python 0 +2
     RMDir /r $INSTDIR\system\python
   
-  File /r /x *.so /x mplayer /x *_d.* /x tcl85g.dll /x tclpip85g.dll /x tk85g.dll "${xbmc_root}\Xbmc\system\*.*"
+  File /r /x *.so /x *_d.* /x tcl85g.dll /x tclpip85g.dll /x tk85g.dll "${xbmc_root}\Xbmc\system\*.*"
   
   ; delete  msvc?90.dll's in INSTDIR, we use the vcredist installer later
   Delete "$INSTDIR\msvcr90.dll"
