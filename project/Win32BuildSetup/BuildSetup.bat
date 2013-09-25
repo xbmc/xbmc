@@ -190,8 +190,8 @@ IF %comp%==vs2010 (
   Echo Desktop.ini>>exclude.txt
   Echo dsstdfx.bin>>exclude.txt
   Echo exclude.txt>>exclude.txt
-  Echo xbmc.txt>>exclude.txt
-  Echo xbmc.old.txt>>exclude.txt
+  Echo xbmc.log>>exclude.txt
+  Echo xbmc.old.log>>exclude.txt
   rem Exclude userdata files
   Echo userdata\advancedsettings.xml>>exclude.txt
   Echo userdata\guisettings.xml>>exclude.txt
