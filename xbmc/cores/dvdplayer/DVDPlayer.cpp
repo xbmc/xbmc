@@ -2493,11 +2493,13 @@ void CDVDPlayer::SetCaching(ECacheState state)
 {
   if(state == CACHESTATE_FLUSH)
   {
+#ifndef __PLEX__ // This makes little sense for streams, ask it to always fill my buffer instead
     double level, delay, offset;
     if(GetCachingTimes(level, delay, offset))
       state = CACHESTATE_FULL;
     else
       state = CACHESTATE_INIT;
+#endif
     state = CACHESTATE_FULL;
   }
 
