@@ -651,11 +651,12 @@ void CCharsetConverter::OnSettingChanged(const CSetting* setting)
     return;
 
   const std::string& settingId = setting->GetId();
-  // TODO: does this make any sense at all for subtitles and karaoke?
-  if (settingId == "subtitles.charset" ||
-      settingId == "karaoke.charset" ||
-      settingId == "locale.charset")
-    reset();
+  if (settingId == "locale.charset")
+    resetUserCharset();
+  else if (settingId == "subtitles.charset")
+    resetSubtitleCharset();
+  else if (settingId == "karaoke.charset")
+    resetKaraokeCharset();
 }
 
 void CCharsetConverter::clear()
@@ -707,6 +708,34 @@ void CCharsetConverter::reset(void)
 {
   for (int i = 0; i < NumberOfStdConversionTypes; i++)
     CInnerConverter::m_stdConversion[i].Reset();
+}
+
+void CCharsetConverter::resetSystemCharset(void)
+{
+  CInnerConverter::m_stdConversion[Utf8ToSystem].Reset();
+}
+
+void CCharsetConverter::resetUserCharset(void)
+{
+  CInnerConverter::m_stdConversion[UserCharsetToUtf8].Reset();
+  CInnerConverter::m_stdConversion[UserCharsetToUtf8].Reset();
+  CInnerConverter::m_stdConversion[Utf32ToUserCharset].Reset();
+  resetSubtitleCharset();
+  resetKaraokeCharset();
+}
+
+void CCharsetConverter::resetSubtitleCharset(void)
+{
+  CInnerConverter::m_stdConversion[SubtitleCharsetToW].Reset();
+}
+
+void CCharsetConverter::resetKaraokeCharset(void)
+{
+}
+
+void CCharsetConverter::reinitCharsetsFromSettings(void)
+{
+  resetUserCharset(); // this will also reinit Subtitle and Karaoke charsets
 }
 
 bool CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)

@@ -39,6 +39,8 @@ public:
   virtual void OnSettingChanged(const CSetting* setting);
 
   static void reset();
+  static void resetSystemCharset();
+  static void reinitCharsetsFromSettings(void);
 
   static void clear();
 
@@ -168,6 +170,10 @@ public:
 
   static void SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current);
 private:
+  static void resetUserCharset(void);
+  static void resetSubtitleCharset(void);
+  static void resetKaraokeCharset(void);
+
   static const int m_Utf8CharMinSize, m_Utf8CharMaxSize;
   class CInnerConverter;
 };

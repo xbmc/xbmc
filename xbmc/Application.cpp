@@ -758,9 +758,6 @@ bool CApplication::Create()
 
   update_emu_environ();//apply the GUI settings
 
-  // initialize our charset converter
-  g_charsetConverter.reset();
-
   // Load the langinfo to have user charset <-> utf-8 conversion
   CStdString strLanguage = CSettings::Get().GetString("locale.language");
   strLanguage[0] = toupper(strLanguage[0]);
@@ -1966,8 +1963,6 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
   g_fontManager.Clear();
 
   g_colorManager.Clear();
-
-  g_charsetConverter.reset();
 
   g_infoManager.Clear();
 
@@ -5740,8 +5735,6 @@ bool CApplication::SetLanguage(const CStdString &strLanguage)
         CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
     }
     CSettings::Get().SetString("locale.language", strNewLanguage);
-
-    g_charsetConverter.reset();
 
     if (!g_localizeStrings.Load("special://xbmc/language/", strNewLanguage))
       return false;
