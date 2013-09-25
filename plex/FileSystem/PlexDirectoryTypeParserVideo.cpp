@@ -59,6 +59,10 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   videoTag.m_iYear = item.GetProperty("year").asInteger();
   videoTag.m_strPath = item.GetPath();
   videoTag.m_duration = item.GetProperty("duration").asInteger() > 0 ? item.GetProperty("duration").asInteger() / 1000 : 0;
+  if (item.HasProperty("userRating"))
+    videoTag.m_fRating = item.GetProperty("userRating").asDouble();
+  else
+    videoTag.m_fRating = item.GetProperty("rating").asDouble();
   
   if (item.HasProperty("viewCount"))
     videoTag.m_playCount = item.GetProperty("viewCount").asInteger();
