@@ -76,7 +76,7 @@ bool CPictureAlbum::Load(const TiXmlElement *PictureAlbum, bool append, bool pri
     XMLUtils::GetString(PictureAlbum,"review",strReview);
     XMLUtils::GetString(PictureAlbum,"releasedate",m_strDateOfRelease);
     XMLUtils::GetString(PictureAlbum,"label",strLabel);
-    XMLUtils::GetString(PictureAlbum,"type",strType);
+    XMLUtils::GetString(PictureAlbum,"picturetype",strPictureType);
     
     size_t iThumbCount = thumbURL.m_url.size();
     CStdString xmlAdd = thumbURL.m_xml;
@@ -197,10 +197,9 @@ bool CPictureAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdStrin
     XMLUtils::SetBoolean(PictureAlbum,      "compilation", bCompilation);
     
     XMLUtils::SetString(PictureAlbum,      "review", strReview);
-    XMLUtils::SetString(PictureAlbum,        "type", strType);
+    XMLUtils::SetString(PictureAlbum,        "picturetype", strPictureType);
     XMLUtils::SetString(PictureAlbum, "releasedate", m_strDateOfRelease);
     XMLUtils::SetString(PictureAlbum,       "label", strLabel);
-    XMLUtils::SetString(PictureAlbum,        "type", strType);
     if (!thumbURL.m_xml.empty())
     {
         CXBMCTinyXML doc;

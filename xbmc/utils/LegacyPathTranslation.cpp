@@ -96,6 +96,23 @@ static Translator s_pictureDbTranslator[] = {
 
 #define PictureDbTranslatorSize sizeof(s_pictureDbTranslator) / sizeof(Translator)
 
+// ATTENTION: Make sure the longer match strings go first
+// because the string match is performed with StringUtils::StartsWith()
+static Translator s_contactDbTranslator[] = {
+  { "contactdb://1",    "contactdb://locations" },
+  { "contactdb://2",    "contactdb://faces" },
+  { "contactdb://3",    "contactdb://albums" },
+  { "contactdb://4",    "contactdb://contacts" },
+  { "contactdb://5/1",  "contactdb://top100/albums" },
+  { "contactdb://5/2",  "contactdb://top100/contacts" },
+  { "contactdb://5",    "contactdb://top100" },
+  { "contactdb://6",    "contactdb://recentlyaddedalbums" },
+  { "contactdb://7",    "contactdb://recentlyplayedalbums" },
+  { "contactdb://9",    "contactdb://years" }
+};
+
+#define contactDbTranslatorSize sizeof(s_contactDbTranslator) / sizeof(Translator)
+
 
 std::string CLegacyPathTranslation::TranslateVideoDbPath(const std::string &legacyPath)
 {
@@ -108,6 +125,10 @@ std::string CLegacyPathTranslation::TranslateMusicDbPath(const std::string &lega
 }
 
 std::string CLegacyPathTranslation::TranslatePictureDbPath(const std::string &legacyPath)
+{
+  return TranslatePath(legacyPath, s_pictureDbTranslator, PictureDbTranslatorSize);
+}
+std::string CLegacyPathTranslation::TranslateContactDbPath(const std::string &legacyPath)
 {
   return TranslatePath(legacyPath, s_pictureDbTranslator, PictureDbTranslatorSize);
 }

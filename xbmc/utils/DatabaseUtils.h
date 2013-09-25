@@ -122,6 +122,7 @@ typedef enum {
   FieldDisbanded,
   FieldDied,
   
+  FieldOrientation,
   FieldTakenOn,
   FieldPictureCount,
   FieldPictureAlbum,
@@ -146,6 +147,7 @@ typedef enum {
   MediaTypeTvShow,
   MediaTypeEpisode,
   MediaTypePicture,
+  MediaTypeContact,
   MediaTypePictureAlbum,
   MediaTypeFace,
   MediaTypeLocation

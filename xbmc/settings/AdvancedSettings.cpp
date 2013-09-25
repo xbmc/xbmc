@@ -379,6 +379,7 @@ void CAdvancedSettings::Initialize()
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
 
+  m_databaseContact.Reset();
   m_databasePicture.Reset();
   m_databaseMusic.Reset();
   m_databaseVideo.Reset();
@@ -1109,7 +1110,17 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
         XMLUtils::GetString(pDatabase, "pass", m_databasePicture.pass);
         XMLUtils::GetString(pDatabase, "name", m_databasePicture.name);
     }
-    
+  pDatabase = pRootElement->FirstChildElement("contactdatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseContact.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseContact.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseContact.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseContact.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseContact.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseContact.name);
+  }
+  
   pDatabase = pRootElement->FirstChildElement("tvdatabase");
   if (pDatabase)
   {

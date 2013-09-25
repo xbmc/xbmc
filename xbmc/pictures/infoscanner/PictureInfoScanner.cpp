@@ -80,6 +80,10 @@ CPictureInfoScanner::~CPictureInfoScanner()
 
 void CPictureInfoScanner::Process()
 {
+  //ASHOK: FIX THIS, DONT NEED IT RIGHT NOW BUT IF PHOTOS TO BE SCANNED FROM THE DRIVE
+  //THEN IT WILL BE NEEDED
+  
+  return;
     ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
     try
     {
@@ -668,6 +672,7 @@ int CPictureInfoScanner::RetrievePictureInfo(const CStdString& strDirectory, CFi
             picture->idAlbum = cachedAlbum->second.idAlbum;
             picture->idPicture = m_pictureDatabase.AddPicture(cachedAlbum->second.idAlbum,
                                                    picture->strTitle,
+                                                              "Horizontal",                                                              
                                                    picture->strFileName, picture->strComment,
                                                    picture->strThumb,
                                                    picture->face,

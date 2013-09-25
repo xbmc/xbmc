@@ -119,6 +119,8 @@ public:
     int idAlbum;
     CStdString strFileName;
     CStdString strTitle;
+    CStdString strPictureType;
+    CStdString strOrientation;
     std::vector<std::string> face;
     VECFACECREDITS faceCredits;
     CStdString strAlbum;

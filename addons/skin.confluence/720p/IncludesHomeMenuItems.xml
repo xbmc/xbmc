@@ -211,9 +211,6 @@
 			<onclick>ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</onclick>
 		</control>
 	</include>
-
-
-
 	<include name="HomeSubMenuVideos">
 		<control type="image" id="90101">
 			<width>35</width>
@@ -444,15 +441,45 @@
 		</control>
 	</include>
 	<include name="HomeSubMenuPictures">
-		<control type="image" id="90147">
+
+
+	<!--	<control type="image" id="90147">
+			<posx>20r</posx>
+			<posy>35r</posy>
+			<width>250</width>
+			<height>35</height>
+			<texture>black-back2.png</texture>
+		</control> 
+	         	<control type="image" id="90147">
 			<width>35</width>
 			<height>35</height>
 			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
-		</control>
-		<control type="button" id="90148">
+			<onfocus>XBMC.RunScript(plugin.image.ScanProfile)</onfocus>
+		</control>-->
+		<control type="button" id="90148"> <!-- ricosett -->
 			<include>ButtonHomeSubCommonValues</include>
-			<label>24001</label>
-			<onclick>ActivateWindow(Pictures,Addons,return)</onclick>
+			<label>31911</label>
+			<onclick>ActivateWindow(Pictures,32,0, 11,0)</onclick>
+		</control>
+		<control type="button" id="90150"> <!-- ricosett -->
+			<include>ButtonHomeSubCommonValues</include>
+			<label>31912</label>
+			<onclick>ActivateWindow(Pictures,  33,0, 12,0)</onclick>
+		</control>
+		<control type="button" id="90151"> <!-- ricosett -->
+			<include>ButtonHomeSubCommonValues</include>
+			<label>31913</label>
+			<onclick>ActivateWindow(Pictures, 31,0, 10,0)</onclick>
+		</control>
+		<control type="button" id="90152"> <!-- ricosett -->
+			<include>ButtonHomeSubCommonValues</include>
+			<label>31914</label>
+			<onclick>ActivateWindow(Pictures,34,0, 13,0)</onclick>
+		</control>
+		<control type="button" id="90153"> <!-- ricosett -->
+			<include>ButtonHomeSubCommonValues</include>
+			<label>31915</label>
+			<onclick>ActivateWindow(Pictures,35,0, 14,0)</onclick>
 		</control>
 		<control type="image" id="90149">
 			<width>35</width>
@@ -573,9 +600,10 @@
 		</item>
 	</include>
 	<include name="HomeAddonItemsPictures">
+
 		<item>
 			<label>$INFO[system.addontitle(Skin.String(HomePictureButton1))]</label>
-			<onclick>RunAddon($INFO[Skin.String(HomePictureButton1)])</onclick>
+		        <onclick>RunAddon($INFO[Skin.String(HomePictureButton1)])</onclick> 
 			<icon>$INFO[system.addonicon(Skin.String(HomePictureButton1))]</icon>
 			<thumb>-</thumb>
 			<visible>!IsEmpty(Skin.String(HomePictureButton1))</visible>

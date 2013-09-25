@@ -337,10 +337,16 @@ bool CRecentlyAddedJob::UpdatePicture()
   CPictureThumbLoader loader;
   loader.Initialize();
   
+  CLog::Log(LOGDEBUG, "Initiate OK");
+  
   picturedatabase.Open();
   
-  if (picturedatabase.GetRecentlyAddedPictureAlbumPictures("picturedb://songs/", pictureItems, NUM_ITEMS))
+  if (picturedatabase.GetRecentlyAddedPictureAlbumPictures("picturedb://recentlyaddedpictures/", pictureItems, NUM_ITEMS))
   {
+    CStdString   value1;
+    value1.Format("Items---->%i", pictureItems.Size());
+    CLog::Log(LOGDEBUG, "on GetRecentlyAddedPictureAlbumPictures(" + value1 );
+    
     long idPictureAlbum = -1;
     CStdString strPictureAlbumThumb;
     CStdString strPictureAlbumFanart;
@@ -369,12 +375,13 @@ bool CRecentlyAddedJob::UpdatePicture()
       
       
       home->SetProperty("LatestPicture." + value + ".Title"   , item->GetPictureInfoTag()->GetTitle());
-      home->SetProperty("LatestPicture." + value + ".Face"  , strFace);
+      home->SetProperty("LatestPicture." + value + ".Face"    , strFace);
       home->SetProperty("LatestPicture." + value + ".PictureAlbum"   , strPictureAlbum);
       home->SetProperty("LatestPicture." + value + ".Rating"  , strRating);
       home->SetProperty("LatestPicture." + value + ".Path"    , item->GetPictureInfoTag()->GetURL());
       home->SetProperty("LatestPicture." + value + ".Thumb"   , strPictureAlbumThumb);
       home->SetProperty("LatestPicture." + value + ".Fanart"  , strPictureAlbumFanart);
+      
     }
   }
   for (; i < NUM_ITEMS; ++i)
@@ -391,6 +398,10 @@ bool CRecentlyAddedJob::UpdatePicture()
     home->SetProperty("LatestPicture." + value + ".Fanart"  , "");
   }
   
+  CStdString value;
+  value.Format("%i", pictureItems.Size());
+  home->SetProperty("LatestPicture.Num"             , value);
+  
   i = 0;
   VECPICTUREALBUMS albums;
   
@@ -399,6 +410,7 @@ bool CRecentlyAddedJob::UpdatePicture()
     for (; i < (int)albums.size(); ++i)
     {
       CStdString value;
+      CStdString strIdAlbum;
       CStdString strPath;
       CStdString strThumb;
       CStdString strFanart;
@@ -407,18 +419,25 @@ bool CRecentlyAddedJob::UpdatePicture()
       CPictureAlbum&    album=albums[i];
       
       value.Format("%i", i + 1);
+      strIdAlbum.Format("%i", album.idAlbum);
       strThumb = picturedatabase.GetArtForItem(album.idAlbum, "album", "thumb");
       strFanart = picturedatabase.GetFaceArtForItem(album.idAlbum, "album", "fanart");
       strDBpath.Format("picturedb://albums/%i/", album.idAlbum);
       strSQLPictureAlbum.Format("idPictureAlbum=%i", album.idAlbum);
       
+      CLog::Log(LOGDEBUG, "on GetRecentlyAddedPictureAlbums(" + strThumb );
+      
       CStdString strFace = picturedatabase.GetSingleValue("albumview", "strFaces", strSQLPictureAlbum);
       
       home->SetProperty("LatestPictureAlbum." + value + ".Title"   , album.strAlbum);
-      home->SetProperty("LatestPictureAlbum." + value + ".Face"  , strFace);
+      home->SetProperty("LatestPictureAlbum." + value + ".Face"    , strFace);
       home->SetProperty("LatestPictureAlbum." + value + ".Path"    , strDBpath);
       home->SetProperty("LatestPictureAlbum." + value + ".Thumb"   , strThumb);
       home->SetProperty("LatestPictureAlbum." + value + ".Fanart"  , strFanart);
+      home->SetProperty("LatestPictureAlbum." + value + ".AlbumId" , strIdAlbum);
+      
+      
+      
     }
   }
   for (; i < NUM_ITEMS; ++i)
@@ -426,17 +445,28 @@ bool CRecentlyAddedJob::UpdatePicture()
     CStdString value;
     value.Format("%i", i + 1);
     home->SetProperty("LatestPictureAlbum." + value + ".Title"   , "");
-    home->SetProperty("LatestPictureAlbum." + value + ".Year"    , "");
     home->SetProperty("LatestPictureAlbum." + value + ".Face"  , "");
-    home->SetProperty("LatestPictureAlbum." + value + ".Rating"  , "");
     home->SetProperty("LatestPictureAlbum." + value + ".Path"    , "");
     home->SetProperty("LatestPictureAlbum." + value + ".Thumb"   , "");
     home->SetProperty("LatestPictureAlbum." + value + ".Fanart"  , "");
+    home->SetProperty("LatestPictureAlbum." + value + ".AlbumId" , "");
   }
+  
+  //  CStdString value;
+  value.Format("%i", albums.size());
+  home->SetProperty("LatestPictureAlbum.NumAlbums"             , value);
+  
+  // Please set like this
+  
+  home->SetProperty("LatestPictureAlbum.1.Fanart"  , "../backgrounds/tv.jpg");
+  home->SetProperty("LatestPictureAlbum.2.Fanart"  , "../backgrounds/media-overlay.jpg");
+  home->SetProperty("LatestPictureAlbum.3.Fanart"  , "../backgrounds/settings.jpg");
+  
   
   picturedatabase.Close();
   return true;
 }
+
 
 bool CRecentlyAddedJob::UpdateTotal()
 {
@@ -495,6 +525,9 @@ bool CRecentlyAddedJob::DoWork()
   
   if (m_flag & Video)
     ret &= UpdateVideo();
+
+  if (m_flag & Picture)
+    ret &= UpdatePicture();
   
   if (m_flag & Totals)
     ret &= UpdateTotal();

@@ -256,6 +256,8 @@ void CPictureInfoTag::Archive(CArchive& ar)
         ar << m_location;
         ar << m_bLoaded;
         ar << m_takenOn;
+      ar << m_strOrientation;
+      ar << m_strType;
         ar << m_strComment;
         ar << m_iAlbumId;
         ar << m_iDbId;
@@ -271,6 +273,8 @@ void CPictureInfoTag::Archive(CArchive& ar)
         ar >> m_strAlbum;
         ar >> m_albumFace;
         ar >> m_location;
+      ar >> m_strOrientation;
+      ar >> m_strType;
         ar >> m_bLoaded;
         ar >> m_takenOn;
         ar >> m_strComment;
@@ -292,6 +296,7 @@ void CPictureInfoTag::ToSortable(SortItem& sortable)
 //    sortable[FieldAlbumFace] = FieldAlbumFace;
     sortable[FieldLocation] = m_location;
     sortable[FieldComment] = m_strComment;
+  sortable[FieldOrientation] = m_strOrientation;
     sortable[FieldTakenOn] = m_takenOn.IsValid() ? m_takenOn.GetAsDBDateTime() : StringUtils::EmptyString;
     sortable[FieldListeners] = m_listeners;
     sortable[FieldId] = (int64_t)m_iDbId;
@@ -706,6 +711,8 @@ const CPictureInfoTag& CPictureInfoTag::operator =(const CPictureInfoTag& tag)
     m_location = tag.m_location;
     m_strTitle = tag.m_strTitle;
     m_strComment = tag.m_strComment;
+  m_strType = tag.m_strType;
+  m_strOrientation = tag.m_strOrientation;
     m_strLyrics = tag.m_strLyrics;
     m_takenOn = tag.m_takenOn;
     m_bLoaded = tag.m_bLoaded;
@@ -785,6 +792,15 @@ const std::string &CPictureInfoTag::GetType() const
 const CStdString &CPictureInfoTag::GetComment() const
 {
     return m_strComment;
+}
+
+const CStdString &CPictureInfoTag::GetOrientation() const
+{
+  return m_strOrientation;
+}
+const CStdString &CPictureInfoTag::GetPictureType() const
+{
+  return m_strType;
 }
 
 
@@ -879,6 +895,16 @@ void CPictureInfoTag::SetComment(const CStdString& comment)
     m_strComment = comment;
 }
 
+void CPictureInfoTag::SetOrientation(const CStdString& orientation)
+{
+  m_strOrientation = orientation;
+}
+
+void CPictureInfoTag::SetPictureType(const CStdString& type)
+{
+  m_strType = type;
+}
+
 
 
 void CPictureInfoTag::SetListeners(int listeners)
@@ -948,6 +974,8 @@ void CPictureInfoTag::SetPicture(const CPicture& picture)
     SetAlbumFace(picture.albumFace);
     SetComment(picture.strComment);
     SetTakenOn(picture.takenOn);
+  SetOrientation(picture.strOrientation);
+  SetPictureType(picture.strPictureType);
     m_strURL = picture.strFileName;
     SYSTEMTIME stTime;
     m_iDbId = picture.idPicture;

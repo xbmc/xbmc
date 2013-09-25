@@ -53,7 +53,7 @@ public:
         art.clear();
         strReview.Empty();
         strLabel.Empty();
-        strType.Empty();
+        strPictureType.Empty();
         strPath.Empty();
         m_strDateOfRelease.Empty();
         bCompilation = false;
@@ -86,7 +86,7 @@ public:
     std::map<std::string, std::string> art;
     CStdString strReview;
     CStdString strLabel;
-    CStdString strType;
+    CStdString strPictureType;
     CStdString strPath;
     CStdString m_strDateOfRelease;
     bool bCompilation;

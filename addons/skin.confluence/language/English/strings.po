@@ -628,6 +628,25 @@ msgid "Map & Alerts"
 msgstr ""
 
 #empty strings from id 31911 to 31949
+msgctxt "#31911"
+msgid "Artists"
+msgstr ""
+
+msgctxt "#31912"
+msgid "Albums"
+msgstr ""
+
+msgctxt "#31913"
+msgid "Files"
+msgstr ""
+
+msgctxt "#31914"
+msgid "Library"
+msgstr ""
+
+msgctxt "#31915"
+msgid "Add-Ons"
+msgstr ""
 
 msgctxt "#31950"
 msgid "WEATHER"

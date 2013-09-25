@@ -3131,6 +3131,23 @@
 		F5FAB0760EFABE2C00BAD4AE /* VTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0750EFABE2C00BAD4AE /* VTPDirectory.cpp */; };
 		F5FAB07A0EFABE4A00BAD4AE /* VTPSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0790EFABE4A00BAD4AE /* VTPSession.cpp */; };
 		F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
+		FE08F50317F147CF004131F9 /* GUIDialogContactInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F4D717F147CF004131F9 /* GUIDialogContactInfo.cpp */; };
+		FE08F50417F147CF004131F9 /* GUIViewStateContacts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F4D917F147CF004131F9 /* GUIViewStateContacts.cpp */; };
+		FE08F50517F147CF004131F9 /* GUIWindowContacts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F4DB17F147CF004131F9 /* GUIWindowContacts.cpp */; };
+		FE08F50B17F147CF004131F9 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = FE08F4E817F147CF004131F9 /* Makefile */; };
+		FE08F50C17F147CF004131F9 /* Contact.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F4E917F147CF004131F9 /* Contact.cpp */; };
+		FE08F50E17F147CF004131F9 /* ContactDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F4ED17F147CF004131F9 /* ContactDatabase.cpp */; };
+		FE08F50F17F147CF004131F9 /* ContactDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F4EF17F147CF004131F9 /* ContactDbUrl.cpp */; };
+		FE08F51017F147CF004131F9 /* ContactInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F4F117F147CF004131F9 /* ContactInfoLoader.cpp */; };
+		FE08F51117F147CF004131F9 /* ContactThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F4F317F147CF004131F9 /* ContactThumbLoader.cpp */; };
+		FE08F51917F2ECAD004131F9 /* ContactDatabaseDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F51817F2ECAC004131F9 /* ContactDatabaseDirectory.cpp */; };
+		FE08F52517F2ED79004131F9 /* DirectoryNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F51B17F2ED79004131F9 /* DirectoryNode.cpp */; };
+		FE08F52617F2ED79004131F9 /* DirectoryNodeContact.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F51D17F2ED79004131F9 /* DirectoryNodeContact.cpp */; };
+		FE08F52717F2ED79004131F9 /* DirectoryNodeContactRecentlyAdded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F51F17F2ED79004131F9 /* DirectoryNodeContactRecentlyAdded.cpp */; };
+		FE08F52817F2ED79004131F9 /* DirectoryNodeRoot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F52117F2ED79004131F9 /* DirectoryNodeRoot.cpp */; };
+		FE08F52917F2ED79004131F9 /* QueryParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F52317F2ED79004131F9 /* QueryParams.cpp */; };
+		FE08F52C17F2EE35004131F9 /* DirectoryNodeFace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F52B17F2EE32004131F9 /* DirectoryNodeFace.cpp */; };
+		FE08F52F17F2EF5C004131F9 /* DirectoryNodeOverview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE08F52E17F2EF58004131F9 /* DirectoryNodeOverview.cpp */; };
 		FE6D10CD17AD556E00D819D5 /* PictureLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10CB17AD556E00D819D5 /* PictureLibrary.cpp */; };
 		FE6D10D017ADD2FD00D819D5 /* ContactLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10CE17ADD2FA00D819D5 /* ContactLibrary.cpp */; };
 		FE6D10D717AE140600D819D5 /* PictureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10D517AE140600D819D5 /* PictureDatabase.cpp */; };
@@ -5523,6 +5540,41 @@
 		F5FAB0790EFABE4A00BAD4AE /* VTPSession.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = VTPSession.cpp; sourceTree = "<group>"; };
 		F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
 		F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
+		FE08F4D317F147CF004131F9 /* DllImageLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllImageLib.h; sourceTree = "<group>"; };
+		FE08F4D417F147CF004131F9 /* DllLibExif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibExif.h; sourceTree = "<group>"; };
+		FE08F4D717F147CF004131F9 /* GUIDialogContactInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogContactInfo.cpp; sourceTree = "<group>"; };
+		FE08F4D817F147CF004131F9 /* GUIDialogContactInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogContactInfo.h; sourceTree = "<group>"; };
+		FE08F4D917F147CF004131F9 /* GUIViewStateContacts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateContacts.cpp; sourceTree = "<group>"; };
+		FE08F4DA17F147CF004131F9 /* GUIViewStateContacts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateContacts.h; sourceTree = "<group>"; };
+		FE08F4DB17F147CF004131F9 /* GUIWindowContacts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowContacts.cpp; sourceTree = "<group>"; };
+		FE08F4DC17F147CF004131F9 /* GUIWindowContacts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowContacts.h; sourceTree = "<group>"; };
+		FE08F4E817F147CF004131F9 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		FE08F4E917F147CF004131F9 /* Contact.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Contact.cpp; sourceTree = "<group>"; };
+		FE08F4EA17F147CF004131F9 /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
+		FE08F4ED17F147CF004131F9 /* ContactDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactDatabase.cpp; sourceTree = "<group>"; };
+		FE08F4EE17F147CF004131F9 /* ContactDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactDatabase.h; sourceTree = "<group>"; };
+		FE08F4EF17F147CF004131F9 /* ContactDbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactDbUrl.cpp; sourceTree = "<group>"; };
+		FE08F4F017F147CF004131F9 /* ContactDbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactDbUrl.h; sourceTree = "<group>"; };
+		FE08F4F117F147CF004131F9 /* ContactInfoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactInfoLoader.cpp; sourceTree = "<group>"; };
+		FE08F4F217F147CF004131F9 /* ContactInfoLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactInfoLoader.h; sourceTree = "<group>"; };
+		FE08F4F317F147CF004131F9 /* ContactThumbLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactThumbLoader.cpp; sourceTree = "<group>"; };
+		FE08F4F417F147CF004131F9 /* ContactThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactThumbLoader.h; sourceTree = "<group>"; };
+		FE08F51717F2ECAA004131F9 /* ContactDatabaseDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactDatabaseDirectory.h; sourceTree = "<group>"; };
+		FE08F51817F2ECAC004131F9 /* ContactDatabaseDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactDatabaseDirectory.cpp; sourceTree = "<group>"; };
+		FE08F51B17F2ED79004131F9 /* DirectoryNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNode.cpp; sourceTree = "<group>"; };
+		FE08F51C17F2ED79004131F9 /* DirectoryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNode.h; sourceTree = "<group>"; };
+		FE08F51D17F2ED79004131F9 /* DirectoryNodeContact.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeContact.cpp; sourceTree = "<group>"; };
+		FE08F51E17F2ED79004131F9 /* DirectoryNodeContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeContact.h; sourceTree = "<group>"; };
+		FE08F51F17F2ED79004131F9 /* DirectoryNodeContactRecentlyAdded.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeContactRecentlyAdded.cpp; sourceTree = "<group>"; };
+		FE08F52017F2ED79004131F9 /* DirectoryNodeContactRecentlyAdded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeContactRecentlyAdded.h; sourceTree = "<group>"; };
+		FE08F52117F2ED79004131F9 /* DirectoryNodeRoot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeRoot.cpp; sourceTree = "<group>"; };
+		FE08F52217F2ED79004131F9 /* DirectoryNodeRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeRoot.h; sourceTree = "<group>"; };
+		FE08F52317F2ED79004131F9 /* QueryParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QueryParams.cpp; sourceTree = "<group>"; };
+		FE08F52417F2ED79004131F9 /* QueryParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryParams.h; sourceTree = "<group>"; };
+		FE08F52A17F2EE30004131F9 /* DirectoryNodeFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeFace.h; sourceTree = "<group>"; };
+		FE08F52B17F2EE32004131F9 /* DirectoryNodeFace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeFace.cpp; sourceTree = "<group>"; };
+		FE08F52D17F2EF55004131F9 /* DirectoryNodeOverview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeOverview.h; sourceTree = "<group>"; };
+		FE08F52E17F2EF58004131F9 /* DirectoryNodeOverview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeOverview.cpp; sourceTree = "<group>"; };
 		FE6D10CB17AD556E00D819D5 /* PictureLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureLibrary.cpp; sourceTree = "<group>"; };
 		FE6D10CC17AD556E00D819D5 /* PictureLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureLibrary.h; sourceTree = "<group>"; };
 		FE6D10CE17ADD2FA00D819D5 /* ContactLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactLibrary.cpp; sourceTree = "<group>"; };
@@ -7154,6 +7206,7 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				FE08F4D217F147CC004131F9 /* contacts */,
 				18B49FF01152BEEB001AF8A6 /* addons */,
 				E38E147F0D25F9F900618676 /* cdrip */,
 				EC720A91155091CA00FFD782 /* commons */,
@@ -7727,6 +7780,9 @@
 		E38E16940D25F9FA00618676 /* filesystem */ = {
 			isa = PBXGroup;
 			children = (
+				FE08F51A17F2ED78004131F9 /* ContactDatabaseDirectory */,
+				FE08F51717F2ECAA004131F9 /* ContactDatabaseDirectory.h */,
+				FE08F51817F2ECAC004131F9 /* ContactDatabaseDirectory.cpp */,
 				FE9D6F8817B1EF4100CDCDDC /* PictureDatabaseDirectory */,
 				F5A7B42B113CBB950059D6AA /* AddonsDirectory.cpp */,
 				F5A7B42A113CBB950059D6AA /* AddonsDirectory.h */,
@@ -9246,6 +9302,77 @@
 			name = CoreAudio;
 			sourceTree = "<group>";
 		};
+		FE08F4D217F147CC004131F9 /* contacts */ = {
+			isa = PBXGroup;
+			children = (
+				FE08F4D317F147CF004131F9 /* DllImageLib.h */,
+				FE08F4D417F147CF004131F9 /* DllLibExif.h */,
+				FE08F4D717F147CF004131F9 /* GUIDialogContactInfo.cpp */,
+				FE08F4D817F147CF004131F9 /* GUIDialogContactInfo.h */,
+				FE08F4D917F147CF004131F9 /* GUIViewStateContacts.cpp */,
+				FE08F4DA17F147CF004131F9 /* GUIViewStateContacts.h */,
+				FE08F4DB17F147CF004131F9 /* GUIWindowContacts.cpp */,
+				FE08F4DC17F147CF004131F9 /* GUIWindowContacts.h */,
+				FE08F4DF17F147CF004131F9 /* infoscanner */,
+				FE08F4E817F147CF004131F9 /* Makefile */,
+				FE08F4E917F147CF004131F9 /* Contact.cpp */,
+				FE08F4EA17F147CF004131F9 /* Contact.h */,
+				FE08F4ED17F147CF004131F9 /* ContactDatabase.cpp */,
+				FE08F4EE17F147CF004131F9 /* ContactDatabase.h */,
+				FE08F4EF17F147CF004131F9 /* ContactDbUrl.cpp */,
+				FE08F4F017F147CF004131F9 /* ContactDbUrl.h */,
+				FE08F4F117F147CF004131F9 /* ContactInfoLoader.cpp */,
+				FE08F4F217F147CF004131F9 /* ContactInfoLoader.h */,
+				FE08F4F317F147CF004131F9 /* ContactThumbLoader.cpp */,
+				FE08F4F417F147CF004131F9 /* ContactThumbLoader.h */,
+				FE08F4F717F147CF004131F9 /* tags */,
+				FE08F50117F147CF004131F9 /* windows */,
+			);
+			path = contacts;
+			sourceTree = "<group>";
+		};
+		FE08F4DF17F147CF004131F9 /* infoscanner */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = infoscanner;
+			sourceTree = "<group>";
+		};
+		FE08F4F717F147CF004131F9 /* tags */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = tags;
+			sourceTree = "<group>";
+		};
+		FE08F50117F147CF004131F9 /* windows */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = windows;
+			sourceTree = "<group>";
+		};
+		FE08F51A17F2ED78004131F9 /* ContactDatabaseDirectory */ = {
+			isa = PBXGroup;
+			children = (
+				FE08F52D17F2EF55004131F9 /* DirectoryNodeOverview.h */,
+				FE08F52E17F2EF58004131F9 /* DirectoryNodeOverview.cpp */,
+				FE08F52A17F2EE30004131F9 /* DirectoryNodeFace.h */,
+				FE08F52B17F2EE32004131F9 /* DirectoryNodeFace.cpp */,
+				FE08F51B17F2ED79004131F9 /* DirectoryNode.cpp */,
+				FE08F51C17F2ED79004131F9 /* DirectoryNode.h */,
+				FE08F51D17F2ED79004131F9 /* DirectoryNodeContact.cpp */,
+				FE08F51E17F2ED79004131F9 /* DirectoryNodeContact.h */,
+				FE08F51F17F2ED79004131F9 /* DirectoryNodeContactRecentlyAdded.cpp */,
+				FE08F52017F2ED79004131F9 /* DirectoryNodeContactRecentlyAdded.h */,
+				FE08F52117F2ED79004131F9 /* DirectoryNodeRoot.cpp */,
+				FE08F52217F2ED79004131F9 /* DirectoryNodeRoot.h */,
+				FE08F52317F2ED79004131F9 /* QueryParams.cpp */,
+				FE08F52417F2ED79004131F9 /* QueryParams.h */,
+			);
+			path = ContactDatabaseDirectory;
+			sourceTree = "<group>";
+		};
 		FE7027AD17B864D300D72349 /* tags */ = {
 			isa = PBXGroup;
 			children = (
@@ -10706,6 +10833,23 @@
 				FE7027B417B8658000D72349 /* PictureInfoTagLoaderFactory.cpp in Sources */,
 				FE7027B717B865BE00D72349 /* PictureInfoTagLoaderDatabase.cpp in Sources */,
 				FE7027BA17B869BF00D72349 /* PictureInfoTagLoaderJPG.cpp in Sources */,
+				FE08F50317F147CF004131F9 /* GUIDialogContactInfo.cpp in Sources */,
+				FE08F50417F147CF004131F9 /* GUIViewStateContacts.cpp in Sources */,
+				FE08F50517F147CF004131F9 /* GUIWindowContacts.cpp in Sources */,
+				FE08F50B17F147CF004131F9 /* Makefile in Sources */,
+				FE08F50C17F147CF004131F9 /* Contact.cpp in Sources */,
+				FE08F50E17F147CF004131F9 /* ContactDatabase.cpp in Sources */,
+				FE08F50F17F147CF004131F9 /* ContactDbUrl.cpp in Sources */,
+				FE08F51017F147CF004131F9 /* ContactInfoLoader.cpp in Sources */,
+				FE08F51117F147CF004131F9 /* ContactThumbLoader.cpp in Sources */,
+				FE08F51917F2ECAD004131F9 /* ContactDatabaseDirectory.cpp in Sources */,
+				FE08F52517F2ED79004131F9 /* DirectoryNode.cpp in Sources */,
+				FE08F52617F2ED79004131F9 /* DirectoryNodeContact.cpp in Sources */,
+				FE08F52717F2ED79004131F9 /* DirectoryNodeContactRecentlyAdded.cpp in Sources */,
+				FE08F52817F2ED79004131F9 /* DirectoryNodeRoot.cpp in Sources */,
+				FE08F52917F2ED79004131F9 /* QueryParams.cpp in Sources */,
+				FE08F52C17F2EE35004131F9 /* DirectoryNodeFace.cpp in Sources */,
+				FE08F52F17F2EF5C004131F9 /* DirectoryNodeOverview.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

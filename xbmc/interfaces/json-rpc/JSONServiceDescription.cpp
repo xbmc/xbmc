@@ -100,14 +100,23 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   // Picture Library
   { "PictureLibrary.GetFaces",                      CPictureLibrary::GetFaces },
   { "PictureLibrary.GetFaceDetails",                CPictureLibrary::GetFaceDetails },
-  { "PictureLibrary.GetPictureAlbums",              CPictureLibrary::GetPictureAlbums },
   { "PictureLibrary.AddPictureAlbum",              CPictureLibrary::AddPictureAlbum },
+  { "PictureLibrary.AddVideoAlbum",              CPictureLibrary::AddVideoAlbum },
   { "PictureLibrary.AddPicture",              CPictureLibrary::AddPicture },
+  { "PictureLibrary.AddVideo",              CPictureLibrary::AddVideo },
+  { "PictureLibrary.GetPictureAlbums",              CPictureLibrary::GetPictureAlbums },
   { "PictureLibrary.GetPictureAlbumDetails",        CPictureLibrary::GetPictureAlbumDetails },
   { "PictureLibrary.GetPictures",                   CPictureLibrary::GetPictures },
   { "PictureLibrary.GetPictureDetails",             CPictureLibrary::GetPictureDetails },
   { "PictureLibrary.GetRecentlyAddedPictureAlbums", CPictureLibrary::GetRecentlyAddedPictureAlbums },
   { "PictureLibrary.GetRecentlyAddedPictures",      CPictureLibrary::GetRecentlyAddedPictures },
+  { "PictureLibrary.GetVideoAlbums",              CPictureLibrary::GetVideoAlbums },
+  { "PictureLibrary.GetVideoAlbumDetails",        CPictureLibrary::GetVideoAlbumDetails },
+  { "PictureLibrary.GetVideos",                   CPictureLibrary::GetVideos },
+  { "PictureLibrary.GetVideoDetails",             CPictureLibrary::GetVideoDetails },
+  { "PictureLibrary.GetRecentlyAddedVideoAlbums", CPictureLibrary::GetRecentlyAddedVideoAlbums },
+  { "PictureLibrary.GetRecentlyAddedVideos",      CPictureLibrary::GetRecentlyAddedVideos },
+
   { "PictureLibrary.GetLocations",                  CPictureLibrary::GetLocations },
   { "PictureLibrary.SetFaceDetails",                CPictureLibrary::SetFaceDetails },
   { "PictureLibrary.SetPictureAlbumDetails",        CPictureLibrary::SetPictureAlbumDetails },
@@ -117,6 +126,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "PictureLibrary.Clean",                         CPictureLibrary::Clean },
  
 // Contact Library
+  { "ContactLibrary.AddContact",                    CContactLibrary::AddContact },
   { "ContactLibrary.GetContacts",                    CContactLibrary::GetContacts },
   { "ContactLibrary.GetContactDetails",              CContactLibrary::GetContactDetails },
     

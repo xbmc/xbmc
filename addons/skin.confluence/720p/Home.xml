@@ -2,9 +2,11 @@
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>	
 	<onunload condition="Container(9000).Hasfocus(10) | Container(9000).Hasfocus(11) | ControlGroup(9010).HasFocus | ControlGroup(9016).HasFocus | ControlGroup(9024).HasFocus | ControlGroup(9017).HasFocus">SetProperty(VideosDirectLink,True)</onunload>
-	<onunload condition="Control.HasFocus(9000) + Container(9000).Hasfocus(2)">ClearProperty(VideosDirectLink)</onunload>
+	<onunload condition="Control.HasFocus(9000) + Container(9000).Hasfocus(2)">ClearProperty(VideosDirectLink)</onunload>  
+
 	<controls>
 		<include>CommonBackground</include>
+
 		<control type="image">
 			<posx>0</posx>
 			<posy>90r</posy>
@@ -435,7 +437,28 @@
 				</control>
 			</control>
 		</control>
-		<include condition="!Skin.HasSetting(HomepageHideRecentlyAddedVideo) | !Skin.HasSetting(HomepageHideRecentlyAddedAlbums)">HomeRecentlyAddedInfo</include>
+
+
+		<include condition="!Skin.HasSetting(HomepageHideRecentlyAddedPicture)">HomeRecentlyAddedInfo</include> <!-- ricosett -->
+		<control type="button" id="9004">
+			<description>Hidden Button to pass through navigation when recently added is disabled</description>
+			<posx>-20</posx>
+			<posy>-20</posy>
+			<width>1</width>
+			<height>1</height>
+			<label>-</label>
+			<font>-</font>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<onup>8003</onup>
+			<ondown>608</ondown>
+			<visible>false</visible>
+		</control>
+
+
+		<include condition="!Skin.HasSetting(HomepageHideRecentlyAddedVideo) | !Skin.HasSetting(HomepageHideRecentlyAddedAlbums)">HomeRecentlyAddedInfo</include> <!-- ricosett -->
 		<control type="button" id="9003">
 			<description>Hidden Button to pass through navigation when recently added is disabled</description>
 			<posx>-20</posx>
@@ -474,6 +497,7 @@
 				<colordiffuse>CCFFFFFF</colordiffuse>
 				<texture flipy="true" border="0,5,0,0" flipx="true">HomeSubEnd.png</texture>
 				<animation effect="slide" start="0,0" end="145,0" time="0" condition="!System.HasAddon(script.globalsearch)">Conditional</animation>
+                                <visible>!Container(9000).Hasfocus(4) + !Skin.HasSetting(HomepageHideRecentlyAddedPicture)</visible>
 			</control>
 			<control type="radiobutton" id="608">
 				<colordiffuse>CCFFFFFF</colordiffuse>
@@ -501,7 +525,8 @@
 				<onup>9003</onup>
 				<ondown>9000</ondown>
 				<visible>System.HasAddon(script.globalsearch)</visible>
-			</control>
+                                <visible>!Container(9000).Hasfocus(4) + !Skin.HasSetting(HomepageHideRecentlyAddedPicture)</visible>
+			</control> 
 			<control type="group" id="600">
 				<posx>180</posx>
 				<onup>9003</onup>
@@ -738,7 +763,7 @@
 					<visible>Container(9000).HasFocus(2)</visible>
 					<include>HomeSubMenuVideos</include> <!-- Buttons for the grouplist -->
 				</control>
-				<control type="grouplist" id="9016">
+				<control type="grouplist" id="9016"> <!-- ricosett -->
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9016</onleft>
 					<onright>9016</onright>
@@ -836,8 +861,9 @@
 					<visible>Container(9000).HasFocus(12)</visible>
 					<include>HomeSubMenuLiveTV</include> <!-- Buttons for the grouplist -->
 				</control>
-				<control type="grouplist" id="9015">
+				<control type="grouplist" id="9015">                  <!-- ricosett -->
 					<include>HomeSubMenuCommonValues</include>
+					<onup>8003</onup>
 					<onleft>9013</onleft>
 					<onright>9013</onright>
 					<visible>Container(9000).HasFocus(4)</visible>
@@ -950,11 +976,11 @@
 					</item>
 					<item id="4">
 						<label>31951</label>
-						<onclick>ActivateWindow(Pictures)</onclick>
+						<onclick>ActivateWindow(Pictures)</onclick> 
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoPicturesButton)</visible>
-					</item>
+                                        </item>
 					<item id="12">
 						<label>31952</label>
 						<onclick>ActivateWindow(PVR)</onclick>
@@ -1012,6 +1038,7 @@
 						<icon>special://skin/backgrounds/settings.jpg</icon>
 						<thumb>-</thumb>
 					</item>
+					<!--
 					<item id="20">
 						<label>Photos</label>
 						<onclick>ActivateWindow(Photos)</onclick>
@@ -1061,6 +1088,7 @@
 						<icon>special://skin/backgrounds/weather.jpg</icon>
 						<thumb>-</thumb>
 					</item>
+					-->
 				</content>
 			</control>
 			<control type="image">
@@ -1105,6 +1133,7 @@
 					<include>HomeAddonItemsMusic</include>
 				</content>
 			</control>
+
 			<control type="fixedlist" id="704">
 				<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(704).NumItems,2) | StringCompare(Container(704).NumItems,4)">conditional</animation>
 				<visible>Container(9000).HasFocus(4)</visible>

@@ -211,6 +211,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdStringArray m_audioExcludeFromListingRegExps;
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
+  CStdStringArray m_contactExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_folderStackRegExps;
     CStdStringArray m_trailerMatchRegExps;
@@ -250,6 +251,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_strPictureLibraryAlbumFormat;
     CStdString m_strPictureLibraryAlbumFormatRight;
     CStdString m_pictureItemSeparator;
+  CStdString m_contactItemSeparator;
 
     bool m_bMusicLibraryHideAllItems;
     int m_iMusicLibraryRecentlyAddedItems;
@@ -360,6 +362,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                //otherwise it will use the windows refreshrate
 
+    DatabaseSettings m_databaseContact; // advanced music database setup
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databasePicture;// advanced picture database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
@@ -389,6 +392,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     // runtime settings which cannot be set from advancedsettings.xml
     CStdString m_pictureExtensions;
+  CStdString m_contactExtensions;
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
     CStdString m_discStubExtensions;

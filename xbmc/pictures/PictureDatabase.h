@@ -125,8 +125,9 @@ public:
      \param iKaraokeNumber [in] the karaoke id of the picture
      \return the id of the picture
      */
-  int AddPicture(const int idAlbum, const CStdString& strTitle, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations,const CStdString& dtTaken);
-    
+  int AddPicture(const int idAlbum, const CStdString& strTitle,  const CStdString& strOrientation, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations,const CStdString& dtTaken);
+  int AddVideo(const int idAlbum, const CStdString& strTitle,  const CStdString& strOrientation, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& Faces, const std::vector<std::string>& locations,const CStdString& dtTaken);
+  
     /*! \brief Update a picture in the database
      \param idPicture [in] the database ID of the picture to update
      \param strTitle [in] the title of the picture (required to be non-empty)
@@ -168,6 +169,7 @@ public:
      \return the id of the PictureAlbum
      */
     int  AddPictureAlbum(const CStdString& strPictureAlbum, const CStdString& strFace, const CStdString& strLocation);
+  int  AddVideoAlbum(const CStdString& strPictureAlbum, const CStdString& strFace, const CStdString& strLocation);
     bool GetPictureAlbum(int idPictureAlbum, CPictureAlbum& PictureAlbum);
     int  UpdatePictureAlbum(int idPictureAlbum, const CPictureAlbum &PictureAlbum);
     bool DeletePictureAlbum(int idPictureAlbum);
@@ -180,6 +182,7 @@ public:
     int  GetPictureAlbumIdByPath(const CStdString& path);
     bool GetPictureAlbumFromPicture(int idPicture, CPictureAlbum &PictureAlbum);
     int  GetPictureAlbumByName(const CStdString& strPictureAlbum, const CStdString& strFace="");
+  int  GetVideoAlbumByName(const CStdString& strPictureAlbum, const CStdString& strFace="");
     int  GetPictureAlbumByName(const CStdString& strPictureAlbum, const std::vector<std::string>& Face);
     CStdString GetPictureAlbumById(int id);
     
@@ -293,10 +296,13 @@ public:
     bool GetPictureAlbumTypesNav(const CStdString &strBaseDir, CFileItemList &items, const Filter &filter = Filter(), bool countOnly = false);
     bool GetPictureLabelsNav(const CStdString &strBaseDir, CFileItemList &items, const Filter &filter = Filter(), bool countOnly = false);
     bool GetPictureAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idLocation = -1, int idFace = -1, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
+  bool GetVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idLocation = -1, int idFace = -1, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
     bool GetPictureAlbumsByYear(const CStdString &strBaseDir, CFileItemList& items, int year);
     bool GetPicturesNav(const CStdString& strBaseDir, CFileItemList& items, int idLocation, int idFace,int idPictureAlbum, const SortDescription &sortDescription = SortDescription());
+  bool GetVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idLocation, int idFace,int idPictureAlbum, const SortDescription &sortDescription = SortDescription());
     bool GetPicturesByYear(const CStdString& baseDir, CFileItemList& items, int year);
     bool GetPicturesByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
+  bool GetVideosByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
     bool GetPictureAlbumsByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
     bool GetFacesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
     bool GetRandomPicture(CFileItem* item, int& idPicture, const Filter &filter);
@@ -455,6 +461,8 @@ private:
         picture_idPicture=0,
         picture_strFaces,
         picture_takenOn,
+        picture_picturetype,
+        picture_orientation,
         picture_strLocations,
         picture_idPath,
         picture_idAlbum,

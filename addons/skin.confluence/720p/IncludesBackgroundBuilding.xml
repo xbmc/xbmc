@@ -22,6 +22,23 @@
 			<visible>Skin.HasSetting(UseCustomBackground) + !IsEmpty(Skin.String(CustomBackgroundPath))</visible>
 			<include>VisibleFadeEffect</include>
 		</control>
+
+		 <!-- ricosett -->
+		<control type="image">
+		      <description>Fanart</description>
+		      <include>CommonFanartVarsSingle</include>
+		      <texture background="true">$INFO[Container(8003).ListItem.Property(Fanart)]</texture>
+		      <visible>Control.HasFocus(8003)</visible>
+		</control>
+		<control type="image">
+		      <description>Fanart</description>
+		      <include>CommonFanartVarsSingle</include>
+		      <texture background="true">$INFO[Container(8004).ListItem.Property(Fanart)]</texture>
+		      <visible>Control.HasFocus(8004)</visible>
+		</control>
+		 <!-- ricosett -->
+
+
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
@@ -35,6 +52,8 @@
 			<include>Window_OpenClose_Animation</include>
 			<visible>![Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)]</visible>
 		</control>
+
+
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
@@ -68,6 +87,9 @@
 			<visible>[Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] | [Player.HasAudio + ![Skin.HasSetting(ShowBackgroundVis) | SubString(Window(videolibrary).Property(TvTunesIsAlive),True)]] | [!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))]</visible>
 			<include>VisibleFadeEffect</include>
 		</control>
+
+
+
 	</include>
 	<include name="ContentPanelBackgrounds">
 		<control type="image">

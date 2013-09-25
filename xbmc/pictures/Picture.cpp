@@ -472,6 +472,7 @@ void CPicture::Serialize(CVariant& value) const
     value["album"] = strAlbum;
     value["albumface"] = albumFace;
     value["location"] = location;
+  value["orientation"] = strOrientation;
     value["comment"] = strComment;
     value["takenon"] = takenOn.IsValid() ? takenOn.GetAsDBDateTime() : "";
     value["albumid"] = idAlbum;

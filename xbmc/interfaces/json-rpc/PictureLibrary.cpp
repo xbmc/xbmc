@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
+//../../../../Tools/jsd_builder/jsd_builder 6.5.5  ezeesystem.txt methods.json types.json notifications.json
 #include "PictureLibrary.h"
 #include "pictures/PictureDatabase.h"
 #include "FileItem.h"
@@ -144,6 +144,8 @@ JSONRPC_STATUS CPictureLibrary::GetPictureAlbums(const CStdString &method, ITran
     locationID = (int)filter["locationid"].asInteger();
   else if (filter.isMember("location"))
     pictureUrl.AddOption("location", filter["location"].asString());
+  else if (filter.isMember("picturetype"))
+    pictureUrl.AddOption("picturetype", filter["picturetype"].asString());
   else if (filter.isObject())
   {
     CStdString xsp;
@@ -174,7 +176,110 @@ JSONRPC_STATUS CPictureLibrary::GetPictureAlbums(const CStdString &method, ITran
   return OK;
 }
 
+
+JSONRPC_STATUS CPictureLibrary::GetVideoAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CPictureDatabase picturedatabase;
+  if (!picturedatabase.Open())
+    return InternalError;
+  
+  CPictureDbUrl pictureUrl;
+  pictureUrl.FromString("picturedb://albums/");
+  int faceID = -1, locationID = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("faceid"))
+    faceID = (int)filter["faceid"].asInteger();
+  else if (filter.isMember("face"))
+    pictureUrl.AddOption("face", filter["face"].asString());
+  else if (filter.isMember("locationid"))
+    locationID = (int)filter["locationid"].asInteger();
+  else if (filter.isMember("location"))
+    pictureUrl.AddOption("location", filter["location"].asString());
+  else if (filter.isMember("picturetype"))
+    pictureUrl.AddOption("picturetype", filter["picturetype"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("albums", filter, xsp))
+      return InvalidParams;
+    
+    pictureUrl.AddOption("xsp", xsp);
+  }
+  
+  SortDescription sorting;
+  ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
+  if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
+    return InvalidParams;
+  
+  CFileItemList items;
+  if (!picturedatabase.GetVideoAlbumsNav(pictureUrl.ToString(), items, locationID, faceID, CDatabase::Filter(), sorting))
+    return InternalError;
+  
+  JSONRPC_STATUS ret = GetAdditionalPictureAlbumDetails(parameterObject, items, picturedatabase);
+  if (ret != OK)
+    return ret;
+  
+  int size = items.Size();
+  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+    size = (int)items.GetProperty("total").asInteger();
+  HandleFileItemList("albumid", false, "picturealbums", items, parameterObject, result, size, false);
+  
+  return OK;
+}
+
 JSONRPC_STATUS CPictureLibrary::AddPictureAlbum(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CPictureDatabase picturedatabase;
+  if (!picturedatabase.Open())
+    return InternalError;
+  
+  CStdString strAlbum = parameterObject["title"].asString();
+  CStdString strLocation = parameterObject["location"].asString();
+  CStdString strFace = parameterObject["faces"].asString();
+  CLog::Log(LOGINFO, "JSONRPC: Add album  '%s'\n", strAlbum.c_str());
+  
+  int idAlbum = picturedatabase.AddPictureAlbum(strAlbum, strLocation, strFace);
+  
+  CPictureDbUrl pictureUrl;
+  pictureUrl.FromString("picturedb://albums/");
+  
+  pictureUrl.AddOption("albumid", idAlbum);
+  int faceID = -1, locationID = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("faceid"))
+    faceID = (int)filter["faceid"].asInteger();
+  else if (filter.isMember("face"))
+    pictureUrl.AddOption("face", filter["face"].asString());
+  else if (filter.isMember("locationid"))
+    locationID = (int)filter["locationid"].asInteger();
+  else if (filter.isMember("location"))
+    pictureUrl.AddOption("location", filter["location"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("albums", filter, xsp))
+      return InvalidParams;
+    
+    pictureUrl.AddOption("xsp", xsp);
+  }
+  
+  CFileItemList items;
+  if (!picturedatabase.GetPictureAlbumsNav(pictureUrl.ToString(), items, locationID, faceID, CDatabase::Filter()))
+    return InternalError;
+  
+  JSONRPC_STATUS ret = GetAdditionalPictureAlbumDetails(parameterObject, items, picturedatabase);
+  if (ret != OK)
+    return ret;
+  
+  int size = items.Size();
+  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+    size = (int)items.GetProperty("total").asInteger();
+  HandleFileItemList("albumid", false, "picturealbums", items, parameterObject, result, size, false);
+  
+  return OK;
+}
+
+JSONRPC_STATUS CPictureLibrary::AddVideoAlbum(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CPictureDatabase picturedatabase;
   if (!picturedatabase.Open())
@@ -257,6 +362,36 @@ JSONRPC_STATUS CPictureLibrary::GetPictureAlbumDetails(const CStdString &method,
   return OK;
 }
 
+JSONRPC_STATUS CPictureLibrary::GetVideoAlbumDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int albumID = (int)parameterObject["albumid"].asInteger();
+  
+  CPictureDatabase picturedatabase;
+  if (!picturedatabase.Open())
+    return InternalError;
+  
+  CPictureAlbum album;
+  if (!picturedatabase.GetPictureAlbumInfo(albumID, album, NULL))
+    return InvalidParams;
+  
+  CStdString path;
+  if (!picturedatabase.GetPictureAlbumPath(albumID, path))
+    return InternalError;
+  
+  CFileItemPtr albumItem;
+  FillPictureAlbumItem(album, path, albumItem);
+  
+  CFileItemList items;
+  items.Add(albumItem);
+  JSONRPC_STATUS ret = GetAdditionalPictureAlbumDetails(parameterObject, items, picturedatabase);
+  if (ret != OK)
+    return ret;
+  
+  HandleFileItem("albumid", false, "albumdetails", items[0], parameterObject, parameterObject["properties"], result, false);
+  
+  return OK;
+}
+
 JSONRPC_STATUS CPictureLibrary::AddPicture(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CPictureDatabase picturedatabase;
@@ -268,6 +403,8 @@ JSONRPC_STATUS CPictureLibrary::AddPicture(const CStdString &method, ITransportL
   CStdString strComment = parameterObject["comment"].c_str();
   CStdString strLocation = parameterObject["location"].c_str();
   CStdString strTaken = parameterObject["takenon"].c_str();
+  CStdString strType = parameterObject["picturetype"].c_str();
+  CStdString strOrientation = parameterObject["orientation"].c_str();
   
   //take the first source as the path
   VECSOURCES *shares = CMediaSourceSettings::Get().GetSources("pictures");
@@ -301,7 +438,7 @@ JSONRPC_STATUS CPictureLibrary::AddPicture(const CStdString &method, ITransportL
   std::vector<std::string> vecFaces;
   vecFaces.push_back(strFaces);
   
-  int idPicture = picturedatabase.AddPicture(idAlbum, strTitle, strPicturePath, strComment, strPicturePath, vecFaces, vecLocations, strTaken);
+  int idPicture = picturedatabase.AddPicture(idAlbum, strTitle, strOrientation, strPicturePath, strComment, strPicturePath, vecFaces, vecLocations, strTaken);
   
   if( idPicture <=0 )
     return InternalError;
@@ -318,6 +455,71 @@ JSONRPC_STATUS CPictureLibrary::AddPicture(const CStdString &method, ITransportL
   
   
   return GetPictures(method, transport, client, parameterObject, result);
+}
+
+JSONRPC_STATUS CPictureLibrary::AddVideo(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CPictureDatabase picturedatabase;
+  if (!picturedatabase.Open())
+    return InternalError;
+  
+  CStdString strAlbum = parameterObject["album"].c_str();
+  CStdString strTitle = parameterObject["title"].c_str();
+  CStdString strComment = parameterObject["comment"].c_str();
+  CStdString strLocation = parameterObject["location"].c_str();
+  CStdString strTaken = parameterObject["takenon"].c_str();
+  CStdString strType = parameterObject["picturetype"].c_str();
+  CStdString strOrientation = parameterObject["orientation"].c_str();
+  
+  //take the first source as the path
+  VECSOURCES *shares = CMediaSourceSettings::Get().GetSources("pictures");
+  if( !shares )
+    return InternalError;
+  
+  //create the thumbnail and pass it in
+  CStdString strPicturePath = shares->at(0).strPath + strTitle;
+  CStdString strFaces = parameterObject["faces"].c_str();
+  int idAlbum = picturedatabase.GetVideoAlbumByName(strAlbum);
+  
+  if(idAlbum <= 0 )
+  {
+    idAlbum = picturedatabase.AddVideoAlbum(strAlbum, strFaces, strLocation);
+    
+    CPictureAlbum album;
+    album.idAlbum = idAlbum;
+    album.strLabel = strAlbum;
+    album.thumbURL.m_xml = strPicturePath;
+    CPicture pic;
+    pic.strFileName = strPicturePath;
+    
+    picturedatabase.SetPictureAlbumInfo(album.idAlbum,
+                                        album,
+                                        album.pictures);
+  }
+  
+  std::vector<std::string> vecLocations;
+  vecLocations.push_back(strLocation);
+  
+  std::vector<std::string> vecFaces;
+  vecFaces.push_back(strFaces);
+  
+  int idPicture = picturedatabase.AddVideo(idAlbum, strTitle, strOrientation, strPicturePath, strComment, strPicturePath, vecFaces, vecLocations, strTaken);
+  
+  if( idPicture <=0 )
+    return InternalError;
+  
+  // set the thumbnail for photo
+  CTextureCache::Get().BackgroundCacheImage(strPicturePath);
+  picturedatabase.SetArtForItem(idPicture, "picture", "thumb", strPicturePath);
+  
+  //set the latest added photo as the thumbnail for the album
+  CTextureCache::Get().BackgroundCacheImage(strPicturePath);
+  picturedatabase.SetArtForItem(idAlbum, "album", "thumb", strPicturePath);
+  CTextureCache::Get().BackgroundCacheImage(strPicturePath);
+  picturedatabase.SetArtForItem(idAlbum, "album", "fanart", strPicturePath);
+  
+  
+  return GetVideos(method, transport, client, parameterObject, result);
 }
 
 JSONRPC_STATUS CPictureLibrary::GetPictures(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -342,6 +544,8 @@ JSONRPC_STATUS CPictureLibrary::GetPictures(const CStdString &method, ITransport
     albumID = (int)filter["albumid"].asInteger();
   else if (filter.isMember("album"))
     pictureUrl.AddOption("album", filter["album"].asString());
+  else if (filter.isMember("picturetype"))
+    pictureUrl.AddOption("picturetype", filter["picturetype"].asString());
   else if (filter.isObject())
   {
     CStdString xsp;
@@ -358,6 +562,69 @@ JSONRPC_STATUS CPictureLibrary::GetPictures(const CStdString &method, ITransport
   
   CFileItemList items;
   if (!picturedatabase.GetPicturesNav(pictureUrl.ToString(), items, locationID, faceID, albumID, sorting))
+    return InternalError;
+  
+  JSONRPC_STATUS ret = GetAdditionalPictureDetails(parameterObject, items, picturedatabase);
+  if (ret != OK)
+    return ret;
+  
+  int size = items.Size();
+  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+    size = (int)items.GetProperty("total").asInteger();
+  
+  
+  // we make sure there is only one pictures path
+  // or get the relationship between picture and path
+  // set the thumbnail for the photo
+  for( int i=0; i<items.Size(); i++){
+    items.Get(i)->SetPath(items.Get(i)->GetPictureInfoTag()->GetURL());
+  }
+  
+  HandleFileItemList("pictureid", true, "pictures", items, parameterObject, result, size, false);
+  
+  return OK;
+}
+
+JSONRPC_STATUS CPictureLibrary::GetVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CPictureDatabase picturedatabase;
+  if (!picturedatabase.Open())
+    return InternalError;
+  
+  CPictureDbUrl pictureUrl;
+  pictureUrl.FromString("picturedb://pictures/");
+  int locationID = -1, albumID = -1, faceID = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("faceid"))
+    faceID = (int)filter["faceid"].asInteger();
+  else if (filter.isMember("face"))
+    pictureUrl.AddOption("face", filter["face"].asString());
+  else if (filter.isMember("locationid"))
+    locationID = (int)filter["locationid"].asInteger();
+  else if (filter.isMember("location"))
+    pictureUrl.AddOption("location", filter["location"].asString());
+  else if (filter.isMember("albumid"))
+    albumID = (int)filter["albumid"].asInteger();
+  else if (filter.isMember("album"))
+    pictureUrl.AddOption("album", filter["album"].asString());
+  else if (filter.isMember("picturetype"))
+    pictureUrl.AddOption("picturetype", filter["picturetype"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("pictures", filter, xsp))
+      return InvalidParams;
+    
+    pictureUrl.AddOption("xsp", xsp);
+  }
+  
+  SortDescription sorting;
+  ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
+  if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
+    return InvalidParams;
+  
+  CFileItemList items;
+  if (!picturedatabase.GetVideosNav(pictureUrl.ToString(), items, locationID, faceID, albumID, sorting))
     return InternalError;
   
   JSONRPC_STATUS ret = GetAdditionalPictureDetails(parameterObject, items, picturedatabase);
@@ -501,6 +768,126 @@ JSONRPC_STATUS CPictureLibrary::GetRecentlyPlayedPictures(const CStdString &meth
   return OK;
 }
 
+
+JSONRPC_STATUS CPictureLibrary::GetVideoDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int idPicture = (int)parameterObject["pictureid"].asInteger();
+  
+  CPictureDatabase picturedatabase;
+  if (!picturedatabase.Open())
+    return InternalError;
+  
+  CPicture picture;
+  if (!picturedatabase.GetPicture(idPicture, picture))
+    return InvalidParams;
+  
+  CFileItemList items;
+  //items.Add(CFileItemPtr(new CFileItem(picture)));
+  JSONRPC_STATUS ret = GetAdditionalPictureDetails(parameterObject, items, picturedatabase);
+  if (ret != OK)
+    return ret;
+  
+  HandleFileItem("pictureid", false, "picturedetails", items[0], parameterObject, parameterObject["properties"], result, false);
+  return OK;
+}
+
+JSONRPC_STATUS CPictureLibrary::GetRecentlyAddedVideoAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CPictureDatabase picturedatabase;
+  if (!picturedatabase.Open())
+    return InternalError;
+  
+  VECPICTUREALBUMS albums;
+  if (!picturedatabase.GetRecentlyAddedPictureAlbums(albums))
+    return InternalError;
+  
+  CFileItemList items;
+  for (unsigned int index = 0; index < albums.size(); index++)
+  {
+    CStdString path;
+    path.Format("picturedb://recentlyaddedalbums/%i/", albums[index].idAlbum);
+    
+    CFileItemPtr item;
+    FillPictureAlbumItem(albums[index], path, item);
+    items.Add(item);
+  }
+  
+  JSONRPC_STATUS ret = GetAdditionalPictureAlbumDetails(parameterObject, items, picturedatabase);
+  if (ret != OK)
+    return ret;
+  
+  HandleFileItemList("albumid", false, "albums", items, parameterObject, result);
+  return OK;
+}
+
+JSONRPC_STATUS CPictureLibrary::GetRecentlyAddedVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CPictureDatabase picturedatabase;
+  if (!picturedatabase.Open())
+    return InternalError;
+  
+  int amount = (int)parameterObject["albumlimit"].asInteger();
+  if (amount < 0)
+    amount = 0;
+  
+  CFileItemList items;
+  if (!picturedatabase.GetRecentlyAddedPictureAlbumPictures("picturedb://", items, (unsigned int)amount))
+    return InternalError;
+  
+  JSONRPC_STATUS ret = GetAdditionalPictureDetails(parameterObject, items, picturedatabase);
+  if (ret != OK)
+    return ret;
+  
+  HandleFileItemList("pictureid", true, "pictures", items, parameterObject, result);
+  return OK;
+}
+
+JSONRPC_STATUS CPictureLibrary::GetRecentlyPlayedVideoAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CPictureDatabase picturedatabase;
+  if (!picturedatabase.Open())
+    return InternalError;
+  
+  VECPICTUREALBUMS albums;
+  if (!picturedatabase.GetRecentlyPlayedPictureAlbums(albums))
+    return InternalError;
+  
+  CFileItemList items;
+  for (unsigned int index = 0; index < albums.size(); index++)
+  {
+    CStdString path;
+    path.Format("picturedb://recentlyplayedalbums/%i/", albums[index].idAlbum);
+    
+    CFileItemPtr item;
+    FillPictureAlbumItem(albums[index], path, item);
+    items.Add(item);
+  }
+  
+  JSONRPC_STATUS ret = GetAdditionalPictureAlbumDetails(parameterObject, items, picturedatabase);
+  if (ret != OK)
+    return ret;
+  
+  HandleFileItemList("albumid", false, "albums", items, parameterObject, result);
+  return OK;
+}
+
+JSONRPC_STATUS CPictureLibrary::GetRecentlyPlayedVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CPictureDatabase picturedatabase;
+  if (!picturedatabase.Open())
+    return InternalError;
+  
+  CFileItemList items;
+  if (!picturedatabase.GetRecentlyPlayedPictureAlbumPictures("picturedb://", items))
+    return InternalError;
+  
+  JSONRPC_STATUS ret = GetAdditionalPictureDetails(parameterObject, items, picturedatabase);
+  if (ret != OK)
+    return ret;
+  
+  HandleFileItemList("pictureid", true, "pictures", items, parameterObject, result);
+  return OK;
+}
 JSONRPC_STATUS CPictureLibrary::GetLocations(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CPictureDatabase picturedatabase;
@@ -589,7 +976,7 @@ JSONRPC_STATUS CPictureLibrary::SetPictureAlbumDetails(const CStdString &method,
   if (ParameterNotNull(parameterObject, "style"))
     CopyStringArray(parameterObject["style"], album.styles);
   if (ParameterNotNull(parameterObject, "type"))
-    album.strType = parameterObject["type"].asString();
+    album.strPictureType = parameterObject["picturetype"].asString();
   if (ParameterNotNull(parameterObject, "albumlabel"))
     album.strLabel = parameterObject["albumlabel"].asString();
   

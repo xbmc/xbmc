@@ -67,6 +67,16 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
   bool useDefaultWebInterface = true;
 
   path = url;
+  //upload content request
+  if (url.find("/upload/") == 0 && url.size() > 8)
+  {
+    if (url.find("/picture/") == 0 && url.size() > 8)
+    {
+      //upload the picture
+      //should be coming in as http post
+    }
+    path.append(DEFAULT_PAGE);
+  }
   if (url.find("/addons/") == 0 && url.size() > 8)
   {
     CStdStringArray components;

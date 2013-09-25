@@ -172,6 +172,8 @@ public:
     const CStdString& GetComment() const;
     const CStdString& GetLyrics() const;
     const CDateTime& GetTakenOn() const;
+  const CStdString &GetPictureType() const;
+  const CStdString &GetOrientation() const;
     int  GetListeners() const;
     const EmbeddedArtInfo &GetCoverArtInfo() const;
     
@@ -192,6 +194,8 @@ public:
     void SetAlbum(const CPictureAlbum& album);
     void SetPicture(const CPicture& picture);
     void SetComment(const CStdString& comment);
+  void SetPictureType(const CStdString& type);
+  void SetOrientation(const CStdString& orientation);
     void SetListeners(int listeners);
     void SetTakenOn(const CStdString& strTakenOn);
     void SetTakenOn(const CDateTime& strTakenOn);
@@ -230,6 +234,8 @@ protected:
     CStdString m_strAlbum;
     std::vector<std::string> m_albumFace;
     std::vector<std::string> m_location;
+  CStdString m_strOrientation;
+  CStdString m_strType;
     CStdString m_strComment;
     CStdString m_strLyrics;
     CDateTime m_takenOn;

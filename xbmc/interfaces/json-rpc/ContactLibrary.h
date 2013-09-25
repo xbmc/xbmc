@@ -25,17 +25,20 @@
 #include "JSONRPC.h"
 #include "FileItemHandler.h"
 
-class CMusicDatabase;
+class CContactDatabase;
 
 namespace JSONRPC
 {
     class CContactLibrary : public CFileItemHandler
     {
     public:
+      static JSONRPC_STATUS AddContact(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
         static JSONRPC_STATUS GetContacts(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
         static JSONRPC_STATUS GetContactDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-        static JSONRPC_STATUS GetAdditionalAlbumDetails(const CVariant &parameterObject, CFileItemList &items, CMusicDatabase &musicdatabase);
-        
+      static JSONRPC_STATUS GetAdditionalContactDetails(const CVariant &parameterObject, CFileItemList &items, CContactDatabase &picturedatabase);
+      static bool CheckForAdditionalProperties(const CVariant &properties, const std::set<std::string> &checkProperties, std::set<std::string> &foundProperties);
+      
+
     };
 }
 

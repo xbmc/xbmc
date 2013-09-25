@@ -25,6 +25,7 @@ enum ERecentlyAddedFlag
 {
   Audio = 0x1,
   Video = 0x2,
+  Picture = 0x3,
   Totals = 0x4
 };
 

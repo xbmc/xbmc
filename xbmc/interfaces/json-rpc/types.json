@@ -103,7 +103,7 @@
                   "album", "albumtype", "genre", "country", "year", "rating", "votes", "top250", "programcount",
                   "playlist", "episode", "season", "totalepisodes", "watchedepisodes", "tvshowstatus", "tvshowtitle",
                   "sorttitle", "productioncode", "mpaa", "studio", "dateadded", "lastplayed", "playcount", "listeners",
-                  "bitrate", "random", "picturecount", "face", "location", "takenon" ]
+                  "bitrate", "random", "picturecount", "face", "location", "takenon", "firstname", "lastname" ]
       },
       "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
       "ignorearticle": { "type": "boolean", "default": false }
@@ -504,6 +504,8 @@
     "properties": {
       "pictureid": { "$ref": "Library.Id", "required": true },
       "file": { "type": "string" },
+      "picturetype": { "type": "string" },
+      "orientation": { "type": "string" },
       "albumface": { "$ref": "Array.String" },
       "album": { "type": "string" },
       "track": { "type": "integer" },
@@ -538,6 +540,128 @@
                 "albumfaceid", "takenon" ]
     }
   },
+  "Contact.Details.Base": {
+    "extends": "Media.Details.Base",
+    "properties": {
+      "name": { "$ref": "Array.String" }
+    }
+  },
+  "Contact.Details.Media": {
+    "extends": "Contact.Details.Base",
+    "properties": {
+      "title": { "type": "string" },
+      "face": { "$ref": "Array.String" },
+      "location": { "type": "string" },
+      "takenon": { "type": "string" },
+      "year": { "type": "integer" },
+      "rating": { "type": "integer" },
+      "locationid": { "$ref": "Array.Integer" },
+      "faceid": { "$ref": "Array.Integer" },
+      "displayartist": { "type" : "string" }
+    }
+  },
+  
+  "Contact.Details.Contact": {
+    "extends": "Contact.Details.Media",
+    "properties": {
+      "pictureid": { "$ref": "Library.Id", "required": true },
+      "file": { "type": "string" },
+      "picturetype": { "type": "string" },
+      "orientation": { "type": "string" },
+      "albumface": { "$ref": "Array.String" },
+      "album": { "type": "string" },
+      "track": { "type": "integer" },
+      "duration": { "type": "integer" },
+      "comment": { "type": "string" },
+      "lyrics": { "type": "string" },
+      "picturecount": { "type": "integer" },
+      "albumid": { "$ref": "Library.Id" },
+      "takenon": { "type": "string" },
+      "disc": { "type": "integer" },
+      "albumfaceid": { "$ref": "Array.Integer" }
+    }
+  },  
+  "Contact.Fields.Contact": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "description": "Requesting the locationid, faceid and/or albumfaceid field will result in increased response times",
+      "enum": [ "suffix" ]
+    }
+  },
+  
+  "Contact.Fields.Name": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "first", "middle", "last", "nick", "prefix", "suffix", "note", "thumbnail" ]
+      }
+    }
+  },
+  "Contact.Fields.Profession": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "organization", "title", "department"]
+      }
+    }
+  },
+  "Contact.Fields.Dates": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "birthday", "anniversary", "other" ]
+      }
+    }
+  },
+  "Contact.Fields.Phones": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "mobile", "work", "home", "other" ]
+      }
+    }
+  },
+  "Contact.Fields.IMs": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "yahoo", "google", "apple", "other" ]
+      }
+    }
+  },
+  "Contact.Fields.URLs": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "home", "office", "other" ]
+      }
+    }
+  },
+  "Contact.Fields.Emails": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "email1", "email2", "email3", "email5", "email4" ]
+      }
+    }
+  },
+  "Contact.Fields.Address": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "type", "houseno", "floor", "street", "city", "state", "zip", "country", "countrycode" ]
+      }
+    }
+  },
+  "Contact.Fields.Relations": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "mother", "father", "mother-in-law", "father-in-law", "son", "daughter", "wife" ]
+      }
+    }
+  },
+  
   "Picture.Details.Album": {
     "extends": "Picture.Details.Media",
     "properties": {
@@ -910,6 +1034,12 @@
       "field": { "$ref": "List.Filter.Fields.Pictures", "required": true }
     }
   },
+  "List.Filter.Rule.Contacts": {
+    "extends": "List.Filter.Rule",
+    "properties": {
+      "field": { "$ref": "List.Filter.Fields.Contacts", "required": true }
+    }
+  },
   "List.Filter.Movies": {
     "type": [
       { "type": "object",
@@ -1076,6 +1206,27 @@
         }
       },
       { "$ref": "List.Filter.Rule.Pictures" }
+    ]
+  },
+    "List.Filter.Contacts": {
+    "type": [
+      { "type": "object",
+        "properties": {
+          "and": { "type": "array",
+            "items": { "$ref": "List.Filter.Contacts" },
+            "minItems": 1, "required": true
+          }
+        }
+      },
+      { "type": "object",
+        "properties": {
+          "or": { "type": "array",
+            "items": { "$ref": "List.Filter.Contacts" },
+            "minItems": 1, "required": true
+          }
+        }
+      },
+      { "$ref": "List.Filter.Rule.Contacts" }
     ]
   },
   "List.Item.Base": {

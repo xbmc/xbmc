@@ -24,10 +24,25 @@
 		<value condition="!IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
 		<value condition="IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Icon]</value>
 	</variable>
+        <variable name="value_defaultvideofanart">
+                 <value condition="Container(8003).Hasfocus(8006)">../backgrounds/tv.jpg</value>
+                 <value condition="IsEmpty(ListItem.Art(fanart)) + !Container.Content(pictures)">../backgrounds/SKINDEFAULT.jpg</value>
+	         <value condition="!IsEmpty(Window.Property(LatestPictureAlbum.1.Fanart))">$INFO[Window.Property(LatestPictureAlbum.1.Fanart)]</value>
+	         <value condition="!IsEmpty(ListItem.Art(fanart)) + Container.Content(pictures)">$INFO[ListItem.Art(fanart)]</value>
+        </variable>
 	<variable name="PosterThumb">
 		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
 		<value condition="IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Icon]</value>
 	</variable>
+
+  <include name="CommonFanartVarsSingle">
+    <posx>0</posx>
+    <posy>0</posy>
+    <width>1280</width>
+    <height>720</height>
+    <fadetime>100</fadetime>
+    <aspectratio align="center">scale</aspectratio>
+  </include>
 
 	<include name="BehindDialogFadeOut">
 		<control type="image">
