@@ -159,7 +159,8 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
 
   if (m_inputFormat.m_channelLayout != m_format.m_channelLayout ||
       m_inputFormat.m_sampleRate != m_format.m_sampleRate ||
-      m_inputFormat.m_dataFormat != m_format.m_dataFormat)
+      m_inputFormat.m_dataFormat != m_format.m_dataFormat ||
+      m_changeResampler)
   {
     m_resampler = new CActiveAEResample();
     m_resampler->Init(CActiveAEResample::GetAVChannelLayout(m_format.m_channelLayout),
@@ -178,6 +179,7 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
   }
 
   m_stereoUpmix = upmix;
+  m_changeResampler = false;
 
   return true;
 }
