@@ -54,6 +54,15 @@ public:
   bool utf8ToUtf32(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool failOnBadChar = true);
   /**
    * Convert UTF-8 string to UTF-32 string.
+   * No RTL logical-visual transformation is performed.
+   * @param utf8StringSrc       is source UTF-8 string to convert
+   * @param failOnBadChar       if set to true function will fail on invalid character,
+   *                            otherwise invalid character will be skipped
+   * @return converted string on successful conversion, empty string on any error
+   */
+  std::u32string utf8ToUtf32(const std::string& utf8StringSrc, bool failOnBadChar = true);
+  /**
+   * Convert UTF-8 string to UTF-32 string.
    * RTL logical-visual transformation is optionally performed.
    * Use it for readable text, GUI strings etc.
    * @param utf8StringSrc       is source UTF-8 string to convert
@@ -76,6 +85,15 @@ public:
    * @return true on successful conversion, false on any error
    */
   bool utf32ToUtf8(const std::u32string& utf32StringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
+  /**
+   * Convert UTF-32 string to UTF-8 string.
+   * No RTL visual-logical transformation is performed.
+   * @param utf32StringSrc      is source UTF-32 string to convert
+   * @param failOnBadChar       if set to true function will fail on invalid character,
+   *                            otherwise invalid character will be skipped
+   * @return converted string on successful conversion, empty string on any error
+   */
+  std::string utf32ToUtf8(const std::u32string& utf32StringSrc, bool failOnBadChar = false);
   /**
    * Convert UTF-32 string to wchar_t string (wstring).
    * No RTL visual-logical transformation is performed.

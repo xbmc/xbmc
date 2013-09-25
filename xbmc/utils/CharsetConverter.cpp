@@ -480,6 +480,13 @@ bool CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, std::u32st
   return convert(m_iconvUtf8ToUtf32, 1, UTF8_SOURCE, "UTF-32", utf8StringSrc, utf32StringDst, failOnBadChar);
 }
 
+std::u32string CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, bool failOnBadChar /*= true*/)
+{
+  std::u32string converted;
+  utf8ToUtf32(utf8StringSrc, converted, failOnBadChar);
+  return converted;
+}
+
 bool CCharsetConverter::utf8ToUtf32Visual(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool bVisualBiDiFlip /*= false*/, bool forceLTRReadingOrder /*= false*/, bool failOnBadChar /*= false*/)
 {
   if (bVisualBiDiFlip)
@@ -498,6 +505,13 @@ bool CCharsetConverter::utf32ToUtf8(const std::u32string& utf32StringSrc, std::s
 {
   CSingleLock lock(m_critSection);
   return convert(m_iconvUtf32ToUtf8, m_Utf8CharMaxSize, "UTF-32", "UTF-8", utf32StringSrc, utf8StringDst, failOnBadChar);
+}
+
+std::string CCharsetConverter::utf32ToUtf8(const std::u32string& utf32StringSrc, bool failOnBadChar /*= false*/)
+{
+  std::string converted;
+  utf32ToUtf8(utf32StringSrc, converted, failOnBadChar);
+  return converted;
 }
 
 bool CCharsetConverter::utf32ToW(const std::u32string& utf32StringSrc, std::wstring& wStringDst, bool failOnBadChar /*= true*/)
