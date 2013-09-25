@@ -180,6 +180,4 @@ private:
 
 XBMC_GLOBAL(CCharsetConverter,g_charsetConverter);
 
-size_t iconv_const (void* cd, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft);
-
 #endif

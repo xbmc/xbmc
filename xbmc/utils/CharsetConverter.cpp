@@ -434,28 +434,18 @@ static struct SCharsetMapping
 };
 
 
-#define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
-#define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
-
-size_t iconv_const (void* cd, const char** inbuf, size_t* inbytesleft,
-                    char** outbuf, size_t* outbytesleft)
+/* iconv may declare inbuf to be char** rather than const char** depending on platform and version,
+    so provide a wrapper that handles both */
+struct charPtrPtrAdapter
 {
-    struct iconv_param_adapter {
-        iconv_param_adapter(const char**p) : p(p) {}
-        iconv_param_adapter(char**p) : p((const char**)p) {}
-        operator char**() const
-        {
-            return(char**)p;
-        }
-        operator const char**() const
-        {
-            return(const char**)p;
-        }
-        const char** p;
-    };
-
-    return iconv((iconv_t)cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
-}
+  const char** pointer;
+  charPtrPtrAdapter(const char** p) :
+    pointer(p) { }
+  operator char**()
+  { return const_cast<char**>(pointer); }
+  operator const char**()
+  { return pointer; }
+};
 
 template<class INPUT,class OUTPUT>
 bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar /*= false*/)
@@ -485,7 +475,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   while(1)
   {
     //iconv() will update inBufStart, inBytesAvail, outBufStart and outBytesAvail
-    returnV = iconv_const(type, &inBufStart, &inBytesAvail, &outBufStart, &outBytesAvail);
+    returnV = iconv(type, charPtrPtrAdapter(&inBufStart), &inBytesAvail, &outBufStart, &outBytesAvail);
 
     if (returnV == (size_t)-1)
     {
@@ -540,7 +530,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   }
 
   //complete the conversion (reset buffers), otherwise the current data will prefix the data on the next call
-  if (iconv_const(type, NULL, NULL, &outBufStart, &outBytesAvail) == (size_t)-1)
+  if (iconv(type, NULL, NULL, &outBufStart, &outBytesAvail) == (size_t)-1)
     CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
 
   if (returnV == (size_t)-1)
