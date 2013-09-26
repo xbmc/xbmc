@@ -359,6 +359,7 @@
 #include "plex/Remote/PlexRemoteSubscriberManager.h"
 #include "plex/CrashReporter/Breakpad.h"
 #include "plex/GUI/GUIDialogPlexAudioSubtitlePicker.h"
+#include "plex/GUI/GUIWindowPlexStartupHelper.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -1523,6 +1524,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowPlexMyChannels);
     g_windowManager.Add(new CGUIDialogPlexAudioPicker);
     g_windowManager.Add(new CGUIDialogPlexSubtitlePicker);
+    g_windowManager.Add(new CGUIWindowPlexStartupHelper);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
@@ -1552,6 +1554,7 @@ bool CApplication::Initialize()
 #ifdef HAS_JSONRPC
       CJSONRPC::Initialize();
 #endif
+#ifndef __PLEX__
       ADDON::CAddonMgr::Get().StartServices(false);
       if (g_SkinInfo->GetFirstWindow() == WINDOW_PVR)
       {
@@ -1563,6 +1566,12 @@ bool CApplication::Initialize()
         StartPVRManager(false);
         g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
       }
+#else
+      if (g_SkinInfo->HasSkinFile("PlexStartupHelper.xml"))
+        g_windowManager.ActivateWindow(WINDOW_PLEX_STARTUP_HELPER);
+      else
+        g_windowManager.ActivateWindow(WINDOW_HOME);
+#endif
     }
 
   }
@@ -3560,6 +3569,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_FILTER_SORT);
     g_windowManager.Delete(WINDOW_DIALOG_PLEX_AUDIO_PICKER);
     g_windowManager.Delete(WINDOW_DIALOG_PLEX_SUBTITLE_PICKER);
+    g_windowManager.Delete(WINDOW_PLEX_STARTUP_HELPER);
     /* END PLEX */
 
     g_windowManager.Delete(WINDOW_MUSIC_PLAYLIST);
