@@ -23,6 +23,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "guilib/TextureManager.h"
 
 #if defined(HAS_GL) || defined(HAS_GLES)
 
@@ -50,7 +51,7 @@ void CGLTexture::CreateTextureObject()
 void CGLTexture::DestroyTextureObject()
 {
   if (m_texture)
-    glDeleteTextures(1, (GLuint*) &m_texture);
+    g_TextureManager.ReleaseHwTexture(m_texture);
 }
 
 void CGLTexture::LoadToGPU()
