@@ -525,12 +525,10 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   return true;
 }
 
-using namespace std;
-
 bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::string& stringSrc, std::string& stringDst, FriBidiCharSet fribidiCharset, FriBidiCharType base /*= FRIBIDI_TYPE_LTR*/, bool* bWasFlipped /*=NULL*/)
 {
   stringDst.clear();
-  vector<std::string> lines = StringUtils::Split(stringSrc, "\n");
+  std::vector<std::string> lines = StringUtils::Split(stringSrc, "\n");
 
   if (bWasFlipped)
     *bWasFlipped = false;
@@ -627,7 +625,7 @@ void CCharsetConverter::clear()
 
 std::vector<std::string> CCharsetConverter::getCharsetLabels()
 {
-  vector<std::string> lab;
+  std::vector<std::string> lab;
   for(SCharsetMapping* c = g_charsets; c->charset; c++)
     lab.push_back(c->caption);
 
@@ -961,7 +959,7 @@ bool CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc
 
 void CCharsetConverter::SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current)
 {
-  vector<std::string> vecCharsets = g_charsetConverter.getCharsetLabels();
+  std::vector<std::string> vecCharsets = g_charsetConverter.getCharsetLabels();
   sort(vecCharsets.begin(), vecCharsets.end(), sortstringbyname());
 
   list.push_back(make_pair(g_localizeStrings.Get(13278), "DEFAULT")); // "Default"
