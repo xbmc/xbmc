@@ -419,6 +419,22 @@ void CLinuxRendererGLES::Reset()
   }
 }
 
+void CLinuxRendererGLES::Flush()
+{
+  if (!m_bValidated)
+    return;
+
+  glFinish();
+
+  for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+    (this->*m_textureDelete)(i);
+
+  glFinish();
+  m_bValidated = false;
+  m_fbo.Cleanup();
+  m_iYV12RenderBuffer = 0;
+}
+
 void CLinuxRendererGLES::Update()
 {
   if (!m_bConfigured) return;
@@ -793,6 +809,17 @@ inline void CLinuxRendererGLES::ReorderDrawPoints()
     m_rotatedDestCoords[1] = m_rotatedDestCoords[2];
     m_rotatedDestCoords[2] = tmp;
   }
+}
+
+void CLinuxRendererGLES::ReleaseBuffer(int idx)
+{
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  YUVBUFFER &buf = m_buffers[idx];
+
+  if (buf.cvBufferRef)
+    CVBufferRelease(buf.cvBufferRef);
+  buf.cvBufferRef = NULL;
+#endif
 }
 
 void CLinuxRendererGLES::Render(DWORD flags, int index)
