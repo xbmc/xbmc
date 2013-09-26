@@ -3485,6 +3485,7 @@ void CLASS subtract (char *fname)
       BAYER(row,col) = MAX (BAYER(row,col) - ntohs(pixel[col]), 0);
   }
   free (pixel);
+  fclose(fp);
   black = 0;
 }
 
