@@ -186,9 +186,21 @@ bool CxMemFile::Alloc(DWORD dwNewLen)
 
 		// allocate new buffer
 		if (m_pBuffer == NULL) m_pBuffer = (BYTE*)malloc(dwNewBufferSize);
-		else	m_pBuffer = (BYTE*)realloc(m_pBuffer, dwNewBufferSize);
+		else
+		{
+			BYTE* new_buf = (BYTE*)realloc(m_pBuffer, dwNewBufferSize);
+			if (!new_buf)
+			{
+				free(m_pBuffer);
+				m_bFreeOnClose = false;
+				return false;
+			}
+			else
+				m_pBuffer = new_buf;
+		}
 		// I own this buffer now (caller knows nothing about it)
-		m_bFreeOnClose = true;
+		if (m_pBuffer)
+			m_bFreeOnClose = true;
 
 		m_Edge = dwNewBufferSize;
 	}

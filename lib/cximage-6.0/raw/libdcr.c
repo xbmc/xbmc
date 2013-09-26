@@ -4735,7 +4735,7 @@ void DCR_CLASS dcr_romm_coeff (DCRAW* p, float romm_cam[3][3])
 void DCR_CLASS dcr_parse_mos (DCRAW* p, int offset)
 {
 	char data[40];
-	int skip, from, i=0, c, neut[4], planes=0, frot=0;
+	int skip, from, i=0, j, c, neut[4], planes=0, frot=0;
 	static const char *mod[] =
 	{ "","DCB2","Volare","Cantare","CMost","Valeo 6","Valeo 11","Valeo 22",
     "Valeo 11p","Valeo 17","","Aptus 17","Aptus 22","Aptus 75","Aptus 65",
@@ -4763,13 +4763,15 @@ void DCR_CLASS dcr_parse_mos (DCRAW* p, int offset)
 				strcpy (p->model, mod[i]);
 		}
 		if (!strcmp(data,"icc_camera_to_tone_matrix")) {
-			for (i=0; i < 9; i++)
-				romm_cam[0][i] = dcr_int_to_float(dcr_get4(p));
+			for (i=0; i < 3; i++)
+				for (j=0; j < 3; j++)
+					romm_cam[i][j] = dcr_int_to_float(dcr_get4(p));
 			dcr_romm_coeff (p,romm_cam);
 		}
 		if (!strcmp(data,"CaptProf_color_matrix")) {
-			for (i=0; i < 9; i++)
-				dcr_fscanf(p->obj_, "%f", &romm_cam[0][i]);
+			for (i=0; i < 3; i++)
+				for (j=0; j < 3; j++)
+					dcr_fscanf(p->obj_, "%f", &romm_cam[i][j]);
 			dcr_romm_coeff (p,romm_cam);
 		}
 		if (!strcmp(data,"CaptProf_number_of_planes"))

@@ -3485,6 +3485,7 @@ void CLASS subtract (char *fname)
       BAYER(row,col) = MAX (BAYER(row,col) - ntohs(pixel[col]), 0);
   }
   free (pixel);
+  fclose(fp);
   black = 0;
 }
 
@@ -4774,7 +4775,7 @@ void CLASS romm_coeff (float romm_cam[3][3])
 void CLASS parse_mos (int offset)
 {
   char data[40];
-  int skip, from, i, c, neut[4], planes=0, frot=0;
+  int skip, from, i, j, c, neut[4], planes=0, frot=0;
   static const char *mod[] =
   { "","DCB2","Volare","Cantare","CMost","Valeo 6","Valeo 11","Valeo 22",
     "Valeo 11p","Valeo 17","","Aptus 17","Aptus 22","Aptus 75","Aptus 65",
@@ -4802,13 +4803,15 @@ void CLASS parse_mos (int offset)
 	strcpy (model, mod[i]);
     }
     if (!strcmp(data,"icc_camera_to_tone_matrix")) {
-      for (i=0; i < 9; i++)
-	romm_cam[0][i] = int_to_float(get4());
+      for (i=0; i < 3; i++)
+		for (j=0; j < 3; j++)
+			romm_cam[i][j] = int_to_float(get4());
       romm_coeff (romm_cam);
     }
     if (!strcmp(data,"CaptProf_color_matrix")) {
-      for (i=0; i < 9; i++)
-	fscanf (ifp, "%f", &romm_cam[0][i]);
+      for (i=0; i < 3; i++)
+		for (j=0; j < 3; j++)
+			fscanf (ifp, "%f", &romm_cam[i][j]);
       romm_coeff (romm_cam);
     }
     if (!strcmp(data,"CaptProf_number_of_planes"))

@@ -654,6 +654,7 @@ bool CxImage::Colorize(BYTE hue, BYTE sat, float blend)
 						hsl.rgbRed=hue;
 						hsl.rgbGreen=sat;
 						hsl.rgbBlue = (BYTE)RGB2GRAY(color.rgbRed,color.rgbGreen,color.rgbBlue);
+						hsl.rgbReserved = (BYTE)0;
 						hsl = HSLtoRGB(hsl);
 						//BlendPixelColor(x,y,hsl,blend);
 						//color.rgbRed = (BYTE)(hsl.rgbRed * blend + color.rgbRed * (1.0f - blend));
@@ -679,6 +680,7 @@ bool CxImage::Colorize(BYTE hue, BYTE sat, float blend)
 				hsl.rgbRed=hue;
 				hsl.rgbGreen=sat;
 				hsl.rgbBlue = (BYTE)RGB2GRAY(color.rgbRed,color.rgbGreen,color.rgbBlue);
+				hsl.rgbReserved = (BYTE)0;
 				hsl = HSLtoRGB(hsl);
 				color.rgbRed = (BYTE)(hsl.rgbRed * blend + color.rgbRed * (1.0f - blend));
 				color.rgbBlue = (BYTE)(hsl.rgbBlue * blend + color.rgbBlue * (1.0f - blend));
@@ -1802,6 +1804,7 @@ bool CxImage::Combine(CxImage* r,CxImage* g,CxImage* b,CxImage* a, long colorspa
 			c.rgbRed=r->GetPixelIndex(x,y);
 			c.rgbGreen=g->GetPixelIndex(x,y);
 			c.rgbBlue=b->GetPixelIndex(x,y);
+			c.rgbReserved = (BYTE)0;
 			switch (colorspace){
 			case 1:
 				BlindSetPixelColor(x,y,HSLtoRGB(c));
@@ -2700,7 +2703,10 @@ bool CxImage::UnsharpMask(float radius /*= 5.0*/, float amount /*= 0.5*/, int th
 		pPalette = new RGBQUAD[head.biClrUsed];
 		memcpy(pPalette, GetPalette(),GetPaletteSize());
 		if (!IncreaseBpp(24))
+		{
+			delete [] pPalette;
 			return false;
+		}
 	}
 
 	CxImage iDst;
