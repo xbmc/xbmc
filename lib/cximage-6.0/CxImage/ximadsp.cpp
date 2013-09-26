@@ -2700,7 +2700,10 @@ bool CxImage::UnsharpMask(float radius /*= 5.0*/, float amount /*= 0.5*/, int th
 		pPalette = new RGBQUAD[head.biClrUsed];
 		memcpy(pPalette, GetPalette(),GetPaletteSize());
 		if (!IncreaseBpp(24))
+		{
+			delete [] pPalette;
 			return false;
+		}
 	}
 
 	CxImage iDst;
