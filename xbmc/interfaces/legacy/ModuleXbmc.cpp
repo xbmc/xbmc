@@ -122,6 +122,7 @@ namespace XBMCAddon
     String executeJSONRPC(const char* jsonrpccommand)
     {
       TRACE;
+      DelayedCallGuard dg;
 #ifdef HAS_JSONRPC
       String ret;
 
