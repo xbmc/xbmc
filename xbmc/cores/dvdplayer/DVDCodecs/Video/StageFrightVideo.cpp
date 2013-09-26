@@ -541,19 +541,6 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
       CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (MP4)");
       goto fail;
     }
-    else if (!strncmp(component, "OMX.rk.", 7))
-    {
-      if (g_advancedSettings.m_stagefrightConfig.useAVCcodec != 1 && g_advancedSettings.m_stagefrightConfig.useMP4codec != 1) 
-      {
-        if (p->width % 32 != 0 || p->height % 16 != 0)
-        {
-          // Buggy. Hard crash on non MOD16 height videos and stride errors for non MOD32 width
-          CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (MOD16)");
-          goto fail;
-
-        }
-      }
-    }
   }
 
   cropLeft = cropTop = cropRight = cropBottom = 0;
