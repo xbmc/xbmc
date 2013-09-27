@@ -149,7 +149,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   std::string deviceFriendlyName;
   DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
 
-  if(StringUtils::EndsWith(device, std::string("default")))
+  if(StringUtils::EndsWithNoCase(device, std::string("default")))
     strDeviceGUID = GetDefaultDevice();
 
   for (std::list<DSDevice>::iterator itt = DSDeviceList.begin(); itt != DSDeviceList.end(); ++itt)

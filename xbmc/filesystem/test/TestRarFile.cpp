@@ -210,7 +210,7 @@ TEST(TestRarFile, StoredRAR)
    * an uncompressed RAR archive. See TestRarFile.Read test case.
    */
   strpathinrar = itemlist[1]->GetPath();
-  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/reffile.txt", true));
+  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/reffile.txt"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
   EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFREG);
 
@@ -255,7 +255,7 @@ TEST(TestRarFile, StoredRAR)
 
   /* /testsymlink -> testdir/reffile.txt */
   strpathinrar = itemlist[2]->GetPath();
-  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlink", true));
+  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlink"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
   EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFLNK);
 
@@ -270,7 +270,7 @@ TEST(TestRarFile, StoredRAR)
 
   /* /testsymlinksubdir -> testdir/testsubdir/reffile.txt */
   strpathinrar = itemlist[3]->GetPath();
-  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlinksubdir", true));
+  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlinksubdir"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
   EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFLNK);
 
@@ -280,7 +280,7 @@ TEST(TestRarFile, StoredRAR)
 
   /* /testdir/ */
   strpathinrar = itemlist[0]->GetPath();
-  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/", true));
+  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
   EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFDIR);
 
@@ -345,7 +345,7 @@ TEST(TestRarFile, StoredRAR)
 
   /* FIXME: This directory appears a second time as a file */
   strpathinrar = itemlist[3]->GetPath();
-  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testsubdir", true));
+  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testsubdir"));
 
   /* /testdir/testsymlink -> testsubdir/reffile.txt */
   strpathinrar = itemlist[4]->GetPath();
@@ -432,7 +432,7 @@ TEST(TestRarFile, NormalRAR)
 
   /* /reffile.txt */
   strpathinrar = itemlist[1]->GetPath();
-  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/reffile.txt", true));
+  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/reffile.txt"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
   EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFREG);
 
@@ -477,7 +477,7 @@ TEST(TestRarFile, NormalRAR)
 
   /* /testsymlink -> testdir/reffile.txt */
   strpathinrar = itemlist[2]->GetPath();
-  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlink", true));
+  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlink"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
   EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFLNK);
 
@@ -492,7 +492,7 @@ TEST(TestRarFile, NormalRAR)
 
   /* /testsymlinksubdir -> testdir/testsubdir/reffile.txt */
   strpathinrar = itemlist[3]->GetPath();
-  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlinksubdir", true));
+  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testsymlinksubdir"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
   EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFLNK);
 
@@ -502,7 +502,7 @@ TEST(TestRarFile, NormalRAR)
 
   /* /testdir/ */
   strpathinrar = itemlist[0]->GetPath();
-  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/", true));
+  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/"));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
   EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFDIR);
 
@@ -567,7 +567,7 @@ TEST(TestRarFile, NormalRAR)
 
   /* FIXME: This directory appears a second time as a file */
   strpathinrar = itemlist[3]->GetPath();
-  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testsubdir", true));
+  ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testsubdir"));
 
   /* /testdir/testsymlink -> testsubdir/reffile.txt */
   strpathinrar = itemlist[4]->GetPath();

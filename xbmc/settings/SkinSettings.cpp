@@ -175,13 +175,13 @@ void CSkinSettings::Reset()
   // clear all the settings and strings from this skin.
   for (map<int, CSkinBool>::iterator it = m_bools.begin(); it != m_bools.end(); ++it)
   {
-    if (StringUtils::StartsWith(it->second.name, currentSkin))
+    if (StringUtils::StartsWithNoCase(it->second.name, currentSkin))
       it->second.value = false;
   }
 
   for (map<int, CSkinString>::iterator it = m_strings.begin(); it != m_strings.end(); ++it)
   {
-    if (StringUtils::StartsWith(it->second.name, currentSkin))
+    if (StringUtils::StartsWithNoCase(it->second.name, currentSkin))
       it->second.value.clear();
   }
 

@@ -447,7 +447,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       if (!item->m_bIsFolder) // music video
        buttons.Add(CONTEXT_BUTTON_INFO, 20393);
-      if (StringUtils::StartsWith(item->GetPath(), "videodb://musicvideos/artist/") && item->m_bIsFolder)
+      if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/artist/") && item->m_bIsFolder)
       {
         long idArtist = m_musicdatabase.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel());
         if (idArtist > - 1)
@@ -565,7 +565,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
 
       // music videos - artists
-      if (StringUtils::StartsWith(item->GetPath(), "videodb://musicvideos/artists/"))
+      if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/artists/"))
       {
         long idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
         if (idArtist == -1)
@@ -582,7 +582,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
 
       // music videos - albums
-      if (StringUtils::StartsWith(item->GetPath(), "videodb://musicvideos/albums/"))
+      if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/albums/"))
       {
         long idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
         if (idAlbum == -1)
