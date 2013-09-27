@@ -36,6 +36,10 @@
 #include "mysqldataset.h"
 #endif
 
+#if defined(TARGET_WINDOWS)
+#include "win32/WIN32Util.h"
+#endif
+
 using namespace AUTOPTR;
 using namespace dbiplus;
 
@@ -356,7 +360,14 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
   {
     dbSettings.type = "sqlite3";
     if (dbSettings.host.IsEmpty())
+#if defined(TARGET_WINDOWS)
+      // Required if the appdata is redirected to an UNC path. Sqlite isn't wrapped. if it would be wrapped
+      // we would need CreatefileW to support our vfs. Optionally we could create a shim: http://sqlite.org/vfs.html
+      // but this seems to be to much effort for too little gain.
+      dbSettings.host = CWIN32Util::SmbToUnc(CSpecialProtocol::TranslatePath(CProfilesManager::Get().GetDatabaseFolder()));
+#else
       dbSettings.host = CSpecialProtocol::TranslatePath(CProfilesManager::Get().GetDatabaseFolder());
+#endif
   }
 
   // use separate, versioned database
