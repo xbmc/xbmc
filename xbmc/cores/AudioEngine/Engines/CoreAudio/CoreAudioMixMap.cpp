@@ -69,6 +69,14 @@ void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout&
   {
     // Nothing else to do...a map already exists
     m_isValid = true;
+    
+    CLog::Log(LOGDEBUG, "CCoreAudioMixMap::Rebuild valid map");
+    for (int i = 0; i < m_outChannels; i++)
+    {
+      Float32 *vol = m_pMap + (i * m_outChannels + i);
+      CLog::Log(LOGDEBUG, "  chan %d = %f", i, *vol);
+    }
+    
     return;
   }
 
@@ -236,10 +244,13 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
   for (UInt32 i = 0; i < inputFormat->mChannelsPerFrame; ++i)
   {
     UInt32 j = 0;
+
     for (; j < fmt->mChannelsPerFrame; ++j)
     {
+      Float32 *volume = val + (i * fmt->mChannelsPerFrame + j);
+      CLog::Log(LOGDEBUG, "CCoreAudioMixMap::SetMixingMatrix setting channel %d to %f", (i + channelOffset) << 16, *volume);
       AudioUnitSetParameter(mixerUnit->GetUnit(),
-        kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *val++, 0);
+        kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *volume, 0);
     }
     // zero out additional outputs from this input
     for (; j < dims[1]; ++j)
