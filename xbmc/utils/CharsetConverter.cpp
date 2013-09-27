@@ -289,7 +289,7 @@ enum StdConversionType /* Keep it in sync with CCharsetConverter::CInnerConverte
 class CCharsetConverter::CInnerConverter
 {
 public:
-  static bool logicalToVisualBiDi(const std::string& stringSrc, std::string& stringDst, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped =NULL);
+  static bool logicalToVisualBiDi(const std::u32string& stringSrc, std::u32string& stringDst, FriBidiCharType base = FRIBIDI_TYPE_LTR);
   
   template<class INPUT,class OUTPUT>
   static bool stdConvert(StdConversionType convertType, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false);
@@ -366,13 +366,6 @@ bool CCharsetConverter::CInnerConverter::customConvert(const std::string& source
 
   return result;
 }
-
-
-#if defined(FRIBIDI_CHAR_SET_NOT_FOUND)
-#define FRIBIDI_UTF8 FRIBIDI_CHAR_SET_UTF8
-#else /* compatibility to older version */
-#define FRIBIDI_UTF8 FRIBIDI_CHARSET_UTF8
-#endif
 
 
 static struct SCharsetMapping
@@ -527,16 +520,15 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   return true;
 }
 
-bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::string& stringSrc, std::string& stringDst, FriBidiCharSet fribidiCharset, FriBidiCharType base /*= FRIBIDI_TYPE_LTR*/, bool* bWasFlipped /*=NULL*/)
+bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32string& stringSrc, std::u32string& stringDst, FriBidiCharType base /*= FRIBIDI_TYPE_LTR*/)
 {
   stringDst.clear();
-  if (bWasFlipped)
-    *bWasFlipped = false;
 
   const size_t srcLen = stringSrc.length();
   if (srcLen == 0)
     return true;
 
+  stringDst.reserve(srcLen);
   size_t lineStart = 0;
 
   // libfribidi is not threadsafe, so make sure we make it so
@@ -551,58 +543,22 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::string& 
     
     const size_t lineLen = lineEnd - lineStart;
 
-    // Convert from the selected charset to Unicode
-    FriBidiChar* logical = (FriBidiChar*) malloc((lineLen + 1) * sizeof(FriBidiChar));
-    if (logical == NULL)
+    FriBidiChar* visual = (FriBidiChar*) malloc((lineLen + 1) * sizeof(FriBidiChar));
+    if (visual == NULL)
     {
-      CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
-      return false;
-    }
-    int len = fribidi_charset_to_unicode(fribidiCharset, (char*) stringSrc.c_str() + lineStart, lineLen, logical);
-
-    FriBidiChar* visual = (FriBidiChar*) malloc((len + 1) * sizeof(FriBidiChar));
-    FriBidiLevel* levels = (FriBidiLevel*) malloc((len + 1) * sizeof(FriBidiLevel));
-    if (levels == NULL || visual == NULL)
-    {
-      free(logical);
       free(visual);
-      free(levels);
       CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
       return false;
     }
 
-    if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, levels))
+    if (fribidi_log2vis((const FriBidiChar*)(stringSrc.c_str() + lineStart), lineLen, &base, visual, NULL, NULL, NULL))
     {
       // Removes bidirectional marks
-      len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
-
-      // Apperently a string can get longer during this transformation
-      // so make sure we allocate the maximum possible character utf8
-      // can generate atleast, should cover all bases
-      char* result = new char[len*4];
-
-      // Convert back from Unicode to the charset
-      int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
-      assert(len2 <= len*4);
-      stringDst += result;
-      delete[] result;
-
-      // Check whether the string was flipped if one of the embedding levels is greater than 0
-      if (bWasFlipped && !*bWasFlipped)
-      {
-        for (int i = 0; i < len; i++)
-        {
-          if ((int) levels[i] > 0)
-          {
-            *bWasFlipped = true;
-            break;
-          }
-        }
-      }
+      const int newLen = fribidi_remove_bidi_marks(visual, lineLen, NULL, NULL, NULL);
+      if (newLen > 0)
+        stringDst.append((const char32_t*)visual, (size_t)newLen);
     }
-    free(logical);
     free(visual);
-    free(levels);
 
     lineStart = lineEnd;
   } while (lineStart < srcLen);
@@ -713,10 +669,11 @@ bool CCharsetConverter::utf8ToUtf32Visual(const std::string& utf8StringSrc, std:
 {
   if (bVisualBiDiFlip)
   {
-    std::string strFlipped;
-    if (!CInnerConverter::logicalToVisualBiDi(utf8StringSrc, strFlipped, FRIBIDI_UTF8, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF))
+    std::u32string converted;
+    if (!CInnerConverter::stdConvert(Utf8ToUtf32, utf8StringSrc, converted, failOnBadChar))
       return false;
-    return CInnerConverter::stdConvert(Utf8ToUtf32, strFlipped, utf32StringDst, failOnBadChar);
+
+    return CInnerConverter::logicalToVisualBiDi(converted, utf32StringDst, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF);
   }
   return CInnerConverter::stdConvert(Utf8ToUtf32, utf8StringSrc, utf32StringDst, failOnBadChar);
 }
@@ -745,12 +702,7 @@ bool CCharsetConverter::utf32ToW(const std::u32string& utf32StringSrc, std::wstr
 
 bool CCharsetConverter::utf32logicalToVisualBiDi(const std::u32string& logicalStringSrc, std::u32string& visualStringDst, bool forceLTRReadingOrder /*= false*/)
 {
-  visualStringDst.clear();
-  std::string utf8Str;
-  if (!utf32ToUtf8(logicalStringSrc, utf8Str, false))
-    return false;
-
-  return utf8ToUtf32Visual(utf8Str, visualStringDst, true, forceLTRReadingOrder);
+  return CInnerConverter::logicalToVisualBiDi(logicalStringSrc, visualStringDst, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF);
 }
 
 bool CCharsetConverter::wToUtf32(const std::wstring& wStringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)
@@ -770,15 +722,18 @@ bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& 
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
-    std::string strFlipped;
-    FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
-    CInnerConverter::logicalToVisualBiDi(utf8StringSrc, strFlipped, FRIBIDI_UTF8, charset);
-    return CInnerConverter::stdConvert(Utf8toW, strFlipped, wStringDst, failOnBadChar);
+    wStringDst.clear();
+    std::u32string utf32str;
+    if (!CInnerConverter::stdConvert(Utf8ToUtf32, utf8StringSrc, utf32str, failOnBadChar))
+      return false;
+
+    std::u32string utf32flipped;
+    const bool bidiResult = CInnerConverter::logicalToVisualBiDi(utf32str, utf32flipped, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF);
+
+    return CInnerConverter::stdConvert(Utf32ToW, utf32flipped, wStringDst, failOnBadChar) && bidiResult;
   }
-  else
-  {
-    return CInnerConverter::stdConvert(Utf8toW, utf8StringSrc, wStringDst, failOnBadChar);
-  }
+  
+  return CInnerConverter::stdConvert(Utf8toW, utf8StringSrc, wStringDst, failOnBadChar);
 }
 
 bool CCharsetConverter::subtitleCharsetToW(const std::string& stringSrc, std::wstring& wStringDst)
@@ -963,7 +918,12 @@ bool CCharsetConverter::isValidUtf8(const std::string& str)
 
 bool CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst)
 {
-  return CInnerConverter::logicalToVisualBiDi(utf8StringSrc, utf8StringDst, FRIBIDI_UTF8, FRIBIDI_TYPE_RTL);
+  utf8StringDst.clear();
+  std::u32string utf32flipped;
+  if (!utf8ToUtf32Visual(utf8StringSrc, utf32flipped, true, true, false))
+    return false;
+
+  return CInnerConverter::stdConvert(Utf32ToUtf8, utf32flipped, utf8StringDst, false);
 }
 
 void CCharsetConverter::SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current)
