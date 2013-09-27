@@ -31,6 +31,11 @@
         <setting id="videoscreen.fakefullscreen">
           <visible>false</visible>
         </setting>
+        <setting id="videoscreen.textures32" type="boolean" label="37020" help="36547">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="3">
         <setting id="videoscreen.vsync">
