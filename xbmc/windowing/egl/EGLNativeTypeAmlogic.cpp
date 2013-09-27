@@ -220,7 +220,7 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
 
   // setup gui freescale depending on display resolution
   DisableFreeScale();
-  if (modestr.Left(4).Equals("1080"))
+  if (StringUtils::StartsWith(modestr, "1080"))
   {
     EnableFreeScale();
   }

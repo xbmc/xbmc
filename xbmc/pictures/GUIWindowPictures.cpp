@@ -43,6 +43,7 @@
 #include "utils/URIUtils.h"
 #include "Autorun.h"
 #include "interfaces/AnnouncementManager.h"
+#include "utils/StringUtils.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
@@ -474,7 +475,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else
     {
-      if (item && !item->GetPath().Left(14).Equals("addons://more/"))
+      if (item && !StringUtils::StartsWithNoCase(item->GetPath(), "addons://more/"))
       {
         if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
           buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info

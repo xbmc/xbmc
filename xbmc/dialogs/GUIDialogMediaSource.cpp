@@ -36,6 +36,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "PasswordManager.h"
 #include "URL.h"
+#include "utils/StringUtils.h"
 
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
@@ -383,13 +384,13 @@ void CGUIDialogMediaSource::OnOK()
   VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(m_type);
   if (shares)
     shares->push_back(share);
-  if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
+  if (StringUtils::StartsWithNoCase(share.strPath, "plugin://") || CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
   {
     m_confirmed = true;
     Close();
     if (m_type == "video" && !URIUtils::IsLiveTV(share.strPath) && 
-        !share.strPath.Left(6).Equals("rss://") &&
-        !share.strPath.Left(7).Equals("upnp://"))
+        !StringUtils::StartsWithNoCase(share.strPath, "rss://") &&
+        !StringUtils::StartsWithNoCase(share.strPath, "upnp://"))
     {
       CGUIWindowVideoBase::OnAssignContent(share.strPath);
     }

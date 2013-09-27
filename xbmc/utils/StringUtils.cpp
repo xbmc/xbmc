@@ -536,7 +536,7 @@ long StringUtils::TimeStringToSeconds(const CStdString &timeString)
   CStdString strCopy(timeString);
   strCopy.TrimLeft(" \n\r\t");
   strCopy.TrimRight(" \n\r\t");
-  if(strCopy.Right(4).Equals(" min"))
+  if(StringUtils::EndsWithNoCase(strCopy, " min"))
   {
     // this is imdb format of "XXX min"
     return 60 * atoi(strCopy.c_str());

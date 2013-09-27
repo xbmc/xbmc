@@ -302,14 +302,14 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CFileItemList items;
     dir.GetDirectory(strPath,items);
     items[0]->m_strDVDLabel = GetDirectory(items[0]->GetPath());
-    if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+    if (StringUtils::StartsWithNoCase(items[0]->m_strDVDLabel, "rar://") || StringUtils::StartsWithNoCase(items[0]->m_strDVDLabel, "zip://"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
       items[i]->m_strDVDLabel = GetDirectory(items[i]->GetPath());
-      if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+      if (StringUtils::StartsWithNoCase(items[0]->m_strDVDLabel, "rar://") || StringUtils::StartsWithNoCase(items[0]->m_strDVDLabel, "zip://"))
         items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
       else
         items[i]->SetPath(items[i]->m_strDVDLabel);
@@ -525,7 +525,7 @@ bool URIUtils::IsOnLAN(const CStdString& strPath)
 
 bool URIUtils::IsMultiPath(const CStdString& strPath)
 {
-  return strPath.Left(10).Equals("multipath:");
+  return StringUtils::StartsWithNoCase(strPath, "multipath:");
 }
 
 bool URIUtils::IsHD(const CStdString& strFileName)
@@ -552,7 +552,7 @@ bool URIUtils::IsDVD(const CStdString& strFile)
     return true;
 
 #if defined(TARGET_WINDOWS)
-  if (strFile.Left(6).Equals("dvd://"))
+  if (StringUtils::StartsWithNoCase(strFile, "dvd://"))
     return true;
 
   if(strFile.Mid(1) != ":\\"
@@ -571,7 +571,7 @@ bool URIUtils::IsDVD(const CStdString& strFile)
 
 bool URIUtils::IsStack(const CStdString& strFile)
 {
-  return strFile.Left(6).Equals("stack:");
+  return StringUtils::StartsWithNoCase(strFile, "stack:");
 }
 
 bool URIUtils::IsRAR(const CStdString& strFile)
@@ -638,7 +638,7 @@ bool URIUtils::IsSpecial(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return strFile2.Left(8).Equals("special:");
+  return StringUtils::StartsWithNoCase(strFile2, "special:");
 }
 
 bool URIUtils::IsPlugin(const CStdString& strFile)
@@ -667,12 +667,12 @@ bool URIUtils::IsSourcesPath(const CStdString& strPath)
 
 bool URIUtils::IsCDDA(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("cdda:");
+  return StringUtils::StartsWithNoCase(strFile, "cdda:");
 }
 
 bool URIUtils::IsISO9660(const CStdString& strFile)
 {
-  return strFile.Left(8).Equals("iso9660:");
+  return StringUtils::StartsWithNoCase(strFile, "iso9660:");
 }
 
 bool URIUtils::IsSmb(const CStdString& strFile)
@@ -682,7 +682,7 @@ bool URIUtils::IsSmb(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return strFile2.Left(4).Equals("smb:");
+  return StringUtils::StartsWithNoCase(strFile2, "smb:");
 }
 
 bool URIUtils::IsURL(const CStdString& strFile)
@@ -697,8 +697,8 @@ bool URIUtils::IsFTP(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return strFile2.Left(4).Equals("ftp:")  ||
-         strFile2.Left(5).Equals("ftps:");
+  return StringUtils::StartsWithNoCase(strFile2, "ftp:")  ||
+         StringUtils::StartsWithNoCase(strFile2, "ftps:");
 }
 
 bool URIUtils::IsDAV(const CStdString& strFile)
@@ -708,8 +708,8 @@ bool URIUtils::IsDAV(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  return strFile2.Left(4).Equals("dav:")  ||
-         strFile2.Left(5).Equals("davs:");
+  return StringUtils::StartsWithNoCase(strFile2, "dav:")  ||
+         StringUtils::StartsWithNoCase(strFile2, "davs:");
 }
 
 bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */)
@@ -745,42 +745,42 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
 
 bool URIUtils::IsDAAP(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("daap:");
+  return StringUtils::StartsWithNoCase(strFile, "daap:");
 }
 
 bool URIUtils::IsUPnP(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("upnp:");
+  return StringUtils::StartsWithNoCase(strFile, "upnp:");
 }
 
 bool URIUtils::IsTuxBox(const CStdString& strFile)
 {
-  return strFile.Left(7).Equals("tuxbox:");
+  return StringUtils::StartsWithNoCase(strFile, "tuxbox:");
 }
 
 bool URIUtils::IsMythTV(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("myth:");
+  return StringUtils::StartsWithNoCase(strFile, "myth:");
 }
 
 bool URIUtils::IsHDHomeRun(const CStdString& strFile)
 {
-  return strFile.Left(10).Equals("hdhomerun:");
+  return StringUtils::StartsWithNoCase(strFile, "hdhomerun:");
 }
 
 bool URIUtils::IsSlingbox(const CStdString& strFile)
 {
-  return strFile.Left(6).Equals("sling:");
+  return StringUtils::StartsWithNoCase(strFile, "sling:");
 }
 
 bool URIUtils::IsVTP(const CStdString& strFile)
 {
-  return strFile.Left(4).Equals("vtp:");
+  return StringUtils::StartsWithNoCase(strFile, "vtp:");
 }
 
 bool URIUtils::IsHTSP(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("htsp:");
+  return StringUtils::StartsWithNoCase(strFile, "htsp:");
 }
 
 bool URIUtils::IsLiveTV(const CStdString& strFile)
@@ -793,8 +793,8 @@ bool URIUtils::IsLiveTV(const CStdString& strFile)
   || IsHDHomeRun(strFile)
   || IsSlingbox(strFile)
   || IsHTSP(strFile)
-  || strFile.Left(4).Equals("sap:")
-  ||(strFileWithoutSlash.Right(4).Equals(".pvr") && !strFileWithoutSlash.Left(16).Equals("pvr://recordings")))
+  || StringUtils::StartsWithNoCase(strFile, "sap:")
+  ||(StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !StringUtils::StartsWithNoCase(strFileWithoutSlash, "pvr://recordings")))
     return true;
 
   if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
@@ -808,13 +808,13 @@ bool URIUtils::IsPVRRecording(const CStdString& strFile)
   CStdString strFileWithoutSlash(strFile);
   RemoveSlashAtEnd(strFileWithoutSlash);
 
-  return strFileWithoutSlash.Right(4).Equals(".pvr") &&
-         strFile.Left(16).Equals("pvr://recordings");
+  return StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") &&
+         StringUtils::StartsWithNoCase(strFile, "pvr://recordings");
 }
 
 bool URIUtils::IsMusicDb(const CStdString& strFile)
 {
-  return strFile.Left(8).Equals("musicdb:");
+  return StringUtils::StartsWithNoCase(strFile, "musicdb:");
 }
 
 bool URIUtils::IsNfs(const CStdString& strFile)
@@ -824,7 +824,7 @@ bool URIUtils::IsNfs(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
   
-  return strFile2.Left(4).Equals("nfs:");
+  return StringUtils::StartsWithNoCase(strFile2, "nfs:");
 }
 
 bool URIUtils::IsAfp(const CStdString& strFile)
@@ -834,23 +834,23 @@ bool URIUtils::IsAfp(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
   
-  return strFile2.Left(4).Equals("afp:");
+  return StringUtils::StartsWithNoCase(strFile2, "afp:");
 }
 
 
 bool URIUtils::IsVideoDb(const CStdString& strFile)
 {
-  return strFile.Left(8).Equals("videodb:");
+  return StringUtils::StartsWithNoCase(strFile, "videodb:");
 }
 
 bool URIUtils::IsBluray(const CStdString& strFile)
 {
-  return strFile.Left(7).Equals("bluray:");
+  return StringUtils::StartsWithNoCase(strFile, "bluray:");
 }
 
 bool URIUtils::IsAndroidApp(const CStdString &path)
 {
-  return path.Left(11).Equals("androidapp:");
+  return StringUtils::StartsWithNoCase(path, "androidapp:");
 }
 
 bool URIUtils::IsLibraryFolder(const CStdString& strFile)

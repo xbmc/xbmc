@@ -25,6 +25,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
+#include "utils/StringUtils.h"
 
 using namespace PVR;
 
@@ -181,7 +182,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
     if (!group)
       group = GetGroupAllTV();
     if (group)
-      group->GetMembers(results, !fileName.Right(7).Equals(".hidden"));
+      group->GetMembers(results, !StringUtils::EndsWithNoCase(fileName, ".hidden"));
     return true;
   }
   else if (fileName.Left(15) == "channels/radio/")
@@ -192,7 +193,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
     if (!group)
       group = GetGroupAllRadio();
     if (group)
-      group->GetMembers(results, !fileName.Right(7).Equals(".hidden"));
+      group->GetMembers(results, !StringUtils::EndsWithNoCase(fileName, ".hidden"));
     return true;
   }
 

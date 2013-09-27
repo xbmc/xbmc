@@ -1061,14 +1061,14 @@ bool CGUIMediaWindow::OnClick(int iItem)
       g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
       return true;
     }
-    else if (pItem->GetPath().Left(19).Equals("newsmartplaylist://"))
+    else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://"))
     {
       m_vecItems->RemoveDiscCache(GetID());
       if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->GetPath().Mid(19)))
         Refresh();
       return true;
     }
-    else if (pItem->GetPath().Left(14).Equals("addons://more/"))
+    else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "addons://more/"))
     {
       CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->GetPath().Mid(14) + ",return)");
       return true;
@@ -1560,8 +1560,8 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
   // TODO: FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->GetPath().Equals("add") && !item->GetPath().Equals("newplaylist://") &&
-      !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->GetPath().Left(9).Equals("newtag://") &&
-      !item->GetPath().Left(14).Equals("addons://more/") && !item->GetPath().Left(14).Equals("musicsearch://"))
+      !StringUtils::StartsWithNoCase(item->GetPath(), "newsmartplaylist://") && !StringUtils::StartsWithNoCase(item->GetPath(), "newtag://") &&
+      !StringUtils::StartsWithNoCase(item->GetPath(), "addons://more/") && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
   {
     if (XFILE::CFavouritesDirectory::IsFavourite(item.get(), GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite

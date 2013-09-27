@@ -30,6 +30,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -133,7 +134,7 @@ void CVideoDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory
 
 bool CVideoDatabaseDirectory::IsAllItem(const CStdString& strDirectory)
 {
-  if (strDirectory.Right(4).Equals("/-1/"))
+  if (StringUtils::EndsWith(strDirectory, "/-1/"))
     return true;
   return false;
 }

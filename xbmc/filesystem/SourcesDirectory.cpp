@@ -28,6 +28,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "guilib/TextureManager.h"
 #include "storage/MediaManager.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 
@@ -65,7 +66,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
   {
     const CMediaSource& share = sources[i];
     CFileItemPtr pItem(new CFileItem(share));
-    if (pItem->GetPath().Left(14).Equals("musicsearch://"))
+    if (StringUtils::StartsWithNoCase(pItem->GetPath(), "musicsearch://"))
       pItem->SetCanQueue(false);
     
     CStdString strIcon;

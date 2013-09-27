@@ -537,7 +537,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
 
 void CPeripherals::GetDirectory(const CStdString &strPath, CFileItemList &items) const
 {
-  if (!strPath.Left(14).Equals("peripherals://"))
+  if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
     return;
 
   CStdString strPathCut = strPath.Right(strPath.length() - 14);
@@ -553,7 +553,7 @@ void CPeripherals::GetDirectory(const CStdString &strPath, CFileItemList &items)
 
 CPeripheral *CPeripherals::GetByPath(const CStdString &strPath) const
 {
-  if (!strPath.Left(14).Equals("peripherals://"))
+  if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
     return NULL;
 
   CStdString strPathCut = strPath.Right(strPath.length() - 14);

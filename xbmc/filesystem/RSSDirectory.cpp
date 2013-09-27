@@ -521,10 +521,10 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
       item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));    
 
     /* handling of mimetypes fo directories are sub optimal at best */
-    if(best->mime == "application/rss+xml" && item->GetPath().Left(7).Equals("http://"))
+    if(best->mime == "application/rss+xml" && StringUtils::StartsWithNoCase(item->GetPath(), "http://"))
       item->SetPath("rss://" + item->GetPath().Mid(7));
 
-    if(item->GetPath().Left(6).Equals("rss://"))
+    if(StringUtils::StartsWithNoCase(item->GetPath(), "rss://"))
       item->m_bIsFolder = true;
     else
       item->m_bIsFolder = false;

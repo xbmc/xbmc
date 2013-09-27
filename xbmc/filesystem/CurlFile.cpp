@@ -42,6 +42,7 @@
 #include "SpecialProtocol.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 using namespace XCURL;
@@ -1099,7 +1100,7 @@ bool CCurlFile::Exists(const CURL& url)
   {
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
     // nocwd is less standard, will return empty list for non-existed remote dir on some ftp server, avoid it.
-    if (url2.GetFileName().Right(1).Equals("/"))
+    if (StringUtils::EndsWith(url2.GetFileName(), "/"))
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_SINGLECWD);
     else
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
@@ -1250,7 +1251,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   if(url2.GetProtocol() == "ftp")
   {
     // nocwd is less standard, will return empty list for non-existed remote dir on some ftp server, avoid it.
-    if (url2.GetFileName().Right(1).Equals("/"))
+    if (StringUtils::EndsWith(url2.GetFileName(), "/"))
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_SINGLECWD);
     else
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);

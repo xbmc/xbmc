@@ -28,6 +28,7 @@
 #include "Key.h"
 #include "TextureCache.h"
 #include "WindowIDs.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -298,7 +299,7 @@ bool CGUIMultiImage::CMultiImageJob::DoWork()
   // check to see if we have a single image or a folder of images
   CFileItem item(m_path, false);
   item.FillInMimeType();
-  if (item.IsPicture() || item.GetMimeType().Left(6).Equals("image/"))
+  if (item.IsPicture() || StringUtils::StartsWithNoCase(item.GetMimeType(), "image/"))
   {
     m_files.push_back(m_path);
   }
@@ -316,7 +317,7 @@ bool CGUIMultiImage::CMultiImageJob::DoWork()
     for (int i=0; i < items.Size(); i++)
     {
       CFileItem* pItem = items[i].get();
-      if (pItem && (pItem->IsPicture() || pItem->GetMimeType().Left(6).Equals("image/")))
+      if (pItem && (pItem->IsPicture() || StringUtils::StartsWithNoCase(pItem->GetMimeType(), "image/")))
         m_files.push_back(pItem->GetPath());
     }
   }

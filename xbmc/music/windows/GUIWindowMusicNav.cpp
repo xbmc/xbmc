@@ -305,14 +305,14 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   }
 
   // update our content in the info manager
-  if (strDirectory.Left(10).Equals("videodb://"))
+  if (StringUtils::StartsWithNoCase(strDirectory, "videodb://"))
   {
     CVideoDatabaseDirectory dir;
     VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
     if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS)
       items.SetContent("musicvideos");
   }
-  else if (strDirectory.Left(10).Equals("musicdb://"))
+  else if (StringUtils::StartsWithNoCase(strDirectory, "musicdb://"))
   {
     CMusicDatabaseDirectory dir;
     NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
@@ -358,11 +358,11 @@ void CGUIWindowMusicNav::UpdateButtons()
     {
       CFileItemPtr pItem = m_vecItems->Get(i);
       if (pItem->IsParentFolder()) iItems--;
-      if (pItem->GetPath().Left(4).Equals("/-1/")) iItems--;
+      if (StringUtils::StartsWith(pItem->GetPath(), "/-1/")) iItems--;
     }
     // or the last item
     if (m_vecItems->Size() > 2 &&
-      m_vecItems->Get(m_vecItems->Size()-1)->GetPath().Left(4).Equals("/-1/"))
+      StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
   CStdString items;
@@ -430,7 +430,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
-  if (item && !item->GetPath().Left(14).Equals("addons://more/"))
+  if (item && !StringUtils::StartsWithNoCase(item->GetPath(), "addons://more/"))
   {
     // are we in the playlists location?
     bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::MusicPlaylistsLocation()) ||
@@ -458,7 +458,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
                               dir.IsArtistDir(item->GetPath())   )      &&
              !dir.IsAllItem(item->GetPath()) && !item->IsParentFolder() &&
              !item->IsPlugin() && !item->IsScript() &&
-             !item->GetPath().Left(14).Equals("musicsearch://"))
+             !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
     {
       if (dir.IsArtistDir(item->GetPath()))
         buttons.Add(CONTEXT_BUTTON_INFO, 21891);
@@ -469,7 +469,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     // enable query all albums button only in album view
     if (dir.HasAlbumInfo(item->GetPath()) && !dir.IsAllItem(item->GetPath()) &&
         item->m_bIsFolder && !item->IsVideoDb() && !item->IsParentFolder()   &&
-       !item->IsPlugin() && !item->GetPath().Left(14).Equals("musicsearch://"))
+       !item->IsPlugin() && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
     }

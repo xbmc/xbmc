@@ -1925,7 +1925,7 @@ namespace VIDEO
     {
       strCheck = strDirectory;
       URIUtils::RemoveSlashAtEnd(strCheck);
-      if (URIUtils::GetFileName(strCheck).size() == 3 && URIUtils::GetFileName(strCheck).Left(2).Equals("cd"))
+      if (URIUtils::GetFileName(strCheck).size() == 3 && StringUtils::StartsWithNoCase(URIUtils::GetFileName(strCheck), "cd"))
         strDirectory = URIUtils::GetDirectory(strCheck);
     }
     return strDirectory;

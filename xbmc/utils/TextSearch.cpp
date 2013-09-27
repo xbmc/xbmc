@@ -84,7 +84,7 @@ void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNe
 {
   CStdString strFindNext(" ");
 
-  if (strSearchTerm.Left(1).Equals("\""))
+  if (StringUtils::EndsWith(strSearchTerm, "\""))
   {
     strSearchTerm.erase(0, 1);
     strFindNext = "\"";
@@ -119,19 +119,19 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
   {
     strParsedSearchTerm = strParsedSearchTerm.TrimLeft();
 
-    if (strParsedSearchTerm.Left(1).Equals("!") || strParsedSearchTerm.Left(3).Equals("NOT"))
+    if (StringUtils::StartsWith(strParsedSearchTerm, "!") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "not"))
     {
       CStdString strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
       bNextNOT = true;
     }
-    else if (strParsedSearchTerm.Left(1).Equals("+") || strParsedSearchTerm.Left(3).Equals("AND"))
+    else if (StringUtils::StartsWith(strParsedSearchTerm, "+") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "and"))
     {
       CStdString strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
       bNextAND = true;
     }
-    else if (strParsedSearchTerm.Left(1).Equals("|") || strParsedSearchTerm.Left(2).Equals("OR"))
+    else if (StringUtils::StartsWith(strParsedSearchTerm, "|") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "or"))
     {
       CStdString strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
