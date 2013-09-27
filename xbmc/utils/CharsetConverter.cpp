@@ -300,6 +300,7 @@ public:
   static bool convert(iconv_t type, int multiplier, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false);
 
   static CConverterType m_stdConversion[NumberOfStdConversionTypes];
+  static CCriticalSection m_critSectionFriBiDi;
 };
 
 /* single symbol sizes in chars */
@@ -324,6 +325,8 @@ CConverterType CCharsetConverter::CInnerConverter::m_stdConversion[NumberOfStdCo
   /* Utf8ToSystem */        CConverterType(UTF8_SOURCE,     SystemCharset),
   /* Ucs2CharsetToUtf8 */   CConverterType("UCS-2LE",       "UTF-8", CCharsetConverter::m_Utf8CharMaxSize)
 };
+
+CCriticalSection CCharsetConverter::CInnerConverter::m_critSectionFriBiDi;
 
 
 
@@ -371,7 +374,6 @@ bool CCharsetConverter::CInnerConverter::customConvert(const std::string& source
 #define FRIBIDI_UTF8 FRIBIDI_CHARSET_UTF8
 #endif
 
-static CCriticalSection            m_critSection;
 
 static struct SCharsetMapping
 {
@@ -528,29 +530,35 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
 bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::string& stringSrc, std::string& stringDst, FriBidiCharSet fribidiCharset, FriBidiCharType base /*= FRIBIDI_TYPE_LTR*/, bool* bWasFlipped /*=NULL*/)
 {
   stringDst.clear();
-  std::vector<std::string> lines = StringUtils::Split(stringSrc, "\n");
-
   if (bWasFlipped)
     *bWasFlipped = false;
 
-  // libfribidi is not threadsafe, so make sure we make it so
-  CSingleLock lock(m_critSection);
+  const size_t srcLen = stringSrc.length();
+  if (srcLen == 0)
+    return true;
 
-  const size_t numLines = lines.size();
-  for (size_t i = 0; i < numLines; i++)
+  size_t lineStart = 0;
+
+  // libfribidi is not threadsafe, so make sure we make it so
+  CSingleLock lock(m_critSectionFriBiDi);
+  do
   {
-    int sourceLen = lines[i].length();
-    if (sourceLen == 0)
-      continue;
+    size_t lineEnd = stringSrc.find('\n', lineStart);
+    if (lineEnd >= srcLen) // equal to 'lineEnd == std::string::npos'
+      lineEnd = srcLen;
+    else
+      lineEnd++; // include '\n'
+    
+    const size_t lineLen = lineEnd - lineStart;
 
     // Convert from the selected charset to Unicode
-    FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
+    FriBidiChar* logical = (FriBidiChar*) malloc((lineLen + 1) * sizeof(FriBidiChar));
     if (logical == NULL)
     {
       CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
       return false;
     }
-    int len = fribidi_charset_to_unicode(fribidiCharset, (char*) lines[i].c_str(), sourceLen, logical);
+    int len = fribidi_charset_to_unicode(fribidiCharset, (char*) stringSrc.c_str() + lineStart, lineLen, logical);
 
     FriBidiChar* visual = (FriBidiChar*) malloc((len + 1) * sizeof(FriBidiChar));
     FriBidiLevel* levels = (FriBidiLevel*) malloc((len + 1) * sizeof(FriBidiLevel));
@@ -592,13 +600,14 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::string& 
         }
       }
     }
-
     free(logical);
     free(visual);
     free(levels);
-  }
 
-  return true;
+    lineStart = lineEnd;
+  } while (lineStart < srcLen);
+
+  return !stringDst.empty();
 }
 
 CCharsetConverter::CCharsetConverter()
