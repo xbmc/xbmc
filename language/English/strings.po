@@ -14940,6 +14940,11 @@ msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
 msgstr ""
 
+#: system/settings/rbp.xml
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr ""
+
 #empty strings from id 36547 to 36999
 #reserved strings 365XX
 
@@ -15007,6 +15012,11 @@ msgid "Enables system keys like printscreen, alt-tab and volume keys when in ful
 #: system/settings/rbp.xml
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
 msgstr ""
 
 #: system/settings/rbp.xml
