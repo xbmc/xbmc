@@ -756,14 +756,14 @@ bool CCharsetConverter::wToUtf32(const std::wstring& wStringSrc, std::u32string&
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
 // of the string is already made or the string is not displayed in the GUI
 bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst, bool bVisualBiDiFlip /*= true*/, 
-                                bool forceLTRReadingOrder /*= false*/, bool failOnBadChar /*= false*/, bool* bWasFlipped /*= NULL*/)
+                                bool forceLTRReadingOrder /*= false*/, bool failOnBadChar /*= false*/)
 {
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
     std::string strFlipped;
     FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
-    CInnerConverter::logicalToVisualBiDi(utf8StringSrc, strFlipped, FRIBIDI_UTF8, charset, bWasFlipped);
+    CInnerConverter::logicalToVisualBiDi(utf8StringSrc, strFlipped, FRIBIDI_UTF8, charset);
     return CInnerConverter::stdConvert(Utf8toW, strFlipped, wStringDst, failOnBadChar);
   }
   else
