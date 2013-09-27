@@ -2894,10 +2894,7 @@ void COutput::Flush()
     if (msg->signal == CMixerDataProtocol::PICTURE)
     {
       CVdpauProcessedPicture pic = *(CVdpauProcessedPicture*)msg->data;
-      if (pic.DVDPic.format == RENDER_FMT_VDPAU_420)
-      {
-        m_config.videoSurfaces->ClearRender(pic.videoSurface);
-      }
+      m_bufferPool.processedPics.push(pic);
     }
     msg->Release();
   }
@@ -2944,6 +2941,21 @@ void COutput::Flush()
       }
       m_config.videoSurfaces->MarkRender(it2->second.sourceVuv);
     }
+  }
+
+  // clear processed pics
+  while(!m_bufferPool.processedPics.empty())
+  {
+    CVdpauProcessedPicture procPic = m_bufferPool.processedPics.front();
+    if (procPic.DVDPic.format == RENDER_FMT_VDPAU)
+    {
+      m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER, &procPic.outputSurface, sizeof(procPic.outputSurface));
+    }
+    else if (procPic.DVDPic.format == RENDER_FMT_VDPAU_420)
+    {
+      m_config.videoSurfaces->ClearRender(procPic.videoSurface);
+    }
+    m_bufferPool.processedPics.pop();
   }
 }
 
