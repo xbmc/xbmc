@@ -756,6 +756,13 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
       else
         continue;
     }
+    else if (written > maxFrames)
+    {
+      m_extError = true;
+      CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - sink returned error");
+      m_stats->UpdateSinkDelay(0, samples->pool ? maxFrames : 0);
+      return 0;
+    }
     frames -= written;
     buffer += written*m_sinkFormat.m_frameSize;
     sinkDelay = m_sink->GetDelay();
