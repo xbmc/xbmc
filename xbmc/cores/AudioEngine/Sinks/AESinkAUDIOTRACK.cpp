@@ -83,11 +83,11 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_draining = false;
   m_audiotrackbuffer_sec = 0.0;
   m_audiotrack_empty_sec = 0.0;
+  m_audiotrack_empty_sec_tweaks = 0.0;
 #if defined(HAS_LIBAMCODEC)
   if (aml_present())
     m_audiotrack_empty_sec_tweaks = 0.250;
 #endif
-  m_audiotrack_empty_sec_tweaks = 0.0;
   m_volume = 1.0;
 }
 
