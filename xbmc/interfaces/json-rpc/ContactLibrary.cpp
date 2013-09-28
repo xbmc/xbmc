@@ -44,7 +44,7 @@ JSONRPC_STATUS CContactLibrary::GetContacts(const CStdString &method, ITransport
         return InternalError;
     
     CContactDbUrl contactUrl;
-    contactUrl.FromString("contactdb://albums/");
+    contactUrl.FromString("contactdb://contacts/");
     int artistID = -1, genreID = -1;
     const CVariant &filter = parameterObject["filter"];
     if (filter.isMember("artistid"))

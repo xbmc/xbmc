@@ -36,6 +36,7 @@
 #include "video/VideoDatabase.h"
 #include "music/MusicDatabase.h"
 #include "pictures/PictureDatabase.h"
+#include "contacts/ContactDatabase.h"
 #include "utils/TuxBoxUtil.h"
 #include "epg/Epg.h"
 #include "pvr/channels/PVRChannel.h"
@@ -46,12 +47,14 @@
 #include "threads/SingleLock.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/tags/PictureInfoTag.h"
+#include "contacts/tags/ContactInfoTag.h"
 #include "music/Artist.h"
 #include "music/Album.h"
 #include "music/Song.h"
 #include "pictures/Face.h"
 #include "pictures/PictureAlbum.h"
 #include "pictures/Picture.h"
+#include "contacts/Contact.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -69,6 +72,7 @@ using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
 using namespace PICTURE_INFO;
+using namespace CONTACT_INFO;
 using namespace PVR;
 using namespace EPG;
 
@@ -79,6 +83,7 @@ using namespace EPG;
 CFileItem::CFileItem(const CPicture& picture)
 {
     m_musicInfoTag = NULL;
+  m_contactInfoTag = NULL;
     m_videoInfoTag = NULL;
     m_epgInfoTag = NULL;
     m_pvrChannelInfoTag = NULL;
@@ -90,9 +95,24 @@ CFileItem::CFileItem(const CPicture& picture)
     SetFromPicture(picture);
 }
 
+CFileItem::CFileItem(const CContact& contact)
+{
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_epgInfoTag = NULL;
+  m_pvrChannelInfoTag = NULL;
+  m_pvrRecordingInfoTag = NULL;
+  m_pvrTimerInfoTag = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+  
+  SetFromContact(contact);
+}
+
 
 CFileItem::CFileItem(const CSong& song)
 {
+    m_contactInfoTag = NULL;
   m_musicInfoTag = NULL;
     m_pictureInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -108,6 +128,7 @@ CFileItem::CFileItem(const CSong& song)
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
 {
+    m_contactInfoTag = NULL;
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_epgInfoTag = NULL;
@@ -124,6 +145,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
 
 CFileItem::CFileItem(const CStdString &path, const CPictureAlbum& album)
 {
+    m_contactInfoTag = NULL;
     m_musicInfoTag = NULL;
     m_videoInfoTag = NULL;
     m_epgInfoTag = NULL;
@@ -140,6 +162,7 @@ CFileItem::CFileItem(const CStdString &path, const CPictureAlbum& album)
 
 CFileItem::CFileItem(const PICTURE_INFO::CPictureInfoTag& picture)
 {
+    m_contactInfoTag = NULL;
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_epgInfoTag = NULL;
@@ -157,9 +180,31 @@ CFileItem::CFileItem(const PICTURE_INFO::CPictureInfoTag& picture)
   
 }
 
+CFileItem::CFileItem(const CONTACT_INFO::CContactInfoTag& contact)
+{
+  m_pictureInfoTag = NULL;
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_epgInfoTag = NULL;
+  m_pvrChannelInfoTag = NULL;
+  m_pvrRecordingInfoTag = NULL;
+  m_pvrTimerInfoTag = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+  SetLabel(contact.GetTitle());
+  m_strPath = contact.GetURL();
+  m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
+  *GetContactInfoTag() = contact;
+  FillInDefaultIcon();
+  FillInMimeType(false);
+  
+}
+
+
 
 CFileItem::CFileItem(const CMusicInfoTag& music)
 {
+    m_contactInfoTag = NULL;
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_epgInfoTag = NULL;
@@ -178,6 +223,7 @@ CFileItem::CFileItem(const CMusicInfoTag& music)
 
 CFileItem::CFileItem(const CVideoInfoTag& movie)
 {
+    m_contactInfoTag = NULL;
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_epgInfoTag = NULL;
@@ -192,6 +238,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
 
 CFileItem::CFileItem(const CEpgInfoTag& tag)
 {
+    m_contactInfoTag = NULL;
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_epgInfoTag = NULL;
@@ -217,6 +264,7 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
 
 CFileItem::CFileItem(const CPVRChannel& channel)
 {
+    m_contactInfoTag = NULL;
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_epgInfoTag = NULL;
@@ -575,6 +623,18 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_pictureInfoTag = NULL;
   }
 
+  if (item.HasContactInfoTag())
+  {
+    m_contactInfoTag = GetContactInfoTag();
+    if (m_contactInfoTag)
+      *m_contactInfoTag = *item.m_contactInfoTag;
+  }
+  else
+  {
+    delete m_contactInfoTag;
+    m_contactInfoTag = NULL;
+  }
+  
   m_lStartOffset = item.m_lStartOffset;
   m_lStartPartNumber = item.m_lStartPartNumber;
   m_lEndOffset = item.m_lEndOffset;
@@ -623,6 +683,8 @@ void CFileItem::Reset()
   m_iHasLock = 0;
   m_bCanQueue=true;
   m_mimetype = "";
+  delete m_contactInfoTag;
+  m_contactInfoTag = NULL;
   delete m_musicInfoTag;
   m_musicInfoTag=NULL;
   delete m_videoInfoTag;
@@ -693,6 +755,13 @@ void CFileItem::Archive(CArchive& ar)
     }
     else
       ar << 0;
+    if (m_contactInfoTag)
+    {
+      ar << 1;
+      ar << *m_contactInfoTag;
+    }
+    else
+      ar << 0;
   }
   else
   {
@@ -757,6 +826,8 @@ void CFileItem::Serialize(CVariant& value) const
 
   if (m_pictureInfoTag)
     (*m_pictureInfoTag).Serialize(value["pictureInfoTag"]);
+  if (m_contactInfoTag)
+    (*m_contactInfoTag).Serialize(value["contactInfoTag"]);
 }
 
 void CFileItem::ToSortable(SortItem &sortable)
@@ -792,9 +863,12 @@ void CFileItem::ToSortable(SortItem &sortable)
         sortable[FieldNumberOfWatchedEpisodes] = GetProperty("unwatchedepisodes");
     }
   }
-    
+  
   if (HasPictureInfoTag())
     GetPictureInfoTag()->ToSortable(sortable);
+
+  if (HasContactInfoTag())
+    GetContactInfoTag()->ToSortable(sortable);
 
   if (HasPVRChannelInfoTag())
     GetPVRChannelInfoTag()->ToSortable(sortable);
@@ -937,6 +1011,18 @@ bool CFileItem::IsPicture() const
   return CUtil::IsPicture(m_strPath);
 }
 
+bool CFileItem::IsContact() const
+{
+  if( m_mimetype.Left(6).Equals("image/") )
+    return true;
+  
+  if (HasContactInfoTag()) return true;
+  if (HasPictureInfoTag()) return false;
+  if (HasMusicInfoTag()) return false;
+  if (HasVideoInfoTag()) return false;
+  
+  return CUtil::IsPicture(m_strPath);
+}
 bool CFileItem::IsLyrics() const
 {
   return URIUtils::HasExtension(m_strPath, ".cdg|.lrc");
@@ -1230,6 +1316,11 @@ bool CFileItem::IsPictureDb() const
   CURL url(m_strPath);
   return url.GetProtocol().Equals("picturedb");
 }
+bool CFileItem::IsContactDb() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("contactdb");
+}
 
 bool CFileItem::IsVideoDb() const
 {
@@ -1317,6 +1408,11 @@ void CFileItem::FillInDefaultIcon()
       {
         // picture
         SetIconImage("DefaultPicture.png");
+      }
+      else if ( IsContact() )
+      {
+        // picture
+        SetIconImage("DefaultContact.png");
       }
       else if ( IsPlayList() )
       {
@@ -1612,6 +1708,18 @@ void CFileItem::SetFromPicture(const CPicture &picture)
     if (!picture.strThumb.empty())
         SetArt("thumb", picture.strThumb);
     FillInMimeType(false);
+}
+void CFileItem::SetFromContact(const CContact &contact)
+{
+  if (!contact.strTitle.empty())
+    SetLabel(contact.strTitle);
+  if (!contact.strFileName.empty())
+    m_strPath = contact.strFileName;
+  GetContactInfoTag()->SetContact(contact);
+  m_lStartPartNumber = 1;
+  if (!contact.strThumb.empty())
+    SetArt("thumb", contact.strThumb);
+  FillInMimeType(false);
 }
 /////////////////////////////////////////////////////////////////////////////////
 /////
@@ -2818,6 +2926,52 @@ CStdString CFileItem::GetUserPictureThumb(bool alwaysCheckRemote /* = false */, 
   return "";
 }
 
+CStdString CFileItem::GetUserContactThumb(bool alwaysCheckRemote /* = false */, bool fallbackToFolder /* = false */) const
+{
+  if (m_strPath.IsEmpty()
+      || m_strPath.Left(19).Equals("newsmartplaylist://")
+      || m_strPath.Left(14).Equals("newplaylist://")
+      || m_bIsShareOrDrive
+      || IsInternetStream()
+      || URIUtils::IsUPnP(m_strPath)
+      || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+      || IsPlugin()
+      || IsAddonsPath()
+      || IsParentFolder()
+      || IsPictureDb())
+    return "";
+  
+  // we first check for <filename>.tbn or <foldername>.tbn
+  CStdString fileThumb(GetTBNFile());
+  if (CFile::Exists(fileThumb))
+    return fileThumb;
+  
+  // Fall back to folder thumb, if requested
+  if (!m_bIsFolder && fallbackToFolder)
+  {
+    CFileItem item(URIUtils::GetDirectory(m_strPath), true);
+    return item.GetUserContactThumb(alwaysCheckRemote);
+  }
+  
+  // if a folder, check for folder.jpg
+  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CSettings::Get().GetBool("contactfiles.findremotethumbs")))
+  {
+    CStdStringArray thumbs;
+    //    StringUtils::SplitString(g_advancedSettings.m_pictureThumbs, "|", thumbs);
+    for (unsigned int i = 0; i < thumbs.size(); ++i)
+    {
+      CStdString folderThumb(GetFolderThumb(thumbs[i]));
+      if (CFile::Exists(folderThumb))
+      {
+        return folderThumb;
+      }
+    }
+  }
+  
+  // No thumb found
+  return "";
+}
+
 
 // Gets the .tbn filename from a file or folder name.
 // <filename>.ext -> <filename>.tbn
@@ -3276,6 +3430,14 @@ CPictureInfoTag* CFileItem::GetPictureInfoTag()
     m_pictureInfoTag = new CPictureInfoTag;
 
   return m_pictureInfoTag;
+}
+
+CContactInfoTag* CFileItem::GetContactInfoTag()
+{
+  if (!m_contactInfoTag)
+    m_contactInfoTag = new CContactInfoTag;
+  
+  return m_contactInfoTag;
 }
 
 MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()

@@ -56,6 +56,13 @@ namespace PICTURE_INFO {
     class CPictureInfoTag;
 }
 
+namespace CONTACT_INFO {
+  class CContactInfoTag;
+}
+class CContact;
+class CPhone;
+class CEmail;
+
 class CAlbum;
 class CArtist;
 class CSong;
@@ -65,6 +72,7 @@ class CPictureAlbum;
 class CFace;
 class CPicture;
 class CLocation;
+
 
 class CURL;
 
@@ -104,12 +112,16 @@ public:
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
   CFileItem(const CPicture& picture);
+  CFileItem(const CContact& contact);
+  CFileItem(const CPhone& phone);
+  CFileItem(const CEmail& email);
   CFileItem(const CStdString &path, const CPictureAlbum& album);
     /*
   CFileItem(const CFace& face);
   CFileItem(const CLocation& location);
      */
   CFileItem(const PICTURE_INFO::CPictureInfoTag& picture);
+  CFileItem(const CONTACT_INFO::CContactInfoTag& contact);
   CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
   CFileItem(const EPG::CEpgInfoTag& tag);
@@ -148,6 +160,7 @@ public:
    */
   bool IsPicture() const;
   bool IsLyrics() const;
+  bool IsContact() const;
 
   /*!
    \brief Check whether an item is an audio item. Note that this returns true for
@@ -192,6 +205,7 @@ public:
   bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsPictureDb() const;
+  bool IsContactDb() const;
   bool IsVideoDb() const;
   bool IsEPG() const;
   bool IsPVRChannel() const;
@@ -310,6 +324,18 @@ public:
     return m_pictureInfoTag;
   }
 
+  inline bool HasContactInfoTag() const
+  {
+    return m_contactInfoTag != NULL;
+  }
+  
+  inline const CONTACT_INFO::CContactInfoTag* GetContactInfoTag() const
+  {
+    return m_contactInfoTag;
+  }
+  
+  CONTACT_INFO::CContactInfoTag* GetContactInfoTag();
+
   PICTURE_INFO::CPictureInfoTag* GetPictureInfoTag();
 
   /*!
@@ -358,6 +384,8 @@ public:
 
   // Gets the user thumb, if it exists
   CStdString GetUserPictureThumb(bool alwaysCheckRemote = false, bool fallbackToFolder = false) const;
+  // Gets the user thumb, if it exists
+  CStdString GetUserContactThumb(bool alwaysCheckRemote = false, bool fallbackToFolder = false) const;
   
   /*! \brief Get the path where we expect local metadata to reside.
    For a folder, this is just the existing path (eg tvshow folder)
@@ -439,7 +467,8 @@ public:
      \param song song details to use and set
      */
     void SetFromPicture(const CPicture &picture);
-    
+  void SetFromContact(const CContact &contact);
+  
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
   int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
@@ -472,6 +501,7 @@ private:
   PVR::CPVRRecording* m_pvrRecordingInfoTag;
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   PICTURE_INFO::CPictureInfoTag* m_pictureInfoTag;
+  CONTACT_INFO::CContactInfoTag* m_contactInfoTag;
   bool m_bIsAlbum;
 };
 
