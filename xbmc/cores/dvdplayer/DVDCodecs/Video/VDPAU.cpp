@@ -943,7 +943,7 @@ void CDecoder::FFDrawSlice(struct AVCodecContext *s,
       return;
   }
 
-//  uint64_t startTime = CurrentHostCounter();
+  uint64_t startTime = CurrentHostCounter();
   uint16_t decoded, processed, rend;
   vdp->m_bufferStats.Get(decoded, processed, rend);
   vdp_st = vdp->m_vdpauConfig.vdpProcs.vdp_decoder_render(vdp->m_vdpauConfig.vdpDecoder,
@@ -952,10 +952,9 @@ void CDecoder::FFDrawSlice(struct AVCodecContext *s,
                                    vdp->m_hwContext.bitstream_buffers_used,
                                    vdp->m_hwContext.bitstream_buffers);
   vdp->CheckStatus(vdp_st, __LINE__);
-//  uint64_t diff = CurrentHostCounter() - startTime;
-//  if (diff*1000/CurrentHostFrequency() > 30)
-//    CLog::Log(LOGWARNING,"CVDPAU::DrawSlice - VdpDecoderRender long decoding: %d ms, dec: %d, proc: %d, rend: %d", (int)((diff*1000)/CurrentHostFrequency()), decoded, processed, rend);
-
+  uint64_t diff = CurrentHostCounter() - startTime;
+  if (diff*1000/CurrentHostFrequency() > 30)
+    CLog::Log(LOGDEBUG, "CVDPAU::DrawSlice - VdpDecoderRender long decoding: %d ms, dec: %d, proc: %d, rend: %d", (int)((diff*1000)/CurrentHostFrequency()), decoded, processed, rend);
 }
 
 
