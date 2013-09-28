@@ -298,7 +298,7 @@ std::vector<int> CJNIMediaCodecInfoCodecCapabilities::colorFormats() const
 {
   JNIEnv *env = xbmc_jnienv();
 
-  jhintArray colorFormats = get_field<jhintArray>(m_object, "numBytesOfEncryptedData");
+  jhintArray colorFormats = get_field<jhintArray>(m_object, "colorFormats");
   jsize size = env->GetArrayLength(colorFormats.get());
   std::vector<int> intarray;
   intarray.resize(size);
