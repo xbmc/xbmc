@@ -25,6 +25,7 @@
 #include <fcntl.h>
 #include <string>
 
+#include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -104,34 +105,16 @@ int aml_get_cputype()
   static int aml_cputype = -1;
   if (aml_cputype == -1)
   {
-    // defualt to m1 SoC
-    aml_cputype = 1;
+    std::string cpu_hardware = g_cpuInfo.getCPUHardware();
 
-    FILE *cpuinfo_fd = fopen("/proc/cpuinfo", "r");
-    if (cpuinfo_fd)
-    {
-      char buffer[512];
-      while (fgets(buffer, sizeof(buffer), cpuinfo_fd))
-      {
-        std::string stdbuffer(buffer);
-        if (stdbuffer.find("MESON-M3") != std::string::npos)
-        {
-          aml_cputype = 3;
-          break;
-        }
-        else if (stdbuffer.find("MESON3") != std::string::npos)
-        {
-          aml_cputype = 3;
-          break;
-        }
-        else if (stdbuffer.find("Meson6") != std::string::npos)
-        {
-          aml_cputype = 6;
-          break;
-        }
-      }
-      fclose(cpuinfo_fd);
-    }
+    // default to AMLogic M1
+    aml_cputype = 1;
+    if (cpu_hardware.find("MESON-M3") != std::string::npos)
+      aml_cputype = 3;
+    else if (cpu_hardware.find("MESON3") != std::string::npos)
+      aml_cputype = 3;
+    else if (cpu_hardware.find("Meson6") != std::string::npos)
+      aml_cputype = 6;
   }
 
   return aml_cputype;
