@@ -11,7 +11,7 @@
 <!-- file to play when the action occurs.                                   -->
 
 <!-- Valid entries for <name> can be found at                               -->
-<!-- http://manual.xboxmediacenter.de/wakka.php?wakka=KeyMappingXML&v=6gu   -->
+<!-- http://wiki.xbmc.org/index.php?title=Keymap                            -->
 
 
 <!-- Also window specific sound can be played                               -->
@@ -27,7 +27,7 @@
 <!-- by setting the file to play.                                           -->
 
 <!-- Valid entries for <name> can be found at                               -->
-<!-- http://manual.xboxmediacenter.de/wakka.php?wakka=WindowList&v=13k6     -->
+<!-- http://wiki.xbmc.org/?title=Window_IDs                                 -->
 
 <!-- Note: Only wav files are supported                                     -->
 
