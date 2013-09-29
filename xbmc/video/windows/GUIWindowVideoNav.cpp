@@ -1533,7 +1533,7 @@ CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
   else if (dir.Equals("MusicVideoYears"))
     return "videodb://musicvideos/years/";
   else if (dir.Equals("MusicVideoArtists"))
-    return "videodb://musicvideos/artist/";
+    return "videodb://musicvideos/artists/";
   else if (dir.Equals("MusicVideoAlbums"))
     return "videodb://musicvideos/albums/";
   else if (dir.Equals("MusicVideoDirectors"))
