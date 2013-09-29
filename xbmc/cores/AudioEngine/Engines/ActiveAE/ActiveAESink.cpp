@@ -713,7 +713,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   unsigned int frames = samples->pkt->nb_samples;
   unsigned int maxFrames;
   int retry = 0;
-  int written = 0;
+  unsigned int written = 0;
   double sinkDelay = 0.0;
 
   switch(m_convertState)
