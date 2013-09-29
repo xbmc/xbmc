@@ -147,7 +147,6 @@ static const ActionMapping actions[] =
         {"delete"            , ACTION_DELETE_ITEM},
         {"copy"              , ACTION_COPY_ITEM},
         {"move"              , ACTION_MOVE_ITEM},
-        {"mplayerosd"        , ACTION_SHOW_MPLAYER_OSD},
         {"hidesubmenu"       , ACTION_OSD_HIDESUBMENU},
         {"screenshot"        , ACTION_TAKE_SCREENSHOT},
         {"rename"            , ACTION_RENAME_ITEM},

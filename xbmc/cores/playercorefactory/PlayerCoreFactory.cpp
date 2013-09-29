@@ -331,10 +331,6 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     dvdplayer->m_bPlaysAudio = dvdplayer->m_bPlaysVideo = true;
     m_vecCoreConfigs.push_back(dvdplayer);
 
-     // Don't remove this, its a placeholder for the old MPlayer core, it would break scripts
-    CPlayerCoreConfig* mplayer = new CPlayerCoreConfig("oldmplayercore", EPC_DVDPLAYER, NULL);
-    m_vecCoreConfigs.push_back(mplayer);
-
     CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", EPC_PAPLAYER, NULL);
     paplayer->m_bPlaysAudio = true;
     m_vecCoreConfigs.push_back(paplayer);
@@ -376,7 +372,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
       type.ToLower();
 
       EPLAYERCORES eCore = EPC_NONE;
-      if (type == "dvdplayer" || type == "mplayer") eCore = EPC_DVDPLAYER;
+      if (type == "dvdplayer" ) eCore = EPC_DVDPLAYER;
       if (type == "paplayer" ) eCore = EPC_PAPLAYER;
       if (type == "externalplayer" ) eCore = EPC_EXTPLAYER;
 

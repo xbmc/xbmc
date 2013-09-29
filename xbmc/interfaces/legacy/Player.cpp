@@ -40,7 +40,6 @@ namespace XBMCAddon
       iPlayList = PLAYLIST_MUSIC;
 
       if (_playerCore == EPC_DVDPLAYER ||
-          _playerCore == EPC_MPLAYER ||
           _playerCore == EPC_PAPLAYER)
         playerCore = (EPLAYERCORES)_playerCore;
       else

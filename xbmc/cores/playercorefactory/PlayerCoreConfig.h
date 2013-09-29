@@ -89,8 +89,6 @@ public:
     IPlayer* pPlayer;
     switch(m_eCore)
     {
-      case EPC_MPLAYER:
-      // TODO: this hack needs removal until we have a better player selection
 #if defined(HAS_OMXPLAYER)
       case EPC_DVDPLAYER: 
         pPlayer = new COMXPlayer(callback); 
