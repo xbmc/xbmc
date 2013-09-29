@@ -105,7 +105,7 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
     m_dst_chan_layout = 0;
     for (unsigned int out=0; out<remapLayout->Count(); out++)
     {
-      m_dst_chan_layout += (1 << out);
+      m_dst_chan_layout += (uint64_t) (1 << out);
       int idx = GetAVChannelIndex((*remapLayout)[out], m_src_chan_layout);
       if (idx >= 0)
       {
