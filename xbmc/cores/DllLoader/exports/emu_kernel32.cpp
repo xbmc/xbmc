@@ -280,32 +280,6 @@ static void DumpSystemInfo(const SYSTEM_INFO* si)
 }
 #endif
 
-extern "C" void WINAPI dllGetSystemInfo(LPSYSTEM_INFO lpSystemInfo)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "GetSystemInfo(0x%x) =>", lpSystemInfo);
-#endif
-#ifdef TARGET_WINDOWS
-  // VS 2003 complains about x even so it's defined
-  lpSystemInfo->wProcessorArchitecture = 0; //#define PROCESSOR_ARCHITECTURE_INTEL 0
-#else
-  lpSystemInfo->x.wProcessorArchitecture = 0; //#define PROCESSOR_ARCHITECTURE_INTEL 0
-#endif
-  lpSystemInfo->dwPageSize = 4096;   //Xbox page size
-  lpSystemInfo->lpMinimumApplicationAddress = (void *)0x00000000;
-  lpSystemInfo->lpMaximumApplicationAddress = (void *)0x7fffffff;
-  lpSystemInfo->dwActiveProcessorMask = 1;
-  lpSystemInfo->dwNumberOfProcessors = 1;
-  lpSystemInfo->dwProcessorType = 586;  //#define PROCESSOR_INTEL_PENTIUM 586
-  lpSystemInfo->wProcessorLevel = 6;
-  //lpSystemInfo->wProcessorLevel = 5;
-  lpSystemInfo->wProcessorRevision = 0x080A;
-  lpSystemInfo->dwAllocationGranularity = 0x10000; //virtualalloc reserve block size
-#ifdef API_DEBUG
-  DumpSystemInfo(lpSystemInfo);
-#endif
-}  //hardcode for xbox processor type;
-
 extern "C" UINT WINAPI dllGetPrivateProfileIntA(
     LPCSTR lpAppName,
     LPCSTR lpKeyName,
