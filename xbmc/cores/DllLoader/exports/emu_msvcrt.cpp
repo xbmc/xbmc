@@ -516,7 +516,7 @@ extern "C"
     bool bResult;
 
     // We need to validate the path here as some calls from ie. libdvdnav
-    // or the python DLLs have malformed slashes on Win32 & Xbox
+    // or the python DLLs have malformed slashes on Win32
     // (-> E:\test\VIDEO_TS/VIDEO_TS.BUP))
     if (bWrite)
       bResult = pFile->OpenForWrite(CUtil::ValidatePath(str), bOverwrite);
