@@ -27,6 +27,7 @@
 #include "settings/Setting.h"
 #include "threads/SingleLock.h"
 #include "log.h"
+#include "utils/PlatformEndian.h"
 
 #include <errno.h>
 #include <iconv.h>
@@ -39,11 +40,13 @@
   #else
     #define WCHAR_CHARSET "UTF-32LE"
   #endif
+  #define UTF32_CHARSET WCHAR_CHARSET
   #define UTF8_SOURCE "UTF-8-MAC"
 #elif defined(TARGET_WINDOWS)
   #undef WCHAR_IS_ALMOST_UTF32
   #define WCHAR_IS_UTF16 1
   #define WCHAR_CHARSET "UTF-16LE"
+  #define UTF32_CHARSET "UTF-32LE"
   #define UTF8_SOURCE "UTF-8"
   #pragma comment(lib, "libfribidi.lib")
   #pragma comment(lib, "libiconv.lib")
@@ -56,6 +59,7 @@
   #else
     #define WCHAR_CHARSET "UTF-32LE"
   #endif
+  #define UTF32_CHARSET WCHAR_CHARSET
 #else
   #define WCHAR_CHARSET "WCHAR_T"
   #define UTF8_SOURCE "UTF-8"
@@ -72,6 +76,11 @@
         #define WCHAR_IS_UTF16 1
       #endif
     #endif
+  #endif
+  #ifdef TARGET_BIGENDIAN
+    #define UTF32_CHARSET "UTF-32BE"
+  #else
+    #define UTF32_CHARSET "UTF-32LE"
   #endif
 #endif
 
@@ -481,7 +490,7 @@ void CCharsetConverter::reset(void)
 bool CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)
 {
   CSingleLock lock(m_critSection);
-  return convert(m_iconvUtf8ToUtf32, 1, UTF8_SOURCE, "UTF-32", utf8StringSrc, utf32StringDst, failOnBadChar);
+  return convert(m_iconvUtf8ToUtf32, 1, UTF8_SOURCE, UTF32_CHARSET, utf8StringSrc, utf32StringDst, failOnBadChar);
 }
 
 std::u32string CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, bool failOnBadChar /*= true*/)
@@ -499,16 +508,16 @@ bool CCharsetConverter::utf8ToUtf32Visual(const std::string& utf8StringSrc, std:
     if (!logicalToVisualBiDi(utf8StringSrc, strFlipped, FRIBIDI_UTF8, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF))
       return false;
     CSingleLock lock(m_critSection);
-    return convert(m_iconvUtf8ToUtf32, 1, UTF8_SOURCE, "UTF-32", strFlipped, utf32StringDst, failOnBadChar);
+    return convert(m_iconvUtf8ToUtf32, 1, UTF8_SOURCE, UTF32_CHARSET, strFlipped, utf32StringDst, failOnBadChar);
   }
   CSingleLock lock(m_critSection);
-  return convert(m_iconvUtf8ToUtf32, 1, UTF8_SOURCE, "UTF-32", utf8StringSrc, utf32StringDst, failOnBadChar);
+  return convert(m_iconvUtf8ToUtf32, 1, UTF8_SOURCE, UTF32_CHARSET, utf8StringSrc, utf32StringDst, failOnBadChar);
 }
 
 bool CCharsetConverter::utf32ToUtf8(const std::u32string& utf32StringSrc, std::string& utf8StringDst, bool failOnBadChar /*= true*/)
 {
   CSingleLock lock(m_critSection);
-  return convert(m_iconvUtf32ToUtf8, m_Utf8CharMaxSize, "UTF-32", "UTF-8", utf32StringSrc, utf8StringDst, failOnBadChar);
+  return convert(m_iconvUtf32ToUtf8, m_Utf8CharMaxSize, UTF32_CHARSET, "UTF-8", utf32StringSrc, utf8StringDst, failOnBadChar);
 }
 
 std::string CCharsetConverter::utf32ToUtf8(const std::u32string& utf32StringSrc, bool failOnBadChar /*= false*/)
@@ -525,7 +534,7 @@ bool CCharsetConverter::utf32ToW(const std::u32string& utf32StringSrc, std::wstr
   return true;
 #else // !WCHAR_IS_ALMOST_UTF32
   CSingleLock lock(m_critSection);
-  return convert(m_iconvUtf32ToW, 1, "UTF-32", WCHAR_CHARSET, utf32StringSrc, wStringDst, failOnBadChar);
+  return convert(m_iconvUtf32ToW, 1, UTF32_CHARSET, WCHAR_CHARSET, utf32StringSrc, wStringDst, failOnBadChar);
 #endif // !WCHAR_IS_ALMOST_UTF32
 }
 
@@ -542,7 +551,7 @@ bool CCharsetConverter::utf32logicalToVisualBiDi(const std::u32string& logicalSt
 bool CCharsetConverter::wToUtf32(const std::wstring& wStringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)
 {
   CSingleLock lock(m_critSection);
-  return convert(m_iconvWToUtf32, 1, WCHAR_CHARSET, "UTF-32", wStringSrc, utf32StringDst, failOnBadChar);
+  return convert(m_iconvWToUtf32, 1, WCHAR_CHARSET, UTF32_CHARSET, wStringSrc, utf32StringDst, failOnBadChar);
 }
 
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
@@ -703,7 +712,7 @@ bool CCharsetConverter::utf16LEtoW(const std::u16string& utf16String, std::wstri
 bool CCharsetConverter::utf32ToStringCharset(const std::u32string& utf32StringSrc, std::string& stringDst)
 {
   CSingleLock lock(m_critSection);
-  return convert(m_iconvUtf32ToStringCharset, 1, g_langInfo.GetGuiCharSet().c_str(), "UTF-32", utf32StringSrc, stringDst);
+  return convert(m_iconvUtf32ToStringCharset, 1, g_langInfo.GetGuiCharSet().c_str(), UTF32_CHARSET, utf32StringSrc, stringDst);
 }
 
 bool CCharsetConverter::utf8ToSystem(std::string& stringSrcDst, bool failOnBadChar /*= false*/)
