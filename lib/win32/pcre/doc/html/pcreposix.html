@@ -44,11 +44,12 @@ man page, in case the conversion went wrong.
 </P>
 <br><a name="SEC2" href="#TOC1">DESCRIPTION</a><br>
 <P>
-This set of functions provides a POSIX-style API to the PCRE regular expression
-package. See the
+This set of functions provides a POSIX-style API for the PCRE regular
+expression 8-bit library. See the
 <a href="pcreapi.html"><b>pcreapi</b></a>
 documentation for a description of PCRE's native API, which contains much
-additional functionality.
+additional functionality. There is no POSIX-style wrapper for PCRE's 16-bit
+and 32-bit library.
 </P>
 <P>
 The functions described here are just wrapper functions that ultimately call
@@ -87,8 +88,6 @@ structure types, <i>regex_t</i> for compiled internal forms, and
 constants whose names start with "REG_"; these are used for setting options and
 identifying error codes.
 </P>
-<P>
-</P>
 <br><a name="SEC3" href="#TOC1">COMPILING A PATTERN</a><br>
 <P>
 The function <b>regcomp()</b> is called to compile a pattern into an
@@ -125,6 +124,13 @@ for compilation to the native function. In addition, when a pattern that is
 compiled with this flag is passed to <b>regexec()</b> for matching, the
 <i>nmatch</i> and <i>pmatch</i> arguments are ignored, and no captured strings
 are returned.
+<pre>
+  REG_UCP
+</pre>
+The PCRE_UCP option is set when the regular expression is passed for
+compilation to the native function. This causes PCRE to use Unicode properties
+when matchine \d, \w, etc., instead of just recognizing ASCII values. Note
+that REG_UTF8 is not part of the POSIX standard.
 <pre>
   REG_UNGREEDY
 </pre>
@@ -277,9 +283,9 @@ Cambridge CB2 3QH, England.
 </P>
 <br><a name="SEC9" href="#TOC1">REVISION</a><br>
 <P>
-Last updated: 02 September 2009
+Last updated: 09 January 2012
 <br>
-Copyright &copy; 1997-2009 University of Cambridge.
+Copyright &copy; 1997-2012 University of Cambridge.
 <br>
 <p>
 Return to the <a href="index.html">PCRE index page</a>.

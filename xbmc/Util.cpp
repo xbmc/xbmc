@@ -240,8 +240,8 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
-  CRegExp reTags(true);
-  CRegExp reYear;
+  CRegExp reTags(true, true);
+  CRegExp reYear(false, true);
 
   if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
@@ -251,8 +251,8 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   {
     if (reYear.RegFind(strTitleAndYear.c_str()) >= 0)
     {
-      strTitleAndYear = reYear.GetReplaceString("\\1");
-      strYear = reYear.GetReplaceString("\\2");
+      strTitleAndYear = reYear.GetMatch(1);
+      strYear = reYear.GetMatch(2);
     }
   }
 
@@ -515,7 +515,7 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
   if (strFileOrFolder.IsEmpty())
     return false;
 
-  CRegExp regExExcludes(true);  // case insensitive regex
+  CRegExp regExExcludes(true, true);  // case insensitive regex
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {

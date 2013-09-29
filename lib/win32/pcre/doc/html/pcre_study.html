@@ -22,6 +22,14 @@ SYNOPSIS
 <b>pcre_extra *pcre_study(const pcre *<i>code</i>, int <i>options</i>,</b>
 <b>const char **<i>errptr</i>);</b>
 </P>
+<P>
+<b>pcre16_extra *pcre16_study(const pcre16 *<i>code</i>, int <i>options</i>,</b>
+<b>const char **<i>errptr</i>);</b>
+</P>
+<P>
+<b>pcre32_extra *pcre32_study(const pcre32 *<i>code</i>, int <i>options</i>,</b>
+<b>const char **<i>errptr</i>);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
@@ -30,11 +38,12 @@ This function studies a compiled pattern, to see if additional information can
 be extracted that might speed up matching. Its arguments are:
 <pre>
   <i>code</i>       A compiled regular expression
-  <i>options</i>    Options for <b>pcre_study()</b>
+  <i>options</i>    Options for <b>pcre[16|32]_study()</b>
   <i>errptr</i>     Where to put an error message
 </pre>
 If the function succeeds, it returns a value that can be passed to
-<b>pcre_exec()</b> via its <i>extra</i> argument.
+<b>pcre[16|32]_exec()</b> or <b>pcre[16|32]_dfa_exec()</b> via their <i>extra</i>
+arguments.
 </P>
 <P>
 If the function returns NULL, either it could not find any additional
@@ -42,8 +51,11 @@ information, or there was an error. You can tell the difference by looking at
 the error value. It is NULL in first case.
 </P>
 <P>
-There are currently no options defined; the value of the second argument should
-always be zero.
+The only option is PCRE_STUDY_JIT_COMPILE. It requests just-in-time compilation
+if possible. If PCRE has been compiled without JIT support, this option is
+ignored. See the
+<a href="pcrejit.html"><b>pcrejit</b></a>
+page for further details.
 </P>
 <P>
 There is a complete description of the PCRE native API in the

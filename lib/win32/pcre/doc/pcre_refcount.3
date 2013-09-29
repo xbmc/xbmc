@@ -1,4 +1,4 @@
-.TH PCRE_REFCOUNT 3
+.TH PCRE_REFCOUNT 3 "24 June 2012" "PCRE 8.30"
 .SH NAME
 PCRE - Perl-compatible regular expressions
 .SH SYNOPSIS
@@ -8,6 +8,10 @@ PCRE - Perl-compatible regular expressions
 .PP
 .SM
 .B int pcre_refcount(pcre *\fIcode\fP, int \fIadjust\fP);
+.PP
+.B int pcre16_refcount(pcre16 *\fIcode\fP, int \fIadjust\fP);
+.PP
+.B int pcre32_refcount(pcre32 *\fIcode\fP, int \fIadjust\fP);
 .
 .SH DESCRIPTION
 .rs

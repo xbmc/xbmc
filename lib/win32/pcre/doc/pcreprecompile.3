@@ -1,4 +1,4 @@
-.TH PCREPRECOMPILE 3
+.TH PCREPRECOMPILE 3 "24 June 2012" "PCRE 8.30"
 .SH NAME
 PCRE - Perl-compatible regular expressions
 .SH "SAVING AND RE-USING PRECOMPILED PCRE PATTERNS"
@@ -12,25 +12,31 @@ If you are not using any private character tables (see the
 \fBpcre_maketables()\fP
 .\"
 documentation), this is relatively straightforward. If you are using private
-tables, it is a little bit more complicated.
+tables, it is a little bit more complicated. However, if you are using the
+just-in-time optimization feature, it is not possible to save and reload the
+JIT data.
 .P
 If you save compiled patterns to a file, you can copy them to a different host
-and run them there. This works even if the new host has the opposite endianness
-to the one on which the patterns were compiled. There may be a small
-performance penalty, but it should be insignificant. However, compiling regular
-expressions with one version of PCRE for use with a different version is not
-guaranteed to work and may cause crashes.
+and run them there. If the two hosts have different endianness (byte order),
+you should run the \fBpcre[16|32]_pattern_to_host_byte_order()\fP function on the
+new host before trying to match the pattern. The matching functions return
+PCRE_ERROR_BADENDIANNESS if they detect a pattern with the wrong endianness.
+.P
+Compiling regular expressions with one version of PCRE for use with a different
+version is not guaranteed to work and may cause crashes, and saving and
+restoring a compiled pattern loses any JIT optimization data.
 .
 .
 .SH "SAVING A COMPILED PATTERN"
 .rs
-.sh
-The value returned by \fBpcre_compile()\fP points to a single block of memory
-that holds the compiled pattern and associated data. You can find the length of
-this block in bytes by calling \fBpcre_fullinfo()\fP with an argument of
-PCRE_INFO_SIZE. You can then save the data in any appropriate manner. Here is
-sample code that compiles a pattern and writes it to a file. It assumes that
-the variable \fIfd\fP refers to a file that is open for output:
+.sp
+The value returned by \fBpcre[16|32]_compile()\fP points to a single block of
+memory that holds the compiled pattern and associated data. You can find the
+length of this block in bytes by calling \fBpcre[16|32]_fullinfo()\fP with an
+argument of PCRE_INFO_SIZE. You can then save the data in any appropriate
+manner. Here is sample code for the 8-bit library that compiles a pattern and
+writes it to a file. It assumes that the variable \fIfd\fP refers to a file
+that is open for output:
 .sp
   int erroroffset, rc, size;
   char *error;
@@ -58,10 +64,12 @@ later use. They could equally well be saved in a database, or in the memory of
 some daemon process that passes them via sockets to the processes that want
 them.
 .P
-If the pattern has been studied, it is also possible to save the study data in
-a similar way to the compiled pattern itself. When studying generates
-additional information, \fBpcre_study()\fP returns a pointer to a
-\fBpcre_extra\fP data block. Its format is defined in the
+If the pattern has been studied, it is also possible to save the normal study
+data in a similar way to the compiled pattern itself. However, if the
+PCRE_STUDY_JIT_COMPILE was used, the just-in-time data that is created cannot
+be saved because it is too dependent on the current environment. When studying
+generates additional information, \fBpcre[16|32]_study()\fP returns a pointer to a
+\fBpcre[16|32]_extra\fP data block. Its format is defined in the
 .\" HTML <a href="pcreapi.html#extradata">
 .\" </a>
 section on matching a pattern
@@ -71,26 +79,27 @@ in the
 \fBpcreapi\fP
 .\"
 documentation. The \fIstudy_data\fP field points to the binary study data, and
-this is what you must save (not the \fBpcre_extra\fP block itself). The length
-of the study data can be obtained by calling \fBpcre_fullinfo()\fP with an
-argument of PCRE_INFO_STUDYSIZE. Remember to check that \fBpcre_study()\fP did
-return a non-NULL value before trying to save the study data.
+this is what you must save (not the \fBpcre[16|32]_extra\fP block itself). The
+length of the study data can be obtained by calling \fBpcre[16|32]_fullinfo()\fP
+with an argument of PCRE_INFO_STUDYSIZE. Remember to check that
+\fBpcre[16|32]_study()\fP did return a non-NULL value before trying to save the
+study data.
 .
 .
 .SH "RE-USING A PRECOMPILED PATTERN"
 .rs
 .sp
 Re-using a precompiled pattern is straightforward. Having reloaded it into main
-memory, you pass its pointer to \fBpcre_exec()\fP or \fBpcre_dfa_exec()\fP in
-the usual way. This should work even on another host, and even if that host has
-the opposite endianness to the one where the pattern was compiled.
+memory, called \fBpcre[16|32]_pattern_to_host_byte_order()\fP if necessary,
+you pass its pointer to \fBpcre[16|32]_exec()\fP or \fBpcre[16|32]_dfa_exec()\fP in
+the usual way.
 .P
 However, if you passed a pointer to custom character tables when the pattern
-was compiled (the \fItableptr\fP argument of \fBpcre_compile()\fP), you must
-now pass a similar pointer to \fBpcre_exec()\fP or \fBpcre_dfa_exec()\fP,
-because the value saved with the compiled pattern will obviously be nonsense. A
-field in a \fBpcre_extra()\fP block is used to pass this data, as described in
-the
+was compiled (the \fItableptr\fP argument of \fBpcre[16|32]_compile()\fP), you
+must now pass a similar pointer to \fBpcre[16|32]_exec()\fP or
+\fBpcre[16|32]_dfa_exec()\fP, because the value saved with the compiled pattern
+will obviously be nonsense. A field in a \fBpcre[16|32]_extra()\fP block is used
+to pass this data, as described in the
 .\" HTML <a href="pcreapi.html#extradata">
 .\" </a>
 section on matching a pattern
@@ -102,24 +111,24 @@ in the
 documentation.
 .P
 If you did not provide custom character tables when the pattern was compiled,
-the pointer in the compiled pattern is NULL, which causes \fBpcre_exec()\fP to
-use PCRE's internal tables. Thus, you do not need to take any special action at
-run time in this case.
+the pointer in the compiled pattern is NULL, which causes the matching
+functions to use PCRE's internal tables. Thus, you do not need to take any
+special action at run time in this case.
 .P
 If you saved study data with the compiled pattern, you need to create your own
-\fBpcre_extra\fP data block and set the \fIstudy_data\fP field to point to the
+\fBpcre[16|32]_extra\fP data block and set the \fIstudy_data\fP field to point to the
 reloaded study data. You must also set the PCRE_EXTRA_STUDY_DATA bit in the
 \fIflags\fP field to indicate that study data is present. Then pass the
-\fBpcre_extra\fP block to \fBpcre_exec()\fP or \fBpcre_dfa_exec()\fP in the
-usual way.
+\fBpcre[16|32]_extra\fP block to the matching function in the usual way. If the
+pattern was studied for just-in-time optimization, that data cannot be saved,
+and so is lost by a save/restore cycle.
 .
 .
 .SH "COMPATIBILITY WITH DIFFERENT PCRE RELEASES"
 .rs
 .sp
 In general, it is safest to recompile all saved patterns when you update to a
-new PCRE release, though not all updates actually require this. Recompiling is
-definitely needed for release 7.2.
+new PCRE release, though not all updates actually require this.
 .
 .
 .
@@ -137,6 +146,6 @@ Cambridge CB2 3QH, England.
 .rs
 .sp
 .nf
-Last updated: 13 June 2007
-Copyright (c) 1997-2007 University of Cambridge.
+Last updated: 24 June 2012
+Copyright (c) 1997-2012 University of Cambridge.
 .fi

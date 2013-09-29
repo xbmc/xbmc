@@ -23,6 +23,16 @@ SYNOPSIS
 <b>int <i>stringcount</i>, int <i>stringnumber</i>, char *<i>buffer</i>,</b>
 <b>int <i>buffersize</i>);</b>
 </P>
+<P>
+<b>int pcre16_copy_substring(PCRE_SPTR16 <i>subject</i>, int *<i>ovector</i>,</b>
+<b>int <i>stringcount</i>, int <i>stringnumber</i>, PCRE_UCHAR16 *<i>buffer</i>,</b>
+<b>int <i>buffersize</i>);</b>
+</P>
+<P>
+<b>int pcre32_copy_substring(PCRE_SPTR32 <i>subject</i>, int *<i>ovector</i>,</b>
+<b>int <i>stringcount</i>, int <i>stringnumber</i>, PCRE_UCHAR32 *<i>buffer</i>,</b>
+<b>int <i>buffersize</i>);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
@@ -31,8 +41,8 @@ This is a convenience function for extracting a captured substring into a given
 buffer. The arguments are:
 <pre>
   <i>subject</i>       Subject that has been successfully matched
-  <i>ovector</i>       Offset vector that <b>pcre_exec()</b> used
-  <i>stringcount</i>   Value returned by <b>pcre_exec()</b>
+  <i>ovector</i>       Offset vector that <b>pcre[16|32]_exec()</b> used
+  <i>stringcount</i>   Value returned by <b>pcre[16|32]_exec()</b>
   <i>stringnumber</i>  Number of the required substring
   <i>buffer</i>        Buffer to receive the string
   <i>buffersize</i>    Size of buffer

@@ -1,0 +1,32 @@
+/-- Tests for the 32-bit library only */
+
+/-- Check maximum character size --/
+
+/\x{110000}/
+
+/\x{7fffffff}/
+
+/\x{80000000}/
+
+/\x{ffffffff}/
+
+/\x{7fffffff}\x{7fffffff}/I
+
+/\x{80000000}\x{80000000}/I
+
+/\x{ffffffff}\x{ffffffff}/I
+
+/-- Non-UTF characters --/
+
+/\C{2,3}/
+    \x{400000}\x{400001}\x{400002}\x{400003}
+
+/\x{400000}\x{800000}/iDZ
+
+/-- Check character ranges --/
+
+/[\H]/BZSI
+
+/[\V]/BZSI
+
+/-- End of testinput25 --/

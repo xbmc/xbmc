@@ -28,24 +28,31 @@ instead of having to compile them every time the application is run.
 If you are not using any private character tables (see the
 <a href="pcre_maketables.html"><b>pcre_maketables()</b></a>
 documentation), this is relatively straightforward. If you are using private
-tables, it is a little bit more complicated.
+tables, it is a little bit more complicated. However, if you are using the
+just-in-time optimization feature, it is not possible to save and reload the
+JIT data.
 </P>
 <P>
 If you save compiled patterns to a file, you can copy them to a different host
-and run them there. This works even if the new host has the opposite endianness
-to the one on which the patterns were compiled. There may be a small
-performance penalty, but it should be insignificant. However, compiling regular
-expressions with one version of PCRE for use with a different version is not
-guaranteed to work and may cause crashes.
+and run them there. If the two hosts have different endianness (byte order),
+you should run the <b>pcre[16|32]_pattern_to_host_byte_order()</b> function on the
+new host before trying to match the pattern. The matching functions return
+PCRE_ERROR_BADENDIANNESS if they detect a pattern with the wrong endianness.
+</P>
+<P>
+Compiling regular expressions with one version of PCRE for use with a different
+version is not guaranteed to work and may cause crashes, and saving and
+restoring a compiled pattern loses any JIT optimization data.
 </P>
 <br><a name="SEC2" href="#TOC1">SAVING A COMPILED PATTERN</a><br>
 <P>
-The value returned by <b>pcre_compile()</b> points to a single block of memory
-that holds the compiled pattern and associated data. You can find the length of
-this block in bytes by calling <b>pcre_fullinfo()</b> with an argument of
-PCRE_INFO_SIZE. You can then save the data in any appropriate manner. Here is
-sample code that compiles a pattern and writes it to a file. It assumes that
-the variable <i>fd</i> refers to a file that is open for output:
+The value returned by <b>pcre[16|32]_compile()</b> points to a single block of
+memory that holds the compiled pattern and associated data. You can find the
+length of this block in bytes by calling <b>pcre[16|32]_fullinfo()</b> with an
+argument of PCRE_INFO_SIZE. You can then save the data in any appropriate
+manner. Here is sample code for the 8-bit library that compiles a pattern and
+writes it to a file. It assumes that the variable <i>fd</i> refers to a file
+that is open for output:
 <pre>
   int erroroffset, rc, size;
   char *error;
@@ -76,33 +83,36 @@ some daemon process that passes them via sockets to the processes that want
 them.
 </P>
 <P>
-If the pattern has been studied, it is also possible to save the study data in
-a similar way to the compiled pattern itself. When studying generates
-additional information, <b>pcre_study()</b> returns a pointer to a
-<b>pcre_extra</b> data block. Its format is defined in the
+If the pattern has been studied, it is also possible to save the normal study
+data in a similar way to the compiled pattern itself. However, if the
+PCRE_STUDY_JIT_COMPILE was used, the just-in-time data that is created cannot
+be saved because it is too dependent on the current environment. When studying
+generates additional information, <b>pcre[16|32]_study()</b> returns a pointer to a
+<b>pcre[16|32]_extra</b> data block. Its format is defined in the
 <a href="pcreapi.html#extradata">section on matching a pattern</a>
 in the
 <a href="pcreapi.html"><b>pcreapi</b></a>
 documentation. The <i>study_data</i> field points to the binary study data, and
-this is what you must save (not the <b>pcre_extra</b> block itself). The length
-of the study data can be obtained by calling <b>pcre_fullinfo()</b> with an
-argument of PCRE_INFO_STUDYSIZE. Remember to check that <b>pcre_study()</b> did
-return a non-NULL value before trying to save the study data.
+this is what you must save (not the <b>pcre[16|32]_extra</b> block itself). The
+length of the study data can be obtained by calling <b>pcre[16|32]_fullinfo()</b>
+with an argument of PCRE_INFO_STUDYSIZE. Remember to check that
+<b>pcre[16|32]_study()</b> did return a non-NULL value before trying to save the
+study data.
 </P>
 <br><a name="SEC3" href="#TOC1">RE-USING A PRECOMPILED PATTERN</a><br>
 <P>
 Re-using a precompiled pattern is straightforward. Having reloaded it into main
-memory, you pass its pointer to <b>pcre_exec()</b> or <b>pcre_dfa_exec()</b> in
-the usual way. This should work even on another host, and even if that host has
-the opposite endianness to the one where the pattern was compiled.
+memory, called <b>pcre[16|32]_pattern_to_host_byte_order()</b> if necessary,
+you pass its pointer to <b>pcre[16|32]_exec()</b> or <b>pcre[16|32]_dfa_exec()</b> in
+the usual way.
 </P>
 <P>
 However, if you passed a pointer to custom character tables when the pattern
-was compiled (the <i>tableptr</i> argument of <b>pcre_compile()</b>), you must
-now pass a similar pointer to <b>pcre_exec()</b> or <b>pcre_dfa_exec()</b>,
-because the value saved with the compiled pattern will obviously be nonsense. A
-field in a <b>pcre_extra()</b> block is used to pass this data, as described in
-the
+was compiled (the <i>tableptr</i> argument of <b>pcre[16|32]_compile()</b>), you
+must now pass a similar pointer to <b>pcre[16|32]_exec()</b> or
+<b>pcre[16|32]_dfa_exec()</b>, because the value saved with the compiled pattern
+will obviously be nonsense. A field in a <b>pcre[16|32]_extra()</b> block is used
+to pass this data, as described in the
 <a href="pcreapi.html#extradata">section on matching a pattern</a>
 in the
 <a href="pcreapi.html"><b>pcreapi</b></a>
@@ -110,23 +120,23 @@ documentation.
 </P>
 <P>
 If you did not provide custom character tables when the pattern was compiled,
-the pointer in the compiled pattern is NULL, which causes <b>pcre_exec()</b> to
-use PCRE's internal tables. Thus, you do not need to take any special action at
-run time in this case.
+the pointer in the compiled pattern is NULL, which causes the matching
+functions to use PCRE's internal tables. Thus, you do not need to take any
+special action at run time in this case.
 </P>
 <P>
 If you saved study data with the compiled pattern, you need to create your own
-<b>pcre_extra</b> data block and set the <i>study_data</i> field to point to the
+<b>pcre[16|32]_extra</b> data block and set the <i>study_data</i> field to point to the
 reloaded study data. You must also set the PCRE_EXTRA_STUDY_DATA bit in the
 <i>flags</i> field to indicate that study data is present. Then pass the
-<b>pcre_extra</b> block to <b>pcre_exec()</b> or <b>pcre_dfa_exec()</b> in the
-usual way.
+<b>pcre[16|32]_extra</b> block to the matching function in the usual way. If the
+pattern was studied for just-in-time optimization, that data cannot be saved,
+and so is lost by a save/restore cycle.
 </P>
 <br><a name="SEC4" href="#TOC1">COMPATIBILITY WITH DIFFERENT PCRE RELEASES</a><br>
 <P>
 In general, it is safest to recompile all saved patterns when you update to a
-new PCRE release, though not all updates actually require this. Recompiling is
-definitely needed for release 7.2.
+new PCRE release, though not all updates actually require this.
 </P>
 <br><a name="SEC5" href="#TOC1">AUTHOR</a><br>
 <P>
@@ -139,9 +149,9 @@ Cambridge CB2 3QH, England.
 </P>
 <br><a name="SEC6" href="#TOC1">REVISION</a><br>
 <P>
-Last updated: 13 June 2007
+Last updated: 24 June 2012
 <br>
-Copyright &copy; 1997-2007 University of Cambridge.
+Copyright &copy; 1997-2012 University of Cambridge.
 <br>
 <p>
 Return to the <a href="index.html">PCRE index page</a>.

@@ -22,6 +22,14 @@ SYNOPSIS
 <b>int pcre_get_stringnumber(const pcre *<i>code</i>,</b>
 <b>const char *<i>name</i>);</b>
 </P>
+<P>
+<b>int pcre16_get_stringnumber(const pcre16 *<i>code</i>,</b>
+<b>PCRE_SPTR16 <i>name</i>);</b>
+</P>
+<P>
+<b>int pcre32_get_stringnumber(const pcre32 *<i>code</i>,</b>
+<b>PCRE_SPTR32 <i>name</i>);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
@@ -35,8 +43,8 @@ parenthesis in a compiled pattern. Its arguments are:
 The yield of the function is the number of the parenthesis if the name is
 found, or PCRE_ERROR_NOSUBSTRING otherwise. When duplicate names are allowed
 (PCRE_DUPNAMES is set), it is not defined which of the numbers is returned by
-<b>pcre_get_stringnumber()</b>. You can obtain the complete list by calling
-<b>pcre_get_stringtable_entries()</b>.
+<b>pcre[16|32]_get_stringnumber()</b>. You can obtain the complete list by calling
+<b>pcre[16|32]_get_stringtable_entries()</b>.
 </P>
 <P>
 There is a complete description of the PCRE native API in the

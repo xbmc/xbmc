@@ -1,4 +1,4 @@
-.TH PCREPOSIX 3
+.TH PCREPOSIX 3 "09 January 2012" "PCRE 8.30"
 .SH NAME
 PCRE - Perl-compatible regular expressions.
 .SH "SYNOPSIS OF POSIX API"
@@ -24,13 +24,14 @@ PCRE - Perl-compatible regular expressions.
 .SH DESCRIPTION
 .rs
 .sp
-This set of functions provides a POSIX-style API to the PCRE regular expression
-package. See the
+This set of functions provides a POSIX-style API for the PCRE regular
+expression 8-bit library. See the
 .\" HREF
 \fBpcreapi\fP
 .\"
 documentation for a description of PCRE's native API, which contains much
-additional functionality.
+additional functionality. There is no POSIX-style wrapper for PCRE's 16-bit
+and 32-bit library.
 .P
 The functions described here are just wrapper functions that ultimately call
 the PCRE native API. Their prototypes are defined in the \fBpcreposix.h\fP
@@ -63,7 +64,8 @@ structure types, \fIregex_t\fP for compiled internal forms, and
 \fIregmatch_t\fP for returning captured substrings. It also defines some
 constants whose names start with "REG_"; these are used for setting options and
 identifying error codes.
-.P
+.
+.
 .SH "COMPILING A PATTERN"
 .rs
 .sp
@@ -100,6 +102,13 @@ for compilation to the native function. In addition, when a pattern that is
 compiled with this flag is passed to \fBregexec()\fP for matching, the
 \fInmatch\fP and \fIpmatch\fP arguments are ignored, and no captured strings
 are returned.
+.sp
+  REG_UCP
+.sp
+The PCRE_UCP option is set when the regular expression is passed for
+compilation to the native function. This causes PCRE to use Unicode properties
+when matchine \ed, \ew, etc., instead of just recognizing ASCII values. Note
+that REG_UTF8 is not part of the POSIX standard.
 .sp
   REG_UNGREEDY
 .sp
@@ -256,6 +265,6 @@ Cambridge CB2 3QH, England.
 .rs
 .sp
 .nf
-Last updated: 02 September 2009
-Copyright (c) 1997-2009 University of Cambridge.
+Last updated: 09 January 2012
+Copyright (c) 1997-2012 University of Cambridge.
 .fi

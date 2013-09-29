@@ -1,4 +1,4 @@
-.TH PCRESYNTAX 3
+.TH PCRESYNTAX 3 "26 April 2013" "PCRE 8.33"
 .SH NAME
 PCRE - Perl-compatible regular expressions
 .SH "PCRE REGULAR EXPRESSION SYNTAX SUMMARY"
@@ -9,8 +9,7 @@ PCRE are described in the
 .\" HREF
 \fBpcrepattern\fP
 .\"
-documentation. This document contains just a quick-reference summary of the
-syntax.
+documentation. This document contains a quick-reference summary of the syntax.
 .
 .
 .SH "QUOTING"
@@ -24,9 +23,9 @@ syntax.
 .rs
 .sp
   \ea         alarm, that is, the BEL character (hex 07)
-  \ecx        "control-x", where x is any character
+  \ecx        "control-x", where x is any ASCII character
   \ee         escape (hex 1B)
-  \ef         formfeed (hex 0C)
+  \ef         form feed (hex 0C)
   \en         newline (hex 0A)
   \er         carriage return (hex 0D)
   \et         tab (hex 09)
@@ -40,26 +39,29 @@ syntax.
 .sp
   .          any character except newline;
                in dotall mode, any character whatsoever
-  \eC         one byte, even in UTF-8 mode (best avoided)
+  \eC         one data unit, even in UTF mode (best avoided)
   \ed         a decimal digit
   \eD         a character that is not a decimal digit
-  \eh         a horizontal whitespace character
-  \eH         a character that is not a horizontal whitespace character
+  \eh         a horizontal white space character
+  \eH         a character that is not a horizontal white space character
+  \eN         a character that is not a newline
   \ep{\fIxx\fP}     a character with the \fIxx\fP property
   \eP{\fIxx\fP}     a character without the \fIxx\fP property
   \eR         a newline sequence
-  \es         a whitespace character
-  \eS         a character that is not a whitespace character
-  \ev         a vertical whitespace character
-  \eV         a character that is not a vertical whitespace character
+  \es         a white space character
+  \eS         a character that is not a white space character
+  \ev         a vertical white space character
+  \eV         a character that is not a vertical white space character
   \ew         a "word" character
   \eW         a "non-word" character
-  \eX         an extended Unicode sequence
+  \eX         a Unicode extended grapheme cluster
 .sp
-In PCRE, \ed, \eD, \es, \eS, \ew, and \eW recognize only ASCII characters.
+In PCRE, by default, \ed, \eD, \es, \eS, \ew, and \eW recognize only ASCII
+characters, even in a UTF mode. However, this can be changed by setting the
+PCRE_UCP option.
 .
 .
-.SH "GENERAL CATEGORY PROPERTY CODES FOR \ep and \eP"
+.SH "GENERAL CATEGORY PROPERTIES FOR \ep and \eP"
 .rs
 .sp
   C          Other
@@ -108,19 +110,35 @@ In PCRE, \ed, \eD, \es, \eS, \ew, and \eW recognize only ASCII characters.
   Zs         Space separator
 .
 .
+.SH "PCRE SPECIAL CATEGORY PROPERTIES FOR \ep and \eP"
+.rs
+.sp
+  Xan        Alphanumeric: union of properties L and N
+  Xps        POSIX space: property Z or tab, NL, VT, FF, CR
+  Xsp        Perl space: property Z or tab, NL, FF, CR
+  Xuc        Univerally-named character: one that can be
+               represented by a Universal Character Name
+  Xwd        Perl word: property Xan or underscore
+.
+.
 .SH "SCRIPT NAMES FOR \ep AND \eP"
 .rs
 .sp
 Arabic,
 Armenian,
+Avestan,
 Balinese,
+Bamum,
+Batak,
 Bengali,
 Bopomofo,
+Brahmi,
 Braille,
 Buginese,
 Buhid,
 Canadian_Aboriginal,
 Carian,
+Chakma,
 Cham,
 Cherokee,
 Common,
@@ -130,6 +148,7 @@ Cypriot,
 Cyrillic,
 Deseret,
 Devanagari,
+Egyptian_Hieroglyphs,
 Ethiopic,
 Georgian,
 Glagolitic,
@@ -142,7 +161,12 @@ Hangul,
 Hanunoo,
 Hebrew,
 Hiragana,
+Imperial_Aramaic,
 Inherited,
+Inscriptional_Pahlavi,
+Inscriptional_Parthian,
+Javanese,
+Kaithi,
 Kannada,
 Katakana,
 Kayah_Li,
@@ -153,9 +177,15 @@ Latin,
 Lepcha,
 Limbu,
 Linear_B,
+Lisu,
 Lycian,
 Lydian,
 Malayalam,
+Mandaic,
+Meetei_Mayek,
+Meroitic_Cursive,
+Meroitic_Hieroglyphs,
+Miao,
 Mongolian,
 Myanmar,
 New_Tai_Lue,
@@ -163,6 +193,8 @@ Nko,
 Ogham,
 Old_Italic,
 Old_Persian,
+Old_South_Arabian,
+Old_Turkic,
 Ol_Chiki,
 Oriya,
 Osmanya,
@@ -170,15 +202,21 @@ Phags_Pa,
 Phoenician,
 Rejang,
 Runic,
+Samaritan,
 Saurashtra,
+Sharada,
 Shavian,
 Sinhala,
-Sudanese,
+Sora_Sompeng,
+Sundanese,
 Syloti_Nagri,
 Syriac,
 Tagalog,
 Tagbanwa,
 Tai_Le,
+Tai_Tham,
+Tai_Viet,
+Takri,
 Tamil,
 Telugu,
 Thaana,
@@ -209,12 +247,13 @@ Yi.
   lower       lower case letter
   print       printing, including space
   punct       printing, excluding alphanumeric
-  space       whitespace
+  space       white space
   upper       upper case letter
   word        same as \ew
   xdigit      hexadecimal digit
 .sp
-In PCRE, POSIX character set names recognize only ASCII characters. You can use
+In PCRE, POSIX character set names recognize only ASCII characters by default,
+but some of them use Unicode properties if PCRE_UCP is set. You can use
 \eQ...\eE inside a character class.
 .
 .
@@ -242,7 +281,7 @@ In PCRE, POSIX character set names recognize only ASCII characters. You can use
 .SH "ANCHORS AND SIMPLE ASSERTIONS"
 .rs
 .sp
-  \eb          word boundary (only ASCII letters recognized)
+  \eb          word boundary
   \eB          not a word boundary
   ^           start of subject
                also after internal newline in multiline mode
@@ -305,10 +344,17 @@ In PCRE, POSIX character set names recognize only ASCII characters. You can use
   (?x)            extended (ignore white space)
   (?-...)         unset option(s)
 .sp
-The following is recognized only at the start of a pattern or after one of the
+The following are recognized only at the start of a pattern or after one of the
 newline-setting options with similar syntax:
 .sp
-  (*UTF8)         set UTF-8 mode
+  (*LIMIT_MATCH=d) set the match limit to d (decimal number)
+  (*LIMIT_RECURSION=d) set the recursion limit to d (decimal number)
+  (*NO_START_OPT) no start-match optimization (PCRE_NO_START_OPTIMIZE)
+  (*UTF8)         set UTF-8 mode: 8-bit library (PCRE_UTF8)
+  (*UTF16)        set UTF-16 mode: 16-bit library (PCRE_UTF16)
+  (*UTF32)        set UTF-32 mode: 32-bit library (PCRE_UTF32)
+  (*UTF)          set appropriate UTF mode for the library in use
+  (*UCP)          set PCRE_UCP (use Unicode properties for \ed etc)
 .
 .
 .SH "LOOKAHEAD AND LOOKBEHIND ASSERTIONS"
@@ -381,6 +427,7 @@ The following act immediately they are reached:
 .sp
   (*ACCEPT)       force successful match
   (*FAIL)         force backtrack; synonym (*F)
+  (*MARK:NAME)    set name to be passed back; synonym (*:NAME)
 .sp
 The following act only when a subsequent match failure causes a backtrack to
 reach them. They all force a match failure, but they differ in what happens
@@ -389,15 +436,19 @@ pattern is not anchored.
 .sp
   (*COMMIT)       overall failure, no advance of starting point
   (*PRUNE)        advance to next starting character
-  (*SKIP)         advance start to current matching position
+  (*PRUNE:NAME)   equivalent to (*MARK:NAME)(*PRUNE)
+  (*SKIP)         advance to current matching position
+  (*SKIP:NAME)    advance to position corresponding to an earlier
+                  (*MARK:NAME); if not found, the (*SKIP) is ignored
   (*THEN)         local failure, backtrack to next alternation
+  (*THEN:NAME)    equivalent to (*MARK:NAME)(*THEN)
 .
 .
 .SH "NEWLINE CONVENTIONS"
 .rs
 .sp
 These are recognized only at the very start of the pattern or after a
-(*BSR_...) or (*UTF8) option.
+(*BSR_...), (*UTF8), (*UTF16), (*UTF32) or (*UCP) option.
 .sp
   (*CR)           carriage return only
   (*LF)           linefeed only
@@ -410,7 +461,7 @@ These are recognized only at the very start of the pattern or after a
 .rs
 .sp
 These are recognized only at the very start of the pattern or after a
-(*...) option that sets the newline convention or UTF-8 mode.
+(*...) option that sets the newline convention or a UTF or UCP mode.
 .sp
   (*BSR_ANYCRLF)  CR, LF, or CRLF
   (*BSR_UNICODE)  any Unicode newline sequence
@@ -444,6 +495,6 @@ Cambridge CB2 3QH, England.
 .rs
 .sp
 .nf
-Last updated: 11 April 2009
-Copyright (c) 1997-2009 University of Cambridge.
+Last updated: 26 April 2013
+Copyright (c) 1997-2013 University of Cambridge.
 .fi

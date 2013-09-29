@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Google Inc.
+// Copyright (c) 2010, Google Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <limits.h>      /* for SHRT_MIN, USHRT_MAX, etc */
+#include <string.h>      /* for memcpy */
 #include <assert.h>
 #include <errno.h>
 #include <string>
@@ -331,7 +332,7 @@ bool RE::FindAndConsume(StringPiece* input,
 bool RE::Replace(const StringPiece& rewrite,
                  string *str) const {
   int vec[kVecSize];
-  int matches = TryMatch(*str, 0, UNANCHORED, vec, kVecSize);
+  int matches = TryMatch(*str, 0, UNANCHORED, true, vec, kVecSize);
   if (matches == 0)
     return false;
 
@@ -383,50 +384,63 @@ int RE::GlobalReplace(const StringPiece& rewrite,
   int vec[kVecSize];
   string out;
   int start = 0;
-  int lastend = -1;
+  bool last_match_was_empty_string = false;
 
   while (start <= static_cast<int>(str->length())) {
-    int matches = TryMatch(*str, start, UNANCHORED, vec, kVecSize);
-    if (matches <= 0)
-      break;
+    // If the previous match was for the empty string, we shouldn't
+    // just match again: we'll match in the same way and get an
+    // infinite loop.  Instead, we do the match in a special way:
+    // anchored -- to force another try at the same position --
+    // and with a flag saying that this time, ignore empty matches.
+    // If this special match returns, that means there's a non-empty
+    // match at this position as well, and we can continue.  If not,
+    // we do what perl does, and just advance by one.
+    // Notice that perl prints '@@@' for this;
+    //    perl -le '$_ = "aa"; s/b*|aa/@/g; print'
+    int matches;
+    if (last_match_was_empty_string) {
+      matches = TryMatch(*str, start, ANCHOR_START, false, vec, kVecSize);
+      if (matches <= 0) {
+        int matchend = start + 1;     // advance one character.
+        // If the current char is CR and we're in CRLF mode, skip LF too.
+        // Note it's better to call pcre_fullinfo() than to examine
+        // all_options(), since options_ could have changed bewteen
+        // compile-time and now, but this is simpler and safe enough.
+        // Modified by PH to add ANY and ANYCRLF.
+        if (matchend < static_cast<int>(str->length()) &&
+            (*str)[start] == '\r' && (*str)[matchend] == '\n' &&
+            (NewlineMode(options_.all_options()) == PCRE_NEWLINE_CRLF ||
+             NewlineMode(options_.all_options()) == PCRE_NEWLINE_ANY ||
+             NewlineMode(options_.all_options()) == PCRE_NEWLINE_ANYCRLF)) {
+          matchend++;
+        }
+        // We also need to advance more than one char if we're in utf8 mode.
+#ifdef SUPPORT_UTF8
+        if (options_.utf8()) {
+          while (matchend < static_cast<int>(str->length()) &&
+                 ((*str)[matchend] & 0xc0) == 0x80)
+            matchend++;
+        }
+#endif
+        if (start < static_cast<int>(str->length()))
+          out.append(*str, start, matchend - start);
+        start = matchend;
+        last_match_was_empty_string = false;
+        continue;
+      }
+    } else {
+      matches = TryMatch(*str, start, UNANCHORED, true, vec, kVecSize);
+      if (matches <= 0)
+        break;
+    }
     int matchstart = vec[0], matchend = vec[1];
     assert(matchstart >= start);
     assert(matchend >= matchstart);
-    if (matchstart == matchend && matchstart == lastend) {
-      // advance one character if we matched an empty string at the same
-      // place as the last match occurred
-      matchend = start + 1;
-      // If the current char is CR and we're in CRLF mode, skip LF too.
-      // Note it's better to call pcre_fullinfo() than to examine
-      // all_options(), since options_ could have changed bewteen
-      // compile-time and now, but this is simpler and safe enough.
-      // Modified by PH to add ANY and ANYCRLF.
-      if (start+1 < static_cast<int>(str->length()) &&
-          (*str)[start] == '\r' && (*str)[start+1] == '\n' &&
-          (NewlineMode(options_.all_options()) == PCRE_NEWLINE_CRLF ||
-           NewlineMode(options_.all_options()) == PCRE_NEWLINE_ANY ||
-           NewlineMode(options_.all_options()) == PCRE_NEWLINE_ANYCRLF)
-          ) {
-        matchend++;
-      }
-      // We also need to advance more than one char if we're in utf8 mode.
-#ifdef SUPPORT_UTF8
-      if (options_.utf8()) {
-        while (matchend < static_cast<int>(str->length()) &&
-               ((*str)[matchend] & 0xc0) == 0x80)
-          matchend++;
-      }
-#endif
-      if (matchend <= static_cast<int>(str->length()))
-        out.append(*str, start, matchend - start);
-      start = matchend;
-    } else {
-      out.append(*str, start, matchstart - start);
-      Rewrite(&out, rewrite, *str, vec, matches);
-      start = matchend;
-      lastend = matchend;
-      count++;
-    }
+    out.append(*str, start, matchstart - start);
+    Rewrite(&out, rewrite, *str, vec, matches);
+    start = matchend;
+    count++;
+    last_match_was_empty_string = (matchstart == matchend);
   }
 
   if (count == 0)
@@ -442,7 +456,7 @@ bool RE::Extract(const StringPiece& rewrite,
                  const StringPiece& text,
                  string *out) const {
   int vec[kVecSize];
-  int matches = TryMatch(text, 0, UNANCHORED, vec, kVecSize);
+  int matches = TryMatch(text, 0, UNANCHORED, true, vec, kVecSize);
   if (matches == 0)
     return false;
   out->erase();
@@ -488,6 +502,7 @@ bool RE::Extract(const StringPiece& rewrite,
 int RE::TryMatch(const StringPiece& text,
                  int startpos,
                  Anchor anchor,
+                 bool empty_ok,
                  int *vec,
                  int vecsize) const {
   pcre* re = (anchor == ANCHOR_BOTH) ? re_full_ : re_partial_;
@@ -505,12 +520,22 @@ int RE::TryMatch(const StringPiece& text,
     extra.flags |= PCRE_EXTRA_MATCH_LIMIT_RECURSION;
     extra.match_limit_recursion = options_.match_limit_recursion();
   }
+
+  // int options = 0;
+  // Changed by PH as a result of bugzilla #1288
+  int options = (options_.all_options() & PCRE_NO_UTF8_CHECK);
+
+  if (anchor != UNANCHORED)
+    options |= PCRE_ANCHORED;
+  if (!empty_ok)
+    options |= PCRE_NOTEMPTY;
+
   int rc = pcre_exec(re,              // The regular expression object
                      &extra,
                      (text.data() == NULL) ? "" : text.data(),
                      text.size(),
                      startpos,
-                     (anchor == UNANCHORED) ? 0 : PCRE_ANCHORED,
+                     options,
                      vec,
                      vecsize);
 
@@ -540,7 +565,7 @@ bool RE::DoMatchImpl(const StringPiece& text,
                      int* vec,
                      int vecsize) const {
   assert((1 + n) * 3 <= vecsize);  // results + PCRE workspace
-  int matches = TryMatch(text, 0, anchor, vec, vecsize);
+  int matches = TryMatch(text, 0, anchor, true, vec, vecsize);
   assert(matches >= 0);  // TryMatch never returns negatives
   if (matches == 0)
     return false;
@@ -582,7 +607,7 @@ bool RE::DoMatch(const StringPiece& text,
                                        // (as for kVecSize)
   int space[21];   // use stack allocation for small vecsize (common case)
   int* vec = vecsize <= 21 ? space : new int[vecsize];
-  bool retval = DoMatchImpl(text, anchor, consumed, args, n, vec, vecsize);
+  bool retval = DoMatchImpl(text, anchor, consumed, args, n, vec, (int)vecsize);
   if (vec != space) delete [] vec;
   return retval;
 }
@@ -798,6 +823,8 @@ bool Arg::parse_longlong_radix(const char* str,
   long long r = strtoll(str, &end, radix);
 #elif defined HAVE__STRTOI64
   long long r = _strtoi64(str, &end, radix);
+#elif defined HAVE_STRTOIMAX
+  long long r = strtoimax(str, &end, radix);
 #else
 #error parse_longlong_radix: cannot convert input to a long-long
 #endif
@@ -828,6 +855,8 @@ bool Arg::parse_ulonglong_radix(const char* str,
   unsigned long long r = strtoull(str, &end, radix);
 #elif defined HAVE__STRTOI64
   unsigned long long r = _strtoui64(str, &end, radix);
+#elif defined HAVE_STRTOIMAX
+  unsigned long long r = strtoumax(str, &end, radix);
 #else
 #error parse_ulonglong_radix: cannot convert input to a long-long
 #endif

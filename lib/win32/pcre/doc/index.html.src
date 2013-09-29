@@ -11,7 +11,9 @@
 <body bgcolor="#FFFFFF" text="#00005A" link="#0066FF" alink="#3399FF" vlink="#2222BB">
 <h1>Perl-compatible Regular Expressions (PCRE)</h1>
 <p>
-The HTML documentation for PCRE comprises the following pages:
+The HTML documentation for PCRE consists of a number of pages that are listed
+below in alphabetical order. If you are new to PCRE, please read the first one
+first.
 </p>
 
 <table>
@@ -21,11 +23,17 @@ The HTML documentation for PCRE comprises the following pages:
 <tr><td><a href="pcre-config.html">pcre-config</a></td>
     <td>&nbsp;&nbsp;Information about the installation configuration</td></tr>
 
+<tr><td><a href="pcre16.html">pcre16</a></td>
+    <td>&nbsp;&nbsp;Discussion of the 16-bit PCRE library</td></tr>
+
+<tr><td><a href="pcre32.html">pcre32</a></td>
+    <td>&nbsp;&nbsp;Discussion of the 32-bit PCRE library</td></tr>
+
 <tr><td><a href="pcreapi.html">pcreapi</a></td>
     <td>&nbsp;&nbsp;PCRE's native API</td></tr>
 
 <tr><td><a href="pcrebuild.html">pcrebuild</a></td>
-    <td>&nbsp;&nbsp;Options for building PCRE</td></tr>
+    <td>&nbsp;&nbsp;Building PCRE</td></tr>
 
 <tr><td><a href="pcrecallout.html">pcrecallout</a></td>
     <td>&nbsp;&nbsp;The <i>callout</i> facility</td></tr>
@@ -42,6 +50,12 @@ The HTML documentation for PCRE comprises the following pages:
 <tr><td><a href="pcregrep.html">pcregrep</a></td>
     <td>&nbsp;&nbsp;The <b>pcregrep</b> command</td></tr>
 
+<tr><td><a href="pcrejit.html">pcrejit</a></td>
+    <td>&nbsp;&nbsp;Discussion of the just-in-time optimization support</td></tr>
+
+<tr><td><a href="pcrelimits.html">pcrelimits</a></td>
+    <td>&nbsp;&nbsp;Details of size and other limits</td></tr>
+
 <tr><td><a href="pcrematching.html">pcrematching</a></td>
     <td>&nbsp;&nbsp;Discussion of the two matching algorithms</td></tr>
 
@@ -55,7 +69,7 @@ The HTML documentation for PCRE comprises the following pages:
     <td>&nbsp;&nbsp;Some comments on performance</td></tr>
 
 <tr><td><a href="pcreposix.html">pcreposix</a></td>
-    <td>&nbsp;&nbsp;The POSIX API to the PCRE library</td></tr>
+    <td>&nbsp;&nbsp;The POSIX API to the PCRE 8-bit library</td></tr>
 
 <tr><td><a href="pcreprecompile.html">pcreprecompile</a></td>
     <td>&nbsp;&nbsp;How to save and re-use compiled patterns</td></tr>
@@ -71,14 +85,21 @@ The HTML documentation for PCRE comprises the following pages:
 
 <tr><td><a href="pcretest.html">pcretest</a></td>
     <td>&nbsp;&nbsp;The <b>pcretest</b> command for testing PCRE</td></tr>
+
+<tr><td><a href="pcreunicode.html">pcreunicode</a></td>
+    <td>&nbsp;&nbsp;Discussion of Unicode and UTF-8/UTF-16/UTF-32 support</td></tr>
 </table>
 
 <p>
-There are also individual pages that summarize the interface for each function 
-in the library:
+There are also individual pages that summarize the interface for each function
+in the library. There is a single page for each triple of 8-bit/16-bit/32-bit
+functions.
 </p>
 
 <table>    
+
+<tr><td><a href="pcre_assign_jit_stack.html">pcre_assign_jit_stack</a></td>
+    <td>&nbsp;&nbsp;Assign stack for JIT matching</td></tr>
 
 <tr><td><a href="pcre_compile.html">pcre_compile</a></td>
     <td>&nbsp;&nbsp;Compile a regular expression</td></tr>
@@ -103,6 +124,9 @@ in the library:
     <td>&nbsp;&nbsp;Match a compiled pattern to a subject string
     (Perl compatible)</td></tr>
 
+<tr><td><a href="pcre_free_study.html">pcre_free_study</a></td>
+    <td>&nbsp;&nbsp;Free study data</td></tr>
+
 <tr><td><a href="pcre_free_substring.html">pcre_free_substring</a></td>
     <td>&nbsp;&nbsp;Free extracted substring</td></tr>
 
@@ -118,23 +142,41 @@ in the library:
 <tr><td><a href="pcre_get_stringnumber.html">pcre_get_stringnumber</a></td>
     <td>&nbsp;&nbsp;Convert captured string name to number</td></tr>
 
+<tr><td><a href="pcre_get_stringtable_entries.html">pcre_get_stringtable_entries</a></td>
+    <td>&nbsp;&nbsp;Find table entries for given string name</td></tr>
+
 <tr><td><a href="pcre_get_substring.html">pcre_get_substring</a></td>
     <td>&nbsp;&nbsp;Extract numbered substring into new memory</td></tr>
 
 <tr><td><a href="pcre_get_substring_list.html">pcre_get_substring_list</a></td>
     <td>&nbsp;&nbsp;Extract all substrings into new memory</td></tr>
 
-<tr><td><a href="pcre_info.html">pcre_info</a></td>
-    <td>&nbsp;&nbsp;Obsolete information extraction function</td></tr>
+<tr><td><a href="pcre_jit_exec.html">pcre_jit_exec</a></td>
+    <td>&nbsp;&nbsp;Fast path interface to JIT matching</td></tr>
+
+<tr><td><a href="pcre_jit_stack_alloc.html">pcre_jit_stack_alloc</a></td>
+    <td>&nbsp;&nbsp;Create a stack for JIT matching</td></tr>
+
+<tr><td><a href="pcre_jit_stack_free.html">pcre_jit_stack_free</a></td>
+    <td>&nbsp;&nbsp;Free a JIT matching stack</td></tr>
 
 <tr><td><a href="pcre_maketables.html">pcre_maketables</a></td>
     <td>&nbsp;&nbsp;Build character tables in current locale</td></tr>
     
+<tr><td><a href="pcre_pattern_to_host_byte_order.html">pcre_pattern_to_host_byte_order</a></td>
+    <td>&nbsp;&nbsp;Convert compiled pattern to host byte order if necessary</td></tr>
+
 <tr><td><a href="pcre_refcount.html">pcre_refcount</a></td>
     <td>&nbsp;&nbsp;Maintain reference count in compiled pattern</td></tr>
 
 <tr><td><a href="pcre_study.html">pcre_study</a></td>
     <td>&nbsp;&nbsp;Study a compiled pattern</td></tr>
+
+<tr><td><a href="pcre_utf16_to_host_byte_order.html">pcre_utf16_to_host_byte_order</a></td>
+    <td>&nbsp;&nbsp;Convert UTF-16 string to host byte order if necessary</td></tr>
+
+<tr><td><a href="pcre_utf32_to_host_byte_order.html">pcre_utf32_to_host_byte_order</a></td>
+    <td>&nbsp;&nbsp;Convert UTF-32 string to host byte order if necessary</td></tr>
 
 <tr><td><a href="pcre_version.html">pcre_version</a></td>
     <td>&nbsp;&nbsp;Return PCRE version and release date</td></tr>

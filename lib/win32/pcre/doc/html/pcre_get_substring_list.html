@@ -22,6 +22,14 @@ SYNOPSIS
 <b>int pcre_get_substring_list(const char *<i>subject</i>,</b>
 <b>int *<i>ovector</i>, int <i>stringcount</i>, const char ***<i>listptr</i>);</b>
 </P>
+<P>
+<b>int pcre16_get_substring_list(PCRE_SPTR16 <i>subject</i>,</b>
+<b>int *<i>ovector</i>, int <i>stringcount</i>, PCRE_SPTR16 **<i>listptr</i>);</b>
+</P>
+<P>
+<b>int pcre32_get_substring_list(PCRE_SPTR32 <i>subject</i>,</b>
+<b>int *<i>ovector</i>, int <i>stringcount</i>, PCRE_SPTR32 **<i>listptr</i>);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
@@ -30,17 +38,17 @@ This is a convenience function for extracting a list of all the captured
 substrings. The arguments are:
 <pre>
   <i>subject</i>       Subject that has been successfully matched
-  <i>ovector</i>       Offset vector that <b>pcre_exec</b> used
-  <i>stringcount</i>   Value returned by <b>pcre_exec</b>
+  <i>ovector</i>       Offset vector that <b>pcre[16|32]_exec</b> used
+  <i>stringcount</i>   Value returned by <b>pcre[16|32]_exec</b>
   <i>listptr</i>       Where to put a pointer to the list
 </pre>
 The memory in which the substrings and the list are placed is obtained by
-calling <b>pcre_malloc()</b>. The convenience function
-<b>pcre_free_substring_list()</b> can be used to free it when it is no longer
-needed. A pointer to a list of pointers is put in the variable whose address is
-in <i>listptr</i>. The list is terminated by a NULL pointer. The yield of the
-function is zero on success or PCRE_ERROR_NOMEMORY if sufficient memory could
-not be obtained.
+calling <b>pcre[16|32]_malloc()</b>. The convenience function
+<b>pcre[16|32]_free_substring_list()</b> can be used to free it when it is no
+longer needed. A pointer to a list of pointers is put in the variable whose
+address is in <i>listptr</i>. The list is terminated by a NULL pointer. The
+yield of the function is zero on success or PCRE_ERROR_NOMEMORY if sufficient
+memory could not be obtained.
 </P>
 <P>
 There is a complete description of the PCRE native API in the

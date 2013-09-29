@@ -9,7 +9,7 @@
 Compatible Regular Expression library. It defines the things POSIX says should
 be there. I hope.
 
-            Copyright (c) 1997-2009 University of Cambridge
+            Copyright (c) 1997-2012 University of Cambridge
 
 -----------------------------------------------------------------------------
 Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,7 @@ extern "C" {
 #define REG_STARTEND  0x0080   /* BSD feature: pass subject string by so,eo */
 #define REG_NOTEMPTY  0x0100   /* NOT defined by POSIX; maps to PCRE_NOTEMPTY */
 #define REG_UNGREEDY  0x0200   /* NOT defined by POSIX; maps to PCRE_UNGREEDY */
+#define REG_UCP       0x0400   /* NOT defined by POSIX; maps to PCRE_UCP */
 
 /* This is not used by PCRE, but by defining it we make it easier
 to slot PCRE into existing programs that make POSIX calls. */

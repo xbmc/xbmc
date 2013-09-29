@@ -1,4 +1,4 @@
-.TH PCRECPP 3
+.TH PCRECPP 3 "08 January 2012" "PCRE 8.30"
 .SH NAME
 PCRE - Perl-compatible regular expressions.
 .SH "SYNOPSIS OF C++ WRAPPER"
@@ -12,7 +12,8 @@ PCRE - Perl-compatible regular expressions.
 The C++ wrapper for PCRE was provided by Google Inc. Some additional
 functionality was added by Giuseppe Maxia. This brief man page was constructed
 from the notes in the \fIpcrecpp.h\fP file, which should be consulted for
-further details.
+further details. Note that the C++ wrapper supports only the original 8-bit
+PCRE library. There is no 16-bit or 32-bit support at present.
 .
 .
 .SH "MATCHING INTERFACE"
@@ -172,7 +173,7 @@ supported:
    PCRE_DOTALL           dot matches newlines        /s
    PCRE_DOLLAR_ENDONLY   $ matches only at end       N/A
    PCRE_EXTRA            strict escape parsing       N/A
-   PCRE_EXTENDED         ignore whitespaces          /x
+   PCRE_EXTENDED         ignore white spaces         /x
    PCRE_UTF8             handles UTF8 chars          built-in
    PCRE_UNGREEDY         reverses * and *?           N/A
    PCRE_NO_AUTO_CAPTURE  disables capturing parens   N/A (*)
@@ -195,11 +196,11 @@ which returns true if the modifier is set, and
   RE_Options & set_caseless(bool)
 .sp
 which sets or unsets the modifier. Moreover, PCRE_EXTRA_MATCH_LIMIT can be
-accessed through the \fBset_match_limit()\fR and \fBmatch_limit()\fR member
-functions. Setting \fImatch_limit\fR to a non-zero value will limit the
+accessed through the \fBset_match_limit()\fP and \fBmatch_limit()\fP member
+functions. Setting \fImatch_limit\fP to a non-zero value will limit the
 execution of pcre to keep it from doing bad things like blowing the stack or
 taking an eternity to return a result. A value of 5000 is good enough to stop
-stack blowup in a 2MB thread stack. Setting \fImatch_limit\fR to zero disables
+stack blowup in a 2MB thread stack. Setting \fImatch_limit\fP to zero disables
 match limiting. Alternatively, you can call \fBmatch_limit_recursion()\fP
 which uses PCRE_EXTRA_MATCH_LIMIT_RECURSION to limit how much PCRE
 recurses. \fBmatch_limit()\fP limits the number of matches PCRE does;
@@ -207,16 +208,16 @@ recurses. \fBmatch_limit()\fP limits the number of matches PCRE does;
 therefore the amount of stack that is used.
 .P
 Normally, to pass one or more modifiers to a RE class, you declare
-a \fIRE_Options\fR object, set the appropriate options, and pass this
+a \fIRE_Options\fP object, set the appropriate options, and pass this
 object to a RE constructor. Example:
 .sp
-   RE_options opt;
+   RE_Options opt;
    opt.set_caseless(true);
    if (RE("HELLO", opt).PartialMatch("hello world")) ...
 .sp
 RE_options has two constructors. The default constructor takes no arguments and
 creates a set of flags that are off by default. The optional parameter
-\fIoption_flags\fR is to facilitate transfer of legacy code from C programs.
+\fIoption_flags\fP is to facilitate transfer of legacy code from C programs.
 This lets you do
 .sp
    RE(pattern,
@@ -230,13 +231,13 @@ However, new code is better off doing
 .sp
 If you are going to pass one of the most used modifiers, there are some
 convenience functions that return a RE_Options class with the
-appropriate modifier already set: \fBCASELESS()\fR, \fBUTF8()\fR,
-\fBMULTILINE()\fR, \fBDOTALL\fR(), and \fBEXTENDED()\fR.
+appropriate modifier already set: \fBCASELESS()\fP, \fBUTF8()\fP,
+\fBMULTILINE()\fP, \fBDOTALL\fP(), and \fBEXTENDED()\fP.
 .P
 If you need to set several options at once, and you don't want to go through
 the pains of declaring a RE_Options object and setting several options, there
 is a parallel method that give you such ability on the fly. You can concatenate
-several \fBset_xxxxx()\fR member functions, since each of them returns a
+several \fBset_xxxxx()\fP member functions, since each of them returns a
 reference to its class object. For example, to pass PCRE_CASELESS,
 PCRE_EXTENDED, and PCRE_MULTILINE to a RE with one statement, you may write:
 .sp
@@ -260,7 +261,7 @@ is defined in the pcrecpp namespace.
   Example: read lines of the form "var = value" from a string.
      string contents = ...;                 // Fill string somehow
      pcrecpp::StringPiece input(contents);  // Wrap in a StringPiece
-
+.sp
      string var;
      int value;
      pcrecpp::RE re("(\e\ew+) = (\e\ed+)\en");
@@ -343,5 +344,5 @@ Copyright (c) 2007 Google Inc.
 .rs
 .sp
 .nf
-Last updated: 17 March 2009
+Last updated: 08 January 2012
 .fi

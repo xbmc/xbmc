@@ -1,339 +1,135 @@
-/-- These tests are for the Perl 5.10 features that PCRE supports. --/
+/-- These are a few representative patterns whose lengths and offsets are to be 
+shown when the link size is 2. This is just a doublecheck test to ensure the 
+sizes don't go horribly wrong when something is changed. The pattern contents 
+are all themselves checked in other tests. Unicode, including property support, 
+is required for these tests. --/
 
-/\H\h\V\v/
-    X X\x0a
-    X\x09X\x0b
-    ** Failers
-    \xa0 X\x0a   
+/((?i)b)/BM
+
+/(?s)(.*X|^B)/BM
+
+/(?s:.*X|^B)/BM
+
+/^[[:alnum:]]/BM
+
+/#/IxMD
+
+/a#/IxMD
+
+/x?+/BM
+
+/x++/BM
+
+/x{1,3}+/BM 
+
+/(x)*+/BM
+
+/^((a+)(?U)([ab]+)(?-U)([bc]+)(\w*))/BM
+
+|8J\$WE\<\.rX\+ix\[d1b\!H\#\?vV0vrK\:ZH1\=2M\>iV\;\?aPhFB\<\*vW\@QW\@sO9\}cfZA\-i\'w\%hKd6gt1UJP\,15_\#QY\$M\^Mss_U\/\]\&LK9\[5vQub\^w\[KDD\<EjmhUZ\?\.akp2dF\>qmj\;2\}YWFdYx\.Ap\]hjCPTP\(n28k\+3\;o\&WXqs\/gOXdr\$\:r\'do0\;b4c\(f_Gr\=\"\\4\)\[01T7ajQJvL\$W\~mL_sS\/4h\:x\*\[ZN\=KLs\&L5zX\/\/\>it\,o\:aU\(\;Z\>pW\&T7oP\'2K\^E\:x9\'c\[\%z\-\,64JQ5AeH_G\#KijUKghQw\^\\vea3a\?kka_G\$8\#\`\*kynsxzBLru\'\]k_\[7FrVx\}\^\=\$blx\>s\-N\%j\;D\*aZDnsw\:YKZ\%Q\.Kne9\#hP\?\+b3\(SOvL\,\^\;\&u5\@\?5C5Bhb\=m\-vEh_L15Jl\]U\)0RP6\{q\%L\^_z5E\'Dw6X\b|BM
+
+|\$\<\.X\+ix\[d1b\!H\#\?vV0vrK\:ZH1\=2M\>iV\;\?aPhFB\<\*vW\@QW\@sO9\}cfZA\-i\'w\%hKd6gt1UJP\,15_\#QY\$M\^Mss_U\/\]\&LK9\[5vQub\^w\[KDD\<EjmhUZ\?\.akp2dF\>qmj\;2\}YWFdYx\.Ap\]hjCPTP\(n28k\+3\;o\&WXqs\/gOXdr\$\:r\'do0\;b4c\(f_Gr\=\"\\4\)\[01T7ajQJvL\$W\~mL_sS\/4h\:x\*\[ZN\=KLs\&L5zX\/\/\>it\,o\:aU\(\;Z\>pW\&T7oP\'2K\^E\:x9\'c\[\%z\-\,64JQ5AeH_G\#KijUKghQw\^\\vea3a\?kka_G\$8\#\`\*kynsxzBLru\'\]k_\[7FrVx\}\^\=\$blx\>s\-N\%j\;D\*aZDnsw\:YKZ\%Q\.Kne9\#hP\?\+b3\(SOvL\,\^\;\&u5\@\?5C5Bhb\=m\-vEh_L15Jl\]U\)0RP6\{q\%L\^_z5E\'Dw6X\b|BM
+
+/(a(?1)b)/BM
+
+/(a(?1)+b)/BM
+
+/a(?P<name1>b|c)d(?P<longername2>e)/BM
+
+/(?:a(?P<c>c(?P<d>d)))(?P<a>a)/BM
+
+/(?P<a>a)...(?P=a)bbb(?P>a)d/BM
+
+/abc(?C255)de(?C)f/BM
+
+/abcde/CBM
+
+/\x{100}/8BM
+
+/\x{1000}/8BM
+
+/\x{10000}/8BM
+
+/\x{100000}/8BM
+
+/\x{10ffff}/8BM
+
+/\x{110000}/8BM
+
+/[\x{ff}]/8BM
+
+/[\x{100}]/8BM
+
+/\x80/8BM
+
+/\xff/8BM
+
+/\x{0041}\x{2262}\x{0391}\x{002e}/D8M
     
-/\H*\h+\V?\v{3,4}/ 
-    \x09\x20\xa0X\x0a\x0b\x0c\x0d\x0a
-    \x09\x20\xa0\x0a\x0b\x0c\x0d\x0a
-    \x09\x20\xa0\x0a\x0b\x0c
-    ** Failers 
-    \x09\x20\xa0\x0a\x0b
-     
-/\H{3,4}/
-    XY  ABCDE
-    XY  PQR ST 
-    
-/.\h{3,4}./
-    XY  AB    PQRS
+/\x{D55c}\x{ad6d}\x{C5B4}/D8M 
 
-/\h*X\h?\H+Y\H?Z/
-    >XNNNYZ
-    >  X NYQZ
-    ** Failers
-    >XYZ   
-    >  X NY Z
+/\x{65e5}\x{672c}\x{8a9e}/D8M
 
-/\v*X\v?Y\v+Z\V*\x0a\V+\x0b\V{2,3}\x0c/
-    >XY\x0aZ\x0aA\x0bNN\x0c
-    >\x0a\x0dX\x0aY\x0a\x0bZZZ\x0aAAA\x0bNNN\x0c
+/[\x{100}]/8BM
 
-/(foo)\Kbar/
-    foobar
-   
-/(foo)(\Kbar|baz)/
-    foobar
-    foobaz 
+/[Z\x{100}]/8BM
 
-/(foo\Kbar)baz/
-    foobarbaz
+/^[\x{100}\E-\Q\E\x{150}]/B8M
 
-/abc\K|def\K/g+
-    Xabcdefghi
+/^[\QĀ\E-\QŐ\E]/B8M
 
-/ab\Kc|de\Kf/g+
-    Xabcdefghi
-    
-/(?=C)/g+
-    ABCDECBA
-    
-/^abc\K/+
-    abcdef
-    ** Failers
-    defabcxyz   
+/^[\QĀ\E-\QŐ\E/B8M
 
-/^(a(b))\1\g1\g{1}\g-1\g{-1}\g{-02}Z/
-    ababababbbabZXXXX
+/[\p{L}]/BM
 
-/(?<A>tom|bon)-\g{A}/
-    tom-tom
-    bon-bon 
-    
-/(^(a|b\g{-1}))/
-    bacxxx
+/[\p{^L}]/BM
 
-/(?|(abc)|(xyz))\1/
-    abcabc
-    xyzxyz 
-    ** Failers
-    abcxyz
-    xyzabc   
-    
-/(?|(abc)|(xyz))(?1)/
-    abcabc
-    xyzabc 
-    ** Failers 
-    xyzxyz 
- 
-/^X(?5)(a)(?|(b)|(q))(c)(d)(Y)/
-    XYabcdY
+/[\P{L}]/BM
 
-/^X(?7)(a)(?|(b|(r)(s))|(q))(c)(d)(Y)/
-    XYabcdY
+/[\P{^L}]/BM
 
-/^X(?7)(a)(?|(b|(?|(r)|(t))(s))|(q))(c)(d)(Y)/
-    XYabcdY
+/[abc\p{L}\x{0660}]/8BM
 
-/(?'abc'\w+):\k<abc>{2}/
-    a:aaxyz
-    ab:ababxyz
-    ** Failers
-    a:axyz
-    ab:abxyz
+/[\p{Nd}]/8BM
 
-/(?'abc'\w+):\g{abc}{2}/
-    a:aaxyz
-    ab:ababxyz
-    ** Failers
-    a:axyz
-    ab:abxyz
+/[\p{Nd}+-]+/8BM
 
-/^(?<ab>a)? (?(<ab>)b|c) (?('ab')d|e)/x
-    abd
-    ce
+/A\x{391}\x{10427}\x{ff3a}\x{1fb0}/8iBM
 
-/^(a.)\g-1Z/
-    aXaXZ
+/A\x{391}\x{10427}\x{ff3a}\x{1fb0}/8BM
 
-/^(a.)\g{-1}Z/
-    aXaXZ
+/[\x{105}-\x{109}]/8iBM
 
-/^(?(DEFINE) (?<A> a) (?<B> b) )  (?&A) (?&B) /x
-    abcd
+/( ( (?(1)0|) )*   )/xBM
 
-/(?<NAME>(?&NAME_PAT))\s+(?<ADDR>(?&ADDRESS_PAT))
-  (?(DEFINE)
-  (?<NAME_PAT>[a-z]+)
-  (?<ADDRESS_PAT>\d+)
-  )/x
-    metcalfe 33
+/(  (?(1)0|)*   )/xBM
 
-/(?(DEFINE)(?<byte>2[0-4]\d|25[0-5]|1\d\d|[1-9]?\d))\b(?&byte)(\.(?&byte)){3}/
-    1.2.3.4
-    131.111.10.206
-    10.0.0.0
-    ** Failers
-    10.6
-    455.3.4.5
+/[a]/BM
 
-/\b(?&byte)(\.(?&byte)){3}(?(DEFINE)(?<byte>2[0-4]\d|25[0-5]|1\d\d|[1-9]?\d))/
-    1.2.3.4
-    131.111.10.206
-    10.0.0.0
-    ** Failers
-    10.6
-    455.3.4.5
+/[a]/8BM
 
-/^(\w++|\s++)*$/
-    now is the time for all good men to come to the aid of the party
-    *** Failers
-    this is not a line with only words and spaces!
+/[\xaa]/BM
 
-/(\d++)(\w)/
-    12345a
-    *** Failers
-    12345+
+/[\xaa]/8BM
 
-/a++b/
-    aaab
+/[^a]/BM
 
-/(a++b)/
-    aaab
+/[^a]/8BM
 
-/(a++)b/
-    aaab
+/[^\xaa]/BM
 
-/([^()]++|\([^()]*\))+/
-    ((abc(ade)ufh()()x
+/[^\xaa]/8BM
 
-/\(([^()]++|\([^()]+\))+\)/
-    (abc)
-    (abc(def)xyz)
-    *** Failers
-    ((()aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+/[^\d]/8WB
 
-/^([^()]|\((?1)*\))*$/
-    abc
-    a(b)c
-    a(b(c))d
-    *** Failers)
-    a(b(c)d
+/[[:^alpha:][:^cntrl:]]+/8WB
 
-/^>abc>([^()]|\((?1)*\))*<xyz<$/
-   >abc>123<xyz<
-   >abc>1(2)3<xyz<
-   >abc>(1(2)3)<xyz<
+/[[:^cntrl:][:^alpha:]]+/8WB
 
-/^(?:((.)(?1)\2|)|((.)(?3)\4|.))$/i
-    1221
-    Satanoscillatemymetallicsonatas
-    AmanaplanacanalPanama
-    AblewasIereIsawElba
-    *** Failers
-    Thequickbrownfox
+/[[:alpha:]]+/8WB
 
-/^(\d+|\((?1)([+*-])(?1)\)|-(?1))$/
-    12
-    (((2+2)*-3)-7)
-    -12
-    *** Failers
-    ((2+2)*-3)-7)
+/[[:^alpha:]\S]+/8WB
 
-/^(x(y|(?1){2})z)/
-    xyz
-    xxyzxyzz
-    *** Failers
-    xxyzz
-    xxyzxyzxyzz
-
-/((< (?: (?(R) \d++  | [^<>]*+) | (?2)) * >))/x
-    <>
-    <abcd>
-    <abc <123> hij>
-    <abc <def> hij>
-    <abc<>def>
-    <abc<>
-    *** Failers
-    <abc
-
-/^a+(*FAIL)/
-    aaaaaa
-    
-/a+b?c+(*FAIL)/
-    aaabccc
-
-/a+b?(*PRUNE)c+(*FAIL)/
-    aaabccc
-
-/a+b?(*COMMIT)c+(*FAIL)/
-    aaabccc
-    
-/a+b?(*SKIP)c+(*FAIL)/
-    aaabcccaaabccc
-
-/^(?:aaa(*THEN)\w{6}|bbb(*THEN)\w{5}|ccc(*THEN)\w{4}|\w{3})/
-    aaaxxxxxx
-    aaa++++++ 
-    bbbxxxxx
-    bbb+++++ 
-    cccxxxx
-    ccc++++ 
-    dddddddd   
-
-/^(aaa(*THEN)\w{6}|bbb(*THEN)\w{5}|ccc(*THEN)\w{4}|\w{3})/
-    aaaxxxxxx
-    aaa++++++ 
-    bbbxxxxx
-    bbb+++++ 
-    cccxxxx
-    ccc++++ 
-    dddddddd   
-
-/a+b?(*THEN)c+(*FAIL)/
-    aaabccc
-
-/(A (A|B(*ACCEPT)|C) D)(E)/x
-    ABX
-    AADE
-    ACDE
-    ** Failers
-    AD 
-        
-/^\W*+(?:((.)\W*+(?1)\W*+\2|)|((.)\W*+(?3)\W*+\4|\W*+.\W*+))\W*+$/i
-    1221
-    Satan, oscillate my metallic sonatas!
-    A man, a plan, a canal: Panama!
-    Able was I ere I saw Elba.
-    *** Failers
-    The quick brown fox
-
-/^((.)(?1)\2|.)$/
-    a
-    aba
-    aabaa  
-    abcdcba 
-    pqaabaaqp  
-    ablewasiereisawelba
-    rhubarb
-    the quick brown fox  
-
-/(a)(?<=b(?1))/
-    baz
-    ** Failers
-    caz  
-    
-/(?<=b(?1))(a)/
-    zbaaz
-    ** Failers
-    aaa  
-    
-/(?<X>a)(?<=b(?&X))/
-    baz
-
-/^(?|(abc)|(def))\1/
-    abcabc
-    defdef 
-    ** Failers
-    abcdef
-    defabc   
-    
-/^(?|(abc)|(def))(?1)/
-    abcabc
-    defabc
-    ** Failers
-    defdef
-    abcdef    
-
-/(?:a(?<quote> (?<apostrophe>')|(?<realquote>")) |b(?<quote> (?<apostrophe>')|(?<realquote>")) ) (?('quote')[a-z]+|[0-9]+)/xJ
-    a\"aaaaa
-    b\"aaaaa 
-    ** Failers 
-    b\"11111
-
-/(?:(?1)|B)(A(*F)|C)/
-    ABCD
-    CCD
-    ** Failers
-    CAD   
-
-/^(?:(?1)|B)(A(*F)|C)/
-    CCD
-    BCD 
-    ** Failers
-    ABCD
-    CAD
-    BAD    
-
-/(?:(?1)|B)(A(*ACCEPT)XX|C)D/
-    AAD
-    ACD
-    BAD
-    BCD
-    BAX  
-    ** Failers
-    ACX
-    ABC   
-
-/(?(DEFINE)(A))B(?1)C/
-    BAC
-
-/(?(DEFINE)((A)\2))B(?1)C/
-    BAAC
-
-/(?<pn> \( ( [^()]++ | (?&pn) )* \) )/x
-    (ab(cd)ef)
+/abc(d|e)(*THEN)x(123(*THEN)4|567(b|q)(*THEN)xx)/B
 
 /-- End of testinput11 --/

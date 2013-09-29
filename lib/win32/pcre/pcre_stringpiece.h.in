@@ -38,7 +38,7 @@
 #ifndef _PCRE_STRINGPIECE_H
 #define _PCRE_STRINGPIECE_H
 
-#include <string.h>
+#include <cstring>
 #include <string>
 #include <iosfwd>    // for ostream forward-declaration
 
@@ -52,6 +52,8 @@
 
 #include <pcre.h>
 
+using std::memcmp;
+using std::strlen;
 using std::string;
 
 namespace pcrecpp {

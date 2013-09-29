@@ -22,6 +22,14 @@ SYNOPSIS
 <b>int pcre_fullinfo(const pcre *<i>code</i>, const pcre_extra *<i>extra</i>,</b>
 <b>int <i>what</i>, void *<i>where</i>);</b>
 </P>
+<P>
+<b>int pcre16_fullinfo(const pcre16 *<i>code</i>, const pcre16_extra *<i>extra</i>,</b>
+<b>int <i>what</i>, void *<i>where</i>);</b>
+</P>
+<P>
+<b>int pcre32_fullinfo(const pcre32 *<i>code</i>, const pcre32_extra *<i>extra</i>,</b>
+<b>int <i>what</i>, void *<i>where</i>);</b>
+</P>
 <br><b>
 DESCRIPTION
 </b><br>
@@ -29,7 +37,7 @@ DESCRIPTION
 This function returns information about a compiled pattern. Its arguments are:
 <pre>
   <i>code</i>                      Compiled regular expression
-  <i>extra</i>                     Result of <b>pcre_study()</b> or NULL
+  <i>extra</i>                     Result of <b>pcre[16|32]_study()</b> or NULL
   <i>what</i>                      What information is required
   <i>where</i>                     Where to put the information
 </pre>
@@ -38,13 +46,16 @@ The following information is available:
   PCRE_INFO_BACKREFMAX      Number of highest back reference
   PCRE_INFO_CAPTURECOUNT    Number of capturing subpatterns
   PCRE_INFO_DEFAULT_TABLES  Pointer to default tables
-  PCRE_INFO_FIRSTBYTE       Fixed first byte for a match, or
+  PCRE_INFO_FIRSTBYTE       Fixed first data unit for a match, or
                               -1 for start of string
                                  or after newline, or
                               -2 otherwise
-  PCRE_INFO_FIRSTTABLE      Table of first bytes (after studying)
+  PCRE_INFO_FIRSTTABLE      Table of first data units (after studying)
+  PCRE_INFO_HASCRORLF       Return 1 if explicit CR or LF matches exist
   PCRE_INFO_JCHANGED        Return 1 if (?J) or (?-J) was used
-  PCRE_INFO_LASTLITERAL     Literal last byte required
+  PCRE_INFO_JIT             Return 1 after successful JIT compilation
+  PCRE_INFO_JITSIZE         Size of JIT compiled code
+  PCRE_INFO_LASTLITERAL     Literal last data unit required
   PCRE_INFO_MINLENGTH       Lower bound length of matching strings
   PCRE_INFO_NAMECOUNT       Number of named subpatterns
   PCRE_INFO_NAMEENTRYSIZE   Size of name table entry
@@ -54,6 +65,29 @@ The following information is available:
   PCRE_INFO_OPTIONS         Option bits used for compilation
   PCRE_INFO_SIZE            Size of compiled pattern
   PCRE_INFO_STUDYSIZE       Size of study data
+  PCRE_INFO_FIRSTCHARACTER      Fixed first data unit for a match
+  PCRE_INFO_FIRSTCHARACTERFLAGS Returns
+                                  1 if there is a first data character set, which can
+                                    then be retrieved using PCRE_INFO_FIRSTCHARACTER,
+                                  2 if the first character is at the start of the data
+                                    string or after a newline, and
+                                  0 otherwise
+  PCRE_INFO_REQUIREDCHAR      Literal last data unit required
+  PCRE_INFO_REQUIREDCHARFLAGS Returns 1 if the last data character is set (which can then
+                              be retrieved using PCRE_INFO_REQUIREDCHAR); 0 otherwise
+</pre>
+The <i>where</i> argument must point to an integer variable, except for the
+following <i>what</i> values:
+<pre>
+  PCRE_INFO_DEFAULT_TABLES  const unsigned char *
+  PCRE_INFO_FIRSTTABLE      const unsigned char *
+  PCRE_INFO_NAMETABLE       PCRE_SPTR16           (16-bit library)
+  PCRE_INFO_NAMETABLE       PCRE_SPTR32           (32-bit library)
+  PCRE_INFO_NAMETABLE       const unsigned char * (8-bit library)
+  PCRE_INFO_OPTIONS         unsigned long int
+  PCRE_INFO_SIZE            size_t
+  PCRE_INFO_FIRSTCHARACTER  uint32_t
+  PCRE_INFO_REQUIREDCHAR    uint32_t
 </pre>
 The yield of the function is zero on success or:
 <pre>
