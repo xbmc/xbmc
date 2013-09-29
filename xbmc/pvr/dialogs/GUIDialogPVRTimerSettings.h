@@ -53,6 +53,8 @@ namespace PVR
     int             m_tmp_iFirstDay;;
     int             m_tmp_day;
     bool            m_bTimerActive;
+    int             m_selectedChannelEntry;
+    std::map<std::pair<bool, int>, int> m_channelEntries;
 
     CFileItem      *m_timerItem;
     bool            m_cancelled;
