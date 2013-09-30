@@ -489,15 +489,23 @@ const CStdString& CLangInfo::GetDVDMenuLanguage() const
 }
 
 // two character codes as defined in ISO639
-const CStdString& CLangInfo::GetDVDAudioLanguage() const
+const std::string CLangInfo::GetDVDAudioLanguage() const
 {
-  return m_currentRegion->m_strDVDAudioLanguage;
+  CStdString code;
+  if (!g_LangCodeExpander.ConvertToTwoCharCode(code, m_audioLanguage))
+    code = m_currentRegion->m_strDVDAudioLanguage;
+  
+  return code;
 }
 
 // two character codes as defined in ISO639
-const CStdString& CLangInfo::GetDVDSubtitleLanguage() const
+const std::string CLangInfo::GetDVDSubtitleLanguage() const
 {
-  return m_currentRegion->m_strDVDSubtitleLanguage;
+  CStdString code;
+  if (!g_LangCodeExpander.ConvertToTwoCharCode(code, m_subtitleLanguage))
+    code = m_currentRegion->m_strDVDSubtitleLanguage;
+  
+  return code;
 }
 
 const CStdString& CLangInfo::GetLanguageLocale() const

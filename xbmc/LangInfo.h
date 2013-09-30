@@ -58,8 +58,8 @@ public:
   void SetSubtitleLanguage(const CStdString &language);
 
   const CStdString& GetDVDMenuLanguage() const;
-  const CStdString& GetDVDAudioLanguage() const;
-  const CStdString& GetDVDSubtitleLanguage() const;
+  const std::string GetDVDAudioLanguage() const;
+  const std::string GetDVDSubtitleLanguage() const;
   const CStdString& GetTimeZone() const;
 
   const CStdString& GetRegionLocale() const;
