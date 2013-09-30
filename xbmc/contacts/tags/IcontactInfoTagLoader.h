@@ -21,16 +21,15 @@
 
 #include "utils/StdString.h"
 
-namespace PICTURE_INFO
+namespace CONTACT_INFO
 {
-  class EmbeddedArt;
-  class CPictureInfoTag;
-  class IPictureInfoTagLoader
+  class CContactInfoTag;
+  class IContactInfoTagLoader
   {
   public:
-    IPictureInfoTagLoader(void){};
-    virtual ~IPictureInfoTagLoader(){};
+    IContactInfoTagLoader(void){};
+    virtual ~IContactInfoTagLoader(){};
     
-    virtual bool Load(const CStdString& strFileName, CPictureInfoTag& tag, EmbeddedArt *art = NULL) = 0;
+    virtual bool Load(const CStdString& strFileName, CContactInfoTag& tag) = 0;
   };
 }

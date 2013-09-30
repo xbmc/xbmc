@@ -18,33 +18,33 @@
  *
  */
 
-#include "PictureInfoTagLoaderDatabase.h"
-#include "pictures/PictureDatabase.h"
-#include "filesystem/PictureDatabaseDirectory.h"
-#include "filesystem/PictureDatabaseDirectory/DirectoryNode.h"
-#include "PictureInfoTag.h"
+#include "ContactInfoTagLoaderDatabase.h"
+#include "contacts/ContactDatabase.h"
+#include "filesystem/ContactDatabaseDirectory.h"
+#include "filesystem/ContactDatabaseDirectory/DirectoryNode.h"
+#include "ContactInfoTag.h"
 
-using namespace PICTURE_INFO;
+using namespace CONTACT_INFO;
 
-CPictureInfoTagLoaderDatabase::CPictureInfoTagLoaderDatabase(void)
+CContactInfoTagLoaderDatabase::CContactInfoTagLoaderDatabase(void)
 {
 }
 
-CPictureInfoTagLoaderDatabase::~CPictureInfoTagLoaderDatabase()
+CContactInfoTagLoaderDatabase::~CContactInfoTagLoaderDatabase()
 {
 }
 
-bool CPictureInfoTagLoaderDatabase::Load(const CStdString& strFileName, CPictureInfoTag& tag, EmbeddedArt *art)
+bool CContactInfoTagLoaderDatabase::Load(const CStdString& strFileName, CContactInfoTag& tag)
 {
   tag.SetLoaded(false);
-  CPictureDatabase database;
+  CContactDatabase database;
   database.Open();
-  XFILE::PICTUREDATABASEDIRECTORY::CQueryParams param;
-  XFILE::PICTUREDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strFileName,param);
+  XFILE::CONTACTDATABASEDIRECTORY::CQueryParams param;
+  XFILE::CONTACTDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strFileName,param);
   
-  CPicture song;
-  if (database.GetPicture(param.GetPictureId(),song))
-    tag.SetPicture(song);
+  CContact contact;
+  if (database.GetContact(param.GetContactId(),contact))
+    tag.SetContact(contact);
   
   database.Close();
   

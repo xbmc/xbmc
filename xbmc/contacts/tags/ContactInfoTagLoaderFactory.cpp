@@ -19,34 +19,31 @@
  */
 
 #include "system.h"
-#include "PictureInfoTagLoaderFactory.h"
-#include "PictureInfoTagLoaderDatabase.h"
-#include "PictureInfoTagLoaderJPG.h"
+#include "ContactInfoTagLoaderFactory.h"
+#include "ContactInfoTagLoaderDatabase.h"
+
 
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 
-#ifdef HAS_ASAP_CODEC
-#include "cores/paplayer/ASAPCodec.h"
-#endif
 
-using namespace PICTURE_INFO;
+using namespace CONTACT_INFO;
 
-CPictureInfoTagLoaderFactory::CPictureInfoTagLoaderFactory()
+CContactInfoTagLoaderFactory::CContactInfoTagLoaderFactory()
 {}
 
-CPictureInfoTagLoaderFactory::~CPictureInfoTagLoaderFactory()
+CContactInfoTagLoaderFactory::~CContactInfoTagLoaderFactory()
 {}
 
-IPictureInfoTagLoader* CPictureInfoTagLoaderFactory::CreateLoader(const CStdString& strFileName)
+IContactInfoTagLoader* CContactInfoTagLoaderFactory::CreateLoader(const CStdString& strFileName)
 {
   // dont try to read the tags for streams & shoutcast
   CFileItem item(strFileName, false);
   if (item.IsInternetStream())
     return NULL;
   
-  if (item.IsPictureDb())
-    return new CPictureInfoTagLoaderDatabase();
+  if (item.IsContactDb())
+    return new CContactInfoTagLoaderDatabase();
   
   CStdString strExtension = URIUtils::GetExtension(strFileName);
   strExtension.ToLower();
@@ -55,12 +52,5 @@ IPictureInfoTagLoader* CPictureInfoTagLoaderFactory::CreateLoader(const CStdStri
   if (strExtension.IsEmpty())
     return NULL;
   
-  if (strExtension == "jpg" )
-  {
-    CPictureInfoTagLoaderJPG *pTagLoader = new CPictureInfoTagLoaderJPG();
-    
-//    CTagLoaderTagLib *pTagLoader = new CTagLoaderTagLib();
-    return (IPictureInfoTagLoader*)pTagLoader;
-  }
   return NULL;
 }

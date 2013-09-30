@@ -19,17 +19,17 @@
  *
  */
 
-#include "IpictureInfoTagLoader.h"
+#include "IcontactInfoTagLoader.h"
 
-namespace PICTURE_INFO
+namespace CONTACT_INFO
 {
-  class CPictureInfoTagLoaderFactory
+  class CContactInfoTagLoaderFactory
   {
   public:
-    CPictureInfoTagLoaderFactory(void);
-    virtual ~CPictureInfoTagLoaderFactory();
+    CContactInfoTagLoaderFactory(void);
+    virtual ~CContactInfoTagLoaderFactory();
     
-    static IPictureInfoTagLoader* CreateLoader(const CStdString& strFileName);
+    static IContactInfoTagLoader* CreateLoader(const CStdString& strFileName);
   };
 }
 
