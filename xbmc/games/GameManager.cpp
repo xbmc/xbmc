@@ -77,15 +77,13 @@ void CGameManager::Start()
   CAddonMgr::Get().RegisterObserver(this);
   CAddonDatabase::RegisterAddonDatabaseCallback(ADDON_GAMEDLL, this);
 
+  // Notify GameManager of game clients being tracked in remote repositories
+  // TODO: Run UpdateRemoteAddons() and UpdateAddons() off-thread
   CAddonDatabase database;
   if (database.Open())
   {
     VECADDONS addons;
     database.GetAddons(addons); // TODO: Filter by type ADDON_GAMEDLL
-    // TODO: either rename this function to UpdateExtensions(), which is more
-    // transparent to what it actually does, or abstract it further by creating
-    // a callback interface for the Repository Updated action (see Repository.cpp).
-    // For now, compromise and pretend that they are remote add-ons.
     UpdateRemoteAddons(addons);
   }
 
@@ -157,7 +155,7 @@ bool CGameManager::RegisterAddon(const GameClientPtr &client)
     return false;
 
   // It's possible for game clients to be enabled but not enabled in the
-  // database when they're installed but not configured yet.
+  // database when they're installed but not configured yet. (TODO: is this correct?)
   bool bEnabled = client->Enabled() && !database.IsAddonDisabled(client->ID());
   if (!bEnabled)
     return false;
@@ -167,10 +165,7 @@ bool CGameManager::RegisterAddon(const GameClientPtr &client)
 
   GameClientPtr &registeredClient = m_gameClients[client->ID()];
   if (registeredClient)
-  {
-    CLog::Log(LOGDEBUG, "GameManager: Already registered: %s!", client->ID().c_str());
-    return true;
-  }
+    return true; // Already registered
 
   if (!client->Init())
   {

@@ -79,7 +79,12 @@ namespace GAMES
      * complete (see Repository.cpp). We must call this after the Repository
      * Updated action so that the game manager's knowledge of file extensions
      * (which it uses to determine whether files are games) contains the
-     * extensions supported by the game clients of new repositories.
+     * extensions supported by the game clients of new/updated repositories.
+     *
+     * TODO: either rename this function to UpdateExtensions(), which is more
+     * transparent to what it actually does, or abstract it further by creating
+     * a callback interface for the Repository Updated action. For now,
+     * compromise and always pretend that they are remote add-ons.
      */
     void UpdateRemoteAddons(const ADDON::VECADDONS &addons);
 
