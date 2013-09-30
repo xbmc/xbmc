@@ -169,6 +169,7 @@ private:
  */
 
 class CVideoSurfaces;
+class CVDPAUContext;
 
 struct CVdpauConfig
 {
@@ -192,6 +193,7 @@ struct CVdpauConfig
   int numRenderBuffers;
   uint32_t maxReferences;
   bool useInteropYuv;
+  CVDPAUContext *context;
 };
 
 /**
@@ -539,6 +541,30 @@ protected:
 // VDPAU decoder
 //-----------------------------------------------------------------------------
 
+class CVDPAUContext
+{
+public:
+  static bool EnsureContext(CVDPAUContext **ctx);
+  void Release();
+  void GetProcs(VDPAU_procs &procs);
+  VdpDevice GetDevice();
+private:
+  CVDPAUContext();
+  void Close();
+  bool LoadSymbols();
+  bool CreateContext();
+  void DestroyContext();
+  static CVDPAUContext *m_context;
+  static CCriticalSection m_section;
+  static Display *m_display;
+  int m_refCount;
+  static void *m_dlHandle;
+  VdpDevice m_vdpDevice;
+  VdpGetProcAddress *m_vdp_get_proc_address;
+  VdpDeviceDestroy *m_vdp_device_destroy;
+  VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
+};
+
 /**
  *  VDPAU main class
  */
@@ -595,8 +621,6 @@ protected:
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
   bool CheckStatus(VdpStatus vdp_st, int line);
-  void InitVDPAUProcs();
-  void FiniVDPAUProcs();
   void FiniVDPAUOutput();
   void ReturnRenderPicture(CVdpauRenderPicture *renderPic);
   long ReleasePicReference();
@@ -604,10 +628,6 @@ protected:
   static void ReadFormatOf( AVCodecID codec
                           , VdpDecoderProfile &decoder_profile
                           , VdpChromaType     &chroma_type);
-
-  VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
-  VdpStatus (*dl_vdp_get_proc_address)(VdpDevice device, VdpFuncId function_id, void** function_pointer);
-  VdpStatus (*dl_vdp_preemption_callback_register)(VdpDevice device, VdpPreemptionCallback callback, void* context);
 
   // OnLostDevice triggers transition from all states to LOST
   // internal errors trigger transition from OPEN to RESET
@@ -621,9 +641,7 @@ protected:
   CCriticalSection m_DecoderSection;
   CEvent         m_DisplayEvent;
 
-  static void*  dl_handle;
   DllAvUtil     m_dllAvUtil;
-  Display*      m_Display;
   ThreadIdentifier m_decoderThread;
   bool          m_vdpauConfigured;
   CVdpauConfig  m_vdpauConfig;

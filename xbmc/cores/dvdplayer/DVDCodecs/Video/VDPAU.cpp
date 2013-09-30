@@ -74,10 +74,192 @@ static struct SInterlaceMapping
 static float studioCSCKCoeffs601[3] = {0.299, 0.587, 0.114}; //BT601 {Kr, Kg, Kb}
 static float studioCSCKCoeffs709[3] = {0.2126, 0.7152, 0.0722}; //BT709 {Kr, Kg, Kb}
 
-//since libvdpau 0.4, vdp_device_create_x11() installs a callback on the Display*,
-//if we unload libvdpau with dlclose(), we segfault on XCloseDisplay,
-//so we just keep a static handle to libvdpau around
-void* CDecoder::dl_handle;
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+CVDPAUContext *CVDPAUContext::m_context = 0;
+CCriticalSection CVDPAUContext::m_section;
+Display *CVDPAUContext::m_display = 0;
+void *CVDPAUContext::m_dlHandle = 0;
+
+CVDPAUContext::CVDPAUContext()
+{
+  m_context = 0;
+  m_refCount = 0;
+}
+
+void CVDPAUContext::Release()
+{
+  CSingleLock lock(m_section);
+
+  m_refCount--;
+  if (m_refCount <= 0)
+  {
+    Close();
+    delete this;
+    m_context = 0;
+  }
+}
+
+void CVDPAUContext::Close()
+{
+  CLog::Log(LOGNOTICE, "VDPAU::Close - closing decoder context");
+  DestroyContext();
+}
+
+bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
+{
+  CSingleLock lock(m_section);
+
+  if (m_context)
+  {
+    m_context->m_refCount++;
+    *ctx = m_context;
+    return true;
+  }
+
+  m_context = new CVDPAUContext();
+  *ctx = m_context;
+  {
+    CSingleLock gLock(g_graphicsContext);
+    if (!m_context->LoadSymbols() || !m_context->CreateContext())
+    {
+      delete m_context;
+      m_context = 0;
+      return false;
+    }
+  }
+
+  m_context->m_refCount++;
+
+  *ctx = m_context;
+  return true;
+}
+
+bool CVDPAUContext::LoadSymbols()
+{
+  if (!m_dlHandle)
+  {
+    m_dlHandle  = dlopen("libvdpau.so.1", RTLD_LAZY);
+    if (!m_dlHandle)
+    {
+      const char* error = dlerror();
+      if (!error)
+        error = "dlerror() returned NULL";
+
+      CLog::Log(LOGERROR,"VDPAU::LoadSymbols: Unable to get handle to lib: %s", error);
+      return false;
+    }
+  }
+
+  char* error;
+  (void)dlerror();
+  dl_vdp_device_create_x11 = (VdpStatus (*)(Display*, int, VdpDevice*, VdpStatus (**)(VdpDevice, VdpFuncId, void**)))dlsym(m_dlHandle, (const char*)"vdp_device_create_x11");
+  error = dlerror();
+  if (error)
+  {
+    CLog::Log(LOGERROR,"(VDPAU) - %s in %s",error,__FUNCTION__);
+    m_vdpDevice = VDP_INVALID_HANDLE;
+    return false;
+  }
+  return true;
+}
+
+bool CVDPAUContext::CreateContext()
+{
+  CLog::Log(LOGNOTICE,"VDPAU::CreateContext - creating decoder context");
+
+  int mScreen;
+  { CSingleLock lock(g_graphicsContext);
+    if (!m_display)
+      m_display = XOpenDisplay(NULL);
+    mScreen = g_Windowing.GetCurrentScreen();
+  }
+
+  VdpStatus vdp_st;
+  // Create Device
+  vdp_st = dl_vdp_device_create_x11(m_display,
+                                    mScreen,
+                                   &m_vdpDevice,
+                                   &m_vdp_get_proc_address);
+
+  CLog::Log(LOGNOTICE,"vdp_device = 0x%08x vdp_st = 0x%08x",m_vdpDevice,vdp_st);
+  if (vdp_st != VDP_STATUS_OK)
+  {
+    CLog::Log(LOGERROR,"(VDPAU) unable to init VDPAU - vdp_st = 0x%x.  Falling back.",vdp_st);
+    m_vdpDevice = VDP_INVALID_HANDLE;
+    return false;
+  }
+  vdp_st = m_vdp_get_proc_address(m_vdpDevice, VDP_FUNC_ID_DEVICE_DESTROY, (void**)&m_vdp_device_destroy);
+
+  return true;
+}
+
+void CVDPAUContext::GetProcs(VDPAU_procs &procs)
+{
+  VdpStatus vdp_st;
+
+  procs.vdp_get_proc_address = m_vdp_get_proc_address;
+
+#define VDP_PROC(id, proc) \
+  do { \
+    vdp_st = m_vdp_get_proc_address(m_vdpDevice, id, (void**)&proc); \
+    if (vdp_st != VDP_STATUS_OK) \
+    { \
+      CLog::Log(LOGERROR, "CVDPAUContext::GetProcs - failed to get proc id"); \
+    } \
+  } while(0);
+
+  VDP_PROC(VDP_FUNC_ID_GET_ERROR_STRING                    , procs.vdp_get_error_string);
+  VDP_PROC(VDP_FUNC_ID_DEVICE_DESTROY                      , procs.vdp_device_destroy);
+  VDP_PROC(VDP_FUNC_ID_GENERATE_CSC_MATRIX                 , procs.vdp_generate_csc_matrix);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_CREATE                , procs.vdp_video_surface_create);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_DESTROY               , procs.vdp_video_surface_destroy);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR      , procs.vdp_video_surface_put_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR      , procs.vdp_video_surface_get_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR     , procs.vdp_output_surface_put_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE      , procs.vdp_output_surface_put_bits_native);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_CREATE               , procs.vdp_output_surface_create);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY              , procs.vdp_output_surface_destroy);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE      , procs.vdp_output_surface_get_bits_native);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE, procs.vdp_output_surface_render_output_surface);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED     , procs.vdp_output_surface_put_bits_indexed);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_CREATE                  , procs.vdp_video_mixer_create);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES     , procs.vdp_video_mixer_set_feature_enables);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_DESTROY                 , procs.vdp_video_mixer_destroy);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_RENDER                  , procs.vdp_video_mixer_render);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES    , procs.vdp_video_mixer_set_attribute_values);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT , procs.vdp_video_mixer_query_parameter_support);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT   , procs.vdp_video_mixer_query_feature_support);
+  VDP_PROC(VDP_FUNC_ID_DECODER_CREATE                      , procs.vdp_decoder_create);
+  VDP_PROC(VDP_FUNC_ID_DECODER_DESTROY                     , procs.vdp_decoder_destroy);
+  VDP_PROC(VDP_FUNC_ID_DECODER_RENDER                      , procs.vdp_decoder_render);
+  VDP_PROC(VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES          , procs.vdp_decoder_query_caps);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY          , procs.vdp_presentation_queue_target_destroy);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_CREATE                  , procs.vdp_presentation_queue_create);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DESTROY                 , procs.vdp_presentation_queue_destroy);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DISPLAY                 , procs.vdp_presentation_queue_display);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_BLOCK_UNTIL_SURFACE_IDLE, procs.vdp_presentation_queue_block_until_surface_idle);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11       , procs.vdp_presentation_queue_target_create_x11);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS    , procs.vdp_presentation_queue_query_surface_status);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME                , procs.vdp_presentation_queue_get_time);
+
+#undef VDP_PROC
+}
+
+VdpDevice CVDPAUContext::GetDevice()
+{
+  return m_vdpDevice;
+}
+
+void CVDPAUContext::DestroyContext()
+{
+  if (!m_vdp_device_destroy)
+    return;
+
+  m_vdp_device_destroy(m_vdpDevice);
+  m_vdpDevice = VDP_INVALID_HANDLE;
+}
 
 //-----------------------------------------------------------------------------
 // VDPAU Video Surface states
@@ -236,6 +418,7 @@ CDecoder::CDecoder() : m_vdpauOutput(&m_inMsgEvent)
   m_vdpauConfigured = false;
   m_hwContext.bitstream_buffers_allocated = 0;
   m_DisplayState = VDPAU_OPEN;
+  m_vdpauConfig.context = 0;
 }
 
 bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces)
@@ -252,27 +435,19 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int 
   if ((avctx->codec_id == AV_CODEC_ID_MPEG4) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
     return false;
 
-  if (!dl_handle)
-  {
-    dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
-    if (!dl_handle)
-    {
-      const char* error = dlerror();
-      if (!error)
-        error = "dlerror() returned NULL";
+  if (!CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
+    return false;
 
-      CLog::Log(LOGNOTICE,"(VDPAU) Unable to get handle to libvdpau: %s", error);
-      return false;
-    }
-  }
+  m_vdpauConfig.context->GetProcs(m_vdpauConfig.vdpProcs);
+  m_vdpauConfig.vdpDevice = m_vdpauConfig.context->GetDevice();
+  m_DisplayState = VDPAU_OPEN;
+  m_vdpauConfigured = false;
 
   if (!m_dllAvUtil.Load())
     return false;
 
-  InitVDPAUProcs();
   m_presentPicture = 0;
 
-  if (m_vdpauConfig.vdpDevice != VDP_INVALID_HANDLE)
   {
     SpewHardwareAvailable();
 
@@ -295,7 +470,6 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int 
       if(vdp_st != VDP_STATUS_OK)
       {
         CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", m_vdpauConfig.vdpProcs.vdp_get_error_string(vdp_st), vdp_st);
-        FiniVDPAUProcs();
         return false;
       }
 
@@ -335,7 +509,6 @@ void CDecoder::Close()
   CSingleLock lock(m_DecoderSection);
 
   FiniVDPAUOutput();
-  FiniVDPAUProcs();
   m_vdpauOutput.Dispose();
 
   if (m_hwContext.bitstream_buffers_allocated)
@@ -344,6 +517,10 @@ void CDecoder::Close()
   }
 
   m_dllAvUtil.Unload();
+
+  if (m_vdpauConfig.context)
+    m_vdpauConfig.context->Release();
+  m_vdpauConfig.context = 0;
 }
 
 long CDecoder::Release()
@@ -424,7 +601,9 @@ void CDecoder::OnLostDevice()
 
   CSingleLock lock(m_DecoderSection);
   FiniVDPAUOutput();
-  FiniVDPAUProcs();
+  if (m_vdpauConfig.context)
+    m_vdpauConfig.context->Release();
+  m_vdpauConfig.context = 0;
 
   m_DisplayState = VDPAU_LOST;
   lock.Leave();
@@ -477,9 +656,17 @@ int CDecoder::Check(AVCodecContext* avctx)
     CSingleLock lock(m_DecoderSection);
 
     FiniVDPAUOutput();
-    FiniVDPAUProcs();
+    if (m_vdpauConfig.context)
+      m_vdpauConfig.context->Release();
+    m_vdpauConfig.context = 0;
 
-    InitVDPAUProcs();
+    if (CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
+    {
+      m_vdpauConfig.context->GetProcs(m_vdpauConfig.vdpProcs);
+      m_vdpauConfig.vdpDevice = m_vdpauConfig.context->GetDevice();
+      m_DisplayState = VDPAU_OPEN;
+      m_vdpauConfigured = false;
+    }
 
     if (state == VDPAU_RESET)
       return VC_FLUSHED;
@@ -533,99 +720,6 @@ bool CDecoder::Supports(EINTERLACEMETHOD method)
 EINTERLACEMETHOD CDecoder::AutoInterlaceMethod()
 {
   return VS_INTERLACEMETHOD_RENDER_BOB;
-}
-
-void CDecoder::InitVDPAUProcs()
-{
-  char* error;
-
-  (void)dlerror();
-  dl_vdp_device_create_x11 = (VdpStatus (*)(Display*, int, VdpDevice*, VdpStatus (**)(VdpDevice, VdpFuncId, void**)))dlsym(dl_handle, (const char*)"vdp_device_create_x11");
-  error = dlerror();
-  if (error)
-  {
-    CLog::Log(LOGERROR,"(VDPAU) - %s in %s",error,__FUNCTION__);
-    m_vdpauConfig.vdpDevice = VDP_INVALID_HANDLE;
-    return;
-  }
-
-  if (dl_vdp_device_create_x11)
-  {
-    m_Display = XOpenDisplay(NULL);
-  }
-
-  int mScreen = g_Windowing.GetCurrentScreen();
-  VdpStatus vdp_st;
-
-  // Create Device
-  vdp_st = dl_vdp_device_create_x11(m_Display, //x_display,
-                                 mScreen, //x_screen,
-                                 &m_vdpauConfig.vdpDevice,
-                                 &m_vdpauConfig.vdpProcs.vdp_get_proc_address);
-
-  CLog::Log(LOGNOTICE,"vdp_device = 0x%08x vdp_st = 0x%08x",m_vdpauConfig.vdpDevice,vdp_st);
-  if (vdp_st != VDP_STATUS_OK)
-  {
-    CLog::Log(LOGERROR,"(VDPAU) unable to init VDPAU - vdp_st = 0x%x.  Falling back.",vdp_st);
-    m_vdpauConfig.vdpDevice = VDP_INVALID_HANDLE;
-    return;
-  }
-
-#define VDP_PROC(id, proc) \
-  do { \
-    vdp_st = m_vdpauConfig.vdpProcs.vdp_get_proc_address(m_vdpauConfig.vdpDevice, id, (void**)&proc); \
-    CheckStatus(vdp_st, __LINE__); \
-  } while(0);
-
-  VDP_PROC(VDP_FUNC_ID_GET_ERROR_STRING                    , m_vdpauConfig.vdpProcs.vdp_get_error_string);
-  VDP_PROC(VDP_FUNC_ID_DEVICE_DESTROY                      , m_vdpauConfig.vdpProcs.vdp_device_destroy);
-  VDP_PROC(VDP_FUNC_ID_GENERATE_CSC_MATRIX                 , m_vdpauConfig.vdpProcs.vdp_generate_csc_matrix);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_CREATE                , m_vdpauConfig.vdpProcs.vdp_video_surface_create);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_DESTROY               , m_vdpauConfig.vdpProcs.vdp_video_surface_destroy);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR      , m_vdpauConfig.vdpProcs.vdp_video_surface_put_bits_y_cb_cr);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR      , m_vdpauConfig.vdpProcs.vdp_video_surface_get_bits_y_cb_cr);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR     , m_vdpauConfig.vdpProcs.vdp_output_surface_put_bits_y_cb_cr);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE      , m_vdpauConfig.vdpProcs.vdp_output_surface_put_bits_native);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_CREATE               , m_vdpauConfig.vdpProcs.vdp_output_surface_create);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY              , m_vdpauConfig.vdpProcs.vdp_output_surface_destroy);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE      , m_vdpauConfig.vdpProcs.vdp_output_surface_get_bits_native);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE, m_vdpauConfig.vdpProcs.vdp_output_surface_render_output_surface);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED     , m_vdpauConfig.vdpProcs.vdp_output_surface_put_bits_indexed);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_CREATE                  , m_vdpauConfig.vdpProcs.vdp_video_mixer_create);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES     , m_vdpauConfig.vdpProcs.vdp_video_mixer_set_feature_enables);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_DESTROY                 , m_vdpauConfig.vdpProcs.vdp_video_mixer_destroy);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_RENDER                  , m_vdpauConfig.vdpProcs.vdp_video_mixer_render);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES    , m_vdpauConfig.vdpProcs.vdp_video_mixer_set_attribute_values);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT , m_vdpauConfig.vdpProcs.vdp_video_mixer_query_parameter_support);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT   , m_vdpauConfig.vdpProcs.vdp_video_mixer_query_feature_support);
-  VDP_PROC(VDP_FUNC_ID_DECODER_CREATE                      , m_vdpauConfig.vdpProcs.vdp_decoder_create);
-  VDP_PROC(VDP_FUNC_ID_DECODER_DESTROY                     , m_vdpauConfig.vdpProcs.vdp_decoder_destroy);
-  VDP_PROC(VDP_FUNC_ID_DECODER_RENDER                      , m_vdpauConfig.vdpProcs.vdp_decoder_render);
-  VDP_PROC(VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES          , m_vdpauConfig.vdpProcs.vdp_decoder_query_caps);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY          , m_vdpauConfig.vdpProcs.vdp_presentation_queue_target_destroy);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_CREATE                  , m_vdpauConfig.vdpProcs.vdp_presentation_queue_create);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DESTROY                 , m_vdpauConfig.vdpProcs.vdp_presentation_queue_destroy);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DISPLAY                 , m_vdpauConfig.vdpProcs.vdp_presentation_queue_display);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_BLOCK_UNTIL_SURFACE_IDLE, m_vdpauConfig.vdpProcs.vdp_presentation_queue_block_until_surface_idle);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11       , m_vdpauConfig.vdpProcs.vdp_presentation_queue_target_create_x11);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS    , m_vdpauConfig.vdpProcs.vdp_presentation_queue_query_surface_status);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME                , m_vdpauConfig.vdpProcs.vdp_presentation_queue_get_time);
-
-#undef VDP_PROC
-
-  // set all vdpau resources to invalid
-  m_DisplayState = VDPAU_OPEN;
-  m_vdpauConfigured = false;
-}
-
-void CDecoder::FiniVDPAUProcs()
-{
-  if (m_vdpauConfig.vdpDevice == VDP_INVALID_HANDLE) return;
-
-  VdpStatus vdp_st;
-  vdp_st = m_vdpauConfig.vdpProcs.vdp_device_destroy(m_vdpauConfig.vdpDevice);
-  CheckStatus(vdp_st, __LINE__);
-  m_vdpauConfig.vdpDevice = VDP_INVALID_HANDLE;
 }
 
 void CDecoder::FiniVDPAUOutput()
