@@ -29,6 +29,7 @@
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY      3
@@ -180,7 +181,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
     return false;
 
   // don't allow the view state to change these
-  if (strDirectory.Left(9).Equals("addons://"))
+  if (StringUtils::StartsWithNoCase(strDirectory, "addons://"))
   {
     for (int i=0;i<items.Size();++i)
     {

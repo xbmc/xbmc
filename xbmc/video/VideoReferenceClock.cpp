@@ -24,6 +24,7 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
@@ -291,7 +292,7 @@ bool CVideoReferenceClock::SetupGLX()
 
   CStdString Vendor = g_Windowing.GetRenderVendor();
   Vendor.ToLower();
-  if (Vendor.compare(0, 3, "ati") == 0)
+  if (StringUtils::StartsWith(Vendor, "ati"))
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GL_VENDOR: %s, using ati workaround", Vendor.c_str());
     m_bIsATI = true;

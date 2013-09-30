@@ -629,7 +629,7 @@ int CBuiltins::Execute(const CStdString& execString)
         // force the item to start at the beginning (m_lStartOffset is initialized to 0)
         askToResume = false;
       }
-      else if (params[i].Left(11).Equals("playoffset=")) {
+      else if (StringUtils::StartsWithNoCase(params[i], "playoffset=")) {
         playOffset = atoi(params[i].Mid(11)) - 1;
         item.SetProperty("playlist_starting_track", playOffset);
       }
@@ -729,7 +729,7 @@ int CBuiltins::Execute(const CStdString& execString)
           flags |= 4;
         else if (params[i].Equals("pause"))
           flags |= 8;
-        else if (params[i].Left(11).Equals("beginslide="))
+        else if (StringUtils::StartsWithNoCase(params[i], "beginslide="))
           beginSlidePath = params[i].Mid(11);
       }
     }
@@ -830,7 +830,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(true, false);
     }
-    else if (parameter.Left(14).Equals("seekpercentage"))
+    else if (StringUtils::StartsWithNoCase(parameter, "seekpercentage"))
     {
       CStdString offset = "";
       if (parameter.size() == 14)
@@ -858,16 +858,16 @@ int CBuiltins::Execute(const CStdString& execString)
       if( g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->CanRecord())
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
     }
-    else if (parameter.Left(9).Equals("partymode"))
+    else if (StringUtils::StartsWithNoCase(parameter, "partymode"))
     {
       CStdString strXspPath = "";
       //empty param=music, "music"=music, "video"=video, else xsp path
       PartyModeContext context = PARTYMODECONTEXT_MUSIC;
       if (parameter.size() > 9)
       {
-        if (parameter.Mid(10).Equals("video)"))
+        if (parameter.size() == 16 && StringUtils::EndsWithNoCase(parameter, "video)"))
           context = PARTYMODECONTEXT_VIDEO;
-        else if (!parameter.Mid(10).Equals("music)"))
+        else if (parameter.size() != 16 || !StringUtils::EndsWithNoCase(parameter, "music)"))
         {
           strXspPath = parameter.Mid(10).TrimRight(")");
           context = PARTYMODECONTEXT_UNKNOWN;
@@ -911,7 +911,7 @@ int CBuiltins::Execute(const CStdString& execString)
       g_windowManager.SendThreadMessage(msg);
 
     }
-    else if (parameter.Left(6).Equals("repeat"))
+    else if (StringUtils::StartsWithNoCase(parameter, "repeat"))
     {
       // get current playlist
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
@@ -1245,7 +1245,7 @@ int CBuiltins::Execute(const CStdString& execString)
         CStdString replace;
         if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
         {
-          if (replace.Mid(0,9).Equals("addons://"))
+          if (StringUtils::StartsWithNoCase(replace, "addons://"))
             CSkinSettings::Get().SetString(string, URIUtils::GetFileName(replace));
           else
             CSkinSettings::Get().SetString(string, replace);

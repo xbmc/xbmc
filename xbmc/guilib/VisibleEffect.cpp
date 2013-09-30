@@ -628,7 +628,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   if (effect) // new layout
     type = node->Attribute("type");
 
-  if (type.Left(7).Equals("visible")) m_type = ANIM_TYPE_VISIBLE;
+  if (StringUtils::StartsWithNoCase(type, "visible")) m_type = ANIM_TYPE_VISIBLE;
   else if (type.Equals("hidden")) m_type = ANIM_TYPE_HIDDEN;
   else if (type.Equals("focus"))  m_type = ANIM_TYPE_FOCUS;
   else if (type.Equals("unfocus"))  m_type = ANIM_TYPE_UNFOCUS;

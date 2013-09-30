@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 
@@ -96,7 +97,7 @@ CStdString CTextureCache::GetCachedImage(const CStdString &image, CTextureDetail
 
 CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStdString &type, const CStdString &options)
 {
-  if (image.compare(0, 8, "image://") == 0)
+  if (StringUtils::StartsWith(image, "image://"))
     return image; // already wrapped
 
   CURL url;
@@ -118,7 +119,7 @@ CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
 
 CStdString CTextureCache::UnwrapImageURL(const CStdString &image)
 {
-  if (image.compare(0, 8, "image://") == 0)
+  if (StringUtils::StartsWith(image, "image://"))
   {
     CURL url(image);
     if (url.GetUserName().IsEmpty() && url.GetOptions().IsEmpty())
