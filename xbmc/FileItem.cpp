@@ -104,6 +104,7 @@ CFileItem::CFileItem(const CContact& contact)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+  m_contactInfoTag = NULL;
   Reset();
   
   SetFromContact(contact);
@@ -114,7 +115,6 @@ CFileItem::CFileItem(const CSong& song)
 {
     m_contactInfoTag = NULL;
   m_musicInfoTag = NULL;
-    m_pictureInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_epgInfoTag = NULL;
   m_pvrChannelInfoTag = NULL;
@@ -160,6 +160,24 @@ CFileItem::CFileItem(const CStdString &path, const CPictureAlbum& album)
     SetFromPictureAlbum(album);
 }
 
+CFileItem::CFileItem(const CStdString &path, const CContact& contact)
+{
+  m_contactInfoTag = NULL;
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_epgInfoTag = NULL;
+  m_pvrChannelInfoTag = NULL;
+  m_pvrRecordingInfoTag = NULL;
+  m_pvrTimerInfoTag = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+  
+  m_strPath = path;
+  URIUtils::AddSlashAtEnd(m_strPath);
+  SetFromContact(contact);
+}
+
+
 CFileItem::CFileItem(const PICTURE_INFO::CPictureInfoTag& picture)
 {
     m_contactInfoTag = NULL;
@@ -182,7 +200,7 @@ CFileItem::CFileItem(const PICTURE_INFO::CPictureInfoTag& picture)
 
 CFileItem::CFileItem(const CONTACT_INFO::CContactInfoTag& contact)
 {
-  m_pictureInfoTag = NULL;
+  m_contactInfoTag = NULL;
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_epgInfoTag = NULL;
@@ -369,6 +387,7 @@ CFileItem::CFileItem(const CArtist& artist)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+  m_contactInfoTag = NULL;
   Reset();
   SetLabel(artist.strArtist);
   m_strPath = artist.strArtist;
@@ -387,6 +406,7 @@ CFileItem::CFileItem(const CGenre& genre)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+    m_contactInfoTag = NULL;
   Reset();
   SetLabel(genre.strGenre);
   m_strPath = genre.strGenre;
@@ -405,6 +425,7 @@ CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+    m_contactInfoTag = NULL;
   *this = item;
 }
 
@@ -417,6 +438,7 @@ CFileItem::CFileItem(const CGUIListItem& item)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+    m_contactInfoTag = NULL;
   Reset();
   // not particularly pretty, but it gets around the issue of Reset() defaulting
   // parameters in the CGUIListItem base class.
@@ -434,6 +456,7 @@ CFileItem::CFileItem(void)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+    m_contactInfoTag = NULL;
   Reset();
 }
 
@@ -447,6 +470,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+    m_contactInfoTag = NULL;
   Reset();
   SetLabel(strLabel);
 }
@@ -460,6 +484,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+    m_contactInfoTag = NULL;
   Reset();
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
@@ -478,6 +503,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+    m_contactInfoTag = NULL;
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
@@ -509,6 +535,8 @@ CFileItem::~CFileItem(void)
   delete m_pvrRecordingInfoTag;
   delete m_pvrTimerInfoTag;
   delete m_pictureInfoTag;
+  delete   m_contactInfoTag;
+  m_contactInfoTag = NULL;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -1713,9 +1741,10 @@ void CFileItem::SetFromContact(const CContact &contact)
 {
   if (!contact.strTitle.empty())
     SetLabel(contact.strTitle);
-  if (!contact.strFileName.empty())
-    m_strPath = contact.strFileName;
+//  if (!contact.strFileName.empty())
+//    m_strPath = contact.strFileName;
   GetContactInfoTag()->SetContact(contact);
+  CContactDatabase::SetPropertiesFromContact(*this,contact);
   m_lStartPartNumber = 1;
   if (!contact.strThumb.empty())
     SetArt("thumb", contact.strThumb);

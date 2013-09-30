@@ -116,6 +116,8 @@ public:
   CFileItem(const CPhone& phone);
   CFileItem(const CEmail& email);
   CFileItem(const CStdString &path, const CPictureAlbum& album);
+  CFileItem(const CStdString &path, const CContact& contact);
+
     /*
   CFileItem(const CFace& face);
   CFileItem(const CLocation& location);
