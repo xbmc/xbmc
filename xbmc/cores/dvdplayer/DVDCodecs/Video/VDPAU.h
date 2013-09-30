@@ -103,15 +103,6 @@ struct VDPAU_procs
 
   VdpGenerateCSCMatrix *                vdp_generate_csc_matrix;
 
-  VdpPresentationQueueTargetDestroy *         vdp_presentation_queue_target_destroy;
-  VdpPresentationQueueCreate *                vdp_presentation_queue_create;
-  VdpPresentationQueueDestroy *               vdp_presentation_queue_destroy;
-  VdpPresentationQueueDisplay *               vdp_presentation_queue_display;
-  VdpPresentationQueueBlockUntilSurfaceIdle * vdp_presentation_queue_block_until_surface_idle;
-  VdpPresentationQueueTargetCreateX11 *       vdp_presentation_queue_target_create_x11;
-  VdpPresentationQueueQuerySurfaceStatus *    vdp_presentation_queue_query_surface_status;
-  VdpPresentationQueueGetTime *               vdp_presentation_queue_get_time;
-
   VdpGetErrorString *                         vdp_get_error_string;
 
   VdpDecoderCreate *             vdp_decoder_create;
@@ -185,7 +176,6 @@ struct CVdpauConfig
   CDecoder *vdpau;
   int upscale;
   CVideoSurfaces *videoSurfaces;
-  bool usePixmaps;
   int numRenderBuffers;
   uint32_t maxReferences;
   bool useInteropYuv;
@@ -363,18 +353,6 @@ struct VdpauBufferPool
 {
   VdpauBufferPool();
   virtual ~VdpauBufferPool();
-  struct Pixmaps
-  {
-    unsigned short id;
-    bool used;
-    DVDVideoPicture DVDPic;
-    GLuint texture;
-    Pixmap pixmap;
-    GLXPixmap  glPixmap;
-    VdpPresentationQueueTarget vdp_flip_target;
-    VdpPresentationQueue vdp_flip_queue;
-    VdpOutputSurface surface;
-  };
   struct GLVideoSurface
   {
     GLuint texture[4];
@@ -386,9 +364,7 @@ struct VdpauBufferPool
   };
   std::vector<CVdpauRenderPicture*> allRenderPics;
   unsigned short numOutputSurfaces;
-  std::vector<Pixmaps> pixmaps;
   std::vector<VdpOutputSurface> outputSurfaces;
-  std::deque<int> notVisiblePixmaps;
   std::map<VdpVideoSurface, GLVideoSurface> glVideoSurfaceMap;
   std::map<VdpOutputSurface, GLVideoSurface> glOutputSurfaceMap;
   std::queue<CVdpauProcessedPicture> processedPics;
@@ -457,7 +433,6 @@ protected:
   void QueueReturnPicture(CVdpauRenderPicture *pic);
   void ProcessReturnPicture(CVdpauRenderPicture *pic);
   bool ProcessSyncPicture();
-  int FindFreePixmap();
   bool Init();
   bool Uninit();
   void Flush();
@@ -470,10 +445,6 @@ protected:
   bool GLInit();
   void GLMapSurfaces();
   void GLUnmapSurfaces();
-  void GLBindPixmaps();
-  void GLUnbindPixmaps();
-  bool MakePixmap(VdpauBufferPool::Pixmaps &pixmap);
-  bool MakePixmapGL(VdpauBufferPool::Pixmaps &pixmap);
   bool CheckStatus(VdpStatus vdp_st, int line);
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;
@@ -494,8 +465,6 @@ protected:
   GLXPixmap m_glPixmap;
 
   // gl functions
-  PFNGLXBINDTEXIMAGEEXTPROC    glXBindTexImageEXT;
-  PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT;
 #ifdef GL_NV_vdpau_interop
   PFNGLVDPAUINITNVPROC glVDPAUInitNV;
   PFNGLVDPAUFININVPROC glVDPAUFiniNV;

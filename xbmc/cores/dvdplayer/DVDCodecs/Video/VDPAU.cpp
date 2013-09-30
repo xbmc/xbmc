@@ -249,15 +249,6 @@ void CVDPAUContext::QueryProcs()
   VDP_PROC(VDP_FUNC_ID_DECODER_DESTROY                     , m_vdpProcs.vdp_decoder_destroy);
   VDP_PROC(VDP_FUNC_ID_DECODER_RENDER                      , m_vdpProcs.vdp_decoder_render);
   VDP_PROC(VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES          , m_vdpProcs.vdp_decoder_query_caps);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY          , m_vdpProcs.vdp_presentation_queue_target_destroy);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_CREATE                  , m_vdpProcs.vdp_presentation_queue_create);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DESTROY                 , m_vdpProcs.vdp_presentation_queue_destroy);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DISPLAY                 , m_vdpProcs.vdp_presentation_queue_display);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_BLOCK_UNTIL_SURFACE_IDLE, m_vdpProcs.vdp_presentation_queue_block_until_surface_idle);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11       , m_vdpProcs.vdp_presentation_queue_target_create_x11);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS    , m_vdpProcs.vdp_presentation_queue_query_surface_status);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME                , m_vdpProcs.vdp_presentation_queue_get_time);
-
 #undef VDP_PROC
 }
 
@@ -760,11 +751,8 @@ bool CDecoder::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  if (!m_vdpauConfig.usePixmaps)
-  {
-    if (method == VS_INTERLACEMETHOD_RENDER_BOB)
-      return true;
-  }
+  if (method == VS_INTERLACEMETHOD_RENDER_BOB)
+    return true;
 
   if (method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE)
     return false;
@@ -900,15 +888,6 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
                                                  sizeof(m_vdpauConfig)))
   {
     bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
-    if (success)
-    {
-      CVdpauConfig *data;
-      data = (CVdpauConfig*)reply->data;
-      if (data)
-      {
-        m_vdpauConfig.usePixmaps = data->usePixmaps;
-      }
-    }
     reply->Release();
     if (!success)
     {
@@ -2971,7 +2950,6 @@ bool COutput::Uninit()
 {
   m_mixer.Dispose();
   GLUnmapSurfaces();
-  GLUnbindPixmaps();
   ReleaseBufferPool();
   DestroyGlxContext();
   return true;
@@ -3065,69 +3043,16 @@ void COutput::Flush()
 
 bool COutput::HasWork()
 {
-  if (m_config.usePixmaps)
-  {
-    if (!m_bufferPool.processedPics.empty() && FindFreePixmap() >= 0)
-      return true;
-    if (!m_bufferPool.notVisiblePixmaps.empty() && !m_bufferPool.freeRenderPics.empty())
-      return true;
-    return false;
-  }
-  else
-  {
-    if (!m_bufferPool.processedPics.empty() && !m_bufferPool.freeRenderPics.empty())
-      return true;
-    return false;
-  }
+  if (!m_bufferPool.processedPics.empty() && !m_bufferPool.freeRenderPics.empty())
+    return true;
+  return false;
 }
 
 CVdpauRenderPicture* COutput::ProcessMixerPicture()
 {
   CVdpauRenderPicture *retPic = NULL;
 
-  if (m_config.usePixmaps)
-  {
-    if (!m_bufferPool.processedPics.empty() && FindFreePixmap() >= 0)
-    {
-      unsigned int i = FindFreePixmap();
-      VdpauBufferPool::Pixmaps *pixmap = &m_bufferPool.pixmaps[i];
-      pixmap->used = true;
-      CVdpauProcessedPicture pic = m_bufferPool.processedPics.front();
-      m_bufferPool.processedPics.pop();
-      pixmap->surface = pic.outputSurface;
-      pixmap->DVDPic = pic.DVDPic;
-      pixmap->id = i;
-      m_bufferPool.notVisiblePixmaps.push_back(i);
-      m_config.context->GetProcs().vdp_presentation_queue_display(pixmap->vdp_flip_queue,
-                                                       pixmap->surface,0,0,0);
-    }
-    if (!m_bufferPool.notVisiblePixmaps.empty() && !m_bufferPool.freeRenderPics.empty())
-    {
-      VdpStatus vdp_st;
-      VdpTime time;
-      VdpPresentationQueueStatus status;
-      int idx = m_bufferPool.notVisiblePixmaps.front();
-      VdpauBufferPool::Pixmaps *pixmap = &m_bufferPool.pixmaps[idx];
-      vdp_st = m_config.context->GetProcs().vdp_presentation_queue_query_surface_status(
-                        pixmap->vdp_flip_queue, pixmap->surface, &status, &time);
-
-      if (vdp_st == VDP_STATUS_OK && status == VDP_PRESENTATION_QUEUE_STATUS_VISIBLE)
-      {
-        int idx = m_bufferPool.freeRenderPics.front();
-        retPic = m_bufferPool.allRenderPics[idx];
-        m_bufferPool.freeRenderPics.pop_front();
-        m_bufferPool.usedRenderPics.push_back(idx);
-        retPic->sourceIdx = pixmap->id;
-        retPic->DVDPic = pixmap->DVDPic;
-        retPic->valid = true;
-        retPic->texture[0] = pixmap->texture;
-        retPic->crop = CRect(0,0,0,0);
-        m_bufferPool.notVisiblePixmaps.pop_front();
-        m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER, &pixmap->surface, sizeof(pixmap->surface));
-      }
-    }
-  } // pixmap
-  else if (!m_bufferPool.processedPics.empty() && !m_bufferPool.freeRenderPics.empty())
+  if (!m_bufferPool.processedPics.empty() && !m_bufferPool.freeRenderPics.empty())
   {
     int idx = m_bufferPool.freeRenderPics.front();
     retPic = m_bufferPool.allRenderPics[idx];
@@ -3257,12 +3182,7 @@ bool COutput::ProcessSyncPicture()
 
 void COutput::ProcessReturnPicture(CVdpauRenderPicture *pic)
 {
-  if (m_config.usePixmaps)
-  {
-    m_bufferPool.pixmaps[pic->sourceIdx].used = false;
-    return;
-  }
-  else if (pic->DVDPic.format == RENDER_FMT_VDPAU_420)
+  if (pic->DVDPic.format == RENDER_FMT_VDPAU_420)
   {
     std::map<VdpVideoSurface, VdpauBufferPool::GLVideoSurface>::iterator it;
     it = m_bufferPool.glVideoSurfaceMap.find(pic->sourceIdx);
@@ -3288,21 +3208,6 @@ void COutput::ProcessReturnPicture(CVdpauRenderPicture *pic)
   }
 }
 
-int COutput::FindFreePixmap()
-{
-  // find free pixmap
-  unsigned int i;
-  for (i = 0; i < m_bufferPool.pixmaps.size(); ++i)
-  {
-    if (!m_bufferPool.pixmaps[i].used)
-      break;
-  }
-  if (i == m_bufferPool.pixmaps.size())
-    return -1;
-  else
-    return i;
-}
-
 bool COutput::EnsureBufferPool()
 {
   VdpStatus vdp_st;
@@ -3325,40 +3230,6 @@ bool COutput::EnsureBufferPool()
                                       sizeof(VdpOutputSurface));
     CLog::Log(LOGNOTICE, "VDPAU::COutput::InitBufferPool - Output Surface created");
   }
-
-
-  if (m_config.usePixmaps && m_bufferPool.pixmaps.empty())
-  {
-    // create pixmpas
-    VdpauBufferPool::Pixmaps pixmap;
-    unsigned int numPixmaps = NUM_RENDER_PICS;
-    for (unsigned int i = 0; i < numPixmaps; i++)
-    {
-      pixmap.pixmap = None;
-      pixmap.glPixmap = None;
-      pixmap.vdp_flip_queue = VDP_INVALID_HANDLE;
-      pixmap.vdp_flip_target = VDP_INVALID_HANDLE;
-      MakePixmap(pixmap);
-      glXMakeCurrent(m_Display, None, NULL);
-      vdp_st = m_config.context->GetProcs().vdp_presentation_queue_target_create_x11(m_config.context->GetDevice(),
-                                             pixmap.pixmap, //x_window,
-                                             &pixmap.vdp_flip_target);
-
-      CheckStatus(vdp_st, __LINE__);
-
-      vdp_st = m_config.context->GetProcs().vdp_presentation_queue_create(m_config.context->GetDevice(),
-                                            pixmap.vdp_flip_target,
-                                            &pixmap.vdp_flip_queue);
-      CheckStatus(vdp_st, __LINE__);
-      glXMakeCurrent(m_Display, m_glPixmap, m_glContext);
-
-      pixmap.id = i;
-      pixmap.used = false;
-      m_bufferPool.pixmaps.push_back(pixmap);
-    }
-    GLBindPixmaps();
-  }
-
   return true;
 }
 
@@ -3367,32 +3238,6 @@ void COutput::ReleaseBufferPool()
   VdpStatus vdp_st;
 
   CSingleLock lock(m_bufferPool.renderPicSec);
-
-  if (m_config.usePixmaps)
-  {
-    for (unsigned int i = 0; i < m_bufferPool.pixmaps.size(); ++i)
-    {
-      if (m_bufferPool.pixmaps[i].vdp_flip_queue != VDP_INVALID_HANDLE)
-      {
-        vdp_st = m_config.context->GetProcs().vdp_presentation_queue_destroy(m_bufferPool.pixmaps[i].vdp_flip_queue);
-        CheckStatus(vdp_st, __LINE__);
-      }
-      if (m_bufferPool.pixmaps[i].vdp_flip_target != VDP_INVALID_HANDLE)
-      {
-        vdp_st = m_config.context->GetProcs().vdp_presentation_queue_target_destroy(m_bufferPool.pixmaps[i].vdp_flip_target);
-        CheckStatus(vdp_st, __LINE__);
-      }
-      if (m_bufferPool.pixmaps[i].glPixmap)
-      {
-        glXDestroyPixmap(m_Display, m_bufferPool.pixmaps[i].glPixmap);
-      }
-      if (m_bufferPool.pixmaps[i].pixmap)
-      {
-        XFreePixmap(m_Display, m_bufferPool.pixmaps[i].pixmap);
-      }
-    }
-    m_bufferPool.pixmaps.clear();
-  }
 
   // release all output surfaces
   for (unsigned int i = 0; i < m_bufferPool.outputSurfaces.size(); ++i)
@@ -3508,89 +3353,8 @@ void COutput::InitMixer()
   }
 }
 
-bool COutput::MakePixmap(VdpauBufferPool::Pixmaps &pixmap)
-{
-  CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", m_config.outWidth, m_config.outHeight);
-
-    // Get our window attribs.
-  XWindowAttributes wndattribs;
-  XGetWindowAttributes(m_Display, g_Windowing.GetWindow(), &wndattribs);
-
-  pixmap.pixmap = XCreatePixmap(m_Display,
-                           g_Windowing.GetWindow(),
-                           m_config.outWidth,
-                           m_config.outHeight,
-                           wndattribs.depth);
-  if (!pixmap.pixmap)
-  {
-    CLog::Log(LOGERROR, "VDPAU::COUtput::MakePixmap - GLX Error: MakePixmap: Unable to create XPixmap");
-    return false;
-  }
-
-//  XGCValues values = {};
-//  GC xgc;
-//  values.foreground = BlackPixel (m_Display, DefaultScreen (m_Display));
-//  xgc = XCreateGC(m_Display, pixmap.pixmap, GCForeground, &values);
-//  XFillRectangle(m_Display, pixmap.pixmap, xgc, 0, 0, m_config.outWidth, m_config.outHeight);
-//  XFreeGC(m_Display, xgc);
-
-  if(!MakePixmapGL(pixmap))
-    return false;
-
-  return true;
-}
-
-bool COutput::MakePixmapGL(VdpauBufferPool::Pixmaps &pixmap)
-{
-  int num=0;
-  int fbConfigIndex = 0;
-
-  int doubleVisAttributes[] = {
-    GLX_RENDER_TYPE, GLX_RGBA_BIT,
-    GLX_RED_SIZE, 8,
-    GLX_GREEN_SIZE, 8,
-    GLX_BLUE_SIZE, 8,
-    GLX_ALPHA_SIZE, 8,
-    GLX_DEPTH_SIZE, 8,
-    GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
-    GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
-    GLX_DOUBLEBUFFER, False,
-    GLX_Y_INVERTED_EXT, True,
-    GLX_X_RENDERABLE, True,
-    None
-  };
-
-  int pixmapAttribs[] = {
-    GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
-    GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
-    None
-  };
-
-  GLXFBConfig *fbConfigs;
-  fbConfigs = glXChooseFBConfig(m_Display, g_Windowing.GetCurrentScreen(), doubleVisAttributes, &num);
-  if (fbConfigs==NULL)
-  {
-    CLog::Log(LOGERROR, "VDPAU::COutput::MakPixmapGL - No compatible framebuffers found");
-    return false;
-  }
-  fbConfigIndex = 0;
-
-  pixmap.glPixmap = glXCreatePixmap(m_Display, fbConfigs[fbConfigIndex], pixmap.pixmap, pixmapAttribs);
-
-  if (!pixmap.glPixmap)
-  {
-    CLog::Log(LOGERROR, "VDPAU::COutput::MakPixmapGL - Could not create Pixmap");
-    XFree(fbConfigs);
-    return false;
-  }
-  XFree(fbConfigs);
-  return true;
-}
-
 bool COutput::GLInit()
 {
-  glXBindTexImageEXT = NULL;
-  glXReleaseTexImageEXT = NULL;
 #ifdef GL_NV_vdpau_interop
   glVDPAUInitNV = NULL;
   glVDPAUFiniNV = NULL;
@@ -3603,8 +3367,6 @@ bool COutput::GLInit()
   glVDPAUUnmapSurfacesNV = NULL;
   glVDPAUGetSurfaceivNV = NULL;
 #endif
-
-  m_config.usePixmaps = false;
 
 #ifdef GL_NV_vdpau_interop
   if (glewIsSupported("GL_NV_vdpau_interop"))
@@ -3635,27 +3397,21 @@ bool COutput::GLInit()
   else
 #endif
   {
-    m_config.usePixmaps = true;
-    CSettings::Get().SetBool("videoplayer.usevdpaumixer",true);
+    // TODO should be detected before vdpau is opened, though very unlikely
+    // that this code is hit
+    CLog::Log(LOGERROR, "VDPAU::COutput driver does not support GL_NV_vdpau_interop");
   }
-  if (!glXBindTexImageEXT)
-    glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
-  if (!glXReleaseTexImageEXT)
-    glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 
 #ifdef GL_NV_vdpau_interop
-  if (!m_config.usePixmaps)
+  while (glGetError() != GL_NO_ERROR);
+  glVDPAUInitNV(reinterpret_cast<void*>(m_config.context->GetDevice()), reinterpret_cast<void*>(m_config.context->GetProcs().vdp_get_proc_address));
+  if (glGetError() != GL_NO_ERROR)
   {
-    while (glGetError() != GL_NO_ERROR);
-    glVDPAUInitNV(reinterpret_cast<void*>(m_config.context->GetDevice()), reinterpret_cast<void*>(m_config.context->GetProcs().vdp_get_proc_address));
-    if (glGetError() != GL_NO_ERROR)
-    {
-      CLog::Log(LOGERROR, "VDPAU::COutput - GLInitInterop glVDPAUInitNV failed");
-      m_vdpError = true;
-      return false;
-    }
-    CLog::Log(LOGNOTICE, "VDPAU::COutput: vdpau gl interop initialized");
+    CLog::Log(LOGERROR, "VDPAU::COutput - GLInitInterop glVDPAUInitNV failed");
+    m_vdpError = true;
+    return false;
   }
+  CLog::Log(LOGNOTICE, "VDPAU::COutput: vdpau gl interop initialized");
 #endif
 
 #ifdef GL_ARB_sync
@@ -3672,8 +3428,6 @@ bool COutput::GLInit()
 void COutput::GLMapSurfaces()
 {
 #ifdef GL_NV_vdpau_interop
-  if (m_config.usePixmaps)
-    return;
 
   if (m_config.useInteropYuv)
   {
@@ -3767,8 +3521,6 @@ void COutput::GLMapSurfaces()
 void COutput::GLUnmapSurfaces()
 {
 #ifdef GL_NV_vdpau_interop
-  if (m_config.usePixmaps)
-    return;
 
   {
     std::map<VdpVideoSurface, VdpauBufferPool::GLVideoSurface>::iterator it;
@@ -3793,52 +3545,6 @@ void COutput::GLUnmapSurfaces()
   CLog::Log(LOGNOTICE, "VDPAU::COutput: vdpau gl interop finished");
 
 #endif
-}
-
-void COutput::GLBindPixmaps()
-{
-  if (!m_config.usePixmaps)
-    return;
-
-  for (unsigned int i = 0; i < m_bufferPool.pixmaps.size(); i++)
-  {
-    // create texture
-    glGenTextures(1, &m_bufferPool.pixmaps[i].texture);
-
-    //bind texture
-    glBindTexture(GL_TEXTURE_2D, m_bufferPool.pixmaps[i].texture);
-
-    // bind pixmap
-    glXBindTexImageEXT(m_Display, m_bufferPool.pixmaps[i].glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-  }
-
-  CLog::Log(LOGNOTICE, "VDPAU::COutput: bound pixmaps");
-}
-
-void COutput::GLUnbindPixmaps()
-{
-  if (!m_config.usePixmaps)
-    return;
-
-  for (unsigned int i = 0; i < m_bufferPool.pixmaps.size(); i++)
-  {
-    // create texture
-    if (!glIsTexture(m_bufferPool.pixmaps[i].texture))
-      continue;
-
-    //bind texture
-    glBindTexture(GL_TEXTURE_2D, m_bufferPool.pixmaps[i].texture);
-
-    // release pixmap
-    glXReleaseTexImageEXT(m_Display, m_bufferPool.pixmaps[i].glPixmap, GLX_FRONT_LEFT_EXT);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glDeleteTextures(1, &m_bufferPool.pixmaps[i].texture);
-  }
-  CLog::Log(LOGNOTICE, "VDPAU::COutput: unbound pixmaps");
 }
 
 bool COutput::CheckStatus(VdpStatus vdp_st, int line)
