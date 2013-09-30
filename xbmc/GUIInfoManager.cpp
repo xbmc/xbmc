@@ -299,7 +299,6 @@ const infomap network_labels[] = {{ "isdhcp",            NETWORK_IS_DHCP },
                                   { "ipaddress",         NETWORK_IP_ADDRESS }, //labels from here
                                   { "linkstate",         NETWORK_LINK_STATE },
                                   { "macaddress",        NETWORK_MAC_ADDRESS },
-                                  { "subnetaddress",     NETWORK_SUBNET_MASK }, //subnetaddress is misleading/wrong. should be deprecated. use subnetmask in stead
                                   { "subnetmask",        NETWORK_SUBNET_MASK },
                                   { "gatewayaddress",    NETWORK_GATEWAY_ADDRESS },
                                   { "dns1address",       NETWORK_DNS1_ADDRESS },
