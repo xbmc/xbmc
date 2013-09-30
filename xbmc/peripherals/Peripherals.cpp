@@ -506,10 +506,10 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
       if (!strEnums.IsEmpty())
       {
         vector< pair<int,int> > enums;
-        vector<CStdString> valuesVec;
-        CUtil::Tokenize(strEnums, valuesVec, "|");
+        vector<std::string> valuesVec;
+        StringUtils::Tokenize(strEnums, valuesVec, "|");
         for (unsigned int i = 0; i < valuesVec.size(); i++)
-          enums.push_back(make_pair(atoi(valuesVec[i]), atoi(valuesVec[i])));
+          enums.push_back(make_pair(atoi(valuesVec[i].c_str()), atoi(valuesVec[i].c_str())));
         int iValue = currentNode->Attribute("value") ? atoi(currentNode->Attribute("value")) : 0;
         setting = new CSettingInt(strKey, iLabelId, iValue, enums);
       }

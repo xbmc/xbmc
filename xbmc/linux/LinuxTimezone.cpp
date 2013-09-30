@@ -34,6 +34,7 @@
 #endif
 
 #include "Util.h"
+#include "utils/StringUtils.h"
 #include "XBDateTime.h"
 #include "settings/Setting.h"
 #include "settings/Settings.h"
@@ -46,7 +47,7 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
    size_t linelen = 0;
    int nameonfourthfield = 0;
    CStdString s;
-   vector<CStdString> tokens;
+   std::vector<std::string> tokens;
 
    // Load timezones
    FILE* fp = fopen("/usr/share/zoneinfo/zone.tab", "r");
@@ -67,7 +68,7 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
          if (s[0] == '#')
             continue;
 
-         CUtil::Tokenize(s, tokens, " \t");
+         StringUtils::Tokenize(s, tokens, " \t");
          if (tokens.size() < 3)
             continue;
 
