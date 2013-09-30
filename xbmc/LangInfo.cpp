@@ -483,9 +483,13 @@ void CLangInfo::SetSubtitleLanguage(const CStdString &language)
 }
 
 // two character codes as defined in ISO639
-const CStdString& CLangInfo::GetDVDMenuLanguage() const
+const std::string CLangInfo::GetDVDMenuLanguage() const
 {
-  return m_currentRegion->m_strDVDMenuLanguage;
+  CStdString code;
+  if (!g_LangCodeExpander.ConvertToTwoCharCode(code, m_currentRegion->m_strLangLocaleName))
+    code = m_currentRegion->m_strDVDMenuLanguage;
+  
+  return code;
 }
 
 // two character codes as defined in ISO639
