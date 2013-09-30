@@ -39,51 +39,51 @@ using namespace XFILE;
 
 JSONRPC_STATUS CContactLibrary::GetContacts(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-    CContactDatabase contactdatabase;
-    if (!contactdatabase.Open())
-        return InternalError;
-    
-    CContactDbUrl contactUrl;
-    contactUrl.FromString("contactdb://contacts/");
-    int artistID = -1, genreID = -1;
-    const CVariant &filter = parameterObject["filter"];
-    if (filter.isMember("artistid"))
-        artistID = (int)filter["artistid"].asInteger();
-    else if (filter.isMember("artist"))
-        contactUrl.AddOption("artist", filter["artist"].asString());
-    else if (filter.isMember("genreid"))
-        genreID = (int)filter["genreid"].asInteger();
-    else if (filter.isMember("genre"))
-        contactUrl.AddOption("genre", filter["genre"].asString());
-    else if (filter.isObject())
-    {
-        CStdString xsp;
-        if (!GetXspFiltering("albums", filter, xsp))
-            return InvalidParams;
-        
-        contactUrl.AddOption("xsp", xsp);
-    }
-    SortDescription sorting;
-  /*
-    ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
-    if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
-        return InvalidParams;
-    */
-    CFileItemList items;
+  CContactDatabase contactdatabase;
+  if (!contactdatabase.Open())
+    return InternalError;
   
-    if (!contactdatabase.GetContactsNav(contactUrl.ToString(), items, sorting))
-        return InternalError;
+  CContactDbUrl contactUrl;
+  contactUrl.FromString("contactdb://contacts/");
+  int artistID = -1, genreID = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("artistid"))
+    artistID = (int)filter["artistid"].asInteger();
+  else if (filter.isMember("artist"))
+    contactUrl.AddOption("artist", filter["artist"].asString());
+  else if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  else if (filter.isMember("genre"))
+    contactUrl.AddOption("genre", filter["genre"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("albums", filter, xsp))
+      return InvalidParams;
     
-    JSONRPC_STATUS ret = GetAdditionalContactDetails(parameterObject, items, contactdatabase);
-    if (ret != OK)
-        return ret;
-    
-    int size = items.Size();
-    if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
-        size = (int)items.GetProperty("total").asInteger();
-    HandleFileItemList("contactid", false, "contacts", items, parameterObject, result, size, false);
-    
-    return OK;
+    contactUrl.AddOption("xsp", xsp);
+  }
+  SortDescription sorting;
+  
+  ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
+  if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
+    return InvalidParams;
+  
+  CFileItemList items;
+  
+  if (!contactdatabase.GetContactsNav(contactUrl.ToString(), items, sorting))
+    return InternalError;
+  
+  JSONRPC_STATUS ret = GetAdditionalContactDetails(parameterObject, items, contactdatabase);
+  if (ret != OK)
+    return ret;
+  
+  int size = items.Size();
+  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+    size = (int)items.GetProperty("total").asInteger();
+  HandleFileItemList("contactid", false, "contacts", items, parameterObject, result, size, false);
+  
+  return OK;
 }
 
 bool CContactLibrary::CheckForAdditionalProperties(const CVariant &properties, const std::set<std::string> &checkProperties, std::set<std::string> &foundProperties)
@@ -125,42 +125,42 @@ JSONRPC_STATUS CContactLibrary::GetAdditionalContactDetails(const CVariant &para
   {
     CFileItemPtr item = items[i];
     /*
-    if (additionalProperties.find("locationid") != additionalProperties.end())
-    {
-      std::vector<int> locationids;
-      if (contactdatabase.GetLocationsByContact(item->GetContactInfoTag()->GetDatabaseId(), locationids))
-      {
-        CVariant locationidObj(CVariant::VariantTypeArray);
-        for (std::vector<int>::const_iterator locationid = locationids.begin(); locationid != locationids.end(); ++locationid)
-          locationidObj.push_back(*locationid);
-        
-        item->SetProperty("locationid", locationidObj);
-      }
-    }
-    if (additionalProperties.find("faceid") != additionalProperties.end())
-    {
-      std::vector<int> faceids;
-      if (contactdatabase.GetFacesByContact(item->GetContactInfoTag()->GetDatabaseId(), true, faceids))
-      {
-        CVariant faceidObj(CVariant::VariantTypeArray);
-        for (std::vector<int>::const_iterator faceid = faceids.begin(); faceid != faceids.end(); ++faceid)
-          faceidObj.push_back(*faceid);
-        
-        item->SetProperty("faceid", faceidObj);
-      }
-    }
-    if (additionalProperties.find("albumfaceid") != additionalProperties.end() && item->GetContactInfoTag()->GetContactAlbumId() > 0)
-    {
-      std::vector<int> albumfaceids;
-      if (contactdatabase.GetFacesByContactAlbum(item->GetContactInfoTag()->GetContactAlbumId(), true, albumfaceids))
-      {
-        CVariant albumfaceidObj(CVariant::VariantTypeArray);
-        for (std::vector<int>::const_iterator albumfaceid = albumfaceids.begin(); albumfaceid != albumfaceids.end(); ++albumfaceid)
-          albumfaceidObj.push_back(*albumfaceid);
-        
-        item->SetProperty("albumfaceid", albumfaceidObj);
-      }
-    }
+     if (additionalProperties.find("locationid") != additionalProperties.end())
+     {
+     std::vector<int> locationids;
+     if (contactdatabase.GetLocationsByContact(item->GetContactInfoTag()->GetDatabaseId(), locationids))
+     {
+     CVariant locationidObj(CVariant::VariantTypeArray);
+     for (std::vector<int>::const_iterator locationid = locationids.begin(); locationid != locationids.end(); ++locationid)
+     locationidObj.push_back(*locationid);
+     
+     item->SetProperty("locationid", locationidObj);
+     }
+     }
+     if (additionalProperties.find("faceid") != additionalProperties.end())
+     {
+     std::vector<int> faceids;
+     if (contactdatabase.GetFacesByContact(item->GetContactInfoTag()->GetDatabaseId(), true, faceids))
+     {
+     CVariant faceidObj(CVariant::VariantTypeArray);
+     for (std::vector<int>::const_iterator faceid = faceids.begin(); faceid != faceids.end(); ++faceid)
+     faceidObj.push_back(*faceid);
+     
+     item->SetProperty("faceid", faceidObj);
+     }
+     }
+     if (additionalProperties.find("albumfaceid") != additionalProperties.end() && item->GetContactInfoTag()->GetContactAlbumId() > 0)
+     {
+     std::vector<int> albumfaceids;
+     if (contactdatabase.GetFacesByContactAlbum(item->GetContactInfoTag()->GetContactAlbumId(), true, albumfaceids))
+     {
+     CVariant albumfaceidObj(CVariant::VariantTypeArray);
+     for (std::vector<int>::const_iterator albumfaceid = albumfaceids.begin(); albumfaceid != albumfaceids.end(); ++albumfaceid)
+     albumfaceidObj.push_back(*albumfaceid);
+     
+     item->SetProperty("albumfaceid", albumfaceidObj);
+     }
+     }
      */
   }
   
@@ -168,13 +168,13 @@ JSONRPC_STATUS CContactLibrary::GetAdditionalContactDetails(const CVariant &para
 }
 JSONRPC_STATUS CContactLibrary::GetContactDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-    int albumID = (int)parameterObject["albumid"].asInteger();
-    
-    CContactDatabase contactdatabase;
-    if (!contactdatabase.Open())
-        return InternalError;
+  int albumID = (int)parameterObject["albumid"].asInteger();
   
-    return OK;
+  CContactDatabase contactdatabase;
+  if (!contactdatabase.Open())
+    return InternalError;
+  
+  return OK;
 }
 
 JSONRPC_STATUS CContactLibrary::AddContact(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -194,30 +194,34 @@ JSONRPC_STATUS CContactLibrary::AddContact(const CStdString &method, ITransportL
   
   CLog::Log(LOGINFO, "JSONRPC: Adding %s %s \n", strFirst.c_str(), strLast.c_str());
   //create the thumbnail and pass it in
-  CStdString strContactPath = shares->at(0).strPath + strFirst + strLast + ".JPG";
+  CStdString strContactPath = shares->at(0).strPath + strFirst +"."+ strLast + ".JPG";
   
   const CVariant &phones = parameterObject["phones"];
   std::map<std::string, std::string> phoneValues;
   phoneValues.insert(std::map<std::string, std::string>::value_type("mobile", phones["mobile"].asString().c_str()));
   phoneValues.insert(std::map<std::string, std::string>::value_type("work", phones["work"].asString().c_str()));
   phoneValues.insert(std::map<std::string, std::string>::value_type("home", phones["home"].asString().c_str()));
-
+  
   const CVariant &email = parameterObject["emails"];
   std::map<std::string, std::string> emailValues;
-  emailValues.insert(std::map<std::string, std::string>::value_type("email1", email["email1"].asString().c_str()));
-  emailValues.insert(std::map<std::string, std::string>::value_type("email2", email["email2"].asString().c_str()));
-  emailValues.insert(std::map<std::string, std::string>::value_type("email3", email["email3"].asString().c_str()));
-  emailValues.insert(std::map<std::string, std::string>::value_type("email4", email["email4"].asString().c_str()));
-  emailValues.insert(std::map<std::string, std::string>::value_type("email5", email["email5"].asString().c_str()));
-
+  emailValues.insert(std::map<std::string, std::string>::value_type("work", email["work"].asString().c_str()));
+  emailValues.insert(std::map<std::string, std::string>::value_type("home", email["home"].asString().c_str()));
+  emailValues.insert(std::map<std::string, std::string>::value_type("work1", email["work1"].asString().c_str()));
+  emailValues.insert(std::map<std::string, std::string>::value_type("home1", email["home1"].asString().c_str()));
+  emailValues.insert(std::map<std::string, std::string>::value_type("work2", email["work2"].asString().c_str()));
+  emailValues.insert(std::map<std::string, std::string>::value_type("home2", email["home2"].asString().c_str()));
+  
   const CVariant &prof = parameterObject["profession"];
   std::map<std::string, std::string> profValues;
   profValues.insert(std::map<std::string, std::string>::value_type("organization", prof["organization"].asString().c_str()));
   profValues.insert(std::map<std::string, std::string>::value_type("title", prof["title"].asString().c_str()));
   profValues.insert(std::map<std::string, std::string>::value_type("department", prof["department"].asString().c_str()));
-
+  
+  std::vector<std::map<std::string, std::string> > addresses;
+  
   const CVariant &home = parameterObject["home"];
   std::map<std::string, std::string> homeValues;
+  homeValues.insert(std::map<std::string, std::string>::value_type("type", "home"));
   homeValues.insert(std::map<std::string, std::string>::value_type("houseno", home["houseno"].asString().c_str()));
   homeValues.insert(std::map<std::string, std::string>::value_type("floor", home["floor"].asString().c_str()));
   homeValues.insert(std::map<std::string, std::string>::value_type("street", home["street"].asString().c_str()));
@@ -226,9 +230,11 @@ JSONRPC_STATUS CContactLibrary::AddContact(const CStdString &method, ITransportL
   homeValues.insert(std::map<std::string, std::string>::value_type("zip", home["zip"].asString().c_str()));
   homeValues.insert(std::map<std::string, std::string>::value_type("country", home["country"].asString().c_str()));
   homeValues.insert(std::map<std::string, std::string>::value_type("countrycode", home["countrycode"].asString().c_str()));
-
+  addresses.push_back(homeValues);
+  
   const CVariant &work = parameterObject["work"];
   std::map<std::string, std::string> workValues;
+  workValues.insert(std::map<std::string, std::string>::value_type("type", "work"));
   workValues.insert(std::map<std::string, std::string>::value_type("houseno", work["houseno"].asString().c_str()));
   workValues.insert(std::map<std::string, std::string>::value_type("floor", work["floor"].asString().c_str()));
   workValues.insert(std::map<std::string, std::string>::value_type("street", work["street"].asString().c_str()));
@@ -237,7 +243,8 @@ JSONRPC_STATUS CContactLibrary::AddContact(const CStdString &method, ITransportL
   workValues.insert(std::map<std::string, std::string>::value_type("zip", work["zip"].asString().c_str()));
   workValues.insert(std::map<std::string, std::string>::value_type("country", work["country"].asString().c_str()));
   workValues.insert(std::map<std::string, std::string>::value_type("countrycode", work["countrycode"].asString().c_str()));
-
+  addresses.push_back(workValues);
+  
   std::map<std::string, std::string> nameValues;
   nameValues.insert(std::map<std::string, std::string>::value_type("first", name["first"].asString().c_str()));
   nameValues.insert(std::map<std::string, std::string>::value_type("middle", name["middle"].asString().c_str()));
@@ -246,14 +253,14 @@ JSONRPC_STATUS CContactLibrary::AddContact(const CStdString &method, ITransportL
   nameValues.insert(std::map<std::string, std::string>::value_type("prefix", name["prefix"].asString().c_str()));
   nameValues.insert(std::map<std::string, std::string>::value_type("suffix", name["suffix"].asString().c_str()));
   nameValues.insert(std::map<std::string, std::string>::value_type("note", name["note"].asString().c_str()));
-
+  
   std::map<std::string, std::string> dateValues;
   std::map<std::string, std::string> relValues;
   std::map<std::string, std::string> IMValues;
-    std::map<std::string, std::string> URLValues;
+  std::map<std::string, std::string> URLValues;
   CLog::Log(LOGINFO, "JSONRPC: Adding  '%s' '%s'\n", nameValues["first"].c_str(), nameValues["last"].c_str());
-
-  int idContact = contactdatabase.AddContact(strContactPath, nameValues, phoneValues, emailValues, homeValues, profValues, dateValues, relValues, IMValues, URLValues);
+  
+  int idContact = contactdatabase.AddContact(strContactPath, nameValues, phoneValues, emailValues, addresses, profValues, dateValues, relValues, IMValues, URLValues);
   
   if( idContact <=0 )
     return InternalError;
@@ -264,10 +271,10 @@ JSONRPC_STATUS CContactLibrary::AddContact(const CStdString &method, ITransportL
   
   //set the latest added photo as the thumbnail for the album
   CTextureCache::Get().BackgroundCacheImage(strContactPath);
-  contactdatabase.SetArtForItem(idContact, "album", "thumb", strContactPath);
+  contactdatabase.SetArtForItem(idContact, "contact", "fanart", strContactPath);
   
   
-
+  
   return GetContacts(method, transport, client, parameterObject, result);
 }
 
