@@ -61,6 +61,7 @@
 #include "PlatformDefs.h"
 #include "NetworkLinux.h"
 #include "Util.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -910,7 +911,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
 
    while (getdelim(&line, &linel, '\n', fp) > 0)
    {
-      vector<CStdString> tokens;
+      std::vector<std::string> tokens;
 
       s = line;
       s.TrimLeft(" \t").TrimRight(" \n");
@@ -920,19 +921,19 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
          continue;
 
       // look for "iface <interface name> inet"
-      CUtil::Tokenize(s, tokens, " ");
+      StringUtils::Tokenize(s, tokens, " ");
       if (!foundInterface &&
           tokens.size() >=3 &&
-          tokens[0].Equals("iface") &&
-          tokens[1].Equals(GetName()) &&
-          tokens[2].Equals("inet"))
+          StringUtils::EqualsNoCase(tokens[0], "iface") &&
+          StringUtils::EqualsNoCase(tokens[1], GetName()) &&
+          StringUtils::EqualsNoCase(tokens[2], "inet"))
       {
-         if (tokens[3].Equals("dhcp"))
+         if (StringUtils::EqualsNoCase(tokens[3], "dhcp"))
          {
             assignment = NETWORK_DHCP;
             foundInterface = true;
          }
-         if (tokens[3].Equals("static"))
+         if (StringUtils::EqualsNoCase(tokens[3], "static"))
          {
             assignment = NETWORK_STATIC;
             foundInterface = true;
@@ -941,22 +942,22 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
 
       if (foundInterface && tokens.size() == 2)
       {
-         if (tokens[0].Equals("address")) ipAddress = tokens[1];
-         else if (tokens[0].Equals("netmask")) networkMask = tokens[1];
-         else if (tokens[0].Equals("gateway")) defaultGateway = tokens[1];
-         else if (tokens[0].Equals("wireless-essid")) essId = tokens[1];
-         else if (tokens[0].Equals("wireless-key"))
+         if (StringUtils::EqualsNoCase(tokens[0], "address")) ipAddress = tokens[1];
+         else if (StringUtils::EqualsNoCase(tokens[0], "netmask")) networkMask = tokens[1];
+         else if (StringUtils::EqualsNoCase(tokens[0], "gateway")) defaultGateway = tokens[1];
+         else if (StringUtils::EqualsNoCase(tokens[0], "wireless-essid")) essId = tokens[1];
+         else if (StringUtils::EqualsNoCase(tokens[0], "wireless-key"))
          {
             key = tokens[1];
             if (key.length() > 2 && key[0] == 's' && key[1] == ':')
                key.erase(0, 2);
             encryptionMode = ENC_WEP;
          }
-         else if (tokens[0].Equals("wpa-ssid")) essId = tokens[1];
-         else if (tokens[0].Equals("wpa-proto") && tokens[1].Equals("WPA")) encryptionMode = ENC_WPA;
-         else if (tokens[0].Equals("wpa-proto") && tokens[1].Equals("WPA2")) encryptionMode = ENC_WPA2;
-         else if (tokens[0].Equals("wpa-psk")) key = tokens[1];
-         else if (tokens[0].Equals("auto") || tokens[0].Equals("iface") || tokens[0].Equals("mapping")) break;
+         else if (StringUtils::EqualsNoCase(tokens[0], "wpa-ssid")) essId = tokens[1];
+         else if (StringUtils::EqualsNoCase(tokens[0], "wpa-proto") && StringUtils::EqualsNoCase(tokens[1], "WPA")) encryptionMode = ENC_WPA;
+         else if (StringUtils::EqualsNoCase(tokens[0], "wpa-proto") && StringUtils::EqualsNoCase(tokens[1], "WPA2")) encryptionMode = ENC_WPA2;
+         else if (StringUtils::EqualsNoCase(tokens[0], "wpa-psk")) key = tokens[1];
+         else if (StringUtils::EqualsNoCase(tokens[0], "auto") || StringUtils::EqualsNoCase(tokens[0], "iface") || StringUtils::EqualsNoCase(tokens[0], "mapping")) break;
       }
    }
    free(line);
@@ -995,7 +996,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
 
    while (getdelim(&line, &linel, '\n', fr) > 0)
    {
-      vector<CStdString> tokens;
+      std::vector<std::string> tokens;
 
       s = line;
       s.TrimLeft(" \t").TrimRight(" \n");
@@ -1008,18 +1009,18 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
       }
 
       // look for "iface <interface name> inet"
-      CUtil::Tokenize(s, tokens, " ");
+      StringUtils::Tokenize(s, tokens, " ");
       if (tokens.size() == 2 &&
-          tokens[0].Equals("auto") &&
-          tokens[1].Equals(GetName()))
+          StringUtils::EqualsNoCase(tokens[0], "auto") &&
+          StringUtils::EqualsNoCase(tokens[1], GetName()))
       {
          continue;
       }
       else if (!foundInterface &&
           tokens.size() == 4 &&
-          tokens[0].Equals("iface") &&
-          tokens[1].Equals(GetName()) &&
-          tokens[2].Equals("inet"))
+          StringUtils::EqualsNoCase(tokens[0], "iface") &&
+          StringUtils::EqualsNoCase(tokens[1], GetName()) &&
+          StringUtils::EqualsNoCase(tokens[2], "inet"))
       {
          foundInterface = true;
          WriteSettings(fw, assignment, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);
@@ -1027,7 +1028,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
       }
       else if (foundInterface &&
                tokens.size() == 4 &&
-               tokens[0].Equals("iface"))
+               StringUtils::EqualsNoCase(tokens[0], "iface"))
       {
         foundInterface = false;
         fprintf(fw, "%s", line);

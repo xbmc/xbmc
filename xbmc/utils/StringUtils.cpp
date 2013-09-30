@@ -859,3 +859,22 @@ std::string StringUtils::Paramify(const std::string &param)
   // add double quotes around the whole string
   return "\"" + result + "\"";
 }
+
+void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters)
+{
+  // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
+  // Skip delimiters at beginning.
+  string::size_type lastPos = input.find_first_not_of(delimiters, 0);
+  // Find first "non-delimiter".
+  string::size_type pos = input.find_first_of(delimiters, lastPos);
+
+  while (string::npos != pos || string::npos != lastPos)
+  {
+    // Found a token, add it to the vector.
+    tokens.push_back(input.substr(lastPos, pos - lastPos));
+    // Skip delimiters.  Note the "not_of"
+    lastPos = input.find_first_not_of(delimiters, pos);
+    // Find next "non-delimiter"
+    pos = input.find_first_of(delimiters, lastPos);
+  }
+}

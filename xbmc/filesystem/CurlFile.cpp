@@ -72,9 +72,9 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
 
   CStdString strLine;
   strLine.append(output, size);
-  std::vector<CStdString> vecLines;
-  CUtil::Tokenize(strLine, vecLines, "\r\n");
-  std::vector<CStdString>::const_iterator it = vecLines.begin();
+  std::vector<std::string> vecLines;
+  StringUtils::Tokenize(strLine, vecLines, "\r\n");
+  std::vector<std::string>::const_iterator it = vecLines.begin();
 
   char *infotype;
   switch(info)
@@ -688,16 +688,16 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     /* it won't be so let's handle that case    */
 
     CStdString partial, filename(url2.GetFileName());
-    CStdStringArray array;
+    std::vector<std::string> array;
 
     // if server sent us the filename in non-utf8, we need send back with same encoding.
     if (url2.GetProtocolOption("utf8") == "0")
       g_charsetConverter.utf8ToStringCharset(filename);
 
     /* TODO: create a tokenizer that doesn't skip empty's */
-    CUtil::Tokenize(filename, array, "/");
+    StringUtils::Tokenize(filename, array, "/");
     filename.Empty();
-    for(CStdStringArray::iterator it = array.begin(); it != array.end(); it++)
+    for(std::vector<std::string>::iterator it = array.begin(); it != array.end(); it++)
     {
       if(it != array.begin())
         filename += "/";

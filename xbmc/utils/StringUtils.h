@@ -137,6 +137,7 @@ public:
    \return Escaped/Paramified string
    */
   static std::string Paramify(const std::string &param);
+  static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters);
 private:
   static CStdString m_lastUUID;
 };

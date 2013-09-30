@@ -74,9 +74,9 @@ namespace XFILE
     if (!g_ZipManager.GetZipList(strPath,entries))
       return false;
 
-    vector<CStdString> baseTokens;
+    vector<std::string> baseTokens;
     if (!strPathInZip.IsEmpty())
-      CUtil::Tokenize(strPathInZip,baseTokens,"/");
+      StringUtils::Tokenize(strPathInZip,baseTokens,"/");
 
     for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
     {
@@ -85,8 +85,8 @@ namespace XFILE
       if (strEntryName == strPathInZip) // skip the listed dir
         continue;
 
-      vector<CStdString> pathTokens;
-      CUtil::Tokenize(strEntryName,pathTokens,"/");
+      vector<std::string> pathTokens;
+      StringUtils::Tokenize(strEntryName,pathTokens,"/");
       if (pathTokens.size() < baseTokens.size()+1)
         continue;
 
