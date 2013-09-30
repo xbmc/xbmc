@@ -128,7 +128,17 @@ typedef enum {
   FieldPictureAlbum,
   FieldPictureAlbumId,
   FieldFace,
-  FieldLocation
+  FieldLocation,
+  
+  //Contacts fields
+  FieldFirstName,
+  FieldLastName,
+  FieldContact,
+  FieldPhones,
+  FieldEmails,
+  FieldProfessional,
+  FieldDates,
+  FieldRelations  
 } Field;
 
 typedef std::set<Field> Fields;
