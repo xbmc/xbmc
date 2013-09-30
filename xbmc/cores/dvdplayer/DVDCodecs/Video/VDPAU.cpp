@@ -1106,7 +1106,14 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   uint64_t startTime = CurrentHostCounter();
   while (!retval)
   {
-    if (m_vdpauOutput.m_dataPort.ReceiveInMessage(&msg))
+    // first fill the buffers to keep vdpau busy
+    // mixer will run with decoded >= 2. output is limited by number of output surfaces
+    // In case mixer is bypassed we limit by looking at processed
+    if (decoded < 3 && processed < 3)
+    {
+      retval |= VC_BUFFER;
+    }
+    else if (m_vdpauOutput.m_dataPort.ReceiveInMessage(&msg))
     {
       if (msg->signal == COutputDataProtocol::PICTURE)
       {
@@ -1140,20 +1147,9 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
       msg->Release();
     }
 
-    // TODO
-    if (1) //(m_codecControl & DVP_FLAG_DRAIN))
+    if (decoded < 3 && processed < 3)
     {
-      if (decoded + processed + render < 4)
-      {
-        retval |= VC_BUFFER;
-      }
-    }
-    else
-    {
-      if (decoded < 4 && (processed + render) < 3)
-      {
-        retval |= VC_BUFFER;
-      }
+      retval |= VC_BUFFER;
     }
 
     if (!retval && !m_inMsgEvent.WaitMSec(2000))
