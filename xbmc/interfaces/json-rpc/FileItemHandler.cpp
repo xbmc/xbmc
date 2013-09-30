@@ -34,6 +34,7 @@
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/tags/PictureInfoTag.h"
+#include "contacts/tags/ContactInfoTag.h"
 #include "video/VideoDatabase.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -41,11 +42,14 @@
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
+#include "contacts/ContactThumbLoader.h"
 #include "Util.h"
 #include "pvr/channels/PVRChannel.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 using namespace PICTURE_INFO;
+using namespace CONTACT_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
 
@@ -117,12 +121,14 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
     {
       if (thumbLoader != NULL && !item->HasArt("thumb") && !fetchedArt &&
         ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)
-         || (item->HasPictureInfoTag() && item->GetPictureInfoTag()->GetDatabaseId() > -1)) )
+         || (item->HasPictureInfoTag() && item->GetPictureInfoTag()->GetDatabaseId() > -1 ) || (item->HasContactInfoTag() && item->GetContactInfoTag()->GetDatabaseId() > -1 )) )
       {
         thumbLoader->FillLibraryArt(*item);
         fetchedArt = true;
       }
       else if (item->HasPictureInfoTag() && !item->HasArt("thumb"))
+        item->SetArt("thumb", CTextureCache::GetWrappedImageURL(item->GetPath()));
+      else if (item->HasContactInfoTag() && !item->HasArt("thumb"))
         item->SetArt("thumb", CTextureCache::GetWrappedImageURL(item->GetPath()));
       
       if (item->HasArt("thumb"))
@@ -226,6 +232,8 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
       thumbLoader = new CMusicThumbLoader();
     else if (items.Get(start)->HasPictureInfoTag())
       thumbLoader = new CPictureThumbLoader();
+    else if (items.Get(start)->HasContactInfoTag())
+      thumbLoader = new CContactThumbLoader();
 
     if (thumbLoader != NULL)
       thumbLoader->Initialize();
@@ -235,7 +243,11 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
     for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array(); field != parameterObject["properties"].end_array(); field++)
+    {
+      CLog::Log(LOGINFO, "JSONRPC: Property %s  \n", field->asString().c_str());
+
       fields.insert(field->asString());
+    }
   }
 
   for (int i = start; i < end; i++)
@@ -294,6 +306,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
         object[ID] = item->GetVideoInfoTag()->m_iDbId;
       else if (item->HasPictureInfoTag() && item->GetPictureInfoTag()->GetDatabaseId() > 0)
         object[ID] = (int)item->GetPictureInfoTag()->GetDatabaseId();
+      else if (item->HasContactInfoTag() && item->GetContactInfoTag()->GetDatabaseId() > 0)
+        object[ID] = (int)item->GetContactInfoTag()->GetDatabaseId();
 
       if (stricmp(ID, "id") == 0)
       {
@@ -338,6 +352,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
         thumbLoader = new CMusicThumbLoader();
       else if (item->HasPictureInfoTag())
         thumbLoader = new CPictureThumbLoader();
+      else if (item->HasContactInfoTag())
+        thumbLoader = new CContactThumbLoader();
 
       if (thumbLoader != NULL)
       {
@@ -354,6 +370,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       FillDetails(item->GetMusicInfoTag(), item, fields, object, thumbLoader);
     if (item->HasPictureInfoTag())
       FillDetails(item->GetPictureInfoTag(), item, fields, object, thumbLoader);
+    if (item->HasContactInfoTag())
+      FillDetails(item->GetContactInfoTag(), item, fields, object, thumbLoader);
     
     FillDetails(item.get(), item, fields, object, thumbLoader);
 
