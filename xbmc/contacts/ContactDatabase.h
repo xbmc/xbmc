@@ -125,7 +125,7 @@ public:
      \param iKaraokeNumber [in] the karaoke id of the contact
      \return the id of the contact
      */
-  int AddContact(const CStdString& strPathAndFileName, std::map<std::string, std::string>& name, std::map<std::string, std::string>& phones, std::map<std::string, std::string>& emails, std::map<std::string, std::string>& addresses, std::map<std::string, std::string>& company, std::map<std::string, std::string>& dates, std::map<std::string, std::string>& relations, std::map<std::string, std::string>& IMs, std::map<std::string, std::string>& URLSs);
+  int AddContact(const CStdString& strPathAndFileName, std::map<std::string, std::string>& name, std::map<std::string, std::string>& phones, std::map<std::string, std::string>& emails, std::vector<std::map<std::string, std::string> >& addresses, std::map<std::string, std::string>& company, std::map<std::string, std::string>& dates, std::map<std::string, std::string>& relations, std::map<std::string, std::string>& IMs, std::map<std::string, std::string>& URLSs);
   int AddPath(const CStdString& strPath1);
 
   
@@ -154,8 +154,7 @@ public:
     //bool GetContactsByPath(const CStdString& strPath, MAPPICTURES& contacts, bool bAppendToMap = false);
     bool GetContact(int idContact, CContact& contact);
   
-    
-    /////////////////////////////////////////////////
+  /////////////////////////////////////////////////
     // Recently added
     /////////////////////////////////////////////////
     //bool GetRecentlyAddedContact(VECPICTUREALBUMS& ContactAlbums, unsigned int limit=0);
@@ -176,7 +175,8 @@ public:
     bool GetItems(const CStdString &strBaseDir, CFileItemList &items, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription());
     bool GetItems(const CStdString &strBaseDir, const CStdString &itemType, CFileItemList &items, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription());
     CStdString GetItemById(const CStdString &itemType, int id);
-  
+  static void SetPropertiesFromContact(CFileItem& item, const CContact& contact);
+
     /////////////////////////////////////////////////
     // Art
     /////////////////////////////////////////////////
@@ -244,23 +244,18 @@ private:
     bool SearchContacts(const CStdString& strSearch, CFileItemList &contacts);
     int GetContactIDFromPath(const CStdString &filePath);
 
-    // Fields should be ordered as they
+
+  // Fields should be ordered as they
     // appear in the contactview
     enum _ContactFields
     {
         contact_idContact=0,
-        contact_strFaces,
-        contact_takenOn,
-        contact_contacttype,
-        contact_orientation,
-        contact_strLocations,
-        contact_idPath,
-        contact_idAlbum,
-        contact_strAlbum,
-        contact_strTitle,
-        contact_strFileName,
+        contact_strFirst,
+      contact_strMiddle,
+        contact_strLast,
         contact_idThumb,
-      contact_strPath
+        contact_idPhone,
+        contact_idEmail
     } ContactFields;
     
     // Fields should be ordered as they

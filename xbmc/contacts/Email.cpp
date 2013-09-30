@@ -18,25 +18,25 @@
  *
  */
 
-#include "Phone.h"
+#include "Email.h"
 #include "utils/XMLUtils.h"
 #include "settings/AdvancedSettings.h"
 
 using namespace std;
 
-bool CPhone::Load(const TiXmlElement *phone, bool append, bool prioritise)
+bool CEmail::Load(const TiXmlElement *email, bool append, bool prioritise)
 {
-  if (!phone) return false;
+  if (!email) return false;
   if (!append)
     Reset();
 
-  XMLUtils::GetString(phone,                "number", strPhone);
+  XMLUtils::GetString(email,                "number", strEmail);
 
 
   size_t iThumbCount = thumbURL.m_url.size();
   CStdString xmlAdd = thumbURL.m_xml;
 
-  const TiXmlElement* thumb = phone->FirstChildElement("thumb");
+  const TiXmlElement* thumb = email->FirstChildElement("thumb");
   while (thumb)
   {
     thumbURL.ParseElement(thumb);
@@ -56,7 +56,7 @@ bool CPhone::Load(const TiXmlElement *phone, bool append, bool prioritise)
            thumbURL.m_url.end());
     thumbURL.m_xml = xmlAdd;
   }
-  const TiXmlElement* node = phone->FirstChildElement("contact");
+  const TiXmlElement* node = email->FirstChildElement("contact");
   while (node)
   {
     const TiXmlNode* title = node->FirstChild("title");
@@ -70,17 +70,17 @@ bool CPhone::Load(const TiXmlElement *phone, bool append, bool prioritise)
   return true;
 }
 
-bool CPhone::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath)
+bool CEmail::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath)
 {
   if (!node) return false;
 
   // we start with a <tag> tag
-  TiXmlElement phoneElement(tag.c_str());
-  TiXmlNode *phone = node->InsertEndChild(phoneElement);
+  TiXmlElement emailElement(tag.c_str());
+  TiXmlNode *email = node->InsertEndChild(emailElement);
 
-  if (!phone) return false;
+  if (!email) return false;
 
-  XMLUtils::SetString(phone,                      "number", strPhone);
+  XMLUtils::SetString(email,                      "number", strEmail);
   if (!thumbURL.m_xml.empty())
   {
     CXBMCTinyXML doc;
@@ -88,7 +88,7 @@ bool CPhone::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
     {
-      phone->InsertEndChild(*thumb);
+      email->InsertEndChild(*thumb);
       thumb = thumb->NextSibling("thumb");
     }
   }

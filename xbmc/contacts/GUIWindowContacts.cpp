@@ -101,7 +101,6 @@ bool CGUIWindowContacts::OnMessage(CGUIMessage& message)
 
       if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
-        m_ImageLib.Unload();
       }
     }
     break;
@@ -116,7 +115,6 @@ bool CGUIWindowContacts::OnMessage(CGUIMessage& message)
 
       if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
-        m_ImageLib.Load();
       }
 
       if (!CGUIMediaWindow::OnMessage(message))

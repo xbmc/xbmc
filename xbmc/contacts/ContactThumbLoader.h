@@ -53,13 +53,13 @@ public:
   virtual void Initialize();
   virtual void Deinitialize();
   
-  virtual bool LoadItem(CContactFileItem* pItem);
+  virtual bool LoadItem(CFileItem* pItem);
   
   /*! \brief helper function to fill the art for a video library item
    \param item a video CContactFileItem
    \return true if we fill art, false otherwise
    */
-  virtual bool FillLibraryArt(CContactFileItem &item);
+  virtual bool FillLibraryArt(CFileItem &item);
   
   /*! \brief Fill the thumb of a music file/folder item
    First uses a cached thumb from a previous run, then checks for a local thumb
@@ -67,7 +67,7 @@ public:
    \param item the CContactFileItem object to fill
    \return true if we fill the thumb, false otherwise
    */
-  static bool FillThumb(CContactFileItem &item, bool folderThumbs = true);
+  static bool FillThumb(CFileItem &item, bool folderThumbs = true);
   
 protected:
   virtual void OnLoaderStart();

@@ -55,7 +55,7 @@ CContact::CContact(CFileItem& item)
   strTitle = tag.GetTitle();
   phone = tag.GetPhone();
   strComment = tag.GetComment();
-  strFileName = tag.GetURL().IsEmpty() ? item.GetPath() : tag.GetURL();
+//  strFileName = tag.GetURL().IsEmpty() ? item.GetPath() : tag.GetURL();
   strThumb = item.GetUserContactThumb(true);
 }
 
@@ -66,10 +66,10 @@ CContact::CContact()
 
 void CContact::Serialize(CVariant& value) const
 {
-  value["filename"] = strFileName;
+//  value["filename"] = strFileName;
   value["title"] = strTitle;
   value["phone"] = phone;
-  value["contact"] = strContact;
+//  value["contact"] = strContact;
   value["phone"] = phone;
   value["comment"] = strComment;
   value["contactid"] = idContact;
@@ -77,7 +77,7 @@ void CContact::Serialize(CVariant& value) const
 
 void CContact::Clear()
 {
-  strFileName.Empty();
+//  strFileName.Empty();
   strTitle.Empty();
   phone.clear();
   phone.clear();

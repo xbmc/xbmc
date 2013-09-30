@@ -49,13 +49,15 @@ public:
   virtual ~CContact(){};
   void Clear() ;
   virtual void Serialize(CVariant& value) const;
-  
+
+  /*
   bool operator<(const CContact &contact) const
   {
     if (strFileName < contact.strFileName) return true;
     if (strFileName > contact.strFileName) return false;
     return false;
   }
+   */
   
   /*! \brief whether this contact has art associated with it
    Tests both the strThumb and embeddedArt members.
@@ -64,10 +66,24 @@ public:
   
   
   int idContact;
-  CStdString strFileName;
-  CStdString strContact;
+  CStdString strFirst;
+  CStdString strLast;
+  CStdString strMiddle;
+  CStdString strNick;
+  CStdString strPrefix;
+  CStdString strSuffix;
+  CStdString strNote;
   CStdString strTitle;
+  CStdString strLabel;
+  CStdString strJobTitle;
+  CStdString strOffice;
+  CStdString strDepartment;
+  
   std::vector<std::string> phone;
+  std::vector<std::string> email;
+  std::vector<std::string> address;
+  std::vector<std::string> dates;
+  std::vector<std::string> relation;
   CStdString strThumb;
   CStdString strComment;
 };
@@ -77,11 +93,4 @@ public:
  \brief A map of CContact objects, used for CContactDatabase
  */
 typedef std::map<std::string, CContact> MAPCONTACTS;
-
-/*!
- \ingroup music
- \brief A vector of CContact objects, used for CContactDatabase
- \sa CContactDatabase
- */
-typedef std::vector<CContact> VECCONTACTS;
 

@@ -28,21 +28,21 @@
 class TiXmlNode;
 class CContactDatabase;
 
-class CPhone
+class CEmail
 {
 public:
-  long idPhone;
-  bool operator<(const CPhone& a) const
+  long idEmail;
+  bool operator<(const CEmail& a) const
   {
-    if (strPhone < a.strPhone) return true;
-    if (strPhone > a.strPhone) return false;
+    if (strEmail < a.strEmail) return true;
+    if (strEmail > a.strEmail) return false;
     return false;
   }
 
   void Reset()
   {
-    strPhone.Empty();
-    idPhone = -1;
+    strEmail.Empty();
+    idEmail = -1;
   }
 
   /*! \brief Load artist information from an XML file.
@@ -55,11 +55,11 @@ public:
   bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
   bool Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath);
 
-  CStdString strPhone;
+  CStdString strEmail;
   CStdString strPath;
   CScraperUrl thumbURL;
 };
 
 
-typedef std::vector<CPhone> VECPHONES;
+typedef std::vector<CEmail> VECEMAILS;
 

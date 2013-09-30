@@ -22,7 +22,6 @@
 
 #include "windows/GUIMediaWindow.h"
 #include "ContactThumbLoader.h"
-#include "DllImageLib.h"
 
 class CGUIDialogProgress;
 
@@ -59,7 +58,6 @@ protected:
   virtual void LoadPlayList(const CStdString& strPlayList);
 
   CGUIDialogProgress* m_dlgProgress;
-  DllImageLib m_ImageLib;
 
   CContactThumbLoader m_thumbLoader;
   bool m_slideShowStarted;

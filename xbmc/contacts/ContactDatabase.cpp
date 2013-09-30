@@ -68,7 +68,7 @@
 using namespace std;
 using namespace AUTOPTR;
 using namespace XFILE;
-//using namespace CONTACTDATABASEDIRECTORY;
+using namespace CONTACTDATABASEDIRECTORY;
 using ADDON::AddonPtr;
 
 #define RECENTLY_PLAYED_LIMIT 25
@@ -182,6 +182,11 @@ bool CContactDatabase::CreateTables()
     CLog::Log(LOGINFO, "create contact index1");
     m_pDS->exec("CREATE INDEX idxContact1 ON contact(strLast)");
     
+    CLog::Log(LOGINFO, "create art table, index and triggers");
+    m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
+    m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
+    m_pDS->exec("CREATE TRIGGER delete_contact AFTER DELETE ON contact FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idcontact AND media_type='contact'; END");
+    
     /*
      CLog::Log(LOGINFO, "create contact_phone indexes");
      m_pDS->exec("CREATE UNIQUE INDEX idxContactPhone_1 ON contact_phone ( idContact, idPhone )\n");
@@ -190,7 +195,7 @@ bool CContactDatabase::CreateTables()
     // we create views last to ensure all indexes are rolled in
     CreateViews();
     
-    //AddContactContact("Untitled", "Face", "Location", 2012, false);
+    //AddContact("Untitled", "Face", "Location", 2012, false);
   }
   catch (...)
   {
@@ -211,11 +216,8 @@ void CContactDatabase::CreateViews()
               "  contact.strFirst AS strFirst,"
               "  contact.strMiddle AS strMiddle,"
               "  contact.strLast AS strLast,"
-              "  contact.idThumb AS idThumb,"
-              "  phones.idPhone AS idPhone"
-              "  FROM contact"
-              "  JOIN phones ON"
-              "  contact.idContact=phones.idContact  ");
+              "  contact.idThumb AS idThumb"
+              "  FROM contact");
   
   CLog::Log(LOGINFO, "create contact view");
 }
@@ -267,7 +269,7 @@ int CContactDatabase::AddPath(const CStdString& strPath1)
   return -1;
 }
 
-int CContactDatabase::AddContact(const CStdString& strPathAndFileName, std::map<std::string, std::string>& name, std::map<std::string, std::string>& phones, std::map<std::string, std::string>& emails, std::map<std::string, std::string>& addresses, std::map<std::string, std::string>& company, std::map<std::string, std::string>& dates, std::map<std::string, std::string>& relations, std::map<std::string, std::string>& IMs, std::map<std::string, std::string>& URLSs)
+int CContactDatabase::AddContact(const CStdString& strPathAndFileName, std::map<std::string, std::string>& name, std::map<std::string, std::string>& phones, std::map<std::string, std::string>& emails, std::vector<std::map<std::string, std::string> >& addresses, std::map<std::string, std::string>& company, std::map<std::string, std::string>& dates, std::map<std::string, std::string>& relations, std::map<std::string, std::string>& IMs, std::map<std::string, std::string>& URLSs)
 {
   
   int idContact = -1;
@@ -307,6 +309,7 @@ int CContactDatabase::AddContact(const CStdString& strPathAndFileName, std::map<
       CLog::Log(LOGERROR, "UpdateContact ");
       //UpdateContact(idContact, strTitle, strPathAndFileName, strComment, strThumb, Faces, locations, dtTaken);
       CLog::Log(LOGERROR, "Cazzo cazzo ");
+      return idContact;
     }
     
     for(std::map<std::string, std::string>::iterator iter = phones.begin(); iter != phones.end(); ++iter)
@@ -318,6 +321,36 @@ int CContactDatabase::AddContact(const CStdString& strPathAndFileName, std::map<
         m_pDS->exec(strSQL.c_str());
         int idPhone = (int)m_pDS->lastinsertid();
       }
+    }
+    for(std::map<std::string, std::string>::iterator iter = emails.begin(); iter != emails.end(); ++iter)
+    {
+      if(iter->second.length())
+      {
+        strSQL = PrepareSQL("INSERT INTO emails (idEmail, idContact, strName, strValue) VALUES (NULL, %i, '%s', '%s')", idContact, iter->first.c_str(), iter->second.c_str());
+        CLog::Log(LOGINFO, strSQL.c_str());
+        m_pDS->exec(strSQL.c_str());
+        int idEmail = (int)m_pDS->lastinsertid();
+      }
+    }
+    for(std::vector<std::map<std::string, std::string> >::iterator iter = addresses.begin(); iter != addresses.end(); ++iter)
+    {
+      std::map<std::string, std::string> add = *iter;
+
+      strSQL = PrepareSQL("INSERT INTO addresses ( idAddress, idContact, strName, strHouseNo, strFloorOrArea, strStreet, strCity, strState, strZip, strCountry, strCountryCode) VALUES (NULL, %i, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", idContact, add["type"].c_str(), add["houseno"].c_str(), add["floor"].c_str(), add["street"].c_str(), add["city"].c_str(), add["state"].c_str(), add["zip"].c_str(), add["country"].c_str(), add["countrycode"].c_str());
+        CLog::Log(LOGINFO, strSQL.c_str());
+        m_pDS->exec(strSQL.c_str());
+        int idPhone = (int)m_pDS->lastinsertid();
+    }
+    for(std::map<std::string, std::string>::iterator iter = dates.begin(); iter != dates.end(); ++iter)
+    {
+      if(iter->second.length())
+      {
+        strSQL = PrepareSQL("INSERT INTO dates (idDate, idContact, strName, strValue) VALUES (NULL, %i, '%s', '%s')", idContact, iter->first.c_str(), iter->second.c_str());
+        CLog::Log(LOGINFO, strSQL.c_str());
+        m_pDS->exec(strSQL.c_str());
+        int idEmail = (int)m_pDS->lastinsertid();
+      }
+    
     }
     
     AnnounceUpdate("contact", idContact);
@@ -355,7 +388,7 @@ CContact CContactDatabase::GetContactFromDataset(bool bWithContactDbPath/*=false
    {
    CStdString strFileName = m_pDS->fv(contact_strFileName).get_asString();
    CStdString strExt = URIUtils::GetExtension(strFileName);
-   contact.strFileName.Format("Contactdb://albums/%ld/%ld%s", m_pDS->fv(contact_idContact).get_asInt(), m_pDS->fv(contact_idContact).get_asInt(), strExt.c_str());
+   contact.strFileName.Format("Contactdb://contacts/%ld/%ld%s", m_pDS->fv(contact_idContact).get_asInt(), m_pDS->fv(contact_idContact).get_asInt(), strExt.c_str());
    }
    */
   return contact;
@@ -369,36 +402,32 @@ void CContactDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString&
 void CContactDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strContactDBbasePath)
 {
   CLog::Log(LOGDEBUG, " Aki si=>>>" + strContactDBbasePath);
-  
+/*
+  contact_idContact=0,
+  contact_strFirst,
+  contact_strLast,
+  contact_strMiddle,
+  contact_idThumb,
+  contact_idPhone,
+  contact_idEmail
+*/
   // get the full artist string
-  item->GetContactInfoTag()->SetFace(StringUtils::Split(record->at(contact_strFaces).get_asString(), g_advancedSettings.m_contactItemSeparator));
   // and the full genre string
-  item->GetContactInfoTag()->SetLocation(record->at(contact_strLocations).get_asString());
+//  item->GetContactInfoTag()->SetFirstName(record->at(contact_strFirst).get_asString());
+//  item->GetContactInfoTag()->SetMiddleName(record->at(contact_strMiddle).get_asString());
+//  item->GetContactInfoTag()->SetLastName(record->at(contact_strLast).get_asString());
   // and the rest...
-  item->GetContactInfoTag()->SetContact(record->at(contact_strContact).get_asString());
   item->GetContactInfoTag()->SetContactId(record->at(contact_idContact).get_asInt());
+  item->GetContactInfoTag()->SetFirstName(record->at(contact_strFirst).get_asString());
+  item->GetContactInfoTag()->SetMiddleName(record->at(contact_strMiddle).get_asString());
+  item->GetContactInfoTag()->SetLastName(record->at(contact_strLast).get_asString());
+  CStdString title = record->at(contact_strFirst).get_asString() +" "+record->at(contact_strMiddle).get_asString() +" "+record->at(contact_strLast).get_asString();
+  item->GetContactInfoTag()->SetTitle(title);
+  item->GetContactInfoTag()->SetLabel(title);
+  //  item->GetContactInfoTag()->SetPhoneId(record->at(contact_idPhone).get_asInt());
+//  item->GetContactInfoTag()->SetEmailId(record->at(contact_idEmail).get_asInt());
   item->GetContactInfoTag()->SetDatabaseId(record->at(contact_idContact).get_asInt(), "contact");
-  item->GetContactInfoTag()->SetTitle(record->at(contact_strTitle).get_asString());
-  item->SetLabel(record->at(contact_strTitle).get_asString());
-  CStdString strRealPath = URIUtils::AddFileToFolder(record->at(contact_strPath).get_asString(), record->at(contact_strFileName).get_asString());
-  item->GetContactInfoTag()->SetURL(strRealPath);
-	//  item->GetContactInfoTag()->SetContactFace(record->at(contact_strContactFaces).get_asString());
-  item->GetContactInfoTag()->SetLoaded(true);
   // Get filename with full path
-  if (strContactDBbasePath.IsEmpty())
-    item->SetPath(strRealPath);
-  else
-  {
-    CContactDbUrl itemUrl;
-    if (!itemUrl.FromString(strContactDBbasePath))
-      return;
-    
-    CStdString strFileName = record->at(contact_strFileName).get_asString();
-    CStdString strExt = URIUtils::GetExtension(strFileName);
-    CStdString path; path.Format("%ld%s", record->at(contact_idContact).get_asInt(), strExt.c_str());
-    itemUrl.AppendPath(path);
-    item->SetPath(itemUrl.ToString());
-  }
   
 }
 
@@ -492,10 +521,10 @@ bool CContactDatabase::GetContactsByWhere(const CStdString &baseDir, const Filte
     
     // if there are extra WHERE conditions we might need access
     // to contactview for these conditions
-    if (extFilter.where.find("albumview") != string::npos)
+    if (extFilter.where.find("contactview") != string::npos)
     {
-      extFilter.AppendJoin("JOIN albumview ON albumview.idContact = contactview.idContact");
-      extFilter.AppendGroup("contactview.idContact");
+     // extFilter.AppendJoin("JOIN contactview ON contactview.idContact = contactview.idContact");
+      //extFilter.AppendGroup("contactview.idContact");
     }
     
     CStdString strSQLExtra;
@@ -648,8 +677,8 @@ bool CContactDatabase::GetItems(const CStdString &strBaseDir, const CStdString &
    return GetYearsNav(strBaseDir, items, filter);
    else if (itemType.Equals("Faces"))
    return GetFacesNav(strBaseDir, items, !CSettings::Get().GetBool("Contactlibrary.showcompilationFaces"), -1, -1, -1, filter, sortDescription);
-   else if (itemType.Equals("albums"))
-   return GetContactContactsByWhere(strBaseDir, filter, items, sortDescription);
+   else if (itemType.Equals("contacts"))
+   return GetContactsByWhere(strBaseDir, filter, items, sortDescription);
    else if (itemType.Equals("contacts"))
    return GetContactsByWhere(strBaseDir, filter, items, sortDescription);
    */
@@ -668,12 +697,31 @@ CStdString CContactDatabase::GetItemById(const CStdString &itemType, int id)
    }
    else if (itemType.Equals("Faces"))
    return GetFaceById(id);
-   else if (itemType.Equals("albums"))
-   return GetContactContactById(id);
+   else if (itemType.Equals("contacts"))
+   return GetContactById(id);
    */
   return "";
 }
 
+void CContactDatabase::SetPropertiesFromContact(CFileItem& item, const CContact& contact)
+{
+  /*
+  item.SetProperty("contact_description", contact.strReview);
+  item.SetProperty("contact_theme", StringUtils::Join(contact.themes, g_advancedSettings.m_pictureItemSeparator));
+  item.SetProperty("contact_theme_array", contact.themes);
+  item.SetProperty("contact_mood", StringUtils::Join(contact.moods, g_advancedSettings.m_pictureItemSeparator));
+  item.SetProperty("contact_mood_array", contact.moods);
+  item.SetProperty("contact_style", StringUtils::Join(contact.styles, g_advancedSettings.m_pictureItemSeparator));
+  item.SetProperty("contact_style_array", contact.styles);
+  item.SetProperty("contact_type", contact.strPictureType);
+  item.SetProperty("contact_label", contact.strLabel);
+  item.SetProperty("contact_Face", StringUtils::Join(contact.face, g_advancedSettings.m_pictureItemSeparator));
+  item.SetProperty("contact_face_array", contact.face);
+  item.SetProperty("contact_location", StringUtils::Join(contact.location, g_advancedSettings.m_pictureItemSeparator));
+  item.SetProperty("contact_location_array", contact.location);
+  item.SetProperty("contact_title", contact.strContact);
+   */
+}
 void CContactDatabase::SetArtForItem(int mediaId, const string &mediaType, const map<string, string> &art)
 {
   for (map<string, string>::const_iterator i = art.begin(); i != art.end(); ++i)
@@ -757,47 +805,47 @@ bool CContactDatabase::GetFilter(CDbUrl &ContactUrl, Filter &filter, SortDescrip
   
   if (type == "Faces")
   {
-    int idFace = -1, idLocation = -1, idContact = -1, idContact = -1;
-    bool albumFacesOnly = false;
+    int idFace = -1, idLocation = -1,  idContact = -1;
+    bool contactFacesOnly = false;
     
     option = options.find("contactid");
     if (option != options.end())
       idContact = (int)option->second.asInteger();
     
-    option = options.find("albumFacesonly");
+    option = options.find("contactFacesonly");
     if (option != options.end())
-      albumFacesOnly = option->second.asBoolean();
+      contactFacesOnly = option->second.asBoolean();
     
     CStdString strSQL = "(Faceview.idFace IN ";
     if (idFace > 0)
       strSQL += PrepareSQL("(%d)", idFace);
     else if (idContact > 0)
-      strSQL += PrepareSQL("(SELECT album_Face.idFace FROM album_Face WHERE album_Face.idContact = %i)", idContact);
+      strSQL += PrepareSQL("(SELECT contact_Face.idFace FROM contact_Face WHERE contact_Face.idContact = %i)", idContact);
     else if (idContact > 0)
       strSQL += PrepareSQL("(SELECT contact_Face.idFace FROM contact_Face WHERE contact_Face.idContact = %i)", idContact);
     else if (idLocation > 0)
     { // same statements as below, but limit to the specified location
-      // in this case we show the whole lot always - there is no limitation to just album Faces
-      if (!albumFacesOnly)  // show all Faces in this case (ie those linked to a contact)
+      // in this case we show the whole lot always - there is no limitation to just contact Faces
+      if (!contactFacesOnly)  // show all Faces in this case (ie those linked to a contact)
         strSQL+=PrepareSQL("(SELECT contact_Face.idFace FROM contact_Face" // All Faces linked to extra locations
                            " JOIN contact_location ON contact_Face.idContact = contact_location.idContact"
                            " WHERE contact_location.idLocation = %i)"
                            " OR idFace IN ", idLocation);
-      // and add any Faces linked to an album (may be different from above due to album Face tag)
-      strSQL += PrepareSQL("(SELECT album_Face.idFace FROM album_Face" // All album Faces linked to extra locations
-                           " JOIN album_location ON album_Face.idContact = album_location.idContact"
-                           " WHERE album_location.idLocation = %i)", idLocation);
+      // and add any Faces linked to an contact (may be different from above due to contact Face tag)
+      strSQL += PrepareSQL("(SELECT contact_Face.idFace FROM contact_Face" // All contact Faces linked to extra locations
+                           " JOIN contact_location ON contact_Face.idContact = contact_location.idContact"
+                           " WHERE contact_location.idLocation = %i)", idLocation);
     }
     else
     {
-      if (!albumFacesOnly)  // show all Faces in this case (ie those linked to a contact)
+      if (!contactFacesOnly)  // show all Faces in this case (ie those linked to a contact)
         strSQL += "(SELECT contact_Face.idFace FROM contact_Face)"
         " OR Faceview.idFace IN ";
       
-      // and always show any Faces linked to an album (may be different from above due to album Face tag)
-      strSQL +=   "(SELECT album_Face.idFace FROM album_Face"; // All Faces linked to an album
-      if (albumFacesOnly)
-        strSQL += " JOIN album ON album.idContact = album_Face.idContact WHERE album.bCompilation = 0 ";            // then exclude those that have no extra Faces
+      // and always show any Faces linked to an contact (may be different from above due to contact Face tag)
+      strSQL +=   "(SELECT contact_Face.idFace FROM contact_Face"; // All Faces linked to an contact
+      if (contactFacesOnly)
+        strSQL += " JOIN contact ON contact.idContact = contact_Face.idContact WHERE contact.bCompilation = 0 ";            // then exclude those that have no extra Faces
       strSQL +=   ")";
     }
     
@@ -805,7 +853,7 @@ bool CContactDatabase::GetFilter(CDbUrl &ContactUrl, Filter &filter, SortDescrip
     strSQL += ") and Faceview.strFace != ''";
     
     // and the various Face entry if applicable
-    if (!albumFacesOnly)
+    if (!contactFacesOnly)
     {
       CStdString strVariousFaces = g_localizeStrings.Get(340);
       strSQL += PrepareSQL(" and Faceview.strFace <> '%s'", strVariousFaces.c_str());
@@ -813,61 +861,61 @@ bool CContactDatabase::GetFilter(CDbUrl &ContactUrl, Filter &filter, SortDescrip
     
     filter.AppendWhere(strSQL);
   }
-  else if (type == "albums")
+  else if (type == "contacts")
   {
     option = options.find("year");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("albumview.iYear = %i", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("contactview.iYear = %i", (int)option->second.asInteger()));
     
-    option = options.find("albumid");
+    option = options.find("contactid");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("albumview.idContact = %i", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("contactview.idContact = %i", (int)option->second.asInteger()));
     
     option = options.find("compilation");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("albumview.bCompilation = %i", option->second.asBoolean() ? 1 : 0));
+      filter.AppendWhere(PrepareSQL("contactview.bCompilation = %i", option->second.asBoolean() ? 1 : 0));
     
     option = options.find("contacttype");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("albumview.contacttype like '%s'", option->second.asString().c_str()));
+      filter.AppendWhere(PrepareSQL("contactview.contacttype like '%s'", option->second.asString().c_str()));
     
     option = options.find("locationid");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("albumview.idContact IN (SELECT contact.idContact FROM contact JOIN contact_location ON contact.idContact = contact_location.idContact WHERE contact_location.idLocation = %i)", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("contactview.idContact IN (SELECT contact.idContact FROM contact JOIN contact_location ON contact.idContact = contact_location.idContact WHERE contact_location.idLocation = %i)", (int)option->second.asInteger()));
     
     option = options.find("location");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("albumview.idContact IN (SELECT contact.idContact FROM contact JOIN contact_location ON contact.idContact = contact_location.idContact JOIN location ON location.idLocation = contact_location.idLocation WHERE location.strLocation like '%s')", option->second.asString().c_str()));
+      filter.AppendWhere(PrepareSQL("contactview.idContact IN (SELECT contact.idContact FROM contact JOIN contact_location ON contact.idContact = contact_location.idContact JOIN location ON location.idLocation = contact_location.idLocation WHERE location.strLocation like '%s')", option->second.asString().c_str()));
     
     
     option = options.find("Faceid");
     if (option != options.end())
     {
-      filter.AppendJoin("JOIN contact ON contact.idContact = albumview.idContact "
+      filter.AppendJoin("JOIN contact ON contact.idContact = contactview.idContact "
                         "JOIN contact_Face ON contact.idContact = contact_Face.idContact "
-                        "JOIN album_Face ON albumview.idContact = album_Face.idContact");
-      filter.AppendWhere(PrepareSQL("      contact_Face.idFace = %i" // All albums linked to this Face via contacts
-                                    " OR  album_Face.idFace = %i", // All albums where album Faces fit
+                        "JOIN contact_Face ON contactview.idContact = contact_Face.idContact");
+      filter.AppendWhere(PrepareSQL("      contact_Face.idFace = %i" // All contacts linked to this Face via contacts
+                                    " OR  contact_Face.idFace = %i", // All contacts where contact Faces fit
                                     (int)option->second.asInteger(), (int)option->second.asInteger()));
-      filter.AppendGroup("albumview.idContact");
+      filter.AppendGroup("contactview.idContact");
     }
     else
     {
       option = options.find("Face");
       if (option != options.end())
-        filter.AppendWhere(PrepareSQL("albumview.idContact IN (SELECT contact.idContact FROM contact JOIN contact_Face ON contact.idContact = contact_Face.idContact JOIN Face ON Face.idFace = contact_Face.idFace WHERE Face.strFace like '%s')" // All albums linked to this Face via contacts
-                                      " OR albumview.idContact IN (SELECT album_Face.idContact FROM album_Face JOIN Face ON Face.idFace = album_Face.idFace WHERE Face.strFace like '%s')", // All albums where album Faces fit
+        filter.AppendWhere(PrepareSQL("contactview.idContact IN (SELECT contact.idContact FROM contact JOIN contact_Face ON contact.idContact = contact_Face.idContact JOIN Face ON Face.idFace = contact_Face.idFace WHERE Face.strFace like '%s')" // All contacts linked to this Face via contacts
+                                      " OR contactview.idContact IN (SELECT contact_Face.idContact FROM contact_Face JOIN Face ON Face.idFace = contact_Face.idFace WHERE Face.strFace like '%s')", // All contacts where contact Faces fit
                                       option->second.asString().c_str(), option->second.asString().c_str()));
-      // no Face given, so exclude any single albums (aka empty tagged albums)
+      // no Face given, so exclude any single contacts (aka empty tagged contacts)
       else
-        filter.AppendWhere("albumview.strContact <> ''");
+        filter.AppendWhere("contactview.strFirst <> ''");
     }
   }
   else if (type == "contacts" || type == "singles")
   {
     option = options.find("singles");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("contactview.idContact %sIN (SELECT idContact FROM album WHERE strContact = '')", option->second.asBoolean() ? "" : "NOT "));
+      filter.AppendWhere(PrepareSQL("contactview.idContact %sIN (SELECT idContact FROM contact WHERE strContact = '')", option->second.asBoolean() ? "" : "NOT "));
     
     option = options.find("year");
     if (option != options.end())
@@ -877,11 +925,11 @@ bool CContactDatabase::GetFilter(CDbUrl &ContactUrl, Filter &filter, SortDescrip
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("contactview.bCompilation = %i", option->second.asBoolean() ? 1 : 0));
     
-    option = options.find("albumid");
+    option = options.find("contactid");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("contactview.idContact = %i", (int)option->second.asInteger()));
     
-    option = options.find("album");
+    option = options.find("contact");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("contactview.strContact like '%s'", option->second.asString().c_str()));
     
@@ -896,13 +944,13 @@ bool CContactDatabase::GetFilter(CDbUrl &ContactUrl, Filter &filter, SortDescrip
     option = options.find("Faceid");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("contactview.idContact IN (SELECT contact_Face.idContact FROM contact_Face WHERE contact_Face.idFace = %i)" // contact Faces
-                                    " OR contactview.idContact IN (SELECT contact.idContact FROM contact JOIN album_Face ON contact.idContact=album_Face.idContact WHERE album_Face.idFace = %i)", // album Faces
+                                    " OR contactview.idContact IN (SELECT contact.idContact FROM contact JOIN contact_Face ON contact.idContact=contact_Face.idContact WHERE contact_Face.idFace = %i)", // contact Faces
                                     (int)option->second.asInteger(), (int)option->second.asInteger()));
     
     option = options.find("Face");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("contactview.idContact IN (SELECT contact_Face.idContact FROM contact_Face JOIN Face ON Face.idFace = contact_Face.idFace WHERE Face.strFace like '%s')" // contact Faces
-                                    " OR contactview.idContact IN (SELECT contact.idContact FROM contact JOIN album_Face ON contact.idContact=album_Face.idContact JOIN Face ON Face.idFace = album_Face.idFace WHERE Face.strFace like '%s')", // album Faces
+                                    " OR contactview.idContact IN (SELECT contact.idContact FROM contact JOIN contact_Face ON contact.idContact=contact_Face.idContact JOIN Face ON Face.idFace = contact_Face.idFace WHERE Face.strFace like '%s')", // contact Faces
                                     option->second.asString().c_str(), option->second.asString().c_str()));
   }
   
