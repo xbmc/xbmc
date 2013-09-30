@@ -179,15 +179,11 @@ struct CVdpauConfig
   int vidHeight;
   int outWidth;
   int outHeight;
-  VDPAU_procs vdpProcs;
-  VdpDevice vdpDevice;
   VdpDecoder vdpDecoder;
   VdpChromaType vdpChromaType;
   CVdpauBufferStats *stats;
   CDecoder *vdpau;
-  int featureCount;
   int upscale;
-  VdpVideoMixerFeature vdpFeatures[14];
   CVideoSurfaces *videoSurfaces;
   bool usePixmaps;
   int numRenderBuffers;
@@ -546,22 +542,28 @@ class CVDPAUContext
 public:
   static bool EnsureContext(CVDPAUContext **ctx);
   void Release();
-  void GetProcs(VDPAU_procs &procs);
+  VDPAU_procs& GetProcs();
   VdpDevice GetDevice();
+  bool Supports(VdpVideoMixerFeature feature);
+  VdpVideoMixerFeature* GetFeatures();
+  int GetFeatureCount();
 private:
   CVDPAUContext();
   void Close();
   bool LoadSymbols();
   bool CreateContext();
   void DestroyContext();
+  void QueryProcs();
+  void SpewHardwareAvailable();
   static CVDPAUContext *m_context;
   static CCriticalSection m_section;
   static Display *m_display;
   int m_refCount;
+  VdpVideoMixerFeature m_vdpFeatures[14];
+  int m_featureCount;
   static void *m_dlHandle;
   VdpDevice m_vdpDevice;
-  VdpGetProcAddress *m_vdp_get_proc_address;
-  VdpDeviceDestroy *m_vdp_device_destroy;
+  VDPAU_procs m_vdpProcs;
   VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
 };
 
@@ -619,7 +621,6 @@ public:
 protected:
   void SetWidthHeight(int width, int height);
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
-  void SpewHardwareAvailable();
   bool CheckStatus(VdpStatus vdp_st, int line);
   void FiniVDPAUOutput();
   void ReturnRenderPicture(CVdpauRenderPicture *renderPic);

@@ -136,6 +136,21 @@ bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
   return true;
 }
 
+VDPAU_procs& CVDPAUContext::GetProcs()
+{
+  return m_vdpProcs;
+}
+
+VdpVideoMixerFeature* CVDPAUContext::GetFeatures()
+{
+  return m_vdpFeatures;
+}
+
+int CVDPAUContext::GetFeatureCount()
+{
+  return m_featureCount;
+}
+
 bool CVDPAUContext::LoadSymbols()
 {
   if (!m_dlHandle)
@@ -181,7 +196,7 @@ bool CVDPAUContext::CreateContext()
   vdp_st = dl_vdp_device_create_x11(m_display,
                                     mScreen,
                                    &m_vdpDevice,
-                                   &m_vdp_get_proc_address);
+                                   &m_vdpProcs.vdp_get_proc_address);
 
   CLog::Log(LOGNOTICE,"vdp_device = 0x%08x vdp_st = 0x%08x",m_vdpDevice,vdp_st);
   if (vdp_st != VDP_STATUS_OK)
@@ -190,59 +205,58 @@ bool CVDPAUContext::CreateContext()
     m_vdpDevice = VDP_INVALID_HANDLE;
     return false;
   }
-  vdp_st = m_vdp_get_proc_address(m_vdpDevice, VDP_FUNC_ID_DEVICE_DESTROY, (void**)&m_vdp_device_destroy);
 
+  QueryProcs();
+  SpewHardwareAvailable();
   return true;
 }
 
-void CVDPAUContext::GetProcs(VDPAU_procs &procs)
+void CVDPAUContext::QueryProcs()
 {
   VdpStatus vdp_st;
 
-  procs.vdp_get_proc_address = m_vdp_get_proc_address;
-
 #define VDP_PROC(id, proc) \
   do { \
-    vdp_st = m_vdp_get_proc_address(m_vdpDevice, id, (void**)&proc); \
+    vdp_st = m_vdpProcs.vdp_get_proc_address(m_vdpDevice, id, (void**)&proc); \
     if (vdp_st != VDP_STATUS_OK) \
     { \
       CLog::Log(LOGERROR, "CVDPAUContext::GetProcs - failed to get proc id"); \
     } \
   } while(0);
 
-  VDP_PROC(VDP_FUNC_ID_GET_ERROR_STRING                    , procs.vdp_get_error_string);
-  VDP_PROC(VDP_FUNC_ID_DEVICE_DESTROY                      , procs.vdp_device_destroy);
-  VDP_PROC(VDP_FUNC_ID_GENERATE_CSC_MATRIX                 , procs.vdp_generate_csc_matrix);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_CREATE                , procs.vdp_video_surface_create);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_DESTROY               , procs.vdp_video_surface_destroy);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR      , procs.vdp_video_surface_put_bits_y_cb_cr);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR      , procs.vdp_video_surface_get_bits_y_cb_cr);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR     , procs.vdp_output_surface_put_bits_y_cb_cr);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE      , procs.vdp_output_surface_put_bits_native);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_CREATE               , procs.vdp_output_surface_create);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY              , procs.vdp_output_surface_destroy);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE      , procs.vdp_output_surface_get_bits_native);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE, procs.vdp_output_surface_render_output_surface);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED     , procs.vdp_output_surface_put_bits_indexed);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_CREATE                  , procs.vdp_video_mixer_create);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES     , procs.vdp_video_mixer_set_feature_enables);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_DESTROY                 , procs.vdp_video_mixer_destroy);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_RENDER                  , procs.vdp_video_mixer_render);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES    , procs.vdp_video_mixer_set_attribute_values);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT , procs.vdp_video_mixer_query_parameter_support);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT   , procs.vdp_video_mixer_query_feature_support);
-  VDP_PROC(VDP_FUNC_ID_DECODER_CREATE                      , procs.vdp_decoder_create);
-  VDP_PROC(VDP_FUNC_ID_DECODER_DESTROY                     , procs.vdp_decoder_destroy);
-  VDP_PROC(VDP_FUNC_ID_DECODER_RENDER                      , procs.vdp_decoder_render);
-  VDP_PROC(VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES          , procs.vdp_decoder_query_caps);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY          , procs.vdp_presentation_queue_target_destroy);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_CREATE                  , procs.vdp_presentation_queue_create);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DESTROY                 , procs.vdp_presentation_queue_destroy);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DISPLAY                 , procs.vdp_presentation_queue_display);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_BLOCK_UNTIL_SURFACE_IDLE, procs.vdp_presentation_queue_block_until_surface_idle);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11       , procs.vdp_presentation_queue_target_create_x11);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS    , procs.vdp_presentation_queue_query_surface_status);
-  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME                , procs.vdp_presentation_queue_get_time);
+  VDP_PROC(VDP_FUNC_ID_GET_ERROR_STRING                    , m_vdpProcs.vdp_get_error_string);
+  VDP_PROC(VDP_FUNC_ID_DEVICE_DESTROY                      , m_vdpProcs.vdp_device_destroy);
+  VDP_PROC(VDP_FUNC_ID_GENERATE_CSC_MATRIX                 , m_vdpProcs.vdp_generate_csc_matrix);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_CREATE                , m_vdpProcs.vdp_video_surface_create);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_DESTROY               , m_vdpProcs.vdp_video_surface_destroy);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR      , m_vdpProcs.vdp_video_surface_put_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR      , m_vdpProcs.vdp_video_surface_get_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR     , m_vdpProcs.vdp_output_surface_put_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE      , m_vdpProcs.vdp_output_surface_put_bits_native);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_CREATE               , m_vdpProcs.vdp_output_surface_create);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY              , m_vdpProcs.vdp_output_surface_destroy);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE      , m_vdpProcs.vdp_output_surface_get_bits_native);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE, m_vdpProcs.vdp_output_surface_render_output_surface);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED     , m_vdpProcs.vdp_output_surface_put_bits_indexed);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_CREATE                  , m_vdpProcs.vdp_video_mixer_create);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES     , m_vdpProcs.vdp_video_mixer_set_feature_enables);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_DESTROY                 , m_vdpProcs.vdp_video_mixer_destroy);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_RENDER                  , m_vdpProcs.vdp_video_mixer_render);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES    , m_vdpProcs.vdp_video_mixer_set_attribute_values);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT , m_vdpProcs.vdp_video_mixer_query_parameter_support);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT   , m_vdpProcs.vdp_video_mixer_query_feature_support);
+  VDP_PROC(VDP_FUNC_ID_DECODER_CREATE                      , m_vdpProcs.vdp_decoder_create);
+  VDP_PROC(VDP_FUNC_ID_DECODER_DESTROY                     , m_vdpProcs.vdp_decoder_destroy);
+  VDP_PROC(VDP_FUNC_ID_DECODER_RENDER                      , m_vdpProcs.vdp_decoder_render);
+  VDP_PROC(VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES          , m_vdpProcs.vdp_decoder_query_caps);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY          , m_vdpProcs.vdp_presentation_queue_target_destroy);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_CREATE                  , m_vdpProcs.vdp_presentation_queue_create);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DESTROY                 , m_vdpProcs.vdp_presentation_queue_destroy);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DISPLAY                 , m_vdpProcs.vdp_presentation_queue_display);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_BLOCK_UNTIL_SURFACE_IDLE, m_vdpProcs.vdp_presentation_queue_block_until_surface_idle);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11       , m_vdpProcs.vdp_presentation_queue_target_create_x11);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS    , m_vdpProcs.vdp_presentation_queue_query_surface_status);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME                , m_vdpProcs.vdp_presentation_queue_get_time);
 
 #undef VDP_PROC
 }
@@ -254,11 +268,69 @@ VdpDevice CVDPAUContext::GetDevice()
 
 void CVDPAUContext::DestroyContext()
 {
-  if (!m_vdp_device_destroy)
+  if (!m_vdpProcs.vdp_device_destroy)
     return;
 
-  m_vdp_device_destroy(m_vdpDevice);
+  m_vdpProcs.vdp_device_destroy(m_vdpDevice);
   m_vdpDevice = VDP_INVALID_HANDLE;
+}
+
+void CVDPAUContext::SpewHardwareAvailable()  //CopyrighVDPAUt (c) 2008 Wladimir J. van der Laan  -- VDPInfo
+{
+  VdpStatus rv;
+  CLog::Log(LOGNOTICE,"VDPAU Decoder capabilities:");
+  CLog::Log(LOGNOTICE,"name          level macbs width height");
+  CLog::Log(LOGNOTICE,"------------------------------------");
+  for(unsigned int x=0; x<decoder_profile_count; ++x)
+  {
+    VdpBool is_supported = false;
+    uint32_t max_level, max_macroblocks, max_width, max_height;
+    rv = m_vdpProcs.vdp_decoder_query_caps(m_vdpDevice, decoder_profiles[x].id,
+                                &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
+    if(rv == VDP_STATUS_OK && is_supported)
+    {
+      CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profiles[x].name,
+                max_level, max_macroblocks, max_width, max_height);
+    }
+  }
+  CLog::Log(LOGNOTICE,"------------------------------------");
+  m_featureCount = 0;
+#define CHECK_SUPPORT(feature)  \
+  do { \
+    VdpBool supported; \
+    if(m_vdpProcs.vdp_video_mixer_query_feature_support(m_vdpDevice, feature, &supported) == VDP_STATUS_OK && supported) { \
+      CLog::Log(LOGNOTICE, "Mixer feature: "#feature);  \
+      m_vdpFeatures[m_featureCount++] = feature; \
+    } \
+  } while(false)
+
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_SHARPNESS);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE);
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9);
+#endif
+#undef CHECK_SUPPORT
+}
+
+bool CVDPAUContext::Supports(VdpVideoMixerFeature feature)
+{
+  for(int i = 0; i < m_featureCount; i++)
+  {
+    if(m_vdpFeatures[i] == feature)
+      return true;
+  }
+  return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -412,7 +484,6 @@ int CVideoSurfaces::Size()
 
 CDecoder::CDecoder() : m_vdpauOutput(&m_inMsgEvent)
 {
-  m_vdpauConfig.vdpDevice = VDP_INVALID_HANDLE;
   m_vdpauConfig.videoSurfaces = &m_videoSurfaces;
 
   m_vdpauConfigured = false;
@@ -438,8 +509,6 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int 
   if (!CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
     return false;
 
-  m_vdpauConfig.context->GetProcs(m_vdpauConfig.vdpProcs);
-  m_vdpauConfig.vdpDevice = m_vdpauConfig.context->GetDevice();
   m_DisplayState = VDPAU_OPEN;
   m_vdpauConfigured = false;
 
@@ -449,8 +518,6 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int 
   m_presentPicture = 0;
 
   {
-    SpewHardwareAvailable();
-
     VdpDecoderProfile profile = 0;
     if(avctx->codec_id == AV_CODEC_ID_H264)
       profile = VDP_DECODER_PROFILE_H264_HIGH;
@@ -465,15 +532,15 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int 
    
       /* attempt to create a decoder with this width/height, some sizes are not supported by hw */
       VdpStatus vdp_st;
-      vdp_st = m_vdpauConfig.vdpProcs.vdp_decoder_create(m_vdpauConfig.vdpDevice, profile, avctx->coded_width, avctx->coded_height, 5, &m_vdpauConfig.vdpDecoder);
+      vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_create(m_vdpauConfig.context->GetDevice(), profile, avctx->coded_width, avctx->coded_height, 5, &m_vdpauConfig.vdpDecoder);
 
       if(vdp_st != VDP_STATUS_OK)
       {
-        CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", m_vdpauConfig.vdpProcs.vdp_get_error_string(vdp_st), vdp_st);
+        CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st);
         return false;
       }
 
-      m_vdpauConfig.vdpProcs.vdp_decoder_destroy(m_vdpauConfig.vdpDecoder);
+      m_vdpauConfig.context->GetProcs().vdp_decoder_destroy(m_vdpauConfig.vdpDecoder);
       CheckStatus(vdp_st, __LINE__);
     }
 
@@ -554,7 +621,7 @@ long CDecoder::Release()
     VdpVideoSurface surf;
     while((surf = m_videoSurfaces.RemoveNext(true)) != VDP_INVALID_HANDLE)
     {
-      m_vdpauConfig.vdpProcs.vdp_video_surface_destroy(surf);
+      m_vdpauConfig.context->GetProcs().vdp_video_surface_destroy(surf);
     }
   }
   return IHardwareDecoder::Release();
@@ -662,8 +729,6 @@ int CDecoder::Check(AVCodecContext* avctx)
 
     if (CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
     {
-      m_vdpauConfig.context->GetProcs(m_vdpauConfig.vdpProcs);
-      m_vdpauConfig.vdpDevice = m_vdpauConfig.context->GetDevice();
       m_DisplayState = VDPAU_OPEN;
       m_vdpauConfigured = false;
     }
@@ -686,12 +751,7 @@ bool CDecoder::IsVDPAUFormat(PixelFormat format)
 
 bool CDecoder::Supports(VdpVideoMixerFeature feature)
 {
-  for(int i = 0; i < m_vdpauConfig.featureCount; i++)
-  {
-    if(m_vdpauConfig.vdpFeatures[i] == feature)
-      return true;
-  }
-  return false;
+  return m_vdpauConfig.context->Supports(feature);
 }
 
 bool CDecoder::Supports(EINTERLACEMETHOD method)
@@ -724,7 +784,8 @@ EINTERLACEMETHOD CDecoder::AutoInterlaceMethod()
 
 void CDecoder::FiniVDPAUOutput()
 {
-  if (m_vdpauConfig.vdpDevice == VDP_INVALID_HANDLE || !m_vdpauConfigured) return;
+  if (!m_vdpauConfigured)
+    return;
 
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
 
@@ -734,7 +795,7 @@ void CDecoder::FiniVDPAUOutput()
 
   VdpStatus vdp_st;
 
-  vdp_st = m_vdpauConfig.vdpProcs.vdp_decoder_destroy(m_vdpauConfig.vdpDecoder);
+  vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_destroy(m_vdpauConfig.vdpDecoder);
   if (CheckStatus(vdp_st, __LINE__))
     return;
   m_vdpauConfig.vdpDecoder = VDP_INVALID_HANDLE;
@@ -744,7 +805,7 @@ void CDecoder::FiniVDPAUOutput()
   VdpVideoSurface surf;
   while((surf = m_videoSurfaces.RemoveNext()) != VDP_INVALID_HANDLE)
   {
-    m_vdpauConfig.vdpProcs.vdp_video_surface_destroy(surf);
+    m_vdpauConfig.context->GetProcs().vdp_video_surface_destroy(surf);
     if (CheckStatus(vdp_st, __LINE__))
       return;
   }
@@ -816,7 +877,7 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   else
     m_vdpauConfig.maxReferences = 2;
 
-  vdp_st = m_vdpauConfig.vdpProcs.vdp_decoder_create(m_vdpauConfig.vdpDevice,
+  vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_create(m_vdpauConfig.context->GetDevice(),
                               vdp_decoder_profile,
                               m_vdpauConfig.surfaceWidth,
                               m_vdpauConfig.surfaceHeight,
@@ -868,55 +929,6 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   return true;
 }
 
-void CDecoder::SpewHardwareAvailable()  //CopyrighVDPAUt (c) 2008 Wladimir J. van der Laan  -- VDPInfo
-{
-  VdpStatus rv;
-  CLog::Log(LOGNOTICE,"VDPAU Decoder capabilities:");
-  CLog::Log(LOGNOTICE,"name          level macbs width height");
-  CLog::Log(LOGNOTICE,"------------------------------------");
-  for(unsigned int x=0; x<decoder_profile_count; ++x)
-  {
-    VdpBool is_supported = false;
-    uint32_t max_level, max_macroblocks, max_width, max_height;
-    rv = m_vdpauConfig.vdpProcs.vdp_decoder_query_caps(m_vdpauConfig.vdpDevice, decoder_profiles[x].id,
-                                &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
-    if(rv == VDP_STATUS_OK && is_supported)
-    {
-      CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profiles[x].name,
-                max_level, max_macroblocks, max_width, max_height);
-    }
-  }
-  CLog::Log(LOGNOTICE,"------------------------------------");
-  m_vdpauConfig.featureCount = 0;
-#define CHECK_SUPPORT(feature)  \
-  do { \
-    VdpBool supported; \
-    if(m_vdpauConfig.vdpProcs.vdp_video_mixer_query_feature_support(m_vdpauConfig.vdpDevice, feature, &supported) == VDP_STATUS_OK && supported) { \
-      CLog::Log(LOGNOTICE, "Mixer feature: "#feature);  \
-      m_vdpauConfig.vdpFeatures[m_vdpauConfig.featureCount++] = feature; \
-    } \
-  } while(false)
-
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_SHARPNESS);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE);
-#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8);
-  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9);
-#endif
-#undef CHECK_SUPPORT
-
-}
-
 int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
@@ -942,7 +954,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     VdpDecoderProfile profile;
     ReadFormatOf(avctx->codec_id, profile, vdp->m_vdpauConfig.vdpChromaType);
 
-    vdp_st = vdp->m_vdpauConfig.vdpProcs.vdp_video_surface_create(vdp->m_vdpauConfig.vdpDevice,
+    vdp_st = vdp->m_vdpauConfig.context->GetProcs().vdp_video_surface_create(vdp->m_vdpauConfig.context->GetDevice(),
                                          vdp->m_vdpauConfig.vdpChromaType,
                                          avctx->coded_width,
                                          avctx->coded_height,
@@ -1040,7 +1052,7 @@ void CDecoder::FFDrawSlice(struct AVCodecContext *s,
   uint64_t startTime = CurrentHostCounter();
   uint16_t decoded, processed, rend;
   vdp->m_bufferStats.Get(decoded, processed, rend);
-  vdp_st = vdp->m_vdpauConfig.vdpProcs.vdp_decoder_render(vdp->m_vdpauConfig.vdpDecoder,
+  vdp_st = vdp->m_vdpauConfig.context->GetProcs().vdp_decoder_render(vdp->m_vdpauConfig.vdpDecoder,
                                    surf,
                                    (VdpPictureInfo const *)&(vdp->m_hwContext.info),
                                    vdp->m_hwContext.bitstream_buffers_used,
@@ -1229,7 +1241,7 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
 {
   if (vdp_st != VDP_STATUS_OK)
   {
-    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_vdpauConfig.vdpProcs.vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
 
     if(m_DisplayState == VDPAU_OPEN)
     {
@@ -1683,9 +1695,9 @@ void CMixer::CreateVdpauMixer()
     &m_config.vdpChromaType};
 
   VdpStatus vdp_st = VDP_STATUS_ERROR;
-  vdp_st = m_config.vdpProcs.vdp_video_mixer_create(m_config.vdpDevice,
-                                m_config.featureCount,
-                                m_config.vdpFeatures,
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_create(m_config.context->GetDevice(),
+                                m_config.context->GetFeatureCount(),
+                                m_config.context->GetFeatures(),
                                 ARSIZE(parameters),
                                 parameters,
                                 parameter_values,
@@ -1772,7 +1784,7 @@ void CMixer::PostProcOff()
                                      VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE};
 
   VdpBool enabled[]={0,0,0};
-  vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
 
   if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION))
@@ -1780,7 +1792,7 @@ void CMixer::PostProcOff()
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION};
 
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
@@ -1789,7 +1801,7 @@ void CMixer::PostProcOff()
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_SHARPNESS};
 
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
@@ -1901,13 +1913,13 @@ void CMixer::SetColor()
     float studioCSC[3][4];
     GenerateStudioCSCMatrix(colorStandard, studioCSC);
     void const * pm_CSCMatix[] = { &studioCSC };
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
   }
   else
   {
-    vdp_st = m_config.vdpProcs.vdp_generate_csc_matrix(&m_Procamp, colorStandard, &m_CSCMatrix);
+    vdp_st = m_config.context->GetProcs().vdp_generate_csc_matrix(&m_Procamp, colorStandard, &m_CSCMatrix);
     void const * pm_CSCMatix[] = { &m_CSCMatrix };
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
   }
 
   CheckStatus(vdp_st, __LINE__);
@@ -1925,16 +1937,16 @@ void CMixer::SetNoiseReduction()
   if (!CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction)
   {
     VdpBool enabled[]= {0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
     return;
   }
   VdpBool enabled[]={1};
-  vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
   void* nr[] = { &CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction };
   CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f",CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction);
-  vdp_st = m_config.vdpProcs.vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, nr);
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, nr);
   CheckStatus(vdp_st, __LINE__);
 }
 
@@ -1950,16 +1962,16 @@ void CMixer::SetSharpness()
   if (!CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness)
   {
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
     return;
   }
   VdpBool enabled[]={1};
-  vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
   void* sh[] = { &CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness };
   CLog::Log(LOGNOTICE,"Setting Sharpness to %f",CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness);
-  vdp_st = m_config.vdpProcs.vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, sh);
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, sh);
   CheckStatus(vdp_st, __LINE__);
 }
 
@@ -2009,7 +2021,7 @@ void CMixer::SetDeinterlacing()
   if (mode == VS_DEINTERLACEMODE_OFF)
   {
     VdpBool enabled[] = {0,0,0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
   }
   else
   {
@@ -2018,7 +2030,7 @@ void CMixer::SetDeinterlacing()
       VdpBool enabled[] = {1,0,0};
       if (g_advancedSettings.m_videoVDPAUtelecine)
         enabled[2] = 1;
-      vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     }
     else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
          ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
@@ -2026,7 +2038,7 @@ void CMixer::SetDeinterlacing()
       VdpBool enabled[] = {1,0,0};
       if (g_advancedSettings.m_videoVDPAUtelecine)
         enabled[2] = 1;
-      vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     }
     else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
          ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
@@ -2034,12 +2046,12 @@ void CMixer::SetDeinterlacing()
       VdpBool enabled[] = {1,1,0};
       if (g_advancedSettings.m_videoVDPAUtelecine)
         enabled[2] = 1;
-      vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     }
     else
     {
       VdpBool enabled[]={0,0,0};
-      vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     }
   }
   CheckStatus(vdp_st, __LINE__);
@@ -2061,7 +2073,7 @@ void CMixer::SetDeintSkipChroma()
     val = 0;
 
   void const *values[]={&val};
-  vdp_st = m_config.vdpProcs.vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attribute), attribute, values);
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attribute), attribute, values);
 
   CheckStatus(vdp_st, __LINE__);
 }
@@ -2078,63 +2090,63 @@ void CMixer::SetHWUpscaling()
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9 };
-          vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
     case 8:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8 };
-          vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
     case 7:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7 };
-          vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
     case 6:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6 };
-          vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
     case 5:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5 };
-          vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
     case 4:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4 };
-          vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
     case 3:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3 };
-          vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
     case 2:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2 };
-          vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
     case 1:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
        {
           VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
-          vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
     default:
@@ -2156,7 +2168,7 @@ void CMixer::DisableHQScaling()
   {
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
@@ -2164,7 +2176,7 @@ void CMixer::DisableHQScaling()
   {
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2 };
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
@@ -2172,7 +2184,7 @@ void CMixer::DisableHQScaling()
   {
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3 };
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
@@ -2180,7 +2192,7 @@ void CMixer::DisableHQScaling()
   {
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4 };
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
@@ -2188,7 +2200,7 @@ void CMixer::DisableHQScaling()
   {
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5 };
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
@@ -2196,7 +2208,7 @@ void CMixer::DisableHQScaling()
   {
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6 };
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
@@ -2204,7 +2216,7 @@ void CMixer::DisableHQScaling()
   {
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7 };
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
@@ -2212,7 +2224,7 @@ void CMixer::DisableHQScaling()
   {
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8 };
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
@@ -2220,7 +2232,7 @@ void CMixer::DisableHQScaling()
   {
     VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9 };
     VdpBool enabled[]={0};
-    vdp_st = m_config.vdpProcs.vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 }
@@ -2251,7 +2263,7 @@ void CMixer::Uninit()
   {
     m_outputSurfaces.pop();
   }
-  m_config.vdpProcs.vdp_video_mixer_destroy(m_videoMixer);
+  m_config.context->GetProcs().vdp_video_mixer_destroy(m_videoMixer);
 
   delete [] m_BlackBar;
 }
@@ -2508,7 +2520,7 @@ void CMixer::ProcessPicture()
   destRect.y1 = m_config.outHeight;
 
   // start vdpau video mixer
-  vdp_st = m_config.vdpProcs.vdp_video_mixer_render(m_videoMixer,
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_render(m_videoMixer,
                                 VDP_INVALID_HANDLE,
                                 0,
                                 m_mixerfield,
@@ -2536,7 +2548,7 @@ void CMixer::ProcessPicture()
     clipRect.y1 = clipRect.y0 + 2;
     uint32_t *data[] = {m_BlackBar};
     uint32_t pitches[] = {destRect.x1};
-    vdp_st = m_config.vdpProcs.vdp_output_surface_put_bits_native(m_processPicture.outputSurface,
+    vdp_st = m_config.context->GetProcs().vdp_output_surface_put_bits_native(m_processPicture.outputSurface,
                                             (void**)data,
                                             pitches,
                                             &clipRect);
@@ -2544,7 +2556,7 @@ void CMixer::ProcessPicture()
 
     clipRect = destRect;
     clipRect.y0 = clipRect.y1 - 2;
-    vdp_st = m_config.vdpProcs.vdp_output_surface_put_bits_native(m_processPicture.outputSurface,
+    vdp_st = m_config.context->GetProcs().vdp_output_surface_put_bits_native(m_processPicture.outputSurface,
                                             (void**)data,
                                             pitches,
                                             &clipRect);
@@ -2557,7 +2569,7 @@ bool CMixer::CheckStatus(VdpStatus vdp_st, int line)
 {
   if (vdp_st != VDP_STATUS_OK)
   {
-    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_config.vdpProcs.vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_config.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
     m_vdpError = true;
     return true;
   }
@@ -3086,7 +3098,7 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
       pixmap->DVDPic = pic.DVDPic;
       pixmap->id = i;
       m_bufferPool.notVisiblePixmaps.push_back(i);
-      m_config.vdpProcs.vdp_presentation_queue_display(pixmap->vdp_flip_queue,
+      m_config.context->GetProcs().vdp_presentation_queue_display(pixmap->vdp_flip_queue,
                                                        pixmap->surface,0,0,0);
     }
     if (!m_bufferPool.notVisiblePixmaps.empty() && !m_bufferPool.freeRenderPics.empty())
@@ -3096,7 +3108,7 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
       VdpPresentationQueueStatus status;
       int idx = m_bufferPool.notVisiblePixmaps.front();
       VdpauBufferPool::Pixmaps *pixmap = &m_bufferPool.pixmaps[idx];
-      vdp_st = m_config.vdpProcs.vdp_presentation_queue_query_surface_status(
+      vdp_st = m_config.context->GetProcs().vdp_presentation_queue_query_surface_status(
                         pixmap->vdp_flip_queue, pixmap->surface, &status, &time);
 
       if (vdp_st == VDP_STATUS_OK && status == VDP_PRESENTATION_QUEUE_STATUS_VISIBLE)
@@ -3299,7 +3311,7 @@ bool COutput::EnsureBufferPool()
   VdpOutputSurface outputSurface;
   for (int i = m_bufferPool.outputSurfaces.size(); i < m_bufferPool.numOutputSurfaces; i++)
   {
-    vdp_st = m_config.vdpProcs.vdp_output_surface_create(m_config.vdpDevice,
+    vdp_st = m_config.context->GetProcs().vdp_output_surface_create(m_config.context->GetDevice(),
                                       VDP_RGBA_FORMAT_B8G8R8A8,
                                       m_config.outWidth,
                                       m_config.outHeight,
@@ -3328,13 +3340,13 @@ bool COutput::EnsureBufferPool()
       pixmap.vdp_flip_target = VDP_INVALID_HANDLE;
       MakePixmap(pixmap);
       glXMakeCurrent(m_Display, None, NULL);
-      vdp_st = m_config.vdpProcs.vdp_presentation_queue_target_create_x11(m_config.vdpDevice,
+      vdp_st = m_config.context->GetProcs().vdp_presentation_queue_target_create_x11(m_config.context->GetDevice(),
                                              pixmap.pixmap, //x_window,
                                              &pixmap.vdp_flip_target);
 
       CheckStatus(vdp_st, __LINE__);
 
-      vdp_st = m_config.vdpProcs.vdp_presentation_queue_create(m_config.vdpDevice,
+      vdp_st = m_config.context->GetProcs().vdp_presentation_queue_create(m_config.context->GetDevice(),
                                             pixmap.vdp_flip_target,
                                             &pixmap.vdp_flip_queue);
       CheckStatus(vdp_st, __LINE__);
@@ -3362,12 +3374,12 @@ void COutput::ReleaseBufferPool()
     {
       if (m_bufferPool.pixmaps[i].vdp_flip_queue != VDP_INVALID_HANDLE)
       {
-        vdp_st = m_config.vdpProcs.vdp_presentation_queue_destroy(m_bufferPool.pixmaps[i].vdp_flip_queue);
+        vdp_st = m_config.context->GetProcs().vdp_presentation_queue_destroy(m_bufferPool.pixmaps[i].vdp_flip_queue);
         CheckStatus(vdp_st, __LINE__);
       }
       if (m_bufferPool.pixmaps[i].vdp_flip_target != VDP_INVALID_HANDLE)
       {
-        vdp_st = m_config.vdpProcs.vdp_presentation_queue_target_destroy(m_bufferPool.pixmaps[i].vdp_flip_target);
+        vdp_st = m_config.context->GetProcs().vdp_presentation_queue_target_destroy(m_bufferPool.pixmaps[i].vdp_flip_target);
         CheckStatus(vdp_st, __LINE__);
       }
       if (m_bufferPool.pixmaps[i].glPixmap)
@@ -3387,7 +3399,7 @@ void COutput::ReleaseBufferPool()
   {
     if (m_bufferPool.outputSurfaces[i] == VDP_INVALID_HANDLE)
       continue;
-    vdp_st = m_config.vdpProcs.vdp_output_surface_destroy(m_bufferPool.outputSurfaces[i]);
+    vdp_st = m_config.context->GetProcs().vdp_output_surface_destroy(m_bufferPool.outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
   }
   m_bufferPool.outputSurfaces.clear();
@@ -3476,7 +3488,7 @@ void COutput::PreCleanup()
     m_bufferPool.glOutputSurfaceMap.erase(it_map);
 #endif
 
-    vdp_st = m_config.vdpProcs.vdp_output_surface_destroy(m_bufferPool.outputSurfaces[i]);
+    vdp_st = m_config.context->GetProcs().vdp_output_surface_destroy(m_bufferPool.outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
 
     m_bufferPool.outputSurfaces[i] = VDP_INVALID_HANDLE;
@@ -3635,7 +3647,7 @@ bool COutput::GLInit()
   if (!m_config.usePixmaps)
   {
     while (glGetError() != GL_NO_ERROR);
-    glVDPAUInitNV(reinterpret_cast<void*>(m_config.vdpDevice), reinterpret_cast<void*>(m_config.vdpProcs.vdp_get_proc_address));
+    glVDPAUInitNV(reinterpret_cast<void*>(m_config.context->GetDevice()), reinterpret_cast<void*>(m_config.context->GetProcs().vdp_get_proc_address));
     if (glGetError() != GL_NO_ERROR)
     {
       CLog::Log(LOGERROR, "VDPAU::COutput - GLInitInterop glVDPAUInitNV failed");
@@ -3833,7 +3845,7 @@ bool COutput::CheckStatus(VdpStatus vdp_st, int line)
 {
   if (vdp_st != VDP_STATUS_OK)
   {
-    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_config.vdpProcs.vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_config.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
     m_vdpError = true;
     return true;
   }
