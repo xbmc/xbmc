@@ -476,7 +476,7 @@ CStdString CWIN32Util::GetProfilePath()
 CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
 {
   CStdString strRetPath(strPath);
-  if(strRetPath.Left(2).Equals("\\\\"))
+  if(StringUtils::StartsWith(strRetPath, "\\\\"))
   {
     strRetPath = "smb:" + strPath;
     strRetPath.Replace("\\","/");
@@ -487,7 +487,7 @@ CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
 CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
 {
   CStdString strRetPath(strPath);
-  if(strRetPath.Left(6).Equals("smb://"))
+  if(StringUtils::StartsWithNoCase(strRetPath, "smb://"))
   {
     strRetPath.Replace("smb://","\\\\");
     strRetPath.Replace("/","\\");

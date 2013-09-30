@@ -110,7 +110,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
       g_charsetConverter.wToUTF8(wConverted, strLinkTemp);
 
-      if (strNameTemp.Right(3).Equals("..>") && 
+      if (StringUtils::EndsWith(strNameTemp, "..>") && 
           strLinkTemp.Left(strNameTemp.GetLength()-3).Equals(strNameTemp.Left(strNameTemp.GetLength()-3)))
         strName = strNameTemp = strLinkTemp;
 

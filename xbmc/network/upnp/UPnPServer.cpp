@@ -1207,7 +1207,7 @@ CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
 
     SortDescription sorting;
     /* Platinum guarantees 1st char is - or + */
-    sorting.sortOrder = itr->Left(1).Equals("+") ? SortOrderAscending : SortOrderDescending;
+    sorting.sortOrder = StringUtils::StartsWith(*itr, "+") ? SortOrderAscending : SortOrderDescending;
 
     /* resource specific */
     if (method.Equals("res@duration"))

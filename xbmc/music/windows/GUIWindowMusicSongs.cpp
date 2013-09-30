@@ -40,6 +40,7 @@
 #include "Autorun.h"
 #include "cdrip/CDDARipper.h"
 #include "cores/IPlayer.h"
+#include "utils/StringUtils.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -324,7 +325,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         if (item->IsAudio())
           buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
         else if (!item->IsParentFolder() &&
-                 !item->GetPath().Left(3).Equals("new") && item->m_bIsFolder)
+                 !StringUtils::StartsWithNoCase(item->GetPath(), "new") && item->m_bIsFolder)
         {
 #if 0
           if (m_musicdatabase.GetAlbumIdByPath(item->GetPath()) > -1)
@@ -368,7 +369,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
              !item->GetPath().Equals("add") && !item->IsParentFolder() &&
              !item->IsPlugin()                                         &&
-             !item->GetPath().Left(9).Equals("addons://")              &&
+             !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
             (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       buttons.Add(CONTEXT_BUTTON_SCAN, 13352);

@@ -497,11 +497,11 @@ void CGUIWindowVideoNav::UpdateButtons()
     {
       CFileItemPtr pItem = m_vecItems->Get(i);
       if (pItem->IsParentFolder()) iItems--;
-      if (pItem->GetPath().Left(4).Equals("/-1/")) iItems--;
+      if (StringUtils::StartsWith(pItem->GetPath(), "/-1/")) iItems--;
     }
     // or the last item
     if (m_vecItems->Size() > 2 &&
-      m_vecItems->Get(m_vecItems->Size()-1)->GetPath().Left(4).Equals("/-1/"))
+      StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
   CStdString items;
@@ -671,7 +671,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     if (!pItem->GetPath().Equals("newsmartplaylist://video") &&
         !pItem->GetPath().Equals("special://videoplaylists/") &&
         !pItem->GetPath().Equals("sources://video/") &&
-        !pItem->GetPath().Left(9).Equals("newtag://"))
+        !StringUtils::StartsWithNoCase(pItem->GetPath(), "newtag://"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
   else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "videodb://movies/sets/") &&
@@ -734,7 +734,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     if (URIUtils::GetFileName(strDeletePath).Equals("VIDEO_TS.IFO"))
     {
       strDeletePath = URIUtils::GetDirectory(strDeletePath);
-      if (strDeletePath.Right(9).Equals("VIDEO_TS/"))
+      if (StringUtils::EndsWithNoCase(strDeletePath, "video_ts/"))
       {
         URIUtils::RemoveSlashAtEnd(strDeletePath);
         strDeletePath = URIUtils::GetDirectory(strDeletePath);
@@ -1437,7 +1437,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     m_viewControl.SetSelectedItem(iItem);
     return true;
   }
-  else if (item->GetPath().Left(9).Equals("newtag://"))
+  else if (StringUtils::StartsWithNoCase(item->GetPath(), "newtag://"))
   {
     // dont allow update while scanning
     if (g_application.IsVideoScanning())

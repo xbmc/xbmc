@@ -1203,7 +1203,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
 
-        if (!m_vecItems->GetPath().IsEmpty() && !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->GetPath().Left(9).Equals("newtag://")
+        if (!m_vecItems->GetPath().IsEmpty() && !StringUtils::StartsWithNoCase(item->GetPath(), "newsmartplaylist://") && !StringUtils::StartsWithNoCase(item->GetPath(), "newtag://")
             && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist

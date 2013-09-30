@@ -23,6 +23,7 @@
 
 #include "WinSystemX11GL.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 CWinSystemX11GL::CWinSystemX11GL()
 {
@@ -138,7 +139,7 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
     return;
 
   bool vendor_nvidia = strVendor.find("nvidia") != std::string::npos;
-  bool vendor_ati    = strVendor.compare(0, 3, "ati") == 0;
+  bool vendor_ati    = StringUtils::StartsWith(strVendor, "ati");
 
   if (m_glXSwapIntervalMESA && !m_iVSyncMode && vendor_ati)
   {

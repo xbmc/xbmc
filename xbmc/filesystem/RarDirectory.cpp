@@ -24,6 +24,7 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "utils/StringUtils.h"
 
 namespace XFILE
 {
@@ -40,7 +41,7 @@ namespace XFILE
     CStdString strPath;
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
-    if( !strPathOrig.Left(6).Equals("rar://") )
+    if( !StringUtils::StartsWithNoCase(strPathOrig, "rar://") )
       URIUtils::CreateArchivePath(strPath, "rar", strPathOrig, "");
     else
       strPath = strPathOrig;

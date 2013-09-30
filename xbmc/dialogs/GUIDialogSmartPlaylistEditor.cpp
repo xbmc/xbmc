@@ -576,7 +576,7 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path, const C
   bool loaded(playlist.Load(path));
   if (!loaded)
   { // failed to load
-    if (!editor->m_mode.Left(5).Equals("party"))
+    if (!StringUtils::StartsWithNoCase(editor->m_mode, "party"))
       return false; // only edit normal playlists that exist
     // party mode playlists can be editted even if they don't exist
     playlist.SetType(editor->m_mode == "partymusic" ? "songs" : "musicvideos");
