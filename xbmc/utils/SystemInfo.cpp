@@ -448,27 +448,49 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
   return m_WinVer;
 }
 
-bool CSysInfo::IsOS64bit()
+int CSysInfo::GetKernelBitness(void)
 {
 #ifdef TARGET_WINDOWS
   SYSTEM_INFO si;
   GetSystemInfo(&si);
   if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
-    return true;
+    return 64;
   
   BOOL (WINAPI *ptrIsWow64) (HANDLE, PBOOL);
   HMODULE hKernel32 = GetModuleHandleA("kernel32");
   if (hKernel32 == NULL)
-    return false; // Can't detect OS
+    return 0; // Can't detect OS
   ptrIsWow64 = (BOOL (WINAPI *) (HANDLE, PBOOL)) GetProcAddress(hKernel32, "IsWow64Process");
   BOOL wow64proc = FALSE;
   if (ptrIsWow64 == NULL || ptrIsWow64(GetCurrentProcess(), &wow64proc) == FALSE)
-    return false; // Can't detect OS
-  return wow64proc != FALSE;
-#else // TARGET_WINDOWS
-  // TODO: Implement Linux, FreeBSD, Android, OSX
-  return false;
-#endif // TARGET_WINDOWS
+    return 0; // Can't detect OS
+  return (wow64proc == FALSE) ? 32 : 64;
+#elif defined(TARGET_POSIX)
+  struct utsname un;
+  if (uname(&un) == 0)
+  {
+    std::string machine(un.machine);
+    if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" || machine == "ppc64" || machine == "ia64")
+      return 64;
+    return 32;
+  }
+  return 0; // can't detect
+#else
+  return 0; // unknown
+#endif
+}
+
+int CSysInfo::GetXbmcBitness(void)
+{
+#if defined (__aarch64__) || defined(__arm64__) || defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64) || defined(__ppc64__)
+  return 64;
+#elif defined(__thumb__) || defined(_M_ARMT) || defined(__arm__) || defined(_M_ARM) || defined(__mips__) || defined(mips) || defined(__mips) || defined(i386) || \
+  defined(__i386) || defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86) || defined(_X86_) || defined(__powerpc) || \
+  defined(__powerpc__) || defined(__ppc__) || defined(_M_PPC)
+  return 32;
+#else
+  return 0; // Unknown
+#endif
 }
 
 CStdString CSysInfo::GetKernelVersion()
@@ -502,7 +524,7 @@ CStdString CSysInfo::GetKernelVersion()
         strKernel.append(" Storage Server 2003");
       else if (osvi.wSuiteMask & VER_SUITE_WH_SERVER)
         strKernel.append(" Home Server");
-      else if (osvi.wProductType == VER_NT_WORKSTATION && IsOS64bit())
+      else if (osvi.wProductType == VER_NT_WORKSTATION && GetKernelBitness() == 64)
         strKernel.append(" XP Professional");
       else if (osvi.wProductType != VER_NT_WORKSTATION)
         strKernel.append(" Server 2003");
@@ -547,20 +569,14 @@ CStdString CSysInfo::GetKernelVersion()
       }
     }
 
-    if (IsOS64bit())
-      strKernel.append(" 64-bit");
-    else
-      strKernel.append(" 32-bit");
+    strKernel.append(StringUtils::Format(" %d-bit", GetKernelBitness()));
 
     strKernel.append(StringUtils::Format(", build %d", osvi.dwBuildNumber));
   }
   else
   {
     strKernel.append(" unknown");
-    if (IsOS64bit())
-      strKernel.append(" 64-bit");
-    else
-      strKernel.append(" 32-bit");
+    strKernel.append(StringUtils::Format(" %d-bit", GetKernelBitness()));
   }
 
   return strKernel;
@@ -885,6 +901,24 @@ std::string CSysInfo::GetBuildTargetPlatformVersion(void)
   return "version " XSTR_MACRO(NTDDI_VERSION);
 #else
   return "(unknown platform)";
+#endif
+}
+
+std::string CSysInfo::GetBuildTargetCpuFamily(void)
+{
+#if defined(__thumb__) || defined(_M_ARMT) 
+  return "ARM (Thumb)";
+#elif defined(__arm__) || defined(_M_ARM) || defined (__aarch64__)
+  return "ARM";
+#elif defined(__mips__) || defined(mips) || defined(__mips)
+  return "MIPS";
+#elif defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64) || \
+   defined(i386) || defined(__i386) || defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86) || defined(_X86_)
+  return "x86";
+#elif defined(__powerpc) || defined(__powerpc__) || defined(__powerpc64__) || defined(__ppc__) || defined(__ppc64__) || defined(_M_PPC)
+  return "PowerPC";
+#else
+  return "unknown CPU family";
 #endif
 }
 
