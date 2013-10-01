@@ -175,7 +175,7 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
     const char* attrId=pChild->Attribute("id");
     if (attrId && !pChild->NoChildren())
     {
-      int id = atoi(attrId) + offset;
+      uint32_t id = atoi(attrId) + offset;
       if (m_strings.find(id) == m_strings.end())
         m_strings[id].strTranslated = ToUTF8(encoding, pChild->FirstChild()->Value());
     }
@@ -258,44 +258,4 @@ void CLocalizeStrings::Clear(uint32_t start, uint32_t end)
     else
       ++it;
   }
-}
-
-uint32_t CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &path, const CStdString &language)
-{
-  iBlocks it = m_blocks.find(id);
-  if (it != m_blocks.end())
-    return it->second;  // already loaded
-
-  // grab a new block
-  uint32_t offset = block_start + m_blocks.size()*block_size;
-  m_blocks.insert(make_pair(id, offset));
-
-  // load the strings
-  CStdString encoding;
-  bool success = LoadStr2Mem(path, language, encoding, offset);
-  if (!success)
-  {
-    if (language.Equals(SOURCE_LANGUAGE)) // no fallback, nothing to do
-      return 0;
-  }
-
-  // load the fallback
-  if (!language.Equals(SOURCE_LANGUAGE))
-    success |= LoadStr2Mem(path, SOURCE_LANGUAGE, encoding, offset);
-
-  return success ? offset : 0;
-}
-
-void CLocalizeStrings::ClearBlock(const CStdString &id)
-{
-  iBlocks it = m_blocks.find(id);
-  if (it == m_blocks.end())
-  {
-    CLog::Log(LOGERROR, "%s: Trying to clear non existent block %s", __FUNCTION__, id.c_str());
-    return; // doesn't exist
-  }
-
-  // clear our block
-  Clear(it->second, it->second + block_size);
-  m_blocks.erase(it);
 }

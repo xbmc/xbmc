@@ -1431,9 +1431,6 @@ void CGUIAddonWindow::AllocResources(bool forceLoad /*= FALSE */)
 
 void CGUIAddonWindow::FreeResources(bool forceUnLoad /*= FALSE */)
 {
-  // Unload temporary language strings
-  ClearAddonStrings();
-
   CGUIMediaWindow::FreeResources(forceUnLoad);
 }
 
@@ -1517,12 +1514,6 @@ void CGUIAddonWindow::WaitForActionEvent(unsigned int timeout)
 void CGUIAddonWindow::PulseActionEvent()
 {
   m_actionEvent.Set();
-}
-
-void CGUIAddonWindow::ClearAddonStrings()
-{
-  // Unload temporary language strings
-  g_localizeStrings.ClearBlock(m_addon->Path());
 }
 
 bool CGUIAddonWindow::OnClick(int iItem)

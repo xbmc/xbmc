@@ -146,7 +146,6 @@ public:
 protected:
   virtual void     Update();
   virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);
-  void             ClearAddonStrings();
   void             SetupShares();
 
   bool (*CBOnInit)(GUIHANDLE cbhdl);
