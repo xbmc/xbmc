@@ -186,13 +186,17 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #endif
 
   CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
-#if !defined(HAS_LIBAMCODEC)
-  // dvd's have weird still-frames in it, which is not fully supported in ffmpeg
-  if(hint.stills && (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_MPEG1VIDEO))
-  {
-    if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
-  }
+#if defined(HAS_LIBAMCODEC)
+  // amcodec can handle dvd playback.
+  if (!CSettings::Get().GetBool("videoplayer.useamcodec"))
 #endif
+  {
+    // dvd's have weird still-frames in it, which is not fully supported in ffmpeg
+    if(hint.stills && (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_MPEG1VIDEO))
+    {
+      if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
+    }
+  }
 
 #if defined(TARGET_DARWIN_OSX)
   if (!hint.software && CSettings::Get().GetBool("videoplayer.usevda"))
@@ -248,7 +252,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #endif
 
 #if defined(HAS_LIBAMCODEC)
-  if (!hint.software && aml_present())
+  if (!hint.software && CSettings::Get().GetBool("videoplayer.useamcodec"))
   {
     CLog::Log(LOGINFO, "Amlogic Video Decoder...");
     if ( (pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options)) ) return pCodec;

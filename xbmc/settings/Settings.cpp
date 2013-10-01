@@ -83,6 +83,10 @@
 #include "view/ViewStateSettings.h"
 #include "windowing/WindowingFactory.h"
 
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
+#endif
+
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 #define SETTINGS_XML_ROOT   "settings"
 
@@ -759,6 +763,10 @@ void CSettings::InitializeConditions()
   m_settingsManager->AddCondition("have_videotoolboxdecoder");
   if (g_sysinfo.HasVideoToolBoxDecoder())
     m_settingsManager->AddCondition("hasvideotoolboxdecoder");
+#endif
+#ifdef HAS_LIBAMCODEC
+  if (aml_present())
+    m_settingsManager->AddCondition("have_amcodec");
 #endif
 #ifdef HAS_LIBSTAGEFRIGHT
   m_settingsManager->AddCondition("have_libstagefrightdecoder");
