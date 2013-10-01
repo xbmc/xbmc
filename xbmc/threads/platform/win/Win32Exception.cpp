@@ -25,6 +25,7 @@
 #include "WIN32Util.h"
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
+#include "utils/URIUtils.h"
 
 #define LOG if(logger) logger->Log
 
@@ -125,7 +126,7 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
                       stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
                       stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
 
-  dumpFileName = StringUtils::Format("%s\%s", CWIN32Util::SmbToUnc(CWIN32Util::GetProfilePath()).c_str(), CUtil::MakeLegalFileName(dumpFileName).c_str());
+  dumpFileName = CWIN32Util::SmbToUnc(URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), CUtil::MakeLegalFileName(dumpFileName)));
 
   g_charsetConverter.utf8ToW(dumpFileName, dumpFileNameW, false);
   HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
@@ -225,7 +226,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
                                       stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
                                       stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
 
-  dumpFileName = StringUtils::Format("%s\%s", CWIN32Util::SmbToUnc(CWIN32Util::GetProfilePath()).c_str(), CUtil::MakeLegalFileName(dumpFileName).c_str());
+  dumpFileName = CWIN32Util::SmbToUnc(URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), CUtil::MakeLegalFileName(dumpFileName)));
 
   g_charsetConverter.utf8ToW(dumpFileName, dumpFileNameW, false);
   HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
