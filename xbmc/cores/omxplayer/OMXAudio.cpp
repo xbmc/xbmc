@@ -850,19 +850,12 @@ void COMXAudio::Flush()
     return;
 
   m_omx_decoder.FlushAll();
-  m_omx_tunnel_decoder.Flush();
 
   if ( m_omx_mixer.IsInitialized() )
     m_omx_mixer.FlushAll();
-  if( m_omx_tunnel_mixer.IsInitialized() )
-    m_omx_tunnel_mixer.Flush();
 
   if ( m_omx_splitter.IsInitialized() )
     m_omx_splitter.FlushAll();
-  if ( m_omx_tunnel_splitter_analog.IsInitialized() )
-    m_omx_tunnel_splitter_analog.Flush();
-  if ( m_omx_tunnel_splitter_hdmi.IsInitialized() )
-    m_omx_tunnel_splitter_hdmi.Flush();
 
   if ( m_omx_render_analog.IsInitialized() )
     m_omx_render_analog.FlushAll();
