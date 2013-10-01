@@ -105,8 +105,6 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL void     GetContextButtons(int itemNumber, CContextButtons &buttons);
       SWIGHIDDENVIRTUAL bool     Update(const String &strPath);
 
-      unsigned int     LoadScriptStrings();
-      void             ClearScriptStrings();
       void             SetupShares();
       String       m_scriptPath;
       String       m_mediaDir;

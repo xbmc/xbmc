@@ -421,8 +421,6 @@ namespace XBMCAddon
     void WindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
     {
       TRACE;
-      // Unload temporary language strings
-      ClearScriptStrings();
 
       ref(window)->FreeResources(forceUnLoad);
     }
@@ -467,8 +465,6 @@ namespace XBMCAddon
         CLog::Log(LOGERROR, "%s: Unable to load skin file %s", __FUNCTION__, strPath.c_str());
         return false;
       }
-      // load the strings in
-      unsigned int offset = LoadScriptStrings();
 
       CStdString xml;
       char *buffer = new char[(unsigned int)file.GetLength()+1];
@@ -479,22 +475,6 @@ namespace XBMCAddon
       {
         buffer[size] = 0;
         xml = buffer;
-        if (offset)
-        {
-          // replace the occurences of SCRIPT### with offset+###
-          // not particularly efficient, but it works
-          int pos = xml.Find("SCRIPT");
-          while (pos != (int)CStdString::npos)
-          {
-            CStdString num = xml.Mid(pos + 6, 4);
-            int number = atol(num.c_str());
-            CStdString oldNumber, newNumber;
-            oldNumber.Format("SCRIPT%d", number);
-            newNumber.Format("%lu", offset + number);
-            xml.Replace(oldNumber, newNumber);
-            pos = xml.Find("SCRIPT", pos + 6);
-          }
-        }
       }
       delete[] buffer;
 
@@ -505,25 +485,6 @@ namespace XBMCAddon
         return false;
 
       return interceptor->Load(xmlDoc.RootElement());
-    }
-
-    unsigned int WindowXML::LoadScriptStrings()
-    {
-      TRACE;
-      // Path where the language strings reside
-      CStdString pathToLanguageFile = URIUtils::AddFileToFolder(m_scriptPath, "resources");
-      pathToLanguageFile = URIUtils::AddFileToFolder(pathToLanguageFile, "language");
-      URIUtils::AddSlashAtEnd(pathToLanguageFile);
-
-      // allocate a bunch of strings
-      return g_localizeStrings.LoadBlock(m_scriptPath, pathToLanguageFile, CSettings::Get().GetString("locale.language"));
-    }
-
-    void WindowXML::ClearScriptStrings()
-    {
-      TRACE;
-      // Unload temporary language strings
-      g_localizeStrings.ClearBlock(m_scriptPath);
     }
 
     void WindowXML::SetupShares()
