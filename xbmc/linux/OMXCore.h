@@ -71,7 +71,6 @@ public:
 
   void Initialize(COMXCoreComponent *src_component, unsigned int src_port, COMXCoreComponent *dst_component, unsigned int dst_port);
   bool IsInitialized();
-  OMX_ERRORTYPE Flush();
   OMX_ERRORTYPE Deestablish(bool noWait = false);
   OMX_ERRORTYPE Establish(bool portSettingsChanged, bool enable_ports = true);
 private:

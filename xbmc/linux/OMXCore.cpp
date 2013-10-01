@@ -97,45 +97,6 @@ bool COMXCoreTunel::IsInitialized()
   return m_tunnel_set;
 }
 
-OMX_ERRORTYPE COMXCoreTunel::Flush()
-{
-  if(!m_src_component || !m_dst_component || !m_tunnel_set || !IsInitialized())
-    return OMX_ErrorUndefined;
-
-  Lock();
-
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-  if(m_src_component->GetComponent())
-  {
-    omx_err = m_src_component->SendCommand(OMX_CommandFlush, m_src_port, NULL);
-    if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorSameState)
-    {
-      CLog::Log(LOGERROR, "COMXCoreTunel::Flush - Error flush  port %d on component %s omx_err(0x%08x)", 
-          m_src_port, m_src_component->GetName().c_str(), (int)omx_err);
-    }
-  }
-
-  if(m_dst_component->GetComponent())
-  {
-    omx_err = m_dst_component->SendCommand(OMX_CommandFlush, m_dst_port, NULL);
-    if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorSameState)
-    {
-      CLog::Log(LOGERROR, "COMXCoreTunel::Flush - Error flush port %d on component %s omx_err(0x%08x)", 
-          m_dst_port, m_dst_component->GetName().c_str(), (int)omx_err);
-    }
-  }
-
-  if(m_src_component->GetComponent())
-    omx_err = m_src_component->WaitForCommand(OMX_CommandFlush, m_src_port);
-
-  if(m_dst_component->GetComponent())
-    omx_err = m_dst_component->WaitForCommand(OMX_CommandFlush, m_dst_port);
-
-  UnLock();
-
-  return OMX_ErrorNone;
-}
-
 OMX_ERRORTYPE COMXCoreTunel::Deestablish(bool noWait)
 {
   if(!m_src_component || !m_dst_component || !IsInitialized())
