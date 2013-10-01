@@ -961,7 +961,6 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
 void CDecoder::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CDecoder*             vdp        = (CDecoder*)ctx->GetHardware();
 
@@ -1298,7 +1297,7 @@ void CVdpauRenderPicture::Sync()
 // Mixer
 //-----------------------------------------------------------------------------
 CMixer::CMixer(CEvent *inMsgEvent) :
-  CThread("Vdpau Mixer Thread"),
+  CThread("Vdpau Mixer"),
   m_controlPort("ControlPort", inMsgEvent, &m_outMsgEvent),
   m_dataPort("DataPort", inMsgEvent, &m_outMsgEvent)
 {
@@ -1462,11 +1461,6 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
           }
           else
           {
-//            if (m_extTimeout != 0)
-//            {
-//              SetPostProcFeatures(false);
-//              CLog::Log(LOGWARNING,"CVDPAU::Mixer timeout - decoded: %d, outputSurf: %d", (int)m_decodedPics.size(), (int)m_outputSurfaces.size());
-//            }
             m_extTimeout = 100;
           }
           return;
@@ -1534,11 +1528,6 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
           }
           else
           {
-//            if (m_extTimeout != 0)
-//            {
-//              SetPostProcFeatures(false);
-//              CLog::Log(LOGNOTICE,"---mixer wait2 decoded: %d, outputSurf: %d", (int)m_decodedPics.size(), (int)m_outputSurfaces.size());
-//            }
             m_extTimeout = 100;
           }
           return;
@@ -2216,7 +2205,6 @@ void CMixer::DisableHQScaling()
   }
 }
 
-
 void CMixer::Init()
 {
   m_Brightness = 0.0;
@@ -2282,10 +2270,9 @@ void CMixer::Flush()
 void CMixer::InitCycle()
 {
   CheckFeatures();
-  uint64_t latency;
   int flags;
+  uint64_t latency;
   m_config.stats->GetParams(latency, flags);
-  latency = (latency*1000)/CurrentHostFrequency();
   // TODO
   if (0) //flags & DVP_FLAG_NO_POSTPROC)
     SetPostProcFeatures(false);
@@ -2404,7 +2391,6 @@ void CMixer::FiniCycle()
       m_config.videoSurfaces->ClearRender(tmp.videoSurface);
     }
     m_mixerInput.pop_back();
-//    m_config.stats->DecDecoded();
   }
 }
 
@@ -2584,7 +2570,7 @@ VdpauBufferPool::~VdpauBufferPool()
 // Output
 //-----------------------------------------------------------------------------
 COutput::COutput(CEvent *inMsgEvent) :
-  CThread("Vdpau Output Thread"),
+  CThread("Vdpau Output"),
   m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
   m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent),
   m_mixer(&m_outMsgEvent)
