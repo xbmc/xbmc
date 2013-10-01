@@ -14,6 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -261,16 +262,18 @@ public class Splash extends Activity {
       }
 
     mState = State.Checking;
-
-    boolean ret = ParseCpuFeature();
+    boolean ret = Build.CPU_ABI.equals("x86");
     if (!ret) {
-      mErrorMsg = "Error! Cannot parse CPU features.";
-      mState = State.InError;
-    } else {
-      ret = CheckCpuFeature("neon");
+      ret = ParseCpuFeature();
       if (!ret) {
-        mErrorMsg = "This XBMC package is not compatible with your device.\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
+        mErrorMsg = "Error! Cannot parse CPU features.";
         mState = State.InError;
+      } else {
+        ret = CheckCpuFeature("neon");
+        if (!ret) {
+          mErrorMsg = "This XBMC package is not compatible with your device.\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
+          mState = State.InError;
+        }
       }
     }
     if (mState != State.InError) {

@@ -22,8 +22,9 @@ ARMOVERRIDES=XBMC_OVERRIDE_HOST=arm-linux-androideabi XBMC_OVERRIDE_TOOLCHAIN=$(
 #this fixes a android ndk fuckup where the pathes to 
 #prebuilt stuff follow different name shemes for
 #arm and x86
-ifeq ($(findstring x86,$$(CPU)),x86)
+ifeq ($(findstring i686,$(CPU)),i686)
 ARCH=x86
+CPU=x86
 endif
 ifeq ($(findstring arm,$(CPU)),arm)
 ARCH=arm
