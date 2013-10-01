@@ -117,6 +117,7 @@ private:
   struct nfs_context *getContextFromMap(const CStdString &exportname, bool forceCacheHit = false);
   int  getContextForExport(const CStdString &exportname);//get context for given export and add to open contexts map - sets m_pNfsContext (my return a already mounted cached context)
   void destroyOpenContexts();
+  void destroyContext(const CStdString &exportName);
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
   void keepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle);
 };
