@@ -55,7 +55,6 @@ protected:
   bool                      m_use_hw_decode;
   bool                      m_hw_decode;
   AEAudioFormat             m_format;
-  CAEChannelInfo            m_channelLayout;
   COMXAudioCodecOMX         *m_pAudioCodec;
   int                       m_speed;
   bool                      m_silence;

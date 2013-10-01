@@ -205,12 +205,14 @@ bool OMXPlayerAudio::CodecChange()
   if(m_hints.codec != AV_CODEC_ID_DTS && m_hints.codec != AV_CODEC_ID_AC3 && m_hints.codec != AV_CODEC_ID_EAC3)
     new_bitrate = old_bitrate = 0;
 
+  // for passthrough we only care about the codec and the samplerate
+  bool minor_change = m_hints_current.channels       != m_hints.channels ||
+                      m_hints_current.bitspersample  != m_hints.bitspersample ||
+                      old_bitrate                    != new_bitrate;
+
   if(m_hints_current.codec          != m_hints.codec ||
-     m_hints_current.channels       != m_hints.channels ||
      m_hints_current.samplerate     != m_hints.samplerate ||
-     m_hints_current.bitspersample  != m_hints.bitspersample ||
-     old_bitrate                    != new_bitrate ||
-     !m_DecoderOpen)
+     (!m_passthrough && minor_change) || !m_DecoderOpen)
   {
     m_hints_current = m_hints;
     return true;
@@ -473,6 +475,7 @@ void OMXPlayerAudio::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
       COMXMsgAudioCodecChange* msg(static_cast<COMXMsgAudioCodecChange*>(pMsg));
+      CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_STREAMCHANGE");
       OpenStream(msg->m_hints, msg->m_codec);
       msg->m_codec = NULL;
     }
@@ -571,7 +574,6 @@ bool OMXPlayerAudio::OpenDecoder()
 
   if(m_DecoderOpen)
   {
-    WaitCompletion();
     m_omxAudio.Deinitialize();
     m_DecoderOpen = false;
   }
