@@ -152,6 +152,69 @@ XBMCController *m_xbmcController;
 }
 @end
 
+@interface XBMCApplication : UIApplication{
+}
+@end
+
+@implementation XBMCApplication
+#define GSEVENT_TYPE 2
+#define GSEVENT_FLAGS 12
+#define GSEVENTKEY_KEYCODE 15
+#define GSEVENT_TYPE_KEYUP 11
+
+- (void)sendEvent:(UIEvent *)event
+{ 
+  [super sendEvent:event];
+
+  if ([event respondsToSelector:@selector(_gsEvent)]) 
+  {
+    // Key events come in form of UIInternalEvents.
+    // They contain a GSEvent object which contains 
+    // a GSEventRecord among other things
+    int *eventMem;
+    eventMem = (int *)[event performSelector:@selector(_gsEvent)];
+    if (eventMem) 
+    {
+      // So far we got a GSEvent :)
+      int eventType = eventMem[GSEVENT_TYPE];
+      if (eventType == GSEVENT_TYPE_KEYUP) 
+      {
+        // Now we got a GSEventKey!
+        
+        // Read flags from GSEvent
+        // for modifier keys if we want to use them somehow at a later time
+        //int eventFlags = eventMem[GSEVENT_FLAGS];
+        // Read keycode from GSEventKey
+        UniChar tmp = (UniChar)eventMem[GSEVENTKEY_KEYCODE];
+        XBMCKey key = XBMCK_UNKNOWN;
+        switch (tmp)
+        {
+          case 0x4f:
+            // right
+            key = XBMCK_RIGHT;
+            break;
+          case 0x50:
+            // left
+            key = XBMCK_LEFT;
+            break;
+          case 0x51:
+            // down
+            key = XBMCK_DOWN;
+            break;
+          case 0x52:
+            // up
+            key = XBMCK_UP;
+            break;
+          default:
+            return; // not supported by us - return...
+        }
+        [g_xbmcController sendKey:key];
+      }
+    }
+  }
+}
+@end
+
 int main(int argc, char *argv[]) {
   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];	
   int retVal = 0;
@@ -167,7 +230,7 @@ int main(int argc, char *argv[]) {
   
   @try
   {
-    retVal = UIApplicationMain(argc,argv,@"UIApplication",@"XBMCApplicationDelegate");
+    retVal = UIApplicationMain(argc,argv,@"XBMCApplication",@"XBMCApplicationDelegate");
     //UIApplicationMain(argc, argv, nil, nil);
   } 
   @catch (id theException) 
