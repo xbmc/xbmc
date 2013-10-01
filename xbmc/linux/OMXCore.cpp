@@ -356,6 +356,9 @@ COMXCoreComponent::COMXCoreComponent()
 
   m_exit = false;
 
+  m_omx_input_use_buffers  = false;
+  m_omx_output_use_buffers = false;
+
   pthread_mutex_init(&m_omx_input_mutex, NULL);
   pthread_mutex_init(&m_omx_output_mutex, NULL);
   pthread_mutex_init(&m_omx_event_mutex, NULL);
@@ -363,9 +366,6 @@ COMXCoreComponent::COMXCoreComponent()
   pthread_cond_init(&m_input_buffer_cond, NULL);
   pthread_cond_init(&m_output_buffer_cond, NULL);
   pthread_cond_init(&m_omx_event_cond, NULL);
-
-  m_omx_input_use_buffers  = false;
-  m_omx_output_use_buffers = false;
 
   m_DllOMX = g_RBP.GetDllOMX();
 
@@ -1447,7 +1447,28 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
 {
   OMX_ERRORTYPE omx_err;
 
-  m_resource_error = false;
+  m_input_port  = 0;
+  m_output_port = 0;
+  m_handle      = NULL;
+
+  m_input_alignment     = 0;
+  m_input_buffer_size  = 0;
+  m_input_buffer_count  = 0;
+
+  m_output_alignment    = 0;
+  m_output_buffer_size  = 0;
+  m_output_buffer_count = 0;
+  m_flush_input         = false;
+  m_flush_output        = false;
+  m_resource_error      = false;
+
+  m_eos                 = false;
+
+  m_exit = false;
+
+  m_omx_input_use_buffers  = false;
+  m_omx_output_use_buffers = false;
+
   m_componentName = component_name;
   
   m_callbacks.EventHandler    = &COMXCoreComponent::DecoderEventHandlerCallback;
