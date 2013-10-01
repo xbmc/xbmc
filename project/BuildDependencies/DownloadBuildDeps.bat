@@ -33,6 +33,10 @@ FOR /F "tokens=*" %%S IN ('dir /B "*_d.bat"') DO (
   CALL %%S
 )
 
+REM Trick to preserve console title
+start /b /wait cmd.exe /c get_formed.cmd
+IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
+
 cd %CUR_PATH%
 
 rmdir %TMP_PATH% /S /Q
