@@ -120,7 +120,8 @@ public:
   static bool IsWindowsVersion(WindowsVersion ver);
   static bool IsWindowsVersionAtLeast(WindowsVersion ver);
   static WindowsVersion GetWindowsVersion();
-  static bool IsOS64bit();
+  static int GetKernelBitness(void);
+  static int GetXbmcBitness(void);
   static CStdString GetKernelVersion();
   CStdString GetCPUModel();
   CStdString GetCPUBogoMips();
@@ -139,6 +140,7 @@ public:
 
   static std::string GetBuildTargetPlatformName(void);
   static std::string GetBuildTargetPlatformVersion(void);
+  static std::string GetBuildTargetCpuFamily(void);
 
 protected:
   virtual CJob *GetJob() const;

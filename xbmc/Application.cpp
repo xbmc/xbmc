@@ -635,7 +635,8 @@ bool CApplication::Create()
   CProfilesManager::Get().Load();
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s). Platform: %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str());
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s). Platform: %s %s %d-bit", g_infoManager.GetVersion().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(),
+      g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetXbmcBitness());
 
 /* Expand macro before stringify */
 #define STR_MACRO(x) #x
@@ -667,21 +668,22 @@ bool CApplication::Create()
 #else
   buildType = "Unknown";
 #endif
-  CLog::Log(LOGNOTICE, "Using %s XBMC build, compiled " __DATE__ " by %s for %s %s", buildType.c_str(), compilerStr.c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetBuildTargetPlatformVersion().c_str());
+  CLog::Log(LOGNOTICE, "Using %s XBMC x%d build, compiled " __DATE__ " by %s for %s %s %d-bit %s", buildType.c_str(), g_sysinfo.GetXbmcBitness(), compilerStr.c_str(),
+      g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersion().c_str());
 
 #if defined(TARGET_DARWIN_OSX)
-  CLog::Log(LOGNOTICE, "Running on Darwin OSX %s", g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Running on Darwin OSX %d-bit %s", g_sysinfo.GetKernelBitness(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_DARWIN_IOS)
-  CLog::Log(LOGNOTICE, "Running on Darwin iOS%s %s", g_sysinfo.IsAppleTV2() ? " (AppleTV2)" : "", g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Running on Darwin iOS %d-bit %s%s", g_sysinfo.GetKernelBitness(), g_sysinfo.IsAppleTV2() ? "(AppleTV2) " : "", g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_FREEBSD)
-  CLog::Log(LOGNOTICE, "Running on FreeBSD %s", g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Running on FreeBSD %d-bit %s", g_sysinfo.GetKernelBitness(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_POSIX)
-  CLog::Log(LOGNOTICE, "Running on Linux (%s, %s)", g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Running on Linux %d-bit (%s, %s)", g_sysinfo.GetKernelBitness(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_WINDOWS)
   CLog::Log(LOGNOTICE, "Running on %s", g_sysinfo.GetKernelVersion().c_str());
 #endif
   
-  CLog::Log(LOGNOTICE, "Host CPU: %s", g_cpuInfo.getCPUModel().c_str());
+  CLog::Log(LOGNOTICE, "Host CPU: %s, %d core%s available", g_cpuInfo.getCPUModel().c_str(), g_cpuInfo.getCPUCount(), (g_cpuInfo.getCPUCount()==1) ? "" : "s");
 #if defined(TARGET_WINDOWS)
   CLog::Log(LOGNOTICE, "%s", CWIN32Util::GetResInfoString().c_str());
   CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
