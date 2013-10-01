@@ -81,7 +81,7 @@ void* thread_run(void* obj)
   (static_cast<T*>(obj)->*fn)();
   return NULL;
 }
-
+CEvent CXBMCApp::m_windowCreated;
 ANativeActivity *CXBMCApp::m_activity = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
 int CXBMCApp::m_batteryLevel = 0;
@@ -187,6 +187,7 @@ void CXBMCApp::onCreateWindow(ANativeWindow* window)
     return;
   }
   m_window = window;
+  m_windowCreated.Set();
   if (getWakeLock() &&  m_wakeLock)
     m_wakeLock->acquire();
   if(!m_firstrun)
@@ -199,6 +200,8 @@ void CXBMCApp::onCreateWindow(ANativeWindow* window)
 void CXBMCApp::onResizeWindow()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
+  m_window=NULL;
+  m_windowCreated.Reset();
   // no need to do anything because we are fixed in fullscreen landscape mode
 }
 
@@ -216,7 +219,6 @@ void CXBMCApp::onDestroyWindow()
   if (m_wakeLock)
     m_wakeLock->release();
 
-  m_window=NULL;
 }
 
 void CXBMCApp::onGainFocus()
@@ -264,12 +266,6 @@ void CXBMCApp::run()
     free(argv);
   }
 
-  android_printf(" => waiting for a window");
-  // Hack!
-  // TODO: Change EGL startup so that we can start headless, then create the
-  // window once android gives us a surface to play with.
-  while(!m_window)
-    usleep(1000);
   m_firstrun=false;
   android_printf(" => running XBMC_Run...");
   try
@@ -597,4 +593,13 @@ std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)
     else
       ret = data.toString();
   return ret;
+}
+
+const ANativeWindow** CXBMCApp::GetNativeWindow(int timeout)
+{
+  if (m_window)
+    return (const ANativeWindow**)&m_window;
+
+  m_windowCreated.WaitMSec(timeout);
+  return (const ANativeWindow**)&m_window;
 }

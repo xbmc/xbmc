@@ -32,6 +32,7 @@
 #include "xbmc.h"
 #include "android/jni/Context.h"
 #include "android/jni/BroadcastReceiver.h"
+#include "threads/Event.h"
 
 // forward delares
 class CJNIWakeLock;
@@ -79,7 +80,7 @@ public:
   void onLostFocus();
 
 
-  static ANativeWindow* GetNativeWindow() { return m_window; };
+  static const ANativeWindow** GetNativeWindow(int timeout);
   static int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
   
@@ -122,7 +123,8 @@ private:
   pthread_t m_thread;
   
   static ANativeWindow* m_window;
-  
+  static CEvent m_windowCreated;
+
   void XBMC_Pause(bool pause);
   void XBMC_Stop();
   bool XBMC_DestroyDisplay();
