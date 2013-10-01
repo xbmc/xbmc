@@ -1381,7 +1381,7 @@ LONG CWIN32Util::UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWOR
 
 bool CWIN32Util::UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64 )
 {
-  const REGSAM rsAccessRightsTmp= ( CSysInfo::IsOS64bit() ? rsAccessRights | ( bReadX64 ? KEY_WOW64_64KEY : KEY_WOW64_32KEY ) : rsAccessRights );
+  const REGSAM rsAccessRightsTmp= ( CSysInfo::GetKernelBitness() == 64 ? rsAccessRights | ( bReadX64 ? KEY_WOW64_64KEY : KEY_WOW64_32KEY ) : rsAccessRights );
   bool bRet= ( ERROR_SUCCESS == RegOpenKeyEx(hKeyParent, pcKey, 0, rsAccessRightsTmp, hKey));
   return bRet;
 }
