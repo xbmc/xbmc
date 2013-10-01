@@ -38,7 +38,7 @@
 #include "cores/VideoRenderers/RenderFlags.h"
 
 using namespace VDPAU;
-#define NUM_RENDER_PICS 9
+#define NUM_RENDER_PICS 7
 
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
