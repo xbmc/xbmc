@@ -33,6 +33,8 @@ namespace PlexUtils
   
   std::string GetPlexCrashPath();
   CStdString GetPrettyStreamName(const CFileItem& fileItem, bool audio);
+
+  CStdString GetSHA1SumFromURL(const CURL &url);
 }
 
 #ifdef _WIN32

@@ -75,6 +75,10 @@
 #include "PlexJobs.h"
 #include "PlexApplication.h"
 
+#include "ApplicationMessenger.h"
+
+#include "AutoUpdate/PlexAutoUpdate.h"
+
 using namespace std;
 using namespace XFILE;
 using namespace boost;
@@ -561,8 +565,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       break;
     }
       
+    case GUI_MSG_WINDOW_RESET:
     case GUI_MSG_PLEX_SERVER_DATA_LOADED:
     case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
+    case GUI_MSG_UPDATE_MAIN_MENU:
     {
       UpdateSections();
       
@@ -744,6 +750,7 @@ void CGUIWindowHome::UpdateSections()
   bool listUpdated = false;
   bool haveShared = false;
   bool haveChannels = false;
+  bool haveUpdate = false;
 
   for (int i = 0; i < oldList.size(); i ++)
   {
@@ -754,6 +761,8 @@ void CGUIWindowHome::UpdateSections()
         haveShared = true;
       if (item->HasProperty("plexchannels"))
         haveChannels = true;
+      if (item->HasProperty("plexupdate"))
+        haveUpdate = true;
 
       newList.push_back(item);
     }

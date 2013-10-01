@@ -90,6 +90,12 @@
 #include <vector>
 #include "xbmc/settings/AdvancedSettings.h"
 
+
+/* PLEX */
+#include "PlexApplication.h"
+#include "AutoUpdate/PlexAutoUpdate.h"
+/* END PLEX */
+
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
@@ -108,8 +114,9 @@ typedef struct
 const BUILT_IN commands[] = {
   /* PLEX */
   #if defined(__APPLE__) || defined(_WIN32)
-  { "ToggleDisplayBlanking",      false,  "Toggle display blanking"},
+  { "ToggleDisplayBlanking",      false,  "Toggle display blanking" },
   #endif
+  { "UpdateAndRestart",           false,  "Update PHT and restart" },
   /* END PLEX */
   { "Help",                       false,  "This help message" },
   { "Reboot",                     false,  "Reboot the system" },
@@ -1655,6 +1662,10 @@ int CBuiltins::Execute(const CStdString& execString)
     g_guiSettings.SetBool("videoscreen.blankdisplays", !g_guiSettings.GetBool("videoscreen.blankdisplays"));
     g_graphicsContext.UpdateDisplayBlanking();
     //g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+  }
+  else if (execute.Equals("updateandrestart"))
+  {
+    g_plexApplication.autoUpdater->UpdateAndRestart();
   }
   else if (execute.Equals("togglewatched"))
   {

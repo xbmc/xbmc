@@ -6,6 +6,8 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include "Utility/sha1.hpp"
+
 #include "PlexUtils.h"
 #include "File.h"
 #include "URIUtils.h"
@@ -19,6 +21,8 @@
 #include "addons/Skin.h"
 #include "Client/PlexMediaServerClient.h"
 #include "PlexApplication.h"
+
+#include "File.h"
 
 #ifdef TARGET_DARWIN_OSX
 #include <CoreServices/CoreServices.h>
@@ -426,3 +430,26 @@ CStdString PlexUtils::GetPrettyStreamName(const CFileItem &fileItem, bool audio)
   return name;
 }
 
+
+
+CStdString PlexUtils::GetSHA1SumFromURL(const CURL &url)
+{
+  SHA1 sha;
+  XFILE::CFile file;
+
+  if (file.Open(url.Get()))
+  {
+    uint8_t buffer[4096];
+    int read = file.Read(buffer, 4096);
+
+    while (read != 0)
+    {
+      sha.update(buffer, read);
+      read = file.Read(buffer, 4096);
+    }
+
+    return sha.end().hex();
+  }
+
+  return "";
+}

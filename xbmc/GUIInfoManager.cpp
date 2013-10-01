@@ -90,6 +90,7 @@
 #include "plex/Client/PlexServerManager.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "plex/PlexApplication.h"
+#include "AutoUpdate/PlexAutoUpdate.h"
 
 using namespace PLAYLIST;
 /* END PLEX */
@@ -253,6 +254,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   /* PLEX */
                                   { "searchinprogress", SYSTEM_SEARCH_IN_PROGRESS },
                                   { "selectedplexmediaserver", SYSTEM_SELECTED_PLEX_MEDIA_SERVER },
+                                  { "updateisavailable", SYSTEM_UPDATE_IS_AVAILABLE },
                                   /* END PLEX */
                                   { "hasmediadvd",      SYSTEM_MEDIA_DVD },
                                   { "dvdready",         SYSTEM_DVDREADY },
@@ -2384,6 +2386,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = true;
     else
       bReturn = false;
+  }
+  else if (condition == SYSTEM_UPDATE_IS_AVAILABLE)
+  {
+    bReturn = g_plexApplication.autoUpdater->IsReadyToInstall();
   }
   /* END PLEX */
   else if (g_application.IsPlaying())

@@ -431,4 +431,15 @@ bool DarwinCFStringRefToUTF8String(CFStringRef source, std::string &destination)
   return DarwinCFStringRefToStringWithEncoding(source, destination, kCFStringEncodingUTF8);
 }
 
+/* PLEX */
+int GetDarwinBundlePath(char *path, uint32_t *pathsize)
+{
+  CCocoaAutoPool pool;
+  NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+  strcpy(path, [bundlePath UTF8String]);
+  *pathsize = strlen(path);
+  return 0;
+}
+/* END PLEX */
+
 #endif

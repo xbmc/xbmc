@@ -43,6 +43,9 @@ extern "C"
   void        DarwinSetScheduling(int message);
   bool        DarwinCFStringRefToString(CFStringRef source, std::string& destination);
   bool        DarwinCFStringRefToUTF8String(CFStringRef source, std::string& destination);
+  /* PLEX */
+  int         GetDarwinBundlePath(char *path, uint32_t *pathsize);
+  /* END PLEX */
 #ifdef __cplusplus
 }
 #endif

@@ -108,4 +108,20 @@ public:
   CFileItemPtr m_item;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////
+class CPlexDownloadFileJob : public CJob
+{
+  public:
+    CPlexDownloadFileJob(const CStdString& url, const CStdString& destination) :
+      CJob(), m_failed(false), m_url(url), m_destination(destination)
+    {};
+
+    bool DoWork();
+    CStdString m_url;
+    CStdString m_destination;
+
+    bool m_failed;
+};
+
+
 #endif /* defined(__Plex_Home_Theater__PlexJobs__) */

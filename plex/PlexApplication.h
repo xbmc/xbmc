@@ -70,11 +70,12 @@ public:
   CPlexServerDataLoaderPtr dataLoader;
   BackgroundMusicPlayer *backgroundMusicPlayer;
   CPlexAnalytics *analytics;
+  CPlexAutoUpdate* autoUpdater;
+
       
 private:
   /// Members
   CPlexServiceListenerPtr m_serviceListener;
-  CPlexAutoUpdate* m_autoUpdater;
   
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 };

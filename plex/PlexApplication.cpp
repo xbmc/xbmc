@@ -41,7 +41,7 @@ PlexApplication::Start()
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
-  m_autoUpdater = new CPlexAutoUpdate("http://plexapp.com/appcast/plexht/appcast.xml");
+  autoUpdater = new CPlexAutoUpdate(CURL("http://10.0.42.200/update.xml"));
 
   serverManager->load();
 
@@ -122,7 +122,7 @@ void PlexApplication::OnWakeUp()
 ////////////////////////////////////////////////////////////////////////////////////////
 void PlexApplication::ForceVersionCheck()
 {
-  m_autoUpdater->ForceCheckInBackground();
+  //m_autoUpdater->ForceCheckInBackground();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -152,6 +152,6 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
     backgroundMusicPlayer->Die();
     delete backgroundMusicPlayer;
     
-    delete m_autoUpdater;
+    delete autoUpdater;
   }
 }

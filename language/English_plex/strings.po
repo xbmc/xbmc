@@ -449,8 +449,8 @@ msgid "Automatically Check For Updates"
 msgstr "Automatically Check For Updates"
 
 msgctxt "#40018"
-msgid "Update"
-msgstr "Update"
+msgid "Update and Restart"
+msgstr "Update and Restart"
 
 msgctxt "#40019"
 msgid "- If Updates Are Available"
