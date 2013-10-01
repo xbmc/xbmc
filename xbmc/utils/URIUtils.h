@@ -95,6 +95,7 @@ public:
   static bool IsAfp(const CStdString& strFile);    
   static bool IsOnDVD(const CStdString& strFile);
   static bool IsOnLAN(const CStdString& strFile);
+  static bool IsHostOnLAN(const CStdString& hostName, bool offLineCheck = false);
   static bool IsPlugin(const CStdString& strFile);
   static bool IsScript(const CStdString& strFile);
   static bool IsRAR(const CStdString& strFile);
