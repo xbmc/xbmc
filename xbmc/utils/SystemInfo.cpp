@@ -47,6 +47,9 @@
 #include "powermanagement/PowerManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
+#if defined(TARGET_ANDROID)
+#include "android/jni/Build.h"
+#endif
 
 /* Target identification */
 #if defined(TARGET_DARWIN)
@@ -362,6 +365,33 @@ CStdString CSysInfo::GetCPURevision()
 CStdString CSysInfo::GetCPUSerial()
 {
   return "Serial: " + g_cpuInfo.getCPUSerial();
+}
+
+CStdString CSysInfo::GetManufacturer()
+{
+  CStdString manufacturer = "";
+#if defined(TARGET_ANDROID)
+  manufacturer = CJNIBuild::MANUFACTURER;
+#endif
+  return manufacturer;
+}
+
+CStdString CSysInfo::GetModel()
+{
+  CStdString model = "";
+#if defined(TARGET_ANDROID)
+  model = CJNIBuild::MODEL;
+#endif
+  return model;
+}
+
+CStdString CSysInfo::GetProduct()
+{
+  CStdString product = "";
+#if defined(TARGET_ANDROID)
+  product = CJNIBuild::PRODUCT;
+#endif
+  return product;
 }
 
 bool CSysInfo::IsAeroDisabled()
