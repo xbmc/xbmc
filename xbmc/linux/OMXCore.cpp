@@ -1628,8 +1628,8 @@ OMX_ERRORTYPE COMXCoreComponent::DecoderEventHandler(
 {
 #ifdef OMX_DEBUG_EVENTS
   CLog::Log(LOGDEBUG,
-    "COMXCore::%s - %s eEvent(0x%x), nData1(0x%lx), nData2(0x%lx), pEventData(0x%p)\n",
-    __func__, (char *)GetName().c_str(), eEvent, nData1, nData2, pEventData);
+    "COMXCoreComponent::%s - %s eEvent(0x%x), nData1(0x%x), nData2(0x%x), pEventData(0x%p)\n",
+    __func__, GetName().c_str(), eEvent, nData1, nData2, pEventData);
 #endif
 
   AddEvent(eEvent, nData1, nData2);
@@ -1688,17 +1688,17 @@ OMX_ERRORTYPE COMXCoreComponent::DecoderEventHandler(
         break;
         case OMX_CommandPortDisable:
           #if defined(OMX_DEBUG_EVENTHANDLER)
-          CLog::Log(LOGDEBUG, "%s::%s %s - OMX_CommandPortDisable, nData1(0x%lx), port %d\n", CLASSNAME, __func__, GetName().c_str(), nData1, (int)nData2);
+          CLog::Log(LOGDEBUG, "%s::%s %s - OMX_CommandPortDisable, nData1(0x%x), port %d\n", CLASSNAME, __func__, GetName().c_str(), nData1, (int)nData2);
           #endif
         break;
         case OMX_CommandPortEnable:
           #if defined(OMX_DEBUG_EVENTHANDLER)
-          CLog::Log(LOGDEBUG, "%s::%s %s - OMX_CommandPortEnable, nData1(0x%lx), port %d\n", CLASSNAME, __func__, GetName().c_str(), nData1, (int)nData2);
+          CLog::Log(LOGDEBUG, "%s::%s %s - OMX_CommandPortEnable, nData1(0x%x), port %d\n", CLASSNAME, __func__, GetName().c_str(), nData1, (int)nData2);
           #endif
         break;
         #if defined(OMX_DEBUG_EVENTHANDLER)
         case OMX_CommandMarkBuffer:
-          CLog::Log(LOGDEBUG, "%s::%s %s - OMX_CommandMarkBuffer, nData1(0x%lx), port %d\n", CLASSNAME, __func__, GetName().c_str(), nData1, (int)nData2);
+          CLog::Log(LOGDEBUG, "%s::%s %s - OMX_CommandMarkBuffer, nData1(0x%x), port %d\n", CLASSNAME, __func__, GetName().c_str(), nData1, (int)nData2);
         break;
         #endif
       }
