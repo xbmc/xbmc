@@ -156,7 +156,7 @@ OMX_ERRORTYPE COMXCoreTunel::Deestablish(bool noWait)
   return OMX_ErrorNone;
 }
 
-OMX_ERRORTYPE COMXCoreTunel::Establish(bool portSettingsChanged, bool enable_ports /* = true */)
+OMX_ERRORTYPE COMXCoreTunel::Establish(bool portSettingsChanged, bool enable_ports /* = true */, bool disable_ports /* = false */)
 {
   Lock();
 
@@ -192,7 +192,7 @@ OMX_ERRORTYPE COMXCoreTunel::Establish(bool portSettingsChanged, bool enable_por
     }
   }
 
-  if(m_src_component->GetComponent())
+  if(m_src_component->GetComponent() && disable_ports)
   {
     omx_err = m_src_component->DisablePort(m_src_port, false);
     if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorSameState) 
@@ -202,7 +202,7 @@ OMX_ERRORTYPE COMXCoreTunel::Establish(bool portSettingsChanged, bool enable_por
     }
   }
 
-  if(m_dst_component->GetComponent())
+  if(m_dst_component->GetComponent() && disable_ports)
   {
     omx_err = m_dst_component->DisablePort(m_dst_port, false);
     if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorSameState) {
@@ -1465,11 +1465,14 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
         component_name.c_str(), (int)omx_err);
   }
 
-  omx_err = DisableAllPorts();
-  if (omx_err != OMX_ErrorNone)
+  if(m_componentName != "OMX.broadcom.clock")
   {
-    CLog::Log(LOGERROR, "COMXCoreComponent::Initialize - error disable ports on component %s omx_err(0x%08x)\n", 
-        component_name.c_str(), (int)omx_err);
+    omx_err = DisableAllPorts();
+    if (omx_err != OMX_ErrorNone)
+    {
+      CLog::Log(LOGERROR, "COMXCoreComponent::Initialize - error disable ports on component %s omx_err(0x%08x)\n",
+          component_name.c_str(), (int)omx_err);
+    }
   }
 
   m_input_port  = port_param.nStartPortNumber;
