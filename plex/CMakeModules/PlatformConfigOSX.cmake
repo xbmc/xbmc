@@ -1,7 +1,7 @@
 # vim: setlocal syntax=cmake:
 
 if(NOT DEFINED OSX_ARCH)
-  set(OSX_ARCH i386)
+  set(OSX_ARCH x86_64)
 endif()
 
 if(NOT OSX_ARCH STREQUAL "i386" AND NOT OSX_ARCH STREQUAL "x86_64")
