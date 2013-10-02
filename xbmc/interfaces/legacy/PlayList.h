@@ -42,6 +42,9 @@ namespace XBMCAddon
       PlayList(int playList) throw (PlayListException);
       virtual ~PlayList();
 
+      /**
+       * getPlayListId() -- returns an integer.
+       */
       inline int getPlayListId() const { return iPlayList; }
 
       /**
