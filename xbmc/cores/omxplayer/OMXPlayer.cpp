@@ -4061,9 +4061,9 @@ int COMXPlayer::SeekChapter(int iChapter)
   {
     // Do a regular big jump.
     if (GetChapter() > 0 && iChapter > GetChapter())
-      Seek(true, true);
+      Seek(true, true, true);
     else
-      Seek(false, true);
+      Seek(false, true, true);
   }
   return 0;
 }
