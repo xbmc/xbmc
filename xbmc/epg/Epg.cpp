@@ -150,7 +150,7 @@ bool CEpg::HasValidEntries(void) const
   CSingleLock lock(m_critSection);
 
   return (m_iEpgID > 0 && /* valid EPG ID */
-      m_tags.size() > 0 && /* contains at least 1 tag */
+      !m_tags.empty()  && /* contains at least 1 tag */
       m_tags.rbegin()->second->EndAsUTC() >= CDateTime::GetCurrentDateTime().GetAsUTCDateTime()); /* the last end time hasn't passed yet */
 }
 
@@ -580,7 +580,7 @@ CDateTime CEpg::GetFirstDate(void) const
   CDateTime first;
 
   CSingleLock lock(m_critSection);
-  if (m_tags.size() > 0)
+  if (!m_tags.empty())
     first = m_tags.begin()->second->StartAsUTC();
 
   return first;
@@ -591,7 +591,7 @@ CDateTime CEpg::GetLastDate(void) const
   CDateTime last;
 
   CSingleLock lock(m_critSection);
-  if (m_tags.size() > 0)
+  if (!m_tags.empty())
     last = m_tags.rbegin()->second->StartAsUTC();
 
   return last;

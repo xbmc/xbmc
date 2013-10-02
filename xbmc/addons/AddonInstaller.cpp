@@ -111,7 +111,7 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
 bool CAddonInstaller::IsDownloading() const
 {
   CSingleLock lock(m_critSection);
-  return m_downloadJobs.size() > 0;
+  return !m_downloadJobs.empty();
 }
 
 void CAddonInstaller::GetInstallList(VECADDONS &addons) const
