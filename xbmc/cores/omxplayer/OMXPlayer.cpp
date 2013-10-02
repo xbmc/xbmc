@@ -2714,15 +2714,16 @@ void COMXPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   if (!m_State.canseek)
     return;
 
-  if (bLargeStep && bChapterOverride)
+  if (bLargeStep && bChapterOverride && GetChapter() > 0)
   {
-    if ((bPlus && GetChapter() < GetChapterCount())
-    || (!bPlus && GetChapter() > 1))
+    if (!bPlus)
     {
-      if(bPlus)
-        SeekChapter(GetChapter() + 1);
-      else
-        SeekChapter(GetChapter() - 1);
+      SeekChapter(GetChapter() - 1);
+      return;
+    }
+    else if (GetChapter() < GetChapterCount())
+    {
+      SeekChapter(GetChapter() + 1);
       return;
     }
   }
@@ -3951,18 +3952,18 @@ bool COMXPlayer::OnAction(const CAction &action)
   switch (action.GetID())
   {
     case ACTION_NEXT_ITEM:
-      if(GetChapterCount() > 0)
+      if (GetChapter() > 0 && GetChapter() < GetChapterCount())
       {
-        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()+1));
+        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter() + 1));
         g_infoManager.SetDisplayAfterSeek();
         return true;
       }
       else
         break;
     case ACTION_PREV_ITEM:
-      if(GetChapterCount() > 0)
+      if (GetChapter() > 0)
       {
-        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()-1));
+        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter() - 1));
         g_infoManager.SetDisplayAfterSeek();
         return true;
       }
@@ -4046,7 +4047,7 @@ void COMXPlayer::GetChapterName(CStdString& strChapterName)
 
 int COMXPlayer::SeekChapter(int iChapter)
 {
-  if (GetChapterCount() > 0)
+  if (GetChapter() > 0)
   {
     if (iChapter < 0)
       iChapter = 0;
@@ -4057,14 +4058,7 @@ int COMXPlayer::SeekChapter(int iChapter)
     m_messenger.Put(new CDVDMsgPlayerSeekChapter(iChapter));
     SynchronizeDemuxer(100);
   }
-  else
-  {
-    // Do a regular big jump.
-    if (GetChapter() > 0 && iChapter > GetChapter())
-      Seek(true, true, true);
-    else
-      Seek(false, true, true);
-  }
+
   return 0;
 }
 

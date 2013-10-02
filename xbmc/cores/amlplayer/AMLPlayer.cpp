@@ -742,20 +742,19 @@ void CAMLPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   CSingleLock lock(m_aml_csection);
 
   // try chapter seeking first, chapter_index is ones based.
-  if (bLargeStep && bChapterOverride)
+  int chapter_index = GetChapter();
+  if (bLargeStep && bChapterOverride && chapter_index > 0)
   {
-    int chapter_index = GetChapter();
-
-    // seek to next chapter
-    if (bPlus && (chapter_index < GetChapterCount()))
+    if (!bPlus)
     {
-      SeekChapter(chapter_index + 1);
+      // seek to previous chapter
+      SeekChapter(chapter_index - 1);
       return;
     }
-    // seek to previous chapter
-    if (!bPlus && chapter_index)
+    else if (chapter_index < GetChapterCount())
     {
-      SeekChapter(chapter_index - 1);
+      // seek to next chapter
+      SeekChapter(chapter_index + 1);
       return;
     }
   }
