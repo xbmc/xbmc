@@ -188,15 +188,19 @@ void CPlexAutoUpdate::OnJobProgress(unsigned int jobID, unsigned int progress, u
 #ifdef TARGET_DARWIN_OSX
 #include "DarwinUtils.h"
 #endif
+ 
+#ifndef MAXPATHLEN
+#define MAXPATHLEN 1024
+#endif
 
 void CPlexAutoUpdate::UpdateAndRestart()
 {
   std::string updater = CSpecialProtocol::TranslatePath(m_localApplication);
   std::string script = CSpecialProtocol::TranslatePath(m_localManifest);
   std::string packagedir = CSpecialProtocol::TranslatePath("special://temp/autoupdate");
+  char installdir[2*MAXPATHLEN];
 
 #ifdef TARGET_DARWIN_OSX
-  char installdir[2*MAXPATHLEN];
   uint32_t size;
   GetDarwinBundlePath(installdir, &size);
 #endif

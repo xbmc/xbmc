@@ -9,6 +9,10 @@
 #include <string.h>
 #include <string>
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 struct SHA1 {
     static const uint32_t SHA1_DIGEST_SIZE = 20;
 
