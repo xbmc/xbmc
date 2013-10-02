@@ -24,7 +24,7 @@
 #include <arpa/inet.h>
 
 #include "system.h"
-#include "network/Network.h"
+#include "network/NetworkUtils.h"
 #include "Application.h"
 #include "DNSNameCache.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -106,14 +106,8 @@ bool CMACDiscoveryJob::DoWork()
     return false;
   }
 
-  vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
-  for (vector<CNetworkInterface*>::const_iterator it = ifaces.begin(); it != ifaces.end(); ++it)
-  {
-    if ((*it)->GetHostMacAddress(ipAddress, m_macAddres))
-      return true;
-  }
-
-  return false;
+  m_macAddres = CNetworkUtils::GetRemoteMacAddress(ipAddress);
+  return !m_macAddres.empty();
 }
 
 //**
@@ -243,7 +237,7 @@ public:
   virtual bool SuccessWaiting () const
   {
     unsigned long address = ntohl(HostToIP(m_host));
-    bool online = g_application.getNetwork().HasInterfaceForIP(address);
+    bool online = CNetworkUtils::HasInterfaceForIP(address);
 
     if (!online) // setup endtime so we dont return true until network is consistently connected
       m_end.Set (m_settle_time_ms);
@@ -286,7 +280,7 @@ public:
   {
     ULONG dst_ip = HostToIP(server.host);
 
-    return g_application.getNetwork().PingHost(dst_ip, server.ping_port, 2000, server.ping_mode & 1);
+    return CNetworkUtils::PingHost(dst_ip, server.ping_port, 2000, server.ping_mode & 1);
   }
 
 private:
@@ -381,14 +375,14 @@ void CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   {
     ULONG dst_ip = HostToIP(server.host);
 
-    if (g_application.getNetwork().PingHost(dst_ip, server.ping_port, 500)) // quick ping with short timeout to not block too long
+    if (CNetworkUtils::PingHost(dst_ip, server.ping_port, 500)) // quick ping with short timeout to not block too long
     {
       CLog::Log(LOGNOTICE,"WakeOnAccess success exit, server already running");
       return;
     }
   }
 
-  if (!g_application.getNetwork().WakeOnLan(server.mac.c_str()))
+  if (!CNetworkUtils::WakeOnLan(server.mac.c_str()))
   {
     CLog::Log(LOGERROR,"WakeOnAccess failed to send. (Is it blocked by firewall?)");
 

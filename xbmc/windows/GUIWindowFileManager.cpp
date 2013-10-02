@@ -34,7 +34,6 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "playlists/PlayListFactory.h"
-#include "network/Network.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "dialogs/GUIDialogOK.h"

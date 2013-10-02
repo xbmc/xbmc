@@ -20,7 +20,6 @@
  *
  */
 
-#include "network/Network.h"
 #include "AirPlayServer.h"
 
 #ifdef HAS_AIRPLAY
@@ -28,6 +27,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "DllLibPlist.h"
+#include "network/NetworkUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -365,10 +365,10 @@ void CAirPlayServer::Process()
 bool CAirPlayServer::Initialize()
 {
   Deinitialize();
-  
-  if ((m_ServerSocket = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "AIRPLAY")) == INVALID_SOCKET)
+
+  if ((m_ServerSocket = CNetworkUtils::CreateTCPServerSocket(m_port, !m_nonlocal, 10, "AIRPLAY")) == INVALID_SOCKET)
     return false;
-  
+
   CLog::Log(LOGINFO, "AIRPLAY Server: Successfully initialized");
   return true;
 }
@@ -1009,7 +1009,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   else if (uri == "/server-info")
   {
     CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
-    responseBody.Format(SERVER_INFO, g_application.getNetwork().GetFirstConnectedInterface()->GetMacAddress());
+    responseBody.Format(SERVER_INFO, g_application.getNetwork().GetDefaultConnectionMacAddress());
     responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
   }
 

@@ -389,6 +389,8 @@ void CAdvancedSettings::Initialize()
   m_guiVisualizeDirtyRegions = false;
   m_guiAlgorithmDirtyRegions = 3;
   m_guiDirtyRegionNoFlipTimeout = 0;
+  m_enableNetworkManager  = false;
+  m_showNetworkPassPhrase = true;
   m_logEnableAirtunes = false;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
@@ -853,6 +855,10 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   }
 
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
+
+  //network manager
+  XMLUtils::GetBoolean(pRootElement, "enablenetworkmanager" , m_enableNetworkManager);
+  XMLUtils::GetBoolean(pRootElement, "shownetworkpassphrase", m_showNetworkPassPhrase);
 
   //airtunes + airplay
   XMLUtils::GetBoolean(pRootElement, "enableairtunesdebuglog", m_logEnableAirtunes);

@@ -1,6 +1,4 @@
-#ifndef GUI_DIALOG_ACCES_POINTS
-#define GUI_DIALOG_ACCES_POINTS
-
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -21,33 +19,35 @@
  *
  */
 
-#pragma once
 
 #include <vector>
 #include "guilib/GUIDialog.h"
-#include "Network.h"
+#include "IConnection.h"
+#include "utils/Job.h"
 
 class CFileItemList;
 
-class CGUIDialogAccessPoints : public CGUIDialog
+class CGUIDialogAccessPoints : public CGUIDialog, public IJobCallback
 {
 public:
   CGUIDialogAccessPoints(void);
   virtual ~CGUIDialogAccessPoints(void);
   virtual void OnInitWindow();
   virtual bool OnAction(const CAction &action);
-  void SetInterfaceName(CStdString interfaceName);
-  CStdString GetSelectedAccessPointEssId();
-  EncMode GetSelectedAccessPointEncMode();
-  bool WasItemSelected();
+  virtual bool OnBack(int actionID);
+
+  // IJobCallback
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
 private:
-  std::vector<NetworkAccessPoint> m_aps;
-  CStdString m_interfaceName;
-  CStdString m_selectedAPEssId;
-  EncMode m_selectedAPEncMode;
-  bool m_wasItemSelected;
-  CFileItemList *m_accessPoints;
-};
+  void UpdateConnectionList();
 
-#endif
+  static const char *ConnectionStateToString(ConnectionState state);
+  static const char *ConnectionTypeToString(ConnectionType type);
+  static const char *EncryptionToString(EncryptionType type);
+ 
+  std::string   m_ipname;
+  CIPConfig     m_ipconfig;
+  bool          m_doing_connection;
+  CFileItemList *m_connectionsFileList;
+};

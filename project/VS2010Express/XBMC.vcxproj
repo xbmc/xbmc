@@ -848,6 +848,7 @@
     <ClCompile Include="..\..\xbmc\network\AirPlayServer.cpp" />
     <ClCompile Include="..\..\xbmc\network\AirTunesServer.cpp" />
     <ClCompile Include="..\..\xbmc\network\cddb.cpp" />
+    <ClCompile Include="..\..\xbmc\network\ConnectionJob.cpp" />
     <ClCompile Include="..\..\xbmc\network\DNSNameCache.cpp" />
     <ClCompile Include="..\..\xbmc\network\EventClient.cpp" />
     <ClCompile Include="..\..\xbmc\network\EventPacket.cpp" />
@@ -862,8 +863,11 @@
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\mdns\ZeroconfBrowserMDNS.cpp" />
     <ClCompile Include="..\..\xbmc\network\mdns\ZeroconfMDNS.cpp" />
-    <ClCompile Include="..\..\xbmc\network\Network.cpp" />
+    <ClCompile Include="..\..\xbmc\network\NetworkManager.cpp" />
     <ClCompile Include="..\..\xbmc\network\NetworkServices.cpp" />
+    <ClCompile Include="..\..\xbmc\network\NetworkSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\network\NetworkUtils.cpp" />
+    <ClCompile Include="..\..\xbmc\network\NullNetworkManager.cpp" />
     <ClCompile Include="..\..\xbmc\network\Socket.cpp" />
     <ClCompile Include="..\..\xbmc\network\TCPServer.cpp" />
     <ClCompile Include="..\..\xbmc\network\UdpClient.cpp" />
@@ -879,7 +883,8 @@
     <ClCompile Include="..\..\xbmc\network\websocket\WebSocketManager.cpp" />
     <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV13.cpp" />
     <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV8.cpp" />
-    <ClCompile Include="..\..\xbmc\network\windows\NetworkWin32.cpp" />
+    <ClCompile Include="..\..\xbmc\network\windows\WinConnection.cpp" />
+    <ClCompile Include="..\..\xbmc\network\windows\WinNetworkManager.cpp" />
     <ClCompile Include="..\..\xbmc\network\Zeroconf.cpp" />
     <ClCompile Include="..\..\xbmc\network\ZeroconfBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\NfoFile.cpp" />
@@ -975,6 +980,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\rendering\RenderSystem.cpp" />
     <ClCompile Include="..\..\xbmc\SectionLoader.cpp" />
+    <ClCompile Include="..\..\xbmc\security\KeyringManager.cpp" />
+    <ClCompile Include="..\..\xbmc\security\MemoryKeyringManager.cpp" />
+    <ClCompile Include="..\..\xbmc\security\XMLKeyringManager.cpp" />
     <ClCompile Include="..\..\xbmc\settings\AdvancedSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.cpp" />
@@ -1168,7 +1176,17 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\PythonInvoker.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\pythreadstate.h" />
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
+    <ClInclude Include="..\..\xbmc\network\ConnectionJob.h" />
+    <ClInclude Include="..\..\xbmc\network\IConnection.h" />
+    <ClInclude Include="..\..\xbmc\network\INetworkManager.h" />
+    <ClInclude Include="..\..\xbmc\network\IPassphraseStorage.h" />
+    <ClInclude Include="..\..\xbmc\network\NetworkManager.h" />
     <ClInclude Include="..\..\xbmc\network\NetworkServices.h" />
+    <ClInclude Include="..\..\xbmc\network\NetworkSettings.h" />
+    <ClInclude Include="..\..\xbmc\network\NetworkUtils.h" />
+    <ClInclude Include="..\..\xbmc\network\NullNetworkManager.h" />
+    <ClInclude Include="..\..\xbmc\network\windows\WinConnection.h" />
+    <ClInclude Include="..\..\xbmc\network\windows\WinNetworkManager.h" />
     <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.h" />
     <ClInclude Include="..\..\xbmc\network\upnp\UPnPSettings.h" />
     <ClInclude Include="..\..\xbmc\profiles\dialogs\GUIDialogLockSettings.h" />
@@ -1176,6 +1194,10 @@
     <ClInclude Include="..\..\xbmc\profiles\Profile.h" />
     <ClInclude Include="..\..\xbmc\profiles\ProfilesManager.h" />
     <ClInclude Include="..\..\xbmc\profiles\windows\GUIWindowSettingsProfile.h" />
+    <ClInclude Include="..\..\xbmc\security\IKeyringManager.h" />
+    <ClInclude Include="..\..\xbmc\security\KeyringManager.h" />
+    <ClInclude Include="..\..\xbmc\security\MemoryKeyringManager.h" />
+    <ClInclude Include="..\..\xbmc\security\XMLKeyringManager.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\DisplaySettings.h" />
@@ -1212,6 +1234,8 @@
     <ClInclude Include="..\..\xbmc\utils\StringValidation.h" />
     <ClInclude Include="..\..\xbmc\utils\uXstrings.h" />
     <ClInclude Include="..\..\xbmc\utils\Vector.h" />
+    <ClInclude Include="..\..\xbmc\utils\XMLVariantParser.h" />
+    <ClInclude Include="..\..\xbmc\utils\XMLVariantWriter.h" />
     <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\swig.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPython.h" />
@@ -1361,6 +1385,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Vector.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\XMLVariantParser.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\XMLVariantWriter.cpp" />
     <ClCompile Include="..\..\xbmc\video\PlayerController.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\music\MusicThumbLoader.cpp" />
@@ -2312,12 +2338,10 @@
     <ClInclude Include="..\..\xbmc\network\GUIDialogAccessPoints.h" />
     <ClInclude Include="..\..\xbmc\network\GUIDialogNetworkSetup.h" />
     <ClInclude Include="..\..\xbmc\network\mdns\ZeroconfMDNS.h" />
-    <ClInclude Include="..\..\xbmc\network\Network.h" />
     <ClInclude Include="..\..\xbmc\network\Socket.h" />
     <ClInclude Include="..\..\xbmc\network\TCPServer.h" />
     <ClInclude Include="..\..\xbmc\network\UdpClient.h" />
     <ClInclude Include="..\..\xbmc\network\WebServer.h" />
-    <ClInclude Include="..\..\xbmc\network\windows\NetworkWin32.h" />
     <ClInclude Include="..\..\xbmc\network\Zeroconf.h" />
     <ClInclude Include="..\..\xbmc\network\ZeroconfBrowser.h" />
     <ClInclude Include="..\..\xbmc\NfoFile.h" />

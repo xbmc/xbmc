@@ -30,7 +30,6 @@
 #include "GUIPassword.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "network/Network.h"
 #include "utils/RegExp.h"
 #include "PartyModeManager.h"
 #include "dialogs/GUIDialogMediaSource.h"

@@ -32,7 +32,8 @@
 #include "utils/Variant.h"
 #include "threads/SingleLock.h"
 #include "websocket/WebSocketManager.h"
-#include "Network.h"
+#include "network/NetworkManager.h"
+#include "network/NetworkUtils.h"
 
 static const char     bt_service_name[] = "XBMC JSON-RPC";
 static const char     bt_service_desc[] = "Interface for XBMC remote control over bluetooth";
@@ -449,7 +450,7 @@ bool CTCPServer::InitializeTCP()
 
   Deinitialize();
 
-  if ((fd = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "JSONRPC")) == INVALID_SOCKET)
+  if ((fd = CNetworkUtils::CreateTCPServerSocket(m_port, !m_nonlocal, 10, "JSONRPC")) == INVALID_SOCKET)
     return false;
 
   m_servers.push_back(fd);

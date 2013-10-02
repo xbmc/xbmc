@@ -18,116 +18,189 @@
  *
  */
 
+
 #include "GUIDialogAccessPoints.h"
-#include "guilib/GUIKeyboardFactory.h"
-#ifdef TARGET_POSIX
-#include "linux/NetworkLinux.h"
-#endif
+#include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "FileItem.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/GUIWindowManager.h"
+#include "utils/JobManager.h"
+#include "utils/StringUtils.h"
+#include "ConnectionJob.h"
 
-#define CONTROL_ACCESS_POINTS 3
+// defines for the controls
+#define ACCESS_POINT_LABEL 1
+#define ACCESS_POINT_LIST  3
 
+//--------------------------------------------------------------
+//--------------------------------------------------------------
 CGUIDialogAccessPoints::CGUIDialogAccessPoints(void)
     : CGUIDialog(WINDOW_DIALOG_ACCESS_POINTS, "DialogAccessPoints.xml")
 {
-  m_accessPoints = new CFileItemList;
+  m_doing_connection = false;
+  m_connectionsFileList = new CFileItemList;
 }
 
 CGUIDialogAccessPoints::~CGUIDialogAccessPoints(void)
 {
-  delete m_accessPoints;
+  delete m_connectionsFileList;
+}
+
+void CGUIDialogAccessPoints::OnInitWindow()
+{
+  UpdateConnectionList();
+  CGUIDialog::OnInitWindow();
 }
 
 bool CGUIDialogAccessPoints::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SELECT_ITEM)
   {
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_ACCESS_POINTS);
-    OnMessage(msg);
-    int iItem = msg.GetParam1();
+    // block users from doing another connection
+    //  while we are already trying to connect.
+    if (!m_doing_connection)
+    {
+      // fetch the current selected item (access point)
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), ACCESS_POINT_LIST);
+      OnMessage(msg);
+      int iItem = msg.GetParam1();
 
-    if (iItem == (int) m_aps.size())
-    {
-       m_selectedAPEssId = "";
-       if (CGUIKeyboardFactory::ShowAndGetInput(m_selectedAPEssId, g_localizeStrings.Get(789), false))
-       {
-         m_selectedAPEncMode = m_aps[iItem].getEncryptionMode();
-         m_wasItemSelected = true;
-         Close();
-         return true;
-       }
+      ConnectionList  connections = g_application.getNetwork().GetConnections();
+      CConnectionJob  *connection = new CConnectionJob(connections[iItem],
+        m_ipconfig, &g_application.getKeyringManager());
+      CJobManager::GetInstance().AddJob(connection, this);
+      m_doing_connection = true;
     }
-    else
-    {
-       m_selectedAPEssId = m_aps[iItem].getEssId();
-       m_selectedAPEncMode = m_aps[iItem].getEncryptionMode();
-       m_wasItemSelected = true;
-       Close();
-       return true;
-    }
+    return true;
+  }
+  else if (action.GetID() == ACTION_CONNECTIONS_REFRESH)
+  {
+    // msg from Network Manager when the network connection changes.
+    // this is for future support for scanning for new access points.
+    UpdateConnectionList();
+    return true;
   }
 
   return CGUIDialog::OnAction(action);
 }
 
-void CGUIDialogAccessPoints::OnInitWindow()
+bool CGUIDialogAccessPoints::OnBack(int actionID)
 {
-  m_wasItemSelected = false;
+  // block the user from closing us if we are trying to connect.
+  if (m_doing_connection)
+    return false;
+  else
+    return CGUIDialog::OnBack(actionID);
+}
 
-  CGUIDialog::OnInitWindow();
+//--------------------------------------------------------------
+//--------------------------------------------------------------
+void CGUIDialogAccessPoints::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  // auto-close when connection job completes
+  m_doing_connection = false;
+  if (success)
+  {
+    Close(true);
+  }
+}
 
-  CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_ACCESS_POINTS);
+void CGUIDialogAccessPoints::UpdateConnectionList()
+{
+  m_connectionsFileList->Clear();
+
+  CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), ACCESS_POINT_LIST);
   OnMessage(msgReset);
 
-  m_accessPoints->Clear();
+  int connectedItem = 0;
+  ConnectionList connections = g_application.getNetwork().GetConnections();
 
-  CStdString ifaceName(m_interfaceName);
-  CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
-  m_aps = iface->GetAccessPoints();
-
-  for (int i = 0; i < (int) m_aps.size(); i++)
+  std::string connection_name;
+  for (size_t i = 0; i < connections.size(); i++)
   {
-      CFileItemPtr item(new CFileItem(m_aps[i].getEssId()));
+    connection_name = connections[i]->GetName();
+    CFileItemPtr item(new CFileItem(connection_name));
 
-      int q = m_aps[i].getQuality();
-      if (q <= 20) item->SetArt("thumb", "ap-signal1.png");
-      else if (q <= 40) item->SetArt("thumb", "ap-signal2.png");
-      else if (q <= 60) item->SetArt("thumb", "ap-signal3.png");
-      else if (q <= 80) item->SetArt("thumb", "ap-signal4.png");
-      else if (q <= 100) item->SetArt("thumb", "ap-signal5.png");
+    if (connections[i]->GetState() == NETWORK_CONNECTION_STATE_CONNECTED)
+      connectedItem = i;
 
-      if (m_aps[i].getEncryptionMode() != ENC_NONE)
-         item->SetIconImage("ap-lock.png");
+    if (connections[i]->GetType() == NETWORK_CONNECTION_TYPE_WIFI)
+    {
+      int strength = connections[i]->GetStrength();
+      int signal   = strength / 20 + 1;
 
-      m_accessPoints->Add(item);
+      item->SetArt("thumb", StringUtils::Format("ap-signal%d.png", signal));
+      item->SetProperty("signal",     signal);
+      item->SetProperty("encryption", EncryptionToString(connections[i]->GetEncryption()));
+    }
+
+    item->SetProperty("type",  ConnectionTypeToString(connections[i]->GetType()));
+    item->SetProperty("state", ConnectionStateToString(connections[i]->GetState()));
+ 
+    m_connectionsFileList->Add(item);
   }
 
-  CFileItemPtr item(new CFileItem(g_localizeStrings.Get(1047)));
-  m_accessPoints->Add(item);
-
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_ACCESS_POINTS, 0, 0, m_accessPoints);
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), ACCESS_POINT_LIST, connectedItem, 0, m_connectionsFileList);
   OnMessage(msg);
 }
 
-void CGUIDialogAccessPoints::SetInterfaceName(CStdString interfaceName)
+const char *CGUIDialogAccessPoints::ConnectionStateToString(ConnectionState state)
 {
-  m_interfaceName = interfaceName;
+  switch (state)
+  {
+    case NETWORK_CONNECTION_STATE_DISCONNECTED:
+      return "disconnected";
+    case NETWORK_CONNECTION_STATE_CONNECTING:
+      return "connecting";
+    case NETWORK_CONNECTION_STATE_CONNECTED:
+      return "connected";
+    case NETWORK_CONNECTION_STATE_FAILURE:
+      return "failure";
+    case NETWORK_CONNECTION_STATE_UNKNOWN:
+    default:
+      return "unknown";
+  }
+
+  return "";
 }
 
-CStdString CGUIDialogAccessPoints::GetSelectedAccessPointEssId()
+const char *CGUIDialogAccessPoints::ConnectionTypeToString(ConnectionType type)
 {
-  return m_selectedAPEssId;
+  switch (type)
+  {
+    case NETWORK_CONNECTION_TYPE_WIRED:
+      return "wired";
+    case NETWORK_CONNECTION_TYPE_WIFI:
+      return "wifi";
+    case NETWORK_CONNECTION_TYPE_UNKNOWN:
+    default:
+      return "unknown";
+  }
+
+  return "";
 }
 
-EncMode CGUIDialogAccessPoints::GetSelectedAccessPointEncMode()
+const char *CGUIDialogAccessPoints::EncryptionToString(EncryptionType type)
 {
-  return m_selectedAPEncMode;
-}
+  switch (type)
+  {
+    case NETWORK_CONNECTION_ENCRYPTION_NONE:
+      return "";
+    case NETWORK_CONNECTION_ENCRYPTION_WEP:
+      return "wep";
+    case NETWORK_CONNECTION_ENCRYPTION_WPA:
+      return "wpa";
+    case NETWORK_CONNECTION_ENCRYPTION_WPA2:
+      return "wpa2";
+    case NETWORK_CONNECTION_ENCRYPTION_IEEE8021x:
+      return "wpa-rsn";
+    case NETWORK_CONNECTION_ENCRYPTION_UNKNOWN:
+    default:
+      return "unknown";
+  }
 
-bool CGUIDialogAccessPoints::WasItemSelected()
-{
-  return m_wasItemSelected;
+  return "";
 }

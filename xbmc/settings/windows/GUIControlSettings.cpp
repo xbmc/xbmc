@@ -493,6 +493,9 @@ void CGUIControlButtonSetting::Update()
         break;
       }
 
+      case SettingControlFormatAction:
+        break;
+
       default:
         return;
     }
