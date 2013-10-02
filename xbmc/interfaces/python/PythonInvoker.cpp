@@ -588,7 +588,7 @@ bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
   return true;
 }
 
-void CPythonInvoker::addPath(const std::string path)
+void CPythonInvoker::addPath(const std::string& path)
 {
   if (path.empty())
     return;

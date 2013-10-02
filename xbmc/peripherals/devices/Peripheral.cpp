@@ -234,7 +234,7 @@ bool CPeripheral::HasSetting(const CStdString &strKey) const
 
 bool CPeripheral::HasSettings(void) const
 {
-  return m_settings.size() > 0;
+  return !m_settings.empty();
 }
 
 bool CPeripheral::HasConfigurableSettings(void) const
