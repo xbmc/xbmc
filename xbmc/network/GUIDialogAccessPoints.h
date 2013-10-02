@@ -19,6 +19,7 @@
  *
  */
 
+
 #include <vector>
 #include "guilib/GUIDialog.h"
 #include "IConnection.h"
