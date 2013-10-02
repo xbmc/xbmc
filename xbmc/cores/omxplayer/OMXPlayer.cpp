@@ -2702,7 +2702,7 @@ bool COMXPlayer::CanSeek()
   return m_State.canseek;
 }
 
-void COMXPlayer::Seek(bool bPlus, bool bLargeStep)
+void COMXPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
   // Single step
   if( m_playSpeed == DVD_PLAYSPEED_PAUSE && bPlus && !bLargeStep)
@@ -2714,14 +2714,17 @@ void COMXPlayer::Seek(bool bPlus, bool bLargeStep)
   if (!m_State.canseek)
     return;
 
-  if(((bPlus && GetChapter() < GetChapterCount())
-  || (!bPlus && GetChapter() > 1)) && bLargeStep)
+  if (bLargeStep && bChapterOverride)
   {
-    if(bPlus)
-      SeekChapter(GetChapter() + 1);
-    else
-      SeekChapter(GetChapter() - 1);
-    return;
+    if ((bPlus && GetChapter() < GetChapterCount())
+    || (!bPlus && GetChapter() > 1))
+    {
+      if(bPlus)
+        SeekChapter(GetChapter() + 1);
+      else
+        SeekChapter(GetChapter() - 1);
+      return;
+    }
   }
 
   int64_t seek;

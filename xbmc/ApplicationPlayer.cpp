@@ -222,11 +222,11 @@ void CApplicationPlayer::SetVolume(float volume)
     player->SetVolume(volume);
 }
 
-void CApplicationPlayer::Seek(bool bPlus, bool bLargeStep)
+void CApplicationPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    player->Seek(bPlus, bLargeStep);
+    player->Seek(bPlus, bLargeStep, bChapterOverride);
 }
 
 void CApplicationPlayer::SeekPercentage(float fPercent)

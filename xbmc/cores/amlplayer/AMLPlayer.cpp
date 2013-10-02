@@ -734,7 +734,7 @@ bool CAMLPlayer::CanSeek()
   return GetTotalTime() > 0;
 }
 
-void CAMLPlayer::Seek(bool bPlus, bool bLargeStep)
+void CAMLPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
   // force updated to m_elapsed_ms, m_duration_ms.
   GetStatus();
@@ -742,9 +742,10 @@ void CAMLPlayer::Seek(bool bPlus, bool bLargeStep)
   CSingleLock lock(m_aml_csection);
 
   // try chapter seeking first, chapter_index is ones based.
-  int chapter_index = GetChapter();
-  if (bLargeStep)
+  if (bLargeStep && bChapterOverride)
   {
+    int chapter_index = GetChapter();
+
     // seek to next chapter
     if (bPlus && (chapter_index < GetChapterCount()))
     {

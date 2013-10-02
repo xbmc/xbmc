@@ -2448,7 +2448,7 @@ bool CDVDPlayer::CanSeek()
   return m_State.canseek;
 }
 
-void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
+void CDVDPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 #if 0
   // sadly this doesn't work for now, audio player must
@@ -2462,14 +2462,17 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   if (!m_State.canseek)
     return;
 
-  if(((bPlus && GetChapter() < GetChapterCount())
-  || (!bPlus && GetChapter() > 1)) && bLargeStep)
+  if (bLargeStep && bChapterOverride)
   {
-    if(bPlus)
-      SeekChapter(GetChapter() + 1);
-    else
-      SeekChapter(GetChapter() - 1);
-    return;
+    if ((bPlus && GetChapter() < GetChapterCount())
+    || (!bPlus && GetChapter() > 1))
+    {
+      if(bPlus)
+        SeekChapter(GetChapter() + 1);
+      else
+        SeekChapter(GetChapter() - 1);
+      return;
+    }
   }
 
   int64_t seek;
@@ -3790,9 +3793,9 @@ int CDVDPlayer::SeekChapter(int iChapter)
   {
     // Do a regular big jump.
     if (GetChapter() > 0 && iChapter > GetChapter())
-      Seek(true, true);
+      Seek(true, true, true);
     else
-      Seek(false, true);
+      Seek(false, true, true);
   }
   return 0;
 }
