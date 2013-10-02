@@ -1653,7 +1653,7 @@ void CLinuxRendererGLES::DeleteYV12Texture(int index)
   g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
   {
-    for(int p = 0;p<MAX_PLANES;p++)
+    for(int p = 0;p<2;p++)
     {
       if( fields[f][p].id )
       {
@@ -1662,10 +1662,11 @@ void CLinuxRendererGLES::DeleteYV12Texture(int index)
         fields[f][p].id = 0;
       }
     }
+    fields[f][2].id = 0;
   }
   g_graphicsContext.EndPaint();
 
-  for(int p = 0;p<MAX_PLANES;p++)
+  for(int p = 0;p<2;p++)
   {
     if (im.plane[p])
     {
@@ -1702,7 +1703,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
   {
-    for(int p = 0;p<MAX_PLANES;p++)
+    for(int p = 0;p<2;p++)
     {
       if (!glIsTexture(fields[f][p].id))
       {
@@ -1710,6 +1711,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
         VerifyGLState();
       }
     }
+    fields[f][2].id = fields[f][1].id;
   }
 
   // YUV
@@ -1732,8 +1734,8 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
     {
       planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
       planes[1].texheight = planes[0].texheight >> im.cshift_y;
-      planes[2].texwidth  = planes[0].texwidth  >> im.cshift_x;
-      planes[2].texheight = planes[0].texheight >> im.cshift_y;
+      planes[2].texwidth  = planes[1].texwidth;
+      planes[2].texheight = planes[1].texheight;
     }
 
     if(m_renderMethod & RENDER_POT)
