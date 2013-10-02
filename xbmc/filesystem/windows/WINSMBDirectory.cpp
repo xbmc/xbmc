@@ -49,20 +49,13 @@ CWINSMBDirectory::~CWINSMBDirectory(void)
 {
 }
 
-CStdString CWINSMBDirectory::GetLocal(const CStdString& strPath)
+std::string CWINSMBDirectory::GetLocal(const std::string& strPath)
 {
   CURL url(strPath);
-  CStdString path( url.GetFileName() );
-  if( url.GetProtocol().Equals("smb", false) )
-  {
-    CStdString host( url.GetHostName() );
+  std::string path(url.GetFileName());
+  if (url.GetProtocol().Equals("smb", false) && !url.GetHostName().empty())
+    path = "\\\\?\\UNC\\" + (std::string&)url.GetHostName() + "\\" + path;
 
-    if(host.size() > 0)
-    {
-      path = "\\\\?\\UNC\\" + host + "\\" + path;
-    }
-  }
-  path.Replace('/', '\\');
   return path;
 }
 
@@ -70,7 +63,7 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
 {
   WIN32_FIND_DATAW wfd;
 
-  CStdString strPath=strPath1;
+  std::string strPath=strPath1;
 
   CURL url(strPath);
 
@@ -85,9 +78,9 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
         return false;
 
       ConnectToShare(url);
-      CStdString strHost = "\\\\" + url.GetHostName();
-      CStdStringW strHostW;
-      g_charsetConverter.utf8ToW(strHost,strHostW);
+      std::string strHost = "\\\\" + url.GetHostName();
+      std::wstring strHostW;
+      g_charsetConverter.utf8ToW(strHost,strHostW, false, false, true);
       lpnr->lpRemoteName = (LPWSTR)strHostW.c_str();
       m_bHost = true;
       ret = EnumerateFunc(lpnr, items);
@@ -102,14 +95,14 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
 
   memset(&wfd, 0, sizeof(wfd));
   //rebuild the URL
-  CStdString strUNCShare = "\\\\?\\UNC\\" + url.GetHostName() + "\\" + url.GetFileName();
-  strUNCShare.Replace("/", "\\");
+  std::string strUNCShare = "\\\\?\\UNC\\" + (std::string)url.GetHostName() + "\\" + CUtil::FixSlashes(url.GetFileName(), true, false);
+  
   if(!URIUtils::HasSlashAtEnd(strUNCShare))
     strUNCShare.append("\\");
 
-  CStdStringW strSearchMask;
-  g_charsetConverter.utf8ToW(strUNCShare, strSearchMask, false);
-  strSearchMask += "*";
+  std::wstring strSearchMask;
+  g_charsetConverter.utf8ToW(strUNCShare, strSearchMask, false, false, true);
+  strSearchMask += L"*";
 
   FILETIME localTime;
   CAutoPtrFind hFind ( FindFirstFileW(strSearchMask.c_str(), &wfd));
@@ -125,7 +118,7 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
       hFind.attach(FindFirstFileW(strSearchMask.c_str(), &wfd));
     }
     else
-      return Exists(strPath1);
+      return Exists(strPath1.c_str());
   }
 
   if (hFind.isValid())
@@ -134,14 +127,14 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
     {
       if (wfd.cFileName[0] != 0)
       {
-        CStdString strLabel;
-        g_charsetConverter.wToUTF8(wfd.cFileName,strLabel);
+        std::string strLabel;
+        g_charsetConverter.wToUTF8(wfd.cFileName,strLabel, true);
         if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
         {
           if (strLabel != "." && strLabel != "..")
           {
             CFileItemPtr pItem(new CFileItem(strLabel));
-            CStdString path = URIUtils::AddFileToFolder(strPath, strLabel);
+            std::string path = URIUtils::AddFileToFolder(strPath, strLabel);
             URIUtils::AddSlashAtEnd(path);
             pItem->SetPath(path);
             pItem->m_bIsFolder = true;
@@ -176,10 +169,7 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
 
 bool CWINSMBDirectory::Create(const char* strPath)
 {
-  CStdString strPath1 = GetLocal(strPath);
-  CStdStringW strWPath1;
-  g_charsetConverter.utf8ToW(strPath1, strWPath1, false);
-  if(::CreateDirectoryW(strWPath1, NULL))
+  if(::CreateDirectoryW(CWIN32Util::ConvertPathToWin32Form(GetLocal(strPath)).c_str(), NULL))
     return true;
   else if(GetLastError() == ERROR_ALREADY_EXISTS)
     return true;
@@ -189,18 +179,12 @@ bool CWINSMBDirectory::Create(const char* strPath)
 
 bool CWINSMBDirectory::Remove(const char* strPath)
 {
-  CStdStringW strWPath;
-  CStdString strPath1 = GetLocal(strPath);
-  g_charsetConverter.utf8ToW(strPath1, strWPath, false);
-  return ::RemoveDirectoryW(strWPath) ? true : false;
+  return ::RemoveDirectoryW(CWIN32Util::ConvertPathToWin32Form(GetLocal(strPath)).c_str()) ? true : false;
 }
 
 bool CWINSMBDirectory::Exists(const char* strPath)
 {
-  CStdString strReplaced=GetLocal(strPath);
-  CStdStringW strWReplaced;
-  g_charsetConverter.utf8ToW(strReplaced, strWReplaced, false);
-  DWORD attributes = GetFileAttributesW(strWReplaced);
+  DWORD attributes = GetFileAttributesW(CWIN32Util::ConvertPathToWin32Form(GetLocal(strPath)).c_str());
   if(attributes == INVALID_FILE_ATTRIBUTES)
     return false;
   if (FILE_ATTRIBUTE_DIRECTORY & attributes)
@@ -284,7 +268,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           CStdStringW strRemoteNameW = lpnrLocal[i].lpRemoteName;
           CStdString  strName,strRemoteName;
 
-          g_charsetConverter.wToUTF8(strRemoteNameW,strRemoteName);
+          g_charsetConverter.wToUTF8(strRemoteNameW,strRemoteName, true);
           CLog::Log(LOGDEBUG,"Found Server/Share: %s", strRemoteName.c_str());
 
           strurl.append(strRemoteName);
@@ -407,11 +391,11 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   return true;
 }
 
-CStdString CWINSMBDirectory::URLEncode(const CURL &url)
+std::string CWINSMBDirectory::URLEncode(const CURL &url)
 {
   /* due to smb wanting encoded urls we have to build it manually */
 
-  CStdString flat = "smb://";
+  std::string flat = "smb://";
 
   /* samba messes up of password is set but no username is set. don't know why yet */
   /* probably the url parser that goes crazy */
