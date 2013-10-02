@@ -46,10 +46,6 @@ using namespace std;
 using namespace XFILE;
 using namespace PVR;
 
-#ifdef HAS_VIDEO_PLAYBACK
-extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers); //lowlevel audio
-#endif
-
 CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "VideoOSDSettings.xml")
 {
