@@ -835,7 +835,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
          // This gets called twice per network, what's the difference between the two?
          case SIOCGIWFREQ:
          {
-            float freq = ((float)iwe->u.freq.m) * pow(10, iwe->u.freq.e);
+            float freq = ((float)iwe->u.freq.m) * pow(10.0, iwe->u.freq.e);
             if (freq > 1000)
                channel = NetworkAccessPoint::FreqToChannel(freq);
             else
