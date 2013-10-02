@@ -160,6 +160,16 @@ bool CStreamDetailSubtitle::IsWorseThan(CStreamDetail *that)
   return false;
 }
 
+CStreamDetailSubtitle& CStreamDetailSubtitle::operator=(const CStreamDetailSubtitle &that)
+{
+  if (this != &that)
+  {
+    this->m_pParent = that.m_pParent;
+    this->m_strLanguage = that.m_strLanguage;
+  }
+  return *this;
+}
+
 CStreamDetails& CStreamDetails::operator=(const CStreamDetails &that)
 {
   if (this != &that)

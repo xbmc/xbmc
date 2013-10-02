@@ -2716,6 +2716,7 @@ void CDVDPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &inf
 
 void CDVDPlayer::SetSubtitle(int iStream)
 {
+  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = iStream;
   m_messenger.Put(new CDVDMsgPlayerSetSubtitleStream(iStream));
 }
 
@@ -3890,6 +3891,17 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
     m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
     m_SelectionStreams.Get(STREAM_SUBTITLE, index).filename2 = vobsubfile;
+    ExternalStreamInfo info;
+    CUtil::GetExternalStreamDetailsFromFilename(m_filename, vobsubfile, info);
+    m_SelectionStreams.Get(STREAM_SUBTITLE, index).name = info.name;
+    if (m_SelectionStreams.Get(STREAM_SUBTITLE, index).language.empty())
+      m_SelectionStreams.Get(STREAM_SUBTITLE, index).language = info.language;
+
+    if (static_cast<CDemuxStream::EFlags>(info.flag) == CDemuxStream::FLAG_NONE)
+      m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
+    else
+      m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = static_cast<CDemuxStream::EFlags>(info.flag);      
+
     return index;
   }
   if(ext == ".sub")
@@ -3903,8 +3915,15 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   s.type     = STREAM_SUBTITLE;
   s.id       = 0;
   s.filename = filename;
-  s.name     = URIUtils::GetFileName(filename);
-  s.flags    = flags;
+  ExternalStreamInfo info;
+  CUtil::GetExternalStreamDetailsFromFilename(m_filename, filename, info);
+  s.name = info.name;
+  s.language = info.language;
+  if (static_cast<CDemuxStream::EFlags>(info.flag) == CDemuxStream::FLAG_NONE)
+    s .flags = flags;
+  else
+    s.flags = static_cast<CDemuxStream::EFlags>(info.flag);     
+
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
 }
@@ -4107,7 +4126,19 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
   if (m_pDemuxer)
   {
-    bool result = CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, details);
+    std::vector<SelectionStream> subs = m_SelectionStreams.Get(STREAM_SUBTITLE);
+    std::vector<CStreamDetailSubtitle> extSubDetails;
+    for (unsigned int i = 0; i < subs.size(); i++)
+    {
+      if (subs[i].filename == m_filename)
+        continue;
+
+      CStreamDetailSubtitle p;
+      p.m_strLanguage = subs[i].language;
+      extSubDetails.push_back(p);
+    }
+    
+    bool result = CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, extSubDetails, details);
     if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
     {
       /* 

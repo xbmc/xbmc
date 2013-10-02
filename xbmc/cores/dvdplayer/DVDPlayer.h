@@ -39,6 +39,7 @@
 #include "Edl.h"
 #include "FileItem.h"
 #include "threads/SingleLock.h"
+#include "utils/StreamDetails.h"
 
 
 class CDVDInputStream;
