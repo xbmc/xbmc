@@ -45,20 +45,9 @@ if(TARGET_OSX)
   set(CPACK_GENERATOR "ZIP")
   set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
 elseif(TARGET_COMMON_LINUX)
-  set(CPACK_GENERATOR "DEB;TBZ2")
+  set(CPACK_GENERATOR "TBZ2")
 elseif(TARGET_WIN32)
   set(CPACK_GENERATOR "NSIS")
-endif()
-
-#debian stuff
-set(CPACK_DEBIAN_PACKAGE_DEPENDS
-  "libasound2 (>= 1.0.23), libavahi-client3 (>= 0.6.16), libavahi-common3 (>= 0.6.16), libavcodec53 (>= 6:0.10.5~) | libavcodec-extra-53 (>= 6:0.10.6), libavfilter2 (>= 6:0.10.5~), libavformat53 (>= 6:0.10.5~), libavutil51 (>= 6:0.10.5~), libboost-system1.46.1 (>= 1.46.1-1), libboost-thread1.46.1 (>= 1.46.1-1), libc6 (>= 2.3.6-6~), libc6 (>= 2.8), libfreetype6 (>= 2.2.1), libfribidi0 (>= 0.19.2), libgcc1 (>= 1:4.1.1), libgl1-mesa-glx | libgl1, libglew1.6 (>= 1.6.0), libglu1-mesa | libglu1, libjpeg8 (>= 8c), liblzo2-2, libmicrohttpd5, libpcre3 (>= 8.10), libpostproc52 (>= 6:0.10.5~), libpulse0 (>= 1:1.0), libsamplerate0 (>= 0.1.7), libsdl1.2debian (>= 1.2.10-1), libsqlite3-0 (>= 3.6.11), libstdc++6 (>= 4.6), libswresample0 (>= 6:0.10.5~), libswscale2 (>= 6:0.10.5~), libtinyxml2.6.2, libx11-6, libxext6, libxrandr2 (>= 4.3), libyajl1 (>= 1.0.5), zlib1g (>= 1:1.1.4), libpulse0 (>= 1:1.1), libasound2 (>= 1.0.25), libcec2 (>= 2.0.5), libass4 (>= 0.10.0), libshairport1, libmad0 (>= 0.15.1b), libcurl3-gnutls (>= 7.16.2-1), libplist1 (>= 0.13), librtmp0 (>= 2.3), libvdpau1 (>= 0.2)")
-set(CPACK_PACKAGE_CONTACT "http://plexapp.com/")
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Plex inc")
-set(CPACK_DEBIAN_PACKAGE_SECTION "universe/video")
-set(CPACK_DEBIAN_PACKAGE_NAME "plexhometheater")
-if(CPACK_GENERATOR MATCHES "DEB")
-  set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/plexhometheater")
 endif()
 
 set(CPACK_SOURCE_GENERATOR TBZ2)
@@ -74,7 +63,15 @@ set(PKG package)
 if(TARGET_WIN32)
   add_custom_target(signed_package ${plexdir}/scripts/WindowsSign.cmd ${CPACK_PACKAGE_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}.exe DEPENDS package)
   set(PKG signed_package)
-endif()
+elseif(TARGET_OSX)
+  add_custom_command(
+    OUTPUT PlexHomeTheater-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}-manifest.xml
+    COMMAND ${plexdir}/scripts/create_update.py -p ${CPACK_SYSTEM_NAME} -v ${PLEX_VERSION_STRING} -i PlexHomeTheater-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}.zip -o ${CMAKE_BINARY_DIR}
+    DEPENDS package
+  )
+  add_custom_target(update_manifest DEPENDS PlexHomeTheater-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}-manifest.xml)
+  set(PKG update_manifest)
+endif(TARGET_WIN32)
 
 add_custom_target(release_package DEPENDS symbols ${PKG})
 

@@ -2,10 +2,9 @@ import hashlib
 
 def make_shasum(fpath):
 	sha1 = hashlib.sha1()
-	f = open(fpath, "rb")
 	try:
-		sha1.update(f.read())
+		sha1.update(fpath.read())
 	finally:
-		f.close()
+		fpath.close()
 
 	return sha1.hexdigest()

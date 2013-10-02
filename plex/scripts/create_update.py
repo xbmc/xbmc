@@ -5,8 +5,29 @@ import platform
 import zipfile
 from utils import make_shasum
 
+def get_file_element(root, frelpath, size, perms, shasum, tarfilename):
+	fileEl = et.SubElement(root, "file")
+
+	name = et.SubElement(fileEl, "name")
+	name.text = frelpath
+
+	sizeel = et.SubElement(fileEl, "size")
+	sizeel.text = str(size)
+
+	permissions = et.SubElement(fileEl, "permissions")
+	permissions.text = str(perms)
+
+	hashel = et.SubElement(fileEl, "hash")
+	hashel.text = shasum
+
+	package = et.SubElement(fileEl, "package")
+	package.text = tarfilename.replace(".zip", "")
+
+	return fileEl
+
+
 def create_update(product, version, output, platform, input, delta, fversion):
-	if not os.path.isdir(input):
+	if not os.path.isdir(input) and not input.endswith(".zip"):
 		print "Input directory %s can't be read." % input
 		return False
 
@@ -36,45 +57,48 @@ def create_update(product, version, output, platform, input, delta, fversion):
 
 	install = et.SubElement(rootel, "install")
 
-	prodstr = "%s-%s-%s" % (product, version, platform)
+	inputiszip = False
 
-	tarfilename = prodstr + "-update_full.zip"
-	if delta:
-		tarfilename = prodstr + "-update_delta-%s.zip" % fversion
+	if input.endswith(".zip"):
+		tarfilename = input
+		inputiszip = True
+	else:
+		prodstr = "%s-%s-%s" % (product, version, platform)
 
-	archive = zipfile.ZipFile(tarfilename, "w")
+		tarfilename = prodstr + "-update_full.zip"
+		if delta:
+			tarfilename = prodstr + "-update_delta-%s.zip" % fversion
 
-	for root,dirs,files in os.walk(input):
-		for f in files:
-			fpath = os.path.join(root, f)
-			frelpath = fpath.replace(input + "/", "Plex Home Theater.app/")
-			shasum = make_shasum(fpath)
-			size = os.path.getsize(fpath)
-			prems = oct(stat.S_IMODE(os.lstat(fpath).st_mode))
+	archive = None
+	if inputiszip:
+		archive = zipfile.ZipFile(tarfilename, "r")
+		for info in archive.infolist():
+			frelpath = info.filename
+			size = info.file_size
+			perms = oct((info.external_attr >> 16) & 0777)
 
-			archive.write(fpath, frelpath, zipfile.ZIP_DEFLATED)
+			zfile = archive.open(info, "r")
+			shasum = make_shasum(zfile)
+			fileEl = get_file_element(install, frelpath, size, perms, shasum, tarfilename)
 
-			fileEl = et.SubElement(install, "file")
+	else:
+		archive = zipfile.ZipFile(tarfilename, "w")
+		for root,dirs,files in os.walk(input):
+			for f in files:
+				fpath = os.path.join(root, f)
+				frelpath = fpath.replace(input + "/", "")
+				shasum = make_shasum(open(fpath, "r"))
+				size = os.path.getsize(fpath)
+				perms = oct(stat.S_IMODE(os.lstat(fpath).st_mode))
 
-			name = et.SubElement(fileEl, "name")
-			name.text = frelpath
+				archive.write(fpath, frelpath, zipfile.ZIP_DEFLATED)
 
-			sizeel = et.SubElement(fileEl, "size")
-			sizeel.text = str(size)
-
-			permissions = et.SubElement(fileEl, "permissions")
-			permissions.text = str(prems)
-
-			hashel = et.SubElement(fileEl, "hash")
-			hashel.text = shasum
-
-			package = et.SubElement(fileEl, "package")
-			package.text = tarfilename.replace(".zip", "")
+				fileEl = get_file_element(install, frelpath, size, perms, shasum, tarfilename)
 
 
 	archive.close()
 
-	shasum = make_shasum(tarfilename)
+	shasum = make_shasum(file(tarfilename, "r"))
 
 	packages = et.SubElement(rootel, "packages")
 	package = et.SubElement(packages, "package")
@@ -88,7 +112,7 @@ def create_update(product, version, output, platform, input, delta, fversion):
 	sizeel = et.SubElement(package, "size")
 	sizeel.text = str(os.path.getsize(tarfilename))
 	tree = et.ElementTree(rootel)
-	tree.write(tarfilename.replace(".zip", ".xml"), pretty_print=True)
+	tree.write(tarfilename.replace(".zip", "-manifest.xml"), pretty_print=True)
 
 	return True
 
