@@ -192,6 +192,7 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_uiBufferLen(0),
   m_avgTimeWaiting(50),
   m_sinkLatency(0.0),
+  m_lastWriteToBuffer(0),
   m_pBuffer(NULL),
   m_bufferPtr(0)
 {
