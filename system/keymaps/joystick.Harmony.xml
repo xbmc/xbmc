@@ -161,8 +161,8 @@
   </MyMusicLibrary>
   <FullscreenVideo>
     <joystick name="Harmony">
-      <!-- up       	-->      <button id="1">BigStepForward</button>
-      <!-- down      	-->      <button id="2">BigStepBack</button>
+      <!-- up       	-->      <button id="1">ChapterOrBigStepForward</button>
+      <!-- down      	-->      <button id="2">ChapterOrBigStepBack</button>
       <!-- left       	-->      <button id="3">StepBack</button>
       <!-- right      	-->      <button id="4">StepForward</button>
       <!-- menu       	-->      <button id="6">OSD</button>

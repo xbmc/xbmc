@@ -527,7 +527,7 @@ bool CExternalPlayer::CanSeek()
   return false;
 }
 
-void CExternalPlayer::Seek(bool bPlus, bool bLargeStep)
+void CExternalPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 }
 

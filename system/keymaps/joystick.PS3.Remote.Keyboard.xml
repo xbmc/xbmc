@@ -97,8 +97,8 @@
       <button id="8">FastForward</button>
       <hat    id="1" position="left">StepBack</hat>
       <hat    id="1" position="right">StepForward</hat>
-      <hat    id="1" position="up">BigStepForward</hat>
-      <hat    id="1" position="down">BigStepBack</hat>
+      <hat    id="1" position="up">ChapterOrBigStepForward</hat>
+      <hat    id="1" position="down">ChapterOrBigStepBack</hat>
     </joystick>
   </FullscreenVideo>
 

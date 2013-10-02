@@ -119,8 +119,8 @@
       <button id="5">AspectRatio</button>
       <button id="6">Info</button>
       <button id="9">OSD</button>
-      <button id="13">BigStepForward</button>
-      <button id="14">StepForward</button>
+      <button id="13">ChapterOrBigStepForward</button>
+      <button id="14">ChapterOrStepForward</button>
       <button id="15">BigStepBack</button>
       <button id="16">StepBack</button>
       <button id="17">SmallStepBack</button>

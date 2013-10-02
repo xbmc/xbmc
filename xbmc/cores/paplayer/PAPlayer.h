@@ -53,7 +53,7 @@ public:
   virtual bool HasVideo() const { return false; }
   virtual bool HasAudio() const { return true; }
   virtual bool CanSeek();
-  virtual void Seek(bool bPlus = true, bool bLargeStep = false);
+  virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false);
   virtual void SeekPercentage(float fPercent = 0.0f);
   virtual float GetPercentage();
   virtual void SetVolume(float volume);
