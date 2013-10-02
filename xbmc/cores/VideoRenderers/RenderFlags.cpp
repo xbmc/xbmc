@@ -83,7 +83,7 @@ namespace RenderManager {
     return 0;
   }
 
-  unsigned int GetStereoModeFlags(const std::string mode)
+  unsigned int GetStereoModeFlags(const std::string& mode)
   {
     static std::map<std::string, unsigned int> convert;
     if(convert.empty())

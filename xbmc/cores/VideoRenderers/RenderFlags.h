@@ -88,7 +88,7 @@ namespace RenderManager {
   unsigned int GetFlagsChromaPosition(unsigned int chroma_position);
   unsigned int GetFlagsColorPrimaries(unsigned int color_primaries);
   unsigned int GetFlagsColorTransfer(unsigned int color_transfer);
-  unsigned int GetStereoModeFlags(const std::string mode);
+  unsigned int GetStereoModeFlags(const std::string& mode);
   std::string  GetStereoModeInvert(const std::string& mode);
 
 }
