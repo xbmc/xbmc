@@ -1116,7 +1116,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
       }
 
       // add our map to our table
-      if (map.size() > 0)
+      if (!map.empty())
         m_translatorMap.insert(pair<int, buttonMap>( windowID, map));
     }
   }
@@ -1554,7 +1554,7 @@ void CButtonTranslator::MapTouchActions(int windowID, TiXmlNode *pTouch)
   }
 
   // add the modified touch map with the window ID
-  if (map.size() > 0)
+  if (!map.empty())
     m_touchMap.insert(std::pair<int, buttonMap>(windowID, map));
 }
 

@@ -116,6 +116,7 @@ static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LP
 CAESinkDirectSound::CAESinkDirectSound() :
   m_pBuffer       (NULL ),
   m_pDSound       (NULL ),
+  m_encodedFormat (AE_FMT_INVALID),
   m_AvgBytesPerSec(0    ),
   m_dwChunkSize   (0    ),
   m_dwFrameSize   (0    ),
@@ -271,6 +272,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
   format.m_channelLayout = m_channelLayout;
+  m_encodedFormat = format.m_dataFormat;
   format.m_frames = uiFrameCount;
   format.m_frameSamples = format.m_frames * format.m_channelLayout.Count();
   format.m_frameSize = (AE_IS_RAW(format.m_dataFormat) ? wfxex.Format.wBitsPerSample >> 3 : sizeof(float)) * format.m_channelLayout.Count();

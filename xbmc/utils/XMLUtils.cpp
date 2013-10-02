@@ -191,7 +191,7 @@ bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
   Parses the XML for multiple tags of the given name.
   Does not clear the array to support chaining.
 */
-bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, std::vector<std::string>& arrayValue, bool clear /* = false */, const std::string separator /* = "" */)
+bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, std::vector<std::string>& arrayValue, bool clear /* = false */, const std::string& separator /* = "" */)
 {
   std::string strTemp;
   const TiXmlElement* node = pRootNode->FirstChildElement(strTag);

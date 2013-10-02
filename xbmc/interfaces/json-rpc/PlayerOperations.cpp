@@ -966,7 +966,7 @@ int CPlayerOperations::GetPlaylist(PlayerType player)
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string path, bool recursive, bool random)
+JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool recursive, bool random)
 {
   int flags = 0;
   if (recursive)

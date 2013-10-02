@@ -99,6 +99,7 @@ string StringUtils::FormatV(const char *fmt, va_list args)
     cstr = new_cstr;
   }
 
+  free(cstr);
   return "";
 }
 
