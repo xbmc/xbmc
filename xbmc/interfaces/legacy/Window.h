@@ -63,9 +63,24 @@ namespace XBMCAddon
       AddonClass::Ref<Control> control; // previously pObject
 #endif
 
+    /**
+     * getId() -- Returns the action's current id as a long or 0 if no action is mapped in the xml's.
+     */
       long getId() { TRACE; return id; }
+
+    /**
+     * getButtonCode() -- Returns the button code for this action.
+     */
       long getButtonCode() { TRACE; return buttonCode; }
+
+    /**
+     * getAmount1() -- Returns the first amount of force applied to the thumbstick n.
+     */
       float getAmount1() { TRACE; return fAmount1; }
+      
+    /**
+     * getAmount2() -- Returns the second amount of force applied to the thumbstick n.
+     */
       float getAmount2() { TRACE; return fAmount2; }
     };
 
