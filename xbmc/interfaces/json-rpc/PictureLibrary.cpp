@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-//../../../../Tools/jsd_builder/jsd_builder 6.5.5  ezeesystem.txt methods.json types.json notifications.json
+//./../../../tools/jsd_builder/jsd_builder.o  6.5.5  ezeesystem.txt methods.json types.json notifications.json
 #include "PictureLibrary.h"
 #include "pictures/PictureDatabase.h"
 #include "FileItem.h"

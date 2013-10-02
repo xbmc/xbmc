@@ -540,55 +540,43 @@
                 "albumfaceid", "takenon" ]
     }
   },
+  
   "Contact.Details.Base": {
     "extends": "Media.Details.Base",
     "properties": {
-      "name": { "$ref": "Array.String" }
+      "phone": { "$ref": "Array.String" }
     }
   },
   "Contact.Details.Media": {
     "extends": "Contact.Details.Base",
     "properties": {
-      "title": { "type": "string" },
-      "face": { "$ref": "Array.String" },
-      "location": { "type": "string" },
-      "takenon": { "type": "string" },
-      "year": { "type": "integer" },
-      "rating": { "type": "integer" },
-      "locationid": { "$ref": "Array.Integer" },
-      "faceid": { "$ref": "Array.Integer" },
-      "displayartist": { "type" : "string" }
+      "contactid": { "$ref": "Array.Integer" },
+      "contact": { "$ref": "Array.String" },
+      "phone": { "$ref": "Array.String" },
+      "phoneid": { "$ref": "Array.Integer" }
     }
   },
+    
+
   
   "Contact.Details.Contact": {
     "extends": "Contact.Details.Media",
     "properties": {
-      "pictureid": { "$ref": "Library.Id", "required": true },
-      "file": { "type": "string" },
-      "picturetype": { "type": "string" },
-      "orientation": { "type": "string" },
-      "albumface": { "$ref": "Array.String" },
-      "album": { "type": "string" },
-      "track": { "type": "integer" },
-      "duration": { "type": "integer" },
-      "comment": { "type": "string" },
-      "lyrics": { "type": "string" },
-      "picturecount": { "type": "integer" },
-      "albumid": { "$ref": "Library.Id" },
-      "takenon": { "type": "string" },
-      "disc": { "type": "integer" },
-      "albumfaceid": { "$ref": "Array.Integer" }
+      "contactid": { "$ref": "Library.Id", "required": true },
+      "contact": { "$ref": "Array.String" },
+      "phoneid": { "$ref": "Library.Id", "required": true },
+      "phones": { "$ref": "Array.String" }
     }
   },  
+  
   "Contact.Fields.Contact": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the locationid, faceid and/or albumfaceid field will result in increased response times",
-      "enum": [ "suffix" ]
+      "description": "Requesting the locationid and/or faceid field will result in increased response times",
+      "enum": [ "phone", "contact", "label", "thumbnail"]
     }
   },
-  
+
   "Contact.Fields.Name": {
     "type": "object",
     "properties": {
@@ -641,7 +629,7 @@
     "type": "object",
     "properties": {
       "method": { "type": "string", "default": "none",
-        "enum": [ "email1", "email2", "email3", "email5", "email4" ]
+        "enum": [ "work", "home", "work1", "home1", "work2", "home2" ]
       }
     }
   },
