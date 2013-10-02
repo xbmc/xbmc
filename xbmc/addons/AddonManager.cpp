@@ -286,6 +286,15 @@ bool CAddonMgr::Init()
   }
 
   FindAddons();
+
+  VECADDONS repos;
+  if (GetAddons(ADDON_REPOSITORY, repos))
+  {
+    VECADDONS::iterator it = repos.begin();
+    for (;it != repos.end(); ++it)
+      CLog::Log(LOGNOTICE, "ADDONS: Using repository %s", (*it)->ID().c_str());
+  }
+
   return true;
 }
 
