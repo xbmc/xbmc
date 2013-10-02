@@ -90,9 +90,12 @@
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "URL.h"
+#include "utils/LangCodeExpander.h"
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
 #endif
+
+#include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
 
 using namespace std;
 
@@ -1984,7 +1987,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     {
       CFileItemList items;
       
-      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip",DIR_FLAG_NO_FILE_DIRS);
+      CDirectory::GetDirectory(strLookInPaths[step], items, g_advancedSettings.m_subtitlesExtensions, DIR_FLAG_NO_FILE_DIRS);
       
       for (int j = 0; j < items.Size(); j++)
       {
@@ -2123,6 +2126,73 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   }
 
   return nSubtitlesAdded;
+}
+
+void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, const CStdString& strStream, ExternalStreamInfo& info)
+{
+  CStdString videoBaseName = URIUtils::GetFileName(strVideo);
+  URIUtils::RemoveExtension(videoBaseName);
+
+  CStdString toParse = URIUtils::GetFileName(strStream);
+  URIUtils::RemoveExtension(toParse);
+
+  // we check left part - if it's same as video base name - strip it
+  if (toParse.Left(videoBaseName.length()).Equals(videoBaseName))
+    toParse = toParse.Mid(videoBaseName.length());
+
+  // trim any non-alphanumeric char in the begining
+  std::string::iterator result = std::find_if(toParse.begin(), toParse.end(), ::isalnum);
+
+  if (result != toParse.end()) // if we have anything to parse
+  {
+    std::string inputString(result, toParse.end());
+    std::string delimiters(" .-");
+    std::vector<std::string> tokens;
+    StringUtils::Tokenize(inputString, tokens, delimiters);
+
+    std::string name;
+    for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
+    {
+      if (info.language.empty())
+      {
+        CStdString langTmp(*it);
+        CStdString langCode;
+        // try to recognize language
+        if (g_LangCodeExpander.ConvertToThreeCharCode(langCode, langTmp))
+        {
+          info.language = langCode;
+          continue;
+        }
+      }
+      if (info.flag == 0x1111)
+      {
+        std::string  flag_tmp(*it);
+        StringUtils::ToLower(flag_tmp);
+        if (!flag_tmp.compare("none"))
+        {
+          info.flag = CDemuxStream::FLAG_NONE;
+          continue;
+        }
+        else if (!flag_tmp.compare("default"))
+        {
+          info.flag = CDemuxStream::FLAG_DEFAULT;
+          continue;
+        }
+        else if (!flag_tmp.compare("forced"))
+        {
+          info.flag = CDemuxStream::FLAG_FORCED;
+          continue;
+        }
+      }
+      name += " " + (*it);
+    }
+    StringUtils::Trim(name);
+    info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);
+
+    if (info.flag == 0x1111)
+      info.flag = CDemuxStream::FLAG_NONE;
+  }
+  CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s", __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, strStream.c_str());
 }
 
 /*! \brief in a vector of subtitles finds the corresponding .sub file for a given .idx file

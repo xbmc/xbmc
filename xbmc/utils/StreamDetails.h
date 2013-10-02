@@ -78,6 +78,7 @@ class CStreamDetailSubtitle : public CStreamDetail
 {
 public:
   CStreamDetailSubtitle();
+  CStreamDetailSubtitle& operator=(const CStreamDetailSubtitle &that);
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& value) const;
   virtual bool IsWorseThan(CStreamDetail *that);
