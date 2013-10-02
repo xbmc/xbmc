@@ -3,11 +3,11 @@ find_program(BZIP2 bzip2 HINTS /usr/bin)
 function(GENERATE_DSYMS TGT)
   get_target_property(TARGET_FNAME ${TGT} OUTPUT_NAME)
   add_custom_command(
-    OUTPUT ${TGT}.dSYM
+    OUTPUT "Plex Home Theater.dSYM/Contents/Resources/DWARF/Plex Home Theater"
     COMMAND dsymutil -o "${TARGET_FNAME}.dSYM" "$<TARGET_FILE:${TGT}>"
     DEPENDS ${TGT}
   )
-  add_custom_target(${TGT}_dsym ALL DEPENDS ${TGT}.dSYM)
+  add_custom_target(${TGT}_dsym ALL DEPENDS "Plex Home Theater.dSYM/Contents/Resources/DWARF/Plex Home Theater")
 endfunction(GENERATE_DSYMS APP)
 
 function(GENERATE_BREAKPAD_SYMBOLS APP)
