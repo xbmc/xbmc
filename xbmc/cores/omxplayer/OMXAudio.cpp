@@ -900,7 +900,7 @@ bool COMXAudio::ApplyVolume(void)
   const float* coeff = downmixing_coefficients_8;
 
   // alternate coffeciciants that boost centre channel more
-  if(!CSettings::Get().GetBool("audiooutput.boostcentre"))
+  if(!CSettings::Get().GetBool("audiooutput.boostcentre") && m_format.m_channelLayout.Count() > 2)
     coeff = downmixing_coefficients_8_boostcentre;
 
   // normally we normalise the levels, can be skipped (boosted) at risk of distortion
@@ -928,32 +928,31 @@ bool COMXAudio::ApplyVolume(void)
 
   assert(sizeof(mix.coeff)/sizeof(mix.coeff[0]) == 16);
 
-  // reduce scaling so overflow can be seen
-  for(size_t i = 0; i < 16; ++i)
-    mix.coeff[i] = static_cast<unsigned int>(0x10000 * (coeff[i] * r * 0.01f));
-
-  mix.nPortIndex = m_omx_decoder.GetInputPort();
-  omx_err = m_omx_decoder.SetConfig(OMX_IndexConfigBrcmAudioDownmixCoefficients, &mix);
-  if(omx_err != OMX_ErrorNone)
-  {
-    CLog::Log(LOGERROR, "%s::%s - error setting decoder OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x\n",
-              CLASSNAME, __func__, omx_err);
-    return false;
-  }
-
   if (m_amplification != 1.0)
   {
+    // reduce scaling so overflow can be seen
     for(size_t i = 0; i < 16; ++i)
-      mix.coeff[i] = static_cast<unsigned int>(0x10000 * (coeff[i] * r * fVolume * m_amplification * m_attenuation));
+      mix.coeff[i] = static_cast<unsigned int>(0x10000 * (coeff[i] * r * 0.01f));
 
-    mix.nPortIndex = m_omx_mixer.GetInputPort();
-    omx_err = m_omx_mixer.SetConfig(OMX_IndexConfigBrcmAudioDownmixCoefficients, &mix);
+    mix.nPortIndex = m_omx_decoder.GetInputPort();
+    omx_err = m_omx_decoder.SetConfig(OMX_IndexConfigBrcmAudioDownmixCoefficients, &mix);
     if(omx_err != OMX_ErrorNone)
     {
-      CLog::Log(LOGERROR, "%s::%s - error setting mixer OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x\n",
+      CLog::Log(LOGERROR, "%s::%s - error setting decoder OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x\n",
                 CLASSNAME, __func__, omx_err);
       return false;
     }
+  }
+  for(size_t i = 0; i < 16; ++i)
+    mix.coeff[i] = static_cast<unsigned int>(0x10000 * (coeff[i] * r * fVolume * m_amplification * m_attenuation));
+
+  mix.nPortIndex = m_omx_mixer.GetInputPort();
+  omx_err = m_omx_mixer.SetConfig(OMX_IndexConfigBrcmAudioDownmixCoefficients, &mix);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s - error setting mixer OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x\n",
+              CLASSNAME, __func__, omx_err);
+    return false;
   }
   CLog::Log(LOGINFO, "%s::%s - Volume=%.2f (* %.2f * %.2f)\n", CLASSNAME, __func__, fVolume, m_amplification, m_attenuation);
   return true;
