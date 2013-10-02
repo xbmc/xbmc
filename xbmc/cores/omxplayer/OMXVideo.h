@@ -88,7 +88,6 @@ protected:
   uint8_t           *m_extradata;
   int               m_extrasize;
 
-  bool              m_video_convert;
   std::string       m_video_codec_name;
 
   bool              m_deinterlace;
