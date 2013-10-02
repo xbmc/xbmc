@@ -763,7 +763,7 @@ void CGUIWindowFullScreen::Render()
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
-  if ((g_application.GetCurrentPlayer() == EPC_MPLAYER ||
+  if ((
 #if defined(HAS_AMLPLAYER)
        g_application.GetCurrentPlayer() == EPC_AMLPLAYER ||
 #endif

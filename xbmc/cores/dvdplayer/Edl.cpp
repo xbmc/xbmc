@@ -38,7 +38,6 @@ extern "C"
 
 using namespace std;
 
-#define MPLAYER_EDL_FILENAME "special://temp/xbmc.edl"
 #define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
 #define VIDEOREDO_HEADER "<Version>2"
 #define VIDEOREDO_TAG_CUT "<Cut>"
@@ -58,9 +57,6 @@ CEdl::~CEdl()
 
 void CEdl::Clear()
 {
-  if (CFile::Exists(MPLAYER_EDL_FILENAME))
-    CFile::Delete(MPLAYER_EDL_FILENAME);
-
   m_vecCuts.clear();
   m_vecSceneMarkers.clear();
   m_iTotalCutTime = 0;
@@ -168,7 +164,6 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
   if (bFound)
   {
     MergeShortCommBreaks();
-    WriteMPlayerEdl();
   }
   return bFound;
 }
@@ -768,47 +763,6 @@ bool CEdl::AddSceneMarker(const int64_t iSceneMarker)
   m_vecSceneMarkers.push_back(iSceneMarker); // Unsorted
 
   return true;
-}
-
-bool CEdl::WriteMPlayerEdl()
-{
-  if (!HasCut())
-    return false;
-
-  CFile mplayerEdlFile;
-  if (!mplayerEdlFile.OpenForWrite(MPLAYER_EDL_FILENAME, true))
-  {
-    CLog::Log(LOGERROR, "%s - Error opening MPlayer EDL file for writing: %s", __FUNCTION__,
-              MPLAYER_EDL_FILENAME);
-    return false;
-  }
-
-  CStdString strBuffer;
-  for (int i = 0; i < (int)m_vecCuts.size(); i++)
-  {
-    /*
-     * MPlayer doesn't understand the scene marker (2) or commercial break (3) identifiers that XBMC
-     * supports in EDL files.
-     *
-     * http://www.mplayerhq.hu/DOCS/HTML/en/edl.html
-     *
-     * Write out mutes (1) directly. Treat commercial breaks as cuts (everything other than MUTES = 0).
-     */
-    strBuffer.AppendFormat("%.3f\t%.3f\t%i\n", (float)(m_vecCuts[i].start / 1000),
-                                               (float)(m_vecCuts[i].end / 1000),
-                                               m_vecCuts[i].action == MUTE ? 1 : 0);
-  }
-  mplayerEdlFile.Write(strBuffer.c_str(), strBuffer.size());
-  mplayerEdlFile.Close();
-
-  CLog::Log(LOGDEBUG, "%s - MPlayer EDL file written to: %s", __FUNCTION__, MPLAYER_EDL_FILENAME);
-
-  return true;
-}
-
-CStdString CEdl::GetMPlayerEdl()
-{
-  return MPLAYER_EDL_FILENAME;
 }
 
 bool CEdl::HasCut()

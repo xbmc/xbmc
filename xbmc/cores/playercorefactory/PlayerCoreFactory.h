@@ -37,12 +37,10 @@ class CPlayerCoreConfig;
 class CPlayerSelectionRule;
 class IPlayer;
 
-// do not remove mplayer - will break scripts
 enum EPLAYERCORES
 {
   EPC_NONE,
   EPC_DVDPLAYER,
-  EPC_MPLAYER,
   EPC_PAPLAYER,
 #if defined(HAS_AMLPLAYER)
   EPC_AMLPLAYER,
@@ -58,7 +56,6 @@ typedef unsigned int PLAYERCOREID;
 typedef std::vector<PLAYERCOREID> VECPLAYERCORES;
 const PLAYERCOREID PCID_NONE = EPC_NONE;
 const PLAYERCOREID PCID_DVDPLAYER = EPC_DVDPLAYER;
-const PLAYERCOREID PCID_MPLAYER = EPC_MPLAYER;
 const PLAYERCOREID PCID_PAPLAYER = EPC_PAPLAYER;
 #if defined(HAS_AMLPLAYER)
 const PLAYERCOREID PCID_AMLPLAYER = EPC_AMLPLAYER;

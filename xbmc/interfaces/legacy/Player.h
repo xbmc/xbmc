@@ -47,7 +47,6 @@ namespace XBMCAddon
      * core     : (optional) Use a specified playcore instead of letting xbmc decide the playercore to use.
      *          - xbmc.PLAYER_CORE_AUTO
      *          - xbmc.PLAYER_CORE_DVDPLAYER
-     *          - xbmc.PLAYER_CORE_MPLAYER
      *          - xbmc.PLAYER_CORE_PAPLAYER
      */
 
@@ -87,7 +86,7 @@ namespace XBMCAddon
        * example:
        *   - listitem = xbmcgui.ListItem('Ironman')
        *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})
-       *   - xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem, windowed)
+       *   - xbmc.Player( xbmc.PLAYER_CORE_DVDPLAYER ).play(url, listitem, windowed)
        */
       void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false);
 
@@ -115,7 +114,7 @@ namespace XBMCAddon
        * windowed       : [opt] bool - true=play video windowed, false=play users preference.(default)
        * 
        * example:
-       *   - xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play()
+       *   - xbmc.Player( xbmc.PLAYER_CORE_DVDPLAYER ).play()
        */
       void playCurrent(bool windowed = false);
 
