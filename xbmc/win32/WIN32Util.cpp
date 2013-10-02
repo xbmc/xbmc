@@ -473,26 +473,18 @@ CStdString CWIN32Util::GetProfilePath()
   return strProfilePath;
 }
 
-CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
+std::string CWIN32Util::UncToSmb(const std::string& strPath)
 {
-  CStdString strRetPath(strPath);
-  if(StringUtils::StartsWith(strRetPath, "\\\\"))
-  {
-    strRetPath = "smb:" + strPath;
-    strRetPath.Replace("\\","/");
-  }
-  return strRetPath;
+  if (strPath.length() > 2 && strPath.compare(0, 2, "\\\\", 2) == 0 && strPath.compare(2, 2, "?\\", 2) != 0)
+    return "smb://" + strPath.substr(2);
+  return strPath;
 }
 
-CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
+std::string CWIN32Util::SmbToUnc(const std::string& strPath)
 {
-  CStdString strRetPath(strPath);
-  if(StringUtils::StartsWithNoCase(strRetPath, "smb://"))
-  {
-    strRetPath.Replace("smb://","\\\\");
-    strRetPath.Replace("/","\\");
-  }
-  return strRetPath;
+  if(StringUtils::StartsWithNoCase(strPath, "smb://"))
+    return "\\\\" + strPath.substr(6);
+  return strPath;
 }
 
 bool CWIN32Util::AddExtraLongPathPrefix(std::wstring& path)
