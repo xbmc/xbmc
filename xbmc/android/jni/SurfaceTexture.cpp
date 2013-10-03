@@ -19,23 +19,61 @@
  */
 
 #include "JNIBase.h"
+#include "Context.h"
+#include "ClassLoader.h"
 #include "SurfaceTexture.h"
 
 #include "jutils/jutils-details.hpp"
 
+#include <algorithm>
+
 using namespace jni;
 
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+CJNISurfaceTextureOnFrameAvailableListener* CJNISurfaceTextureOnFrameAvailableListener::m_listenerInstance(NULL);
+
+CJNISurfaceTextureOnFrameAvailableListener::CJNISurfaceTextureOnFrameAvailableListener()
+: CJNIBase("org/xbmc/xbmc/XBMCOnFrameAvailableListener")
+{
+  CJNIContext *appInstance = CJNIContext::GetAppInstance();
+  if (!appInstance)
+    return;
+
+  // Convert "the/class/name" to "the.class.name" as loadClass() expects it.
+  std::string dotClassName = GetClassName();
+  std::replace(dotClassName.begin(), dotClassName.end(), '/', '.');
+  m_object = new_object(appInstance->getClassLoader().loadClass(dotClassName));
+  m_object.setGlobal();
+
+  m_listenerInstance = this;
+}
+
+void CJNISurfaceTextureOnFrameAvailableListener::_onFrameAvailable(JNIEnv *env, jobject context, jobject surface)
+{
+  (void)env;
+  (void)context;
+  if (m_listenerInstance)
+  {
+    CJNISurfaceTexture jni_surface = jhobject(surface);
+    m_listenerInstance->OnFrameAvailable(jni_surface);
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 CJNISurfaceTexture::CJNISurfaceTexture(int texName) : CJNIBase("android/graphics/SurfaceTexture")
 {
   m_object = new_object(GetClassName(), "<init>", "(I)V", texName);
   m_object.setGlobal();
 }
 
-/*
-void setOnFrameAvailableListener(const CJNISurfaceTextureOnFrameAvailableListener &listener)
+void CJNISurfaceTexture::setOnFrameAvailableListener(const CJNISurfaceTextureOnFrameAvailableListener &listener)
 {
+  call_method<void>(m_object,
+    "setOnFrameAvailableListener",
+    "(Landroid/graphics/SurfaceTexture$OnFrameAvailableListener;)V", listener.get_raw());
 }
-*/
 
 void CJNISurfaceTexture::setDefaultBufferSize(int width, int height)
 {

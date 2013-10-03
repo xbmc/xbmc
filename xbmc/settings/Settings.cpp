@@ -82,6 +82,9 @@
 #include "utils/XBMCTinyXML.h"
 #include "view/ViewStateSettings.h"
 #include "windowing/WindowingFactory.h"
+#if defined(TARGET_ANDROID)
+#include "android/activity/AndroidFeatures.h"
+#endif
 
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
@@ -758,6 +761,10 @@ void CSettings::InitializeConditions()
 #endif
 #ifdef HAVE_LIBVDPAU
   m_settingsManager->AddCondition("have_libvdpau");
+#endif
+#ifdef TARGET_ANDROID
+  if (CAndroidFeatures::GetVersion() > 15)
+    m_settingsManager->AddCondition("has_mediacodec");
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   m_settingsManager->AddCondition("have_videotoolboxdecoder");

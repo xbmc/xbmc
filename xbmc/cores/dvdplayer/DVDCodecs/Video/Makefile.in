@@ -41,6 +41,10 @@ INCLUDES += -I$(prefix)/include/amcodec
 INCLUDES += -I$(prefix)/include/amplayer
 endif
 
+ifeq (@USE_ANDROID@,1)
+SRCS += DVDVideoCodecAndroidMediaCodec.cpp
+endif
+
 LIB=Video.a
 
 include @abs_top_srcdir@/Makefile.include
