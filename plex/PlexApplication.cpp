@@ -41,7 +41,7 @@ PlexApplication::Start()
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
-  autoUpdater = new CPlexAutoUpdate(CURL("http://10.0.42.200/update.xml"));
+  autoUpdater = new CPlexAutoUpdate(CURL("http://nightlies.plexapp.com/update.xml"));
 
   serverManager->load();
 
@@ -122,7 +122,7 @@ void PlexApplication::OnWakeUp()
 ////////////////////////////////////////////////////////////////////////////////////////
 void PlexApplication::ForceVersionCheck()
 {
-  //m_autoUpdater->ForceCheckInBackground();
+  autoUpdater->ForceVersionCheckInBackground();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

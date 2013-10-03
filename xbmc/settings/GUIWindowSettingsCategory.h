@@ -69,6 +69,10 @@ protected:
 
   void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
 
+  /* PLEX */
+  void FillInPlexUpdateChannels(CSetting *pSetting);
+  /* END PLEX */
+
   virtual void SetupControls();
   CGUIControl* AddIntBasedSpinControl(CSetting *pSetting, float groupWidth, int &iControlID);
   void CreateSettings();

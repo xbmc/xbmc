@@ -134,6 +134,7 @@
 #include "Client/PlexTranscoderClient.h"
 #include "Client/PlexServerDataLoader.h"
 #include "Client/PlexNetworkServiceBrowser.h"
+#include "AutoUpdate/PlexAutoUpdate.h"
 /* END PLEX */
 
 using namespace std;
@@ -587,8 +588,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
       continue;
     }
     /* PLEX */
+    else if (strSetting.Equals("updates.channel"))
+    {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
+      FillInPlexUpdateChannels(pSetting);
+      continue;
+    }
     else if (strSetting.Equals("updates.current"))
+    {
       g_guiSettings.SetString("updates.current", g_infoManager.GetVersion());
+    }
     /* END PLEX */
 
     AddSetting(pSetting, group->GetWidth(), iControlID);
@@ -1114,7 +1123,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("updates.checknow"))
     {
-      g_application.ForceVersionCheck();
+      CGUIButtonControl *pControl = (CGUIButtonControl*)GetControl(pSettingControl->GetID());
+      if (pControl)
+      {
+        if (g_plexApplication.autoUpdater->IsReadyToInstall())
+          pControl->SetLabel(g_localizeStrings.Get(40018));
+        else
+          pControl->SetLabel(g_localizeStrings.Get(40016));
+      }
     }
     else if (strSetting.Equals("updates.current"))
     {
@@ -1123,9 +1139,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       {
         pControl->SetEnabled(false);
       }
-      g_guiSettings.SetString("updates.current", g_infoManager.GetVersion());
-    }
 
+      if (g_plexApplication.autoUpdater->IsReadyToInstall())
+      {
+        pControl->SetLabel(g_localizeStrings.Get(40028));
+        g_guiSettings.SetString("updates.current", g_plexApplication.autoUpdater->GetUpdateVersion());
+      }
+      else
+      {
+        pControl->SetLabel(g_localizeStrings.Get(40029));
+        g_guiSettings.SetString("updates.current", g_infoManager.GetVersion());
+      }
+    }
     /* END PLEX */
 
     else if (strSetting.Equals("input.enablejoystick"))
@@ -2213,6 +2238,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     else
       g_plexApplication.GetServiceListener()->StopAdvertisement();
   }
+  else if (strSetting.Equals("updates.checknow"))
+  {
+    if (g_plexApplication.autoUpdater->IsReadyToInstall())
+      g_plexApplication.autoUpdater->UpdateAndRestart();
+    else
+      g_plexApplication.autoUpdater->ForceVersionCheckInBackground();
+  }
   /* END PLEX */
 
   UpdateSettings();
@@ -3219,3 +3251,28 @@ void CGUIWindowSettingsCategory::ValidatePortNumber(BaseSettingControlPtr pSetti
     pSetting->SetData(privPort.c_str());
   }
 }
+
+/* PLEX */
+void CGUIWindowSettingsCategory::FillInPlexUpdateChannels(CSetting *pSetting)
+{
+  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  CMyPlexUserInfo user = g_plexApplication.myPlexManager->GetCurrentUserInfo();
+
+  pControl->AddLabel(g_localizeStrings.Get(40003),   PLEX_UPDATE_CHANNEL_STABLE);
+
+  if (user.subscription)
+    pControl->AddLabel(g_localizeStrings.Get(40004),   PLEX_UPDATE_CHANNEL_PLEXPASS);
+
+  if (user.ninja)
+    pControl->AddLabel(g_localizeStrings.Get(40005),   PLEX_UPDATE_CHANNEL_NINJA);
+
+  if (!user.subscription && !user.ninja)
+    /* only one choice */
+    pControl->SetEnabled(false);
+
+  pControl->SetValue(pSettingInt->GetData());
+}
+/* END PLEX */

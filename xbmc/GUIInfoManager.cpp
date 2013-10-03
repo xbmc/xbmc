@@ -4336,23 +4336,17 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 // in the HTTP request user agent.
 CStdString CGUIInfoManager::GetVersion()
 {
-  CStdString tmp;
 #ifndef __PLEX__
+  CStdString tmp;
 #ifdef GIT_REV
   tmp.Format("%d.%d%s Git:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, GIT_REV);
 #else
   tmp.Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
 #endif
-#else
-
-#include "git_revision.h"
-#ifndef GIT_REV
-#define GIT_REV "Unknown"
-#endif
-
-  tmp.Format("%s-%s", PLEX_VERSION, GIT_REV);
-#endif
   return tmp;
+#else
+  return PLEX_VERSION;
+#endif
 }
 
 CStdString CGUIInfoManager::GetBuild()

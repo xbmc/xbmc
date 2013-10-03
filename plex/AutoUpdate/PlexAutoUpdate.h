@@ -25,13 +25,18 @@
 class CPlexAutoUpdate : public ITimerCallback, IJobCallback
 {
   public:
-    CPlexAutoUpdate(const CURL& updateUrl, int searchFrequency = 21600);
+    CPlexAutoUpdate(const CURL& updateUrl, int searchFrequency = 21600000); /* 6 hours default */
     void OnTimeout();
     virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
     virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
     bool IsReadyToInstall() const { return m_ready; }
+    bool IsDownloadingUpdate() const { return m_isDownloading; }
+    CStdString GetUpdateVersion() const { return m_downloadItem->GetProperty("version").asString(); }
+    bool IsSearchingForUpdate() const { return m_isSearching; }
     void UpdateAndRestart();
+    void ForceVersionCheckInBackground();
+    void ResetTimer();
 
   private:
     void DownloadUpdate(CFileItemPtr updateItem);
@@ -45,6 +50,10 @@ class CPlexAutoUpdate : public ITimerCallback, IJobCallback
     CStdString m_localManifest;
     CStdString m_localBinary;
     CStdString m_localApplication;
+
+    bool m_forced;
+    bool m_isSearching;
+    bool m_isDownloading;
 
     bool m_needManifest;
     bool m_needBinary;

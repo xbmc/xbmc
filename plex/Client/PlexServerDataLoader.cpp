@@ -15,11 +15,10 @@ using namespace XFILE;
 
 #define SECTION_REFRESH_INTERVAL 30 * 1000
 
-CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIORITY_NORMAL)
+CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIORITY_NORMAL), m_stopped(false)
 {
   m_refreshTimer = new CTimer(this);
   m_refreshTimer->Start(SECTION_REFRESH_INTERVAL, true);
-  m_stopped = false;
 }
 
 void
@@ -95,10 +94,14 @@ CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job
     if (j->m_channelList)
       m_channelMap[j->m_server->GetUUID()] = j->m_channelList;
 
+    CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnJobComplete sending PLEX_SERVER_DATA_LOADED for %s", j->m_server->GetUUID().c_str());
+
     CGUIMessage msg(GUI_MSG_PLEX_SERVER_DATA_LOADED, PLEX_DATA_LOADER, 0);
     msg.SetStringParam(j->m_server->GetUUID());
     g_windowManager.SendThreadMessage(msg);
   }
+  else
+    CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnJobComplete fail");
 
   CJobQueue::OnJobComplete(jobID, success, job);
 }

@@ -14,19 +14,18 @@
 #include "File.h"
 #include "Directory.h"
 #include "utils/URIUtils.h"
-
+#include "settings/GUISettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
-
 #include "ApplicationMessenger.h"
-
 #include "filesystem/SpecialProtocol.h"
 
 using namespace XFILE;
 
-CPlexAutoUpdate::CPlexAutoUpdate(const CURL &updateUrl, int searchFrequency) : m_url(updateUrl), m_searchFrequency(searchFrequency), m_timer(this), m_ready(false)
+CPlexAutoUpdate::CPlexAutoUpdate(const CURL &updateUrl, int searchFrequency)
+  : m_forced(false), m_isSearching(false), m_isDownloading(false), m_url(updateUrl), m_searchFrequency(searchFrequency), m_timer(this), m_ready(false)
 {
 #ifdef TARGET_DARWIN_OSX
-  m_timer.Start(5 * 1000, false);
+  m_timer.Start(5 * 1000, true);
 #endif
 }
 
@@ -34,31 +33,48 @@ void CPlexAutoUpdate::OnTimeout()
 {
   CFileItemList list;
   CPlexDirectory dir;
+  m_isSearching = true;
+
   if (dir.GetDirectory(m_url, list))
   {
-    if (list.Size() != 1)
-    {
-      CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout failed to get something useful from %s", m_url.Get().c_str());
-      return;
-    }
+    m_isSearching = false;
 
-    CFileItemPtr updateItem = list.Get(0);
-    if (updateItem->HasProperty("version") &&
-        updateItem->GetProperty("version").asString() != PLEX_VERSION)
+    if (list.Size() == 1)
     {
-      CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout got version %s from update endpoint", updateItem->GetProperty("version").asString().c_str());
+      CFileItemPtr updateItem = list.Get(0);
+      if (updateItem->HasProperty("version") &&
+          updateItem->GetProperty("version").asString() != PLEX_VERSION)
+      {
+        CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout got version %s from update endpoint", updateItem->GetProperty("version").asString().c_str());
 
-      DownloadUpdate(updateItem);
+        DownloadUpdate(updateItem);
+        return;
+      }
     }
-    else
-      m_timer.Start(m_searchFrequency);
   }
+
+  CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout no updates available");
+
+  if (m_forced)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "No update available!", "You are up-to-date!", 10000, false);
+    m_forced = false;
+  }
+
+  if (g_guiSettings.GetBool("updates.auto"))
+    m_timer.SetTimeout(m_searchFrequency);
+  else
+    m_timer.Stop();
+
+  m_isSearching = false;
 }
 
 void CPlexAutoUpdate::DownloadUpdate(CFileItemPtr updateItem)
 {
   if (m_downloadItem)
     return;
+
+  m_isDownloading = true;
 
   m_downloadItem = updateItem;
   m_needManifest = m_needBinary = m_needApplication = false;
@@ -113,13 +129,15 @@ void CPlexAutoUpdate::DownloadUpdate(CFileItemPtr updateItem)
 void CPlexAutoUpdate::ProcessDownloads()
 {
   CStdString verStr;
-  verStr.Format("Version %s is now ready to be installed.", m_downloadItem->GetProperty("version").asString());
+  verStr.Format("Version %s is now ready to be installed.", GetUpdateVersion());
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Update available!", verStr, 10000, false);
 
   CGUIMessage msg(GUI_MSG_UPDATE_MAIN_MENU, PLEX_AUTO_UPDATER, 0);
   CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_HOME);
 
+  m_isDownloading = false;
   m_ready = true;
+  m_timer.Stop(); // no need to poll for any more updates
 }
 
 void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
@@ -132,7 +150,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
       if (PlexUtils::GetSHA1SumFromURL(m_localManifest) != m_downloadItem->GetProperty("updateManifestSHA").asString())
       {
         CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to download manifest, SHA mismatch. Retrying in %d seconds", m_searchFrequency);
-        m_timer.Start(m_searchFrequency);
+        return;
       }
 
       CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnJobComplete got manifest.");
@@ -143,7 +161,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
       if (PlexUtils::GetSHA1SumFromURL(m_localBinary) != m_downloadItem->GetProperty("updateBinarySHA").asString())
       {
         CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to download update, SHA mismatch. Retrying in %d seconds", m_searchFrequency);
-        m_timer.Start(m_searchFrequency);
+        return;
       }
 
       CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnJobComplete got update binary.");
@@ -154,7 +172,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
       if (PlexUtils::GetSHA1SumFromURL(m_localApplication) != m_downloadItem->GetProperty("updateApplicationSHA").asString())
       {
         CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to download updater, SHA mismatch. Retrying in %d seconds", m_searchFrequency);
-        m_timer.Start(m_searchFrequency);
+        return;
       }
       CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnJobComplete got update application");
       m_needApplication = false;
@@ -170,7 +188,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   else if (!success)
   {
     CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to run a download job, will retry in %d seconds.", m_searchFrequency);
-    m_timer.Start(m_searchFrequency);
+    return;
   }
 
   if (!m_needApplication && !m_needBinary && !m_needManifest)
@@ -235,4 +253,25 @@ void CPlexAutoUpdate::UpdateAndRestart()
   }
 
 #endif
+}
+
+void CPlexAutoUpdate::ForceVersionCheckInBackground()
+{
+  if (m_timer.IsRunning())
+    m_timer.Stop(true);
+
+  m_forced = true;
+  m_isSearching = true;
+  // restart with a short time out, just to make sure that we get it running in the background thread
+  m_timer.Start(1);
+}
+
+void CPlexAutoUpdate::ResetTimer()
+{
+  if (g_guiSettings.GetBool("updates.auto"))
+  {
+    if (m_timer.IsRunning())
+      m_timer.Stop(true);
+    m_timer.Start(m_searchFrequency);
+  }
 }

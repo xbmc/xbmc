@@ -695,6 +695,8 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* update = AddCategory(SETTINGS_SYSTEM, "updates", 40000);
   AddString(update, "updates.current", 40029, g_infoManager.GetVersion(), EDIT_CONTROL_INPUT, true);
+  AddBool(update, "updates.auto", 40017, true);
+  AddString(update, "updates.channel", 40002, "Stable", SPIN_CONTROL_TEXT);
   AddString(update, "updates.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
 
   // video settings

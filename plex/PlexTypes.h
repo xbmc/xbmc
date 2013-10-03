@@ -150,6 +150,10 @@ class CMusicThumbLoader;
 
 #define CONF_FLAGS_RGB           0x20
 
+#define PLEX_UPDATE_CHANNEL_STABLE 0
+#define PLEX_UPDATE_CHANNEL_PLEXPASS 1
+#define PLEX_UPDATE_CHANNEL_NINJA 2
+
 #define PLEX_ART_THUMB "thumb"
 #define PLEX_ART_FANART "fanart"
 #define PLEX_ART_BANNER "banner"

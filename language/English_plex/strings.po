@@ -381,64 +381,24 @@ msgid "Software Update"
 msgstr "Software Update"
 
 msgctxt "#40001"
-msgid "New Version Available"
-msgstr "New Version Available"
+msgid "Checking For Available Updates..."
+msgstr "Checking For Available Updates..."
 
 msgctxt "#40002"
-msgid "Install with Software Update"
-msgstr "Install with Software Update"
+msgid "Update Channel"
+msgstr "Update Channel"
 
 msgctxt "#40003"
-msgid "A new version of Plex/HT is available."
-msgstr "A new version of Plex/HT is available."
+msgid "Stable"
+msgstr "Stable"
 
 msgctxt "#40004"
-msgid "Version: %@  (you have %@)"
-msgstr "Version: %@  (you have %@)"
+msgid "PlexPass"
+msgstr "PlexPass"
 
 msgctxt "#40005"
-msgid "Would you like to download and install it now?"
-msgstr "Would you like to download and install it now?"
-
-msgctxt "#40006"
-msgid "You currently have the latest version of Plex/HT (%@)"
-msgstr "You currently have the latest version of Plex/HT (%@)"
-
-msgctxt "#40007"
-msgid "Downloading Plex/HT update"
-msgstr "Downloading Plex/HT update"
-
-msgctxt "#40008"
-msgid "%@ of %@"
-msgstr "%@ of %@"
-
-msgctxt "#40009"
-msgid "%@ downloaded"
-msgstr "%@ downloaded"
-
-msgctxt "#40010"
-msgid "Extracting Plex/HT update"
-msgstr "Extracting Plex/HT update"
-
-msgctxt "#40011"
-msgid "Installing Plex/HT update"
-msgstr "Installing Plex/HT update"
-
-msgctxt "#40012"
-msgid "Update Failed"
-msgstr "Update Failed"
-
-msgctxt "#40013"
-msgid "An error has occurred."
-msgstr "An error has occurred."
-
-msgctxt "#40014"
-msgid "Please check the console for more details."
-msgstr "Please check the console for more details."
-
-msgctxt "#40015"
-msgid "Checking for updates"
-msgstr "Checking for updates"
+msgid "Ninja"
+msgstr "Ninja"
 
 msgctxt "#40016"
 msgid "Check For Update Now..."
@@ -452,49 +412,13 @@ msgctxt "#40018"
 msgid "Update and Restart"
 msgstr "Update and Restart"
 
-msgctxt "#40019"
-msgid "- If Updates Are Available"
-msgstr "- If Updates Are Available"
-
-msgctxt "#40020"
-msgid "Ahow a Notification"
-msgstr "Ahow a Notification"
-
-msgctxt "#40021"
-msgid "Ask to Install"
-msgstr "Ask to Install"
-
-msgctxt "#40022"
-msgid "Check for Updates Automatically?"
-msgstr "Check for Updates Automatically?"
-
-msgctxt "#40023"
-msgid "Would you like Plex/HT to alert you when updates"
-msgstr "Would you like Plex/HT to alert you when updates"
-
-msgctxt "#40024"
-msgid "are available?"
-msgstr "are available?"
-
-msgctxt "#40025"
-msgid "- Check For Updates"
-msgstr "- Check For Updates"
-
-msgctxt "#40026"
-msgid "Every Hour"
-msgstr "Every Hour"
-
-msgctxt "#40027"
-msgid "Every Day"
-msgstr "Every Day"
-
-msgctxt "#40028"
-msgid "Every Week"
-msgstr "Every Week"
-
 msgctxt "#40029"
 msgid "Current version"
 msgstr "Current version"
+
+msgctxt "#40028"
+msgid "Update Available!"
+msgstr "Update Available!"
 
 #empty strings from id 40029 to 40099
 

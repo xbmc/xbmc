@@ -16,7 +16,7 @@
 class CMyPlexUserInfo
 {
   public:
-    CMyPlexUserInfo() {}
+    CMyPlexUserInfo() : ninja(false) {}
 
     bool SetFromXmlElement(TiXmlElement* root);
 
@@ -29,6 +29,7 @@ class CMyPlexUserInfo
     std::string authToken;
 
     bool subscription;
+    bool ninja;
     std::string subscriptionStatus;
     std::string subscriptionPlan;
     std::vector<std::string> features;

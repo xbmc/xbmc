@@ -542,6 +542,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
   bool ret = CGUIWindow::OnMessage(message);
 
+  CLog::Log(LOGDEBUG, "CGUIWindowHome::OnMessage got message %d", message.GetMessage());
+
   switch (message.GetMessage())
   {
     case GUI_MSG_WINDOW_INIT:
