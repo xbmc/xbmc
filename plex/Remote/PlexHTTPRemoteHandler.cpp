@@ -39,14 +39,33 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   /* defaults */
   m_responseType = HTTPMemoryDownloadNoFreeCopy;
   m_responseCode = MHD_HTTP_OK;
-  m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", "text/xml"));
-  m_data = "<Response code=\"200\" status=\"OK\" />";
 
   ArgMap argumentMap;
+  ArgMap headerMap;
   CStdString path(request.url);
   
   CWebServer::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, argumentMap);
-  
+  CWebServer::GetRequestHeaderValues(request.connection, MHD_HEADER_KIND, headerMap);
+
+  /* first see if we need to handle CORS requests */
+  if (request.method == OPTIONS &&
+      headerMap.find("Access-Control-Request-Method") != headerMap.end())
+  {
+    m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", "text/plain"));
+    m_responseHeaderFields.insert(std::pair<std::string, std::string>("Access-Control-Allow-Origin", "*"));
+    m_responseHeaderFields.insert(std::pair<std::string, std::string>("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT, HEAD"));
+    m_responseHeaderFields.insert(std::pair<std::string, std::string>("Access-Control-Max-Age", "1209600"));
+    m_responseHeaderFields.insert(std::pair<std::string, std::string>("Connection", "close"));
+
+    if (headerMap.find("Access-Control-Request-Headers") != headerMap.end())
+      m_responseHeaderFields.insert(std::pair<std::string, std::string>("Access-Control-Allow-Headers", headerMap["Access-Control-Request-Headers"]));
+
+    return MHD_YES;
+  }
+
+  m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", "text/xml"));
+  m_data = "<Response code=\"200\" status=\"OK\" />";
+
   CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::HandleHTTPRequest handling %s", request.url.c_str());
   
   if (path.Equals("/player/application/playMedia"))
