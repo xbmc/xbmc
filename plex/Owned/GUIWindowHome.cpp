@@ -546,6 +546,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
+      UpdateSections();
+
       RestoreSection();
 
       if (m_lastSelectedItem == "Search")
