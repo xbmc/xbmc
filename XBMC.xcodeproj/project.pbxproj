@@ -3018,6 +3018,9 @@
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
 		EC720A9D1550927000FFD782 /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A9B1550927000FFD782 /* XbmcContext.cpp */; };
+		F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
+		F500E35717F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
+		F500E35817F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F5071906175A26AD004C87D1 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5071905175A26AD004C87D1 /* VideoDecodeAcceleration.framework */; };
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
@@ -5270,6 +5273,8 @@
 		EC720A8E155091BB00FFD782 /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ilog.h; path = commons/ilog.h; sourceTree = "<group>"; };
 		EC720A9B1550927000FFD782 /* XbmcContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XbmcContext.cpp; sourceTree = "<group>"; };
 		EC720A9C1550927000FFD782 /* XbmcContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XbmcContext.h; sourceTree = "<group>"; };
+		F500E35517F3412C004FC217 /* WinEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinEvents.cpp; sourceTree = "<group>"; };
+		F500E35917F34132004FC217 /* WinEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEvents.h; sourceTree = "<group>"; };
 		F502BFDA160F34B900C96C76 /* CallbackHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CallbackHandler.cpp; path = python/CallbackHandler.cpp; sourceTree = "<group>"; };
 		F502BFDB160F34B900C96C76 /* CallbackHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CallbackHandler.h; path = python/CallbackHandler.h; sourceTree = "<group>"; };
 		F502BFE4160F34DC00C96C76 /* LanguageHook.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LanguageHook.cpp; path = python/LanguageHook.cpp; sourceTree = "<group>"; };
@@ -6582,6 +6587,8 @@
 				7C779E26104A57E500F444C4 /* WinEvents.h */,
 				7C779E27104A57E500F444C4 /* WinEventsSDL.cpp */,
 				7C779E28104A57E500F444C4 /* WinEventsSDL.h */,
+				F500E35517F3412C004FC217 /* WinEvents.cpp */,
+				F500E35917F34132004FC217 /* WinEvents.h */,
 				7C779E29104A57E500F444C4 /* WinSystem.cpp */,
 				7C779E2A104A57E500F444C4 /* WinSystem.h */,
 				7C779E2F104A57E500F444C4 /* XBMC_events.h */,
@@ -10616,6 +10623,7 @@
 				180F6C8117CE9A5700127892 /* smc.c in Sources */,
 				DFD882F817DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E917DD189E001516FE /* StringValidation.cpp in Sources */,
+				F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11645,6 +11653,7 @@
 				DF28DF4F17B8379E0077F41A /* ProfilesOperations.cpp in Sources */,
 				DFD882F617DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E717DD189E001516FE /* StringValidation.cpp in Sources */,
+				F500E35817F3412C004FC217 /* WinEvents.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12676,6 +12685,7 @@
 				DF28DF4E17B8379E0077F41A /* ProfilesOperations.cpp in Sources */,
 				DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */,
+				F500E35717F3412C004FC217 /* WinEvents.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

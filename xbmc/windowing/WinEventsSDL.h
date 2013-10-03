@@ -22,17 +22,20 @@
 #ifndef WINDOW_EVENTS_SDL_H
 #define WINDOW_EVENTS_SDL_H
 
+#include "system.h"
+
 #ifdef HAS_SDL
 #include <SDL/SDL_events.h>
 
 #include "WinEvents.h"
 
-class CWinEventsSDL : public CWinEventsBase
+class CWinEventsSDL : public IWinEvents
 {
 public:
-  static bool MessagePump();
+  virtual bool MessagePump();
+  virtual size_t GetQueueSize();
 
-protected:
+private:
 #ifdef TARGET_DARWIN
   static bool ProcessOSXShortcuts(SDL_Event& event);
 #elif defined(TARGET_POSIX)

@@ -74,4 +74,9 @@ bool CWinEventsLinux::MessagePump()
   return ret;
 }
 
+size_t CWinEventsLinux::GetQueueSize()
+{
+  return m_devices.Size();
+}
+
 #endif

@@ -25,6 +25,7 @@
 
 #include "system_gl.h"
 #include <GL/glx.h>
+#include <SDL/SDL.h>
 
 #include "windowing/WinSystem.h"
 #include "utils/Stopwatch.h"
