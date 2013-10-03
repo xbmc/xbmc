@@ -5801,7 +5801,11 @@ msgctxt "#13438"
 msgid "Allow hardware acceleration (amcodec)"
 msgstr ""
 
-#empty strings from id 13439 to 13499
+msgctxt "#13439"
+msgid "Allow hardware acceleration (MediaCodec)"
+msgstr ""
+
+#empty strings from id 13440 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"
@@ -14364,6 +14368,11 @@ msgstr ""
 #: system/settings/rbp.xml
 msgctxt "#36543"
 msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
 msgstr ""
 
 #reserved strings 365XX

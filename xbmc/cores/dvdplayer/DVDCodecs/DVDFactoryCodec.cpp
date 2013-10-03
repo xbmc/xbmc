@@ -43,6 +43,9 @@
 #include "utils/AMLUtils.h"
 #include "Video/DVDVideoCodecAmlogic.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "Video/DVDVideoCodecAndroidMediaCodec.h"
+#endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecLibMad.h"
 #include "Audio/DVDAudioCodecPcm.h"
@@ -159,6 +162,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #else
   hwSupport += "AMCodec:no ";
 #endif
+#if defined(TARGET_ANDROID)
+  hwSupport += "MediaCodec:yes ";
+#else
+  hwSupport += "MediaCodec:no ";
+#endif
 #if defined(HAVE_LIBOPENMAX) && defined(TARGET_POSIX)
   hwSupport += "OpenMax:yes ";
 #elif defined(TARGET_POSIX)
@@ -256,6 +264,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   {
     CLog::Log(LOGINFO, "Amlogic Video Decoder...");
     if ( (pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options)) ) return pCodec;
+  }
+#endif
+
+#if defined(TARGET_ANDROID)
+  if (!hint.software && CSettings::Get().GetBool("videoplayer.usemediacodec"))
+  {
+    CLog::Log(LOGINFO, "MediaCodec Video Decoder...");
+    if ( (pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(), hint, options)) ) return pCodec;
   }
 #endif
 

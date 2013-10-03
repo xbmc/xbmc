@@ -41,6 +41,7 @@ namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
 class CStageFrightVideo;
+class CDVDMediaCodecInfo;
 typedef std::vector<int>     Features;
 
 
@@ -87,7 +88,8 @@ enum RenderMethod
   RENDER_OMXEGL = 0x040,
   RENDER_CVREF  = 0x080,
   RENDER_BYPASS = 0x100,
-  RENDER_EGLIMG = 0x200
+  RENDER_EGLIMG = 0x200,
+  RENDER_MEDIACODEC = 0x400
 };
 
 enum RenderQuality
@@ -167,6 +169,10 @@ public:
 #ifdef HAS_LIBSTAGEFRIGHT
   virtual void         AddProcessor(CStageFrightVideo* stf, EGLImageKHR eglimg, int index);
 #endif
+#if defined(TARGET_ANDROID)
+  // mediaCodec
+  virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
+#endif
 
 protected:
   virtual void Render(DWORD flags, int index);
@@ -198,6 +204,10 @@ protected:
   void DeleteEGLIMGTexture(int index);
   bool CreateEGLIMGTexture(int index);
 
+  void UploadSurfaceTexture(int index);
+  void DeleteSurfaceTexture(int index);
+  bool CreateSurfaceTexture(int index);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -207,6 +217,7 @@ protected:
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
   void RenderEglImage(int index, int field);       // Android OES texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
+  void RenderMediaCodec(int index, int field);    // MediaCodec reference
 
   CFrameBufferObject m_fbo;
 
@@ -266,6 +277,10 @@ protected:
     CStageFrightVideo* stf;
     EGLImageKHR eglimg;
 #endif
+#if defined(TARGET_ANDROID)
+    // mediacodec
+    CDVDMediaCodecInfo *mediacodec;
+#endif
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
@@ -296,6 +311,7 @@ protected:
   struct SwsContext *m_sw_context;
   BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int m_rgbBufferSize;
+  float        m_textureMatrix[16];
 };
 
 
