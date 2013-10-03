@@ -130,7 +130,7 @@ std::vector<T> jcast_helper<std::vector<T>, jobjectArray>::cast(jobjectArray con
 
   for (int i = 0; i < size; i++)
   {
-    jhobject element = (jhobject)env->GetObjectArrayElement(v, i);
+    T element((jhobject)env->GetObjectArrayElement(v, i));
     vec.emplace_back(element);
   }
   return vec;
