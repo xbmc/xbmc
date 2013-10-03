@@ -721,6 +721,9 @@ void CSettings::InitializeConditions()
 #ifdef HAS_EVENT_SERVER
   m_settingsManager->AddCondition("has_event_server");
 #endif
+#ifdef HAVE_X11
+  m_settingsManager->AddCondition("have_x11");
+#endif
 #ifdef HAS_GL
   m_settingsManager->AddCondition("has_gl");
 #endif
@@ -943,6 +946,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert("input.enablemouse");
   m_settingsManager->RegisterCallback(&g_Mouse, settingSet);
+
+#if defined(HAS_GL) && defined(HAVE_X11)
+  settingSet.clear();
+  settingSet.insert("input.enablesystemkeys");
+  m_settingsManager->RegisterCallback(&g_Windowing, settingSet);
+#endif
 
   settingSet.clear();
   settingSet.insert("services.webserver");

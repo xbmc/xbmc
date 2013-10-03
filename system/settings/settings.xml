@@ -2142,6 +2142,14 @@
           <level>0</level>
           <default>true</default>
         </setting>
+        <setting id="input.enablesystemkeys" type="boolean" label="35103" help="37019">
+          <and>
+            <requirement>HAS_GL</requirement>
+            <requirement>HAVE_X11</requirement>
+          </and>
+          <level>2</level>
+          <default>false</default>
+        </setting>
       </group>
     </category>
     <category id="network" label="798" help="36379">
