@@ -894,13 +894,13 @@ bool URIUtils::IsDOSPath(const CStdString &path)
   return false;
 }
 
-void URIUtils::AddSlashAtEnd(CStdString& strFolder)
+void URIUtils::AddSlashAtEnd(std::string& strFolder)
 {
   if (IsURL(strFolder))
   {
     CURL url(strFolder);
-    CStdString file = url.GetFileName();
-    if(!file.IsEmpty() && file != strFolder)
+    std::string file = url.GetFileName();
+    if(!file.empty() && file != strFolder)
     {
       AddSlashAtEnd(file);
       url.SetFileName(file);
