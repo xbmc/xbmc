@@ -707,10 +707,13 @@ void CPVRChannel::SetCachedChannelNumber(unsigned int iChannelNumber)
   m_iCachedChannelNumber = iChannelNumber;
 }
 
-void CPVRChannel::ToSortable(SortItem& sortable) const
+void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
 {
-  CSingleLock lock(m_critSection);
-  sortable[FieldChannelName] = m_strChannelName;
+  if (field == FieldChannelName)
+  {
+    CSingleLock lock(m_critSection);
+    sortable[FieldChannelName] = m_strChannelName;
+  }
 }
 
 int CPVRChannel::ChannelID(void) const

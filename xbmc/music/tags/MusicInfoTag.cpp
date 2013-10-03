@@ -590,22 +590,26 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["compilationartist"] = m_bCompilation;
 }
 
-void CMusicInfoTag::ToSortable(SortItem& sortable)
+void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
 {
-  sortable[FieldTitle] = m_strTitle;
-  sortable[FieldArtist] = m_artist;
-  sortable[FieldAlbum] = m_strAlbum;
-  sortable[FieldAlbumArtist] = FieldAlbumArtist;
-  sortable[FieldGenre] = m_genre;
-  sortable[FieldTime] = m_iDuration;
-  sortable[FieldTrackNumber] = m_iTrack;
-  sortable[FieldYear] = m_dwReleaseDate.wYear;
-  sortable[FieldComment] = m_strComment;
-  sortable[FieldRating] = (float)(m_rating - '0');
-  sortable[FieldPlaycount] = m_iTimesPlayed;
-  sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
-  sortable[FieldListeners] = m_listeners;
-  sortable[FieldId] = (int64_t)m_iDbId;
+  switch (field)
+  {
+  case FieldTitle:       sortable[FieldTitle] = m_strTitle; break;
+  case FieldArtist:      sortable[FieldArtist] = m_artist; break;
+  case FieldAlbum:       sortable[FieldAlbum] = m_strAlbum; break;
+  case FieldAlbumArtist: sortable[FieldAlbumArtist] = m_albumArtist; break;
+  case FieldGenre:       sortable[FieldGenre] = m_genre; break;
+  case FieldTime:        sortable[FieldTime] = m_iDuration; break;
+  case FieldTrackNumber: sortable[FieldTrackNumber] = m_iTrack; break;
+  case FieldYear:        sortable[FieldYear] = m_dwReleaseDate.wYear; break;
+  case FieldComment:     sortable[FieldComment] = m_strComment; break;
+  case FieldRating:      sortable[FieldRating] = (float)(m_rating - '0'); break;
+  case FieldPlaycount:   sortable[FieldPlaycount] = m_iTimesPlayed; break;
+  case FieldLastPlayed:  sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString; break;
+  case FieldListeners:   sortable[FieldListeners] = m_listeners; break;
+  case FieldId:          sortable[FieldId] = (int64_t)m_iDbId; break;
+  default: break;
+  }
 }
 
 void CMusicInfoTag::Archive(CArchive& ar)

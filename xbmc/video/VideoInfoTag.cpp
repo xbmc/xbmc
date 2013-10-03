@@ -483,57 +483,61 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["seasonid"] = m_iIdSeason;
 }
 
-void CVideoInfoTag::ToSortable(SortItem& sortable)
+void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
 {
-  sortable[FieldDirector] = m_director;
-  sortable[FieldWriter] = m_writingCredits;
-  sortable[FieldGenre] = m_genre;
-  sortable[FieldCountry] = m_country;
-  sortable[FieldTagline] = m_strTagLine;
-  sortable[FieldPlotOutline] = m_strPlotOutline;
-  sortable[FieldPlot] = m_strPlot;
-  sortable[FieldTitle] = m_strTitle;
-  sortable[FieldVotes] = m_strVotes;
-  sortable[FieldStudio] = m_studio;
-  sortable[FieldTrailer] = m_strTrailer;
-  sortable[FieldSet] = m_strSet;
-  sortable[FieldTime] = GetDuration();
-  sortable[FieldFilename] = m_strFile;
-  sortable[FieldMPAA] = m_strMPAARating;
-  sortable[FieldPath] = m_strFileNameAndPath;
-  sortable[FieldSortTitle] = m_strSortTitle;
-  sortable[FieldTvShowStatus] = m_strStatus;
-  sortable[FieldProductionCode] = m_strProductionCode;
-  sortable[FieldAirDate] = m_firstAired.IsValid() ? m_firstAired.GetAsDBDate() : (m_premiered.IsValid() ? m_premiered.GetAsDBDate() : StringUtils::EmptyString);
-  sortable[FieldTvShowTitle] = m_strShowTitle;
-  sortable[FieldAlbum] = m_strAlbum;
-  sortable[FieldArtist] = m_artist;
-  sortable[FieldPlaycount] = m_playCount;
-  sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
-  sortable[FieldTop250] = m_iTop250;
-  sortable[FieldYear] = m_iYear;
-  sortable[FieldSeason] = m_iSeason;
-  sortable[FieldEpisodeNumber] = m_iEpisode;
-  sortable[FieldEpisodeNumberSpecialSort] = m_iSpecialSortEpisode;
-  sortable[FieldSeasonSpecialSort] = m_iSpecialSortSeason;
-  sortable[FieldRating] = m_fRating;
-  sortable[FieldId] = m_iDbId;
-  sortable[FieldTrackNumber] = m_iTrack;
-  sortable[FieldTag] = m_tags;
+  switch (field)
+  {
+  case FieldDirector:                 sortable[FieldDirector] = m_director; break;
+  case FieldWriter:                   sortable[FieldWriter] = m_writingCredits; break;
+  case FieldGenre:                    sortable[FieldGenre] = m_genre; break;
+  case FieldCountry:                  sortable[FieldCountry] = m_country; break;
+  case FieldTagline:                  sortable[FieldTagline] = m_strTagLine; break;
+  case FieldPlotOutline:              sortable[FieldPlotOutline] = m_strPlotOutline; break;
+  case FieldPlot:                     sortable[FieldPlot] = m_strPlot; break;
+  case FieldTitle:                    sortable[FieldTitle] = m_strTitle; break;
+  case FieldVotes:                    sortable[FieldVotes] = m_strVotes; break;
+  case FieldStudio:                   sortable[FieldStudio] = m_studio; break;
+  case FieldTrailer:                  sortable[FieldTrailer] = m_strTrailer; break;
+  case FieldSet:                      sortable[FieldSet] = m_strSet; break;
+  case FieldTime:                     sortable[FieldTime] = GetDuration(); break;
+  case FieldFilename:                 sortable[FieldFilename] = m_strFile; break;
+  case FieldMPAA:                     sortable[FieldMPAA] = m_strMPAARating; break;
+  case FieldPath:                     sortable[FieldPath] = m_strFileNameAndPath; break;
+  case FieldSortTitle:                sortable[FieldSortTitle] = m_strSortTitle; break;
+  case FieldTvShowStatus:             sortable[FieldTvShowStatus] = m_strStatus; break;
+  case FieldProductionCode:           sortable[FieldProductionCode] = m_strProductionCode; break;
+  case FieldAirDate:                  sortable[FieldAirDate] = m_firstAired.IsValid() ? m_firstAired.GetAsDBDate() : (m_premiered.IsValid() ? m_premiered.GetAsDBDate() : StringUtils::EmptyString); break;
+  case FieldTvShowTitle:              sortable[FieldTvShowTitle] = m_strShowTitle; break;
+  case FieldAlbum:                    sortable[FieldAlbum] = m_strAlbum; break;
+  case FieldArtist:                   sortable[FieldArtist] = m_artist; break;
+  case FieldPlaycount:                sortable[FieldPlaycount] = m_playCount; break;
+  case FieldLastPlayed:               sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString; break;
+  case FieldTop250:                   sortable[FieldTop250] = m_iTop250; break;
+  case FieldYear:                     sortable[FieldYear] = m_iYear; break;
+  case FieldSeason:                   sortable[FieldSeason] = m_iSeason; break;
+  case FieldEpisodeNumber:            sortable[FieldEpisodeNumber] = m_iEpisode; break;
+  case FieldEpisodeNumberSpecialSort: sortable[FieldEpisodeNumberSpecialSort] = m_iSpecialSortEpisode; break;
+  case FieldSeasonSpecialSort:        sortable[FieldSeasonSpecialSort] = m_iSpecialSortSeason; break;
+  case FieldRating:                   sortable[FieldRating] = m_fRating; break;
+  case FieldId:                       sortable[FieldId] = m_iDbId; break;
+  case FieldTrackNumber:              sortable[FieldTrackNumber] = m_iTrack; break;
+  case FieldTag:                      sortable[FieldTag] = m_tags; break;
 
-  sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight();
-  sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect();
-  sortable[FieldVideoCodec] = m_streamDetails.GetVideoCodec();
-  
-  sortable[FieldAudioChannels] = m_streamDetails.GetAudioChannels();
-  sortable[FieldAudioCodec] = m_streamDetails.GetAudioCodec();
-  sortable[FieldAudioLanguage] = m_streamDetails.GetAudioLanguage();
-  
-  sortable[FieldSubtitleLanguage] = m_streamDetails.GetSubtitleLanguage();
+  case FieldVideoResolution:          sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight(); break;
+  case FieldVideoAspectRatio:         sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect(); break;
+  case FieldVideoCodec:               sortable[FieldVideoCodec] = m_streamDetails.GetVideoCodec(); break;
 
-  sortable[FieldInProgress] = m_resumePoint.IsPartWay();
-  sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::EmptyString;
-  sortable[FieldMediaType] = DatabaseUtils::MediaTypeFromString(m_type);
+  case FieldAudioChannels:            sortable[FieldAudioChannels] = m_streamDetails.GetAudioChannels(); break;
+  case FieldAudioCodec:               sortable[FieldAudioCodec] = m_streamDetails.GetAudioCodec(); break;
+  case FieldAudioLanguage:            sortable[FieldAudioLanguage] = m_streamDetails.GetAudioLanguage(); break;
+
+  case FieldSubtitleLanguage:         sortable[FieldSubtitleLanguage] = m_streamDetails.GetSubtitleLanguage(); break;
+
+  case FieldInProgress:               sortable[FieldInProgress] = m_resumePoint.IsPartWay(); break;
+  case FieldDateAdded:                sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::EmptyString; break;
+  case FieldMediaType:                sortable[FieldMediaType] = DatabaseUtils::MediaTypeFromString(m_type); break;
+  default: break;
+  }
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
