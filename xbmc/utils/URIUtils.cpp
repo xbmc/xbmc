@@ -567,24 +567,37 @@ bool URIUtils::IsHD(const CStdString& strFileName)
   return url.GetProtocol().IsEmpty() || url.GetProtocol() == "file";
 }
 
-bool URIUtils::IsDVD(const CStdString& strFile)
+bool URIUtils::IsDVD(const std::string& strFile)
 {
-  CStdString strFileLow = strFile;
-  strFileLow.MakeLower();
-  if (strFileLow.Find("video_ts.ifo") != -1 && IsOnDVD(strFile))
+  if (strFile.empty())
+    return false;
+
+  std::string strFileLow (strFile);
+  StringUtils::ToLower(strFileLow);
+  if (strFileLow.find("video_ts.ifo") != std::string::npos && IsOnDVD(strFile))
     return true;
 
 #if defined(TARGET_WINDOWS)
-  if (StringUtils::StartsWithNoCase(strFile, "dvd://"))
+  if (strFileLow.compare(0, 5, "dvd://", 5) == 0 || strFileLow.compare(0, 5, "dvd:\\\\", 5) == 0)
     return true;
 
-  if(strFile.Mid(1) != ":\\"
-  && strFile.Mid(1) != ":")
+  if (strFileLow.compare(0, 4, "\\\\?\\", 4) == 0)
+    strFileLow.erase(0, 4);
+
+  if (strFileLow.length() < 2 || strFileLow.length() > 3)
     return false;
 
-  if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
+  if (strFileLow.compare(1, std::string::npos, ":\\", 2) != 0
+   && strFileLow.compare(1, std::string::npos, ":/",  2) != 0
+   && strFileLow.compare(1, std::string::npos, ":",   1) != 0)
+    return false;
+
+  if(GetDriveType((strFileLow.substr(0, 2) + "\\").c_str()) == DRIVE_CDROM)
     return true;
 #else
+  if (strFileLow.length() < 6 || strFileLow.length() > 10)
+    return false;
+
   if (strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 #endif

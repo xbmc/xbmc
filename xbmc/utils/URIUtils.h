@@ -74,7 +74,7 @@ public:
   static bool IsDAAP(const CStdString& strFile);
   static bool IsDAV(const CStdString& strFile);
   static bool IsDOSPath(const CStdString &path);
-  static bool IsDVD(const CStdString& strFile);
+  static bool IsDVD(const std::string& strFile);
   static bool IsFTP(const CStdString& strFile);
   static bool IsHD(const CStdString& strFileName);
   static bool IsHDHomeRun(const CStdString& strFile);
