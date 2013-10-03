@@ -553,12 +553,18 @@ void CXBMCApp::SetupEnv()
   setenv("XBMC_HOME", (cacheDir + "/apk/assets").c_str(), 0);
 
   std::string externalDir;
-  CJNIFile androidPath = getExternalFilesDir("");
-  if (!androidPath)
-    androidPath = getDir("org.xbmc.xbmc", 1);
-
-  if (androidPath)
-    externalDir = androidPath.getAbsolutePath();
+  std::string mountedState = CJNIEnvironment::getExternalStorageState();
+  bool mounted = mountedState == "mounted";
+    
+  if (mounted)
+  {
+    CJNIFile androidPath = getExternalFilesDir("");
+    if (!androidPath)
+      androidPath = getDir("org.xbmc.xbmc", 1);
+      
+    if (androidPath)
+      externalDir = androidPath.getAbsolutePath();
+  }
 
   if (!externalDir.empty())
     setenv("HOME", externalDir.c_str(), 0);
