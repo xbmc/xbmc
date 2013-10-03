@@ -1,5 +1,5 @@
 ; package.list should contain all file names of packages which are already in the "new" package format (the package contains the paths to the libraries 
-; and headers relative to the XBMC root directory, stored in a 7zip container)
+; and headers relative to the XBMC root directory, stored in a zip container)
 ; example sqlite-3.7.12.1-win32.7z:
 ; -> (package name)\(relative path to file)
 ; -> sqlite-3.7.12.1-win32\project\BuildDependencies\lib\sqlite3.lib
@@ -8,7 +8,7 @@
 dnssd-379.32.1-win32.7z
 doxygen-1.8.2-win32.7z
 lame_enc-3.99.5-win32.7z
-libbluray-0.2.3-win32.7z
+libbluray-0.4.0-win32.zip
 libnfs-1.6.1-win32.7z
 libshairplay-c159ca7-win32.7z
 libjpeg-turbo-1.2.0-win32.7z
