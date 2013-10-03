@@ -442,23 +442,23 @@ bool URIUtils::IsRemote(const CStdString& strFile)
   return false;
 }
 
-bool URIUtils::IsOnDVD(const CStdString& strFile)
+bool URIUtils::IsOnDVD(const std::string& strFile)
 {
+  if (strFile.length() < 2)
+    return false;
+
+  std::string str(strFile);
 #ifdef TARGET_WINDOWS
-  if (strFile.Mid(1,1) == ":")
-    return (GetDriveType(strFile.Left(3)) == DRIVE_CDROM);
+  if (str.compare(0, 4, "\\\\?\\", 4) == 0)
+    str.erase(0, 4);
+
+  if (str.length() >= 2 && str[1] == ':')
+    return (GetDriveType((str.substr(0, 2) + "\\").c_str()) == DRIVE_CDROM);
 #endif
+  StringUtils::ToLower(str);
 
-  if (strFile.Left(4).CompareNoCase("dvd:") == 0)
-    return true;
-
-  if (strFile.Left(4).CompareNoCase("udf:") == 0)
-    return true;
-
-  if (strFile.Left(8).CompareNoCase("iso9660:") == 0)
-    return true;
-
-  if (strFile.Left(5).CompareNoCase("cdda:") == 0)
+  if (str.compare(0, 4, "dvd:", 4) == 0 || str.compare(0, 4, "udf:", 4) == 0 ||
+      str.compare(0, 8, "iso9660:", 8) == 0 || str.compare(0, 5, "cdda:", 5) == 0)
     return true;
 
   return false;
