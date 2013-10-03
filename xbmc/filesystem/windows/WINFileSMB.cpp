@@ -30,6 +30,8 @@
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
 #include "WINSMBDirectory.h"
+#include "Util.h"
+#include "win32/WIN32Util.h"
 
 using namespace XFILE;
 
@@ -48,21 +50,11 @@ CWINFileSMB::~CWINFileSMB()
   if (m_hFile != INVALID_HANDLE_VALUE) Close();
 }
 //*********************************************************************************************
-CStdString CWINFileSMB::GetLocal(const CURL &url)
+std::string CWINFileSMB::GetLocal(const CURL &url)
 {
-  CStdString path( url.GetFileName() );
-
-  if( url.GetProtocol().Equals("smb", false) )
-  {
-    CStdString host( url.GetHostName() );
-
-    if(host.size() > 0)
-    {
-      path = "\\\\?\\UNC\\" + host + "\\" + path;
-    }
-  }
-
-  path.Replace('/', '\\');
+  std::string path(url.GetFileName());
+  if (url.GetProtocol().Equals("smb", false) && !url.GetHostName().empty())
+    path = "\\\\?\\UNC\\" + (std::string&)url.GetHostName() + "\\" + path;
 
   return path;
 }
@@ -70,11 +62,9 @@ CStdString CWINFileSMB::GetLocal(const CURL &url)
 //*********************************************************************************************
 bool CWINFileSMB::Open(const CURL& url)
 {
-  CStdString strFile = GetLocal(url);
+  std::wstring wfilename(CWIN32Util::ConvertPathToWin32Form(GetLocal(url)));
 
-  CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
+  m_hFile.attach(CreateFileW(wfilename.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
 
   if (!m_hFile.isValid())
   {
@@ -83,10 +73,10 @@ bool CWINFileSMB::Open(const CURL& url)
 
     XFILE::CWINSMBDirectory smb;
     smb.ConnectToShare(url);
-    m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
+    m_hFile.attach(CreateFileW(wfilename.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!m_hFile.isValid())
     {
-      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file %s Error: %d", strFile.c_str(), GetLastError());
+      CLog::Log(LOGERROR, "%s: Unable to open file %s Error: %d", __FUNCTION__, url.Get().c_str(), GetLastError());
       return false;
     }
   }
@@ -99,10 +89,8 @@ bool CWINFileSMB::Open(const CURL& url)
 
 bool CWINFileSMB::Exists(const CURL& url)
 {
-  CStdString strFile = GetLocal(url);
-  URIUtils::RemoveSlashAtEnd(strFile);
-  CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
+  std::wstring strWFile(CWIN32Util::ConvertPathToWin32Form(GetLocal(url)));
+
   DWORD attributes = GetFileAttributesW(strWFile.c_str());
   if(attributes != INVALID_FILE_ATTRIBUTES)
     return true;
@@ -129,14 +117,14 @@ int CWINFileSMB::Stat(struct __stat64* buffer)
   HANDLE hFileDup;
   if (0 == DuplicateHandle(GetCurrentProcess(), (HANDLE)m_hFile, GetCurrentProcess(), &hFileDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - DuplicateHandle()");
+    CLog::Log(LOGERROR, "%s: DuplicateHandle() error", __FUNCTION__);
     return -1;
   }
 
   fd = _open_osfhandle((intptr_t)((HANDLE)hFileDup), 0);
   if (fd == -1)
   {
-    CLog::Log(LOGERROR, "CWINFileSMB Stat: fd == -1");
+    CLog::Log(LOGERROR, "%s: _open_osfhandle() error", __FUNCTION__);
     return -1;
   }
 
@@ -147,15 +135,17 @@ int CWINFileSMB::Stat(struct __stat64* buffer)
 
 int CWINFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CStdString strFile = GetLocal(url);
+  std::wstring strWFile(CWIN32Util::ConvertPathToWin32Form(GetLocal(url)));
+
   /* _wstat64 can't handle long paths therefore we remove the \\?\UNC\ */
-  strFile.Replace("\\\\?\\UNC\\", "\\\\");
+  if (strWFile.compare(0, 8, L"\\\\?\\UNC\\", 8) == 0)
+    strWFile.erase(2, 6);
+
   /* _wstat64 calls FindFirstFileEx. According to MSDN, the path should not end in a trailing backslash.
     Remove it before calling _wstat64 */
-  if (strFile.length() > 3 && URIUtils::HasSlashAtEnd(strFile))
-    URIUtils::RemoveSlashAtEnd(strFile);
-  CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
+  if (strWFile[strWFile.length()-1] == L'\\')
+    strWFile.pop_back();
+
   if(_wstat64(strWFile.c_str(), buffer) == 0)
     return 0;
 
@@ -173,10 +163,8 @@ int CWINFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 //*********************************************************************************************
 bool CWINFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
 {
-  CStdString strPath = GetLocal(url);
+  std::wstring strWPath(CWIN32Util::ConvertPathToWin32Form(GetLocal(url)));
 
-  CStdStringW strWPath;
-  g_charsetConverter.utf8ToW(strPath, strWPath, false);
   m_hFile.attach(CreateFileW(strWPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
 
   if (!m_hFile.isValid())
@@ -189,7 +177,7 @@ bool CWINFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
     m_hFile.attach(CreateFileW(strWPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
     if (!m_hFile.isValid())
     {
-      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file for writing '%s' Error '%d%",strPath.c_str(), GetLastError());
+      CLog::Log(LOGERROR, "%s: Unable to open file for writing '%s' Error '%d%", __FUNCTION__, url.Get().c_str(), GetLastError());
       return false;
     }
   }
@@ -289,31 +277,17 @@ int64_t CWINFileSMB::GetPosition()
 
 bool CWINFileSMB::Delete(const CURL& url)
 {
-  CStdString strFile=GetLocal(url);
-
-  CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  return ::DeleteFileW(strWFile.c_str()) ? true : false;
+  return ::DeleteFileW(CWIN32Util::ConvertPathToWin32Form(GetLocal(url)).c_str()) ? true : false;
 }
 
 bool CWINFileSMB::Rename(const CURL& url, const CURL& urlnew)
 {
-  CStdString strFile=GetLocal(url);
-  CStdString strNewFile=GetLocal(urlnew);
-
-  CStdStringW strWFile;
-  CStdStringW strWNewFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  g_charsetConverter.utf8ToW(strNewFile, strWNewFile, false);
-  return ::MoveFileW(strWFile.c_str(), strWNewFile.c_str()) ? true : false;
+  return ::MoveFileW(CWIN32Util::ConvertPathToWin32Form(GetLocal(url)).c_str(), CWIN32Util::ConvertPathToWin32Form(GetLocal(urlnew)).c_str()) ? true : false;
 }
 
 bool CWINFileSMB::SetHidden(const CURL &url, bool hidden)
 {
-  CStdStringW path;
-  g_charsetConverter.utf8ToW(GetLocal(url), path, false);
-  DWORD attributes = hidden ? FILE_ATTRIBUTE_HIDDEN : FILE_ATTRIBUTE_NORMAL;
-  if (SetFileAttributesW(path.c_str(), attributes))
+  if (SetFileAttributesW(CWIN32Util::ConvertPathToWin32Form(GetLocal(url)).c_str(), hidden ? FILE_ATTRIBUTE_HIDDEN : FILE_ATTRIBUTE_NORMAL))
     return true;
   return false;
 }
@@ -334,14 +308,14 @@ int CWINFileSMB::Truncate(int64_t size)
   HANDLE hFileDup;
   if (0 == DuplicateHandle(GetCurrentProcess(), (HANDLE)m_hFile, GetCurrentProcess(), &hFileDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - DuplicateHandle()");
+    CLog::Log(LOGERROR, "%s: DuplicateHandle() error", __FUNCTION__);
     return -1;
   }
 
   fd = _open_osfhandle((intptr_t)((HANDLE)hFileDup), 0);
   if (fd == -1)
   {
-    CLog::Log(LOGERROR, "CWINFileSMB Stat: fd == -1");
+    CLog::Log(LOGERROR, "%s: _open_osfhandle() error", __FUNCTION__);
     return -1;
   }
   int result = _chsize_s(fd, (long) size);
