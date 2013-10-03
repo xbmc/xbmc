@@ -1890,8 +1890,9 @@ void CFileItemList::Sort(SortDescription sortDescription)
   SortItems sortItems((size_t)Size());
   for (int index = 0; index < Size(); index++)
   {
-    m_items[index]->ToSortable(sortItems[index]);
-    sortItems[index][FieldId] = index;
+    sortItems[index] = boost::shared_ptr<SortItem>(new SortItem);
+    m_items[index]->ToSortable(*sortItems[index]);
+    (*sortItems[index])[FieldId] = index;
   }
 
   // do the sorting
@@ -1902,9 +1903,9 @@ void CFileItemList::Sort(SortDescription sortDescription)
   sortedFileItems.reserve(Size());
   for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); it++)
   {
-    CFileItemPtr item = m_items[(int)it->at(FieldId).asInteger()];
+    CFileItemPtr item = m_items[(int)(*it)->at(FieldId).asInteger()];
     // Set the sort label in the CFileItem
-    item->SetSortLabel(CStdStringW(it->at(FieldSort).asWideString()));
+    item->SetSortLabel(CStdStringW((*it)->at(FieldSort).asWideString()));
 
     sortedFileItems.push_back(item);
   }
