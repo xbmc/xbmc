@@ -47,12 +47,13 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   CWebServer::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, argumentMap);
   CWebServer::GetRequestHeaderValues(request.connection, MHD_HEADER_KIND, headerMap);
 
-  /* first see if we need to handle CORS requests */
+  /* first see if we need to handle CORS requests - Access-Control-Allow-Origin needs to be
+   * available for all requests, the other headers is only needed on a OPTIONS call */
+  m_responseHeaderFields.insert(std::pair<std::string, std::string>("Access-Control-Allow-Origin", "*"));
   if (request.method == OPTIONS &&
       headerMap.find("Access-Control-Request-Method") != headerMap.end())
   {
     m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", "text/plain"));
-    m_responseHeaderFields.insert(std::pair<std::string, std::string>("Access-Control-Allow-Origin", "*"));
     m_responseHeaderFields.insert(std::pair<std::string, std::string>("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT, HEAD"));
     m_responseHeaderFields.insert(std::pair<std::string, std::string>("Access-Control-Max-Age", "1209600"));
     m_responseHeaderFields.insert(std::pair<std::string, std::string>("Connection", "close"));
