@@ -164,6 +164,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_videoPPFFmpegPostProc;
     bool m_videoVDPAUtelecine;
     bool m_videoVDPAUdeintSkipChromaHD;
+    bool m_useVAAPIAdvancedDeinterlacing;
     bool m_musicUseTimeSeeking;
     int m_musicTimeSeekForward;
     int m_musicTimeSeekBackward;
