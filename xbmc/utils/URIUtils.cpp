@@ -887,7 +887,7 @@ bool URIUtils::IsDOSPath(const CStdString &path)
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
     return true;
 
-  // windows network drives
+  // long win32 path ("\\?\") or win32 UNC path ("\\server\")
   if (path.size() > 1 && path[0] == '\\' && path[1] == '\\')
     return true;
 
