@@ -44,6 +44,10 @@ public:
 
   float GetElapsedSeconds() const;
   float GetElapsedMilliseconds() const;
+
+  /* PLEX */
+  void SetTimeout(uint32_t timeout) { m_timeout = timeout; }
+  /* END PLEX */
   
 protected:
   virtual void Process();
