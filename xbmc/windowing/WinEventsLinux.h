@@ -32,6 +32,11 @@ public:
   bool MessagePump();
   size_t GetQueueSize();
   void RefreshDevices();
+  void Notify(const Observable &obs, const ObservableMessage msg)
+  {
+    if (msg == ObservableMessagePeripheralsChanged)
+      RefreshDevices();
+  }
   static bool IsRemoteLowBattery();
 
 private:
