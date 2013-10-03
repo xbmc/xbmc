@@ -712,8 +712,6 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
   case FieldProgramCount: sortable[FieldProgramCount] = m_iprogramCount; break;
   case FieldBitrate:      sortable[FieldBitrate] = m_dwSize; break;
   case FieldTitle:        sortable[FieldTitle] = m_strTitle; break;
-  case FieldSortSpecial:  sortable[FieldSortSpecial] = m_specialSort; break;
-  case FieldFolder:       sortable[FieldFolder] = m_bIsFolder; break;
   // If there's ever a need to convert more properties from CGUIListItem it might be
   // worth to make CGUIListItem  implement ISortable as well and call it from here
   default: break;
@@ -750,6 +748,9 @@ void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
 
   /* FieldLabel is used as a fallback by all sorters and therefore has to be present as well */
   sortable[FieldLabel] = GetLabel();
+  /* FieldSortSpecial and FieldFolder are required in conjunction with all other sorters as well */
+  sortable[FieldSortSpecial] = m_specialSort;
+  sortable[FieldFolder] = m_bIsFolder;
 }
 
 bool CFileItem::Exists(bool bUseCache /* = true */) const
