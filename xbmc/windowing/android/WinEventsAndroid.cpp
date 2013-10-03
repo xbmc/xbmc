@@ -20,7 +20,6 @@
 
 #include "system.h"
 #include <list>
-#include "windowing/WinEvents.h"
 #include "WinEventsAndroid.h"
 #include "Application.h"
 #include "threads/CriticalSection.h"
@@ -49,7 +48,7 @@ bool CWinEventsAndroid::MessagePump()
 
   // Do not always loop, only pump the initial queued count events. else if ui keep pushing 
   // events the loop won't finish then it will block xbmc main message loop. 
-  for (int pumpEventCount = GetQueueSize(); pumpEventCount > 0; --pumpEventCount) 
+  for (size_t pumpEventCount = GetQueueSize(); pumpEventCount > 0; --pumpEventCount) 
   {
   
     // Pop up only one event per time since in App::OnEvent it may init modal dialog which init 
@@ -69,7 +68,7 @@ bool CWinEventsAndroid::MessagePump()
   return ret;
 }
 
-int CWinEventsAndroid::GetQueueSize()
+size_t CWinEventsAndroid::GetQueueSize()
 {
   CSingleLock lock(g_inputCond);
   return events.size();

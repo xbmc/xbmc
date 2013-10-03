@@ -330,7 +330,6 @@
 	if (!animating && context)
 	{
 		animating = TRUE;
-    CWinEventsIOS::Init();
 
     // kick off an animation thread
     animationThreadLock = [[NSConditionLock alloc] initWithCondition: FALSE];
@@ -358,7 +357,6 @@
     // wait for animation thread to die
     if ([animationThread isFinished] == NO)
       [animationThreadLock lockWhenCondition:TRUE];
-    CWinEventsIOS::DeInit();
 	}
 }
 //--------------------------------------------------------------

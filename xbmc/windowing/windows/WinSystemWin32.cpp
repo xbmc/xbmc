@@ -89,7 +89,7 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
   // Register the windows class
   WNDCLASS wndClass;
   wndClass.style = CS_OWNDC; // For OpenGL
-  wndClass.lpfnWndProc = CWinEvents::WndProc;
+  wndClass.lpfnWndProc = CWinEventsWin32::WndProc;
   wndClass.cbClsExtra = 0;
   wndClass.cbWndExtra = 0;
   wndClass.hInstance = m_hInstance;

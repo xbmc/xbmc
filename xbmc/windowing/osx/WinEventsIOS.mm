@@ -32,14 +32,6 @@ static CCriticalSection g_inputCond;
 
 static std::list<XBMC_Event> events;
 
-void CWinEventsIOS::DeInit()
-{
-}
-
-void CWinEventsIOS::Init()
-{
-}
-
 void CWinEventsIOS::MessagePush(XBMC_Event *newEvent)
 {
   CSingleLock lock(g_inputCond);
@@ -53,7 +45,7 @@ bool CWinEventsIOS::MessagePump()
   
   // Do not always loop, only pump the initial queued count events. else if ui keep pushing
   // events the loop won't finish then it will block xbmc main message loop.
-  for (int pumpEventCount = GetQueueSize(); pumpEventCount > 0; --pumpEventCount)
+  for (size_t pumpEventCount = GetQueueSize(); pumpEventCount > 0; --pumpEventCount)
   {
     // Pop up only one event per time since in App::OnEvent it may init modal dialog which init
     // deeper message loop and call the deeper MessagePump from there.
@@ -86,7 +78,7 @@ bool CWinEventsIOS::MessagePump()
   return ret;
 }
 
-int CWinEventsIOS::GetQueueSize()
+size_t CWinEventsIOS::GetQueueSize()
 {
   CSingleLock lock(g_inputCond);
   return events.size();

@@ -24,19 +24,15 @@
 #define WINDOW_EVENTS_ANDROID_H
 
 #include "windowing/WinEvents.h"
-#include "input/MouseStat.h"
 
-class CWinEventsAndroid : public CWinEventsBase
+class CWinEventsAndroid : public IWinEvents
 {
 public:
   static void Init();
   static void DeInit();
-  static void MessagePush(XBMC_Event *newEvent);
-  static bool MessagePump();
-
-protected:
-  static int  GetQueueSize();
-
+  void MessagePush(XBMC_Event *newEvent);
+  bool MessagePump();
+  virtual size_t  GetQueueSize();
 };
 
 #endif // WINDOW_EVENTS_ANDROID_H
