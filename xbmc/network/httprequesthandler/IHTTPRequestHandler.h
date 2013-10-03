@@ -38,6 +38,9 @@ enum HTTPMethod
   UNKNOWN,
   POST,
   GET,
+  /* PLEX */
+  OPTIONS,
+  /* END PLEX */
   HEAD
 };
 

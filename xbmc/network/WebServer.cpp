@@ -340,6 +340,11 @@ HTTPMethod CWebServer::GetMethod(const char *method)
   if (strcmp(method, "HEAD") == 0)
     return HEAD;
 
+  /* PLEX */
+  if (strcmp(method, "OPTIONS") == 0)
+    return OPTIONS;
+  /* END PLEX */
+
   return UNKNOWN;
 }
 
