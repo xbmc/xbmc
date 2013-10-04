@@ -181,7 +181,6 @@ bool CHDFile::SetHidden(const CURL &url, bool hidden)
 //*********************************************************************************************
 bool CHDFile::OpenForWrite(const CURL& url, bool bOverWrite)
 {
-  // make sure it's a legal FATX filename (we are writing to the harddisk)
   std::string strPath(GetLocal(url));
 
 #ifdef TARGET_WINDOWS
