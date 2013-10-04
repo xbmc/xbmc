@@ -78,7 +78,6 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   if (boost::contains(m_url.GetFileName(), "library/metadata"))
     m_url.SetOption("checkFiles", "1");
 
-  CStdString data;
   bool httpSuccess;
 
   if (m_url.HasProtocolOption("containerSize"))
@@ -93,9 +92,9 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   }
 
   if (m_body.empty())
-    httpSuccess = m_file.Get(m_url.Get(), data);
+    httpSuccess = m_file.Get(m_url.Get(), m_data);
   else
-    httpSuccess = m_file.Post(m_url.Get(), m_body, data);
+    httpSuccess = m_file.Post(m_url.Get(), m_body, m_data);
 
   if (!httpSuccess)
   {
@@ -110,11 +109,11 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   {
     CXBMCTinyXML doc;
 
-    doc.Parse(data);
+    doc.Parse(m_data);
     
     if (doc.Error())
     {
-      CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s\nError on %d:%d - %s\n%s", m_url.Get().c_str(), doc.ErrorRow(), doc.ErrorCol(), doc.ErrorDesc(), data.c_str());
+      CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s\nError on %d:%d - %s\n%s", m_url.Get().c_str(), doc.ErrorRow(), doc.ErrorCol(), doc.ErrorDesc(), m_data.c_str());
       CancelAugmentations();
       return false;
     }
