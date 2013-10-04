@@ -918,9 +918,9 @@ void URIUtils::AddSlashAtEnd(std::string& strFolder)
   }
 }
 
-bool URIUtils::HasSlashAtEnd(const CStdString& strFile, bool checkURL /* = false */)
+bool URIUtils::HasSlashAtEnd(const std::string& strFile, bool checkURL /* = false */)
 {
-  if (strFile.size() == 0) return false;
+  if (strFile.empty()) return false;
   if (checkURL && IsURL(strFile))
   {
     CURL url(strFile);
@@ -935,13 +935,13 @@ bool URIUtils::HasSlashAtEnd(const CStdString& strFile, bool checkURL /* = false
   return false;
 }
 
-void URIUtils::RemoveSlashAtEnd(CStdString& strFolder)
+void URIUtils::RemoveSlashAtEnd(std::string& strFolder)
 {
   if (IsURL(strFolder))
   {
     CURL url(strFolder);
-    CStdString file = url.GetFileName();
-    if (!file.IsEmpty() && file != strFolder)
+    std::string file = url.GetFileName();
+    if (!file.empty() && file != strFolder)
     {
       RemoveSlashAtEnd(file);
       url.SetFileName(file);
@@ -953,7 +953,7 @@ void URIUtils::RemoveSlashAtEnd(CStdString& strFolder)
   }
 
   while (HasSlashAtEnd(strFolder))
-    strFolder.Delete(strFolder.size() - 1);
+    strFolder.erase(strFolder.size()-1, 1);
 }
 
 bool URIUtils::CompareWithoutSlashAtEnd(const CStdString& strPath1, const CStdString& strPath2)
