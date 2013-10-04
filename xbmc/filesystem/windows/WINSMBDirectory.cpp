@@ -53,6 +53,9 @@ CStdString CWINSMBDirectory::GetLocal(const CStdString& strPath)
 {
   CURL url(strPath);
   CStdString path( url.GetFileName() );
+  path.Replace('/', '\\');
+  path.Replace("\\\\", "\\");
+
   if( url.GetProtocol().Equals("smb", false) )
   {
     CStdString host( url.GetHostName() );
@@ -62,7 +65,6 @@ CStdString CWINSMBDirectory::GetLocal(const CStdString& strPath)
       path = "\\\\?\\UNC\\" + host + "\\" + path;
     }
   }
-  path.Replace('/', '\\');
   return path;
 }
 

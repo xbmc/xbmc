@@ -28,6 +28,9 @@
 #ifdef TARGET_POSIX
 #include "XHandle.h"
 #endif
+#ifdef TARGET_WINDOWS
+#include "win32/WIN32Util.h"
+#endif
 
 #include <sys/stat.h>
 #ifdef TARGET_POSIX
@@ -79,11 +82,6 @@ CStdString CHDFile::GetLocal(const CURL &url)
     }
   }
 
-#ifdef TARGET_WINDOWS
-  path.Insert(0, "\\\\?\\");
-  path.Replace('/', '\\');
-#endif
-
   if (IsAliasShortcut(path))
     TranslateAliasShortcut(path);
 
@@ -97,7 +95,7 @@ bool CHDFile::Open(const CURL& url)
 
 #ifdef TARGET_WINDOWS
   CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
+  CWIN32Util::AddExtraLongPathPrefix(strFile, strWFile);
   m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
 #else
   m_hFile.attach(CreateFile(strFile.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
@@ -119,7 +117,7 @@ bool CHDFile::Exists(const CURL& url)
 #ifdef TARGET_WINDOWS
   CStdStringW strWFile;
   URIUtils::RemoveSlashAtEnd(strFile);
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
+  CWIN32Util::AddExtraLongPathPrefix(strFile, strWFile);
   DWORD attributes = GetFileAttributesW(strWFile);
   if(attributes == INVALID_FILE_ATTRIBUTES)
     return false;
@@ -181,7 +179,7 @@ bool CHDFile::SetHidden(const CURL &url, bool hidden)
 {
 #ifdef TARGET_WINDOWS
   CStdStringW path;
-  g_charsetConverter.utf8ToW(GetLocal(url), path, false);
+  CWIN32Util::AddExtraLongPathPrefix(GetLocal(url), path);
   DWORD attributes = hidden ? FILE_ATTRIBUTE_HIDDEN : FILE_ATTRIBUTE_NORMAL;
   if (SetFileAttributesW(path.c_str(), attributes))
     return true;
@@ -197,7 +195,7 @@ bool CHDFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
 #ifdef TARGET_WINDOWS
   CStdStringW strWPath;
-  g_charsetConverter.utf8ToW(strPath, strWPath, false);
+  CWIN32Util::AddExtraLongPathPrefix(strPath, strWPath);
   m_hFile.attach(CreateFileW(strWPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
 #else
   m_hFile.attach(CreateFile(strPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
@@ -322,7 +320,7 @@ bool CHDFile::Delete(const CURL& url)
 
 #ifdef TARGET_WINDOWS
   CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
+  CWIN32Util::AddExtraLongPathPrefix(strFile, strWFile);
   return ::DeleteFileW(strWFile.c_str()) ? true : false;
 #else
   return ::DeleteFile(strFile.c_str()) ? true : false;
@@ -336,9 +334,9 @@ bool CHDFile::Rename(const CURL& url, const CURL& urlnew)
 
 #ifdef TARGET_WINDOWS
   CStdStringW strWFile;
+  CWIN32Util::AddExtraLongPathPrefix(strFile, strWFile);
   CStdStringW strWNewFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  g_charsetConverter.utf8ToW(strNewFile, strWNewFile, false);
+  CWIN32Util::AddExtraLongPathPrefix(strNewFile, strWNewFile);
   return ::MoveFileW(strWFile.c_str(), strWNewFile.c_str()) ? true : false;
 #else
   return ::MoveFile(strFile.c_str(), strNewFile.c_str()) ? true : false;

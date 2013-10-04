@@ -398,8 +398,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
   {
     //expand potential relative path to full path
     CStdStringW strPathW;
-    g_charsetConverter.utf8ToW(strPath, strPathW, false);
-    CWIN32Util::AddExtraLongPathPrefix(strPathW);
+    CWIN32Util::AddExtraLongPathPrefix(strPath, strPathW);
     const unsigned int bufSize = GetFullPathNameW(strPathW, 0, NULL, NULL);
     if (bufSize != 0)
     {

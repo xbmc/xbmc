@@ -495,12 +495,21 @@ CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
   return strRetPath;
 }
 
-bool CWIN32Util::AddExtraLongPathPrefix(std::wstring& path)
+bool CWIN32Util::AddExtraLongPathPrefix(const CStdString& path, CStdStringW& retpath)
 {
-  const wchar_t* const str = path.c_str();
-  if (path.length() < 4 || str[0] != L'\\' || str[1] != L'\\' || str[3] != L'\\' || str[2] != L'?')
+  g_charsetConverter.utf8ToW(path, retpath, false);
+  return AddExtraLongPathPrefix(retpath);
+}
+
+bool CWIN32Util::AddExtraLongPathPrefix(CStdStringW& path)
+{
+  if (path.length() < 4 || path[0] != L'\\' || path[1] != L'\\' || path[3] != L'\\' || path[2] != L'?')
   {
-    path.insert(0, L"\\\\?\\");
+    // Ensure valid path
+    path.Replace(L'/', L'\\');
+    path.Replace(L"\\\\", L"\\");
+
+    path.Insert(0, L"\\\\?\\");
     return true;
   }
   return false;

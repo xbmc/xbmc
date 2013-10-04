@@ -59,7 +59,8 @@ public:
   static CStdString GetProfilePath();
   static CStdString UncToSmb(const CStdString &strPath);
   static CStdString SmbToUnc(const CStdString &strPath);
-  static bool AddExtraLongPathPrefix(std::wstring& path);
+  static bool AddExtraLongPathPrefix(CStdStringW& path);
+  static bool AddExtraLongPathPrefix(const CStdString& path, CStdStringW& retpath);
   static bool RemoveExtraLongPathPrefix(std::wstring& path);
   static void ExtendDllPath();
   static HRESULT ToggleTray(const char cDriveLetter='\0');
