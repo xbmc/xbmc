@@ -74,7 +74,8 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
 
   CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::HandleHTTPRequest handling %s", request.url.c_str());
   
-  if (path.Equals("/player/application/playMedia"))
+  if (path.Equals("/player/playback/playMedia") ||
+      /* LEGACY */ path.Equals("/player/application/playMedia"))
     playMedia(argumentMap);
   else if (path.Equals("/player/playback/stepForward") ||
            path.Equals("/player/playback/stepBack"))
