@@ -9,6 +9,7 @@
 #include "FileItem.h"
 
 #include <map>
+#include <boost/shared_ptr.hpp>
 
 class CPlexTimelineManager
 {
@@ -40,6 +41,8 @@ class CPlexTimelineManager
     std::vector<CUrlOptions> WaitForTimeline();
     uint64_t GetItemDuration(CFileItemPtr item);
 
+    void Stop();
+
   private:
     std::map<MediaType, CFileItemPtr> m_currentItems;
     std::map<MediaType, MediaState> m_currentStates;
@@ -48,6 +51,10 @@ class CPlexTimelineManager
     CPlexTimer m_serverTimer;
 
     CEvent m_pollEvent;
+
+    bool m_stopped;
 };
+
+typedef boost::shared_ptr<CPlexTimelineManager> CPlexTimelineManagerPtr;
 
 #endif // PLEXTIMELINEMANAGER_H

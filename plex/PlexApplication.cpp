@@ -39,7 +39,7 @@ PlexApplication::Start()
   mediaServerClient = CPlexMediaServerClientPtr(new CPlexMediaServerClient);
   backgroundMusicPlayer = new BackgroundMusicPlayer;
   analytics = new CPlexAnalytics;
-  timelineManager = new CPlexTimelineManager;
+  timelineManager = CPlexTimelineManagerPtr(new CPlexTimelineManager);
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
@@ -145,11 +145,12 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
 
     dataLoader->Stop();
     dataLoader.reset();
+
+    timelineManager->Stop();
+    timelineManager.reset();
     
     mediaServerClient->CancelJobs();
     mediaServerClient.reset();
-
-    delete timelineManager;
     
     delete remoteSubscriberManager;
     

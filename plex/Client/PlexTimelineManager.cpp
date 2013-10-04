@@ -13,7 +13,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 
-CPlexTimelineManager::CPlexTimelineManager()
+CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false)
 {
   m_currentItems[MUSIC] = CFileItemPtr();
   m_currentItems[PHOTO] = CFileItemPtr();
@@ -51,6 +51,12 @@ uint64_t CPlexTimelineManager::GetItemDuration(CFileItemPtr item)
     return item->GetMusicInfoTag()->GetDuration() * 1000;
 
   return 0;
+}
+
+void CPlexTimelineManager::Stop()
+{
+  m_stopped = true;
+  m_pollEvent.Set();
 }
 
 CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forServer)
@@ -166,6 +172,7 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
   }
 
   bool stateChange = false;
+  bool positionUpdate = false;
 
   if (currentItem != m_currentItems[type])
   {
@@ -180,10 +187,16 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
   }
 
   if (currentItem)
-    currentItem->SetProperty("viewOffset", currentPosition);
+  {
+    if (currentItem->GetProperty("viewOffset").asInteger() != currentPosition)
+    {
+      currentItem->SetProperty("viewOffset", currentPosition);
+      positionUpdate = true;
+    }
+  }
 
   if ((m_pollEvent.getNumWaits() > 0 || g_plexApplication.remoteSubscriberManager->hasSubscribers()) &&
-      (stateChange || m_subTimer.elapsed() > 1))
+      (stateChange || (positionUpdate && m_subTimer.elapsed() >= 1)))
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating subscribers.");
     m_pollEvent.Set();
@@ -191,7 +204,7 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
     m_subTimer.restart();
   }
 
-  if (stateChange || m_serverTimer.elapsed() > 10)
+  if (stateChange || (positionUpdate && m_serverTimer.elapsed() >= 10))
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server");
     g_plexApplication.mediaServerClient->SendServerTimeline(m_currentItems[type], GetCurrentTimeline(type));
@@ -201,10 +214,7 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
   /* Mark progress for the item */
   float percentage = 0.0;
   if (GetItemDuration(currentItem) > 0)
-  {
     percentage = (float)(((float)currentPosition/(float)GetItemDuration(currentItem)) * 100.0);
-    CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress %lld / %lld = %f", currentPosition, GetItemDuration(currentItem), percentage);
-  }
 
   if (currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED &&
       currentPosition >= 5)
@@ -212,7 +222,6 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
     currentItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
   }
 
-  CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress percentage is %f", percentage);
   if ((currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_IN_PROGRESS ||
       currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED) &&
       percentage > g_advancedSettings.m_videoPlayCountMinimumPercent)
@@ -278,7 +287,8 @@ std::vector<CUrlOptions> CPlexTimelineManager::WaitForTimeline()
 {
   if (m_pollEvent.Wait())
   {
-    return GetCurrentTimeLines();
+    if (!m_stopped)
+      return GetCurrentTimeLines();
   }
 
   return std::vector<CUrlOptions>();

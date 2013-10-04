@@ -41,6 +41,7 @@ class CPlexServiceListener;
 typedef boost::shared_ptr<CPlexServiceListener> CPlexServiceListenerPtr;
 
 class CPlexTimelineManager;
+typedef boost::shared_ptr<CPlexTimelineManager> CPlexTimelineManagerPtr;
 
 ///
 /// The hub of all Plex goodness.
@@ -73,7 +74,7 @@ public:
   BackgroundMusicPlayer *backgroundMusicPlayer;
   CPlexAnalytics *analytics;
   CPlexAutoUpdate* autoUpdater;
-  CPlexTimelineManager *timelineManager;
+  CPlexTimelineManagerPtr timelineManager;
 
       
 private:
