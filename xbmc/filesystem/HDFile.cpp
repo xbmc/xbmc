@@ -37,6 +37,7 @@
 #include <io.h>
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
+#include "win32/WIN32Util.h"
 #endif
 #include "utils/log.h"
 
@@ -60,29 +61,24 @@ CHDFile::~CHDFile()
   if (m_hFile != INVALID_HANDLE_VALUE) Close();
 }
 //*********************************************************************************************
-CStdString CHDFile::GetLocal(const CURL &url)
+std::string CHDFile::GetLocal(const CURL &url)
 {
-  CStdString path( url.GetFileName() );
+  std::string path(url.GetFileName());
 
-  if( url.GetProtocol().Equals("file", false) )
+  if(url.GetProtocol() == "file")
   {
     // file://drive[:]/path
     // file:///drive:/path
-    CStdString host( url.GetHostName() );
+    std::string host(url.GetHostName());
 
-    if(host.size() > 0)
+    if(!host.empty())
     {
-      if(host.Right(1) == ":")
+      if(host[host.length()-1] == ':')
         path = host + "/" + path;
       else
         path = host + ":/" + path;
     }
   }
-
-#ifdef TARGET_WINDOWS
-  path.Insert(0, "\\\\?\\");
-  path.Replace('/', '\\');
-#endif
 
   if (IsAliasShortcut(path))
     TranslateAliasShortcut(path);
@@ -93,12 +89,10 @@ CStdString CHDFile::GetLocal(const CURL &url)
 //*********************************************************************************************
 bool CHDFile::Open(const CURL& url)
 {
-  CStdString strFile = GetLocal(url);
+  std::string strFile(GetLocal(url));
 
 #ifdef TARGET_WINDOWS
-  CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
+  m_hFile.attach(CreateFileW(CWIN32Util::ConvertPathToWin32Form(strFile).c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
 #else
   m_hFile.attach(CreateFile(strFile.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
 #endif
@@ -113,18 +107,16 @@ bool CHDFile::Open(const CURL& url)
 
 bool CHDFile::Exists(const CURL& url)
 {
-  struct __stat64 buffer;
-  CStdString strFile = GetLocal(url);
+  std::string strFile(GetLocal(url));
 
 #ifdef TARGET_WINDOWS
-  CStdStringW strWFile;
   URIUtils::RemoveSlashAtEnd(strFile);
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  DWORD attributes = GetFileAttributesW(strWFile);
+  DWORD attributes = GetFileAttributesW(CWIN32Util::ConvertPathToWin32Form(strFile).c_str());
   if(attributes == INVALID_FILE_ATTRIBUTES)
     return false;
   return true;
 #else
+  struct __stat64 buffer;
   return (_stat64(strFile.c_str(), &buffer)==0);
 #endif
 }
@@ -157,20 +149,19 @@ int CHDFile::Stat(struct __stat64* buffer)
 
 int CHDFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CStdString strFile = GetLocal(url);
+  std::string strFile(GetLocal(url));
 
 #ifdef TARGET_WINDOWS
-  CStdStringW strWFile;
+  std::wstring strWFile(CWIN32Util::ConvertPathToWin32Form(strFile));
   /* _wstat64 can't handle long paths therefore we remove the \\?\ */
-  strFile.Replace("\\\\?\\", "");
+  CWIN32Util::RemoveExtraLongPathPrefix(strWFile);
   // win32 can only stat root drives with a slash at the end
-  if(strFile.length() == 2 && strFile[1] ==':')
-    URIUtils::AddSlashAtEnd(strFile);
+  if(strWFile.length() == 2 && strWFile[1] == L':')
+    strWFile.push_back(L'\\');
   /* _wstat64 calls FindFirstFileEx. According to MSDN, the path should not end in a trailing backslash.
     Remove it before calling _wstat64 */
-  if (strFile.length() > 3 && URIUtils::HasSlashAtEnd(strFile))
-    URIUtils::RemoveSlashAtEnd(strFile);
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
+  else if (strWFile.length() > 3 && URIUtils::HasSlashAtEnd(strFile))
+    strWFile.pop_back();
   return _wstat64(strWFile.c_str(), buffer);
 #else
   return _stat64(strFile.c_str(), buffer);
@@ -180,10 +171,8 @@ int CHDFile::Stat(const CURL& url, struct __stat64* buffer)
 bool CHDFile::SetHidden(const CURL &url, bool hidden)
 {
 #ifdef TARGET_WINDOWS
-  CStdStringW path;
-  g_charsetConverter.utf8ToW(GetLocal(url), path, false);
   DWORD attributes = hidden ? FILE_ATTRIBUTE_HIDDEN : FILE_ATTRIBUTE_NORMAL;
-  if (SetFileAttributesW(path.c_str(), attributes))
+  if (SetFileAttributesW(CWIN32Util::ConvertPathToWin32Form(GetLocal(url)).c_str(), attributes))
     return true;
 #endif
   return false;
@@ -193,12 +182,10 @@ bool CHDFile::SetHidden(const CURL &url, bool hidden)
 bool CHDFile::OpenForWrite(const CURL& url, bool bOverWrite)
 {
   // make sure it's a legal FATX filename (we are writing to the harddisk)
-  CStdString strPath = GetLocal(url);
+  std::string strPath(GetLocal(url));
 
 #ifdef TARGET_WINDOWS
-  CStdStringW strWPath;
-  g_charsetConverter.utf8ToW(strPath, strWPath, false);
-  m_hFile.attach(CreateFileW(strWPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
+  m_hFile.attach(CreateFileW(CWIN32Util::ConvertPathToWin32Form(strPath).c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
 #else
   m_hFile.attach(CreateFile(strPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
 #endif
@@ -318,12 +305,10 @@ int64_t CHDFile::GetPosition()
 
 bool CHDFile::Delete(const CURL& url)
 {
-  CStdString strFile=GetLocal(url);
+  std::string strFile(GetLocal(url));
 
 #ifdef TARGET_WINDOWS
-  CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  return ::DeleteFileW(strWFile.c_str()) ? true : false;
+  return ::DeleteFileW(CWIN32Util::ConvertPathToWin32Form(strFile).c_str()) ? true : false;
 #else
   return ::DeleteFile(strFile.c_str()) ? true : false;
 #endif
@@ -331,15 +316,11 @@ bool CHDFile::Delete(const CURL& url)
 
 bool CHDFile::Rename(const CURL& url, const CURL& urlnew)
 {
-  CStdString strFile=GetLocal(url);
-  CStdString strNewFile=GetLocal(urlnew);
+  std::string strFile(GetLocal(url));
+  std::string strNewFile(GetLocal(urlnew));
 
 #ifdef TARGET_WINDOWS
-  CStdStringW strWFile;
-  CStdStringW strWNewFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  g_charsetConverter.utf8ToW(strNewFile, strWNewFile, false);
-  return ::MoveFileW(strWFile.c_str(), strWNewFile.c_str()) ? true : false;
+  return ::MoveFileW(CWIN32Util::ConvertPathToWin32Form(strFile).c_str(), CWIN32Util::ConvertPathToWin32Form(strNewFile).c_str()) ? true : false;
 #else
   return ::MoveFile(strFile.c_str(), strNewFile.c_str()) ? true : false;
 #endif
