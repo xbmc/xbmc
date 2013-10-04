@@ -24,6 +24,7 @@
 #include "PlexApplication.h"
 #include "interfaces/AnnouncementManager.h"
 #include "PlexAnalytics.h"
+#include "Client/PlexTimelineManager.h"
 
 #include "AutoUpdate/PlexAutoUpdate.h"
 
@@ -38,6 +39,7 @@ PlexApplication::Start()
   mediaServerClient = CPlexMediaServerClientPtr(new CPlexMediaServerClient);
   backgroundMusicPlayer = new BackgroundMusicPlayer;
   analytics = new CPlexAnalytics;
+  timelineManager = new CPlexTimelineManager;
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
@@ -146,6 +148,8 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
     
     mediaServerClient->CancelJobs();
     mediaServerClient.reset();
+
+    delete timelineManager;
     
     delete remoteSubscriberManager;
     

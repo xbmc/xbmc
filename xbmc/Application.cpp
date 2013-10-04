@@ -6324,27 +6324,27 @@ void CApplication::UpdateFileState(const string& aState)
     return;
 
   // Compute the state if not passed on.
-  CPlexMediaServerClient::MediaState state;
+  CPlexTimelineManager::MediaState state;
   if (aState == "paused")
-    state = CPlexMediaServerClient::MEDIA_STATE_PAUSED;
+    state = CPlexTimelineManager::MEDIA_STATE_PAUSED;
   else if (aState == "playing")
-    state = CPlexMediaServerClient::MEDIA_STATE_PLAYING;
+    state = CPlexTimelineManager::MEDIA_STATE_PLAYING;
   else if (aState == "buffering")
-    state = CPlexMediaServerClient::MEDIA_STATE_BUFFERING;
+    state = CPlexTimelineManager::MEDIA_STATE_BUFFERING;
   else if (aState == "stopped" )
-    state = CPlexMediaServerClient::MEDIA_STATE_STOPPED;
+    state = CPlexTimelineManager::MEDIA_STATE_STOPPED;
   else if (aState.empty())
-    state = IsBuffering() ? CPlexMediaServerClient::MEDIA_STATE_BUFFERING : IsPaused() ? CPlexMediaServerClient::MEDIA_STATE_PAUSED : CPlexMediaServerClient::MEDIA_STATE_PLAYING;
+    state = IsBuffering() ? CPlexTimelineManager::MEDIA_STATE_BUFFERING : IsPaused() ? CPlexTimelineManager::MEDIA_STATE_PAUSED : CPlexTimelineManager::MEDIA_STATE_PLAYING;
   else
     return;
 
   if (!m_itemCurrentFile->HasProperty("duration"))
     m_itemCurrentFile->SetProperty("duration", GetTotalTime());
 
-  if (state == CPlexMediaServerClient::MEDIA_STATE_STOPPED || IsPlayingVideo() || IsPlayingAudio())
+  if (state == CPlexTimelineManager::MEDIA_STATE_STOPPED || IsPlayingVideo() || IsPlayingAudio())
   {
-    if (g_plexApplication.mediaServerClient)
-      g_plexApplication.mediaServerClient->ReportItemProgress(m_itemCurrentFile, state, GetTime() * 1000);
+    if (g_plexApplication.timelineManager)
+      g_plexApplication.timelineManager->ReportProgress(m_itemCurrentFile, state, GetTime() * 1000);
 
     // Update the item in place.
     CGUIMediaWindow* mediaWindow = (CGUIMediaWindow* )g_windowManager.GetWindow(WINDOW_VIDEO_FILES);

@@ -96,6 +96,9 @@ CPlexFile::BuildHTTPURL(CURL& url)
 
   newUrl = server->BuildURL(url.GetFileName(), url.GetOptions());
 
+  if (url.HasProtocolOption("ssl") && url.GetProtocolOption("ssl") == "1")
+    newUrl.SetProtocol("https");
+
   if (!url.GetUserName().empty())
     newUrl.SetUserName(url.GetUserName());
   if (!url.GetPassWord().empty())

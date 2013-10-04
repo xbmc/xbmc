@@ -25,7 +25,7 @@ class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
   
     virtual void* GetHTTPResponseData() const;
     virtual size_t GetHTTPResonseDataLength() const;
-  
+
   private:
     /* player functions */
     void playMedia(const ArgMap &arguments);
@@ -43,7 +43,10 @@ class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
     void subscribe(const HTTPRequest &request, const ArgMap &arguments);
     void unsubscribe(const HTTPRequest &request, const ArgMap &arguments);
     void setStreams(const ArgMap &arguments);
-  
+    void poll(const HTTPRequest &request, const ArgMap &arguments);
+    void skipTo(const ArgMap &arguments);
+    void device();
+
     CPlexRemoteSubscriberPtr getSubFromRequest(const HTTPRequest &request, const ArgMap &arguments);
     CStdString m_data;
 };

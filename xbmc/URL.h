@@ -88,6 +88,7 @@ public:
 
   /* PLEX */
   const CStdString& GetUrlWithoutOptions() const;
+  void AddOptions(const CUrlOptions &options);
   /* END PLEX */
 
   void GetProtocolOptions(std::map<CStdString, CStdString> &options) const;

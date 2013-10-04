@@ -21,11 +21,16 @@
 #include "utils/log.h"
 #include "interfaces/Builtins.h"
 #include "PlexRemoteSubscriberManager.h"
+#include "Client/PlexTimelineManager.h"
 
 #include <boost/asio/detail/socket_ops.hpp>
 #include "PlexApplication.h"
 
 #include "settings/GUISettings.h"
+
+#include "PlayList.h"
+
+#define LEGACY 1
 
 ////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexHTTPRemoteHandler::CheckHTTPRequest(const HTTPRequest &request)
@@ -71,49 +76,51 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   
   if (path.Equals("/player/application/playMedia"))
     playMedia(argumentMap);
-  else if (path.Equals("/player/application/sendString"))
-    sendString(argumentMap);
-  else if (path.Equals("/player/application/sendVirtualKey") ||
-           path.Equals("/player/application/sendKey"))
-    sendVKey(argumentMap);
-  else if (path.Equals("/player/playback/bigStepForward") ||
-           path.Equals("/player/playback/bigStepBack") ||
-           path.Equals("/player/playback/stepForward") ||
+  else if (path.Equals("/player/playback/stepForward") ||
            path.Equals("/player/playback/stepBack"))
     stepFunction(request.url, argumentMap);
   else if (path.Equals("/player/playback/skipNext"))
     skipNext(argumentMap);
   else if (path.Equals("/player/playback/skipPrevious"))
     skipPrevious(argumentMap);
-  else if (path.Equals("/player/playback/pause"))
-    pausePlay(argumentMap);
-  else if (path.Equals("/player/playback/play"))
-    pausePlay(argumentMap);
   else if (path.Equals("/player/playback/stop"))
     stop(argumentMap);
   else if (path.Equals("/player/playback/seekTo"))
     seekTo(argumentMap);
-  else if (path.Equals("/player/application/setVolume"))
-    setVolume(argumentMap);
-  else if (path.Equals("/player/set"))
+  else if (path.Equals("/player/playback/skipTo"))
+    skipTo(argumentMap);
+  else if (path.Equals("/player/playback/setParameters"))
     set(argumentMap);
   else if (boost::starts_with(path, "/player/navigation"))
     navigation(path, argumentMap);
-  else if (path.Equals("/player/subscribe"))
+  else if (path.Equals("/player/timeline/subscribe"))
     subscribe(request, argumentMap);
-  else if (path.Equals("/player/unsubscribe"))
+  else if (path.Equals("/player/timeline/unsubscribe"))
     unsubscribe(request, argumentMap);
+  else if (path.Equals("/player/timeline/poll"))
+    poll(request, argumentMap);
   else if (path.Equals("/player/setStreams"))
     setStreams(argumentMap);
   else if (boost::starts_with(path, "/device"))
-  {
-    m_data.Format("<MediaContainer machineIdentifier=\"%s\" version=\"%s\" types=\"plex/media-player\" friendlyName=\"%s\" platform=\"%s\" platfromVersion=\"%s\" />\n",
-                  g_guiSettings.GetString("system.uuid"),
-                  PLEX_VERSION,
-                  g_guiSettings.GetString("services.devicename"),
-                  PlexUtils::GetMachinePlatform(),
-                  PlexUtils::GetMachinePlatformVersion());
-  }
+    device();
+  else if (path.Equals("/player/playback/togglePlayPause"))
+    pausePlay(argumentMap);
+
+#ifdef LEGACY
+  else if (path.Equals("/player/application/sendString"))
+    sendString(argumentMap);
+  else if (path.Equals("/player/application/sendVirtualKey") ||
+           path.Equals("/player/application/sendKey"))
+    sendVKey(argumentMap);
+  else if (path.Equals("/player/playback/bigStepForward") ||
+           path.Equals("/player/playback/bigStepBack"))
+    stepFunction(request.url, argumentMap);
+  else if (path.Equals("/player/playback/pause"))
+    pausePlay(argumentMap);
+  else if (path.Equals("/player/playback/play"))
+    pausePlay(argumentMap);
+#endif
+
   else
   {
     m_responseCode = MHD_HTTP_INTERNAL_SERVER_ERROR;
@@ -197,6 +204,12 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia no key attribute, can't progress...");
     return;
+  }
+
+  if (arguments.find("protocol") != arguments.end())
+  {
+    if (arguments.find("protocol")->second == "https")
+      itemURL.SetProtocolOption("ssl", "1");
   }
   
   /* fetch the container */
@@ -347,6 +360,15 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     action = ACTION_SELECT_ITEM;
   else if (navigation.Equals("back"))
     action = ACTION_NAV_BACK;
+  else if (navigation.Equals("home"))
+    action = ACTION_FIRST_PAGE;
+  else if (navigation.Equals("music"))
+  {
+    if (g_application.IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+      action = ACTION_SHOW_GUI;
+  }
+
+#ifdef LEGACY
   else if (navigation.Equals("contextMenu"))
     action = ACTION_CONTEXT_MENU;
   else if (navigation.Equals("toggleOSD"))
@@ -359,6 +381,7 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     action = ACTION_NEXT_LETTER;
   else if (navigation.Equals("previousLetter"))
     action = ACTION_PREV_LETTER;
+#endif
   
   if (action != ACTION_NONE)
   {
@@ -539,4 +562,84 @@ void CPlexHTTPRemoteHandler::setStreams(const ArgMap &arguments)
       g_application.m_pPlayer->SetSubtitleVisible(true);
     }
   }
+}
+
+void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &arguments)
+{
+  bool wait = false;
+  if (arguments.find("wait") != arguments.end())
+  {
+    if (arguments.find("wait")->second == "1" || arguments.find("wait")->second == "true")
+      wait = true;
+  }
+
+  std::vector<CUrlOptions> lines;
+  if (wait)
+  {
+    CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::poll waiting for timeline event.");
+    lines = g_plexApplication.timelineManager->WaitForTimeline();
+  }
+  else
+  {
+    lines = g_plexApplication.timelineManager->GetCurrentTimeLines();
+  }
+
+  CStdString ret = "<Response code\"0\">\n";
+
+  BOOST_FOREACH(CUrlOptions opt, lines)
+    ret += opt.GetOptionsString() + "\n";
+
+  ret+="</Response>\n";
+
+  m_data = ret;
+}
+
+void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)
+{
+  PLAYLIST::CPlayList playlist;
+  int playlistType = g_playlistPlayer.GetCurrentPlaylist();
+
+  if (arguments.find("type") != arguments.end())
+  {
+    std::string type = arguments.find("type")->second;
+    if (type == "music")
+      playlistType = PLAYLIST_MUSIC;
+    else if (type == "video")
+      playlistType = PLAYLIST_VIDEO;
+  }
+
+  playlist = g_playlistPlayer.GetPlaylist(playlistType);
+
+  if (arguments.find("key") == arguments.end())
+  {
+    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::skipTo missing 'key' argument.");
+    return;
+  }
+
+  std::string key = arguments.find("key")->second;
+
+  int idx = -1;
+  for (int i = 0; i < playlist.size(); i++)
+  {
+    CFileItemPtr item = playlist[i];
+    if (item->GetProperty("unprocessed_key").asString() == key)
+    {
+      idx = i;
+      break;
+    }
+  }
+
+  if (idx != -1)
+    CApplicationMessenger::Get().MediaPlay(playlistType, idx);
+}
+
+
+void CPlexHTTPRemoteHandler::device()
+{
+  m_data.Format("<MediaContainer machineIdentifier=\"%s\" platform=\"%s\" platformVersion=\"%s\" friendlyName=\"%s\">",
+                g_guiSettings.GetString("system.uuid"),
+                PlexUtils::GetMachinePlatform(),
+                PlexUtils::GetMachinePlatformVersion(),
+                g_guiSettings.GetString("services.devicename"));
+  m_data += "\n  <Capability type=\"player\" protocolVersion=\"1\" protocolCapabilites=\"navigation\" />\n</MediaContainer>";
 }

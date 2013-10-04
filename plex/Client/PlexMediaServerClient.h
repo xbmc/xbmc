@@ -18,13 +18,6 @@
 class CPlexMediaServerClient : public CJobQueue, public boost::enable_shared_from_this<CPlexMediaServerClient>
 {
 public:
-  enum MediaState {
-    MEDIA_STATE_STOPPED,
-    MEDIA_STATE_PLAYING,
-    MEDIA_STATE_BUFFERING,
-    MEDIA_STATE_PAUSED
-  };
-  
   CPlexMediaServerClient() : CJobQueue() {}
   void SelectStream(const CFileItemPtr& item, int partID, int subtitleStreamID, int audioStreamID);
   
@@ -37,9 +30,8 @@ public:
   void SetItemRating(const CFileItemPtr& item, float rating);
   
   /* timeline api */
-  void ReportItemProgress(const CFileItemPtr& item, MediaState state, int64_t currentPosition = 0);
-  void ReportItemProgressToSubscriber(const CURL &url, CFileItemPtr item, MediaState state, int64_t currentPosition);
-  
+  void SendServerTimeline(const CFileItemPtr& item, const CUrlOptions &options);
+
   /* Set viewMode */
   void SetViewMode(const CFileItem& item, int viewMode, int sortMode = -1, int sortAsc = 1);
   
@@ -47,11 +39,7 @@ public:
   void StopTranscodeSession(CPlexServerPtr server);
   
   void deleteItem(const CFileItemPtr &item);
-  
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-  
-  static std::string StateToString(CPlexMediaServerClient::MediaState state);
-  static CURL constructTimelineRequest(CFileItemPtr item, MediaState state, int64_t currentPosition = 0, bool includeSystemVars = false);
 
 private:
   CStdString GetPrefix(const CFileItemPtr& item) const
@@ -60,11 +48,7 @@ private:
     if (item->GetProperty("plexserver") == "myplex")
       prefix = "/pms/:/";
     return prefix;
-  }
-  
-  /* last timeline state */
-  CStdString m_lastItemKey;
-  MediaState m_lastItemState;
+  }  
 };
 
 typedef boost::shared_ptr<CPlexMediaServerClient> CPlexMediaServerClientPtr;

@@ -64,23 +64,6 @@ void CPlexRemoteSubscriberManager::addSubscriber(CPlexRemoteSubscriberPtr subscr
   {
     m_map[subscriber->getUUID()] = subscriber;
     CLog::Log(LOGDEBUG, "CPlexRemoteSubscriberManager::addSubscriber added %s", subscriber->getUUID().c_str());
-    
-    CPlexMediaServerClient::MediaState state;
-    CFileItemPtr item;
-    
-    if (g_application.IsPlaying())
-    {
-      if (g_application.GetPlaySpeed() == 0)
-        state = CPlexMediaServerClient::MEDIA_STATE_PAUSED;
-      else
-        state = CPlexMediaServerClient::MEDIA_STATE_PLAYING;
-      
-      item = g_application.CurrentFileItemPtr();
-    }
-    else
-      state = CPlexMediaServerClient::MEDIA_STATE_STOPPED;
-    
-    g_plexApplication.mediaServerClient->ReportItemProgressToSubscriber(subscriber->getURL(), item, state, g_application.GetTime());
   }
   
   if (!m_refreshTimer.IsRunning())

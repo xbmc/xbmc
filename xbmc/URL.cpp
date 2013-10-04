@@ -840,6 +840,12 @@ const CStdString& CURL::GetUrlWithoutOptions() const
 {
   return m_strWithoutOptions;
 }
+
+void CURL::AddOptions(const CUrlOptions &options)
+{
+  for (CUrlOptions::UrlOptions::const_iterator option = options.GetOptions().begin(); option != options.GetOptions().end(); option++)
+    SetOption(option->first, option->second.asString());
+}
 /* END PLEX */
 
 void CURL::GetProtocolOptions(std::map<CStdString, CStdString> &options) const

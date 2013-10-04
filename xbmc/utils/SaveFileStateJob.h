@@ -9,6 +9,7 @@
 
 /* PLEX */
 #include "Client/PlexMediaServerClient.h"
+#include "Client/PlexTimelineManager.h"
 #include "Remote/PlexRemoteSubscriberManager.h"
 #include <boost/make_shared.hpp>
 #include "PlexApplication.h"
@@ -80,7 +81,7 @@ bool CSaveFileStateJob::DoWork()
             /* PLEX */
             CFileItemPtr item = boost::make_shared<CFileItem>(m_item);
             g_plexApplication.mediaServerClient->SetItemWatched(item);
-            g_plexApplication.mediaServerClient->ReportItemProgress(item, CPlexMediaServerClient::MEDIA_STATE_STOPPED);
+            g_plexApplication.timelineManager->ReportProgress(item, CPlexTimelineManager::MEDIA_STATE_STOPPED);
             /* END PLEX */
           }
 #ifndef __PLEX__
@@ -98,11 +99,11 @@ bool CSaveFileStateJob::DoWork()
 #else
             if (m_bookmark.timeInSeconds < 0.0f)
             {
-              g_plexApplication.mediaServerClient->ReportItemProgress(boost::make_shared<CFileItem>(m_item), CPlexMediaServerClient::MEDIA_STATE_STOPPED);
+              g_plexApplication.timelineManager->ReportProgress(boost::make_shared<CFileItem>(m_item), CPlexTimelineManager::MEDIA_STATE_STOPPED);
             }
             else if (m_bookmark.timeInSeconds > 0.0f)
             {
-              g_plexApplication.mediaServerClient->ReportItemProgress(boost::make_shared<CFileItem>(m_item), CPlexMediaServerClient::MEDIA_STATE_STOPPED, m_bookmark.timeInSeconds*1000);
+              g_plexApplication.timelineManager->ReportProgress(boost::make_shared<CFileItem>(m_item), CPlexTimelineManager::MEDIA_STATE_STOPPED, m_bookmark.timeInSeconds*1000);
               m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
             }
 #endif
