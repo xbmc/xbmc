@@ -5,9 +5,12 @@ DEPS= ../../Makefile.include.in Makefile
 
 # lib name, version
 LIBNAME=m4
-VERSION=1.4.9
+VERSION=1.4.17
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+
+
+BASE_URL=http://ftp.gnu.org/gnu/m4
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
