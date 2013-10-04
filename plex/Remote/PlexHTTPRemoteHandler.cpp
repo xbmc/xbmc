@@ -585,7 +585,7 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
     lines = g_plexApplication.timelineManager->GetCurrentTimeLines();
   }
 
-  CStdString ret = "<Response code\"0\">\n";
+  CStdString ret = "<Response code=\"0\">\n";
 
   BOOST_FOREACH(CUrlOptions opt, lines)
     ret += opt.GetOptionsString() + "\n";
