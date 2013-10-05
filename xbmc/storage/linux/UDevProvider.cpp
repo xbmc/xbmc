@@ -145,11 +145,13 @@ void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
       continue;
     }
 
-    // look for usb devices on the usb bus or mounted on /media/usbX (sdcards)
+    // look for usb devices on the usb bus, or mounted on /media/usbX (sdcards) or cdroms
     const char *bus = udev_device_get_property_value(device, "ID_BUS");
+    const char *cdrom = udev_device_get_property_value(device, "ID_CDROM");
     if (removable  &&
       ((bus        && strstr(bus, "usb")) ||
-       (mountpoint && strstr(mountpoint, "usb"))))
+       (cdrom      && strstr(cdrom,"1"))  ||
+       (mountpoint && strstr(mountpoint, "/media/"))))
     {
       const char *label = udev_device_get_property_value(device, "ID_FS_LABEL");
       if (!label)
