@@ -105,7 +105,7 @@ public:
   static bool IsStack(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
-  static bool IsURL(const CStdString& strFile);
+  static bool IsURL(const std::string& strFile);
   static bool IsVideoDb(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
   static bool IsAPK(const CStdString& strFile);

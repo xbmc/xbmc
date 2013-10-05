@@ -721,9 +721,9 @@ bool URIUtils::IsSmb(const CStdString& strFile)
   return StringUtils::StartsWithNoCase(strFile2, "smb:");
 }
 
-bool URIUtils::IsURL(const CStdString& strFile)
+bool URIUtils::IsURL(const std::string& strFile)
 {
-  return strFile.Find("://") >= 0;
+  return strFile.find("://") != std::string::npos;
 }
 
 bool URIUtils::IsFTP(const CStdString& strFile)
