@@ -203,7 +203,14 @@ bool CLibretroEnvironment::EnvironmentCallback(unsigned int cmd, void *data)
 
         if (!m_activeClient->GetSetting("systemdirectory").empty())
         {
-          m_systemDirectory = m_activeClient->GetSetting("systemdirectory");
+          m_systemDirectory = m_activeClient->GetSetting("systemdirectory"); // TODO
+
+          // A string is a valid directory with or without a trailing slash.
+          // This means we can return either: prefer without, as the occasional
+          // game client author tends to concatenate without checking for the
+          // trailing slash.
+          URIUtils::RemoveSlashAtEnd(m_systemDirectory);
+
           // Avoid passing the game client a nonexistent directory. Note, if the
           // user chooses "skip" this passes NULL but preserves the setting.
           if (!CDirectory::Exists(m_systemDirectory))
@@ -230,10 +237,12 @@ bool CLibretroEnvironment::EnvironmentCallback(unsigned int cmd, void *data)
             g_mediaManager.GetLocalDrives(shares);
 
             // "Choose system directory"
-            if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(15027), m_systemDirectory))
+            if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(15027), m_systemDirectory)) // TODO
               m_activeClient->UpdateSetting("systemdirectory", m_systemDirectory);
             else
               m_bAbort = true;
+
+            URIUtils::RemoveSlashAtEnd(m_systemDirectory); // See comment above
           }
           else if (btnid == 1)
           {
