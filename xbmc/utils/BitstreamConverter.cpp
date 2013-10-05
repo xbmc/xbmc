@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2010-2012 Team XBMC
- *      http://www.xbmc.org
+ *      Copyright (C) 2010-2013 Team XBMC
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -328,6 +328,10 @@ bool CBitstreamConverter::Open(enum CodecID codec, uint8_t *in_extradata, int in
       }
       else
       {
+        m_dllAvUtil = new DllAvUtil;
+        if (!m_dllAvUtil->Load())
+            return false;
+
         // valid avcC atom data always starts with the value 1 (version)
         if ( in_extradata[0] != 1 )
         {
@@ -337,9 +341,8 @@ bool CBitstreamConverter::Open(enum CodecID codec, uint8_t *in_extradata, int in
             CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init");
             // video content is from x264 or from bytestream h264 (AnnexB format)
             // NAL reformating to bitstream format needed
-            m_dllAvUtil = new DllAvUtil;
             m_dllAvFormat = new DllAvFormat;
-            if (!m_dllAvUtil->Load() || !m_dllAvFormat->Load())
+            if (!m_dllAvFormat->Load())
               return false;
 
             AVIOContext *pb;
@@ -373,20 +376,24 @@ bool CBitstreamConverter::Open(enum CodecID codec, uint8_t *in_extradata, int in
             CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init 3 byte to 4 byte nal");
             // video content is from so silly encoder that think 3 byte NAL sizes
             // are valid, setup to convert 3 byte NAL sizes to 4 byte.
-            m_dllAvUtil = new DllAvUtil;
             m_dllAvFormat = new DllAvFormat;
-            if (!m_dllAvUtil->Load() || !m_dllAvFormat->Load())
+            if (!m_dllAvFormat->Load())
               return false;
 
             in_extradata[4] = 0xFF;
             m_convert_3byteTo4byteNALSize = true;
-           
+
             m_extradata = (uint8_t *)m_dllAvUtil->av_malloc(in_extrasize);
             memcpy(m_extradata, in_extradata, in_extrasize);
             m_extrasize = in_extrasize;
             return true;
           }
         }
+        // valid avcC atom
+        m_extradata = (uint8_t*)m_dllAvUtil->av_malloc(in_extrasize);
+        memcpy(m_extradata, in_extradata, in_extrasize);
+        m_extrasize = in_extrasize;
+        return true;
       }
       return false;
       break;
@@ -484,7 +491,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 
           // convert demuxer packet from bytestream (AnnexB) to bitstream
           AVIOContext *pb;
-  
+
           if(m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
           {
             return false;
@@ -517,7 +524,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
             m_dllAvFormat->avio_write(pb, nal_start, nal_size);
             nal_start += nal_size;
           }
-  
+
           m_convertSize = m_dllAvFormat->avio_close_dyn_buf(pb, &m_convertBuffer);
         }
         return true;
@@ -542,7 +549,7 @@ int CBitstreamConverter::GetConvertSize()
   if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
     return m_convertSize;
   else
-    return m_inputSize; 
+    return m_inputSize;
 }
 
 uint8_t *CBitstreamConverter::GetExtraData()
@@ -575,42 +582,62 @@ bool CBitstreamConverter::BitstreamConvertInit(void *in_extradata, int in_extras
 
   uint16_t unit_size;
   uint32_t total_size = 0;
-  uint8_t *out = NULL, unit_nb, sps_done = 0;
+  uint8_t *out = NULL, unit_nb, sps_done = 0, sps_seen = 0, pps_seen = 0;
   const uint8_t *extradata = (uint8_t*)in_extradata + 4;
   static const uint8_t nalu_header[4] = {0, 0, 0, 1};
 
   // retrieve length coded size
   m_sps_pps_context.length_size = (*extradata++ & 0x3) + 1;
-  if (m_sps_pps_context.length_size == 3)
-    return false;
 
   // retrieve sps and pps unit(s)
   unit_nb = *extradata++ & 0x1f;  // number of sps unit(s)
   if (!unit_nb)
   {
-    unit_nb = *extradata++;       // number of pps unit(s)
-    sps_done++;
+    goto pps;
   }
+  else
+  {
+    sps_seen = 1;
+  }
+
   while (unit_nb--)
   {
+    void *tmp;
+
     unit_size = extradata[0] << 8 | extradata[1];
     total_size += unit_size + 4;
-    if ( (extradata + 2 + unit_size) > ((uint8_t*)in_extradata + in_extrasize) )
-    {
+
+    if (total_size > INT_MAX - FF_INPUT_BUFFER_PADDING_SIZE ||
+      (extradata + 2 + unit_size) > ((uint8_t*)in_extradata + in_extrasize)) {
       m_dllAvUtil->av_free(out);
       return false;
     }
-    out = (uint8_t*)m_dllAvUtil->av_realloc(out, total_size);
-    if (!out)
-      return false;
-
+    tmp = m_dllAvUtil->av_realloc(out, total_size + FF_INPUT_BUFFER_PADDING_SIZE);
+    if (!tmp) {
+        m_dllAvUtil->av_free(out);
+        return false;
+    }
+    out = (uint8_t*)tmp;
     memcpy(out + total_size - unit_size - 4, nalu_header, 4);
     memcpy(out + total_size - unit_size, extradata + 2, unit_size);
     extradata += 2 + unit_size;
 
+pps:
     if (!unit_nb && !sps_done++)
-      unit_nb = *extradata++;     // number of pps unit(s)
+    {
+      unit_nb = *extradata++;   // number of pps unit(s)
+      if (unit_nb)
+        pps_seen = 1;
+    }
   }
+
+  if (out)
+    memset(out + total_size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+
+  if (!sps_seen)
+      CLog::Log(LOGDEBUG, "SPS NALU missing or invalid. The resulting stream may not play");
+  if (!pps_seen)
+      CLog::Log(LOGDEBUG, "PPS NALU missing or invalid. The resulting stream may not play");
 
   m_sps_pps_context.sps_pps_data = out;
   m_sps_pps_context.size = total_size;
@@ -625,7 +652,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
   // and Licensed GPL 2.1 or greater
 
-
+  int i;
   uint8_t *buf = pData;
   uint32_t buf_size = iSize;
   uint8_t  unit_type;
@@ -638,12 +665,8 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     if (buf + m_sps_pps_context.length_size > buf_end)
       goto fail;
 
-    if (m_sps_pps_context.length_size == 1)
-      nal_size = buf[0];
-    else if (m_sps_pps_context.length_size == 2)
-      nal_size = buf[0] << 8 | buf[1];
-    else
-      nal_size = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
+    for (nal_size = 0, i = 0; i < m_sps_pps_context.length_size; i++)
+      nal_size = (nal_size << 8) | buf[i];
 
     buf += m_sps_pps_context.length_size;
     unit_type = *buf & 0x1f;
@@ -684,24 +707,22 @@ void CBitstreamConverter::BitstreamAllocAndCopy( uint8_t **poutbuf, int *poutbuf
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
   // and Licensed GPL 2.1 or greater
 
-  #define CHD_WB32(p, d) { \
-    ((uint8_t*)(p))[3] = (d); \
-    ((uint8_t*)(p))[2] = (d) >> 8; \
-    ((uint8_t*)(p))[1] = (d) >> 16; \
-    ((uint8_t*)(p))[0] = (d) >> 24; }
-
   uint32_t offset = *poutbuf_size;
   uint8_t nal_header_size = offset ? 3 : 4;
+  void *tmp;
 
   *poutbuf_size += sps_pps_size + in_size + nal_header_size;
-  *poutbuf = (uint8_t*)m_dllAvUtil->av_realloc(*poutbuf, *poutbuf_size);
+  tmp = m_dllAvUtil->av_realloc(*poutbuf, *poutbuf_size);
+  if (!tmp)
+    return;
+  *poutbuf = (uint8_t*)tmp;
   if (sps_pps)
     memcpy(*poutbuf + offset, sps_pps, sps_pps_size);
 
   memcpy(*poutbuf + sps_pps_size + nal_header_size + offset, in, in_size);
   if (!offset)
   {
-    CHD_WB32(*poutbuf + sps_pps_size, 1);
+    BS_WB32(*poutbuf + sps_pps_size, 1);
   }
   else
   {
@@ -904,11 +925,11 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t *data, const uint3
       nal_bs_init(&bs, nal_start, end - nal_start);
 
       // sequence_header_code
-      nal_bs_read(&bs, 8);  
+      nal_bs_read(&bs, 8);
 
       // width
       // nal_start + 12 bits == horizontal_size_value
-      uint32_t width = nal_bs_read(&bs, 12);  
+      uint32_t width = nal_bs_read(&bs, 12);
       if (width != sequence->width)
       {
         changed = true;
