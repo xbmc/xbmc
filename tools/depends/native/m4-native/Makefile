@@ -9,9 +9,6 @@ VERSION=1.4.17
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-
-BASE_URL=http://ftp.gnu.org/gnu/m4
-
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
 
