@@ -381,6 +381,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "videoaspect",      VIDEOPLAYER_VIDEO_ASPECT },
                                   { "audiocodec",       VIDEOPLAYER_AUDIO_CODEC },
                                   { "audiochannels",    VIDEOPLAYER_AUDIO_CHANNELS },
+                                  { "audiolanguage",    VIDEOPLAYER_AUDIO_LANG },
                                   { "hasteletext",      VIDEOPLAYER_HASTELETEXT },
                                   { "lastplayed",       VIDEOPLAYER_LASTPLAYED },
                                   { "playcount",        VIDEOPLAYER_PLAYCOUNT },
@@ -1554,6 +1555,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     {
       UpdateAVInfo();
       strLabel.Format("%i", m_audioInfo.channels);
+    }
+    break;
+  case VIDEOPLAYER_AUDIO_LANG:
+    if(g_application.m_pPlayer->IsPlaying())
+    {
+      SPlayerAudioStreamInfo info;
+      g_application.m_pPlayer->GetAudioStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream, info);
+      strLabel = info.language;
     }
     break;
   case VIDEOPLAYER_STEREOSCOPIC_MODE:
