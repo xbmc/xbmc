@@ -376,7 +376,7 @@
           <default>true</default>
         </setting>
         <setting id="videoplayer.usevdpaumixer" type="boolean" label="13437" help="36421">
-          <visible>HAVE_LIBVDPAU</visible>
+          <requirement>HAVE_LIBVDPAU</requirement>
           <level>2</level>
           <default>true</default>
           <control>
