@@ -720,7 +720,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
         uint8_t *src_ptr = (uint8_t*)xbmc_jnienv()->GetDirectBufferAddress(m_output[index].get_raw());
         src_ptr += offset;
 
-        int loop_end;
+        int loop_end = 0;
         if (m_videobuffer.format == RENDER_FMT_YUV420P)
           loop_end = 3;
         else if (m_videobuffer.format == RENDER_FMT_NV12)
