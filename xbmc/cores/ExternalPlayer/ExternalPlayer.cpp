@@ -310,11 +310,17 @@ void CExternalPlayer::Process()
 
   /* Suspend AE temporarily so exclusive or hog-mode sinks */
   /* don't block external player's access to audio device  */
-  if (!CAEFactory::Suspend())
+  CAEFactory::Suspend();
+  // wait for AE has completed suspended
+  XbmcThreads::EndTime timer(2000);
+  while (!timer.IsTimePast() && !CAEFactory::IsSuspended())
   {
-    CLog::Log(LOGNOTICE,"%s: Failed to suspend AudioEngine before launching external player", __FUNCTION__);
+    Sleep(50);
   }
-
+  if (timer.IsTimePast())
+  {
+    CLog::Log(LOGERROR,"%s: AudioEngine did not suspend before launching external player", __FUNCTION__);
+  }
 
   BOOL ret = TRUE;
 #if defined(TARGET_WINDOWS)
