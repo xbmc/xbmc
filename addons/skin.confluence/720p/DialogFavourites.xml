@@ -8,18 +8,18 @@
 	</coordinates>
 	<controls>
 		<control type="group">
-			<animation effect="slide" start="1280,0" end="0,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<animation effect="slide" start="0,0" end="1280,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="400,0" end="0,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="400,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<control type="image">
-				<posx>1280r</posx>
+				<posx>400r</posx>
 				<posy>0</posy>
-				<width>1280</width>
+				<width>400</width>
 				<height>720</height>
 				<texture border="15,0,0,0" flipx="true">HomeBladeSub.png</texture>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>100r</posx>
+				<posx>380r</posx>
 				<posy>0</posy>
 				<width>64</width>
 				<height>32</height>
@@ -34,421 +34,89 @@
 				<ondown>450</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
-			<control type="grouplist">
-				<posx>82</posx>
-				<posy>50</posy>
-				<width>1220</width>
-				<height>620</height>
-				<orientation>vertical</orientation>
-				<itemgap>0</itemgap>
-				<control type="label" id="350">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>350</width>
-					<height>30</height>
-					<font>font12_title</font>
-					<textcolor>grey</textcolor>
-					<visible>Control.isVisible(450)</visible>
-				</control>
-				<control type="panel" id="450">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>1116</width>
-					<height>186</height>
-					<onup>450</onup>
-					<ondown>450</ondown>
-					<pagecontrol>-</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<preloaditems>4</preloaditems>
-					<orientation>horizontal</orientation>
-					<visible>false</visible>
-					<itemlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">button-nofocus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">folder-focus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</focusedlayout>
-				</control>
-				<control type="label" id="351">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>350</width>
-					<height>30</height>
-					<font>font12_title</font>
-					<textcolor>grey</textcolor>
-					<visible>Control.isVisible(451)</visible>
-				</control>
-				<control type="panel" id="451">
-					<posx>0</posx>
-					<posy>100</posy>
-					<width>1116</width>
-					<height>186</height>
-					<onup>450</onup>
-					<ondown>450</ondown>
-					<pagecontrol>-</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<preloaditems>4</preloaditems>
-					<orientation>horizontal</orientation>
-					<visible>false</visible>
-					<itemlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">button-nofocus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">folder-focus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</focusedlayout>
-				</control>
-				<control type="label" id="352">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>350</width>
-					<height>30</height>
-					<font>font12_title</font>
-					<textcolor>grey</textcolor>
-					<visible>Control.isVisible(452)</visible>
-				</control>
-				<control type="panel" id="452">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>1116</width>
-					<height>186</height>
-					<onup>450</onup>
-					<ondown>450</ondown>
-					<pagecontrol>-</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<preloaditems>4</preloaditems>
-					<orientation>horizontal</orientation>
-					<visible>false</visible>
-					<itemlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">button-nofocus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">folder-focus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</focusedlayout>
-				</control>
-				<control type="label" id="353">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>350</width>
-					<height>30</height>
-					<font>font12_title</font>
-					<textcolor>grey</textcolor>
-					<visible>Control.isVisible(453)</visible>
-				</control>
-				<control type="panel" id="453">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>1116</width>
-					<height>186</height>
-					<onup>450</onup>
-					<ondown>450</ondown>
-					<pagecontrol>-</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<preloaditems>4</preloaditems>
-					<orientation>horizontal</orientation>
-					<visible>false</visible>
-					<itemlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">button-nofocus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">folder-focus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</focusedlayout>
-				</control>
-				<control type="label" id="354">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>350</width>
-					<height>30</height>
-					<font>font12_title</font>
-					<textcolor>grey</textcolor>
-					<visible>Control.isVisible(454)</visible>
-				</control>
-				<control type="panel" id="454">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>1116</width>
-					<height>186</height>
-					<onup>450</onup>
-					<ondown>450</ondown>
-					<pagecontrol>-</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<preloaditems>4</preloaditems>
-					<orientation>horizontal</orientation>
-					<visible>false</visible>
-					<itemlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">button-nofocus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">folder-focus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</focusedlayout>
-				</control>
-				<control type="label" id="355">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>350</width>
-					<height>30</height>
-					<font>font12_title</font>
-					<textcolor>grey</textcolor>
-					<visible>Control.isVisible(455)</visible>
-				</control>
-				<control type="panel" id="455">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>1116</width>
-					<height>186</height>
-					<onup>450</onup>
-					<ondown>450</ondown>
-					<pagecontrol>-</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<preloaditems>4</preloaditems>
-					<orientation>horizontal</orientation>
-					<visible>false</visible>
-					<itemlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">button-nofocus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout height="186" width="186">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>170</width>
-							<height>170</height>
-							<bordertexture border="5">folder-focus.png</bordertexture>
-							<bordersize>5</bordersize>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>80</posx>
-							<posy>160</posy>
-							<width>160</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</focusedlayout>
-				</control>
+			<control type="image">
+				<posx>370r</posx>
+				<posy>30</posy>
+				<width>200</width>
+				<height>200</height>
+				<aspectratio align="center">keep</aspectratio>
+				<fadetime>IconCrossfadeTime</fadetime>
+				<texture>$INFO[ListItem.Icon]</texture>
+				<bordertexture border="8">ThumbShadow.png</bordertexture>
+				<bordersize>8</bordersize>
+			</control>
+			<control type="list" id="450">
+				<posx>390r</posx>
+				<posy>250</posy>
+				<width>450</width>
+				<height>380</height>
+				<onup>450</onup>
+				<onleft>Dialog.Close(Favourites)</onleft>
+				<onright>450</onright>
+				<ondown>450</ondown>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="40">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>370</width>
+						<height>40</height>
+						<texture border="5">button-nofocus.png</texture>
+					</control>
+					<control type="label">
+						<posx>10</posx>
+						<posy>0</posy>
+						<width>350</width>
+						<height>40</height>
+						<font>font12_title</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<selectedcolor>selected</selectedcolor>
+						<info>ListItem.Label</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="40">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>370</width>
+						<height>40</height>
+						<visible>!Control.HasFocus(450)</visible>
+						<texture border="3">button-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>370</width>
+						<height>40</height>
+						<visible>Control.HasFocus(450)</visible>
+						<texture border="3">button-focus.png</texture>
+					</control>
+					<control type="label">
+						<posx>10</posx>
+						<posy>0</posy>
+						<width>350</width>
+						<height>40</height>
+						<font>font12_title</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<selectedcolor>selected</selectedcolor>
+						<info>ListItem.Label</info>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="label">
+				<description>Page label</description>
+				<posx>30r</posx>
+				<posy>670</posy>
+				<width>350</width>
+				<height>30</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<label>([COLOR=blue]$INFO[Container(450).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(450).CurrentPage]/$INFO[Container(450).NumPages][/COLOR])</label>
 			</control>
 		</control>
 	</controls>
