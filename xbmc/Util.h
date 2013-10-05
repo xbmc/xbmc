@@ -123,7 +123,7 @@ public:
   static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_NONE);
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
 #endif
-  static CStdString ValidatePath(const CStdString &path, bool bFixDoubleSlashes = false); ///< return a validated path, with correct directory separators.
+  static std::string ValidatePath(const std::string& path, bool bFixDoubleSlashes = false); ///< return a validated path, with correct directory separators.
   
   static bool IsUsingTTFSubtitles();
 
