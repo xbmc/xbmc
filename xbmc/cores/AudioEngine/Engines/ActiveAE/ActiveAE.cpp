@@ -322,7 +322,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case CActiveAEControlProtocol::INIT:
           m_extError = false;
-          m_sink.EnumerateSinkList();
+          m_sink.EnumerateSinkList(false);
           LoadSettings();
           Configure();
           msg->Reply(CActiveAEControlProtocol::ACC);
@@ -589,7 +589,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_extError = false;
           if (!displayReset)
           {
-            m_sink.EnumerateSinkList();
+            m_sink.EnumerateSinkList(true);
             LoadSettings();
           }
           Configure();

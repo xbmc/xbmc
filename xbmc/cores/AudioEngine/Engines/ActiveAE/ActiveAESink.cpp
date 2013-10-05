@@ -491,8 +491,11 @@ void CActiveAESink::Process()
   }
 }
 
-void CActiveAESink::EnumerateSinkList()
+void CActiveAESink::EnumerateSinkList(bool force)
 {
+  if (!m_sinkInfoList.empty() && !force)
+    return;
+
   unsigned int c_retry = 5;
   m_sinkInfoList.clear();
   CAESinkFactory::EnumerateEx(m_sinkInfoList);
@@ -528,6 +531,8 @@ void CActiveAESink::PrintSinks()
 
 void CActiveAESink::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
+  EnumerateSinkList(false);
+
   for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
   {
     AESinkInfo sinkInfo = *itt;
@@ -556,6 +561,8 @@ void CActiveAESink::EnumerateOutputDevices(AEDeviceList &devices, bool passthrou
 
 std::string CActiveAESink::GetDefaultDevice(bool passthrough)
 {
+  EnumerateSinkList(false);
+
   for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
   {
     AESinkInfo sinkInfo = *itt;
