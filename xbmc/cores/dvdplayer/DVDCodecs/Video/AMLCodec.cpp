@@ -201,29 +201,12 @@ typedef enum {
     AM_STREAM_VIDEO,
 } pstream_type;
 
-typedef union {
-    int64_t      total_bytes;
-    unsigned int vpkt_num;
-    unsigned int spkt_num;
-} read_write_size;
-
-typedef  struct {
-    unsigned int read_end_flag: 1;
-    unsigned int end_flag: 1;
-    unsigned int reset_flag: 1;
-    int check_lowlevel_eagain_cnt;
-} p_ctrl_info_t;
-
 typedef struct am_private_t
 {
   am_packet_t       am_pkt;
   codec_para_t      vcodec;
 
   pstream_type      stream_type;
-  p_ctrl_info_t     playctrl_info;
-
-  read_write_size   read_size;
-  read_write_size   write_size;
   int               check_first_pts;
 
   vformat_t         video_format;
@@ -242,8 +225,42 @@ typedef struct am_private_t
   int               extrasize;
   uint8_t           *extradata;
   DllLibAmCodec     *m_dll;
+
+  int               dumpfile;
+  bool              dumpdemux;
 } am_private_t;
 
+/*************************************************************************/
+/*************************************************************************/
+void dumpfile_open(am_private_t *para)
+{
+  if (para->dumpdemux)
+  {
+    static int amcodec_dumpid = 0;
+    char dump_path[128] = {0};
+    sprintf(dump_path, "/temp/dump_amcodec-%d.dat", amcodec_dumpid++);
+
+    para->dumpfile = open(dump_path, O_CREAT | O_RDWR, 0666);
+  }
+}
+void dumpfile_close(am_private_t *para)
+{
+  if (para->dumpdemux && para->dumpfile != -1)
+    close(para->dumpfile), para->dumpfile = -1;
+}
+void dumpfile_write(am_private_t *para, void* buf, int bufsiz)
+{
+  if (!buf)
+  {
+    CLog::Log(LOGERROR, "dumpfile_write: wtf ? buf is null, bufsiz(%d)", bufsiz);
+    return;
+  }
+
+  if (para->dumpdemux && para->dumpfile != -1)
+    write(para->dumpfile, buf, bufsiz);
+}
+
+/*************************************************************************/
 /*************************************************************************/
 static int64_t get_pts_video()
 {
@@ -464,17 +481,14 @@ static void am_packet_init(am_packet_t *pkt)
 void am_packet_release(am_packet_t *pkt)
 {
   if (pkt->buf != NULL)
-  {
-    free(pkt->buf);
-    pkt->buf= NULL;
-  }
+    free(pkt->buf), pkt->buf= NULL;
   if (pkt->hdr != NULL)
   {
-    free(pkt->hdr->data);
-    pkt->hdr->data = NULL;
-    free(pkt->hdr);
-    pkt->hdr = NULL;
+    if (pkt->hdr->data != NULL)
+      free(pkt->hdr->data), pkt->hdr->data = NULL;
+    free(pkt->hdr), pkt->hdr = NULL;
   }
+
   pkt->codec = NULL;
 }
 
@@ -522,16 +536,6 @@ int check_in_pts(am_private_t *para, am_packet_t *pkt)
     return PLAYER_SUCCESS;
 }
 
-static int check_write_finish(am_private_t *para, am_packet_t *pkt)
-{
-    if (para->playctrl_info.read_end_flag) {
-        if ((para->write_size.vpkt_num == para->read_size.vpkt_num)) {
-            return PLAYER_WR_FINISH;
-        }
-    }
-    return PLAYER_WR_FAILED;
-}
-
 static int write_header(am_private_t *para, am_packet_t *pkt)
 {
     int write_bytes = 0, len = 0;
@@ -559,6 +563,7 @@ static int write_header(am_private_t *para, am_packet_t *pkt)
                     continue;
                 }
             } else {
+                dumpfile_write(para, pkt->hdr->data, write_bytes);
                 len += write_bytes;
                 if (len == pkt->hdr->size) {
                     break;
@@ -583,6 +588,7 @@ int write_av_packet(am_private_t *para, am_packet_t *pkt)
     unsigned char *buf;
     int size;
 
+    // do we need to check in pts or write the header ?
     if (pkt->newflag) {
         if (pkt->isvalid) {
             ret = check_in_pts(para, pkt);
@@ -601,42 +607,33 @@ int write_av_packet(am_private_t *para, am_packet_t *pkt)
     buf = pkt->data;
     size = pkt->data_size ;
     if (size == 0 && pkt->isvalid) {
-        para->write_size.vpkt_num++;
         pkt->isvalid = 0;
+        pkt->data_size = 0;
     }
+
     while (size > 0 && pkt->isvalid) {
-        write_bytes = para->m_dll->codec_write(pkt->codec, (char *)buf, size);
+        write_bytes = para->m_dll->codec_write(pkt->codec, buf, size);
         if (write_bytes < 0 || write_bytes > size) {
+            CLog::Log(LOGDEBUG, "write codec data failed, write_bytes(%d), errno(%d), size(%d)", write_bytes, errno, size);
             if (-errno != AVERROR(EAGAIN)) {
-                para->playctrl_info.check_lowlevel_eagain_cnt = 0;
                 CLog::Log(LOGDEBUG, "write codec data failed!");
                 return PLAYER_WR_FAILED;
             } else {
-                // EAGAIN to see if buffer full or write time out too much
-                if (check_avbuffer_enough(para, pkt)) {
-                  para->playctrl_info.check_lowlevel_eagain_cnt++;
-                } else {
-                  para->playctrl_info.check_lowlevel_eagain_cnt = 0;
-                }
-
-                if (para->playctrl_info.check_lowlevel_eagain_cnt > 50) {
-                    // reset decoder
-                    para->playctrl_info.check_lowlevel_eagain_cnt = 0;
-                    para->playctrl_info.reset_flag = 1;
-                    para->playctrl_info.end_flag = 1;
-                    CLog::Log(LOGDEBUG, "$$$$$$ write blocked, need reset decoder!$$$$$$");
-                }
-                //pkt->data += len;
-                //pkt->data_size -= len;
+                // adjust for any data we already wrote into codec.
+                // we sleep a bit then exit as we will get called again
+                // with the same pkt because pkt->isvalid has not been cleared.
+                pkt->data += len;
+                pkt->data_size -= len;
                 usleep(RW_WAIT_TIME);
                 CLog::Log(LOGDEBUG, "usleep(RW_WAIT_TIME), len(%d)", len);
                 return PLAYER_SUCCESS;
             }
         } else {
-            para->playctrl_info.check_lowlevel_eagain_cnt = 0;
+            dumpfile_write(para, buf, write_bytes);
+            // keep track of what we write into codec from this pkt
+            // in case we get hit with EAGAIN.
             len += write_bytes;
             if (len == pkt->data_size) {
-                para->write_size.vpkt_num++;
                 pkt->isvalid = 0;
                 pkt->data_size = 0;
                 break;
@@ -644,65 +641,13 @@ int write_av_packet(am_private_t *para, am_packet_t *pkt)
                 buf += write_bytes;
                 size -= write_bytes;
             } else {
+                // writing more that we should is a failure.
                 return PLAYER_WR_FAILED;
             }
         }
     }
-    if (check_write_finish(para, pkt) == PLAYER_WR_FINISH) {
-        return PLAYER_WR_FINISH;
-    }
+
     return PLAYER_SUCCESS;
-}
-
-static int check_size_in_buffer(unsigned char *p, int len)
-{
-    unsigned int size;
-    unsigned char *q = p;
-    while ((q + 4) < (p + len)) {
-        size = (*q << 24) | (*(q + 1) << 16) | (*(q + 2) << 8) | (*(q + 3));
-        if (size & 0xff000000) {
-            return 0;
-        }
-
-        if (q + size + 4 == p + len) {
-            return 1;
-        }
-
-        q += size + 4;
-    }
-    return 0;
-}
-
-static int check_size_in_buffer3(unsigned char *p, int len)
-{
-    unsigned int size;
-    unsigned char *q = p;
-    while ((q + 3) < (p + len)) {
-        size = (*q << 16) | (*(q + 1) << 8) | (*(q + 2));
-
-        if (q + size + 3 == p + len) {
-            return 1;
-        }
-
-        q += size + 3;
-    }
-    return 0;
-}
-
-static int check_size_in_buffer2(unsigned char *p, int len)
-{
-    unsigned int size;
-    unsigned char *q = p;
-    while ((q + 2) < (p + len)) {
-        size = (*q << 8) | (*(q + 1));
-
-        if (q + size + 2 == p + len) {
-            return 1;
-        }
-
-        q += size + 2;
-    }
-    return 0;
 }
 
 /*************************************************************************/
@@ -843,75 +788,22 @@ static int divx3_write_header(am_private_t *para, am_packet_t *pkt)
 
 static int h264_add_header(unsigned char *buf, int size, am_packet_t *pkt)
 {
-    char nal_start_code[] = {0x0, 0x0, 0x0, 0x1};
-    int nalsize;
-    unsigned char* p;
-    int tmpi;
-    unsigned char* extradata = buf;
-    int header_len = 0;
-    char* buffer = pkt->hdr->data;
-
-    p = extradata;
-
     // h264 annex-b
-	  if ((p[0]==0 && p[1]==0 && p[2]==0 && p[3]==1) && size < HDR_BUF_SIZE) {
+	  if ((buf[0]==0 && buf[1]==0 && buf[2]==0 && buf[3]==1) && size < HDR_BUF_SIZE) {
         CLog::Log(LOGDEBUG, "add four byte NAL 264 header in stream before header len=%d",size);
-        memcpy(buffer, buf, size);
+        memcpy(pkt->hdr->data, buf, size);
         pkt->hdr->size = size;
         return PLAYER_SUCCESS;
     }
 
-    if ((p[0]==0 && p[1]==0 && p[2]==1) && size < HDR_BUF_SIZE) {
+    if ((buf[0]==0 && buf[1]==0 && buf[2]==1) && size < HDR_BUF_SIZE) {
         CLog::Log(LOGDEBUG, "add three byte NAL 264 header in stream before header len=%d",size);
-        memcpy(buffer, buf, size);
+        memcpy(pkt->hdr->data, buf, size);
         pkt->hdr->size = size;
         return PLAYER_SUCCESS;
     }
 
-    if (size < 4) {
-        return PLAYER_FAILED;
-    }
-
-    if (size < 10) {
-        CLog::Log(LOGDEBUG, "avcC too short");
-        return PLAYER_FAILED;
-    }
-
-    // h264 avcC
-    if (*p != 1) {
-        CLog::Log(LOGDEBUG, "Unknown avcC version %d", *p);
-        return PLAYER_FAILED;
-    }
-
-    int cnt = *(p + 5) & 0x1f; //number of sps
-    // CLog::Log(LOGDEBUG, "number of sps :%d", cnt);
-    p += 6;
-    for (tmpi = 0; tmpi < cnt; tmpi++) {
-        nalsize = (*p << 8) | (*(p + 1));
-        memcpy(&(buffer[header_len]), nal_start_code, 4);
-        header_len += 4;
-        memcpy(&(buffer[header_len]), p + 2, nalsize);
-        header_len += nalsize;
-        p += (nalsize + 2);
-    }
-
-    cnt = *(p++); //Number of pps
-    // CLog::Log(LOGDEBUG, "number of pps :%d", cnt);
-    for (tmpi = 0; tmpi < cnt; tmpi++) {
-        nalsize = (*p << 8) | (*(p + 1));
-        memcpy(&(buffer[header_len]), nal_start_code, 4);
-        header_len += 4;
-        memcpy(&(buffer[header_len]), p + 2, nalsize);
-        header_len += nalsize;
-        p += (nalsize + 2);
-    }
-    if (header_len >= HDR_BUF_SIZE) {
-        CLog::Log(LOGDEBUG, "header_len %d is larger than max length", header_len);
-        return 0;
-    }
-    pkt->hdr->size = header_len;
-
-    return PLAYER_SUCCESS;
+    return PLAYER_FAILED;
 }
 static int h264_write_header(am_private_t *para, am_packet_t *pkt)
 {
@@ -1148,66 +1040,6 @@ int pre_header_feeding(am_private_t *para, am_packet_t *pkt)
     return PLAYER_SUCCESS;
 }
 
-/*************************************************************************/
-int h264_update_frame_header(am_packet_t *pkt)
-{
-    int nalsize, size = pkt->data_size;
-    unsigned char *data = pkt->data;
-    unsigned char *p = data;
-    if (p != NULL) {
-        if (check_size_in_buffer(p, size)) {
-            while ((p + 4) < (data + size)) {
-                nalsize = (*p << 24) | (*(p + 1) << 16) | (*(p + 2) << 8) | (*(p + 3));
-                *p = 0;
-                *(p + 1) = 0;
-                *(p + 2) = 0;
-                *(p + 3) = 1;
-                p += (nalsize + 4);
-            }
-            return PLAYER_SUCCESS;
-        } else if (check_size_in_buffer3(p, size)) {
-            while ((p + 3) < (data + size)) {
-                nalsize = (*p << 16) | (*(p + 1) << 8) | (*(p + 2));
-                *p = 0;
-                *(p + 1) = 0;
-                *(p + 2) = 1;
-                p += (nalsize + 3);
-            }
-            return PLAYER_SUCCESS;
-        } else if (check_size_in_buffer2(p, size)) {
-            unsigned char *new_data;
-            int new_len = 0;
-
-            new_data = (unsigned char *)malloc(size + 2 * 1024);
-            if (!new_data) {
-                return PLAYER_NOMEM;
-            }
-
-            while ((p + 2) < (data + size)) {
-                nalsize = (*p << 8) | (*(p + 1));
-                *(new_data + new_len) = 0;
-                *(new_data + new_len + 1) = 0;
-                *(new_data + new_len + 2) = 0;
-                *(new_data + new_len + 3) = 1;
-                memcpy(new_data + new_len + 4, p + 2, nalsize);
-                p += (nalsize + 2);
-                new_len += nalsize + 4;
-            }
-
-            free(pkt->buf);
-
-            pkt->buf = new_data;
-            pkt->buf_size = size + 2 * 1024;
-            pkt->data = pkt->buf;
-            pkt->data_size = new_len;
-        }
-    } else {
-        CLog::Log(LOGDEBUG, "[%s]invalid pointer!", __FUNCTION__);
-        return PLAYER_FAILED;
-    }
-    return PLAYER_SUCCESS;
-}
-
 int divx3_prefix(am_packet_t *pkt)
 {
 #define DIVX311_CHUNK_HEAD_SIZE 13
@@ -1258,11 +1090,7 @@ int set_header_info(am_private_t *para)
     //if (pkt->hdr)
     //  pkt->hdr->size = 0;
 
-    if ((para->video_format == VFORMAT_H264) /*|| (am_private->video_format == VFORMAT_H264MVC)*/)
-    {
-      return h264_update_frame_header(pkt);
-    }
-    else if (para->video_format == VFORMAT_MPEG4)
+    if (para->video_format == VFORMAT_MPEG4)
     {
       if (para->video_codec_type == VIDEO_DEC_FORMAT_MPEG4_3)
       {
@@ -1581,6 +1409,9 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     am_private->flv_flag = 1;
   }
 
+  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder "
+    "hints.width(%d), hints.height(%d), hints.codec(%d), hints.codec_tag(%d), hints.pid(%d)",
+    hints.width, hints.height, hints.codec, hints.codec_tag, hints.pid);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.fpsrate(%d), hints.fpsscale(%d), hints.rfpsrate(%d), hints.rfpsscale(%d), video_rate(%d)",
     hints.fpsrate, hints.fpsscale, hints.rfpsrate, hints.rfpsscale, am_private->video_rate);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.aspect(%f), video_ratio.num(%d), video_ratio.den(%d)",
@@ -1619,6 +1450,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
       break;
     case VFORMAT_REAL:
       am_private->stream_type = AM_STREAM_RM;
+      am_private->vcodec.noblock = 1;
       am_private->vcodec.stream_type = STREAM_TYPE_RM;
       am_private->vcodec.am_sysinfo.ratio = 0x100;
       am_private->vcodec.am_sysinfo.ratio64 = 0;
@@ -1653,6 +1485,9 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, ret=0x%x", -ret);
     return false;
   }
+  am_private->dumpdemux = false;
+  dumpfile_open(am_private);
+
   // make sure we are not stuck in pause (amcodec bug)
   m_dll->codec_resume(&am_private->vcodec);
   m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
@@ -1704,6 +1539,7 @@ void CAMLCodec::CloseDecoder()
     m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
   }
   m_dll->codec_close(&am_private->vcodec);
+  dumpfile_close(am_private);
   m_opened = false;
 
   am_packet_release(&am_private->am_pkt);
@@ -1735,6 +1571,8 @@ void CAMLCodec::Reset()
   }
   // reset the decoder
   m_dll->codec_reset(&am_private->vcodec);
+  dumpfile_close(am_private);
+  dumpfile_open(am_private);
 
   // re-init our am_pkt
   am_packet_release(&am_private->am_pkt);
@@ -1753,7 +1591,7 @@ void CAMLCodec::Reset()
   SetSpeed(m_speed);
 }
 
-int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
+int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
 {
   if (!m_opened)
     return VC_BUFFER;
@@ -1766,7 +1604,7 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
   if (pData)
   {
     am_private->am_pkt.data = pData;
-    am_private->am_pkt.data_size = size;
+    am_private->am_pkt.data_size = iSize;
 
     am_private->am_pkt.newflag    = 1;
     am_private->am_pkt.isvalid    = 1;
@@ -1799,11 +1637,26 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
     if (am_private->am_pkt.avdts != (int64_t)AV_NOPTS_VALUE)
       am_private->am_pkt.avdts -= m_start_dts;
 
-    //CLog::Log(LOGDEBUG, "CAMLCodec::Decode: siz(%d), dts(%f), pts(%f), avdts(%llx), avpts(%llx)",
-    //  size, dts, pts, am_private->am_pkt.avdts, am_private->am_pkt.avpts);
+    //CLog::Log(LOGDEBUG, "CAMLCodec::Decode: iSize(%d), dts(%f), pts(%f), avdts(%llx), avpts(%llx)",
+    //  iSize, dts, pts, am_private->am_pkt.avdts, am_private->am_pkt.avpts);
 
+    // some formats need header/data tweaks.
+    // the actual write occurs once in write_av_packet
+    // and is controlled by am_pkt.newflag.
     set_header_info(am_private);
-    write_av_packet(am_private, &am_private->am_pkt);
+
+    // loop until we write all into codec, am_pkt.isvalid
+    // will get set to zero once everything is consumed.
+    // PLAYER_SUCCESS means all is ok, not all bytes were written.
+    while (am_private->am_pkt.isvalid)
+    {
+      // abort on any errors.
+      if (write_av_packet(am_private, &am_private->am_pkt) != PLAYER_SUCCESS)
+        break;
+
+      if (am_private->am_pkt.isvalid)
+        CLog::Log(LOGDEBUG, "CAMLCodec::Decode: write_av_packet looping");
+    }
 
     // if we seek, then GetTimeSize is wrong as
     // reports lastpts - cur_pts and hw decoder has
@@ -1817,7 +1670,7 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
   // if we have still frames, demux size will be small
   // and we need to pre-buffer more.
   double target_timesize = 1.0;
-  if (size < 20)
+  if (iSize < 20)
     target_timesize = 2.0;
 
   // keep hw buffered demux above 1 second
@@ -1833,7 +1686,7 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
   int rtn = VC_BUFFER;
   if (m_old_pictcnt != m_cur_pictcnt)
   {
-    m_old_pictcnt = m_cur_pictcnt;
+    m_old_pictcnt++;
     rtn = VC_PICTURE;
     // we got a new pict, try and keep hw buffered demux above 2 seconds.
     // this, combined with the above 1 second check, keeps hw buffered demux between 1 and 2 seconds.
@@ -1959,6 +1812,7 @@ void CAMLCodec::Process()
       {
         //CLog::Log(LOGDEBUG, "CAMLCodec::Process: pts_video(%lld), pts_video/PTS_FREQ(%f), duration(%f)",
         //  pts_video, (double)pts_video/PTS_FREQ, 1.0/((double)(pts_video - m_cur_pts)/PTS_FREQ));
+
         // other threads look at these, do them first
         m_cur_pts = pts_video;
         m_cur_pictcnt++;
@@ -1999,7 +1853,7 @@ void CAMLCodec::Process()
     }
     else
     {
-      Sleep(10);
+      Sleep(100);
     }
   }
   SetPriority(THREAD_PRIORITY_NORMAL);
