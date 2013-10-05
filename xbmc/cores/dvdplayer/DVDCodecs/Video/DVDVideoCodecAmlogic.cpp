@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
- *      http://www.xbmc.org
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -47,7 +46,7 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic() :
   m_framerate(0.0),
   m_video_rate(0),
   m_mpeg2_sequence(NULL),
-  m_parser(NULL),
+  m_bitparser(NULL),
   m_bitstream(NULL)
 {
   pthread_mutex_init(&m_queue_mutex, NULL);
@@ -88,7 +87,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       m_pFormatName = "am-h264";
       // convert h264-avcC to h264-annex-b as h264-avcC
       // under streamers can have issues when seeking.
-      if (*(uint8_t*)m_hints.extradata == 1)
+      if (m_hints.extradata && *(uint8_t*)m_hints.extradata == 1)
       {
         m_bitstream = new CBitstreamConverter;
         m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true);
@@ -98,8 +97,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         m_hints.extradata = malloc(m_hints.extrasize);
         memcpy(m_hints.extradata, m_bitstream->GetExtraData(), m_hints.extrasize);
       }
-      //m_parser = new CBitstreamParser();
-      //m_parser->Open();
+      //m_bitparser = new CBitstreamParser();
+      //m_bitparser->Open();
       break;
     case CODEC_ID_MPEG4:
     case CODEC_ID_MSMPEG4V2:
@@ -202,17 +201,14 @@ void CDVDVideoCodecAmlogic::Dispose(void)
   if (m_bitstream)
     delete m_bitstream, m_bitstream = NULL;
 
-  if (m_parser)
-    delete m_parser, m_parser = NULL;
+  if (m_bitparser)
+    delete m_bitparser, m_bitparser = NULL;
 
   while (m_queue_depth)
     FrameQueuePop();
-
-  // let thumbgen jobs resume.
-  CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
 }
 
-int CDVDVideoCodecAmlogic::Decode(BYTE *pData, int iSize, double dts, double pts)
+int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double pts)
 {
   // Handle Input, add demuxer packet to input queue, we must accept it or
   // it will be discarded as DVDPlayerVideo has no concept of "try again".
@@ -227,8 +223,8 @@ int CDVDVideoCodecAmlogic::Decode(BYTE *pData, int iSize, double dts, double pts
       iSize = m_bitstream->GetConvertSize();
     }
 
-    if (m_parser)
-      m_parser->FindIdrSlice(pData, iSize);
+    if (m_bitparser)
+      m_bitparser->FindIdrSlice(pData, iSize);
 
     FrameRateTracking( pData, iSize, dts, pts);
   }
@@ -368,7 +364,7 @@ void CDVDVideoCodecAmlogic::FrameQueuePush(double dts, double pts)
   pthread_mutex_unlock(&m_queue_mutex);	
 }
 
-void CDVDVideoCodecAmlogic::FrameRateTracking(BYTE *pData, int iSize, double dts, double pts)
+void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts)
 {
   // mpeg2 handling
   if (m_mpeg2_sequence)

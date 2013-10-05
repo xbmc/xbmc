@@ -1,7 +1,7 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2012 Team XBMC
- *      http://www.xbmc.org
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,7 +28,6 @@ struct mpeg2_sequence;
 class CBitstreamParser;
 class CBitstreamConverter;
 
-
 class CDVDVideoCodecAmlogic : public CDVDVideoCodec
 {
 public:
@@ -39,7 +37,7 @@ public:
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose(void);
-  virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
+  virtual int  Decode(uint8_t *pData, int iSize, double dts, double pts);
   virtual void Reset(void);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual void SetSpeed(int iSpeed);
@@ -51,7 +49,7 @@ public:
 protected:
   void            FrameQueuePop(void);
   void            FrameQueuePush(double dts, double pts);
-  void            FrameRateTracking(BYTE *pData, int iSize, double dts, double pts);
+  void            FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
 
   CAMLCodec      *m_Codec;
   const char     *m_pFormatName;
@@ -68,6 +66,6 @@ protected:
   mpeg2_sequence *m_mpeg2_sequence;
   double          m_mpeg2_sequence_pts;
 
-  CBitstreamParser *m_parser;
+  CBitstreamParser *m_bitparser;
   CBitstreamConverter *m_bitstream;
 };
