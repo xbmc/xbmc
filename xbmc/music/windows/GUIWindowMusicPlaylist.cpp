@@ -540,6 +540,9 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_EDIT_PARTYMODE, 21439);
     buttons.Add(CONTEXT_BUTTON_CANCEL_PARTYMODE, 588);      // cancel party mode
   }
+
+  if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+    BaseContextMenuManager::Get().AppendVisibleContextItems(m_vecItems->Get(itemNumber), buttons); 
 }
 
 bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

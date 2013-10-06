@@ -131,6 +131,9 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   choices.Add(4, 118);
   choices.Add(5, 20019);
 
+  CFileItemPtr itemPtr = m_favourites->Get(item);
+  BaseContextMenuManager::Get().AppendVisibleContextItems(itemPtr, choices);
+
   int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
 
   // unhighlight the item
@@ -146,6 +149,10 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
     OnRename(item);
   else if (button == 5)
     OnSetThumb(item);
+
+  ADDON::ContextAddonPtr context_item = BaseContextMenuManager::Get().GetContextItemByID(button);
+  if (context_item != 0)
+    context_item->Execute(itemPtr);
 }
 
 void CGUIDialogFavourites::OnMoveItem(int item, int amount)
