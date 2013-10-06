@@ -20,6 +20,7 @@
 
 #include "JobManager.h"
 #include <algorithm>
+#include <stdexcept>
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -178,6 +179,15 @@ CJobManager::CJobManager()
   m_pauseJobs = false;
 }
 
+void CJobManager::Restart()
+{
+  CSingleLock lock(m_section);
+
+  if (m_running)
+    throw std::logic_error("CJobManager already running");
+  m_running = true;
+}
+
 void CJobManager::CancelJobs()
 {
   CSingleLock lock(m_section);
@@ -307,6 +317,9 @@ bool CJobManager::IsProcessing(const CJob::PRIORITY &priority) const
 {
   CSingleLock lock(m_section);
 
+  if (m_pauseJobs)
+    return false;
+
   for(Processing::const_iterator it = m_processing.begin(); it < m_processing.end(); it++)
   {
     if (priority == it->m_priority)
@@ -319,6 +332,10 @@ int CJobManager::IsProcessing(const std::string &type) const
 {
   int jobsMatched = 0;
   CSingleLock lock(m_section);
+
+  if (m_pauseJobs)
+    return 0;
+
   for(Processing::const_iterator it = m_processing.begin(); it < m_processing.end(); it++)
   {
     if (type == std::string(it->m_job->GetType()))
