@@ -94,6 +94,7 @@ public:
 
   /*!
    \brief Finds out where the given Context Item belongs to and registers it to the appropriate ContextMenuManager.
+   It checks if it belongs in the root or the core 'manage' submenu
    NOTE: if a context item has changed, just register it again and it will overwrite the old one
    NOTE: only 'enabled' context addons should be registered
    \param the context item to register

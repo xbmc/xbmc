@@ -120,10 +120,19 @@ BaseContextMenuManager& BaseContextMenuManager::Get()
 
 void BaseContextMenuManager::Register(ContextAddonPtr contextAddon)
 {
-  RegisterContextItem(contextAddon);
+  std::string parent = contextAddon->GetParent();
+  if (parent.empty())
+    RegisterContextItem(contextAddon);
+  else if (parent == MANAGE_CATEGORY_NAME)
+    CGUIDialogVideoInfo::manageContextAddonsMgr.RegisterContextItem(contextAddon);
 }
 
 void BaseContextMenuManager::Unregister(ADDON::ContextAddonPtr contextAddon)
 {
+  //always try to unregister from main category, because thats our fallback.
   UnregisterContextItem(contextAddon);
+
+  std::string parent = contextAddon->GetParent();
+  if (parent == MANAGE_CATEGORY_NAME)
+    CGUIDialogVideoInfo::manageContextAddonsMgr.UnregisterContextItem(contextAddon);
 }

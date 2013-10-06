@@ -27,7 +27,6 @@
 #include "utils/StringUtils.h"
 #include "GUIContextMenuManager.h"
 #include "addons/ContextCategoryAddon.h"
-#include "video/dialogs/GUIDialogVideoInfo.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include <boost/lexical_cast.hpp>
 
@@ -71,6 +70,8 @@ IContextItem::IContextItem(const cp_extension_t *ext)
     else
       m_label = labelStr;
   }
+
+  m_parent = CAddonMgr::Get().GetExtValue(ext->configuration, "@parent");
 }
 
 bool IContextItem::OnPreInstall()
