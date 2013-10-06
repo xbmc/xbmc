@@ -178,6 +178,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CRepository(props));
     case ADDON_CONTEXT_ITEM:
       return AddonPtr(new CContextItemAddon(props));
+    case ADDON_CONTEXT_CATEGORY:
+      return AddonPtr(new CContextCategoryAddon(props));
     default:
       break;
   }
@@ -688,6 +690,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CRepository(addonProps));
     case ADDON_CONTEXT_ITEM:
       return AddonPtr(new CContextItemAddon(addonProps));
+    case ADDON_CONTEXT_CATEGORY:
+      return AddonPtr(new CContextCategoryAddon(addonProps));
     default:
       break;
   }

@@ -72,6 +72,7 @@ namespace ADDON
      */
     virtual bool IsVisible(const CFileItemPtr item) const = 0;
     /*! \brief Adds this element to the list, if this element is visible
+     NOTE: On ContextCategoryAddons this functions will add a child element, if there is only one child and that one is visible.
      \param item - the currently selected item
      \param out visible - may be changed by adding this or a child element.
      */

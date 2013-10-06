@@ -93,9 +93,16 @@ void ContextMenuManager::AppendVisibleContextItems(const CFileItemPtr item, CCon
 void BaseContextMenuManager::Init()
 {
   //Make sure we load all context items on first usage...
-  VECADDONS items;
-  CAddonMgr::Get().GetAddons(ADDON_CONTEXT_ITEM, items);
-  ADDON::VECADDONS::iterator end = items.end();
+  ADDON::VECADDONS categories;
+  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_CONTEXT_CATEGORY, categories);
+  ADDON::VECADDONS::iterator i;
+  ADDON::VECADDONS::iterator end = categories.end();
+  for (i = categories.begin(); i != end; ++i)
+    Register(boost::static_pointer_cast<IContextItem>(*i));
+
+  ADDON::VECADDONS items;
+  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_CONTEXT_ITEM, items);
+  end = items.end();
   for (i = items.begin(); i != end; ++i)
     Register(boost::static_pointer_cast<IContextItem>(*i));
 }
@@ -125,6 +132,20 @@ void BaseContextMenuManager::Register(ContextAddonPtr contextAddon)
     RegisterContextItem(contextAddon);
   else if (parent == MANAGE_CATEGORY_NAME)
     CGUIDialogVideoInfo::manageContextAddonsMgr.RegisterContextItem(contextAddon);
+  else
+  {
+    AddonPtr parentPtr = BaseContextMenuManager::Get().GetContextItemByID(parent);
+    if (parentPtr)
+    {
+      boost::shared_ptr<CContextCategoryAddon> parentCat = boost::static_pointer_cast<CContextCategoryAddon>(parentPtr);
+      parentCat->RegisterContextItem(contextAddon);
+    }
+    else
+    { //fallback... add it to the root menu!
+      CLog::Log(LOGWARNING, "ADDON: %s - specified parent category '%s' not found. Context item will show up in root.", contextAddon->ID().c_str(), parent.c_str());
+      BaseContextMenuManager::Get().RegisterContextItem(contextAddon);
+    }
+  }
 }
 
 void BaseContextMenuManager::Unregister(ADDON::ContextAddonPtr contextAddon)
@@ -135,4 +156,17 @@ void BaseContextMenuManager::Unregister(ADDON::ContextAddonPtr contextAddon)
   std::string parent = contextAddon->GetParent();
   if (parent == MANAGE_CATEGORY_NAME)
     CGUIDialogVideoInfo::manageContextAddonsMgr.UnregisterContextItem(contextAddon);
+  else
+  {
+    AddonPtr parentPtr;
+    CAddonMgr::Get().GetAddon(parent, parentPtr, ADDON_CONTEXT_CATEGORY);
+    if (parentPtr)
+    {
+      boost::shared_ptr<CContextCategoryAddon> parentCat = boost::static_pointer_cast<CContextCategoryAddon>(parentPtr);
+      if (parentCat)
+      {
+        parentCat->UnregisterContextItem(contextAddon);
+      }
+    }
+  }
 }
