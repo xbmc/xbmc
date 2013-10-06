@@ -897,6 +897,38 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   return true;
 }
 
+std::string CUtil::FixSlashes(const std::string& path, const bool removeDuplicated /*= false*/, const bool useForwardSlashes /*= true*/, const size_t startFrom /*= 0*/)
+{
+  const size_t len = path.length();
+  if (startFrom >= len)
+    return path;
+
+  std::string result(path, 0, startFrom);
+  result.reserve(len);
+  
+  const char targetSlash = useForwardSlashes ? '/' : '\\';
+  const char* const str = path.c_str();
+  size_t pos = startFrom;
+  do
+  {
+    if (str[pos] == '\\' || str[pos] == '/')
+    {
+      result.push_back(targetSlash);  // append one slash
+      pos++;
+      if (removeDuplicated)
+      { // skip any following slashes
+        while (str[pos] == '\\' || str[pos] == '/') // str is null-terminated, no need to check for buffer overrun
+          pos++;
+      }
+    }
+    else
+      result.push_back(str[pos++]);   // append current char and advance pos to next char
+
+  } while(pos < len);
+
+  return result;
+}
+
 CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
 {
   CStdString result = strFile;

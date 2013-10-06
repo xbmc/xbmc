@@ -110,6 +110,7 @@ public:
 #endif
   static bool CreateDirectoryEx(const CStdString& strPath);
 
+  static std::string FixSlashes(const std::string& path, const bool removeDuplicated = false, const bool useForwardSlashes = true, const size_t startFrom = 0);
 #ifdef TARGET_WINDOWS
   static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_WIN32_COMPAT);
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_WIN32_COMPAT);
