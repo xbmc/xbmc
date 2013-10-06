@@ -24,6 +24,7 @@
 #include "epg/GUIEPGGridContainer.h"
 #include "utils/Stopwatch.h"
 #include "threads/CriticalSection.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 namespace PVR
 {
@@ -60,6 +61,8 @@ namespace PVR
     virtual void FrameMove();
     virtual void Reset(void);
     virtual void Cleanup(void);
+    virtual CPVRChannelGroupPtr GetSelectedGroup(void);
+    virtual void SetSelectedGroup(CPVRChannelGroupPtr group);
 
     EPG::CGUIEPGGridContainer *m_guideGrid;
 
@@ -72,19 +75,20 @@ namespace PVR
   private:
     virtual bool OnMessageFocus(CGUIMessage &message);
     virtual bool OnMessageClick(CGUIMessage &message);
-
+    virtual bool OpenGroupDialogSelect();
     virtual void CreateViews(void);
 
     CGUIWindowPVRCommon *    m_currentSubwindow;
     CGUIWindowPVRCommon *    m_savedSubwindow;
 
-    CGUIWindowPVRChannels *  m_windowChannelsTV;
-    CGUIWindowPVRChannels *  m_windowChannelsRadio;
+    CGUIWindowPVRChannels *  m_windowChannels;
     CGUIWindowPVRGuide    *  m_windowGuide;
     CGUIWindowPVRRecordings *m_windowRecordings;
     CGUIWindowPVRSearch *    m_windowSearch;
     CGUIWindowPVRTimers *    m_windowTimers;
     bool                     m_bWasReset;
+    bool                     m_bRadio;
+    CPVRChannelGroupPtr      m_selectedGroup;
 
     CCriticalSection         m_critSection;
 

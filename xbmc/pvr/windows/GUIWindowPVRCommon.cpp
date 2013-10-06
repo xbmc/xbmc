@@ -53,7 +53,7 @@ using namespace PVR;
 using namespace EPG;
 
 CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window,
-    unsigned int iControlButton, unsigned int iControlList)
+                                         unsigned int iControlButton, unsigned int iControlList) : Observer()
 {
   m_parent          = parent;
   m_window          = window;
@@ -89,10 +89,8 @@ const char *CGUIWindowPVRCommon::GetName(void) const
   {
   case PVR_WINDOW_EPG:
     return "epg";
-  case PVR_WINDOW_CHANNELS_RADIO:
-    return "radio";
-  case PVR_WINDOW_CHANNELS_TV:
-    return "tv";
+  case PVR_WINDOW_CHANNELS:
+      return m_parent->m_bRadio ? "radio" : "tv";
   case PVR_WINDOW_RECORDINGS:
     return "recordings";
   case PVR_WINDOW_SEARCH:

@@ -40,7 +40,6 @@ using namespace EPG;
 
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT),
-  Observer(),
   m_iGuideView(CSettings::Get().GetInt("epg.defaultguideview"))
 {
   m_cachedTimeline = new CFileItemList;
@@ -157,21 +156,15 @@ void CGUIWindowPVRGuide::UpdateViewChannel(bool bUpdateSelectedFile)
 
 void CGUIWindowPVRGuide::UpdateViewNow(bool bUpdateSelectedFile)
 {
-  CPVRChannelPtr CurrentChannel;
-  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
-  bool bRadio = bGotCurrentChannel ? CurrentChannel->IsRadio() : false;
-
   m_parent->m_guideGrid = NULL;
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19030));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
 
-  int iEpgItems = g_PVRManager.GetPlayingGroup(bRadio)->GetEPGNow(*m_parent->m_vecItems);
-  if (iEpgItems == 0 && bRadio)
-    // if we didn't get any events for radio, get tv instead
-    iEpgItems = g_PVRManager.GetPlayingGroup(false)->GetEPGNow(*m_parent->m_vecItems);
-
+  CPVRChannelGroupPtr group = m_parent->GetSelectedGroup();
+  int iEpgItems = group->GetEPGNow(*m_parent->m_vecItems);
+  
   if (iEpgItems == 0)
   {
     CFileItemPtr item;
@@ -185,20 +178,14 @@ void CGUIWindowPVRGuide::UpdateViewNow(bool bUpdateSelectedFile)
 
 void CGUIWindowPVRGuide::UpdateViewNext(bool bUpdateSelectedFile)
 {
-  CPVRChannelPtr CurrentChannel;
-  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
-  bool bRadio = bGotCurrentChannel ? CurrentChannel->IsRadio() : false;
-
   m_parent->m_guideGrid = NULL;
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19031));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
 
-  int iEpgItems = g_PVRManager.GetPlayingGroup(bRadio)->GetEPGNext(*m_parent->m_vecItems);
-  if (iEpgItems == 0 && bRadio)
-    // if we didn't get any events for radio, get tv instead
-    iEpgItems = g_PVRManager.GetPlayingGroup(false)->GetEPGNext(*m_parent->m_vecItems);
+  CPVRChannelGroupPtr group = m_parent->GetSelectedGroup();
+  int iEpgItems = group->GetEPGNext(*m_parent->m_vecItems);
 
   if (iEpgItems)
   {
@@ -217,23 +204,16 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
   if (!m_parent->m_guideGrid)
     return;
 
-  CPVRChannelPtr CurrentChannel;
-  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
-  bool bRadio = bGotCurrentChannel ? CurrentChannel->IsRadio() : false;
+  CPVRChannelGroupPtr group = m_parent->GetSelectedGroup();
 
   if (m_bUpdateRequired || m_cachedTimeline->IsEmpty() ||
-      *m_cachedChannelGroup != *g_PVRManager.GetPlayingGroup(bRadio))
+      *m_cachedChannelGroup != *group)
   {
     m_bUpdateRequired = false;
 
     m_cachedTimeline->Clear();
-    m_cachedChannelGroup = g_PVRManager.GetPlayingGroup(bRadio);
-    if (m_cachedChannelGroup->GetEPGAll(*m_cachedTimeline) == 0 && bRadio)
-    {
-      // if we didn't get any events for radio, get tv instead
-      m_cachedChannelGroup = g_PVRManager.GetPlayingGroup(false);
-      m_cachedChannelGroup->GetEPGAll(*m_cachedTimeline);
-    }
+    m_cachedChannelGroup = group;
+    m_cachedChannelGroup->GetEPGAll(*m_cachedTimeline);
   }
 
   m_parent->m_vecItems->RemoveDiscCache(m_parent->GetID());

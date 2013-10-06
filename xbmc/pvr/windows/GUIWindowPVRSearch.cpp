@@ -288,3 +288,15 @@ void CGUIWindowPVRSearch::ShowSearchResults()
     UpdateData();
   }
 }
+
+void CGUIWindowPVRSearch::UnregisterObservers(void)
+{
+}
+
+void CGUIWindowPVRSearch::ResetObservers(void)
+{
+}
+
+void CGUIWindowPVRSearch::Notify(const Observable &obs, const ObservableMessage msg)
+{
+}
