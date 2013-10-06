@@ -234,6 +234,14 @@ public:
   void CancelJobs();
 
   /*!
+   \brief Re-start accepting jobs again
+   Called after calling CancelJobs() to allow this manager to accept more jobs
+   \throws std::logic_error if the manager was not previously cancelled
+   \sa CancelJobs()
+   */
+  void Restart();
+
+  /*!
    \brief Checks to see if any jobs of a specific type are currently processing.
    \param type Job type to search for
    \return Number of matching jobs
