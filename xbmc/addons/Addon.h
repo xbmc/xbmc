@@ -145,7 +145,6 @@ public:
   AddonProps& Props() { return m_props; }
   const std::string ID() const { return m_props.id; }
   const std::string Name() const { return m_props.name; }
-  bool Enabled() const { return m_enabled; }
   virtual bool IsInUse() const { return false; };
   const AddonVersion Version() const { return m_props.version; }
   const AddonVersion MinVersion() const { return m_props.minversion; }
@@ -175,8 +174,6 @@ public:
    */
   bool MeetsVersion(const AddonVersion &version) const;
   virtual bool ReloadSettings();
-
-  void MarkAsDisabled() { m_enabled = false; }
 
   /*! \brief callback for when this add-on is disabled.
    Use to perform any needed actions (e.g. stop a service)
@@ -244,8 +241,6 @@ private:
 
   virtual bool IsAddonLibrary() { return false; }
 
-  void Enable() { LoadStrings(); m_enabled = true; }
-  void Disable() { m_enabled = false; ClearStrings();}
 
   virtual bool LoadStrings();
   virtual void ClearStrings();
@@ -254,7 +249,6 @@ private:
   bool m_hasSettings;
 
   std::string m_profile;
-  bool        m_enabled;
   CLocalizeStrings  m_strings;
   std::map<std::string, std::string> m_settings;
 };

@@ -260,7 +260,6 @@ CAddon::CAddon(const cp_extension_t *ext)
   Props().libname = m_strLibName;
   BuildProfilePath();
   m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
-  m_enabled = true;
   m_hasSettings = true;
   m_hasStrings = false;
   m_checkedStrings = false;
@@ -271,7 +270,6 @@ CAddon::CAddon(const cp_extension_t *ext)
 CAddon::CAddon(const cp_plugin_info_t *plugin)
   : m_props(plugin)
 {
-  m_enabled = true;
   m_hasSettings = false;
   m_hasStrings = false;
   m_checkedStrings = true;
@@ -286,7 +284,6 @@ CAddon::CAddon(const AddonProps &props)
   else m_strLibName = props.libname;
   BuildProfilePath();
   m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
-  m_enabled = true;
   m_hasSettings = true;
   m_hasStrings = false;
   m_checkedStrings = false;
@@ -305,7 +302,6 @@ CAddon::CAddon(const CAddon &rhs)
   BuildProfilePath();
   m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
   m_strLibName  = rhs.m_strLibName;
-  m_enabled = rhs.Enabled();
   m_hasStrings  = false;
   m_checkedStrings  = false;
 }
