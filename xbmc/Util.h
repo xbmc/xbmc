@@ -27,6 +27,12 @@
 
 #include "MediaSource.h"
 
+#ifdef TARGET_WINDOWS
+#ifdef CreateDirectoryEx
+#undef CreateDirectoryEx
+#endif // CreateDirectoryEx
+#endif // TARGET_WINDOWS
+
 // A list of filesystem types for LegalPath/FileName
 #define LEGAL_NONE            0
 #define LEGAL_WIN32_COMPAT    1
