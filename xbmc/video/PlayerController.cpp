@@ -361,6 +361,16 @@ bool CPlayerController::OnAction(const CAction &action)
     case ACTION_VOLAMP_UP:
     case ACTION_VOLAMP_DOWN:
     {
+      // Don't allow change with passthrough audio
+      if (g_application.m_pPlayer->IsPassthrough())
+      {
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning,
+                                              g_localizeStrings.Get(660),
+                                              g_localizeStrings.Get(29802),
+                                              TOAST_DISPLAY_TIME, false);
+        return false;
+      }
+
       float sliderMax = VOLUME_DRC_MAXIMUM / 100.0f;
       float sliderMin = VOLUME_DRC_MINIMUM / 100.0f;
 
