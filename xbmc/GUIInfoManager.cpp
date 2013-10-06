@@ -929,6 +929,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           CStdString label = CGUIInfoLabel::GetLabel(param).ToLower();
           return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, ConditionalStringParameter(label), 1));
         }
+        else if (prop.name == "addonversion")
+        {
+          int infoLabel = TranslateSingleString(param);
+          if (infoLabel > 0)
+            return AddMultiInfo(GUIInfo(SYSTEM_ADDON_VERSION, infoLabel, 0));
+          CStdString label = CGUIInfoLabel::GetLabel(param).ToLower();
+          return AddMultiInfo(GUIInfo(SYSTEM_ADDON_VERSION, ConditionalStringParameter(label), 1));
+        }
         else if (prop.name == "idletime")
           return AddMultiInfo(GUIInfo(SYSTEM_IDLE_TIME, atoi(param.c_str())));
       }
@@ -3163,7 +3171,8 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
       return window->GetProperty(m_stringParameters[info.GetData2()]).asString();
   }
   else if (info.m_info == SYSTEM_ADDON_TITLE ||
-           info.m_info == SYSTEM_ADDON_ICON)
+           info.m_info == SYSTEM_ADDON_ICON ||
+           info.m_info == SYSTEM_ADDON_VERSION)
   {
     // This logic does not check/care whether an addon has been disabled/marked as broken,
     // it simply retrieves it's name or icon that means if an addon is placed on the home screen it
@@ -3178,6 +3187,8 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
       return addon->Name();
     if (addon && info.m_info == SYSTEM_ADDON_ICON)
       return addon->Icon();
+    if (addon && info.m_info == SYSTEM_ADDON_VERSION)
+      return addon->Version().c_str();
   }
 
   return StringUtils::EmptyString;
