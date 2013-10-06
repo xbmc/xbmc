@@ -27,6 +27,8 @@
 #include "threads/Event.h"
 
 typedef struct _object PyObject;
+class CFileItem;
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 class CPythonInvoker : public ILanguageInvoker
 {
@@ -34,15 +36,14 @@ public:
   CPythonInvoker(ILanguageInvocationHandler *invocationHandler);
   virtual ~CPythonInvoker();
 
-  virtual bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>());
-
+  virtual bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>(), const CFileItemPtr item = CFileItemPtr());
   virtual bool IsStopping() const { return m_stop || ILanguageInvoker::IsStopping(); }
 
   typedef void (*PythonModuleInitialization)();
   
 protected:
   // implementation of ILanguageInvoker
-  virtual bool execute(const std::string &script, const std::vector<std::string> &arguments);
+  virtual bool execute(const std::string &script, const std::vector<std::string> &arguments, const CFileItemPtr item);
   virtual bool stop(bool abort);
   virtual void onExecutionFailed();
 
@@ -72,6 +73,8 @@ private:
   void *m_threadState;
   bool m_stop;
   CEvent m_stoppedEvent;
+
+  PyObject* m_item;
 
   static CCriticalSection s_critical;
 };

@@ -28,6 +28,7 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace XFILE;
@@ -197,7 +198,7 @@ ILanguageInvoker* CScriptInvocationManager::GetLanguageInvoker(const std::string
   return NULL;
 }
 
-int CScriptInvocationManager::Execute(const std::string &script, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
+int CScriptInvocationManager::Execute(const std::string &script, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */, const CFileItemPtr item /*= CFileItemPtr()*/)
 {
   if (script.empty() || !CFile::Exists(script, false))
     return -1;
@@ -220,7 +221,7 @@ int CScriptInvocationManager::Execute(const std::string &script, const ADDON::Ad
   LanguageInvokerThread thread = { invokerThread, script, false };
   m_scripts.insert(make_pair(invokerThread->GetId(), thread));
   m_scriptPaths.insert(make_pair(script, invokerThread->GetId()));
-  invokerThread->Execute(script, arguments);
+  invokerThread->Execute(script, arguments, item);
 
   return invokerThread->GetId();
 }

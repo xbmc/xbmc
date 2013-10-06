@@ -49,6 +49,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "FileItem.h"
 
 #ifdef TARGET_WINDOWS
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -77,6 +78,11 @@ extern "C"
 #define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)
 
 CCriticalSection CPythonInvoker::s_critical;
+
+namespace PythonBindings
+{
+  extern TypeInfo TyXBMCAddon_xbmcgui_ListItem_Type;
+}
 
 static const std::string getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook>& languageHook)
 {
@@ -124,7 +130,7 @@ CPythonInvoker::~CPythonInvoker()
   g_pythonParser.FinalizeScript();
 }
 
-bool CPythonInvoker::Execute(const std::string &script, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
+bool CPythonInvoker::Execute(const std::string &script, const std::vector<std::string> &arguments /* = std::vector<std::string>() */, const CFileItemPtr item /*= CFileItemPtr()*/)
 {
   if (script.empty())
     return false;
@@ -138,10 +144,10 @@ bool CPythonInvoker::Execute(const std::string &script, const std::vector<std::s
   if (!g_pythonParser.InitializeEngine())
     return false;
 
-  return ILanguageInvoker::Execute(script, arguments);
+  return ILanguageInvoker::Execute(script, arguments, item);
 }
 
-bool CPythonInvoker::execute(const std::string &script, const std::vector<std::string> &arguments)
+bool CPythonInvoker::execute(const std::string &script, const std::vector<std::string> &arguments, const CFileItemPtr item /*= CFileItemPtr()*/)
 {
   // copy the code/script into a local string buffer
   m_sourceFile = script;
@@ -223,6 +229,17 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   // set current directory and python's path.
   if (m_argv != NULL)
     PySys_SetArgv(m_argc, m_argv);
+
+  XBMCAddon::xbmcgui::ListItem* arg = new XBMCAddon::xbmcgui::ListItem(item);
+
+  m_item = PythonBindings::makePythonInstance(arg,
+                                             &PythonBindings::TyXBMCAddon_xbmcgui_ListItem_Type.pythonType,
+                                              true);
+  if (m_item != NULL)
+  {
+      if (0 != PySys_SetObject((char*)"item", m_item))
+        CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setSysParameter failed!", GetId(), m_sourceFile);
+  }
 
 #ifdef TARGET_WINDOWS
   std::string pyPathUtf8;
