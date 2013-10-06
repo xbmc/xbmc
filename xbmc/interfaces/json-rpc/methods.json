@@ -1640,6 +1640,40 @@
       }
     }
   },
+  "PVR.GetBroadcasts": {
+    "type": "method",
+    "description": "Retrieves the program of a specific channel",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "channelid", "$ref": "Library.Id", "required": true },
+      { "name": "properties", "$ref": "PVR.Fields.Broadcast" },
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "broadcasts": { "type": "array", "required": true,
+          "items": { "$ref": "PVR.Details.Broadcast" }
+        }
+      }
+    }
+  },
+  "PVR.GetBroadcastDetails": {
+    "type": "method",
+    "description": "Retrieves the details of a specific broadcast",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "broadcastid", "$ref": "Library.Id", "required": true },
+      { "name": "properties", "$ref": "PVR.Fields.Broadcast" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "broadcastdetails": { "$ref": "PVR.Details.Broadcast" }
+      }
+    }
+  },      
   "PVR.Record": {
     "type": "method",
     "description": "Toggle recording of a channel",

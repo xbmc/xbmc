@@ -780,6 +780,40 @@
       }
     }
   },
+  "PVR.Fields.Broadcast": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "title", "plot", "plotoutline", "starttime",
+                "endtime", "runtime", "progress", "progresspercentage",
+                "genre", "episodename", "episodenum", "episodepart",
+                "firstaired", "hastimer", "isactive", "parentalrating",
+                "wasactive", "thumbnail" ]
+    }
+  },
+  "PVR.Details.Broadcast": {"
+    "extends": "Item.Details.Base",
+    "properties": {"
+      "broadcastid": { "$ref": "Library.Id", "required": true },
+      "title": { "type": "string" },
+      "plot": { "type": "string" },
+      "plotoutline": { "type": "string" },
+      "starttime": { "type": "string" },
+      "endtime": { "type": "string" },
+      "runtime": { "type": "integer" },
+      "progress": { "type": "integer" },
+      "progresspercentage": { "type": "number" },
+      "genre": { "type": "string" },
+      "episodename": { "type": "string" },
+      "episodenum": { "type": "integer" },
+      "episodepart": { "type": "integer" },
+      "firstaired": { "type": "string" },
+      "hastimer": { "type": "boolean" },
+      "isactive": { "type": "boolean" },
+      "rating": { "type": "integer" },
+      "wasactive": { "type": "boolean" },
+      "thumbnail": { "type": "string" }
+    }
+  },
   "Profiles.Password": {
     "type": "object",
     "properties": {
