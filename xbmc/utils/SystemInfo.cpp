@@ -695,6 +695,27 @@ CStdString CSysInfo::GetLinuxDistro()
           pretty_name[strlen(pretty_name) - 1] = '\0';
         }
 
+        // unescape quotes and backslashes
+        char *p = pretty_name;
+        while (*p)
+        {
+          char *this_char = p;
+          char *next_char = p + 1;
+
+          if (*this_char == '\\' &&
+              (*next_char == '\'' || *next_char == '\"' || *next_char == '\\'))
+          {
+            while (*this_char)
+            {
+              *this_char = *next_char;
+              this_char++;
+              next_char++;
+            }
+          }
+
+          p++;
+        }
+
         result = pretty_name;
         break;
       }
