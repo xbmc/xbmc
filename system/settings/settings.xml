@@ -22,6 +22,9 @@
           <constraints>
             <options>skinthemes</options>
           </constraints>
+          <dependencies>
+            <dependency type="update" setting="lookandfeel.skin" />
+          </dependencies>
           <control type="spinner" format="string" delayed="true" />
         </setting>
         <setting id="lookandfeel.skincolors" type="string" parent="lookandfeel.skin" label="14078" help="36106">
@@ -30,6 +33,9 @@
           <constraints>
             <options>skincolors</options>
           </constraints>
+          <dependencies>
+            <dependency type="update" setting="lookandfeel.skin" />
+          </dependencies>
           <control type="spinner" format="string" delayed="true" />
         </setting>
         <setting id="lookandfeel.font" type="string" parent="lookandfeel.skin" label="13303" help="36107">
@@ -38,6 +44,9 @@
           <constraints>
             <options>skinfonts</options>
           </constraints>
+          <dependencies>
+            <dependency type="update" setting="lookandfeel.skin" />
+          </dependencies>
           <control type="spinner" format="string" delayed="true" />
         </setting>
         <setting id="lookandfeel.skinzoom" type="integer" parent="lookandfeel.skin" label="20109" help="36108">
@@ -48,6 +57,9 @@
             <step>2</step>
             <maximum>20</maximum>
           </constraints>
+          <dependencies>
+            <dependency type="update" setting="lookandfeel.skin" />
+          </dependencies>
           <control type="spinner" format="string">
             <formatlabel>14047</formatlabel>
           </control>
@@ -58,6 +70,9 @@
           <constraints>
             <options>startupwindows</options>
           </constraints>
+          <dependencies>
+            <dependency type="update" setting="lookandfeel.skin" />
+          </dependencies>
           <control type="spinner" format="string" />
         </setting>
         <setting id="lookandfeel.soundskin" type="string" label="15108" help="36110">
@@ -66,6 +81,9 @@
           <constraints>
             <options>skinsounds</options>
           </constraints>
+          <dependencies>
+            <dependency type="update" setting="lookandfeel.skin" />
+          </dependencies>
           <control type="spinner" format="string" />
         </setting>
       </group>
