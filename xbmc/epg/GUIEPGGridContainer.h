@@ -216,7 +216,7 @@ namespace EPG
 
     CGUITexture m_guiProgressIndicatorTexture;
 
-    struct GridItemsPtr **m_gridIndex;
+    std::vector<std::vector<GridItemsPtr> > m_gridIndex;
     GridItemsPtr *m_item;
     CGUIListItem *m_lastItem;
     CGUIListItem *m_lastChannel;
