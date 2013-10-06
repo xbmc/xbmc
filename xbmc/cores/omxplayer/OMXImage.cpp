@@ -226,6 +226,7 @@ OMX_IMAGE_CODINGTYPE COMXImage::GetCodingType()
   m_width         = 0;
   m_height        = 0;
   m_progressive   = false;
+  int components = 0;
   m_orientation   = 0;
 
   m_omx_image.eCompressionFormat = OMX_IMAGE_CodingMax;
@@ -336,6 +337,8 @@ OMX_IMAGE_CODINGTYPE COMXImage::GetCodingType()
         readBits += 2;
         m_omx_image.nFrameWidth = READ16(p);
         readBits += 2;
+        components = READ8(p);
+        readBits += 1;
         SKIPN(p, 1 * (block_size - readBits));
       }
       else if(marker == M_APP1)
@@ -476,6 +479,11 @@ OMX_IMAGE_CODINGTYPE COMXImage::GetCodingType()
 
     }
 
+    if(components > 3)
+    {
+      CLog::Log(LOGWARNING, "%s::%s Only YUV images are supported by decoder\n", CLASSNAME, __func__);
+      m_omx_image.eCompressionFormat = OMX_IMAGE_CodingMax;
+    }
   }
 
   if(m_orientation > 8)
