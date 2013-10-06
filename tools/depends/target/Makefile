@@ -25,7 +25,7 @@ endif
 
 ifeq ($(OS),ios)
   DEPENDS += Backrow
-  EXCLUDED_DEPENDS = libcec libcrystalhd libusb
+  EXCLUDED_DEPENDS = libcec libcrystalhd libusb gmp nettle gnutls
 endif
 
 ifeq ($(OS),osx)
