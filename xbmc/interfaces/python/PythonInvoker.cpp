@@ -534,12 +534,10 @@ void CPythonInvoker::onInitialization()
   }
 }
 
-void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
+void CPythonInvoker::onPythonModuleInitialization(PyObject* moduleDictionary)
 {
-  if (m_addon.get() == NULL || moduleDict == NULL)
+  if (m_addon.get() == NULL || moduleDictionary == NULL)
     return;
-
-  PyObject *moduleDictionary = (PyObject *)moduleDict;
 
   PyObject *pyaddonid = PyString_FromString(m_addon->ID().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__", pyaddonid);

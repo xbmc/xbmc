@@ -26,6 +26,8 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
+typedef struct _object PyObject;
+
 class CPythonInvoker : public ILanguageInvoker
 {
 public:
@@ -48,8 +50,7 @@ protected:
   virtual std::map<std::string, PythonModuleInitialization> getModules() const;
   virtual const char* getInitializationScript() const;
   virtual void onInitialization();
-  // actually a PyObject* but don't wanna draw Python.h include into the header
-  virtual void onPythonModuleInitialization(void* moduleDict);
+  virtual void onPythonModuleInitialization(PyObject* moduleDict);
   virtual void onDeinitialization();
 
   virtual void onSuccess() { }
