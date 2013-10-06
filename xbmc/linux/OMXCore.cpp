@@ -752,6 +752,11 @@ OMX_ERRORTYPE COMXCoreComponent::AllocInputBuffers(bool use_buffers /* = false *
   }
 
   omx_err = WaitForCommand(OMX_CommandPortEnable, m_input_port);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "COMXCoreComponent::AllocInputBuffers WaitForCommand:OMX_CommandPortEnable failed on %s omx_err(0x%08x)\n", m_componentName.c_str(), omx_err);
+    return omx_err;
+  }
 
   m_flush_input = false;
 
@@ -828,6 +833,11 @@ OMX_ERRORTYPE COMXCoreComponent::AllocOutputBuffers(bool use_buffers /* = false 
   }
 
   omx_err = WaitForCommand(OMX_CommandPortEnable, m_output_port);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "COMXCoreComponent::AllocOutputBuffers WaitForCommand:OMX_CommandPortEnable failed on %s omx_err(0x%08x)\n", m_componentName.c_str(), omx_err);
+    return omx_err;
+  }
 
   m_flush_output = false;
 
@@ -846,10 +856,10 @@ OMX_ERRORTYPE COMXCoreComponent::FreeInputBuffers()
 
   m_flush_input = true;
 
+  omx_err = DisablePort(m_input_port, false);
+
   pthread_mutex_lock(&m_omx_input_mutex);
   pthread_cond_broadcast(&m_input_buffer_cond);
-
-  omx_err = DisablePort(m_input_port, false);
 
   for (size_t i = 0; i < m_omx_input_buffers.size(); i++)
   {
@@ -865,8 +875,17 @@ OMX_ERRORTYPE COMXCoreComponent::FreeInputBuffers()
       CLog::Log(LOGERROR, "COMXCoreComponent::FreeInputBuffers error deallocate omx input buffer on component %s omx_err(0x%08x)\n", m_componentName.c_str(), omx_err);
     }
   }
+  pthread_mutex_unlock(&m_omx_input_mutex);
 
-  WaitForCommand(OMX_CommandPortDisable, m_input_port);
+  omx_err = WaitForCommand(OMX_CommandPortDisable, m_input_port);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "COMXCoreComponent::FreeInputBuffers WaitForCommand:OMX_CommandPortDisable failed on %s omx_err(0x%08x)\n", m_componentName.c_str(), omx_err);
+  }
+
+  WaitForInputDone(1000);
+
+  pthread_mutex_lock(&m_omx_input_mutex);
   assert(m_omx_input_buffers.size() == m_omx_input_avaliable.size());
 
   m_omx_input_buffers.clear();
@@ -895,10 +914,10 @@ OMX_ERRORTYPE COMXCoreComponent::FreeOutputBuffers()
 
   m_flush_output = true;
 
+  omx_err = DisablePort(m_output_port, false);
+
   pthread_mutex_lock(&m_omx_output_mutex);
   pthread_cond_broadcast(&m_output_buffer_cond);
-
-  omx_err = DisablePort(m_output_port, false);
 
   for (size_t i = 0; i < m_omx_output_buffers.size(); i++)
   {
@@ -914,8 +933,17 @@ OMX_ERRORTYPE COMXCoreComponent::FreeOutputBuffers()
       CLog::Log(LOGERROR, "COMXCoreComponent::FreeOutputBuffers error deallocate omx output buffer on component %s omx_err(0x%08x)\n", m_componentName.c_str(), omx_err);
     }
   }
+  pthread_mutex_unlock(&m_omx_output_mutex);
 
-  WaitForCommand(OMX_CommandPortDisable, m_output_port);
+  omx_err = WaitForCommand(OMX_CommandPortDisable, m_output_port);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "COMXCoreComponent::FreeOutputBuffers WaitForCommand:OMX_CommandPortDisable failed on %s omx_err(0x%08x)\n", m_componentName.c_str(), omx_err);
+  }
+
+  WaitForOutputDone(1000);
+
+  pthread_mutex_lock(&m_omx_output_mutex);
   assert(m_omx_output_buffers.size() == m_omx_output_available.size());
 
   m_omx_output_buffers.clear();
@@ -1092,7 +1120,7 @@ OMX_ERRORTYPE COMXCoreComponent::WaitForEvent(OMX_EVENTTYPE eventType, long time
         CLog::Log(LOGERROR, "COMXCoreComponent::WaitForEvent %s wait event 0x%08x timeout %ld\n",
                           m_componentName.c_str(), (int)eventType, timeout);
       pthread_mutex_unlock(&m_omx_event_mutex);
-      return OMX_ErrorMax;
+      return OMX_ErrorTimeout;
     }
   }
   pthread_mutex_unlock(&m_omx_event_mutex);
@@ -1160,7 +1188,7 @@ OMX_ERRORTYPE COMXCoreComponent::WaitForCommand(OMX_U32 command, OMX_U32 nData2,
         m_componentName.c_str(), (int)OMX_EventCmdComplete, (int)command, (int)nData2);
       
       pthread_mutex_unlock(&m_omx_event_mutex);
-      return OMX_ErrorMax;
+      return OMX_ErrorTimeout;
     }
   }
   pthread_mutex_unlock(&m_omx_event_mutex);
@@ -1188,6 +1216,8 @@ OMX_ERRORTYPE COMXCoreComponent::SetStateForComponent(OMX_STATETYPE state)
   {
     if(omx_err == OMX_ErrorSameState)
     {
+      CLog::Log(LOGERROR, "COMXCoreComponent::SetStateForComponent - %s same state\n",
+        m_componentName.c_str());
       omx_err = OMX_ErrorNone;
     }
     else
@@ -1199,12 +1229,10 @@ OMX_ERRORTYPE COMXCoreComponent::SetStateForComponent(OMX_STATETYPE state)
   else 
   {
     omx_err = WaitForCommand(OMX_CommandStateSet, state);
-    if(omx_err == OMX_ErrorSameState)
+    if (omx_err != OMX_ErrorNone)
     {
-      CLog::Log(LOGERROR, "COMXCoreComponent::SetStateForComponent - %s ignore OMX_ErrorSameState\n", 
-        m_componentName.c_str());
-      UnLock();
-      return OMX_ErrorNone;
+      CLog::Log(LOGERROR, "COMXCoreComponent::WaitForCommand - %s failed with omx_err(0x%x)\n",
+        m_componentName.c_str(), omx_err);
     }
   }
 
