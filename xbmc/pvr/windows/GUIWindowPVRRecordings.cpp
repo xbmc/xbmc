@@ -20,6 +20,7 @@
 
 #include "GUIWindowPVRRecordings.h"
 
+#include "ContextMenuManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIRadioButtonControl.h"
@@ -169,6 +170,8 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
 
   if (!isDeletedRecording)
     CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
+
+  CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
 }
 
 bool CGUIWindowPVRRecordings::OnAction(const CAction &action)

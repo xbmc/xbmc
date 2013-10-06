@@ -59,6 +59,7 @@
 #include "video/VideoInfoScanner.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "ContextMenuManager.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
@@ -945,6 +946,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
+    CContextMenuManager::Get().AddVisibleItems(item, buttons);
   }
 }
 

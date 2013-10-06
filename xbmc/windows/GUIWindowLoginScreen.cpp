@@ -48,6 +48,7 @@
 #include "addons/AddonManager.h"
 #include "view/ViewState.h"
 #include "pvr/PVRManager.h"
+#include "ContextMenuManager.h"
 
 #define CONTROL_BIG_LIST               52
 #define CONTROL_LABEL_HEADER            2
@@ -220,9 +221,10 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
 
-  bool bSelect = m_vecItems->Get(iItem)->IsSelected();
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
+  bool bSelect = pItem->IsSelected();
   // mark the item
-  m_vecItems->Get(iItem)->Select(true);
+  pItem->Select(true);
 
   CContextButtons choices;
   choices.Add(1, 20067);
@@ -230,6 +232,8 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     choices.Add(2, 117); */
   if (iItem == 0 && g_passwordManager.iMasterLockRetriesLeft == 0)
     choices.Add(3, 12334);
+
+  CContextMenuManager::Get().AddVisibleItems(pItem, choices);
 
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (choice == 3)
@@ -260,7 +264,9 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   if (iItem < (int)CProfilesManager::Get().GetNumberOfProfiles())
     m_vecItems->Get(iItem)->Select(bSelect);
 
-  return (choice > 0);
+  if (choice >= CONTEXT_BUTTON_FIRST_ADDON)
+    return CContextMenuManager::Get().Execute(choice, pItem);
+  return false;
 }
 
 CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)

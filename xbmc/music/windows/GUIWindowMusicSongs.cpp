@@ -42,6 +42,7 @@
 #include "cdrip/CDDARipper.h"
 #include "cores/IPlayer.h"
 #include "utils/StringUtils.h"
+#include "ContextMenuManager.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -383,6 +384,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
   if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlugin())
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
+
+  CContextMenuManager::Get().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

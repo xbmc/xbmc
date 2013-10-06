@@ -47,6 +47,7 @@
 #include "storage/MediaManager.h"
 #include "LangInfo.h"
 #include "guilib/Key.h"
+#include "ContextMenuManager.h"
 
 #define CONTROL_AUTOUPDATE    5
 #define CONTROL_SHUTUP        6
@@ -179,6 +180,8 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& 
 
   if (addon->HasSettings())
     buttons.Add(CONTEXT_BUTTON_SETTINGS,24020);
+
+  CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
 }
 
 bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
