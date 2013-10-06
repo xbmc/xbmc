@@ -236,6 +236,7 @@ protected:
   bool              m_settingsLoaded;
   bool              m_userSettingsLoaded;
 
+  virtual void ClearStrings();
 private:
   friend class CAddonMgr;
   AddonProps m_props;
@@ -248,7 +249,7 @@ private:
   void Disable() { m_enabled = false; ClearStrings();}
 
   virtual bool LoadStrings();
-  virtual void ClearStrings();
+
   bool m_hasStrings;
   bool m_checkedStrings;
   bool m_hasSettings;

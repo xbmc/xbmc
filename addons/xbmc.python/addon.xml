@@ -10,4 +10,5 @@
   <extension-point id="weather" schema="script.xsd"/>
   <extension-point id="library" schema="script.xsd"/>
   <extension-point id="plugin" schema="pluginsource.xsd"/>
+  <extension-point id="context.item" schema="contextitem.xsd"/>
 </addon>

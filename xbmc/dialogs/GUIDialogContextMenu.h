@@ -140,7 +140,11 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_USER7,
                       CONTEXT_BUTTON_USER8,
                       CONTEXT_BUTTON_USER9,
-                      CONTEXT_BUTTON_USER10
+                      CONTEXT_BUTTON_USER10,
+
+                      //NOTE: this has to be the last in this enum,
+                      //because this one, and the ones higher will be used by context addons
+                      CONTEXT_BUTTON_FIRST_ADDON
                     };
 
 class CContextButtons : public std::vector< std::pair<unsigned int, std::string> >

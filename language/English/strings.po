@@ -12307,7 +12307,13 @@ msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr ""
 
-#empty strings from id 24025 to 24026
+#. Used as the type name for context item addons
+#: xbmc/addons/Addons.cpp
+msgctxt "#24025"
+msgid "Context Items"
+msgstr ""
+
+#empty string with id 24026
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#24027"

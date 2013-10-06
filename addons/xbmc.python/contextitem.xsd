@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE schema PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="extension">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="item">
+          <xs:complexType>
+            <xs:sequence>
+            <xs:element name="label" type="xs:string"/>
+            <xs:element name="visible" type="xs:string"/>
+            <xs:element name="parent" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="point" type="xs:string" use="required"/>
+      <xs:attribute name="id" type="simpleIdentifier"/>
+      <xs:attribute name="name" type="xs:string"/>
+      <xs:attribute name="library" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="simpleIdentifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^.]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+

@@ -5,6 +5,7 @@ SRCS=Application.cpp \
      Autorun.cpp \
      AutoSwitch.cpp \
      BackgroundInfoLoader.cpp \
+     ContextMenuManager.cpp \
      CompileInfo.cpp \
      CueDocument.cpp \
      DatabaseManager.cpp \
