@@ -34,6 +34,10 @@
   #include "Engines/PulseAE/PulseAE.h"
 #endif
 
+#if defined(TARGET_RASPBERRY_PI)
+  #include "Engines/PiAudio/PiAudioAE.h"
+#endif
+
 #include "guilib/LocalizeStrings.h"
 #include "settings/Setting.h"
 #include "utils/StringUtils.h"
@@ -52,7 +56,7 @@ bool CAEFactory::LoadEngine()
   bool loaded = false;
 
 #if defined(TARGET_RASPBERRY_PI)
-  return true;
+  return CAEFactory::LoadEngine(AE_ENGINE_PIAUDIO);
 #elif defined(TARGET_DARWIN)
   return CAEFactory::LoadEngine(AE_ENGINE_COREAUDIO);
 #endif
@@ -104,7 +108,9 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
 #if defined(HAS_PULSEAUDIO)
     case AE_ENGINE_PULSE    : AE = new CPulseAE(); break;
 #endif
-
+#if defined(TARGET_RASPBERRY_PI)
+    case AE_ENGINE_PIAUDIO  : AE = new PiAudioAE::CPiAudioAE(); break;
+#endif
     default:
       return false;
   }
@@ -130,10 +136,6 @@ void CAEFactory::UnLoadEngine()
 
 bool CAEFactory::StartEngine()
 {
-#if defined(TARGET_RASPBERRY_PI)
-  return true;
-#endif
-
   if (!AE)
     return false;
 
