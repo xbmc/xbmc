@@ -32,6 +32,7 @@
 #include "storage/MediaManager.h"
 
 using namespace XFILE;
+using ADDON::ContextAddonPtr;
 
 #define FAVOURITES_LIST 450
 
@@ -129,7 +130,7 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   choices.Add(3, 15015);
   choices.Add(4, 118);
   choices.Add(5, 20019);
-  
+
   int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
 
   // unhighlight the item

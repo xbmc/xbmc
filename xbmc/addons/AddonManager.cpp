@@ -47,7 +47,12 @@
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
+#include "ContextItemAddon.h"
+#include "ContextCategoryAddon.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "Util.h"
+#include "dialogs/GUIDialogContextMenu.h"
 
 using namespace std;
 using namespace XFILE;
@@ -171,6 +176,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CAddonLibrary(props));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(props));
+    case ADDON_CONTEXT_ITEM:
+      return AddonPtr(new CContextItemAddon(props));
     default:
       break;
   }
@@ -210,6 +217,7 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
 CAddonMgr::CAddonMgr()
 {
   m_cpluff = NULL;
+  m_iCurrentContextId = CONTEXT_BUTTON_FIRST_CONTEXT_PLUGIN;
 }
 
 CAddonMgr::~CAddonMgr()
@@ -582,6 +590,17 @@ void CAddonMgr::RemoveAddon(const std::string& ID)
   }
 }
 
+unsigned int CAddonMgr::GetMsgIdForContextAddon(const std::string& AddonID)
+{
+  CSingleLock lock(m_critSection);
+  unsigned int& id = m_contextMsgAssign[AddonID];
+
+  if (id==0)
+    id = m_iCurrentContextId++;
+
+  return id;
+}
+
 bool CAddonMgr::DisableAddon(const std::string& ID, bool disable)
 {
   CSingleLock lock(m_critSection);
@@ -667,6 +686,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CAudioEncoder(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
+    case ADDON_CONTEXT_ITEM:
+      return AddonPtr(new CContextItemAddon(addonProps));
     default:
       break;
   }

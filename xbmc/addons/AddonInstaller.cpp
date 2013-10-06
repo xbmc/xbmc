@@ -39,6 +39,8 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "URL.h"
+#include "ContextItemAddon.h"
+#include "GUIContextMenuManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -629,6 +631,13 @@ bool CAddonInstallJob::DownloadPackage(const std::string &path, const std::strin
 
 bool CAddonInstallJob::OnPreInstall()
 {
+  if (m_update && (m_addon->Type() == ADDON_CONTEXT_ITEM || m_addon->Type() == ADDON_CONTEXT_CATEGORY))
+  {
+    boost::shared_ptr<IContextItem> context = boost::dynamic_pointer_cast<IContextItem>(m_addon);
+    if (context)
+      BaseContextMenuManager::Get().Unregister(context);
+  }
+
   return m_addon->OnPreInstall();
 }
 

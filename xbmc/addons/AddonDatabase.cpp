@@ -25,6 +25,8 @@
 #include "utils/StringUtils.h"
 #include "XBDateTime.h"
 #include "dbwrappers/dataset.h"
+#include "addons/ContextItemAddon.h"
+#include "GUIContextMenuManager.h"
 
 using namespace ADDON;
 using namespace std;
@@ -590,7 +592,9 @@ bool CAddonDatabase::DisableAddon(const std::string &addonID, bool disable /* = 
         // If the addon is a special, call the disabled handler
         AddonPtr addon;
         if ((CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false)
-          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false)) && addon)
+          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false)
+          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_CONTEXT_ITEM, false)
+          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_CONTEXT_CATEGORY, false)) && addon)
           addon->OnDisabled();
 
         return true;
@@ -608,7 +612,9 @@ bool CAddonDatabase::DisableAddon(const std::string &addonID, bool disable /* = 
         // If the addon is a special, call the enabled handler
         AddonPtr addon;
         if ((CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false)
-          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false)) && addon)
+          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false)
+          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_CONTEXT_ITEM, false)
+          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_CONTEXT_CATEGORY, false)) && addon)
           addon->OnEnabled();
       }
     }
