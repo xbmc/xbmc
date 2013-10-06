@@ -36,6 +36,7 @@ SRCS=Application.cpp \
      XBDateTime.cpp \
      xbmc.cpp \
      XbmcContext.cpp \
+     GUIContextMenuManager.cpp \
 
 LIB=xbmc.a
 

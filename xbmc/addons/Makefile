@@ -21,6 +21,8 @@ SRCS=Addon.cpp \
      Service.cpp \
      Skin.cpp \
      Visualisation.cpp \
+     ContextItemAddon.cpp \
+     ContextCategoryAddon.cpp \
 
 LIB=addons.a
 
