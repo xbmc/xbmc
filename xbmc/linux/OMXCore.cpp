@@ -559,7 +559,7 @@ void COMXCoreComponent::FlushOutput()
 }
 
 // timeout in milliseconds
-OMX_BUFFERHEADERTYPE *COMXCoreComponent::GetInputBuffer(long timeout)
+OMX_BUFFERHEADERTYPE *COMXCoreComponent::GetInputBuffer(long timeout /*=200*/)
 {
   OMX_BUFFERHEADERTYPE *omx_input_buffer = NULL;
 
@@ -570,7 +570,7 @@ OMX_BUFFERHEADERTYPE *COMXCoreComponent::GetInputBuffer(long timeout)
   struct timespec endtime;
   clock_gettime(CLOCK_REALTIME, &endtime);
   add_timespecs(endtime, timeout);
-  while (1 && !m_flush_input)
+  while (!m_flush_input)
   {
     if(!m_omx_input_avaliable.empty())
     {
@@ -589,7 +589,7 @@ OMX_BUFFERHEADERTYPE *COMXCoreComponent::GetInputBuffer(long timeout)
   return omx_input_buffer;
 }
 
-OMX_BUFFERHEADERTYPE *COMXCoreComponent::GetOutputBuffer()
+OMX_BUFFERHEADERTYPE *COMXCoreComponent::GetOutputBuffer(long timeout /*=200*/)
 {
   OMX_BUFFERHEADERTYPE *omx_output_buffer = NULL;
 
@@ -597,16 +597,73 @@ OMX_BUFFERHEADERTYPE *COMXCoreComponent::GetOutputBuffer()
     return NULL;
 
   pthread_mutex_lock(&m_omx_output_mutex);
-
-  if(!m_omx_output_available.empty())
+  struct timespec endtime;
+  clock_gettime(CLOCK_REALTIME, &endtime);
+  add_timespecs(endtime, timeout);
+  while (!m_flush_output)
   {
-    omx_output_buffer = m_omx_output_available.front();
-    m_omx_output_available.pop();
-  }
+    if(!m_omx_output_available.empty())
+    {
+      omx_output_buffer = m_omx_output_available.front();
+      m_omx_output_available.pop();
+      break;
+    }
 
+    int retcode = pthread_cond_timedwait(&m_output_buffer_cond, &m_omx_output_mutex, &endtime);
+    if (retcode != 0) {
+      CLog::Log(LOGERROR, "COMXCoreComponent::GetOutputBuffer %s wait event timeout\n", m_componentName.c_str());
+      break;
+    }
+  }
   pthread_mutex_unlock(&m_omx_output_mutex);
+
   return omx_output_buffer;
 }
+
+
+OMX_ERRORTYPE COMXCoreComponent::WaitForInputDone(long timeout /*=200*/)
+{
+  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
+
+  pthread_mutex_lock(&m_omx_input_mutex);
+  struct timespec endtime;
+  clock_gettime(CLOCK_REALTIME, &endtime);
+  add_timespecs(endtime, timeout);
+  while (m_input_buffer_count != m_omx_input_avaliable.size())
+  {
+    int retcode = pthread_cond_timedwait(&m_input_buffer_cond, &m_omx_input_mutex, &endtime);
+    if (retcode != 0) {
+      CLog::Log(LOGERROR, "COMXCoreComponent::WaitForInputDone %s wait event timeout\n", m_componentName.c_str());
+      omx_err = OMX_ErrorTimeout;
+      break;
+    }
+  }
+  pthread_mutex_unlock(&m_omx_input_mutex);
+  return omx_err;
+}
+
+
+OMX_ERRORTYPE COMXCoreComponent::WaitForOutputDone(long timeout /*=200*/)
+{
+  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
+
+  pthread_mutex_lock(&m_omx_output_mutex);
+  struct timespec endtime;
+  clock_gettime(CLOCK_REALTIME, &endtime);
+  add_timespecs(endtime, timeout);
+  while (m_output_buffer_count != m_omx_output_available.size())
+  {
+    int retcode = pthread_cond_timedwait(&m_output_buffer_cond, &m_omx_output_mutex, &endtime);
+    if (retcode != 0) {
+      CLog::Log(LOGERROR, "COMXCoreComponent::WaitForOutputDone %s wait event timeout\n", m_componentName.c_str());
+      omx_err = OMX_ErrorTimeout;
+      break;
+    }
+  }
+  pthread_mutex_unlock(&m_omx_output_mutex);
+  return omx_err;
+}
+
 
 OMX_ERRORTYPE COMXCoreComponent::AllocInputBuffers(bool use_buffers /* = false **/)
 {

@@ -153,13 +153,16 @@ public:
   void FlushOutput();
 
   OMX_BUFFERHEADERTYPE *GetInputBuffer(long timeout=200);
-  OMX_BUFFERHEADERTYPE *GetOutputBuffer();
+  OMX_BUFFERHEADERTYPE *GetOutputBuffer(long timeout=200);
 
   OMX_ERRORTYPE AllocInputBuffers(bool use_buffers = false);
   OMX_ERRORTYPE AllocOutputBuffers(bool use_buffers = false);
 
   OMX_ERRORTYPE FreeInputBuffers();
   OMX_ERRORTYPE FreeOutputBuffers();
+
+  OMX_ERRORTYPE WaitForInputDone(long timeout=200);
+  OMX_ERRORTYPE WaitForOutputDone(long timeout=200);
 
   bool IsEOS() { return m_eos; };
   bool BadState() { return m_resource_error; };
