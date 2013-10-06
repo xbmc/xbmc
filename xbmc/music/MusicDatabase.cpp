@@ -1005,12 +1005,20 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   return song;
 }
 
-void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath)
+void CMusicDatabase::ParseBaseUrl(const CStdString &strMusicDBbasePath, CMusicDbUrl &baseUrl, const CMusicDbUrl *&pBaseUrl)
 {
-  return GetFileItemFromDataset(m_pDS->get_sql_record(), item, strMusicDBbasePath);
+  if (strMusicDBbasePath.IsEmpty() || !baseUrl.FromString(strMusicDBbasePath))
+    pBaseUrl = NULL;
+  else
+    pBaseUrl = &baseUrl;
 }
 
-void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath)
+void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath, const CMusicDbUrl *baseUrl)
+{
+  GetFileItemFromDataset(m_pDS->get_sql_record(), item, strMusicDBbasePath, baseUrl);
+}
+
+void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath, const CMusicDbUrl *baseUrl)
 {
   // get the full artist string
   item->GetMusicInfoTag()->SetArtist(StringUtils::Split(record->at(song_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator));
@@ -1043,12 +1051,9 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   // Get filename with full path
   if (strMusicDBbasePath.IsEmpty())
     item->SetPath(strRealPath);
-  else
+  else if (baseUrl)
   {
-    CMusicDbUrl itemUrl;
-    if (!itemUrl.FromString(strMusicDBbasePath))
-      return;
-    
+    CMusicDbUrl itemUrl = *baseUrl;
     CStdString strFileName = record->at(song_strFileName).get_asString();
     CStdString strExt = URIUtils::GetExtension(strFileName);
     CStdString path; path.Format("%ld%s", record->at(song_idSong).get_asInt(), strExt.c_str());
@@ -1493,11 +1498,14 @@ bool CMusicDatabase::GetTop100(const CStdString& strBaseDir, CFileItemList& item
       m_pDS->close();
       return true;
     }
+    CMusicDbUrl baseUrl;
+    const CMusicDbUrl *pBaseUrl;
+    ParseBaseUrl(strBaseDir, baseUrl, pBaseUrl);
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
       CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), strBaseDir);
+      GetFileItemFromDataset(item.get(), strBaseDir, pBaseUrl);
       items.Add(item);
       m_pDS->next();
     }
@@ -1573,11 +1581,14 @@ bool CMusicDatabase::GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItem
     }
 
     // get data from returned rows
+    CMusicDbUrl baseUrl;
+    const CMusicDbUrl *pBaseUrl;
+    ParseBaseUrl(strBaseDir, baseUrl, pBaseUrl);
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
       CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), strBaseDir);
+      GetFileItemFromDataset(item.get(), strBaseDir, pBaseUrl);
       items.Add(item);
       m_pDS->next();
     }
@@ -1648,11 +1659,14 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     }
 
     // get data from returned rows
+    CMusicDbUrl baseUrl;
+    const CMusicDbUrl *pBaseUrl;
+    ParseBaseUrl(strBaseDir, baseUrl, pBaseUrl);
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
       CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), strBaseDir);
+      GetFileItemFromDataset(item.get(), strBaseDir, pBaseUrl);
       items.Add(item);
       m_pDS->next();
     }
@@ -1725,11 +1739,14 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     }
 
     // get data from returned rows
+    CMusicDbUrl baseUrl;
+    const CMusicDbUrl *pBaseUrl;
+    ParseBaseUrl(strBaseDir, baseUrl, pBaseUrl);
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
       CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), strBaseDir);
+      GetFileItemFromDataset(item.get(), strBaseDir, pBaseUrl);
       items.Add(item);
       m_pDS->next();
     }
@@ -1849,10 +1866,14 @@ bool CMusicDatabase::SearchSongs(const CStdString& search, CFileItemList &items)
     if (m_pDS->num_rows() == 0) return false;
 
     CStdString songLabel = g_localizeStrings.Get(179); // Song
+    const CStdString strBaseDir = "musicdb://songs/";
+    CMusicDbUrl baseUrl;
+    const CMusicDbUrl *pBaseUrl;
+    ParseBaseUrl(strBaseDir, baseUrl, pBaseUrl);
     while (!m_pDS->eof())
     {
       CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), "musicdb://songs/");
+      GetFileItemFromDataset(item.get(), strBaseDir, pBaseUrl);
       items.Add(item);
       m_pDS->next();
     }
@@ -3343,7 +3364,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &fi
       try
       {
         CFileItemPtr item(new CFileItem);
-        GetFileItemFromDataset(record, item.get(), musicUrl.ToString());
+        GetFileItemFromDataset(record, item.get(), baseDir, &musicUrl);
         // HACK for sorting by database returned order
         item->m_iprogramCount = ++count;
         items.Add(item);
@@ -4142,7 +4163,7 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const Filter &f
       m_pDS->close();
       return false;
     }
-    GetFileItemFromDataset(item, "");
+    GetFileItemFromDataset(item, "", NULL);
     idSong = m_pDS->fv("songview.idSong").get_asInt();
     m_pDS->close();
     return true;
