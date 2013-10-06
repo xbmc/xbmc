@@ -20,12 +20,14 @@
 #include "PlexApplication.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
-CPlexRemoteSubscriber::CPlexRemoteSubscriber(const std::string &uuid, const std::string &ipaddress, int port)
+CPlexRemoteSubscriber::CPlexRemoteSubscriber(const std::string &uuid, const std::string &ipaddress, int port, int commandID, const std::string &protocol)
 {
-  m_url.SetProtocol("http");
+  m_url.SetProtocol(protocol);
   m_url.SetHostName(ipaddress);
   m_url.SetPort(port);
-  
+  if (commandID != -1)
+    m_url.SetOption("commandID", boost::lexical_cast<std::string>(commandID));
+
   m_uuid = uuid;
 }
 
@@ -34,17 +36,24 @@ bool CPlexRemoteSubscriber::shouldRemove() const
 {
   if (m_lastUpdated.elapsed() > PLEX_REMOTE_SUBSCRIBER_REMOVE_INTERVAL)
   {
-    CLog::Log(LOGDEBUG, "CPlexRemoteSubscriber::shouldRemove removing %s because elapsed: %d", m_uuid.c_str(), m_lastUpdated.elapsed());
+    CLog::Log(LOGDEBUG, "CPlexRemoteSubscriber::shouldRemove removing %s because elapsed: %lld", m_uuid.c_str(), m_lastUpdated.elapsed());
     return true;
   }
-  CLog::Log(LOGDEBUG, "CPlexRemoteSubscriber::shouldRemove will not remove because elapsed: %d", m_lastUpdated.elapsed());
+  CLog::Log(LOGDEBUG, "CPlexRemoteSubscriber::shouldRemove will not remove because elapsed: %lld", m_lastUpdated.elapsed());
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-void CPlexRemoteSubscriber::refresh()
+void CPlexRemoteSubscriber::refresh(CPlexRemoteSubscriberPtr sub)
 {
   CLog::Log(LOGDEBUG, "CPlexRemoteSubscriber::refresh %s", m_uuid.c_str());
+
+  if (sub->getURL().Get() != getURL().Get())
+  {
+    CLog::Log(LOGDEBUG, "CPlexRemoteSubscriber::refresh new url %s", m_url.Get().c_str());
+    m_url = sub->getURL();
+  }
+
   m_lastUpdated.restart();
 }
 
@@ -58,7 +67,7 @@ void CPlexRemoteSubscriberManager::addSubscriber(CPlexRemoteSubscriberPtr subscr
   if (m_map.find(subscriber->getUUID()) != m_map.end())
   {
     CLog::Log(LOGDEBUG, "CPlexRemoteSubscriberManager::addSubscriber refreshed %s", subscriber->getUUID().c_str());
-    m_map[subscriber->getUUID()]->refresh();
+    m_map[subscriber->getUUID()]->refresh(subscriber);
   }
   else
   {

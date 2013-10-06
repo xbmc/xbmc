@@ -164,6 +164,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
 
 void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelineManager::MediaState state, uint64_t currentPosition)
 {
+  CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress for item %s (%s) [%lld]", currentItem->GetLabel().c_str(), StateToString(state).c_str(), currentPosition);
   MediaType type = GetMediaType(currentItem);
   if (type == UNKNOWN)
   {
@@ -196,7 +197,7 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
   }
 
   if ((m_pollEvent.getNumWaits() > 0 || g_plexApplication.remoteSubscriberManager->hasSubscribers()) &&
-      (stateChange || (positionUpdate && m_subTimer.elapsed() >= 1)))
+      (stateChange || (positionUpdate && m_subTimer.elapsedMs() >= 950)))
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating subscribers.");
     m_pollEvent.Set();
@@ -204,7 +205,7 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
     m_subTimer.restart();
   }
 
-  if (stateChange || (positionUpdate && m_serverTimer.elapsed() >= 10))
+  if (stateChange || (positionUpdate && m_serverTimer.elapsedMs() >= 9950))
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server");
     g_plexApplication.mediaServerClient->SendServerTimeline(m_currentItems[type], GetCurrentTimeline(type));
@@ -232,8 +233,6 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
   /* if we are stopping, we need to reset our currentItem */
   if (state == MEDIA_STATE_STOPPED)
     m_currentItems[type].reset();
-
-  m_pollEvent.Reset();
 }
 
 CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(CFileItemPtr item)
@@ -285,6 +284,9 @@ CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(const CStdStr
 
 std::vector<CUrlOptions> CPlexTimelineManager::WaitForTimeline()
 {
+  CLog::Log(LOGDEBUG, "CPlexTimelineManager::WaitForTimeline - waiting until pollEvent is set.");
+  m_pollEvent.Reset();
+
   if (m_pollEvent.Wait())
   {
     if (!m_stopped)

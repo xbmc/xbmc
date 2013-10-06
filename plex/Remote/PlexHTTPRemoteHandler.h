@@ -49,6 +49,8 @@ class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
 
     CPlexRemoteSubscriberPtr getSubFromRequest(const HTTPRequest &request, const ArgMap &arguments);
     CStdString m_data;
+
+    CStdString m_contentType;
 };
 
 

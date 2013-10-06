@@ -44,6 +44,7 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   /* defaults */
   m_responseType = HTTPMemoryDownloadNoFreeCopy;
   m_responseCode = MHD_HTTP_OK;
+  m_contentType = "text/xml";
 
   ArgMap argumentMap;
   ArgMap headerMap;
@@ -69,7 +70,6 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     return MHD_YES;
   }
 
-  m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", "text/xml"));
   m_data = "<Response code=\"200\" status=\"OK\" />";
 
   CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::HandleHTTPRequest handling %s", request.url.c_str());
@@ -127,6 +127,8 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     m_responseCode = MHD_HTTP_INTERNAL_SERVER_ERROR;
     m_data.Format("<Response code=\"500\" status=\"not implemented\" />");
   }
+
+  m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", m_contentType));
   
   return MHD_YES;
 }
@@ -286,27 +288,27 @@ void CPlexHTTPRemoteHandler::stepFunction(const CStdString &url, const ArgMap &a
     return;
   
   if (url.Equals("/player/playback/bigStepForward"))
-    CBuiltins::Execute("playercontrol(bigskipforward)");
+    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(bigskipforward)");
   else if (url.Equals("/player/playback/bigStepBack"))
-    CBuiltins::Execute("playercontrol(bigskipbackward)");
+    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(bigskipbackward)");
   else if (url.Equals("/player/playback/stepForward"))
-    CBuiltins::Execute("playercontrol(smallskipforward)");
+    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(smallskipforward)");
   else if (url.Equals("/player/playback/stepBack"))
-    CBuiltins::Execute("playercontrol(smallskipbackward)");
+    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(smallskipbackward)");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::skipNext(const ArgMap &arguments)
 {
   if (g_application.IsPlaying())
-    CBuiltins::Execute("playercontrol(next)");
+    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(next)");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::skipPrevious(const ArgMap &arguments)
 {
   if (g_application.IsPlaying())
-    CBuiltins::Execute("playercontrol(previous)");
+    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(previous)");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -532,10 +534,19 @@ CPlexRemoteSubscriberPtr CPlexHTTPRemoteHandler::getSubFromRequest(const HTTPReq
     return CPlexRemoteSubscriberPtr();
   
   int port = 32400;
+  int commandID = -1;
+  CStdString protocol = "http";
+
   if (arguments.find("port") != arguments.end())
     port = boost::lexical_cast<int>(arguments.find("port")->second);
+
+  if (arguments.find("commandID") != arguments.end())
+    commandID = boost::lexical_cast<int>(arguments.find("commandID")->second);
+
+  if (arguments.find("protocol") != arguments.end())
+    protocol = arguments.find("protocol")->second;
   
-  CPlexRemoteSubscriberPtr sub = CPlexRemoteSubscriber::NewSubscriber(uuid, ipstr, port);
+  CPlexRemoteSubscriberPtr sub = CPlexRemoteSubscriber::NewSubscriber(uuid, ipstr, port, commandID);
   
   return sub;
 }
@@ -574,6 +585,12 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
       wait = true;
   }
 
+  std::string commandID;
+  if (arguments.find("commandID") != arguments.end())
+  {
+    commandID = arguments.find("commandID")->second;
+  }
+
   std::vector<CUrlOptions> lines;
   if (wait)
   {
@@ -585,14 +602,16 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
     lines = g_plexApplication.timelineManager->GetCurrentTimeLines();
   }
 
-  CStdString ret = "<Response code=\"0\">\n";
+  m_data.Empty();
 
   BOOST_FOREACH(CUrlOptions opt, lines)
-    ret += opt.GetOptionsString() + "\n";
+  {
+    if (!commandID.empty())
+      opt.AddOption("commandID", commandID);
+    m_data += opt.GetOptionsString() + "\n";
+  }
 
-  ret+="</Response>\n";
-
-  m_data = ret;
+  m_contentType = "text/plain";
 }
 
 void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)

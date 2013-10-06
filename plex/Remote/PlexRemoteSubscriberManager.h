@@ -29,12 +29,12 @@ typedef boost::shared_ptr<CPlexRemoteSubscriber> CPlexRemoteSubscriberPtr;
 class CPlexRemoteSubscriber
 {
   public:
-    static CPlexRemoteSubscriberPtr NewSubscriber(const std::string &uuid, const std::string &ipaddress, int port)
+    static CPlexRemoteSubscriberPtr NewSubscriber(const std::string &uuid, const std::string &ipaddress, int port, int commandID = -1, const std::string &protocol = "http")
     {
-      return CPlexRemoteSubscriberPtr(new CPlexRemoteSubscriber(uuid, ipaddress, port));
+      return CPlexRemoteSubscriberPtr(new CPlexRemoteSubscriber(uuid, ipaddress, port, commandID, protocol));
     };
-    CPlexRemoteSubscriber(const std::string &uuid, const std::string &ipaddress, int port=32400);
-    void refresh();
+    CPlexRemoteSubscriber(const std::string &uuid, const std::string &ipaddress, int port=32400, int commandID=-1, const std::string& protocol="http");
+    void refresh(CPlexRemoteSubscriberPtr sub);
     bool shouldRemove() const;
   
     CURL getURL() const { return m_url; }
