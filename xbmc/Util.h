@@ -36,7 +36,6 @@
 // A list of filesystem types for LegalPath/FileName
 #define LEGAL_NONE            0
 #define LEGAL_WIN32_COMPAT    1
-#define LEGAL_FATX            2
 
 namespace XFILE
 {
