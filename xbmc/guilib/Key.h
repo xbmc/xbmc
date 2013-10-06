@@ -368,6 +368,8 @@
 #define ICON_TYPE_WEATHER       107
 #define ICON_TYPE_SETTINGS      109
 
+#ifndef SWIG
+
 class CKey;
 
 /*!
@@ -522,5 +524,7 @@ private:
   float m_repeat; // time since last keypress
   bool m_fromService;
 };
+#endif //undef SWIG
+
 #endif
 
