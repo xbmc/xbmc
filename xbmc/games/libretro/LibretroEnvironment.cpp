@@ -31,6 +31,7 @@
 #include "storage/MediaManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #define RETRO_ENVIRONMENT_GET_VARIABLE_OLD   4
 #define RETRO_ENVIRONMENT_SET_VARIABLES_OLD  5
