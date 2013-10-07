@@ -329,7 +329,7 @@ CStdString CPlexTimelineManager::WaitForTimeline(int commandID)
   if (m_pollEvent.Wait())
   {
     if (!m_stopped)
-      return GetCurrentTimeLinesXML();
+      return GetCurrentTimeLinesXML(commandID);
   }
 
   return "";
