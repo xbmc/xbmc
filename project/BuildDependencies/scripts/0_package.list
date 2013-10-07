@@ -5,8 +5,10 @@
 ; -> sqlite-3.7.12.1-win32\project\BuildDependencies\lib\sqlite3.lib
 ; -> sqlite-3.7.12.1-win32\system\sqlite3.dll
 ; -> ...
+boost-1.46.1-headers-win32.7z
 dnssd-379.32.1-win32.7z
 doxygen-1.8.2-win32.7z
+gnutls-3.2.3-win32.zip
 lame_enc-3.99.5-win32.7z
 libbluray-0.4.0-win32.zip
 libnfs-1.6.1-win32.7z
@@ -16,4 +18,3 @@ pcre-8.33-win32.zip
 python-2.7.5-win32.7z
 sqlite-3.7.16.1-win32.7z
 taglib-1.8-win32.7z
-gnutls-3.2.3-win32.zip
