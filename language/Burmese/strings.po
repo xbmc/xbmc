@@ -953,10 +953,6 @@ msgctxt "#337"
 msgid "Audio output"
 msgstr "audio ထွက်ရှိမှု့"
 
-msgctxt "#338"
-msgid "Analog"
-msgstr "Analog"
-
 msgctxt "#339"
 msgid "Optical/Coax"
 msgstr "Optical/Coax"
@@ -1276,10 +1272,6 @@ msgstr "ဖိုင်ကိုဖွင့်နေပါသည်။"
 msgctxt "#439"
 msgid "Cache"
 msgstr "Cache"
-
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "Harddisk"
 
 msgctxt "#441"
 msgid "UDF"
@@ -2425,10 +2417,6 @@ msgctxt "#10029"
 msgid "Login screen"
 msgstr "ဝင်ရောက်သည့်စခရင်"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "Addon များကြည့်ရှုခြင်း"
-
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Lock settings"
@@ -2500,10 +2488,6 @@ msgstr "ယခုဖွင့်ထားသည် - ဗွီဒီယိုမ
 msgctxt "#10524"
 msgid "Movie info"
 msgstr "ရုပ်ရှင်အချက်အလက်"
-
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "dialog ရွေးမည်"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -2708,10 +2692,6 @@ msgstr "ထွက်မည်"
 msgctxt "#13013"
 msgid "Reboot"
 msgstr "ပြန်စမည်"
-
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "ချုံ့မည်"
 
 msgctxt "#13015"
 msgid "Power button action"
@@ -3648,10 +3628,6 @@ msgstr "DXVA Best"
 msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
-
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 optimized"
 
 msgctxt "#17997"
 msgid "%i MByte"
@@ -5672,10 +5648,6 @@ msgstr "အမည်"
 msgctxt "#35504"
 msgid "Product ID"
 msgstr "ထုတ်ကုန် ID"
-
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr "adapter ကိုမဖွင့်နိုင်ပါ"
 
 msgctxt "#36015"
 msgid "HDMI port number"

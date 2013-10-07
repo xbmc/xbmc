@@ -857,10 +857,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Musikk"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Visualisering"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Velg destinasjonsmappe"
@@ -1193,10 +1189,6 @@ msgctxt "#337"
 msgid "Audio output"
 msgstr "Lydutgang"
 
-msgctxt "#338"
-msgid "Analog"
-msgstr "Analog"
-
 msgctxt "#339"
 msgid "Optical/Coax"
 msgstr "Optisk/koaks"
@@ -1517,6 +1509,10 @@ msgctxt "#420"
 msgid "HDMI"
 msgstr "HDMI"
 
+msgctxt "#421"
+msgid "Stream silence when idle"
+msgstr "Strøm stillhet når inaktiv"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Slett albuminformasjon"
@@ -1588,10 +1584,6 @@ msgstr "Åpner filen"
 msgctxt "#439"
 msgid "Cache"
 msgstr "Mellomlagring"
-
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "Harddisk"
 
 msgctxt "#441"
 msgid "UDF"
@@ -1828,10 +1820,6 @@ msgstr "Henter informasjon fra filer..."
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Sorter etter: Bruk"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "Aktiver visualisering"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2213,6 +2201,10 @@ msgctxt "#613"
 msgid "Sample rate"
 msgstr "Samplingsrate"
 
+msgctxt "#614"
+msgid "Virtual folder"
+msgstr "Virtuell mappe"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Lyd-CD-er"
@@ -2273,14 +2265,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Egendefinert"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "Replay Gain"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "Replay Gain volumjustering"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Bruk spornivåer"
@@ -2288,18 +2272,6 @@ msgstr "Bruk spornivåer"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Bruk albumnivåer"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "PreAmp-nivå - filer med Replay Gain"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "PreAmp-nivå - filer uten Replay Gain"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "Unngå klipping i filer med Replay Gain"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -3121,6 +3093,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Annonser disse tjenestene med Zeroconf"
 
+msgctxt "#1269"
+msgid "Allow volume control"
+msgstr "Tillat volumkontroll"
+
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
 msgstr "Tillat XBMC å motta AirPlay-innhold"
@@ -3517,10 +3493,6 @@ msgctxt "#10039"
 msgid "Level: Expert"
 msgstr "Nivå: Ekspert"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "Tilleggsutforsker"
-
 msgctxt "#10041"
 msgid "Reset settings"
 msgstr "Nullstill innstillinger"
@@ -3536,14 +3508,6 @@ msgstr "Hjelp"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Ingen hjelp tilgjengelig"
-
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "Ja/Nei dialog"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "Forløpsdialog"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3685,17 +3649,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Filminformasjon"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "Velg dialog"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Musikk/Info"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "Dialog OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3708,14 +3664,6 @@ msgstr "Skript/Info"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Fullskjermsvideo"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "Lydvisualisering"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "Filstablingsdialog"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4053,10 +4001,6 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Omstart"
 
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "Minimer"
-
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Av/på-knapp funksjon"
@@ -4221,10 +4165,6 @@ msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU HQ oppskaleringsnivå"
 
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr "VDPAU studionivå fargekonvertering"
-
 msgctxt "#13130"
 msgid "Blank other displays"
 msgstr "Slukk andre skjermer"
@@ -4276,10 +4216,6 @@ msgstr "Gateway"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "Primær DNS"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "Initialisering mislyktes"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4525,10 +4461,6 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Rekursiv lysbildefremvisning"
 
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "Bland"
-
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Stereo"
@@ -4741,21 +4673,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "%s forhåndsinnstillinger"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "Det er ingen forhåndsinnstillinger tilgjengelige⏎\nfor denne visualiseringen"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "Det er ingen innstillinger tilgjengelige\nfor denne visualiseringen"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Løs ut/last inn"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "Bruk visualisering ved musikkavspilling"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4929,6 +4849,10 @@ msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
 msgstr "Aktiver høykvalitetsskalering for skaleringer over"
 
+msgctxt "#13436"
+msgid "Allow hardware acceleration (libstagefright)"
+msgstr "Tillat maskinvareakselerasjon (libstagefright)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Synkroniseringsmetode"
@@ -4944,10 +4868,6 @@ msgstr "Videoklokking (dropp/dupliser lyd)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Videoklokking (resample lyd)"
-
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr "Maksimum resamplingsnivå (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -5140,10 +5060,6 @@ msgstr "Ingen TV"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Skriv inn nærmeste store by"
-
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "Video/Lyd/DVD mellomlager - Harddisk"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5489,10 +5405,6 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "Spill av med..."
 
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "Bruk utjevnet A/V synkronisering"
-
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "Skjul filnavn i miniatyrvisning"
@@ -5632,10 +5544,6 @@ msgstr "Festmodus stoppet."
 msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Ingen samsvarende låter i bibliotek."
-
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "Kunne ikke initialisere databasen."
 
 msgctxt "#16033"
 msgid "Could not open database."
@@ -5785,10 +5693,6 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Omvendt telecine"
 
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr "Lanczos3-optimalisert"
-
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Automatisk"
@@ -5817,17 +5721,9 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 optimert"
-
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
-
-msgctxt "#16325"
-msgid "Auto - ION Optimized"
-msgstr "Auto - optimalisert for ION"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6481,10 +6377,6 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Timeout når avspilling starter"
 
-msgctxt "#19171"
-msgid "Start playback minimized"
-msgstr "Start avspilling minimert"
-
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Øyeblikkelig opptaksvarighet"
@@ -6552,10 +6444,6 @@ msgstr "EPG blir tilbakestilt"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Fortsett siste kanal ved oppstart"
-
-msgctxt "#19190"
-msgid "Minimized"
-msgstr "Minimert"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6713,10 +6601,6 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Lukk kanal-OSD etter kanalbytte"
 
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr "Hindre EPG-oppdateringer når en TV-strøm spilles"
-
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "Bruk alltid kanalrekkefølge fra kulisseklient(er)"
@@ -6728,10 +6612,6 @@ msgstr "Tøm søkeresultat"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Vis notifikasjon ved tidsuroppdateringer"
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Bruk kanalnumre fra kulisseklient (fungerer kun med et aktivert PVR-tillegg)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7556,14 +7436,6 @@ msgstr "Vis værinformasjon"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Vis systeminformasjon"
-
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr "Vis tilgjengelig diskplass C: E: F:"
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr "Vis tilgjengelig diskplass E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8500,10 +8372,6 @@ msgstr "Slå sammen TV-serier"
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Hent fankunst"
-
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr "Vis fankunst i video- og musikkbibliotek"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -9577,10 +9445,6 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "Guide"
 
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "Tillatt avvik i formatforhold for å redusere sorte felt"
-
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "Vis filmfiler i lister"
@@ -9740,10 +9604,6 @@ msgstr "Skjermsparer"
 msgctxt "#24009"
 msgid "Script"
 msgstr "Skript"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Visualisering"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -10509,10 +10369,6 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Mislyktes ved initiering av videofilter/skalerere, går tilbake til bilineær skalering"
 
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr "Mislyktes ved initiering av lydenhet"
-
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Sjekk dine lydinnstillinger"
@@ -10544,10 +10400,6 @@ msgstr "Tilbehør"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Generisk HID-enhet"
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr "Generisk nettverksadapter"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10605,10 +10457,6 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "Produkt-id"
 
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr "Pulse-Eight CEC adapter"
-
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10628,10 +10476,6 @@ msgstr "Trykk «bruker» knappen"
 msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Slå på endre side-kommandoer"
-
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr "Kunne ikke åpne adapteret"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
@@ -10653,10 +10497,6 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Kunne ikke finne CEC kommunikasjonsporten. Still den inn manuelt."
 
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "Kunne ikke starte CEC-adapteret. Sjekk dine innstillinger."
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI port nummer"
@@ -10664,10 +10504,6 @@ msgstr "HDMI port nummer"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Tilkoblet"
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "Kunne ikke starte CEC-adapteren: libCEC ble ikke funnet på ditt system."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10721,14 +10557,6 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Tilkoblingen ble brutt"
 
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr "Denne brukerkontoen har ikke tilgang til å åpne CECadapteret"
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr "Porten er opptatt. Bare ett program kan ha tilgang til CECadapteret omgangen"
-
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Pause avspilling ved bytte til annen kilde"
@@ -10760,10 +10588,6 @@ msgstr "libCECs grensesnittversjon er ikke støttet. %x er lavere enn versjonen 
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Oppføringsmappe"
-
-msgctxt "#36042"
-msgid "Use limited color range (16-235)"
-msgstr "Bruk begrenset fargemodus (16-235)"
 
 msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
@@ -10881,10 +10705,6 @@ msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Oppgi tiden det tar før skjermspareren vises ved inaktivitet."
 
-msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
-msgstr "Velg skjermsparer. XBMC vil benytte «dempet» skjermsparer når en video avspilt i fullskjerm blir satt i pause eller når en dialogboks er aktiv."
-
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
 msgstr "Endre skjermsparerinnstillingene. De tilgjengelige alternativene bestemmes av den benyttete skjermspareren."
@@ -10892,10 +10712,6 @@ msgstr "Endre skjermsparerinnstillingene. De tilgjengelige alternativene bestemm
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "Forhåndsvis den valgte skjermsparer."
-
-msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
-msgstr "Hvis musikk blir avspilt, så vil XBMC benytte den valgte visualiseringen istedenfor å vise skjermspareren."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -10977,6 +10793,10 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Juster metodene brukt for å bearbeide og vise video."
 
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "Ingen informasjon tilgjengelig enda."
+
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
 msgstr "Aktiver maskinvareavkoding av videofiler."
@@ -11021,21 +10841,9 @@ msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
 msgstr "Stopp for en kort periode når oppfriskingsfrekvensen forandres. Aktiver for å automatisk velge den oppfriskingsfrekvensen som best passer til den videoen som spilles av. Dette gjør det mulig å få en jevn avspilling, fordi videomateriale kan bli tatt opp i mange forskjellige bildefreksvenser som må svare til oppfriskingsfrekvensen til skjermen for jevn avspilling."
 
-msgctxt "#36166"
-msgid "Synchronize the video to the refresh rate of the monitor."
-msgstr "Synkroniser video til skjermens oppdateringsfrekvens."
-
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "Lyd må være synkronisert, dette kan enten gjøres ved å gjensample, hoppe over/duplisere pakker, eller ved å juster klokken hvis lyden havner for mye i utakt."
-
-msgctxt "#36168"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36169"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -11044,10 +10852,6 @@ msgstr "Tillat videospilleren til en viss grad å ignorere en del av formatforho
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Velg hvordan 4:3-videoer skaleres på widescreen-skjermer."
-
-msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
-msgstr "VDPAU tillater avanserte applikasjoner som XBMC å påvirke fargeromkonverteringen."
 
 msgctxt "#36173"
 msgid "No info available yet."
@@ -11065,10 +10869,6 @@ msgctxt "#36176"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
-msgctxt "#36177"
-msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "Skift mellom «Velg», «Spill (forvalgt)», «Fortsett» og «Vis informasjon». «Velg» vil velge en oppføring, med andre ord åpne en mappe i filmodus. «Fortsett» vil automatisk spille av videoer fra den siste posisjonen du så dem, selv etter at systemet er blitt startet på nytt. "
-
 msgctxt "#36178"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
@@ -11082,14 +10882,6 @@ msgid "Extract thumbnails and information, such as codecs and aspect ratio, to d
 msgstr "Hent ut miniatyrbilder og informasjon, slik som kodeker og formatforhold, som vises i Biblioteksmodus."
 
 msgctxt "#36181"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36182"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36183"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
@@ -11397,6 +11189,10 @@ msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
 msgstr "Se etter nye og fjernede mediefiler når XBMC starter."
 
+msgctxt "#36260"
+msgid "No info available yet."
+msgstr "Ingen informasjon tilgjengelig enda."
+
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
 msgstr "Eksporter musikkbiblioteksdatabasen til en XML-fil. Dette vil kunne skrive over dine eksisterende XML-filer."
@@ -11417,10 +11213,6 @@ msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
 msgstr "Når låter blir lagt til en spilleliste blir de lagt i kø istedenfor å spilles av med en gang."
 
-msgctxt "#36267"
-msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
-msgstr "XBMC vil lese Replay Gain-informasjonen koded i lydfilene dine ved å benytte et program som MP3Gain og deretter normalisere lydnivået."
-
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Standard er 89dB. Utvis forsiktighet ved endring."
@@ -11440,10 +11232,6 @@ msgstr "Ton ut fra et lydspor til det neste. Du kan oppgi fra 1-15 sekunder med 
 msgctxt "#36272"
 msgid "Allow crassfading to occur when both tracks are from the same album."
 msgstr "Tillat at det tones ut mellom spor som er fra det samme albumet."
-
-msgctxt "#36273"
-msgid "Select the visualization that will be displayed while listening to music."
-msgstr "Velg visualiseringen som vil bli vist når du lytter til musikk."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
@@ -11536,10 +11324,6 @@ msgstr "Velg skrifttype som brukes for karaoke."
 msgctxt "#36296"
 msgid "Select the size of the font used during karoake."
 msgstr "Velg skriftstørrelse som brukes for karaoke."
-
-msgctxt "#36297"
-msgid "Select the font color used during karoake."
-msgstr "Velg fargen på skriften som brukes for karaoke."
 
 msgctxt "#36298"
 msgid "Select the character set used during karoake."
@@ -11681,6 +11465,10 @@ msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Velg mellom nettgrensesnitt-tilleggene installert ved hjelp av tilleggsbehandleren."
 
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "Ingen informasjon tilgjengelig enda."
+
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Tillat programmer på denne datamaskinen å kontrollere XBMC gjennom nettgrensesnittet eller JSON-RPC protokollen for grensesnitt."
@@ -11756,10 +11544,6 @@ msgstr "Ingen informasjon tilgjengelig enda."
 msgctxt "#36353"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36354"
-msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimizing other applications. Uses a bit more resources and playback may be slightly less smooth."
-msgstr "Hovedfordelen er for flerskjermskonfigurasjoner, slik at XMBC kan brukes uten å automatisk minimere andre applikasjoner. Dette bruker litt flere ressurser og kan resultere i litt ujevn avspilling."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -11921,10 +11705,6 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Spesifiser ytterlige biblioteker som skal inkluderes i fejlrettingsloggen."
 
-msgctxt "#36395"
-msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
-msgstr "Åpne systemlåsdialogen, hvor du kan konfigurere dine systemlåsalternativer."
-
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Definer PIN-koden brukt for systemlåsen."
@@ -12017,7 +11797,39 @@ msgctxt "#36418"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "Velg steder som brukes for å hente værinfo."
+
 msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Ingen informasjon tilgjengelig enda."
+
+msgctxt "#36503"
+msgid "Over/Under"
+msgstr "Over/under"
+
+msgctxt "#36504"
+msgid "Side by side"
+msgstr "Side ved side"
+
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "Mono (2D)"
+
+msgctxt "#36537"
+msgid "No info available yet."
+msgstr "Ingen informasjon tilgjengelig enda."
+
+msgctxt "#36538"
+msgid "No info available yet."
+msgstr "Ingen informasjon tilgjengelig enda."
+
+msgctxt "#36539"
+msgid "No info available yet."
+msgstr "Ingen informasjon tilgjengelig enda."
+
+msgctxt "#36540"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 

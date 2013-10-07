@@ -393,10 +393,6 @@ msgctxt "#313"
 msgid "Cleaning database"
 msgstr "در حال پاک‌سازی پایگاه‌‌داده"
 
-msgctxt "#338"
-msgid "Analog"
-msgstr "آنالوگ"
-
 msgctxt "#344"
 msgid "Actors"
 msgstr "هنرپیشه"

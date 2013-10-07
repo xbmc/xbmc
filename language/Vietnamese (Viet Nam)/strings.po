@@ -677,10 +677,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Âm nhạc"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Ảo hóa"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Số kênh"
@@ -1052,10 +1048,6 @@ msgstr "Tải xuống thông tin bộ sưu tập"
 msgctxt "#22030"
 msgid "Font"
 msgstr "Phông chữ"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Ảo hóa"
 
 msgctxt "#24012"
 msgid "Subtitles"
