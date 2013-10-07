@@ -855,3 +855,12 @@ msgstr "Remote Video Quality"
 msgctxt "#52210"
 msgid "Show myPlex Queue and Recommendations"
 msgstr "Show myPlex Queue and Recommendations"
+
+msgctxt "#52300"
+msgid "Media Server went away"
+msgstr "Media Server went away"
+
+msgctxt "#52301"
+msgid "The Server you where browsing went away..."
+msgstr "The Server you where browsing went away..."
+

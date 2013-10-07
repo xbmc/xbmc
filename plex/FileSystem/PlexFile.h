@@ -21,5 +21,9 @@ namespace XFILE
     
     static std::vector<std::pair<std::string, std::string> > GetHeaderList();
     static bool BuildHTTPURL(CURL& url);
+
+    /* Returns false if the server is missing or
+     * there is something else wrong */
+    static bool CanBeTranslated(const CURL &url);
   };
 }

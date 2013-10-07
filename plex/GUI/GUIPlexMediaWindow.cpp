@@ -19,6 +19,8 @@
 #include "GUI/GUIDialogFilterSort.h"
 #include "GUIWindowManager.h"
 #include "PlexContentPlayerMixin.h"
+#include "ApplicationMessenger.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 #include "LocalizeStrings.h"
 
@@ -89,6 +91,16 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       }
       break;
     }
+
+    case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
+    {
+      if (message.GetStringParam() == m_vecItems->GetProperty("plexserver").asString())
+      {
+        CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::OnMessage got a notice that server that we are browsing is going away, returning home");
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(52300), g_localizeStrings.Get(52301));
+        g_windowManager.ActivateWindow(WINDOW_HOME);
+      }
+    }
       
   }
 
@@ -118,6 +130,13 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
   u.SetProtocolOption("containerStart", "0");
   u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(DEFAULT_PAGE_SIZE));
   m_pagingOffset = DEFAULT_PAGE_SIZE - 1;
+
+  if (!XFILE::CPlexFile::CanBeTranslated(u))
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(52300), g_localizeStrings.Get(52301));
+    g_windowManager.ActivateWindow(WINDOW_HOME);
+    return false;
+  }
   
   bool ret = CGUIWindowVideoNav::GetDirectory(u.Get(), items);
   

@@ -95,6 +95,8 @@ CPlexFile::BuildHTTPURL(CURL& url)
   }
 
   newUrl = server->BuildURL(url.GetFileName(), url.GetOptions());
+  if (newUrl.Get().empty())
+    return false;
 
   if (url.HasProtocolOption("ssl") && url.GetProtocolOption("ssl") == "1")
     newUrl.SetProtocol("https");
@@ -108,6 +110,12 @@ CPlexFile::BuildHTTPURL(CURL& url)
   url = newUrl;
 
   return true;
+}
+
+bool CPlexFile::CanBeTranslated(const CURL &url)
+{
+  CURL t(url);
+  return BuildHTTPURL(t);
 }
 
 bool
