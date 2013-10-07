@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Opcinet e konfigurimit"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Ekran i Plotë"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Kohëzgjatja"
@@ -116,10 +112,6 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "Duke kërkuar"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Paracilësime të Vizualizimit"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Koha e Përfundimit"
@@ -172,10 +164,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Trego \"Pauzuar\" gjatë paradës së fotografive"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Riprodho \"Trailer'in\" në një dritare [COLOR=grey3](vetëm dialogu i informacioneve video)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Opcione të ndryshme"
@@ -212,25 +200,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Trego Video të shtuar së fundi"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Ndërmenyja e programeve të faqes kryesore"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Fsheh Fanart në Sfond"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Faqja e Motit"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Trego Sfondin \"Duke Riprodhuar\" Video"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Trego Sfondin \"Duke Riprodhuar\" Vizualizim"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +220,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Tekste Këngësh"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Fsheh Fanart gjat vizualizimit në ekran të plotë"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Shtesë Tekstesh të Këngëve"
@@ -255,18 +227,6 @@ msgstr "Shtesë Tekstesh të Këngëve"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Shtesë Subtitërash"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Submeny Video në Faqen Kryesore"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Submeny Muzikë në Faqen Kryesore"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Submeny Foto në Faqen Kryesore"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +376,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Shkarko Titra"
 
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Aktivuar"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Standarte e Maskës"
@@ -456,10 +420,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]KONFIGURO SHTESAT[/B][CR][CR]Menaxho shtesat e installuara · Shiko dhe installo shtesa nga xbmc.org[CR]Modifiko konfigurimet e shtesave."
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]KONFIGURO OPCIONET E TV[/B][CR][CR]Ndrysho informacionet në ekran të plotë · Menaxho opcionet e EPG's"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGURO OPCIONET E SERVISEVE[/B][CR][CR]Konfiguro kontrollimin e XBMC'së nëpërmjet UPnP dhe HTTP · Konfiguro shpërndarjen e skedeve[CR]Aktivizo Zeroconf · Konfiguro AirPlay"
@@ -468,17 +428,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ndihma për përdorimin e parë..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Ky tab sinjifikon që eksiston një meny në këto dritare në të majtë që përmbanë opcione plotësuese për këtë sekcion. Për të hapur këtë meny, navigo në të majtë me telekomandën ose tastierrën tënde ose lëviz mausin në të majtë.[CR][CR]Kliko \"OK\" për të mbyllur këtë dialog. Nuk do të paraqitet përsëri."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Zgjidh XBMC profilin [CR] në cilin don të paraqitesh dhe vazhdo"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Orari i regjistrimit"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

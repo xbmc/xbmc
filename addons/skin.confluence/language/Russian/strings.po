@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Настройки параметров"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Полный экран"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Общая длительность"
@@ -92,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Информация"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Действия"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Сейчас воспроизводится:"
@@ -115,10 +115,6 @@ msgstr "ПЕРЕМОТКА НАЗАД"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "ПОИСК"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Настройки визуализации"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -172,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Показывать \"Пауза\" в режиме слайд-шоу"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Воспроизводить трейлеры в окне [COLOR=grey3](только для окна сведений)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Различные параметры"
@@ -212,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Показывать последнее добавленное видео"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Подменю программ главного экрана"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Скрыть фоновый фанарт"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Страница погоды"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Воспроизводимое видео в качестве фона"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Музыкальная визуализация в качестве фона"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Тексты"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Скрывать фанарт в полноэкранной визуализации"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Дополнение текстов песен"
@@ -255,18 +231,6 @@ msgstr "Дополнение текстов песен"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Дополнение субтитров"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Подменю видео главного экрана"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Подменю музыки главного экрана"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Подменю фото главного экрана"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -382,7 +346,7 @@ msgstr "Последние"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Установлен таймер![/B] [COLOR=grey2] Автоматическое отключение через[/COLOR]"
+msgstr "[B]Установлен таймер![/B] [COLOR=grey2] Выключение через[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
@@ -415,6 +379,18 @@ msgstr "Меню фильма"
 msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Загрузить субтитры"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Смотреть в 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Изменить режим"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Вкл."
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -456,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]НАСТРОЙКА ДОПОЛНЕНИЙ[/B][CR][CR]Управление установленными дополнениями • Установка дополнений с xbmc.org[CR]Настройка дополнений"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ ТВ[/B][CR][CR]Настройка полноэкранной информации · Настройка отображения EPG"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ СЛУЖБ[/B][CR][CR]Настройка управления XBMC по UPnP и HTTP • Настройка доступа к файлам[CR]Включение Zeroconf • Настройка AirPlay"
@@ -468,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Сведения при первом запуске."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Эта вкладка означает, что сбоку окна есть меню с дополнительными настройками.  Чтобы получить доступ к меню, перейдите влево при помощи пульта ДУ или клавиатуры либо поместите курсор мыши над вкладкой. [CR][CR]Нажмите ОК, чтобы закрыть этот диалог. Он больше не будет отображаться."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Выберите профиль пользователя XBMC,[CR]чтобы войти в систему"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Таймеры записи"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -554,7 +518,7 @@ msgstr "ПОГОДА"
 
 msgctxt "#31951"
 msgid "PICTURES"
-msgstr "КАРТИНКИ"
+msgstr "ФОТО"
 
 msgctxt "#31952"
 msgid "LIVE TV"
@@ -570,7 +534,7 @@ msgstr "ФИЛЬМЫ"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "ТВ-ШОУ"
+msgstr "СЕРИАЛЫ"
 
 msgctxt "#31956"
 msgid "MUSIC"

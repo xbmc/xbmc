@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Opciones de Ajustes"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Pantalla Completa"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Duración Total"
@@ -116,10 +112,6 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "BUSQUEDA"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Preajustes de Visualización"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Hora de Finalización"
@@ -172,10 +164,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Mostrar \"Pausa\" en presentacion de imágenes"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Reproducir Trailers en una ventana [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Opciones variadas"
@@ -212,25 +200,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Mostrar Videos añadidos Recientemente"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Submenú de Programas de Pantalla Principal"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Esconder Fanart de Fondo"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Página de Clima"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Mostrar Video de Fondo \"Reproduciendo Ahora\""
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Mostrar Visualización de Fondo \"Reproduciendo Ahora\""
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +220,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Letras"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Ocultar Fanart en visualización de pantalla completa"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Add-on de Liricas"
@@ -255,18 +227,6 @@ msgstr "Add-on de Liricas"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Add-on de Subtítulos"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Submenú de Videos de Pantalla Principal"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Submenú de Música de Pantalla Principal"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Submenú de Imágenes de Pantalla Principal"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +376,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Descargar Subtítulos"
 
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Activado"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Según skin"
@@ -456,10 +420,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]CONFIGURAR ADD-ONS[/B][CR][CR]Administrar tus Add-ons instalados · Buscar e instalar add-ons desde xbmc.org[CR]Modificar la configuración de Add-ons"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]CONFIGURAR AJUSTES DE TV[/B][CR][CR]Cambiar información de pantalla completa · Administrar ajustes de datos EPG"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]CONFIGURAR AJUSTES DE SERVICIO[/B][CR][CR]Configuración de control de XBMC a través de UPnP y HTTP · Configurar el uso compartido de archivos[CR]HabilitarZeroconf · Configurar AirPlay"
@@ -468,17 +428,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ayuda de primera vez..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Esta pestaña significa que existe un menú al lado de esta ventana que contiene opciones extra para esta sección. Para acceder al menú, navegue a la izquierda con su control remoto o teclado, o posicione el puntero del ratón sobre la pestaña. [CR][CR] Presione \"Aceptar\" para cerrar este diálogo. No aparecerá nuevamente."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Selecciona tu Perfil XBMC[CR]para iniciar sesión y continuar"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Temporizadores de Grabación"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

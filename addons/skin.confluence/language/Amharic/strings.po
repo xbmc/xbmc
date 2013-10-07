@@ -36,10 +36,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "ምርጫዎችን መመልከቻ"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "በሙሉ መመልከቻ ዘዴ"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "ጠቅላላ የሚፈጀው ጊዜ"
@@ -176,21 +172,9 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "በቅርብ ጊዜ የተጨመሩ ቪዲዮዎችን ማሳያ"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "የ ቤት ገጽ ፕሮግራሞች ንዑስ አርእስት"
-
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "የአየር ንብረት ገጽ"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "መደቡን ማሳያ \"አሁን የሚታየውን\" ቪዲዩ "
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "መደቡን ማሳያ \"አሁን የሚታየውን\"  Visualization"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -203,18 +187,6 @@ msgstr "ግጥም መጨ - መሪያ "
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "የንዑስ አርእስት ተጨማ-ሪዎች "
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "የቤት ገጽ ቪዲዮ ንዑስ አርእስት"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "የቤት ገጽ ሙዚቃ ንዑስ አርእስት"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "የቤት ገጽ የስእል ንዑስ አርእስት"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -331,6 +303,10 @@ msgstr "የሙቪ ዝርዝር"
 msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "ንዑስ አርእስቶች ማውረጃ "
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "ተችሏል"
 
 msgctxt "#31390"
 msgid "Skin default"

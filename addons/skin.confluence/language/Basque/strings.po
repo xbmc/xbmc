@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Ezarpen aukerak"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Pantaila-osoa"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Iraupen osoa"
@@ -99,10 +95,6 @@ msgstr "AZKAR AURRERA"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ATZERA"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Ikuste aurrezpenak"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -183,14 +175,6 @@ msgstr "Ikusi azkenaldian igotako albumak"
 msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Ikusi azkenaldian igotako bideoak"
-
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Etxe orrialde programa azpimenua"
-
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Eguraldi orrialdea"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -299,6 +283,10 @@ msgstr "Pelikula menua"
 msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Deskargatu azpitituluak"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Gaituta"
 
 msgctxt "#31390"
 msgid "Skin default"

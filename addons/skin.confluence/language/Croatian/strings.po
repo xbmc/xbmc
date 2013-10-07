@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Postavke mogućnosti"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Cijeli zaslon"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Ukupno trajanje"
@@ -92,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Informacije"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Radnje"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Trenutno se reproducira"
@@ -115,10 +115,6 @@ msgstr "PREMOTAVANJE UNAZAD"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "PREMOTAVANJE"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Predlošci vizualizacije"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -172,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Prikaži \"Pauzirano\" u slikovnoj prezentaciji"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Reproduciraj najave u prozoru [COLOR=grey3](Samo dijalog video informacija)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Ostale mogućnosti"
@@ -212,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Prikaži nedavno dodane video snimke"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Početna stranica podizbornika programa "
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Sakrij pozadinu slike omota"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Stranica s vremenske prognoze"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Prikaži pozadinu \"Trenutno se reproducira\" videa"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Prikaži pozadinu \"Trenutno se reproducira\" vizualizacije"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Tekstovi pjesama"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Sakrij sliku omota u vizualizaciji cijelog zaslona"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Dodatak za tekstove pjesama"
@@ -255,18 +231,6 @@ msgstr "Dodatak za tekstove pjesama"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Dodatak za podnaslove"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Početna stranica video podizbornika"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Početna stranica glazbenog podizbornika"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Početna stranica podizbornika slika"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +380,18 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Preuzmanje podnaslova"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Gledaj kao 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Promijeni način"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Omogućeno"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Uobičajena presvlaka"
@@ -456,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]PODESITE DODATKE[/B][CR][CR]Upravljajte svojim instaliranim dodacima · Pregledavajte i instalirajte dodatake iz xbmc.org[CR]Mijenjajte postavke dodataka"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]PODESITE TV POSTAVKE[/B][CR][CR]Promjenite informacije cijelozaslonskog prikaza · Upravljajte postavkama podataka elektronskog programskog vodiča (EPG)"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]PODESITE POSTAVKE USLUGA[/B][CR][CR]Postavite upravljanje XBMC-om putem UPnP-a i HTTP-a · Podesite dijeljenje datoteka[CR]Omogućite Zeroconf · Podesite AirPlay"
@@ -468,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Pomoć kod prvog pokretanja..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Ova kartica označava da postoji izbornik sa strane ovog prozora koji sadrži dodatne mogućnosti ovog odjeljka. Za pristup izborniku, idite lijevo daljinskim upravljačem ili tipkovnicom ili postavite pokazivač miša iznad kartice. [CR] [CR] Kliknite na \"U redu\" za zatvaranje ovog dijaloga. Neće se ponovno pojaviti."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Odaberite svoj XBMC korisnički profil[CR]za prijavu i nastavak"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Zakazana snimanja"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

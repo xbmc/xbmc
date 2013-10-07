@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Settings Options"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "На ўвесь экран"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Агульная працягласьць"
@@ -116,10 +112,6 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "SEEKING"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Visualization Presets"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "End Time"
@@ -172,10 +164,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Show \"Paused\" in picture slide show"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Miscellaneous options"
@@ -212,25 +200,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Show Recently added Videos"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Home Page Programs Submenu"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Hide Background Fanart"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Weather Page"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Show Background \"Now Playing\" Video"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Show Background \"Now Playing\" Visualization"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +220,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lyrics"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Hide Fanart in full screen visualization"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Lyrics Add-on"
@@ -255,18 +227,6 @@ msgstr "Lyrics Add-on"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Subtitle Add-on"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Home Page Videos Submenu"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Home Page Music Submenu"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Home Page Pictures Submenu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +376,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Download Subtitles"
 
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Уключаны"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Перадвызначана"
@@ -456,10 +420,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ ДАДАТКАЎ[/B][CR][CR]Кіраваць усталяванымі дадаткамі · Абраць і ўсталяваць дадаткі з xbmc.org[CR]Зьмяніць налады дадаткаў"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ ТВ[/B][CR][CR]Зьмяніць зьвесткі ва ўвесь экран · Кіраваць наладамі EPG зьвестак"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ СЭРВІСАЎ[/B][CR][CR]Наставіць кіраваньне XBMC праз UPnP ды HTTP · Наладзіць даступнасьць файлаў[CR]Дазволіць Zeroconf · Наставіць AirPlay"
@@ -468,17 +428,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "First run help...."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Select your XBMC user Profile[CR]to login and continue"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Recording Timers"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
