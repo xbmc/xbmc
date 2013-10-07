@@ -1571,7 +1571,15 @@ void CApplication::OnSettingChanged(const CSetting *setting)
   if (settingId == "lookandfeel.skin" ||
       settingId == "lookandfeel.font" ||
       settingId == "lookandfeel.skincolors")
-    CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin");
+  {
+    // if the skin changes and the current theme is not the default one, reset
+    // the theme to the default value (which will also change lookandfeel.skincolors
+    // which in turn will reload the skin
+    if (settingId == "lookandfeel.skin" && CSettings::Get().GetString("lookandfeel.skintheme") != "SKINDEFAULT")
+      CSettings::Get().SetString("lookandfeel.skintheme", "SKINDEFAULT");
+    else
+      CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin");
+  }
   else if (settingId == "lookandfeel.skintheme")
   {
     // also set the default color theme
