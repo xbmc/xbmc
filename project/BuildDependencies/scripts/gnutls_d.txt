@@ -1,0 +1,2 @@
+; filename                          source of the file
+gnutls-3.2.3-win32.zip             http://mirrors.xbmc.org/build-deps/win32/

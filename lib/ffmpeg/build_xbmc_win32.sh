@@ -48,6 +48,7 @@ OPTIONS="
 --enable-runtime-cpudetect \
 --enable-avfilter \
 --enable-dxva2 \
+--enable-gnutls \
 --disable-doc"
 
 ./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2 -DNDEBUG" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&

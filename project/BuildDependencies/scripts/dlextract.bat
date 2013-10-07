@@ -22,7 +22,7 @@ echo -------------
 cd %TMP_PATH%
 
 FOR /F "eol=; tokens=1,2" %%f IN (%2) DO (
-  %ZIP% x %%f
+  %ZIP% x -y %%f
 )
 
 FOR /F "tokens=*" %%f IN ('dir /B "*.tar"') DO (
