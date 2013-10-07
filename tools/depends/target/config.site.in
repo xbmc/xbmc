@@ -72,6 +72,10 @@ if test "@platform_os@" = "osx"; then
   ac_cv_func_strnlen_working=no
 fi
 
+#gnutls
+gl_cv_func_gettimeofday_clobber=no
+
+
 #samba
 SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
 samba_cv_CC_NEGATIVE_ENUM_VALUES=yes

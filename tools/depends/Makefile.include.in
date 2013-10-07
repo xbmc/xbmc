@@ -14,6 +14,7 @@ RETRIEVE_TOOL=@CURL@
 ARCHIVE_TOOL=@TAR@
 PREFIX=@prefix@/@deps_dir@
 NATIVEPREFIX=@prefix@/@tool_dir@
+ARCHIVE_TOOL_NATIVE=$(NATIVEPREFIX)/bin/tar
 OS=@platform_os@
 CROSS_COMPILING=@cross_compiling@
 ARCH_DEFINES=@ARCH_DEFINES@
