@@ -272,7 +272,11 @@ CPlexServer::BuildURL(const CStdString &path, const CStdString &options) const
     connection = m_connections[0];
   else if (!connection && m_connections.size() == 0)
     /* no connections are no gooooood */
+  if (!connection)
+  {
+    CLog::Log(LOGDEBUG, "CPlexServer::BuildURL no active connections for %s", toString().c_str());
     return CURL();
+  }
 
   CURL url = connection->BuildURL(path);
 
