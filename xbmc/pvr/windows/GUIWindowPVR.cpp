@@ -29,6 +29,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/addons/PVRClients.h"
+#include "guilib/Key.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
@@ -126,6 +127,22 @@ CGUIWindowPVRCommon *CGUIWindowPVR::GetSavedView(void) const
 
 bool CGUIWindowPVR::OnAction(const CAction &action)
 {
+  switch (action.GetID())
+  {
+  case ACTION_PREVIOUS_CHANNELGROUP:
+  case ACTION_NEXT_CHANNELGROUP:
+    {
+      // switch to next or previous group
+      CPVRChannelGroupPtr group = GetSelectedGroup();
+      CPVRChannelGroupPtr nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP ? group->GetNextGroup() : group->GetPreviousGroup();
+      SetSelectedGroup(nextGroup);
+      CGUIWindowPVRCommon *view = GetActiveView();
+      if(view)
+        view->UpdateData();
+      return true;
+    }
+  }
+
   CGUIWindowPVRCommon *view = GetActiveView();
   return (view && view->OnAction(action)) ||
       CGUIMediaWindow::OnAction(action);
@@ -152,7 +169,7 @@ void CGUIWindowPVR::OnInitWindow(void)
   CreateViews();
 
   CSingleLock graphicsLock(g_graphicsContext);
-  SET_CONTROL_VISIBLE(CONTROL_LIST_TIMELINE);
+  SET_CONTROL_VISIBLE(CONTROL_LIST_CHANNELS);
 
   CSingleLock lock(m_critSection);
   if (m_savedSubwindow)
