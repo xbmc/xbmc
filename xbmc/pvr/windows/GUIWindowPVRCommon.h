@@ -46,6 +46,7 @@ namespace PVR
   #define CONTROL_LIST_GUIDE_NOW_NEXT  16
   #define CONTROL_LIST_SEARCH          17
 
+  #define CONTROL_LABELGUIDE           28
   #define CONTROL_LABELHEADER          29
   #define CONTROL_LABELGROUP           30
 

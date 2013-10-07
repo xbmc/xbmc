@@ -119,6 +119,7 @@ void CGUIWindowPVRTimers::UpdateData(bool bUpdateSelectedFile /* = true */)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19025));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
+  m_parent->SetLabel(CONTROL_LABELGUIDE, "");
 }
 
 bool CGUIWindowPVRTimers::OnClickButton(CGUIMessage &message)

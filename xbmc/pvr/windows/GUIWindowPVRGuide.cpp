@@ -141,7 +141,8 @@ void CGUIWindowPVRGuide::UpdateViewChannel(bool bUpdateSelectedFile)
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19029));
   if (bGotCurrentChannel && CurrentChannel.get())
-    m_parent->SetLabel(CONTROL_LABELGROUP, CurrentChannel->ChannelName().c_str());
+    m_parent->SetLabel(CONTROL_LABELGUIDE, CurrentChannel->ChannelName().c_str());
+  m_parent->SetLabel(CONTROL_LABELGROUP, m_parent->GetSelectedGroup()->GroupName());
 
   if ((!bGotCurrentChannel || g_PVRManager.GetCurrentEpg(*m_parent->m_vecItems) == 0) && CurrentChannel.get())
   {
@@ -160,7 +161,8 @@ void CGUIWindowPVRGuide::UpdateViewNow(bool bUpdateSelectedFile)
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19030));
-  m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
+  m_parent->SetLabel(CONTROL_LABELGUIDE, g_localizeStrings.Get(19030));
+  m_parent->SetLabel(CONTROL_LABELGROUP, m_parent->GetSelectedGroup()->GroupName());
 
   CPVRChannelGroupPtr group = m_parent->GetSelectedGroup();
   int iEpgItems = group->GetEPGNow(*m_parent->m_vecItems);
@@ -182,7 +184,8 @@ void CGUIWindowPVRGuide::UpdateViewNext(bool bUpdateSelectedFile)
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19031));
-  m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
+  m_parent->SetLabel(CONTROL_LABELGUIDE, g_localizeStrings.Get(19031));
+  m_parent->SetLabel(CONTROL_LABELGROUP, m_parent->GetSelectedGroup()->GroupName());
 
   CPVRChannelGroupPtr group = m_parent->GetSelectedGroup();
   int iEpgItems = group->GetEPGNext(*m_parent->m_vecItems);
@@ -229,7 +232,8 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
   m_parent->m_guideGrid->SetStartEnd(firstDate, lastDate);
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
-  m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
+  m_parent->SetLabel(CONTROL_LABELGUIDE, g_localizeStrings.Get(19032));
+  m_parent->SetLabel(CONTROL_LABELGROUP, m_parent->GetSelectedGroup()->GroupName());
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE, true);
 
   if (bUpdateSelectedFile)

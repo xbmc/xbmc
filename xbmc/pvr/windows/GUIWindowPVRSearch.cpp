@@ -151,6 +151,7 @@ void CGUIWindowPVRSearch::UpdateData(bool bUpdateSelectedFile /* = true */)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(283));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
+  m_parent->SetLabel(CONTROL_LABELGUIDE, "");
 }
 
 bool CGUIWindowPVRSearch::OnClickButton(CGUIMessage &message)

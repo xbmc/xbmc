@@ -208,7 +208,8 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(m_parent->m_bRadio ? 19024 : 19023));
   m_parent->SetLabel(CONTROL_LABELGROUP, m_bShowHiddenChannels ? g_localizeStrings.Get(19022) : currentGroup->GroupName());
-    
+  m_parent->SetLabel(CONTROL_LABELGUIDE, "");
+  
   UpdateButtons();
 }
 

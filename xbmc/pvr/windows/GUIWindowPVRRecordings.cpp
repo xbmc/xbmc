@@ -224,6 +224,7 @@ void CGUIWindowPVRRecordings::UpdateData(bool bUpdateSelectedFile /* = true */)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19017));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
+  m_parent->SetLabel(CONTROL_LABELGUIDE, "");
 }
 
 void CGUIWindowPVRRecordings::Notify(const Observable &obs, const ObservableMessage msg)
