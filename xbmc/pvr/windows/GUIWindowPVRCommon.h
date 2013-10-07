@@ -83,9 +83,10 @@ namespace PVR
     virtual bool IsSelectedButton(CGUIMessage &message) const;
     virtual bool IsSelectedControl(CGUIMessage &message) const;
     virtual bool IsSelectedList(CGUIMessage &message) const;
-    
+
     virtual bool OnAction(const CAction &action);
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const = 0;
     virtual void UpdateData(bool bUpdateSelectedFile = true) = 0;
     virtual void SetInvalid(void);
@@ -129,7 +130,7 @@ namespace PVR
 
     virtual void BeforeUpdate(const CStdString &strDirectory) {}
     virtual void AfterUpdate(CFileItemList& items) {}
-    
+
     CGUIWindowPVR *       m_parent;
     PVRWindow             m_window;
     unsigned int          m_iControlButton;

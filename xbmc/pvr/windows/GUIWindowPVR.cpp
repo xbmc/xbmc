@@ -272,7 +272,8 @@ bool CGUIWindowPVR::OnMessageClick(CGUIMessage &message)
     {
       return OpenGroupDialogSelect();
     }
-    else {
+    else 
+    {
       return (m_windowChannels->OnClickButton(message) ||
         m_windowGuide->OnClickButton(message) ||
         m_windowRecordings->OnClickButton(message) ||
@@ -411,6 +412,7 @@ void CGUIWindowPVR::SetSelectedGroup(CPVRChannelGroupPtr group)
   if (m_selectedGroup)
     m_selectedGroup->UnregisterObserver(m_windowChannels);
   m_selectedGroup = group;
+  // we need to register the channel window to receive changes from the new group
   m_selectedGroup->RegisterObserver(m_windowChannels);
   g_PVRManager.SetPlayingGroup(m_selectedGroup);
 }
