@@ -28,6 +28,11 @@
 #include "XBDateTime.h"
 #include "utils/md5.h"
 
+/* PLEX */
+#include "PlexApplication.h"
+#include "Client/PlexTimelineManager.h"
+/* END PLEX */
+
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif
@@ -74,6 +79,9 @@ CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
 
 CGUIEditControl::~CGUIEditControl(void)
 {
+  /* PLEX */
+  g_plexApplication.timelineManager->SetTextFieldFocused(false);
+  /* END PLEX */
 }
 
 bool CGUIEditControl::OnMessage(CGUIMessage &message)
@@ -92,6 +100,10 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
            message.GetMessage() == GUI_MSG_LOSTFOCUS)
   {
     m_smsTimer.Stop();
+
+    /* PLEX */
+    g_plexApplication.timelineManager->SetTextFieldFocused(message.GetMessage() == GUI_MSG_SETFOCUS);
+    /* END PLEX */
   }
   else if (message.GetMessage() == GUI_MSG_SET_TEXT &&
           ((message.GetControlId() <= 0 && HasFocus()) || (message.GetControlId() == GetID())))

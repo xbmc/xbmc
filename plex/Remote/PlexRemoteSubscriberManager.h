@@ -39,8 +39,12 @@ class CPlexRemoteSubscriber
   
     CURL getURL() const { return m_url; }
     std::string getUUID() const { return m_uuid; }
+
+    int getCommandID() const { return m_commandID; }
+    void setCommandID(int commandID) { m_commandID = commandID; }
   
   private:
+    int m_commandID;
     CURL m_url;
     CPlexTimer m_lastUpdated;
     std::string m_uuid;
@@ -56,6 +60,8 @@ class CPlexRemoteSubscriberManager : public ITimerCallback
     void addSubscriber(CPlexRemoteSubscriberPtr subscriber);
     void removeSubscriber(CPlexRemoteSubscriberPtr subscriber);
     std::vector<CURL> getSubscriberURL() const;
+
+    std::vector<CPlexRemoteSubscriberPtr> getSubscribers() const;
   
     bool hasSubscribers() const { CSingleLock lk(m_crit); return m_map.size(); }
   

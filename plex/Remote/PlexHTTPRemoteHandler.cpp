@@ -499,7 +499,17 @@ void CPlexHTTPRemoteHandler::sendVKey(const ArgMap &arguments)
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::subscribe(const HTTPRequest &request, const ArgMap &arguments)
 {
-  g_plexApplication.remoteSubscriberManager->addSubscriber(getSubFromRequest(request, arguments));
+  CPlexRemoteSubscriberPtr sub = getSubFromRequest(request, arguments);
+  if (sub)
+  {
+    g_plexApplication.remoteSubscriberManager->addSubscriber(sub);
+    g_plexApplication.timelineManager->SendTimelineToSubscriber(sub);
+    m_data = g_plexApplication.timelineManager->GetCurrentTimeLinesXML(sub->getCommandID());
+  }
+  else
+  {
+    m_data = "<Response code=\"500\" status=\"Failed to specify all data to subscribe call, try again\" />";
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -585,33 +595,22 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
       wait = true;
   }
 
-  std::string commandID;
+  int commandID = -1;
   if (arguments.find("commandID") != arguments.end())
-  {
-    commandID = arguments.find("commandID")->second;
-  }
+    commandID = boost::lexical_cast<int>(arguments.find("commandID")->second);
 
-  std::vector<CUrlOptions> lines;
+  CStdString lines;
   if (wait)
   {
     CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::poll waiting for timeline event.");
-    lines = g_plexApplication.timelineManager->WaitForTimeline();
+    lines = g_plexApplication.timelineManager->WaitForTimeline(commandID);
   }
   else
   {
-    lines = g_plexApplication.timelineManager->GetCurrentTimeLines();
+    lines = g_plexApplication.timelineManager->GetCurrentTimeLinesXML(commandID);
   }
 
-  m_data.Empty();
-
-  BOOST_FOREACH(CUrlOptions opt, lines)
-  {
-    if (!commandID.empty())
-      opt.AddOption("commandID", commandID);
-    m_data += opt.GetOptionsString() + "\n";
-  }
-
-  m_contentType = "text/plain";
+  m_data = lines;
 }
 
 void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)

@@ -93,6 +93,15 @@ void CPlexMediaServerClient::SendServerTimeline(const CFileItemPtr &item, const 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::SendSubscriberTimeline(const CURL &url, const CStdString &postData)
+{
+  CPlexMediaServerClientJob *job = new CPlexMediaServerClientJob(url, "POST");
+  job->m_postData = postData;
+
+  AddJob(job);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::SetViewMode(const CFileItem &item, int viewMode, int sortMode, int sortAsc)
 {
   CURL u(item.GetPath());

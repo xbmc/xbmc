@@ -25,8 +25,7 @@ CPlexRemoteSubscriber::CPlexRemoteSubscriber(const std::string &uuid, const std:
   m_url.SetProtocol(protocol);
   m_url.SetHostName(ipaddress);
   m_url.SetPort(port);
-  if (commandID != -1)
-    m_url.SetOption("commandID", boost::lexical_cast<std::string>(commandID));
+  m_commandID = commandID;
 
   m_uuid = uuid;
 }
@@ -53,6 +52,9 @@ void CPlexRemoteSubscriber::refresh(CPlexRemoteSubscriberPtr sub)
     CLog::Log(LOGDEBUG, "CPlexRemoteSubscriber::refresh new url %s", m_url.Get().c_str());
     m_url = sub->getURL();
   }
+
+  if (sub->m_commandID != m_commandID)
+    m_commandID = sub->m_commandID;
 
   m_lastUpdated.restart();
 }
@@ -131,5 +133,19 @@ std::vector<CURL> CPlexRemoteSubscriberManager::getSubscriberURL() const
   BOOST_FOREACH(SubscriberPair p, m_map)
     list.push_back(p.second->getURL());
   
+  return list;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+std::vector<CPlexRemoteSubscriberPtr> CPlexRemoteSubscriberManager::getSubscribers() const
+{
+  std::vector<CPlexRemoteSubscriberPtr> list;
+  if (!hasSubscribers())
+    return list;
+
+  CSingleLock lk(m_crit);
+  BOOST_FOREACH(SubscriberPair p, m_map)
+    list.push_back(p.second);
+
   return list;
 }

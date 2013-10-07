@@ -31,6 +31,7 @@ public:
   
   /* timeline api */
   void SendServerTimeline(const CFileItemPtr& item, const CUrlOptions &options);
+  void SendSubscriberTimeline(const CURL& url, const CStdString &postData);
 
   /* Set viewMode */
   void SetViewMode(const CFileItem& item, int viewMode, int sortMode = -1, int sortAsc = 1);

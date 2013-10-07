@@ -40,6 +40,7 @@
 #include "PlexUtils.h"
 #include "input/XBMC_vkeys.h"
 #include "PlexApplication.h"
+#include "Client/PlexTimelineManager.h"
 
 #define CTL_LABEL_EDIT       310
 #define CTL_BUTTON_BACKSPACE 8
@@ -72,6 +73,8 @@ CGUIWindowPlexSearch::CGUIWindowPlexSearch()
   
   // Create the worker. We're not going to destroy it because whacking it on exit can cause problems.
   m_workerManager = new PlexContentWorkerManager();
+
+  m_loadType = LOAD_EVERY_TIME;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -82,7 +85,10 @@ CGUIWindowPlexSearch::~CGUIWindowPlexSearch()
 ///////////////////////////////////////////////////////////////////////////////
 void CGUIWindowPlexSearch::OnInitWindow()
 {
+  CGUIWindow::OnInitWindow();
+
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+  g_plexApplication.timelineManager->SetTextFieldFocused(true);
 
   if (m_selectedItem != -1)
   {
@@ -299,6 +305,7 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
   {
+    g_plexApplication.timelineManager->SetTextFieldFocused(false);
     if (m_videoThumbLoader.IsLoading())
       m_videoThumbLoader.StopThread();
 
@@ -316,6 +323,10 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
     return true;
   }
   break;
+
+  case GUI_MSG_LOSTFOCUS:
+    g_plexApplication.timelineManager->SetTextFieldFocused(false);
+    break;
   }
 
   return CGUIWindow::OnMessage(message);
@@ -419,7 +430,6 @@ void CGUIWindowPlexSearch::Bind()
 void CGUIWindowPlexSearch::Reset()
 {
   // Reset results.
-  printf("Resetting results.\n");
   BOOST_FOREACH(int_list_pair pair, m_categoryResults)
   {
     int controlID = 9000 + pair.first;

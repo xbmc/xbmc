@@ -12,7 +12,10 @@
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
+#include <boost/foreach.hpp>
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false)
 {
   m_currentItems[MUSIC] = CFileItemPtr();
@@ -41,6 +44,7 @@ std::string CPlexTimelineManager::StateToString(MediaState state)
   return strstate;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 uint64_t CPlexTimelineManager::GetItemDuration(CFileItemPtr item)
 {
   if (item->HasProperty("duration"))
@@ -53,12 +57,40 @@ uint64_t CPlexTimelineManager::GetItemDuration(CFileItemPtr item)
   return 0;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexTimelineManager::SendTimelineToSubscriber(CPlexRemoteSubscriberPtr subscriber)
+{
+  if (!subscriber)
+    return;
+
+  CStdString timelineData = GetCurrentTimeLinesXML(subscriber->getCommandID());
+  CURL url = subscriber->getURL();
+
+  g_plexApplication.mediaServerClient->SendSubscriberTimeline(url, timelineData);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexTimelineManager::SendTimelineToSubscribers()
+{
+  BOOST_FOREACH(CPlexRemoteSubscriberPtr sub, g_plexApplication.remoteSubscriberManager->getSubscribers())
+      SendTimelineToSubscriber(sub);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexTimelineManager::SetTextFieldFocused(bool focused)
+{
+  m_textfieldfocused = focused;
+  SendTimelineToSubscribers();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexTimelineManager::Stop()
 {
   m_stopped = true;
   m_pollEvent.Set();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forServer)
 {
   CUrlOptions options;
@@ -162,6 +194,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
   return options;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelineManager::MediaState state, uint64_t currentPosition)
 {
   CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress for item %s (%s) [%lld]", currentItem->GetLabel().c_str(), StateToString(state).c_str(), currentPosition);
@@ -202,6 +235,8 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating subscribers.");
     m_pollEvent.Set();
 
+    SendTimelineToSubscribers();
+
     m_subTimer.restart();
   }
 
@@ -235,6 +270,7 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
     m_currentItems[type].reset();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(CFileItemPtr item)
 {
   EPlexDirectoryType plexType = item->GetPlexDirectoryType();
@@ -256,6 +292,7 @@ CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(CFileItemPtr 
   return UNKNOWN;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 std::string CPlexTimelineManager::MediaTypeToString(MediaType type)
 {
   switch(type)
@@ -271,6 +308,7 @@ std::string CPlexTimelineManager::MediaTypeToString(MediaType type)
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(const CStdString &typestr)
 {
   if (typestr == "music")
@@ -282,7 +320,8 @@ CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(const CStdStr
   return UNKNOWN;
 }
 
-std::vector<CUrlOptions> CPlexTimelineManager::WaitForTimeline()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CPlexTimelineManager::WaitForTimeline(int commandID)
 {
   CLog::Log(LOGDEBUG, "CPlexTimelineManager::WaitForTimeline - waiting until pollEvent is set.");
   m_pollEvent.Reset();
@@ -290,13 +329,14 @@ std::vector<CUrlOptions> CPlexTimelineManager::WaitForTimeline()
   if (m_pollEvent.Wait())
   {
     if (!m_stopped)
-      return GetCurrentTimeLines();
+      return GetCurrentTimeLinesXML();
   }
 
-  return std::vector<CUrlOptions>();
+  return "";
 }
 
-std::vector<CUrlOptions> CPlexTimelineManager::GetCurrentTimeLines()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::vector<CUrlOptions> CPlexTimelineManager::GetCurrentTimeLines(int commandID)
 {
   std::vector<CUrlOptions> array;
 
@@ -310,3 +350,38 @@ std::vector<CUrlOptions> CPlexTimelineManager::GetCurrentTimeLines()
   return array;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CPlexTimelineManager::GetCurrentTimeLinesXML(int commandID)
+{
+  std::vector<CUrlOptions> tlines = GetCurrentTimeLines();
+
+  TiXmlDocument doc;
+  doc.LinkEndChild(new TiXmlDeclaration("1.0", "", ""));
+
+  TiXmlElement *mediaContainer = new TiXmlElement("MediaContainer");
+  mediaContainer->SetAttribute("machineIdentifier", g_guiSettings.GetString("system.uuid").c_str());
+  mediaContainer->SetAttribute("textFieldFocused", m_textfieldfocused ? "1" : "0");
+  if (commandID != -1)
+    mediaContainer->SetAttribute("commandID", commandID);
+
+  BOOST_FOREACH(CUrlOptions options, tlines)
+  {
+    std::pair<std::string, CVariant> p;
+    TiXmlElement *lineEl = new TiXmlElement("Timeline");
+    BOOST_FOREACH(p, options.GetOptions())
+    {
+      if (p.first == "location")
+        mediaContainer->SetAttribute("location", p.second.asString().c_str());
+      else
+        lineEl->SetAttribute(p.first, p.second.asString());
+    }
+    mediaContainer->LinkEndChild(lineEl);
+  }
+  doc.LinkEndChild(mediaContainer);
+
+  TiXmlPrinter printer;
+  printer.SetIndent("  ");
+  doc.Accept(&printer);
+
+  return printer.Str();
+}
