@@ -22,11 +22,11 @@ msgstr "Mode"
 
 msgctxt "#30001"
 msgid "Filled"
-msgstr "Ple"
+msgstr "Sòlid"
 
 msgctxt "#30002"
 msgid "Wireframe"
-msgstr "Filferro"
+msgstr "Malla"
 
 msgctxt "#30003"
 msgid "Points"
@@ -34,7 +34,7 @@ msgstr "Punts"
 
 msgctxt "#30004"
 msgid "Bar Height"
-msgstr "Altura de la barra"
+msgstr "Alçada de la barra"
 
 msgctxt "#30005"
 msgid "Small"

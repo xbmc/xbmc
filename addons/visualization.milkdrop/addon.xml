@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.milkdrop"
-  version="1.0.6"
+  version="1.0.7"
   name="MilkDrop"
   provider-name="Team XBMC">
   <extension
@@ -19,6 +19,7 @@
     <summary lang="de">MilkDrop nimmt dich mit auf einen Flug durch deine Musik.</summary>
     <summary lang="el">Το MilkDrop σας ταξιδεύει μέσα στα ηχητικά κύματα που ακούτε</summary>
     <summary lang="en">MilkDrop takes you flying through the soundwaves you're hearing</summary>
+    <summary lang="en_US">MilkDrop takes you flying through the soundwaves you're hearing</summary>
     <summary lang="es">MilkDrop te lleva volando a través de las ondas que estás escuchando</summary>
     <summary lang="es_AR">MilkDrop te lleva volando a través de las ondas que estás escuchando</summary>
     <summary lang="es_MX">MilkDrop the lleva volando a través de las ondas de sonido que estás escuchando</summary>

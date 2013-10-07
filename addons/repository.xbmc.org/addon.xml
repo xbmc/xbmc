@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="XBMC.org Add-ons"
-		version="2.1.10"
+		version="2.1.11"
 		provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -26,6 +26,7 @@
 		<summary lang="de">Installiere Add-ons von XBMC.org</summary>
 		<summary lang="el">Εγκατάσταση Πρόσθετων από το XBMC.org</summary>
 		<summary lang="en">Install Add-ons from XBMC.org</summary>
+		<summary lang="en_US">Install Add-ons from XBMC.org</summary>
 		<summary lang="es">Instalar Add-ons de XBMC.org</summary>
 		<summary lang="es_AR">Instalar Add-ons de XBMC.org</summary>
 		<summary lang="es_MX">Installar Add-ons de XBMC.org</summary>
@@ -122,6 +123,7 @@
 		<disclaimer lang="de">Team XBMC hat nicht alle Add-Ons aus dem Repository erstellt und ist für deren Inhalt nicht verantwortlich</disclaimer>
 		<disclaimer lang="el">Η Ομάδα XBMC δεν δημιούργησε όλα τα πρόσθετα σε αυτό το αποθετήριο συνεπώς δεν είναι υπεύθυνοι για το περιεχόμενό τους</disclaimer>
 		<disclaimer lang="en">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
+		<disclaimer lang="en_US">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
 		<disclaimer lang="es">El equipo de XBMC no ha hecho todos los Addons en este repositorio y no son responsables de su contenido</disclaimer>
 		<disclaimer lang="es_AR">El equipo de XBMC no ha hecho todos los Add-ons en este repositorio y no es responsable de su contenido</disclaimer>
 		<disclaimer lang="es_MX">El equipo de XBMC no hizo todos los add-ons en este repositorio y no es responsable de su contenido</disclaimer>
@@ -154,7 +156,7 @@
 		<disclaimer lang="sv">Team XBMC har inte gjort alla tillägg och är inte ansvariga för innehållet i dessa.</disclaimer>
 		<disclaimer lang="ta_IN">இந்த களஞ்சியத்தில் உள்ள துனை பயன்களை XBMC அணியால் உருவாக்கப்படவில்லை மற்றும் அவற்றின் உள்ளடக்கம் தங்கள் பொறுப்பு அல்ல.</disclaimer>
 		<disclaimer lang="th">ทีม XBMC ไม่ได้จัดทำ ส่วนเสริม ทั้งหมดในแหล่งข้อมูลโปรแกรมนี้ และจะไม่รับผิดชอบต่อเนื้อหาเหล่านั้น</disclaimer>
-		<disclaimer lang="tr">XBMC takımı depodaki tüm eklentileri geliştirmemiştir ve bunların içeriklerinden sorumlu değildir.</disclaimer>
+		<disclaimer lang="tr">XBMC takımı bu depodaki tüm eklentileri geliştirmemiştir ve bunların içeriklerinden sorumlu değildir.</disclaimer>
 		<disclaimer lang="uk">Зауважте, що не всі додатки в цьому Репозиторії створені Командою XBMC, і тому Команда не несе відповідальності за їх вміст.</disclaimer>
 		<disclaimer lang="vi">Đội ngũ XBMC không làm ra tất cả các add-on có trên kho chứa này và sẽ không chịu trách nhiệm về nội dung của các add-on đấy</disclaimer>
 		<disclaimer lang="zh">本库中扩展功能模块并非完全由XBMC开发团队开发，因此不对相关内容承担责任</disclaimer>

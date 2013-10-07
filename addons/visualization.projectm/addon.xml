@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.projectm"
-  version="1.0.7"
+  version="1.0.8"
   name="projectM"
   provider-name="Team XBMC">
   <extension
@@ -20,13 +20,14 @@
     <summary lang="ar">مشروع M يجعلك تطير بين موحات الصوت التي تسمعها</summary>
     <summary lang="be">projectM takes you flying through the soundwaves you're hearing</summary>
     <summary lang="bg">"projectM" ще Ви отведе на пътешествие между звуковите вълни, които чувате</summary>
-    <summary lang="ca">projectM et porta volant a través de les ones que escoltes</summary>
+    <summary lang="ca">projectM et fa volar a través de les ones de so que escoltes</summary>
     <summary lang="cs">projectM s Vámi proletí zvukovými vlnamy, které posloucháte</summary>
     <summary lang="cy">Mae projectM yn eich hedeg drwy'r tonnau sain</summary>
     <summary lang="da">projectM tager dig på en flyvetur gennem lydbølgerne, du lytter til</summary>
     <summary lang="de">projectM lässt euch durch den Sound fliegen, den Ihr gerade hört</summary>
     <summary lang="el">Το projectM σας ταξιδεύει μέσα στα ηχητικά κύματα που ακούτε</summary>
     <summary lang="en">projectM takes you flying through the soundwaves you're hearing</summary>
+    <summary lang="en_US">projectM takes you flying through the soundwaves you're hearing</summary>
     <summary lang="es">projectM te lleva volando a través de las ondas que estás escuchando</summary>
     <summary lang="es_AR">projectM te lleva volando a través de las ondas que estás escuchando</summary>
     <summary lang="es_MX">projectM te lleva volando a través de las ondas de sonido que estás escuchando</summary>

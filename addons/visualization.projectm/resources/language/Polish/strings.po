@@ -42,7 +42,7 @@ msgstr "Tryb mieszania"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"
-msgstr "Smooth Preset Duration"
+msgstr "Płynna długość efektu"
 
 msgctxt "#30007"
 msgid "Preset Duration"

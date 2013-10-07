@@ -42,11 +42,11 @@ msgstr "Mode aleatori"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"
-msgstr "Durada suau del predefinit"
+msgstr "Suavitzar la durada del predefinit"
 
 msgctxt "#30007"
 msgid "Preset Duration"
-msgstr "Durada preestablerta"
+msgstr "Durada del predefinit"
 
 msgctxt "#30008"
 msgid "Beat Sensitivity"
