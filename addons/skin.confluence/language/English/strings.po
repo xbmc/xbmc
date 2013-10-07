@@ -473,7 +473,8 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr ""
 
-#empty strings from id 31357 to 31358
+#empty strings from id 31357 to 31359
+
 # Stereoscopic labels
 msgctxt "#31360"
 msgid "Watch as 2D"
@@ -487,7 +488,7 @@ msgctxt "#31362"
 msgid "Enabled"
 msgstr ""
 
-#empty strings from id 3136 to 31389
+#empty strings from id 31363 to 31389
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -558,10 +559,7 @@ msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr ""
 
-#empty strings from id 31422 to 31499
-#PVR labels
-
-#empty string id #31500
+#empty strings from id 31422 to 31500
 
 msgctxt "#31501"
 msgid "Scheduled Time"

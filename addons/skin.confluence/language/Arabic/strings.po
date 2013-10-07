@@ -36,10 +36,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "خيارات العرض"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "شاشة كاملة"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "إجمالي المدة"
@@ -108,10 +104,6 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "إرجاع"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "التصور المسبقة"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "وقت الانتهاء"
@@ -164,10 +156,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "إظهار \"إيقاف مؤقت\" في عرض شرائح الصور"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "[COLOR=grey3] (صندوق حوار معلومات الفيديو فقط)[/COLOR]تشغيل مقطع الفيديو في نافذة"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "خيارات متنوعة"
@@ -204,25 +192,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "إظهار الفيديوات المضافة مؤخراً"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "القائمة الفرعية لقائمة البرامج الرئيسية"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Fanart إخفاء خلفية"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "صفحة الطقس"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "إظهار خلفية \"التشغيل الآن\" للفيديو"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "إظهار خلفية \"التشغيل الآن\" للتصور"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -236,10 +212,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "كلمات الأغاني"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "إخفاء فانارت في تصوير ملء الشاشة"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "ملحق كلمات الأغاني"
@@ -247,18 +219,6 @@ msgstr "ملحق كلمات الأغاني"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "ملحق الترجمات"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "القائمة الفرعية لقائمة الفيديو الرئيسية"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "القائمة الفرعية لقائمة الموسيقى الرئيسية"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "القائمة الفرعية لقائمة الصور الرئيسية"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -408,6 +368,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "تحميل الترجمات"
 
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "ممكن"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "الخلفية الاإفتراضية"
@@ -448,10 +412,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]تكوين الملحقات [/B][CR][CR]xbmc.org إدارة الملحقات المثبتة · تصفح وتثبيت الملحقات من[CR] تعديل إعدادت الملحق"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B] تكوين إعدادات تي في [/B][CR][CR] تغيير معلومات ملء الشاشة. إدارة إعدادات بينات EPG"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "تكوين إعدادات الخدمة [B/][CR][CR] إعداد التحكم بـXBMC عبر UPnP و HTTP. نكوين مشاركة ملف [CR] تمكن  Zeroconf. تكوين التشغيل الحي "
@@ -459,10 +419,6 @@ msgstr "تكوين إعدادات الخدمة [B/][CR][CR] إعداد التح�
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "للدخول والإستمرارا [CR]XBMC  حدد ملفك الشخصي الخاص بـ"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "تسجيل الأزمنة"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

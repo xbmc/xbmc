@@ -36,10 +36,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Besigtig Opsies"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Volskerm"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Totale Tydsduur"
@@ -108,10 +104,6 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "TERUGSPOEL"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Visualisering Instellings"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Eind Tyd"
@@ -164,10 +156,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Wys \"Gepouseer\" in prentjie skyfievertoning"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Speel Voorskoue in 'n venster [COLOR=grey3](Slegs Video Inligting Dialoog)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Diverse Opsies"
@@ -204,25 +192,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Wys onlangs bygevoegde Videos"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Tuis bladsy programme subkieslys"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Stel verpersoonlikte byvoegsel knoppie in staat"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Weer Bladsy"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Wys agtergrond \"Speel Nou\" video"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Wys agtergrond \"Speel Nou\" visualisering"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -236,10 +212,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lirieke"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Versteek Ondersteunerkuns in volskerm visualisering"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Lirieke Byvoegsel"
@@ -247,18 +219,6 @@ msgstr "Lirieke Byvoegsel"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Subtitel Byvoegsel"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Tuis Blad Videos Subkieslys"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Tuis Blad Musiek Subkieslys"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Tuis Blad Prente Subkieslys"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -408,6 +368,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Laai Subtitels Af"
 
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "In staat gestel"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Bestek omslag"
@@ -448,10 +412,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]KONFIGUREER BYVOEGSELS[/B][CR][CR]Bestuur jou geïnstalleerde Byvoegsels · Soek en installeer Byvoegsels vanaf xbmc.org[CR]Verander Byvoeging verstellings"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]KONFIGUREER TV VERSTELLINGS[/B][CR][CR]Verander volskerm info · Bestuur EPG data verstellings"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGUREER DIENS VERSTELLINGS[/B][CR][CR]Stel beheer van XBMC via UPnP en HTTP op · Konfigureer lêer deling[CR]Stel Zeroconf in staat · Konfigureer AirPlay"
@@ -460,17 +420,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Loop eers hulp..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Hierdie duimgids beteken daar is 'n kieslys van die kant van hierdie venster af wat ekstra opsies bevat vir hierdie seksie. Vir toegang tot die kieslys, navigeer na links met jou afstandbeheer of sleutelbord of plaas jou muis wyser oor die duimgids. [CR][CR]Kliek \"Ok\" om die dialoog toe te maak. Dit sal nie weer verskyn."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Selekteer jou XBMC gebruiker Profiel[CR]om in te log en voort te gaan"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Opname Tydhouers"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

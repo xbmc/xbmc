@@ -36,10 +36,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Gweld Dewisiadau"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Sgrin Lawn"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Cyfanswm Hyd"
@@ -108,10 +104,6 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "NÔL"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Rhagosodiaid Delweddu"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Amser Gorffen"
@@ -164,10 +156,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Dangos \"Oedwyd\" yn y sioe sleidiau"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Chwarae Hysbysebion mewn ffenestr [COLOR=grey3] (Deialog Gwybodaeth Fideo yn Unig)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Dewisiadau amrywiol"
@@ -204,25 +192,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Dangos Fideos Ychwanegwyd yn Ddiweddar"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Isddewislen Tudalen Cartref Rhaglenni"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Cuddio Celf Cefndir Selogion "
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Tudalen Tywydd"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Dangos Cefndir Fideo \"Nawr yn Chwarae\""
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Dangos Cefndir Delweddu \"Nawr yn Chwarae\""
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -236,10 +212,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Geiriau Caneuon"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Cuddio Celf Selogion mewn delweddu sgrin lawn"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Ychwanegyn Geiriau Caneuon"
@@ -247,18 +219,6 @@ msgstr "Ychwanegyn Geiriau Caneuon"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Ychwanegyn Isdeitlau"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Isddewislen Tudalen Cartref Fideo"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Isddewislen Tudalen Cartref Cerddoriaeth"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Isddewislen Tudalen Cartref Lluniau"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -408,6 +368,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Llwytho Isdeitlau i Lawr"
 
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Galluogwyd"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Croen rhagosodedig"
@@ -448,10 +412,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]FFURFWEDDU YCHWANEGION[/B][CR][CR]Rheoli eich Ychwanegion · Pori a gosod ychwanegion o xbmc.org[CR]Newid gosodiadau Ychwanegion"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]FFURFWEDDU GOSODIADAU TELEDU[/B][CR][CR]Newid gwybodaeth sgrin lawn · Rheoli gosodiadau data'r Amserlenydd Rhaglenni Electronig"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]FFURFWEDDU GOSODIADAU GWASANAETHAU[/B][CR][CR]Gosod rheoli XBMC drwy UPnP a HTTP · Ffurfweddu rhannu ffeiliau[CR]Galluogi Zeroconf · Ffurfweddu AirPlay"
@@ -460,17 +420,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Cymorth defnydd cyntaf..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Mae'r tab yma'n amlygu fod yna ddewislen ar ochr y ffenestr sy'n cynnwys dewisiadau ychwanegol ar gyfer yr adran hon. I gael at y ddewislen, ewch i'r chwith gyda'ch rheolwr pell neu fysellfwrdd neu osod eich pwyntydd llygaden dros y tab. [CR][CR]Cliciwch \"Iawn\" i gau'r ddeialog. Ni fydd yn ymddangos eto."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Dewiswch eich Proffil[CR] defnyddiwr XBMC i fewngofnodi a pharhau"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Amseryddion Recordio"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

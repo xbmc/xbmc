@@ -20,10 +20,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "نمایش تنظیمات"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "تمام‌صفحه"
-
 msgctxt "#31023"
 msgid "Playing"
 msgstr "در حال پخش"

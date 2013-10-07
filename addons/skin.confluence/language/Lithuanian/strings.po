@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Nustatymų parinktys"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Visame ekrane"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Bendra trukmė"
@@ -92,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Informacija"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Veiksmas"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Dabar atkuriama"
@@ -115,10 +115,6 @@ msgstr "PRASUKTI ATGAL"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "PAIEŠKA"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Vizualizacijos parinktys"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -172,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Rodyti \"Pauzė\" prezentacijos režime"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Atkūrti filmo anonsą lange [COLOR=grey3](Tik informacijai apie filmo dialogą)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Įvairios opcijos"
@@ -212,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Rodyti neseniai patalpintus video"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Pagrindinio ekrano submeniu"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Slėpti Fanart informaciją"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Orų puslapis"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Rodyti foninį \"Dabar atkuriama\" Video"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Rodyti foninį \"Dabar atkuriama\" Vizualizacija"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Dainų tekstai"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Slėpti Fanart viso ekrano vizualizacijai"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Dainų tekstų priedas"
@@ -255,18 +231,6 @@ msgstr "Dainų tekstų priedas"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Subtitrų priedas"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Pagrindinio puslapio video submeniu"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Pagrindinio puslapio muzikos submeniu"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Pagrindinio puslapio nuotraukų submeniu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +380,18 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Atsisiųsti subtitrus"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Žiūrėti kaip 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Pakeisti režimą"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Įjungta"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Kaip yra"
@@ -456,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B][COLOR=blue]PRIEDŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyti priedų parametrų valdymą · Nustatyti diegimą iš xbmc.org · Nustatyti priedų pakeitimą"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B][COLOR=blue]KONFIGŪRUOTI TV NUSTATYMUS[/COLOR][/B][CR][CR]Pakeisti viso ekrano informacija · Tvarkyti EPG duomenis"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B][COLOR=blue]TINKLO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]XBMC sąrankos valdymas per UPnP ar HTTP · Konfigūruoti bendrą failų naudojimą"
@@ -468,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Pirmo paleidimo pagalba..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Šis skirtukas reiškia, kad yra meniu iki šio lango, kuriame yra papildomų galimybių šioje skyrio pusėje. Norėdami atidaryti menių, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba pažimėkite pelės žymekliu virš skirtuko.[CR][CR] Spauskite \"OK\" uždaryti šį langą. Ir jis daugiau nebus rodomas."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Pasirinkite XBMC vartotojo profilį[CR]įeikitei į sistemą ir tęskite."
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Įrašymo laikmatis"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

@@ -20,10 +20,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Ko'rish parametrlari"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "To'liq ekran"
-
 msgctxt "#31033"
 msgid "Info"
 msgstr "Ma'lumot"

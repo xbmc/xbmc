@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Thiết lập cho Tùy Chọn"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Toàn Màn Hình"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Độ dài thời gian"
@@ -116,10 +112,6 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "Đang kiếm"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Các lựa chọn hiệu ứng"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Thời gian kết thúc"
@@ -172,10 +164,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Hiển thị \"Tạm Dừng\" ở trình diễn ảnh"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Phát trailer trong một cửa sổ [COLOR=grey3](Chỉ chứ thông tin về video)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Tùy chọn tổng quan"
@@ -212,25 +200,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Hiển thị các video được thêm vào gần đây"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Menu con của trang chính với chương trình"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Ẩn hình nền Fanart"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Trang thời tiết"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Hiển thị hình nền \"Đang phát\" dạng video"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Hiển thị hình nền \"Đang phát\" của hiệu ứng"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +220,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lời Bài Hát"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Ẩn Fanart trong chế độ hiệu ứng toàn màn hình"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Lời Bài Hát của Addon"
@@ -255,18 +227,6 @@ msgstr "Lời Bài Hát của Addon"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Phụ Đề Addon"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Các menu con của mục Video trên trang bắt đầu"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Các menu con của mục Nhạc trên trang bắt đầu"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Các menu con của mục Ảnh trên trang bắt đầu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +376,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Tải phụ đề"
 
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Đã bật"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Skin mặc định"
@@ -456,10 +420,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]TUỲ CHỈNH ADD-ONS[/B][CR][CR]Quản lý những Add-on đã cài · Duyệt và cài các Add-on từ xbmc.org[CR]Thay đổi các thiết lập Add-on"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]TUỲ CHỈNH CÀI ĐẶT TV[/B][CR][CR]Đổi thông tin trong chế độ toàn màn hình · Quản lý các thiết lập dữ liệu lịch chiếu (EPG)"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]TUỲ CHỈNH CÀI ĐẶT DỊCH VỤ[/B][CR][CR]Cài đặt điều khiển XBMC thông qua UPnP và HTTP · Tuỳ chỉnh chia sẻ file[CR]Bật Zeroconf · Tuỳ chỉnh AirPlay"
@@ -468,17 +428,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Trợ giúp lần đầu tiên...."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Tab này báo hiệu rằng có một menu ẩn bên cạnh cửa sổ có chứa những thiết lập thêm cho phần đang xem.  Để truy cập vào menu phụ, di chuyển đến tab bên trái bằng điều khiển từ xa, bàn phím hoặc con chuột. [CR][CR]Bấm \"Ok\" để đóng hội thoại này. Nó sẽ không xuất hiện lại lần thứ hai."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Chọn profile XBMC[CR]để tiếp tục đăng nhập"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Hẹn giờ thu chương trình"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

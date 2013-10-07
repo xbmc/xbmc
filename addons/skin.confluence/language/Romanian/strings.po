@@ -36,10 +36,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Opțiuni vizualizare"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Pe tot ecranul"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Durata Totală"
@@ -108,10 +104,6 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "DERULARE ÎNAPOI"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Vizualizări predefinite"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Se termină la"
@@ -164,10 +156,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Arată „În pauză” la prezentare diapozitive"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Redă secvențele intr-o fereastră [COLOR=grey3](doar în dialogul de informații video)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Opțiuni diverse"
@@ -204,25 +192,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Arată filme și episoade adăugate recent"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Submeniu Programe în pagină inițială"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Ascunde fundal (Fanart)"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Pagină meteo"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Arată video „Acum în redare” pe fundal"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Arată vizualizare „Acum în redare” pe fundal"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -236,10 +212,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Versuri"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Ascunde Fanart în modul de vizualizare full screen"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Supliment versuri"
@@ -247,18 +219,6 @@ msgstr "Supliment versuri"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Supliment subtitrări"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Submeniu Video în pagina inițială"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Submeniu Muzică în pagina inițială"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Submeniu Imagini în pagina inițială"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -408,6 +368,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Descărcare subtitrare"
 
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Activat"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Standard pentru costum"
@@ -448,10 +412,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]CONFIGURAȚI SUPLIMENTE[/B][CR][CR]Administrați suplimentele instalate · Căutați și instalați suplimente de la xbmc.org[CR]Modificați setări suplimente"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]CONFIGUREAZĂ SETĂRILE TV[/B][CR][CR]Schimbă informațiile afișate pe ecran în modul full screen · Schimbă setările datelor de tip EPG"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]CONFIGURAREA SETĂRILOR SERVICIULUI[/B][CR][CR]Stabilirea controului XBMC prin UPnP și HTTP · Configurarea partajării de fișiere[CR]Enable Zeroconf · Configurarea AirPlay"
@@ -460,17 +420,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ajutor la prima execuție...."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Acest semn indică prezența unui meniu în partea stângă a ferestrei care oferă opțiuni suplimentare pentru această secțiune. Pentru a accesa meniul, apasă la stânga cu telecomanda sau tastatura sau poziționează săgeata mouse-ului deasupra acestui semn.[CR][CR]Apasă pe \"Ok\" pentru a închide acest dialog care nu va mai apărea ulterior."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Selectați profilul dumneavoastră de utilizator XBMC[CR]pentru a vă autentifica și a continua"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Timpul Înregistrărilor"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

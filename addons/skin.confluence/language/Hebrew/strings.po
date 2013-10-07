@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "אפשרות בהגדרות"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "מסך מלא"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "סה\"כ משך זמן"
@@ -92,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "מידע"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "פעולות"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "מנגן כעת"
@@ -115,10 +115,6 @@ msgstr "הרצה אחורה"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "בחיפוש"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "קביעוני חיזוי"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -172,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "הראה \"הפסקה\" במצגת תמונות"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "נגן קדימונים בחלון [COLOR=grey3](חלון פרטי וידאו בלבד)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "אפשרות שונות"
@@ -212,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "הצג וידאו שנוסף לאחרונה"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "תת-תפריט תוכנות במסך הבית"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "החבא הצגת פאנארט ברקע"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "מסך מזג אויר"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "הצג ברקע \"מנגן כעת\" וידאו"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "הצג ברקע \"מנגן כעת\" חיזוי"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "מילות שירים"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "הסתר עטיפת דיסק בזמן הנפשות"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "תוספי מילים לשירים"
@@ -255,18 +231,6 @@ msgstr "תוספי מילים לשירים"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "תסוף כתובית"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "תת-תפריט וידאו במסך הבית"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "תת-תפריט מוסיקה במסך הבית"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "תת-תפריט תמונות במסך הבית"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +380,18 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "הורד כתוביות"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "צפה בדו-מימד"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "שנה מצב"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "פעיל"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "ברירת מחדל של הסקין"
@@ -456,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]שינוי הגדרות הרחבות[/B][CR][CR]נהל את ההרחבות המותקנות אצלך, עיין והתקן הרחבות נוספות מxbmc.org[CR]שנה הגדרות הרחבות"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]התאם הגדרות טלווזיה[/B][CR][CR]שנה מידע במסך מלא · נהל מידע לוחות שידורים"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]שינוי הגדרות שירותים[/B][CR][CR]הגדר שליטה על XBMC בUPnP וHTTP, הגדר שיתוף קבצים[CR]הפעל Zeroconf, הגדר את AirPlay"
@@ -468,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "הרץ עזרה תחילה...."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ".לשונית זו מציינת שיש תפריט נוסף לצד חלון זה שמכיל הגדרות נוספות לחלק זה. ע\"מ לגשת לתפריט זה, לחץ על מקש שמאלה בשלט או במקלדת או הצב את העכבר על לשונית זו. [CR][CR]לחץ על \"אישור\" ע\"מ לסגור תיבה זו.היא לא תופיע שוב."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "בחר בפרופיל משתמש XBMC [CR]שלך כדי להתחבר ולהמשיך"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "מתזמני הקלטות"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -578,7 +542,7 @@ msgstr "מוזיקה"
 
 msgctxt "#31957"
 msgid "PROGRAMS"
-msgstr "סדרות"
+msgstr "תוכנות"
 
 msgctxt "#31958"
 msgid "PLAY DISC"

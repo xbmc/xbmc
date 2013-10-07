@@ -36,10 +36,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Stillingar sjónarhorns"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Allur skjárinn"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Alls tímalengd"
@@ -108,10 +104,6 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "TIL BAKA"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Forstillingar myndskreytinga"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Lokatími"
@@ -164,10 +156,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Sýna \"Í bið\" í myndasýningu"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Spila kvikmyndasýnishorn í glugga [COLOR=grey3](Aðeins myndbandaupplýsingarglugga)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Ýmsir valkostir"
@@ -196,25 +184,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Sýna myndbönd sem var nýlega bætt við"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Undirvalmynd heimasíðu"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Fela aðdáendamyndir í bakgrunni"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Veðursíða"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Sýna \"Í spilun\" myndband í bakgrunni"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Sýna \"Í spilun\" myndskreytingu í bakgrunni"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -235,18 +211,6 @@ msgstr "Viðbót fyrir lagatexta"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Viðbót fyrir þýðingartexta"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Undirvalmynd myndbandasíðu"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Undirvalmynd tónlistarsíðu"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Undirvalmynd ljósmyndaasíðu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -395,6 +359,10 @@ msgstr "Kvikmyndavalmynd"
 msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Niðurhala þýðingartextum"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Virkt"
 
 msgctxt "#31390"
 msgid "Skin default"
