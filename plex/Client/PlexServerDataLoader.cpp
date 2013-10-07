@@ -76,7 +76,6 @@ void
 CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CPlexServerDataLoaderJob *j = (CPlexServerDataLoaderJob*)job;
-  CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnJobComplete (%s) %s", j->m_server->GetName().c_str(), success ? "success" : "failed");
   if (success && !m_stopped)
   {
     CSingleLock lk(m_dataLock);
@@ -93,8 +92,6 @@ CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job
     
     if (j->m_channelList)
       m_channelMap[j->m_server->GetUUID()] = j->m_channelList;
-
-    CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnJobComplete sending PLEX_SERVER_DATA_LOADED for %s", j->m_server->GetUUID().c_str());
 
     CGUIMessage msg(GUI_MSG_PLEX_SERVER_DATA_LOADED, PLEX_DATA_LOADER, 0);
     msg.SetStringParam(j->m_server->GetUUID());
