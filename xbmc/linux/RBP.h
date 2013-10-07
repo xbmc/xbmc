@@ -52,6 +52,7 @@ public:
   void GetDisplaySize(int &width, int &height);
   // stride can be null for packed output
   unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue, bool video_only = true);
+  DllOMX *GetDllOMX() { return m_OMX ? m_OMX->GetDll() : NULL; }
 
 private:
   DllBcmHost *m_DllBcmHost;
@@ -60,6 +61,7 @@ private:
   int        m_arm_mem;
   int        m_gpu_mem;
   COMXCore   *m_OMX;
+  class DllLibOMXCore;
 };
 
 extern CRBP g_RBP;
