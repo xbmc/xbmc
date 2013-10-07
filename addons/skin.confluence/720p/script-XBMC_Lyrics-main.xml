@@ -45,7 +45,7 @@
 				<width>550</width>
 				<height>30</height>
 				<font>font30_title</font>
-				<label>$LOCALIZE[SCRIPT0]</label>
+				<label>$ADDON[script.cu.lrclyrics 0]</label>
 				<align>right</align>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
