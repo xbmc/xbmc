@@ -1486,9 +1486,6 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
       Deinitialize(true);
       return false;
     }
-
-    CLog::Log(LOGDEBUG, "COMXCoreComponent::Initialize : %s handle %p\n",
-          m_componentName.c_str(), m_handle);
   }
 
   OMX_PORT_PARAM_TYPE port_param;
@@ -1520,8 +1517,8 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
   if (m_output_port > port_param.nStartPortNumber+port_param.nPorts-1)
     m_output_port = port_param.nStartPortNumber+port_param.nPorts-1;
 
-  CLog::Log(LOGDEBUG, "COMXCoreComponent::Initialize %s input port %d output port %d\n",
-      m_componentName.c_str(), m_input_port, m_output_port);
+  CLog::Log(LOGDEBUG, "COMXCoreComponent::Initialize %s input port %d output port %d m_handle %p\n",
+      m_componentName.c_str(), m_input_port, m_output_port, m_handle);
 
   m_exit = false;
   m_flush_input   = false;
