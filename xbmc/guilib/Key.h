@@ -327,9 +327,10 @@
 #define ACTION_STEREOMODE_TOGGLE      237 // turns 3d mode on/off
 #define ACTION_STEREOMODE_SELECT      238
 #define ACTION_STEREOMODE_TOMONO      239
+#define ACTION_STEREOMODE_SET         240
 
-#define ACTION_SETTINGS_RESET         240
-#define ACTION_SETTINGS_LEVEL_CHANGE  241
+#define ACTION_SETTINGS_RESET         241
+#define ACTION_SETTINGS_LEVEL_CHANGE  242
 
 // touch actions
 #define ACTION_TOUCH_TAP              401
@@ -383,6 +384,7 @@ public:
   CAction(int actionID, wchar_t unicode);
   CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name = "");
   CAction(int actionID, const CStdString &name, const CKey &key);
+  CAction(int actionID, const std::string &name);
 
   /*! \brief Identifier of the action
    \return id of the action
