@@ -857,10 +857,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Μουσική"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Οπτικοποίηση"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Επιλογή φακέλου προορισμού"
@@ -1193,10 +1189,6 @@ msgctxt "#337"
 msgid "Audio output"
 msgstr "Έξοδος ήχου"
 
-msgctxt "#338"
-msgid "Analog"
-msgstr "Αναλογική"
-
 msgctxt "#339"
 msgid "Optical/Coax"
 msgstr "Οπτική/Coax"
@@ -1251,7 +1243,7 @@ msgstr "Ανενεργό/ή"
 
 msgctxt "#352"
 msgid "Dim"
-msgstr "Αμυδρό φως"
+msgstr "Σκίαση"
 
 msgctxt "#353"
 msgid "Black"
@@ -1291,7 +1283,7 @@ msgstr "Παρουσίαση διαφανειών και των υποφακέλ
 
 msgctxt "#362"
 msgid "Screensaver dim level"
-msgstr "Ποσοστό εξασθένισης της προφύλαξης οθόνης"
+msgstr "Ποσοστό εξασθένησης της προφύλαξης οθόνης"
 
 msgctxt "#363"
 msgid "Sort by: File"
@@ -1517,6 +1509,10 @@ msgctxt "#420"
 msgid "HDMI"
 msgstr "HDMI"
 
+msgctxt "#421"
+msgid "Stream silence when idle"
+msgstr "Μετάδοση σιγής κατά την αδράνεια"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Διαγραφή πληροφοριών άλμπουμ"
@@ -1588,10 +1584,6 @@ msgstr "Άνοιγμα αρχείου"
 msgctxt "#439"
 msgid "Cache"
 msgstr "Λανθάνουσα μνήμη"
-
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "Σκληρός δίσκος"
 
 msgctxt "#441"
 msgid "UDF"
@@ -1828,10 +1820,6 @@ msgstr "Φόρτωση πληροφοριών πολυμέσων..."
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Ταξ.: Χρήση"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "Ενεργοποίηση οπτικοποιήσεων"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2213,6 +2201,10 @@ msgctxt "#613"
 msgid "Sample rate"
 msgstr "Ρυθμός δειγματοληψίας"
 
+msgctxt "#614"
+msgid "Virtual folder"
+msgstr "Εικονικός φάκελος"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "CD ήχου"
@@ -2273,14 +2265,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Προσαρμογή"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "Ενίσχυση ήχου"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "Προσαρμογή έντασης ενίσχυσης ήχου"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Σε επίπεδο τραγουδιού"
@@ -2288,18 +2272,6 @@ msgstr "Σε επίπεδο τραγουδιού"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Σε επίπεδο άλμπουμ"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "Ένταση ΠροΕνισχυτή - Στα ήδη ενισχυμένα αρχεία"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "Ένταση ΠροΕνισχυτή - Στα μη ενισχυμένα αρχεία"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "Αποφυγή μείωσης της έντασης ενίσχυσης"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -3121,6 +3093,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Αναγγελία αυτών των υπηρεσιών σε άλλα συστήματα μέσω του Zeroconf"
 
+msgctxt "#1269"
+msgid "Allow volume control"
+msgstr "Να επιτρέπεται έλεγχος της έντασης ήχου"
+
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
 msgstr "Έγκριση στο XBMC να λαμβάνει περιεχόμενο AirPlay"
@@ -3517,10 +3493,6 @@ msgctxt "#10039"
 msgid "Level: Expert"
 msgstr "Επίπεδο: Ανώτερο"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "Περιηγητής Πρόσθετων"
-
 msgctxt "#10041"
 msgid "Reset settings"
 msgstr "Επαναφορά ρυθμίσεων"
@@ -3536,14 +3508,6 @@ msgstr "Βοήθεια"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Δεν υπάρχει διαθέσιμη βοήθεια"
-
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "Παράθυρο Ναι/Όχι"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "Παράθυρο διαδικασίας"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3685,17 +3649,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Πληροφορίες ταινίας"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "Παράθυρο επιλογής"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Μουσική/Πληροφορίες"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "Παράθυρο 'Επιλογή'"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3708,14 +3664,6 @@ msgstr "Script/Πληροφορίες"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Βίντεο πλήρους οθόνης"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "Μουσική οπτικοποίηση"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "Παράθυρο στοιβάγματος αρχείων"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4053,10 +4001,6 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Επανεκκίνηση"
 
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "Ελαχιστοποίηση"
-
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Λειτουργία πλήκτρου τροφοδοσίας"
@@ -4221,10 +4165,6 @@ msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU HQ επίπεδο Upscaling"
 
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr "VDPAU Μετατροπή χρώματος επιπέδου στούντιο"
-
 msgctxt "#13130"
 msgid "Blank other displays"
 msgstr "Κενό σε άλλες οθόνες"
@@ -4276,10 +4216,6 @@ msgstr "Πύλη"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "Πρωτεύον DNS"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "Η αναγνώριση απέτυχε"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4525,10 +4461,6 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Παρουσίαση διαφανειών και των υποφακέλων"
 
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "Τυχαία διάταξη"
-
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Στερεοφωνικά"
@@ -4741,21 +4673,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Προρύθμιση"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "Δεν υπάρχουν διαθέσιμες προρυθμίσεις\nγι' αυτή την οπτικοποίηση"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "Δεν υπάρχουν διαθέσιμες ρυθμίσεις\nγι' αυτή την οπτικοποίηση"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Εξαγωγή/Φόρτωση"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "Χρήση οπτικοποιήσεων κατά την αναπαραγωγή μουσικής"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4929,6 +4849,10 @@ msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
 msgstr "Ενεργοποίηση HQ Scalers για προσαρμογή ανάλυσης πάνω από"
 
+msgctxt "#13436"
+msgid "Allow hardware acceleration (libstagefright)"
+msgstr "Να επιτρέπεται επιτάχυνση υλικού (libstagefright)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Μέθοδος συγχρονισμού A/V"
@@ -4944,10 +4868,6 @@ msgstr "Χρονισµός βίντεο (εις βάρος του ήχου)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Χρονισμός βίντεο (εκ νέου δειγματοληψία ήχου)"
-
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr "Μέγιστο ποσοστό επανάληψης δειγματοληψίας (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -5140,10 +5060,6 @@ msgstr "Χωρίς τηλεόραση"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Η κοντινότερη μεγάλη πόλη"
-
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "Συνολική λανθάνουσα μνήμη - Σκληρός δίσκος"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5489,10 +5405,6 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "Άνοιγμα με..."
 
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "Χρήση ομαλού συγχρονισμού A/V"
-
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "Απόκρυψη ονομάτων αρχείων στις Μικρογραφίες"
@@ -5633,10 +5545,6 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Δεν υπάρχουν παρόμοια τραγούδια στη συλλογή."
 
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "Δεν είναι δυνατός ο συγχρονισμός με τη βάση δεδομένων."
-
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "Αποτυχία ανοίγματος βάσης δεδομένων."
@@ -5696,6 +5604,14 @@ msgstr "Σήμανση ως μη προβληθέν"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "Επεξεργασία τίτλου"
+
+msgctxt "#16106"
+msgid "Manage ..."
+msgstr "Διαχείριση ..."
+
+msgctxt "#16107"
+msgid "Edit sort title"
+msgstr "Επεξεργασία ταξινόμησης τίτλου"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
@@ -5785,10 +5701,6 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Αντίστροφη Telecine"
 
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr "Lanczos3 βελτιστοποιημένο"
-
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Αυτόματη"
@@ -5817,17 +5729,9 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 βελτιστοποιημένο"
-
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Blend λογισμικού"
-
-msgctxt "#16325"
-msgid "Auto - ION Optimized"
-msgstr "Αυτόματο - Βελτιστοποίηση ION"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6481,10 +6385,6 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Χρονικό όριο κατά την έναρξη αναπαραγωγής"
 
-msgctxt "#19171"
-msgid "Start playback minimized"
-msgstr "Εκκίνηση αναπαραγωγής σε ελαχιστοποίηση"
-
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Διάρκεια άμεσης εγγραφής"
@@ -6552,10 +6452,6 @@ msgstr "Γίνεται επαναφορά της βάσης δεδομένων E
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Συνέχεια του τελευταίου καναλιού κατά την εκκίνηση"
-
-msgctxt "#19190"
-msgid "Minimized"
-msgstr "Ελαχιστοποιημένο"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6713,10 +6609,6 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Κλείσιμο του OSD του καναλιού κατά το ζάπινγκ"
 
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr "Αποτροπή ενημερώσεων EPG κατά την αναπαραγωγή τηλεόρασης"
-
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "Πάντα να χρησιμοποιείται η διάταξη των καναλιών από τα backend"
@@ -6728,10 +6620,6 @@ msgstr "Εκκαθάριση αποτελεσμάτων αναζήτησης"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Εμφάνιση ειδοποίησης κατά τις ενημερώσεις χρονοδιακοπτών"
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Χρήση αριθμών καναλιών backend (δουλεύει μόνο με 1 ενεργό πρόσθετο PVR)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7556,14 +7444,6 @@ msgstr "Εμφάνιση πληροφοριών για τον καιρό"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Εμφάνιση πληροφοριών για το σύστημα"
-
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr "Εμφάνιση διαθέσιμου χώρου στα C: E: F:"
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr "Εμφάνιση διαθέσιμου χώρου στα E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8501,10 +8381,6 @@ msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Λήψη Fanart"
 
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr "Προβολή Fanart στις συλλογές βίντεο και μουσικής"
-
 msgctxt "#20415"
 msgid "Scanning for new content"
 msgstr "Έλεγχος για νέα περιεχόμενα"
@@ -8585,6 +8461,10 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Ομάδες Ταινιών"
 
+msgctxt "#20435"
+msgid "Combine split video items"
+msgstr "Συνένωση διαχωρισμένων βίντεο"
+
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Εξαγωγή μικρογραφιών ηθοποιών;"
@@ -8664,6 +8544,10 @@ msgstr "Ακροατής"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Ακροατές"
+
+msgctxt "#20456"
+msgid "Flatten library hierarchy"
+msgstr "Ενιαία λίστα ιεραρχίας συλλογής"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -9551,7 +9435,7 @@ msgstr "Δεδομένα προφίλ"
 
 msgctxt "#22014"
 msgid "Use dim if paused during video playback"
-msgstr "Χρήση 'Αμυδρού φωτός' κατά την παύση"
+msgstr "Χρήση 'Σκίασης' κατά την παύση"
 
 msgctxt "#22015"
 msgid "All recordings"
@@ -9576,10 +9460,6 @@ msgstr "Εγγραφές ανά τίτλο"
 msgctxt "#22020"
 msgid "Guide"
 msgstr "Οδηγός"
-
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "Σφάλμα αναλογιών εικόνας για μείωση μαύρων μπαρών"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
@@ -9740,10 +9620,6 @@ msgstr "Προφύλαξη οθόνης"
 msgctxt "#24009"
 msgid "Script"
 msgstr "Script"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Οπτικοποίηση"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -10457,6 +10333,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "When activated silence is output in order to keep alive receiver, otherwise sink is drained in idle state"
+msgstr "Αν ενεργοποιηθεί, μεταδίδει σήμα σιγής στην έξοδο ήχου προκειμένου να παραμείνει ενεργός ο δέκτης, διαφορετικά ο αποδέκτης αδειάζει κατά την αδράνεια"
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Ήχοι πλοήγησης"
@@ -10509,10 +10389,6 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Αποτυχία χρήσης φίλτρων/scalers βίντεο, επαναφορά σε bilinear προσαρμογή ανάλυσης"
 
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr "Αποτυχία έναρξης της συσκευής ήχου"
-
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Ελέγξτε τις ρυθμίσεις ήχου"
@@ -10544,10 +10420,6 @@ msgstr "Περιφερειακά"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Γενική συσκευή HID"
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr "Γενικός προσαρμογέας δικτύου"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10605,10 +10477,6 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "Αναγνωριστικό προϊόντος (ID)"
 
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr "Προσαρμογέας Pulse-Eight CEC"
-
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10628,10 +10496,6 @@ msgstr "Πιέστε το \"user\" πλήκτρο εντολών"
 msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Ενεργοποίηση διακόπτη εντολών"
-
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr "Αδυναμία εκκίνησης του προσαρμογέα"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
@@ -10653,10 +10517,6 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Δεν εντοπίστηκε η θύρα CEC. Ρυθμίστε την χειροκίνητα."
 
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "Ο προσαρμογέας CEC δεν εκκίνησε. Ελέγξτε τις ρυθμίσεις σας."
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "Αριθμός θύρας HDMI"
@@ -10664,10 +10524,6 @@ msgstr "Αριθμός θύρας HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Συνδεδεμένη"
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "Ο προσαρμογέας CEC δεν εκκίνησε: η libCEC δεν εντοπίστηκε στο σύστημά σας."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10721,14 +10577,6 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Απώλεια σύνδεσης"
 
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr "Αυτός ο χρήστης δεν έχει άδεια για να ανοίξει τον προσαρμογέα CEC"
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr "Η θύρα είναι απασχολημένη. Μόνο ένα πρόγραμμα μπορεί να έχει πρόσβαση στον προσαρμογέα CEC"
-
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Παύση αναπαραγωγής κατά τη μετάβαση σε άλλη πηγή"
@@ -10760,10 +10608,6 @@ msgstr "Μη υποστηριζόμενη έκδοση libCEC. Η %x είναι 
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Φάκελος αντικειμένου"
-
-msgctxt "#36042"
-msgid "Use limited color range (16-235)"
-msgstr "Χρήση περιορισμένου χρωματικού εύρους (16-235)"
 
 msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
@@ -10881,10 +10725,6 @@ msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Ορισμός του χρόνου αδράνειας που απαιτείται προτού εμφανιστεί η προφύλαξη οθόνης."
 
-msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
-msgstr "Επιλογή της προφύλαξης οθόνης. Το XBMC θα χρησιμοποιήσει τη 'Σκίαση' κατά την αναπαραγωγή βίντεο πλήρους οθόνης ή όταν είναι ενεργό ένα παράθυρο."
-
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
 msgstr "Αλλαγή συγκεκριμένων ρυθμίσεων της προφύλαξης οθόνης. Οι διαθέσιμες επιλογές εξαρτώνται από την προφύλαξη που χρησιμοποιείται."
@@ -10893,13 +10733,9 @@ msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "Προεπισκόπηση της επιλεγμένης προφύλαξης οθόνης."
 
-msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
-msgstr "Αν αναπαράγεται μουσική, το XBMC θα εκκινήσει την επιλεγμένη οπτικοποίηση αντί για την προφύλαξη οθόνης."
-
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
-msgstr "Να γίνεται σκίαση της οθόνης κατά την παύση. Δεν εφαρμόζεται στην προφύλαξη οθόνης 'Σκίαση'."
+msgstr "Να γίνεται εξασθένηση της οθόνης κατά την παύση. Δεν εφαρμόζεται στην προφύλαξη οθόνης 'Σκίαση'."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -11025,21 +10861,13 @@ msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
 msgstr "Παύση για ένα μικρό διάστημα κατά την αλλαγή του ρυθμού ανανέωσης. Ενεργοποιήστε το προκειμένου να ορίζεται αυτόματα ο ρυθμός ανανέωσης που ταιριάζει καλύτερα με το βίντεο που αναπαράγεται. Αυτό πιθανότατα θα οδηγήσει σε μια πολύ ομαλή αναπαραγωγή βίντεο, αφού οι ταινίες μπορεί να εγγράφονται με ένα πλήθος ρυθμών καρέ ούτως ώστε να προβάλλονται ομαλά."
 
-msgctxt "#36166"
-msgid "Synchronize the video to the refresh rate of the monitor."
-msgstr "Συγχρονισμός του βίντεο με το ρυθμό ανανέωσης της οθόνης."
-
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "Ο ήχος πρέπει να μένει συγχρονισμένος, αυτό μπορεί να γίνεται είτε μέσω επανάληψης της δειγματοληψίας, παράλειψης/αντιγραφής πακέτων, ή ρύθμισης του χρονισμού αν βγαίνει πολύ εκτός συγχρονισμού."
 
-msgctxt "#36168"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
-
 msgctxt "#36169"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Resampling and other sound processing quality. Low quality is fast, higher quality will consume more CPU."
+msgstr "Ποιότητα επανάληψης δειγματοληψίας και άλλης επεξεργασίας ήχου. Η χαμηλή ποιότητα είναι ταχύτερη, η υψηλή ποιότητα καταναλώνει περισσότερη επεξεργαστική ισχύ."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -11048,10 +10876,6 @@ msgstr "Να επιτρέπεται στην αναπαραγωγή βίντεο
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Επιλογή της μεγέθυνσης με την οποία θα προβάλλονται τα βίντεο αναλογίας 4:3 σε ευρείες οθόνες 16:9."
-
-msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
-msgstr "Η συμπίεση επιπέδου στούντιο VDPAU παρέχει σε προχωρημένες εφαρμογές, όπως το XBMC, τη δυνατότητα να επηρεάζουν τη μετατροπή του χρωματικού χώρου."
 
 msgctxt "#36173"
 msgid "No info available yet."
@@ -11070,7 +10894,7 @@ msgid "No info available yet."
 msgstr "Μη διαθέσιμες πληροφορίες."
 
 msgctxt "#36177"
-msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "Εναλλαγή ανάμεσα σε 'Επιλογή', 'Εκκίνηση' (προεπιλογή), 'Συνέχεια' και 'Προβολή Πληροφοριών'. Η 'Επιλογή' θα επιλέξει το αντικείμενο, π.χ. θα ανοίξει το φάκελο στη λειτουργία αρχείων. Η 'Συνέχεια' θα αναπαραγάγει αυτόματα το βίντεο από το σημείο όπου σταμάτησε την τελευταία φορά, ακόμα και αν έγινε επανεκκίνηση."
 
 msgctxt "#36178"
@@ -11090,12 +10914,12 @@ msgid "No info available yet."
 msgstr "Μη διαθέσιμες πληροφορίες."
 
 msgctxt "#36182"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Enables direct playback of videos that are in folders, without having to open those folders first, as well as displaying multi-part video files as single items in non-library views."
+msgstr "Ενεργοποιεί την άμεση αναπαραγωγή των βίντεο που βρίσκονται σε φακέλους, χωρίς να απαιτείται το άνοιγμα των φακέλων πρώτα, καθώς και την εμφάνιση βίντεο πολλαπλών κομματιών σαν μοναδιαία αντικείμενα σε προβολές εκτός συλλογής."
 
 msgctxt "#36183"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
+msgstr "Αφαιρεί τους κόμβους τίτλου, είδους, κτλ. από την προβολή συλλογής. Επιλογή μιας κατηγορίας οδηγεί άμεσα σε προβολή τίτλων."
 
 msgctxt "#36184"
 msgid "No info available yet."
@@ -11401,6 +11225,14 @@ msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
 msgstr "Έλεγχος για αρχεία πολυμέσων που προστέθηκαν και αφαιρέθηκαν κατά την εκκίνηση του XBMC."
 
+msgctxt "#36260"
+msgid "No info available yet."
+msgstr "Μη διαθέσιμες πληροφορίες."
+
+msgctxt "#36261"
+msgid "Path where taken screenshots will be stored."
+msgstr "Διαδρομή όπου θα αποθηκεύονται τα στιγμιότυπα οθόνης."
+
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
 msgstr "Εξαγωγή της βάσης δεδομένων της Μουσικής Συλλογής σε αρχεία XML. Αυτό θα αντικαταστήσει κατ' επιλογή τα παρόντα αρχεία XML."
@@ -11421,10 +11253,6 @@ msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
 msgstr "Όταν προστίθενται τραγούδια σε μια λίστα αναπαραγωγής, μπαίνουν σε αναμονή αντί να αναπαράγονται άμεσα."
 
-msgctxt "#36267"
-msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
-msgstr "Το XBMC θα διαβάσει τις πληροφορίες Ενίσχυσης Ήχου που είναι κωδικοποιημένες στα μουσικά αρχεία από προγράμματα όπως το MP3Gain, και θα εξομαλύνουν αναλόγως την ένταση του ήχου."
-
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Προεπιλογή είναι τα 89dB ανά πρότυπο. Απαιτείται προσοχή κατά την αλλαγή."
@@ -11444,10 +11272,6 @@ msgstr "Ομαλή εξασθένιση κατά τη μετάβαση από τ
 msgctxt "#36272"
 msgid "Allow crassfading to occur when both tracks are from the same album."
 msgstr "Να επιτρέπεται βαθμιαία εξασθένιση όταν και τα δύο κομμάτια είναι από το ίδιο άλμπουμ."
-
-msgctxt "#36273"
-msgid "Select the visualization that will be displayed while listening to music."
-msgstr "Επιλογή της οπτικοποίησης που θα προβάλλεται κατά την ακρόαση μουσικής."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
@@ -11540,10 +11364,6 @@ msgstr "Επιλογή της γραμματοσειράς που θα χρησ�
 msgctxt "#36296"
 msgid "Select the size of the font used during karoake."
 msgstr "Επιλογή του μεγέθους της γραμματοσειράς που θα χρησιμοποιείται στο καραόκε."
-
-msgctxt "#36297"
-msgid "Select the font color used during karoake."
-msgstr "Επιλογή του χρώματος της γραμματοσειράς που θα χρησιμοποιείται στο καραόκε."
 
 msgctxt "#36298"
 msgid "Select the character set used during karoake."
@@ -11753,6 +11573,10 @@ msgctxt "#36349"
 msgid "No info available yet."
 msgstr "Μη διαθέσιμες πληροφορίες."
 
+msgctxt "#36350"
+msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
+msgstr "Αυτόματη αποστολή πακέτων \"Wake-On-Lan\" στους διακομιστές λίγο πριν τη μετάβαση σε κοινόχρηστα αρχεία ή υπηρεσίες."
+
 msgctxt "#36351"
 msgid "No info available yet."
 msgstr "Μη διαθέσιμες πληροφορίες."
@@ -11764,10 +11588,6 @@ msgstr "Μη διαθέσιμες πληροφορίες."
 msgctxt "#36353"
 msgid "No info available yet."
 msgstr "Μη διαθέσιμες πληροφορίες."
-
-msgctxt "#36354"
-msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimizing other applications. Uses a bit more resources and playback may be slightly less smooth."
-msgstr "Το μεγαλύτερο όφελος είναι για συστήματα με πολλαπλές οθόνες, ούτως ώστε το XBMC να μπορεί να χρησιμοποιηθεί χωρίς να απαιτείται αυτόματη ελαχιστοποίηση άλλων εφαρμογών. Αξιοποιεί λίγο περισσότερους πόρους συνεπώς η αναπαραγωγή ενδέχεται να είναι λιγότερο ομαλή."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -11929,10 +11749,6 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Ποιες συλλογές να συμπεριληφθούν στο αρχείο καταγραφής εντοπισμού σφαλμάτων."
 
-msgctxt "#36395"
-msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
-msgstr "Άνοιγμα του παραθύρου Κεντρικού Κλειδώματος, όπου μπορείτε να διαμορφώσετε τις αντίστοιχες επιλογές."
-
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Ορισμός του κωδικού PIN που θα χρησιμοποιείται για το κεντρικό κλείδωμα."
@@ -12032,6 +11848,122 @@ msgstr "Ορισμός τοποθεσιών για λήψη πληροφοριώ
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Μη διαθέσιμες πληροφορίες."
+
+msgctxt "#36500"
+msgid "Stereoscopic mode (current)"
+msgstr "Στερεοσκοπική προβολή (τρέχουσα)"
+
+msgctxt "#36501"
+msgid "Stereoscopic mode"
+msgstr "Στερεοσκοπική προβολή"
+
+msgctxt "#36502"
+msgid "None"
+msgstr "Κανένα"
+
+msgctxt "#36503"
+msgid "Over/Under"
+msgstr "Πάνω/Κάτω"
+
+msgctxt "#36504"
+msgid "Side by side"
+msgstr "Το ένα δίπλα στο άλλο"
+
+msgctxt "#36505"
+msgid "Anaglyph Red/Cyan"
+msgstr "Ανάγλυφο Κόκκινο/Κυανό"
+
+msgctxt "#36506"
+msgid "Anaglyph Green/Magenta"
+msgstr "Ανάγλυφο Πράσινο/Ματζέντα"
+
+msgctxt "#36507"
+msgid "Interlaced"
+msgstr "Πεπλεγμένο (Interlaced)"
+
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Βασισμένο στο Υλικό"
+
+msgctxt "#36509"
+msgid "Monoscopic - 2D"
+msgstr "Μονοσκοπικό - 2D"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos"
+msgstr "Λειτουργία αναπαραγωγής στερεοσκοπικών βίντεο"
+
+msgctxt "#36521"
+msgid "Ask me"
+msgstr "Ρωτήστε με"
+
+msgctxt "#36522"
+msgid "Use preferred mode"
+msgstr "Χρήση προτιμώμενης λειτουργίας"
+
+msgctxt "#36524"
+msgid "Preferred mode"
+msgstr "Προτιμώμενη λειτουργία"
+
+msgctxt "#36525"
+msgid "Same as movie (autodetect)"
+msgstr "Όπως η ταινία (αυτόματος εντοπισμός)"
+
+msgctxt "#36526"
+msgid "Disable stereoscopic mode when playback is stopped"
+msgstr "Απενεργοποίηση στερεοσκοπικής προβολής κατά τη διακοπή της αναπαραγωγής"
+
+msgctxt "#36527"
+msgid "This video is stereoscopic. Select playback mode"
+msgstr "Αυτό το βίντεο είναι στερεοσκοπικό. Επιλέξτε λειτουργία αναπαραγωγής"
+
+msgctxt "#36528"
+msgid "Select stereoscopic mode"
+msgstr "Επιλογή στερεοσκοπικής προβολής"
+
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "Μονό (2D)"
+
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr "Προτιμώμενη λειτουργία"
+
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr "Επιλογή εναλλακτικής λειτουργίας..."
+
+msgctxt "#36532"
+msgid "Same as movie"
+msgstr "Όπως η ταινία"
+
+msgctxt "#36535"
+msgid "Stereoscopic mode of video"
+msgstr "Στερεοσκοπική προβολή του βίντεο"
+
+msgctxt "#36536"
+msgid "Stereoscopic mode inverted"
+msgstr "Ανεστραμμένη στερεοσκοπική προβολή"
+
+msgctxt "#36537"
+msgid "No info available yet."
+msgstr "Μη διαθέσιμες πληροφορίες."
+
+msgctxt "#36538"
+msgid "No info available yet."
+msgstr "Μη διαθέσιμες πληροφορίες."
+
+msgctxt "#36539"
+msgid "No info available yet."
+msgstr "Μη διαθέσιμες πληροφορίες."
+
+msgctxt "#36540"
+msgid "No info available yet."
+msgstr "Μη διαθέσιμες πληροφορίες."
+
+msgctxt "#36541"
+msgid "Allows volume control from AirPlay clients."
+msgstr "Επιτρέπει τον έλεγχο της έντασης του ήχου από πελάτες AirPlay."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

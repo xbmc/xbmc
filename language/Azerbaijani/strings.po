@@ -541,10 +541,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Musiqi"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Vizuallaşdirma"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanalların sayısı"
@@ -640,10 +636,6 @@ msgstr "Mahnı axtarışı..."
 msgctxt "#335"
 msgid "Start"
 msgstr "Başla"
-
-msgctxt "#338"
-msgid "Analog"
-msgstr "Analog"
 
 msgctxt "#339"
 msgid "Optical/Coax"
@@ -1433,14 +1425,6 @@ msgctxt "#10516"
 msgid "Music - Library"
 msgstr "Musiqi - Kitabxana"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "Diaqolu seç"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "Audio vizuallaşdirma"
-
 msgctxt "#12310"
 msgid "0"
 msgstr "0"
@@ -1560,10 +1544,6 @@ msgstr "Çıx"
 msgctxt "#13013"
 msgid "Reboot"
 msgstr "Yenidən başlat"
-
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "Minimallaşdır"
 
 msgctxt "#13117"
 msgid "Bicubic"
@@ -1864,10 +1844,6 @@ msgstr "Mediya qaynaqları"
 msgctxt "#24008"
 msgid "Screensaver"
 msgstr "Ekran qoruyucusu"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Vizuallaşdirma"
 
 msgctxt "#24012"
 msgid "Subtitles"

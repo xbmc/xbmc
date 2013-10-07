@@ -1029,10 +1029,6 @@ msgctxt "#337"
 msgid "Audio output"
 msgstr "የድምፅ ውጤት "
 
-msgctxt "#338"
-msgid "Analog"
-msgstr "አናሎግ "
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "የተለያዩ ከያኒዎች"
@@ -1364,10 +1360,6 @@ msgstr "የሚወልቅ ዲስክ "
 msgctxt "#438"
 msgid "Opening file"
 msgstr "ፋይል በመክፈት ላይ "
-
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "ሀርድ ዲስክ "
 
 msgctxt "#441"
 msgid "UDF"
@@ -1896,10 +1888,6 @@ msgstr "ማስፊያ 16:9"
 msgctxt "#635"
 msgid "Original Size"
 msgstr "ዋነኛው ምውጠን "
-
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "እንደገና ማጫወቻ "
 
 msgctxt "#646"
 msgid "Remove from library"
@@ -2689,21 +2677,9 @@ msgctxt "#10036"
 msgid "Level: Basic"
 msgstr "ደረጃ: መሰረታዊ"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "ተጨማሪዎች መቃኛ "
-
 msgctxt "#10043"
 msgid "Help"
 msgstr "እርዳታ"
-
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "አዎ/አይ ንግግር"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "የ ንግግር ሂደት"
 
 msgctxt "#10131"
 msgid "Lock settings"
@@ -2793,17 +2769,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "የሙቪ መረጃ "
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "ንግግር ይምረጡ"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "የሙዚቃ / መረጃ "
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "ንግግር እሺ"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3085,10 +3053,6 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "እንደገና ማስነሻ "
 
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "ማሳነሻ "
-
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "የ ሀይል ቁልፍ ተግባር "
@@ -3160,10 +3124,6 @@ msgstr "ተሰናክሏል "
 msgctxt "#13132"
 msgid "Blank displays"
 msgstr "ባዶ ማሳያዎች"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "ማስነሳት አልተቻለም "
 
 msgctxt "#13170"
 msgid "Never"
@@ -3901,10 +3861,6 @@ msgctxt "#16028"
 msgid "Enter value"
 msgstr "ዋጋ ያስገቡ"
 
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "ዳታቤዝ ማስነሳት አልተቻለም "
-
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "ዳታቤዝ መክፈት አልተቻለም "
@@ -3980,10 +3936,6 @@ msgstr "DXVA Best"
 msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
-
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 optimized"
 
 msgctxt "#17998"
 msgid "%i hours"

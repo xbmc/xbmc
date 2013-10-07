@@ -857,10 +857,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "מוסיקה"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "חיזוי"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "בחר ספרית יעד"
@@ -1192,10 +1188,6 @@ msgstr "המרת קצב פריימים"
 msgctxt "#337"
 msgid "Audio output"
 msgstr "פלט אודיו"
-
-msgctxt "#338"
-msgid "Analog"
-msgstr "אנלוגי"
 
 msgctxt "#339"
 msgid "Optical/Coax"
@@ -1589,10 +1581,6 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "זכרון מטמון"
 
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "כונן קשיח"
-
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1828,10 +1816,6 @@ msgstr "טוען פרטי מדיה מהקבצים"
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "מיין לפי : שימוש"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "אפשר חיזוי"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2273,14 +2257,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "מותאם אישי"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "תיקון עוצמת הקול"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "התאמות תיקון עוצמת הקול"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "השתמש בעוצמת הרצועה"
@@ -2288,18 +2264,6 @@ msgstr "השתמש בעוצמת הרצועה"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "השתמש בעוצמת האלבום"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "עוצמת PreAmp  - תיקון עוצמת קבצים"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "עוצמת PreAmp - ללא תיקון עוצמת קבצים"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "המנע מחיתוך קבצים מתוקני עוצמה"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -3517,10 +3481,6 @@ msgctxt "#10039"
 msgid "Level: Expert"
 msgstr "רמה: מומחה"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "דפדפן הרחבות"
-
 msgctxt "#10041"
 msgid "Reset settings"
 msgstr "איפוס ההגדרות"
@@ -3536,14 +3496,6 @@ msgstr "עזרה"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "אין עזרה זמינה"
-
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "דיאלוג לא/כן"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "דיאלוג התקדמות"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3685,17 +3637,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "פרטי סרט"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "בחר דיאלוג"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "מוסיקה/פרטים"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "דיאלוג אישור"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3708,14 +3652,6 @@ msgstr "סקרפטים/פרטים"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "וידאו במסך מלא"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "חיזוי אודיו"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "דיאלוג ערימת קבצים"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4053,10 +3989,6 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "הפעלה מחדש"
 
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "מזער"
-
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "פעולת כפתור הכיבוי"
@@ -4221,10 +4153,6 @@ msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU HQ Upscaling level"
 
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr "VDPAU Studio level color conversion"
-
 msgctxt "#13130"
 msgid "Blank other displays"
 msgstr "החשך צגים אחרים"
@@ -4276,10 +4204,6 @@ msgstr "שער"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "DNS ראשי"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "אתחול נכשל"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4525,10 +4449,6 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "מצגת תמונות רקורסיבית"
 
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "אקראי"
-
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "סטריאו"
@@ -4741,21 +4661,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "קביעון"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "אין קביעונים לחיזוי זה"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "אין הגדרות לחיזוי זה"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "הוצאה/טעינה"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "השתמש בחיזוי בזמן נגינת אודיו"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4925,6 +4833,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "נגן רק את זה"
 
+msgctxt "#13436"
+msgid "Allow hardware acceleration (libstagefright)"
+msgstr "אפשר תאוצת חומרה (libstagefright)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "שיטת סינכרון ניגון למסך"
@@ -4940,10 +4852,6 @@ msgstr "שעון וידאו (Drop/Dupe audio)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "שעון וידאו"
-
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr "כמות דגימה מקסימלית (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -5136,10 +5044,6 @@ msgstr "אין טלויזיה"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "הזן את העיר הגדולה הקרובה"
-
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "מטמון וידאו/אודיו/DVD - דיסק קשיח"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5485,10 +5389,6 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "נגן באמצעות..."
 
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "השתמש בסנכרון A/V חלק"
-
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "הסתר שמות קבצים בתצוגת תמונות ממוזערות"
@@ -5629,10 +5529,6 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "לא נמצאו שירים מתאימים במסד הנתונים."
 
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "אתחול מסד הנתונים נכשל."
-
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "פתיחת מסד נתונים נכשלה."
@@ -5692,6 +5588,14 @@ msgstr "סמן כלא כנצפה"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "ערוך כותרת"
+
+msgctxt "#16106"
+msgid "Manage ..."
+msgstr "נהל..."
+
+msgctxt "#16107"
+msgid "Edit sort title"
+msgstr "ערוך כותרת מיון"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
@@ -5781,10 +5685,6 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Inverse Telecine"
 
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr "Lanczos3 optimized"
-
 msgctxt "#16316"
 msgid "Auto"
 msgstr "אוטומטי"
@@ -5813,17 +5713,9 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 optimized"
-
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
-
-msgctxt "#16325"
-msgid "Auto - ION Optimized"
-msgstr "אוטו' - ION מיטבי"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -5984,6 +5876,10 @@ msgstr "מידע"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "ההקלטה כבר התחילה בערוץ זה"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "לא ניתן לנגן את %s. בדוק את יומן הרישום למידע."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -6473,10 +6369,6 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "פסק זמן בתחילת ניגון."
 
-msgctxt "#19171"
-msgid "Start playback minimized"
-msgstr "התחל בצפיה בחלון ממוזער"
-
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "משך הקלטה מידית"
@@ -6544,10 +6436,6 @@ msgstr "מדריך שידורים מתאפס"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "בהפעלה מחדש התחל בערוץ אחרון שנצפה"
-
-msgctxt "#19190"
-msgid "Minimized"
-msgstr "ממוזער"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6705,10 +6593,6 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "סגור מידע ערוץ על מסך אחרי מעבר ערוץ"
 
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr "מנע עדכוני לוח שידורים בזמן צפיה בשידורחי"
-
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "תמיד השתמש הסידור ערוצים של שרת(ים) אחורי(ים)"
@@ -6720,10 +6604,6 @@ msgstr "נקה תוצאות חיפוש"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "הצג הודעה על עדכון תזמון הקלטה"
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "השתמש בערוצים ממשק אחורי(עובד עם תוסף PVR אחד בלבד)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7548,14 +7428,6 @@ msgstr "הצג פרטים אודות מזג האויר"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "הצג פרטים אודות המערכת"
-
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr "הצג מקום פנוי בכונן C: E: F:"
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr "הצג מקום פנוי בכונן E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8493,10 +8365,6 @@ msgctxt "#20413"
 msgid "Get fanart"
 msgstr "קבל פאנארט"
 
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr "הצג פאנארט בספריות וידאו ומוזיקה"
-
 msgctxt "#20415"
 msgid "Scanning for new content"
 msgstr "סורק עבור תוכן חדש"
@@ -8656,6 +8524,10 @@ msgstr "מאזין"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "מאזינים"
+
+msgctxt "#20456"
+msgid "Flatten library hierarchy"
+msgstr "שטח היררכיית ספרייה"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -9569,10 +9441,6 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "מדריך"
 
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "אפשר שגיאות ביחס גודל כדי להקטין פסים שחורים"
-
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "הצג קיבצי וידאו ברשימה"
@@ -9732,10 +9600,6 @@ msgstr "שומר מסך"
 msgctxt "#24009"
 msgid "Script"
 msgstr "סקריפט"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "חיזוי"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -10397,6 +10261,14 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
+
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr "תצורת רמקול"
@@ -10493,10 +10365,6 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Failed to init video filters/scalers, falling back to bilinear scaling"
 
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr "נכשל בהפעלת התקן האודיו"
-
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "בדוק הגדרות אודיו"
@@ -10528,10 +10396,6 @@ msgstr "ציוד היקפי"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "התקן HID כללי"
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr "מתאם רשת כללי"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10589,10 +10453,6 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "מוצר ID"
 
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr "Pulse-Eight CEC adapter"
-
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10613,10 +10473,6 @@ msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Enable switch side commands"
 
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr "אין אפשרות לפתוח מתאם"
-
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
 msgstr "התקנים אשר יפעלו כאשר מפעילים את XBMC"
@@ -10629,13 +10485,13 @@ msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "הכנס את ההתקנים למצב שינה כאשר מפעילים שומר מסך"
 
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "הער מכשירים כאשר מבוטל שומר המסך"
+
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "אין אפשרות לזהות פורט CEC. הגדר זאת ידנית."
-
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "אין אפשרות לאתחל מתאם CEC. בדוק את ההגדרות שלך"
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -10644,10 +10500,6 @@ msgstr "מספר פורט HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "מחובר"
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "מתאם נמצא. אבל libCEC לא זמין"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10701,14 +10553,6 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "חיבור אבד"
 
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr "למשתמש זה אין הרשאות לפתיחת מתאם CEC"
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr "הפורט עסוק. רק תוכנה אחת יכולה לגשת למתאם CEC"
-
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "השהה ניגון במעבר לערוץ אחר"
@@ -10741,17 +10585,13 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* תיקיית פריט"
 
-msgctxt "#36042"
-msgid "Use limited color range (16-235)"
-msgstr "שימוש בטווח צבעים מוגבל (16-235)"
-
 msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
 msgstr "החלפת המראה והתחושה של מנשק המשתמש."
 
 msgctxt "#36102"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36103"
 msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
@@ -10777,13 +10617,17 @@ msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the User Interface."
 msgstr "בחר או השבת את ערכת הצלילים בממשק המשתמש"
 
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "כבה אפשרות זאת כדי לבטל את הגלילה של עדכוני RSS"
+
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "עריכת הזנות ה־RSS."
 
 msgctxt "#36113"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36114"
 msgid "Chooses the language of the User Interface."
@@ -10801,9 +10645,21 @@ msgctxt "#36118"
 msgid "Select your current timezone."
 msgstr "בחירת אזור הזמן הנוכחי שלך."
 
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "בחר את רצועת השמע ברירת המחדל כאשר קיימות מספר אפשרויות של שפות"
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "בחר את כתוביות ברירת המחדל כאשר קיימות מספר אפשרויות של שפות"
+
 msgctxt "#36121"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "הצג את הסימן (..) ברשימות כדי לעבור לספריית האב"
 
 msgctxt "#36127"
 msgid "Show hidden files and directories."
@@ -10811,7 +10667,7 @@ msgstr "הצגת קבצים ותיקיות מוסתרים."
 
 msgctxt "#36128"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
@@ -10819,27 +10675,27 @@ msgstr "תצוגה מקדימה של שומר המסך."
 
 msgctxt "#36135"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36136"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36137"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36138"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36139"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36140"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
@@ -10847,7 +10703,7 @@ msgstr "הצגת פרטי העלילה למדיה שעדיין לא נצפתה �
 
 msgctxt "#36142"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36146"
 msgid "Check for new media files on XBMC startup."
@@ -10859,7 +10715,11 @@ msgstr "ייבא קובץ XML אל ספריית הוידאו."
 
 msgctxt "#36151"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
@@ -10867,51 +10727,39 @@ msgstr "אפשר פענוח חומרה של קבצי וידאו."
 
 msgctxt "#36156"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36157"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36158"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36159"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36160"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36161"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36162"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36163"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין.אין מידע זמין עדיין.אין מידע זמין עדיין."
-
-msgctxt "#36166"
-msgid "Synchronize the video to the refresh rate of the monitor."
-msgstr "סנכרן את הוידאו לקצב הרענון של המסך."
-
-msgctxt "#36168"
-msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
-
-msgctxt "#36169"
-msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36173"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
@@ -10927,47 +10775,39 @@ msgstr "אין מידע זמין עדיין."
 
 msgctxt "#36178"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36181"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
-
-msgctxt "#36182"
-msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
-
-msgctxt "#36183"
-msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36184"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36185"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36186"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36187"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36188"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36189"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36190"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
@@ -10975,23 +10815,27 @@ msgstr "מיקום הכתוביות על המסך."
 
 msgctxt "#36193"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
 msgstr "נגינת סרט ה־DVD מהדיסק עם הכנסתו."
 
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "אלץ אזור צפיה לניגון DVD."
+
 msgctxt "#36197"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36201"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36202"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
@@ -10999,43 +10843,43 @@ msgstr "הפעל את תכונות מקליט הוידאו (PVR) בXBMC. זה ד
 
 msgctxt "#36210"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36211"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36212"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36213"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36214"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36215"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36216"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36217"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36218"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36226"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
@@ -11043,19 +10887,19 @@ msgstr "הצג את הערוץ הנבחר בחלונית קטנה במקום ב�
 
 msgctxt "#36230"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36232"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36233"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36240"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36243"
 msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
@@ -11067,27 +10911,43 @@ msgstr "מתי להפעיל את פקודת ההתעוררות היומית."
 
 msgctxt "#36247"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36251"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36252"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36253"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36254"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36257"
+msgid "Select the default album information source"
+msgstr "בחר את שירות ברירת המחדל לפרטי אלבום"
+
+msgctxt "#36259"
+msgid "Check for new and removed media files on XBMC startup."
+msgstr "בדוק אם קיימים קבצי מדיה חדשים בעת הפעלת XBMC."
+
+msgctxt "#36260"
+msgid "No info available yet."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "ייבא קובץ XML למסד הנתונים של ספריית המוסיקה"
 
 msgctxt "#36264"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11099,23 +10959,27 @@ msgstr "בררת המחדל היא 89dB לפי התקן. ניתן לשנות א�
 
 msgctxt "#36277"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36278"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36279"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36280"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36282"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "נגן דיסקים באופן אוטומטי בעת הכנסתם למחשב"
 
 msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
@@ -11125,17 +10989,21 @@ msgctxt "#36288"
 msgid "Select which quality you want to rip your files."
 msgstr "בחר באיזו איכות אתה רוצה להעתיק את הקבצים שלך."
 
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr "עבור FLAC הגדר רמת דחיסה, ברירת מחדל 5."
+
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "הוצא דיסק לאחר שההעתקה תושלם."
 
 msgctxt "#36292"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36294"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36295"
 msgid "Select the font used during karoake."
@@ -11145,41 +11013,37 @@ msgctxt "#36296"
 msgid "Select the size of the font used during karoake."
 msgstr "בחירת גודל הגופן המופיע בקריוקי."
 
-msgctxt "#36297"
-msgid "Select the font color used during karoake."
-msgstr "בחירת צבע הגופן המופיע בקריוקי."
-
 msgctxt "#36298"
 msgid "Select the character set used during karoake."
 msgstr "בחירת ערכת התווים שתשמש את הגופן שמופיע בקריוקי."
 
 msgctxt "#36299"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36300"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36301"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36302"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36303"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36304"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36305"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
@@ -11187,39 +11051,39 @@ msgstr "אם קיימים נתוני EXIF (תאריך, שעה, המצלמה שצ
 
 msgctxt "#36310"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36311"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36315"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36316"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36319"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36320"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36322"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36325"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36327"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11227,91 +11091,103 @@ msgstr "אפשר שליטה מרחוק של ה-XBMC באמצעות שרת ה-WEB
 
 msgctxt "#36329"
 msgid "Define the webserver port."
-msgstr "אין מידע זמין עדיין."
+msgstr "הגדר פורט לשרת WEB"
 
 msgctxt "#36330"
 msgid "Define the webserver username."
-msgstr "אין מידע זמין עדיין."
+msgstr "הגדר שם משתמש לשרת WEB"
 
 msgctxt "#36331"
 msgid "Define webserver password."
 msgstr "הגדר סיסמא לשרת ה-WEB שלך."
 
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "אין מידע זמין כעת."
+
 msgctxt "#36335"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36336"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36337"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36339"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36340"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36341"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36342"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36343"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36344"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36345"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36346"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36347"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36348"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36349"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36351"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36352"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36353"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36359"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36360"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36361"
+msgid "Type of connection to the audio equipment."
+msgstr "סוג חיבור לציוד השמע."
+
+msgctxt "#36362"
+msgid "Select your physical speaker layout."
+msgstr "בחר את תצורת מיקום הרמקולים."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11339,11 +11215,11 @@ msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל 
 
 msgctxt "#36374"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36375"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
@@ -11351,7 +11227,7 @@ msgstr "שימוש בג׳ויסטיק לשליטה ב־XBMC."
 
 msgctxt "#36379"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11383,7 +11259,7 @@ msgstr "אם על החיבור שלך יש הגבלת רוחב פס, מערכת 
 
 msgctxt "#36388"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
@@ -11391,7 +11267,7 @@ msgstr "הגדר/י כמה זמן להמתין לפני כבוי"
 
 msgctxt "#36392"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
@@ -11411,83 +11287,119 @@ msgstr "אם מאופשר, קוד המאסטר נדרש לפתיחת ה-XBMC ב�
 
 msgctxt "#36399"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36400"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36401"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36402"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36403"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36404"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36405"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36406"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36407"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36408"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36409"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36410"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36411"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36412"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36413"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36414"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36415"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36417"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#36418"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "הגדר מיקומים לשימוש עבור איחזור מידע לגבי מזג-האוויר."
 
 msgctxt "#36420"
 msgid "No info available yet."
-msgstr "אין מידע זמין עדיין."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "מבוסס חומרה"
+
+msgctxt "#36521"
+msgid "Ask me"
+msgstr "שאל אותי"
+
+msgctxt "#36524"
+msgid "Preferred mode"
+msgstr "מצב מועדף"
+
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "מונו (2D)"
+
+msgctxt "#36537"
+msgid "No info available yet."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36538"
+msgid "No info available yet."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36539"
+msgid "No info available yet."
+msgstr "אין מידע זמין כעת."
+
+msgctxt "#36540"
+msgid "No info available yet."
+msgstr "אין מידע זמין כעת."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

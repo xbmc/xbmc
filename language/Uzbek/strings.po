@@ -789,10 +789,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Musiqa"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Vizualizatsiya"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Mo'ljal direktoriyasini tanlash"
@@ -1053,10 +1049,6 @@ msgctxt "#337"
 msgid "Audio output"
 msgstr "Audio chiqarish"
 
-msgctxt "#338"
-msgid "Analog"
-msgstr "Analog"
-
 msgctxt "#339"
 msgid "Optical/Coax"
 msgstr "Optik/Coax"
@@ -1280,10 +1272,6 @@ msgstr "Fayl ochilmoqda"
 msgctxt "#439"
 msgid "Cache"
 msgstr "Kesh"
-
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "Qattiq disk"
 
 msgctxt "#441"
 msgid "UDF"
@@ -3905,10 +3893,6 @@ msgctxt "#24009"
 msgid "Script"
 msgstr "Skript"
 
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Vizualizatsiya"
-
 msgctxt "#24012"
 msgid "Subtitles"
 msgstr "Subtitrlar"
@@ -4092,14 +4076,6 @@ msgstr "TV o'chirilganda"
 msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Aloqa uzilgan"
-
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr "Ushbu foydalanuvchida CEC adapterini ochishga huquqlar yo'q"
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr "Port band. Faqat bitta dastur uchun CEC adapteriga ruxsat etilgan"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"

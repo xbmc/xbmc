@@ -299,7 +299,7 @@ msgstr "มุมมอง: อัตโนมัติ"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "มุมมอง: อัตโนมัติ ขนาดใหญ่"
+msgstr "มุมมอง: ใหญ่ อัตโนมัติ"
 
 msgctxt "#100"
 msgid "View: Icons"
@@ -495,7 +495,7 @@ msgstr "ค่าคงที่"
 
 msgctxt "#148"
 msgid "DHCP"
-msgstr "DHCP"
+msgstr "รับที่อยู่ IP โดยอัตโนมัติ"
 
 msgctxt "#149"
 msgid "MAC address"
@@ -511,15 +511,15 @@ msgstr "การเชื่อมต่อ:"
 
 msgctxt "#152"
 msgid "Half duplex"
-msgstr "Half duplex"
+msgstr "รับส่ง แบบสลับ"
 
 msgctxt "#153"
 msgid "Full duplex"
-msgstr "Full duplex"
+msgstr "รับส่งพร้อมกัน"
 
 msgctxt "#154"
 msgid "Storage"
-msgstr "หน่วยเก็บข้อมูล"
+msgstr "แหล่งเก็บข้อมูล"
 
 msgctxt "#155"
 msgid "Drive"
@@ -679,7 +679,7 @@ msgstr "กำลังเรียกดู %s ข้อมูล"
 
 msgctxt "#198"
 msgid "Loading movie details"
-msgstr "กำลังโหลดรายละเอียดภาพยนต์"
+msgstr "กำลังโหลดรายละเอียดภาพยนตร์"
 
 msgctxt "#199"
 msgid "Web interface"
@@ -856,10 +856,6 @@ msgstr "ภาษา"
 msgctxt "#249"
 msgid "Music"
 msgstr "เพลง"
-
-msgctxt "#250"
-msgid "Visualization"
-msgstr "แสดงแสงสี"
 
 msgctxt "#251"
 msgid "Select destination directory"
@@ -1193,10 +1189,6 @@ msgctxt "#337"
 msgid "Audio output"
 msgstr "ส่งออกเสียง"
 
-msgctxt "#338"
-msgid "Analog"
-msgstr "อนาล๊อก"
-
 msgctxt "#339"
 msgid "Optical/Coax"
 msgstr "ดิจิทัล"
@@ -1517,6 +1509,10 @@ msgctxt "#420"
 msgid "HDMI"
 msgstr "HDMI"
 
+msgctxt "#421"
+msgid "Stream silence when idle"
+msgstr "ส่งสัญญาณเงียบ เมื่อไม่ได้ใช้งาน"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "ลบข้อมูลอัลบั้ม"
@@ -1588,10 +1584,6 @@ msgstr "กำลังเปิดแฟ้ม"
 msgctxt "#439"
 msgid "Cache"
 msgstr "แคช"
-
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "ฮาร์ดดิสก์"
 
 msgctxt "#441"
 msgid "UDF"
@@ -1828,10 +1820,6 @@ msgstr "กำลังโหลดข้อมูลสื่อจากแฟ
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "เรียงลำดับ: การใช้"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "เปิดใช้งาน การแสดงแสงสี"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2213,6 +2201,10 @@ msgctxt "#613"
 msgid "Sample rate"
 msgstr "อัตรา แซมเปิล"
 
+msgctxt "#614"
+msgid "Virtual folder"
+msgstr "โฟลเดอร์ เสมือน"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "ซีดีเพลง"
@@ -2273,14 +2265,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "กำหนดเอง"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "ปรับระดับเสียง"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "การปรับระดับเสียง (เฉพาะเพลง)"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "ใช้ระดับของแทร็ก"
@@ -2288,18 +2272,6 @@ msgstr "ใช้ระดับของแทร็ก"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "ใช้ระดับของอัลบั้ม"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "ระดับของปรีแอมป์ - แฟ้มที่ปรับเสียงเล่น"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "ระดับของปรีแอมป์ - แฟ้มที่ไม่ปรับเสียงเล่น"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "งดเว้นการตัดช่วงเล่น บนแฟ้มที่ปรับเสียงเล่น"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -3121,6 +3093,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "ประกาศการให้บริการผ่านทาง Zeroconf"
 
+msgctxt "#1269"
+msgid "Allow volume control"
+msgstr "อนุญาตให้มีการควบคุมระดับเสียง"
+
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
 msgstr "อนุญาตให้ XBMCรับเนื้อหาจาก AirPlay"
@@ -3517,10 +3493,6 @@ msgctxt "#10039"
 msgid "Level: Expert"
 msgstr "ระดับ: ผู้เชี่ยวชาญ"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "สืบค้น ส่วนเสริม"
-
 msgctxt "#10041"
 msgid "Reset settings"
 msgstr "คืนค่า การตั้งค่า"
@@ -3536,14 +3508,6 @@ msgstr "ช่วยเหลือ"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "ไม่มี ส่วนช่วยเหลือ ที่มีอยู่"
-
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "กล่องโต้ตอบ ใช่/ไม่"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "กล่องโต้ตอบ กระบวนการ"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3685,17 +3649,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "ข้อมูลภาพยนต์"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "เลือกกล่องโต้ตอบ"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "เพลง/ข้อมูล"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "กล่องโต้ตอบ ตกลง"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3708,14 +3664,6 @@ msgstr "สคริปต์/ข้อมูล"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "วิดีโอเต็มจอ"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "แสดงแสงสีประกอบ เสียง"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "กล่องโต้ตอบ การซ้อนแฟ้ม"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4053,10 +4001,6 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "เริ่มระบบใหม่"
 
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "ย่อเก็บ"
-
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "การกระทำของปุ่มปิด"
@@ -4219,11 +4163,7 @@ msgstr "VDPAU"
 
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
-msgstr "VDPAU HQ Upscaling level"
-
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr "VDPAU Studio level color conversion"
+msgstr "VDPAU ปรับขนาดภาพระดับ HQ"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4239,7 +4179,7 @@ msgstr "ปิดการแสดงผล"
 
 msgctxt "#13140"
 msgid "Active connections detected!"
-msgstr "ใช้งานการเชื่อมต่อที่ตรวจพบ!"
+msgstr "การเชื่อมต่อที่ใช้งานได้ ถูกตรวจพบ!"
 
 msgctxt "#13141"
 msgid "If you proceed, you might not be able to control XBMC"
@@ -4276,10 +4216,6 @@ msgstr "Gateway"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "Primary DNS"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "การเตรียมการล้มเหลว"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4525,10 +4461,6 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "การเรียกสไลด์โชว์ซ้ำ"
 
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "สุ่มลำดับ"
-
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "สเตอริโอ"
@@ -4741,21 +4673,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "ค่าที่กำหนดไว้"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "ไม่มีค่าที่กำหนดไว้\nสำหรับการแสดงแสงสี นี้"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "ไม่มีการตั้งค่า\nสำหรับการแสดงแสงสีนี้"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "เปิด/ปิด"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "ใช้ การแสดงแสงสี ถ้ากำลังเล่นเสียง"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4929,6 +4849,10 @@ msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
 msgstr "เปิดใช้งาน HQ Scalers สำหรับปรับขนาดข้างต้น"
 
+msgctxt "#13436"
+msgid "Allow hardware acceleration (libstagefright)"
+msgstr "อนุญาตให้มีการเร่งความเร็วด้วยฮาร์ดแวร์ (libstagefright)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "กระบวนการ A/V sync"
@@ -4944,10 +4868,6 @@ msgstr "ความถี่วิดีโอ (Drop/Dupe audio)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "ความถี่วิดีโอ (Resample audio)"
-
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr "Maximum resample amount (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -5140,10 +5060,6 @@ msgstr "ไม่มี ทีวี"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "ป้อนเมืองขนาดใหญ่ที่อยู่ใกล้ที่สุด"
-
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "วิดีโอ/เสียง/ดีวีดี แคช - ฮาร์ดดิสก์"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5489,10 +5405,6 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "เล่นโดยใช้..."
 
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "ใช้ A/V synchronization แบบลื่นไหล"
-
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "ซ่อนชื่อแฟ้มในมุมมองรูปย่อ"
@@ -5591,7 +5503,7 @@ msgstr "เลือกอัตโนมัติ"
 
 msgctxt "#16020"
 msgid "De-interlace"
-msgstr "De-interlace"
+msgstr "ลบ-การแยกเส้นทางขวาง"
 
 msgctxt "#16021"
 msgid "Bob"
@@ -5633,10 +5545,6 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "ไม่พบเพลงที่ตรงกันในคลังข้อมูล"
 
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "ไม่สามารถเริ่มต้นฐานข้อมูล"
-
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "ไม่สามารถเปิดฐานข้อมูล"
@@ -5651,15 +5559,15 @@ msgstr "รายการเล่น โหมดปาร์ตี้"
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
-msgstr "De-interlace (Half)"
+msgstr "ลบ-การแยกเส้นทางขวาง (ครึ่งเดียว)"
 
 msgctxt "#16037"
 msgid "Deinterlace video"
-msgstr "Deinterlace video"
+msgstr "ลบเส้นทางขวาง ของวิดีโอ"
 
 msgctxt "#16038"
 msgid "Deinterlace method"
-msgstr "วิธีการ Deinterlace"
+msgstr "วิธีการ ลบเส้นทางขวาง"
 
 msgctxt "#16039"
 msgid "Off"
@@ -5696,6 +5604,14 @@ msgstr "ทำว่ายังไม่ได้ดู"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "แก้ไขชื่อเรื่อง"
+
+msgctxt "#16106"
+msgid "Manage ..."
+msgstr "จัดการ ..."
+
+msgctxt "#16107"
+msgid "Edit sort title"
+msgstr "แก้ไข การจัดลำดับ ชื่อเรื่อง"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
@@ -5785,10 +5701,6 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Inverse Telecine"
 
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr "ปรับให้เหมาะกับ Lanczos3"
-
 msgctxt "#16316"
 msgid "Auto"
 msgstr "อัตโนมัติ"
@@ -5817,17 +5729,9 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 optimized"
-
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
-
-msgctxt "#16325"
-msgid "Auto - ION Optimized"
-msgstr "เพิ่มประสิทธิภาพ - ION อัตโนมัติ"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6481,10 +6385,6 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "หมดเวลาขณะเริ่มต้นการเล่น"
 
-msgctxt "#19171"
-msgid "Start playback minimized"
-msgstr "เริ่มการเล่นแบบย่อเล็กสุด"
-
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "ระยะเวลาของการบันทึกทันที"
@@ -6552,10 +6452,6 @@ msgstr "กำลังคืนค่า EPG"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "ดูต่อช่องล่าสุดในการเริ่มต้น"
-
-msgctxt "#19190"
-msgid "Minimized"
-msgstr "ย่อลง"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6713,10 +6609,6 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "ปิด OSD ของช่อง หลังจากเปลี่ยนช่อง"
 
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr "ป้องกันไม่ให้อัพเดท EPG ในขณะที่เล่นทีวีสตรีม"
-
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "ใช้ลำดับของช่องจาก backend(s) เสมอ"
@@ -6728,10 +6620,6 @@ msgstr "ล้างผลการค้นหา"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "แสดงการแจ้งเตือนในการปรับปรุงตัวตั้งเวลา"
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "ใช้ หมายเลขช่อง ของbackend (ใช้ได้เฉพาะกับการใช้งาน 1 ส่วนเสริม PVR)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7556,14 +7444,6 @@ msgstr "แสดงข้อมูลสภาพอากาศ"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "แสดงข้อมูลระบบ"
-
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr "แสดงพื้นที่ว่าง C: E: F:"
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr "แสดงพื้นที่ว่าง E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8501,10 +8381,6 @@ msgctxt "#20413"
 msgid "Get fanart"
 msgstr "รับ Fanart"
 
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr "แสดง แฟนอาร์ต ในคลังวิดีโอและเพลง"
-
 msgctxt "#20415"
 msgid "Scanning for new content"
 msgstr "สำรวจเนื้อหาใหม่"
@@ -8585,6 +8461,10 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "ตั้งค่า"
 
+msgctxt "#20435"
+msgid "Combine split video items"
+msgstr "รวมรายการวิดีโอที่ถูกแบ่ง"
+
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "ส่งออกรูปย่อนักแสดง"
@@ -8664,6 +8544,10 @@ msgstr "ผู้ฟัง"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "ผู้ฟัง"
+
+msgctxt "#20456"
+msgid "Flatten library hierarchy"
+msgstr "รวมลำดับชั้นของคลังข้อมูล"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -9577,10 +9461,6 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "ไกด์"
 
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "ยอมรับการเพี้ยนของอัตราส่วนเพื่อลดขนาดของแถบดำ"
-
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "แสดงแฟ้มวิดีโอระหว่างฟังเพลง"
@@ -9740,10 +9620,6 @@ msgstr "พักหน้าจอ"
 msgctxt "#24009"
 msgid "Script"
 msgstr "สคริปต์"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "แสดงแสงสี"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -10457,6 +10333,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "When activated silence is output in order to keep alive receiver, otherwise sink is drained in idle state"
+msgstr "เมื่อเปิดใช้ เสียงเงียบจะถูกส่งออก เพื่อทำให้เครื่องรับคงการทำงานอยู่, ในกรณีอื่น สัญญาณจะถูกตัดไป เมื่อไม่ได้ใช้งาน"
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "เล่นเสียง GUI"
@@ -10509,10 +10389,6 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "ล้มเหลวในการเริ่ม ฟิลเตอร์/ปรับขนาด วิดีโอ, กลับไปใช้การปรับขนาดแบบ bilinear"
 
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr "ล้มเหลวในการเริ่มต้นอุปกรณ์เสียง"
-
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "ตรวจสอบการตั้งค่าเสียงของคุณ"
@@ -10544,10 +10420,6 @@ msgstr "อุปกรณ์ต่อพ่วง"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "อุปกรณ์ HID ทั่วไป"
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr "การ์ดเชื่อมต่อเครือข่ายทั่วไป"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10605,10 +10477,6 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "รหัสผลิตภัณฑ์"
 
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr "การ์ดเชื่อมต่อ Pulse-Eight CEC"
-
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10628,10 +10496,6 @@ msgstr "กดปุ่มคำสั่ง \"ผู้ใช้\""
 msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "เปิดใช้งานสลับฝั่งคำสั่ง"
-
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr "ไม่สามารถเปิดการ์ดเชื่อมต่อ"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
@@ -10653,10 +10517,6 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "ไม่พบ CEC com port. ให้กำหนดขึ้นมาเอง"
 
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "ไม่อาจเริ่มต้นการ์ดเชื่อมต่อ CEC. กรุณาตรวจสอบการตั้งค่าของคุณ"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "หมายเลขพอร์ต HDMI"
@@ -10664,10 +10524,6 @@ msgstr "หมายเลขพอร์ต HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "เชื่อมต่อแล้ว"
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "ไม่อาจเริ่มต้นการ์ดเชื่อมต่อ CEC: libCEC ไม่พบบนระบบของคุณ"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10721,14 +10577,6 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "การเชื่อมต่อขาดหาย"
 
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr "ผู้ใช้นี้ไม่มีสิทธิ์ในการเปิดการ์ดเชื่อมต่อ CEC"
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr "พอร์ตไม่ว่าง เพียงโปรแกรมเดียวที่สามารถเข้าถึง การ์ดเชื่อมต่อ CEC"
-
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "หยุดเล่นชั่วคราวเมื่อเปลี่ยนไปยังแหล่งข้อมูลอื่น"
@@ -10760,10 +10608,6 @@ msgstr "รุ่นที่ไม่สนับสนุนส่วนติ
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* โฟลเดอร์ รายการ"
-
-msgctxt "#36042"
-msgid "Use limited color range (16-235)"
-msgstr "ใช้ขอบเขตของสีแบบจำกัด (16-235)"
 
 msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
@@ -10881,10 +10725,6 @@ msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "ตั้งระยะเวลาที่ไม่ได้ใช้งาน ก่อนจะแสดงผลการพักหน้าจอ"
 
-msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
-msgstr "เลือกการพักหน้าจอ. XBMC จะบังคับใช้  การพักหน้าจอ 'ทำให้มืดลง'  เมื่อการเล่นวิดีโอเต็มจอถูก หยุดชั่วขณะ หรือเมื่อกล่องโต้ตอบปรากฏขึ้น."
-
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
 msgstr "เปลี่ยนการตั้งค่าเฉพาะของการพักหน้าจอ. ตัวเลือกที่มีจะขึ้นอยู่กับการพักหน้าจอที่ใช้อยู่."
@@ -10892,10 +10732,6 @@ msgstr "เปลี่ยนการตั้งค่าเฉพาะขอ
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "แสดงตัวอย่าง การพักหน้าจอที่เลือกไว้"
-
-msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
-msgstr "เมื่อเพลงถูกเล่น, XBMC จะเริ่มการแสดงแสงสีที่เลือกไว้ แทนที่การแสดงผลพักหน้าจอ"
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11025,21 +10861,13 @@ msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
 msgstr "หยุดชั่วขณะ เป็นเวลาเล็กน้อย ในระหว่างทำการเปลี่ยนอัตรารีเฟชหน้าจอ. เปิดใช้งาน เพื่อตั้งอัตราการรีเฟชหน้าจอโดยอัตโนมัติ ที่เหมาะสมกับวิดีโอที่เล่นอยู่. นี้อาจช่วยให้การแสดงภาพวิดีโอลื่นไหลสมบูรณ์แบบ, ดังที่เนื้อหาวิดีโอนั้นได้บันทึกมาในอัตรารีเฟชที่หลากหลาย ที่จำเป็นต้องใช้การจับคู่ที่เหมาะสมกับอัตรารีเฟชหน้าจอ เพื่อให้แสดงผลได้อย่างลื่นไหล."
 
-msgctxt "#36166"
-msgid "Synchronize the video to the refresh rate of the monitor."
-msgstr "เชื่อมโยงวิดีโอไปสู่อัตราการรีเฟรชของจอภาพ"
-
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "เสียงอยู่ในการทำให้ตรงกัน, นี้สามารถทำได้โดย เพิ่มอัตราสุ่ม, การข้าม/ทำซ้ำ ชุดข้อมูล, หรือปรับสัญญาณนาฬิกา ถ้ามันเริ่มไม่ตรงกันมากเกินไป."
 
-msgctxt "#36168"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
 msgctxt "#36169"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
+msgid "Resampling and other sound processing quality. Low quality is fast, higher quality will consume more CPU."
+msgstr "การเปลี่ยนอัตราสุ่ม และ การประมวลผลด้านคุณภาพเสียงอื่นๆ. ที่คุณภาพต่ำจะเป็นไปอย่างรวดเร็ว, ที่คุณภาพสูงขึ้นจะใช้ CPU มากขึ้น."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -11048,10 +10876,6 @@ msgstr "ยินยอมให้ตัวเล่นวิดีโอ ล�
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "เลือกระดับการซูมภาพ ที่วิดีโอ สัดส่วน 4:3 จะแสดงบนจอภาพแบบกว้าง."
-
-msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
-msgstr "การแปลงในระดับสตูดิโอ VDPAU เป็นวิธีสำหรับโปรแกรมขั้นสูงเช่น XBMC ที่จะมีผลต่อการแปลง ขอบเขตการแสดงผลของสี."
 
 msgctxt "#36173"
 msgid "No info available yet."
@@ -11070,8 +10894,8 @@ msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
 
 msgctxt "#36177"
-msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "สลับไปมาระหว่าง เลือก, เล่น (ค่าเริ่มต้น), เล่นต่อจากเดิม และแสดงข้อมูล. เลือกการกระทำกับรายการที่เลือก, อย่างเช่น เปิดไดเรกทอรีในโหมดแฟ้ม. เล่นต่อจากเดิม จะเริ่มเล่นวิดีโอจากตำเหน่งที่คุณเคยดูโดยอัตโนมัติ, แม้กระทั่งหลังจากที่เริ่มระบบใหม่."
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "สลับค่าระหว่าง เลือก, เล่น (ค่าเริ่มต้น), เล่นต่อ และ แสดงข้อมูล. เลือกจะเลือกรายการ, อย่างเช่น เปิดไดเรกทอรีในโหมดแฟ้ม. เล่นต่อ จะดำเนินการวิดีโอจากตำแหน่งสุดท้ายที่คุณได้ดูไป, แม้หลังจากเริ่มระบบใหม่แล้ว."
 
 msgctxt "#36178"
 msgid "No info available yet."
@@ -11090,12 +10914,12 @@ msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
 
 msgctxt "#36182"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
+msgid "Enables direct playback of videos that are in folders, without having to open those folders first, as well as displaying multi-part video files as single items in non-library views."
+msgstr "เปิดใช้งาน การเล่นวิดีโอที่อยู่ในโฟลเดอร์โดยตรง, โดยไม่ต้องเปิดโฟลเดอร์นั้นก่อน, รวมไปถึงการแสดงแฟ้มวิดีโอที่แบ่งเป็นหลายส่วน ให้เป็นรายการเดียว ในมุมมองที่ไม่ใช่คลังข้อมูล."
 
 msgctxt "#36183"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
+msgstr "นำหมวดย่อย ชื่อเรื่อง, ประเภท และอื่นๆ ออกจากมุมมองคลังข้อมูล. การเลือกหมวด จะนำคุณไปสู่มุมมองชื่อเรื่องโดยตรง."
 
 msgctxt "#36184"
 msgid "No info available yet."
@@ -11401,6 +11225,14 @@ msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
 msgstr "ตรวจสอบเพื่อหา สื่อที่มาใหม่และถูกเอาออก ขณะเริ่มระบบ XBMC."
 
+msgctxt "#36260"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36261"
+msgid "Path where taken screenshots will be stored."
+msgstr "ตำแหน่งเส้นทาง ที่ภาพจับหน้าจอ จะถูกจัดเก็บ."
+
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
 msgstr "ส่งออกฐานข้อมูลเพลงไปยังแฟ้ม XML. การกระทำนี้มีตัวเลือกที่จะเขียนทับแฟ้ม XML ที่มีอยู่ของคุณ."
@@ -11421,10 +11253,6 @@ msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
 msgstr "เมื่อเพลงถูกเพิ่มไปยังรายการเล่น พวกมันจะถูกจัดคิวแทนที่จะเริ่มเล่นโดยทันที."
 
-msgctxt "#36267"
-msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
-msgstr "XBMC จะอ่านข้อมูลการปรับระดับเสียงเล่น ที่ถูกเข้ารหัสไว้ในแฟ้มเสียง โดย โปรแกรมอย่าง MP3Gain แล้วปรับระดับเสียงให้เป็นปกติตามนั้น."
-
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "ค่าเริ่มต้นคือ 89dB ต่อค่ามาตรฐาน. จงเปลี่ยนอย่างระมัดระวัง."
@@ -11444,10 +11272,6 @@ msgstr "ผสานเสียง จากแทร็คเสียงห�
 msgctxt "#36272"
 msgid "Allow crassfading to occur when both tracks are from the same album."
 msgstr "ยอมให้การผสานเสียงเกิดขึ้น เมื่อแทร็คทั้งหมดมาจากอัลบั้มเดียวกัน."
-
-msgctxt "#36273"
-msgid "Select the visualization that will be displayed while listening to music."
-msgstr "เลือกการแสดงแสงสี ที่จะแสดงผลขณะกำลังฟังเพลง."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
@@ -11540,10 +11364,6 @@ msgstr "เลือกแบบตัวอักษร ที่ใช้ข�
 msgctxt "#36296"
 msgid "Select the size of the font used during karoake."
 msgstr "เลือกขนาดของตัวอักษร ที่ใช้ขณะเล่นคาราโอเกะ."
-
-msgctxt "#36297"
-msgid "Select the font color used during karoake."
-msgstr "เลือกสีของตัวอักษร ที่ใช้ขณะเล่นคาราโอเกะ."
 
 msgctxt "#36298"
 msgid "Select the character set used during karoake."
@@ -11753,6 +11573,10 @@ msgctxt "#36349"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
 
+msgctxt "#36350"
+msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
+msgstr "ส่งคำสั่ง 'ปลุก-ผ่าน-แลน' โดยอัตโนมัติ เพื่อให้เซิร์ฟเวอร์(s)พร้อม ก่อนพยายามที่จะเข้าถึง การแบ่งปัน แฟ้มหรือบริการ."
+
 msgctxt "#36351"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
@@ -11764,10 +11588,6 @@ msgstr "ยังไม่มีข้อมูล."
 msgctxt "#36353"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36354"
-msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimizing other applications. Uses a bit more resources and playback may be slightly less smooth."
-msgstr "ประโยชน์หลักๆ คือ เพื่อการกำหนดค่าหลายหน้าจอ, ดังนั้น XBMC จึงสามารถใช้งานได้โดยไม่ต้องย่อโปรแกรมอื่นลงแบบอัตโนมัติ. ใช้ทรัพยากรระบบเพิ่มขึ้นนิดหน่อย และการเล่นอาจจะลื่นไหลน้อยลงเล็กน้อย."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -11929,10 +11749,6 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "ระบุคลังข้อมูลเพิ่มเติม ที่จะรวมเข้าในบันทึกการแก้ไขจุดบกพร่อง."
 
-msgctxt "#36395"
-msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
-msgstr "เปิดกล่องโต้ตอบ ล็อคผู้ดูแลระบบ, ที่คุณสามารถกำหนดตัวเลือก ล็อคผู้ดูแลระบบ."
-
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "กำหนดรหัส PIN ที่ใช้สำหรับ ล็อคผู้ดูแลระบบ."
@@ -12032,6 +11848,122 @@ msgstr "กำหนดตำแหน่งพื้นที่ ที่ใ�
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36500"
+msgid "Stereoscopic mode (current)"
+msgstr "โหมดภาพสามมิติ (ปัจจุบัน)"
+
+msgctxt "#36501"
+msgid "Stereoscopic mode"
+msgstr "โหมดภาพสามมิติ"
+
+msgctxt "#36502"
+msgid "None"
+msgstr "ไม่ใช้"
+
+msgctxt "#36503"
+msgid "Over/Under"
+msgstr "แบ่ง บน/ล่าง"
+
+msgctxt "#36504"
+msgid "Side by side"
+msgstr "แยก ซ้ายขวา"
+
+msgctxt "#36505"
+msgid "Anaglyph Red/Cyan"
+msgstr "แยกสี แดง/ฟ้า"
+
+msgctxt "#36506"
+msgid "Anaglyph Green/Magenta"
+msgstr "แยกสี เขียว/บานเย็น"
+
+msgctxt "#36507"
+msgid "Interlaced"
+msgstr "แยกเส้นทางขวาง"
+
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "ใช้ฮาร์ดแวร์"
+
+msgctxt "#36509"
+msgid "Monoscopic - 2D"
+msgstr "มุมมองเดียว - 2มิติ"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos"
+msgstr "โหมดการเล่น ของวิดีโอแบบสามมิติ"
+
+msgctxt "#36521"
+msgid "Ask me"
+msgstr "ถามฉัน"
+
+msgctxt "#36522"
+msgid "Use preferred mode"
+msgstr "ใช้โหมดที่กำหนดไว้"
+
+msgctxt "#36524"
+msgid "Preferred mode"
+msgstr "โหมดที่กำหนดไว้"
+
+msgctxt "#36525"
+msgid "Same as movie (autodetect)"
+msgstr "แบบเดียวกับภาพยนตร์ (ตรวจสอบอัตโนมัติ)"
+
+msgctxt "#36526"
+msgid "Disable stereoscopic mode when playback is stopped"
+msgstr "ปิดใช้งาน โหมดภาพสามมิติ เมื่อจบการเล่น"
+
+msgctxt "#36527"
+msgid "This video is stereoscopic. Select playback mode"
+msgstr "วิดีโอนี้เป็นแบบสามมิติ. จงเลือกโหมดการเล่น"
+
+msgctxt "#36528"
+msgid "Select stereoscopic mode"
+msgstr "เลือก โหมดภาพสามมิติ"
+
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "ภาพเดียว (2มิติ)"
+
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr "โหมดที่กำหนดไว้"
+
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr "เลือกโหมดอื่น..."
+
+msgctxt "#36532"
+msgid "Same as movie"
+msgstr "แบบเดียวกับภาพยนตร์"
+
+msgctxt "#36535"
+msgid "Stereoscopic mode of video"
+msgstr "โหมดภาพสามมิติ ของวิดีโอ"
+
+msgctxt "#36536"
+msgid "Stereoscopic mode inverted"
+msgstr "โหมดภาพสามมิติ กลับด้าน"
+
+msgctxt "#36537"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36538"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36539"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36540"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36541"
+msgid "Allows volume control from AirPlay clients."
+msgstr "อนุญาตให้มีการควบคุมระดับเสียง จากลูกข่าย AirPlay."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

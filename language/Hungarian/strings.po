@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Fájlműveletek  félbeszakítása"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Felbontás"
@@ -852,10 +856,6 @@ msgstr "Nyelv"
 msgctxt "#249"
 msgid "Music"
 msgstr "Zene"
-
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Vizualizáció"
 
 msgctxt "#251"
 msgid "Select destination directory"
@@ -1188,10 +1188,6 @@ msgstr "Képkockasebesség konvertálás"
 msgctxt "#337"
 msgid "Audio output"
 msgstr "Hangkimenet"
-
-msgctxt "#338"
-msgid "Analog"
-msgstr "Analóg"
 
 msgctxt "#339"
 msgid "Optical/Coax"
@@ -1585,10 +1581,6 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "Gyorsítótár"
 
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "Merevlemez"
-
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1824,10 +1816,6 @@ msgstr "Médiainformáció betöltése fájlokból..."
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Használat alapján"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "Vizualizációk engedélyezése"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2265,14 +2253,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Egyéni"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "Hangerőingadozások kiegyenlítése"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "Hangerőingadozások kiegyenlítése"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Zeneszám szintekhez"
@@ -2280,18 +2260,6 @@ msgstr "Zeneszám szintekhez"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Album szintekhez"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "Előerősítés - Hangerőkiegyenlített fájlok"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "Előerősítés - Nem hangerőkiegyenlített fájlok"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "Túlvezérelt torzítás elkerülése hangerőkiegyenlítésnél"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -3501,10 +3469,6 @@ msgctxt "#10039"
 msgid "Level: Expert"
 msgstr "Profi szint"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "Kiegészítő böngésző"
-
 msgctxt "#10041"
 msgid "Reset settings"
 msgstr "Beállítások nullázása"
@@ -3521,14 +3485,6 @@ msgctxt "#10044"
 msgid "No help available"
 msgstr "Nem áll rendelkezésre súgó"
 
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "Igen/nem párbeszédpanel"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "Folyamatjelző párbeszédpanel"
-
 msgctxt "#10126"
 msgid "File browser"
 msgstr "Fájlkezelő"
@@ -3536,6 +3492,10 @@ msgstr "Fájlkezelő"
 msgctxt "#10128"
 msgid "Network setup"
 msgstr "Hálózat beállítása"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Médiaforrás"
 
 msgctxt "#10130"
 msgid "Profile settings"
@@ -3553,9 +3513,29 @@ msgctxt "#10134"
 msgid "Favourites"
 msgstr "Kedvencek"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Dalok/Infó"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Intelligens lejátszáslista szerkesztő"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Intelligens lejátszáslista szabályszerkesztő"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Képek/Infó"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Kiegészítő beállítások"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Bővítmények/Infó"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3645,17 +3625,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Filminfó"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "Párbeszédpanel választása"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Zene/Infó"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "Párbeszédpanel OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3668,14 +3640,6 @@ msgstr "Programok/Infó"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Teljesképernyős videó"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "Vizualizáció kiválasztása"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "Fájl egyesítés"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4013,10 +3977,6 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Újraindítás"
 
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "Kicsinyítés"
-
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Be(ki)kapcsoló gomb művelet"
@@ -4137,10 +4097,6 @@ msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU HQ felskálázás (csak megfelelő HW esetén)"
 
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr "VDPAU stúdiószint színkonverzió"
-
 msgctxt "#13130"
 msgid "Blank other displays"
 msgstr "A többi megjelenítő sötétítése"
@@ -4192,10 +4148,6 @@ msgstr "Átjáró"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "Elsődleges DNS"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "A beállítás meghiúsult"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4377,6 +4329,10 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Ventilátorsebesség felülbírálása"
 
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Betűtípusok"
+
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Kétirányú szövegek megfordítása"
@@ -4436,10 +4392,6 @@ msgstr "Diavetítés"
 msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Rekurzív diavetítés"
-
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "Véletlenszerű"
 
 msgctxt "#13320"
 msgid "Stereo"
@@ -4653,21 +4605,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Előbeállítások"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "Nincs előbeállítás\nehhez a vizualizációhoz"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "Nincs altípusa\nennek a vizualizációnak"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Tálcát nyit/zár"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "Vizualizáció használata zenelejátszás esetén"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4853,10 +4793,6 @@ msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Kép-órajel (hang sebesség váltás)"
 
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr "Maximális sebességváltási mérték (%)"
-
 msgctxt "#13505"
 msgid "Resample quality"
 msgstr "Újramintavételezés minősége"
@@ -4900,6 +4836,10 @@ msgstr "Helyi kép"
 msgctxt "#13515"
 msgid "No art"
 msgstr "Nincs kép"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Kép hozzáadása"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5045,13 +4985,13 @@ msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Legközelebbi nagyváros"
 
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "Videó/Hang/DVD gyorsítótár - Merevlemez"
-
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Videó gyorsítótár - DVD-ROM"
+
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Helyi hálózat"
 
 msgctxt "#14028"
 msgid "Internet"
@@ -5061,6 +5001,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Hang gyorsítótár - DVD-ROM"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "Helyi hálózat"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "Internet"
@@ -5068,6 +5012,10 @@ msgstr "Internet"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD gyorsítótár - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Helyi hálózat"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5217,6 +5165,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Eltávolítás kedvencekből"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Színek"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Időzóna (ország)"
@@ -5353,6 +5305,10 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Felszín alapértelmezése"
 
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Téma"
+
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Alapértelmezett téma"
@@ -5372,10 +5328,6 @@ msgstr "Nincs csatlakozás"
 msgctxt "#15213"
 msgid "Play using..."
 msgstr "Egyéb lejátszóval..."
-
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "Finomított Hang/Kép szinkronizáció"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
@@ -5516,10 +5468,6 @@ msgstr "Partymód megszakítva."
 msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Zeneszám nem található a médiatárban."
-
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "Sikertelen adatbázis előkészítés."
 
 msgctxt "#16033"
 msgid "Could not open database."
@@ -5669,10 +5617,6 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Inverse Telecine"
 
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr "Lanczos3 gyors"
-
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Auto"
@@ -5701,17 +5645,9 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 optimalizált"
-
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
-
-msgctxt "#16325"
-msgid "Auto - ION Optimized"
-msgstr "Auto - ION-ra optimalizálva"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6361,10 +6297,6 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Időkorlát a lejátszás indításához"
 
-msgctxt "#19171"
-msgid "Start playback minimized"
-msgstr "A lejátszás indítása minimalizálva"
-
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Azonnali felvétel hossza"
@@ -6432,10 +6364,6 @@ msgstr "Az EPG adatbázis törlődik"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Az utolsó csatorna folytatása bekapcsoláskor"
-
-msgctxt "#19190"
-msgid "Minimized"
-msgstr "Minimalizált"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6593,10 +6521,6 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "A csatorna OSD bezárása csatornaváltáskor"
 
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr "EPG frissítések szüneteltetése TV nézéskor"
-
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "Mindig a háttér-kiszolgálón lévő csatornasorrend használata "
@@ -6608,10 +6532,6 @@ msgstr "Keresési eredmények törlése"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Értesítés megjelenítése időzítő frissítésekor"
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "A háttér-kiszolgáló csatornaszámozásának használata (1 PVR kiegészítővel)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7436,14 +7356,6 @@ msgstr "Időjárás információ megjelenítése"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Rendszerinformáció megjelenítése"
-
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr "C, E, F lemezek szabad területének megjelenítése"
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr "E, F, G lemezek szabad területének megjelenítése"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8341,6 +8253,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Színész minikép beállítás"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Könyvjelző törlése"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Epizód-könyvj. törlése"
@@ -8377,10 +8293,6 @@ msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Fanartkép"
 
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr "Fanartkép megjelenítése a médiatárban"
-
 msgctxt "#20415"
 msgid "Scanning for new content"
 msgstr "Új tartalom keresése"
@@ -8392,6 +8304,10 @@ msgstr "Első adás"
 msgctxt "#20417"
 msgid "Writer"
 msgstr "Írta"
+
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Írták"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -8608,6 +8524,18 @@ msgstr "Médiamegosztás hozzáadása..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Videó és zene megosztás UPnP-n keresztül"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Távoli UPnP lejátszók keresése"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Könyvjelző létrehozva"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "Epizód-könyvjelző létrehozva"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -9149,6 +9077,18 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "Tájolás"
 
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "Alhely"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "Képtípus"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Létrehozás ideje"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "Kiegészítő kategóriák"
@@ -9220,6 +9160,10 @@ msgstr "Eredeti Tx referencia"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "Létrehozás dátuma"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Sürgösség"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9389,10 +9333,6 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "Műsorkalauz"
 
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "Max. képarányhiba, feketesávok minimalizálásakor (%)"
-
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "Videófájlokat is megjelenít a listázáskor"
@@ -9412,6 +9352,10 @@ msgstr "Betűtípus"
 msgctxt "#22031"
 msgid "Size"
 msgstr "Méret"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Színek"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9544,10 +9488,6 @@ msgstr "Képernyővédő"
 msgctxt "#24009"
 msgid "Script"
 msgstr "Program"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Vizualizáció"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -10161,6 +10101,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Egyedi program gomb engedélyezése"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Automatikus bejelentkezés"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Elindítás meghiúsult"
@@ -10273,9 +10217,21 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Nincs előző lejátszandó elem"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Zeroconf indítása meghiúsult"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Biztos, hogy az Apple Bonjour Service telepítve van? (Részletes információ a naplóban)"
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "Az AirPlay-hez engedélyezve kell lennie a Zeroconfnak."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Zeroconf leállítása sikertelen"
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10284,10 +10240,6 @@ msgstr "Video leképező rendszer hiba"
 msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Az átméretező (scaler) nem használható, visszaállva a bilinear eljárásra"
-
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr "A beállított hangeszköz nem használható"
 
 msgctxt "#34403"
 msgid "Check your audiosettings"
@@ -10320,10 +10272,6 @@ msgstr "Perifériák"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Szabványos HID eszköz"
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr "Szabványos hálózati adapter"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10377,10 +10325,6 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "Gyári szám"
 
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr "Pulse-Eight CEC adapter"
-
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10401,10 +10345,6 @@ msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Kapcsoló parancsok engedélyezése"
 
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr "Adapter megnyitása sikertelen"
-
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
 msgstr "TV bekapcsolása XBMC elindításával"
@@ -10421,10 +10361,6 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "A CEC csatlakozó nem található. Állítsd be manuálisan."
 
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "A CEC adapter nem található."
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI csatlakozó száma"
@@ -10432,10 +10368,6 @@ msgstr "HDMI csatlakozó száma"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Csatlakozva"
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "Az adaptert megtaláltam, de a libcec nem elérhető"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10489,14 +10421,6 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "A kapcsolat megszakadt"
 
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr "A felhasználó nem nem rendelkezik engedéllyel a CEC adapterhez"
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr "A port foglalt. Csak egy program kezelheti a CEC adaptert"
-
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Lejátszás szüneteltetése másik forrásra való váltáskor"
@@ -10528,3 +10452,555 @@ msgstr "Nem támogatott libCEC interfész verzió. A meglévő verzió (%x) alac
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Elem mappa"
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Az RSS hírcsatornák szerkesztése."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Válaszd ki a jelenlegi időzónádat."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Videófájlok hardveres dekódolásának engedélyezése."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Teletext engedélyezése élő TV műsor nézésekor."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Teletext méretezése 4:3 arányra"
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "A feliratok helye a képernyőn."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36260"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36524"
+msgid "Preferred mode"
+msgstr "Előnyben részesített mód"
+
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "Monó (2D)"
+
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr "Előnyben részesített mód"
+
+msgctxt "#36537"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36538"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36539"
+msgid "No info available yet."
+msgstr "Nincs még információ"
+
+msgctxt "#36540"
+msgid "No info available yet."
+msgstr "Nincs még információ"
