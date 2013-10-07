@@ -222,6 +222,11 @@ void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelin
 
   if (currentItem)
   {
+    /* Let's cheat, if the timecode is something absurd, like bigger than our current
+     * duration, let's just reset it to 0 */
+    if (currentPosition > GetItemDuration(currentItem))
+      currentPosition = 0;
+
     if (currentItem->GetProperty("viewOffset").asInteger() != currentPosition)
     {
       currentItem->SetProperty("viewOffset", currentPosition);
