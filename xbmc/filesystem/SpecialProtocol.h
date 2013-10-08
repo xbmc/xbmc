@@ -64,7 +64,7 @@ public:
   static bool ComparePath(const CStdString &path1, const CStdString &path2);
   static void LogPaths();
 
-  static CStdString TranslatePath(const CStdString &path);
+  static CStdString TranslatePath(const std::string& path);
   static CStdString TranslatePath(const CURL &url);
   static CStdString TranslatePathConvertCase(const CStdString& path);
 
