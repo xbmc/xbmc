@@ -415,4 +415,7 @@ void CGUIWindowPVR::SetSelectedGroup(CPVRChannelGroupPtr group)
   // we need to register the channel window to receive changes from the new group
   m_selectedGroup->RegisterObserver(m_windowChannels);
   g_PVRManager.SetPlayingGroup(m_selectedGroup);
+
+  // update label
+  SetLabel(CONTROL_BTNCHANNEL_GROUPS, g_localizeStrings.Get(19141) + ": " + (m_selectedGroup->GroupType() == PVR_GROUP_TYPE_INTERNAL ? g_localizeStrings.Get(19282) : m_selectedGroup->GroupName()));
 }
