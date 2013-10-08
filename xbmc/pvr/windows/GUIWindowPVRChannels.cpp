@@ -46,7 +46,7 @@ using namespace PVR;
 using namespace EPG;
 
 CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent) :
-  CGUIWindowPVRCommon(parent, PVR_WINDOW_CHANNELS, CONTROL_BTNCHANNEL_TYPE, CONTROL_LIST_CHANNELS)
+  CGUIWindowPVRCommon(parent, PVR_WINDOW_CHANNELS, CONTROL_BTNCHANNELS, CONTROL_LIST_CHANNELS)
                      
 {
   m_bShowHiddenChannels = false;

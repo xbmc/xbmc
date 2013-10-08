@@ -184,7 +184,7 @@ void CGUIWindowPVR::OnInitWindow(void)
 
   if (bReset)
   {
-    CGUIMessage msg(GUI_MSG_FOCUSED, GetID(), CONTROL_BTNCHANNEL_TYPE, 0, 0);
+    CGUIMessage msg(GUI_MSG_FOCUSED, GetID(), CONTROL_BTNCHANNELS, 0, 0);
     OnMessageFocus(msg);
   }
 }

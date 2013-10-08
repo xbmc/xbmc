@@ -51,7 +51,7 @@ namespace PVR
   #define CONTROL_LABELGROUP           30
 
   #define CONTROL_BTNGUIDE             31
-  #define CONTROL_BTNCHANNEL_TYPE      32
+  #define CONTROL_BTNCHANNELS          32
   #define CONTROL_BTNCHANNEL_GROUPS    33
   #define CONTROL_BTNRECORDINGS        34
   #define CONTROL_BTNTIMERS            35
