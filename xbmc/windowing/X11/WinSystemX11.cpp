@@ -26,6 +26,7 @@
 #include "WinSystemX11.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "settings/Setting.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "guilib/DispResource.h"
@@ -174,6 +175,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
   if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
   {
+    SetGrabMode();
     RefreshGlxContext();
     return true;
   }
@@ -216,6 +218,7 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     if ((m_SDLSurface->flags & SDL_OPENGL) != SDL_OPENGL)
       CLog::Log(LOGERROR, "CWinSystemX11::SetFullScreen SDL_OPENGL not set, SDL_GetError:%s", SDL_GetError());
 
+    SetGrabMode();
     RefreshGlxContext();
 
     return true;
@@ -558,6 +561,39 @@ int CWinSystemX11::XErrorHandler(Display* dpy, XErrorEvent* error)
 bool CWinSystemX11::EnableFrameLimiter()
 {
   return m_minimized;
+}
+
+void CWinSystemX11::SetGrabMode(const CSetting *setting /*= NULL*/)
+{
+  bool enabled;
+  if (setting)
+    enabled = ((CSettingBool*)setting)->GetValue();
+  else
+    enabled = CSettings::Get().GetBool("input.enablesystemkeys");
+    
+  if (m_SDLSurface && m_SDLSurface->flags & SDL_FULLSCREEN)
+  {
+    if (enabled)
+    {
+      //SDL will always call XGrabPointer and XGrabKeyboard when in fullscreen
+      //so temporarily zero the SDL_FULLSCREEN flag, then turn off SDL grab mode
+      //this will make SDL call XUnGrabPointer and XUnGrabKeyboard
+      m_SDLSurface->flags &= ~SDL_FULLSCREEN;
+      SDL_WM_GrabInput(SDL_GRAB_OFF);
+      m_SDLSurface->flags |= SDL_FULLSCREEN;
+    }
+    else
+    {
+      //turn off key grabbing, which will actually make SDL turn it on when in fullscreen
+      SDL_WM_GrabInput(SDL_GRAB_OFF);
+    }
+  }
+}
+
+void CWinSystemX11::OnSettingChanged(const CSetting *setting)
+{
+  if (setting->GetId() == "input.enablesystemkeys")
+    SetGrabMode(setting);
 }
 
 #endif
