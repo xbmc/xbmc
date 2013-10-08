@@ -88,9 +88,9 @@ const char *CGUIWindowPVRCommon::GetName(void) const
   switch(m_window)
   {
   case PVR_WINDOW_EPG:
-    return "epg";
+    return "guide";
   case PVR_WINDOW_CHANNELS:
-      return m_parent->m_bRadio ? "radio" : "tv";
+    return m_parent->m_bRadio ? "radio" : "tv";
   case PVR_WINDOW_RECORDINGS:
     return "recordings";
   case PVR_WINDOW_SEARCH:
@@ -153,6 +153,38 @@ void CGUIWindowPVRCommon::SetInvalid()
 void CGUIWindowPVRCommon::OnInitWindow()
 {
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
+}
+
+bool CGUIWindowPVRCommon::OnMessage(CGUIMessage& message)
+{
+  switch (message.GetMessage())
+  {
+    case GUI_MSG_WINDOW_INIT:
+    {
+      CStdString dir = message.GetStringParam();
+      if(dir) {
+        dir = dir.ToLower();
+        
+        if(dir.Equals("radio"))
+          m_parent->m_bRadio = true;
+        else if(dir.Equals("tv"))
+          m_parent->m_bRadio = false;
+        
+        if(dir.Equals(GetName()))
+        {
+          if(!IsActive())
+          {
+            m_parent->SetActiveView(this);
+            UpdateData();
+          }
+          
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 }
 
 bool CGUIWindowPVRCommon::SelectPlayingFile(void)

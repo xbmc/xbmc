@@ -169,8 +169,6 @@ void CGUIWindowPVR::OnInitWindow(void)
   CreateViews();
 
   CSingleLock graphicsLock(g_graphicsContext);
-  SET_CONTROL_VISIBLE(CONTROL_LIST_CHANNELS);
-
   CSingleLock lock(m_critSection);
   if (m_savedSubwindow)
     m_savedSubwindow->OnInitWindow();
@@ -191,8 +189,16 @@ void CGUIWindowPVR::OnInitWindow(void)
 
 bool CGUIWindowPVR::OnMessage(CGUIMessage& message)
 {
-  return (OnMessageFocus(message) ||OnMessageClick(message) ||
-      CGUIMediaWindow::OnMessage(message));
+  CGUIWindow::OnMessage(message);
+  
+  return m_windowChannels->OnMessage(message) ||
+    m_windowGuide->OnMessage(message) ||
+    m_windowRecordings->OnMessage(message) ||
+    m_windowTimers->OnMessage(message) ||
+    m_windowSearch->OnMessage(message) ||
+    OnMessageFocus(message) ||
+    OnMessageClick(message) ||
+    CGUIMediaWindow::OnMessage(message);
 }
 
 void CGUIWindowPVR::OnWindowLoaded(void)

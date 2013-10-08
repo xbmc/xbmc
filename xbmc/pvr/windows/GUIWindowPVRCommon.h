@@ -94,6 +94,7 @@ namespace PVR
 
     virtual void OnInitWindow(void);
     virtual void OnWindowUnload(void);
+    virtual bool OnMessage(CGUIMessage& message);
 
   protected:
     virtual bool SelectPlayingFile(void);
