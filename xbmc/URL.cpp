@@ -147,33 +147,39 @@ void CURL::Parse(const std::string& strURL1)
   else
   {
     SetProtocol(strURL.substr(0, iPos));
-    iPos += 3;
+    iPos += 3; // length of "://"
   }
 
-  // virtual protocols
-  // why not handle all format 2 (protocol://file) style urls here?
-  // ones that come to mind are iso9660, cdda, musicdb, etc.
-  // they are all local protocols and have no server part, port number, special options, etc.
-  // this removes the need for special handling below.
-  if (
-    m_strProtocol.Equals("stack") ||
-    m_strProtocol.Equals("virtualpath") ||
-    m_strProtocol.Equals("multipath") ||
-    m_strProtocol.Equals("filereader") ||
-    m_strProtocol.Equals("special")
-    )
+  // virtual protocols / local protocols
+  // they have no server part, port number, special options, etc.
+  // FIXME: add more protocols here?
+  if ( m_strProtocol == "stack"         ||
+        m_strProtocol == "virtualpath"  ||
+        m_strProtocol == "multipath"    ||
+        m_strProtocol == "filereader"   ||
+        m_strProtocol == "special"      ||
+        m_strProtocol == "iso9660"      ||
+        m_strProtocol == "musicdb"      ||
+        m_strProtocol == "videodb"      ||
+        m_strProtocol == "sources"      ||
+        m_strProtocol == "pvr"          ||
+        m_strProtocol == "cdda"         ||
+        m_strProtocol.compare(0, 3, "mem", 3) == 0)
   {
     SetFileName(strURL.substr(iPos));
     return;
   }
 
-  // check for username/password - should occur before first /
+  const size_t strLen = strURL1.length();
+
+  if (iPos >= strLen)
+    return;
+
   if (iPos == std::string::npos) 
     iPos = 0;
 
   // for protocols supporting options, chop that part off here
-  // maybe we should invert this list instead?
-  size_t iEnd = strURL.length();
+  size_t iEnd = strLen;
   const char* sep = NULL;
 
   //TODO fix all Addon paths
@@ -221,42 +227,43 @@ void CURL::Parse(const std::string& strURL1)
   if (iSlash != std::string::npos && iSlash >= iEnd)
     iSlash = std::string::npos; // was an invalid slash as it was contained in options
 
-  if ( !m_strProtocol.Equals("iso9660") )
+  // check for username/password - should occur before first '/'
+  const size_t iAlphaSign = strURL.find('@', iPos);
+  if (iAlphaSign != std::string::npos && iAlphaSign < iEnd && iAlphaSign < iSlash)
   {
-    const size_t iAlphaSign = strURL.find('@', iPos);
-    if (iAlphaSign != std::string::npos && iAlphaSign < iEnd && iAlphaSign < iSlash)
+    // username/password found
+    std::string strUserNamePassword(strURL, iPos, iAlphaSign - iPos);
+
+    // first extract domain, if protocol is smb
+    if (m_strProtocol.Equals("smb"))
     {
-      // username/password found
-      std::string strUserNamePassword(strURL, iPos, iAlphaSign - iPos);
+      const size_t iSemiColon = strUserNamePassword.find(';');
 
-      // first extract domain, if protocol is smb
-      if (m_strProtocol.Equals("smb"))
-      {
-        const size_t iSemiColon = strUserNamePassword.find(';');
-
-        if (iSemiColon != std::string::npos)
-        {
-          m_strDomain = strUserNamePassword.substr(0, iSemiColon);
-          strUserNamePassword.erase(0, iSemiColon + 1);
-        }
+      if (iSemiColon != std::string::npos && iSemiColon < strUserNamePassword.find(':'))
+      { // domain;username
+        m_strDomain = strUserNamePassword.substr(0, iSemiColon);
+        strUserNamePassword.erase(0, iSemiColon + 1);
       }
-
-      const size_t iColon = strUserNamePassword.find(':');
-      if (iColon != std::string::npos)
-      {   // username:password
-        m_strUserName = strUserNamePassword.substr(0, iColon);
-        m_strPassword = strUserNamePassword.substr(iColon + 1);
-      }
-      else // username
-        m_strUserName = strUserNamePassword;
-
-      iPos = iAlphaSign + 1;
-      iSlash = strURL.find('/', iAlphaSign);
-
-      if (iSlash >= iEnd)
-        iSlash = std::string::npos;
     }
+
+    const size_t iColon = strUserNamePassword.find(':');
+    if (iColon != std::string::npos)
+    {   // username:password
+      m_strUserName = strUserNamePassword.substr(0, iColon);
+      m_strPassword = strUserNamePassword.substr(iColon + 1);
+    }
+    else // username
+      m_strUserName = strUserNamePassword;
+
+    iPos = iAlphaSign + 1;
+    iSlash = strURL.find('/', iAlphaSign);
+
+    if (iSlash >= iEnd)
+      iSlash = std::string::npos;
   }
+
+  if (iPos >= strLen)
+    return;
 
   // detect hostname:port/
   if (iSlash == std::string::npos)
@@ -298,32 +305,6 @@ void CURL::Parse(const std::string& strURL1)
         m_strShareName = m_strFileName.substr(0, iSlash);
     }
   }
-
-  // iso9960 doesnt have an hostname;-)
-  if (m_strProtocol == "iso9660"
-    || m_strProtocol == "musicdb"
-    || m_strProtocol == "videodb"
-    || m_strProtocol == "sources"
-    || m_strProtocol == "pvr"
-    || m_strProtocol.substr(0, 3) == "mem")
-  {
-    if (m_strHostName != "" && m_strFileName != "")
-    {
-      std::string strFileName(m_strFileName);
-      m_strFileName = m_strHostName + "/" + m_strFileName;
-      m_strHostName.clear();
-    }
-    else
-    {
-      if (!m_strHostName.empty() && strURL[iEnd-1]=='/')
-        m_strFileName = m_strHostName + "/";
-      else
-        m_strFileName = m_strHostName;
-      m_strHostName.clear();
-    }
-  }
-
-  StringUtils::Replace(m_strFileName, "\\", "/");
 
   /* update extension */
   SetFileName(m_strFileName);
