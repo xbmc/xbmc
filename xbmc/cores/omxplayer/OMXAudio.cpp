@@ -258,15 +258,20 @@ bool COMXAudio::PortSettingsChanged()
         return false;
       }
 
-      // Splitter will copy input params to output when input port is enabled.
-      omx_err = m_omx_splitter.SetStateForComponent(OMX_StateIdle);
+      m_pcm_output.nPortIndex = m_omx_splitter.GetOutputPort();
+      omx_err = m_omx_splitter.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
       if(omx_err != OMX_ErrorNone)
       {
-        CLog::Log(LOGERROR, "COMXAudio::AddPackets - Error setting OMX_StateIdle 0x%08x for m_omx_splitter", omx_err);
+        CLog::Log(LOGERROR, "%s::%s - error m_omx_splitter SetParameter omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
         return false;
       }
-      m_omx_splitter.EnablePort(m_omx_splitter.GetInputPort(), false);
-      m_omx_splitter.DisablePort(m_omx_splitter.GetInputPort(), false);
+      m_pcm_output.nPortIndex = m_omx_splitter.GetOutputPort() + 1;
+      omx_err = m_omx_splitter.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
+      if(omx_err != OMX_ErrorNone)
+      {
+        CLog::Log(LOGERROR, "%s::%s - error m_omx_splitter SetParameter omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+        return false;
+      }
     }
 
     if( m_omx_render_analog.IsInitialized() )
