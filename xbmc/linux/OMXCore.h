@@ -165,6 +165,7 @@ public:
   bool IsEOS() { return m_eos; };
   bool BadState() { return m_resource_error; };
   void ResetEos();
+  void IgnoreNextError(OMX_S32 error) { m_ignore_error = error; }
 
 private:
   OMX_HANDLETYPE m_handle;
@@ -175,6 +176,7 @@ private:
   pthread_mutex_t   m_omx_eos_mutex;
   pthread_mutex_t   m_lock;
   std::vector<omx_event> m_omx_events;
+  OMX_S32 m_ignore_error;
 
   OMX_CALLBACKTYPE  m_callbacks;
 
