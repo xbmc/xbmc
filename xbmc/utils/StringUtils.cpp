@@ -168,15 +168,22 @@ std::string& StringUtils::Trim(std::string &str)
   return TrimRight(str);
 }
 
+// hack to ensure that std::string::iterator will be dereferenced as _unsigned_ char
+// without this hack "TrimX" functions failed on Win32 with UTF-8 strings
+static int isspace_c(char c)
+{
+  return ::isspace((unsigned char)c);
+}
+
 std::string& StringUtils::TrimLeft(std::string &str)
 {
-  str.erase(str.begin(), ::find_if(str.begin(), str.end(), ::not1(::ptr_fun<int, int>(::isspace))));
+  str.erase(str.begin(), ::find_if(str.begin(), str.end(), ::not1(::ptr_fun(isspace_c))));
   return str;
 }
 
 std::string& StringUtils::TrimRight(std::string &str)
 {
-  str.erase(::find_if(str.rbegin(), str.rend(), ::not1(::ptr_fun<int, int>(::isspace))).base(), str.end());
+  str.erase(::find_if(str.rbegin(), str.rend(), ::not1(::ptr_fun(isspace_c))).base(), str.end());
   return str;
 }
 
