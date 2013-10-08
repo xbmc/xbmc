@@ -367,13 +367,13 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   while(dwRet != NO_ERROR)
   {
     strPath = URLEncode(urlIn);
-    LPCTSTR pUser = urlIn.GetUserNameA().empty() ? NULL : (LPCTSTR)urlIn.GetUserNameA().c_str();
+    LPCTSTR pUser = urlIn.GetUserName().empty() ? NULL : (LPCTSTR)urlIn.GetUserName().c_str();
     LPCTSTR pPass = urlIn.GetPassWord().empty() ? NULL : (LPCTSTR)urlIn.GetPassWord().c_str();
     dwRet = WNetAddConnection2(&nr, pPass, pUser, CONNECT_TEMPORARY);
 #ifdef _DEBUG
-    CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserNameA().c_str(), urlIn.GetPassWord().c_str());
+    CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserName().c_str(), urlIn.GetPassWord().c_str());
 #else
-    CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserNameA().c_str(), "XXXX");
+    CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserName().c_str(), "XXXX");
 #endif
     if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD || dwRet == ERROR_LOGON_FAILURE)
     {
