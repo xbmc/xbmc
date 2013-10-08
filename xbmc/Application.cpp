@@ -335,10 +335,15 @@
 
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
+#include "android/activity/AndroidFeatures.h"
 #endif
 
 #ifdef TARGET_WINDOWS
 #include "utils/Environment.h"
+#endif
+
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
 #endif
 
 using namespace std;
@@ -1685,6 +1690,28 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
     {
       musicvideoScraper->Reset();
       return true;
+    }
+  }
+  else if (settingId == "videoplayer.useamcodec")
+  {
+    // Do not permit amcodec to be used on non-aml platforms.
+    // The setting will be hidden but the default value is true,
+    // so change it to false.
+    if (!aml_present())
+    {
+      CSettingBool *useamcodec = (CSettingBool*)setting;
+      useamcodec->SetValue(false);
+    }
+  }
+  else if (settingId == "videoplayer.usemediacodec")
+  {
+    // Do not permit MediaCodec to be used Android platforms that do not have it.
+    // The setting will be hidden but the default value is true,
+    // so change it to false.
+    if (CAndroidFeatures::GetVersion() < 16)
+    {
+      CSettingBool *usemediacodec = (CSettingBool*)setting;
+      usemediacodec->SetValue(false);
     }
   }
 
