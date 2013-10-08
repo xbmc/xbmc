@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,28 +20,30 @@
 
 #pragma once
 
-#include "Texture.h"
+#include "TextureGL.h"
 
-#if defined(HAS_GL) || defined(HAS_GLES)
+#if defined(HAS_OMXPLAYER)
 
 #include "system_gl.h"
 
 /************************************************************************/
 /*    CGLTexture                                                       */
 /************************************************************************/
-class CGLTexture : public CBaseTexture
+class CPiTexture : public CGLTexture
 {
 public:
-  CGLTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
-  virtual ~CGLTexture();
-
+  CPiTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
+  virtual ~CPiTexture();
   void CreateTextureObject();
-  virtual void DestroyTextureObject();
   void LoadToGPU();
-  void BindToUnit(unsigned int unit);
+  void Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU);
+  void Allocate(unsigned int width, unsigned int height, unsigned int format);
+  bool LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate);
 
 protected:
-  GLuint m_texture;
+
+private:
+  void *m_egl_image;
 };
 
 #endif
