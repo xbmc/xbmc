@@ -491,6 +491,7 @@ void CGUIDialogVideoInfo::OnSearch(CStdString& strSearch)
 /// \param items Items Found
 void CGUIDialogVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
 {
+#ifndef __PLEX__
   CVideoDatabase db;
   if (!db.Open())
     return;
@@ -534,6 +535,7 @@ void CGUIDialogVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   }
   CGUIWindowVideoBase::AppendAndClearSearchItems(movies, "[" + g_localizeStrings.Get(20391) + "] ", items);
   db.Close();
+#endif
 }
 
 /// \brief React on the selected search item

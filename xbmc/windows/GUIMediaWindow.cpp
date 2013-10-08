@@ -1582,6 +1582,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
   SetupShares();
   if (!strDirectory.IsEmpty())
   {
+#ifndef __PLEX__
     // Build the directory history for default path
     CStdString strPath, strParentPath;
     strPath = strDirectory;
@@ -1626,6 +1627,9 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
       strPath = strParentPath;
       URIUtils::RemoveSlashAtEnd(strPath);
     }
+#else
+    m_history.AddPath(strDirectory);
+#endif
   }
   else
     m_history.ClearPathHistory();
@@ -1867,22 +1871,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
   if (!item)
     return;
-
-  /* PLEX */
-  // add rating options
-  if (item->HasProperty("ratingKey") && item->HasProperty("pluginIdentifier") && (item->IsRemoteSharedPlexMediaServerLibrary() == false))
-    buttons.Add(CONTEXT_BUTTON_RATING, item->HasProperty("userRating") ? 40206 : 40205);
-
-  if (item->IsPlexMediaServerLibrary() &&
-      (item->IsRemoteSharedPlexMediaServerLibrary() == false) &&
-      (item->GetProperty("type") == "episode" || item->GetProperty("type") == "movie" ||
-       item->GetProperty("type") == "track"   || item->GetProperty("type") == "photo"))
-  {
-    CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item->GetProperty("plexserver").asString());
-    if (server && server->SupportsDeletion())
-      buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
-  }
-  /* END PLEX */
 
   // user added buttons
   CStdString label;

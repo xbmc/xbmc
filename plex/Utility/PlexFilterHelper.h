@@ -50,6 +50,7 @@ class CPlexFilterHelper
 
     void SetSectionUrl(const CStdString& url) { m_sectionUrl = url; }
     CURL GetSectionUrl() const { return m_sectionUrl; }
+    CURL GetSectionUrlWithSecondaryFilter() const { CURL u(m_sectionUrl); PlexUtils::AppendPathToURL(u, m_secondaryFilter); return u;}
 
   private:
     std::map<CStdString, CPlexFilterPtr> m_filters;
@@ -62,6 +63,7 @@ class CPlexFilterHelper
     bool m_sortDirectionAsc;
     CPlexFilterPtr m_openFilter;
 
+    CStdString m_secondaryFilter;
     CURL m_sectionUrl;
     CURL m_mapToSection;
 

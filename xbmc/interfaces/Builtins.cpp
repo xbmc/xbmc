@@ -614,8 +614,10 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if ( askToResume == true )
     {
+#ifndef __PLEX__
       if ( CGUIWindowVideoBase::ShowResumeMenu(item) == false )
         return false;
+#endif
     }
     if (item.m_bIsFolder)
     {

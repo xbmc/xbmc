@@ -103,6 +103,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_ALBUMINFO)
       {
+#ifndef __PLEX__
         CGUIWindowMusicBase *window = (CGUIWindowMusicBase *)g_windowManager.GetWindow(WINDOW_MUSIC_NAV);
         if (window)
         {
@@ -113,6 +114,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
           item.m_bIsFolder = true;
           window->OnInfo(&item, true);
         }
+#endif
         return true;
       }
       else if (iControl == CONTROL_GETTHUMB)

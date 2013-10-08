@@ -176,7 +176,10 @@ class CPlexFilter
 
       std::pair<CStdString, CStdString> f;
       BOOST_FOREACH(f, m_appliedFilters)
-        url.SetOption(f.first, f.second);
+      {
+        if (f.first != GetFilterName())
+          url.SetOption(f.first, f.second);
+      }
       
       return dir.GetDirectory(url, m_sublist);
     }

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "video/windows/GUIWindowVideoBase.h"
+#include "GUIPlexMediaWindow.h"
 
-class CGUIWindowPlexMyChannels : public CGUIWindowVideoBase {
+class CGUIWindowPlexMyChannels : public CGUIPlexMediaWindow {
 public:
   CGUIWindowPlexMyChannels();
   
-  bool OnClick(int iItem);
+  bool OnSelect(int iItem);
 };

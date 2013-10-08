@@ -87,7 +87,7 @@ public:
   void RemoveOption(const CStdString &key);
 
   /* PLEX */
-  const CStdString& GetUrlWithoutOptions() const;
+  CStdString GetUrlWithoutOptions() const;
   void AddOptions(const CUrlOptions &options);
   /* END PLEX */
 
@@ -111,10 +111,5 @@ protected:
   CStdString m_strOptions;
   CStdString m_strProtocolOptions;
   CUrlOptions m_options;
-
-  /* PLEX */
-  CStdString m_strWithoutOptions;
-  /* END PLEX */
-
   CUrlOptions m_protocolOptions;
 };

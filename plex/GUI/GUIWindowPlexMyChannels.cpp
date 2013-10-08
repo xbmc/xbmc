@@ -4,18 +4,18 @@
 #include "log.h"
 
 CGUIWindowPlexMyChannels::CGUIWindowPlexMyChannels()
-  : CGUIWindowVideoBase(WINDOW_PLEX_MYCHANNELS, "MyChannels.xml")
+  : CGUIPlexMediaWindow(WINDOW_PLEX_MYCHANNELS, "MyChannels.xml")
 {
 }
 
 bool
-CGUIWindowPlexMyChannels::OnClick(int iItem)
+CGUIWindowPlexMyChannels::OnSelect(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   
   if (!pItem->HasProperty("mediaWindow"))
-    return CGUIWindowVideoBase::OnClick(iItem);
+    return CGUIPlexMediaWindow::OnClick(iItem);
 
   CStdString window = pItem->GetProperty("mediaWindow").asString();
   CStdString action = "XBMC.ActivateWindow(" + window + "," + pItem->GetPath() + ",return)";

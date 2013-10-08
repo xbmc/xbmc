@@ -348,7 +348,6 @@
 #include "plex/Utility/BackgroundMusicPlayer.h"
 #include "plex/GUI/GUIPlexMediaWindow.h"
 #include "plex/GUI/GUIDialogFilterSort.h"
-#include "plex/GUI/GUIPlexMusicWindow.h"
 #include "plex/GUI/GUIDialogMyPlex.h"
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
 #include "plex/GUI/GUIWindowPlexPreplayVideo.h"
@@ -1404,8 +1403,8 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowSettingsCategory);
 #ifndef __PLEX__
     g_windowManager.Add(new CGUIWindowVideoNav);
-#endif
     g_windowManager.Add(new CGUIWindowVideoPlaylist);
+#endif
     g_windowManager.Add(new CGUIWindowLoginScreen);
     g_windowManager.Add(new CGUIWindowSettingsProfile);
     g_windowManager.Add(new CGUIWindow(WINDOW_SKIN_SETTINGS, "SkinSettings.xml"));
@@ -1468,14 +1467,15 @@ bool CApplication::Initialize()
     
     g_windowManager.Add(new CGUIDialogMediaFilter);
 
+#ifndef __PLEX__
     g_windowManager.Add(new CGUIWindowMusicPlayList);
     g_windowManager.Add(new CGUIWindowMusicSongs);
-#ifndef __PLEX__
     g_windowManager.Add(new CGUIWindowMusicNav);
-#endif
     g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);
+#endif
 
     /* Load PVR related Windows and Dialogs */
+#ifndef __PLEX__
     g_windowManager.Add(new CGUIDialogTeletext);
     g_windowManager.Add(new CGUIWindowPVR);
     g_windowManager.Add(new CGUIDialogPVRGuideInfo);
@@ -1488,6 +1488,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogPVRGuideOSD);
     g_windowManager.Add(new CGUIDialogPVRDirectorOSD);
     g_windowManager.Add(new CGUIDialogPVRCutterOSD);
+#endif
 
     g_windowManager.Add(new CGUIDialogSelect);
     g_windowManager.Add(new CGUIDialogMusicInfo);

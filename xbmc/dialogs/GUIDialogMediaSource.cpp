@@ -391,7 +391,9 @@ void CGUIDialogMediaSource::OnOK()
         !share.strPath.Left(6).Equals("rss://") &&
         !share.strPath.Left(7).Equals("upnp://"))
     {
+#ifndef __PLEX__
       CGUIWindowVideoBase::OnAssignContent(share.strPath);
+#endif
     }
   }
 

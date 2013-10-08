@@ -216,15 +216,7 @@ void CURL::Parse(const CStdString& strURL1)
         m_strOptions = strURL.substr(iOptions);
       iEnd = iOptions;
       m_options.AddOptions(m_strOptions);
-
-      /* PLEX */
-      m_strWithoutOptions = strURL.substr(0,iOptions);
-      /* END PLEX */
     }
-    else
-      /* PLEX */
-      m_strWithoutOptions = strURL;
-      /* END PLEX */
   }
 
   int iSlash = strURL.Find("/", iPos);
@@ -836,9 +828,15 @@ void CURL::RemoveOption(const CStdString &key)
 }
 
 /* PLEX */
-const CStdString& CURL::GetUrlWithoutOptions() const
+CStdString CURL::GetUrlWithoutOptions() const
 {
-  return m_strWithoutOptions;
+  CURL t(Get());
+  t.SetProtocolOptions("");
+  t.SetOptions("");
+
+  CLog::Log(LOGDEBUG, "CURL::GetUrlWithoutOptions %s > %s", Get().c_str(), t.Get().c_str());
+
+  return t.Get();
 }
 
 void CURL::AddOptions(const CUrlOptions &options)

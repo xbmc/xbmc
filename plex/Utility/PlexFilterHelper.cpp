@@ -126,7 +126,15 @@ void CPlexFilterHelper::BuildFilters(const CURL& baseUrl, EPlexDirectoryType typ
 
   CURL filterUrl(baseUrl);
   PlexUtils::AppendPathToURL(filterUrl, "filters");
-  filterUrl.SetOption("type", boost::lexical_cast<std::string>(type));
+
+  CStdString typeStr;
+  if (type == PLEX_DIR_TYPE_SHOW) typeStr = "2";
+  else if (type == PLEX_DIR_TYPE_EPISODE) typeStr = "4";
+  else if (type == PLEX_DIR_TYPE_ARTIST) typeStr = "8";
+  else if (type == PLEX_DIR_TYPE_ALBUM) typeStr = "9";
+
+  if (!typeStr.empty())
+    filterUrl.SetOption("type", typeStr);
 
   /* Fetch Filters */
   CFileItemList filterItems;
@@ -215,6 +223,10 @@ CURL CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& url_, bool& second
   if (!SkinHasFilters())
     return url_;
 
+  if (dirUrl.GetProtocol() == "plexserver" &&
+      (dirUrl.GetHostName() == "channels" || dirUrl.GetHostName() == "shared" || dirUrl.GetHostName() == "channeldirectory"))
+    return url_;
+
   secondary = false;
 
   if (m_mapToSection.Get() == dirUrl.Get())
@@ -240,9 +252,11 @@ CURL CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& url_, bool& second
 
       CURL url(dirUrl);
       if (tmpItems.GetProperty("HomeVideoSection").asBoolean())
-        PlexUtils::AppendPathToURL(url, "folder");
+        m_secondaryFilter = "folder";
       else
-        PlexUtils::AppendPathToURL(url, "all");
+        m_secondaryFilter = "all";
+
+      PlexUtils::AppendPathToURL(url, m_secondaryFilter);
 
       url = GetFilterUrl("", url);
 

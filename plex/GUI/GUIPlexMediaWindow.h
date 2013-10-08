@@ -16,21 +16,46 @@
 #include "Utility/PlexFilterHelper.h"
 #include "JobManager.h"
 
-class CGUIPlexMediaWindow : public CGUIWindowVideoNav, public IJobCallback
+class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback
 {    
   public:
-    CGUIPlexMediaWindow() : CGUIWindowVideoNav(), m_filterHelper(this), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1) {};
+    CGUIPlexMediaWindow(int windowId = WINDOW_VIDEO_NAV, const CStdString &xml = "MyVideoNav.xml") :
+      CGUIMediaWindow(windowId, xml), m_filterHelper(this), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1) {};
     bool OnMessage(CGUIMessage &message);
     bool OnAction(const CAction& action);
-    void PlayMovie(const CFileItem *item);
     virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-  
-  protected:
+    void GetContextButtons(int itemNumber, CContextButtons &buttons);
+
     bool Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters);
     bool Update(const CStdString &strDirectory, bool updateFilterPath);
     void BuildFilter(const CURL &strDirectory);
+    bool OnSelect(int item);
+    bool OnPlayMedia(int iItem);
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+
+    void ShuffleItem(CFileItemPtr item);
+    void QueueItem(CFileItemPtr item);
+    void QueueItems(const CFileItemList &list, CFileItemPtr startItem=CFileItemPtr());
 
   private:
+
+    bool IsVideoContainer() const;
+    bool IsMusicContainer() const;
+    bool IsPhotoContainer() const;
+
+
+    CStdString ShowPluginSearch(CFileItemPtr item);
+    CStdString ShowPluginSettings(CFileItemPtr item);
+
+    int ContainerPlaylistType() const
+    {
+      int currentPlaylist = PLAYLIST_NONE;
+      if (IsVideoContainer()) currentPlaylist = PLAYLIST_VIDEO;
+      else if (IsMusicContainer()) currentPlaylist = PLAYLIST_MUSIC;
+      else if (IsPhotoContainer()) currentPlaylist = PLAYLIST_PICTURE;
+      return currentPlaylist;
+    }
+
     void LoadPage(int start, int numberOfItems);
     void LoadNextPage();
     virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
@@ -40,5 +65,12 @@ class CGUIPlexMediaWindow : public CGUIWindowVideoNav, public IJobCallback
     int m_pagingOffset;
     int m_currentJobId;
 };
+
+class CGUIPlexMusicWindow : public CGUIPlexMediaWindow
+{
+  public:
+    CGUIPlexMusicWindow() : CGUIPlexMediaWindow(WINDOW_MUSIC_FILES, "MyMusicSongs.xml") {}
+};
+
 
 #endif // GUIWINDOWMEDIAFILTERVIEW_H

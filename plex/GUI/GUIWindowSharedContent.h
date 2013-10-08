@@ -21,19 +21,19 @@
  *
  */
 
-#include "video/windows/GUIWindowVideoBase.h"
+#include "GUIPlexMediaWindow.h"
 #include "PlexTypes.h"
 
-class CGUIWindowSharedContent : public CGUIWindowVideoBase
+class CGUIWindowSharedContent : public CGUIPlexMediaWindow
 {
  public:
 
   CGUIWindowSharedContent()
-    : CGUIWindowVideoBase(WINDOW_SHARED_CONTENT, "MySharedContent.xml")
+    : CGUIPlexMediaWindow(WINDOW_SHARED_CONTENT, "MySharedContent.xml")
   {
   }
   
-  bool OnClick(int iItem)
+  bool OnSelect(int iItem)
   {
     if (iItem < 0 || iItem >= (int)m_vecItems->Size()) 
       return true;

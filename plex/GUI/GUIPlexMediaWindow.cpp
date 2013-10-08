@@ -21,15 +21,24 @@
 #include "PlexContentPlayerMixin.h"
 #include "ApplicationMessenger.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "PlexUtils.h"
+#include "interfaces/Builtins.h"
+#include "PlayList.h"
+#include "PlexApplication.h"
+#include "Client/PlexServerManager.h"
+#include "GUIKeyboardFactory.h"
+#include "utils/URIUtils.h"
+#include "plex/GUI/GUIDialogPlexPluginSettings.h"
 
 #include "LocalizeStrings.h"
 
 #define DEFAULT_PAGE_SIZE 50
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 {
-  bool ret = CGUIWindowVideoNav::OnMessage(message);
+  bool ret = CGUIMediaWindow::OnMessage(message);
 
   switch(message.GetMessage())
   {
@@ -72,8 +81,14 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       lbl = (CGUILabelControl*)GetControl(SORT_LABEL);
       if (lbl)
         lbl->SetLabel(g_localizeStrings.Get(44031));
-    }
       break;
+    }
+
+    case GUI_MSG_WINDOW_DEINIT:
+    {
+      m_filterHelper.ClearFilters();
+      break;
+    }
 
     case GUI_MSG_UPDATE_FILTERS:
     {
@@ -107,9 +122,10 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
   return ret;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::OnAction(const CAction &action)
 {
-  bool ret = CGUIWindowVideoNav::OnAction(action);
+  bool ret = CGUIMediaWindow::OnAction(action);
 
   if ((action.GetID() > ACTION_NONE &&
       action.GetID() <= ACTION_PAGE_DOWN) ||
@@ -124,6 +140,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
   return ret;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   CURL u(strDirectory);
@@ -131,14 +148,18 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
   u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(DEFAULT_PAGE_SIZE));
   m_pagingOffset = DEFAULT_PAGE_SIZE - 1;
 
-  if (!XFILE::CPlexFile::CanBeTranslated(u))
+  if (u.GetProtocol() == "plexserver" &&
+      (u.GetHostName() != "channels" && u.GetHostName() != "shared" && u.GetHostName() != "channeldirectory"))
   {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(52300), g_localizeStrings.Get(52301));
-    g_windowManager.ActivateWindow(WINDOW_HOME);
-    return false;
+    if (!XFILE::CPlexFile::CanBeTranslated(u))
+    {
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(52300), g_localizeStrings.Get(52301));
+      g_windowManager.ActivateWindow(WINDOW_HOME);
+      return false;
+    }
   }
   
-  bool ret = CGUIWindowVideoNav::GetDirectory(u.Get(), items);
+  bool ret = CGUIMediaWindow::GetDirectory(u.Get(), items);
   
   if (items.HasProperty("totalSize"))
   {
@@ -184,6 +205,7 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
   return ret;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::LoadPage(int start, int numberOfItems)
 {
   if (start >= m_vecItems->GetProperty("totalSize").asInteger())
@@ -206,6 +228,7 @@ void CGUIPlexMediaWindow::LoadPage(int start, int numberOfItems)
   m_currentJobId = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(u), this);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::LoadNextPage()
 {
   if (m_vecItems->HasProperty("totalSize"))
@@ -217,6 +240,7 @@ void CGUIPlexMediaWindow::LoadNextPage()
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   if (success)
@@ -243,12 +267,236 @@ void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob *
   m_currentJobId = -1;
 }
 
-void CGUIPlexMediaWindow::PlayMovie(const CFileItem *item)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::OnSelect(int iItem)
 {
-  CFileItemPtr file = CFileItemPtr(new CFileItem(*item));
-  PlexContentPlayerMixin::PlayPlexItem(file);
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  if (!item)
+    return false;
+
+  if (!item->m_bIsFolder && PlexUtils::CurrentSkinHasPreplay() &&
+      item->IsPlexMediaServer() &&
+      (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE ||
+       item->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE))
+  {
+    CBuiltins::Execute("ActivateWindow(PlexPreplayVideo, " + item->GetProperty("key").asString() + ", return)");
+    return true;
+  }
+
+  if (item->m_bIsFolder)
+  {
+    CStdString newPath;
+    if (item->GetProperty("search").asBoolean())
+      newPath = ShowPluginSearch(item);
+    else if (item->GetProperty("settings").asBoolean())
+      newPath = ShowPluginSettings(item);
+    else
+      newPath = item->GetPath();
+
+    if (!newPath.empty())
+      if (!Update(newPath, true))
+        ShowShareErrorMessage(item.get());
+    return true;
+  }
+
+  return OnPlayMedia(iItem);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::OnPlayMedia(int iItem)
+{
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  if (!item)
+    return false;
+
+  if (IsVideoContainer() || IsPhotoContainer())
+    PlexContentPlayerMixin::PlayPlexItem(item);
+  else
+    QueueItems(*m_vecItems, item);
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
+{
+  CFileItemPtr item = m_vecItems->Get(itemNumber);
+  if (!item)
+    return;
+
+  int currentPlaylist = ContainerPlaylistType();
+
+  if (currentPlaylist != PLAYLIST_NONE)
+  {
+    if (g_playlistPlayer.GetPlaylist(currentPlaylist).size() > 0)
+    {
+      buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+    }
+  }
+
+  if (item->CanQueue())
+  {
+    buttons.Add(CONTEXT_BUTTON_SHUFFLE, 191);
+    buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);
+  }
+
+  if (IsVideoContainer() && item->IsPlexMediaServerLibrary())
+  {
+    CStdString viewOffset = item->GetProperty("viewOffset").asString();
+
+    if (item->GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
+      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
+    if (item->GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
+      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
+  }
+
+  EPlexDirectoryType dirType = item->GetPlexDirectoryType();
+
+  if (item->IsPlexMediaServerLibrary() &&
+      (item->IsRemoteSharedPlexMediaServerLibrary() == false) &&
+      (dirType == PLEX_DIR_TYPE_EPISODE || dirType == PLEX_DIR_TYPE_MOVIE ||
+       dirType == PLEX_DIR_TYPE_VIDEO || dirType == PLEX_DIR_TYPE_TRACK))
+  {
+    CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item->GetProperty("plexserver").asString());
+    if (server && server->SupportsDeletion())
+      buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  CFileItemPtr item = m_vecItems->Get(itemNumber);
+  if (!item)
+    return false;
+
+  switch(button)
+  {
+    case CONTEXT_BUTTON_NOW_PLAYING:
+    {
+      if (IsVideoContainer() && g_application.IsPlayingVideo())
+        g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+      else if (IsVideoContainer() && g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
+        CApplicationMessenger::Get().MediaPlay(PLAYLIST_VIDEO);
+      else if (IsMusicContainer() && g_application.IsPlayingAudio())
+        g_windowManager.ActivateWindow(WINDOW_NOW_PLAYING);
+       break;
+    }
+    case CONTEXT_BUTTON_SHUFFLE:
+      ShuffleItem(item);
+      break;
+
+    case CONTEXT_BUTTON_QUEUE_ITEM:
+      QueueItem(item);
+      break;
+
+    case CONTEXT_BUTTON_MARK_UNWATCHED:
+      item->MarkAsUnWatched();
+      break;
+
+    case CONTEXT_BUTTON_MARK_WATCHED:
+      item->MarkAsWatched();
+      break;
+
+    case CONTEXT_BUTTON_DELETE:
+      g_plexApplication.mediaServerClient->deleteItem(item);
+      break;
+
+    default:
+      break;
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::ShuffleItem(CFileItemPtr item)
+{
+  int currentPlaylist = ContainerPlaylistType();
+  if (currentPlaylist == PLAYLIST_NONE)
+    return;
+
+  CApplicationMessenger &appMsg = CApplicationMessenger::Get();
+
+  appMsg.MediaStop();
+  appMsg.PlayListPlayerClear(currentPlaylist);
+
+  if (!item->m_bIsFolder)
+    appMsg.PlayListPlayerAdd(currentPlaylist, *m_vecItems);
+  else
+  {
+    XFILE::CPlexDirectory dir;
+    CFileItemList list;
+    dir.GetDirectory(item->GetPath(), list);
+    appMsg.PlayListPlayerAdd(currentPlaylist, list);
+  }
+
+  appMsg.PlayListPlayerShuffle(currentPlaylist, true);
+  appMsg.MediaPlay(currentPlaylist);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::QueueItem(CFileItemPtr item)
+{
+  int currentPlaylist = ContainerPlaylistType();
+  if (currentPlaylist == PLAYLIST_NONE)
+    return;
+
+  CApplicationMessenger &appMsg = CApplicationMessenger::Get();
+
+  if ((IsVideoContainer() && !g_application.IsPlayingVideo()) ||
+      (IsMusicContainer() && !g_application.IsPlayingAudio()))
+    appMsg.PlayListPlayerClear(currentPlaylist);
+
+  if(item->m_bIsFolder)
+  {
+    XFILE::CPlexDirectory dir;
+    CFileItemList list;
+    dir.GetDirectory(item->GetPath(), list);
+    appMsg.PlayListPlayerAdd(currentPlaylist, list);
+  }
+  else
+  {
+    appMsg.PlayListPlayerAdd(currentPlaylist, *item.get());
+  }
+
+  if ((IsVideoContainer() && !g_application.IsPlayingVideo()) ||
+      (IsMusicContainer() && !g_application.IsPlayingAudio()))
+  {
+    appMsg.MediaStop(true);
+    appMsg.MediaPlay(currentPlaylist);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::QueueItems(const CFileItemList &list, CFileItemPtr startItem)
+{
+  int currentPlaylist = ContainerPlaylistType();
+  if (currentPlaylist == PLAYLIST_NONE)
+    return;
+
+  CApplicationMessenger &appMsg = CApplicationMessenger::Get();
+  appMsg.PlayListPlayerClear(currentPlaylist);
+  appMsg.PlayListPlayerAdd(currentPlaylist, list);
+  appMsg.MediaStop(true);
+
+  bool found = false;
+  int idx = 0;
+  if (startItem)
+  {
+    for (; idx < list.Size(); idx++)
+    {
+      if (list.Get(idx)->GetPath() == startItem->GetPath())
+      {
+        found = true;
+        break;
+      }
+    }
+  }
+  appMsg.MediaPlay(currentPlaylist, found ? idx : 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::BuildFilter(const CURL& strDirectory)
 {
   if (strDirectory.Get().empty())
@@ -257,33 +505,98 @@ void CGUIPlexMediaWindow::BuildFilter(const CURL& strDirectory)
   m_filterHelper.BuildFilters(strDirectory, m_vecItems->GetPlexDirectoryType());
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath)
 {
   return Update(strDirectory, updateFilterPath, true);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters)
 {
   bool isSecondary = false;
   CURL newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, isSecondary);
+  CURL oldUrl = CURL(m_vecItems->GetPath());
 
-  bool ret = CGUIWindowVideoNav::Update(newUrl.Get(), updateFilterPath);
+  CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::Update(%s)->%s", strDirectory.c_str(), newUrl.Get().c_str());
 
-  if (isSecondary)
-  {
-    /* Kill the history */
-    m_history.ClearPathHistory();
-    m_history.AddPath(newUrl.Get());
+  if (strDirectory == m_startDirectory)
     m_startDirectory = newUrl.Get();
 
-    if (updateFilters)
-      BuildFilter(m_filterHelper.GetSectionUrl());
-  }
-  else
+  bool ret = CGUIMediaWindow::Update(newUrl.Get(), updateFilterPath);
+
+  newUrl.SetProtocolOptions("");
+  oldUrl.SetProtocolOptions("");
+
+  if (newUrl.Get() != oldUrl.Get())
   {
-    newUrl.SetProtocolOptions("");
-    m_history.AddPath(newUrl.GetUrlWithoutOptions());
+    CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::Update adding to history because %s != %s", oldUrl.Get().c_str(), newUrl.Get().c_str());
+    if (newUrl.GetUrlWithoutOptions() == oldUrl.GetUrlWithoutOptions())
+    {
+      if (m_history.GetParentPath() == m_startDirectory)
+      {
+        CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::Update resetting startDirectory to %s", newUrl.Get().c_str());
+        m_startDirectory = newUrl.Get();
+      }
+
+      CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::Update popping parentPath");
+      m_history.RemoveParentPath();
+    }
+    m_history.AddPath(newUrl.Get());
   }
 
+  if (isSecondary && updateFilters)
+    BuildFilter(m_filterHelper.GetSectionUrl());
+
   return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::IsVideoContainer() const
+{
+  EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
+  return (dirType == PLEX_DIR_TYPE_MOVIE || dirType == PLEX_DIR_TYPE_SHOW || dirType == PLEX_DIR_TYPE_SEASON || dirType == PLEX_DIR_TYPE_PLAYLIST || dirType == PLEX_DIR_TYPE_EPISODE);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::IsMusicContainer() const
+{
+  EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
+  return (dirType == PLEX_DIR_TYPE_ALBUM || dirType == PLEX_DIR_TYPE_ARTIST || dirType == PLEX_DIR_TYPE_TRACK);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::IsPhotoContainer() const
+{
+  EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
+  return (dirType == PLEX_DIR_TYPE_PHOTOALBUM);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CGUIPlexMediaWindow::ShowPluginSearch(CFileItemPtr item)
+{
+  CStdString strSearchTerm = "";
+  if (CGUIKeyboardFactory::ShowAndGetInput(strSearchTerm, item->GetProperty("prompt").asString(), false))
+  {
+    // Encode the query.
+    CURL::Encode(strSearchTerm);
+
+    // Find the ? if there is one.
+    CURL u(item->GetPath());
+    u.SetOption("query", strSearchTerm);
+    return u.Get();
+  }
+  return CStdString();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CGUIPlexMediaWindow::ShowPluginSettings(CFileItemPtr item)
+{
+  CFileItemList fileItems;
+  std::vector<CStdString> items;
+  XFILE::CPlexDirectory plexDir;
+
+  plexDir.GetDirectory(item->GetPath(), fileItems);
+  CGUIDialogPlexPluginSettings::ShowAndGetInput(item->GetPath(), plexDir.GetData());
+  return m_vecItems->GetPath();
 }

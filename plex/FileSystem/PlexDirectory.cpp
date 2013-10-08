@@ -378,8 +378,16 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
     return false;
   }
 
-  /* common attributes */
-  mediaContainer.SetPath(m_url.GetUrlWithoutOptions());
+  if (m_url.HasOption("checkFiles"))
+    m_url.RemoveOption("checkFiles");
+
+  if (m_url.HasOption("X-Plex-Container-Start"))
+    m_url.RemoveOption("X-Plex-Container-Start");
+
+  if (m_url.HasOption("X-Plex-Container-Size"))
+    m_url.RemoveOption("X-Plex-Container-Size");
+
+  mediaContainer.SetPath(m_url.Get());
   mediaContainer.SetProperty("plex", true);
   mediaContainer.SetProperty("plexserver", m_url.GetHostName());
   
@@ -681,6 +689,7 @@ bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
       for (int y = 0; y < sections->Size(); y ++)
       {
         CFileItemPtr s = sections->Get(y);
+        s->SetProperty("sharedSection", true);
         if (s->GetProperty("path").asString() ==
             ("/library/sections/" + sectionItem->GetProperty("unprocessed_key").asString()))
           item->SetArt(s->GetArt());
