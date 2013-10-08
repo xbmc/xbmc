@@ -495,8 +495,8 @@ const CStdString CURL::GetFileNameWithoutPath() const
 
 char CURL::GetDirectorySeparator() const
 {
-#ifndef TARGET_POSIX
-  if ( IsLocal() )
+#ifdef TARGET_WINDOWS
+  if (m_strProtocol.empty() || m_strProtocol == "file")
     return '\\';
   else
 #endif
