@@ -112,9 +112,9 @@ OMX_ERRORTYPE COMXCoreTunel::Deestablish(bool noWait)
   if(m_src_component->GetComponent())
   {
     omx_err = m_src_component->DisablePort(m_src_port, false);
-    if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorSameState)
+    if(omx_err != OMX_ErrorNone)
     {
-      CLog::Log(LOGERROR, "COMXCoreTunel::Deestablish - Error disable port %d on component %s omx_err(0x%08x)", 
+      CLog::Log(LOGERROR, "COMXCoreTunel::Deestablish - Error disable port %d on component %s omx_err(0x%08x)",
           m_src_port, m_src_component->GetName().c_str(), (int)omx_err);
     }
   }
@@ -122,9 +122,9 @@ OMX_ERRORTYPE COMXCoreTunel::Deestablish(bool noWait)
   if(m_dst_component->GetComponent())
   {
     omx_err = m_dst_component->DisablePort(m_dst_port, false);
-    if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorSameState) 
+    if(omx_err != OMX_ErrorNone)
     {
-      CLog::Log(LOGERROR, "COMXCoreTunel::Deestablish - Error disable port %d on component %s omx_err(0x%08x)", 
+      CLog::Log(LOGERROR, "COMXCoreTunel::Deestablish - Error disable port %d on component %s omx_err(0x%08x)",
           m_dst_port, m_dst_component->GetName().c_str(), (int)omx_err);
     }
   }
@@ -132,9 +132,9 @@ OMX_ERRORTYPE COMXCoreTunel::Deestablish(bool noWait)
   if(m_src_component->GetComponent())
   {
     omx_err = m_DllOMX->OMX_SetupTunnel(m_src_component->GetComponent(), m_src_port, NULL, 0);
-    if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorIncorrectStateOperation) 
+    if(omx_err != OMX_ErrorNone)
     {
-      CLog::Log(LOGERROR, "COMXCoreTunel::Deestablish - could not unset tunnel on comp src %s port %d omx_err(0x%08x)\n", 
+      CLog::Log(LOGERROR, "COMXCoreTunel::Deestablish - could not unset tunnel on comp src %s port %d omx_err(0x%08x)\n",
           m_src_component->GetName().c_str(), m_src_port, (int)omx_err);
     }
   }
@@ -142,9 +142,9 @@ OMX_ERRORTYPE COMXCoreTunel::Deestablish(bool noWait)
   if(m_dst_component->GetComponent())
   {
     omx_err = m_DllOMX->OMX_SetupTunnel(m_dst_component->GetComponent(), m_dst_port, NULL, 0);
-    if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorIncorrectStateOperation) 
+    if(omx_err != OMX_ErrorNone)
     {
-      CLog::Log(LOGERROR, "COMXCoreTunel::Deestablish - could not unset tunnel on comp dst %s port %d omx_err(0x%08x)\n", 
+      CLog::Log(LOGERROR, "COMXCoreTunel::Deestablish - could not unset tunnel on comp dst %s port %d omx_err(0x%08x)\n",
           m_dst_component->GetName().c_str(), m_dst_port, (int)omx_err);
     }
   }
@@ -195,7 +195,7 @@ OMX_ERRORTYPE COMXCoreTunel::Establish(bool portSettingsChanged, bool enable_por
   if(m_src_component->GetComponent() && disable_ports)
   {
     omx_err = m_src_component->DisablePort(m_src_port, false);
-    if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorSameState) 
+    if(omx_err != OMX_ErrorNone)
     {
       CLog::Log(LOGERROR, "COMXCoreTunel::Establish - Error disable port %d on component %s omx_err(0x%08x)",
           m_src_port, m_src_component->GetName().c_str(), (int)omx_err);
@@ -205,7 +205,8 @@ OMX_ERRORTYPE COMXCoreTunel::Establish(bool portSettingsChanged, bool enable_por
   if(m_dst_component->GetComponent() && disable_ports)
   {
     omx_err = m_dst_component->DisablePort(m_dst_port, false);
-    if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorSameState) {
+    if(omx_err != OMX_ErrorNone)
+    {
       CLog::Log(LOGERROR, "COMXCoreTunel::Establish - Error disable port %d on component %s omx_err(0x%08x)",
           m_dst_port, m_dst_component->GetName().c_str(), (int)omx_err);
     }
