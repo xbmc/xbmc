@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.7.0";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.8.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -1315,16 +1315,16 @@ namespace JSONRPC
     "}",
     "\"Favourite.Details.Favourite\": {"
       "\"type\": \"object\","
-      "\"properties\": {"
-        "\"title\": { \"type\": \"string\", \"required\": true },"
-        "\"type\": { \"$ref\": \"Favourite.Type\", \"required\": true },"
-        "\"path\": { \"type\": \"string\" },"
-        "\"window\": { \"type\": \"string\" },"
-        "\"windowparameter\": { \"type\": \"string\" },"
-        "\"thumbnail\": { \"type\": \"string\" }"
-      "},"
-      "\"additionalProperties\": false"
-    "}"
+        "\"properties\": {"
+          "\"title\": { \"type\": \"string\", \"required\": true },"
+          "\"type\": { \"$ref\": \"Favourite.Type\", \"required\": true },"
+          "\"path\": { \"type\": \"string\" },"
+          "\"window\": { \"type\": \"string\" },"
+          "\"windowparameter\": { \"type\": \"string\" },"
+          "\"thumbnail\": { \"type\": \"string\" }"
+        "},"
+        "\"additionalProperties\": false"
+      "}"
   };
 
   const char* const JSONRPC_SERVICE_METHODS[] = {  
