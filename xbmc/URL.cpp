@@ -83,13 +83,32 @@ void CURL::Parse(const std::string& strURL1)
   // strURL can be one of the following:
   // format 1: protocol://[username:password]@hostname[:port]/directoryandfile
   // format 2: protocol://file
-  // format 3: drive:directoryandfile
+  // format 3: drive:directoryandfile (or (win32 only) \\?\drive:directoryandfile)
+  // format 4 (win32 only): \\Server\Share\directoryandfile (or \\?\UNC\Server\Share\directoryandfile)
   //
   // first need 2 check if this is a protocol or just a normal drive & path
   if (strURL.empty())
     return;
   if (strURL == "?")
     return;
+
+#ifdef TARGET_WINDOWS
+  if (StringUtils::StartsWith(strURL, "\\\\"))
+  {
+    size_t serverNamePos;
+    if (strURL.length() > 8 && strURL.compare(2, 6, "?\\UNC\\", 6) == 0) // win32 long UNC path
+      serverNamePos = 8;
+    else if (strURL.length() > 3 && strURL.compare(2, 2, "?\\", 2) == 0) // win32 long local path
+    {
+      SetFileName(strURL);
+      return;
+    }
+    else
+      serverNamePos = 2; // win32 "\\server\share\file" path
+
+    strURL = "smb://" + CUtil::FixSlashes(strURL.substr(serverNamePos), false, true); // handling of "smb://" require forward slashes
+  }
+#endif // TARGET_WINDOWS
 
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
