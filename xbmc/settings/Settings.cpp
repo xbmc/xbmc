@@ -911,6 +911,8 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("screensaver.settings");
   settingSet.insert("videoscreen.guicalibration");
   settingSet.insert("videoscreen.testpattern");
+  settingSet.insert("videoplayer.useamcodec");
+  settingSet.insert("videoplayer.usemediacodec");
   m_settingsManager->RegisterCallback(&g_application, settingSet);
 
   settingSet.clear();

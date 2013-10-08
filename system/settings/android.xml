@@ -14,6 +14,9 @@
           <requirement>HAVE_AMCODEC</requirement>
           <level>2</level>
           <default>true</default>
+          <updates>
+            <update type="change" />
+          </updates>
         </setting>
       </group>
     </category>
@@ -34,6 +37,9 @@
           <visible>HAS_MEDIACODEC</visible>
           <level>2</level>
           <default>true</default>
+          <updates>
+            <update type="change" />
+          </updates>
         </setting>
       </group>
     </category>
