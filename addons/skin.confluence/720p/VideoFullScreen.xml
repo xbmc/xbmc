@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+	<onunload>Dialog.Close(1111)</onunload>
 	<defaultcontrol>-</defaultcontrol>
 	<controls>
 		<!-- media infos -->

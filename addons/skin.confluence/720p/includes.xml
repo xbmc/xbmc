@@ -33,6 +33,11 @@
 		<value condition="Player.HasVideo">ActivateWindow(videoplaylist)</value>
 		<value condition="Player.HasAudio">ActivateWindow(musicplaylist)</value>
 	</variable>
+	<variable name="VideoPlot">
+		<value condition="!IsEmpty(VideoPlayer.Plot)">$INFO[VideoPlayer.Plot]</value>
+		<value condition="!IsEmpty(VideoPlayer.PlotOutline)">$INFO[VideoPlayer.PlotOutline]</value>
+		<value>$INFO[VideoPlayer.Tagline]</value>
+	</variable>
 
 	<include name="BehindDialogFadeOut">
 		<control type="image">
