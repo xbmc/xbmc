@@ -1692,6 +1692,7 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
       return true;
     }
   }
+#if defined(HAS_LIBAMCODEC)
   else if (settingId == "videoplayer.useamcodec")
   {
     // Do not permit amcodec to be used on non-aml platforms.
@@ -1703,6 +1704,8 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
       useamcodec->SetValue(false);
     }
   }
+#endif
+#if defined(TARGET_ANDROID)
   else if (settingId == "videoplayer.usemediacodec")
   {
     // Do not permit MediaCodec to be used Android platforms that do not have it.
@@ -1714,6 +1717,7 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
       usemediacodec->SetValue(false);
     }
   }
+#endif
 
   return false;
 }
