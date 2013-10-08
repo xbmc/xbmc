@@ -359,6 +359,9 @@ COMXCoreComponent::COMXCoreComponent()
   m_omx_input_use_buffers  = false;
   m_omx_output_use_buffers = false;
 
+  m_omx_events.clear();
+  m_ignore_error = OMX_ErrorNone;
+
   pthread_mutex_init(&m_omx_input_mutex, NULL);
   pthread_mutex_init(&m_omx_output_mutex, NULL);
   pthread_mutex_init(&m_omx_event_mutex, NULL);
@@ -1469,6 +1472,9 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
   m_omx_input_use_buffers  = false;
   m_omx_output_use_buffers = false;
 
+  m_omx_events.clear();
+  m_ignore_error = OMX_ErrorNone;
+
   m_componentName = component_name;
   
   m_callbacks.EventHandler    = &COMXCoreComponent::DecoderEventHandlerCallback;
@@ -1676,6 +1682,15 @@ OMX_ERRORTYPE COMXCoreComponent::DecoderEventHandler(
     __func__, GetName().c_str(), eEvent, nData1, nData2, pEventData);
 #endif
 
+  // if the error is expected, then we can skip it
+  if (eEvent == OMX_EventError && (OMX_S32)nData1 == m_ignore_error)
+  {
+    CLog::Log(LOGDEBUG,
+      "COMXCoreComponent::%s - %s Ignoring expected event: eEvent(0x%x), nData1(0x%x), nData2(0x%x), pEventData(0x%p)\n",
+      __func__, GetName().c_str(), eEvent, nData1, nData2, pEventData);
+    m_ignore_error = OMX_ErrorNone;
+    return OMX_ErrorNone;
+  }
   AddEvent(eEvent, nData1, nData2);
 
   switch (eEvent)
@@ -1792,9 +1807,7 @@ OMX_ERRORTYPE COMXCoreComponent::DecoderEventHandler(
           CLog::Log(LOGERROR, "%s::%s %s - OMX_ErrorFormatNotDetected, cannot parse input stream\n", CLASSNAME, __func__, GetName().c_str());
         break;
         case OMX_ErrorPortUnpopulated:
-          // this one is expected for tunneled ports. We always get it from mixer on teardown
-          if(GetName() != "OMX.broadcom.audio_mixer")
-            CLog::Log(LOGWARNING, "%s::%s %s - OMX_ErrorPortUnpopulated port %d\n", CLASSNAME, __func__, GetName().c_str(), (int)nData2);
+        CLog::Log(LOGWARNING, "%s::%s %s - OMX_ErrorPortUnpopulated port %d\n", CLASSNAME, __func__, GetName().c_str(), (int)nData2);
         break;
         case OMX_ErrorStreamCorrupt:
           CLog::Log(LOGERROR, "%s::%s %s - OMX_ErrorStreamCorrupt, Bitstream corrupt\n", CLASSNAME, __func__, GetName().c_str());
