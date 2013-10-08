@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1111">
+	<allowoverlay>no</allowoverlay>
+	<defaultcontrol always="false">101</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<left>680</left>
+		<top>0</top>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<animation effect="slide" start="600,0" end="0,0" time="400" tween="quadratic" easing="out" condition="!Player.ShowCodec">WindowOpen</animation>
+			<animation effect="slide" start="600,0" end="0,0" time="400" delay="400" tween="quadratic" easing="out" condition="Player.ShowCodec">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="600,0" time="200" tween="quadratic" easing="out">WindowClose</animation>
+			<control type="image">
+				<description>media info background image</description>
+				<left>0</left>
+				<top>0</top>
+				<width>600</width>
+				<height>720</height>
+				<colordiffuse>BBFFFFFF</colordiffuse>
+				<texture border="20,0,0,0" flipx="true">MediaBladeSub.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<left>20</left>
+				<top>0</top>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>101</onleft>
+				<onright>101</onright>
+				<onup>101</onup>
+				<ondown>101</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<right>580</right>
+				<top>30</top>
+				<width>550</width>
+				<height>30</height>
+				<font>font30_title</font>
+				<label>$INFO[VideoPlayer.Title]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>Year label</description>
+				<right>580</right>
+				<top>60</top>
+				<width>550</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$INFO[VideoPlayer.Year]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>!VideoPlayer.Content(Episodes) + !VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="label">
+				<description>Show label</description>
+				<right>580</right>
+				<top>60</top>
+				<width>550</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$INFO[VideoPlayer.TVShowTitle]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>VideoPlayer.Content(Episodes)</visible>
+			</control>
+			<control type="label">
+				<description>Channel label</description>
+				<right>580</right>
+				<top>60</top>
+				<width>550</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$INFO[VideoPlayer.ChannelName]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="label">
+				<description>Genre label</description>
+				<right>580</right>
+				<top>85</top>
+				<width>550</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$INFO[VideoPlayer.Genre]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>!VideoPlayer.Content(Episodes)</visible>
+			</control>
+			<control type="label">
+				<description>Season label</description>
+				<right>580</right>
+				<top>85</top>
+				<width>550</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$INFO[VideoPlayer.Season,$LOCALIZE[20373]: ]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>VideoPlayer.Content(Episodes)</visible>
+			</control>
+			<control type="image">
+				<left>30</left>
+				<top>120</top>
+				<width>550</width>
+				<height>4</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="textbox">
+				<description>textarea</description>
+				<left>30</left>
+				<top>135</top>
+				<width>550</width>
+				<height>490</height>
+				<align>justify</align>
+				<font>font13</font>
+				<label>$INFO[VideoPlayer.Plot]</label>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<pagecontrol>101</pagecontrol>
+			</control>
+			<control type="spincontrol" id="101">
+				<description>Next page button</description>
+				<left>520</left>
+				<top>650</top>
+				<subtype>page</subtype>
+				<font>font12</font>
+				<onleft>101</onleft>
+				<onright>101</onright>
+				<ondown>101</ondown>
+				<onup>101</onup>
+				<textcolor>blue</textcolor>
+				<showonepage>false</showonepage>
+			</control>
+			<control type="image">
+				<left>30</left>
+				<top>640</top>
+				<width>550</width>
+				<height>4</height>
+				<texture>separator.png</texture>
+			</control>
+		</control>
+	</controls>
+</window>
