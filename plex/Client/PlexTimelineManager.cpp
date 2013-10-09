@@ -65,6 +65,7 @@ void CPlexTimelineManager::SendTimelineToSubscriber(CPlexRemoteSubscriberPtr sub
 
   CStdString timelineData = GetCurrentTimeLinesXML(subscriber->getCommandID());
   CURL url = subscriber->getURL();
+  url.SetFileName(":/timeline");
 
   g_plexApplication.mediaServerClient->SendSubscriberTimeline(url, timelineData);
 }
