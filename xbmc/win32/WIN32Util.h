@@ -57,7 +57,6 @@ public:
   static CStdString GetSpecialFolder(int csidl);
   static CStdString GetSystemPath();
   static CStdString GetProfilePath();
-  static std::string UncToSmb(const std::string& strPath);
   static std::string SmbToUnc(const std::string& strPath);
   static bool AddExtraLongPathPrefix(std::wstring& path);
   static bool RemoveExtraLongPathPrefix(std::wstring& path);

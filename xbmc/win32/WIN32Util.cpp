@@ -439,7 +439,6 @@ CStdString CWIN32Util::GetSpecialFolder(int csidl)
   {
     buf[bufSize-1] = 0;
     g_charsetConverter.wToUTF8(buf, strProfilePath);
-    strProfilePath = UncToSmb(strProfilePath);
   }
   else
     strProfilePath = "";
@@ -471,13 +470,6 @@ CStdString CWIN32Util::GetProfilePath()
   URIUtils::AddSlashAtEnd(strProfilePath);
 
   return strProfilePath;
-}
-
-std::string CWIN32Util::UncToSmb(const std::string& strPath)
-{
-  if (strPath.length() > 2 && strPath.compare(0, 2, "\\\\", 2) == 0 && strPath.compare(2, 2, "?\\", 2) != 0)
-    return "smb://" + strPath.substr(2);
-  return strPath;
 }
 
 std::string CWIN32Util::SmbToUnc(const std::string& strPath)
