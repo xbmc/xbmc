@@ -24,6 +24,7 @@
 #include "CoreAudioAEHAL.h"
 #include "utils/log.h"
 
+#include <boost/lexical_cast.hpp>
 
 #include <AudioToolbox/AudioToolbox.h>
 
@@ -77,6 +78,17 @@ void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout&
       CLog::Log(LOGDEBUG, "CCoreAudioMixMap::Rebuild %d = %f", chan, *vol);
       *vol = 1.;
     }
+  }
+
+  for (int i = 0; i < m_inChannels; i++)
+  {
+    CStdString outStr = "";
+    for (int j = 0; j < m_outChannels; j ++)
+    {
+      Float32 *d = (m_pMap + (i * m_outChannels) + j);
+      outStr += boost::lexical_cast<std::string>(*d) + ", ";
+    }
+    CLog::Log(LOGDEBUG, "CCoreAudioMixMap::Rebuild %d = %s", i, outStr.c_str());
   }
 
   // Always have a valid map.
@@ -234,20 +246,23 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
   for (UInt32 i = 0; i < inputFormat->mChannelsPerFrame; ++i)
   {
     UInt32 j = 0;
+    CStdString outStr="";
     for (; j < fmt->mChannelsPerFrame; ++j)
     {
-      Float32 *volume = val + (i * fmt->mChannelsPerFrame + j);
-      CLog::Log(LOGDEBUG, "CCoreAudioMixMap::SetMixingMatrix setting channel %d to %f", (i + channelOffset) << 16 | j, *volume);
+      Float32 *volume = val + (i * mixMap->m_outChannels + j);
+      outStr += boost::lexical_cast<std::string>(*volume) + ", ";
       AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *volume, 0);
     }
     // zero out additional outputs from this input
     for (; j < dims[1]; ++j)
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioMixMap::SetMixingMatrix zeroing channel %d", (i + channelOffset) << 16 | j);
       AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, 0.0f, 0);
+      outStr += "0.0, ";
     }
+
+    CLog::Log(LOGDEBUG, "CCoreAudioMixMap::SetMixingMatrix Setting %d = %s", i, outStr.c_str());
   }
 
   CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: "
