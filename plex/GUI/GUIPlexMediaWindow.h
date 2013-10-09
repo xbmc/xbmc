@@ -37,6 +37,8 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback
     void QueueItem(CFileItemPtr item);
     void QueueItems(const CFileItemList &list, CFileItemPtr startItem=CFileItemPtr());
 
+    bool OnBack(int actionID);
+
   private:
 
     bool IsVideoContainer() const;

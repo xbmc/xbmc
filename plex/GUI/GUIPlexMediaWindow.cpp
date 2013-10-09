@@ -86,7 +86,8 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 
     case GUI_MSG_WINDOW_DEINIT:
     {
-      m_filterHelper.ClearFilters();
+      CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::OnMessage clearing filters");
+//      m_filterHelper.ClearFilters();
       break;
     }
 
@@ -518,32 +519,12 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
   CURL newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, isSecondary);
   CURL oldUrl = CURL(m_vecItems->GetPath());
 
+  if (strDirectory == m_startDirectory)
+    m_startDirectory = newUrl.GetUrlWithoutOptions();
+
   CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::Update(%s)->%s", strDirectory.c_str(), newUrl.Get().c_str());
 
-  if (strDirectory == m_startDirectory)
-    m_startDirectory = newUrl.Get();
-
   bool ret = CGUIMediaWindow::Update(newUrl.Get(), updateFilterPath);
-
-  newUrl.SetProtocolOptions("");
-  oldUrl.SetProtocolOptions("");
-
-  if (newUrl.Get() != oldUrl.Get())
-  {
-    CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::Update adding to history because %s != %s", oldUrl.Get().c_str(), newUrl.Get().c_str());
-    if (newUrl.GetUrlWithoutOptions() == oldUrl.GetUrlWithoutOptions())
-    {
-      if (m_history.GetParentPath() == m_startDirectory)
-      {
-        CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::Update resetting startDirectory to %s", newUrl.Get().c_str());
-        m_startDirectory = newUrl.Get();
-      }
-
-      CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::Update popping parentPath");
-      m_history.RemoveParentPath();
-    }
-    m_history.AddPath(newUrl.Get());
-  }
 
   if (isSecondary && updateFilters)
     BuildFilter(m_filterHelper.GetSectionUrl());
@@ -599,4 +580,33 @@ CStdString CGUIPlexMediaWindow::ShowPluginSettings(CFileItemPtr item)
   plexDir.GetDirectory(item->GetPath(), fileItems);
   CGUIDialogPlexPluginSettings::ShowAndGetInput(item->GetPath(), plexDir.GetData());
   return m_vecItems->GetPath();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIPlexMediaWindow::OnBack(int actionID)
+{
+  CURL currPath(m_vecItems->GetPath());
+
+  CURL parent(m_history.GetParentPath());
+  if (!parent.Get().empty())
+  {
+    m_history.RemoveParentPath();
+
+    while (parent.GetUrlWithoutOptions() == currPath.GetUrlWithoutOptions())
+    {
+      parent = CURL(m_history.GetParentPath());
+      m_history.RemoveParentPath();
+    }
+  }
+
+  if (currPath.GetUrlWithoutOptions() == m_startDirectory || parent.Get().empty())
+  {
+    m_filterHelper.ClearFilters();
+    g_windowManager.PreviousWindow();
+    return true;
+  }
+
+  Update(parent.Get(), true);
+
+  return true;
 }
