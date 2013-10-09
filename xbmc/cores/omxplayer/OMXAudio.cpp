@@ -258,15 +258,20 @@ bool COMXAudio::PortSettingsChanged()
         return false;
       }
 
-      // Splitter will copy input params to output when input port is enabled.
-      omx_err = m_omx_splitter.SetStateForComponent(OMX_StateIdle);
+      m_pcm_output.nPortIndex = m_omx_splitter.GetOutputPort();
+      omx_err = m_omx_splitter.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
       if(omx_err != OMX_ErrorNone)
       {
-        CLog::Log(LOGERROR, "COMXAudio::AddPackets - Error setting OMX_StateIdle 0x%08x for m_omx_splitter", omx_err);
+        CLog::Log(LOGERROR, "%s::%s - error m_omx_splitter SetParameter omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
         return false;
       }
-      m_omx_splitter.EnablePort(m_omx_splitter.GetInputPort(), false);
-      m_omx_splitter.DisablePort(m_omx_splitter.GetInputPort(), false);
+      m_pcm_output.nPortIndex = m_omx_splitter.GetOutputPort() + 1;
+      omx_err = m_omx_splitter.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
+      if(omx_err != OMX_ErrorNone)
+      {
+        CLog::Log(LOGERROR, "%s::%s - error m_omx_splitter SetParameter omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+        return false;
+      }
     }
 
     if( m_omx_render_analog.IsInitialized() )
@@ -777,29 +782,41 @@ bool COMXAudio::Deinitialize()
 {
   CSingleLock lock (m_critSection);
 
-  Flush();
-
   if ( m_omx_tunnel_clock_analog.IsInitialized() )
     m_omx_tunnel_clock_analog.Deestablish();
   if ( m_omx_tunnel_clock_hdmi.IsInitialized() )
     m_omx_tunnel_clock_hdmi.Deestablish();
-  if ( m_omx_tunnel_splitter_analog.IsInitialized() )
-    m_omx_tunnel_splitter_analog.Deestablish();
-  if ( m_omx_tunnel_splitter_hdmi.IsInitialized() )
-    m_omx_tunnel_splitter_hdmi.Deestablish();
+
+  // ignore expected errors on teardown
+  if ( m_omx_mixer.IsInitialized() )
+    m_omx_mixer.IgnoreNextError(OMX_ErrorPortUnpopulated);
+  else
+  {
+    if ( m_omx_render_hdmi.IsInitialized() )
+      m_omx_render_hdmi.IgnoreNextError(OMX_ErrorPortUnpopulated);
+    if ( m_omx_render_analog.IsInitialized() )
+      m_omx_render_analog.IgnoreNextError(OMX_ErrorPortUnpopulated);
+  }
+
+  m_omx_tunnel_decoder.Deestablish();
   if ( m_omx_tunnel_mixer.IsInitialized() )
     m_omx_tunnel_mixer.Deestablish();
-  m_omx_tunnel_decoder.Deestablish();
+  if ( m_omx_tunnel_splitter_hdmi.IsInitialized() )
+    m_omx_tunnel_splitter_hdmi.Deestablish();
+  if ( m_omx_tunnel_splitter_analog.IsInitialized() )
+    m_omx_tunnel_splitter_analog.Deestablish();
 
-  if ( m_omx_render_analog.IsInitialized() )
-    m_omx_render_analog.Deinitialize(true);
-  if ( m_omx_render_hdmi.IsInitialized() )
-    m_omx_render_hdmi.Deinitialize(true);
-  if ( m_omx_splitter.IsInitialized() )
-    m_omx_splitter.Deinitialize(true);
+  m_omx_decoder.FlushInput();
+
+  m_omx_decoder.Deinitialize(true);
   if ( m_omx_mixer.IsInitialized() )
     m_omx_mixer.Deinitialize(true);
-  m_omx_decoder.Deinitialize(true);
+  if ( m_omx_splitter.IsInitialized() )
+    m_omx_splitter.Deinitialize(true);
+  if ( m_omx_render_hdmi.IsInitialized() )
+    m_omx_render_hdmi.Deinitialize(true);
+  if ( m_omx_render_analog.IsInitialized() )
+    m_omx_render_analog.Deinitialize(true);
 
   m_BytesPerSec = 0;
   m_BufferLen   = 0;
@@ -833,19 +850,12 @@ void COMXAudio::Flush()
     return;
 
   m_omx_decoder.FlushAll();
-  m_omx_tunnel_decoder.Flush();
 
   if ( m_omx_mixer.IsInitialized() )
     m_omx_mixer.FlushAll();
-  if( m_omx_tunnel_mixer.IsInitialized() )
-    m_omx_tunnel_mixer.Flush();
 
   if ( m_omx_splitter.IsInitialized() )
     m_omx_splitter.FlushAll();
-  if ( m_omx_tunnel_splitter_analog.IsInitialized() )
-    m_omx_tunnel_splitter_analog.Flush();
-  if ( m_omx_tunnel_splitter_hdmi.IsInitialized() )
-    m_omx_tunnel_splitter_hdmi.Flush();
 
   if ( m_omx_render_analog.IsInitialized() )
     m_omx_render_analog.FlushAll();

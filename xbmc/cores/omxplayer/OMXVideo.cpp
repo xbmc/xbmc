@@ -674,12 +674,6 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
 
 void COMXVideo::Close()
 {
-  m_omx_tunnel_decoder.Flush();
-  if(m_deinterlace)
-    m_omx_tunnel_image_fx.Flush();
-  m_omx_tunnel_clock.Flush();
-  m_omx_tunnel_sched.Flush();
-
   m_omx_tunnel_clock.Deestablish();
   m_omx_tunnel_decoder.Deestablish();
   if(m_deinterlace)
@@ -821,7 +815,6 @@ void COMXVideo::Reset(void)
 
   m_setStartTime = true;
   m_omx_decoder.FlushInput();
-  m_omx_tunnel_decoder.Flush();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
