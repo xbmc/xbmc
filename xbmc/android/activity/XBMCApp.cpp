@@ -404,7 +404,29 @@ bool CXBMCApp::StartActivity(const string &package, const string &intent, const 
   if (!intent.empty())
     newIntent.setAction(intent);
 
-   startActivity(newIntent);
+  startActivity(newIntent);
+  return true;
+}
+
+// Note intent, dataType, dataURI all default to ""
+bool CXBMCApp::StartExternalPlayerActivity(const string &package, const string &intent, const string &dataType, const string &dataURI)
+{
+  if (intent.empty())
+    return false;
+
+  CJNIIntent newIntent(intent);
+  if (!newIntent)
+    return false;
+
+  if (!dataURI.empty())
+  {
+    CJNIURI jniURI = CJNIURI::parse(dataURI);
+    newIntent.setDataAndType(jniURI, dataType);
+  }
+
+  newIntent.setPackage(package);
+
+  startActivity(newIntent);
   return true;
 }
 
