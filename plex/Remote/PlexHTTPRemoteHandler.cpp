@@ -504,7 +504,6 @@ void CPlexHTTPRemoteHandler::subscribe(const HTTPRequest &request, const ArgMap 
   {
     g_plexApplication.remoteSubscriberManager->addSubscriber(sub);
     g_plexApplication.timelineManager->SendTimelineToSubscriber(sub);
-    m_data = g_plexApplication.timelineManager->GetCurrentTimeLinesXML(sub->getCommandID());
   }
   else
   {
