@@ -102,8 +102,6 @@ void COMXImage::Close()
     m_omx_resize.FlushOutput();
     m_omx_resize.FreeOutputBuffers();
 
-    m_omx_tunnel_decode.Flush();
-    m_omx_tunnel_decode.Flush();
     m_omx_tunnel_decode.Deestablish();
     m_omx_decoder.Deinitialize();
     m_omx_resize.Deinitialize();
