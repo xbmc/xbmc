@@ -57,13 +57,13 @@ public:
   // or a language name in english (as used by XBMC)
   void SetSubtitleLanguage(const CStdString &language);
 
-  const CStdString& GetDVDMenuLanguage() const;
-  const CStdString& GetDVDAudioLanguage() const;
-  const CStdString& GetDVDSubtitleLanguage() const;
+  const std::string GetDVDMenuLanguage() const;
+  const std::string GetDVDAudioLanguage() const;
+  const std::string GetDVDSubtitleLanguage() const;
   const CStdString& GetTimeZone() const;
 
   const CStdString& GetRegionLocale() const;
-  const CStdString& GetLanguageLocale() const;
+  const std::string GetLanguageLocale(bool twochar = false) const;
 
   bool ForceUnicodeFont() const { return m_currentRegion->m_forceUnicodeFont; }
 
@@ -144,6 +144,7 @@ protected:
     CStdString m_strDVDAudioLanguage;
     CStdString m_strDVDSubtitleLanguage;
     CStdString m_strLangLocaleName;
+    std::string m_strLangLocaleCodeTwoChar;
     CStdString m_strRegionLocaleName;
     bool m_forceUnicodeFont;
     CStdString m_strName;
