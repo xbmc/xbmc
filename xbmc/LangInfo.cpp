@@ -53,6 +53,7 @@ CLangInfo::CRegion::CRegion(const CRegion& region)
   m_strDVDAudioLanguage=region.m_strDVDAudioLanguage;
   m_strDVDSubtitleLanguage=region.m_strDVDSubtitleLanguage;
   m_strLangLocaleName = region.m_strLangLocaleName;
+  m_strLangLocaleCodeTwoChar = region.m_strLangLocaleCodeTwoChar;
   m_strRegionLocaleName = region.m_strRegionLocaleName;
 
   m_strDateFormatShort=region.m_strDateFormatShort;
@@ -86,6 +87,7 @@ void CLangInfo::CRegion::SetDefaults()
   m_strDVDAudioLanguage="en";
   m_strDVDSubtitleLanguage="en";
   m_strLangLocaleName = "English";
+  m_strLangLocaleCodeTwoChar = "en";
 
   m_strDateFormatShort="DD/MM/YYYY";
   m_strDateFormatLong="DDDD, D MMMM YYYY";
@@ -269,6 +271,10 @@ bool CLangInfo::Load(const CStdString& strFileName)
   else
     m_languageCodeGeneral = m_defaultRegion.m_strLangLocaleName;
 #endif
+
+  CStdString tmp;
+  if (g_LangCodeExpander.ConvertToTwoCharCode(tmp, m_defaultRegion.m_strLangLocaleName))
+    m_defaultRegion.m_strLangLocaleCodeTwoChar = tmp;
 
   const TiXmlNode *pCharSets = pRootElement->FirstChild("charsets");
   if (pCharSets && !pCharSets->NoChildren())
@@ -483,25 +489,40 @@ void CLangInfo::SetSubtitleLanguage(const CStdString &language)
 }
 
 // two character codes as defined in ISO639
-const CStdString& CLangInfo::GetDVDMenuLanguage() const
+const std::string CLangInfo::GetDVDMenuLanguage() const
 {
-  return m_currentRegion->m_strDVDMenuLanguage;
+  CStdString code;
+  if (!g_LangCodeExpander.ConvertToTwoCharCode(code, m_currentRegion->m_strLangLocaleName))
+    code = m_currentRegion->m_strDVDMenuLanguage;
+  
+  return code;
 }
 
 // two character codes as defined in ISO639
-const CStdString& CLangInfo::GetDVDAudioLanguage() const
+const std::string CLangInfo::GetDVDAudioLanguage() const
 {
-  return m_currentRegion->m_strDVDAudioLanguage;
+  CStdString code;
+  if (!g_LangCodeExpander.ConvertToTwoCharCode(code, m_audioLanguage))
+    code = m_currentRegion->m_strDVDAudioLanguage;
+  
+  return code;
 }
 
 // two character codes as defined in ISO639
-const CStdString& CLangInfo::GetDVDSubtitleLanguage() const
+const std::string CLangInfo::GetDVDSubtitleLanguage() const
 {
-  return m_currentRegion->m_strDVDSubtitleLanguage;
+  CStdString code;
+  if (!g_LangCodeExpander.ConvertToTwoCharCode(code, m_subtitleLanguage))
+    code = m_currentRegion->m_strDVDSubtitleLanguage;
+  
+  return code;
 }
 
-const CStdString& CLangInfo::GetLanguageLocale() const
+const std::string CLangInfo::GetLanguageLocale(bool twochar /* = false */) const
 {
+  if (twochar)
+    return m_currentRegion->m_strLangLocaleCodeTwoChar;
+
   return m_currentRegion->m_strLangLocaleName;
 }
 
