@@ -419,6 +419,11 @@ lib/cmyth/Makefile
 /system/players/dvdplayer/libdvdnav.dll
 /system/players/dvdplayer/libexpat-1.dll
 /system/players/dvdplayer/libfontconfig-1.dll
+/system/players/dvdplayer/libgmp-10.dll
+/system/players/dvdplayer/libgnutls-28.dll
+/system/players/dvdplayer/libhogweed-2-5.dll
+/system/players/dvdplayer/libnettle-4-7.dll
+/system/players/dvdplayer/libp11-kit-0.dll
 /system/players/dvdplayer/librtmp.dll
 /system/players/dvdplayer/postproc-52.dll
 /system/players/dvdplayer/swresample-0.dll
