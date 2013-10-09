@@ -73,7 +73,6 @@ namespace PVR
     virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
 
   private:
-    virtual bool OnMessageFocus(CGUIMessage &message);
     virtual bool OnMessageClick(CGUIMessage &message);
     virtual bool OpenGroupDialogSelect();
     virtual void CreateViews(void);

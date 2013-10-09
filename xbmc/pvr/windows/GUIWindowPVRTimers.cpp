@@ -124,9 +124,9 @@ void CGUIWindowPVRTimers::UpdateData(bool bUpdateSelectedFile /* = true */)
 
 bool CGUIWindowPVRTimers::OnClickButton(CGUIMessage &message)
 {
-  bool bReturn = false;
+  bool bReturn = CGUIWindowPVRCommon::OnClickButton(message);
 
-  if (IsSelectedButton(message))
+  if (!bReturn && IsSelectedButton(message))
   {
     bReturn = true;
     g_PVRManager.TriggerTimersUpdate();

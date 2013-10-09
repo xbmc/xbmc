@@ -168,7 +168,7 @@ void CGUIWindowPVR::OnInitWindow(void)
 
   CreateViews();
 
-  CSingleLock graphicsLock(g_graphicsContext);
+  CSingleLock graphicsLock(g_graphicsContext);  
   CSingleLock lock(m_critSection);
   if (m_savedSubwindow)
     m_savedSubwindow->OnInitWindow();
@@ -182,23 +182,24 @@ void CGUIWindowPVR::OnInitWindow(void)
 
   if (bReset)
   {
-    CGUIMessage msg(GUI_MSG_FOCUSED, GetID(), CONTROL_BTNCHANNELS, 0, 0);
-    OnMessageFocus(msg);
+    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), CONTROL_BTNCHANNELS, 0, 0);
+    OnMessageClick(msg);
   }
 }
 
 bool CGUIWindowPVR::OnMessage(CGUIMessage& message)
 {
-  CGUIWindow::OnMessage(message);
+  bool bReturn = false;
   
-  return m_windowChannels->OnMessage(message) ||
+  bReturn |= OnMessageClick(message);
+  bReturn |= CGUIMediaWindow::OnMessage(message);
+  bReturn |= m_windowChannels->OnMessage(message) ||
     m_windowGuide->OnMessage(message) ||
     m_windowRecordings->OnMessage(message) ||
     m_windowTimers->OnMessage(message) ||
-    m_windowSearch->OnMessage(message) ||
-    OnMessageFocus(message) ||
-    OnMessageClick(message) ||
-    CGUIMediaWindow::OnMessage(message);
+    m_windowSearch->OnMessage(message);
+  
+  return bReturn;
 }
 
 void CGUIWindowPVR::OnWindowLoaded(void)
@@ -250,24 +251,6 @@ void CGUIWindowPVR::SetLabel(int iControl, int iLabel)
 void CGUIWindowPVR::UpdateButtons(void)
 {
   m_windowGuide->UpdateButtons();
-}
-
-bool CGUIWindowPVR::OnMessageFocus(CGUIMessage &message)
-{
-  bool bReturn = false;
-
-  if (message.GetMessage() == GUI_MSG_FOCUSED)
-  {
-    m_windowChannels->OnMessageFocus(message) ||
-    m_windowGuide->OnMessageFocus(message) ||
-    m_windowRecordings->OnMessageFocus(message) ||
-    m_windowSearch->OnMessageFocus(message) ||
-    m_windowTimers->OnMessageFocus(message);
-
-    m_savedSubwindow = NULL;
-  }
-
-  return bReturn;
 }
 
 bool CGUIWindowPVR::OnMessageClick(CGUIMessage &message)
@@ -405,7 +388,7 @@ void CGUIWindowPVR::FrameMove()
 CPVRChannelGroupPtr CGUIWindowPVR::GetSelectedGroup(void)
 {
   if (!m_selectedGroup)
-    m_selectedGroup = g_PVRManager.GetPlayingGroup(m_bRadio);
+    SetSelectedGroup(g_PVRManager.GetPlayingGroup(m_bRadio));
   
   return m_selectedGroup;
 }
@@ -421,7 +404,4 @@ void CGUIWindowPVR::SetSelectedGroup(CPVRChannelGroupPtr group)
   // we need to register the channel window to receive changes from the new group
   m_selectedGroup->RegisterObserver(m_windowChannels);
   g_PVRManager.SetPlayingGroup(m_selectedGroup);
-
-  // update label
-  SetLabel(CONTROL_BTNCHANNEL_GROUPS, g_localizeStrings.Get(19141) + ": " + (m_selectedGroup->GroupType() == PVR_GROUP_TYPE_INTERNAL ? g_localizeStrings.Get(19282) : m_selectedGroup->GroupName()));
 }

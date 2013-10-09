@@ -156,9 +156,9 @@ void CGUIWindowPVRSearch::UpdateData(bool bUpdateSelectedFile /* = true */)
 
 bool CGUIWindowPVRSearch::OnClickButton(CGUIMessage &message)
 {
-  bool bReturn = false;
+  bool bReturn = CGUIWindowPVRCommon::OnClickButton(message);
 
-  if (IsSelectedButton(message))
+  if (!bReturn && IsSelectedButton(message))
   {
     bReturn = true;
     ShowSearchResults();

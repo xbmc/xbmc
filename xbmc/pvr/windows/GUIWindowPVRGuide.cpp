@@ -260,6 +260,14 @@ void CGUIWindowPVRGuide::UpdateData(bool bUpdateSelectedFile /* = true */)
 
   /* lock the graphics context while updating */
   CSingleLock graphicsLock(g_graphicsContext);
+  
+  CPVRChannelGroupPtr group = m_parent->GetSelectedGroup();
+  CStdString strPath;
+  strPath.Format("pvr://channels/%s/%s/",
+                 m_parent->m_bRadio ? "radio" : "tv",
+                 m_bShowHiddenChannels ? ".hidden" : group->GroupName());
+  m_parent->Update(strPath);
+  
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
 
@@ -296,9 +304,9 @@ bool CGUIWindowPVRGuide::IsSelectedList(CGUIMessage &message) const
 
 bool CGUIWindowPVRGuide::OnClickButton(CGUIMessage &message)
 {
-  bool bReturn = false;
+  bool bReturn = CGUIWindowPVRCommon::OnClickButton(message);
 
-  if (IsSelectedButton(message))
+  if (!bReturn && IsSelectedButton(message))
   {
     unsigned int iControl = message.GetSenderId();
     bReturn = true;
@@ -469,6 +477,8 @@ bool CGUIWindowPVRGuide::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTT
 
 void CGUIWindowPVRGuide::UpdateButtons(void)
 {
+  CGUIWindowPVRCommon::UpdateButtons();
+  
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
     m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19029));
   else if (m_iGuideView == GUIDE_VIEW_NOW)

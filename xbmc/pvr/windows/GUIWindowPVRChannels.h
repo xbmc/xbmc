@@ -37,7 +37,6 @@ namespace PVR
     void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     void UpdateData(bool bUpdateSelectedFile = true);
-    void UpdateButtons(void);
     void Notify(const Observable &obs, const ObservableMessage msg);
     void ResetObservers(void);
     void UnregisterObservers(void);
@@ -60,7 +59,5 @@ namespace PVR
     bool OnContextButtonLock(CFileItem *item, CONTEXT_BUTTON button);
 
     void ShowGroupManager(void);
-
-    bool              m_bShowHiddenChannels;
   };
 }

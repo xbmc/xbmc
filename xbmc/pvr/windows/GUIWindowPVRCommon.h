@@ -90,6 +90,7 @@ namespace PVR
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const = 0;
     virtual void UpdateData(bool bUpdateSelectedFile = true) = 0;
+    virtual void UpdateButtons(void);
     virtual void SetInvalid(void);
 
     virtual void OnInitWindow(void);
@@ -98,9 +99,8 @@ namespace PVR
 
   protected:
     virtual bool SelectPlayingFile(void);
-    virtual bool OnMessageFocus(CGUIMessage &message);
 
-    virtual bool OnClickButton(CGUIMessage &message) = 0;
+    virtual bool OnClickButton(CGUIMessage &message);
     virtual bool OnClickList(CGUIMessage &message) = 0;
 
     virtual bool ActionDeleteTimer(CFileItem *item);
@@ -138,6 +138,7 @@ namespace PVR
     unsigned int          m_iControlButton;
     unsigned int          m_iControlList;
     bool                  m_bUpdateRequired;
+    bool                  m_bShowHiddenChannels;
     int                   m_iSelected;
     SortOrder             m_iSortOrder;
     SortBy                m_iSortMethod;

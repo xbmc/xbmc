@@ -49,7 +49,6 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_CHANNELS, CONTROL_BTNCHANNELS, CONTROL_LIST_CHANNELS)
                      
 {
-  m_bShowHiddenChannels = false;
 }
 
 CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
@@ -170,16 +169,12 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
   ShowBusyItem();
   m_parent->m_vecItems->Clear();
 
-  CPVRChannelGroupPtr currentGroup = g_PVRManager.GetPlayingGroup(m_parent->m_bRadio);
-  if (!currentGroup)
-    return;
-
-  m_parent->SetSelectedGroup(currentGroup);
-
+  CPVRChannelGroupPtr group = m_parent->GetSelectedGroup();
+  
   CStdString strPath;
   strPath.Format("pvr://channels/%s/%s/",
       m_parent->m_bRadio ? "radio" : "tv",
-      m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName());
+      m_bShowHiddenChannels ? ".hidden" : group->GroupName());
 
   m_parent->m_vecItems->SetPath(strPath);
   m_parent->Update(m_parent->m_vecItems->GetPath());
@@ -207,7 +202,7 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
   }
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(m_parent->m_bRadio ? 19024 : 19023));
-  m_parent->SetLabel(CONTROL_LABELGROUP, m_bShowHiddenChannels ? g_localizeStrings.Get(19022) : currentGroup->GroupName());
+  m_parent->SetLabel(CONTROL_LABELGROUP, m_bShowHiddenChannels ? g_localizeStrings.Get(19022) : m_parent->GetSelectedGroup()->GroupName());
   m_parent->SetLabel(CONTROL_LABELGUIDE, "");
   
   UpdateButtons();
@@ -215,9 +210,9 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
 
 bool CGUIWindowPVRChannels::OnClickButton(CGUIMessage &message)
 {
-  bool bReturn = false;
+  bool bReturn = CGUIWindowPVRCommon::OnClickButton(message);
 
-  if (IsSelectedButton(message))
+  if (!bReturn && IsSelectedButton(message))
   {
     m_parent->m_bRadio = !m_parent->m_bRadio;
     m_parent->SetSelectedGroup(g_PVRManager.GetPlayingGroup(m_parent->m_bRadio));
@@ -547,9 +542,4 @@ void CGUIWindowPVRChannels::ShowGroupManager(void)
   pDlgInfo->DoModal();
 
   return;
-}
-
-void CGUIWindowPVRChannels::UpdateButtons(void)
-{
-  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19019) + ": " + g_localizeStrings.Get(m_parent->m_bRadio ? 19021 : 19020));
 }
