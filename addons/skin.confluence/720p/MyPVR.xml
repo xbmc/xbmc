@@ -167,7 +167,7 @@
 					<posy>0</posy>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
-					<label>$LOCALIZE[19019]: $LOCALIZE[19020]</label>
+					<label>-</label>
 				</control>
 				<control type="button" id="33">
 					<description>Channel Groups</description>
@@ -175,7 +175,7 @@
 					<posy>40</posy>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
-					<label>$LOCALIZE[19146]</label>
+					<label>-</label>
 				</control>
 				<control type="button" id="31">
 					<description>TV Guide</description>
@@ -183,7 +183,7 @@
 					<posy>80</posy>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
-					<label>$LOCALIZE[19222]: $LOCALIZE[19030]</label>
+					<label>-</label>
 				</control>
 				<control type="button" id="34">
 					<description>Recordings</description>
