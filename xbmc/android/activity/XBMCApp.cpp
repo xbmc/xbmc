@@ -401,17 +401,32 @@ bool CXBMCApp::HasLaunchIntent(const string &package)
 // Note intent, dataType, dataURI all default to ""
 bool CXBMCApp::StartActivity(const string &package, const string &intent, const string &dataType, const string &dataURI)
 {
-  CJNIIntent newIntent = GetPackageManager().getLaunchIntentForPackage(package);
+  CJNIIntent newIntent = intent.empty() ?
+    GetPackageManager().getLaunchIntentForPackage(package) :
+    CJNIIntent(intent);
+
   if (!newIntent)
     return false;
 
   if (!dataURI.empty())
-    newIntent.setData(dataURI);
+  {
+    CJNIURI jniURI = CJNIURI::parse(dataURI);
 
-  if (!intent.empty())
-    newIntent.setAction(intent);
+    if (!jniURI)
+      return false;
 
-   startActivity(newIntent);
+    newIntent.setDataAndType(jniURI, dataType); 
+  }
+
+  newIntent.setPackage(package);
+  startActivity(newIntent);
+  if (xbmc_jnienv()->ExceptionOccurred())
+  {
+    CLog::Log(LOGERROR, "CXBMCApp::StartActivity - ExceptionOccurred launching %s", package.c_str());
+    xbmc_jnienv()->ExceptionClear();
+    return false;
+  }
+
   return true;
 }
 
