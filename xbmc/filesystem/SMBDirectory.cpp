@@ -150,8 +150,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 #endif
         if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && g_advancedSettings.m_sambastatfiles)
         {
-          // make sure we use the authenticated path wich contains any default username
-          CStdString strFullName = strAuth + smb.URLEncode(strFile);
+          // make sure we use the authenticated path which contains any default username
+          std::string strFullName((std::string&)strAuth + smb.URLEncode(strFile));
 
           lock.Enter();
 
@@ -165,7 +165,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
             char value[20];
             // We poll for extended attributes which symbolizes bits but split up into a string. Where 0x02 is hidden and 0x12 is hidden directory.
             // According to the libsmbclient.h it's supposed to return 0 if ok, or the length of the string. It seems always to return the length wich is 4
-            if (smbc_getxattr(strFullName, "system.dos_attr.mode", value, sizeof(value)) > 0)
+            if (smbc_getxattr(strFullName.c_str(), "system.dos_attr.mode", value, sizeof(value)) > 0)
             {
               long longvalue = strtol(value, NULL, 16);
               if (longvalue & SMBC_DOS_MODE_HIDDEN)
