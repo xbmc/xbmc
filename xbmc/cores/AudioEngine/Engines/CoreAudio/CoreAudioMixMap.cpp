@@ -259,7 +259,7 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
     {
       AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, 0.0f, 0);
-      outStr += "0.0, ";
+      outStr += "0, ";
     }
 
     CLog::Log(LOGDEBUG, "CCoreAudioMixMap::SetMixingMatrix Setting %d = %s", i, outStr.c_str());
