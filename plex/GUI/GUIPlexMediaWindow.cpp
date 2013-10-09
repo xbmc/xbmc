@@ -84,13 +84,6 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       break;
     }
 
-    case GUI_MSG_WINDOW_DEINIT:
-    {
-      CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::OnMessage clearing filters");
-//      m_filterHelper.ClearFilters();
-      break;
-    }
-
     case GUI_MSG_UPDATE_FILTERS:
     {
       Update(m_filterHelper.GetSectionUrl().Get(), true, false);
@@ -310,10 +303,10 @@ bool CGUIPlexMediaWindow::OnPlayMedia(int iItem)
   if (!item)
     return false;
 
-  if (IsVideoContainer() || IsPhotoContainer())
-    PlexContentPlayerMixin::PlayPlexItem(item);
-  else
+  if (IsMusicContainer())
     QueueItems(*m_vecItems, item);
+  else
+    PlexContentPlayerMixin::PlayPlexItem(item);
 
   return true;
 }
@@ -533,10 +526,20 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIPlexMediaWindow::IsVideoContainer() const
+bool CGUIPlexMediaWindow::IsVideoContainer(CFileItemPtr item) const
 {
   EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
-  return (dirType == PLEX_DIR_TYPE_MOVIE || dirType == PLEX_DIR_TYPE_SHOW || dirType == PLEX_DIR_TYPE_SEASON || dirType == PLEX_DIR_TYPE_PLAYLIST || dirType == PLEX_DIR_TYPE_EPISODE);
+
+  if (dirType == PLEX_DIR_TYPE_DIRECTORY && item)
+    dirType = item->GetPlexDirectoryType();
+
+  return (dirType == PLEX_DIR_TYPE_MOVIE ||
+          dirType == PLEX_DIR_TYPE_SHOW ||
+          dirType == PLEX_DIR_TYPE_SEASON ||
+          dirType == PLEX_DIR_TYPE_PLAYLIST ||
+          dirType == PLEX_DIR_TYPE_EPISODE ||
+          dirType == PLEX_DIR_TYPE_VIDEO ||
+          dirType == PLEX_DIR_TYPE_CLIP);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

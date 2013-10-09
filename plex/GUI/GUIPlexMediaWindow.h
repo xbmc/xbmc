@@ -41,7 +41,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback
 
   private:
 
-    bool IsVideoContainer() const;
+    bool IsVideoContainer(CFileItemPtr item=CFileItemPtr()) const;
     bool IsMusicContainer() const;
     bool IsPhotoContainer() const;
 
