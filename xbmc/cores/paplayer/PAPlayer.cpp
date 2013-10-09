@@ -674,7 +674,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
     }
 
     /* it is time to start playing the next stream? */
-    if (si->m_playNextAtFrame > 0 && !si->m_playNextTriggered && si->m_framesSent >= si->m_playNextAtFrame)
+    if (si->m_playNextAtFrame > 0 && !si->m_playNextTriggered && !m_continueStream && si->m_framesSent >= si->m_playNextAtFrame)
     {
       if (!si->m_prepareTriggered)
       {
