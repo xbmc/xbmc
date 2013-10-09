@@ -15,6 +15,9 @@
 #include "settings/GUISettings.h"
 #include <boost/foreach.hpp>
 
+#include "Client/PlexServer.h"
+#include "Client/PlexServerManager.h"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false)
 {
@@ -116,6 +119,16 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
 
     if (GetItemDuration(item) > 0)
       options.AddOption("duration", boost::lexical_cast<std::string>(GetItemDuration(item)));
+
+    CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item->GetProperty("plexserver").asString());
+    if (server)
+    {
+      options.AddOption("port", server->GetActiveConnectionURL().GetPort());
+      options.AddOption("protocol", server->GetActiveConnectionURL().GetProtocol());
+      options.AddOption("address", server->GetActiveConnectionURL().GetHostName());
+
+      options.AddOption("token", "");
+    }
   }
   else
   {
@@ -153,10 +166,10 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
       }
     }
 
-    if (controllable.size() > 0)
+    if (controllable.size() > 0 && m_currentStates[type] != MEDIA_STATE_STOPPED)
       options.AddOption("controllable", StringUtils::Join(controllable, ","));
 
-    if (g_application.IsPlaying())
+    if (g_application.IsPlaying() && m_currentStates[type] != MEDIA_STATE_STOPPED)
     {
       options.AddOption("volume", g_application.GetVolume());
 
@@ -346,12 +359,9 @@ std::vector<CUrlOptions> CPlexTimelineManager::GetCurrentTimeLines(int commandID
 {
   std::vector<CUrlOptions> array;
 
-  if (m_currentItems[MUSIC])
-    array.push_back(GetCurrentTimeline(MUSIC, false));
-  if (m_currentItems[PHOTO])
-    array.push_back(GetCurrentTimeline(PHOTO, false));
-  if (m_currentItems[VIDEO])
-    array.push_back(GetCurrentTimeline(VIDEO, false));
+  array.push_back(GetCurrentTimeline(MUSIC, false));
+  array.push_back(GetCurrentTimeline(PHOTO, false));
+  array.push_back(GetCurrentTimeline(VIDEO, false));
 
   return array;
 }
