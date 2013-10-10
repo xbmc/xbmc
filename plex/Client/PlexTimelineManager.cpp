@@ -108,7 +108,6 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
   if (item)
   {
     options.AddOption("time", item->GetProperty("viewOffset").asString());
-    options.AddOption("position", item->GetProperty("viewOffset").asString());
 
     options.AddOption("machineidentifier", item->GetProperty("plexserver").asString());
     options.AddOption("ratingKey", item->GetProperty("ratingKey").asString());
@@ -137,7 +136,6 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
   else
   {
     options.AddOption("time", 0);
-    options.AddOption("position", 0);
   }
 
   if (!forServer)
