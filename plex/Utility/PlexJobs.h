@@ -123,5 +123,14 @@ class CPlexDownloadFileJob : public CJob
     bool m_failed;
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+class CPlexThemeMusicPlayerJob : public CJob
+{
+  public:
+    CPlexThemeMusicPlayerJob(const CFileItem& item) : m_item(item) {}
+    bool DoWork();
+    CFileItem m_item;
+    CStdString m_fileToPlay;
+};
 
 #endif /* defined(__Plex_Home_Theater__PlexJobs__) */

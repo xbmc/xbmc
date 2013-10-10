@@ -11,6 +11,7 @@
 #include "ApplicationMessenger.h"
 #include "PlexApplication.h"
 #include "PlexContentPlayerMixin.h"
+#include "PlexThemeMusicPlayer.h"
 
 CGUIWindowPlexPreplayVideo::CGUIWindowPlexPreplayVideo(void)
  : CGUIMediaWindow(WINDOW_PLEX_PREPLAY_VIDEO, "PlexPreplayVideo.xml")
@@ -34,6 +35,7 @@ CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
       m_vecItems->SetContent("episode");
     
     g_plexApplication.m_preplayItem = m_vecItems->Get(0);
+    g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems->Get(0));
   }
   else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
   {

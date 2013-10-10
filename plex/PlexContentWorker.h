@@ -19,7 +19,6 @@
 #include "pictures/PictureThumbLoader.h"
 #include "ThumbLoader.h"
 #include "video/VideoThumbLoader.h"
-#include "BackgroundMusicPlayer.h"
 #include "music/MusicThumbLoader.h"
 
 class PlexContentWorker;

@@ -9,7 +9,6 @@
 
 #include "Client/PlexNetworkServiceBrowser.h"
 #include "PlexApplication.h"
-#include "BackgroundMusicPlayer.h"
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "plex/Helper/PlexHTHelper.h"
@@ -25,6 +24,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "PlexAnalytics.h"
 #include "Client/PlexTimelineManager.h"
+#include "PlexThemeMusicPlayer.h"
 
 #include "AutoUpdate/PlexAutoUpdate.h"
 
@@ -37,9 +37,9 @@ PlexApplication::Start()
   myPlexManager = new CMyPlexManager;
   remoteSubscriberManager = new CPlexRemoteSubscriberManager;
   mediaServerClient = CPlexMediaServerClientPtr(new CPlexMediaServerClient);
-  backgroundMusicPlayer = new BackgroundMusicPlayer;
   analytics = new CPlexAnalytics;
   timelineManager = CPlexTimelineManagerPtr(new CPlexTimelineManager);
+  themeMusicPlayer = CPlexThemeMusicPlayerPtr(new CPlexThemeMusicPlayer);
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
@@ -85,7 +85,7 @@ bool PlexApplication::OnMessage(CGUIMessage& message)
     }
     case GUI_MSG_BG_MUSIC_THEME_UPDATED:
     {
-      g_plexApplication.backgroundMusicPlayer->SetTheme(message.GetStringParam());
+//      g_plexApplication.backgroundMusicPlayer->SetTheme(message.GetStringParam());
       return true;
     }
   }
@@ -133,6 +133,8 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
   if (flag == ANNOUNCEMENT::System && stricmp(sender, "xbmc") == 0 && stricmp(message, "onQuit") == 0)
   {
     CLog::Log(LOGINFO, "CPlexApplication shutting down!");
+
+    themeMusicPlayer->stop();
     
     m_serviceListener->Stop();
     m_serviceListener.reset();
@@ -154,8 +156,8 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
     
     delete remoteSubscriberManager;
     
-    backgroundMusicPlayer->Die();
-    delete backgroundMusicPlayer;
+//    backgroundMusicPlayer->Die();
+//    delete backgroundMusicPlayer;
     
     delete autoUpdater;
   }

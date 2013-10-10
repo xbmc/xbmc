@@ -13,6 +13,9 @@
 
 #include "TextureCache.h"
 #include "File.h"
+#include "utils/Crc32.h"
+#include "PlexFile.h"
+#include "video/VideoInfoTag.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexHTTPFetchJob::DoWork()
@@ -144,4 +147,66 @@ CPlexDownloadFileJob::DoWork()
 
   CLog::Log(LOGWARNING, "[DownloadJob] Failed to download file.");
   return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexThemeMusicPlayerJob::DoWork()
+{
+  CStdString themeMusicUrl = m_item.GetProperty("theme").asString();
+  if (themeMusicUrl.empty())
+    return false;
+
+  Crc32 crc;
+  crc.ComputeFromLowerCase(themeMusicUrl);
+
+  CStdString hex;
+  hex.Format("%08x", (unsigned int)crc);
+
+  m_fileToPlay = "special://masterprofile/ThemeMusicCache/" + hex + ".mp3";
+
+  if (!XFILE::CFile::Exists(m_fileToPlay))
+  {
+    CPlexFile plex;
+    CFile localFile;
+
+    if (!localFile.OpenForWrite(m_fileToPlay, true))
+    {
+      CLog::Log(LOGWARNING, "CPlexThemeMusicPlayerJob::DoWork failed to open %s for writing.", m_fileToPlay.c_str());
+      return false;
+    }
+
+    bool failed = false;
+
+    if (plex.Open(themeMusicUrl))
+    {
+      bool done = false;
+      int64_t read = 0;
+
+      while(!done)
+      {
+        char buffer[4096];
+        read = plex.Read(buffer, 4096);
+        if (read > 0)
+        {
+          localFile.Write(buffer, read);
+          done = ShouldCancel(0, 0);
+          if (done) failed = true;
+        }
+        else if (read == 0)
+        {
+          done = true;
+          continue;
+        }
+      }
+    }
+
+    CLog::Log(LOGDEBUG, "CPlexThemeMusicPlayerJob::DoWork cached %s => %s", themeMusicUrl.c_str(), m_fileToPlay.c_str());
+
+    plex.Close();
+    localFile.Close();
+
+    return !failed;
+  }
+  else
+    return true;
 }

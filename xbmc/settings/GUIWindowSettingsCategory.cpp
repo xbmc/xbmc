@@ -129,7 +129,6 @@
 #include "PlexUtils.h"
 #include "plex/GUI/GUIDialogMyPlex.h"
 #include "PlexApplication.h"
-#include "BackgroundMusicPlayer.h"
 #include "Client/PlexServerManager.h"
 #include "Client/PlexTranscoderClient.h"
 #include "Client/PlexServerDataLoader.h"
@@ -1116,10 +1115,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("backgroundmusic.bgmusicenabled"))
     {
-      if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
-        g_plexApplication.backgroundMusicPlayer->PlayElevatorMusic();
-      else
-        g_plexApplication.backgroundMusicPlayer->Die();
+//      if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
+//        g_plexApplication.backgroundMusicPlayer->PlayElevatorMusic();
+//      else
+//        g_plexApplication.backgroundMusicPlayer->Die();
     }
     else if (strSetting.Equals("updates.checknow"))
     {

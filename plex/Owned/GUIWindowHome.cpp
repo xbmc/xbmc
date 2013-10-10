@@ -66,8 +66,6 @@
 #include "Job.h"
 #include "JobManager.h"
 
-#include "BackgroundMusicPlayer.h"
-
 #include "interfaces/Builtins.h"
 
 #include "Client/PlexServerManager.h"
@@ -557,8 +555,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       
       RefreshAllSections(false);
 
-      if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
-        g_plexApplication.backgroundMusicPlayer->PlayElevatorMusic();
+//      if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
+//        g_plexApplication.backgroundMusicPlayer->PlayElevatorMusic();
       
       break;
     }

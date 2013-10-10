@@ -345,7 +345,6 @@
 #include "plex/GUI/GUIDialogTimer.h"
 #include "plex/GUI/GUIWindowNowPlaying.h"
 #include "plex/GUI/GUIWindowPlexSearch.h"
-#include "plex/Utility/BackgroundMusicPlayer.h"
 #include "plex/GUI/GUIPlexMediaWindow.h"
 #include "plex/GUI/GUIDialogFilterSort.h"
 #include "plex/GUI/GUIDialogMyPlex.h"
@@ -359,6 +358,7 @@
 #include "plex/CrashReporter/Breakpad.h"
 #include "plex/GUI/GUIDialogPlexAudioSubtitlePicker.h"
 #include "plex/GUI/GUIWindowPlexStartupHelper.h"
+#include "plex/PlexThemeMusicPlayer.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -4223,9 +4223,6 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
   }
 #endif
 
-  /* PLEX */
-  BackgroundMusicPlayer::SendThemeChangeMessage();
-
   if (item.IsPlexMediaServer())
   {
     CFileItem newItem;
@@ -4451,7 +4448,7 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
   if(bResult)
   {
     /* PLEX */
-    g_plexApplication.backgroundMusicPlayer->PauseElevatorMusic();
+    g_plexApplication.themeMusicPlayer->pauseThemeMusic();
     /* END PLEX */
 
     if (m_iPlaySpeed != 1)
@@ -4618,10 +4615,6 @@ void CApplication::OnPlayBackStopped()
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   g_windowManager.SendThreadMessage(msg);
-
-  /* PLEX */
-  g_plexApplication.backgroundMusicPlayer->PlayElevatorMusic();
-  /* END PLEX */
 
 }
 

@@ -29,6 +29,7 @@
 #include "GUIKeyboardFactory.h"
 #include "utils/URIUtils.h"
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
+#include "PlexThemeMusicPlayer.h"
 
 #include "LocalizeStrings.h"
 
@@ -521,6 +522,8 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 
   if (isSecondary && updateFilters)
     BuildFilter(m_filterHelper.GetSectionUrl());
+
+  g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems);
 
   return ret;
 }

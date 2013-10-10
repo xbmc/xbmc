@@ -43,13 +43,16 @@ typedef boost::shared_ptr<CPlexServiceListener> CPlexServiceListenerPtr;
 class CPlexTimelineManager;
 typedef boost::shared_ptr<CPlexTimelineManager> CPlexTimelineManagerPtr;
 
+class CPlexThemeMusicPlayer;
+typedef boost::shared_ptr<CPlexThemeMusicPlayer> CPlexThemeMusicPlayerPtr;
+
 ///
 /// The hub of all Plex goodness.
 ///
 class PlexApplication : public IMsgTargetCallback, public ANNOUNCEMENT::IAnnouncer
 {
 public:
-  PlexApplication() : myPlexManager(NULL), remoteSubscriberManager(NULL), backgroundMusicPlayer(NULL) {};
+  PlexApplication() : myPlexManager(NULL), remoteSubscriberManager(NULL) {};
   void Start();
 
   /// Destructor
@@ -71,7 +74,7 @@ public:
   CPlexRemoteSubscriberManager *remoteSubscriberManager;
   CPlexMediaServerClientPtr mediaServerClient;
   CPlexServerDataLoaderPtr dataLoader;
-  BackgroundMusicPlayer *backgroundMusicPlayer;
+  CPlexThemeMusicPlayerPtr themeMusicPlayer;
   CPlexAnalytics *analytics;
   CPlexAutoUpdate* autoUpdater;
   CPlexTimelineManagerPtr timelineManager;

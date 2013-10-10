@@ -133,12 +133,16 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
 {
   /* fade all the streams out fast for a nice soft stop */
   CSharedLock lock(m_streamsLock);
+  /* PLEX */
+  int xfadeTime = FAST_XFADE_TIME;
+  if (m_hardCrossFade) xfadeTime = m_hardCrossFade;
+  /* END PLEX */
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
     if (si->m_stream)
       // PLEX 1.0 -> Getmax
-      si->m_stream->FadeVolume(GetMaxVolume(), 0.0f, FAST_XFADE_TIME);
+      si->m_stream->FadeVolume(GetMaxVolume(), 0.0f, xfadeTime);
 
     if (close)
     {
@@ -153,7 +157,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
   {
     /* wait for them to fade out */
     lock.Leave();
-    Sleep(FAST_XFADE_TIME);
+    Sleep(xfadeTime);
     lock.Enter();
 
     /* be sure they have faded out */
@@ -247,6 +251,11 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   if (m_streams.size() == 2)
   {
     //do a short crossfade on trackskip, set to max 2 seconds for these prev/next transitions
+    /* PLEX */
+    if (m_hardCrossFade)
+      m_upcomingCrossfadeMS = m_hardCrossFade;
+    else
+    /* END PLEX */
     m_upcomingCrossfadeMS = std::min(m_defaultCrossfadeMS, (unsigned int)MAX_SKIP_XFADE_TIME);
 
     //start transition to next track
@@ -267,6 +276,14 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
 void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
 {
+  /* PLEX */
+  if (m_hardCrossFade)
+  {
+    m_upcomingCrossfadeMS = m_defaultCrossfadeMS = m_hardCrossFade;
+    return;
+  }
+  /* END PLEX */
+
   m_upcomingCrossfadeMS = m_defaultCrossfadeMS = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
   if (m_upcomingCrossfadeMS)
   {
@@ -956,3 +973,9 @@ float PAPlayer::GetMaxVolume()
   else
     return 1.0f;
 }
+
+void PAPlayer::FadeOut(int milliseconds)
+{
+  m_hardCrossFade = milliseconds;
+}
+/* END PLEX */

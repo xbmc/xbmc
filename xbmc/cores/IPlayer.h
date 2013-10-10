@@ -237,6 +237,7 @@ public:
   virtual int GetPlexMediaPartID() { return -1; };
   virtual bool CanOpenAsync() { return false; };
   virtual void Abort() {};
+  virtual void FadeOut(int milliseconds) {};
   /* END PLEX */
 
 protected:
