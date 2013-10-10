@@ -249,6 +249,9 @@ CPlexServer::GetActiveConnection() const
 CURL
 CPlexServer::GetActiveConnectionURL() const
 {
+  if (!m_activeConnection)
+    return CURL();
+
   return m_activeConnection->GetAddress();
 }
 
