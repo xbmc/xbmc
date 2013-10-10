@@ -102,6 +102,7 @@ typedef struct XBMC_JoyAxisEvent {
 	unsigned char which;	/* The joystick device index */
 	unsigned char axis;	/* The joystick axis index */
 	int16_t value;	/* The axis value (range: -32768 to 32767) */
+	float   fvalue; /* The axis value (range: -1.0 to 1.0) */
 } XBMC_JoyAxisEvent;
 
 /* Joystick trackball motion event structure */

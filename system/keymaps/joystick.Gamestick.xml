@@ -1,0 +1,127 @@
+<!-- This file contains the mappings for a Gamestick controller to actions within XBMC    -->
+<!-- The <global> section is a fall through - they will only be used if the button is not          -->
+<!-- used in the current window's section.  Note that there is only handling                       -->
+<!-- for a single action per button at this stage.                                                 -->
+
+<!-- The format of a mapping is:                                -->
+<!--    <device name="name">                                    -->
+<!--      <button id="x">action</button>                        -->
+<!--      <axis id="x" limit="y">action</axis>                  -->
+<!--    </device>                                               -->
+
+<!-- Note that the action can be a built-in function.           -->
+<!-- eg <button id="x">XBMC.ActivateWindow(Home)</button>       -->
+<!-- would automatically go to Home on the press of button 'x'. -->
+
+<!-- Joystick Name: Gamestick                  -->
+
+<!-- Button Mappings in Android:               -->
+<!-- see JoyButtonMap in AndroidKey.cpp        -->
+<!--                                           -->
+<!-- ID              Button                    -->
+<!--                                           -->
+<!-- 1               A                         -->
+<!-- 2               B                         -->
+<!-- 4               X                         -->
+<!-- 5               Y                         -->
+<!-- 7               Left Shoulder             -->
+<!-- 8               Right Shoulder            -->
+<!-- 11              Left Stick Button         -->
+<!-- 12              Right Stick Button        -->
+<!-- 13              Start                     -->
+
+<!-- Axis Mappings:                   -->
+<!--                                  -->
+<!-- ID              Button           -->
+<!--                                  -->
+<!-- 1               Left Stick L/R   -->
+<!-- 2               Left Stick U/D   -->
+<!-- 3               Right Stick L/R  -->
+<!-- 4               Right Stick U/D  -->
+<!-- 5               D-Pad U/D        -->
+<!-- 6               D-Pad L/R        -->
+
+<keymap>
+  <global>
+    <joystick name="GameStick Controller">
+      <altname>GameStick Controller 1</altname>
+      <altname>GameStick Controller 2</altname>
+      <!-- A selects. B goes back. X gets context menu. Y goes fullscreen and back. -->
+      <button id="1">Select</button>
+      <button id="2">Back</button>
+      <button id="4">ContextMenu</button>
+      <button id="5">FullScreen</button>
+      <!--Left Shoulder Queues videos. Right shoulder displays the current queue. -->
+      <button id="7">Queue</button>
+      <button id="8">Playlist</button>
+      <!--left/right stick buttons -->
+      <button id="11">Enter</button>
+      <button id="12">Enter</button>
+      <!-- Push up on the left stick for volueme up. Push down for volume down. -->
+      <axis id="1" limit="-1">Up</axis>
+      <axis id="1" limit="+1">Down</axis>
+      <axis id="2" limit="-1">Left</axis>
+      <axis id="2" limit="+1">Right</axis>
+      <!-- Push up on the right stick for volueme up. Push down for volume down. -->
+      <axis id="3" limit="-1">VolumeDown</axis>
+      <axis id="3" limit="+1">VolumeUp</axis>
+      <axis id="4" limit="-1">VolumeDown</axis>
+      <axis id="4" limit="+1">VolumeUp</axis>
+      <!-- Analog DPad. -->
+      <axis id="5" limit="-1">Up</axis>
+      <axis id="5" limit="+1">Down</axis>
+      <axis id="6" limit="-1">Left</axis>
+      <axis id="6" limit="+1">Right</axis>
+    </joystick>
+  </global>
+  <FullscreenVideo>
+    <joystick name="GameStick Controller">
+      <altname>GameStick Controller 1</altname>
+      <altname>GameStick Controller 2</altname>
+      <!--
+            A pauses and starts the video.
+            B stops the video.
+            X opens the onscreen display.
+            Y switches in and out of full screen
+            -->
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="4">OSD</button>
+      <!--
+            Left shoulder changes aspect ratio.
+            Right shoulder changes subtitles.
+            Right stick changes Audio Language.
+            Start button displays info.
+            -->
+      <button id="7">Info</button>
+      <button id="8">AudioNextLanguage</button>
+      <!-- Analog DPad. -->
+      <axis id="5" limit="-1">BigStepForward</axis>
+      <axis id="5" limit="+1">BigStepBack</axis>
+      <axis id="6" limit="-1">StepBack</axis>
+      <axis id="6" limit="+1">StepForward</axis>
+    </joystick>
+  </FullscreenVideo>
+  <FullscreenInfo>
+    <joystick name="GameStick Controller">
+      <altname>GameStick Controller 1</altname>
+      <altname>GameStick Controller 2</altname>
+      <button id="2">Close</button>
+      <button id="4">OSD</button>
+    </joystick>
+  </FullscreenInfo>
+  <VideoOSD>
+    <joystick name="GameStick Controller">
+      <altname>GameStick Controller 1</altname>
+      <altname>GameStick Controller 2</altname>
+      <button id="4">CodecInfo</button>
+    </joystick>
+  </VideoOSD>
+  <PlayerControls>
+    <joystick name="GameStick Controller">
+      <altname>GameStick Controller 1</altname>
+      <altname>GameStick Controller 2</altname>
+      <button id="4">Close</button>
+    </joystick>
+  </PlayerControls>
+</keymap>

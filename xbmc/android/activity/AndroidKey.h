@@ -19,19 +19,19 @@
  *
  */
 
-#include <stdint.h>
 #include <android/input.h>
 
-typedef struct {
-  int32_t nativeKey;
-  int16_t xbmcKey;
-} KeyMap;
+#include <stdint.h>
+#include <string>
+#include <vector>
 
 class CAndroidKey
 {
 public:
-  CAndroidKey(){};
-  ~CAndroidKey(){};
+  CAndroidKey() {};
+ ~CAndroidKey() {};
+
+  bool onKeyboardEvent(AInputEvent *event);
   void XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, bool up);
-  bool onKeyboardEvent(AInputEvent* event);
+  void XBMC_JoyButton(uint8_t id, uint8_t button, bool up);
 };

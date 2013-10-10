@@ -373,6 +373,9 @@ protected:
 #if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;
 #endif
+#if defined(TARGET_ANDROID)
+  friend class CWinEventsAndroid;
+#endif
   // screensaver
   bool m_bScreenSave;
   ADDON::AddonPtr m_screenSaver;
