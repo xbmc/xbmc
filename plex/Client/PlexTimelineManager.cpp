@@ -18,6 +18,8 @@
 #include "Client/PlexServer.h"
 #include "Client/PlexServerManager.h"
 
+#include "FileItem.h"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false)
 {
@@ -123,7 +125,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
       options.AddOption("duration", boost::lexical_cast<std::string>(GetItemDuration(item)));
 
     CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item->GetProperty("plexserver").asString());
-    if (server)
+    if (server && server->GetActiveConnection())
     {
       options.AddOption("port", server->GetActiveConnectionURL().GetPort());
       options.AddOption("protocol", server->GetActiveConnectionURL().GetProtocol());
@@ -212,9 +214,11 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexTimelineManager::ReportProgress(CFileItemPtr currentItem, CPlexTimelineManager::MediaState state, uint64_t currentPosition)
+void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlexTimelineManager::MediaState state, uint64_t currentPosition)
 {
-  CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress for item %s (%s) [%lld]", currentItem->GetLabel().c_str(), StateToString(state).c_str(), currentPosition);
+  if (!currentItem)
+    return;
+
   MediaType type = GetMediaType(currentItem);
   if (type == UNKNOWN)
   {

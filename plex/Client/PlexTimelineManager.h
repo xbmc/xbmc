@@ -31,7 +31,7 @@ class CPlexTimelineManager
 
     CPlexTimelineManager();
 
-    void ReportProgress(CFileItemPtr currentItem, MediaState state, uint64_t currentPosition=0);
+    void ReportProgress(const CFileItemPtr &currentItem, MediaState state, uint64_t currentPosition=0);
     std::vector<CUrlOptions> GetCurrentTimeLines(int commandID = -1);
     CStdString GetCurrentTimeLinesXML(int commandID = -1);
     CUrlOptions GetCurrentTimeline(CPlexTimelineManager::MediaType type, bool forServer=true);
