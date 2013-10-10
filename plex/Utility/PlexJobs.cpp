@@ -61,13 +61,22 @@ bool CPlexVideoThumbLoaderJob::DoWork()
       !CTextureCache::Get().HasCachedImage(m_item->GetArt("thumb")))
     CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("thumb"));
 
+  if (ShouldCancel(1, 5))
+    return false;
+
   if (m_item->HasArt("fanart") &&
       !CTextureCache::Get().HasCachedImage(m_item->GetArt("fanart")))
     CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("fanart"));
 
+  if (ShouldCancel(2, 5))
+    return false;
+
   if (m_item->HasArt("grandParentThumb") &&
       !CTextureCache::Get().HasCachedImage(m_item->GetArt("grandParentThumb")))
     CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("grandParentThumb"));
+
+  if (ShouldCancel(3, 5))
+    return false;
 
   if (m_item->HasArt("bigPoster") &&
       !CTextureCache::Get().HasCachedImage(m_item->GetArt("bigPoster")))

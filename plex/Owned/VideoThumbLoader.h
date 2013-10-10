@@ -54,9 +54,14 @@ private:
 class CPlexThumbCacher : public CJobQueue
 {
 public:
-  CPlexThumbCacher() : CJobQueue(true, 5, CJob::PRIORITY_LOW) {};
+  CPlexThumbCacher() : CJobQueue(true, 5, CJob::PRIORITY_LOW), m_stop(false) {};
+  void Stop() { m_stop = true; CancelJobs(); }
+  void Start() { m_stop = false; }
   void Load(const CFileItemList &list)
   {
+    if (m_stop)
+      return;
+
     for (int i = 0; i < list.Size(); i++)
     {
       CFileItemPtr item = list.Get(i);
@@ -64,4 +69,6 @@ public:
         AddJob(new CPlexVideoThumbLoaderJob(item));
     }
   }
+
+  bool m_stop;
 };

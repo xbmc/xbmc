@@ -535,6 +535,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() ==  GUI_MSG_WINDOW_DEINIT)
   {
+    thumbCacher.Stop();
     m_lastSelectedItem = GetCurrentItemName();
     HideAllLists();
     return true;
@@ -546,6 +547,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
+      thumbCacher.Start();
       UpdateSections();
 
       RestoreSection();
