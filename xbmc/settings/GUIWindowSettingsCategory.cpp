@@ -127,7 +127,7 @@
 /* PLEX */
 #include "Client/MyPlex/MyPlexManager.h"
 #include "PlexUtils.h"
-#include "plex/GUI/GUIDialogMyPlex.h"
+#include "plex/GUI/GUIWindowMyPlex.h"
 #include "PlexApplication.h"
 #include "Client/PlexServerManager.h"
 #include "Client/PlexTranscoderClient.h"
@@ -2169,7 +2169,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
 
     if (!g_plexApplication.myPlexManager->IsSignedIn())
     {
-      CGUIDialogMyPlex::ShowAndGetInput();
+//      CGUIWindowMyPlex::ShowAndGetInput();
     }
     else
     {

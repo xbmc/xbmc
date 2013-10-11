@@ -18,7 +18,7 @@
 #define ID_ICON_SUCCESS   10088
 #define ID_ICON_ERROR     10089
 
-#include "GUIDialogMyPlex.h"
+#include "GUIWindowMyPlex.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIButtonControl.h"
 #include "LocalizeStrings.h"
@@ -29,17 +29,7 @@
 
 #include "PlexApplication.h"
 
-void
-CGUIDialogMyPlex::ShowAndGetInput()
-{
-  CGUIDialogMyPlex *dialog = (CGUIDialogMyPlex *)g_windowManager.GetWindow(WINDOW_DIALOG_MYPLEX_PIN);
-  if (!dialog) return;
-
-  dialog->DoModal();
-  return ;
-}
-
-void CGUIDialogMyPlex::Setup()
+void CGUIWindowMyPlex::Setup()
 {
   SET_CONTROL_HIDDEN(ID_ICON_ERROR);
   SET_CONTROL_HIDDEN(ID_ICON_SUCCESS);
@@ -51,7 +41,7 @@ void CGUIDialogMyPlex::Setup()
   ShowPinInput();
 }
 
-void CGUIDialogMyPlex::ShowManualInput()
+void CGUIWindowMyPlex::ShowManualInput()
 {
   m_manual = true;
 
@@ -74,7 +64,7 @@ void CGUIDialogMyPlex::ShowManualInput()
   SET_CONTROL_FOCUS(ID_USERNAME, 0);
 }
 
-void CGUIDialogMyPlex::ShowPinInput()
+void CGUIWindowMyPlex::ShowPinInput()
 {
   m_manual = false;
   SET_CONTROL_HIDDEN(ID_USERNAME);
@@ -88,7 +78,7 @@ void CGUIDialogMyPlex::ShowPinInput()
   g_plexApplication.myPlexManager->StartPinLogin();
 }
 
-void CGUIDialogMyPlex::ShowSuccess()
+void CGUIWindowMyPlex::ShowSuccess()
 {
   SET_CONTROL_HIDDEN(ID_USERNAME);
   SET_CONTROL_HIDDEN(ID_PASSWORD);
@@ -104,7 +94,7 @@ void CGUIDialogMyPlex::ShowSuccess()
   SET_CONTROL_LABEL(ID_BUTTON_CANCEL, g_localizeStrings.Get(186));
 }
 
-void CGUIDialogMyPlex::ShowFailure(int reason)
+void CGUIWindowMyPlex::ShowFailure(int reason)
 {
   SET_CONTROL_HIDDEN(ID_USERNAME);
   SET_CONTROL_HIDDEN(ID_PASSWORD);
@@ -120,7 +110,7 @@ void CGUIDialogMyPlex::ShowFailure(int reason)
   SET_CONTROL_LABEL(ID_DESC_TEXT, g_localizeStrings.Get(reason));
 }
 
-void CGUIDialogMyPlex::HandleMyPlexState(int state, int errorCode)
+void CGUIWindowMyPlex::HandleMyPlexState(int state, int errorCode)
 {
   switch(state)
   {
@@ -178,13 +168,13 @@ void CGUIDialogMyPlex::HandleMyPlexState(int state, int errorCode)
 }
 
 bool
-CGUIDialogMyPlex::OnMessage(CGUIMessage &message)
+CGUIWindowMyPlex::OnMessage(CGUIMessage &message)
 {
   switch(message.GetMessage())
   {
     case GUI_MSG_WINDOW_INIT:
     {
-      CGUIDialog::OnMessage(message);
+      CGUIWindow::OnMessage(message);
       Setup();
 
       return true;
@@ -233,5 +223,5 @@ CGUIDialogMyPlex::OnMessage(CGUIMessage &message)
     default:
       break;
   }
-  return CGUIDialog::OnMessage(message);
+  return CGUIWindow::OnMessage(message);
 }

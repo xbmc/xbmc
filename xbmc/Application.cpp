@@ -347,7 +347,7 @@
 #include "plex/GUI/GUIWindowPlexSearch.h"
 #include "plex/GUI/GUIPlexMediaWindow.h"
 #include "plex/GUI/GUIDialogFilterSort.h"
-#include "plex/GUI/GUIDialogMyPlex.h"
+#include "plex/GUI/GUIWindowMyPlex.h"
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
 #include "plex/GUI/GUIWindowPlexPreplayVideo.h"
 #include "plex/GUI/GUIWindowPlexMyChannels.h"
@@ -1520,7 +1520,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIPlexMediaWindow);
     g_windowManager.Add(new CGUIPlexMusicWindow);
     g_windowManager.Add(new CGUIWindowPlexPreplayVideo);
-    g_windowManager.Add(new CGUIDialogMyPlex);
+    g_windowManager.Add(new CGUIWindowMyPlex);
     g_windowManager.Add(new CGUIDialogPlexPluginSettings);
     g_windowManager.Add(new CGUIWindowPlexMyChannels);
     g_windowManager.Add(new CGUIDialogPlexAudioPicker);

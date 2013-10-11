@@ -29,13 +29,10 @@ bool CGUIWindowPlexStartupHelper::OnMessage(CGUIMessage &message)
     {
       switch (m_page) {
         case WIZARD_PAGE_WELCOME:
-          SetPage(WIZARD_PAGE_MYPLEX);
-          break;
-        case WIZARD_PAGE_MYPLEX:
           SetPage(WIZARD_PAGE_AUDIO);
           break;
         case WIZARD_PAGE_AUDIO:
-          CApplicationMessenger::Get().ExecBuiltIn("XBMC.ActivateWindow(Home)");
+          CApplicationMessenger::Get().ExecBuiltIn("XBMC.ReplaceWindow(Home)");
           break;
         default:
           break;

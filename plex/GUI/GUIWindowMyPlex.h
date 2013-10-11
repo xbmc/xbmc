@@ -13,10 +13,10 @@
 #include "PlexTypes.h"
 #include "Client/MyPlex/MyPlexManager.h"
 
-class CGUIDialogMyPlex : public CGUIDialog
+class CGUIWindowMyPlex : public CGUIWindow
 {
   public:
-    CGUIDialogMyPlex() : CGUIDialog(WINDOW_DIALOG_MYPLEX_PIN, "DialogMyPlexLogin.xml") {};
+    CGUIWindowMyPlex() : CGUIWindow(WINDOW_MYPLEX_PIN, "MyPlexLogin.xml") {};
 
     virtual bool OnMessage(CGUIMessage &message);
     static void ShowAndGetInput();
