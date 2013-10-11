@@ -34,7 +34,8 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
-  DEPENDS += mdnsresponder android-sources-ics gmp nettle gnutls
+  DEPENDS += mdnsresponder android-sources-ics
+  EXCLUDED_DEPENDS = gmp nettle gnutls
 endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
