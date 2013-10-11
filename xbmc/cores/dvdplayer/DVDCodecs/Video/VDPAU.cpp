@@ -485,6 +485,16 @@ CDecoder::CDecoder() : m_vdpauOutput(&m_inMsgEvent)
 
 bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces)
 {
+#ifndef GL_NV_vdpau_interop
+  CLog::Log(LOGNOTICE, "VDPAU: compilation without required extension GL_NV_vdpau_interop");
+  return false;
+#endif
+  if (!g_Windowing.IsExtSupported("GL_NV_vdpau_interop"))
+  {
+    CLog::Log(LOGNOTICE, "VDPAU: required extension GL_NV_vdpau_interop not found");
+    return false;
+  }
+
   if(avctx->coded_width  == 0
   || avctx->coded_height == 0)
   {
@@ -3355,8 +3365,6 @@ bool COutput::GLInit()
 #endif
 
 #ifdef GL_NV_vdpau_interop
-  if (glewIsSupported("GL_NV_vdpau_interop"))
-  {
     if (!glVDPAUInitNV)
       glVDPAUInitNV    = (PFNGLVDPAUINITNVPROC)glXGetProcAddress((GLubyte *) "glVDPAUInitNV");
     if (!glVDPAUFiniNV)
@@ -3378,17 +3386,6 @@ bool COutput::GLInit()
     if (!glVDPAUGetSurfaceivNV)
       glVDPAUGetSurfaceivNV = (PFNGLVDPAUGETSURFACEIVNVPROC)glXGetProcAddress((GLubyte *) "glVDPAUGetSurfaceivNV");
 
-    CLog::Log(LOGNOTICE, "VDPAU::COutput GL interop supported");
-  }
-  else
-#endif
-  {
-    // TODO should be detected before vdpau is opened, though very unlikely
-    // that this code is hit
-    CLog::Log(LOGERROR, "VDPAU::COutput driver does not support GL_NV_vdpau_interop");
-  }
-
-#ifdef GL_NV_vdpau_interop
   while (glGetError() != GL_NO_ERROR);
   glVDPAUInitNV(reinterpret_cast<void*>(m_config.context->GetDevice()), reinterpret_cast<void*>(m_config.context->GetProcs().vdp_get_proc_address));
   if (glGetError() != GL_NO_ERROR)
