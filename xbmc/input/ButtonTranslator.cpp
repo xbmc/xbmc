@@ -250,6 +250,7 @@ static const ActionMapping windows[] =
         {"plexsearch"               , WINDOW_PLEX_SEARCH},
         {"plexpreplayvideo"         , WINDOW_PLEX_PREPLAY_VIDEO},
         {"plexpreplaymusic"         , WINDOW_PLEX_PREPLAY_MUSIC},
+        {"myplexlogin"              , WINDOW_MYPLEX_LOGIN},
         /* END PLEX */
         {"programs"                 , WINDOW_PROGRAMS},
         {"pictures"                 , WINDOW_PICTURES},

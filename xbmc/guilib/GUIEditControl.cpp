@@ -80,7 +80,8 @@ CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
 CGUIEditControl::~CGUIEditControl(void)
 {
   /* PLEX */
-  g_plexApplication.timelineManager->SetTextFieldFocused(false);
+  if (g_plexApplication.timelineManager)
+    g_plexApplication.timelineManager->SetTextFieldFocused(false);
   /* END PLEX */
 }
 
@@ -106,7 +107,8 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
     if (GetDescription().size() > 0)
       name = GetDescription();
 
-    g_plexApplication.timelineManager->SetTextFieldFocused(message.GetMessage() == GUI_MSG_SETFOCUS, name, GetLabel2(), m_label2.GetHidden());
+    if (g_plexApplication.timelineManager)
+      g_plexApplication.timelineManager->SetTextFieldFocused(message.GetMessage() == GUI_MSG_SETFOCUS, name, GetLabel2(), m_label2.GetHidden());
     /* END PLEX */
   }
   else if (message.GetMessage() == GUI_MSG_SET_TEXT &&
@@ -351,7 +353,8 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 
     /* PLEX */
-    g_plexApplication.timelineManager->SetTextFieldFocused(true, GetDescription().size() > 0 ? GetDescription() : "field", GetLabel2(), m_label2.GetHidden());
+    if (g_plexApplication.timelineManager)
+      g_plexApplication.timelineManager->SetTextFieldFocused(true, GetDescription().size() > 0 ? GetDescription() : "field", GetLabel2(), m_label2.GetHidden());
     /* END PLEX */
 
     m_textChangeActions.ExecuteActions(GetID(), GetParentID());

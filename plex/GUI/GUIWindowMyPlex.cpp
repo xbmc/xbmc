@@ -26,6 +26,8 @@
 #include "GUIWindowManager.h"
 #include "guilib/GUITextBox.h"
 #include "guilib/GUIEditControl.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "ApplicationMessenger.h"
 
 #include "PlexApplication.h"
 
@@ -167,6 +169,24 @@ void CGUIWindowMyPlex::HandleMyPlexState(int state, int errorCode)
   }
 }
 
+void CGUIWindowMyPlex::Close(bool forceClose, int nextWindowID, bool enableSound, bool bWait)
+{
+  if (!g_plexApplication.myPlexManager->IsSignedIn())
+  {
+    bool ok = CGUIDialogYesNo::ShowAndGetInput("Are you sure?",
+                                               "MyPlex provides a number of features which requires a login:",
+                                               "Improved server discovery, config-free remote access,",
+                                               "Queueing and recommending video, Sharing you media",
+                                               "No!", "Yes");
+    if (!ok)
+      CApplicationMessenger::Get().ActivateWindow(WINDOW_MYPLEX_LOGIN, std::vector<CStdString>(), true);
+    else
+      CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+    return;
+  }
+  CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+}
+
 bool
 CGUIWindowMyPlex::OnMessage(CGUIMessage &message)
 {
@@ -190,11 +210,11 @@ CGUIWindowMyPlex::OnMessage(CGUIMessage &message)
       {
         CGUIEditControl* username = (CGUIEditControl*)GetControl(ID_USERNAME);
         if (!username)
-          Close();
+          Close(false, WINDOW_HOME);
 
         CGUIEditControl* password = (CGUIEditControl*)GetControl(ID_PASSWORD);
         if (!password)
-          Close();
+          Close(false, WINDOW_HOME);
 
         CStdString ustr = username->GetLabel2();
         CStdString pstr = password->GetLabel2();
@@ -210,7 +230,7 @@ CGUIWindowMyPlex::OnMessage(CGUIMessage &message)
 
       }
       else if (message.GetSenderId() == ID_BUTTON_CANCEL)
-        Close();
+        Close(false, WINDOW_HOME);
 
 
       break;

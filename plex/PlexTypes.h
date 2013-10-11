@@ -55,7 +55,7 @@ enum EPlexDirectoryType
 #define WINDOW_PLEX_PREPLAY_MUSIC         10091
 #define WINDOW_PLEX_MYCHANNELS            10092
 #define WINDOW_PLEX_STARTUP_HELPER        10093
-#define WINDOW_MYPLEX_PIN                 10203
+#define WINDOW_MYPLEX_LOGIN                 10203
 
 // Dialogs.
 #define WINDOW_DIALOG_RATING              10200

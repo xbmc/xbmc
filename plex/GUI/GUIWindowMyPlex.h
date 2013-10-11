@@ -16,7 +16,7 @@
 class CGUIWindowMyPlex : public CGUIWindow
 {
   public:
-    CGUIWindowMyPlex() : CGUIWindow(WINDOW_MYPLEX_PIN, "MyPlexLogin.xml") {};
+    CGUIWindowMyPlex() : CGUIWindow(WINDOW_MYPLEX_LOGIN, "MyPlexLogin.xml") {};
 
     virtual bool OnMessage(CGUIMessage &message);
     static void ShowAndGetInput();
@@ -27,6 +27,8 @@ class CGUIWindowMyPlex : public CGUIWindow
 
     void ShowSuccess();
     void ShowFailure(int reason);
+
+    void Close(bool forceClose = false, int nextWindowID = 0, bool enableSound = true, bool bWait = true);
 
     void ToggleInput()
     {

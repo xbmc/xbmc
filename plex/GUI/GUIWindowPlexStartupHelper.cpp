@@ -12,6 +12,7 @@
 #include "StdString.h"
 #include "Variant.h"
 #include "ApplicationMessenger.h"
+#include "GUIWindowManager.h"
 
 CGUIWindowPlexStartupHelper::CGUIWindowPlexStartupHelper() :
   CGUIWindow(WINDOW_PLEX_STARTUP_HELPER, "PlexStartupHelper.xml")
@@ -32,7 +33,7 @@ bool CGUIWindowPlexStartupHelper::OnMessage(CGUIMessage &message)
           SetPage(WIZARD_PAGE_AUDIO);
           break;
         case WIZARD_PAGE_AUDIO:
-          CApplicationMessenger::Get().ExecBuiltIn("XBMC.ReplaceWindow(Home)");
+          g_windowManager.ActivateWindow(WINDOW_MYPLEX_LOGIN, std::vector<CStdString>(), true);
           break;
         default:
           break;
