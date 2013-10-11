@@ -1,0 +1,30 @@
+INCLUDES=-I.
+
+SRCS = WinSystemEGL.cpp
+SRCS+= EGLNativeTypeAmlogic.cpp
+SRCS+= EGLNativeTypeAndroid.cpp
+SRCS+= EGLNativeTypeRaspberryPI.cpp
+SRCS+= EGLNativeTypeWayland.cpp
+SRCS+= EGLWrapper.cpp
+
+# Wayland specific detail
+ifeq (@USE_WAYLAND@,1)
+SRCS+= wayland/Callback.cpp \
+       wayland/Compositor.cpp \
+       wayland/Display.cpp \
+       wayland/OpenGLSurface.cpp \
+       wayland/Output.cpp \
+       wayland/Region.cpp \
+       wayland/Registry.cpp \
+       wayland/Shell.cpp \
+       wayland/ShellSurface.cpp \
+       wayland/Surface.cpp \
+       wayland/WaylandLibraries.cpp \
+       wayland/XBMCConnection.cpp \
+       wayland/XBMCSurface.cpp
+endif
+
+LIB = windowing_egl.a
+
+include ../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

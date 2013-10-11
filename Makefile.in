@@ -307,10 +307,20 @@ CHECK_LIBS = xbmc/filesystem/test/filesystemTest.a \
              xbmc/utils/test/utilsTest.a \
              xbmc/threads/test/threadTest.a \
              xbmc/interfaces/python/test/pythonSwigTest.a \
+             xbmc/windowing/tests/wayland/test_wayland.a \
              xbmc/test/xbmc-test.a
+
+ifeq (@USE_WAYLAND_TEST_EXTENSION@,1)
+WAYLAND_TEST_MODULE = xbmc/windowing/tests/wayland/xbmc-wayland-test-extension.so
+$(WAYLAND_TEST_MODULE): force
+	$(MAKE) -C $(@D) $(@F)
+CHECK_EXTENSIONS = $(WAYLAND_TEST_MODULE)
+CHECK_LIBADD=@WAYLAND_TEST_LIBS@
+endif
+
 CHECK_PROGRAMS = xbmc-test
 
-CLEAN_FILES += $(CHECK_PROGRAMS)
+CLEAN_FILES += $(CHECK_PROGRAMS) $(CHECK_EXTENSIONS)
 
 all : $(FINAL_TARGETS)
 	@echo '-----------------------'
@@ -674,7 +684,7 @@ ifeq (1,@GTEST_CONFIGURED@)
 check: testsuite
 	for check_program in $(CHECK_PROGRAMS); do $(CURDIR)/$$check_program; done
 
-testsuite: $(CHECK_PROGRAMS)
+testsuite: $(CHECK_EXTENSIONS) $(CHECK_PROGRAMS)
 
 testframework: $(GTEST_LIBS)
 
@@ -688,9 +698,9 @@ $(CHECK_LIBS): force
 
 xbmc-test: $(CHECK_LIBS) $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(GTEST_LIBS)
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(SILENT_LD) $(CXX) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,-all_load,-ObjC $(CHECK_LIBS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) $(LIBS) $(CHECK_LIBADD) -rdynamic
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,--whole-archive $(CHECK_LIBS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(GTEST_LIBS) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(LIBS) $(CHECK_LIBADD) -rdynamic
 endif
 else
 # Give a message that the framework is not configured, but don't fail.

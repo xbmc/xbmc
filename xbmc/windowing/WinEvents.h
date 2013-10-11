@@ -45,5 +45,4 @@ class CWinEvents
     static size_t GetQueueSize();
 };
 
-
 #endif // WINDOW_EVENTS_H

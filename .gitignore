@@ -596,6 +596,9 @@ lib/cmyth/Makefile
 /xbmc/guilib/Profile
 /xbmc/guilib/Profile_FastCap
 
+# /xbmc/input
+/xbmc/input/linux/Makefile
+
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
 /xbmc/interfaces/python/Makefile
@@ -721,6 +724,14 @@ lib/cmyth/Makefile
 #/xbmc/win32/
 # no longer used
 /xbmc/win32/git_rev.h
+
+# /xbmc/windowing/
+/xbmc/windowing/Makefile
+/xbmc/windowing/egl/Makefile
+/xbmc/windowing/tests/wayland/xbmc_wayland_test_client_protocol.h
+/xbmc/windowing/tests/wayland/xbmc_wayland_test_protocol.c
+/xbmc/windowing/tests/wayland/xbmc_wayland_test_server_protocol.h
+/xbmc/windowing/tests/wayland/Makefile
 
 # /lib/ffmpeg/
 /lib/ffmpeg/config.h
