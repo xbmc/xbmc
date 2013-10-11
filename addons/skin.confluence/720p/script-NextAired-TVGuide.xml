@@ -126,7 +126,7 @@
 			<itemgap>5</itemgap>
 			<control type="label">
 				<include>WindowTitleCommons</include>
-				<label>$LOCALIZE[SCRIPT450]</label>
+				<label>$ADDON[script.tv.show.next.aired 450]</label>
 			</control>
 			<control type="label">
 				<include>WindowTitleCommons</include>
