@@ -333,7 +333,7 @@ void CStageFrightVideoPrivate::UninitStagefrightSurface()
 {
   if (mVideoNativeWindow == NULL)
     return;
-
+  native_window_api_disconnect(mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
   ANativeWindow_release(mVideoNativeWindow.get());
   mVideoNativeWindow = NULL;
 
