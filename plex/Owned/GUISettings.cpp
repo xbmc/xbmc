@@ -19,9 +19,19 @@
  */
 
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wconstant-logical-operand"
+#endif // __clang__
+
 #include <boost/uuid/uuid.hpp>            // uuid class
 #include <boost/uuid/uuid_generators.hpp> // generators
 #include <boost/uuid/uuid_io.hpp>
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+
 
 
 #include "network/Network.h"
