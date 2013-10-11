@@ -83,14 +83,13 @@ bool CSpecialProtocol::ComparePath(const CStdString &path1, const CStdString &pa
   return TranslatePath(path1) == TranslatePath(path2);
 }
 
-CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
+CStdString CSpecialProtocol::TranslatePath(const std::string& path)
 {
   CURL url(path);
   // check for special-protocol, if not, return
-  if (!url.GetProtocol().Equals("special"))
-  {
+  if (url.GetProtocol() != "special")
     return path;
-  }
+
   return TranslatePath(url);
 }
 

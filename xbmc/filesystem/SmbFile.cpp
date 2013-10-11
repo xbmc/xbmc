@@ -240,11 +240,11 @@ void CSMB::PurgeEx(const CURL& url)
   m_strLastHost = url.GetHostName();
 }
 
-CStdString CSMB::URLEncode(const CURL &url)
+std::string CSMB::URLEncode(const CURL &url)
 {
   /* due to smb wanting encoded urls we have to build it manually */
 
-  CStdString flat = "smb://";
+  std::string flat = "smb://";
 
   if(url.GetDomain().length() > 0)
   {
@@ -278,9 +278,9 @@ CStdString CSMB::URLEncode(const CURL &url)
   return flat;
 }
 
-CStdString CSMB::URLEncode(const CStdString &value)
+std::string CSMB::URLEncode(const std::string &value)
 {
-  CStdString encoded(value);
+  std::string encoded(value);
   CURL::Encode(encoded);
   return encoded;
 }

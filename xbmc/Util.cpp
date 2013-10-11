@@ -897,6 +897,38 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   return true;
 }
 
+std::string CUtil::FixSlashes(const std::string& path, const bool removeDuplicated /*= false*/, const bool useForwardSlashes /*= true*/, const size_t startFrom /*= 0*/)
+{
+  const size_t len = path.length();
+  if (startFrom >= len)
+    return path;
+
+  std::string result(path, 0, startFrom);
+  result.reserve(len);
+  
+  const char targetSlash = useForwardSlashes ? '/' : '\\';
+  const char* const str = path.c_str();
+  size_t pos = startFrom;
+  do
+  {
+    if (str[pos] == '\\' || str[pos] == '/')
+    {
+      result.push_back(targetSlash);  // append one slash
+      pos++;
+      if (removeDuplicated)
+      { // skip any following slashes
+        while (str[pos] == '\\' || str[pos] == '/') // str is null-terminated, no need to check for buffer overrun
+          pos++;
+      }
+    }
+    else
+      result.push_back(str[pos++]);   // append current char and advance pos to next char
+
+  } while(pos < len);
+
+  return result;
+}
+
 CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
 {
   CStdString result = strFile;
@@ -944,15 +976,15 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
   return dir;
 }
 
-CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /* = false */)
+std::string CUtil::ValidatePath(const std::string& path, bool bFixDoubleSlashes /* = false */)
 {
-  CStdString result = path;
+  std::string result(path);
 
   // Don't do any stuff on URLs containing %-characters or protocols that embed
   // filenames. NOTE: Don't use IsInZip or IsInRar here since it will infinitely
   // recurse and crash XBMC
   if (URIUtils::IsURL(path) && 
-     (path.Find('%') >= 0 ||
+     (path.find('%') != std::string::npos ||
       StringUtils::StartsWithNoCase(path, "apk:") ||
       StringUtils::StartsWithNoCase(path, "zip:") ||
       StringUtils::StartsWithNoCase(path, "rar:") ||
@@ -963,41 +995,14 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
 
   // check the path for incorrect slashes
 #ifdef TARGET_WINDOWS
-  if (URIUtils::IsDOSPath(path))
-  {
-    result.Replace('/', '\\');
-    /* The double slash correction should only be used when *absolutely*
-       necessary! This applies to certain DLLs or use from Python DLLs/scripts
-       that incorrectly generate double (back) slashes.
-    */
-    if (bFixDoubleSlashes)
-    {
-      // Fixup for double back slashes (but ignore the \\ of unc-paths)
-      for (int x = 1; x < result.GetLength() - 1; x++)
-      {
-        if (result[x] == '\\' && result[x+1] == '\\')
-          result.Delete(x);
-      }
-    }
-  }
-  else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
+  if (result.length() >= 2 && result[1] == ':' && (result.length() == 2 || result[2] == '\\' || result[2] == '/')) // path in form "x:\"...
+    result = FixSlashes(result, bFixDoubleSlashes, false);
+  else if (result.compare(0, 2, "\\\\", 2) == 0) // 'result' starts with "\\": it's ether "\\server\share\ or "\\?\"
+    result = FixSlashes(result, bFixDoubleSlashes, false, 2);
+  else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif
-  {
-    result.Replace('\\', '/');
-    /* The double slash correction should only be used when *absolutely*
-       necessary! This applies to certain DLLs or use from Python DLLs/scripts
-       that incorrectly generate double (back) slashes.
-    */
-    if (bFixDoubleSlashes)
-    {
-      // Fixup for double forward slashes(/) but don't touch the :// of URLs
-      for (int x = 2; x < result.GetLength() - 1; x++)
-      {
-        if ( result[x] == '/' && result[x + 1] == '/' && !(result[x - 1] == ':' || (result[x - 1] == '/' && result[x - 2] == ':')) )
-          result.Delete(x);
-      }
-    }
-  }
+    result = FixSlashes(result, bFixDoubleSlashes);
+
   return result;
 }
 

@@ -439,7 +439,6 @@ CStdString CWIN32Util::GetSpecialFolder(int csidl)
   {
     buf[bufSize-1] = 0;
     g_charsetConverter.wToUTF8(buf, strProfilePath);
-    strProfilePath = UncToSmb(strProfilePath);
   }
   else
     strProfilePath = "";
@@ -473,26 +472,11 @@ CStdString CWIN32Util::GetProfilePath()
   return strProfilePath;
 }
 
-CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
+std::string CWIN32Util::SmbToUnc(const std::string& strPath)
 {
-  CStdString strRetPath(strPath);
-  if(StringUtils::StartsWith(strRetPath, "\\\\"))
-  {
-    strRetPath = "smb:" + strPath;
-    strRetPath.Replace("\\","/");
-  }
-  return strRetPath;
-}
-
-CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
-{
-  CStdString strRetPath(strPath);
-  if(StringUtils::StartsWithNoCase(strRetPath, "smb://"))
-  {
-    strRetPath.Replace("smb://","\\\\");
-    strRetPath.Replace("/","\\");
-  }
-  return strRetPath;
+  if(StringUtils::StartsWithNoCase(strPath, "smb://"))
+    return "\\\\" + strPath.substr(6);
+  return strPath;
 }
 
 bool CWIN32Util::AddExtraLongPathPrefix(std::wstring& path)
@@ -515,6 +499,43 @@ bool CWIN32Util::RemoveExtraLongPathPrefix(std::wstring& path)
     return true;
   }
   return false;
+}
+
+std::wstring CWIN32Util::ConvertPathToWin32Form(const std::string& pathUtf8)
+{
+  std::wstring result;
+  if (pathUtf8.empty())
+    return result;
+
+  bool convertResult;
+
+  if (pathUtf8.compare(0, 2, "\\\\", 2) != 0) // pathUtf8 don't start from "\\"
+  { // assume local file path in form 'C:\Folder\File.ext'
+    std::string formedPath("\\\\?\\"); // insert "\\?\" prefix
+    formedPath += CUtil::FixSlashes(pathUtf8, true, false); // fix duplicated and forward slashes
+    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
+  }
+
+  else if (pathUtf8.compare(0, 8, "\\\\?\\UNC\\", 8) == 0) // pathUtf8 starts from "\\?\UNC\"
+    convertResult = g_charsetConverter.utf8ToW(CUtil::FixSlashes(pathUtf8, true, false, 7), result, false, false, true);
+
+  else if (pathUtf8.compare(0, 4, "\\\\?\\", 4) == 0) // pathUtf8 starts from "\\?\", but it's not UNC path
+    convertResult = g_charsetConverter.utf8ToW(CUtil::FixSlashes(pathUtf8, true, false, 4), result, false, false, true);
+
+  else // pathUtf8 starts from "\\", but not from "\\?\UNC\"
+  { // assume UNC path in form '\\server\share\folder\file.ext'
+    std::string formedPath("\\\\?\\UNC\\"); // append "\\?\UNC\" prefix
+    formedPath.append(CUtil::FixSlashes(pathUtf8, true, false, 4), 2, std::string::npos); // fix duplicated and forward slashes, skip two first slashes
+    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
+  }
+
+  if (!convertResult)
+  {
+    CLog::Log(LOGERROR, "Error converting path \"%s\" to Win32 wide string!", pathUtf8.c_str());
+    return L"";
+  }
+
+  return result;
 }
 
 void CWIN32Util::ExtendDllPath()

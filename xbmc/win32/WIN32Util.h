@@ -57,10 +57,10 @@ public:
   static CStdString GetSpecialFolder(int csidl);
   static CStdString GetSystemPath();
   static CStdString GetProfilePath();
-  static CStdString UncToSmb(const CStdString &strPath);
-  static CStdString SmbToUnc(const CStdString &strPath);
+  static std::string SmbToUnc(const std::string& strPath);
   static bool AddExtraLongPathPrefix(std::wstring& path);
   static bool RemoveExtraLongPathPrefix(std::wstring& path);
+  static std::wstring ConvertPathToWin32Form(const std::string& pathUtf8);
   static void ExtendDllPath();
   static HRESULT ToggleTray(const char cDriveLetter='\0');
   static HRESULT EjectTray(const char cDriveLetter='\0');

@@ -442,23 +442,23 @@ bool URIUtils::IsRemote(const CStdString& strFile)
   return false;
 }
 
-bool URIUtils::IsOnDVD(const CStdString& strFile)
+bool URIUtils::IsOnDVD(const std::string& strFile)
 {
+  if (strFile.length() < 2)
+    return false;
+
+  std::string str(strFile);
 #ifdef TARGET_WINDOWS
-  if (strFile.Mid(1,1) == ":")
-    return (GetDriveType(strFile.Left(3)) == DRIVE_CDROM);
+  if (str.compare(0, 4, "\\\\?\\", 4) == 0)
+    str.erase(0, 4);
+
+  if (str.length() >= 2 && str[1] == ':')
+    return (GetDriveType((str.substr(0, 2) + "\\").c_str()) == DRIVE_CDROM);
 #endif
+  StringUtils::ToLower(str);
 
-  if (strFile.Left(4).CompareNoCase("dvd:") == 0)
-    return true;
-
-  if (strFile.Left(4).CompareNoCase("udf:") == 0)
-    return true;
-
-  if (strFile.Left(8).CompareNoCase("iso9660:") == 0)
-    return true;
-
-  if (strFile.Left(5).CompareNoCase("cdda:") == 0)
+  if (str.compare(0, 4, "dvd:", 4) == 0 || str.compare(0, 4, "udf:", 4) == 0 ||
+      str.compare(0, 8, "iso9660:", 8) == 0 || str.compare(0, 5, "cdda:", 5) == 0)
     return true;
 
   return false;
@@ -567,24 +567,37 @@ bool URIUtils::IsHD(const CStdString& strFileName)
   return url.GetProtocol().IsEmpty() || url.GetProtocol() == "file";
 }
 
-bool URIUtils::IsDVD(const CStdString& strFile)
+bool URIUtils::IsDVD(const std::string& strFile)
 {
-  CStdString strFileLow = strFile;
-  strFileLow.MakeLower();
-  if (strFileLow.Find("video_ts.ifo") != -1 && IsOnDVD(strFile))
+  if (strFile.empty())
+    return false;
+
+  std::string strFileLow (strFile);
+  StringUtils::ToLower(strFileLow);
+  if (strFileLow.find("video_ts.ifo") != std::string::npos && IsOnDVD(strFile))
     return true;
 
 #if defined(TARGET_WINDOWS)
-  if (StringUtils::StartsWithNoCase(strFile, "dvd://"))
+  if (strFileLow.compare(0, 5, "dvd://", 5) == 0 || strFileLow.compare(0, 5, "dvd:\\\\", 5) == 0)
     return true;
 
-  if(strFile.Mid(1) != ":\\"
-  && strFile.Mid(1) != ":")
+  if (strFileLow.compare(0, 4, "\\\\?\\", 4) == 0)
+    strFileLow.erase(0, 4);
+
+  if (strFileLow.length() < 2 || strFileLow.length() > 3)
     return false;
 
-  if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
+  if (strFileLow.compare(1, std::string::npos, ":\\", 2) != 0
+   && strFileLow.compare(1, std::string::npos, ":/",  2) != 0
+   && strFileLow.compare(1, std::string::npos, ":",   1) != 0)
+    return false;
+
+  if(GetDriveType((strFileLow.substr(0, 2) + "\\").c_str()) == DRIVE_CDROM)
     return true;
 #else
+  if (strFileLow.length() < 6 || strFileLow.length() > 10)
+    return false;
+
   if (strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 #endif
@@ -708,9 +721,9 @@ bool URIUtils::IsSmb(const CStdString& strFile)
   return StringUtils::StartsWithNoCase(strFile2, "smb:");
 }
 
-bool URIUtils::IsURL(const CStdString& strFile)
+bool URIUtils::IsURL(const std::string& strFile)
 {
-  return strFile.Find("://") >= 0;
+  return strFile.find("://") != std::string::npos;
 }
 
 bool URIUtils::IsFTP(const CStdString& strFile)
@@ -887,20 +900,20 @@ bool URIUtils::IsDOSPath(const CStdString &path)
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
     return true;
 
-  // windows network drives
+  // long win32 path ("\\?\") or win32 UNC path ("\\server\")
   if (path.size() > 1 && path[0] == '\\' && path[1] == '\\')
     return true;
 
   return false;
 }
 
-void URIUtils::AddSlashAtEnd(CStdString& strFolder)
+void URIUtils::AddSlashAtEnd(std::string& strFolder)
 {
   if (IsURL(strFolder))
   {
     CURL url(strFolder);
-    CStdString file = url.GetFileName();
-    if(!file.IsEmpty() && file != strFolder)
+    std::string file = url.GetFileName();
+    if(!file.empty() && file != strFolder)
     {
       AddSlashAtEnd(file);
       url.SetFileName(file);
@@ -918,9 +931,9 @@ void URIUtils::AddSlashAtEnd(CStdString& strFolder)
   }
 }
 
-bool URIUtils::HasSlashAtEnd(const CStdString& strFile, bool checkURL /* = false */)
+bool URIUtils::HasSlashAtEnd(const std::string& strFile, bool checkURL /* = false */)
 {
-  if (strFile.size() == 0) return false;
+  if (strFile.empty()) return false;
   if (checkURL && IsURL(strFile))
   {
     CURL url(strFile);
@@ -935,13 +948,13 @@ bool URIUtils::HasSlashAtEnd(const CStdString& strFile, bool checkURL /* = false
   return false;
 }
 
-void URIUtils::RemoveSlashAtEnd(CStdString& strFolder)
+void URIUtils::RemoveSlashAtEnd(std::string& strFolder)
 {
   if (IsURL(strFolder))
   {
     CURL url(strFolder);
-    CStdString file = url.GetFileName();
-    if (!file.IsEmpty() && file != strFolder)
+    std::string file = url.GetFileName();
+    if (!file.empty() && file != strFolder)
     {
       RemoveSlashAtEnd(file);
       url.SetFileName(file);
@@ -953,7 +966,7 @@ void URIUtils::RemoveSlashAtEnd(CStdString& strFolder)
   }
 
   while (HasSlashAtEnd(strFolder))
-    strFolder.Delete(strFolder.size() - 1);
+    strFolder.erase(strFolder.size()-1, 1);
 }
 
 bool URIUtils::CompareWithoutSlashAtEnd(const CStdString& strPath1, const CStdString& strPath2)

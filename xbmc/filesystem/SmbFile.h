@@ -67,8 +67,8 @@ public:
   void AddActiveConnection();
   void AddIdleConnection();
 #endif
-  CStdString URLEncode(const CStdString &value);
-  CStdString URLEncode(const CURL &url);
+  std::string URLEncode(const std::string &value);
+  std::string URLEncode(const CURL &url);
 
   DWORD ConvertUnixToNT(int error);
 private:

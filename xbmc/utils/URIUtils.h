@@ -74,7 +74,7 @@ public:
   static bool IsDAAP(const CStdString& strFile);
   static bool IsDAV(const CStdString& strFile);
   static bool IsDOSPath(const CStdString &path);
-  static bool IsDVD(const CStdString& strFile);
+  static bool IsDVD(const std::string& strFile);
   static bool IsFTP(const CStdString& strFile);
   static bool IsHD(const CStdString& strFileName);
   static bool IsHDHomeRun(const CStdString& strFile);
@@ -93,7 +93,7 @@ public:
   static bool IsMythTV(const CStdString& strFile);
   static bool IsNfs(const CStdString& strFile);  
   static bool IsAfp(const CStdString& strFile);    
-  static bool IsOnDVD(const CStdString& strFile);
+  static bool IsOnDVD(const std::string& strFile);
   static bool IsOnLAN(const CStdString& strFile);
   static bool IsHostOnLAN(const CStdString& hostName, bool offLineCheck = false);
   static bool IsPlugin(const CStdString& strFile);
@@ -105,7 +105,7 @@ public:
   static bool IsStack(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
-  static bool IsURL(const CStdString& strFile);
+  static bool IsURL(const std::string& strFile);
   static bool IsVideoDb(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
   static bool IsAPK(const CStdString& strFile);
@@ -115,9 +115,9 @@ public:
   static bool IsAndroidApp(const CStdString& strFile);
   static bool IsLibraryFolder(const CStdString& strFile);
 
-  static void AddSlashAtEnd(CStdString& strFolder);
-  static bool HasSlashAtEnd(const CStdString& strFile, bool checkURL = false);
-  static void RemoveSlashAtEnd(CStdString& strFolder);
+  static void AddSlashAtEnd(std::string& strFolder);
+  static bool HasSlashAtEnd(const std::string& strFile, bool checkURL = false);
+  static void RemoveSlashAtEnd(std::string& strFolder);
   static bool CompareWithoutSlashAtEnd(const CStdString& strPath1, const CStdString& strPath2);
 
   static void CreateArchivePath(CStdString& strUrlPath,

@@ -27,10 +27,15 @@
 
 #include "MediaSource.h"
 
+#ifdef TARGET_WINDOWS
+#ifdef CreateDirectoryEx
+#undef CreateDirectoryEx
+#endif // CreateDirectoryEx
+#endif // TARGET_WINDOWS
+
 // A list of filesystem types for LegalPath/FileName
 #define LEGAL_NONE            0
 #define LEGAL_WIN32_COMPAT    1
-#define LEGAL_FATX            2
 
 namespace XFILE
 {
@@ -110,6 +115,7 @@ public:
 #endif
   static bool CreateDirectoryEx(const CStdString& strPath);
 
+  static std::string FixSlashes(const std::string& path, const bool removeDuplicated = false, const bool useForwardSlashes = true, const size_t startFrom = 0);
 #ifdef TARGET_WINDOWS
   static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_WIN32_COMPAT);
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_WIN32_COMPAT);
@@ -117,7 +123,7 @@ public:
   static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_NONE);
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
 #endif
-  static CStdString ValidatePath(const CStdString &path, bool bFixDoubleSlashes = false); ///< return a validated path, with correct directory separators.
+  static std::string ValidatePath(const std::string& path, bool bFixDoubleSlashes = false); ///< return a validated path, with correct directory separators.
   
   static bool IsUsingTTFSubtitles();
 

@@ -24,18 +24,21 @@
 
 #ifdef TARGET_WINDOWS
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
+#ifdef GetUserName
+#undef GetUserName
+#endif // GetUserName
 #endif
 
 class CURL
 {
 public:
-  CURL(const CStdString& strURL);
+  CURL(const std::string& strURL);
   CURL();
   virtual ~CURL(void);
 
   void Reset();
-  void Parse(const CStdString& strURL);
-  void SetFileName(const CStdString& strFileName);
+  void Parse(const std::string& strURL);
+  void SetFileName(const std::string& strFileName);
   void SetHostName(const CStdString& strHostName);
   void SetUserName(const CStdString& strUserName);
   void SetPassword(const CStdString& strPassword);
@@ -70,7 +73,7 @@ public:
   static bool IsFileOnly(const CStdString &url); ///< return true if there are no directories in the url.
   static bool IsFullPath(const CStdString &url); ///< return true if the url includes the full path
   static void Decode(CStdString& strURLData);
-  static void Encode(CStdString& strURLData);
+  static void Encode(std::string& strURLData);
   static std::string Decode(const std::string& strURLData);
   static std::string Encode(const std::string& strURLData);
   static CStdString TranslateProtocol(const CStdString& prot);
