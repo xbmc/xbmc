@@ -45,7 +45,7 @@ class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
     void setStreams(const ArgMap &arguments);
     void poll(const HTTPRequest &request, const ArgMap &arguments);
     void skipTo(const ArgMap &arguments);
-    void device();
+    void resources();
 
     CPlexRemoteSubscriberPtr getSubFromRequest(const HTTPRequest &request, const ArgMap &arguments);
     CStdString m_data;

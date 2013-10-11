@@ -35,7 +35,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexHTTPRemoteHandler::CheckHTTPRequest(const HTTPRequest &request)
 {
-  return boost::starts_with(request.url, "/player") || boost::starts_with(request.url, "/device");;
+  return boost::starts_with(request.url, "/player") || boost::starts_with(request.url, "/resources");;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -102,8 +102,8 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     poll(request, argumentMap);
   else if (path.Equals("/player/setStreams"))
     setStreams(argumentMap);
-  else if (boost::starts_with(path, "/device"))
-    device();
+  else if (boost::starts_with(path, "/resources"))
+    resources();
   else if (path.Equals("/player/playback/togglePlayPause"))
     pausePlay(argumentMap);
 
@@ -652,12 +652,31 @@ void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)
 }
 
 
-void CPlexHTTPRemoteHandler::device()
+void CPlexHTTPRemoteHandler::resources()
 {
-  m_data.Format("<MediaContainer machineIdentifier=\"%s\" platform=\"%s\" platformVersion=\"%s\" friendlyName=\"%s\">",
-                g_guiSettings.GetString("system.uuid"),
-                PlexUtils::GetMachinePlatform(),
-                PlexUtils::GetMachinePlatformVersion(),
-                g_guiSettings.GetString("services.devicename"));
-  m_data += "\n  <Capability type=\"player\" protocolVersion=\"1\" protocolCapabilites=\"navigation\" />\n</MediaContainer>";
+  TiXmlDocument doc;
+  doc.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));
+
+  TiXmlElement *mediaContainer = new TiXmlElement("MediaContainer");
+  doc.LinkEndChild(mediaContainer);
+
+  // title="My Nexus 7" machineIdentifier="x" product="p" platform="p" platformVersion="v" protocolVersion="x" protocolCapabilities="y" deviceClass="z"
+  TiXmlElement *player = new TiXmlElement("Player");
+  player->SetAttribute("title", g_guiSettings.GetString("services.devicename").c_str());
+  player->SetAttribute("protocol", "plex");
+  player->SetAttribute("protocolVersion", "1");
+  player->SetAttribute("protocolCapabilities", "navigation,playback,timeline");
+  player->SetAttribute("machineIdentifier", g_guiSettings.GetString("system.uuid").c_str());
+  player->SetAttribute("product", "Plex Home Theater");
+  player->SetAttribute("platform", PlexUtils::GetMachinePlatform());
+  player->SetAttribute("platformvVersion", PlexUtils::GetMachinePlatformVersion());
+  player->SetAttribute("deviceClass", "pc");
+
+  mediaContainer->LinkEndChild(player);
+
+  TiXmlPrinter p;
+  p.SetIndent("  ");
+  doc.Accept(&p);
+
+  m_data = p.Str();
 }
