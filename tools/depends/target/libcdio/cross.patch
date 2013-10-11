@@ -1,0 +1,109 @@
+--- configure.ac	2013-03-10 19:25:36.396466337 -0400
++++ configure.ac	2013-03-10 19:24:34.906466376 -0400
+@@ -269,37 +269,6 @@
+ fi
+ dnl empty_array_size
+ 
+-dnl bitfield order
+-AC_MSG_CHECKING(bitfield ordering in structs)
+-AC_TRY_RUN([
+-int
+- main() {
+-  struct { char bit_0:1, bit_12:2, bit_345:3, bit_67:2; }
+-#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
+-  __attribute__((packed))
+-#endif
+-  bf = { 1,1,1,1 };
+-  if (sizeof (bf) != 1) return 1;
+-  return *((unsigned char*) &bf) != 0x4b; }
+-], bf_lsbf=1, AC_TRY_RUN([ 
+-int
+-main() {
+-  struct { char bit_0:1, bit_12:2, bit_345:3, bit_67:2; }
+-#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
+-  __attribute__((packed))
+-#endif
+-  bf = { 1,1,1,1 };
+-  if (sizeof (bf) != 1) return 1;
+-  return *((unsigned char*) &bf) != 0xa5; }
+-], bf_lsbf=0, AC_MSG_ERROR([unsupported bitfield ordering])))
+-if test "x$bf_lsbf" = "x1"; then
+- AC_MSG_RESULT(LSBF)
+- AC_DEFINE(BITFIELD_LSBF, [], [compiler does least-significant bit first in struct bitfields])
+-else
+- AC_MSG_RESULT(MSBF)
+-fi
+-dnl
+-
+ dnl AM_PROG_LIBTOOL tests whether we have GNU ld
+ dnl this must come before checking --with-versioned-libs
+ dnl which requires GNU ld.
+@@ -466,24 +435,6 @@
+ 	;;
+ esac
+ 
+-AC_MSG_CHECKING(extern long timezone variable)
+-AC_TRY_RUN([
+-#ifdef NEED_TIMEZONEVAR
+-#define timezonevar 1
+-#endif
+-
+-#include <time.h>
+-extern long timezone;
+-int main(int argc, char **argv) {
+-  long test_timezone = timezone;
+-  return 0; 
+-}
+-], [AC_MSG_RESULT(yes); 
+-   AC_DEFINE([HAVE_TIMEZONE_VAR], 1, 
+-	[Define if you have an extern long timenzone variable.])],
+-   [AC_MSG_RESULT(no)])
+-dnl
+-
+ AC_SUBST(LINUX_CDROM_TIMEOUT)
+ AC_SUBST(DARWIN_PKG_LIB_HACK)
+ AC_SUBST(HAVE_BSDI_CDROM)
+@@ -508,43 +459,6 @@
+                  ,
+                  [#include <time.h>])
+ 
+-if test $ac_cv_member_struct_tm_tm_gmtoff = yes ; then
+-  AC_MSG_CHECKING([whether time.h defines daylight and timezone variables])
+-  AC_TRY_RUN([
+-#include <time.h>
+-
+-
+-       extern char *tzname[2];
+-       extern long timezone;
+-       extern int daylight;
+-
+-int
+- main() {
+-  return (timezone != 0) + daylight;
+-}
+-  ],[AC_DEFINE(HAVE_DAYLIGHT, 1,
+-   [Define if time.h defines extern long timezone and int daylight vars.])
+-   has_daylight=yes
+-   ],[has_daylight=no])
+-  AC_MSG_RESULT($has_daylight)
+-  AC_MSG_CHECKING([whether time.h defines tzname variable])
+-  AC_TRY_RUN([
+-#include <time.h>
+-
+-
+-       extern char *tzname[2];
+-
+-int
+- main() {
+-  return (tzname != NULL);
+-}
+-  ],[AC_DEFINE(HAVE_TZNAME, 1,
+-   [Define if time.h defines extern extern char *tzname[2] variable])
+-   has_tzname=yes
+-   ],[has_tzname=no])
+-   AC_MSG_RESULT($has_tzname)
+-fi
+-
+ AC_ARG_ENABLE(joliet,
+ 	AS_HELP_STRING([--disable-joliet], [don't include Joliet extension support (default enabled)]),
+ 	[enable_joliet=$enableval],
