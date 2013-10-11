@@ -49,6 +49,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar << m_iHeight;
     ar << m_iWidth;
     ar << m_iDuration;
+    ar << m_strStereoMode;
   }
   else
   {
@@ -57,6 +58,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar >> m_iHeight;
     ar >> m_iWidth;
     ar >> m_iDuration;
+    ar >> m_strStereoMode;
   }
 }
 void CStreamDetailVideo::Serialize(CVariant& value) const
@@ -66,6 +68,7 @@ void CStreamDetailVideo::Serialize(CVariant& value) const
   value["height"] = m_iHeight;
   value["width"] = m_iWidth;
   value["duration"] = m_iDuration;
+  value["stereomode"] = m_strStereoMode;
 }
 
 bool CStreamDetailVideo::IsWorseThan(CStreamDetail *that)
@@ -387,6 +390,15 @@ int CStreamDetails::GetVideoDuration(int idx) const
     return item->m_iDuration;
   else
     return 0;
+}
+
+std::string CStreamDetails::GetStereoMode(int idx) const
+{
+  CStreamDetailVideo *item = (CStreamDetailVideo *)GetNthStream(CStreamDetail::VIDEO, idx);
+  if (item)
+    return item->m_strStereoMode;
+  else
+    return "";
 }
 
 CStdString CStreamDetails::GetAudioCodec(int idx) const

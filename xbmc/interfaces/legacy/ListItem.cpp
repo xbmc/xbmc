@@ -493,6 +493,8 @@ namespace XBMCAddon
             video->m_iHeight = strtol(value, NULL, 10);
           else if (key == "duration")
             video->m_iDuration = strtol(value, NULL, 10);
+          else if (key == "stereomode")
+            video->m_strStereoMode = value;
         }
         item->GetVideoInfoTag()->m_streamDetails.AddStream(video);
       }
