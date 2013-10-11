@@ -264,5 +264,9 @@
 	<string id="31985">Show Separate Menu Items for Plug-in Sections</string>
 	  
 	<string id="31999">End Time</string>
-	
+<!-- Startup helper -->
+<string id="32000">This will be the description text. The list ID 210 in PlexStartUpHelper.xml (line 115) needs to be dynamically populated with radio buttons before anything works (the list has some dummy values hardcoded that will need to be deleted when it's done or when testing). The superimposed empty radio button box on the first listitem is the dynamic list button (ID 211) that will populate the list when it has real items. This text and the list values are only for an example :)</string>
+<!--><string id="32000">To set up your audio connection, look at the images in the list below and choose either HDMI or Optical depending on what you have. Please verify that it is the correct one or your audio might not work correctly. If in doubt, or you're unable to verify your connection, choose neither (and press "Next") and we'll default to 2 channel audio. It will work just fine, and you can always change this setting later in the Preferences.</string>-->
+<string id="32001">Plex first startup Helper</string>
+<string id="32002">Setting your audio connection</string>
 </strings>
