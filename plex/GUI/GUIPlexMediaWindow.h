@@ -45,7 +45,6 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback
     bool IsMusicContainer() const;
     bool IsPhotoContainer() const;
 
-
     CStdString ShowPluginSearch(CFileItemPtr item);
     CStdString ShowPluginSettings(CFileItemPtr item);
 
@@ -74,5 +73,10 @@ class CGUIPlexMusicWindow : public CGUIPlexMediaWindow
     CGUIPlexMusicWindow() : CGUIPlexMediaWindow(WINDOW_MUSIC_FILES, "MyMusicSongs.xml") {}
 };
 
+class CGUIPlexPictureWindow : public CGUIPlexMediaWindow
+{
+  public:
+    CGUIPlexPictureWindow() : CGUIPlexMediaWindow(WINDOW_PICTURES, "MyPics.xml") {}
+};
 
 #endif // GUIWINDOWMEDIAFILTERVIEW_H

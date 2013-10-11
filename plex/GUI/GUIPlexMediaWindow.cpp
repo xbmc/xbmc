@@ -82,6 +82,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       lbl = (CGUILabelControl*)GetControl(SORT_LABEL);
       if (lbl)
         lbl->SetLabel(g_localizeStrings.Get(44031));
+
       break;
     }
 
@@ -306,6 +307,8 @@ bool CGUIPlexMediaWindow::OnPlayMedia(int iItem)
 
   if (IsMusicContainer())
     QueueItems(*m_vecItems, item);
+  else if (IsPhotoContainer())
+    CApplicationMessenger::Get().PictureSlideShow(m_vecItems->GetPath(), false, item->GetPath());
   else
     PlexContentPlayerMixin::PlayPlexItem(item);
 
@@ -556,7 +559,7 @@ bool CGUIPlexMediaWindow::IsMusicContainer() const
 bool CGUIPlexMediaWindow::IsPhotoContainer() const
 {
   EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
-  return (dirType == PLEX_DIR_TYPE_PHOTOALBUM);
+  return (dirType == PLEX_DIR_TYPE_PHOTOALBUM | dirType == PLEX_DIR_TYPE_PHOTO);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -88,7 +88,7 @@ void CGUIWindowPlexSearch::OnInitWindow()
   CGUIWindow::OnInitWindow();
 
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-  g_plexApplication.timelineManager->SetTextFieldFocused(true);
+  g_plexApplication.timelineManager->SetTextFieldFocused(true, "Search");
 
   if (m_selectedItem != -1)
   {
@@ -97,6 +97,8 @@ void CGUIWindowPlexSearch::OnInitWindow()
     g_charsetConverter.wToUTF8(m_strEdit, utf8Edit);
     pEdit->SetLabel(utf8Edit);
     pEdit->SetCursorPos(utf8Edit.size());
+
+    g_plexApplication.timelineManager->SetTextFieldFocused(true, "Search", utf8Edit);
 
     // Bind the lists.
     Bind();
@@ -378,6 +380,7 @@ void CGUIWindowPlexSearch::UpdateLabel()
     // Convert back to utf8.
     CStdString utf8Edit;
     g_charsetConverter.wToUTF8(m_strEdit, utf8Edit);
+    g_plexApplication.timelineManager->SetTextFieldFocused(true, "Search", utf8Edit);
     pEdit->SetLabel(utf8Edit);
 
     // Send off a search message if it's been SEARCH_DELAY since last search.
@@ -549,6 +552,7 @@ void CGUIWindowPlexSearch::OnClickButton(int iButtonControl)
       CStdString utf8Edit;
       g_charsetConverter.wToUTF8(m_strEdit, utf8Edit);
       pEdit->SetLabel(utf8Edit);
+      g_plexApplication.timelineManager->SetTextFieldFocused(true, "Search", utf8Edit);
 
       // Reset cursor position.
       pEdit->SetCursorPos(0);

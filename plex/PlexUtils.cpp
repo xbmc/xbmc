@@ -453,3 +453,15 @@ CStdString PlexUtils::GetSHA1SumFromURL(const CURL &url)
 
   return "";
 }
+
+
+CStdString PlexUtils::GetXMLString(const CXBMCTinyXML &document)
+{
+  CXBMCTinyXML ldoc(document);
+
+  TiXmlPrinter printer;
+  printer.SetIndent("  ");
+  ldoc.Accept(&printer);
+
+  return printer.Str();
+}

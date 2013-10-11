@@ -44,7 +44,6 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   /* defaults */
   m_responseType = HTTPMemoryDownloadNoFreeCopy;
   m_responseCode = MHD_HTTP_OK;
-  m_contentType = "text/xml";
 
   ArgMap argumentMap;
   ArgMap headerMap;
@@ -70,7 +69,8 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     return MHD_YES;
   }
 
-  m_data = "<Response code=\"200\" status=\"OK\" />";
+  m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", "text/xml"));
+  setStandardResponse();
 
   CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::HandleHTTPRequest handling %s", request.url.c_str());
   
@@ -124,12 +124,11 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
 
   else
   {
-    m_responseCode = MHD_HTTP_INTERNAL_SERVER_ERROR;
-    m_data.Format("<Response code=\"500\" status=\"not implemented\" />");
+    setStandardResponse(500, "Nope, not implemented, sorry!");
   }
 
-  m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", m_contentType));
-  
+  m_data = PlexUtils::GetXMLString(m_xmlOutput);
+
   return MHD_YES;
 }
 
@@ -507,7 +506,7 @@ void CPlexHTTPRemoteHandler::subscribe(const HTTPRequest &request, const ArgMap 
   }
   else
   {
-    m_data = "<Response code=\"500\" status=\"Failed to specify all data to subscribe call, try again\" />";
+    setStandardResponse(500, "Client failed to specify all required data for a subscribe call");
   }
 }
 
@@ -598,18 +597,10 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
   if (arguments.find("commandID") != arguments.end())
     commandID = boost::lexical_cast<int>(arguments.find("commandID")->second);
 
-  CStdString lines;
   if (wait)
-  {
-    CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::poll waiting for timeline event.");
-    lines = g_plexApplication.timelineManager->WaitForTimeline(commandID);
-  }
+    m_xmlOutput = g_plexApplication.timelineManager->WaitForTimeline(commandID);
   else
-  {
-    lines = g_plexApplication.timelineManager->GetCurrentTimeLinesXML(commandID);
-  }
-
-  m_data = lines;
+    m_xmlOutput = g_plexApplication.timelineManager->GetCurrentTimeLinesXML(commandID);
 }
 
 void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)
@@ -654,11 +645,11 @@ void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)
 
 void CPlexHTTPRemoteHandler::resources()
 {
-  TiXmlDocument doc;
-  doc.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));
+  m_xmlOutput.Clear();
+  m_xmlOutput.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));
 
   TiXmlElement *mediaContainer = new TiXmlElement("MediaContainer");
-  doc.LinkEndChild(mediaContainer);
+  m_xmlOutput.LinkEndChild(mediaContainer);
 
   // title="My Nexus 7" machineIdentifier="x" product="p" platform="p" platformVersion="v" protocolVersion="x" protocolCapabilities="y" deviceClass="z"
   TiXmlElement *player = new TiXmlElement("Player");
@@ -673,10 +664,4 @@ void CPlexHTTPRemoteHandler::resources()
   player->SetAttribute("deviceClass", "pc");
 
   mediaContainer->LinkEndChild(player);
-
-  TiXmlPrinter p;
-  p.SetIndent("  ");
-  doc.Accept(&p);
-
-  m_data = p.Str();
 }

@@ -3,6 +3,7 @@
 #include <string>
 #include <StdString.h>
 #include "FileItem.h"
+#include "utils/XBMCTinyXML.h"
 
 namespace PlexUtils
 {
@@ -35,6 +36,8 @@ namespace PlexUtils
   CStdString GetPrettyStreamName(const CFileItem& fileItem, bool audio);
 
   CStdString GetSHA1SumFromURL(const CURL &url);
+
+  CStdString GetXMLString(const CXBMCTinyXML &document);
 }
 
 #ifdef _WIN32

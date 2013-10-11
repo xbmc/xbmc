@@ -102,7 +102,11 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
     m_smsTimer.Stop();
 
     /* PLEX */
-    g_plexApplication.timelineManager->SetTextFieldFocused(message.GetMessage() == GUI_MSG_SETFOCUS);
+    CStdString name = "field";
+    if (GetDescription().size() > 0)
+      name = GetDescription();
+
+    g_plexApplication.timelineManager->SetTextFieldFocused(message.GetMessage() == GUI_MSG_SETFOCUS, name, GetLabel2(), m_label2.GetHidden());
     /* END PLEX */
   }
   else if (message.GetMessage() == GUI_MSG_SET_TEXT &&
@@ -345,6 +349,10 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
   if (sendUpdate)
   {
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
+
+    /* PLEX */
+    g_plexApplication.timelineManager->SetTextFieldFocused(true, GetDescription().size() > 0 ? GetDescription() : "field", GetLabel2(), m_label2.GetHidden());
+    /* END PLEX */
 
     m_textChangeActions.ExecuteActions(GetID(), GetParentID());
   }

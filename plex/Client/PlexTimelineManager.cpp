@@ -21,7 +21,7 @@
 #include "FileItem.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false)
+CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false), m_textFieldFocused(false), m_textFieldSecure(false)
 {
   m_currentItems[MUSIC] = CFileItemPtr();
   m_currentItems[PHOTO] = CFileItemPtr();
@@ -68,11 +68,14 @@ void CPlexTimelineManager::SendTimelineToSubscriber(CPlexRemoteSubscriberPtr sub
   if (!subscriber)
     return;
 
-  CStdString timelineData = GetCurrentTimeLinesXML(subscriber->getCommandID());
+  CXBMCTinyXML timelineXML = GetCurrentTimeLinesXML(subscriber->getCommandID());
+  if (!timelineXML.FirstChild())
+    return;
+
   CURL url = subscriber->getURL();
   url.SetFileName(":/timeline");
 
-  g_plexApplication.mediaServerClient->SendSubscriberTimeline(url, timelineData);
+  g_plexApplication.mediaServerClient->SendSubscriberTimeline(url, PlexUtils::GetXMLString(timelineXML));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,9 +86,21 @@ void CPlexTimelineManager::SendTimelineToSubscribers()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexTimelineManager::SetTextFieldFocused(bool focused)
+void CPlexTimelineManager::SetTextFieldFocused(bool focused, const CStdString &name, const CStdString &contents, bool isSecure)
 {
-  m_textfieldfocused = focused;
+  m_textFieldFocused = focused;
+  if (m_textFieldFocused)
+  {
+    m_textFieldName = name;
+    m_textFieldContents = contents;
+    m_textFieldSecure = isSecure;
+  }
+  else
+  {
+    m_textFieldName = "";
+    m_textFieldContents = "";
+    m_textFieldSecure = false;
+  }
   SendTimelineToSubscribers();
 }
 
@@ -194,18 +209,19 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
         options.AddOption("subtitleStreamID", subid);
         options.AddOption("audioStreamID", g_application.m_pPlayer->GetAudioStreamPlexID());
       }
-
-      std::string location = "navigation";
-      int currentWindow = g_windowManager.GetActiveWindow();
-      if (currentWindow == WINDOW_FULLSCREEN_VIDEO)
-        location = "fullScreenVideo";
-      else if (currentWindow == WINDOW_SLIDESHOW)
-        location = "fullScreenPhoto";
-      else if (currentWindow == WINDOW_NOW_PLAYING || currentWindow == WINDOW_VISUALISATION)
-        location = "fullScreenMusic";
-
-      options.AddOption("location", location);
     }
+
+    std::string location = "navigation";
+    int currentWindow = g_windowManager.GetActiveWindow();
+    if (currentWindow == WINDOW_FULLSCREEN_VIDEO)
+      location = "fullScreenVideo";
+    else if (currentWindow == WINDOW_SLIDESHOW)
+      location = "fullScreenPhoto";
+    else if (currentWindow == WINDOW_NOW_PLAYING || currentWindow == WINDOW_VISUALISATION)
+      location = "fullScreenMusic";
+
+    options.AddOption("location", location);
+
   }
 
   return options;
@@ -309,6 +325,8 @@ CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(CFileItemPtr 
     case PLEX_DIR_TYPE_MOVIE:
       return VIDEO;
     case PLEX_DIR_TYPE_IMAGE:
+    case PLEX_DIR_TYPE_PHOTO:
+    case PLEX_DIR_TYPE_PHOTOALBUM:
       return PHOTO;
     default:
       return UNKNOWN;
@@ -345,7 +363,7 @@ CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(const CStdStr
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CStdString CPlexTimelineManager::WaitForTimeline(int commandID)
+CXBMCTinyXML CPlexTimelineManager::WaitForTimeline(int commandID)
 {
   CLog::Log(LOGDEBUG, "CPlexTimelineManager::WaitForTimeline - waiting until pollEvent is set.");
   m_pollEvent.Reset();
@@ -356,7 +374,7 @@ CStdString CPlexTimelineManager::WaitForTimeline(int commandID)
       return GetCurrentTimeLinesXML(commandID);
   }
 
-  return "";
+  return NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -372,16 +390,21 @@ std::vector<CUrlOptions> CPlexTimelineManager::GetCurrentTimeLines(int commandID
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CStdString CPlexTimelineManager::GetCurrentTimeLinesXML(int commandID)
+CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(int commandID)
 {
   std::vector<CUrlOptions> tlines = GetCurrentTimeLines();
 
-  TiXmlDocument doc;
-  doc.LinkEndChild(new TiXmlDeclaration("1.0", "", ""));
-
+  CXBMCTinyXML doc;
+  doc.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));
   TiXmlElement *mediaContainer = new TiXmlElement("MediaContainer");
   mediaContainer->SetAttribute("machineIdentifier", g_guiSettings.GetString("system.uuid").c_str());
-  mediaContainer->SetAttribute("textFieldFocused", m_textfieldfocused ? "1" : "0");
+  if (m_textFieldFocused)
+  {
+    mediaContainer->SetAttribute("textFieldFocused", std::string(m_textFieldName));
+    mediaContainer->SetAttribute("textFieldSecure", m_textFieldSecure ? "1" : "0");
+    mediaContainer->SetAttribute("textFieldContents", std::string(m_textFieldContents));
+  }
+
   if (commandID != -1)
     mediaContainer->SetAttribute("commandID", commandID);
 
@@ -400,9 +423,5 @@ CStdString CPlexTimelineManager::GetCurrentTimeLinesXML(int commandID)
   }
   doc.LinkEndChild(mediaContainer);
 
-  TiXmlPrinter printer;
-  printer.SetIndent("  ");
-  doc.Accept(&printer);
-
-  return printer.Str();
+  return doc;
 }

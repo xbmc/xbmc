@@ -13,6 +13,8 @@
 #include "utils/StdString.h"
 #include "PlexRemoteSubscriberManager.h"
 
+#include "utils/XBMCTinyXML.h"
+
 typedef std::map<std::string, std::string> ArgMap;
 
 class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
@@ -47,10 +49,23 @@ class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
     void skipTo(const ArgMap &arguments);
     void resources();
 
-    CPlexRemoteSubscriberPtr getSubFromRequest(const HTTPRequest &request, const ArgMap &arguments);
-    CStdString m_data;
+    void setStandardResponse(int code=200, const CStdString status="OK")
+    {
+      m_xmlOutput.Clear();
 
-    CStdString m_contentType;
+      TiXmlDeclaration decl("1.0", "utf-8", "");
+      m_xmlOutput.InsertEndChild(decl);
+
+      TiXmlElement el("Response");
+      el.SetAttribute("code", code);
+      el.SetAttribute("status", std::string(status));
+      m_xmlOutput.InsertEndChild(el);
+    }
+
+    CPlexRemoteSubscriberPtr getSubFromRequest(const HTTPRequest &request, const ArgMap &arguments);
+    CXBMCTinyXML m_xmlOutput;
+
+    CStdString m_data;
 };
 
 

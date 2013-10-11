@@ -212,6 +212,7 @@ public:
 
   /* PLEX */
   void SetHidden(bool hidden) { m_bHidden = hidden; }
+  bool GetHidden() const { return m_bHidden; }
   /* END PLEX */
   
 protected:

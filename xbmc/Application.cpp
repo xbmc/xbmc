@@ -1385,8 +1385,8 @@ bool CApplication::Initialize()
     g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(m_dpms->IsSupported());
     g_windowManager.Add(new CGUIWindowHome);
     g_windowManager.Add(new CGUIWindowPrograms);
-    g_windowManager.Add(new CGUIWindowPictures);
 #ifndef __PLEX__
+    g_windowManager.Add(new CGUIWindowPictures);
     g_windowManager.Add(new CGUIWindowFileManager);
 #endif
     g_windowManager.Add(new CGUIWindowSettings);
@@ -1526,6 +1526,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogPlexAudioPicker);
     g_windowManager.Add(new CGUIDialogPlexSubtitlePicker);
     g_windowManager.Add(new CGUIWindowPlexStartupHelper);
+    g_windowManager.Add(new CGUIPlexPictureWindow);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
