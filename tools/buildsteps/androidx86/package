@@ -1,0 +1,10 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=android
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+cd $WORKSPACE;make apk
+
+#rename for upload
+#e.x. xbmc-20130314-8c2fb31-Frodo-x86.apk
+UPLOAD_FILENAME="xbmc-$(getBuildRevDateStr)-x86.apk"
+mv xbmcapp-x86-*.apk $UPLOAD_FILENAME
