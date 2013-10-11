@@ -125,7 +125,7 @@ public:
      \param iKaraokeNumber [in] the karaoke id of the contact
      \return the id of the contact
      */
-  int AddContact(const CStdString& strPathAndFileName, std::map<std::string, std::string>& name, std::map<std::string, std::string>& phones, std::map<std::string, std::string>& emails, std::vector<std::map<std::string, std::string> >& addresses, std::map<std::string, std::string>& company, std::map<std::string, std::string>& dates, std::map<std::string, std::string>& relations, std::map<std::string, std::string>& IMs, std::map<std::string, std::string>& URLSs);
+  int AddContact(const CStdString& strPathAndFileName, std::map<std::string, std::string>& name, std::map<std::string, std::string>& phones, std::map<std::string, std::string>& emails, std::vector<std::map<std::string, std::string> >& addresses, std::map<std::string, std::string>& company, std::map<std::string, std::string>& dates, std::map<std::string, std::string>& relations, std::map<std::string, std::string>& IMs, std::map<std::string, std::string>& URLSs, int hasProfilePic);
   int AddPath(const CStdString& strPath1);
 
   
@@ -152,7 +152,8 @@ public:
     //// Misc Contact
     bool GetContactByFileName(const CStdString& strFileName, CContact& contact, int startOffset = 0);
     //bool GetContactsByPath(const CStdString& strPath, MAPPICTURES& contacts, bool bAppendToMap = false);
-    bool GetContact(int idContact, CContact& contact);
+    bool GetContactFromDataSet(const dbiplus::sql_record* const record, int idContact, CContact& contact);
+  bool GetContact( int idContact, CContact& contact);
   
   /////////////////////////////////////////////////
     // Recently added
@@ -240,12 +241,17 @@ private:
     void SplitString(const CStdString &multiString, std::vector<std::string> &vecStrings, CStdString &extraStrings);
     CContact GetContactFromDataset(bool bWithContactDbPath=false);
     void GetFileItemFromDataset(CFileItem* item, const CStdString& strContactDBbasePath);
+  void GetFileItemFromContact(CContact& contact, CFileItem* item, const CStdString& strContactDBbasePath);
     void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strContactDBbasePath);
+//  void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const std::vector<std::string>& phones, const std::vector<std::string>& emails,  const CStdString& strContactDBbasePath);
+
     bool SearchContacts(const CStdString& strSearch, CFileItemList &contacts);
     int GetContactIDFromPath(const CStdString &filePath);
+  bool SetContactPhones(CFileItemList &items);
+  bool SetContactEmails(CFileItemList &items);
 
 
-  // Fields should be ordered as they
+  // Fields sh;ould be ordered as they
     // appear in the contactview
     enum _ContactFields
     {
@@ -253,6 +259,7 @@ private:
         contact_strFirst,
       contact_strMiddle,
         contact_strLast,
+      contact_profilePic,
         contact_idThumb,
         contact_idPhone,
         contact_idEmail

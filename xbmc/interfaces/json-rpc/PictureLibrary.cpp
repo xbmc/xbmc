@@ -444,6 +444,7 @@ JSONRPC_STATUS CPictureLibrary::AddPicture(const CStdString &method, ITransportL
     return InternalError;
   
   // set the thumbnail for photo
+  CLog::Log(LOGINFO, "JSONRPC: Add Picture Thumb  '%s'\n", strPicturePath.c_str());
   CTextureCache::Get().BackgroundCacheImage(strPicturePath);
   picturedatabase.SetArtForItem(idPicture, "picture", "thumb", strPicturePath);
   
@@ -465,6 +466,7 @@ JSONRPC_STATUS CPictureLibrary::AddVideo(const CStdString &method, ITransportLay
   
   CStdString strAlbum = parameterObject["album"].c_str();
   CStdString strTitle = parameterObject["title"].c_str();
+  CStdString strThumb = parameterObject["thumbnail"].c_str();
   CStdString strComment = parameterObject["comment"].c_str();
   CStdString strLocation = parameterObject["location"].c_str();
   CStdString strTaken = parameterObject["takenon"].c_str();
@@ -477,7 +479,7 @@ JSONRPC_STATUS CPictureLibrary::AddVideo(const CStdString &method, ITransportLay
     return InternalError;
   
   //create the thumbnail and pass it in
-  CStdString strPicturePath = shares->at(0).strPath + strTitle;
+  CStdString strPicturePath = shares->at(0).strPath + strThumb;
   CStdString strFaces = parameterObject["faces"].c_str();
   int idAlbum = picturedatabase.GetVideoAlbumByName(strAlbum);
   

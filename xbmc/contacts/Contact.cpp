@@ -69,8 +69,7 @@ void CContact::Serialize(CVariant& value) const
 //  value["filename"] = strFileName;
   value["title"] = strTitle;
   value["phone"] = phone;
-//  value["contact"] = strContact;
-  value["phone"] = phone;
+  value["profilepic"] = profilePic;
   value["comment"] = strComment;
   value["contactid"] = idContact;
 }

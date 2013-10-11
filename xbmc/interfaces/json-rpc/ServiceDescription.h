@@ -581,7 +581,8 @@ namespace JSONRPC
         "\"contactid\": { \"$ref\": \"Array.Integer\" },"
         "\"contact\": { \"$ref\": \"Array.String\" },"
         "\"phone\": { \"$ref\": \"Array.String\" },"
-        "\"phoneid\": { \"$ref\": \"Array.Integer\" }"
+        "\"phoneid\": { \"$ref\": \"Array.Integer\" },"
+        "\"profilepic\": { \"type\": \"string\" }"
       "}"
     "}",
       
@@ -591,9 +592,11 @@ namespace JSONRPC
       "\"extends\": \"Contact.Details.Media\","
       "\"properties\": {"
         "\"contactid\": { \"$ref\": \"Library.Id\", \"required\": true },"
-        "\"contact\": { \"$ref\": \"Array.String\" },"
+        "\"name\": { \"$ref\": \"Array.String\" },"
         "\"phoneid\": { \"$ref\": \"Library.Id\", \"required\": true },"
-        "\"phones\": { \"$ref\": \"Array.String\" }"
+        "\"phone\": { \"$ref\": \"Array.String\" },"
+        "\"emailid\": { \"$ref\": \"Library.Id\", \"required\": true },"
+        "\"email\": { \"$ref\": \"Array.String\" }"
       "}"
     "}",
     
@@ -601,7 +604,7 @@ namespace JSONRPC
       "\"extends\": \"Item.Fields.Base\","
       "\"items\": { \"type\": \"string\","
         "\"description\": \"Requesting the locationid and/or faceid field will result in increased response times\","
-        "\"enum\": [ \"phone\", \"contact\", \"label\", \"thumbnail\"]"
+        "\"enum\": [ \"phone\", \"email\", \"name\", \"label\", \"title\", \"profilepic\", \"thumbnail\"]"
       "}"
     "}",
   
@@ -1861,6 +1864,7 @@ namespace JSONRPC
       "\"params\": ["
               "{ \"name\": \"title\", \"type\": \"string\", \"required\": true, \"description\": \"Required for picture title\"},"
               "{ \"name\": \"orientation\", \"type\": \"string\", \"required\": true, \"description\": \"Required for picture orientation\"},"
+              "{ \"name\": \"thumbnail\", \"type\": \"string\", \"required\": true, \"description\": \"Required for picture orientation\"},"
               "{ \"name\": \"picturetype\", \"type\": \"string\", \"required\": true, \"description\": \"Required for picture orientation\"},"
               "{ \"name\": \"album\", \"type\": \"string\", \"required\": true, \"description\": \"Required for album title to add to\"},"
               "{ \"name\": \"comment\", \"type\": \"string\", \"required\": false, \"description\": \"Required for album title to add to\"},"
@@ -1897,6 +1901,7 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"UpdateData\","
       "\"params\": ["
+                  "{ \"name\": \"profilepic\", \"type\": \"string\", \"required\": true, \"description\": \"Required for picture title\"},"
                    "{ \"name\": \"name\", \"$ref\": \"Contact.Fields.Name\" },"
                    "{ \"name\": \"profession\", \"$ref\": \"Contact.Fields.Profession\" },"
                    "{ \"name\": \"dates\", \"$ref\": \"Contact.Fields.Dates\" },"
@@ -1935,10 +1940,13 @@ namespace JSONRPC
                    "{ \"name\": \"sort\", \"$ref\": \"List.Sort\" },"
                    "{ \"name\": \"filter\","
                    "\"type\": ["
+                            "{ \"type\": \"object\", \"properties\": { \"profilepic\": { \"type\": \"string\", \"minLength\": 1, \"required\": true } }, \"additionalProperties\": false },"
                             "{ \"type\": \"object\", \"properties\": { \"contactid\": { \"$ref\": \"Library.Id\", \"required\": true } }, \"additionalProperties\": false },"
-                            "{ \"type\": \"object\", \"properties\": { \"contact\": { \"type\": \"string\", \"minLength\": 1, \"required\": true } }, \"additionalProperties\": false },"
+                            "{ \"type\": \"object\", \"properties\": { \"name\": { \"type\": \"string\", \"minLength\": 1, \"required\": true } }, \"additionalProperties\": false },"
                             "{ \"type\": \"object\", \"properties\": { \"phoneid\": { \"$ref\": \"Library.Id\", \"required\": true } }, \"additionalProperties\": false },"
                             "{ \"type\": \"object\", \"properties\": { \"phone\": { \"type\": \"string\", \"minLength\": 1, \"required\": true } }, \"additionalProperties\": false },"
+                            "{ \"type\": \"object\", \"properties\": { \"emailid\": { \"$ref\": \"Library.Id\", \"required\": true } }, \"additionalProperties\": false },"
+                            "{ \"type\": \"object\", \"properties\": { \"email\": { \"type\": \"string\", \"minLength\": 1, \"required\": true } }, \"additionalProperties\": false },"
                             "{ \"$ref\": \"List.Filter.Albums\" }"
                             "]"
                    "}"

@@ -149,7 +149,7 @@ bool CContactDatabase::CreateTables()
      */
     
     CLog::Log(LOGINFO, "create contact table");
-    m_pDS->exec("CREATE TABLE contact ( idContact integer primary key, strFirst text, strMiddle text, strLast text, strPrefix text, strSuffix text, strNick text, strNote text, idThumb integer)\n");
+    m_pDS->exec("CREATE TABLE contact ( idContact integer primary key, strFirst text, strMiddle text, strLast text, strPrefix text, strSuffix text, strNick text, strNote text, hasProfilePic integer, idThumb integer)\n");
     
     CLog::Log(LOGINFO, "create office table");
     m_pDS->exec("CREATE TABLE office ( idOffice integer primary key, idContact integer, strOffice text, strJobTitle text, strDepartment text)\n");
@@ -216,10 +216,26 @@ void CContactDatabase::CreateViews()
               "  contact.strFirst AS strFirst,"
               "  contact.strMiddle AS strMiddle,"
               "  contact.strLast AS strLast,"
+              "  contact.hasProfilePic AS hasProfilePic,"
               "  contact.idThumb AS idThumb"
               "  FROM contact");
   
-  CLog::Log(LOGINFO, "create contact view");
+  m_pDS->exec("CREATE VIEW phoneview AS SELECT "
+              "  phones.strName AS strName, "
+              "  phones.strValue AS strValue, "
+              "  contact.idContact AS idContact "
+              "  FROM phones"
+              "  JOIN contact ON"
+              "  phones.idContact=contact.idContact  ");
+  
+  
+  m_pDS->exec("CREATE VIEW emailview AS SELECT "
+              "  emails.strName AS strName, "
+              "  emails.strValue AS strValue, "
+              "  contact.idContact AS idContact "
+              "  FROM emails"
+              "  JOIN contact ON"
+              "  emails.idContact=contact.idContact  ");
 }
 
 int CContactDatabase::AddPath(const CStdString& strPath1)
@@ -269,9 +285,8 @@ int CContactDatabase::AddPath(const CStdString& strPath1)
   return -1;
 }
 
-int CContactDatabase::AddContact(const CStdString& strPathAndFileName, std::map<std::string, std::string>& name, std::map<std::string, std::string>& phones, std::map<std::string, std::string>& emails, std::vector<std::map<std::string, std::string> >& addresses, std::map<std::string, std::string>& company, std::map<std::string, std::string>& dates, std::map<std::string, std::string>& relations, std::map<std::string, std::string>& IMs, std::map<std::string, std::string>& URLSs)
+int CContactDatabase::AddContact(const CStdString& strPathAndFileName, std::map<std::string, std::string>& name, std::map<std::string, std::string>& phones, std::map<std::string, std::string>& emails, std::vector<std::map<std::string, std::string> >& addresses, std::map<std::string, std::string>& company, std::map<std::string, std::string>& dates, std::map<std::string, std::string>& relations, std::map<std::string, std::string>& IMs, std::map<std::string, std::string>& URLSs, int hasProfilePic)
 {
-  
   int idContact = -1;
   CStdString strSQL;
   
@@ -297,7 +312,7 @@ int CContactDatabase::AddContact(const CStdString& strPathAndFileName, std::map<
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      strSQL=PrepareSQL("INSERT INTO contact (idContact,strFirst, strMiddle, strLast, strPrefix, strSuffix, strNick, strNote) values (NULL,'%s', '%s', '%s', '%s', '%s', '%s', '%s')",name["first"].c_str(), name["middle"].c_str(),name["last"].c_str(), name["prefix"].c_str(),name["suffix"].c_str(), name["nick"].c_str(),name["note"].c_str());
+      strSQL=PrepareSQL("INSERT INTO contact (idContact,strFirst, strMiddle, strLast, strPrefix, strSuffix, strNick, strNote, hasProfilePic) values (NULL,'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d')",name["first"].c_str(), name["middle"].c_str(),name["last"].c_str(), name["prefix"].c_str(),name["suffix"].c_str(), name["nick"].c_str(),name["note"].c_str(), hasProfilePic);
       CLog::Log(LOGINFO, strSQL.c_str());
       m_pDS->exec(strSQL.c_str());
       idContact = (int)m_pDS->lastinsertid();
@@ -335,11 +350,11 @@ int CContactDatabase::AddContact(const CStdString& strPathAndFileName, std::map<
     for(std::vector<std::map<std::string, std::string> >::iterator iter = addresses.begin(); iter != addresses.end(); ++iter)
     {
       std::map<std::string, std::string> add = *iter;
-
+      
       strSQL = PrepareSQL("INSERT INTO addresses ( idAddress, idContact, strName, strHouseNo, strFloorOrArea, strStreet, strCity, strState, strZip, strCountry, strCountryCode) VALUES (NULL, %i, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", idContact, add["type"].c_str(), add["houseno"].c_str(), add["floor"].c_str(), add["street"].c_str(), add["city"].c_str(), add["state"].c_str(), add["zip"].c_str(), add["country"].c_str(), add["countrycode"].c_str());
-        CLog::Log(LOGINFO, strSQL.c_str());
-        m_pDS->exec(strSQL.c_str());
-        int idPhone = (int)m_pDS->lastinsertid();
+      CLog::Log(LOGINFO, strSQL.c_str());
+      m_pDS->exec(strSQL.c_str());
+      int idPhone = (int)m_pDS->lastinsertid();
     }
     for(std::map<std::string, std::string>::iterator iter = dates.begin(); iter != dates.end(); ++iter)
     {
@@ -350,7 +365,7 @@ int CContactDatabase::AddContact(const CStdString& strPathAndFileName, std::map<
         m_pDS->exec(strSQL.c_str());
         int idEmail = (int)m_pDS->lastinsertid();
       }
-    
+      
     }
     
     AnnounceUpdate("contact", idContact);
@@ -366,104 +381,183 @@ CContact CContactDatabase::GetContactFromDataset(bool bWithContactDbPath/*=false
 {
   
   CContact contact;
-  /*
-   contact.idContact = m_pDS->fv(contact_idContact).get_asInt();
-   // get the full Face string
-   contact.face = StringUtils::Split(m_pDS->fv(contact_strFaces).get_asString(), g_advancedSettings.m_contactItemSeparator);
-   // and the full location string
-   contact.location = StringUtils::Split(m_pDS->fv(contact_strLocations).get_asString(), g_advancedSettings.m_contactItemSeparator);
-   // and the rest...
-   contact.strContact = m_pDS->fv(contact_strContact).get_asString();
-   contact.strContactType = m_pDS->fv(contact_contacttype).get_asString();
-   contact.strOrientation = m_pDS->fv(contact_orientation).get_asString();
-   contact.idContact = m_pDS->fv(contact_idContact).get_asInt();
-   contact.strTitle = m_pDS->fv(contact_strTitle).get_asString();
-   contact.takenOn.SetFromDBDateTime(m_pDS->fv(contact_takenOn).get_asString());
-   
-   // Get filename with full path
-   
-   if (!bWithContactDbPath)
-   contact.strFileName = URIUtils::AddFileToFolder(m_pDS->fv(contact_strPath).get_asString(), m_pDS->fv(contact_strFileName).get_asString());
-   else
-   {
-   CStdString strFileName = m_pDS->fv(contact_strFileName).get_asString();
-   CStdString strExt = URIUtils::GetExtension(strFileName);
-   contact.strFileName.Format("Contactdb://contacts/%ld/%ld%s", m_pDS->fv(contact_idContact).get_asInt(), m_pDS->fv(contact_idContact).get_asInt(), strExt.c_str());
-   }
-   */
+  
+  contact.idContact = m_pDS->fv(contact_idContact).get_asInt();
+  contact.strFirst = m_pDS->fv(contact_strFirst).get_asString();
+  contact.strMiddle = m_pDS->fv(contact_strMiddle).get_asString();
+  contact.strLast = m_pDS->fv(contact_strLast).get_asString();
+  contact.idContact = m_pDS->fv(contact_idContact).get_asInt();
+  contact.strTitle = contact.strFirst+":"+contact.strMiddle+":"+contact.strLast;
+  
+  // Get filename with full path
+  
   return contact;
 }
-
+/*
+ void CContactDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const std::vector<std::string>& phones, const std::vector<std::string>& emails,  const CStdString& strContactDBbasePath)
+ {
+ GetFileItemFromDataset(record, item, strContactDBbasePath);
+ item->GetContactInfoTag()->SetEmail(phones);
+ item->GetContactInfoTag()->SetPhone(phones);
+ }
+ */
 void CContactDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& strContactDBbasePath)
 {
   return GetFileItemFromDataset(m_pDS->get_sql_record(), item, strContactDBbasePath);
 }
 
+bool CContactDatabase::SetContactPhones(CFileItemList &items)
+{
+  try
+  {
+    for (int i=0; i < items.Size(); ++i)
+    {
+      if (NULL == m_pDB.get())
+        return false;
+      if (NULL == m_pDS.get())
+        return false;
+      
+      CStdString sql = PrepareSQL("SELECT * FROM %s WHERE idContact = %d", "phoneview", items[i]->GetContactInfoTag()->GetContactId());
+      m_pDS->query(sql.c_str());
+            
+      std::vector<std::string> phones;
+      while (!m_pDS->eof())
+      {
+        CStdString strNameValue = m_pDS->fv("strName").get_asString()+":"+m_pDS->fv("strValue").get_asString();
+        phones.push_back(strNameValue);
+        m_pDS->next();
+      }
+      m_pDS->close();
+      items[i]->GetContactInfoTag()->SetPhone(phones);
+    }
+    return true;
+    
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+
+bool CContactDatabase::SetContactEmails(CFileItemList &items)
+{
+  try
+  {
+    for (int i=0; i < items.Size(); ++i)
+    {
+      if (NULL == m_pDB.get())
+        return false;
+      if (NULL == m_pDS.get())
+        return false;
+      
+      CStdString sql = PrepareSQL("SELECT * FROM %s WHERE idContact = %d", "emailview", items[i]->GetContactInfoTag()->GetContactId());
+      m_pDS->query(sql.c_str());
+            
+      std::vector<std::string> phones;
+      while (!m_pDS->eof())
+      {
+        CStdString strNameValue = m_pDS->fv("strName").get_asString()+":"+m_pDS->fv("strValue").get_asString();
+        phones.push_back(strNameValue);
+        m_pDS->next();
+      }
+      m_pDS->close();
+      items[i]->GetContactInfoTag()->SetEmail(phones);
+    }
+    return true;
+    
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+
 void CContactDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strContactDBbasePath)
 {
-  CLog::Log(LOGDEBUG, " Aki si=>>>" + strContactDBbasePath);
-/*
-  contact_idContact=0,
-  contact_strFirst,
-  contact_strLast,
-  contact_strMiddle,
-  contact_idThumb,
-  contact_idPhone,
-  contact_idEmail
-*/
-  // get the full artist string
-  // and the full genre string
-//  item->GetContactInfoTag()->SetFirstName(record->at(contact_strFirst).get_asString());
-//  item->GetContactInfoTag()->SetMiddleName(record->at(contact_strMiddle).get_asString());
-//  item->GetContactInfoTag()->SetLastName(record->at(contact_strLast).get_asString());
-  // and the rest...
-  item->GetContactInfoTag()->SetContactId(record->at(contact_idContact).get_asInt());
+  int idContact = record->at(contact_idContact).get_asInt();
+  item->GetContactInfoTag()->SetContactId(idContact);
   item->GetContactInfoTag()->SetFirstName(record->at(contact_strFirst).get_asString());
   item->GetContactInfoTag()->SetMiddleName(record->at(contact_strMiddle).get_asString());
   item->GetContactInfoTag()->SetLastName(record->at(contact_strLast).get_asString());
+  item->GetContactInfoTag()->SetProfilePic(record->at(contact_profilePic).get_asInt());
   CStdString title = record->at(contact_strFirst).get_asString() +" "+record->at(contact_strMiddle).get_asString() +" "+record->at(contact_strLast).get_asString();
   item->GetContactInfoTag()->SetTitle(title);
   item->GetContactInfoTag()->SetLabel(title);
-  //  item->GetContactInfoTag()->SetPhoneId(record->at(contact_idPhone).get_asInt());
-//  item->GetContactInfoTag()->SetEmailId(record->at(contact_idEmail).get_asInt());
   item->GetContactInfoTag()->SetDatabaseId(record->at(contact_idContact).get_asInt(), "contact");
   // Get filename with full path
+}
+
+bool CContactDatabase::GetContactFromDataSet(const dbiplus::sql_record* const record, int idContact, CContact& contact)
+{
+  contact.idContact = idContact;
+  return true;
+  try
+  {
+    contact.Clear();
+    
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    
+    CStdString strSQL=PrepareSQL("select * from contactview "
+                                 "where idContact=%i"
+                                 , idContact);
+    
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    contact = GetContactFromDataset();
+    m_pDS->close(); // cleanup recordset data
+    //now add the addition properties
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idContact);
+  }
   
+  return false;
 }
 
 bool CContactDatabase::GetContact(int idContact, CContact& contact)
 {
-  /*
-   try
-   {
-   contact.Clear();
-   
-   if (NULL == m_pDB.get()) return false;
-   if (NULL == m_pDS.get()) return false;
-   
-   CStdString strSQL=PrepareSQL("select * from contactview "
-   "where idContact=%i"
-   , idContact);
-   
-   if (!m_pDS->query(strSQL.c_str())) return false;
-   int iRowsFound = m_pDS->num_rows();
-   if (iRowsFound == 0)
-   {
-   m_pDS->close();
-   return false;
-   }
-   contact = GetContactFromDataset();
-   m_pDS->close(); // cleanup recordset data
-   return true;
-   }
-   catch (...)
-   {
-   CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idContact);
-   }
-   */
+  try
+  {
+    contact.Clear();
+    
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    
+    CStdString strSQL=PrepareSQL("select * from contactview "
+                                 "where idContact=%i"
+                                 , idContact);
+    
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    contact = GetContactFromDataset();
+    m_pDS->close(); // cleanup recordset data
+    //now add the addition properties
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idContact);
+  }
+  
   return false;
 }
-
 
 bool CContactDatabase::SearchContacts(const CStdString& search, CFileItemList &items)
 {
@@ -503,6 +597,7 @@ bool CContactDatabase::SearchContacts(const CStdString& search, CFileItemList &i
 
 bool CContactDatabase::GetContactsByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */)
 {
+  
   if (m_pDB.get() == NULL || m_pDS.get() == NULL)
     return false;
   
@@ -523,7 +618,7 @@ bool CContactDatabase::GetContactsByWhere(const CStdString &baseDir, const Filte
     // to contactview for these conditions
     if (extFilter.where.find("contactview") != string::npos)
     {
-     // extFilter.AppendJoin("JOIN contactview ON contactview.idContact = contactview.idContact");
+      // extFilter.AppendJoin("JOIN contactview ON contactview.idContact = contactview.idContact");
       //extFilter.AppendGroup("contactview.idContact");
     }
     
@@ -567,13 +662,14 @@ bool CContactDatabase::GetContactsByWhere(const CStdString &baseDir, const Filte
     
     // get data from returned rows
     items.Reserve(results.size());
+    std::vector<CContact >vecContacts;
     const dbiplus::query_data &data = m_pDS->get_result_set().records;
     int count = 0;
     for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
-      
+      CContact contact;
       try
       {
         CFileItemPtr item(new CFileItem);
@@ -590,9 +686,13 @@ bool CContactDatabase::GetContactsByWhere(const CStdString &baseDir, const Filte
       }
     }
     
+    
     // cleanup
     m_pDS->close();
     CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, filter.where.c_str(), XbmcThreads::SystemClockMillis() - time);
+    
+    SetContactPhones(items);
+    SetContactEmails(items);
     return true;
   }
   catch (...)
@@ -602,6 +702,20 @@ bool CContactDatabase::GetContactsByWhere(const CStdString &baseDir, const Filte
     CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, filter.where.c_str());
   }
   return false;
+}
+
+void CContactDatabase::GetFileItemFromContact(CContact& contact, CFileItem* item, const CStdString& strContactDBbasePath)
+{
+  int idContact = contact.idContact;
+  item->GetContactInfoTag()->SetContactId(idContact);
+  item->GetContactInfoTag()->SetFirstName(contact.strFirst);
+  item->GetContactInfoTag()->SetMiddleName(contact.strMiddle);
+  item->GetContactInfoTag()->SetLastName(contact.strLast);
+  CStdString title = contact.strFirst +":"+contact.strMiddle +":"+contact.strLast;
+  item->GetContactInfoTag()->SetTitle(title);
+  item->GetContactInfoTag()->SetLabel(title);
+  item->GetContactInfoTag()->SetDatabaseId(idContact, "contact");
+  
 }
 
 bool CContactDatabase::GetContactsNav(const CStdString& strBaseDir, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */)
@@ -706,20 +820,20 @@ CStdString CContactDatabase::GetItemById(const CStdString &itemType, int id)
 void CContactDatabase::SetPropertiesFromContact(CFileItem& item, const CContact& contact)
 {
   /*
-  item.SetProperty("contact_description", contact.strReview);
-  item.SetProperty("contact_theme", StringUtils::Join(contact.themes, g_advancedSettings.m_pictureItemSeparator));
-  item.SetProperty("contact_theme_array", contact.themes);
-  item.SetProperty("contact_mood", StringUtils::Join(contact.moods, g_advancedSettings.m_pictureItemSeparator));
-  item.SetProperty("contact_mood_array", contact.moods);
-  item.SetProperty("contact_style", StringUtils::Join(contact.styles, g_advancedSettings.m_pictureItemSeparator));
-  item.SetProperty("contact_style_array", contact.styles);
-  item.SetProperty("contact_type", contact.strPictureType);
-  item.SetProperty("contact_label", contact.strLabel);
-  item.SetProperty("contact_Face", StringUtils::Join(contact.face, g_advancedSettings.m_pictureItemSeparator));
-  item.SetProperty("contact_face_array", contact.face);
-  item.SetProperty("contact_location", StringUtils::Join(contact.location, g_advancedSettings.m_pictureItemSeparator));
-  item.SetProperty("contact_location_array", contact.location);
-  item.SetProperty("contact_title", contact.strContact);
+   item.SetProperty("contact_description", contact.strReview);
+   item.SetProperty("contact_theme", StringUtils::Join(contact.themes, g_advancedSettings.m_pictureItemSeparator));
+   item.SetProperty("contact_theme_array", contact.themes);
+   item.SetProperty("contact_mood", StringUtils::Join(contact.moods, g_advancedSettings.m_pictureItemSeparator));
+   item.SetProperty("contact_mood_array", contact.moods);
+   item.SetProperty("contact_style", StringUtils::Join(contact.styles, g_advancedSettings.m_pictureItemSeparator));
+   item.SetProperty("contact_style_array", contact.styles);
+   item.SetProperty("contact_type", contact.strPictureType);
+   item.SetProperty("contact_label", contact.strLabel);
+   item.SetProperty("contact_Face", StringUtils::Join(contact.face, g_advancedSettings.m_pictureItemSeparator));
+   item.SetProperty("contact_face_array", contact.face);
+   item.SetProperty("contact_location", StringUtils::Join(contact.location, g_advancedSettings.m_pictureItemSeparator));
+   item.SetProperty("contact_location_array", contact.location);
+   item.SetProperty("contact_title", contact.strContact);
    */
 }
 void CContactDatabase::SetArtForItem(int mediaId, const string &mediaType, const map<string, string> &art)
@@ -908,7 +1022,7 @@ bool CContactDatabase::GetFilter(CDbUrl &ContactUrl, Filter &filter, SortDescrip
                                       option->second.asString().c_str(), option->second.asString().c_str()));
       // no Face given, so exclude any single contacts (aka empty tagged contacts)
       else
-        filter.AppendWhere("contactview.strFirst <> ''");
+        filter.AppendWhere("contactview.idContact > 0");
     }
   }
   else if (type == "contacts" || type == "singles")

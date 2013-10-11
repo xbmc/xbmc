@@ -354,6 +354,7 @@
     "params": [
 			      { "name": "title", "type": "string", "required": true, "description": "Required for picture title"},
 			      { "name": "orientation", "type": "string", "required": true, "description": "Required for picture orientation"},
+			      { "name": "thumbnail", "type": "string", "required": true, "description": "Required for picture orientation"},
 			      { "name": "picturetype", "type": "string", "required": true, "description": "Required for picture orientation"},
 			      { "name": "album", "type": "string", "required": true, "description": "Required for album title to add to"},
 			      { "name": "comment", "type": "string", "required": false, "description": "Required for album title to add to"},
@@ -390,6 +391,7 @@
     "transport": "Response",
     "permission": "UpdateData",
     "params": [
+    			      { "name": "profilepic", "type": "string", "required": true, "description": "Required for picture title"},
                  { "name": "name", "$ref": "Contact.Fields.Name" },
                  { "name": "profession", "$ref": "Contact.Fields.Profession" },
                  { "name": "dates", "$ref": "Contact.Fields.Dates" },
@@ -428,10 +430,13 @@
                  { "name": "sort", "$ref": "List.Sort" },
                  { "name": "filter",
                  "type": [
+                          { "type": "object", "properties": { "profilepic": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
                           { "type": "object", "properties": { "contactid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-                          { "type": "object", "properties": { "contact": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "name": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
                           { "type": "object", "properties": { "phoneid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
                           { "type": "object", "properties": { "phone": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "emailid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+                          { "type": "object", "properties": { "email": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
                           { "$ref": "List.Filter.Albums" }
                           ]
                  }

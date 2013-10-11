@@ -196,21 +196,27 @@ JSONRPC_STATUS CContactLibrary::AddContact(const CStdString &method, ITransportL
   //create the thumbnail and pass it in
   CStdString strContactPath = shares->at(0).strPath + strFirst +"."+ strLast + ".JPG";
   
+  //{"home": "+852 2222 222", "main": "4444 4444", "work fax": "6666 6666", "other": "9999 9999", "mobile": "+852 9662 3829", "home fax": "5555 5555", "other fax": "7777 7777", "pager": "8888 8888", "work": "3333 3333", "iPhone": "+852 1111111" }
+  
+  std::string s;
+  std::istringstream phoneType("home:main:work fax:other:mobile:home fax:other fax:pager:work:iPhone");
   const CVariant &phones = parameterObject["phones"];
   std::map<std::string, std::string> phoneValues;
-  phoneValues.insert(std::map<std::string, std::string>::value_type("mobile", phones["mobile"].asString().c_str()));
-  phoneValues.insert(std::map<std::string, std::string>::value_type("work", phones["work"].asString().c_str()));
-  phoneValues.insert(std::map<std::string, std::string>::value_type("home", phones["home"].asString().c_str()));
-  
+  while (std::getline(phoneType, s, ':')) {
+    CStdString val = phones[s.c_str()].asString();
+    if(val.length())
+      phoneValues.insert(std::map<std::string, std::string>::value_type(s.c_str(), phones[s.c_str()].asString().c_str()));
+  }
+  //{"emails": {"work": "work@work.com", "other": "other2@other2.com", "home": "home@home.com" }
+  std::istringstream emailType("home:work:other");
   const CVariant &email = parameterObject["emails"];
   std::map<std::string, std::string> emailValues;
-  emailValues.insert(std::map<std::string, std::string>::value_type("work", email["work"].asString().c_str()));
-  emailValues.insert(std::map<std::string, std::string>::value_type("home", email["home"].asString().c_str()));
-  emailValues.insert(std::map<std::string, std::string>::value_type("work1", email["work1"].asString().c_str()));
-  emailValues.insert(std::map<std::string, std::string>::value_type("home1", email["home1"].asString().c_str()));
-  emailValues.insert(std::map<std::string, std::string>::value_type("work2", email["work2"].asString().c_str()));
-  emailValues.insert(std::map<std::string, std::string>::value_type("home2", email["home2"].asString().c_str()));
-  
+  while (std::getline(emailType, s, ':')) {
+    CStdString val = email[s.c_str()].asString();
+    if(val.length())
+    emailValues.insert(std::map<std::string, std::string>::value_type(s.c_str(), email[s.c_str()].asString().c_str()));
+  }
+
   const CVariant &prof = parameterObject["profession"];
   std::map<std::string, std::string> profValues;
   profValues.insert(std::map<std::string, std::string>::value_type("organization", prof["organization"].asString().c_str()));
@@ -260,7 +266,9 @@ JSONRPC_STATUS CContactLibrary::AddContact(const CStdString &method, ITransportL
   std::map<std::string, std::string> URLValues;
   CLog::Log(LOGINFO, "JSONRPC: Adding  '%s' '%s'\n", nameValues["first"].c_str(), nameValues["last"].c_str());
   
-  int idContact = contactdatabase.AddContact(strContactPath, nameValues, phoneValues, emailValues, addresses, profValues, dateValues, relValues, IMValues, URLValues);
+  int bHasProfilePic = parameterObject["profilepic"].asInteger();
+  
+  int idContact = contactdatabase.AddContact(strContactPath, nameValues, phoneValues, emailValues, addresses, profValues, dateValues, relValues, IMValues, URLValues, bHasProfilePic);
   
   if( idContact <=0 )
     return InternalError;

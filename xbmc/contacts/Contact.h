@@ -65,6 +65,7 @@ public:
   bool HasArt() const;
   
   
+  int profilePic;
   int idContact;
   CStdString strFirst;
   CStdString strLast;

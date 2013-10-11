@@ -225,10 +225,6 @@ bool CContactInfoTag::operator !=(const CContactInfoTag& tag) const
 
 
 
-const CStdString& CContactInfoTag::GetTitle() const
-{
-  return m_strTitle;
-}
 const CStdString& CContactInfoTag::GetLabel() const
 {
   return m_strLabel;
@@ -298,9 +294,6 @@ const CDateTime &CContactInfoTag::GetTakenOn() const
   return m_takenOn;
 }
 
-
-
-
 void CContactInfoTag::SetURL(const CStdString& strURL)
 {
   m_strURL = strURL;
@@ -324,6 +317,11 @@ void CContactInfoTag::SetMiddleName(const CStdString &strTitle)
 void CContactInfoTag::SetLastName(const CStdString &strTitle)
 {
   m_strLastName = Trim(strTitle);
+}
+
+void CContactInfoTag::SetProfilePic(const int val)
+{
+  m_profilePic = val;
 }
 
 void CContactInfoTag::SetLabel(const CStdString& strLabel)
@@ -451,6 +449,7 @@ void CContactInfoTag::SetContact(const CContact& contact)
   SetFirstName(contact.strFirst);
   SetMiddleName(contact.strMiddle);
     SetLastName(contact.strLast);
+  SetProfilePic(contact.profilePic);
   SetLabel(contact.strLabel);
   SetPhone(contact.phone);
   SetEmail(contact.email);
@@ -483,8 +482,10 @@ void CContactInfoTag::Serialize(CVariant& value) const
     value["email"] = m_email;
   value["displayemail"] = StringUtils::Join(m_email, g_advancedSettings.m_contactItemSeparator);
   value["contact"] = m_strContact;
+  value["name"] = m_strFirstName+":"+m_strMiddleName+":"+m_strLastName;
   value["contactemail"] = m_contactEmail;
   value["phone"] = m_phone;
+  value["profilepic"] = m_profilePic;
   value["loaded"] = m_bLoaded;
   value["comment"] = m_strComment;
   value["takenon"] = m_takenOn.IsValid() ? m_takenOn.GetAsDBDateTime() : StringUtils::EmptyString;

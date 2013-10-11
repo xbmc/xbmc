@@ -69,10 +69,11 @@ namespace CONTACT_INFO
   public:
     bool operator !=(const CContactInfoTag& tag) const;
     bool Loaded() const;
-    const CStdString& GetTitle() const;
-    const CStdString& GetFirstName() const;
-    const CStdString& GetMiddleName() const;
-    const CStdString& GetLastName() const;
+    const CStdString& GetTitle() const{ return m_strTitle; };
+    const CStdString& GetFirstName() const{ return m_strFirstName; };
+    const CStdString& GetMiddleName() const{ return m_strMiddleName; };
+    const CStdString& GetLastName() const{ return m_strLastName; };
+    const int GetProfilePic() const{ return m_profilePic; };
     const CStdString& GetLabel() const;
     const CStdString& GetURL() const;
     const std::vector<std::string>& GetEmail() const;
@@ -97,6 +98,7 @@ namespace CONTACT_INFO
     void SetFirstName(const CStdString& strTitle);
     void SetMiddleName(const CStdString& strTitle);
     void SetLastName(const CStdString& strTitle);
+    void SetProfilePic(const int strTitle);
     void SetLabel(const CStdString& strTitle);
     void SetEmail(const CStdString& strEmail);
     void SetEmail(const std::vector<std::string>& emails);
@@ -147,6 +149,7 @@ namespace CONTACT_INFO
      */
     CStdString Trim(const CStdString &value) const;
     
+    int m_profilePic;
     CStdString m_strURL;
     CStdString m_strTitle;
     CStdString m_strFirstName;
