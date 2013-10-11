@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0"?>
-<window id="4999">
-	<defaultcontrol always="true">110</defaultcontrol>
+<window id="10093">
+	<defaultcontrol always="false">100</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<!-- header title & description text -->
@@ -9,14 +9,73 @@
 			<posy>60</posy>
 			<width>1160</width>
 			<!-- header title -->
-			<control type="label" id="1">
-				<description>Heading</description>
+			<control type="label">
+				<visible>!IsEmpty(ListItem.Property(WizardWelcome))</visible>
 				<width>1160</width>
 				<include>DialogHeading</include>
+				<label>$LOCALIZE[32001]</label>
+			</control>
+			<control type="label">
+				<visible>!IsEmpty(ListItem.Property(WizardAudio))</visible>
+				<width>1160</width>
+				<include>DialogHeading</include>
+				<label>$LOCALIZE[32002]</label>
+			</control>
+			<control type="label">
+				<visible>!IsEmpty(ListItem.Property(WizardMyPlex))</visible>
+				<width>1160</width>
+				<include>DialogHeading</include>
+				<label>Sign in to MyPlex</label>
+			</control>
+		</control>
+		<!-- welcome -->
+		<control type="group" id="100">
+			<visible>!IsEmpty(ListItem.Property(WizardWelcome))</visible>
+			<posx>100</posx>
+			<posy>120</posy>
+			<width>750</width>
+			<!-- description text -->
+			<control type="textbox" id="2">
+				<posy>0</posy>
+				<posx>0</posx>
+				<width>1050</width>
+				<height>140</height>
+				<align>left</align>
+				<font>PINdescription</font>
+				<label>Welcome to Plex. Blah blah. Press "Next".</label>
+			</control>
+			<control type="group">
+				<posy>500</posy>
+				<posx>-100</posx>
+				<control type="group">
+					<control type="image">
+						<description>button bg</description>
+						<posx>0</posx>
+						<width>1280</width>
+						<height>80</height>
+						<include>Orange</include>
+						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+					</control>
+				</control>
+				<control type="group" id="120">
+					<posy>15</posy>
+					<posx>-100r</posx>
+					<control type="button" id="121">
+						<description>Button</description>
+						<width>120</width>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>-</onup>
+						<onclick>Control.SetFocus(320)</onclick>
+						<label>Next</label>
+						<include>DialogPressButton</include>
+					</control>
+				</control>
 			</control>
 		</control>
 		<!-- audio connector selection assets -->
-		<control type="group" id="100">
+		<control type="group" id="200">
+			<visible>!IsEmpty(ListItem.Property(WizardAudio))</visible>
 			<posx>100</posx>
 			<posy>120</posy>
 			<width>750</width>
@@ -28,6 +87,7 @@
 				<height>140</height>
 				<align>left</align>
 				<font>PINdescription</font>
+				<label>$LOCALIZE[32000]</label>
 			</control>
 			<control type="group">
 				<posy>170</posy>
@@ -52,53 +112,138 @@
 					</control>
 				</control>
 				<!-- audio connector selection list -->
-				<control type="grouplist" id="110">
+				<control type="grouplist" id="210">
 					<posx>290</posx>
 					<posy>0</posy>
 					<width>790</width>
 					<height>400</height>
-					<onup>110</onup>
-					<ondown>120</ondown>
+					<onup>210</onup>
+					<ondown>220</ondown>
 					<onleft>-</onleft>
 					<onright>-</onright>
 					<itemgap>20</itemgap>
+					<control type="radiobutton" id="1">
+						<width>770</width>
+						<height>130</height>
+						<textoffsetx>20</textoffsetx>
+						<label>HDMI Audio Connection</label>
+					</control>
+					<control type="radiobutton" id="2">
+						<width>770</width>
+						<height>130</height>
+						<textoffsetx>20</textoffsetx>
+						<label>Optical Audio Connection</label>
+					</control>
 				</control>
-				<control type="radiobutton" id="111">
-				<width>770</width>
-				<height>130</height>
-				<textoffsetx>20</textoffsetx>
+				<control type="radiobutton" id="211">
+					<width>770</width>
+					<height>130</height>
+					<textoffsetx>20</textoffsetx>
+				</control>
 			</control>
+			<!-- buttons area -->
+			<control type="group">
+				<posy>500</posy>
+				<posx>-100</posx>
+				<control type="group">
+					<control type="image">
+						<description>button bg</description>
+						<posx>0</posx>
+						<width>1280</width>
+						<height>80</height>
+						<include>Orange</include>
+						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+					</control>
+				</control>
+				<control type="group" id="220">
+					<posy>15</posy>
+					<posx>-100r</posx>
+					<control type="button" id="121">
+						<description>Button</description>
+						<width>120</width>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>210</onup>
+						<label>Next</label>
+						<include>DialogPressButton</include>
+					</control>
+				</control>
+			</control>
+		</control>
+		<!-- myplex -->
+		<control type="group" id="300">
+			<visible>!IsEmpty(ListItem.Property(WizardMyPlex))</visible>
+			<posx>100</posx>
+			<posy>120</posy>
+			<width>750</width>
+			<!-- description text -->
+			<control type="textbox" id="2">
+				<posy>0</posy>
+				<posx>20</posx>
+				<width>1050</width>
+				<height>140</height>
+				<align>left</align>
+				<font>PINdescription</font>
+				<label>Sign in to MyPlex. Blah blah. Press "Next".</label>
+			</control>
+			<control type="group">
+				<posy>30</posy>
+				<control type="label" id="1">
+					<posy>33</posy>
+					<description>Heading</description>
+					<width>1000</width>
+					<include>DialogHeading</include>
+				</control>
+				<!-- hardcoded dialog title, delete when control 1 has a dynamic one -->
+				<control type="label">
+					<posy>33</posy>
+					<description>Heading</description>
+					<width>1000</width>
+					<include>DialogHeading</include>
+					<label>myPlex Log In</label>
+				</control>
+				<!-- description text -->
+				<control type="textbox" id="10081">
+					<posy>110</posy>
+					<posx>270</posx>
+					<width>460</width>
+					<height>195</height>
+					<align>center</align>
+					<font>PINdescription</font>
+				</control>
+			</control>
+			<control type="group">
+				<posy>500</posy>
+				<posx>-100</posx>
+				<control type="group">
+					<control type="image">
+						<description>button bg</description>
+						<posx>0</posx>
+						<width>1280</width>
+						<height>80</height>
+						<include>Orange</include>
+						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+					</control>
+				</control>
+				<control type="group" id="320">
+					<posy>15</posy>
+					<posx>-100r</posx>
+					<control type="button" id="121">
+						<description>Button</description>
+						<width>120</width>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>-</onup>
+						<onclick>Control.SetFocus(210)</onclick>
+						<label>Next</label>
+						<include>DialogPressButton</include>
+					</control>
+				</control>
 			</control>
 		</control>
 		<!-- buttons area -->
-		<control type="group">
-			<posy>600</posy>
-			<posx>0</posx>
-			<control type="group">
-				<control type="image">
-					<description>button bg</description>
-					<posx>0</posx>
-					<width>1280</width>
-					<height>80</height>
-					<include>Orange</include>
-					<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
-				</control>
-			</control>
-			<control type="group" id="120">
-				<posy>15</posy>
-				<posx>240r</posx>
-				<control type="button" id="121">
-					<description>Button</description>
-					<width>120</width>
-					<onleft>-</onleft>
-					<onright>-</onright>
-					<onup>110</onup>
-					<label>Next</label>
-					<include>DialogPressButton</include>
-				</control>
-			</control>
-		</control>
 		<!-- top-level ui (Debug.xml) -->
+		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>
 	</controls>
