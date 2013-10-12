@@ -189,15 +189,15 @@ int64_t CDVDInputStreamPVRManager::Seek(int64_t offset, int whence)
   if (!m_pFile)
     return -1;
 
-  if (whence == SEEK_POSSIBLE)
-    return m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
-
   if (m_pOtherStream)
   {
     return m_pOtherStream->Seek(offset, whence);
   }
   else
   {
+    if (whence == SEEK_POSSIBLE)
+      return m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+
     int64_t ret = m_pFile->Seek(offset, whence);
 
     /* if we succeed, we are not eof anymore */
