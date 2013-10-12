@@ -110,6 +110,23 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
           pItem->SetArt("artist.fanart", fanart);
           pItem->SetArtFallback("fanart", "artist.fanart");
         }
+        else if (!pItem->GetMusicInfoTag()->GetAlbumArtist().empty() &&
+                 pItem->GetMusicInfoTag()->GetAlbumArtist()[0] != artist)
+        {
+          // If no artist fanart and the album artist is different to the artist,
+          // try to get fanart from the album artist
+          artist = pItem->GetMusicInfoTag()->GetAlbumArtist()[0];
+          idArtist = m_musicDatabase->GetArtistByName(artist);
+          if (idArtist >= 0)
+          {
+            fanart = m_musicDatabase->GetArtForItem(idArtist, "artist", "fanart");
+            if (!fanart.empty())
+            {
+              pItem->SetArt("albumartist.fanart", fanart);
+              pItem->SetArtFallback("fanart", "albumartist.fanart");
+            }
+          }
+        }
       }
       m_musicDatabase->Close();
     }
@@ -202,6 +219,16 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       {
         item.SetArt("artist.fanart", fanart);
         item.SetArtFallback("fanart", "artist.fanart");
+      }
+      else if (tag.GetType() == "song")
+      {
+        // If no artist fanart, try for album artist fanart
+        fanart = m_musicDatabase->GetArtistArtForItem(tag.GetAlbumId(), "album", "fanart");
+        if (!fanart.empty())
+        {
+          item.SetArt("albumartist.fanart", fanart);
+          item.SetArtFallback("fanart", "albumartist.fanart");
+        }
       }
     }
     m_musicDatabase->Close();
