@@ -1,0 +1,14 @@
+First release
+- requirement 
+			in the xbmc/utils/RecentlyAddedJob.cpp 
+			function bool CRecentlyAddedJob::UpdatePicture()
+			must be insert a new skin variable AlbumId
+			home->SetProperty("LatestPictureAlbum." + value + ".AlbumId" , strIdAlbum);
+
+- changed
+
+			xbmc/utils/RecentlyAddedJob.cpp --- to place the new variable
+			IncludesHomeRecentlyAdded.xml   --- to run plugin.ezeesystems
+			ViewsPictures.xml -- to zoom the picture Include PictureThumbView
+			
+			

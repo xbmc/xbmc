@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon  id="plugin.video.ezeesystems" 
+        name="ezeesystems" 
+        version="2.0.0" 
+        provider-name="ezeesystems (info@ezeesystems.com)">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension    point="xbmc.python.pluginsource"
+                library="default.py">
+        <provides>image</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <minversion>1</minversion>
+    <summary lang="en">Browse and play local photo media files managed by ezeesystems Media Server.</summary>
+    <description lang="en">Browse and play local photo media files managed by ezeesystems Media Server.</description>
+  </extension>
+</addon>
