@@ -43,6 +43,11 @@ public:
     user.clear();
     pass.clear();
     name.clear();
+    key.clear();
+    cert.clear();
+    ca.clear();
+    capath.clear();
+    ciphers.clear();
   };
   CStdString type;
   CStdString host;
@@ -50,6 +55,11 @@ public:
   CStdString user;
   CStdString pass;
   CStdString name;
+  CStdString key;
+  CStdString cert;
+  CStdString ca;
+  CStdString capath;
+  CStdString ciphers;
 };
 
 struct TVShowRegexp
