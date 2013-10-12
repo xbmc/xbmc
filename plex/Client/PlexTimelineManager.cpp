@@ -117,14 +117,12 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
   CUrlOptions options;
 
   options.AddOption("state", StateToString(m_currentStates[type]));
-  options.AddOption("type", MediaTypeToString(type));
 
   CFileItemPtr item = m_currentItems[type];
   if (item)
   {
     options.AddOption("time", item->GetProperty("viewOffset").asString());
 
-    options.AddOption("machineidentifier", item->GetProperty("plexserver").asString());
     options.AddOption("ratingKey", item->GetProperty("ratingKey").asString());
     options.AddOption("key", item->GetProperty("unprocessed_key").asString());
     options.AddOption("containerKey", item->GetProperty("containerKey").asString());
@@ -138,15 +136,6 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
     if (GetItemDuration(item) > 0)
       options.AddOption("duration", boost::lexical_cast<std::string>(GetItemDuration(item)));
 
-    CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item->GetProperty("plexserver").asString());
-    if (server && server->GetActiveConnection())
-    {
-      options.AddOption("port", server->GetActiveConnectionURL().GetPort());
-      options.AddOption("protocol", server->GetActiveConnectionURL().GetProtocol());
-      options.AddOption("address", server->GetActiveConnectionURL().GetHostName());
-
-      options.AddOption("token", "");
-    }
   }
   else
   {
@@ -155,6 +144,23 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
 
   if (!forServer)
   {
+    options.AddOption("type", MediaTypeToString(type));
+
+    if (item)
+    {
+      CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item->GetProperty("plexserver").asString());
+      if (server && server->GetActiveConnection())
+      {
+        options.AddOption("port", server->GetActiveConnectionURL().GetPort());
+        options.AddOption("protocol", server->GetActiveConnectionURL().GetProtocol());
+        options.AddOption("address", server->GetActiveConnectionURL().GetHostName());
+
+        options.AddOption("token", "");
+      }
+
+      options.AddOption("machineidentifier", item->GetProperty("plexserver").asString());
+    }
+
     int player = g_application.IsPlayingAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
     int playlistLen = g_playlistPlayer.GetPlaylist(player).size();
     int playlistPos = g_playlistPlayer.GetCurrentSong();
@@ -416,7 +422,7 @@ CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(int commandID)
     {
       if (p.first == "location")
         mediaContainer->SetAttribute("location", p.second.asString().c_str());
-      else
+      else if (p.second.size() > 0)
         lineEl->SetAttribute(p.first, p.second.asString());
     }
     mediaContainer->LinkEndChild(lineEl);
