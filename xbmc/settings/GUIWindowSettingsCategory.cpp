@@ -2169,7 +2169,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
 
     if (!g_plexApplication.myPlexManager->IsSignedIn())
     {
-//      CGUIWindowMyPlex::ShowAndGetInput();
+      g_windowManager.ActivateWindow(WINDOW_MYPLEX_LOGIN);
     }
     else
     {

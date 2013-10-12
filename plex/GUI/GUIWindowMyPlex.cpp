@@ -180,11 +180,16 @@ void CGUIWindowMyPlex::Close(bool forceClose, int nextWindowID, bool enableSound
                                                "No!", "Yes");
     if (!ok)
       CApplicationMessenger::Get().ActivateWindow(WINDOW_MYPLEX_LOGIN, std::vector<CStdString>(), true);
-    else
+    else if (m_goHome)
       CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+    else
+      g_windowManager.PreviousWindow();
     return;
   }
-  CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+  if (m_goHome)
+    CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+  else
+    g_windowManager.PreviousWindow();
 }
 
 bool
@@ -195,6 +200,10 @@ CGUIWindowMyPlex::OnMessage(CGUIMessage &message)
     case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
+
+      if (message.GetStringParam() == "gohome")
+        m_goHome = true;
+
       Setup();
 
       return true;
@@ -210,11 +219,11 @@ CGUIWindowMyPlex::OnMessage(CGUIMessage &message)
       {
         CGUIEditControl* username = (CGUIEditControl*)GetControl(ID_USERNAME);
         if (!username)
-          Close(false, WINDOW_HOME);
+          Close();
 
         CGUIEditControl* password = (CGUIEditControl*)GetControl(ID_PASSWORD);
         if (!password)
-          Close(false, WINDOW_HOME);
+          Close();
 
         CStdString ustr = username->GetLabel2();
         CStdString pstr = password->GetLabel2();
@@ -230,7 +239,7 @@ CGUIWindowMyPlex::OnMessage(CGUIMessage &message)
 
       }
       else if (message.GetSenderId() == ID_BUTTON_CANCEL)
-        Close(false, WINDOW_HOME);
+        Close();
 
 
       break;

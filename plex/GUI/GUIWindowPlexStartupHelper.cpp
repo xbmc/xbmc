@@ -33,8 +33,12 @@ bool CGUIWindowPlexStartupHelper::OnMessage(CGUIMessage &message)
           SetPage(WIZARD_PAGE_AUDIO);
           break;
         case WIZARD_PAGE_AUDIO:
-          g_windowManager.ActivateWindow(WINDOW_MYPLEX_LOGIN, std::vector<CStdString>(), true);
+        {
+          std::vector<CStdString> param;
+          param.push_back("gohome");
+          g_windowManager.ActivateWindow(WINDOW_MYPLEX_LOGIN, param, true);
           break;
+        }
         default:
           break;
       }
