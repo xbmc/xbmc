@@ -452,27 +452,26 @@
 		<mypictures>KEY_MHP</mypictures>
 		<mypictures>KEY_CAMERA</mypictures>
 		<mytv>KEY_TV</mytv>
-		<liveradio>KEY_RADIO</liveradio>
 		<mytv>KEY_TUNER</mytv>
 		<one>KEY_1</one>
-		<two>KEY_2</two>
-		<three>KEY_3</three>
-		<four>KEY_4</four>
-		<five>KEY_5</five>
-		<six>KEY_6</six>
-		<seven>KEY_7</seven>
-		<eight>KEY_8</eight>
-		<nine>KEY_9</nine>
-		<zero>KEY_0</zero>
 		<one>KEY_NUMERIC_1</one>
+		<two>KEY_2</two>
 		<two>KEY_NUMERIC_2</two>
+		<three>KEY_3</three>
 		<three>KEY_NUMERIC_3</three>
+		<four>KEY_4</four>
 		<four>KEY_NUMERIC_4</four>
+		<five>KEY_5</five>
 		<five>KEY_NUMERIC_5</five>
+		<six>KEY_6</six>
 		<six>KEY_NUMERIC_6</six>
+		<seven>KEY_7</seven>
 		<seven>KEY_NUMERIC_7</seven>
+		<eight>KEY_8</eight>
 		<eight>KEY_NUMERIC_8</eight>
+		<nine>KEY_9</nine>
 		<nine>KEY_NUMERIC_9</nine>
+		<zero>KEY_0</zero>
 		<zero>KEY_NUMERIC_0</zero>
 		<star>KEY_NUMERIC_STAR</star>
 		<hash>KEY_NUMERIC_POUND</hash>
@@ -487,8 +486,8 @@
 		<display>KEY_ANGLE</display>
 		<display>KEY_ZOOM</display>
 		<recordedtv>KEY_PVR</recordedtv>
+		<liveradio>KEY_RADIO</liveradio>
 		<teletext>KEY_TEXT</teletext>
-		<clear>KEY_DELETE</clear>
 	</remote>
 	<remote device="mediacenter">
 		<pause>pause</pause>
