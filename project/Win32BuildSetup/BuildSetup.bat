@@ -134,7 +134,7 @@ IF %comp%==vs2010 (
   %NET% %CLEAN_EXE%
   ECHO Compiling XBMC branch %BRANCH%...
   %NET% %OPTS_EXE%
-  IF NOT EXIST %EXE% (
+  IF %errorlevel%==1 (
   	set DIETEXT="XBMC.EXE failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
 	IF %promptlevel%==noprompt (
 		type "%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
@@ -151,7 +151,7 @@ IF %comp%==vs2010 (
   ECHO ------------------------------------------------------------
   ECHO Compiling XBMC branch %BRANCH%...
   %NET% %OPTS_EXE%
-  IF NOT EXIST %EXE% (
+  IF %errorlevel%==1 (
   	set DIETEXT="XBMC.EXE failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
 	IF %promptlevel%==noprompt (
 		type "%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
@@ -345,6 +345,7 @@ IF %comp%==vs2010 (
   echo %DIETEXT%
   SET exitcode=1
   ECHO ------------------------------------------------------------
+  GOTO END
 
 :VIEWLOG_EXE
   SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
