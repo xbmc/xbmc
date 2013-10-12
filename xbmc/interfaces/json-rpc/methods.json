@@ -441,7 +441,12 @@
     "permission": "ControlPlayback",
     "params": [
       { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
-      { "name": "item", "$ref": "Playlist.Item", "required": true }
+      { "name": "item",
+        "type": [
+          { "$ref": "Playlist.Item", "required": true },
+          { "type": "array", "items": { "$ref": "Playlist.Item" }, "required": true }
+        ],
+        "required": true }
     ],
     "returns": "string"
   },
@@ -453,7 +458,12 @@
     "params": [
       { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
       { "name": "position", "$ref": "Playlist.Position", "required": true },
-      { "name": "item", "$ref": "Playlist.Item", "required": true }
+      { "name": "item",
+        "type": [
+          { "$ref": "Playlist.Item", "required": true },
+          { "type": "array", "items": { "$ref": "Playlist.Item" }, "required": true }
+        ],
+        "required": true }
     ],
     "returns": "string"
   },
