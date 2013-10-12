@@ -2116,7 +2116,8 @@ void CApplication::Render()
 
   bool hasRendered = false;
   bool limitFrames = false;
-  unsigned int singleFrameTime = 10; // default limit 100 fps
+  // Round to nearest lower frame rate time delay
+  unsigned int singleFrameTime = ( 1000 / g_advancedSettings.m_guiFrameRate ) + 0.5; 
 
   {
     // Less fps in DPMS
