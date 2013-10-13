@@ -551,7 +551,8 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32strin
       return false;
     }
 
-    if (fribidi_log2vis((const FriBidiChar*)(stringSrc.c_str() + lineStart), lineLen, &base, visual, NULL, NULL, NULL))
+    FriBidiCharType baseCopy = base; // preserve same value for all lines, required because fribidi_log2vis will modify parameter value
+    if (fribidi_log2vis((const FriBidiChar*)(stringSrc.c_str() + lineStart), lineLen, &baseCopy, visual, NULL, NULL, NULL))
     {
       // Removes bidirectional marks
       const int newLen = fribidi_remove_bidi_marks(visual, lineLen, NULL, NULL, NULL);
