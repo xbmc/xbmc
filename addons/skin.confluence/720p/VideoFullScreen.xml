@@ -60,7 +60,7 @@
 				<posy>230r</posy>
 				<width>1280</width>
 				<height>230</height>
-				<texture>HomeNowPlayingBack.png</texture>
+				<texture border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="image" id="1">
 				<description>cover image</description>
