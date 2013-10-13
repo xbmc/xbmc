@@ -501,9 +501,6 @@ bool CDVDPlayer::CloseFile()
 {
   CLog::Log(LOGNOTICE, "CDVDPlayer::CloseFile()");
 
-  // unpause the player
-  SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
-
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
 
