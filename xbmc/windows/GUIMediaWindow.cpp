@@ -831,6 +831,13 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   }
   if (m_vecItems->GetPath().Equals("sources://video/"))
     showLabel = 999;
+  else if (m_vecItems->GetPath().Equals("sources://music/"))
+    showLabel = 998;
+  else if (m_vecItems->GetPath().Equals("sources://pictures/"))
+    showLabel = 997;
+  else if (m_vecItems->GetPath().Equals("sources://programs/") ||
+           m_vecItems->GetPath().Equals("sources://files/"))
+    showLabel = 1026;
   if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
     CStdString strLabel = g_localizeStrings.Get(showLabel);
