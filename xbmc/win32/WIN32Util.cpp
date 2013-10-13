@@ -41,6 +41,7 @@
 #include "powermanagement\PowerManager.h"
 #include "utils/SystemInfo.h"
 #include "utils/Environment.h"
+#include "utils/URIUtils.h"
 
 // default Broadcom registy bits (setup when installing a CrystalHD card)
 #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
@@ -515,6 +516,43 @@ bool CWIN32Util::RemoveExtraLongPathPrefix(std::wstring& path)
     return true;
   }
   return false;
+}
+
+std::wstring CWIN32Util::ConvertPathToWin32Form(const std::string& pathUtf8)
+{
+  std::wstring result;
+  if (pathUtf8.empty())
+    return result;
+
+  bool convertResult;
+
+  if (pathUtf8.compare(0, 2, "\\\\", 2) != 0) // pathUtf8 don't start from "\\"
+  { // assume local file path in form 'C:\Folder\File.ext'
+    std::string formedPath("\\\\?\\"); // insert "\\?\" prefix
+    formedPath += URIUtils::FixSlashesAndDups(pathUtf8, '\\'); // fix duplicated and forward slashes
+    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
+  }
+
+  else if (pathUtf8.compare(0, 8, "\\\\?\\UNC\\", 8) == 0) // pathUtf8 starts from "\\?\UNC\"
+    convertResult = g_charsetConverter.utf8ToW(URIUtils::FixSlashesAndDups(pathUtf8, '\\', 7), result, false, false, true); // fix duplicated and forward slashes, don't touch "\\?\UNC" prefix
+
+  else if (pathUtf8.compare(0, 4, "\\\\?\\", 4) == 0) // pathUtf8 starts from "\\?\", but it's not UNC path
+    convertResult = g_charsetConverter.utf8ToW(URIUtils::FixSlashesAndDups(pathUtf8, '\\', 4), result, false, false, true); // fix duplicated and forward slashes, don't touch "\\?\" prefix
+
+  else // pathUtf8 starts from "\\", but not from "\\?\UNC\"
+  { // assume UNC path in form '\\server\share\folder\file.ext'
+    std::string formedPath("\\\\?\\UNC\\"); // append "\\?\UNC\" prefix
+    formedPath.append(URIUtils::FixSlashesAndDups(pathUtf8, '\\', 2), 2, std::string::npos); // fix duplicated and forward slashes, skip and cut out two first slashes
+    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
+  }
+
+  if (!convertResult)
+  {
+    CLog::Log(LOGERROR, "Error converting path \"%s\" to Win32 wide string!", pathUtf8.c_str());
+    return L"";
+  }
+
+  return result;
 }
 
 void CWIN32Util::ExtendDllPath()
