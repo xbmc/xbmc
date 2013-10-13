@@ -59,19 +59,6 @@ public:
    */
   static CStdString TranslateControlType(CGUIControl::GUICONTROLTYPES type);
 
-  /*! \brief grab a dimension out of the XML
-   
-   Supports plain reading of a number (or constant) and, in addition allows "auto" as the value
-   for the dimension, whereby value is set to the max attribute (if it exists) and min is set the min
-   attribute (if it exists) or 1.  Auto values are thus detected by min != 0.
-
-   \param pRootNode XML node to read
-   \param strTag tag within pRootNode to read
-   \param value value to set, or maximum value if using auto
-   \param min minimum value - set != 0 if auto is used.
-   \return true if we found and read the tag.
-   */
-  static bool GetDimension(const TiXmlNode* pRootNode, const char* strTag, float &value, float &min);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspectRatio);
   static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info, int parentID);
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image);
@@ -106,5 +93,19 @@ private:
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);
   static bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
   static bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);
+
+  /*! \brief grab a dimension out of the XML
+
+   Supports plain reading of a number (or constant) and, in addition allows "auto" as the value
+   for the dimension, whereby value is set to the max attribute (if it exists) and min is set the min
+   attribute (if it exists) or 1.  Auto values are thus detected by min != 0.
+
+   \param node the <control> XML node to read
+   \param strTag tag within node to read
+   \param value value to set, or maximum value if using auto
+   \param min minimum value - set != 0 if auto is used.
+   \return true if we found and read the tag.
+   */
+  static bool GetDimension(const TiXmlNode *node, const char* strTag, float &value, float &min);
 };
 #endif
