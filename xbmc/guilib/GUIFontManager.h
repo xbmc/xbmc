@@ -80,12 +80,10 @@ public:
   bool IsFontSetUnicode(const CStdString& strFontSet);
   bool GetFirstFontSetUnicode(CStdString& strFontSet);
 
-  void ReloadTTFFonts();
-  void UnloadTTFFonts();
-
   static void SettingOptionsFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
 protected:
+  void ReloadTTFFonts();
   static void RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect);
   void LoadFonts(const TiXmlNode* fontNode);
   CGUIFontTTFBase* GetFontFile(const CStdString& strFontFile);
