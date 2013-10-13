@@ -257,23 +257,34 @@ bool CGUIWindowPVR::OnMessageClick(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_CLICKED)
   {
-    if(message.GetSenderId() == CONTROL_BTNCHANNEL_GROUPS)
+    switch (message.GetSenderId())
     {
-      return OpenGroupDialogSelect();
-    }
-    else 
-    {
-      return (m_windowChannels->OnClickButton(message) ||
-        m_windowGuide->OnClickButton(message) ||
-        m_windowRecordings->OnClickButton(message) ||
-        m_windowSearch->OnClickButton(message) ||
-        m_windowTimers->OnClickButton(message) ||
-              
-        m_windowChannels->OnClickList(message) ||
-        m_windowGuide->OnClickList(message) ||
-        m_windowRecordings->OnClickList(message) ||
-        m_windowSearch->OnClickList(message) ||
-        m_windowTimers->OnClickList(message));
+    case CONTROL_BTNCHANNEL_GROUPS:
+      {
+        return OpenGroupDialogSelect();
+      }
+    case CONTROL_BTNCHANNELS_TV:
+    case CONTROL_BTNCHANNELS_RADIO:
+      {
+        m_bRadio = (message.GetSenderId() == CONTROL_BTNCHANNELS_RADIO);
+        SetActiveView(m_windowChannels);
+        m_windowChannels->UpdateData();
+        return true;
+      }
+    default:
+      {
+        return (m_windowChannels->OnClickButton(message) ||
+                m_windowGuide->OnClickButton(message) ||
+                m_windowRecordings->OnClickButton(message) ||
+                m_windowSearch->OnClickButton(message) ||
+                m_windowTimers->OnClickButton(message) ||
+                
+                m_windowChannels->OnClickList(message) ||
+                m_windowGuide->OnClickList(message) ||
+                m_windowRecordings->OnClickList(message) ||
+                m_windowSearch->OnClickList(message) ||
+                m_windowTimers->OnClickList(message));
+      }
     }
   }
 
