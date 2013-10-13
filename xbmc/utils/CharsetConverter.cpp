@@ -368,39 +368,6 @@ bool CCharsetConverter::CInnerConverter::customConvert(const std::string& source
 }
 
 
-static struct SCharsetMapping
-{
-  const char* charset;
-  const char* caption;
-} g_charsets[] = {
-   { "ISO-8859-1", "Western Europe (ISO)" }
- , { "ISO-8859-2", "Central Europe (ISO)" }
- , { "ISO-8859-3", "South Europe (ISO)"   }
- , { "ISO-8859-4", "Baltic (ISO)"         }
- , { "ISO-8859-5", "Cyrillic (ISO)"       }
- , { "ISO-8859-6", "Arabic (ISO)"         }
- , { "ISO-8859-7", "Greek (ISO)"          }
- , { "ISO-8859-8", "Hebrew (ISO)"         }
- , { "ISO-8859-9", "Turkish (ISO)"        }
- , { "CP1250"    , "Central Europe (Windows)" }
- , { "CP1251"    , "Cyrillic (Windows)"       }
- , { "CP1252"    , "Western Europe (Windows)" }
- , { "CP1253"    , "Greek (Windows)"          }
- , { "CP1254"    , "Turkish (Windows)"        }
- , { "CP1255"    , "Hebrew (Windows)"         }
- , { "CP1256"    , "Arabic (Windows)"         }
- , { "CP1257"    , "Baltic (Windows)"         }
- , { "CP1258"    , "Vietnamesse (Windows)"    }
- , { "CP874"     , "Thai (Windows)"           }
- , { "BIG5"      , "Chinese Traditional (Big5)" }
- , { "GBK"       , "Chinese Simplified (GBK)" }
- , { "SHIFT_JIS" , "Japanese (Shift-JIS)"     }
- , { "CP949"     , "Korean"                   }
- , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)"   }
- , { NULL        , NULL                       }
-};
-
-
 /* iconv may declare inbuf to be char** rather than const char** depending on platform and version,
     so provide a wrapper that handles both */
 struct charPtrPtrAdapter
@@ -566,6 +533,40 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32strin
 
   return !stringDst.empty();
 }
+
+
+static struct SCharsetMapping
+{
+  const char* charset;
+  const char* caption;
+} g_charsets[] = {
+  { "ISO-8859-1", "Western Europe (ISO)" }
+  , { "ISO-8859-2", "Central Europe (ISO)" }
+  , { "ISO-8859-3", "South Europe (ISO)" }
+  , { "ISO-8859-4", "Baltic (ISO)" }
+  , { "ISO-8859-5", "Cyrillic (ISO)" }
+  , { "ISO-8859-6", "Arabic (ISO)" }
+  , { "ISO-8859-7", "Greek (ISO)" }
+  , { "ISO-8859-8", "Hebrew (ISO)" }
+  , { "ISO-8859-9", "Turkish (ISO)" }
+  , { "CP1250", "Central Europe (Windows)" }
+  , { "CP1251", "Cyrillic (Windows)" }
+  , { "CP1252", "Western Europe (Windows)" }
+  , { "CP1253", "Greek (Windows)" }
+  , { "CP1254", "Turkish (Windows)" }
+  , { "CP1255", "Hebrew (Windows)" }
+  , { "CP1256", "Arabic (Windows)" }
+  , { "CP1257", "Baltic (Windows)" }
+  , { "CP1258", "Vietnamesse (Windows)" }
+  , { "CP874", "Thai (Windows)" }
+  , { "BIG5", "Chinese Traditional (Big5)" }
+  , { "GBK", "Chinese Simplified (GBK)" }
+  , { "SHIFT_JIS", "Japanese (Shift-JIS)" }
+  , { "CP949", "Korean" }
+  , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)" }
+  , { NULL, NULL }
+};
+
 
 CCharsetConverter::CCharsetConverter()
 {
