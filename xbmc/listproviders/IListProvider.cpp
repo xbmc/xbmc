@@ -21,6 +21,7 @@
 #include "IListProvider.h"
 #include "utils/XBMCTinyXML.h"
 #include "StaticProvider.h"
+#include "DirectoryProvider.h"
 
 IListProvider *IListProvider::Create(const TiXmlNode *node, int parentID)
 {
@@ -30,6 +31,9 @@ IListProvider *IListProvider::Create(const TiXmlNode *node, int parentID)
     const TiXmlElement *item = root->FirstChildElement("item");
     if (item)
       return new CStaticListProvider(root, parentID);
+
+    if (!root->NoChildren())
+      return new CDirectoryProvider(root, parentID);
   }
   return NULL;
 }

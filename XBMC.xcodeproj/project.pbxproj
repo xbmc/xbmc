@@ -302,6 +302,7 @@
 		7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
 		7CEE2E5B13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */; };
 		7CF1FB0C123B1AF000B2CBCB /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF1FB09123B1AF000B2CBCB /* Variant.cpp */; };
+		7CF3F213180A8C9E00DF1FE8 /* DirectoryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF3F211180A8C9E00DF1FE8 /* DirectoryProvider.cpp */; };
 		810C9F630D67BD2F0095F5DD /* PltMediaConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		810C9FA90D67D1FB0095F5DD /* MythDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */; };
 		810C9FAA0D67D1FB0095F5DD /* MythFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA70D67D1FB0095F5DD /* MythFile.cpp */; };
@@ -3785,6 +3786,8 @@
 		7CEE2E5A13D6B71E000ABF2A /* TimeSmoother.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeSmoother.h; sourceTree = "<group>"; };
 		7CF1FB09123B1AF000B2CBCB /* Variant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Variant.cpp; sourceTree = "<group>"; };
 		7CF1FB0A123B1AF000B2CBCB /* Variant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Variant.h; sourceTree = "<group>"; };
+		7CF3F211180A8C9E00DF1FE8 /* DirectoryProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryProvider.cpp; path = xbmc/listproviders/DirectoryProvider.cpp; sourceTree = SOURCE_ROOT; };
+		7CF3F212180A8C9E00DF1FE8 /* DirectoryProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryProvider.h; path = xbmc/listproviders/DirectoryProvider.h; sourceTree = SOURCE_ROOT; };
 		810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnect.cpp; path = MediaConnect/PltMediaConnect.cpp; sourceTree = "<group>"; };
 		810C9F610D67BD2F0095F5DD /* PltMediaConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PltMediaConnect.h; path = MediaConnect/PltMediaConnect.h; sourceTree = "<group>"; };
 		810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MythDirectory.cpp; sourceTree = "<group>"; };
@@ -6631,6 +6634,8 @@
 		7C430161175C41FE009B82E5 /* listproviders */ = {
 			isa = PBXGroup;
 			children = (
+				7CF3F211180A8C9E00DF1FE8 /* DirectoryProvider.cpp */,
+				7CF3F212180A8C9E00DF1FE8 /* DirectoryProvider.h */,
 				7C7BCDBF17727951004842FB /* IListProvider.cpp */,
 				7C7BCDC417727951004842FB /* IListProvider.h */,
 				7C7BCDC317727951004842FB /* StaticProvider.cpp */,
@@ -10649,6 +10654,7 @@
 				F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */,
 				7C7BCDC517727951004842FB /* IListProvider.cpp in Sources */,
 				7C7BCDC717727951004842FB /* StaticProvider.cpp in Sources */,
+				7CF3F213180A8C9E00DF1FE8 /* DirectoryProvider.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
