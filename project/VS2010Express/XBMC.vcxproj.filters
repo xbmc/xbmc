@@ -3092,6 +3092,9 @@
     <ClCompile Include="..\..\xbmc\listproviders\IListProvider.cpp">
       <Filter>listproviders</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\listproviders\DirectoryProvider.cpp">
+      <Filter>listproviders</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\listproviders\StaticProvider.cpp">
       <Filter>listproviders</Filter>
     </ClCompile>
@@ -6076,6 +6079,9 @@
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\listproviders\IListProvider.h">
+      <Filter>listproviders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\listproviders\DirectoryProvider.h">
       <Filter>listproviders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\listproviders\StaticProvider.h">

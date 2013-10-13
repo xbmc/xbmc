@@ -1,4 +1,5 @@
-SRCS  = IListProvider.cpp
+SRCS  = DirectoryProvider.cpp
+SRCS += IListProvider.cpp
 SRCS += StaticProvider.cpp
      
 LIB=listproviders.a
