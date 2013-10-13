@@ -59,6 +59,17 @@ void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &line
   dialog->DoModal();
 }
 
+// \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
+void CGUIDialogOK::ShowAndGetInputTextbox(const CVariant &heading, const CVariant &line)
+{
+  CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+  if (!dialog)
+    return;
+  dialog->SetHeading(heading);
+  dialog->SetTextBox(line);
+  dialog->DoModal();
+}
+
 int CGUIDialogOK::GetDefaultLabelID(int controlId) const
 {
   if (controlId == ID_BUTTON_OK)

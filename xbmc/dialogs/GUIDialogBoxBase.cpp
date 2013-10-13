@@ -27,17 +27,34 @@ using namespace std;
 
 #define CONTROL_HEADING 1
 #define CONTROL_LINES_START 2
+#define CONTROL_TEXTBOX     5
 #define CONTROL_CHOICES_START 10
 
 CGUIDialogBoxBase::CGUIDialogBoxBase(int id, const CStdString &xmlFile)
     : CGUIDialog(id, xmlFile)
 {
   m_bConfirmed = false;
+  m_bShowingTextBox = false;
   m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogBoxBase::~CGUIDialogBoxBase(void)
 {
+}
+
+void CGUIDialogBoxBase::UseTextbox(bool bEnable) {
+  for (int ptr = 0; ptr < DIALOG_MAX_LINES; ptr++)
+  {
+    if (bEnable)
+      SET_CONTROL_HIDDEN(CONTROL_LINES_START + ptr);
+    else
+      SET_CONTROL_VISIBLE(CONTROL_LINES_START + ptr);
+  }
+
+  if (bEnable)
+    SET_CONTROL_VISIBLE(CONTROL_TEXTBOX);
+  else
+    SET_CONTROL_HIDDEN(CONTROL_TEXTBOX);
 }
 
 bool CGUIDialogBoxBase::OnMessage(CGUIMessage& message)
@@ -73,9 +90,25 @@ void CGUIDialogBoxBase::SetLine(int iLine, const CVariant& line)
     return;
 
   m_strLines[iLine] = GetLocalized(line);
+  m_bShowingTextBox = false;
   if (IsActive())
+  {
+    UseTextbox(false);
     SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_LINES_START + iLine, m_strLines[iLine]);
+  }
 }
+
+void CGUIDialogBoxBase::SetTextBox(const CVariant& line)
+{
+  m_strLines[DIALOG_MAX_LINES] = GetLocalized(line);
+  m_bShowingTextBox = true;
+  if (IsActive()) {
+    UseTextbox(true);
+    SET_CONTROL_VISIBLE(CONTROL_TEXTBOX);
+    SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_TEXTBOX, m_strLines[DIALOG_MAX_LINES]);
+  }
+}
+
 
 void CGUIDialogBoxBase::SetChoice(int iButton, const CVariant &choice) // iButton == 0 for no, 1 for yes
 {
@@ -94,8 +127,18 @@ void CGUIDialogBoxBase::OnInitWindow()
 
   // set control labels
   SET_CONTROL_LABEL(CONTROL_HEADING, !m_strHeading.empty() ? m_strHeading : GetDefaultLabel(CONTROL_HEADING));
-  for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
-    SET_CONTROL_LABEL(CONTROL_LINES_START + i, !m_strLines[i].empty() ? m_strLines[i] : GetDefaultLabel(CONTROL_LINES_START + i));
+
+  UseTextbox(m_bShowingTextBox);
+
+  if (!m_bShowingTextBox) {
+    for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
+      SET_CONTROL_LABEL(CONTROL_LINES_START + i, !m_bShowingTextBox && !m_strLines[i].empty() ? m_strLines[i] : GetDefaultLabel(CONTROL_LINES_START + i));
+  }
+  else
+  {
+    SET_CONTROL_LABEL(CONTROL_TEXTBOX, m_strLines[DIALOG_MAX_LINES]);
+  }
+
   for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
     SET_CONTROL_LABEL(CONTROL_CHOICES_START + i, !m_strChoices[i].empty() ? m_strChoices[i] : GetDefaultLabel(CONTROL_CHOICES_START + i));
 
@@ -105,7 +148,9 @@ void CGUIDialogBoxBase::OnInitWindow()
 void CGUIDialogBoxBase::OnDeinitWindow(int nextWindowID)
 {
   // make sure we set default labels for heading, lines and choices
+  m_bShowingTextBox = false;
   SetHeading(m_strHeading = "");
+  SetTextBox(m_strLines[DIALOG_MAX_LINES] = "");
   for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
     SetLine(i, m_strLines[i] = "");
   for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)

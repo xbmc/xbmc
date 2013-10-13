@@ -86,6 +86,17 @@
 			<label>-</label>
 			<font>font13</font>
 		</control>
+		<control type="textbox" id="5">
+			<description>text</description>
+			<posx>30</posx>
+			<posy>60</posy>
+			<width>550</width>
+			<height>80</height>
+			<align>left</align>
+			<label>-</label>
+			<font>font13</font>
+			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+		</control>
 		<control type="button" id="10">
 			<description>OK button</description>
 			<posx>205</posx>

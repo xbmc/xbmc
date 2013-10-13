@@ -37,6 +37,7 @@ public:
   void SetLine(int iLine, const CVariant &line);
   void SetHeading(const CVariant &heading);
   void SetChoice(int iButton, const CVariant &choice);
+  void SetTextBox(const CVariant& line);
 protected:
   CStdString GetDefaultLabel(int controlId) const;
   virtual int GetDefaultLabelID(int controlId) const;
@@ -49,11 +50,13 @@ protected:
 
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
+  void UseTextbox(bool bEnable);
 
   bool m_bConfirmed;
+  bool m_bShowingTextBox;
 
   // actual strings
   std::string m_strHeading;
-  std::string m_strLines[DIALOG_MAX_LINES];
+  std::string m_strLines[DIALOG_MAX_LINES + 1];
   std::string m_strChoices[DIALOG_MAX_CHOICES];
 };
