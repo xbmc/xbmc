@@ -38,6 +38,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "TextureCache.h"
 #include "ThumbLoader.h"
+#include "utils/URIUtils.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -809,6 +810,48 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry)
   return pItem;
 }
 
+struct ResourcePrioritySort
+{
+  ResourcePrioritySort(const PLT_MediaObject* entry)
+  {
+    if (entry->m_ObjectClass.type.StartsWith("object.item.audioItem"))
+        m_content = "audio";
+    else if (entry->m_ObjectClass.type.StartsWith("object.item.imageItem"))
+        m_content = "image";
+    else if (entry->m_ObjectClass.type.StartsWith("object.item.videoItem"))
+        m_content = "video";
+  }
+
+  int  GetPriority(const PLT_MediaItemResource& res) const
+  {
+    int prio = 0;
+
+    if (m_content != "" && res.m_ProtocolInfo.GetContentType().StartsWith(m_content))
+        prio += 400;
+
+    NPT_Url url(res.m_Uri);
+    if (URIUtils::IsHostOnLAN((const char*)url.GetHost(), false))
+        prio += 300;
+
+    if (res.m_ProtocolInfo.GetProtocol() == "xbmc-get")
+        prio += 200;
+    else if (res.m_ProtocolInfo.GetProtocol() == "http-get")
+        prio += 100;
+
+    return prio;
+  }
+
+  int operator()(const PLT_MediaItemResource& lh, const PLT_MediaItemResource& rh) const
+  {
+    if(GetPriority(lh) < GetPriority(rh))
+        return 1;
+    else
+        return 0;
+  }
+
+  NPT_String m_content;
+};
+
 bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
 {
   PLT_MediaItemResource resource;
@@ -817,30 +860,17 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
   item.SetProperty("original_listitem_url",  item.GetPath());
   item.SetProperty("original_listitem_mime", item.GetMimeType());
 
-  // look for a resource with "xbmc-get" protocol
-  // if we can't find one, try to find a valid resource
-  if(NPT_FAILED(NPT_ContainerFind(entry->m_Resources,
-                                  CResourceFinder("xbmc-get"), resource))) {
-    const char* content = NULL;
-    if (entry->m_ObjectClass.type.StartsWith("object.item.audioItem"))
-      content = "audio";
-    else if (entry->m_ObjectClass.type.StartsWith("object.item.imageItem"))
-      content = "image";
-    else if (entry->m_ObjectClass.type.StartsWith("object.item.videoItem"))
-      content = "video";
-
-    if(NPT_FAILED(NPT_ContainerFind(entry->m_Resources,
-                                    CResourceFinder("http-get", content), resource))) {
-      if(entry->m_Resources.GetItemCount()) {
-        // last attempt to find something suitable
-        resource = entry->m_Resources[0];
-      }
-      else {
-        CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - no resources available for object %s", (const char*)entry->m_ObjectID);
-        return false;
-      }
-    }
+  // get a sorted list based on our preference
+  NPT_List<PLT_MediaItemResource> sorted;
+  for (NPT_Cardinal i = 0; i < entry->m_Resources.GetItemCount(); ++i) {
+      sorted.Add(entry->m_Resources[i]);
   }
+  sorted.Sort(ResourcePrioritySort(entry));
+
+  if(sorted.GetItemCount() == 0)
+    return false;
+
+  resource = *sorted.GetFirstItem();
 
   // if it's an item, path is the first url to the item
   // we hope the server made the first one reachable for us
