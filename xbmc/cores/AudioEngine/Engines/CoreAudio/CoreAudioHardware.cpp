@@ -378,6 +378,10 @@ UInt32 CCoreAudioHardware::GetOutputDevices(CoreAudioDeviceList *pList)
     for (size_t dev = 0; dev < deviceCount; dev++)
     {
       CCoreAudioDevice device(pDevices[dev]);
+      /* PLEX */
+      if (device.GetName() == "AirPlay")
+        continue;
+      /* END PLEX */
       if (device.GetTotalOutputChannels() == 0)
         continue;
       found++;
