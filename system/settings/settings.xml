@@ -101,7 +101,7 @@
           <dependencies>
             <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
           </dependencies>
-          <control type="button" format="action" />
+          <control type="button" format="action" attributes="hide_value" />
         </setting>
       </group>
     </category>
@@ -2327,7 +2327,7 @@
         <setting id="masterlock.lockcode" type="string" label="20100" help="36396">
           <level>2</level>
           <default>-</default>
-          <control type="button" format="action" />
+          <control type="button" format="action" attributes="hide_value"/>
         </setting>
         <setting id="masterlock.startuplock" type="boolean" label="20076" help="36397">
           <level>2</level>

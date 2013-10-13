@@ -48,7 +48,8 @@ typedef enum {
 typedef enum {
   SettingControlAttributeNone       = 0x0,
   SettingControlAttributeHidden     = 0x1,
-  SettingControlAttributeVerifyNew  = 0x2
+  SettingControlAttributeVerifyNew  = 0x2,
+  SettingControlAttributeHideValue  = 0x4
 } SettingControlAttribute;
 
 class CSettingControl
