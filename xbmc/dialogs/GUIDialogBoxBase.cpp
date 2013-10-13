@@ -42,7 +42,8 @@ CGUIDialogBoxBase::~CGUIDialogBoxBase(void)
 {
 }
 
-void CGUIDialogBoxBase::UseTextbox(bool bEnable) {
+void CGUIDialogBoxBase::UseTextbox(bool bEnable)
+{
   for (int ptr = 0; ptr < DIALOG_MAX_LINES; ptr++)
   {
     if (bEnable)
@@ -102,7 +103,8 @@ void CGUIDialogBoxBase::SetTextBox(const CVariant& line)
 {
   m_strLines[DIALOG_MAX_LINES] = GetLocalized(line);
   m_bShowingTextBox = true;
-  if (IsActive()) {
+  if (IsActive())
+  {
     UseTextbox(true);
     SET_CONTROL_VISIBLE(CONTROL_TEXTBOX);
     SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_TEXTBOX, m_strLines[DIALOG_MAX_LINES]);
@@ -130,7 +132,8 @@ void CGUIDialogBoxBase::OnInitWindow()
 
   UseTextbox(m_bShowingTextBox);
 
-  if (!m_bShowingTextBox) {
+  if (!m_bShowingTextBox)
+  {
     for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
       SET_CONTROL_LABEL(CONTROL_LINES_START + i, !m_bShowingTextBox && !m_strLines[i].empty() ? m_strLines[i] : GetDefaultLabel(CONTROL_LINES_START + i));
   }
