@@ -10,28 +10,41 @@
 #include "JobManager.h"
 #include "PlexJobs.h"
 
-CPlexThemeMusicPlayer::CPlexThemeMusicPlayer()
+CPlexThemeMusicPlayer::CPlexThemeMusicPlayer() : m_player(NULL)
 {
-  m_player = CPlayerCoreFactory::CreatePlayer(EPC_PAPLAYER, *this);
-  m_player->RegisterAudioCallback(this);
-  m_player->SetVolume(g_guiSettings.GetInt("backgroundmusic.bgmusicvolume") / 100);
-  m_player->FadeOut(2 * 1000);
-
   if (!XFILE::CDirectory::Exists("special://masterprofile/ThemeMusicCache"))
     XFILE::CDirectory::Create("special://masterprofile/ThemeMusicCache");
 }
 
+void CPlexThemeMusicPlayer::initPlayer()
+{
+  if (!m_player)
+  {
+    m_player = CPlayerCoreFactory::CreatePlayer(EPC_PAPLAYER, *this);
+    m_player->RegisterAudioCallback(this);
+    m_player->SetVolume(g_guiSettings.GetInt("backgroundmusic.bgmusicvolume") / 100);
+    m_player->FadeOut(2 * 1000);
+  }
+}
+
 void CPlexThemeMusicPlayer::stop()
 {
-  if (m_player->IsPlaying())
-    m_player->CloseFile();
-  delete m_player;
+  if (m_player)
+  {
+    if (m_player->IsPlaying())
+      m_player->CloseFile();
+    delete m_player;
+    m_player = NULL;
+  }
 }
 
 void CPlexThemeMusicPlayer::pauseThemeMusic()
 {
-  m_player->FadeOut(80);
-  playForItem(CFileItem());
+  if (m_player)
+  {
+    m_player->FadeOut(80);
+    playForItem(CFileItem());
+  }
 }
 
 CFileItemPtr CPlexThemeMusicPlayer::getThemeItem(const CStdString &url)
@@ -49,7 +62,10 @@ void CPlexThemeMusicPlayer::playForItem(const CFileItem &item)
 
 void CPlexThemeMusicPlayer::OnQueueNextItem()
 {
-  m_player->OnNothingToQueueNotify();
+  if (m_player)
+  {
+    m_player->OnNothingToQueueNotify();
+  }
   m_currentItem.reset();
 }
 
@@ -64,15 +80,18 @@ void CPlexThemeMusicPlayer::OnJobComplete(unsigned int jobID, bool success, CJob
     {
       m_currentItem = themeItem;
       CLog::Log(LOGDEBUG, "CPlexThemeMusicPlayer::OnJobComplete playing %s", m_currentItem->GetPath().c_str());
-      m_player->FadeOut(2 * 1000);
+
+      initPlayer();
       m_player->OpenFile(*m_currentItem.get(), CPlayerOptions());
     }
   }
-  else if (m_player->IsPlaying() && !m_player->IsPaused())
+  else if (m_player && m_player->IsPlaying() && !m_player->IsPaused())
   {
     CSingleLock lk(m_fadeLock);
     CLog::Log(LOGDEBUG, "CPlexThemeMusicPlayer::OnJobComplete fading out...");
     m_player->Pause();
+    delete m_player;
+    m_player = NULL;
     m_currentItem.reset();
     CLog::Log(LOGDEBUG, "CPlexThemeMusicPlayer::OnJobComplete fading out done...");
   }
