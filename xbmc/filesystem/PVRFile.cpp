@@ -308,7 +308,7 @@ int CPVRFile::IoControl(EIoControl request, void *param)
   {
     if (!g_PVRManager.IsStarted())
       return 0;
-    else if (g_PVRClients->GetStreamLength() && g_PVRClients->SeekStream(0, SEEK_CUR) >= 0)
+    else if (g_PVRClients->CanSeekStream())
       return 1;
     else
       return 0;
