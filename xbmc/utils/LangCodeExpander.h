@@ -73,13 +73,8 @@ public:
   *   \return The 3-Char ISO 639-2/T code of lang if that code exists, lang otherwise.
   */
   CStdString ConvertToISO6392T(const CStdString& lang);
-#ifdef TARGET_WINDOWS
-  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack = false);
-  bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool localeHack = false);
-#else
-  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode);
-  bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode);
-#endif
+  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool checkWin32Locales = false);
+  bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool checkXbmcLocales = true, bool checkWin32Locales = false);
 
 #ifdef TARGET_WINDOWS
   bool ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode);
