@@ -230,22 +230,21 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
   }
 }
 
-bool CLangInfo::Load(const CStdString& strFileName)
+bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= false*/)
 {
   SetDefaults();
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strFileName))
   {
-    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    CLog::Log(onlyCheckLanguage ? LOGDEBUG : LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;
   }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if (strValue != CStdString("language"))
+  if (pRootElement->ValueStr() == "language")
   {
-    CLog::Log(LOGERROR, "%s Doesn't contain <language>", strFileName.c_str());
+    CLog::Log(onlyCheckLanguage ? LOGDEBUG : LOGERROR, "%s Doesn't contain <language>", strFileName.c_str());
     return false;
   }
 
@@ -367,11 +366,15 @@ bool CLangInfo::Load(const CStdString& strFileName)
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    const CStdString& strName=CSettings::Get().GetString("locale.country");
-    SetCurrentRegion(strName);
+    if (!onlyCheckLanguage)
+    {
+      const CStdString& strName = CSettings::Get().GetString("locale.country");
+      SetCurrentRegion(strName);
+    }
   }
 
-  LoadTokens(pRootElement->FirstChild("sorttokens"),g_advancedSettings.m_vecTokens);
+  if (!onlyCheckLanguage)
+    LoadTokens(pRootElement->FirstChild("sorttokens"), g_advancedSettings.m_vecTokens);
 
   return true;
 }

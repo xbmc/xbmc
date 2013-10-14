@@ -43,7 +43,7 @@ public:
 
   virtual void OnSettingChanged(const CSetting *setting);
 
-  bool Load(const CStdString& strFileName);
+  bool Load(const std::string& strFileName, bool onlyCheckLanguage = false);
 
   CStdString GetGuiCharSet() const;
   CStdString GetSubtitleCharSet() const;
