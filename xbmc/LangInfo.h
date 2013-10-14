@@ -48,14 +48,14 @@ public:
   // language can either be a two char language code as defined in ISO639
   // or a three char language code
   // or a language name in english (as used by XBMC)
-  void SetAudioLanguage(const CStdString &language);
+  void SetAudioLanguage(const std::string& language);
   
   // three char language code (not win32 specific)
   const CStdString& GetSubtitleLanguage() const;
   // language can either be a two char language code as defined in ISO639
   // or a three char language code
   // or a language name in english (as used by XBMC)
-  void SetSubtitleLanguage(const CStdString &language);
+  void SetSubtitleLanguage(const std::string& language);
 
   const std::string GetDVDMenuLanguage() const;
   const std::string GetDVDAudioLanguage() const;
