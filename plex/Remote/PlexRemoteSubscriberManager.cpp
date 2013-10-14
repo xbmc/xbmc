@@ -81,6 +81,16 @@ void CPlexRemoteSubscriberManager::addSubscriber(CPlexRemoteSubscriberPtr subscr
     m_refreshTimer.Start(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, true);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexRemoteSubscriberManager::updateSubscriberCommandID(CPlexRemoteSubscriberPtr subscriber)
+{
+  if (!subscriber) return;
+
+  CSingleLock lk(m_crit);
+  if (m_map.find(subscriber->getUUID()) != m_map.end())
+    m_map[subscriber->getUUID()]->setCommandID(subscriber->getCommandID());
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexRemoteSubscriberManager::removeSubscriber(CPlexRemoteSubscriberPtr subscriber)
 {

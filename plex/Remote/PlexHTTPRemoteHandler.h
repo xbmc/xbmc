@@ -29,6 +29,9 @@ class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
     virtual size_t GetHTTPResonseDataLength() const;
 
   private:
+    /* generic function to handle commandID parameter */
+    void updateCommandID(const HTTPRequest &request, const ArgMap &arguments);
+
     /* player functions */
     void playMedia(const ArgMap &arguments);
     void stepFunction(const CStdString &url, const ArgMap &arguments);

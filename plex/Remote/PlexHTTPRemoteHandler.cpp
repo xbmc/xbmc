@@ -72,6 +72,8 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   m_responseHeaderFields.insert(std::pair<std::string, std::string>("Content-Type", "text/xml"));
   setStandardResponse();
 
+  updateCommandID(request, argumentMap);
+
   CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::HandleHTTPRequest handling %s", request.url.c_str());
   
   if (path.Equals("/player/playback/playMedia") ||
@@ -142,6 +144,23 @@ void* CPlexHTTPRemoteHandler::GetHTTPResponseData() const
 size_t CPlexHTTPRemoteHandler::GetHTTPResonseDataLength() const
 {
   return m_data.size();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexHTTPRemoteHandler::updateCommandID(const HTTPRequest &request, const ArgMap &arguments)
+{
+  if (arguments.find("commandID") == arguments.end())
+  {
+    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::updateCommandID no commandID sent to this request!");
+    return;
+  }
+
+  CPlexRemoteSubscriberPtr subscriber = getSubFromRequest(request, arguments);
+  if (subscriber)
+  {
+    g_plexApplication.remoteSubscriberManager->updateSubscriberCommandID(subscriber);
+  }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

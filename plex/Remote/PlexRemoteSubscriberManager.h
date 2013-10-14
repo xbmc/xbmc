@@ -58,6 +58,7 @@ class CPlexRemoteSubscriberManager : public ITimerCallback
   public:
     CPlexRemoteSubscriberManager() : m_refreshTimer(this) {}
     void addSubscriber(CPlexRemoteSubscriberPtr subscriber);
+    void updateSubscriberCommandID(CPlexRemoteSubscriberPtr subscriber);
     void removeSubscriber(CPlexRemoteSubscriberPtr subscriber);
     std::vector<CURL> getSubscriberURL() const;
 
