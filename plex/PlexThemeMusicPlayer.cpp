@@ -42,8 +42,13 @@ void CPlexThemeMusicPlayer::pauseThemeMusic()
 {
   if (m_player)
   {
+    CSingleLock lk(m_fadeLock);
+
     m_player->FadeOut(80);
-    playForItem(CFileItem());
+    m_player->Pause();
+    delete m_player;
+    m_player = NULL;
+    m_currentItem.reset();
   }
 }
 
