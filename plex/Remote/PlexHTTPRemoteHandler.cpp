@@ -148,6 +148,7 @@ size_t CPlexHTTPRemoteHandler::GetHTTPResonseDataLength() const
 void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
 {
   CPlexServerPtr server;
+  CStdString key;
   std::string containerPath;
   
   /* Protocol v2 allows for sending machineIndentifier. */
@@ -155,58 +156,72 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   {
     std::string uuid = arguments.find("machineIdentifier")->second;
     server = g_plexApplication.serverManager->FindByUUID(uuid);
-    if (arguments.find("containerKey") != arguments.end())
-      containerPath = arguments.find("containerKey")->second;
   }
-  else if (arguments.find("path") != arguments.end())
+
+  if (!server)
   {
-    CURL serverURL(arguments.find("path")->second);
-    if (!PlexUtils::IsValidIP(serverURL.GetHostName()))
+    CURL serverURL;
+
+    /* old school path sent */
+    if (arguments.find("path") != arguments.end())
     {
-      CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia got a path, but it's not a valid IP.");
+      serverURL = CURL(arguments.find("path")->second);
+      containerPath = serverURL.GetFileName();
+    }
+    else if (arguments.find("address") != arguments.end() &&
+             arguments.find("port") != arguments.end() &&
+             arguments.find("protocol") != arguments.end())
+    {
+      serverURL.SetProtocol(arguments.find("protocol")->second);
+      serverURL.SetHostName(arguments.find("address")->second);
+      serverURL.SetPort(boost::lexical_cast<int>(arguments.find("port")->second));
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia no machineId, no path, no protocol/address/port, how should I know what to play?");
       return;
     }
+
+    if (!PlexUtils::IsValidIP(serverURL.GetHostName()))
+    {
+      CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia got something, but it's not a valid IP.");
+      return;
+    }
+
     /* look up via host and port, this is not super reliable, but it will probably work
      * most of the time */
     server = g_plexApplication.serverManager->FindByHostAndPort(serverURL.GetHostName(), serverURL.GetPort());
 
     if (!server)
     {
+      CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia synthesizing server based on URL: %s", serverURL.Get().c_str());
+
       server = CPlexServerPtr(new CPlexServer());
       CStdString token("");
 
       if (serverURL.HasOption("X-Plex-Token"))
         token = serverURL.GetOption("X-Plex-Token");
+
       server->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED, serverURL.GetHostName(), serverURL.GetPort(), token)));
     }
+  }
 
-    containerPath = serverURL.GetFileName();
-  }
-  else
+  CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia got a valid server %s", server->toString().c_str());
+
+  if (arguments.find("key") == arguments.end())
   {
-    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia Didn't find machineIdentifier nor path in the request. Can't know what to play?");
+    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia need a key argument!");
     return;
   }
-  
-  if (!server || containerPath.empty())
-  {
-    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia can't find server to play from");
-    return;
-  }
-  
+
+  key = arguments.find("key")->second;
+
+  if (containerPath.empty() && arguments.find("containerKey") != arguments.end())
+    containerPath = arguments.find("containerKey")->second;
+  else if (containerPath.empty())
+    containerPath = key;
+    
   CURL itemURL = server->BuildPlexURL(containerPath);
-  
-  std::string key;
-  
-  if (arguments.find("key") != arguments.end())
-  {
-    key = arguments.find("key")->second;
-  }
-  else
-  {
-    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia no key attribute, can't progress...");
-    return;
-  }
 
   if (arguments.find("protocol") != arguments.end())
   {
