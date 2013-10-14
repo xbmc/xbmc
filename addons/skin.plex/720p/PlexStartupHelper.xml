@@ -95,11 +95,12 @@
 				<control type="group">
 					<posx>0</posx>
 					<posy>0</posy>
+					<!--
 					<control type="image">
-						<description>hdmi</description>
+						<description>analog</description>
 						<width>290</width>
 						<height>130</height>
-						<texture>hdmi.jpg</texture>
+						<texture>analog.jpg</texture>
 						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
 					</control>
 					<control type="image">
@@ -110,6 +111,16 @@
 						<texture>optical.jpg</texture>
 						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
 					</control>
+					<control type="image">
+						<description>hdmi</description>
+						<posy>300</posy>
+						<width>290</width>
+						<height>130</height>
+						<texture>hdmi.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
+					</control>-->
+
 				</control>
 				<!-- audio connector selection list -->
 				<control type="grouplist" id="210">
@@ -122,23 +133,25 @@
 					<onleft>-</onleft>
 					<onright>-</onright>
 					<itemgap>20</itemgap>
-					<control type="radiobutton" id="1">
+					<control type="radiobutton" id="211">
 						<width>770</width>
-						<height>130</height>
+						<height>70</height>
 						<textoffsetx>20</textoffsetx>
-						<label>HDMI Audio Connection</label>
+						<label>Analog / Built-in speakers</label>
 					</control>
-					<control type="radiobutton" id="2">
+					<control type="radiobutton" id="212">
 						<width>770</width>
-						<height>130</height>
+						<height>70</height>
 						<textoffsetx>20</textoffsetx>
 						<label>Optical Audio Connection</label>
 					</control>
-				</control>
-				<control type="radiobutton" id="211">
-					<width>770</width>
-					<height>130</height>
-					<textoffsetx>20</textoffsetx>
+					<control type="radiobutton" id="213">
+						<width>770</width>
+						<height>70</height>
+						<textoffsetx>20</textoffsetx>
+						<label>HDMI Audio Connection</label>
+						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
+					</control>
 				</control>
 			</control>
 			<!-- buttons area -->
