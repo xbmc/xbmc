@@ -379,6 +379,12 @@ bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= 
   return true;
 }
 
+bool CLangInfo::CheckLanguage(const std::string& language)
+{
+  CLangInfo li;
+  return li.Load("special://xbmc/language/" + language + "/langinfo.xml", true);
+}
+
 void CLangInfo::LoadTokens(const TiXmlNode* pTokens, vector<CStdString>& vecTokens)
 {
   if (pTokens && !pTokens->NoChildren())
@@ -459,6 +465,11 @@ bool CLangInfo::SetLanguage(const std::string &strLanguage)
   g_application.ReloadSkin();
 
   return true;
+}
+
+bool CLangInfo::CheckLoadLanguage(const std::string &language)
+{
+  return Load("special://xbmc/language/" + language + "/langinfo.xml", true);
 }
 
 // three char language code (not win32 specific)
