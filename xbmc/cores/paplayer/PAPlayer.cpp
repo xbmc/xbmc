@@ -60,7 +60,10 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_currentStream      (NULL ),
   m_audioCallback      (NULL ),
   m_FileItem           (new CFileItem()),
-  m_userRequestedVolume(-1)
+  m_userRequestedVolume(-1),
+/* PLEX */
+  m_hardCrossFade(0)
+/* END PLEX */
 {
   memset(&m_playerGUIData, 0, sizeof(m_playerGUIData));
 }
