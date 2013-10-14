@@ -434,7 +434,7 @@ CStdString CLangInfo::GetSubtitleCharSet() const
 bool CLangInfo::SetLanguage(const std::string &strLanguage)
 {
   string strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
-  if (!g_langInfo.Load(strLangInfoPath))
+  if (!Load(strLangInfoPath))
     return false;
 
   if (ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
