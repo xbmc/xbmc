@@ -261,7 +261,7 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
 }
 #endif
 
-bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString& lang)
+bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString& lang, bool checkXbmcLocales /*= true*/)
 {
   if (lang.empty())
     return false;
@@ -309,14 +309,15 @@ bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString&
       return ConvertToTwoCharCode(code, tmp);
   }
 
-  // try xbmc specific language names
-  CStdString strLangInfoPath;
-  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", lang.c_str());
-  CLangInfo langInfo;
-  if (!langInfo.Load(strLangInfoPath))
+  if (!checkXbmcLocales)
     return false;
 
-  return ConvertToTwoCharCode(code, langInfo.GetLanguageCode());
+  // try xbmc specific language names
+  CLangInfo langInfo;
+  if (!langInfo.CheckLoadLanguage(lang))
+    return false;
+
+  return ConvertToTwoCharCode(code, langInfo.GetLanguageCode(), false);
 }
 
 bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
