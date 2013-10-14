@@ -161,21 +161,39 @@
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
-				<control type="button" id="32">
-					<description>Channels</description>
+				<!-- 
+				<control type="button" id="41">
+					<description>Channels + toggle channel types</description>
 					<posx>0</posx>
 					<posy>0</posy>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>-</label>
 				</control>
-				<control type="button" id="33">
+				 -->
+				<control type="button" id="42">
 					<description>Channel Groups</description>
 					<posx>0</posx>
 					<posy>40</posy>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>-</label>
+				</control>
+				<control type="button" id="32">
+					<description>TV Channels</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>19023</label>
+				</control>
+				<control type="button" id="33">
+					<description>Radio Channels</description>
+					<posx>0</posx>
+					<posy>40</posy>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>19024</label>
 				</control>
 				<control type="button" id="31">
 					<description>TV Guide</description>
