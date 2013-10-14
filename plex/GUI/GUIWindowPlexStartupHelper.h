@@ -27,7 +27,13 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool HasListItems() const { return true; }
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_item; }
+
+  void AudioControlSelected(int id);
   
+  void SetupAudioStuff();
+
+  int GetNumberOfHDMIChannels();
+
 private:
   
   void SetPage(WizardPage page);

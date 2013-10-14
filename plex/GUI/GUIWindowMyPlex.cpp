@@ -28,6 +28,7 @@
 #include "guilib/GUIEditControl.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "ApplicationMessenger.h"
+#include "addons/Skin.h"
 
 #include "PlexApplication.h"
 
@@ -181,13 +182,13 @@ void CGUIWindowMyPlex::Close(bool forceClose, int nextWindowID, bool enableSound
     if (!ok)
       CApplicationMessenger::Get().ActivateWindow(WINDOW_MYPLEX_LOGIN, std::vector<CStdString>(), true);
     else if (m_goHome)
-      CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+      CApplicationMessenger::Get().ActivateWindow(g_SkinInfo->GetFirstWindow(), std::vector<CStdString>(), true);
     else
       g_windowManager.PreviousWindow();
     return;
   }
   if (m_goHome)
-    CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+    CApplicationMessenger::Get().ActivateWindow(g_SkinInfo->GetFirstWindow(), std::vector<CStdString>(), true);
   else
     g_windowManager.PreviousWindow();
 }

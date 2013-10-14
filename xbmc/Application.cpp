@@ -1569,10 +1569,13 @@ bool CApplication::Initialize()
         g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
       }
 #else
-      if (g_SkinInfo->HasSkinFile("PlexStartupHelper.xml"))
+      if (g_SkinInfo->HasSkinFile("PlexStartupHelper.xml"))// && !g_guiSettings.GetBool("system.firstrunwizard"))
+      {
         g_windowManager.ActivateWindow(WINDOW_PLEX_STARTUP_HELPER);
+        g_guiSettings.SetBool("system.firstrunwizard", true);
+      }
       else
-        g_windowManager.ActivateWindow(WINDOW_HOME);
+        g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
 #endif
     }
 

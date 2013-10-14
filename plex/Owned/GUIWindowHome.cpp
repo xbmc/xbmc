@@ -77,6 +77,8 @@
 
 #include "AutoUpdate/PlexAutoUpdate.h"
 
+#include "PlexThemeMusicPlayer.h"
+
 using namespace std;
 using namespace XFILE;
 using namespace boost;
@@ -554,6 +556,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         RefreshSection("global://art/", SECTION_TYPE_GLOBAL_FANART);
       
       RefreshAllSections(false);
+      g_plexApplication.themeMusicPlayer->playForItem(CFileItem());
 
 //      if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
 //        g_plexApplication.backgroundMusicPlayer->PlayElevatorMusic();

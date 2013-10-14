@@ -1108,6 +1108,7 @@ void CGUISettings::Initialize()
   s << uuid;
 
   AddString(NULL, "system.uuid", 99999, s.str().c_str(), SPIN_CONTROL_TEXT);
+  AddBool(NULL, "system.firstrunwizard", 0, false, 1);
 }
 
 CGUISettings::~CGUISettings(void)
