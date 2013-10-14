@@ -25,6 +25,7 @@
 #include "PlexAnalytics.h"
 #include "Client/PlexTimelineManager.h"
 #include "PlexThemeMusicPlayer.h"
+#include "VideoThumbLoader.h"
 
 #include "AutoUpdate/PlexAutoUpdate.h"
 
@@ -40,6 +41,7 @@ PlexApplication::Start()
   analytics = new CPlexAnalytics;
   timelineManager = CPlexTimelineManagerPtr(new CPlexTimelineManager);
   themeMusicPlayer = CPlexThemeMusicPlayerPtr(new CPlexThemeMusicPlayer);
+  thumbCacher = new CPlexThumbCacher;
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
@@ -160,5 +162,7 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
 //    delete backgroundMusicPlayer;
     
     delete autoUpdater;
+
+    delete thumbCacher;
   }
 }

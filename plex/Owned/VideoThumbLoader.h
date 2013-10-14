@@ -55,6 +55,7 @@ class CPlexThumbCacher : public CJobQueue
 {
 public:
   CPlexThumbCacher() : CJobQueue(true, 5, CJob::PRIORITY_LOW), m_stop(false) {};
+  ~CPlexThumbCacher() {}
   void Stop() { m_stop = true; CancelJobs(); }
   void Start() { m_stop = false; }
   void Load(const CFileItemList &list)

@@ -99,7 +99,6 @@ using namespace boost;
 #define SLIDESHOW_MULTIIMAGE 10101
 
 typedef std::pair<CStdString, CPlexSectionFanout*> nameSectionPair;
-static CPlexThumbCacher thumbCacher;
 
 //////////////////////////////////////////////////////////////////////////////
 CPlexSectionFanout::CPlexSectionFanout(const CStdString &url, SectionTypes sectionType)
@@ -237,7 +236,7 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
     
     /* Pre-cache stuff */
     if (type != CONTENT_LIST_FANART)
-      thumbCacher.Load(*newList);
+      g_plexApplication.thumbCacher->Load(*newList);
   }
 
   m_age.restart();
@@ -535,7 +534,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() ==  GUI_MSG_WINDOW_DEINIT)
   {
-    thumbCacher.Stop();
     m_lastSelectedItem = GetCurrentItemName();
     HideAllLists();
     return true;
@@ -547,7 +545,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
-      thumbCacher.Start();
       UpdateSections();
 
       RestoreSection();
