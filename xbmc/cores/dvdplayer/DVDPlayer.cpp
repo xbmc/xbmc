@@ -4369,9 +4369,10 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
       {
         int streamType = stream->GetProperty("streamType").asInteger();
         int streamId = stream->GetProperty("id").asInteger();
+        std::string streamLang = stream->GetProperty("language").asString();
         bool selected = stream->GetProperty("selected").asBoolean();
-        CLog::Log(LOGINFO, "Considering Plex stream %d of type %d (selected: %d)",
-                  streamId, streamType, selected);
+        CLog::Log(LOGINFO, "CDVDPlayer::OpenDefaultStreams Considering Plex stream %d[%s] of type %d (selected: %d)",
+                  streamId, streamLang.c_str(), streamType, selected);
 
         // If we've found the selected audio stream...
         if (streamType == PLEX_STREAM_AUDIO && selected)
@@ -4381,8 +4382,11 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
           for (int i=0; i<count && !valid; i++)
           {
             SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
-            if (s.id == streamId && OpenAudioStream(s.id, s.source, reset))
+            if (s.plexID == streamId && OpenAudioStream(s.id, s.source, reset))
+            {
+              CLog::Log(LOGINFO, "CDVDPlayer::OpenDefaultStreams selected stream %d[%s]", streamId, streamLang.c_str());
               valid = true;
+            }
           }
         }
 
@@ -4395,7 +4399,10 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
     {
       SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
       if(OpenAudioStream(s.id, s.source, reset))
+      {
+        CLog::Log(LOGINFO, "CDVDPlayer::OpenDefaultStreams failed to find the stream based plexId, instead you will get %d[%s]", s.plexID, s.language.c_str());
         valid = true;
+      }
     }
 
     // If we don't have an audio stream, close it.
