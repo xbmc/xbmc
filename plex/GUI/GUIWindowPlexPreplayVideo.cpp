@@ -59,6 +59,19 @@ CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
       m_vecItems->Get(0)->MarkAsUnWatched();
     else
       m_vecItems->Get(0)->MarkAsWatched();
+    return true;
+  }
+  else if (action.GetID() == ACTION_MARK_AS_UNWATCHED)
+  {
+    m_vecItems->Get(0)->MarkAsUnWatched();
+    SetInvalid();
+    return true;
+  }
+  else if (action.GetID() == ACTION_MARK_AS_WATCHED)
+  {
+    m_vecItems->Get(0)->MarkAsWatched();
+    SetInvalid();
+    return true;
   }
   
   return CGUIMediaWindow::OnAction(action);
