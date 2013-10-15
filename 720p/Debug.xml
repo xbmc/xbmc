@@ -297,6 +297,10 @@
 				<include>debugFont</include>
 				<label>ListItem.SubtitleLanguage : [COLOR=orangeLight]$INFO[ListItem.SubtitleLanguage][/COLOR]</label>
 			</control>
+			<control type="label">
+				<include>debugFont</include>
+				<label>ListItem.Overlay : [COLOR=orangeLight]$INFO[ListItem.Overlay][/COLOR]</label>
+			</control>
 			</control>
 		</control>
 	</include>
