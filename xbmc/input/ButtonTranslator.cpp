@@ -236,6 +236,11 @@ static const ActionMapping actions[] =
         {"wheeldown"         , ACTION_MOUSE_WHEEL_DOWN},
         {"mousedrag"         , ACTION_MOUSE_DRAG},
         {"mousemove"         , ACTION_MOUSE_MOVE},
+  
+        /* PLEX */
+        {"markaswatched"     , ACTION_MARK_AS_WATCHED},
+        {"markasunwatched"   , ACTION_MARK_AS_UNWATCHED},
+        /* END PLEX */
 
         // Do nothing action
         { "noop"             , ACTION_NOOP}
