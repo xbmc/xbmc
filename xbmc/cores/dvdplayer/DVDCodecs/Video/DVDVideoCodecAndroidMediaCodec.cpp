@@ -158,6 +158,7 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
     m_frameready->Reset();
 
   m_codec->releaseOutputBuffer(m_index, render);
+
   if (xbmc_jnienv()->ExceptionOccurred())
   {
     CLog::Log(LOGERROR, "CDVDMediaCodecInfo::ReleaseOutputBuffer "
@@ -165,16 +166,13 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
     xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
   }
+}
 
-  // this is key, after calling releaseOutputBuffer, we must
-  // wait a little for MediaCodec to render to the surface.
-  // Then we can updateTexImage without delay. If we do not
-  // wait, then video playback gets jerky. To optomize this,
-  // we hook the SurfaceTexture OnFrameAvailable callback
-  // using CJNISurfaceTextureOnFrameAvailableListener and wait
-  // on a CEvent to fire. 20ms seems to be a good max fallback.
-  if (render)
-    m_frameready->WaitMSec(20);
+int CDVDMediaCodecInfo::GetIndex() const
+{
+  CSingleLock lock(m_section);
+
+  return m_index;
 }
 
 int CDVDMediaCodecInfo::GetTextureID() const
@@ -200,6 +198,19 @@ void CDVDMediaCodecInfo::UpdateTexImage()
 
   if (!m_valid)
     return;
+
+  // updateTexImage will check and spew any prior gl errors,
+  // clear them before we call updateTexImage.
+  glGetError();
+
+  // this is key, after calling releaseOutputBuffer, we must
+  // wait a little for MediaCodec to render to the surface.
+  // Then we can updateTexImage without delay. If we do not
+  // wait, then video playback gets jerky. To optomize this,
+  // we hook the SurfaceTexture OnFrameAvailable callback
+  // using CJNISurfaceTextureOnFrameAvailableListener and wait
+  // on a CEvent to fire. 20ms seems to be a good max fallback.
+  m_frameready->WaitMSec(20);
 
   m_surfacetexture->updateTexImage();
   if (xbmc_jnienv()->ExceptionOccurred())

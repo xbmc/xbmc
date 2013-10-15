@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 //#define DEBUG_VERBOSE 1
 
 #include "system.h"
@@ -858,7 +859,7 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
 #if defined(TARGET_ANDROID)
   YUVBUFFER &buf = m_buffers[idx];
 
-  SAFE_RELEASE(m_buffers[idx].mediacodec);
+  SAFE_RELEASE(buf.mediacodec);
 #endif
 }
 
@@ -919,7 +920,7 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
   }
   else if (m_renderMethod & RENDER_MEDIACODEC)
   {
-    RenderMediaCodec(index, m_currentField);
+    RenderSurfaceTexture(index, m_currentField);
   }
   else
   {
@@ -1410,7 +1411,7 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
 #endif
 }
 
-void CLinuxRendererGLES::RenderMediaCodec(int index, int field)
+void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
 {
 #if defined(TARGET_ANDROID)
   #ifdef DEBUG_VERBOSE
@@ -2128,15 +2129,25 @@ bool CLinuxRendererGLES::CreateEGLIMGTexture(int index)
 void CLinuxRendererGLES::UploadSurfaceTexture(int index)
 {
 #if defined(TARGET_ANDROID)
-  if (m_buffers[index].mediacodec)
+#ifdef DEBUG_VERBOSE
+  unsigned int time = XbmcThreads::SystemClockMillis();
+#endif
+
+  int mindex = -1;
+  YUVBUFFER &buf = m_buffers[index];
+
+  if (buf.mediacodec)
   {
-    m_buffers[index].fields[0][0].id = m_buffers[index].mediacodec->GetTextureID();
-    m_buffers[index].mediacodec->ReleaseOutputBuffer(true);
-    m_buffers[index].mediacodec->UpdateTexImage();
-    m_buffers[index].mediacodec->GetTransformMatrix(m_textureMatrix);
-    SAFE_RELEASE(m_buffers[index].mediacodec);
+    mindex = buf.mediacodec->GetIndex();
+    buf.fields[0][0].id = buf.mediacodec->GetTextureID();
+    buf.mediacodec->UpdateTexImage();
+    buf.mediacodec->GetTransformMatrix(m_textureMatrix);
+    SAFE_RELEASE(buf.mediacodec);
   }
 
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "UploadSurfaceTexture %d: img: %d tm:%d", index, mindex, XbmcThreads::SystemClockMillis() - time);
+#endif
 #endif
 }
 void CLinuxRendererGLES::DeleteSurfaceTexture(int index)
@@ -2388,12 +2399,20 @@ void CLinuxRendererGLES::AddProcessor(CDVDMediaCodecInfo *mediacodec, int index)
   unsigned int time = XbmcThreads::SystemClockMillis();
 #endif
 
+  int mindex = -1;
   YUVBUFFER &buf = m_buffers[index];
   if (mediacodec)
+  {
     buf.mediacodec = mediacodec->Retain();
+    mindex = buf.mediacodec->GetIndex();
+    // releaseOutputBuffer must be in same thread as
+    // dequeueOutputBuffer. We are in DVDPlayerVideo
+    // thread here, so we are safe.
+    buf.mediacodec->ReleaseOutputBuffer(true);
+  }
 
 #ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "AddProcessor %d: img:%d: tm:%d\n", index, buf.mediacodec->GetTexture(), XbmcThreads::SystemClockMillis() - time);
+  CLog::Log(LOGDEBUG, "AddProcessor %d: img:%d tm:%d", index, mindex, XbmcThreads::SystemClockMillis() - time);
 #endif
 }
 #endif

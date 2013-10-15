@@ -217,7 +217,7 @@ protected:
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
   void RenderEglImage(int index, int field);       // Android OES texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
-  void RenderMediaCodec(int index, int field);    // MediaCodec reference
+  void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
 
   CFrameBufferObject m_fbo;
 
