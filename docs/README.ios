@@ -10,7 +10,8 @@ TOC
 5. Packaging
 6. Gesture Handling on iPad/iPhone/iPod touch
 7. Remote control on ATV2
-
+8. Usage/Development on un-jailbroken devices (only interesting for official
+   apple developers!)
 -----------------------------------------------------------------------------
 1. Introduction
 -----------------------------------------------------------------------------
@@ -189,3 +190,16 @@ distribution.
  - Menu               -> back
  - Menu long press    -> context menu
  
+------------------------------------------------------------------------------
+8. Usage/Development on un-jailbroken devices (only interesting for official apple developers!)
+------------------------------------------------------------------------------
+
+If you are a developer with an official apple code signing identity you can deploy XBMC
+via xcode to work on it on non-jailbroken devices. For this to happen you just need to alter the
+Xcode project by setting your codesign identity. After that the last buildstep in our support script
+will do a full sign of all binaries and the bundle with the given identity (all *.viz, *.pvr, *.so files
+Xcode doesn't know anything about). This should allow you to deploy XBMC to all non-jailbroken devices
+which you can deploy normal apps to. In that case (XBMC will be sandboxed like any other app) - all XBMC
+files are then located in the sandboxed "Documents" folder and can be easily accessed via iTunes file
+sharing.
+Keep in mind that no hardware acceleration will be possible without jailbreaking!
