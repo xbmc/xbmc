@@ -169,7 +169,7 @@ bool CSettingCategory::Deserialize(const TiXmlNode *node, bool update /* = false
   int tmp = -1;
   if (element->QueryIntAttribute(XML_ATTR_LABEL, &tmp) == TIXML_SUCCESS && tmp > 0)
     m_label = tmp;
-  if (element->QueryIntAttribute(XML_ATTR_HELP, &m_help) == TIXML_SUCCESS && m_help > 0)
+  if (element->QueryIntAttribute(XML_ATTR_HELP, &tmp) == TIXML_SUCCESS && tmp > 0)
     m_help = tmp;
 
   const TiXmlNode *accessNode = node->FirstChild("access");
