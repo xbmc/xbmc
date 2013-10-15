@@ -71,6 +71,7 @@ void CGUIDialogRating::SetRating(int iRating)
   fileName.Format("rating%d-big.png", iRating);
   image->SetFileName(fileName);
   m_iRating = iRating;
+  SetInvalid();
 }
 
 int CGUIDialogRating::ShowAndGetInput(int heading, const CStdString& title, int rating)
