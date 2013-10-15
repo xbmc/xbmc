@@ -626,7 +626,7 @@
 				</control>
 				<!-- Star Rating -->
 				<control type="image">
-					<posy>98</posy>
+					<posy>90</posy>
 					<width>200</width>
 					<height>20</height>
 					<texture>$INFO[ListItem.StarRating]</texture>
@@ -788,26 +788,24 @@
 					<visible>true</visible>
 				</control>
 				<!-- Title Episode & Watched/Unwatched indicator -->
-				<control type="group">
-					<control type="grouplist">
-						<width>600</width>
+				<control type="grouplist">
+					<width>600</width>
+					<height>40</height>
+					<align>left</align>
+					<usecontrolcoords>true</usecontrolcoords>
+					<orientation>horizontal</orientation>
+					<itemgap>20</itemgap>
+					<control type="label">
+						<width min="29" max="500">auto</width>
 						<height>40</height>
-						<align>left</align>
-						<usecontrolcoords>true</usecontrolcoords>
-						<orientation>horizontal</orientation>
-						<itemgap>20</itemgap>
-						<control type="label">
-							<width min="29" max="500">auto</width>
-							<height>40</height>
-							<label>$INFO[ListItem.Title]</label>
-							<font>CondensedBold-36</font>
-							<textcolor>FF999999</textcolor>
-							<visible>true</visible>
-						</control>
-						<control type="image">
-							<posy>13</posy>
-							<texture>$INFO[ListItem.Overlay]</texture>
-						</control>
+						<label>$INFO[ListItem.Title]</label>
+						<font>CondensedBold-36</font>
+						<textcolor>FF999999</textcolor>
+						<visible>true</visible>
+					</control>
+					<control type="image">
+						<posy>13</posy>
+						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>
 				<!-- Season, Episode -->
@@ -849,7 +847,7 @@
 				</control>
 				<!-- Star Rating -->
 				<control type="image">
-					<posy>130</posy>
+					<posy>94</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
@@ -986,27 +984,25 @@
 				<posy>61</posy>
 				<posx>560</posx>
 				<!-- Title & Watched/Unwatched indicator -->
-				<control type="group">
-					<control type="grouplist">
-						<width>570</width>
+				<control type="grouplist">
+					<width>570</width>
+					<height>40</height>
+					<align>left</align>
+					<usecontrolcoords>true</usecontrolcoords>
+					<orientation>horizontal</orientation>
+					<itemgap>20</itemgap>
+					<control type="label">
+						<width min="29" max="500">auto</width>
 						<height>40</height>
-						<align>left</align>
-						<usecontrolcoords>true</usecontrolcoords>
-						<orientation>horizontal</orientation>
-						<itemgap>20</itemgap>
-						<control type="label">
-							<width min="29" max="500">auto</width>
-							<height>40</height>
-							<label>$INFO[ListItem.Title]</label>
-							<font>CondensedBold-36</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>ff333333</shadowcolor>
-							<visible>true</visible>
-						</control>
-						<control type="image">
-							<posy>13</posy>
-							<texture>$INFO[ListItem.Overlay]</texture>
-						</control>
+						<label>$INFO[ListItem.Title]</label>
+						<font>CondensedBold-36</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>true</visible>
+					</control>
+					<control type="image">
+						<posy>13</posy>
+						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>
 				<!-- Genre -->
@@ -1056,7 +1052,7 @@
 				</control>
 				<!-- Star Rating -->
 				<control type="image">
-					<posy>78</posy>
+					<posy>74</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
