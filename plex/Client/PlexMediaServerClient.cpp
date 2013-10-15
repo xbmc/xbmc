@@ -77,6 +77,8 @@ void CPlexMediaServerClient::SetItemRating(const CFileItemPtr &item, float ratin
   CURL u(item->GetPath());
   
   u.SetFileName(GetPrefix(item) + "rate");
+  u.SetOption("key", item->GetProperty("ratingKey").asString());
+  u.SetOption("identifier", item->GetProperty("identifier").asString());
   u.SetOption("rating", boost::lexical_cast<std::string>(rating));
   
   AddJob(new CPlexMediaServerClientJob(u));
