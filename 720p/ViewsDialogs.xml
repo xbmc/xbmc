@@ -771,6 +771,65 @@
 		
 	</include>
 	<!-- -->
+	<!-- DialogRating.xml -->
+	<include name="DialogRating">
+		<control type="group">
+			<posx>130</posx>
+			<posy>166</posy>
+			<!-- bg's -->
+			<control type="group">
+				<control type="image">
+					<posx>-1</posx>
+					<posy>-1</posy>
+					<width>302</width>
+					<height>162</height>
+					<texture>transparent.png</texture>
+					<bordertexture border="10">border-black.png</bordertexture>
+					<bordersize>1</bordersize>
+					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				</control>
+				<control type="image">
+					<posy>80</posy>
+					<width>300</width>
+					<height>80</height>
+					<texture border="10">base-rounded-half.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
+					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- title bg -->
+				<control type="image">
+					<width>300</width>
+					<height>80</height>
+					<texture border="10" flipy="true">base-rounded-half.png</texture>
+					<colordiffuse>FF111111</colordiffuse>
+				</control>
+				<control type="image">
+					<posy>30</posy>
+					<width>300</width>
+					<height>50</height>
+					<texture>border-bottom-grey.png</texture>
+				</control>
+				<!-- arrow left -->
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>-14</posx>
+					<posy>70</posy>
+					<include>ArrowBlackLeft</include>
+				</control>
+			</control>
+			<control type="group">
+				<posy>20</posy>
+				<control type="label" id="1">
+					<label>[UPPERCASE]$LOCALIZE[32100][/UPPERCASE]</label>
+					<width>300</width>
+					<height>40</height>
+					<align>center</align>
+					<font>Condensed-24</font>
+					<textcolor>Focused</textcolor>
+				</control>
+			</control>
+		</control>
+	</include>
 	<!-- DialogBusy.xml -->
 	<include name="DialogBusy">
 		<control type="group">
