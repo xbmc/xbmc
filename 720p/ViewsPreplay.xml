@@ -853,8 +853,17 @@
 					<height>20</height>
 					<texture>$INFO[ListItem.StarRating]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-					<visible>true</visible>
+					<visible>IsEmpty(Property(userRating))</visible>
+				</control>
+				<control type="image">
+					<posy>94</posy>
+					<posx>140r</posx>
+					<width>100</width>
+					<height>20</height>
+					<texture>$INFO[ListItem.StarRating]</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<colordiffuse>orange</colordiffuse>
+					<visible>!IsEmpty(Property(userRating))</visible>
 				</control>
 			</control>
 			<!-- Director -->
@@ -1058,7 +1067,17 @@
 					<height>20</height>
 					<texture>$INFO[ListItem.StarRating]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<visible>true</visible>
+					<visible>IsEmpty(Property(userRating))</visible>
+				</control>
+				<control type="image">
+					<posy>74</posy>
+					<posx>140r</posx>
+					<width>100</width>
+					<height>20</height>
+					<texture>$INFO[ListItem.StarRating]</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<colordiffuse>orange</colordiffuse>
+					<visible>!IsEmpty(Property(userRating))</visible>
 				</control>
 			</control>
 			<!-- Director -->
