@@ -673,7 +673,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
               iAction == ACTION_SELECT_ITEM &&
               item &&
               (item->GetProperty("type").asString() == "movie" ||
-               item->GetProperty("type").asString() == "episode"))
+               item->GetProperty("type").asString() == "episode" ||
+               item->GetProperty("type").asString() == "video" ||
+               item->GetProperty("type").asString() == "clip"))
           {
             CBuiltins::Execute("XBMC.ActivateWindow(PlexPreplayVideo," + item->GetProperty("key").asString() + ",return)");
             return true;
