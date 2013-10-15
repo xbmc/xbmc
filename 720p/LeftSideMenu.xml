@@ -373,11 +373,11 @@
 						<label>Sleep</label>
 						<onclick>XBMC.Hibernate</onclick>
 					</control>
-					<control type="button" id="155">
+					<!--><control type="button" id="155">
 						<textoffsetx>35</textoffsetx>
 						<include>leftMenuFormat</include>
 						<label>Modify Art</label>
-					</control>
+					</control>-->
 				</control>
 				<!-- END OPTIONS DEV EXAMPLES TO DELETE -->
 				<!-- OPTIONS -->
