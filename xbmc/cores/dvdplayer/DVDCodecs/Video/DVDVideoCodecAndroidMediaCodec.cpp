@@ -317,6 +317,14 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         m_codecname = codec_info.getName();
         m_codec = boost::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createByCodecName(m_codecname)));
 
+        CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
+        std::vector<int> color_formats = codec_caps.colorFormats();
+        for (size_t k = 0; k < color_formats.size(); ++k)
+        {
+          CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open "
+            "m_codecname(%s), colorFormat(%d)", m_codecname.c_str(), color_formats[k]);
+        }
+
         // clear any jni exceptions, jni gets upset if we do not.
         if (xbmc_jnienv()->ExceptionOccurred())
         {
