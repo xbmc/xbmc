@@ -5,6 +5,11 @@
 #include "PlexTypes.h"
 #include "threads/SingleLock.h"
 
+#include "Video/VideoInfoTag.h"
+#include "PlexDirectory.h"
+#include "PlexApplication.h"
+#include "Client/PlexMediaServerClient.h"
+
 CGUIDialogRating::CGUIDialogRating(void)
 : CGUIDialog(WINDOW_DIALOG_RATING, "DialogRating.xml")
 {
@@ -68,28 +73,55 @@ void CGUIDialogRating::SetRating(int iRating)
   Initialize();
   CGUIImage* image = (CGUIImage*)GetControl(10);
   CStdString fileName;
-  fileName.Format("rating%d-big.png", iRating);
+  fileName.Format("rating%d.png", iRating);
   image->SetFileName(fileName);
   m_iRating = iRating;
   SetInvalid();
+  
+  if (m_fileItem)
+  {
+    g_plexApplication.mediaServerClient->SetItemRating(m_fileItem, (float)iRating);
+    m_fileItem->SetProperty("userRating", iRating);
+    if (m_fileItem->HasVideoInfoTag())
+      m_fileItem->GetVideoInfoTag()->m_fRating = iRating;
+  }
 }
 
-int CGUIDialogRating::ShowAndGetInput(int heading, const CStdString& title, int rating)
+bool CGUIDialogRating::OnMessage(CGUIMessage &msg)
 {
-  CGUIDialogRating *dialog = (CGUIDialogRating *)g_windowManager.GetWindow(WINDOW_DIALOG_RATING);
-  if (!dialog) return -1;  
-  dialog->SetHeading(heading);
-  dialog->SetTitle(title);
-  dialog->SetRating(rating);
-  dialog->m_bConfirmed = false;
-  dialog->DoModal();
-  if (dialog->m_bConfirmed)
+  
+  if (msg.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
-    return dialog->GetRating();
+    CFileItemPtr item;
+    if (g_plexApplication.m_preplayItem)
+    {
+      item = g_plexApplication.m_preplayItem;
+    }
+    else if (!msg.GetStringParam().empty())
+    {
+      XFILE::CPlexDirectory dir;
+      CFileItemList list;
+      
+      if (dir.GetDirectory(msg.GetStringParam(), list))
+      {
+        if (list.Size() > 0)
+          item = list.Get(0);
+      }
+    }
+    
+    if (item)
+    {
+      SetHeading(item->HasProperty("userRating") ? 40208 : 40207);
+      if (item && item->HasVideoInfoTag())
+      {
+        SetRating(item->GetVideoInfoTag()->m_fRating);
+        SetTitle(item->GetVideoInfoTag()->m_strTitle);
+      }
+      
+      m_fileItem = item;
+    }
+    
   }
-  else
-  {
-    return -1;
-  }
-
+  
+  return CGUIDialog::OnMessage(msg);
 }

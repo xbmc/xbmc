@@ -1948,30 +1948,6 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CApplicationMessenger::Get().ExecBuiltIn(m_vecItems->Get(itemNumber)->GetProperty(action).asString());
       return true;
     }
-  /* PLEX */
-  case CONTEXT_BUTTON_DELETE:
-  {
-    OnDeleteItem(itemNumber);
-    return true;
-  }
-  case CONTEXT_BUTTON_RATING:
-  {
-    CFileItemPtr item = m_vecItems->Get(itemNumber);
-
-    bool hasUserRating = item->HasProperty("userRating");
-    int newRating = CGUIDialogRating::ShowAndGetInput(hasUserRating ? 40208 : 40207,
-                                                      item->GetVideoInfoTag()->m_strTitle,
-                                                      hasUserRating? item->GetProperty("userRating").asInteger() : (int)item->GetVideoInfoTag()->m_fRating);
-
-    if (newRating >= 0 && newRating <= 10)
-    {
-      g_plexApplication.mediaServerClient->SetItemRating(item, float(newRating));
-      item->SetProperty("userRating", newRating);
-    }
-
-    return true;
-  }
-  /* END PLEX */
   default:
     break;
   }
