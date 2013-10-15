@@ -4,6 +4,8 @@
 #include "paplayer/PAPlayer.h"
 #include "settings/GUISettings.h"
 
+#include "cores/AudioEngine/AEFactory.h"
+
 #include "Directory.h"
 
 #include "Variant.h"
@@ -27,28 +29,33 @@ void CPlexThemeMusicPlayer::initPlayer()
   }
 }
 
-void CPlexThemeMusicPlayer::stop()
+void CPlexThemeMusicPlayer::destroy(int fadeOut)
 {
+  CSingleLock lk(m_fadeLock);
   if (m_player)
   {
-    if (m_player->IsPlaying())
-      m_player->CloseFile();
+    CLog::Log(LOGDEBUG, "CPlexThemeMusicPlayer::OnJobComplete fading out during %d ms...", fadeOut);
+    m_player->FadeOut(fadeOut);
     delete m_player;
+    CLog::Log(LOGDEBUG, "CPlexThemeMusicPlayer::OnJobComplete fading out done...");
+
+    CAEFactory::GarbageCollect();
+
     m_player = NULL;
+    m_currentItem.reset();
   }
+}
+
+void CPlexThemeMusicPlayer::stop()
+{
+  destroy();
 }
 
 void CPlexThemeMusicPlayer::pauseThemeMusic()
 {
   if (m_player)
   {
-    CSingleLock lk(m_fadeLock);
-
-    m_player->FadeOut(80);
-    m_player->Pause();
-    delete m_player;
-    m_player = NULL;
-    m_currentItem.reset();
+    destroy();
   }
 }
 
@@ -92,12 +99,6 @@ void CPlexThemeMusicPlayer::OnJobComplete(unsigned int jobID, bool success, CJob
   }
   else if (m_player && m_player->IsPlaying() && !m_player->IsPaused())
   {
-    CSingleLock lk(m_fadeLock);
-    CLog::Log(LOGDEBUG, "CPlexThemeMusicPlayer::OnJobComplete fading out...");
-    m_player->Pause();
-    delete m_player;
-    m_player = NULL;
-    m_currentItem.reset();
-    CLog::Log(LOGDEBUG, "CPlexThemeMusicPlayer::OnJobComplete fading out done...");
+    destroy(2 * 1000);
   }
 }

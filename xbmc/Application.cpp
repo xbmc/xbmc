@@ -4438,6 +4438,10 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
   bool bResult;
   if (m_pPlayer)
   {
+    /* PLEX */
+    g_plexApplication.themeMusicPlayer->pauseThemeMusic();
+    /* END PLEX */
+
     // don't hold graphicscontext here since player
     // may wait on another thread, that requires gfx
     CSingleExit ex(g_graphicsContext);
@@ -4451,10 +4455,6 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
 
   if(bResult)
   {
-    /* PLEX */
-    g_plexApplication.themeMusicPlayer->pauseThemeMusic();
-    /* END PLEX */
-
     if (m_iPlaySpeed != 1)
     {
       int iSpeed = m_iPlaySpeed;

@@ -32,6 +32,7 @@ class CPlexThemeMusicPlayer : public IPlayerCallback, public IAudioCallback, pub
     virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
     void initPlayer();
+    void destroy(int fadeOut = 0);
   private:
     CCriticalSection m_fadeLock;
     CFileItemPtr m_currentItem;
