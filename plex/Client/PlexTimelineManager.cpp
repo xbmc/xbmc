@@ -422,8 +422,11 @@ CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(int commandID)
     {
       if (p.first == "location")
         mediaContainer->SetAttribute("location", p.second.asString().c_str());
-      else if (p.second.size() > 0)
-        lineEl->SetAttribute(p.first, p.second.asString());
+
+      if (p.second.isString() && p.second.empty())
+        continue;
+
+      lineEl->SetAttribute(p.first, p.second.asString());
     }
     mediaContainer->LinkEndChild(lineEl);
   }
