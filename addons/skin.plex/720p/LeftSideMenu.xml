@@ -278,7 +278,7 @@
 				<control type="button" id="105">
 					<texturefocus>b-pp-rate-s.png</texturefocus>
 					<texturenofocus>b-pp-rate.png</texturenofocus>
-					<onclick>ActivateWindow(10200)</onclick>
+					<onclick>ActivateWindow(10200,$INFO[ListItem(0).Path])</onclick>
 					<onup>104</onup>
 					<ondown>106</ondown>
 					<include>leftMenuPreplayButton</include>
