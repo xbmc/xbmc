@@ -634,6 +634,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
   if(deviceInfoList.size() > 1)
   {
     std::string strDD = GetDefaultDevice();
+
     for (AEDeviceInfoList::iterator itt = deviceInfoList.begin(); itt != deviceInfoList.end(); ++itt)
     {
       CAEDeviceInfo devInfo = *itt;
@@ -641,6 +642,10 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
       {
         deviceInfoList.erase(itt);
         deviceInfoList.insert(deviceInfoList.begin(), devInfo);
+
+        /* PLEX */
+        break;
+        /* END PLEX */
       }
     }
   }
