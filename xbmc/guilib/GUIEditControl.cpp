@@ -108,7 +108,7 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
       name = GetDescription();
 
     if (g_plexApplication.timelineManager)
-      g_plexApplication.timelineManager->SetTextFieldFocused(message.GetMessage() == GUI_MSG_SETFOCUS, name, GetLabel2(), m_label2.GetHidden());
+      g_plexApplication.timelineManager->SetTextFieldFocused(message.GetMessage() == GUI_MSG_SETFOCUS, name, GetLabel2(), m_inputType == INPUT_TYPE_PASSWORD);
     /* END PLEX */
   }
   else if (message.GetMessage() == GUI_MSG_SET_TEXT &&
@@ -354,7 +354,7 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
 
     /* PLEX */
     if (g_plexApplication.timelineManager)
-      g_plexApplication.timelineManager->SetTextFieldFocused(true, GetDescription().size() > 0 ? GetDescription() : "field", GetLabel2(), m_label2.GetHidden());
+      g_plexApplication.timelineManager->SetTextFieldFocused(true, GetDescription().size() > 0 ? GetDescription() : "field", GetLabel2(), m_inputType == INPUT_TYPE_PASSWORD);
     /* END PLEX */
 
     m_textChangeActions.ExecuteActions(GetID(), GetParentID());
