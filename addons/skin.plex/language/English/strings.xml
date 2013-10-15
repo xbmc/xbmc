@@ -269,4 +269,6 @@
 <!--><string id="32000">To set up your audio connection, look at the images in the list below and choose either HDMI or Optical depending on what you have. Please verify that it is the correct one or your audio might not work correctly. If in doubt, or you're unable to verify your connection, choose neither (and press "Next") and we'll default to 2 channel audio. It will work just fine, and you can always change this setting later in the Preferences.</string>-->
 <string id="32001">Plex first startup Helper</string>
 <string id="32002">Setting your audio connection</string>
+<!-- Other -->
+<string id="32100">Set Rating</string>
 </strings>
