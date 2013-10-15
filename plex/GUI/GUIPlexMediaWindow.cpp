@@ -132,6 +132,17 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     else if (m_viewControl.GetSelectedItem() >= (m_pagingOffset - (DEFAULT_PAGE_SIZE/2)))
       LoadNextPage();
   }
+  else if (action.GetID() == ACTION_TOGGLE_WATCHED)
+  {
+    if (m_viewControl.GetSelectedItem())
+    {
+      CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
+      if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
+        return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
+      if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)
+        return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
+    }
+  }
 
   return ret;
 }
