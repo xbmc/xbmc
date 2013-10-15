@@ -28,6 +28,7 @@
 #else
 #include <time.h>
 #endif
+#include "SystemClock.h"
 
 namespace XbmcThreads
 {
@@ -52,4 +53,5 @@ namespace XbmcThreads
     }
     return (unsigned int)(now_time - start_time);
   }
+  const unsigned int EndTime::InfiniteValue = std::numeric_limits<unsigned int>::max();
 }
