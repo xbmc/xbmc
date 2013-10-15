@@ -5204,9 +5204,12 @@ void CApplication::Restart(bool bSamePosition)
     m_pPlayer->SetPlayerState(state);
 }
 
-const CStdString& CApplication::CurrentFile()
+const CStdString& CApplication::CurrentFile(bool unstacked /* = false */)
 {
-  return m_itemCurrentFile->GetPath();
+  if (unstacked && m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
+    return (*m_currentStack)[m_currentStackPosition]->GetPath(); // Return the unstacked current file
+
+  return m_itemCurrentFile->GetPath(); // Return current (possibly stacked) file
 }
 
 CFileItem& CApplication::CurrentFileItem()
