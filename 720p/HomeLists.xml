@@ -99,7 +99,7 @@
 	<!-- specific variables -->
 	<!-- variables for HomeListItemFullInfo -->
 	<include name="ShowHomeFullInfo">
-		<visible>[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [ControlGroup(7002).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]]</visible>
+		<visible>[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [ControlGroup(7002).HasFocus + [Container(11001).ListItem.Type(movie) | Container(11001).ListItem.Type(episode)]]</visible>
 	</include>
 	<include name="ShowHomeClassic">
 		<visible>[ControlGroup(7001).HasFocus + ![Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [ControlGroup(7002).HasFocus + ![Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | ControlGroup(7003).HasFocus | ControlGroup(7004).HasFocus | ControlGroup(7005).HasFocus</visible>
@@ -429,7 +429,7 @@
 	</include>
 	<!-- HomeListItemFullInfo slide animation -->
 	<include name="HomeListItemFullInfoSlide">
-		<animation effect="slide" start="0" end="391" time="200" tween="out" condition="[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [ControlGroup(7002).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]]">Conditional</animation>
+		<animation effect="slide" start="0" end="391" time="200" tween="out" condition="[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [ControlGroup(7002).HasFocus + [Container(11001).ListItem.Type(movie) | Container(11001).ListItem.Type(episode)]]">Conditional</animation>
 	</include>
 	<!-- Poster Items -->
 	<include name="ListItemPoster">
