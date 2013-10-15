@@ -210,11 +210,6 @@ public:
   static bool CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2);
 
 
-  /* PLEX */
-  void SetHidden(bool hidden) { m_bHidden = hidden; }
-  bool GetHidden() const { return m_bHidden; }
-  /* END PLEX */
-  
 protected:
   color_t GetColor() const;
   
@@ -237,9 +232,4 @@ private:
   CRect          m_maxRect;      ///< maximum sizing of text
   bool           m_invalid;      ///< if true, the label needs recomputing
   COLOR          m_color;        ///< color to render text \sa SetColor, GetColor
-
-  /* PLEX */
-  bool           m_bHidden;
-  int            m_textLength;   /// Needed to correctly update the hidden string.
-  /* END PLEX */
 };
