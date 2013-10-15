@@ -333,6 +333,11 @@ CPlexDirectory::NewPlexElement(TiXmlElement *element, const CFileItem &parentIte
   newItem->SetProperty("plex", true);
   newItem->SetProperty("plexserver", baseUrl.GetHostName());
 
+
+  /* set the CanShare and CanRecommend properties */
+  newItem->SetProperty("canShare", newItem->HasProperty("url"));
+  newItem->SetProperty("canRecommend", newItem->HasProperty("url"));
+
 #if 0
   CLog::Log(LOGDEBUG, "CPlexDirectory::NewPlexElement %s (type: %s) -> isFolder(%s)",
             newItem->GetPath().c_str(),
