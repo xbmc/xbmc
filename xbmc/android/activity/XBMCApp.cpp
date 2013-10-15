@@ -500,7 +500,7 @@ int CXBMCApp::GetMaxSystemVolume()
   {
     maxVolume = GetMaxSystemVolume(env);
   }
-  android_printf("CXBMCApp::GetMaxSystemVolume: %i",maxVolume);
+  //android_printf("CXBMCApp::GetMaxSystemVolume: %i",maxVolume);
   return maxVolume;
 }
 
@@ -509,7 +509,7 @@ int CXBMCApp::GetMaxSystemVolume(JNIEnv *env)
   CJNIAudioManager audioManager(getSystemService("audio"));
   if (audioManager)
     return audioManager.getStreamMaxVolume();
-    android_printf("CXBMCApp::SetSystemVolume: Could not get Audio Manager");
+  android_printf("CXBMCApp::SetSystemVolume: Could not get Audio Manager");
   return 0;
 }
 
