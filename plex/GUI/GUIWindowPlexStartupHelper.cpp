@@ -169,7 +169,7 @@ void CGUIWindowPlexStartupHelper::SetupAudioStuff()
 int CGUIWindowPlexStartupHelper::GetNumberOfHDMIChannels()
 {
 #ifdef TARGET_DARWIN_OSX
-  AudioDeviceID id = CCoreAudioHardware::FindAudioDevice("CoreAudio:HDMI");
+  AudioDeviceID id = CCoreAudioHardware::FindAudioDevice("HDMI");
   CCoreAudioDevice device(id);
 
   int channels = device.GetTotalOutputChannels();
