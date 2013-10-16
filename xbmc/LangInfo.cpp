@@ -196,6 +196,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
 
   locale::global(current_locale);
 #endif
+  g_charsetConverter.resetSystemCharset();
   CLog::Log(LOGINFO, "global locale set to %s", strLocale.c_str());
 }
 
@@ -370,6 +371,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
     const CStdString& strName=CSettings::Get().GetString("locale.country");
     SetCurrentRegion(strName);
   }
+  g_charsetConverter.reinitCharsetsFromSettings();
 
   LoadTokens(pRootElement->FirstChild("sorttokens"),g_advancedSettings.m_vecTokens);
 
@@ -444,8 +446,6 @@ bool CLangInfo::SetLanguage(const std::string &strLanguage)
     if (!g_fontManager.GetFirstFontSetUnicode(strFontSet))
       CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
   }
-
-  g_charsetConverter.reset();
 
   if (!g_localizeStrings.Load("special://xbmc/language/", strLanguage))
     return false;
