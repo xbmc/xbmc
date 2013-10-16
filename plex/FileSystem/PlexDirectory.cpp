@@ -436,8 +436,13 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   if (boost::starts_with(m_url.GetFileName(), "video") ||
       boost::starts_with(m_url.GetFileName(), "music") ||
       boost::starts_with(m_url.GetFileName(), "photos"))
-    mediaContainer.SetPlexDirectoryType(PLEX_DIR_TYPE_CHANNEL);
-
+  {
+    if (mediaContainer.HasProperty("message"))
+      mediaContainer.SetPlexDirectoryType(PLEX_DIR_TYPE_MESSAGE);
+    else
+      mediaContainer.SetPlexDirectoryType(PLEX_DIR_TYPE_CHANNEL);
+  }
+  
   /* now we need to set content to something that XBMC expects */
   CStdString content = CPlexDirectory::GetContentFromType(mediaContainer.GetPlexDirectoryType());
   if (!content.empty())

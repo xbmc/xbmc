@@ -524,7 +524,11 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters)
 {
   bool isSecondary = false;
+  
   CURL newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, isSecondary);
+  if (newUrl.Get().empty())
+    return false;
+  
   CURL oldUrl = CURL(m_vecItems->GetPath());
 
   if (strDirectory == m_startDirectory)

@@ -808,11 +808,11 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       m_history.RemoveParentPath();
   }
 
-  /* PLEX - Default to plug-in stream for top-level */
-  if (strDirectory.size() == 0)
+  /* PLEX */
+  if (items.GetPlexDirectoryType() == PLEX_DIR_TYPE_MESSAGE)
   {
-    int viewMode = 131131;
-    items.SetProperty("viewMode", viewMode);
+    CGUIDialogOK::ShowAndGetInput(items.GetProperty("header"), "", items.GetProperty("message"), "");
+    return false;
   }
   /* END PLEX */
 
