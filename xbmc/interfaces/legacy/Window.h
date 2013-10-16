@@ -166,7 +166,7 @@ namespace XBMCAddon
 
       // This is called from the InterceptorBase destructor to prevent further
       //  use of the interceptor from the window.
-      inline void interceptorClear() { Synchronize lock(*this); window = NULL; }
+      inline void interceptorClear() { CSingleLock lock(*this); window = NULL; }
 #endif
 
       // callback takes a parameter

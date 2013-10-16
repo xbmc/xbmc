@@ -81,7 +81,7 @@ CCriticalSection CPythonInvoker::s_critical;
 static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook>& languageHook)
 {
   CStdString message;
-  XBMCAddon::AddonClass::Synchronize l(*(languageHook.get()));
+  CSingleLock l(*(languageHook.get()));
   std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
   bool firstTime = true;
   for (std::set<XBMCAddon::AddonClass*>::iterator iter = acs.begin(); iter != acs.end(); ++iter)

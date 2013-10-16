@@ -103,7 +103,7 @@ namespace XBMCAddon
 #ifdef ENABLE_TRACE_API
           CLog::Log(LOGDEBUG,"%sNEWADDON executing callback 0x%lx",_tg.getSpaces(),(long)(p->cb.get()));
 #endif
-          Synchronize lock2(*(p->cb->getObject()));
+          CSingleLock lock2(*(p->cb->getObject()));
           if (!p->cb->getObject()->isDeallocating())
           {
             try

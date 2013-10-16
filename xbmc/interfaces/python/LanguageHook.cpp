@@ -170,7 +170,7 @@ namespace XBMCAddon
     void LanguageHook::RegisterAddonClassInstance(AddonClass* obj)
     {
       TRACE;
-      Synchronize l(*this);
+      CSingleLock l(*this);
       obj->Acquire();
       currentObjects.insert(obj);
     }
@@ -178,7 +178,7 @@ namespace XBMCAddon
     void LanguageHook::UnregisterAddonClassInstance(AddonClass* obj)
     {
       TRACE;
-      Synchronize l(*this);
+      CSingleLock l(*this);
       if (currentObjects.erase(obj) > 0)
         obj->Release();
     }
@@ -186,7 +186,7 @@ namespace XBMCAddon
     bool LanguageHook::HasRegisteredAddonClassInstance(AddonClass* obj)
     {
       TRACE;
-      Synchronize l(*this);
+      CSingleLock l(*this);
       return currentObjects.find(obj) != currentObjects.end();
     }
   }
