@@ -34,6 +34,16 @@ bool CGUIDialogRating::OnAction(const CAction &action)
     SetRating(m_iRating+1);
     return true;
   }
+  else if (action.GetID() == ACTION_MOVE_UP && m_iRating < 10)
+  {
+    SetRating(m_iRating+2);
+    return true;
+  }
+  else if (action.GetID() == ACTION_MOVE_DOWN && m_iRating > 0)
+  {
+    SetRating(m_iRating-2);
+    return true;
+  }
   else if (action.GetID() == ACTION_SELECT_ITEM)
   {
     m_bConfirmed = true;
@@ -68,20 +78,31 @@ void CGUIDialogRating::SetTitle(const CStdString& strTitle)
     g_windowManager.SendThreadMessage(msg, GetID());
 }
 
-void CGUIDialogRating::SetRating(int iRating)
+void CGUIDialogRating::SetRating(float iRating)
 {
   Initialize();
+  
   CGUIImage* image = (CGUIImage*)GetControl(10);
   CStdString fileName;
-  fileName.Format("rating%d.png", iRating);
+  fileName.Format("rating%d.png", (int)(iRating + 0.5f));
   image->SetFileName(fileName);
-  m_iRating = iRating;
+  m_iRating = (int)iRating;
   SetInvalid();
   
   if (m_fileItem)
   {
-    g_plexApplication.mediaServerClient->SetItemRating(m_fileItem, (float)iRating);
+    g_plexApplication.mediaServerClient->SetItemRating(m_fileItem, iRating);
     m_fileItem->SetProperty("userRating", iRating);
+    
+    if (iRating == 0)
+    {
+      /* If we set it to 0 we need to switch to IMDb ratings instead */
+      m_fileItem->SetProperty("hasUserRating", "");
+      iRating = m_fileItem->GetProperty("rating").asDouble();
+    }
+    else
+      m_fileItem->SetProperty("hasUserRating", "yes");
+    
     if (m_fileItem->HasVideoInfoTag())
       m_fileItem->GetVideoInfoTag()->m_fRating = iRating;
   }
@@ -111,8 +132,12 @@ bool CGUIDialogRating::OnMessage(CGUIMessage &msg)
     
     if (item)
     {
-      SetHeading(item->HasProperty("userRating") ? 40208 : 40207);
-      if (item && item->HasVideoInfoTag())
+      bool hasUserRating = item->HasProperty("userRating") && item->GetProperty("userRating").asDouble() > 0.0;
+      SetHeading(hasUserRating ? 40208 : 40207);
+      
+      if (item->HasProperty("userRating"))
+        SetRating(item->GetProperty("userRating").asDouble());
+      else if (item && item->HasVideoInfoTag())
       {
         SetRating(item->GetVideoInfoTag()->m_fRating);
         SetTitle(item->GetVideoInfoTag()->m_strTitle);
