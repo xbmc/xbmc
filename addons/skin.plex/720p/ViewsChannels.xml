@@ -236,6 +236,50 @@
 		</control>
 	</include>
 	<!-- inside channels -->
+	<!-- Video Channel (MyVideoNav.xml) -->
+	<include name="ChannelVideo">
+		<control type="group">
+			<visible>Container.content(channel)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<include>ChannelPlotBG</include>
+			<include>ChannelPlot</include>
+			<include>ChannelIcon</include>
+			<!-- main list -->
+			<control type="group" id="777">
+				<control type="panel" id="71">
+					<viewtype label="ChannelVideo">panel</viewtype>
+					<visible>Container.content(channel)</visible>
+					<onup>72</onup>
+					<ondown>72</ondown>
+					<onright>72</onright>
+					<onleft>9100</onleft>
+					<orientation>vertical</orientation>
+					<posx>369</posx>
+					<posy>50</posy>
+					<width>1000</width>
+					<height>665</height>
+					<itemlayout width="150" height="165">
+						<include>PhotoThumbCard</include>
+						<include>PhotoThumb</include>
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>white</textcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout width="150" height="160">
+						<include>PhotoThumbCard</include>
+						<include>PhotoThumb</include>
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>SelectedBorder</include>
+					</focusedlayout>
+				</control>
+			</control>
+		</control>
+	</include>
 	<!-- Photo Channel (MyPics.xml) -->
 	<include name="ChannelPhoto">
 		<control type="group">
