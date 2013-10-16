@@ -1101,10 +1101,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   //m_history.DumpPathHistory();
 
   /* PLEX */
-  // Make sure root directories end up with a content type of "plugins".
-  if (m_vecItems->IsVirtualDirectoryRoot())
-    m_vecItems->SetContent("plugins");
-
   // Last, but not least, make sure the filter list is bound.
   CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(CONTENT_LIST_FILTERS);
   if (control && CPlexDirectory::GetFilterList()->Size() > 0)
@@ -1962,12 +1958,6 @@ const CGUIViewState *CGUIMediaWindow::GetViewState() const
 const CFileItemList& CGUIMediaWindow::CurrentDirectory() const
 {
   CFileItemPtr item = m_vecItems->Get(0);
-  /* PLEX */
-  if (m_vecItems->GetContent().IsEmpty())
-  {
-    m_vecItems->SetContent("plugins");
-  }
-  /* END PLEX */
   return *m_vecItems;
 }
 

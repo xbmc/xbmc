@@ -431,6 +431,12 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
     if (firstItem && firstItem->HasProperty("parentKey"))
       AddAugmentation(CURL(firstItem->GetProperty("parentKey").asString()));
   }
+  
+  /* we need to massage channels a tiny wee bit */
+  if (boost::starts_with(m_url.GetFileName(), "video") ||
+      boost::starts_with(m_url.GetFileName(), "music") ||
+      boost::starts_with(m_url.GetFileName(), "photos"))
+    mediaContainer.SetPlexDirectoryType(PLEX_DIR_TYPE_CHANNEL);
 
   /* now we need to set content to something that XBMC expects */
   CStdString content = CPlexDirectory::GetContentFromType(mediaContainer.GetPlexDirectoryType());
@@ -747,6 +753,7 @@ bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
     items.Add(channel);
   }
   
+  items.SetContent("channels");
   items.SetPath("plexserver://channels");
   
   return true;

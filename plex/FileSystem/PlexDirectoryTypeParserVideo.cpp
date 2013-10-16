@@ -55,7 +55,6 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   videoTag.m_strFileNameAndPath = item.GetPath();
   videoTag.m_strTitle = item.GetProperty("title").asString();
   videoTag.m_strOriginalTitle = item.GetProperty("originalTitle").asString();
-  videoTag.m_strPlot = videoTag.m_strPlotOutline = item.GetProperty("summary").asString();
   videoTag.m_iYear = item.GetProperty("year").asInteger();
   videoTag.m_strPath = item.GetPath();
   videoTag.m_duration = item.GetProperty("duration").asInteger() > 0 ? item.GetProperty("duration").asInteger() / 1000 : 0;
@@ -67,6 +66,11 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   }
   else
     videoTag.m_fRating = item.GetProperty("rating").asDouble();
+  
+  if (item.HasProperty("summary") && !item.GetProperty("summary").empty())
+    videoTag.m_strPlot = videoTag.m_strPlotOutline = item.GetProperty("summary").asString();
+  else if (item.HasProperty("parentSummary"))
+    videoTag.m_strPlot = videoTag.m_strPlotOutline = item.GetProperty("parentSummary").asString();
   
   if (item.HasProperty("viewCount"))
     videoTag.m_playCount = item.GetProperty("viewCount").asInteger();

@@ -2877,7 +2877,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           CStdString content;
           CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
-#ifndef __PLEX__
           if (window)
           {
             if (window->GetID() == WINDOW_DIALOG_MUSIC_INFO)
@@ -2892,36 +2891,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
               content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
           }
           bReturn = m_stringParameters[info.GetData2()].Equals(content);
-#else // PLEX version of this also track plugins
-          bool insidePlugins = false;
-
-          if (window)
-          {
-            if (window->GetID() == WINDOW_DIALOG_MUSIC_INFO)
-            {
-              content = ((CGUIDialogMusicInfo *)window)->CurrentDirectory().GetContent();
-              insidePlugins = ((CGUIDialogMusicInfo *)window)->CurrentDirectory().GetProperty("insidePlugins").asBoolean();
-            }
-            else if (window->GetID() == WINDOW_DIALOG_VIDEO_INFO)
-            {
-              content = ((CGUIDialogVideoInfo *)window)->CurrentDirectory().GetContent();
-              insidePlugins = ((CGUIDialogVideoInfo *)window)->CurrentDirectory().GetProperty("insidePlugins").asBoolean();
-            }
-          }
-          if (content.IsEmpty())
-          {
-            window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-            if (window)
-            {
-              content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
-              insidePlugins = ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("insidePlugins").asBoolean();
-            }
-          }
-          if (insidePlugins == true && content == "files" && m_stringParameters[info.GetData1()].Equals("plugincontent"))
-            bReturn = true;
-          else
-            bReturn = m_stringParameters[info.GetData2()].Equals(content);
-#endif
         }
         break;
       case CONTAINER_ROW:
