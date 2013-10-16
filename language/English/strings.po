@@ -478,6 +478,7 @@ msgid "Delete these files? - Deleting files cannot be undone!"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#126"
 msgid "Status"
 msgstr ""
@@ -511,6 +512,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#132"
 msgid "Albums"
 msgstr ""
@@ -519,6 +521,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#133"
 msgid "Artists"
 msgstr ""
@@ -707,10 +710,12 @@ msgstr ""
 
 #empty string with id 174
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#175"
 msgid "Moods"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#176"
 msgid "Styles"
 msgstr ""
@@ -723,6 +728,7 @@ msgid "Song"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#180"
 msgid "Duration"
 msgstr ""
@@ -737,6 +743,7 @@ msgid "Tracks"
 msgstr ""
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#183"
 msgid "Review"
 msgstr ""
@@ -813,16 +820,19 @@ msgstr ""
 
 #empty strings from id 200 to 201
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#202"
 msgid "Tagline"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#203"
 msgid "Plot outline"
 msgstr ""
 
 #empty string with id 204
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#205"
 msgid "Votes"
 msgstr ""
@@ -831,6 +841,7 @@ msgctxt "#206"
 msgid "Cast"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#207"
 msgid "Plot"
 msgstr ""
@@ -856,6 +867,7 @@ msgid "Calibrate user interface..."
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#214"
 msgid "Video calibration..."
 msgstr ""
@@ -864,10 +876,12 @@ msgctxt "#215"
 msgid "Soften"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#216"
 msgid "Zoom amount"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#217"
 msgid "Pixel ratio"
 msgstr ""
@@ -911,6 +925,7 @@ msgctxt "#224"
 msgid "Speed"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#225"
 msgid "Vertical Shift"
 msgstr ""
@@ -940,6 +955,7 @@ msgstr ""
 #: system/peripherals.xml
 #: xbmc/addons/guiviewstateaddonbrowser.cpp
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 #: system/settings/settings.xml
 msgctxt "#231"
 msgid "None"
@@ -1410,6 +1426,7 @@ msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#344"
 msgid "Actors"
 msgstr ""
@@ -1942,14 +1959,17 @@ msgctxt "#463"
 msgid "Backlight"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#464"
 msgid "Brightness"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#465"
 msgid "Contrast"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#466"
 msgid "Gamma"
 msgstr ""
@@ -2131,6 +2151,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#515"
 msgid "Genre"
 msgstr ""
@@ -2291,6 +2312,7 @@ msgid "Size"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#554"
 msgid "Track"
 msgstr ""
@@ -2300,23 +2322,27 @@ msgid "Time"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#556"
 msgid "Title"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#557"
 msgid "Artist"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#558"
 msgid "Album"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#559"
 msgid "Playlist"
 msgstr ""
@@ -2325,6 +2351,7 @@ msgctxt "#560"
 msgid "ID"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#561"
 msgid "File"
 msgstr ""
@@ -2334,16 +2361,19 @@ msgstr ""
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#562"
 msgid "Year"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#563"
 msgid "Rating"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#564"
 msgid "Type"
 msgstr ""
@@ -2352,47 +2382,57 @@ msgctxt "#565"
 msgid "Usage"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#566"
 msgid "Album artist"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#567"
 msgid "Play count"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#568"
 msgid "Last played"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#569"
 msgid "Comment"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#570"
 msgid "Date added"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#571"
 msgid "Default"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#572"
 msgid "Studio"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#573"
 msgid "Path"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#574"
 msgid "Country"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#575"
 msgid "In progress"
 msgstr ""
@@ -2447,6 +2487,7 @@ msgctxt "#589"
 msgid "Party mode"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#590"
 msgid "Random"
 msgstr ""
@@ -2584,33 +2625,40 @@ msgid "View mode"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#630"
 msgid "Normal"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#631"
 msgid "Zoom"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#632"
 msgid "Stretch 4:3"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#633"
 msgid "Wide Zoom"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#634"
 msgid "Stretch 16:9"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#635"
 msgid "Original Size"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#636"
 msgid "Custom"
 msgstr ""
@@ -2684,6 +2732,7 @@ msgid "Browse for library"
 msgstr ""
 
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#652"
 msgid "Years"
 msgstr ""
@@ -2713,6 +2762,7 @@ msgctxt "#658"
 msgid "Song information"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#659"
 msgid "Non-linear stretch"
 msgstr ""
@@ -2947,6 +2997,7 @@ msgid "Mirror image"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#750"
 msgid "Are you sure?"
 msgstr ""
@@ -4385,70 +4436,99 @@ msgctxt "#12009"
 msgid "Rebuild index..."
 msgstr ""
 
+#: unknown
 msgctxt "#12010"
 msgid "Return to music window"
 msgstr ""
 
+#: unknown
 msgctxt "#12011"
 msgid "Return to videos window"
 msgstr ""
 
 #empty strings from id 12012 to 12020
 
+#: xbmc\Autorun.cpp
+#: xbmc\pvr\windows\GUIWindowPVRRecordings.cpp
+#: xbmc\video\windows\GUIWindowVideoBase.cpp
 msgctxt "#12021"
 msgid "Start from beginning"
 msgstr ""
 
+#: xbmc\pvr\windows\GUIWindowPVRRecordings.cpp
+#: xbmc\video\windows\GUIWindowVideoBase.cpp
 msgctxt "#12022"
 msgid "Resume from %s"
 msgstr ""
 
 #empty strings from id 12023 to 12309
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#12310"
 msgid "0"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#12311"
 msgid "1"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#12312"
 msgid "2"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#12313"
 msgid "3"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#12314"
 msgid "4"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#12315"
 msgid "5"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#12316"
 msgid "6"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#12317"
 msgid "7"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#12318"
 msgid "8"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#12319"
 msgid "9"
 msgstr ""
 
+#: unknown
 msgctxt "#12320"
 msgid "c"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#12321"
 msgid "Ok"
 msgstr ""
@@ -4460,6 +4540,7 @@ msgstr ""
 
 #empty strings from id 12323 to 12324
 
+#: xbmc\GUIPassword.cpp
 msgctxt "#12325"
 msgid "Locked! Enter code..."
 msgstr ""
@@ -4469,14 +4550,17 @@ msgctxt "#12326"
 msgid "Enter password"
 msgstr ""
 
+#: unknown
 msgctxt "#12327"
 msgid "Enter master code"
 msgstr ""
 
+#: unknown
 msgctxt "#12328"
 msgid "Enter unlock code"
 msgstr ""
 
+#: unknown
 msgctxt "#12329"
 msgid "or press C to cancel"
 msgstr ""
@@ -4513,14 +4597,17 @@ msgstr ""
 
 #empty string with id 12336
 
+#: xbmc\profiles\dialogs\GUIDialogLockSettings.cpp
 msgctxt "#12337"
 msgid "Numeric password"
 msgstr ""
 
+#: xbmc\profiles\dialogs\GUIDialogLockSettings.cpp
 msgctxt "#12338"
 msgid "Gamepad button combo"
 msgstr ""
 
+#: xbmc\profiles\dialogs\GUIDialogLockSettings.cpp
 msgctxt "#12339"
 msgid "Full-text password"
 msgstr ""
@@ -4553,18 +4640,22 @@ msgctxt "#12344"
 msgid "Passwords entered did not match."
 msgstr ""
 
+#: xbmc\GUIPassword.cpp
 msgctxt "#12345"
 msgid "Access denied"
 msgstr ""
 
+#: xbmc\GUIPassword.cpp
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr ""
 
+#: unknown
 msgctxt "#12347"
-msgid "The system will now shut off."
+msgid "The system will now power down."
 msgstr ""
 
+#: xbmc\GUIPassword.cpp
 msgctxt "#12348"
 msgid "Item locked"
 msgstr ""
@@ -4620,38 +4711,48 @@ msgstr ""
 
 #empty string with id 12359
 
+#: xbmc\GUIPassword.cpp
+#: xbmc\profiles\dialogs\GUIDialogProfileSettings.cpp
 msgctxt "#12360"
 msgid "Master lock"
 msgstr ""
 
 #empty string with id 12361
 
+#: unknown
 msgctxt "#12362"
 msgid "Shutdown system if Master Lock retries exceeded"
 msgstr ""
 
 #empty strings from id 12363 to 12366
 
+#: xbmc\GUIPassword.cpp
 msgctxt "#12367"
 msgid "Master code is not valid"
 msgstr ""
 
+#: xbmc\GUIPassword.cpp
 msgctxt "#12368"
 msgid "Please enter a valid master code"
 msgstr ""
 
 #empty strings from id 12369 to 12372
 
+#: unknown
 msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr ""
 
 #empty strings from id 12374 to 12375
 
+#: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
+#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
 msgctxt "#12376"
 msgid "Set as default for all videos"
 msgstr ""
 
+#: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
+#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
 msgstr ""
@@ -4668,18 +4769,22 @@ msgstr ""
 
 #empty strings from id 12380 to 12382
 
+#: unknown
 msgctxt "#12383"
 msgid "12 hour clock"
 msgstr ""
 
+#: unknown
 msgctxt "#12384"
 msgid "24 hour clock"
 msgstr ""
 
+#: unknown
 msgctxt "#12385"
 msgid "Day/Month"
 msgstr ""
 
+#: unknown
 msgctxt "#12386"
 msgid "Month/Day"
 msgstr ""
@@ -4691,14 +4796,20 @@ msgctxt "#12390"
 msgid "System uptime"
 msgstr ""
 
+#: skin.confluence
+#: xbmc\utils\SystemInfo.cpp
 msgctxt "#12391"
 msgid "Minutes"
 msgstr ""
 
+#: skin.confluence
+#: xbmc\utils\SystemInfo.cpp
 msgctxt "#12392"
 msgid "Hours"
 msgstr ""
 
+#: skin.confluence
+#: xbmc\utils\SystemInfo.cpp
 msgctxt "#12393"
 msgid "Days"
 msgstr ""
@@ -4740,18 +4851,22 @@ msgctxt "#13000"
 msgid "System"
 msgstr ""
 
+#: unknown
 msgctxt "#13001"
 msgid "Immediate HD spindown"
 msgstr ""
 
+#: unknown
 msgctxt "#13002"
 msgid "Video only"
 msgstr ""
 
+#: unknown
 msgctxt "#13003"
 msgid "- Delay"
 msgstr ""
 
+#: unknown
 msgctxt "#13004"
 msgid "- Minimum file duration"
 msgstr ""
@@ -4785,10 +4900,14 @@ msgctxt "#13011"
 msgid "Suspend"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#13012"
 msgid "Exit"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#13013"
 msgid "Reboot"
 msgstr ""
@@ -4798,44 +4917,58 @@ msgctxt "#13014"
 msgid "Minimise"
 msgstr ""
 
+#: unknown
 msgctxt "#13015"
 msgid "Power button action"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#13016"
 msgid "Power off System"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#13017"
 msgid "Inhibit idle shutdown"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#13018"
 msgid "Allow idle shutdown"
 msgstr ""
 
 #empty string with id 13019
 
+#: unknown
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
 msgstr ""
 
+#: xbmc\linux\HALManager.cpp
+#: xbmc\storage\MediaManager.cpp
 msgctxt "#13021"
 msgid "Mounted removable harddrive"
 msgstr ""
 
+#: xbmc\linux\HALManager.cpp
+#: xbmc\storage\MediaManager.cpp
 msgctxt "#13022"
 msgid "Unsafe device removal"
 msgstr ""
 
+#: xbmc\linux\HALManager.cpp
+#: xbmc\storage\MediaManager.cpp
 msgctxt "#13023"
 msgid "Successfully removed device"
 msgstr ""
 
+#: xbmc\linux\HALManager.cpp
 msgctxt "#13024"
 msgid "Joystick plugged"
 msgstr ""
 
+#: xbmc\linux\HALManager.cpp
 msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr ""
@@ -4897,12 +5030,14 @@ msgstr ""
 
 #empty strings from id 13037 to 13049
 
+#: xbmc\powermanagement\PowerManager.cpp
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr ""
 
 #empty strings from id 13051 to 13099
 
+#: xbmc\interfaces\legacy\Window.cpp
 msgctxt "#13100"
 msgid "Flicker filter"
 msgstr ""
@@ -4934,26 +5069,32 @@ msgctxt "#13108"
 msgid "Always enabled"
 msgstr ""
 
+#: unknown
 msgctxt "#13109"
 msgid "Test & apply resolution"
 msgstr ""
 
+#: xbmc\settings\DisplaySettings.cpp
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr ""
 
+#: xbmc\settings\DisplaySettings.cpp
 msgctxt "#13111"
 msgid "Would you like to keep this resolution?"
 msgstr ""
 
+#: unknown
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr ""
 
+#: unknown
 msgctxt "#13113"
 msgid "Disabled"
 msgstr ""
 
+#: unknown
 msgctxt "#13114"
 msgid "Enabled for SD content"
 msgstr ""
@@ -4974,14 +5115,17 @@ msgctxt "#13118"
 msgid "Lanczos"
 msgstr ""
 
+#: unknown
 msgctxt "#13119"
 msgid "Sinc"
 msgstr ""
 
+#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
 msgctxt "#13120"
 msgid "VDPAU"
 msgstr ""
 
+#: system/settings/settings.xml
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr ""
@@ -4998,42 +5142,51 @@ msgctxt "#13130"
 msgid "Blank other displays"
 msgstr ""
 
+#: unknown
 msgctxt "#13131"
 msgid "Disabled"
 msgstr ""
 
+#: unknown
 msgctxt "#13132"
 msgid "Blank displays"
 msgstr ""
 
 #empty strings from id 13133 to 13139
 
+#: xbmc\network\NetworkServices.cpp
 msgctxt "#13140"
 msgid "Active connections detected!"
 msgstr ""
 
+#: xbmc\network\NetworkServices.cpp
 msgctxt "#13141"
 msgid "If you proceed, you might not be able to control XBMC"
 msgstr ""
 
+#: xbmc\network\NetworkServices.cpp
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
 msgstr ""
 
 #empty string with id 13143
 
+#: xbmc\osx\XBMCHelper.cpp
 msgctxt "#13144"
 msgid "Change Apple Remote mode?"
 msgstr ""
 
+#: xbmc\osx\XBMCHelper.cpp
 msgctxt "#13145"
 msgid "If you are currently using the Apple Remote to control"
 msgstr ""
 
+#: xbmc\osx\XBMCHelper.cpp
 msgctxt "#13146"
 msgid "XBMC, changing this setting might affect your ability"
 msgstr ""
 
+#: xbmc\osx\XBMCHelper.cpp
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
 msgstr ""
@@ -5055,44 +5208,55 @@ msgctxt "#13161"
 msgid "Primary DNS"
 msgstr ""
 
+#: unknown
 msgctxt "#13162"
 msgid "Initialise failed"
 msgstr ""
 
 #empty strings from id 13163 to 13169
 
+#: skin.confluence
 msgctxt "#13170"
 msgid "Never"
 msgstr ""
 
+#: unknown
 msgctxt "#13171"
 msgid "Immediately"
 msgstr ""
 
+#: unknown
 msgctxt "#13172"
 msgid "After %i secs"
 msgstr ""
 
+#: unknown
 msgctxt "#13173"
 msgid "HDD install date:"
 msgstr ""
 
+#: unknown
 msgctxt "#13174"
 msgid "HDD power cycle count:"
 msgstr ""
 
 #empty strings from id 13175 to 13199
 
+#: skin.confluence
+#: skin.touched
+#: xbmc\profiles\ProfilesManager.cpp
 msgctxt "#13200"
 msgid "Profiles"
 msgstr ""
 
+#: xbmc\profiles\ProfilesManager.cpp
 msgctxt "#13201"
 msgid "Delete profile '%s'?"
 msgstr ""
 
 #empty strings from id 13202 to 13203
 
+#: unknown
 msgctxt "#13204"
 msgid "Last loaded profile:"
 msgstr ""
@@ -5659,6 +5823,7 @@ msgctxt "#13408"
 msgid "(IMDb user rating)"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#13409"
 msgid "Top 250"
 msgstr ""
@@ -5691,19 +5856,23 @@ msgid "Render method"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13416"
 msgid "Auto detect"
 msgstr ""
 
+#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13417"
 msgid "Basic shaders (ARB)"
 msgstr ""
 
+#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13418"
 msgid "Advanced shaders (GLSL)"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13419"
 msgid "Software"
 msgstr ""
@@ -5761,6 +5930,7 @@ msgid "Allow hardware acceleration (OpenMax)"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13431"
 msgid "Pixel Shaders"
 msgstr ""
@@ -6618,22 +6788,27 @@ msgid "Enter search string"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#16018"
 msgid "None"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16019"
 msgid "Auto select"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16020"
 msgid "De-interlace"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16021"
 msgid "Bob"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr ""
@@ -6690,6 +6865,7 @@ msgctxt "#16035"
 msgid "Party mode playlist"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16036"
 msgid "De-interlace (Half)"
 msgstr ""
@@ -6698,18 +6874,22 @@ msgctxt "#16037"
 msgid "Deinterlace video"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16038"
 msgid "Deinterlace method"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16039"
 msgid "Off"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16040"
 msgid "Auto"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16041"
 msgid "On"
 msgstr ""
@@ -6787,112 +6967,139 @@ msgstr ""
 
 #empty strings from id 16207 to 16299
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16300"
 msgid "Video scaling method"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16301"
 msgid "Nearest neighbour"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16302"
 msgid "Bilinear"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16303"
 msgid "Bicubic"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16304"
 msgid "Lanczos2"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16305"
 msgid "Lanczos3"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16306"
 msgid "Sinc8"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16307"
 msgid "Bicubic (software)"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16308"
 msgid "Lanczos (software)"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16309"
 msgid "Sinc (software)"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16310"
 msgid "Temporal"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16311"
 msgid "Temporal/Spatial"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16312"
 msgid "(VDPAU)Noise Reduction"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16313"
 msgid "(VDPAU)Sharpness"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16315"
 msgid "Lanczos3 optimised"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16316"
 msgid "Auto"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16317"
 msgid "Temporal (Half)"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16318"
 msgid "Temporal/Spatial (Half)"
 msgstr ""
 
+#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
 msgctxt "#16319"
 msgid "DXVA"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16320"
 msgid "DXVA Bob"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16321"
 msgid "DXVA Best"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16322"
 msgid "Spline36"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16323"
 msgid "Spline36 optimised"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr ""
 
 #empty strings from id 16326 to 16399
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr ""
@@ -8820,6 +9027,7 @@ msgctxt "#20073"
 msgid "and that the new folder name is valid"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20074"
 msgid "MPAA rating"
 msgstr ""
@@ -9022,6 +9230,7 @@ msgctxt "#20121"
 msgid "Party on!"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20122"
 msgid "True"
 msgstr ""
@@ -9049,14 +9258,17 @@ msgctxt "#20128"
 msgid "Go to root"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#20129"
 msgid "Weave"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#20130"
 msgid "Weave (inverted)"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#20131"
 msgid "Blend"
 msgstr ""
@@ -9575,6 +9787,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20337"
 msgid "Actor"
 msgstr ""
@@ -9585,6 +9798,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20339"
 msgid "Director"
 msgstr ""
@@ -9629,6 +9843,7 @@ msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20348"
 msgid "Directors"
 msgstr ""
@@ -9674,6 +9889,7 @@ msgctxt "#20358"
 msgid "Season %i"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20359"
 msgid "Episode"
 msgstr ""
@@ -9681,6 +9897,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20360"
 msgid "Episodes"
 msgstr ""
@@ -9697,6 +9914,7 @@ msgctxt "#20363"
 msgid "Remove TV show from library"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20364"
 msgid "TV show"
 msgstr ""
@@ -9736,6 +9954,7 @@ msgctxt "#20372"
 msgid "Season image"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20373"
 msgid "Season"
 msgstr ""
@@ -9803,6 +10022,7 @@ msgstr ""
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20388"
 msgid "Studios"
 msgstr ""
@@ -9925,11 +10145,13 @@ msgid "Scanning for new content"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20416"
 msgid "First aired"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20417"
 msgid "Writer"
 msgstr ""
@@ -9959,10 +10181,12 @@ msgctxt "#20422"
 msgid "Always"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20423"
 msgid "Has trailer"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20424"
 msgid "False"
 msgstr ""
@@ -10082,6 +10306,7 @@ msgid "Would you like to continue scanning?"
 msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20451"
 msgid "Countries"
 msgstr ""
@@ -10107,6 +10332,7 @@ msgctxt "#20456"
 msgid "Flatten library hierarchy"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20457"
 msgid "Movie set"
 msgstr ""
@@ -10121,6 +10347,7 @@ msgstr ""
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20459"
 msgid "Tags"
 msgstr ""
@@ -10382,50 +10609,62 @@ msgctxt "#21399"
 msgid "Use tween animations"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21400"
 msgid "contains"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21401"
 msgid "does not contain"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21402"
 msgid "is"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21403"
 msgid "is not"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21404"
 msgid "starts with"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21405"
 msgid "ends with"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21406"
 msgid "greater than"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21407"
 msgid "less than"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21408"
 msgid "after"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21409"
 msgid "before"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21410"
 msgid "in the last"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21411"
 msgid "not in the last"
 msgstr ""
@@ -10562,26 +10801,32 @@ msgctxt "#21442"
 msgid "Episode title"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21443"
 msgid "Video resolution"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21444"
 msgid "Audio channels"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21445"
 msgid "Video codec"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21446"
 msgid "Audio codec"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21447"
 msgid "Audio language"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21448"
 msgid "Subtitle language"
 msgstr ""
@@ -10618,10 +10863,12 @@ msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21456"
 msgid "External storage"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21457"
 msgid "Watched episode count"
 msgstr ""
@@ -10946,6 +11193,7 @@ msgid "Downloading artist information"
 msgstr ""
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21887"
 msgid "Biography"
 msgstr ""
@@ -10968,26 +11216,32 @@ msgctxt "#21891"
 msgid "Artist information"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21892"
 msgid "Instruments"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21893"
 msgid "Born"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21894"
 msgid "Formed"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21895"
 msgid "Themes"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21896"
 msgid "Disbanded"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21897"
 msgid "Died"
 msgstr ""
@@ -10996,6 +11250,7 @@ msgctxt "#21898"
 msgid "Years active"
 msgstr ""
 
+#: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21899"
 msgid "Label"
 msgstr ""
@@ -11471,16 +11726,19 @@ msgctxt "#24046"
 msgid "%s is used by the following installed add-on(s)"
 msgstr ""
 
+#: xbmc\addons\GUIDialogAddonInfo.cpp
 msgctxt "#24047"
 msgid "This add-on cannot be uninstalled"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#24048"
 msgid "Rollback"
 msgstr ""
 
 #empty string with id 24049
 
+#: unknown
 msgctxt "#24050"
 msgid "Available Add-ons"
 msgstr ""
@@ -11490,10 +11748,13 @@ msgctxt "#24051"
 msgid "Version:"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#24052"
 msgid "Disclaimer"
 msgstr ""
 
+#: unknown
 msgctxt "#24053"
 msgid "License:"
 msgstr ""
@@ -11685,6 +11946,7 @@ msgctxt "#25005"
 msgid "Title: %d"
 msgstr ""
 
+#: xbmc\video\windows\GUIWindowVideoBase.cpp
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr ""
@@ -11692,14 +11954,19 @@ msgstr ""
 #empty strings from id 25007 to 29799
 #strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#29800"
 msgid "Library Mode"
 msgstr ""
 
+#: unused
 msgctxt "#29801"
 msgid "QWERTY keyboard"
 msgstr ""
 
+#: skin.confluence
+#: skin.touched
 msgctxt "#29802"
 msgid "Passthrough Audio in use"
 msgstr ""
@@ -11710,6 +11977,7 @@ msgstr ""
 #strings 32000 thru 32999 reserved for scripts
 #strings 33000 thru 33999 reserved for common strings used in add-ons
 
+#: unknown
 msgctxt "#33001"
 msgid "Trailer quality"
 msgstr ""
@@ -14234,11 +14502,13 @@ msgid "None"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#36503"
 msgid "Over/Under"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#36504"
 msgid "Side by side"
 msgstr ""
@@ -14336,11 +14606,13 @@ msgstr ""
 #empty strings from id 36533 to 36534
 
 #: guilib/StereoscopicsManager.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr ""
 
 #: guilib/StereoscopicsManager.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr ""
