@@ -10,6 +10,7 @@
 		<!-- Preplay screens (ViewsPreplay.xml) -->
 		<include>PreplayMovie</include>
 		<include>PreplayEpisode</include>
+		<include>PreplayClip</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenuPreplay</include>
 		<include>TopBar</include>

@@ -305,7 +305,9 @@
 	<!-- Preplay menu -->
 	<include name="LeftSideMenuPreplay">
 		<control type="group">
-			<visible>Container.Content(movie) | Container.Content(episode)</visible>
+			<!--><visible>Container.Content(movie) | Container.Content(episode) | Container.Content(clip)</visible>-->
+			<!-- a hack until Container.Content is defined for Queue content preplay screen -->
+			<visible>!Container.Content(seasons) + !Container.Content(episodes)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
