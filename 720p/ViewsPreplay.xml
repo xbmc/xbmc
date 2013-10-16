@@ -853,7 +853,7 @@
 					<height>20</height>
 					<texture>$INFO[ListItem.StarRating]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<visible>IsEmpty(Property(hasUserRating))</visible>
+					<visible>IsEmpty(ListItem.Property(hasUserRating))</visible>
 				</control>
 				<control type="image">
 					<posy>94</posy>
@@ -863,7 +863,7 @@
 					<texture>$INFO[ListItem.StarRating]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>orange</colordiffuse>
-					<visible>!IsEmpty(Property(hasUserRating))</visible>
+					<visible>!IsEmpty(ListItem.Property(hasUserRating))</visible>
 				</control>
 			</control>
 			<!-- Director -->
