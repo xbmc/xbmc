@@ -80,7 +80,7 @@
 				<height>570</height>
 				<onup>300</onup>
 				<ondown>300</ondown>
-				<onleft>-</onleft>
+				<onleft>1300</onleft>
 				<onright>5000</onright>
 				<focusposition>6</focusposition>
 				<scrolltime>200</scrolltime>

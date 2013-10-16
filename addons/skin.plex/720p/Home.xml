@@ -9,7 +9,7 @@
 		<include>HomeLists</include>
 		<include>Clock</include>
 		<!-- server title -->
-		<control type="label">
+		<!--><control type="label">
 			<posx>20r</posx>
 			<posy>0</posy>
 			<width>800</width>
@@ -21,8 +21,9 @@
 			<animation effect="fade" end="70" time="0" condition="true">Conditional</animation>
 			<textcolor>50FFFFFF</textcolor>
 			<wrapmultiline>false</wrapmultiline>
-		</control>
+		</control>-->
 		<include>NowPlayingOverlay</include>
+		<include>LeftSideMenuHome</include>
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>
