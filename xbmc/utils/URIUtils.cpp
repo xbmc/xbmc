@@ -1059,6 +1059,39 @@ std::string URIUtils::FixSlashesAndDups(const std::string& path, const char slas
 }
 
 
+std::string URIUtils::CanonicalizePath(const std::string& path, const char slashCharacter /*= '\\'*/)
+{
+  assert(slashCharacter == '\\' || slashCharacter == '/');
+
+  if (path.empty())
+    return path;
+
+  const std::string slashStr(1, slashCharacter);
+  vector<std::string> pathVec, resultVec;
+  StringUtils::Tokenize(path, pathVec, slashStr);
+
+  for (vector<std::string>::const_iterator it = pathVec.begin(); it != pathVec.end(); ++it)
+  {
+    if (*it == ".")
+    { /* skip - do nothing */ }
+    else if (*it == ".." && !resultVec.empty() && resultVec.back() != "..")
+      resultVec.pop_back();
+    else
+      resultVec.push_back(*it);
+  }
+
+  std::string result;
+  if (path[0] == slashCharacter)
+    result.push_back(slashCharacter); // add slash at the begin
+
+  result += StringUtils::Join(resultVec, slashStr);
+
+  if (path[path.length() - 1] == slashCharacter  && !result.empty() && result[result.length() - 1] != slashCharacter)
+    result.push_back(slashCharacter); // add slash at the end if result isn't empty and result isn't "/"
+
+  return result;
+}
+
 CStdString URIUtils::AddFileToFolder(const CStdString& strFolder, 
                                 const CStdString& strFile)
 {
