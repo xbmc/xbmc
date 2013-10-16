@@ -37,44 +37,50 @@ namespace PCRE {
 #include <pcre.h>
 }
 
-// maximum of 20 backreferences
-// OVEVCOUNT must be a multiple of 3
-const int OVECCOUNT=(20+1)*3;
-
 class CRegExp
 {
 public:
+  static const int m_MaxNumOfBackrefrences = 20;
   CRegExp(bool caseless = false);
   CRegExp(const CRegExp& re);
   ~CRegExp();
 
-  CRegExp* RegComp(const char *re);
-  CRegExp* RegComp(const std::string& re) { return RegComp(re.c_str()); }
-  int RegFind(const char *str, int startoffset = 0);
-  int RegFind(const std::string& str, int startoffset = 0) { return RegFind(str.c_str(), startoffset); }
-  std::string GetReplaceString( const char* sReplaceExp );
-  int GetFindLen()
+  bool RegComp(const char *re);
+  bool RegComp(const std::string& re) { return RegComp(re.c_str()); }
+  int RegFind(const char* str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
+  int RegFind(const std::string& str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1)
+  { return PrivateRegFind(str.length(), str.c_str(), startoffset, maxNumberOfCharsToTest); }
+  std::string GetReplaceString(const std::string& sReplaceExp) const;
+  int GetFindLen() const
   {
     if (!m_re || !m_bMatched)
       return 0;
 
     return (m_iOvector[1] - m_iOvector[0]);
   };
-  int GetSubCount() { return m_iMatchCount - 1; } // PCRE returns the number of sub-patterns + 1
-  int GetSubStart(int iSub) { return m_iOvector[iSub*2]; } // normalized to match old engine
-  int GetSubLength(int iSub) { return (m_iOvector[(iSub*2)+1] - m_iOvector[(iSub*2)]); } // correct spelling
-  int GetCaptureTotal();
-  std::string GetMatch(int iSub = 0);
-  const std::string& GetPattern() { return m_pattern; }
-  bool GetNamedSubPattern(const char* strName, std::string& strMatch);
+  int GetSubCount() const { return m_iMatchCount - 1; } // PCRE returns the number of sub-patterns + 1
+  int GetSubStart(int iSub) const;
+  int GetSubStart(const std::string& subName) const;
+  int GetSubLength(int iSub) const;
+  int GetSubLength(const std::string& subName) const;
+  int GetCaptureTotal() const;
+  std::string GetMatch(int iSub = 0) const;
+  std::string GetMatch(const std::string& subName) const;
+  const std::string& GetPattern() const { return m_pattern; }
+  bool GetNamedSubPattern(const char* strName, std::string& strMatch) const;
+  int GetNamedSubPatternNumber(const char* strName) const;
   void DumpOvector(int iLog);
   const CRegExp& operator= (const CRegExp& re);
 
 private:
-  void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
+  int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
 
-private:
+  void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
+  inline bool IsValidSubNumber(int iSub) const;
+
   PCRE::pcre* m_re;
+  static const int OVECCOUNT=(m_MaxNumOfBackrefrences + 1) * 3;
+  unsigned int m_offset;
   int         m_iOvector[OVECCOUNT];
   int         m_iMatchCount;
   int         m_iOptions;
