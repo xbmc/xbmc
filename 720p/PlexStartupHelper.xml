@@ -66,7 +66,7 @@
 						<onleft>-</onleft>
 						<onright>-</onright>
 						<onup>-</onup>
-						<onclick>Control.SetFocus(320)</onclick>
+						<onclick>Control.SetFocus(210)</onclick>
 						<label>Next</label>
 						<include>DialogPressButton</include>
 					</control>
@@ -140,7 +140,40 @@
 					</control>
 				</control>
 				<!-- audio connector selection list -->
+				<!-- show this list if HDMI detected -->
 				<control type="grouplist" id="210">
+					<visible allowhiddenfocus="false">!IsEmpty(ListItem(0).Property(HDMI))</visible>
+					<posx>290</posx>
+					<posy>0</posy>
+					<width>790</width>
+					<height>400</height>
+					<onup>210</onup>
+					<ondown>220</ondown>
+					<onleft>-</onleft>
+					<onright>-</onright>
+					<itemgap>20</itemgap>
+					<control type="radiobutton" id="211">
+						<width>770</width>
+						<height>80</height>
+						<textoffsetx>20</textoffsetx>
+						<label>Analog / Built-in speakers</label>
+					</control>
+					<control type="radiobutton" id="212">
+						<width>770</width>
+						<height>80</height>
+						<textoffsetx>20</textoffsetx>
+						<label>Optical Audio Connection</label>
+					</control>
+					<control type="radiobutton" id="213">
+						<width>770</width>
+						<height>80</height>
+						<textoffsetx>20</textoffsetx>
+						<label>HDMI Audio Connection</label>
+					</control>
+				</control>
+				<!-- show this list if no HDMI detected -->
+				<control type="grouplist" id="210">
+					<visible allowhiddenfocus="false">IsEmpty(ListItem(0).Property(HDMI))</visible>
 					<posx>290</posx>
 					<posy>0</posy>
 					<width>790</width>
@@ -155,35 +188,12 @@
 						<height>130</height>
 						<textoffsetx>20</textoffsetx>
 						<label>Analog / Built-in speakers</label>
-						<visible>IsEmpty(ListItem(0).Property(HDMI))</visible>
 					</control>
 					<control type="radiobutton" id="212">
 						<width>770</width>
 						<height>130</height>
 						<textoffsetx>20</textoffsetx>
 						<label>Optical Audio Connection</label>
-						<visible>IsEmpty(ListItem(0).Property(HDMI))</visible>
-					</control>
-					<control type="radiobutton" id="211">
-						<width>770</width>
-						<height>80</height>
-						<textoffsetx>20</textoffsetx>
-						<label>Analog / Built-in speakers</label>
-						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
-					</control>
-					<control type="radiobutton" id="212">
-						<width>770</width>
-						<height>80</height>
-						<textoffsetx>20</textoffsetx>
-						<label>Optical Audio Connection</label>
-						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
-					</control>
-					<control type="radiobutton" id="213">
-						<width>770</width>
-						<height>80</height>
-						<textoffsetx>20</textoffsetx>
-						<label>HDMI Audio Connection</label>
-						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
 					</control>
 				</control>
 			</control>
