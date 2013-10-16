@@ -5,7 +5,7 @@
 #include "PlexTypes.h"
 #include "threads/SingleLock.h"
 
-#include "Video/VideoInfoTag.h"
+#include "video/VideoInfoTag.h"
 #include "PlexDirectory.h"
 #include "PlexApplication.h"
 #include "Client/PlexMediaServerClient.h"
