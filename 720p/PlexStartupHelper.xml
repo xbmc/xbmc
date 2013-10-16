@@ -95,32 +95,49 @@
 				<control type="group">
 					<posx>0</posx>
 					<posy>0</posy>
-					<!--
 					<control type="image">
 						<description>analog</description>
 						<width>290</width>
 						<height>130</height>
-						<texture>analog.jpg</texture>
+						<texture>audio-analog.jpg</texture>
 						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+						<visible>IsEmpty(ListItem(0).Property(HDMI))</visible>
 					</control>
 					<control type="image">
 						<description>optical</description>
 						<posy>150</posy>
 						<width>290</width>
 						<height>130</height>
-						<texture>optical.jpg</texture>
+						<texture>audio-optical.jpg</texture>
 						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+						<visible>IsEmpty(ListItem(0).Property(HDMI))</visible>
+					</control>
+					<control type="image">
+						<description>analog</description>
+						<width>290</width>
+						<height>80</height>
+						<texture>audio-analog.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
+					</control>
+					<control type="image">
+						<description>optical</description>
+						<posy>100</posy>
+						<width>290</width>
+						<height>80</height>
+						<texture>audio-optical.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
 					</control>
 					<control type="image">
 						<description>hdmi</description>
-						<posy>300</posy>
+						<posy>200</posy>
 						<width>290</width>
-						<height>130</height>
-						<texture>hdmi.jpg</texture>
+						<height>80</height>
+						<texture>audio-hdmi.jpg</texture>
 						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
 						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
-					</control>-->
-
+					</control>
 				</control>
 				<!-- audio connector selection list -->
 				<control type="grouplist" id="210">
@@ -135,19 +152,35 @@
 					<itemgap>20</itemgap>
 					<control type="radiobutton" id="211">
 						<width>770</width>
-						<height>70</height>
+						<height>130</height>
 						<textoffsetx>20</textoffsetx>
 						<label>Analog / Built-in speakers</label>
+						<visible>IsEmpty(ListItem(0).Property(HDMI))</visible>
 					</control>
 					<control type="radiobutton" id="212">
 						<width>770</width>
-						<height>70</height>
+						<height>130</height>
 						<textoffsetx>20</textoffsetx>
 						<label>Optical Audio Connection</label>
+						<visible>IsEmpty(ListItem(0).Property(HDMI))</visible>
+					</control>
+					<control type="radiobutton" id="211">
+						<width>770</width>
+						<height>80</height>
+						<textoffsetx>20</textoffsetx>
+						<label>Analog / Built-in speakers</label>
+						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
+					</control>
+					<control type="radiobutton" id="212">
+						<width>770</width>
+						<height>80</height>
+						<textoffsetx>20</textoffsetx>
+						<label>Optical Audio Connection</label>
+						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
 					</control>
 					<control type="radiobutton" id="213">
 						<width>770</width>
-						<height>70</height>
+						<height>80</height>
 						<textoffsetx>20</textoffsetx>
 						<label>HDMI Audio Connection</label>
 						<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
@@ -183,78 +216,6 @@
 				</control>
 			</control>
 		</control>
-		<!-- myplex -->
-		<control type="group" id="300">
-			<visible>!IsEmpty(ListItem.Property(WizardMyPlex))</visible>
-			<posx>100</posx>
-			<posy>120</posy>
-			<width>750</width>
-			<!-- description text -->
-			<control type="textbox" id="2">
-				<posy>0</posy>
-				<posx>20</posx>
-				<width>1050</width>
-				<height>140</height>
-				<align>left</align>
-				<font>PINdescription</font>
-				<label>Sign in to MyPlex. Blah blah. Press "Next".</label>
-			</control>
-			<control type="group">
-				<posy>30</posy>
-				<control type="label" id="1">
-					<posy>33</posy>
-					<description>Heading</description>
-					<width>1000</width>
-					<include>DialogHeading</include>
-				</control>
-				<!-- hardcoded dialog title, delete when control 1 has a dynamic one -->
-				<control type="label">
-					<posy>33</posy>
-					<description>Heading</description>
-					<width>1000</width>
-					<include>DialogHeading</include>
-					<label>myPlex Log In</label>
-				</control>
-				<!-- description text -->
-				<control type="textbox" id="10081">
-					<posy>110</posy>
-					<posx>270</posx>
-					<width>460</width>
-					<height>195</height>
-					<align>center</align>
-					<font>PINdescription</font>
-				</control>
-			</control>
-			<control type="group">
-				<posy>500</posy>
-				<posx>-100</posx>
-				<control type="group">
-					<control type="image">
-						<description>button bg</description>
-						<posx>0</posx>
-						<width>1280</width>
-						<height>80</height>
-						<include>Orange</include>
-						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
-					</control>
-				</control>
-				<control type="group" id="320">
-					<posy>15</posy>
-					<posx>-100r</posx>
-					<control type="button" id="121">
-						<description>Button</description>
-						<width>120</width>
-						<onleft>-</onleft>
-						<onright>-</onright>
-						<onup>-</onup>
-						<onclick>Control.SetFocus(210)</onclick>
-						<label>Next</label>
-						<include>DialogPressButton</include>
-					</control>
-				</control>
-			</control>
-		</control>
-		<!-- buttons area -->
 		<!-- top-level ui (Debug.xml) -->
 		<include>debugInfos</include>
 		<include>Grid</include>
