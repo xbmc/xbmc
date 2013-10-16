@@ -1,0 +1,10 @@
+If you run xbmc standalone and/or do want to have password less upgrades, copy the file 10-allow-update.conf to /etc/polkit-1/localauthority/50-local.d/
+
+Make sure to adjust the username if it is different from "xbmc"
+
+For this to work, you must have python-apt and  python-aptdaemon installed:
+sudo apt-get install python-apt python-aptdaemon
+
+
+If those packages are not installed, this script will fallback to calling apt directly and ask you for your password.
+

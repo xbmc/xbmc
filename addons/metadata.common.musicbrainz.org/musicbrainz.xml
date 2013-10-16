@@ -178,7 +178,7 @@
 	<ParseMBAlbumTracks dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\4&lt;/title&gt;&lt;duration&gt;\2&lt;/duration&gt;&lt;/track&gt;" dest="2">
-				<expression repeat="yes">&lt;track&gt;&lt;position&gt;(\d+)&lt;/position&gt;&lt;number&gt;\d*&lt;/number&gt;(?:&lt;length&gt;(\d*?)\d{3}&lt;/length&gt;)*(?:&lt;recording id=&quot;([^&quot;]*)&quot;&gt;)*&lt;title&gt;([^&lt;]*)&lt;</expression>
+				<expression repeat="yes">&lt;track[^&gt;]+&gt;&lt;position&gt;(\d+)&lt;/position&gt;&lt;number&gt;\d*&lt;/number&gt;(?:&lt;length&gt;(\d*?)\d{3}&lt;/length&gt;)*(?:&lt;recording id=&quot;([^&quot;]*)&quot;&gt;)*&lt;title&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
