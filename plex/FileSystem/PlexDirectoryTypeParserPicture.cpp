@@ -18,6 +18,6 @@ void CPlexDirectoryTypeParserPicture::Process(CFileItem &item, CFileItem &mediaC
     CPlexAttributeParserMediaUrl mUrl;
     mUrl.Process(item.GetPath(), "picture", item.m_mediaItems[0]->m_mediaParts[0]->GetProperty("unprocessed_key").asString(), &item);
     item.SetPath(item.GetArt("picture"));
-    CLog::Log(LOGDEBUG, "CPlexDirectoryTypeParserPicture: setting key = %s", item.GetPath().c_str());
+//    CLog::Log(LOGDEBUG, "CPlexDirectoryTypeParserPicture: setting key = %s", item.GetPath().c_str());
   }
 }
