@@ -71,6 +71,8 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
 
   if (item.HasProperty("grandparentTitle"))
     videoTag.m_strShowTitle = item.GetProperty("grandparentTitle").asString();
+  
+  item.SetArt(PLEX_ART_POSTER, item.GetArt(PLEX_ART_THUMB));
 
   if (dirType == PLEX_DIR_TYPE_EPISODE)
   {
@@ -78,6 +80,7 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
     videoTag.m_iSeason = item.GetProperty("parentIndex").asInteger();
     if (videoTag.m_iEpisode == 0)
       item.SetProperty("allepisodes", 1);
+    item.SetArt(PLEX_ART_POSTER, item.GetArt("parentThumb"));
   }
   else if (dirType == PLEX_DIR_TYPE_SEASON)
   {
