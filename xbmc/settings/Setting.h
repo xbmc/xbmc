@@ -41,6 +41,7 @@ typedef enum {
   SettingTypeInteger,
   SettingTypeNumber,
   SettingTypeString,
+  SettingTypeStringList,
   SettingTypeAction
 } SettingType;
 
@@ -304,6 +305,53 @@ protected:
 
   std::string m_value;
   std::string m_default;
+  bool m_allowEmpty;
+  int m_heading;
+  std::string m_optionsFiller;
+  DynamicStringSettingOptions m_dynamicOptions;
+};
+
+/*!
+ \ingroup settings
+ \brief String setting implementation.
+ \sa CSetting
+ */
+class CSettingStringList : public CSetting
+{
+public:
+  CSettingStringList(const std::string &id, CSettingsManager *settingsManager = NULL);
+  CSettingStringList(const std::string &id, const CSettingStringList &setting);
+  CSettingStringList(const std::string &id, int label, const std::vector<std::string> &value, CSettingsManager *settingsManager = NULL);
+  virtual ~CSettingStringList() { }
+
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+
+  virtual int GetType() const { return SettingTypeStringList; }
+  virtual bool FromString(const std::string &value);
+  virtual std::string ToString() const;
+  virtual bool Equals(const std::string &value) const;
+  virtual bool CheckValidity(const std::string &value) const;
+  virtual void Reset() { SetValue(m_default); }
+
+  const std::vector<std::string>& GetValue() const { return m_value; }
+  bool SetValue(const std::vector<std::string> &value);
+  const std::vector<std::string>& GetDefault() const { return m_default; }
+  void SetDefault(const std::vector<std::string> &value);
+
+  virtual bool AllowEmpty() const { return m_allowEmpty; }
+  virtual int GetHeading() const { return m_heading; }
+
+  SettingOptionsType GetOptionsType() const;
+  const std::string& GetOptionsFiller() const { return m_optionsFiller; }
+  DynamicStringSettingOptions UpdateDynamicOptions();
+
+protected:
+  void copy(const CSettingStringList &setting);
+  bool CheckValidity(const std::vector<std::string> &value) const;
+  static std::vector<std::string> fromString(const std::string &value);
+
+  std::vector<std::string> m_value;
+  std::vector<std::string> m_default;
   bool m_allowEmpty;
   int m_heading;
   std::string m_optionsFiller;

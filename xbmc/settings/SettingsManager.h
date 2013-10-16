@@ -276,6 +276,13 @@ public:
    \return String value of the setting with the given identifier
    */
   std::string GetString(const std::string &id) const;
+  /*!
+   \brief Gets the stringlist value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \return String list value of the setting with the given identifier
+   */
+  std::vector<std::string> GetStringList(const std::string &id) const;
 
   /*!
    \brief Sets the boolean value of the setting with the given identifier.
@@ -316,6 +323,14 @@ public:
    \return True if setting the value was successful, false otherwise
    */
   bool SetString(const std::string &id, const std::string &value);
+  /*!
+   \brief Sets the stringlist value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \param value String list value to set
+   \return True if setting the value was successful, false otherwise
+   */
+  bool SetStringList(const std::string &id, const std::vector<std::string> &value);
 
   /*!
    \brief Gets the setting conditions manager used by the settings manager.
