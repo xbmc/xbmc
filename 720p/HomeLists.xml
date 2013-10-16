@@ -378,8 +378,28 @@
 							<scroll>false</scroll>
 							<textcolor>FF888888</textcolor>
 							<wrapmultiline>false</wrapmultiline>
-							<width>315</width>
+							<width>270</width>
 							<shadowcolor>ff222222</shadowcolor>
+						</control>
+						<control type="image">
+							<posy>38</posy>
+							<posx>970r</posx>
+							<width>60</width>
+							<height>24</height>
+							<texture>$INFO[Container(11001).Listitem.Art(mediaTag::contentRating)]</texture>
+							<aspectratio align="right" aligny="bottom">keep</aspectratio>
+							<colordiffuse>FF999999</colordiffuse>
+							<visible>ControlGroup(7002).HasFocus</visible>
+						</control>
+						<control type="image">
+							<posy>38</posy>
+							<posx>970r</posx>
+							<width>60</width>
+							<height>24</height>
+							<texture>$INFO[Container(11000).Listitem.Art(mediaTag::contentRating)]</texture>
+							<aspectratio align="right" aligny="bottom">keep</aspectratio>
+							<colordiffuse>FF999999</colordiffuse>
+							<visible>ControlGroup(7001).HasFocus</visible>
 						</control>
 						<control type="textbox">
 							<posy>90</posy>
