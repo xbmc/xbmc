@@ -268,27 +268,41 @@ bool CGUIControlListSetting::OnClick()
   dialog->Reset();
   dialog->SetHeading(g_localizeStrings.Get(m_pSetting->GetLabel()));
   dialog->SetItems(&options);
-  dialog->SetMultiSelection(false);
+  dialog->SetMultiSelection(m_pSetting->GetType() == SettingTypeStringList);
   dialog->DoModal();
 
   if (!dialog->IsConfirmed())
     return false;
 
-  const CFileItemPtr item = dialog->GetSelectedItem();
-  if (item == NULL || !item->HasProperty("value"))
-    return false;
-  
-  CVariant value = item->GetProperty("value");
-  switch (m_pSetting->GetType())
+  if (m_pSetting->GetType() == SettingTypeStringList)
   {
-    case SettingTypeInteger:
-      return ((CSettingInt *)m_pSetting)->SetValue((int)value.asInteger());
-    
-    case SettingTypeString:
-      return ((CSettingString *)m_pSetting)->SetValue(value.asString());
-    
-    default:
-      break;
+    const CFileItemList &items = dialog->GetSelectedItems();
+    if (!items.Size())
+      return false;
+
+    std::vector<std::string> selected;
+    for (int i = 0; i < items.Size(); i++)
+      selected.push_back(items[i]->GetProperty("value").asString());
+    return ((CSettingStringList *)m_pSetting)->SetValue(selected);
+  }
+  else
+  {
+    const CFileItemPtr item = dialog->GetSelectedItem();
+    if (item == NULL || !item->HasProperty("value"))
+      return false;
+
+    CVariant value = item->GetProperty("value");
+    switch (m_pSetting->GetType())
+    {
+      case SettingTypeInteger:
+        return ((CSettingInt *)m_pSetting)->SetValue((int)value.asInteger());
+
+      case SettingTypeString:
+        return ((CSettingString *)m_pSetting)->SetValue(value.asString());
+
+      default:
+        break;
+    }
   }
 
   return true;
@@ -302,18 +316,17 @@ void CGUIControlListSetting::Update()
   CGUIControlBaseSetting::Update();
   
   CFileItemList options;
+  std::vector<std::string> labels;
   if (GetItems(m_pSetting, options))
   {
     for (int index = 0; index < options.Size(); index++)
     {
       const CFileItemPtr pItem = options.Get(index);
       if (pItem->IsSelected())
-      {
-        m_pButton->SetLabel2(pItem->GetLabel());
-        break;
-      }
+        labels.push_back(pItem->GetLabel());
     }
   }
+  m_pButton->SetLabel2(StringUtils::Join(labels, ","));
 
   // disable the control if it has less than two items
   if (!m_pButton->IsDisabled() && options.Size() <= 1)
@@ -350,6 +363,27 @@ bool CGUIControlListSetting::GetItems(CSetting *setting, CFileItemList &items)
             CFileItemPtr pItem = GetItem(option->first, option->second);
 
             if (StringUtils::EqualsNoCase(option->second, pSettingString->GetValue()))
+              pItem->Select(true);
+
+            items.Add(pItem);
+          }
+        }
+      }
+      break;
+
+    case SettingControlFormatStringList:
+      if (setting->GetType() == SettingTypeStringList)
+      {
+        CSettingStringList *pSettingStringList = (CSettingStringList *)setting;
+        if (pSettingStringList->GetOptionsType() == SettingOptionsTypeDynamic)
+        {
+          DynamicStringSettingOptions options = pSettingStringList->UpdateDynamicOptions();
+          const std::vector<std::string> &values = pSettingStringList->GetValue();
+          for (DynamicStringSettingOptions::const_iterator option = options.begin(); option != options.end(); ++option)
+          {
+            CFileItemPtr pItem = GetItem(option->first, option->second);
+
+            if (std::find(values.begin(), values.end(), option->second) != values.end())
               pItem->Select(true);
 
             items.Add(pItem);
