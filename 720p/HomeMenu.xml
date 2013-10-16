@@ -171,11 +171,11 @@
 						<onclick>Plex.UpdateAndRestart</onclick>
 						<visible>System.UpdateIsAvailable</visible>
 					</item>
-					<item id="115">
+					<!--><item id="115">
 						<description>test</description>
 						<label>Wizard</label>
 						<onclick>Plex.ActivateWindow(4999)</onclick>
-					</item>
+					</item>-->
 				</content>
 			</control>
 		</control>		
