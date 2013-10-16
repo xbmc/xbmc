@@ -186,8 +186,8 @@
 	</include>
 	<include name="DialogSelectAudioSubtitleStreamPicker">
 		<control type="group">
-			<posx>130</posx>
-			<posy>110</posy>
+			<posx>96</posx>
+			<posy>72</posy>
 			<!-- bg's -->
 			<control type="group">
 				<control type="image">
@@ -206,7 +206,7 @@
 					<height>260</height>
 					<texture border="10">base-rounded-half.png</texture>
 					<colordiffuse>FF000000</colordiffuse>
-					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+					<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
 				</control>
 				<!-- title bg -->
 				<control type="image">
@@ -225,7 +225,7 @@
 				<control type="image">
 					<description>Dialog arrow</description>
 					<posx>-14</posx>
-					<posy>100</posy>
+					<posy>86</posy>
 					<include>ArrowBlackLeft</include>
 				</control>
 			</control>
@@ -774,7 +774,7 @@
 	<!-- DialogRating.xml -->
 	<include name="DialogRating">
 		<control type="group">
-			<posx>130</posx>
+			<posx>96</posx>
 			<posy>166</posy>
 			<!-- bg's -->
 			<control type="group">
@@ -794,7 +794,7 @@
 					<height>80</height>
 					<texture border="10">base-rounded-half.png</texture>
 					<colordiffuse>FF000000</colordiffuse>
-					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+					<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
 				</control>
 				<!-- title bg -->
 				<control type="image">
