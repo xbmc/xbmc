@@ -23,6 +23,8 @@
 		<value condition="Container.Content(actors)">actors</value>
 		<value condition="Container.Content(playlists)">playlists</value>
 		<value condition="Container.Content(plugins)">plugins</value>
+		<value condition="Container.Content(channels)">channels</value>
+		<value condition="Container.Content(channel)">channel</value>
 		<value condition="Container.Content(studios)">studios</value>
 		<value condition="Container.Content(directors)">directors</value>
 		<value condition="Container.Content(plugincontent)">plugincontent</value>

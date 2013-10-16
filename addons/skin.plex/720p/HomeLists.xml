@@ -135,7 +135,7 @@
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">Season $INFO[Container(11001).ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[Container(11001).ListItem.Episode] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(11001).ListItem.Date]</value>
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">[UPPERCASE]$INFO[Container(11001).ListItem.Genre][/UPPERCASE]</value>
 		<!-- recently added -->
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(season)">$INFO[Container(11000).ListItem.Property(TotalEpisodes)]</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(season)">$LOCALIZE[32101]: $INFO[Container(11000).ListItem.Property(LeafCount)]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">Season $INFO[Container(11000).ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[Container(11000).ListItem.Episode] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(11000).ListItem.Date]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">[UPPERCASE]$INFO[Container(11000).ListItem.Genre][/UPPERCASE]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album) + !IsEmpty(Container(11000).ListItem.Album)">$INFO[Container(11000).ListItem.Album]</value>
