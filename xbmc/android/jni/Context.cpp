@@ -63,7 +63,6 @@ CJNIContext::CJNIContext(const ANativeActivity *nativeActivity)
 CJNIContext::~CJNIContext()
 {
   m_appInstance = NULL;
-  m_context.release();
   xbmc_jni_on_unload();
 }
 

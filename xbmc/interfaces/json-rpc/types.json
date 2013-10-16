@@ -1244,17 +1244,15 @@
     "enum": [ "media", "window", "script", "unknown" ]
   },
   "Favourite.Details.Favourite": {
-    "type": "array",
-    "items": { "type": "object",
-      "properties": {
-        "title": { "type": "string", "required": true },
-        "type": { "$ref": "Favourite.Type", "required": true },
-        "path": { "type": "string" },
-        "window": { "type": "string" },
-        "windowparameter": { "type": "string" },
-        "thumbnail": { "type": "string" }
-      },
-      "additionalProperties": false
-    }
+    "type": "object",
+    "properties": {
+      "title": { "type": "string", "required": true },
+      "type": { "$ref": "Favourite.Type", "required": true },
+      "path": { "type": "string" },
+      "window": { "type": "string" },
+      "windowparameter": { "type": "string" },
+      "thumbnail": { "type": "string" }
+    },
+    "additionalProperties": false
   }
 }

@@ -18,7 +18,6 @@
  *
  */
 
-#include "threads/SystemClock.h"
 #include "system.h"
 #include "DVDPlayer.h"
 
@@ -501,9 +500,6 @@ bool CDVDPlayer::CloseFile()
 {
   CLog::Log(LOGNOTICE, "CDVDPlayer::CloseFile()");
 
-  // unpause the player
-  SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
-
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
 
@@ -639,7 +635,7 @@ bool CDVDPlayer::OpenInputStream()
   m_clock.Reset();
   m_dvd.Clear();
   m_errorCount = 0;
-  m_iChannelEntryTimeOut = 0;
+  m_ChannelEntryTimeOut.SetInfinite();
 
   return true;
 }
@@ -1226,14 +1222,14 @@ bool CDVDPlayer::CheckDelayedChannelEntry(void)
 {
   bool bReturn(false);
 
-  if (m_iChannelEntryTimeOut > 0 && XbmcThreads::SystemClockMillis() >= m_iChannelEntryTimeOut)
+  if (m_ChannelEntryTimeOut.IsTimePast())
   {
     CFileItem currentFile(g_application.CurrentFileItem());
     CPVRChannel *currentChannel = currentFile.GetPVRChannelInfoTag();
     SwitchChannel(*currentChannel);
 
     bReturn = true;
-    m_iChannelEntryTimeOut = 0;
+    m_ChannelEntryTimeOut.SetInfinite();
   }
 
   return bReturn;
@@ -2285,11 +2281,11 @@ void CDVDPlayer::HandleMessages()
             if (bShowPreview)
             {
               UpdateApplication(0);
-              m_iChannelEntryTimeOut = XbmcThreads::SystemClockMillis() + CSettings::Get().GetInt("pvrplayback.channelentrytimeout");
+              m_ChannelEntryTimeOut.Set(CSettings::Get().GetInt("pvrplayback.channelentrytimeout"));
             }
             else
             {
-              m_iChannelEntryTimeOut = 0;
+              m_ChannelEntryTimeOut.SetInfinite();
               SAFE_DELETE(m_pDemuxer);
 
               g_infoManager.SetDisplayAfterSeek();

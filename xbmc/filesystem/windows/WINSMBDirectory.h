@@ -41,7 +41,7 @@ public:
 private:
   bool m_bHost;
   bool EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items);
-  CStdString GetLocal(const CStdString& strPath);
-  CStdString URLEncode(const CURL &url);
+  std::string GetLocal(const std::string& strPath);
+  std::string URLEncode(const CURL &url);
 };
 }

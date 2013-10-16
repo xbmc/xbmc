@@ -20,6 +20,7 @@
  */
 
 #include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "utils/Observer.h"
 #include "threads/Thread.h"
 #include "addons/include/xbmc_pvr_types.h"
@@ -163,7 +164,7 @@ namespace PVR
     unsigned int                    m_iAddonInfoToggleCurrent;
     unsigned int                    m_iTimerInfoToggleStart;
     unsigned int                    m_iTimerInfoToggleCurrent;
-    unsigned int                    m_iToggleShowInfo;
+    XbmcThreads::EndTime            m_ToggleShowInfo;
     EPG::CEpgInfoTag *              m_playingEpgTag;
 
     CCriticalSection                m_critSection;

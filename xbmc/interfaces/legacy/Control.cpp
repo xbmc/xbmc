@@ -583,7 +583,9 @@ namespace XBMCAddon
     // ============================================================
     // ============================================================
     ControlRadioButton::ControlRadioButton(long x, long y, long width, long height, const String& label,
-                                           const char* focusTexture, const char* noFocusTexture, 
+                                           const char* focusOnTexture,  const char* noFocusOnTexture,
+                                           const char* focusOffTexture, const char* noFocusOffTexture,
+                                           const char* focusTexture,    const char* noFocusTexture, 
                                            long _textOffsetX, long _textOffsetY, 
                                            long alignment, const char* font, const char* _textColor,
                                            const char* _disabledColor, long angle,
@@ -605,11 +607,29 @@ namespace XBMCAddon
         XBMCAddonUtils::getDefaultImage((char*)"button", (char*)"texturefocus", (char*)"button-focus.png");
       strTextureNoFocus = noFocusTexture ? noFocusTexture :
         XBMCAddonUtils::getDefaultImage((char*)"button", (char*)"texturenofocus", (char*)"button-nofocus.jpg");
-      strTextureRadioFocus = TextureRadioFocus ? TextureRadioFocus :
-        XBMCAddonUtils::getDefaultImage((char*)"radiobutton", (char*)"textureradiofocus", (char*)"radiobutton-focus.png");
-      strTextureRadioNoFocus = TextureRadioNoFocus ? TextureRadioNoFocus :
-        XBMCAddonUtils::getDefaultImage((char*)"radiobutton", (char*)"textureradionofocus", (char*)"radiobutton-nofocus.jpg");
-      
+
+      if (focusOnTexture && noFocusOnTexture)
+      {
+        strTextureRadioOnFocus = focusOnTexture;
+        strTextureRadioOnNoFocus = noFocusOnTexture;
+      }
+      else
+      {
+        strTextureRadioOnFocus = strTextureRadioOnNoFocus = focusTexture ? focusTexture :
+          XBMCAddonUtils::getDefaultImage((char*)"radiobutton", (char*)"textureradiofocus", (char*)"radiobutton-focus.png");
+      }
+
+      if (focusOffTexture && noFocusOffTexture)
+      {
+        strTextureRadioOffFocus = focusOffTexture;
+        strTextureRadioOffNoFocus = noFocusOffTexture;
+      }
+      else
+      {
+        strTextureRadioOffFocus = strTextureRadioOffNoFocus = noFocusTexture ? noFocusTexture :
+          XBMCAddonUtils::getDefaultImage((char*)"radiobutton", (char*)"textureradiofocus", (char*)"radiobutton-focus.png");
+      }
+
       if (font) strFont = font;
       if (_textColor) sscanf( _textColor, "%x", &textColor );
       if (_disabledColor) sscanf( _disabledColor, "%x", &disabledColor );
@@ -697,8 +717,10 @@ namespace XBMCAddon
         (CStdString)strTextureFocus,
         (CStdString)strTextureNoFocus,
         label,
-        (CStdString)strTextureRadioFocus,
-        (CStdString)strTextureRadioNoFocus);
+        (CStdString)strTextureRadioOnFocus,
+        (CStdString)strTextureRadioOnNoFocus,
+        (CStdString)strTextureRadioOffFocus,
+        (CStdString)strTextureRadioOffNoFocus);
 
       CGUIRadioButtonControl* pGuiButtonControl =
         (CGUIRadioButtonControl*)pGUIControl;

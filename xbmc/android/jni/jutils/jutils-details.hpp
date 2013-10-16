@@ -94,7 +94,7 @@ struct jcast_helper<std::string, jhstring>
 {
     static std::string cast(jhstring const &v)
     {
-        return jcast_helper<std::string, jstring>::cast(v);
+        return jcast_helper<std::string, jstring>::cast(v.get());
     }
 };
 
@@ -103,7 +103,7 @@ struct jcast_helper<std::vector<std::string>, jhobjectArray>
 {
     static std::vector<std::string> cast(jhobjectArray const &v)
     {
-        return jcast_helper<std::vector<std::string>, jobjectArray>::cast(v);
+        return jcast_helper<std::vector<std::string>, jobjectArray>::cast(v.get());
     }
 };
 
@@ -112,7 +112,7 @@ struct jcast_helper<std::vector<T>, jhobjectArray>
 {
     static std::vector<T> cast(jhobjectArray const &v)
     {
-        return jcast_helper<std::vector<T>, jobjectArray>::cast(v);
+        return jcast_helper<std::vector<T>, jobjectArray>::cast(v.get());
     }
 };
 
@@ -130,7 +130,7 @@ std::vector<T> jcast_helper<std::vector<T>, jobjectArray>::cast(jobjectArray con
 
   for (int i = 0; i < size; i++)
   {
-    jhobject element = (jhobject)env->GetObjectArrayElement(v, i);
+    T element((jhobject)env->GetObjectArrayElement(v, i));
     vec.emplace_back(element);
   }
   return vec;

@@ -33,7 +33,7 @@ typedef struct LCENTRY
 } LCENTRY;
 
 extern const struct LCENTRY g_iso639_1[145];
-extern const struct LCENTRY g_iso639_2[537];
+extern const struct LCENTRY g_iso639_2[538];
 
 struct CharCodeConvertionWithHack
 {
@@ -663,7 +663,7 @@ extern const LCENTRY g_iso639_1[145] =
   { MAKECODE('\0','\0','z','u'), "Zulu" },
 };
 
-extern const LCENTRY g_iso639_2[537] =
+extern const LCENTRY g_iso639_2[538] =
 {
   { MAKECODE('\0','a','b','k'), "Abkhaz" },
   { MAKECODE('\0','a','b','k'), "Abkhazian" },
@@ -1203,6 +1203,7 @@ extern const LCENTRY g_iso639_2[537] =
   { MAKECODE('\0','z','h','a'), "Zhuang" },
   { MAKECODE('\0','z','u','l'), "Zulu" },
   { MAKECODE('\0','z','u','n'), "Zuni" },
+  { MAKECODE('\0','u','n','d'), "Undetermined" }, // non-ISO entry for Matroska special language code
 };
 
 const CharCodeConvertionWithHack CharCode2To3[184] =

@@ -71,6 +71,14 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   if(!ctx->IsHardwareAllowed())
     return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 
+  /* there are many corrupt mpeg2 rips from dvd's which don't *
+   * follow profile spec properly, they go corrupt on hw, so  *
+   * keep those running in software for the time being.       */
+  if (avctx->codec_id  == AV_CODEC_ID_MPEG2VIDEO
+  &&  avctx->height    <= 576
+  &&  avctx->width     <= 720)
+    return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
+
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
   {

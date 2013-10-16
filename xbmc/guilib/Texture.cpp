@@ -223,66 +223,25 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
   if (URIUtils::HasExtension(texturePath, ".jpg|.tbn")
       /*|| URIUtils::HasExtension(texturePath, ".png")*/)
   {
-    COMXImage omx_image;
-
-    if(omx_image.ReadFile(texturePath))
+    COMXImageFile *file = COMXImage::LoadJpeg(texturePath);
+    if (file)
     {
-      if(omx_image.Decode(maxWidth, maxHeight))
+      bool okay = false;
+      int orientation = file->GetOrientation();
+      // limit the sizes of jpegs (even if we fail to decode)
+      COMXImage::ClampLimits(maxWidth, maxHeight, file->GetWidth(), file->GetHeight(), orientation & 4);
+      Allocate(maxWidth, maxHeight, XB_FMT_A8R8G8B8);
+      if (m_pixels && COMXImage::DecodeJpeg(file, maxWidth, GetRows(), GetPitch(), (void *)m_pixels))
       {
-        Allocate(omx_image.GetDecodedWidth(), omx_image.GetDecodedHeight(), XB_FMT_A8R8G8B8);
-
-        if(!m_pixels)
-        {
-          CLog::Log(LOGERROR, "Texture manager (OMX) out of memory");
-          omx_image.Close();
-          return false;
-        }
-
-        m_originalWidth  = omx_image.GetOriginalWidth();
-        m_originalHeight = omx_image.GetOriginalHeight();
-
-        m_hasAlpha = omx_image.IsAlpha();
-
-        if (autoRotate && omx_image.GetOrientation())
-          m_orientation = omx_image.GetOrientation() - 1;
-
-        if(m_textureWidth != omx_image.GetDecodedWidth() || m_textureHeight != omx_image.GetDecodedHeight())
-        {
-          unsigned int imagePitch = GetPitch(m_imageWidth);
-          unsigned int imageRows = GetRows(m_imageHeight);
-          unsigned int texturePitch = GetPitch(m_textureWidth);
-
-          unsigned char *src = omx_image.GetDecodedData();
-          unsigned char *dst = m_pixels;
-          for (unsigned int y = 0; y < imageRows; y++)
-          {
-            memcpy(dst, src, imagePitch);
-            src += imagePitch;
-            dst += texturePitch;
-          }
-        }
-        else
-        {
-          if(omx_image.GetDecodedData())
-          {
-            int size = ( ( GetPitch() * GetRows() ) > omx_image.GetDecodedSize() ) ?
-                             omx_image.GetDecodedSize() : ( GetPitch() * GetRows() );
-
-            memcpy(m_pixels, (unsigned char *)omx_image.GetDecodedData(), size);
-          }
-        }
-
-        omx_image.Close();
-
+        m_hasAlpha = false;
+        if (autoRotate && orientation)
+          m_orientation = orientation - 1;
+        okay = true;
+      }
+      COMXImage::CloseJpeg(file);
+      if (okay)
         return true;
-      }
-      else
-      {
-        omx_image.Close();
-      }
     }
-    // this limits the sizes of jpegs we failed to decode
-    omx_image.ClampLimits(maxWidth, maxHeight);
   }
 #endif
   if (URIUtils::HasExtension(texturePath, ".dds"))

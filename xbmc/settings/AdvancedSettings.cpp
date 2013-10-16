@@ -1118,6 +1118,11 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pDatabase, "user", m_databaseVideo.user);
     XMLUtils::GetString(pDatabase, "pass", m_databaseVideo.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseVideo.name);
+    XMLUtils::GetString(pDatabase, "key", m_databaseVideo.key);
+    XMLUtils::GetString(pDatabase, "cert", m_databaseVideo.cert);
+    XMLUtils::GetString(pDatabase, "ca", m_databaseVideo.ca);
+    XMLUtils::GetString(pDatabase, "capath", m_databaseVideo.capath);
+    XMLUtils::GetString(pDatabase, "ciphers", m_databaseVideo.ciphers);
   }
 
   pDatabase = pRootElement->FirstChildElement("musicdatabase");
@@ -1129,6 +1134,11 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
     XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
+    XMLUtils::GetString(pDatabase, "key", m_databaseMusic.key);
+    XMLUtils::GetString(pDatabase, "cert", m_databaseMusic.cert);
+    XMLUtils::GetString(pDatabase, "ca", m_databaseMusic.ca);
+    XMLUtils::GetString(pDatabase, "capath", m_databaseMusic.capath);
+    XMLUtils::GetString(pDatabase, "ciphers", m_databaseMusic.ciphers);
   }
 
   pDatabase = pRootElement->FirstChildElement("tvdatabase");
@@ -1140,6 +1150,11 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pDatabase, "user", m_databaseTV.user);
     XMLUtils::GetString(pDatabase, "pass", m_databaseTV.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseTV.name);
+    XMLUtils::GetString(pDatabase, "key", m_databaseTV.key);
+    XMLUtils::GetString(pDatabase, "cert", m_databaseTV.cert);
+    XMLUtils::GetString(pDatabase, "ca", m_databaseTV.ca);
+    XMLUtils::GetString(pDatabase, "capath", m_databaseTV.capath);
+    XMLUtils::GetString(pDatabase, "ciphers", m_databaseTV.ciphers);
   }
 
   pDatabase = pRootElement->FirstChildElement("epgdatabase");
@@ -1151,6 +1166,11 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pDatabase, "user", m_databaseEpg.user);
     XMLUtils::GetString(pDatabase, "pass", m_databaseEpg.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseEpg.name);
+    XMLUtils::GetString(pDatabase, "key", m_databaseEpg.key);
+    XMLUtils::GetString(pDatabase, "cert", m_databaseEpg.cert);
+    XMLUtils::GetString(pDatabase, "ca", m_databaseEpg.ca);
+    XMLUtils::GetString(pDatabase, "capath", m_databaseEpg.capath);
+    XMLUtils::GetString(pDatabase, "ciphers", m_databaseEpg.ciphers);
   }
 
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");
