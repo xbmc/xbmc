@@ -493,8 +493,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
       int iMin   = currentNode->Attribute("min") ? atoi(currentNode->Attribute("min")) : 0;
       int iStep  = currentNode->Attribute("step") ? atoi(currentNode->Attribute("step")) : 1;
       int iMax   = currentNode->Attribute("max") ? atoi(currentNode->Attribute("max")) : 255;
-      CStdString strFormat(currentNode->Attribute("format"));
-      setting = new CSettingInt(strKey, iLabelId, iValue, iMin, iStep, iMax, strFormat);
+      setting = new CSettingInt(strKey, iLabelId, iValue, iMin, iStep, iMax);
     }
     else if (strSettingsType.Equals("float"))
     {

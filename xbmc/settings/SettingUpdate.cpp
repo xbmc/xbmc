@@ -19,6 +19,7 @@
  */
 
 #include "SettingUpdate.h"
+#include "SettingDefinitions.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -41,7 +42,7 @@ bool CSettingUpdate::Deserialize(const TiXmlNode *node)
   if (elem == NULL)
     return false;
   
-  const char *strType = elem->Attribute("type");
+  const char *strType = elem->Attribute(SETTING_XML_ATTR_TYPE);
   if (strType == NULL || strlen(strType) <= 0 || !setType(strType))
   {
     CLog::Log(LOGWARNING, "CSettingUpdate: missing or unknown update type definition");

@@ -19,13 +19,10 @@
  */
 
 #include "ISetting.h"
+#include "SettingDefinitions.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-
-#define XML_VISIBLE     "visible"
-#define XML_REQUIREMENT "requirement"
-#define XML_CONDITION   "condition"
 
 using namespace std;
 
@@ -43,10 +40,10 @@ bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
     return false;
 
   bool value;
-  if (XMLUtils::GetBoolean(node, XML_VISIBLE, value))
+  if (XMLUtils::GetBoolean(node, SETTING_XML_ELM_VISIBLE, value))
     m_visible = value;
 
-  const TiXmlNode *requirementNode = node->FirstChild(XML_REQUIREMENT);
+  const TiXmlNode *requirementNode = node->FirstChild(SETTING_XML_ELM_REQUIREMENT);
   if (requirementNode == NULL)
     return true;
 
@@ -62,7 +59,7 @@ bool ISetting::DeserializeIdentification(const TiXmlNode *node, std::string &ide
   if (element == NULL)
     return false;
 
-  const char *idAttribute = element->Attribute(XML_ATTR_ID);
+  const char *idAttribute = element->Attribute(SETTING_XML_ATTR_ID);
   if (idAttribute == NULL || strlen(idAttribute) <= 0)
     return false;
 

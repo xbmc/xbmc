@@ -30,11 +30,7 @@
 CSettingAddon::CSettingAddon(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : CSettingString(id, settingsManager),
     m_addonType(ADDON::ADDON_UNKNOWN)
-{
-  m_control.SetType(SettingControlTypeButton);
-  m_control.SetFormat(SettingControlFormatAddon);
-  m_control.SetAttributes(SettingControlAttributeNone);
-}
+{ }
   
 CSettingAddon::CSettingAddon(const std::string &id, const CSettingAddon &setting)
   : CSettingString(id, setting)
@@ -49,9 +45,8 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
   if (!CSettingString::Deserialize(node, update))
     return false;
     
-  if (m_control.GetType() != SettingControlTypeButton ||
-      m_control.GetFormat() != SettingControlFormatAddon ||
-      m_control.GetAttributes() != SettingControlAttributeNone)
+  if (m_control != NULL &&
+     (m_control->GetType() != "button" || m_control->GetFormat() != "addon"))
   {
     CLog::Log(LOGERROR, "CSettingAddon: invalid <control> of \"%s\"", m_id.c_str());
     return false;
