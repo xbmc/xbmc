@@ -2193,7 +2193,10 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
 
   sound = new CActiveAESound(file);
   if (!sound->Prepare())
+  {
+    delete sound;
     return NULL;
+  }
   int fileSize = sound->GetFileSize();
 
   fmt_ctx = m_dllAvFormat.avformat_alloc_context();
