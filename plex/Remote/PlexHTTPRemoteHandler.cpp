@@ -302,6 +302,7 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     if (g_application.IsPlayingVideo())
       CApplicationMessenger::Get().MediaStop();
     
+    g_application.WakeUpScreenSaverAndDPMS();
     CApplicationMessenger::Get().PictureSlideShow(itemURL.Get(), false, list.Get(idx)->GetPath());
   }
   else
