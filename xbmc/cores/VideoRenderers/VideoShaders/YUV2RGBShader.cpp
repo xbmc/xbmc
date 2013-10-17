@@ -228,6 +228,12 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
   m_hProj   = -1;
   m_hModel  = -1;
   m_hAlpha  = -1;
+  if (m_format == RENDER_FMT_YUV420P)
+    m_defines += "#define XBMC_YV12\n";
+  else if (m_format == RENDER_FMT_NV12)
+    m_defines += "#define XBMC_NV12\n";
+  else
+    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
 
   VertexShader()->LoadSource("yuv2rgb_vertex_gles.glsl", m_defines);
 #endif
