@@ -305,9 +305,7 @@
 	<!-- Preplay menu -->
 	<include name="LeftSideMenuPreplay">
 		<control type="group">
-			<!--><visible>Container.Content(movie) | Container.Content(episode) | Container.Content(clip)</visible>-->
-			<!-- a hack until Container.Content is defined for Queue content preplay screen -->
-			<visible>!Container.Content(seasons) + !Container.Content(episodes)</visible>
+			<visible>Container.Content(movie) | Container.Content(episode) | Container.Content(clip)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -338,6 +336,7 @@
 					<onup>102</onup>
 					<ondown>104</ondown>
 					<include>leftMenuPreplayButton</include>
+					<enable>!Container.Content(clip)</enable>
 				</control>
 				<!-- Subtitles -->
 				<control type="button" id="104">
@@ -347,6 +346,7 @@
 					<onup>103</onup>
 					<ondown>105</ondown>
 					<include>leftMenuPreplayButton</include>
+					<enable>!Container.Content(clip)</enable>
 				</control>
 				<!-- Rate -->
 				<control type="button" id="105">
