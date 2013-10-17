@@ -41,7 +41,7 @@ class CRegExp
 {
 public:
   static const int m_MaxNumOfBackrefrences = 20;
-  CRegExp(bool caseless = false);
+  CRegExp(bool caseless = false, bool utf8 = false);
   CRegExp(const CRegExp& re);
   ~CRegExp();
 
@@ -71,6 +71,9 @@ public:
   int GetNamedSubPatternNumber(const char* strName) const;
   void DumpOvector(int iLog);
   const CRegExp& operator= (const CRegExp& re);
+  static bool IsUtf8Supported(void);
+  static bool AreUnicodePropertiesSupported(void);
+  static bool LogCheckUtf8Support(void);
 
 private:
   int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
@@ -87,6 +90,8 @@ private:
   bool        m_bMatched;
   std::string m_subject;
   std::string m_pattern;
+  static int  m_Utf8Supported;     
+  static int  m_UcpSupported;
 };
 
 typedef std::vector<CRegExp> VECCREGEXP;

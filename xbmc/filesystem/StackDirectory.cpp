@@ -59,7 +59,7 @@ namespace XFILE
   {
     // Load up our REs
     VECCREGEXP  RegExps;
-    CRegExp     tempRE(true);
+    CRegExp     tempRE(true, true);
     const CStdStringArray& strRegExps = g_advancedSettings.m_videoStackRegExps;
     CStdStringArray::const_iterator itRegExp = strRegExps.begin();
     vector<pair<int, CStdString> > badStacks;
