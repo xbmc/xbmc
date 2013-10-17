@@ -54,6 +54,9 @@ public:
   unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue, bool video_only = true);
   DllOMX *GetDllOMX() { return m_OMX ? m_OMX->GetDll() : NULL; }
 
+  void SuspendVideoOutput();
+  void ResumeVideoOutput();
+
 private:
   DllBcmHost *m_DllBcmHost;
   bool       m_initialized;

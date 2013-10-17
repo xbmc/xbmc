@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "guilib/gui3d.h"
 #include "linux/DllBCM.h"
+#include "math.h"
 
 #ifndef __VIDEOCORE4__
 #define __VIDEOCORE4__
@@ -53,6 +54,12 @@
 # define DLOG(fmt, args...) printf(fmt, ##args)
 #else
 # define DLOG(fmt, args...)
+#endif
+
+#if defined(TARGET_RASPBERRY_PI)
+static float get_display_aspect_ratio(HDMI_ASPECT_T aspect);
+static float get_display_aspect_ratio(SDTV_ASPECT_T aspect);
+static SDTV_ASPECT_T get_sdtv_aspect_from_display_aspect(float display_aspect);
 #endif
 
 
@@ -111,6 +118,37 @@ void CEGLNativeTypeRaspberryPI::Destroy()
 
 bool CEGLNativeTypeRaspberryPI::CreateNativeDisplay()
 {
+  if(!m_DllBcmHost)
+    return false;
+
+  // it can happen, that the TV interface was powered off by us, and not
+  // resumed before the next XBMC launch. let's do that now.
+
+  // get current display settings state
+  TV_DISPLAY_STATE_T tv_state;
+  memset(&tv_state, 0, sizeof(TV_DISPLAY_STATE_T));
+  m_DllBcmHost->vc_tv_get_display_state(&tv_state);
+
+  if ((tv_state.state & VC_HDMI_ATTACHED) != 0) // hdmi
+  {
+    if (tv_state.display.hdmi.mode == HDMI_MODE_OFF)
+    {
+      CLog::Log(LOGDEBUG, "HDMI was off, powering on now\n");
+      m_DllBcmHost->vc_tv_hdmi_power_on_preferred();
+    }
+  }
+  else // sdtv
+  {
+    if (tv_state.display.sdtv.mode == SDTV_MODE_OFF)
+    {
+      CLog::Log(LOGDEBUG, "SDTV was off, powering on now\n");
+      // not sure what to use here as default - does it even matter after
+      // SetNativeResolution() has been called?
+      SDTV_OPTIONS_T options = { SDTV_ASPECT_4_3 };
+      m_DllBcmHost->vc_tv_sdtv_power_on(SDTV_MODE_PAL, &options);
+    }
+  }
+
   m_nativeDisplay = EGL_DEFAULT_DISPLAY;
   return true;
 }
@@ -156,6 +194,10 @@ bool CEGLNativeTypeRaspberryPI::DestroyNativeWindow()
   DestroyDispmaxWindow();
   free(m_nativeWindow);
   m_nativeWindow = NULL;
+  
+  if(m_DllBcmHost)
+    m_DllBcmHost->vc_tv_power_off();
+  
   DLOG("CEGLNativeTypeRaspberryPI::DestroyNativeWindow\n");
   return true;
 #else
@@ -210,12 +252,18 @@ int CEGLNativeTypeRaspberryPI::AddUniqueResolution(const RESOLUTION_INFO &res, s
 bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
 {
 #if defined(TARGET_RASPBERRY_PI)
-  if(!m_DllBcmHost || !m_nativeWindow)
+  if(!m_DllBcmHost)
     return false;
 
+  // necessary for CRBP::ResumeVideoOutput() to work
+  if(!m_nativeWindow)
+    CreateNativeWindow();
+  if(!m_nativeWindow)
+    return false;
+  
   DestroyDispmaxWindow();
 
-  if(!m_fixedMode && GETFLAGS_GROUP(res.dwFlags) && GETFLAGS_MODE(res.dwFlags))
+  if(GETFLAGS_GROUP(res.dwFlags) && GETFLAGS_MODE(res.dwFlags))
   {
     sem_init(&m_tv_synced, 0, 0);
     m_DllBcmHost->vc_tv_register_callback(CallbackTvServiceCallback, this);
@@ -251,6 +299,33 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
                           GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success,
                           (res.dwFlags & D3DPRESENTFLAG_MODE3DSBS) ? " SBS":"",
                           (res.dwFlags & D3DPRESENTFLAG_MODE3DTB) ? " TB":"");
+    }
+    m_DllBcmHost->vc_tv_unregister_callback(CallbackTvServiceCallback);
+    sem_destroy(&m_tv_synced);
+
+    m_desktopRes = res;
+  }
+  else if(!GETFLAGS_GROUP(res.dwFlags) && GETFLAGS_MODE(res.dwFlags))
+  {
+    sem_init(&m_tv_synced, 0, 0);
+    m_DllBcmHost->vc_tv_register_callback(CallbackTvServiceCallback, this);
+
+    SDTV_OPTIONS_T options;
+    options.aspect = get_sdtv_aspect_from_display_aspect((float)res.iScreenWidth / (float)res.iScreenHeight);
+
+    int success = m_DllBcmHost->vc_tv_sdtv_power_on((SDTV_MODE_T)GETFLAGS_MODE(res.dwFlags), &options);
+
+    if (success == 0)
+    {
+      CLog::Log(LOGDEBUG, "EGL set SDTV mode (%d,%d)=%d\n",
+                          GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success);
+
+      sem_wait(&m_tv_synced);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "EGL failed to set SDTV mode (%d,%d)=%d\n",
+                          GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success);
     }
     m_DllBcmHost->vc_tv_unregister_callback(CallbackTvServiceCallback);
     sem_destroy(&m_tv_synced);
@@ -322,36 +397,6 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
 #endif
 }
 
-#if defined(TARGET_RASPBERRY_PI)
-static float get_display_aspect_ratio(HDMI_ASPECT_T aspect)
-{
-  float display_aspect;
-  switch (aspect) {
-    case HDMI_ASPECT_4_3:   display_aspect = 4.0/3.0;   break;
-    case HDMI_ASPECT_14_9:  display_aspect = 14.0/9.0;  break;
-    case HDMI_ASPECT_16_9:  display_aspect = 16.0/9.0;  break;
-    case HDMI_ASPECT_5_4:   display_aspect = 5.0/4.0;   break;
-    case HDMI_ASPECT_16_10: display_aspect = 16.0/10.0; break;
-    case HDMI_ASPECT_15_9:  display_aspect = 15.0/9.0;  break;
-    case HDMI_ASPECT_64_27: display_aspect = 64.0/27.0; break;
-    default:                display_aspect = 16.0/9.0;  break;
-  }
-  return display_aspect;
-}
-
-static float get_display_aspect_ratio(SDTV_ASPECT_T aspect)
-{
-  float display_aspect;
-  switch (aspect) {
-    case SDTV_ASPECT_4_3:  display_aspect = 4.0/3.0;  break;
-    case SDTV_ASPECT_14_9: display_aspect = 14.0/9.0; break;
-    case SDTV_ASPECT_16_9: display_aspect = 16.0/9.0; break;
-    default:               display_aspect = 4.0/3.0;  break;
-  }
-  return display_aspect;
-}
-#endif
-
 bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
 #if defined(TARGET_RASPBERRY_PI)
@@ -359,8 +404,6 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
 
   if(!m_DllBcmHost)
     return false;
-
-  m_fixedMode               = false;
 
   /* read initial desktop resolution before probe resolutions.
    * probing will replace the desktop resolution when it finds the same one.
@@ -407,7 +450,7 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
       m_desktopRes.iHeight      = tv_state.display.sdtv.height;
       m_desktopRes.iScreenWidth = tv_state.display.sdtv.width;
       m_desktopRes.iScreenHeight= tv_state.display.sdtv.height;
-      m_desktopRes.dwFlags      = D3DPRESENTFLAG_INTERLACED;
+      m_desktopRes.dwFlags      = MAKEFLAGS(HDMI_RES_GROUP_INVALID, tv_state.display.sdtv.mode, 1);
       m_desktopRes.fRefreshRate = (float)tv_state.display.sdtv.frame_rate;
       m_desktopRes.fPixelRatio  = get_display_aspect_ratio((SDTV_ASPECT_T)tv_state.display.sdtv.display_options.aspect) / ((float)m_desktopRes.iScreenWidth / (float)m_desktopRes.iScreenHeight);
     }
@@ -444,9 +487,6 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
 
     AddUniqueResolution(m_desktopRes, resolutions);
   }
-
-  if(resolutions.size() < 2)
-    m_fixedMode = true;
 
   DLOG("CEGLNativeTypeRaspberryPI::ProbeResolutions\n");
   return true;
@@ -639,3 +679,54 @@ bool CEGLNativeTypeRaspberryPI::ClampToGUIDisplayLimits(int &width, int &height)
 
 #endif
 
+
+// private utility functions
+
+#if defined(TARGET_RASPBERRY_PI)
+static float get_display_aspect_ratio(HDMI_ASPECT_T aspect)
+{
+  float display_aspect;
+  switch (aspect) {
+    case HDMI_ASPECT_4_3:   display_aspect = 4.0/3.0;   break;
+    case HDMI_ASPECT_14_9:  display_aspect = 14.0/9.0;  break;
+    case HDMI_ASPECT_16_9:  display_aspect = 16.0/9.0;  break;
+    case HDMI_ASPECT_5_4:   display_aspect = 5.0/4.0;   break;
+    case HDMI_ASPECT_16_10: display_aspect = 16.0/10.0; break;
+    case HDMI_ASPECT_15_9:  display_aspect = 15.0/9.0;  break;
+    case HDMI_ASPECT_64_27: display_aspect = 64.0/27.0; break;
+    default:                display_aspect = 16.0/9.0;  break;
+  }
+  return display_aspect;
+}
+
+static float get_display_aspect_ratio(SDTV_ASPECT_T aspect)
+{
+  float display_aspect;
+  switch (aspect) {
+    case SDTV_ASPECT_4_3:  display_aspect = 4.0/3.0;  break;
+    case SDTV_ASPECT_14_9: display_aspect = 14.0/9.0; break;
+    case SDTV_ASPECT_16_9: display_aspect = 16.0/9.0; break;
+    default:               display_aspect = 4.0/3.0;  break;
+  }
+  return display_aspect;
+}
+
+static SDTV_ASPECT_T get_sdtv_aspect_from_display_aspect(float display_aspect)
+{
+  SDTV_ASPECT_T aspect;
+  const float delta = 1e-3;
+  if(fabs(get_display_aspect_ratio(SDTV_ASPECT_16_9) - display_aspect) < delta)
+  {
+    aspect = SDTV_ASPECT_16_9;
+  }
+  else if(fabs(get_display_aspect_ratio(SDTV_ASPECT_14_9) - display_aspect) < delta)
+  {
+    aspect = SDTV_ASPECT_14_9;
+  }
+  else
+  {
+    aspect = SDTV_ASPECT_4_3;
+  }
+  return aspect;
+}
+#endif

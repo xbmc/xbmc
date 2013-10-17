@@ -20,6 +20,9 @@
  *
  */
 
+// forward declaration
+class CAction;
+
 class IPowerEventsCallback
 {
 public:
@@ -60,6 +63,10 @@ public:
    \param callback the callback to signal to
    */
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback) = 0;
+
+  // this is an optional part of the interface, so we provide a no-op implementation here.
+  // return true to suppress further processing of the CAction.
+  virtual bool ProcessAction(const CAction& action) { return false; }
 };
 
 class CPowerSyscallWithoutEvents : public IPowerSyscall

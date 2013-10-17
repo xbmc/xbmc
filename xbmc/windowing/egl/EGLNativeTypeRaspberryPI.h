@@ -36,7 +36,7 @@ public:
   virtual bool  CheckCompatibility();
   virtual void  Initialize();
   virtual void  Destroy();
-  virtual int   GetQuirks() { return EGL_QUIRK_NONE; };
+  virtual int   GetQuirks() { return EGL_QUIRK_DESTROY_NATIVE_WINDOW_WITH_SURFACE|EGL_QUIRK_NEED_WINDOW_FOR_RES; };
 
   virtual bool  CreateNativeDisplay();
   virtual bool  CreateNativeWindow();
@@ -59,7 +59,6 @@ private:
   DISPMANX_ELEMENT_HANDLE_T     m_dispman_element;
   TV_GET_STATE_RESP_T           m_tv_state;
   sem_t                         m_tv_synced;
-  bool                          m_fixedMode;
   RESOLUTION_INFO               m_desktopRes;
   int                           m_width;
   int                           m_height;
