@@ -258,10 +258,11 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   }
   
   CFileItemPtr item;
-  int idx;
+  int idx = 0;
   for (int i = 0; i < list.Size(); i ++)
   {
     CFileItemPtr it = list.Get(i);
+    CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia compare %s = %s", it->GetProperty("unprocessed_key").asString().c_str(), key.c_str());
     if (it->HasProperty("unprocessed_key") &&
         it->GetProperty("unprocessed_key") == key)
     {
@@ -270,6 +271,8 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
       break;
     }
   }
+
+  CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia found media (%s) at index %d", key.c_str(), idx);
   
   if (!item)
   {
@@ -303,6 +306,7 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
       CApplicationMessenger::Get().MediaStop();
     
     g_application.WakeUpScreenSaverAndDPMS();
+    CLog::Log(LOGDEBUG, "PlexHTTPRemoteHandler::playMedia photo slideshow with start %s", list.Get(idx)->GetPath().c_str());
     CApplicationMessenger::Get().PictureSlideShow(itemURL.Get(), false, list.Get(idx)->GetPath());
   }
   else
