@@ -19,6 +19,8 @@
  */
 
 #include "HTTPWebinterfaceAddonsHandler.h"
+
+#if defined(HAS_WEB_SERVER) && defined(HAS_WEB_INTERFACE)
 #include "network/WebServer.h"
 #include "addons/AddonManager.h"
 
@@ -48,5 +50,4 @@ int CHTTPWebinterfaceAddonsHandler::HandleHTTPRequest(const HTTPRequest &request
 
   return MHD_YES;
 }
-
-
+#endif // defined(HAS_WEB_SERVER) && defined(HAS_WEB_INTERFACE)

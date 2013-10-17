@@ -21,13 +21,6 @@
 
 #include "system.h"
 #ifdef HAS_WEB_SERVER
-#include <sys/types.h>
-#include <sys/select.h>
-#include <sys/socket.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdint.h>
 #include <vector>
 
 #include "interfaces/json-rpc/ITransportLayer.h"
@@ -132,4 +125,4 @@ private:
     struct MHD_PostProcessor *postprocessor;
   } ConnectionHandler;
 };
-#endif
+#endif // HAS_WEB_SERVER

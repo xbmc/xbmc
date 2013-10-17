@@ -19,6 +19,8 @@
  */
 
 #include "HTTPVfsHandler.h"
+
+#ifdef HAS_WEB_SERVER
 #include "MediaSource.h"
 #include "URL.h"
 #include "filesystem/File.h"
@@ -107,3 +109,4 @@ int CHTTPVfsHandler::HandleHTTPRequest(const HTTPRequest &request)
 
   return MHD_YES;
 }
+#endif // HAS_WEB_SERVER

@@ -19,16 +19,21 @@
  *
  */
 
+#include "system.h"
+#ifdef HAS_WEB_SERVER
 #include <string>
 #include <map>
 
-#include <sys/types.h>
-#include <sys/select.h>
-#include <sys/socket.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include <unistd.h>
+#include <stdarg.h>
 #include <stdint.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+
+#ifndef MHD_PLATFORM_H
+#define MHD_PLATFORM_H
+#endif
 #include <microhttpd.h>
 
 class CWebServer;
@@ -104,3 +109,4 @@ protected:
 
   std::map<std::string, std::string> m_postFields;
 };
+#endif // HAS_WEB_SERVER
