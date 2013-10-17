@@ -98,15 +98,15 @@ void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
     strAlarmClock = g_localizeStrings.Get(13208);
 
   CStdString strMessage;
-  if( iter->second.watch.GetElapsedSeconds() > iter->second.m_fSecs )
+  if( iter->second.watch.GetElapsedMilliseconds()/1000.0f > iter->second.m_fSecs )
     strMessage = g_localizeStrings.Get(13211);
   else
   {
-    float remaining = static_cast<float>(iter->second.m_fSecs-iter->second.watch.GetElapsedSeconds());
+    float remaining = static_cast<float>(iter->second.m_fSecs-iter->second.watch.GetElapsedMilliseconds()/1000.0f);
     CStdString strStarted = g_localizeStrings.Get(13212);
     strMessage.Format(strStarted.c_str(),static_cast<int>(remaining)/60,static_cast<int>(remaining)%60);
   }
-  if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
+  if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedMilliseconds()/1000.0f)
   {
     if(!bSilent)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
@@ -133,7 +133,7 @@ void CAlarmClock::Process()
     {
       CSingleLock lock(m_events);
       for (map<CStdString,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
-        if (iter->second.watch.GetElapsedSeconds() >= iter->second.m_fSecs)
+        if (iter->second.watch.GetElapsedMilliseconds()/1000.0f >= iter->second.m_fSecs)
         {
           Stop(iter->first);
           if ((iter = m_event.find(strLast)) == m_event.end())
