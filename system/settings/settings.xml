@@ -474,7 +474,7 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="videoplayer.maxspeedadjust" type="number" label="13504" help="36168">
-          <level>4</level>
+          <level>2</level>
           <default>5.0</default>
           <constraints>
             <minimum>0.0</minimum>
