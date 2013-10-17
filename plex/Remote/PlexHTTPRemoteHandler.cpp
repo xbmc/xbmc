@@ -333,27 +333,55 @@ void CPlexHTTPRemoteHandler::stepFunction(const CStdString &url, const ArgMap &a
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::skipNext(const ArgMap &arguments)
 {
-  if (g_application.IsPlaying())
-    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(next)");
+  CStdString type="video";
+  if (arguments.find("type") != arguments.end())
+    type = arguments.find("type")->second;
+
+  if (type == "video" || type == "music")
+    /* WINDOW_INVALID gets AppMessenger to send to send the action the application instead */
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_NEXT_ITEM), WINDOW_INVALID);
+  else if (type == "photo")
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_NEXT_PICTURE), WINDOW_SLIDESHOW);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::skipPrevious(const ArgMap &arguments)
 {
-  if (g_application.IsPlaying())
-    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(previous)");
+  CStdString type="video";
+  if (arguments.find("type") != arguments.end())
+    type = arguments.find("type")->second;
+
+  if (type == "video" || type == "music")
+    /* WINDOW_INVALID gets AppMessenger to send to send the action the application instead */
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_PREV_ITEM), WINDOW_INVALID);
+  else if (type == "photo")
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_PREV_PICTURE), WINDOW_SLIDESHOW);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::pausePlay(const ArgMap &arguments)
 {
-  CApplicationMessenger::Get().MediaPause();
+  CStdString type="video";
+  if (arguments.find("type") != arguments.end())
+    type = arguments.find("type")->second;
+
+  if (type == "video" || type == "music")
+    CApplicationMessenger::Get().MediaPause();
+  else if (type == "photo")
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_PAUSE), WINDOW_SLIDESHOW);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::stop(const ArgMap &arguments)
 {
-  CApplicationMessenger::Get().MediaStop();
+  CStdString type="video";
+  if (arguments.find("type") != arguments.end())
+    type = arguments.find("type")->second;
+
+  if (type == "video" || type == "music")
+    CApplicationMessenger::Get().MediaStop();
+  else if (type == "photo")
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_STOP), WINDOW_SLIDESHOW);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
