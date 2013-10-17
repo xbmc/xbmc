@@ -22,7 +22,9 @@
 #ifdef HAS_PULSEAUDIO
 
 #include "PulseAEStream.h"
+#include "PulseAE.h"
 #include "AEFactory.h"
+#include "Utils/AEUtil.h"
 #include "Utils/AEUtil.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
@@ -63,6 +65,8 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   m_sampleRate = sampleRate;
   m_channelLayout = channelLayout;
   m_options = options;
+
+  bool m_passthrough = false;
 
   m_DrainOperation = NULL;
   m_slave = NULL;
@@ -139,7 +143,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
   m_MaxVolume     = CAEFactory::GetEngine()->GetVolume();
   m_Volume        = 1.0f;
-  pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
+  pa_volume_t paVolume = CAEUtil::PercentToPulseVolume((double)(m_Volume * m_MaxVolume));
   pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
 
 #if PA_CHECK_VERSION(1,0,0)
@@ -157,6 +161,8 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   pa_format_info_set_channel_map  (info[0], &map);
   pa_format_info_set_sample_format(info[0], m_SampleSpec.format);
   m_Stream = pa_stream_new_extended(m_Context, "audio stream", info, 1, NULL);
+  if (!info[0]->encoding == PA_ENCODING_PCM)
+    m_passthrough = true;
   pa_format_info_free(info[0]);
 #else
   m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map);
@@ -179,7 +185,14 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   if (options && AESTREAM_FORCE_RESAMPLE)
     flags |= PA_STREAM_VARIABLE_RATE;
 
-  if (pa_stream_connect_playback(m_Stream, NULL, NULL, (pa_stream_flags)flags, &m_ChVolume, NULL) < 0)
+  int pa_state;
+  std::string m_outputDevice = CPulseAE::GetAudioDevice(m_passthrough);
+  if (m_outputDevice == "default")
+    pa_state = pa_stream_connect_playback(m_Stream, NULL, NULL, (pa_stream_flags)flags, &m_ChVolume, NULL);
+  else
+    pa_state = pa_stream_connect_playback(m_Stream, m_outputDevice.c_str(), NULL, (pa_stream_flags)flags, &m_ChVolume, NULL);
+
+  if (pa_state < 0)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to connect stream to output");
     pa_threaded_mainloop_unlock(m_MainLoop);
@@ -212,6 +225,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   m_Initialized = true;
 
   CLog::Log(LOGINFO, "PulseAEStream::Initialized");
+  CLog::Log(LOGINFO, "  Sink Output   : %s", m_outputDevice.c_str());
   CLog::Log(LOGINFO, "  Sample Rate   : %d", m_sampleRate);
   CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(m_format));
   CLog::Log(LOGINFO, "  Channel Count : %d", m_channelLayout.Count());
@@ -430,7 +444,7 @@ void CPulseAEStream::SetVolume(float volume)
   if (volume > 0.f)
   {
     m_Volume = volume;
-    pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
+    pa_volume_t paVolume = CAEUtil::PercentToPulseVolume((double)(m_Volume * m_MaxVolume));
 
     pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
   } 

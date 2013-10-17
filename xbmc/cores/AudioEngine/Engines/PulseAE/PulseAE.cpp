@@ -31,6 +31,7 @@
 #include <pulse/pulseaudio.h>
 #include <pulse/simple.h>
 #include "guilib/LocalizeStrings.h"
+#include "settings/GUISettings.h"
 
 /* Static helpers */
 static const char *ContextStateToString(pa_context_state s)
@@ -355,7 +356,7 @@ static void SinkInfo(pa_context *c, const pa_sink_info *i, int eol, void *userda
     {
       CStdString desc, sink;
       desc.Format("%s (PulseAudio)", i->description);
-      sink.Format("pulse:%s@default", i->name);
+      sink.Format("%s", i->name);
       sinkStruct->list->push_back(AEDevice(desc, sink));
       CLog::Log(LOGDEBUG, "PulseAudio: Found %s with devicestring %s", desc.c_str(), sink.c_str());
     }
@@ -377,7 +378,7 @@ void CPulseAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
   sinkStruct.list = &devices;
   CStdString def;
   def.Format("%s (PulseAudio)",g_localizeStrings.Get(409).c_str());
-  devices.push_back(AEDevice(def, "pulse:default@default"));
+  devices.push_back(AEDevice(def, "default"));
   WaitForOperation(pa_context_get_sink_info_list(m_Context,
                    SinkInfo, &sinkStruct), m_MainLoop, "EnumerateAudioSinks");
 
@@ -409,6 +410,20 @@ void CPulseAE::SetMute(const bool enabled)
     (*itt)->SetMute(enabled);
 
   m_muted = enabled;
+}
+
+/*
+  Return audio device name set within XBMC GUI. If passthrough is set to true
+  audio passthrough device name will be returned.
+*/
+const char* CPulseAE::GetAudioDevice(bool passthrough)
+{
+  std::string m_outputDevice;
+  if (passthrough)
+    m_outputDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
+  else
+    m_outputDevice = g_guiSettings.GetString("audiooutput.audiodevice");
+  return m_outputDevice.c_str();
 }
 
 #endif

@@ -22,7 +22,9 @@
 #ifdef HAS_PULSEAUDIO
 
 #include "PulseAESound.h"
+#include "PulseAE.h"
 #include "AEFactory.h"
+#include "Utils/AEUtil.h"
 #include "utils/log.h"
 #include "MathUtils.h"
 #include "StringUtils.h"
@@ -83,7 +85,7 @@ bool CPulseAESound::Initialize()
 
   m_maxVolume     = CAEFactory::GetEngine()->GetVolume();
   m_volume        = 1.0f;
-  pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_volume * m_maxVolume));
+  pa_volume_t paVolume = CAEUtil::PercentToPulseVolume((double)(m_volume * m_maxVolume));
   pa_cvolume_set(&m_chVolume, m_sampleSpec.channels, paVolume);
 
   pa_threaded_mainloop_lock(m_mainLoop);
@@ -137,7 +139,13 @@ void CPulseAESound::Play()
   /* we only keep the most recent operation as it is the only one needed for IsPlaying to function */
   if (m_op)
     pa_operation_unref(m_op);
-  m_op = pa_context_play_sample(m_context, m_pulseName.c_str(), NULL, PA_VOLUME_INVALID, NULL, NULL);
+  m_maxVolume     = CAEFactory::GetEngine()->GetVolume();
+  pa_volume_t  paVolume = CAEUtil::PercentToPulseVolume((double)(m_volume * m_maxVolume));
+  std::string m_outputDevice = CPulseAE::GetAudioDevice(false);
+  if (m_outputDevice == "default")
+    m_op = pa_context_play_sample(m_context, m_pulseName.c_str(), NULL, paVolume, NULL, NULL);
+  else
+    m_op = pa_context_play_sample(m_context, m_pulseName.c_str(), m_outputDevice.c_str(), paVolume, NULL, NULL);   
   pa_threaded_mainloop_unlock(m_mainLoop);
 }
 

@@ -24,6 +24,10 @@
 #include "PlatformDefs.h"
 #include <math.h>
 
+#if defined(HAS_PULSEAUDIO)
+#include <pulse/pulseaudio.h>
+#endif
+
 #ifdef TARGET_WINDOWS
 #if _M_IX86_FP>0 && !defined(__SSE__)
 #define __SSE__
@@ -119,6 +123,26 @@ public:
   {
     return pow(10.0f, dB/20);
   }
+  
+  #if defined(HAS_PULSEAUDIO)
+  /*
+     Hardware volume [0,1] will be converted to dB using PercentToGain() and then converted to scale by 
+     GainToScale() before reaching PulseAudio. However the underlying math assumes 60dB volume range which
+     contradicts (-inf,0] volume range used by pulseaudio 2.0 and above. To fix this we will reverse the
+     process of GainToScale() and PercentToGain() to get hardware volume then using our own linear converter to
+     get valid pulseaudio volume [0,PA_VOLUME_NORM].
+  */
+  static inline const int PercentToPulseVolume(const float value)
+  {
+    float hardware_volume = 0.f;
+    // This is to reverse "pow(10.0f, dB/20)" in GainToScale() and "(value - 1)*db_range" in PercentToGain()
+    if ( value > 0.f )
+      hardware_volume = (double)( (20 * log10(value)) / 60 + 1 );
+    // This is to simulate pa_sw_volume_from_linear() which convert a linear hardware volume rage [0,1] 
+    // to pulseaudio volume rage [0, PA_VOLUME_NORM]
+    return (int)( hardware_volume * PA_VOLUME_NORM );
+  }
+  #endif
 
   /*! \brief convert a scale factor to dB gain for audio manipulation
    Inverts GainToScale result
