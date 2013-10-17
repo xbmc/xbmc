@@ -98,8 +98,8 @@ private:
 class CMyPlexConnection : public CPlexConnection
 {
   public:
-    CMyPlexConnection(int type, const CStdString& host, int port)
-      : CPlexConnection(type, host, port) {}
+    CMyPlexConnection()
+    : CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "my.plexapp.com", 443) {}
 
     virtual CStdString GetAccessToken() const
     {

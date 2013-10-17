@@ -43,7 +43,8 @@ enum EPlexDirectoryType
   PLEX_DIR_TYPE_THUMB,
   PLEX_DIR_TYPE_IMAGE,
   PLEX_DIR_TYPE_CHANNELS,
-  PLEX_DIR_TYPE_MESSAGE
+  PLEX_DIR_TYPE_MESSAGE,
+  PLEX_DIR_TYPE_USER
 };
 
 // Windows.
@@ -59,11 +60,11 @@ enum EPlexDirectoryType
 #define WINDOW_MYPLEX_LOGIN                 10203
 
 // Dialogs.
-#define WINDOW_DIALOG_RATING              10200
-#define WINDOW_DIALOG_TIMER               10201
-#define WINDOW_DIALOG_FILTER_SORT         10202
-#define WINDOW_DIALOG_PLEX_SUBTITLE_PICKER 10204
-#define WINDOW_DIALOG_PLEX_AUDIO_PICKER    10205
+#define WINDOW_DIALOG_RATING                10200
+#define WINDOW_DIALOG_TIMER                 10201
+#define WINDOW_DIALOG_FILTER_SORT           10202
+#define WINDOW_DIALOG_PLEX_SUBTITLE_PICKER  10204
+#define WINDOW_DIALOG_PLEX_AUDIO_PICKER     10205
 
 // Sent when the set of remote sources has changed
 #define GUI_MSG_UPDATE_REMOTE_SOURCES GUI_MSG_USER + 40

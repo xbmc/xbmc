@@ -69,6 +69,12 @@ void CPlexAttributeParserKey::Process(const CURL& url, const CStdString &key, co
   else if (boost::starts_with(value, "http://") || boost::starts_with(value, "https://"))
   {
     keyUrl = value;
+    if (keyUrl.GetHostName() == "node.plexapp.com")
+    {
+      keyUrl.SetProtocol("plexserver");
+      keyUrl.SetHostName("node");
+      keyUrl.SetPort(0);
+    }
   }
   else
   {

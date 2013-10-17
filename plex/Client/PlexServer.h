@@ -88,6 +88,8 @@ public:
   
   void save(TiXmlNode* parent);
   static CPlexServerPtr load(TiXmlElement* element);
+  
+  void SetActiveConnection(CPlexConnectionPtr connection) { m_activeConnection = connection; }
 
 private:
   bool m_owned;

@@ -30,11 +30,22 @@ CPlexServerReachabilityThread::Process()
 
 CPlexServerManager::CPlexServerManager() : m_stopped(false)
 {
+  CPlexConnectionPtr conn;
+  
   _myPlexServer = CPlexServerPtr(new CPlexServer("myplex", "myPlex", true));
-  _myPlexServer->AddConnection(CPlexConnectionPtr(new CMyPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "my.plexapp.com", 443)));
+  conn = CPlexConnectionPtr(new CMyPlexConnection);
+  _myPlexServer->AddConnection(conn);
+  _myPlexServer->SetActiveConnection(conn);
 
   _localServer = CPlexServerPtr(new CPlexServer("local", PlexUtils::GetHostName(), true));
-  _localServer->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "127.0.0.1", 32400)));
+  conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "127.0.0.1", 32400));
+  _localServer->AddConnection(conn);
+  _localServer->SetActiveConnection(conn);
+  
+  _nodeServer = CPlexServerPtr(new CPlexServer("node", "plexNode", true));
+  conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "node.plexapp.com", 32400));
+  _nodeServer->AddConnection(conn);
+  _nodeServer->SetActiveConnection(conn);
 }
 
 CPlexServerPtr
@@ -69,6 +80,9 @@ CPlexServerManager::FindByUUID(const CStdString &uuid)
 
   if (uuid.Equals("local"))
     return _localServer;
+  
+  if (uuid.Equals("node"))
+    return _nodeServer;
 
   if (m_serverMap.find(uuid) != m_serverMap.end())
   {

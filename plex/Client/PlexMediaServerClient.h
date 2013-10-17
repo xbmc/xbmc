@@ -42,6 +42,8 @@ public:
   void deleteItem(const CFileItemPtr &item);
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
+  void share(const CFileItemPtr &item, const CStdString &network, const CStdString &message);
+
 private:
   CStdString GetPrefix(const CFileItemPtr& item) const
   {

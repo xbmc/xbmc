@@ -864,3 +864,18 @@ msgctxt "#52301"
 msgid "The Server you where browsing went away..."
 msgstr "The Server you where browsing went away..."
 
+msgctxt "#52400"
+msgid "No linked social accounts"
+msgstr "No linked social accounts"
+
+msgctxt "#52401"
+msgid "Go to http://my.plexapp.com to link your account"
+msgstr "Go to http://my.plexapp.com to link your account"
+
+msgctxt "#52402"
+msgid "Enter message"
+msgstr "Enter message"
+
+msgctxt "#52403"
+msgid "Share %s on %s with message:"
+msgstr "Share %s on %s with message:"

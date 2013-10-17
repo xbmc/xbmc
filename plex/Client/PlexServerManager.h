@@ -64,6 +64,7 @@ public:
 private:
   CPlexServerPtr _myPlexServer;
   CPlexServerPtr _localServer;
+  CPlexServerPtr _nodeServer;
   bool m_stopped;
 
   void NotifyAboutServer(CPlexServerPtr server, bool added = true);

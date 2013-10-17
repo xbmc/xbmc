@@ -41,6 +41,21 @@ void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJo
   CJobQueue::OnJobComplete(jobID, success, job);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::share(const CFileItemPtr &item, const CStdString &network, const CStdString &message)
+{
+  CStdString fnameStr;
+  fnameStr.Format("pms/social/networks/%s/share", network);
+
+  CURL u;
+  u.SetProtocol("plexserver");
+  u.SetHostName("myplex");
+  u.SetFileName(fnameStr);
+  u.SetOption("url", item->GetProperty("url").asString());
+  u.SetOption("message", message);
+
+  AddJob(new CPlexMediaServerClientJob(u, "POST"));
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,

@@ -184,6 +184,7 @@ static DirectoryTypeMap g_typeMap = boost::assign::list_of<DirectoryTypeMap::rel
                                     (PLEX_DIR_TYPE_THUMB, "thumb")
                                     (PLEX_DIR_TYPE_IMAGE, "image")
                                     (PLEX_DIR_TYPE_CHANNELS, "plugin")
+                                    (PLEX_DIR_TYPE_USER, "user")
                                     ;
 
 
@@ -333,10 +334,9 @@ CPlexDirectory::NewPlexElement(TiXmlElement *element, const CFileItem &parentIte
   newItem->SetProperty("plex", true);
   newItem->SetProperty("plexserver", baseUrl.GetHostName());
 
-
-  /* set the CanShare and CanRecommend properties */
-  newItem->SetProperty("canShare", newItem->HasProperty("url"));
-  newItem->SetProperty("canRecommend", newItem->HasProperty("url"));
+  /* set the canShare and canRecommend properties */
+  newItem->SetProperty("canShare", newItem->HasProperty("url") ? "yes" : "");
+  newItem->SetProperty("canRecommend", newItem->HasProperty("url") ? "yes" : "");
 
 #if 0
   CLog::Log(LOGDEBUG, "CPlexDirectory::NewPlexElement %s (type: %s) -> isFolder(%s)",
