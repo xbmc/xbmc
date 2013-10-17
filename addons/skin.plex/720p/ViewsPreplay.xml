@@ -1167,9 +1167,7 @@
 	<!-- Pre-play Clip -->
 	<include name="PreplayClip">
 		<control type="group" id="777">
-			<!--><visible>Container.Content(clip)</visible>-->
-			<!-- a hack until Container.Content is defined for Queue content preplay screen -->
-			<visible>!Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(episode) + !Container.Content(movie)</visible>
+			<visible>Container.Content(clip)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
@@ -1205,15 +1203,15 @@
 					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
 				</control>
 			</control>
-			<!-- poster -->
-			<control type="largeimage">
-				<posy>77</posy>
-				<posx>293</posx>
-				<width>184</width>
-				<height>276</height>
-				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.GrandparentThumb]</texture>
-				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<!-- Source Icon -->
+			<control type="image">
+				<posy>146</posy>
+				<posx>273</posx>
+				<width>204</width>
+				<height>204</height>
+				<texture>$INFO[ListItem.Art(sourceIcon)]</texture>
+				<aspectratio align="right" aligny="center">keep</aspectratio>
+				<visible>!IsEmpty(ListItem.Art(sourceIcon))</visible>
 			</control>
 			<!-- thumb -->
 			<control type="largeimage">
@@ -1231,42 +1229,84 @@
 				<itemgap>10</itemgap>
 				<posy>61</posy>
 				<posx>560</posx>
-				<!-- Title -->
-				<control type="label">
-					<width>570</width>
-					<height>30</height>
-					<label>$INFO[ListItem.TVShowTitle]</label>
-					<font>CondensedBold-36</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>ff333333</shadowcolor>
-					<visible>true</visible>
-				</control>
-				<!-- Title Episode & Watched/Unwatched indicator -->
+				<!-- Title & Watched/Unwatched indicator -->
 				<control type="grouplist">
-					<width>600</width>
+					<width>630</width>
 					<height>40</height>
 					<align>left</align>
 					<usecontrolcoords>true</usecontrolcoords>
 					<orientation>horizontal</orientation>
 					<itemgap>20</itemgap>
 					<control type="label">
-						<width min="29" max="500">auto</width>
-						<height>40</height>
+						<width min="29" max="570">auto</width>
+						<height>30</height>
 						<label>$INFO[ListItem.Title]</label>
 						<font>CondensedBold-36</font>
-						<textcolor>FF999999</textcolor>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff333333</shadowcolor>
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posy>13</posy>
+						<posy>10</posy>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>
+				<!-- Year / Duration / Source -->
+				<control type="grouplist">
+					<width>630</width>
+					<height>40</height>
+					<align>left</align>
+					<usecontrolcoords>true</usecontrolcoords>
+					<orientation>horizontal</orientation>
+					<itemgap>0</itemgap>
+					<control type="label">
+						<width min="30" max="500">auto</width>
+						<height>30</height>
+						<label>$INFO[ListItem.Year]</label>
+						<font>CondensedBold-30</font>
+						<textcolor>FF999999</textcolor>
+						<visible>!IsEmpty(ListItem.Year)</visible>
+					</control>
+					<control type="label">
+						<width min="30" max="500">auto</width>
+						<height>30</height>
+						<label> &#xB7; </label>
+						<font>CondensedBold-30</font>
+						<textcolor>FF999999</textcolor>
+						<visible>!IsEmpty(ListItem.Year)</visible>
+					</control>
+					<control type="label">
+						<width min="30" max="500">auto</width>
+						<height>30</height>
+						<label>$INFO[ListItem.DurationStr]</label>
+						<font>CondensedBold-30</font>
+						<textcolor>FF999999</textcolor>
+						<visible>!IsEmpty(ListItem.DurationStr)</visible>
+					</control>
+					<control type="label">
+						<width min="30" max="500">auto</width>
+						<height>30</height>
+						<label> &#xB7; </label>
+						<font>CondensedBold-30</font>
+						<textcolor>FF999999</textcolor>
+						<visible>!IsEmpty(ListItem.DurationStr) + IsEmpty(ListItem.Art(sourceIcon))</visible>
+					</control>
+					<control type="label">
+						<width min="30" max="500">auto</width>
+						<height>30</height>
+						<label>$INFO[ListItem.Property(sourceTitle)]</label>
+						<font>CondensedBold-30</font>
+						<textcolor>FF999999</textcolor>
+						<visible>!IsEmpty(ListItem.Property(sourceTitle)) + IsEmpty(ListItem.Art(sourceIcon))</visible>
+					</control>
+				</control>
+				
+				
 				<!-- Season, Episode -->
 				<control type="label">
 					<width>600</width>
 					<height>25</height>
-					<label>$LOCALIZE[31141] $INFO[ListItem.Season]$INFO[ListItem.Date, &#xB7; ]</label>
+					<label>$INFO[ListItem.Date]</label>
 					<font>Condensed-18</font>
 					<textcolor>white</textcolor>
 					<visible>true</visible>
@@ -1275,40 +1315,7 @@
 			<!-- Infos Right -->
 			<control type="group">
 				<posy>61</posy>
-				<!-- MPAA flag -->
-				<control type="image">
-					<posy>25</posy>
-					<posx>140r</posx>
-					<width>100</width>
-					<height>17</height>
-					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
-					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<colordiffuse>FF999999</colordiffuse>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-					<visible>true</visible>
-				</control>
-				<!-- DurationStr -->
-				<control type="label">
-					<posy>40</posy>
-					<posx>40r</posx>
-					<width>200</width>
-					<height>40</height>
-					<align>right</align>
-					<label>$INFO[ListItem.DurationStr]</label>
-					<font>CondensedBold-36</font>
-					<textcolor>FF999999</textcolor>
-					<visible>true</visible>
-				</control>
 				<!-- Star Rating -->
-				<control type="image">
-					<posy>94</posy>
-					<posx>140r</posx>
-					<width>100</width>
-					<height>20</height>
-					<texture>$INFO[ListItem.StarRating]</texture>
-					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<visible>IsEmpty(ListItem.Property(hasUserRating))</visible>
-				</control>
 				<control type="image">
 					<posy>94</posy>
 					<posx>140r</posx>
@@ -1326,6 +1333,7 @@
 				<posx>560</posx>
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
+				<visible>!IsEmpty(ListItem.Director)</visible>
 				<control type="label">
 					<label>[UPPERCASE]$LOCALIZE[31135][/UPPERCASE]</label>
 					<include>LeftInfoFormatGrey</include>
@@ -1333,61 +1341,6 @@
 				<control type="label">
 					<label>$INFO[ListItem.Director]</label>
 					<include>LeftInfoFormatWhite</include>
-				</control>
-			</control>
-			<!-- Cast -->
-			<control type="grouplist">
-				<posy>278</posy>
-				<posx>560</posx>
-				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
-				<control type="label">
-					<label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>
-					<include>LeftInfoFormatGrey</include>
-				</control>
-				<control type="label">
-					<label>$INFO[ListItem.Cast]</label>
-					<include>LeftInfoFormatWhite</include>
-				</control>
-			</control>
-			<!-- Audio & Subtitles buttons -->
-			<control type="group" id="999">
-				<defaultcontrol always="true">19101</defaultcontrol>
-				<!-- Audio -->
-				<control type="grouplist">
-					<posy>306</posy>
-					<posx>560</posx>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<control type="label">
-						<textoffsetx>0</textoffsetx>
-						<!-- NOTE: NEED STRING FOR THIS -->
-						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
-						<label>[UPPERCASE]Audio[/UPPERCASE]</label>
-						<include>LeftInfoFormatGrey</include>
-					</control>
-					<control type="label">
-						<label>$INFO[ListItem.Property(SelectedAudioStream)]</label>
-						<include>LeftInfoFormatWhite</include>
-					</control>
-				</control>
-				<!-- Subtitles -->
-				<control type="grouplist">
-					<posy>334</posy>
-					<posx>560</posx>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<control type="label">
-						<textoffsetx>0</textoffsetx>
-						<!-- NOTE: NEED STRING FOR THIS -->
-						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
-						<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
-						<include>LeftInfoFormatGrey</include>
-					</control>
-					<control type="label">
-						<label>$INFO[ListItem.Property(SelectedSubtitleStream)]</label>
-						<include>LeftInfoFormatWhite</include>
-					</control>
 				</control>
 			</control>
 			<!-- plot -->
