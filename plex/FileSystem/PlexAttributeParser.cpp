@@ -99,6 +99,9 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
     CPlexServerPtr bestServer = g_plexApplication.serverManager->GetBestServer();
     if (bestServer)
       mediaUrl.SetHostName(bestServer->GetUUID());
+    else
+      /* if we don't have a best server we use myPlex even for node content */
+      mediaUrl.SetHostName("myplex");
   }
 
   if (boost::starts_with(value, "http://") || boost::starts_with(value, "https://"))
