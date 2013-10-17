@@ -3085,53 +3085,58 @@ bool CApplication::ProcessEventServer(float frameTime)
   es = CEventServer::GetInstance();
   if (!es || !es->Running() || es->GetNumberOfClients()==0)
     return false;
-  unsigned int wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
+  EVENTCLIENT::EC_button buttonSent = es->GetButtonCode(joystickName, isAxis, fAmount);
 
-  if (wKeyID)
+  if (buttonSent.keycode | buttonSent.unicode)
   {
     if (joystickName.length() > 0)
     {
       if (isAxis == true)
       {
         if (fabs(fAmount) >= 0.08)
-          m_lastAxisMap[joystickName][wKeyID] = fAmount;
+          m_lastAxisMap[joystickName][buttonSent.keycode] = fAmount;
         else
-          m_lastAxisMap[joystickName].erase(wKeyID);
+          m_lastAxisMap[joystickName].erase(buttonSent.keycode);
       }
 
-      return ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount);
+      return ProcessJoystickEvent(joystickName, buttonSent.keycode, isAxis, fAmount);
     }
     else
     {
       CKey key;
-      if (wKeyID & ES_FLAG_UNICODE)
+      if (buttonSent.unicode)
       {
-        key = CKey((uint8_t)0, wKeyID & ~ES_FLAG_UNICODE, 0, 0, 0);
+        XBMC_keysym keyPressed;
+        keyPressed.scancode = 0;
+        keyPressed.sym = (XBMCKey)buttonSent.keycode;
+        keyPressed.unicode = buttonSent.unicode;
+        keyPressed.mod = (XBMCMod) buttonSent.modifier;
+        key = g_Keyboard.ProcessKeyDown(keyPressed);
+        g_Keyboard.ProcessKeyUp();
         return OnKey(key);
       }
-
-      if(wKeyID == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
-        key = CKey(wKeyID, (BYTE)(255*fAmount), 0, 0.0, 0.0, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
-        key = CKey(wKeyID, 0, (BYTE)(255*fAmount), 0.0, 0.0, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
-        key = CKey(wKeyID, 0, 0, -fAmount, 0.0, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
-        key = CKey(wKeyID, 0, 0,  fAmount, 0.0, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_UP)
-        key = CKey(wKeyID, 0, 0, 0.0,  fAmount, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
-        key = CKey(wKeyID, 0, 0, 0.0, -fAmount, 0.0, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
-        key = CKey(wKeyID, 0, 0, 0.0, 0.0, -fAmount, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
-        key = CKey(wKeyID, 0, 0, 0.0, 0.0,  fAmount, 0.0, frameTime);
-      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
-        key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0,  fAmount, frameTime);
-      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
-        key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
+      else if(buttonSent.keycode == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
+        key = CKey(buttonSent.keycode, (BYTE)(255*fAmount), 0, 0.0, 0.0, 0.0, 0.0, frameTime);
+      else if(buttonSent.keycode == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
+        key = CKey(buttonSent.keycode, 0, (BYTE)(255*fAmount), 0.0, 0.0, 0.0, 0.0, frameTime);
+      else if(buttonSent.keycode == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
+        key = CKey(buttonSent.keycode, 0, 0, -fAmount, 0.0, 0.0, 0.0, frameTime);
+      else if(buttonSent.keycode == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+        key = CKey(buttonSent.keycode, 0, 0,  fAmount, 0.0, 0.0, 0.0, frameTime);
+      else if(buttonSent.keycode == KEY_BUTTON_LEFT_THUMB_STICK_UP)
+        key = CKey(buttonSent.keycode, 0, 0, 0.0,  fAmount, 0.0, 0.0, frameTime);
+      else if(buttonSent.keycode == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+        key = CKey(buttonSent.keycode, 0, 0, 0.0, -fAmount, 0.0, 0.0, frameTime);
+      else if(buttonSent.keycode == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
+        key = CKey(buttonSent.keycode, 0, 0, 0.0, 0.0, -fAmount, 0.0, frameTime);
+      else if(buttonSent.keycode == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+        key = CKey(buttonSent.keycode, 0, 0, 0.0, 0.0,  fAmount, 0.0, frameTime);
+      else if(buttonSent.keycode == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
+        key = CKey(buttonSent.keycode, 0, 0, 0.0, 0.0, 0.0,  fAmount, frameTime);
+      else if(buttonSent.keycode == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+        key = CKey(buttonSent.keycode, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
       else
-        key = CKey(wKeyID);
+        key = CKey(buttonSent.keycode);
       key.SetFromService(true);
       return OnKey(key);
     }

@@ -34,8 +34,12 @@
 namespace EVENTCLIENT
 {
 
-  #define ES_FLAG_UNICODE    0x80000000 // new 16bit key flag to support real unicode over EventServer
-
+  typedef struct EC_button {
+    unsigned int keycode;
+    unsigned short modifier;
+    unsigned int unicode;
+  } EC_button;
+    
   class CEventAction
   {
   public:
@@ -59,6 +63,8 @@ namespace EVENTCLIENT
     CEventButtonState()
     {
       m_iKeyCode   = 0;
+      m_modifiers = 0;
+      m_unicode = 0;
       m_mapName    = "";
       m_buttonName = "";
       m_fAmount    = 0.0f;
@@ -71,6 +77,8 @@ namespace EVENTCLIENT
     }
 
     CEventButtonState(unsigned int iKeyCode,
+                      unsigned short modifiers,
+                      unsigned int unicode,
                       std::string mapName,
                       std::string buttonName,
                       float fAmount,
@@ -80,6 +88,8 @@ namespace EVENTCLIENT
       )
     {
       m_iKeyCode   = iKeyCode;
+      m_modifiers = modifiers;
+      m_unicode    = unicode;
       m_buttonName = buttonName;
       m_mapName    = mapName;
       m_fAmount    = fAmount;
@@ -99,12 +109,16 @@ namespace EVENTCLIENT
     int  ControllerNumber() const { return m_iControllerNumber; }
     bool Axis() const { return m_bAxis; }
     unsigned int KeyCode() const { return m_iKeyCode; }
+    unsigned short Modifiers() const { return m_modifiers; }
+    unsigned int Unicode() const { return m_unicode; }
     float Amount() const  { return m_fAmount; }
     void Load();
     const std::string& JoystickName() const { return m_joystickName; }
 
     // data
     unsigned int      m_iKeyCode;
+    unsigned short    m_modifiers;
+    unsigned int      m_unicode;
     unsigned short    m_iControllerNumber;
     std::string       m_buttonName;
     std::string       m_mapName;
@@ -191,7 +205,7 @@ namespace EVENTCLIENT
     void FreePacketQueues();
 
     // return event states
-    unsigned int GetButtonCode(std::string& strMapName, bool& isAxis, float& amount);
+    EC_button GetButtonCode(std::string& strMapName, bool& isAxis, float& amount);
 
     // update mouse position
     bool GetMousePos(float& x, float& y);
@@ -202,7 +216,7 @@ namespace EVENTCLIENT
     // packet handlers
     virtual bool OnPacketHELO(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketBYE(EVENTPACKET::CEventPacket *packet);
-    virtual bool OnPacketBUTTON(EVENTPACKET::CEventPacket *packet);
+    virtual bool OnPacketBUTTON(EVENTPACKET::CEventPacket *packet, bool extended);
     virtual bool OnPacketMOUSE(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketNOTIFICATION(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketLOG(EVENTPACKET::CEventPacket *packet);

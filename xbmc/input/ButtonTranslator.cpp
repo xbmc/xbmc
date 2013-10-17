@@ -1360,6 +1360,26 @@ uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
   return buttonCode;
 }
 
+uint32_t CButtonTranslator::TranslateKeyboardStringToKeysym(const char *szButton)
+{
+  uint32_t buttonCode = 0;
+  XBMCKEYTABLE keytable;
+  
+  // Look up the key name
+  if (KeyTableLookupName(szButton, &keytable))
+  {
+    buttonCode = (XBMCKey)keytable.sym;
+  }
+  
+  // The lookup failed i.e. the key name wasn't found
+  else
+  {
+    CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", szButton);
+  }
+  
+  return buttonCode;
+}
+
 uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 {
   uint32_t button_id = 0;

@@ -128,7 +128,11 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
     // values.
     if (keytable.unicode == 0 && unicode != 0)
       unicode = 0;
-    else if (keysym.unicode > 32 && keysym.unicode < 128)
+    // If we get a key and need to populate the unicode value (e.g. from the event server)
+    else if (unicode == KEY_INVALID) 
+        unicode = keytable.unicode;
+      
+    if (unicode > 32 && unicode < 128)
       ascii = unicode & 0x7f;
   }
 

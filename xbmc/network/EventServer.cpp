@@ -362,16 +362,16 @@ bool CEventServer::ExecuteNextAction()
   return false;
 }
 
-unsigned int CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, float& fAmount)
+EC_button CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, float& fAmount)
 {
   CSingleLock lock(m_critSection);
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
-  unsigned int bcode = 0;
+  EC_button bcode;
 
   while (iter != m_clients.end())
   {
     bcode = iter->second->GetButtonCode(strMapName, isAxis, fAmount);
-    if (bcode)
+    if (bcode.keycode | bcode.unicode)
       return bcode;
     iter++;
   }

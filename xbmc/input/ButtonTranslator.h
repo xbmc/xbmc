@@ -121,6 +121,7 @@ private:
   static uint32_t TranslateUniversalRemoteString(const char *szButton);
 
   static uint32_t TranslateKeyboardString(const char *szButton);
+  static uint32_t TranslateKeyboardStringToKeysym(const char *szButton);
   static uint32_t TranslateKeyboardButton(TiXmlElement *pButton);
 
   static uint32_t TranslateMouseCommand(const char *szButton);

@@ -88,7 +88,8 @@ namespace EVENTPACKET
     PTB_VKEY       = 0x40,
     PTB_AXIS       = 0x80,
     PTB_AXISSINGLE = 0x100,
-    PTB_UNICODE    = 0x200
+    PTB_UNICODE    = 0x200,
+    PTB_SDL        = 0x400
   };
 
   enum MouseFlags
@@ -133,6 +134,9 @@ namespace EVENTPACKET
     /*            0x20 => do not repeat                                     */
     /*            0x40 => virtual key                                       */
     /*            0x80 => axis key                                          */
+    /*            0x100 => SingleAxis key                                   */
+    /*            0x200 => Unicode key                                      */
+    /*            0x400 => XBMC SDL Key                                     */
     /* %i - amount ( 0 => 65k maps to -1 => 1 )                             */
     /* %s - device map (case sensitive and required if flags & 0x01)        */
     /*      "KB" - Standard keyboard map                                    */
@@ -189,12 +193,45 @@ namespace EVENTPACKET
     /* %c - log type                                                        */
     /* %s - message                                                         */
     /************************************************************************/
+      
     PT_ACTION        = 0x0A,
     /************************************************************************/
     /* Payload format                                                       */
     /* %c - action type                                                     */
     /* %s - action message                                                  */
     /************************************************************************/
+      
+    PT_BUTTON_EXTENDED        = 0x0B,
+    /************************************************************************/
+    /* Payload format                                                       */
+    /* %d - button code                                                     */
+    /* %i - button modifiers - used with flags 0x01 ("KB"), 0x200, 0x400    */
+    /* %i - flags 0x01 => use button map/name instead of code               */
+    /*            0x02 => btn down                                          */
+    /*            0x04 => btn up                                            */
+    /*            0x08 => use amount                                        */
+    /*            0x10 => queue event                                       */
+    /*            0x20 => do not repeat                                     */
+    /*            0x40 => virtual key                                       */
+    /*            0x80 => axis key                                          */
+    /*            0x100 => SingleAxis key                                   */
+    /*            0x200 => Unicode key (Uses SDLmod values for modifiers)   */
+    /*            0x400 => XBMC SDL Key (Uses SDLmod values for modifiers)  */
+    /* %i - amount ( 0 => 65k maps to -1 => 1 )                             */
+    /* %s - device map (case sensitive and required if flags & 0x01)        */
+    /*      "KB" - Standard keyboard map (Uses SDLmod values for modifiers) */
+    /*      "XG" - Xbox Gamepad                                             */
+    /*      "R1" - Xbox Remote                                              */
+    /*      "R2" - Xbox Universal Remote                                    */
+    /*      "LI:devicename" -  valid LIRC device map where 'devicename'     */
+    /*                         is the actual name of the LIRC device        */
+    /*      "JS<num>:joyname" -  valid Joystick device map where            */
+    /*                           'joyname'  is the name specified in        */
+    /*                           the keymap. JS only supports button code   */
+    /*                           and not button name currently (!0x01).     */
+    /* %s - button name (required if flags & 0x01)                          */
+    /************************************************************************/
+      
     PT_DEBUG         = 0xFF,
     /************************************************************************/
     /* Payload format:                                                      */
