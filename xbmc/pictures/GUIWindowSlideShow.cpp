@@ -169,7 +169,7 @@ void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", item, param);
   
   /* PLEX */
-  g_plexApplication.timelineManager->ReportProgress(item, CPlexTimelineManager::MEDIA_STATE_PLAYING);
+  g_plexApplication.timelineManager->ReportProgress(item, m_bPause ? CPlexTimelineManager::MEDIA_STATE_PAUSED : CPlexTimelineManager::MEDIA_STATE_PLAYING);
   /* END PLEX */
 }
 
