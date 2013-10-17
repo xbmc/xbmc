@@ -35,7 +35,7 @@ void CStreamDetail::Serialize(CVariant &value) const
 }
 
 CStreamDetailVideo::CStreamDetailVideo() :
-  CStreamDetail(CStreamDetail::VIDEO), m_iWidth(0), m_iHeight(0), m_fAspect(0.0), m_iDuration(0)
+  CStreamDetail(CStreamDetail::VIDEO), m_iWidth(0), m_iHeight(0), m_fAspect(0.0), m_iDuration(0), m_avg_frame_rate(0.0)
 {
 }
 
