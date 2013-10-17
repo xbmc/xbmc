@@ -158,7 +158,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
         options.AddOption("token", "");
       }
 
-      options.AddOption("machineidentifier", item->GetProperty("plexserver").asString());
+      options.AddOption("machineIdentifier", item->GetProperty("plexserver").asString());
     }
 
     int player = g_application.IsPlayingAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
