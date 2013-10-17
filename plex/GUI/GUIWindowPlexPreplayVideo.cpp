@@ -40,6 +40,8 @@ bool CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
       m_vecItems->SetContent("movie");
     if (m_vecItems->GetContent() == "episodes")
       m_vecItems->SetContent("episode");
+    if (m_vecItems->GetContent() == "clips")
+      m_vecItems->SetContent("clip");
     
     g_plexApplication.m_preplayItem = m_vecItems->Get(0);
     g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems->Get(0));

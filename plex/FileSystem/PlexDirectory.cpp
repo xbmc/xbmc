@@ -511,6 +511,9 @@ CStdString CPlexDirectory::GetContentFromType(EPlexDirectoryType typeNr)
     case PLEX_DIR_TYPE_CHANNELS:
       content = "channels";
       break;
+    case PLEX_DIR_TYPE_CLIP:
+      content = "clips";
+      break;
     default:
       CLog::Log(LOGWARNING, "CPlexDirectory::GetContentFromType oopes, no Content for Type %s", CPlexDirectory::GetDirectoryTypeString(typeNr).c_str());
       break;
