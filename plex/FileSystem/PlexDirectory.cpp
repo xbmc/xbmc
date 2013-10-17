@@ -244,6 +244,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("banner", g_parserMediaUrl)
                                      ("parentThumb", g_parserMediaUrl)
                                      ("grandparentThumb", g_parserMediaUrl)
+                                     ("sourceIcon", g_parserMediaUrl)
 
                                      /* Media flags */
                                      ("aspectRatio", g_parserMediaFlag)
