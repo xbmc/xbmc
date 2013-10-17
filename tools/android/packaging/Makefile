@@ -69,11 +69,12 @@ package: extras
 
 extras: libs
 	rm -rf xbmc/assets/python2.6/lib/
-	mkdir -p xbmc/assets xbmc/res xbmc/assets/python2.6/lib/
+	mkdir -p xbmc/assets xbmc/res xbmc/res/raw xbmc/assets/python2.6/lib/
 	cp -rfp $(PREFIX)/share/xbmc/* ./xbmc/assets
 	find `pwd`/xbmc/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find `pwd`/xbmc/assets/system/ -name "*.so" -exec rm {} \;
 	find `pwd`/xbmc/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
+	@echo "native_arch=$(ARCH)" > xbmc/res/raw/xbmc.properties
 	cd xbmc/assets/addons; rm -rf $(EXCLUDED_ADDONS)
 	cp -rfp $(PREFIX)/lib/python2.6 xbmc/assets/python2.6/lib/
 	cp -rfp $(XBMCROOT)/media/Splash.png xbmc/res/drawable/splash.png
