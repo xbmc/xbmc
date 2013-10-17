@@ -1,0 +1,57 @@
+--- /libcnary/node.c	2011-06-25 05:00:48.000000000 +0400
++++ /libcnary/node.c	2013-03-19 20:34:11.000000000 +0400
+@@ -95,16 +95,17 @@
+ }
+ 
+ int node_detach(node_t* parent, node_t* child) {
+-	if (!parent || !child) return 0;
+-	if (node_list_remove(parent->children, child) == 0) {
++	if (!parent || !child) return -1;
++	int index = node_list_remove(parent->children, child);
++	if (index >= 0) {
+ 		parent->count--;
+ 	}
+-	return 0;
++	return index;
+ }
+ 
+ int node_insert(node_t* parent, unsigned int index, node_t* child)
+ {
+-	if (!parent || !child) return;
++	if (!parent || !child) return -1;
+ 	child->isLeaf = TRUE;
+ 	child->isRoot = FALSE;
+ 	child->parent = parent;
+@@ -209,7 +210,7 @@
+ node_t* node_copy_deep(node_t* node, copy_func_t copy_func)
+ {
+ 	if (!node) return NULL;
+-	void *data;
++	void *data = NULL;
+ 	if (copy_func) {
+ 		data = copy_func(node->data);
+ 	}
+ 	
+--- /src/base64.c	2013-10-06 23:14:24.000000000 +0400
++++ /src/base64.c	2013-03-19 20:34:11.000000000 +0400
+@@ -104,9 +104,9 @@
+ 
+ unsigned char *base64decode(const char *buf, size_t *size)
+ {
+-	if (!buf) return;
++	if (!buf) return NULL;
+ 	size_t len = strlen(buf);
+-	if (len <= 0) return;
++	if (len <= 0) return NULL;
+ 	unsigned char *outbuf = (unsigned char*)malloc((len/4)*3+3);
+ 
+ 	unsigned char *line;
+@@ -114,7 +114,7 @@
+ 
+ 	line = (unsigned char*)strtok((char*)buf, "\r\n\t ");
+ 	while (line) {
+-		p+=base64decode_block(outbuf+p, line, strlen((char*)line));
++		p+=base64decode_block(outbuf+p, (const char*)line, strlen((char*)line));
+ 
+ 		// get next line of base64 encoded block
+ 		line = (unsigned char*)strtok(NULL, "\r\n\t ");
