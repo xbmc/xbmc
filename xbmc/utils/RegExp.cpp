@@ -27,12 +27,27 @@
 
 using namespace PCRE;
 
-CRegExp::CRegExp(bool caseless)
+#ifndef PCRE_UCP
+#define PCRE_UCP 0
+#endif // PCRE_UCP
+
+int CRegExp::m_Utf8Supported = -1;
+int CRegExp::m_UcpSupported  = -1;
+
+
+CRegExp::CRegExp(bool caseless /*= false*/, bool utf8 /*= false*/)
 {
   m_re          = NULL;
   m_iOptions    = PCRE_DOTALL | PCRE_NEWLINE_ANY;
   if(caseless)
     m_iOptions |= PCRE_CASELESS;
+  if (utf8)
+  {
+    if (IsUtf8Supported())
+      m_iOptions |= PCRE_UTF8;
+    if (AreUnicodePropertiesSupported())
+      m_iOptions |= PCRE_UCP;
+  }
 
   m_offset      = 0;
   m_bMatched    = false;
@@ -150,6 +165,17 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
 
     case PCRE_ERROR_MATCHLIMIT:
       CLog::Log(LOGERROR, "PCRE: Match limit reached");
+      return -1;
+
+#ifdef PCRE_ERROR_SHORTUTF8 
+    case PCRE_ERROR_SHORTUTF8:
+#endif
+    case PCRE_ERROR_BADUTF8:
+      CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character");
+      return -1;
+
+    case PCRE_ERROR_BADUTF8_OFFSET:
+      CLog::Log(LOGERROR, "PCRE: Offset (%d) is pointing to the middle of UTF-8 character", startoffset);
       return -1;
 
     default:
@@ -304,3 +330,54 @@ inline bool CRegExp::IsValidSubNumber(int iSub) const
   return iSub >= 0 && iSub <= m_iMatchCount && iSub <= m_MaxNumOfBackrefrences;
 }
 
+
+bool CRegExp::IsUtf8Supported(void)
+{
+  if (m_Utf8Supported == -1)
+  {
+    if (pcre_config(PCRE_CONFIG_UTF8, &m_Utf8Supported) != 0)
+      m_Utf8Supported = 0;
+  }
+
+  return m_Utf8Supported == 1;
+}
+
+bool CRegExp::AreUnicodePropertiesSupported(void)
+{
+#if defined(PCRE_CONFIG_UNICODE_PROPERTIES) && PCRE_UCP != 0
+  if (m_UcpSupported == -1)
+  {
+    if (pcre_config(PCRE_CONFIG_UNICODE_PROPERTIES, &m_UcpSupported) != 0)
+      m_UcpSupported = 0;
+  }
+#endif
+
+  return m_UcpSupported == 1;
+}
+
+bool CRegExp::LogCheckUtf8Support(void)
+{
+  bool utf8FullSupport = true;
+
+  if (!CRegExp::IsUtf8Supported())
+  {
+    utf8FullSupport = false;
+    CLog::Log(LOGWARNING, "UTF-8 is not supported in PCRE lib, support for national symbols is limited!");
+  }
+
+  if (!CRegExp::AreUnicodePropertiesSupported())
+  {
+    utf8FullSupport = false;
+    CLog::Log(LOGWARNING, "Unicode properties are not enabled in PCRE lib, support for national symbols may be limited!");
+  }
+
+  if (!utf8FullSupport)
+  {
+    CLog::Log(LOGNOTICE, "Consider installing PCRE lib version 8.10 or later with enabled Unicode properties and UTF-8 support. Your PCRE lib version: %s", PCRE::pcre_version());
+#if PCRE_UCP == 0
+    CLog::Log(LOGNOTICE, "You will need to rebuild XBMC after PCRE lib update.", PCRE::pcre_version());
+#endif
+  }
+
+  return utf8FullSupport;
+}
