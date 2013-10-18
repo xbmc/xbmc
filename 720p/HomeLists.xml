@@ -1559,7 +1559,7 @@
 				<visible>true</visible>
 				<posx>0</posx>
 				<posy>226</posy>
-				<width>890</width>
+				<width>860</width>
 				<height>720</height>
 				<ondown>-</ondown>
 				<onup>-</onup>
