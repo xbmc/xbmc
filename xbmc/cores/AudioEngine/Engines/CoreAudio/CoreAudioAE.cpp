@@ -240,17 +240,14 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
     case 10: m_stdChLayout = AE_CH_LAYOUT_7_1; break;
   }
 #endif
-  // force optical/coax to 2.0 output channels
-  if (!m_rawPassthrough && !m_transcode && CSettings::Get().GetInt("audiooutput.mode") == AUDIO_IEC958)
-    m_stdChLayout = AE_CH_LAYOUT_2_0;
 
   // setup the desired format
   m_format.m_channelLayout = CAEChannelInfo(m_stdChLayout);
 
   // if there is an audio resample rate set, use it.
-  if (g_advancedSettings.m_audioResample && !m_rawPassthrough)
+  if (CSettings::Get().GetInt("audiooutput.config") == AE_CONFIG_FIXED && !m_rawPassthrough)
   {
-    sampleRate = g_advancedSettings.m_audioResample;
+    sampleRate = CSettings::Get().GetInt("audiooutput.samplerate");
     CLog::Log(LOGINFO, "CCoreAudioAE::passthrough - Forcing samplerate to %d", sampleRate);
   }
 
@@ -406,11 +403,13 @@ void CCoreAudioAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.custompassthrough" ||
       setting == "audiooutput.audiodevice"       ||
       setting == "audiooutput.customdevice"      ||
-      setting == "audiooutput.mode"              ||
       setting == "audiooutput.ac3passthrough"    ||
+      setting == "audiooutput.eac3passthrough"   ||
       setting == "audiooutput.dtspassthrough"    ||
-      setting == "audiooutput.channels"     ||
-      setting == "audiooutput.multichannellpcm")
+      setting == "audiooutput.channels"          ||
+      setting == "audiooutput.samplerate"        ||
+      setting == "audiooutput.config"            ||
+      setting == "audiooutput.passthrough"        )
   {
     // only reinit the engine if we not
     // suspended (resume will initialize
@@ -508,8 +507,30 @@ void CCoreAudioAE::SetSoundMode(const int mode)
     StopAllSounds();
 }
 
-bool CCoreAudioAE::SupportsRaw()
+bool CCoreAudioAE::SupportsRaw(AEDataFormat format)
 {
+  switch(format)
+  {
+    case AE_FMT_AC3:
+    case AE_FMT_DTS:
+    case AE_FMT_EAC3:
+    case AE_FMT_LPCM:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool CCoreAudioAE::IsSettingVisible(const std::string &settingId)
+{
+  if (settingId == "audiooutput.samplerate")
+  {
+    if (CSettings::Get().GetInt("audiooutput.config") == AE_CONFIG_FIXED)
+      return true;
+    else
+      return false;
+  }
+
   return true;
 }
 
@@ -534,20 +555,17 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   CLog::Log(LOGINFO, "CCoreAudioAE::MakeStream - %s, %u, %u, %s",
     CAEUtil::DataFormatToStr(dataFormat), sampleRate, encodedSamplerate, ((std::string)channelInfo).c_str());
 
+  bool multichannelpcm = CSettings::Get().GetInt("audiooutput.channels") > AE_CH_LAYOUT_2_0; //if more then 2 channels are set - assume lpcm capability
+#if defined(TARGET_DARWIN_IOS)
+  multichannelpcm = false;
+#endif
   // determine if we need to transcode this audio
   // when we're called, we'll either get the audio in an encoded form (COREAUDIO_IS_RAW==true)
   // that we can passthrough based on user options, or we'll get it unencoded
   // if it's unencoded, and is 5.1, we'll transcode it to AC3 if possible
-  bool transcode = CSettings::Get().GetBool("audiooutput.ac3passthrough") && 
-    (
-      (CSettings::Get().GetInt("audiooutput.mode") == AUDIO_IEC958) ||
-      (
-        (CSettings::Get().GetInt("audiooutput.mode") == AUDIO_HDMI) &&
-        !CSettings::Get().GetBool("audiooutput.multichannellpcm")
-      )
-    ) &&
-    !COREAUDIO_IS_RAW(dataFormat) &&
-    (channelInfo.Count() == 6);
+  bool transcode = CSettings::Get().GetBool("audiooutput.passthrough") && CSettings::Get().GetBool("audiooutput.ac3passthrough") && !multichannelpcm &&
+                   !COREAUDIO_IS_RAW(dataFormat) &&
+                  (channelInfo.Count() == 6);
   
   CCoreAudioAEStream *stream = new CCoreAudioAEStream(dataFormat, sampleRate, encodedSamplerate, channelLayout, options, transcode);
   CSingleLock streamLock(m_streamLock);
@@ -748,7 +766,7 @@ void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
 void CCoreAudioAE::GarbageCollect()
 {
 #if defined(TARGET_DARWIN_OSX)
-  if (g_advancedSettings.m_streamSilence)
+  if (CSettings::Get().GetBool("audiooutput.streamsilence"))
     return;
   
   if (!m_streamsPlaying && m_playing_sounds.empty())
