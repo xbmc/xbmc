@@ -17,4 +17,5 @@ endif(TARGET_WIN32)
 
 find_all_sources(. network_SRCS)
 list(REMOVE_ITEM network_SRCS ./UPnP.cpp)
+list(REMOVE_ITEM network_SRCS ./cddb.cpp)
 add_sources(${network_SRCS})

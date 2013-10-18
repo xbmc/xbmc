@@ -1,2 +1,5 @@
 find_all_sources(. shaders_SRCS)
+if(NOT TARGET_WIN32)
+	list(REMOVE_ITEM shaders_SRCS ./WinVideoFilter.cpp)
+endif()
 add_sources(${shaders_SRCS})

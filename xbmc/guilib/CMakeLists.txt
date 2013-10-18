@@ -1,2 +1,7 @@
 find_all_sources(. guilib_SRCS)
+if(NOT TARGET_WIN32)
+	list(REMOVE_ITEM guilib_SRCS ./GUIFontTTFDX.cpp)
+endif()
+list(REMOVE_ITEM guilib_SRCS ./GUIShader.cpp)
+list(REMOVE_ITEM guilib_SRCS ./MatrixGLES.cpp)
 add_sources(${guilib_SRCS})

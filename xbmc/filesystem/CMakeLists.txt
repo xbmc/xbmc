@@ -20,6 +20,15 @@ set(removed_files
   RarFile.cpp
   RarDirectory.cpp
   RarManager.cpp
+  AFPDirectory.cpp
+  AFPFile.cpp
+  AndroidAppDirectory.cpp
+  AndroidAppFile.cpp
+  CDDADirectory.cpp
+  CDDAFile.cpp
+  NFSDirectory.cpp
+  NFSFile.cpp
+  SFTPDirectory.cpp
 )
 
 foreach(r ${removed_files})

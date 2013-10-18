@@ -29,6 +29,10 @@ foreach(f ${PlexOwnedFiles})
   list(REMOVE_ITEM xbmc_SRCS ./${f})
 endforeach()
 
+if(NOT ENABLE_DVD_DRIVE)
+	list(REMOVE_ITEM xbmc_SRCS ./Autorun.cpp)
+endif()
+
 get_property(ALL_SRCS GLOBAL PROPERTY SRCS_LIST)
 
 set(SRCS ${xbmc_SRCS} ${ALL_SRCS})
