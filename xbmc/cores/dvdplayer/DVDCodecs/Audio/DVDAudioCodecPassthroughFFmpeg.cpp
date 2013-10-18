@@ -25,6 +25,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 //These values are forced to allow spdif out
 #define OUT_SAMPLESIZE 16
@@ -293,17 +294,17 @@ bool CDVDAudioCodecPassthroughFFmpeg::SupportsFormat(CDVDStreamInfo &hints)
 
 bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  int audioMode = CSettings::Get().GetInt("audiooutput.mode");
-
   // TODO - move this stuff somewhere else
-  if (AUDIO_IS_BITSTREAM(audioMode))
+  bool m_bSupportsAC3Out    = CAEFactory::SupportsRaw(AE_FMT_AC3);
+  bool m_bSupportsEAC3Out   = CAEFactory::SupportsRaw(AE_FMT_EAC3);
+  bool m_bSupportsDTSOut    = CAEFactory::SupportsRaw(AE_FMT_DTS);
+
+  if ((hints.codec == AV_CODEC_ID_AC3 && !m_bSupportsAC3Out) ||
+      (hints.codec == AV_CODEC_ID_EAC3 && !m_bSupportsEAC3Out) ||
+      (hints.codec == AV_CODEC_ID_DTS && !m_bSupportsDTSOut))
   {
-    m_bSupportsAC3Out = CSettings::Get().GetBool("audiooutput.ac3passthrough");
-    m_bSupportsDTSOut = CSettings::Get().GetBool("audiooutput.dtspassthrough");
-    m_bSupportsAACOut = CSettings::Get().GetBool("audiooutput.passthroughaac");
-  }
-  else
     return false;
+  }
 
   // TODO - this is only valid for video files, and should be moved somewhere else
   if( hints.channels == 2 && CMediaSettings::Get().GetCurrentVideoSettings().m_OutputToAllSpeakers )
