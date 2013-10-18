@@ -1610,7 +1610,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     }
     // this tells player whether to open an audio stream passthrough or PCM
     // if this is changed, audio stream has to be reopened
-    else if (settingId == "audiooutput.mode")
+    else if (settingId == "audiooutput.passthrough")
     {
       CApplicationMessenger::Get().MediaRestart(false);
       return;
@@ -2764,13 +2764,8 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_DIGITAL_ANALOG)
   {
-    // TODO
-    // revisit after new audio settings page have been implemented
-    // makes no sense toggling a mode when you have three different settings
-    int mode = CSettings::Get().GetInt("audiooutput.mode");
-    if (++mode == 3)
-      mode = 0;
-    CSettings::Get().SetInt("audiooutput.mode", mode);
+    bool passthrough = CSettings::Get().GetBool("audiooutput.passthrough");
+    CSettings::Get().SetBool("audiooutput.passthrough", !passthrough);
 
     if (g_windowManager.GetActiveWindow() == WINDOW_SETTINGS_SYSTEM)
     {
