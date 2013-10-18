@@ -790,9 +790,16 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   // TODO: Perhaps we should check here whether id is valid for focusable controls
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 
+  GetAlignment(pControlNode, "align", labelInfo.align);
   if (!GetDimensions(pControlNode, "left", "right", "centerx", "width", rect.Width(), posX, width, minWidth))
   { // didn't get 2 dimensions, so test for old <posx> as well
-    GetPosition(pControlNode, "posx", rect.Width(), posX);
+    if (GetPosition(pControlNode, "posx", rect.Width(), posX))
+    { // <posx> available, so use it along with any hacks we used to support
+      if (!insideContainer &&
+          type == CGUIControl::GUICONTROL_LABEL &&
+          (labelInfo.align & XBFONT_RIGHT))
+        posX -= width;
+    }
     if (!width)
       width = max(rect.Width() - posX, 0.0f);
   }
@@ -846,7 +853,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CStdString strFont;
   if (XMLUtils::GetString(pControlNode, "font", strFont))
     labelInfo.font = g_fontManager.GetFont(strFont);
-  GetAlignment(pControlNode, "align", labelInfo.align);
   uint32_t alignY = 0;
   if (GetAlignmentY(pControlNode, "aligny", alignY))
     labelInfo.align |= alignY;
