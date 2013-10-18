@@ -29,6 +29,7 @@ bool CWin32StorageProvider::xbevent = false;
 
 void CWin32StorageProvider::Initialize()
 {
+#ifdef HAS_DVD_DRIVE
   // check for a DVD drive
   VECSOURCES vShare;
   CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
@@ -43,6 +44,7 @@ void CWin32StorageProvider::Initialize()
     if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
       CJobManager::GetInstance().AddJob(new CDetectDisc(it->strPath, false), NULL);
   // remove end
+#endif
 }
 
 void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
@@ -95,6 +97,7 @@ CDetectDisc::CDetectDisc(const CStdString &strPath, const bool bautorun)
 
 bool CDetectDisc::DoWork()
 {
+#ifdef HAS_DVD_DRIVE
   CLog::Log(LOGDEBUG, "%s: Optical media found in drive %s", __FUNCTION__, m_strPath.c_str());
   CMediaSource share;
   share.strPath = m_strPath;
@@ -108,5 +111,6 @@ bool CDetectDisc::DoWork()
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
   g_mediaManager.AddAutoSource(share, m_bautorun);
+#endif
   return true;
 }
