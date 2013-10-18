@@ -14,6 +14,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include <boost/foreach.hpp>
+#include "pictures/GUIWindowSlideShow.h"
 
 #include "Client/PlexServer.h"
 #include "Client/PlexServerManager.h"
@@ -168,18 +169,19 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
     /* determine what things are controllable */
     std::vector<std::string> controllable;
 
-    if (playlistLen > 0)
-    {
-      if (playlistPos > 0)
-        controllable.push_back("skipPrevious");
-      if (playlistLen > (playlistPos + 1))
-        controllable.push_back("skipNext");
-
-      controllable.push_back("shuffle");
-      controllable.push_back("repeat");
-    }
     if (type == MUSIC || type == VIDEO)
     {
+      if (playlistLen > 0)
+      {
+        if (playlistPos > 0)
+          controllable.push_back("skipPrevious");
+        if (playlistLen > (playlistPos + 1))
+          controllable.push_back("skipNext");
+
+        controllable.push_back("shuffle");
+        controllable.push_back("repeat");
+      }
+
       controllable.push_back("volume");
       controllable.push_back("stepBack");
       controllable.push_back("stepForward");
@@ -188,6 +190,11 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
         controllable.push_back("subtitleStream");
         controllable.push_back("audioStream");
       }
+    }
+    else if (type == PHOTO)
+    {
+      controllable.push_back("skipPrevious");
+      controllable.push_back("skipNext");
     }
 
     if (controllable.size() > 0 && m_currentStates[type] != MEDIA_STATE_STOPPED)
