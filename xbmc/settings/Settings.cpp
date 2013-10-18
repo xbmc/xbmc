@@ -372,7 +372,6 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("aequalitylevels");
   m_settingsManager->UnregisterSettingOptionsFiller("audiodevices");
   m_settingsManager->UnregisterSettingOptionsFiller("audiodevicespassthrough");
-  m_settingsManager->UnregisterSettingOptionsFiller("audiooutputmodes");
   m_settingsManager->UnregisterSettingOptionsFiller("charsets");
   m_settingsManager->UnregisterSettingOptionsFiller("epgguideviews");
   m_settingsManager->UnregisterSettingOptionsFiller("fontheights");
@@ -687,7 +686,6 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("aequalitylevels", CAEFactory::SettingOptionsAudioQualityLevelsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevices", CAEFactory::SettingOptionsAudioDevicesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevicespassthrough", CAEFactory::SettingOptionsAudioDevicesPassthroughFiller);
-  m_settingsManager->RegisterSettingOptionsFiller("audiooutputmodes", CAEFactory::SettingOptionsAudioOutputModesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("charsets", CCharsetConverter::SettingOptionsCharsetsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("epgguideviews", PVR::CGUIWindowPVRGuide::SettingOptionsEpgGuideViewFiller);
   m_settingsManager->RegisterSettingOptionsFiller("fonts", GUIFontManager::SettingOptionsFontsFiller);
@@ -824,6 +822,7 @@ void CSettings::InitializeConditions()
   m_settingsManager->AddCondition("profilehassettingslocked", ProfileHasSettingsLocked);
   m_settingsManager->AddCondition("profilehasvideoslocked", ProfileHasVideosLocked);
   m_settingsManager->AddCondition("profilelockmode", ProfileLockMode);
+  m_settingsManager->AddCondition("aesettingvisible", CAEFactory::IsSettingVisible);
 }
 
 void CSettings::InitializeISettingsHandlers()
@@ -887,7 +886,9 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&CStereoscopicsManager::Get(), settingSet);
 
   settingSet.clear();
-  settingSet.insert("audiooutput.mode");
+  settingSet.insert("audiooutput.config");
+  settingSet.insert("audiooutput.samplerate");
+  settingSet.insert("audiooutput.passthrough");
   settingSet.insert("audiooutput.channels");
   settingSet.insert("audiooutput.processquality");
   settingSet.insert("audiooutput.guisoundmode");
@@ -898,7 +899,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("audiooutput.passthroughaac");
   settingSet.insert("audiooutput.truehdpassthrough");
   settingSet.insert("audiooutput.dtshdpassthrough");
-  settingSet.insert("audiooutput.multichannellpcm");
   settingSet.insert("audiooutput.audiodevice");
   settingSet.insert("audiooutput.passthroughdevice");
   settingSet.insert("audiooutput.streamsilence");

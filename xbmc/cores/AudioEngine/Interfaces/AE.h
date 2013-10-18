@@ -41,6 +41,11 @@ class IAudioCallback;
 #define AE_SOUND_IDLE   1 /* only play sounds while no streams are running */
 #define AE_SOUND_ALWAYS 2 /* always play sounds */
 
+/* config options */
+#define AE_CONFIG_FIXED 1
+#define AE_CONFIG_AUTO  2
+#define AE_CONFIG_MATCH 3
+
 enum AEQuality
 {
   AE_QUALITY_UNKNOWN    = -1, /* Unset, unknown or incorrect quality level */
@@ -198,7 +203,7 @@ public:
    * @see CAEPackIEC61937::CAEPackIEC61937()
    * @returns true if the AudioEngine is capable of RAW output
    */
-  virtual bool SupportsRaw() { return false; }
+  virtual bool SupportsRaw(AEDataFormat format) { return false; }
 
    /**
    * Returns true if the AudioEngine supports drain mode which is not streaming silence when idle
@@ -215,5 +220,11 @@ public:
    * @return true if specified quality level is supported, otherwise false
    */
   virtual bool SupportsQualityLevel(enum AEQuality level) { return false; }
+
+  /**
+   * AE decides whether this settings should be displayed
+   * @return true if AudioEngine wants to display this setting
+   */
+  virtual bool IsSettingVisible(const std::string &settingId) {return false; }
 };
 
