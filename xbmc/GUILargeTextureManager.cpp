@@ -164,7 +164,12 @@ bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &te
   }
 
   if (firstRequest)
+  {
+    /* PLEX */
+    lock.unlock();
+    /* END PLEX */
     QueueImage(path);
+  }
 
   return true;
 }
@@ -177,8 +182,16 @@ void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediat
     CLargeTexture *image = *it;
     if (image->GetPath() == path)
     {
+      /* PLEX */
+      lock.unlock();
+      /* END PLEX */
       if (image->DecrRef(immediately) && immediately)
+      {
+        /* PLEX */
+        lock.lock();
+        /* END PLEX */
         m_allocated.erase(it);
+      }
       return;
     }
   }
@@ -186,10 +199,16 @@ void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediat
   {
     unsigned int id = it->first;
     CLargeTexture *image = it->second;
+    /* PLEX */
+    lock.unlock();
+    /* END PLEX */
     if (image->GetPath() == path && image->DecrRef(true))
     {
       // cancel this job
       CJobManager::GetInstance().CancelJob(id);
+      /* PLEX */
+      lock.lock();
+      /* END PLEX */
       m_queued.erase(it);
       return;
     }
