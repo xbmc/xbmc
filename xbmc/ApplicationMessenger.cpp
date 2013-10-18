@@ -444,12 +444,13 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         {
           for (int i=0;i<items.Size();++i)
             pSlideShow->Add(items[i].get());
-          pSlideShow->StartSlideShow(); //Start the slideshow!
-          
+
           /* PLEX */
           if (pMsg->params.size() > 0)
             pSlideShow->Select(pMsg->params[0]);
           /* END PLEX */
+
+          pSlideShow->StartSlideShow(); //Start the slideshow!
         }
 
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
