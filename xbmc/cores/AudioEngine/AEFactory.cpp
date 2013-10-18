@@ -26,7 +26,6 @@
   #include "Engines/CoreAudio/CoreAudioAE.h"
   #include "settings/SettingsManager.h"
 #else
-  #include "Engines/SoftAE/SoftAE.h"
   #include "Engines/ActiveAE/ActiveAE.h"
 #endif
 
@@ -73,9 +72,6 @@ bool CAEFactory::LoadEngine()
       loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
     #endif
     
-    if (!loaded && engine == "SOFT" )
-      loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
-
     if (!loaded && engine == "ACTIVE")
       loaded = CAEFactory::LoadEngine(AE_ENGINE_ACTIVE);
   }
@@ -103,7 +99,6 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
 #if defined(TARGET_DARWIN)
     case AE_ENGINE_COREAUDIO: AE = new CCoreAudioAE(); break;
 #else
-    case AE_ENGINE_SOFT     : AE = new CSoftAE(); break;
     case AE_ENGINE_ACTIVE   : AE = new ActiveAE::CActiveAE(); break;
 #endif
 #if defined(HAS_PULSEAUDIO)
