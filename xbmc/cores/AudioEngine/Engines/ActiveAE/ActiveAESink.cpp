@@ -90,6 +90,37 @@ bool CActiveAESink::HasVolume()
   return m_sink->HasVolume();
 }
 
+AEDeviceType CActiveAESink::GetDeviceType(const std::string &device)
+{
+  std::string dev = device;
+  std::string dri;
+  CAESinkFactory::ParseDevice(dev, dri);
+  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+  {
+    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
+    {
+      CAEDeviceInfo& info = *itt2;
+      if (info.m_deviceName == dev)
+        return info.m_deviceType;
+    }
+  }
+  return AE_DEVTYPE_PCM;
+}
+
+bool CActiveAESink::HasPassthroughDevice()
+{
+  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+  {
+    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
+    {
+      CAEDeviceInfo& info = *itt2;
+      if (info.m_deviceType != AE_DEVTYPE_PCM)
+        return true;
+    }
+  }
+  return false;
+}
+
 enum SINK_STATES
 {
   S_TOP = 0,                      // 0

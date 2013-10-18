@@ -48,7 +48,6 @@ struct AudioSettings
   std::string device;
   std::string driver;
   std::string passthoughdevice;
-  int mode;
   int channels;
   bool ac3passthrough;
   bool eac3passthrough;
@@ -56,8 +55,10 @@ struct AudioSettings
   bool aacpassthrough;
   bool truehdpassthrough;
   bool dtshdpassthrough;
-  bool multichannellpcm;
   bool stereoupmix;
+  bool passthrough;
+  int config;
+  unsigned int samplerate;
   AEQuality resampleQuality;
 };
 
@@ -214,9 +215,10 @@ public:
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual std::string GetDefaultDevice(bool passthrough);
-  virtual bool SupportsRaw();
+  virtual bool SupportsRaw(AEDataFormat format);
   virtual bool SupportsDrain();
   virtual bool SupportsQualityLevel(enum AEQuality level);
+  virtual bool IsSettingVisible(const std::string &settingId);
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback();

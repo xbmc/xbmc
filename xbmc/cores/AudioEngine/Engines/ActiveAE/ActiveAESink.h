@@ -89,6 +89,8 @@ public:
   void Start();
   void Dispose();
   bool HasVolume();
+  AEDeviceType GetDeviceType(const std::string &device);
+  bool HasPassthroughDevice();
   CSinkControlProtocol m_controlPort;
   CSinkDataProtocol m_dataPort;
 
