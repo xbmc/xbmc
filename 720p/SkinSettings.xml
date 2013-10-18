@@ -165,6 +165,13 @@
 					<onclick>Skin.ToggleSetting(HideNowPlayingInViz)</onclick>
 					<selected>!Skin.HasSetting(HideNowPlayingInViz)</selected>
 				</control>
+				<control type="radiobutton" id="326">
+					<description>Show Extended Media flags in preplays</description>
+					<width>625</width>
+					<label>Show all media flags in details view</label>
+					<onclick>Skin.ToggleSetting(ShowAllMediaFlags)</onclick>
+					<selected>Skin.HasSetting(ShowAllMediaFlags)</selected>
+				</control>
 			</control>
 			<!-- Home Options -->
 			<control type="grouplist" id="202">
