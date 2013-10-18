@@ -28,8 +28,12 @@ $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/lib
 
 .installed-$(PLATFORM): $(LIBDYLIB)
+	# install only libcurl and includes
 	$(MAKE) -C $(PLATFORM)/lib install
 	$(MAKE) -C $(PLATFORM)/include install
+	# make sure to also install libcurl.pc, we need to do
+	# this because we are selectively installing only libcurl
+	$(MAKE) -C $(PLATFORM) install-pkgconfigDATA
 ifeq ($(OS),android)
 	rm -f $(PREFIX)/lib/libcurl.la $(PREFIX)/lib/libcurl.so $(PREFIX)/lib/libcurl.so.5
 	mv -f $(PREFIX)/lib/libcurl.so.5.2.0 $(PREFIX)/lib/libcurl.so
