@@ -43,6 +43,13 @@
 		<value condition="Container.Content(secondary)">secondary</value>
 		<value></value>
 	</variable>
+	<variable name="ItemStatus">
+		<value condition="ListItem(0).Status(WaTcHeD)">Watched</value>
+		<value condition="ListItem(0).Status(inprogress)">InProgress</value>
+		<value condition="ListItem(0).Status(unwatched)">Unwatched</value>
+		<value>????</value>
+	</variable>
+
 	<include name="debugInfos">
 		<control type="group">
 			<visible>Skin.HasSetting(showdebug)</visible>
@@ -65,6 +72,10 @@
 				<height>600</height>
 				<orientation>vertical</orientation>
 				<itemgap>0</itemgap>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Status : [COLOR=orangeLight]$VAR[ItemStatus][/COLOR]</label>
+				</control>
 				<control type="label">
 					<include>debugFont</include>
 					<label>System.CurrentWindow : [COLOR=orangeLight]$INFO[System.CurrentWindow][/COLOR]</label>
