@@ -176,43 +176,73 @@ bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &te
 
 void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediately)
 {
+  /* PLEX */
+  /* We need to queue up the textures to delete so we don't delete them while we hold
+   * the listSection lock. This is because the destructor of CLargeTexture will take
+   * the graphiccontext's lock and it will easily deadlock */
+  std::vector<CLargeTexture*> texturesToDelete;
+  bool found = false;
+  /* END PLEX */
+
   CSingleLock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
     CLargeTexture *image = *it;
     if (image->GetPath() == path)
     {
-      /* PLEX */
-      lock.unlock();
-      /* END PLEX */
+#ifndef __PLEX__
       if (image->DecrRef(immediately) && immediately)
       {
-        /* PLEX */
-        lock.lock();
-        /* END PLEX */
         m_allocated.erase(it);
       }
       return;
+#else
+      if (image->DecrRef(false) && immediately)
+      {
+        m_allocated.erase(it);
+        texturesToDelete.push_back(image);
+      }
+      found = true;
+      break;
+#endif
     }
   }
-  for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
+
+  /* PLEX */
+  if (!found)
   {
-    unsigned int id = it->first;
-    CLargeTexture *image = it->second;
-    /* PLEX */
-    lock.unlock();
-    /* END PLEX */
-    if (image->GetPath() == path && image->DecrRef(true))
+  /* END PLEX */
+    for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
     {
-      // cancel this job
-      CJobManager::GetInstance().CancelJob(id);
-      /* PLEX */
-      lock.lock();
-      /* END PLEX */
-      m_queued.erase(it);
-      return;
+      unsigned int id = it->first;
+      CLargeTexture *image = it->second;
+#ifndef __PLEX__
+      if (image->GetPath() == path && image->DecrRef(true))
+      {
+        // cancel this job
+        CJobManager::GetInstance().CancelJob(id);
+        m_queued.erase(it);
+        return;
+      }
+#else
+      if (image->GetPath() == path)
+      {
+        if (image->DecrRef(false))
+        {
+          CJobManager::GetInstance().CancelJob(id);
+          m_queued.erase(it);
+          break;
+        }
+      }
+#endif
     }
   }
+
+  lock.unlock();
+  /* PLEX */
+  for(listIterator it = texturesToDelete.begin(); it != texturesToDelete.end(); ++it)
+    delete *it;
+  /* END PLEX */
 }
 
 // queue the image, and start the background loader if necessary
