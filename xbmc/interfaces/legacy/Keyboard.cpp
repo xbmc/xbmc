@@ -30,8 +30,9 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
+
     Keyboard::Keyboard(const String& line /* = nullString*/, const String& heading/* = nullString*/, bool hidden/* = false*/) 
-      : AddonClass("Keyboard"), strDefault(line), strHeading(heading), bHidden(hidden), bConfirmed(false)
+      : strDefault(line), strHeading(heading), bHidden(hidden), bConfirmed(false)
     {
     }
 

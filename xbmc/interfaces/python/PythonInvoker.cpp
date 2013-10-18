@@ -78,7 +78,7 @@ extern "C"
 
 CCriticalSection CPythonInvoker::s_critical;
 
-static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook>& languageHook)
+static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook>& languageHook)
 {
   CStdString message;
   CSingleLock l(*(languageHook.get()));
@@ -90,7 +90,7 @@ static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref
       message += ",";
     else
       firstTime = false;
-    message += (*iter)->GetClassname().c_str();
+    message += (*iter)->GetClassname();
   }
 
   return message;
@@ -179,7 +179,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   // swap in my thread state
   PyThreadState_Swap(state);
 
-  XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook> languageHook(new XBMCAddon::Python::LanguageHook(state->interp));
+  XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> languageHook(new XBMCAddon::Python::PythonLanguageHook(state->interp));
   languageHook->RegisterMe();
 
   onInitialization();

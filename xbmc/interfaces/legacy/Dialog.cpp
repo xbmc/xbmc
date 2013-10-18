@@ -36,7 +36,6 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
-
     static void XBMCWaitForThreadMessage(int message, int param1, int param2)
     {
       ThreadMessage tMsg = {(DWORD)message, (DWORD)param1, (DWORD)param2};

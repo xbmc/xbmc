@@ -72,7 +72,7 @@ Helper.setup(this,classes,
       (Pattern.compile('''(p.){0,1}std::vector<\\(.*\\)>''')) : new File('typemaps/python.vector.outtm'),
       (Pattern.compile('''(p.){0,1}Tuple<\\(.*\\)>''')) : new File('typemaps/python.Tuple.outtm'),
       (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.outtm')
-    ], '${result} = makePythonInstance(${api},&Py${classname.replaceAll(\'::\',\'_\')}_Type,&Ty${classname.replaceAll(\'::\',\'_\')}_Type,true);',
+    ], '${result} = makePythonInstance(${api},true);',
     /**
      * This is meant to contain mini-templates for converting the parameter types
      * of the native call to be converted from the python types provided by the caller.
@@ -85,6 +85,7 @@ Helper.setup(this,classes,
       'String' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},false,"${api}","${method.@name}");',
       (Pattern.compile('''(p.){0,1}std::vector<\\(.*\\)>''')) : new File('typemaps/python.vector.intm'),
       (Pattern.compile('''(p.){0,1}Tuple(3){0,1}<\\(.*\\)>''')) : new File('typemaps/python.Tuple.intm'),
+      (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.intm'),
       // I shouldn't need both of these but my parser doesn't resolve namespaces within
       //  parameter declarations. TODO: Maybe I should fix this.
       'r.q(const).Dictionary' : new File('typemaps/python.dict.intm'),
@@ -203,14 +204,14 @@ void doMethod(Node method, MethodType methodType)
     }
     // now do the method call itself
     if (!destructor) {
-    if (constructor || !clazz) {  %>      XBMCAddon::SetLanguageHookGuard slhg(XBMCAddon::Python::LanguageHook::GetIfExists(PyThreadState_Get()->interp).get());<% println() }
+    if (constructor || !clazz) {  %>      XBMCAddon::SetLanguageHookGuard slhg(XBMCAddon::Python::PythonLanguageHook::GetIfExists(PyThreadState_Get()->interp).get());<% println() }
 %>      <%
     if (returns != "void") { %>apiResult = (${SwigTypeParser.SwigType_lstr(returns)})<% }
     if (clazz && !constructor) {
-      %>((${clazz}*)retrieveApiInstance((PyObject*)self,&Py${classNameAsVariable}_Type,"${Helper.callingName(method)}","${clazz}"))-> <%
+      %>((${clazz}*)retrieveApiInstance((PyObject*)self,&Ty${classNameAsVariable}_Type,"${Helper.callingName(method)}","${clazz}"))-> <%
     }
     if (constructor && classnode.@feature_director) { 
-    %>(&Py${classNameAsVariable}_Type != pytype) ? new ${classNameAsVariable}_Director(<% params.eachWithIndex { param, i -> %> ${param.@name}${i < params.size() - 1 ? "," : ""} <% } %>) : <% }
+    %>(&(Ty${classNameAsVariable}_Type.pythonType) != pytype) ? new ${classNameAsVariable}_Director(<% params.eachWithIndex { param, i -> %> ${param.@name}${i < params.size() - 1 ? "," : ""} <% } %>) : <% }
 
     // Here is the actual call ... if this is a Director we need to do an upCall (from Python)
     if (isDirectorCall){ %>${clazz}::<% }
@@ -220,7 +221,7 @@ void doMethod(Node method, MethodType methodType)
     } // close the 'if method is not a destructor'
     else {  // it is a destructor
 %>
-      ${clazz}* theObj = (${clazz}*)retrieveApiInstance((PyObject*)self,&Py${classNameAsVariable}_Type,"~${Helper.callingName(method)}","${clazz}");
+      ${clazz}* theObj = (${clazz}*)retrieveApiInstance((PyObject*)self,&Ty${classNameAsVariable}_Type,"~${Helper.callingName(method)}","${clazz}");
       cleanForDealloc(theObj);
 <%
     }
@@ -257,13 +258,13 @@ void doMethod(Node method, MethodType methodType)
     // transform the result
 <%
     if (constructor) {
-      %>    result = makePythonInstance(apiResult,pytype,&Ty${SwigTypeParser.getRootType(returns).replaceAll('::','_')}_Type,false);<%
+      %>    result = makePythonInstance(apiResult,pytype,false);<%
     }
     else { 
 %>    ${Helper.getOutConversion(returns,'result',method)}<%
     }
     if (constructor && method.@feature_director) { %>
-    if (&Py${classNameAsVariable}_Type != pytype) 
+    if (&(Ty${classNameAsVariable}_Type.pythonType) != pytype) 
       ((${classNameAsVariable}_Director*)apiResult)->setPyObjectForDirector(result);<%
     }
  %>
@@ -293,14 +294,7 @@ void doClassTypeInfo(Node clazz, List classNameAsVariables = null)
 %>
   //=========================================================================
   // These variables will hold the Python Type information for ${fullClassName}
-  PyTypeObject Py${classNameAsVariable}_Type;
-  TypeInfo Ty${classNameAsVariable}_Type;<%
-
-    Node baseclass = PythonTools.findValidBaseClass(clazz, module)
-    if (baseclass)
-    {%>
-  TypeConverter<${Helper.findFullClassName(baseclass)},${fullClassName}> ${classNameAsVariable}_ParentConverter;<%
-    }
+  TypeInfo Ty${classNameAsVariable}_Type(typeid(${fullClassName}));<%
 %>
   //=========================================================================
 <%    
@@ -316,7 +310,6 @@ void doExternClassTypeInfo(String knownType)
 %>
   //=========================================================================
   // These variables define the type ${knownType} from another module 
-  extern PyTypeObject Py${classNameAsVariable}_Type;
   extern TypeInfo Ty${classNameAsVariable}_Type;
   //=========================================================================
 <%    
@@ -409,7 +402,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
 %>
   static Py_ssize_t ${module.@name}_${classNameAsVariable}_size_(PyObject* self)
   {
-    return (Py_ssize_t)((${fullClassName}*)retrieveApiInstance(self,&Py${classNameAsVariable}_Type,"${Helper.callingName(indexOp)}","${fullClassName}"))-> size();
+    return (Py_ssize_t)((${fullClassName}*)retrieveApiInstance(self,&Ty${classNameAsVariable}_Type,"${Helper.callingName(indexOp)}","${fullClassName}"))-> size();
   }
 
   //=========================================================================
@@ -464,7 +457,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
 %>
     try
     {
-      ${clazzName}* theObj = (${clazzName}*)retrieveApiInstance((PyObject*)self, &Py${classNameAsVariable}_Type, "${classNameAsVariable}_getMember()", "${clazzName}");
+      ${clazzName}* theObj = (${clazzName}*)retrieveApiInstance((PyObject*)self, &Ty${classNameAsVariable}_Type, "${classNameAsVariable}_getMember()", "${clazzName}");
 
       PyObject* result = NULL;
    <%
@@ -515,7 +508,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     ${clazzName}* theObj = NULL;
     try
     {
-      theObj = (${clazzName}*)retrieveApiInstance((PyObject*)self, &Py${classNameAsVariable}_Type, "${classNameAsVariable}_getMember()", "${clazzName}");
+      theObj = (${clazzName}*)retrieveApiInstance((PyObject*)self, &Ty${classNameAsVariable}_Type, "${classNameAsVariable}_getMember()", "${clazzName}");
     }
     catch (const XBMCAddon::WrongTypeException& e)
     {
@@ -577,38 +570,42 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
                  ${PythonTools.makeDocString(clazz.doc[0])}
                 );
 <%  } %>
-    PyXBMCInitializeTypeObject(&Py${classNameAsVariable}_Type,&Ty${classNameAsVariable}_Type);
 
-    Py${classNameAsVariable}_Type.tp_name = (char*)"${module.@name}.${clazz.@sym_name}";
-    Py${classNameAsVariable}_Type.tp_basicsize = sizeof(PyHolder);
-    Py${classNameAsVariable}_Type.tp_dealloc = (destructor)${module.@name}_${classNameAsVariable}_Dealloc; <%
+    PyTypeObject& pythonType = Ty${classNameAsVariable}_Type.pythonType;
+    pythonType.tp_name = (char*)"${module.@name}.${clazz.@sym_name}";
+    pythonType.tp_basicsize = sizeof(PyHolder);
+    pythonType.tp_dealloc = (destructor)${module.@name}_${classNameAsVariable}_Dealloc; <%
  if (doComparator) { %>
-    Py${classNameAsVariable}_Type.tp_compare=${module.@name}_${classNameAsVariable}_cmp;<%
+    pythonType.tp_compare=${module.@name}_${classNameAsVariable}_cmp;<%
  }
  if (clazz.@feature_python_rcmp) { %>
-    Py${classNameAsVariable}_Type.tp_richcompare=(richcmpfunc)${module.@name}_${classNameAsVariable}_rcmp;<%
+    pythonType.tp_richcompare=(richcmpfunc)${module.@name}_${classNameAsVariable}_rcmp;<%
  } %>
 
-    Py${classNameAsVariable}_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
-    Py${classNameAsVariable}_Type.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
-    Py${classNameAsVariable}_Type.tp_methods = ${classNameAsVariable}_methods; <%
+    pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+    pythonType.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
+    pythonType.tp_methods = ${classNameAsVariable}_methods; <%
  if (properties.size() > 0) { %>
-    Py${classNameAsVariable}_Type.tp_getset = ${classNameAsVariable}_getsets;
+    pythonType.tp_getset = ${classNameAsVariable}_getsets;
 <%
  }
  if (doAsMapping) { %>
-    Py${classNameAsVariable}_Type.tp_as_mapping = &${module.@name}_${classNameAsVariable}_as_mapping;
+    pythonType.tp_as_mapping = &${module.@name}_${classNameAsVariable}_as_mapping;
 <%  }
     Node baseclass = PythonTools.findValidBaseClass(clazz, module)
 
-%>    Py${classNameAsVariable}_Type.tp_base = ${baseclass ? ('&Py' + PythonTools.getClassNameAsVariable(baseclass) + '_Type') : "NULL"};
-    Py${classNameAsVariable}_Type.tp_new = <% Helper.hasHiddenConstructor(clazz) ? print('NULL') : print("${module.@name}_${classNameAsVariable}_New") %>;
+%>
+    pythonType.tp_base = ${baseclass ? ('&(Ty' + PythonTools.getClassNameAsVariable(baseclass) + '_Type.pythonType)') : "NULL"};
+    pythonType.tp_new = <% Helper.hasHiddenConstructor(clazz) ? print('NULL') : print("${module.@name}_${classNameAsVariable}_New") %>;
 
     Ty${classNameAsVariable}_Type.swigType="p.${fullClassName}";<%
   if (baseclass) { %>
     Ty${classNameAsVariable}_Type.parentType=&Ty${PythonTools.getClassNameAsVariable(baseclass)}_Type;
-    Ty${classNameAsVariable}_Type.converter=&${classNameAsVariable}_ParentConverter;
-<%} %>  
+<%}
+
+  if (!Helper.hasHiddenConstructor(clazz)) { %>
+    registerAddonClassTypeInformation(&Ty${classNameAsVariable}_Type);
+<%} %>
   }
   //=========================================================================
 <%
@@ -803,7 +800,7 @@ namespace PythonBindings
       }
 
       classNameAsVariables.each { %>
-      if (PyType_Ready(&Py${it}_Type) < 0)
+      if (PyType_Ready(&(Ty${it}_Type.pythonType)) < 0)
         return;<%
       }%>
     }
@@ -817,14 +814,14 @@ namespace PythonBindings
     PyObject* module;
 
 <% classNameAsVariables.each { %>
-    Py_INCREF(&Py${it}_Type);<%
+    Py_INCREF(&(Ty${it}_Type.pythonType));<%
    }%>
 
     module = Py_InitModule((char*)"${module.@name}", ${module.@name}_methods);
     if (module == NULL) return;
 
 <% classes.each { clazz -> %>
-    PyModule_AddObject(module, (char*)"${clazz.@sym_name}", (PyObject*)&Py${PythonTools.getClassNameAsVariable(clazz)}_Type);<%
+    PyModule_AddObject(module, (char*)"${clazz.@sym_name}", (PyObject*)(&(Ty${PythonTools.getClassNameAsVariable(clazz)}_Type.pythonType)));<%
    }%>
 
    // constants

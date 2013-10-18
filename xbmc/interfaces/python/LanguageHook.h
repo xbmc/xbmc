@@ -43,22 +43,19 @@ namespace XBMCAddon
      *  plugging into the API. It's got a static only implementation
      *  and uses the singleton pattern for access.
      */
-    class LanguageHook : public XBMCAddon::LanguageHook
+    class PythonLanguageHook : public XBMCAddon::LanguageHook
     {
       PyInterpreterState* m_interp;
       CCriticalSection crit;
       std::set<AddonClass*> currentObjects;
 
       // This constructor is only used to instantiate the global LanguageHook
-      inline LanguageHook() : 
-        XBMCAddon::LanguageHook("Python::LanguageHook(Global)"), m_interp(NULL)  {  }
+      inline PythonLanguageHook() : m_interp(NULL)  {  }
 
     public:
 
-      inline LanguageHook(PyInterpreterState* interp) : 
-        XBMCAddon::LanguageHook("Python::LanguageHook"), m_interp(interp)  {  }
-
-      virtual ~LanguageHook();
+      inline PythonLanguageHook(PyInterpreterState* interp) : m_interp(interp)  {  }
+      virtual ~PythonLanguageHook();
 
       virtual void DelayedCallOpen();
       virtual void DelayedCallClose();
@@ -87,7 +84,7 @@ namespace XBMCAddon
       virtual void UnregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor);
       virtual bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
-      static AddonClass::Ref<LanguageHook> GetIfExists(PyInterpreterState* interp);
+      static AddonClass::Ref<PythonLanguageHook> GetIfExists(PyInterpreterState* interp);
       static bool IsAddonClassInstanceRegistered(AddonClass* obj);
 
       void RegisterAddonClassInstance(AddonClass* obj);

@@ -32,7 +32,7 @@ namespace XBMCAddon
     AddonClass::Ref<Callback> cb;
     RetardedAsynchCallbackHandler* handler;
     AsynchCallbackMessage(Callback* _cb, RetardedAsynchCallbackHandler* _handler) :
-      AddonClass("AsynchCallbackMessage"), cb(_cb), handler(_handler) { TRACE; }
+      cb(_cb), handler(_handler) { TRACE; }
   };
 
   //********************************************************************

@@ -66,11 +66,10 @@ namespace XBMCAddon
   {
   private:
     long   refs;
-    String classname;
     bool m_isDeallocating;
+
     // no copying
     inline AddonClass(const AddonClass&);
-
 
 #ifdef XBMC_ADDON_DEBUG_MEMORY
     bool isDeleted;
@@ -94,11 +93,17 @@ namespace XBMCAddon
       m_isDeallocating = true;
     }
 
+    /**
+     * This is meant to be called during static initialization and so isn't
+     * synchronized.
+     */
+    static short getNextClassIndex();
+
   public:
-    AddonClass(const char* classname);
+    AddonClass();
     virtual ~AddonClass();
 
-    inline const String& GetClassname() const { return classname; }
+    inline const char* GetClassname() const { return typeid(*this).name(); }
     inline LanguageHook* GetLanguageHook() { return languageHook; }
 
     /**
@@ -107,6 +112,8 @@ namespace XBMCAddon
      *  the time it's held.
      */
     bool isDeallocating() { TRACE; return m_isDeallocating; }
+
+    static short getNumAddonClasses();
 
 #ifdef XBMC_ADDON_DEBUG_MEMORY
     virtual 
@@ -118,7 +125,7 @@ namespace XBMCAddon
     {
       long ct = AtomicDecrement((long*)&refs);
 #ifdef LOG_LIFECYCLE_EVENTS
-      CLog::Log(LOGDEBUG,"NEWADDON REFCNT decrementing to %ld on %s 0x%lx", ct,classname.c_str(), (long)(((void*)this)));
+      CLog::Log(LOGDEBUG,"NEWADDON REFCNT decrementing to %ld on %s 0x%lx", ct,GetClassname(), (long)(((void*)this)));
 #endif
       if(ct == 0)
         delete this;
@@ -138,7 +145,7 @@ namespace XBMCAddon
     {
 #ifdef LOG_LIFECYCLE_EVENTS
       CLog::Log(LOGDEBUG,"NEWADDON REFCNT incrementing to %ld on %s 0x%lx", 
-                AtomicIncrement((long*)&refs),classname.c_str(), (long)(((void*)this)));
+                AtomicIncrement((long*)&refs),GetClassname(), (long)(((void*)this)));
 #else
       AtomicIncrement((long*)&refs);
 #endif

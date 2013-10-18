@@ -39,7 +39,7 @@ namespace XBMCAddon
                        const String& label2,
                        const String& iconImage,
                        const String& thumbnailImage,
-                       const String& path) : AddonClass("ListItem")
+                       const String& path)
     {
       item.reset();
 
