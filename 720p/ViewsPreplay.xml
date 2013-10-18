@@ -823,10 +823,10 @@
 				<posy>61</posy>
 				<!-- MPAA flag -->
 				<control type="image">
-					<posy>25</posy>
-					<posx>140r</posx>
-					<width>100</width>
-					<height>17</height>
+					<posy>0</posy>
+					<posx>100r</posx>
+					<width>60</width>
+					<height>30</height>
 					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
@@ -1050,7 +1050,7 @@
 				</control>
 				<!-- MPAA flag -->
 				<control type="image">
-					<posy>55</posy>
+					<posy>50</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>17</height>
