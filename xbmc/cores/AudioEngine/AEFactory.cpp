@@ -251,8 +251,6 @@ bool CAEFactory::SupportsRaw(AEDataFormat format)
     return false;
   if (format == AE_FMT_EAC3 && !CSettings::Get().GetBool("audiooutput.eac3passthrough"))
     return false;
-  if (format == AE_FMT_AAC && !CSettings::Get().GetBool("audiooutput.passthroughaac"))
-    return false;
   if (format == AE_FMT_TRUEHD && !CSettings::Get().GetBool("audiooutput.truehdpassthrough"))
     return false;
   if (format == AE_FMT_DTSHD && !CSettings::Get().GetBool("audiooutput.dtshdpassthrough"))

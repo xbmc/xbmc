@@ -8,9 +8,6 @@
     </category>
     <category id="audiooutput">
       <group id="1">
-        <setting id="audiooutput.passthroughaac">
-          <visible>false</visible>
-        </setting>
         <setting id="audiooutput.truehdpassthrough">
           <visible>false</visible>
         </setting>

@@ -1978,7 +1978,6 @@ void CActiveAE::LoadSettings()
   m_settings.truehdpassthrough = CSettings::Get().GetBool("audiooutput.truehdpassthrough");
   m_settings.dtspassthrough = CSettings::Get().GetBool("audiooutput.dtspassthrough");
   m_settings.dtshdpassthrough = CSettings::Get().GetBool("audiooutput.dtshdpassthrough");
-  m_settings.aacpassthrough = CSettings::Get().GetBool("audiooutput.passthroughaac");
 
   m_settings.resampleQuality = static_cast<AEQuality>(CSettings::Get().GetInt("audiooutput.processquality"));
 }
@@ -2041,7 +2040,6 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.ac3passthrough"    ||
       setting == "audiooutput.eac3passthrough"   ||
       setting == "audiooutput.dtspassthrough"    ||
-      setting == "audiooutput.passthroughaac"    ||
       setting == "audiooutput.truehdpassthrough" ||
       setting == "audiooutput.dtshdpassthrough"  ||
       setting == "audiooutput.channels"          ||

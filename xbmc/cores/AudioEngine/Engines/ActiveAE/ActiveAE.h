@@ -52,7 +52,6 @@ struct AudioSettings
   bool ac3passthrough;
   bool eac3passthrough;
   bool dtspassthrough;
-  bool aacpassthrough;
   bool truehdpassthrough;
   bool dtshdpassthrough;
   bool stereoupmix;

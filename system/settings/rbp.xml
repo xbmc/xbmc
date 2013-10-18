@@ -41,9 +41,6 @@
         <setting id="audiooutput.stereoupmix">
           <visible>false</visible>
         </setting>
-        <setting id="audiooutput.passthroughaac">
-          <visible>false</visible>
-        </setting>
         <setting id="audiooutput.multichannellpcm">
           <visible>false</visible>
         </setting>

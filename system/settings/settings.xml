@@ -2133,19 +2133,6 @@
             </dependency>
           </dependencies>       
         </setting>
-        <setting id="audiooutput.passthroughaac" type="boolean" label="299" help="36367">
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="visible">
-              <and>
-                <condition setting="audiooutput.passthrough" operator="is">true</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.passthrough</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
-              </and>
-            </dependency>
-          </dependencies>     
-        </setting>
         <setting id="audiooutput.truehdpassthrough" type="boolean" label="349" help="36369">
           <level>2</level>
           <default>false</default>

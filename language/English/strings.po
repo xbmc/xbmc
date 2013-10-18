@@ -1242,10 +1242,7 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr ""
+#empty string with id 299
 
 msgctxt "#300"
 msgid "MP1 capable receiver"
@@ -14236,10 +14233,7 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36367"
-msgid "Select this option if your receiver is capable of decoding AAC streams."
-msgstr ""
+#empty string with id 36367
 
 #: system/settings/settings.xml
 msgctxt "#36368"
