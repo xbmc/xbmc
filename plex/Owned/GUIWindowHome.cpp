@@ -382,7 +382,12 @@ CFileItemPtr CGUIWindowHome::GetCurrentListItem(int offset)
 {
   CGUIBaseContainer* pControl = (CGUIBaseContainer* )GetControl(MAIN_MENU);
   if (pControl)
-    return boost::static_pointer_cast<CFileItem>(pControl->GetListItem(offset));
+  {
+    CGUIListItemPtr guiItem = pControl->GetListItem(offset);
+    if (guiItem && guiItem->IsFileItem())
+      return boost::static_pointer_cast<CFileItem>(guiItem);
+  }
+
   return CFileItemPtr();
 }
 
