@@ -396,7 +396,7 @@
 			</control>
 			<!-- menu inside -->
 			<control type="group" id="1300">
-				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
+				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202) + !Container.Content(episode) + !Container.Content(movie)</visible>
 				<posx>-253</posx>
 				<posy>30</posy>
 				<width>253</width>
