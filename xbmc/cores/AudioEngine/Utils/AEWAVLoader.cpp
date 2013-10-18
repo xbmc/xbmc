@@ -32,6 +32,10 @@
 #include "AEUtil.h"
 #include "AERemap.h"
 
+#ifdef TARGET_WINDOWS
+#pragma comment(lib, "libsamplerate-0.lib")
+#endif 
+
 typedef struct
 {
   char     chunk_id[4];
