@@ -5749,7 +5749,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition, int s
     uint32_t param = secondCondition > 0 ? secondCondition : condition;
     if (param > m_stringParameters.size())
       return false;
-    return lhs.Equals(m_stringParameters[param]);
+    return lhs.CompareNoCase(m_stringParameters[param]) == 0;
   }
   else if (condition == LISTITEM_ISSELECTED)
     return item->IsSelected();
