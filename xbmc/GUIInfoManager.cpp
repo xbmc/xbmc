@@ -2629,14 +2629,21 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       if (!data1) // No container specified, so we lookup the current view container
       {
         window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+        /* PLEX */
+        if (window && (window->GetID() == WINDOW_PLEX_PREPLAY_VIDEO || window->GetID() == WINDOW_PLEX_PREPLAY_MUSIC))
+          item = window->GetCurrentListItem(info.GetData2()).get();
+        /* END PLEX */
         if (window && window->IsMediaWindow())
           data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
       }
 
       if (!window) // If we don't have a window already (from lookup above), get one
         window = GetWindowWithCondition(contextWindow, 0);
-
+#ifndef __PLEX__
       if (window)
+#else
+      if (window && !item)
+#endif
       {
         const CGUIControl *control = window->GetControl(data1);
         if (control && control->IsContainer())
