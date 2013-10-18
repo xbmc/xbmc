@@ -166,7 +166,7 @@
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
 			<!-- global search-->
-			<include>GlobalSearch</include>
+			<!--><include>GlobalSearch</include>-->
 			<!-- filters & sorting menu -->
 			<control type="group" id="1300">
 				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
@@ -238,7 +238,7 @@
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
 			<!-- global search-->
-			<include>GlobalSearch</include>
+			<!--><include>GlobalSearch</include>-->
 			<!-- filters & sorting menu -->
 			<control type="group" id="1300">
 				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
@@ -310,7 +310,7 @@
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
 			<!-- global search-->
-			<include>GlobalSearch</include>
+			<!--><include>GlobalSearch</include>-->
 			<!-- sidebar buttons -->
 			<control type="grouplist" id="998">
 				<posy>80</posy>
