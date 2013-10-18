@@ -134,7 +134,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
   }
   else if (action.GetID() == ACTION_TOGGLE_WATCHED)
   {
-    if (m_viewControl.GetSelectedItem())
+    if (m_viewControl.GetSelectedItem() != -1)
     {
       CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
       if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
