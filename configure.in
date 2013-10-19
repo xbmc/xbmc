@@ -975,7 +975,7 @@ if test "$use_wayland" = "yes" && test "$host_vendor" != "apple"; then
      AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([WAYLAND_EGL],    [wayland-egl],
     [INCLUDES="$INCLUDES $WAYLAND_EGL_CFLAGS";
-     WAYLAND_EGL_LIBRARY_LINE=`LIBRARY=\`${PKG_CONFIG} --libs-only-l wayland-egl\`; echo ${LIBRARY:2}`
+     WAYLAND_EGL_LIBRARY_LINE=`LIBRARY=\`${PKG_CONFIG} --libs-only-l wayland-egl\`; echo ${LIBRARY:2:11}`
      XB_FIND_SONAME([WAYLAND_EGL_LIBRARY], ${WAYLAND_EGL_LIBRARY_LINE})],
     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XKBCOMMON],    [xkbcommon],
