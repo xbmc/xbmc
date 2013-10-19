@@ -30,8 +30,6 @@
 #include "utils/SystemInfo.h"
 #endif
 
-using namespace std;
-
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
 bool in_ether (const char *bufp, unsigned char *addr)
 {
@@ -169,8 +167,8 @@ CStdString CNetwork::GetHostName(void)
 
 CNetworkInterface* CNetwork::GetFirstConnectedInterface()
 {
-   vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-   vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
    while (iter != ifaces.end())
    {
       CNetworkInterface* iface = *iter;
@@ -186,8 +184,8 @@ bool CNetwork::HasInterfaceForIP(unsigned long address)
 {
    unsigned long subnet;
    unsigned long local;
-   vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-   vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
    while (iter != ifaces.end())
    {
       CNetworkInterface* iface = *iter;
@@ -213,7 +211,7 @@ bool CNetwork::IsAvailable(bool wait /*= false*/)
     //       wait for 5 seconds here.
   }
 
-  vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+  std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
   return (ifaces.size() != 0);
 }
 
@@ -224,8 +222,8 @@ bool CNetwork::IsConnected()
 
 CNetworkInterface* CNetwork::GetInterfaceByName(CStdString& name)
 {
-   vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-   vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
    while (iter != ifaces.end())
    {
       CNetworkInterface* iface = *iter;
