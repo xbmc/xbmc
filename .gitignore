@@ -57,14 +57,6 @@ config.log
 *.pbxuser
 *project.xcworkspace
 *xcuserdata
-/tools/darwin/depends/config.site
-/tools/darwin/depends/config.site.mk
-/tools/darwin/depends/Makefile
-/tools/darwin/depends/Makefile.include
-/tools/darwin/depends/configure
-/tools/darwin/depends/python26/Makefile
-/tools/darwin/depends/**/.gitignore
-/tools/darwin/depends/**/.installed
 
 .libs/
 .deps/
