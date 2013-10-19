@@ -289,7 +289,7 @@ enum StdConversionType /* Keep it in sync with CCharsetConverter::CInnerConverte
 class CCharsetConverter::CInnerConverter
 {
 public:
-  static bool logicalToVisualBiDi(const std::u32string& stringSrc, std::u32string& stringDst, FriBidiCharType base = FRIBIDI_TYPE_LTR);
+  static bool logicalToVisualBiDi(const std::u32string& stringSrc, std::u32string& stringDst, FriBidiCharType base = FRIBIDI_TYPE_LTR, const bool failOnBadString = false);
   
   template<class INPUT,class OUTPUT>
   static bool stdConvert(StdConversionType convertType, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false);
@@ -487,7 +487,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   return true;
 }
 
-bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32string& stringSrc, std::u32string& stringDst, FriBidiCharType base /*= FRIBIDI_TYPE_LTR*/)
+bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32string& stringSrc, std::u32string& stringDst, FriBidiCharType base /*= FRIBIDI_TYPE_LTR*/, const bool failOnBadString /*= false*/)
 {
   stringDst.clear();
 
@@ -518,6 +518,7 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32strin
       return false;
     }
 
+    bool bidiFailed = false;
     FriBidiCharType baseCopy = base; // preserve same value for all lines, required because fribidi_log2vis will modify parameter value
     if (fribidi_log2vis((const FriBidiChar*)(stringSrc.c_str() + lineStart), lineLen, &baseCopy, visual, NULL, NULL, NULL))
     {
@@ -525,8 +526,16 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32strin
       const int newLen = fribidi_remove_bidi_marks(visual, lineLen, NULL, NULL, NULL);
       if (newLen > 0)
         stringDst.append((const char32_t*)visual, (size_t)newLen);
+      else if (newLen < 0)
+        bidiFailed = failOnBadString;
     }
+    else
+      bidiFailed = failOnBadString;
+
     free(visual);
+
+    if (bidiFailed)
+      return false;
 
     lineStart = lineEnd;
   } while (lineStart < srcLen);
