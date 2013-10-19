@@ -33,6 +33,10 @@ public class SwigTypeParser
     */
    private static Map typeTable = [:]
 
+   /**
+    * Add a typedef node to the global list of typedefs to be used later in 
+    *  parsing types.
+    */
    public static void appendTypeTable(Node typetab) { typetab.each { typeTable[it.@namespace + it.@type] = it.@basetype } }
 
    /**

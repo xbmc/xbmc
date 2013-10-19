@@ -23,7 +23,6 @@
 import Helper
 import SwigTypeParser
 import PythonTools
-import MethodType
 
 import groovy.xml.XmlUtil
 import groovy.text.SimpleTemplateEngine
@@ -34,12 +33,24 @@ import java.util.regex.Pattern
  * times over, so they are pulled out once here.
  */
 
+// ---------------------------------------------------------
 // initialize the SwigTypeParser with the module's typetables
 module.findAll( { it.name() == 'typetab' } ).each {  SwigTypeParser.appendTypeTable(it) }
+// ---------------------------------------------------------
 
-methods = module.depthFirst().findAll { it.name() == 'function' || it.name() == 'constructor' || it.name() == 'destructor' }
-classes = module.depthFirst().findAll { it.name() == 'class' }
+// ---------------------------------------------------------
+// Flatten out all of the method/function nodes, whether inside 
+//  classes or not, into 'methods'
+List methods = module.depthFirst().findAll { it.name() == 'function' || it.name() == 'constructor' || it.name() == 'destructor' }
+// ---------------------------------------------------------
 
+// ---------------------------------------------------------
+// Flatten out all of the class nodes into 'classes'
+List classes = module.depthFirst().findAll { it.name() == 'class' }
+// ---------------------------------------------------------
+
+// ---------------------------------------------------------
+// Initialize the Helper with the type conversions
 Helper.setup(this,classes,
     /**
      * This is meant to contain mini-templates for converting the return type
@@ -89,10 +100,14 @@ Helper.setup(this,classes,
       'double' : '${api} = PyFloat_AsDouble(${slarg});',
       'float' : '${api} = (float)PyFloat_AsDouble(${slarg});'
     ], '${api} = (${swigTypeParser.SwigType_str(ltype)})retrieveApiInstance(${slarg},"${ltype}","${helper.findNamespace(method)}","${helper.callingName(method)}");')
+// ---------------------------------------------------------
 
-//println 'this: ' + this.binding.getVariables()
-
-void doMethod(method, MethodType methodType)
+/*******************************************************************************/
+/**
+ * The doMethod will actually write out the CPython method call for
+ *  the method/function represented by the provided Node ('method').
+ */
+void doMethod(Node method, MethodType methodType)
 {
   boolean isOperator = method.@name.startsWith("operator ")
   boolean doAsMappingIndex = false
@@ -261,7 +276,15 @@ void doMethod(method, MethodType methodType)
     %>
   } <%
 }
+/*******************************************************************************/
 
+/**
+ * This method writes out the instance of a TypeInfo (which includes
+ * The PyTypeObject as a member) for the class node provided.
+ *
+ * If classNameAsVariable is not null then the class name as a 
+ * variable will be appended to it.
+ */
 void doClassTypeInfo(Node clazz, List classNameAsVariables = null)
 { 
   String classNameAsVariable = PythonTools.getClassNameAsVariable(clazz)
@@ -283,6 +306,10 @@ void doClassTypeInfo(Node clazz, List classNameAsVariables = null)
 <%    
 }
 
+/**
+ * This method will take the name of an API class from another module and
+ *  create an external reference to its TypeInfo instance.
+ */
 void doExternClassTypeInfo(String knownType)
 { 
   String classNameAsVariable = knownType.replaceAll('::','_')
@@ -295,7 +322,28 @@ void doExternClassTypeInfo(String knownType)
 <%    
 }
 
-void doClassMethodInfo(Node clazz, List initTypeCalls = null)
+/*******************************************************************************/
+/**
+ * This method takes the class node and outputs all of the python meta-data
+ *  and class oddities (like comparators, as_mapping, etc.). These include:
+ *
+ * 1) comparator *_cmp python method as long as there's an operator==, an
+ *    operator>, AND an operator<. 
+ * 2) it will create a python "as_mapping" method as long as there's both
+ *    an operator[], AND a .size() method on the class.
+ * 3) it will handle the explicitly defined rich compare (_rcmp) if the 
+ *    feature is included in the .i file using %feature("python:rcmp")
+ * 4) The array of PyMethodDefs for the class definition
+ * 5) It will handle public fields as if the were python properties by:
+ *    a) Creating a get/set_member if there are read/write properties.
+ *    b) Creating only a get if there are only read-only properties.
+ * 6) It will write the init[Classname] method for the class which will
+ *    initialize the TypeInfo and PyTypeObject structs.
+ *
+ * If initTypeCalls is not null then the method name for the generated init
+ *  method (see #6 above) will be appended to it.
+ */
+void doClassMethodInfo(Node clazz, List initTypeCalls)
 { 
   String classNameAsVariable = PythonTools.getClassNameAsVariable(clazz)
   String fullClassName = Helper.findFullClassName(clazz)
@@ -565,6 +613,8 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
   //=========================================================================
 <%
 }
+/*******************************************************************************/
+
 
 List getAllVirtualMethods(Node clazz)
 {
@@ -624,6 +674,7 @@ Helper.getInsertNodes(module, 'header').each { %>${Helper.unescape(it)}<% }
 namespace PythonBindings
 {
 <%
+  // initTypeCalls is the 
   List initTypeCalls = []
   List classNameAsVariables = []
 
@@ -649,7 +700,9 @@ namespace PythonBindings
 
 <%
 //=========================================================================
-// Do the directors
+// Do the directors. For every class that can be extended in python, we 
+// need to create a Director instance with bridging calls. This chunk of
+// code will generate those classes.
   classes.findAll({ it.@feature_director != null }).each { clazz ->
     // find the constructor for this class
     constructor = clazz.constructor[0]
