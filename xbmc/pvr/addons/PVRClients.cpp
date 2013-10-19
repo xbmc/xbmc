@@ -894,7 +894,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
   {
     const AddonPtr clientAddon = map.at(iClientPtr);
     bool bEnabled = clientAddon->Enabled() &&
-        !m_addonDb.IsAddonDisabled(clientAddon->ID());
+        !CAddonMgr::Get().IsAddonDisabled(clientAddon->ID());
 
     if (!bEnabled && IsKnownClient(clientAddon))
     {
@@ -970,7 +970,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
     for (ADDON::VECADDONS::iterator it = disableAddons.begin(); it != disableAddons.end(); it++)
     {
       // disable in the add-on db
-      m_addonDb.DisableAddon((*it)->ID(), true);
+      CAddonMgr::Get().DisableAddon((*it)->ID(), true);
 
       // remove from the pvr add-on list
       ADDON::VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), *it);
