@@ -483,6 +483,10 @@ CSettingSection* CSettings::GetSection(const std::string &section) const
 
 bool CSettings::GetBool(const std::string &id) const
 {
+  // Backward compatibility (skins use this setting)
+  if (StringUtils::EqualsNoCase(id, "lookandfeel.enablemouse"))
+    return GetBool("input.enablemouse");
+
   return m_settingsManager->GetBool(id);
 }
 
