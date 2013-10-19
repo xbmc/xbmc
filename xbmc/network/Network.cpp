@@ -497,7 +497,6 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     if (::bind( sock, (struct sockaddr *) &addr, sizeof(struct sockaddr_in)) < 0)
     {
       closesocket(sock);
-      int err = errno;
       CLog::Log(LOGERROR, "%s Server: Failed to bind ipv4 serversocket", callerName);
       return INVALID_SOCKET;
     }
