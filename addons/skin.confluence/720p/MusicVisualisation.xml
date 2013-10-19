@@ -31,7 +31,7 @@
 				<posy>-150</posy>
 				<width>1280</width>
 				<height>256</height>
-				<texture flipy="true">HomeNowPlayingBack.png</texture>
+				<texture flipy="true" border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="label">
 				<description>Partymode Header label</description>
@@ -80,7 +80,7 @@
 				<posy>230r</posy>
 				<width>1280</width>
 				<height>230</height>
-				<texture>HomeNowPlayingBack.png</texture>
+				<texture border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="image">
 				<description>cover image</description>

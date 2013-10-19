@@ -238,7 +238,7 @@
 				<posy>0</posy>
 				<width>1280</width>
 				<height>270</height>
-				<texture>HomeNowPlayingBack.png</texture>
+				<texture border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="label">
 				<posx>40</posx>

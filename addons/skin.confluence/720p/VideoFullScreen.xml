@@ -11,7 +11,7 @@
 				<posy>-150</posy>
 				<width>1280</width>
 				<height>256</height>
-				<texture flipy="true">HomeNowPlayingBack.png</texture>
+				<texture flipy="true" border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="label" id="1">
 				<description>Chapter Count Header label</description>
