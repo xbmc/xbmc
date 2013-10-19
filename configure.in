@@ -545,7 +545,7 @@ AC_ARG_ENABLE([libcap],
 
 AC_ARG_ENABLE([player],
   [AS_HELP_STRING([--enable-player],
-  [enable additional players from a list of comma separated names, (default is none, choices are amlplayer, omxplayer)])],
+  [enable additional players from a list of comma separated names, (default is none, choices are omxplayer)])],
   [add_players=$enableval],
   [add_players=no])
 
@@ -1950,10 +1950,6 @@ AC_DEFINE(YAJL_MAJOR, 1, [yajl version 1])
 
 # additional internal players
 case $add_players in
-  *amlplayer*)
-      AC_CHECK_HEADER([amplayer/player_error.h],, AC_MSG_ERROR($missing_headers))
-      XB_ADD_PLAYER([AMLPLAYER], [amlplayer])
-      ;;
   *omxplayer*)
       XB_ADD_PLAYER([OMXPLAYER], [omxplayer])
       ;;
@@ -2500,7 +2496,6 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
     xbmc/cores/AudioEngine/Makefile \
     xbmc/cores/paplayer/Makefile \
-    xbmc/cores/amlplayer/Makefile \
     xbmc/cores/omxplayer/Makefile \
     lib/timidity/Makefile \
     lib/xbadpcm/Makefile \
