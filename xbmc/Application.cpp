@@ -4380,8 +4380,12 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
 
   // this really aught to be inside !bRestart, but since PlayStack
   // uses that to init playback, we have to keep it outside
+#ifndef __PLEX__
   int playlist = g_playlistPlayer.GetCurrentPlaylist();
   if (item.IsVideo() && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
+#else
+  if (item.IsVideo() && g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 1)
+#endif
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart && !g_settings.m_bStartVideoWindowed;
