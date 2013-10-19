@@ -52,7 +52,7 @@ void CHttpHeader::Parse(const std::string& strData)
       StringUtils::Trim(strValue);
 
       if (!strParam.empty() && !strValue.empty())
-        m_params.insert(HeaderParams::value_type(strParam, strValue));
+        m_params.push_back(HeaderParams::value_type(strParam, strValue));
     }
     else if (m_protoLine.empty())
       m_protoLine.assign(strData, pos, lineEnd - pos);
@@ -65,11 +65,28 @@ std::string CHttpHeader::GetValue(std::string strParam) const
 {
   StringUtils::ToLower(strParam);
 
-  HeaderParams::const_iterator pIter = m_params.find(strParam);
-  if (pIter != m_params.end())
-    return pIter->second;
+  // look in reverse to find last parameter (probably most important)
+  for (HeaderParams::const_reverse_iterator iter = m_params.rbegin(); iter != m_params.rend(); ++iter)
+  {
+    if (iter->first == strParam)
+      return iter->second;
+  }
 
   return "";
+}
+
+std::vector<std::string> CHttpHeader::GetValues(std::string strParam) const
+{
+  StringUtils::ToLower(strParam);
+  std::vector<std::string> values;
+
+  for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
+  {
+    if (iter->first == strParam)
+      values.push_back(iter->second);
+  }
+
+  return values;
 }
 
 std::string CHttpHeader::GetHeader(void) const

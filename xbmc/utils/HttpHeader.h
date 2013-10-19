@@ -20,23 +20,25 @@
  *
  */
 
-#include <map>
+#include <utility>
 #include <vector>
 #include <string>
 
 #define HTTPHEADER_CONTENT_TYPE "Content-Type"
 
-typedef std::map<std::string, std::string> HeaderParams;
-typedef HeaderParams::iterator HeaderParamsIter;
-
 class CHttpHeader
 {
 public:
+  typedef std::pair<std::string, std::string> HeaderParamValue;
+  typedef std::vector<HeaderParamValue> HeaderParams;
+  typedef HeaderParams::iterator HeaderParamsIter;
+
   CHttpHeader();
   ~CHttpHeader();
 
   void Parse(const std::string& strData);
   std::string GetValue(std::string strParam) const;
+  std::vector<std::string> GetValues(std::string strParam) const;
 
   std::string GetHeader(void) const;
 
