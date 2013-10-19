@@ -22,12 +22,10 @@
 
 #include <map>
 #include <vector>
-#include "StdString.h"
+#include <string>
 
-#define HTTPHEADER_CONTENT_TYPE "Content-Type"
-
-typedef std::map<CStdString, CStdString> HeaderParams;
-typedef std::map<CStdString, CStdString>::iterator HeaderParamsIter;
+typedef std::map<std::string, std::string> HeaderParams;
+typedef HeaderParams::iterator HeaderParamsIter;
 
 class CHttpHeader
 {
@@ -35,18 +33,32 @@ public:
   CHttpHeader();
   ~CHttpHeader();
 
-  void Parse(CStdString strData);
-  CStdString GetValue(CStdString strParam) const;
+  void Parse(const std::string& strData);
+  void AddParamWithValue(const std::string& param, const std::string& value);
 
-  void GetHeader(CStdString& strHeader) const;
+  std::string GetValue(std::string strParam) const;
 
-  CStdString GetMimeType() { return GetValue(HTTPHEADER_CONTENT_TYPE); }
-  CStdString GetProtoLine() { return m_protoLine; }
+  std::string& GetHeader(std::string& strHeader) const;
+  std::string GetHeader(void) const;
+
+  std::string GetMimeType(void);
+  std::string GetCharset(void);
+  std::string GetProtoLine() const { return m_protoLine; }
+
+  bool IsHeaderDone(void) const
+  { return m_headerdone; }
 
   void Clear();
 
 protected:
+  void ClearCached(void);
+
   HeaderParams m_params;
-  CStdString   m_protoLine;
+  std::string   m_protoLine;
+  bool m_headerdone;
+  std::string m_detectedMimeType;
+  bool m_mimeTypeIsCached;
+  std::string m_detectedCharset;
+  bool m_charsetIsCached;
 };
 

@@ -19,91 +19,167 @@
  */
 
 #include "HttpHeader.h"
+#include "utils/StringUtils.h"
 
 CHttpHeader::CHttpHeader()
 {
-  m_params.clear();
+  m_headerdone = false;
+  m_mimeTypeIsCached = false;
+  m_charsetIsCached = false;
 }
 
 CHttpHeader::~CHttpHeader()
 {
 }
 
-void CHttpHeader::Parse(CStdString strData)
+void CHttpHeader::Parse(const std::string& strData)
 {
-  unsigned int iIter = 0;
-  int iValueStart = 0;
-  int iValueEnd = 0;
+  if (m_headerdone)
+    Clear();
 
-  CStdString strParam;
-  CStdString strValue;
-
-  while (iIter < strData.size())
+  size_t pos = 0;
+  const size_t len = strData.length();
+  while (pos < len)
   {
-    iValueStart = strData.Find(":", iIter);
-    iValueEnd = strData.Find("\r\n", iIter);
+    const size_t valueStart = strData.find(':', pos);
+    const size_t lineEnd = strData.find("\r\n", pos);
 
-    if (iValueEnd < 0) break;
+    if (lineEnd == std::string::npos)
+      break;
 
-    if (iValueStart > 0)
-    {
-      strParam = strData.substr(iIter, iValueStart - iIter);
-      strValue = strData.substr(iValueStart + 1, iValueEnd - iValueStart - 1);
-
-      /*
-      CUtil::Lower(strParam.c_str()
-      // trim left and right
-      {
-        string::size_type pos = strValue.find_last_not_of(' ');
-        if(pos != string::npos)
-        {
-          strValue.erase(pos + 1);
-          pos = strValue.find_first_not_of(' ');
-          if(pos != string::npos) strValue.erase(0, pos);
-        }
-        else strValue.erase(strValue.begin(), strValue.end());
-      }*/
-      strParam.Trim();
-      strParam.ToLower();
-
-      strValue.Trim();
-
-
-      m_params[strParam] = strValue;
+    if (valueStart == pos)
+    { 
+      /* skip (erroneously) empty parameter */
     }
-    else if (m_protoLine.IsEmpty())
-      m_protoLine = strData;
+    else if (lineEnd == pos)
+    {
+      m_headerdone = true;
+      break;
+    }
+    else if (valueStart != std::string::npos && valueStart < lineEnd)
+    {
+      std::string strParam(strData, pos, valueStart - pos);
+      std::string strValue(strData, valueStart + 1, lineEnd - valueStart - 1);
 
+      StringUtils::Trim(strParam);
+      StringUtils::ToLower(strParam);
 
-    iIter = iValueEnd + 2;
+      StringUtils::Trim(strValue);
+
+      m_params.insert(HeaderParams::value_type(strParam, strValue));
+    }
+    else if (m_protoLine.empty())
+      m_protoLine.assign(strData, pos, lineEnd - pos);
+
+    pos = lineEnd + 2;
   }
 }
 
-CStdString CHttpHeader::GetValue(CStdString strParam) const
+void CHttpHeader::AddParamWithValue(const std::string& param, const std::string& value)
 {
-  strParam.ToLower();
+  ClearCached();
+  m_params.insert(HeaderParams::value_type(param, value));
+}
 
-  std::map<CStdString,CStdString>::const_iterator pIter = m_params.find(strParam);
-  if (pIter != m_params.end()) return pIter->second;
+std::string CHttpHeader::GetValue(std::string strParam) const
+{
+  StringUtils::ToLower(strParam);
+
+  HeaderParams::const_iterator pIter = m_params.find(strParam);
+  if (pIter != m_params.end())
+    return pIter->second;
 
   return "";
 }
 
-void CHttpHeader::GetHeader(CStdString& strHeader) const
+std::string& CHttpHeader::GetHeader(std::string& strHeader) const
 {
-  strHeader.clear();
+  strHeader = m_protoLine + '\n';
 
-  std::map<CStdString,CStdString>::const_iterator iter = m_params.begin();
-  while (iter != m_params.end())
+  HeaderParams::const_iterator iter;
+  for(iter = m_params.begin(); iter != m_params.end(); ++iter)
+    strHeader += ((*iter).first + ": " + (*iter).second + '\n');
+
+  strHeader += '\n';
+  
+  return strHeader;
+}
+
+std::string CHttpHeader::GetHeader(void) const
+{
+  std::string strHeader;
+  return GetHeader(strHeader);
+}
+
+std::string CHttpHeader::GetMimeType(void)
+{
+  if (m_mimeTypeIsCached && m_headerdone)
+    return m_detectedMimeType;
+
+  m_mimeTypeIsCached = m_headerdone;
+
+  const HeaderParams::const_iterator it = m_params.find("content-type");
+  if (it == m_params.end())
   {
-    strHeader += ((*iter).first + ": " + (*iter).second + "\n");
-    iter++;
+    m_detectedMimeType.clear();
+    return m_detectedMimeType;
   }
 
-  strHeader += "\n";
+  const std::string& strValue = it->second;
+  return m_detectedMimeType.assign(strValue, 0, strValue.find(';'));
+}
+
+std::string CHttpHeader::GetCharset(void)
+{
+  if (m_charsetIsCached && m_headerdone)
+    return m_detectedCharset;
+
+  m_charsetIsCached = m_headerdone;
+
+  const HeaderParams::const_iterator it = m_params.find("content-type");
+  if (it == m_params.end())
+  {
+    m_detectedCharset.clear();
+    return m_detectedCharset;
+  }
+
+  std::string strValue = it->second;
+  StringUtils::ToLower(strValue);
+  size_t charsetParamPos = strValue.find("; charset=");
+  size_t charsetNamePos;
+  if (charsetParamPos != std::string::npos)
+    charsetNamePos = charsetParamPos + 10;
+  else
+  {
+    charsetParamPos = strValue.find(";charset=");
+    charsetNamePos = charsetParamPos + 9;
+  }
+
+  if (charsetParamPos == std::string::npos || charsetNamePos >= strValue.length())
+  {
+    m_detectedCharset.clear();
+    return m_detectedCharset;
+  }
+
+  m_detectedCharset.assign(strValue, charsetNamePos, strValue.find(';', charsetNamePos));
+  StringUtils::ToUpper(m_detectedCharset);
+
+  return m_detectedCharset;
 }
 
 void CHttpHeader::Clear()
 {
+  ClearCached();
   m_params.clear();
+  m_protoLine.clear();
+  m_headerdone = false;
 }
+
+void CHttpHeader::ClearCached(void)
+{
+  m_detectedMimeType.clear();
+  m_mimeTypeIsCached = false;
+  m_detectedCharset.clear();
+  m_charsetIsCached = false;
+}
+
