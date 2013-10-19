@@ -612,6 +612,22 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           break;
         }
       }
+      else if (&m_sink.m_dataPort)
+      {
+        switch (signal)
+        {
+        case CSinkDataProtocol::RETURNSAMPLE:
+          CSampleBuffer **buffer;
+          buffer = (CSampleBuffer**)msg->data;
+          if (buffer)
+          {
+            (*buffer)->Return();
+          }
+          return;
+        default:
+          break;
+        }
+      }
       break;
 
     case AE_TOP_CONFIGURED_IDLE:
