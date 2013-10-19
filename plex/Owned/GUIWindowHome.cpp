@@ -305,7 +305,7 @@ bool CPlexSectionFanout::NeedsRefresh()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(false), m_lastSelectedItem("Search")
+CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(false), m_lastSelectedItem("Search"), m_loadFanoutTimer(this)
 {
   m_loadType = LOAD_ON_GUI_INIT;
   AddSection("global://art/", SECTION_TYPE_GLOBAL_FANART);
@@ -343,19 +343,19 @@ bool CGUIWindowHome::OnAction(const CAction &action)
   // See what's focused.
   if (focusedControl == MAIN_MENU)
   {
-    CGUIBaseContainer* pControl = (CGUIBaseContainer*)GetFocusedControl();
-    if (pControl)
+    CFileItemPtr pItem = GetCurrentListItem();
+    if (pItem)
     {
-      CGUIListItemPtr pItem = pControl->GetListItem(0);
-      if (pItem)
+      if (m_lastSelectedItem != GetCurrentItemName())
       {
+        HideAllLists();
         m_lastSelectedItem = GetCurrentItemName();
         m_lastSelectedSubItem.Empty();
-        if (!ShowSection(pItem->GetProperty("sectionPath").asString()) && !m_globalArt)
-        {
-          HideAllLists();
-          ShowSection("global://art/");
-        }
+
+        if (m_loadFanoutTimer.IsRunning())
+          m_loadFanoutTimer.Restart();
+        else
+          m_loadFanoutTimer.Start(200);
       }
     }
   }
@@ -963,6 +963,20 @@ bool CGUIWindowHome::GetContentListFromSection(const CStdString &url, int conten
   }
 
   return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::OnTimeout()
+{
+  if (GetCurrentItemName() == m_lastSelectedItem)
+  {
+    CFileItemPtr pItem = GetCurrentListItem();
+    if (!ShowSection(pItem->GetProperty("sectionPath").asString()) && !m_globalArt)
+    {
+      HideAllLists();
+      ShowSection("global://art/");
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
