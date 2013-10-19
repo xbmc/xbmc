@@ -12,6 +12,8 @@
 #include "JobManager.h"
 #include "PlexJobs.h"
 
+#include "Application.h"
+
 CPlexThemeMusicPlayer::CPlexThemeMusicPlayer() : m_player(NULL)
 {
   if (!XFILE::CDirectory::Exists("special://masterprofile/ThemeMusicCache"))
@@ -68,7 +70,7 @@ CFileItemPtr CPlexThemeMusicPlayer::getThemeItem(const CStdString &url)
 
 void CPlexThemeMusicPlayer::playForItem(const CFileItem &item)
 {
-  if (g_guiSettings.GetBool("backgroundmusic.thememusicenabled"))
+  if (g_guiSettings.GetBool("backgroundmusic.thememusicenabled") && !g_application.IsPlaying())
     CJobManager::GetInstance().AddJob(new CPlexThemeMusicPlayerJob(item), this);
 }
 
