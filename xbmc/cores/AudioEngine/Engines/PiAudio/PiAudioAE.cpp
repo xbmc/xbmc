@@ -48,7 +48,8 @@ bool CPiAudioAE::Initialize()
 void CPiAudioAE::UpdateStreamSilence()
 {
 #if defined(TARGET_RASPBERRY_PI)
-  bool enable = CSettings::Get().GetBool("audiooutput.streamsilence");
+  bool enable = CSettings::Get().GetString("audiooutput.audiodevice") == "HDMI" &&
+                CSettings::Get().GetBool("audiooutput.streamsilence");
   char response[80] = "";
   char command[80] = "";
   sprintf(command, "force_audio hdmi %d", enable);
@@ -105,9 +106,27 @@ void CPiAudioAE::FreeSound(IAESound *sound)
 {
 }
 
-bool CPiAudioAE::SupportsRaw()
+bool CPiAudioAE::SupportsRaw(AEDataFormat format)
 {
-  return true;
+  bool supported = false;
+#if defined(TARGET_RASPBERRY_PI)
+  if (CSettings::Get().GetString("audiooutput.audiodevice") == "HDMI")
+  {
+    if (!CSettings::Get().GetBool("audiooutput.dualaudio"))
+    {
+      DllBcmHost m_DllBcmHost;
+      m_DllBcmHost.Load();
+      if (format == AE_FMT_AC3 && CSettings::Get().GetBool("audiooutput.ac3passthrough") &&
+          m_DllBcmHost.vc_tv_hdmi_audio_supported(EDID_AudioFormat_eAC3, 2, EDID_AudioSampleRate_e44KHz, EDID_AudioSampleSize_16bit ) == 0)
+        supported = true;
+      if (format == AE_FMT_DTS && CSettings::Get().GetBool("audiooutput.dtspassthrough") &&
+          m_DllBcmHost.vc_tv_hdmi_audio_supported(EDID_AudioFormat_eDTS, 2, EDID_AudioSampleRate_e44KHz, EDID_AudioSampleSize_16bit ) == 0)
+        supported = true;
+      m_DllBcmHost.Unload();
+    }
+  }
+#endif
+  return supported;
 }
 
 bool CPiAudioAE::SupportsDrain()
@@ -117,11 +136,43 @@ bool CPiAudioAE::SupportsDrain()
 
 void CPiAudioAE::OnSettingsChange(const std::string& setting)
 {
-  if (setting == "audiooutput.streamsilence")
+  if (setting == "audiooutput.streamsilence" || setting == "audiooutput.audiodevice")
     UpdateStreamSilence();
 }
 
 void CPiAudioAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
+   if (!passthrough)
+   {
+     devices.push_back(AEDevice("Analogue", "Analogue"));
+     devices.push_back(AEDevice("HDMI", "HDMI"));
+   }
 }
 
+std::string CPiAudioAE::GetDefaultDevice(bool passthrough)
+{
+  return "HDMI";
+}
+
+bool CPiAudioAE::IsSettingVisible(const std::string &settingId)
+{
+  if (settingId == "audiooutput.samplerate")
+    return true;
+
+  if (CSettings::Get().GetString("audiooutput.audiodevice") == "HDMI")
+  {
+    if (settingId == "audiooutput.passthrough")
+      return true;
+    if (settingId == "audiooutput.dtspassthrough")
+      return true;
+    if (settingId == "audiooutput.ac3passthrough")
+      return true;
+    if (settingId == "audiooutput.channels")
+      return true;
+    if (settingId == "audiooutput.dualaudio")
+      return true;
+    if (settingId == "audiooutput.streamsilence")
+      return true;
+  }
+  return false;
+}

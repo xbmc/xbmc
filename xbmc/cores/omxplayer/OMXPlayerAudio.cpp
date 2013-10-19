@@ -42,6 +42,7 @@
 
 #include "OMXPlayer.h"
 #include "linux/RBP.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 #include <iostream>
 #include <sstream>
@@ -83,7 +84,6 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
   m_messageQueue.SetMaxDataSize((small_mem ? 3:6) * 1024 * 1024);
 
   m_messageQueue.SetMaxTimeSize(8.0);
-  m_use_passthrough = false;
   m_passthrough = false;
   m_use_hw_decode = false;
   m_hw_decode = false;
@@ -95,15 +95,10 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
 OMXPlayerAudio::~OMXPlayerAudio()
 {
   CloseStream(false);
-
-  m_DllBcmHost.Unload();
 }
 
 bool OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints)
 {
-  if(!m_DllBcmHost.Load())
-    return false;
-
   m_bad_state = false;
 
   COMXAudioCodecOMX *codec = new COMXAudioCodecOMX();
@@ -146,8 +141,6 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_flush           = false;
   m_nChannels       = 0;
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
-  m_use_passthrough = (CSettings::Get().GetInt("audiooutput.mode") == AUDIO_HDMI &&
-                      !CSettings::Get().GetBool("audiooutput.dualaudio")) ? true : false ;
   m_use_hw_decode   = g_advancedSettings.m_omxHWAudioDecode;
   m_format.m_dataFormat    = GetDataFormat(m_hints);
   m_format.m_sampleRate    = 0;
@@ -511,13 +504,6 @@ bool OMXPlayerAudio::Passthrough() const
 AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
 {
   AEDataFormat dataFormat = AE_FMT_S16NE;
-  bool hdmi_passthrough_dts = false;
-  bool hdmi_passthrough_ac3 = false;
-
-  if (m_DllBcmHost.vc_tv_hdmi_audio_supported(EDID_AudioFormat_eAC3, 2, EDID_AudioSampleRate_e44KHz, EDID_AudioSampleSize_16bit ) == 0)
-    hdmi_passthrough_ac3 = true;
-  if (m_DllBcmHost.vc_tv_hdmi_audio_supported(EDID_AudioFormat_eDTS, 2, EDID_AudioSampleRate_e44KHz, EDID_AudioSampleSize_16bit ) == 0)
-    hdmi_passthrough_dts = true;
 
   m_passthrough = false;
   m_hw_decode   = false;
@@ -525,18 +511,15 @@ AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
   /* check our audio capabilties */
 
   /* pathrought is overriding hw decode*/
-  if(AUDIO_IS_BITSTREAM(CSettings::Get().GetInt("audiooutput.mode")) && m_use_passthrough)
+  if(hints.codec == AV_CODEC_ID_AC3 && CAEFactory::SupportsRaw(AE_FMT_AC3))
   {
-    if(hints.codec == AV_CODEC_ID_AC3 && CSettings::Get().GetBool("audiooutput.ac3passthrough") && hdmi_passthrough_ac3)
-    {
-      dataFormat = AE_FMT_AC3;
-      m_passthrough = true;
-    }
-    if(hints.codec == AV_CODEC_ID_DTS && CSettings::Get().GetBool("audiooutput.dtspassthrough") && hdmi_passthrough_dts)
-    {
-      dataFormat = AE_FMT_DTS;
-      m_passthrough = true;
-    }
+    dataFormat = AE_FMT_AC3;
+    m_passthrough = true;
+  }
+  if(hints.codec == AV_CODEC_ID_DTS && CAEFactory::SupportsRaw(AE_FMT_DTS))
+  {
+    dataFormat = AE_FMT_DTS;
+    m_passthrough = true;
   }
 
   /* hw decode */

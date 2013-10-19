@@ -58,8 +58,10 @@ public:
 
   virtual void GarbageCollect() {};
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
+  virtual std::string GetDefaultDevice(bool passthrough);
+  virtual bool IsSettingVisible(const std::string &settingId);
 
-  virtual bool SupportsRaw();
+  virtual bool SupportsRaw(AEDataFormat format);
   virtual bool SupportsDrain();
 
   virtual void OnLostDevice() {}

@@ -30,18 +30,64 @@
         </setting>
       </group>
     </category>
-    <category id="audiooutput">
+
+    <category id="audiooutput" label="772" help="36360">
       <group id="1">
-        <setting id="audiooutput.mode">
-          <default>2</default> <!-- AUDIO_HDMI -->
+        <setting id="audiooutput.audiodevice">
+          <level>1</level>
+          <default>HDMI</default>
+          <constraints>
+            <options>audiodevices</options>
+          </constraints>
+          <control type="list" format="string" />
         </setting>
-        <setting id="audiooutput.channels">
+        <setting id="audiooutput.dualaudio" type="boolean" label="37017" help="36542">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.passthrough</condition>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="audiooutput.boostcentre" type="boolean" label="37018" help="36543">
+          <level>2</level>
+          <default>false</default>
+        </setting>
+        <setting id="audiooutput.config">
           <visible>false</visible>
         </setting>
         <setting id="audiooutput.stereoupmix">
           <visible>false</visible>
         </setting>
-        <setting id="audiooutput.multichannellpcm">
+        <setting id="audiooutput.channels">
+          <visible>false</visible>
+        </setting>
+        <setting id="audiooutput.streamsilence">
+          <level>2</level>
+          <requirement>audiosupportsdrain</requirement>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.streamsilence</condition>
+            </dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group id="2">
+        <visible>false</visible>
+      </group>
+      <group id="3">
+        <setting id="audiooutput.passthrough">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.passthrough</condition>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="audiooutput.passthroughdevice">
           <visible>false</visible>
         </setting>
         <setting id="audiooutput.truehdpassthrough">
@@ -54,48 +100,18 @@
           <visible>false</visible>
         </setting>
         <setting id="audiooutput.ac3passthrough">
-          <default>true</default>
           <dependencies>
-            <dependency type="enable">
-              <and>
-                <or>
-                  <condition setting="audiooutput.mode">1</condition> <!-- AUDIO_IEC958 -->
-                  <condition setting="audiooutput.mode">2</condition> <!-- AUDIO_HDMI -->
-                </or>
-                <condition setting="audiooutput.dualaudio">false</condition>
-              </and>
+            <dependency type="visible">
+              <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.ac3passthrough</condition>
             </dependency>
           </dependencies>
         </setting>
         <setting id="audiooutput.dtspassthrough">
-          <default>true</default>
           <dependencies>
-            <dependency type="enable">
-              <and>
-                <or>
-                  <condition setting="audiooutput.mode">1</condition> <!-- AUDIO_IEC958 -->
-                  <condition setting="audiooutput.mode">2</condition> <!-- AUDIO_HDMI -->
-                </or>
-                <condition setting="audiooutput.dualaudio">false</condition>
-              </and>
+            <dependency type="visible">
+              <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.dtspassthrough</condition>
             </dependency>
           </dependencies>
-        </setting>
-        <setting id="audiooutput.dualaudio" type="boolean" label="37017" help="36542">
-          <level>2</level>
-          <default>false</default>
-        </setting>
-        <setting id="audiooutput.boostcentre" type="boolean" label="37018" help="36543">
-          <level>2</level>
-          <default>false</default>
-        </setting>
-      </group>
-      <group id="2">
-        <visible>false</visible>
-      </group>
-      <group id="3">
-        <setting id="audiooutput.guisoundmode">
-          <visible>false</visible>
         </setting>
       </group>
     </category>
