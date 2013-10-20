@@ -113,7 +113,7 @@ public:
    * @param forceLTRReadingOrder        force LTR reading order
    * @return true on success, false otherwise
    */
-  static bool utf32logicalToVisualBiDi(const std::u32string& logicalStringSrc, std::u32string& visualStringDst, bool forceLTRReadingOrder = false);
+  static bool utf32logicalToVisualBiDi(const std::u32string& logicalStringSrc, std::u32string& visualStringDst, bool forceLTRReadingOrder = false, bool failOnBadString = false);
   /**
    * Strictly convert wchar_t string (wstring) to UTF-32 string.
    * No RTL visual-logical transformation is performed.
@@ -127,7 +127,7 @@ public:
 
   static bool utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst,
                 bool bVisualBiDiFlip = true, bool forceLTRReadingOrder = false,
-                bool failOnBadChar = false, bool* bWasFlipped = NULL);
+                bool failOnBadChar = false);
 
   static bool utf16LEtoW(const std::u16string& utf16String, std::wstring& wString);
 
@@ -153,7 +153,7 @@ public:
   static bool utf16LEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
   static bool ucs2ToUTF8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst);
 
-  static bool utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst);
+  static bool utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst, bool failOnBadString = false);
 
   static bool utf32ToStringCharset(const std::u32string& utf32StringSrc, std::string& stringDst);
 
