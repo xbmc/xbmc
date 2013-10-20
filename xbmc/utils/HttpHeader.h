@@ -39,7 +39,7 @@ public:
   void Parse(const std::string& strData);
   void AddParam(const std::string& param, const std::string& value, const bool overwrite = false);
 
-  std::string GetValue(std::string strParam) const;
+  std::string GetValue(const std::string& strParam) const;
   std::vector<std::string> GetValues(std::string strParam) const;
 
   std::string GetHeader(void) const;
@@ -53,6 +53,8 @@ public:
   void Clear();
 
 protected:
+  std::string GetValueRaw(const std::string& strParam) const;
+
   HeaderParams m_params;
   std::string   m_protoLine;
   bool m_headerdone;

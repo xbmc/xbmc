@@ -94,10 +94,16 @@ void CHttpHeader::AddParam(const std::string& param, const std::string& value, c
   m_params.push_back(HeaderParams::value_type(paramLower, value));
 }
 
-std::string CHttpHeader::GetValue(std::string strParam) const
+std::string CHttpHeader::GetValue(const std::string& strParam) const
 {
-  StringUtils::ToLower(strParam);
+  std::string paramLower(strParam);
+  StringUtils::ToLower(paramLower);
 
+  return GetValueRaw(paramLower);
+}
+
+std::string CHttpHeader::GetValueRaw(const std::string& strParam) const
+{
   // look in reverse to find last parameter (probably most important)
   for (HeaderParams::const_reverse_iterator iter = m_params.rbegin(); iter != m_params.rend(); ++iter)
   {
