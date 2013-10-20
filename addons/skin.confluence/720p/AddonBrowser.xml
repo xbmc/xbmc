@@ -98,21 +98,21 @@
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
-				<control type="radiobutton" id ="5">
+				<control type="radiobutton" id="5">
 					<description>Enable auto-updates</description>
 					<posx>0</posx>
 					<posy>130</posy>
 					<include>ButtonCommonValues</include>
 					<label>24063</label>
 				</control>
-				<control type="radiobutton" id ="6">
+				<control type="radiobutton" id="6">
 					<description>No notifications</description>
 					<posx>0</posx>
 					<posy>170</posy>
 					<include>ButtonCommonValues</include>
 					<label>25000</label>
 				</control>
-				<control type="radiobutton" id ="7">
+				<control type="radiobutton" id="7">
 					<description>Hide foreign</description>
 					<posx>0</posx>
 					<posy>210</posy>

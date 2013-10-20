@@ -294,7 +294,7 @@
 			<control type="group" id="9000">
 				<posx>40</posx>
 				<posy>445</posy>
-				<control type="button" id ="10">
+				<control type="button" id="10">
 					<description>Ok button</description>
 					<posx>0</posx>
 					<posy>0</posy>
@@ -336,7 +336,7 @@
 					<onup>14</onup>
 					<ondown>14</ondown>
 				</control>
-				<control type="button" id ="13">
+				<control type="button" id="13">
 					<description>Get Thumb button</description>
 					<posx>630</posx>
 					<posy>0</posy>

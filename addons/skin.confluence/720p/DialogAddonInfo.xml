@@ -356,7 +356,7 @@
 					<align>center</align>
 					<font>font12_title</font>
 				</control>
-				<control type="button" id ="6">
+				<control type="button" id="6">
 					<description>Install/UnInstall Addon button</description>
 					<width>220</width>
 					<height>43</height>

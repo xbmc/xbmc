@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<include file="defaults.xml" />
-	<include file="ViewsVideoLibrary.xml" />
-	<include file="ViewsMusicLibrary.xml" />
-	<include file="ViewsFileMode.xml" />
-	<include file="ViewsPictures.xml" />
-	<include file="ViewsAddonBrowser.xml" />
-	<include file="ViewsLiveTV.xml" />
-	<include file="ViewsPVR.xml" />
-	<include file="IncludesCodecFlagging.xml" />
-	<include file="IncludesHomeRecentlyAdded.xml" />
-	<include file="IncludesHomeMenuItems.xml" />
-	<include file="IncludesBackgroundBuilding.xml" />
-	<include file="weather\10DayForecast.xml" />
-	<include file="weather\36HourForecast.xml" />
-	<include file="weather\WeekendForecast.xml" />
-	<include file="weather\HourlyForecast.xml" />
-	<include file="weather\MapAlerts.xml" />
+	<include file="defaults.xml"/>
+	<include file="ViewsVideoLibrary.xml"/>
+	<include file="ViewsMusicLibrary.xml"/>
+	<include file="ViewsFileMode.xml"/>
+	<include file="ViewsPictures.xml"/>
+	<include file="ViewsAddonBrowser.xml"/>
+	<include file="ViewsLiveTV.xml"/>
+	<include file="ViewsPVR.xml"/>
+	<include file="IncludesCodecFlagging.xml"/>
+	<include file="IncludesHomeRecentlyAdded.xml"/>
+	<include file="IncludesHomeMenuItems.xml"/>
+	<include file="IncludesBackgroundBuilding.xml"/>
+	<include file="weather\10DayForecast.xml"/>
+	<include file="weather\36HourForecast.xml"/>
+	<include file="weather\WeekendForecast.xml"/>
+	<include file="weather\HourlyForecast.xml"/>
+	<include file="weather\MapAlerts.xml"/>
 
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
@@ -947,14 +947,14 @@
 	<include name="HomeAddonsCommonLayout">
 		<include>Window_OpenClose_Animation</include>
 		<animation type="Visible">
-			<effect type="slide" start="0,30" end="0,0" delay="200" easing="out" tween="quadratic" time="200" />
-			<effect type="fade" start="0" end="100" delay="200" time="200" />
+			<effect type="slide" start="0,30" end="0,0" delay="200" easing="out" tween="quadratic" time="200"/>
+			<effect type="fade" start="0" end="100" delay="200" time="200"/>
 		</animation>
 		<animation type="Hidden">
-			<effect type="zoom" start="100" end="70" center="auto" easing="in" tween="quadratic" time="300" />
-			<effect type="fade" start="100" end="0" time="300" />
+			<effect type="zoom" start="100" end="70" center="auto" easing="in" tween="quadratic" time="300"/>
+			<effect type="fade" start="100" end="0" time="300"/>
 		</animation>
-		<hitrect x="0" y="530" w="1280" h="120" />
+		<hitrect x="0" y="530" w="1280" h="120"/>
 		<posx>0</posx>
 		<posy>190r</posy>
 		<width>1280</width>
