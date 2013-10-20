@@ -44,7 +44,8 @@ public:
 
   std::string GetMimeType(void) const;
   std::string GetCharset(void) const;
-  std::string GetProtoLine() { return m_protoLine; }
+  inline std::string GetProtoLine() const
+  { return m_protoLine; }
 
   inline bool IsHeaderDone(void) const
   { return m_headerdone; }
