@@ -20,10 +20,10 @@ if test "@platform_os@" = "ios" ; then
   export CCAS="--tag CC @prefix@/@tool_dir@/bin/gas-preprocessor.pl @CC@ -arch @use_cpu@"
 fi
 
-CFLAGS="@platform_cflags@ @platform_includes@ -I@prefix@/@deps_dir@/include $CFLAGS"
+CFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CFLAGS"
 LDFLAGS="-L@prefix@/@deps_dir@/lib @platform_ldflags@ $LDFLAGS"
-CXXFLAGS="@platform_cxxflags@ @platform_includes@ -I@prefix@/@deps_dir@/include $CXXFLAGS"
-CPPFLAGS="@platform_cflags@ @platform_includes@ -I@prefix@/@deps_dir@/include $CPPFLAGS"
+CXXFLAGS="@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CXXFLAGS"
+CPPFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CPPFLAGS"
 
 export PKG_CONFIG=@prefix@/@tool_dir@/bin/pkg-config
 export PKG_CONFIG_LIBDIR=@prefix@/@deps_dir@/lib/pkgconfig
