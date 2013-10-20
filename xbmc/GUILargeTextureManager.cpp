@@ -231,6 +231,7 @@ void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediat
         {
           CJobManager::GetInstance().CancelJob(id);
           m_queued.erase(it);
+          texturesToDelete.push_back(image);
           break;
         }
       }
