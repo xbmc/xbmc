@@ -146,6 +146,28 @@ std::string CHttpHeader::GetMimeType(void) const
   return strValue.substr(0, strValue.find(';'));
 }
 
+std::string CHttpHeader::GetCharset(void) const
+{
+  std::string strValue(GetValueRaw("content-type"));
+  if (strValue.empty())
+    return strValue;
+
+  const size_t semicolonPos = strValue.find(';');
+  if (semicolonPos == std::string::npos)
+    return "";
+
+  StringUtils::ToUpper(strValue);
+  size_t posCharset;
+  if ((posCharset = strValue.find("; CHARSET=", semicolonPos)) != std::string::npos)
+    posCharset += 10;
+  else if ((posCharset = strValue.find(";CHARSET=", semicolonPos)) != std::string::npos)
+    posCharset += 9;
+  else
+    return "";
+
+  return strValue.substr(posCharset, strValue.find(';', posCharset) - posCharset);
+}
+
 void CHttpHeader::Clear()
 {
   m_params.clear();
