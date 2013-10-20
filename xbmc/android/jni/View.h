@@ -20,6 +20,7 @@
  */
 
 #include "JNIBase.h"
+#include "List.h"
 
 class CJNIViewInputDeviceMotionRange : public CJNIBase
 {
@@ -48,7 +49,10 @@ public:
   static const CJNIViewInputDevice getDevice(int id);
 
   std::string  getName() const;
+  int          getSources() const;
+  const CJNIList<CJNIViewInputDeviceMotionRange> getMotionRanges() const;
   const CJNIViewInputDeviceMotionRange getMotionRange(int axis) const;
+  const CJNIViewInputDeviceMotionRange getMotionRange(int axis, int source) const;
 
 private:
   CJNIViewInputDevice();
