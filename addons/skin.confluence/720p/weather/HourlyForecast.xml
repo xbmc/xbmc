@@ -267,7 +267,7 @@
 			<control type="label">
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>number of files/pages</description>
-				<posx>660</posx>
+				<right>660</right>
 				<posy>627</posy>
 				<width>570</width>
 				<font>font12</font>

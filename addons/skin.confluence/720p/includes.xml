@@ -334,7 +334,7 @@
 			<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 			<control type="label">
 				<description>Page Count Label</description>
-				<posx>40r</posx>
+				<right>40r</right>
 				<posy>53r</posy>
 				<width>500</width>
 				<height>20</height>
@@ -348,7 +348,7 @@
 			</control>
 			<control type="label">
 				<description>Container Duration Label</description>
-				<posx>40r</posx>
+				<right>40r</right>
 				<posy>32r</posy>
 				<width>500</width>
 				<height>20</height>
@@ -436,7 +436,7 @@
 		</control>
 		<control type="label">
 			<description>Next Label</description>
-			<posx>485</posx>
+			<right>485</right>
 			<posy>120</posy>
 			<height>30</height>
 			<width>325</width>
@@ -931,7 +931,7 @@
 	<include name="Clock">
 		<control type="label">
 			<description>time label</description>
-			<posx>20r</posx>
+			<right>20r</right>
 			<posy>5</posy>
 			<width>200</width>
 			<height>30</height>

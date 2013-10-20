@@ -941,7 +941,7 @@
 				</control>
 				<control type="label">
 					<description>Episodes txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>120</posy>
 					<width>140</width>
 					<height>25</height>
@@ -965,7 +965,7 @@
 				</control>
 				<control type="label">
 					<description>Aired txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>145</posy>
 					<width>140</width>
 					<height>25</height>
@@ -989,7 +989,7 @@
 				</control>
 				<control type="label">
 					<description>Genre txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>170</posy>
 					<width>140</width>
 					<height>25</height>
@@ -1403,7 +1403,7 @@
 				</control>
 				<control type="label">
 					<description>Year txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>335</posy>
 					<width>140</width>
 					<height>25</height>
@@ -1427,7 +1427,7 @@
 				</control>
 				<control type="label">
 					<description>Genre txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>360</posy>
 					<width>140</width>
 					<height>25</height>
@@ -1508,7 +1508,7 @@
 				</control>
 				<control type="label">
 					<description>Aired txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>335</posy>
 					<width>140</width>
 					<height>25</height>
@@ -1532,7 +1532,7 @@
 				</control>
 				<control type="label">
 					<description>Episode txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>360</posy>
 					<width>140</width>
 					<height>25</height>

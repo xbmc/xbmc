@@ -172,7 +172,7 @@
 				<posx>940</posx>
 				<posy>600</posy>
 				<control type="label">
-					<posx>0</posx>
+					<right>0</right>
 					<posy>0</posy>
 					<width>580</width>
 					<height>45</height>
@@ -221,7 +221,7 @@
 		<include>Clock</include>
 		<control type="label">
 			<description>Date label</description>
-			<posx>20r</posx>
+			<right>20r</right>
 			<posy>35</posy>
 			<width>200</width>
 			<height>15</height>

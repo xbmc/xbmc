@@ -108,7 +108,7 @@
 			</control>
 			<control type="label">
 				<description>Page label</description>
-				<posx>30r</posx>
+				<right>30r</right>
 				<posy>670</posy>
 				<width>350</width>
 				<height>30</height>

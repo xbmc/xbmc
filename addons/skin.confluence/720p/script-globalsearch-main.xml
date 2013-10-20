@@ -620,7 +620,7 @@
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
-							<posx>750</posx>
+							<right>750</right>
 							<posy>530</posy>
 							<width>500</width>
 							<height>35</height>
@@ -794,7 +794,7 @@
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
-							<posx>750</posx>
+							<right>750</right>
 							<posy>530</posy>
 							<width>500</width>
 							<height>35</height>
@@ -925,7 +925,7 @@
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
-							<posx>750</posx>
+							<right>750</right>
 							<posy>530</posy>
 							<width>500</width>
 							<height>35</height>
@@ -1093,7 +1093,7 @@
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
-							<posx>750</posx>
+							<right>750</right>
 							<posy>530</posy>
 							<width>500</width>
 							<height>35</height>
@@ -1282,7 +1282,7 @@
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
-							<posx>750</posx>
+							<right>750</right>
 							<posy>530</posy>
 							<width>500</width>
 							<height>35</height>
@@ -1435,7 +1435,7 @@
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
-							<posx>750</posx>
+							<right>750</right>
 							<posy>530</posy>
 							<width>500</width>
 							<height>35</height>
@@ -1588,7 +1588,7 @@
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
-							<posx>750</posx>
+							<right>750</right>
 							<posy>530</posy>
 							<width>500</width>
 							<height>35</height>
@@ -1761,7 +1761,7 @@
 						</control>
 						<control type="label">
 							<description>number of files/pages in list text label</description>
-							<posx>750</posx>
+							<right>750</right>
 							<posy>530</posy>
 							<width>500</width>
 							<height>35</height>

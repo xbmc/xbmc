@@ -123,7 +123,7 @@
 				</control>
 				<control type="label">
 					<description>Next Timer Header label</description>
-					<posx>355</posx>
+					<right>355</right>
 					<posy>5</posy>
 					<height>25</height>
 					<width>400</width>
@@ -136,7 +136,7 @@
 				</control>
 				<control type="label">
 					<description>NextRecordingDateTime</description>
-					<posx>390</posx>
+					<right>390</right>
 					<posy>30</posy>
 					<height>25</height>
 					<width>400</width>
@@ -149,7 +149,7 @@
 				</control>
 				<control type="label">
 					<description>NextRecordingTitle Channel</description>
-					<posx>390</posx>
+					<right>390</right>
 					<posy>50</posy>
 					<height>25</height>
 					<width>800</width>
@@ -190,7 +190,7 @@
 				</control>
 				<control type="label">
 					<description>Is Recording Header label</description>
-					<posx>350</posx>
+					<right>350</right>
 					<posy>5</posy>
 					<height>25</height>
 					<width>400</width>
@@ -203,7 +203,7 @@
 				</control>
 				<control type="label">
 					<description>NextRecordingDateTime</description>
-					<posx>390</posx>
+					<right>390</right>
 					<posy>30</posy>
 					<height>25</height>
 					<width>400</width>
@@ -216,7 +216,7 @@
 				</control>
 				<control type="label">
 					<description>NextRecordingTitle Channel</description>
-					<posx>390</posx>
+					<right>390</right>
 					<posy>50</posy>
 					<height>30</height>
 					<width>800</width>
@@ -1183,7 +1183,7 @@
 		<include>Clock</include>
 		<control type="label">
 			<description>Date label</description>
-			<posx>20r</posx>
+			<right>20r</right>
 			<posy>35</posy>
 			<width>200</width>
 			<height>15</height>

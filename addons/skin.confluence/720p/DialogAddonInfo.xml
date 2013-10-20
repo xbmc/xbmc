@@ -86,7 +86,7 @@
 				<posy>130</posy>
 				<control type="label">
 					<description>Type txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>0</posy>
 					<width>140</width>
 					<height>25</height>
@@ -110,7 +110,7 @@
 				</control>
 				<control type="label">
 					<description>Author txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>30</posy>
 					<width>140</width>
 					<height>25</height>
@@ -134,7 +134,7 @@
 				</control>
 				<control type="label">
 					<description>Version txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>60</posy>
 					<width>140</width>
 					<height>25</height>
@@ -158,7 +158,7 @@
 				</control>
 				<control type="label">
 					<description>Rating txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>90</posy>
 					<width>140</width>
 					<height>25</height>
@@ -179,7 +179,7 @@
 				</control>
 				<control type="label">
 					<description>Summary txt</description>
-					<posx>150</posx>
+					<right>150</right>
 					<posy>120</posy>
 					<width>140</width>
 					<height>25</height>
@@ -225,7 +225,7 @@
 					<visible>!IsEmpty(ListItem.Property(Addon.Disclaimer))</visible>
 					<control type="label">
 						<description>Description Page Count</description>
-						<posx>610</posx>
+						<right>610</right>
 						<posy>170</posy>
 						<width>300</width>
 						<height>25</height>
@@ -291,7 +291,7 @@
 					<visible>IsEmpty(ListItem.Property(Addon.Disclaimer))</visible>
 					<control type="label">
 						<description>Description Page Count</description>
-						<posx>610</posx>
+						<right>610</right>
 						<posy>170</posy>
 						<width>300</width>
 						<height>25</height>

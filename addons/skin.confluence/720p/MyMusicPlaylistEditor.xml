@@ -268,7 +268,7 @@
 				<texture border="15,0,0,0" flipx="true">MediaBladeSub.png</texture>
 			</control>
 			<control type="label">
-				<posx>440</posx>
+				<right>440</right>
 				<posy>40</posy>
 				<width>410</width>
 				<height>30</height>
@@ -295,7 +295,7 @@
 			</control>
 			<control type="label">
 				<description>Page Count Label</description>
-				<posx>440</posx>
+				<right>440</right>
 				<posy>38r</posy>
 				<width>300</width>
 				<height>20</height>

@@ -85,7 +85,7 @@
 					<posy>120</posy>
 					<control type="label">
 						<description>Time description</description>
-						<posx>170</posx>
+						<right>170</right>
 						<posy>0</posy>
 						<width>170</width>
 						<height>25</height>
@@ -109,7 +109,7 @@
 					</control>
 					<control type="label">
 						<description>Duration</description>
-						<posx>170</posx>
+						<right>170</right>
 						<posy>35</posy>
 						<width>170</width>
 						<height>25</height>
@@ -133,7 +133,7 @@
 					</control>
 					<control type="label">
 						<description>Channel Name</description>
-						<posx>170</posx>
+						<right>170</right>
 						<posy>70</posy>
 						<width>170</width>
 						<height>25</height>
@@ -157,7 +157,7 @@
 					</control>
 					<control type="label">
 						<description>Genre</description>
-						<posx>170</posx>
+						<right>170</right>
 						<posy>105</posy>
 						<width>170</width>
 						<height>25</height>

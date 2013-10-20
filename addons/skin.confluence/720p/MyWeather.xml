@@ -150,7 +150,7 @@
 					</control>
 					<control type="label">
 						<description>current temp Value</description>
-						<posx>195</posx>
+						<right>195</right>
 						<posy>175</posy>
 						<width>180</width>
 						<height>40</height>
@@ -207,7 +207,7 @@
 				</control>
 				<control type="label">
 					<description>current feels like label</description>
-					<posx>170</posx>
+					<right>170</right>
 					<posy>400</posy>
 					<width>170</width>
 					<height>35</height>
@@ -220,7 +220,7 @@
 				</control>
 				<control type="label">
 					<description>current dew label</description>
-					<posx>170</posx>
+					<right>170</right>
 					<posy>430</posy>
 					<width>170</width>
 					<height>35</height>
@@ -233,7 +233,7 @@
 				</control>
 				<control type="label">
 					<description>current humidity label</description>
-					<posx>170</posx>
+					<right>170</right>
 					<posy>460</posy>
 					<width>170</width>
 					<height>35</height>
@@ -246,7 +246,7 @@
 				</control>
 				<control type="label">
 					<description>current UV Index label</description>
-					<posx>170</posx>
+					<right>170</right>
 					<posy>490</posy>
 					<width>170</width>
 					<height>35</height>
@@ -259,7 +259,7 @@
 				</control>
 				<control type="label">
 					<description>current Wind label</description>
-					<posx>170</posx>
+					<right>170</right>
 					<posy>520</posy>
 					<width>170</width>
 					<height>35</height>
@@ -352,7 +352,7 @@
 					</control>
 					<control type="label">
 						<description>Sunset label</description>
-						<posx>470</posx>
+						<right>470</right>
 						<posy>570</posy>
 						<width>300</width>
 						<height>35</height>
@@ -683,7 +683,7 @@
 				<control type="label">
 					<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 					<description>number of files/pages</description>
-					<posx>660</posx>
+					<right>660</right>
 					<posy>627</posy>
 					<width>570</width>
 					<font>font12</font>

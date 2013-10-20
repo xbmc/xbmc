@@ -148,7 +148,7 @@
 			</control>
 			<control type="label">
 				<description>number of files/pages in list text label</description>
-				<posx>760</posx>
+				<right>760</right>
 				<posy>548</posy>
 				<width>300</width>
 				<height>35</height>

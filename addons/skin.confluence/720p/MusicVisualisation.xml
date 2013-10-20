@@ -63,7 +63,7 @@
 			</control>
 			<control type="label">
 				<description>Clock label</description>
-				<posx>1250</posx>
+				<right>1250</right>
 				<posy>5</posy>
 				<width>800</width>
 				<height>25</height>
@@ -206,7 +206,7 @@
 					<info>Player.Progress</info>
 				</control>
 				<control type="label">
-					<posx>920</posx>
+					<right>920</right>
 					<posy>0</posy>
 					<width>100</width>
 					<height>40</height>

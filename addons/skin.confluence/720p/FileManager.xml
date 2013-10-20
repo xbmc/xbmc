@@ -246,7 +246,7 @@
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>580</posx>
+				<right>580</right>
 				<posy>30</posy>
 				<width>470</width>
 				<height>30</height>
@@ -259,7 +259,7 @@
 			</control>
 			<control type="label" id="102">
 				<description>current directory text label</description>
-				<posx>580</posx>
+				<right>580</right>
 				<posy>70</posy>
 				<width>470</width>
 				<height>30</height>
@@ -397,7 +397,7 @@
 		</control>
 		<control type="label">
 			<description>number of files/pages in left list text label</description>
-			<posx>40r</posx>
+			<right>40r</right>
 			<posy>53r</posy>
 			<width>570</width>
 			<font>font12</font>

@@ -813,7 +813,7 @@
 					<posy>310</posy>
 					<control type="label">
 						<description>Born txt</description>
-						<posx>140</posx>
+						<right>140</right>
 						<posy>0</posy>
 						<width>140</width>
 						<height>25</height>
@@ -839,7 +839,7 @@
 					</control>
 					<control type="label">
 						<description>Formed txt</description>
-						<posx>140</posx>
+						<right>140</right>
 						<posy>0</posy>
 						<width>140</width>
 						<height>25</height>
@@ -865,7 +865,7 @@
 					</control>
 					<control type="label">
 						<description>Genre txt</description>
-						<posx>140</posx>
+						<right>140</right>
 						<posy>30</posy>
 						<width>140</width>
 						<height>25</height>

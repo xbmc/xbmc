@@ -43,7 +43,7 @@
 			</control>
 			<control type="label" id="1">
 				<description>Clock label</description>
-				<posx>1250</posx>
+				<right>1250</right>
 				<posy>5</posy>
 				<width>800</width>
 				<height>25</height>
@@ -336,7 +336,7 @@
 				</control>
 				<control type="label" id="1">
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
-					<posx>920</posx>
+					<right>920</right>
 					<posy>0</posy>
 					<width>100</width>
 					<height>40</height>
@@ -347,7 +347,7 @@
 				</control>
 				<control type="label" id="1">
 					<visible>VideoPlayer.Content(LiveTV)</visible>
-					<posx>920</posx>
+					<right>920</right>
 					<posy>0</posy>
 					<width>100</width>
 					<height>40</height>
