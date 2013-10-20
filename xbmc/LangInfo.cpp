@@ -231,22 +231,21 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
   }
 }
 
-bool CLangInfo::Load(const CStdString& strFileName)
+bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= false*/)
 {
   SetDefaults();
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strFileName))
   {
-    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    CLog::Log(onlyCheckLanguage ? LOGDEBUG : LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;
   }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if (strValue != CStdString("language"))
+  if (pRootElement->ValueStr() == "language")
   {
-    CLog::Log(LOGERROR, "%s Doesn't contain <language>", strFileName.c_str());
+    CLog::Log(onlyCheckLanguage ? LOGDEBUG : LOGERROR, "%s Doesn't contain <language>", strFileName.c_str());
     return false;
   }
 
@@ -266,7 +265,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
 #else
   if (m_defaultRegion.m_strLangLocaleName.length() != 3)
   {
-    if (!g_LangCodeExpander.ConvertToThreeCharCode(m_languageCodeGeneral, m_defaultRegion.m_strLangLocaleName))
+    if (!g_LangCodeExpander.ConvertToThreeCharCode(m_languageCodeGeneral, m_defaultRegion.m_strLangLocaleName, !onlyCheckLanguage))
       m_languageCodeGeneral = "";
   }
   else
@@ -368,14 +367,24 @@ bool CLangInfo::Load(const CStdString& strFileName)
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    const CStdString& strName=CSettings::Get().GetString("locale.country");
-    SetCurrentRegion(strName);
+    if (!onlyCheckLanguage)
+    {
+      const CStdString& strName = CSettings::Get().GetString("locale.country");
+      SetCurrentRegion(strName);
+    }
   }
   g_charsetConverter.reinitCharsetsFromSettings();
 
-  LoadTokens(pRootElement->FirstChild("sorttokens"),g_advancedSettings.m_vecTokens);
+  if (!onlyCheckLanguage)
+    LoadTokens(pRootElement->FirstChild("sorttokens"), g_advancedSettings.m_vecTokens);
 
   return true;
+}
+
+bool CLangInfo::CheckLanguage(const std::string& language)
+{
+  CLangInfo li;
+  return li.Load("special://xbmc/language/" + language + "/langinfo.xml", true);
 }
 
 void CLangInfo::LoadTokens(const TiXmlNode* pTokens, vector<CStdString>& vecTokens)
@@ -436,7 +445,7 @@ CStdString CLangInfo::GetSubtitleCharSet() const
 bool CLangInfo::SetLanguage(const std::string &strLanguage)
 {
   string strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
-  if (!g_langInfo.Load(strLangInfoPath))
+  if (!Load(strLangInfoPath))
     return false;
 
   if (ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
@@ -456,6 +465,11 @@ bool CLangInfo::SetLanguage(const std::string &strLanguage)
   g_application.ReloadSkin();
 
   return true;
+}
+
+bool CLangInfo::CheckLoadLanguage(const std::string &language)
+{
+  return Load("special://xbmc/language/" + language + "/langinfo.xml", true);
 }
 
 // three char language code (not win32 specific)

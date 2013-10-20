@@ -141,11 +141,7 @@ bool CLangCodeExpander::Lookup(CStdString& desc, const int code)
   return Lookup(desc, lang);
 }
 
-#ifdef TARGET_WINDOWS
-bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack /*= false*/)
-#else
-bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode)
-#endif
+bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool checkWin32Locales /*= false*/)
 {       
   if ( strTwoCharCode.length() == 2 )
   {
@@ -158,13 +154,11 @@ bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, 
     {
       if (strTwoCharCodeLower.Equals(CharCode2To3[index].old))
       {
-#ifdef TARGET_WINDOWS
-        if (localeHack && CharCode2To3[index].win_id)
+        if (checkWin32Locales && CharCode2To3[index].win_id)
         {
           strThreeCharCode = CharCode2To3[index].win_id;
           return true;
         }
-#endif
         strThreeCharCode = CharCode2To3[index].id;
         return true;
       }
@@ -175,28 +169,16 @@ bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, 
   return false;
 }
 
-#ifdef TARGET_WINDOWS
-bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool localeHack /*= false*/)
-#else
-bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode)
-#endif
+bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool checkXbmcLocales /*= true*/, bool checkWin32Locales /*= false*/)
 {
   if (strCharCode.size() == 2)
-#ifdef TARGET_WINDOWS
-    return g_LangCodeExpander.ConvertTwoToThreeCharCode(strThreeCharCode, strCharCode, localeHack);
-#else
-    return g_LangCodeExpander.ConvertTwoToThreeCharCode(strThreeCharCode, strCharCode);
-#endif
+    return g_LangCodeExpander.ConvertTwoToThreeCharCode(strThreeCharCode, strCharCode, checkWin32Locales);
   else if (strCharCode.size() == 3)
   {
     for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
     {
-#ifdef TARGET_WINDOWS
       if (strCharCode.Equals(CharCode2To3[index].id) ||
-         (localeHack && CharCode2To3[index].win_id != NULL && strCharCode.Equals(CharCode2To3[index].win_id)))
-#else
-      if (strCharCode.Equals(CharCode2To3[index].id))
-#endif
+           (checkWin32Locales && CharCode2To3[index].win_id != NULL && strCharCode.Equals(CharCode2To3[index].win_id)) )
       {
         strThreeCharCode = strCharCode;
         return true;
@@ -222,14 +204,15 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
       }
     }
 
-    CStdString strLangInfoPath;
-    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strCharCode.c_str());
-    CLangInfo langInfo;
-    if (!langInfo.Load(strLangInfoPath))
-      return false;
+    if (checkXbmcLocales)
+    {
+      CLangInfo langInfo;
+      if (!langInfo.CheckLoadLanguage(strCharCode))
+        return false;
 
-    strThreeCharCode = langInfo.GetLanguageCode();
-    return true;
+      strThreeCharCode = langInfo.GetLanguageCode();
+      return !strThreeCharCode.empty();
+    }
   }
 
   return false;
@@ -278,7 +261,7 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
 }
 #endif
 
-bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString& lang)
+bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString& lang, bool checkXbmcLocales /*= true*/)
 {
   if (lang.empty())
     return false;
@@ -326,14 +309,15 @@ bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString&
       return ConvertToTwoCharCode(code, tmp);
   }
 
-  // try xbmc specific language names
-  CStdString strLangInfoPath;
-  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", lang.c_str());
-  CLangInfo langInfo;
-  if (!langInfo.Load(strLangInfoPath))
+  if (!checkXbmcLocales)
     return false;
 
-  return ConvertToTwoCharCode(code, langInfo.GetLanguageCode());
+  // try xbmc specific language names
+  CLangInfo langInfo;
+  if (!langInfo.CheckLoadLanguage(lang))
+    return false;
+
+  return ConvertToTwoCharCode(code, langInfo.GetLanguageCode(), false);
 }
 
 bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
