@@ -138,13 +138,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
     bool m_dvdplayerIgnoreDTSinWAV;
-    int m_audioResample;
-    bool m_allowTranscode44100;
-    bool m_audioForceDirectSound;
-    bool m_audioAudiophile;
-    bool m_allChannelStereo;
-    bool m_streamSilence;
-    CStdString m_audioTranscodeTo;
     float m_limiterHold;
     float m_limiterRelease;
 

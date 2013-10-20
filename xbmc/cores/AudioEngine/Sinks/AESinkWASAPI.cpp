@@ -500,12 +500,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
       return INT_MAX;
     }
 
-    /* Inject one buffer of silence if sink has just opened */
-    /* to avoid losing start of stream or GUI sound         */
-    if (g_advancedSettings.m_streamSilence)
-      memcpy(buf, data, NumFramesRequested * m_format.m_frameSize); //fill buffer with audio
-    else
-      memset(buf,    0, NumFramesRequested * m_format.m_frameSize); //fill buffer with silence
+    memset(buf, 0, NumFramesRequested * m_format.m_frameSize); //fill buffer with silence
 
     hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
     if (FAILED(hr))
@@ -520,7 +515,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
     if (FAILED(hr))
       CLog::Log(LOGERROR, __FUNCTION__": AudioClient Start Failed");
     m_running = true; //signal that we're processing frames
-    return g_advancedSettings.m_streamSilence ? NumFramesRequested : 0U;
+    return 0U;
   }
 
 #ifndef _DEBUG
@@ -545,15 +540,8 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
   {
     if(eventAudioCallback != WAIT_OBJECT_0 || !&buf)
     {
-      /* Event handle timed out - flag sink as dirty for re-initializing */
       CLog::Log(LOGERROR, __FUNCTION__": Endpoint Buffer timed out");
-      if (g_advancedSettings.m_streamSilence)
-      {
-        m_isDirty = true; //flag new device or re-init needed
-        Deinitialize();
-        m_running = false;
-        return INT_MAX;
-      }
+      return INT_MAX;
     }
   }
 
