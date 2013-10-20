@@ -145,10 +145,14 @@ bool CGUIDialogKaiToast::DoWork()
         else
           typeImage = image;
 
-        strTypeImage = typeImage->GetFileName();
+        if (typeImage)
+          strTypeImage = typeImage->GetFileName();
+        else
+          CLog::Log(LOGWARNING, "Missing control in DialogKaiToast: %d", toast.eType);
       }
 
-      image->SetFileName(strTypeImage);
+      if (!strTypeImage.IsEmpty())
+        image->SetFileName(strTypeImage);
     }
 
     //  Play the window specific init sound for each notification queued
