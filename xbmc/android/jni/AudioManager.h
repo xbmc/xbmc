@@ -29,6 +29,7 @@ public:
 
   // Note removal of streamType param.
   int  getStreamMaxVolume();
+  int  getStreamVolume();
   void setStreamVolume(int index = 0, int flags = 0);
 
   static void PopulateStaticFields();
