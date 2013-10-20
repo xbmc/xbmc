@@ -339,13 +339,6 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     paplayer->m_bPlaysAudio = true;
     m_vecCoreConfigs.push_back(paplayer);
 
-#if defined(HAS_AMLPLAYER)
-    CPlayerCoreConfig* amlplayer = new CPlayerCoreConfig("AMLPlayer", EPC_AMLPLAYER, NULL);
-    amlplayer->m_bPlaysAudio = true;
-    amlplayer->m_bPlaysVideo = true;
-    m_vecCoreConfigs.push_back(amlplayer);
-#endif
-
 #if defined(HAS_OMXPLAYER)
     CPlayerCoreConfig* omxplayer = new CPlayerCoreConfig("OMXPlayer", EPC_OMXPLAYER, NULL);
     omxplayer->m_bPlaysAudio = true;
