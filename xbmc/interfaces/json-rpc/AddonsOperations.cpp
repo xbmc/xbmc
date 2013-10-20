@@ -142,21 +142,17 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const CStdString &method, ITra
 
 JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CAddonDatabase addondatabase;
-  if (!addondatabase.Open())
-    return InternalError;
-
   string id = parameterObject["addonid"].asString();
   bool disabled = false;
   if (parameterObject["enabled"].isBoolean())
     disabled = !parameterObject["enabled"].asBoolean();
   // we need to toggle the current disabled state of the addon
   else if (parameterObject["enabled"].isString())
-    disabled = !addondatabase.IsAddonDisabled(id);
+    disabled = !CAddonMgr::Get().IsAddonDisabled(id);
   else
     return InvalidParams;
 
-  if (!addondatabase.DisableAddon(id, disabled))
+  if (!CAddonMgr::Get().DisableAddon(id, disabled))
       return InvalidParams;
 
   return ACK;
@@ -221,9 +217,7 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
     // from the addon database because it can't be read from addon.xml
     if (field == "enabled")
     {
-      if (!addondb.IsOpen() && !addondb.Open())
-        return;
-      object[field] = !addondb.IsAddonDisabled(addon->ID());
+      object[field] = !CAddonMgr::Get().IsAddonDisabled(addon->ID());
     }
     else if (field == "fanart" || field == "thumbnail")
     {
