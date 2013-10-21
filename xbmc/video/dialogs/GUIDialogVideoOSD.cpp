@@ -34,6 +34,10 @@ CGUIDialogVideoOSD::CGUIDialogVideoOSD(void)
     : CGUIDialog(WINDOW_DIALOG_VIDEO_OSD, "VideoOSD.xml")
 {
   m_loadType = KEEP_IN_MEMORY;
+
+  /* PLEX */
+  m_closeOnPlay = false;
+  /* END PLEX */
 }
 
 CGUIDialogVideoOSD::~CGUIDialogVideoOSD(void)
@@ -72,6 +76,17 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
     return true;
   }
 
+  /* PLEX */
+  if (action.GetID() == ACTION_PAUSE || action.GetID() == ACTION_PLAYER_PLAY)
+  {
+    if (IsDialogRunning() && m_closeOnPlay)
+    {
+      m_closeOnPlay = false;
+      Close();
+    }
+  }
+  /* END PLEX */
+
   return CGUIDialog::OnAction(action);
 }
 
@@ -99,6 +114,20 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
       Close();
     }
     break;
+  /* PLEX */
+  case GUI_MSG_CLICKED:
+    {
+      if (message.GetSenderId() == 702)
+      {
+        if (m_closeOnPlay)
+        {
+          m_closeOnPlay = false;
+          Close();
+        }
+      }
+    }
+    break;
+  /* END PLEX */
   case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
     {
       // Remove our subdialogs if visible
