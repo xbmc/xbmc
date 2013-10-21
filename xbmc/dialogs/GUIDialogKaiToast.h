@@ -66,6 +66,8 @@ protected:
   unsigned int m_toastDisplayTime;
   unsigned int m_toastMessageTime;
 
+  CStdString m_defaultIcon;
+  
   static TOASTQUEUE m_notifications;
   static CCriticalSection m_critical;
 };
