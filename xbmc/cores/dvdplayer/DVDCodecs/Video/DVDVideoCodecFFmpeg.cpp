@@ -253,7 +253,17 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keep default threading for Hi10p: %d",
                         m_pCodecContext->thread_type);
   }
-  else
+  else if(false
+#ifdef HAVE_LIBVDPAU
+    || CSettings::Get().GetBool("videoplayer.usevdpau")
+#endif
+#ifdef HAS_DX
+    || CSettings::Get().GetBool("videoplayer.usedxva2")
+#endif
+#ifdef HAVE_LIBVA
+    || CSettings::Get().GetBool("videoplayer.usevaapi")
+#endif
+    )
     m_pCodecContext->thread_type = FF_THREAD_SLICE;
 
 #if defined(TARGET_DARWIN_IOS)
