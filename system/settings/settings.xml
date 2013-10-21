@@ -466,6 +466,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.useframemtdec" type="boolean" label="13440" help="36423">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.adjustrefreshrate" type="integer" label="170" help="36164">
           <level>2</level>
           <default>0</default> <!-- ADJUST_REFRESHRATE_OFF -->
