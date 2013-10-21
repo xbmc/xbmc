@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/shared_ptr.hpp>
+
 #include "ISetting.h"
 #include "ISettingCallback.h"
 #include "ISettingControl.h"
@@ -41,7 +43,8 @@ typedef enum {
   SettingTypeInteger,
   SettingTypeNumber,
   SettingTypeString,
-  SettingTypeAction
+  SettingTypeAction,
+  SettingTypeList
 } SettingType;
 
 /*!
@@ -131,7 +134,58 @@ protected:
   CSharedSection m_critical;
 };
 
+typedef boost::shared_ptr<CSetting> SettingPtr;
+
 typedef std::vector<CSetting *> SettingList;
+typedef std::vector<SettingPtr> SettingPtrList;
+
+/*!
+ \ingroup settings
+ \brief List setting implementation
+ \sa CSetting
+ */
+class CSettingList : public CSetting
+{
+public:
+  CSettingList(const std::string &id, CSetting *settingDefinition, CSettingsManager *settingsManager = NULL);
+  CSettingList(const std::string &id, const CSettingList &setting);
+  virtual ~CSettingList();
+
+  virtual CSetting* Clone(const std::string &id) const;
+
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+
+  virtual int GetType() const { return SettingTypeList; }
+  virtual bool FromString(const std::string &value);
+  virtual std::string ToString() const;
+  virtual bool Equals(const std::string &value) const;
+  virtual bool CheckValidity(const std::string &value) const;
+  virtual void Reset();
+  
+  int GetElementType() const;
+  const CSetting* GetDefinition() const { return m_definition; }
+  
+  bool FromString(const std::vector<std::string> &value);
+
+  const SettingPtrList& GetValue() const { return m_values; }
+  bool SetValue(const SettingPtrList &values);
+  const SettingPtrList& GetDefault() const { return m_defaults; }
+  void SetDefault(const SettingPtrList &values);
+
+protected:
+  void copy(const CSettingList &setting);
+  static void copy(const SettingPtrList &srcValues, SettingPtrList &dstValues);
+  bool fromString(const std::string &strValue, SettingPtrList &values) const;
+  bool fromValues(const std::vector<std::string> &strValues, SettingPtrList &values) const;
+  std::string toString(const SettingPtrList &values) const;
+
+  SettingPtrList m_values;
+  SettingPtrList m_defaults;
+  CSetting *m_definition;
+  std::string m_delimiter;
+  int m_minimum;
+  int m_maximum;
+};
 
 /*!
  \ingroup settings
