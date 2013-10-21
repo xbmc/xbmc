@@ -114,6 +114,10 @@ void CPlexMediaServerClient::SetItemRating(const CFileItemPtr &item, float ratin
 void CPlexMediaServerClient::SendServerTimeline(const CFileItemPtr &item, const CUrlOptions &options)
 {
   CURL u(item->GetPath());
+
+  if (u.GetHostName() == "node")
+    u.SetHostName("myplex");
+
   u.SetFileName(":/timeline");
   u.AddOptions(options);
 
