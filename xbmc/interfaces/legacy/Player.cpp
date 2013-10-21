@@ -35,7 +35,7 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    Player::Player(int _playerCore): AddonCallback("Player")
+    Player::Player(int _playerCore)
     {
       iPlayList = PLAYLIST_MUSIC;
 
@@ -64,6 +64,19 @@ namespace XBMCAddon
         DelayedCallGuard dc(languageHook);
         languageHook->UnregisterPlayerCallback(this);
       }
+    }
+
+    void Player::play(const Alternative<String, const PlayList* > & item,
+                      const XBMCAddon::xbmcgui::ListItem* listitem, bool windowed, int startpos)
+    {
+      TRACE;
+
+      if (Alternative<String, const PlayList*>::isNullReference(item))
+        playCurrent(windowed);
+      else if (item.which() == XBMCAddon::first)
+        playStream(item.former(), listitem, windowed);
+      else // item is a PlayListItem
+        playPlaylist(item.later(),windowed,startpos);
     }
 
     void Player::playStream(const String& item, const xbmcgui::ListItem* plistitem, bool windowed)

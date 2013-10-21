@@ -28,9 +28,9 @@ namespace XBMCAddon
   namespace xbmc
   {
     /**
-     * Monitor class.\n
-     * \n
-     * Monitor() -- Creates a new Monitor to notify addon about changes.\n
+     * Monitor class.
+     * 
+     * Monitor() -- Creates a new Monitor to notify addon about changes.
      */
     class Monitor : public AddonCallback
     {
@@ -46,6 +46,8 @@ namespace XBMCAddon
       inline void    OnDatabaseScanStarted(const String &database) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseScanStarted,database)); }
       inline void    OnAbortRequested() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
       inline void    OnNotification(const String &sender, const String &method, const String &data) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String,const String,const String>(this,&Monitor::onNotification,sender,method,data)); }
+
+      inline const String& GetId() { return Id; }
 #endif
 
       /**
@@ -106,8 +108,6 @@ namespace XBMCAddon
       virtual void    onNotification(const String sender, const String method, const String data) { TRACE; }
 
       virtual ~Monitor();
-
-      inline const String& GetId() { return Id; }
     };
   }
 };

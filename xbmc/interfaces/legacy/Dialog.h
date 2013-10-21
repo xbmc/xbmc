@@ -51,7 +51,7 @@ namespace XBMCAddon
     {
     public:
 
-      Dialog() : AddonClass("Dialog") {}
+      inline Dialog() {}
       virtual ~Dialog();
 
       /**
@@ -297,7 +297,7 @@ namespace XBMCAddon
 
     public:
 
-      DialogProgress() : AddonClass("DialogProgress"), dlg(NULL) {}
+      DialogProgress() : dlg(NULL) {}
       virtual ~DialogProgress();
 
 
@@ -366,7 +366,7 @@ namespace XBMCAddon
 
     public:
 
-      DialogProgressBG() : AddonClass("DialogProgressBG"), dlg(NULL), handle(NULL) {}
+      DialogProgressBG() : dlg(NULL), handle(NULL) {}
       virtual ~DialogProgressBG();
 
 

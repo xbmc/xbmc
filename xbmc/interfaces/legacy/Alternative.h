@@ -45,7 +45,7 @@ namespace XBMCAddon
         new(data) T2(o.later());
     }
 
-    inline WhichAlternative which() { return pos; }
+    inline WhichAlternative which() const { return pos; }
 
     inline T1& former() throw (WrongTypeException)
     {
@@ -89,6 +89,9 @@ namespace XBMCAddon
     inline operator const T1& () const throw (WrongTypeException) { return former(); }
     inline operator T2& () throw (WrongTypeException) { return later(); }
     inline operator const T2& () const throw (WrongTypeException) { return later(); }
+
+    static inline Alternative<T1,T2>& nullItem() { return *(Alternative<T1,T2>*)NULL; }
+    static inline bool isNullReference(const Alternative<T1,T2>& ref) { return (&ref) == NULL; }
   };
 }
 

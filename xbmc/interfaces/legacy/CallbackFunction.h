@@ -38,7 +38,7 @@ namespace XBMCAddon
   { 
   protected:
     AddonClass* addonClassObject;
-    Callback(AddonClass* _object, const char* classname) : AddonClass(classname), addonClassObject(_object) {}
+    Callback(AddonClass* _object) : addonClassObject(_object) {}
 
   public:
     virtual void executeCallback() = 0;
@@ -70,7 +70,7 @@ namespace XBMCAddon
 
   public:
     CallbackFunction(M* object, MemberFunction method) : 
-      Callback(object, "CallbackFunction<M>"), meth(method), obj(object) {}
+      Callback(object), meth(method), obj(object) {}
 
     virtual ~CallbackFunction() { deallocating(); }
 
@@ -93,7 +93,7 @@ namespace XBMCAddon
 
   public:
     CallbackFunction(M* object, MemberFunction method, P1 parameter) : 
-      Callback(object, "CallbackFunction<M,P1>"), meth(method), obj(object),
+      Callback(object), meth(method), obj(object),
       param(parameter) {}
 
     virtual ~CallbackFunction() { deallocating(); }
@@ -118,7 +118,7 @@ namespace XBMCAddon
 
   public:
     CallbackFunction(M* object, MemberFunction method, P1* parameter) : 
-      Callback(object, "CallbackFunction<M,P1>"), meth(method), obj(object),
+      Callback(object), meth(method), obj(object),
       param(parameter) {}
 
     virtual ~CallbackFunction() { deallocating(); }
@@ -144,7 +144,7 @@ namespace XBMCAddon
 
   public:
     CallbackFunction(M* object, MemberFunction method, P1 parameter, P2 parameter2) : 
-      Callback(object, "CallbackFunction<M,P1,P2>"), meth(method), obj(object),
+      Callback(object), meth(method), obj(object),
       param1(parameter), param2(parameter2) {}
 
     virtual ~CallbackFunction() { deallocating(); }
@@ -171,15 +171,13 @@ namespace XBMCAddon
 
   public:
     CallbackFunction(M* object, MemberFunction method, P1 parameter, P2 parameter2, P3 parameter3) : 
-      Callback(object, "CallbackFunction<M,P1,P2,P3>"), meth(method), obj(object),
+      Callback(object), meth(method), obj(object),
       param1(parameter), param2(parameter2), param3(parameter3) {}
 
     virtual ~CallbackFunction() { deallocating(); }
 
     virtual void executeCallback() { TRACE; ((*obj).*(meth))(param1,param2,param3); }
   };
-
-
 }
 
 

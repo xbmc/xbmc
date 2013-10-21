@@ -23,6 +23,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderCapture.h"
 #include "AddonClass.h"
+#include "LanguageHook.h"
 #include "Exception.h"
 #include "commons/Buffer.h"
 
@@ -36,7 +37,7 @@ namespace XBMCAddon
     {
       CRenderCapture* m_capture;
     public:
-      inline RenderCapture() : AddonClass("RenderCapture"), m_capture(g_renderManager.AllocRenderCapture()) {}
+      inline RenderCapture() : m_capture(g_renderManager.AllocRenderCapture()) {}
       inline virtual ~RenderCapture() { g_renderManager.ReleaseRenderCapture(m_capture); }
 
       /**

@@ -28,6 +28,9 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
+    /**
+     * WindowDialog class
+     */
     class WindowDialog : public Window, private WindowDialogMixin
     {
 
@@ -43,10 +46,10 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool IsDialogRunning() const { return WindowDialogMixin::IsDialogRunning(); }
       SWIGHIDDENVIRTUAL bool IsModalDialog() const { TRACE; return true; };
       SWIGHIDDENVIRTUAL bool IsDialog() const { TRACE; return true; };
-#endif
 
       SWIGHIDDENVIRTUAL inline void show() { TRACE; WindowDialogMixin::show(); }
       SWIGHIDDENVIRTUAL inline void close() { TRACE; WindowDialogMixin::close(); }
+#endif
     };
   }
 }
