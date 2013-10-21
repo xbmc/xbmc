@@ -52,13 +52,13 @@ namespace XBMCAddon
     void LanguageHook::DelayedCallOpen()
     {
       TRACE;
-      PyGILLock::releaseGil();
+      PyGILRelease::releaseGil();
     }
 
     void LanguageHook::DelayedCallClose()
     {
       TRACE;
-      PyGILLock::acquireGil();
+      PyGILRelease::acquireGil();
     }
 
     void LanguageHook::RegisterMe()

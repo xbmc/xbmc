@@ -105,8 +105,8 @@ ifeq (@USE_WEB_SERVER@,1)
 DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/httprequesthandlers.a
 endif
 
-DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/legacy.a
 DIRECTORY_ARCHIVES += xbmc/interfaces/python/python_binding.a
+DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/legacy.a
 
 ifeq (@USE_OPENGL@,1)
 DIRECTORY_ARCHIVES += xbmc/rendering/gl/rendering_gl.a
@@ -477,7 +477,13 @@ endif
 
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 
-MAINOBJS=xbmc/xbmc.o
+MAINOBJS+=xbmc/xbmc.o
+
+#This is basically to force these symbols to be present for Linux/Dbus.
+ifneq ($(findstring osx,@ARCH@), osx)
+MAINOBJS+=xbmc/interfaces/python/pywrappers.o
+endif
+
 ifeq (@USE_ANDROID@,1)
 MAINOBJS+=xbmc/android/activity/android_main.o
 endif
