@@ -67,6 +67,19 @@ CPlexServerManager::FindByHostAndPort(const CStdString &host, int port)
   return CPlexServerPtr();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexServerPtr CPlexServerManager::FindFromItem(CFileItemPtr item)
+{
+  if (!item)
+    return CPlexServerPtr();
+
+  CStdString uuid = item->GetProperty("plexserver").asString();
+  if (uuid.empty())
+    return CPlexServerPtr();
+
+  return FindByUUID(uuid);
+}
+
 CPlexServerPtr
 CPlexServerManager::FindByUUID(const CStdString &uuid)
 {
