@@ -21,47 +21,16 @@
 #pragma once
 
 #include "WinEvents.h"
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include "threads/SystemClock.h"
-#include <map>
 
-class CWinEventsX11 : public CWinEventsBase
+typedef struct _XDisplay Display;
+typedef unsigned long Window;
+
+class CWinEventsX11 : public IWinEvents
 {
 public:
   virtual ~CWinEventsX11();
+  bool MessagePump();
+  size_t GetQueueSize();
   static bool Init(Display *dpy, Window win);
   static void Quit();
-  static bool MessagePump();
-
-protected:
-  CWinEventsX11(Display *dpy, Window win);
-  XBMCKey LookupXbmcKeySym(KeySym keysym);
-  bool    Process();
-  bool    ProcessMotion       (XMotionEvent& xmotion);
-  bool    ProcessConfigure    (XConfigureEvent& xevent);
-  bool    ProcessKeyPress     (XKeyEvent& xevent);
-  bool    ProcessKeyRelease   (XKeyEvent& xevent);
-  bool    ProcessButtonPress  (XButtonEvent& xbutton);
-  bool    ProcessButtonRelease(XButtonEvent& xbutton);
-  bool    ProcessClientMessage(XClientMessageEvent& xclient);
-  bool    ProcessFocusIn      (XFocusInEvent& xfocus);
-  bool    ProcessFocusOut     (XFocusOutEvent& xfocus);
-  bool    ProcessEnter        (XCrossingEvent& xcrossing);
-  bool    ProcessLeave        (XCrossingEvent& xcrossing);
-  bool    ProcessKey          (XBMC_Event &event);
-  bool    ProcessKeyRepeat();
-  bool    ProcessShortcuts(XBMC_Event& event);
-  static CWinEventsX11 *WinEvents;
-  Display *m_display;
-  Window m_window;
-  Atom m_wmDeleteMessage;
-  char *m_keybuf;
-  size_t m_keybuf_len;
-  XIM m_xim;
-  XIC m_xic;
-  XComposeStatus m_compose;
-  std::map<uint32_t,uint32_t> m_symLookupTable;
-  int m_keymodState;
-  int m_RREventBase;
 };

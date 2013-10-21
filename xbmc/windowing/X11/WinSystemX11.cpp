@@ -23,6 +23,7 @@
 #ifdef HAS_GLX
 
 #include "WinSystemX11.h"
+#include "windowing/WinEventsX11.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/Setting.h"
@@ -114,7 +115,7 @@ bool CWinSystemX11::DestroyWindowSystem()
 {
   //restore videomode on exit
   if (m_bFullScreen)
-    SetOutputMode(g_settings.m_ResInfo[DesktopResolution(m_outputIndex)]);
+    SetOutputMode(CDisplaySettings::Get().GetResolutionInfo(DesktopResolution(m_outputIndex)));
 
   if (m_visual)
   {
@@ -400,7 +401,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   if(m_wm_fullscreen || fullScreen == false)
   {
     /* center in display */
-    RESOLUTION_INFO& win = g_settings.m_ResInfo[RES_WINDOW];
+    RESOLUTION_INFO& win = CDisplaySettings::Get().GetResolutionInfo(RES_WINDOW);
     w  = win.iWidth;
     h  = win.iHeight;
     x += res.iWidth   / 2 - w / 2;
@@ -466,7 +467,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   RefreshWindowState();
 
   //init X11 events
-  CWinEvents::Init(m_dpy, m_wmWindow);
+  CWinEventsX11::Init(m_dpy, m_wmWindow);
 
   m_bWindowCreated = true;
   return true;
@@ -487,7 +488,7 @@ bool CWinSystemX11::DestroyWindow()
     m_invisibleCursor = 0;
   }
 
-  CWinEvents::Quit();
+  CWinEventsX11::Quit();
 
   if(m_wmWindow)
   {
@@ -532,7 +533,7 @@ bool CWinSystemX11::SetResolution(RESOLUTION_INFO& res, bool fullScreen)
   bool changed = false;
   /* if we switched outputs or went to desktop, restore old resolution */
   if(m_bFullScreen && (m_outputName != res.strOutput || !fullScreen))
-    changed |= SetOutputMode(g_settings.m_ResInfo[DesktopResolution(m_outputIndex)]);
+    changed |= SetOutputMode(CDisplaySettings::Get().GetResolutionInfo(DesktopResolution(m_outputIndex)));
 
   /* setup wanted mode on wanted display */
   if(fullScreen)
@@ -666,11 +667,7 @@ void CWinSystemX11::UpdateResolutions()
   CWinSystemBase::UpdateResolutions();
 
   // erase previous stored modes
-  if (g_settings.m_ResInfo.size() > (unsigned)RES_DESKTOP)
-  {
-    g_settings.m_ResInfo.erase(g_settings.m_ResInfo.begin()+RES_DESKTOP
-                             , g_settings.m_ResInfo.end());
-  }
+  CDisplaySettings::Get().EraseAllDesktopResolutions();
 
 #if defined(HAS_XRANDR)
   // add desktop modes
@@ -688,7 +685,10 @@ void CWinSystemX11::UpdateResolutions()
       res.strId     = mode.id;
       res.strOutput = out.name;
       res.iInternal = out.screen;
-      g_settings.m_ResInfo.push_back(res);
+
+      // XXX: Assuming here that the intention was to add
+      // a new RESOLUTION_INFO
+      CDisplaySettings::Get().AddResolutionInfo(res);
     }
   }
   else
@@ -701,7 +701,7 @@ void CWinSystemX11::UpdateResolutions()
 
     res.iInternal = x11screen;
     UpdateDesktopResolution(res, 0, w, h, 0.0);
-    g_settings.m_ResInfo.push_back(res);
+    CDisplaySettings::Get().AddResolutionInfo(res);
   }
 
 
@@ -964,37 +964,8 @@ bool CWinSystemX11::EnableFrameLimiter()
   return m_minimized;
 }
 
-void CWinSystemX11::SetGrabMode(const CSetting *setting /*= NULL*/)
-{
-  bool enabled;
-  if (setting)
-    enabled = ((CSettingBool*)setting)->GetValue();
-  else
-    enabled = CSettings::Get().GetBool("input.enablesystemkeys");
-    
-  if (m_SDLSurface && m_SDLSurface->flags & SDL_FULLSCREEN)
-  {
-    if (enabled)
-    {
-      //SDL will always call XGrabPointer and XGrabKeyboard when in fullscreen
-      //so temporarily zero the SDL_FULLSCREEN flag, then turn off SDL grab mode
-      //this will make SDL call XUnGrabPointer and XUnGrabKeyboard
-      m_SDLSurface->flags &= ~SDL_FULLSCREEN;
-      SDL_WM_GrabInput(SDL_GRAB_OFF);
-      m_SDLSurface->flags |= SDL_FULLSCREEN;
-    }
-    else
-    {
-      //turn off key grabbing, which will actually make SDL turn it on when in fullscreen
-      SDL_WM_GrabInput(SDL_GRAB_OFF);
-    }
-  }
-}
-
 void CWinSystemX11::OnSettingChanged(const CSetting *setting)
 {
-  if (setting->GetId() == "input.enablesystemkeys")
-    SetGrabMode(setting);
 }
 
 #endif

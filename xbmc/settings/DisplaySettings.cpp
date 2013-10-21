@@ -365,6 +365,15 @@ void CDisplaySettings::AddResolutionInfo(const RESOLUTION_INFO &resolution)
   m_resolutions.push_back(res);
 }
 
+void CDisplaySettings::EraseAllDesktopResolutions()
+{
+  if (m_resolutions.size() > (unsigned)RES_DESKTOP)
+  {
+    m_resolutions.erase(m_resolutions.begin() + RES_DESKTOP,
+                        m_resolutions.end());
+  }
+}
+
 void CDisplaySettings::ApplyCalibrations()
 {
   CSingleLock lock(m_critical);

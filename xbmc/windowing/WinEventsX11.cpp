@@ -23,10 +23,13 @@
 
 #ifdef HAS_X11_WIN_EVENTS
 
+#include <map>
+
 #include "WinEvents.h"
 #include "WinEventsX11.h"
 #include "Application.h"
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include "X11/WinSystemX11GL.h"
 #include "X11/keysymdef.h"
 #include "X11/XF86keysym.h"
@@ -34,6 +37,7 @@
 #include "utils/CharsetConverter.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
+#include "threads/SystemClock.h"
 #include "ApplicationMessenger.h"
 
 #if defined(HAS_XRANDR)
@@ -44,7 +48,48 @@
 #include "input/SDLJoystick.h"
 #endif
 
-CWinEventsX11* CWinEventsX11::WinEvents = 0;
+class CWinEventsX11Impl
+{
+public:
+  CWinEventsX11Impl(Display *dpy, Window win);
+  virtual ~CWinEventsX11Impl();
+  bool MessagePump();
+  size_t GetQueueSize();
+
+protected:
+  XBMCKey LookupXbmcKeySym(KeySym keysym);
+  bool    Process();
+  bool    ProcessMotion       (XMotionEvent& xmotion);
+  bool    ProcessConfigure    (XConfigureEvent& xevent);
+  bool    ProcessKeyPress     (XKeyEvent& xevent);
+  bool    ProcessKeyRelease   (XKeyEvent& xevent);
+  bool    ProcessButtonPress  (XButtonEvent& xbutton);
+  bool    ProcessButtonRelease(XButtonEvent& xbutton);
+  bool    ProcessClientMessage(XClientMessageEvent& xclient);
+  bool    ProcessFocusIn      (XFocusInEvent& xfocus);
+  bool    ProcessFocusOut     (XFocusOutEvent& xfocus);
+  bool    ProcessEnter        (XCrossingEvent& xcrossing);
+  bool    ProcessLeave        (XCrossingEvent& xcrossing);
+  bool    ProcessKey          (XBMC_Event &event);
+  bool    ProcessKeyRepeat();
+  bool    ProcessShortcuts(XBMC_Event& event);
+  Display *m_display;
+  Window m_window;
+  Atom m_wmDeleteMessage;
+  char *m_keybuf;
+  size_t m_keybuf_len;
+  XIM m_xim;
+  XIC m_xic;
+  XComposeStatus m_compose;
+  std::map<uint32_t,uint32_t> m_symLookupTable;
+  int m_keymodState;
+  int m_RREventBase;
+};
+
+namespace
+{
+CWinEventsX11Impl* WinEvents = NULL;
+}
 
 static const uint32_t SymMappingsX11[][2] =
 {
@@ -156,7 +201,7 @@ static const uint32_t SymMappingsX11[][2] =
 , {XF86XK_AudioForward, XBMCK_FASTFORWARD}
 };
 
-CWinEventsX11::~CWinEventsX11()
+CWinEventsX11Impl::~CWinEventsX11Impl()
 {
   free(m_keybuf);
   m_keybuf = 0;
@@ -177,15 +222,28 @@ CWinEventsX11::~CWinEventsX11()
   m_symLookupTable.clear();
 }
 
+CWinEventsX11::~CWinEventsX11()
+{
+}
+
 bool CWinEventsX11::Init(Display *dpy, Window win)
 {
   if (WinEvents)
     return true;
-  WinEvents = new CWinEventsX11(dpy, win);
+  WinEvents = new CWinEventsX11Impl(dpy, win);
   return true;
 }
 
-CWinEventsX11::CWinEventsX11(Display *dpy, Window win)
+void CWinEventsX11::Quit()
+{
+  if (!WinEvents)
+    return;
+
+  delete WinEvents;
+  WinEvents = NULL;
+}
+
+CWinEventsX11Impl::CWinEventsX11Impl(Display *dpy, Window win)
 {
   m_display = dpy;
   m_window = win;
@@ -226,7 +284,7 @@ CWinEventsX11::CWinEventsX11(Display *dpy, Window win)
   }
 
   if (!m_xic)
-    CLog::Log(LOGWARNING,"CWinEventsX11::Init - no input method found");
+    CLog::Log(LOGWARNING,"CWinEventsX11Impl::Init - no input method found");
 
   // build Keysym lookup table
   for (unsigned int i = 0; i < sizeof(SymMappingsX11)/(2*sizeof(uint32_t)); ++i)
@@ -242,23 +300,30 @@ CWinEventsX11::CWinEventsX11(Display *dpy, Window win)
 #endif
 }
 
-void CWinEventsX11::Quit()
+bool CWinEventsX11Impl::MessagePump()
 {
-  if (!WinEvents)
-    return;
-
-  delete WinEvents;
-  WinEvents = NULL;
+  return Process();
 }
 
 bool CWinEventsX11::MessagePump()
 {
   if (!WinEvents)
     return false;
-  return WinEvents->Process();
+
+  return WinEvents->MessagePump();
 }
 
-bool CWinEventsX11::ProcessKeyPress(XKeyEvent& xevent)
+size_t CWinEventsX11Impl::GetQueueSize()
+{
+  return XPending(m_display);
+}
+
+size_t CWinEventsX11::GetQueueSize()
+{
+  return WinEvents->GetQueueSize();
+}
+
+bool CWinEventsX11Impl::ProcessKeyPress(XKeyEvent& xevent)
 {
   XBMC_Event newEvent = {0};
   KeySym xkeysym;
@@ -352,7 +417,7 @@ bool CWinEventsX11::ProcessKeyPress(XKeyEvent& xevent)
   return ret;
 }
 
-bool CWinEventsX11::ProcessKeyRelease(XKeyEvent& xkey)
+bool CWinEventsX11Impl::ProcessKeyRelease(XKeyEvent& xkey)
 {
   /* if we have a queued press directly after, this is a repeat */
   if( XEventsQueued( m_display, QueuedAfterReading ) )
@@ -374,7 +439,7 @@ bool CWinEventsX11::ProcessKeyRelease(XKeyEvent& xkey)
   return ProcessKey(newEvent);
 }
 
-bool CWinEventsX11::ProcessConfigure (XConfigureEvent& xevent)
+bool CWinEventsX11Impl::ProcessConfigure (XConfigureEvent& xevent)
 {
   if (xevent.window != m_window)
     return false;
@@ -421,7 +486,7 @@ bool CWinEventsX11::ProcessConfigure (XConfigureEvent& xevent)
   return ret;
 }
 
-bool CWinEventsX11::ProcessMotion(XMotionEvent& xmotion)
+bool CWinEventsX11Impl::ProcessMotion(XMotionEvent& xmotion)
 {
   XBMC_Event newEvent = {0};
   newEvent.type = XBMC_MOUSEMOTION;
@@ -432,18 +497,18 @@ bool CWinEventsX11::ProcessMotion(XMotionEvent& xmotion)
   return g_application.OnEvent(newEvent);
 }
 
-bool CWinEventsX11::ProcessEnter(XCrossingEvent& xcrossing)
+bool CWinEventsX11Impl::ProcessEnter(XCrossingEvent& xcrossing)
 {
   return true;
 }
 
-bool CWinEventsX11::ProcessLeave(XCrossingEvent& xcrossing)
+bool CWinEventsX11Impl::ProcessLeave(XCrossingEvent& xcrossing)
 {
   g_Mouse.SetActive(false);
   return true;
 }
 
-bool CWinEventsX11::ProcessButtonPress(XButtonEvent& xbutton)
+bool CWinEventsX11Impl::ProcessButtonPress(XButtonEvent& xbutton)
 {
   XBMC_Event newEvent = {0};
   newEvent.type = XBMC_MOUSEBUTTONDOWN;
@@ -454,7 +519,7 @@ bool CWinEventsX11::ProcessButtonPress(XButtonEvent& xbutton)
   return g_application.OnEvent(newEvent);
 }
 
-bool CWinEventsX11::ProcessButtonRelease(XButtonEvent& xbutton)
+bool CWinEventsX11Impl::ProcessButtonRelease(XButtonEvent& xbutton)
 {
   XBMC_Event newEvent = {0};
   newEvent.type = XBMC_MOUSEBUTTONUP;
@@ -465,7 +530,7 @@ bool CWinEventsX11::ProcessButtonRelease(XButtonEvent& xbutton)
   return g_application.OnEvent(newEvent);
 }
 
-bool CWinEventsX11::ProcessClientMessage(XClientMessageEvent& xclient)
+bool CWinEventsX11Impl::ProcessClientMessage(XClientMessageEvent& xclient)
 {
   if ((Atom)(xclient.data.l[0]) == m_wmDeleteMessage)
   {
@@ -476,7 +541,7 @@ bool CWinEventsX11::ProcessClientMessage(XClientMessageEvent& xclient)
   return false;
 }
 
-bool CWinEventsX11::ProcessFocusIn(XFocusInEvent& xfocus)
+bool CWinEventsX11Impl::ProcessFocusIn(XFocusInEvent& xfocus)
 {
   if (m_xic)
     XSetICFocus(m_xic);
@@ -487,7 +552,7 @@ bool CWinEventsX11::ProcessFocusIn(XFocusInEvent& xfocus)
   return true;
 }
 
-bool CWinEventsX11::ProcessFocusOut(XFocusOutEvent& xfocus)
+bool CWinEventsX11Impl::ProcessFocusOut(XFocusOutEvent& xfocus)
 {
   if (m_xic)
     XUnsetICFocus(m_xic);
@@ -497,7 +562,7 @@ bool CWinEventsX11::ProcessFocusOut(XFocusOutEvent& xfocus)
   return true;
 }
 
-bool CWinEventsX11::Process()
+bool CWinEventsX11Impl::Process()
 {
   bool ret = false;
   XEvent xevent;
@@ -532,21 +597,23 @@ bool CWinEventsX11::Process()
     switch (xevent.type)
     {
       case MapNotify:
-        CLog::Log(LOGDEBUG,"CWinEventsX11::map %ld", xevent.xmap.window);
-        g_application.m_AppActive = true;
+        CLog::Log(LOGDEBUG,"CWinEventsX11Impl::map %ld", xevent.xmap.window);
+        g_application.SetRenderGUI(true);
+        g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
         break;
 
       case UnmapNotify:
-        g_application.m_AppActive = false;
+        g_application.SetRenderGUI(false);
+        g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
         break;
 
       case FocusIn:
-        CLog::Log(LOGDEBUG,"CWinEventsX11::focus in %ld %d %d", xevent.xfocus.window, xevent.xfocus.mode, xevent.xfocus.detail);
+        CLog::Log(LOGDEBUG,"CWinEventsX11Impl::focus in %ld %d %d", xevent.xfocus.window, xevent.xfocus.mode, xevent.xfocus.detail);
         ret |= ProcessFocusIn(xevent.xfocus);
         break;
 
       case FocusOut:
-        CLog::Log(LOGDEBUG,"CWinEventsX11::focus out %ld %d %d", xevent.xfocus.window, xevent.xfocus.mode, xevent.xfocus.detail);
+        CLog::Log(LOGDEBUG,"CWinEventsX11Impl::focus out %ld %d %d", xevent.xfocus.window, xevent.xfocus.mode, xevent.xfocus.detail);
         ret |= ProcessFocusOut(xevent.xfocus);
         break;
 
@@ -571,12 +638,12 @@ bool CWinEventsX11::Process()
         break;
 
       case EnterNotify:
-        CLog::Log(LOGDEBUG,"CWinEventsX11::enter %ld %d", xevent.xcrossing.window, xevent.xcrossing.mode);
+        CLog::Log(LOGDEBUG,"CWinEventsX11Impl::enter %ld %d", xevent.xcrossing.window, xevent.xcrossing.mode);
         ret |= ProcessEnter(xevent.xcrossing);
         break;
 
       case LeaveNotify:
-        CLog::Log(LOGDEBUG,"CWinEventsX11::leave %ld %d", xevent.xcrossing.window, xevent.xcrossing.mode);
+        CLog::Log(LOGDEBUG,"CWinEventsX11Impl::leave %ld %d", xevent.xcrossing.window, xevent.xcrossing.mode);
         ret |= ProcessLeave(xevent.xcrossing);
         break;
 
@@ -597,7 +664,7 @@ bool CWinEventsX11::Process()
     }// switch event.type
 
 #if defined(HAS_XRANDR)
-    if (WinEvents && xevent.type == m_RREventBase + RRScreenChangeNotify)
+    if (xevent.type == m_RREventBase + RRScreenChangeNotify)
     {
       XRRUpdateConfiguration(&xevent);
       g_Windowing.NotifyXRREvent();
@@ -631,7 +698,7 @@ bool CWinEventsX11::Process()
   return ret;
 }
 
-bool CWinEventsX11::ProcessKey(XBMC_Event &event)
+bool CWinEventsX11Impl::ProcessKey(XBMC_Event &event)
 {
   if (event.type == XBMC_KEYDOWN)
   {
@@ -714,7 +781,7 @@ bool CWinEventsX11::ProcessKey(XBMC_Event &event)
   return g_application.OnEvent(event);
 }
 
-bool CWinEventsX11::ProcessShortcuts(XBMC_Event& event)
+bool CWinEventsX11Impl::ProcessShortcuts(XBMC_Event& event)
 {
   if (event.key.keysym.mod & XBMCKMOD_ALT)
   {
@@ -731,7 +798,7 @@ bool CWinEventsX11::ProcessShortcuts(XBMC_Event& event)
   return false;
 }
 
-XBMCKey CWinEventsX11::LookupXbmcKeySym(KeySym keysym)
+XBMCKey CWinEventsX11Impl::LookupXbmcKeySym(KeySym keysym)
 {
   // try direct mapping first
   std::map<uint32_t, uint32_t>::iterator it;

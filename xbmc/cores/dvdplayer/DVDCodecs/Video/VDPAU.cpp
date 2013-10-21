@@ -180,48 +180,17 @@ bool CVDPAUContext::LoadSymbols()
   return true;
 }
 
-bool CVDPAU::MakePixmapGL()
-{
-  int num=0;
-  int fbConfigIndex = 0;
-
-  int doubleVisAttributes[] = {
-    GLX_RENDER_TYPE, GLX_RGBA_BIT,
-    GLX_RED_SIZE, 8,
-    GLX_GREEN_SIZE, 8,
-    GLX_BLUE_SIZE, 8,
-    GLX_ALPHA_SIZE, 8,
-    GLX_DEPTH_SIZE, 8,
-    GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
-    GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
-    GLX_DOUBLEBUFFER, True,
-    GLX_Y_INVERTED_EXT, True,
-    GLX_X_RENDERABLE, True,
-    None
-  };
-
-  int pixmapAttribs[] = {
-    GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
-    GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
-    None
-  };
-
-  GLXFBConfig *fbConfigs;
-  fbConfigs = glXChooseFBConfig(m_Display, g_Windowing.GetVisual()->screen, doubleVisAttributes, &num);
-  if (fbConfigs==NULL)
-  {
-    CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
-    return false;
-  }
-
-  return true;
-}
-
 bool CVDPAUContext::CreateContext()
 {
   CLog::Log(LOGNOTICE,"VDPAU::CreateContext - creating decoder context");
 
-  int mScreen = g_Windowing.GetVisual()->screen;
+  int mScreen;
+  { CSingleLock lock(g_graphicsContext);
+    if (!m_display)
+      m_display = XOpenDisplay(NULL);
+    mScreen = g_Windowing.GetVisual()->screen;
+  };
+
   VdpStatus vdp_st;
   // Create Device
   vdp_st = dl_vdp_device_create_x11(m_display,
@@ -231,18 +200,6 @@ bool CVDPAUContext::CreateContext()
 
   CLog::Log(LOGNOTICE,"vdp_device = 0x%08x vdp_st = 0x%08x",m_vdpDevice,vdp_st);
   if (vdp_st != VDP_STATUS_OK)
-    return false;
-
-  // Get our window attribs.
-  XWindowAttributes wndattribs;
-  XGetWindowAttributes(m_Display, g_Windowing.GetWindow(), &wndattribs); // returns a status but I don't know what success is
-
-  m_Pixmap = XCreatePixmap(m_Display,
-                           g_Windowing.GetWindow(),
-                           OutWidth,
-                           OutHeight,
-                           wndattribs.depth);
-  if (!m_Pixmap)
   {
     CLog::Log(LOGERROR,"(VDPAU) unable to init VDPAU - vdp_st = 0x%x.  Falling back.",vdp_st);
     m_vdpDevice = VDP_INVALID_HANDLE;
@@ -251,17 +208,6 @@ bool CVDPAUContext::CreateContext()
 
   QueryProcs();
   SpewHardwareAvailable();
-
-  XGCValues values = {};
-  GC xgc;
-  values.foreground = BlackPixel (m_Display, g_Windowing.GetVisual()->screen);
-  xgc = XCreateGC(m_Display, m_Pixmap, GCForeground, &values);
-  XFillRectangle(m_Display, m_Pixmap, xgc, 0, 0, OutWidth, OutHeight);
-  XFreeGC(m_Display, xgc);
-
-  if(!MakePixmapGL())
-    return false;
-
   return true;
 }
 

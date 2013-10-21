@@ -72,6 +72,7 @@ public:
   RESOLUTION_INFO& GetResolutionInfo(RESOLUTION resolution);
   size_t ResolutionInfoSize() const { return m_resolutions.size(); }
   void AddResolutionInfo(const RESOLUTION_INFO &resolution);
+  void EraseAllDesktopResolutions();
 
   const RESOLUTION_INFO& GetCurrentResolutionInfo() const { return GetResolutionInfo(m_currentResolution); }
   RESOLUTION_INFO& GetCurrentResolutionInfo() { return GetResolutionInfo(m_currentResolution); }
