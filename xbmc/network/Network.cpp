@@ -471,7 +471,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     else
       s6->sin6_addr = in6addr_any;
 
-    if (::bind( sock, (struct sockaddr *) &addr, sizeof(struct sockaddr_in6)) < 0)
+    if (bind( sock, (struct sockaddr *) &addr, sizeof(struct sockaddr_in6)) < 0)
     {
       closesocket(sock);
       sock = -1;
@@ -494,7 +494,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     else
       s4->sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if (::bind( sock, (struct sockaddr *) &addr, sizeof(struct sockaddr_in)) < 0)
+    if (bind( sock, (struct sockaddr *) &addr, sizeof(struct sockaddr_in)) < 0)
     {
       closesocket(sock);
       CLog::Log(LOGERROR, "%s Server: Failed to bind ipv4 serversocket", callerName);
