@@ -385,8 +385,10 @@ void CEGLWrapper::SwapBuffers(EGLDisplay display, EGLSurface surface)
     return;
   eglSwapBuffers(display, surface);
 
+#if defined(TARGET_HYBRIS)
   if (m_nativeTypes)
     m_nativeTypes->ShowWindow(show);
+#endif
 }
 
 bool CEGLWrapper::GetConfigAttrib(EGLDisplay display, EGLConfig config, EGLint attribute, EGLint *value)

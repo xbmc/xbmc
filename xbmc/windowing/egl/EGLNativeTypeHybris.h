@@ -20,6 +20,12 @@
  *
  */
 
+#if defined(TARGET_HYBRIS)
+#include <hwcomposerwindow/hwcomposer_window.h>
+#include <hardware/hardware.h>
+#include <hardware/hwcomposer.h>
+#endif
+
 #include "EGLNativeType.h"
 
 class CEGLNativeTypeHybris : public CEGLNativeType
@@ -47,8 +53,10 @@ public:
   virtual bool  GetPreferredResolution(RESOLUTION_INFO *res) const;
 
   virtual bool  ShowWindow(bool show);
+#if defined(TARGET_HYBRIS)
 private:
   hw_module_t                m_hwcModule;
   hwc_display_contents_1_t   **m_bufferList;
   hwc_composer_device_1_t    *m_hwcDevicePtr;
+#endif
 };

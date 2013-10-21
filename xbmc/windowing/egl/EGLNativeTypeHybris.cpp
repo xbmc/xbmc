@@ -17,10 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
+#if defined(TARGET_HYBRIS)
 #include <hwcomposerwindow/hwcomposer_window.h>
 #include <hardware/hardware.h>
 #include <hardware/hwcomposer.h>
+#endif
 
 #include "system.h"
 #include <EGL/egl.h>
@@ -38,6 +39,7 @@ CEGLNativeTypeHybris::~CEGLNativeTypeHybris()
 
 bool CEGLNativeTypeHybris::CheckCompatibility()
 {
+#if defined(TARGET_HYBRIS)
   if(hw_get_module(HWC_HARDWARE_MODULE_ID, (const hw_module_t **) &m_hwcModule))
   {
     return false;
@@ -49,11 +51,16 @@ bool CEGLNativeTypeHybris::CheckCompatibility()
   }
 
   return true;
+#else
+  return false;
+#endif
 }
 
 void CEGLNativeTypeHybris::Initialize()
 {
+#if defined(TARGET_HYBRIS)
   m_hwcDevicePtr->blank(hwcDevicePtr, 0, 0);
+#endif
 }
 
 void CEGLNativeTypeHybris::Destroy()
@@ -69,6 +76,7 @@ bool CEGLNativeTypeHybris::CreateNativeDisplay()
 
 bool CEGLNativeTypeHybris::CreateNativeWindow()
 {
+#if defined(TARGET_HYBRIS)
   RESOLUTION_INFO res;
   if (!GetNativeResolution(&res))
     return false;
@@ -119,7 +127,10 @@ bool CEGLNativeTypeHybris::CreateNativeWindow()
   list->numHwLayers = 2;
 
   return (m_nativeWindow != NULL);
-}  
+#else
+  return false;
+#endif
+}
 
 bool CEGLNativeTypeHybris::GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const
 {
@@ -153,6 +164,7 @@ bool CEGLNativeTypeHybris::DestroyNativeWindow()
 
 bool CEGLNativeTypeHybris::GetNativeResolution(RESOLUTION_INFO *res) const
 {
+#if defined(TARGET_HYBRIS)
   uint32_t configs[5];
   size_t numConfigs = 5;
 
@@ -181,6 +193,7 @@ bool CEGLNativeTypeHybris::GetNativeResolution(RESOLUTION_INFO *res) const
   res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
   CLog::Log(LOGNOTICE,"Current resolution: %s\n",res->strMode.c_str());
   return true;
+#endif
 }
 
 bool CEGLNativeTypeHybris::SetNativeResolution(const RESOLUTION_INFO &res)
@@ -208,6 +221,7 @@ bool CEGLNativeTypeHybris::GetPreferredResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeHybris::ShowWindow(bool show)
 {
+#if defined(TARGET_HYBRIS)
   HWComposerNativeWindow* window = (HWComposerNativeWindow*)m_nativeWindow;
   HWComposerNativeWindowBuffer *front;
   window->lockFrontBuffer(&front);
@@ -244,5 +258,6 @@ bool CEGLNativeTypeHybris::ShowWindow(bool show)
     sync_wait(oldretire, -1);
     close(oldretire);
   }
-  return false;
+#endif
+  return true;
 }
