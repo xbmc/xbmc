@@ -30,7 +30,11 @@
 #include "guilib/gui3d.h"
 
 CEGLNativeTypeHybris::CEGLNativeTypeHybris()
+ : m_hwcModule(NULL), m_bufferList(NULL), m_hwcDevicePtr(NULL)
 {
+  m_nativeWindow = NULL;
+  m_hwNativeWindow = NULL;
+  m_swNativeWindow = NULL;
 }
 
 CEGLNativeTypeHybris::~CEGLNativeTypeHybris()
@@ -50,6 +54,7 @@ bool CEGLNativeTypeHybris::CheckCompatibility()
     return false;
   }
 
+  m_hwcDevicePtr->blank(m_hwcDevicePtr, 0, 0);
   return true;
 #else
   return false;
@@ -58,9 +63,6 @@ bool CEGLNativeTypeHybris::CheckCompatibility()
 
 void CEGLNativeTypeHybris::Initialize()
 {
-#if defined(TARGET_HYBRIS)
-  m_hwcDevicePtr->blank(hwcDevicePtr, 0, 0);
-#endif
 }
 
 void CEGLNativeTypeHybris::Destroy()
@@ -81,19 +83,25 @@ bool CEGLNativeTypeHybris::CreateNativeWindow()
   if (!GetNativeResolution(&res))
     return false;
  
-  m_nativeWindow = new (XBNativeWindowType)HWComposerNativeWindow(res->iWidth, res->iHeight, HAL_PIXEL_FORMAT_RGBA_8888);
+  m_hwNativeWindow = new HWComposerNativeWindow(res.iWidth, res.iHeight, HAL_PIXEL_FORMAT_RGBA_8888);
+  if (m_hwNativeWindow == NULL)
+  {
+    CLog::Log(LOGERROR, "HWComposer native window failed!");
+    return false;
+  }
+  m_swNativeWindow = (static_cast<ANativeWindow *> (m_hwNativeWindow));
 
   size_t size = sizeof(hwc_display_contents_1_t) + 2 * sizeof(hwc_layer_1_t);
   
   hwc_display_contents_1_t *list = (hwc_display_contents_1_t *) malloc(size);
-  mList = (hwc_display_contents_1_t **) malloc(HWC_NUM_DISPLAY_TYPES * sizeof(hwc_display_contents_1_t *));
-  const hwc_rect_t r = { 0, 0, res->iWidth, res->iHeight };
+  m_bufferList = (hwc_display_contents_1_t **) malloc(HWC_NUM_DISPLAY_TYPES * sizeof(hwc_display_contents_1_t *));
+  const hwc_rect_t r = { 0, 0, res.iWidth, res.iHeight };
 
   int counter = 0;
   for (; counter < HWC_NUM_DISPLAY_TYPES; counter++)
-    mList[counter] = list;
+    m_bufferList[counter] = list;
 
-  hwc_layer_1_t *layer = &m_bufferList->hwLayers[0];
+  hwc_layer_1_t *layer = &list->hwLayers[0];
   memset(layer, 0, sizeof(hwc_layer_1_t));
   layer->compositionType = HWC_FRAMEBUFFER;
   layer->hints = 0;
@@ -126,7 +134,7 @@ bool CEGLNativeTypeHybris::CreateNativeWindow()
   list->flags = HWC_GEOMETRY_CHANGED;
   list->numHwLayers = 2;
 
-  return (m_nativeWindow != NULL);
+  return true;
 #else
   return false;
 #endif
@@ -144,11 +152,15 @@ bool CEGLNativeTypeHybris::GetNativeDisplay(XBNativeDisplayType **nativeDisplay)
 
 bool CEGLNativeTypeHybris::GetNativeWindow(XBNativeWindowType **nativeWindow) const
 {
-  if (!nativeWindow || !m_nativeWindow)
+  if (!nativeWindow)
     return false;
-  *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
 
-  return true;
+#if defined(TARGET_HYBRIS)
+  *nativeWindow = (XBNativeWindowType*) &m_swNativeWindow;
+  return (m_swNativeWindow != NULL);
+#else
+  return false;
+#endif
 }
 
 bool CEGLNativeTypeHybris::DestroyNativeDisplay()
@@ -168,7 +180,7 @@ bool CEGLNativeTypeHybris::GetNativeResolution(RESOLUTION_INFO *res) const
   uint32_t configs[5];
   size_t numConfigs = 5;
 
-  err = hwcDevicePtr->getDisplayConfigs(hwcDevicePtr, 0, configs, &numConfigs);
+  int err = m_hwcDevicePtr->getDisplayConfigs(m_hwcDevicePtr, 0, configs, &numConfigs);
   if (err) {
       CLog::Log(LOGERROR, "getDisplayConfigs failed!");
       return false;
@@ -222,21 +234,22 @@ bool CEGLNativeTypeHybris::GetPreferredResolution(RESOLUTION_INFO *res) const
 bool CEGLNativeTypeHybris::ShowWindow(bool show)
 {
 #if defined(TARGET_HYBRIS)
-  HWComposerNativeWindow* window = (HWComposerNativeWindow*)m_nativeWindow;
+  HWComposerNativeWindow* window = (HWComposerNativeWindow*)m_hwNativeWindow;
   HWComposerNativeWindowBuffer *front;
   window->lockFrontBuffer(&front);
 
   m_bufferList[0]->hwLayers[1].handle = front->handle;
   m_bufferList[0]->hwLayers[0].handle = NULL;
   m_bufferList[0]->hwLayers[0].flags = HWC_SKIP_LAYER;
-
+  
+  int oldretire = -1, oldrelease = -1, oldrelease2 = -1; 
   oldretire = m_bufferList[0]->retireFenceFd;
   oldrelease = m_bufferList[0]->hwLayers[1].releaseFenceFd;
   oldrelease2 = m_bufferList[0]->hwLayers[0].releaseFenceFd;
 
-  int err = m_hwcDevicePtr->prepare(hwcDevicePtr, HWC_NUM_DISPLAY_TYPES, m_bufferList);
+  int err = m_hwcDevicePtr->prepare(m_hwcDevicePtr, HWC_NUM_DISPLAY_TYPES, m_bufferList);
   if(err) {
-    printf("prepare() failed!");
+    CLog::Log(LOGERROR, "prepare() failed!");
   }
 
   err = m_hwcDevicePtr->set(m_hwcDevicePtr, HWC_NUM_DISPLAY_TYPES, m_bufferList);

@@ -31,13 +31,13 @@
 class CEGLNativeTypeHybris : public CEGLNativeType
 {
 public:
-  CEGLNativeTypeHybris(): m_hwcModule(0), m_bufferList(NULL), m_hwcDevicePtr(NULL);
+  CEGLNativeTypeHybris();
   virtual ~CEGLNativeTypeHybris();
   virtual std::string GetNativeName() const { return "hybris"; };
   virtual bool  CheckCompatibility();
   virtual void  Initialize();
   virtual void  Destroy();
-  virtual int   GetQuirks() { return EGL_QUIRK_NEED_WINDOW_FOR_RES | EGL_QUIRK_DESTROY_NATIVE_WINDOW_WITH_SURFACE; };
+  virtual int   GetQuirks() { return 0; };
 
   virtual bool  CreateNativeDisplay();
   virtual bool  CreateNativeWindow();
@@ -55,8 +55,10 @@ public:
   virtual bool  ShowWindow(bool show);
 #if defined(TARGET_HYBRIS)
 private:
-  hw_module_t                m_hwcModule;
+  hw_module_t                *m_hwcModule;
   hwc_display_contents_1_t   **m_bufferList;
   hwc_composer_device_1_t    *m_hwcDevicePtr;
+  HWComposerNativeWindow     *m_hwNativeWindow;
+  ANativeWindow              *m_swNativeWindow;
 #endif
 };
