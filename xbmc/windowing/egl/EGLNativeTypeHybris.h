@@ -25,8 +25,8 @@
 class CEGLNativeTypeHybris : public CEGLNativeType
 {
 public:
-  CEGLNativeTypeAndroid();
-  virtual ~CEGLNativeTypeAndroid();
+  CEGLNativeTypeHybris(): m_hwcModule(0), m_bufferList(NULL), m_hwcDevicePtr(NULL);
+  virtual ~CEGLNativeTypeHybris();
   virtual std::string GetNativeName() const { return "hybris"; };
   virtual bool  CheckCompatibility();
   virtual void  Initialize();
@@ -47,4 +47,8 @@ public:
   virtual bool  GetPreferredResolution(RESOLUTION_INFO *res) const;
 
   virtual bool  ShowWindow(bool show);
+private:
+  hw_module_t                m_hwcModule;
+  hwc_display_contents_1_t   **m_bufferList;
+  hwc_composer_device_1_t    *m_hwcDevicePtr;
 };
