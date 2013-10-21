@@ -225,6 +225,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     TiXmlNode *node = movie->InsertEndChild(cast);
     XMLUtils::SetString(node, "name", it->strName);
     XMLUtils::SetString(node, "role", it->strRole);
+    XMLUtils::SetInt(node, "order", it->order);
     XMLUtils::SetString(node, "thumb", it->thumbUrl.GetFirstThumb().m_url);
   }
   XMLUtils::SetStringArray(movie, "artist", m_artist);
@@ -277,6 +278,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     {
       ar << m_cast[i].strName;
       ar << m_cast[i].strRole;
+      ar << m_cast[i].order;
       ar << m_cast[i].thumb;
       ar << m_cast[i].thumbUrl.m_xml;
     }
@@ -351,6 +353,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
       SActorInfo info;
       ar >> info.strName;
       ar >> info.strRole;
+      ar >> info.order;
       ar >> info.thumb;
       CStdString strXml;
       ar >> strXml;
@@ -427,6 +430,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
     CVariant actor;
     actor["name"] = m_cast[i].strName;
     actor["role"] = m_cast[i].strRole;
+    actor["order"] = m_cast[i].order;
     if (!m_cast[i].thumb.IsEmpty())
       actor["thumbnail"] = CTextureCache::GetWrappedImageURL(m_cast[i].thumb);
     value["cast"].push_back(actor);
@@ -640,6 +644,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       SActorInfo info;
       info.strName = actor->FirstChild()->Value();
       XMLUtils::GetString(node, "role", info.strRole);
+      XMLUtils::GetInt(node, "order", info.order);
       const TiXmlElement* thumb = node->FirstChildElement("thumb");
       while (thumb)
       {
