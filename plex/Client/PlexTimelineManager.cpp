@@ -293,7 +293,15 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
     m_subTimer.restart();
   }
 
-  if (stateChange || (positionUpdate && m_serverTimer.elapsedMs() >= 9950))
+  int serverTimeout = 9950; /* default to 10 seconds for local servers */
+  CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(m_currentItems[type]);
+
+  if (server && (server->GetUUID() == "myplex" || server->GetUUID() == "node"))
+    serverTimeout = 9950 * 3; // 30 seconds for myPlex or node
+  else if (server && server->GetActiveConnection() && !server->GetActiveConnection()->IsLocal())
+    serverTimeout = 9950 * 3; // 30 seconds for remote server
+
+  if (stateChange || (positionUpdate && m_serverTimer.elapsedMs() >= serverTimeout))
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server");
     g_plexApplication.mediaServerClient->SendServerTimeline(m_currentItems[type], GetCurrentTimeline(type));
