@@ -400,11 +400,11 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       break;
 
     case CONTEXT_BUTTON_MARK_UNWATCHED:
-      item->MarkAsUnWatched();
+      item->MarkAsUnWatched(true);
       break;
 
     case CONTEXT_BUTTON_MARK_WATCHED:
-      item->MarkAsWatched();
+      item->MarkAsWatched(true);
       break;
 
     case CONTEXT_BUTTON_DELETE:

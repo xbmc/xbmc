@@ -441,8 +441,8 @@ public:
 
   void SetEpisodeData(int total, int watchedCount);
 
-  void MarkAsWatched();
-  void MarkAsUnWatched();
+  void MarkAsWatched(bool sendMessage=false);
+  void MarkAsUnWatched(bool sendMessage=false);
 
   EPlexDirectoryType GetPlexDirectoryType() const { return m_plexDirectoryType; }
   void SetPlexDirectoryType(EPlexDirectoryType dirType) { m_plexDirectoryType = dirType; }

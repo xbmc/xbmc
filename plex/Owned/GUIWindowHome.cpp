@@ -446,11 +446,6 @@ bool CGUIWindowHome::OnPopupMenu()
       CContextButtons buttons;
       EPlexDirectoryType type = (EPlexDirectoryType)fileItem->GetPlexDirectoryType();
 
-      if (type == PLEX_DIR_TYPE_EPISODE)
-        buttons.Add(CONTEXT_BUTTON_INFO, 20352);
-      else if (type == PLEX_DIR_TYPE_MOVIE)
-        buttons.Add(CONTEXT_BUTTON_INFO, 13346);
-
       if (((fileItem->IsRemoteSharedPlexMediaServerLibrary() == false) &&
           (fileItem->GetProperty("HasWatchedState").asBoolean() == true)) ||
           fileItem->HasProperty("ratingKey"))
@@ -469,28 +464,28 @@ bool CGUIWindowHome::OnPopupMenu()
 
       int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
 
-      if (choice == CONTEXT_BUTTON_INFO)
+      if (choice == CONTEXT_BUTTON_MARK_UNWATCHED)
       {
-        CGUIDialogVideoInfo* pDlgInfo = (CGUIDialogVideoInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_INFO);
-
-        if (!pDlgInfo) return false;
-
-        pDlgInfo->SetMovie(fileItem.get());
-        pDlgInfo->DoModal();
-
-        if (pDlgInfo->NeedRefresh() == false)
-          return false;
-
-        return true;
-      }
-      else if (choice == CONTEXT_BUTTON_MARK_UNWATCHED)
-      {
-        fileItem->MarkAsUnWatched();
+        bool sendMsg = false;
+        if (controlId == CONTENT_LIST_ON_DECK && fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE)
+        {
+          std::vector<CGUIListItemPtr> items = container->GetItems();
+          int idx = std::distance(items.begin(), std::find(items.begin(), items.end(), fileItem));
+          CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), controlId, idx+1, 0);
+          OnMessage(msg);
+        }
+        else if (controlId == CONTENT_LIST_ON_DECK && fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
+        {
+          SectionNeedsRefresh(GetCurrentItemName());
+          sendMsg = true;
+        }
+        fileItem->MarkAsUnWatched(sendMsg);
       }
       else if (choice == CONTEXT_BUTTON_MARK_WATCHED)
       {
-        fileItem->MarkAsWatched();
-        if (controlId == CONTENT_LIST_ON_DECK || controlId == CONTENT_LIST_RECENTLY_ADDED)
+        bool sendMsg = false;
+        if (controlId == CONTENT_LIST_RECENTLY_ADDED ||
+            (controlId == CONTENT_LIST_ON_DECK && fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE))
         {
           /* marking as watched and is on the on deck list, we need to remove it then */
           std::vector<CGUIListItemPtr> items = container->GetItems();
@@ -498,6 +493,13 @@ bool CGUIWindowHome::OnPopupMenu()
           CGUIMessage msg(GUI_MSG_LIST_REMOVE_ITEM, GetID(), controlId, idx+1, 0);
           OnMessage(msg);
         }
+        else if (controlId == CONTENT_LIST_ON_DECK && fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
+        {
+          SectionNeedsRefresh(GetCurrentItemName());
+          sendMsg = true;
+        }
+
+        fileItem->MarkAsWatched(sendMsg);
       }
       else if (choice == CONTEXT_BUTTON_DELETE)
       {
@@ -585,7 +587,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       UpdateSections();
       
-      if (message.GetMessage() == GUI_MSG_WINDOW_RESET)
+      if (message.GetMessage() == GUI_MSG_WINDOW_RESET || message.GetMessage() == GUI_MSG_UPDATE_MAIN_MENU)
         RefreshAllSections(false);
       else if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
         RefreshSectionsForServer(message.GetStringParam());
@@ -963,6 +965,16 @@ bool CGUIWindowHome::GetContentListFromSection(const CStdString &url, int conten
   }
 
   return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::SectionNeedsRefresh(const CStdString &url)
+{
+  if (m_sections.find(url) != m_sections.end())
+  {
+    CPlexSectionFanout* section = m_sections[url];
+    section->m_needsRefresh = true;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

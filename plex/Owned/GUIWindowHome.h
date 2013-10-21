@@ -120,6 +120,7 @@ public:
   bool ShowCurrentSection();
   bool GetContentTypesFromSection(const CStdString& url, std::vector<int> &types);
   bool GetContentListFromSection(const CStdString& url, int contentType, CFileItemList &list);
+  void SectionNeedsRefresh(const CStdString& url);
 
   void OnTimeout();
 

@@ -22,9 +22,9 @@ public:
   void SelectStream(const CFileItemPtr& item, int partID, int subtitleStreamID, int audioStreamID);
   
   /* scrobble events */
-  void SetItemWatched(const CFileItemPtr& item) { SetItemWatchStatus(item, true); }
-  void SetItemUnWatched(const CFileItemPtr& item) { SetItemWatchStatus(item, false); }
-  void SetItemWatchStatus(const CFileItemPtr& item, bool watched);
+  void SetItemWatched(const CFileItemPtr& item, bool sendMessage = false) { SetItemWatchStatus(item, true, sendMessage); }
+  void SetItemUnWatched(const CFileItemPtr& item, bool sendMessage = false) { SetItemWatchStatus(item, false, sendMessage); }
+  void SetItemWatchStatus(const CFileItemPtr& item, bool watched, bool sendMessage = false);
   
   /* Rating */
   void SetItemRating(const CFileItemPtr& item, float rating);

@@ -3541,9 +3541,9 @@ bool CFileItemList::IsPlexMediaServerMusic() const
 #include "Client/PlexMediaServerClient.h"
 
 //Add Mark a Title as watched
-void CFileItem::MarkAsWatched()
+void CFileItem::MarkAsWatched(bool sendMessage)
 {
-  g_plexApplication.mediaServerClient->SetItemWatched(shared_from_this());
+  g_plexApplication.mediaServerClient->SetItemWatched(shared_from_this(), sendMessage);
 
   // Change the item.
   SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
@@ -3564,9 +3564,9 @@ void CFileItem::MarkAsWatched()
 }
 
 
-void CFileItem::MarkAsUnWatched()
+void CFileItem::MarkAsUnWatched(bool sendMessage)
 {
-  g_plexApplication.mediaServerClient->SetItemUnWatched(shared_from_this());
+  g_plexApplication.mediaServerClient->SetItemUnWatched(shared_from_this(), sendMessage);
   SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
   if (GetVideoInfoTag())
   {

@@ -34,7 +34,11 @@ void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJo
   CPlexMediaServerClientJob *clientJob = static_cast<CPlexMediaServerClientJob*>(job);
 
   if (success && clientJob->m_msg.GetMessage() != 0)
+  {
+    /* give us a small breathing room to make sure PMS is up-to-date before reloading */
+    Sleep(500);
     g_windowManager.SendThreadMessage(clientJob->m_msg);
+  }
   else if (!success && clientJob->m_errorMsg)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), g_localizeStrings.Get(clientJob->m_errorMsg));
   
@@ -75,15 +79,22 @@ void CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-void CPlexMediaServerClient::SetItemWatchStatus(const CFileItemPtr &item, bool watched)
+void CPlexMediaServerClient::SetItemWatchStatus(const CFileItemPtr &item, bool watched, bool sendMessage)
 {
   CURL u(item->GetPath());
   
   u.SetFileName(GetPrefix(item) + (watched ? "scrobble" : "unscrobble"));
   u.SetOption("key", item->GetProperty("ratingKey").asString());
   u.SetOption("identifier", item->GetProperty("identifier").asString());
-  
-  AddJob(new CPlexMediaServerClientJob(u));
+
+  if (!sendMessage)
+  {
+    AddJob(new CPlexMediaServerClientJob(u));
+    return;
+  }
+
+  CGUIMessage msg(GUI_MSG_UPDATE_MAIN_MENU, 0, WINDOW_HOME, 0, 0);
+  AddJob(new CPlexMediaServerClientJob(u, "GET", msg));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
