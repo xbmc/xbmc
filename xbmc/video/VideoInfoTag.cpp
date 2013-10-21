@@ -223,18 +223,9 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     // add a <actor> tag
     TiXmlElement cast("actor");
     TiXmlNode *node = movie->InsertEndChild(cast);
-    TiXmlElement actor("name");
-    TiXmlNode *actorNode = node->InsertEndChild(actor);
-    TiXmlText name(it->strName);
-    actorNode->InsertEndChild(name);
-    TiXmlElement role("role");
-    TiXmlNode *roleNode = node->InsertEndChild(role);
-    TiXmlText character(it->strRole);
-    roleNode->InsertEndChild(character);
-    TiXmlElement thumb("thumb");
-    TiXmlNode *thumbNode = node->InsertEndChild(thumb);
-    TiXmlText th(it->thumbUrl.GetFirstThumb().m_url);
-    thumbNode->InsertEndChild(th);
+    XMLUtils::SetString(node, "name", it->strName);
+    XMLUtils::SetString(node, "role", it->strRole);
+    XMLUtils::SetString(node, "thumb", it->thumbUrl.GetFirstThumb().m_url);
   }
   XMLUtils::SetStringArray(movie, "artist", m_artist);
   XMLUtils::SetStringArray(movie, "showlink", m_showLink);
@@ -648,9 +639,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     {
       SActorInfo info;
       info.strName = actor->FirstChild()->Value();
-      const TiXmlNode *roleNode = node->FirstChild("role");
-      if (roleNode && roleNode->FirstChild())
-        info.strRole = roleNode->FirstChild()->Value();
+      XMLUtils::GetString(node, "role", info.strRole);
       const TiXmlElement* thumb = node->FirstChildElement("thumb");
       while (thumb)
       {
