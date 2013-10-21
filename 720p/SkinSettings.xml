@@ -144,12 +144,7 @@
 					<onclick>Skin.ToggleSetting(HideListViewIcons)</onclick>
 					<selected>!Skin.HasSetting(HideListViewIcons)</selected>
 				</control>
-				<control type="radiobutton" id="240">
-					<description>Show Plot in Video OSD</description>
 					<width>625</width>
-					<label>$LOCALIZE[31982]</label>
-					<onclick>Skin.ToggleSetting(HidePlotInVideoOSD)</onclick>
-					<selected>!Skin.HasSetting(HidePlotInVideoOSD)</selected>
 				</control>
 				<control type="radiobutton" id="324">
 					<description>Show Pictures description</description>
