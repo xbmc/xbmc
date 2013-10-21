@@ -675,6 +675,24 @@ case $use_platform in
      CXXFLAGS="$CXXFLAGS"
      ffmpeg_target_os=linux
      ;;
+  hybris)
+     target_platform=target_hybris
+     ARCH="arm"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_HYBRIS")
+     AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
+     CFLAGS="$CFLAGS"
+     CXXFLAGS="$CXXFLAGS"
+     PKG_CHECK_MODULES([HWCOMPOSEREGL],  [hwcomposer-egl >= 0.1],
+       [INCLUDES="$INCLUDES $HWCOMPOSEREGL_CFLAGS"; LIBS="$LIBS $HWCOMPOSEREGL_LIBS"],
+       AC_MSG_ERROR($missing_library))
+     PKG_CHECK_MODULES([HYBRISEGL],  [hybris-egl-platform >= 0.1],
+       [INCLUDES="$INCLUDES $HYBRISEGL_CFLAGS"; LIBS="$LIBS $HYBRISEGL_LIBS"],
+       AC_MSG_ERROR($missing_library))
+     PKG_CHECK_MODULES([LIBHARDWARE],  [libhardware >= 0.1],
+       [INCLUDES="$INCLUDES $LIBHARDWARE_CFLAGS"; LIBS="$LIBS $LIBHARDWARE_LIBS -lsync"],
+       AC_MSG_ERROR($missing_library))
+     ;;
+
 esac
 
 if test "$build_shared_lib" = "yes"; then
