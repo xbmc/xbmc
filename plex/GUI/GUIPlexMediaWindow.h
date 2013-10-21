@@ -15,8 +15,9 @@
 #include "StringUtils.h"
 #include "Utility/PlexFilterHelper.h"
 #include "JobManager.h"
+#include "PlexContentPlayerMixin.h"
 
-class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback
+class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public PlexContentPlayerMixin
 {    
   public:
     CGUIPlexMediaWindow(int windowId = WINDOW_VIDEO_NAV, const CStdString &xml = "MyVideoNav.xml") :

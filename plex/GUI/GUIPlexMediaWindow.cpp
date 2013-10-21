@@ -30,6 +30,7 @@
 #include "utils/URIUtils.h"
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
 #include "PlexThemeMusicPlayer.h"
+#include "PlexContentPlayerMixin.h"
 
 #include "LocalizeStrings.h"
 
@@ -142,6 +143,12 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
       if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)
         return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
     }
+  }
+  else if (action.GetID() == ACTION_PLAYER_PLAY)
+  {
+    CGUIControl *pControl = (CGUIControl*)GetControl(m_viewControl.GetCurrentControl());
+    if (pControl)
+      PlayFileFromContainer(pControl);
   }
 
   return ret;

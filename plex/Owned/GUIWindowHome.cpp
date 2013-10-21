@@ -681,26 +681,43 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(iControl);
         if (container)
         {
-          CGUIListItemPtr item = container->GetListItem(0);
-          if (PlexUtils::CurrentSkinHasPreplay() &&
-              iAction == ACTION_SELECT_ITEM &&
-              item &&
-              (item->GetProperty("type").asString() == "movie" ||
-               item->GetProperty("type").asString() == "episode" ||
-               item->GetProperty("type").asString() == "video" ||
-               item->GetProperty("type").asString() == "clip"))
+          CGUIListItemPtr litem = container->GetListItem(0);
+          CFileItemPtr item;
+          if (litem->IsFileItem())
+            item = boost::static_pointer_cast<CFileItem>(litem);
+
+          if (!item)
+            return false;
+
+          EPlexDirectoryType type = item->GetPlexDirectoryType();
+
+          if (PlexUtils::CurrentSkinHasPreplay() && iAction == ACTION_SELECT_ITEM &&
+              (type == PLEX_DIR_TYPE_MOVIE || type == PLEX_DIR_TYPE_EPISODE ||
+               type == PLEX_DIR_TYPE_VIDEO || type == PLEX_DIR_TYPE_CLIP))
           {
             CBuiltins::Execute("XBMC.ActivateWindow(PlexPreplayVideo," + item->GetProperty("key").asString() + ",return)");
             return true;
           }
-          
-          if (item->GetProperty("type").asString() == "season" && iAction == ACTION_SELECT_ITEM)
+
+          if (iAction == ACTION_SELECT_ITEM &&
+              (type == PLEX_DIR_TYPE_ALBUM || type == PLEX_DIR_TYPE_ARTIST ||
+               type == PLEX_DIR_TYPE_PHOTOALBUM || type == PLEX_DIR_TYPE_SEASON))
           {
-            CBuiltins::Execute("XBMC.ActivateWindow(MyVideos," + item->GetProperty("key").asString() + ",return)");
-          } else {
+            std::string window;
+            if (type == PLEX_DIR_TYPE_ALBUM || type == PLEX_DIR_TYPE_ARTIST)
+              window = "MyMusicFiles";
+            else if (type == PLEX_DIR_TYPE_PHOTOALBUM)
+              window = "MyPictures";
+            else if (type == PLEX_DIR_TYPE_SEASON)
+              window = "MyVideoFiles";
+
+            CBuiltins::Execute("XBMC.Activatewindow(" + window + "," + item->GetProperty("key").asString() + ",return)");
+            return true;
+          }
+          else
+          {
             PlayFileFromContainer(container);
           }
-          return true;
         }
       }
     }

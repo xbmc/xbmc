@@ -46,6 +46,26 @@ class PlexContentPlayerMixin
   }
   
  public:
+
+  static CFileItemPtr GetNextUnwatched(const std::string& container)
+  {
+    CFileItemList list;
+    XFILE::CPlexDirectory dir;
+    if (dir.GetDirectory(container, list))
+    {
+      for (int i = 0; i < list.Size(); i ++)
+      {
+        CFileItemPtr n = list.Get(i);
+        if (n->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_IN_PROGRESS ||
+            n->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED)
+          return n;
+      }
+
+      // if we didn't find any inprogress or unwatched just ... eh take the first one?
+      return list.Get(0);
+    }
+    return CFileItemPtr();
+  }
   
   static void PlayPlexItem(const CFileItemPtr file, CGUIBaseContainer* container=NULL)
   {
@@ -71,41 +91,42 @@ class PlexContentPlayerMixin
     }
     
     // Now see what to do with it.
-    std::string type = file->GetProperty("type").asString();
-    if (type == "show" || type == "person")
-    {
-      ActivateWindow(WINDOW_VIDEO_FILES, file->GetPath());
-    }
-    else if (type == "artist" || type == "album")
-    {
-      ActivateWindow(WINDOW_MUSIC_FILES, file->GetPath());
-    }
-    else if (type == "track")
+    EPlexDirectoryType type = file->GetPlexDirectoryType();
+    if (type == PLEX_DIR_TYPE_TRACK || type == PLEX_DIR_TYPE_ARTIST || type == PLEX_DIR_TYPE_ALBUM)
     {
       CFileItemList fileItems;
       int itemIndex = 0;
       
-      if (file->HasProperty("parentPath"))
+      // Get the most interesting container, for a track this means
+      // the album, for a album it means... the album :) and for
+      // a artist we just play everything by that artist.
+      CStdString key;
+      if (type == PLEX_DIR_TYPE_TRACK)
       {
-        // Get album.
-        XFILE::CPlexDirectory plexDir;
-        plexDir.GetDirectory(file->GetProperty("parentPath").asString(), fileItems);
-        
-        for (int i=0; i < fileItems.Size(); ++i)
-        {
-          CFileItemPtr fileItem = fileItems[i];
-          if (fileItem->GetProperty("unprocessed_key") == file->GetProperty("unprocessed_key"))
-          {
-            itemIndex = i;
-            break;
-          }
-        }
+        key = file->GetProperty("parentPath").asString();
       }
-      else
+      else if (type == PLEX_DIR_TYPE_ALBUM)
       {
-        // Just add the track.
-        CFileItemPtr theTrack(new CFileItem(*file));
-        fileItems.Add(theTrack);
+        key = file->GetProperty("key").asString();
+      }
+      else if (type == PLEX_DIR_TYPE_ARTIST)
+      {
+        CURL p(file->GetPath());
+        PlexUtils::AppendPathToURL(p, "allLeaves");
+        key = p.Get();
+      }
+
+      XFILE::CPlexDirectory plexDir;
+      plexDir.GetDirectory(key, fileItems);
+
+      for (int i=0; i < fileItems.Size(); ++i)
+      {
+        CFileItemPtr fileItem = fileItems[i];
+        if (fileItem->GetProperty("unprocessed_key") == file->GetProperty("unprocessed_key"))
+        {
+          itemIndex = i;
+          break;
+        }
       }
       
       g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
@@ -114,7 +135,7 @@ class PlexContentPlayerMixin
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
       g_playlistPlayer.Play(itemIndex);
     }
-    else if (type == "photo")
+    else if (type == PLEX_DIR_TYPE_PHOTO)
     {
       // Attempt to get the slideshow window
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
@@ -140,33 +161,31 @@ class PlexContentPlayerMixin
       pSlideShow->StartSlideShow();
       g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
     }
-    else if (type == "channel")
-    {
-      if (file->GetPath().find("/video/") != std::string::npos)
-        ActivateWindow(WINDOW_VIDEO_FILES, file->GetPath());
-      else if (file->GetPath().find("/music/") != std::string::npos)
-        ActivateWindow(WINDOW_MUSIC_FILES, file->GetPath());
-      else if (file->GetPath().find("/applications/") != std::string::npos)
-        ActivateWindow(WINDOW_PROGRAMS, file->GetPath());
-      else
-        ActivateWindow(WINDOW_PICTURES, file->GetPath());
-    }
     else
     {
+      CFileItemPtr rFile = file;
+
+      if (type == PLEX_DIR_TYPE_SHOW)
+      {
+        CFileItemPtr season = GetNextUnwatched(file->GetPath());
+        if (season)
+          rFile = GetNextUnwatched(season->GetPath());
+      }
+      else if (type == PLEX_DIR_TYPE_SEASON)
+      {
+        rFile = GetNextUnwatched(file->GetPath());
+      }
+
       // If there is more than one media item, allow picking which one.
-      if (ProcessMediaChoice(file.get()) == false)
+      if (ProcessMediaChoice(rFile.get()) == false)
         return;
       
       // See if we're going to resume the playback or not.
-      if (ProcessResumeChoice(file.get()) == false)
+      if (ProcessResumeChoice(rFile.get()) == false)
         return;
       
-      // Allow class to save state.
-      /*if (container)
-        SaveStateBeforePlay(container);*/
-      
       // Play it.
-      g_application.PlayFile(*file);
+      g_application.PlayFile(*rFile);
     }
   }
   
