@@ -50,7 +50,24 @@ public:
   };
 
   static const int m_MaxNumOfBackrefrences = 20;
+  /**
+   * @param caseless (optional) Matching will be case insensitive if set to true
+   *                            or case sensitive if set to false
+   * @param utf8 (optional) If set to true all string will be processed as UTF-8 strings 
+   */
   CRegExp(bool caseless = false, bool utf8 = false);
+  /**
+   * Create new CRegExp object and compile regexp expression in one step
+   * @warning Use only with hardcoded regexp when you're sure that regexp is compiled without errors
+   * @param caseless    Matching will be case insensitive if set to true 
+   *                    or case sensitive if set to false
+   * @param utf8        If set to true all string will be processed as UTF-8 strings
+   * @param re          The regular expression
+   * @param study (optional) Controls study of expression, useful if expression will be used
+   *                         several times
+   */
+  CRegExp(bool caseless, bool utf8, const char *re, studyMode study = NoStudy);
+
   CRegExp(const CRegExp& re);
   ~CRegExp();
 
@@ -73,7 +90,23 @@ public:
   bool RegComp(const std::string& re, studyMode study = NoStudy)
   { return RegComp(re.c_str(), study); }
 
+  /**
+   * Find first match of regular expression in given string
+   * @param str         The string to match against regular expression
+   * @param startoffset (optional) The string offset to start matching
+   * @param maxNumberOfCharsToTest (optional) The maximum number of characters to test (match) in 
+   *                                          string. If set to -1 string checked up to the end.
+   * @return staring position of match in string, negative value in case of error or no match
+   */
   int RegFind(const char* str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
+  /**
+   * Find first match of regular expression in given string
+   * @param str         The string to match against regular expression
+   * @param startoffset (optional) The string offset to start matching
+   * @param maxNumberOfCharsToTest (optional) The maximum number of characters to test (match) in
+   *                                          string. If set to -1 string checked up to the end.
+   * @return staring position of match in string, negative value in case of error or no match
+   */
   int RegFind(const std::string& str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1)
   { return PrivateRegFind(str.length(), str.c_str(), startoffset, maxNumberOfCharsToTest); }
   std::string GetReplaceString(const std::string& sReplaceExp) const;
@@ -96,6 +129,12 @@ public:
   bool GetNamedSubPattern(const char* strName, std::string& strMatch) const;
   int GetNamedSubPatternNumber(const char* strName) const;
   void DumpOvector(int iLog);
+  /**
+   * Check is RegExp object is ready for matching
+   * @return true if RegExp object is ready for matching, false otherwise
+   */
+  inline bool IsCompiled(void)
+  { return !m_pattern.empty(); }
   const CRegExp& operator= (const CRegExp& re);
   static bool IsUtf8Supported(void);
   static bool AreUnicodePropertiesSupported(void);
@@ -104,6 +143,7 @@ public:
 
 private:
   int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
+  void InitValues(bool caseless = false, bool utf8 = false);
 
   void Cleanup();
   inline bool IsValidSubNumber(int iSub) const;
