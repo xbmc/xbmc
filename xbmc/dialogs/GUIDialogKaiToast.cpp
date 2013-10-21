@@ -38,6 +38,7 @@ CCriticalSection CGUIDialogKaiToast::m_critical;
 CGUIDialogKaiToast::CGUIDialogKaiToast(void)
 : CGUIDialog(WINDOW_DIALOG_KAI_TOAST, "DialogKaiToast.xml")
 {
+  m_defaultIcon = "";
   m_loadType = LOAD_ON_GUI_INIT;
   m_timer = 0;
   m_toastDisplayTime = 0;
@@ -71,6 +72,9 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
 void CGUIDialogKaiToast::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
+  CGUIImage *image = (CGUIImage *)GetControl(POPUP_ICON);
+  if (image)
+    m_defaultIcon = image->GetFileName();
 }
 
 void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
@@ -148,11 +152,10 @@ bool CGUIDialogKaiToast::DoWork()
         if (typeImage)
           strTypeImage = typeImage->GetFileName();
         else
-          CLog::Log(LOGWARNING, "Missing control in DialogKaiToast: %d", toast.eType);
+          strTypeImage = m_defaultIcon;
       }
 
-      if (!strTypeImage.IsEmpty())
-        image->SetFileName(strTypeImage);
+      image->SetFileName(strTypeImage);
     }
 
     //  Play the window specific init sound for each notification queued
