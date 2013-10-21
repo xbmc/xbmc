@@ -28,6 +28,7 @@
 	</include>
 	<include name="NextCover">
 		<control type="group">
+			<animation effect="fade" start="0" end="60" condition="true">Conditional</animation>
 			<control type="image">
 				<posx>-4</posx>
 				<posy>-4</posy>
@@ -56,7 +57,7 @@
 		<control type="label">
 			<posy>5</posy>
 			<width>800</width>
-			<font>CondensedBold-30</font>
+			<font>CondensedBold-32</font>
 			<textcolor>orange</textcolor>
 			<label>$INFO[MusicPlayer.Artist]</label>
 			<shadowcolor>ff222222</shadowcolor>
@@ -73,7 +74,6 @@
 			<posy>165</posy>
 			<width>800</width>
 			<font>CondensedBold-30</font>
-			<textcolor>orange</textcolor>
 			<label>$INFO[MusicPlayer.Title]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
@@ -96,9 +96,10 @@
 		</control>
 	</include>
 	<include name="NextInfo">
+		<animation effect="fade" start="0" end="80" condition="true">Conditional</animation>
 		<control type="label">
 			<width>800</width>
-			<font>CondensedBold-22</font>
+			<font>CondensedBold-24</font>
 			<textcolor>orange</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Artist]</label>
 			<align>right</align>
@@ -107,7 +108,7 @@
 		<control type="label">
 			<posy>53</posy>
 			<width>800</width>
-			<font>Condensed-22</font>
+			<font>Condensed-24</font>
 			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Title]</label>
 			<align>right</align>
@@ -116,7 +117,7 @@
 		<control type="label">
 			<posy>100</posy>
 			<width>800</width>
-			<font>CondensedBold-22</font>
+			<font>CondensedBold-24</font>
 			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Album]</label>
 			<align>right</align>
@@ -127,7 +128,7 @@
 		<control type="label">
 			<posy>5</posy>
 			<width>800</width>
-			<font>CondensedBold-30</font>
+			<font>CondensedBold-32</font>
 			<textcolor>orange</textcolor>
 			<label>$INFO[MusicPlayer.Artist]</label>
 			<align>right</align>
@@ -171,9 +172,10 @@
 		</control>
 	</include>
 	<include name="NextInfoFlipped">
+		<animation effect="fade" start="0" end="80" condition="true">Conditional</animation>
 		<control type="label">
 			<width>800</width>
-			<font>CondensedBold-22</font>
+			<font>CondensedBold-24</font>
 			<textcolor>orange</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Artist]</label>
 			<shadowcolor>ff222222</shadowcolor>
@@ -181,7 +183,7 @@
 		<control type="label">
 			<posy>53</posy>
 			<width>800</width>
-			<font>Condensed-22</font>
+			<font>Condensed-24</font>
 			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Title]</label>
 			<shadowcolor>ff222222</shadowcolor>
@@ -189,7 +191,7 @@
 		<control type="label">
 			<posy>100</posy>
 			<width>800</width>
-			<font>CondensedBold-22</font>
+			<font>CondensedBold-24</font>
 			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Album]</label>
 			<shadowcolor>ff222222</shadowcolor>
@@ -272,14 +274,14 @@
 					<include>CurrentInfo</include>
 				</control>
 				<control type="progress">
-					<posx>425</posx>
-					<posy>325</posy>
-					<width>820</width>
-					<height>26</height>
+					<posx>428</posx>
+					<posy>330</posy>
+					<width>803</width>
+					<height>16</height>
 					<aligny>center</aligny>
 					<info>Player.Progress</info>
-					<texturebg border="13">OSDProgressBack.png</texturebg>
-					<midtexture border="13">OSDProgressMid.png</midtexture>
+					<texturebg border="8">OSDProgressBack2.png</texturebg>
+					<midtexture border="8">OSDProgressMid-grey4.png</midtexture>
 				</control>
 				<control type="group">
 					<posx>990</posx>
@@ -304,14 +306,14 @@
 					<include>CurrentInfo</include>
 				</control>
 				<control type="progress">
-					<posx>425</posx>
-					<posy>325</posy>
-					<width>820</width>
-					<height>26</height>
+					<posx>428</posx>
+					<posy>330</posy>
+					<width>803</width>
+					<height>16</height>
 					<aligny>center</aligny>
 					<info>Player.Progress</info>
-					<texturebg border="13">OSDProgressBack.png</texturebg>
-					<midtexture border="13">OSDProgressMid.png</midtexture>
+					<texturebg border="8">OSDProgressBack2.png</texturebg>
+					<midtexture border="8">OSDProgressMid-grey4.png</midtexture>
 				</control>
 			</control>
 		</control>
@@ -336,13 +338,13 @@
 					<include>CurrentInfoFlipped</include>
 				</control>
 				<control type="progress">
-					<posy>325</posy>
-					<height>26</height>
-					<width>820</width>
+					<posy>330</posy>
+					<width>803</width>
+					<height>16</height>
 					<aligny>center</aligny>
 					<info>Player.Progress</info>
-					<texturebg border="13">OSDProgressBack.png</texturebg>
-					<midtexture border="13">OSDProgressMid.png</midtexture>
+					<texturebg border="8">OSDProgressBack2.png</texturebg>
+					<midtexture border="8">OSDProgressMid-grey4.png</midtexture>
 				</control>
 				<control type="group">
 					<posx>0</posx>
@@ -371,13 +373,13 @@
 					<include>CurrentInfoFlipped</include>
 				</control>
 				<control type="progress">
-					<posy>325</posy>
-					<height>26</height>
-					<width>820</width>
+					<posy>330</posy>
+					<width>803</width>
+					<height>16</height>
 					<aligny>center</aligny>
 					<info>Player.Progress</info>
-					<texturebg border="13">OSDProgressBack.png</texturebg>
-					<midtexture border="13">OSDProgressMid.png</midtexture>
+					<texturebg border="8">OSDProgressBack2.png</texturebg>
+					<midtexture border="8">OSDProgressMid-grey4.png</midtexture>
 				</control>
 			</control>
 		</control>
