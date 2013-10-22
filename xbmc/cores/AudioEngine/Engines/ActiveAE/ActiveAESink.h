@@ -116,7 +116,8 @@ protected:
   bool m_bStateMachineSelfTrigger;
   int m_extTimeout;
   bool m_extError;
-  bool m_extSilence;
+  int m_extSilenceTimeout;
+  XbmcThreads::EndTime m_extSilenceTimer;
 
   CSampleBuffer m_sampleOfSilence;
   uint8_t *m_convertBuffer;

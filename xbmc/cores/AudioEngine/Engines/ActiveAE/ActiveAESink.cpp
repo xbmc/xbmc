@@ -163,7 +163,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             m_device = *(data->device);
           }
           m_extError = false;
-          m_extSilence = false;
+          m_extSilenceTimer = 0;
           ReturnBuffers();
           OpenSink();
 
@@ -266,10 +266,14 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkControlProtocol::SILENCEMODE:
-          m_extSilence = *(bool*)msg->data;
-          if (CSettings::Get().GetBool("audiooutput.streamsilence"))
-            m_extSilence = true;
-          if (m_extSilence)
+          bool silencemode;
+          silencemode = *(bool*)msg->data;
+          if (silencemode)
+            m_extSilenceTimeout = XbmcThreads::EndTime::InfiniteValue;
+          else
+            m_extSilenceTimeout = CSettings::Get().GetInt("audiooutput.streamsilence") * 60000;
+          m_extSilenceTimer.Set(m_extSilenceTimeout);
+          if (!m_extSilenceTimer.IsTimePast())
           {
             m_state = S_TOP_CONFIGURED_SILENCE;
             m_extTimeout = 0;
@@ -311,6 +315,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           {
             m_state = S_TOP_CONFIGURED_PLAY;
             m_extTimeout = delay / 2;
+            m_extSilenceTimer.Set(m_extSilenceTimeout);
           }
           return;
         default:
@@ -403,7 +408,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkControlProtocol::TIMEOUT:
-          if (m_extSilence)
+          if (!m_extSilenceTimer.IsTimePast())
           {
             m_state = S_TOP_CONFIGURED_SILENCE;
             m_extTimeout = 0;
@@ -435,6 +440,8 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             m_sink = NULL;
             m_state = S_TOP_CONFIGURED_SUSPEND;
           }
+          else
+            m_state = S_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           return;
         default:
