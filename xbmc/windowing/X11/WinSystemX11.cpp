@@ -27,6 +27,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/Setting.h"
+#include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "guilib/DispResource.h"
@@ -198,7 +199,9 @@ static Pixmap AllocateIconPixmap(Display* dpy, Window w)
   ImageInfo image;
   memset(&image, 0, sizeof(image));
 
-  if(!dll.LoadImage("special://xbmc/media/icon.png", 256, 256, &image))
+  const CStdString iconPath(CSpecialProtocol::TranslatePath("special://xbmc/media/icon.png"));
+
+  if(!dll.LoadImage(iconPath.c_str(), 256, 256, &image))
   {
     CLog::Log(LOGERROR, "AllocateIconPixmap to load icon");
     return false;
