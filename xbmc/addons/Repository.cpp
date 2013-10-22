@@ -19,21 +19,21 @@
  */
 
 #include "Repository.h"
-#include "utils/XBMCTinyXML.h"
-#include "filesystem/File.h"
-#include "AddonDatabase.h"
-#include "settings/Settings.h"
-#include "FileItem.h"
-#include "utils/JobManager.h"
+#include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
+#include "addons/AddonManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "filesystem/File.h"
+#include "filesystem/PluginDirectory.h"
+#include "pvr/PVRManager.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
+#include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML.h"
+#include "FileItem.h"
 #include "TextureDatabase.h"
 #include "URL.h"
-#include "pvr/PVRManager.h"
-#include "filesystem/PluginDirectory.h"
 
 using namespace std;
 using namespace XFILE;
