@@ -233,6 +233,11 @@ bool CEGLNativeTypeHybris::GetPreferredResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeHybris::ShowWindow(bool show)
 {
+  return true;
+} 
+
+void CEGLNativeTypeHybris::SwapSurface(void)
+{
 #if defined(TARGET_HYBRIS)
   HWComposerNativeWindow* window = (HWComposerNativeWindow*)m_hwNativeWindow;
   HWComposerNativeWindowBuffer *front;
@@ -272,5 +277,4 @@ bool CEGLNativeTypeHybris::ShowWindow(bool show)
     close(oldretire);
   }
 #endif
-  return true;
 }
