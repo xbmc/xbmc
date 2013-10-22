@@ -739,9 +739,7 @@ protected:
   void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
   void RemoveFromLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
 
-  void AddActorToMovie(int idMovie, int idActor, const CStdString& strRole, int order);
-  void AddActorToTvShow(int idTvShow, int idActor, const CStdString& strRole, int order);
-  void AddActorToEpisode(int idEpisode, int idActor, const CStdString& strRole, int order);
+  void AddCast(int idMedia, const char *table, const char *field, const std::vector<SActorInfo> &cast);
   void AddArtistToMusicVideo(int lMVideo, int idArtist);
 
   void AddDirectorToMovie(int idMovie, int idDirector);

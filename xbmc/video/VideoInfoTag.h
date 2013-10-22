@@ -33,10 +33,16 @@ class TiXmlElement;
 
 struct SActorInfo
 {
+  SActorInfo() : order(-1) {};
+  bool operator<(const SActorInfo &right) const
+  {
+    return order < right.order;
+  }
   CStdString strName;
   CStdString strRole;
   CScraperUrl thumbUrl;
   CStdString thumb;
+  int        order;
 };
 
 class CVideoInfoTag : public IArchivable, public ISerializable, public ISortable
