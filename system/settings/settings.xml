@@ -2047,10 +2047,14 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="audiooutput.streamsilence" type="boolean" label="421" help="34111">
+        <setting id="audiooutput.streamsilence" type="integer" label="421" help="34111">
           <level>1</level>
           <requirement>audiosupportsdrain</requirement>
-          <default>true</default>
+          <default>1</default>
+          <constraints>
+            <options>audiostreamsilence</options>
+          </constraints>
+          <control type="spinner" format="string" />
         </setting>
       </group>
       <group id="2">

@@ -6080,7 +6080,15 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr ""
 
-#empty strings from id 13554 to 13599
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr ""
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr ""
+
+#empty strings from id 13556 to 13599
 
 #: system/settings/darwin.xml
 msgctxt "#13600"
