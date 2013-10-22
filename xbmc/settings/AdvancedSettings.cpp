@@ -39,6 +39,9 @@
 #include "addons/IAddon.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
+#if defined(TARGET_DARWIN_IOS)
+#include "osx/DarwinUtils.h"
+#endif
 
 using namespace ADDON;
 using namespace XFILE;
@@ -414,7 +417,11 @@ void CAdvancedSettings::Initialize()
 
   #if defined(TARGET_DARWIN)
     CStdString logDir = getenv("HOME");
+    #if defined(TARGET_DARWIN_OSX)
     logDir += "/Library/Logs/";
+    #else // ios/atv2
+    logDir += "/" + DarwinGetXbmcRootFolder() + "/";
+    #endif
     m_logFolder = logDir;
   #else
     m_logFolder = "special://home/";              // log file location
