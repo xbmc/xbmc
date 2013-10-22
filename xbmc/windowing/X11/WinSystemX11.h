@@ -108,6 +108,7 @@ protected:
   bool         m_wm;
   CStdString   m_wm_name;
   bool         m_wm_fullscreen;
+  bool         m_wm_fullscreen_monitors;
   bool         m_wm_controlled;
 
   Atom m_NET_SUPPORTING_WM_CHECK;
@@ -118,6 +119,7 @@ protected:
   Atom m_NET_SUPPORTED;
   Atom m_NET_WM_NAME;
   Atom m_WM_DELETE_WINDOW;
+  Atom m_NET_WM_FULLSCREEN_MONITORS;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);

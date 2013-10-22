@@ -296,6 +296,7 @@ void CWinSystemX11::ProbeWindowManager()
   m_wm            = false;
   m_wm_name       = "";
   m_wm_fullscreen = false;
+  m_wm_fullscreen_monitors = false;
 
   res = XGetWindowProperty(m_dpy, XRootWindow(m_dpy, m_visual->screen), m_NET_SUPPORTING_WM_CHECK,
                         0, 16384, False, AnyPropertyType, &type, &format,
@@ -336,6 +337,8 @@ void CWinSystemX11::ProbeWindowManager()
   {
     if(items[i] == m_NET_WM_STATE_FULLSCREEN)
       m_wm_fullscreen = true;
+    if(items[i] == m_NET_WM_FULLSCREEN_MONITORS)
+      m_wm_fullscreen_monitors = true;
   }
   XFree(prop_return);
   prop_return = NULL;
@@ -376,6 +379,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   m_NET_SUPPORTING_WM_CHECK     = XInternAtom(m_dpy, "_NET_SUPPORTING_WM_CHECK", False);
   m_NET_WM_NAME                 = XInternAtom(m_dpy, "_NET_WM_NAME", False);
   m_WM_DELETE_WINDOW            = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
+  m_NET_WM_FULLSCREEN_MONITORS  = XInternAtom(m_dpy, "_NET_WM_FULLSCREEN_MONITORS", False);
 
   /* higher layer should have set m_visual */
   if(m_visual == NULL)
@@ -408,7 +412,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
     w  = win.iWidth;
     h  = win.iHeight;
     x += res.iWidth   / 2 - w / 2;
-    y += res.iHeight  / 2 - w / 2;
+    y += res.iHeight  / 2 - h / 2;
 
     swa.override_redirect = 0;
     swa.border_pixel      = 5;
@@ -534,6 +538,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 bool CWinSystemX11::SetResolution(RESOLUTION_INFO& res, bool fullScreen)
 {
   bool changed = false;
+
   /* if we switched outputs or went to desktop, restore old resolution */
   if(m_bFullScreen && (m_outputName != res.strOutput || !fullScreen))
     changed |= SetOutputMode(CDisplaySettings::Get().GetResolutionInfo(DesktopResolution(m_outputIndex)));
@@ -549,6 +554,26 @@ bool CWinSystemX11::SetResolution(RESOLUTION_INFO& res, bool fullScreen)
     XSync(m_dpy, False);
   }
   return changed;
+}
+
+namespace
+{
+void SetFullscreenMonitors(Display *dpy, Window root, Window window, Atom fsMonitorsAtom, int monitor)
+{
+  XEvent e = {0};
+  e.xany.type = ClientMessage;
+  e.xclient.message_type = fsMonitorsAtom;
+  e.xclient.display = dpy;
+  e.xclient.window  = window;
+  e.xclient.format  = 32;
+  e.xclient.data.l[0] = monitor;
+  e.xclient.data.l[1] = monitor;
+  e.xclient.data.l[2] = monitor;
+  e.xclient.data.l[3] = monitor;
+
+  XSendEvent(dpy, root, False,
+             SubstructureNotifyMask | SubstructureRedirectMask, &e);
+}
 }
 
 bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
@@ -590,7 +615,25 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
      * the window manager will fullscreen it on the wrong
      * window */
     if(fullScreen && GetCurrentScreen() != res.iScreen)
-      XMoveWindow(m_dpy, m_wmWindow, x, y);
+    {
+      /* If the window manager supports it, just set the
+       * _NET_WM_FULLSCREEN_MONITORS hint. This will ensure
+       * that the window is always placed on the right monitor
+       * as opposed to moving it, which window managers are not
+       * required to obey */
+      if(m_wm_fullscreen_monitors)
+      {
+        /* XXX: We are assuming that res.iScreen is the same index
+         * as what would have been returned by the Xinerama extension */
+        SetFullscreenMonitors(m_dpy,
+                              RootWindow(m_dpy, m_visual->screen),
+                              m_wmWindow,
+                              m_NET_WM_FULLSCREEN_MONITORS,
+                              res.iScreen);
+      }
+      else
+        XMoveWindow(m_dpy, m_wmWindow, x, y);
+    }
 
     if(attr2.map_state == IsUnmapped)
     {
@@ -775,7 +818,6 @@ int  CWinSystemX11::GetNumScreens()
 
 int  CWinSystemX11::GetCurrentScreen()
 {
-
 #if defined(HAS_XRANDR)
   std::vector<XOutput> outs = g_xrandr.GetModes();
   int best_index   = -1;
@@ -808,11 +850,8 @@ void CWinSystemX11::RefreshWindowState()
 
   m_nWidth    = attr.width;
   m_nHeight   = attr.height;
-  if(!m_bFullScreen)
-  {
-    m_nLeft     = attr.x;
-    m_nTop      = attr.y;
-  }
+  m_nLeft     = attr.x;
+  m_nTop      = attr.y;
 
   m_wm_controlled = attr.override_redirect == 0 && m_wm_name;
 }
@@ -907,6 +946,13 @@ void CWinSystemX11::NotifyXRREvent()
   g_xrandr.Query(XScreenCount(m_dpy), true);
 #endif
   OnResetDevice();
+
+  /* We should also re-set the fullscreen state */
+  SetFullscreenMonitors(m_dpy,
+                        RootWindow(m_dpy, m_visual->screen),
+                        m_wmWindow,
+                        m_NET_WM_FULLSCREEN_MONITORS,
+                        m_outputIndex);
 }
 
 void CWinSystemX11::OnLostDevice()
