@@ -1586,9 +1586,10 @@ void CApplication::OnSettingChanged(const CSetting *setting)
   else if (settingId == "lookandfeel.skintheme")
   {
     // also set the default color theme
-    string colorTheme = URIUtils::ReplaceExtension(((CSettingString*)setting)->GetValue(), ".xml");
-    if (StringUtils::EqualsNoCase(colorTheme, "Textures.xml"))
-      colorTheme = "defaults.xml";
+    CStdString colorTheme = ((CSettingString*)setting)->GetValue();
+    URIUtils::RemoveExtension(colorTheme);
+    if (StringUtils::EqualsNoCase(colorTheme, "Textures"))
+      colorTheme = "defaults";
 
     // check if we have to change the skin color
     // if yes, it will trigger a call to ReloadSkin() in
