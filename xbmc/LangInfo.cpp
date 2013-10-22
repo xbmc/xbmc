@@ -243,7 +243,7 @@ bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= 
   }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (pRootElement->ValueStr() == "language")
+  if (pRootElement->ValueStr() != "language")
   {
     CLog::Log(onlyCheckLanguage ? LOGDEBUG : LOGERROR, "%s Doesn't contain <language>", strFileName.c_str());
     return false;
