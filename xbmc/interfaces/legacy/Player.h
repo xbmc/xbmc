@@ -50,13 +50,7 @@ namespace XBMCAddon
     /**
      * Player class.
      * 
-     * Player([core]) -- Creates a new Player with as default the xbmc music playlist.
-     * 
-     * core     : (optional) Use a specified playcore instead of letting xbmc decide the playercore to use.
-     *          - xbmc.PLAYER_CORE_AUTO
-     *          - xbmc.PLAYER_CORE_DVDPLAYER
-     *          - xbmc.PLAYER_CORE_MPLAYER
-     *          - xbmc.PLAYER_CORE_PAPLAYER
+     * Player() -- Creates a new Player class.
      */
     class Player : public AddonCallback, public IPlayerCallback
     {
@@ -92,7 +86,7 @@ namespace XBMCAddon
        * example:\n
        *   - listitem = xbmcgui.ListItem('Ironman')\n
        *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})\n
-       *   - xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem, windowed)\n
+       *   - xbmc.Player().play(url, listitem, windowed)\n
        */
       void play(const PlayParameter& item = PlayParameter::nullItem(), 
                 const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false, int startpos = -1);
