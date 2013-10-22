@@ -104,7 +104,7 @@ CRepository::~CRepository()
 {
 }
 
-CStdString CRepository::Checksum()
+CStdString CRepository::Checksum() const
 {
   CStdString result;
   for (DirList::const_iterator it  = m_dirs.begin(); it != m_dirs.end(); ++it)
@@ -117,7 +117,6 @@ CStdString CRepository::Checksum()
 
 CStdString CRepository::FetchChecksum(const CStdString& url)
 {
-  CSingleLock lock(m_critSection);
   CFile file;
   try
   {
@@ -140,7 +139,7 @@ CStdString CRepository::FetchChecksum(const CStdString& url)
   }
 }
 
-CStdString CRepository::GetAddonHash(const AddonPtr& addon)
+CStdString CRepository::GetAddonHash(const AddonPtr& addon) const
 {
   CStdString checksum;
   DirList::const_iterator it;

@@ -38,13 +38,13 @@ namespace ADDON
     CRepository(const cp_extension_t *props);
     virtual ~CRepository();
 
-    CStdString Checksum();
+    CStdString Checksum() const;
 
     /*! \brief Get the md5 hash for an addon.
      \param the addon in question.
      \return the md5 hash for the given addon, empty if non exists.
      */
-    CStdString GetAddonHash(const AddonPtr& addon);
+    CStdString GetAddonHash(const AddonPtr& addon) const;
 
     struct DirInfo
     {
@@ -63,10 +63,8 @@ namespace ADDON
 
     static VECADDONS Parse(const DirInfo& dir);
   private:
-    CStdString FetchChecksum(const CStdString& url);
+    static CStdString FetchChecksum(const CStdString& url);
     CRepository(const CRepository &rhs);
-
-    CCriticalSection m_critSection;
   };
 
   class CRepositoryUpdateJob : public CJob
