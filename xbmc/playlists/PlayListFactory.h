@@ -22,6 +22,7 @@
 #include "utils/StdString.h"
 
 class CFileItem;
+class CDVDInputStream;
 
 namespace PLAYLIST
 {
@@ -34,5 +35,10 @@ namespace PLAYLIST
     static CPlayList* Create(const CFileItem& item);
     static bool IsPlaylist(const CStdString& filename);
     static bool IsPlaylist(const CFileItem& item);
+    
+    // if the input stream points to some sort of playlist with bandwidth information
+    // this method will redirect the inputstream to the best fit (e.x. m3u8 or mov reference playlist)
+    // the inputStream has to be opened already for this method!
+    static bool HandleRedirects(CDVDInputStream *inputStream, unsigned int bandwidth);
   };
 }
