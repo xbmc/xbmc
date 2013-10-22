@@ -29,6 +29,7 @@
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "FileItem.h"
@@ -104,9 +105,9 @@ CRepository::~CRepository()
 {
 }
 
-CStdString CRepository::Checksum() const
+string CRepository::Checksum() const
 {
-  CStdString result;
+  string result;
   for (DirList::const_iterator it  = m_dirs.begin(); it != m_dirs.end(); ++it)
   {
     if (!it->checksum.empty())
@@ -115,7 +116,7 @@ CStdString CRepository::Checksum() const
   return result;
 }
 
-CStdString CRepository::FetchChecksum(const CStdString& url)
+string CRepository::FetchChecksum(const string& url)
 {
   CFile file;
   try
@@ -139,9 +140,9 @@ CStdString CRepository::FetchChecksum(const CStdString& url)
   }
 }
 
-CStdString CRepository::GetAddonHash(const AddonPtr& addon) const
+string CRepository::GetAddonHash(const AddonPtr& addon) const
 {
-  CStdString checksum;
+  string checksum;
   DirList::const_iterator it;
   for (it = m_dirs.begin();it != m_dirs.end(); ++it)
     if (it->datadir == addon->Path())
@@ -150,8 +151,8 @@ CStdString CRepository::GetAddonHash(const AddonPtr& addon) const
   {
     checksum = FetchChecksum(addon->Path()+".md5");
     size_t pos = checksum.find_first_of(" \n");
-    if (pos != CStdString::npos)
-      return checksum.Left(pos);
+    if (pos != string::npos)
+      return checksum.substr(0, pos);
   }
   return checksum;
 }
@@ -167,12 +168,12 @@ VECADDONS CRepository::Parse(const DirInfo& dir)
   VECADDONS result;
   CXBMCTinyXML doc;
 
-  CStdString file = dir.info;
+  string file = dir.info;
   if (dir.compressed)
   {
     CURL url(dir.info);
-    CStdString opts = url.GetProtocolOptions();
-    if (!opts.IsEmpty())
+    string opts = url.GetProtocolOptions();
+    if (!opts.empty())
       opts += "&";
     url.SetProtocolOptions(opts+"Encoding=gzip");
     file = url.Get();
@@ -186,11 +187,10 @@ VECADDONS CRepository::Parse(const DirInfo& dir)
       AddonPtr addon = *i;
       if (dir.zipped)
       {
-        CStdString file;
-        file.Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().c_str());
+        string file = StringUtils::Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().c_str());
         addon->Props().path = URIUtils::AddFileToFolder(dir.datadir,file);
         SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/icon.png"))
-        file.Format("%s/changelog-%s.txt", addon->ID().c_str(), addon->Version().c_str());
+        file = StringUtils::Format("%s/changelog-%s.txt", addon->ID().c_str(), addon->Version().c_str());
         SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(dir.datadir,file))
         SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/fanart.jpg"))
       }
@@ -252,9 +252,9 @@ bool CRepositoryUpdateJob::DoWork()
     {
       if (CSettings::Get().GetBool("general.addonautoupdate") || addon->Type() >= ADDON_VIZ_LIBRARY)
       {
-        CStdString referer;
+        string referer;
         if (URIUtils::IsInternetStream(addons[i]->Path()))
-          referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
+          referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
 
         if (addons[i]->Type() == ADDON_PVRDLL &&
             !PVR::CPVRManager::Get().InstallAddonAllowed(addons[i]->ID()))
@@ -290,11 +290,11 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
 {
   CAddonDatabase database;
   database.Open();
-  CStdString checksum;
+  string checksum;
   database.GetRepoChecksum(repo->ID(),checksum);
-  CStdString reposum = repo->Checksum();
+  string reposum = repo->Checksum();
   VECADDONS addons;
-  if (!checksum.Equals(reposum) || checksum.empty())
+  if (checksum != reposum || checksum.empty())
   {
     map<string, AddonPtr> uniqueAddons;
     for (CRepository::DirList::const_iterator it = repo->m_dirs.begin(); it != repo->m_dirs.end(); ++it)
@@ -324,8 +324,7 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
       if (!repo->Props().libname.empty())
       {
         CFileItemList dummy;
-        CStdString s;
-        s.Format("plugin://%s/?action=update", repo->ID());
+        string s = StringUtils::Format("plugin://%s/?action=update", repo->ID().c_str());
         add = CDirectory::GetDirectory(s, dummy);
       }
       if (add)
