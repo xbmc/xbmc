@@ -914,6 +914,7 @@
     <ClCompile Include="..\..\xbmc\playlists\PlayListB4S.cpp" />
     <ClCompile Include="..\..\xbmc\playlists\PlayListFactory.cpp" />
     <ClCompile Include="..\..\xbmc\playlists\PlayListM3U.cpp" />
+    <ClCompile Include="..\..\xbmc\playlists\PlayListMOV.cpp" />
     <ClCompile Include="..\..\xbmc\playlists\PlayListPLS.cpp" />
     <ClCompile Include="..\..\xbmc\playlists\PlayListURL.cpp" />
     <ClCompile Include="..\..\xbmc\playlists\PlayListWPL.cpp" />
@@ -2354,6 +2355,7 @@
     <ClInclude Include="..\..\xbmc\playlists\PlayListB4S.h" />
     <ClInclude Include="..\..\xbmc\playlists\PlayListFactory.h" />
     <ClInclude Include="..\..\xbmc\playlists\PlayListM3U.h" />
+    <ClInclude Include="..\..\xbmc\playlists\PlayListMOV.h" />
     <ClInclude Include="..\..\xbmc\playlists\PlayListPLS.h" />
     <ClInclude Include="..\..\xbmc\playlists\PlayListURL.h" />
     <ClInclude Include="..\..\xbmc\playlists\PlayListWPL.h" />

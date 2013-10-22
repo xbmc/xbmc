@@ -501,6 +501,9 @@
 		DFB25D46163D4743006C4A48 /* WindowDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1E215FCE77900E10810 /* WindowDialog.cpp */; };
 		DFB25D47163D4743006C4A48 /* WindowDialogMixin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1E615FCE77900E10810 /* WindowDialogMixin.cpp */; };
 		DFB25D48163D4743006C4A48 /* WindowXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1EC15FCE77900E10810 /* WindowXML.cpp */; };
+		DFB594921815D441006DA1C0 /* PlayListMov.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB594901815D441006DA1C0 /* PlayListMov.cpp */; };
+		DFB594931815D441006DA1C0 /* PlayListMov.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB594901815D441006DA1C0 /* PlayListMov.cpp */; };
+		DFB594941815D441006DA1C0 /* PlayListMov.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB594901815D441006DA1C0 /* PlayListMov.cpp */; };
 		DFB65FB515373AE7006B8FF1 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
 		DFB65FB715373AE7006B8FF1 /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */; };
 		DFB65FB815373AE7006B8FF1 /* CoreAudioAE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6D15373AE7006B8FF1 /* CoreAudioAE.cpp */; };
@@ -4180,6 +4183,8 @@
 		DFB0F471161B747500D744F4 /* AddonsOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonsOperations.h; sourceTree = "<group>"; };
 		DFB15B2015F8FB8100CDF0DE /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		DFB15B2115F8FB8100CDF0DE /* SDLMain.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SDLMain.mm; sourceTree = "<group>"; };
+		DFB594901815D441006DA1C0 /* PlayListMov.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayListMov.cpp; sourceTree = "<group>"; };
+		DFB594911815D441006DA1C0 /* PlayListMov.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListMov.h; sourceTree = "<group>"; };
 		DFB65F6415373AE7006B8FF1 /* AEAudioFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAudioFormat.h; sourceTree = "<group>"; };
 		DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEFactory.cpp; sourceTree = "<group>"; };
 		DFB65F6615373AE7006B8FF1 /* AEFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEFactory.h; sourceTree = "<group>"; };
@@ -6036,6 +6041,8 @@
 				18B7C922129428CA009E7A26 /* PlayListFactory.h */,
 				18B7C923129428CA009E7A26 /* PlayListM3U.cpp */,
 				18B7C924129428CA009E7A26 /* PlayListM3U.h */,
+				DFB594901815D441006DA1C0 /* PlayListMov.cpp */,
+				DFB594911815D441006DA1C0 /* PlayListMov.h */,
 				18B7C925129428CA009E7A26 /* PlayListPLS.cpp */,
 				18B7C926129428CA009E7A26 /* PlayListPLS.h */,
 				18B7C927129428CA009E7A26 /* PlayListURL.cpp */,
@@ -10624,6 +10631,7 @@
 				DFD882F817DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E917DD189E001516FE /* StringValidation.cpp in Sources */,
 				F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */,
+				DFB594921815D441006DA1C0 /* PlayListMov.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11654,6 +11662,7 @@
 				DFD882F617DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E717DD189E001516FE /* StringValidation.cpp in Sources */,
 				F500E35817F3412C004FC217 /* WinEvents.cpp in Sources */,
+				DFB594941815D441006DA1C0 /* PlayListMov.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12686,6 +12695,7 @@
 				DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */,
 				F500E35717F3412C004FC217 /* WinEvents.cpp in Sources */,
+				DFB594931815D441006DA1C0 /* PlayListMov.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

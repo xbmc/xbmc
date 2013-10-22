@@ -1375,6 +1375,9 @@
     <ClCompile Include="..\..\xbmc\playlists\PlayListM3U.cpp">
       <Filter>playlists</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\playlists\PlayListMOV.cpp">
+      <Filter>playlists</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\playlists\PlayListPLS.cpp">
       <Filter>playlists</Filter>
     </ClCompile>
@@ -4356,6 +4359,9 @@
       <Filter>playlists</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\playlists\PlayListM3U.h">
+      <Filter>playlists</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\playlists\PlayListMOV.h">
       <Filter>playlists</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\playlists\PlayListPLS.h">
