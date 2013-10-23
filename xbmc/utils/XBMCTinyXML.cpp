@@ -108,22 +108,25 @@ bool CXBMCTinyXML::SaveFile(const std::string& filename) const
 
 const char *CXBMCTinyXML::Parse(const char *_data, TiXmlParsingData *prevData, TiXmlEncoding encoding)
 {
-  std::string data(_data);
-  return Parse(data, prevData, encoding);
+  return Parse(std::string(_data), prevData, encoding);
 }
 
-const char *CXBMCTinyXML::Parse(std::string& data, TiXmlParsingData *prevData, TiXmlEncoding encoding)
+const char *CXBMCTinyXML::Parse(const std::string& rawdata, TiXmlParsingData *prevData, TiXmlEncoding encoding)
 {
   // Preprocess string, replacing '&' with '&amp; for invalid XML entities
-  size_t pos = 0;
-  CRegExp re(true);
-  re.RegComp("^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
-  while ((pos = data.find("&", pos)) != std::string::npos)
+  size_t pos = rawdata.find('&');
+  if (pos == std::string::npos)
+    return TiXmlDocument::Parse(rawdata.c_str(), prevData, encoding); // nothing to fix, process data directly
+
+  std::string data(rawdata);
+  CRegExp re(true, false, "^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
+  do
   {
     if (re.RegFind(data, pos, MAX_ENTITY_LENGTH) < 0)
       data.insert(pos + 1, "amp;");
-    pos++;
-  }
+    pos = data.find('&', pos + 1);
+  } while (pos != std::string::npos);
+
   return TiXmlDocument::Parse(data.c_str(), prevData, encoding);
 }
 
