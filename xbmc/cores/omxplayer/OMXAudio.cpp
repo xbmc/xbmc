@@ -955,22 +955,10 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     }
     else
     {
-      if(pts == DVD_NOPTS_VALUE)
-      {
+      if(pts == DVD_NOPTS_VALUE || pts == m_last_pts)
         omx_buffer->nFlags = OMX_BUFFERFLAG_TIME_UNKNOWN;
+      else
         m_last_pts = pts;
-      }
-      else if (m_last_pts != pts)
-      {
-        if(pts > m_last_pts)
-          m_last_pts = pts;
-        else
-          omx_buffer->nFlags = OMX_BUFFERFLAG_TIME_UNKNOWN;;
-      }
-      else if (m_last_pts == pts)
-      {
-        omx_buffer->nFlags = OMX_BUFFERFLAG_TIME_UNKNOWN;
-      }
     }
 
     omx_buffer->nTimeStamp = ToOMXTime(val);
