@@ -350,11 +350,6 @@ bool CLibretroEnvironment::EnvironmentCallback(unsigned int cmd, void *data)
       {
         // m_varMap provides both a static layer for returning persistent strings,
         // and a way of detecting stale data for RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE
-        if (false && m_activeClient)
-          m_varMap[var->key] = m_activeClient->GetSetting(var->key);
-        else
-          m_varMap[var->key] = "";
-
         if (!m_varMap[var->key].empty())
         {
           var->value = m_varMap[var->key].c_str();
