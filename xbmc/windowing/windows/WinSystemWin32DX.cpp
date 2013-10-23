@@ -44,9 +44,7 @@ bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)
 
 bool CWinSystemWin32DX::CreateNewWindow(CStdString name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  CWinSystemWin32::CreateNewWindow(name, fullScreen, res, userFunction);
-
-  if(m_hWnd == NULL)
+  if(!CWinSystemWin32::CreateNewWindow(name, fullScreen, res, userFunction))
     return false;
 
   SetFocusWnd(m_hWnd);
