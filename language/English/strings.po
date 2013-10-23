@@ -8030,7 +8030,7 @@ msgid "EPG"
 msgstr ""
 
 msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
 msgstr ""
 
 msgctxt "#19224"
@@ -8078,7 +8078,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR add-on)"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
 msgstr ""
 
 msgctxt "#19235"
@@ -8102,7 +8102,7 @@ msgid "Starting background threads"
 msgstr ""
 
 msgctxt "#19240"
-msgid "No PVR add-on enabled"
+msgid "No PVR Add-on enabled"
 msgstr ""
 
 msgctxt "#19241"
@@ -8110,7 +8110,7 @@ msgid "The PVR manager has been enabled without any"
 msgstr ""
 
 msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
 msgstr ""
 
 msgctxt "#19243"
@@ -8238,7 +8238,7 @@ msgid "* All recordings"
 msgstr ""
 
 msgctxt "#19271"
-msgid "No PVR add-ons could be found"
+msgid "No PVR Add-ons could be found"
 msgstr ""
 
 msgctxt "#19272"
@@ -8246,7 +8246,7 @@ msgid "You need a tuner, backend software, and an"
 msgstr ""
 
 msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
+msgid "Add-on for the backend to be able to use PVR."
 msgstr ""
 
 msgctxt "#19274"
@@ -11713,7 +11713,7 @@ msgstr ""
 #: xbmc/addons/addoninstaller.cpp
 #: xbmc/addons/Repository.cpp
 msgctxt "#24044"
-msgid "Dependencies not met"
+msgid "Dependencies not met. Please contact Add-on author."
 msgstr ""
 
 #: xbmc/addons/addoninstaller.cpp
@@ -11723,12 +11723,12 @@ msgstr ""
 
 #: xbmc/addons/guidialogaddoninfo.cpp
 msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
+msgid "%s is used by the following installed Add-on(s)"
 msgstr ""
 
 #: xbmc\addons\GUIDialogAddonInfo.cpp
 msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
+msgid "This Add-on cannot be uninstalled"
 msgstr ""
 
 #: skin.confluence
@@ -11975,7 +11975,7 @@ msgstr ""
 #strings 30000 thru 30999 reserved for plugins and plugin settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
-#strings 33000 thru 33999 reserved for common strings used in add-ons
+#strings 33000 thru 33999 reserved for common strings used in Add-ons
 
 #: unknown
 msgctxt "#33001"
@@ -13385,7 +13385,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13515,7 +13515,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36229"
-msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13545,22 +13545,22 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36236"
-msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36237"
-msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36238"
-msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
 msgstr ""
 
 #: system/settings/settings.xml
