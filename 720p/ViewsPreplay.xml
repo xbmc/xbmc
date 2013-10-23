@@ -385,9 +385,10 @@
 				</control>
 				<!-- MPAA flag -->
 				<control type="image">
-					<posy>55</posy>
-					<width>200</width>
-					<height>17</height>
+					<posy>20</posy>
+					<posx>580r</posx>
+					<width>60</width>
+					<height>30</height>
 					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
@@ -396,7 +397,7 @@
 				</control>
 				<!-- Star Rating -->
 				<control type="image">
-					<posy>78</posy>
+					<posy>69</posy>
 					<width>200</width>
 					<height>20</height>
 					<texture>$INFO[ListItem.StarRating]</texture>
