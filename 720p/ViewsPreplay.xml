@@ -383,6 +383,14 @@
 				<height>630</height>
 				<itemlayout width="223" height="315">
 					<include>TVPoster</include>
+					<control type="image">
+						<posx>13</posx>
+						<posy>243</posy>
+						<width>182</width>
+						<height>44</height>
+						<include>BlackRoundedHalf</include>
+						<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
+					</control>
 					<control type="label">
 						<posy>250</posy>
 						<posx>23</posx>
@@ -417,6 +425,14 @@
 				</itemlayout>
 				<focusedlayout width="223" height="315">
 					<include>TVPoster</include>
+					<control type="image">
+						<posx>13</posx>
+						<posy>243</posy>
+						<width>182</width>
+						<height>44</height>
+						<include>BlackRoundedHalf</include>
+						<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
+					</control>
 					<include>TVPosterSelectedBorder</include>
 					<control type="label">
 						<posy>250</posy>

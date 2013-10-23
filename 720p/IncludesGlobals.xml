@@ -6,6 +6,9 @@
 	<include name="BaseRounded">
 		<texture border="5">base-rounded.png</texture>
 	</include>
+	<include name="BaseRoundedHalf">
+		<texture border="5">base-rounded-half.png</texture>
+	</include>
 	<include name="BaseRoundedRight">
 		<texture border="5">base-rounded-half-horiz.png</texture>
 	</include>
@@ -22,6 +25,10 @@
 	</include>
 	<include name="BlackRounded">
 		<include>BaseRounded</include>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="BlackRoundedHalf">
+		<include>BaseRoundedHalf</include>
 		<colordiffuse>FF000000</colordiffuse>
 	</include>
 	<include name="BlackRoundedRight">
