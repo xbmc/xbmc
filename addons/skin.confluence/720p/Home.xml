@@ -495,8 +495,10 @@
 				<pulseonselect>false</pulseonselect>
 				<label>137</label>
 				<onclick>RunScript(script.globalsearch)</onclick>
-				<textureradiofocus>icon_search.png</textureradiofocus>
-				<textureradionofocus>icon_search.png</textureradionofocus>
+				<textureradioonfocus>icon_search.png</textureradioonfocus>
+				<textureradioonnofocus>icon_search.png</textureradioonnofocus>
+				<textureradioofffocus>icon_search.png</textureradioofffocus>
+				<textureradiooffnofocus>icon_search.png</textureradiooffnofocus>
 				<onleft>607</onleft>
 				<onright>601</onright>
 				<onup>9003</onup>
@@ -708,8 +710,10 @@
 				<pulseonselect>false</pulseonselect>
 				<label>31008</label>
 				<onclick>fullscreen</onclick>
-				<textureradiofocus>GoFullscreen.png</textureradiofocus>
-				<textureradionofocus>GoFullscreen.png</textureradionofocus>
+				<textureradioonfocus>GoFullscreen.png</textureradioonfocus>
+				<textureradioonnofocus>GoFullscreen.png</textureradioonnofocus>
+				<textureradioofffocus>GoFullscreen.png</textureradioofffocus>
+				<textureradiooffnofocus>GoFullscreen.png</textureradiooffnofocus>
 				<onleft>606</onleft>
 				<onright>608</onright>
 				<onup>9003</onup>
@@ -1064,7 +1068,6 @@
 				<height>45</height>
 				<label>31003</label>
 				<font>-</font>
-				<aligny>-</aligny>
 				<onclick>ActivateWindow(ShutdownMenu)</onclick>
 				<texturefocus border="5">floor_buttonFO.png</texturefocus>
 				<texturenofocus border="5">floor_button.png</texturenofocus>
@@ -1090,7 +1093,6 @@
 				<height>45</height>
 				<label>1036</label>
 				<font>-</font>
-				<aligny>-</aligny>
 				<onclick>ActivateWindow(Favourites)</onclick>
 				<texturefocus border="5">floor_buttonFO.png</texturefocus>
 				<texturenofocus border="5">floor_button.png</texturenofocus>

@@ -426,7 +426,6 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$LOCALIZE[515]: $INFO[ListItem.Genre]</label>
-					<scroll>false</scroll>
 				</control>
 				<control type="label">
 					<posx>0</posx>
@@ -440,7 +439,6 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$LOCALIZE[562]: $INFO[ListItem.Year]</label>
-					<scroll>false</scroll>
 				</control>
 				<control type="fadelabel">
 					<posx>0</posx>
