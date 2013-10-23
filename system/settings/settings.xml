@@ -2049,7 +2049,6 @@
         </setting>
         <setting id="audiooutput.streamsilence" type="integer" label="421" help="34111">
           <level>1</level>
-          <requirement>audiosupportsdrain</requirement>
           <default>1</default>
           <constraints>
             <options>audiostreamsilence</options>

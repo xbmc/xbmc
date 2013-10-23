@@ -797,9 +797,6 @@ void CSettings::InitializeConditions()
   if (g_application.IsStandAlone())
     m_settingsManager->AddCondition("isstandalone");
 
-  if (CAEFactory::SupportsDrain())
-    m_settingsManager->AddCondition("audiosupportsdrain");
-
   if(CAEFactory::SupportsQualitySetting())
     m_settingsManager->AddCondition("has_ae_quality_levels");
 

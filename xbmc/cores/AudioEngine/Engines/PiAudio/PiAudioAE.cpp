@@ -49,7 +49,7 @@ void CPiAudioAE::UpdateStreamSilence()
 {
 #if defined(TARGET_RASPBERRY_PI)
   bool enable = CSettings::Get().GetString("audiooutput.audiodevice") == "HDMI" &&
-                CSettings::Get().GetBool("audiooutput.streamsilence");
+                CSettings::Get().GetInt("audiooutput.streamsilence") != 0;
   char response[80] = "";
   char command[80] = "";
   sprintf(command, "force_audio hdmi %d", enable);
@@ -129,9 +129,9 @@ bool CPiAudioAE::SupportsRaw(AEDataFormat format)
   return supported;
 }
 
-bool CPiAudioAE::SupportsDrain()
+bool CPiAudioAE::SupportsSilenceTimeout()
 {
-  return true;
+  return false;
 }
 
 void CPiAudioAE::OnSettingsChange(const std::string& setting)

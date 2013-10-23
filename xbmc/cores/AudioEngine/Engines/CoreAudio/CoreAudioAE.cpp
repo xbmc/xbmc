@@ -766,7 +766,7 @@ void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
 void CCoreAudioAE::GarbageCollect()
 {
 #if defined(TARGET_DARWIN_OSX)
-  if (CSettings::Get().GetBool("audiooutput.streamsilence"))
+  if (CSettings::Get().GetInt("audiooutput.streamsilence") != 0)
     return;
   
   if (!m_streamsPlaying && m_playing_sounds.empty())

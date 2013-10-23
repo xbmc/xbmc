@@ -62,7 +62,7 @@ public:
   virtual bool IsSettingVisible(const std::string &settingId);
 
   virtual bool SupportsRaw(AEDataFormat format);
-  virtual bool SupportsDrain();
+  virtual bool SupportsSilenceTimeout();
 
   virtual void OnLostDevice() {}
   virtual void OnResetDevice() {}

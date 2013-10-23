@@ -54,7 +54,7 @@ public:
   static void VerifyOutputDevice(std::string &device, bool passthrough);
   static std::string GetDefaultDevice(bool passthrough);
   static bool SupportsRaw(AEDataFormat format);
-  static bool SupportsDrain();
+  static bool SupportsSilenceTimeout();
 
   /**
    * Returns true if current AudioEngine supports at lest two basic quality levels

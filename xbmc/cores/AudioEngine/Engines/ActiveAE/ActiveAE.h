@@ -215,7 +215,7 @@ public:
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual std::string GetDefaultDevice(bool passthrough);
   virtual bool SupportsRaw(AEDataFormat format);
-  virtual bool SupportsDrain();
+  virtual bool SupportsSilenceTimeout();
   virtual bool SupportsQualityLevel(enum AEQuality level);
   virtual bool IsSettingVisible(const std::string &settingId);
 

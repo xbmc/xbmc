@@ -2069,7 +2069,7 @@ bool CActiveAE::SupportsRaw(AEDataFormat format)
   return true;
 }
 
-bool CActiveAE::SupportsDrain()
+bool CActiveAE::SupportsSilenceTimeout()
 {
   return true;
 }

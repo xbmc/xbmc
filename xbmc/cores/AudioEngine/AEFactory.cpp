@@ -262,10 +262,10 @@ bool CAEFactory::SupportsRaw(AEDataFormat format)
   return false;
 }
 
-bool CAEFactory::SupportsDrain()
+bool CAEFactory::SupportsSilenceTimeout()
 {
   if(AE)
-    return AE->SupportsDrain();
+    return AE->SupportsSilenceTimeout();
 
   return false;
 }
@@ -377,10 +377,14 @@ void CAEFactory::SettingOptionsAudioStreamsilenceFiller(const CSetting *setting,
 
   list.push_back(std::make_pair(g_localizeStrings.Get(20422), XbmcThreads::EndTime::InfiniteValue));
   list.push_back(std::make_pair(g_localizeStrings.Get(13551), 0));
-  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(13554).c_str(), 1), 1));
-  for (int i = 2; i <= 10; i++)
+
+  if (AE->SupportsSilenceTimeout())
   {
-    list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(13555).c_str(), i), i));
+    list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(13554).c_str(), 1), 1));
+    for (int i = 2; i <= 10; i++)
+    {
+      list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(13555).c_str(), i), i));
+    }
   }
 }
 
