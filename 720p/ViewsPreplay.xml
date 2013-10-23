@@ -499,6 +499,17 @@
 					<height>274</height>
 					<texture background="true" diffuse="mask-poster-middle.png">$INFO[Container.Thumb]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					<visible>IsEmpty(Container.Property(mixedParents))</visible>
+				</control>
+				<control type="image">
+					<description>Poster image</description>
+					<posx>13</posx>
+					<posy>13</posy>
+					<width>182</width>
+					<height>274</height>
+					<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(parentThumb)]</texture>
+					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 				</control>
 			</control>
 			<!-- Infos Left -->
@@ -513,7 +524,16 @@
 					<font>CondensedBold-36</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>ff333333</shadowcolor>
-					<visible>true</visible>
+					<visible>IsEmpty(Container.Property(mixedParents))</visible>
+				</control>
+				<control type="label">
+					<width>270</width>
+					<height>40</height>
+					<label>$INFO[Container.Property(parentTitle)]</label>
+					<font>CondensedBold-36</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>ff333333</shadowcolor>
+					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 				</control>
 				<control type="label">
 					<posy>40</posy>
@@ -523,7 +543,17 @@
 					<font>CondensedBold-36</font>
 					<include>Grey1</include>
 					<shadowcolor>ff333333</shadowcolor>
-					<visible>true</visible>
+					<visible>IsEmpty(Container.Property(mixedParents))</visible>
+				</control>
+				<control type="label">
+					<posy>40</posy>
+					<width>270</width>
+					<height>40</height>
+					<label>$LOCALIZE[32102]</label>
+					<font>CondensedBold-36</font>
+					<include>Grey1</include>
+					<shadowcolor>ff333333</shadowcolor>
+					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 				</control>
 				<!-- Year -->
 				<control type="label">
