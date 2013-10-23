@@ -334,7 +334,7 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 {
   try
   {
-	CStdString storedFileName = URIUtils::SubstitutePath(strFileName);
+    CStdString storedFileName = URIUtils::SubstitutePath(strFileName);
     CURL url(storedFileName);
 
     m_pFile = CFileFactory::CreateLoader(url);
