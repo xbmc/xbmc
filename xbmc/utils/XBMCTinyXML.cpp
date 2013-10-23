@@ -36,7 +36,7 @@ CXBMCTinyXML::CXBMCTinyXML(const char *documentName)
 {
 }
 
-CXBMCTinyXML::CXBMCTinyXML(const CStdString &documentName)
+CXBMCTinyXML::CXBMCTinyXML(const std::string& documentName)
 : TiXmlDocument(documentName)
 {
 }
@@ -48,11 +48,10 @@ bool CXBMCTinyXML::LoadFile(TiXmlEncoding encoding)
 
 bool CXBMCTinyXML::LoadFile(const char *_filename, TiXmlEncoding encoding)
 {
-  CStdString filename(_filename);
-  return LoadFile(filename, encoding);
+  return LoadFile(std::string(_filename), encoding);
 }
 
-bool CXBMCTinyXML::LoadFile(const CStdString &_filename, TiXmlEncoding encoding)
+bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding)
 {
   value = _filename.c_str();
 
@@ -68,7 +67,7 @@ bool CXBMCTinyXML::LoadFile(const CStdString &_filename, TiXmlEncoding encoding)
   Clear();
   location.Clear();
 
-  CStdString data ((char*) buffPtr, (size_t) buffSize);
+  std::string data ((char*) buffPtr, (size_t) buffSize);
   free(buffPtr);
 
   Parse(data, NULL, encoding);
@@ -80,7 +79,7 @@ bool CXBMCTinyXML::LoadFile(const CStdString &_filename, TiXmlEncoding encoding)
 
 bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
 {
-  CStdString data("");
+  std::string data;
   char buf[BUFFER_SIZE];
   memset(buf, 0, BUFFER_SIZE);
   int result;
@@ -91,11 +90,10 @@ bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
 
 bool CXBMCTinyXML::SaveFile(const char *_filename) const
 {
-  CStdString filename(_filename);
-  return SaveFile(filename);
+  return SaveFile(std::string(_filename));
 }
 
-bool CXBMCTinyXML::SaveFile(const CStdString &filename) const
+bool CXBMCTinyXML::SaveFile(const std::string& filename) const
 {
   XFILE::CFile file;
   if (file.OpenForWrite(filename, true))
@@ -110,17 +108,17 @@ bool CXBMCTinyXML::SaveFile(const CStdString &filename) const
 
 const char *CXBMCTinyXML::Parse(const char *_data, TiXmlParsingData *prevData, TiXmlEncoding encoding)
 {
-  CStdString data(_data);
+  std::string data(_data);
   return Parse(data, prevData, encoding);
 }
 
-const char *CXBMCTinyXML::Parse(CStdString &data, TiXmlParsingData *prevData, TiXmlEncoding encoding)
+const char *CXBMCTinyXML::Parse(std::string& data, TiXmlParsingData *prevData, TiXmlEncoding encoding)
 {
   // Preprocess string, replacing '&' with '&amp; for invalid XML entities
   size_t pos = 0;
   CRegExp re(true);
   re.RegComp("^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
-  while ((pos = data.find("&", pos)) != CStdString::npos)
+  while ((pos = data.find("&", pos)) != std::string::npos)
   {
     if (re.RegFind(data, pos, MAX_ENTITY_LENGTH) < 0)
       data.insert(pos + 1, "amp;");
@@ -133,7 +131,7 @@ bool CXBMCTinyXML::Test()
 {
   // scraper results with unescaped &
   CXBMCTinyXML doc;
-  CStdString data("<details><url function=\"ParseTMDBRating\" "
+  std::string data("<details><url function=\"ParseTMDBRating\" "
                   "cache=\"tmdb-en-12244.json\">"
                   "http://api.themoviedb.org/3/movie/12244"
                   "?api_key=57983e31fb435df4df77afb854740ea9"
