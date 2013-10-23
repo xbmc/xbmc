@@ -153,7 +153,7 @@
 	<include name="EpisodeThumbOverlay">
 		<control type="image">
 			<posx>13</posx>
-			<posy>80</posy>
+			<posy>81</posy>
 			<width>198</width>
 			<height>38</height>
 			<include>Black</include>
