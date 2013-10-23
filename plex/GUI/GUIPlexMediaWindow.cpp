@@ -732,7 +732,7 @@ void CGUIPlexMediaWindow::QueueItems(const CFileItemList &list, CFileItemPtr sta
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath)
 {
-  return Update(strDirectory, updateFilterPath, true);
+  return Update(strDirectory, updateFilterPath, false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
