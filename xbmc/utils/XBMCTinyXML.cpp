@@ -119,7 +119,7 @@ const char *CXBMCTinyXML::Parse(const std::string& rawdata, TiXmlEncoding encodi
     return TiXmlDocument::Parse(rawdata.c_str(), NULL, encoding); // nothing to fix, process data directly
 
   std::string data(rawdata);
-  CRegExp re(true, false, "^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
+  CRegExp re(false, false, "^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
   do
   {
     if (re.RegFind(data, pos, MAX_ENTITY_LENGTH) < 0)
