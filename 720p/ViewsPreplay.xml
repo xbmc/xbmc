@@ -312,7 +312,7 @@
 						<visible>true</visible>
 					</control>
 					<control type="label">
-						<width min="29" max="600">auto</width>
+						<width min="29" max="400">auto</width>
 						<height>15</height>
 						<label>$INFO[ListItem.Genre]</label>
 						<font>Condensed-18</font>
