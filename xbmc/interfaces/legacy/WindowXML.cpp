@@ -452,7 +452,7 @@ namespace XBMCAddon
       delete[] buffer;
 
       CXBMCTinyXML xmlDoc;
-      xmlDoc.Parse(xml.c_str());
+      xmlDoc.Parse(xml);
 
       if (xmlDoc.Error())
         return false;

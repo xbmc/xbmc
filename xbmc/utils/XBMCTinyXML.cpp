@@ -70,7 +70,7 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
   std::string data ((char*) buffPtr, (size_t) buffSize);
   free(buffPtr);
 
-  Parse(data, NULL, encoding);
+  Parse(data, encoding);
 
   if (Error())
     return false;
@@ -85,7 +85,7 @@ bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
   int result;
   while ((result = fread(buf, 1, BUFFER_SIZE, f)) > 0)
     data.append(buf, result);
-  return Parse(data, NULL, encoding) != NULL;
+  return Parse(data, encoding) != NULL;
 }
 
 bool CXBMCTinyXML::SaveFile(const char *_filename) const
@@ -106,17 +106,17 @@ bool CXBMCTinyXML::SaveFile(const std::string& filename) const
   return false;
 }
 
-const char *CXBMCTinyXML::Parse(const char *_data, TiXmlParsingData *prevData, TiXmlEncoding encoding)
+const char *CXBMCTinyXML::Parse(const char *_data, TiXmlEncoding encoding)
 {
-  return Parse(std::string(_data), prevData, encoding);
+  return Parse(std::string(_data), encoding);
 }
 
-const char *CXBMCTinyXML::Parse(const std::string& rawdata, TiXmlParsingData *prevData, TiXmlEncoding encoding)
+const char *CXBMCTinyXML::Parse(const std::string& rawdata, TiXmlEncoding encoding)
 {
   // Preprocess string, replacing '&' with '&amp; for invalid XML entities
   size_t pos = rawdata.find('&');
   if (pos == std::string::npos)
-    return TiXmlDocument::Parse(rawdata.c_str(), prevData, encoding); // nothing to fix, process data directly
+    return TiXmlDocument::Parse(rawdata.c_str(), NULL, encoding); // nothing to fix, process data directly
 
   std::string data(rawdata);
   CRegExp re(true, false, "^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
@@ -127,7 +127,7 @@ const char *CXBMCTinyXML::Parse(const std::string& rawdata, TiXmlParsingData *pr
     pos = data.find('&', pos + 1);
   } while (pos != std::string::npos);
 
-  return TiXmlDocument::Parse(data.c_str(), prevData, encoding);
+  return TiXmlDocument::Parse(data.c_str(), NULL, encoding);
 }
 
 bool CXBMCTinyXML::Test()

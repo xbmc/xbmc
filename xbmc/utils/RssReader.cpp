@@ -327,7 +327,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 {
   m_xml.Clear();
-  m_xml.Parse((LPCSTR)szBuffer, 0, TIXML_ENCODING_LEGACY);
+  m_xml.Parse((LPCSTR)szBuffer, TIXML_ENCODING_LEGACY);
 
   m_encoding = "UTF-8";
   if (m_xml.RootElement())
