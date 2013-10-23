@@ -1,6 +1,9 @@
 #ifndef __PLEX_TYPES_H__
 #define __PLEX_TYPES_H__
 
+#include <string>
+#include <map>
+
 enum EPlexDirectoryType
 {
   PLEX_DIR_TYPE_UNKNOWN,
@@ -87,7 +90,9 @@ enum EPlexDirectoryType
 // Send when a search helper has finished.
 #define GUI_MSG_SEARCH_HELPER_COMPLETE GUI_MSG_USER + 47
 
-#define GUI_MSG_UPDATE_FILTERS GUI_MSG_USER + 48
+#define GUI_MSG_FILTER_SELECTED GUI_MSG_USER + 50
+#define GUI_MSG_FILTER_LOADED GUI_MSG_USER + 51
+#define GUI_MSG_FILTER_VALUES_LOADED GUI_MSG_USER + 52
 
 #define GUI_MSG_LIST_REMOVE_ITEM GUI_MSG_USER + 70
 
@@ -102,6 +107,7 @@ enum EPlexDirectoryType
 #define PLEX_SERVER_MANAGER 99991
 #define PLEX_MYPLEX_MANAGER 99992
 #define PLEX_AUTO_UPDATER 99993
+#define PLEX_FILTER_MANAGER 99994
 
 #define PLEX_STREAM_VIDEO    1
 #define PLEX_STREAM_AUDIO    2
@@ -171,5 +177,13 @@ class CMusicThumbLoader;
 #define PLEX_ART_SEASON_FANART "season.fanart"
 
 #define PLEX_ART_FANART_FALLBACK "plex_fanart_fallback"
+
+typedef std::pair<std::string, std::string> PlexStringPair;
+typedef std::pair<int64_t, std::string> PlexIntStringPair;
+typedef std::vector<PlexStringPair> PlexStringPairVector;
+typedef std::map<std::string, std::string> PlexStringMap;
+typedef std::map<int64_t, std::string> PlexIntStringMap;
+typedef std::vector<std::string> PlexStringVector;
+typedef std::vector<int64_t> PlexIntVector;
 
 #endif

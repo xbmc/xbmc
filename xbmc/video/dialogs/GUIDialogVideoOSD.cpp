@@ -72,6 +72,11 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
   }
   if (action.GetID() == ACTION_SHOW_OSD)
   {
+    if (m_closeOnPlay)
+    {
+      return true;
+    }
+
     Close();
     return true;
   }

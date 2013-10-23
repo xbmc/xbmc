@@ -39,7 +39,7 @@
     <keyboard>
       <p>Play</p>
       <q>Queue</q>
-      <f>FastForward</f>
+      <f>ClearFilters</f>
       <r>Rewind</r>
       <left>Left</left>
       <right>Right</right>
@@ -469,6 +469,7 @@
       <delete>Delete</delete>
       <space>Playlist</space>
       <w>ToggleWatched</w>
+      <f>ClearFilters</f>
     </keyboard>
   </MyVideoLibrary>
   <MyVideoFiles>
@@ -617,6 +618,10 @@
       <escape>fullscreen</escape>
 		</keyboard>
 	</NowPlaying>
+
+  <FilterDialog>
+    <f>ClearFilters</f>
+  </FilterDialog>
   <PlexSearch>
     <keyboard>
       <escape>PreviousMenu</escape>

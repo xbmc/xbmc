@@ -18,15 +18,16 @@ CGUIDialogFilterSort::CGUIDialogFilterSort()
   m_loadType = LOAD_ON_GUI_INIT;
 }
 
-void CGUIDialogFilterSort::SetFilter(CPlexFilterPtr filter)
+void CGUIDialogFilterSort::SetFilter(CPlexSecondaryFilterPtr filter, int filterButtonId)
 {
   m_filter = filter;
-  m_filterIdMap.clear();
-  m_itemIdMap.clear();
+  m_filterButtonId = filterButtonId;
 
-  CFileItemList sublist;
-  if (!filter->GetSublist(sublist))
+  if (!m_filter->hasValues())
+  {
+    /* We should always have values at this point! */
     return;
+  }
 
   CGUIControlGroupList* list = (CGUIControlGroupList*)GetControl(FILTER_SUBLIST);
   if (!list)
@@ -37,29 +38,59 @@ void CGUIDialogFilterSort::SetFilter(CPlexFilterPtr filter)
   CGUIRadioButtonControl* radioButton = (CGUIRadioButtonControl*)GetControl(FILTER_SUBLIST_BUTTON);
   if (!radioButton)
     return;
-  radioButton->SetVisible(false);
 
   CGUILabelControl* headerLabel = (CGUILabelControl*)GetControl(FILTER_SUBLIST_LABEL);
   if (headerLabel)
-    headerLabel->SetLabel(filter->GetFilterTitle());
+    headerLabel->SetLabel(m_filter->getFilterTitle());
 
-  for (int i = 0; i < sublist.Size(); i++)
+  PlexStringPairVector values = m_filter->getFilterValues();
+
+  int id = FILTER_SUBLIST_BUTTONS_START;
+  BOOST_FOREACH(PlexStringPair p, values)
   {
-    CFileItemPtr item = sublist.Get(i);
     CGUIRadioButtonControl* sublistItem = new CGUIRadioButtonControl(*radioButton);
-    sublistItem->SetLabel(item->GetLabel());
+    sublistItem->SetLabel(p.second);
     sublistItem->SetVisible(true);
     sublistItem->AllocResources();
-    sublistItem->SetID(FILTER_SUBLIST_BUTTONS_START + i);
+    sublistItem->SetID(id);
+    sublistItem->SetSelected(m_filter->isSelected(p.first));
 
-    if (filter->HasCurrentValue(item->GetProperty("unprocessed_key").asString()))
-      sublistItem->SetSelected(true);
+    filterControl fc;
+    fc.first = p;
+    fc.second = sublistItem;
+    m_filterMap[id] = fc;
 
-    m_filterIdMap[FILTER_SUBLIST_BUTTONS_START + i] = sublistItem;
-    m_itemIdMap[FILTER_SUBLIST_BUTTONS_START + i] = item;
     list->AddControl(sublistItem);
+
+    id++;
+  }
+}
+
+bool CGUIDialogFilterSort::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_CLEAR_FILTERS)
+  {
+    m_filter->clearFilters();
+
+    for (int i = FILTER_SUBLIST_BUTTONS_START; i < 0; i++)
+    {
+      CGUIRadioButtonControl* button = (CGUIRadioButtonControl*)GetControl(i);
+      if (!button)
+        break;
+
+      button->SetSelected(false);
+    }
+
+    CGUIMessage msg(GUI_MSG_FILTER_SELECTED, WINDOW_DIALOG_FILTER_SORT, 0, m_filterButtonId, 0);
+    msg.SetStringParam(m_filter->getFilterKey());
+    g_windowManager.SendThreadMessage(msg, WINDOW_VIDEO_NAV);
+
+    SetInvalid();
+
+    return true;
   }
 
+  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogFilterSort::OnMessage(CGUIMessage &message)
@@ -69,28 +100,21 @@ bool CGUIDialogFilterSort::OnMessage(CGUIMessage &message)
     case GUI_MSG_CLICKED:
     {
       int senderId = message.GetSenderId();
-      if (m_filterIdMap.find(senderId) != m_filterIdMap.end())
+      if (m_filterMap.find(senderId) != m_filterMap.end())
       {
-        CGUIRadioButtonControl *filterCtrl = m_filterIdMap[senderId];
-        CFileItemPtr item = m_itemIdMap[senderId];
-        if (filterCtrl->IsSelected())
-          m_filter->AddCurrentValue(item->GetProperty("unprocessed_key").asString());
-        else
-          m_filter->RemoveCurrentValue(item->GetProperty("unprocessed_key").asString());
+        CGUIRadioButtonControl *filterCtrl = m_filterMap[senderId].second;
+        PlexStringPair filterKv = m_filterMap[senderId].first;
+        m_filter->setSelected(filterKv.first, filterCtrl->IsSelected());
 
-        if (m_helper)
-          m_helper->ApplyFilterFromDialog(m_filter);
+        CGUIMessage msg(GUI_MSG_FILTER_SELECTED, WINDOW_DIALOG_FILTER_SORT, 0, m_filterButtonId, 0);
+        msg.SetStringParam(m_filter->getFilterKey());
+        g_windowManager.SendThreadMessage(msg, WINDOW_VIDEO_NAV);
 
-        CGUIMessage msg(GUI_MSG_UPDATE_FILTERS, GetID(), m_helper->GetWindowID());
-        g_windowManager.SendThreadMessage(msg);
+        SetInvalid();
+        return true;
       }
     }
 
   }
   return CGUIDialog::OnMessage(message);
-}
-
-void CGUIDialogFilterSort::DoModal(int iWindowID, const CStdString &param)
-{
-  CGUIDialog::DoModal(iWindowID, param);
 }

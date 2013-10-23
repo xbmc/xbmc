@@ -26,6 +26,7 @@
 #include "Client/PlexTimelineManager.h"
 #include "PlexThemeMusicPlayer.h"
 #include "VideoThumbLoader.h"
+#include "PlexFilterManager.h"
 
 #include "AutoUpdate/PlexAutoUpdate.h"
 
@@ -42,6 +43,7 @@ PlexApplication::Start()
   timelineManager = CPlexTimelineManagerPtr(new CPlexTimelineManager);
   themeMusicPlayer = CPlexThemeMusicPlayerPtr(new CPlexThemeMusicPlayer);
   thumbCacher = new CPlexThumbCacher;
+  filterManager = CPlexFilterManagerPtr(new CPlexFilterManager);
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 

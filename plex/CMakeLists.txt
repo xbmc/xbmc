@@ -14,6 +14,7 @@ include_directories(
 	${root}/plex/FileSystem
 	${root}/plex/Network
 	${root}/plex/Remote
+	${root}/plex/Filters
   ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
@@ -32,6 +33,7 @@ add_subdirectory(Owned)
 add_subdirectory(Utility)
 add_subdirectory(AutoUpdate)
 add_subdirectory(Remote)
+add_subdirectory(Filters)
 
 include(BreakpadSymbols)
 

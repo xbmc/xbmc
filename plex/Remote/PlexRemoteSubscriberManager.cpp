@@ -74,7 +74,8 @@ void CPlexRemoteSubscriberManager::addSubscriber(CPlexRemoteSubscriberPtr subscr
   else
   {
     m_map[subscriber->getUUID()] = subscriber;
-    CLog::Log(LOGDEBUG, "CPlexRemoteSubscriberManager::addSubscriber added %s", subscriber->getUUID().c_str());
+    CLog::Log(LOGDEBUG, "CPlexRemoteSubscriberManager::addSubscriber added %s:%d [%s]",
+              subscriber->getURL().GetHostName().c_str(), subscriber->getURL().GetPort(), subscriber->getUUID().c_str());
   }
   
   if (!m_refreshTimer.IsRunning())

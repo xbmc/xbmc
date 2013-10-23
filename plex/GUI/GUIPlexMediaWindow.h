@@ -13,23 +13,44 @@
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "StringUtils.h"
-#include "Utility/PlexFilterHelper.h"
 #include "JobManager.h"
 #include "PlexContentPlayerMixin.h"
+#include "threads/Event.h"
+#include "Filters/PlexSectionFilter.h"
+
+#define FILTER_PRIMARY_CONTAINER     19000
+#define FILTER_SECONDARY_CONTAINER   19001
+#define FILTER_BUTTON                19005
+#define FILTER_RADIO_BUTTON          19006
+#define FILTER_ACTIVE_LABEL          19007
+
+#define SORT_LIST                    19010
+#define SORT_ORDER_BUTTON            19011
+
+#define FILTER_PRIMARY_BUTTONS_START 30000
+#define FILTER_SECONDARY_BUTTONS_START 31000
+#define SORT_BUTTONS_START           32000
+
+#define FILTER_BUTTONS_START FILTER_PRIMARY_BUTTONS_START
+#define FILTER_BUTTONS_STOP SORT_BUTTONS_START + 100
+
+#define FILTER_PRIMARY_LABEL         19008
+#define FILTER_SECONDARY_LABEL       10009
+#define SORT_LABEL                   19019
+
 
 class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public PlexContentPlayerMixin
 {    
   public:
     CGUIPlexMediaWindow(int windowId = WINDOW_VIDEO_NAV, const CStdString &xml = "MyVideoNav.xml") :
-      CGUIMediaWindow(windowId, xml), m_filterHelper(this), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1) {};
+      CGUIMediaWindow(windowId, xml), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1) {};
     bool OnMessage(CGUIMessage &message);
     bool OnAction(const CAction& action);
     virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
 
-    bool Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters);
+    bool Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFromFilter);
     bool Update(const CStdString &strDirectory, bool updateFilterPath);
-    void BuildFilter(const CURL &strDirectory);
     bool OnSelect(int item);
     bool OnPlayMedia(int iItem);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
@@ -39,8 +60,11 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     void QueueItems(const CFileItemList &list, CFileItemPtr startItem=CFileItemPtr());
 
     bool OnBack(int actionID);
+    void OnFilterButton(int filterButtonId);
+    void OnFilterSelected(const std::string& filterKey, int filterButtonId);
 
   private:
+    void AddFilters();
 
     bool IsVideoContainer(CFileItemPtr item=CFileItemPtr()) const;
     bool IsMusicContainer() const;
@@ -61,11 +85,20 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     void LoadPage(int start, int numberOfItems);
     void LoadNextPage();
     virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-    CPlexFilterHelper m_filterHelper;
+    CURL GetRealDirectoryUrl(const CStdString &strDirectory);
+
     bool m_returningFromSkinLoad;
-  
     int m_pagingOffset;
     int m_currentJobId;
+    int m_currentSection;
+    CURL m_sectionRoot;
+    bool m_isSecondary;
+    void UpdateSectionTitle();
+
+    CCriticalSection m_filterValuesSection;
+    std::string m_waitingForFilter;
+    CEvent m_filterValuesEvent;
+    void updateFilterButtons(CPlexSectionFilterPtr filter, bool clear=false, bool disable=false);
 };
 
 class CGUIPlexMusicWindow : public CGUIPlexMediaWindow

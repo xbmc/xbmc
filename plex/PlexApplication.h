@@ -48,6 +48,9 @@ typedef boost::shared_ptr<CPlexThemeMusicPlayer> CPlexThemeMusicPlayerPtr;
 
 class CPlexThumbCacher;
 
+class CPlexFilterManager;
+typedef boost::shared_ptr<CPlexFilterManager> CPlexFilterManagerPtr;
+
 ///
 /// The hub of all Plex goodness.
 ///
@@ -81,8 +84,8 @@ public:
   CPlexAutoUpdate* autoUpdater;
   CPlexTimelineManagerPtr timelineManager;  
   CPlexThumbCacher *thumbCacher;
+  CPlexFilterManagerPtr filterManager;
 
-      
 private:
   /// Members
   CPlexServiceListenerPtr m_serviceListener;

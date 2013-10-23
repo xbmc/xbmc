@@ -240,6 +240,7 @@ static const ActionMapping actions[] =
         /* PLEX */
         {"markaswatched"     , ACTION_MARK_AS_WATCHED},
         {"markasunwatched"   , ACTION_MARK_AS_UNWATCHED},
+        {"clearfilters"      , ACTION_CLEAR_FILTERS},
         /* END PLEX */
 
         // Do nothing action
@@ -256,6 +257,7 @@ static const ActionMapping windows[] =
         {"plexpreplayvideo"         , WINDOW_PLEX_PREPLAY_VIDEO},
         {"plexpreplaymusic"         , WINDOW_PLEX_PREPLAY_MUSIC},
         {"myplexlogin"              , WINDOW_MYPLEX_LOGIN},
+        {"filterdialog"             , WINDOW_DIALOG_FILTER_SORT},
         /* END PLEX */
         {"programs"                 , WINDOW_PROGRAMS},
         {"pictures"                 , WINDOW_PICTURES},

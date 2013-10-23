@@ -31,6 +31,9 @@
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
 #include "PlexThemeMusicPlayer.h"
 #include "PlexContentPlayerMixin.h"
+#include "PlexFilterManager.h"
+#include "Filters/GUIPlexFilterFactory.h"
+#include "dialogs/GUIDialogBusy.h"
 
 #include "LocalizeStrings.h"
 
@@ -44,20 +47,6 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 
   switch(message.GetMessage())
   {
-    case GUI_MSG_CLICKED:
-    {
-      bool update = false;
-      int ctrlId = message.GetSenderId();
-      if (ctrlId < 0 && ctrlId >= FILTER_BUTTONS_START)
-        update = m_filterHelper.ApplyFilter(ctrlId);
-      else if (ctrlId < FILTER_BUTTONS_START && ctrlId >= SORT_BUTTONS_START)
-        update = m_filterHelper.ApplySort(ctrlId);
-
-      if (update)
-        Update(m_filterHelper.GetSectionUrl().Get(), true, false);
-    }
-      break;
-
     case GUI_MSG_LOAD_SKIN:
     {
       /* This is called BEFORE the skin is reloaded, so let's save this event to be handled
@@ -71,25 +60,10 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     {
       /* If this is a reload event we must make sure to get the filters back */
       if (m_returningFromSkinLoad)
-        Update(m_filterHelper.GetSectionUrl().Get(), true);
+        Update(m_sectionRoot.Get(), true);
       else
-        BuildFilter(m_filterHelper.GetSectionUrl());
+        AddFilters();
       m_returningFromSkinLoad = false;
-
-      CGUILabelControl *lbl = (CGUILabelControl*)GetControl(FILTER_LABEL);
-      if (lbl)
-        lbl->SetLabel(g_localizeStrings.Get(44030));
-
-      lbl = (CGUILabelControl*)GetControl(SORT_LABEL);
-      if (lbl)
-        lbl->SetLabel(g_localizeStrings.Get(44031));
-
-      break;
-    }
-
-    case GUI_MSG_UPDATE_FILTERS:
-    {
-      Update(m_filterHelper.GetSectionUrl().Get(), true, false);
       break;
     }
 
@@ -112,11 +86,242 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(52300), g_localizeStrings.Get(52301));
         g_windowManager.ActivateWindow(WINDOW_HOME);
       }
+      break;
+    }
+
+    case GUI_MSG_FILTER_LOADED:
+    {
+      if (message.GetStringParam() == m_sectionRoot.Get())
+      {
+        CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::OnMessage filter is loaded for %s", m_sectionRoot.Get().c_str());
+        AddFilters();
+
+        g_plexApplication.filterManager->saveFiltersToDisk();
+      }
+      break;
+    }
+
+    case GUI_MSG_FILTER_SELECTED:
+    {
+      if (!message.GetStringParam().empty())
+      {
+        OnFilterSelected(message.GetStringParam(), message.GetParam1());
+      }
+      break;
+    }
+
+    case GUI_MSG_FILTER_VALUES_LOADED:
+    {
+      CSingleLock lk(m_filterValuesSection);
+      if (m_waitingForFilter == message.GetStringParam())
+      {
+        m_filterValuesEvent.Set();
+        m_waitingForFilter.clear();
+      }
+      break;
+    }
+
+    case GUI_MSG_CLICKED:
+    {
+      if (message.GetSenderId() >= FILTER_BUTTONS_START && message.GetSenderId() < FILTER_BUTTONS_STOP)
+      {
+        OnFilterButton(message.GetSenderId());
+        return true;
+      }
+      break;
     }
       
   }
 
   return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::updateFilterButtons(CPlexSectionFilterPtr filter, bool clear, bool disable)
+{
+  for (int i = FILTER_SECONDARY_BUTTONS_START; i < SORT_BUTTONS_START; i ++)
+  {
+    CGUIRadioButtonControl* button = (CGUIRadioButtonControl*)GetControl(i);
+    if (!button)
+      break;
+
+    if (button->IsSelected() && clear)
+    {
+      std::vector<CPlexSecondaryFilterPtr> filters = filter->getSecondaryFilters();
+      CPlexSecondaryFilterPtr currentSecFilter;
+
+      try { currentSecFilter = filters.at(i - FILTER_SECONDARY_BUTTONS_START); }
+      catch (...) { break; }
+
+      button->SetSelected(false);
+      button->SetLabel(currentSecFilter->getFilterTitle());
+    }
+
+    button->SetEnabled(!disable);
+  }
+
+  for (int i = SORT_BUTTONS_START; i < SORT_BUTTONS_START + 30; i++)
+  {
+    CGUIFilterOrderButtonControl* button = (CGUIFilterOrderButtonControl*)GetControl(i);
+    if (!button)
+      break;
+    if (clear)
+      button->SetTristate(CGUIFilterOrderButtonControl::OFF);
+    else
+    {
+      PlexStringPairVector sortOrders = filter->getSortOrders();
+      PlexStringPair p;
+
+      try { p = sortOrders.at(i - SORT_BUTTONS_START); }
+      catch (...) { break; }
+
+      if (p.first == filter->currentSortOrder())
+        button->SetTristate(filter->currentSortOrderAscending() ? CGUIFilterOrderButtonControl::ASCENDING : CGUIFilterOrderButtonControl::DESCENDING);
+    }
+    button->SetEnabled(!disable);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
+{
+  CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+  if (filterButtonId >= FILTER_PRIMARY_BUTTONS_START && filterButtonId < FILTER_SECONDARY_BUTTONS_START)
+  {
+    PlexStringPairVector filterButtons = filter->getPrimaryFilters();
+
+    PlexStringPair selectedFilter;
+    try { selectedFilter = filterButtons.at(filterButtonId - FILTER_PRIMARY_BUTTONS_START); }
+    catch(...) { return; }
+
+    CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::OnFilterButton button %s was pressed", selectedFilter.second.c_str());
+
+    int id = FILTER_PRIMARY_BUTTONS_START;
+    BOOST_FOREACH(PlexStringPair fp, filterButtons)
+    {
+      CGUIRadioButtonControl* ctrl = (CGUIRadioButtonControl*)GetControl(id);
+      if(ctrl)
+        ctrl->SetSelected(id == filterButtonId);
+
+      id ++;
+    }
+
+    bool clear = false;
+    if ((filter->currentPrimaryFilter() == "all") &&
+        (selectedFilter.first != "all"))
+    {
+      filter->clearFilters();
+      clear = true;
+    }
+
+    filter->setPrimaryFilter(selectedFilter.first);
+    updateFilterButtons(filter, clear, (selectedFilter.first != "all"));
+  }
+  else if (filterButtonId >= FILTER_SECONDARY_BUTTONS_START && filterButtonId < SORT_BUTTONS_START)
+  {
+    std::vector<CPlexSecondaryFilterPtr> secondaryFilters = filter->getSecondaryFilters();
+    CPlexSecondaryFilterPtr currentFilter;
+    try { currentFilter = secondaryFilters.at(filterButtonId - FILTER_SECONDARY_BUTTONS_START); }
+    catch(...) { return; }
+
+    if (currentFilter->getFilterType() == CPlexSecondaryFilter::FILTER_TYPE_BOOLEAN)
+    {
+      currentFilter->setSelected(!currentFilter->isSelected());
+      filter->addSecondaryFilter(currentFilter);
+    }
+    else
+    {
+      m_filterValuesEvent.Reset();
+      m_waitingForFilter = currentFilter->getFilterKey();
+
+      filter->loadFilterValues(currentFilter);
+      CGUIDialogBusy *busy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      if (busy)
+      {
+        busy->Show();
+        while(!m_filterValuesEvent.WaitMSec(1))
+        {
+          g_windowManager.ProcessRenderLoop(false);
+          if (busy->IsCanceled())
+          {
+            CSingleLock lk(m_filterValuesSection);
+            m_filterValuesEvent.Set();
+            m_waitingForFilter.clear();
+            break;
+          }
+        }
+        busy->Close();
+      }
+
+      if (currentFilter->hasValues())
+      {
+        CGUIDialogFilterSort* dialog = (CGUIDialogFilterSort*)g_windowManager.GetWindow(WINDOW_DIALOG_FILTER_SORT);
+        if (dialog)
+        {
+          dialog->SetFilter(currentFilter, filterButtonId);
+          dialog->DoModal();
+        }
+      }
+    }
+  }
+  else
+  {
+    /* sort buttons */
+    PlexStringPairVector sortOrders = filter->getSortOrders();
+    PlexStringPair currentOrder;
+
+    try { currentOrder = sortOrders.at(filterButtonId - SORT_BUTTONS_START); }
+    catch (...) { return; }
+
+    int id = SORT_BUTTONS_START;
+    CGUIFilterOrderButtonControl::FilterOrderButtonState state;
+
+    BOOST_FOREACH(PlexStringPair p, sortOrders)
+    {
+      CGUIFilterOrderButtonControl* button = (CGUIFilterOrderButtonControl*)GetControl(id);
+      if (button)
+      {
+        if (p.first == currentOrder.first)
+          state = button->GetTristate();
+        else
+          button->SetTristate(CGUIFilterOrderButtonControl::OFF);
+      }
+      id ++;
+
+    }
+
+    filter->setSortOrder(currentOrder.first);
+    filter->setSortOrderAscending(state == CGUIFilterOrderButtonControl::ASCENDING);
+  }
+
+  Update(m_sectionRoot.Get(), false, true);
+  g_plexApplication.filterManager->saveFiltersToDisk();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::OnFilterSelected(const std::string &filterKey, int filterButtonId)
+{
+  CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+  if (!sectionFilter)
+    return;
+
+  CPlexSecondaryFilterPtr filter =sectionFilter->addSecondaryFilter(filterKey);
+  if (!filter)
+    return;
+
+  Update(m_sectionRoot.Get(), false, true);
+
+  CGUIButtonControl* button = (CGUIButtonControl*)GetControl(filterButtonId);
+  if (button)
+  {
+    button->SetSelected(filter->isSelected());
+    if (filter->isSelected())
+      button->SetLabel(filter->getFilterTitle() + ": " + filter->getCurrentValueLabel());
+    else
+      button->SetLabel(filter->getFilterTitle());
+  }
+
+  g_plexApplication.filterManager->saveFiltersToDisk();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,6 +354,18 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     CGUIControl *pControl = (CGUIControl*)GetControl(m_viewControl.GetCurrentControl());
     if (pControl)
       PlayFileFromContainer(pControl);
+  }
+  else if (action.GetID() == ACTION_CLEAR_FILTERS)
+  {
+    CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+    if (sectionFilter)
+    {
+      sectionFilter->clearFilters();
+      updateFilterButtons(sectionFilter, true, sectionFilter->currentPrimaryFilter() != "all");
+
+      g_plexApplication.filterManager->saveFiltersToDisk();
+      Update(m_sectionRoot.Get(), false, true);
+    }
   }
 
   return ret;
@@ -513,42 +730,36 @@ void CGUIPlexMediaWindow::QueueItems(const CFileItemList &list, CFileItemPtr sta
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIPlexMediaWindow::BuildFilter(const CURL& strDirectory)
-{
-  if (strDirectory.Get().empty())
-    return;
-
-  m_filterHelper.BuildFilters(strDirectory, m_vecItems->GetPlexDirectoryType());
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath)
 {
   return Update(strDirectory, updateFilterPath, true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters)
+bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFromFilter)
 {
-  bool isSecondary = false;
-  
-  CURL newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, isSecondary);
+  CURL newUrl = GetRealDirectoryUrl(strDirectory);
   if (newUrl.Get().empty())
     return false;
   
   CURL oldUrl = CURL(m_vecItems->GetPath());
 
   if (strDirectory == m_startDirectory)
+  {
+    m_sectionRoot = strDirectory;
+    g_plexApplication.filterManager->loadFilterForSection(m_sectionRoot.Get());
     m_startDirectory = newUrl.GetUrlWithoutOptions();
+  }
 
-  CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::Update(%s)->%s", strDirectory.c_str(), newUrl.Get().c_str());
+  if (updateFromFilter)
+    m_history.RemoveParentPath();
 
   bool ret = CGUIMediaWindow::Update(newUrl.Get(), updateFilterPath);
 
-  if (isSecondary && updateFilters)
-    BuildFilter(m_filterHelper.GetSectionUrl());
+  if (!updateFromFilter)
+    g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems);
 
-  g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems);
+  UpdateSectionTitle();
 
   return ret;
 }
@@ -632,7 +843,6 @@ bool CGUIPlexMediaWindow::OnBack(int actionID)
 
   if (currPath.GetUrlWithoutOptions() == m_startDirectory || parent.Get().empty())
   {
-    m_filterHelper.ClearFilters();
     g_windowManager.PreviousWindow();
     return true;
   }
@@ -640,4 +850,165 @@ bool CGUIPlexMediaWindow::OnBack(int actionID)
   Update(parent.Get(), true);
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CURL CGUIPlexMediaWindow::GetRealDirectoryUrl(const CStdString& url_)
+{
+  CFileItemList tmpItems;
+  XFILE::CPlexDirectory dir;
+  CURL dirUrl(url_);
+
+#if 0
+  if (!PlexUtils::CurrentSkinHasFilters())
+    return url_;
+#endif
+
+  if (dirUrl.GetProtocol() == "plexserver" &&
+      (dirUrl.GetHostName() == "channels" || dirUrl.GetHostName() == "shared" || dirUrl.GetHostName() == "channeldirectory"))
+    return url_;
+
+  m_isSecondary = false;
+
+  int sectionNumber = -1;
+  if (dirUrl.GetProtocol() == "plexserver" &&
+      boost::starts_with(dirUrl.GetFileName(), "library/sections/"))
+  {
+    /* remove library/sections/ at the beginning of the string */
+    CStdString sectionName = dirUrl.GetFileName().substr(17);
+
+    /* now let's check if this is a number i.e. 5 or something */
+    try { sectionNumber = boost::lexical_cast<int>(sectionName); }
+    catch (...) { }
+
+    if (sectionNumber != -1)
+    {
+      CLog::Log(LOGDEBUG, "CPlexFilterHelper::GetRealDirectoryUrl got section %d", sectionNumber);
+      m_isSecondary = true;
+    }
+  }
+
+  if (m_isSecondary)
+  {
+    if (m_currentSection != sectionNumber)
+      m_currentSection = sectionNumber;
+
+    CURL url(dirUrl);
+
+    CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(url.Get());
+    if (filter)
+      url = filter->addFiltersToUrl(url);
+    else
+      PlexUtils::AppendPathToURL(url, "all");
+
+    return url;
+  }
+
+  return dirUrl;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::UpdateSectionTitle()
+{
+  CGUILabelControl *lblCtrl = (CGUILabelControl*)GetControl(FILTER_PRIMARY_LABEL);
+  if (lblCtrl)
+  {
+    std::string lbl = m_vecItems->GetLabel();
+    StringUtils::ToUpper(lbl);
+    lblCtrl->SetLabel(lbl);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::AddFilters()
+{
+  CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+  CGUIPlexFilterFactory factory(this);
+
+  if (sectionFilter)
+  {
+    CGUIControlGroupList *primaryFilters = (CGUIControlGroupList*)GetControl(FILTER_PRIMARY_CONTAINER);
+    if (primaryFilters)
+    {
+      primaryFilters->ClearAll();
+
+      PlexStringPairVector pfilterLabel = sectionFilter->getPrimaryFilters();
+      int id = FILTER_PRIMARY_BUTTONS_START;
+      BOOST_FOREACH(PlexStringPair p, pfilterLabel)
+      {
+        CGUIButtonControl *button = factory.getPrimaryFilterButton(p.second);
+        if (button)
+        {
+          button->SetID(id ++);
+
+          primaryFilters->AddControl(button);
+          if (p.first == sectionFilter->currentPrimaryFilter())
+            button->SetSelected(true);
+          else
+            button->SetSelected(false);
+        }
+      }
+    }
+
+    CGUIControlGroupList *secondaryFilters = (CGUIControlGroupList*)GetControl(FILTER_SECONDARY_CONTAINER);
+    if(secondaryFilters)
+    {
+      secondaryFilters->ClearAll();
+
+      int id = FILTER_SECONDARY_BUTTONS_START;
+      BOOST_FOREACH(CPlexSecondaryFilterPtr filter, sectionFilter->getSecondaryFilters())
+      {
+        CGUIButtonControl *button = factory.getSecondaryFilterButton(filter);
+        if (button)
+        {
+          button->SetID(id ++);
+
+          if (sectionFilter->currentPrimaryFilter() != "all")
+            button->SetEnabled(false);
+
+          CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::AddFilters added %s with id %d", button->GetLabel().c_str(), button->GetID());
+          secondaryFilters->AddControl(button);
+
+        }
+
+//        if (filter->isSelected())
+//        {
+//          CGUILabelControl* subLbl = factory.getSecondaryFilterLabel(filter);
+//          if (subLbl)
+//            secondaryFilters->AddControl(subLbl);
+//        }
+      }
+    }
+
+    CGUIControlGroupList *sortButtons = (CGUIControlGroupList*)GetControl(SORT_LIST);
+    if (sortButtons)
+    {
+      sortButtons->ClearAll();
+
+      PlexStringPairVector sorts = sectionFilter->getSortOrders();
+
+      int id = SORT_BUTTONS_START;
+      BOOST_FOREACH(PlexStringPair p, sorts)
+      {
+        CGUIFilterOrderButtonControl::FilterOrderButtonState state = CGUIFilterOrderButtonControl::OFF;
+
+        if (p.first == sectionFilter->currentSortOrder())
+          state = sectionFilter->currentSortOrderAscending() ? CGUIFilterOrderButtonControl::ASCENDING : CGUIFilterOrderButtonControl::DESCENDING;
+
+        CGUIFilterOrderButtonControl* button = factory.getSortButton(p.second, state);
+        if (button)
+        {
+          button->SetID(id ++);
+
+          if (sectionFilter->currentPrimaryFilter() != "all")
+          {
+            button->SetEnabled(false);
+            button->SetTristate(CGUIFilterOrderButtonControl::OFF);
+          }
+
+          sortButtons->AddControl(button);
+        }
+      }
+    }
+  }
 }
