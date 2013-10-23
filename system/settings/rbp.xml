@@ -60,9 +60,6 @@
         <setting id="audiooutput.stereoupmix">
           <visible>false</visible>
         </setting>
-        <setting id="audiooutput.channels">
-          <visible>false</visible>
-        </setting>
         <setting id="audiooutput.streamsilence">
           <level>2</level>
           <default>0</default>
