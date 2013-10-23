@@ -61,7 +61,8 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return GetOnlineChannelDirectory(fileItems);
   }
 
-  if (boost::ends_with(m_url.GetFileName(), "/children"))
+  if (boost::ends_with(m_url.GetFileName(), "/children") ||
+      boost::ends_with(m_url.GetFileName(), "/allLeaves"))
   {
     /* When we are asking for /children we also ask for the parent
      * path to get more information for the path we want to navigate
@@ -70,7 +71,10 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     augmentUrl.SetProtocolOptions("");
     
     CStdString newFile = m_url.GetFileName();
-    boost::replace_last(newFile, "/children", "");
+    if (boost::ends_with(m_url.GetFileName(), "/children"))
+      boost::replace_last(newFile, "/children", "");
+    else
+      boost::replace_last(newFile, "/allLeaves", "");
     augmentUrl.SetFileName(newFile);
     AddAugmentation(augmentUrl);
   }
