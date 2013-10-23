@@ -28,9 +28,12 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include "windowing/egl/EGLWrapper.h"
+#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "threads/Thread.h"
 
 #include "android/jni/Surface.h"
 #include "android/jni/SurfaceTexture.h"
@@ -318,41 +321,74 @@ void CStageFrightVideoPrivate::UninitializeEGL()
   eglInitialized = false;
 }
 
-bool CStageFrightVideoPrivate::InitStagefrightSurface()
+void CStageFrightVideoPrivate::CallbackInitSurfaceTexture(void *userdata)
+{
+  CStageFrightVideoPrivate *ctx = static_cast<CStageFrightVideoPrivate*>(userdata);
+  ctx->InitSurfaceTexture();
+}
+
+bool CStageFrightVideoPrivate::InitSurfaceTexture()
 {
 #if defined(DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s: >>> InitStagefrightSurface\n", CLASSNAME);
+  CLog::Log(LOGDEBUG, "%s: >>> InitSurfaceTexture\n", CLASSNAME);
 #endif
    if (mVideoNativeWindow != NULL)
-    return true;
+    return false;
 
   mVideoTextureId = -1;
 
-  glGenTextures(1, &mVideoTextureId);
-  glBindTexture(GL_TEXTURE_EXTERNAL_OES, mVideoTextureId);
-  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
+  // We MUST create the GLES texture on the main thread
+  // to match where the valid GLES context is located.
+  // It would be nice to move this out of here, we would need
+  // to create/fetch/create from g_RenderMananger. But g_RenderMananger
+  // does not know we are using MediaCodec until Configure and we
+  // we need m_surfaceTexture valid before then. Chicken, meet Egg.
+  if (m_g_application->IsCurrentThread())
+  {
+    // localize GLuint so we do not spew gles includes in our header
+    GLuint texture_id;
 
-  mSurfTexture = new CJNISurfaceTexture(mVideoTextureId);
-  mSurface = new CJNISurface(*mSurfTexture);
+    glGenTextures(1, &texture_id);
+    glBindTexture(  GL_TEXTURE_EXTERNAL_OES, texture_id);
+    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glBindTexture(  GL_TEXTURE_EXTERNAL_OES, 0);
+    mVideoTextureId = texture_id;
 
-  JNIEnv* env = xbmc_jnienv();
-  mVideoNativeWindow = ANativeWindow_fromSurface(env, mSurface->get_raw());
-  native_window_api_connect(mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
+    mSurfTexture = new CJNISurfaceTexture(mVideoTextureId);
+    mSurface = new CJNISurface(*mSurfTexture);
 
-#if defined(DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s: <<< InitStagefrightSurface\n", CLASSNAME);
-#endif
-  return true;
+    JNIEnv* env = xbmc_jnienv();
+    mVideoNativeWindow = ANativeWindow_fromSurface(env, mSurface->get_raw());
+    native_window_api_connect(mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
+
+  #if defined(DEBUG_VERBOSE)
+    CLog::Log(LOGDEBUG, "%s: <<< InitSurfaceTexture\n", CLASSNAME);
+  #endif
+  }
+  else
+  {
+    ThreadMessageCallback callbackData;
+    callbackData.callback = &CallbackInitSurfaceTexture;
+    callbackData.userptr  = (void*)this;
+
+    ThreadMessage msg;
+    msg.dwMessage = TMSG_CALLBACK;
+    msg.lpVoid = (void*)&callbackData;
+
+    // wait for it.
+    m_g_applicationMessenger->SendMessage(msg, true);
+  }
+
+  return (mVideoTextureId != -1);
 }
 
-void CStageFrightVideoPrivate::UninitStagefrightSurface()
+void CStageFrightVideoPrivate::ReleaseSurfaceTexture()
 {
 #if defined(DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s: >>> UninitStagefrightSurface\n", CLASSNAME);
+  CLog::Log(LOGDEBUG, "%s: >>> ReleaseSurfaceTexture\n", CLASSNAME);
 #endif
   if (mVideoNativeWindow == NULL)
     return;
@@ -369,16 +405,16 @@ void CStageFrightVideoPrivate::UninitStagefrightSurface()
 
   glDeleteTextures(1, &mVideoTextureId);
 #if defined(DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s: <<< UninitStagefrightSurface\n", CLASSNAME);
+  CLog::Log(LOGDEBUG, "%s: <<< ReleaseSurfaceTexture\n", CLASSNAME);
 #endif
 }
 
-void CStageFrightVideoPrivate::UpdateStagefrightTexture()
+void CStageFrightVideoPrivate::UpdateSurfaceTexture()
 {
   mSurfTexture->updateTexImage();
 }
 
-void CStageFrightVideoPrivate::GetStagefrightTransformMatrix(float* transformMatrix)
+void CStageFrightVideoPrivate::GetSurfaceTextureTransformMatrix(float* transformMatrix)
 {
   mSurfTexture->getTransformMatrix(transformMatrix);
 }

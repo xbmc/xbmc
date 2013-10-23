@@ -27,6 +27,8 @@
 #include "DynamicDll.h"
 #include "DVDVideoCodec.h"
 
+class CApplication;
+class CApplicationMessenger;
 class CWinSystemEGL;
 class CAdvancedSettings;
 
@@ -35,7 +37,7 @@ class DllLibStageFrightCodecInterface
 public:
   virtual ~DllLibStageFrightCodecInterface() {}
 
-  virtual void* create_stf(CWinSystemEGL* windowing, CAdvancedSettings* advsettings)=0;
+  virtual void* create_stf(CApplication* application, CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings)=0;
   virtual void destroy_stf(void*)=0;
   
   virtual bool stf_Open(void*, CDVDStreamInfo &hints) = 0;
@@ -54,7 +56,7 @@ public:
 class DllLibStageFrightCodec : public DllDynamic, DllLibStageFrightCodecInterface
 {
   DECLARE_DLL_WRAPPER(DllLibStageFrightCodec, DLL_PATH_LIBSTAGEFRIGHTICS)
-  DEFINE_METHOD2(void*, create_stf, (CWinSystemEGL* p1, CAdvancedSettings* p2))
+  DEFINE_METHOD4(void*, create_stf, (CApplication* p1, CApplicationMessenger* p2, CWinSystemEGL* p3, CAdvancedSettings* p4))
   DEFINE_METHOD1(void, destroy_stf, (void* p1))
   DEFINE_METHOD2(bool, stf_Open, (void* p1, CDVDStreamInfo &p2))
   DEFINE_METHOD1(void, stf_Close, (void* p1))

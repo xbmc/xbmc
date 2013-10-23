@@ -56,6 +56,8 @@ class CJNISurface;
 class CJNISurfaceTexture;
 class CWinSystemEGL;
 class CAdvancedSettings;
+class CApplication;
+class CApplicationMessenger;
 
 using namespace android;
 
@@ -109,6 +111,8 @@ public:
   GLint mTexSamplerHandle;
   GLint mTexMatrixHandle;
 
+  CApplication* m_g_application;
+  CApplicationMessenger* m_g_applicationMessenger;
   CWinSystemEGL* m_g_Windowing;
   CAdvancedSettings* m_g_advancedSettings;
 
@@ -158,8 +162,9 @@ public:
   CJNISurface* mSurface;
   sp<ANativeWindow> mVideoNativeWindow;
 
-  bool InitStagefrightSurface();
-  void UninitStagefrightSurface();
-  void UpdateStagefrightTexture();
-  void GetStagefrightTransformMatrix(float* transformMatrix);
+  static void  CallbackInitSurfaceTexture(void*);
+  bool InitSurfaceTexture();
+  void ReleaseSurfaceTexture();
+  void UpdateSurfaceTexture();
+  void GetSurfaceTextureTransformMatrix(float* transformMatrix);
 };

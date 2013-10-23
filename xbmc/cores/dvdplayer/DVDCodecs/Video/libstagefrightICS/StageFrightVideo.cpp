@@ -33,6 +33,8 @@
 #include "utils/fastmemcpy.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"
+#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 
 #include "xbmc/guilib/FrameBufferObject.h"
@@ -325,7 +327,7 @@ public:
           frame->medbuf->meta_data()->setInt32(kKeyRendered, 1);
         frame->medbuf->release();
         frame->medbuf = NULL;
-        p->UpdateStagefrightTexture();
+        p->UpdateSurfaceTexture();
 
         if (!p->drop_state)
         {
@@ -362,7 +364,7 @@ public:
             // 0, 0, 1, 0,
             // 0, 1, 0, 1
           // };
-          p->GetStagefrightTransformMatrix(texMatrix);
+          p->GetSurfaceTextureTransformMatrix(texMatrix);
           glUniformMatrix4fv(p->mTexMatrixHandle, 1, GL_FALSE, texMatrix);
 
           glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -401,12 +403,14 @@ public:
 
 /***********************************************************/
 
-CStageFrightVideo::CStageFrightVideo(CWinSystemEGL* windowing, CAdvancedSettings* advsettings)
+CStageFrightVideo::CStageFrightVideo(CApplication* application, CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings)
 {
 #if defined(DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::ctor: %d\n", CLASSNAME, sizeof(CStageFrightVideo));
 #endif
   p = new CStageFrightVideoPrivate;
+  p->m_g_application = application;
+  p->m_g_applicationMessenger = applicationMessenger;
   p->m_g_Windowing = windowing;
   p->m_g_advancedSettings = advsettings;
 }
@@ -510,7 +514,13 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   }
 
   if ((p->quirks & QuirkSWRender) == 0)
-    p->InitStagefrightSurface();
+    if (!p->InitSurfaceTexture())
+    {
+      delete p->client;
+      p->client = NULL;
+      CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Cannot allocate texture");
+      return false;
+    }
 
   p->decoder  = OMXCodec::Create(p->client->interface(), p->meta,
                                          false, p->source, NULL,
@@ -842,7 +852,7 @@ void CStageFrightVideo::Close()
   CLog::Log(LOGDEBUG, "Cleaning libstagefright\n", p->in_queue.size());
 #endif
   if ((p->quirks & QuirkSWRender) == 0)
-    p->UninitStagefrightSurface();
+    p->ReleaseSurfaceTexture();
 
 #if defined(DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "Final Cleaning\n", p->in_queue.size());

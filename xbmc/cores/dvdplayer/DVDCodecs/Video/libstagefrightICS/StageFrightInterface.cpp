@@ -24,9 +24,9 @@
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 
-void* create_stf(CWinSystemEGL* windowing, CAdvancedSettings* advsettings)
+void* create_stf(CApplication* application, CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings)
 {
-  return (void*)new CStageFrightVideo(windowing, advsettings);
+  return (void*)new CStageFrightVideo(application, applicationMessenger, windowing, advsettings);
 }
 
 void destroy_stf(void* stf)
