@@ -19,7 +19,6 @@ bool CPlexSectionFilter::loadFilters()
   XFILE::CPlexDirectory dir;
   CFileItemList list;
 
-
   /* get primary filters */
   CURL fURL(m_sectionUrl);
   if (dir.GetDirectory(fURL.Get(), list))
@@ -27,9 +26,12 @@ bool CPlexSectionFilter::loadFilters()
     for (int i = 0; i < list.Size(); i ++)
     {
       CFileItemPtr primaryFilter = list.Get(i);
-      if (!primaryFilter->GetProperty("secondary").asBoolean() &&
-          !primaryFilter->GetProperty("search").asBoolean() &&
-          primaryFilter->GetProperty("unprocessed_key").asString() != "unwatched")
+//      if (!primaryFilter->GetProperty("secondary").asBoolean() &&
+//          !primaryFilter->GetProperty("search").asBoolean() &&
+//          primaryFilter->GetProperty("unprocessed_key").asString() != "unwatched")
+      if (primaryFilter->GetProperty("unprocessed_key").asString() == "all" ||
+          primaryFilter->GetProperty("unprocessed_key").asString() == "onDeck" ||
+          primaryFilter->GetProperty("unprocessed_key").asString() == "folder")
         m_primaryFilters[primaryFilter->GetProperty("unprocessed_key").asString()] = primaryFilter->GetLabel();
     }
   }
