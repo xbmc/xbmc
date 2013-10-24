@@ -186,6 +186,12 @@ void CGUIPlexMediaWindow::updateFilterButtons(CPlexSectionFilterPtr filter, bool
 void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
 {
   CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+  if (!filter)
+  {
+    CLog::Log(LOGWARNING, "CGUIPlexMediaWindow::OnFilterButton failed to get filters for %s", m_sectionRoot.Get().c_str());
+    return;
+  }
+
   if (filterButtonId >= FILTER_PRIMARY_BUTTONS_START && filterButtonId < FILTER_SECONDARY_BUTTONS_START)
   {
     PlexStringPairVector filterButtons = filter->getPrimaryFilters();
