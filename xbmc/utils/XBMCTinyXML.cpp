@@ -111,7 +111,12 @@ bool CXBMCTinyXML::Parse(const char *_data, TiXmlEncoding encoding)
   return Parse(std::string(_data), encoding);
 }
 
-bool CXBMCTinyXML::Parse(const std::string& rawdata, TiXmlEncoding encoding)
+bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIXML_DEFAULT_ENCODING */)
+{
+  return InternalParse(data, encoding);
+}
+
+bool CXBMCTinyXML::InternalParse(const std::string& rawdata, TiXmlEncoding encoding /*= TIXML_DEFAULT_ENCODING */)
 {
   // Preprocess string, replacing '&' with '&amp; for invalid XML entities
   size_t pos = rawdata.find('&');
