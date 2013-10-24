@@ -266,7 +266,7 @@
 				<posx>-253</posx>
 				<posy>5</posy>
 				<width>253</width>
-				<height>650</height>
+				<height>670</height>
 				<ondown>19000</ondown>
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
@@ -286,7 +286,6 @@
 					<onright>777</onright>
 					<itemgap>0</itemgap>
 				</control>
-
 				<!-- secondary filters list title -->
 				<control type="label" id="19009">
 					<description>Secondary Title</description>
@@ -304,7 +303,6 @@
 					<onright>777</onright>
 					<itemgap>0</itemgap>
 				</control>
-
 				<!-- filters buttons -->
 				<control type="button" id="19005">
 					<textoffsetx>35</textoffsetx>
@@ -322,19 +320,18 @@
 					<shadowcolor>ff222222</shadowcolor>
 					<textcolor>FFFFCCCC</textcolor>
 				</control>
-
 				<!-- SORTING -->
 				<!-- sorting list title -->
 				<control type="label" id="19019">
 					<description>Title</description>
-					<posy>630</posy>
+					<posy>500</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
 				</control>
 				<!-- sorting list -->
 				<control type="grouplist" id="19010">
-					<posy>660</posy>
+					<posy>560</posy>
 					<posx>10</posx>
 					<onup>19001</onup>
 					<onright>777</onright>
