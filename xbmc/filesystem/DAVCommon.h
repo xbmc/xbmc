@@ -26,7 +26,7 @@ namespace XFILE
   class CDAVCommon
   {
     public:
-      static bool ValueWithoutNamespace(const TiXmlNode *pNode, const CStdString& value);
-      static CStdString GetStatusTag(const TiXmlElement *pElement);
+      static bool ValueWithoutNamespace(const TiXmlNode *pNode, const std::string& value);
+      static std::string GetStatusTag(const TiXmlElement *pElement);
   };
 }

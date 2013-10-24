@@ -29,7 +29,7 @@ using namespace XFILE;
  *
  * if pElement is <DAV:foo> and value is foo then ValueWithoutNamespace is true
  */
-bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const CStdString& value)
+bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const std::string& value)
 {
   CStdStringArray tag;
   const TiXmlElement *pElement;
@@ -67,7 +67,7 @@ bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const CStdString&
 /*
  * Search for <status> and return its content
  */
-CStdString CDAVCommon::GetStatusTag(const TiXmlElement *pElement)
+std::string CDAVCommon::GetStatusTag(const TiXmlElement *pElement)
 {
   const TiXmlElement *pChild;
 
@@ -75,7 +75,7 @@ CStdString CDAVCommon::GetStatusTag(const TiXmlElement *pElement)
   {
     if (ValueWithoutNamespace(pChild, "status"))
     {
-      return CStdString(pChild->GetText());
+      return pChild->GetText();
     }
   }
 
