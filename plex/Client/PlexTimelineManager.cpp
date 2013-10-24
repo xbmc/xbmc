@@ -116,6 +116,7 @@ void CPlexTimelineManager::Stop()
 CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forServer)
 {
   CUrlOptions options;
+  std::string durationStr;
 
   options.AddOption("state", StateToString(m_currentStates[type]));
 
@@ -135,7 +136,10 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
       options.AddOption("url", item->GetProperty("url").asString());
 
     if (GetItemDuration(item) > 0)
-      options.AddOption("duration", boost::lexical_cast<std::string>(GetItemDuration(item)));
+    {
+      durationStr = boost::lexical_cast<std::string>(GetItemDuration(item));
+      options.AddOption("duration", durationStr);
+    }
 
   }
   else
@@ -234,6 +238,14 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
       location = "fullScreenMusic";
 
     options.AddOption("location", location);
+
+    if (g_application.IsPlaying() && g_application.m_pPlayer)
+    {
+      if (g_application.m_pPlayer->CanSeek() && !durationStr.empty())
+        options.AddOption("seekRange", "0-" + durationStr);
+      else
+        options.AddOption("seekRange", "0-0");
+    }
 
   }
 
