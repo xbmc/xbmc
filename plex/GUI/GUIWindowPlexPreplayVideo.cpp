@@ -100,7 +100,7 @@ bool CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
 void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
 {
   CFileItemPtr item = m_vecItems->Get(0);
-  if (item)
+  if (item && item->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
   {
     if (!m_parentPath.empty())
     {
