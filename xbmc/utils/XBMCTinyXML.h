@@ -72,7 +72,7 @@ public:
   bool LoadFile(FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool SaveFile(const char*) const;
   bool SaveFile(const std::string& filename) const;
-  const char *Parse(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
-  const char *Parse(const std::string& rawdata, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  bool Parse(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  bool Parse(const std::string& rawdata, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   static bool Test();
 };
