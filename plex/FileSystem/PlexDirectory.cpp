@@ -520,7 +520,6 @@ CStdString CPlexDirectory::GetContentFromType(EPlexDirectoryType typeNr)
       content = "clips";
       break;
     default:
-      CLog::Log(LOGWARNING, "CPlexDirectory::GetContentFromType oopes, no Content for Type %s", CPlexDirectory::GetDirectoryTypeString(typeNr).c_str());
       break;
   }
 
