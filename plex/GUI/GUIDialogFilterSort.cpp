@@ -83,7 +83,7 @@ bool CGUIDialogFilterSort::OnAction(const CAction &action)
 
     CGUIMessage msg(GUI_MSG_FILTER_SELECTED, WINDOW_DIALOG_FILTER_SORT, 0, m_filterButtonId, 0);
     msg.SetStringParam(m_filter->getFilterKey());
-    g_windowManager.SendThreadMessage(msg, WINDOW_VIDEO_NAV);
+    g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindow());
 
     SetInvalid();
 
@@ -108,7 +108,7 @@ bool CGUIDialogFilterSort::OnMessage(CGUIMessage &message)
 
         CGUIMessage msg(GUI_MSG_FILTER_SELECTED, WINDOW_DIALOG_FILTER_SORT, 0, m_filterButtonId, 0);
         msg.SetStringParam(m_filter->getFilterKey());
-        g_windowManager.SendThreadMessage(msg, WINDOW_VIDEO_NAV);
+        g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindow());
 
         SetInvalid();
         return true;
