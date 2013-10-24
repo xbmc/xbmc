@@ -680,6 +680,9 @@ clean-codecs: clean-dvdpcodecs clean-papcodecs
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
 	clean-screensavers clean-visualisations clean-libaddons clean-pvraddons
 
+clean-apk: 
+	make -C tools/android/packaging clean
+
 ifeq (1,@GTEST_CONFIGURED@)
 check: testsuite
 	for check_program in $(CHECK_PROGRAMS); do $(CURDIR)/$$check_program; done
