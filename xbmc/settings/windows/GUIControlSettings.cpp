@@ -259,34 +259,53 @@ bool CGUIControlListSetting::OnClick()
   CFileItemList options;
   if (!GetItems(m_pSetting, options) || options.Size() <= 1)
     return false;
+
+  const CSettingControlList *control = static_cast<const CSettingControlList*>(m_pSetting->GetControl());
   
   dialog->Reset();
   dialog->SetHeading(g_localizeStrings.Get(m_pSetting->GetLabel()));
   dialog->SetItems(&options);
-  dialog->SetMultiSelection(false);
+  dialog->SetMultiSelection(control->CanMultiSelect());
   dialog->DoModal();
 
   if (!dialog->IsConfirmed())
     return false;
 
-  const CFileItemPtr item = dialog->GetSelectedItem();
-  if (item == NULL || !item->HasProperty("value"))
-    return false;
-  
-  CVariant value = item->GetProperty("value");
+  const CFileItemList &items = dialog->GetSelectedItems();
+  std::vector<CVariant> values;
+  for (int index = 0; index < items.Size(); index++)
+  {
+    const CFileItemPtr item = items[index];
+    if (item == NULL || !item->HasProperty("value"))
+      return false;
+
+    values.push_back(item->GetProperty("value"));
+  }
+
+  bool ret = false;
   switch (m_pSetting->GetType())
   {
     case SettingTypeInteger:
-      return ((CSettingInt *)m_pSetting)->SetValue((int)value.asInteger());
+      if (values.size() > 1)
+        return false;
+      ret = ((CSettingInt *)m_pSetting)->SetValue((int)values.at(0).asInteger());
     
     case SettingTypeString:
-      return ((CSettingString *)m_pSetting)->SetValue(value.asString());
+      if (values.size() > 1)
+        return false;
+      ret = ((CSettingString *)m_pSetting)->SetValue(values.at(0).asString());
+
+    case SettingTypeList:
+      ret = CSettings::Get().SetList(m_pSetting->GetId(), values);
     
     default:
       break;
   }
 
-  return true;
+  if (ret)
+    Update();
+
+  return ret;
 }
 
 void CGUIControlListSetting::Update()
@@ -299,15 +318,15 @@ void CGUIControlListSetting::Update()
   CFileItemList options;
   if (GetItems(m_pSetting, options))
   {
+    std::vector<std::string> labels;
     for (int index = 0; index < options.Size(); index++)
     {
       const CFileItemPtr pItem = options.Get(index);
       if (pItem->IsSelected())
-      {
-        m_pButton->SetLabel2(pItem->GetLabel());
-        break;
-      }
+        labels.push_back(pItem->GetLabel());
     }
+
+    m_pButton->SetLabel2(StringUtils::Join(labels, ", "));
   }
 
   // disable the control if it has less than two items
@@ -323,33 +342,21 @@ static CFileItemPtr GetItem(const std::string &label, const CVariant &value)
   return pItem;
 }
 
-bool CGUIControlListSetting::GetItems(CSetting *setting, CFileItemList &items)
+bool CGUIControlListSetting::GetItems(const CSetting *setting, CFileItemList &items)
 {
   const CSettingControlList *control = static_cast<const CSettingControlList*>(setting->GetControl());
   const std::string &controlFormat = control->GetFormat();
+
   if (controlFormat == "integer")
     return GetIntegerItems(setting, items);
   else if (controlFormat == "string")
   {
-    if (setting->GetType() == SettingTypeInteger)
+    if (setting->GetType() == SettingTypeInteger ||
+       (setting->GetType() == SettingTypeList && ((CSettingList *)setting)->GetElementType() == SettingTypeInteger))
       return GetIntegerItems(setting, items);
-    else if (setting->GetType() == SettingTypeString)
-    {
-      CSettingString *pSettingString = (CSettingString *)setting;
-      if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
-      {
-        DynamicStringSettingOptions options = pSettingString->UpdateDynamicOptions();
-        for (DynamicStringSettingOptions::const_iterator option = options.begin(); option != options.end(); ++option)
-        {
-          CFileItemPtr pItem = GetItem(option->first, option->second);
-
-          if (StringUtils::EqualsNoCase(option->second, pSettingString->GetValue()))
-            pItem->Select(true);
-
-          items.Add(pItem);
-        }
-      }
-    }
+    else if (setting->GetType() == SettingTypeString ||
+            (setting->GetType() == SettingTypeList && ((CSettingList *)setting)->GetElementType() == SettingTypeString))
+      return GetStringItems(setting, items);
   }
   else
     return false;
@@ -357,9 +364,33 @@ bool CGUIControlListSetting::GetItems(CSetting *setting, CFileItemList &items)
   return true;
 }
 
-bool CGUIControlListSetting::GetIntegerItems(CSetting *setting, CFileItemList &items)
+bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemList &items)
 {
-  CSettingInt *pSettingInt = (CSettingInt *)setting;
+  const CSettingInt *pSettingInt = NULL;
+  std::set<int> values;
+  if (setting->GetType() == SettingTypeInteger)
+  {
+    pSettingInt = static_cast<const CSettingInt*>(setting);
+    values.insert(pSettingInt->GetValue());
+  }
+  else if (setting->GetType() == SettingTypeList)
+  {
+    const CSettingList *settingList = static_cast<const CSettingList*>(setting);
+    if (settingList->GetElementType() != SettingTypeInteger)
+      return false;
+
+    pSettingInt = static_cast<const CSettingInt*>(settingList->GetDefinition());
+    std::vector<CVariant> list = CSettings::Get().GetList(settingList->GetId());
+    for (std::vector<CVariant>::const_iterator itValue = list.begin(); itValue != list.end(); ++itValue)
+    {
+      if (!itValue->isInteger())
+        return false;
+      values.insert(itValue->asInteger());
+    }
+  }
+  else
+    return false;
+
   switch (pSettingInt->GetOptionsType())
   {
     case SettingOptionsTypeStatic:
@@ -369,7 +400,7 @@ bool CGUIControlListSetting::GetIntegerItems(CSetting *setting, CFileItemList &i
       {
         CFileItemPtr pItem = GetItem(g_localizeStrings.Get(it->first), it->second);
 
-        if (it->second == pSettingInt->GetValue())
+        if (values.find(it->second) != values.end())
           pItem->Select(true);
 
         items.Add(pItem);
@@ -379,12 +410,12 @@ bool CGUIControlListSetting::GetIntegerItems(CSetting *setting, CFileItemList &i
 
     case SettingOptionsTypeDynamic:
     {
-      DynamicIntegerSettingOptions options = pSettingInt->UpdateDynamicOptions();
+      DynamicIntegerSettingOptions options = const_cast<CSettingInt*>(pSettingInt)->UpdateDynamicOptions();
       for (DynamicIntegerSettingOptions::const_iterator option = options.begin(); option != options.end(); ++option)
       {
         CFileItemPtr pItem = GetItem(option->first, option->second);
 
-        if (option->second == pSettingInt->GetValue())
+        if (values.find(option->second) != values.end())
           pItem->Select(true);
 
         items.Add(pItem);
@@ -396,6 +427,52 @@ bool CGUIControlListSetting::GetIntegerItems(CSetting *setting, CFileItemList &i
     default:
       return false;
   }
+
+  return true;
+}
+
+bool CGUIControlListSetting::GetStringItems(const CSetting *setting, CFileItemList &items)
+{
+  const CSettingString *pSettingString = NULL;
+  std::set<std::string> values;
+  if (setting->GetType() == SettingTypeString)
+  {
+    pSettingString = static_cast<const CSettingString*>(setting);
+    values.insert(pSettingString->GetValue());
+  }
+  else if (setting->GetType() == SettingTypeList)
+  {
+    const CSettingList *settingList = static_cast<const CSettingList*>(setting);
+    if (settingList->GetElementType() != SettingTypeString)
+      return false;
+
+    pSettingString = static_cast<const CSettingString*>(settingList->GetDefinition());
+    std::vector<CVariant> list = CSettings::Get().GetList(settingList->GetId());
+    for (std::vector<CVariant>::const_iterator itValue = list.begin(); itValue != list.end(); ++itValue)
+    {
+      if (!itValue->isString())
+        return false;
+      values.insert(itValue->asString());
+    }
+  }
+  else
+    return false;
+
+  if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
+  {
+    DynamicStringSettingOptions options = const_cast<CSettingString*>(pSettingString)->UpdateDynamicOptions();
+    for (DynamicStringSettingOptions::const_iterator option = options.begin(); option != options.end(); ++option)
+    {
+      CFileItemPtr pItem = GetItem(option->first, option->second);
+
+      if (values.find(option->second) != values.end())
+        pItem->Select(true);
+
+      items.Add(pItem);
+    }
+  }
+  else
+    return false;
 
   return true;
 }
