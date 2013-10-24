@@ -695,7 +695,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
               (type == PLEX_DIR_TYPE_MOVIE || type == PLEX_DIR_TYPE_EPISODE ||
                type == PLEX_DIR_TYPE_VIDEO || type == PLEX_DIR_TYPE_CLIP))
           {
-            CBuiltins::Execute("XBMC.ActivateWindow(PlexPreplayVideo," + item->GetProperty("key").asString() + ",return)");
+            CBuiltins::Execute("XBMC.ActivateWindow(PlexPreplayVideo," + item->GetProperty("key").asString() + ",return, " + item->GetProperty("containerPath").asString() + ")");
             return true;
           }
 

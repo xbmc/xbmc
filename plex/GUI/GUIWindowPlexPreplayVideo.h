@@ -18,8 +18,13 @@ public:
   void Share();
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  bool Update(const CStdString &strDirectory, bool updateFilterPath);
+  void UpdateItem();
+  bool OnBack(int actionID);
 
+  std::string m_parentPath;
   CEvent m_dataLoaded;
   CFileItemList m_friends;
   CFileItemList m_networks;
+  void MoveToItem(int idx);
 };

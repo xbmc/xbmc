@@ -519,7 +519,7 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
       (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE ||
        item->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE))
   {
-    CBuiltins::Execute("ActivateWindow(PlexPreplayVideo, " + item->GetProperty("key").asString() + ", return)");
+    CBuiltins::Execute("ActivateWindow(PlexPreplayVideo, " + item->GetProperty("key").asString() + ", return, " + std::string(m_vecItems->GetPath()) + ")");
     return true;
   }
 

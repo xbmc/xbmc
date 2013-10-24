@@ -36,15 +36,10 @@ bool CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
 
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
-    if (m_vecItems->GetContent() == "movies")
-      m_vecItems->SetContent("movie");
-    if (m_vecItems->GetContent() == "episodes")
-      m_vecItems->SetContent("episode");
-    if (m_vecItems->GetContent() == "clips")
-      m_vecItems->SetContent("clip");
-    
-    g_plexApplication.m_preplayItem = m_vecItems->Get(0);
-    g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems->Get(0));
+    if (!message.GetStringParam(2).empty())
+      m_parentPath = message.GetStringParam(2);
+
+    UpdateItem();
   }
   else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
   {
@@ -89,8 +84,49 @@ bool CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
     SetInvalid();
     return true;
   }
+  else if (action.GetID() == ACTION_MOVE_RIGHT)
+  {
+    MoveToItem(1);
+  }
+  else if (action.GetID() == ACTION_MOVE_LEFT)
+  {
+    MoveToItem(-1);
+  }
   
   return CGUIMediaWindow::OnAction(action);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
+{
+  CFileItemPtr item = m_vecItems->Get(0);
+  if (item)
+  {
+    if (!m_parentPath.empty())
+    {
+      CFileItemList list;
+      XFILE::CPlexDirectory dir;
+      if (dir.GetDirectory(m_parentPath, list))
+      {
+        CFileItemPtr litem;
+        for (int i = 0; i < list.Size(); i++)
+        {
+          litem = list.Get(i);
+          if (!litem)
+            continue;
+
+          if (litem->GetPath() == item->GetPath())
+          {
+            litem = list.Get(i + idx);
+            break;
+          }
+        }
+
+        if (litem)
+          Update(litem->GetPath(), true);
+      }
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,6 +234,38 @@ void CGUIWindowPlexPreplayVideo::Share()
     }
   }
 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowPlexPreplayVideo::OnBack(int actionID)
+{
+  g_windowManager.PreviousWindow();
+  return true;
+}
+
+///////////////////////////////////the////////////////////////////////////////////////////////////////
+bool CGUIWindowPlexPreplayVideo::Update(const CStdString &strDirectory, bool updateFilterPath)
+{
+  bool ret = CGUIMediaWindow::Update(strDirectory, updateFilterPath);
+
+  if (ret)
+    UpdateItem();
+
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowPlexPreplayVideo::UpdateItem()
+{
+  if (m_vecItems->GetContent() == "movies")
+    m_vecItems->SetContent("movie");
+  if (m_vecItems->GetContent() == "episodes")
+    m_vecItems->SetContent("episode");
+  if (m_vecItems->GetContent() == "clips")
+    m_vecItems->SetContent("clip");
+
+  g_plexApplication.m_preplayItem = m_vecItems->Get(0);
+  g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems->Get(0));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

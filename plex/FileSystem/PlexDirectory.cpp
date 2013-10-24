@@ -343,6 +343,9 @@ CPlexDirectory::NewPlexElement(TiXmlElement *element, const CFileItem &parentIte
   newItem->SetProperty("canShare", newItem->HasProperty("url") ? "yes" : "");
   newItem->SetProperty("canRecommend", newItem->HasProperty("url") ? "yes" : "");
 
+  if (!parentItem.GetPath().empty())
+    newItem->SetProperty("containerPath", parentItem.GetPath());
+
 #if 0
   CLog::Log(LOGDEBUG, "CPlexDirectory::NewPlexElement %s (type: %s) -> isFolder(%s)",
             newItem->GetPath().c_str(),
