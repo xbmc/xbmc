@@ -66,15 +66,20 @@ public:
   CXBMCTinyXML();
   CXBMCTinyXML(const char*);
   CXBMCTinyXML(const std::string& documentName);
+  CXBMCTinyXML(const std::string& documentName, const std::string& documentCharset);
   bool LoadFile(TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool LoadFile(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool LoadFile(const std::string& _filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  bool LoadFile(const std::string& _filename, const std::string& documentCharset);
   bool LoadFile(FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool SaveFile(const char*) const;
   bool SaveFile(const std::string& filename) const;
   bool Parse(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool Parse(const std::string& data, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  bool Parse(const std::string& data, const std::string& dataCharset);
   static bool Test();
 protected:
   bool InternalParse(const std::string& rawdata, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+
+  std::string m_SuggestedCharset;
 };

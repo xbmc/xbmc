@@ -21,6 +21,7 @@
 #include "XBMCTinyXML.h"
 #include "filesystem/File.h"
 #include "utils/FileUtils.h"
+#include "utils/StringUtils.h"
 #include "RegExp.h"
 
 #define MAX_ENTITY_LENGTH 8 // size of largest entity "&#xNNNN;"
@@ -39,6 +40,12 @@ CXBMCTinyXML::CXBMCTinyXML(const char *documentName)
 CXBMCTinyXML::CXBMCTinyXML(const std::string& documentName)
 : TiXmlDocument(documentName)
 {
+}
+
+CXBMCTinyXML::CXBMCTinyXML(const std::string& documentName, const std::string& documentCharset)
+: TiXmlDocument(documentName), m_SuggestedCharset(documentCharset)
+{
+  StringUtils::ToUpper(m_SuggestedCharset);
 }
 
 bool CXBMCTinyXML::LoadFile(TiXmlEncoding encoding)
@@ -77,6 +84,13 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
   return true;
 }
 
+bool CXBMCTinyXML::LoadFile(const std::string& _filename, const std::string& documentCharset)
+{
+  m_SuggestedCharset = documentCharset;
+  StringUtils::ToUpper(m_SuggestedCharset);
+  return LoadFile(_filename, TIXML_ENCODING_UNKNOWN);
+}
+
 bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
 {
   std::string data;
@@ -109,6 +123,13 @@ bool CXBMCTinyXML::SaveFile(const std::string& filename) const
 bool CXBMCTinyXML::Parse(const char *_data, TiXmlEncoding encoding)
 {
   return Parse(std::string(_data), encoding);
+}
+
+bool CXBMCTinyXML::Parse(const std::string& data, const std::string& dataCharset)
+{
+  m_SuggestedCharset = dataCharset;
+  StringUtils::ToUpper(m_SuggestedCharset);
+  return Parse(data, TIXML_ENCODING_UNKNOWN);
 }
 
 bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIXML_DEFAULT_ENCODING */)
