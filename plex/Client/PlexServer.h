@@ -26,8 +26,8 @@ class CPlexServerConnTestThread : public CThread
   public:
     CPlexServerConnTestThread(CPlexConnectionPtr conn, CPlexServerPtr server);
     void Process();
+    void Cancel();
 
-  private:
     CPlexConnectionPtr m_conn;
     CPlexServerPtr m_server;
 };
@@ -120,4 +120,7 @@ private:
 
   CCriticalSection m_testingLock;
   CEvent m_testEvent;
+
+  CCriticalSection m_connTestThreadLock;
+  std::vector<CPlexServerConnTestThread*> m_connTestThreads;
 };

@@ -34,6 +34,11 @@ CPlexServerConnTestThread::Process()
   m_server->OnConnectionTest(m_conn, state);
 }
 
+void CPlexServerConnTestThread::Cancel()
+{
+  m_conn->m_http.Cancel();
+}
+
 bool
 CPlexServer::CollectDataFromRoot(const CStdString xmlData)
 {
@@ -162,14 +167,27 @@ CPlexServer::UpdateReachability()
   vector<CPlexConnectionPtr> sortedConnections = m_connections;
   sort(sortedConnections.begin(), sortedConnections.end(), ConnectionSortFunction);
 
+  CSingleLock lk(m_connTestThreadLock);
+  m_connTestThreads.clear();
   BOOST_FOREACH(CPlexConnectionPtr conn, sortedConnections)
   {
     CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability testing connection %s", conn->toString().c_str());
-
-    new CPlexServerConnTestThread(conn, GetShared());
+    m_connTestThreads.push_back(new CPlexServerConnTestThread(conn, GetShared()));
   }
+  lk.unlock();
 
-  m_testEvent.WaitMSec(30000);
+  /* Three minutes should be enough ? */
+  if (!m_testEvent.WaitMSec(1000 * 120))
+    CLog::Log(LOGWARNING, "CPlexServer::UpdateReachability waited 2 minutes and connection testing didn't finish.");
+
+  /* kill any left over threads */
+  lk.lock();
+  BOOST_FOREACH(CPlexServerConnTestThread* thread, m_connTestThreads)
+  {
+    CLog::Log(LOGWARNING, "CPlexServer::UpdateReachability done but threads are still running: %s", thread->m_conn->toString().c_str());
+    thread->Cancel();
+  }
+  lk.unlock();
 
   CSingleLock tlk(m_testingLock);
   m_complete = true;
@@ -183,7 +201,19 @@ CPlexServer::UpdateReachability()
 
 void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, int state)
 {
-  CSingleLock lk(m_testingLock);
+  {
+    CSingleLock lk(m_connTestThreadLock);
+    BOOST_FOREACH(CPlexServerConnTestThread* thread, m_connTestThreads)
+    {
+      if (thread->m_conn == conn)
+      {
+        m_connTestThreads.erase(std::remove(m_connTestThreads.begin(), m_connTestThreads.end(), thread));
+        break;
+      }
+    }
+  }
+
+  CSingleLock tlk(m_testingLock);
   if (state == CPlexConnection::CONNECTION_STATE_REACHABLE)
   {
     if (!m_bestConnection)

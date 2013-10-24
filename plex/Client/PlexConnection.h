@@ -10,6 +10,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "PlexApplication.h"
+#include "filesystem/CurlFile.h"
 
 class CPlexConnection;
 typedef boost::shared_ptr<CPlexConnection> CPlexConnectionPtr;
@@ -84,6 +85,8 @@ public:
 
   void save(TiXmlNode* server);
   static CPlexConnectionPtr load(TiXmlElement* element);
+
+  XFILE::CCurlFile m_http;
 
 private:
   ConnectionState m_state;

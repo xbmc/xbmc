@@ -16,6 +16,8 @@ CPlexConnection::CPlexConnection(int type, const CStdString& host, int port, con
     m_url.SetProtocol("https");
   else
     m_url.SetProtocol("http");
+
+  m_http.SetTimeout(3);
 }
 
 CURL
@@ -38,14 +40,12 @@ CPlexConnection::BuildURL(const CStdString &path) const
 CPlexConnection::ConnectionState
 CPlexConnection::TestReachability(CPlexServerPtr server)
 {
-  CCurlFile http;
-
   CURL url = BuildURL("/");
   CStdString rootXml;
 
-  http.SetRequestHeader("Accept", "application/xml");
+  m_http.SetRequestHeader("Accept", "application/xml");
 
-  if (http.Get(url.Get(), rootXml))
+  if (m_http.Get(url.Get(), rootXml))
   {
     if (server->CollectDataFromRoot(rootXml))
       m_state = CONNECTION_STATE_REACHABLE;
@@ -58,7 +58,7 @@ CPlexConnection::TestReachability(CPlexServerPtr server)
   }
   else
   {
-    if (http.GetLastHTTPResponseCode() == 401)
+    if (m_http.GetLastHTTPResponseCode() == 401)
       m_state = CONNECTION_STATE_UNAUTHORIZED;
     else
       m_state = CONNECTION_STATE_UNREACHABLE;

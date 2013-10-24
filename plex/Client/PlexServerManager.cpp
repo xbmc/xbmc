@@ -22,6 +22,9 @@ using namespace std;
 void
 CPlexServerReachabilityThread::Process()
 {
+  if (!g_plexApplication.serverManager)
+    return;
+
   if (m_server->UpdateReachability())
     g_plexApplication.serverManager->ServerReachabilityDone(m_server, true);
   else
@@ -365,5 +368,11 @@ void CPlexServerManager::Stop()
 {
   m_stopped = true;
   if (IsRunningReachabilityTests())
-    m_reachabilityTestEvent.Wait();
+  {
+    if (!m_reachabilityTestEvent.WaitMSec(10 * 1000))
+    {
+      CLog::Log(LOGWARNING, "CPlexServerManager::Stop waited 10 seconds for the reachability stuff to finish, will just kill and move on.");
+      return;
+    }
+  }
 }
