@@ -60,8 +60,6 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     {
       /* If this is a reload event we must make sure to get the filters back */
       if (m_returningFromSkinLoad)
-        Update(m_sectionRoot.Get(), true);
-      else
         AddFilters();
       m_returningFromSkinLoad = false;
       break;
