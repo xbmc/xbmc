@@ -112,4 +112,16 @@ armeabi-v7a: $(XBMC_ARM_TOOLCHAIN) force
 x86: $(XBMC_X86_TOOLCHAIN) force
 	XBMC_OVERRIDE_PLATFORM=$@ $(X86OVERRIDES) $(MAKE) package
 
+clean:
+	rm -rf images
+	rm -rf xbmc/lib
+	rm -rf xbmc/libs
+	rm -rf xbmc/assets
+	rm -rf xbmc/obj
+	rm -rf xbmc/res/raw
+	rm -rf tmp
+	rm xbmc/res/drawable/splash.png
+	rm xbmc/src/R.java
+	rm xbmc/classes.dex
+
 .PHONY: arm armeabi-v7a x86 force extras libs
