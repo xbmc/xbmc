@@ -82,6 +82,8 @@ public:
   CSetting(const std::string &id, const CSetting &setting);
   virtual ~CSetting();
 
+  virtual CSetting* Clone(const std::string &id) const = 0;
+
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
   virtual int GetType() const = 0;
@@ -144,6 +146,8 @@ public:
   CSettingBool(const std::string &id, int label, bool value, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingBool() { }
 
+  virtual CSetting* Clone(const std::string &id) const;
+
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
   virtual int GetType() const { return SettingTypeBool; }
@@ -179,6 +183,8 @@ public:
   CSettingInt(const std::string &id, int label, int value, int minimum, int step, int maximum, CSettingsManager *settingsManager = NULL);
   CSettingInt(const std::string &id, int label, int value, const StaticIntegerSettingOptions &options, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingInt() { }
+
+  virtual CSetting* Clone(const std::string &id) const;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
@@ -231,6 +237,8 @@ public:
   CSettingNumber(const std::string &id, int label, float value, float minimum, float step, float maximum, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingNumber() { }
 
+  virtual CSetting* Clone(const std::string &id) const;
+
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
   virtual int GetType() const { return SettingTypeNumber; }
@@ -273,6 +281,8 @@ public:
   CSettingString(const std::string &id, const CSettingString &setting);
   CSettingString(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingString() { }
+
+  virtual CSetting* Clone(const std::string &id) const;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
@@ -319,6 +329,8 @@ public:
   CSettingAction(const std::string &id, CSettingsManager *settingsManager = NULL);
   CSettingAction(const std::string &id, const CSettingAction &setting);
   virtual ~CSettingAction() { }
+
+  virtual CSetting* Clone(const std::string &id) const;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 

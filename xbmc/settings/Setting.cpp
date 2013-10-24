@@ -265,6 +265,11 @@ CSettingBool::CSettingBool(const std::string &id, int label, bool value, CSettin
   m_label = label;
 }
 
+CSetting* CSettingBool::Clone(const std::string &id) const
+{
+  return new CSettingBool(id, *this);
+}
+
 bool CSettingBool::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   CExclusiveLock lock(m_critical);
@@ -398,6 +403,11 @@ CSettingInt::CSettingInt(const std::string &id, int label, int value, const Stat
     m_options(options)
 {
   m_label = label;
+}
+
+CSetting* CSettingInt::Clone(const std::string &id) const
+{
+  return new CSettingInt(id, *this);
 }
 
 bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
@@ -650,6 +660,11 @@ CSettingNumber::CSettingNumber(const std::string &id, int label, float value, fl
   m_label = label;
 }
 
+CSetting* CSettingNumber::Clone(const std::string &id) const
+{
+  return new CSettingNumber(id, *this);
+}
+
 bool CSettingNumber::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   CExclusiveLock lock(m_critical);
@@ -807,6 +822,11 @@ CSettingString::CSettingString(const std::string &id, int label, const std::stri
   m_label = label;
 }
 
+CSetting* CSettingString::Clone(const std::string &id) const
+{
+  return new CSettingString(id, *this);
+}
+
 bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   CExclusiveLock lock(m_critical);
@@ -955,6 +975,11 @@ CSettingAction::CSettingAction(const std::string &id, CSettingsManager *settings
 CSettingAction::CSettingAction(const std::string &id, const CSettingAction &setting)
   : CSetting(id, setting)
 { }
+
+CSetting* CSettingAction::Clone(const std::string &id) const
+{
+  return new CSettingAction(id, *this);
+}
 
 bool CSettingAction::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
