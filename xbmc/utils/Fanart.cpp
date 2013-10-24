@@ -55,7 +55,7 @@ void CFanart::Pack()
 bool CFanart::Unpack()
 {
   CXBMCTinyXML doc;
-  doc.Parse(m_xml.c_str());
+  doc.Parse(m_xml);
 
   m_fanart.clear();
 

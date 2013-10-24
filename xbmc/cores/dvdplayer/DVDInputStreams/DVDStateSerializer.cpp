@@ -212,7 +212,7 @@ bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &
 {
   CXBMCTinyXML xmlDoc;
 
-  xmlDoc.Parse(xmlstate.c_str());
+  xmlDoc.Parse(xmlstate);
 
   if( xmlDoc.Error() )
     return false;
