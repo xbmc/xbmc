@@ -274,7 +274,7 @@
 					<textcolor>white</textcolor>
 				</control>
 			</control>
-			<!-- buttons first stage -->
+			<!-- buttons -->
 			<control type="group" id="200">
 				<posx>270</posx>
 				<posy>5</posy>
@@ -351,18 +351,18 @@
 					<control type="group">
 						<control type="image">
 							<posy>0</posy>
-							<width>34</width>
+							<width>33</width>
 							<height>24</height>
-							<texture>b-video.png</texture>
+							<texture>b-subtitles.png</texture>
 							<visible>!Control.HasFocus(721)</visible>
 							<colordiffuse>FF666666</colordiffuse>
 						</control>
 						<control type="button" id="721">
 							<posy>0</posy>
-							<width>34</width>
+							<width>33</width>
 							<height>24</height>
-							<texturefocus>b-video.png</texturefocus>
-							<texturenofocus>b-video.png</texturenofocus>
+							<texturefocus>b-subtitles.png</texturefocus>
+							<texturenofocus>b-subtitles.png</texturenofocus>
 							<onleft>720</onleft>
 							<onright>713</onright>
 							<onup>200</onup>
@@ -520,7 +520,7 @@
 	<!-- VideoOSDSettings.xml -->
 	<!-- variables for "OSDSettings" -->
 	<include name="AudioSettingsWindowPosition">
-		<posx>20</posx>
+		<posx>659</posx>
 	</include>
 	<include name="VideoSettingsWindowPosition">
 		<posx>659</posx>
@@ -532,7 +532,7 @@
 			<include>FadeQuick</include>
 			<!-- bg's -->
 			<control type="group">
-				<posy>70</posy>
+				<posy>110</posy>
 				<control type="image">
 					<posx>-1</posx>
 					<posy>-1</posy>
@@ -577,9 +577,10 @@
 			<!-- settings -->
 			<control type="group">
 				<posx>10</posx>
-				<posy>90</posy>
+				<posy>130</posy>
 				<control type="group">
 					<control type="label" id="2">
+						<posy>20</posy>
 						<width>580</width>
 						<include>DialogHeading</include>
 					</control>
