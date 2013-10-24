@@ -221,7 +221,12 @@ CCurlFile::CReadState::CReadState()
   m_headerdone = false;
 
 #ifndef TARGET_WINDOWS
-  ::pipe(m_ticklePipe);
+  m_hasTicklePipe = true;
+  if (::pipe(m_ticklePipe) == -1)
+  {
+    CLog::Log(LOGWARNING, "CCurlFile::CReadState::CReadState failed when creating a pipe!");
+    m_hasTicklePipe = false;
+  }
 #endif
 }
 
@@ -234,10 +239,13 @@ CCurlFile::CReadState::~CReadState()
 
   /* PLEX */
 #ifndef TARGET_WINDOWS
-  ::shutdown(m_ticklePipe[0], 2);
-  ::close(m_ticklePipe[0]);
-  ::shutdown(m_ticklePipe[1], 2);
-  ::close(m_ticklePipe[1]);
+  if (m_hasTicklePipe)
+  {
+    ::shutdown(m_ticklePipe[0], 2);
+    ::close(m_ticklePipe[0]);
+    ::shutdown(m_ticklePipe[1], 2);
+    ::close(m_ticklePipe[1]);
+  }
 #endif
   /* END PLEX */
 }
@@ -929,6 +937,10 @@ bool CCurlFile::Open(const CURL& url)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
+  /* PLEX */
+  m_state->m_url = url2.Get();
+  /* END PLEX */
+
   CLog::Log(LOGDEBUG, "CurlFile::Open(%p) %s", (void*)this, m_url.c_str());
 
   ASSERT(!(!m_state->m_easyHandle ^ !m_state->m_multiHandle));
@@ -1126,6 +1138,10 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
     CURL url(m_url);
     oldstate = m_state;
     m_state = new CReadState();
+
+    /* PLEX */
+    m_state->m_url = url.Get();
+    /* END PLEX */
 
     g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName(), &m_state->m_easyHandle, &m_state->m_multiHandle );
 
@@ -1379,7 +1395,11 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
             if (msg->data.result == CURLE_OK)
               return true;
 
+#ifndef __PLEX__
             CLog::Log(LOGWARNING, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
+#else
+            CLog::Log(LOGWARNING, "%s: curl [%s] failed with code %i", __FUNCTION__, m_url.c_str(), msg->data.result);
+#endif
 
             // We need to check the result here as we don't want to retry on every error
             if ( (msg->data.result == CURLE_OPERATION_TIMEDOUT ||
@@ -1456,9 +1476,12 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
         /* PLEX */
 #ifndef TARGET_WINDOWS
         // Add the tickle pipe
-        FD_SET(m_ticklePipe[0], &fdread);
-        if (m_ticklePipe[0] > maxfd)
-          maxfd = m_ticklePipe[0];
+        if (maxfd != -1 && m_hasTicklePipe)
+        {
+          FD_SET(m_ticklePipe[0], &fdread);
+          if (m_ticklePipe[0] > maxfd)
+            maxfd = m_ticklePipe[0];
+        }
 #endif
         /* END PLEX */
 
@@ -1475,11 +1498,14 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
         /* PLEX */
 #ifndef TARGET_WINDOWS
         // Read the byte from the tickle socket if there was one
-        if (FD_ISSET(m_ticklePipe[0], &fdread))
+        if (m_hasTicklePipe)
         {
-          CLog::Log(LOGINFO, "The curl loop was woken up.");
-          char theTickleByte;
-          ::read(m_ticklePipe[0], &theTickleByte, 1);
+          if (FD_ISSET(m_ticklePipe[0], &fdread))
+          {
+            CLog::Log(LOGINFO, "The curl loop was woken up.");
+            char theTickleByte;
+            ::read(m_ticklePipe[0], &theTickleByte, 1);
+          }
         }
 #endif
         /* END PLEX */
