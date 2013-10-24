@@ -15,7 +15,7 @@ CPlexSecondaryFilter::CPlexSecondaryFilter(const std::string &name,
                                            const std::string &key,
                                            const std::string &title,
                                            CPlexSecondaryFilter::SecondaryFilterType type)
-  : m_name(name), m_filterKey(key), m_title(title), m_type(type)
+  : m_name(name), m_filterKey(key), m_title(title), m_type(type), m_booleanValue(false)
 {
 }
 
