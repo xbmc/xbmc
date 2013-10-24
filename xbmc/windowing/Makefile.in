@@ -1,4 +1,4 @@
-SRCS=WinEventsSDL.cpp \
+SRCS=WinEventsX11.cpp \
      WinEventsLinux.cpp \
      WinEventsWayland.cpp \
      WinSystem.cpp \

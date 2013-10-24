@@ -31,7 +31,7 @@ struct wl_output;
 struct wl_shell;
 struct wl_seat;
 
-typedef struct wl_egl_window * EGLNativeWindowType;
+typedef struct wl_display * EGLNativeDisplayType;
 
 struct RESOLUTION_INFO;
 

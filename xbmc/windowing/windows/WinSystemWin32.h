@@ -184,6 +184,7 @@ protected:
   int m_nPrimary;
   bool m_ValidWindowedPosition;
   bool m_IsAlteringWindow;
+  int  m_nScreen;
 };
 
 extern HWND g_hWnd;

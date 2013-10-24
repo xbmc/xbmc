@@ -188,8 +188,8 @@ bool CVDPAUContext::CreateContext()
   { CSingleLock lock(g_graphicsContext);
     if (!m_display)
       m_display = XOpenDisplay(NULL);
-    mScreen = g_Windowing.GetCurrentScreen();
-  }
+    mScreen = g_Windowing.GetVisual()->screen;
+  };
 
   VdpStatus vdp_st;
   // Create Device
