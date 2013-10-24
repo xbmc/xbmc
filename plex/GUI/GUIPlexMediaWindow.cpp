@@ -266,8 +266,13 @@ void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
         {
           dialog->SetFilter(currentFilter, filterButtonId);
           dialog->DoModal();
+
         }
       }
+
+      CGUIRadioButtonControl *radio = (CGUIRadioButtonControl*)GetControl(filterButtonId);
+      if (radio)
+        radio->SetSelected(currentFilter->isSelected());
     }
   }
   else
