@@ -169,6 +169,7 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   CPlexServerPtr server;
   CStdString key;
   std::string containerPath;
+  CUrlOptions containerOptions;
   
   /* Protocol v2 allows for sending machineIndentifier. */
   if (arguments.find("machineIdentifier") != arguments.end())
@@ -186,6 +187,9 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     {
       serverURL = CURL(arguments.find("path")->second);
       containerPath = serverURL.GetFileName();
+      containerOptions = serverURL.GetOptions();
+
+      CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia setting containerPath = %s", containerPath.c_str());
     }
     else if (arguments.find("address") != arguments.end() &&
              arguments.find("port") != arguments.end() &&
@@ -241,6 +245,9 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     containerPath = key;
     
   CURL itemURL = server->BuildPlexURL(containerPath);
+
+  if (!containerOptions.GetOptionsString().empty())
+    itemURL.AddOptions(containerOptions);
 
   if (arguments.find("protocol") != arguments.end())
   {
