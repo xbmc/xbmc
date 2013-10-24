@@ -542,6 +542,8 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_mapProperties = item.m_mapProperties;
   m_mediaParts = item.m_mediaParts;
   m_mediaItems = item.m_mediaItems;
+  m_mediaPartStreams = item.m_mediaPartStreams;
+
   m_plexDirectoryType = item.m_plexDirectoryType;
   m_selectedMediaPart = item.m_selectedMediaPart;
   /* END PLEX */

@@ -26,6 +26,7 @@ CGUIDialogPlexPicker::OnMessage(CGUIMessage &msg)
 {
   if (msg.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
+    SetHeading(g_localizeStrings.Get(m_audio ? 52100 : 52101));
     if (g_application.IsPlaying() && g_application.CurrentFileItemPtr())
       SetFileItem(g_application.CurrentFileItemPtr());
     else if (g_plexApplication.m_preplayItem)
@@ -101,6 +102,29 @@ void CGUIDialogPlexPicker::UpdateStreamSelection()
     return;
   
   PlexUtils::SetSelectedStream(m_fileItem, selectedStream);
+
+  if (g_application.CurrentFileItemPtr()->GetPath() == m_fileItem->GetPath() &&
+      g_application.IsPlayingVideo() && g_application.m_pPlayer)
+  {
+    IPlayer *player = g_application.m_pPlayer;
+    int64_t streamId = selectedStream->GetProperty("id").asInteger();
+
+    if (m_audio)
+    {
+      if (player->GetAudioStreamPlexID() != streamId)
+        player->SetAudioStreamPlexID(streamId);
+    }
+    else
+    {
+      if (streamId == -1)
+        player->SetSubtitleVisible(false);
+      else
+      {
+        player->SetSubtitleStreamPlexID(streamId);
+        player->SetSubtitleVisible(true);
+      }
+    }
+  }
 }
 
 bool

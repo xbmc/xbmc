@@ -4235,7 +4235,7 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
     {
       newItem.m_lStartOffset = item.m_lStartOffset;
       item = newItem;
-      m_itemCurrentFile->SetProperty("plexDidTranscode", item.GetProperty("plexDidTranscode"));
+      *m_itemCurrentFile = newItem;
     }
   }
   /* END PLEX */
