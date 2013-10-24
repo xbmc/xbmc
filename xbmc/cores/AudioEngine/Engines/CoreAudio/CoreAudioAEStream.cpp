@@ -143,9 +143,7 @@ CCoreAudioAEStream::~CCoreAudioAEStream()
   m_delete = true;
   m_valid = false;
 
-#ifndef __PLEX__
   InternalFlush();
-#endif
 
   _aligned_free(m_convertBuffer); m_convertBuffer = NULL;
   //_aligned_free(m_resampleBuffer); m_resampleBuffer = NULL;
