@@ -53,6 +53,34 @@
 			</control>
 		</control>
 	</include>
+	<include name="PlotBGSeason">
+		<control type="group">
+			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+			<control type="image">
+				<posy>385</posy>
+				<posx>15</posx>
+				<width>556</width>
+				<height>264</height>
+				<include>Black</include>
+			</control>
+			<control type="image">
+				<posx>571</posx>
+				<posy>500</posy>
+				<texture>arrow-big.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+			</control>
+		</control>
+	</include>
+	<include name="RightBGSeason">
+		<control type="group">
+			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+			<control type="image">
+				<posy>20</posy>
+				<posx>571</posx>
+				<include>WhiteArrowInsertLeft</include>
+			</control>
+		</control>
+	</include>
 	<!-- -->
 	<!-- thumbs -->
 	<include name="EpisodeThumb">
@@ -125,7 +153,7 @@
 	<include name="EpisodeThumbOverlay">
 		<control type="image">
 			<posx>13</posx>
-			<posy>80</posy>
+			<posy>81</posy>
 			<width>198</width>
 			<height>38</height>
 			<include>Black</include>
@@ -271,7 +299,7 @@
 				</control>
 				<!-- Genre -->
 				<control type="grouplist">
-					<posy>221</posy>
+					<posy>249</posy>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
 					<control type="label">
@@ -284,55 +312,9 @@
 						<visible>true</visible>
 					</control>
 					<control type="label">
-						<width min="29" max="600">auto</width>
-						<height>15</height>
-						<label>$INFO[ListItem.Genre]</label>
-						<font>Condensed-18</font>
-						<include>White2</include>
-						<visible>true</visible>
-					</control>
-				</control>
-				<!-- Creator -->
-				<!--><control type="grouplist">
-					<posy>221</posy>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<control type="label">
-						<width min="29" max="100">auto</width>
-						<height>15</height>
-						<label>[UPPERCASE]Creator[/UPPERCASE]</label>
-						<font>Condensed-18</font>
-						<include>Grey1</include>
-						<shadowcolor>ff333333</shadowcolor>
-						<visible>true</visible>
-					</control>
-					<control type="label">
-						<width min="29" max="330">auto</width>
-						<height>15</height>
-						<label>Creator placeholder</label>
-						<font>Condensed-18</font>
-						<include>White2</include>
-						<visible>true</visible>
-					</control>
-				</control>-->
-				<!-- Cast -->
-				<control type="grouplist">
-					<posy>249</posy>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<control type="label">
-						<width min="29" max="100">auto</width>
-						<height>15</height>
-						<label>[UPPERCASE]Cast[/UPPERCASE]</label>
-						<font>Condensed-18</font>
-						<include>Grey1</include>
-						<shadowcolor>ff333333</shadowcolor>
-						<visible>true</visible>
-					</control>
-					<control type="label">
 						<width min="29" max="400">auto</width>
 						<height>15</height>
-						<label>$INFO[ListItem.Cast]</label>
+						<label>$INFO[ListItem.Genre]</label>
 						<font>Condensed-18</font>
 						<include>White2</include>
 						<visible>true</visible>
@@ -357,9 +339,10 @@
 				</control>
 				<!-- MPAA flag -->
 				<control type="image">
-					<posy>55</posy>
-					<width>200</width>
-					<height>17</height>
+					<posy>20</posy>
+					<posx>580r</posx>
+					<width>60</width>
+					<height>30</height>
 					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
@@ -368,7 +351,7 @@
 				</control>
 				<!-- Star Rating -->
 				<control type="image">
-					<posy>78</posy>
+					<posy>69</posy>
 					<width>200</width>
 					<height>20</height>
 					<texture>$INFO[ListItem.StarRating]</texture>
@@ -400,6 +383,14 @@
 				<height>630</height>
 				<itemlayout width="223" height="315">
 					<include>TVPoster</include>
+					<control type="image">
+						<posx>13</posx>
+						<posy>243</posy>
+						<width>182</width>
+						<height>44</height>
+						<include>BlackRoundedHalf</include>
+						<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
+					</control>
 					<control type="label">
 						<posy>250</posy>
 						<posx>23</posx>
@@ -434,6 +425,14 @@
 				</itemlayout>
 				<focusedlayout width="223" height="315">
 					<include>TVPoster</include>
+					<control type="image">
+						<posx>13</posx>
+						<posy>243</posy>
+						<width>182</width>
+						<height>44</height>
+						<include>BlackRoundedHalf</include>
+						<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
+					</control>
 					<include>TVPosterSelectedBorder</include>
 					<control type="label">
 						<posy>250</posy>
@@ -478,20 +477,19 @@
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
 			<control type="group">
-				<include>PlotBG</include>
-				<include>RightBG</include>
+				<include>PlotBGSeason</include>
+				<include>RightBGSeason</include>
 			</control>
 			<!-- poster -->
 			<control type="group">
-				<posx>82</posx>
+				<posx>80</posx>
 				<posy>74</posy>
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>208</width>
 					<height>300</height>
-					<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-					<texture background="true" border="40">shadow.png</texture>
+					<include>Shadow</include>
 				</control>
 				<control type="image">
 					<description>Poster image</description>
@@ -499,139 +497,74 @@
 					<posy>13</posy>
 					<width>182</width>
 					<height>274</height>
-					<texture background="true" diffuse="library-poster-mask.png">$INFO[Container.Thumb]</texture>
+					<texture background="true" diffuse="mask-poster-middle.png">$INFO[Container.Thumb]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					<visible>IsEmpty(Container.Property(mixedParents))</visible>
+				</control>
+				<control type="image">
+					<description>Poster image</description>
+					<posx>13</posx>
+					<posy>13</posy>
+					<width>182</width>
+					<height>274</height>
+					<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(parentThumb)]</texture>
+					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 				</control>
 			</control>
 			<!-- Infos Left -->
 			<control type="group">
-				<posy>80</posy>
+				<posy>82</posy>
 				<posx>302</posx>
 				<!-- Titles -->
 				<control type="label">
-					<width>360</width>
+					<width>270</width>
 					<height>40</height>
 					<label>$INFO[Container.FirstTitle]</label>
 					<font>CondensedBold-36</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>ff333333</shadowcolor>
-					<visible>true</visible>
+					<visible>IsEmpty(Container.Property(mixedParents))</visible>
+				</control>
+				<control type="label">
+					<width>270</width>
+					<height>40</height>
+					<label>$INFO[Container.Property(parentTitle)]</label>
+					<font>CondensedBold-36</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>ff333333</shadowcolor>
+					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 				</control>
 				<control type="label">
 					<posy>40</posy>
-					<width>360</width>
+					<width>270</width>
 					<height>40</height>
 					<label>$INFO[Container.SecondTitle]</label>
 					<font>CondensedBold-36</font>
 					<include>Grey1</include>
 					<shadowcolor>ff333333</shadowcolor>
-					<visible>true</visible>
+					<visible>IsEmpty(Container.Property(mixedParents))</visible>
 				</control>
-				<!-- Genre -->
-				<control type="grouplist">
-					<posy>221</posy>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<control type="label">
-						<width min="29" max="200">auto</width>
-						<height>15</height>
-						<label>[UPPERCASE]Genre[/UPPERCASE]</label>
-						<font>Condensed-18</font>
-						<include>Grey1</include>
-						<shadowcolor>ff333333</shadowcolor>
-						<visible>true</visible>
-					</control>
-					<control type="label">
-						<width min="29" max="600">auto</width>
-						<height>15</height>
-						<label>$INFO[ListItem.Genre]</label>
-						<font>Condensed-18</font>
-						<include>White2</include>
-						<visible>true</visible>
-					</control>
-				</control>
-				<!-- Creator -->
-				<!--><control type="grouplist">
-					<posy>221</posy>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<control type="label">
-						<width min="29" max="100">auto</width>
-						<height>15</height>
-						<label>[UPPERCASE]Creator[/UPPERCASE]</label>
-						<font>Condensed-18</font>
-						<include>Grey1</include>
-						<shadowcolor>ff333333</shadowcolor>
-						<visible>true</visible>
-					</control>
-					<control type="label">
-						<width min="29" max="330">auto</width>
-						<height>15</height>
-						<label>Creator placeholder</label>
-						<font>Condensed-18</font>
-						<include>White2</include>
-						<visible>true</visible>
-					</control>
-				</control>-->
-				<!-- Cast -->
-				<control type="grouplist">
-					<posy>249</posy>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<control type="label">
-						<width min="29" max="100">auto</width>
-						<height>15</height>
-						<label>[UPPERCASE]Cast[/UPPERCASE]</label>
-						<font>Condensed-18</font>
-						<include>Grey1</include>
-						<shadowcolor>ff333333</shadowcolor>
-						<visible>true</visible>
-					</control>
-					<control type="label">
-						<width min="29" max="400">auto</width>
-						<height>15</height>
-						<label>$INFO[ListItem.Cast]</label>
-						<font>Condensed-18</font>
-						<include>White2</include>
-						<visible>true</visible>
-					</control>
-				</control>
-			</control>
-			<!-- Infos Right -->
-			<control type="group">
-				<posy>71</posy>
-				<posx>560</posx>
-				<!-- MPAA flag -->
-				<control type="image">
-					<posy>21</posy>
-					<width>200</width>
-					<height>17</height>
-					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
-					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<colordiffuse>FF999999</colordiffuse>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-					<visible>true</visible>
+				<control type="label">
+					<posy>40</posy>
+					<width>270</width>
+					<height>40</height>
+					<label>$LOCALIZE[32102]</label>
+					<font>CondensedBold-36</font>
+					<include>Grey1</include>
+					<shadowcolor>ff333333</shadowcolor>
+					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 				</control>
 				<!-- Year -->
 				<control type="label">
-					<posy>40</posy>
-					<posx>203</posx>
-					<width>200</width>
+					<posy>80</posy>
+					<width>270</width>
 					<height>40</height>
-					<align>right</align>
+					<align>left</align>
 					<label>$INFO[ListItem.Year]</label>
 					<font>CondensedBold-36</font>
-					<include>White1</include>
-					<visible>true</visible>
-				</control>
-				<!-- Star Rating -->
-				<control type="image">
-					<posy>90</posy>
-					<width>200</width>
-					<height>20</height>
-					<texture>$INFO[ListItem.StarRating]</texture>
-					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<include>Grey1</include>
+					<shadowcolor>ff333333</shadowcolor>
 					<visible>true</visible>
 				</control>
 			</control>
@@ -640,7 +573,7 @@
 			<control type="textbox">
 				<posx>95</posx>
 				<posy>412</posy>
-				<width>670</width>
+				<width>450</width>
 				<height>207</height>
 				<label>$INFO[Container.ShowPlot]</label>
 				<visible>!IsEmpty(Container.ShowPlot)</visible>
@@ -654,9 +587,9 @@
 				<onright>61</onright>
 				<onleft>9100</onleft>
 				<orientation>vertical</orientation>
-				<posx>810</posx>
+				<posx>588</posx>
 				<posy>47</posy>
-				<width>500</width>
+				<width>750</width>
 				<height>670</height>
 				<itemlayout width="226" height="165">
 					<include>EpisodeThumbCard</include>
@@ -823,10 +756,10 @@
 				<posy>61</posy>
 				<!-- MPAA flag -->
 				<control type="image">
-					<posy>25</posy>
-					<posx>140r</posx>
-					<width>100</width>
-					<height>17</height>
+					<posy>0</posy>
+					<posx>100r</posx>
+					<width>60</width>
+					<height>30</height>
 					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
@@ -940,6 +873,12 @@
 			<control type="textbox">
 				<label>$INFO[ListItem.Plot]</label>
 				<include>PlotFormat</include>
+				<visible>ListItem.Status(Watched) | [ListItem.Status(UnWatched) + !Skin.HasSetting(HidePlotForUnwatched)] | [ListItem.Status(InProgress) + !Skin.HasSetting(HidePlotForUnwatched)]</visible>
+			</control>
+			<control type="textbox">
+				<label>* Plot hidden to avoid spoilers *</label>
+				<include>PlotFormat</include>
+				<visible>[ListItem.Status(UnWatched) + Skin.HasSetting(HidePlotForUnwatched)] | [ListItem.Status(InProgress) + Skin.HasSetting(HidePlotForUnwatched)]</visible>
 			</control>
 			<!-- MediaFlags -->
 			<include>MediaFlags</include>
@@ -1050,7 +989,7 @@
 				</control>
 				<!-- MPAA flag -->
 				<control type="image">
-					<posy>55</posy>
+					<posy>50</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>17</height>
@@ -1299,9 +1238,7 @@
 						<textcolor>FF999999</textcolor>
 						<visible>!IsEmpty(ListItem.Property(sourceTitle)) + IsEmpty(ListItem.Art(sourceIcon))</visible>
 					</control>
-				</control>
-				
-				
+				</control>			
 				<!-- Season, Episode -->
 				<control type="label">
 					<width>600</width>

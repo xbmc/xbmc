@@ -144,12 +144,12 @@
 					<onclick>Skin.ToggleSetting(HideListViewIcons)</onclick>
 					<selected>!Skin.HasSetting(HideListViewIcons)</selected>
 				</control>
-				<control type="radiobutton" id="240">
-					<description>Show Plot in Video OSD</description>
+				<control type="radiobutton" id="327">
+					<description>Hide plot for Unwatched/In Progress</description>
 					<width>625</width>
-					<label>$LOCALIZE[31982]</label>
-					<onclick>Skin.ToggleSetting(HidePlotInVideoOSD)</onclick>
-					<selected>!Skin.HasSetting(HidePlotInVideoOSD)</selected>
+					<label>Hide plot for Unwatched/In Progress Episodes</label>
+					<onclick>Skin.ToggleSetting(HidePlotForUnwatched)</onclick>
+					<selected>Skin.HasSetting(HidePlotForUnwatched)</selected>
 				</control>
 				<control type="radiobutton" id="324">
 					<description>Show Pictures description</description>

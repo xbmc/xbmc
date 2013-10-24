@@ -260,6 +260,11 @@
 			<size>30</size>
 		</font>
 		<font>
+			<name>CondensedBold-32</name>
+			<filename>DejaVuSansCondensed-Bold.ttf</filename>
+			<size>32</size>
+		</font>
+		<font>
 			<name>CondensedBold-34</name>
 			<filename>DejaVuSansCondensed-Bold.ttf</filename>
 			<size>34</size>

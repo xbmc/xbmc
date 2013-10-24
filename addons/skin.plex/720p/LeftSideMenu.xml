@@ -136,9 +136,9 @@
 	</include>
 	<include name="leftMenuSortingButton">
 		<description>sorting radio button</description>
-		<textureradiofocus>arrow-big-up-orange.png</textureradiofocus>
-		<textureradionofocus flipy="true">arrow-big-up-gray.png</textureradionofocus>
-		<textureradioon>arrow-big-up-orange.png</textureradioon>
+		<!-- <textureorderoff>black-bottom-grey.png</textureorderoff> -->
+		<textureorderascending>arrow-big-up-orange.png</textureorderascending>
+		<textureorderdescending flipy="true">arrow-big-up-orange.png</textureorderdescending>
 		<align>right</align>
 		<aligny>center</aligny>
 		<pulseonselect>false</pulseonselect>
@@ -179,14 +179,14 @@
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
 				<!-- FILTERS -->
-				<!-- filters list title -->
-				<control type="label" id="19009">
+				<!-- primary filter list title -->
+				<control type="label" id="19008">
 					<description>Title</description>
 					<posy>90</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 				</control>
-				<!-- filters list -->
+				<!-- primary filters list -->
 				<control type="grouplist" id="19000">
 					<posy>150</posy>
 					<posx>15</posx>
@@ -194,16 +194,35 @@
 					<onright>777</onright>
 					<itemgap>0</itemgap>
 				</control>
+
+				<!-- secondary filters list title -->
+				<control type="label" id="19009">
+					<description>Secondary Title</description>
+					<posy>200</posy>
+					<posx>253</posx>
+					<include>leftMenuTitle</include>
+					<label>FILTER</label>
+				</control>
+				<!-- secondary filters list -->
+				<control type="grouplist" id="19001">
+					<posy>260</posy>
+					<posx>15</posx>
+					<ondown>19010</ondown>
+					<onright>777</onright>
+					<itemgap>0</itemgap>
+				</control>
+
 				<!-- filters buttons -->
-				<control type="button" id="19001">
+				<control type="button" id="19005">
 					<textoffsetx>35</textoffsetx>
 					<include>leftMenuFormat</include>
 				</control>
-				<control type="radiobutton" id="19002">
+				<control type="radiobutton" id="19006">
 					<textoffsetx>35</textoffsetx>
 					<include>leftMenuFormat</include>
 					<include>leftMenuFilterRadioButton</include>
 				</control>
+
 				<!-- SORTING -->
 				<!-- sorting list title -->
 				<control type="label" id="19019">
@@ -211,6 +230,7 @@
 					<posy>420</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
+					<label>SORT</label>
 				</control>
 				<!-- sorting list -->
 				<control type="grouplist" id="19010">
@@ -244,56 +264,84 @@
 				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
 				<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(10202)">Conditional</animation>
 				<posx>-253</posx>
-				<posy>30</posy>
+				<posy>5</posy>
 				<width>253</width>
 				<height>650</height>
 				<ondown>19000</ondown>
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
 				<!-- FILTERS -->
-				<!-- filters list title -->
-				<control type="label" id="19009">
+				<!-- primary filter list title -->
+				<control type="label" id="19008">
 					<description>Title</description>
-					<posy>90</posy>
+					<posy>50</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 				</control>
-				<!-- filters list -->
+				<!-- primary filters list -->
 				<control type="grouplist" id="19000">
-					<posy>150</posy>
+					<posy>110</posy>
 					<posx>15</posx>
+					<ondown>19001</ondown>
+					<onright>777</onright>
+					<itemgap>0</itemgap>
+				</control>
+
+				<!-- secondary filters list title -->
+				<control type="label" id="19009">
+					<description>Secondary Title</description>
+					<posy>300</posy>
+					<posx>253</posx>
+					<include>leftMenuTitle</include>
+					<label>FILTER</label>
+				</control>
+				<!-- secondary filters list -->
+				<control type="grouplist" id="19001">
+					<posy>360</posy>
+					<posx>15</posx>
+					<onup>19000</onup>
 					<ondown>19010</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
 				</control>
+
 				<!-- filters buttons -->
-				<control type="button" id="19001">
+				<control type="button" id="19005">
 					<textoffsetx>35</textoffsetx>
 					<include>leftMenuFormat</include>
 				</control>
-				<control type="radiobutton" id="19002">
+				<control type="radiobutton" id="19006">
 					<textoffsetx>35</textoffsetx>
 					<include>leftMenuFormat</include>
 					<include>leftMenuFilterRadioButton</include>
 				</control>
+				<control type="label" id="19007">
+					<textoffsetx>40</textoffsetx>
+					<include>leftMenuFormat</include>
+					<font>Condensed-14</font>
+					<shadowcolor>ff222222</shadowcolor>
+					<textcolor>FFFFCCCC</textcolor>
+				</control>
+
 				<!-- SORTING -->
 				<!-- sorting list title -->
 				<control type="label" id="19019">
 					<description>Title</description>
-					<posy>420</posy>
+					<posy>630</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
+					<label>SORT</label>
 				</control>
 				<!-- sorting list -->
 				<control type="grouplist" id="19010">
-					<posy>485</posy>
+					<posy>660</posy>
 					<posx>10</posx>
-					<onup>19000</onup>
+					<onup>19001</onup>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
 				</control>
 				<!-- sorting buttons -->
-				<control type="radiobutton" id="19011">
+				<control type="filterorderbutton" id="19011">
 					<textoffsetx>30</textoffsetx>
 					<include>leftMenuFormat</include>
 					<include>leftMenuSortingButton</include>
