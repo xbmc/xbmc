@@ -95,10 +95,6 @@
 				<font>font13</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
-				<onup>100</onup>
-				<ondown>100</ondown>
-				<onleft>101</onleft>
-				<onright>101</onright>
 				<pagecontrol>101</pagecontrol>
 			</control>
 			<control type="spincontrol" id="101">
@@ -137,7 +133,6 @@
 						<aligny>center</aligny>
 						<align>center</align>
 						<selectedcolor>selected</selectedcolor>
-						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
 				</itemlayout>
@@ -153,7 +148,6 @@
 						<shadowcolor>black</shadowcolor>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
-						<align>left</align>
 						<label>$INFO[ListItem.Label]</label>
 						<visible>!Control.HasFocus(110)</visible>
 					</control>
@@ -167,7 +161,6 @@
 						<align>center</align>
 						<shadowcolor>black</shadowcolor>
 						<textcolor>selected</textcolor>
-						<align>left</align>
 						<label fallback="--">$INFO[ListItem.Label]</label>
 						<visible>Control.HasFocus(110)</visible>
 					</control>
@@ -264,7 +257,6 @@
 				</focusedlayout>
 			</control>
 			<control type="spincontrol" id="121">
-				<description>Next page button</description>
 				<description>Next page button</description>
 				<posx>520</posx>
 				<posy>650</posy>

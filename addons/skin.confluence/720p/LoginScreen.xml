@@ -190,7 +190,6 @@
 					<height>45</height>
 					<label>-</label>
 					<font>-</font>
-					<aligny>-</aligny>
 					<onclick>ActivateWindow(ShutdownMenu)</onclick>
 					<texturefocus border="5">floor_buttonFO.png</texturefocus>
 					<texturenofocus border="5">floor_button.png</texturenofocus>

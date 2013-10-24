@@ -228,7 +228,6 @@
 				<width>55</width>
 				<height>55</height>
 				<label>31351</label>
-				<altlabel>208</altlabel>
 				<font>-</font>
 				<texturefocus>OSDStopFO.png</texturefocus>
 				<texturenofocus>OSDStopNF.png</texturenofocus>
@@ -497,7 +496,6 @@
 			<posy>350r</posy>
 			<width>256</width>
 			<height>300</height>
-			<align>bottom</align>
 			<itemgap>0</itemgap>
 			<onleft>400</onleft>
 			<onright>400</onright>
@@ -619,7 +617,6 @@
 			<posy>350r</posy>
 			<width>256</width>
 			<height>300</height>
-			<align>bottom</align>
 			<itemgap>0</itemgap>
 			<onleft>500</onleft>
 			<onright>500</onright>
@@ -719,7 +716,6 @@
 			<posy>350r</posy>
 			<width>256</width>
 			<height>300</height>
-			<align>bottom</align>
 			<itemgap>0</itemgap>
 			<onleft>550</onleft>
 			<onright>550</onright>

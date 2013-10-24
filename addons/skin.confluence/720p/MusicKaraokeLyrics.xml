@@ -7,7 +7,7 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<visibility>false</visibility>
+			<visible>false</visible>
 		</control>
 		<control type="image" id="2">
 			<description>fullscreen image</description>
@@ -15,7 +15,7 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<visibility>false</visibility>
+			<visible>false</visible>
 		</control>
 		<control type="group">
 			<visible>MusicPlayer.Offset(number).Exists + !IntegerGreaterThan(Player.TimeRemaining,20)</visible>

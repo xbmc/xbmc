@@ -4,7 +4,7 @@
 	<controls>
 		<!-- media infos -->
 		<control type="group" id="1">
-			<visible>[Player.ShowInfo | Window.IsActive(VideoOSD)] + ![Window.IsVisible(123) | Window.IsVisible(124) | Window.IsVisible(125) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(SliderDialog)]</visible>
+			<visible>[Player.ShowInfo | Window.IsActive(VideoOSD)] + ![Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(SliderDialog)]</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<control type="image" id="1">
 				<posx>0</posx>
