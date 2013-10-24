@@ -287,12 +287,17 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     return;
   }
 
+  item->m_lStartOffset = 0;
   if (arguments.find("viewOffset") != arguments.end())
   {
-    item->SetProperty("viewOffset", arguments.find("viewOffset")->second);
-    item->m_lStartOffset = STARTOFFSET_RESUME;
+    int offset = 0;
+    try { offset = boost::lexical_cast<int>(arguments.find("viewOffset")->second); }
+    catch (boost::bad_lexical_cast) { }
+
+    item->SetProperty("viewOffset", offset);
+    item->m_lStartOffset = offset != 0 ? STARTOFFSET_RESUME : 0;
   }
-  
+
   
   if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK)
   {
