@@ -1009,7 +1009,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
 
   // now the query parameter
   CStdString wholeQuery;
-  for (vector<CStdString>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); /* it++ is done further down */)
+  for (vector<CStdString>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); ++it)
   {
     CStdString parameter = FormatParameter(operatorString, *it, db, strType);
 
@@ -1161,12 +1161,11 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       query += negate + parameter;
     }
     
-    it++;
     if (query.Equals(negate + parameter))
       query = "1";
 
     query = "(" + query + ")";
-    if (it != m_parameter.end())
+    if (it+1 != m_parameter.end())
       query += " OR ";
 
     wholeQuery += query;
