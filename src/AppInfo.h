@@ -24,16 +24,16 @@ class AppInfo
 
 inline std::string AppInfo::name()
 {
-	return "Mendeley Updater";
+	return "Plex Updater";
 }
 
 inline std::string AppInfo::appName()
 {
-	return "Mendeley Desktop";
+	return "Plex Home Theater";
 }
 
 inline std::string AppInfo::organizationName()
 {
-	return "Mendeley Ltd.";
+	return "Plex Inc.";
 }
 

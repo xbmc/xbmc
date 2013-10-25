@@ -18,10 +18,10 @@ BEGIN
                         VALUE "OriginalFilename", "updater.exe"
                         VALUE "InternalName", "updater.exe"
                         VALUE "FileDescription", "Software Update Tool"
-                        VALUE "CompanyName", "Mendeley Ltd."
-                        VALUE "LegalCopyright", "(C) Mendeley Ltd. 2011"
-                        VALUE "ProductName", "Mendeley Software Updater"
-                        VALUE "PrivateBuild", "Built by Robert Knight"
+                        VALUE "CompanyName", "Plex Inc."
+                        VALUE "LegalCopyright", "(C) Plex Inc. 2011"
+                        VALUE "ProductName", "Plex Software Updater"
+                        VALUE "PrivateBuild", "Built by Plex"
                 END
         END
         BLOCK "VarFileInfo"

@@ -12,7 +12,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Mendeley Updater.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.mendeley.MendeleyUpdater</string>
+	<string>com.plex.PlexUpdater</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
