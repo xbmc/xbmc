@@ -43,7 +43,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
 {    
   public:
     CGUIPlexMediaWindow(int windowId = WINDOW_VIDEO_NAV, const CStdString &xml = "MyVideoNav.xml") :
-      CGUIMediaWindow(windowId, xml), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1) {};
+      CGUIMediaWindow(windowId, xml), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1), m_hasAdvancedFilters(false) {};
     bool OnMessage(CGUIMessage &message);
     bool OnAction(const CAction& action);
     virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
@@ -94,6 +94,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     CURL m_sectionRoot;
     bool m_isSecondary;
     void UpdateSectionTitle();
+    bool m_hasAdvancedFilters;
 
     CCriticalSection m_filterValuesSection;
     std::string m_waitingForFilter;
