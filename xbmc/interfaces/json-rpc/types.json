@@ -1361,5 +1361,250 @@
       "thumbnail": { "type": "string" }
     },
     "additionalProperties": false
+  },
+  "Setting.Type": {
+    "type": "string",
+    "enum": [
+      "boolean", "integer", "number", "string", "action", "list",
+      "path", "addon"
+    ]
+  },
+  "Setting.Level": {
+    "type": "string",
+    "enum": [ "basic", "standard", "advanced", "expert" ]
+  },
+  "Setting.Value": {
+    "type": [
+      { "type": "boolean", "required": true },
+      { "type": "integer", "required": true },
+      { "type": "number", "required": true },
+      { "type": "string", "required": true }
+    ]
+  },
+  "Setting.Value.List": {
+    "type": "array",
+    "items": { "$ref": "Setting.Value" }
+  },
+  "Setting.Value.Extended": {
+    "type": [
+      { "type": "boolean", "required": true },
+      { "type": "integer", "required": true },
+      { "type": "number", "required": true },
+      { "type": "string", "required": true },
+      { "$ref": "Setting.Value.List", "required": true }
+    ]
+  },
+  "Setting.Details.ControlBase": {
+    "type": "object",
+    "properties": {
+      "type": { "type": "string", "required": true },
+      "format": { "type": "string", "required": true },
+      "delayed": { "type": "boolean", "required": true }
+    }
+  },
+  "Setting.Details.ControlCheckmark": {
+    "extends": "Setting.Details.ControlBase",
+    "properties": {
+      "type": { "type": "string", "required": true, "enum": [ "toggle" ] },
+      "format": { "type": "string", "required": true, "enum": [ "boolean" ] }
+    }
+  },
+  "Setting.Details.ControlSpinner": {
+    "extends": "Setting.Details.ControlBase",
+    "properties": {
+      "type": { "type": "string", "required": true, "enum": [ "spinner" ] },
+      "formatlabel": { "type": "string" },
+      "minimumlabel": { "type": "string" }
+    }
+  },
+  "Setting.Details.ControlHeading": {
+    "extends": "Setting.Details.ControlBase",
+    "properties": {
+      "heading": { "type": "string" }
+    }
+  },
+  "Setting.Details.ControlEdit": {
+    "extends": "Setting.Details.ControlHeading",
+    "properties": {
+      "type": { "type": "string", "required": true, "enum": [ "edit" ] },
+      "hidden": { "type": "boolean", "required": true },
+      "verifynewvalue": { "type": "boolean", "required": true }
+    }
+  },
+  "Setting.Details.ControlButton": {
+    "extends": "Setting.Details.ControlHeading",
+    "properties": {
+      "type": { "type": "string", "required": true, "enum": [ "button" ] }
+    }
+  },
+  "Setting.Details.ControlList": {
+    "extends": "Setting.Details.ControlHeading",
+    "properties": {
+      "type": { "type": "string", "required": true, "enum": [ "list" ] },
+      "multiselect": { "type": "boolean", "required": true }
+    }
+  },
+  "Setting.Details.Control": {
+    "type": [
+      { "$ref": "Setting.Details.ControlCheckmark", "required": true },
+      { "$ref": "Setting.Details.ControlSpinner", "required": true },
+      { "$ref": "Setting.Details.ControlEdit", "required": true },
+      { "$ref": "Setting.Details.ControlButton", "required": true },
+      { "$ref": "Setting.Details.ControlList", "required": true }
+    ]
+  },
+  "Setting.Details.Base": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "string", "required": true, "minLength": 1 },
+      "label": { "type": "string", "required": true },
+      "help": { "type": "string" }
+    }
+  },
+  "Setting.Details.SettingBase": {
+    "extends": "Setting.Details.Base",
+    "properties": {
+      "type": { "$ref": "Setting.Type", "required": true },
+      "enabled": { "type": "boolean", "required": true },
+      "level": { "type": "integer", "required": true },
+      "parent": { "type": "string" },
+      "control": { "$ref": "Setting.Details.Control" }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingBool": {
+    "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "value": { "type": "boolean", "required": true },
+      "default": { "type": "boolean", "required": true }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingInt": {
+    "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "value": { "type": "integer", "required": true },
+      "default": { "type": "integer", "required": true },
+      "minimum": { "type": "integer" },
+      "step": { "type": "integer" },
+      "maximum": { "type": "integer" },
+      "options": { "type": "array",
+        "items": { "type": "object",
+          "properties": {
+            "label": { "type": "string", "required": true },
+            "value": { "type": "integer", "required": true }
+          }
+        }
+      }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingNumber": {
+    "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "value": { "type": "number", "required": true },
+      "default": { "type": "number", "required": true },
+      "minimum": { "type": "number", "required": true },
+      "step": { "type": "number", "required": true },
+      "maximum": { "type": "number", "required": true }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingString": {
+    "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "value": { "type": "string", "required": true },
+      "default": { "type": "string", "required": true },
+      "allowempty": { "type": "boolean", "required": true },
+      "options": { "type": "array",
+        "items": { "type": "object",
+          "properties": {
+            "label": { "type": "string", "required": true },
+            "value": { "type": "string", "required": true }
+          }
+        }
+      }
+    }
+  },
+  "Setting.Details.SettingAction": {
+    "extends": "Setting.Details.SettingBase",
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingList": {
+    "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "value": { "$ref": "Setting.Value.List", "required": true },
+      "default": { "$ref": "Setting.Value.List", "required": true },
+      "elementtype": { "$ref": "Setting.Type", "required": true },
+      "definition": { "$ref": "Setting.Details.Setting", "required": true },
+      "delimiter": { "type": "string", "required": true },
+      "minimum": { "type": "integer" },
+      "maximum": { "type": "integer" }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingPath": {
+    "extends": "Setting.Details.SettingString",
+    "properties": {
+      "writable": { "type": "boolean", "required": true },
+      "sources": { "type": "array", "items": { "type": "string" } }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingAddon": {
+    "extends": "Setting.Details.SettingString",
+    "properties": {
+      "addontype": { "$ref": "Addon.Types", "required": true }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.Setting": {
+    "type": [
+      { "$ref": "Setting.Details.SettingBool", "required": true },
+      { "$ref": "Setting.Details.SettingInt", "required": true },
+      { "$ref": "Setting.Details.SettingNumber", "required": true },
+      { "$ref": "Setting.Details.SettingString", "required": true },
+      { "$ref": "Setting.Details.SettingAction", "required": true },
+      { "$ref": "Setting.Details.SettingList", "required": true },
+      { "$ref": "Setting.Details.SettingPath", "required": true },
+      { "$ref": "Setting.Details.SettingAddon", "required": true }
+    ]
+  },
+  "Setting.Details.Group": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "string", "required": true, "minLength": 1 },
+      "settings": {
+        "type": "array",
+        "items": { "$ref": "Setting.Details.Setting" },
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.Category": {
+    "extends": "Setting.Details.Base",
+    "properties": {
+      "groups": {
+        "type": "array",
+        "items": { "$ref": "Setting.Details.Group" },
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.Section": {
+    "extends": "Setting.Details.Base",
+    "properties": {
+      "categories": {
+        "type": "array",
+        "items": { "$ref": "Setting.Details.Category" },
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "additionalProperties": false
   }
 }

@@ -2108,5 +2108,115 @@
       { "name": "thumbnail", "$ref": "Optional.String" }
     ],
     "returns": "string"
+  },
+  "Settings.GetSections": {
+    "type": "method",
+    "description": "Retrieves all setting sections",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "level", "$ref": "Setting.Level", "default": "standard" },
+      { "name": "properties", "extends": "Item.Fields.Base",
+        "items": { "type": "string",
+          "enum": [ "categories" ]
+        }
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "sections": { "type": "array",
+          "items": { "$ref": "Setting.Details.Section" }
+        }
+      }
+    }
+  },
+  "Settings.GetCategories": {
+    "type": "method",
+    "description": "Retrieves all setting categories",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "level", "$ref": "Setting.Level", "default": "standard" },
+      { "name": "section", "type": "string", "default": "" },
+      { "name": "properties", "extends": "Item.Fields.Base",
+        "items": { "type": "string",
+          "enum": [ "settings" ]
+        }
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "categories": { "type": "array",
+          "items": { "$ref": "Setting.Details.Category" }
+        }
+      }
+    }
+  },
+  "Settings.GetSettings": {
+    "type": "method",
+    "description": "Retrieves all settings",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "level", "$ref": "Setting.Level", "default": "standard" },
+      { "name": "filter", "type": [
+          { "type": "object",
+            "properties": {
+              "section": { "type": "string", "required": true, "minLength": 1 },
+              "category": { "type": "string", "required": true, "minLength": 1 }
+            },
+            "additionalProperties": false,
+            "required": true
+          }
+        ],
+        "default": null
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "settings": { "type": "array",
+          "items": { "$ref": "Setting.Details.Setting" }
+        }
+      }
+    }
+  },
+  "Settings.GetSettingValue": {
+    "type": "method",
+    "description": "Retrieves the value of a setting",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "setting", "type": "string", "required": true, "minLength": 1 }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "value": { "$ref": "Setting.Value.Extended", "required": true }
+      }
+    }
+  },
+  "Settings.SetSettingValue": {
+    "type": "method",
+    "description": "Changes the value of a setting",
+    "transport": "Response",
+    "permission": "WriteSetting",
+    "params": [
+      { "name": "setting", "type": "string", "required": true, "minLength": 1 },
+      { "name": "value", "$ref": "Setting.Value.Extended", "required": true }
+    ],
+    "returns": "boolean"
+  },
+  "Settings.ResetSettingValue": {
+    "type": "method",
+    "description": "Resets the value of a setting",
+    "transport": "Response",
+    "permission": "WriteSetting",
+    "params": [
+      { "name": "setting", "type": "string", "required": true, "minLength": 1 }
+    ],
+    "returns": "string"
   }
 }
