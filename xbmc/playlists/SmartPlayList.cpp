@@ -174,7 +174,6 @@ CSmartPlaylistRule::CSmartPlaylistRule()
 {
   m_field = FieldNone;
   m_operator = OPERATOR_CONTAINS;
-  m_parameter.clear();
 }
 
 bool CSmartPlaylistRule::Load(const TiXmlNode *node, const std::string &encoding /* = "UTF-8" */)
