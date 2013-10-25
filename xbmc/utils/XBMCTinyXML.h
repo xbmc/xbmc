@@ -77,6 +77,8 @@ public:
   bool Parse(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool Parse(const std::string& data, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool Parse(const std::string& data, const std::string& dataCharset);
+  inline std::string GetSuggestedCharset(void) const { return m_SuggestedCharset; }
+  inline std::string GetUsedCharset(void) const      { return m_UsedCharset; }
   static bool Test();
 protected:
   bool TryParse(const std::string& data, const std::string& tryDataCharset);
