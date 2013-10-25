@@ -293,6 +293,7 @@
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
+					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- secondary filters list -->
 				<control type="grouplist" id="19001">
@@ -328,6 +329,7 @@
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
+					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- sorting list -->
 				<control type="grouplist" id="19010">
