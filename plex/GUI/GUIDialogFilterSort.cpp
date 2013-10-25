@@ -39,6 +39,8 @@ void CGUIDialogFilterSort::SetFilter(CPlexSecondaryFilterPtr filter, int filterB
   if (!radioButton)
     return;
 
+  radioButton->SetVisible(false);
+
   CGUILabelControl* headerLabel = (CGUILabelControl*)GetControl(FILTER_SUBLIST_LABEL);
   if (headerLabel)
     headerLabel->SetLabel(m_filter->getFilterTitle());
