@@ -113,6 +113,8 @@ protected:
   virtual int                 TranslateField(const char *field) const;
   virtual CStdString          TranslateField(int field) const;
   virtual CStdString          FormatParameter(const CStdString &negate, const CStdString &oper, const CDatabase &db, const CStdString &type) const;
+  virtual CStdString          FormatWhereClause(const CStdString &negate, const CStdString &oper, const CStdString &param,
+                                                const CDatabase &db, const CStdString &type) const;
   virtual SEARCH_OPERATOR     GetOperator(const CStdString &type) const;
   virtual CStdString          GetOperatorString(SEARCH_OPERATOR op) const;
   virtual CStdString          GetBooleanQuery(const CStdString &negate, const CStdString &strType) const;

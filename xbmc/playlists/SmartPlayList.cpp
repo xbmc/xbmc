@@ -1011,7 +1011,21 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
   CStdString wholeQuery;
   for (vector<CStdString>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); ++it)
   {
-    CStdString parameter = FormatParameter(operatorString, *it, db, strType);
+    CStdString query = "(" + FormatWhereClause(negate, operatorString, *it, db, strType) + ")";
+
+    if (it+1 != m_parameter.end())
+      query += " OR ";
+
+    wholeQuery += query;
+  }
+
+  return wholeQuery;
+}
+
+CStdString CSmartPlaylistRule::FormatWhereClause(const CStdString &negate, const CStdString &oper, const CStdString &param,
+                                                 const CDatabase &db, const CStdString &strType) const
+{
+    CStdString parameter = FormatParameter(oper, param, db, strType);
 
     CStdString query;
     CStdString table;
@@ -1125,7 +1139,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
         query = negate + " (" + GetField(FieldId, strType) +  parameter + ")";
     }
     if (m_field == FieldVideoResolution)
-      query = table + ".idFile" + negate + GetVideoResolutionQuery(*it);
+      query = table + ".idFile" + negate + GetVideoResolutionQuery(param);
     else if (m_field == FieldAudioChannels)
       query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND iAudioChannels " + parameter + ")";
     else if (m_field == FieldVideoCodec)
@@ -1140,8 +1154,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND fVideoAspect " + parameter + ")";
     if (m_field == FieldPlaycount && strType != "songs" && strType != "albums" && strType != "tvshows")
     { // playcount IS stored as NULL OR number IN video db
-      if ((m_operator == OPERATOR_EQUALS && it->Equals("0")) ||
-          (m_operator == OPERATOR_DOES_NOT_EQUAL && !it->Equals("0")) ||
+      if ((m_operator == OPERATOR_EQUALS && param == "0") ||
+          (m_operator == OPERATOR_DOES_NOT_EQUAL && param != "0") ||
           (m_operator == OPERATOR_LESS_THAN))
       {
         CStdString field = GetField(FieldPlaycount, strType);
@@ -1163,15 +1177,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     
     if (query.Equals(negate + parameter))
       query = "1";
-
-    query = "(" + query + ")";
-    if (it+1 != m_parameter.end())
-      query += " OR ";
-
-    wholeQuery += query;
-  }
-
-  return wholeQuery;
+  return query;
 }
 
 CStdString CSmartPlaylistRule::GetField(int field, const CStdString &type) const
