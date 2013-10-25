@@ -85,16 +85,13 @@ public:
   CStdString                  GetLocalizedRule() const;
   CStdString                  GetWhereClause(const CDatabase &db, const CStdString& strType) const;
 
-  static Field                TranslateField(const char *field);
-  static CStdString           TranslateField(Field field);
   static SortBy               TranslateOrder(const char *order);
   static CStdString           TranslateOrder(SortBy order);
-  static CStdString           GetField(Field field, const CStdString& strType);
   static CStdString           TranslateOperator(SEARCH_OPERATOR oper);
   static Field                TranslateGroup(const char *group);
   static CStdString           TranslateGroup(Field group);
 
-  static CStdString           GetLocalizedField(Field field);
+  static CStdString           GetLocalizedField(int field);
   static CStdString           GetLocalizedOperator(SEARCH_OPERATOR oper);
   static CStdString           GetLocalizedGroup(Field group);
   static bool                 CanGroupMix(Field group);
@@ -103,14 +100,18 @@ public:
   static std::vector<SortBy>  GetOrders(const CStdString &type);
   static std::vector<Field>   GetGroups(const CStdString &type);
   virtual FIELD_TYPE          GetFieldType(int field) const;
-  static bool                 IsFieldBrowseable(Field field);
+  static bool                 IsFieldBrowseable(int field);
 
   static bool Validate(const std::string &input, void *data);
   static bool ValidateRating(const std::string &input, void *data);
 
-  Field                       m_field;
+  int                         m_field;
   SEARCH_OPERATOR             m_operator;
   std::vector<CStdString>     m_parameter;
+protected:
+  virtual CStdString          GetField(int field, const CStdString& type) const;
+  virtual int                 TranslateField(const char *field) const;
+  virtual CStdString          TranslateField(int field) const;
 private:
   static SEARCH_OPERATOR TranslateOperator(const char *oper);
 

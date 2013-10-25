@@ -312,14 +312,14 @@ bool CSmartPlaylistRule::Save(CVariant &obj) const
   return true;
 }
 
-Field CSmartPlaylistRule::TranslateField(const char *field)
+int CSmartPlaylistRule::TranslateField(const char *field) const
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (StringUtils::EqualsNoCase(field, fields[i].string)) return fields[i].field;
   return FieldNone;
 }
 
-CStdString CSmartPlaylistRule::TranslateField(Field field)
+CStdString CSmartPlaylistRule::TranslateField(int field) const
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].string;
@@ -376,7 +376,7 @@ CStdString CSmartPlaylistRule::TranslateGroup(Field group)
   return "";
 }
 
-CStdString CSmartPlaylistRule::GetLocalizedField(Field field)
+CStdString CSmartPlaylistRule::GetLocalizedField(int field)
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return g_localizeStrings.Get(fields[i].localizedString);
@@ -390,7 +390,7 @@ CSmartPlaylistRule::FIELD_TYPE CSmartPlaylistRule::GetFieldType(int field) const
   return TEXT_FIELD;
 }
 
-bool CSmartPlaylistRule::IsFieldBrowseable(Field field)
+bool CSmartPlaylistRule::IsFieldBrowseable(int field)
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].browseable;
@@ -1156,9 +1156,11 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
   return wholeQuery;
 }
 
-CStdString CSmartPlaylistRule::GetField(Field field, const CStdString& type)
+CStdString CSmartPlaylistRule::GetField(int field, const CStdString &type) const
 {
-  return DatabaseUtils::GetField(field, DatabaseUtils::MediaTypeFromString(type), DatabaseQueryPartWhere);
+  if (field >= FieldUnknown && field < FieldMax)
+    return DatabaseUtils::GetField((Field)field, DatabaseUtils::MediaTypeFromString(type), DatabaseQueryPartWhere);
+  return "";
 }
 
 CSmartPlaylistRuleCombination::CSmartPlaylistRuleCombination()
