@@ -5,7 +5,7 @@ import platform
 import zipfile
 from utils import make_shasum
 
-def get_file_element(root, frelpath, size, perms, shasum, tarfilename):
+def get_file_element(root, frelpath, size, perms, shasum, tarfilename, ismain):
 	fileEl = et.SubElement(root, "file")
 
 	name = et.SubElement(fileEl, "name")
@@ -23,10 +23,14 @@ def get_file_element(root, frelpath, size, perms, shasum, tarfilename):
 	package = et.SubElement(fileEl, "package")
 	package.text = tarfilename.replace(".zip", "")
 
+	if ismain:
+		ismainel = et.SubElement(fileEl, "is-main-binary")
+		ismainel.text = "true"
+
 	return fileEl
 
 
-def create_update(product, version, output, platform, input, delta, fversion):
+def create_update(product, version, output, platform, input, delta, fversion, mainbinary):
 	if not os.path.isdir(input) and not input.endswith(".zip"):
 		print "Input directory %s can't be read." % input
 		return False
@@ -79,7 +83,11 @@ def create_update(product, version, output, platform, input, delta, fversion):
 
 			zfile = archive.open(info, "r")
 			shasum = make_shasum(zfile)
-			fileEl = get_file_element(install, frelpath, size, perms, shasum, tarfilename)
+
+			ismain = False;
+			if frelpath == mainbinary: ismain = True
+
+			fileEl = get_file_element(install, frelpath, size, perms, shasum, tarfilename, ismain)
 
 	else:
 		archive = zipfile.ZipFile(tarfilename, "w")
@@ -93,7 +101,10 @@ def create_update(product, version, output, platform, input, delta, fversion):
 
 				archive.write(fpath, frelpath, zipfile.ZIP_DEFLATED)
 
-				fileEl = get_file_element(install, frelpath, size, perms, shasum, tarfilename)
+				ismain = False
+				if frelpath == mainbinary: ismain = True
+
+				fileEl = get_file_element(install, frelpath, size, perms, shasum, tarfilename, ismain)
 
 
 	archive.close()
@@ -125,8 +136,9 @@ if __name__ == "__main__":
 	o.add_option("-i", dest="input", default="output/Plex Home Theater.app", type="string")
 	o.add_option("-d", dest="delta", default=False, action="store_true")
 	o.add_option("-f", dest="fromversion", default="", type="string")
+	o.add_option("-m", dest="mainbinary", default="Plex Home Theater.app/Contents/MacOS/Plex Home Theater", type="string")
 
 	(options, args) = o.parse_args()
 
-	if not create_update(options.product, options.version, options.output, options.platform, options.input, options.delta, options.fromversion):
+	if not create_update(options.product, options.version, options.output, options.platform, options.input, options.delta, options.fromversion, options.mainbinary):
 		sys.exit(1)
