@@ -114,6 +114,7 @@ protected:
   virtual CStdString          TranslateField(int field) const;
   virtual CStdString          FormatParameter(const CStdString &negate, const CStdString &oper, const CDatabase &db, const CStdString &type) const;
   virtual SEARCH_OPERATOR     GetOperator(const CStdString &type) const;
+  virtual CStdString          GetOperatorString(SEARCH_OPERATOR op) const;
   virtual CStdString          GetBooleanQuery(const CStdString &negate, const CStdString &strType) const;
 private:
   static SEARCH_OPERATOR TranslateOperator(const char *oper);

@@ -921,10 +921,8 @@ CStdString CSmartPlaylistRule::FormatParameter(const CStdString &operatorString,
   return parameter;
 }
 
-CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdString& strType) const
+CStdString CSmartPlaylistRule::GetOperatorString(SEARCH_OPERATOR op) const
 {
-  SEARCH_OPERATOR op = GetOperator(strType);
-
   CStdString operatorString;
   if (GetFieldType(m_field) != TEXTIN_FIELD)
   {
@@ -977,7 +975,14 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       break;
     }
   }
+  return operatorString;
+}
 
+CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdString& strType) const
+{
+  SEARCH_OPERATOR op = GetOperator(strType);
+
+  CStdString operatorString = GetOperatorString(op);
   CStdString negate;
   if (op == OPERATOR_DOES_NOT_CONTAIN || op == OPERATOR_FALSE ||
      (op == OPERATOR_DOES_NOT_EQUAL && GetFieldType(m_field) != NUMERIC_FIELD && GetFieldType(m_field) != SECONDS_FIELD))
