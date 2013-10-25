@@ -4162,19 +4162,19 @@ msgid "Reset"
 msgstr ""
 
 msgctxt "#10036"
-msgid "Level: Basic"
+msgid "Basic"
 msgstr ""
 
 msgctxt "#10037"
-msgid "Level: Standard"
+msgid "Standard"
 msgstr ""
 
 msgctxt "#10038"
-msgid "Level: Advanced"
+msgid "Advanced"
 msgstr ""
 
 msgctxt "#10039"
-msgid "Level: Expert"
+msgid "Expert"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -4182,10 +4182,12 @@ msgctxt "#10040"
 msgid "Add-on browser"
 msgstr ""
 
+#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
 msgctxt "#10041"
-msgid "Reset settings"
+msgid "Reset above settings to default"
 msgstr ""
 
+#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr ""
@@ -4198,7 +4200,11 @@ msgctxt "#10044"
 msgid "No help available"
 msgstr ""
 
-#empty strings from id 10045 to 10099
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr ""
+
+#empty strings from id 10046 to 10099
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10100"
