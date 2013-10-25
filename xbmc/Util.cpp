@@ -2188,10 +2188,10 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
     }
     StringUtils::Trim(name);
     info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);
-
-    if (info.flag == 0x1111)
-      info.flag = CDemuxStream::FLAG_NONE;
   }
+  if (info.flag == 0x1111)
+    info.flag = CDemuxStream::FLAG_NONE;
+
   CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s", __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, strStream.c_str());
 }
 
