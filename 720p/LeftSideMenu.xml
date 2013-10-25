@@ -266,7 +266,7 @@
 				<posx>-253</posx>
 				<posy>5</posy>
 				<width>253</width>
-				<height>670</height>
+				<height>720</height>
 				<ondown>19000</ondown>
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
@@ -285,6 +285,7 @@
 					<ondown>19001</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
+					<animation effect="slide" end="0,-10" time="0" condition="Container.Content(movies)">Conditional</animation>
 				</control>
 				<!-- secondary filters list title -->
 				<control type="label" id="19009">
@@ -293,6 +294,7 @@
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
+					<animation effect="slide" end="0,-120" time="0" condition="Container.Content(movies)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- secondary filters list -->
@@ -303,6 +305,7 @@
 					<ondown>19010</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
+					<animation effect="slide" end="0,-130" time="0" condition="Container.Content(movies)">Conditional</animation>
 				</control>
 				<!-- filters buttons -->
 				<control type="button" id="19005">
@@ -329,6 +332,7 @@
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
+					<animation effect="slide" end="0,-10" time="0" condition="Container.Content(movies)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- sorting list -->
@@ -338,6 +342,7 @@
 					<onup>19001</onup>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
+					<animation effect="slide" end="0,-20" time="0" condition="Container.Content(movies)">Conditional</animation>
 				</control>
 				<!-- sorting buttons -->
 				<control type="filterorderbutton" id="19011">
