@@ -1039,10 +1039,7 @@ bool CSmartPlaylist::load(const TiXmlNode *root)
   if (root == NULL)
     return false;
 
-  CStdString encoding;
-  XMLUtils::GetEncoding(&m_xmlDoc, encoding);
-
-  return LoadFromXML(root, encoding);
+  return LoadFromXML(root);
 }
 
 bool CSmartPlaylist::Load(const CStdString &path)

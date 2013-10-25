@@ -280,9 +280,6 @@ void CWeatherJob::LoadLocalizedToken()
     return;
   }
 
-  CStdString strEncoding;
-  XMLUtils::GetEncoding(&xmlDoc, strEncoding);
-
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (pRootElement->Value() != CStdString("strings"))
     return;
@@ -302,12 +299,7 @@ void CWeatherJob::LoadLocalizedToken()
             (LOCALIZED_TOKEN_FIRSTID3 <= id && id <= LOCALIZED_TOKEN_LASTID3) ||
             (LOCALIZED_TOKEN_FIRSTID4 <= id && id <= LOCALIZED_TOKEN_LASTID4))
         {
-          CStdString utf8Label;
-          if (strEncoding.IsEmpty()) // Is language file utf8?
-            utf8Label=pChild->FirstChild()->Value();
-          else
-            g_charsetConverter.ToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8Label);
-
+          CStdString utf8Label(pChild->FirstChild()->Value());
           if (!utf8Label.IsEmpty())
             m_localizedTokens.insert(make_pair(utf8Label, id));
         }
