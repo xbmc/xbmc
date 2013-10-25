@@ -5,6 +5,9 @@
 #include "FileItem.h"
 #include "URL.h"
 
+#include "PlexApplication.h"
+#include "Client/PlexServerDataLoader.h"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexSectionFilter::CPlexSectionFilter(const CURL &sectionUrl) : m_sectionUrl(sectionUrl)
 {
@@ -19,6 +22,11 @@ bool CPlexSectionFilter::loadFilters()
   XFILE::CPlexDirectory dir;
   CFileItemList list;
 
+  CLog::Log(LOGDEBUG, "CPlexSectionFilter::loadFilters loading filters from section %s", m_sectionUrl.Get().c_str());
+
+  bool advancedFilters = g_plexApplication.dataLoader->SectionHasFilters(m_sectionUrl);
+  EPlexDirectoryType type = g_plexApplication.dataLoader->GetSectionType(m_sectionUrl);
+
   /* get primary filters */
   CURL fURL(m_sectionUrl);
   if (dir.GetDirectory(fURL.Get(), list))
@@ -26,14 +34,28 @@ bool CPlexSectionFilter::loadFilters()
     for (int i = 0; i < list.Size(); i ++)
     {
       CFileItemPtr primaryFilter = list.Get(i);
-//      if (!primaryFilter->GetProperty("secondary").asBoolean() &&
-//          !primaryFilter->GetProperty("search").asBoolean() &&
-//          primaryFilter->GetProperty("unprocessed_key").asString() != "unwatched")
-      if (primaryFilter->GetProperty("unprocessed_key").asString() == "all" ||
-          primaryFilter->GetProperty("unprocessed_key").asString() == "onDeck" ||
-          primaryFilter->GetProperty("unprocessed_key").asString() == "folder")
-        m_primaryFilters[primaryFilter->GetProperty("unprocessed_key").asString()] = primaryFilter->GetLabel();
+
+      if (advancedFilters && type == PLEX_DIR_TYPE_MOVIE)
+      {
+        if (primaryFilter->GetProperty("unprocessed_key").asString() == "all" ||
+            primaryFilter->GetProperty("unprocessed_key").asString() == "onDeck" ||
+            primaryFilter->GetProperty("unprocessed_key").asString() == "folder")
+          m_primaryFilters[primaryFilter->GetProperty("unprocessed_key").asString()] = primaryFilter->GetLabel();
+      }
+      else
+      {
+        if (!primaryFilter->GetProperty("secondary").asBoolean() &&
+            !primaryFilter->GetProperty("search").asBoolean() &&
+            primaryFilter->GetProperty("unprocessed_key").asString() != "unwatched")
+          m_primaryFilters[primaryFilter->GetProperty("unprocessed_key").asString()] = primaryFilter->GetLabel();
+      }
     }
+  }
+
+  if (!advancedFilters)
+  {
+    CLog::Log(LOGDEBUG, "CPlexSectionFilter::loadFilters section %s doesn't have filters...", m_sectionUrl.Get().c_str());
+    return true;
   }
 
   list.Clear();
@@ -88,7 +110,7 @@ bool CPlexSectionFilter::loadFilters()
     }
   }
 
-  return false;
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

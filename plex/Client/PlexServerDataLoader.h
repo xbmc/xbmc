@@ -20,66 +20,71 @@ typedef std::map<CStdString, CPlexServerPtr> ServerMap;
 
 class CPlexServerDataLoader : public CJobQueue, public ITimerCallback, public boost::enable_shared_from_this<CPlexServerDataLoader>
 {
-public:
-  CPlexServerDataLoader();
+  public:
+    CPlexServerDataLoader();
 
-  void LoadDataFromServer(const CPlexServerPtr& server);
-  void RemoveServer(const CPlexServerPtr& server);
+    void LoadDataFromServer(const CPlexServerPtr& server);
+    void RemoveServer(const CPlexServerPtr& server);
 
-  CFileItemListPtr GetSectionsForUUID(const CStdString& uuid);
-  CFileItemListPtr GetSectionsForServer(const CPlexServerPtr &server) { return GetSectionsForUUID(server->GetUUID()); }
-  CFileItemListPtr GetChannelsForUUID(const CStdString& uuid);
-  CFileItemListPtr GetChannelsForServer(const CPlexServerPtr &server) { return GetChannelsForUUID(server->GetUUID()); }
+    CFileItemListPtr GetSectionsForUUID(const CStdString& uuid);
+    CFileItemListPtr GetSectionsForServer(const CPlexServerPtr &server) { return GetSectionsForUUID(server->GetUUID()); }
+    CFileItemListPtr GetChannelsForUUID(const CStdString& uuid);
+    CFileItemListPtr GetChannelsForServer(const CPlexServerPtr &server) { return GetChannelsForUUID(server->GetUUID()); }
 
-  CFileItemListPtr GetAllSections() const;
-  CFileItemListPtr GetAllSharedSections() const;
-  CFileItemListPtr GetAllChannels() const;
+    CFileItemListPtr GetAllSections() const;
+    CFileItemListPtr GetAllSharedSections() const;
+    CFileItemListPtr GetAllChannels() const;
 
-  bool HasChannels() const { return m_channelMap.size() > 0; }
+    bool SectionHasFilters(const CURL &section);
 
-  void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-  
-  void Stop();
+    bool HasChannels() const { return m_channelMap.size() > 0; }
 
-private:
-  bool m_stopped;
-  void OnTimeout();
+    void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
-  CTimer *m_refreshTimer;
+    void Stop();
 
-  CCriticalSection m_dataLock;
-  CCriticalSection m_serverLock;
+    CFileItemPtr GetSection(const CURL &sectionUrl);
+    EPlexDirectoryType GetSectionType(const CURL &sectionUrl);
 
-  ServerMap m_servers;
+  private:
+    bool m_stopped;
+    void OnTimeout();
 
-  ServerDataMap m_sectionMap;
-  ServerDataMap m_channelMap;
+    CTimer *m_refreshTimer;
 
-  ServerDataMap m_sharedSectionsMap;
+    CCriticalSection m_dataLock;
+    CCriticalSection m_serverLock;
+
+    ServerMap m_servers;
+
+    ServerDataMap m_sectionMap;
+    ServerDataMap m_channelMap;
+
+    ServerDataMap m_sharedSectionsMap;
 };
 
 typedef boost::shared_ptr<CPlexServerDataLoader> CPlexServerDataLoaderPtr;
 
 class CPlexServerDataLoaderJob : public CJob
 {
-public:
-  CPlexServerDataLoaderJob(const CPlexServerPtr& server, const CPlexServerDataLoaderPtr &loader) : m_server(server), m_loader(loader) {}
+  public:
+    CPlexServerDataLoaderJob(const CPlexServerPtr& server, const CPlexServerDataLoaderPtr &loader) : m_server(server), m_loader(loader) {}
 
-  bool DoWork();
-  CFileItemListPtr FetchList(const CStdString& path);
+    bool DoWork();
+    CFileItemListPtr FetchList(const CStdString& path);
 
-  CPlexServerPtr m_server;
-  CFileItemListPtr m_sectionList;
-  CFileItemListPtr m_channelList;
+    CPlexServerPtr m_server;
+    CFileItemListPtr m_sectionList;
+    CFileItemListPtr m_channelList;
 
-  /* we retain this so it won't go away from under us */
-  CPlexServerDataLoaderPtr m_loader;
+    /* we retain this so it won't go away from under us */
+    CPlexServerDataLoaderPtr m_loader;
 
-  virtual bool operator==(const CJob* job) const
-  {
-    CPlexServerDataLoaderJob *oJob = (CPlexServerDataLoaderJob*)job;
-    if (oJob->m_server == m_server)
-      return true;
-    return false;
-  }
+    virtual bool operator==(const CJob* job) const
+    {
+      CPlexServerDataLoaderJob *oJob = (CPlexServerDataLoaderJob*)job;
+      if (oJob->m_server == m_server)
+        return true;
+      return false;
+    }
 };

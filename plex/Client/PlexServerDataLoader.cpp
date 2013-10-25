@@ -233,10 +233,47 @@ void CPlexServerDataLoader::OnTimeout()
     AddJob(new CPlexServerDataLoaderJob(p.second, shared_from_this()));
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServerDataLoader::Stop()
 {
   m_refreshTimer->Stop();
   m_stopped = true;
 
   CancelJobs();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemPtr CPlexServerDataLoader::GetSection(const CURL &sectionUrl)
+{
+  CFileItemListPtr sections = GetSectionsForUUID(sectionUrl.GetHostName());
+  if (sections && sections->Size() > 0)
+  {
+    for (int i = 0; i < sections->Size(); i ++)
+    {
+      CFileItemPtr item = sections->Get(i);
+      if (item && item->GetPath() == sectionUrl.Get())
+        return item;
+    }
+  }
+  return CFileItemPtr();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexServerDataLoader::SectionHasFilters(const CURL &sectionUrl)
+{
+  CFileItemPtr item = GetSection(sectionUrl);
+  if (item)
+    return item->GetProperty("filters").asBoolean();
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+EPlexDirectoryType CPlexServerDataLoader::GetSectionType(const CURL &sectionUrl)
+{
+  CFileItemPtr item = GetSection(sectionUrl);
+  if (item)
+    return item->GetPlexDirectoryType();
+
+  return PLEX_DIR_TYPE_UNKNOWN;
 }

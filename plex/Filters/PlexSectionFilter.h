@@ -57,7 +57,8 @@ class CPlexSectionFilter
     std::vector<CPlexSecondaryFilterPtr> currentSecondaryFilters() const { return m_currentSecondaryFilters; }
 
     std::string getFilterUrl() const { return m_sectionUrl.Get(); }
-    bool isLoaded() const { return m_secondaryFilters.size() > 0; }
+    bool isLoaded() const { return m_primaryFilters.size() > 0; }
+    bool hasAdvancedFilters() const { return m_secondaryFilters.size() > 0; }
 
     void addSecondaryFilter(CPlexSecondaryFilterPtr secFilter);
     CPlexSecondaryFilterPtr addSecondaryFilter(const std::string& filterKey);

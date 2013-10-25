@@ -881,10 +881,11 @@ CURL CGUIPlexMediaWindow::GetRealDirectoryUrl(const CStdString& url_)
 
   int sectionNumber = -1;
   if (dirUrl.GetProtocol() == "plexserver" &&
-      boost::starts_with(dirUrl.GetFileName(), "library/sections/"))
+      (boost::starts_with(dirUrl.GetFileName(), "library/sections/") ||
+       (boost::starts_with(dirUrl.GetFileName(), "sync/"))))
   {
     /* remove library/sections/ at the beginning of the string */
-    CStdString sectionName = dirUrl.GetFileName().substr(17);
+    CStdString sectionName = URIUtils::GetFileName(dirUrl.GetFileName());
 
     /* now let's check if this is a number i.e. 5 or something */
     try { sectionNumber = boost::lexical_cast<int>(sectionName); }
@@ -934,28 +935,30 @@ void CGUIPlexMediaWindow::AddFilters()
   CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
   CGUIPlexFilterFactory factory(this);
 
-  if (sectionFilter)
+  if (!sectionFilter)
+    return;
+
+  m_vecItems->SetProperty("hasAdvancedFilters", sectionFilter->hasAdvancedFilters() ? "yes" : "");
+
+  CGUIControlGroupList *primaryFilters = (CGUIControlGroupList*)GetControl(FILTER_PRIMARY_CONTAINER);
+  if (primaryFilters)
   {
-    CGUIControlGroupList *primaryFilters = (CGUIControlGroupList*)GetControl(FILTER_PRIMARY_CONTAINER);
-    if (primaryFilters)
+    primaryFilters->ClearAll();
+
+    PlexStringPairVector pfilterLabel = sectionFilter->getPrimaryFilters();
+    int id = FILTER_PRIMARY_BUTTONS_START;
+    BOOST_FOREACH(PlexStringPair p, pfilterLabel)
     {
-      primaryFilters->ClearAll();
-
-      PlexStringPairVector pfilterLabel = sectionFilter->getPrimaryFilters();
-      int id = FILTER_PRIMARY_BUTTONS_START;
-      BOOST_FOREACH(PlexStringPair p, pfilterLabel)
+      CGUIButtonControl *button = factory.getPrimaryFilterButton(p.second);
+      if (button)
       {
-        CGUIButtonControl *button = factory.getPrimaryFilterButton(p.second);
-        if (button)
-        {
-          button->SetID(id ++);
+        button->SetID(id ++);
 
-          primaryFilters->AddControl(button);
-          if (p.first == sectionFilter->currentPrimaryFilter())
-            button->SetSelected(true);
-          else
-            button->SetSelected(false);
-        }
+        primaryFilters->AddControl(button);
+        if (p.first == sectionFilter->currentPrimaryFilter())
+          button->SetSelected(true);
+        else
+          button->SetSelected(false);
       }
     }
 
@@ -979,13 +982,6 @@ void CGUIPlexMediaWindow::AddFilters()
           secondaryFilters->AddControl(button);
 
         }
-
-//        if (filter->isSelected())
-//        {
-//          CGUILabelControl* subLbl = factory.getSecondaryFilterLabel(filter);
-//          if (subLbl)
-//            secondaryFilters->AddControl(subLbl);
-//        }
       }
     }
 
