@@ -842,7 +842,34 @@ CStdString CSmartPlaylistRule::GetVideoResolutionQuery(const CStdString &paramet
   return retVal;
 }
 
-CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdString& strType) const
+CStdString CSmartPlaylistRule::GetBooleanQuery(const CStdString &negate, const CStdString &strType) const
+{
+  if (strType == "movies")
+  {
+    if (m_field == FieldInProgress)
+      return "movieview.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
+    else if (m_field == FieldTrailer)
+      return negate + GetField(m_field, strType) + "!= ''";
+  }
+  else if (strType == "episodes")
+  {
+    if (m_field == FieldInProgress)
+      return "episodeview.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
+  }
+  else if (strType == "tvshows")
+  {
+    if (m_field == FieldInProgress)
+      return negate + " ("
+                          "(tvshowview.watchedcount > 0 AND tvshowview.watchedcount < tvshowview.totalCount) OR "
+                          "(tvshowview.watchedcount = 0 AND EXISTS "
+                            "(SELECT 1 FROM episodeview WHERE episodeview.idShow = " + GetField(FieldId, strType) + " AND episodeview.resumeTimeInSeconds > 0)"
+                          ")"
+                       ")";
+  }
+  return "";
+}
+
+CSmartPlaylistRule::SEARCH_OPERATOR CSmartPlaylistRule::GetOperator(const CStdString &strType) const
 {
   SEARCH_OPERATOR op = m_operator;
   if ((strType == "tvshows" || strType == "episodes") && m_field == FieldYear)
@@ -853,6 +880,12 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     else if (op == OPERATOR_DOES_NOT_EQUAL)
       op = OPERATOR_DOES_NOT_CONTAIN;
   }
+  return op;
+}
+
+CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdString& strType) const
+{
+  SEARCH_OPERATOR op = GetOperator(strType);
 
   CStdString operatorString, negate;
   if (GetFieldType(m_field) == TEXTIN_FIELD)
@@ -917,30 +950,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
 
   // boolean operators don't have any values in m_parameter, they work on the operator
   if (m_operator == OPERATOR_FALSE || m_operator == OPERATOR_TRUE)
-  {
-    if (strType == "movies")
-    {
-      if (m_field == FieldInProgress)
-        return "movieview.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
-      else if (m_field == FieldTrailer)
-        return negate + GetField(m_field, strType) + "!= ''";
-    }
-    else if (strType == "episodes")
-    {
-      if (m_field == FieldInProgress)
-        return "episodeview.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
-    }
-    else if (strType == "tvshows")
-    {
-      if (m_field == FieldInProgress)
-        return negate + " ("
-            "(tvshowview.watchedcount > 0 AND tvshowview.watchedcount < tvshowview.totalCount) OR "
-            "(tvshowview.watchedcount = 0 AND EXISTS "
-              "(SELECT 1 FROM episodeview WHERE episodeview.idShow = " + GetField(FieldId, strType) + " AND episodeview.resumeTimeInSeconds > 0)"
-            ")"
-          ")";
-    }
-  }
+    return GetBooleanQuery(negate, strType);
 
   // The BETWEEN operator is handled special
   if (op == OPERATOR_BETWEEN)
