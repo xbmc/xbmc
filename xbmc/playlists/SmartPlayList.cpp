@@ -883,6 +883,44 @@ CSmartPlaylistRule::SEARCH_OPERATOR CSmartPlaylistRule::GetOperator(const CStdSt
   return op;
 }
 
+CStdString CSmartPlaylistRule::FormatParameter(const CStdString &operatorString, const CStdString &param, const CDatabase &db, const CStdString &strType) const
+{
+  CStdString parameter;
+  if (GetFieldType(m_field) == TEXTIN_FIELD)
+  {
+    CStdStringArray split;
+    StringUtils::SplitString(param, ",", split);
+    for (CStdStringArray::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
+    {
+      if (!parameter.IsEmpty())
+        parameter += ",";
+      parameter += db.PrepareSQL("'%s'", (*itIn).Trim().c_str());
+    }
+    parameter = " IN (" + parameter + ")";
+  }
+  else
+    parameter = db.PrepareSQL(operatorString.c_str(), param.c_str());
+
+  if (GetFieldType(m_field) == DATE_FIELD)
+  {
+    if (m_operator == OPERATOR_IN_THE_LAST || m_operator == OPERATOR_NOT_IN_THE_LAST)
+    { // translate time period
+      CDateTime date=CDateTime::GetCurrentDateTime();
+      CDateTimeSpan span;
+      span.SetFromPeriod(param);
+      date-=span;
+      parameter = db.PrepareSQL(operatorString.c_str(), date.GetAsDBDate().c_str());
+    }
+  }
+  // special-casing
+  if (m_field == FieldTime)
+  { // translate time to seconds
+    CStdString seconds; seconds.Format("%i", StringUtils::TimeStringToSeconds(param));
+    parameter = db.PrepareSQL(operatorString.c_str(), seconds.c_str());
+  }
+  return parameter;
+}
+
 CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdString& strType) const
 {
   SEARCH_OPERATOR op = GetOperator(strType);
@@ -971,38 +1009,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
   CStdString wholeQuery;
   for (vector<CStdString>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); /* it++ is done further down */)
   {
-    CStdString parameter;
-    if (GetFieldType(m_field) == TEXTIN_FIELD)
-    {
-      CStdStringArray split;
-      StringUtils::SplitString(*it, ",", split);
-      for (CStdStringArray::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
-      {
-        if (!parameter.IsEmpty())
-          parameter += ",";
-        parameter += db.PrepareSQL("'%s'", (*itIn).Trim().c_str());
-      }
-      parameter = " IN (" + parameter + ")";
-    }
-    else
-      parameter = db.PrepareSQL(operatorString.c_str(), it->c_str());
-
-    if (GetFieldType(m_field) == DATE_FIELD)
-    {
-      if (m_operator == OPERATOR_IN_THE_LAST || m_operator == OPERATOR_NOT_IN_THE_LAST)
-      { // translate time period
-        CDateTime date=CDateTime::GetCurrentDateTime();
-        CDateTimeSpan span;
-        span.SetFromPeriod(*it);
-        date-=span;
-        parameter = db.PrepareSQL(operatorString.c_str(), date.GetAsDBDate().c_str());
-      }
-    }
-    else if (m_field == FieldTime)
-    { // translate time to seconds
-      CStdString seconds; seconds.Format("%i", StringUtils::TimeStringToSeconds(*it));
-      parameter = db.PrepareSQL(operatorString.c_str(), seconds.c_str());
-    }
+    CStdString parameter = FormatParameter(operatorString, *it, db, strType);
 
     CStdString query;
     CStdString table;
