@@ -102,7 +102,7 @@ public:
   static std::vector<Field>   GetFields(const CStdString &type);
   static std::vector<SortBy>  GetOrders(const CStdString &type);
   static std::vector<Field>   GetGroups(const CStdString &type);
-  static FIELD_TYPE           GetFieldType(Field field);
+  virtual FIELD_TYPE          GetFieldType(int field) const;
   static bool                 IsFieldBrowseable(Field field);
 
   static bool Validate(const std::string &input, void *data);

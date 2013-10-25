@@ -384,7 +384,7 @@ CStdString CSmartPlaylistRule::GetLocalizedField(Field field)
   return g_localizeStrings.Get(16018);
 }
 
-CSmartPlaylistRule::FIELD_TYPE CSmartPlaylistRule::GetFieldType(Field field)
+CSmartPlaylistRule::FIELD_TYPE CSmartPlaylistRule::GetFieldType(int field) const
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].type;
