@@ -40,11 +40,11 @@ public:
   virtual bool Save(CVariant &obj) const = 0;
 };
 
-class CSmartPlaylistRule : public ISmartPlaylistRule
+class CDatabaseQueryRule : public ISmartPlaylistRule
 {
 public:
-  CSmartPlaylistRule();
-  virtual ~CSmartPlaylistRule() { }
+  CDatabaseQueryRule();
+  virtual ~CDatabaseQueryRule() { };
 
   enum SEARCH_OPERATOR { OPERATOR_START = 0,
                          OPERATOR_CONTAINS,
@@ -82,12 +82,39 @@ public:
   CStdString                  GetParameter() const;
   void                        SetParameter(const CStdString &value);
   void                        SetParameter(const std::vector<CStdString> &values);
+
+  virtual CStdString          GetWhereClause(const CDatabase &db, const CStdString& strType) const;
+
+  int                         m_field;
+  SEARCH_OPERATOR             m_operator;
+  std::vector<CStdString>     m_parameter;
+
+protected:
+  virtual CStdString          GetField(int field, const CStdString& type) const=0;
+  virtual FIELD_TYPE          GetFieldType(int field) const=0;
+  virtual int                 TranslateField(const char *field) const=0;
+  virtual CStdString          TranslateField(int field) const=0;
+  virtual CStdString          FormatParameter(const CStdString &negate, const CStdString &oper, const CDatabase &db, const CStdString &type) const;
+  virtual CStdString          FormatWhereClause(const CStdString &negate, const CStdString &oper, const CStdString &param,
+                                                const CDatabase &db, const CStdString &type) const;
+  virtual SEARCH_OPERATOR     GetOperator(const CStdString &type) const { return m_operator; };
+  virtual CStdString          GetOperatorString(SEARCH_OPERATOR op) const;
+  virtual CStdString          GetBooleanQuery(const CStdString &negate, const CStdString &strType) const { return ""; }
+
+  static SEARCH_OPERATOR      TranslateOperator(const char *oper);
+  static CStdString           TranslateOperator(SEARCH_OPERATOR oper);
+};
+
+class CSmartPlaylistRule : public CDatabaseQueryRule
+{
+public:
+  CSmartPlaylistRule();
+  virtual ~CSmartPlaylistRule() { }
+
   CStdString                  GetLocalizedRule() const;
-  CStdString                  GetWhereClause(const CDatabase &db, const CStdString& strType) const;
 
   static SortBy               TranslateOrder(const char *order);
   static CStdString           TranslateOrder(SortBy order);
-  static CStdString           TranslateOperator(SEARCH_OPERATOR oper);
   static Field                TranslateGroup(const char *group);
   static CStdString           TranslateGroup(Field group);
 
@@ -105,9 +132,6 @@ public:
   static bool Validate(const std::string &input, void *data);
   static bool ValidateRating(const std::string &input, void *data);
 
-  int                         m_field;
-  SEARCH_OPERATOR             m_operator;
-  std::vector<CStdString>     m_parameter;
 protected:
   virtual CStdString          GetField(int field, const CStdString& type) const;
   virtual int                 TranslateField(const char *field) const;
@@ -116,11 +140,9 @@ protected:
   virtual CStdString          FormatWhereClause(const CStdString &negate, const CStdString &oper, const CStdString &param,
                                                 const CDatabase &db, const CStdString &type) const;
   virtual SEARCH_OPERATOR     GetOperator(const CStdString &type) const;
-  virtual CStdString          GetOperatorString(SEARCH_OPERATOR op) const;
   virtual CStdString          GetBooleanQuery(const CStdString &negate, const CStdString &strType) const;
-private:
-  static SEARCH_OPERATOR TranslateOperator(const char *oper);
 
+private:
   CStdString GetVideoResolutionQuery(const CStdString &parameter) const;
 };
 

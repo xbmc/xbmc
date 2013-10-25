@@ -47,7 +47,7 @@ public:
     Field field;
     uint32_t label;
     SettingInfo::SETTING_TYPE type;
-    CSmartPlaylistRule::SEARCH_OPERATOR ruleOperator;
+    CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator;
     void *data;
     CSmartPlaylistRule *rule;
     int controlIndex;
@@ -68,7 +68,7 @@ protected:
   void TriggerFilter() const;
 
   void OnBrowse(const Filter &filter, CFileItemList &items, bool countOnly = false);
-  CSmartPlaylistRule* AddRule(Field field, CSmartPlaylistRule::SEARCH_OPERATOR ruleOperator = CSmartPlaylistRule::OPERATOR_CONTAINS);
+  CSmartPlaylistRule* AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS);
   void DeleteRule(Field field);
   void GetRange(const Filter &filter, float &min, float &interval, float &max, RANGEFORMATFUNCTION &formatFunction);
   bool GetMinMax(const CStdString &table, const CStdString &field, float &min, float &max, const CDatabase::Filter &filter = CDatabase::Filter());
