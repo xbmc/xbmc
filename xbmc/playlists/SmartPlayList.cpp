@@ -949,7 +949,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       return "";
 
     FIELD_TYPE fieldType = GetFieldType(m_field);
-    if (fieldType == NUMERIC_FIELD || m_field == FieldYear)
+    if (fieldType == NUMERIC_FIELD)
       return db.PrepareSQL("CAST(%s as DECIMAL(5,1)) BETWEEN %s AND %s", GetField(m_field, strType).c_str(), m_parameter[0].c_str(), m_parameter[1].c_str());
     else if (fieldType == SECONDS_FIELD)
       return db.PrepareSQL("CAST(%s as INTEGER) BETWEEN %s AND %s", GetField(m_field, strType).c_str(), m_parameter[0].c_str(), m_parameter[1].c_str());
