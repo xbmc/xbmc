@@ -925,13 +925,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
 {
   SEARCH_OPERATOR op = GetOperator(strType);
 
-  CStdString operatorString, negate;
-  if (GetFieldType(m_field) == TEXTIN_FIELD)
-  {
-    if (op == OPERATOR_DOES_NOT_EQUAL)
-      negate = " NOT";
-  }
-  else
+  CStdString operatorString;
+  if (GetFieldType(m_field) != TEXTIN_FIELD)
   {
     // the comparison piece
     switch (op)
@@ -939,7 +934,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     case OPERATOR_CONTAINS:
       operatorString = " LIKE '%%%s%%'"; break;
     case OPERATOR_DOES_NOT_CONTAIN:
-      negate = " NOT"; operatorString = " LIKE '%%%s%%'"; break;
+      operatorString = " LIKE '%%%s%%'"; break;
     case OPERATOR_EQUALS:
       if (GetFieldType(m_field) == NUMERIC_FIELD || GetFieldType(m_field) == SECONDS_FIELD)
         operatorString = " = %s";
@@ -950,10 +945,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       if (GetFieldType(m_field) == NUMERIC_FIELD || GetFieldType(m_field) == SECONDS_FIELD)
         operatorString = " != %s";
       else
-      {
-        negate = " NOT";
         operatorString = " LIKE '%s'";
-      }
       break;
     case OPERATOR_STARTS_WITH:
       operatorString = " LIKE '%s%%'"; break;
@@ -980,11 +972,16 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     case OPERATOR_TRUE:
       operatorString = " = 1"; break;
     case OPERATOR_FALSE:
-      negate = " NOT "; operatorString = " = 0"; break;
+      operatorString = " = 0"; break;
     default:
       break;
     }
   }
+
+  CStdString negate;
+  if (op == OPERATOR_DOES_NOT_CONTAIN || op == OPERATOR_FALSE ||
+     (op == OPERATOR_DOES_NOT_EQUAL && GetFieldType(m_field) != NUMERIC_FIELD && GetFieldType(m_field) != SECONDS_FIELD))
+    negate = " NOT";
 
   // boolean operators don't have any values in m_parameter, they work on the operator
   if (m_operator == OPERATOR_FALSE || m_operator == OPERATOR_TRUE)
