@@ -92,7 +92,9 @@ public:
   virtual void Reset() = 0;
 
   int GetLabel() const { return m_label; }
+  void SetLabel(int label) { m_label = label; }
   int GetHelp() const { return m_help; }
+  void SetHelp(int help) { m_help = help; }
   bool IsEnabled() const;
   const std::string& GetParent() const { return m_parentSetting; }
   SettingLevel GetLevel() const { return m_level; }
