@@ -1210,6 +1210,13 @@ CSmartPlaylistRuleCombination::CSmartPlaylistRuleCombination()
   : m_type(CombinationAnd)
 { }
 
+void CSmartPlaylistRuleCombination::clear()
+{
+  m_combinations.clear();
+  m_rules.clear();
+  m_type = CombinationAnd;
+}
+
 CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const
 {
   CStdString rule, currentRule;
@@ -1344,6 +1351,13 @@ bool CSmartPlaylistRuleCombination::Load(const CVariant &obj)
     }
   }
 
+  return true;
+}
+
+bool CSmartPlaylistRuleCombination::Save(TiXmlNode *parent) const
+{
+  for (CSmartPlaylistRules::const_iterator it = m_rules.begin(); it != m_rules.end(); ++it)
+    (*it)->Save(parent);
   return true;
 }
 
@@ -1624,8 +1638,7 @@ bool CSmartPlaylist::Save(const CStdString &path) const
   XMLUtils::SetString(pRoot, "match", m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd ? "all" : "one");
 
   // add <rule> tags
-  for (CSmartPlaylistRules::const_iterator it = m_ruleCombination.m_rules.begin(); it != m_ruleCombination.m_rules.end(); ++it)
-    (*it)->Save(pRoot);
+  m_ruleCombination.Save(pRoot);
 
   // add <group> tag if necessary
   if (!m_group.empty())
@@ -1705,9 +1718,7 @@ bool CSmartPlaylist::SaveAsJson(CStdString &json, bool full /* = true */) const
 
 void CSmartPlaylist::Reset()
 {
-  m_ruleCombination.m_combinations.clear();
-  m_ruleCombination.m_rules.clear();
-  m_ruleCombination.SetType(CSmartPlaylistRuleCombination::CombinationAnd);
+  m_ruleCombination.clear();
   m_limit = 0;
   m_orderField = SortByNone;
   m_orderDirection = SortOrderNone;
@@ -1790,7 +1801,7 @@ void CSmartPlaylist::GetAvailableOperators(std::vector<std::string> &operatorLis
 
 bool CSmartPlaylist::IsEmpty(bool ignoreSortAndLimit /* = true */) const
 {
-  bool empty = m_ruleCombination.m_rules.empty() && m_ruleCombination.m_combinations.empty();
+  bool empty = m_ruleCombination.empty();
   if (empty && !ignoreSortAndLimit)
     empty = m_limit <= 0 && m_orderField == SortByNone && m_orderDirection == SortOrderNone;
 
