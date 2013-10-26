@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
 <!-- The <global> section is a fall through - they will only be used if the button is not          -->
 <!-- used in the current window's section.  Note that there is only handling                       -->
