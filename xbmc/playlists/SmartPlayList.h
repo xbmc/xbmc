@@ -21,6 +21,7 @@
 
 #include <set>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 #include "utils/SortUtils.h"
 #include "utils/StdString.h"
@@ -148,8 +149,8 @@ private:
 
 class CSmartPlaylistRuleCombination;
 
-typedef std::vector<CSmartPlaylistRule> CSmartPlaylistRules;
-typedef std::vector<CSmartPlaylistRuleCombination> CSmartPlaylistRuleCombinations;
+typedef std::vector< boost::shared_ptr<CSmartPlaylistRule> > CSmartPlaylistRules;
+typedef std::vector< boost::shared_ptr<CSmartPlaylistRuleCombination> > CSmartPlaylistRuleCombinations;
 
 class CSmartPlaylistRuleCombination : public ISmartPlaylistRule
 {

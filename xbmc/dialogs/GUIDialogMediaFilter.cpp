@@ -254,11 +254,11 @@ void CGUIDialogMediaFilter::CreateSettings()
     filter.controlIndex = CONTROL_START + m_settings.size();
 
     // check the smartplaylist if it contains a matching rule
-    for (vector<CSmartPlaylistRule>::iterator rule = m_filter->m_ruleCombination.m_rules.begin(); rule != m_filter->m_ruleCombination.m_rules.end(); rule++)
+    for (CSmartPlaylistRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin(); rule != m_filter->m_ruleCombination.m_rules.end(); rule++)
     {
-      if (rule->m_field == filter.field)
+      if ((*rule)->m_field == filter.field)
       {
-        filter.rule = &(*rule);
+        filter.rule = rule->get();
         handledRules++;
         break;
       }
@@ -676,9 +676,9 @@ void CGUIDialogMediaFilter::OnBrowse(const Filter &filter, CFileItemList &items,
       return;
 
     CSmartPlaylist tmpFilter = *m_filter;
-    for (vector<CSmartPlaylistRule>::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin(); rule != tmpFilter.m_ruleCombination.m_rules.end(); rule++)
+    for (CSmartPlaylistRules::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin(); rule != tmpFilter.m_ruleCombination.m_rules.end(); rule++)
     {
-      if (rule->m_field == filter.field)
+      if ((*rule)->m_field == filter.field)
       {
         tmpFilter.m_ruleCombination.m_rules.erase(rule);
         break;
@@ -717,9 +717,9 @@ void CGUIDialogMediaFilter::OnBrowse(const Filter &filter, CFileItemList &items,
       return;
 
     CSmartPlaylist tmpFilter = *m_filter;
-    for (vector<CSmartPlaylistRule>::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin(); rule != tmpFilter.m_ruleCombination.m_rules.end(); rule++)
+    for (CSmartPlaylistRules::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin(); rule != tmpFilter.m_ruleCombination.m_rules.end(); rule++)
     {
-      if (rule->m_field == filter.field)
+      if ((*rule)->m_field == filter.field)
       {
         tmpFilter.m_ruleCombination.m_rules.erase(rule);
         break;
@@ -779,15 +779,15 @@ CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(Field field, CDatabaseQueryRu
   rule.m_field = field;
   rule.m_operator = ruleOperator;
 
-  m_filter->m_ruleCombination.m_rules.push_back(rule);
-  return &m_filter->m_ruleCombination.m_rules.at(m_filter->m_ruleCombination.m_rules.size() - 1);
+  m_filter->m_ruleCombination.AddRule(rule);
+  return m_filter->m_ruleCombination.m_rules.back().get();
 }
 
 void CGUIDialogMediaFilter::DeleteRule(Field field)
 {
-  for (vector<CSmartPlaylistRule>::iterator rule = m_filter->m_ruleCombination.m_rules.begin(); rule != m_filter->m_ruleCombination.m_rules.end(); rule++)
+  for (CSmartPlaylistRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin(); rule != m_filter->m_ruleCombination.m_rules.end(); rule++)
   {
-    if (rule->m_field == field)
+    if ((*rule)->m_field == field)
     {
       m_filter->m_ruleCombination.m_rules.erase(rule);
       break;
