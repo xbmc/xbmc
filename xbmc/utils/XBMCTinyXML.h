@@ -31,11 +31,11 @@
 #else
 #pragma comment(lib, "tinyxmlSTL.lib")
 #endif
-#else // _MSC_VER < 1700
+#else if _MSC_VER >= 1800
 #ifdef _DEBUG
-#pragma comment(lib, "tinyxmlSTL11d.lib")
+#pragma comment(lib, "tinyxmlSTL12d.lib")
 #else
-#pragma comment(lib, "tinyxmlSTL11.lib")
+#pragma comment(lib, "tinyxmlSTL12.lib")
 #endif
 #endif // _MSC_VER < 1700
 #else
