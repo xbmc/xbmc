@@ -29,13 +29,14 @@
 namespace PiAudioAE
 {
 
-class CPiAudioAE : public IAE
+class CPiAudioAE : public IAE, public CThread
 {
 protected:
   friend class ::CAEFactory;
   CPiAudioAE();
   virtual ~CPiAudioAE();
   virtual bool  Initialize();
+  virtual void Process();
 
 public:
   virtual bool   Suspend();
@@ -69,8 +70,11 @@ public:
 
 protected:
   void UpdateStreamSilence();
+  void UpdateStreamSilence(bool enable);
   // polled via the interface
   float m_aeVolume;
   bool m_aeMuted;
+  int m_extSilenceTimeout;
+  XbmcThreads::EndTime m_extSilenceTimer;
 };
 };

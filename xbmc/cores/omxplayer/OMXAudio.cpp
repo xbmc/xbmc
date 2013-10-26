@@ -39,6 +39,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 using namespace std;
 
@@ -776,6 +777,9 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize device passthrough %d hwdecode %d",
      m_Passthrough, m_HWDecode);
 
+  /* dummy call to inform PiAudioAE that audo is active */
+  CAEFactory::MakeStream((enum AEDataFormat)0, 0, 0, (CAEChannelInfo)0, 0);
+
   return true;
 }
 
@@ -841,6 +845,9 @@ bool COMXAudio::Deinitialize()
   m_dllAvUtil.Unload();
 
   m_last_pts      = DVD_NOPTS_VALUE;
+
+  /* dummy call to inform PiAudioAE that audo is inactive */
+  CAEFactory::FreeStream(0);
 
   return true;
 }

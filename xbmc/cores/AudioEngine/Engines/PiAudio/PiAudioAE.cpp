@@ -32,6 +32,7 @@ using namespace PiAudioAE;
 #endif
 
 CPiAudioAE::CPiAudioAE()
+: CThread("CPiAudio")
 {
 }
 
@@ -42,14 +43,39 @@ CPiAudioAE::~CPiAudioAE()
 bool CPiAudioAE::Initialize()
 {
   UpdateStreamSilence();
+  Create();
   return true;
+}
+
+void CPiAudioAE::Process()
+{
+  while(!m_bStop)
+  {
+    /* thread just currently checks once a second if it's time to disable streamsilence */
+    Sleep(1000);
+
+    if (m_extSilenceTimer.IsTimePast())
+    {
+      UpdateStreamSilence(false);
+      m_extSilenceTimer.Set(XbmcThreads::EndTime::InfiniteValue);
+    }
+  }
 }
 
 void CPiAudioAE::UpdateStreamSilence()
 {
+  if (CSettings::Get().GetInt("audiooutput.streamsilence") > 0)
+    m_extSilenceTimeout = CSettings::Get().GetInt("audiooutput.streamsilence") * 60000;
+  else
+    m_extSilenceTimeout = XbmcThreads::EndTime::InfiniteValue;
+  m_extSilenceTimer.Set(m_extSilenceTimeout);
+  UpdateStreamSilence(CSettings::Get().GetString("audiooutput.audiodevice") == "HDMI" &&
+              CSettings::Get().GetInt("audiooutput.streamsilence") != 0);
+}
+
+void CPiAudioAE::UpdateStreamSilence(bool enable)
+{
 #if defined(TARGET_RASPBERRY_PI)
-  bool enable = CSettings::Get().GetString("audiooutput.audiodevice") == "HDMI" &&
-                CSettings::Get().GetInt("audiooutput.streamsilence") != 0;
   char response[80] = "";
   char command[80] = "";
   sprintf(command, "force_audio hdmi %d", enable);
@@ -94,6 +120,8 @@ IAEStream *CPiAudioAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sam
 
 IAEStream *CPiAudioAE::FreeStream(IAEStream *stream)
 {
+  // will retrigger the streamsilence timer
+  UpdateStreamSilence();
   return NULL;
 }
 
@@ -131,7 +159,7 @@ bool CPiAudioAE::SupportsRaw(AEDataFormat format)
 
 bool CPiAudioAE::SupportsSilenceTimeout()
 {
-  return false;
+  return true;
 }
 
 void CPiAudioAE::OnSettingsChange(const std::string& setting)
