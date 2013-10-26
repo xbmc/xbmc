@@ -1388,11 +1388,6 @@ void CSmartPlaylistRuleCombination::AddRule(const CSmartPlaylistRule &rule)
   m_rules.push_back(rule);
 }
 
-void CSmartPlaylistRuleCombination::AddCombination(const CSmartPlaylistRuleCombination &combination)
-{
-  m_combinations.push_back(combination);
-}
-
 CSmartPlaylist::CSmartPlaylist()
 {
   Reset();
