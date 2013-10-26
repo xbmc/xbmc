@@ -149,7 +149,7 @@ private:
 
 class CSmartPlaylistRuleCombination;
 
-typedef std::vector< boost::shared_ptr<CSmartPlaylistRule> > CSmartPlaylistRules;
+typedef std::vector< boost::shared_ptr<CDatabaseQueryRule> > CDatabaseQueryRules;
 typedef std::vector< boost::shared_ptr<CSmartPlaylistRuleCombination> > CSmartPlaylistRuleCombinations;
 
 class CSmartPlaylistRuleCombination : public ISmartPlaylistRule
@@ -186,7 +186,7 @@ private:
 
   Combination m_type;
   CSmartPlaylistRuleCombinations m_combinations;
-  CSmartPlaylistRules m_rules;
+  CDatabaseQueryRules m_rules;
 };
 
 class CSmartPlaylist
