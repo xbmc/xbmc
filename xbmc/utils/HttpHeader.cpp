@@ -19,91 +19,89 @@
  */
 
 #include "HttpHeader.h"
+#include "utils/StringUtils.h"
 
 CHttpHeader::CHttpHeader()
 {
-  m_params.clear();
 }
 
 CHttpHeader::~CHttpHeader()
 {
 }
 
-void CHttpHeader::Parse(CStdString strData)
+void CHttpHeader::Parse(const std::string& strData)
 {
-  unsigned int iIter = 0;
-  int iValueStart = 0;
-  int iValueEnd = 0;
-
-  CStdString strParam;
-  CStdString strValue;
-
-  while (iIter < strData.size())
+  size_t pos = 0;
+  const size_t len = strData.length();
+  while (pos < len)
   {
-    iValueStart = strData.Find(":", iIter);
-    iValueEnd = strData.Find("\r\n", iIter);
+    const size_t valueStart = strData.find(':', pos);
+    const size_t lineEnd = strData.find("\r\n", pos);
 
-    if (iValueEnd < 0) break;
+    if (lineEnd == std::string::npos)
+      break;
 
-    if (iValueStart > 0)
+    if (valueStart != std::string::npos && valueStart < lineEnd)
     {
-      strParam = strData.substr(iIter, iValueStart - iIter);
-      strValue = strData.substr(iValueStart + 1, iValueEnd - iValueStart - 1);
+      std::string strParam(strData, pos, valueStart - pos);
+      std::string strValue(strData, valueStart + 1, lineEnd - valueStart - 1);
 
-      /*
-      CUtil::Lower(strParam.c_str()
-      // trim left and right
-      {
-        string::size_type pos = strValue.find_last_not_of(' ');
-        if(pos != string::npos)
-        {
-          strValue.erase(pos + 1);
-          pos = strValue.find_first_not_of(' ');
-          if(pos != string::npos) strValue.erase(0, pos);
-        }
-        else strValue.erase(strValue.begin(), strValue.end());
-      }*/
-      strParam.Trim();
-      strParam.ToLower();
+      StringUtils::Trim(strParam);
+      StringUtils::ToLower(strParam);
 
-      strValue.Trim();
+      StringUtils::Trim(strValue);
 
-
-      m_params[strParam] = strValue;
+      if (!strParam.empty() && !strValue.empty())
+        m_params.push_back(HeaderParams::value_type(strParam, strValue));
     }
-    else if (m_protoLine.IsEmpty())
-      m_protoLine = strData;
+    else if (m_protoLine.empty())
+      m_protoLine.assign(strData, pos, lineEnd - pos);
 
-
-    iIter = iValueEnd + 2;
+    pos = lineEnd + 2;
   }
 }
 
-CStdString CHttpHeader::GetValue(CStdString strParam) const
+std::string CHttpHeader::GetValue(std::string strParam) const
 {
-  strParam.ToLower();
+  StringUtils::ToLower(strParam);
 
-  std::map<CStdString,CStdString>::const_iterator pIter = m_params.find(strParam);
-  if (pIter != m_params.end()) return pIter->second;
+  // look in reverse to find last parameter (probably most important)
+  for (HeaderParams::const_reverse_iterator iter = m_params.rbegin(); iter != m_params.rend(); ++iter)
+  {
+    if (iter->first == strParam)
+      return iter->second;
+  }
 
   return "";
 }
 
-void CHttpHeader::GetHeader(CStdString& strHeader) const
+std::vector<std::string> CHttpHeader::GetValues(std::string strParam) const
 {
-  strHeader.clear();
+  StringUtils::ToLower(strParam);
+  std::vector<std::string> values;
 
-  std::map<CStdString,CStdString>::const_iterator iter = m_params.begin();
-  while (iter != m_params.end())
+  for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
   {
-    strHeader += ((*iter).first + ": " + (*iter).second + "\n");
-    iter++;
+    if (iter->first == strParam)
+      values.push_back(iter->second);
   }
 
+  return values;
+}
+
+std::string CHttpHeader::GetHeader(void) const
+{
+  std::string strHeader(m_protoLine + '\n');
+
+  for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
+    strHeader += ((*iter).first + ": " + (*iter).second + "\n");
+
   strHeader += "\n";
+  return strHeader;
 }
 
 void CHttpHeader::Clear()
 {
   m_params.clear();
+  m_protoLine.clear();
 }

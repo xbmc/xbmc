@@ -20,33 +20,35 @@
  *
  */
 
-#include <map>
+#include <utility>
 #include <vector>
-#include "StdString.h"
+#include <string>
 
 #define HTTPHEADER_CONTENT_TYPE "Content-Type"
-
-typedef std::map<CStdString, CStdString> HeaderParams;
-typedef std::map<CStdString, CStdString>::iterator HeaderParamsIter;
 
 class CHttpHeader
 {
 public:
+  typedef std::pair<std::string, std::string> HeaderParamValue;
+  typedef std::vector<HeaderParamValue> HeaderParams;
+  typedef HeaderParams::iterator HeaderParamsIter;
+
   CHttpHeader();
   ~CHttpHeader();
 
-  void Parse(CStdString strData);
-  CStdString GetValue(CStdString strParam) const;
+  void Parse(const std::string& strData);
+  std::string GetValue(std::string strParam) const;
+  std::vector<std::string> GetValues(std::string strParam) const;
 
-  void GetHeader(CStdString& strHeader) const;
+  std::string GetHeader(void) const;
 
-  CStdString GetMimeType() { return GetValue(HTTPHEADER_CONTENT_TYPE); }
-  CStdString GetProtoLine() { return m_protoLine; }
+  std::string GetMimeType() { return GetValue(HTTPHEADER_CONTENT_TYPE); }
+  std::string GetProtoLine() { return m_protoLine; }
 
   void Clear();
 
 protected:
   HeaderParams m_params;
-  CStdString   m_protoLine;
+  std::string   m_protoLine;
 };
 

@@ -647,17 +647,17 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
 {
   CHttpHeader& h = state->m_httpheader;
   /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
-  if( h.GetMimeType().IsEmpty() )
+  if( h.GetMimeType().empty() )
   {
-    if( !h.GetValue("icy-notice1").IsEmpty()
-    || !h.GetValue("icy-name").IsEmpty()
-    || !h.GetValue("icy-br").IsEmpty() )
+    if( !h.GetValue("icy-notice1").empty()
+    || !h.GetValue("icy-name").empty()
+    || !h.GetValue("icy-br").empty() )
     h.Parse("Content-Type: audio/mpeg\r\n");
   }
 
   /* hack for google video */
-  if ( h.GetMimeType().Equals("text/html")
-  &&  !h.GetValue("Content-Disposition").IsEmpty() )
+  if (StringUtils::EqualsNoCase(h.GetMimeType(),"text/html")
+  &&  !h.GetValue("Content-Disposition").empty() )
   {
     CStdString strValue = h.GetValue("Content-Disposition");
     if (strValue.Find("filename=") > -1 && strValue.Find(".flv") > -1)
@@ -925,9 +925,9 @@ bool CCurlFile::Open(const CURL& url)
 
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
   // shoutcast streams should be handled by FileShoutcast.
-  if ((m_state->m_httpheader.GetProtoLine().Left(3) == "ICY" || !m_state->m_httpheader.GetValue("icy-notice1").IsEmpty()
-     || !m_state->m_httpheader.GetValue("icy-name").IsEmpty()
-     || !m_state->m_httpheader.GetValue("icy-br").IsEmpty()) && !m_skipshout)
+  if ((m_state->m_httpheader.GetProtoLine().substr(0, 3) == "ICY" || !m_state->m_httpheader.GetValue("icy-notice1").empty()
+     || !m_state->m_httpheader.GetValue("icy-name").empty()
+     || !m_state->m_httpheader.GetValue("icy-br").empty()) && !m_skipshout)
   {
     CLog::Log(LOGDEBUG,"CCurlFile::Open - File <%s> is a shoutcast stream. Re-opening", m_url.c_str());
     throw new CRedirectException(new CShoutcastFile);
@@ -937,14 +937,14 @@ bool CCurlFile::Open(const CURL& url)
   if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
   {
     m_multisession = true;
-    if(m_state->m_httpheader.GetValue("Server").Find("Portable SDK for UPnP devices") >= 0)
+    if(m_state->m_httpheader.GetValue("Server").find("Portable SDK for UPnP devices") != std::string::npos)
     {
       CLog::Log(LOGWARNING, "CCurlFile::Open - Disabling multi session due to broken libupnp server");
       m_multisession = false;
     }
   }
 
-  if(m_state->m_httpheader.GetValue("Transfer-Encoding").Equals("chunked"))
+  if(StringUtils::EqualsNoCase(m_state->m_httpheader.GetValue("Transfer-Encoding"), "chunked"))
     m_state->m_fileSize = 0;
 
   if(m_state->m_fileSize <= 0)
@@ -955,7 +955,7 @@ bool CCurlFile::Open(const CURL& url)
     || url2.GetProtocol().Equals("https"))
     {
       // if server says explicitly it can't seek, respect that
-      if(m_state->m_httpheader.GetValue("Accept-Ranges").Equals("none"))
+      if(StringUtils::EqualsNoCase(m_state->m_httpheader.GetValue("Accept-Ranges"),"none"))
         m_seekable = false;
     }
   }
