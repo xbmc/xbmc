@@ -12838,10 +12838,6 @@
 					"-lsmbclient",
 					"-lpython2.6",
 					"-ltag",
-					"-lgnutls",
-					"-lhogweed",
-					"-lnettle",
-					"-lgmp",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -12974,10 +12970,6 @@
 					"-lsmbclient",
 					"-lpython2.6",
 					"-ltag",
-					"-lgnutls",
-					"-lhogweed",
-					"-lnettle",
-					"-lgmp",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
