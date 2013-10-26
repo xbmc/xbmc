@@ -136,23 +136,23 @@ private:
   CStdString GetVideoResolutionQuery(const CStdString &parameter) const;
 };
 
-class CSmartPlaylistRuleCombination;
+class CDatabaseQueryRuleCombination;
 
 typedef std::vector< boost::shared_ptr<CDatabaseQueryRule> > CDatabaseQueryRules;
-typedef std::vector< boost::shared_ptr<CSmartPlaylistRuleCombination> > CSmartPlaylistRuleCombinations;
+typedef std::vector< boost::shared_ptr<CDatabaseQueryRuleCombination> > CDatabaseQueryRuleCombinations;
 
 class IDatabaseQueryRuleFactory
 {
 public:
   virtual CDatabaseQueryRule *CreateRule() const=0;
-  virtual CSmartPlaylistRuleCombination *CreateCombination() const=0;
+  virtual CDatabaseQueryRuleCombination *CreateCombination() const=0;
 };
 
-class CSmartPlaylistRuleCombination
+class CDatabaseQueryRuleCombination
 {
 public:
-  CSmartPlaylistRuleCombination();
-  virtual ~CSmartPlaylistRuleCombination() { }
+  CDatabaseQueryRuleCombination();
+  virtual ~CDatabaseQueryRuleCombination() { };
 
   typedef enum {
     CombinationOr = 0,
@@ -165,24 +165,32 @@ public:
   virtual bool Save(TiXmlNode *parent) const;
   virtual bool Save(CVariant &obj) const;
 
-  CStdString GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const;
-  void GetVirtualFolders(const CStdString& strType, std::vector<CStdString> &virtualFolders) const;
   std::string TranslateCombinationType() const;
 
   Combination GetType() const { return m_type; }
   void SetType(Combination combination) { m_type = combination; }
 
-  void AddRule(const CSmartPlaylistRule &rule);
-
   bool empty() const { return m_combinations.empty() && m_rules.empty(); }
 
-private:
+protected:
   friend class CGUIDialogSmartPlaylistEditor;
   friend class CGUIDialogMediaFilter;
 
   Combination m_type;
-  CSmartPlaylistRuleCombinations m_combinations;
+  CDatabaseQueryRuleCombinations m_combinations;
   CDatabaseQueryRules m_rules;
+};
+
+class CSmartPlaylistRuleCombination : public CDatabaseQueryRuleCombination
+{
+public:
+  CSmartPlaylistRuleCombination() { }
+  virtual ~CSmartPlaylistRuleCombination() { }
+
+  CStdString GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const;
+  void GetVirtualFolders(const CStdString& strType, std::vector<CStdString> &virtualFolders) const;
+
+  void AddRule(const CSmartPlaylistRule &rule);
 };
 
 class CSmartPlaylist : public IDatabaseQueryRuleFactory
@@ -254,7 +262,7 @@ public:
 
   // rule creation
   virtual CDatabaseQueryRule *CreateRule() const;
-  virtual CSmartPlaylistRuleCombination *CreateCombination() const;
+  virtual CDatabaseQueryRuleCombination *CreateCombination() const;
 private:
   friend class CGUIDialogSmartPlaylistEditor;
   friend class CGUIDialogMediaFilter;
