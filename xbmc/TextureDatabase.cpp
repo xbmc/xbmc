@@ -52,7 +52,7 @@ typedef struct
 
 static const translateField fields[] = {
   { "none",          TF_None,          CDatabaseQueryRule::TEXT_FIELD    },
-  { "id",            TF_Id,            CDatabaseQueryRule::NUMERIC_FIELD },
+  { "textureid",     TF_Id,            CDatabaseQueryRule::NUMERIC_FIELD },
   { "url",           TF_Url,           CDatabaseQueryRule::TEXT_FIELD    },
   { "cachedurl",     TF_CachedUrl,     CDatabaseQueryRule::TEXT_FIELD    },
   { "lasthashcheck", TF_LastHashCheck, CDatabaseQueryRule::TEXT_FIELD    },
@@ -98,6 +98,14 @@ CDatabaseQueryRule::FIELD_TYPE CTextureRule::GetFieldType(int field) const
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].type;
   return TEXT_FIELD;
+}
+
+CStdString CTextureRule::FormatParameter(const CStdString &operatorString, const CStdString &param, const CDatabase &db, const CStdString &strType) const
+{
+  CStdString parameter(param);
+  if (m_field == TF_Url)
+    parameter = CTextureUtils::UnwrapImageURL(param);
+  return CDatabaseQueryRule::FormatParameter(operatorString, parameter, db, strType);
 }
 
 void CTextureRule::GetAvailableFields(std::vector<std::string> &fieldList)
@@ -312,7 +320,7 @@ bool CTextureDatabase::GetTextures(CVariant &items, const Filter &filter)
     while (!m_pDS->eof())
     {
       CVariant texture;
-      texture["id"] = m_pDS->fv(0).get_asInt();
+      texture["textureid"] = m_pDS->fv(0).get_asInt();
       texture["url"] = m_pDS->fv(1).get_asString();
       texture["cachedurl"] = m_pDS->fv(2).get_asString();
       texture["imagehash"] = m_pDS->fv(3).get_asString();

@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "TextureDatabase.h"
 
 using namespace ANNOUNCEMENT;
 using namespace JSONRPC;
@@ -83,6 +84,10 @@ void CJSONRPC::Initialize()
   smartplaylistList.clear();
   CSmartPlaylist::GetAvailableFields("songs", smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Fields.Songs", smartplaylistList);
+
+  smartplaylistList.clear();
+  CTextureRule::GetAvailableFields(smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Textures", smartplaylistList);
 
   unsigned int size = sizeof(JSONRPC_SERVICE_TYPES) / sizeof(char*);
 

@@ -747,6 +747,7 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\SystemOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\VideoLibrary.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\XBMCOperations.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\TextureOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\legacy\Addon.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\legacy\AddonCallback.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\legacy\AddonClass.cpp" />
@@ -2250,6 +2251,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\SystemOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\VideoLibrary.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\XBMCOperations.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\TextureOperations.h" />
     <ClInclude Include="..\..\xbmc\IProgressCallback.h" />
     <ClInclude Include="..\..\xbmc\LangInfo.h" />
     <ClInclude Include="..\..\xbmc\MediaSource.h" />
