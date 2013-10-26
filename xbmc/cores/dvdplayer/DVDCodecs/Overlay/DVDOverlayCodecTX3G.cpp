@@ -235,7 +235,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
     return OC_BUFFER;
 
   if (strUTF8[strUTF8.size()-1] == '\n')
-    strUTF8.Delete(strUTF8.size()-1);
+    strUTF8.erase(strUTF8.size()-1);
 
   // add a new text element to our container
   m_pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));

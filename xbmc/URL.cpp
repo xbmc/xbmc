@@ -237,7 +237,7 @@ void CURL::Parse(const CStdString& strURL1)
         if (iSemiColon != std::string::npos)
         {
           m_strDomain = strUserNamePassword.substr(0, iSemiColon);
-          strUserNamePassword.Delete(0, iSemiColon + 1);
+          strUserNamePassword.erase(0, iSemiColon + 1);
         }
       }
 

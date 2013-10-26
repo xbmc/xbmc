@@ -194,7 +194,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
     return;
 
   if( strUTF8[strUTF8.size()-1] == '\n' )
-    strUTF8.Delete(strUTF8.size()-1);
+    strUTF8.erase(strUTF8.size()-1);
 
   // add a new text element to our container
   pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));

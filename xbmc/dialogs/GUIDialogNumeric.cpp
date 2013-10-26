@@ -209,7 +209,7 @@ void CGUIDialogNumeric::OnBackSpace()
   if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   { // just go back one character
     if (!m_number.empty())
-      m_number.Delete(m_number.GetLength() - 1);
+      m_number.erase(m_number.size() - 1);
   }
   else if (m_mode == INPUT_IP_ADDRESS)
   {

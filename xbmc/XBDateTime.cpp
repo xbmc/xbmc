@@ -1166,7 +1166,7 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
         strOut+=str;
       }
       else
-        strOut.Delete(strOut.GetLength()-1,1);
+        strOut.erase(strOut.size()-1,1);
     }
     else if (c=='x') // add meridiem symbol
     {
@@ -1315,8 +1315,8 @@ CStdString CDateTime::GetAsLocalizedDate(const CStdString &strFormat, bool withS
 
       // Format string with the length of the mask
       CStdString str = StringUtils::Format("%d", dateTime.wYear); // four-digit number
-      if (partLength<=2)
-        str.Delete(0, 2); // two-digit number
+      if (partLength <= 2)
+        str.erase(0, 2); // two-digit number
 
       strOut+=str;
     }

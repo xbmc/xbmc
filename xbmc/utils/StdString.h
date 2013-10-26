@@ -2557,17 +2557,6 @@ public:
     return ssicmp(this->c_str(), szThat);
   }
 
-  int Delete(int nIdx, int nCount=1)
-  {
-        if ( nIdx < 0 )
-      nIdx = 0;
-
-    if ( nIdx < this->GetLength() )
-      this->erase(static_cast<MYSIZE>(nIdx), static_cast<MYSIZE>(nCount));
-
-    return GetLength();
-  }
-
   int FindOneOf(PCMYSTR szCharSet) const
   {
     MYSIZE nIdx = this->find_first_of(szCharSet);

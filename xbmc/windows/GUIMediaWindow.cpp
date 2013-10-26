@@ -1202,7 +1202,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
           nPosClose != std::string::npos &&
           nPosClose > nPosOpen)
       {
-        strLabel.Delete(nPosOpen + 1, (nPosClose) - (nPosOpen + 1));
+        strLabel.erase(nPosOpen + 1, (nPosClose) - (nPosOpen + 1));
         strHistoryString = strLabel;
       }
       else

@@ -421,7 +421,7 @@ void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& d
     result += (*it) + delimiter;
 
   if(result != "")
-    result.Delete(result.size()-delimiter.size(), delimiter.size());
+    result.erase(result.size()-delimiter.size(), delimiter.size());
 }
 
 CStdString StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter)

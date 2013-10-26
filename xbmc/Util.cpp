@@ -968,7 +968,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
       for (int x = 1; x < result.GetLength() - 1; x++)
       {
         if (result[x] == '\\' && result[x+1] == '\\')
-          result.Delete(x);
+          result.erase(x);
       }
     }
   }
@@ -986,7 +986,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
       for (int x = 2; x < result.GetLength() - 1; x++)
       {
         if ( result[x] == '/' && result[x + 1] == '/' && !(result[x - 1] == ':' || (result[x - 1] == '/' && result[x - 2] == ':')) )
-          result.Delete(x);
+          result.erase(x);
       }
     }
   }
@@ -1043,7 +1043,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
   // remove any whitespace, and the standard prefix (if it exists)
   StringUtils::Trim(function);
   if( StringUtils::StartsWithNoCase(function, "xbmc.") )
-    function.Delete(0, 5);
+    function.erase(0, 5);
 
   SplitParams(paramString, parameters);
 }
@@ -1095,8 +1095,8 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
           size_t quotaPos = parameter.find('"');
           if (quotaPos > 1 && quotaPos < parameter.length() - 1 && parameter[quotaPos - 1] == '=')
           {
-            parameter.Delete(parameter.GetLength() - 1);
-            parameter.Delete(quotaPos);
+            parameter.erase(parameter.length() - 1);
+            parameter.erase(quotaPos);
           }
         }
         parameters.push_back(parameter);
@@ -1135,8 +1135,8 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
     size_t quotaPos = parameter.find('"');
     if (quotaPos > 1 && quotaPos < parameter.length() - 1 && parameter[quotaPos - 1] == '=')
     {
-      parameter.Delete(parameter.GetLength() - 1);
-      parameter.Delete(quotaPos);
+      parameter.erase(parameter.length() - 1);
+      parameter.erase(quotaPos);
     }
   }
   if (!parameter.empty() || parameters.size())
@@ -1156,7 +1156,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
   // stack://
   if (checkURL.GetProtocol() == "stack")
-    strPath.Delete(0, 8); // remove the stack protocol
+    strPath.erase(0, 8); // remove the stack protocol
 
   if (checkURL.GetProtocol() == "shout")
     strPath = checkURL.GetHostName();

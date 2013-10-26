@@ -2611,7 +2611,7 @@ void CMusicDatabase::DeleteCDDBInfo()
         continue;
 
       CStdString strFile = URIUtils::GetFileName(items[i]->GetPath());
-      strFile.Delete(strFile.size() - 5, 5);
+      strFile.erase(strFile.size() - 5, 5);
       ULONG lDiscId = strtoul(strFile.c_str(), NULL, 16);
       Xcddb cddb;
       cddb.setCacheDir(CProfilesManager::Get().GetCDDBFolder());
