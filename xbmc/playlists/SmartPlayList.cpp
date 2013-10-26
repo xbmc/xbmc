@@ -1308,7 +1308,7 @@ void CSmartPlaylistRuleCombination::GetVirtualFolders(const CStdString& strType,
   }
 }
 
-bool CSmartPlaylistRuleCombination::Load(const CVariant &obj)
+bool CSmartPlaylistRuleCombination::Load(const CVariant &obj, const IDatabaseQueryRuleFactory *factory)
 {
   if (!obj.isObject() && !obj.isArray())
     return false;
@@ -1339,13 +1339,13 @@ bool CSmartPlaylistRuleCombination::Load(const CVariant &obj)
 
     if (it->isMember("and") || it->isMember("or"))
     {
-      boost::shared_ptr<CSmartPlaylistRuleCombination> combo(new CSmartPlaylistRuleCombination());
-      if (combo && combo->Load(*it))
+      boost::shared_ptr<CSmartPlaylistRuleCombination> combo(factory->CreateCombination());
+      if (combo && combo->Load(*it, factory))
         m_combinations.push_back(combo);
     }
     else
     {
-      boost::shared_ptr<CDatabaseQueryRule> rule(new CSmartPlaylistRule());
+      boost::shared_ptr<CDatabaseQueryRule> rule(factory->CreateRule());
       if (rule && rule->Load(*it))
         m_rules.push_back(rule);
     }
@@ -1526,7 +1526,7 @@ bool CSmartPlaylist::Load(const CVariant &obj)
     m_playlistName = obj["name"].asString();
 
   if (obj.isMember("rules"))
-    m_ruleCombination.Load(obj["rules"]);
+    m_ruleCombination.Load(obj["rules"], this);
 
   if (obj.isMember("group") && obj["group"].isMember("type") && obj["group"]["type"].isString())
   {
@@ -1822,4 +1822,13 @@ bool CSmartPlaylist::CheckTypeCompatibility(const CStdString &typeLeft, const CS
     return true;
 
   return false;
+}
+
+CDatabaseQueryRule *CSmartPlaylist::CreateRule() const
+{
+  return new CSmartPlaylistRule();
+}
+CSmartPlaylistRuleCombination *CSmartPlaylist::CreateCombination() const
+{
+  return new CSmartPlaylistRuleCombination();
 }

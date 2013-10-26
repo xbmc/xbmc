@@ -141,6 +141,13 @@ class CSmartPlaylistRuleCombination;
 typedef std::vector< boost::shared_ptr<CDatabaseQueryRule> > CDatabaseQueryRules;
 typedef std::vector< boost::shared_ptr<CSmartPlaylistRuleCombination> > CSmartPlaylistRuleCombinations;
 
+class IDatabaseQueryRuleFactory
+{
+public:
+  virtual CDatabaseQueryRule *CreateRule() const=0;
+  virtual CSmartPlaylistRuleCombination *CreateCombination() const=0;
+};
+
 class CSmartPlaylistRuleCombination
 {
 public:
@@ -154,7 +161,7 @@ public:
 
   void clear();
   virtual bool Load(const TiXmlNode *node, const std::string &encoding = "UTF-8") { return false; }
-  virtual bool Load(const CVariant &obj);
+  virtual bool Load(const CVariant &obj, const IDatabaseQueryRuleFactory *factory);
   virtual bool Save(TiXmlNode *parent) const;
   virtual bool Save(CVariant &obj) const;
 
@@ -178,7 +185,7 @@ private:
   CDatabaseQueryRules m_rules;
 };
 
-class CSmartPlaylist
+class CSmartPlaylist : public IDatabaseQueryRuleFactory
 {
 public:
   CSmartPlaylist();
@@ -244,6 +251,10 @@ public:
   static bool CheckTypeCompatibility(const CStdString &typeLeft, const CStdString &typeRight);
 
   bool IsEmpty(bool ignoreSortAndLimit = true) const;
+
+  // rule creation
+  virtual CDatabaseQueryRule *CreateRule() const;
+  virtual CSmartPlaylistRuleCombination *CreateCombination() const;
 private:
   friend class CGUIDialogSmartPlaylistEditor;
   friend class CGUIDialogMediaFilter;
