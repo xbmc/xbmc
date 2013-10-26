@@ -165,6 +165,7 @@ public:
   virtual bool Save(TiXmlNode *parent) const;
   virtual bool Save(CVariant &obj) const;
 
+  CStdString GetWhereClause(const CDatabase &db, const CStdString& strType) const;
   std::string TranslateCombinationType() const;
 
   Combination GetType() const { return m_type; }

@@ -1217,6 +1217,35 @@ void CDatabaseQueryRuleCombination::clear()
   m_type = CombinationAnd;
 }
 
+CStdString CDatabaseQueryRuleCombination::GetWhereClause(const CDatabase &db, const CStdString& strType) const
+{
+  CStdString rule, currentRule;
+
+  // translate the combinations into SQL
+  for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)
+  {
+    if (it != m_combinations.begin())
+      rule += m_type == CombinationAnd ? " AND " : " OR ";
+    rule += "(" + (*it)->GetWhereClause(db, strType) + ")";
+  }
+
+  // translate the rules into SQL
+  for (CDatabaseQueryRules::const_iterator it = m_rules.begin(); it != m_rules.end(); ++it)
+  {
+    if (!rule.empty())
+      rule += m_type == CombinationAnd ? " AND " : " OR ";
+    rule += "(";
+    CStdString currentRule = (*it)->GetWhereClause(db, strType);
+    // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
+    if (currentRule.IsEmpty())
+      currentRule = m_type == CombinationAnd ? "'1'" : "'0'";
+    rule += currentRule;
+    rule += ")";
+  }
+
+  return rule;
+}
+
 CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const
 {
   CStdString rule, currentRule;
