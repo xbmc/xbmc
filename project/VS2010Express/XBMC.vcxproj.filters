@@ -3083,6 +3083,9 @@
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.cpp">
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\SettingsOperations.cpp">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6060,6 +6063,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.h">
       <Filter>cores\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\SettingsOperations.h">
+      <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
