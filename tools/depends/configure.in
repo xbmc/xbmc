@@ -164,7 +164,7 @@ case $host in
         platform_cc=gcc-4.2
         platform_cxx=g++-4.2
         ;;
-      4.*.*)
+      4.* | 4.*.*)
         platform_cc=llvm-gcc-4.2
         platform_cxx=llvm-g++-4.2
         ;; 
