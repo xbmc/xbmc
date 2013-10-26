@@ -23,6 +23,89 @@
 #include "XBDateTime.h"
 #include "dbwrappers/dataset.h"
 #include "URL.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+
+enum TextureField
+{
+  TF_None = 0,
+  TF_Id,
+  TF_Url,
+  TF_CachedUrl,
+  TF_LastHashCheck,
+  TF_ImageHash,
+  TF_Width,
+  TF_Height,
+  TF_UseCount,
+  TF_LastUsed,
+  TF_Max
+};
+
+typedef struct
+{
+  char string[14];
+  TextureField field;
+  CDatabaseQueryRule::FIELD_TYPE type;
+  bool browseable;
+  int localizedString;
+} translateField;
+
+static const translateField fields[] = {
+  { "none",          TF_None,          CDatabaseQueryRule::TEXT_FIELD    },
+  { "id",            TF_Id,            CDatabaseQueryRule::NUMERIC_FIELD },
+  { "url",           TF_Url,           CDatabaseQueryRule::TEXT_FIELD    },
+  { "cachedurl",     TF_CachedUrl,     CDatabaseQueryRule::TEXT_FIELD    },
+  { "lasthashcheck", TF_LastHashCheck, CDatabaseQueryRule::TEXT_FIELD    },
+  { "imagehash",     TF_ImageHash,     CDatabaseQueryRule::TEXT_FIELD    },
+  { "width",         TF_Width,         CDatabaseQueryRule::NUMERIC_FIELD },
+  { "height",        TF_Height,        CDatabaseQueryRule::NUMERIC_FIELD },
+  { "usecount",      TF_UseCount,      CDatabaseQueryRule::NUMERIC_FIELD },
+  { "lastused",      TF_LastUsed,      CDatabaseQueryRule::TEXT_FIELD    }
+};
+
+static const size_t NUM_FIELDS = sizeof(fields) / sizeof(translateField);
+
+int CTextureRule::TranslateField(const char *field) const
+{
+  for (unsigned int i = 0; i < NUM_FIELDS; i++)
+    if (StringUtils::EqualsNoCase(field, fields[i].string)) return fields[i].field;
+  return FieldNone;
+}
+
+CStdString CTextureRule::TranslateField(int field) const
+{
+  for (unsigned int i = 0; i < NUM_FIELDS; i++)
+    if (field == fields[i].field) return fields[i].string;
+  return "none";
+}
+
+CStdString CTextureRule::GetField(int field, const CStdString &type) const
+{
+  if (field == TF_Id) return "texture.id";
+  else if (field == TF_Url) return "texture.url";
+  else if (field == TF_CachedUrl) return "texture.cachedurl";
+  else if (field == TF_LastHashCheck) return "texture.lasthashcheck";
+  else if (field == TF_ImageHash) return "texture.imagehash";
+  else if (field == TF_Width) return "sizes.width";
+  else if (field == TF_Height) return "sizes.height";
+  else if (field == TF_UseCount) return "sizes.usecount";
+  else if (field == TF_LastUsed) return "sizes.lastusetime";
+  return "";
+}
+
+CDatabaseQueryRule::FIELD_TYPE CTextureRule::GetFieldType(int field) const
+{
+  for (unsigned int i = 0; i < NUM_FIELDS; i++)
+    if (field == fields[i].field) return fields[i].type;
+  return TEXT_FIELD;
+}
+
+void CTextureRule::GetAvailableFields(std::vector<std::string> &fieldList)
+{
+  // start at 1 to skip TF_None
+  for (unsigned int i = 1; i < NUM_FIELDS; i++)
+    fieldList.push_back(fields[i].string);
+}
 
 CTextureDatabase::CTextureDatabase()
 {
@@ -177,6 +260,52 @@ bool CTextureDatabase::GetCachedTexture(const CStdString &url, CTextureDetails &
   return false;
 }
 
+bool CTextureDatabase::GetTextures(CVariant &items, const Filter &filter)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString sql = "SELECT %s FROM texture JOIN sizes ON (texture.id=sizes.idtexture AND sizes.size=1)";
+    CStdString sqlFilter;
+    if (!CDatabase::BuildSQL("", filter, sqlFilter))
+      return false;
+
+    sql = PrepareSQL(sql, !filter.fields.empty() ? filter.fields.c_str() : "*") + sqlFilter;
+    if (!m_pDS->query(sql.c_str()))
+      return false;
+
+    while (!m_pDS->eof())
+    {
+      CVariant texture;
+      texture["id"] = m_pDS->fv(0).get_asInt();
+      texture["url"] = m_pDS->fv(1).get_asString();
+      texture["cachedurl"] = m_pDS->fv(2).get_asString();
+      texture["imagehash"] = m_pDS->fv(3).get_asString();
+      texture["lasthashcheck"] = m_pDS->fv(4).get_asString();
+      CVariant size(CVariant::VariantTypeObject);
+      // 5 is sizes.idtexture
+      size["size"]  = m_pDS->fv(6).get_asInt();
+      size["width"] = m_pDS->fv(7).get_asInt();
+      size["height"] = m_pDS->fv(8).get_asInt();
+      size["usecount"] = m_pDS->fv(9).get_asInt();
+      size["lastused"] = m_pDS->fv(10).get_asString();
+      texture["sizes"] = CVariant(CVariant::VariantTypeArray);
+      texture["sizes"].push_back(size);
+      items.push_back(texture);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s, failed", __FUNCTION__);
+  }
+  return false;
+}
+
 bool CTextureDatabase::SetCachedTextureValid(const CStdString &url, bool updateable)
 {
   CStdString date = updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
@@ -327,4 +456,14 @@ void CTextureDatabase::ClearTextureForPath(const CStdString &url, const CStdStri
     CLog::Log(LOGERROR, "%s failed on url '%s'", __FUNCTION__, url.c_str());
   }
   return;
+}
+
+CDatabaseQueryRule *CTextureDatabase::CreateRule() const
+{
+  return new CTextureRule();
+}
+
+CDatabaseQueryRuleCombination *CTextureDatabase::CreateCombination() const
+{
+  return new CDatabaseQueryRuleCombination();
 }

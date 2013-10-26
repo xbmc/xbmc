@@ -22,8 +22,25 @@
 
 #include "dbwrappers/Database.h"
 #include "TextureCacheJob.h"
+#include "playlists/SmartPlayList.h"
 
-class CTextureDatabase : public CDatabase
+class CVariant;
+
+class CTextureRule : public CDatabaseQueryRule
+{
+public:
+  CTextureRule() {};
+  virtual ~CTextureRule() {};
+
+  static void GetAvailableFields(std::vector<std::string> &fieldList);
+protected:
+  virtual int                 TranslateField(const char *field) const;
+  virtual CStdString          TranslateField(int field) const;
+  virtual CStdString          GetField(int field, const CStdString& type) const;
+  virtual FIELD_TYPE          GetFieldType(int field) const;
+};
+
+class CTextureDatabase : public CDatabase, public IDatabaseQueryRuleFactory
 {
 public:
   CTextureDatabase();
@@ -72,6 +89,11 @@ public:
    */
   void ClearTextureForPath(const CStdString &url, const CStdString &type);
 
+  bool GetTextures(CVariant &items, const Filter &filter);
+
+  // rule creation
+  virtual CDatabaseQueryRule *CreateRule() const;
+  virtual CDatabaseQueryRuleCombination *CreateCombination() const;
 protected:
   /*! \brief retrieve a hash for the given url
    Computes a hash of the current url to use for lookups in the database
