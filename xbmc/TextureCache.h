@@ -115,6 +115,12 @@ public:
    */
   void ClearCachedImage(const CStdString &image, bool deleteSource = false);
 
+  /*! \brief clear the cached version of the image with given id
+   \param database id of the image
+   \sa GetCachedImage
+   */
+  bool ClearCachedImage(int textureID);
+
   /*! \brief retrieve a cache file (relative to the cache path) to associate with the given image, excluding extension
    Use GetCachedPath(GetCacheFile(url)+extension) for the full path to the file.
    \param url location of the image
@@ -203,6 +209,7 @@ private:
    \return true if we had a cached version of this image, false otherwise.
    */
   bool ClearCachedTexture(const CStdString &url, CStdString &cacheFile);
+  bool ClearCachedTexture(int textureID, CStdString &cacheFile);
 
   /*! \brief Increment the use count of a texture
    Stores locally before calling CTextureDatabase::IncrementUseCount via a CUseCountJob

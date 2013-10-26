@@ -34,6 +34,7 @@ public:
   bool AddCachedTexture(const CStdString &originalURL, const CTextureDetails &details);
   bool SetCachedTextureValid(const CStdString &originalURL, bool updateable);
   bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
+  bool ClearCachedTexture(int textureID, CStdString &cacheFile);
   bool IncrementUseCount(const CTextureDetails &details);
 
   /*! \brief Invalidate a previously cached texture

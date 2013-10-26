@@ -221,6 +221,22 @@ void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*
     CFile::Delete(path);
 }
 
+bool CTextureCache::ClearCachedImage(int id)
+{
+  CStdString cachedFile;
+  if (ClearCachedTexture(id, cachedFile))
+  {
+    cachedFile = GetCachedPath(cachedFile);
+    if (CFile::Exists(cachedFile))
+      CFile::Delete(cachedFile);
+    cachedFile = URIUtils::ReplaceExtension(cachedFile, ".dds");
+    if (CFile::Exists(cachedFile))
+      CFile::Delete(cachedFile);
+    return true;
+  }
+  return false;
+}
+
 bool CTextureCache::GetCachedTexture(const CStdString &url, CTextureDetails &details)
 {
   CSingleLock lock(m_databaseSection);
@@ -256,6 +272,12 @@ bool CTextureCache::ClearCachedTexture(const CStdString &url, CStdString &cached
 {
   CSingleLock lock(m_databaseSection);
   return m_database.ClearCachedTexture(url, cachedURL);
+}
+
+bool CTextureCache::ClearCachedTexture(int id, CStdString &cachedURL)
+{
+  CSingleLock lock(m_databaseSection);
+  return m_database.ClearCachedTexture(id, cachedURL);
 }
 
 CStdString CTextureCache::GetCacheFile(const CStdString &url)

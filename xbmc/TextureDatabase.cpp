@@ -212,21 +212,26 @@ bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CTextureDet
 
 bool CTextureDatabase::ClearCachedTexture(const CStdString &url, CStdString &cacheFile)
 {
+  std::string id = GetSingleValue(PrepareSQL("select id from texture where url='%s'", url.c_str()));
+  return !id.empty() ? ClearCachedTexture(strtol(id.c_str(), NULL, 10), cacheFile) : false;
+}
+
+bool CTextureDatabase::ClearCachedTexture(int id, CStdString &cacheFile)
+{
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString sql = PrepareSQL("select id, cachedurl from texture where url='%s'", url.c_str());
+    CStdString sql = PrepareSQL("select cachedurl from texture where id=%u", id);
     m_pDS->query(sql.c_str());
 
     if (!m_pDS->eof())
     { // have some information
-      int textureID = m_pDS->fv(0).get_asInt();
-      cacheFile = m_pDS->fv(1).get_asString();
+      cacheFile = m_pDS->fv(0).get_asString();
       m_pDS->close();
       // remove it
-      sql = PrepareSQL("delete from texture where id=%u", textureID);
+      sql = PrepareSQL("delete from texture where id=%u", id);
       m_pDS->exec(sql.c_str());
       return true;
     }
@@ -234,7 +239,7 @@ bool CTextureDatabase::ClearCachedTexture(const CStdString &url, CStdString &cac
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s, failed on url '%s'", __FUNCTION__, url.c_str());
+    CLog::Log(LOGERROR, "%s, failed on texture id %u", __FUNCTION__, id);
   }
   return false;
 }
