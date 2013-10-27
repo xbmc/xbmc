@@ -2626,13 +2626,6 @@ public:
     return BufferSet(nLen);
   }
 
-  // GetLength() -- MFC docs say this is the # of BYTES but
-  // in truth it is the number of CHARACTERs (chars or wchar_ts)
-  int GetLength() const
-  {
-    return static_cast<int>(this->length());
-  }
-
 #ifndef SS_ANSI
   bool LoadString(UINT nId)
   {

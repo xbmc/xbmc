@@ -1268,7 +1268,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
 
     CStdString strVariousArtists = g_localizeStrings.Get(340).c_str();
     CStdString strSQL;
-    if (search.GetLength() >= MIN_FULL_SEARCH_LENGTH)
+    if (search.size() >= MIN_FULL_SEARCH_LENGTH)
       strSQL=PrepareSQL("select * from artist "
                                 "where (strArtist like '%s%%' or strArtist like '%% %s%%') and strArtist <> '%s' "
                                 , search.c_str(), search.c_str(), strVariousArtists.c_str() );
@@ -1854,7 +1854,7 @@ bool CMusicDatabase::SearchSongs(const CStdString& search, CFileItemList &items)
       return false;
 
     CStdString strSQL;
-    if (search.GetLength() >= MIN_FULL_SEARCH_LENGTH)
+    if (search.size() >= MIN_FULL_SEARCH_LENGTH)
       strSQL=PrepareSQL("select * from songview where strTitle like '%s%%' or strTitle like '%% %s%%' limit 1000", search.c_str(), search.c_str());
     else
       strSQL=PrepareSQL("select * from songview where strTitle like '%s%%' limit 1000", search.c_str());
@@ -1890,7 +1890,7 @@ bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &album
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    if (search.GetLength() >= MIN_FULL_SEARCH_LENGTH)
+    if (search.size() >= MIN_FULL_SEARCH_LENGTH)
       strSQL=PrepareSQL("select * from albumview where strAlbum like '%s%%' or strAlbum like '%% %s%%'", search.c_str(), search.c_str());
     else
       strSQL=PrepareSQL("select * from albumview where strAlbum like '%s%%'", search.c_str());

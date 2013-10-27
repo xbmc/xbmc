@@ -235,9 +235,9 @@ void CRssReader::AddString(CStdStringW aString, int aColour, int iFeed)
   else
     m_strFeed[iFeed] += aString;
 
-  int nStringLength = aString.GetLength();
+  size_t nStringLength = aString.size();
 
-  for (int i = 0;i < nStringLength;i++)
+  for (size_t i = 0;i < nStringLength;i++)
     aString[i] = (CHAR) (48 + aColour);
 
   if (m_rtlText)

@@ -528,7 +528,7 @@ void Xcddb::parseData(const char *buffer)
       // DTITLE may contain artist and disc title, separated with " / ",
       // for example: DTITLE=Modern Talking / Album: Victory (The 11th Album)
       bool found = false;
-      for (int i = 0; i < strValue.GetLength() - 2; i++)
+      for (int i = 0; i < (int)strValue.size() - 2; i++)
       {
         if (strValue[i] == ' ' && strValue[i + 1] == '/' && strValue[i + 2] == ' ')
         {

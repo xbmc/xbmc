@@ -431,10 +431,10 @@ bool CSlingboxFile::SelectChannel(unsigned int uiChannel)
   {
     // Prepare variables
     CStdString strDigits = StringUtils::Format("%u", uiChannel);
-    unsigned int uiNumberOfDigits = strDigits.GetLength();
+    size_t uiNumberOfDigits = strDigits.size();
 
     // Change the channel using IR commands
-    for (unsigned int i = 0; i < uiNumberOfDigits; i++)
+    for (size_t i = 0; i < uiNumberOfDigits; i++)
     {
       if (m_pSlingbox->SendIRCommand(m_sSlingboxSettings.uiCodeNumber[strDigits[i] - '0']))
       {

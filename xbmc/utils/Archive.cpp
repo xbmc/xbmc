@@ -181,9 +181,9 @@ CArchive& CArchive::operator<<(const std::string& str)
 
 CArchive& CArchive::operator<<(const CStdString& str)
 {
-  *this << str.GetLength();
+  *this << (unsigned int)str.size();
 
-  int size = str.GetLength();
+  int size = str.size();
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -205,9 +205,9 @@ CArchive& CArchive::operator<<(const CStdString& str)
 
 CArchive& CArchive::operator<<(const CStdStringW& str)
 {
-  *this << str.GetLength();
+  *this << (unsigned int)str.size();
 
-  int size = str.GetLength() * sizeof(wchar_t);
+  int size = str.size() * sizeof(wchar_t);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -377,7 +377,7 @@ CArchive& CArchive::operator>>(std::string& str)
 
 CArchive& CArchive::operator>>(CStdString& str)
 {
-  int iLength = 0;
+  unsigned int iLength = 0;
   *this >> iLength;
 
   m_pFile->Read((void*)str.GetBufferSetLength(iLength), iLength);
@@ -389,7 +389,7 @@ CArchive& CArchive::operator>>(CStdString& str)
 
 CArchive& CArchive::operator>>(CStdStringW& str)
 {
-  int iLength = 0;
+  unsigned int iLength = 0;
   *this >> iLength;
 
   m_pFile->Read((void*)str.GetBufferSetLength(iLength), iLength * sizeof(wchar_t));

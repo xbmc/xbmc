@@ -5756,7 +5756,7 @@ bool CVideoDatabase::GetStackedTvShowList(int idShow, CStdString& strIn) const
         strIn += PrepareSQL("%i,", m_pDS->fv(0).get_asInt());
         m_pDS->next();
       }
-      strIn[strIn.GetLength() - 1] = ')'; // replace last , with )
+      strIn[strIn.size() - 1] = ')'; // replace last , with )
     }
     m_pDS->close();
     return true;

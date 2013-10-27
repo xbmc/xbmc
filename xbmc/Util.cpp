@@ -962,10 +962,10 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
     */
-    if (bFixDoubleSlashes)
+    if (bFixDoubleSlashes && !result.empty())
     {
       // Fixup for double back slashes (but ignore the \\ of unc-paths)
-      for (int x = 1; x < result.GetLength() - 1; x++)
+      for (size_t x = 1; x < result.size() - 1; x++)
       {
         if (result[x] == '\\' && result[x+1] == '\\')
           result.erase(x);
@@ -980,10 +980,10 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
     */
-    if (bFixDoubleSlashes)
+    if (bFixDoubleSlashes && !result.empty())
     {
       // Fixup for double forward slashes(/) but don't touch the :// of URLs
-      for (int x = 2; x < result.GetLength() - 1; x++)
+      for (size_t x = 2; x < result.size() - 1; x++)
       {
         if ( result[x] == '/' && result[x + 1] == '/' && !(result[x - 1] == ':' || (result[x - 1] == '/' && result[x - 2] == ':')) )
           result.erase(x);
@@ -1127,9 +1127,9 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
   if (whiteSpacePos)
     parameter.erase(whiteSpacePos);
   // trim off start and end quotes
-  if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
-    parameter = parameter.substr(1,parameter.GetLength() - 2);
-  else if (parameter.GetLength() > 3 && parameter[parameter.GetLength() - 1] == '"')
+  if (parameter.size() > 1 && parameter[0] == '"' && parameter[parameter.size() - 1] == '"')
+    parameter = parameter.substr(1,parameter.size() - 2);
+  else if (parameter.size() > 3 && parameter[parameter.size() - 1] == '"')
   {
     // check name="value" style param.
     size_t quotaPos = parameter.find('"');

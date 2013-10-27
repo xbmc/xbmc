@@ -163,7 +163,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
     }
     else if (b == XBMCVK_END)
     {
-      SetCursorPos(m_strEdit.GetLength());
+      SetCursorPos(m_strEdit.size());
     }
     else if (b == XBMCVK_LEFT)
     {
@@ -179,7 +179,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
     }
     else if (b == XBMCVK_DELETE)
     {
-      if (GetCursorPos() < m_strEdit.GetLength())
+      if (GetCursorPos() < (int)m_strEdit.size())
       {
         MoveCursor(1);
         Backspace();
@@ -213,7 +213,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
         Close();
         break;
       case 0x7F: // Delete
-        if (GetCursorPos() < m_strEdit.GetLength())
+        if (GetCursorPos() < (int)m_strEdit.size())
         {
           MoveCursor(1);
           Backspace();

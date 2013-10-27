@@ -42,7 +42,7 @@ bool URIUtils::IsInPath(const CStdString &uri, const CStdString &baseURI)
 {
   CStdString uriPath = CSpecialProtocol::TranslatePath(uri);
   CStdString basePath = CSpecialProtocol::TranslatePath(baseURI);
-  return (strncmp(uriPath.c_str(), basePath.c_str(), basePath.GetLength()) == 0);
+  return StringUtils::StartsWith(uriPath, basePath);
 }
 
 /* returns filename extension including period of filename */

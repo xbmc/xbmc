@@ -23,6 +23,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "climits"
 
 using namespace std;
@@ -142,8 +143,7 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
   iCache i = m_cache.begin();
   while (i != m_cache.end())
   {
-    CStdString path = i->first;
-    if (strncmp(path.c_str(), storedPath.c_str(), storedPath.GetLength()) == 0)
+    if (StringUtils::StartsWith(i->first, storedPath))
       Delete(i++);
     else
       i++;

@@ -251,7 +251,7 @@ bool CTextureBundleXPR::HasFile(const CStdString& Filename)
 
 void CTextureBundleXPR::GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures)
 {
-  if (path.GetLength() > 1 && path[1] == ':')
+  if (path.size() > 1 && path[1] == ':')
     return;
 
   if (m_hFile == NULL && !OpenBundle())

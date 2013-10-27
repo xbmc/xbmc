@@ -260,7 +260,7 @@ bool CUdpClient::DispatchNextCommand()
 
     do
     {
-      ret = sendto(client_socket, command.message, command.message.GetLength(), 0, (struct sockaddr *) & command.address, sizeof(command.address));
+      ret = sendto(client_socket, command.message, command.message.size(), 0, (struct sockaddr *) & command.address, sizeof(command.address));
     }
     while (ret == -1 && !m_bStop);
   }

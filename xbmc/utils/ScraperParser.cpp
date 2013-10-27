@@ -158,7 +158,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
     CStdString temp = StringUtils::Format("$$%i",i+1);
     while ((iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
     {
-      strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+temp.GetLength(),m_param[i]);
+      strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+temp.size(),m_param[i]);
       iIndex += m_param[i].length();
     }
   }
