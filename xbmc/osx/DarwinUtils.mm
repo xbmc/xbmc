@@ -277,7 +277,7 @@ int  GetDarwinExecutablePath(char* path, uint32_t *pathsize)
   return 0;
 }
 
-const std::string& DarwinGetXbmcRootFolder(void)
+const char* DarwinGetXbmcRootFolder(void)
 {
   static std::string rootFolder = "";
   if ( rootFolder.length() == 0)
@@ -294,7 +294,7 @@ const std::string& DarwinGetXbmcRootFolder(void)
       rootFolder = "Library/Preferences";
     }
   }
-  return rootFolder;
+  return rootFolder.c_str();
 }
 
 bool DarwinIsIosSandboxed(void)
