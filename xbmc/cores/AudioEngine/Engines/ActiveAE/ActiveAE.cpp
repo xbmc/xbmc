@@ -1952,7 +1952,7 @@ void CActiveAE::Deamplify(CSoundPacket &dstSample)
       CAEUtil::SSEMulArray(buffer, m_muted ? 0.0 : m_volume, nb_floats);
 #else
       float *fbuffer = buffer;
-      for (unsigned int i = 0; i < nb_floats; i++)
+      for (int i = 0; i < nb_floats; i++)
         *fbuffer++ *= m_volume;
 #endif
     }
