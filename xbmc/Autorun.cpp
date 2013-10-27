@@ -105,7 +105,7 @@ bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startF
     mediaPath = path;
 
 #ifdef TARGET_WINDOWS
-  if (mediaPath.empty() || mediaPath.CompareNoCase("iso9660://") == 0)
+  if (mediaPath.empty() || mediaPath == "iso9660://")
     mediaPath = g_mediaManager.TranslateDevicePath("");
 #endif
 

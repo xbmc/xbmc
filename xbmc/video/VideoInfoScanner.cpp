@@ -1421,7 +1421,7 @@ namespace VIDEO
           matches.push_back(*guide);
           continue;
         }
-        if (!guide->cScraperUrl.strTitle.empty() && guide->cScraperUrl.strTitle.CompareNoCase(file->strTitle.c_str()) == 0)
+        if (!guide->cScraperUrl.strTitle.empty() && StringUtils::EqualsNoCase(guide->cScraperUrl.strTitle, file->strTitle))
         {
           bFound = true;
           break;

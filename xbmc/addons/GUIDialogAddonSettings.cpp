@@ -527,7 +527,7 @@ void CGUIDialogAddonSettings::UpdateFromControls()
         case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
           {
             CStdString option = setting->Attribute("option");
-            if (option.size() == 0 || option.CompareNoCase("float") == 0)
+            if (option.size() == 0 || StringUtils::EqualsNoCase(option, "float"))
               value = StringUtils::Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
             else
               value = StringUtils::Format("%i", ((CGUISettingsSliderControl *)control)->GetIntValue());
@@ -872,11 +872,11 @@ void CGUIDialogAddonSettings::CreateControls()
         CStdString option = setting->Attribute("option");
         int iType=0;
 
-        if (option.size() == 0 || option.CompareNoCase("float") == 0)
+        if (option.size() == 0 || StringUtils::EqualsNoCase(option, "float"))
           iType = SPIN_CONTROL_TYPE_FLOAT;
-        else if (option.CompareNoCase("int") == 0)
+        else if (StringUtils::EqualsNoCase(option, "int"))
           iType = SPIN_CONTROL_TYPE_INT;
-        else if (option.CompareNoCase("percent") == 0)
+        else if (StringUtils::EqualsNoCase(option, "percent"))
           iType = 0;
 
         ((CGUISettingsSliderControl *)pControl)->SetType(iType);
@@ -943,7 +943,7 @@ vector<std::string> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString 
   else
     fullPath = URIUtils::AddFileToFolder(m_addon->Path(), path);
 
-  bool hideExtensions = (options.CompareNoCase("hideext") == 0);
+  bool hideExtensions = StringUtils::EqualsNoCase(options, "hideext");
   // fetch directory
   CFileItemList items;
   if (!mask.empty())

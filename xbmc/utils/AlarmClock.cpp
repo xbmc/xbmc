@@ -55,7 +55,7 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
 
   CStdString strAlarmClock;
   CStdString strStarted;
-  if (strName.CompareNoCase("shutdowntimer") == 0)
+  if (StringUtils::EqualsNoCase(strName, "shutdowntimer"))
   {
     strAlarmClock = g_localizeStrings.Get(20144);
     strStarted = g_localizeStrings.Get(20146);

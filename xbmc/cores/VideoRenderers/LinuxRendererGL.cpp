@@ -44,6 +44,7 @@
 #include "DllSwScale.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "utils/StringUtils.h"
 #include "RenderCapture.h"
 #include "RenderFormats.h"
 #include "cores/IPlayer.h"

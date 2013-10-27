@@ -339,7 +339,7 @@ namespace XFILE
         CSmartPlaylist playlist;
         if (playlist.OpenAndReadName(item->GetPath()))
         {
-          if (playlist.GetName().CompareNoCase(name) == 0)
+          if (StringUtils::EqualsNoCase(playlist.GetName(), name))
             return item->GetPath();
         }
       }

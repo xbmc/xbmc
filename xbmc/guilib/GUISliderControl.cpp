@@ -643,7 +643,7 @@ void CGUISliderControl::SetAction(const CStdString &action)
 {
   for (size_t i = 0; i < sizeof(actions)/sizeof(SliderAction); i++)
   {
-    if (action.CompareNoCase(actions[i].action) == 0)
+    if (StringUtils::EqualsNoCase(action, actions[i].action))
     {
       m_action = &actions[i];
       return;

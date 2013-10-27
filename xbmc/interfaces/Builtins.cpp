@@ -237,7 +237,7 @@ bool CBuiltins::HasCommand(const CStdString& execString)
   CUtil::SplitExecFunction(execString, function, parameters);
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
-    if (function.CompareNoCase(commands[i].command) == 0 && (!commands[i].needsParameters || parameters.size()))
+    if (StringUtils::EqualsNoCase(function, commands[i].command) && (!commands[i].needsParameters || parameters.size()))
       return true;
   }
   return false;
@@ -1075,7 +1075,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else
     { // check if shutdown is specified in particular, and get the time for it
       CStdString strHeading;
-      if (parameter.CompareNoCase("shutdowntimer") == 0)
+      if (StringUtils::EqualsNoCase(parameter, "shutdowntimer"))
         strHeading = g_localizeStrings.Get(20145);
       else
         strHeading = g_localizeStrings.Get(13209);
@@ -1090,9 +1090,9 @@ int CBuiltins::Execute(const CStdString& execString)
     for (unsigned int i = 3; i < params.size() ; i++)
     {
       // check "true" for backward comp
-      if (params[i].CompareNoCase("true") == 0 || params[i].CompareNoCase("silent") == 0)
+      if (StringUtils::EqualsNoCase(params[i], "true") || StringUtils::EqualsNoCase(params[i], "silent"))
         silent = true;
-      else if (params[i].CompareNoCase("loop") == 0)
+      else if (StringUtils::EqualsNoCase(params[i], "loop"))
         loop = true;
     }
 
@@ -1117,7 +1117,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("cancelalarm"))
   {
     bool silent = false;
-    if (params.size() > 1 && params[1].CompareNoCase("true") == 0)
+    if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "true"))
       silent = true;
     g_alarmClock.Stop(params[0],silent);
   }
@@ -1125,7 +1125,7 @@ int CBuiltins::Execute(const CStdString& execString)
   {
 #ifdef HAS_DVD_DRIVE
     bool restart = false;
-    if (params.size() > 0 && params[0].CompareNoCase("restart") == 0)
+    if (params.size() > 0 && StringUtils::EqualsNoCase(params[0], "restart"))
       restart = true;
     CAutorun::PlayDisc(g_mediaManager.GetDiscPath(), true, restart);
 #endif
@@ -1147,7 +1147,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params.size() > 1)
     {
       int string = CSkinSettings::Get().TranslateBool(params[0]);
-      CSkinSettings::Get().SetBool(string, params[1].CompareNoCase("true") == 0);
+      CSkinSettings::Get().SetBool(string, StringUtils::EqualsNoCase(params[1], "true"));
       CSettings::Get().Save();
       return 0;
     }
@@ -1343,9 +1343,9 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("dialog.close") && params.size())
   {
     bool bForce = false;
-    if (params.size() > 1 && params[1].CompareNoCase("true") == 0)
+    if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "true"))
       bForce = true;
-    if (params[0].CompareNoCase("all") == 0)
+    if (StringUtils::EqualsNoCase(params[0], "all"))
     {
       g_windowManager.CloseDialogs(bForce);
     }
@@ -1528,7 +1528,7 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
     message.SetStringParam(params[0]);
-    if (params.size() > 1 && params[1].CompareNoCase("replace") == 0)
+    if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "replace"))
       message.SetParam2(1); // reset the history
     g_windowManager.SendMessage(message);
   }

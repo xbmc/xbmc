@@ -354,8 +354,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
       int iImages = AnimatedGifSet.LoadGIF(strPath.c_str());
       if (iImages == 0)
       {
-        CStdString rootPath = strPath.substr(0, g_SkinInfo->Path().size());
-        if (0 == rootPath.CompareNoCase(g_SkinInfo->Path()))
+        if (StringUtils::StartsWith(strPath, g_SkinInfo->Path()))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return emptyTexture;
       }

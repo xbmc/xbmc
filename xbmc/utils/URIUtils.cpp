@@ -619,10 +619,10 @@ bool URIUtils::IsRAR(const CStdString& strFile)
   if (strExtension.Equals(".001") && !StringUtils::EndsWithNoCase(strFile, ".ts.001"))
     return true;
 
-  if (strExtension.CompareNoCase(".cbr") == 0)
+  if (StringUtils::EqualsNoCase(strExtension, ".cbr"))
     return true;
 
-  if (strExtension.CompareNoCase(".rar") == 0)
+  if (StringUtils::EqualsNoCase(strExtension, ".rar"))
     return true;
 
   return false;

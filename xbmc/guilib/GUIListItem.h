@@ -185,10 +185,7 @@ protected:
 
   struct icompare
   {
-    bool operator()(const CStdString &s1, const CStdString &s2) const
-    {
-      return s1.CompareNoCase(s2) < 0;
-    }
+    bool operator()(const CStdString &s1, const CStdString &s2) const;
   };
 
   typedef std::map<CStdString, CVariant, icompare> PropertyMap;

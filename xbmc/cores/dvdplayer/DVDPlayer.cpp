@@ -654,7 +654,7 @@ bool CDVDPlayer::OpenInputStream()
   // correct the filename if needed
   CStdString filename(m_filename);
   if (StringUtils::StartsWith(filename, "dvd://")
-  ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
+  ||  StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo"))
   {
     m_filename = g_mediaManager.TranslateDevicePath("");
   }

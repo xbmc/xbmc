@@ -161,7 +161,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
             strUTF8.erase(del_start, pos - del_start);
             pos = del_start;
           }
-          if (!tagOptionValue.Compare(lang))
+          if (!tagOptionValue.compare(lang))
           {
             m_flag[FLAG_LANGUAGE] = false;
           }

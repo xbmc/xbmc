@@ -843,9 +843,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int compareString = ConditionalStringParameter(label);
       if (cat.num_params() > 2)
       {
-        if (cat.param(2).CompareNoCase("left") == 0)
+        if (StringUtils::EqualsNoCase(cat.param(2), "left"))
           return AddMultiInfo(GUIInfo(STRING_STR_LEFT, info, compareString));
-        else if (cat.param(2).CompareNoCase("right") == 0)
+        else if (StringUtils::EqualsNoCase(cat.param(2), "right"))
           return AddMultiInfo(GUIInfo(STRING_STR_RIGHT, info, compareString));
       }
       return AddMultiInfo(GUIInfo(STRING_STR, info, compareString));

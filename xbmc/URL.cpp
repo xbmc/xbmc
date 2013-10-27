@@ -305,11 +305,11 @@ void CURL::Parse(const CStdString& strURL1)
   }
 
   // iso9960 doesnt have an hostname;-)
-  if (m_strProtocol.CompareNoCase("iso9660") == 0
-    || m_strProtocol.CompareNoCase("musicdb") == 0
-    || m_strProtocol.CompareNoCase("videodb") == 0
-    || m_strProtocol.CompareNoCase("sources") == 0
-    || m_strProtocol.CompareNoCase("pvr") == 0
+  if (m_strProtocol == "iso9660"
+    || m_strProtocol == "musicdb"
+    || m_strProtocol == "videodb"
+    || m_strProtocol == "sources"
+    || m_strProtocol == "pvr"
     || StringUtils::StartsWith(m_strProtocol, "mem"))
   {
     if (m_strHostName != "" && m_strFileName != "")

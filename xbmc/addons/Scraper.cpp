@@ -618,7 +618,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
 
     // we need to sort if returned results don't specify 'sorted="yes"'
     if (fSort)
-      fSort = CStdString(xhResults.Element()->Attribute("sorted")).CompareNoCase("yes") != 0;
+      fSort = !StringUtils::EqualsNoCase(xhResults.Element()->Attribute("sorted"), "yes");
 
     for (TiXmlElement *pxeMovie = xhResults.FirstChild("entity").Element();
       pxeMovie; pxeMovie = pxeMovie->NextSiblingElement())

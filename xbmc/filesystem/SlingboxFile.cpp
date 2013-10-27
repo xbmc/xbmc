@@ -55,9 +55,9 @@ bool CSlingboxFile::Open(const CURL& url)
 
   // Prepare to connect to the Slingbox
   bool bAdmin;
-  if (url.GetUserName().CompareNoCase("administrator") == 0)
+  if (StringUtils::EqualsNoCase(url.GetUserName(), "administrator"))
     bAdmin = true;
-  else if (url.GetUserName().CompareNoCase("viewer") == 0)
+  else if (StringUtils::EqualsNoCase(url.GetUserName(), "viewer"))
     bAdmin = false;
   else
   {
@@ -528,7 +528,7 @@ void CSlingboxFile::LoadSettings(const CStdString& strHostname)
     pElement = pElement->NextSiblingElement("slingbox"))
   {
     if (pElement->Attribute("hostname") == NULL ||      
-      !m_sSlingboxSettings.strHostname.CompareNoCase(pElement->Attribute("hostname")))
+      StringUtils::EqualsNoCase(m_sSlingboxSettings.strHostname, pElement->Attribute("hostname")))
     {
       // Load setting values
       XMLUtils::GetInt(pElement, "width", m_sSlingboxSettings.iVideoWidth, 0, 640);

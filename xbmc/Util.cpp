@@ -1537,8 +1537,8 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension = URIUtils::GetExtension(pItem->GetPath());
-      if ((strExtension == ".xpr" && pItem->GetLabel().CompareNoCase("Textures.xpr")) ||
-          (strExtension == ".xbt" && pItem->GetLabel().CompareNoCase("Textures.xbt")))
+      if ((strExtension == ".xpr" && !StringUtils::EqualsNoCase(pItem->GetLabel(), "Textures.xpr")) ||
+          (strExtension == ".xbt" && !StringUtils::EqualsNoCase(pItem->GetLabel(), "Textures.xbt")))
       {
         CStdString strLabel = pItem->GetLabel();
         vecTheme.push_back(strLabel.substr(0, strLabel.size() - 4));
@@ -2098,7 +2098,7 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
    int iPos=0;
     while (sub_exts[iPos])
     {
-     if (strExt.CompareNoCase(sub_exts[iPos]) == 0)
+     if (StringUtils::EqualsNoCase(strExt, sub_exts[iPos]))
      {
       CStdString strSourceUrl;
       if (URIUtils::HasExtension(strArchivePath, ".rar"))

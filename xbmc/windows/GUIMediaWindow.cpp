@@ -487,7 +487,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         m_vecItems->SetPath("");
       CStdString dir = message.GetStringParam(0);
       const CStdString &ret = message.GetStringParam(1);
-      bool returning = ret.CompareNoCase("return") == 0;
+      bool returning = StringUtils::EqualsNoCase(ret, "return");
       if (!dir.empty())
       {
         m_history.ClearPathHistory();

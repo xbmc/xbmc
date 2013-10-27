@@ -2547,16 +2547,6 @@ public:
     return ssicoll(this->c_str(), this->length(), szThat, sslen(szThat));
   }
 #endif
-  int Compare(PCMYSTR szThat) const
-  {
-    return this->compare(szThat);
-  }
-
-  int CompareNoCase(PCMYSTR szThat)  const
-  {
-    return ssicmp(this->c_str(), szThat);
-  }
-
   int FindOneOf(PCMYSTR szCharSet) const
   {
     MYSIZE nIdx = this->find_first_of(szCharSet);
