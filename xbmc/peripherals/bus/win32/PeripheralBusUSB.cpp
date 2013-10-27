@@ -48,7 +48,6 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
 bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType defaultType, PeripheralScanResults &results)
 {
   bool     bReturn(false);
-  HDEVINFO hDevHandle;
   DWORD    required = 0, iMemberIndex = 0;
   int      nBufferSize = 0;
 
@@ -58,7 +57,8 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
   SP_DEVINFO_DATA devInfoData;
   devInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
 
-  if ((hDevHandle = SetupDiGetClassDevs(guid, 0, 0, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE)) == INVALID_HANDLE_VALUE)
+  HDEVINFO const hDevHandle = SetupDiGetClassDevs(guid, 0, 0, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+  if (hDevHandle == INVALID_HANDLE_VALUE)
   {
     CLog::Log(LOGWARNING, "%s - cannot query USB devices: invalid handle", __FUNCTION__);
     return bReturn;
