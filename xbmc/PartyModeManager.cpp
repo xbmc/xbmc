@@ -644,34 +644,35 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
 
 pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
 {
-  CStdString historyWhereMusic;
-  CStdString historyWhereVideo;
   // now add this on to the normal where clause
-  if (m_history.size())
+  std::vector<std::string> historyItemsMusic;
+  std::vector<std::string> historyItemsVideo;
+  for (unsigned int i = 0; i < m_history.size(); i++)
   {
-    if (m_strCurrentFilterMusic.empty())
-      historyWhereMusic = "songview.idSong not in (";
-    else
-      historyWhereMusic = m_strCurrentFilterMusic + " and songview.idSong not in (";
-    if (m_strCurrentFilterVideo.empty())
-      historyWhereVideo = "idMVideo not in (";
-    else
-      historyWhereVideo = m_strCurrentFilterVideo + " and idMVideo not in (";
-
-    for (unsigned int i = 0; i < m_history.size(); i++)
-    {
-      CStdString number = StringUtils::Format("%i,", m_history[i].second);
-      if (m_history[i].first == 1)
-        historyWhereMusic += number;
-      if (m_history[i].first == 2)
-        historyWhereVideo += number;
-    }
-    historyWhereMusic.TrimRight(",");
-    historyWhereMusic += ")";
-    historyWhereVideo.TrimRight(",");
-    historyWhereVideo += ")";
+    std::string number = StringUtils::Format("%i", m_history[i].second);
+    if (m_history[i].first == 1)
+      historyItemsMusic.push_back(number);
+    if (m_history[i].first == 2)
+      historyItemsVideo.push_back(number);
   }
-  return make_pair(historyWhereMusic,historyWhereVideo);
+
+  std::string historyWhereMusic;
+  if (!historyItemsMusic.empty())
+  {
+    if (!m_strCurrentFilterMusic.empty())
+      historyWhereMusic = m_strCurrentFilterMusic + " and ";
+    historyWhereMusic += "songview.idSong not in (" + StringUtils::Join(historyItemsMusic, ", ") + ")";
+  }
+
+  std::string historyWhereVideo;
+  if (!historyItemsVideo.empty())
+  {
+    if (!m_strCurrentFilterVideo.empty())
+      historyWhereVideo = m_strCurrentFilterVideo + " and ";
+    historyWhereVideo += "idMVideo not in (" + StringUtils::Join(historyItemsVideo, ", ") + ")";
+  }
+
+  return make_pair(historyWhereMusic, historyWhereVideo);
 }
 
 void CPartyModeManager::AddToHistory(int type, int songID)
