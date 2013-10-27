@@ -98,7 +98,7 @@ public:
     If possible, the created window should use the current display's geometry
     and allocate as needed so that it is immediately available for use.
     If not, it must be made ready by SetNativeResolution(). */
-  virtual bool  CreateNativeWindow() = 0;
+  virtual bool  CreateNativeWindow(int nativeVisualId) = 0;
 
 /*! \brief Returns the current Native Display */
   virtual bool  GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const = 0;

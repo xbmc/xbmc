@@ -694,7 +694,6 @@ case $host in
      use_neon=yes
      use_gles=yes
      use_sdl=no
-     use_x11=no
      use_wayland=no
      ;;
   arm*-*linux-android*)
@@ -1385,6 +1384,14 @@ fi
 AC_SUBST(USE_MDNSEMBEDDED)
 
 # X11
+
+# X11 is not a requirement on arm
+if test "$use_x11" = "yes" && test "$ARCH" = "arm"; then
+  AC_MSG_NOTICE("test arm x11")
+  PKG_CHECK_MODULES([X11],    [x11],,
+    use_x11="no"; AC_MSG_RESULT($x11_disabled))
+fi
+
 if test "$use_x11" = "yes" && test "$host_vendor" != "apple"; then
   AC_MSG_NOTICE($x11_enabled)
   PKG_CHECK_MODULES([X11],    [x11],

@@ -33,7 +33,7 @@ public:
   virtual int   GetQuirks() { return EGL_QUIRK_NEED_WINDOW_FOR_RES | EGL_QUIRK_DESTROY_NATIVE_WINDOW_WITH_SURFACE; };
 
   virtual bool  CreateNativeDisplay();
-  virtual bool  CreateNativeWindow();
+  virtual bool  CreateNativeWindow(int nativeVisualId);
   virtual bool  GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const;
   virtual bool  GetNativeWindow(XBNativeWindowType **nativeWindow) const;
 

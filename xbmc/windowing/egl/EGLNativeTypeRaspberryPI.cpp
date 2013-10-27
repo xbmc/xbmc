@@ -115,7 +115,7 @@ bool CEGLNativeTypeRaspberryPI::CreateNativeDisplay()
   return true;
 }
 
-bool CEGLNativeTypeRaspberryPI::CreateNativeWindow()
+bool CEGLNativeTypeRaspberryPI::CreateNativeWindow(int)
 {
 #if defined(TARGET_RASPBERRY_PI)
   if(!m_nativeWindow)

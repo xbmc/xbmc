@@ -37,7 +37,7 @@ public:
   virtual int   GetQuirks();
 
   virtual bool  CreateNativeDisplay();
-  virtual bool  CreateNativeWindow();
+  virtual bool  CreateNativeWindow(int nativeVisualId);
   virtual bool  GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const;
   virtual bool  GetNativeWindow(XBNativeWindowType **nativeWindow) const;
 

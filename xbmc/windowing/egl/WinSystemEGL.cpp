@@ -85,12 +85,6 @@ bool CWinSystemEGL::InitWindowSystem()
     return false;
   }
 
-  if (!m_egl->CreateNativeWindow())
-  {
-    CLog::Log(LOGERROR, "%s: Could not get native window",__FUNCTION__);
-    return false;
-  }
-
   if (!m_egl->InitDisplay(&m_display))
   {
     CLog::Log(LOGERROR, "%s: Could not create display",__FUNCTION__);
@@ -123,6 +117,18 @@ bool CWinSystemEGL::InitWindowSystem()
     return false;
   }
 
+  // Get the native visual id for the chosen config. Don't check for an error since
+  // there might be backends which do not have a native id. Assume it never fails
+  // for backends which require this id.
+  EGLint nativeVisualId = 0;
+  eglGetConfigAttrib(m_display, m_config, EGL_NATIVE_VISUAL_ID, &nativeVisualId);
+  
+  if (!m_egl->CreateNativeWindow(int(nativeVisualId)))
+  {
+    CLog::Log(LOGERROR, "%s: Could not get native window",__FUNCTION__);
+    return false;
+  }
+
   // Some platforms require a surface before we can probe the resolution.
   // Create the window here, then the creation in CreateNewWindow() will be skipped.
   int quirks;
@@ -152,7 +158,14 @@ bool CWinSystemEGL::CreateWindow(RESOLUTION_INFO &res)
   {
     CLog::Log(LOGNOTICE, "%s: Could not create a surface. Trying with a fresh Native Window.",__FUNCTION__);
     m_egl->DestroyNativeWindow();
-    if (!m_egl->CreateNativeWindow())
+
+    // Get the native visual id for the chosen config. Don't check for an error since
+    // there might be backends which do not have a native id. Assume it never fails
+    // for backends which require this id.
+    EGLint nativeVisualId = 0;
+    eglGetConfigAttrib(m_display, m_config, EGL_NATIVE_VISUAL_ID, &nativeVisualId);
+
+    if (!m_egl->CreateNativeWindow(nativeVisualId))
     {
       CLog::Log(LOGERROR, "%s: Could not get native window",__FUNCTION__);
       return false;

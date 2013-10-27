@@ -77,7 +77,7 @@ bool CEGLNativeTypeAmlogic::CreateNativeDisplay()
   return true;
 }
 
-bool CEGLNativeTypeAmlogic::CreateNativeWindow()
+bool CEGLNativeTypeAmlogic::CreateNativeWindow(int)
 {
 #if defined(_FBDEV_WINDOW_H_)
   fbdev_window *nativeWindow = new fbdev_window;
