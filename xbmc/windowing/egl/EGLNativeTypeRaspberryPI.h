@@ -39,7 +39,7 @@ public:
   virtual int   GetQuirks() { return EGL_QUIRK_NONE; };
 
   virtual bool  CreateNativeDisplay();
-  virtual bool  CreateNativeWindow();
+  virtual bool  CreateNativeWindow(int nativeVisualId);
   virtual bool  GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const;
   virtual bool  GetNativeWindow(XBNativeWindowType **nativeWindow) const;
 

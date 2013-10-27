@@ -27,6 +27,7 @@
 #include "EGLNativeTypeAmlogic.h"
 #include "EGLNativeTypeRaspberryPI.h"
 #include "EGLNativeTypeWayland.h"
+#include "EGLNativeTypeX11.h"
 #include "EGLWrapper.h"
 
 #define CheckError() m_result = eglGetError(); if(m_result != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, m_result);
@@ -81,6 +82,9 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
   // Try to create each backend in sequence and go with the first one
   // that we know will work
   if ((nativeGuess = CreateEGLNativeType<CEGLNativeTypeWayland>(implementation)) ||
+#if defined(HAVE_X11)
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeX11>(implementation)) ||
+#endif
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation)))
@@ -121,12 +125,12 @@ bool CEGLWrapper::CreateNativeDisplay()
   return m_nativeTypes->CreateNativeDisplay();
 }
 
-bool CEGLWrapper::CreateNativeWindow()
+bool CEGLWrapper::CreateNativeWindow(int nativeVisualId)
 {
   if(!m_nativeTypes)
     return false;
 
-  return m_nativeTypes->CreateNativeWindow();
+  return m_nativeTypes->CreateNativeWindow(nativeVisualId);
 }
 
 void CEGLWrapper::DestroyNativeDisplay()

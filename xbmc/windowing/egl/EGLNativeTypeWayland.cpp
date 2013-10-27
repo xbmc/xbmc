@@ -201,7 +201,7 @@ bool CEGLNativeTypeWayland::CreateNativeDisplay()
 #endif
 }
 
-bool CEGLNativeTypeWayland::CreateNativeWindow()
+bool CEGLNativeTypeWayland::CreateNativeWindow(int)
 {
 #if defined(HAVE_WAYLAND)
 

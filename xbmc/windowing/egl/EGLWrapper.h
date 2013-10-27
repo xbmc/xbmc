@@ -34,7 +34,7 @@ public:
   std::string GetNativeName();
 
   bool CreateNativeDisplay();
-  bool CreateNativeWindow();
+  bool CreateNativeWindow(int nativeVisualId);
   void DestroyNativeDisplay();
   void DestroyNativeWindow();
 
