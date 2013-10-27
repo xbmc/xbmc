@@ -324,7 +324,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
     return "";
 
   if(bReturnAsDevice == false)
-    strDevice.Replace("\\\\.\\","");
+    StringUtils::Replace(strDevice, "\\\\.\\","");
   else if(!strDevice.empty() && strDevice[1]==':')
     strDevice = StringUtils::Format("\\\\.\\%c:", strDevice[0]);
 

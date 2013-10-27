@@ -65,7 +65,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   if (strPath.empty())
     return INVALID_HANDLE_VALUE;
 
-  strPath.Replace("\\","/");
+  StringUtils::Replace(strPath, '\\','/');
 
   // if the file name is a directory then we add a * to look for all files in this directory
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
@@ -94,9 +94,9 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
      strFiles = "*";
 
   strFiles = CStdString("^") + strFiles + "$";
-  strFiles.Replace(".","\\.");
-  strFiles.Replace("*",".*");
-  strFiles.Replace("?",".");
+  StringUtils::Replace(strFiles, ".","\\.");
+  StringUtils::Replace(strFiles, "*",".*");
+  StringUtils::Replace(strFiles, "?",".");
 
   StringUtils::ToLower(strFiles);  // Do we really want this case insensitive?
   CRegExp re(true);

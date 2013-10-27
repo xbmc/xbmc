@@ -511,7 +511,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
   if (net)
   {
     m_macAddress = net->GetMacAddress();
-    m_macAddress.Replace(":","");
+    StringUtils::Replace(m_macAddress, ":","");
     while (m_macAddress.size() < 12)
     {
       m_macAddress = CStdString("0") + m_macAddress;

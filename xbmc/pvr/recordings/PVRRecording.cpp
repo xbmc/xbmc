@@ -290,7 +290,7 @@ void CPVRRecording::UpdatePath(void)
     CStdString strDatetime(m_recordingTime.GetAsSaveString());
     CStdString strDirectory;
     CStdString strChannel;
-    strTitle.Replace('/',' ');
+    StringUtils::Replace(strTitle, '/',' ');
 
     if (!m_strDirectory.empty())
       strDirectory = StringUtils::Format("%s/", m_strDirectory.c_str());

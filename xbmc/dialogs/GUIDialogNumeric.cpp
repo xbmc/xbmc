@@ -575,7 +575,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const CStdString &initial)
     else if (m_mode == INPUT_DATE)
     {
       CStdString tmp = initial;
-      tmp.Replace("/", ".");
+      StringUtils::Replace(tmp, '/', '.');
       dateTime.SetFromDBDate(tmp);
     }
 

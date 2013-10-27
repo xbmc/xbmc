@@ -511,6 +511,6 @@ CStdString CTextureBundleXPR::Normalize(const CStdString &name)
   CStdString newName(name);
   StringUtils::Trim(newName);
   StringUtils::ToLower(newName);
-  newName.Replace('/','\\');
+  StringUtils::Replace(newName, '/','\\');
   return newName;
 }

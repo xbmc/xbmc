@@ -1414,7 +1414,7 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
 
   // change protocol to mms for the following mime-type.  Allows us to create proper FileMMS.
   if( StringUtils::StartsWithNoCase(m_mimetype, "application/vnd.ms.wms-hdr.asfv1") || StringUtils::StartsWithNoCase(m_mimetype, "application/x-mms-framed") )
-    m_strPath.Replace("http:", "mms:");
+    StringUtils::Replace(m_strPath, "http:", "mms:");
 }
 
 bool CFileItem::IsSamePath(const CFileItem *item) const

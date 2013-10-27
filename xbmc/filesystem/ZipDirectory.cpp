@@ -81,7 +81,7 @@ namespace XFILE
     for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
     {
       CStdString strEntryName(ze->name);
-      strEntryName.Replace('\\','/');
+      StringUtils::Replace(strEntryName, '\\','/');
       if (strEntryName == strPathInZip) // skip the listed dir
         continue;
 

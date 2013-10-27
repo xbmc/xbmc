@@ -370,13 +370,13 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             {
               strMask = setting->Attribute("mask");
               // convert mask qualifiers
-              strMask.Replace("$AUDIO", g_advancedSettings.m_musicExtensions);
-              strMask.Replace("$VIDEO", g_advancedSettings.m_videoExtensions);
-              strMask.Replace("$IMAGE", g_advancedSettings.m_pictureExtensions);
+              StringUtils::Replace(strMask, "$AUDIO", g_advancedSettings.m_musicExtensions);
+              StringUtils::Replace(strMask, "$VIDEO", g_advancedSettings.m_videoExtensions);
+              StringUtils::Replace(strMask, "$IMAGE", g_advancedSettings.m_pictureExtensions);
 #if defined(_WIN32_WINNT)
-              strMask.Replace("$EXECUTABLE", ".exe|.bat|.cmd|.py");
+              StringUtils::Replace(strMask, "$EXECUTABLE", ".exe|.bat|.cmd|.py");
 #else
-              strMask.Replace("$EXECUTABLE", "");
+              StringUtils::Replace(strMask, "$EXECUTABLE", "");
 #endif
             }
             else
@@ -414,8 +414,8 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           if (!action.empty())
           {
             // replace $CWD with the url of plugin/script
-            action.Replace("$CWD", m_addon->Path());
-            action.Replace("$ID", m_addon->ID());
+            StringUtils::Replace(action, "$CWD", m_addon->Path());
+            StringUtils::Replace(action, "$ID", m_addon->ID());
             if (option)
               bCloseDialog = (strcmpi(option, "close") == 0);
             CApplicationMessenger::Get().ExecBuiltIn(action);
@@ -939,7 +939,7 @@ vector<std::string> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString 
   // replace $PROFILE with the profile path of the plugin/script
   CStdString fullPath = path;
   if (fullPath.find("$PROFILE") != std::string::npos)
-    fullPath.Replace("$PROFILE", m_addon->Profile());
+    StringUtils::Replace(fullPath, "$PROFILE", m_addon->Profile());
   else
     fullPath = URIUtils::AddFileToFolder(m_addon->Path(), path);
 

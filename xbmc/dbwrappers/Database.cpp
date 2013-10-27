@@ -140,10 +140,10 @@ CStdString CDatabase::FormatSQL(CStdString strStmt, ...)
 {
   //  %q is the sqlite format string for %s.
   //  Any bad character, like "'", will be replaced with a proper one
-  strStmt.Replace("%s", "%q");
+  StringUtils::Replace(strStmt, "%s", "%q");
   //  the %I64 enhancement is not supported by sqlite3_vmprintf
   //  must be %ll instead
-  strStmt.Replace("%I64", "%ll");
+  StringUtils::Replace(strStmt, "%I64", "%ll");
 
   va_list args;
   va_start(args, strStmt);

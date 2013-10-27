@@ -9323,7 +9323,7 @@ bool CVideoDatabase::SetSingleValue(const std::string &table, const std::string 
 CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &name) const
 {
   CStdString safeThumb(name);
-  safeThumb.Replace(' ', '_');
+  StringUtils::Replace(safeThumb, ' ', '_');
   return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
 }
 

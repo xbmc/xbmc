@@ -143,7 +143,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
           m_vecItems[idx - 1]->SetLabel(URIUtils::GetFileName(strValue));
         CFileItem item(strValue, false);
         if (bShoutCast && !item.IsAudio())
-          strValue.Replace("http:", "shout:");
+          strValue.replace(0, 7, "shout://");
 
         strValue = URIUtils::SubstitutePath(strValue);
         CUtil::GetQualifiedFilename(m_strBasePath, strValue);

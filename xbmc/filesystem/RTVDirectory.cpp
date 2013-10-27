@@ -103,7 +103,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       strURL = StringUtils::TrimRight(strRoot, "/");
       pos = strURL.rfind('/');
       strRTV = strURL.substr(0, pos + 1);
-      strRTV.Replace("*", strURL.substr(pos + 1).c_str());
+      StringUtils::Replace(strRTV, "*", strURL.substr(pos + 1));
       CURL tmpURL(strRTV);
 
       // Force the newly constructed share into the right variables to

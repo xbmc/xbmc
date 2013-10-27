@@ -346,10 +346,10 @@ CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, co
   m_postfix = postfix;
   m_escaped = escaped;
   // filter our prefix and postfix for comma's
-  m_prefix.Replace("$COMMA", ",");
-  m_postfix.Replace("$COMMA", ",");
-  m_prefix.Replace("$LBRACKET", "["); m_prefix.Replace("$RBRACKET", "]");
-  m_postfix.Replace("$LBRACKET", "["); m_postfix.Replace("$RBRACKET", "]");
+  StringUtils::Replace(m_prefix, "$COMMA", ",");
+  StringUtils::Replace(m_postfix, "$COMMA", ",");
+  StringUtils::Replace(m_prefix, "$LBRACKET", "["); StringUtils::Replace(m_prefix, "$RBRACKET", "]");
+  StringUtils::Replace(m_postfix, "$LBRACKET", "["); StringUtils::Replace(m_postfix, "$RBRACKET", "]");
 }
 
 CStdString CGUIInfoLabel::CInfoPortion::GetLabel(const CStdString &info) const
@@ -357,8 +357,8 @@ CStdString CGUIInfoLabel::CInfoPortion::GetLabel(const CStdString &info) const
   CStdString label = m_prefix + info + m_postfix;
   if (m_escaped) // escape all quotes and backslashes, then quote
   {
-    label.Replace("\\", "\\\\");
-    label.Replace("\"", "\\\"");
+    StringUtils::Replace(label, "\\", "\\\\");
+    StringUtils::Replace(label, "\"", "\\\"");
     return "\"" + label + "\"";
   }
   return label;

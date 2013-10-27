@@ -1035,9 +1035,9 @@ CStdString URIUtils::AddFileToFolder(const CStdString& strFolder,
 
   // correct any slash directions
   if (!IsDOSPath(strFolder))
-    strResult.Replace('\\', '/');
+    StringUtils::Replace(strResult, '\\', '/');
   else
-    strResult.Replace('/', '\\');
+    StringUtils::Replace(strResult, '/', '\\');
 
   return strResult;
 }

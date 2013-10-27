@@ -123,7 +123,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     OutputDebugString(strData);
 
     /* fixup newline alignment, number of spaces should equal prefix length */
-    strData.Replace("\n", LINE_ENDING"                                            ");
+    StringUtils::Replace(strData, "\n", LINE_ENDING"                                            ");
     strData += LINE_ENDING;
 
     strPrefix = StringUtils::Format(prefixFormat,

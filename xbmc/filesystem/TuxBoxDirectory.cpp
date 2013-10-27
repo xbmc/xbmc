@@ -128,7 +128,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
       // parse returned xml
       CXBMCTinyXML doc;
-      data.Replace("></",">-</"); //FILL EMPTY ELEMENTS WITH "-"!
+      StringUtils::Replace(data, "></",">-</"); //FILL EMPTY ELEMENTS WITH "-"!
       doc.Parse(data, http.GetServerReportedCharset());
       TiXmlElement *root = doc.RootElement();
       if(root == NULL)

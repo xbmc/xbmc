@@ -821,7 +821,7 @@ extern "C"
     if (url.GetFileName().find("*.*") != string::npos)
     {
       CStdString strReplaced = url.GetFileName();
-      strReplaced.Replace("*.*","");
+      StringUtils::Replace(strReplaced, "*.*","");
       url.SetFileName(strReplaced);
     }
     else if (url.GetFileName().find("*.") != string::npos)
@@ -832,7 +832,7 @@ extern "C"
     else if (url.GetFileName().find("*") != string::npos)
     {
       CStdString strReplaced = url.GetFileName();
-      strReplaced.Replace("*","");
+      StringUtils::Replace(strReplaced, "*","");
       url.SetFileName(strReplaced);
     }
     int iDirSlot=0; // locate next free directory

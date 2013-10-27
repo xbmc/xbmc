@@ -329,8 +329,8 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   strFilename = URIUtils::AddFileToFolder(strBasePath, strFilename);
 
   // get rid of any /./ or \.\ that happen to be there
-  strFilename.Replace("\\.\\", "\\");
-  strFilename.Replace("/./", "/");
+  StringUtils::Replace(strFilename, "\\.\\", "\\");
+  StringUtils::Replace(strFilename, "/./", "/");
 
   // now find any "\\..\\" and remove them via GetParentPath
   size_t pos;
@@ -894,20 +894,20 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
 {
   CStdString result = strFile;
 
-  result.Replace('/', '_');
-  result.Replace('\\', '_');
-  result.Replace('?', '_');
+  StringUtils::Replace(result, '/', '_');
+  StringUtils::Replace(result, '\\', '_');
+  StringUtils::Replace(result, '?', '_');
 
   if (LegalType == LEGAL_WIN32_COMPAT)
   {
     // just filter out some illegal characters on windows
-    result.Replace(':', '_');
-    result.Replace('*', '_');
-    result.Replace('?', '_');
-    result.Replace('\"', '_');
-    result.Replace('<', '_');
-    result.Replace('>', '_');
-    result.Replace('|', '_');
+    StringUtils::Replace(result, ':', '_');
+    StringUtils::Replace(result, '*', '_');
+    StringUtils::Replace(result, '?', '_');
+    StringUtils::Replace(result, '\"', '_');
+    StringUtils::Replace(result, '<', '_');
+    StringUtils::Replace(result, '>', '_');
+    StringUtils::Replace(result, '|', '_');
     StringUtils::TrimRight(result, ". ");
   }
   return result;
@@ -957,7 +957,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
 #ifdef TARGET_WINDOWS
   if (URIUtils::IsDOSPath(path))
   {
-    result.Replace('/', '\\');
+    StringUtils::Replace(result, '/', '\\');
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
@@ -975,7 +975,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
   else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif
   {
-    result.Replace('\\', '/');
+    StringUtils::Replace(result, '\\', '/');
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
@@ -1462,7 +1462,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, size_t i
   // replace any additional /../../ with just /../ if necessary
   CStdString replaceDots = StringUtils::Format("..%c..", cDelim);
   while (StrInput.size() > (unsigned int)iTextMaxLength)
-    if (!StrInput.Replace(replaceDots, ".."))
+    if (!StringUtils::Replace(StrInput, replaceDots, ".."))
       break;
   // finally, truncate our string to force inside our max text length,
   // replacing the last 2 characters with ".."

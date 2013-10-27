@@ -708,7 +708,7 @@ bool CRarFile::OpenInArchive()
 
         /* replace back slashes into forward slashes */
         /* this could get us into troubles, file could two different files, one with / and one with \ */
-        strFileName.Replace('\\', '/');
+        StringUtils::Replace(strFileName, '\\', '/');
 
         if (strFileName == m_strPathInRar)
         {

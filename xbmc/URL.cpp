@@ -327,7 +327,7 @@ void CURL::Parse(const CStdString& strURL1)
     }
   }
 
-  m_strFileName.Replace("\\", "/");
+  StringUtils::Replace(m_strFileName, '\\', '/');
 
   /* update extension */
   SetFileName(m_strFileName);

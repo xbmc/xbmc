@@ -134,7 +134,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 
   CStdString strPath = strPathInRar;
 #ifndef TARGET_POSIX
-  strPath.Replace('/', '\\');
+  StringUtils::Replace(strPath, '/', '\\');
 #endif
   //g_charsetConverter.unknownToUTF8(strPath);
   CStdString strCachedPath = URIUtils::AddFileToFolder(strDir + "rarfolder%04d",
@@ -270,7 +270,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
 
     /* replace back slashes into forward slashes */
     /* this could get us into troubles, file could two different files, one with / and one with \ */
-    strName.Replace('\\', '/');
+    StringUtils::Replace(strName, '\\', '/');
 
     if (bMask)
     {

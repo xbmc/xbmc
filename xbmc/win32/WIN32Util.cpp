@@ -228,7 +228,7 @@ CStdString CWIN32Util::GetLocalPath(const CStdString &strPath)
 {
   CURL url(strPath);
   CStdString strLocalPath = url.GetFileName();
-  strLocalPath.Replace(url.GetShareName()+"/","");
+  StringUtils::Replace(strLocalPath, url.GetShareName()+"/", "");
   return strLocalPath;
 }
 
@@ -331,7 +331,7 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
     strParams = strCommand.substr(iIndex + 1);
   }
 
-  strExe.Replace("\"","");
+  StringUtils::Replace(strExe, "\"", "");
 
   strWorkingDir = strExe;
   iIndex = strWorkingDir.rfind('\\');
@@ -479,7 +479,7 @@ CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
   if(StringUtils::StartsWith(strRetPath, "\\\\"))
   {
     strRetPath = "smb:" + strPath;
-    strRetPath.Replace("\\","/");
+    StringUtils::Replace(strRetPath, '\\', '/');
   }
   return strRetPath;
 }
@@ -489,8 +489,8 @@ CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
   CStdString strRetPath(strPath);
   if(StringUtils::StartsWithNoCase(strRetPath, "smb://"))
   {
-    strRetPath.Replace("smb://","\\\\");
-    strRetPath.Replace("/","\\");
+    StringUtils::Replace(strRetPath, "smb://", "\\\\");
+    StringUtils::Replace(strRetPath, '/', '\\');
   }
   return strRetPath;
 }
@@ -926,8 +926,8 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
             break;
           }
         }
-        share.strName.Replace(":\\",":");
-        share.strPath.Replace(":\\",":");
+        StringUtils::Replace(share.strName, ":\\", ":");
+        StringUtils::Replace(share.strPath, ":\\", ":");
         share.m_ignore= true;
         if( !bUseDCD )
         {

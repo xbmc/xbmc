@@ -296,7 +296,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
   strStripped = strHTML;
   while (mappings[iPos].html)
   {
-    strStripped.Replace(mappings[iPos].html,CStdStringW(1, mappings[iPos].w));
+    StringUtils::Replace(strStripped, mappings[iPos].html,CStdStringW(1, mappings[iPos].w));
     iPos++;
   }
 
@@ -325,7 +325,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
     else
       num = StringUtils::Format(L"&#x%ls;", num.c_str());
 
-    strStripped.Replace(num,CStdStringW(1,val));
+    StringUtils::Replace(strStripped, num,CStdStringW(1,val));
     iPos = strStripped.find(L"&#", iStart);
   }
 }

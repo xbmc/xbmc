@@ -189,7 +189,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
         CStdString strFormat = StringUtils::Format("part%%0%ii", digits);
         CStdString strNumber = StringUtils::Format(strFormat.c_str(), 1);
         CStdString strPath2 = strPath;
-        strPath2.Replace(token,strNumber);
+        StringUtils::Replace(strPath2,token,strNumber);
         if (atoi(token.substr(4).c_str()) > 1 && CFile::Stat(strPath2,&stat) == 0)
         {
           pItem->m_bIsFolder = true;

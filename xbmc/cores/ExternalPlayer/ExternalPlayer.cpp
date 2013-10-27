@@ -183,7 +183,7 @@ void CExternalPlayer::Process()
         continue;
 
       CStdString strMatch = vecSplit[0];
-      strMatch.Replace(",,",",");
+      StringUtils::Replace(strMatch, ",,",",");
       bool bCaseless = vecSplit[3].find('i') != std::string::npos;
       CRegExp regExp(bCaseless, true);
 
@@ -196,7 +196,7 @@ void CExternalPlayer::Process()
       if (regExp.RegFind(mainFile) > -1)
       {
         CStdString strPat = vecSplit[1];
-        strPat.Replace(",,",",");
+        StringUtils::Replace(strPat, ",,",",");
 
         if (!regExp.RegComp(strPat.c_str()))
         { // invalid regexp - complain in logs
@@ -205,7 +205,7 @@ void CExternalPlayer::Process()
         }
 
         CStdString strRep = vecSplit[2];
-        strRep.Replace(",,",",");
+        StringUtils::Replace(strRep, ",,",",");
         bool bGlobal = vecSplit[3].find('g') != std::string::npos;
         bool bStop = vecSplit[3].find('s') != std::string::npos;
         int iStart = 0;
@@ -250,10 +250,10 @@ void CExternalPlayer::Process()
   strFArgs.append("\" ");
   strFArgs.append(m_args);
 
-  int nReplaced = strFArgs.Replace("{0}", mainFile);
+  int nReplaced = StringUtils::Replace(strFArgs, "{0}", mainFile);
 
   if (!nReplaced)
-    nReplaced = strFArgs.Replace("{1}", mainFile) + strFArgs.Replace("{2}", archiveContent);
+    nReplaced = StringUtils::Replace(strFArgs, "{1}", mainFile) + StringUtils::Replace(strFArgs, "{2}", archiveContent);
 
   if (!nReplaced)
   {
@@ -744,9 +744,9 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
         CLog::Log(LOGDEBUG,"    Match:[%s] Pattern:[%s] Replacement:[%s]", strMatch.c_str(), strPat.c_str(), strRep.c_str());
         CLog::Log(LOGDEBUG,"    Global:[%s] Stop:[%s]", bGlobal?"true":"false", bStop?"true":"false");
         // keep literal commas since we use comma as a seperator
-        strMatch.Replace(",",",,");
-        strPat.Replace(",",",,");
-        strRep.Replace(",",",,");
+        StringUtils::Replace(strMatch, ",",",,");
+        StringUtils::Replace(strPat, ",",",,");
+        StringUtils::Replace(strRep, ",",",,");
 
         CStdString strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
         if (iAction == 2)

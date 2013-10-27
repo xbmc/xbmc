@@ -592,7 +592,7 @@ CStdString getFieldFromString(const CStdString &str, const char* field)
     {
       if (StringUtils::SplitString(tmpAr1[i], "=", tmpAr2) == 2)
       {
-        tmpAr2[1].Remove('\"');//remove quotes
+        StringUtils::Replace(tmpAr2[1], "\"", "");//remove quotes
         return tmpAr2[1];
       }
     }

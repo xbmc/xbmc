@@ -5198,8 +5198,8 @@ void CGUIInfoManager::UpdateFromTuxBox()
     !g_tuxbox.sCurSrvData.current_event_duration.Equals("-") &&
     !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
   {
-    g_tuxbox.sCurSrvData.current_event_duration.Replace("(","");
-    g_tuxbox.sCurSrvData.current_event_duration.Replace(")","");
+    StringUtils::Replace(g_tuxbox.sCurSrvData.current_event_duration, "(","");
+    StringUtils::Replace(g_tuxbox.sCurSrvData.current_event_duration, ")","");
 
     m_currentMovieDuration = StringUtils::Format("%s: %s %s (%s - %s)",
                                                  g_localizeStrings.Get(180).c_str(),

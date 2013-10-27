@@ -1069,7 +1069,7 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
         i=length;
       }
 
-      strPart.Replace("''", "'");
+      StringUtils::Replace(strPart, "''", "'");
 
       strOut+=strPart;
     }
@@ -1228,7 +1228,7 @@ CStdString CDateTime::GetAsLocalizedDate(const CStdString &strFormat, bool withS
         strPart = strFormat.substr(i + 1, length - i - 1);
         i = length;
       }
-      strPart.Replace("''", "'");
+      StringUtils::Replace(strPart, "''", "'");
       strOut+=strPart;
     }
     else if (c=='D' || c=='d') // parse days

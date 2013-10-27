@@ -167,7 +167,7 @@ namespace XFILE
 
     // remove "stack://" from the folder
     folder = folder.substr(8);
-    file.Replace(",,", ",");
+    StringUtils::Replace(file, ",,", ",");
 
     return URIUtils::AddFileToFolder(folder, file);
   }
@@ -188,7 +188,7 @@ namespace XFILE
 
     // because " , " is used as a seperator any "," in the real paths are double escaped
     for (vector<CStdString>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); itPath++)
-      itPath->Replace(",,", ",");
+      StringUtils::Replace(*itPath, ",,", ",");
 
     return true;
   }
@@ -203,7 +203,7 @@ namespace XFILE
     URIUtils::Split(items[stack[0]]->GetPath(), folder, file);
     stackedPath += folder;
     // double escape any occurence of commas
-    file.Replace(",", ",,");
+    StringUtils::Replace(file, ",", ",,");
     stackedPath += file;
     for (unsigned int i = 1; i < stack.size(); ++i)
     {
@@ -211,7 +211,7 @@ namespace XFILE
       file = items[stack[i]]->GetPath();
 
       // double escape any occurence of commas
-      file.Replace(",", ",,");
+      StringUtils::Replace(file, ",", ",,");
       stackedPath += file;
     }
     return stackedPath;

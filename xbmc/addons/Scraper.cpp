@@ -570,7 +570,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
     return vcscurl;
 
   if (!fFirst)
-    sTitle.Replace("-"," ");
+    StringUtils::Replace(sTitle, '-',' ');
 
   StringUtils::ToLower(sTitle);
 

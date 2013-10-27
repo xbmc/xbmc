@@ -77,7 +77,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   CURL urlFile(strFile);
   if (urlFile.GetProtocol() == "shout" )
-    strFileToOpen.Replace("shout://","http://");
+    strFileToOpen.replace(0, 8, "http://");
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFileToOpen, m_strContentType);
   if (!m_pInputStream)

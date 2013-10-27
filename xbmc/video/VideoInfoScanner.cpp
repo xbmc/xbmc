@@ -1791,7 +1791,7 @@ namespace VIDEO
       if (i->thumb.empty())
       {
         CStdString thumbFile = i->strName;
-        thumbFile.Replace(" ","_");
+        StringUtils::Replace(thumbFile, ' ', '_');
         for (int j = 0; j < items.Size(); j++)
         {
           CStdString compare = URIUtils::GetFileName(items[j]->GetPath());

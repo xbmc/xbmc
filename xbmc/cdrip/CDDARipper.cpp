@@ -236,8 +236,8 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
     if (strAlbumArtist.empty())
       strAlbumArtist = "Unknown Artist";
     else
-      strAlbumArtist.Replace('/', '_');
-    strAlbumDir.Replace("%A", strAlbumArtist);
+      StringUtils::Replace(strAlbumArtist, '/', '_');
+    StringUtils::Replace(strAlbumDir, "%A", strAlbumArtist);
   }
 
   // replace %B with album title
@@ -247,8 +247,8 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
     if (strAlbum.empty())
       strAlbum = StringUtils::Format("Unknown Album %s", CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime().c_str());
     else
-      strAlbum.Replace('/', '_');
-    strAlbumDir.Replace("%B", strAlbum);
+      StringUtils::Replace(strAlbum, '/', '_');
+    StringUtils::Replace(strAlbumDir, "%B", strAlbum);
   }
 
   // replace %G with genre
@@ -258,8 +258,8 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
     if (strGenre.empty())
       strGenre = "Unknown Genre";
     else
-      strGenre.Replace('/', '_');
-    strAlbumDir.Replace("%G", strGenre);
+      StringUtils::Replace(strGenre, '/', '_');
+    StringUtils::Replace(strAlbumDir, "%G", strGenre);
   }
 
   // replace %Y with year
@@ -269,8 +269,8 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
     if (strYear.empty())
       strYear = "Unknown Year";
     else
-      strYear.Replace('/', '_');
-    strAlbumDir.Replace("%Y", strYear);
+      StringUtils::Replace(strYear, '/', '_');
+    StringUtils::Replace(strAlbumDir, "%Y", strYear);
   }
 
   return strAlbumDir;
