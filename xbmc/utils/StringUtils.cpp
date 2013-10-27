@@ -323,6 +323,24 @@ int StringUtils::Replace(std::string &str, const std::string &oldStr, const std:
   return replacedChars;
 }
 
+int StringUtils::Replace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr)
+{
+  if (oldStr.empty())
+    return 0;
+
+  int replacedChars = 0;
+  size_t index = 0;
+
+  while (index < str.size() && (index = str.find(oldStr, index)) != string::npos)
+  {
+    str.replace(index, oldStr.size(), newStr);
+    index += newStr.size();
+    replacedChars++;
+  }
+
+  return replacedChars;
+}
+
 bool StringUtils::StartsWith(const std::string &str1, const std::string &str2)
 {
   return str1.compare(0, str2.size(), str2) == 0;

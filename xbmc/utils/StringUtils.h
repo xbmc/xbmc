@@ -72,6 +72,7 @@ public:
   static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
   static int Replace(std::string &str, char oldChar, char newChar);
   static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);
+  static int Replace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr);
   static bool StartsWith(const std::string &str1, const std::string &str2);
   static bool StartsWith(const std::string &str1, const char *s2);
   static bool StartsWith(const char *s1, const char *s2);
