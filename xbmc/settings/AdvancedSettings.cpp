@@ -420,7 +420,7 @@ void CAdvancedSettings::Initialize()
     #if defined(TARGET_DARWIN_OSX)
     logDir += "/Library/Logs/";
     #else // ios/atv2
-    logDir += "/" + DarwinGetXbmcRootFolder() + "/";
+    logDir += "/" + CStdString(DarwinGetXbmcRootFolder()) + "/";
     #endif
     m_logFolder = logDir;
   #else
