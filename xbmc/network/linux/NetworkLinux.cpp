@@ -920,7 +920,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
       StringUtils::TrimRight(s," \n");
 
       // skip comments
-      if (s.length() == 0 || s.GetAt(0) == '#')
+      if (s.empty() || s[0] == '#')
          continue;
 
       // look for "iface <interface name> inet"
@@ -1006,7 +1006,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
       StringUtils::TrimRight(s," \n");
 
       // skip comments
-      if (!foundInterface && (s.length() == 0 || s.GetAt(0) == '#'))
+      if (!foundInterface && (s.empty() || s[0] == '#'))
       {
         fprintf(fw, "%s", line);
         continue;

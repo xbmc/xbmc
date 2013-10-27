@@ -283,16 +283,16 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
     bool initialDots = true;
     bool alreadyContainsSpace = (strTitleAndYear.find(' ') != std::string::npos);
 
-    for (int i = 0; i < (int)strTitleAndYear.size(); i++)
+    for (size_t i = 0; i < strTitleAndYear.size(); i++)
     {
-      char c = strTitleAndYear.GetAt(i);
+      char c = strTitleAndYear[i];
 
       if (c != '.')
         initialDots = false;
 
       if ((c == '_') || ((!alreadyContainsSpace) && !initialDots && (c == '.')))
       {
-        strTitleAndYear.SetAt(i, ' ');
+        strTitleAndYear[i] = ' ';
       }
     }
   }

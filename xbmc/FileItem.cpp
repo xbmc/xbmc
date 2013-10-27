@@ -3051,7 +3051,7 @@ bool CFileItem::LoadMusicTag()
     if (iTrack >= 1)
     {
       CStdString strText = g_localizeStrings.Get(554); // "Track"
-      if (strText.GetAt(strText.size() - 1) != ' ')
+      if (!strText.empty() && strText[strText.size() - 1] != ' ')
         strText += " ";
       CStdString strTrack = StringUtils::Format(strText + "%i", iTrack);
       GetMusicInfoTag()->SetTitle(strTrack);

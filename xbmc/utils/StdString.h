@@ -2611,11 +2611,6 @@ public:
   // -------------------------------------------------------------------------
   // GetXXXX -- Direct access to character buffer
   // -------------------------------------------------------------------------
-  CT GetAt(int nIdx) const
-  {
-    return this->at(static_cast<MYSIZE>(nIdx));
-  }
-
   CT* GetBuffer(int nMinLen=-1)
   {
     return GetBuf(nMinLen);
@@ -2641,12 +2636,6 @@ public:
   void ReleaseBuffer(int nNewLen=-1)
   {
     RelBuf(nNewLen);
-  }
-
-  void SetAt(int nIndex, CT ch)
-  {
-    ASSERT(this->size() > static_cast<MYSIZE>(nIndex));
-    this->at(static_cast<MYSIZE>(nIndex))    = ch;
   }
 
 #ifndef SS_ANSI
