@@ -1572,19 +1572,18 @@ bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
   // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
   // But it's still limited, for example quotes inside the strings are not expanded, etc.
   // TODO: Maybe some python library routine can parse this more properly ?
-  for (size_t i=0; i<args.size(); i++)
+  for (CStdStringArray::iterator it = args.begin(); it != args.end(); ++it)
   {
-    CStdString &s = args[i];
-    CStdString stripd = s.Trim();
-    if (stripd[0] == '"' || stripd[0] == '\'')
+    size_t pos;
+    pos = it->find_first_not_of(" \t\n\"'");
+    if (pos != std::string::npos)
     {
-      s = s.TrimLeft();
-      s = s.Right(s.size() - 1);
+      it->erase(0, pos);
     }
-    if (stripd[stripd.size() - 1] == '"' || stripd[stripd.size() - 1] == '\'')
+
+    pos = it->find_last_not_of(" \t\n\"'"); // if it returns npos we'll end up with an empty string which is OK
     {
-      s = s.TrimRight();
-      s = s.Left(s.size() - 1);
+      it->erase(++pos, it->size());
     }
   }
 
