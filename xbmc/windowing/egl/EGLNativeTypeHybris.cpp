@@ -30,12 +30,17 @@
 #include "guilib/gui3d.h"
 
 CEGLNativeTypeHybris::CEGLNativeTypeHybris()
+#if defined(TARGET_HYBRIS)
  : m_hwcModule(NULL), m_bufferList(NULL), m_hwcDevicePtr(NULL)
 {
   m_nativeWindow = NULL;
   m_hwNativeWindow = NULL;
   m_swNativeWindow = NULL;
 }
+#else
+{
+}
+#endif
 
 CEGLNativeTypeHybris::~CEGLNativeTypeHybris()
 {

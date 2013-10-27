@@ -69,7 +69,7 @@ bool CWinSystemEGL::InitWindowSystem()
 
   if (!m_egl->Initialize("auto"))
   {
-    CLog::Log(LOGERROR, "%s: Could not initialize",__FUNCTION__);
+    CLog::Log(LOGERROR, "%s: Could not initialize EGL",__FUNCTION__);
     return false;
   }
 
