@@ -2068,7 +2068,7 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
       m_pDS->close();
       return true;
     }
-    CStdString strSongsToDelete = "";
+    vector<std::string> songsToDelete;
     while (!m_pDS->eof())
     { // get the full song path
       CStdString strFileName = URIUtils::AddFileToFolder(m_pDS->fv("path.strPath").get_asString(), m_pDS->fv("song.strFileName").get_asString());
@@ -2085,15 +2085,15 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
 
       if (!CFile::Exists(strFileName))
       { // file no longer exists, so add to deletion list
-        strSongsToDelete += m_pDS->fv("song.idSong").get_asString() + ",";
+        songsToDelete.push_back(m_pDS->fv("song.idSong").get_asString());
       }
       m_pDS->next();
     }
     m_pDS->close();
 
-    if ( ! strSongsToDelete.empty() )
+    if (!songsToDelete.empty())
     {
-      strSongsToDelete = "(" + strSongsToDelete.TrimRight(",") + ")";
+      std::string strSongsToDelete = "(" + StringUtils::Join(songsToDelete, ",") + ")";
       // ok, now delete these songs + all references to them from the linked tables
       strSQL = "delete from song where idSong in " + strSongsToDelete;
       m_pDS->exec(strSQL.c_str());
@@ -2131,15 +2131,15 @@ bool CMusicDatabase::CleanupSongs()
         m_pDS->close();
         return true;
       }
-      CStdString strSongIds = "(";
+
+      std::vector<std::string> songIds;
       while (!m_pDS->eof())
       {
-        strSongIds += m_pDS->fv("song.idSong").get_asString() + ",";
+        songIds.push_back(m_pDS->fv("song.idSong").get_asString());
         m_pDS->next();
       }
       m_pDS->close();
-      strSongIds.TrimRight(",");
-      strSongIds += ")";
+      std::string strSongIds = "(" + StringUtils::Join(songIds, ",") + ")";
       CLog::Log(LOGDEBUG,"Checking songs from song ID list: %s",strSongIds.c_str());
       if (!CleanupSongsByIds(strSongIds)) return false;
     }
@@ -2166,16 +2166,16 @@ bool CMusicDatabase::CleanupAlbums()
       m_pDS->close();
       return true;
     }
-    CStdString strAlbumIds = "(";
+
+    std::vector<std::string> albumIds;
     while (!m_pDS->eof())
     {
-      strAlbumIds += m_pDS->fv("album.idAlbum").get_asString() + ",";
+      albumIds.push_back(m_pDS->fv("album.idAlbum").get_asString());
       m_pDS->next();
     }
     m_pDS->close();
 
-    strAlbumIds.TrimRight(",");
-    strAlbumIds += ")";
+    std::string strAlbumIds = "(" + StringUtils::Join(albumIds, ",") + ")";
     // ok, now we can delete them and the references in the linked tables
     strSQL = "delete from album where idAlbum in " + strAlbumIds;
     m_pDS->exec(strSQL.c_str());
@@ -2216,23 +2216,23 @@ bool CMusicDatabase::CleanupPaths()
       return true;
     }
     // and construct a list to delete
-    CStdString deleteSQL;
+    std::vector<std::string> pathIds;
     while (!m_pDS->eof())
     {
       // anything that isn't a parent path of a song path is to be deleted
       CStdString path = m_pDS->fv("strPath").get_asString();
       CStdString sql = PrepareSQL("select count(idPath) from songpaths where SUBSTR(strPath,1,%i)='%s'", StringUtils::utf8_strlen(path.c_str()), path.c_str());
       if (m_pDS2->query(sql.c_str()) && m_pDS2->num_rows() == 1 && m_pDS2->fv(0).get_asInt() == 0)
-        deleteSQL += PrepareSQL("%i,", m_pDS->fv("idPath").get_asInt()); // nothing found, so delete
+        pathIds.push_back(m_pDS->fv("idPath").get_asString()); // nothing found, so delete
       m_pDS2->close();
       m_pDS->next();
     }
     m_pDS->close();
 
-    if ( ! deleteSQL.empty() )
+    if (!pathIds.empty())
     {
-      deleteSQL = "DELETE FROM path WHERE idPath IN (" + deleteSQL.TrimRight(',') + ")";
       // do the deletion, and drop our temp table
+      std::string deleteSQL = "DELETE FROM path WHERE idPath IN (" + StringUtils::Join(pathIds, ",") + ")";
       m_pDS->exec(deleteSQL.c_str());
     }
     m_pDS->exec("drop table songpaths");
@@ -4297,34 +4297,29 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path1, MAPSONGS& song
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound > 0)
     {
-      std::vector<int> ids;
-      CStdString songIds = "(";
+      std::vector<std::string> songIds;
       while (!m_pDS->eof())
       {
         CSong song = GetSongFromDataset();
         song.strThumb = GetArtForItem(song.idSong, "song", "thumb");
         songs.insert(make_pair(song.strFileName, song));
-        songIds += PrepareSQL("%i,", song.idSong);
-        ids.push_back(song.idSong);
+        songIds.push_back(PrepareSQL("%i", song.idSong));
         m_pDS->next();
       }
-      songIds.TrimRight(",");
-      songIds += ")";
-
       m_pDS->close();
 
       //TODO: move this below the m_pDS->exec block, once UPnP doesn't rely on this anymore
-      for (unsigned int i = 0; i < ids.size(); i++)
-        AnnounceRemove("song", ids[i]);
+      for (MAPSONGS::iterator songit = songs.begin(); songit != songs.end(); ++songit)
+        AnnounceRemove("song", songit->second.idSong);
 
       // and delete all songs, and anything linked to them
-      sql = "delete from song where idSong in " + songIds;
+      sql = "delete from song where idSong in (" + StringUtils::Join(songIds, ",") + ")";
       m_pDS->exec(sql.c_str());
-      sql = "delete from song_artist where idSong in " + songIds;
+      sql = "delete from song_artist where idSong in (" + StringUtils::Join(songIds, ",") + ")";
       m_pDS->exec(sql.c_str());
-      sql = "delete from song_genre where idSong in " + songIds;
+      sql = "delete from song_genre where idSong in (" + StringUtils::Join(songIds, ",") + ")";
       m_pDS->exec(sql.c_str());
-      sql = "delete from karaokedata where idSong in " + songIds;
+      sql = "delete from karaokedata where idSong in (" + StringUtils::Join(songIds, ",") + ")";
       m_pDS->exec(sql.c_str());
 
     }
