@@ -428,8 +428,7 @@ void CScraperParser::Clean(CStdString& strDirty)
       CStdString strConverted(strBuffer);
       HTML::CHTMLUtil::RemoveTags(strConverted);
       StringUtils::Trim(strConverted);
-      strDirty.erase(i,i2-i+11);
-      strDirty.Insert(i,strConverted);
+      strDirty.replace(i, i2-i+11, strConverted);
       i += strConverted.size();
     }
     else
@@ -443,8 +442,7 @@ void CScraperParser::Clean(CStdString& strDirty)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
       StringUtils::Trim(strBuffer);
-      strDirty.erase(i,i2-i+10);
-      strDirty.Insert(i,strBuffer);
+      strDirty.replace(i, i2-i+10, strBuffer);
       i += strBuffer.size();
     }
     else
@@ -464,8 +462,7 @@ void CScraperParser::Clean(CStdString& strDirty)
       g_charsetConverter.fromW(wConverted,strBuffer,GetSearchStringEncoding());
       StringUtils::Trim(strBuffer);
       ConvertJSON(strBuffer);
-      strDirty.erase(i,i2-i+14);
-      strDirty.Insert(i,strBuffer);
+      strDirty.replace(i, i2-i+14, strBuffer);
       i += strBuffer.size();
     }
     else
@@ -479,8 +476,7 @@ void CScraperParser::Clean(CStdString& strDirty)
     {
       strBuffer = strDirty.substr(i+12,i2-i-12);
       CURL::Encode(strBuffer);
-      strDirty.erase(i,i2-i+12);
-      strDirty.Insert(i,strBuffer);
+      strDirty.replace(i, i2-i+12, strBuffer);
       i += strBuffer.size();
     }
     else
@@ -547,10 +543,9 @@ void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* tok
   size_t i2=0;
   while ((i2 = strOutput.find(temp,i2)) != std::string::npos)
   {
-    strOutput.Insert(i2,token);
-    i2 += strlen(token);
-    strOutput.Insert(i2+strlen(temp),token);
-    i2 += strlen(temp);
+    strOutput.insert(i2,token);
+    i2 += strlen(token) + strlen(temp);
+    strOutput.insert(i2,token);
   }
 }
 

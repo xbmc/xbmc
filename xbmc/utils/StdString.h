@@ -2633,25 +2633,6 @@ public:
     return static_cast<int>(this->length());
   }
 
-  int Insert(int nIdx, CT ch)
-  {
-    if ( static_cast<MYSIZE>(nIdx) > this->size()-1 )
-      this->append(1, ch);
-    else
-      this->insert(static_cast<MYSIZE>(nIdx), 1, ch);
-
-    return GetLength();
-  }
-  int Insert(int nIdx, PCMYSTR sz)
-  {
-    if ( static_cast<MYSIZE>(nIdx) >= this->size() )
-      this->append(sz, static_cast<MYSIZE>(sslen(sz)));
-    else
-      this->insert(static_cast<MYSIZE>(nIdx), sz);
-
-    return GetLength();
-  }
-
 #ifndef SS_ANSI
   bool LoadString(UINT nId)
   {

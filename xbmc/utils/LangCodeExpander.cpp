@@ -419,7 +419,7 @@ void CLangCodeExpander::CodeToString(long code, CStdString& ret)
     char c = (char) code & 0xFF;
     if (c == '\0')
       return;
-    ret.Insert(0, c);
+    ret.insert(0, 1, c);
     code >>= 8;
   }
 }

@@ -447,7 +447,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
         col = L"|";
       else
         col = L"[COLOR 00FFFFFF]|[/COLOR]";
-      text.Insert(m_cursorPos, col);
+      text.insert(m_cursorPos, col);
     }
 
     changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);

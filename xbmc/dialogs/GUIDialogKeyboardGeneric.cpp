@@ -327,7 +327,7 @@ void CGUIDialogKeyboardGeneric::InputText(const CStdString& aTextString)
   {
     m_strEditing.clear();
     m_iEditingOffset = 0;
-    m_strEdit.Insert(GetCursorPos(), newStr);
+    m_strEdit.insert(GetCursorPos(), newStr);
     UpdateLabel();
     MoveCursor(newStr.size());
   }
@@ -357,7 +357,7 @@ void CGUIDialogKeyboardGeneric::Character(WCHAR ch)
   m_strEditing.clear();
   m_iEditingOffset = 0;
   // TODO: May have to make this routine take a WCHAR for the symbols?
-  m_strEdit.Insert(GetCursorPos(), ch);
+  m_strEdit.insert(GetCursorPos(), 1, ch);
   UpdateLabel();
   MoveCursor(1);
 }
@@ -395,7 +395,7 @@ void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice 
     }
     else if (!m_strEditing.empty())
     {
-      edit.Insert(m_iCursorPos, m_strEditing);
+      edit.insert(m_iCursorPos, m_strEditing);
       pEdit->SetHighlight(m_iCursorPos, m_iCursorPos + m_strEditing.size());
       if (m_iEditingLength > 0)
         pEdit->SetSelection(m_iCursorPos + m_iEditingOffset, m_iCursorPos + m_iEditingOffset + m_iEditingLength);

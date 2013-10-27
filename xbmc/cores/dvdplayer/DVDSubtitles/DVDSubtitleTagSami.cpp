@@ -182,7 +182,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
     }
     else if (fullTag == "<br>" && !strUTF8.empty())
     {
-      strUTF8.Insert(pos, "\n");
+      strUTF8.insert(pos, "\n");
       pos += 1;
     }
   }
