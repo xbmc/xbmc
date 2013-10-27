@@ -24,8 +24,6 @@
 #include <vector>
 #include <string>
 
-#define HTTPHEADER_CONTENT_TYPE "Content-Type"
-
 class CHttpHeader
 {
 public:
@@ -37,18 +35,28 @@ public:
   ~CHttpHeader();
 
   void Parse(const std::string& strData);
-  std::string GetValue(std::string strParam) const;
+  void AddParam(const std::string& param, const std::string& value, const bool overwrite = false);
+
+  std::string GetValue(const std::string& strParam) const;
   std::vector<std::string> GetValues(std::string strParam) const;
 
   std::string GetHeader(void) const;
 
-  std::string GetMimeType() { return GetValue(HTTPHEADER_CONTENT_TYPE); }
-  std::string GetProtoLine() { return m_protoLine; }
+  std::string GetMimeType(void) const;
+  std::string GetCharset(void) const;
+  inline std::string GetProtoLine() const
+  { return m_protoLine; }
+
+  inline bool IsHeaderDone(void) const
+  { return m_headerdone; }
 
   void Clear();
 
 protected:
+  std::string GetValueRaw(const std::string& strParam) const;
+
   HeaderParams m_params;
   std::string   m_protoLine;
+  bool m_headerdone;
 };
 

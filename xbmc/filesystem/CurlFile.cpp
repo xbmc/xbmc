@@ -140,31 +140,16 @@ static inline void* realloc_simple(void *ptr, size_t size)
 
 size_t CCurlFile::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmemb)
 {
-  // clear any previous header
-  if(m_headerdone)
-  {
-    m_httpheader.Clear();
-    m_headerdone = false;
-  }
-
+  std::string inString;
   // libcurl doc says that this info is not always \0 terminated
-  char* strData = (char*)ptr;
-  int iSize = size * nmemb;
+  const char* strBuf = (const char*)ptr;
+  const size_t iSize = size * nmemb;
+  if (strBuf[iSize - 1] == 0)
+    inString.assign(strBuf, iSize - 1); // skip last char if it's zero
+  else
+    inString.append(strBuf, iSize);
 
-  if (strData[iSize] != 0)
-  {
-    strData = (char*)malloc(iSize + 1);
-    strncpy(strData, (char*)ptr, iSize);
-    strData[iSize] = 0;
-  }
-  else strData = strdup((char*)ptr);
-
-  if(strcmp(strData, "\r\n") == 0)
-    m_headerdone = true;
-
-  m_httpheader.Parse(strData);
-
-  free(strData);
+  m_httpheader.Parse(inString);
 
   return iSize;
 }
@@ -248,7 +233,6 @@ CCurlFile::CReadState::CReadState()
   m_cancelled = false;
   m_bFirstLoop = true;
   m_sendRange = true;
-  m_headerdone = false;
   m_readBuffer = 0;
   m_isPaused = false;
   m_curlHeaderList = NULL;
@@ -332,7 +316,7 @@ long CCurlFile::CReadState::Connect(unsigned int size)
   m_bufferSize = size;
   m_buffer.Destroy();
   m_buffer.Create(size * 3);
-  m_headerdone = false;
+  m_httpheader.Clear();
 
   // read some data in to try and obtain the length
   // maybe there's a better way to get this info??
@@ -652,7 +636,7 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
     if( !h.GetValue("icy-notice1").empty()
     || !h.GetValue("icy-name").empty()
     || !h.GetValue("icy-br").empty() )
-    h.Parse("Content-Type: audio/mpeg\r\n");
+      h.AddParam("Content-Type", "audio/mpeg");
   }
 
   /* hack for google video */
@@ -661,7 +645,7 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
   {
     CStdString strValue = h.GetValue("Content-Disposition");
     if (strValue.Find("filename=") > -1 && strValue.Find(".flv") > -1)
-      h.Parse("Content-Type: video/flv\r\n");
+      h.AddParam("Content-Type", "video/flv");
   }
 }
 
@@ -1560,6 +1544,14 @@ void CCurlFile::SetRequestHeader(CStdString header, long value)
   CStdString buffer;
   buffer.Format("%ld", value);
   m_requestheaders[header] = buffer;
+}
+
+std::string CCurlFile::GetServerReportedCharset(void)
+{
+  if (!m_state)
+    return "";
+
+  return m_state->m_httpheader.GetCharset();
 }
 
 /* STATIC FUNCTIONS */

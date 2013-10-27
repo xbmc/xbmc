@@ -23,6 +23,7 @@
 
 CHttpHeader::CHttpHeader()
 {
+  m_headerdone = false;
 }
 
 CHttpHeader::~CHttpHeader()
@@ -31,6 +32,9 @@ CHttpHeader::~CHttpHeader()
 
 void CHttpHeader::Parse(const std::string& strData)
 {
+  if (m_headerdone)
+    Clear();
+
   size_t pos = 0;
   const size_t len = strData.length();
   while (pos < len)
@@ -41,7 +45,12 @@ void CHttpHeader::Parse(const std::string& strData)
     if (lineEnd == std::string::npos)
       break;
 
-    if (valueStart != std::string::npos && valueStart < lineEnd)
+    if (lineEnd == pos)
+    {
+      m_headerdone = true;
+      break;
+    }
+    else if (valueStart != std::string::npos && valueStart < lineEnd)
     {
       std::string strParam(strData, pos, valueStart - pos);
       std::string strValue(strData, valueStart + 1, lineEnd - valueStart - 1);
@@ -61,10 +70,40 @@ void CHttpHeader::Parse(const std::string& strData)
   }
 }
 
-std::string CHttpHeader::GetValue(std::string strParam) const
+void CHttpHeader::AddParam(const std::string& param, const std::string& value, const bool overwrite /*= false*/)
 {
-  StringUtils::ToLower(strParam);
+  if (param.empty() || value.empty())
+    return;
 
+  std::string paramLower(param);
+  if (overwrite)
+  { // delete ALL parameters with the same name
+    // note: 'GetValue' always returns last added parameter,
+    //       so you probably don't need to overwrite 
+    for (size_t i = 0; i < m_params.size();)
+    {
+      if (m_params[i].first == param)
+        m_params.erase(m_params.begin() + i);
+      else
+        ++i;
+    }
+  }
+
+  StringUtils::ToLower(paramLower);
+
+  m_params.push_back(HeaderParams::value_type(paramLower, value));
+}
+
+std::string CHttpHeader::GetValue(const std::string& strParam) const
+{
+  std::string paramLower(strParam);
+  StringUtils::ToLower(paramLower);
+
+  return GetValueRaw(paramLower);
+}
+
+std::string CHttpHeader::GetValueRaw(const std::string& strParam) const
+{
   // look in reverse to find last parameter (probably most important)
   for (HeaderParams::const_reverse_iterator iter = m_params.rbegin(); iter != m_params.rend(); ++iter)
   {
@@ -100,8 +139,38 @@ std::string CHttpHeader::GetHeader(void) const
   return strHeader;
 }
 
+std::string CHttpHeader::GetMimeType(void) const
+{
+  std::string strValue(GetValueRaw("content-type"));
+
+  return strValue.substr(0, strValue.find(';'));
+}
+
+std::string CHttpHeader::GetCharset(void) const
+{
+  std::string strValue(GetValueRaw("content-type"));
+  if (strValue.empty())
+    return strValue;
+
+  const size_t semicolonPos = strValue.find(';');
+  if (semicolonPos == std::string::npos)
+    return "";
+
+  StringUtils::ToUpper(strValue);
+  size_t posCharset;
+  if ((posCharset = strValue.find("; CHARSET=", semicolonPos)) != std::string::npos)
+    posCharset += 10;
+  else if ((posCharset = strValue.find(";CHARSET=", semicolonPos)) != std::string::npos)
+    posCharset += 9;
+  else
+    return "";
+
+  return strValue.substr(posCharset, strValue.find(';', posCharset) - posCharset);
+}
+
 void CHttpHeader::Clear()
 {
   m_params.clear();
   m_protoLine.clear();
+  m_headerdone = false;
 }

@@ -90,6 +90,7 @@ namespace XFILE
       void SetBufferSize(unsigned int size);
 
       const CHttpHeader& GetHttpHeader() { return m_state->m_httpheader; }
+      std::string GetServerReportedCharset(void);
 
       /* static function that will get content type of a file */
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
@@ -120,7 +121,8 @@ namespace XFILE
 
           /* returned http header */
           CHttpHeader m_httpheader;
-          bool        m_headerdone;
+          bool        IsHeaderDone(void)
+          { return m_httpheader.IsHeaderDone(); }
 
           struct XCURL::curl_slist* m_curlHeaderList;
           struct XCURL::curl_slist* m_curlAliasList;
