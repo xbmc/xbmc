@@ -288,7 +288,7 @@
 				<posx>302</posx>
 				<!-- Title -->
 				<control type="label">
-					<width>360</width>
+					<width>380</width>
 					<height>40</height>
 					<label>$INFO[Container.SecondTitle]</label>
 					<label>Seasons view</label>
