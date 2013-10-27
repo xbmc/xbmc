@@ -120,7 +120,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       CStdString strLeft = strLine.Left(iPosEqual);
       iPosEqual++;
       CStdString strValue = strLine.Right(strLine.size() - iPosEqual);
-      strLeft.ToLower();
+      StringUtils::ToLower(strLeft);
       while (strLeft[0] == ' ' || strLeft[0] == '\t')
         strLeft.erase(0,1);
 
@@ -307,7 +307,7 @@ bool CPlayListASX::LoadData(istream& stream)
     TiXmlNode *pChild = NULL;
     CStdString value;
     value = pNode->Value();
-    value.ToLower();
+    StringUtils::ToLower(value);
     pNode->SetValue(value);
     while(pNode)
     {
@@ -317,14 +317,14 @@ bool CPlayListASX::LoadData(istream& stream)
         if (pChild->Type() == TiXmlNode::TINYXML_ELEMENT)
         {
           value = pChild->Value();
-          value.ToLower();
+          StringUtils::ToLower(value);
           pChild->SetValue(value);
 
           TiXmlAttribute* pAttr = pChild->ToElement()->FirstAttribute();
           while(pAttr)
           {
             value = pAttr->Name();
-            value.ToLower();
+            StringUtils::ToLower(value);
             pAttr->SetName(value);
             pAttr = pAttr->Next();
           }

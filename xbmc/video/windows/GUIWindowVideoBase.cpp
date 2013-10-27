@@ -777,7 +777,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       {
         CStdString strPath = items[i]->GetPath();
         URIUtils::RemoveSlashAtEnd(strPath);
-        strPath.ToLower();
+        StringUtils::ToLower(strPath);
         if (strPath.size() > 6)
         {
           CStdString strSub = strPath.substr(strPath.size()-6);
@@ -1866,7 +1866,7 @@ void CGUIWindowVideoBase::OnSearch()
   if (!CGUIKeyboardFactory::ShowAndGetInput(strSearch, g_localizeStrings.Get(16017), false))
     return ;
 
-  strSearch.ToLower();
+  StringUtils::ToLower(strSearch);
   if (m_dlgProgress)
   {
     m_dlgProgress->SetHeading(194);

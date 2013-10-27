@@ -25,7 +25,7 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-
+#include "utils/StringUtils.h"
 #include "karaokelyricstextustar.h"
 
 
@@ -177,7 +177,7 @@ bool CKaraokeLyricsTextUStar::Load()
     else if ( key == "GAP" )
       startoffsetms = atoi( value.c_str() );
     else if ( key == "RELATIVE" )
-      relative = (value.ToUpper() == "YES" );
+      relative = StringUtils::EqualsNoCase(value, "YES");
     else if ( key == "LANGUAGE" || key == "EDITION" || key == "GENRE" || key == "YEAR" || key == "MP3" )
     {
       ; // do nothing

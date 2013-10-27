@@ -82,7 +82,7 @@ void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
       {
         sShort = pShort->FirstChild()->Value();
         sLong = pLong->FirstChild()->Value();
-        sShort.ToLower();
+        StringUtils::ToLower(sShort);
         m_mapUser[sShort] = sLong;
       }
       pLangCode = pLangCode->NextSibling();
@@ -245,7 +245,7 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
     return false;
 
   CStdString strLower(strWindowsCharCode);
-  strLower.MakeLower();
+  StringUtils::ToLower(strLower);
   for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
   {
     if ((CharCode2To3[index].win_id && strLower.Equals(CharCode2To3[index].win_id)) ||

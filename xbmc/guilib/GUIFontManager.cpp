@@ -419,7 +419,8 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
         if (pNode)
         {
           CStdString strFontFileName = pNode->FirstChild()->Value();
-          if (strFontFileName.ToLower().Find(".ttf") >= 0)
+          StringUtils::ToLower(strFontFileName);
+          if (strFontFileName.find(".ttf") != string::npos)
           {
             int iSize = 20;
             int iStyle = FONT_STYLE_NORMAL;

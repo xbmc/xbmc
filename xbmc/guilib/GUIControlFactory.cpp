@@ -927,7 +927,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
   {
-    strSubType.ToLower();
+    StringUtils::ToLower(strSubType);
 
     if ( strSubType == "int")
       iType = SPIN_CONTROL_TYPE_INT;
@@ -978,7 +978,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
   {
-    if (strTmp.ToLower() == "horizontal")
+    StringUtils::ToLower(strTmp);
+    if (strTmp == "horizontal")
       orientation = HORIZONTAL;
   }
   XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);

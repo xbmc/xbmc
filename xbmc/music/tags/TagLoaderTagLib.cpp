@@ -102,7 +102,7 @@ bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, c
     strExtension = fallbackFileExtension;
     if (strExtension.empty())
       return false;
-    strExtension.ToLower();
+    StringUtils::ToLower(strExtension);
   }
 
   TagLibVFSStream*           stream = new TagLibVFSStream(strFileName, true);

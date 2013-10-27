@@ -701,8 +701,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         XMLUtils::GetString(nodeDetail, "codec", p->m_strCodec);
         XMLUtils::GetString(nodeDetail, "language", p->m_strLanguage);
         XMLUtils::GetInt(nodeDetail, "channels", p->m_iChannels);
-        p->m_strCodec.MakeLower();
-        p->m_strLanguage.MakeLower();
+        StringUtils::ToLower(p->m_strCodec);
+        StringUtils::ToLower(p->m_strLanguage);
         m_streamDetails.AddStream(p);
       }
       nodeDetail = NULL;
@@ -715,7 +715,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         XMLUtils::GetInt(nodeDetail, "height", p->m_iHeight);
         XMLUtils::GetInt(nodeDetail, "durationinseconds", p->m_iDuration);
         XMLUtils::GetString(nodeDetail, "stereomode", p->m_strStereoMode);
-        p->m_strCodec.MakeLower();
+        StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strStereoMode);
         m_streamDetails.AddStream(p);
       }
@@ -724,7 +724,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       {
         CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
         XMLUtils::GetString(nodeDetail, "language", p->m_strLanguage);
-        p->m_strLanguage.MakeLower();
+        StringUtils::ToLower(p->m_strLanguage);
         m_streamDetails.AddStream(p);
       }
     }

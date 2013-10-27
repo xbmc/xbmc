@@ -1234,7 +1234,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
     strHistoryString = RemoveParameterFromPath(strHistoryString, "filter");
 
   URIUtils::RemoveSlashAtEnd(strHistoryString);
-  strHistoryString.ToLower();
+  StringUtils::ToLower(strHistoryString);
 }
 
 // \brief Call this function to create a directory history for the
@@ -1853,7 +1853,7 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items)
   for (int j = 0; j < resultItems.Size(); j++)
   {
     CStdString itemPath = RemoveParameterFromPath(resultItems[j]->GetPath(), "filter");
-    itemPath.ToLower();
+    StringUtils::ToLower(itemPath);
 
     lookup[itemPath] = resultItems[j];
   }
@@ -1874,7 +1874,7 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items)
     // by comparing their paths (but ignoring any special
     // options because they differ from filter to filter)
     CStdString path = RemoveParameterFromPath(item->GetPath(), "filter");
-    path.ToLower();
+    StringUtils::ToLower(path);
 
     map<CStdString, CFileItemPtr>::iterator itItem = lookup.find(path);
     if (itItem != lookup.end())

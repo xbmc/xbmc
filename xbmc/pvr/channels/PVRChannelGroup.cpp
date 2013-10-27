@@ -261,9 +261,10 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
     CStdString strBasePath = CSettings::Get().GetString("pvrmenu.iconpath");
     CStdString strSanitizedChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
+    StringUtils::ToLower(strSanitizedChannelName);
 
     CStdString strIconPath = strBasePath + strSanitizedChannelName;
-    CStdString strIconPathLower = strBasePath + strSanitizedChannelName.ToLower();
+    CStdString strIconPathLower = strBasePath + strSanitizedChannelName;
     CStdString strIconPathUid;
     strIconPathUid = StringUtils::Format("%08d", groupMember.channel->UniqueID());
     strIconPathUid = URIUtils::AddFileToFolder(strBasePath, strIconPathUid);

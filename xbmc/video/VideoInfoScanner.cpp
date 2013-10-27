@@ -867,7 +867,7 @@ namespace VIDEO
     CStdString strLabel=item->GetPath();
     // URLDecode in case an episode is on a http/https/dav/davs:// source and URL-encoded like foo%201x01%20bar.avi
     CURL::Decode(strLabel);
-    strLabel.MakeLower();
+    StringUtils::ToLower(strLabel);
 
     for (unsigned int i=0;i<expression.size();++i)
     {
@@ -1456,7 +1456,10 @@ namespace VIDEO
 
           CStdStringArray titles;
           for (guide = candidates->begin(); guide != candidates->end(); ++guide)
-            titles.push_back(guide->cScraperUrl.strTitle.ToLower());
+          {
+            StringUtils::ToLower(guide->cScraperUrl.strTitle);
+            titles.push_back(guide->cScraperUrl.strTitle);
+          }
 
           double matchscore;
           std::string loweredTitle(file->strTitle);

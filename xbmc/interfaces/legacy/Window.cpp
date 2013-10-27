@@ -641,8 +641,9 @@ namespace XBMCAddon
       XBMC_TRACE;
       SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       CStdString lowerKey = key;
+      StringUtils::ToLower(lowerKey);
 
-      ref(window)->SetProperty(lowerKey.ToLower(), value);
+      ref(window)->SetProperty(lowerKey, value);
     }
 
     String Window::getProperty(const char* key)
@@ -650,7 +651,8 @@ namespace XBMCAddon
       XBMC_TRACE;
       SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       CStdString lowerKey = key;
-      std::string value = ref(window)->GetProperty(lowerKey.ToLower()).asString();
+      StringUtils::ToLower(lowerKey);
+      std::string value = ref(window)->GetProperty(lowerKey).asString();
       return value;
     }
 
@@ -661,7 +663,8 @@ namespace XBMCAddon
       SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
 
       CStdString lowerKey = key;
-      ref(window)->SetProperty(lowerKey.ToLower(), "");
+      StringUtils::ToLower(lowerKey);
+      ref(window)->SetProperty(lowerKey, "");
     }
 
     void Window::clearProperties()

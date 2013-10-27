@@ -113,7 +113,7 @@ namespace PERIPHERALS
     static PeripheralType GetTypeFromString(const CStdString &strType)
     {
       CStdString strTypeLowerCase(strType);
-      strTypeLowerCase.ToLower();
+      StringUtils::ToLower(strTypeLowerCase);
 
       if (strTypeLowerCase.Equals("bluetooth"))
         return PERIPHERAL_BLUETOOTH;
@@ -155,7 +155,7 @@ namespace PERIPHERALS
     static PeripheralBusType GetBusTypeFromString(const CStdString &strType)
     {
       CStdString strTypeLowerCase(strType);
-      strTypeLowerCase.ToLower();
+      StringUtils::ToLower(strTypeLowerCase);
 
       if (strTypeLowerCase.Equals("usb"))
         return PERIPHERAL_BUS_USB;

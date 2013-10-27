@@ -112,7 +112,7 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
   CStdString strEnabled = pNode->FirstChild()->Value();
-  strEnabled.ToLower();
+  StringUtils::ToLower(strEnabled);
   if (strEnabled == "off" || strEnabled == "no" || strEnabled == "disabled" || strEnabled == "false" || strEnabled == "0" )
     bBoolValue = false;
   else

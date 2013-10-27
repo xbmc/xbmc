@@ -572,7 +572,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
   if (!fFirst)
     sTitle.Replace("-"," ");
 
-  sTitle.ToLower();
+  StringUtils::ToLower(sTitle);
 
   vector<CStdString> vcsIn(1);
   g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
@@ -636,9 +636,9 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
 
         // calculate the relavance of this hit
         CStdString sCompareTitle = scurlMovie.strTitle;
-        sCompareTitle.ToLower();
+        StringUtils::ToLower(sCompareTitle);
         CStdString sMatchTitle = sTitle;
-        sMatchTitle.ToLower();
+        StringUtils::ToLower(sMatchTitle);
 
         /*
          * Identify the best match by performing a fuzzy string compare on the search term and

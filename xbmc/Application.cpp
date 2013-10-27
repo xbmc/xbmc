@@ -5708,7 +5708,7 @@ bool CApplication::AlwaysProcess(const CAction& action)
     CStdString builtInFunction;
     vector<CStdString> params;
     CUtil::SplitExecFunction(action.GetName(), builtInFunction, params);
-    builtInFunction.ToLower();
+    StringUtils::ToLower(builtInFunction);
 
     // should this button be handled normally or just cancel the screensaver?
     if (   builtInFunction.Equals("powerdown")

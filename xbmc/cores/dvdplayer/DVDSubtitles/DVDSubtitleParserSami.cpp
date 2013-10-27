@@ -24,6 +24,7 @@
 #include "utils/RegExp.h"
 #include "DVDStreamInfo.h"
 #include "utils/StdString.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "DVDSubtitleTagSami.h"
 
@@ -65,7 +66,8 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
     {
       if (strFileName.Find(TagConv.m_Langclass[i].Name, 9) == 9)
       {
-        strClassID = TagConv.m_Langclass[i].ID.ToLower();
+        strClassID = TagConv.m_Langclass[i].ID;
+        StringUtils::ToLower(strClassID);
         break;
       }
     }

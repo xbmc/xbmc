@@ -1155,7 +1155,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
 {
   action = ACTION_NONE;
   CStdString strAction = szAction;
-  strAction.ToLower();
+  StringUtils::ToLower(strAction);
   if (CBuiltins::HasCommand(strAction)) 
     action = ACTION_BUILT_IN_FUNCTION;
 
@@ -1192,7 +1192,7 @@ int CButtonTranslator::TranslateWindow(const CStdString &window)
   CStdString strWindow(window);
   if (strWindow.empty()) 
     return WINDOW_INVALID;
-  strWindow.ToLower();
+  StringUtils::ToLower(strWindow);
   // eliminate .xml
   if (strWindow.Mid(strWindow.GetLength() - 4) == ".xml" )
     strWindow = strWindow.Mid(0, strWindow.GetLength() - 4);
@@ -1228,7 +1228,7 @@ uint32_t CButtonTranslator::TranslateGamepadString(const char *szButton)
     return 0;
   uint32_t buttonCode = 0;
   CStdString strButton = szButton;
-  strButton.ToLower();
+  StringUtils::ToLower(strButton);
   if (strButton.Equals("a")) buttonCode = KEY_BUTTON_A;
   else if (strButton.Equals("b")) buttonCode = KEY_BUTTON_B;
   else if (strButton.Equals("x")) buttonCode = KEY_BUTTON_X;
@@ -1267,7 +1267,7 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
     return 0;
   uint32_t buttonCode = 0;
   CStdString strButton = szButton;
-  strButton.ToLower();
+  StringUtils::ToLower(strButton);
   if (strButton.Equals("left")) buttonCode = XINPUT_IR_REMOTE_LEFT;
   else if (strButton.Equals("right")) buttonCode = XINPUT_IR_REMOTE_RIGHT;
   else if (strButton.Equals("up")) buttonCode = XINPUT_IR_REMOTE_UP;
@@ -1398,7 +1398,7 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
   CStdString strMod;
   if (pButton->QueryValueAttribute("mod", &strMod) == TIXML_SUCCESS)
   {
-    strMod.ToLower();
+    StringUtils::ToLower(strMod);
 
     CStdStringArray modArray;
     StringUtils::SplitString(strMod, ",", modArray);
@@ -1429,7 +1429,7 @@ uint32_t CButtonTranslator::TranslateAppCommand(const char *szButton)
 {
 #ifdef TARGET_WINDOWS
   CStdString strAppCommand = szButton;
-  strAppCommand.ToLower();
+  StringUtils::ToLower(strAppCommand);
 
   for (int i = 0; i < sizeof(appcommands)/sizeof(appcommands[0]); i++)
     if (strAppCommand.Equals(appcommands[i].name))
@@ -1444,7 +1444,7 @@ uint32_t CButtonTranslator::TranslateAppCommand(const char *szButton)
 uint32_t CButtonTranslator::TranslateMouseCommand(const char *szButton)
 {
   CStdString strMouseCommand = szButton;
-  strMouseCommand.ToLower();
+  StringUtils::ToLower(strMouseCommand);
 
   for (unsigned int i = 0; i < sizeof(mousecommands)/sizeof(mousecommands[0]); i++)
     if (strMouseCommand.Equals(mousecommands[i].name))
@@ -1483,7 +1483,7 @@ uint32_t CButtonTranslator::TranslateTouchCommand(TiXmlElement *pButton, CButton
     return ACTION_NONE;
 
   CStdString strTouchCommand = szButton;
-  strTouchCommand.ToLower();
+  StringUtils::ToLower(strTouchCommand);
 
   const char *attrVal = pButton->Attribute("direction");
   if (attrVal != NULL)

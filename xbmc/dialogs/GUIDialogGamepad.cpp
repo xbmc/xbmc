@@ -300,7 +300,7 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
     XBMC::XBMC_MD5 md5state;
     md5state.append(pDialog->m_strUserInput);
     md5state.getDigest(strToVerify);
-    strToVerify.ToLower();
+    StringUtils::ToLower(strToVerify);
     pDialog->m_strUserInput = "";
   }
 

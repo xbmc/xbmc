@@ -432,7 +432,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &meth
 JSONRPC_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["type"].asString();
-  media = media.ToLower();
+  StringUtils::ToLower(media);
   int idContent = -1;
 
   CStdString strPath = "videodb://";

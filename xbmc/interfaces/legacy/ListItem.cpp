@@ -156,50 +156,52 @@ namespace XBMCAddon
     {
       LOCKGUI;
       CStdString lowerKey = key;
-      if (lowerKey.CompareNoCase("startoffset") == 0)
+      StringUtils::ToLower(lowerKey);
+      if (lowerKey == "startoffset")
       { // special case for start offset - don't actually store in a property,
         // we store it in item.m_lStartOffset instead
         item->m_lStartOffset = (int)(atof(value.c_str()) * 75.0); // we store the offset in frames, or 1/75th of a second
       }
-      else if (lowerKey.CompareNoCase("mimetype") == 0)
+      else if (lowerKey == "mimetype")
       { // special case for mime type - don't actually stored in a property,
         item->SetMimeType(value.c_str());
       }
-      else if (lowerKey.CompareNoCase("totaltime") == 0)
+      else if (lowerKey == "totaltime")
         item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds = (float)atof(value.c_str());
-      else if (lowerKey.CompareNoCase("resumetime") == 0)
+      else if (lowerKey == "resumetime")
         item->GetVideoInfoTag()->m_resumePoint.timeInSeconds = (float)atof(value.c_str());
-      else if (lowerKey.CompareNoCase("specialsort") == 0)
+      else if (lowerKey == "specialsort")
       {
         if (value == "bottom")
           item->SetSpecialSort(SortSpecialOnBottom);
         else if (value == "top")
           item->SetSpecialSort(SortSpecialOnTop);
       }
-      else if (lowerKey.CompareNoCase("fanart_image") == 0)
+      else if (lowerKey == "fanart_image")
         item->SetArt("fanart", value);
       else
-        item->SetProperty(lowerKey.ToLower(), value.c_str());
+        item->SetProperty(lowerKey, value);
     }
 
     String ListItem::getProperty(const char* key)
     {
       LOCKGUI;
       CStdString lowerKey = key;
+      StringUtils::ToLower(lowerKey);
       CStdString value;
-      if (lowerKey.CompareNoCase("startoffset") == 0)
+      if (lowerKey == "startoffset")
       { // special case for start offset - don't actually store in a property,
         // we store it in item.m_lStartOffset instead
         value = StringUtils::Format("%f", item->m_lStartOffset / 75.0);
       }
-      else if (lowerKey.CompareNoCase("totaltime") == 0)
+      else if (lowerKey == "totaltime")
         value = StringUtils::Format("%f", item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
-      else if (lowerKey.CompareNoCase("resumetime") == 0)
+      else if (lowerKey == "resumetime")
         value = StringUtils::Format("%f", item->GetVideoInfoTag()->m_resumePoint.timeInSeconds);
-      else if (lowerKey.CompareNoCase("fanart_image") == 0)
+      else if (lowerKey == "fanart_image")
         value = item->GetArt("fanart");
       else
-        value = item->GetProperty(lowerKey.ToLower()).asString();
+        value = item->GetProperty(lowerKey).asString();
 
       return value.c_str();
     }
@@ -253,7 +255,7 @@ namespace XBMCAddon
         for (Dictionary::const_iterator it = infoLabels.begin(); it != infoLabels.end(); ++it)
         {
           CStdString key = it->first;
-          key.ToLower();
+          StringUtils::ToLower(key);
           const CStdString value(it->second.c_str());
 
           if (key == "year")
@@ -382,7 +384,7 @@ namespace XBMCAddon
         {
           CStdString key = it->first;
 
-          key.ToLower();
+          StringUtils::ToLower(key);
           const CStdString value(it->second.c_str());
 
           // TODO: add the rest of the infolabels
@@ -444,7 +446,7 @@ namespace XBMCAddon
         for (Dictionary::const_iterator it = infoLabels.begin(); it != infoLabels.end(); ++it)
         {
           CStdString key = it->first;
-          key.ToLower();
+          StringUtils::ToLower(key);
           const CStdString value(it->second.c_str());
 
           if (key == "count")

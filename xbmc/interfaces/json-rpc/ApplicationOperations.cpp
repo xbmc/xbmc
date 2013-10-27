@@ -124,11 +124,11 @@ JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const CStdString &proper
     if (GetXbmcGitRevision())
       result["revision"] = GetXbmcGitRevision();
     CStdString tag(VERSION_TAG);
-    if (tag.ToLower().Equals("-pre"))
+    if (StringUtils::EqualsNoCase(tag, "-pre"))
       result["tag"] = "alpha";
-    else if (StringUtils::StartsWithNoCase(tag.ToLower(), "-beta"))
+    else if (StringUtils::StartsWithNoCase(tag, "-beta"))
       result["tag"] = "beta";
-    else if (StringUtils::StartsWithNoCase(tag.ToLower(), "-rc"))
+    else if (StringUtils::StartsWithNoCase(tag, "-rc"))
       result["tag"] = "releasecandidate";
     else if (tag.empty())
       result["tag"] = "stable";

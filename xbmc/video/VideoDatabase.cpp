@@ -6901,7 +6901,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
 
       // try and ascertain scraper for this path
       CStdString strcontent = m_pDS->fv("path.strContent").get_asString();
-      strcontent.ToLower();
+      StringUtils::ToLower(strcontent);
       content = TranslateContent(strcontent);
 
       //FIXME paths stored should not have empty strContent
@@ -6940,7 +6940,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
         {
 
           CStdString strcontent = m_pDS->fv("path.strContent").get_asString();
-          strcontent.ToLower();
+          StringUtils::ToLower(strcontent);
           if (m_pDS->fv("path.exclude").get_asBool())
           {
             settings.exclude = true;

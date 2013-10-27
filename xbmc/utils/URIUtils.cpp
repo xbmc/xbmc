@@ -123,7 +123,7 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
   if (iPos > 0)
   {
     CStdString strExtension = GetExtension(strFileName);
-    strExtension.ToLower();
+    StringUtils::ToLower(strExtension);
     strExtension += "|";
 
     CStdString strFileMask;
@@ -594,7 +594,7 @@ bool URIUtils::IsHD(const CStdString& strFileName)
 bool URIUtils::IsDVD(const CStdString& strFile)
 {
   CStdString strFileLow = strFile;
-  strFileLow.MakeLower();
+  StringUtils::ToLower(strFileLow);
   if (strFileLow.Find("video_ts.ifo") != -1 && IsOnDVD(strFile))
     return true;
 

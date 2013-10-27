@@ -1553,7 +1553,7 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
       if(strName.Equals(strServiceName))
       {
         strPng = StringUtils::Format("%s%s", piconPath.c_str(), strPng.c_str());
-        strPng.ToLower();
+        StringUtils::ToLower(strPng);
         CLog::Log(LOGDEBUG, "%s %s: Path is: %s", __FUNCTION__,strServiceName.c_str(), strPng.c_str());
         return strPng;
       }

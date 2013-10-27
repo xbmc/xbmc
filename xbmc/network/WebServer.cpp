@@ -408,7 +408,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
     // get the MIME type for the Content-Type header
     CStdString ext = URIUtils::GetExtension(strURL);
-    ext = ext.ToLower();
+    StringUtils::ToLower(ext);
     string mimeType = CreateMimeTypeFromExtension(ext.c_str());
 
     if (methodType != HEAD)

@@ -161,9 +161,19 @@ void StringUtils::ToUpper(string &str)
   transform(str.begin(), str.end(), str.begin(), ::toupper);
 }
 
+void StringUtils::ToUpper(wstring &str)
+{
+  transform(str.begin(), str.end(), str.begin(), ::towupper);
+}
+
 void StringUtils::ToLower(string &str)
 {
   transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+
+void StringUtils::ToLower(wstring &str)
+{
+  transform(str.begin(), str.end(), str.begin(), ::towlower);
 }
 
 bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
@@ -807,7 +817,7 @@ int StringUtils::FindEndBracket(const CStdString &str, char opener, char closer,
 void StringUtils::WordToDigits(CStdString &word)
 {
   static const char word_to_letter[] = "22233344455566677778889999";
-  word.ToLower();
+  StringUtils::ToLower(word);
   for (unsigned int i = 0; i < word.size(); ++i)
   { // NB: This assumes ascii, which probably needs extending at some  point.
     char letter = word[i];

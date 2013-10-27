@@ -502,7 +502,7 @@ void CKaraokeLyricsText::rescanLyrics()
       else
       {
         CStdString lower = m_lyrics[i].text;
-        lower.ToLower();
+        StringUtils::ToLower(lower);
         ld.upper_start = (m_lyrics[i].text == lower);
       }
 

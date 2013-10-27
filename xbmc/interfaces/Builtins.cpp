@@ -261,7 +261,7 @@ int CBuiltins::Execute(const CStdString& execString)
   CStdString execute;
   vector<CStdString> params;
   CUtil::SplitExecFunction(execString, execute, params);
-  execute.ToLower();
+  StringUtils::ToLower(execute);
   CStdString parameter = params.size() ? params[0] : "";
   CStdString strParameterCaseIntact = parameter;
 
@@ -1259,7 +1259,7 @@ int CBuiltins::Execute(const CStdString& execString)
       // if browsing for addons, required param[1] is addontype string, with optional param[2]
       // as contenttype string see IAddon.h & ADDON::TranslateXX
       CStdString strMask = (params.size() > 1) ? params[1] : "";
-      strMask.ToLower();
+      StringUtils::ToLower(strMask);
       ADDON::TYPE type;
       if ((type = TranslateType(strMask)) != ADDON_UNKNOWN)
       {
@@ -1269,7 +1269,7 @@ int CBuiltins::Execute(const CStdString& execString)
         url.SetFileName(strMask+"/");
         localShares.clear();
         CStdString content = (params.size() > 2) ? params[2] : "";
-        content.ToLower();
+        StringUtils::ToLower(content);
         url.SetPassword(content);
         CStdString strMask;
         if (type == ADDON_SCRIPT)

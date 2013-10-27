@@ -1409,17 +1409,17 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
   // weighting is identical, both album and artist are 50% of the total relevance
   // a missing artist means the maximum relevance can only be 0.50
   CStdString strAlbumTemp = strAlbumTemp1;
-  strAlbumTemp.MakeLower();
+  StringUtils::ToLower(strAlbumTemp);
   CStdString strAlbum = strAlbum1;
-  strAlbum.MakeLower();
+  StringUtils::ToLower(strAlbum);
   double fAlbumPercentage = fstrcmp(strAlbumTemp, strAlbum, 0.0f);
   double fArtistPercentage = 0.0f;
   if (!strArtist1.empty())
   {
     CStdString strArtistTemp = strArtistTemp1;
-    strArtistTemp.MakeLower();
+    StringUtils::ToLower(strArtistTemp);
     CStdString strArtist = strArtist1;
-    strArtist.MakeLower();
+    StringUtils::ToLower(strArtist);
     fArtistPercentage = fstrcmp(strArtistTemp, strArtist, 0.0f);
   }
   double fRelevance = fAlbumPercentage * 0.5f + fArtistPercentage * 0.5f;

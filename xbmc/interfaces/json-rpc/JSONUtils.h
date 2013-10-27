@@ -28,6 +28,7 @@
 #include "playlists/SmartPlayList.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/JSONVariantParser.h"
+#include "utils/StringUtils.h"
 
 namespace JSONRPC
 {
@@ -90,8 +91,8 @@ namespace JSONRPC
     {
       CStdString method = parameterObject["sort"]["method"].asString();
       CStdString order = parameterObject["sort"]["order"].asString();
-      method.ToLower();
-      order.ToLower();
+      StringUtils::ToLower(method);
+      StringUtils::ToLower(order);
 
       sortAttributes = SortAttributeNone;
       if (parameterObject["sort"]["ignorearticle"].asBoolean())

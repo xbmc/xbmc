@@ -140,7 +140,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
     CStdString actionName = action.GetName();
-    actionName.ToLower();
+    StringUtils::ToLower(actionName);
     if (actionName.Find("shutdown") != -1)
       CBuiltins::Execute(action.GetName());
     return true;
