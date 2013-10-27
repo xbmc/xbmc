@@ -27,6 +27,7 @@
 #include "system.h"
 #include "PlatformInclude.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/StringUtils.h"
 #include "../xbmc/utils/log.h"
 
 #if defined(TARGET_FREEBSD)
@@ -89,8 +90,7 @@ bool CXRandR::Query(bool force)
   {
     XOutput xoutput;
     xoutput.name = output->Attribute("name");
-    xoutput.name.TrimLeft(" \n\r\t");
-    xoutput.name.TrimRight(" \n\r\t");
+    StringUtils::Trim(xoutput.name);
     xoutput.isConnected = (strcasecmp(output->Attribute("connected"), "true") == 0);
     xoutput.w = (output->Attribute("w") != NULL ? atoi(output->Attribute("w")) : 0);
     xoutput.h = (output->Attribute("h") != NULL ? atoi(output->Attribute("h")) : 0);
@@ -317,11 +317,9 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
   for (TiXmlElement* modeline = pRootElement->FirstChildElement("modeline"); modeline; modeline = modeline->NextSiblingElement("modeline"))
   {
     name = modeline->Attribute("label");
-    name.TrimLeft(" \n\t\r");
-    name.TrimRight(" \n\t\r");
+    StringUtils::Trim(name);
     strModeLine = modeline->FirstChild()->Value();
-    strModeLine.TrimLeft(" \n\t\r");
-    strModeLine.TrimRight(" \n\t\r");
+    StringUtils::Trim(strModeLine);
     if (getenv("XBMC_BIN_HOME"))
     {
       snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --newmode \"%s\" %s > /dev/null 2>&1", getenv("XBMC_BIN_HOME"),

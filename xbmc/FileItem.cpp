@@ -1402,7 +1402,7 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
       int i = m_mimetype.Find(';');
       if(i>=0)
         m_mimetype.Delete(i, m_mimetype.length() - i);
-      m_mimetype.Trim();
+      StringUtils::Trim(m_mimetype);
     }
     else
       m_mimetype = CMime::GetMimeType(*this);

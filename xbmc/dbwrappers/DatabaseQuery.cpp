@@ -254,7 +254,7 @@ CStdString CDatabaseQueryRule::FormatParameter(const CStdString &operatorString,
     {
       if (!parameter.empty())
         parameter += ",";
-      parameter += db.PrepareSQL("'%s'", (*itIn).Trim().c_str());
+      parameter += db.PrepareSQL("'%s'", StringUtils::Trim(*itIn).c_str());
     }
     parameter = " IN (" + parameter + ")";
   }

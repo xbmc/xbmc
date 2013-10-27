@@ -19,6 +19,7 @@
  */
 
 #include "utils/XBMCTinyXML.h"
+#include "utils/StringUtils.h"
 #include "test/TestUtils.h"
 
 #include "gtest/gtest.h"
@@ -62,7 +63,7 @@ TEST(TestXBMCTinyXML, ParseFromFileHandle)
     if (url && url->FirstChild())
     {
       CStdString str = url->FirstChild()->ValueStr();
-      retval = (str.Trim() == "http://api.themoviedb.org/3/movie/12244?api_key=57983e31fb435df4df77afb854740ea9&language=en???");
+      retval = (StringUtils::Trim(str) == "http://api.themoviedb.org/3/movie/12244?api_key=57983e31fb435df4df77afb854740ea9&language=en???");
     }
   }
   EXPECT_TRUE(retval);

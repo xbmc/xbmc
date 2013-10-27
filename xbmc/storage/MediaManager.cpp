@@ -490,7 +490,7 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
   if(GetVolumeInformationW(CStdStringW(strDevice).c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
     return "";
   g_charsetConverter.wToUTF8(cVolumenName, strDevice);
-  return strDevice.TrimRight(" ");
+  return StringUtils::TrimRight(strDevice, " ");
 #else
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif

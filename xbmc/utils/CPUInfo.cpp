@@ -273,7 +273,7 @@ CCPUInfo::CCPUInfo(void)
         {
           needle+=2;
           m_cores[nCurrId].m_strVendor = needle;
-          m_cores[nCurrId].m_strVendor.Trim();
+          StringUtils::Trim(m_cores[nCurrId].m_strVendor);
         }
       }
       else if (strncmp(buffer, "Processor", strlen("Processor"))==0)
@@ -284,7 +284,7 @@ CCPUInfo::CCPUInfo(void)
           needle+=2;
           m_cpuModel = needle;
           m_cores[nCurrId].m_strModel = m_cpuModel;
-          m_cores[nCurrId].m_strModel.Trim();
+          StringUtils::Trim(m_cores[nCurrId].m_strModel);
         }
       }
       else if (strncmp(buffer, "BogoMIPS", strlen("BogoMIPS"))==0)
@@ -295,7 +295,7 @@ CCPUInfo::CCPUInfo(void)
           needle+=2;
           m_cpuBogoMips = needle;
           m_cores[nCurrId].m_strBogoMips = m_cpuBogoMips;
-          m_cores[nCurrId].m_strBogoMips.Trim();
+          StringUtils::Trim(m_cores[nCurrId].m_strBogoMips);
         }
       }
       else if (strncmp(buffer, "Hardware", strlen("Hardware"))==0)
@@ -306,7 +306,7 @@ CCPUInfo::CCPUInfo(void)
           needle+=2;
           m_cpuHardware = needle;
           m_cores[nCurrId].m_strHardware = m_cpuHardware;
-          m_cores[nCurrId].m_strHardware.Trim();
+          StringUtils::Trim(m_cores[nCurrId].m_strHardware);
         }
       }
       else if (strncmp(buffer, "Revision", strlen("Revision"))==0)
@@ -317,7 +317,7 @@ CCPUInfo::CCPUInfo(void)
           needle+=2;
           m_cpuRevision = needle;
           m_cores[nCurrId].m_strRevision = m_cpuRevision;
-          m_cores[nCurrId].m_strRevision.Trim();
+          StringUtils::Trim(m_cores[nCurrId].m_strRevision);
         }
       }
       else if (strncmp(buffer, "Serial", strlen("Serial"))==0)
@@ -328,7 +328,7 @@ CCPUInfo::CCPUInfo(void)
           needle+=2;
           m_cpuSerial = needle;
           m_cores[nCurrId].m_strSerial = m_cpuSerial;
-          m_cores[nCurrId].m_strSerial.Trim();
+          StringUtils::Trim(m_cores[nCurrId].m_strSerial);
         }
       }
       else if (strncmp(buffer, "model name", strlen("model name"))==0)
@@ -339,7 +339,7 @@ CCPUInfo::CCPUInfo(void)
           needle+=2;
           m_cpuModel = needle;
           m_cores[nCurrId].m_strModel = m_cpuModel;
-          m_cores[nCurrId].m_strModel.Trim();
+          StringUtils::Trim(m_cores[nCurrId].m_strModel);
         }
       }
       else if (strncmp(buffer, "flags", 5) == 0)

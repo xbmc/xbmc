@@ -33,7 +33,7 @@
 #include "MusicInfoTagLoaderDatabase.h"
 #include "MusicInfoTagLoaderASAP.h"
 #include "MusicInfoTagLoaderMidi.h"
-
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 
@@ -60,8 +60,8 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     return new CMusicInfoTagLoaderDatabase();
 
   CStdString strExtension = URIUtils::GetExtension(strFileName);
-  strExtension.ToLower();
-  strExtension.TrimLeft('.');
+  StringUtils::ToLower(strExtension);
+  StringUtils::TrimLeft(strExtension, ".");
 
   if (strExtension.empty())
     return NULL;

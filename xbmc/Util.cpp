@@ -297,7 +297,8 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
     }
   }
 
-  strTitle = strTitleAndYear.Trim();
+  StringUtils::Trim(strTitleAndYear);
+  strTitle = strTitleAndYear;
 
   // append year
   if (!strYear.empty())
@@ -911,8 +912,7 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
     result.Replace('<', '_');
     result.Replace('>', '_');
     result.Replace('|', '_');
-    result.TrimRight(".");
-    result.TrimRight(" ");
+    StringUtils::TrimRight(result, ". ");
   }
   return result;
 }
@@ -1045,7 +1045,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
     function = execString;
 
   // remove any whitespace, and the standard prefix (if it exists)
-  function.Trim();
+  StringUtils::Trim(function);
   if( StringUtils::StartsWithNoCase(function, "xbmc.") )
     function.Delete(0, 5);
 

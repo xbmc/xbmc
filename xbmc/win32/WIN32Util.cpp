@@ -313,7 +313,7 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   CStdString strParams;
   CStdString strWorkingDir;
 
-  strCommand.Trim();
+  StringUtils::Trim(strCommand);
   if (strCommand.empty())
   {
     return false;
@@ -977,7 +977,8 @@ CStdString CWIN32Util::GetDiskLabel(const CStdString& strPath)
   URIUtils::AddSlashAtEnd(strDrive);
   if(GetVolumeInformation(strDrive.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
     return "";
-  return CStdString(cVolumenName).TrimRight(" ");
+  CStdString volume = cVolumenName;
+  return StringUtils::TrimRight(volume, " ");
 }
 
 extern "C"

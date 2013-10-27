@@ -739,7 +739,7 @@ void CMusicInfoTag::AppendGenre(const CStdString &genre)
 CStdString CMusicInfoTag::Trim(const CStdString &value) const
 {
   CStdString trimmedValue(value);
-  trimmedValue.TrimLeft(' ');
-  trimmedValue.TrimRight(" \n\r");
+  StringUtils::TrimLeft(trimmedValue, " ");
+  StringUtils::TrimRight(trimmedValue, " \n\r");
   return trimmedValue;
 }

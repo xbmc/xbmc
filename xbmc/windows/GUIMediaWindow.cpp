@@ -1793,7 +1793,8 @@ bool CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &
     result = GetAdvanceFilteredItems(items);
 
   CStdString trimmedFilter(filter);
-  trimmedFilter.TrimLeft().ToLower();
+  StringUtils::TrimLeft(trimmedFilter);
+  StringUtils::ToLower(trimmedFilter);
   
   if (trimmedFilter.empty())
     return result;

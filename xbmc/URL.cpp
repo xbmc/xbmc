@@ -360,7 +360,8 @@ void CURL::SetFileName(const CStdString& strFileName)
   else
     m_strFileType = "";
 
-  m_strFileType.Normalize();
+  StringUtils::Trim(m_strFileType);
+  StringUtils::ToLower(m_strFileType);
 }
 
 void CURL::SetHostName(const CStdString& strHostName)

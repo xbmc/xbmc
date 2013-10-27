@@ -916,7 +916,8 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
       std::vector<std::string> tokens;
 
       s = line;
-      s.TrimLeft(" \t").TrimRight(" \n");
+      StringUtils::TrimLeft(s, " \t");
+      StringUtils::TrimRight(s," \n");
 
       // skip comments
       if (s.length() == 0 || s.GetAt(0) == '#')
@@ -1001,7 +1002,8 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
       std::vector<std::string> tokens;
 
       s = line;
-      s.TrimLeft(" \t").TrimRight(" \n");
+      StringUtils::TrimLeft(s, " \t");
+      StringUtils::TrimRight(s," \n");
 
       // skip comments
       if (!foundInterface && (s.length() == 0 || s.GetAt(0) == '#'))

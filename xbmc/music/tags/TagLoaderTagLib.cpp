@@ -94,8 +94,8 @@ bool CTagLoaderTagLib::Load(const CStdString& strFileName, MUSIC_INFO::CMusicInf
 bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, const CStdString& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art /* = NULL */)
 {  
   CStdString strExtension = URIUtils::GetExtension(strFileName);
-  strExtension.ToLower();
-  strExtension.TrimLeft('.');
+  StringUtils::ToLower(strExtension);
+  StringUtils::TrimLeft(strExtension, ".");
 
   if (strExtension.empty())
   {

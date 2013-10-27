@@ -26,6 +26,7 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/StringUtils.h"
 #include "FileItem.h"
 
 using namespace XFILE;
@@ -99,7 +100,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       // Isolate the IP from the URL and replace the "*" with the real IP
       // of the ReplayTV.  E.g., rtv://*/Video/192.168.1.100/ becomes
       // rtv://192.168.1.100/Video/ .  This trickery makes things work.
-      strURL = strRoot.TrimRight('/');
+      strURL = StringUtils::TrimRight(strRoot, "/");
       pos = strURL.ReverseFind('/');
       strRTV = strURL.Left(pos + 1);
       strRTV.Replace("*", strURL.Mid(pos + 1));

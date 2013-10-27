@@ -794,8 +794,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
   // trim whitespaces
   CStdString strTest = strCondition;
-  strTest.TrimLeft(" \t\r\n");
-  strTest.TrimRight(" \t\r\n");
+  StringUtils::Trim(strTest);
 
   vector< Property> info;
   SplitInfoString(strTest, info);
@@ -1385,7 +1384,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
-    strLabel = strLabel.Trim();
+    StringUtils::Trim(strLabel);
     break;
   case WEATHER_TEMPERATURE:
     strLabel = StringUtils::Format("%s%s",
@@ -2111,8 +2110,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
 unsigned int CGUIInfoManager::Register(const CStdString &expression, int context)
 {
   CStdString condition(CGUIInfoLabel::ReplaceLocalize(expression));
-  condition.TrimLeft(" \t\r\n");
-  condition.TrimRight(" \t\r\n");
+  StringUtils::Trim(condition);
 
   if (condition.empty())
     return 0;
@@ -4516,7 +4514,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       if (info==LISTITEM_FILE_EXTENSION)
       {
         CStdString strExtension = URIUtils::GetExtension(strFile);
-        return strExtension.TrimLeft(".");
+        return StringUtils::TrimLeft(strExtension, ".");
       }
       return strFile;
     }

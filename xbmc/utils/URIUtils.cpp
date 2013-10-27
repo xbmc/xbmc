@@ -1091,8 +1091,8 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
   strUrlPath += strBuffer;
 
   strBuffer = strFilePathInArchive;
-  strBuffer.Replace('\\', '/');
-  strBuffer.TrimLeft('/');
+  StringUtils::Replace(strBuffer, '\\', '/');
+  StringUtils::TrimLeft(strBuffer, "/");
 
   strUrlPath += "/";
   strUrlPath += strBuffer;

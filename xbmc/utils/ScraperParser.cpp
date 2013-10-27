@@ -427,7 +427,7 @@ void CScraperParser::Clean(CStdString& strDirty)
       strBuffer = strDirty.substr(i+11,i2-i-11);
       CStdString strConverted(strBuffer);
       HTML::CHTMLUtil::RemoveTags(strConverted);
-      RemoveWhiteSpace(strConverted);
+      StringUtils::Trim(strConverted);
       strDirty.erase(i,i2-i+11);
       strDirty.Insert(i,strConverted);
       i += strConverted.size();
@@ -442,7 +442,7 @@ void CScraperParser::Clean(CStdString& strDirty)
     if ((i2=strDirty.Find("!!!TRIM!!!",i+10)) != -1)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
-      RemoveWhiteSpace(strBuffer);
+      StringUtils::Trim(strBuffer);
       strDirty.erase(i,i2-i+10);
       strDirty.Insert(i,strBuffer);
       i += strBuffer.size();
@@ -462,7 +462,7 @@ void CScraperParser::Clean(CStdString& strDirty)
       CStdStringW wConverted;
       HTML::CHTMLUtil::ConvertHTMLToW(wbuffer,wConverted);
       g_charsetConverter.fromW(wConverted,strBuffer,GetSearchStringEncoding());
-      RemoveWhiteSpace(strBuffer);
+      StringUtils::Trim(strBuffer);
       ConvertJSON(strBuffer);
       strDirty.erase(i,i2-i+14);
       strDirty.Insert(i,strBuffer);
@@ -486,12 +486,6 @@ void CScraperParser::Clean(CStdString& strDirty)
     else
       break;
   }
-}
-
-void CScraperParser::RemoveWhiteSpace(CStdString &string)
-{
-  string.TrimLeft(" \t\r\n");
-  string.TrimRight(" \t\r\n");
 }
 
 void CScraperParser::ConvertJSON(CStdString &string)

@@ -1313,7 +1313,8 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     m_configuration.tvVendor = iVendor;
 
   // read the devices to wake when starting
-  CStdString strWakeDevices = CStdString(GetSettingString("wake_devices_advanced")).Trim();
+  CStdString strWakeDevices = GetSettingString("wake_devices_advanced");
+  StringUtils::Trim(strWakeDevices);
   m_configuration.wakeDevices.Clear();
   if (!strWakeDevices.empty())
     ReadLogicalAddresses(strWakeDevices, m_configuration.wakeDevices);
@@ -1321,7 +1322,8 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     ReadLogicalAddresses(GetSettingInt("wake_devices"), m_configuration.wakeDevices);
 
   // read the devices to power off when stopping
-  CStdString strStandbyDevices = CStdString(GetSettingString("standby_devices_advanced")).Trim();
+  CStdString strStandbyDevices = GetSettingString("standby_devices_advanced");
+  StringUtils::Trim(strStandbyDevices);
   m_configuration.powerOffDevices.Clear();
   if (!strStandbyDevices.empty())
     ReadLogicalAddresses(strStandbyDevices, m_configuration.powerOffDevices);
@@ -1348,7 +1350,8 @@ void CPeripheralCecAdapter::ReadLogicalAddresses(const CStdString &strString, ce
 {
   for (size_t iPtr = 0; iPtr < strString.size(); iPtr++)
   {
-    CStdString strDevice = CStdString(strString.substr(iPtr, 1)).Trim();
+    CStdString strDevice = strString.substr(iPtr, 1);
+    StringUtils::Trim(strDevice);
     if (!strDevice.empty())
     {
       int iDevice(0);
@@ -1390,7 +1393,8 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
     for (unsigned int iPtr = CECDEVICE_TV; iPtr <= CECDEVICE_BROADCAST; iPtr++)
       if (addresses[iPtr])
         strPowerOffDevices.AppendFormat(" %X", iPtr);
-    bChanged = SetSetting(strAdvancedSettingName, strPowerOffDevices.Trim());
+    StringUtils::Trim(strPowerOffDevices);
+    bChanged = SetSetting(strAdvancedSettingName, strPowerOffDevices);
   }
 
   int iSettingPowerOffDevices = LOCALISED_ID_NONE;

@@ -562,7 +562,7 @@ int CMusicDatabase::AddGenre(const CStdString& strGenre1)
   try
   {
     CStdString strGenre = strGenre1;
-    strGenre.Trim();
+    StringUtils::Trim(strGenre);
 
     if (strGenre.empty())
       strGenre=g_localizeStrings.Get(13205); // Unknown

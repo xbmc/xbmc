@@ -106,7 +106,7 @@ void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNe
 void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearchDefault defaultSearchMode)
 {
   CStdString strParsedSearchTerm(strSearchTerm);
-  strParsedSearchTerm = strParsedSearchTerm.Trim();
+  StringUtils::Trim(strParsedSearchTerm);
 
   if (!m_bCaseSensitive)
     strParsedSearchTerm = strParsedSearchTerm.ToLower();
@@ -117,7 +117,7 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
 
   while (strParsedSearchTerm.length() > 0)
   {
-    strParsedSearchTerm = strParsedSearchTerm.TrimLeft();
+    StringUtils::TrimLeft(strParsedSearchTerm);
 
     if (StringUtils::StartsWith(strParsedSearchTerm, "!") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "not"))
     {
@@ -160,6 +160,6 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
       bNextNOT = (defaultSearchMode == SEARCH_DEFAULT_NOT);
     }
 
-    strParsedSearchTerm = strParsedSearchTerm.TrimLeft();
+    StringUtils::TrimLeft(strParsedSearchTerm);
   }
 }

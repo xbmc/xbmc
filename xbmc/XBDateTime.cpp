@@ -1004,7 +1004,7 @@ void CDateTime::SetFromDBTime(const CStdString &time)
 void CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
 {
   CStdString date = dateTime;
-  date.Trim();
+  StringUtils::Trim(date);
 
   if (date.size() != 29)
     return;

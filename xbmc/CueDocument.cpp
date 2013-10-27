@@ -132,7 +132,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
       {
         // lets manage tracks titles without quotes
         CStdString titleNoQuote = strLine.Mid(5);
-        titleNoQuote.TrimLeft();
+        StringUtils::TrimLeft(titleNoQuote);
         if (!titleNoQuote.empty())
         {
           g_charsetConverter.unknownToUTF8(titleNoQuote);
@@ -193,7 +193,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
       if (!ExtractQuoteInfo(strLine, m_strGenre))
       {
         CStdString genreNoQuote = strLine.Mid(9);
-        genreNoQuote.TrimLeft();
+        StringUtils::TrimLeft(genreNoQuote);
         if (!genreNoQuote.empty())
         {
           g_charsetConverter.unknownToUTF8(genreNoQuote);
@@ -290,7 +290,7 @@ bool CCueDocument::ReadNextLine(CStdString &szLine)
   {
     // Remove the white space at the beginning and end of the line.
     szLine = m_szBuffer;
-    szLine.Trim();
+    StringUtils::Trim(szLine);
     if (!szLine.empty())
       return true;
     // If we are here, we have an empty line so try the next line
@@ -325,14 +325,14 @@ int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
 {
   // Get rid of the index number and any whitespace
   CStdString numberTime = index.Mid(5);
-  numberTime.TrimLeft();
+  StringUtils::TrimLeft(numberTime);
   while (!numberTime.empty())
   {
     if (!isdigit(numberTime[0]))
       break;
     numberTime.erase(0, 1);
   }
-  numberTime.TrimLeft();
+  StringUtils::TrimLeft(numberTime);
   // split the resulting string
   CStdStringArray time;
   StringUtils::SplitString(numberTime, ":", time);
@@ -353,7 +353,7 @@ int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
 int CCueDocument::ExtractNumericInfo(const CStdString &info)
 {
   CStdString number(info);
-  number.TrimLeft();
+  StringUtils::TrimLeft(number);
   if (number.empty() || !isdigit(number[0]))
     return -1;
   return atoi(number.c_str());

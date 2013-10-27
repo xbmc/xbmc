@@ -22,6 +22,7 @@
 #include "DVDSubtitleStream.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 
 CDVDSubtitleTagSami::~CDVDSubtitleTagSami()
 {
@@ -48,7 +49,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
 {
   CStdStringA strUTF8;
   strUTF8.assign(line, len);
-  strUTF8.Trim();
+  StringUtils::Trim(strUTF8);
 
   int pos = 0;
   int del_start = 0;
@@ -243,9 +244,9 @@ void CDVDSubtitleTagSami::LoadHead(CDVDSubtitleStream* samiStream)
           lc.Name = reg.GetMatch(2);
           lc.Lang = reg.GetMatch(3);
           lc.SAMIType = reg.GetMatch(4);
-          lc.Name.Trim();
-          lc.Lang.Trim();
-          lc.SAMIType.Trim();
+          StringUtils::Trim(lc.Name);
+          StringUtils::Trim(lc.Lang);
+          StringUtils::Trim(lc.SAMIType);
           m_Langclass.push_back(lc);
         }
       }

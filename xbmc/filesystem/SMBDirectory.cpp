@@ -422,7 +422,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
   }
 
   CStdString newPath = smbPath;
-  newPath.TrimLeft("/");
+  StringUtils::TrimLeft(newPath, "/");
   smbFullPath += newPath;
 
   // Make the mount command.

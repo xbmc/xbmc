@@ -233,9 +233,23 @@ std::string& StringUtils::TrimLeft(std::string &str)
   return str;
 }
 
+std::string& StringUtils::TrimLeft(std::string &str, const std::string& chars)
+{
+  size_t nidx = str.find_first_not_of(chars);
+  str.substr(nidx == str.npos ? 0 : nidx).swap(str);
+  return str;
+}
+
 std::string& StringUtils::TrimRight(std::string &str)
 {
   str.erase(::find_if(str.rbegin(), str.rend(), ::not1(::ptr_fun(isspace_c))).base(), str.end());
+  return str;
+}
+
+std::string& StringUtils::TrimRight(std::string &str, const std::string& chars)
+{
+  size_t nidx = str.find_last_not_of(chars);
+  str.erase(str.npos == nidx ? 0 : ++nidx);
   return str;
 }
 
@@ -594,8 +608,7 @@ int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
 long StringUtils::TimeStringToSeconds(const CStdString &timeString)
 {
   CStdString strCopy(timeString);
-  strCopy.TrimLeft(" \n\r\t");
-  strCopy.TrimRight(" \n\r\t");
+  StringUtils::Trim(strCopy);
   if(StringUtils::EndsWithNoCase(strCopy, " min"))
   {
     // this is imdb format of "XXX min"

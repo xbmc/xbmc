@@ -2393,7 +2393,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
       for (unsigned int i = 0; i < details.m_artist.size(); i++)
       {
         CStdString artist = details.m_artist[i];
-        artist.Trim();
+        StringUtils::Trim(artist);
         int idArtist = AddActor(artist,"");
         AddArtistToMusicVideo(idMVideo, idArtist);
       }
@@ -8097,7 +8097,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     if ( ! filesToDelete.empty() )
     {
-      filesToDelete.TrimRight(",");
+      StringUtils::TrimRight(filesToDelete, ",");
       // now grab them movies
       sql = PrepareSQL("select idMovie from movie where idFile in (%s)",filesToDelete.c_str());
       m_pDS->query(sql.c_str());
@@ -8163,7 +8163,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     if ( ! moviesToDelete.empty() )
     {
-      moviesToDelete = "(" + moviesToDelete.TrimRight(",") + ")";
+      moviesToDelete = "(" + StringUtils::TrimRight(moviesToDelete, ",") + ")";
 
       CLog::Log(LOGDEBUG, "%s: Cleaning movie table", __FUNCTION__);
       sql = "delete from movie where idMovie in " + moviesToDelete;
@@ -8196,7 +8196,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     if ( ! episodesToDelete.empty() )
     {
-      episodesToDelete = "(" + episodesToDelete.TrimRight(",") + ")";
+      episodesToDelete = "(" + StringUtils::TrimRight(episodesToDelete, ",") + ")";
 
       CLog::Log(LOGDEBUG, "%s: Cleaning episode table", __FUNCTION__);
       sql = "delete from episode where idEpisode in " + episodesToDelete;
@@ -8228,7 +8228,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     m_pDS->close();
     if (!strIds.empty())
     {
-      strIds.TrimRight(",");
+      StringUtils::TrimRight(strIds, ",");
       sql = PrepareSQL("delete from path where idPath in (%s)",strIds.c_str());
       m_pDS->exec(sql.c_str());
       sql = PrepareSQL("delete from tvshowlinkpath where idPath in (%s)",strIds.c_str());
@@ -8258,7 +8258,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     m_pDS->close();
     if (!showsToDelete.empty())
     {
-      sql = "delete from tvshow where idShow in (" + showsToDelete.TrimRight(",") + ")";
+      sql = "delete from tvshow where idShow in (" + StringUtils::TrimRight(showsToDelete, ",") + ")";
       m_pDS->exec(sql.c_str());
     }
 
@@ -8290,7 +8290,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     if ( ! musicVideosToDelete.empty() )
     {
-      musicVideosToDelete = "(" + musicVideosToDelete.TrimRight(",") + ")";
+      musicVideosToDelete = "(" + StringUtils::TrimRight(musicVideosToDelete, ",") + ")";
 
       CLog::Log(LOGDEBUG, "%s: Cleaning musicvideo table", __FUNCTION__);
       sql = "delete from musicvideo where idMVideo in " + musicVideosToDelete;

@@ -89,8 +89,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
   while (file.ReadString(szLine, 1024))
   {
     strLine = szLine;
-    strLine.TrimRight(" \t\r\n");
-    strLine.TrimLeft(" \t");
+    StringUtils::Trim(strLine);
 
     if (strLine.Left( (int)strlen(M3U_INFO_MARKER) ) == M3U_INFO_MARKER)
     {
@@ -218,8 +217,7 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
   {
     // read and trim a line
     strLine = szLine;
-    strLine.TrimRight(" \t\r\n");
-    strLine.TrimLeft(" \t");
+    StringUtils::Trim(strLine);
 
     // skip the first line
     if (strLine == M3U_START_MARKER)
@@ -240,8 +238,7 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
             continue;
 
           strLine = szLine;
-          strLine.TrimRight(" \t\r\n");
-          strLine.TrimLeft(" \t");
+          StringUtils::Trim(strLine);
 
           // this line was empty
           if (strLine.empty())
@@ -281,12 +278,15 @@ std::map< CStdString, CStdString > CPlayListM3U::ParseStreamLine(const CStdStrin
   for (size_t i = 0; i < vecParams.size(); i++)
   {
     // split the param, ensure there was an =
-    CStdStringArray vecTuple = StringUtils::SplitString(vecParams[i].Trim(), "=");
+    StringUtils::Trim(vecParams[i]);
+    CStdStringArray vecTuple = StringUtils::SplitString(vecParams[i], "=");
     if (vecTuple.size() < 2)
       continue;
 
     // remove white space from name and value and store it in the dictionary
-    params[vecTuple[0].Trim()] = vecTuple[1].Trim();
+    StringUtils::Trim(vecTuple[0]);
+    StringUtils::Trim(vecTuple[1]);
+    params[vecTuple[0]] = vecTuple[1];
   }
 
   return params;

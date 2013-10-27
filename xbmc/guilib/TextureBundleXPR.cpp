@@ -509,7 +509,8 @@ void CTextureBundleXPR::SetThemeBundle(bool themeBundle)
 CStdString CTextureBundleXPR::Normalize(const CStdString &name)
 {
   CStdString newName(name);
-  newName.Normalize();
+  StringUtils::Trim(newName);
+  StringUtils::ToLower(newName);
   newName.Replace('/','\\');
   return newName;
 }

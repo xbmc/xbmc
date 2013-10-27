@@ -54,7 +54,7 @@ bool CEGLNativeTypeAmlogic::CheckCompatibility()
 
   aml_get_sysfs_str(modalias.c_str(), name, 255);
   CStdString strName = name;
-  strName.Trim();
+  StringUtils::Trim(strName);
   if (strName == "platform:mesonfb")
     return true;
   return false;
@@ -243,7 +243,7 @@ bool CEGLNativeTypeAmlogic::ModeToResolution(const char *mode, RESOLUTION_INFO *
     return false;
 
   CStdString fromMode = mode;
-  fromMode.Trim();
+  StringUtils::Trim(fromMode);
   // strips, for example, 720p* to 720p
   // the * indicate the 'native' mode of the display
   if (fromMode.Right(1) == "*")

@@ -64,7 +64,9 @@ public:
   static std::string Right(const std::string &str, size_t count);
   static std::string& Trim(std::string &str);
   static std::string& TrimLeft(std::string &str);
+  static std::string& TrimLeft(std::string &str, const std::string &chars);
   static std::string& TrimRight(std::string &str);
+  static std::string& TrimRight(std::string &str, const std::string &chars);
   static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
   static int Replace(std::string &str, char oldChar, char newChar);
   static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);

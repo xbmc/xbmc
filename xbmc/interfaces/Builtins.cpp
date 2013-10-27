@@ -870,7 +870,8 @@ int CBuiltins::Execute(const CStdString& execString)
       else
       {
         // Don't bother checking the argument: an invalid arg will do seek(0)
-        offset = parameter.Mid(15).TrimRight(")");
+        offset = parameter.Mid(15);
+        StringUtils::TrimRight(offset, ")");
         float offsetpercent = (float) atof(offset.c_str());
         if (offsetpercent < 0 || offsetpercent > 100)
           CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) argument, %f, must be 0-100", offsetpercent);
@@ -899,7 +900,8 @@ int CBuiltins::Execute(const CStdString& execString)
           context = PARTYMODECONTEXT_VIDEO;
         else if (parameter.size() != 16 || !StringUtils::EndsWithNoCase(parameter, "music)"))
         {
-          strXspPath = parameter.Mid(10).TrimRight(")");
+          strXspPath = parameter.Mid(10);
+          StringUtils::TrimRight(strXspPath, ")");
           context = PARTYMODECONTEXT_UNKNOWN;
         }
       }

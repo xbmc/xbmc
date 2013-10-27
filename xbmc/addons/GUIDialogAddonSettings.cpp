@@ -460,7 +460,8 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             vector<ADDON::TYPE> types;
             for (unsigned int i = 0 ; i < addonTypes.size() ; i++)
             {
-              ADDON::TYPE type = TranslateType(addonTypes[i].Trim());
+              StringUtils::Trim(addonTypes[i]);
+              ADDON::TYPE type = TranslateType(addonTypes[i]);
               if (type != ADDON_UNKNOWN)
                 types.push_back(type);
             }
@@ -1079,9 +1080,8 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
 bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strCondition, vector<CStdString> &condVec)
 {
   CStdString strTest = strCondition;
-  strTest.ToLower();
-  strTest.TrimLeft(" ");
-  strTest.TrimRight(" ");
+  StringUtils::ToLower(strTest);
+  StringUtils::Trim(strTest);
 
   int pos1 = strTest.Find("(");
   int pos2 = strTest.Find(",");
