@@ -669,6 +669,12 @@
 						<thumb>b-s-system.png</thumb>
 						<onclick>XBMC.ReplaceWindow(16)</onclick>
 					</item>
+					<item id="5">
+						<description>Network Button</description>
+						<label>$LOCALIZE[31602]</label>
+						<thumb>b-s-network.png</thumb>
+						<onclick>XBMC.ReplaceWindow(18)</onclick>
+					</item>
 				</content>
 			</control>
 		</control>
