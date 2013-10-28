@@ -22,7 +22,6 @@
 #include "Client/MyPlex/MyPlexManager.h"
 
 #include "xbmc/Util.h"
-#include "XFileUtils.h"
 
 using namespace XFILE;
 
