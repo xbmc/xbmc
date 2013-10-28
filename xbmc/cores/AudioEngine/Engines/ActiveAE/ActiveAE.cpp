@@ -1731,7 +1731,7 @@ bool CActiveAE::RunStages()
 #else
                 for (int k = 0; k < nb_floats; ++k)
                 {
-                  dst[k] += src[k] * m_muted ? 0.0 : volume;
+                  dst[k] += src[k] * (m_muted ? 0.0 : volume);
                   if (fabs(dst[k]) > 1.0f)
                     needClamp = true;
                 }
