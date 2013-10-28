@@ -12,7 +12,7 @@ all: $(LIB)
 include ../../../codegenerator.mk
 
 SRCS=	AddonPythonInvoker.cpp CallbackHandler.cpp LanguageHook.cpp \
-	PythonInvoker.cpp XBPython.cpp swig.cpp PyContext.cpp \
+	PythonInvoker.cpp XBPython.cpp swig.cpp PyContext.cpp pywrappers.cpp \
 	$(GENERATED)
 
 INCLUDES += @PYTHON_CPPFLAGS@

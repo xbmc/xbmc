@@ -21,29 +21,43 @@ namespace XBMCAddon
 {
   namespace Python
   {
-    class PyGILLock;
+    class PyGILRelease;
 
     /**
      * These classes should NOT be used with 'new'. They are expected to reside 
      *  as stack instances and they act as "Guard" classes that track the
      *  current context.
+     *
+     * PyContexts MUST be created while holding the GIL.
      */
     class PyContext
     {
-    protected:
-      friend class PyGILLock;
-      static void* enterContext();
+      static void enterContext();
       static void leaveContext();
     public:
-
       inline PyContext() { enterContext(); }
       inline ~PyContext() { leaveContext(); }
     };
 
     /**
+     * This class supports recursive unlocking of the GIL. It assumes that
+     * all Python GIL manipulation is done through this class or PyGILLock 
+     * so that it can monitor the current owner.
+     */
+    class PyGILRelease
+    {
+    public:
+      static void releaseGil();
+      static void acquireGil();
+
+      inline PyGILRelease() { releaseGil(); }
+      inline ~PyGILRelease() { acquireGil(); }
+    };
+
+    /**
      * This class supports recursive locking of the GIL. It assumes that
-     * all Python GIL manipulation is done through this class so that it 
-     * can monitor the current owner.
+     * all Python GIL manipulation is done through this class or PyGILRelease
+     * so that it can monitor the current owner.
      */
     class PyGILLock
     {
@@ -51,8 +65,9 @@ namespace XBMCAddon
       static void releaseGil();
       static void acquireGil();
 
-      inline PyGILLock() { releaseGil(); }
-      inline ~PyGILLock() { acquireGil(); }
+      inline PyGILLock() { acquireGil(); }
+      inline ~PyGILLock() { releaseGil(); }
     };
+    
   }
 }
