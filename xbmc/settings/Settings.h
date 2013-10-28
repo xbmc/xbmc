@@ -21,6 +21,7 @@
 
 #include <set>
 #include <string>
+#include <vector>
 
 #include "settings/ISettingCallback.h"
 #include "settings/ISettingControlCreator.h"
@@ -150,6 +151,12 @@ public:
    \return Setting object with the given identifier or NULL if the identifier is unknown
    */
   CSetting* GetSetting(const std::string &id) const;
+  /*!
+   \brief Gets the full list of setting sections.
+
+   \return List of setting sections
+   */
+  std::vector<CSettingSection*> GetSections() const;
   /*!
    \brief Gets the setting section with the given identifier.
 

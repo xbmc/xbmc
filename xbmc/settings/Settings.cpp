@@ -491,6 +491,12 @@ CSetting* CSettings::GetSetting(const std::string &id) const
   return m_settingsManager->GetSetting(id);
 }
 
+std::vector<CSettingSection*> CSettings::GetSections() const
+{
+  CSingleLock lock(m_critical);
+  return m_settingsManager->GetSections();
+}
+
 CSettingSection* CSettings::GetSection(const std::string &section) const
 {
   CSingleLock lock(m_critical);
