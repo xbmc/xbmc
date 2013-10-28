@@ -663,6 +663,28 @@ bool CWinSystemOSX::DestroyWindow()
 }
 
 extern "C" void SDL_SetWidthHeight(int w, int h);
+bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop, void *additional)
+{
+  bool ret = ResizeWindow(newWidth, newHeight, newLeft, newTop);
+
+  // there is no NSAppKitVersionNumber10_9 out there anywhere
+  // so we detect mavericks by one of these newly added app nap
+  // methods - and fix the ugly mouse rect problem which was hitting
+  // us when mavericks came out
+  if( [NSProcessInfo instancesRespondToSelector:@selector(beginActivityWithOptions:reason:)])
+  {
+    CLog::Log(LOGDEBUG, "Detected Mavericks - enable mouse fixup");
+    NSView * last_view = (NSView *)additional;
+    if (last_view && [last_view window])
+    {
+      NSWindow* lastWindow = [last_view window];
+      [lastWindow setContentSize:NSMakeSize(m_nWidth, m_nHeight)];
+      [lastWindow update];
+      [last_view setFrameSize:NSMakeSize(m_nWidth, m_nHeight)];
+    }
+  }
+  return ret;
+}
 bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   if (!m_glContext)
@@ -945,7 +967,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   ShowHideNSWindow([last_view window], needtoshowme);
   // need to make sure SDL tracks any window size changes
-  ResizeWindow(m_nWidth, m_nHeight, -1, -1);
+  ResizeWindowInternal(m_nWidth, m_nHeight, -1, -1, last_view);
 
   return true;
 }
