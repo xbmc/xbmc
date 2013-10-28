@@ -315,7 +315,7 @@
 	<include name="DialogFilters">
 		<control type="group">
 			<posx>0</posx>
-			<posy>60</posy>
+			<posy>0</posy>
 			<!-- sub-list backgrounds -->
 			<control type="group">
 				<control type="image">
@@ -323,14 +323,14 @@
 					<posy>-12</posy>
 					<posx>0</posx>
 					<width>246</width>
-					<height>70</height>
+					<height>80</height>
 					<texture border="10">base.png</texture>
 					<colordiffuse>FF111111</colordiffuse>
 					<animation effect="fade" start="0" end="40" time="300" condition="true">Conditional</animation>
 				</control>
 				<control type="image">
 					<description>Title bottom line</description>
-					<posy>55</posy>
+					<posy>65</posy>
 					<posx>0</posx>
 					<width>246</width>
 					<height>2</height>
@@ -341,16 +341,17 @@
 			</control>
 			<!-- sub-list -->
 			<control type="group" id="1400">
-				<posy>24</posy>
+				<posy>44</posy>
 				<!-- sub-list title -->
 				<control type="label" id="19029">
+					<posy>-10</posy>
 					<description>Heading</description>
 					<width>250</width>
 					<include>DialogHeading</include>
 				</control>
 				<control type="grouplist" id="19020">
 					<width>230</width>
-					<height>555</height>
+					<height>620</height>
 					<posy>40</posy>
 					<posx>6</posx>
 					<onup>19020</onup>

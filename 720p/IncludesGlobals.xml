@@ -117,7 +117,7 @@
 	<include name="MediaFlags">
 		<control type="group">
 			<control type="grouplist">
-				<posy>675</posy>
+				<posy>688</posy>
 				<posx>74</posx>
 				<width>447</width>
 				<align>center</align>
@@ -182,7 +182,7 @@
 			</control>
 			<!-- Studio -->
 			<control type="image">
-				<posy>658</posy>
+				<posy>672</posy>
 				<posx>140r</posx>
 				<width>100</width>
 				<height>50</height>

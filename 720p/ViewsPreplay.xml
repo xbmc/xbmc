@@ -47,19 +47,19 @@
 		<control type="group">
 			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 			<control type="image">
-				<posy>20</posy>
+				<posy>0</posy>
 				<posx>791</posx>
 				<include>WhiteArrowInsertLeft</include>
 			</control>
 		</control>
 	</include>
-	<include name="PlotBGSeason">
+	<include name="PlotBGShowAndSeason">
 		<control type="group">
 			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
 			<control type="image">
 				<posy>385</posy>
-				<posx>15</posx>
-				<width>556</width>
+				<posx>0</posx>
+				<width>571</width>
 				<height>264</height>
 				<include>Black</include>
 			</control>
@@ -71,11 +71,11 @@
 			</control>
 		</control>
 	</include>
-	<include name="RightBGSeason">
+	<include name="RightBGShowAndSeason">
 		<control type="group">
 			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 			<control type="image">
-				<posy>20</posy>
+				<posy>0</posy>
 				<posx>571</posx>
 				<include>WhiteArrowInsertLeft</include>
 			</control>
@@ -228,14 +228,14 @@
 	<!-- poster movie -->
 	<include name="MoviePosterBig">
 		<control type="largeimage">
-			<posy>77</posy>
+			<posy>68</posy>
 			<posx>117</posx>
 			<width>360</width>
 			<height>540</height>
 			<texture background="true">default-poster-big.png</texture>
 		</control>
 		<control type="largeimage">
-			<posy>77</posy>
+			<posy>68</posy>
 			<posx>117</posx>
 			<width>360</width>
 			<height>540</height>
@@ -258,13 +258,13 @@
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
 			<control type="group">
-				<include>PlotBG</include>
-				<include>RightBG</include>
+				<include>PlotBGShowAndSeason</include>
+				<include>RightBGShowAndSeason</include>
 			</control>
 			<!-- poster -->
 			<control type="group">
-				<posx>80</posx>
-				<posy>74</posy>
+				<posx>28</posx>
+				<posy>28</posy>
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
@@ -278,17 +278,18 @@
 					<posy>13</posy>
 					<width>182</width>
 					<height>274</height>
+					<fadetime>160</fadetime>
 					<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				</control>
 			</control>
 			<!-- Infos Left -->
 			<control type="group">
-				<posy>82</posy>
-				<posx>302</posx>
+				<posy>38</posy>
+				<posx>262</posx>
 				<!-- Title -->
 				<control type="label">
-					<width>380</width>
+					<width min="29" max="300">auto</width>
 					<height>40</height>
 					<label>$INFO[Container.SecondTitle]</label>
 					<label>Seasons view</label>
@@ -297,9 +298,30 @@
 					<shadowcolor>ff333333</shadowcolor>
 					<visible>true</visible>
 				</control>
+				<!-- MPAA flag -->
+				<control type="image">
+					<posy>60</posy>
+					<width>60</width>
+					<height>30</height>
+					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
+					<aspectratio align="left" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+				<!-- Star Rating -->
+				<!--><control type="image">
+					<posy>89</posy>
+					<width>200</width>
+					<height>20</height>
+					<texture>$INFO[ListItem.StarRating]</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>-->
 				<!-- Genre -->
 				<control type="grouplist">
-					<posy>249</posy>
+					<posy>252</posy>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
 					<control type="label">
@@ -309,57 +331,18 @@
 						<visible>true</visible>
 					</control>
 					<control type="label">
-						<width min="29" max="400">auto</width>
+						<width min="29" max="230">auto</width>
 						<include>LeftInfoFormatWhite</include>
 						<label>$INFO[ListItem.Genre]</label>
 						<visible>true</visible>
 					</control>
 				</control>
 			</control>
-			<!-- Infos Right -->
-			<control type="group">
-				<posy>71</posy>
-				<posx>560</posx>
-				<!-- Year -->
-				<control type="label">
-					<posy>0</posy>
-					<posx>203</posx>
-					<width>200</width>
-					<height>40</height>
-					<align>right</align>
-					<label>$INFO[ListItem.Year]</label>
-					<font>CondensedBold-36</font>
-					<include>White1</include>
-					<visible>true</visible>
-				</control>
-				<!-- MPAA flag -->
-				<control type="image">
-					<posy>20</posy>
-					<posx>580r</posx>
-					<width>60</width>
-					<height>30</height>
-					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
-					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<colordiffuse>FF999999</colordiffuse>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-					<visible>true</visible>
-				</control>
-				<!-- Star Rating -->
-				<control type="image">
-					<posy>69</posy>
-					<width>200</width>
-					<height>20</height>
-					<texture>$INFO[ListItem.StarRating]</texture>
-					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-					<visible>true</visible>
-				</control>
-			</control>
 			<!-- show plot -->
 			<control type="textbox">
-				<posx>95</posx>
+				<posx>40</posx>
 				<posy>412</posy>
-				<width>670</width>
+				<width>490</width>
 				<height>207</height>
 				<label>$INFO[Container.ShowPlot]</label>
 			</control>
@@ -372,11 +355,11 @@
 				<onright>60</onright>
 				<onleft>9100</onleft>
 				<orientation>vertical</orientation>
-				<posx>820</posx>
-				<posy>74</posy>
-				<width>500</width>
-				<height>630</height>
-				<itemlayout width="223" height="315">
+				<posx>598</posx>
+				<posy>30</posy>
+				<width>700</width>
+				<height>670</height>
+				<itemlayout width="223" height="335">
 					<include>TVPoster</include>
 					<control type="image">
 						<posx>13</posx>
@@ -418,7 +401,7 @@
 						<include>MovieTVUnwatchedOverlay</include>
 					</control>
 				</itemlayout>
-				<focusedlayout width="223" height="315">
+				<focusedlayout width="223" height="335">
 					<include>TVPoster</include>
 					<control type="image">
 						<posx>13</posx>
@@ -472,13 +455,13 @@
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
 			<control type="group">
-				<include>PlotBGSeason</include>
-				<include>RightBGSeason</include>
+				<include>PlotBGShowAndSeason</include>
+				<include>RightBGShowAndSeason</include>
 			</control>
 			<!-- poster -->
 			<control type="group">
-				<posx>80</posx>
-				<posy>74</posy>
+				<posx>28</posx>
+				<posy>28</posy>
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
@@ -509,8 +492,8 @@
 			</control>
 			<!-- Infos Left -->
 			<control type="group">
-				<posy>82</posy>
-				<posx>302</posx>
+				<posy>38</posy>
+				<posx>262</posx>
 				<!-- Titles -->
 				<control type="label">
 					<width>270</width>
@@ -566,9 +549,9 @@
 			<!-- plot text -->
 			<!-- TO DELETE WHEN TVSEASONPLOT WORKS -->
 			<control type="textbox">
-				<posx>95</posx>
+				<posx>40</posx>
 				<posy>412</posy>
-				<width>450</width>
+				<width>490</width>
 				<height>207</height>
 				<label>$INFO[Container.ShowPlot]</label>
 				<visible>!IsEmpty(Container.ShowPlot)</visible>
@@ -583,9 +566,9 @@
 				<onleft>9100</onleft>
 				<orientation>vertical</orientation>
 				<posx>588</posx>
-				<posy>47</posy>
+				<posy>27</posy>
 				<width>750</width>
-				<height>670</height>
+				<height>665</height>
 				<itemlayout width="226" height="165">
 					<include>EpisodeThumbCard</include>
 					<include>EpisodeThumb</include>
@@ -643,45 +626,24 @@
 	<!-- Pre-play Episode -->
 	<include name="PreplayEpisode">
 		<control type="group" id="777">
+			<posy>-28</posy>
 			<visible>Container.Content(Episode)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
 			<control type="group">
-				<!-- left side big bg -->
-				<control type="image">
-					<posy>49</posy>
-					<posx>74</posx>
-					<width>447</width>
-					<height>672</height>
-					<texture>preplay-left-big-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
-				</control>
-				<!-- left side small bg -->
-				<control type="image">
-					<posy>384</posy>
-					<posx>74</posx>
-					<width>447</width>
-					<height>264</height>
-					<texture border="50">preplay-left-small-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-				</control>
-				<!-- right side plot bg -->
-				<control type="image">
-					<posy>384</posy>
-					<posx>506</posx>
-					<width>834</width>
-					<height>264</height>
-					<texture border="50" flipx="true">preplay-plot-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+				<control type="largeimage">
+					<posy>28</posy>
+					<posx>0</posx>
+					<width>1280</width>
+					<height>720</height>
+					<texture>preplay-movie-episode-bg.png</texture>
+					<aspectratio>scale</aspectratio>
 				</control>
 			</control>
 			<!-- poster -->
 			<control type="largeimage">
-				<posy>77</posy>
+				<posy>67</posy>
 				<posx>293</posx>
 				<width>184</width>
 				<height>276</height>
@@ -703,7 +665,7 @@
 			<control type="grouplist">
 				<orientation>vertical</orientation>
 				<itemgap>10</itemgap>
-				<posy>61</posy>
+				<posy>66</posy>
 				<posx>560</posx>
 				<!-- Title -->
 				<control type="label">
@@ -748,7 +710,7 @@
 			</control>
 			<!-- Infos Right -->
 			<control type="group">
-				<posy>61</posy>
+				<posy>68</posy>
 				<!-- MPAA flag -->
 				<control type="image">
 					<posy>0</posy>
@@ -763,7 +725,7 @@
 				</control>
 				<!-- DurationStr -->
 				<control type="label">
-					<posy>40</posy>
+					<posy>38</posy>
 					<posx>40r</posx>
 					<width>200</width>
 					<height>40</height>
@@ -775,7 +737,7 @@
 				</control>
 				<!-- Star Rating -->
 				<control type="image">
-					<posy>94</posy>
+					<posy>90</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
@@ -784,7 +746,7 @@
 					<visible>IsEmpty(ListItem.Property(hasUserRating))</visible>
 				</control>
 				<control type="image">
-					<posy>94</posy>
+					<posy>90</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
@@ -796,7 +758,7 @@
 			</control>
 			<!-- Director -->
 			<control type="grouplist">
-				<posy>250</posy>
+				<posy>238</posy>
 				<posx>560</posx>
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
@@ -811,7 +773,7 @@
 			</control>
 			<!-- Cast -->
 			<control type="grouplist">
-				<posy>278</posy>
+				<posy>268</posy>
 				<posx>560</posx>
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
@@ -829,7 +791,7 @@
 				<defaultcontrol always="true">19101</defaultcontrol>
 				<!-- Audio -->
 				<control type="grouplist">
-					<posy>306</posy>
+					<posy>298</posy>
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
@@ -847,7 +809,7 @@
 				</control>
 				<!-- Subtitles -->
 				<control type="grouplist">
-					<posy>334</posy>
+					<posy>328</posy>
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
@@ -882,40 +844,19 @@
 	<!-- Pre-play Movie -->
 	<include name="PreplayMovie">
 		<control type="group">
+			<posy>-28</posy>
 			<visible>Container.Content(Movie)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
 			<control type="group">
-				<!-- left side big bg -->
-				<control type="image">
-					<posy>49</posy>
-					<posx>74</posx>
-					<width>448</width>
-					<height>672</height>
-					<texture>preplay-left-big-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
-				</control>
-				<!-- left side small bg -->
-				<control type="image">
-					<posy>384</posy>
-					<posx>74</posx>
-					<width>448</width>
-					<height>264</height>
-					<texture border="50">preplay-left-small-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-				</control>
-				<!-- right side plot bg -->
-				<control type="image">
-					<posy>384</posy>
-					<posx>506</posx>
-					<width>833</width>
-					<height>264</height>
-					<texture border="50" flipx="true">preplay-plot-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+				<control type="largeimage">
+					<posy>28</posy>
+					<posx>0</posx>
+					<width>1280</width>
+					<height>720</height>
+					<texture>preplay-movie-episode-bg.png</texture>
+					<aspectratio>scale</aspectratio>
 				</control>
 			</control>
 			<!-- poster -->
@@ -923,8 +864,8 @@
 			<!-- Infos Left -->
 			<control type="grouplist">
 				<orientation>vertical</orientation>
-				<itemgap>10</itemgap>
-				<posy>61</posy>
+				<itemgap>15</itemgap>
+				<posy>66</posy>
 				<posx>560</posx>
 				<!-- Title & Watched/Unwatched indicator -->
 				<control type="grouplist">
@@ -969,7 +910,7 @@
 			</control>
 			<!-- Infos Right -->
 			<control type="group">
-				<posy>61</posy>
+				<posy>68</posy>
 				<!-- Year -->
 				<control type="label">
 					<posy>0</posy>
@@ -985,9 +926,9 @@
 				<!-- MPAA flag -->
 				<control type="image">
 					<posy>50</posy>
-					<posx>140r</posx>
+					<posx>142r</posx>
 					<width>100</width>
-					<height>17</height>
+					<height>20</height>
 					<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
@@ -995,7 +936,7 @@
 				</control>
 				<!-- Star Rating -->
 				<control type="image">
-					<posy>74</posy>
+					<posy>80</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
@@ -1004,7 +945,7 @@
 					<visible>IsEmpty(ListItem.Property(hasUserRating))</visible>
 				</control>
 				<control type="image">
-					<posy>74</posy>
+					<posy>80</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
@@ -1016,7 +957,7 @@
 			</control>
 			<!-- Director -->
 			<control type="grouplist">
-				<posy>250</posy>
+				<posy>238</posy>
 				<posx>560</posx>
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
@@ -1025,14 +966,13 @@
 					<include>LeftInfoFormatGrey</include>
 				</control>
 				<control type="label">
-					<width min="29" max="600">auto</width>
 					<label>$INFO[ListItem.Director]</label>
 					<include>LeftInfoFormatWhite</include>
 				</control>
 			</control>
 			<!-- Cast -->
 			<control type="grouplist">
-				<posy>278</posy>
+				<posy>268</posy>
 				<posx>560</posx>
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
@@ -1046,14 +986,16 @@
 				</control>
 			</control>
 			<!-- Audio & Subtitles buttons -->
-			<control type="group">
+			<control type="group" id="999">
+				<defaultcontrol always="true">19101</defaultcontrol>
 				<!-- Audio -->
 				<control type="grouplist">
-					<posy>306</posy>
+					<posy>298</posy>
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
 					<control type="label">
+						<textoffsetx>0</textoffsetx>
 						<!-- NOTE: NEED STRING FOR THIS -->
 						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
 						<label>[UPPERCASE]Audio[/UPPERCASE]</label>
@@ -1066,7 +1008,7 @@
 				</control>
 				<!-- Subtitles -->
 				<control type="grouplist">
-					<posy>334</posy>
+					<posy>328</posy>
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>

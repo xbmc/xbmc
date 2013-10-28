@@ -21,7 +21,7 @@
 		<include>LibraryPhoto</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
-		<include>TopBar</include>
+		<!--<include>TopBar</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>

@@ -14,11 +14,11 @@
 	</include>
 	<include name="leftMenuBg">
 		<control type="group">
+			<posy>0</posy>
 			<!-- Background -->
 			<control type="image">
 				<posx>-253</posx>
-				<posy>48</posy>
-				<height>680</height>
+				<height>720</height>
 				<width>254</width>
 				<include>Black</include>
 				<animation type="Conditional" condition="true">
@@ -26,14 +26,13 @@
 				</animation>
 			</control>
 			<control type="image">
-				<posy>48</posy>
 				<posx>0</posx>
 				<width>74</width>
 				<height>720</height>
 				<include>Black</include>
 			</control>
 			<control type="image">
-				<posy>500</posy>
+				<posy>498</posy>
 				<posx>74</posx>
 				<width>16</width>
 				<height>32</height>
@@ -42,7 +41,7 @@
 				<colordiffuse>FF000000</colordiffuse>
 			</control>
 			<control type="image">
-				<posy>70</posy>
+				<posy>41</posy>
 				<posx>25</posx>
 				<width>24</width>
 				<height>24</height>
@@ -254,7 +253,7 @@
 	<include name="LeftSideMenu">
 		<!-- MyVideoNav.xml -->
 		<control type="group">
-			<visible>!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode)</visible>
+			<visible>!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode) + !Container.Content(episodes) + !Container.Content(seasons)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -265,7 +264,7 @@
 				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
 				<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(10202)">Conditional</animation>
 				<posx>-253</posx>
-				<posy>5</posy>
+				<posy>0</posy>
 				<width>253</width>
 				<height>720</height>
 				<ondown>19000</ondown>
@@ -275,13 +274,13 @@
 				<!-- primary filter list title -->
 				<control type="label" id="19008">
 					<description>Title</description>
-					<posy>50</posy>
+					<posy>22</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 				</control>
 				<!-- primary filters list -->
 				<control type="grouplist" id="19000">
-					<posy>110</posy>
+					<posy>87</posy>
 					<posx>15</posx>
 					<ondown>19001</ondown>
 					<onright>777</onright>
@@ -291,22 +290,22 @@
 				<!-- secondary filters list title -->
 				<control type="label" id="19009">
 					<description>Secondary Title</description>
-					<posy>300</posy>
+					<posy>293</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
-					<animation effect="slide" end="0,-120" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-127" time="0" condition="Container.Content(movies)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- secondary filters list -->
 				<control type="grouplist" id="19001">
-					<posy>360</posy>
+					<posy>358</posy>
 					<posx>15</posx>
 					<onup>19000</onup>
 					<ondown>19010</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-130" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-137" time="0" condition="Container.Content(movies)">Conditional</animation>
 				</control>
 				<!-- filters buttons -->
 				<control type="button" id="19005">
@@ -329,21 +328,21 @@
 				<!-- sorting list title -->
 				<control type="label" id="19019">
 					<description>Title</description>
-					<posy>500</posy>
+					<posy>512</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
-					<animation effect="slide" end="0,-10" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="Container.Content(movies)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- sorting list -->
 				<control type="grouplist" id="19010">
-					<posy>560</posy>
+					<posy>576</posy>
 					<posx>10</posx>
 					<onup>19001</onup>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-20" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-30" time="0" condition="Container.Content(movies)">Conditional</animation>
 				</control>
 				<!-- sorting buttons -->
 				<control type="filterorderbutton" id="19011">
@@ -366,7 +365,7 @@
 			<!--><include>GlobalSearch</include>-->
 			<!-- sidebar buttons -->
 			<control type="grouplist" id="998">
-				<posy>80</posy>
+				<posy>40</posy>
 				<posx>0</posx>
 				<width>74</width>
 				<aligny>top</aligny>

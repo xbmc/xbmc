@@ -25,7 +25,7 @@
 		<include>ChannelVideo</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
-		<include>TopBar</include>
+		<!--<include>TopBar</include>-->
 		<!--><include>CommonSortLetters</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>
