@@ -64,6 +64,10 @@ namespace XBMCAddon
       void playCurrent(bool windowed = false);
 
     public:
+#ifndef SWIG
+	  static PlayParameter defaultPlayParameter;
+#endif
+
       // Construct a Player proxying the given generated binding. The 
       //  construction of a Player needs to identify whether or not any 
       //  callbacks will be executed asynchronously or not.
@@ -88,7 +92,7 @@ namespace XBMCAddon
        *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})\n
        *   - xbmc.Player().play(url, listitem, windowed)\n
        */
-      void play(const PlayParameter& item = PlayParameter::nullItem(), 
+      void play(const PlayParameter& item = Player::defaultPlayParameter, 
                 const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false, int startpos = -1);
 
       /**

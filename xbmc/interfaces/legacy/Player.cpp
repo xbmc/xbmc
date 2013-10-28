@@ -35,6 +35,8 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
+	PlayParameter Player::defaultPlayParameter;
+
     Player::Player(int _playerCore)
     {
       iPlayList = PLAYLIST_MUSIC;
@@ -71,7 +73,7 @@ namespace XBMCAddon
     {
       TRACE;
 
-      if (Alternative<String, const PlayList*>::isNullReference(item))
+      if (&item == &defaultPlayParameter)
         playCurrent(windowed);
       else if (item.which() == XBMCAddon::first)
         playStream(item.former(), listitem, windowed);
