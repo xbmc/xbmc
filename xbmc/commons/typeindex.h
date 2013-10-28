@@ -22,7 +22,7 @@
 
 /**
  * This struct represents a pre-introduction of the std::type_index for RTTI
- *  which will only availalbe in C++11.
+ *  which is only availalbe in C++11.
  */
 
 namespace XbmcCommons
@@ -47,7 +47,7 @@ namespace XbmcCommons
 
     inline bool
     operator<(const type_index& __rhs) const
-    { return _M_target->before(*__rhs._M_target); }
+    { return _M_target->before(*__rhs._M_target) != 0; }
 
     inline bool
     operator<=(const type_index& __rhs) const
@@ -55,7 +55,7 @@ namespace XbmcCommons
 
     inline bool
     operator>(const type_index& __rhs) const
-    { return __rhs._M_target->before(*_M_target); }
+    { return __rhs._M_target->before(*_M_target) != 0; }
 
     inline bool
     operator>=(const type_index& __rhs) const
