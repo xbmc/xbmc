@@ -22,6 +22,7 @@
 #include "Client/MyPlex/MyPlexManager.h"
 
 #include "xbmc/Util.h"
+#include "XBDateTime.h"
 
 using namespace XFILE;
 
@@ -74,23 +75,53 @@ void CPlexAutoUpdate::OnTimeout()
   if (g_plexApplication.myPlexManager->IsSignedIn())
     m_url.SetOption("X-Plex-Token", g_plexApplication.myPlexManager->GetAuthToken());
 
+  CFileItemList updates;
+
   if (dir.GetDirectory(m_url, list))
   {
     m_isSearching = false;
 
-    if (list.Size() == 1)
+    if (list.Size() > 0)
     {
-      CFileItemPtr updateItem = list.Get(0);
-      if (updateItem->HasProperty("version") &&
-          updateItem->GetProperty("version").asString() != PLEX_VERSION)
+      for (int i = 0; i < list.Size(); i++)
       {
-        CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout got version %s from update endpoint", updateItem->GetProperty("version").asString().c_str());
-
-        m_timer.Stop();
-        DownloadUpdate(updateItem);
-        return;
+        CFileItemPtr updateItem = list.Get(i);
+        if (updateItem->HasProperty("version") &&
+            updateItem->GetProperty("live").asBoolean() &&
+            updateItem->GetProperty("autoupdate").asBoolean() &&
+            updateItem->GetProperty("version").asString() != PLEX_VERSION)
+        {
+          CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout got version %s from update endpoint", updateItem->GetProperty("version").asString().c_str());
+          updates.Add(updateItem);
+        }
       }
     }
+  }
+
+  CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout found %d candidates", updates.Size());
+  CFileItemPtr selectedItem;
+
+  for (int i = 0; i < updates.Size(); i++)
+  {
+    if (!selectedItem)
+      selectedItem = updates.Get(i);
+    else
+    {
+      CDateTime time1, time2;
+      time1.SetFromDBDateTime(selectedItem->GetProperty("unprocessed_createdAt").asString().substr(0, 19));
+      time2.SetFromDBDateTime(list.Get(i)->GetProperty("unprocessed_createdAt").asString().substr(0, 19));
+
+      if (time2 > time1)
+        selectedItem = updates.Get(i);
+    }
+  }
+
+  if (selectedItem)
+  {
+    CLog::Log(LOGINFO, "CPlexAutoUpdate::OnTimeout update found! %s", selectedItem->GetProperty("version").asString().c_str());
+    DownloadUpdate(selectedItem);
+    m_timer.Stop();
+    return;
   }
 
   CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout no updates available");
@@ -230,8 +261,6 @@ void CPlexAutoUpdate::WriteUpdateInfo()
 
 void CPlexAutoUpdate::ProcessDownloads()
 {
-  WriteUpdateInfo();
-
   CStdString verStr;
   verStr.Format("Version %s is now ready to be installed.", GetUpdateVersion());
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Update available!", verStr, 10000, false);
@@ -379,6 +408,8 @@ void CPlexAutoUpdate::UpdateAndRestart()
   exec.Format("\"%s\" --install-dir \"%s\" --package-dir \"%s\" --script \"%s\" --auto-close", updater, appdir, packagedir, script);
   CLog::Log(LOGDEBUG, "CPlexAutoUpdate::UpdateAndRestart going to run %s", exec.c_str());
 
+  WriteUpdateInfo();
+
 #ifdef TARGET_POSIX
   pid_t pid = fork();
   if (pid == -1)
@@ -388,11 +419,40 @@ void CPlexAutoUpdate::UpdateAndRestart()
   }
   else if (pid == 0)
   {
+    /* hack! we don't know the parents all open file descriptiors, so we need
+     * to loop over them and kill them :( not nice! */
+    struct rlimit rlim;
+
+    if (getrlimit(RLIMIT_NOFILE, &rlim) == -1)
+    {
+      fprintf(stderr, "Couldn't get the max number of fd's!");
+      exit(1);
+    }
+
+    int maxFd = rlim.rlim_cur;
+    fprintf(stderr, "Total number of fd's %d\n", maxFd);
+    for (int i = 3; i < maxFd; ++i)
+      close(i);
+
     /* Child */
     pid_t parentPid = getppid();
     fprintf(stderr, "Waiting for PHT to quit...\n");
-    while(kill(parentPid, SIGINT) == 0)
-      sleep(1);
+
+    time_t start = time(NULL);
+
+    while(kill(parentPid, SIGHUP) == 0)
+    {
+      /* wait for parent process 30 seconds... */
+      if ((time(NULL) - start) > 30)
+      {
+        fprintf(stderr, "PHT still haven't quit after 30 seconds, let's be a bit more forceful...sending KILL to %d\n", parentPid);
+        kill(parentPid, SIGKILL);
+        usleep(1000 * 100);
+        start = time(NULL);
+      }
+      else
+        usleep(1000 * 10);
+    }
 
     fprintf(stderr, "PHT seems to have quit, running updater\n");
 

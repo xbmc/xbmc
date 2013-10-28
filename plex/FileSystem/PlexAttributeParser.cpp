@@ -39,8 +39,11 @@ int64_t CPlexAttributeParserInt::GetInt(const CStdString &value)
 
 void CPlexAttributeParserInt::Process(const CURL& url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
+  item->SetProperty("unprocessed_" + key, value);
+
   int64_t intval = GetInt(value);
-  if (intval == -1) return;
+  if (intval == -1)
+    return;
 
   item->SetProperty(key, intval);
 }
@@ -49,6 +52,11 @@ void CPlexAttributeParserInt::Process(const CURL& url, const CStdString &key, co
 void CPlexAttributeParserBool::Process(const CURL& url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
   int64_t intval = GetInt(value);
+
+  if (value == "true")
+    item->SetProperty(key, true);
+  else if (value == "false")
+    item->SetProperty(key, false);
   if (intval == -1)
     item->SetProperty(key, (bool)!value.empty());
   else
