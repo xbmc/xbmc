@@ -18,6 +18,11 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "ApplicationMessenger.h"
 #include "filesystem/SpecialProtocol.h"
+#include "PlexApplication.h"
+#include "Client/MyPlex/MyPlexManager.h"
+
+#include "xbmc/Util.h"
+#include "XFileUtils.h"
 
 using namespace XFILE;
 
@@ -34,6 +39,12 @@ void CPlexAutoUpdate::OnTimeout()
   CFileItemList list;
   CPlexDirectory dir;
   m_isSearching = true;
+
+  m_url.SetOption("version", PLEX_VERSION);
+  m_url.SetOption("build", PLEX_BUILD_TAG);
+  m_url.SetOption("channel", "6");
+  if (g_plexApplication.myPlexManager->IsSignedIn())
+    m_url.SetOption("X-Plex-Token", g_plexApplication.myPlexManager->GetAuthToken());
 
   if (dir.GetDirectory(m_url, list))
   {
@@ -69,60 +80,77 @@ void CPlexAutoUpdate::OnTimeout()
   m_isSearching = false;
 }
 
+CFileItemPtr CPlexAutoUpdate::GetPackage(CFileItemPtr updateItem)
+{
+  CFileItemPtr deltaItem, fullItem;
+  if (updateItem && updateItem->m_mediaItems.size() > 0)
+  {
+    for (int i = 0; i < updateItem->m_mediaItems.size(); i ++)
+    {
+      CFileItemPtr package = updateItem->m_mediaItems[i];
+      if (package->GetProperty("delta").asBoolean())
+        deltaItem = package;
+      else
+        fullItem = package;
+    }
+  }
+
+  if (deltaItem)
+    return deltaItem;
+
+  return fullItem;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexAutoUpdate::NeedDownload(const std::string& localFile, const std::string& expectedHash)
+{
+  if (CFile::Exists(localFile, false) && PlexUtils::GetSHA1SumFromURL(CURL(localFile)) == expectedHash)
+  {
+    CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate we already have %s with correct SHA", localFile.c_str());
+    return false;
+  }
+  return true;
+}
+
 void CPlexAutoUpdate::DownloadUpdate(CFileItemPtr updateItem)
 {
   if (m_downloadItem)
     return;
 
-  m_isDownloading = true;
+  m_downloadPackage = GetPackage(updateItem);
+  if (!m_downloadPackage)
+    return;
 
+  m_isDownloading = true;
   m_downloadItem = updateItem;
   m_needManifest = m_needBinary = m_needApplication = false;
 
   CDirectory::Create("special://temp/autoupdate");
 
-  CStdString manifestUrl = m_downloadItem->GetProperty("updateManifest").asString();
-  CStdString updateUrl = m_downloadItem->GetProperty("updateBinary").asString();
-  CStdString applicationUrl = m_downloadItem->GetProperty("updateApplication").asString();
+  CStdString manifestUrl = m_downloadPackage->GetProperty("manifestPath").asString();
+  CStdString updateUrl = m_downloadPackage->GetProperty("filePath").asString();
+//  CStdString applicationUrl = m_downloadItem->GetProperty("updateApplication").asString();
 
-  m_localManifest = "special://temp/autoupdate/" + URIUtils::GetFileName(manifestUrl);
-  m_localBinary = "special://temp/autoupdate/" + URIUtils::GetFileName(updateUrl);
-  m_localApplication = "special://temp/autoupdate/updater";
+  bool isDelta = m_downloadPackage->GetProperty("delta").asBoolean();
+  std::string packageStr = isDelta ? "delta" : "full";
+  m_localManifest = "special://temp/autoupdate/manifest-" + m_downloadItem->GetProperty("version").asString() + "." + packageStr + ".xml";
+  m_localBinary = "special://temp/autoupdate/binary-" + m_downloadItem->GetProperty("version").asString() + "." + packageStr + ".zip";
 
-  if (CFile::Exists(m_localManifest) && PlexUtils::GetSHA1SumFromURL(m_localManifest) == m_downloadItem->GetProperty("updateManifestSHA").asString())
-  {
-    CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate we already have %s with correct SHA", m_localManifest.c_str());
-  }
-  else
+  if (NeedDownload(m_localManifest, m_downloadPackage->GetProperty("manifestHash").asString()))
   {
     CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate need %s", manifestUrl.c_str());
     CJobManager::GetInstance().AddJob(new CPlexDownloadFileJob(manifestUrl, m_localManifest), this, CJob::PRIORITY_LOW);
     m_needManifest = true;
   }
 
-  if (CFile::Exists(m_localBinary) && PlexUtils::GetSHA1SumFromURL(m_localBinary) == m_downloadItem->GetProperty("updateBinarySHA").asString())
+  if (NeedDownload(m_localBinary, m_downloadPackage->GetProperty("fileHash").asString()))
   {
-    CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate we already have %s with correct SHA", m_localBinary.c_str());
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate need %s", updateUrl.c_str());
+    CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate need %s", m_localBinary.c_str());
     CJobManager::GetInstance().AddJob(new CPlexDownloadFileJob(updateUrl, m_localBinary), this, CJob::PRIORITY_LOW);
     m_needBinary = true;
   }
 
-  if (CFile::Exists(m_localApplication) && PlexUtils::GetSHA1SumFromURL(m_localApplication) == m_downloadItem->GetProperty("updateApplicationSHA").asString())
-  {
-    CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate we already have %s with correct SHA", m_localApplication.c_str());
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate need %s", applicationUrl.c_str());
-    CJobManager::GetInstance().AddJob(new CPlexDownloadFileJob(applicationUrl, m_localApplication), this, CJob::PRIORITY_LOW);
-    m_needApplication = true;
-  }
-
-  if (!m_needBinary && !m_needManifest && !m_needApplication)
+  if (!m_needBinary && !m_needManifest)
     ProcessDownloads();
 }
 
@@ -147,7 +175,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   {
     if (fj->m_destination == m_localManifest)
     {
-      if (PlexUtils::GetSHA1SumFromURL(m_localManifest) != m_downloadItem->GetProperty("updateManifestSHA").asString())
+      if (NeedDownload(m_localManifest, m_downloadPackage->GetProperty("manifestHash").asString()))
       {
         CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to download manifest, SHA mismatch. Retrying in %d seconds", m_searchFrequency);
         return;
@@ -158,7 +186,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     }
     else if (fj->m_destination == m_localBinary)
     {
-      if (PlexUtils::GetSHA1SumFromURL(m_localBinary) != m_downloadItem->GetProperty("updateBinarySHA").asString())
+      if (NeedDownload(m_localBinary, m_downloadPackage->GetProperty("fileHash").asString()))
       {
         CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to download update, SHA mismatch. Retrying in %d seconds", m_searchFrequency);
         return;
@@ -166,21 +194,6 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 
       CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnJobComplete got update binary.");
       m_needBinary = false;
-    }
-    else if (fj->m_destination == m_localApplication)
-    {
-      if (PlexUtils::GetSHA1SumFromURL(m_localApplication) != m_downloadItem->GetProperty("updateApplicationSHA").asString())
-      {
-        CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to download updater, SHA mismatch. Retrying in %d seconds", m_searchFrequency);
-        return;
-      }
-      CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnJobComplete got update application");
-      m_needApplication = false;
-
-#if defined(TARGET_POSIX)
-      chmod(CSpecialProtocol::TranslatePath(m_localApplication), 0755);
-#endif
-
     }
     else
       CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnJobComplete What is %s", fj->m_destination.c_str());
@@ -199,6 +212,47 @@ void CPlexAutoUpdate::OnJobProgress(unsigned int jobID, unsigned int progress, u
 {
 }
 
+bool CPlexAutoUpdate::RenameLocalBinary()
+{
+  CXBMCTinyXML doc;
+
+  doc.LoadFile(m_localManifest);
+  if (!doc.RootElement())
+  {
+    CLog::Log(LOGWARNING, "CPlexAutoUpdate::RenameLocalBinary failed to parse mainfest!");
+    return false;
+  }
+
+  std::string newName;
+  TiXmlElement *el = doc.RootElement()->FirstChildElement();
+  while(el)
+  {
+    if (el->ValueStr() == "packages" || el->ValueStr() == "package")
+    {
+      el=el->FirstChildElement();
+      continue;
+    }
+    if (el->ValueStr() == "name")
+    {
+      newName = el->GetText();
+      break;
+    }
+
+    el = el->NextSiblingElement();
+  }
+
+  if (newName.empty())
+  {
+    CLog::Log(LOGWARNING, "CPlexAutoUpdater::RenameLocalBinary failed to get the new name from the manifest!");
+    return false;
+  }
+
+  std::string bpath = CSpecialProtocol::TranslatePath(m_localBinary);
+  std::string tgd = CSpecialProtocol::TranslatePath("special://temp/autoupdate/" + newName + ".zip");
+
+  return CopyFile(bpath.c_str(), tgd.c_str(), false);
+}
+
 #ifdef TARGET_POSIX
 #include <signal.h>
 #endif
@@ -213,18 +267,40 @@ void CPlexAutoUpdate::OnJobProgress(unsigned int jobID, unsigned int progress, u
 
 void CPlexAutoUpdate::UpdateAndRestart()
 {
-  std::string updater = CSpecialProtocol::TranslatePath(m_localApplication);
+  /* first we need to copy the updater app to our tmp directory, it might change during install.. */
+
+  CStdString updaterPath;
+  CUtil::GetHomePath(updaterPath);
+  updaterPath += "/tools/updater";
+  std::string updater = CSpecialProtocol::TranslatePath("special://temp/autoupdate/updater");
+
+  if (!CopyFile(updaterPath.c_str(), updater.c_str(), false))
+  {
+    CLog::Log(LOGWARNING, "CPlexAutoUpdate::UpdateAndRestart failed to copy %s to %s", updaterPath.c_str(), updater.c_str());
+    return;
+  }
+
+#ifdef TARGET_POSIX
+  chmod(updater.c_str(), 0755);
+#endif
+
+  if (!RenameLocalBinary())
+    return;
+
   std::string script = CSpecialProtocol::TranslatePath(m_localManifest);
   std::string packagedir = CSpecialProtocol::TranslatePath("special://temp/autoupdate");
-  char installdir[2*MAXPATHLEN];
+  std::string appdir;
 
 #ifdef TARGET_DARWIN_OSX
+  char installdir[2*MAXPATHLEN];
+
   uint32_t size;
   GetDarwinBundlePath(installdir, &size);
+  appdir = std::string(installdir) + "/..";
 #endif
 
   CStdString exec;
-  exec.Format("\"%s\" --install-dir \"%s\" --package-dir \"%s\" --script \"%s\"", updater, installdir, packagedir, script);
+  exec.Format("\"%s\" --install-dir \"%s\" --package-dir \"%s\" --script \"%s\" --auto-close", updater, appdir, packagedir, script);
   CLog::Log(LOGDEBUG, "CPlexAutoUpdate::UpdateAndRestart going to run %s", exec.c_str());
 
 #ifdef TARGET_POSIX
@@ -243,6 +319,7 @@ void CPlexAutoUpdate::UpdateAndRestart()
       sleep(1);
 
     fprintf(stderr, "PHT seems to have quit, running updater\n");
+
     system(exec.c_str());
 
     exit(0);
@@ -251,7 +328,6 @@ void CPlexAutoUpdate::UpdateAndRestart()
   {
     CApplicationMessenger::Get().Quit();
   }
-
 #endif
 }
 

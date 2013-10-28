@@ -1,0 +1,31 @@
+IDI_APPICON		ICON		DISCARDABLE	"updater.ico"
+
+1       VERSIONINFO
+FILEVERSION     0,0,1,0
+PRODUCTVERSION  1,0,1,0
+FILEFLAGSMASK   0X3FL
+FILEFLAGS       0X8L
+FILEOS          0X40004L
+FILETYPE        0X1
+FILESUBTYPE     0
+BEGIN
+        BLOCK "StringFileInfo"
+        BEGIN
+                BLOCK "000004b0"
+                BEGIN
+                        VALUE "FileVersion", "0.0.1.0"
+                        VALUE "ProductVersion", "1.0.1.0"
+                        VALUE "OriginalFilename", "updater.exe"
+                        VALUE "InternalName", "updater.exe"
+                        VALUE "FileDescription", "Software Update Tool"
+                        VALUE "CompanyName", "Plex Inc."
+                        VALUE "LegalCopyright", "(C) Plex Inc. 2011"
+                        VALUE "ProductName", "Plex Software Updater"
+                        VALUE "PrivateBuild", "Built by Plex"
+                END
+        END
+        BLOCK "VarFileInfo"
+        BEGIN
+                VALUE "Translation", 0x0000, 0x04b0
+        END
+END

@@ -1,0 +1,26 @@
+//Microsoft eMbedded Visual C++ generated resource script.
+//
+
+#include "resource.h"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    IDW_MAIN                "Simple Window"
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDW_MAIN ACCELERATORS DISCARDABLE
+BEGIN
+    "Q",            IDW_QUIT,               VIRTKEY, CONTROL, NOINVERT
+END
+

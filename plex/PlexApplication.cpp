@@ -47,7 +47,7 @@ PlexApplication::Start()
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
-  autoUpdater = new CPlexAutoUpdate(CURL("http://nightlies.plexapp.com/update.xml"));
+  autoUpdater = new CPlexAutoUpdate(CURL("https://mystaging.plexapp.com/updater/products/1/check.xml"));
 
   serverManager->load();
 

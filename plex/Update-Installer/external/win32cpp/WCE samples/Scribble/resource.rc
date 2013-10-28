@@ -1,0 +1,94 @@
+//Microsoft eMbedded Visual C++ generated resource script.
+//
+
+#include "resource.h"
+#include "newres.h"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDW_MAIN                ICON    DISCARDABLE     "res\\Default.ICO"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Data
+//
+
+IDW_MAIN SHMENUBAR MOVEABLE PURE
+BEGIN
+    IDW_MAIN, 2,
+    I_IMAGENONE, IDM_MAIN_COMMAND1, TBSTATE_ENABLED, TBSTYLE_AUTOSIZE,
+    IDM_NEW, 0, NOMENU,
+    I_IMAGENONE, IDM_MAIN_COMMAND2, TBSTATE_ENABLED,
+    TBSTYLE_DROPDOWN | TBSTYLE_AUTOSIZE, IDM_HELP, 0, 1,
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menubar
+//
+
+IDW_MAIN MENU DISCARDABLE
+BEGIN
+    MENUITEM "New",                         IDM_NEW
+    POPUP "Help"
+    BEGIN
+        MENUITEM "About",                       IDM_HELP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDW_ABOUT DIALOG DISCARDABLE  0, 0, 140, 57
+STYLE WS_POPUP | WS_CAPTION
+EXSTYLE 0x80000000L
+CAPTION "About Default"
+BEGIN
+    ICON            IDW_MAIN,IDC_STATIC,11,17,20,20
+    LTEXT           "Scribble Application",IDC_STATIC,40,10,70,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2007",IDC_STATIC,40,25,70,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDW_MAIN ACCELERATORS DISCARDABLE
+BEGIN
+    "A",            IDM_HELP_ABOUT,         VIRTKEY, CONTROL, NOINVERT
+    "Q",            IDW_QUIT,               VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDW_MAIN                BITMAP  DISCARDABLE     "res\\toolbar.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    IDW_MAIN                "WinCE Scribble App"
+    IDM_NEW                 "New"
+    IDM_HELP                "Help"
+END
+

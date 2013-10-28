@@ -18,6 +18,17 @@ include_directories(
   ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
+if(TARGET_OSX)
+  include(ExternalProject)
+  ExternalProject_Add(Update-Installer
+    SOURCE_DIR ${plexdir}/Update-Installer
+    INSTALL_COMMAND ""
+  )
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Update-Installer-prefix/src/Update-Installer-build/src/updater
+          PERMISSIONS WORLD_READ WORLD_EXECUTE OWNER_WRITE OWNER_EXECUTE OWNER_READ GROUP_EXECUTE GROUP_READ
+          DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources/XBMC/tools)
+endif(TARGET_OSX)
+
 if(TARGET_WIN32)
   # disable safe seh
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /DELAYLOAD:dnssd.dll /DELAYLOAD:dwmapi.dll /DELAYLOAD:libmicrohttpd-5.dll /DELAYLOAD:sqlite3.dll /DELAYLOAD:libsamplerate-0.dll /MANIFEST:NO")
@@ -68,6 +79,7 @@ ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 if(TARGET_COMMON_DARWIN)
   add_executable(${PLEX_TARGET_NAME} MACOSX_BUNDLE ${PLEX_ALL_SRCS})
   set_target_properties(${PLEX_TARGET_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")
+  add_dependencies(${PLEX_TARGET_NAME} Update-Installer)
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PLEX_VERSION_STRING}")
   set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PLEX_VERSION_STRING_SHORT}")
   set(MACOSX_BUNDLE_BUNDLE_VERSION "${PLEX_VERSION_STRING}")

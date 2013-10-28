@@ -1,0 +1,41 @@
+//Microsoft eMbedded Visual C++ generated resource script.
+//
+
+#include "resource.h"
+#include "windows.h"
+#include "commctrl.h"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDW_MAIN                ICON    DISCARDABLE     "res\\star.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG DIALOG DISCARDABLE  0, 0, 160, 180
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE
+FONT 8, "Tahoma"
+BEGIN
+    PUSHBUTTON      "Done",IDOK,54,118,50,14
+    CTEXT           "Dialog Application",IDC_STATIC,33,63,90,13
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    IDW_MAIN                "Dialog Application"
+END
+

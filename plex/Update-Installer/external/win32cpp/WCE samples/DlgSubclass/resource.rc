@@ -1,0 +1,40 @@
+//Microsoft eMbedded Visual C++ generated resource script.
+//
+
+#include "windows.h"
+#include "resource.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+ID_MAIN                 ICON    DISCARDABLE     "res\\Dialog.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+ID_MAIN                 BITMAP  MOVEABLE PURE   "res\\toolbar.bmp"
+IDB_BITMAP1             BITMAP  MOVEABLE PURE   "res\\Zapotec.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG1 DIALOG DISCARDABLE  0, 0, 160, 166
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "Hyperlink and Subclassed Button"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,52,111,50,16
+    PUSHBUTTON      "Subclassed Button",IDC_BUTTON2,39,9,81,45
+    LTEXT           "https://sourceforge.net/projects/win32-framework",IDC_STATIC4,
+                    11,149,136,11
+    EDITTEXT        IDC_EDIT1,21,73,114,15,ES_AUTOHSCROLL
+END
+

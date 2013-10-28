@@ -1,0 +1,62 @@
+//Microsoft eMbedded Visual C++ generated resource script.
+//
+
+#include "resource.h"
+#include "windows.h"
+#include "commctrl.h"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDW_MAIN                ICON    DISCARDABLE     "res\\star.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_COMCTLS DIALOG DISCARDABLE  0, 0, 160, 180
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE
+FONT 8, "Tahoma"
+BEGIN
+    LTEXT           "Static Text",IDC_STATIC,2,2,48,8
+    CTEXT           "Boxed Static Text",IDC_STATIC,56,2,66,12,WS_BORDER
+    EDITTEXT        IDC_EDIT1,4,22,58,54,ES_MULTILINE | ES_AUTOVSCROLL |
+                    ES_WANTRETURN | WS_VSCROLL
+    PUSHBUTTON      "Button1",IDC_BUTTON1,66,22,46,14
+    COMBOBOX        IDC_COMBO1,66,52,64,53,CBS_DROPDOWN | CBS_SORT |
+                    CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_LIST1,4,88,58,42,LBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Edit",IDC_STATIC,2,12,48,8
+    LTEXT           "Combo box",IDC_STATIC,66,40,48,11
+    LTEXT           "List box",IDC_STATIC,2,78,48,8
+    SCROLLBAR       IDC_SCROLLBAR1,138,46,10,56,SBS_VERT
+    SCROLLBAR       IDC_SCROLLBAR2,66,108,86,8
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_ARROWKEYS,140,2,
+                    11,18
+    CONTROL         "Slider1",IDC_SLIDER1,"msctls_trackbar32",TBS_BOTH |
+                    WS_TABSTOP,78,134,72,26
+    CONTROL         "Progress1",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,
+                    2,140,72,12
+    LTEXT           "Slider",IDC_STATIC,78,124,48,8
+    LTEXT           "Progress Bar",IDC_STATIC,4,132,48,8
+    LTEXT           "Vert and Horz Scrollbars",IDC_STATIC,80,82,48,20
+    PUSHBUTTON      "Done",IDOK,54,162,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    IDW_MAIN                "Dialog Application"
+END
+

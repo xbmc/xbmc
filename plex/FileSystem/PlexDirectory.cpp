@@ -189,6 +189,8 @@ static DirectoryTypeMap g_typeMap = boost::assign::list_of<DirectoryTypeMap::rel
                                     (PLEX_DIR_TYPE_IMAGE, "image")
                                     (PLEX_DIR_TYPE_CHANNELS, "plugin")
                                     (PLEX_DIR_TYPE_USER, "user")
+                                    (PLEX_DIR_TYPE_RELEASE, "release")
+                                    (PLEX_DIR_TYPE_PACKAGE, "package")
                                     ;
 
 

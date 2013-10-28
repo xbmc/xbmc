@@ -1,0 +1,21 @@
+This directory contains a set of tools for preparing auto-updates.
+
+ * create-packages.rb
+
+	Given a directory containing the set of files that make up a release,
+	laid out as they are when installed and a JSON package config file,
+	this tool generates a set of packages for the release
+	and a file_list.xml listing all the files that make up the release.
+
+ * config-template.json
+
+    This is a template for the config file that specifies:
+
+	- How to partition the files that make up an installed application
+	  into packages.
+	- The path of the main binary to run after the update completes
+	- The name of the updater binary to download as part of the update
+
+    This is the simplest possible package configuration, where all files for
+	a release are placed in a single package.  This means that the whole
+	package will need to be downloaded to install the update.

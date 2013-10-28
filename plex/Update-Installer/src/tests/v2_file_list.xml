@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<!-- The v2-compatible attribute lets the update script parser
+     know that it is dealing with a script structured for backwards
+     compatibility with the MD <= 1.0 updater.
+!-->
+<update version="3" v2-compatible="true">
+ <targetVersion>2.0</targetVersion>
+ <platform>Test</platform>
+ <dependencies>
+   <!-- The new updater is standalone and has no dependencies,
+        except for standard system libraries and itself.
+    !-->
+ </dependencies>
+ <packages>
+  <package>
+   <name>app-pkg</name>
+   <hash>$APP_PACKAGE_HASH</hash>
+   <size>$APP_PACKAGE_SIZE</size>
+   <source>http://some/dummy/URL</source>
+  </package>
+ </packages>
+
+ <!-- For compatibility with the update download in MD <= 1.0,
+      an <install> section lists the packages to download and
+      the real list of files to install is in the <install-v3>
+      section. !-->
+ <install>
+   <!-- A duplicate of the <packages> section should appear here,
+        except that each package is listed using the same structure
+	    as files in the install-v3/files section.
+	!-->
+ </install>
+ <install-v3>
+  <file>
+   <name>$APP_FILENAME</name>
+   <hash>$UPDATED_APP_HASH</hash>
+   <size>$UPDATED_APP_SIZE</size>
+   <permissions>0755</permissions>
+   <package>app-pkg</package>
+   <is-main-binary>true</is-main-binary>
+  </file>
+  <file>
+   <name>$UPDATER_FILENAME</name>
+   <hash>$UPDATER_HASH</hash>
+   <size>$UPDATER_SIZE</size>
+   <permissions>0755</permissions>
+  </file>
+  <!-- Test symlink !-->
+  <file>
+   <name>test-dir/app-symlink</name>
+   <target>../app</target>
+  </file>
+  <file>
+   <name>new-dir/new-dir2/new-file.txt</name>
+   <hash>$TEST_FILENAME</hash>
+   <size>$TEST_SIZE</size>
+   <package>app-pkg</package>
+   <permissions>0644</permissions>
+  </file>
+ </install-v3>
+ <uninstall>
+  <!-- TODO - List some files to uninstall here !-->
+  <file>file-to-uninstall.txt</file>
+  <file>symlink-to-file-to-uninstall.txt</file>
+ </uninstall>
+</update>

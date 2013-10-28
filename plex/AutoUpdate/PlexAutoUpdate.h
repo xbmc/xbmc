@@ -43,6 +43,7 @@ class CPlexAutoUpdate : public ITimerCallback, IJobCallback
     void ProcessDownloads();
 
     CFileItemPtr m_downloadItem;
+    CFileItemPtr m_downloadPackage;
     int m_searchFrequency;
     CURL m_url;
     CTimer m_timer;
@@ -60,6 +61,10 @@ class CPlexAutoUpdate : public ITimerCallback, IJobCallback
     bool m_needApplication;
 
     bool m_ready;
+
+    CFileItemPtr GetPackage(CFileItemPtr updateItem);
+    bool NeedDownload(const std::string& localFile, const std::string& expectedHash);
+    bool RenameLocalBinary();
 };
 
 #endif // PLEXAUTOUPDATE_H

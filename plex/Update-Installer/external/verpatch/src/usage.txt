@@ -1,0 +1,22 @@
+verpatch r8 (2011-04-25)
+Usage: verpatch filename [version] [/options]
+Options:
+ /s name "value" - add or replace any version resource string.
+                   name: a string attribute. See readme.txt for reference.
+ /sc "comment" - add Comments string (same as /s comment "comment")
+ /va - create the version resource (use when the file has no version info, or to replace it)
+ /pv <version> - specify Product version
+           /prodver, /productversion - same as /pv
+ /fn - preserve Original Filename, Internal Name in the file version info
+ /vo - output the file version info in RC format
+ /xi - test mode, does not modify the file
+ /vft2 num - specify driver type (one of VFT2_ values defined in winver.h)
+ /rpdb - remove path to .pdb in debug information
+ /rf #hex-id file - add a raw binary resource from file (see readme)
+ /noed - discard any extra data attached at the end of file
+
+Examples:
+  verpatch d:\foo.dll 1.2.33.44 /s comment "fixed this and that"
+  verpatch d:\foo.dll "33.44 released on %date%"
+  verpatch d:\foo.exe /va 1.2.3.4 /s desc "my program"
+  verpatch d:\foo.exe 1.2.3.4 /rf #9 embedded-dll.dll

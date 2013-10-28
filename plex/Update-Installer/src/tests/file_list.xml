@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<update version="3">
+ <targetVersion>2.0</targetVersion>
+ <platform>Test</platform>
+ <dependencies>
+   <!-- The new updater is standalone and has no dependencies,
+        except for standard system libraries.
+    !-->
+ </dependencies>
+ <packages>
+  <package>
+   <name>app-pkg</name>
+   <hash>$APP_PACKAGE_HASH</hash>
+   <size>$APP_PACKAGE_SIZE</size>
+   <source>http://some/dummy/URL</source>
+  </package>
+ </packages>
+ <install>
+  <file>
+   <name>$APP_FILENAME</name>
+   <hash>$UPDATED_APP_HASH</hash>
+   <size>$UPDATED_APP_SIZE</size>
+   <permissions>0755</permissions>
+   <package>app-pkg</package>
+   <is-main-binary>true</is-main-binary>
+  </file>
+  <file>
+   <name>$UPDATER_FILENAME</name>
+   <hash>$UPDATER_HASH</hash>
+   <size>$UPDATER_SIZE</size>
+   <permissions>0755</permissions>
+  </file>
+  <!-- Test symlink !-->
+  <file>
+   <name>test-dir/app-symlink</name>
+   <target>../app</target>
+  </file>
+  <!-- Test file in new directory !-->
+  <file>
+   <name>new-dir/new-dir2/new-file.txt</name>
+   <hash>$TEST_FILENAME</hash>
+   <size>$TEST_SIZE</size>
+   <package>app-pkg</package>
+   <permissions>0644</permissions>
+  </file>
+ </install>
+ <uninstall>
+  <!-- TODO - List some files to uninstall here !-->
+  <file>file-to-uninstall.txt</file>
+  <file>symlink-to-file-to-uninstall.txt</file>
+ </uninstall>
+</update>

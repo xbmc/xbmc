@@ -1,0 +1,116 @@
+About Win32++
+-------------
+Win32++ is simple and easy to understand framework for developing Win32 
+applications using C++. It brings an object oriented approach to programming 
+directly with the Win32 API. Each window created is a C++ class object capable 
+of having its own window procedure for routing messages.
+
+Win32++ supports the following compilers and development environments:
+* Borland C++ Compiler 5.5
+* Borland Developer Studio 2006
+* Dev-C++
+* Microsoft Visual C++ Toolkit 2003
+* Microsoft Visual C++ 2005 Express Edition
+* Microsoft Visual C++ 2008 Express Edition
+* Microsoft Visual C++ 2010 Express Edition
+* Microsoft Visual Studio 6.0
+* Microsoft Visual Studio.net 2003
+* Microsoft Visual Studio.net 2005
+* Microsoft Visual Studio.net 2008
+* Microsoft Visual Studio.net 2010
+* MinGW compiler
+
+Win32++ supports the following operating systems
+* Windows 95
+* Windows 98
+* Windows ME
+* Windows NT 4
+* Windows 2000
+* Windows XP 	(32bit and 64bit)
+* Windows 2003 Server (32bit and 64bit)
+* Windows Vista	(32bit and 64bit)
+* Windows 2008 Server (32bit and 64bit)
+* Windows 7 (32 bit and 64 bit)
+* Windows CE from WCE400 (Windows mobile 2003) to WCE600 (Windows mobile 6)
+
+
+Features
+--------
+Win32++ code has the following features
+ * Object Orientated
+ * Subclassing support
+ * Notification reflection and message reflection
+ * Unicode compliant, with multilingual support
+ * Multi-threaded support.
+ * Tracing
+ * 64 bit support
+ * Windows 7 ribbon support
+ * Themes support
+ * Network support (including IP version 6)
+ * Docking windows
+ * Tabbed MDIs  
+
+Frames produced by Win32++ include the following:
+ * Rebar
+ * Menubar
+ * Toolbar
+ * Status bar
+ * Tool tips
+
+About the file downloads
+------------------------
+The file download from Sourceforge includes the following:
+ * The Win32++ library itself
+ * Help for the library
+ * A set of tutorials
+ * A collection of sample applications
+
+The sample applications include:
+ * Browser - An Internet browser application with an event sink.
+ * Dialog - An example of a simple dialog application.
+ * DialogDemo - An interative dialog application demonstrating slider controls and progress bars.
+ * DialogResizing - An example of a resizable dialog.
+ * DialogTab - A dialog application with a tab control.
+ * DirectX - A simple DirectX application.
+ * DLL - Shows how to run Win32++ from within a DLL
+ * Dock - An example of a simple docking application.
+ * DockContainer - An example of a docking application which incorporates containers.
+ * DockTabbedMDI - An example of a docking application with containers and a tabbed MDI.
+ * Explorer - A Windows Explorer-like application.
+ * FastGDI - An application which demonstrates direct manipulation of a bitmap's colour.
+ * FormDemo - An example of a modeless dialog within a frame.
+ * Frame - A simple frame application.
+ * GDIPlus - Demonstrates how to use GDI+ with Win32++.
+ * MDIFrame - A simple MDI frame application.
+ * MDIFrameDemo - Demonstrates some additional features of MDI frames.
+ * MDIFrameSplitter - Demonstrates how to implement splitter windows in MDI Child windows. 
+ * Networking - Demonstrates the use of networking.
+ * Notepad - A simple text editor with printing.
+ * Performance - Measures Win32++'s message handling speed.
+ * Picture - A simple picture rendering application.
+ * PropertySheets - A demonstration of property sheets.
+ * RibbonFrame - Demonstrates how to use the Windows 7 ribbon with a frame.
+ * RibbonSimple - Demonstrates how to use the Windwos 7 ribbon with a simple window.
+ * Scribble - A simple drawing application.
+ * Simple - Creates a simple window.
+ * Splitter - Demonstrates how to use dockers to create splitter windows.
+ * TabDemo - Demonstrates the use of a CTab control in a frame.
+ * TaskDialog - Demonstrates the use of task dialogs (available on Vista and above).
+ * Themes - Demonstrates how to customise the colours for rebar and toolbar controls.
+ * Threads - Demonstrates multi-threaded Windows.
+ * Tray - Demonstrates how to "minimise" an application to the system tray.  
+ * WinCE samples - A small collection of samples for Windows CE
+
+Getting Started
+---------------
+Each file download includes the project files for Dev-C++, CodeBlocks and the
+various compilers from Microsoft. CodeBlocks is an IDE (Integrated Development
+Environment) that supports GNU GCC, Borland Developer Studio 2006 and Microsoft
+C++ Toolkit 2003.
+
+You  can start with one of the sample programs, and add your code. Alternatively
+you can start with the projects and sample code provided in the "new projects" 
+folder. 
+
+For additional information on getting started, refer to the help included
+in the documentation.

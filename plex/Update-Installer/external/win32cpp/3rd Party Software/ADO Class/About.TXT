@@ -1,0 +1,6 @@
+This software provides a simple database catalog access using a set of ADOX classes.
+It was written by Carlos Antollini. It was downloaded from CodeProject at:
+http://www.codeproject.com/KB/database/caaadoxclass.aspx
+
+This software remains the property of Carlos Antollini. Refer to the original download 
+site to ensure your use of the software is consistant with any copyright or license.
