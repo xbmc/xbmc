@@ -7,12 +7,17 @@ set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "c:/Windows/System32" "${dependdir}
 link_directories(${dependdir}/lib)
 set(ENV{LIBS} "$ENV{LIBS};${dependdir}/lib")
 
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MDd")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /MD")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}} /MD")
-set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} /MD")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}} /MD")
+# C4800 = 'unsigned int' : forcing value to bool 'true' or 'false' (performance warning)
+# C4996 = 'strcmpi': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strcmpi. See online help for details
+# C4244 = 'initializing' : conversion from 'int64_t' to 'int', possible loss of data
+set(IGNOREERRS "/IGNORE:C4800 /IGNORE:C4996 /IGNORE:C4244")
+
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MDd ${IGNOREERRS}")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd ${IGNOREERRS}")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /MD ${IGNOREERRS}")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD ${IGNOREERRS}")
+set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} /MD ${IGNOREERRS}")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /MD ${IGNOREERRS}")
 
 set(IGNORELIBS
 libc.lib
