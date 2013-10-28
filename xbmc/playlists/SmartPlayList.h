@@ -44,7 +44,6 @@ public:
   static CStdString           TranslateGroup(Field group);
 
   static CStdString           GetLocalizedField(int field);
-  static CStdString           GetLocalizedOperator(SEARCH_OPERATOR oper);
   static CStdString           GetLocalizedGroup(Field group);
   static bool                 CanGroupMix(Field group);
 
@@ -142,7 +141,6 @@ public:
   CStdString GetSaveLocation() const;
 
   static void GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList);
-  static void GetAvailableOperators(std::vector<std::string> &operatorList);
 
   static bool IsVideoType(const CStdString &type);
   static bool IsMusicType(const CStdString &type);

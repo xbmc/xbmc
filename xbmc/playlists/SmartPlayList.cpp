@@ -578,11 +578,6 @@ std::vector<Field> CSmartPlaylistRule::GetGroups(const CStdString &type)
   return groups;
 }
 
-CStdString CSmartPlaylistRule::GetLocalizedOperator(SEARCH_OPERATOR oper)
-{
-  return CDatabaseQueryRule::GetLocalizedOperator(oper);
-}
-
 CStdString CSmartPlaylistRule::GetLocalizedGroup(Field group)
 {
   for (unsigned int i = 0; i < NUM_GROUPS; i++)
@@ -1340,11 +1335,6 @@ void CSmartPlaylist::GetAvailableFields(const std::string &type, std::vector<std
         fieldList.push_back(fields[i].string);
     }
   }
-}
-
-void CSmartPlaylist::GetAvailableOperators(std::vector<std::string> &operatorList)
-{
-  CDatabaseQueryRule::GetAvailableOperators(operatorList);
 }
 
 bool CSmartPlaylist::IsEmpty(bool ignoreSortAndLimit /* = true */) const

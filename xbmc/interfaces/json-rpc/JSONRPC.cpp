@@ -22,6 +22,7 @@
 
 #include "JSONRPC.h"
 #include "ServiceDescription.h"
+#include "dbwrappers/DatabaseQuery.h"
 #include "input/ButtonTranslator.h"
 #include "interfaces/AnnouncementManager.h"
 #include "playlists/SmartPlayList.h"
@@ -52,7 +53,7 @@ void CJSONRPC::Initialize()
 
   // filter-related enums
   vector<string> smartplaylistList;
-  CSmartPlaylist::GetAvailableOperators(smartplaylistList);
+  CDatabaseQueryRule::GetAvailableOperators(smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Operators", smartplaylistList);
 
   smartplaylistList.clear();
