@@ -80,7 +80,7 @@ bool CTextureCache::HasCachedImage(const CStdString &url)
 
 CStdString CTextureCache::GetCachedImage(const CStdString &image, CTextureDetails &details, bool trackUsage)
 {
-  CStdString url = UnwrapImageURL(image);
+  CStdString url = CTextureUtils::UnwrapImageURL(image);
 
   if (IsCachedImage(url))
     return url;
@@ -93,39 +93,6 @@ CStdString CTextureCache::GetCachedImage(const CStdString &image, CTextureDetail
     return GetCachedPath(details.file);
   }
   return "";
-}
-
-CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStdString &type, const CStdString &options)
-{
-  if (StringUtils::StartsWith(image, "image://"))
-    return image; // already wrapped
-
-  CURL url;
-  url.SetProtocol("image");
-  url.SetUserName(type);
-  url.SetHostName(image);
-  if (!options.IsEmpty())
-  {
-    url.SetFileName("transform");
-    url.SetOptions("?" + options);
-  }
-  return url.Get();
-}
-
-CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
-{
-  return GetWrappedImageURL(image, "", "size=thumb");
-}
-
-CStdString CTextureCache::UnwrapImageURL(const CStdString &image)
-{
-  if (StringUtils::StartsWith(image, "image://"))
-  {
-    CURL url(image);
-    if (url.GetUserName().IsEmpty() && url.GetOptions().IsEmpty())
-      return url.GetHostName();
-  }
-  return image;
 }
 
 bool CTextureCache::CanCacheImageURL(const CURL &url)
@@ -161,7 +128,7 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
     return; // image is already cached and doesn't need to be checked further
 
   // needs (re)caching
-  AddJob(new CTextureCacheJob(UnwrapImageURL(url), details.hash));
+  AddJob(new CTextureCacheJob(CTextureUtils::UnwrapImageURL(url), details.hash));
 }
 
 bool CTextureCache::CacheImage(const CStdString &image, CTextureDetails &details)
@@ -175,7 +142,7 @@ bool CTextureCache::CacheImage(const CStdString &image, CTextureDetails &details
 
 CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **texture, CTextureDetails *details)
 {
-  CStdString url = UnwrapImageURL(image);
+  CStdString url = CTextureUtils::UnwrapImageURL(image);
   CSingleLock lock(m_processingSection);
   if (m_processing.find(url) == m_processing.end())
   {

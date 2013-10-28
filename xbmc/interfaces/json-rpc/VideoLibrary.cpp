@@ -20,7 +20,7 @@
 
 #include "VideoLibrary.h"
 #include "ApplicationMessenger.h"
-#include "TextureCache.h"
+#include "TextureDatabase.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -973,7 +973,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
     for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
     {
       if (!artIt->second.asString().empty())
-        artwork[artIt->first] = CTextureCache::UnwrapImageURL(artIt->second.asString());
+        artwork[artIt->first] = CTextureUtils::UnwrapImageURL(artIt->second.asString());
     }
   }
 }

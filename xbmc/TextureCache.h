@@ -134,22 +134,6 @@ public:
    */
   static CStdString GetCachedPath(const CStdString &file);
 
-  /*! \brief retrieve a wrapped URL for a image file
-   \param image name of the file
-   \param type signifies a special type of image (eg embedded video thumb, picture folder thumb)
-   \param options which options we need (eg size=thumb)
-   \return full wrapped URL of the image file
-   */
-  static CStdString GetWrappedImageURL(const CStdString &image, const CStdString &type = "", const CStdString &options = "");
-  static CStdString GetWrappedThumbURL(const CStdString &image);
-
-  /*! \brief Unwrap an image://<url_encoded_path> style URL
-   Such urls are used for art over the webserver or other users of the VFS
-   \param image url of the image
-   \return the unwrapped URL, or the original URL if unwrapping is inappropriate.
-   */
-  static CStdString UnwrapImageURL(const CStdString &image);
-
   /*! \brief check whether an image:// URL may be cached
    \param url the URL to the image
    \return true if the given URL may be cached, false otherwise
