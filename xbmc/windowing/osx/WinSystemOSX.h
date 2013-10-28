@@ -64,6 +64,9 @@ public:
   virtual void Unregister(IDispResource *resource);
   
   virtual int GetNumScreens();
+  virtual int GetCurrentScreen();
+  
+  void        WindowChangedScreen();
 
   void CheckDisplayChanging(u_int32_t flags);
   
@@ -92,8 +95,11 @@ protected:
 
   bool                         m_use_system_screensaver;
   bool                         m_can_display_switch;
+  bool                         m_movedToOtherScreen;
+  int                          m_lastDisplayNr;
   void                        *m_windowDidMove;
   void                        *m_windowDidReSize;
+  void                        *m_windowChangedScreen;
 
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
