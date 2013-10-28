@@ -139,8 +139,9 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CStdString strResponse;
   dav.ReadData(strResponse);
 
+  std::string fileCharset(dav.GetServerReportedCharset());
   CXBMCTinyXML davResponse;
-  davResponse.Parse(strResponse);
+  davResponse.Parse(strResponse, fileCharset);
 
   if (!davResponse.Parse(strResponse))
   {
