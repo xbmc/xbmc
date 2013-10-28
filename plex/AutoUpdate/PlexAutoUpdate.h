@@ -38,6 +38,9 @@ class CPlexAutoUpdate : public ITimerCallback, IJobCallback
     void ForceVersionCheckInBackground();
     void ResetTimer();
 
+    void WriteUpdateInfo();
+    bool GetUpdateInfo(std::string& version, bool& isDelta, std::string& packageHash) const;
+
   private:
     void DownloadUpdate(CFileItemPtr updateItem);
     void ProcessDownloads();

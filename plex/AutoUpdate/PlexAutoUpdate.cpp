@@ -25,12 +25,15 @@
 
 using namespace XFILE;
 
+//#define UPDATE_DEBUG 1
+
 CPlexAutoUpdate::CPlexAutoUpdate(const CURL &updateUrl, int searchFrequency)
   : m_forced(false), m_isSearching(false), m_isDownloading(false), m_url(updateUrl), m_searchFrequency(searchFrequency), m_timer(this), m_ready(false)
 {
 #ifdef TARGET_DARWIN_OSX
   m_timer.Start(5 * 1000, true);
 #endif
+
 }
 
 void CPlexAutoUpdate::OnTimeout()
@@ -39,7 +42,33 @@ void CPlexAutoUpdate::OnTimeout()
   CPlexDirectory dir;
   m_isSearching = true;
 
+  /* First, check if we tried and updated to a new version */
+
+  std::string version, packageHash;
+  bool isDelta;
+  if (GetUpdateInfo(version, isDelta, packageHash))
+  {
+    if (version != PLEX_VERSION)
+    {
+      CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnTimeout we probably failed to update to version %s since this is %s", version.c_str(), PLEX_VERSION);
+      if (isDelta)
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Failed to upgrade!", "PHT failed to (delta) upgrade to version " + version, 10000, true);
+      else
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Failed to upgrade!", "PHT failed to upgrade to version " + version, 10000, true);
+    }
+    else
+    {
+      CLog::Log(LOGINFO, "CPlexAutoUpdate::OnTimeout successfully upgraded to version %s", PLEX_VERSION);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Upgrade succesfull!", "PHT is upgraded to version " + version, 10000, true);
+      CFile::Delete("special://temp/autoupdate/plexupdateinfo.xml");
+    }
+  }
+
+#ifdef UPDATE_DEBUG
+  m_url.SetOption("version", "0.0.0.0");
+#else
   m_url.SetOption("version", PLEX_VERSION);
+#endif
   m_url.SetOption("build", PLEX_BUILD_TAG);
   m_url.SetOption("channel", "6");
   if (g_plexApplication.myPlexManager->IsSignedIn())
@@ -57,6 +86,7 @@ void CPlexAutoUpdate::OnTimeout()
       {
         CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout got version %s from update endpoint", updateItem->GetProperty("version").asString().c_str());
 
+        m_timer.Stop();
         DownloadUpdate(updateItem);
         return;
       }
@@ -82,6 +112,12 @@ void CPlexAutoUpdate::OnTimeout()
 CFileItemPtr CPlexAutoUpdate::GetPackage(CFileItemPtr updateItem)
 {
   CFileItemPtr deltaItem, fullItem;
+
+  std::string version, packageHash;
+  bool isDelta;
+
+  GetUpdateInfo(version, isDelta, packageHash);
+
   if (updateItem && updateItem->m_mediaItems.size() > 0)
   {
     for (int i = 0; i < updateItem->m_mediaItems.size(); i ++)
@@ -95,7 +131,15 @@ CFileItemPtr CPlexAutoUpdate::GetPackage(CFileItemPtr updateItem)
   }
 
   if (deltaItem)
-    return deltaItem;
+  {
+    if (isDelta && deltaItem->GetProperty("manifestHash") == packageHash)
+    {
+      CLog::Log(LOGINFO, "CPlexAutoUpdate::GetPackage we failed installing delta %s so now we will ignore that.", packageHash.c_str());
+      return fullItem;
+    }
+    else
+      return deltaItem;
+  }
 
   return fullItem;
 }
@@ -153,8 +197,41 @@ void CPlexAutoUpdate::DownloadUpdate(CFileItemPtr updateItem)
     ProcessDownloads();
 }
 
+bool CPlexAutoUpdate::GetUpdateInfo(std::string& version, bool& isDelta, std::string& packageHash) const
+{
+  CXBMCTinyXML doc;
+  doc.LoadFile("special://temp/autoupdate/plexupdateinfo.xml");
+  if (!doc.RootElement())
+    return false;
+
+  if (doc.RootElement()->QueryStringAttribute("version", &version) != TIXML_SUCCESS)
+    return false;
+  if (doc.RootElement()->QueryBoolAttribute("isDelta", &isDelta) != TIXML_SUCCESS)
+    return false;
+  if (doc.RootElement()->QueryStringAttribute("packageHash", &packageHash) != TIXML_SUCCESS)
+    return false;
+
+  return true;
+}
+
+void CPlexAutoUpdate::WriteUpdateInfo()
+{
+  CXBMCTinyXML doc;
+
+  doc.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));
+  TiXmlElement* el = new TiXmlElement("Update");
+  el->SetAttribute("version", m_downloadItem->GetProperty("version").asString());
+  el->SetAttribute("packageHash", m_downloadPackage->GetProperty("manifestHash").asString());
+  el->SetAttribute("isDelta", m_downloadPackage->GetProperty("delta").asBoolean());
+  doc.LinkEndChild(el);
+
+  doc.SaveFile("special://temp/autoupdate/plexupdateinfo.xml");
+}
+
 void CPlexAutoUpdate::ProcessDownloads()
 {
+  WriteUpdateInfo();
+
   CStdString verStr;
   verStr.Format("Version %s is now ready to be installed.", GetUpdateVersion());
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Update available!", verStr, 10000, false);
@@ -200,6 +277,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   else if (!success)
   {
     CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to run a download job, will retry in %d seconds.", m_searchFrequency);
+    m_timer.Start(m_searchFrequency, true);
     return;
   }
 
@@ -265,9 +343,8 @@ bool CPlexAutoUpdate::RenameLocalBinary()
 #endif
 
 void CPlexAutoUpdate::UpdateAndRestart()
-{
+{  
   /* first we need to copy the updater app to our tmp directory, it might change during install.. */
-
   CStdString updaterPath;
   CUtil::GetHomePath(updaterPath);
   updaterPath += "/tools/updater";
