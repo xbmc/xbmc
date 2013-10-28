@@ -234,6 +234,12 @@ public:
    */
   CSetting* GetSetting(const std::string &id) const;
   /*!
+   \brief Gets the full list of setting sections.
+
+   \return List of setting sections
+   */
+  std::vector<CSettingSection*> GetSections() const;
+  /*!
    \brief Gets the setting section with the given identifier.
 
    \param section Setting section identifier
