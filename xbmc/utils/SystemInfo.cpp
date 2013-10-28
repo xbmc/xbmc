@@ -437,8 +437,10 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
         m_WinVer = WindowsVersionWin7;
       else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2)
         m_WinVer = WindowsVersionWin8;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3) 
+        m_WinVer = WindowsVersionWin8_1;
       /* Insert checks for new Windows versions here */
-      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 2) || osvi.dwMajorVersion > 6)
+      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 6)
         m_WinVer = WindowsVersionFuture;
     }
   }
@@ -532,6 +534,12 @@ CStdString CSysInfo::GetKernelVersion()
         strKernel.append(" 8");
       else
         strKernel.append(" Server 2012");
+      break;
+    case WindowsVersionWin8_1:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        strKernel.append(" 8.1");
+      else
+        strKernel.append(" Server 2012 R2");
       break;
     case WindowsVersionFuture:
       strKernel.append(" Unknown Future Version");
