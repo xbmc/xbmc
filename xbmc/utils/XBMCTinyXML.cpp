@@ -20,7 +20,6 @@
 
 #include "XBMCTinyXML.h"
 #include "filesystem/File.h"
-#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/CharsetDetection.h"
@@ -66,9 +65,10 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
 {
   value = _filename.c_str();
 
-  void * buffPtr;
-  unsigned int buffSize = CFileUtils::LoadFile(value, buffPtr);
-  if (buffSize == 0)
+  XFILE::CFile file;
+  XFILE::auto_buffer buffer;
+
+  if (!file.LoadFile(value, buffer))
   {
     SetError(TIXML_ERROR_OPENING_FILE, NULL, NULL, TIXML_ENCODING_UNKNOWN);
     return false;
@@ -78,10 +78,13 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
   Clear();
   location.Clear();
 
-  std::string data ((char*) buffPtr, (size_t) buffSize);
-  free(buffPtr);
+  std::string data(buffer.get(), buffer.length());
+  buffer.clear(); // free memory early
 
-  Parse(data, encoding);
+  if (encoding == TIXML_ENCODING_UNKNOWN)
+    Parse(data, file.GetContentCharset());
+  else
+    Parse(data, encoding);
 
   if (Error())
     return false;
