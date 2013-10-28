@@ -59,6 +59,7 @@
 				<aspectratio>scale</aspectratio>
 				<texture flipx="true">left-menu-indicator-arrow.png</texture>
 				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
+				<visible>!Container.Content(secondary) + !Window.IsActive(10202) + !Container.Content(tvshow) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(episode) + !Container.Content(movie) + !Container.Content(clip)</visible>
 			</control>
 		</control>
 	</include>
@@ -266,7 +267,7 @@
 				<posx>-253</posx>
 				<posy>5</posy>
 				<width>253</width>
-				<height>650</height>
+				<height>720</height>
 				<ondown>19000</ondown>
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
@@ -285,8 +286,8 @@
 					<ondown>19001</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
+					<animation effect="slide" end="0,-10" time="0" condition="Container.Content(movies)">Conditional</animation>
 				</control>
-
 				<!-- secondary filters list title -->
 				<control type="label" id="19009">
 					<description>Secondary Title</description>
@@ -294,6 +295,8 @@
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
+					<animation effect="slide" end="0,-120" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- secondary filters list -->
 				<control type="grouplist" id="19001">
@@ -303,8 +306,8 @@
 					<ondown>19010</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
+					<animation effect="slide" end="0,-130" time="0" condition="Container.Content(movies)">Conditional</animation>
 				</control>
-
 				<!-- filters buttons -->
 				<control type="button" id="19005">
 					<textoffsetx>35</textoffsetx>
@@ -322,23 +325,25 @@
 					<shadowcolor>ff222222</shadowcolor>
 					<textcolor>FFFFCCCC</textcolor>
 				</control>
-
 				<!-- SORTING -->
 				<!-- sorting list title -->
 				<control type="label" id="19019">
 					<description>Title</description>
-					<posy>630</posy>
+					<posy>500</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
+					<animation effect="slide" end="0,-10" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- sorting list -->
 				<control type="grouplist" id="19010">
-					<posy>660</posy>
+					<posy>560</posy>
 					<posx>10</posx>
 					<onup>19001</onup>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
+					<animation effect="slide" end="0,-20" time="0" condition="Container.Content(movies)">Conditional</animation>
 				</control>
 				<!-- sorting buttons -->
 				<control type="filterorderbutton" id="19011">
@@ -444,7 +449,7 @@
 			</control>
 			<!-- menu inside -->
 			<control type="group" id="1300">
-				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202) + !Container.Content(episode) + !Container.Content(movie)</visible>
+				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202) + !Container.Content(episode) + !Container.Content(movie) + !Container.Content(clip)</visible>
 				<posx>-253</posx>
 				<posy>30</posy>
 				<width>253</width>
@@ -663,6 +668,12 @@
 						<label>$LOCALIZE[31006]</label>
 						<thumb>b-s-system.png</thumb>
 						<onclick>XBMC.ReplaceWindow(16)</onclick>
+					</item>
+					<item id="5">
+						<description>Network Button</description>
+						<label>$LOCALIZE[31602]</label>
+						<thumb>b-s-network.png</thumb>
+						<onclick>XBMC.ReplaceWindow(18)</onclick>
 					</item>
 				</content>
 			</control>

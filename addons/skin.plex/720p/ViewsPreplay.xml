@@ -14,13 +14,13 @@
 	<!-- info formatting -->
 	<include name="LeftInfoFormatGrey">
 		<width min="29" max="200">auto</width>
-		<height>15</height>
+		<height>20</height>
 		<font>Condensed-18</font>
 		<include>Grey1</include>
 	</include>
 	<include name="LeftInfoFormatWhite">
 		<width min="29" max="600">auto</width>
-		<height>15</height>
+		<height>20</height>
 		<font>Condensed-18</font>
 		<include>White2</include>
 	</include>
@@ -288,7 +288,7 @@
 				<posx>302</posx>
 				<!-- Title -->
 				<control type="label">
-					<width>360</width>
+					<width>380</width>
 					<height>40</height>
 					<label>$INFO[Container.SecondTitle]</label>
 					<label>Seasons view</label>
@@ -303,20 +303,15 @@
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
 					<control type="label">
-						<width min="29" max="200">auto</width>
-						<height>15</height>
+						<include>LeftInfoFormatGrey</include>
 						<label>[UPPERCASE]Genre[/UPPERCASE]</label>
-						<font>Condensed-18</font>
-						<include>Grey1</include>
 						<shadowcolor>ff333333</shadowcolor>
 						<visible>true</visible>
 					</control>
 					<control type="label">
 						<width min="29" max="400">auto</width>
-						<height>15</height>
+						<include>LeftInfoFormatWhite</include>
 						<label>$INFO[ListItem.Genre]</label>
-						<font>Condensed-18</font>
-						<include>White2</include>
 						<visible>true</visible>
 					</control>
 				</control>
@@ -1031,7 +1026,6 @@
 				</control>
 				<control type="label">
 					<width min="29" max="600">auto</width>
-					<height>15</height>
 					<label>$INFO[ListItem.Director]</label>
 					<include>LeftInfoFormatWhite</include>
 				</control>

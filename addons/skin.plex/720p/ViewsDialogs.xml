@@ -55,6 +55,24 @@
 		<posy>-60</posy>
 		<posx>-210</posx>
 	</include>
+	<include name="AudioSubtitleStreamPickerArrow">
+		<control type="image">
+			<posx>-14</posx>
+			<posy>100</posy>
+			<include>ArrowBlackLeft</include>
+		</control>
+	</include>
+	<include name="OSDAudioSubtitleStreamPickerWindowPosition">
+		<posy>-60</posy>
+		<posx>-320</posx>
+	</include>
+	<include name="OSDAudioSubtitleStreamPickerArrow">
+		<control type="image">
+			<posx>285</posx>
+			<posy>440</posy>
+			<include>ArrowBlackDown</include>
+		</control>
+	</include>
 	<!-- animations open/close -->
 	<include name="DialogFadeInOut">
 		<animation effect="fade" time="300">WindowOpen</animation>
@@ -73,6 +91,7 @@
 	<include name="DialogSelectDefault">
 		<control type="group">
 			<include condition="Window.IsVisible(10090)">AudioSubtitleStreamPickerWindowPosition</include>
+			<include condition="Window.IsVisible(2901)">OSDAudioSubtitleStreamPickerWindowPosition</include>
 			<!-- bg's -->
 			<control type="group">
 				<posx>340</posx>
@@ -108,13 +127,9 @@
 					<height>50</height>
 					<texture>border-bottom-grey.png</texture>
 				</control>
-				<!-- arrow down -->
-				<control type="image">
-					<description>Dialog arrow</description>
-					<posx>-14</posx>
-					<posy>100</posy>
-					<include>ArrowBlackLeft</include>
-				</control>
+				<!-- arrow -->
+				<include condition="Window.IsVisible(10090)">AudioSubtitleStreamPickerArrow</include>
+				<include condition="Window.IsVisible(2901)">OSDAudioSubtitleStreamPickerArrow</include>
 			</control>
 			<control type="group">
 				<posx>340</posx>

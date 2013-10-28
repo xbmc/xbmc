@@ -2,6 +2,7 @@
 <window id="123">
 	<defaultcontrol always="true">5</defaultcontrol>
 	<zorder>1</zorder>
+	<include>DialogFadeInOut</include>
 	<controls>
 		<!-- ViewsOSD.xml -->
 		<include>OSDSettings</include>
