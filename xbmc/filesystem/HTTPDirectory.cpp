@@ -73,6 +73,14 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   while(http.ReadString(buffer, sizeof(buffer)-1))
   {
     CStdString strBuffer = buffer;
+    std::string fileCharset(http.GetServerReportedCharset());
+    if (!fileCharset.empty() && fileCharset != "UTF-8")
+    {
+      std::string converted;
+      if (g_charsetConverter.ToUtf8(fileCharset, strBuffer, converted) && !converted.empty())
+        strBuffer = converted;
+    }
+
     StringUtils::RemoveCRLF(strBuffer);
 
     if (reItem.RegFind(strBuffer.c_str()) >= 0)
@@ -86,7 +94,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       CStdString strNameTemp = strName.Trim();
 
       CStdStringW wName, wLink, wConverted;
-      g_charsetConverter.unknownToUTF8(strNameTemp);
+      if (fileCharset.empty())
+        g_charsetConverter.unknownToUTF8(strNameTemp);
       g_charsetConverter.utf8ToW(strNameTemp, wName, false);
       HTML::CHTMLUtil::ConvertHTMLToW(wName, wConverted);
       g_charsetConverter.wToUTF8(wConverted, strNameTemp);
@@ -105,7 +114,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
       URIUtils::RemoveSlashAtEnd(strLinkTemp);
       CURL::Decode(strLinkTemp);
-      g_charsetConverter.unknownToUTF8(strLinkTemp);
+      if (fileCharset.empty())
+        g_charsetConverter.unknownToUTF8(strLinkTemp);
       g_charsetConverter.utf8ToW(strLinkTemp, wLink, false);
       HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
       g_charsetConverter.wToUTF8(wConverted, strLinkTemp);
