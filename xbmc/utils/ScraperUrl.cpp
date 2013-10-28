@@ -214,10 +214,9 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
       XFILE::CFile file;
       if (file.Open(strCachePath))
       {
-        char* temp = new char[(int)file.GetLength()];
-        file.Read(temp,file.GetLength());
-        strHTML.clear();
-        strHTML.append(temp,temp+file.GetLength());
+        size_t flen = file.GetLength();
+        char* temp = new char[flen];
+        strHTML.assign(temp, file.Read(temp, flen));
         file.Close();
         delete[] temp;
         return true;
