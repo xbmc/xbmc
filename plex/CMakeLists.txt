@@ -18,16 +18,23 @@ include_directories(
   ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
-if(TARGET_OSX)
+if(TARGET_OSX OR TARGET_WIN32)
   include(ExternalProject)
   ExternalProject_Add(Update-Installer
+    CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}"
     SOURCE_DIR ${plexdir}/Update-Installer
-    INSTALL_COMMAND ""
+    INSTALL_DIR "${CMAKE_BINARY_DIR}"
   )
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Update-Installer-prefix/src/Update-Installer-build/src/updater
-          PERMISSIONS WORLD_READ WORLD_EXECUTE OWNER_WRITE OWNER_EXECUTE OWNER_READ GROUP_EXECUTE GROUP_READ
-          DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources/XBMC/tools)
-endif(TARGET_OSX)
+  if(TARGET_OSX)
+    install(FILES ${CMAKE_BINARY_DIR}/update_installer/updater
+            PERMISSIONS WORLD_READ WORLD_EXECUTE OWNER_WRITE OWNER_EXECUTE OWNER_READ GROUP_EXECUTE GROUP_READ
+            DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources/XBMC/tools)
+  else(TARGET_OSX)
+    install(FILES ${CMAKE_BINARY_DIR}/update_installer/updater.exe
+            PERMISSIONS WORLD_READ WORLD_EXECUTE OWNER_WRITE OWNER_EXECUTE OWNER_READ GROUP_EXECUTE GROUP_READ
+            DESTINATION ${BINPATH} COMPONENT RUNTIME)
+  endif(TARGET_OSX)
+endif(TARGET_OSX OR TARGET_WIN32)
 
 if(TARGET_WIN32)
   # disable safe seh

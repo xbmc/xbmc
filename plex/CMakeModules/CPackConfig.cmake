@@ -47,7 +47,8 @@ if(TARGET_OSX)
 elseif(TARGET_COMMON_LINUX)
   set(CPACK_GENERATOR "TBZ2")
 elseif(TARGET_WIN32)
-  set(CPACK_GENERATOR "NSIS")
+  set(CPACK_GENERATOR "NSIS;ZIP")
+  set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
 endif()
 
 set(CPACK_SOURCE_GENERATOR TBZ2)
@@ -59,20 +60,22 @@ set(CPACK_SOURCE_IGNORE_FILES
   "^${PROJECT_SOURCE_DIR}/upload"
 )
 
-set(PKG package)
 if(TARGET_WIN32)
-  add_custom_target(signed_package ${plexdir}/scripts/WindowsSign.cmd ${CPACK_PACKAGE_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}.exe DEPENDS package)
-  set(PKG signed_package)
-elseif(TARGET_OSX)
-  add_custom_command(
-    OUTPUT PlexHomeTheater-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}-manifest.xml
-    COMMAND ${plexdir}/scripts/create_update.py -p ${CPACK_SYSTEM_NAME} -v ${PLEX_VERSION_STRING} -i PlexHomeTheater-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}.zip -o ${CMAKE_BINARY_DIR}
-    DEPENDS package
-  )
-  add_custom_target(update_manifest DEPENDS PlexHomeTheater-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}-manifest.xml)
-  set(PKG update_manifest)
+  set(MAIN_BINARY "-m \"Plex Home Theater.exe\"")
 endif(TARGET_WIN32)
 
+add_custom_command(
+  OUTPUT PlexHomeTheater-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}-manifest.xml
+  COMMAND ${plexdir}/scripts/create_update.py -p ${CPACK_SYSTEM_NAME} ${MAIN_BINARY} -v ${PLEX_VERSION_STRING} -i ${CPACK_PACKAGE_DIRECTORY}/PlexHomeTheater-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}.zip -o ${CMAKE_BINARY_DIR}
+  DEPENDS package
+)
+add_custom_target(update_manifest DEPENDS PlexHomeTheater-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}-manifest.xml)
+
+set(PKG update_manifest)
+if(TARGET_WIN32)
+  add_custom_target(signed_package ${plexdir}/scripts/WindowsSign.cmd ${CPACK_PACKAGE_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}.exe DEPENDS package update_manifest)
+  set(PKG signed_package)
+endif(TARGET_WIN32)
 add_custom_target(release_package DEPENDS symbols ${PKG})
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/plex/CMakeModules ${CMAKE_MODULE_PATH})
