@@ -647,7 +647,6 @@ CGUIWindow* CGUIWindowManager::GetWindow(int id) const
     return NULL;
   }
 
-  CSingleLock lock(g_graphicsContext);
   WindowMap::const_iterator it = m_mapWindows.find(id);
   if (it != m_mapWindows.end())
     return (*it).second;
