@@ -7,6 +7,9 @@
       </group>
     </category>
     <category id="audiooutput">
+      <group id="1">
+        <setting id="audiooutput.channels" help="36367" />
+      </group>
       <group id="3">
         <setting id="audiooutput.truehdpassthrough">
           <visible>false</visible>

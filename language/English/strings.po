@@ -12450,7 +12450,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#34111"
-msgid "When enabled very quiet noise is sent (for a given period of time) to the audio output device when XBMC is idle, this keeps the receiving device alive ensuring any new sounds are not missed. This might block concurrent applications from outputting sound."
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
 msgstr ""
 
 #empty strings from id 34112 to 34119
@@ -13253,7 +13253,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36169"
-msgid "Select the quality of resampling when audio output needs to be at a different sampling rate from that used by the source. Low quality is fast and will have minimal impact on system resources such as the use of the CPU, Medium & High will use progressively more system resources."
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14213,12 +14213,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36361"
-msgid "Select how audio is output. Fixed - the properties of the audio output are fixed to the specified sampling rate & speaker configuration; Best Match - the properties of the audio output are set to match the properties of the audio source where possible if not the closest match is chosen; Optimized - the properties of the audio output are not changed during playback."
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36362"
-msgid "Select the maximum number of audio channels/speakers available for audio decoded. On OS-X systems where optical/coax digital outputs are used this must be set to 2.0"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14228,7 +14228,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36364"
-msgid "When enabled upmix 2 channel stereo sources to the number of audio channels specified by the Speaker Configuration."
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14241,7 +14241,10 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr ""
 
-#empty string with id 36367
+#: system/settings/darwin_osx.xml
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36368"
