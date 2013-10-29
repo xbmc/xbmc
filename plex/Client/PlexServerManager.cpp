@@ -100,6 +100,9 @@ CPlexServerManager::FindByUUID(const CStdString &uuid)
   if (uuid.Equals("node"))
     return _nodeServer;
 
+  if (uuid.Equals("best"))
+    return m_bestServer;
+
   if (m_serverMap.find(uuid) != m_serverMap.end())
   {
     return m_serverMap.find(uuid)->second;
