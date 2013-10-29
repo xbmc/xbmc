@@ -109,7 +109,7 @@ def create_update(product, version, output, platform, input, delta, fversion, ma
 
 	archive.close()
 
-	shasum = make_shasum(file(tarfilename, "r"))
+	shasum = make_shasum(file(tarfilename, "rb"))
 
 	packages = et.SubElement(rootel, "packages")
 	package = et.SubElement(packages, "package")

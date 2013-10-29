@@ -16,5 +16,5 @@ def make_shasum(fpath):
 if __name__ == "__main__":
 	for f in sys.argv[1:]:
 		for f2 in glob.glob(f):
-			fp=open(f2, "r")
+			fp=open(f2, "rb")
 			print f2, make_shasum(fp)
