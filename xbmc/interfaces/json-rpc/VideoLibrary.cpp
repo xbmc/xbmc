@@ -232,6 +232,24 @@ JSONRPC_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLay
   return OK;
 }
 
+JSONRPC_STATUS CVideoLibrary::GetSeasonDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  int id = (int)parameterObject["seasonid"].asInteger();
+
+  CVideoInfoTag infos;
+  if (!videodatabase.GetSeasonInfo(id, infos) ||
+      infos.m_iDbId <= 0 || infos.m_iIdShow <= 0)
+    return InvalidParams;
+  
+  CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
+  HandleFileItem("seasonid", false, "seasondetails", pItem, parameterObject, parameterObject["properties"], result, false);
+  return OK;
+}
+
 JSONRPC_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CVideoDatabase videodatabase;

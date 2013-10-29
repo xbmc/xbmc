@@ -125,6 +125,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.GetTVShows",                      CVideoLibrary::GetTVShows },
   { "VideoLibrary.GetTVShowDetails",                CVideoLibrary::GetTVShowDetails },
   { "VideoLibrary.GetSeasons",                      CVideoLibrary::GetSeasons },
+  { "VideoLibrary.GetSeasonDetails",                CVideoLibrary::GetSeasonDetails },
   { "VideoLibrary.GetEpisodes",                     CVideoLibrary::GetEpisodes },
   { "VideoLibrary.GetEpisodeDetails",               CVideoLibrary::GetEpisodeDetails },
   { "VideoLibrary.GetMusicVideos",                  CVideoLibrary::GetMusicVideos },

@@ -1073,6 +1073,21 @@
       }
     }
   },
+  "VideoLibrary.GetSeasonDetails": {
+    "type": "method",
+    "description": "Retrieve details about a specific tv show season",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "seasonid", "$ref": "Library.Id", "required": true },
+      { "name": "properties", "$ref": "Video.Fields.Season" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "seasondetails": { "$ref": "Video.Details.Season" }
+      }
+    }
+  },
   "VideoLibrary.GetEpisodes": {
     "type": "method",
     "description": "Retrieve all tv show episodes",
