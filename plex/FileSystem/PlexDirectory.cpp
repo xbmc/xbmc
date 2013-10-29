@@ -409,7 +409,7 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   mediaContainer.SetProperty("plexserver", m_url.GetHostName());
   
   CPlexDirectory::CopyAttributes(root, &mediaContainer, m_url);
-  g_parserKey->Process(m_url, "key", m_url.GetFileName(), &mediaContainer);
+  g_parserKey->Process(m_url, "key", "/" + m_url.GetFileName(), &mediaContainer);
   
   
   /* set the view mode */
