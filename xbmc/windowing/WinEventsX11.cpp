@@ -213,7 +213,6 @@ bool CWinEventsX11Imp::Init(Display *dpy, Window win)
   WinEvents->m_wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
   WinEvents->m_structureChanged = false;
   WinEvents->m_xrrEventPending = false;
-  WinEvents->m_xrrPollTimer.Set(3000);
 
   // open input method
   char *old_locale = NULL, *old_modifiers = NULL;
@@ -280,7 +279,11 @@ bool CWinEventsX11Imp::Init(Display *dpy, Window win)
 #if defined(HAS_XRANDR)
   int iReturn;
   XRRQueryExtension(WinEvents->m_display, &WinEvents->m_RREventBase, &iReturn);
-  XRRSelectInput(WinEvents->m_display, WinEvents->m_window, RRScreenChangeNotifyMask);
+  int numScreens = XScreenCount(WinEvents->m_display);
+  for (int i = 0; i < numScreens; i++)
+  {
+    XRRSelectInput(WinEvents->m_display, RootWindow(WinEvents->m_display, i), RRScreenChangeNotifyMask | RRCrtcChangeNotifyMask | RROutputChangeNotifyMask | RROutputPropertyNotifyMask);
+  }
 #endif
 
   return true;
@@ -327,6 +330,26 @@ bool CWinEventsX11Imp::MessagePump()
   {
     memset(&xevent, 0, sizeof (XEvent));
     XNextEvent(WinEvents->m_display, &xevent);
+
+#if defined(HAS_XRANDR)
+    if (WinEvents && (xevent.type == WinEvents->m_RREventBase + RRScreenChangeNotify))
+    {
+      XRRUpdateConfiguration(&xevent);
+      if (xevent.xgeneric.serial != serial)
+        g_Windowing.NotifyXRREvent();
+      WinEvents->m_xrrEventPending = false;
+      serial = xevent.xgeneric.serial;
+      continue;
+    }
+    else if (WinEvents && (xevent.type == WinEvents->m_RREventBase + RRNotify))
+    {
+      if (xevent.xgeneric.serial != serial)
+        g_Windowing.NotifyXRREvent();
+      WinEvents->m_xrrEventPending = false;
+      serial = xevent.xgeneric.serial;
+      continue;
+    }
+#endif
 
     if (XFilterEvent(&xevent, WinEvents->m_window))
       continue;
@@ -575,18 +598,6 @@ bool CWinEventsX11Imp::MessagePump()
         break;
       }
     }// switch event.type
-
-#if defined(HAS_XRANDR)
-    if (WinEvents && (xevent.type == WinEvents->m_RREventBase + RRScreenChangeNotify))
-    {
-      XRRUpdateConfiguration(&xevent);
-      if (xevent.xgeneric.serial != serial)
-        g_Windowing.NotifyXRREvent();
-      WinEvents->m_xrrEventPending = false;
-      serial = xevent.xgeneric.serial;
-    }
-#endif
-
   }// while
 
 #if defined(HAS_XRANDR)
@@ -595,11 +606,6 @@ bool CWinEventsX11Imp::MessagePump()
     CLog::Log(LOGERROR,"CWinEventsX11::MessagePump - missed XRR Events");
     g_Windowing.NotifyXRREvent();
     WinEvents->m_xrrEventPending = false;
-  }
-  else if (!g_application.m_pPlayer->IsPlaying() && WinEvents && WinEvents->m_xrrPollTimer.IsTimePast())
-  {
-    g_Windowing.NotifyXRREvent(true);
-    WinEvents->m_xrrPollTimer.Set(3000);
   }
 #endif
 
