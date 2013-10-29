@@ -2,6 +2,7 @@
 
 import hashlib
 import sys
+import glob
 
 def make_shasum(fpath):
 	sha1 = hashlib.sha1()
@@ -14,5 +15,6 @@ def make_shasum(fpath):
 
 if __name__ == "__main__":
 	for f in sys.argv[1:]:
-		fp=open(f, "r")
-		print f, make_shasum(fp)
+		for f2 in glob.glob(f):
+			fp=open(f2, "r")
+			print f2, make_shasum(fp)
