@@ -27,7 +27,7 @@
 
 using namespace XFILE;
 
-#define UPDATE_DEBUG 1
+//#define UPDATE_DEBUG 1
 
 CPlexAutoUpdate::CPlexAutoUpdate(const CURL &updateUrl, int searchFrequency)
   : m_forced(false), m_isSearching(false), m_isDownloading(false), m_url(updateUrl), m_searchFrequency(searchFrequency), m_timer(this), m_ready(false)
@@ -49,7 +49,7 @@ void CPlexAutoUpdate::OnTimeout()
   {
     if (version != g_infoManager.GetVersion())
     {
-      CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnTimeout we probably failed to update to version %s since this is %s", version.c_str(), g_infoManager.GetVersion());
+      CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnTimeout we probably failed to update to version %s since this is %s", version.c_str(), g_infoManager.GetVersion().c_str());
       if (isDelta)
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Failed to upgrade!", "PHT failed to (delta) upgrade to version " + version, 10000, true);
       else
@@ -57,7 +57,7 @@ void CPlexAutoUpdate::OnTimeout()
     }
     else
     {
-      CLog::Log(LOGINFO, "CPlexAutoUpdate::OnTimeout successfully upgraded to version %s", g_infoManager.GetVersion());
+      CLog::Log(LOGINFO, "CPlexAutoUpdate::OnTimeout successfully upgraded to version %s", g_infoManager.GetVersion().c_str());
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Upgrade succesfull!", "PHT is upgraded to version " + version, 10000, true);
       CFile::Delete("special://temp/autoupdate/plexupdateinfo.xml");
     }

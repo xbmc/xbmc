@@ -95,7 +95,7 @@ static inline bool BreakPad_MinidumpCallback(const char *dump_dir, const char *m
     return false;
 
   std::string dumpPath = dp + "/" + mid + ".dmp";
-  std::string finalPath = dp + "/" + mid + "-v-" + PLEX_VERSION + ".dmp";
+  std::string finalPath = dp + "/" + mid + "-v-" + g_infoManager.GetVersion().c_str() + ".dmp";
   fprintf(stderr, "***** moving %s to %s", dumpPath.c_str(), finalPath.c_str());
   rename(dumpPath.c_str(), finalPath.c_str());
 
