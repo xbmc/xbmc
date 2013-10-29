@@ -23,18 +23,16 @@
 
 #include "xbmc/Util.h"
 #include "XBDateTime.h"
+#include "GUIInfoManager.h"
 
 using namespace XFILE;
 
-//#define UPDATE_DEBUG 1
+#define UPDATE_DEBUG 1
 
 CPlexAutoUpdate::CPlexAutoUpdate(const CURL &updateUrl, int searchFrequency)
   : m_forced(false), m_isSearching(false), m_isDownloading(false), m_url(updateUrl), m_searchFrequency(searchFrequency), m_timer(this), m_ready(false)
 {
-#ifdef TARGET_DARWIN_OSX
   m_timer.Start(5 * 1000, true);
-#endif
-
 }
 
 void CPlexAutoUpdate::OnTimeout()
@@ -49,9 +47,9 @@ void CPlexAutoUpdate::OnTimeout()
   bool isDelta;
   if (GetUpdateInfo(version, isDelta, packageHash))
   {
-    if (version != PLEX_VERSION)
+    if (version != g_infoManager.GetVersion())
     {
-      CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnTimeout we probably failed to update to version %s since this is %s", version.c_str(), PLEX_VERSION);
+      CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnTimeout we probably failed to update to version %s since this is %s", version.c_str(), g_infoManager.GetVersion());
       if (isDelta)
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Failed to upgrade!", "PHT failed to (delta) upgrade to version " + version, 10000, true);
       else
@@ -59,7 +57,7 @@ void CPlexAutoUpdate::OnTimeout()
     }
     else
     {
-      CLog::Log(LOGINFO, "CPlexAutoUpdate::OnTimeout successfully upgraded to version %s", PLEX_VERSION);
+      CLog::Log(LOGINFO, "CPlexAutoUpdate::OnTimeout successfully upgraded to version %s", g_infoManager.GetVersion());
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Upgrade succesfull!", "PHT is upgraded to version " + version, 10000, true);
       CFile::Delete("special://temp/autoupdate/plexupdateinfo.xml");
     }
@@ -68,7 +66,7 @@ void CPlexAutoUpdate::OnTimeout()
 #ifdef UPDATE_DEBUG
   m_url.SetOption("version", "0.0.0.0");
 #else
-  m_url.SetOption("version", PLEX_VERSION);
+  m_url.SetOption("version", g_infoManager.GetVersion());
 #endif
   m_url.SetOption("build", PLEX_BUILD_TAG);
   m_url.SetOption("channel", "6");
@@ -89,7 +87,7 @@ void CPlexAutoUpdate::OnTimeout()
         if (updateItem->HasProperty("version") &&
             updateItem->GetProperty("live").asBoolean() &&
             updateItem->GetProperty("autoupdate").asBoolean() &&
-            updateItem->GetProperty("version").asString() != PLEX_VERSION)
+            updateItem->GetProperty("version").asString() != g_infoManager.GetVersion())
         {
           CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout got version %s from update endpoint", updateItem->GetProperty("version").asString().c_str());
           updates.Add(updateItem);

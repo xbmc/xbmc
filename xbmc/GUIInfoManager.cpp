@@ -91,6 +91,7 @@
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "plex/PlexApplication.h"
 #include "AutoUpdate/PlexAutoUpdate.h"
+#include "git_revision.h"
 
 using namespace PLAYLIST;
 /* END PLEX */

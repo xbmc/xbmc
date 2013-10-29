@@ -8,6 +8,7 @@
 #include <string>
 
 #include "PlexApplication.h"
+#include "GUIInfoManager.h"
 
 using namespace XFILE;
 using namespace std;
@@ -18,7 +19,7 @@ vector<stringPair> CPlexFile::GetHeaderList()
 {
   std::vector<std::pair<std::string, std::string> > hdrs;
   
-  hdrs.push_back(stringPair("X-Plex-Version", PLEX_VERSION));
+  hdrs.push_back(stringPair("X-Plex-Version", g_infoManager.GetVersion()));
 
   hdrs.push_back(stringPair("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid")));
   hdrs.push_back(stringPair("X-Plex-Provides", "player"));

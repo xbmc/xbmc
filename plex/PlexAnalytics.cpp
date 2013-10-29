@@ -16,6 +16,7 @@
 #include "log.h"
 #include "PlexJobs.h"
 #include "JobManager.h"
+#include "GUIInfoManager.h"
 
 #define ANALYTICS_TID_PHT "UA-6111912-18"
 
@@ -40,7 +41,7 @@ CPlexAnalytics::CPlexAnalytics() : m_timer(this), m_firstEvent(true), m_numberOf
   m_baseOptions.AddOption("tid", ANALYTICS_TID_PHT);
   m_baseOptions.AddOption("ul", g_guiSettings.GetString("locale.language"));
   m_baseOptions.AddOption("an", "Plex Home Theater");
-  m_baseOptions.AddOption("av", PLEX_VERSION);
+  m_baseOptions.AddOption("av", g_infoManager.GetVersion());
   m_baseOptions.AddOption("cid", g_guiSettings.GetString("system.uuid"));
 
   /* let's jump through some hoops to get some resolution info */

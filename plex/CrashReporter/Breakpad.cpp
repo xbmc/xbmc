@@ -13,6 +13,8 @@
 
 #include <string>
 
+#include "GUIInfoManager.h"
+
 #ifdef HAVE_BREAKPAD
 
 //
@@ -76,7 +78,7 @@ bool BreakPad_MinidumpCallback(const wchar_t* dump_path,
   {
     // Rename the file, best effort
     std::wstring dumpPath = (std::wstring)dump_path + L"\\" + minidump_id + L".dmp";
-	  std::wstring newDumpPath = (std::wstring)dump_path + L"\\" + minidump_id + L"-v-" + utf8to16(PLEX_VERSION) + L".dmp";
+    std::wstring newDumpPath = (std::wstring)dump_path + L"\\" + minidump_id + L"-v-" + utf8to16(g_infoManager.GetVersion()) + L".dmp";
     MoveFileW(dumpPath.c_str(), newDumpPath.c_str());
   }
   return succeeded;
