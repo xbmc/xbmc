@@ -132,6 +132,10 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
   if (key == "thumb" || key == "poster")
   {
     width = height = "720";
+    if (key == "poster")
+    {
+      Process(url, "bigPoster", value, item);
+    }
   }
   else if (key == "grandparentThumb")
   {
@@ -147,7 +151,7 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
   {
     width = "1920";
     height = "1080";
-    propertyName = "fanart";
+    propertyName = PLEX_ART_FANART;
   }
   else if (key == "picture")
   {
