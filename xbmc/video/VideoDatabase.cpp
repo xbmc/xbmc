@@ -3742,6 +3742,20 @@ string CVideoDatabase::GetArtForItem(int mediaId, const string &mediaType, const
   return GetSingleValue(query, m_pDS2);
 }
 
+bool CVideoDatabase::RemoveArtForItem(int mediaId, const std::string &mediaType, const std::string &artType)
+{
+  return ExecuteQuery(PrepareSQL("DELETE FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str()));
+}
+
+bool CVideoDatabase::RemoveArtForItem(int mediaId, const std::string &mediaType, const std::set<std::string> &artTypes)
+{
+  bool result = true;
+  for (set<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+    result &= RemoveArtForItem(mediaId, mediaType, *i);
+
+  return result;
+}
+
 bool CVideoDatabase::GetTvShowSeasonArt(int showId, map<int, map<string, string> > &seasonArt)
 {
   try
