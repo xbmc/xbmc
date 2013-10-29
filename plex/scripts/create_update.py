@@ -115,7 +115,7 @@ def create_update(product, version, output, platform, input, delta, fversion, ma
 	package = et.SubElement(packages, "package")
 
 	name = et.SubElement(package, "name")
-	name.text = tarfilename.replace(".zip", "")
+	name.text = os.path.basename(tarfilename.replace(".zip", ""))
 
 	hashel = et.SubElement(package, "hash")
 	hashel.text = shasum
