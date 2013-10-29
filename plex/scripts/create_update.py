@@ -21,7 +21,7 @@ def get_file_element(root, frelpath, size, perms, shasum, tarfilename, ismain):
 	hashel.text = shasum
 
 	package = et.SubElement(fileEl, "package")
-	package.text = tarfilename.replace(".zip", "")
+	package.text = os.path.basename(tarfilename.replace(".zip", ""))
 
 	if ismain:
 		ismainel = et.SubElement(fileEl, "is-main-binary")
