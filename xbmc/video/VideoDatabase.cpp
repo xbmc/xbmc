@@ -2193,6 +2193,41 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
   return -1;
 }
 
+int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idSeason /* = -1 */)
+{
+  if (idShow < 0 || details.m_iSeason < 0)
+    return -1;
+
+   try
+  {
+    BeginTransaction();
+    if (idSeason < 0)
+    {
+      idSeason = AddSeason(idShow, details.m_iSeason);
+      if (idSeason < 0)
+      {
+        CommitTransaction();
+        return -1;
+      }
+    }
+
+    SetArtForItem(idSeason, "season", artwork);
+
+    // and insert the new row
+    CStdString sql = PrepareSQL("UPDATE seasons SET season=%i WHERE idSeason=%i", details.m_iSeason, idSeason);
+    m_pDS->exec(sql.c_str());
+    CommitTransaction();
+
+    return idSeason;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSeason);
+  }
+  RollbackTransaction();
+  return -1;
+}
+
 int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const map<string, string> &artwork, int idShow, int idEpisode)
 {
   try
