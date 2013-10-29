@@ -363,6 +363,16 @@
     },
     "additionalProperties": { "$ref": "Global.String.NotEmpty" }
   },
+  "Media.Artwork.Set": {
+    "type": "object",
+    "properties": {
+      "thumb": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ], "default": "" },
+      "poster": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ], "default": "" },
+      "banner": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ], "default": "" },
+      "fanart": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ], "default": "" }
+    },
+    "additionalProperties": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ] }
+  },
   "Library.Fields.Genre": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string", "enum": [ "title", "thumbnail" ] }

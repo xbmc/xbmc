@@ -473,13 +473,17 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
-  UpdateVideoTag(parameterObject, infos, artwork);
+  std::set<std::string> removedArtwork;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
 
   // we need to manually remove tags/taglinks for now because they aren't replaced
   // due to scrapers not supporting them
   videodatabase.RemoveTagsFromItem(id, "movie");
 
   if (videodatabase.SetDetailsForMovie(infos.m_strFileNameAndPath, infos, artwork, id) <= 0)
+    return InternalError;
+
+  if (!videodatabase.RemoveArtForItem(infos.m_iDbId, "movie", removedArtwork))
     return InternalError;
 
   if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
@@ -518,13 +522,17 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
-  UpdateVideoTag(parameterObject, infos, artwork);
+  std::set<std::string> removedArtwork;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
 
   // we need to manually remove tags/taglinks for now because they aren't replaced
   // due to scrapers not supporting them
   videodatabase.RemoveTagsFromItem(id, "tvshow");
 
   if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, artwork, seasonArt, id) <= 0)
+    return InternalError;
+
+  if (!videodatabase.RemoveArtForItem(infos.m_iDbId, "tvshow", removedArtwork))
     return InternalError;
 
   if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
@@ -569,9 +577,13 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITrans
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
-  UpdateVideoTag(parameterObject, infos, artwork);
+  std::set<std::string> removedArtwork;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
 
   if (videodatabase.SetDetailsForEpisode(infos.m_strFileNameAndPath, infos, artwork, tvshowid, id) <= 0)
+    return InternalError;
+
+  if (!videodatabase.RemoveArtForItem(infos.m_iDbId, "episode", removedArtwork))
     return InternalError;
 
   if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
@@ -611,13 +623,17 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
-  UpdateVideoTag(parameterObject, infos, artwork);
+  std::set<std::string> removedArtwork;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
 
   // we need to manually remove tags/taglinks for now because they aren't replaced
   // due to scrapers not supporting them
   videodatabase.RemoveTagsFromItem(id, "musicvideo");
 
   if (videodatabase.SetDetailsForMusicVideo(infos.m_strFileNameAndPath, infos, artwork, id) <= 0)
+    return InternalError;
+
+  if (!videodatabase.RemoveArtForItem(infos.m_iDbId, "musicvideo", removedArtwork))
     return InternalError;
 
   if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
@@ -895,7 +911,7 @@ void CVideoLibrary::UpdateResumePoint(const CVariant &parameterObject, CVideoInf
   }
 }
 
-void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork)
+void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork)
 {
   if (ParameterNotNull(parameterObject, "title"))
     details.m_strTitle = parameterObject["title"].asString();
@@ -972,8 +988,13 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
     CVariant art = parameterObject["art"];
     for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
     {
-      if (!artIt->second.asString().empty())
+      if (artIt->second.isString() && !artIt->second.asString().empty())
         artwork[artIt->first] = CTextureUtils::UnwrapImageURL(artIt->second.asString());
+      else if (artIt->second.isNull())
+      {
+        artwork.erase(artIt->first);
+        removedArtwork.insert(artIt->first);
+      }
     }
   }
 }
