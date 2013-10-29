@@ -1324,6 +1324,17 @@
     ],
     "returns": "string"
   },
+  "VideoLibrary.SetSeasonDetails": {
+    "type": "method",
+    "description": "Update the given season with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "seasonid", "$ref": "Library.Id", "required": true },
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
+    ],
+    "returns": "string"
+  },
   "VideoLibrary.SetEpisodeDetails": {
     "type": "method",
     "description": "Update the given episode with the given details",

@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.9.1";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.10.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -2713,6 +2713,17 @@ namespace JSONRPC
         "{ \"name\": \"thumbnail\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
+        "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork.Set\", \"required\": true } ], \"default\": null }"
+      "],"
+      "\"returns\": \"string\""
+    "}",
+    "\"VideoLibrary.SetSeasonDetails\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Update the given season with the given details\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"UpdateData\","
+      "\"params\": ["
+        "{ \"name\": \"seasonid\", \"$ref\": \"Library.Id\", \"required\": true },"
         "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork.Set\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""

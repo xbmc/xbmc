@@ -565,6 +565,39 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   return ACK;
 }
 
+JSONRPC_STATUS CVideoLibrary::SetSeasonDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["seasonid"].asInteger();
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVideoInfoTag infos;
+  videodatabase.GetSeasonInfo(id, infos);
+  if (infos.m_iDbId <= 0 || infos.m_iIdShow <= 0)
+  {
+    videodatabase.Close();
+    return InvalidParams;
+  }
+
+  // get artwork
+  std::map<std::string, std::string> artwork;
+  videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
+
+  std::set<std::string> removedArtwork;
+  UpdateVideoTag(parameterObject, infos, artwork);
+
+  if (videodatabase.SetDetailsForSeason(infos, artwork, infos.m_iIdShow, id) <= 0)
+    return InternalError;
+
+  if (!videodatabase.RemoveArtForItem(infos.m_iDbId, "season", removedArtwork))
+    return InternalError;
+
+  CJSONRPCUtils::NotifyItemUpdated();
+  return ACK;
+}
+
 JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int id = (int)parameterObject["episodeid"].asInteger();
