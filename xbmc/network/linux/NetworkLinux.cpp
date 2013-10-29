@@ -584,7 +584,8 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, CStdString
   
   if (sysctl(mib, sizeof(mib) / sizeof(mib[0]), NULL, &needed, NULL, 0) == 0)
   {   
-    if (buf = (char*)malloc(needed))
+    buf = (char*)malloc(needed);
+    if (buf)
     {      
       if (sysctl(mib, sizeof(mib) / sizeof(mib[0]), buf, &needed, NULL, 0) == 0)
       {        

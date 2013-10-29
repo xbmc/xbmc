@@ -87,7 +87,7 @@ bool URIUtils::HasExtension(const CStdString& strFileName, const CStdString& str
   {
     // Iterate backwards over strFileName untill we hit a '.' or a mismatch
     for (CStdString::const_reverse_iterator itFileName = strFileName.rbegin();
-         itFileName != strFileName.rend(), itExtensions != strExtensions.rend(),
+         itFileName != strFileName.rend() && itExtensions != strExtensions.rend() &&
          tolower(*itFileName) == *itExtensions;
          ++itFileName, ++itExtensions)
     {
