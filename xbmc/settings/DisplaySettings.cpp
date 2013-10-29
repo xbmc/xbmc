@@ -219,19 +219,13 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
 
   const std::string &settingId = setting->GetId();
   if (settingId == "videoscreen.resolution" ||
-      settingId == "videoscreen.screen" ||
-      settingId == "videoscreen.monitor")
+      settingId == "videoscreen.screen")
   {
     RESOLUTION newRes = RES_DESKTOP;
     if (settingId == "videoscreen.resolution")
       newRes = (RESOLUTION)((CSettingInt*)setting)->GetValue();
     else if (settingId == "videoscreen.screen")
       newRes = GetResolutionForScreen();
-    else if (settingId == "videoscreen.monitor")
-    {
-      g_Windowing.UpdateResolutions();
-      newRes = GetResolutionForScreen();
-    }
 
     string screenmode = GetStringFromResolution(newRes);
     CSettings::Get().SetString("videoscreen.screenmode", screenmode);
@@ -242,11 +236,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     RESOLUTION newRes = GetResolutionFromString(((CSettingString*)setting)->GetValue());
 
     SetCurrentResolution(newRes, false);
-    bool outputChanged = false;
-#if defined(HAS_GLX)
-    outputChanged = !g_Windowing.IsCurrentOutput(CSettings::Get().GetString("videoscreen.monitor"));
-#endif
-    g_graphicsContext.SetVideoResolution(newRes, outputChanged);
+    g_graphicsContext.SetVideoResolution(newRes);
 
     // check if the old or the new resolution was/is windowed
     // in which case we don't show any prompt to the user
@@ -264,6 +254,28 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
       else
         m_resolutionChangeAborted = false;
     }
+  }
+  else if (settingId == "videoscreen.monitor")
+  {
+    g_Windowing.UpdateResolutions();
+    RESOLUTION newRes = GetResolutionForScreen();
+
+    SetCurrentResolution(newRes, false);
+    g_graphicsContext.SetVideoResolution(newRes, true);
+
+    if (!m_resolutionChangeAborted)
+    {
+      bool cancelled = false;
+      if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
+      {
+        m_resolutionChangeAborted = true;
+        return false;
+      }
+    }
+    else
+      m_resolutionChangeAborted = false;
+
+    return true;
   }
   else if (settingId == "videoscreen.monitorsingle")
   {
@@ -688,9 +700,11 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(const CSetting *setting, std
 #if defined(HAS_GLX)
   std::vector<CStdString> monitors;
   g_Windowing.GetConnectedOutputs(&monitors);
+  std::string currentMonitor = CSettings::Get().GetString("videoscreen.monitor");
   for (unsigned int i=0; i<monitors.size(); ++i)
   {
-    if(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput.Equals(monitors[i]))
+    if(currentMonitor.compare("Default") != 0 &&
+       CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput.Equals(monitors[i]))
     {
       current = monitors[i];
     }
