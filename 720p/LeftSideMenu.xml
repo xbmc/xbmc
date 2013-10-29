@@ -8,6 +8,11 @@
 		<animation effect="slide" start="0" end="-246" time="500" condition="ControlGroup(1300).HasFocus()">WindowClose</animation>
 		<animation effect="slide" start="0" end="-246" time="500" condition="ControlGroup(1300).HasFocus() + Container.Content(secondary)">Conditional</animation>
 	</include>
+	<include name="leftMenuSlideHome">
+		<animation effect="slide" start="0" end="317" time="500" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+		<animation effect="slide" start="0" end="-317" time="500" condition="ControlGroup(1300).HasFocus()">WindowClose</animation>
+		<animation effect="slide" start="0" end="-317" time="500" condition="ControlGroup(1300).HasFocus() + Container.Content(secondary)">Conditional</animation>
+	</include>
 	<include name="rightSideSlide">
 		<include>leftMenuSlide</include>
 		<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
@@ -40,6 +45,62 @@
 				<texture>arrow-big.png</texture>
 				<colordiffuse>FF000000</colordiffuse>
 			</control>
+			<control type="image">
+				<posy>41</posy>
+				<posx>25</posx>
+				<width>24</width>
+				<height>24</height>
+				<aspectratio>keep</aspectratio>
+				<texture>left-menu-filters-icon.png</texture>
+				<colordiffuse>FF999999</colordiffuse>
+				<visible>Container.content(movies) | Container.content(tvshows)</visible>
+			</control>
+			<control type="image">
+				<posy>680</posy>
+				<posx>30</posx>
+				<width>12</width>
+				<height>18</height>
+				<aspectratio>scale</aspectratio>
+				<texture flipx="true">left-menu-indicator-arrow.png</texture>
+				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
+				<visible>!Container.Content(secondary) + !Window.IsActive(10202) + !Container.Content(tvshow) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(episode) + !Container.Content(movie) + !Container.Content(clip)</visible>
+			</control>
+		</control>
+	</include>
+	<include name="leftMenuBgHome">
+		<control type="group">
+			<posy>0</posy>
+			<!-- Background -->
+			<control type="image">
+				<posx>-324</posx>
+				<height>720</height>
+				<width>325</width>
+				<include>Black</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="75"/>
+				</animation>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<width>74</width>
+				<height>720</height>
+				<include>Black</include>
+				<animation type="Conditional" condition="ControlGroup(1300).HasFocus()">
+					<effect type="fade" start="0" time="300" end="75"/>
+				</animation>
+				<animation type="Conditional" condition="!ControlGroup(1300).HasFocus()">
+					<effect type="fade" start="75" time="200" end="0"/>
+				</animation>
+			</control>
+			<!--><control type="image">
+				<posy>498</posy>
+				<posx>74</posx>
+				<width>16</width>
+				<height>32</height>
+				<aspectratio>scale</aspectratio>
+				<texture>arrow-big.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+			</control>-->
 			<control type="image">
 				<posy>41</posy>
 				<posx>25</posx>
@@ -158,13 +219,13 @@
 		<onright>-</onright>
 	</include>
 	<!-- Home menu -->
-	<include name="_LeftSideMenuHome">
+	<include name="LeftSideMenuHome">
 		<!-- Home.xml -->
 		<control type="group">
 			<visible>true</visible>
 			<include>leftMenuInitSlide</include>
-			<include>leftMenuSlide</include>
-			<include>leftMenuBg</include>
+			<include>leftMenuSlideHome</include>
+			<include>leftMenuBgHome</include>
 			<!-- global search-->
 			<!--><include>GlobalSearch</include>-->
 			<!-- filters & sorting menu -->
@@ -178,73 +239,52 @@
 				<ondown>19000</ondown>
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
-				<!-- FILTERS -->
-				<!-- primary filter list title -->
-				<control type="label" id="19008">
+				<!-- options list title -->
+				<control type="label">
 					<description>Title</description>
-					<posy>90</posy>
+					<posy>0</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
+					<label>MORE:</label>
 				</control>
-				<!-- primary filters list -->
-				<control type="grouplist" id="19000">
-					<posy>150</posy>
+				<!-- options list -->
+				<control type="grouplist">
+					<posy>80</posy>
 					<posx>15</posx>
-					<ondown>19010</ondown>
-					<onright>777</onright>
+					<ondown>1300</ondown>
+					<onup>1300</onup>
+					<onright>300</onright>
 					<itemgap>0</itemgap>
-				</control>
-
-				<!-- secondary filters list title -->
-				<control type="label" id="19009">
-					<description>Secondary Title</description>
-					<posy>200</posy>
-					<posx>253</posx>
-					<include>leftMenuTitle</include>
-					<label>FILTER</label>
-				</control>
-				<!-- secondary filters list -->
-				<control type="grouplist" id="19001">
-					<posy>260</posy>
-					<posx>15</posx>
-					<ondown>19010</ondown>
-					<onright>777</onright>
-					<itemgap>0</itemgap>
-				</control>
-
-				<!-- filters buttons -->
-				<control type="button" id="19005">
-					<textoffsetx>35</textoffsetx>
-					<include>leftMenuFormat</include>
-				</control>
-				<control type="radiobutton" id="19006">
-					<textoffsetx>35</textoffsetx>
-					<include>leftMenuFormat</include>
-					<include>leftMenuFilterRadioButton</include>
-				</control>
-
-				<!-- SORTING -->
-				<!-- sorting list title -->
-				<control type="label" id="19019">
-					<description>Title</description>
-					<posy>420</posy>
-					<posx>253</posx>
-					<include>leftMenuTitle</include>
-					<label>SORT</label>
-				</control>
-				<!-- sorting list -->
-				<control type="grouplist" id="19010">
-					<posy>485</posy>
-					<posx>10</posx>
-					<onup>19000</onup>
-					<onright>777</onright>
-					<itemgap>0</itemgap>
-				</control>
-				<!-- sorting buttons -->
-				<control type="radiobutton" id="19011">
-					<textoffsetx>30</textoffsetx>
-					<include>leftMenuFormat</include>
-					<include>leftMenuSortingButton</include>
+					<control type="button" id="1305">
+						<textoffsetx>35</textoffsetx>
+						<include>leftMenuFormat</include>
+						<label> $LOCALIZE[31952]</label>
+						<onclick>Plex.ActivateWindow(1,plexserver://channeldirectory,return)</onclick>
+					</control>
+					<control type="button" id="1304">
+						<textoffsetx>35</textoffsetx>
+						<include>leftMenuFormat</include>
+						<label>$LOCALIZE[31955]</label>
+						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
+					</control>
+					<control type="button" id="1303">
+						<textoffsetx>35</textoffsetx>
+						<include>leftMenuFormat</include>
+						<label>$LOCALIZE[31961]</label>
+						<onclick>Plex.Powerdown</onclick>
+					</control>
+					<control type="button" id="1302">
+						<textoffsetx>35</textoffsetx>
+						<include>leftMenuFormat</include>
+						<label>$LOCALIZE[31960]</label>
+						<onclick>Plex.Suspend</onclick>
+					</control>
+					<control type="button" id="1301">
+						<textoffsetx>35</textoffsetx>
+						<include>leftMenuFormat</include>
+						<label>$LOCALIZE[31007]</label>
+						<onclick>Plex.Quit</onclick>
+					</control>
 				</control>
 			</control>
 		</control>
