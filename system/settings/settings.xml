@@ -854,7 +854,12 @@
         <setting id="pvrmenu.searchicons" type="action" label="19167" help="36217">
           <level>1</level>
           <dependencies>
-            <dependency type="enable" setting="pvrmanager.enabled">true</dependency>
+            <dependency type="enable">
+              <and>
+                <condition setting="pvrmanager.enabled" operator="is">true</condition>
+                <condition setting="pvrmenu.iconpath" operator="!is"></condition>
+              </and>
+            </dependency>
           </dependencies>
         </setting>
       </group>
