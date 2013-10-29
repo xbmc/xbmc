@@ -65,8 +65,6 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 // Time before ill-behaved scripts are terminated
 #define PYTHON_SCRIPT_TIMEOUT 5000 // ms
 
-#define THREAD_STOP_TIMEOUT_MILLIS 5000
-
 using namespace std;
 using namespace XFILE;
 
@@ -288,22 +286,23 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   }
 
   bool systemExitThrown = false;
+  InvokerState stateToSet;
   if (!failed && !PyErr_Occurred())
   {
     CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): script successfully run", GetId(), m_source);
-    setState(InvokerStateDone);
+    stateToSet = InvokerStateDone;
     onSuccess();
   }
   else if (PyErr_ExceptionMatches(PyExc_SystemExit))
   {
     systemExitThrown = true;
     CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): script aborted", GetId(), m_source);
-    setState(InvokerStateFailed);
+    stateToSet = InvokerStateFailed;
     onAbort();
   }
   else
   {
-    setState(InvokerStateFailed);
+    stateToSet = InvokerStateFailed;
 
     // if it failed with an exception we already logged the details
     if (!failed)
@@ -317,14 +316,16 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
   // no need to do anything else because the script has already stopped
   if (failed)
+  {
+    setState(stateToSet);
     return true;
+  }
 
   PyObject *m = PyImport_AddModule((char*)"xbmc");
   if (m == NULL || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
     CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(), m_source);
 
   // make sure all sub threads have finished
-  XbmcThreads::EndTime waitTime(THREAD_STOP_TIMEOUT_MILLIS); // we will wait THREAD_STOP_TIMEOUT_MILLIS for any given thread to end
   for (PyThreadState* s = state->interp->tstate_head, *old = NULL; s;)
   {
     if (s == state)
@@ -335,22 +336,12 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     if (old != s)
     {
       CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): waiting on thread %"PRIu64, GetId(), m_source, (uint64_t)s->thread_id);
-      waitTime.Set(THREAD_STOP_TIMEOUT_MILLIS); // reset the wait time
       old = s;
     }
 
     CPyThreadState pyState;
     Sleep(100);
     pyState.Restore();
-
-    if (waitTime.IsTimePast())
-    {
-      // let's kick this and see if it helps
-      // Raise a SystemExit exception in python threads
-      Py_XDECREF(s->async_exc);
-      s->async_exc = PyExc_SystemExit;
-      Py_XINCREF(s->async_exc);
-    }
 
     s = state->interp->tstate_head;
   }
@@ -399,6 +390,8 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   languageHook->UnregisterMe();
 
   PyEval_ReleaseLock();
+
+  setState(stateToSet);
 
   return true;
 }
@@ -510,7 +503,7 @@ std::map<std::string, CPythonInvoker::PythonModuleInitialization> CPythonInvoker
 
 void CPythonInvoker::onInitialization()
 {
-  TRACE;
+  XBMC_TRACE;
   {
     GilSafeSingleLock lock(s_critical);
     initializeModules(getModules());
@@ -546,7 +539,7 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 
 void CPythonInvoker::onDeinitialization()
 {
-  TRACE;
+  XBMC_TRACE;
 }
 
 void CPythonInvoker::onError()
