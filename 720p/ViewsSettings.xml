@@ -4,7 +4,7 @@
 	<include name="SettingsBG">
 		<control type="group">
 			<include>FadeDialog</include>
-			<posy>190</posy>
+			<posy>110</posy>
 			<posx>100</posx>
 			<!-- left side -->
 			<control type="group">
@@ -80,7 +80,7 @@
 		<control type="group" id="302">
 			<include>FadeDialog</include>
 			<control type="grouplist" id="3">
-				<posy>215</posy>
+				<posy>135</posy>
 				<posx>120</posx>
 				<width>350</width>
 				<onleft>997</onleft>
@@ -103,7 +103,7 @@
 		<control type="group" id="301">
 			<include>FadeDialog</include>
 			<posx>400</posx>
-			<posy>150</posy>
+			<posy>70</posy>
 			<width>750</width>
 			<animation type="WindowOpen">
 				<effect type="fade" time="200"/>

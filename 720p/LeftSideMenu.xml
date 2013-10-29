@@ -567,7 +567,7 @@
 			<!-- page title -->
 			<control type="group">
 				<posx>100</posx>
-				<posy>118</posy>
+				<posy>40</posy>
 				<!--><control type="image">
 					<texture>arrow-big.png</texture>
 					<colordiffuse>orange</colordiffuse>
@@ -610,7 +610,7 @@
 			</control>
 			<control type="list" id="997">
 				<posx>0</posx>
-				<posy>100</posy>
+				<posy>90</posy>
 				<width>1000</width>
 				<height>700</height>
 				<onup>997</onup>
