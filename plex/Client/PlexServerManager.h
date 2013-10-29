@@ -87,7 +87,7 @@ class CPlexServerReachabilityThread : public CThread
     CPlexServerReachabilityThread(CPlexServerManagerPtr serverManager, CPlexServerPtr server)
       : CThread("ServerReachability: " + server->GetName()), m_server(server), m_serverManager(serverManager)
     {
-      Create(false);
+      Create(true);
     }
 
     void Process();

@@ -51,8 +51,7 @@ CPlexServerManager::CPlexServerManager() : m_stopped(false)
   _nodeServer->SetActiveConnection(conn);
 }
 
-CPlexServerPtr
-CPlexServerManager::FindByHostAndPort(const CStdString &host, int port)
+CPlexServerPtr CPlexServerManager::FindByHostAndPort(const CStdString &host, int port)
 {
   CSingleLock lk(m_serverManagerLock);
 
@@ -281,10 +280,6 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
   {
     CLog::Log(LOGINFO, "CPlexServerManager::ServerRechabilityDone still %ld server checking reachability", m_reachabilityThreads.size());
   }
-  
-  if (rt)
-    delete rt;
-
 }
 
 void
