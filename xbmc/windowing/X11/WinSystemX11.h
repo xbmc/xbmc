@@ -69,7 +69,7 @@ public:
   Display*  GetDisplay() { return m_dpy; }
   GLXWindow GetWindow() { return m_glWindow; }
   GLXContext GetGlxContext() { return m_glContext; }
-  void NotifyXRREvent(bool poll = false);
+  void NotifyXRREvent();
   void GetConnectedOutputs(std::vector<CStdString> *outputs);
   bool IsCurrentOutput(CStdString output);
   void NotifyMouseCoverage(bool covered);
@@ -78,7 +78,7 @@ protected:
   bool RefreshGlxContext(bool force);
   void CheckDisplayEvents();
   void OnLostDevice();
-  bool SetWindow(int width, int height, bool fullscreen, const CStdString &output);
+  bool SetWindow(int width, int height, bool fullscreen, const std::string &output);
 
   Window       m_glWindow, m_mainWindow;
   GLXContext   m_glContext;
@@ -94,8 +94,8 @@ protected:
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   uint64_t                     m_dpyLostTime;
-  CStdString                   m_currentOutput;
-  CStdString                   m_userOutput;
+  std::string                  m_currentOutput;
+  std::string                  m_userOutput;
   bool                         m_windowDirty;
   bool                         m_bIsInternalXrr;
   bool                         m_newGlContext;
