@@ -42,6 +42,7 @@ public:
   virtual bool CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
   virtual bool DestroyWindow();
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
+  bool         ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop, void *additional);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
   virtual void NotifyAppFocusChange(bool bGaining);
