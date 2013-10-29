@@ -33,7 +33,7 @@ namespace XBMCAddon
      */
     PythonCallbackHandler::PythonCallbackHandler()
     {
-      TRACE;
+      XBMC_TRACE;
       objectThreadState = PyThreadState_Get();
     }
 
@@ -43,7 +43,7 @@ namespace XBMCAddon
      */
     bool PythonCallbackHandler::isStateOk(AddonClass* obj)
     {
-      TRACE;
+      XBMC_TRACE;
       PyThreadState* state = PyThreadState_Get();
       if (objectThreadState == state)
       {
@@ -64,7 +64,7 @@ namespace XBMCAddon
      */
     bool PythonCallbackHandler::shouldRemoveCallback(AddonClass* obj, void* threadState)
     {
-      TRACE;
+      XBMC_TRACE;
       if (threadState == objectThreadState)
         return true;
 

@@ -74,7 +74,7 @@ namespace XBMCAddon
 
     virtual ~CallbackFunction() { deallocating(); }
 
-    virtual void executeCallback() { TRACE; ((*obj).*(meth))(); }
+    virtual void executeCallback() { XBMC_TRACE; ((*obj).*(meth))(); }
   };
 
   /**
@@ -98,7 +98,7 @@ namespace XBMCAddon
 
     virtual ~CallbackFunction() { deallocating(); }
 
-    virtual void executeCallback() { TRACE; ((*obj).*(meth))(param); }
+    virtual void executeCallback() { XBMC_TRACE; ((*obj).*(meth))(param); }
   };
 
   /**
@@ -123,7 +123,7 @@ namespace XBMCAddon
 
     virtual ~CallbackFunction() { deallocating(); }
 
-    virtual void executeCallback() { TRACE; ((*obj).*(meth))(param); }
+    virtual void executeCallback() { XBMC_TRACE; ((*obj).*(meth))(param); }
   };
 
 
@@ -149,7 +149,7 @@ namespace XBMCAddon
 
     virtual ~CallbackFunction() { deallocating(); }
 
-    virtual void executeCallback() { TRACE; ((*obj).*(meth))(param1,param2); }
+    virtual void executeCallback() { XBMC_TRACE; ((*obj).*(meth))(param1,param2); }
   };
 
 
@@ -176,7 +176,7 @@ namespace XBMCAddon
 
     virtual ~CallbackFunction() { deallocating(); }
 
-    virtual void executeCallback() { TRACE; ((*obj).*(meth))(param1,param2,param3); }
+    virtual void executeCallback() { XBMC_TRACE; ((*obj).*(meth))(param1,param2,param3); }
   };
 }
 

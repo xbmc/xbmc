@@ -70,7 +70,7 @@ using namespace xbmcgui;
 
 // This is such a damn hack it makes me nauseous
 %feature("python:rcmp") XBMCAddon::xbmcgui::Action
-  { TRACE;
+  { XBMC_TRACE;
     if (method == Py_EQ)
     {
       XBMCAddon::xbmcgui::Action* a1 = (Action*)retrieveApiInstance(obj1,&TyXBMCAddon_xbmcgui_Action_Type,"rcmp","XBMCAddon::xbmcgui::Action");

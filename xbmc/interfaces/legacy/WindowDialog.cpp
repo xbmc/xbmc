@@ -38,8 +38,8 @@ namespace XBMCAddon
 
     bool WindowDialog::OnMessage(CGUIMessage& message)
     {
-#ifdef ENABLE_TRACE_API
-      TRACE;
+#ifdef ENABLE_XBMC_TRACE_API
+      XBMC_TRACE;
       CLog::Log(LOGDEBUG,"%sNEWADDON WindowDialog::OnMessage Message %d", _tg.getSpaces(),message.GetMessage());
 #endif
 
@@ -65,7 +65,7 @@ namespace XBMCAddon
 
     bool WindowDialog::OnAction(const CAction &action)
     {
-      TRACE;
+      XBMC_TRACE;
       return WindowDialogMixin::OnAction(action) ? true : Window::OnAction(action);
     }
 

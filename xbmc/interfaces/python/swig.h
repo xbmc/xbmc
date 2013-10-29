@@ -175,7 +175,7 @@ namespace PythonBindings
     static inline int compare(PyObject* obj1, PyObject* obj2, const char* swigType, const char* methodNamespacePrefix, const char* methodNameForErrorString)
       throw(XBMCAddon::WrongTypeException)
     {
-      TRACE;
+      XBMC_TRACE;
       try
       {
         T* o1 = (T*)retrieveApiInstance(obj1, swigType, methodNamespacePrefix, methodNameForErrorString);

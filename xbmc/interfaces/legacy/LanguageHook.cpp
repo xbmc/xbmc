@@ -34,7 +34,7 @@ namespace XBMCAddon
 
   void LanguageHook::SetLanguageHook(LanguageHook* languageHook)
   {
-    TRACE;
+    XBMC_TRACE;
     languageHook->Acquire();
     addonLanguageHookTls.set(languageHook);
   }

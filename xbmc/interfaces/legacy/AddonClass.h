@@ -111,7 +111,7 @@ namespace XBMCAddon
      *  on the object. It will prevent the deallocation during
      *  the time it's held.
      */
-    bool isDeallocating() { TRACE; return m_isDeallocating; }
+    bool isDeallocating() { XBMC_TRACE; return m_isDeallocating; }
 
     static short getNumAddonClasses();
 

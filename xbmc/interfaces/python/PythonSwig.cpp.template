@@ -152,7 +152,7 @@ void doMethod(Node method, MethodType methodType)
                    if (doAsMappingIndex) { %>, PyObject* py${params[0].@name}<% }
                    else if (methodType != MethodType.destructor) { %> , PyObject *args, PyObject *kwds <%} %> )
   {
-    TRACE;
+    XBMC_TRACE;
 <%  if (numParams > 0)
     { 
       if (useKeywordParsing && !doAsMappingIndex)

@@ -222,7 +222,7 @@ namespace PythonBindings
    */
   void prepareForReturn(XBMCAddon::AddonClass* c)
   {
-    TRACE;
+    XBMC_TRACE;
     if(c) { 
       c->Acquire(); 
       PyThreadState* state = PyThreadState_Get();
@@ -232,7 +232,7 @@ namespace PythonBindings
 
   static bool handleInterpRegistrationForClean(XBMCAddon::AddonClass* c)
   {
-    TRACE;
+    XBMC_TRACE;
     if(c){
       XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> lh = 
         XBMCAddon::AddonClass::Ref<XBMCAddon::AddonClass>(c->GetLanguageHook());
@@ -259,7 +259,7 @@ namespace PythonBindings
    */
   void cleanForDealloc(XBMCAddon::AddonClass* c) 
   { 
-    TRACE;
+    XBMC_TRACE;
     if (handleInterpRegistrationForClean(c))
       c->Release();
   }
@@ -274,7 +274,7 @@ namespace PythonBindings
    */
   void cleanForDealloc(XBMCAddon::xbmcgui::Window* c) 
   {
-    TRACE;
+    XBMC_TRACE;
     if (handleInterpRegistrationForClean(c))
     { 
       c->dispose();

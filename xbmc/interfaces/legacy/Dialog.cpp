@@ -352,11 +352,11 @@ namespace XBMCAddon
       return value;
     }
 
-    DialogProgress::~DialogProgress() { TRACE; deallocating(); }
+    DialogProgress::~DialogProgress() { XBMC_TRACE; deallocating(); }
 
     void DialogProgress::deallocating()
     {
-      TRACE;
+      XBMC_TRACE;
 
       if (dlg)
       {
@@ -428,11 +428,11 @@ namespace XBMCAddon
       return dlg->IsCanceled();
     }
 
-    DialogProgressBG::~DialogProgressBG() { TRACE; deallocating(); }
+    DialogProgressBG::~DialogProgressBG() { XBMC_TRACE; deallocating(); }
 
     void DialogProgressBG::deallocating()
     {
-      TRACE;
+      XBMC_TRACE;
 
       if (dlg)
       {

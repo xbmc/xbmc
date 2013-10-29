@@ -73,22 +73,22 @@ namespace XBMCAddon
       /**
        * getId() -- Returns the action's current id as a long or 0 if no action is mapped in the xml's.
        */
-      long getId() { TRACE; return id; }
+      long getId() { XBMC_TRACE; return id; }
 
       /**
        * getButtonCode() -- Returns the button code for this action.
        */
-      long getButtonCode() { TRACE; return buttonCode; }
+      long getButtonCode() { XBMC_TRACE; return buttonCode; }
 
       /**
        * getAmount1() -- Returns the first amount of force applied to the thumbstick n.
        */
-      float getAmount1() { TRACE; return fAmount1; }
+      float getAmount1() { XBMC_TRACE; return fAmount1; }
       
       /**
        * getAmount2() -- Returns the second amount of force applied to the thumbstick n.
        */
-      float getAmount2() { TRACE; return fAmount2; }
+      float getAmount2() { XBMC_TRACE; return fAmount2; }
     };
 
     //============================================================================
@@ -179,10 +179,10 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool    OnBack(int actionId);
       SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
 
-      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool    IsDialog() const { TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool    IsModalDialog() const { TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { XBMC_TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool    IsDialog() const { XBMC_TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool    IsModalDialog() const { XBMC_TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { XBMC_TRACE; return false; };
       SWIGHIDDENVIRTUAL void    dispose();
 
       // This is called from the InterceptorBase destructor to prevent further

@@ -169,7 +169,7 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool      OnDoubleClick(int iItem);
       SWIGHIDDENVIRTUAL void      Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
-      SWIGHIDDENVIRTUAL bool IsMediaWindow() const { TRACE; return true; };
+      SWIGHIDDENVIRTUAL bool IsMediaWindow() const { XBMC_TRACE; return true; };
 
       // This method is identical to the Window::OnDeinitWindow method
       //  except it passes the message on to their respective parents.
@@ -236,15 +236,15 @@ namespace XBMCAddon
 
 #ifndef SWIG
       SWIGHIDDENVIRTUAL bool    OnMessage(CGUIMessage &message);
-      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { TRACE; return WindowDialogMixin::IsDialogRunning(); }
-      SWIGHIDDENVIRTUAL bool    IsDialog() const { TRACE; return true;};
-      SWIGHIDDENVIRTUAL bool    IsModalDialog() const { TRACE; return true; };
-      SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { XBMC_TRACE; return WindowDialogMixin::IsDialogRunning(); }
+      SWIGHIDDENVIRTUAL bool    IsDialog() const { XBMC_TRACE; return true;};
+      SWIGHIDDENVIRTUAL bool    IsModalDialog() const { XBMC_TRACE; return true; };
+      SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { XBMC_TRACE; return false; };
       SWIGHIDDENVIRTUAL bool    OnAction(const CAction &action);
       SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
 
-      SWIGHIDDENVIRTUAL inline void show() { TRACE; WindowDialogMixin::show(); }
-      SWIGHIDDENVIRTUAL inline void close() { TRACE; WindowDialogMixin::close(); }
+      SWIGHIDDENVIRTUAL inline void show() { XBMC_TRACE; WindowDialogMixin::show(); }
+      SWIGHIDDENVIRTUAL inline void close() { XBMC_TRACE; WindowDialogMixin::close(); }
 
       friend class DialogJumper;
 #endif

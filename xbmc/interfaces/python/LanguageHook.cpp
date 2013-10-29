@@ -39,38 +39,38 @@ namespace XBMCAddon
     // vtab instantiation
     PythonLanguageHook::~PythonLanguageHook()
     {
-      TRACE;
+      XBMC_TRACE;
       XBMCAddon::LanguageHook::deallocating();
     }
 
     void PythonLanguageHook::MakePendingCalls()
     {
-      TRACE;
+      XBMC_TRACE;
       PythonCallbackHandler::makePendingCalls();
     }
 
     void PythonLanguageHook::DelayedCallOpen()
     {
-      TRACE;
+      XBMC_TRACE;
       PyGILLock::releaseGil();
     }
 
     void PythonLanguageHook::DelayedCallClose()
     {
-      TRACE;
+      XBMC_TRACE;
       PyGILLock::acquireGil();
     }
 
     void PythonLanguageHook::RegisterMe()
     {
-      TRACE;
+      XBMC_TRACE;
       CSingleLock lock(hooksMutex);
       hooks[m_interp] = AddonClass::Ref<PythonLanguageHook>(this);
     }
 
     void PythonLanguageHook::UnregisterMe()
     {
-      TRACE;
+      XBMC_TRACE;
       CSingleLock lock(hooksMutex);
       hooks.erase(m_interp);
     }
@@ -84,7 +84,7 @@ namespace XBMCAddon
     // cases like this we're going to use a global interpreter 
     AddonClass::Ref<PythonLanguageHook> PythonLanguageHook::GetIfExists(PyInterpreterState* interp)
     {
-      TRACE;
+      XBMC_TRACE;
       CSingleLock lock(hooksMutex);
       std::map<PyInterpreterState*,AddonClass::Ref<PythonLanguageHook> >::iterator iter = hooks.find(interp);
       if (iter != hooks.end())
@@ -122,13 +122,13 @@ namespace XBMCAddon
      */
     XBMCAddon::CallbackHandler* PythonLanguageHook::GetCallbackHandler()
     { 
-      TRACE;
+      XBMC_TRACE;
       return new PythonCallbackHandler();
     }
 
     String PythonLanguageHook::GetAddonId()
     {
-      TRACE;
+      XBMC_TRACE;
       const char* id = NULL;
 
       // Get a reference to the main module
@@ -144,7 +144,7 @@ namespace XBMCAddon
 
     String PythonLanguageHook::GetAddonVersion()
     {
-      TRACE;
+      XBMC_TRACE;
       // Get a reference to the main module
       // and global dictionary
       PyObject* main_module = PyImport_AddModule((char*)"__main__");
@@ -156,20 +156,20 @@ namespace XBMCAddon
       return version;
     }
 
-    void PythonLanguageHook::RegisterPlayerCallback(IPlayerCallback* player) { TRACE; g_pythonParser.RegisterPythonPlayerCallBack(player); }
-    void PythonLanguageHook::UnregisterPlayerCallback(IPlayerCallback* player) { TRACE; g_pythonParser.UnregisterPythonPlayerCallBack(player); }
-    void PythonLanguageHook::RegisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { TRACE; g_pythonParser.RegisterPythonMonitorCallBack(monitor); }
-    void PythonLanguageHook::UnregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { TRACE; g_pythonParser.UnregisterPythonMonitorCallBack(monitor); }
+    void PythonLanguageHook::RegisterPlayerCallback(IPlayerCallback* player) { XBMC_TRACE; g_pythonParser.RegisterPythonPlayerCallBack(player); }
+    void PythonLanguageHook::UnregisterPlayerCallback(IPlayerCallback* player) { XBMC_TRACE; g_pythonParser.UnregisterPythonPlayerCallBack(player); }
+    void PythonLanguageHook::RegisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { XBMC_TRACE; g_pythonParser.RegisterPythonMonitorCallBack(monitor); }
+    void PythonLanguageHook::UnregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { XBMC_TRACE; g_pythonParser.UnregisterPythonMonitorCallBack(monitor); }
 
     bool PythonLanguageHook::WaitForEvent(CEvent& hEvent, unsigned int milliseconds)
     { 
-      TRACE;
+      XBMC_TRACE;
       return g_pythonParser.WaitForEvent(hEvent,milliseconds);
     }
 
     void PythonLanguageHook::RegisterAddonClassInstance(AddonClass* obj)
     {
-      TRACE;
+      XBMC_TRACE;
       CSingleLock l(*this);
       obj->Acquire();
       currentObjects.insert(obj);
@@ -177,7 +177,7 @@ namespace XBMCAddon
 
     void PythonLanguageHook::UnregisterAddonClassInstance(AddonClass* obj)
     {
-      TRACE;
+      XBMC_TRACE;
       CSingleLock l(*this);
       if (currentObjects.erase(obj) > 0)
         obj->Release();
@@ -185,7 +185,7 @@ namespace XBMCAddon
 
     bool PythonLanguageHook::HasRegisteredAddonClassInstance(AddonClass* obj)
     {
-      TRACE;
+      XBMC_TRACE;
       CSingleLock l(*this);
       return currentObjects.find(obj) != currentObjects.end();
     }
