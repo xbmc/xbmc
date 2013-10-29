@@ -12,7 +12,7 @@
 			<fadetime>1000</fadetime>
 			<randomize>true</randomize>
 			<loop>yes</loop>
-			<imagepath background="true">http://localhost:32400/library/arts</imagepath>
+			<imagepath background="true">plexserver://best:32400/library/arts</imagepath>
 			<animation effect="fade" end="20" time="400" condition="true">Conditional</animation>
 			<animation type="WindowClose">
 				<effect type="fade" start="100" end="0" time="800"/>
