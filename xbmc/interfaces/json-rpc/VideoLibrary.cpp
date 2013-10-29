@@ -228,7 +228,7 @@ JSONRPC_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLay
   if (!videodatabase.GetSeasonsNav(strPath, items, -1, -1, -1, -1, tvshowID, false))
     return InternalError;
 
-  HandleFileItemList(NULL, false, "seasons", items, parameterObject, result);
+  HandleFileItemList("seasonid", false, "seasons", items, parameterObject, result);
   return OK;
 }
 

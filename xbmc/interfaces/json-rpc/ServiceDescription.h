@@ -727,6 +727,7 @@ namespace JSONRPC
     "\"Video.Details.Season\": {"
       "\"extends\": \"Video.Details.Base\","
       "\"properties\": {"
+        "\"seasonid\": { \"$ref\": \"Library.Id\", \"required\": true },"
         "\"season\": { \"type\": \"integer\", \"required\": true },"
         "\"showtitle\": { \"type\": \"string\" },"
         "\"episode\": { \"type\": \"integer\" },"
