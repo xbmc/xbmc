@@ -1417,7 +1417,7 @@
 						<onup>300</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
-						<posx>-14</posx>
+						<posx>-24</posx>
 						<posy>131</posy>
 						<width>880</width>
 						<height>500</height>
@@ -1425,7 +1425,7 @@
 							<!-- when both lists are visible -->
 							<control type="group">
 								<visible>Control.IsVisible(11004)</visible>
-								<posy>0</posy>
+								<posy>-10</posy>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>
@@ -1447,7 +1447,7 @@
 							<!-- when both lists are visible -->
 							<control type="group">
 								<visible>Control.IsVisible(11004)</visible>
-								<posy>0</posy>
+								<posy>-10</posy>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>
@@ -1491,7 +1491,7 @@
 						<onup>7003</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
-						<posx>-14</posx>
+						<posx>-24</posx>
 						<posy>0</posy>
 						<width>880</width>
 						<height>400</height>
@@ -1499,7 +1499,7 @@
 							<!-- when both lists are visible -->
 							<control type="group">
 								<visible>Control.IsVisible(11003)</visible>
-								<posy>100</posy>
+								<posy>102</posy>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>
