@@ -17,7 +17,7 @@
           </dependencies>
         </setting>
         <setting id="lookandfeel.skintheme" type="string" parent="lookandfeel.skin" label="15111" help="36105">
-          <level>1</level>
+          <level>0</level>
           <default>SKINDEFAULT</default>
           <constraints>
             <options>skinthemes</options>
@@ -28,7 +28,7 @@
           <control type="spinner" format="string" delayed="true" />
         </setting>
         <setting id="lookandfeel.skincolors" type="string" parent="lookandfeel.skin" label="14078" help="36106">
-          <level>1</level>
+          <level>0</level>
           <default>SKINDEFAULT</default>
           <constraints>
             <options>skincolors</options>
@@ -140,7 +140,7 @@
       </group>
       <group id="2">
         <setting id="locale.timezonecountry" type="string" label="14079" help="36117">
-          <level>2</level>
+          <level>1</level>
           <default>default</default> <!-- will be properly set on startup -->
           <constraints>
             <options>timezonecountries</options>
@@ -148,7 +148,7 @@
           <control type="list" format="string" />
         </setting>
         <setting id="locale.timezone" type="string" label="14080" help="36118">
-          <level>2</level>
+          <level>1</level>
           <default>default</default> <!-- will be properly set on startup -->
           <constraints>
             <options>timezones</options>
@@ -568,7 +568,7 @@
     <category id="myvideos" label="14081" help="36176">
       <group id="1">
         <setting id="myvideos.selectaction" type="integer" label="22079" help="36177">
-          <level>1</level>
+          <level>0</level>
           <default>1</default> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
           <constraints>
             <options>
@@ -815,7 +815,7 @@
     <category id="pvrmenu" label="19181" help="36211">
       <group id="1">
         <setting id="pvrmenu.infoswitch" type="boolean" label="19178" help="36212">
-          <level>1</level>
+          <level>0</level>
           <default>true</default>
         </setting>
         <setting id="pvrmenu.infotimeout" type="boolean" label="19179" help="36213">
@@ -867,7 +867,7 @@
     <category id="epg" label="19069" help="36218">
       <group id="1">
         <setting id="epg.defaultguideview" type="integer" label="19065" help="36219">
-          <level>1</level>
+          <level>0</level>
           <default>3</default> <!-- GUIDE_VIEW_TIMELINE -->
           <constraints>
             <minimum>0</minimum>
@@ -923,11 +923,11 @@
     <category id="pvrplayback" label="19177" help="36226">
       <group id="1">
         <setting id="pvrplayback.playminimized" type="boolean" label="19171" help="36227">
-          <level>1</level>
+          <level>0</level>
           <default>true</default>
         </setting>
         <setting id="pvrplayback.startlast" type="integer" label="19189" help="36228">
-          <level>1</level>
+          <level>0</level>
           <default>0</default> <!-- START_LAST_CHANNEL_OFF -->
           <constraints>
             <minimum>0</minimum>
@@ -956,7 +956,7 @@
           </control>
         </setting>
         <setting id="pvrplayback.confirmchannelswitch" type="boolean" label="19281" help="36231">
-          <level>1</level>
+          <level>0</level>
           <default>false</default>
         </setting>
         <setting id="pvrplayback.channelentrytimeout" type="integer" label="19073" help="36232">
@@ -1044,13 +1044,13 @@
     <category id="pvrpowermanagement" label="14095" help="36240">
       <group id="1">
         <setting id="pvrpowermanagement.enabled" type="boolean" label="305" help="36241">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
         </setting>
       </group>
       <group id="2">
         <setting id="pvrpowermanagement.backendidletime" type="integer" label="19244" help="36242">
-          <level>1</level>
+          <level>2</level>
           <default>15</default>
           <constraints>
             <minimum label="351">0</minimum>
@@ -1062,7 +1062,7 @@
           </control>
         </setting>
         <setting id="pvrpowermanagement.setwakeupcmd" type="string" label="19245" help="36243">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -1070,7 +1070,7 @@
           <control type="edit" format="string" />
         </setting>
         <setting id="pvrpowermanagement.prewakeup" type="integer" label="19246" help="36244">
-          <level>1</level>
+          <level>2</level>
           <default>15</default>
           <constraints>
             <minimum label="351">0</minimum>
@@ -1084,11 +1084,11 @@
       </group>
       <group id="3">
         <setting id="pvrpowermanagement.dailywakeup" type="boolean" label="19247" help="36245">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
         </setting>
         <setting id="pvrpowermanagement.dailywakeuptime" type="string" label="19248" help="36246">
-          <level>1</level>
+          <level>2</level>
           <default>00:00:00</default>
           <control type="edit" format="string" />
         </setting>
@@ -1098,13 +1098,13 @@
       <access>CheckPVRParentalPin</access>
       <group id="1">
         <setting id="pvrparental.enabled" type="boolean" label="449" help="36248">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
         </setting>
       </group>
       <group id="2">
         <setting id="pvrparental.pin" type="string" label="19261" help="36249">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -1115,7 +1115,7 @@
           <control type="edit" format="integer" attributes="hidden,new" delayed="false" />
         </setting>
         <setting id="pvrparental.duration" type="integer" label="19260" help="36250">
-          <level>1</level>
+          <level>2</level>
           <default>300</default>
           <constraints>
             <minimum>5</minimum>
@@ -1153,7 +1153,7 @@
       </group>
       <group id="2">
         <setting id="musiclibrary.downloadinfo" type="boolean" label="20192" help="36256">
-          <level>0</level>
+          <level>1</level>
           <default>false</default>
         </setting>
         <setting id="musiclibrary.albumsscraper" type="addon" label="20193" help="36257">
@@ -1568,7 +1568,7 @@
           <default>true</default>
         </setting>
         <setting id="pictures.showvideos" type="boolean" label="22022" help="36309">
-          <level>1</level>
+          <level>0</level>
           <default>true</default>
         </setting>
         <setting id="pictures.displayresolution" type="integer" label="169" help="36310">
@@ -1669,11 +1669,11 @@
       <requirement>HAS_WEB_SERVER</requirement>
       <group id="1">
         <setting id="services.webserver" type="boolean" label="263" help="36328">
-          <level>1</level>
+          <level>0</level>
           <default>false</default>
         </setting>
         <setting id="services.webserverport" type="integer" parent="services.webserver" label="730" help="36329">
-          <level>2</level>
+          <level>1</level>
           <default>8080</default>
           <constraints>
             <minimum>1</minimum>
@@ -1683,7 +1683,7 @@
           <control type="edit" format="integer" />
         </setting>
         <setting id="services.webserverusername" type="string" parent="services.webserver" label="1048" help="36330">
-          <level>2</level>
+          <level>1</level>
           <default>xbmc</default>
           <constraints>
             <allowempty>true</allowempty>
@@ -1694,7 +1694,7 @@
           <control type="edit" format="string" />
         </setting>
         <setting id="services.webserverpassword" type="string" parent="services.webserver" label="733" help="36331">
-          <level>2</level>
+          <level>1</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -1817,7 +1817,7 @@
       <requirement>HAS_AIRPLAY</requirement>
       <group id="1">
         <setting id="services.airplay" type="boolean" label="1270" help="36343">
-          <level>1</level>
+          <level>0</level>
           <default>false</default>
         </setting>
         <setting id="services.airplayvolumecontrol" type="boolean" parent="services.airplay" label="1269" help="36541">
@@ -1962,7 +1962,7 @@
               <condition>HAS_DX</condition>
             </or>
           </requirement>
-          <level>3</level>
+          <level>2</level>
           <default>false</default>
           <updates>
             <update type="rename">videoplayer.vdpaustudiolevel</update>
@@ -2016,12 +2016,12 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="audiooutput.stereoupmix" type="boolean" label="252" help="36364">
-          <level>2</level>
+          <level>1</level>
           <default>false</default>
         </setting>
         <setting id="audiooutput.ac3passthrough" type="boolean" parent="audiooutput.mode" label="364" help="36365">
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <dependencies>
             <dependency type="enable">
               <or>
@@ -2033,7 +2033,7 @@
         </setting>
         <setting id="audiooutput.eac3passthrough" type="boolean" parent="audiooutput.mode" label="448" help="37016">
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <dependencies>
             <dependency type="enable">
               <or>
@@ -2042,10 +2042,10 @@
               </or>
             </dependency>
           </dependencies>
-        </setting>
+        </setting> 
         <setting id="audiooutput.dtspassthrough" type="boolean" parent="audiooutput.mode" label="254" help="36366">
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <dependencies>
             <dependency type="enable">
               <or>
@@ -2076,14 +2076,14 @@
         </setting>
         <setting id="audiooutput.truehdpassthrough" type="boolean" parent="audiooutput.mode" label="349" help="36369">
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <dependencies>
             <dependency type="enable" setting="audiooutput.mode">2</dependency> <!-- AUDIO_HDMI -->
           </dependencies>
         </setting>
         <setting id="audiooutput.dtshdpassthrough" type="boolean" parent="audiooutput.mode" label="347" help="36370">
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <dependencies>
             <dependency type="enable">
               <and>
@@ -2101,7 +2101,7 @@
       </group>
       <group id="2">
         <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
-          <level>2</level>
+          <level>1</level>
           <default>Default</default> <!-- will be properly set on startup -->
           <constraints>
             <options>audiodevices</options>
@@ -2151,7 +2151,7 @@
       </group>
       <group id="2">
         <setting id="input.remoteaskeyboard" type="boolean" label="21449" help="36376">
-          <level>2</level>
+          <level>1</level>
           <default>false</default>
         </setting>
         <setting id="input.enablemouse" type="boolean" label="21369" help="36377">
@@ -2176,11 +2176,11 @@
     <category id="network" label="798" help="36379">
       <group id="1">
         <setting id="network.usehttpproxy" type="boolean" label="708" help="36380">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
         </setting>
         <setting id="network.httpproxytype" type="integer" parent="network.usehttpproxy" label="1180" help="36381">
-          <level>1</level>
+          <level>2</level>
           <default>0</default>
           <constraints>
             <options>
@@ -2197,7 +2197,7 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="network.httpproxyserver" type="string" parent="network.usehttpproxy" label="706" help="36382">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -2208,7 +2208,7 @@
           <control type="edit" format="string" />
         </setting>
         <setting id="network.httpproxyport" type="integer" parent="network.usehttpproxy" label="730" help="36383">
-          <level>1</level>
+          <level>2</level>
           <default>8080</default>
           <constraints>
             <minimum>1</minimum>
@@ -2221,7 +2221,7 @@
           <control type="edit" format="integer" />
         </setting>
         <setting id="network.httpproxyusername" type="string" parent="network.usehttpproxy" label="1048" help="36384">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -2232,7 +2232,7 @@
           <control type="edit" format="string" />
         </setting>
         <setting id="network.httpproxypassword" type="string" parent="network.usehttpproxy" label="733" help="36385">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
