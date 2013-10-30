@@ -127,7 +127,7 @@ JSONRPC_STATUS CPVROperations::GetChannels(const CStdString &method, ITransportL
   if (channelGroup->GetMembers(channels) < 0)
     return InvalidParams;
   
-  HandleFileItemList("channelid", false, "channels", channels, parameterObject, result, false);
+  HandleFileItemList("channelid", false, "channels", channels, parameterObject, result, true);
     
   return OK;
 }
