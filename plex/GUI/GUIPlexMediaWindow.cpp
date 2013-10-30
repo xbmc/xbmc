@@ -34,6 +34,7 @@
 #include "PlexFilterManager.h"
 #include "Filters/GUIPlexFilterFactory.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "Client/PlexTimelineManager.h"
 
 #include "LocalizeStrings.h"
 
@@ -62,6 +63,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       if (m_returningFromSkinLoad)
         AddFilters();
       m_returningFromSkinLoad = false;
+      g_plexApplication.timelineManager->UpdateLocation();
       break;
     }
 
