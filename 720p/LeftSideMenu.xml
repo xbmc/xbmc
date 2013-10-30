@@ -439,6 +439,7 @@
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
 					<animation effect="slide" end="0,-127" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-140" time="0" condition="Window.IsActive(2)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- secondary filters list -->
@@ -450,6 +451,7 @@
 					<onright>777</onright>
 					<itemgap>0</itemgap>
 					<animation effect="slide" end="0,-137" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-150" time="0" condition="Window.IsActive(2)">Conditional</animation>
 				</control>
 				<!-- filters buttons -->
 				<control type="button" id="19005">
@@ -477,6 +479,7 @@
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
 					<animation effect="slide" end="0,-20" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-80" time="0" condition="Window.IsActive(2)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- sorting list -->
@@ -487,6 +490,7 @@
 					<onright>777</onright>
 					<itemgap>0</itemgap>
 					<animation effect="slide" end="0,-30" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-80" time="0" condition="Window.IsActive(2)">Conditional</animation>
 				</control>
 				<!-- sorting buttons -->
 				<control type="filterorderbutton" id="19011">
