@@ -10955,7 +10955,19 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr ""
 
-#empty strings from id 21470 to 21799
+#empty strings from id 21470 to 21599
+
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr ""
+
+#empty strings from id 21602 to 21799
 
 msgctxt "#21800"
 msgid "File name"

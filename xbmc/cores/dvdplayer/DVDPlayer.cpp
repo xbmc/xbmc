@@ -142,10 +142,12 @@ class PredicateSubtitleFilter
 private:
   std::string audiolang;
   bool original;
+  bool preferexternal;
 public:
   PredicateSubtitleFilter(std::string& lang)
     : audiolang(lang),
-      original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
+      original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original")),
+      preferexternal(CSettings::Get().GetBool("subtitles.preferexternal"))
   {
   };
   
@@ -153,6 +155,12 @@ public:
   {
     if (ss.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream)
       return false;
+
+    if (preferexternal)
+    {
+      if(ss.source == STREAM_SOURCE_DEMUX_SUB || ss.source == STREAM_SOURCE_TEXT)
+        return false;
+    }
 
     if ((ss.flags & CDemuxStream::FLAG_FORCED) && g_LangCodeExpander.CompareLangCodes(ss.language, audiolang))
       return false;
@@ -204,6 +212,15 @@ static bool PredicateSubtitlePriority(const SelectionStream& lh, const Selection
 
   PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream
                  , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
+  
+  if (CSettings::Get().GetBool("subtitles.preferexternal"))
+  {
+    PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
+                   , rh.source == STREAM_SOURCE_DEMUX_SUB);
+
+    PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
+                   , rh.source == STREAM_SOURCE_TEXT);
+  }
 
   CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
   if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
