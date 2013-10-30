@@ -721,9 +721,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   if (type == CGUIControl::GUICONTROL_GROUP || type == CGUIControl::GUICONTROL_GROUPLIST)
   {
     if (!width)
-      width = max(rect.x2 - posX, 0.0f);
+      width = max(rect.Width() - posX, 0.0f);
     if (!height)
-      height = max(rect.y2 - posY, 0.0f);
+      height = max(rect.Height() - posY, 0.0f);
   }
 
   hitRect.SetRect(posX, posY, posX + width, posY + height);
