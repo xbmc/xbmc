@@ -1049,6 +1049,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     {
       (*it)->SetConverted(false);
     }
+    m_sounds_playing.clear();
   }
 
   ClearDiscardedBuffers();
