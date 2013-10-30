@@ -23,7 +23,7 @@
 			<wrapmultiline>false</wrapmultiline>
 		</control>-->
 		<include>NowPlayingOverlay</include>
-		<include>LeftSideMenuHome</include>
+		<!--><include>LeftSideMenuHome</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>

@@ -71,22 +71,46 @@
 			<include>FadeDialog</include>
 			<include>MenuSeparatorVertical</include>
 			<include>MenuFocusedLabel</include>
+			<control type="image">
+				<posy>680</posy>
+				<posx>30</posx>
+				<width>12</width>
+				<height>18</height>
+				<aspectratio>scale</aspectratio>
+				<texture flipx="true">left-menu-indicator-arrow.png</texture>
+				<animation effect="rotate" end="-180" center="36,689" time="300" condition="Window.IsActive(4998)">Conditional</animation>
+				<animation type="Conditional" condition="ControlGroup(5000).HasFocus()" reversible="false">
+				  <effect type="fade" start="100" end="0" time="0" />
+				</animation>
+			</control>
 			<!-- list -->
 			<control type="wraplist" id="300">
 				<description>Home Main Menu</description>
 				<posx>0</posx>
 				<posy>97</posy>
-				<width>829</width>
+				<width>372</width>
 				<height>570</height>
 				<onup>300</onup>
 				<ondown>300</ondown>
-				<onleft>1300</onleft>
+				<onleft>Plex.ActivateWindow(4998)</onleft>
 				<onright>5000</onright>
 				<focusposition>6</focusposition>
 				<scrolltime>200</scrolltime>
-				<visible allowhiddenfocus="true">Control.HasFocus(300)</visible>
-				<animation effect="fade" start="0" end="100" time="500">Visible</animation>
-				<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
+				<!--><visible allowhiddenfocus="true">Control.HasFocus(300)</visible>-->
+				
+				<animation type="Conditional" condition="!Window.IsActive(4998)" reversible="false">
+				  <effect type="rotatey" center="304" start="80,455" end="0,455" time="300" />
+				  <effect type="fade" start="0" end="100" time="50" delay="0" />
+				</animation>
+				<animation type="Conditional" condition="Window.IsActive(4998)" reversible="false">
+				  <effect type="rotatey" center="304" start="0,455" end="80,455" time="300" />
+				  <effect type="fade" start="100" end="0" time="230" />
+				</animation>
+				<animation type="Conditional" condition="ControlGroup(5000).HasFocus()" reversible="false">
+				  <!--><effect type="rotatey" center="304" start="0,455" end="-80,455" time="300" />
+				  <effect type="fade" start="100" end="0" time="230" />-->
+				  <effect type="fade" start="100" end="0" time="0" />
+				</animation>
 				<itemlayout width="600" height="50">
 					<control type="label">
 						<posx>372</posx>
@@ -108,7 +132,7 @@
 						<posy>53</posy>
 						<width>353</width>
 						<height>0</height>
-						<info>ListItem.Label</info>
+						<label>$INFO[ListItem.Title]</label>
 						<align>right</align>
 						<aligny>center</aligny>
 						<font>CondensedBold-36</font>

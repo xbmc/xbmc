@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<window type="dialog" id="4998">
+	<defaultcontrol always="true">1300</defaultcontrol>
+	<controls>
+		<include>PivotMenuHome</include>
+	</controls>
+</window>
