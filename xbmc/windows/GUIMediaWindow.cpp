@@ -531,7 +531,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 #endif
 
       /* PLEX */
-      g_plexApplication.mediaServerClient->SetViewMode(*m_vecItems, viewMode);
+      g_plexApplication.mediaServerClient->SetViewMode(m_vecItems->shared_from_this(), viewMode);
       m_vecItems->SetProperty("viewMode", viewMode);
       /* END PLEX */
 

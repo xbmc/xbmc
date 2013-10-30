@@ -27,6 +27,24 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "PlexApplication.h"
+#include "PlexServerManager.h"
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CURL CPlexMediaServerClient::GetItemURL(CFileItemPtr item)
+{
+  CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
+  if (server)
+    return server->BuildPlexURL("/");
+
+  CURL u(item->GetPath());
+  if (u.GetHostName().empty())
+  {
+    CLog::Log(LOGDEBUG, "CPlexMediaServerClient::GetItemURL failed to find a viable URL!");
+    return CURL();
+  }
+
+  return u;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::OnJobComplete(unsigned int jobID, bool success, CJob *job)
@@ -67,7 +85,7 @@ void CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,
                                           int subtitleStreamID,
                                           int audioStreamID)
 {
-  CURL u(item->GetPath());
+  CURL u = GetItemURL(item);
   
   u.SetFileName("/library/parts/" + boost::lexical_cast<std::string>(partID));
   if (subtitleStreamID != -1)
@@ -81,7 +99,7 @@ void CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::SetItemWatchStatus(const CFileItemPtr &item, bool watched, bool sendMessage)
 {
-  CURL u(item->GetPath());
+  CURL u = GetItemURL(item);
   
   u.SetFileName(GetPrefix(item) + (watched ? "scrobble" : "unscrobble"));
   u.SetOption("key", item->GetProperty("ratingKey").asString());
@@ -100,7 +118,7 @@ void CPlexMediaServerClient::SetItemWatchStatus(const CFileItemPtr &item, bool w
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::SetItemRating(const CFileItemPtr &item, float rating)
 {
-  CURL u(item->GetPath());
+  CURL u = GetItemURL(item);
   
   u.SetFileName(GetPrefix(item) + "rate");
   u.SetOption("key", item->GetProperty("ratingKey").asString());
@@ -113,7 +131,7 @@ void CPlexMediaServerClient::SetItemRating(const CFileItemPtr &item, float ratin
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::SendServerTimeline(const CFileItemPtr &item, const CUrlOptions &options)
 {
-  CURL u(item->GetPath());
+  CURL u = GetItemURL(item);
 
   if (u.GetHostName() == "node")
     u.SetHostName("myplex");
@@ -134,12 +152,12 @@ void CPlexMediaServerClient::SendSubscriberTimeline(const CURL &url, const CStdS
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-void CPlexMediaServerClient::SetViewMode(const CFileItem &item, int viewMode, int sortMode, int sortAsc)
+void CPlexMediaServerClient::SetViewMode(CFileItemPtr item, int viewMode, int sortMode, int sortAsc)
 {
-  CURL u(item.GetPath());
+  CURL u = GetItemURL(item);
   u.SetFileName("/:/viewChange");
-  u.SetOption("identifier", item.GetProperty("identifier").asString());
-  u.SetOption("viewGroup", item.GetProperty("viewGroup").asString());
+  u.SetOption("identifier", item->GetProperty("identifier").asString());
+  u.SetOption("viewGroup", item->GetProperty("viewGroup").asString());
 
   u.SetOption("viewMode", boost::lexical_cast<CStdString>(viewMode));
   u.SetOption("sortMode", boost::lexical_cast<CStdString>(sortMode));

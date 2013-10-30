@@ -34,7 +34,7 @@ public:
   void SendSubscriberTimeline(const CURL& url, const CStdString &postData);
 
   /* Set viewMode */
-  void SetViewMode(const CFileItem& item, int viewMode, int sortMode = -1, int sortAsc = 1);
+  void SetViewMode(CFileItemPtr item, int viewMode, int sortMode = -1, int sortAsc = 1);
   
   /* stop a transcode session */
   void StopTranscodeSession(CPlexServerPtr server);
@@ -44,7 +44,9 @@ public:
 
   void share(const CFileItemPtr &item, const CStdString &network, const CStdString &message);
 
-private:
+  CURL GetItemURL(CFileItemPtr item);
+
+  private:
   CStdString GetPrefix(const CFileItemPtr& item) const
   {
     CStdString prefix = "/:/";
