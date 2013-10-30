@@ -3,16 +3,16 @@
 	<controls>
 		<control type="karvisualisation" id="1">
 			<description>visualisation</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>1280</width>
 			<height>720</height>
 			<visible>false</visible>
 		</control>
 		<control type="image" id="2">
 			<description>fullscreen image</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>1280</width>
 			<height>720</height>
 			<visible>false</visible>
@@ -20,19 +20,19 @@
 		<control type="group">
 			<visible>MusicPlayer.Offset(number).Exists + !IntegerGreaterThan(Player.TimeRemaining,20)</visible>
 			<animation effect="slide" start="0,-40" end="0,0" time="100">Visible</animation>
-			<posx>420</posx>
-			<posy>0</posy>
+			<left>420</left>
+			<top>0</top>
 			<control type="image">
-				<posx>0</posx>
-				<posy>-10</posy>
+				<left>0</left>
+				<top>-10</top>
 				<width>470</width>
 				<height>55</height>
 				<texture flipy="true" border="20,20,20,2">InfoMessagePanel.png</texture>
 			</control>
 			<control type="label" id="402">
 				<description>Next Song Name</description>
-				<posx>5</posx>
-				<posy>5</posy>
+				<left>5</left>
+				<top>5</top>
 				<width>470</width>
 				<height>25</height>
 				<font>font13_title</font>

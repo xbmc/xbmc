@@ -5,21 +5,21 @@
 	<animation effect="slide" start="0,0" end="0,-80" time="100">WindowClose</animation>
 	<coordinates>
 		<system>1</system>
-		<posx>405</posx>
-		<posy>0</posy>
+		<left>405</left>
+		<top>0</top>
 	</coordinates>
 	<controls>
 		<control type="image">
-			<posx>0</posx>
-			<posy>-10</posy>
+			<left>0</left>
+			<top>-10</top>
 			<width>460</width>
 			<height>80</height>
 			<texture flipy="true" border="20,2,20,20">InfoMessagePanel.png</texture>
 		</control>
 		<control type="label" id="10">
 			<description>Dialog header</description>
-			<posx>20</posx>
-			<posy>10</posy>
+			<left>20</left>
+			<top>10</top>
 			<width>230</width>
 			<height>20</height>
 			<align>left</align>
@@ -30,7 +30,7 @@
 		<control type="label" id="12">
 			<description>Slider Value</description>
 			<right>440</right>
-			<posy>10</posy>
+			<top>10</top>
 			<width>220</width>
 			<height>20</height>
 			<align>right</align>
@@ -40,8 +40,8 @@
 		</control>
 		<control type="slider" id="11">
 			<description>Slider</description>
-			<posx>20</posx>
-			<posy>35</posy>
+			<left>20</left>
+			<top>35</top>
 			<width>420</width>
 			<height>20</height>
 			<aligny>center</aligny>

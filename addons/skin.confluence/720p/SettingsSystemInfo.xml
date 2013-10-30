@@ -5,8 +5,8 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="image">
-			<posx>0</posx>
-			<posy>100r</posy>
+			<left>0</left>
+			<top>100r</top>
 			<width>1280</width>
 			<height>100</height>
 			<texture>floor.png</texture>
@@ -14,8 +14,8 @@
 			<animation effect="slide" start="0,0" end="0,10" time="200" condition="Window.Next(Home)">WindowClose</animation>
 		</control>
 		<control type="group">
-			<posx>90</posx>
-			<posy>30</posy>
+			<left>90</left>
+			<top>30</top>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300"/>
 				<effect type="fade" start="0" end="100" time="300"/>
@@ -25,23 +25,23 @@
 				<effect type="fade" start="100" end="0" time="300"/>
 			</animation>
 			<control type="image">
-				<posx>5</posx>
-				<posy>5</posy>
+				<left>5</left>
+				<top>5</top>
 				<width>1090</width>
 				<height>630</height>
 				<texture border="15">ContentPanel.png</texture>
 			</control>
 			<control type="image">
-				<posx>5</posx>
-				<posy>625</posy>
+				<left>5</left>
+				<top>625</top>
 				<width>1090</width>
 				<height>64</height>
 				<texture border="15">ContentPanelMirror.png</texture>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>980</posx>
-				<posy>11</posy>
+				<left>980</left>
+				<top>11</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -57,16 +57,16 @@
 			</control>
 			<control type="image">
 				<description>LOGO</description>
-				<posx>30</posx>
-				<posy>15</posy>
+				<left>30</left>
+				<top>15</top>
 				<width>220</width>
 				<height>80</height>
 				<aspectratio>keep</aspectratio>
 				<texture>Confluence_Logo.png</texture>
 			</control>
 			<control type="grouplist" id="9000">
-				<posx>10</posx>
-				<posy>90</posy>
+				<left>10</left>
+				<top>90</top>
 				<width>260</width>
 				<height>481</height>
 				<itemgap>-1</itemgap>
@@ -164,15 +164,15 @@
 				</control>
 			</control>
 			<control type="image">
-				<posx>268</posx>
-				<posy>10</posy>
+				<left>268</left>
+				<top>10</top>
 				<width>790</width>
 				<height>618</height>
 				<texture border="5">black-back2.png</texture>
 			</control>
 			<control type="image">
-				<posx>268</posx>
-				<posy>10</posy>
+				<left>268</left>
+				<top>10</top>
 				<width>804</width>
 				<height>100</height>
 				<aspectratio>stretch</aspectratio>
@@ -180,8 +180,8 @@
 			</control>
 			<control type="label" id="40">
 				<description>header label</description>
-				<posx>300</posx>
-				<posy>20</posy>
+				<left>300</left>
+				<top>20</top>
 				<width>740</width>
 				<height>30</height>
 				<font>font16</font>
@@ -192,84 +192,84 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="group">
-				<posx>290</posx>
-				<posy>100</posy>
+				<left>290</left>
+				<top>100</top>
 				<control type="label" id="2">
 					<description>Label 2</description>
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>750</width>
 					<label>-</label>
 					<font>font13</font>
 				</control>
 				<control type="label" id="3">
 					<description>Label 3</description>
-					<posx>0</posx>
-					<posy>35</posy>
+					<left>0</left>
+					<top>35</top>
 					<width>750</width>
 					<label>-</label>
 					<font>font13</font>
 				</control>
 				<control type="label" id="4">
 					<description>Label 4</description>
-					<posx>0</posx>
-					<posy>70</posy>
+					<left>0</left>
+					<top>70</top>
 					<width>750</width>
 					<label>-</label>
 					<font>font13</font>
 				</control>
 				<control type="label" id="5">
 					<description>Label 5</description>
-					<posx>0</posx>
-					<posy>105</posy>
+					<left>0</left>
+					<top>105</top>
 					<width>750</width>
 					<label>-</label>
 					<font>font13</font>
 				</control>
 				<control type="label" id="6">
 					<description>Label 6</description>
-					<posx>0</posx>
-					<posy>140</posy>
+					<left>0</left>
+					<top>140</top>
 					<width>750</width>
 					<label>-</label>
 					<font>font13</font>
 				</control>
 				<control type="label" id="7">
 					<description>Label 7</description>
-					<posx>0</posx>
-					<posy>175</posy>
+					<left>0</left>
+					<top>175</top>
 					<width>750</width>
 					<label>-</label>
 					<font>font13</font>
 				</control>
 				<control type="label" id="8">
 					<description>Label 8</description>
-					<posx>0</posx>
-					<posy>210</posy>
+					<left>0</left>
+					<top>210</top>
 					<width>750</width>
 					<label>-</label>
 					<font>font13</font>
 				</control>
 				<control type="label" id="9">
 					<description>Label 9</description>
-					<posx>0</posx>
-					<posy>245</posy>
+					<left>0</left>
+					<top>245</top>
 					<width>750</width>
 					<label>-</label>
 					<font>font13</font>
 				</control>
 				<control type="label" id="10">
 					<description>Label 10</description>
-					<posx>0</posx>
-					<posy>280</posy>
+					<left>0</left>
+					<top>280</top>
 					<width>750</width>
 					<label>-</label>
 					<font>font13</font>
 				</control>
 				<control type="label" id="11">
 					<description>Label 11</description>
-					<posx>0</posx>
-					<posy>315</posy>
+					<left>0</left>
+					<top>315</top>
 					<width>750</width>
 					<label>-</label>
 					<font>font13</font>
@@ -277,7 +277,7 @@
 				<control type="label" id="52">
 					<description>XBMC BUILD Version</description>
 					<right>750</right>
-					<posy>400</posy>
+					<top>400</top>
 					<width>730</width>
 					<label>144</label>
 					<align>right</align>
@@ -288,7 +288,7 @@
 				<control type="label">
 					<description>CPU Text</description>
 					<right>420</right>
-					<posy>450</posy>
+					<top>450</top>
 					<width>350</width>
 					<height>25</height>
 					<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
@@ -300,8 +300,8 @@
 				</control>
 				<control type="progress">
 					<description>CPU BAR</description>
-					<posx>430</posx>
-					<posy>455</posy>
+					<left>430</left>
+					<top>455</top>
 					<width>320</width>
 					<height>16</height>
 					<info>System.CPUUsage</info>
@@ -309,7 +309,7 @@
 				<control type="label">
 					<description>Memory Text</description>
 					<right>420</right>
-					<posy>480</posy>
+					<top>480</top>
 					<width>350</width>
 					<height>25</height>
 					<label>$LOCALIZE[31309] $INFO[system.memory(used.percent)]</label>
@@ -321,8 +321,8 @@
 				</control>
 				<control type="progress">
 					<description>Memory BAR</description>
-					<posx>430</posx>
-					<posy>485</posy>
+					<left>430</left>
+					<top>485</top>
 					<width>320</width>
 					<height>16</height>
 					<info>system.memory(used)</info>
@@ -333,16 +333,16 @@
 		<include>MainWindowMouseButtons</include>
 		<control type="image">
 			<description>Section header image</description>
-			<posx>20</posx>
-			<posy>3</posy>
+			<left>20</left>
+			<top>3</top>
 			<width>35</width>
 			<height>35</height>
 			<aspectratio>keep</aspectratio>
 			<texture>icon_system.png</texture>
 		</control>
 		<control type="grouplist">
-			<posx>65</posx>
-			<posy>5</posy>
+			<left>65</left>
+			<top>5</top>
 			<width>1000</width>
 			<height>30</height>
 			<orientation>horizontal</orientation>

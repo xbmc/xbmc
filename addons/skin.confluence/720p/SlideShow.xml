@@ -3,12 +3,12 @@
 	<defaultcontrol>2</defaultcontrol>
 	<controls>
 		<control type="group" id="13">
-			<posx>130r</posx>
-			<posy>10</posy>
+			<left>130r</left>
+			<top>10</top>
 			<visible>!Skin.HasSetting(Show_SlideShow_Paused)</visible>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>120</width>
 				<height>35</height>
 				<texture>black-back.png</texture>
@@ -17,8 +17,8 @@
 			</control>
 			<control type="label">
 				<description>paused label</description>
-				<posx>10</posx>
-				<posy>0</posy>
+				<left>10</left>
+				<top>0</top>
 				<width>100</width>
 				<height>35</height>
 				<align>center</align>
@@ -30,8 +30,8 @@
 		</control>
 		<!-- media infos -->
 		<control type="group">
-			<posx>20</posx>
-			<posy>180r</posy>
+			<left>20</left>
+			<top>180r</top>
 			<visible>Player.ShowInfo + Player.HasMedia</visible>
 			<include>VisibleFadeEffect</include>
 			<include>SmallMusicInfo</include>
@@ -39,8 +39,8 @@
 		<control type="button">
 			<visible>SlideShow.IsVideo + [!SlideShow.IsActive | SlideShow.IsPaused]</visible>
 			<description>Video Play Button</description>
-			<posx>540</posx>
-			<posy>260</posy>
+			<left>540</left>
+			<top>260</top>
 			<width>200</width>
 			<height>200</height>
 			<font>-</font>

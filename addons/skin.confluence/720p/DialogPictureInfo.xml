@@ -3,16 +3,16 @@
 	<defaultcontrol always="true">5</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>240</posx>
-		<posy>45</posy>
+		<left>240</left>
+		<top>45</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="group">
 			<control type="image">
 				<description>background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>800</width>
 				<height>630</height>
 				<texture border="40">DialogBack.png</texture>
@@ -20,8 +20,8 @@
 			</control>
 			<control type="image">
 				<description>background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>800</width>
 				<height>630</height>
 				<texture border="40">DialogBack2.png</texture>
@@ -29,16 +29,16 @@
 			</control>
 			<control type="image">
 				<description>Dialog Header image</description>
-				<posx>40</posx>
-				<posy>16</posy>
+				<left>40</left>
+				<top>16</top>
 				<width>720</width>
 				<height>40</height>
 				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>40</posx>
-				<posy>20</posy>
+				<left>40</left>
+				<top>20</top>
 				<width>720</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -50,8 +50,8 @@
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>710</posx>
-				<posy>15</posy>
+				<left>710</left>
+				<top>15</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -66,8 +66,8 @@
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>755</posx>
-				<posy>70</posy>
+				<left>755</left>
+				<top>70</top>
 				<width>25</width>
 				<height>495</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -82,8 +82,8 @@
 			</control>
 			<control type="list" id="5">
 				<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
-				<posx>30</posx>
-				<posy>70</posy>
+				<left>30</left>
+				<top>70</top>
 				<width>720</width>
 				<height>495</height>
 				<onleft>60</onleft>
@@ -94,15 +94,15 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="45">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>720</width>
 						<height>40</height>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="label">
-						<posx>10</posx>
-						<posy>0</posy>
+						<left>10</left>
+						<top>0</top>
 						<width>500</width>
 						<height>40</height>
 						<font>font13</font>
@@ -114,8 +114,8 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>710</posx>
-						<posy>0</posy>
+						<left>710</left>
+						<top>0</top>
 						<width>650</width>
 						<height>40</height>
 						<font>font13</font>
@@ -129,24 +129,24 @@
 				</itemlayout>
 				<focusedlayout height="45">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>720</width>
 						<height>40</height>
 						<visible>!Control.HasFocus(5)</visible>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>720</width>
 						<height>40</height>
 						<texture border="5">button-focus2.png</texture>
 						<visible>Control.HasFocus(5)</visible>
 					</control>
 					<control type="label">
-						<posx>10</posx>
-						<posy>0</posy>
+						<left>10</left>
+						<top>0</top>
 						<width>500</width>
 						<height>40</height>
 						<font>font13</font>
@@ -158,8 +158,8 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>710</posx>
-						<posy>0</posy>
+						<left>710</left>
+						<top>0</top>
 						<width>650</width>
 						<height>40</height>
 						<font>font13</font>
@@ -175,7 +175,7 @@
 			<control type="label">
 				<description>number of files/pages in list text label</description>
 				<right>760</right>
-				<posy>570</posy>
+				<top>570</top>
 				<width>300</width>
 				<height>35</height>
 				<font>font12</font>

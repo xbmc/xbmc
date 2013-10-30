@@ -6,8 +6,8 @@
 			<include>VisibleFadeEffect</include>
 			<control type="button" id="997">
 				<description>Hidden Button for focus</description>
-				<posx>-600</posx>
-				<posy>-20</posy>
+				<left>-600</left>
+				<top>-20</top>
 				<width>1</width>
 				<height>1</height>
 				<texturenofocus>-</texturenofocus>
@@ -17,8 +17,8 @@
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>20</posx>
-				<posy>13</posy>
+				<left>20</left>
+				<top>13</top>
 				<width>610</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -29,8 +29,8 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="label">
-				<posx>0</posx>
-				<posy>200</posy>
+				<left>0</left>
+				<top>200</top>
 				<width>600</width>
 				<height>30</height>
 				<font>font13</font>
@@ -41,16 +41,16 @@
 				<visible>IsEmpty(Window.Property(36Hour.IsFetched))</visible>
 			</control>
 			<control type="group">
-				<posx>20</posx>
-				<posy>50</posy>
+				<left>20</left>
+				<top>50</top>
 				<visible>!IsEmpty(Window.Property(36Hour.IsFetched))</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="group">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<control type="label">
-						<posx>0</posx>
-						<posy>5</posy>
+						<left>0</left>
+						<top>5</top>
 						<width>600</width>
 						<height>30</height>
 						<font>font13_title</font>
@@ -60,16 +60,16 @@
 						<label>$INFO[Window.Property(36Hour.1.Heading)]</label>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>10</posy>
+						<left>0</left>
+						<top>10</top>
 						<width>120</width>
 						<height>110</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[Window.Property(36Hour.1.OutlookIcon)]</texture>
 					</control>
 					<control type="label">
-						<posx>120</posx>
-						<posy>40</posy>
+						<left>120</left>
+						<top>40</top>
 						<width>100</width>
 						<height>40</height>
 						<font>font13_title</font>
@@ -81,7 +81,7 @@
 					</control>
 					<control type="label">
 						<right>590</right>
-						<posy>60</posy>
+						<top>60</top>
 						<width>390</width>
 						<height>20</height>
 						<font>font12</font>
@@ -92,8 +92,8 @@
 						<label>$INFO[Window.Property(36Hour.1.ChancePrecipitation),[COLOR=grey2]$LOCALIZE[31908] :[/COLOR][B] ,[/B]]</label>
 					</control>
 					<control type="textbox">
-						<posx>0</posx>
-						<posy>110</posy>
+						<left>0</left>
+						<top>110</top>
 						<width>590</width>
 						<height>70</height>
 						<font>font12</font>
@@ -103,19 +103,19 @@
 						<label>$INFO[Window.Property(36hour.1.Forecast),[COLOR=grey2]$LOCALIZE[31905]: [/COLOR]]</label>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>180</posy>
+						<left>0</left>
+						<top>180</top>
 						<width>650</width>
 						<height>4</height>
 						<texture>separator.png</texture>
 					</control>
 				</control>
 				<control type="group">
-					<posx>0</posx>
-					<posy>185</posy>
+					<left>0</left>
+					<top>185</top>
 					<control type="label">
-						<posx>0</posx>
-						<posy>5</posy>
+						<left>0</left>
+						<top>5</top>
 						<width>600</width>
 						<height>30</height>
 						<font>font13_title</font>
@@ -125,16 +125,16 @@
 						<label>$INFO[Window.Property(36Hour.2.Heading)]</label>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>10</posy>
+						<left>0</left>
+						<top>10</top>
 						<width>120</width>
 						<height>110</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[Window.Property(36Hour.2.OutlookIcon)]</texture>
 					</control>
 					<control type="label">
-						<posx>120</posx>
-						<posy>40</posy>
+						<left>120</left>
+						<top>40</top>
 						<width>100</width>
 						<height>40</height>
 						<font>font13_title</font>
@@ -146,7 +146,7 @@
 					</control>
 					<control type="label">
 						<right>590</right>
-						<posy>60</posy>
+						<top>60</top>
 						<width>390</width>
 						<height>20</height>
 						<font>font12</font>
@@ -157,8 +157,8 @@
 						<label>$INFO[Window.Property(36Hour.2.ChancePrecipitation),[COLOR=grey2]$LOCALIZE[31908] :[/COLOR][B] ,[/B]]</label>
 					</control>
 					<control type="textbox">
-						<posx>0</posx>
-						<posy>110</posy>
+						<left>0</left>
+						<top>110</top>
 						<width>590</width>
 						<height>70</height>
 						<font>font12</font>
@@ -168,19 +168,19 @@
 						<label>$INFO[Window.Property(36hour.2.Forecast),[COLOR=grey2]$LOCALIZE[31905]: [/COLOR]]</label>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>180</posy>
+						<left>0</left>
+						<top>180</top>
 						<width>650</width>
 						<height>4</height>
 						<texture>separator.png</texture>
 					</control>
 				</control>
 				<control type="group">
-					<posx>0</posx>
-					<posy>370</posy>
+					<left>0</left>
+					<top>370</top>
 					<control type="label">
-						<posx>0</posx>
-						<posy>5</posy>
+						<left>0</left>
+						<top>5</top>
 						<width>600</width>
 						<height>30</height>
 						<font>font13_title</font>
@@ -190,16 +190,16 @@
 						<label>$INFO[Window.Property(36Hour.3.Heading)]</label>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>10</posy>
+						<left>0</left>
+						<top>10</top>
 						<width>120</width>
 						<height>110</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[Window.Property(36Hour.3.OutlookIcon)]</texture>
 					</control>
 					<control type="label">
-						<posx>120</posx>
-						<posy>40</posy>
+						<left>120</left>
+						<top>40</top>
 						<width>100</width>
 						<height>40</height>
 						<font>font13_title</font>
@@ -211,7 +211,7 @@
 					</control>
 					<control type="label">
 						<right>590</right>
-						<posy>60</posy>
+						<top>60</top>
 						<width>390</width>
 						<height>20</height>
 						<font>font12</font>
@@ -222,8 +222,8 @@
 						<label>$INFO[Window.Property(36Hour.3.ChancePrecipitation),[COLOR=grey2]$LOCALIZE[31908] :[/COLOR][B] ,[/B]]</label>
 					</control>
 					<control type="textbox">
-						<posx>0</posx>
-						<posy>110</posy>
+						<left>0</left>
+						<top>110</top>
 						<width>590</width>
 						<height>70</height>
 						<font>font12</font>

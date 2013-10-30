@@ -5,20 +5,20 @@
 	<animation effect="slide" start="0,0" end="0,-70" delay="400" time="100">WindowClose</animation>
 	<controls>
 		<control type="group">
-			<posx>720</posx>
-			<posy>0</posy>
+			<left>720</left>
+			<top>0</top>
 			<animation effect="slide" end="0,-80" time="200" condition="Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)">conditional</animation>
 			<control type="image">
-				<posx>0</posx>
-				<posy>-10</posy>
+				<left>0</left>
+				<top>-10</top>
 				<width>400</width>
 				<height>70</height>
 				<texture flipy="true" border="20,20,20,2">InfoMessagePanel.png</texture>
 			</control>
 			<control type="label" id="30">
 				<description>Header Label</description>
-				<posx>15</posx>
-				<posy>4</posy>
+				<left>15</left>
+				<top>4</top>
 				<width>370</width>
 				<height>18</height>
 				<font>font10_title</font>
@@ -28,8 +28,8 @@
 			</control>
 			<control type="label" id="31">
 				<description>Title Label</description>
-				<posx>15</posx>
-				<posy>20</posy>
+				<left>15</left>
+				<top>20</top>
 				<width>370</width>
 				<height>20</height>
 				<font>font10</font>
@@ -38,8 +38,8 @@
 			</control>
 			<control type="progress" id="32">
 				<description>progress control</description>
-				<posx>15</posx>
-				<posy>42</posy>
+				<left>15</left>
+				<top>42</top>
 				<width>370</width>
 				<height>8</height>
 			</control>

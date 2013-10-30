@@ -5,8 +5,8 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="image">
-			<posx>0</posx>
-			<posy>100r</posy>
+			<left>0</left>
+			<top>100r</top>
 			<width>1280</width>
 			<height>100</height>
 			<texture>floor.png</texture>
@@ -14,8 +14,8 @@
 			<animation effect="slide" start="0,0" end="0,10" time="200" condition="Window.Next(Home)">WindowClose</animation>
 		</control>
 		<control type="group">
-			<posx>90</posx>
-			<posy>30</posy>
+			<left>90</left>
+			<top>30</top>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300"/>
 				<effect type="fade" start="0" end="100" time="300"/>
@@ -25,23 +25,23 @@
 				<effect type="fade" start="100" end="0" time="300"/>
 			</animation>
 			<control type="image">
-				<posx>5</posx>
-				<posy>5</posy>
+				<left>5</left>
+				<top>5</top>
 				<width>1090</width>
 				<height>630</height>
 				<texture border="15">ContentPanel.png</texture>
 			</control>
 			<control type="image">
-				<posx>5</posx>
-				<posy>625</posy>
+				<left>5</left>
+				<top>625</top>
 				<width>1090</width>
 				<height>64</height>
 				<texture border="15">ContentPanelMirror.png</texture>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>980</posx>
-				<posy>11</posy>
+				<left>980</left>
+				<top>11</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -57,16 +57,16 @@
 			</control>
 			<control type="image">
 				<description>LOGO</description>
-				<posx>30</posx>
-				<posy>15</posy>
+				<left>30</left>
+				<top>15</top>
 				<width>220</width>
 				<height>80</height>
 				<aspectratio>keep</aspectratio>
 				<texture>Confluence_Logo.png</texture>
 			</control>
 			<control type="list" id="9000">
-				<posx>10</posx>
-				<posy>82</posy>
+				<left>10</left>
+				<top>82</top>
 				<width>260</width>
 				<height>541</height>
 				<onleft>9000</onleft>
@@ -77,15 +77,15 @@
 				<scrolltime>300</scrolltime>
 				<itemlayout height="54" width="260">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>260</width>
 						<height>55</height>
 						<texture border="5">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
-						<posx>250</posx>
-						<posy>0</posy>
+						<left>250</left>
+						<top>0</top>
 						<width>380</width>
 						<height>55</height>
 						<font>font24_title</font>
@@ -97,15 +97,15 @@
 				</itemlayout>
 				<focusedlayout height="54" width="260">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>260</width>
 						<height>55</height>
 						<texture border="5">MenuItemFO.png</texture>
 					</control>
 					<control type="label">
-						<posx>250</posx>
-						<posy>0</posy>
+						<left>250</left>
+						<top>0</top>
 						<width>380</width>
 						<height>55</height>
 						<font>font24_title</font>
@@ -173,15 +173,15 @@
 				</content>
 			</control>
 			<control type="image">
-				<posx>268</posx>
-				<posy>10</posy>
+				<left>268</left>
+				<top>10</top>
 				<width>804</width>
 				<height>50</height>
 				<texture border="5">black-back2.png</texture>
 			</control>
 			<control type="image">
-				<posx>268</posx>
-				<posy>10</posy>
+				<left>268</left>
+				<top>10</top>
 				<width>804</width>
 				<height>70</height>
 				<aspectratio>stretch</aspectratio>
@@ -189,8 +189,8 @@
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>300</posx>
-				<posy>20</posy>
+				<left>300</left>
+				<top>20</top>
 				<width>740</width>
 				<height>30</height>
 				<font>font16</font>
@@ -201,15 +201,15 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="image">
-				<posx>270</posx>
-				<posy>60</posy>
+				<left>270</left>
+				<top>60</top>
 				<width>800</width>
 				<height>450</height>
 				<texture border="5">button-nofocus.png</texture>
 			</control>
 			<control type="image">
-				<posx>272</posx>
-				<posy>62</posy>
+				<left>272</left>
+				<top>62</top>
 				<width>796</width>
 				<height>446</height>
 				<aspectratio>stretch</aspectratio>
@@ -217,8 +217,8 @@
 				<texture background="true">special://skin/backgrounds/settings.jpg</texture>
 			</control>
 			<control type="image">
-				<posx>272</posx>
-				<posy>62</posy>
+				<left>272</left>
+				<top>62</top>
 				<width>600</width>
 				<height>340</height>
 				<aspectratio>stretch</aspectratio>
@@ -226,16 +226,16 @@
 				<colordiffuse>AAFFFFFF</colordiffuse>
 			</control>
 			<control type="image">
-				<posx>268</posx>
-				<posy>510</posy>
+				<left>268</left>
+				<top>510</top>
 				<width>804</width>
 				<height>118</height>
 				<texture border="5">black-back2.png</texture>
 			</control>
 			<control type="textbox">
 				<description>Appearance Description</description>
-				<posx>300</posx>
-				<posy>520</posy>
+				<left>300</left>
+				<top>520</top>
 				<width>740</width>
 				<height>100</height>
 				<font>font12</font>
@@ -250,16 +250,16 @@
 		<include>BehindDialogFadeOut</include>
 		<control type="image">
 			<description>Section header image</description>
-			<posx>20</posx>
-			<posy>3</posy>
+			<left>20</left>
+			<top>3</top>
 			<width>35</width>
 			<height>35</height>
 			<aspectratio>keep</aspectratio>
 			<texture>icon_system.png</texture>
 		</control>
 		<control type="grouplist">
-			<posx>65</posx>
-			<posy>5</posy>
+			<left>65</left>
+			<top>5</top>
 			<width>1000</width>
 			<height>30</height>
 			<orientation>horizontal</orientation>

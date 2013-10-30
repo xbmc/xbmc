@@ -5,8 +5,8 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="image">
-			<posx>0</posx>
-			<posy>100r</posy>
+			<left>0</left>
+			<top>100r</top>
 			<width>1280</width>
 			<height>100</height>
 			<texture>floor.png</texture>
@@ -14,8 +14,8 @@
 			<animation effect="slide" start="0,0" end="0,10" time="200" condition="Window.Next(Home)">WindowClose</animation>
 		</control>
 		<control type="group">
-			<posx>90</posx>
-			<posy>30</posy>
+			<left>90</left>
+			<top>30</top>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300"/>
 				<effect type="fade" start="0" end="100" time="300"/>
@@ -25,23 +25,23 @@
 				<effect type="fade" start="100" end="0" time="300"/>
 			</animation>
 			<control type="image">
-				<posx>5</posx>
-				<posy>5</posy>
+				<left>5</left>
+				<top>5</top>
 				<width>1090</width>
 				<height>630</height>
 				<texture border="15">ContentPanel.png</texture>
 			</control>
 			<control type="image">
-				<posx>5</posx>
-				<posy>625</posy>
+				<left>5</left>
+				<top>625</top>
 				<width>1090</width>
 				<height>64</height>
 				<texture border="15">ContentPanelMirror.png</texture>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>980</posx>
-				<posy>11</posy>
+				<left>980</left>
+				<top>11</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -57,8 +57,8 @@
 			</control>
 			<control type="image">
 				<description>LOGO</description>
-				<posx>30</posx>
-				<posy>15</posy>
+				<left>30</left>
+				<top>15</top>
 				<width>220</width>
 				<height>80</height>
 				<aspectratio>keep</aspectratio>
@@ -66,8 +66,8 @@
 			</control>
 			<control type="button" id="4">
 				<description>Enable Login screen</description>
-				<posx>10</posx>
-				<posy>90</posy>
+				<left>10</left>
+				<top>90</top>
 				<width>250</width>
 				<height>72</height>
 				<textoffsety>8</textoffsety>
@@ -85,7 +85,7 @@
 			</control>
 			<control type="label">
 				<right>250</right>
-				<posy>130</posy>
+				<top>130</top>
 				<width>240</width>
 				<height>25</height>
 				<font>font13</font>
@@ -97,7 +97,7 @@
 			</control>
 			<control type="label">
 				<right>250</right>
-				<posy>130</posy>
+				<top>130</top>
 				<width>240</width>
 				<height>25</height>
 				<font>font13</font>
@@ -109,8 +109,8 @@
 			</control>
 			<control type="button" id="5"> 
 				<description>Choose auto login user</description> 
-				<posx>10</posx> 
-				<posy>161</posy> 
+				<left>10</left> 
+				<top>161</top> 
 				<width>250</width> 
 				<height>72</height> 
 				<textoffsety>8</textoffsety> 
@@ -129,8 +129,8 @@
 			</control> 
 			<control type="button"> 
 				<description>Choose auto login user (grayed out)</description> 
-				<posx>10</posx> 
-				<posy>161</posy> 
+				<left>10</left> 
+				<top>161</top> 
 				<width>250</width> 
 				<height>72</height> 
 				<textoffsety>8</textoffsety> 
@@ -150,7 +150,7 @@
 			</control> 
 			<control type="label"> 
 				<right>247</right> 
-				<posy>201</posy> 
+				<top>201</top> 
 				<width>200</width> 
 				<height>25</height> 
 				<font>font13caps</font> 
@@ -161,8 +161,8 @@
 				<visible>!Control.HasFocus(5) + !System.HasLoginScreen</visible>
 			</control> 
 			<control type="label"> 
-				<posx>247</posx> 
-				<posy>201</posy> 
+				<left>247</left> 
+				<top>201</top> 
 				<width>200</width> 
 				<height>25</height> 
 				<font>font13caps</font> 
@@ -175,11 +175,11 @@
 				<visible>Control.HasFocus(5) + !System.HasLoginScreen</visible>
 			</control> 
 			<control type="group">
-				<posx>20</posx>
-				<posy>260</posy>
+				<left>20</left>
+				<top>260</top>
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>240</width>
 					<height>200</height>
 					<aspectratio>keep</aspectratio>
@@ -188,8 +188,8 @@
 					<texture fallback="unknown-user.png">$INFO[Container(2).Listitem.Icon]</texture>
 				</control>
 				<control type="label">
-					<posx>0</posx>
-					<posy>210</posy>
+					<left>0</left>
+					<top>210</top>
 					<width>240</width>
 					<height>20</height>
 					<font>font12_title</font>
@@ -199,8 +199,8 @@
 					<label>$LOCALIZE[31319]</label>
 				</control>
 				<control type="label">
-					<posx>0</posx>
-					<posy>235</posy>
+					<left>0</left>
+					<top>235</top>
 					<width>240</width>
 					<height>20</height>
 					<font>font13</font>
@@ -210,8 +210,8 @@
 					<label>$INFO[Container(2).ListItem.Label]</label>
 				</control>
 				<control type="label">
-					<posx>0</posx>
-					<posy>265</posy>
+					<left>0</left>
+					<top>265</top>
 					<width>240</width>
 					<height>30</height>
 					<font>font12_title</font>
@@ -221,8 +221,8 @@
 					<label>$LOCALIZE[31320]</label>
 				</control>
 				<control type="label">
-					<posx>0</posx>
-					<posy>290</posy>
+					<left>0</left>
+					<top>290</top>
 					<width>240</width>
 					<height>30</height>
 					<font>font13</font>
@@ -233,15 +233,15 @@
 				</control>
 			</control>
 			<control type="image">
-				<posx>268</posx>
-				<posy>10</posy>
+				<left>268</left>
+				<top>10</top>
 				<width>790</width>
 				<height>618</height>
 				<texture border="5">black-back2.png</texture>
 			</control>
 			<control type="image">
-				<posx>268</posx>
-				<posy>10</posy>
+				<left>268</left>
+				<top>10</top>
 				<width>804</width>
 				<height>70</height>
 				<aspectratio>stretch</aspectratio>
@@ -249,8 +249,8 @@
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>300</posx>
-				<posy>20</posy>
+				<left>300</left>
+				<top>20</top>
 				<width>740</width>
 				<height>30</height>
 				<font>font30_title</font>
@@ -261,8 +261,8 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="panel" id="2">
-				<posx>283</posx>
-				<posy>70</posy>
+				<left>283</left>
+				<top>70</top>
 				<width>760</width>
 				<height>540</height>
 				<onleft>4</onleft>
@@ -274,8 +274,8 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="180" width="190">
 					<control type="image">
-						<posx>1</posx>
-						<posy>0</posy>
+						<left>1</left>
+						<top>0</top>
 						<width>188</width>
 						<height>145</height>
 						<bordertexture border="5">button-nofocus.png</bordertexture>
@@ -283,8 +283,8 @@
 						<texture fallback="unknown-user.png">$INFO[Listitem.Icon]</texture>
 					</control>
 					<control type="label">
-						<posx>94</posx>
-						<posy>145</posy>
+						<left>94</left>
+						<top>145</top>
 						<width>178</width>
 						<height>25</height>
 						<font>font11</font>
@@ -297,8 +297,8 @@
 				</itemlayout>
 				<focusedlayout height="180" width="190">
 					<control type="image">
-						<posx>1</posx>
-						<posy>0</posy>
+						<left>1</left>
+						<top>0</top>
 						<width>188</width>
 						<height>145</height>
 						<bordertexture border="5">folder-focus.png</bordertexture>
@@ -306,8 +306,8 @@
 						<texture fallback="unknown-user.png">$INFO[Listitem.Icon]</texture>
 					</control>
 					<control type="label">
-						<posx>94</posx>
-						<posy>145</posy>
+						<left>94</left>
+						<top>145</top>
 						<width>178</width>
 						<height>25</height>
 						<font>font11</font>
@@ -320,8 +320,8 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>1060</posx>
-				<posy>60</posy>
+				<left>1060</left>
+				<top>60</top>
 				<width>25</width>
 				<height>530</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -340,16 +340,16 @@
 		<include>BehindDialogFadeOut</include>
 		<control type="image">
 			<description>Section header image</description>
-			<posx>20</posx>
-			<posy>3</posy>
+			<left>20</left>
+			<top>3</top>
 			<width>35</width>
 			<height>35</height>
 			<aspectratio>keep</aspectratio>
 			<texture>icon_system.png</texture>
 		</control>
 		<control type="grouplist">
-			<posx>65</posx>
-			<posy>5</posy>
+			<left>65</left>
+			<top>5</top>
 			<width>1000</width>
 			<height>30</height>
 			<orientation>horizontal</orientation>

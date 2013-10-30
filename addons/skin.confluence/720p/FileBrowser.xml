@@ -4,27 +4,27 @@
 	<allowoverlay>no</allowoverlay>
 	<coordinates>
 		<system>1</system>
-		<posx>0</posx>
-		<posy>0</posy>
+		<left>0</left>
+		<top>0</top>
 	</coordinates>
 	<controls>
 		<control type="group">
-			<posx>580</posx>
+			<left>580</left>
 			<animation effect="slide" start="700,0" end="0,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
 			<animation effect="slide" start="-400,0" end="0,0" time="400" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="700,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
 			<animation effect="slide" start="0,0" end="-400,0" time="400" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>1100</width>
 				<height>720</height>
 				<texture border="15,0,0,0" flipx="true">MediaBladeSub.png</texture>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>20</posx>
-				<posy>0</posy>
+				<left>20</left>
+				<top>0</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -44,7 +44,7 @@
 				<control type="label" id="411">
 					<description>header label</description>
 					<right>660</right>
-					<posy>40</posy>
+					<top>40</top>
 					<width>630</width>
 					<height>30</height>
 					<font>font13_title</font>
@@ -57,7 +57,7 @@
 				<control type="label" id="412">
 					<description>Path label</description>
 					<right>660</right>
-					<posy>70</posy>
+					<top>70</top>
 					<width>630</width>
 					<height>30</height>
 					<font>font13</font>
@@ -68,8 +68,8 @@
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="grouplist" id="9000">
-					<posx>20</posx>
-					<posy>460</posy>
+					<left>20</left>
+					<top>460</top>
 					<width>221</width>
 					<height>225</height>
 					<itemgap>5</itemgap>
@@ -108,15 +108,15 @@
 					</control>
 				</control>
 				<control type="image">
-					<posx>245</posx>
-					<posy>460</posy>
+					<left>245</left>
+					<top>460</top>
 					<width>420</width>
 					<height>210</height>
 					<texture border="5">button-nofocus.png</texture>
 				</control>
 				<control type="image"> 
-					<posx>250</posx> 
-					<posy>465</posy> 
+					<left>250</left> 
+					<top>465</top> 
 					<width>410</width> 
 					<height>200</height> 
 					<aspectratio>keep</aspectratio> 
@@ -124,8 +124,8 @@
 					<visible>!SubString(Control.GetLabel(416),*)</visible> 
 				</control> 
 				<control type="image"> 
-					<posx>250</posx> 
-					<posy>465</posy> 
+					<left>250</left> 
+					<top>465</top> 
 					<width>410</width> 
 					<height>200</height> 
 					<aspectratio>keep</aspectratio> 
@@ -133,8 +133,8 @@
 					<visible>SubString(Control.GetLabel(416),*)</visible> 
 				</control>
 				<control type="panel" id="450">
-					<posx>20</posx>
-					<posy>120</posy>
+					<left>20</left>
+					<top>120</top>
 					<width>640</width>
 					<height>321</height>
 					<onleft>9000</onleft>
@@ -145,22 +145,22 @@
 					<scrolltime>200</scrolltime>
 					<itemlayout height="40" width="640">
 						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
+							<left>0</left>
+							<top>0</top>
 							<width>640</width>
 							<height>41</height>
 							<texture border="5">MenuItemNF.png</texture>
 						</control>
 						<control type="image">
-							<posx>10</posx>
-							<posy>2</posy>
+							<left>10</left>
+							<top>2</top>
 							<width>38</width>
 							<height>38</height>
 							<texture>$INFO[ListItem.Icon]</texture>
 						</control>
 						<control type="label">
-							<posx>55</posx>
-							<posy>0</posy>
+							<left>55</left>
+							<top>0</top>
 							<width>580</width>
 							<height>40</height>
 							<font>font13</font>
@@ -172,31 +172,31 @@
 					</itemlayout>
 					<focusedlayout height="40" width="640">
 						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
+							<left>0</left>
+							<top>0</top>
 							<width>640</width>
 							<height>41</height>
 							<visible>!Control.HasFocus(450)</visible>
 							<texture border="5">MenuItemNF.png</texture>
 						</control>
 						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
+							<left>0</left>
+							<top>0</top>
 							<width>640</width>
 							<height>41</height>
 							<visible>Control.HasFocus(450)</visible>
 							<texture border="5">MenuItemFO.png</texture>
 						</control>
 						<control type="image">
-							<posx>10</posx>
-							<posy>2</posy>
+							<left>10</left>
+							<top>2</top>
 							<width>38</width>
 							<height>38</height>
 							<texture>$INFO[ListItem.Icon]</texture>
 						</control>
 						<control type="label">
-							<posx>55</posx>
-							<posy>0</posy>
+							<left>55</left>
+							<top>0</top>
 							<width>580</width>
 							<height>40</height>
 							<font>font13</font>
@@ -208,8 +208,8 @@
 					</focusedlayout>
 				</control>
 				<control type="panel" id="451">
-					<posx>20</posx>
-					<posy>120</posy>
+					<left>20</left>
+					<top>120</top>
 					<width>640</width>
 					<height>321</height>
 					<onleft>9000</onleft>
@@ -220,22 +220,22 @@
 					<scrolltime>200</scrolltime>
 					<itemlayout height="40" width="640">
 						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
+							<left>0</left>
+							<top>0</top>
 							<width>640</width>
 							<height>41</height>
 							<texture border="5">MenuItemNF.png</texture>
 						</control>
 						<control type="image">
-							<posx>10</posx>
-							<posy>2</posy>
+							<left>10</left>
+							<top>2</top>
 							<width>38</width>
 							<height>38</height>
 							<texture>$INFO[ListItem.Icon]</texture>
 						</control>
 						<control type="label">
-							<posx>55</posx>
-							<posy>0</posy>
+							<left>55</left>
+							<top>0</top>
 							<width>580</width>
 							<height>40</height>
 							<font>font13</font>
@@ -247,31 +247,31 @@
 					</itemlayout>
 					<focusedlayout height="40" width="640">
 						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
+							<left>0</left>
+							<top>0</top>
 							<width>640</width>
 							<height>41</height>
 							<visible>!Control.HasFocus(451)</visible>
 							<texture border="5">MenuItemNF.png</texture>
 						</control>
 						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
+							<left>0</left>
+							<top>0</top>
 							<width>640</width>
 							<height>41</height>
 							<visible>Control.HasFocus(451)</visible>
 							<texture border="5">MenuItemFO.png</texture>
 						</control>
 						<control type="image">
-							<posx>10</posx>
-							<posy>2</posy>
+							<left>10</left>
+							<top>2</top>
 							<width>38</width>
 							<height>38</height>
 							<texture>$INFO[ListItem.Icon]</texture>
 						</control>
 						<control type="label">
-							<posx>55</posx>
-							<posy>0</posy>
+							<left>55</left>
+							<top>0</top>
 							<width>580</width>
 							<height>40</height>
 							<font>font13</font>
@@ -284,8 +284,8 @@
 				</control>
 
 				<control type="scrollbar" id="60">
-					<posx>650</posx>
-					<posy>120</posy>
+					<left>650</left>
+					<top>120</top>
 					<width>25</width>
 					<height>320</height>
 					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -301,7 +301,7 @@
 				<control type="label">
 					<description>Page label</description>
 					<right>660</right>
-					<posy>680</posy>
+					<top>680</top>
 					<width>560</width>
 					<height>30</height>
 					<align>right</align>
@@ -314,7 +314,7 @@
 				<control type="label">
 					<description>Page label</description>
 					<right>660</right>
-					<posy>680</posy>
+					<top>680</top>
 					<width>560</width>
 					<height>30</height>
 					<align>right</align>

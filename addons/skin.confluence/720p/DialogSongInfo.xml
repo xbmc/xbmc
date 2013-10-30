@@ -3,8 +3,8 @@
 	<defaultcontrol always="true">10</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>185</posx>
-		<posy>105</posy>
+		<left>185</left>
+		<top>105</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -13,24 +13,24 @@
 			<visible>!Window.IsVisible(MusicInformation)</visible>
 			<control type="image">
 				<description>background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>910</width>
 				<height>510</height>
 				<texture border="40">DialogBack.png</texture>
 			</control>
 			<control type="image">
 				<description>Dialog Header image</description>
-				<posx>40</posx>
-				<posy>16</posy>
+				<left>40</left>
+				<top>16</top>
 				<width>830</width>
 				<height>40</height>
 				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>40</posx>
-				<posy>20</posy>
+				<left>40</left>
+				<top>20</top>
 				<width>830</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -42,8 +42,8 @@
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>820</posx>
-				<posy>14</posy>
+				<left>820</left>
+				<top>14</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -59,8 +59,8 @@
 			</control>
 			<control type="label">
 				<description>Song Title value</description>
-				<posx>40</posx>
-				<posy>60</posy>
+				<left>40</left>
+				<top>60</top>
 				<width>830</width>
 				<height>30</height>
 				<align>center</align>
@@ -71,28 +71,28 @@
 				<scroll>true</scroll>
 			</control>
 			<control type="image">
-				<posx>40</posx>
-				<posy>120</posy>
+				<left>40</left>
+				<top>120</top>
 				<width>200</width>
 				<height>200</height>
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<texture>$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="image">
-				<posx>40</posx>
-				<posy>320</posy>
+				<left>40</left>
+				<top>320</top>
 				<width>200</width>
 				<height>200</height>
 				<aspectratio aligny="top">keep</aspectratio>
 				<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="group">
-				<posx>250</posx>
-				<posy>120</posy>
+				<left>250</left>
+				<top>120</top>
 				<control type="label">
 					<description>Artist Title</description>
 					<right>150</right>
-					<posy>0</posy>
+					<top>0</top>
 					<width>150</width>
 					<height>25</height>
 					<align>right</align>
@@ -103,8 +103,8 @@
 				</control>
 				<control type="fadelabel">
 					<description>Artist Value</description>
-					<posx>160</posx>
-					<posy>0</posy>
+					<left>160</left>
+					<top>0</top>
 					<width>460</width>
 					<height>25</height>
 					<align>left</align>
@@ -118,7 +118,7 @@
 				<control type="label">
 					<description>Album Title</description>
 					<right>150</right>
-					<posy>30</posy>
+					<top>30</top>
 					<width>150</width>
 					<height>25</height>
 					<align>right</align>
@@ -129,8 +129,8 @@
 				</control>
 				<control type="fadelabel">
 					<description>Album Value</description>
-					<posx>160</posx>
-					<posy>30</posy>
+					<left>160</left>
+					<top>30</top>
 					<width>460</width>
 					<height>25</height>
 					<align>left</align>
@@ -144,7 +144,7 @@
 				<control type="label">
 					<description>Genre Title</description>
 					<right>150</right>
-					<posy>60</posy>
+					<top>60</top>
 					<width>150</width>
 					<height>25</height>
 					<align>right</align>
@@ -157,8 +157,8 @@
 				</control>
 				<control type="fadelabel">
 					<description>Genre Value</description>
-					<posx>160</posx>
-					<posy>60</posy>
+					<left>160</left>
+					<top>60</top>
 					<width>460</width>
 					<height>25</height>
 					<align>left</align>
@@ -170,7 +170,7 @@
 				<control type="label">
 					<description>Year Title</description>
 					<right>150</right>
-					<posy>90</posy>
+					<top>90</top>
 					<width>150</width>
 					<height>25</height>
 					<align>right</align>
@@ -181,8 +181,8 @@
 				</control>
 				<control type="fadelabel">
 					<description>Year Value</description>
-					<posx>160</posx>
-					<posy>90</posy>
+					<left>160</left>
+					<top>90</top>
 					<width>460</width>
 					<height>25</height>
 					<align>left</align>
@@ -194,7 +194,7 @@
 				<control type="label">
 					<description>Track Number Title</description>
 					<right>150</right>
-					<posy>120</posy>
+					<top>120</top>
 					<width>150</width>
 					<height>25</height>
 					<align>right</align>
@@ -205,8 +205,8 @@
 				</control>
 				<control type="fadelabel">
 					<description>Track Number Value</description>
-					<posx>160</posx>
-					<posy>120</posy>
+					<left>160</left>
+					<top>120</top>
 					<width>460</width>
 					<height>25</height>
 					<align>left</align>
@@ -218,7 +218,7 @@
 				<control type="label">
 					<description>Rating Title</description>
 					<right>150</right>
-					<posy>150</posy>
+					<top>150</top>
 					<width>150</width>
 					<height>25</height>
 					<align>right</align>
@@ -228,12 +228,12 @@
 					<label>$LOCALIZE[563]:</label>
 				</control>
 				<control type="group">
-					<posx>160</posx>
-					<posy>148</posy>
+					<left>160</left>
+					<top>148</top>
 					<control type="image">
 						<description>Rating value</description>
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>150</width>
 						<height>32</height>
 						<aspectratio align="left">keep</aspectratio>
@@ -241,8 +241,8 @@
 					</control>
 					<control type="button" id="14">
 						<description>Decrease Rating</description>
-						<posx>160</posx>
-						<posy>5</posy>
+						<left>160</left>
+						<top>5</top>
 						<width>33</width>
 						<height>22</height>
 						<onclick>DecreaseRating</onclick>
@@ -255,8 +255,8 @@
 					</control>
 					<control type="button" id="15">
 						<description>Increase Rating</description>
-						<posx>193</posx>
-						<posy>5</posy>
+						<left>193</left>
+						<top>5</top>
 						<width>33</width>
 						<height>22</height>
 						<onclick>IncreaseRating</onclick>
@@ -271,7 +271,7 @@
 				<control type="label">
 					<description>Comment Title</description>
 					<right>150</right>
-					<posy>180</posy>
+					<top>180</top>
 					<width>150</width>
 					<height>25</height>
 					<align>right</align>
@@ -282,8 +282,8 @@
 				</control>
 				<control type="textbox">
 					<description>Comment value</description>
-					<posx>160</posx>
-					<posy>177</posy>
+					<left>160</left>
+					<top>177</top>
 					<width>460</width>
 					<height>140</height>
 					<font>font13</font>
@@ -292,12 +292,12 @@
 				</control>
 			</control>
 			<control type="group" id="9000">
-				<posx>40</posx>
-				<posy>445</posy>
+				<left>40</left>
+				<top>445</top>
 				<control type="button" id="10">
 					<description>Ok button</description>
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>200</width>
 					<height>40</height>
 					<label>186</label>
@@ -310,8 +310,8 @@
 				</control>
 				<control type="button" id="11">
 					<description>Cancel button</description>
-					<posx>210</posx>
-					<posy>0</posy>
+					<left>210</left>
+					<top>0</top>
 					<width>200</width>
 					<height>40</height>
 					<label>222</label>
@@ -324,8 +324,8 @@
 				</control>
 				<control type="button" id="12">
 					<description>Album Info button</description>
-					<posx>420</posx>
-					<posy>0</posy>
+					<left>420</left>
+					<top>0</top>
 					<width>200</width>
 					<height>40</height>
 					<label>10523</label>
@@ -338,8 +338,8 @@
 				</control>
 				<control type="button" id="13">
 					<description>Get Thumb button</description>
-					<posx>630</posx>
-					<posy>0</posy>
+					<left>630</left>
+					<top>0</top>
 					<width>200</width>
 					<height>40</height>
 					<label>13405</label>

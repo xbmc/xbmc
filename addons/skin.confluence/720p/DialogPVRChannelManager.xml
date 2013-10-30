@@ -4,31 +4,31 @@
 	<allowoverlay>no</allowoverlay>
 	<coordinates>
 		<system>1</system>
-		<posx>190</posx>
-		<posy>30</posy>
+		<left>190</left>
+		<top>30</top>
 	</coordinates>
 	<include>dialogeffect</include>
 
 	<controls>
 		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>900</width>
 			<height>660</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
 			<description>Dialog Header image</description>
-			<posx>40</posx>
-			<posy>16</posy>
+			<left>40</left>
+			<top>16</top>
 			<width>820</width>
 			<height>40</height>
 			<texture>dialogheader.png</texture>
 		</control>
 		<control type="label">
 			<description>header label</description>
-			<posx>40</posx>
-			<posy>20</posy>
+			<left>40</left>
+			<top>20</top>
 			<width>820</width>
 			<height>30</height>
 			<font>font13_title</font>
@@ -41,8 +41,8 @@
 		</control>
 		<control type="label">
 			<description>header label</description>
-			<posx>40</posx>
-			<posy>20</posy>
+			<left>40</left>
+			<top>20</top>
 			<width>820</width>
 			<height>30</height>
 			<font>font13_title</font>
@@ -55,8 +55,8 @@
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>810</posx>
-			<posy>15</posy>
+			<left>810</left>
+			<top>15</top>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -71,11 +71,11 @@
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
 		<control type="group">
-			<posx>20</posx>
-			<posy>70</posy>
+			<left>20</left>
+			<top>70</top>
 			<control type="scrollbar" id="60">
-				<posx>0</posx>
-				<posy>5</posy>
+				<left>0</left>
+				<top>5</top>
 				<width>25</width>
 				<height>470</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -89,15 +89,15 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="image">
-				<posx>25</posx>
-				<posy>0</posy>
+				<left>25</left>
+				<top>0</top>
 				<width>430</width>
 				<height>475</height>
 				<texture border="5">button-nofocus.png</texture>
 			</control>
 			<control type="list" id="20">
-				<posx>30</posx>
-				<posy>5</posy>
+				<left>30</left>
+				<top>5</top>
 				<width>420</width>
 				<height>470</height>
 				<onup>20</onup>
@@ -108,23 +108,23 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="45" width="420">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>420</width>
 						<height>40</height>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="image">
-						<posx>5</posx>
-						<posy>5</posy>
+						<left>5</left>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<texture>$INFO[ListItem.Property(Icon)]</texture>
 						<visible>ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="image">
-						<posx>5</posx>
-						<posy>5</posy>
+						<left>5</left>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<colordiffuse>77FFFFFF</colordiffuse>
@@ -132,8 +132,8 @@
 						<visible>!ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="label">
-						<posx>45</posx>
-						<posy>0</posy>
+						<left>45</left>
+						<top>0</top>
 						<width>335</width>
 						<height>40</height>
 						<font>font12</font>
@@ -145,8 +145,8 @@
 						<visible>ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="label">
-						<posx>45</posx>
-						<posy>0</posy>
+						<left>45</left>
+						<top>0</top>
 						<width>335</width>
 						<height>40</height>
 						<font>font12</font>
@@ -158,8 +158,8 @@
 						<visible>!ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="image">
-						<posx>390</posx>
-						<posy>10</posy>
+						<left>390</left>
+						<top>10</top>
 						<width>20</width>
 						<height>20</height>
 						<texture>OverlayWatched.png</texture>
@@ -168,24 +168,24 @@
 				</itemlayout>
 				<focusedlayout height="65" width="420">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>420</width>
 						<height>60</height>
 						<texture border="5">button-focus2.png</texture>
 						<animation effect="fade" start="100" end="30" time="0" condition="!Control.HasFocus(20)">conditional</animation>
 					</control>
 					<control type="image">
-						<posx>5</posx>
-						<posy>5</posy>
+						<left>5</left>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<texture>$INFO[ListItem.Property(Icon)]</texture>
 						<visible>ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="image">
-						<posx>5</posx>
-						<posy>5</posy>
+						<left>5</left>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<colordiffuse>77FFFFFF</colordiffuse>
@@ -193,8 +193,8 @@
 						<visible>!ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="label">
-						<posx>45</posx>
-						<posy>0</posy>
+						<left>45</left>
+						<top>0</top>
 						<width>335</width>
 						<height>40</height>
 						<font>font12</font>
@@ -206,8 +206,8 @@
 						<visible>ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="label">
-						<posx>45</posx>
-						<posy>0</posy>
+						<left>45</left>
+						<top>0</top>
 						<width>335</width>
 						<height>40</height>
 						<font>font12</font>
@@ -219,16 +219,16 @@
 						<visible>!ListItem.Property(ActiveChannel)</visible>
 					</control>
 					<control type="image">
-						<posx>390</posx>
-						<posy>10</posy>
+						<left>390</left>
+						<top>10</top>
 						<width>20</width>
 						<height>20</height>
 						<texture>OverlayWatched.png</texture>
 						<visible>ListItem.Property(Changed)</visible>
 					</control>
 					<control type="label">
-						<posx>5</posx>
-						<posy>30</posy>
+						<left>5</left>
+						<top>30</top>
 						<width>410</width>
 						<height>30</height>
 						<font>font12</font>
@@ -242,8 +242,8 @@
 			</control>
 			<control type="label">
 				<description>Page Count Label</description>
-				<posx>30</posx>
-				<posy>485</posy>
+				<left>30</left>
+				<top>485</top>
 				<width>420</width>
 				<height>20</height>
 				<font>font12</font>
@@ -256,12 +256,12 @@
 		</control>
 		<control type="group" id="9002">
 			<control type="group">
-				<posx>490</posx>
-				<posy>70</posy>
+				<left>490</left>
+				<top>70</top>
 				<control type="label">
 					<description>channel options Header</description>
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>380</width>
 					<height>20</height>
 					<font>font12</font>
@@ -273,8 +273,8 @@
 				</control>
 				<control type="radiobutton" id="7">
 					<description>Channel activated</description>
-					<posx>0</posx>
-					<posy>25</posy>
+					<left>0</left>
+					<top>25</top>
 					<width>380</width>
 					<height>35</height>
 					<font>font12</font>
@@ -294,8 +294,8 @@
 				</control>
 				<control type="edit" id="8">
 					<description>Channel name</description>
-					<posx>0</posx>
-					<posy>65</posy>
+					<left>0</left>
+					<top>65</top>
 					<width>380</width>
 					<height>35</height>
 					<font>font12</font>
@@ -312,8 +312,8 @@
 				</control>
 				<control type="button" id="9">
 					<description>Channel logo Button</description>
-					<posx>0</posx>
-					<posy>105</posy>
+					<left>0</left>
+					<top>105</top>
 					<width>380</width>
 					<height>35</height>
 					<font>font12</font>
@@ -327,8 +327,8 @@
 				</control>
 				<control type="image" id="10">
 					<description>Current Channel Icon</description>
-					<posx>345</posx>
-					<posy>107</posy>
+					<left>345</left>
+					<top>107</top>
 					<width>30</width>
 					<height>30</height>
 					<aspectratio>keep</aspectratio>
@@ -336,8 +336,8 @@
 				</control>
 				<control type="radiobutton" id="12">
 					<description>EPG activated</description>
-					<posx>0</posx>
-					<posy>145</posy>
+					<left>0</left>
+					<top>145</top>
 					<width>380</width>
 					<height>35</height>
 					<font>font12</font>
@@ -357,8 +357,8 @@
 				</control>
 				<control type="spincontrolex" id="13">
 					<description>EPG source</description>
-					<posx>0</posx>
-					<posy>185</posy>
+					<left>0</left>
+					<top>185</top>
 					<width>380</width>
 					<height>35</height>
 					<font>font12</font>
@@ -372,8 +372,8 @@
 				</control>
 				<control type="radiobutton" id="14">
 					<description>Parental locked</description>
-					<posx>0</posx>
-					<posy>225</posy>
+					<left>0</left>
+					<top>225</top>
 					<width>380</width>
 					<height>35</height>
 					<font>font12</font>
@@ -393,12 +393,12 @@
 				</control>
 			</control>
 			<control type="group">
-				<posx>490</posx>
-				<posy>360</posy>
+				<left>490</left>
+				<top>360</top>
 				<control type="label">
 					<description>channel options Header</description>
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>380</width>
 					<height>20</height>
 					<font>font12</font>
@@ -410,8 +410,8 @@
 				</control>
 				<control type="button" id="30">
 					<description>Group Manager Button</description>
-					<posx>0</posx>
-					<posy>25</posy>
+					<left>0</left>
+					<top>25</top>
 					<width>190</width>
 					<height>35</height>
 					<font>font12</font>
@@ -426,8 +426,8 @@
 				</control>
 				<control type="button" id="34">
 					<description>TV/Radio Button</description>
-					<posx>195</posx>
-					<posy>25</posy>
+					<left>195</left>
+					<top>25</top>
 					<width>185</width>
 					<height>35</height>
 					<font>font12</font>
@@ -443,8 +443,8 @@
 				</control>
 				<control type="button" id="34">
 					<description>TV/Radio Button</description>
-					<posx>195</posx>
-					<posy>25</posy>
+					<left>195</left>
+					<top>25</top>
 					<width>185</width>
 					<height>35</height>
 					<font>font12</font>
@@ -460,8 +460,8 @@
 				</control>
 				<control type="button" id="31">
 					<description>Edit channel Button</description>
-					<posx>0</posx>
-					<posy>65</posy>
+					<left>0</left>
+					<top>65</top>
 					<width>380</width>
 					<height>35</height>
 					<font>font12</font>
@@ -476,8 +476,8 @@
 				</control>
 				<control type="button" id="32">
 					<description>Delete channel Button</description>
-					<posx>0</posx>
-					<posy>105</posy>
+					<left>0</left>
+					<top>105</top>
 					<width>380</width>
 					<height>35</height>
 					<font>font12</font>
@@ -492,8 +492,8 @@
 				</control>
 				<control type="button" id="33">
 					<description>New channel Button</description>
-					<posx>0</posx>
-					<posy>145</posy>
+					<left>0</left>
+					<top>145</top>
 					<width>380</width>
 					<height>35</height>
 					<font>font12</font>
@@ -509,12 +509,12 @@
 			</control>
 		</control>
 		<control type="group" id="9000">
-			<posx>70</posx>
-			<posy>590</posy>
+			<left>70</left>
+			<top>590</top>
 			<control type="button" id="4">
 				<description>OK Button</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>250</width>
 				<height>40</height>
 				<label>186</label>
@@ -528,8 +528,8 @@
 			</control>
 			<control type="button" id="5">
 				<description>Apply changes Button</description>
-				<posx>260</posx>
-				<posy>0</posy>
+				<left>260</left>
+				<top>0</top>
 				<width>250</width>
 				<height>40</height>
 				<label>14070</label>
@@ -543,8 +543,8 @@
 			</control>
 			<control type="button" id="6">
 				<description>Cancel Button</description>
-				<posx>520</posx>
-				<posy>0</posy>
+				<left>520</left>
+				<top>0</top>
 				<width>250</width>
 				<height>40</height>
 				<label>222</label>

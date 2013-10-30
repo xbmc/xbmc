@@ -4,8 +4,8 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="image">
-			<posx>0</posx>
-			<posy>100r</posy>
+			<left>0</left>
+			<top>100r</top>
 			<width>1280</width>
 			<height>100</height>
 			<texture>floor.png</texture>
@@ -13,16 +13,16 @@
 		</control>
 		<control type="image">
 			<description>Section header image</description>
-			<posx>20</posx>
-			<posy>3</posy>
+			<left>20</left>
+			<top>3</top>
 			<width>35</width>
 			<height>35</height>
 			<aspectratio>keep</aspectratio>
 			<texture>icon_system.png</texture>
 		</control>
 		<control type="grouplist">
-			<posx>65</posx>
-			<posy>5</posy>
+			<left>65</left>
+			<top>5</top>
 			<width>1000</width>
 			<height>30</height>
 			<orientation>horizontal</orientation>
@@ -39,8 +39,8 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>90</posx>
-			<posy>30</posy>
+			<left>90</left>
+			<top>30</top>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300"/>
 				<effect type="fade" start="0" end="100" time="300"/>
@@ -50,23 +50,23 @@
 				<effect type="fade" start="100" end="0" time="300"/>
 			</animation>
 			<control type="image">
-				<posx>5</posx>
-				<posy>5</posy>
+				<left>5</left>
+				<top>5</top>
 				<width>1090</width>
 				<height>630</height>
 				<texture border="15">ContentPanel.png</texture>
 			</control>
 			<control type="image">
-				<posx>5</posx>
-				<posy>625</posy>
+				<left>5</left>
+				<top>625</top>
 				<width>1090</width>
 				<height>64</height>
 				<texture border="15">ContentPanelMirror.png</texture>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>980</posx>
-				<posy>11</posy>
+				<left>980</left>
+				<top>11</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -82,16 +82,16 @@
 			</control>
 			<control type="image">
 				<description>LOGO</description>
-				<posx>30</posx>
-				<posy>15</posy>
+				<left>30</left>
+				<top>15</top>
 				<width>220</width>
 				<height>80</height>
 				<aspectratio>keep</aspectratio>
 				<texture>Confluence_Logo.png</texture>
 			</control>
 			<control type="list" id="9000">
-				<posx>10</posx>
-				<posy>90</posy>
+				<left>10</left>
+				<top>90</top>
 				<width>260</width>
 				<height>481</height>
 				<onleft>9010</onleft>
@@ -102,15 +102,15 @@
 				<scrolltime>300</scrolltime>
 				<itemlayout height="80" width="260">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>260</width>
 						<height>81</height>
 						<texture border="5">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
-						<posx>250</posx>
-						<posy>15</posy>
+						<left>250</left>
+						<top>15</top>
 						<width>380</width>
 						<height>25</height>
 						<font>font24_title</font>
@@ -120,8 +120,8 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>250</posx>
-						<posy>42</posy>
+						<left>250</left>
+						<top>42</top>
 						<width>870</width>
 						<height>25</height>
 						<font>font13</font>
@@ -133,16 +133,16 @@
 				</itemlayout>
 				<focusedlayout height="80" width="260">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>260</width>
 						<height>81</height>
 						<texture border="5">MenuItemFO.png</texture>
 						<animation effect="fade" start="100" end="30" time="100" condition="!Control.HasFocus(9000)">Conditional</animation>
 					</control>
 					<control type="label">
-						<posx>250</posx>
-						<posy>15</posy>
+						<left>250</left>
+						<top>15</top>
 						<width>380</width>
 						<height>25</height>
 						<font>font24_title</font>
@@ -152,8 +152,8 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>250</posx>
-						<posy>42</posy>
+						<left>250</left>
+						<top>42</top>
 						<width>870</width>
 						<height>25</height>
 						<font>font13</font>
@@ -187,15 +187,15 @@
 				</content>
 			</control>
 			<control type="image">
-				<posx>268</posx>
-				<posy>10</posy>
+				<left>268</left>
+				<top>10</top>
 				<width>790</width>
 				<height>618</height>
 				<texture border="5">black-back2.png</texture>
 			</control>
 			<control type="image">
-				<posx>268</posx>
-				<posy>10</posy>
+				<left>268</left>
+				<top>10</top>
 				<width>804</width>
 				<height>100</height>
 				<aspectratio>stretch</aspectratio>
@@ -203,8 +203,8 @@
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>300</posx>
-				<posy>20</posy>
+				<left>300</left>
+				<top>20</top>
 				<width>740</width>
 				<height>30</height>
 				<font>font16</font>
@@ -217,8 +217,8 @@
 			<control type="group" id="9010">
 				<control type="grouplist" id="9001">
 					<visible>Container(9000).Hasfocus(1)</visible>
-					<posx>290</posx>
-					<posy>60</posy>
+					<left>290</left>
+					<top>60</top>
 					<width>750</width>
 					<height>530</height>
 					<itemgap>-1</itemgap>
@@ -347,8 +347,8 @@
 					</control>
 				</control>
 				<control type="scrollbar" id="60">
-					<posx>1060</posx>
-					<posy>60</posy>
+					<left>1060</left>
+					<top>60</top>
 					<width>25</width>
 					<height>530</height>
 					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -364,8 +364,8 @@
 				</control>
 				<control type="grouplist" id="9002">
 					<visible>Container(9000).Hasfocus(2)</visible>
-					<posx>290</posx>
-					<posy>60</posy>
+					<left>290</left>
+					<top>60</top>
 					<width>750</width>
 					<height>530</height>
 					<itemgap>-1</itemgap>
@@ -555,8 +555,8 @@
 					</control>
 				</control>
 				<control type="scrollbar" id="60">
-					<posx>1060</posx>
-					<posy>60</posy>
+					<left>1060</left>
+					<top>60</top>
 					<width>25</width>
 					<height>530</height>
 					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -572,8 +572,8 @@
 				</control>
 				<control type="grouplist" id="9003">
 					<visible>Container(9000).Hasfocus(3)</visible>
-					<posx>290</posx>
-					<posy>60</posy>
+					<left>290</left>
+					<top>60</top>
 					<width>750</width>
 					<height>530</height>
 					<itemgap>-1</itemgap>
@@ -679,8 +679,8 @@
 				<control type="group">
 					<control type="grouplist" id="9004">
 						<visible>Container(9000).Hasfocus(4)</visible>
-						<posx>290</posx>
-						<posy>60</posy>
+						<left>290</left>
+						<top>60</top>
 						<width>750</width>
 						<height>530</height>
 						<itemgap>-1</itemgap>
@@ -1056,8 +1056,8 @@
 					</control>
 				</control>
 				<control type="scrollbar" id="61">
-					<posx>1060</posx>
-					<posy>60</posy>
+					<left>1060</left>
+					<top>60</top>
 					<width>25</width>
 					<height>530</height>
 					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>

@@ -4,29 +4,29 @@
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>1280</width>
 			<height>720</height>
 			<texture border="120,0,0,0">hint-overlay.png</texture>
 		</control>
 		<control type="image">
-			<posx>120</posx>
-			<posy>300</posy>
+			<left>120</left>
+			<top>300</top>
 			<width>64</width>
 			<height>64</height>
 			<texture>arrow-big-left.png</texture>
 		</control>
 		<control type="image">
-			<posx>190</posx>
-			<posy>100</posy>
+			<left>190</left>
+			<top>100</top>
 			<width>2</width>
 			<height>512</height>
 			<texture>separator_vertical.png</texture>
 		</control>
 		<control type="label">
-			<posx>240</posx>
-			<posy>150</posy>
+			<left>240</left>
+			<top>150</top>
 			<width>680</width>
 			<height>60</height>
 			<font>font35_title</font>
@@ -36,8 +36,8 @@
 			<label>31411</label>
 		</control>
 		<control type="textbox">
-			<posx>240</posx>
-			<posy>240</posy>
+			<left>240</left>
+			<top>240</top>
 			<width>680</width>
 			<height>250</height>
 			<font>font14</font>
@@ -47,8 +47,8 @@
 		</control>
 		<control type="button" id="100">
 			<description>OK button</description>
-			<posx>720</posx>
-			<posy>500</posy>
+			<left>720</left>
+			<top>500</top>
 			<width>200</width>
 			<height>40</height>
 			<label>12321</label>

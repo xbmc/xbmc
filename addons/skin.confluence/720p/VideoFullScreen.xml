@@ -7,16 +7,16 @@
 			<visible>[Player.ShowInfo | Window.IsActive(VideoOSD)] + ![Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(SliderDialog)]</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<control type="image" id="1">
-				<posx>0</posx>
-				<posy>-150</posy>
+				<left>0</left>
+				<top>-150</top>
 				<width>1280</width>
 				<height>256</height>
 				<texture flipy="true" border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="label" id="1">
 				<description>Chapter Count Header label</description>
-				<posx>30</posx>
-				<posy>5</posy>
+				<left>30</left>
+				<top>5</top>
 				<width>1000</width>
 				<height>25</height>
 				<align>left</align>
@@ -29,8 +29,8 @@
 			</control>
 			<control type="label" id="1">
 				<description>Channel Group label</description>
-				<posx>30</posx>
-				<posy>5</posy>
+				<left>30</left>
+				<top>5</top>
 				<width>1000</width>
 				<height>25</height>
 				<align>left</align>
@@ -44,7 +44,7 @@
 			<control type="label" id="1">
 				<description>Clock label</description>
 				<right>1250</right>
-				<posy>5</posy>
+				<top>5</top>
 				<width>800</width>
 				<height>25</height>
 				<align>right</align>
@@ -56,16 +56,16 @@
 				<animation effect="slide" start="0,0" end="-70,0" time="0" condition="Window.IsVisible(VideoOSD)">conditional</animation>
 			</control>
 			<control type="image" id="1">
-				<posx>0</posx>
-				<posy>230r</posy>
+				<left>0</left>
+				<top>230r</top>
 				<width>1280</width>
 				<height>230</height>
 				<texture border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="image" id="1">
 				<description>cover image</description>
-				<posx>20</posx>
-				<posy>260r</posy>
+				<left>20</left>
+				<top>260r</top>
 				<width>300</width>
 				<height>230</height>
 				<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
@@ -76,8 +76,8 @@
 			</control>
 			<control type="image" id="1">
 				<description>Movie cover image</description>
-				<posx>20</posx>
-				<posy>350r</posy>
+				<left>20</left>
+				<top>350r</top>
 				<width>300</width>
 				<height>330</height>
 				<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
@@ -87,12 +87,12 @@
 				<visible>VideoPlayer.Content(Movies)</visible>
 			</control>
 			<control type="group" id="1">
-				<posx>330</posx>
-				<posy>185r</posy>
+				<left>330</left>
+				<top>185r</top>
 				<control type="label" id="1">
 					<description>Heading label</description>
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>910</width>
 					<height>25</height>
 					<align>left</align>
@@ -105,7 +105,7 @@
 					<animation effect="slide" start="0,0" end="0,25" time="0" condition="!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes) + !VideoPlayer.Content(MusicVideos) + !VideoPlayer.Content(LiveTV)">conditional</animation>
 				</control>
 				<control type="image" id="1">
-					<posy>0</posy>
+					<top>0</top>
 					<width>50</width>
 					<height>25</height>
 					<aspectratio align="center" aligny="center">keep</aspectratio>
@@ -114,8 +114,8 @@
 				</control>
 				<control type="label" id="1">
 					<description>Heading label</description>
-					<posx>50</posx>
-					<posy>0</posy>
+					<left>50</left>
+					<top>0</top>
 					<width>860</width>
 					<height>25</height>
 					<align>left</align>
@@ -128,8 +128,8 @@
 				</control>
 				<control type="label" id="1">
 					<description>Studio label</description>
-					<posx>20</posx>
-					<posy>30</posy>
+					<left>20</left>
+					<top>30</top>
 					<width>910</width>
 					<height>25</height>
 					<align>left</align>
@@ -141,8 +141,8 @@
 				</control>
 				<control type="label" id="1">
 					<description>TV Show label</description>
-					<posx>20</posx>
-					<posy>30</posy>
+					<left>20</left>
+					<top>30</top>
 					<width>910</width>
 					<height>25</height>
 					<align>left</align>
@@ -154,8 +154,8 @@
 				</control>
 				<control type="label" id="1">
 					<description>Music Info label</description>
-					<posx>20</posx>
-					<posy>30</posy>
+					<left>20</left>
+					<top>30</top>
 					<width>910</width>
 					<height>25</height>
 					<align>left</align>
@@ -167,8 +167,8 @@
 				</control>
 				<control type="label" id="1">
 					<description>LiveTV Info label</description>
-					<posx>20</posx>
-					<posy>30</posy>
+					<left>20</left>
+					<top>30</top>
 					<width>910</width>
 					<height>25</height>
 					<align>left</align>
@@ -179,8 +179,8 @@
 					<visible>VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="grouplist" id="1">
-					<posx>20</posx>
-					<posy>60</posy>
+					<left>20</left>
+					<top>60</top>
 					<width>910</width>
 					<height>35</height>
 					<itemgap>5</itemgap>
@@ -221,16 +221,16 @@
 						<height>35</height>
 						<visible>!IsEmpty(VideoPlayer.AudioLanguage)</visible>
 						<control type="image" id="1">
-							<posx>5</posx>
-							<posy>0</posy>
+							<left>5</left>
+							<top>0</top>
 							<description>Audio Language Image</description>
 							<width>80</width>
 							<height>35</height>
 							<texture>flagging/AudioLang.png</texture>
 						</control>
 						<control type="label" id="1">
-							<posx>38</posx>
-							<posy>2</posy>
+							<left>38</left>
+							<top>2</top>
 							<width>47</width>
 							<height>35</height>
 							<font>font13</font>
@@ -244,15 +244,15 @@
 						<height>35</height>
 						<visible>!IsEmpty(VideoPlayer.SubtitlesLanguage)</visible>
 						<control type="image" id="1">
-							<posx>5</posx>
-							<posy>0</posy>
+							<left>5</left>
+							<top>0</top>
 							<width>80</width>
 							<height>35</height>
 							<texture>flagging/SubLang.png</texture>
 						</control>
 						<control type="label" id="1">
-							<posx>38</posx>
-							<posy>2</posy>
+							<left>38</left>
+							<top>2</top>
 							<width>47</width>
 							<height>35</height>
 							<font>font13</font>
@@ -263,8 +263,8 @@
 					</control>
 				</control>
 				<control type="label" id="1">
-					<posx>0</posx>
-					<posy>120</posy>
+					<left>0</left>
+					<top>120</top>
 					<width>910</width>
 					<height>25</height>
 					<label>$LOCALIZE[31049] $INFO[Player.FinishTime]</label>
@@ -277,8 +277,8 @@
 					<animation effect="fade" time="200">VisibleChange</animation>
 				</control>
 				<control type="label" id="1">
-					<posx>0</posx>
-					<posy>120</posy>
+					<left>0</left>
+					<top>120</top>
 					<width>910</width>
 					<height>25</height>
 					<label>$INFO[VideoPlayer.NextTitle,$LOCALIZE[209]: ]</label>
@@ -292,13 +292,13 @@
 				</control>
 			</control>
 			<control type="group" id="1">
-				<posx>330</posx>
-				<posy>95r</posy>
+				<left>330</left>
+				<top>95r</top>
 				<visible>!VideoPlayer.Content(LiveTV) | [VideoPlayer.Content(LiveTV) + VideoPlayer.HasEpg]</visible>
 				<control type="label" id="1">
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>100</width>
 					<height>40</height>
 					<font>font13</font>
@@ -308,8 +308,8 @@
 				</control>
 				<control type="label" id="1">
 					<visible>VideoPlayer.Content(LiveTV)</visible>
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>100</width>
 					<height>40</height>
 					<font>font13</font>
@@ -319,8 +319,8 @@
 				</control>
 				<control type="progress" id="1">
 					<description>ProgressbarCache</description>
-					<posx>100</posx>
-					<posy>15</posy>
+					<left>100</left>
+					<top>15</top>
 					<width>720</width>
 					<height>16</height>
 					<info>Player.ProgressCache</info>
@@ -328,8 +328,8 @@
 				</control>
 				<control type="progress" id="1">
 					<description>Progressbar</description>
-					<posx>100</posx>
-					<posy>15</posy>
+					<left>100</left>
+					<top>15</top>
 					<width>720</width>
 					<height>16</height>
 					<info>Player.Progress</info>
@@ -337,7 +337,7 @@
 				<control type="label" id="1">
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
 					<right>920</right>
-					<posy>0</posy>
+					<top>0</top>
 					<width>100</width>
 					<height>40</height>
 					<font>font13</font>
@@ -348,7 +348,7 @@
 				<control type="label" id="1">
 					<visible>VideoPlayer.Content(LiveTV)</visible>
 					<right>920</right>
-					<posy>0</posy>
+					<top>0</top>
 					<width>100</width>
 					<height>40</height>
 					<font>font13</font>
@@ -360,21 +360,21 @@
 		</control>
 		<!-- codec info -->
 		<control type="group" id="0">
-			<posx>0</posx>
-			<posy>20</posy>
+			<left>0</left>
+			<top>20</top>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<control type="image">
 				<description>media info background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>1280</width>
 				<height>140</height>
 				<texture>black-back.png</texture>
 			</control>
 			<control type="label" id="10">
 				<description>row 1 label</description>
-				<posx>50</posx>
-				<posy>10</posy>
+				<left>50</left>
+				<top>10</top>
 				<width>1180</width>
 				<height>30</height>
 				<align>left</align>
@@ -384,8 +384,8 @@
 			</control>
 			<control type="label" id="11">
 				<description>row 2 label</description>
-				<posx>50</posx>
-				<posy>55</posy>
+				<left>50</left>
+				<top>55</top>
 				<width>1180</width>
 				<height>30</height>
 				<align>left</align>
@@ -395,8 +395,8 @@
 			</control>
 			<control type="label" id="12">
 				<description>row 3 label</description>
-				<posx>50</posx>
-				<posy>100</posy>
+				<left>50</left>
+				<top>100</top>
 				<width>1180</width>
 				<height>30</height>
 				<align>left</align>
@@ -406,8 +406,8 @@
 			</control>
 		</control>
 		<control type="selectbutton" id="503">
-			<posx>440</posx>
-			<posy>100</posy>
+			<left>440</left>
+			<top>100</top>
 			<width>400</width>
 			<height>100</height>
 			<font>font13caps</font>
@@ -421,19 +421,19 @@
 		</control>
 		<control type="group">
 			<visible>Player.ShowCodec + VideoPlayer.Content(LiveTV) + system.getbool(pvrplayback.signalquality)</visible>
-			<posy>165</posy>
+			<top>165</top>
 			<control type="image">
 				<description>media info background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>1280</width>
 				<height>220</height>
 				<texture>black-back.png</texture>
 			</control>
 			<control type="label">
 				<description>Header</description>
-				<posx>50</posx>
-				<posy>5</posy>
+				<left>50</left>
+				<top>5</top>
 				<width>1200</width>
 				<height>25</height>
 				<label>$LOCALIZE[19005]</label>
@@ -444,8 +444,8 @@
 			</control>
 			<control type="label">
 				<description>Backend</description>
-				<posx>50</posx>
-				<posy>40</posy>
+				<left>50</left>
+				<top>40</top>
 				<width>165</width>
 				<height>25</height>
 				<label>$LOCALIZE[19012]:</label>
@@ -456,8 +456,8 @@
 			</control>
 			<control type="label">
 				<description>Backend value</description>
-				<posx>220</posx>
-				<posy>40</posy>
+				<left>220</left>
+				<top>40</top>
 				<width>1000</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamClient]</label>
@@ -468,8 +468,8 @@
 			</control>
 			<control type="label">
 				<description>Device</description>
-				<posx>50</posx>
-				<posy>65</posy>
+				<left>50</left>
+				<top>65</top>
 				<width>165</width>
 				<height>25</height>
 				<label>$LOCALIZE[19006]:</label>
@@ -480,8 +480,8 @@
 			</control>
 			<control type="label">
 				<description>Device value</description>
-				<posx>220</posx>
-				<posy>65</posy>
+				<left>220</left>
+				<top>65</top>
 				<width>1000</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamDevice]</label>
@@ -492,8 +492,8 @@
 			</control>
 			<control type="label">
 				<description>Status</description>
-				<posx>50</posx>
-				<posy>90</posy>
+				<left>50</left>
+				<top>90</top>
 				<width>165</width>
 				<height>25</height>
 				<label>$LOCALIZE[19007]:</label>
@@ -504,8 +504,8 @@
 			</control>
 			<control type="label">
 				<description>Status value</description>
-				<posx>220</posx>
-				<posy>90</posy>
+				<left>220</left>
+				<top>90</top>
 				<width>1000</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamStatus]</label>
@@ -516,8 +516,8 @@
 			</control>
 			<control type="label">
 				<description>Signal</description>
-				<posx>50</posx>
-				<posy>115</posy>
+				<left>50</left>
+				<top>115</top>
 				<width>165</width>
 				<height>25</height>
 				<label>$LOCALIZE[19008]:</label>
@@ -528,16 +528,16 @@
 			</control>
 			<control type="progress">
 				<description>Progressbar</description>
-				<posx>220</posx>
-				<posy>122</posy>
+				<left>220</left>
+				<top>122</top>
 				<width>910</width>
 				<height>14</height>
 				<info>PVR.ActStreamProgrSignal</info>
 			</control>
 			<control type="label">
 				<description>Signal value</description>
-				<posx>1200</posx>
-				<posy>115</posy>
+				<left>1200</left>
+				<top>115</top>
 				<width>180</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamSignal]</label>
@@ -548,8 +548,8 @@
 			</control>
 			<control type="label">
 				<description>SNR</description>
-				<posx>50</posx>
-				<posy>140</posy>
+				<left>50</left>
+				<top>140</top>
 				<width>165</width>
 				<height>25</height>
 				<label>$LOCALIZE[19009]:</label>
@@ -560,8 +560,8 @@
 			</control>
 			<control type="progress">
 				<description>Progressbar</description>
-				<posx>220</posx>
-				<posy>147</posy>
+				<left>220</left>
+				<top>147</top>
 				<width>910</width>
 				<height>14</height>
 				<overlaytexture>-</overlaytexture>
@@ -569,8 +569,8 @@
 			</control>
 			<control type="label">
 				<description>SNR value</description>
-				<posx>1200</posx>
-				<posy>140</posy>
+				<left>1200</left>
+				<top>140</top>
 				<width>180</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamSNR]</label>
@@ -581,8 +581,8 @@
 			</control>
 			<control type="label">
 				<description>BER</description>
-				<posx>50</posx>
-				<posy>165</posy>
+				<left>50</left>
+				<top>165</top>
 				<width>165</width>
 				<height>25</height>
 				<label>$LOCALIZE[19010]:</label>
@@ -593,8 +593,8 @@
 			</control>
 			<control type="label">
 				<description>BER value</description>
-				<posx>220</posx>
-				<posy>165</posy>
+				<left>220</left>
+				<top>165</top>
 				<width>1000</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamBER]</label>
@@ -605,8 +605,8 @@
 			</control>
 			<control type="label">
 				<description>UNC</description>
-				<posx>430</posx>
-				<posy>165</posy>
+				<left>430</left>
+				<top>165</top>
 				<width>165</width>
 				<height>25</height>
 				<label>$LOCALIZE[19011]:</label>
@@ -617,8 +617,8 @@
 			</control>
 			<control type="label">
 				<description>UNC value</description>
-				<posx>600</posx>
-				<posy>165</posy>
+				<left>600</left>
+				<top>165</top>
 				<width>1000</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamUNC]</label>
@@ -629,8 +629,8 @@
 			</control>
 			<control type="label">
 				<description>Encryption</description>
-				<posx>50</posx>
-				<posy>190</posy>
+				<left>50</left>
+				<top>190</top>
 				<width>165</width>
 				<height>25</height>
 				<label>$LOCALIZE[19015]:</label>
@@ -641,8 +641,8 @@
 			</control>
 			<control type="label">
 				<description>Encryption value</description>
-				<posx>220</posx>
-				<posy>190</posy>
+				<left>220</left>
+				<top>190</top>
 				<width>1000</width>
 				<height>25</height>
 				<label>$INFO[PVR.ActStreamEncryptionName]</label>

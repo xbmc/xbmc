@@ -3,24 +3,24 @@
 	<defaultcontrol always="true">11</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>780</posx>
-		<posy>30</posy>
+		<left>780</left>
+		<top>30</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="group">
 			<control type="image">
 				<description>background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>480</width>
 				<height>660</height>
 				<texture border="40">DialogBack2.png</texture>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>390</posx>
-				<posy>15</posy>
+				<left>390</left>
+				<top>15</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -36,16 +36,16 @@
 			</control>
 			<control type="image">
 				<description>Dialog Header image</description>
-				<posx>40</posx>
-				<posy>16</posy>
+				<left>40</left>
+				<top>16</top>
 				<width>400</width>
 				<height>40</height>
 				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>40</posx>
-				<posy>16</posy>
+				<left>40</left>
+				<top>16</top>
 				<width>430</width>
 				<height>40</height>
 				<font>font12_title</font>
@@ -57,8 +57,8 @@
 			</control>
 			<control type="label">
 				<description>Selected item's date</description>
-				<posx>40</posx>
-				<posy>60</posy>
+				<left>40</left>
+				<top>60</top>
 				<width>430</width>
 				<height>30</height>
 				<font>font11</font>
@@ -68,8 +68,8 @@
 				<aligny>center</aligny>
 			</control>
 			<control type="list" id="11">
-				<posx>30</posx>
-				<posy>100</posy>
+				<left>30</left>
+				<top>100</top>
 				<width>410</width>
 				<height>490</height>
 				<onleft>60</onleft>
@@ -81,16 +81,16 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="35" width="410">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>410</width>
 						<height>30</height>
 						<texture border="5">button-nofocus.png</texture>
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="label">
-						<posx>10</posx>
-						<posy>0</posy>
+						<left>10</left>
+						<top>0</top>
 						<width>100</width>
 						<height>30</height>
 						<font>font13</font>
@@ -101,24 +101,24 @@
 						<label>$INFO[ListItem.StartTime]</label>
 					</control>
 					<control type="image">
-						<posx>120</posx>
-						<posy>5</posy>
+						<left>120</left>
+						<top>5</top>
 						<width>30</width>
 						<height>20</height>
 						<texture>PVR-IsRecording.png</texture>
 						<visible>ListItem.IsRecording</visible>
 					</control>
 					<control type="image">
-						<posx>120</posx>
-						<posy>5</posy>
+						<left>120</left>
+						<top>5</top>
 						<width>20</width>
 						<height>20</height>
 						<texture>PVR-HasTimer.png</texture>
 						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 					</control>
 					<control type="label">
-						<posx>400</posx>
-						<posy>0</posy>
+						<left>400</left>
+						<top>0</top>
 						<width>300</width>
 						<height>30</height>
 						<font>font12</font>
@@ -130,8 +130,8 @@
 						<visible>![ListItem.IsRecording | ListItem.HasTimer]</visible>
 					</control>
 					<control type="label">
-						<posx>400</posx>
-						<posy>0</posy>
+						<left>400</left>
+						<top>0</top>
 						<width>250</width>
 						<height>30</height>
 						<font>font12</font>
@@ -145,8 +145,8 @@
 				</itemlayout>
 				<focusedlayout height="35" width="410">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>410</width>
 						<height>30</height>
 						<texture border="5">button-nofocus.png</texture>
@@ -154,8 +154,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>410</width>
 						<height>30</height>
 						<texture border="5">button-focus2.png</texture>
@@ -163,8 +163,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="label">
-						<posx>10</posx>
-						<posy>0</posy>
+						<left>10</left>
+						<top>0</top>
 						<width>100</width>
 						<height>30</height>
 						<font>font13</font>
@@ -175,24 +175,24 @@
 						<label>$INFO[ListItem.StartTime]</label>
 					</control>
 					<control type="image">
-						<posx>120</posx>
-						<posy>5</posy>
+						<left>120</left>
+						<top>5</top>
 						<width>30</width>
 						<height>20</height>
 						<texture>PVR-IsRecording.png</texture>
 						<visible>ListItem.IsRecording</visible>
 					</control>
 					<control type="image">
-						<posx>120</posx>
-						<posy>5</posy>
+						<left>120</left>
+						<top>5</top>
 						<width>20</width>
 						<height>20</height>
 						<texture>PVR-HasTimer.png</texture>
 						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 					</control>
 					<control type="label">
-						<posx>400</posx>
-						<posy>0</posy>
+						<left>400</left>
+						<top>0</top>
 						<width>300</width>
 						<height>30</height>
 						<font>font12</font>
@@ -204,8 +204,8 @@
 						<visible>![ListItem.IsRecording | ListItem.HasTimer]</visible>
 					</control>
 					<control type="label">
-						<posx>400</posx>
-						<posy>0</posy>
+						<left>400</left>
+						<top>0</top>
 						<width>250</width>
 						<height>30</height>
 						<font>font12</font>
@@ -219,8 +219,8 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>440</posx>
-				<posy>100</posy>
+				<left>440</left>
+				<top>100</top>
 				<width>25</width>
 				<height>490</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -238,7 +238,7 @@
 			<control type="label">
 				<description>Page Count Label</description>
 				<right>450</right>
-				<posy>610</posy>
+				<top>610</top>
 				<width>400</width>
 				<height>20</height>
 				<font>font12</font>

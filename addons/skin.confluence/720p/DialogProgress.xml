@@ -3,30 +3,30 @@
 	<defaultcontrol always="true">10</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>335</posx>
-		<posy>230</posy>
+		<left>335</left>
+		<top>230</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>610</width>
 			<height>240</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
 			<description>Dialog Header image</description>
-			<posx>40</posx>
-			<posy>16</posy>
+			<left>40</left>
+			<top>16</top>
 			<width>530</width>
 			<height>40</height>
 			<texture>dialogheader.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>fake heading label</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>0</width>
 			<height>0</height>
 			<font>-</font>
@@ -34,8 +34,8 @@
 		</control>
 		<control type="label">
 			<description>header label</description>
-			<posx>40</posx>
-			<posy>20</posy>
+			<left>40</left>
+			<top>20</top>
 			<width>530</width>
 			<height>30</height>
 			<font>font13_title</font>
@@ -47,8 +47,8 @@
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>520</posx>
-			<posy>15</posy>
+			<left>520</left>
+			<top>15</top>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -64,8 +64,8 @@
 		</control>
 		<control type="label" id="2">
 			<description>dialog line 1</description>
-			<posx>30</posx>
-			<posy>60</posy>
+			<left>30</left>
+			<top>60</top>
 			<width>550</width>
 			<height>30</height>
 			<align>left</align>
@@ -76,8 +76,8 @@
 		</control>
 		<control type="label" id="3">
 			<description>dialog line 2</description>
-			<posx>30</posx>
-			<posy>85</posy>
+			<left>30</left>
+			<top>85</top>
 			<width>550</width>
 			<height>30</height>
 			<align>left</align>
@@ -88,8 +88,8 @@
 		</control>
 		<control type="label" id="4">
 			<description>dialog line 3</description>
-			<posx>30</posx>
-			<posy>110</posy>
+			<left>30</left>
+			<top>110</top>
 			<width>550</width>
 			<height>30</height>
 			<align>left</align>
@@ -100,16 +100,16 @@
 		</control>
 		<control type="progress">
 			<description>Progressbar</description>
-			<posx>30</posx>
-			<posy>148</posy>
+			<left>30</left>
+			<top>148</top>
 			<width>550</width>
 			<height>16</height>
 			<info>System.Progressbar</info>
 		</control>
 		<control type="button" id="10">
 			<description>Cancel button</description>
-			<posx>205</posx>
-			<posy>175</posy>
+			<left>205</left>
+			<top>175</top>
 			<width>200</width>
 			<height>40</height>
 			<label>222</label>

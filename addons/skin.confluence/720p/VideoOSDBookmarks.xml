@@ -3,31 +3,31 @@
 	<defaultcontrol always="true">2</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>240</posx>
-		<posy>60</posy>
+		<left>240</left>
+		<top>60</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image">
 			<description>background image</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>800</width>
 			<height>600</height>
 			<texture border="40">DialogBack2.png</texture>
 		</control>
 		<control type="image">
 			<description>Dialog Header image</description>
-			<posx>40</posx>
-			<posy>16</posy>
+			<left>40</left>
+			<top>16</top>
 			<width>720</width>
 			<height>40</height>
 			<texture>dialogheader.png</texture>
 		</control>
 		<control type="label">
 			<description>header label</description>
-			<posx>40</posx>
-			<posy>20</posy>
+			<left>40</left>
+			<top>20</top>
 			<width>720</width>
 			<height>30</height>
 			<font>font13_title</font>
@@ -39,8 +39,8 @@
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>710</posx>
-			<posy>15</posy>
+			<left>710</left>
+			<top>15</top>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -57,7 +57,7 @@
 		<control type="label">
 			<description>number of files/pages in list text label</description>
 			<right>760</right>
-			<posy>495</posy>
+			<top>495</top>
 			<width>300</width>
 			<height>35</height>
 			<font>font12</font>
@@ -68,8 +68,8 @@
 			<label>([COLOR=blue]$INFO[Container(11).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR])</label>
 		</control>
 		<control type="panel" id="11">
-			<posx>40</posx>
-			<posy>65</posy>
+			<left>40</left>
+			<top>65</top>
 			<width>720</width>
 			<height>430</height>
 			<onleft>2</onleft>
@@ -82,23 +82,23 @@
 			<orientation>vertical</orientation>
 			<itemlayout height="215" width="240">
 				<control type="image">
-					<posx>2</posx>
-					<posy>2</posy>
+					<left>2</left>
+					<top>2</top>
 					<width>235</width>
 					<height>211</height>
 					<texture border="3">button-nofocus.png</texture>
 				</control>
 				<control type="image">
-					<posx>7</posx>
-					<posy>20</posy>
+					<left>7</left>
+					<top>20</top>
 					<width>220</width>
 					<height>150</height>
 					<aspectratio>scale</aspectratio>
 					<info>ListItem.Icon</info>
 				</control>
 				<control type="label">
-					<posx>112</posx>
-					<posy>185</posy>
+					<left>112</left>
+					<top>185</top>
 					<width>225</width>
 					<height>15</height>
 					<font>font12</font>
@@ -110,23 +110,23 @@
 			</itemlayout>
 			<focusedlayout height="215" width="240">
 				<control type="image">
-					<posx>2</posx>
-					<posy>2</posy>
+					<left>2</left>
+					<top>2</top>
 					<width>235</width>
 					<height>211</height>
 					<texture border="3">folder-focus.png</texture>
 				</control>
 				<control type="image">
-					<posx>7</posx>
-					<posy>20</posy>
+					<left>7</left>
+					<top>20</top>
 					<width>220</width>
 					<height>150</height>
 					<aspectratio>scale</aspectratio>
 					<info>ListItem.Icon</info>
 				</control>
 				<control type="label">
-					<posx>112</posx>
-					<posy>185</posy>
+					<left>112</left>
+					<top>185</top>
 					<width>225</width>
 					<height>15</height>
 					<font>font12</font>
@@ -138,8 +138,8 @@
 			</focusedlayout>
 		</control>
 		<control type="grouplist" id="9000">
-			<posx>20</posx>
-			<posy>535</posy>
+			<left>20</left>
+			<top>535</top>
 			<width>760</width>
 			<height>40</height>
 			<itemgap>5</itemgap>

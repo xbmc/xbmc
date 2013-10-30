@@ -5,18 +5,18 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="group">
-			<posy>10</posy>
+			<top>10</top>
 			<include>Window_OpenClose_Animation</include>
 			<control type="image">
-				<posx>445</posx>
-				<posy>40</posy>
+				<left>445</left>
+				<top>40</top>
 				<width>390</width>
 				<height>640</height>
 				<texture>black-back.png</texture>
 			</control>
 			<control type="label">
-				<posx>475</posx>
-				<posy>45</posy>
+				<left>475</left>
+				<top>45</top>
 				<width>330</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -27,12 +27,12 @@
 				<label>$LOCALIZE[31061]</label>
 			</control>
 			<control type="group" id="9000">
-				<posx>475</posx>
-				<posy>550</posy>
+				<left>475</left>
+				<top>550</top>
 				<control type="button" id="6">
 					<description>Open Button</description>
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>330</width>
 					<label>31055</label>
 					<align>center</align>
@@ -44,8 +44,8 @@
 				</control>
 				<control type="button" id="7">
 					<description>Save Button</description>
-					<posx>0</posx>
-					<posy>40</posy>
+					<left>0</left>
+					<top>40</top>
 					<width>330</width>
 					<label>31056</label>
 					<align>center</align>
@@ -57,8 +57,8 @@
 				</control>
 				<control type="button" id="8">
 					<description>Clear button</description>
-					<posx>0</posx>
-					<posy>80</posy>
+					<left>0</left>
+					<top>80</top>
 					<width>330</width>
 					<label>31057</label>
 					<align>center</align>
@@ -73,16 +73,16 @@
 				<visible>Control.HasFocus(50)</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="image">
-					<posx>480</posx>
-					<posy>90</posy>
+					<left>480</left>
+					<top>90</top>
 					<width>320</width>
 					<height>200</height>
 					<aspectratio>keep</aspectratio>
 					<texture>$INFO[Container(50).ListItem.Icon]</texture>
 				</control>
 				<control type="textbox">
-					<posx>480</posx>
-					<posy>300</posy>
+					<left>480</left>
+					<top>300</top>
 					<width>320</width>
 					<height>220</height>
 					<font>font11</font>
@@ -97,16 +97,16 @@
 				<visible>Control.HasFocus(100)</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="image">
-					<posx>465</posx>
-					<posy>90</posy>
+					<left>465</left>
+					<top>90</top>
 					<width>350</width>
 					<height>200</height>
 					<aspectratio>keep</aspectratio>
 					<texture>$INFO[Container(100).ListItem.Icon]</texture>
 				</control>
 				<control type="textbox">
-					<posx>465</posx>
-					<posy>300</posy>
+					<left>465</left>
+					<top>300</top>
 					<width>350</width>
 					<height>220</height>
 					<font>font11</font>
@@ -122,15 +122,15 @@
 			<animation effect="slide" start="-480,0" end="0,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" end="-480,0" start="0,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>480</width>
 				<height>720</height>
 				<texture border="0,0,15,0">MediaBladeSub.png</texture>
 			</control>
 			<control type="label">
-				<posx>30</posx>
-				<posy>40</posy>
+				<left>30</left>
+				<top>40</top>
 				<width>410</width>
 				<height>30</height>
 				<font>font24_title</font>
@@ -141,23 +141,23 @@
 				<label>31058</label>
 			</control>
 			<control type="image">
-				<posx>10</posx>
-				<posy>80</posy>
+				<left>10</left>
+				<top>80</top>
 				<width>460</width>
 				<height>4</height>
 				<texture>separator.png</texture>
 			</control>
 			<control type="image">
-				<posx>10</posx>
-				<posy>50r</posy>
+				<left>10</left>
+				<top>50r</top>
 				<width>460</width>
 				<height>4</height>
 				<texture>separator.png</texture>
 			</control>
 			<control type="label">
 				<description>number of files/pages in left list text label</description>
-				<posx>30</posx>
-				<posy>38r</posy>
+				<left>30</left>
+				<top>38r</top>
 				<width>410</width>
 				<font>font12</font>
 				<align>left</align>
@@ -167,8 +167,8 @@
 				<label>($INFO[Container(50).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(50).CurrentPage]/$INFO[Container(50).NumPages])</label>
 			</control>
 			<control type="scrollbar" id="30">
-				<posx>20</posx>
-				<posy>100</posy>
+				<left>20</left>
+				<top>100</top>
 				<width>25</width>
 				<height>540</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -182,8 +182,8 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="list" id="50">
-				<posx>50</posx>
-				<posy>100</posy>
+				<left>50</left>
+				<top>100</top>
 				<width>400</width>
 				<height>540</height>
 				<onleft>30</onleft>
@@ -195,8 +195,8 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="30" width="400">
 					<control type="label">
-						<posx>5</posx>
-						<posy>0</posy>
+						<left>5</left>
+						<top>0</top>
 						<width>380</width>
 						<height>30</height>
 						<font>font12</font>
@@ -207,8 +207,8 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="label">
-						<posx>395</posx>
-						<posy>0</posy>
+						<left>395</left>
+						<top>0</top>
 						<width>360</width>
 						<height>30</height>
 						<font>font12</font>
@@ -221,8 +221,8 @@
 				</itemlayout>
 				<focusedlayout height="30" width="400">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>400</width>
 						<height>30</height>
 						<texture border="7">MenuItemFO.png</texture>
@@ -230,8 +230,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="label">
-						<posx>5</posx>
-						<posy>0</posy>
+						<left>5</left>
+						<top>0</top>
 						<width>380</width>
 						<height>30</height>
 						<font>font12</font>
@@ -242,8 +242,8 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="label">
-						<posx>395</posx>
-						<posy>0</posy>
+						<left>395</left>
+						<top>0</top>
 						<width>360</width>
 						<height>30</height>
 						<font>font12</font>
@@ -259,17 +259,17 @@
 		<control type="group">
 			<animation effect="slide" start="480,0" end="0,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" end="480,0" start="0,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
-			<posx>800</posx>
+			<left>800</left>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>480</width>
 				<height>720</height>
 				<texture border="15,0,0,0" flipx="true">MediaBladeSub.png</texture>
 			</control>
 			<control type="label">
 				<right>440</right>
-				<posy>40</posy>
+				<top>40</top>
 				<width>410</width>
 				<height>30</height>
 				<font>font24_title</font>
@@ -280,15 +280,15 @@
 				<label>31059</label>
 			</control>
 			<control type="image">
-				<posx>10</posx>
-				<posy>80</posy>
+				<left>10</left>
+				<top>80</top>
 				<width>460</width>
 				<height>4</height>
 				<texture>separator.png</texture>
 			</control>
 			<control type="image">
-				<posx>10</posx>
-				<posy>50r</posy>
+				<left>10</left>
+				<top>50r</top>
 				<width>460</width>
 				<height>4</height>
 				<texture>separator.png</texture>
@@ -296,7 +296,7 @@
 			<control type="label">
 				<description>Page Count Label</description>
 				<right>440</right>
-				<posy>38r</posy>
+				<top>38r</top>
 				<width>300</width>
 				<height>20</height>
 				<font>font12</font>
@@ -307,8 +307,8 @@
 				<label>($INFO[Container(100).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(100).CurrentPage]/$INFO[Container(100).NumPages])</label>
 			</control>
 			<control type="scrollbar" id="31">
-				<posx>430</posx>
-				<posy>100</posy>
+				<left>430</left>
+				<top>100</top>
 				<width>25</width>
 				<height>550</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -322,8 +322,8 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="list" id="100">
-				<posx>20</posx>
-				<posy>100</posy>
+				<left>20</left>
+				<top>100</top>
 				<width>400</width>
 				<height>550</height>
 				<onleft>9000</onleft>
@@ -335,8 +335,8 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="30" width="400">
 					<control type="label">
-						<posx>5</posx>
-						<posy>0</posy>
+						<left>5</left>
+						<top>0</top>
 						<width>380</width>
 						<height>30</height>
 						<font>font12</font>
@@ -347,8 +347,8 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="label">
-						<posx>395</posx>
-						<posy>0</posy>
+						<left>395</left>
+						<top>0</top>
 						<width>360</width>
 						<height>30</height>
 						<font>font12</font>
@@ -361,8 +361,8 @@
 				</itemlayout>
 				<focusedlayout height="30" width="400">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>400</width>
 						<height>30</height>
 						<texture border="7">MenuItemFO.png</texture>
@@ -370,8 +370,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="label">
-						<posx>5</posx>
-						<posy>0</posy>
+						<left>5</left>
+						<top>0</top>
 						<width>380</width>
 						<height>30</height>
 						<font>font12</font>
@@ -382,8 +382,8 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="label">
-						<posx>395</posx>
-						<posy>0</posy>
+						<left>395</left>
+						<top>0</top>
 						<width>360</width>
 						<height>30</height>
 						<font>font12</font>
@@ -398,16 +398,16 @@
 		</control>
 		<control type="image">
 			<description>Section header image</description>
-			<posx>20</posx>
-			<posy>3</posy>
+			<left>20</left>
+			<top>3</top>
 			<width>35</width>
 			<height>35</height>
 			<aspectratio>keep</aspectratio>
 			<texture>icon_music.png</texture>
 		</control>
 		<control type="grouplist">
-			<posx>65</posx>
-			<posy>5</posy>
+			<left>65</left>
+			<top>5</top>
 			<width>1000</width>
 			<height>30</height>
 			<orientation>horizontal</orientation>

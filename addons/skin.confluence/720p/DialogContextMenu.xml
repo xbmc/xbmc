@@ -4,30 +4,30 @@
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
-		<posx>0</posx>
-		<posy>0</posy>
+		<left>0</left>
+		<top>0</top>
 	</coordinates>
 	<controls>
 		<control type="image" id="999">
 			<description>background image</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>340</width>
 			<height>720</height>
 			<texture border="20">DialogBack.png</texture>
 		</control>
 		<control type="grouplist" id="996">
 			<description>grouplist for context buttons</description>
-			<posx>20</posx>
-			<posy>30</posy>
+			<left>20</left>
+			<top>30</top>
 			<width>300</width>
 			<height max="670">auto</height>
 			<itemgap>2</itemgap>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>260</posx>
-			<posy>5</posy>
+			<left>260</left>
+			<top>5</top>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -43,8 +43,8 @@
 		</control>
 		<control type="button" id="1000">
 			<description>button template</description>
-			<posx>-</posx>
-			<posy>-</posy>
+			<left>-</left>
+			<top>-</top>
 			<width>300</width>
 			<height>38</height>
 			<font>fontContextMenu</font>

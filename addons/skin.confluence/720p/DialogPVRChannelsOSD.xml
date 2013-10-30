@@ -3,24 +3,24 @@
 	<defaultcontrol always="true">11</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>780</posx>
-		<posy>30</posy>
+		<left>780</left>
+		<top>30</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="group">
 			<control type="image">
 				<description>background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>480</width>
 				<height>660</height>
 				<texture border="40">DialogBack2.png</texture>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>390</posx>
-				<posy>15</posy>
+				<left>390</left>
+				<top>15</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -36,16 +36,16 @@
 			</control>
 			<control type="image">
 				<description>Dialog Header image</description>
-				<posx>40</posx>
-				<posy>16</posy>
+				<left>40</left>
+				<top>16</top>
 				<width>400</width>
 				<height>50</height>
 				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>40</posx>
-				<posy>16</posy>
+				<left>40</left>
+				<top>16</top>
 				<width>430</width>
 				<height>40</height>
 				<font>font12_title</font>
@@ -58,8 +58,8 @@
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>40</posx>
-				<posy>16</posy>
+				<left>40</left>
+				<top>16</top>
 				<width>430</width>
 				<height>40</height>
 				<font>font12_title</font>
@@ -72,8 +72,8 @@
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>40</posx>
-				<posy>-7</posy>
+				<left>40</left>
+				<top>-7</top>
 				<width>430</width>
 				<height>120</height>
 				<font>font10_title</font>
@@ -84,8 +84,8 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="list" id="11">
-				<posx>30</posx>
-				<posy>70</posy>
+				<left>30</left>
+				<top>70</top>
 				<width>410</width>
 				<height>520</height>
 				<onleft>PreviousChannelGroup</onleft>
@@ -97,16 +97,16 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="70" width="410">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>410</width>
 						<height>65</height>
 						<texture border="5">button-nofocus.png</texture>
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="label">
-						<posx>5</posx>
-						<posy>0</posy>
+						<left>5</left>
+						<top>0</top>
 						<width>40</width>
 						<height>30</height>
 						<font>font12</font>
@@ -117,16 +117,16 @@
 						<info>ListItem.ChannelNumber</info>
 					</control>
 					<control type="image">
-						<posx>5</posx>
-						<posy>35</posy>
+						<left>5</left>
+						<top>35</top>
 						<width>30</width>
 						<height>20</height>
 						<texture>PVR-IsRecording.png</texture>
 						<visible>ListItem.IsRecording</visible>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>0</posy>
+						<left>50</left>
+						<top>0</top>
 						<width>350</width>
 						<height>25</height>
 						<font>font13</font>
@@ -137,8 +137,8 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>25</posy>
+						<left>50</left>
+						<top>25</top>
 						<width>350</width>
 						<height>20</height>
 						<font>font12</font>
@@ -150,8 +150,8 @@
 						<visible>IsEmpty(Listitem.Icon)</visible>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>25</posy>
+						<left>50</left>
+						<top>25</top>
 						<width>300</width>
 						<height>20</height>
 						<font>font12</font>
@@ -163,8 +163,8 @@
 						<visible>!IsEmpty(Listitem.Icon)</visible>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>44</posy>
+						<left>50</left>
+						<top>44</top>
 						<width>60</width>
 						<height>20</height>
 						<font>font10_title</font>
@@ -176,8 +176,8 @@
 					</control>
 					<control type="progress">
 						<description>Progressbar</description>
-						<posx>110</posx>
-						<posy>53</posy>
+						<left>110</left>
+						<top>53</top>
 						<width>230</width>
 						<height>6</height>
 						<colordiffuse>88FFFFFF</colordiffuse>
@@ -185,8 +185,8 @@
 						<visible>ListItem.HasEpg</visible>
 					</control>
 					<control type="label">
-						<posx>355</posx>
-						<posy>44</posy>
+						<left>355</left>
+						<top>44</top>
 						<width>60</width>
 						<height>20</height>
 						<font>font10_title</font>
@@ -197,8 +197,8 @@
 						<visible>ListItem.HasEpg</visible>
 					</control>
 					<control type="image">
-						<posx>360</posx>
-						<posy>4</posy>
+						<left>360</left>
+						<top>4</top>
 						<width>40</width>
 						<height>40</height>
 						<texture>$INFO[ListItem.Icon]</texture>
@@ -206,8 +206,8 @@
 				</itemlayout>
 				<focusedlayout height="70" width="410">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>410</width>
 						<height>65</height>
 						<texture border="5">button-nofocus.png</texture>
@@ -215,8 +215,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>410</width>
 						<height>65</height>
 						<texture border="5">button-focus2.png</texture>
@@ -224,8 +224,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="label">
-						<posx>5</posx>
-						<posy>0</posy>
+						<left>5</left>
+						<top>0</top>
 						<width>40</width>
 						<height>30</height>
 						<font>font12</font>
@@ -236,16 +236,16 @@
 						<info>ListItem.ChannelNumber</info>
 					</control>
 					<control type="image">
-						<posx>5</posx>
-						<posy>35</posy>
+						<left>5</left>
+						<top>35</top>
 						<width>30</width>
 						<height>20</height>
 						<texture>PVR-IsRecording.png</texture>
 						<visible>ListItem.IsRecording</visible>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>0</posy>
+						<left>50</left>
+						<top>0</top>
 						<width>350</width>
 						<height>25</height>
 						<font>font13</font>
@@ -256,8 +256,8 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>25</posy>
+						<left>50</left>
+						<top>25</top>
 						<width>350</width>
 						<height>20</height>
 						<font>font12</font>
@@ -269,8 +269,8 @@
 						<visible>IsEmpty(Listitem.Icon)</visible>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>25</posy>
+						<left>50</left>
+						<top>25</top>
 						<width>300</width>
 						<height>20</height>
 						<font>font12</font>
@@ -282,8 +282,8 @@
 						<visible>!IsEmpty(Listitem.Icon)</visible>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>44</posy>
+						<left>50</left>
+						<top>44</top>
 						<width>60</width>
 						<height>20</height>
 						<font>font10_title</font>
@@ -295,8 +295,8 @@
 					</control>
 					<control type="progress">
 						<description>Progressbar</description>
-						<posx>110</posx>
-						<posy>53</posy>
+						<left>110</left>
+						<top>53</top>
 						<width>230</width>
 						<height>6</height>
 						<colordiffuse>88FFFFFF</colordiffuse>
@@ -304,8 +304,8 @@
 						<visible>ListItem.HasEpg</visible>
 					</control>
 					<control type="label">
-						<posx>355</posx>
-						<posy>44</posy>
+						<left>355</left>
+						<top>44</top>
 						<width>60</width>
 						<height>20</height>
 						<font>font10_title</font>
@@ -316,8 +316,8 @@
 						<visible>ListItem.HasEpg</visible>
 					</control>
 					<control type="image">
-						<posx>360</posx>
-						<posy>4</posy>
+						<left>360</left>
+						<top>4</top>
 						<width>40</width>
 						<height>40</height>
 						<texture>$INFO[ListItem.Icon]</texture>
@@ -325,8 +325,8 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>440</posx>
-				<posy>70</posy>
+				<left>440</left>
+				<top>70</top>
 				<width>25</width>
 				<height>520</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -344,7 +344,7 @@
 			<control type="label">
 				<description>Page Count Label</description>
 				<right>450</right>
-				<posy>610</posy>
+				<top>610</top>
 				<width>400</width>
 				<height>20</height>
 				<font>font12</font>

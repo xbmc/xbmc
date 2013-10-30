@@ -3,8 +3,8 @@
 	<defaultcontrol always="true">7</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>20</posx>
-		<posy>30</posy>
+		<left>20</left>
+		<top>30</top>
 		<origin x="275" y="30">![Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)]</origin>
 	</coordinates>
 	<include>dialogeffect</include>
@@ -12,8 +12,8 @@
 		<control type="group">
 			<control type="image">
 				<description>background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>730</width>
 				<height>660</height>
 				<texture border="40">DialogBack2.png</texture>
@@ -21,8 +21,8 @@
 			</control>
 			<control type="image">
 				<description>background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>730</width>
 				<height>660</height>
 				<texture border="40">DialogBack.png</texture>
@@ -30,16 +30,16 @@
 			</control>
 			<control type="image">
 				<description>Dialog Header image</description>
-				<posx>40</posx>
-				<posy>16</posy>
+				<left>40</left>
+				<top>16</top>
 				<width>650</width>
 				<height>40</height>
 				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>40</posx>
-				<posy>20</posy>
+				<left>40</left>
+				<top>20</top>
 				<width>650</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -51,8 +51,8 @@
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>640</posx>
-				<posy>15</posy>
+				<left>640</left>
+				<top>15</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -68,8 +68,8 @@
 			</control>
 			<control type="label">
 				<description>Title label</description>
-				<posx>40</posx>
-				<posy>70</posy>
+				<left>40</left>
+				<top>70</top>
 				<width>650</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -81,12 +81,12 @@
 			</control>
 			<control type="group">
 				<control type="group">
-					<posx>40</posx>
-					<posy>120</posy>
+					<left>40</left>
+					<top>120</top>
 					<control type="label">
 						<description>Time description</description>
 						<right>170</right>
-						<posy>0</posy>
+						<top>0</top>
 						<width>170</width>
 						<height>25</height>
 						<align>right</align>
@@ -97,8 +97,8 @@
 					</control>
 					<control type="label">
 						<description>Time value</description>
-						<posx>180</posx>
-						<posy>0</posy>
+						<left>180</left>
+						<top>0</top>
 						<width>470</width>
 						<height>25</height>
 						<align>left</align>
@@ -110,7 +110,7 @@
 					<control type="label">
 						<description>Duration</description>
 						<right>170</right>
-						<posy>35</posy>
+						<top>35</top>
 						<width>170</width>
 						<height>25</height>
 						<align>right</align>
@@ -121,8 +121,8 @@
 					</control>
 					<control type="label">
 						<description>Duration value</description>
-						<posx>180</posx>
-						<posy>35</posy>
+						<left>180</left>
+						<top>35</top>
 						<width>470</width>
 						<height>25</height>
 						<align>left</align>
@@ -134,7 +134,7 @@
 					<control type="label">
 						<description>Channel Name</description>
 						<right>170</right>
-						<posy>70</posy>
+						<top>70</top>
 						<width>170</width>
 						<height>25</height>
 						<align>right</align>
@@ -145,8 +145,8 @@
 					</control>
 					<control type="fadelabel">
 						<description>Channel Value</description>
-						<posx>180</posx>
-						<posy>70</posy>
+						<left>180</left>
+						<top>70</top>
 						<width>470</width>
 						<height>25</height>
 						<align>left</align>
@@ -158,7 +158,7 @@
 					<control type="label">
 						<description>Genre</description>
 						<right>170</right>
-						<posy>105</posy>
+						<top>105</top>
 						<width>170</width>
 						<height>25</height>
 						<align>right</align>
@@ -169,8 +169,8 @@
 					</control>
 					<control type="label">
 						<description>Genre value</description>
-						<posx>180</posx>
-						<posy>105</posy>
+						<left>180</left>
+						<top>105</top>
 						<width>470</width>
 						<label fallback="161">$INFO[ListItem.Genre]</label>
 						<align>left</align>
@@ -180,8 +180,8 @@
 				</control>
 				<control type="textbox" id="400">
 					<description>Plot value</description>
-					<posx>40</posx>
-					<posy>275</posy>
+					<left>40</left>
+					<top>275</top>
 					<width>650</width>
 					<height>295</height>
 					<font>font12</font>
@@ -193,8 +193,8 @@
 					<label fallback="161">$INFO[ListItem.Plot]</label>
 				</control>
 				<control type="grouplist" id="9000">
-					<posx>40</posx>
-					<posy>590</posy>
+					<left>40</left>
+					<top>590</top>
 					<width>640</width>
 					<height>40</height>
 					<itemgap>5</itemgap>

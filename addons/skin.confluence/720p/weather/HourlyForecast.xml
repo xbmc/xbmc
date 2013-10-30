@@ -6,8 +6,8 @@
 			<include>VisibleFadeEffect</include>
 			<control type="label">
 				<description>header label</description>
-				<posx>20</posx>
-				<posy>13</posy>
+				<left>20</left>
+				<top>13</top>
 				<width>610</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -18,8 +18,8 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="list" id="52">
-				<posx>15</posx>
-				<posy>60</posy>
+				<left>15</left>
+				<top>60</top>
 				<width>600</width>
 				<height>541</height>
 				<onleft>9000</onleft>
@@ -31,15 +31,15 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="135" width="600">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>600</width>
 						<height>136</height>
 						<texture border="0,5,0,5">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>0</posy>
+						<left>50</left>
+						<top>0</top>
 						<width>100</width>
 						<height>120</height>
 						<font>font12</font>
@@ -50,16 +50,16 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="image">
-						<posx>110</posx>
-						<posy>5</posy>
+						<left>110</left>
+						<top>5</top>
 						<width>80</width>
 						<height>80</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Thumb]</texture>
 					</control>
 					<control type="label">
-						<posx>590</posx>
-						<posy>5</posy>
+						<left>590</left>
+						<top>5</top>
 						<width>390</width>
 						<height>70</height>
 						<font>font12</font>
@@ -70,8 +70,8 @@
 						<label>$INFO[ListItem.Label2]</label>
 					</control>
 					<control type="textbox">
-						<posx>0</posx>
-						<posy>80</posy>
+						<left>0</left>
+						<top>80</top>
 						<width>590</width>
 						<height>50</height>
 						<font>font12</font>
@@ -83,8 +83,8 @@
 				</itemlayout>
 				<focusedlayout height="135" width="600">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>600</width>
 						<height>136</height>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
@@ -92,8 +92,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>600</width>
 						<height>136</height>
 						<texture border="10">button-focus2.png</texture>
@@ -101,8 +101,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>0</posy>
+						<left>50</left>
+						<top>0</top>
 						<width>100</width>
 						<height>120</height>
 						<font>font12</font>
@@ -113,16 +113,16 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="image">
-						<posx>110</posx>
-						<posy>5</posy>
+						<left>110</left>
+						<top>5</top>
 						<width>80</width>
 						<height>80</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Thumb]</texture>
 					</control>
 					<control type="label">
-						<posx>590</posx>
-						<posy>5</posy>
+						<left>590</left>
+						<top>5</top>
 						<width>390</width>
 						<height>70</height>
 						<font>font12</font>
@@ -133,8 +133,8 @@
 						<label>$INFO[ListItem.Label2]</label>
 					</control>
 					<control type="textbox">
-						<posx>0</posx>
-						<posy>80</posy>
+						<left>0</left>
+						<top>80</top>
 						<width>590</width>
 						<height>50</height>
 						<font>font12</font>
@@ -249,8 +249,8 @@
 				</content>
 			</control>
 			<control type="scrollbar" id="62">
-				<posx>615</posx>
-				<posy>60</posy>
+				<left>615</left>
+				<top>60</top>
 				<width>25</width>
 				<height>540</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -268,7 +268,7 @@
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>number of files/pages</description>
 				<right>660</right>
-				<posy>627</posy>
+				<top>627</top>
 				<width>570</width>
 				<font>font12</font>
 				<align>right</align>
