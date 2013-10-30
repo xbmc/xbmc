@@ -359,6 +359,7 @@
 #include "plex/GUI/GUIDialogPlexAudioSubtitlePicker.h"
 #include "plex/GUI/GUIWindowPlexStartupHelper.h"
 #include "plex/PlexThemeMusicPlayer.h"
+#include "video/dialogs/GUIDialogVideoOSD.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
@@ -4636,6 +4637,16 @@ void CApplication::OnPlayBackPaused()
   param["player"]["speed"] = 0;
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
   CAnnouncementManager::Announce(Player, "xbmc", "OnPause", m_itemCurrentFile, param);
+
+  /* PLEX */
+  CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+  if (osd && !osd->IsActive())
+  {
+    std::vector<CStdString> arg;
+    arg.push_back("pauseOpen");
+    CApplicationMessenger::Get().ActivateWindow(WINDOW_DIALOG_VIDEO_OSD, arg, false);
+  }
+  /* END PLEX */
 }
 
 void CApplication::OnPlayBackResumed()
@@ -4648,6 +4659,12 @@ void CApplication::OnPlayBackResumed()
   param["player"]["speed"] = 1;
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
   CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
+
+  /* PLEX */
+  CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+  if (osd && osd->IsOpenedFromPause())
+    CApplicationMessenger::Get().Close(osd, false);
+  /* PLEX */
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)

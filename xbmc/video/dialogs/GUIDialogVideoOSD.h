@@ -34,9 +34,13 @@ public:
   virtual bool OnAction(const CAction &action);
 
   /* PLEX */
-  void SetCloseOnPlay(bool closeOnPlay) { m_closeOnPlay = closeOnPlay; }
-  bool m_closeOnPlay;
+  bool IsOpenedFromPause() const { return m_openedFromPause; }
   /* END PLEX */
+
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+
+  /* PLEX */
+  bool m_openedFromPause;
+  /* END PLEX */
 };

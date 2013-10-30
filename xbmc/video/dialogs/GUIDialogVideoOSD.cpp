@@ -36,7 +36,7 @@ CGUIDialogVideoOSD::CGUIDialogVideoOSD(void)
   m_loadType = KEEP_IN_MEMORY;
 
   /* PLEX */
-  m_closeOnPlay = false;
+  m_openedFromPause = false;
   /* END PLEX */
 }
 
@@ -70,30 +70,22 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
     if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
       return true;
   }
+
+  /* PLEX */
+  if (action.GetID() == ACTION_NAV_BACK && m_openedFromPause)
+    return true;
+  /* END PLEX */
+
   if (action.GetID() == ACTION_SHOW_OSD)
   {
-    if (m_closeOnPlay)
+    /* PLEX */
+    if (m_openedFromPause)
       return true;
+    /* END PLEX */
 
     Close();
     return true;
   }
-  /* PLEX */
-  if (action.GetID() == ACTION_NAV_BACK)
-  {
-    if (m_closeOnPlay)
-      return true;
-  }
-  if (action.GetID() == ACTION_PAUSE || action.GetID() == ACTION_PLAYER_PLAY)
-  {
-    if (IsDialogRunning() && m_closeOnPlay)
-    {
-      m_closeOnPlay = false;
-      Close();
-    }
-  }
-  /* END PLEX */
-
   return CGUIDialog::OnAction(action);
 }
 
@@ -115,26 +107,21 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  /* PLEX */
+  case GUI_MSG_WINDOW_INIT:
+    {
+      if (message.GetStringParam(0) == "pauseOpen")
+        m_openedFromPause = true;
+      else
+        m_openedFromPause = false;
+    }
+    break;
   case GUI_MSG_VIDEO_MENU_STARTED:
     {
       // We have gone to the DVD menu, so close the OSD.
       Close();
     }
     break;
-  /* PLEX */
-  case GUI_MSG_CLICKED:
-    {
-      if (message.GetSenderId() == 702)
-      {
-        if (m_closeOnPlay)
-        {
-          m_closeOnPlay = false;
-          Close();
-        }
-      }
-    }
-    break;
-  /* END PLEX */
   case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
     {
       // Remove our subdialogs if visible
