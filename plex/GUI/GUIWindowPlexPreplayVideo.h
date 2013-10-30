@@ -9,7 +9,7 @@ class CGUIWindowPlexPreplayVideo : public CGUIMediaWindow, public IJobCallback
 public:
   CGUIWindowPlexPreplayVideo(void);
   virtual ~CGUIWindowPlexPreplayVideo();
-  
+
   virtual bool OnMessage(CGUIMessage& message);
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   virtual bool OnAction(const CAction &action);

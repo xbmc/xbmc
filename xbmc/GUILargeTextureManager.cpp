@@ -93,8 +93,14 @@ void CGUILargeTextureManager::CLargeTexture::AddRef()
 
 bool CGUILargeTextureManager::CLargeTexture::DecrRef(bool deleteImmediately)
 {
+#ifndef __PLEX__
   assert(m_refCount);
   m_refCount--;
+#else
+  if (m_refCount > 0)
+    m_refCount --;
+#endif
+
   if (m_refCount == 0)
   {
     if (deleteImmediately)

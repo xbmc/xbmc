@@ -196,12 +196,18 @@ CPlexServerDataLoader::GetAllSections() const
 
   BOOST_FOREACH(ServerDataPair pair, m_sectionMap)
   {
+    if (!pair.second)
+      continue;
+
     for (int i = 0; i < pair.second->Size(); i++)
     {
       CFileItemPtr item = pair.second->Get(i);
-      item->SetProperty("serverName", pair.second->GetProperty("serverName"));
-      item->SetProperty("serverUUID", pair.second->GetProperty("serverUUID"));
-      list->Add(item);
+      if (item)
+      {
+        item->SetProperty("serverName", pair.second->GetProperty("serverName"));
+        item->SetProperty("serverUUID", pair.second->GetProperty("serverUUID"));
+        list->Add(item);
+      }
     }
   }
 

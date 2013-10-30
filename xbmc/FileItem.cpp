@@ -61,6 +61,7 @@
 /* PLEX */
 #include "plex/PlexTypes.h"
 #include "PlexApplication.h"
+#include "filesystem/DirectoryCache.h"
 /* END PLEX */
 
 using namespace std;
@@ -3563,6 +3564,8 @@ void CFileItem::MarkAsWatched(bool sendMessage)
 
     SetEpisodeData(watched+unwatched, watched+unwatched);
   }
+
+  g_directoryCache.ClearDirectory(GetPath());
 }
 
 
@@ -3584,6 +3587,8 @@ void CFileItem::MarkAsUnWatched(bool sendMessage)
 
     SetEpisodeData(watched+unwatched, 0);
   }
+
+  g_directoryCache.ClearDirectory(GetPath());
 }
 
 void CFileItemList::Insert(int iIndex, CFileItemPtr pItem)

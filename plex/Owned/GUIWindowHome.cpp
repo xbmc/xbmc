@@ -78,6 +78,9 @@
 #include "AutoUpdate/PlexAutoUpdate.h"
 
 #include "PlexThemeMusicPlayer.h"
+#include "dialogs/GUIDialogBusy.h"
+#include "DirectoryCache.h"
+#include "GUI/GUIPlexMediaWindow.h"
 
 using namespace std;
 using namespace XFILE;
@@ -357,6 +360,12 @@ bool CGUIWindowHome::OnAction(const CAction &action)
         else
           m_loadFanoutTimer.Start(200);
       }
+
+      if (action.GetID() == ACTION_SELECT_ITEM && pItem->GetPath().empty() && pItem->HasProperty("sectionPath"))
+      {
+        OpenItem(pItem, false);
+        return true;
+      }
     }
   }
   else if (focusedControl == CONTENT_LIST_ON_DECK ||
@@ -567,9 +576,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       
       RefreshAllSections(false);
       g_plexApplication.themeMusicPlayer->playForItem(CFileItem());
-
-//      if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
-//        g_plexApplication.backgroundMusicPlayer->PlayElevatorMusic();
       
       break;
     }
@@ -695,29 +701,23 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
               (type == PLEX_DIR_TYPE_MOVIE || type == PLEX_DIR_TYPE_EPISODE ||
                type == PLEX_DIR_TYPE_VIDEO || type == PLEX_DIR_TYPE_CLIP))
           {
-            CBuiltins::Execute("XBMC.ActivateWindow(PlexPreplayVideo," + item->GetProperty("key").asString() + ",return, " + item->GetProperty("containerPath").asString() + ")");
+            OpenItem(item, true);
             return true;
           }
-
-          if (iAction == ACTION_SELECT_ITEM &&
-              (type == PLEX_DIR_TYPE_ALBUM || type == PLEX_DIR_TYPE_ARTIST ||
-               type == PLEX_DIR_TYPE_PHOTOALBUM || type == PLEX_DIR_TYPE_SEASON))
+          else if (iAction == ACTION_SELECT_ITEM)
           {
-            std::string window;
-            if (type == PLEX_DIR_TYPE_ALBUM || type == PLEX_DIR_TYPE_ARTIST)
-              window = "MyMusicFiles";
-            else if (type == PLEX_DIR_TYPE_PHOTOALBUM)
-              window = "MyPictures";
-            else if (type == PLEX_DIR_TYPE_SEASON)
-              window = "MyVideoFiles";
-
-            CBuiltins::Execute("XBMC.Activatewindow(" + window + "," + item->GetProperty("key").asString() + ",return)");
+            OpenItem(item, false);
             return true;
           }
           else
           {
             PlayFileFromContainer(container);
           }
+        }
+        else
+        {
+          CFileItemPtr item = GetCurrentListItem();
+          OpenItem(item, false);
         }
       }
     }
@@ -727,6 +727,87 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   return ret;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::OpenItem(CFileItemPtr item, bool prePlay)
+{
+  std::vector<CStdString> args;
+  CURL url = CGUIPlexMediaWindow::GetRealDirectoryUrl(item->GetProperty("key").asString());
+  args.push_back(item->GetProperty("key").asString());
+
+  if (item->HasProperty("sectionPath"))
+  {
+    url = CGUIPlexMediaWindow::GetRealDirectoryUrl(item->GetProperty("sectionPath").asString());
+    url.SetProtocolOption("containerStart", "0");
+    url.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
+
+    args.clear();
+    args.push_back(item->GetProperty("sectionPath").asString());
+  }
+
+  /* First we need to cache this item so it will not stall when PlexMediaWindow opens */
+  CGUIDialogBusy *busy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  if (busy)
+  {
+    busy->Show();
+    m_loadNavigationEvent.Reset();
+    m_cacheLoadFail = false;
+    g_directoryCache.ClearDirectory(url.Get());
+
+    unsigned int job = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
+
+    while(!m_loadNavigationEvent.WaitMSec(10))
+    {
+      if (busy->IsCanceled())
+      {
+        CJobManager::GetInstance().CancelJob(job);
+        busy->Close();
+        return;
+      }
+      g_windowManager.ProcessRenderLoop();
+    }
+
+    busy->Close();
+  }
+
+  if (m_cacheLoadFail)
+  {
+    CGUIDialogOK::ShowAndGetInput("Failed to open directory!", "The section failed to open", "Check log file and report this as a bug.", "");
+    return;
+  }
+
+  args.push_back("return");
+  if (prePlay)
+  {
+    if (item->HasProperty("containerPath"))
+      args.push_back(item->GetProperty("containerPath").asString());
+
+    CApplicationMessenger::Get().ActivateWindow(WINDOW_PLEX_PREPLAY_VIDEO, args, false);
+  }
+  else
+  {
+    int window = WINDOW_VIDEO_NAV;
+    EPlexDirectoryType type = item->GetPlexDirectoryType();
+    if (type == PLEX_DIR_TYPE_ALBUM || type == PLEX_DIR_TYPE_ARTIST)
+      window = WINDOW_MUSIC_FILES;
+    else if (type == PLEX_DIR_TYPE_PHOTOALBUM || type == PLEX_DIR_TYPE_PHOTO)
+      window = WINDOW_PICTURES;
+
+    CApplicationMessenger::Get().ActivateWindow(window, args, false);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
+  m_cacheLoadFail = !success;
+
+  if (success && fjob)
+    g_directoryCache.SetDirectory(fjob->m_url.Get(), fjob->m_items, DIR_CACHE_ALWAYS);
+
+  m_loadNavigationEvent.Set();
+}
+
 CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
 {
   CGUIStaticItemPtr newItem = CGUIStaticItemPtr(new CGUIStaticItem);
@@ -734,10 +815,12 @@ CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
   newItem->SetLabel2(item->GetProperty("serverName").asString());
   newItem->SetProperty("plex", true);
   newItem->SetProperty("sectionPath", item->GetPath());
+  newItem->SetPlexDirectoryType(item->GetPlexDirectoryType());
 
   AddSection(item->GetPath(),
              CGUIWindowHome::GetSectionTypeFromDirectoryType(item->GetPlexDirectoryType()));
 
+#if 0
   CStdString path("XBMC.ActivateWindow");
   if (item->GetProperty("type").asString() == "artist")
     path += "(MyMusicFiles, " + item->GetPath() + ",return)";
@@ -748,6 +831,7 @@ CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
 
   newItem->SetPath(path);
   newItem->SetClickActions(CGUIAction("", path));
+#endif
   return newItem;
 }
 

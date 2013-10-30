@@ -62,6 +62,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     bool OnBack(int actionID);
     void OnFilterButton(int filterButtonId);
     void OnFilterSelected(const std::string& filterKey, int filterButtonId);
+    static CURL GetRealDirectoryUrl(const CStdString &strDirectory);
 
   private:
     void AddFilters();
@@ -85,20 +86,19 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     void LoadPage(int start, int numberOfItems);
     void LoadNextPage();
     virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-    CURL GetRealDirectoryUrl(const CStdString &strDirectory);
 
     bool m_returningFromSkinLoad;
     int m_pagingOffset;
     int m_currentJobId;
-    int m_currentSection;
     CURL m_sectionRoot;
-    bool m_isSecondary;
     void UpdateSectionTitle();
     bool m_hasAdvancedFilters;
 
     CCriticalSection m_filterValuesSection;
     std::string m_waitingForFilter;
     CEvent m_filterValuesEvent;
+    CEvent m_cacheEvent;
+    CStdString m_waitingCache;
     void updateFilterButtons(CPlexSectionFilterPtr filter, bool clear=false, bool disable=false);
 };
 

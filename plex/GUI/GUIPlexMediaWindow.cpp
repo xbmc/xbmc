@@ -37,8 +37,8 @@
 #include "Client/PlexTimelineManager.h"
 
 #include "LocalizeStrings.h"
+#include "DirectoryCache.h"
 
-#define DEFAULT_PAGE_SIZE 50
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       if (currentIdx > m_pagingOffset && m_currentJobId == -1)
       {
         /* the user selected something in the middle of where we loaded, let's just cheat and fill in everything */
-        LoadPage(m_pagingOffset, currentIdx + DEFAULT_PAGE_SIZE);
+        LoadPage(m_pagingOffset, currentIdx + PLEX_DEFAULT_PAGE_SIZE);
       }
       break;
     }
@@ -345,8 +345,8 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
       action.GetID() >= KEY_ASCII) // KEY_ASCII means that we letterjumped.
   {
     if (m_viewControl.GetSelectedItem() >= m_pagingOffset)
-      LoadPage(m_pagingOffset, m_viewControl.GetSelectedItem() + DEFAULT_PAGE_SIZE);
-    else if (m_viewControl.GetSelectedItem() >= (m_pagingOffset - (DEFAULT_PAGE_SIZE/2)))
+      LoadPage(m_pagingOffset, m_viewControl.GetSelectedItem() + PLEX_DEFAULT_PAGE_SIZE);
+    else if (m_viewControl.GetSelectedItem() >= (m_pagingOffset - (PLEX_DEFAULT_PAGE_SIZE/2)))
       LoadNextPage();
   }
   else if (action.GetID() == ACTION_TOGGLE_WATCHED)
@@ -387,8 +387,8 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
 {
   CURL u(strDirectory);
   u.SetProtocolOption("containerStart", "0");
-  u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(DEFAULT_PAGE_SIZE));
-  m_pagingOffset = DEFAULT_PAGE_SIZE - 1;
+  u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
+  m_pagingOffset = PLEX_DEFAULT_PAGE_SIZE - 1;
 
   if (u.GetProtocol() == "plexserver" &&
       (u.GetHostName() != "channels" && u.GetHostName() != "shared" && u.GetHostName() != "channeldirectory"))
@@ -402,10 +402,14 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
   }
   
   bool ret = CGUIMediaWindow::GetDirectory(u.Get(), items);
+
+  CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(u.GetHostName());
+  if (server && server->GetActiveConnection() && server->GetActiveConnection()->IsLocal())
+    g_directoryCache.ClearDirectory(u.Get());
   
   if (items.HasProperty("totalSize"))
   {
-    if (items.GetProperty("totalSize").asInteger() > DEFAULT_PAGE_SIZE)
+    if (items.GetProperty("totalSize").asInteger() > PLEX_DEFAULT_PAGE_SIZE)
     {
      
       std::map<int, std::string> charMap;
@@ -434,12 +438,12 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
         }
       }
       
-      for (int i=0; i < (items.GetProperty("totalSize").asInteger()) - DEFAULT_PAGE_SIZE; i++)
+      for (int i=0; i < (items.GetProperty("totalSize").asInteger()) - PLEX_DEFAULT_PAGE_SIZE; i++)
       {
         CFileItemPtr item = CFileItemPtr(new CFileItem);
         item->SetPath(boost::lexical_cast<std::string>(i));
-        if (charMap.find(DEFAULT_PAGE_SIZE + i) != charMap.end())
-          item->SetSortLabel(CStdString(charMap[DEFAULT_PAGE_SIZE + i]));
+        if (charMap.find(PLEX_DEFAULT_PAGE_SIZE + i) != charMap.end())
+          item->SetSortLabel(CStdString(charMap[PLEX_DEFAULT_PAGE_SIZE + i]));
         items.Add(item);
       }
     }
@@ -477,7 +481,7 @@ void CGUIPlexMediaWindow::LoadNextPage()
   {
     if (m_vecItems->GetProperty("totalSize").asInteger() > m_pagingOffset)
     {
-      LoadPage(m_pagingOffset, DEFAULT_PAGE_SIZE);
+      LoadPage(m_pagingOffset, PLEX_DEFAULT_PAGE_SIZE);
     }
   }
 }
@@ -485,10 +489,21 @@ void CGUIPlexMediaWindow::LoadNextPage()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  if (success)
+  CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
+  if (!fjob)
+    return;
+
+  if (m_waitingCache == fjob->m_url.Get())
   {
-    CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
-    
+    if (success)
+      g_directoryCache.SetDirectory(fjob->m_url.Get(), fjob->m_items, XFILE::DIR_CACHE_ALWAYS);
+    m_cacheEvent.Set();
+    m_waitingCache.clear();
+    return;
+  }
+
+  if (success)
+  {    
     int nItem = m_viewControl.GetSelectedItem();
     CStdString strSelected;
     if (nItem >= 0)
@@ -516,32 +531,91 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
   if (!item)
     return false;
 
+  if (!item->m_bIsFolder)
+  {
+    if (!PlexUtils::CurrentSkinHasPreplay() || item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK || item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO)
+      return OnPlayMedia(iItem);
+  }
+
+  CStdString url = item->GetPath();
+  if (item->m_bIsFolder)
+  {
+    if (item->GetProperty("search").asBoolean())
+      url = ShowPluginSearch(item);
+    else if (item->GetProperty("settings").asBoolean())
+      url = ShowPluginSettings(item);
+  }
+
+  if (GetID() == WINDOW_SHARED_CONTENT)
+  {
+    CURL u = GetRealDirectoryUrl(url);
+    u.SetProtocolOption("containerStart", "0");
+    u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
+    url = u.Get();
+  }
+
+  CGUIDialogBusy *busy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  if (busy)
+  {
+    m_cacheEvent.Reset();
+
+    m_waitingCache = url;
+    int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
+
+    busy->Show();
+    while (!m_cacheEvent.WaitMSec(10))
+    {
+      if (busy->IsCanceled())
+      {
+        CJobManager::GetInstance().CancelJob(id);
+        busy->Close();
+        return false;
+      }
+
+      g_windowManager.ProcessRenderLoop();
+    }
+    busy->Close();
+  }
+
+  if (GetID() == WINDOW_SHARED_CONTENT)
+  {
+    int window = WINDOW_VIDEO_NAV;
+    if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_ARTIST)
+      window = WINDOW_MUSIC_NAV;
+    else if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO ||
+             item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTOALBUM)
+      window = WINDOW_PICTURES;
+
+    std::vector<CStdString> args;
+    args.push_back(url);
+    args.push_back("return");
+
+    CApplicationMessenger::Get().ActivateWindow(window, args, false);
+    return true;
+  }
+
   if (!item->m_bIsFolder && PlexUtils::CurrentSkinHasPreplay() &&
       item->IsPlexMediaServer() &&
       (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE ||
        item->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE))
   {
-    CBuiltins::Execute("ActivateWindow(PlexPreplayVideo, " + item->GetProperty("key").asString() + ", return, " + std::string(m_vecItems->GetPath()) + ")");
+    std::vector<CStdString> args;
+    args.push_back(url);
+    args.push_back("return");
+    args.push_back(m_vecItems->GetPath());
+
+    CApplicationMessenger::Get().ActivateWindow(WINDOW_PLEX_PREPLAY_VIDEO, args, false);
     return true;
   }
 
   if (item->m_bIsFolder)
   {
-    CStdString newPath;
-    if (item->GetProperty("search").asBoolean())
-      newPath = ShowPluginSearch(item);
-    else if (item->GetProperty("settings").asBoolean())
-      newPath = ShowPluginSettings(item);
-    else
-      newPath = item->GetPath();
-
-    if (!newPath.empty())
-      if (!Update(newPath, true))
-        ShowShareErrorMessage(item.get());
+    if (!Update(url, true))
+      ShowShareErrorMessage(item.get());
     return true;
   }
 
-  return OnPlayMedia(iItem);
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -636,14 +710,17 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
     case CONTEXT_BUTTON_MARK_UNWATCHED:
       item->MarkAsUnWatched(true);
+      g_directoryCache.ClearSubPaths(m_vecItems->GetPath());
       break;
 
     case CONTEXT_BUTTON_MARK_WATCHED:
       item->MarkAsWatched(true);
+      g_directoryCache.ClearSubPaths(m_vecItems->GetPath());
       break;
 
     case CONTEXT_BUTTON_DELETE:
       g_plexApplication.mediaServerClient->deleteItem(item);
+      g_directoryCache.ClearSubPaths(m_vecItems->GetPath());
       break;
 
     default:
@@ -881,7 +958,7 @@ CURL CGUIPlexMediaWindow::GetRealDirectoryUrl(const CStdString& url_)
       (dirUrl.GetHostName() == "channels" || dirUrl.GetHostName() == "shared" || dirUrl.GetHostName() == "channeldirectory"))
     return url_;
 
-  m_isSecondary = false;
+  bool isSecondary = false;
 
   int sectionNumber = -1;
   if (dirUrl.GetProtocol() == "plexserver" &&
@@ -898,15 +975,12 @@ CURL CGUIPlexMediaWindow::GetRealDirectoryUrl(const CStdString& url_)
     if (sectionNumber != -1)
     {
       CLog::Log(LOGDEBUG, "CPlexFilterHelper::GetRealDirectoryUrl got section %d", sectionNumber);
-      m_isSecondary = true;
+     isSecondary = true;
     }
   }
 
-  if (m_isSecondary)
+  if (isSecondary)
   {
-    if (m_currentSection != sectionNumber)
-      m_currentSection = sectionNumber;
-
     CURL url(dirUrl);
 
     CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(url.Get());

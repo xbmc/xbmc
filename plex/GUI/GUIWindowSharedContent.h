@@ -31,39 +31,5 @@ class CGUIWindowSharedContent : public CGUIPlexMediaWindow
   CGUIWindowSharedContent()
     : CGUIPlexMediaWindow(WINDOW_SHARED_CONTENT, "MySharedContent.xml")
   {
-  }
-  
-  bool OnSelect(int iItem)
-  {
-    if (iItem < 0 || iItem >= (int)m_vecItems->Size()) 
-      return true;
-    
-    CFileItemPtr pItem = m_vecItems->Get(iItem);
-
-    CStdString strWindow;
-
-    switch(pItem->GetPlexDirectoryType())
-    {
-      case PLEX_DIR_TYPE_ARTIST:
-        strWindow = "MyMusicFiles";
-        break;
-      case PLEX_DIR_TYPE_MOVIE:
-      case PLEX_DIR_TYPE_SHOW:
-        strWindow = "MyVideoFiles";
-        break;
-      case PLEX_DIR_TYPE_PHOTOALBUM:
-      case PLEX_DIR_TYPE_PHOTO:
-        strWindow = "MyPictures";
-      default:
-        break;
-    }
-    
-    if (strWindow.empty())
-      return false;
-
-    CStdString cmd = "XBMC.ActivateWindow(" + strWindow + "," + pItem->GetPath() + ",return)";
-    g_application.ExecuteXBMCAction(cmd);
-
-    return true;
-  }
+  }  
 };

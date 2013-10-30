@@ -95,7 +95,7 @@ class CPlexSectionFanout : public IJobCallback
     std::vector<int> m_outstandingJobs;
 };
 
-class CGUIWindowHome : public CGUIWindow, public PlexContentPlayerMixin, public ITimerCallback
+class CGUIWindowHome : public CGUIWindow, public PlexContentPlayerMixin, public ITimerCallback, public IJobCallback
 {
 public:
   CGUIWindowHome(void);
@@ -121,6 +121,9 @@ public:
   bool GetContentTypesFromSection(const CStdString& url, std::vector<int> &types);
   bool GetContentListFromSection(const CStdString& url, int contentType, CFileItemList &list);
   void SectionNeedsRefresh(const CStdString& url);
+  void OpenItem(CFileItemPtr item, bool prePlay);
+
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
   void OnTimeout();
 
@@ -143,5 +146,7 @@ public:
   CStdString                 m_currentFanArt;
   CStdString                 m_lastSelectedSubItem;
   CTimer                     m_loadFanoutTimer;
+  CEvent                     m_loadNavigationEvent;
+  bool                       m_cacheLoadFail;
 };
 

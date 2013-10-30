@@ -74,13 +74,10 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &ite
     if (dir->m_cacheType == XFILE::DIR_CACHE_ALWAYS ||
        (dir->m_cacheType == XFILE::DIR_CACHE_ONCE && retrieveAll))
     {
-      /* PLEX - Preserve view mode, which may have been updated */
-      int defaultViewMode = items.GetProperty("viewMode").asInteger();
       items.Copy(*dir->m_Items);
-      items.SetProperty("viewMode", defaultViewMode);
-      /* END PLEX */
       dir->SetLastAccess(m_accessCounter);
 #ifdef _DEBUG
+      CLog::Log(LOGDEBUG, "CDirectoryCache::GetDirectory cache hit for %s", strPath.c_str());
       m_cacheHits+=items.Size();
 #endif
       return true;
@@ -139,7 +136,6 @@ void CDirectoryCache::ClearDirectory(const CStdString& strPath)
     Delete(i);
 }
 
-#ifndef __PLEX__
 void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
 {
   CSingleLock lock (m_cs);
@@ -157,7 +153,6 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
       i++;
   }
 }
-#endif
 
 void CDirectoryCache::AddFile(const CStdString& strFile)
 {
@@ -285,32 +280,3 @@ void CDirectoryCache::PrintStats() const
   CLog::Log(LOGDEBUG, "%s - %u folders cached, with %u items total.  Oldest is %u, current is %u", __FUNCTION__, numDirs, numItems, oldest, m_accessCounter);
 }
 #endif
-
-/* PLEX */
-CStdString RemoveArgumentsFromString(const CStdString& strPath)
-{
-  CStdString ret = strPath;
-  size_t q = ret.find("?");
-  if (q != string::npos)
-    ret = ret.substr(0, q);
-
-  return ret;
-}
-
-void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
-{
-  CSingleLock lock (m_cs);
-
-  CStdString storedPath = RemoveArgumentsFromString(URIUtils::SubstitutePath(strPath));
-
-  iCache i = m_cache.begin();
-  while (i != m_cache.end())
-  {
-    CStdString path = RemoveArgumentsFromString(i->first);
-    if (strncmp(path.c_str(), storedPath.c_str(), storedPath.GetLength()) == 0 && path.size() > storedPath.size())
-      Delete(i++);
-    else
-      i++;
-  }
-}
-/* END PLEX */

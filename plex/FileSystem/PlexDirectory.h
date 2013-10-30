@@ -72,7 +72,11 @@ namespace XFILE
 
       long GetHTTPResponseCode() const { return m_file.GetLastHTTPResponseCode(); }
     
-      virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_NEVER; };
+      virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const;
+
+      virtual bool IsAllowed(const CStdString &strFile) const { return true; }
+
+      static bool CachePath(const CStdString& path);
 
     private:
       bool ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaContainer);

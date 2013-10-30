@@ -188,4 +188,6 @@ typedef std::map<int64_t, std::string> PlexIntStringMap;
 typedef std::vector<std::string> PlexStringVector;
 typedef std::vector<int64_t> PlexIntVector;
 
+#define PLEX_DEFAULT_PAGE_SIZE 50
+
 #endif

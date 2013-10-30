@@ -34,6 +34,8 @@
 #include "PlexJobs.h"
 #include "PlexApplication.h"
 
+#include "DirectoryCache.h"
+
 using namespace XFILE;
 
 /* IDirectory Interface */
@@ -655,6 +657,51 @@ void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 
   if (m_augmentationJobs.size() == 0)
     m_augmentationEvent.Set();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+DIR_CACHE_TYPE CPlexDirectory::GetCacheType(const CStdString &strPath) const
+{
+  /* We really don't want to agressively cache stuff, so let's just start by caching remote servers */
+  CURL u(strPath);
+
+  if (boost::starts_with(u.GetFileName(), "library/metadata"))
+  {
+    CLog::Log(LOGDEBUG, "CPlexDirectory::GetCacheType allow caching of preplay screen: %s", u.Get().c_str());
+    return DIR_CACHE_ALWAYS;
+  }
+
+  CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(u.GetHostName());
+
+  if (server && server->GetActiveConnection())
+  {
+    if (server->GetActiveConnection()->IsLocal())
+      return DIR_CACHE_NEVER;
+    else
+    {
+      CLog::Log(LOGDEBUG, "CPlexDirectory::GetCacheType allow %s to be cached", m_url.Get().c_str());
+      return DIR_CACHE_ALWAYS;
+    }
+  }
+
+  return DIR_CACHE_NEVER;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexDirectory::CachePath(const CStdString &path)
+{
+  CPlexDirectory dir;
+  CFileItemList list;
+
+  g_directoryCache.ClearDirectory(path);
+
+  if (dir.GetDirectory(path, list))
+  {
+    g_directoryCache.SetDirectory(path, list, DIR_CACHE_ALWAYS);
+    return true;
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

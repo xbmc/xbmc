@@ -17,6 +17,9 @@
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "PlexJobs.h"
+#include "Client/PlexServerManager.h"
+
+#include "DirectoryCache.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIWindowPlexPreplayVideo::CGUIWindowPlexPreplayVideo(void)
@@ -43,7 +46,16 @@ bool CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
   }
   else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
   {
+    CFileItemPtr item = g_plexApplication.m_preplayItem;
     g_plexApplication.m_preplayItem.reset();
+
+    CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
+    if (server && server->GetActiveConnection() && server->GetActiveConnection()->IsLocal())
+    {
+      CLog::Log(LOGDEBUG, "CGUIWindowPlexPreplayVideo::OnMessage(deinit) killing local item out of directory cache");
+      g_directoryCache.ClearDirectory(item->GetPath());
+    }
+
   }
   else if (message.GetMessage() == GUI_MSG_CLICKED)
   {
