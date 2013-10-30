@@ -681,6 +681,14 @@ void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
       if (passthrough && devInfo.m_deviceType == AE_DEVTYPE_PCM)
         continue;
 
+        /* PLEX */
+      /* Direct Sound can NOT be used for HD formats */
+      if ((g_guiSettings.GetBool("audiooutput.truehdpassthrough") || g_guiSettings.GetBool("audiooutput.dtshdpassthrough")) &&
+        sinkInfo.m_sinkName == "DirectSound")
+        continue;
+      /* END PLEX */
+
+
       std::string device = sinkInfo.m_sinkName + ":" + devInfo.m_deviceName;
 
       std::stringstream ss;

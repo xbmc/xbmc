@@ -2133,6 +2133,16 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     {
       CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
     }
+    /* PLEX */
+    else if (strSetting.Equals("audiooutput.truehdpassthrough") ||  strSetting.Equals("audiooutput.dtshdpassthrough"))
+    {
+      CSetting *pSetting = g_guiSettings.GetSetting("audiooutput.audiodevice");
+      FillInAudioDevices(pSetting, false);
+
+      pSetting = g_guiSettings.GetSetting("audiooutput.passthroughdevice");
+      FillInAudioDevices(pSetting, true);
+    }
+    /* PLEX */
 
     CAEFactory::OnSettingsChange(strSetting);
   }
