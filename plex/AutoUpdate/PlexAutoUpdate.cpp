@@ -369,13 +369,47 @@ bool CPlexAutoUpdate::RenameLocalBinary()
 #define MAXPATHLEN 1024
 #endif
 
+std::string quoteArgs(const std::list<std::string>& arguments)
+{
+	std::string quotedArgs;
+	for (std::list<std::string>::const_iterator iter = arguments.begin();
+	     iter != arguments.end();
+	     iter++)
+	{
+		std::string arg = *iter;
+
+		bool isQuoted = !arg.empty() &&
+		                 arg.at(0) == '"' &&
+		                 arg.at(arg.size()-1) == '"';
+
+		if (!isQuoted && arg.find(' ') != std::string::npos)
+		{
+			arg.insert(0,"\"");
+			arg.append("\"");
+		}
+		quotedArgs += arg;
+		quotedArgs += " ";
+	}
+	return quotedArgs;
+}
+
 void CPlexAutoUpdate::UpdateAndRestart()
 {  
   /* first we need to copy the updater app to our tmp directory, it might change during install.. */
   CStdString updaterPath;
   CUtil::GetHomePath(updaterPath);
+
+#ifdef TARGET_DARWIN_OSX
   updaterPath += "/tools/updater";
+#elif TARGET_WINDOWS
+  updaterPath += "\\updater.exe";
+#endif
+
+#ifdef TARGET_DARWIN_OSX
   std::string updater = CSpecialProtocol::TranslatePath("special://temp/autoupdate/updater");
+#elif TARGET_WINDOWS
+  std::string updater = CSpecialProtocol::TranslatePath("special://temp/autoupdate/updater.exe");
+#endif
 
   if (!CopyFile(updaterPath.c_str(), updater.c_str(), false))
   {
@@ -392,7 +426,7 @@ void CPlexAutoUpdate::UpdateAndRestart()
 
   std::string script = CSpecialProtocol::TranslatePath(m_localManifest);
   std::string packagedir = CSpecialProtocol::TranslatePath("special://temp/autoupdate");
-  std::string appdir;
+  CStdString appdir;
 
 #ifdef TARGET_DARWIN_OSX
   char installdir[2*MAXPATHLEN];
@@ -400,15 +434,20 @@ void CPlexAutoUpdate::UpdateAndRestart()
   uint32_t size;
   GetDarwinBundlePath(installdir, &size);
   appdir = std::string(installdir) + "/..";
+#elif TARGET_WINDOWS
+  CUtil::GetHomePath(appdir);
 #endif
 
-  CStdString exec;
-  exec.Format("\"%s\" --install-dir \"%s\" --package-dir \"%s\" --script \"%s\" --auto-close", updater, appdir, packagedir, script);
-  CLog::Log(LOGDEBUG, "CPlexAutoUpdate::UpdateAndRestart going to run %s", exec.c_str());
-
+#ifdef TARGET_POSIX
+  CStdString args;
+  args.Format("--install-dir \"%s\" --package-dir \"%s\" --script \"%s\" --auto-close", appdir, packagedir, script);
   WriteUpdateInfo();
 
-#ifdef TARGET_POSIX
+  CStdString exec;
+  exec.Format("\"%s\" %s", updater, args);
+
+  CLog::Log(LOGDEBUG, "CPlexAutoUpdate::UpdateAndRestart going to run %s", exec.c_str());
+
   pid_t pid = fork();
   if (pid == -1)
   {
@@ -462,6 +501,49 @@ void CPlexAutoUpdate::UpdateAndRestart()
   {
     CApplicationMessenger::Get().Quit();
   }
+#elif TARGET_WINDOWS
+  DWORD pid = GetCurrentProcessId();
+
+  std::list<std::string> args;
+  args.push_back("--wait");
+  args.push_back(boost::lexical_cast<std::string>(pid));
+  
+  args.push_back("--install-dir");
+  args.push_back(appdir);
+
+  args.push_back("--package-dir");
+  args.push_back(packagedir);
+
+  args.push_back("--script");
+  args.push_back(script);
+
+  args.push_back("--auto-close");
+
+  char *arguments = strdup(quoteArgs(args).c_str());
+
+  CLog::Log(LOGDEBUG, "CPlexAutoUpdate::UpdateAndRestart going to run %s %s", updater.c_str(), arguments);
+
+	STARTUPINFO startupInfo;
+	ZeroMemory(&startupInfo,sizeof(startupInfo));
+	startupInfo.cb = sizeof(startupInfo);
+
+	PROCESS_INFORMATION processInfo;
+	ZeroMemory(&processInfo,sizeof(processInfo));
+
+
+  if (CreateProcess(updater.c_str(), arguments, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &processInfo) == 0)
+  {
+    CLog::Log(LOGWARNING, "CPlexAutoUpdate::UpdateAndRestart CreateProcess failed! %d", GetLastError());
+  }
+  else
+  {
+    //CloseHandle(pInfo.hProcess);
+    //CloseHandle(pInfo.hProcess);
+    CApplicationMessenger::Get().Quit();
+  }
+
+  free(arguments);
+
 #endif
 }
 
