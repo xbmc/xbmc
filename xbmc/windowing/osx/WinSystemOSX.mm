@@ -662,18 +662,29 @@ bool CWinSystemOSX::DestroyWindow()
   return true;
 }
 
-extern "C" void SDL_SetWidthHeight(int w, int h);
-bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop, void *additional)
+bool isMavericks()
 {
-  bool ret = ResizeWindow(newWidth, newHeight, newLeft, newTop);
+  static int isMavericks = -1;
 
   // there is no NSAppKitVersionNumber10_9 out there anywhere
   // so we detect mavericks by one of these newly added app nap
   // methods - and fix the ugly mouse rect problem which was hitting
   // us when mavericks came out
-  if( [NSProcessInfo instancesRespondToSelector:@selector(beginActivityWithOptions:reason:)])
+  if (isMavericks == -1)
   {
-    CLog::Log(LOGDEBUG, "Detected Mavericks - enable mouse fixup");
+    CLog::Log(LOGDEBUG, "Detected Mavericks - enable windowing fixups.");
+    isMavericks = [NSProcessInfo instancesRespondToSelector:@selector(beginActivityWithOptions:reason:)] == TRUE ? 1 : 0;
+  }
+  return isMavericks == 1;
+}
+
+extern "C" void SDL_SetWidthHeight(int w, int h);
+bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop, void *additional)
+{
+  bool ret = ResizeWindow(newWidth, newHeight, newLeft, newTop);
+
+  if( isMavericks() )
+  {
     NSView * last_view = (NSView *)additional;
     if (last_view && [last_view window])
     {
@@ -846,7 +857,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       [newContext setView:blankView];
 
       // Hide the menu bar.
-      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
+      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || isMavericks() )
         SetMenuBarVisible(false);
 
       // Blank other displays if requested.
@@ -880,7 +891,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
         CGDisplayCapture(GetDisplayID(res.iScreen));
 
       // If we don't hide menu bar, it will get events and interrupt the program.
-      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
+      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || isMavericks() )
         SetMenuBarVisible(false);
     }
 
@@ -908,7 +919,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     [NSCursor unhide];
 
     // Show menubar.
-    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
+    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || isMavericks() )
       SetMenuBarVisible(true);
 
     if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
@@ -1444,7 +1455,7 @@ void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
           // find the screenID
           NSDictionary* screenInfo = [[window screen] deviceDescription];
           NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-          if ((CGDirectDisplayID)[screenID longValue] == kCGDirectMainDisplay)
+          if ((CGDirectDisplayID)[screenID longValue] == kCGDirectMainDisplay || isMavericks() )
           {
             SetMenuBarVisible(false);
           }
