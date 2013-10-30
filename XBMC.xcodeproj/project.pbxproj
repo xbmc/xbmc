@@ -261,6 +261,9 @@
 		7C2612671820667C0086E04D /* ISettingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2612631820667C0086E04D /* ISettingControl.cpp */; };
 		7C2612681820667C0086E04D /* ISettingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2612631820667C0086E04D /* ISettingControl.cpp */; };
 		7C2612691820667C0086E04D /* ISettingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2612631820667C0086E04D /* ISettingControl.cpp */; };
+		7C26126C182068660086E04D /* SettingsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126A182068660086E04D /* SettingsOperations.cpp */; };
+		7C26126D182068660086E04D /* SettingsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126A182068660086E04D /* SettingsOperations.cpp */; };
+		7C26126E182068660086E04D /* SettingsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126A182068660086E04D /* SettingsOperations.cpp */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C4458BD161E203800A905F6 /* Screenshot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4458BB161E203800A905F6 /* Screenshot.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
@@ -3711,6 +3714,8 @@
 		7C2612641820667C0086E04D /* ISettingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISettingControl.h; sourceTree = "<group>"; };
 		7C2612651820667C0086E04D /* ISettingControlCreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISettingControlCreator.h; sourceTree = "<group>"; };
 		7C2612661820667C0086E04D /* SettingDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingDefinitions.h; sourceTree = "<group>"; };
+		7C26126A182068660086E04D /* SettingsOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsOperations.cpp; sourceTree = "<group>"; };
+		7C26126B182068660086E04D /* SettingsOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsOperations.h; sourceTree = "<group>"; };
 		7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocol.cpp; sourceTree = "<group>"; };
 		7C2D6AE30F35453E00DD2E85 /* SpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocol.h; sourceTree = "<group>"; };
 		7C4458BB161E203800A905F6 /* Screenshot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Screenshot.cpp; sourceTree = "<group>"; };
@@ -9067,6 +9072,8 @@
 				DF28DF4C17B8379E0077F41A /* ProfilesOperations.h */,
 				DF00492B162DAEA200A971AD /* PVROperations.cpp */,
 				DF00492C162DAEA200A971AD /* PVROperations.h */,
+				7C26126A182068660086E04D /* SettingsOperations.cpp */,
+				7C26126B182068660086E04D /* SettingsOperations.h */,
 				F5AE409613415D9E0004BD79 /* SystemOperations.cpp */,
 				F5AE409713415D9E0004BD79 /* SystemOperations.h */,
 				7C920CF7181669FF00DA1477 /* TextureOperations.cpp */,
@@ -10676,6 +10683,7 @@
 				DFEF0BC1180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 				7C2612671820667C0086E04D /* ISettingControl.cpp in Sources */,
 				7CC82C9318284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
+				7C26126C182068660086E04D /* SettingsOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11712,6 +11720,7 @@
 				7C2612691820667C0086E04D /* ISettingControl.cpp in Sources */,
 				7CC82C9518284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
 				DF6D1DFF18312525009DB64F /* OverlayRendererGUI.cpp in Sources */,
+				7C26126E182068660086E04D /* SettingsOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12750,6 +12759,7 @@
 				7C2612681820667C0086E04D /* ISettingControl.cpp in Sources */,
 				7CC82C9418284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
 				DF6D1DFE18312525009DB64F /* OverlayRendererGUI.cpp in Sources */,
+				7C26126D182068660086E04D /* SettingsOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
