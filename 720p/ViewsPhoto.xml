@@ -182,22 +182,30 @@
 	<include name="PlotLibrary">
 		<control type="group">
 			<!-- dummy plot -->
-			<control type="textbox">
+			<!--><control type="textbox">
 				<posx>100</posx>
 				<posy>410</posy>
 				<width>430</width>
 				<height>205</height>
 				<include>Plot</include>
 				<visible>IsEmpty(Container.ShowPlot)</visible>
-			</control>
+			</control>-->
 			<!-- plot -->
 			<control type="textbox">
 				<posx>100</posx>
 				<posy>410</posy>
 				<width>430</width>
 				<height>205</height>
-				<include>Plot</include>
-				<label>$INFO[Container.ShowPlot]</label>
+				<include>PlotFormat</include>
+				<label>$INFO[ListItem.Plot]</label>
+			</control>
+			<control type="textbox">
+				<posx>100</posx>
+				<posy>410</posy>
+				<width>430</width>
+				<height>205</height>
+				<include>PlotFormat</include>
+				<label>$INFO[ListItem.Property(summary)]</label>
 			</control>
 		</control>
 	</include>
