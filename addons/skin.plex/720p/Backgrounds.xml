@@ -83,19 +83,6 @@
 					<effect type="fade" start="100" end="0" time="800"/>
 				</animation>
 			</control>
-			<!-- a hack until the automatic home slideshow is fixed (starts correctly) -->
-			<!--><control type="multiimage">
-				<include>FullScreenScaled</include>
-				<timeperimage>8000</timeperimage>
-				<fadetime>1000</fadetime>
-				<randomize>true</randomize>
-				<loop>yes</loop>
-				<imagepath background="true">http://localhost:32400/library/arts</imagepath>
-				<animation effect="fade" start="100" end="0" time="400" condition="ControlGroup(5000).HasFocus">Conditional</animation>
-				<animation type="WindowClose">
-					<effect type="fade" start="100" end="0" time="800"/>
-				</animation>
-			</control>-->
 			<!-- "new list" focused item fanart while using inside the list -->
 			<!-- on deck -->
 			<control type="multiimage">
@@ -126,6 +113,13 @@
 				<visible>ControlGroup(7005).HasFocus</visible>
 				<info background="true">Container(11004).ListItem.Art(thumb)</info>
 			</control>
+			<control type="image">
+				<include>FullScreenScaled</include>
+				<texture>bg-overlay-grainy.png</texture>
+				<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="600">Hidden</animation>
+				<visible>ControlGroup(7005).HasFocus | ControlGroup(7003).HasFocus</visible>
+			</control>
 			<!-- Fanart grainy overlay -->
 			<control type="image">
 				<width>1280</width>
@@ -155,8 +149,8 @@
 			<fadetime>1000</fadetime>
 			<randomize>true</randomize>
 			<loop>yes</loop>
-			<imagepath background="true">http://localhost:32400/library/arts</imagepath>
-			<animation effect="fade" end="20" time="400" condition="true">Conditional</animation>
+			<imagepath background="true">plexserver://best:32400/library/arts</imagepath>
+			<animation effect="fade" end="15" time="400" condition="true">Conditional</animation>
 			<animation type="WindowClose">
 				<effect type="fade" start="100" end="0" time="800"/>
 			</animation>

@@ -13,7 +13,7 @@
 		<include>PreplayClip</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenuPreplay</include>
-		<include>TopBar</include>
+		<!--<include>TopBar</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>

@@ -87,8 +87,8 @@
 	</include>
 	<include name="AlbumTitleLibrary">
 		<control type="group">
-			<posy>75</posy>
-			<posx>93</posx>
+			<posy>44</posy>
+			<posx>112</posx>
 			<control type="label">
 				<posy>0</posy>
 				<posx>0</posx>
@@ -222,10 +222,10 @@
 					<onleft>1300</onleft>
 					<orientation>vertical</orientation>
 					<posx>573</posx>
-					<posy>57</posy>
+					<posy>28</posy>
 					<width>700</width>
-					<height>645</height>
-					<itemlayout width="136" height="160">						
+					<height>657</height>
+					<itemlayout width="136" height="163">						
 						<include>PhotoThumbCard</include>
 						<include>PhotoThumb</include>						
 						<control type="label">
@@ -233,7 +233,7 @@
 							<textcolor>white</textcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout width="136" height="160">
+					<focusedlayout width="136" height="163">
 						<include>PhotoThumbCard</include>
 						<include>PhotoThumb</include>						
 						<control type="label">

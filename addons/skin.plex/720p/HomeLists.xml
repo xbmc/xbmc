@@ -454,7 +454,7 @@
 	</include>
 	<!-- HomeListItemFullInfo slide animation -->
 	<include name="HomeListItemFullInfoSlide">
-		<animation effect="slide" start="0" end="391" time="200" tween="out" condition="[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode) | Container(11000).ListItem.Type(season)]]] | [ControlGroup(7002).HasFocus + [Container(11001).ListItem.Type(movie) | Container(11001).ListItem.Type(episode)]]">Conditional</animation>
+		<animation effect="slide" start="0" end="391" time="400" tween="out" condition="[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode) | Container(11000).ListItem.Type(season)]]] | [ControlGroup(7002).HasFocus + [Container(11001).ListItem.Type(movie) | Container(11001).ListItem.Type(episode)]]">Conditional</animation>
 	</include>
 	<!-- Poster Items -->
 	<include name="ListItemPoster">
@@ -781,7 +781,7 @@
 		<!-- lists -->
 		<control type="group" id="5000">
 			<include>FadeDialog</include>
-			<visible>Control.IsVisible(11000) | Control.IsVisible(11001) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(11004) | Control.IsVisible(12000)</visible>
+			<visible>[Control.IsVisible(11000) | Control.IsVisible(11001) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(11004) | Control.IsVisible(12000)]</visible>
 			<posx>391</posx>
 			<posy>0</posy>
 			<width>890</width>
@@ -912,7 +912,7 @@
 						<visible allowhiddenfocus="false">false</visible>
 						<orientation>horizontal</orientation>
 						<ondown>7001</ondown>
-						<onup>-</onup>
+						<onup>300</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
 						<posx>0</posx>
@@ -1077,7 +1077,7 @@
 					<control type="fixedlist" id="11000">
 						<visible allowhiddenfocus="false">false</visible>
 						<orientation>horizontal</orientation>
-						<ondown>-</ondown>
+						<ondown>300</ondown>
 						<onup>7002</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
@@ -1414,7 +1414,7 @@
 						<visible allowhiddenfocus="false">false</visible>
 						<orientation>horizontal</orientation>
 						<ondown>7005</ondown>
-						<onup>-</onup>
+						<onup>300</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
 						<posx>-14</posx>
@@ -1487,7 +1487,7 @@
 					<control type="fixedlist" id="11004">
 						<visible allowhiddenfocus="false">false</visible>
 						<orientation>horizontal</orientation>
-						<ondown>-</ondown>
+						<ondown>300</ondown>
 						<onup>7003</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
@@ -1574,8 +1574,8 @@
 					<control type="fixedlist" id="11002">
 						<visible allowhiddenfocus="false">false</visible>
 						<orientation>horizontal</orientation>
-						<ondown>-</ondown>
-						<onup>-</onup>
+						<ondown>300</ondown>
+						<onup>300</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
 						<posx>-14</posx>

@@ -7,7 +7,7 @@
 		<!-- views (ViewsSharedContent.xml) -->
 		<include>SharedContent</include>
 		<!-- top-level ui (IncludesGlobals.xml & Debug.xml) -->
-		<include>TopBar</include>
+		<!--<include>TopBar</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>

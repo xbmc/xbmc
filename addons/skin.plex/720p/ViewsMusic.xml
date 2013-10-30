@@ -97,16 +97,16 @@
 				<control type="panel" id="52">
 					<viewtype label="MusicLibrary">panel</viewtype>
 					<visible>!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
-					<posy>56</posy>
-					<posx>105</posx>
+					<posy>28</posy>
+					<posx>100</posx>
 					<width>1200</width>
-					<height>645</height>
+					<height>660</height>
 					<onup>52</onup>
 					<ondown>52</ondown>
 					<onright>52</onright>
 					<onleft>1300</onleft>
 					<orientation>vertical</orientation>
-					<itemlayout width="190" height="216">
+					<itemlayout width="192" height="220">
 						<include>MusicThumbCard</include>
 						<include>MusicThumb</include>
 						<control type="label">
@@ -114,7 +114,7 @@
 							<textcolor>white</textcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout width="190" height="216">
+					<focusedlayout width="192" height="220">
 						<include>MusicThumbCard</include>
 						<include>MusicThumb</include>
 						<control type="label">

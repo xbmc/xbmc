@@ -315,22 +315,30 @@
 	<include name="DialogFilters">
 		<control type="group">
 			<posx>0</posx>
-			<posy>60</posy>
+			<posy>0</posy>
+			<animation type="WindowOpen" condition="true" reversible="false">
+			  <effect type="rotatey" center="120" start="-90,360" end="0,360" time="300"/>
+			  <effect type="fade" start="0" end="100" time="0" delay="0" />
+			</animation>
+			<animation type="WindowClose" condition="true" reversible="false">
+			  <effect type="rotatey" center="120" start="0,360" end="-90,360" time="300" />
+			  <effect type="fade" start="100" end="0" time="230" />
+			</animation>
 			<!-- sub-list backgrounds -->
-			<control type="group">
+			<!--><control type="group">
 				<control type="image">
 					<description>Title bg</description>
 					<posy>-12</posy>
 					<posx>0</posx>
 					<width>246</width>
-					<height>70</height>
+					<height>80</height>
 					<texture border="10">base.png</texture>
 					<colordiffuse>FF111111</colordiffuse>
 					<animation effect="fade" start="0" end="40" time="300" condition="true">Conditional</animation>
 				</control>
 				<control type="image">
 					<description>Title bottom line</description>
-					<posy>55</posy>
+					<posy>65</posy>
 					<posx>0</posx>
 					<width>246</width>
 					<height>2</height>
@@ -338,20 +346,37 @@
 					<colordiffuse>orange</colordiffuse>
 					<animation effect="fade" start="0" end="50" time="300" condition="true">Conditional</animation>
 				</control>
-			</control>
+			</control>-->
 			<!-- sub-list -->
 			<control type="group" id="1400">
-				<posy>24</posy>
-				<!-- sub-list title -->
-				<control type="label" id="19029">
-					<description>Heading</description>
-					<width>250</width>
-					<include>DialogHeading</include>
+				<posy>44</posy>
+				<control type="grouplist">
+					<posy>-9</posy>
+					<posx>10</posx>
+					<align>right</align>
+					<height>30</height>
+					<width>220</width>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<control type="label">
+						<height>30</height>
+						<width min="29" max="80">auto</width>
+						<label>[UPPERCASE]Filter:[/UPPERCASE]</label>
+						<font>Condensed-24</font>
+						<textcolor>white</textcolor>
+					</control>
+					<control type="label" id="19029">
+						<height>30</height>
+						<description>Heading</description>
+						<width min="29" max="120">auto</width>
+						<font>Condensed-24</font>
+						<textcolor>white</textcolor>
+					</control>
 				</control>
 				<control type="grouplist" id="19020">
 					<width>230</width>
-					<height>555</height>
-					<posy>40</posy>
+					<height>620</height>
+					<posy>38</posy>
 					<posx>6</posx>
 					<onup>19020</onup>
 					<ondown>19020</ondown>
@@ -659,6 +684,16 @@
 				</control>
 				<control type="spincontrolex" id="5">
 					<description>Default SpinControlex</description>
+				</control>
+				<control type="sliderex" id="8">
+					<description>Default Slider</description>
+					<height>40</height>
+					<include>DialogHeading</include>
+					<texturefocus border="5">button-focus2.png</texturefocus>
+				</control>
+				<control type="label" id="7">
+					<height>35</height>
+					<include>DialogHeading</include>
 				</control>
 				<control type="grouplist" id="9000">
 					<posx>20</posx>
