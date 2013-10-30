@@ -2,6 +2,7 @@ SRCS=PlayListB4S.cpp \
      PlayList.cpp \
      PlayListFactory.cpp \
      PlayListM3U.cpp \
+     PlayListMov.cpp \
      PlayListPLS.cpp \
      PlayListURL.cpp \
      PlayListWPL.cpp \

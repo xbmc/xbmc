@@ -20,12 +20,15 @@
 
 #include "PlayListFactory.h"
 #include "PlayListM3U.h"
+#include "PlayListMov.h"
 #include "PlayListPLS.h"
 #include "PlayListB4S.h"
 #include "PlayListWPL.h"
 #include "PlayListURL.h"
 #include "PlayListXML.h"
 #include "utils/URIUtils.h"
+#include "DVDInputStreams/DVDInputStream.h"
+#include "URL.h"
 
 using namespace PLAYLIST;
 
@@ -135,5 +138,26 @@ bool CPlayListFactory::IsPlaylist(const CStdString& filename)
 {
   return URIUtils::HasExtension(filename,
                      ".m3u|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml");
+}
+
+bool CPlayListFactory::HandleRedirects(CDVDInputStream *inputStream, unsigned int bandwidth)
+{
+  bool redirected = false;
+  CURL url= CURL(inputStream->GetURL());
+  
+  if (!inputStream)
+    return redirected;
+  
+  // handle potential mov reference lists first
+  // they can contain m3u8 so we do those afterwards
+  if (inputStream->GetURL().GetFileType() == "mov")
+    redirected = CPlayListMov::HandleRedirects(inputStream, bandwidth);
+
+  // if this is an HLS playlist then get the
+  // most appropriate bitrate based on our network settings
+  // ensure to strip off the url options by using a temp CURL object
+  if (inputStream->GetURL().GetProtocol() == "http" && inputStream->GetURL().GetFileType() == "m3u8")
+    redirected = CPlayListM3U::HandleRedirects(inputStream, bandwidth);
+  return redirected;
 }
 

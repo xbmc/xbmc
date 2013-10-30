@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "music/tags/MusicInfoTag.h"
+#include "DVDInputStreams/DVDInputStream.h"
 
 using namespace PLAYLIST;
 using namespace XFILE;
@@ -181,84 +182,116 @@ void CPlayListM3U::Save(const CStdString& strFileName) const
   file.Close();
 }
 
-CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, size_t bandwidth)
+// helper reads and trims a line from a buffer
+// moves the buffptr forward to the next line
+// decreases buffsize accordingly
+CStdString readNextLineFromBuffer(char *&buffPtr, int &buffSize)
+{
+  // read and trim a line
+  CStdString strLine = buffPtr;
+  size_t lineEndIdx = strLine.find_first_of("\r\n\0");
+  if (lineEndIdx < (unsigned)buffSize)
+    buffPtr[lineEndIdx + 1] = '\0';
+  strLine = buffPtr;
+  strLine.TrimLeft(" \t");
+  strLine.TrimRight("\r\n");
+  if (lineEndIdx < (unsigned)buffSize)
+  {
+    buffPtr += lineEndIdx + 2;
+    buffSize -= lineEndIdx + 2;
+  }
+  return strLine;
+}
+
+bool CPlayListM3U::HandleRedirects(CDVDInputStream *inputStream, unsigned int bandwidth)
 {
   // we may be passed a playlist that does not contain playlists of different
   // bitrates (eg: this playlist is really the HLS video). So, default the
   // return to the filename so it can be played
-  char szLine[4096];
+  uint8_t *buffer = NULL;
+  char *buffPtr = NULL;
   CStdString strLine;
-  CStdString strPlaylist = strFileName;
-  size_t maxBandwidth = 0;
+  unsigned int maxBandwidth = 0;
+  bool redirected = false;
+  
+  if (!inputStream)
+    return redirected;
 
+  CURL url= CURL(inputStream->GetURL());
+  
   // if we cannot get the last / we wont be able to determine the sub-playlists
-  size_t baseEnd = strPlaylist.rfind('/');
-  if (baseEnd == std::string::npos)
-    return strPlaylist;
+  if (url.GetFileName().length() == 0)
+    return redirected;
 
   // store the base path (the path without the filename)
-  CStdString basePath = strPlaylist.substr(0, baseEnd + 1);
-
-  // open the file, and if it fails, return
-  CFile file;
-  if (!file.Open(strFileName) )
-  {
-    file.Close();
-    return strPlaylist;
-  }
+  std::string basePath = URIUtils::GetDirectory(url.GetFileName());
 
   // convert bandwidth specified in kbps to bps used by the m3u8
   bandwidth *= 1000;
-
-  while (file.ReadString(szLine, 1024))
-  {
-    // read and trim a line
-    strLine = szLine;
-    strLine.TrimRight(" \t\r\n");
-    strLine.TrimLeft(" \t");
-
-    // skip the first line
-    if (strLine == M3U_START_MARKER)
-        continue;
-    else if (strLine.Left(strlen(M3U_STREAM_MARKER)) == M3U_STREAM_MARKER)
+  buffer = new uint8_t[inputStream->GetLength() + 1];
+  
+  int buffSize = inputStream->Read(buffer, inputStream->GetLength());
+  if (buffSize > 0)
+  { 
+    buffer[buffSize + 1] = '\0';
+    buffPtr = (char *)buffer;
+    while (buffSize > 0)
     {
-      // parse the line so we can pull out the bandwidth
-      std::map< CStdString, CStdString > params = ParseStreamLine(strLine);
-      std::map< CStdString, CStdString >::iterator it = params.find(M3U_BANDWIDTH_MARKER);
+      strLine = readNextLineFromBuffer(buffPtr, buffSize);
 
-      if (it != params.end())
+      // skip the first line
+      if (strLine == M3U_START_MARKER)
+          continue;
+      else if (strLine.Left(strlen(M3U_STREAM_MARKER)) == M3U_STREAM_MARKER)
       {
-        size_t streamBandwidth = atoi(it->second.c_str());
-        if ((maxBandwidth < streamBandwidth) && (streamBandwidth <= bandwidth))
+        // parse the line so we can pull out the bandwidth
+        std::map< CStdString, CStdString > params = ParseStreamLine(strLine);
+        std::map< CStdString, CStdString >::iterator it = params.find(M3U_BANDWIDTH_MARKER);
+
+        if (it != params.end())
         {
-          // read the next line
-          if (!file.ReadString(szLine, 1024))
-            continue;
+          unsigned int streamBandwidth = atoi(it->second.c_str());
+          if ((maxBandwidth < streamBandwidth) && (streamBandwidth <= bandwidth))
+          {
+            // read the next line
+            if (buffSize <= 0)
+              continue;
 
-          strLine = szLine;
-          strLine.TrimRight(" \t\r\n");
-          strLine.TrimLeft(" \t");
+            strLine = readNextLineFromBuffer(buffPtr, buffSize);
 
-          // this line was empty
-          if (strLine.empty())
-            continue;
+            // this line was empty
+            if (strLine.empty())
+              continue;
 
-          // store the max bandwidth
-          maxBandwidth = streamBandwidth;
+            // store the max bandwidth
+            maxBandwidth = streamBandwidth;
+            redirected = true;
 
-          // if the path is absolute just use it
-          if (CURL::IsFullPath(strLine))
-            strPlaylist = strLine;
-          else
-            strPlaylist = basePath + strLine;
+            // if the path is absolute just use it
+            if (CURL::IsFullPath(strLine))
+            {
+              CURL tmpUrl = CURL(strLine);
+              url.SetHostName(tmpUrl.GetHostName());
+              url.SetFileName(tmpUrl.GetFileName());
+            }
+            else
+              url.SetFileName(URIUtils::AddFileToFolder(basePath, strLine));
+          }
         }
       }
     }
   }
+  delete [] buffer;
 
-  CLog::Log(LOGINFO, "Auto-selecting %s based on configured bandwidth.", strPlaylist.c_str());
+  if (!redirected)
+    inputStream->Seek(0, SEEK_SET);
+  else 
+  {
+    CLog::Log(LOGINFO, "Auto-selecting %s based on configured bandwidth.", url.Get().c_str());
+    inputStream->Open(url.Get(), "");
+  }
 
-  return strPlaylist;
+  return redirected;
 }
 
 std::map< CStdString, CStdString > CPlayListM3U::ParseStreamLine(const CStdString &streamLine)

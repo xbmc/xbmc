@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,27 +18,14 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#include "utils/StdString.h"
-
-class CFileItem;
+#include <string>
 class CDVDInputStream;
 
 namespace PLAYLIST
 {
-  class CPlayList;
-
-  class CPlayListFactory
+  class CPlayListMov
   {
   public:
-    static CPlayList* Create(const CStdString& filename);
-    static CPlayList* Create(const CFileItem& item);
-    static bool IsPlaylist(const CStdString& filename);
-    static bool IsPlaylist(const CFileItem& item);
-    
-    // if the input stream points to some sort of playlist with bandwidth information
-    // this method will redirect the inputstream to the best fit (e.x. m3u8 or mov reference playlist)
-    // the inputStream has to be opened already for this method!
     static bool HandleRedirects(CDVDInputStream *inputStream, unsigned int bandwidth);
   };
 }

@@ -20,6 +20,8 @@
  */
 #include "PlayList.h"
 
+class CDVDInputStream;
+
 namespace PLAYLIST
 {
 class CPlayListM3U :
@@ -31,7 +33,7 @@ public:
   virtual bool Load(const CStdString& strFileName);
   virtual void Save(const CStdString& strFileName) const;
 
-  static CStdString GetBestBandwidthStream(const CStdString &strFileName, size_t bandwidth);
+  static bool HandleRedirects(CDVDInputStream *inputStream, unsigned int bandwidth);
 
 protected:
 
