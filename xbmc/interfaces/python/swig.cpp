@@ -197,23 +197,23 @@ namespace PythonBindings
     SetMessage("%s",msg.c_str());
   }
 
-  XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* expectedType, 
+  XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonObj, const TypeInfo* typeInfo, const char* expectedType, 
                               const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException)
   {
-    if (pythonType == NULL || pythonType->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
+    if (pythonObj->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
       throw XBMCAddon::WrongTypeException("Non api type passed to \"%s\" in place of the expected type \"%s.\"",
                                           methodNameForErrorString, expectedType);
     if (!isParameterRightType(typeInfo->swigType,expectedType,methodNamespacePrefix))
     {
       // maybe it's a child class
       if (typeInfo->parentType)
-        return doretrieveApiInstance(pythonType, typeInfo->parentType,expectedType, 
+        return doretrieveApiInstance(pythonObj, typeInfo->parentType,expectedType, 
                                      methodNamespacePrefix, methodNameForErrorString);
       else
         throw XBMCAddon::WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\" but received a \"%s\"",
                                  methodNameForErrorString,expectedType,typeInfo->swigType);
     }
-    return ((PyHolder*)pythonType)->pSelf;
+    return ((PyHolder*)pythonObj)->pSelf;
   }
 
   /**

@@ -64,20 +64,20 @@ namespace PythonBindings
    *
    * Since the calls to this are generated there's no NULL pointer checks
    */
-  inline XBMCAddon::AddonClass* retrieveApiInstance(PyObject* pythonType, const TypeInfo* typeToCheck, 
+  inline XBMCAddon::AddonClass* retrieveApiInstance(PyObject* pythonObj, const TypeInfo* typeToCheck, 
                                    const char* methodNameForErrorString, 
                                    const char* typenameForErrorString) throw (XBMCAddon::WrongTypeException)
   {
-    if (pythonType == NULL || ((PyHolder*)pythonType)->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
+    if (pythonObj == NULL || pythonObj == Py_None)
       return NULL;
-    if (!PyObject_TypeCheck(pythonType, (PyTypeObject*)(&(typeToCheck->pythonType))))
+    if (((PyHolder*)pythonObj)->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER || !PyObject_TypeCheck(pythonObj, (PyTypeObject*)(&(typeToCheck->pythonType))))
       throw XBMCAddon::WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\".",methodNameForErrorString,typenameForErrorString);
-    return ((PyHolder*)pythonType)->pSelf;
+    return ((PyHolder*)pythonObj)->pSelf;
   }
 
   bool isParameterRightType(const char* passedType, const char* expectedType, const char* methodNamespacePrefix, bool tryReverse = true);
 
-  XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* expectedType, 
+  XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonObj, const TypeInfo* typeInfo, const char* expectedType, 
                               const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException);
 
   /**
@@ -85,12 +85,15 @@ namespace PythonBindings
    * be cast to the appropriate type.
    *
    * Since the calls to this are generated there's no NULL pointer checks
+   *
+   * This method will return NULL if either the pythonObj is NULL or the 
+   * pythonObj is Py_None.
    */
-  inline XBMCAddon::AddonClass* retrieveApiInstance(const PyObject* pythonType, const char* expectedType, const char* methodNamespacePrefix,
+  inline XBMCAddon::AddonClass* retrieveApiInstance(const PyObject* pythonObj, const char* expectedType, const char* methodNamespacePrefix,
                                    const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException)
   {
-    return (pythonType == NULL) ? NULL :
-      doretrieveApiInstance(((PyHolder*)pythonType),((PyHolder*)pythonType)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
+    return (pythonObj == NULL || pythonObj == Py_None) ? NULL :
+      doretrieveApiInstance(((PyHolder*)pythonObj),((PyHolder*)pythonObj)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
   }
 
   /**
