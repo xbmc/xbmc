@@ -1,4 +1,4 @@
-include ....//Makefile.include.in
+include ../../Makefile.include.in
 PREFIX=$(CURDIR)/../../pre-build-deps
 PLATFORM=native
 TARBALLS_LOCATION=$(PREFIX)
