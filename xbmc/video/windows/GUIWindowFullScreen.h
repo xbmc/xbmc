@@ -91,8 +91,4 @@ private:
 
   CCriticalSection m_fontLock;
   CGUITextLayout* m_subsLayout;
-
-  /* PLEX */
-  bool m_osdCloseOnPlay;
-  /* END PLEX */
 };

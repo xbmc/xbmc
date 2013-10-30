@@ -66,7 +66,6 @@
 /* PLEX */
 #include "PlexApplication.h"
 #include "Client/PlexServerManager.h"
-#include "video/dialogs/GUIDialogVideoOSD.h"
 /* END PLEX */
 
 using namespace PVR;
@@ -124,12 +123,6 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   // subtitles
   //  - delay
   //  - language
-
-
-  /* PLEX */
-  m_osdCloseOnPlay = false;
-  /* END PLEX */
-
 }
 
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
@@ -172,17 +165,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_PLAYER_PLAY:
   case ACTION_PAUSE:
-      /* PLEX */
-
-      // first we need to show the OSD, we do this by sending this message and not waiting for response, otherwise
-      // we will block when showing the OSD.
-      CApplicationMessenger::Get().SendAction(CAction(ACTION_SHOW_OSD), WINDOW_FULLSCREEN_VIDEO, false);
-      m_osdCloseOnPlay = true;
-
-      // Now forward the action to WINDOW_INVALID == CApplication that will actually pause the video
-//      CApplicationMessenger::Get().SendAction(action, WINDOW_INVALID, false);
-      /* END PLEX */
-
       if (m_timeCodePosition > 0)
       {
         SeekToTimeCodeStamp(SEEK_ABSOLUTE);
@@ -1326,10 +1308,6 @@ void CGUIWindowFullScreen::ToggleOSD()
   CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
   if (pOSD)
   {
-    /* PLEX */
-    pOSD->SetCloseOnPlay(m_osdCloseOnPlay);
-    m_osdCloseOnPlay = false;
-    /* END PLEX */
     if (pOSD->IsDialogRunning())
       pOSD->Close();
     else
