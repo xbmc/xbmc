@@ -73,6 +73,7 @@ using namespace std;
 #define CONTRL_BTN_LEVELS               20
 
 #define RESET_SETTING_ID                "settings.reset"
+#define EMPTY_CATEGORY_ID               "categories.empty"
 
 typedef struct {
   int id;
@@ -96,6 +97,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
       m_settings(CSettings::Get()),
       m_iSetting(0), m_iCategory(0), m_iSection(0),
       m_resetSetting(NULL),
+      m_dummyCategory(NULL),
       m_pOriginalSpin(NULL),
       m_pOriginalRadioButton(NULL),
       m_pOriginalCategoryButton(NULL),
@@ -132,6 +134,7 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
   }
 
   delete m_resetSetting;
+  delete m_dummyCategory;
 }
 
 bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
@@ -152,6 +155,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       m_resetSetting->SetLabel(10041);
       m_resetSetting->SetHelp(10045);
 
+      m_dummyCategory = new CSettingCategory(EMPTY_CATEGORY_ID);
+      m_dummyCategory->SetLabel(10046);
+      m_dummyCategory->SetHelp(10047);
       
       m_iSection = (int)message.GetParam2() - (int)CGUIWindow::GetID();
       CGUIWindow::OnMessage(message);
@@ -461,6 +467,8 @@ void CGUIWindowSettingsCategory::SetupControls(bool createSettings /* = true */)
 
   // get the categories we need
   m_categories = section->GetCategories(CViewStateSettings::Get().GetSettingLevel());
+  if (m_categories.empty())
+    m_categories.push_back(m_dummyCategory);
 
   // go through the categories and create the necessary buttons
   int buttonIdOffset = 0;

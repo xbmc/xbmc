@@ -90,6 +90,7 @@ protected:
   int m_iCategory;
   int m_iSection;
   CSettingAction *m_resetSetting;
+  CSettingCategory *m_dummyCategory;
   
   CGUISpinControlEx *m_pOriginalSpin;
   CGUIRadioButtonControl *m_pOriginalRadioButton;

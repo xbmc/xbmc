@@ -4204,7 +4204,17 @@ msgctxt "#10045"
 msgid "Resets all the visible settings to their default values."
 msgstr ""
 
-#empty strings from id 10046 to 10099
+#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+msgctxt "#10046"
+msgid "No categories available"
+msgstr ""
+
+#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr ""
+
+#empty strings from id 10048 to 10099
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10100"
