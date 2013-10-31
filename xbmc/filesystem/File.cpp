@@ -809,6 +809,21 @@ int CFile::GetChunkSize()
     return m_pFile->GetChunkSize();
   return 0;
 }
+
+std::string CFile::GetContentMimeType(void)
+{
+  if (!m_pFile)
+    return "";
+  return m_pFile->GetContent();
+}
+
+std::string CFile::GetContentCharset(void)
+{
+  if (!m_pFile)
+    return "";
+  return m_pFile->GetContentCharset();
+}
+
 //*********************************************************************************************
 //*************** Stream IO for CFile objects *************************************************
 //*********************************************************************************************

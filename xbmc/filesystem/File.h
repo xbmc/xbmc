@@ -87,6 +87,8 @@ public:
   int64_t GetLength();
   void Close();
   int GetChunkSize();
+  std::string GetContentMimeType(void);
+  std::string GetContentCharset(void);
 
   // will return a size, that is aligned to chunk size
   // but always greater or equal to the file's chunk size
