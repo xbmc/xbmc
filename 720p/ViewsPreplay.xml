@@ -702,7 +702,7 @@
 				<control type="label">
 					<width>600</width>
 					<height>25</height>
-					<label>$LOCALIZE[31141] $INFO[ListItem.Season]$INFO[ListItem.Date, &#xB7; ]</label>
+					<label>$LOCALIZE[31141] $INFO[ListItem.Season] &#xB7; $LOCALIZE[31114] $INFO[ListItem.Episode]$INFO[ListItem.Date, &#xB7; ]</label>
 					<font>Condensed-18</font>
 					<textcolor>white</textcolor>
 					<visible>true</visible>
