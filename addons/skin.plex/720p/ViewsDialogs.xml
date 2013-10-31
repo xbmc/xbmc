@@ -390,6 +390,10 @@
 				<control type="radiobutton" id="19021">
 					<include>leftSubMenuRadioButton</include>
 				</control>
+				<!-- Used for Clear Filters -->
+				<control type="button" id="19022">
+					<include>leftMenuFormat</include>
+				</control>
 				<control type="scrollbar" id="61">
 					<description>Scroll Bar</description>
 					<posx>227</posx>

@@ -43,21 +43,6 @@
 		<align>right</align>
 	</include>
 	<include name="ListArrow">
-		<!-- top & bottom lists -->
-		<control type="image">
-			<!--><posy>330</posy>-->
-			<posy>330</posy>
-			<posx>391</posx>
-			<texture background="true">arrow-big.png</texture>
-			<colordiffuse>orange</colordiffuse>
-			<animation effect="fade" start="0" end="100" time="600" condition="true">Visible</animation>
-			<animation effect="fade" start="100" end="0" time="100" condition="true">Hidden</animation>
-			<visible>[Control.HasFocus(11000) + Control.IsVisible(11001)] | [Control.HasFocus(11001) + Control.IsVisible(11000)] | [Control.HasFocus(11003) + Control.IsVisible(11004)] | [Control.HasFocus(11004) + Control.IsVisible(11003)]</visible>
-			<animation effect="slide" start="0,0" end="0,220" time="200" reversible="false" tween="quadratic" easing="out" condition="Control.HasFocus(11000) | Control.HasFocus(11003)">Conditional</animation>
-			<animation effect="slide" start="0,220" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Control.HasFocus(11001) | Control.HasFocus(11004)">Conditional</animation>
-			<animation effect="slide" start="0,0" end="0,110" time="200" reversible="false" tween="quadratic" easing="out" condition="[Control.HasFocus(11000) + !Control.IsVisible(11001)] | [Control.HasFocus(11001) + !Control.IsVisible(11000)]">Conditional</animation>
-		</control>
-		<!-- alone -->
 		<control type="image">
 			<posy>-123</posy>
 			<posx>0</posx>
@@ -65,7 +50,7 @@
 			<colordiffuse>orange</colordiffuse>
 			<animation effect="fade" start="0" end="100" time="200" condition="true">Visible</animation>
 			<animation effect="fade" start="100" end="0" time="100" condition="true">Hidden</animation>
-			<visible>[Control.HasFocus(11000) + !Control.IsVisible(11001)] | [Control.HasFocus(11001) + !Control.IsVisible(11000)] | [Control.HasFocus(11002) | Control.HasFocus(11003) | Control.HasFocus(11004)]</visible>
+			<visible>ControlGroup(5000).HasFocus + !Control.IsVisible(999)</visible>
 		</control>
 	</include>
 	<include name="ListItemTitle1">
@@ -99,22 +84,23 @@
 	<!-- specific variables -->
 	<!-- variables for HomeListItemFullInfo -->
 	<include name="ShowHomeFullInfo">
-		<visible>[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode) | Container(11000).ListItem.Type(season)]] | [ControlGroup(7002).HasFocus + [Container(11001).ListItem.Type(movie) | Container(11001).ListItem.Type(episode)]]</visible>
+		<visible>[Control.HasFocus(11001) + Control.IsVisible(11000)] | [Control.HasFocus(11003) + Control.IsVisible(11004)] | [Control.HasFocus(11000) + Control.IsVisible(11001)] | [Control.HasFocus(11004) + Control.IsVisible(11003)] | [Control.HasFocus(11000) + !Control.IsVisible(11001) + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [Control.HasFocus(11001) + !Control.IsVisible(11000)] | [Control.HasFocus(11003) + !Control.IsVisible(11004)] | [Control.HasFocus(11004) + !Control.IsVisible(11003)]</visible>
 	</include>
 	<include name="ShowHomeClassic">
-		<visible>[ControlGroup(7001).HasFocus + ![Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [ControlGroup(7002).HasFocus + ![Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | ControlGroup(7003).HasFocus | ControlGroup(7004).HasFocus | ControlGroup(7005).HasFocus</visible>
+		<!-- show the menu title when no full info available -->
+		<visible>ControlGroup(5000).HasFocus + !Control.IsVisible(999)</visible>
 	</include>
 	<variable name="HomeListItemFullInfoTitle">
 		<!-- on deck -->
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">$INFO[Container(11001).ListItem.TVShowTitle]</value>
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.Title]</value>
 		<!-- recently added -->
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(season)">$INFO[Container(11000).ListItem.TVShowTitle]</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">$INFO[Container(11000).ListItem.TVShowTitle]</value>
-		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(photo) | Container(11000).ListItem.Type(clip)]">$INFO[Container(11000).ListItem.Title]</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album)">$INFO[Container(11000).ListItem.Artist]</value>
+		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(season) | Container(11000).ListItem.Type(episode)]">$INFO[Container(11000).ListItem.TVShowTitle]</value>
+		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(clip)]">$INFO[Container(11000).ListItem.Title]</value>
 		<!-- queue -->
-		<!--><value condition="ControlGroup(7003).HasFocus + [Container(11003).ListItem.Type(clip) | Container(11003).ListItem.Type(movie)]">$INFO[Container(11003).ListItem.Title]</value>-->
+		<value condition="ControlGroup(7003).HasFocus">$INFO[Container(11003).ListItem.Title]</value>
+		<!-- recommended -->
+		<value condition="ControlGroup(7005).HasFocus">$INFO[Container(11004).ListItem.Title]</value>
 		<!--><value>No title available (debug).</value>-->
 	</variable>
 	<variable name="HomeListItemFullInfoSecondTitle">
@@ -127,8 +113,9 @@
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">$INFO[Container(11000).ListItem.DurationStr] &#xB7; $INFO[Container(11000).ListItem.Year]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album)">$INFO[Container(11000).ListItem.Title]</value>
 		<!-- queue -->
-		<!--><value condition="ControlGroup(7003).HasFocus + [Container(11003).ListItem.Type(clip) | Container(11003).ListItem.Type(movie)]">$INFO[Container(11003).ListItem.Property(sourceTitle)]</value>-->
-		<!--><value>No second title available (debug).</value>-->
+		<value condition="ControlGroup(7003).HasFocus]">$INFO[Container(11003).ListItem.DurationStr]</value>
+		<!-- recommended -->
+		<value condition="ControlGroup(7005).HasFocus]">$INFO[Container(11004).ListItem.DurationStr]</value>
 	</variable>
 	<variable name="HomeListItemFullInfoThirdTitle">
 		<!-- on deck -->
@@ -140,7 +127,10 @@
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">[UPPERCASE]$INFO[Container(11000).ListItem.Genre][/UPPERCASE]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album) + !IsEmpty(Container(11000).ListItem.Album)">$INFO[Container(11000).ListItem.Album]</value>
 		<!-- queue -->
-		<!--><value condition="ControlGroup(7003).HasFocus + [Container(11003).ListItem.Type(clip) | Container(11003).ListItem.Type(movie)]">$INFO[Container(11003).ListItem.DurationStr]</value>-->
+		<value condition="ControlGroup(7003).HasFocus]">$INFO[Container(11003).ListItem.Property(sourceTitle)]</value>
+		<!-- recommended -->
+		<value condition="ControlGroup(7005).HasFocus]">$INFO[Container(11004).ListItem.Property(Recommender)] &#xB7; $INFO[Container(11004).ListItem.Property(sourceTitle)]</value>
+		<!--><value>No second title available (debug).</value>-->
 		<!--><value>No third title available (debug).</value>-->
 	</variable>
 	<variable name="HomeListItemFullInfoPlot">
@@ -150,6 +140,10 @@
 		<value condition="[ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)] + [[Container(11001).ListItem.Status(UnWatched) + Skin.HasSetting(HidePlotForUnwatched)] | [Container(11001).ListItem.Status(InProgress) + Skin.HasSetting(HidePlotForUnwatched)]]">* Plot hidden to avoid spoilers *</value>
 		<!-- recently added -->
 		<value condition="ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem.Plot)">$INFO[Container(11000).ListItem.Plot]</value>
+		<!-- queue -->
+		<value condition="ControlGroup(7003).HasFocus]">$INFO[Container(11003).ListItem.Plot]</value>
+		<!-- recommended -->
+		<value condition="ControlGroup(7005).HasFocus]">$INFO[Container(11004).ListItem.Plot]</value>
 		<!--><value>No plot available (debug).</value>-->
 	</variable>
 	<include name="HomeListItemFullInfoFlags">
@@ -214,6 +208,10 @@
 			</control>
 		</control>
 	</include>
+	<!-- HomeListItemFullInfo slide animation -->
+	<include name="HomeListItemFullInfoSlide">
+		<animation effect="slide" start="0" end="391" time="400" tween="out" condition="true">Visible</animation>
+	</include>
 	<!-- HomeListItemFullInfo -->
 	<include name="HomeListItemFullInfo">
 		<control type="group">
@@ -258,7 +256,24 @@
 						<visible>true</visible>
 					</control>
 					<!-- arrow -->
-					<include>ListArrow</include>
+					<control type="image">
+						<posy>440</posy>
+						<posx>391</posx>
+						<texture background="true">arrow-big.png</texture>
+						<colordiffuse>orange</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="500" delay="100" condition="true">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="100" condition="true">Hidden</animation>
+						<!-- top on deck -->
+						<animation effect="slide" start="0,110" end="0,-110" time="300" reversible="false" tween="quadratic" easing="out" condition="[Control.HasFocus(11001) + Control.IsVisible(11000)]">Conditional</animation>
+						<!-- top queue -->
+						<animation effect="slide" start="0,110" end="0,-135" time="300" reversible="false" tween="quadratic" easing="out" condition="[Control.HasFocus(11003) + Control.IsVisible(11004)]">Conditional</animation>
+						<!-- bottom recently added -->
+						<animation effect="slide" start="0,0" end="0,110" time="300" reversible="false" tween="quadratic" easing="out" condition="[Control.HasFocus(11000) + Control.IsVisible(11001)]">Conditional</animation>
+						<!-- bottom recommended -->
+						<animation effect="slide" start="0,0" end="0,85" time="300" reversible="false" tween="quadratic" easing="out" condition="[Control.HasFocus(11004) + Control.IsVisible(11003)]">Conditional</animation>
+						<!-- middle -->
+						<animation effect="slide" start="0,0" end="0,0" time="0" reversible="false" tween="quadratic" easing="out" condition="[Control.HasFocus(11000) + !Control.IsVisible(11001)] | [Control.HasFocus(11001) + !Control.IsVisible(11000)] | [Control.HasFocus(11003) + !Control.IsVisible(11004)] | [Control.HasFocus(11004) + !Control.IsVisible(11003)]">Conditional</animation>
+					</control>
 					<!-- thumb -->
 					<control type="group">
 						<posy>-30</posy>
@@ -328,24 +343,33 @@
 								<visible>Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(season)</visible>
 							</control>
 						</control>
-						<!-- queue -->
-						<!--><control type="group">
-					<visible>ControlGroup(7003).HasFocus</visible>
-					<control type="image">
-						<posy>47</posy>
-						<posx>34</posx>
-						<width>321</width>
-						<height>183</height>
-						<include>BorderBlack</include>
-					</control>
-				<control type="image">
-					<include>PosListItem</include>
-					<width>315</width>
-					<height>177</height>
-					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-					<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11003).ListItem.Art(thumb)]</texture>
-				</control>
-				</control>-->
+						<!-- queue & recommended -->
+						<control type="group">
+							<visible>ControlGroup(7003).HasFocus | ControlGroup(7005).HasFocus</visible>
+							<control type="image">
+								<posy>47</posy>
+								<posx>34</posx>
+								<width>321</width>
+								<height>183</height>
+								<include>BorderBlack</include>
+							</control>
+							<control type="image">
+								<include>PosListItem</include>
+								<width>356</width>
+								<height>208</height>
+								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11003).ListItem.Art(thumb)]</texture>
+								<visible>ControlGroup(7003).HasFocus</visible>
+							</control>
+							<control type="image">
+								<include>PosListItem</include>
+								<width>356</width>
+								<height>208</height>
+								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11004).ListItem.Art(thumb)]</texture>
+								<visible>ControlGroup(7005).HasFocus</visible>
+							</control>
+						</control>
 					</control>
 					<!-- infos -->
 					<control type="group">
@@ -386,7 +410,7 @@
 						<control type="image">
 							<posy>38</posy>
 							<posx>970r</posx>
-							<width>60</width>
+							<width>50</width>
 							<height>24</height>
 							<texture>$INFO[Container(11001).Listitem.Art(mediaTag::contentRating)]</texture>
 							<aspectratio align="right" aligny="bottom">keep</aspectratio>
@@ -396,7 +420,7 @@
 						<control type="image">
 							<posy>38</posy>
 							<posx>970r</posx>
-							<width>60</width>
+							<width>50</width>
 							<height>24</height>
 							<texture>$INFO[Container(11000).Listitem.Art(mediaTag::contentRating)]</texture>
 							<aspectratio align="right" aligny="bottom">keep</aspectratio>
@@ -451,10 +475,6 @@
 				</control>
 			</control>
 		</control>
-	</include>
-	<!-- HomeListItemFullInfo slide animation -->
-	<include name="HomeListItemFullInfoSlide">
-		<animation effect="slide" start="0" end="391" time="400" tween="out" condition="[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode) | Container(11000).ListItem.Type(season)]]] | [ControlGroup(7002).HasFocus + [Container(11001).ListItem.Type(movie) | Container(11001).ListItem.Type(episode)]]">Conditional</animation>
 	</include>
 	<!-- Poster Items -->
 	<include name="ListItemPoster">
@@ -775,6 +795,17 @@
 			<textcolor>FF999999</textcolor>
 			<label>$INFO[ListItem.Property(Recommender)] - $INFO[ListItem.Property(sourceTitle)]</label>
 		</control>
+	</include>
+	<include name="ListItemWideDimmer">
+		<posx>37</posx>
+		<posy>50</posy>
+		<width>196</width>
+		<height>116</height>
+		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+		<texture diffuse="mask-clip-small.png" background="true">mask-clip-small.png</texture>
+		<colordiffuse>FF000000</colordiffuse>
+		<animation effect="fade" start="0" end="50" time="400" condition="true">Visible</animation>
+		<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 	</include>
 	<!-- lists -->
 	<include name="HomeLists">
@@ -1417,20 +1448,24 @@
 						<onup>300</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
-						<posx>-14</posx>
+						<posx>-12</posx>
 						<posy>131</posy>
 						<width>880</width>
 						<height>500</height>
-						<itemlayout width="216" height="230">
+						<itemlayout width="211" height="230">
 							<!-- when both lists are visible -->
 							<control type="group">
 								<visible>Control.IsVisible(11004)</visible>
-								<posy>0</posy>
+								<posy>-10</posy>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>
 								<include>ListItemWideTitleProvider</include>
 								<include>ListItemWideTitle</include>
+								<control type="image">
+									<visible>ControlGroup(7005).HasFocus</visible>
+									<include>ListItemWideDimmer</include>
+								</control>
 							</control>
 							<!-- when only this list is visible -->
 							<control type="group">
@@ -1443,11 +1478,11 @@
 								<include>ListItemWideTitle</include>
 							</control>
 						</itemlayout>
-						<focusedlayout width="216" height="230">
+						<focusedlayout width="211" height="230">
 							<!-- when both lists are visible -->
 							<control type="group">
 								<visible>Control.IsVisible(11004)</visible>
-								<posy>0</posy>
+								<posy>-10</posy>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>
@@ -1491,20 +1526,24 @@
 						<onup>7003</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
-						<posx>-14</posx>
+						<posx>-12</posx>
 						<posy>0</posy>
 						<width>880</width>
 						<height>400</height>
-						<itemlayout width="216" height="230">
+						<itemlayout width="211" height="230">
 							<!-- when both lists are visible -->
 							<control type="group">
 								<visible>Control.IsVisible(11003)</visible>
-								<posy>100</posy>
+								<posy>102</posy>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>
 								<include>ListItemWideTitleProvider</include>
 								<include>ListItemWideTitle</include>
+								<control type="image">
+									<visible>ControlGroup(7003).HasFocus</visible>
+									<include>ListItemWideDimmer</include>
+								</control>
 							</control>
 							<!-- when only this list is visible -->
 							<control type="group">
@@ -1517,11 +1556,11 @@
 								<include>ListItemWideTitle</include>
 							</control>
 						</itemlayout>
-						<focusedlayout width="216" height="230">
+						<focusedlayout width="211" height="230">
 							<!-- when both lists are visible -->
 							<control type="group">
 								<visible>Control.IsVisible(11003)</visible>
-								<posy>100</posy>
+								<posy>102</posy>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>

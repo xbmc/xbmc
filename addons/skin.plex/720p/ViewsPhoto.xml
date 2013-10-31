@@ -182,22 +182,30 @@
 	<include name="PlotLibrary">
 		<control type="group">
 			<!-- dummy plot -->
-			<control type="textbox">
+			<!--><control type="textbox">
 				<posx>100</posx>
 				<posy>410</posy>
 				<width>430</width>
 				<height>205</height>
 				<include>Plot</include>
 				<visible>IsEmpty(Container.ShowPlot)</visible>
-			</control>
+			</control>-->
 			<!-- plot -->
 			<control type="textbox">
 				<posx>100</posx>
 				<posy>410</posy>
 				<width>430</width>
 				<height>205</height>
-				<include>Plot</include>
-				<label>$INFO[Container.ShowPlot]</label>
+				<include>PlotFormat</include>
+				<label>$INFO[ListItem.Plot]</label>
+			</control>
+			<control type="textbox">
+				<posx>100</posx>
+				<posy>410</posy>
+				<width>430</width>
+				<height>205</height>
+				<include>PlotFormat</include>
+				<label>$INFO[ListItem.Property(summary)]</label>
 			</control>
 		</control>
 	</include>
@@ -222,10 +230,10 @@
 					<onleft>1300</onleft>
 					<orientation>vertical</orientation>
 					<posx>573</posx>
-					<posy>28</posy>
+					<posy>15</posy>
 					<width>700</width>
-					<height>657</height>
-					<itemlayout width="136" height="163">						
+					<height>690</height>
+					<itemlayout width="136" height="171">						
 						<include>PhotoThumbCard</include>
 						<include>PhotoThumb</include>						
 						<control type="label">
@@ -233,7 +241,7 @@
 							<textcolor>white</textcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout width="136" height="163">
+					<focusedlayout width="136" height="171">
 						<include>PhotoThumbCard</include>
 						<include>PhotoThumb</include>						
 						<control type="label">

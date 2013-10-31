@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.plex" version="2.0" name="Plex" provider-name="Sebastian Pitkanen, Plex Inc.">
+<addon id="skin.plex" version="1.0" name="Plex" provider-name="Sebastian Pitkanen, Plex Inc.">
 	<requires>
-		<import addon="xbmc.gui" version="3.01"/>
+		<import addon="xbmc.gui" version="4.0.0"/>
 	</requires>
 	<extension  point="xbmc.gui.skin" defaultthemename="Textures.xbt" effectslowdown="0.75" debugging="false"/>
 	<extension point="xbmc.addon.metadata">
@@ -9,5 +9,8 @@
 		<description lang="en">"Plex" is the default skin for Plex.</description>
 		<disclaimer lang="en">"Plex" is the default skin for Plex, removing it may cause issues.</disclaimer>
 		<platform>all</platform>
+		<website>www.plexapp.com</website>
+		<forum>forums.plexapp.com</forum>
+		<email>contact@plexapp.com</email>
 	</extension>
 </addon>
