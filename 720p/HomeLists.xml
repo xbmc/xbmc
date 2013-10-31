@@ -416,7 +416,7 @@
 						<control type="image">
 							<posy>38</posy>
 							<posx>970r</posx>
-							<width>60</width>
+							<width>50</width>
 							<height>24</height>
 							<texture>$INFO[Container(11000).Listitem.Art(mediaTag::contentRating)]</texture>
 							<aspectratio align="right" aligny="bottom">keep</aspectratio>
