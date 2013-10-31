@@ -716,16 +716,6 @@
 			<control type="group">
 				<posx>100</posx>
 				<posy>40</posy>
-				<!--><control type="image">
-					<texture>arrow-big.png</texture>
-					<colordiffuse>orange</colordiffuse>
-					<visible>Control.HasFocus(997)</visible>
-				</control>
-				<control type="image">
-					<texture>arrow-big.png</texture>
-					<animation effect="fade" time="300" start="0" end="30" condition="true">Conditional</animation>
-					<visible>!Control.HasFocus(997)</visible>
-				</control>-->
 				<control type="group">
 					<posy>13</posy>
 					<posx>45</posx>

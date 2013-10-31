@@ -11,12 +11,12 @@
 		<!-- settings menu (left) -->
 		<control type="group" id="302">
 			<control type="list" id="101">
-				<posy>215</posy>
+				<posy>135</posy>
 				<posx>120</posx>
 				<width>350</width>
 				<onup>1000</onup>
 				<ondown>101</ondown>
-				<onleft>101</onleft>
+				<onleft>997</onleft>
 				<onright>5</onright>
 				<height>500</height>
 				<scrolltime>200</scrolltime>
@@ -124,10 +124,10 @@
 		<!-- Main control area -->
 		<control type="group" id="5">
 			<posx>400</posx>
-			<posy>150</posy>
+			<posy>135</posy>
 			<!-- General Options -->
 			<control type="grouplist" id="201">
-				<posy>65</posy>
+				<posy>0</posy>
 				<posx>105</posx>
 				<width>625</width>
 				<height>400</height>
@@ -280,7 +280,11 @@
 				<posy>60</posy>
 			</control>
 		</control>
-		<!-- Widgets -->
-		<include>Clock</include>
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
+		<include>LeftSideMenuSettings</include>
+		<!--<include>TopBar</include>-->
+		<include>debugInfos</include>
+		<include>Grid</include>
+		<include>WindowFade</include>
 	</controls>
 </window>

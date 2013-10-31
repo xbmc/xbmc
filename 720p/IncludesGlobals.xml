@@ -215,6 +215,7 @@
 		<value condition="Window.IsActive(picturessettings)">$LOCALIZE[31606] $LOCALIZE[31003]</value>
 		<value condition="Window.IsActive(systemsettings)">$LOCALIZE[31606] $LOCALIZE[31006]</value>
 		<value condition="Window.IsActive(networksettings)">$LOCALIZE[31606] $LOCALIZE[31602]</value>
+		<value condition="Window.IsActive(skinsettings)">$LOCALIZE[31606] $LOCALIZE[31603]</value>
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<include name="TopBar">
