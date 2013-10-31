@@ -1049,6 +1049,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     {
       (*it)->SetConverted(false);
     }
+    m_sounds_playing.clear();
   }
 
   ClearDiscardedBuffers();
@@ -1809,14 +1810,9 @@ bool CActiveAE::RunStages()
               break;
             else
             {
-              int submitted = 0;
               int samples;
-              while(submitted < buf->pkt->nb_samples)
-              {
-                samples = std::min(512, buf->pkt->nb_samples-submitted);
-                m_audioCallback->OnAudioData((float*)(buf->pkt->data[0]+2*submitted), samples);
-                submitted += samples;
-              }
+              samples = std::min(512, buf->pkt->nb_samples);
+              m_audioCallback->OnAudioData((float*)(buf->pkt->data[0]), samples);
               buf->Return();
               m_vizBuffers->m_outputSamples.pop_front();
             }
