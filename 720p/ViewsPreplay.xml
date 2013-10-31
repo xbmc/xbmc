@@ -758,7 +758,7 @@
 			</control>
 			<!-- Director -->
 			<control type="grouplist">
-				<posy>238</posy>
+				<posy>268</posy>
 				<posx>560</posx>
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
@@ -768,21 +768,6 @@
 				</control>
 				<control type="label">
 					<label>$INFO[ListItem.Director]</label>
-					<include>LeftInfoFormatWhite</include>
-				</control>
-			</control>
-			<!-- Cast -->
-			<control type="grouplist">
-				<posy>268</posy>
-				<posx>560</posx>
-				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
-				<control type="label">
-					<label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>
-					<include>LeftInfoFormatGrey</include>
-				</control>
-				<control type="label">
-					<label>$INFO[ListItem.Cast]</label>
 					<include>LeftInfoFormatWhite</include>
 				</control>
 			</control>
