@@ -215,6 +215,7 @@ CPlexServerManager::UpdateReachability(bool force)
     return;
   }
 
+  m_updateRechabilityForced = force;
   m_reachabilityTestEvent.Reset();
 
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
@@ -267,7 +268,7 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
   }
   else
   {
-    if (m_bestServer==server)
+    if (m_bestServer == server)
       ClearBestServer();
     
     NotifyAboutServer(server, false);
@@ -278,7 +279,7 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
     CLog::Log(LOGINFO, "CPlexServerManager::ServerRechabilityDone All servers have done their thing. have a nice day now.");
     m_reachabilityTestEvent.Set();
 
-    if (!m_bestServer)
+    if (!m_bestServer && !m_updateRechabilityForced)
       UpdateReachability(true);
   }
   else

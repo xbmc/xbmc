@@ -75,6 +75,7 @@ private:
   PlexServerMap m_serverMap;
   
   CEvent m_reachabilityTestEvent;
+  bool m_updateRechabilityForced;
   
   std::map<CStdString, CPlexServerReachabilityThread*> m_reachabilityThreads;
 };
