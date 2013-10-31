@@ -15,14 +15,15 @@ using namespace XFILE;
 
 #define SECTION_REFRESH_INTERVAL 30 * 1000
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIORITY_NORMAL), m_stopped(false)
 {
   m_refreshTimer = new CTimer(this);
   m_refreshTimer->Start(SECTION_REFRESH_INTERVAL, true);
 }
 
-void
-CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
 {
   if (m_stopped)
     return;
@@ -39,6 +40,7 @@ CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServerDataLoader::RemoveServer(const CPlexServerPtr &server)
 {
   if (m_stopped)
@@ -72,8 +74,8 @@ void CPlexServerDataLoader::RemoveServer(const CPlexServerPtr &server)
   g_windowManager.SendThreadMessage(msg);
 }
 
-void
-CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CPlexServerDataLoaderJob *j = (CPlexServerDataLoaderJob*)job;
   if (success && !m_stopped)
@@ -103,8 +105,8 @@ CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job
   CJobQueue::OnJobComplete(jobID, success, job);
 }
 
-CFileItemListPtr
-CPlexServerDataLoader::GetSectionsForUUID(const CStdString &uuid)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemListPtr CPlexServerDataLoader::GetSectionsForUUID(const CStdString &uuid)
 {
   CSingleLock lk(m_dataLock);
 
@@ -118,8 +120,8 @@ CPlexServerDataLoader::GetSectionsForUUID(const CStdString &uuid)
   return CFileItemListPtr();
 }
 
-CFileItemListPtr
-CPlexServerDataLoader::GetChannelsForUUID(const CStdString &uuid)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemListPtr CPlexServerDataLoader::GetChannelsForUUID(const CStdString &uuid)
 {
   CSingleLock lk(m_dataLock);
   if (m_channelMap.find(uuid) != m_channelMap.end())
@@ -127,8 +129,8 @@ CPlexServerDataLoader::GetChannelsForUUID(const CStdString &uuid)
   return CFileItemListPtr();
 }
 
-CFileItemListPtr
-CPlexServerDataLoaderJob::FetchList(const CStdString& path)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemListPtr CPlexServerDataLoaderJob::FetchList(const CStdString& path)
 {
   CPlexDirectory dir;
   CURL url = m_server->BuildPlexURL(path);
@@ -141,8 +143,8 @@ CPlexServerDataLoaderJob::FetchList(const CStdString& path)
   return CFileItemListPtr();
 }
 
-bool
-CPlexServerDataLoaderJob::DoWork()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexServerDataLoaderJob::DoWork()
 {
   if (m_server->GetUUID() != "myplex")
   {
@@ -168,8 +170,8 @@ CPlexServerDataLoaderJob::DoWork()
   return true;
 }
 
-CFileItemListPtr
-CPlexServerDataLoader::GetAllSharedSections() const
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemListPtr CPlexServerDataLoader::GetAllSharedSections() const
 {
   CSingleLock lk(m_dataLock);
   CFileItemList* list = new CFileItemList;
@@ -188,8 +190,8 @@ CPlexServerDataLoader::GetAllSharedSections() const
   return CFileItemListPtr(list);
 }
 
-CFileItemListPtr
-CPlexServerDataLoader::GetAllSections() const
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemListPtr CPlexServerDataLoader::GetAllSections() const
 {
   CSingleLock lk(m_dataLock);
   CFileItemList* list = new CFileItemList;
@@ -214,6 +216,7 @@ CPlexServerDataLoader::GetAllSections() const
   return CFileItemListPtr(list);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CFileItemListPtr CPlexServerDataLoader::GetAllChannels() const
 {
   CSingleLock lk(m_dataLock);
@@ -228,6 +231,7 @@ CFileItemListPtr CPlexServerDataLoader::GetAllChannels() const
   return CFileItemListPtr(list);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServerDataLoader::OnTimeout()
 {
   CSingleLock lk(m_serverLock);
