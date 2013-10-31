@@ -156,13 +156,14 @@
 							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						</control>
 					</control>
-					<!-- plot text -->
+					<!-- plot text -->	
 					<control type="textbox">
 						<posx>95</posx>
 						<posy>412</posy>
 						<width>670</width>
 						<height>207</height>
-						<include>Plot</include>
+						<include>PlotFormat</include>
+						<label>$INFO[Container.Property(summary)]</label>
 					</control>
 				</control>
 				<!-- Infos Left -->
