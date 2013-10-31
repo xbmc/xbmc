@@ -18,6 +18,7 @@ CGUIDialogFilterSort::CGUIDialogFilterSort()
   : CGUIDialog(WINDOW_DIALOG_FILTER_SORT, "DialogFilters.xml")
 {
   m_loadType = LOAD_ON_GUI_INIT;
+  m_clearFilters = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,11 +44,6 @@ void CGUIDialogFilterSort::SetFilter(CPlexSecondaryFilterPtr filter, int filterB
     return;
   radioButton->SetVisible(false);
 
-  CGUIButtonControl* clearFilters = (CGUIRadioButtonControl*)GetControl(FILTER_SUBLIST_BUTTON);
-  if (!clearFilters)
-    return;
-  clearFilters->SetVisible(false);
-
   CGUILabelControl* headerLabel = (CGUILabelControl*)GetControl(FILTER_SUBLIST_LABEL);
   if (headerLabel)
     headerLabel->SetLabel(m_filter->getFilterTitle());
@@ -56,12 +52,18 @@ void CGUIDialogFilterSort::SetFilter(CPlexSecondaryFilterPtr filter, int filterB
 
   int id = FILTER_SUBLIST_BUTTONS_START;
 
-  m_clearFilters = new CGUIButtonControl(*clearFilters);
-  m_clearFilters->SetLabel(g_localizeStrings.Get(44032));
-  m_clearFilters->SetVisible(false);
-  m_clearFilters->AllocResources();
-  m_clearFilters->SetID(FILTER_SUBLIST_CLEAR_FILTERS);
-  list->AddControl(m_clearFilters);
+  CGUIButtonControl* clearOrig = (CGUIButtonControl*)GetControl(FILTER_SUBLIST_BUTTON);
+  if (clearOrig)
+  {
+    clearOrig->SetVisible(false);
+
+    m_clearFilters = new CGUIButtonControl(*clearOrig);
+    m_clearFilters->SetLabel(g_localizeStrings.Get(44032));
+    m_clearFilters->SetVisible(false);
+    m_clearFilters->AllocResources();
+    m_clearFilters->SetID(99);
+    list->AddControl(m_clearFilters);
+  }
 
   BOOST_FOREACH(PlexStringPair p, values)
   {
@@ -82,7 +84,8 @@ void CGUIDialogFilterSort::SetFilter(CPlexSecondaryFilterPtr filter, int filterB
     id++;
   }
 
-  m_clearFilters->SetVisible(m_filter->isSelected());
+  if (m_clearFilters)
+    m_clearFilters->SetVisible(m_filter->isSelected());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +104,8 @@ bool CGUIDialogFilterSort::OnAction(const CAction &action)
       button->SetSelected(false);
     }
 
-    m_clearFilters->SetVisible(false);
+    if (m_clearFilters)
+      m_clearFilters->SetVisible(false);
 
     CGUIMessage msg(GUI_MSG_FILTER_SELECTED, WINDOW_DIALOG_FILTER_SORT, 0, m_filterButtonId, 0);
     msg.SetStringParam(m_filter->getFilterKey());
@@ -129,13 +133,19 @@ bool CGUIDialogFilterSort::OnMessage(CGUIMessage &message)
         PlexStringPair filterKv = m_filterMap[senderId].first;
         m_filter->setSelected(filterKv.first, filterCtrl->IsSelected());
 
-        m_clearFilters->SetVisible(m_filter->isSelected());
+        if (m_clearFilters)
+          m_clearFilters->SetVisible(m_filter->isSelected());
 
         CGUIMessage msg(GUI_MSG_FILTER_SELECTED, WINDOW_DIALOG_FILTER_SORT, 0, m_filterButtonId, 0);
         msg.SetStringParam(m_filter->getFilterKey());
         g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindow());
 
         SetInvalid();
+        return true;
+      }
+      else if (senderId == 99)
+      {
+        OnAction(CAction(ACTION_CLEAR_FILTERS));
         return true;
       }
     }

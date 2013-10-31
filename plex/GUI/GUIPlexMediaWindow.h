@@ -17,6 +17,7 @@
 #include "PlexContentPlayerMixin.h"
 #include "threads/Event.h"
 #include "Filters/PlexSectionFilter.h"
+#include "guilib/GUIButtonControl.h"
 
 #define FILTER_PRIMARY_CONTAINER     19000
 #define FILTER_SECONDARY_CONTAINER   19001
@@ -33,6 +34,7 @@
 
 #define FILTER_BUTTONS_START FILTER_PRIMARY_BUTTONS_START
 #define FILTER_BUTTONS_STOP SORT_BUTTONS_START + 100
+#define FILTER_CLEAR_FILTER_BUTTON FILTER_BUTTONS_START - 1
 
 #define FILTER_PRIMARY_LABEL         19008
 #define FILTER_SECONDARY_LABEL       10009
@@ -43,7 +45,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
 {    
   public:
     CGUIPlexMediaWindow(int windowId = WINDOW_VIDEO_NAV, const CStdString &xml = "MyVideoNav.xml") :
-      CGUIMediaWindow(windowId, xml), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1), m_hasAdvancedFilters(false) {};
+      CGUIMediaWindow(windowId, xml), m_returningFromSkinLoad(false), m_pagingOffset(0), m_currentJobId(-1), m_hasAdvancedFilters(false), m_clearFilterButton(NULL) {};
     bool OnMessage(CGUIMessage &message);
     bool OnAction(const CAction& action);
     virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
@@ -87,6 +89,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     void LoadNextPage();
     virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
     void updateFilterButtons(CPlexSectionFilterPtr filter, bool clear=false, bool disable=false);
+    void ToggleClearFilterButton(bool onOff);
 
     bool m_returningFromSkinLoad;
     int m_pagingOffset;
@@ -98,6 +101,8 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     CCriticalSection m_filterValuesSection;
     std::string m_waitingForFilter;
     CEvent m_filterValuesEvent;
+    CGUIButtonControl *m_clearFilterButton;
+
     CEvent m_cacheEvent;
     CStdString m_waitingCache;
 

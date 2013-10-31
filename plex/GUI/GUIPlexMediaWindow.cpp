@@ -128,6 +128,8 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
         OnFilterButton(message.GetSenderId());
         return true;
       }
+      else if (message.GetSenderId() == FILTER_CLEAR_FILTER_BUTTON)
+        OnAction(CAction(ACTION_CLEAR_FILTERS));
       break;
     }
       
@@ -316,7 +318,7 @@ void CGUIPlexMediaWindow::OnFilterSelected(const std::string &filterKey, int fil
   if (!sectionFilter)
     return;
 
-  CPlexSecondaryFilterPtr filter =sectionFilter->addSecondaryFilter(filterKey);
+  CPlexSecondaryFilterPtr filter = sectionFilter->addSecondaryFilter(filterKey);
   if (!filter)
     return;
 
@@ -331,6 +333,8 @@ void CGUIPlexMediaWindow::OnFilterSelected(const std::string &filterKey, int fil
     else
       button->SetLabel(filter->getFilterTitle());
   }
+
+  ToggleClearFilterButton(sectionFilter->hasActiveSecondaryFilters());
 
   g_plexApplication.filterManager->saveFiltersToDisk();
 }
@@ -1020,6 +1024,28 @@ void CGUIPlexMediaWindow::UpdateSectionTitle()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::ToggleClearFilterButton(bool onOff)
+{
+  if (!m_clearFilterButton)
+  {
+    CGUIButtonControl *origButton = (CGUIButtonControl*)GetControl(FILTER_BUTTON);
+    if (!origButton)
+      return;
+
+    m_clearFilterButton = new CGUIButtonControl(*origButton);
+    m_clearFilterButton->SetLabel(g_localizeStrings.Get(44032));
+    m_clearFilterButton->AllocResources();
+    m_clearFilterButton->SetID(FILTER_CLEAR_FILTER_BUTTON);
+
+    CGUIControlGroupList *secondaryList = (CGUIControlGroupList*)GetControl(FILTER_SECONDARY_CONTAINER);
+    if (secondaryList)
+      secondaryList->InsertControl(m_clearFilterButton, GetControl(FILTER_SECONDARY_BUTTONS_START));
+  }
+
+  m_clearFilterButton->SetVisible(onOff);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::AddFilters()
 {
   CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
@@ -1056,6 +1082,7 @@ void CGUIPlexMediaWindow::AddFilters()
     CGUIControlGroupList *secondaryFilters = (CGUIControlGroupList*)GetControl(FILTER_SECONDARY_CONTAINER);
     if(secondaryFilters)
     {
+      bool hasActiveFilters = false;
       secondaryFilters->ClearAll();
 
       int id = FILTER_SECONDARY_BUTTONS_START;
@@ -1073,7 +1100,11 @@ void CGUIPlexMediaWindow::AddFilters()
           secondaryFilters->AddControl(button);
 
         }
+        if (filter->isSelected())
+          hasActiveFilters = true;
       }
+
+      ToggleClearFilterButton(hasActiveFilters);
     }
 
     CGUIControlGroupList *sortButtons = (CGUIControlGroupList*)GetControl(SORT_LIST);

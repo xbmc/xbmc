@@ -19,6 +19,7 @@ class CPlexSectionFilter
 
     CUrlOptions getFilterOptions();
     CURL addFiltersToUrl(const CURL& baseUrl);
+    bool hasActiveSecondaryFilters() const;
 
     PlexStringPairVector getPrimaryFilters() const
     {

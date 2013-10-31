@@ -38,8 +38,7 @@ bool CPlexSectionFilter::loadFilters()
       if (advancedFilters && type == PLEX_DIR_TYPE_MOVIE)
       {
         if (primaryFilter->GetProperty("unprocessed_key").asString() == "all" ||
-            primaryFilter->GetProperty("unprocessed_key").asString() == "onDeck" ||
-            primaryFilter->GetProperty("unprocessed_key").asString() == "folder")
+            primaryFilter->GetProperty("unprocessed_key").asString() == "onDeck")
           m_primaryFilters[primaryFilter->GetProperty("unprocessed_key").asString()] = primaryFilter->GetLabel();
       }
       else
@@ -123,6 +122,12 @@ CUrlOptions CPlexSectionFilter::getFilterOptions()
     options.AddOption(kv.first, kv.second);
   }
   return options;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexSectionFilter::hasActiveSecondaryFilters() const
+{
+  return m_currentSecondaryFilters.size() > 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
