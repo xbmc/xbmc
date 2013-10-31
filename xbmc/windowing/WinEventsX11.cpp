@@ -538,16 +538,12 @@ bool CWinEventsX11Imp::MessagePump()
 
       case EnterNotify:
       {
-        if (xevent.xcrossing.mode ==  NotifyNormal)
-          g_Windowing.NotifyMouseCoverage(true);
         break;
       }
 
       // lose mouse coverage
       case LeaveNotify:
       {
-        if (xevent.xcrossing.mode ==  NotifyNormal)
-          g_Windowing.NotifyMouseCoverage(false);
         g_Mouse.SetActive(false);
         break;
       }

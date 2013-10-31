@@ -152,8 +152,6 @@ bool CWinSystemX11::DestroyWindow()
 
   XUnmapWindow(m_dpy, m_mainWindow);
   XSync(m_dpy,TRUE);
-  XUngrabKeyboard(m_dpy, CurrentTime);
-  XUngrabPointer(m_dpy, CurrentTime);
   XDestroyWindow(m_dpy, m_glWindow);
   XDestroyWindow(m_dpy, m_mainWindow);
   m_glWindow = 0;
@@ -627,30 +625,6 @@ void CWinSystemX11::NotifyAppFocusChange(bool bGaining)
     m_bIgnoreNextFocusMessage = false;
 }
 
-void CWinSystemX11::NotifyMouseCoverage(bool covered)
-{
-  if (!m_bFullScreen || !m_mainWindow)
-    return;
-
-  if (covered && !m_bIsGrabbed)
-  {
-    int result = -1;
-    while (result != GrabSuccess && result != AlreadyGrabbed)
-    {
-      result = XGrabPointer(m_dpy, m_mainWindow, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
-      XbmcThreads::ThreadSleep(100);
-    }
-    XGrabKeyboard(m_dpy, m_mainWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
-    m_bIsGrabbed = true;
-  }
-  else if (!covered && m_bIsGrabbed)
-  {
-    XUngrabKeyboard(m_dpy, CurrentTime);
-    XUngrabPointer(m_dpy, CurrentTime);
-    m_bIsGrabbed = false;
-  }
-}
-
 bool CWinSystemX11::Minimize()
 {
   m_bWasFullScreenBeforeMinimize = m_bFullScreen;
@@ -1000,20 +974,6 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     {
       XWarpPointer(m_dpy, None, m_mainWindow, 0, 0, 0, 0, mouseX*width, mouseY*height);
     }
-
-    if (fullscreen)
-    {
-      int result = -1;
-      while (result != GrabSuccess && result != AlreadyGrabbed)
-      {
-        result = XGrabPointer(m_dpy, m_mainWindow, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
-        XbmcThreads::ThreadSleep(100);
-      }
-      XGrabKeyboard(m_dpy, m_mainWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
-      m_bIsGrabbed = true;
-    }
-    else
-      m_bIsGrabbed = false;
 
     CDirtyRegionList dr;
     RefreshGlxContext(m_currentOutput.compare(output) != 0);

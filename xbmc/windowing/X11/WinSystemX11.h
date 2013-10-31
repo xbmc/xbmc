@@ -73,7 +73,6 @@ public:
   void NotifyXRREvent();
   void GetConnectedOutputs(std::vector<CStdString> *outputs);
   bool IsCurrentOutput(CStdString output);
-  void NotifyMouseCoverage(bool covered);
 
 protected:
   bool RefreshGlxContext(bool force);
@@ -90,7 +89,6 @@ protected:
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_minimized;
   bool         m_bIgnoreNextFocusMessage;
-  bool         m_bIsGrabbed;
   int          m_RREventBase;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
