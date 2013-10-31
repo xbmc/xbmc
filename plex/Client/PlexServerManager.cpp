@@ -233,6 +233,7 @@ CPlexServerManager::SetBestServer(CPlexServerPtr server, bool force)
   CSingleLock lk(m_serverManagerLock);
   if (!m_bestServer || force || m_bestServer == server)
   {
+    CLog::Log(LOGDEBUG, "CPlexServerManager::SetBestServer bestServer updated to %s", server->toString().c_str());
     m_bestServer = server;
 
     CGUIMessage msg(GUI_MSG_PLEX_BEST_SERVER_UPDATED, 0, 0);
@@ -244,6 +245,7 @@ CPlexServerManager::SetBestServer(CPlexServerPtr server, bool force)
 void
 CPlexServerManager::ClearBestServer()
 {
+  CLog::Log(LOGDEBUG, "CPlexServerManager::ClearBestServer clearing %s", m_bestServer->toString().c_str());
   m_bestServer.reset();
 }
 
@@ -275,6 +277,9 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
   {
     CLog::Log(LOGINFO, "CPlexServerManager::ServerRechabilityDone All servers have done their thing. have a nice day now.");
     m_reachabilityTestEvent.Set();
+
+    if (!m_bestServer)
+      UpdateReachability(true);
   }
   else
   {
