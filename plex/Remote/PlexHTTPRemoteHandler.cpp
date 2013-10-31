@@ -108,6 +108,8 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     resources();
   else if (path.Equals("/player/playback/togglePlayPause"))
     pausePlay(argumentMap);
+  else if (path.Equals("/player/application/setText"))
+    sendString(argumentMap);
 
 #ifdef LEGACY
   else if (path.Equals("/player/application/sendString"))
@@ -441,12 +443,17 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     action = ACTION_SELECT_ITEM;
   else if (navigation.Equals("back"))
     action = ACTION_NAV_BACK;
-  else if (navigation.Equals("home"))
-    action = ACTION_FIRST_PAGE;
   else if (navigation.Equals("music"))
   {
     if (g_application.IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
       action = ACTION_SHOW_GUI;
+  }
+  else if (navigation.Equals("home"))
+  {
+    std::vector<CStdString> args;
+    g_application.WakeUpScreenSaverAndDPMS();
+    CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, args, false);
+    return;
   }
 
 #ifdef LEGACY
