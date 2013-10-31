@@ -1211,7 +1211,15 @@ void CGUIBaseContainer::SetOffset(int offset)
 
 bool CGUIBaseContainer::CanFocus() const
 {
-  return (!m_items.empty() && CGUIControl::CanFocus());
+  if (CGUIControl::CanFocus())
+  {
+    /*
+     We allow focus if we have items available or if we have a list provider
+     that's in the process of updating.
+     */
+    return !m_items.empty() || (m_listProvider && m_listProvider->IsUpdating());
+  }
+  return false;
 }
 
 void CGUIBaseContainer::OnFocus()

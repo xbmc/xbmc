@@ -54,6 +54,11 @@ public:
    */
   virtual void Fetch(std::vector<CGUIListItemPtr> &items) const=0;
 
+  /*! \brief Check whether the list provider is updating content.
+   \return true if in the processing of updating, false otherwise.
+   */
+  virtual bool IsUpdating() const { return false; }
+
   /*! \brief Reset the current list of items.
    Derived classes may choose to ignore this.
    */

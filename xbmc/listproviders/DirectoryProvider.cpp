@@ -185,3 +185,9 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
   }
   return false;
 }
+
+bool CDirectoryProvider::IsUpdating() const
+{
+  CSingleLock lock(m_section);
+  return m_jobID || m_invalid;
+}
