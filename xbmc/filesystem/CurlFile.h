@@ -31,8 +31,6 @@ namespace XCURL
   struct curl_slist;
 }
 
-class CHttpHeader;
-
 namespace XFILE
 {
   class CCurlFile : public IFile
