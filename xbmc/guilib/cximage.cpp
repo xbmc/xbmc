@@ -46,7 +46,7 @@ bool CXImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, u
   memset(&m_image, 0, sizeof(m_image));
 
   std::string strExt = m_strMimeType;
-  int nPos = strExt.find_first_of('/');
+  size_t nPos = strExt.find('/');
   if (nPos != std::string::npos)
     strExt.erase(0, nPos + 1);
 
