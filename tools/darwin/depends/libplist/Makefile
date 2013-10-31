@@ -20,8 +20,9 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); patch -p1 < ../0001-dontbuildswig.patch
+	cd $(SOURCE); patch -p1 < ../0002-fixclang.patch
 	cd $(SOURCE); rm -rf build; mkdir -p build
-	cd $(SOURCE)/build; CC=$(CC) CXX=$(CXX) cmake        \
+	cd $(SOURCE)/build; CC="$(CC)" CXX="$(CXX)" cmake        \
 	  -DCMAKE_C_FLAGS:STRING="$(CPPFLAGS) $(CFLAGS)"     \
 	  -DCMAKE_CXX_FLAGS:STRING="$(CPPFLAGS) $(CXXFLAGS)" \
 	  -DCMAKE_INCLUDE_PATH=$(PREFIX)/include             \

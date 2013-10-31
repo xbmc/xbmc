@@ -19,9 +19,9 @@ else
     platform_cpp=cpp-4.2
     platform_cxx=g++-4.2
   else
-    platform_cc=llvm-gcc-4.2
-    platform_cpp=llvm-gcc-4.2 -E
-    platform_cxx=llvm-g++-4.2
+    platform_cc=clang
+    platform_cpp=clang -E
+    platform_cxx=clang++
   endif
   platform_gnu=gnu99
   platform_gcc_version=4.2
@@ -31,7 +31,7 @@ else
   platform_min_version=macosx-version-min=10.6
 endif
 
-platform_path=@use_xcodepath@
+platform_path=@use_xcodepath@/Toolchains/XcodeDefault.xctoolchain
 platform_os_cflags=-arch @use_arch@ -no_compact_linkedit
 platform_os_ldflags=-arch @use_arch@ -no_compact_linkedit
 platform_sdk_path=@use_sdk_path@
@@ -40,11 +40,11 @@ export NM=${platform_path}/usr/bin/nm
 export CPP=${platform_path}/usr/bin/${platform_cpp}
 export CXXCPP=${CPP}
 export CPPFLAGS+=-no-cpp-precomp -I${PREFIX}/include -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}
-export CC=/usr/bin/${platform_cc}
+export CC=/usr/local/bin/ccache ${platform_path}/usr/bin/${platform_cc}
 export CFLAGS+=-std=${platform_gnu} -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}
 export LD=${platform_path}/usr/bin/ld
 export LDFLAGS+=-m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_ldflags} -L${PREFIX}/lib
-export CXX=/usr/bin/${platform_cxx}
+export CXX=/usr/local/bin/ccache ${platform_path}/usr/bin/${platform_cxx}
 export CXXFLAGS+=-m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}
 export AR=${platform_path}/usr/bin/ar
 export AS=${platform_path}/usr/bin/as

@@ -10,6 +10,10 @@ ARCHIVE=$(SOURCE).tar.bz2
 export PATH:=$(TOOLCHAIN)/bin:$(PATH) 
 CONFIGURE=./configure --prefix=$(PREFIX)
 
+ifeq ($(DARWIN),osx)
+CONFIGURE+=--disable-asm
+endif
+
 LIBDYLIB=$(SOURCE)/.libs/libgcrypt.dylib
 
 CLEAN_FILES=$(ARCHIVE) $(SOURCE)

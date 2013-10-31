@@ -23,7 +23,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); rm -rf build; mkdir -p build
 	cd $(SOURCE); patch -p0 < ../removelegacy.patch
-	cd $(SOURCE)/build; CC=$(CC) CXX=$(CXX) cmake        \
+	cd $(SOURCE)/build; CC="$(CC)" CXX="$(CXX)" cmake        \
 	  -DCMAKE_C_FLAGS:STRING="$(CPPFLAGS) $(CFLAGS)"     \
 	  -DCMAKE_CXX_FLAGS:STRING="$(CPPFLAGS) $(CXXFLAGS)" \
 	  -DCMAKE_INCLUDE_PATH=$(PREFIX)/include             \
