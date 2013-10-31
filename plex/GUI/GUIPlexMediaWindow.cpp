@@ -610,6 +610,9 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
 
   if (item->m_bIsFolder)
   {
+    CURL u(m_vecItems->GetPath());
+    m_lastSelectedIndex[u.GetUrlWithoutOptions()] = iItem;
+
     if (!Update(url, true))
       ShowShareErrorMessage(item.get());
     return true;
@@ -850,6 +853,15 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
     g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems);
 
   UpdateSectionTitle();
+
+  /* try to restore section a bit better */
+  int idx = 0;
+  CURL u(m_vecItems->GetPath());
+  if (m_lastSelectedIndex.find(u.GetUrlWithoutOptions()) != m_lastSelectedIndex.end())
+    idx = m_lastSelectedIndex[u.GetUrlWithoutOptions()];
+
+  if (m_viewControl.GetSelectedItem() == 0 && idx != 0)
+    m_viewControl.SetSelectedItem(idx);
 
   return ret;
 }

@@ -86,6 +86,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     void LoadPage(int start, int numberOfItems);
     void LoadNextPage();
     virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+    void updateFilterButtons(CPlexSectionFilterPtr filter, bool clear=false, bool disable=false);
 
     bool m_returningFromSkinLoad;
     int m_pagingOffset;
@@ -99,7 +100,8 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     CEvent m_filterValuesEvent;
     CEvent m_cacheEvent;
     CStdString m_waitingCache;
-    void updateFilterButtons(CPlexSectionFilterPtr filter, bool clear=false, bool disable=false);
+
+    std::map<std::string, int> m_lastSelectedIndex;
 };
 
 class CGUIPlexMusicWindow : public CGUIPlexMediaWindow
