@@ -898,13 +898,13 @@ std::string CFile::GetContentCharset(void)
 }
 
 
-unsigned int CFile::LoadFile(const std::string &filename, void* &outputBuffer)
+unsigned int CFile::LoadFile(const std::string &filename, auto_buffer& outputBuffer)
 {
   static const unsigned int max_file_size = 0x7FFFFFFF;
   static const unsigned int min_chunk_size = 64 * 1024U;
   static const unsigned int max_chunk_size = 2048 * 1024U;
 
-  outputBuffer = NULL;
+  outputBuffer.clear();
   if (filename.empty())
     return 0;
 
@@ -931,65 +931,31 @@ unsigned int CFile::LoadFile(const std::string &filename, void* &outputBuffer)
   */
   int64_t filesize = GetLength();
   if (filesize > max_file_size)
-  { /* file is too large for this function */
-    Close();
-    return 0;
-  }
-  unsigned int chunksize = (filesize > 0) ? (unsigned int)(filesize + 1) : GetChunkSize(GetChunkSize(), min_chunk_size);
-  unsigned char *inputBuff = NULL;
-  unsigned int inputBuffSize = 0;
+    return 0; /* file is too large for this function */
 
-  unsigned int total_read = 0, free_space = 0;
+  unsigned int chunksize = (filesize > 0) ? (unsigned int)(filesize + 1) : GetChunkSize(GetChunkSize(), min_chunk_size);
+  unsigned int total_read = 0;
   while (true)
   {
-    if (!free_space)
+    if (total_read == outputBuffer.size())
     { // (re)alloc
-      inputBuffSize += chunksize;
-      unsigned char *tempinputBuff = NULL;
-      if (inputBuffSize <= max_file_size)
-        tempinputBuff = (unsigned char *)realloc(inputBuff, inputBuffSize);
-      if (!tempinputBuff)
+      if (outputBuffer.size() >= max_file_size)
       {
-        CLog::Log(LOGERROR, "%s unable to (re)allocate buffer of size %u for file \"%s\"", __FUNCTION__, inputBuffSize, filename.c_str());
-        free(inputBuff);
-        Close();
+        outputBuffer.clear();
         return 0;
       }
-      inputBuff = tempinputBuff;
-      free_space = chunksize;
+      outputBuffer.resize(outputBuffer.size() + chunksize);
       if (chunksize < max_chunk_size)
         chunksize *= 2;
     }
-    unsigned int read = Read(inputBuff + total_read, free_space);
-    free_space -= read;
+    unsigned int read = Read(outputBuffer.get() + total_read, outputBuffer.size() - total_read);
     total_read += read;
     if (!read)
       break;
   }
 
-  Close();
+  outputBuffer.resize(total_read);
 
-  if (total_read == 0)
-  {
-    free(inputBuff);
-    return 0;
-  }
-
-  if (total_read + 1 < inputBuffSize)
-  {
-    /* free extra memory if more than 1 byte (cases 1 and 3) */
-    unsigned char *tempinputBuff = (unsigned char *)realloc(inputBuff, total_read);
-    if (!tempinputBuff)
-    {
-      /* just a precaution, shouldn't really happen */
-      CLog::Log(LOGERROR, "%s unable to reallocate buffer for file \"%s\"", __FUNCTION__, filename.c_str());
-      free(inputBuff);
-      return 0;
-    }
-    inputBuff = tempinputBuff;
-  }
-
-  outputBuffer = (void *)inputBuff;
   return total_read;
 }
 

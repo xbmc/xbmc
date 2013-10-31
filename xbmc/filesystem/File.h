@@ -116,7 +116,7 @@ public:
   int GetChunkSize();
   std::string GetContentMimeType(void);
   std::string GetContentCharset(void);
-  unsigned int LoadFile(const std::string &filename, void* &outputBuffer);
+  unsigned int LoadFile(const std::string &filename, auto_buffer& outputBuffer);
 
 
   // will return a size, that is aligned to chunk size
