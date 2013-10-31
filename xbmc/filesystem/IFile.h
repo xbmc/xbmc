@@ -83,6 +83,7 @@ public:
   virtual int IoControl(EIoControl request, void* param) { return -1; }
 
   virtual CStdString GetContent()                            { return "application/octet-stream"; }
+  virtual std::string GetContentCharset(void)                { return ""; }
 };
 
 class CRedirectException

@@ -61,6 +61,7 @@ namespace XFILE
       virtual CStdString GetMimeType()                           { return m_state->m_httpheader.GetMimeType(); }
       virtual CStdString GetContent()                            { return GetMimeType(); }
       virtual int IoControl(EIoControl request, void* param);
+      virtual std::string GetContentCharset(void)                { return GetServerReportedCharset(); }
 
       bool Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML);
       bool Get(const CStdString& strURL, CStdString& strHTML);
