@@ -67,6 +67,11 @@ CFile::~CFile()
 }
 
 //*********************************************************************************************
+#ifdef TARGET_WINDOWS
+#define MALLOC_EXCP_MSG "auto_buffer: malloc failed!"
+#else
+#define MALLOC_EXCP_MSG
+#endif
 
 class CAutoBuffer
 {
@@ -76,6 +81,70 @@ public:
   ~CAutoBuffer() { free(p); }
   char* get() { return p; }
 };
+
+
+//*********************************************************************************************
+
+
+auto_buffer::auto_buffer(size_t size) : p(NULL), s(0)
+{
+  if (!size)
+    return;
+
+  p = malloc(size);
+  if (!p)
+    throw std::bad_alloc(MALLOC_EXCP_MSG);
+  s = size;
+}
+
+auto_buffer::~auto_buffer()
+{
+  clear();
+}
+
+auto_buffer& auto_buffer::allocate(size_t size)
+{
+  clear();
+  return resize(size);
+}
+
+auto_buffer& auto_buffer::resize(size_t newSize)
+{
+  void* newPtr = realloc(p, newSize);
+  if (!newPtr && newSize)
+    throw std::bad_alloc(MALLOC_EXCP_MSG);
+  p = newPtr;
+  s = newSize;
+  return *this;
+}
+
+auto_buffer& auto_buffer::clear(void)
+{
+  free(p);
+  p = NULL;
+  s = 0;
+  return *this;
+}
+
+auto_buffer& auto_buffer::attach(void* pointer, size_t size)
+{
+  clear();
+  if ((pointer && size) || (!pointer && !size))
+  {
+    p = pointer;
+    s = size;
+  }
+  return *this;
+}
+
+void* auto_buffer::detach(void)
+{
+  void* returnPtr = p;
+  p = NULL;
+  s = 0;
+  return returnPtr;
+}
+
 
 // This *looks* like a copy function, therefor the name "Cache" is misleading
 bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
