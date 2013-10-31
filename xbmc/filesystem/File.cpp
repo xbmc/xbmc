@@ -402,6 +402,13 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
 
 int CFile::Stat(struct __stat64 *buffer)
 {
+  if (!m_pFile)
+  {
+    memset(buffer, 0, sizeof(struct __stat64));
+    errno = ENOENT;
+    return -1;
+  }
+
   return m_pFile->Stat(buffer);
 }
 
@@ -701,6 +708,9 @@ bool CFile::ReadString(char *szLine, int iLineLength)
 
 int CFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
+  if (!m_pFile)
+    return -1;
+
   try
   {
     return m_pFile->Write(lpBuf, uiBufSize);
