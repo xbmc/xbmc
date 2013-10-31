@@ -1,4 +1,5 @@
-﻿<scraperfunctions>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<scraperfunctions>
 	<GetIMDBGenresById dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBGenres&quot;&gt;http://akas.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
@@ -77,7 +78,7 @@
 	<ParseMetaCriticRating dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;rating&gt;\1.\2&lt;/rating&gt;" dest="2">
-				<expression>&lt;a\shref=&quot;criticreviews[^&quot;]*?&quot;\stitle[^&gt;]*?&gt;\s(\d)(\d*)</expression>
+				<expression>&lt;a\shref=&quot;criticreviews[^&quot;]*?&quot;\stitle[^&gt;]*?&gt;\s(\d*)(\d)/</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

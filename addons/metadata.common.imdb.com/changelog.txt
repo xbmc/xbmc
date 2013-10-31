@@ -1,3 +1,9 @@
+[B]2.7.8[/B]
+- fixed: add xml header
+
+[B]2.7.7[/B]
+- fixed: MetaCritic Score for 100/100 films
+
 [B]2.7.6[/B]
 - fixed: IMDb studio/director/writer after layout change
 

@@ -2506,14 +2506,18 @@ void COMXPlayer::Seek(bool bPlus, bool bLargeStep)
   if (!m_State.canseek)
     return;
 
-  if(((bPlus && GetChapter() < GetChapterCount())
-  || (!bPlus && GetChapter() > 1)) && bLargeStep)
+  if (bLargeStep && GetChapter() > 0)
   {
-    if(bPlus)
-      SeekChapter(GetChapter() + 1);
-    else
+    if (!bPlus)
+    {
       SeekChapter(GetChapter() - 1);
-    return;
+      return;
+    }
+    else if (GetChapter() < GetChapterCount())
+    {
+      SeekChapter(GetChapter() + 1);
+      return;
+    }
   }
 
   int64_t seek;
@@ -3731,18 +3735,18 @@ bool COMXPlayer::OnAction(const CAction &action)
   switch (action.GetID())
   {
     case ACTION_NEXT_ITEM:
-      if(GetChapterCount() > 0)
+      if (GetChapter() > 0 && GetChapter() < GetChapterCount())
       {
-        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()+1));
+        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter() + 1));
         g_infoManager.SetDisplayAfterSeek();
         return true;
       }
       else
         break;
     case ACTION_PREV_ITEM:
-      if(GetChapterCount() > 0)
+      if (GetChapter() > 0)
       {
-        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()-1));
+        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter() - 1));
         g_infoManager.SetDisplayAfterSeek();
         return true;
       }
@@ -3826,7 +3830,7 @@ void COMXPlayer::GetChapterName(CStdString& strChapterName)
 
 int COMXPlayer::SeekChapter(int iChapter)
 {
-  if (GetChapterCount() > 0)
+  if (GetChapter() > 0)
   {
     if (iChapter < 0)
       iChapter = 0;
@@ -3837,14 +3841,7 @@ int COMXPlayer::SeekChapter(int iChapter)
     m_messenger.Put(new CDVDMsgPlayerSeekChapter(iChapter));
     SynchronizeDemuxer(100);
   }
-  else
-  {
-    // Do a regular big jump.
-    if (GetChapter() > 0 && iChapter > GetChapter())
-      Seek(true, true);
-    else
-      Seek(false, true);
-  }
+
   return 0;
 }
 

@@ -449,6 +449,12 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   // if we have been deleted
   if (!m_valid || m_delete || !m_Buffer || m_paused)
     return 0;
+  
+  if (m_flushRequested)
+  {
+    InternalFlush();
+    return 0;
+  }
 
   if (m_flushRequested)
   {

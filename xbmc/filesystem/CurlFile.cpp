@@ -218,6 +218,7 @@ CCurlFile::CReadState::CReadState()
   m_bufferSize = 0;
   m_cancelled = false;
   m_bFirstLoop = true;
+  m_sendRange = true;
   m_headerdone = false;
 
 #ifndef TARGET_WINDOWS
@@ -297,8 +298,13 @@ void CCurlFile::CReadState::SetResume(void)
    * request header. If we don't the server may provide different content causing seeking to fail.
    * This only affects HTTP-like items, for FTP it's a null operation.
    */
-  if (m_filePos == 0)
+  if (m_sendRange && m_filePos == 0)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, "0-");
+  else
+  {
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, NULL);
+    m_sendRange = false;
+  }
 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
 }
@@ -950,6 +956,7 @@ bool CCurlFile::Open(const CURL& url)
   // setup common curl options
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
+  m_state->m_sendRange = m_seekable;
 
   m_httpresponse = m_state->Connect(m_bufferSize);
 #ifndef __PLEX__
@@ -1155,6 +1162,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   SetRequestHeaders(m_state);
 
   m_state->m_filePos = nextPos;
+  m_state->m_sendRange = true;
   if (oldstate)
     m_state->m_fileSize = oldstate->m_fileSize;
 
@@ -1408,6 +1416,16 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
                   msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
               CURLresult = msg->data.result;
+            else if ( (msg->data.result == CURLE_HTTP_RANGE_ERROR     ||
+                       msg->data.result == CURLE_HTTP_RETURNED_ERROR) &&
+                       m_bFirstLoop                                   &&
+                       m_filePos == 0                                 &&
+                       m_sendRange)
+            {
+              // If server returns a range or http error, retry with range disabled
+              CURLresult = msg->data.result;
+              m_sendRange = false;
+            }
             else
               return false;
           }

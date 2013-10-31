@@ -174,7 +174,8 @@ bool CGUISliderControl::OnAction(const CAction &action)
 
   case ACTION_SELECT_ITEM:
     // switch between the two sliders
-    SwitchRangeSelector();
+    if (m_rangeSelection)
+      SwitchRangeSelector();
     return true;
 
   default:

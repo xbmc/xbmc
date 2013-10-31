@@ -108,6 +108,7 @@ namespace XFILE
           int64_t         m_fileSize;
           int64_t         m_filePos;
           bool            m_bFirstLoop;
+          bool            m_sendRange;
 
           /* returned http header */
           CHttpHeader m_httpheader;

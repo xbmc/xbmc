@@ -39,6 +39,7 @@ class CDVDInputStreamPVRManager
   : public CDVDInputStream
   , public CDVDInputStream::IChannel
   , public CDVDInputStream::IDisplayTime
+  , public CDVDInputStream::ISeekable
 {
 public:
   CDVDInputStreamPVRManager(IDVDPlayer* pPlayer);

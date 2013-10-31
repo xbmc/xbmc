@@ -199,6 +199,8 @@ int scandir(
 		++entries;
 	}
 
+	closedir(d);
+
 	// sort
 	if (*namelist && compar) qsort(*namelist, entries, sizeof((*namelist)[0]), compar);
 

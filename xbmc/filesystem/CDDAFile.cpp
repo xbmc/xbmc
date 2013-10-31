@@ -40,6 +40,7 @@ CFileCDDA::CFileCDDA(void)
   m_lsnCurrent = CDIO_INVALID_LSN;
   m_lsnEnd = CDIO_INVALID_LSN;
   m_cdio = CLibcdio::GetInstance();
+  m_iSectorCount = 52;
 }
 
 CFileCDDA::~CFileCDDA(void)
@@ -120,7 +121,8 @@ unsigned int CFileCDDA::Read(void* lpBuf, int64_t uiBufSize)
   if (!m_pCdIo || !g_mediaManager.IsDiscInDrive())
     return 0;
 
-  int iSectorCount = (int)uiBufSize / CDIO_CD_FRAMESIZE_RAW;
+  // limit number of sectors that fits in buffer by m_iSectorCount
+  int iSectorCount = std::min((int)uiBufSize / CDIO_CD_FRAMESIZE_RAW, m_iSectorCount);
 
   if (iSectorCount <= 0)
     return 0;
@@ -129,14 +131,32 @@ unsigned int CFileCDDA::Read(void* lpBuf, int64_t uiBufSize)
   if (m_lsnCurrent + iSectorCount > m_lsnEnd)
     iSectorCount = m_lsnEnd - m_lsnCurrent;
 
-  int iret = m_cdio->cdio_read_audio_sectors(m_pCdIo, lpBuf, m_lsnCurrent, iSectorCount);
-
-  if ( iret != DRIVER_OP_SUCCESS)
+  // The loop tries to solve read error problem by lowering number of sectors to read (iSectorCount).
+  // When problem is solved the proper number of sectors is stored in m_iSectorCount
+  int big_iSectorCount = iSectorCount;
+  while (iSectorCount > 0)
   {
-    CLog::Log(LOGERROR, "file cdda: Reading %d sectors of audio data starting at lsn %d failed with error code %i", iSectorCount, m_lsnCurrent, iret);
-    return 0;
-  }
+    int iret = m_cdio->cdio_read_audio_sectors(m_pCdIo, lpBuf, m_lsnCurrent, iSectorCount);
 
+    if (iret == DRIVER_OP_SUCCESS)
+    {
+      // If lower iSectorCount solved the problem limit it's value
+      if (iSectorCount < big_iSectorCount)
+      {
+        m_iSectorCount = iSectorCount;
+      }
+      break;
+    }
+
+    // iSectorCount is low so it cannot solve read problem
+    if (iSectorCount <= 10)
+    {
+      CLog::Log(LOGERROR, "file cdda: Reading %d sectors of audio data starting at lsn %d failed with error code %i", iSectorCount, m_lsnCurrent, iret);
+      return 0;
+    }
+
+    iSectorCount = 10;
+  }
   m_lsnCurrent += iSectorCount;
 
   return iSectorCount*CDIO_CD_FRAMESIZE_RAW;

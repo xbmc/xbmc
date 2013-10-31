@@ -32,6 +32,9 @@
 #define POPUP_ICON_WARNING        404
 #define POPUP_ICON_ERROR          405
 
+CGUIDialogKaiToast::TOASTQUEUE CGUIDialogKaiToast::m_notifications;
+CCriticalSection CGUIDialogKaiToast::m_critical;
+
 CGUIDialogKaiToast::CGUIDialogKaiToast(void)
 : CGUIDialog(WINDOW_DIALOG_KAI_TOAST, "DialogKaiToast.xml")
 {
@@ -76,9 +79,7 @@ void CGUIDialogKaiToast::OnWindowLoaded()
 
 void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
 {
-  CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-  if (toast)
-    toast->AddToQueue(eType, aCaption, aDescription, displayTime, withSound, messageTime);
+  AddToQueue("", eType, aCaption, aDescription, displayTime, withSound, messageTime);
 }
 
 void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CStdString& aDescription)
@@ -88,34 +89,15 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CSt
 
 void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
 {
-  CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-  if (toast)
-    toast->AddToQueue(aImageFile, aCaption, aDescription, displayTime, withSound, messageTime);
+  AddToQueue(aImageFile, Default, aCaption, aDescription, displayTime, withSound, messageTime);
 }
 
-void CGUIDialogKaiToast::AddToQueue(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
-{
-  CGUIImage *image    = NULL;
-  
-  if (eType == Info)
-    image = (CGUIImage *)GetControl(POPUP_ICON_INFO);
-  else if (eType == Warning)
-    image = (CGUIImage *)GetControl(POPUP_ICON_WARNING);
-  else if (eType == Error)
-    image = (CGUIImage *)GetControl(POPUP_ICON_ERROR);
-  
-  CStdString strImage;
-  if (image)
-    strImage = image->GetFileName();
-  
-  AddToQueue(strImage, aCaption, aDescription, displayTime, withSound, messageTime);
-}
-
-void CGUIDialogKaiToast::AddToQueue(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
+void CGUIDialogKaiToast::AddToQueue(const CStdString& aImageFile, const eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
 {
   CSingleLock lock(m_critical);
 
   Notification toast;
+  toast.eType = eType;
   toast.imagefile = aImageFile;
   toast.caption = aCaption;
   toast.description = aDescription;
@@ -152,10 +134,28 @@ bool CGUIDialogKaiToast::DoWork()
     CGUIImage *image = (CGUIImage *)GetControl(POPUP_ICON);
     if (image)
     {
-      if (!toast.imagefile.IsEmpty())
-        image->SetFileName(toast.imagefile);
-      else
-        image->SetFileName(m_defaultIcon);
+      CStdString strTypeImage = toast.imagefile;
+
+      if (strTypeImage.IsEmpty())
+      {
+        CGUIImage *typeImage = NULL;
+
+        if (toast.eType == Info)
+          typeImage = (CGUIImage *)GetControl(POPUP_ICON_INFO);
+        else if (toast.eType == Warning)
+          typeImage = (CGUIImage *)GetControl(POPUP_ICON_WARNING);
+        else if (toast.eType == Error)
+          typeImage = (CGUIImage *)GetControl(POPUP_ICON_ERROR);
+        else
+          typeImage = image;
+
+        if (typeImage)
+          strTypeImage = typeImage->GetFileName();
+        else
+          strTypeImage = m_defaultIcon;
+      }
+
+      image->SetFileName(strTypeImage);
     }
 
     //  Play the window specific init sound for each notification queued

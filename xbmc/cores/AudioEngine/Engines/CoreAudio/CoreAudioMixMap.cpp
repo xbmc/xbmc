@@ -24,9 +24,9 @@
 #include "CoreAudioAEHAL.h"
 #include "utils/log.h"
 
-#include <boost/lexical_cast.hpp>
 
 #include <AudioToolbox/AudioToolbox.h>
+#include <sstream>
 
 CCoreAudioMixMap::CCoreAudioMixMap() :
   m_isValid(false)
@@ -55,7 +55,6 @@ void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout&
 
   m_inChannels  = CCoreAudioChannelLayout::GetChannelCountForLayout(inLayout);
   m_outChannels = CCoreAudioChannelLayout::GetChannelCountForLayout(outLayout);
-  CLog::Log(LOGDEBUG, "CCoreAudioMixMap::Rebuild MatrixMixMap with %d input channels and %d output channels.", m_inChannels, m_outChannels);
 
   // Try to find a 'well-known' matrix
   const AudioChannelLayout* layouts[] = {&inLayout, &outLayout};
@@ -67,10 +66,10 @@ void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout&
   // Try and get a predefined mixmap
   ret = AudioFormatGetProperty(kAudioFormatProperty_MatrixMixMap,
     sizeof(layouts), layouts, &propSize, m_pMap);
-
   if (ret)
   {
-    // No predefined mixmap was available. Going to have to build it manually
+    // If we for some reason don't find a predefined matrix let's build a diagonal matrix,
+    // basically guessing here, but we need to have a mixmap that matches the output and input
     CLog::Log(LOGDEBUG, "CCoreAudioMixMap::CreateMap: No pre-defined mapping from %d to %d channels, building diagonal matrix.", m_inChannels, m_outChannels);
     for (UInt32 chan = 0; chan < std::min(m_inChannels, m_outChannels); ++chan)
     {
@@ -80,18 +79,6 @@ void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout&
     }
   }
 
-  for (int i = 0; i < m_inChannels; i++)
-  {
-    CStdString outStr = "";
-    for (int j = 0; j < m_outChannels; j ++)
-    {
-      Float32 *d = (m_pMap + (i * m_outChannels) + j);
-      outStr += boost::lexical_cast<std::string>(*d) + ", ";
-    }
-    CLog::Log(LOGDEBUG, "CCoreAudioMixMap::Rebuild %d = %s", i, outStr.c_str());
-  }
-
-  // Always have a valid map.
   m_isValid = true;
 }
 
@@ -200,9 +187,6 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   //  deviceLayout.CopyLayout(guiLayout);
 
   // TODO: Skip matrix mixer if input/output are compatible
-
-//  AudioChannelLayout* layoutCandidates[] = {(AudioChannelLayout*)deviceLayout, (AudioChannelLayout*)userLayout, NULL};
-
   CCoreAudioMixMap *mixMap = new CCoreAudioMixMap();
   mixMap->Rebuild(*sourceLayout, *(AudioChannelLayout*)deviceLayout);
   return mixMap;
@@ -240,29 +224,46 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
     CLog::Log(LOGWARNING, "CCoreAudioMixMap::SetMixingMatrix - ouput format doesn't specify all outputs %u < %u"
               , fmt->mChannelsPerFrame, dims[1]);
   }
-  
+
   // Configure the mixing matrix
+  // The return from kAudioFormatProperty_MatrixMixMap (See Rebuild above) 
+  // is a Float32* which is laid out like this:
+  //
+  // mapping 2 chan -> 2 chan
+  // 1 0 0 1
+  //
+  // or better represented in a tow dimensional array:
+  //
+  // 1 0
+  // 0 1
+  //
+  // mapping 6 chan -> 6 chan:
+  // 1 0 0 0 0 0
+  // 0 1 0 0 0 0
+  // 0 0 1 0 0 0
+  // ....
+
   Float32* val = (Float32*)*mixMap;
   for (UInt32 i = 0; i < inputFormat->mChannelsPerFrame; ++i)
   {
     UInt32 j = 0;
-    CStdString outStr="";
+    std::stringstream layoutStr;
     for (; j < fmt->mChannelsPerFrame; ++j)
     {
-      Float32 *volume = val + (i * mixMap->m_outChannels + j);
-      outStr += boost::lexical_cast<std::string>(*volume) + ", ";
+      Float32 *vol = val + (i * mixMap->m_outChannels + j);
+      layoutStr << *vol << ", ";
       AudioUnitSetParameter(mixerUnit->GetUnit(),
-        kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *volume, 0);
+        kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *vol, 0);
     }
     // zero out additional outputs from this input
     for (; j < dims[1]; ++j)
     {
       AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, 0.0f, 0);
-      outStr += "0, ";
+      layoutStr << "0, ";
     }
 
-    CLog::Log(LOGDEBUG, "CCoreAudioMixMap::SetMixingMatrix Setting %d = %s", i, outStr.c_str());
+    CLog::Log(LOGDEBUG, "CCoreAudioMixMap::SetMixingMatrix channel %d = [%s]", i, layoutStr.str().c_str());
   }
 
   CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: "

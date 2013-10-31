@@ -147,6 +147,10 @@ CVDPAU::CVDPAU()
   dl_vdp_device_create_x11 = NULL;
   dl_vdp_get_proc_address = NULL;
   dl_vdp_preemption_callback_register = NULL;
+  past[0] = NULL;
+  past[1] = NULL;
+  current = NULL;
+  future = NULL;
 }
 
 bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces)
