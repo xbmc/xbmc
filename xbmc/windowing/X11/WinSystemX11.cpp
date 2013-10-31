@@ -884,8 +884,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 
     swa.override_redirect = False;
     swa.border_pixel = 0;
-    swa.event_mask = 0;
-    mask = CWBackPixel | CWBorderPixel | CWColormap | CWOverrideRedirect | CWColormap;
+    swa.event_mask = ExposureMask;
+    mask = CWBackPixel | CWBorderPixel | CWColormap | CWOverrideRedirect | CWColormap | CWEventMask;
 
     m_glWindow = XCreateWindow(m_dpy, m_mainWindow,
                     0, 0, width, height, 0, vi->depth,
