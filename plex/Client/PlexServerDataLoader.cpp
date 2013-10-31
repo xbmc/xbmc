@@ -57,13 +57,13 @@ void CPlexServerDataLoader::RemoveServer(const CPlexServerPtr &server)
   if (m_sharedSectionsMap.find(server->GetUUID()) != m_sharedSectionsMap.end())
   {
     CLog::Log(LOG_LEVEL_DEBUG, "CPlexServerDataLoader::RemoveServer from sharedSectionMap %s", server->GetName().c_str());
-    m_sharedSectionsMap.equal_range(server->GetUUID());
+    m_sharedSectionsMap.erase(server->GetUUID());
   }
 
   if (m_channelMap.find(server->GetUUID()) != m_channelMap.end())
   {
     CLog::Log(LOG_LEVEL_DEBUG, "CPlexServerDataLoader::RemoveServer from channelMap %s", server->GetName().c_str());
-    m_channelMap.equal_range(server->GetUUID());
+    m_channelMap.erase(server->GetUUID());
   }
 
   if (m_servers.find(server->GetUUID()) != m_servers.end())
