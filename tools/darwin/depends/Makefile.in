@@ -11,7 +11,7 @@ SUBDIRS := \
 	openssl libssh libssh2 librtmp curl \
 	libjpeg-turbo tiff libpng libogg \
 	libvorbis libflac libmp3lame libmad fribidi libmpeg2 \
-	libass libcdio libsamplerate libcrystalhd libnfs \
+	libass libcdio libsamplerate libcrystalhd \
 	libGLEW libsdl libsdl_mixer libsdl_image \
 	libmicrohttpd libmodplug libbluray libyajl libffi \
 	libgpg-error libgcrypt \

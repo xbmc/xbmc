@@ -27,7 +27,7 @@ echo "Building for $darwin-$arch"
 xcodepath=$(xcode-select -print-path)
 xcodebuild=$xcodepath/usr/bin/xcodebuild
 if [ $darwin = "osx" ]; then
-  sdkversion=$($xcodebuild -showsdks | grep macosx | sort |  tail -n 1 | grep -oE 'macosx[0-9.0-9]+' | cut -c 7-$NF)
+  sdkversion=10.8
 else
   sdkversion=$($xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}')
 fi
@@ -73,13 +73,7 @@ config="$config --enable-gpl --enable-postproc --enable-static --enable-pthreads
 config="$config --enable-muxer=spdif --enable-muxer=adts --enable-encoder=ac3 --enable-encoder=aac"
 config="$config --enable-protocol=http --enable-runtime-cpudetect --enable-gnutls"
 config="$config --prefix=$ROOT/plex/Dependencies/xbmc-depends/ffmpeg-$outputdir"
-
-case $CC in
-  *llvm-gcc-4.2*)
-    config="$config --cc=clang" ;;
-  *)
-    config="$config --cc=$CC" ;;
-esac
+config="$config --cc=clang"
 
 extra_cflags="$extra_cflags -I$outputpath/include"
 
