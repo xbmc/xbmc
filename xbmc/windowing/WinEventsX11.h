@@ -48,7 +48,6 @@ public:
 protected:
   static XBMCKey LookupXbmcKeySym(KeySym keysym);
   static bool ProcessKey(XBMC_Event &event);
-  static bool ProcessShortcuts(XBMC_Event& event);
   static CWinEventsX11Imp *WinEvents;
   Display *m_display;
   Window m_window;
