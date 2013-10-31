@@ -73,18 +73,6 @@ CFile::~CFile()
 #define MALLOC_EXCP_MSG
 #endif
 
-class CAutoBuffer
-{
-  char* p;
-public:
-  explicit CAutoBuffer(size_t s) { p = (char*)malloc(s); }
-  ~CAutoBuffer() { free(p); }
-  char* get() { return p; }
-};
-
-
-//*********************************************************************************************
-
 
 auto_buffer::auto_buffer(size_t size) : p(NULL), s(0)
 {
@@ -202,7 +190,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 
     int iBufferSize = 128 * 1024;
 
-    CAutoBuffer buffer(iBufferSize);
+    auto_buffer buffer(iBufferSize);
     int iRead, iWrite;
 
     UINT64 llFileSize = file.GetLength();
