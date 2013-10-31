@@ -8,7 +8,7 @@ ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
-  --without-x --disable-video-x11
+  --without-x --disable-video-x11 
 
 LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
 
@@ -24,6 +24,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); patch -p0 < ../01-SDL_SetWidthHeight.patch
 	cd $(SOURCE); patch -p0 < ../02-mmx.patch
+	cd $(SOURCE); patch -p0 < ../03-quartzWindowCrash.patch
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
