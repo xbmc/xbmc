@@ -11,13 +11,16 @@
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUILabelControl.h"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIDialogFilterSort::CGUIDialogFilterSort()
   : CGUIDialog(WINDOW_DIALOG_FILTER_SORT, "DialogFilters.xml")
 {
   m_loadType = LOAD_ON_GUI_INIT;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIDialogFilterSort::SetFilter(CPlexSecondaryFilterPtr filter, int filterButtonId)
 {
   m_filter = filter;
@@ -35,11 +38,15 @@ void CGUIDialogFilterSort::SetFilter(CPlexSecondaryFilterPtr filter, int filterB
 
   list->ClearAll();
 
-  CGUIRadioButtonControl* radioButton = (CGUIRadioButtonControl*)GetControl(FILTER_SUBLIST_BUTTON);
+  CGUIRadioButtonControl* radioButton = (CGUIRadioButtonControl*)GetControl(FILTER_SUBLIST_RADIO_BUTTON);
   if (!radioButton)
     return;
-
   radioButton->SetVisible(false);
+
+  CGUIButtonControl* clearFilters = (CGUIRadioButtonControl*)GetControl(FILTER_SUBLIST_BUTTON);
+  if (!clearFilters)
+    return;
+  clearFilters->SetVisible(false);
 
   CGUILabelControl* headerLabel = (CGUILabelControl*)GetControl(FILTER_SUBLIST_LABEL);
   if (headerLabel)
@@ -48,6 +55,14 @@ void CGUIDialogFilterSort::SetFilter(CPlexSecondaryFilterPtr filter, int filterB
   PlexStringPairVector values = m_filter->getFilterValues();
 
   int id = FILTER_SUBLIST_BUTTONS_START;
+
+  m_clearFilters = new CGUIButtonControl(*clearFilters);
+  m_clearFilters->SetLabel(g_localizeStrings.Get(44032));
+  m_clearFilters->SetVisible(false);
+  m_clearFilters->AllocResources();
+  m_clearFilters->SetID(FILTER_SUBLIST_CLEAR_FILTERS);
+  list->AddControl(m_clearFilters);
+
   BOOST_FOREACH(PlexStringPair p, values)
   {
     CGUIRadioButtonControl* sublistItem = new CGUIRadioButtonControl(*radioButton);
@@ -66,8 +81,11 @@ void CGUIDialogFilterSort::SetFilter(CPlexSecondaryFilterPtr filter, int filterB
 
     id++;
   }
+
+  m_clearFilters->SetVisible(m_filter->isSelected());
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIDialogFilterSort::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_CLEAR_FILTERS)
@@ -83,6 +101,8 @@ bool CGUIDialogFilterSort::OnAction(const CAction &action)
       button->SetSelected(false);
     }
 
+    m_clearFilters->SetVisible(false);
+
     CGUIMessage msg(GUI_MSG_FILTER_SELECTED, WINDOW_DIALOG_FILTER_SORT, 0, m_filterButtonId, 0);
     msg.SetStringParam(m_filter->getFilterKey());
     g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindow());
@@ -95,6 +115,7 @@ bool CGUIDialogFilterSort::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIDialogFilterSort::OnMessage(CGUIMessage &message)
 {
   switch (message.GetMessage())
@@ -107,6 +128,8 @@ bool CGUIDialogFilterSort::OnMessage(CGUIMessage &message)
         CGUIRadioButtonControl *filterCtrl = m_filterMap[senderId].second;
         PlexStringPair filterKv = m_filterMap[senderId].first;
         m_filter->setSelected(filterKv.first, filterCtrl->IsSelected());
+
+        m_clearFilters->SetVisible(m_filter->isSelected());
 
         CGUIMessage msg(GUI_MSG_FILTER_SELECTED, WINDOW_DIALOG_FILTER_SORT, 0, m_filterButtonId, 0);
         msg.SetStringParam(m_filter->getFilterKey());

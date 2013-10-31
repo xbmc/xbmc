@@ -10,9 +10,11 @@
 #define GUIDIALOGFILTERSORT_H
 
 #define FILTER_SUBLIST 19020
-#define FILTER_SUBLIST_BUTTON 19021
+#define FILTER_SUBLIST_RADIO_BUTTON 19021
+#define FILTER_SUBLIST_BUTTON 19022
 #define FILTER_SUBLIST_LABEL 19029
 #define FILTER_SUBLIST_BUTTONS_START -300
+#define FILTER_SUBLIST_CLEAR_FILTERS -99
 
 #include "guilib/GUIDialog.h"
 #include "FileItem.h"
@@ -31,6 +33,7 @@ class CGUIDialogFilterSort : public CGUIDialog
     bool OnAction(const CAction &action);
 
   private:
+    CGUIButtonControl *m_clearFilters;
     CPlexSecondaryFilterPtr m_filter;
     std::map<int, filterControl> m_filterMap;
     int m_filterButtonId;

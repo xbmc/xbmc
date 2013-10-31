@@ -749,6 +749,10 @@ msgctxt "#44031"
 msgid "SORTING"
 msgstr "SORTING"
 
+msgctxt "#44032"
+msgid "Clear Filters"
+msgstr "Clear Filters"
+
 msgctxt "#44100"
 msgid "Sign in to myPlex"
 msgstr "Sign in to myPlex"
