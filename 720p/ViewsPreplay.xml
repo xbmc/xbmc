@@ -702,7 +702,7 @@
 				<control type="label">
 					<width>600</width>
 					<height>25</height>
-					<label>$LOCALIZE[31141] $INFO[ListItem.Season] &#xB7; $LOCALIZE[31114] $INFO[ListItem.Episode]$INFO[ListItem.Date, &#xB7; ]</label>
+					<label>$LOCALIZE[31141] $INFO[ListItem.Season] &#xB7; $LOCALIZE[31114, &#xB7; ] $INFO[ListItem.Episode]$INFO[ListItem.Date, &#xB7; ]</label>
 					<font>Condensed-18</font>
 					<textcolor>white</textcolor>
 					<visible>true</visible>
@@ -1112,53 +1112,14 @@
 					</control>
 				</control>
 				<!-- Year / Duration / Source -->
-				<control type="grouplist">
+				<control type="label">
 					<width>630</width>
-					<height>40</height>
-					<align>left</align>
-					<usecontrolcoords>true</usecontrolcoords>
-					<orientation>horizontal</orientation>
-					<itemgap>0</itemgap>
-					<control type="label">
-						<width min="30" max="500">auto</width>
-						<height>30</height>
-						<label>$INFO[ListItem.Year]</label>
-						<font>CondensedBold-30</font>
-						<textcolor>FF999999</textcolor>
-						<visible>!IsEmpty(ListItem.Year)</visible>
-					</control>
-					<control type="label">
-						<width min="30" max="500">auto</width>
-						<height>30</height>
-						<label> &#xB7; </label>
-						<font>CondensedBold-30</font>
-						<textcolor>FF999999</textcolor>
-						<visible>!IsEmpty(ListItem.Year)</visible>
-					</control>
-					<control type="label">
-						<width min="30" max="500">auto</width>
-						<height>30</height>
-						<label>$INFO[ListItem.DurationStr]</label>
-						<font>CondensedBold-30</font>
-						<textcolor>FF999999</textcolor>
-						<visible>!IsEmpty(ListItem.DurationStr)</visible>
-					</control>
-					<control type="label">
-						<width min="30" max="500">auto</width>
-						<height>30</height>
-						<label> &#xB7; </label>
-						<font>CondensedBold-30</font>
-						<textcolor>FF999999</textcolor>
-						<visible>!IsEmpty(ListItem.DurationStr) + IsEmpty(ListItem.Art(sourceIcon))</visible>
-					</control>
-					<control type="label">
-						<width min="30" max="500">auto</width>
-						<height>30</height>
-						<label>$INFO[ListItem.Property(sourceTitle)]</label>
-						<font>CondensedBold-30</font>
-						<textcolor>FF999999</textcolor>
-						<visible>!IsEmpty(ListItem.Property(sourceTitle)) + IsEmpty(ListItem.Art(sourceIcon))</visible>
-					</control>
+					<height>30</height>
+					<width min="30" max="500">auto</width>
+					<height>30</height>
+					<label>$INFO[ListItem.Year]$INFO[ListItem.DurationStr, &#xB7; ]$INFO[ListItem.Property(sourceTitle), &#xB7; ]</label>
+					<font>CondensedBold-30</font>
+					<textcolor>FF999999</textcolor>
 				</control>			
 				<!-- Season, Episode -->
 				<control type="label">
