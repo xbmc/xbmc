@@ -71,10 +71,44 @@
 				<width>260</width>
 				<height>481</height>
 				<itemgap>-1</itemgap>
-				<onleft>9000</onleft>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<onup>20</onup>
+				<ondown>20</ondown>
+			</control>
+			<control type="button" id="20">
+				<description>Setting level button</description>
+				<posx>10</posx>
+				<posy>562</posy>
+				<height>60</height>
+				<width>260</width>
+				<label>10037</label>>
+				<textoffsetx>20</textoffsetx>
+				<textoffsety>28</textoffsety>
+				<align>right</align>
+				<aligny>top</aligny>
+				<font>font13caps</font>
+				<textcolor>selected</textcolor>
+				<focusedcolor>selected</focusedcolor>
+				<texturefocus border="5">MenuItemFO.png</texturefocus>
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<onleft>5</onleft>
 				<onright>5</onright>
 				<onup>3</onup>
 				<ondown>3</ondown>
+				<onclick>SettingsLevelChange</onclick>
+			</control>
+			<control type="label">
+				<posx>250</posx>
+				<posy>566</posy>
+				<height>25</height>
+				<width>230</width> 
+				<label>31142</label> 
+				<font>font13_title</font> 
+				<textcolor>white</textcolor> 
+				<align>right</align> 
+				<aligny>center</aligny>
 			</control>
 			<control type="image">
 				<posx>268</posx>
@@ -132,11 +166,20 @@
 				<showonepage>false</showonepage>
 				<orientation>vertical</orientation>
 			</control>
+			<control type="image">
+				<description>separator image</description>
+				<posx>290</posx>
+				<posy>525</posy>
+				<width>750</width>
+				<height>2</height>
+				<texture>separator2.png</texture>
+				<colordiffuse>40FFFFFF</colordiffuse>
+			</control>
 			<control type="textbox" id="6">
 				<description>description area</description>
-				<posx>290</posx>
-				<posy>515</posy>
-				<width>750</width>
+				<posx>297</posx>
+				<posy>530</posy>
+				<width>736</width>
 				<height>85</height>
 				<font>font12</font>
 				<align>justify</align>
@@ -159,6 +202,7 @@
 			<texturefocus border="5">MenuItemFO.png</texturefocus>
 			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 			<pulseonselect>false</pulseonselect>
+      <onleft>20</onleft>
 		</control>
 		<control type="button" id="7">
 			<description>Default Button</description>
@@ -236,44 +280,6 @@
 			<control type="label">
 				<include>WindowTitleCommons</include>
 				<label>[COLOR=blue] - [/COLOR]$INFO[Control.GetLabel(2)]</label>
-			</control>
-		</control>
-		<control type="group">
-			<posx>-250</posx>
-			<include>SideBladeLeft</include>
-			<control type="grouplist" id="9000">
-				<posx>0</posx>
-				<posy>110</posy>
-				<width>250</width>
-				<height>600</height>
-				<onleft>9000</onleft>
-				<onright>3</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
-				<onback>3</onback>
-				<itemgap>0</itemgap>
-				<control type="label" id="200">
-					<width>250</width>
-					<height>35</height>
-					<font>font12</font>
-					<label>31007</label>
-					<textcolor>blue</textcolor>
-					<align>center</align>
-					<aligny>center</aligny>
-				</control>
-				<control type="button" id="20">
-					<description>Setting level button</description>
-					<textwidth>235</textwidth>
-					<include>ButtonCommonValues</include>
-					<label>10037</label>
-					<onclick>SettingsLevelChange</onclick>
-				</control>
-				<control type="button" id="21">
-					<description>Reset button</description>
-					<include>ButtonCommonValues</include>
-					<label>10035</label>
-					<onclick>SettingsReset</onclick>
-				</control>
 			</control>
 		</control>
 		<include>Clock</include>

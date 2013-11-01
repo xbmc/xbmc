@@ -99,11 +99,23 @@ public:
    */
   const int GetLabel() const { return m_label; }
   /*!
+   \brief Sets the localizeable label ID of the setting category.
+
+   \param label Localizeable label ID of the setting category
+   */
+  void SetLabel(int label) { m_label = label; }
+  /*!
    \brief Gets the localizeable help ID of the setting category.
 
    \return Localizeable help ID of the setting category
    */
   const int GetHelp() const { return m_help; }
+  /*!
+   \brief Sets the localizeable help ID of the setting category.
+
+   \param label Localizeable help ID of the setting category
+   */
+  void SetHelp(int help) { m_help = help; }
   /*!
    \brief Gets the full list of setting groups belonging to the setting
    category.
@@ -165,11 +177,23 @@ public:
    */
   const int GetLabel() const { return m_label; }
   /*!
+   \brief Sets the localizeable label ID of the setting section.
+
+   \param label Localizeable label ID of the setting section
+   */
+  void SetLabel(int label) { m_label = label; }
+  /*!
    \brief Gets the localizeable help ID of the setting section.
 
    \return Localizeable help ID of the setting section
    */
   const int GetHelp() const { return m_help; }
+  /*!
+   \brief Sets the localizeable help ID of the setting section.
+
+   \param label Localizeable help ID of the setting section
+   */
+  void SetHelp(int help) { m_help = help; }
   /*!
    \brief Gets the full list of setting categories belonging to the setting
    section.
