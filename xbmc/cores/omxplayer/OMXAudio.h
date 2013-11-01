@@ -92,6 +92,7 @@ public:
   void PrintDTS(OMX_AUDIO_PARAM_DTSTYPE *dtsparam);
   unsigned int SyncDTS(BYTE* pData, unsigned int iSize);
   unsigned int SyncAC3(BYTE* pData, unsigned int iSize);
+  void UpdateAttenuation();
 
   bool BadState() { return !m_Initialized; };
   unsigned int GetAudioRenderingLatency();
@@ -113,7 +114,7 @@ private:
   float         m_maxLevel;
   float         m_amplification;
   float         m_attenuation;
-  float         m_desired_attenuation;
+  float         m_submitted;
   COMXCoreComponent *m_omx_clock;
   OMXClock       *m_av_clock;
   bool          m_settings_changed;
@@ -138,6 +139,12 @@ private:
     double pts;
   } vizblock_t;
   std::queue<vizblock_t> m_vizqueue;
+
+  typedef struct {
+    double pts;
+    float level;
+  } amplitudes_t;
+  std::deque<amplitudes_t> m_ampqueue;
 
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_output;
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_input;

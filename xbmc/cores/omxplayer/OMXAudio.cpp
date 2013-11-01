@@ -122,7 +122,7 @@ COMXAudio::COMXAudio() :
   m_maxLevel        (0.0f   ),
   m_amplification   (1.0f   ),
   m_attenuation     (1.0f   ),
-  m_desired_attenuation(1.0f),
+  m_submitted       (0.0f   ),
   m_omx_clock       (NULL   ),
   m_av_clock        (NULL   ),
   m_settings_changed(false  ),
@@ -218,7 +218,7 @@ bool COMXAudio::PortSettingsChanged()
   }
 
   SetDynamicRangeCompression((long)(CMediaSettings::Get().GetCurrentVideoSettings().m_VolumeAmplification * 100));
-  ApplyVolume();
+  UpdateAttenuation();
 
   if( m_omx_mixer.IsInitialized() )
   {
@@ -770,6 +770,8 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   m_submitted_eos = false;
   m_failed_eos = false;
   m_last_pts      = DVD_NOPTS_VALUE;
+  m_submitted     = 0.0f;
+  m_maxLevel      = 0.0f;
 
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize Input bps %d samplerate %d channels %d buffer size %d bytes per second %d",
       (int)m_pcm_input.nBitPerSample, (int)m_pcm_input.nSamplingRate, (int)m_pcm_input.nChannels, m_BufferLen, m_BytesPerSec);
@@ -844,7 +846,12 @@ bool COMXAudio::Deinitialize()
 
   m_dllAvUtil.Unload();
 
+  while(!m_ampqueue.empty())
+    m_ampqueue.pop_front();
+
   m_last_pts      = DVD_NOPTS_VALUE;
+  m_submitted     = 0.0f;
+  m_maxLevel      = 0.0f;
 
   /* dummy call to inform PiAudioAE that audo is inactive */
   CAEFactory::FreeStream(0);
@@ -872,6 +879,8 @@ void COMXAudio::Flush()
     m_omx_render_hdmi.FlushAll();
 
   m_last_pts      = DVD_NOPTS_VALUE;
+  m_submitted     = 0.0f;
+  m_maxLevel      = 0.0f;
   m_LostSync      = true;
   m_setStartTime  = true;
 }
@@ -882,7 +891,7 @@ void COMXAudio::SetDynamicRangeCompression(long drc)
   CSingleLock lock (m_critSection);
   m_amplification = powf(10.0f, (float)drc / 2000.0f);
   if (m_settings_changed)
-    ApplyVolume();
+    UpdateAttenuation();
 }
 
 //***********************************************************************************************
@@ -891,7 +900,7 @@ void COMXAudio::SetMute(bool bMute)
   CSingleLock lock (m_critSection);
   m_Mute = bMute;
   if (m_settings_changed)
-    ApplyVolume();
+    UpdateAttenuation();
 }
 
 //***********************************************************************************************
@@ -900,7 +909,7 @@ void COMXAudio::SetVolume(float fVolume)
   CSingleLock lock (m_critSection);
   m_CurrentVolume = fVolume;
   if (m_settings_changed)
-    ApplyVolume();
+    UpdateAttenuation();
 }
 
 //***********************************************************************************************
@@ -918,7 +927,7 @@ bool COMXAudio::ApplyVolume(void)
   double r = 1.0;
   const float* coeff = downmixing_coefficients_8;
 
-  // alternate coffeciciants that boost centre channel more
+  // alternate coefficients that boost centre channel more
   if(!CSettings::Get().GetBool("audiooutput.boostcentre") && m_format.m_channelLayout.Count() > 2)
     coeff = downmixing_coefficients_8_boostcentre;
 
@@ -1187,29 +1196,78 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
       }
     }
   }
-
+  m_submitted += (float)demuxer_samples / m_SampleRate;
   if (m_amplification != 1.0)
-  {
-    double level_pts = 0.0;
-    float level = GetMaxLevel(level_pts);
-    if (level_pts != 0.0)
-    {
-      float alpha_h = -1.0f/(0.025f*log10f(0.999f));
-      float alpha_r = -1.0f/(0.100f*log10f(0.900f));
-      float hold    = powf(10.0f, -1.0f / (alpha_h * g_advancedSettings.m_limiterHold));
-      float release = powf(10.0f, -1.0f / (alpha_r * g_advancedSettings.m_limiterRelease));
-      m_maxLevel = level > m_maxLevel ? level : hold * m_maxLevel + (1.0f-hold) * level;
-
-      float amp = m_amplification * m_desired_attenuation;
-
-      // want m_maxLevel * amp -> 1.0
-      m_desired_attenuation = std::min(1.0f, std::max(m_desired_attenuation / (amp * m_maxLevel), 1.0f/m_amplification));
-      m_attenuation = release * m_attenuation + (1.0f-release) * m_desired_attenuation;
-
-      ApplyVolume();
-    }
-  }
+    UpdateAttenuation();
   return len;
+}
+
+void COMXAudio::UpdateAttenuation()
+{
+  if (m_amplification == 1.0)
+  {
+    ApplyVolume();
+    return;
+  }
+
+  double level_pts = 0.0;
+  float level = GetMaxLevel(level_pts);
+  if (level_pts != 0.0)
+  {
+    amplitudes_t v;
+    v.level = level;
+    v.pts = level_pts;
+    m_ampqueue.push_back(v);
+  }
+  double stamp = m_av_clock->OMXMediaTime();
+  // discard too old data
+  while(!m_ampqueue.empty())
+  {
+    amplitudes_t &v = m_ampqueue.front();
+    /* we'll also consume if queue gets unexpectedly long to avoid filling memory */
+    if (v.pts == DVD_NOPTS_VALUE || v.pts < stamp || v.pts - stamp > DVD_SEC_TO_TIME(15.0))
+      m_ampqueue.pop_front();
+    else break;
+  }
+  float maxlevel = 0.0f, imminent_maxlevel = 0.0f;
+  for (int i=0; i < (int)m_ampqueue.size(); i++)
+  {
+    amplitudes_t &v = m_ampqueue[i];
+    maxlevel = std::max(maxlevel, v.level);
+    // check for maximum volume in next 200ms
+    if (v.pts != DVD_NOPTS_VALUE && v.pts < stamp + DVD_SEC_TO_TIME(0.2))
+      imminent_maxlevel = std::max(imminent_maxlevel, v.level);
+  }
+
+  if (maxlevel != 0.0)
+  {
+    float alpha_h = -1.0f/(0.025f*log10f(0.999f));
+    float alpha_r = -1.0f/(0.100f*log10f(0.900f));
+    float decay  = powf(10.0f, -1.0f / (alpha_h * g_advancedSettings.m_limiterHold));
+    float attack = powf(10.0f, -1.0f / (alpha_r * g_advancedSettings.m_limiterRelease));
+    // if we are going to clip imminently then deal with it now
+    if (imminent_maxlevel > m_maxLevel)
+      m_maxLevel = imminent_maxlevel;
+    // clip but not imminently can ramp up more slowly
+    else if (maxlevel > m_maxLevel)
+      m_maxLevel = attack * m_maxLevel + (1.0f-attack) * maxlevel;
+    // not clipping, decay more slowly
+    else
+      m_maxLevel = decay  * m_maxLevel + (1.0f-decay ) * maxlevel;
+
+    // want m_maxLevel * amp -> 1.0
+    float amp = m_amplification * m_attenuation;
+
+    // We fade in the attenuation over first couple of seconds
+    float start = std::min(std::max((m_submitted-1.0f), 0.0f), 1.0f);
+    float attenuation = std::min(1.0f, std::max(m_attenuation / (amp * m_maxLevel), 1.0f/m_amplification));
+    m_attenuation = (1.0f - start) * 1.0f/m_amplification + start * attenuation;
+  }
+  else
+  {
+    m_attenuation = 1.0f/m_amplification;
+  }
+  ApplyVolume();
 }
 
 //***********************************************************************************************
