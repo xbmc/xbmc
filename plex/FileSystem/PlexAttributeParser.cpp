@@ -215,6 +215,15 @@ void CPlexAttributeParserType::Process(const CURL &url, const CStdString &key, c
   CStdString lookupVal = boost::algorithm::to_lower_copy(std::string(value));
   EPlexDirectoryType dirType = XFILE::CPlexDirectory::GetDirectoryType(lookupVal);
 
+  if (dirType == PLEX_DIR_TYPE_PHOTO)
+  {
+    if (item->GetProperty("xmlElementName") == "Directory")
+    {
+      dirType = PLEX_DIR_TYPE_PHOTOALBUM;
+      lookupVal = "photoalbum";
+    }
+  }
+
   if (dirType != PLEX_DIR_TYPE_UNKNOWN)
   {
     item->SetProperty(key, lookupVal);

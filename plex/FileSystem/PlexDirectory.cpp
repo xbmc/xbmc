@@ -193,6 +193,7 @@ static DirectoryTypeMap g_typeMap = boost::assign::list_of<DirectoryTypeMap::rel
                                     (PLEX_DIR_TYPE_USER, "user")
                                     (PLEX_DIR_TYPE_RELEASE, "release")
                                     (PLEX_DIR_TYPE_PACKAGE, "package")
+                                    (PLEX_DIR_TYPE_PHOTOALBUM, "photoalbum")
                                     ;
 
 
@@ -320,6 +321,8 @@ CPlexDirectory::NewPlexElement(TiXmlElement *element, const CFileItem &parentIte
     if (parentItem.HasProperty("mediaTagVersion"))
       newItem->SetProperty("mediaTagVersion", parentItem.GetProperty("mediaTagVersion").asString());
   }
+
+  newItem->SetProperty("xmlElementName", element->ValueStr());
 
   CPlexDirectory::CopyAttributes(element, newItem.get(), baseUrl);
 
@@ -527,6 +530,12 @@ CStdString CPlexDirectory::GetContentFromType(EPlexDirectoryType typeNr)
       break;
     case PLEX_DIR_TYPE_CLIP:
       content = "clips";
+      break;
+    case PLEX_DIR_TYPE_PHOTO:
+      content = "photos";
+      break;
+    case PLEX_DIR_TYPE_PHOTOALBUM:
+      content = "photoalbums";
       break;
     default:
       break;
