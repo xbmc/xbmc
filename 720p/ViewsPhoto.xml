@@ -233,7 +233,7 @@
 					<posy>15</posy>
 					<width>700</width>
 					<height>690</height>
-					<itemlayout width="136" height="171">						
+					<itemlayout width="136" height="171">
 						<include>PhotoThumbCard</include>
 						<include>PhotoThumb</include>						
 						<control type="label">
