@@ -72,7 +72,7 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
   }
 
   /* PLEX */
-  if (action.GetID() == ACTION_NAV_BACK && m_openedFromPause)
+  if (action.GetID() == ACTION_NAV_BACK && (m_openedFromPause || g_application.IsPaused()))
     return true;
   /* END PLEX */
 
