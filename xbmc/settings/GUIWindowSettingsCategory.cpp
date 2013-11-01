@@ -134,6 +134,7 @@
 #include "Client/PlexServerDataLoader.h"
 #include "Client/PlexNetworkServiceBrowser.h"
 #include "AutoUpdate/PlexAutoUpdate.h"
+#include "plex/GUI/GUIWindowPlexStartupHelper.h"
 /* END PLEX */
 
 using namespace std;
@@ -828,6 +829,22 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") == CDDARIP_ENCODER_FLAC);
     }
+/* PLEX */
+    else if (strSetting.Equals("audiooutput.channels"))
+    {
+      CGUISpinControl *pControl = (CGUISpinControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI &&
+                                         g_guiSettings.GetBool("audiooutput.multichannellpcm"));
+#ifdef TARGET_DARWIN_OSX
+      if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI)
+      {
+        g_guiSettings.SetInt("audiooutput.channels", CGUIWindowPlexStartupHelper::GetNumberOfHDMIChannels());
+        pControl->SetValue(g_guiSettings.GetInt("audiooutput.channels"));
+        pControl->SetEnabled(false);
+      }
+#endif
+    }
+/* END PLEX */
     else if (
              strSetting.Equals("audiooutput.passthroughdevice") ||
              strSetting.Equals("audiooutput.ac3passthrough") ||
@@ -1113,6 +1130,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(enabled);      
     }
+    else if (strSetting.Equals("advanced.labelvideo")||
+             strSetting.Equals("advanced.labelaudio")||
+             strSetting.Equals("advanced.labeldebug"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(false);
+    }
+
     else if (strSetting.Equals("backgroundmusic.bgmusicenabled"))
     {
 //      if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
@@ -2133,16 +2158,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     {
       CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
     }
-    /* PLEX */
-    else if (strSetting.Equals("audiooutput.truehdpassthrough") ||  strSetting.Equals("audiooutput.dtshdpassthrough"))
-    {
-      CSetting *pSetting = g_guiSettings.GetSetting("audiooutput.audiodevice");
-      FillInAudioDevices(pSetting, false);
-
-      pSetting = g_guiSettings.GetSetting("audiooutput.passthroughdevice");
-      FillInAudioDevices(pSetting, true);
-    }
-    /* PLEX */
 
     CAEFactory::OnSettingsChange(strSetting);
   }

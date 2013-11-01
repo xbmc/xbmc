@@ -97,8 +97,8 @@ msgstr "If you proceed, you might not be able to control Plex/HT"
 #empty string with id 13142
 
 msgctxt "#13143"
-msgid "Search Remote Libraries"
-msgstr "Search Remote Libraries"
+msgid "Search remote libraries"
+msgstr "Search remote libraries"
 
 #empty strings from id 13144 to 13145
 
@@ -220,8 +220,8 @@ msgstr "Plex/HT requires a restart to change your"
 #empty strings from id 14040 to 15149
 
 msgctxt "#15150"
-msgid "Enable Global Slideshow"
-msgstr "Enable Global Slideshow"
+msgid "Use library artwork backgrounds"
+msgstr "Use library artwork backgrounds"
 
 #empty strings from id 15151 to 15204
 
@@ -296,12 +296,12 @@ msgstr "Enable low battery warning"
 #empty strings from id 18010 to 18100
 
 msgctxt "#18101"
-msgid "Theme Music Volume"
-msgstr "Theme Music Volume"
+msgid "Theme music volume"
+msgstr "Theme music volume"
 
 msgctxt "#18102"
-msgid "Enable Theme Music"
-msgstr "Enable Theme Music"
+msgid "Enable TV theme music"
+msgstr "Enable TV theme music"
 
 msgctxt "#18103"
 msgid "- Automatically Download Theme Music"
@@ -311,7 +311,43 @@ msgctxt "#18104"
 msgid "Enable Background Music"
 msgstr "Enable Background Music"
 
-#empty strings from id 18105 to 18999
+msgctxt "#18105"
+msgid "Advanced"
+msgstr "Advanced"
+
+msgctxt "#18106"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#18107"
+msgid "Music"
+msgstr "Music"
+
+msgctxt "#18108"
+msgid "Photos"
+msgstr "Photos"
+
+msgctxt "#18109"
+msgid "Video render method"
+msgstr "Video render method"
+
+msgctxt "#18110"
+msgid "HDMI output channels"
+msgstr "HDMI output channels"
+
+msgctxt "#18111"
+msgid "Advanced video"
+msgstr "Advanced video"
+
+msgctxt "#18112"
+msgid "Logging"
+msgstr "Logging"
+
+msgctxt "#18113"
+msgid "Theme music"
+msgstr "Theme music"
+
+#empty strings from id 18114 to 18999
 
 
 #empty strings from id 19022 to 20008
@@ -377,16 +413,16 @@ msgstr "Unsupported libcec interface version. %d is greater than the version Ple
 #empty strings from id 36014 to 39999
 
 msgctxt "#40000"
-msgid "Software Update"
-msgstr "Software Update"
+msgid "Software update"
+msgstr "Software update"
 
 msgctxt "#40001"
-msgid "Checking For Available Updates..."
-msgstr "Checking For Available Updates..."
+msgid "Checking for available updates..."
+msgstr "Checking for available updates..."
 
 msgctxt "#40002"
-msgid "Update Channel"
-msgstr "Update Channel"
+msgid "Update channel"
+msgstr "Update channel"
 
 msgctxt "#40003"
 msgid "Stable"
@@ -401,16 +437,16 @@ msgid "Ninja"
 msgstr "Ninja"
 
 msgctxt "#40016"
-msgid "Check For Update Now..."
-msgstr "Check For Update Now..."
+msgid "Check for update now..."
+msgstr "Check for update now..."
 
 msgctxt "#40017"
-msgid "Automatically Check For Updates"
-msgstr "Automatically Check For Updates"
+msgid "Automatically check for updates"
+msgstr "Automatically check for updates"
 
 msgctxt "#40018"
-msgid "Update and Restart"
-msgstr "Update and Restart"
+msgid "Update and restart"
+msgstr "Update and restart"
 
 msgctxt "#40029"
 msgid "Current version"
@@ -849,16 +885,20 @@ msgid "Channels"
 msgstr "Channels"
 
 msgctxt "#52201"
-msgid "Local Video Quality"
-msgstr "Local Video Quality"
+msgid "Local video quality"
+msgstr "Local video quality"
 
 msgctxt "#52202"
-msgid "Remote Video Quality"
-msgstr "Remote Video Quality"
+msgid "Remote video quality"
+msgstr "Remote video quality"
+
+msgctxt "#52203"
+msgid "Online video quality"
+msgstr "Online video quality"
 
 msgctxt "#52210"
-msgid "Show myPlex Queue and Recommendations"
-msgstr "Show myPlex Queue and Recommendations"
+msgid "Show myPlex queue and recommendations"
+msgstr "Show myPlex queue and recommendations"
 
 msgctxt "#52300"
 msgid "Media Server went away"

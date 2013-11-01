@@ -32,7 +32,7 @@ public:
   
   void SetupAudioStuff();
 
-  int GetNumberOfHDMIChannels();
+  static int GetNumberOfHDMIChannels();
 
 private:
   
