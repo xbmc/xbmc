@@ -186,7 +186,7 @@
 					<itemgap>5</itemgap>
 					<orientation>horizontal</orientation>
 					<control type="label" id="1">
-						<width min="10" max="710">auto</width>
+						<width min="10" max="520">auto</width>
 						<height>30</height>
 						<font>font30</font>
 						<align>left</align>
