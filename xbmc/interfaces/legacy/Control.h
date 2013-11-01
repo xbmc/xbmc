@@ -950,14 +950,15 @@ namespace XBMCAddon
                    const char* colorDiffuse = NULL);
 
       /**
-       * setImage(filename) -- Changes the image.
+       * setImage(filename, useCache) -- Changes the image.
        * 
        * filename       : string - image filename.
+       * useCache       : [opt] bool - true/use cache, false/don't use cache
        * 
        * example:
        *   - self.image.setImage('special://home/scripts/test.png')
        */
-      virtual void setImage(const char* imageFilename) throw (UnimplementedException);
+      virtual void setImage(const char* imageFilename, const bool useCache = true) throw (UnimplementedException);
 
       /**
        * setColorDiffuse(colorDiffuse) -- Changes the images color.
