@@ -38,6 +38,7 @@
 #include "OMXCore.h"
 #include "DllAvCodec.h"
 #include "DllAvUtil.h"
+#include "PCMRemap.h"
 
 #include "threads/CriticalSection.h"
 
@@ -60,7 +61,7 @@ public:
   float GetCacheTime();
   float GetCacheTotal();
   COMXAudio();
-  bool Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, bool bUsePassthrough, bool bUseHWDecode);
+  bool Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, uint64_t channelMap, bool bUsePassthrough, bool bUseHWDecode);
   bool PortSettingsChanged();
   ~COMXAudio();
 
@@ -99,6 +100,12 @@ public:
   float GetMaxLevel(double &pts);
   void VizPacket(const void* data, unsigned int len, double pts);
 
+  void BuildChannelMap(enum PCMChannels *channelMap, uint64_t layout);
+  int BuildChannelMapCEA(enum PCMChannels *channelMap, uint64_t layout);
+  void BuildChannelMapOMX(enum OMX_AUDIO_CHANNELTYPE *channelMap, uint64_t layout);
+  uint64_t GetChannelLayout(enum PCMLayout layout);
+  CAEChannelInfo GetAEChannelLayout(uint64_t layout);
+
 private:
   IAudioCallback* m_pCallback;
   bool          m_Initialized;
@@ -110,6 +117,8 @@ private:
   unsigned int  m_BytesPerSec;
   unsigned int  m_BufferLen;
   unsigned int  m_ChunkLen;
+  unsigned int  m_InputChannels;
+  unsigned int  m_OutputChannels;
   unsigned int  m_BitsPerSample;
   float         m_maxLevel;
   float         m_amplification;
@@ -146,6 +155,10 @@ private:
   } amplitudes_t;
   std::deque<amplitudes_t> m_ampqueue;
 
+  float m_downmix_matrix[OMX_AUDIO_MAXCHANNELS*OMX_AUDIO_MAXCHANNELS];
+
+  OMX_AUDIO_CHANNELTYPE m_input_channels[OMX_AUDIO_MAXCHANNELS];
+  OMX_AUDIO_CHANNELTYPE m_output_channels[OMX_AUDIO_MAXCHANNELS];
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_output;
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_input;
   OMX_AUDIO_PARAM_DTSTYPE     m_dtsParam;
@@ -164,12 +177,6 @@ protected:
   COMXCoreTunel     m_omx_tunnel_splitter_analog;
   COMXCoreTunel     m_omx_tunnel_splitter_hdmi;
   DllAvUtil         m_dllAvUtil;
-
-  OMX_AUDIO_CHANNELTYPE m_input_channels[OMX_AUDIO_MAXCHANNELS];
-
-  CAEChannelInfo    m_channelLayout;
-
-  static CAEChannelInfo    GetChannelLayout(AEAudioFormat format);
 
   static void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize);
   CCriticalSection m_critSection;
