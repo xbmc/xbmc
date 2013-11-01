@@ -68,7 +68,7 @@ package: extras
 	@echo "$(XBMCROOT)/xbmcapp-$(CPU)-debug.apk created"
 
 extras: libs
-	rm -rf xbmc/assets/python2.6/lib/
+	rm -rf xbmc/assets
 	mkdir -p xbmc/assets xbmc/res xbmc/res/raw xbmc/assets/python2.6/lib/
 	cp -rfp $(PREFIX)/share/xbmc/* ./xbmc/assets
 	find `pwd`/xbmc/assets/ -depth -name ".git" -exec rm -rf {} \;
