@@ -11,7 +11,7 @@
 	</include>
 	<variable name="ContainerContent">
 		<value condition="Container.Content(files)">files</value>
-		<value condition="Container.Content(files)">file</value>
+		<value condition="Container.Content(file)">file</value>
 		<value condition="Container.Content(songs)">songs</value>
 		<value condition="Container.Content(song)">song</value>
 		<value condition="Container.Content(artists)">artists</value>
@@ -32,6 +32,7 @@
 		<value condition="Container.Content(genres)">genres</value>
 		<value condition="Container.Content(years)">years</value>
 		<value condition="Container.Content(actors)">actors</value>
+		<value condition="Container.Content(actor)">actor</value>
 		<value condition="Container.Content(playlists)">playlists</value>
 		<value condition="Container.Content(playlist)">playlist</value>
 		<value condition="Container.Content(plugins)">plugins</value>
@@ -39,11 +40,52 @@
 		<value condition="Container.Content(channel)">channel</value>
 		<value condition="Container.Content(studios)">studios</value>
 		<value condition="Container.Content(directors)">directors</value>
+		<value condition="Container.Content(director)">director</value>
 		<value condition="Container.Content(plugincontent)">plugincontent</value>
 		<value condition="Container.Content(addons)">addons</value>
 		<value condition="Container.Content(secondary)">secondary</value>
 		<value condition="Container.Content(photos)">photos</value>
 		<value condition="Container.Content(photoalbum)">photoalbum</value>
+		<value/>
+	</variable>
+	<variable name="ListItemType">
+		<value condition="ListItem.Type(files)">files</value>
+		<value condition="ListItem.Type(file)">file</value>
+		<value condition="ListItem.Type(songs)">songs</value>
+		<value condition="ListItem.Type(song)">song</value>
+		<value condition="ListItem.Type(artists)">artists</value>
+		<value condition="ListItem.Type(artist)">artist</value>
+		<value condition="ListItem.Type(albums)">albums</value>
+		<value condition="ListItem.Type(album)">album</value>
+		<value condition="ListItem.Type(movies)">movies</value>
+		<value condition="ListItem.Type(movie)">movie</value>
+		<value condition="ListItem.Type(tvshows)">tvshows</value>
+		<value condition="ListItem.Type(tvshow)">tvshow</value>
+		<value condition="ListItem.Type(seasons)">seasons</value>
+		<value condition="ListItem.Type(season)">season</value>
+		<value condition="ListItem.Type(episodes)">episodes</value>
+		<value condition="ListItem.Type(episode)">episode</value>
+		<value condition="ListItem.Type(clips)">clips</value>
+		<value condition="ListItem.Type(clip)">clip</value>
+		<value condition="ListItem.Type(musicvideos)">musicvideos</value>
+		<value condition="ListItem.Type(genres)">genres</value>
+		<value condition="ListItem.Type(years)">years</value>
+		<value condition="ListItem.Type(actors)">actors</value>
+		<value condition="ListItem.Type(actor)">actor</value>
+		<value condition="ListItem.Type(playlists)">playlists</value>
+		<value condition="ListItem.Type(playlist)">playlist</value>
+		<value condition="ListItem.Type(plugins)">plugins</value>
+		<value condition="ListItem.Type(channels)">channels</value>
+		<value condition="ListItem.Type(channel)">channel</value>
+		<value condition="ListItem.Type(studios)">studios</value>
+		<value condition="ListItem.Type(directors)">directors</value>
+		<value condition="ListItem.Type(director)">director</value>
+		<value condition="ListItem.Type(plugincontent)">plugincontent</value>
+		<value condition="ListItem.Type(addons)">addons</value>
+		<value condition="ListItem.Type(secondary)">secondary</value>
+		<value condition="ListItem.Type(photo)">photo</value>
+		<value condition="ListItem.Type(photos)">photos</value>
+		<value condition="ListItem.Type(photoalbum)">photoalbum</value>
 		<value/>
 	</variable>
 	<variable name="ItemStatus">
@@ -207,7 +249,7 @@
 				<itemgap>5</itemgap>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Listitem.Type : [COLOR=orangeLight]$INFO[Listitem.Type][/COLOR]</label>
+					<label>Listitem.Type : [COLOR=orangeLight]$VAR[ListItemType][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
