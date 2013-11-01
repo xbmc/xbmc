@@ -191,6 +191,9 @@ bool CGUIWindowPVR::OnMessage(CGUIMessage& message)
 {
   bool bReturn = false;
   
+  if(m_windowChannels == NULL)
+    return false;
+  
   bReturn |= OnMessageClick(message);
   bReturn |= CGUIMediaWindow::OnMessage(message);
   bReturn |= m_windowChannels->OnMessage(message) ||
