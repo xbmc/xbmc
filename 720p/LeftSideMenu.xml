@@ -58,7 +58,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
-				<visible>Container.content(movies) | Container.content(tvshows) | Window.IsActive(2)</visible>
+				<visible>Container.content(movies) | Container.content(tvshows) | Window.IsActive(2) | Window.IsActive(501)</visible>
 			</control>
 			<control type="image">
 				<posy>680</posy>
@@ -387,9 +387,8 @@
 	</include>
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
-		<!-- MyVideoNav.xml -->
 		<control type="group">
-			<visible>!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode) + !Container.Content(episodes) + !Container.Content(seasons)</visible>
+			<visible>!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode) + !Container.Content(episodes) + !Container.Content(seasons) + !Container.Content(songs) + !Container.Content(albums)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
