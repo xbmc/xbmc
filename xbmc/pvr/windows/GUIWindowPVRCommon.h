@@ -24,6 +24,7 @@
 #include "windows/GUIMediaWindow.h"
 #include "GUIWindowPVRCommon.h"
 #include "threads/CriticalSection.h"
+#include "utils/Observer.h"
 
 namespace PVR
 {
@@ -31,22 +32,21 @@ namespace PVR
   {
     PVR_WINDOW_UNKNOWN         = 0,
     PVR_WINDOW_EPG             = 1,
-    PVR_WINDOW_CHANNELS_TV     = 2,
-    PVR_WINDOW_CHANNELS_RADIO  = 3,
+    PVR_WINDOW_CHANNELS        = 2,
     PVR_WINDOW_RECORDINGS      = 4,
     PVR_WINDOW_TIMERS          = 5,
     PVR_WINDOW_SEARCH          = 6
   };
 
   #define CONTROL_LIST_TIMELINE        10
-  #define CONTROL_LIST_CHANNELS_TV     11
-  #define CONTROL_LIST_CHANNELS_RADIO  12
+  #define CONTROL_LIST_CHANNELS        11
   #define CONTROL_LIST_RECORDINGS      13
   #define CONTROL_LIST_TIMERS          14
   #define CONTROL_LIST_GUIDE_CHANNEL   15
   #define CONTROL_LIST_GUIDE_NOW_NEXT  16
   #define CONTROL_LIST_SEARCH          17
 
+  #define CONTROL_LABELGUIDE           28
   #define CONTROL_LABELHEADER          29
   #define CONTROL_LABELGROUP           30
 
@@ -60,10 +60,12 @@ namespace PVR
   #define CONTROL_BTNGUIDE_NOW         38
   #define CONTROL_BTNGUIDE_NEXT        39
   #define CONTROL_BTNGUIDE_TIMELINE    40
+  #define CONTROL_BTNCHANNELS          41
+  #define CONTROL_BTNCHANNEL_GROUPS    42
 
   class CGUIWindowPVR;
 
-  class CGUIWindowPVRCommon
+  class CGUIWindowPVRCommon : public Observer
   {
     friend class CGUIWindowPVR;
 
@@ -90,16 +92,17 @@ namespace PVR
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const = 0;
     virtual void UpdateData(bool bUpdateSelectedFile = true) = 0;
+    virtual void UpdateButtons(void);
     virtual void SetInvalid(void);
 
     virtual void OnInitWindow(void);
     virtual void OnWindowUnload(void);
+    virtual bool OnMessage(CGUIMessage& message);
 
   protected:
     virtual bool SelectPlayingFile(void);
-    virtual bool OnMessageFocus(CGUIMessage &message);
 
-    virtual bool OnClickButton(CGUIMessage &message) = 0;
+    virtual bool OnClickButton(CGUIMessage &message);
     virtual bool OnClickList(CGUIMessage &message) = 0;
 
     virtual bool ActionDeleteTimer(CFileItem *item);
@@ -132,16 +135,17 @@ namespace PVR
     virtual void BeforeUpdate(const CStdString &strDirectory) {}
     virtual void AfterUpdate(CFileItemList& items) {}
 
-    CGUIWindowPVR *  m_parent;
-    PVRWindow        m_window;
-    unsigned int     m_iControlButton;
-    unsigned int     m_iControlList;
-    bool             m_bUpdateRequired;
-    int              m_iSelected;
-    SortOrder        m_iSortOrder;
-    SortBy           m_iSortMethod;
-    SortAttribute    m_iSortAttributes;
-    CCriticalSection m_critSection;
-    CDirectoryHistory m_history;
+    CGUIWindowPVR *       m_parent;
+    PVRWindow             m_window;
+    unsigned int          m_iControlButton;
+    unsigned int          m_iControlList;
+    bool                  m_bUpdateRequired;
+    bool                  m_bShowHiddenChannels;
+    int                   m_iSelected;
+    SortOrder             m_iSortOrder;
+    SortBy                m_iSortMethod;
+    SortAttribute         m_iSortAttributes;
+    CCriticalSection      m_critSection;
+    CDirectoryHistory     m_history;
   };
 }

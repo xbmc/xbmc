@@ -23,13 +23,12 @@
 #include "GUIWindowPVRCommon.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoDatabase.h"
-#include "utils/Observer.h"
 
 namespace PVR
 {
   class CGUIWindowPVR;
 
-  class CGUIWindowPVRRecordings : public CGUIWindowPVRCommon, private Observer
+  class CGUIWindowPVRRecordings : public CGUIWindowPVRCommon
   {
     friend class CGUIWindowPVR;
 

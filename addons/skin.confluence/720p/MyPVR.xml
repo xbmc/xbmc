@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol>32</defaultcontrol>
+	<defaultcontrol>50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
@@ -33,8 +33,16 @@
 			</control>
 			<control type="label">
 				<include>WindowTitleCommons</include>
+				<label>$INFO[Control.GetLabel(28),[COLOR=blue] - [/COLOR]]</label>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
 				<label>$INFO[Control.GetLabel(30),[COLOR=blue] - [/COLOR]]</label>
 			</control>
+		</control>
+		<control type="label" id="28">
+			<description>Empty so we can pass the values up one level</description>
+			<visible>False</visible>
 		</control>
 		<control type="label" id="29">
 			<description>Empty so we can pass the values up one level</description>
@@ -48,7 +56,7 @@
 			<description>Small Media Window</description>
 			<posx>530</posx>
 			<posy>80</posy>
-			<visible>Control.IsVisible(11) | Control.IsVisible(12)</visible>
+			<visible>Control.IsVisible(11)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>		
 			<control type="image">
@@ -110,7 +118,6 @@
 			<include>Window_OpenClose_Animation</include>
 			<include>EPGTimelineView</include> <!-- view id = 10 -->
 			<include>LiveTVChannelView</include> <!-- view id = 11 -->
-			<include>LiveRadioChannelView</include> <!-- view id = 12 -->
 			<include>LiveTVRecordingsView</include> <!-- view id = 13 -->
 			<include>LiveTVTimersView</include> <!-- view id = 14 -->
 			<include>LiveTVGuideChannelView</include> <!-- view id = 15 -->
@@ -154,6 +161,24 @@
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
+				<!-- 
+				<control type="button" id="41">
+					<description>Channels + toggle channel types</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>-</label>
+				</control>
+				 -->
+				<control type="button" id="42">
+					<description>Channel Groups</description>
+					<posx>0</posx>
+					<posy>40</posy>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>-</label>
+				</control>
 				<control type="button" id="32">
 					<description>TV Channels</description>
 					<posx>0</posx>
@@ -169,8 +194,6 @@
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>19024</label>
-					<onleft>12</onleft>
-					<onright>12</onright>
 				</control>
 				<control type="button" id="31">
 					<description>TV Guide</description>
@@ -178,7 +201,7 @@
 					<posy>80</posy>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
-					<label>$LOCALIZE[19222]: $LOCALIZE[19030]</label>
+					<label>-</label>
 				</control>
 				<control type="button" id="34">
 					<description>Recordings</description>

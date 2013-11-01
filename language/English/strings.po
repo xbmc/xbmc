@@ -8312,7 +8312,11 @@ msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr ""
 
-#empty strings from id 19282 to 19498
+msgctxt "#19282"
+msgid "All channels"
+msgstr ""
+
+#empty strings from id 19283 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"

@@ -53,13 +53,14 @@ using namespace PVR;
 using namespace EPG;
 
 CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window,
-    unsigned int iControlButton, unsigned int iControlList)
+                                         unsigned int iControlButton, unsigned int iControlList) : Observer()
 {
   m_parent          = parent;
   m_window          = window;
   m_iControlButton  = iControlButton;
   m_iControlList    = iControlList;
   m_bUpdateRequired = false;
+  m_bShowHiddenChannels = false;
   m_iSelected       = 0;
   m_iSortOrder      = SortOrderAscending;
   m_iSortMethod     = SortByDate;
@@ -88,11 +89,9 @@ const char *CGUIWindowPVRCommon::GetName(void) const
   switch(m_window)
   {
   case PVR_WINDOW_EPG:
-    return "epg";
-  case PVR_WINDOW_CHANNELS_RADIO:
-    return "radio";
-  case PVR_WINDOW_CHANNELS_TV:
-    return "tv";
+    return "guide";
+  case PVR_WINDOW_CHANNELS:
+    return m_parent->m_bRadio ? "radio" : "tv";
   case PVR_WINDOW_RECORDINGS:
     return "recordings";
   case PVR_WINDOW_SEARCH:
@@ -157,6 +156,46 @@ void CGUIWindowPVRCommon::OnInitWindow()
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
 }
 
+bool CGUIWindowPVRCommon::OnMessage(CGUIMessage& message)
+{
+  bool bReturn = false;
+  
+  switch (message.GetMessage())
+  {
+    case GUI_MSG_WINDOW_INIT:
+    {
+      bool bActivateWindow = false;
+      
+      CStdString dir = message.GetStringParam();
+      if(!dir.IsEmpty()) {
+        dir = dir.ToLower();
+        
+        if(dir.Equals("radio"))
+          m_parent->m_bRadio = true;
+        else if(dir.Equals("tv"))
+          m_parent->m_bRadio = false;
+        
+        bActivateWindow = dir.Equals(GetName());
+      }
+      else
+      {
+        bActivateWindow = (IsSavedView() || (m_parent->GetActiveView() == NULL && m_window == PVR_WINDOW_CHANNELS));
+      }
+      
+      if(bActivateWindow)
+      {
+        bool bIsActive = IsActive();
+        m_parent->SetActiveView(this);
+        
+        if (!bIsActive || m_bUpdateRequired)
+          UpdateData();
+      }
+    }
+  }
+
+  return bReturn;
+}
+
 bool CGUIWindowPVRCommon::SelectPlayingFile(void)
 {
   bool bReturn(false);
@@ -170,24 +209,21 @@ bool CGUIWindowPVRCommon::SelectPlayingFile(void)
   return bReturn;
 }
 
-bool CGUIWindowPVRCommon::OnMessageFocus(CGUIMessage &message)
+bool CGUIWindowPVRCommon::OnClickButton(CGUIMessage &message)
 {
-  bool bReturn = false;
-
-  if (message.GetMessage() == GUI_MSG_FOCUSED &&
-      (IsSelectedControl(message) || IsSavedView()))
+  if (IsSelectedButton(message) && !IsActive())
   {
     CLog::Log(LOGDEBUG, "CGUIWindowPVRCommon - %s - focus set to window '%s'", __FUNCTION__, GetName());
     bool bIsActive = IsActive();
     m_parent->SetActiveView(this);
-
+    
     if (!bIsActive || m_bUpdateRequired)
       UpdateData();
-
-    bReturn = true;
+    
+    return true;
   }
-
-  return bReturn;
+  
+  return false;
 }
 
 void CGUIWindowPVRCommon::OnWindowUnload(void)
@@ -891,4 +927,10 @@ void CGUIWindowPVRCommon::ShowBusyItem(void)
     busy_items.AddFront(pItem, 0);
   }
   m_parent->m_viewControl.SetItems(busy_items);
+}
+
+void CGUIWindowPVRCommon::UpdateButtons(void)
+{
+  m_parent->SetLabel(CONTROL_BTNCHANNELS, g_localizeStrings.Get(19019) + ": " + g_localizeStrings.Get(m_parent->m_bRadio ? 19021 : 19020));
+  m_parent->SetLabel(CONTROL_BTNCHANNEL_GROUPS, g_localizeStrings.Get(19141) + ": " + (m_parent->GetSelectedGroup()->GroupType() == PVR_GROUP_TYPE_INTERNAL ? g_localizeStrings.Get(19282) : m_parent->GetSelectedGroup()->GroupName()));
 }

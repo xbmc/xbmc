@@ -27,11 +27,14 @@
 #include "GUIWindowPVRTimers.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/addons/PVRClients.h"
+#include "guilib/Key.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "threads/SingleLock.h"
 
 using namespace PVR;
@@ -43,8 +46,7 @@ CGUIWindowPVR::CGUIWindowPVR(void) :
   m_guideGrid(NULL),
   m_currentSubwindow(NULL),
   m_savedSubwindow(NULL),
-  m_windowChannelsTV(NULL),
-  m_windowChannelsRadio(NULL),
+  m_windowChannels(NULL),
   m_windowGuide(NULL),
   m_windowRecordings(NULL),
   m_windowSearch(NULL),
@@ -52,6 +54,7 @@ CGUIWindowPVR::CGUIWindowPVR(void) :
   m_bWasReset(false)
 {
   m_loadType = LOAD_EVERY_TIME;
+  m_bRadio = false;
 }
 
 CGUIWindowPVR::~CGUIWindowPVR(void)
@@ -79,7 +82,7 @@ void CGUIWindowPVR::SetActiveView(CGUIWindowPVRCommon *window)
       m_currentSubwindow->m_iSelected = m_viewControl.GetSelectedItem();
     }
 
-    if (window == m_windowChannelsRadio || window == m_windowChannelsTV)
+    if (window == m_windowChannels)
       m_refreshWatch.StartZero();
 
     // update m_history
@@ -124,6 +127,22 @@ CGUIWindowPVRCommon *CGUIWindowPVR::GetSavedView(void) const
 
 bool CGUIWindowPVR::OnAction(const CAction &action)
 {
+  switch (action.GetID())
+  {
+  case ACTION_PREVIOUS_CHANNELGROUP:
+  case ACTION_NEXT_CHANNELGROUP:
+    {
+      // switch to next or previous group
+      CPVRChannelGroupPtr group = GetSelectedGroup();
+      CPVRChannelGroupPtr nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP ? group->GetNextGroup() : group->GetPreviousGroup();
+      SetSelectedGroup(nextGroup);
+      CGUIWindowPVRCommon *view = GetActiveView();
+      if(view)
+        view->UpdateData();
+      return true;
+    }
+  }
+
   CGUIWindowPVRCommon *view = GetActiveView();
   return (view && view->OnAction(action)) ||
       CGUIMediaWindow::OnAction(action);
@@ -149,9 +168,7 @@ void CGUIWindowPVR::OnInitWindow(void)
 
   CreateViews();
 
-  CSingleLock graphicsLock(g_graphicsContext);
-  SET_CONTROL_VISIBLE(CONTROL_LIST_TIMELINE);
-
+  CSingleLock graphicsLock(g_graphicsContext);  
   CSingleLock lock(m_critSection);
   if (m_savedSubwindow)
     m_savedSubwindow->OnInitWindow();
@@ -165,15 +182,27 @@ void CGUIWindowPVR::OnInitWindow(void)
 
   if (bReset)
   {
-    CGUIMessage msg(GUI_MSG_FOCUSED, GetID(), CONTROL_BTNCHANNELS_TV, 0, 0);
-    OnMessageFocus(msg);
+    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), CONTROL_BTNCHANNELS, 0, 0);
+    OnMessageClick(msg);
   }
 }
 
 bool CGUIWindowPVR::OnMessage(CGUIMessage& message)
 {
-  return (OnMessageFocus(message) ||OnMessageClick(message) ||
-      CGUIMediaWindow::OnMessage(message));
+  bool bReturn = false;
+  
+  if(m_windowChannels == NULL)
+    return false;
+  
+  bReturn |= OnMessageClick(message);
+  bReturn |= CGUIMediaWindow::OnMessage(message);
+  bReturn |= m_windowChannels->OnMessage(message) ||
+    m_windowGuide->OnMessage(message) ||
+    m_windowRecordings->OnMessage(message) ||
+    m_windowTimers->OnMessage(message) ||
+    m_windowSearch->OnMessage(message);
+  
+  return bReturn;
 }
 
 void CGUIWindowPVR::OnWindowLoaded(void)
@@ -184,8 +213,7 @@ void CGUIWindowPVR::OnWindowLoaded(void)
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
 
-  m_viewControl.AddView(GetControl(CONTROL_LIST_CHANNELS_TV));
-  m_viewControl.AddView(GetControl(CONTROL_LIST_CHANNELS_RADIO));
+  m_viewControl.AddView(GetControl(CONTROL_LIST_CHANNELS));
   m_viewControl.AddView(GetControl(CONTROL_LIST_RECORDINGS));
   m_viewControl.AddView(GetControl(CONTROL_LIST_TIMERS));
   m_viewControl.AddView(GetControl(CONTROL_LIST_GUIDE_CHANNEL));
@@ -228,57 +256,78 @@ void CGUIWindowPVR::UpdateButtons(void)
   m_windowGuide->UpdateButtons();
 }
 
-bool CGUIWindowPVR::OnMessageFocus(CGUIMessage &message)
-{
-  bool bReturn = false;
-
-  if (message.GetMessage() == GUI_MSG_FOCUSED)
-  {
-    m_windowChannelsRadio->OnMessageFocus(message) ||
-        m_windowChannelsTV->OnMessageFocus(message) ||
-        m_windowGuide->OnMessageFocus(message) ||
-        m_windowRecordings->OnMessageFocus(message) ||
-        m_windowSearch->OnMessageFocus(message) ||
-        m_windowTimers->OnMessageFocus(message);
-
-    m_savedSubwindow = NULL;
-  }
-
-  return bReturn;
-}
-
 bool CGUIWindowPVR::OnMessageClick(CGUIMessage &message)
 {
-  bool bReturn = false;
-
   if (message.GetMessage() == GUI_MSG_CLICKED)
   {
-    bReturn = m_windowChannelsRadio->OnClickButton(message) ||
-        m_windowChannelsTV->OnClickButton(message) ||
-        m_windowGuide->OnClickButton(message) ||
-        m_windowRecordings->OnClickButton(message) ||
-        m_windowSearch->OnClickButton(message) ||
-        m_windowTimers->OnClickButton(message) ||
-
-        m_windowChannelsRadio->OnClickList(message) ||
-        m_windowChannelsTV->OnClickList(message) ||
-        m_windowGuide->OnClickList(message) ||
-        m_windowRecordings->OnClickList(message) ||
-        m_windowSearch->OnClickList(message) ||
-        m_windowTimers->OnClickList(message);
+    switch (message.GetSenderId())
+    {
+    case CONTROL_BTNCHANNEL_GROUPS:
+      {
+        return OpenGroupDialogSelect();
+      }
+    case CONTROL_BTNCHANNELS_TV:
+    case CONTROL_BTNCHANNELS_RADIO:
+      {
+        m_bRadio = (message.GetSenderId() == CONTROL_BTNCHANNELS_RADIO);
+        SetActiveView(m_windowChannels);
+        m_windowChannels->UpdateData();
+        return true;
+      }
+    default:
+      {
+        return (m_windowChannels->OnClickButton(message) ||
+                m_windowGuide->OnClickButton(message) ||
+                m_windowRecordings->OnClickButton(message) ||
+                m_windowSearch->OnClickButton(message) ||
+                m_windowTimers->OnClickButton(message) ||
+                
+                m_windowChannels->OnClickList(message) ||
+                m_windowGuide->OnClickList(message) ||
+                m_windowRecordings->OnClickList(message) ||
+                m_windowSearch->OnClickList(message) ||
+                m_windowTimers->OnClickList(message));
+      }
+    }
   }
 
-  return bReturn;
+  return false;
+}
+
+bool CGUIWindowPVR::OpenGroupDialogSelect()
+{
+  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (dialog == NULL)
+    return false;
+  
+  CFileItemList options;
+  g_PVRChannelGroups->Get(m_bRadio)->GetGroupList(&options);
+  
+  dialog->Reset();
+  dialog->SetHeading(g_localizeStrings.Get(19146));
+  dialog->SetItems(&options);
+  dialog->SetMultiSelection(false);
+  dialog->SetSelected(m_selectedGroup->GroupName());
+  dialog->DoModal();
+  
+  if (!dialog->IsConfirmed())
+    return false;
+  
+  const CFileItemPtr item = dialog->GetSelectedItem();
+  if (item == NULL)
+    return false;
+  
+  SetSelectedGroup(g_PVRChannelGroups->Get(m_bRadio)->GetByName(item->m_strTitle));
+  GetActiveView()->UpdateData();
+  
+  return true;
 }
 
 void CGUIWindowPVR::CreateViews(void)
 {
   CSingleLock lock(m_critSection);
-  if (!m_windowChannelsRadio)
-    m_windowChannelsRadio = new CGUIWindowPVRChannels(this, true);
-
-  if (!m_windowChannelsTV)
-    m_windowChannelsTV = new CGUIWindowPVRChannels(this, false);
+  if (!m_windowChannels)
+    m_windowChannels = new CGUIWindowPVRChannels(this);
 
   if (!m_windowGuide)
     m_windowGuide = new CGUIWindowPVRGuide(this);
@@ -301,8 +350,7 @@ void CGUIWindowPVR::Reset(void)
   Cleanup();
   CreateViews();
 
-  m_windowChannelsRadio->ResetObservers();
-  m_windowChannelsTV->ResetObservers();
+  m_windowChannels->ResetObservers();
   m_windowGuide->ResetObservers();
   m_windowRecordings->ResetObservers();
   m_windowTimers->ResetObservers();
@@ -312,13 +360,9 @@ void CGUIWindowPVR::Reset(void)
 
 void CGUIWindowPVR::Cleanup(void)
 {
-  if (m_windowChannelsRadio)
-    m_windowChannelsRadio->UnregisterObservers();
-  SAFE_DELETE(m_windowChannelsRadio);
-
-  if (m_windowChannelsTV)
-    m_windowChannelsTV->UnregisterObservers();
-  SAFE_DELETE(m_windowChannelsTV);
+  if (m_windowChannels)
+    m_windowChannels->UnregisterObservers();
+  SAFE_DELETE(m_windowChannels);
 
   if (m_windowGuide)
     m_windowGuide->UnregisterObservers();
@@ -344,7 +388,7 @@ void CGUIWindowPVR::Cleanup(void)
 void CGUIWindowPVR::FrameMove()
 {
   CGUIWindowPVRCommon* view = GetActiveView();
-  if (view == m_windowChannelsRadio || view == m_windowChannelsTV)
+  if (view == m_windowChannels)
   {
     if (m_refreshWatch.GetElapsedMilliseconds() > CHANNELS_REFRESH_INTERVAL)
     {
@@ -353,4 +397,25 @@ void CGUIWindowPVR::FrameMove()
     }
   }
   CGUIMediaWindow::FrameMove();
+}
+
+CPVRChannelGroupPtr CGUIWindowPVR::GetSelectedGroup(void)
+{
+  if (!m_selectedGroup)
+    SetSelectedGroup(g_PVRManager.GetPlayingGroup(m_bRadio));
+  
+  return m_selectedGroup;
+}
+
+void CGUIWindowPVR::SetSelectedGroup(CPVRChannelGroupPtr group)
+{
+  if (!group)
+    return;
+  
+  if (m_selectedGroup)
+    m_selectedGroup->UnregisterObserver(m_windowChannels);
+  m_selectedGroup = group;
+  // we need to register the channel window to receive changes from the new group
+  m_selectedGroup->RegisterObserver(m_windowChannels);
+  g_PVRManager.SetPlayingGroup(m_selectedGroup);
 }

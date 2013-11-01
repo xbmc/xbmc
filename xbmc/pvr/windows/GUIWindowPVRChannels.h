@@ -21,26 +21,21 @@
  */
 
 #include "GUIWindowPVRCommon.h"
-#include "utils/Observer.h"
-#include "../channels/PVRChannelGroup.h"
 
 namespace PVR
 {
   class CGUIWindowPVR;
 
-  class CGUIWindowPVRChannels : public CGUIWindowPVRCommon, private Observer
+  class CGUIWindowPVRChannels : public CGUIWindowPVRCommon
   {
     friend class CGUIWindowPVR;
 
   public:
-    CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio);
+    CGUIWindowPVRChannels(CGUIWindowPVR *parent);
     virtual ~CGUIWindowPVRChannels(void);
 
     void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    CPVRChannelGroupPtr SelectedGroup(void);
-    void SetSelectedGroup(CPVRChannelGroupPtr group);
-    CPVRChannelGroupPtr SelectNextGroup(void);
     void UpdateData(bool bUpdateSelectedFile = true);
     void Notify(const Observable &obs, const ObservableMessage msg);
     void ResetObservers(void);
@@ -64,9 +59,5 @@ namespace PVR
     bool OnContextButtonLock(CFileItem *item, CONTEXT_BUTTON button);
 
     void ShowGroupManager(void);
-
-    CPVRChannelGroupPtr m_selectedGroup;
-    bool              m_bShowHiddenChannels;
-    bool              m_bRadio;
   };
 }
