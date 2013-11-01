@@ -1,6 +1,7 @@
 #!/bin/bash
 
 MAKEFLAGS=""
+BGPROCESSFILE="$2"
 
 if [ "$1" == "clean" ]
 then
@@ -27,3 +28,6 @@ make $MAKEFLAGS &&
 
 strip libmpeg2/.libs/*.dll &&
 cp libmpeg2/.libs/*.dll /xbmc/system/players/dvdplayer/
+
+#remove the bgprocessfile for signaling the process end
+rm $BGPROCESSFILE
