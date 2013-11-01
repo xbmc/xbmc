@@ -1027,41 +1027,18 @@
 	<!-- Pre-play Clip -->
 	<include name="PreplayClip">
 		<control type="group" id="777">
+			<posy>-28</posy>
 			<visible>Container.Content(clip)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
-			<control type="group">
-				<!-- left side big bg -->
-				<control type="image">
-					<posy>49</posy>
-					<posx>74</posx>
-					<width>447</width>
-					<height>672</height>
-					<texture>preplay-left-big-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
-				</control>
-				<!-- left side small bg -->
-				<control type="image">
-					<posy>384</posy>
-					<posx>74</posx>
-					<width>447</width>
-					<height>264</height>
-					<texture border="50">preplay-left-small-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-				</control>
-				<!-- right side plot bg -->
-				<control type="image">
-					<posy>384</posy>
-					<posx>506</posx>
-					<width>834</width>
-					<height>264</height>
-					<texture border="50" flipx="true">preplay-plot-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
-				</control>
+			<control type="largeimage">
+				<posy>28</posy>
+				<posx>0</posx>
+				<width>1280</width>
+				<height>720</height>
+				<texture>preplay-movie-episode-bg.png</texture>
+				<aspectratio>scale</aspectratio>
 			</control>
 			<!-- Source Icon -->
 			<control type="image">
