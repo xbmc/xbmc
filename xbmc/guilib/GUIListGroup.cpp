@@ -63,7 +63,6 @@ void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
 
 void CGUIListGroup::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  CPoint pos(GetPosition());
   g_graphicsContext.SetOrigin(m_posX, m_posY);
 
   CRect rect;
