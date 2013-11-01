@@ -22,6 +22,7 @@
 #include <list>
 #include "WinEventsIOS.h"
 #include "input/XBMC_vkeys.h"
+#include "input/SDLJoystick.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
 #include "threads/CriticalSection.h"
@@ -64,13 +65,12 @@ bool CWinEventsIOS::MessagePump()
       // the jbutton.which will be the keyID to translate using joystick.AppleRemote.xml
       // jbutton.holdTime is the time the button is hold in ms (for repeated keypresses)
       std::string joystickName = "AppleRemote";
-      bool isAxis = false;
       float fAmount = 1.0;
       unsigned char wKeyID = pumpEvent.jbutton.which;
       unsigned int holdTime = pumpEvent.jbutton.holdTime;
 
       CLog::Log(LOGDEBUG,"CWinEventsIOS: Button press keyID = %i", wKeyID);
-      ret |= g_application.ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount, holdTime);
+      ret |= g_application.ProcessJoystickEvent(joystickName, wKeyID, JACTIVE_BUTTON, fAmount, holdTime);
     }
     else
       ret |= g_application.OnEvent(pumpEvent);

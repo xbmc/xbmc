@@ -3094,7 +3094,7 @@ bool CApplication::ProcessEventServer(float frameTime)
           m_lastAxisMap[joystickName].erase(wKeyID);
       }
 
-      return ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount);
+      return ProcessJoystickEvent(joystickName, wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, fAmount);
     }
     else
     {
@@ -3138,7 +3138,7 @@ bool CApplication::ProcessEventServer(float frameTime)
     for (map<std::string, map<int, float> >::iterator iter = m_lastAxisMap.begin(); iter != m_lastAxisMap.end(); ++iter)
     {
       for (map<int, float>::iterator iterAxis = (*iter).second.begin(); iterAxis != (*iter).second.end(); ++iterAxis)
-        ProcessJoystickEvent((*iter).first, (*iterAxis).first, true, (*iterAxis).second);
+        ProcessJoystickEvent((*iter).first, (*iterAxis).first, JACTIVE_AXIS, (*iterAxis).second);
     }
   }
 
@@ -3162,7 +3162,7 @@ bool CApplication::ProcessEventServer(float frameTime)
   return false;
 }
 
-bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount, unsigned int holdTime /*=0*/)
+bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, short inputType, float fAmount, unsigned int holdTime /*=0*/)
 {
 #if defined(HAS_EVENT_SERVER)
   m_idleTimer.StartZero();
@@ -3183,7 +3183,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    bool fullRange = false;
 
    // Translate using regular joystick translator.
-   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, actionID, actionName, fullRange))
+   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, inputType, actionID, actionName, fullRange))
      return ExecuteInputAction( CAction(actionID, fAmount, 0.0f, actionName, holdTime) );
    else
      CLog::Log(LOGDEBUG, "ERROR mapping joystick action. Joystick: %s %i",joystickName.c_str(), wKeyID);
