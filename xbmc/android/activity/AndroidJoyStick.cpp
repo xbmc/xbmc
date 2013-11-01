@@ -34,39 +34,45 @@
 #include <math.h>
 #include <dlfcn.h>
 
+#define DEBUG_VERBOSE
+
 // mapping to axis IDs codes in keymaps.xmls
 enum {
   AXIS_LEFT_STICK_L_R  = 1,
   AXIS_LEFT_STICK_U_D  = 2,
-  AXIS_RIGHT_STICK_L_R = 3,
-  AXIS_RIGHT_STICK_U_D = 4,
-  AXIS_DPAD_U_D        = 5,
-  AXIS_DPAD_L_R        = 6,
+  AXIS_TRIGGER         = 3,
+  AXIS_RIGHT_STICK_L_R = 4,
+  AXIS_RIGHT_STICK_U_D = 5,
 };
 
-// mapping to button codes in keymaps.xmls
 typedef struct {
   int32_t nativeKey;
   int16_t xbmcID;
 } KeyMap;
 
-static const KeyMap GamePadMap[] = {
+// mapping to button codes in keymaps.xmls
+static const KeyMap ButtonMap[] = {
   { AKEYCODE_BUTTON_A        , 1 },
   { AKEYCODE_BUTTON_B        , 2 },
-  { AKEYCODE_BUTTON_C        , 3 },
-  { AKEYCODE_BUTTON_X        , 4 },
-  { AKEYCODE_BUTTON_Y        , 5 },
-  { AKEYCODE_BUTTON_Z        , 6 },
-  { AKEYCODE_BUTTON_L1       , 7 },
-  { AKEYCODE_BUTTON_R1       , 8 },
-  { AKEYCODE_BUTTON_L2       , 9 },
-  { AKEYCODE_BUTTON_R2       , 10 },
-  { AKEYCODE_BUTTON_THUMBL   , 11 },
-  { AKEYCODE_BUTTON_THUMBR   , 12 },
-  { AKEYCODE_BUTTON_START    , 13 }
+  { AKEYCODE_BUTTON_X        , 3 },
+  { AKEYCODE_BUTTON_Y        , 4 },
+  { AKEYCODE_BUTTON_L1       , 5 },
+  { AKEYCODE_BUTTON_R1       , 6 },
+  { AKEYCODE_BUTTON_SELECT   , 7 },
+  { AKEYCODE_BUTTON_START    , 8 },
+  { AKEYCODE_BUTTON_THUMBL   , 9 },
+  { AKEYCODE_BUTTON_THUMBR   , 10 },
+  { AKEYCODE_DPAD_UP         , 11 },
+  { AKEYCODE_DPAD_DOWN       , 12 },
+  { AKEYCODE_DPAD_LEFT       , 13 },
+  { AKEYCODE_DPAD_RIGHT      , 14 },
+  { AKEYCODE_BUTTON_L2       , 16 },
+  { AKEYCODE_BUTTON_R2       , 17 },
+  { AKEYCODE_BUTTON_C        , 51 },
+  { AKEYCODE_BUTTON_Z        , 52 },
 };
 
-// missing in early NDKs, should be present in r9+
+// missing in early NDKs, is present in r9b+
 extern float AMotionEvent_getAxisValue(const AInputEvent* motion_event, int32_t axis, size_t pointer_index);
 static typeof(AMotionEvent_getAxisValue) *p_AMotionEvent_getAxisValue;
 #define AMotionEvent_getAxisValue (*p_AMotionEvent_getAxisValue)
@@ -180,7 +186,7 @@ static void SetupJoySticks(APP_InputDeviceAxes *axes, int device)
     SetAxisFromValues(-0.5f, 0.5f, 0.1f, 0.0f, 1.0f, axes->rz_axis);
   }
 
-#if 1
+#ifdef DEBUG_VERBOSE
   LogAxisValues(AMOTION_EVENT_AXIS_X,     axes->x_axis);
   LogAxisValues(AMOTION_EVENT_AXIS_Y,     axes->y_axis);
   LogAxisValues(AMOTION_EVENT_AXIS_Z,     axes->z_axis);
@@ -227,12 +233,12 @@ bool CAndroidJoyStick::onJoyStickKeyEvent(AInputEvent *event)
     // GamePad events are AINPUT_EVENT_TYPE_KEY events,
     // trap them here and revector valid ones as JoyButtons
     // so we get keymap handling.
-    for (size_t i = 0; i < sizeof(GamePadMap) / sizeof(KeyMap); i++)
+    for (size_t i = 0; i < sizeof(ButtonMap) / sizeof(KeyMap); i++)
     {
-      if (keycode == GamePadMap[i].nativeKey)
+      if (keycode == ButtonMap[i].nativeKey)
       {
         uint32_t holdtime = 0;
-        uint8_t  button = GamePadMap[i].xbmcID;
+        uint8_t  button = ButtonMap[i].xbmcID;
         int32_t  action = AKeyEvent_getAction(event);
         int32_t  device = AInputEvent_getDeviceId(event);
 
@@ -313,11 +319,11 @@ void CAndroidJoyStick::ProcessMotionEvents(AInputEvent *event,
 
   // Dpad
   if (axes->y_hat.enabled)
-    ProcessHat(event, pointer_index,  axes->y_hat,  device, AXIS_DPAD_U_D, AMOTION_EVENT_AXIS_HAT_Y);
+    ProcessHat(event, pointer_index,  axes->y_hat,  device, AMOTION_EVENT_AXIS_HAT_Y);
   if (axes->x_hat.enabled)
-    ProcessHat(event, pointer_index,  axes->x_hat,  device, AXIS_DPAD_L_R, AMOTION_EVENT_AXIS_HAT_X);
+    ProcessHat(event, pointer_index,  axes->x_hat,  device, AMOTION_EVENT_AXIS_HAT_X);
 
-#if 0
+#ifdef DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "joystick event. x(%f),  y(%f)", axes->x_axis.value, axes->y_axis.value);
   CLog::Log(LOGDEBUG, "joystick event. z(%f), rz(%f)", axes->z_axis.value, axes->rz_axis.value);
   CLog::Log(LOGDEBUG, "joystick event. xhat(%f), yhat(%f)", axes->x_hat.value, axes->y_hat.value);
@@ -325,14 +331,33 @@ void CAndroidJoyStick::ProcessMotionEvents(AInputEvent *event,
 }
 
 bool CAndroidJoyStick::ProcessHat(AInputEvent *event, size_t pointer_index,
-  APP_InputDeviceAxis &hat, int device, int keymap_axis, int android_axis)
+  APP_InputDeviceAxis &hat, int device, int android_axis)
 {
   bool rtn = false;
   // Dpad (quantized to -1.0, 0.0 and 1.0)
   float value = AMotionEvent_getAxisValue(event, android_axis, pointer_index);
   if (value != hat.value)
   {
-    XBMC_JoyAxis(device, keymap_axis, value);
+    u_int8_t hatvalue = XBMC_HAT_CENTERED;
+    if (value != 0)
+      switch (android_axis)
+      {
+        case AMOTION_EVENT_AXIS_HAT_X:
+          if (value < 0)
+            hatvalue |= XBMC_HAT_LEFT;
+          else
+            hatvalue |= XBMC_HAT_RIGHT;
+          break;
+
+        case AMOTION_EVENT_AXIS_HAT_Y:
+          if (value < 0)
+            hatvalue |= XBMC_HAT_UP;
+          else
+            hatvalue |= XBMC_HAT_DOWN;
+          break;
+      }
+
+    XBMC_JoyHat(device, hatvalue);
     rtn = true;
   }
   hat.value = value;
@@ -369,7 +394,25 @@ void CAndroidJoyStick::XBMC_JoyAxis(uint8_t device, uint8_t axis, float value)
   newEvent.jaxis.axis   = axis;
   newEvent.jaxis.fvalue = value;
 
-  //CLog::Log(LOGDEBUG, "XBMC_Axis(%u, %u, %u, %f)", type, device, axis, value);
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "XBMC_Axis(%u, %u, %u, %f)", newEvent.type, device, axis, value);
+#endif
+  CWinEvents::MessagePush(&newEvent);
+}
+
+void CAndroidJoyStick::XBMC_JoyHat(uint8_t device, uint8_t value)
+{
+  XBMC_Event newEvent = {};
+
+  newEvent.type       = XBMC_JOYHATMOTION;
+  newEvent.jhat.type = XBMC_JOYHATMOTION;
+  newEvent.jhat.which  = device;
+  newEvent.jhat.hat   = 1;
+  newEvent.jhat.value = value;
+
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "XBMC_Hat(%u, %u, %u)", newEvent.type, device, value);
+#endif
   CWinEvents::MessagePush(&newEvent);
 }
 
@@ -384,8 +427,10 @@ void CAndroidJoyStick::XBMC_JoyButton(uint8_t device, uint8_t button, uint32_t h
   newEvent.jbutton.button = button;
   newEvent.jbutton.holdTime = holdtime;
 
-  //CXBMCApp::android_printf("CAndroidJoyStick::XBMC_JoyButton(%u, %u, %u, %d)",
-  //  newEvent.jbutton.type, newEvent.jbutton.which, newEvent.jbutton.button, newEvent.jbutton.holdTime);
+#ifdef DEBUG_VERBOSE
+  CXBMCApp::android_printf("CAndroidJoyStick::XBMC_JoyButton(%u, %u, %u, %d)",
+    newEvent.jbutton.type, newEvent.jbutton.which, newEvent.jbutton.button, newEvent.jbutton.holdTime);
+#endif
 
   CWinEvents::MessagePush(&newEvent);
 }

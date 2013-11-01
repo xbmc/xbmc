@@ -36,6 +36,17 @@
 #define XBMC_RELEASED	0
 #define XBMC_PRESSED	1
 
+/* Hat definitions */
+#define XBMC_HAT_CENTERED    0
+#define XBMC_HAT_UP          0x01
+#define XBMC_HAT_RIGHT       0x02
+#define XBMC_HAT_DOWN        0x04
+#define XBMC_HAT_LEFT        0x08
+#define XBMC_HAT_LEFTUP      XBMC_HAT_UP   | XBMC_HAT_LEFT
+#define XBMC_HAT_RIGHTUP     XBMC_HAT_UP   | XBMC_HAT_RIGHT
+#define XBMC_HAT_LEFTDOWN    XBMC_HAT_DOWN | XBMC_HAT_LEFT
+#define XBMC_HAT_RIGHTDOWN   XBMC_HAT_DOWN | XBMC_HAT_RIGHT
+
 /* Event enumerations */
 typedef enum {
        XBMC_NOEVENT = 0,        /* Unused (do not remove) */

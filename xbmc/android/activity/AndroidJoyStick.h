@@ -60,11 +60,12 @@ private:
   void  ProcessMotionEvents(AInputEvent *event, size_t pointer_index,
           int32_t device, APP_InputDeviceAxes *axes);
   bool  ProcessHat( AInputEvent *event, size_t pointer_index,
-          APP_InputDeviceAxis &hat, int device, int keymap_axis, int android_axis);
+          APP_InputDeviceAxis &hat, int device, int android_axis);
   bool  ProcessAxis(AInputEvent *event, size_t pointer_index,
           APP_InputDeviceAxis &axis, int device, int keymap_axis, int android_axis);
 
   void  XBMC_JoyAxis(uint8_t device, uint8_t axis, float value);
+  void  XBMC_JoyHat(uint8_t device, uint8_t value);
   void  XBMC_JoyButton(uint8_t device, uint8_t button, uint32_t holdtime, bool up);
 
   uint8_t               m_prev_device;

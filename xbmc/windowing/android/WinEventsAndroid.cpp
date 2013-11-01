@@ -25,6 +25,7 @@
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/XBMC_vkeys.h"
+#include "input/SDLJoystick.h"
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
 
@@ -43,6 +44,14 @@ enum {
 /************************************************************************/
 static bool different_event(XBMC_Event &curEvent, XBMC_Event &newEvent)
 {
+  // different type
+  if (curEvent.type != newEvent.type)
+    return true;
+
+  // Hat
+  if(newEvent.type == XBMC_JOYHATMOTION)
+    return (curEvent.jhat.value != newEvent.jhat.value);
+
   // different axis
   if (curEvent.jaxis.axis != newEvent.jaxis.axis)
     return true;
@@ -137,37 +146,51 @@ bool CWinEventsAndroid::MessagePump()
 
     if ((pumpEvent.type == XBMC_JOYBUTTONUP)   ||
         (pumpEvent.type == XBMC_JOYBUTTONDOWN) ||
-        (pumpEvent.type == XBMC_JOYAXISMOTION))
+        (pumpEvent.type == XBMC_JOYAXISMOTION) ||
+        (pumpEvent.type == XBMC_JOYHATMOTION))
     {
       int             item;
       int             type;
       uint32_t        holdTime;
       APP_InputDevice input_device;
       float           amount = 1.0f;
+      short           input_type;
 
       type = pumpEvent.type;
-      if (type == XBMC_JOYAXISMOTION)
+      switch (type)
       {
-        // The typical joystick keymap xml has the following where 'id' is the axis
-        //  and 'limit' is which action to choose (ie. Up or Down).
-        //  <axis id="5" limit="-1">Up</axis>
-        //  <axis id="5" limit="+1">Down</axis>
-        // One would think that limits is in reference to fvalue but
-        // it is really in reference to id :) The sign of item passed
-        // into ProcessJoystickEvent indicates the action mapping.
-        item = pumpEvent.jaxis.axis;
-        if (fabs(pumpEvent.jaxis.fvalue) < ALMOST_ZERO)
-          amount = 0.0f;
-        else if (pumpEvent.jaxis.fvalue  < 0.0f)
-          item = -item;
-        holdTime = 0;
-        input_device.id = pumpEvent.jaxis.which;
-      }
-      else
-      {
-        item = pumpEvent.jbutton.button;
-        holdTime = pumpEvent.jbutton.holdTime;
-        input_device.id = pumpEvent.jbutton.which;
+        case XBMC_JOYAXISMOTION:
+          // The typical joystick keymap xml has the following where 'id' is the axis
+          //  and 'limit' is which action to choose (ie. Up or Down).
+          //  <axis id="5" limit="-1">Up</axis>
+          //  <axis id="5" limit="+1">Down</axis>
+          // One would think that limits is in reference to fvalue but
+          // it is really in reference to id :) The sign of item passed
+          // into ProcessJoystickEvent indicates the action mapping.
+          item = pumpEvent.jaxis.axis;
+          if (fabs(pumpEvent.jaxis.fvalue) < ALMOST_ZERO)
+            amount = 0.0f;
+          else if (pumpEvent.jaxis.fvalue  < 0.0f)
+            item = -item;
+          holdTime = 0;
+          input_device.id = pumpEvent.jaxis.which;
+          input_type = JACTIVE_AXIS;
+          break;
+
+        case XBMC_JOYHATMOTION:
+          item = pumpEvent.jhat.hat | 0xFFF00000 | (pumpEvent.jhat.value<<16);
+          holdTime = 0;
+          input_device.id = pumpEvent.jhat.which;
+          input_type = JACTIVE_HAT;
+          break;
+
+        case XBMC_JOYBUTTONUP:
+        case XBMC_JOYBUTTONDOWN:
+          item = pumpEvent.jbutton.button;
+          holdTime = pumpEvent.jbutton.holdTime;
+          input_device.id = pumpEvent.jbutton.which;
+          input_type = JACTIVE_BUTTON;
+          break;
       }
 
       // look for device name in our inputdevice cache
@@ -187,7 +210,7 @@ bool CWinEventsAndroid::MessagePump()
         m_input_devices.push_back(input_device);
       }
 
-      if (type == XBMC_JOYAXISMOTION)
+      if (type == XBMC_JOYAXISMOTION || type == XBMC_JOYHATMOTION)
       {
         // Joystick autorepeat -> only handle axis
         CSingleLock lock(m_lasteventCond);
@@ -197,7 +220,7 @@ bool CWinEventsAndroid::MessagePump()
       if (fabs(amount) >= ALMOST_ZERO)
       {
         ret |= g_application.ProcessJoystickEvent(input_device.name,
-          item, type == XBMC_JOYAXISMOTION, amount, holdTime);
+          item, input_type, amount, holdTime);
       }
     }
     else
@@ -241,7 +264,8 @@ void CWinEventsAndroid::Process()
         // check for axis action events
         if (!m_lastevent.empty())
         {
-          if (fabs(m_lastevent.front().jaxis.fvalue) >= ALMOST_ZERO)
+          if ((m_lastevent.front().type == XBMC_JOYAXISMOTION && fabs(m_lastevent.front().jaxis.fvalue) >= ALMOST_ZERO)
+              || (m_lastevent.front().type == XBMC_JOYHATMOTION && m_lastevent.front().jhat.value > XBMC_HAT_CENTERED))
           {
             // new active event
             cur_event = m_lastevent.front();
