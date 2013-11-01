@@ -199,8 +199,7 @@
 						<control type="label">
 							<width min="29" max="200">auto</width>
 							<height>15</height>
-							<!--><label>[UPPERCASE]$LOCALIZE[31135][/UPPERCASE]</label>-->
-							<label>[UPPERCASE]Genre[/UPPERCASE]</label>
+							<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
 							<font>Condensed-18</font>
 							<include>Grey1</include>
 							<shadowcolor>ff333333</shadowcolor>
@@ -265,7 +264,6 @@
 					<posx>850</posx>
 					<posy>60</posy>
 					<width>480</width>
-					<!--><width>450</width>-->
 					<height>670</height>
 					<itemlayout width="235" height="223">
 						<include>MusicThumbCard</include>
@@ -364,9 +362,32 @@
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>true</visible>
 					</control>
-					<!-- Count -->
+					<!-- Genre -->
 					<control type="grouplist">
 						<posy>93</posy>
+						<orientation>horizontal</orientation>
+						<itemgap>10</itemgap>
+						<control type="label">
+							<width min="29" max="200">auto</width>
+							<height>15</height>
+							<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
+							<font>Condensed-18</font>
+							<include>Grey1</include>
+							<shadowcolor>ff333333</shadowcolor>
+							<visible>true</visible>
+						</control>
+						<control type="label">
+							<width min="29" max="600">auto</width>
+							<height>15</height>
+							<label>$INFO[ListItem.Property(Genre)]</label>
+							<font>Condensed-18</font>
+							<include>White2</include>
+							<visible>true</visible>
+						</control>
+					</control>
+					<!-- Count -->
+					<control type="grouplist">
+						<posy>123</posy>
 						<orientation>horizontal</orientation>
 						<itemgap>10</itemgap>
 						<control type="label">

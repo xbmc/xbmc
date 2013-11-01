@@ -326,7 +326,7 @@
 					<itemgap>10</itemgap>
 					<control type="label">
 						<include>LeftInfoFormatGrey</include>
-						<label>[UPPERCASE]Genre[/UPPERCASE]</label>
+						<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
 						<shadowcolor>ff333333</shadowcolor>
 						<visible>true</visible>
 					</control>
