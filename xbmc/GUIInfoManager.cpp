@@ -208,6 +208,7 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "starrating",       PLAYER_STAR_RATING },
                                   { "folderpath",       PLAYER_PATH },
                                   { "filenameandpath",  PLAYER_FILEPATH },
+                                  { "filename",         PLAYER_FILENAME },
                                   { "isinternetstream", PLAYER_ISINTERNETSTREAM },
                                   { "pauseenabled",     PLAYER_CAN_PAUSE },
                                   { "seekenabled",      PLAYER_CAN_SEEK }};
@@ -1404,6 +1405,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
       strLabel = GetDuration(TIME_FORMAT_HH_MM);
     break;
   case PLAYER_PATH:
+  case PLAYER_FILENAME:
   case PLAYER_FILEPATH:
     if (m_currentFile)
     {
@@ -1422,6 +1424,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
         strLabel = URIUtils::GetParentPath(strLabel);
       strLabel = URIUtils::GetParentPath(strLabel);
     }
+    else if (info == PLAYER_FILENAME)
+      strLabel = URIUtils::GetFileName(strLabel);
     break;
   case PLAYER_TITLE:
     {
