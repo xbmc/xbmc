@@ -33,6 +33,9 @@
 #include "FileItem.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
+#if defined(HAS_OMXPLAYER)
+#include "cores/omxplayer/OMXImage.h"
+#endif
 
 CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldHash)
 {
@@ -87,6 +90,18 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
   else if (m_details.hash == m_oldHash)
     return true;
 
+#if defined(HAS_OMXPLAYER)
+  if (COMXImage::CreateThumb(image, width, height, additional_info, CTextureCache::GetCachedPath(m_cachePath + ".jpg")))
+  {
+    m_details.width = width;
+    m_details.height = height;
+    m_details.file = m_cachePath + ".jpg";
+    if (out_texture)
+      *out_texture = LoadImage(CTextureCache::GetCachedPath(m_details.file), width, height, additional_info);
+    CLog::Log(LOGDEBUG, "Fast %s image '%s' to '%s': %p", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str(), out_texture);
+    return true;
+  }
+#endif
   CBaseTexture *texture = LoadImage(image, width, height, additional_info);
   if (texture)
   {

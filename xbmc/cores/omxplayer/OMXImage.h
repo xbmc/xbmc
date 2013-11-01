@@ -49,6 +49,7 @@ public:
   static bool CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height,
       unsigned int format, unsigned int pitch, const CStdString& destFile);
   static bool ClampLimits(unsigned int &width, unsigned int &height, unsigned int m_width, unsigned int m_height, bool transposed = false);
+  static bool CreateThumb(const CStdString& srcFile, unsigned int width, unsigned int height, std::string &additional_info, const CStdString& destFile);
 };
 
 class COMXImageFile
@@ -112,6 +113,29 @@ protected:
   OMX_BUFFERHEADERTYPE          *m_encoded_buffer;
   OMX_PARAM_PORTDEFINITIONTYPE  m_encoded_format;
   CCriticalSection              m_OMXSection;
+};
+
+class COMXImageReEnc
+{
+public:
+  COMXImageReEnc();
+  virtual ~COMXImageReEnc();
+
+  // Required overrides
+  void Close();
+  bool ReEncode(COMXImageFile &srcFile, unsigned int width, unsigned int height, void * &pDestBuffer, unsigned int &nDestSize);
+protected:
+  bool HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, bool port_settings_changed);
+  // Components
+  COMXCoreComponent             m_omx_decoder;
+  COMXCoreComponent             m_omx_resize;
+  COMXCoreComponent             m_omx_encoder;
+  COMXCoreTunel                 m_omx_tunnel_decode;
+  COMXCoreTunel                 m_omx_tunnel_resize;
+  OMX_BUFFERHEADERTYPE          *m_encoded_buffer;
+  CCriticalSection              m_OMXSection;
+  void                          *m_pDestBuffer;
+  unsigned int                  m_nDestAllocSize;
 };
 
 #endif
