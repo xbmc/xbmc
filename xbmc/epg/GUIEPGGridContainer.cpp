@@ -46,8 +46,9 @@ using namespace std;
 
 CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width,
                                            float height, ORIENTATION orientation, int scrollTime,
-                                           int preloadItems, int timeBlocks, int rulerUnit)
+                                           int preloadItems, int timeBlocks, int rulerUnit, const CTextureInfo& progressIndicatorTexture)
     : IGUIContainer(parentID, controlID, posX, posY, width, height)
+    , m_guiProgressIndicatorTexture(posX, posY, width, height, progressIndicatorTexture)
 {
   ControlType             = GUICONTAINER_EPGGRID;
   m_blocksPerPage         = timeBlocks;
@@ -108,6 +109,7 @@ void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList &d
   ProcessChannels(currentTime, dirtyregions);
   ProcessRuler(currentTime, dirtyregions);
   ProcessProgrammeGrid(currentTime, dirtyregions);
+  ProcessProgressIndicator(currentTime, dirtyregions);
 
   CGUIControl::Process(currentTime, dirtyregions);
 }
@@ -117,6 +119,7 @@ void CGUIEPGGridContainer::Render()
   RenderChannels();
   RenderRuler();
   RenderProgrammeGrid();
+  RenderProgressIndicator();
 
   CGUIControl::Render();
 }
@@ -538,6 +541,41 @@ void CGUIEPGGridContainer::RenderProgrammeGrid()
     RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
 
   g_graphicsContext.RestoreClipRegion();
+}
+
+void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  CPoint originRuler = CPoint(m_rulerPosX, m_rulerPosY) + m_renderOffset;
+  float width = ((CDateTime::GetUTCDateTime() - m_gridStart).GetSecondsTotal() * m_blockSize) / (MINSPERBLOCK * 60) - m_programmeScrollOffset;
+
+  if (m_orientation == VERTICAL)
+  {
+    m_guiProgressIndicatorTexture.SetWidth(width);
+    m_guiProgressIndicatorTexture.SetPosition(originRuler.x, originRuler.y);
+  }
+  else
+  {
+    m_guiProgressIndicatorTexture.SetHeight(width);
+    m_guiProgressIndicatorTexture.SetPosition(originRuler.x, originRuler.y);
+  }
+  
+  m_guiProgressIndicatorTexture.Process(currentTime);
+}
+
+void CGUIEPGGridContainer::RenderProgressIndicator()
+{
+  bool render = false;
+  
+  if (m_orientation == VERTICAL)
+    render = g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, m_gridWidth, m_height);
+  else
+    render = g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, m_width, m_gridHeight);
+  
+  if(render)
+  {
+    m_guiProgressIndicatorTexture.Render();
+    g_graphicsContext.RestoreClipRegion();
+  }
 }
 
 void CGUIEPGGridContainer::ProcessItem(float posX, float posY, CGUIListItem* item, CGUIListItem *&lastitem,

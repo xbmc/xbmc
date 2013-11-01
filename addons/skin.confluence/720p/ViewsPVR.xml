@@ -855,6 +855,7 @@
 				<scrolltime>350</scrolltime>
 				<timeblocks>40</timeblocks>
 				<rulerunit>6</rulerunit>
+        <progresstexture border="5">PVR-EpgProgressIndicator.png</progresstexture>
 				<onleft>31</onleft>
 				<onright>31</onright>
 				<onup>10</onup>
