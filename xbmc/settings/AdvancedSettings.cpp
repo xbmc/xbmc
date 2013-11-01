@@ -1296,3 +1296,22 @@ void CAdvancedSettings::SetDebugMode(bool debug)
     CLog::SetLogLevel(level);
   }
 }
+/* PLEX */
+void CAdvancedSettings::SetVisualizeDirtyRegions(bool visualize)
+{
+  m_guiVisualizeDirtyRegions  = visualize;
+  CLog::Log(LOGNOTICE, "Setting dirty regions vizualization to %s.", (visualize)?"true":"false");
+}
+
+void CAdvancedSettings::SetDirtyRegionsAlgorithm(int algorithm)
+{
+  m_guiAlgorithmDirtyRegions = algorithm;
+  CLog::Log(LOGNOTICE, "Setting dirty regions algorithm to %d.", algorithm);
+}
+
+void CAdvancedSettings::SetDirtyRegionsNoFlipTimeout(int timeout)
+{
+  m_guiDirtyRegionNoFlipTimeout = timeout;
+  CLog::Log(LOGNOTICE, "Setting dirty regions no flip timeout to %d.", timeout);
+}
+/* END PLEX */

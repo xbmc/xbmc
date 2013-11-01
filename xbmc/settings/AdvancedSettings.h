@@ -389,6 +389,10 @@ class CAdvancedSettings
     bool m_bAlwaysReinitCoreAudio;
     bool m_bHideFanouts;
     bool m_bForceJpegImageFormat;
+
+    void SetVisualizeDirtyRegions(bool visualize);
+    void SetDirtyRegionsAlgorithm(int algorithm);
+    void SetDirtyRegionsNoFlipTimeout(int timeout);
     /* END PLEX */
 };
 

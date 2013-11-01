@@ -347,7 +347,19 @@ msgctxt "#18113"
 msgid "Theme music"
 msgstr "Theme music"
 
-#empty strings from id 18114 to 18999
+msgctxt "#18114"
+msgid "Visualize dirty regions"
+msgstr "Visualize dirty regions"
+
+msgctxt "#18115"
+msgid "Dirty regions algorithm"
+msgstr "Dirty regions algorithm"
+
+msgctxt "#18116"
+msgid "Dirty regions no flip timeout (ms)"
+msgstr "Dirty regions no flip timeout (ms)"
+
+#empty strings from id 18117 to 18999
 
 
 #empty strings from id 19022 to 20008

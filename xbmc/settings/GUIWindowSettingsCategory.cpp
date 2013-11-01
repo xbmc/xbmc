@@ -1294,6 +1294,20 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   {
     g_advancedSettings.SetDebugMode(g_guiSettings.GetBool("debug.showloginfo"));
   }
+/* PLEX */
+  else if (strSetting.Equals("debug.visualizedirtyregions"))
+  {
+    g_advancedSettings.SetVisualizeDirtyRegions(g_guiSettings.GetBool("debug.visualizedirtyregions"));
+  }
+  else if (strSetting.Equals("debug.visualizedirtyregions"))
+  {
+    g_advancedSettings.SetDirtyRegionsAlgorithm(g_guiSettings.GetInt("debug.dirtyregionsalgorithm"));
+  }
+  else if (strSetting.Equals("debug.dirtyregionsnofliptimeout"))
+  {
+    g_advancedSettings.SetDirtyRegionsNoFlipTimeout(g_guiSettings.GetInt("debug.dirtyregionsnofliptimeout"));
+  }
+/* END PLEX */
   /*else if (strSetting.Equals("musicfiles.repeat"))
   {
     g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("musicfiles.repeat") ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
