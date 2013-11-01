@@ -216,6 +216,51 @@
 						<aspectratio align="center">keep</aspectratio>
 						<texture>$INFO[VideoPlayer.AudioChannels,flagging/audio/,.png]</texture>
 					</control>
+					<control type="group" id="1">
+						<width>85</width>
+						<height>35</height>
+						<visible>!IsEmpty(VideoPlayer.AudioLanguage)</visible>
+						<control type="image" id="1">
+							<posx>5</posx>
+							<posy>0</posy>
+							<description>Audio Language Image</description>
+							<width>80</width>
+							<height>35</height>
+							<texture>flagging/AudioLang.png</texture>
+						</control>
+						<control type="label" id="1">
+							<posx>38</posx>
+							<posy>2</posy>
+							<width>47</width>
+							<height>35</height>
+							<font>font13</font>
+							<align>left</align>
+							<label>$INFO[VideoPlayer.AudioLanguage]</label>
+							<textcolor>grey</textcolor>
+						</control>
+					</control>
+					<control type="group" id="1">
+						<width>85</width>
+						<height>35</height>
+						<visible>!IsEmpty(VideoPlayer.SubtitlesLanguage)</visible>
+						<control type="image" id="1">
+							<posx>5</posx>
+							<posy>0</posy>
+							<width>80</width>
+							<height>35</height>
+							<texture>flagging/SubLang.png</texture>
+						</control>
+						<control type="label" id="1">
+							<posx>38</posx>
+							<posy>2</posy>
+							<width>47</width>
+							<height>35</height>
+							<font>font13</font>
+							<align>left</align>
+							<label>$INFO[VideoPlayer.SubtitlesLanguage]</label>
+							<textcolor>grey</textcolor>
+						</control>
+					</control>
 				</control>
 				<control type="label" id="1">
 					<posx>0</posx>
