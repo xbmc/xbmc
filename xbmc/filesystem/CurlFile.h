@@ -75,6 +75,7 @@ namespace XFILE
       void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void SetContentEncoding(CStdString encoding)               { m_contentencoding = encoding; }
+      void SetAcceptCharset(const std::string& charset)          { m_acceptCharset = charset; }
       void SetTimeout(int connecttimeout)                        { m_connecttimeout = connecttimeout; }
       void SetLowSpeedTime(int lowspeedtime)                     { m_lowspeedtime = lowspeedtime; }
       void SetPostData(CStdString postdata)                      { m_postdata = postdata; }
@@ -160,6 +161,7 @@ namespace XFILE
       ProxyType       m_proxytype;
       CStdString      m_customrequest;
       CStdString      m_contentencoding;
+      std::string     m_acceptCharset;
       CStdString      m_ftpauth;
       CStdString      m_ftpport;
       CStdString      m_binary;
