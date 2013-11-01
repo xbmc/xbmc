@@ -33,6 +33,42 @@ static str2str _qualities = boost::assign::list_of<std::pair<std::string, std::s
   ("3000", "75") ("4000", "100") ("8000", "60") ("10000", "75") ("12000", "90") ("20000", "100");
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+PlexIntStringMap CPlexTranscoderClient::getOnlineQualties()
+{
+  PlexIntStringMap qual;
+  qual[PLEX_ONLINE_QUALITY_ALWAYS_ASK] = g_localizeStrings.Get(13181);
+  qual[PLEX_ONLINE_QUALITY_1080p] = g_localizeStrings.Get(13182);
+  qual[PLEX_ONLINE_QUALITY_720p] = g_localizeStrings.Get(13183);
+  qual[PLEX_ONLINE_QUALITY_480p] = g_localizeStrings.Get(13184);
+  qual[PLEX_ONLINE_QUALITY_SD] = g_localizeStrings.Get(13185);
+
+  return qual;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+int CPlexTranscoderClient::SelectAOnlineQuality(int currentQuality)
+{
+  PlexIntStringMap qualities = getOnlineQualties();
+
+  CGUIDialogSelect* select = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (!select)
+    return currentQuality;
+
+  int idx = 0;
+  BOOST_FOREACH(PlexIntStringPair p, qualities)
+  {
+    select->Add(p.second);
+    if (p.first == currentQuality)
+      select->SetSelected(idx);
+
+    idx++;
+  }
+
+  select->DoModal();
+  return select->GetSelectedLabel();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 int CPlexTranscoderClient::SelectATranscoderQuality(CPlexServerPtr server, int currentQuality)
 {

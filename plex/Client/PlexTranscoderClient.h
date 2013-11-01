@@ -13,6 +13,12 @@
 #include "FileItem.h"
 #include "URL.h"
 
+#define PLEX_ONLINE_QUALITY_ALWAYS_ASK 0
+#define PLEX_ONLINE_QUALITY_1080p 1
+#define PLEX_ONLINE_QUALITY_720p 2
+#define PLEX_ONLINE_QUALITY_480p 3
+#define PLEX_ONLINE_QUALITY_SD 4
+
 class CPlexTranscoderClient
 {
 public:
@@ -23,6 +29,8 @@ public:
   static CURL GetTranscodeURL(CPlexServerPtr server, const CFileItem& item);
   static std::string GetCurrentBitrate(bool local);
   static CURL GetTranscodeStopURL(CPlexServerPtr server);
+  static PlexIntStringMap getOnlineQualties();
+  static int SelectAOnlineQuality(int currentQuality);
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexTranscoderClient__) */

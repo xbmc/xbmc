@@ -135,6 +135,7 @@
 #include "Client/PlexNetworkServiceBrowser.h"
 #include "AutoUpdate/PlexAutoUpdate.h"
 #include "plex/GUI/GUIWindowPlexStartupHelper.h"
+#include "PlexMediaDecisionEngine.h"
 /* END PLEX */
 
 using namespace std;
@@ -2247,6 +2248,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
       else
         g_guiSettings.SetString("plexmediaserver.remotequalitystr", g_localizeStrings.Get(42999));
     }
+  }
+  else if (strSetting.Equals("plexmediaserver.onlinemediaqualitystr"))
+  {
+    int quality = CPlexTranscoderClient::SelectAOnlineQuality(g_guiSettings.GetInt("plexmediaserver.onlinemediaquality"));
+    PlexIntStringMap q = CPlexTranscoderClient::getOnlineQualties();
+    g_guiSettings.SetInt("plexmediaserver.onlinemediaquality", quality);
+    g_guiSettings.SetString("plexmediaserver.onlinemediaqualitystr", q[quality].c_str());
   }
   // Check manual server.
   else if (strSetting.Equals("plexmediaserver.manualaddress") || strSetting.Equals("plexmediaserver.address"))
