@@ -995,8 +995,8 @@ void CGUISettings::Initialize()
   AddString(adva, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 
 //  AddCategory(SETTINGS_APPEARANCE, "window", 0);
-//  AddInt(NULL, "window.width",  0, 1280, 10, 1, INT_MAX, SPIN_CONTROL_INT);
-//  AddInt(NULL, "window.height", 0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);
+  AddInt(NULL, "window.width",  0, 1280, 10, 1, INT_MAX, SPIN_CONTROL_INT);
+  AddInt(NULL, "window.height", 0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);
 
 //  AddPath(NULL,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 
