@@ -44,12 +44,21 @@ if(NOT TARGET_WIN32)
   endif(ENABLE_PYTHON)
   
   set(plugins "${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/system/ImageLib-${ARCH}.so")
-  message(${CMAKE_INSTALL_PREFIX}/${TARGET}.app)
   fixup_bundle("${CMAKE_INSTALL_PREFIX}/${TARGET}.app" "${plugins};${INST_LIBS}${PYTHON_DYLIB}" "${DEPENDDIR}/lib;${DEPENDDIR}/Frameworks;${DEPENDDIR}/lib64" COMPONENT RUNTIME)
 
   if(TARGET_COMMON_DARWIN)
-    message("Signing binary: ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app")
+    file(GLOB_RECURSE DYLIBS ${CMAKE_INSTALL_PREFIX}/*.dylib)
+    foreach(LIB ${DYLIBS})
+      message("Signing: ${LIB}")
+      execute_process(COMMAND codesign --force --sign "Developer ID Application: Plex Inc." "${LIB}")
+    endforeach(LIB ${DYLIBS})
+
+    message("Signing binary: ${EXECUTABLE_NAME}.app")
     execute_process(COMMAND codesign --force --sign "Developer ID Application: Plex Inc." -r ${PLEXDIR}/Resources/requirement.bin "${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app")
+
+    message("Verifing signature")
+    execute_process(COMMAND codesign --verbose=4 --verify "${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app")
+    execute_process(COMMAND spctl --verbose=4 --assess --type execute "${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app")
   endif(TARGET_COMMON_DARWIN)
 else(NOT TARGET_WIN32)
   # On win we use this for code signing
