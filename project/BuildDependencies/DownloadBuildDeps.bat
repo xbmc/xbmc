@@ -44,3 +44,4 @@ IF NOT EXIST %FORMED_OK_FLAG% (
 cd %CUR_PATH%
 
 rmdir %TMP_PATH% /S /Q
+EXIT /B 0
