@@ -600,25 +600,50 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
             }
           }
         }
-        else if (fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_ARTIST)
+        else if ((fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_ALBUM ||
+                  fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK) &&
+                 (augItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_ARTIST ||
+                  augItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_ALBUM))
         {
-          std::pair<CStdString, CVariant> p;
-          BOOST_FOREACH(p, augItem->m_mapProperties)
+          for (int i = 0; i < fileItems.Size(); i++)
           {
-            /* we only insert the properties if they are not available */
-            if (fileItems.m_mapProperties.find(p.first) == fileItems.m_mapProperties.end())
+            CFileItemPtr item = fileItems.Get(i);
+            if (!item)
+              continue;
+
+
+            std::pair<CStdString, CVariant> p;
+            BOOST_FOREACH(p, augItem->m_mapProperties)
             {
-              fileItems.m_mapProperties[p.first] = p.second;
+              /* we only insert the properties if they are not available */
+              if (item->m_mapProperties.find(p.first) == item->m_mapProperties.end())
+              {
+                item->m_mapProperties[p.first] = p.second;
+              }
             }
-          }
 
-          fileItems.AppendArt(augItem->GetArt());
+            std::pair<CStdString, CStdString> sP;
+            BOOST_FOREACH(sP, augItem->GetArt())
+            {
+              if (!item->HasArt(sP.first))
+                item->SetArt(sP.first, sP.second);
+            }
 
-          if (fileItems.HasMusicInfoTag() && augItem->HasMusicInfoTag())
-          {
-            MUSIC_INFO::CMusicInfoTag* musicInfoTag = fileItems.GetMusicInfoTag();
-            MUSIC_INFO::CMusicInfoTag* musicInfoTag2 = augItem->GetMusicInfoTag();
-            musicInfoTag->SetGenre(musicInfoTag2->GetGenre());
+            if (augItem->HasMusicInfoTag())
+            {
+              MUSIC_INFO::CMusicInfoTag* musicInfoTag = item->GetMusicInfoTag();
+              MUSIC_INFO::CMusicInfoTag* musicInfoTag2 = augItem->GetMusicInfoTag();
+
+              std::vector<std::string> genres = musicInfoTag2->GetGenre();
+              std::vector<std::string> genres2 = musicInfoTag->GetGenre();
+              BOOST_FOREACH(std::string g, genres)
+              {
+                if (std::find(genres2.begin(), genres2.end(), g) == genres2.end())
+                  genres2.push_back(g);
+              }
+
+              musicInfoTag->SetGenre(genres2);
+            }
           }
         }
       }
@@ -652,7 +677,9 @@ void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     m_augmentationItems.push_back(list);
 
     /* Fire off some more augmentation events if needed */
-    if (list->GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON &&
+    if ((list->GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON ||
+         list->GetPlexDirectoryType() == PLEX_DIR_TYPE_ALBUM ||
+         list->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK) &&
         list->Size() > 0 &&
         list->Get(0)->HasProperty("parentKey"))
     {

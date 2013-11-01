@@ -17,6 +17,7 @@ class CPlexDirectoryTypeParserAlbum : public CPlexDirectoryTypeParserBase
 {
   public:
     virtual void Process(CFileItem& item, CFileItem& mediaContainer, TiXmlElement* itemElement);
+    void ParseTag(CFileItem &item, CFileItem &tagItem);
 };
 
 class CPlexDirectoryTypeParserTrack : public CPlexDirectoryTypeParserVideo
@@ -26,7 +27,7 @@ public:
   virtual void Process(CFileItem& item, CFileItem& mediaContainer, TiXmlElement* itemElement);
 };
 
-class CPlexDirectoryTypeParserArtist : public CPlexDirectoryTypeParserVideo
+class CPlexDirectoryTypeParserArtist : public CPlexDirectoryTypeParserAlbum
 {
 public:
   CPlexDirectoryTypeParserArtist() {}
