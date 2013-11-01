@@ -40,15 +40,17 @@
       </group>
     </category>
     <category id="audiooutput" label="772" help="36360">
-      <group id="2">
+      <group id="1">
         <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
-          <level>2</level>
+          <level>1</level>
           <default>DirectSound:default</default>
           <constraints>
             <options>audiodevices</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
+      </group>
+      <group id="3">
         <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
           <level>2</level>
           <default>DirectSound:default</default>
@@ -56,14 +58,14 @@
             <options>audiodevicespassthrough</options>
           </constraints>
           <dependencies>
-            <dependency type="enable">
-              <or>
-                <condition setting="audiooutput.mode">1</condition> <!-- AUDIO_IEC958 -->
-                <condition setting="audiooutput.mode">2</condition> <!-- AUDIO_HDMI -->
-              </or>
+            <dependency type="visible">
+              <and>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.passthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+              </and>
             </dependency>
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
     </category>

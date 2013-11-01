@@ -39,6 +39,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 using namespace std;
 
@@ -205,12 +206,12 @@ bool COMXAudio::PortSettingsChanged()
     if(!m_omx_splitter.Initialize("OMX.broadcom.audio_splitter", OMX_IndexParamAudioInit))
       return false;
   }
-  if (CSettings::Get().GetBool("audiooutput.dualaudio") || CSettings::Get().GetInt("audiooutput.mode") == AUDIO_ANALOG)
+  if (CSettings::Get().GetBool("audiooutput.dualaudio") || CSettings::Get().GetString("audiooutput.audiodevice") == "Analogue")
   {
     if(!m_omx_render_analog.Initialize("OMX.broadcom.audio_render", OMX_IndexParamAudioInit))
       return false;
   }
-  if (CSettings::Get().GetBool("audiooutput.dualaudio") || CSettings::Get().GetInt("audiooutput.mode") == AUDIO_HDMI)
+  if (CSettings::Get().GetBool("audiooutput.dualaudio") || CSettings::Get().GetString("audiooutput.audiodevice") == "HDMI")
   {
     if(!m_omx_render_hdmi.Initialize("OMX.broadcom.audio_render", OMX_IndexParamAudioInit))
       return false;
@@ -235,6 +236,8 @@ bool COMXAudio::PortSettingsChanged()
     m_pcm_output.eChannelMapping[0] = OMX_AUDIO_ChannelLF;
     m_pcm_output.eChannelMapping[1] = OMX_AUDIO_ChannelRF;
     m_pcm_output.nChannels = 2;
+    /* limit samplerate (through resampling) if requested */
+    m_pcm_output.nSamplingRate = std::min((int)m_pcm_output.nSamplingRate, CSettings::Get().GetInt("audiooutput.samplerate"));
 
     m_pcm_output.nPortIndex = m_omx_mixer.GetOutputPort();
     omx_err = m_omx_mixer.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
@@ -774,6 +777,9 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize device passthrough %d hwdecode %d",
      m_Passthrough, m_HWDecode);
 
+  /* dummy call to inform PiAudioAE that audo is active */
+  CAEFactory::MakeStream((enum AEDataFormat)0, 0, 0, (CAEChannelInfo)0, 0);
+
   return true;
 }
 
@@ -839,6 +845,9 @@ bool COMXAudio::Deinitialize()
   m_dllAvUtil.Unload();
 
   m_last_pts      = DVD_NOPTS_VALUE;
+
+  /* dummy call to inform PiAudioAE that audo is inactive */
+  CAEFactory::FreeStream(0);
 
   return true;
 }

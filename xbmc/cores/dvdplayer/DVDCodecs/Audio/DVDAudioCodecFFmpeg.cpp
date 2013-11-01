@@ -74,10 +74,9 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
-#if defined(TARGET_DARWIN)
-  int audioMode = CSettings::Get().GetInt("audiooutput.mode");
-  if (audioMode == AUDIO_HDMI)
-    m_bLpcmMode = CSettings::Get().GetBool("audiooutput.multichannellpcm");
+#if defined(TARGET_DARWIN_OSX)
+  if (CSettings::Get().GetInt("audiooutput.channels") >  AE_CH_LAYOUT_2_0)
+    m_bLpcmMode = true;
 #endif
 
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);

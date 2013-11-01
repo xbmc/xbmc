@@ -37,6 +37,7 @@
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
 #include "guilib/LocalizeStrings.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 #define PLAYERCOREFACTORY_XML "playercorefactory.xml"
 
@@ -189,13 +190,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
     if (bAdd)
     {
-      if( CSettings::Get().GetInt("audiooutput.mode") == AUDIO_ANALOG )
-      {
-        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding PAPlayer (%d)", EPC_PAPLAYER);
-        vecCores.push_back(EPC_PAPLAYER);
-      }
-      else if (url.GetFileType().Equals("ac3") 
-            || url.GetFileType().Equals("dts"))
+      if ((url.GetFileType().Equals("ac3") && !CAEFactory::SupportsRaw(AE_FMT_AC3))
+            || (url.GetFileType().Equals("dts") && !CAEFactory::SupportsRaw(AE_FMT_DTS)))
       {
         CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding DVDPlayer (%d)", EPC_DVDPLAYER);
         vecCores.push_back(EPC_DVDPLAYER);
