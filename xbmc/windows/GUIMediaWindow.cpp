@@ -829,8 +829,15 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     else if (iWindow == WINDOW_FILES || iWindow == WINDOW_PROGRAMS)
       showLabel = 1026;
   }
-  if (strDirectory.Equals("sources://video/"))
+  if (m_vecItems->GetPath().Equals("sources://video/"))
     showLabel = 999;
+  else if (m_vecItems->GetPath().Equals("sources://music/"))
+    showLabel = 998;
+  else if (m_vecItems->GetPath().Equals("sources://pictures/"))
+    showLabel = 997;
+  else if (m_vecItems->GetPath().Equals("sources://programs/") ||
+           m_vecItems->GetPath().Equals("sources://files/"))
+    showLabel = 1026;
   if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
     CStdString strLabel = g_localizeStrings.Get(showLabel);
@@ -1478,7 +1485,13 @@ void CGUIMediaWindow::OnInitWindow()
 {
   // initial fetch is done unthreaded to ensure the items are setup prior to skin animations kicking off
   m_rootDir.SetAllowThreads(false);
+
+  // the start directory may change during Refresh
+  bool updateStartDirectory = (m_startDirectory == m_vecItems->GetPath());
   Refresh();
+  if (updateStartDirectory)
+    m_startDirectory = m_vecItems->GetPath();
+
   m_rootDir.SetAllowThreads(true);
 
   if (m_iSelectedItem > -1)
