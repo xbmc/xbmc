@@ -1522,9 +1522,12 @@ fi
 
 # samba
 if test "x$use_samba" != "xno"; then
-  AC_CHECK_LIB([smbclient], [main],,
-    use_samba=no;AC_MSG_ERROR($missing_library))
-    USE_LIBSMBCLIENT=0
+  PKG_CHECK_MODULES([SAMBA], [smbclient],
+    [INCLUDES="$INCLUDES $SAMBA_CFLAGS"; LIBS="$LIBS $SAMBA_LIBS"],
+    [AC_CHECK_LIB([smbclient], [main],,
+      use_samba=no;AC_MSG_ERROR($missing_library))
+      USE_LIBSMBCLIENT=0
+    ])
 else
   AC_MSG_RESULT($samba_disabled)
   USE_LIBSMBCLIENT=0
