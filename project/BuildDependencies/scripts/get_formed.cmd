@@ -9,6 +9,11 @@ ECHO Aborting...
 EXIT /B 20
 )
 
+REM Clear succeed flag
+IF EXIST %FORMED_OK_FLAG% (
+  del /F /Q "%FORMED_OK_FLAG%" || EXIT /B 4
+)
+
 CALL :setStageName Starting downloads of formed packages...
 SET SCRIPT_PATH=%CD%
 CD %DL_PATH% || EXIT /B 10
@@ -18,6 +23,7 @@ IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
 )
 
 CALL :setStageName All formed packages ready.
+ECHO %DATE% %TIME% > "%FORMED_OK_FLAG%"
 EXIT /B 0
 REM End of main body
 
