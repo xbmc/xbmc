@@ -19,13 +19,12 @@
  */
 
 #include "utils/HttpHeader.h"
-
 #include "gtest/gtest.h"
 
 TEST(TestHttpHeader, General)
 {
   CHttpHeader a;
-  CStdString str = "Host: xbmc.org\r\n"
+  std::string str = "Host: xbmc.org\r\n"
                    "Accept: text/*, text/html, text/html;level=1, */*\r\n"
                    "Accept-Language: en\r\n"
                    "Accept-Encoding: gzip, deflate\r\n"
@@ -33,27 +32,30 @@ TEST(TestHttpHeader, General)
                    "User-Agent: XBMC/snapshot (compatible; MSIE 5.5; Windows NT"
                      " 4.0)\r\n"
                    "Connection: Keep-Alive\r\n";
-  CStdString refstr, varstr;
+  std::string refstr, varstr;
 
   a.Parse(str);
 
-  refstr = "accept: text/*, text/html, text/html;level=1, */*\n"
-           "accept-encoding: gzip, deflate\n"
-           "accept-language: en\n"
-           "connection: Keep-Alive\n"
-           "content-type: text/html; charset=ISO-8859-4\n"
+  /* Should be in the same order as above */
+  refstr = "\n"
            "host: xbmc.org\n"
+           "accept: text/*, text/html, text/html;level=1, */*\n"
+           "accept-language: en\n"
+           "accept-encoding: gzip, deflate\n"
+           "content-type: text/html; charset=ISO-8859-4\n"
            "user-agent: XBMC/snapshot (compatible; MSIE 5.5; Windows NT 4.0)\n"
+           "connection: Keep-Alive\n"
            "\n";
   varstr.clear();
-  a.GetHeader(varstr);
+  varstr = a.GetHeader();
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "XBMC/snapshot (compatible; MSIE 5.5; Windows NT 4.0)";
   varstr = a.GetValue("User-Agent");
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = "text/html; charset=ISO-8859-4";
+  /* No charset should be here */
+  refstr = "text/html";
   varstr = a.GetMimeType();
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 

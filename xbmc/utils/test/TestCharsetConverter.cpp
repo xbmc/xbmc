@@ -351,12 +351,6 @@ TEST_F(TestCharsetConverter, getCharsetNameByLabel)
   EXPECT_STREQ("", varstr.c_str());
 }
 
-TEST_F(TestCharsetConverter, isBidiCharset)
-{
-  EXPECT_TRUE(g_charsetConverter.isBidiCharset("ISO-8859-6"));
-  EXPECT_FALSE(g_charsetConverter.isBidiCharset("Bogus"));
-}
-
 TEST_F(TestCharsetConverter, unknownToUTF8_1)
 {
   refstra1 = "ｔｅｓｔ＿ｕｎｋｎｏｗｎＴｏＵＴＦ８";
