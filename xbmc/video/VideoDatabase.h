@@ -703,6 +703,7 @@ public:
 
   virtual bool GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting);
 
+  int AddSeason(int showID, int season);
   int AddSet(const CStdString& strSet);
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);
@@ -733,7 +734,6 @@ protected:
 
   int AddTvShow(const CStdString& strPath);
   int AddMusicVideo(const CStdString& strFilenameAndPath);
-  int AddSeason(int showID, int season);
 
   // link functions - these two do all the work
   void AddLinkToActor(const char *table, int actorID, const char *secondField, int secondID, const CStdString &role, int order);
