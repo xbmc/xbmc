@@ -22,7 +22,6 @@
 
 #include "Setting.h"
 #include "SettingsManager.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -270,7 +269,7 @@ CSettingBool::CSettingBool(const std::string &id, int label, bool value, CSettin
 
 bool CSettingBool::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;
@@ -324,7 +323,7 @@ bool CSettingBool::CheckValidity(const std::string &value) const
 
 bool CSettingBool::SetValue(bool value)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   if (value == m_value)
     return true;
@@ -351,7 +350,7 @@ bool CSettingBool::SetValue(bool value)
   
 void CSettingBool::SetDefault(bool value)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   m_default = value;
   if (!m_changed)
@@ -368,8 +367,6 @@ void CSettingBool::copy(const CSettingBool &setting)
   
 bool CSettingBool::fromString(const std::string &strValue, bool &value) const
 {
-  CSingleLock lock(m_critical);
-
   if (StringUtils::EqualsNoCase(strValue, "true"))
   {
     value = true;
@@ -448,7 +445,7 @@ CSettingInt::CSettingInt(const std::string &id, int label, int value, const Stat
 
 bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;
@@ -586,7 +583,7 @@ bool CSettingInt::CheckValidity(int value) const
 
 bool CSettingInt::SetValue(int value)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   if (value == m_value)
     return true;
@@ -616,7 +613,7 @@ bool CSettingInt::SetValue(int value)
 
 void CSettingInt::SetDefault(int value)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   m_default = value;
   if (!m_changed)
@@ -625,6 +622,7 @@ void CSettingInt::SetDefault(int value)
 
 SettingOptionsType CSettingInt::GetOptionsType() const
 {
+  CSharedLock lock(m_critical);
   if (!m_options.empty())
     return SettingOptionsTypeStatic;
   if (!m_optionsFiller.empty())
@@ -635,6 +633,7 @@ SettingOptionsType CSettingInt::GetOptionsType() const
 
 DynamicIntegerSettingOptions CSettingInt::UpdateDynamicOptions()
 {
+  CExclusiveLock lock(m_critical);
   DynamicIntegerSettingOptions options;
   if (m_optionsFiller.empty() || m_settingsManager == NULL)
     return options;
@@ -675,6 +674,8 @@ DynamicIntegerSettingOptions CSettingInt::UpdateDynamicOptions()
 void CSettingInt::copy(const CSettingInt &setting)
 {
   CSetting::Copy(setting);
+
+  CExclusiveLock lock(m_critical);
 
   m_value = setting.m_value;
   m_default = setting.m_default;
@@ -727,7 +728,7 @@ CSettingNumber::CSettingNumber(const std::string &id, int label, float value, fl
 
 bool CSettingNumber::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;
@@ -783,6 +784,7 @@ std::string CSettingNumber::ToString() const
 bool CSettingNumber::Equals(const std::string &value) const
 {
   double dValue;
+  CSharedLock lock(m_critical);
   return (fromString(value, dValue) && m_value == dValue);
 }
 
@@ -797,6 +799,7 @@ bool CSettingNumber::CheckValidity(const std::string &value) const
 
 bool CSettingNumber::CheckValidity(double value) const
 {
+  CSharedLock lock(m_critical);
   if (m_min != m_max &&
      (value < m_min || value > m_max))
     return false;
@@ -806,7 +809,7 @@ bool CSettingNumber::CheckValidity(double value) const
 
 bool CSettingNumber::SetValue(double value)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   if (value == m_value)
     return true;
@@ -836,7 +839,7 @@ bool CSettingNumber::SetValue(double value)
 
 void CSettingNumber::SetDefault(double value)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   m_default = value;
   if (!m_changed)
@@ -846,6 +849,7 @@ void CSettingNumber::SetDefault(double value)
 void CSettingNumber::copy(const CSettingNumber &setting)
 {
   CSetting::Copy(setting);
+  CExclusiveLock lock(m_critical);
 
   m_value = setting.m_value;
   m_default = setting.m_default;
@@ -892,7 +896,7 @@ CSettingString::CSettingString(const std::string &id, int label, const std::stri
 
 bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;
@@ -940,6 +944,7 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
 
 bool CSettingString::CheckValidity(const std::string &value) const
 {
+  CSharedLock lock(m_critical);
   if (!m_allowEmpty && value.empty())
     return false;
 
@@ -948,7 +953,7 @@ bool CSettingString::CheckValidity(const std::string &value) const
 
 bool CSettingString::SetValue(const std::string &value)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   if (value == m_value)
     return true;
@@ -978,7 +983,7 @@ bool CSettingString::SetValue(const std::string &value)
 
 void CSettingString::SetDefault(const std::string &value)
 {
-  CSingleLock lock(m_critical);
+  CSharedLock lock(m_critical);
 
   m_default = value;
   if (!m_changed)
@@ -987,6 +992,7 @@ void CSettingString::SetDefault(const std::string &value)
 
 SettingOptionsType CSettingString::GetOptionsType() const
 {
+  CSharedLock lock(m_critical);
   if (!m_optionsFiller.empty())
     return SettingOptionsTypeDynamic;
 
@@ -995,6 +1001,7 @@ SettingOptionsType CSettingString::GetOptionsType() const
 
 DynamicStringSettingOptions CSettingString::UpdateDynamicOptions()
 {
+  CExclusiveLock lock(m_critical);
   DynamicStringSettingOptions options;
   if (m_optionsFiller.empty() || m_settingsManager == NULL)
     return options;
@@ -1037,6 +1044,7 @@ void CSettingString::copy(const CSettingString &setting)
 {
   CSetting::Copy(setting);
 
+  CExclusiveLock lock(m_critical);
   m_value = setting.m_value;
   m_default = setting.m_default;
   m_allowEmpty = setting.m_allowEmpty;
@@ -1061,7 +1069,7 @@ CSettingAction::CSettingAction(const std::string &id, const CSettingAction &sett
 
 bool CSettingAction::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CSingleLock lock(m_critical);
+  CSharedLock lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;

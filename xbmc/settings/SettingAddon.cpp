@@ -21,7 +21,6 @@
 #include "SettingAddon.h"
 #include "addons/Addon.h"
 #include "settings/SettingsManager.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -45,7 +44,7 @@ CSettingAddon::CSettingAddon(const std::string &id, const CSettingAddon &setting
 
 bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   if (!CSettingString::Deserialize(node, update))
     return false;
@@ -84,6 +83,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
 void CSettingAddon::copy(const CSettingAddon &setting)
 {
   CSettingString::Copy(setting);
-
+  
+  CExclusiveLock lock(m_critical);
   m_addonType = setting.m_addonType;
 }
