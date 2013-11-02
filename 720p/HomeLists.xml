@@ -1170,7 +1170,7 @@
 									<include>ListItemInProgress</include>
 								</control>
 								<control type="group">
-									<visible>ListItem.Type(episode)</visible>
+									<visible>ListItem.Type(season)</visible>
 									<include>ListItemPosterCard</include>
 									<include>ListItemPosterTitleTV3</include>
 									<include>ListItemInProgress</include>
