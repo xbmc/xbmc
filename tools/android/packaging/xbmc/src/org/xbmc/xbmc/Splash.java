@@ -88,8 +88,21 @@ public class Splash extends Activity {
       this.mSplash = splash;
     }
 
+    void DeleteRecursive(File fileOrDirectory) {
+      if (fileOrDirectory.isDirectory())
+        for (File child : fileOrDirectory.listFiles())
+          DeleteRecursive(child);
+
+      fileOrDirectory.delete();
+    }
+
     @Override
     protected Integer doInBackground(Void... param) {
+      if (fApkDir.exists()) {
+        // Remove existing files
+        Log.d(TAG, "Removing existing " + fApkDir.toString());
+        DeleteRecursive(fApkDir);
+      }
       fApkDir.mkdirs();
 
       // Log.d(TAG, "apk: " + sPackagePath);
@@ -125,15 +138,6 @@ public class Splash extends Activity {
             continue;
           }
 
-          // Log.d(TAG,
-          // "time: " + e.getTime() + ";"
-          // + fFullPath.lastModified());
-
-          // If file exists and has same time, skip
-          if (e.getTime() == fFullPath.lastModified())
-            continue;
-
-          // Log.d(TAG, "writing: " + sFullPath);
           fFullPath.getParentFile().mkdirs();
 
           try {
@@ -145,11 +149,6 @@ public class Splash extends Activity {
 
             in.close();
             out.close();
-
-            // save the zip time. this way we know for certain
-            // if we
-            // need to refresh.
-            fFullPath.setLastModified(e.getTime());
           } catch (IOException e1) {
             e1.printStackTrace();
           }
