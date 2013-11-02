@@ -263,7 +263,46 @@
 	<!-- Library -->
 	<include name="LibraryPhoto">
 		<control type="group">
-			<visible>!Container.content(addons) + !Container.content(plugins) + !Container.content(secondary)</visible>
+			<visible>!Container.Content(photoAlbum)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- main list -->
+			<control type="group" id="777">
+				<control type="panel" id="51">
+					<visible>!Container.Content(photoAlbum)</visible>
+					<viewtype label="LibraryPhoto">panel</viewtype>
+					<onup>51</onup>
+					<ondown>51</ondown>
+					<onright>51</onright>
+					<onleft>1300</onleft>
+					<orientation>vertical</orientation>
+					<posx>93</posx>
+					<posy>15</posy>
+					<width>1200</width>
+					<height>690</height>
+					<itemlayout width="146" height="171">
+						<include>PhotoThumbCard</include>
+						<include>PhotoThumb</include>
+						<include>PhotoAlbumCover</include>						
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>white</textcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout width="146" height="171">
+						<include>PhotoThumbCard</include>
+						<include>PhotoThumb</include>	
+						<include>PhotoAlbumCover</include>					
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>SelectedBorder</include>
+					</focusedlayout>
+				</control>
+			</control>
+		</control>
+	</include>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<include>PlotBGLibrary</include>
