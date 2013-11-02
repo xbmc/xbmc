@@ -255,3 +255,15 @@ CAction::CAction(int actionID, const CStdString &name, const CKey &key)
   else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
     m_amount[0] = key.GetRightThumbX();
 }
+
+CAction::CAction(int actionID, const std::string &name)
+{
+  m_id = actionID;
+  m_name = name;
+  for (unsigned int i = 0; i < max_amounts; i++)
+    m_amount[i] = 0;
+  m_repeat = 0;
+  m_buttonCode = 0;
+  m_unicode = 0;
+  m_holdTime = 0;
+}

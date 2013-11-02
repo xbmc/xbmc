@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.7.0";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.8.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -1237,7 +1237,7 @@ namespace JSONRPC
     "}",
     "\"GUI.Property.Name\": {"
       "\"type\": \"string\","
-      "\"enum\": [ \"currentwindow\", \"currentcontrol\", \"skin\", \"fullscreen\" ]"
+      "\"enum\": [ \"currentwindow\", \"currentcontrol\", \"skin\", \"fullscreen\", \"stereoscopicmode\" ]"
     "}",
     "\"GUI.Property.Value\": {"
       "\"type\": \"object\","
@@ -1259,7 +1259,15 @@ namespace JSONRPC
             "\"name\": { \"type\": \"string\" }"
           "}"
         "},"
-        "\"fullscreen\": { \"type\": \"boolean\" }"
+        "\"fullscreen\": { \"type\": \"boolean\" },"
+        "\"stereoscopicmode\": { \"$ref\": \"GUI.Stereoscopy.Mode\" }"
+      "}"
+    "}",
+    "\"GUI.Stereoscopy.Mode\": {"
+      "\"type\": \"object\","
+      "\"properties\": {"
+        "\"mode\": { \"type\": \"string\", \"required\": true, \"enum\": [ \"off\", \"split_vertical\", \"split_horizontal\", \"row_interleaved\", \"hardware_based\", \"anaglyph_cyan_red\", \"anaglyph_green_magenta\", \"monoscopic\" ] },"
+        "\"label\": { \"type\": \"string\", \"required\": true }"
       "}"
     "}",
     "\"System.Property.Name\": {"
@@ -1307,16 +1315,16 @@ namespace JSONRPC
     "}",
     "\"Favourite.Details.Favourite\": {"
       "\"type\": \"object\","
-      "\"properties\": {"
-        "\"title\": { \"type\": \"string\", \"required\": true },"
-        "\"type\": { \"$ref\": \"Favourite.Type\", \"required\": true },"
-        "\"path\": { \"type\": \"string\" },"
-        "\"window\": { \"type\": \"string\" },"
-        "\"windowparameter\": { \"type\": \"string\" },"
-        "\"thumbnail\": { \"type\": \"string\" }"
-      "},"
-      "\"additionalProperties\": false"
-    "}"
+        "\"properties\": {"
+          "\"title\": { \"type\": \"string\", \"required\": true },"
+          "\"type\": { \"$ref\": \"Favourite.Type\", \"required\": true },"
+          "\"path\": { \"type\": \"string\" },"
+          "\"window\": { \"type\": \"string\" },"
+          "\"windowparameter\": { \"type\": \"string\" },"
+          "\"thumbnail\": { \"type\": \"string\" }"
+        "},"
+        "\"additionalProperties\": false"
+      "}"
   };
 
   const char* const JSONRPC_SERVICE_METHODS[] = {  
@@ -2814,6 +2822,33 @@ namespace JSONRPC
         "{ \"name\": \"fullscreen\", \"required\": true, \"$ref\": \"Global.Toggle\" }"
       "],"
       "\"returns\": { \"type\": \"boolean\", \"description\": \"Fullscreen state\" }"
+    "}",
+    "\"GUI.SetStereoscopicMode\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Sets the stereoscopic mode of the GUI to the given mode\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ControlGUI\","
+      "\"params\": ["
+        "{ \"name\": \"mode\", \"type\": \"string\", \"enum\": [ \"toggle\", \"tomono\", \"next\", \"previous\", \"select\", \"off\", \"split_vertical\", \"split_horizontal\", \"row_interleaved\", \"hardware_based\", \"anaglyph_cyan_red\", \"anaglyph_green_magenta\", \"monoscopic\" ], \"required\": true }"
+      "],"
+      "\"returns\": \"string\""
+    "}",
+    "\"GUI.GetStereoscopicModes\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Returns the supported stereoscopic modes of the GUI\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": [],"
+      "\"returns\": {"
+        "\"type\": \"object\","
+        "\"properties\": {"
+          "\"stereoscopicmodes\" : {"
+            "\"type\": \"array\","
+            "\"uniqueItems\": true,"
+            "\"items\": { \"$ref\": \"GUI.Stereoscopy.Mode\" }"
+          "}"
+        "}"
+      "}"
     "}",
     "\"Addons.GetAddons\": {"
       "\"type\": \"method\","

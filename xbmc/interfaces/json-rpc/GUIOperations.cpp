@@ -29,6 +29,8 @@
 #include "addons/AddonManager.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
+#include "guilib/StereoscopicsManager.h"
+#include "windowing/WindowingFactory.h"
 
 using namespace std;
 using namespace JSONRPC;
@@ -100,6 +102,30 @@ JSONRPC_STATUS CGUIOperations::SetFullscreen(const CStdString &method, ITranspor
   return GetPropertyValue("fullscreen", result);
 }
 
+JSONRPC_STATUS CGUIOperations::SetStereoscopicMode(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CAction action = CStereoscopicsManager::Get().ConvertActionCommandToAction("SetStereoMode", parameterObject["mode"].asString());
+  if (action.GetID() != ACTION_NONE)
+  {
+    CApplicationMessenger::Get().SendAction(action);
+    return ACK;
+  }
+
+  return InvalidParams;
+}
+
+JSONRPC_STATUS CGUIOperations::GetStereoscopicModes(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
+  {
+    RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
+    if (g_Windowing.SupportsStereo(mode))
+      result["stereoscopicmodes"].push_back(GetStereoModeObjectFromGuiMode(mode));
+  }
+
+  return OK;
+}
+
 JSONRPC_STATUS CGUIOperations::GetPropertyValue(const CStdString &property, CVariant &result)
 {
   if (property.Equals("currentwindow"))
@@ -121,8 +147,18 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const CStdString &property, CVar
   }
   else if (property.Equals("fullscreen"))
     result = g_application.IsFullScreen();
+  else if (property.Equals("stereoscopicmode"))
+    result = GetStereoModeObjectFromGuiMode( CStereoscopicsManager::Get().GetStereoMode() );
   else
     return InvalidParams;
 
   return OK;
+}
+
+CVariant CGUIOperations::GetStereoModeObjectFromGuiMode(const RENDER_STEREO_MODE &mode)
+{
+  CVariant modeObj(CVariant::VariantTypeObject);
+  modeObj["mode"] = CStereoscopicsManager::Get().ConvertGuiStereoModeToString(mode);
+  modeObj["label"] = CStereoscopicsManager::Get().GetLabelForStereoMode(mode);
+  return modeObj;
 }

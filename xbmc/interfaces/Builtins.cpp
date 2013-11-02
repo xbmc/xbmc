@@ -32,6 +32,7 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/Key.h"
+#include "guilib/StereoscopicsManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -226,6 +227,7 @@ const BUILT_IN commands[] = {
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
 #endif
+  { "SetStereoMode",              true,   "Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, monoscopic)" }
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -1730,6 +1732,17 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("StartAndroidActivity") && params.size() > 0)
   {
     CApplicationMessenger::Get().StartAndroidActivity(params);
+  }
+  else if (execute.Equals("SetStereoMode") && !parameter.IsEmpty())
+  {
+    CAction action = CStereoscopicsManager::Get().ConvertActionCommandToAction(execute, parameter);
+    if (action.GetID() != ACTION_NONE)
+      CApplicationMessenger::Get().SendAction(action);
+    else
+    {
+      CLog::Log(LOGERROR,"Builtin 'SetStereoMode' called with unknown parameter: %s", parameter.c_str());
+      return -2;
+    }
   }
   else
     return -1;
