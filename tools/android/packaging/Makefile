@@ -96,7 +96,7 @@ libs: $(PREFIX)/lib/xbmc/libxbmc.so
 	install -p $(GDBPATH) ./xbmc/libs/$(CPU)/gdbserver
 	echo "set solib-search-path ./obj/local/$(CPU)" > ./xbmc/libs/$(CPU)/gdb.setup
 	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
-	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/include/$(GCC_VERSION) $(XBMCROOT)  $(PREFIX)/include jni" >> ./xbmc/libs/$(CPU)/gdb.setup
+	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(XBMCROOT)  $(PREFIX)/include jni" >> ./xbmc/libs/$(CPU)/gdb.setup
 	cp -fp xbmc/libs/$(CPU)/* xbmc/lib/$(CPU)
 
 $(PREFIX)/lib/xbmc/libxbmc.so: $(SRCLIBS)
