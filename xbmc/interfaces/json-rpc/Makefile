@@ -2,8 +2,10 @@ SRCS=AddonsOperations.cpp \
      ApplicationOperations.cpp \
      AudioLibrary.cpp \
      FavouritesOperations.cpp \
+     ContactLibrary.cpp \
      FileItemHandler.cpp \
      FileOperations.cpp \
+     PictureLibrary.cpp \
      GUIOperations.cpp \
      InputOperations.cpp \
      JSONRPC.cpp \

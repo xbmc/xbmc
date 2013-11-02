@@ -20,7 +20,7 @@
 
 #include "DirectoryNodeAlbum.h"
 #include "QueryParams.h"
-#include "pictureS/PictureDatabase.h"
+#include "pictures/PictureDatabase.h"
 
 using namespace XFILE::PICTUREDATABASEDIRECTORY;
 

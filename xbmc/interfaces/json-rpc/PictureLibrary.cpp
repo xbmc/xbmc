@@ -36,7 +36,13 @@
 #include "utils/log.h"
 #include "pictures/infoscanner/PictureAlbumInfo.h"
 #include "TextureCache.h"
+
 #include "settings/MediaSourceSettings.h"
+#include "utils/StreamDetails.h"
+
+
+#include "cores/dvdplayer/DVDFileInfo.h"
+
 
 using namespace PICTURE_INFO;
 using namespace JSONRPC;
@@ -278,7 +284,7 @@ JSONRPC_STATUS CPictureLibrary::AddPictureAlbum(const CStdString &method, ITrans
   
   return OK;
 }
-
+// ricosett
 JSONRPC_STATUS CPictureLibrary::AddVideoAlbum(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CPictureDatabase picturedatabase;
@@ -474,14 +480,24 @@ JSONRPC_STATUS CPictureLibrary::AddVideo(const CStdString &method, ITransportLay
   CStdString strOrientation = parameterObject["orientation"].c_str();
   
   //take the first source as the path
-  VECSOURCES *shares = CMediaSourceSettings::Get().GetSources("pictures");
+  VECSOURCES *shares = CMediaSourceSettings::Get().GetSources("video");
   if( !shares )
     return InternalError;
   
-  //create the thumbnail and pass it in
-  CStdString strPicturePath = shares->at(0).strPath + strThumb;
-  CStdString strFaces = parameterObject["faces"].c_str();
-  int idAlbum = picturedatabase.GetVideoAlbumByName(strAlbum);
+  CStdString strPicturePath   = shares->at(0).strPath + strTitle;
+  // TODO create the thumbnail and pass it in
+  // construct the thumb cache file
+  if (!strlen(strThumb.c_str()))
+		  {
+			 CTextureDetails details;
+			 CStreamDetails  streamDetail;
+			 details.file   = CTextureCache::GetCacheFile(strTitle) + ".jpg";
+			 if (CDVDFileInfo::ExtractThumb(strPicturePath.c_str(), details, &streamDetail))
+				 strThumb   = CTextureCache::GetCachedPath(details.file);
+		  }
+
+  CStdString strFaces       = parameterObject["faces"].c_str();
+  int idAlbum               = picturedatabase.GetVideoAlbumByName(strAlbum);
   
   if(idAlbum <= 0 )
   {
@@ -490,7 +506,7 @@ JSONRPC_STATUS CPictureLibrary::AddVideo(const CStdString &method, ITransportLay
     CPictureAlbum album;
     album.idAlbum = idAlbum;
     album.strLabel = strAlbum;
-    album.thumbURL.m_xml = strPicturePath;
+    album.thumbURL.m_xml = strThumb;
     CPicture pic;
     pic.strFileName = strPicturePath;
     
@@ -504,21 +520,21 @@ JSONRPC_STATUS CPictureLibrary::AddVideo(const CStdString &method, ITransportLay
   
   std::vector<std::string> vecFaces;
   vecFaces.push_back(strFaces);
-  
-  int idPicture = picturedatabase.AddVideo(idAlbum, strTitle, strOrientation, strPicturePath, strComment, strPicturePath, vecFaces, vecLocations, strTaken);
+
+  int idPicture = picturedatabase.AddVideo(idAlbum, strTitle, strOrientation, strPicturePath, strComment, strThumb, vecFaces, vecLocations, strTaken);
   
   if( idPicture <=0 )
     return InternalError;
   
   // set the thumbnail for photo
   CTextureCache::Get().BackgroundCacheImage(strPicturePath);
-  picturedatabase.SetArtForItem(idPicture, "picture", "thumb", strPicturePath);
+  picturedatabase.SetArtForItem(idPicture, "picture", "thumb", strThumb);
   
   //set the latest added photo as the thumbnail for the album
-  CTextureCache::Get().BackgroundCacheImage(strPicturePath);
-  picturedatabase.SetArtForItem(idAlbum, "album", "thumb", strPicturePath);
-  CTextureCache::Get().BackgroundCacheImage(strPicturePath);
-  picturedatabase.SetArtForItem(idAlbum, "album", "fanart", strPicturePath);
+  CTextureCache::Get().BackgroundCacheImage(strThumb);
+  picturedatabase.SetArtForItem(idAlbum, "album", "thumb", strThumb);
+  CTextureCache::Get().BackgroundCacheImage(strThumb);
+  picturedatabase.SetArtForItem(idAlbum, "album", "fanart", strThumb);
   
   
   return GetVideos(method, transport, client, parameterObject, result);
@@ -712,7 +728,8 @@ JSONRPC_STATUS CPictureLibrary::GetRecentlyAddedPictures(const CStdString &metho
     amount = 0;
   
   CFileItemList items;
-  if (!picturedatabase.GetRecentlyAddedPictureAlbumPictures("picturedb://", items, (unsigned int)amount))
+  CStdString pictureType  = "Picture";
+  if (!picturedatabase.GetRecentlyAddedPictureAlbumPictures("picturedb://", items, (unsigned int)amount), pictureType)
     return InternalError;
   
   JSONRPC_STATUS ret = GetAdditionalPictureDetails(parameterObject, items, picturedatabase);
@@ -759,7 +776,8 @@ JSONRPC_STATUS CPictureLibrary::GetRecentlyPlayedPictures(const CStdString &meth
     return InternalError;
   
   CFileItemList items;
-  if (!picturedatabase.GetRecentlyPlayedPictureAlbumPictures("picturedb://", items))
+  CStdString pictureType = "Picture";
+  if (!picturedatabase.GetRecentlyPlayedPictureAlbumPictures("picturedb://", items, pictureType))
     return InternalError;
   
   JSONRPC_STATUS ret = GetAdditionalPictureDetails(parameterObject, items, picturedatabase);
@@ -833,7 +851,8 @@ JSONRPC_STATUS CPictureLibrary::GetRecentlyAddedVideos(const CStdString &method,
     amount = 0;
   
   CFileItemList items;
-  if (!picturedatabase.GetRecentlyAddedPictureAlbumPictures("picturedb://", items, (unsigned int)amount))
+  CStdString pictureType = "Picture";
+  if (!picturedatabase.GetRecentlyAddedPictureAlbumPictures("picturedb://", items, (unsigned int)amount,pictureType))
     return InternalError;
   
   JSONRPC_STATUS ret = GetAdditionalPictureDetails(parameterObject, items, picturedatabase);
@@ -880,7 +899,8 @@ JSONRPC_STATUS CPictureLibrary::GetRecentlyPlayedVideos(const CStdString &method
     return InternalError;
   
   CFileItemList items;
-  if (!picturedatabase.GetRecentlyPlayedPictureAlbumPictures("picturedb://", items))
+  CStdString pictureType = "Picture";
+  if (!picturedatabase.GetRecentlyPlayedPictureAlbumPictures("picturedb://", items, pictureType))
     return InternalError;
   
   JSONRPC_STATUS ret = GetAdditionalPictureDetails(parameterObject, items, picturedatabase);

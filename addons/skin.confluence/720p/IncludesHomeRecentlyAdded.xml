@@ -13,7 +13,8 @@
 		        <control type="group">
 			        <posx>665</posx>
 				<posy>578</posy>
-	                        <visible>Container(9000).Hasfocus(4) + !Skin.HasSetting(HomepageHideRecentlyAddedPicture)</visible>
+	               <visible>Container(9000).Hasfocus(4) + !Skin.HasSetting(HomepageHideRecentlyAddedPicture)</visible>
+	       
 				<control type="image">
 					<description>Background End image</description>
 					<posx>0</posx>
@@ -85,33 +86,6 @@
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
-
-                  <!--          <control type="label"> ricosett Pictures                 Total Nummber of Pictures ????????????????????????????????????????? 
-					<description>Title label</description>
-					<posx>285</posx>
-					<posy>0</posy>
-					<height>35</height>
-					<width>80</width>  
-		            <label>Pictures :</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font12_title</font>
-					<textcolor>blue</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>Title label</description>
-					<posx>350</posx>
-					<posy>0</posy>
-					<height>35</height>
-					<width>80</width>
-		            <label>$INFO[Window.Property(LatestPicture.Num)]</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font12_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control> -->
 				<control type="radiobutton" id="608">
 					<colordiffuse>CCFFFFFF</colordiffuse>
 					<description>Global Search</description>
@@ -139,31 +113,31 @@
 					<ondown>9000</ondown>
 					<visible>System.HasAddon(script.globalsearch)</visible>
 				</control> 
-
-
-	                </control>
+               </control>
            <!-- ricosett -->
-	                <control type="group">
-				<posx>180</posx>
-				<posy>50</posy>
-				<visible>!IsEmpty(Window.Property(LatestPictureAlbum.1.Title))</visible>
-	                <control type="image">
-					<description>background</description>
-					<posx>-25</posx>
-					<posy>0</posy>
-					<width>850</width>
-					<height>520</height>
-					<texture border="15">MenuItemNF.png</texture>
+	            <control type="group">
+				 <posx>180</posx>
+				 <posy>50</posy>
+				 <visible>!IsEmpty(Window.Property(LatestPictureAlbum.1.Title))</visible>
+			        <control type="image">
+						<description>background</description>
+						<posx>-25</posx>
+						<posy>0</posy>
+						<width>850</width>
+						<height>520</height>
+						<texture border="15">MenuItemNF.png</texture>
 	  			    </control>
 		            <control type="image">
-					<description>background</description>
-					<posx>150</posx>
-					<posy>	0</posy>
+				   	    <description>background</description>
+					    <posx>150</posx>
+					    <posy>	0</posy>
 				<!--	<width>950</width> -->
-					<height>90</height> 
-					<texture border="15">GlassTitleBar.png</texture>
-				</control>
+					    <height>90</height> 
+					    <texture border="15">GlassTitleBar.png</texture>
+				    </control>
+				    
 				<visible>Container(9000).Hasfocus(4) + !Skin.HasSetting(HomepageHideRecentlyAddedPicture)</visible>
+				
 				<include>VisibleFadeEffect</include>
 				<control type="label">
 					<description>Title label</description>
@@ -482,7 +456,351 @@
 					</content>
 				</control>
 			</control>
-<!-- ricosett -->
+<!-- ricosett fine pictures -->
+           <!-- ricosett    inizio Video -->
+	            <control type="group">
+				 <posx>180</posx>
+				 <posy>50</posy>
+				 <visible>!IsEmpty(Window.Property(LatestVideoAlbum.1.Title))</visible>
+			        <control type="image">
+						<description>background</description>
+						<posx>-25</posx>
+						<posy>0</posy>
+						<width>850</width>
+						<height>520</height>
+						<texture border="15">MenuItemNF.png</texture>
+	  			    </control>
+		            <control type="image">
+				   	    <description>background</description>
+					    <posx>150</posx>
+					    <posy>	0</posy>
+				
+					    <height>90</height> 
+					    <texture border="15">GlassTitleBar.png</texture>
+				    </control>
+				    
+				<visible>Container(9000).Hasfocus(2) + !Skin.HasSetting(HomepageHideRecentlyAddedPicture)</visible>
+				
+				<include>VisibleFadeEffect</include>
+				<control type="label">
+					<description>Title label</description>
+					<posx>180</posx>
+					<posy>5</posy>
+					<height>20</height>
+					<width>540</width>
+					<label>Lastest Albums</label> <!-- ricosett -->
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="list" id="8003">
+					<posx>0</posx>
+					<posy>50</posy>
+					<width>900</width>
+					<height>220</height>
+					<onleft>8003</onleft>
+					<onright>8003</onright>
+					<onup>9000</onup>
+					<ondown>8004</ondown>
+					<viewtype label="535">list</viewtype>
+					<pagecontrol>-</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<orientation>Horizontal</orientation>
+					<itemlayout height="220" width="180">
+						<control type="image">
+							<description>background</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>180</width>
+							<height>220</height>
+							<texture border="15">RecentAddedBack.png</texture>
+						</control>
+						<control type="image">
+							<posx>10</posx>
+							<posy>10</posy>
+							<width>160</width>
+							<height>170</height>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+						</control>
+						<control type="label">
+							<posx>90</posx>
+							<posy>185</posy>
+							<width>150</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</itemlayout>
+
+
+					<focusedlayout height="220" width="180">
+						<control type="image">
+							<description>background</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>180</width>
+							<height>220</height>
+							<texture border="15">RecentAddedBack.png</texture>
+						</control>
+						<control type="image">
+							<posx>10</posx>
+							<posy>10</posy>
+							<width>160</width>
+							<height>170</height>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<bordertexture border="5">folder-focus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>Control.HasFocus(8003)</visible>
+						</control>
+						<control type="image">
+							<posx>10</posx>
+							<posy>10</posy>
+							<width>160</width>
+							<height>170</height>
+							<texture>$INFO[ListItem.Icon]</texture>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>!Control.HasFocus(8003)</visible>
+						</control>
+						<control type="label">
+							<posx>90</posx>
+							<posy>185</posy>
+							<width>150</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="label">
+							<posx>90</posx>
+							<posy>185</posy>
+							<width>150</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>blue</textcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>Control.HasFocus(8003)</visible>
+						</control>
+					</focusedlayout>
+					<content>
+						<item >
+							<label>$INFO[Window.Property(LatestVideoAlbum.1.Title)]</label>
+							<label2></label2>
+                            <property name="Fanart">$INFO[Window.Property(LatestVideoAlbum.1.Fanart)]</property>
+                            <onclick>ActivateWindow(pictures,plugin://plugin.video.ezeesystems/?albumId=$INFO[Window.Property(LatestVideoAlbum.1.AlbumId)]&mode=0&picturetype=Video,return)</onclick> 
+							<icon>$INFO[Window.Property(LatestVideoAlbum.1.Thumb)]</icon>
+	<!--							<icon>special://masterprofile/Thumbnails/4/44ea3e73.jpg</icon> --> 
+							<thumb>-</thumb>
+							<visible>!IsEmpty(Window.Property(LatestVideoAlbum.1.Title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestVideoAlbum.2.Title)]</label>
+							<label2></label2>
+                            <property name="Fanart">$INFO[Window.Property(LatestVideoAlbum.2.Fanart)]</property>
+                            <onclick>ActivateWindow(pictures,plugin://plugin.video.ezeesystems/?albumId=$INFO[Window.Property(LatestVideoAlbum.2.AlbumId)]&mode=0&picturetype=Video,return)</onclick>                                                        
+							<icon>$INFO[Window.Property(LatestVideoAlbum.2.Thumb)]</icon>
+							<thumb>-</thumb>
+							<visible>!IsEmpty(Window.Property(LatestVideoAlbum.2.Title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestVideoAlbum.3.Title)]</label>
+							<label2></label2>
+							<property name="Fanart">$INFO[Window.Property(LatestVideoAlbum.3.Fanart)]</property>
+                            <onclick>ActivateWindow(pictures,plugin://plugin.video.ezeesystems/?albumId=$INFO[Window.Property(LatestVideoAlbum.3.AlbumId)]&mode=0&picturetype=Video,return)</onclick>
+   							<icon>$INFO[Window.Property(LatestVideoAlbum.3.Thumb)]</icon>							
+							<thumb>-</thumb>
+							<visible>!IsEmpty(Window.Property(LatestVideoAlbum.3.Title))</visible>
+                        </item>
+						<item>
+							<label>$INFO[Window.Property(LatestVideoAlbum.4.Title)]</label>
+							<label2></label2>
+							<property name="Fanart">$INFO[Window.Property(LatestVideoAlbum.4.Fanart)]</property>
+                            <onclick>ActivateWindow(pictures,plugin://plugin.video.ezeesystems/?albumId=$INFO[Window.Property(LatestVideoAlbum.4.AlbumId)]&mode=0&picturetype=Video,return)</onclick>                                                        
+							<icon>$INFO[Window.Property(LatestVideoAlbum.4.Thumb)]</icon>
+							<thumb>-</thumb>
+							<visible>!IsEmpty(Window.Property(LatestVideoAlbum.4.Title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestVideoAlbum.5.Title)]</label>
+							<label2></label2>
+							<property name="Fanart">$INFO[Window.Property(LatestVideoAlbum.5.Fanart)]</property>
+                            <onclick>ActivateWindow(pictures,plugin://plugin.video.ezeesystems/?albumId=$INFO[Window.Property(LatestVideoAlbum.5.AlbumId)]&mode=0&picturetype=Video,return)</onclick>                                                        
+							<icon>$INFO[Window.Property(LatestVideoAlbum.5.Thumb)]</icon>
+							<thumb>-</thumb>
+							<visible>!IsEmpty(Window.Property(LatestVideoAlbum.5.Title))</visible>
+						</item>
+					</content>
+				</control>
+
+				<control type="list" id="8004">
+					<posx>0</posx>
+					<posy>280</posy>
+					<width>900</width>
+					<height>220</height>
+					<onleft>8004</onleft>
+					<onright>8004</onright>
+					<onup>8003</onup>
+                                        <ondown>9000</ondown>
+					<viewtype label="535">list</viewtype>
+					<pagecontrol>-</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<orientation>Horizontal</orientation>
+					<itemlayout height="220" width="180">
+						<control type="image">
+							<description>background</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>180</width>
+							<height>220</height>
+							<texture border="15">RecentAddedBack.png</texture>
+						</control>
+						<control type="image">
+							<posx>10</posx>
+							<posy>10</posy>
+							<width>160</width>
+							<height>170</height>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+						</control>
+						<control type="label">
+							<posx>90</posx>
+							<posy>185</posy>
+							<width>150</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="220" width="180">
+						<control type="image">
+							<description>background</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>180</width>
+							<height>220</height>
+							<texture border="15">RecentAddedBack.png</texture>
+						</control>
+						<control type="image">
+							<posx>10</posx>
+							<posy>10</posy>
+							<width>160</width>
+							<height>170</height>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<bordertexture border="5">folder-focus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>Control.HasFocus(8004)</visible>
+						</control>
+						<control type="image">
+							<posx>10</posx>
+							<posy>10</posy>
+							<width>160</width>
+							<height>170</height>
+							<texture>$INFO[ListItem.Icon]</texture>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>!Control.HasFocus(8004)</visible>
+						</control>
+						<control type="label">
+							<posx>90</posx>
+							<posy>185</posy>
+							<width>150</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="label">
+							<posx>90</posx>
+							<posy>185</posy>
+							<width>150</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>blue</textcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>Control.HasFocus(8004)</visible>
+						</control>
+					</focusedlayout>
+					<content>
+					
+						<item>
+							<label>$INFO[Window.Property(LatestVideoAlbum.6.Title)]</label>
+							<label2></label2>
+                            <property name="Fanart">$INFO[Window.Property(LatestVideoAlbum.6.Fanart)]</property>
+                            <onclick>ActivateWindow(pictures,plugin://plugin.video.ezeesystems/?albumId=$INFO[Window.Property(LatestVideoAlbum.6.AlbumId)]&mode=0&picturetype=Video,return)</onclick>                                                        
+							<icon>$INFO[Window.Property(LatestVideoAlbum.6.Thumb)]</icon>
+							<thumb>-</thumb>
+							<visible>!IsEmpty(Window.Property(LatestVideoAlbum.6.Title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestVideoAlbum.7.Title)]</label>
+							<label2></label2>
+                            <property name="Fanart">$INFO[Window.Property(LatestVideoAlbum.7.Fanart)]</property>
+                            <onclick>ActivateWindow(pictures,plugin://plugin.video.ezeesystems/?albumId=$INFO[Window.Property(LatestVideoAlbum.7.AlbumId)]&mode=0&picturetype=Video,return)</onclick>                         
+							<icon>$INFO[Window.Property(LatestVideoAlbum.7.Thumb)]</icon>
+							<thumb>-</thumb>
+							<visible>!IsEmpty(Window.Property(LatestVideoAlbum.7.Title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestVideoAlbum.8.Title)]</label>
+							<label2></label2>
+                            <property name="Fanart">$INFO[Window.Property(LatestVideoAlbum.8.Fanart)]</property>
+                            <onclick>ActivateWindow(pictures,plugin://plugin.video.ezeesystems/?albumId=$INFO[Window.Property(LatestVideoAlbum.8.AlbumId)]&mode=0&picturetype=Video,return)</onclick>                                                        
+							<icon>$INFO[Window.Property(LatestVideoAlbum.8.Thumb)]</icon>
+							<thumb>-</thumb>
+							<visible>!IsEmpty(Window.Property(LatestVideoAlbum.8.Title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestVideoAlbum.9.Title)]</label>
+							<label2></label2>
+							<property name="Fanart">$INFO[Window.Property(LatestVideoAlbum.9.Fanart)]</property>
+                            <onclick>ActivateWindow(pictures,plugin://plugin.video.ezeesystems/?albumId=$INFO[Window.Property(LatestVideoAlbum.9.AlbumId)]&mode=0&picturetype=Video,return)</onclick>
+							<icon>$INFO[Window.Property(LatestVideoAlbum.9.Thumb)]</icon>
+							<thumb>-</thumb>
+							<visible>!IsEmpty(Window.Property(LatestVideoAlbum.9.Title))</visible>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestVideoAlbum.10.Title)]</label>
+							<label2></label2>
+                            <property name="Fanart">$INFO[Window.Property(LatestVideoAlbum.10.Fanart)]</property>
+                            <onclick>ActivateWindow(pictures,plugin://plugin.video.ezeesystems/?albumId=$INFO[Window.Property(LatestVideoAlbum.10.AlbumId)]&mode=0&picturetype=Video,return)</onclick>
+							<icon>$INFO[Window.Property(LatestVideoAlbum.10.Thumb)]</icon>
+							<thumb>-</thumb>
+							<visible>!IsEmpty(Window.Property(LatestVideoAlbum.10.Title))</visible>
+						</item>
+					</content>
+				</control>
+			</control>
+<!-- ricosett fine video-->
+
 			<control type="group">
 				<posx>190</posx>
 				<posy>50</posy>

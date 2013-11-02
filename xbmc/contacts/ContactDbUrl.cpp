@@ -41,8 +41,8 @@ bool CContactDbUrl::parse()
         return false;
     
     CStdString path = m_url.Get();
-    NODE_TYPE dirType = CContactDatabaseDirectory::GetDirectoryType(path);
-    NODE_TYPE childType = CContactDatabaseDirectory::GetDirectoryChildType(path);
+    CONTACTDATABASEDIRECTORY::NODE_TYPE dirType   = CContactDatabaseDirectory::GetDirectoryType(path);
+    CONTACTDATABASEDIRECTORY::NODE_TYPE childType = CContactDatabaseDirectory::GetDirectoryChildType(path);
     
     switch (dirType)
     {

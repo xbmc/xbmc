@@ -36,7 +36,8 @@ bool CDirectoryNodeAlbumRecentlyAddedPicture::GetContent(CFileItemList& items) c
         return false;
     
     CStdString strBaseDir=BuildPath();
-    bool bSuccess=picturedatabase.GetRecentlyPlayedPictureAlbumPictures(strBaseDir, items);
+    CStdString pictureType = "Picture";
+    bool bSuccess=picturedatabase.GetRecentlyPlayedPictureAlbumPictures(strBaseDir, items, pictureType);
     
     picturedatabase.Close();
     

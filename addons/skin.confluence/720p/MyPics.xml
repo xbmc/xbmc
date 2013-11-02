@@ -6,21 +6,6 @@
 	<controls>
 		<include>CommonBackground</include>
 
-<!--		<control type="image">
-  	        <posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>625</height>
-			<texture background="true">$INFO[Container(8003).ListItem.Property(Fanart)]</texture> 
-			<texture background="true">$INFO[ListItem.Icon]</texture>
-			<fadetime>1000</fadetime>
-			<aspectratio>keep</aspectratio>
-			<include>VisibleFadeEffect</include>
-			<visible>Control.IsVisible(514)</visible>
-			<include>Window_OpenClose_Animation</include>	
-		</control>-->
-		
-	 
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>

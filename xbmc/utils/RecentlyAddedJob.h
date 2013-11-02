@@ -33,7 +33,8 @@ class CRecentlyAddedJob : public CJob
 {
 public:
   CRecentlyAddedJob(int flag);
-  bool UpdateVideo();
+  bool UpdateMovies();
+  bool UpdateVideos();
   bool UpdatePicture();
   bool UpdateMusic();
   bool UpdateTotal();

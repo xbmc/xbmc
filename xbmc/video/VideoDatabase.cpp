@@ -369,7 +369,8 @@ bool CVideoDatabase::CreateTables()
 
 void CVideoDatabase::CreateViews()
 {
-  CLog::Log(LOGINFO, "create episodeview");
+
+   CLog::Log(LOGINFO, "create episodeview");
   m_pDS->exec("DROP VIEW IF EXISTS episodeview");
   CStdString episodeview = PrepareSQL("CREATE VIEW episodeview AS SELECT "
                                       "  episode.*,"

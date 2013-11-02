@@ -130,7 +130,7 @@ bool CPictureDatabase::CreateTables()
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strHash text)\n");
     CLog::Log(LOGINFO, "create picture table");
-    m_pDS->exec("CREATE TABLE picture ( idPicture integer primary key, idAlbum integer, idPath integer, strFaces text, strLocations text, orientation text,  strTitle varchar(512), dwFileNameCRC text, strFileName text, idThumb integer, takenon varchar(20) default NULL, comment text, picturetype text )\n");
+    m_pDS->exec("CREATE TABLE picture ( idPicture integer primary key, idAlbum integer, idPath integer, strFaces text, strLocations text, orientation text,  strTitle varchar(512), dwFileNameCRC text, strFileName text, idThumb integer, takenon varchar(20) default NULL, comment text, picturetype text, strFileThumb text )\n");
     CLog::Log(LOGINFO, "create picture_face table");
     m_pDS->exec("CREATE TABLE picture_face ( idFace integer, idPicture integer, strJoinPhrase text, boolFeatured integer, iOrder integer )\n");
     CLog::Log(LOGINFO, "create picture_location table");
@@ -236,7 +236,7 @@ void CPictureDatabase::CreateViews()
               "  album.strAlbum as strAlbum,"
               "  picture.strTitle AS strTitle,"
               "  picture.strFileName AS strFileName,"
-              "  picture.idThumb AS idThumb,"
+              "  picture.strFileThumb AS strFileThumb,"
               "  path.strPath as strPath"
               "  FROM picture"
               "  JOIN album ON"
@@ -351,9 +351,7 @@ int CPictureDatabase::AddPicture(const int idAlbum, const CStdString& strTitle, 
     {
       idPicture = m_pDS->fv("idPicture").get_asInt();
       m_pDS->close();
-      CLog::Log(LOGERROR, "UpdatePicture ");
       UpdatePicture(idPicture, strTitle, strPathAndFileName, strComment, strThumb, Faces, locations, dtTaken);
-      CLog::Log(LOGERROR, "Cazzo cazzo ");
     }
     
     if (!strThumb.empty())
@@ -410,7 +408,7 @@ int CPictureDatabase::AddVideo(const int idAlbum, const CStdString& strTitle, co
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      strSQL=PrepareSQL("INSERT INTO picture (idPicture,idAlbum,idPath,picturetype,orientation,strFaces,strLocations,strTitle,dwFileNameCRC,strFileName,comment,takenon) values (NULL, %i, %i, '%s', '%s', '%s', '%s', '%s', '%ul', '%s' ",
+      strSQL=PrepareSQL("INSERT INTO picture (idPicture,idAlbum,idPath,picturetype,orientation,strFaces,strLocations,strTitle,dwFileNameCRC,strFileName,comment,strFileThumb,takenon) values (NULL, %i, %i, '%s', '%s', '%s', '%s', '%s', '%ul', '%s', '%s', '%s' ",
                         idAlbum,
                         idPath,
                         "Video",
@@ -418,12 +416,15 @@ int CPictureDatabase::AddVideo(const int idAlbum, const CStdString& strTitle, co
                         StringUtils::Join(Faces, g_advancedSettings.m_pictureItemSeparator).c_str(),
                         StringUtils::Join(locations, g_advancedSettings.m_pictureItemSeparator).c_str(),
                         strTitle.c_str(),
-                        crc, strFileName.c_str());
-      CLog::Log(LOGERROR, "PrepareSQL %s ",strSQL.c_str());
+                        crc,
+                        strFileName.c_str(),
+                        strComment.c_str(),
+                        strThumb.c_str());
       if (dtTaken.length())
-        strSQL += PrepareSQL(",'%s','%s')",dtTaken.c_str(), strComment.c_str());
+        strSQL += PrepareSQL(",'%s')",dtTaken.c_str());
       else
-        strSQL += PrepareSQL(",NULL,'%s')",strComment.c_str());
+        strSQL += PrepareSQL(",NULL)");
+
       CLog::Log(LOGINFO, strSQL.c_str());
       m_pDS->exec(strSQL.c_str());
       idPicture = (int)m_pDS->lastinsertid();
@@ -432,9 +433,7 @@ int CPictureDatabase::AddVideo(const int idAlbum, const CStdString& strTitle, co
     {
       idPicture = m_pDS->fv("idPicture").get_asInt();
       m_pDS->close();
-      CLog::Log(LOGERROR, "UpdatePicture ");
       UpdatePicture(idPicture, strTitle, strPathAndFileName, strComment, strThumb, Faces, locations, dtTaken);
-      CLog::Log(LOGERROR, "Cazzo cazzo ");
     }
     
     if (!strThumb.empty())
@@ -1581,6 +1580,7 @@ bool CPictureDatabase::GetRecentlyPlayedPictureAlbums(VECPICTUREALBUMS& albums)
     
     CStdString strSQL;
     strSQL.Format("select distinct albumview.* from picture join albumview on albumview.idAlbum=picture.idAlbum where picture.takenon IS NOT NULL order by picture.takenon desc limit %i", RECENTLY_PLAYED_LIMIT);
+
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -1606,7 +1606,7 @@ bool CPictureDatabase::GetRecentlyPlayedPictureAlbums(VECPICTUREALBUMS& albums)
   return false;
 }
 
-bool CPictureDatabase::GetRecentlyPlayedPictureAlbumPictures(const CStdString& strBaseDir, CFileItemList& items)
+bool CPictureDatabase::GetRecentlyPlayedPictureAlbumPictures(const CStdString& strBaseDir, CFileItemList& items, const CStdString &pictureType)
 {
   try
   {
@@ -1646,27 +1646,29 @@ bool CPictureDatabase::GetRecentlyPlayedPictureAlbumPictures(const CStdString& s
   return false;
 }
 
-bool CPictureDatabase::GetRecentlyAddedPictureAlbums(VECPICTUREALBUMS& albums, unsigned int limit)
+bool CPictureDatabase::GetRecentlyAddedPictureAlbums(VECPICTUREALBUMS& albums, unsigned int limit, const CStdString &picturetype)
 {
   try
   {
     albums.erase(albums.begin(), albums.end());
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    CLog::Log(LOGERROR, "%s CPictureDatabase::GetRecentlyAddedPictureAlbums ", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s CPictureDatabase::GetRecentlyAddedPictureAlbums %s", __FUNCTION__, picturetype.c_str());
     CStdString strSQL;
-    strSQL.Format("select * from albumview where strAlbum != '' order by idAlbum desc limit %u", limit ? limit : g_advancedSettings.m_iPictureLibraryRecentlyAddedItems);
+    strSQL.Format("select * from albumview where strAlbum != '' and picturetype = '%s' order by idAlbum desc limit %u",picturetype.c_str(), limit ? limit : g_advancedSettings.m_iPictureLibraryRecentlyAddedItems);
     
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
-CLog::Log(LOGERROR, "%s CPictureDatabase::GetRecentlyAddedPictureAlbums 1", __FUNCTION__);
+
+    CLog::Log(LOGERROR, "%s CPictureDatabase::GetRecentlyAddedPictureAlbums 1", __FUNCTION__);
+
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
       m_pDS->close();
       return true;
     }
-    
+    CLog::Log(LOGERROR, "%s CPictureDatabase::GetRecentlyAddedPictureAlbums 2", __FUNCTION__);
     while (!m_pDS->eof())
     {
       CLog::Log(LOGERROR, "%s CPictureDatabase::albums.push_back 2 ", __FUNCTION__);
@@ -1675,6 +1677,7 @@ CLog::Log(LOGERROR, "%s CPictureDatabase::GetRecentlyAddedPictureAlbums 1", __FU
     }
     
     m_pDS->close(); // cleanup recordset data
+    CLog::Log(LOGERROR, "%s CPictureDatabase::GetRecentlyAddedPictureAlbums 3", __FUNCTION__);
     return true;
   }
   catch (...)
@@ -1685,7 +1688,7 @@ CLog::Log(LOGERROR, "%s CPictureDatabase::GetRecentlyAddedPictureAlbums 1", __FU
   return false;
 }
 
-bool CPictureDatabase::GetRecentlyAddedPictureAlbumPictures(const CStdString& strBaseDir, CFileItemList& items, unsigned int limit)
+bool CPictureDatabase::GetRecentlyAddedPictureAlbumPictures(const CStdString& strBaseDir, CFileItemList& items, unsigned int limit, const CStdString& pictureType)
 {
    try
   {
@@ -1693,7 +1696,7 @@ bool CPictureDatabase::GetRecentlyAddedPictureAlbumPictures(const CStdString& st
     if (NULL == m_pDS.get()) return false;
     
     CStdString strSQL;
-    strSQL = PrepareSQL("SELECT pictureview.* FROM (SELECT idAlbum FROM albumview ORDER BY idAlbum DESC LIMIT %u) AS recentalbums JOIN pictureview ON pictureview.idAlbum=recentalbums.idAlbum", limit ? limit : g_advancedSettings.m_iPictureLibraryRecentlyAddedItems);
+    strSQL = PrepareSQL("SELECT pictureview.* FROM (SELECT idAlbum FROM albumview ORDER BY idAlbum DESC LIMIT %u) AS recentalbums JOIN pictureview ON pictureview.idAlbum=recentalbums.idAlbum where pictureType = \"%s\"", limit ? limit : g_advancedSettings.m_iPictureLibraryRecentlyAddedItems, pictureType.c_str());
 
     CLog::Log(LOGDEBUG,"GetRecentlyAddedPictureAlbumPictures() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;

@@ -1,6 +1,6 @@
 import re,xbmcplugin,xbmcgui,xbmc, sqlite3, xbmcaddon, os, time
 
-def addItemsFromAlbumId(albumId):
+def addItemsFromAlbumPictureId(albumId):
     
         conn = sqlite3.connect(xbmc.translatePath("special://database/MyPicture1.db"))
         curs = conn.cursor()
@@ -18,7 +18,33 @@ def addItemsFromAlbumId(albumId):
 #                    myPicture = result[3]
 #addons://sources/image/image001.jpeg
                     copyFile(myPicture,xbmc.translatePath("special://home/addons/plugin.video.ezeesystems/pictures"))
-                    addDir(result[0],1,str( result[1]) + str( result[2]), result[3])
+                    addPictureDir(result[0],1,str( result[1]) + str( result[2]), result[3])
+                    
+        conn.close()
+        xbmc.executebuiltin("Container.SetViewMode(514)")
+
+def addItemsFromAlbumVideoId(albumId):
+        xbmc.log("addItemsFromAlbumVideoId: " + str(albumId))
+        conn = sqlite3.connect(xbmc.translatePath("special://database/MyPicture1.db"))
+        curs = conn.cursor()
+        curs.execute("select  strTitle, strPath, strFileName, strFileThumb from pictureview a , albumview  b where a.idalbum = b.idalbum and a.idAlbum = " + albumId )
+        
+        results = curs.fetchall()
+        if os.path.exists(xbmc.translatePath("special://home/addons/plugin.video.ezeesystems/pictures")):
+           xbmc.log("delete : " + xbmc.translatePath("special://home/addons/plugin.video.ezeesystems/pictures"))
+           delTree(xbmc.translatePath("special://home/addons/plugin.video.ezeesystems/pictures"))
+        os.mkdir(xbmc.translatePath("special://home/addons/plugin.video.ezeesystems/pictures"))
+        # Loop over all the channels
+        for result in results : 
+                    myVideo =  str( result[1]) + str( result[0])
+                    xbmc.log("myVideo: " + str( result[1]))
+                    xbmc.log("myVideo: " + myVideo)
+ #                   ffmpeg = "ffmpeg -i " + myPicture + " -f mjpeg -t 0.001 -ss 5 -y " + xbmc.translatePath("special://home/addons/plugin.video.ezeesystems/pictures") + myPicture + "~ni.tbn"
+ #                   xbmc.log("Eseguo: " + ffmpeg)
+ #                   os.system(ffmpeg)
+                    idThumb = xbmc.translatePath("special://masterprofile/Thumbnails/") + str( result[3].replace('special://masterprofile/Thumbnails/',''))
+                    xbmc.log("myVideo: " + idThumb)
+                    addVideoDir(result[0],1,idThumb, result[3], myVideo)
                     
         conn.close()
         xbmc.executebuiltin("Container.SetViewMode(514)")
@@ -64,18 +90,26 @@ def get_params():
                                 
         return param
 
-def addDir(name,mode,iconimage,fanart):
-        u=sys.argv[0]+"?mode="+str(mode)+"&name="+name
+def addPictureDir(name,mode,iconimage,fanart):
+        u=sys.argv[0]+"?mode="+str(mode)+"&name="+name+"&picturetype=Picture"
         ok=True
         liz=xbmcgui.ListItem(name, iconImage=fanart, thumbnailImage=iconimage)
         liz.setInfo( type="Picture", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
 
+
+def addVideoDir(name,mode,iconimage,fanart, video):
+        u=sys.argv[0]+"?mode="+str(mode)+"&name="+name+"&picturetype=Video" +"&video=" + video
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage=fanart, thumbnailImage=iconimage)
+        liz.setInfo( type="Video", infoLabels={ "Title": name } )
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+        return ok
+
+
 xbmc.log("PARAMS." + str(sys.argv))
-xbmc.log("PARAMS." + str(sys.argv[0]))
-xbmc.log("PARAMS." + str(sys.argv[1]))
-xbmc.log("PARAMS." + str(sys.argv[2]))
+
 xbmc.log("Path to Database :" + xbmc.translatePath("special://database/MyPicture1.db"))
 params=get_params()
 
@@ -85,6 +119,8 @@ albums = None
 Files = None
 library = None
 addons = None
+picturetype = "Picture"
+video = ""
 mode = 1
 
 try:
@@ -115,6 +151,14 @@ try:
         mode=int(params["mode"])
 except:
         pass
+try:
+        picturetype=params["picturetype"]
+except:
+        pass
+try:
+        video=params["video"]
+except:
+        pass
     
 xbmc.log("AlbumId: " + str(albumId))
 xbmc.log("Artist: " + str(artist))
@@ -123,22 +167,37 @@ xbmc.log("Files: " + str(Files))
 xbmc.log("Library: " + str(library))
 xbmc.log("Addons : "+ str(addons))
 xbmc.log("Mode : "+ str(mode))
+xbmc.log("picturetype : "+ str(picturetype))
+
+player=xbmc.Player()
 
 
-if (int(mode) == 0 and albumId!=None):
-        addItemsFromAlbumId(albumId)
+if (picturetype  =="Picture"):
+   if (int(mode) == 0 and albumId!=None):
+        addItemsFromAlbumPictureId(albumId)
 
 
-if xbmc.getCondVisibility("Slideshow.IsActive"):
-      xbmc.executebuiltin("Action(Play)")
-      xbmc.executebuiltin("ActivateWindow(home,,return)")
-elif int(mode) == 1 :
+   if xbmc.getCondVisibility("Slideshow.IsActive"):
+        xbmc.executebuiltin("Action(Play)")
+        xbmc.executebuiltin("ActivateWindow(home,,return)")
+   elif int(mode) == 1 :
 # forum.xbmc.org/showthread.php?tid=68345s    
 #http://passion-xbmc.org/gros_fichiers/XBMC%20Python%20Doc/Camelot/xbmc.html
-       xbmc.executebuiltin("SlideShow(special://home/addons/plugin.video.ezeesystems/pictures, random)")#        
-#        xbmc.executebuiltin("ActivateWindow(Pictures,special://home/addons/plugin.video.ezeesystems/pictures/)")   
-#        xbmc.executebuiltin("Container.SetViewMode(510)")   
-#       xbmc.executebuiltin("ActivateWindow(home,,return)")
+        xbmc.executebuiltin("SlideShow(special://home/addons/plugin.video.ezeesystems/pictures, random)")
+   xbmcplugin.endOfDirectory(int(sys.argv[1]))       
 
+if (picturetype  =="Video"):
+   if (int(mode) == 0 and albumId!=None):
+        addItemsFromAlbumVideoId(albumId)
+        xbmcplugin.endOfDirectory(int(sys.argv[1]))
+        
+   if xbmc.Player().isPlaying():
+        xbmc.executebuiltin("ActivateWindow(home,,return)")
+   elif int(mode) == 1 :
+        xbmc.log("Eseguo : " + video.replace("%2f","/"))
+        player.play(video.replace("%2f","/"))
+        stop = 1
+        xbmc.sleep(1000)
+        xbmc.executebuiltin("ActivateWindow(home,,return)")
 
-xbmcplugin.endOfDirectory(int(sys.argv[1]))
+xbmcplugin.endOfDirectory(int(sys.argv[1]))       

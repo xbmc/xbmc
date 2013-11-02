@@ -182,7 +182,7 @@ public:
     int  GetPictureAlbumIdByPath(const CStdString& path);
     bool GetPictureAlbumFromPicture(int idPicture, CPictureAlbum &PictureAlbum);
     int  GetPictureAlbumByName(const CStdString& strPictureAlbum, const CStdString& strFace="");
-  int  GetVideoAlbumByName(const CStdString& strPictureAlbum, const CStdString& strFace="");
+    int  GetVideoAlbumByName(const CStdString& strPictureAlbum, const CStdString& strFace="");
     int  GetPictureAlbumByName(const CStdString& strPictureAlbum, const std::vector<std::string>& Face);
     CStdString GetPictureAlbumById(int id);
     
@@ -264,11 +264,12 @@ public:
     /////////////////////////////////////////////////
     // Recently added
     /////////////////////////////////////////////////
-    bool GetRecentlyAddedPictureAlbums(VECPICTUREALBUMS& PictureAlbums, unsigned int limit=0);
-    bool GetRecentlyAddedPictureAlbumPictures(const CStdString& strBaseDir, CFileItemList& item, unsigned int limit=0);
+    bool GetRecentlyAddedPictureAlbums(VECPICTUREALBUMS& PictureAlbums, unsigned int limit=0, const CStdString &pictureType = "Picture");
+    bool GetRecentlyAddedPictureAlbumPictures(const CStdString& strBaseDir, CFileItemList& item, unsigned int limit=0, const CStdString &pictureType  = "Picture");
     bool GetRecentlyPlayedPictureAlbums(VECPICTUREALBUMS& PictureAlbums);
-    bool GetRecentlyPlayedPictureAlbumPictures(const CStdString& strBaseDir, CFileItemList& item);
+    bool GetRecentlyPlayedPictureAlbumPictures(const CStdString& strBaseDir, CFileItemList& item, const CStdString &pictureType);
     
+
     /////////////////////////////////////////////////
     // Compilations
     /////////////////////////////////////////////////
