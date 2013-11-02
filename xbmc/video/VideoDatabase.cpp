@@ -3926,7 +3926,7 @@ bool CVideoDatabase::RemoveArtForItem(int mediaId, const MediaType &mediaType, c
   return result;
 }
 
-bool CVideoDatabase::GetTvShowSeasonArt(int showId, map<int, map<string, string> > &seasonArt)
+bool CVideoDatabase::GetTvShowSeasons(int showId, map<int, int> &seasons)
 {
   try
   {
@@ -3937,19 +3937,37 @@ bool CVideoDatabase::GetTvShowSeasonArt(int showId, map<int, map<string, string>
     std::string sql = PrepareSQL("select idSeason,season from seasons where idShow=%i", showId);
     m_pDS2->query(sql.c_str());
 
-    vector< pair<int, int> > seasons;
+    seasons.clear();
     while (!m_pDS2->eof())
     {
-      seasons.push_back(make_pair(m_pDS2->fv(0).get_asInt(), m_pDS2->fv(1).get_asInt()));
+      seasons.insert(make_pair(m_pDS2->fv(1).get_asInt(), m_pDS2->fv(0).get_asInt()));
       m_pDS2->next();
     }
     m_pDS2->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, showId);
+  }
+  return false;
+}
 
-    for (vector< pair<int,int> >::const_iterator i = seasons.begin(); i != seasons.end(); ++i)
+bool CVideoDatabase::GetTvShowSeasonArt(int showId, map<int, map<string, string> > &seasonArt)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false; // using dataset 2 as we're likely called in loops on dataset 1
+
+    map<int, int> seasons;
+    GetTvShowSeasons(showId, seasons);
+
+    for (map<int, int>::const_iterator i = seasons.begin(); i != seasons.end(); ++i)
     {
       map<string, string> art;
-      GetArtForItem(i->first, MediaTypeSeason, art);
-      seasonArt.insert(make_pair(i->second,art));
+      GetArtForItem(i->second, MediaTypeSeason, art);
+      seasonArt.insert(make_pair(i->first,art));
     }
     return true;
   }
