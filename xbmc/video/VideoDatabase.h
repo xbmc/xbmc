@@ -789,6 +789,7 @@ public:
 
   virtual bool GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting);
 
+  int AddSeason(int showID, int season);
   int AddSet(const std::string& strSet);
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);
@@ -816,7 +817,6 @@ protected:
 
   int AddTvShow();
   int AddMusicVideo(const std::string& strFilenameAndPath);
-  int AddSeason(int showID, int season);
 
   /*! \brief Adds a path to the tvshow link table.
    \param idShow the id of the show.
