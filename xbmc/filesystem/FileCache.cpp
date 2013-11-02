@@ -483,6 +483,15 @@ CStdString CFileCache::GetContent()
   return m_source.GetImplemenation()->GetContent();
 }
 
+std::string CFileCache::GetContentCharset(void)
+{
+  IFile* impl = m_source.GetImplemenation();
+  if (!impl)
+    return IFile::GetContentCharset();
+
+  return impl->GetContentCharset();
+}
+
 int CFileCache::IoControl(EIoControl request, void* param)
 {
   if (request == IOCTRL_CACHE_STATUS)
