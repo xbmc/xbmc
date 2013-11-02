@@ -59,6 +59,7 @@ namespace XFILE
       virtual unsigned int Read(void* lpBuf, int64_t uiBufSize)  { return m_state->Read(lpBuf, uiBufSize); }
       virtual int Write(const void* lpBuf, int64_t uiBufSize);
       virtual CStdString GetMimeType()                           { return m_state->m_httpheader.GetMimeType(); }
+      virtual CStdString GetContent()                            { return GetMimeType(); }
       virtual int IoControl(EIoControl request, void* param);
 
       bool Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML);
