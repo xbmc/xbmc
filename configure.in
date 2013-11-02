@@ -2896,6 +2896,17 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
 ], [$DISABLE_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
+  if test "$host_vendor" = "apple"; then
+    # clang treats inlines different
+    case $CC in
+      *clang*)
+        TEMPCFLAGS="$CFLAGS";;
+      *)
+        TEMPCFLAGS="${CFLAGS} -fgnu89-inline";;
+    esac
+  else
+    TEMPCFLAGS="$CFLAGS";
+  fi
   ./configure \
     CC="$CC" \
     CXX="$CXX" \
