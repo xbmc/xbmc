@@ -60,7 +60,7 @@ static bool CanSurfaceRenderWhiteList(const std::string &name)
     };
     for (const char **ptr = cansurfacerender_decoders; *ptr; ptr++)
     {
-      if (!strcmp(*ptr, name.c_str()))
+      if (!strncmp(*ptr, name.c_str(), strlen(*ptr)))
         return true;
     }
     return false;
@@ -369,7 +369,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   }
 
   // whitelist of devices that can surface render.
-  m_render_sw = CanSurfaceRenderWhiteList(m_codecname);
+  m_render_sw = !CanSurfaceRenderWhiteList(m_codecname);
 
   ConfigureMediaCodec();
 
