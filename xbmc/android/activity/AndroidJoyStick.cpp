@@ -34,7 +34,7 @@
 #include <math.h>
 #include <dlfcn.h>
 
-#define DEBUG_VERBOSE
+//#define DEBUG_VERBOSE
 
 // mapping to axis IDs codes in keymaps.xmls
 enum {
@@ -140,7 +140,9 @@ static void SetupJoySticks(APP_InputDeviceAxes *axes, int device)
   {
     int axis = device_ranges.get(i).getAxis();
     int source = device_ranges.get(i).getSource();
+#ifdef DEBUG_VERBOSE
     CLog::Log(LOGDEBUG, "SetupJoySticks:range(%d), axis(%d), source(%d)", i, axis, source);
+#endif
 
     // ignore anything we do not understand
     if (source != AINPUT_SOURCE_JOYSTICK)
