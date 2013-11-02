@@ -191,6 +191,11 @@ bool CVideoInfoDownloader::GetDetails(const CScraperUrl &url,
     return m_info->GetVideoDetails(*m_http, url, true/*fMovie*/, movieDetails);
 }
 
+bool CVideoInfoDownloader::GetArt(const std::string &id, CVideoInfoTag &details)
+{
+  return m_info->GetArt(*m_http, id, details);
+}
+
 bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
                                              CVideoInfoTag &movieDetails,
                                              CGUIDialogProgress *pProgress /* = NULL */)

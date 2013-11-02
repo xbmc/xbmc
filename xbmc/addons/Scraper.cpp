@@ -925,6 +925,44 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
   return vcep;
 }
 
+// takes URL; returns true and populates art XML details on success, false otherwise
+bool CScraper::GetArt(XFILE::CCurlFile &fcurl, const std::string &id, CVideoInfoTag &video)
+{
+  CLog::Log(LOGDEBUG, "%s: Reading art for '%s' using %s scraper "
+            "(file: '%s', content: '%s', version: '%s')", __FUNCTION__, id.c_str(), Name().c_str(), Path().c_str(),
+            ADDON::TranslateContent(Content()).c_str(), Version().c_str());
+
+  video.Reset();
+  vector<CStdString> vcsIn;
+  CScraperUrl scurl;
+  vcsIn.push_back(id);
+  vector<CStdString> vcsOut = RunNoThrow("GetArt", scurl, fcurl, &vcsIn);
+
+  // parse XML output
+  bool fRet(false);
+  for (CStdStringArray::const_iterator i = vcsOut.begin(); i != vcsOut.end(); ++i)
+  {
+    CXBMCTinyXML doc;
+    doc.Parse(*i, TIXML_ENCODING_UTF8);
+    if (!doc.RootElement())
+    {
+      CLog::Log(LOGERROR, "%s: Unable to parse XML", __FUNCTION__);
+      continue;
+    }
+
+    TiXmlHandle xhDoc(&doc);
+    TiXmlElement *pxeDetails = xhDoc.FirstChild("details").Element();
+    if (!pxeDetails)
+    {
+      CLog::Log(LOGERROR, "%s: Invalid XML file (want <details>)", __FUNCTION__);
+      continue;
+    }
+    video.Load(pxeDetails, true/*fChain*/);
+    fRet = true;  // but don't exit in case of chaining
+  }
+  return fRet;
+}
+
 // takes URL; returns true and populates video details on success, false otherwise
 bool CScraper::GetVideoDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
   bool fMovie/*else episode*/, CVideoInfoTag &video)

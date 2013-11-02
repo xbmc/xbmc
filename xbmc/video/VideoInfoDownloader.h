@@ -59,6 +59,13 @@ public:
 
   static void ShowErrorDialog(const ADDON::CScraperError &sce);
 
+  /*! \brief Grab art URLs for an item with the scraper
+   \param id the unique identifier used by the scraper to describe the item.
+   \param details [out] the video info tag structure to fill with art.
+   \return true on success, false on failure.
+   */
+  bool GetArt(const std::string &id, CVideoInfoTag &details);
+
 protected:
   enum LOOKUP_STATE { DO_NOTHING = 0,
                       FIND_MOVIE = 1,
