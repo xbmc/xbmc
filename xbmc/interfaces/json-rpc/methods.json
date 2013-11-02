@@ -1725,6 +1725,34 @@
     "params": [ ],
     "returns":  "string"
   },
+  "Textures.GetTextures": {
+    "type": "method",
+    "description": "Retrieve all textures",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "Textures.Fields.Texture" },
+      { "name": "filter", "$ref": "List.Filter.Textures" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "textures": { "type": "array", "required": true,
+          "items": { "$ref": "Textures.Details.Texture" }
+        }
+      }
+    }
+  },
+  "Textures.RemoveTexture": {
+    "type": "method",
+    "description": "Remove the specified texture",
+    "transport": "Response",
+    "permission": "RemoveData",
+    "params": [
+      { "name": "textureid", "$ref": "Library.Id", "required": true, "description": "Texture database identifier" }
+    ],
+    "returns": "string"
+  },
   "Profiles.GetProfiles": {
     "type": "method",
     "description": "Retrieve all profiles",

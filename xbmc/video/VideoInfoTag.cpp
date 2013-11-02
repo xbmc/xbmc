@@ -25,7 +25,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "TextureCache.h"
+#include "TextureDatabase.h"
 #include "filesystem/File.h"
 
 #include <sstream>
@@ -432,7 +432,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
     actor["role"] = m_cast[i].strRole;
     actor["order"] = m_cast[i].order;
     if (!m_cast[i].thumb.IsEmpty())
-      actor["thumbnail"] = CTextureCache::GetWrappedImageURL(m_cast[i].thumb);
+      actor["thumbnail"] = CTextureUtils::GetWrappedImageURL(m_cast[i].thumb);
     value["cast"].push_back(actor);
   }
   value["set"] = m_strSet;

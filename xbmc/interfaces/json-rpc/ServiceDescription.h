@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.8.0";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.9.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -842,6 +842,33 @@ namespace JSONRPC
         "\"thumbnail\": { \"type\": \"string\" }"
       "}"
     "}",
+    "\"Textures.Details.Size\": {"
+      "\"type\": \"object\","
+      "\"properties\": {"
+        "\"size\": { \"type\": \"integer\", \"description\": \"Size of texture (1 == largest)\" },"
+        "\"width\": { \"type\": \"integer\", \"description\": \"Width of texture\" },"
+        "\"height\": { \"type\": \"integer\", \"description\": \"Height of texture\" },"
+        "\"usecount\": { \"type\": \"integer\", \"description\": \"Number of uses\" },"
+        "\"lastused\": { \"type\": \"string\", \"description\": \"Time of last use\" }"
+      "}"
+    "}",
+    "\"Textures.Fields.Texture\": {"
+      "\"extends\": \"Item.Fields.Base\","
+      "\"items\": { \"type\": \"string\","
+        "\"enum\": [ \"url\", \"cachedurl\", \"lasthashcheck\", \"imagehash\", \"sizes\" ]"
+      "}"
+    "}",
+    "\"Textures.Details.Texture\": {"
+      "\"type\": \"object\","
+      "\"properties\": {"
+        "\"textureid\": { \"$ref\": \"Library.Id\", \"required\": true },"
+        "\"url\": { \"type\": \"string\", \"description\": \"Original source URL\" },"
+        "\"cachedurl\": { \"type\": \"string\", \"description\": \"Cached URL on disk\" },"
+        "\"lasthashcheck\": { \"type\": \"string\", \"description\": \"Last time source was checked for changes\" },"
+        "\"imagehash\": { \"type\": \"string\", \"description\": \"Hash of image\" },"
+        "\"sizes\": { \"type\": \"array\", \"items\": { \"$ref\": \"Textures.Details.Size\" } }"
+      "}"
+    "}",
     "\"Profiles.Password\": {"
       "\"type\": \"object\","
       "\"properties\": {"
@@ -912,6 +939,12 @@ namespace JSONRPC
       "\"extends\": \"List.Filter.Rule\","
       "\"properties\": {"
         "\"field\": { \"$ref\": \"List.Filter.Fields.Songs\", \"required\": true }"
+      "}"
+    "}",
+    "\"List.Filter.Rule.Textures\": {"
+      "\"extends\": \"List.Filter.Rule\","
+      "\"properties\": {"
+        "\"field\": { \"$ref\": \"List.Filter.Fields.Textures\", \"required\": true }"
       "}"
     "}",
     "\"List.Filter.Movies\": {"
@@ -1059,6 +1092,27 @@ namespace JSONRPC
           "}"
         "},"
         "{ \"$ref\": \"List.Filter.Rule.Songs\" }"
+      "]"
+    "}",
+    "\"List.Filter.Textures\": {"
+      "\"type\": ["
+        "{ \"type\": \"object\","
+          "\"properties\": {"
+            "\"and\": { \"type\": \"array\","
+              "\"items\": { \"$ref\": \"List.Filter.Textures\" },"
+              "\"minItems\": 1, \"required\": true"
+            "}"
+          "}"
+        "},"
+        "{ \"type\": \"object\","
+          "\"properties\": {"
+            "\"or\": { \"type\": \"array\","
+              "\"items\": { \"$ref\": \"List.Filter.Textures\" },"
+              "\"minItems\": 1, \"required\": true"
+            "}"
+          "}"
+        "},"
+        "{ \"$ref\": \"List.Filter.Rule.Textures\" }"
       "]"
     "}",
     "\"List.Item.Base\": {"
@@ -3053,6 +3107,34 @@ namespace JSONRPC
       "\"permission\": \"ControlPVR\","
       "\"params\": [ ],"
       "\"returns\":  \"string\""
+    "}",
+    "\"Textures.GetTextures\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Retrieve all textures\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": ["
+        "{ \"name\": \"properties\", \"$ref\": \"Textures.Fields.Texture\" },"
+        "{ \"name\": \"filter\", \"$ref\": \"List.Filter.Textures\" }"
+      "],"
+      "\"returns\": {"
+        "\"type\": \"object\","
+        "\"properties\": {"
+          "\"textures\": { \"type\": \"array\", \"required\": true,"
+            "\"items\": { \"$ref\": \"Textures.Details.Texture\" }"
+          "}"
+        "}"
+      "}"
+    "}",
+    "\"Textures.RemoveTexture\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Remove the specified texture\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"RemoveData\","
+      "\"params\": ["
+        "{ \"name\": \"textureid\", \"$ref\": \"Library.Id\", \"required\": true, \"description\": \"Texture database identifier\" }"
+      "],"
+      "\"returns\": \"string\""
     "}",
     "\"Profiles.GetProfiles\": {"
       "\"type\": \"method\","

@@ -21,144 +21,68 @@
 
 #include <set>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
+#include "dbwrappers/DatabaseQuery.h"
 #include "utils/SortUtils.h"
 #include "utils/StdString.h"
 #include "utils/XBMCTinyXML.h"
 
-class CDatabase;
 class CVariant;
 
-class ISmartPlaylistRule
-{
-public:
-  virtual ~ISmartPlaylistRule() { }
-
-  virtual bool Load(const TiXmlNode *node, const std::string &encoding = "UTF-8") = 0;
-  virtual bool Load(const CVariant &obj) = 0;
-  virtual bool Save(TiXmlNode *parent) const = 0;
-  virtual bool Save(CVariant &obj) const = 0;
-};
-
-class CSmartPlaylistRule : public ISmartPlaylistRule
+class CSmartPlaylistRule : public CDatabaseQueryRule
 {
 public:
   CSmartPlaylistRule();
   virtual ~CSmartPlaylistRule() { }
 
-  enum SEARCH_OPERATOR { OPERATOR_START = 0,
-                         OPERATOR_CONTAINS,
-                         OPERATOR_DOES_NOT_CONTAIN,
-                         OPERATOR_EQUALS,
-                         OPERATOR_DOES_NOT_EQUAL,
-                         OPERATOR_STARTS_WITH,
-                         OPERATOR_ENDS_WITH,
-                         OPERATOR_GREATER_THAN,
-                         OPERATOR_LESS_THAN,
-                         OPERATOR_AFTER,
-                         OPERATOR_BEFORE,
-                         OPERATOR_IN_THE_LAST,
-                         OPERATOR_NOT_IN_THE_LAST,
-                         OPERATOR_TRUE,
-                         OPERATOR_FALSE,
-                         OPERATOR_BETWEEN,
-                         OPERATOR_END
-                       };
-
-  enum FIELD_TYPE { TEXT_FIELD = 0,
-                    NUMERIC_FIELD,
-                    DATE_FIELD,
-                    PLAYLIST_FIELD,
-                    SECONDS_FIELD,
-                    BOOLEAN_FIELD,
-                    TEXTIN_FIELD
-                  };
-
-  virtual bool Load(const TiXmlNode *node, const std::string &encoding = "UTF-8");
-  virtual bool Load(const CVariant &obj);
-  virtual bool Save(TiXmlNode *parent) const;
-  virtual bool Save(CVariant &obj) const;
-
-  CStdString                  GetParameter() const;
-  void                        SetParameter(const CStdString &value);
-  void                        SetParameter(const std::vector<CStdString> &values);
   CStdString                  GetLocalizedRule() const;
-  CStdString                  GetWhereClause(const CDatabase &db, const CStdString& strType) const;
 
-  static Field                TranslateField(const char *field);
-  static CStdString           TranslateField(Field field);
   static SortBy               TranslateOrder(const char *order);
   static CStdString           TranslateOrder(SortBy order);
-  static CStdString           GetField(Field field, const CStdString& strType);
-  static CStdString           TranslateOperator(SEARCH_OPERATOR oper);
   static Field                TranslateGroup(const char *group);
   static CStdString           TranslateGroup(Field group);
 
-  static CStdString           GetLocalizedField(Field field);
-  static CStdString           GetLocalizedOperator(SEARCH_OPERATOR oper);
+  static CStdString           GetLocalizedField(int field);
   static CStdString           GetLocalizedGroup(Field group);
   static bool                 CanGroupMix(Field group);
 
   static std::vector<Field>   GetFields(const CStdString &type);
   static std::vector<SortBy>  GetOrders(const CStdString &type);
   static std::vector<Field>   GetGroups(const CStdString &type);
-  static FIELD_TYPE           GetFieldType(Field field);
-  static bool                 IsFieldBrowseable(Field field);
+  virtual FIELD_TYPE          GetFieldType(int field) const;
+  static bool                 IsFieldBrowseable(int field);
 
   static bool Validate(const std::string &input, void *data);
   static bool ValidateRating(const std::string &input, void *data);
 
-  Field                       m_field;
-  SEARCH_OPERATOR             m_operator;
-  std::vector<CStdString>     m_parameter;
-private:
-  static SEARCH_OPERATOR TranslateOperator(const char *oper);
+protected:
+  virtual CStdString          GetField(int field, const CStdString& type) const;
+  virtual int                 TranslateField(const char *field) const;
+  virtual CStdString          TranslateField(int field) const;
+  virtual CStdString          FormatParameter(const CStdString &negate, const CStdString &oper, const CDatabase &db, const CStdString &type) const;
+  virtual CStdString          FormatWhereClause(const CStdString &negate, const CStdString &oper, const CStdString &param,
+                                                const CDatabase &db, const CStdString &type) const;
+  virtual SEARCH_OPERATOR     GetOperator(const CStdString &type) const;
+  virtual CStdString          GetBooleanQuery(const CStdString &negate, const CStdString &strType) const;
 
+private:
   CStdString GetVideoResolutionQuery(const CStdString &parameter) const;
 };
 
-class CSmartPlaylistRuleCombination;
-
-typedef std::vector<CSmartPlaylistRule> CSmartPlaylistRules;
-typedef std::vector<CSmartPlaylistRuleCombination> CSmartPlaylistRuleCombinations;
-
-class CSmartPlaylistRuleCombination : public ISmartPlaylistRule
+class CSmartPlaylistRuleCombination : public CDatabaseQueryRuleCombination
 {
 public:
-  CSmartPlaylistRuleCombination();
+  CSmartPlaylistRuleCombination() { }
   virtual ~CSmartPlaylistRuleCombination() { }
-
-  typedef enum {
-    CombinationOr = 0,
-    CombinationAnd
-  } Combination;
-
-  virtual bool Load(const TiXmlNode *node, const std::string &encoding = "UTF-8") { return false; }
-  virtual bool Load(const CVariant &obj);
-  virtual bool Save(TiXmlNode *parent) const { return false; }
-  virtual bool Save(CVariant &obj) const;
 
   CStdString GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const;
   void GetVirtualFolders(const CStdString& strType, std::vector<CStdString> &virtualFolders) const;
-  std::string TranslateCombinationType() const;
-
-  Combination GetType() const { return m_type; }
-  void SetType(Combination combination) { m_type = combination; }
 
   void AddRule(const CSmartPlaylistRule &rule);
-  void AddCombination(const CSmartPlaylistRuleCombination &rule);
-
-private:
-  friend class CSmartPlaylist;
-  friend class CGUIDialogSmartPlaylistEditor;
-  friend class CGUIDialogMediaFilter;
-
-  Combination m_type;
-  CSmartPlaylistRuleCombinations m_combinations;
-  CSmartPlaylistRules m_rules;
 };
 
-class CSmartPlaylist
+class CSmartPlaylist : public IDatabaseQueryRuleFactory
 {
 public:
   CSmartPlaylist();
@@ -217,13 +141,16 @@ public:
   CStdString GetSaveLocation() const;
 
   static void GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList);
-  static void GetAvailableOperators(std::vector<std::string> &operatorList);
 
   static bool IsVideoType(const CStdString &type);
   static bool IsMusicType(const CStdString &type);
   static bool CheckTypeCompatibility(const CStdString &typeLeft, const CStdString &typeRight);
 
   bool IsEmpty(bool ignoreSortAndLimit = true) const;
+
+  // rule creation
+  virtual CDatabaseQueryRule *CreateRule() const;
+  virtual CDatabaseQueryRuleCombination *CreateCombination() const;
 private:
   friend class CGUIDialogSmartPlaylistEditor;
   friend class CGUIDialogMediaFilter;

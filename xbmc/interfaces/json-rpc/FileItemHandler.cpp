@@ -35,7 +35,7 @@
 #include "video/VideoDatabase.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "TextureCache.h"
+#include "TextureDatabase.h"
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "Util.h"
@@ -117,7 +117,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       for (CGUIListItem::ArtMap::const_iterator artIt = artMap.begin(); artIt != artMap.end(); ++artIt)
       {
         if (!artIt->second.empty())
-          artObj[artIt->first] = CTextureCache::GetWrappedImageURL(artIt->second);
+          artObj[artIt->first] = CTextureUtils::GetWrappedImageURL(artIt->second);
       }
 
       result["art"] = artObj;
@@ -133,10 +133,10 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
         fetchedArt = true;
       }
       else if (item->HasPictureInfoTag() && !item->HasArt("thumb"))
-        item->SetArt("thumb", CTextureCache::GetWrappedThumbURL(item->GetPath()));
+        item->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(item->GetPath()));
       
       if (item->HasArt("thumb"))
-        result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetArt("thumb"));
+        result["thumbnail"] = CTextureUtils::GetWrappedImageURL(item->GetArt("thumb"));
       else
         result["thumbnail"] = "";
       
@@ -153,7 +153,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       }
       
       if (item->HasArt("fanart"))
-        result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetArt("fanart"));
+        result["fanart"] = CTextureUtils::GetWrappedImageURL(item->GetArt("fanart"));
       else
         result["fanart"] = "";
       

@@ -227,7 +227,7 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
       bool needsRecaching;
       CStdString image = CTextureCache::Get().CheckCachedImage(url, false, needsRecaching);
       if (!image.empty() || CFile::Exists(url))
-        object[field] = CTextureCache::Get().GetWrappedImageURL(url);
+        object[field] = CTextureUtils::GetWrappedImageURL(url);
       else
         object[field] = "";
     }
