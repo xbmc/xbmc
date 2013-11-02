@@ -3,7 +3,7 @@ INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 SRCS  = DVDVideoCodecFFmpeg.cpp
 SRCS += DVDVideoCodecLibMpeg2.cpp
 SRCS += DVDVideoPPFFmpeg.cpp
-
+SRCS += DVDVideoCodecHybris.cpp
 ifeq (@USE_VDPAU@,1)
 SRCS += VDPAU.cpp
 endif

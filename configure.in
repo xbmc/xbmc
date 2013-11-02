@@ -689,7 +689,7 @@ case $use_platform in
        [INCLUDES="$INCLUDES $HYBRISEGL_CFLAGS"; LIBS="$LIBS $HYBRISEGL_LIBS"],
        AC_MSG_ERROR($missing_library))
      PKG_CHECK_MODULES([LIBHARDWARE],  [libhardware >= 0.1],
-       [INCLUDES="$INCLUDES $LIBHARDWARE_CFLAGS"; LIBS="$LIBS $LIBHARDWARE_LIBS -lsync"],
+       [INCLUDES="$INCLUDES $LIBHARDWARE_CFLAGS"; LIBS="$LIBS $LIBHARDWARE_LIBS -lsync -lmedia"],
        AC_MSG_ERROR($missing_library))
      ;;
 
