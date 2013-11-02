@@ -137,8 +137,6 @@ int32_t CEventLoop::processInput(AInputEvent* event)
   int32_t rtn    = 0;
   int32_t type   = AInputEvent_getType(event);
   int32_t source = AInputEvent_getSource(event);
-  int32_t repeat = AKeyEvent_getRepeatCount(event);
-  int32_t keycod = AKeyEvent_getKeyCode(event);
 
   switch(type)
   {

@@ -213,8 +213,8 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_ALT_ON) ? "yes" : "no",
         (state & AMETA_SHIFT_ON) ? "yes" : "no",
         (state & AMETA_SYM_ON) ? "yes" : "no");
-      XBMC_Key((uint8_t)keycode, sym, modifiers, true);
 #endif
+      XBMC_Key((uint8_t)keycode, sym, modifiers, true);
       return true;
 
     case AKEY_EVENT_ACTION_MULTIPLE:
