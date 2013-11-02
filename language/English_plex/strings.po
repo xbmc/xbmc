@@ -821,6 +821,10 @@ msgctxt "#44104"
 msgid "Hooray we are signed in!"
 msgstr "Hooray we are signed in!"
 
+msgctxt "#44105"
+msgid "Signed in to myPlex"
+msgstr "Signed in to myPlex"
+
 msgctxt "#44200"
 msgid "PlexPass Required"
 msgstr "PlexPass Required"
