@@ -24,11 +24,7 @@
   #include "config.h"
 #endif
 extern "C" {
-#if defined(TARGET_WINDOWS)
-  #include "lib/libass/libass/ass.h"
-#else
   #include <ass/ass.h>
-#endif
 }
 #include "DynamicDll.h"
 #include "utils/log.h"
