@@ -49,8 +49,6 @@
 #include <sys/mman.h>
 #include <dirent.h>
 
-#define USE_FIMC 1 //doesn't work now, do not undefine!
-
 #ifdef CLASSNAME
 #undef CLASSNAME
 #endif
