@@ -2910,13 +2910,13 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
   ./configure \
     CC="$CC" \
     CXX="$CXX" \
-    CFLAGS="$TEMPCFLAGS" \ 
+    CFLAGS="$CFLAGS" \
     CXXFLAGS="$CXXFLAGS" \
     `if test "$host_vendor" = "apple"; then echo --with-png=${prefix} --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib; fi` \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias \      
+    `if test -n "$host_alias"; then echo --host=$host_alias ; fi` \
+    `if test -n "$build_alias"; then echo --build=$build_alias ; fi` \
+    `if test -n "$target_alias"; then echo --target=$target_alias ; fi` \
     --without-xscreensaver \
     --disable-sound \
     --disable-cyclone \
