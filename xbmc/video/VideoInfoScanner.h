@@ -212,6 +212,8 @@ namespace VIDEO
      */
     INFO_RET OnProcessSeriesFolder(EPISODELIST& files, const ADDON::ScraperPtr &scraper, bool useLocal, const CVideoInfoTag& showInfo, CGUIDialogProgress* pDlgProgress = NULL);
 
+    void UpdateSeasons(const CVideoInfoTag &showInfo, const ADDON::ScraperPtr &scraper, bool useLocal);
+
     void EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
     bool EnumerateEpisodeItem(const CFileItem *item, EPISODELIST& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);

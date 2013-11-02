@@ -18,6 +18,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include <string>
 #include "addons/Addon.h"
 #include "XBDateTime.h"
 #include "utils/ScraperUrl.h"
@@ -146,6 +148,7 @@ public:
     CAlbum &album);
   bool GetArtistDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     const CStdString &sSearch, CArtist &artist);
+  bool GetArt(XFILE::CCurlFile &fcurl, const std::string &id, CVideoInfoTag &video);
 
 private:
   CScraper(const CScraper &rhs);
