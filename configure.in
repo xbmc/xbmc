@@ -2554,8 +2554,11 @@ OUTPUT_FILES="Makefile \
     xbmc/android/jni/Makefile \
     xbmc/utils/Makefile \
     xbmc/main/Makefile \
-    xbmc/windowing/tests/wayland/Makefile \
     project/cmake/xbmc-config.cmake"
+
+if $use_wayland = "yes"; then
+OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"
+fi
 
 if test "$use_skin_touched" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.touched/media/Makefile"
