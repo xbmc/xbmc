@@ -47,7 +47,7 @@ protected:
   float m_volume;
   int m_audioStream;
   int m_subtitleStream;
-  int m_outputmode;
+  bool m_outputmode;
   bool m_subtitleVisible;
   Features m_audioCaps;
   Features m_subCaps;

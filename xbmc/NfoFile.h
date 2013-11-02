@@ -68,7 +68,7 @@ public:
       g_charsetConverter.ToUtf8(encoding, strDoc, strUtf8);
 
     doc.Clear();
-    doc.Parse(strUtf8.c_str(),0,TIXML_ENCODING_UTF8);
+    doc.Parse(strUtf8, TIXML_ENCODING_UTF8);
     return details.Load(doc.RootElement(), true, prioritise);
   }
 

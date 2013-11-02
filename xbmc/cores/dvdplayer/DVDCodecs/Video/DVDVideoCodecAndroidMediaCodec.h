@@ -61,6 +61,7 @@ public:
   // MediaCodec related
   void                ReleaseOutputBuffer(bool render);
   // SurfaceTexture released
+  int                 GetIndex() const;
   int                 GetTextureID() const;
   void                GetTransformMatrix(float *textureMatrix);
   void                UpdateTexImage();

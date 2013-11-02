@@ -50,6 +50,7 @@
 #endif
 
 #include <tinyxml.h>
+#include <string>
 
 #undef DOCUMENT
 #undef ELEMENT
@@ -59,21 +60,19 @@
 #undef DECLARATION
 #undef TYPECOUNT
 
-#include "StdString.h"
-
 class CXBMCTinyXML : public TiXmlDocument
 {
 public:
   CXBMCTinyXML();
   CXBMCTinyXML(const char*);
-  CXBMCTinyXML(const CStdString&);
+  CXBMCTinyXML(const std::string& documentName);
   bool LoadFile(TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool LoadFile(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
-  bool LoadFile(const CStdString&, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  bool LoadFile(const std::string& _filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool LoadFile(FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool SaveFile(const char*) const;
-  bool SaveFile(const CStdString&) const;
-  const char *Parse(const char*, TiXmlParsingData *prevData = NULL, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
-  const char *Parse(CStdString&, TiXmlParsingData *prevData = NULL, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  bool SaveFile(const std::string& filename) const;
+  const char *Parse(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  const char *Parse(const std::string& rawdata, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   static bool Test();
 };

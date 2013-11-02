@@ -431,16 +431,16 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
     if (GetVersionEx((OSVERSIONINFO *)&osvi))
     {
-      if (osvi.dwMajorVersion == 5 && (osvi.dwMinorVersion == 1 || osvi.dwMinorVersion == 2 ))
-        m_WinVer = WindowsVersionWinXP;
-      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0)
+      if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0)
         m_WinVer = WindowsVersionVista;
       else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1)
         m_WinVer = WindowsVersionWin7;
       else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2)
         m_WinVer = WindowsVersionWin8;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3) 
+        m_WinVer = WindowsVersionWin8_1;
       /* Insert checks for new Windows versions here */
-      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 2) || osvi.dwMajorVersion > 6)
+      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 6)
         m_WinVer = WindowsVersionFuture;
     }
   }
@@ -517,22 +517,6 @@ CStdString CSysInfo::GetKernelVersion()
   {
     switch (GetWindowsVersion())
     {
-    case WindowsVersionWinXP:
-      if (GetSystemMetrics(SM_SERVERR2))
-        strKernel.append(" Server 2003 R2");
-      else if (osvi.wSuiteMask & VER_SUITE_STORAGE_SERVER)
-        strKernel.append(" Storage Server 2003");
-      else if (osvi.wSuiteMask & VER_SUITE_WH_SERVER)
-        strKernel.append(" Home Server");
-      else if (osvi.wProductType == VER_NT_WORKSTATION && GetKernelBitness() == 64)
-        strKernel.append(" XP Professional");
-      else if (osvi.wProductType != VER_NT_WORKSTATION)
-        strKernel.append(" Server 2003");
-      else if (osvi.wSuiteMask & VER_SUITE_PERSONAL)
-        strKernel.append("XP Home Edition" );
-      else
-        strKernel.append("XP Professional" );
-      break;
     case WindowsVersionVista:
       if (osvi.wProductType == VER_NT_WORKSTATION)
         strKernel.append(" Vista");
@@ -550,6 +534,12 @@ CStdString CSysInfo::GetKernelVersion()
         strKernel.append(" 8");
       else
         strKernel.append(" Server 2012");
+      break;
+    case WindowsVersionWin8_1:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        strKernel.append(" 8.1");
+      else
+        strKernel.append(" Server 2012 R2");
       break;
     case WindowsVersionFuture:
       strKernel.append(" Unknown Future Version");

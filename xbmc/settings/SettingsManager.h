@@ -396,7 +396,7 @@ private:
   SettingCreatorMap m_settingCreators;
 
   std::set<ISubSettings*> m_subSettings;
-  typedef std::set<ISettingsHandler*> SettingsHandlers;
+  typedef std::vector<ISettingsHandler*> SettingsHandlers;
   SettingsHandlers m_settingsHandlers;
 
   CSettingConditionsManager m_conditions;

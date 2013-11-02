@@ -316,7 +316,8 @@ void CSettingsManager::RegisterSettingsHandler(ISettingsHandler *settingsHandler
     return;
 
   CSingleLock lock(m_critical);
-  m_settingsHandlers.insert(settingsHandler);
+  if (find(m_settingsHandlers.begin(), m_settingsHandlers.end(), settingsHandler) >= m_settingsHandlers.end())
+    m_settingsHandlers.push_back(settingsHandler);
 }
 
 void CSettingsManager::UnregisterSettingsHandler(ISettingsHandler *settingsHandler)
@@ -325,7 +326,7 @@ void CSettingsManager::UnregisterSettingsHandler(ISettingsHandler *settingsHandl
     return;
 
   CSingleLock lock(m_critical);
-  m_settingsHandlers.erase(settingsHandler);
+  m_settingsHandlers.erase(find(m_settingsHandlers.begin(), m_settingsHandlers.end(), settingsHandler));
 }
 
 void CSettingsManager::RegisterSubSettings(ISubSettings *subSettings)
@@ -474,13 +475,7 @@ bool CSettingsManager::GetBool(const std::string &id) const
   CSingleLock lock(m_critical);
   CSetting *setting = GetSetting(id);
   if (setting == NULL || setting->GetType() != SettingTypeBool)
-  {
-    // Backward compatibility (skins use this setting)
-    if (setting == NULL && StringUtils::EqualsNoCase(id, "lookandfeel.enablemouse"))
-      return GetBool("input.enablemouse");
-
     return false;
-  }
 
   return ((CSettingBool*)setting)->GetValue();
 }

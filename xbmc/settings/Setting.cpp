@@ -1006,6 +1006,9 @@ DynamicStringSettingOptions CSettingString::UpdateDynamicOptions()
   std::string bestMatchingValue = m_value;
   filler(this, options, bestMatchingValue);
 
+  if (bestMatchingValue != m_value)
+    SetValue(bestMatchingValue);
+
   // check if the list of items has changed
   bool changed = m_dynamicOptions.size() != options.size();
   if (!changed)

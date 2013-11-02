@@ -110,6 +110,7 @@ namespace INFO
 #define PLAYER_START_TIME            52
 #define PLAYER_TITLE                 53
 #define PLAYER_ISINTERNETSTREAM      54
+#define PLAYER_FILENAME              55
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -276,6 +277,7 @@ namespace INFO
 #define VIDEOPLAYER_IS_STEREOSCOPIC   310
 #define VIDEOPLAYER_STEREOSCOPIC_MODE 311
 #define VIDEOPLAYER_SUBTITLES_LANG    312
+#define VIDEOPLAYER_AUDIO_LANG        313
 
 #define CONTAINER_CAN_FILTER         342
 #define CONTAINER_CAN_FILTERADVANCED 343
@@ -405,6 +407,7 @@ namespace INFO
 #define SYSTEM_PLATFORM_DARWIN_IOS  745
 #define SYSTEM_PLATFORM_DARWIN_ATV2 746
 #define SYSTEM_PLATFORM_ANDROID     747
+#define SYSTEM_PLATFORM_LINUX_RASPBERRY_PI 748
 
 #define SYSTEM_CAN_POWERDOWN        750
 #define SYSTEM_CAN_SUSPEND          751
@@ -492,7 +495,7 @@ namespace INFO
 
 #define VERSION_MAJOR               13
 #define VERSION_MINOR               0
-#define VERSION_TAG                 "-ALPHA9"
+#define VERSION_TAG                 "-ALPHA10"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)

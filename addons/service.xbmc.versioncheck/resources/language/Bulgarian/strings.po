@@ -1,0 +1,89 @@
+# XBMC Media Center language file
+# Addon Name: XBMC Version Check
+# Addon id: service.xbmc.versioncheck
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Bulgarian (http://www.transifex.com/projects/p/xbmc-addons/language/bg/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: bg\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#32001"
+msgid "We would like to recommend you to upgrade."
+msgstr "Препоръчваме Ви да актуализирате."
+
+msgctxt "#32002"
+msgid "Visit XBMC.org for more information."
+msgstr "Посетете www.xbmc.info за информация."
+
+msgctxt "#32003"
+msgid "You are still using an older stable version of XBMC."
+msgstr "Ползвате стара стабилна версия на XBMC."
+
+msgctxt "#32004"
+msgid "You are still using an older RC version of XBMC."
+msgstr "Ползвате стара RC версия на XBMC."
+
+msgctxt "#32005"
+msgid "You are still using an older beta version of XBMC."
+msgstr "Ползвате стара бета версия на XBMC."
+
+msgctxt "#32006"
+msgid "You are still using an older alpha version of XBMC."
+msgstr "Ползвате стара алфа версия на XBMC."
+
+msgctxt "#32007"
+msgid "You are still using an older monthly version of XBMC."
+msgstr "Ползвате стара версия, от месечно компилираните, на XBMC."
+
+msgctxt "#32008"
+msgid "You are still using an older non stable version of XBMC."
+msgstr "Ползвате стара нестабилна версия на XBMC."
+
+msgctxt "#32009"
+msgid "Would you like to remove this reminder?"
+msgstr "Желаете ли изключите това напомняне?"
+
+msgctxt "#32010"
+msgid "You can enable/disable it through addon settings."
+msgstr "Можете да включите/изключите напомнянето от настройките на добавката."
+
+msgctxt "#32011"
+msgid "Use your package manager(apt) to upgrade."
+msgstr "Актуализирайте чрез вашия диспeчер на пакети  (apt)."
+
+msgctxt "#32012"
+msgid "A new version is available, do you want to upgrade now?"
+msgstr "Налична е нова версия. Желаете ли да актуализирате сега?"
+
+msgctxt "#32013"
+msgid "Upgrade successful"
+msgstr "Актуализирането е успешно"
+
+msgctxt "#32014"
+msgid "Do you want to restart Xbmc to finish the upgrade?"
+msgstr "Желаете ли да рестартирате XBMC, за да приключи актуализирането?"
+
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr "Желаете ли хранилището да бъде проверено за нова версия?"
+
+msgctxt "#32020"
+msgid "General"
+msgstr "Основни"
+
+msgctxt "#32021"
+msgid "Enable XBMC version check?"
+msgstr "Да бъде ли проверяване версията на XBMC?"
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr "Моля, въведете паролата си"

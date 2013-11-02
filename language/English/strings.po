@@ -1242,10 +1242,7 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr ""
+#empty string with id 299
 
 msgctxt "#300"
 msgid "MP1 capable receiver"
@@ -1393,17 +1390,17 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#337"
-msgid "Audio output"
+msgid "Output configuration"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#338"
-msgid "Analogue"
+msgid "Fixed"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#339"
-msgid "Optical/Coax"
+msgid "Optimized"
 msgstr ""
 
 msgctxt "#340"
@@ -1447,7 +1444,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
+msgid "Enable passthrough"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -1780,12 +1777,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#420"
-msgid "HDMI"
+msgid "Best Match"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#421"
-msgid "Stream silence when idle"
+msgid "Keep audio device alive"
 msgstr ""
 
 msgctxt "#422"
@@ -1937,7 +1934,10 @@ msgctxt "#457"
 msgid "Switch view"
 msgstr ""
 
-#empty string with id 458
+#: system/settings/settings.xml
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr ""
 
 msgctxt "#459"
 msgid "Subs"
@@ -4162,19 +4162,19 @@ msgid "Reset"
 msgstr ""
 
 msgctxt "#10036"
-msgid "Level: Basic"
+msgid "Basic"
 msgstr ""
 
 msgctxt "#10037"
-msgid "Level: Standard"
+msgid "Standard"
 msgstr ""
 
 msgctxt "#10038"
-msgid "Level: Advanced"
+msgid "Advanced"
 msgstr ""
 
 msgctxt "#10039"
-msgid "Level: Expert"
+msgid "Expert"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -4182,10 +4182,12 @@ msgctxt "#10040"
 msgid "Add-on browser"
 msgstr ""
 
+#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
 msgctxt "#10041"
-msgid "Reset settings"
+msgid "Reset above settings to default"
 msgstr ""
 
+#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr ""
@@ -4198,7 +4200,21 @@ msgctxt "#10044"
 msgid "No help available"
 msgstr ""
 
-#empty strings from id 10045 to 10099
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr ""
+
+#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+msgctxt "#10046"
+msgid "No categories available"
+msgstr ""
+
+#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr ""
+
+#empty strings from id 10048 to 10099
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10100"
@@ -6080,7 +6096,15 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr ""
 
-#empty strings from id 13554 to 13599
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr ""
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr ""
+
+#empty strings from id 13556 to 13599
 
 #: system/settings/darwin.xml
 msgctxt "#13600"
@@ -8030,7 +8054,7 @@ msgid "EPG"
 msgstr ""
 
 msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
 msgstr ""
 
 msgctxt "#19224"
@@ -8078,7 +8102,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR add-on)"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
 msgstr ""
 
 msgctxt "#19235"
@@ -8102,7 +8126,7 @@ msgid "Starting background threads"
 msgstr ""
 
 msgctxt "#19240"
-msgid "No PVR add-on enabled"
+msgid "No PVR Add-on enabled"
 msgstr ""
 
 msgctxt "#19241"
@@ -8110,7 +8134,7 @@ msgid "The PVR manager has been enabled without any"
 msgstr ""
 
 msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
 msgstr ""
 
 msgctxt "#19243"
@@ -8238,7 +8262,7 @@ msgid "* All recordings"
 msgstr ""
 
 msgctxt "#19271"
-msgid "No PVR add-ons could be found"
+msgid "No PVR Add-ons could be found"
 msgstr ""
 
 msgctxt "#19272"
@@ -8246,7 +8270,7 @@ msgid "You need a tuner, backend software, and an"
 msgstr ""
 
 msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
+msgid "Add-on for the backend to be able to use PVR."
 msgstr ""
 
 msgctxt "#19274"
@@ -11713,7 +11737,7 @@ msgstr ""
 #: xbmc/addons/addoninstaller.cpp
 #: xbmc/addons/Repository.cpp
 msgctxt "#24044"
-msgid "Dependencies not met"
+msgid "Dependencies not met. Please contact Add-on author."
 msgstr ""
 
 #: xbmc/addons/addoninstaller.cpp
@@ -11723,12 +11747,12 @@ msgstr ""
 
 #: xbmc/addons/guidialogaddoninfo.cpp
 msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
+msgid "%s is used by the following installed Add-on(s)"
 msgstr ""
 
 #: xbmc\addons\GUIDialogAddonInfo.cpp
 msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
+msgid "This Add-on cannot be uninstalled"
 msgstr ""
 
 #: skin.confluence
@@ -11975,7 +11999,7 @@ msgstr ""
 #strings 30000 thru 30999 reserved for plugins and plugin settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
-#strings 33000 thru 33999 reserved for common strings used in add-ons
+#strings 33000 thru 33999 reserved for common strings used in Add-ons
 
 #: unknown
 msgctxt "#33001"
@@ -12442,7 +12466,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#34111"
-msgid "When activated silence is output in order to keep alive receiver, otherwise sink is drained in idle state"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
 msgstr ""
 
 #empty strings from id 34112 to 34119
@@ -12471,8 +12495,38 @@ msgctxt "#34123"
 msgid "Never"
 msgstr ""
 
-#empty strings from id 34124 to 34200
-#34124-34200 reserved for future use
+#. SPDIF max sampling rate
+#: system/settings/settings.xml
+msgctxt "#34124"
+msgid "44.1"
+msgstr ""
+
+#. SPDIF max sampling rate
+#: system/settings/settings.xml
+msgctxt "#34125"
+msgid "48.0"
+msgstr ""
+
+#. SPDIF max sampling rate
+#: system/settings/settings.xml
+msgctxt "#34126"
+msgid "88.2"
+msgstr ""
+
+#. SPDIF max sampling rate
+#: system/settings/settings.xml
+msgctxt "#34127"
+msgid "96.0"
+msgstr ""
+
+#. SPDIF max sampling rate
+#: system/settings/settings.xml
+msgctxt "#34128"
+msgid "192.0"
+msgstr ""
+
+#empty strings from id 34129 to 34200
+#34129-34200 reserved for future use
 
 #: xbmc\PlayListPlayer.cpp
 msgctxt "#34201"
@@ -13215,7 +13269,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36169"
-msgid "Resampling and other sound processing quality. Low quality is fast, higher quality will consume more CPU."
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13385,7 +13439,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13515,7 +13569,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36229"
-msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13545,22 +13599,22 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36236"
-msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36237"
-msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36238"
-msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14175,12 +14229,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36361"
-msgid "Type of connection to the audio equipment."
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36362"
-msgid "Select your physical speaker layout."
+msgid "Select the maximum number of audio channels/speakers available for audio decoded."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14190,7 +14244,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36364"
-msgid "Upmix 2 channel stereo sources so the number of audio channels matches the number of speakers."
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14203,14 +14257,14 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr ""
 
-#: system/settings/settings.xml
+#: system/settings/darwin_osx.xml
 msgctxt "#36367"
-msgid "Select this option if your receiver is capable of decoding AAC streams."
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36368"
-msgid "Select this option if your receiver is capable of decoding LPCM streams."
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14225,12 +14279,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36371"
-msgid "Select the device you use to play audio decoded by XBMC such as mp3's and FLAC."
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36372"
-msgid "Select the device you use to play encoded formats, these are any of the formats checked above in the 'capable receiver' options."
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14556,7 +14610,10 @@ msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr ""
 
-#empty string with id 36523
+#: system/settings/settings.xml
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36524"

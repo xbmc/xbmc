@@ -90,6 +90,37 @@ bool CActiveAESink::HasVolume()
   return m_sink->HasVolume();
 }
 
+AEDeviceType CActiveAESink::GetDeviceType(const std::string &device)
+{
+  std::string dev = device;
+  std::string dri;
+  CAESinkFactory::ParseDevice(dev, dri);
+  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+  {
+    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
+    {
+      CAEDeviceInfo& info = *itt2;
+      if (info.m_deviceName == dev)
+        return info.m_deviceType;
+    }
+  }
+  return AE_DEVTYPE_PCM;
+}
+
+bool CActiveAESink::HasPassthroughDevice()
+{
+  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+  {
+    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
+    {
+      CAEDeviceInfo& info = *itt2;
+      if (info.m_deviceType != AE_DEVTYPE_PCM)
+        return true;
+    }
+  }
+  return false;
+}
+
 enum SINK_STATES
 {
   S_TOP = 0,                      // 0
@@ -132,7 +163,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             m_device = *(data->device);
           }
           m_extError = false;
-          m_extSilence = false;
+          m_extSilenceTimer = 0;
           ReturnBuffers();
           OpenSink();
 
@@ -235,10 +266,14 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkControlProtocol::SILENCEMODE:
-          m_extSilence = *(bool*)msg->data;
-          if (CSettings::Get().GetBool("audiooutput.streamsilence"))
-            m_extSilence = true;
-          if (m_extSilence)
+          bool silencemode;
+          silencemode = *(bool*)msg->data;
+          if (silencemode)
+            m_extSilenceTimeout = XbmcThreads::EndTime::InfiniteValue;
+          else
+            m_extSilenceTimeout = CSettings::Get().GetInt("audiooutput.streamsilence") * 60000;
+          m_extSilenceTimer.Set(m_extSilenceTimeout);
+          if (!m_extSilenceTimer.IsTimePast())
           {
             m_state = S_TOP_CONFIGURED_SILENCE;
             m_extTimeout = 0;
@@ -280,6 +315,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           {
             m_state = S_TOP_CONFIGURED_PLAY;
             m_extTimeout = delay / 2;
+            m_extSilenceTimer.Set(m_extSilenceTimeout);
           }
           return;
         default:
@@ -372,7 +408,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkControlProtocol::TIMEOUT:
-          if (m_extSilence)
+          if (!m_extSilenceTimer.IsTimePast())
           {
             m_state = S_TOP_CONFIGURED_SILENCE;
             m_extTimeout = 0;
@@ -404,6 +440,8 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             m_sink = NULL;
             m_state = S_TOP_CONFIGURED_SUSPEND;
           }
+          else
+            m_state = S_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           return;
         default:

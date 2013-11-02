@@ -30,7 +30,7 @@ endif
 
 ifeq ($(OS),osx)
   DEPENDS += libGLEW libsdl libcrystalhd
-  EXCLUDED_DEPENDS = libusb
+  EXCLUDED_DEPENDS = libusb gmp nettle gnutls
 endif
 
 ifeq ($(OS),android)

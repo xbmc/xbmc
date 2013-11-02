@@ -26,12 +26,12 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    InfoTagMusic::InfoTagMusic() : AddonClass("InfoTagMusic")
+    InfoTagMusic::InfoTagMusic()
     {
       infoTag = new MUSIC_INFO::CMusicInfoTag();
     }
 
-    InfoTagMusic::InfoTagMusic(const MUSIC_INFO::CMusicInfoTag& tag) : AddonClass("InfoTagMusic")
+    InfoTagMusic::InfoTagMusic(const MUSIC_INFO::CMusicInfoTag& tag)
     {
       infoTag = new MUSIC_INFO::CMusicInfoTag();
       *infoTag = tag;

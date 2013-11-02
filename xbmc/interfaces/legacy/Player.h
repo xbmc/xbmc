@@ -30,6 +30,7 @@
 #include "AddonString.h"
 #include "InfoTagMusic.h"
 #include "AddonCallback.h"
+#include "Alternative.h"
 
 #include "swighelper.h"
 
@@ -39,24 +40,34 @@ namespace XBMCAddon
   {
     XBMCCOMMONS_STANDARD_EXCEPTION(PlayerException);
 
-    /**
-     * Player class.
-     * 
-     * Player() -- Creates a new Player class.
-     */
+    typedef Alternative<String, const PlayList* > PlayParameter;
 
     // This class is a merge of what was previously in xbmcmodule/player.h
     //  and xbmcmodule/PythonPlayer.h without the python references. The
     //  queuing and handling of asynchronous callbacks is done internal to
     //  this class.
 
+    /**
+     * Player class.
+     * 
+     * Player() -- Creates a new Player class.
+     */
     class Player : public AddonCallback, public IPlayerCallback
     {
     private:
       int iPlayList;
       EPLAYERCORES playerCore;
 
+      void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false);
+      void playPlaylist(const PlayList* playlist = NULL,
+                        bool windowed = false, int startpos=-1);
+      void playCurrent(bool windowed = false);
+
     public:
+#ifndef SWIG
+	  static PlayParameter defaultPlayParameter;
+#endif
+
       // Construct a Player proxying the given generated binding. The 
       //  construction of a Player needs to identify whether or not any 
       //  callbacks will be executed asynchronously or not.
@@ -64,9 +75,9 @@ namespace XBMCAddon
       virtual ~Player(void);
 
       /**
-       * playStream([item, listitem, windowed]) -- Play this item.\n
+       * play([item, listitem, windowed]) -- Play this item.\n
        * \n
-       * item           : [opt] string - filename or url.\n
+       * item           : [opt] string - filename, url or playlist.\n
        * listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n
        * windowed       : [opt] bool - true=play video windowed, false=play users preference.(default)\n
        * \n
@@ -75,42 +86,14 @@ namespace XBMCAddon
        * \n
        *        You can use the above as keywords for arguments and skip certain optional arguments.\n
        *        Once you use a keyword, all following arguments require the keyword.\n
-       * 
-       * example:
-       *   - listitem = xbmcgui.ListItem('Ironman')
-       *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})
-       *   - xbmc.Player().play(url, listitem, windowed)
-       */
-      void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false);
-
-      /**
-       * playPlaylist([playlist, windowed, startpos]) -- Play this item.\n
-       * \n
-       * playlist       : [opt] playlist.\n
-       * windowed       : [opt] bool - true=play video windowed, false=play users preference.(default)\n
-       * startpos       : [opt] int - Playlist starting position (0 based). If not given, current position is used\n
-       * \n
-       * *Note, If playlist is not given then the Player will try to play the current item\n
-       *        in the current playlist.\n
-       * \n
-       *        You can use the above as keywords for arguments and skip certain optional arguments.\n
-       *        Once you use a keyword, all following arguments require the keyword.\n
        * \n
        * example:\n
+       *   - listitem = xbmcgui.ListItem('Ironman')\n
+       *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})\n
+       *   - xbmc.Player().play(url, listitem, windowed)\n
        */
-      void playPlaylist(const PlayList* playlist = NULL,
-                        bool windowed = false, int startpos=-1);
-
-      /**
-       * play() -- try to play the current item in the current playlist.
-       * 
-       * windowed       : [opt] bool - true=play video windowed, false=play users preference (default).
-       * 
-       * example:
-       * 
-       *   - xbmc.Player().play()
-       */
-      void playCurrent(bool windowed = false);
+      void play(const PlayParameter& item = Player::defaultPlayParameter, 
+                const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false, int startpos = -1);
 
       /**
        * stop() -- Stop playing.

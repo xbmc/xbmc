@@ -27,7 +27,7 @@
 
 #pragma once
 
-//#define ENABLE_TRACE_API
+//#define ENABLE_XBMC_TRACE_API
 
 #include "threads/SingleLock.h"
 
@@ -64,17 +64,6 @@ namespace XBMCAddonUtils
     ~InvertSingleLockGuard() { lock.Enter(); }
   };
 
-//  class WaitForNotify
-//  {
-//    std::vector<HANDLE> thoseWaiting;
-//    CCriticalSection csection; // Ha!
-//    CCriticalSection atomicWait;
-//  public:
-//    void wait();
-//    void notify();
-//    void notifyAll();
-//  };
-
 #define LOCKGUI XBMCAddonUtils::GuiLock __gl
 
   /*
@@ -83,7 +72,7 @@ namespace XBMCAddonUtils
    */
   const char *getDefaultImage(char* cControlType, char* cTextureType, char* cDefault);
 
-#ifdef ENABLE_TRACE_API
+#ifdef ENABLE_XBMC_TRACE_API
   class TraceGuard
   {
     const char* function;
@@ -100,10 +89,10 @@ namespace XBMCAddonUtils
 #endif
 }
 
-#ifdef ENABLE_TRACE_API
-#define TRACE XBMCAddonUtils::TraceGuard _tg(__PRETTY_FUNCTION__)
+#ifdef ENABLE_XBMC_TRACE_API
+#define XBMC_TRACE XBMCAddonUtils::TraceGuard _tg(__PRETTY_FUNCTION__)
 #else
-#define TRACE
+#define XBMC_TRACE
 #endif
 
 

@@ -204,7 +204,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       if (stricmp(sensitive,"yes") == 0)
         bInsensitive=false; // match case sensitive
 
-    CRegExp reg(bInsensitive);
+    CRegExp reg(bInsensitive, true);
     CStdString strExpression;
     if (pExpression->FirstChild())
       strExpression = pExpression->FirstChild()->Value();

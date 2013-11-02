@@ -120,5 +120,5 @@ int64_t CJNISurfaceTexture::getTimestamp()
 void CJNISurfaceTexture::release()
 {
   call_method<void>(m_object,
-    "attachToGLContext", "()V");
+    "release", "()V");
 }

@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.Properties;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -29,19 +30,16 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
 
 public class Splash extends Activity {
-
-  static
-  {
-    System.loadLibrary("xbmc");
-  }
 
   public enum State {
     Uninitialized, InError, Checking, Caching, StartingXBMC
   }
 
-  private static final String TAG = "Splash";
+  private static final String TAG = "XBMC";
 
   private String mCpuinfo = "";
   private String mErrorMsg = "";
@@ -237,6 +235,10 @@ public class Splash extends Activity {
   }
 
   protected void startXBMC() {
+    // NB: We only preload libxbmc to be able to get info on missing symbols.
+    //     This is not normally needed
+    System.loadLibrary("xbmc");
+    
     // Run XBMC
     Intent intent = getIntent();
     intent.setClass(this, org.xbmc.xbmc.Main.class);
@@ -262,20 +264,61 @@ public class Splash extends Activity {
       }
 
     mState = State.Checking;
-    boolean ret = Build.CPU_ABI.equals("x86");
-    if (!ret) {
-      ret = ParseCpuFeature();
-      if (!ret) {
-        mErrorMsg = "Error! Cannot parse CPU features.";
-        mState = State.InError;
-      } else {
-        ret = CheckCpuFeature("neon");
-        if (!ret) {
-          mErrorMsg = "This XBMC package is not compatible with your device.\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
+
+    String curArch = "";
+    try {
+      curArch = Build.CPU_ABI.substring(0,3);
+    } catch (IndexOutOfBoundsException e) {
+      mErrorMsg = "Error! Unexpected architecture: " + Build.CPU_ABI;
+      Log.e(TAG, mErrorMsg);
+      mState = State.InError;
+   }
+    
+    if (mState != State.InError) {
+      // Check if we are on the proper arch
+
+      // Read the properties
+      try {
+        Resources resources = this.getResources();
+        InputStream xbmcprop = resources.openRawResource(R.raw.xbmc);
+        Properties properties = new Properties();
+        properties.load(xbmcprop);
+
+        if (!curArch.equalsIgnoreCase(properties.getProperty("native_arch"))) {
+          mErrorMsg = "This XBMC package is not compatible with your device (" + curArch + " vs. " + properties.getProperty("native_arch") +").\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
+          Log.e(TAG, mErrorMsg);
           mState = State.InError;
+        }
+      } catch (NotFoundException e) {
+        mErrorMsg = "Cannot find properties file";
+        Log.e(TAG, mErrorMsg);
+        mState = State.InError;
+      } catch (IOException e) {
+        mErrorMsg = "Failed to open properties file";
+        Log.e(TAG, mErrorMsg);
+        mState = State.InError;
+      }
+    }
+    
+    if (mState != State.InError) {
+      if (curArch.equalsIgnoreCase("arm")) {
+        // arm arch: check if the cpu supports neon
+        boolean ret = ParseCpuFeature();
+        if (!ret) {
+          mErrorMsg = "Error! Cannot parse CPU features.";
+          Log.e(TAG, mErrorMsg);
+          mState = State.InError;
+        } else {
+          ret = CheckCpuFeature("neon");
+          if (!ret) {
+            mErrorMsg = "This XBMC package is not compatible with your device (NEON).\nPlease check the <a href=\"http://wiki.xbmc.org/index.php?title=XBMC_for_Android_specific_FAQ\">XBMC Android wiki</a> for more information.";
+            Log.e(TAG, mErrorMsg);
+            mState = State.InError;
+          }
         }
       }
     }
+    
     if (mState != State.InError) {
       sPackagePath = getPackageResourcePath();
       fPackagePath = new File(sPackagePath);

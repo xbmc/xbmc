@@ -35,7 +35,9 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    Player::Player(int _playerCore): AddonCallback("Player")
+	PlayParameter Player::defaultPlayParameter;
+
+    Player::Player(int _playerCore)
     {
       iPlayList = PLAYLIST_MUSIC;
 
@@ -66,9 +68,22 @@ namespace XBMCAddon
       }
     }
 
+    void Player::play(const Alternative<String, const PlayList* > & item,
+                      const XBMCAddon::xbmcgui::ListItem* listitem, bool windowed, int startpos)
+    {
+      XBMC_TRACE;
+
+      if (&item == &defaultPlayParameter)
+        playCurrent(windowed);
+      else if (item.which() == XBMCAddon::first)
+        playStream(item.former(), listitem, windowed);
+      else // item is a PlayListItem
+        playPlaylist(item.later(),windowed,startpos);
+    }
+
     void Player::playStream(const String& item, const xbmcgui::ListItem* plistitem, bool windowed)
     {
-      TRACE;
+      XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
       if (!item.empty())
       {
@@ -98,7 +113,7 @@ namespace XBMCAddon
 
     void Player::playCurrent(bool windowed)
     {
-      TRACE;
+      XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
       // set fullscreen or windowed
       CMediaSettings::Get().SetVideoStartWindowed(windowed);
@@ -114,7 +129,7 @@ namespace XBMCAddon
 
     void Player::playPlaylist(const PlayList* playlist, bool windowed, int startpos)
     {
-      TRACE;
+      XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
       if (playlist != NULL)
       {
@@ -137,19 +152,19 @@ namespace XBMCAddon
 
     void Player::stop()
     {
-      TRACE;
+      XBMC_TRACE;
       CApplicationMessenger::Get().MediaStop();
     }
 
     void Player::pause()
     {
-      TRACE;
+      XBMC_TRACE;
       CApplicationMessenger::Get().MediaPause();
     }
 
     void Player::playnext()
     {
-      TRACE;
+      XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
       // force a playercore before playing
       g_application.m_eForcedNextPlayer = playerCore;
@@ -159,7 +174,7 @@ namespace XBMCAddon
 
     void Player::playprevious()
     {
-      TRACE;
+      XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
       // force a playercore before playing
       g_application.m_eForcedNextPlayer = playerCore;
@@ -169,7 +184,7 @@ namespace XBMCAddon
 
     void Player::playselected(int selected)
     {
-      TRACE;
+      XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
       // force a playercore before playing
       g_application.m_eForcedNextPlayer = playerCore;
@@ -187,124 +202,124 @@ namespace XBMCAddon
 
     void Player::OnPlayBackStarted()
     { 
-      TRACE;
+      XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackStarted));
     }
 
     void Player::OnPlayBackEnded()
     { 
-      TRACE;
+      XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackEnded));
     }
 
     void Player::OnPlayBackStopped()
     { 
-      TRACE;
+      XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackStopped));
     }
 
     void Player::OnPlayBackPaused()
     { 
-      TRACE;
+      XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackPaused));
     }
 
     void Player::OnPlayBackResumed()
     { 
-      TRACE;
+      XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackResumed));
     }
 
     void Player::OnQueueNextItem()
     { 
-      TRACE;
+      XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onQueueNextItem));
     }
 
     void Player::OnPlayBackSpeedChanged(int speed)
     { 
-      TRACE;
+      XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player,int>(this,&Player::onPlayBackSpeedChanged,speed));
     }
 
     void Player::OnPlayBackSeek(int time, int seekOffset)
     { 
-      TRACE;
+      XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player,int,int>(this,&Player::onPlayBackSeek,time,seekOffset));
     }
 
     void Player::OnPlayBackSeekChapter(int chapter)
     { 
-      TRACE;
+      XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player,int>(this,&Player::onPlayBackSeekChapter,chapter));
     }
 
     void Player::onPlayBackStarted()
     {
-      TRACE;
+      XBMC_TRACE;
     }
 
     void Player::onPlayBackEnded()
     {
-      TRACE;
+      XBMC_TRACE;
     }
 
     void Player::onPlayBackStopped()
     {
-      TRACE;
+      XBMC_TRACE;
     }
 
     void Player::onPlayBackPaused()
     {
-      TRACE;
+      XBMC_TRACE;
     }
 
     void Player::onPlayBackResumed()
     {
-      TRACE;
+      XBMC_TRACE;
     }
 
     void Player::onQueueNextItem()
     {
-      TRACE;
+      XBMC_TRACE;
     }
 
     void Player::onPlayBackSpeedChanged(int speed)
     { 
-      TRACE;
+      XBMC_TRACE;
     }
 
     void Player::onPlayBackSeek(int time, int seekOffset)
     { 
-      TRACE;
+      XBMC_TRACE;
     }
 
     void Player::onPlayBackSeekChapter(int chapter)
     { 
-      TRACE;
+      XBMC_TRACE;
     }
 
     bool Player::isPlaying()
     {
-      TRACE;
+      XBMC_TRACE;
       return g_application.m_pPlayer->IsPlaying();
     }
 
     bool Player::isPlayingAudio()
     {
-      TRACE;
+      XBMC_TRACE;
       return g_application.m_pPlayer->IsPlayingAudio();
     }
 
     bool Player::isPlayingVideo()
     {
-      TRACE;
+      XBMC_TRACE;
       return g_application.m_pPlayer->IsPlayingVideo();
     }
 
     String Player::getPlayingFile() throw (PlayerException)
     {
-      TRACE;
+      XBMC_TRACE;
       if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any file");
 
@@ -313,7 +328,7 @@ namespace XBMCAddon
 
     InfoTagVideo* Player::getVideoInfoTag() throw (PlayerException)
     {
-      TRACE;
+      XBMC_TRACE;
       if (!g_application.m_pPlayer->IsPlayingVideo())
         throw PlayerException("XBMC is not playing any videofile");
 
@@ -326,7 +341,7 @@ namespace XBMCAddon
 
     InfoTagMusic* Player::getMusicInfoTag() throw (PlayerException)
     {
-      TRACE;
+      XBMC_TRACE;
       if (g_application.m_pPlayer->IsPlayingVideo() || !g_application.m_pPlayer->IsPlayingAudio())
         throw PlayerException("XBMC is not playing any music file");
 
@@ -339,7 +354,7 @@ namespace XBMCAddon
 
     double Player::getTotalTime() throw (PlayerException)
     {
-      TRACE;
+      XBMC_TRACE;
       if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any media file");
 
@@ -348,7 +363,7 @@ namespace XBMCAddon
 
     double Player::getTime() throw (PlayerException)
     {
-      TRACE;
+      XBMC_TRACE;
       if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any media file");
 
@@ -357,7 +372,7 @@ namespace XBMCAddon
 
     void Player::seekTime(double pTime) throw (PlayerException)
     {
-      TRACE;
+      XBMC_TRACE;
       if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any media file");
 
@@ -366,7 +381,7 @@ namespace XBMCAddon
 
     void Player::setSubtitles(const char* cLine)
     {
-      TRACE;
+      XBMC_TRACE;
       if (g_application.m_pPlayer->HasPlayer())
       {
         int nStream = g_application.m_pPlayer->AddSubtitle(cLine);
@@ -382,7 +397,7 @@ namespace XBMCAddon
 
     void Player::showSubtitles(bool bVisible)
     {
-      TRACE;
+      XBMC_TRACE;
       if (g_application.m_pPlayer->HasPlayer())
       {
         CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible != 0;
@@ -392,7 +407,7 @@ namespace XBMCAddon
 
     String Player::getSubtitles()
     {
-      TRACE;
+      XBMC_TRACE;
       if (g_application.m_pPlayer->HasPlayer())
       {
         SPlayerSubtitleStreamInfo info;
@@ -409,7 +424,7 @@ namespace XBMCAddon
 
     void Player::disableSubtitles()
     {
-      TRACE;
+      XBMC_TRACE;
       CLog::Log(LOGWARNING,"'xbmc.Player().disableSubtitles()' is deprecated and will be removed in future releases, please use 'xbmc.Player().showSubtitles(false)' instead");
       if (g_application.m_pPlayer->HasPlayer())
       {

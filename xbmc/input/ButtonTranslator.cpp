@@ -41,6 +41,8 @@
 #include "SDLJoystick.h"
 #endif
 
+#define JOYSTICK_DEFAULT_MAP "_xbmc_"
+
 using namespace std;
 using namespace XFILE;
 
@@ -741,7 +743,7 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
 void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 {
-  string joyname = "_xbmc_"; // default global map name
+  string joyname = JOYSTICK_DEFAULT_MAP; // default global map name
   vector<string> joynames;
   map<int, string> buttonMap;
   map<int, string> axisMap;
@@ -861,7 +863,11 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
 
   map<string, JoystickMap>::iterator it = jmap->find(szDevice);
   if (it==jmap->end())
-    return false;
+  {
+    it = jmap->find(JOYSTICK_DEFAULT_MAP); // default global map name
+    if (it==jmap->end())
+      return false;
+  }
 
   JoystickMap wmap = it->second;
 

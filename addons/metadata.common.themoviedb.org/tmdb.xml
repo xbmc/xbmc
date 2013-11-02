@@ -190,11 +190,11 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes" noclean="1">&quot;cast&quot;:\[([^\]]*)</expression>
 			</RegExp>
-			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;thumb&gt;http://cf2.imgobject.com/t/p/original\3&lt;/thumb&gt;&lt;/actor&gt;" dest="2">
-				<expression repeat="yes" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;character&quot;:&quot;([^&quot;]*)&quot;,&quot;order&quot;:[0-9]*,&quot;cast_id&quot;:[0-9]*,&quot;profile_path&quot;:&quot;([^&quot;]*)&quot;</expression>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;thumb&gt;http://cf2.imgobject.com/t/p/original\4&lt;/thumb&gt;&lt;/actor&gt;" dest="2">
+				<expression repeat="yes" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;character&quot;:&quot;([^&quot;]*)&quot;,&quot;order&quot;:([0-9]*),&quot;cast_id&quot;:[0-9]*,&quot;profile_path&quot;:&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
-			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="2+">
-				<expression repeat="yes" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;character&quot;:&quot;([^&quot;]*)&quot;,&quot;order&quot;:[0-9]*,&quot;cast_id&quot;:[0-9]*,&quot;profile_path&quot;:null</expression>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;/actor&gt;" dest="2+">
+				<expression repeat="yes" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;character&quot;:&quot;([^&quot;]*)&quot;,&quot;order&quot;:([0-9]*),&quot;cast_id&quot;:[0-9]*,&quot;profile_path&quot;:null</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

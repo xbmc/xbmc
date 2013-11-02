@@ -178,19 +178,110 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* strTag, float &value, float &min)
+float CGUIControlFactory::ParsePosition(const char* pos, const float parentSize)
+{
+  char* end = NULL;
+  float value = pos ? (float)strtod(pos, &end) : 0;
+  if (end)
+  {
+    if (*end == 'r')
+      value = parentSize - value;
+    else if (*end == '%')
+      value = value * parentSize / 100.0f;
+  }
+  return value;
+}
+
+bool CGUIControlFactory::GetPosition(const TiXmlNode *node, const char* strTag, const float parentSize, float& value)
+{
+  const TiXmlElement* pNode = node->FirstChildElement(strTag);
+  if (!pNode || !pNode->FirstChild()) return false;
+
+  value = ParsePosition(pNode->FirstChild()->Value(), parentSize);
+  return true;
+}
+
+bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* strTag, const float parentSize, float &value, float &min)
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
   if (0 == strnicmp("auto", pNode->FirstChild()->Value(), 4))
   { // auto-width - at least min must be set
-    pNode->QueryFloatAttribute("max", &value);
-    pNode->QueryFloatAttribute("min", &min);
+    value = ParsePosition(pNode->Attribute("max"), parentSize);
+    min = ParsePosition(pNode->Attribute("min"), parentSize);
     if (!min) min = 1;
     return true;
   }
   value = (float)atof(pNode->FirstChild()->Value());
   return true;
+}
+
+bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTag, const char *rightTag, const char *centerTag,
+                                       const char *widthTag, const float parentSize, float &left, float &width, float &min_width)
+{
+  float center = 0, right = 0;
+
+  // read from the XML
+  bool hasLeft = GetPosition(node, leftTag, parentSize, left);
+  bool hasCenter = GetPosition(node, centerTag, parentSize, center);
+  bool hasRight = GetPosition(node, rightTag, parentSize, right);
+  bool hasWidth = GetDimension(node, widthTag, parentSize, width, min_width);
+
+  if (!hasLeft)
+  { // figure out position
+    if (hasCenter) // no left specified
+    {
+      if (hasWidth)
+      {
+        left = center - width/2;
+        hasLeft = true;
+      }
+      else
+      {
+        if (hasRight)
+        {
+          width = (right - center) * 2;
+          left = right - center;
+          hasLeft = true;
+        }
+      }
+    }
+    else if (hasRight) // no left or centre
+    {
+      if (hasWidth)
+      {
+        left = right - width;
+        hasLeft = true;
+      }
+    }
+  }
+  if (!hasWidth)
+  {
+    if (hasRight)
+    {
+      width = max(0.0f, right - left); // if left=0, this fills to size of parent
+      hasLeft = true;
+    }
+    else if (hasCenter)
+    {
+      if (hasLeft)
+      {
+        width = max(0.0f, (center - left) * 2);
+        hasWidth = true;
+      }
+      else if (center > 0 && center < parentSize)
+      { // centre given, so fill to edge of parent
+        width = max(0.0f, min(parentSize - center, center) * 2);
+        left = center - width/2;
+        hasLeft = hasWidth = true;
+      }
+    }
+    else // neither right nor center specified
+    {
+      width = max(0.0f, parentSize - left); // if left=0, this fills to parent
+    }
+  }
+  return hasLeft && hasWidth;
 }
 
 bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspect)
@@ -699,32 +790,28 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   // TODO: Perhaps we should check here whether id is valid for focusable controls
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 
-  XMLUtils::GetFloat(pControlNode, "posx", posX);
-  XMLUtils::GetFloat(pControlNode, "posy", posY);
-  // Convert these from relative coords
-  CStdString pos;
-  XMLUtils::GetString(pControlNode, "posx", pos);
-  if (pos.Right(1) == "r")
-    posX = rect.Width() - posX;
-  XMLUtils::GetString(pControlNode, "posy", pos);
-  if (pos.Right(1) == "r")
-    posY = rect.Height() - posY;
+  GetAlignment(pControlNode, "align", labelInfo.align);
+  if (!GetDimensions(pControlNode, "left", "right", "centerx", "width", rect.Width(), posX, width, minWidth))
+  { // didn't get 2 dimensions, so test for old <posx> as well
+    if (GetPosition(pControlNode, "posx", rect.Width(), posX))
+    { // <posx> available, so use it along with any hacks we used to support
+      if (!insideContainer &&
+          type == CGUIControl::GUICONTROL_LABEL &&
+          (labelInfo.align & XBFONT_RIGHT))
+        posX -= width;
+    }
+    if (!width)
+      width = max(rect.Width() - posX, 0.0f);
+  }
+  if (!GetDimensions(pControlNode, "top", "bottom", "centery", "height", rect.Height(), posY, height, minHeight))
+  {
+    GetPosition(pControlNode, "posy", rect.Height(), posY);
+    if (!height)
+      height = max(rect.Height() - posY, 0.0f);
+  }
 
-  GetDimension(pControlNode, "width", width, minWidth);
-  GetDimension(pControlNode, "height", height, minHeight);
   XMLUtils::GetFloat(pControlNode, "offsetx", offset.x);
   XMLUtils::GetFloat(pControlNode, "offsety", offset.y);
-
-  // adjust width and height accordingly for groups.  Groups should
-  // take the width/height of the parent (adjusted for positioning)
-  // if none is defined.
-  if (type == CGUIControl::GUICONTROL_GROUP || type == CGUIControl::GUICONTROL_GROUPLIST)
-  {
-    if (!width)
-      width = max(rect.x2 - posX, 0.0f);
-    if (!height)
-      height = max(rect.y2 - posY, 0.0f);
-  }
 
   hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
@@ -766,7 +853,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CStdString strFont;
   if (XMLUtils::GetString(pControlNode, "font", strFont))
     labelInfo.font = g_fontManager.GetFont(strFont);
-  GetAlignment(pControlNode, "align", labelInfo.align);
   uint32_t alignY = 0;
   if (GetAlignmentY(pControlNode, "aligny", alignY))
     labelInfo.align |= alignY;

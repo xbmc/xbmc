@@ -28,9 +28,9 @@ namespace XBMCAddon
   namespace xbmc
   {
     /**
-     * Monitor class.\n
-     * \n
-     * Monitor() -- Creates a new Monitor to notify addon about changes.\n
+     * Monitor class.
+     * 
+     * Monitor() -- Creates a new Monitor to notify addon about changes.
      */
     class Monitor : public AddonCallback
     {
@@ -39,13 +39,15 @@ namespace XBMCAddon
       Monitor();
 
 #ifndef SWIG
-      inline void    OnSettingsChanged() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onSettingsChanged)); }
-      inline void    OnScreensaverActivated() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverActivated)); }
-      inline void    OnScreensaverDeactivated() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverDeactivated)); }
-      inline void    OnDatabaseUpdated(const String &database) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseUpdated,database)); }
-      inline void    OnDatabaseScanStarted(const String &database) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseScanStarted,database)); }
-      inline void    OnAbortRequested() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
-      inline void    OnNotification(const String &sender, const String &method, const String &data) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String,const String,const String>(this,&Monitor::onNotification,sender,method,data)); }
+      inline void    OnSettingsChanged() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onSettingsChanged)); }
+      inline void    OnScreensaverActivated() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverActivated)); }
+      inline void    OnScreensaverDeactivated() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverDeactivated)); }
+      inline void    OnDatabaseUpdated(const String &database) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseUpdated,database)); }
+      inline void    OnDatabaseScanStarted(const String &database) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseScanStarted,database)); }
+      inline void    OnAbortRequested() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
+      inline void    OnNotification(const String &sender, const String &method, const String &data) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String,const String,const String>(this,&Monitor::onNotification,sender,method,data)); }
+
+      inline const String& GetId() { return Id; }
 #endif
 
       /**
@@ -53,21 +55,21 @@ namespace XBMCAddon
        * \n
        * Will be called when addon settings are changed\n
        */
-      virtual void    onSettingsChanged() { TRACE; }
+      virtual void    onSettingsChanged() { XBMC_TRACE; }
 
       /**
        * onScreensaverActivated() -- onScreensaverActivated method.\n
        * \n
        * Will be called when screensaver kicks in\n
        */
-      virtual void    onScreensaverActivated() { TRACE; }
+      virtual void    onScreensaverActivated() { XBMC_TRACE; }
 
       /**
        * onScreensaverDeactivated() -- onScreensaverDeactivated method.\n
        * \n
        * Will be called when screensaver goes off\n
        */
-      virtual void    onScreensaverDeactivated() { TRACE; }
+      virtual void    onScreensaverDeactivated() { XBMC_TRACE; }
 
       /**
        * onDatabaseUpdated(database) -- onDatabaseUpdated method.\n
@@ -76,7 +78,7 @@ namespace XBMCAddon
        * \n
        * Will be called when database gets updated and return video or music to indicate which DB has been changed\n
        */
-      virtual void    onDatabaseUpdated(const String database) { TRACE; }
+      virtual void    onDatabaseUpdated(const String database) { XBMC_TRACE; }
 
       /**
        * onDatabaseScanStarted(database) -- onDatabaseScanStarted method.\n
@@ -85,14 +87,14 @@ namespace XBMCAddon
        *\n
        * Will be called when database update starts and return video or music to indicate which DB is being updated\n
        */
-      virtual void    onDatabaseScanStarted(const String database) { TRACE; }
+      virtual void    onDatabaseScanStarted(const String database) { XBMC_TRACE; }
       
       /**
        * onAbortRequested() -- onAbortRequested method.\n
        * \n
        * Will be called when XBMC requests Abort\n
        */
-      virtual void    onAbortRequested() { TRACE; }
+      virtual void    onAbortRequested() { XBMC_TRACE; }
 
       /**
        * onNotification(sender, method, data) -- onNotification method.\n
@@ -103,11 +105,9 @@ namespace XBMCAddon
        *\n
        * Will be called when XBMC receives or sends a notification\n
        */
-      virtual void    onNotification(const String sender, const String method, const String data) { TRACE; }
+      virtual void    onNotification(const String sender, const String method, const String data) { XBMC_TRACE; }
 
       virtual ~Monitor();
-
-      inline const String& GetId() { return Id; }
     };
   }
 };

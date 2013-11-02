@@ -1,0 +1,41 @@
+--- src/video/quartz/SDL_QuartzVideo.h	2012-01-19 07:30:06.000000000 +0100
++++ src/video/quartz/SDL_QuartzVideo.h	2013-10-30 16:35:02.000000000 +0100
+@@ -91,7 +91,9 @@
+     CGDirectDisplayID  display;            /* 0 == main display (only support single display) */
+     const void         *mode;              /* current mode of the display */
+     const void         *save_mode;         /* original mode of the display */
++#ifdef CGDirectPaletteRef
+     CGDirectPaletteRef palette;            /* palette of an 8-bit display */
++#endif
+     NSOpenGLContext    *gl_context;        /* OpenGL rendering context */
+     NSGraphicsContext  *nsgfx_context;     /* Cocoa graphics context */
+     Uint32             width, height, bpp; /* frequently used data about the display */
+--- src/video/quartz/SDL_QuartzVideo.m	2012-01-19 07:30:06.000000000 +0100
++++ src/video/quartz/SDL_QuartzVideo.m	2013-10-30 16:39:21.000000000 +0100
+@@ -336,7 +336,7 @@
+     }
+ #endif
+ 
+-#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1070)
++#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1070) && defined(CGDirectPaletteRef)
+     if (!IS_LION_OR_LATER(this)) {
+         palette = CGPaletteCreateDefaultColorPalette();
+     }
+@@ -1244,7 +1244,7 @@
+ static int QZ_SetColors (_THIS, int first_color, int num_colors,
+                          SDL_Color *colors)
+ {
+-#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1070)
++#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1070) && defined(CGDirectPaletteRef)
+     /* we shouldn't have an 8-bit mode on Lion! */
+     if (!IS_LION_OR_LATER(this)) {
+         CGTableCount  index;
+@@ -1554,7 +1554,7 @@
+     else
+         QZ_UnsetVideoMode (this, TRUE, FALSE);
+ 
+-#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1070)
++#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1070) && defined(CGDirectPaletteRef)
+     if (!IS_LION_OR_LATER(this)) {
+         CGPaletteRelease(palette);
+     }

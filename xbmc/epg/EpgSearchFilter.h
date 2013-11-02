@@ -55,6 +55,7 @@ namespace EPG
     virtual bool MatchSearchTerm(const CEpgInfoTag &tag) const;
     virtual bool MatchChannelNumber(const CEpgInfoTag &tag) const;
     virtual bool MatchChannelGroup(const CEpgInfoTag &tag) const;
+    virtual bool MatchBroadcastId(const CEpgInfoTag &tag) const;
 
     static int RemoveDuplicates(CFileItemList &results);
 
@@ -76,5 +77,6 @@ namespace EPG
     int           m_iChannelGroup;            /*!< The group this channel belongs to */
     bool          m_bIgnorePresentTimers;     /*!< True to ignore currently present timers (future recordings), false if not */
     bool          m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
+    int           m_iUniqueBroadcastId;       /*!< The broadcastid to search for */
   };
 }

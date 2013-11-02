@@ -45,7 +45,7 @@ namespace XBMCAddon
         new(data) T2(o.later());
     }
 
-    inline WhichAlternative which() { return pos; }
+    inline WhichAlternative which() const { return pos; }
 
     inline T1& former() throw (WrongTypeException)
     {

@@ -23,7 +23,7 @@
 #include <inttypes.h>
 #include "guilib/XBTF.h"
 #include "utils/EndianSwap.h"
-#if defined(TARGET_FREEBSD)
+#if defined(TARGET_FREEBSD) || defined(TARGET_DARWIN)
 #include <stdlib.h>
 #elif !defined(TARGET_DARWIN)
 #include <malloc.h>

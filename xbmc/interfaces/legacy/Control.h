@@ -24,6 +24,7 @@
 #include "guilib/GUIFont.h"
 #include "guilib/Key.h"
 
+#include "Alternative.h"
 #include "Tuple.h"
 #include "ListItem.h"
 #include "swighelper.h"
@@ -39,48 +40,19 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
-
-    // Parent for control classes. The problem here is that Python uses 
-    // references to this class in a dynamic typing way. For example,
-    // you will find this type of python code frequently:
-    //
-    // window.getControl( 100 ).setLabel( "Stupid Dynamic Type")
-    //
-    // Notice that the 'getControl' call returns a 'Control' object.
-    // In a dynamically typed language, the subsequent call to setLabel
-    // works if the specific type of control has the method. The script
-    // writer is often in a position to know more than the code about
-    // the specific Control type (in the example, that control id 100
-    // is a 'ControlLabel') where the C++ code is not.
-    //
-    // SWIG doesn't support this type of dynamic typing. The 'Control'
-    // wrapper that's returned will wrap a ControlLabel but will not
-    // have the 'setLabel' method on it. The only way to handle this is
-    // to add all possible subclass methods to the parent class. This is
-    // ugly but the alternative is nearly as ugly. It's particularly ugly
-    // here because the majority of the methods are unique to the 
-    // particular subclass.
-    //
-    // If anyone thinks they have a solution then let me know. The alternative
-    // would be to have a set of 'getContol' methods, each one coresponding
-    // to a type so that the downcast can be done in the native code. IOW
-    // rather than a simple 'getControl' there would be a 'getControlLabel',
-    // 'getControlRadioButton', 'getControlButton', etc.
-    //
-    // TODO:This later solution should be implemented for future scripting 
-    // languages while the former will remain as deprecated functionality 
-    // for Python. 
-    //
-    // We don't need the SWIGHIDDENVIRTUAL since this is not a director.
+    /**
+     * Control class.
+     * 
+     * Base class for all controls.
+     */
     class Control : public AddonClass
     {
     protected:
-    public:
-      Control(const char* classname) : AddonClass(classname),
-                                       iControlId(0), iParentId(0), dwPosX(0), dwPosY(0), dwWidth(0),
-                                       dwHeight(0), iControlUp(0), iControlDown(0), iControlLeft(0),
-                                       iControlRight(0), pGUIControl(NULL) {}
+      Control() : iControlId(0), iParentId(0), dwPosX(0), dwPosY(0), dwWidth(0),
+                  dwHeight(0), iControlUp(0), iControlDown(0), iControlLeft(0),
+                  iControlRight(0), pGUIControl(NULL) {}
 
+    public:
       virtual ~Control();
 
 #ifndef SWIG
@@ -89,188 +61,6 @@ namespace XBMCAddon
 
       // currently we only accept messages from a button or controllist with a select action
       virtual bool canAcceptMessages(int actionId) { return false; }
-
-      /**
-       * setLabel() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setLabel(const String& label = emptyString, 
-                            const char* font = NULL,
-                            const char* textColor = NULL,
-                            const char* disabledColor = NULL,
-                            const char* shadowColor = NULL,
-                            const char* focusedColor = NULL,
-                            const String& label2 = emptyString) DECL_UNIMP("Control");
-      /**
-       * reset() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void reset() DECL_UNIMP("Control");
-      /**
-       * removeItem() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void removeItem(int index) DECL_UNIMP2("Control",WindowException);
-      /**
-       * setSelected() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setSelected(bool selected) DECL_UNIMP("Control");
-      /**
-       * setPercent() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setPercent(float pct) DECL_UNIMP("Control");
-      /**
-       * setDisabledColor() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setDisabledColor(const char* color) DECL_UNIMP("Control");
-      /**
-       * getPercent() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual float getPercent() DECL_UNIMP("Control");
-      /**
-       * getLabel() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual String getLabel() DECL_UNIMP("Control");
-      /**
-       * getText() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual String getText() DECL_UNIMP("Control");
-      /**
-       * size() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual long size() DECL_UNIMP("Control");
-      /**
-       * setTextures() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setTextures(const char* up, const char* down, 
-                               const char* upFocus, 
-                               const char* downFocus) DECL_UNIMP("Control");
-      /**
-       * setText() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setText(const String& text) DECL_UNIMP("Control");
-      /**
-       * setStaticContent() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setStaticContent(const ListItemList* items) DECL_UNIMP("Control");
-      /**
-       * setSpace() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setSpace(int space) DECL_UNIMP("Control");
-      /**
-       * setRadioDimension() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setRadioDimension(long x, long y, long width, long height) DECL_UNIMP("Control");
-      /**
-       * setPageControlVisible() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setPageControlVisible(bool visible) DECL_UNIMP("Control");
-      /**
-       * setItemHeight() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setItemHeight(long height) DECL_UNIMP("Control");
-      /**
-       * setImageDimensions() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setImageDimensions(long imageWidth,long imageHeight) DECL_UNIMP("Control");
-      /**
-       * setImage() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setImage(const char* imageFilename) DECL_UNIMP("Control");
-      /**
-       * setColorDiffuse() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void setColorDiffuse(const char* hexString) DECL_UNIMP("Control");
-      /**
-       * selectItem() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void selectItem(long item) DECL_UNIMP("Control");
-      /**
-       * scroll() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void scroll(long id) DECL_UNIMP("Control");
-      /**
-       * isSelected() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual bool isSelected() DECL_UNIMP("Control");
-      /**
-       * getSpinControl() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual Control* getSpinControl() DECL_UNIMP("Control");
-      /**
-       * getSpace() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual long getSpace() DECL_UNIMP("Control");
-      /**
-       * getSelectedPosition() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual long getSelectedPosition() DECL_UNIMP("Control");
-      /**
-       * getSelectedItem() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual XBMCAddon::xbmcgui::ListItem* getSelectedItem() DECL_UNIMP("Control");
-      /**
-       * getSelected() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual bool getSelected() DECL_UNIMP("Control");
-      /**
-       * getListItem() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual XBMCAddon::xbmcgui::ListItem* getListItem(int index) DECL_UNIMP2("Control",WindowException);
-      /**
-       * getLabel2() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual String getLabel2() DECL_UNIMP("Control");
-      /**
-       * getItemHeight() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual long getItemHeight() DECL_UNIMP("Control");
-      /**
-       * addLabel() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void addLabel(const String& label) DECL_UNIMP("Control");
-
-      // These need to be here for the stubbed out addItem
-      //   and addItems methods
-      /**
-       * addItemStream() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void addItemStream(const String& fileOrUrl, bool sendMessage = true) DECL_UNIMP2("Control",WindowException);
-      /**
-       * addListItem() is only defined in subclasses of Control. See the specific
-       *  subclass for the appropriate documentation.
-       */
-      virtual void addListItem(const XBMCAddon::xbmcgui::ListItem* listitem, bool sendMessage = true) DECL_UNIMP2("Control",WindowException);
 
       /**
        * getId() -- Returns the control's current id as an integer.
@@ -614,7 +404,6 @@ namespace XBMCAddon
                             const String& label2 = emptyString) throw(UnimplementedException);
 #ifndef SWIG
       ControlLabel() : 
-        Control ("ControlLabel"),
         bHasPath(false),
         iAngle  (0)
       {}
@@ -628,6 +417,7 @@ namespace XBMCAddon
       int iAngle;
 
       SWIGHIDDENVIRTUAL CGUIControl* Create() throw (WindowException);
+
 #endif
     };
 
@@ -716,7 +506,6 @@ namespace XBMCAddon
 
 #ifndef SWIG
       ControlEdit() :
-        Control     ("ControlEdit"),
         bIsPassword (false)
       {}
 
@@ -788,8 +577,21 @@ namespace XBMCAddon
        * example:
        *   - cList.addItem('Reboot XBMC')
        */
-      virtual void addItemStream(const String& fileOrUrl, bool sendMessage = true) throw(UnimplementedException,WindowException);
-      virtual void addListItem(const XBMCAddon::xbmcgui::ListItem* listitem, bool sendMessage = true) throw(UnimplementedException,WindowException);
+      virtual void addItem(const Alternative<String, const XBMCAddon::xbmcgui::ListItem* > & item, bool sendMessage = true);
+
+      /**
+       * addItems(items) -- Adds a list of listitems or strings to this list control.
+       * 
+       * items                : List - list of strings, unicode objects or ListItems to add.
+       * 
+       * *Note, You can use the above as keywords for arguments.
+       * 
+       * Large lists benefit considerably, than using the standard addItem()
+       * 
+       * example:
+       *   - cList.addItems(items=listitems)
+       */
+      virtual void addItems(const std::vector<Alternative<String, const XBMCAddon::xbmcgui::ListItem* > > & items);
 
       /**
        * selectItem(item) -- Select an item by index number.
@@ -961,7 +763,6 @@ namespace XBMCAddon
       // This is called from AddonWindow.cpp but shouldn't be available
       //  to the scripting languages.
       ControlList() :
-        Control("ControlList"),
         imageHeight     (0),
         imageWidth      (0),
         itemHeight      (0),
@@ -1049,7 +850,7 @@ namespace XBMCAddon
 
       SWIGHIDDENVIRTUAL CGUIControl* Create() throw (WindowException);
 
-      ControlFadeLabel() : Control("ControlFadeLabel") {}
+      ControlFadeLabel() {}
 #endif
     };
 
@@ -1116,7 +917,7 @@ namespace XBMCAddon
 
       SWIGHIDDENVIRTUAL CGUIControl* Create() throw (WindowException);
 
-      ControlTextBox() : Control("ControlTextBox") {}
+      ControlTextBox() {}
 #endif
     };
 
@@ -1149,14 +950,15 @@ namespace XBMCAddon
                    const char* colorDiffuse = NULL);
 
       /**
-       * setImage(filename) -- Changes the image.
+       * setImage(filename, useCache) -- Changes the image.
        * 
        * filename       : string - image filename.
+       * useCache       : [opt] bool - true/use cache, false/don't use cache
        * 
        * example:
        *   - self.image.setImage('special://home/scripts/test.png')
        */
-      virtual void setImage(const char* imageFilename) throw (UnimplementedException);
+      virtual void setImage(const char* imageFilename, const bool useCache = true) throw (UnimplementedException);
 
       /**
        * setColorDiffuse(colorDiffuse) -- Changes the images color.
@@ -1170,7 +972,6 @@ namespace XBMCAddon
 
 #ifndef SWIG
       ControlImage() :
-        Control     ("ControlImage"),
         aspectRatio (0)
       {}
 
@@ -1223,7 +1024,6 @@ namespace XBMCAddon
 
       SWIGHIDDENVIRTUAL CGUIControl* Create() throw (WindowException);
       ControlProgress() :
-        Control     ("ControlProgress"),
         aspectRatio (0)
       {}
 #endif
@@ -1346,7 +1146,6 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL CGUIControl* Create() throw (WindowException);
 
       ControlButton() :
-        Control     ("ControlButton"),
         textOffsetX (0),
         textOffsetY (0),
         iAngle      (0),
@@ -1461,7 +1260,6 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL CGUIControl* Create() throw (WindowException);
 
       ControlCheckMark() :
-        Control     ("ControlCheckMark"),
         checkWidth  (0),
         checkHeight (0)
       {}
@@ -1489,7 +1287,7 @@ namespace XBMCAddon
 #ifndef SWIG
       SWIGHIDDENVIRTUAL CGUIControl* Create() throw (WindowException);
 
-      ControlGroup() : Control("ControlGroup") {}
+      inline ControlGroup() {}
 #endif
     };
 
@@ -1630,7 +1428,6 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL CGUIControl* Create() throw (WindowException);
 
       ControlRadioButton() :
-        Control     ("ControlRadioButton"),
         textOffsetX (0),
         textOffsetY (0),
         iAngle      (0)
@@ -1689,7 +1486,7 @@ namespace XBMCAddon
 
       SWIGHIDDENVIRTUAL CGUIControl* Create() throw (WindowException);
 
-      ControlSlider() : Control("ControlSlider") {}
+      inline ControlSlider() {}
 #endif
     };
   }

@@ -243,8 +243,8 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
-  CRegExp reTags(true);
-  CRegExp reYear;
+  CRegExp reTags(true, true);
+  CRegExp reYear(false, true);
 
   if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
@@ -518,7 +518,7 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
   if (strFileOrFolder.IsEmpty())
     return false;
 
-  CRegExp regExExcludes(true);  // case insensitive regex
+  CRegExp regExExcludes(true, true);  // case insensitive regex
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -2188,10 +2188,10 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
     }
     StringUtils::Trim(name);
     info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);
-
-    if (info.flag == 0x1111)
-      info.flag = CDemuxStream::FLAG_NONE;
   }
+  if (info.flag == 0x1111)
+    info.flag = CDemuxStream::FLAG_NONE;
+
   CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s", __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, strStream.c_str());
 }
 

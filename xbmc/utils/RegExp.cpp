@@ -27,23 +27,70 @@
 
 using namespace PCRE;
 
-CRegExp::CRegExp(bool caseless)
+#ifndef PCRE_UCP
+#define PCRE_UCP 0
+#endif // PCRE_UCP
+
+#ifdef PCRE_CONFIG_JIT
+#define PCRE_HAS_JIT_CODE 1
+#endif
+
+#ifndef PCRE_STUDY_JIT_COMPILE
+#define PCRE_STUDY_JIT_COMPILE 0
+#endif
+#ifndef PCRE_INFO_JIT
+// some unused number
+#define PCRE_INFO_JIT 2048
+#endif
+#ifndef PCRE_HAS_JIT_CODE
+#define pcre_free_study(x) pcre_free((x))
+#endif
+
+int CRegExp::m_Utf8Supported = -1;
+int CRegExp::m_UcpSupported  = -1;
+int CRegExp::m_JitSupported  = -1;
+
+
+CRegExp::CRegExp(bool caseless /*= false*/, bool utf8 /*= false*/)
+{
+  InitValues(caseless, utf8);
+}
+
+void CRegExp::InitValues(bool caseless /*= false*/, bool utf8 /*= false*/)
 {
   m_re          = NULL;
+  m_sd          = NULL;
   m_iOptions    = PCRE_DOTALL | PCRE_NEWLINE_ANY;
   if(caseless)
     m_iOptions |= PCRE_CASELESS;
+  if (utf8)
+  {
+    if (IsUtf8Supported())
+      m_iOptions |= PCRE_UTF8;
+    if (AreUnicodePropertiesSupported())
+      m_iOptions |= PCRE_UCP;
+  }
 
   m_offset      = 0;
+  m_jitCompiled = false;
   m_bMatched    = false;
   m_iMatchCount = 0;
+  m_jitStack    = NULL;
 
   memset(m_iOvector, 0, sizeof(m_iOvector));
+}
+
+CRegExp::CRegExp(bool caseless, bool utf8, const char *re, studyMode study /*= NoStudy*/)
+{
+  InitValues(caseless, utf8);
+  RegComp(re, study);
 }
 
 CRegExp::CRegExp(const CRegExp& re)
 {
   m_re = NULL;
+  m_sd = NULL;
+  m_jitStack = NULL;
   m_iOptions = re.m_iOptions;
   *this = re;
 }
@@ -52,6 +99,7 @@ const CRegExp& CRegExp::operator=(const CRegExp& re)
 {
   size_t size;
   Cleanup();
+  m_jitCompiled = false;
   m_pattern = re.m_pattern;
   if (re.m_re)
   {
@@ -79,12 +127,13 @@ CRegExp::~CRegExp()
   Cleanup();
 }
 
-bool CRegExp::RegComp(const char *re)
+bool CRegExp::RegComp(const char *re, studyMode study /*= NoStudy*/)
 {
   if (!re)
     return false;
 
   m_offset           = 0;
+  m_jitCompiled      = false;
   m_bMatched         = false;
   m_iMatchCount      = 0;
   const char *errMsg = NULL;
@@ -102,6 +151,28 @@ bool CRegExp::RegComp(const char *re)
   }
 
   m_pattern = re;
+
+  if (study)
+  {
+    const bool jitCompile = (study == StudyWithJitComp) && IsJitSupported();
+    const int studyOptions = jitCompile ? PCRE_STUDY_JIT_COMPILE : 0;
+
+    m_sd = pcre_study(m_re, studyOptions, &errMsg);
+    if (errMsg != NULL)
+    {
+      CLog::Log(LOGWARNING, "%s: PCRE error \"%s\" while studying expression", __FUNCTION__, errMsg);
+      if (m_sd != NULL)
+      {
+        pcre_free_study(m_sd);
+        m_sd = NULL;
+      }
+    }
+    else if (jitCompile)
+    {
+      int jitPresent = 0;
+      m_jitCompiled = (pcre_fullinfo(m_re, m_sd, PCRE_INFO_JIT, &jitPresent) == 0 && jitPresent == 1);
+    }
+  }
 
   return true;
 }
@@ -135,6 +206,17 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
     return -1;
   }
 
+#ifdef PCRE_HAS_JIT_CODE
+  if (m_jitCompiled && !m_jitStack)
+  {
+    m_jitStack = pcre_jit_stack_alloc(32*1024, 512*1024);
+    if (m_jitStack == NULL)
+      CLog::Log(LOGWARNING, "%s: can't allocate address space for JIT stack", __FUNCTION__);
+
+    pcre_assign_jit_stack(m_sd, NULL, m_jitStack);
+  }
+#endif
+
   if (maxNumberOfCharsToTest >= 0)
     bufferLen = std::min<size_t>(bufferLen, startoffset + maxNumberOfCharsToTest);
 
@@ -150,6 +232,17 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
 
     case PCRE_ERROR_MATCHLIMIT:
       CLog::Log(LOGERROR, "PCRE: Match limit reached");
+      return -1;
+
+#ifdef PCRE_ERROR_SHORTUTF8 
+    case PCRE_ERROR_SHORTUTF8:
+#endif
+    case PCRE_ERROR_BADUTF8:
+      CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character");
+      return -1;
+
+    case PCRE_ERROR_BADUTF8_OFFSET:
+      CLog::Log(LOGERROR, "PCRE: Offset (%d) is pointing to the middle of UTF-8 character", startoffset);
       return -1;
 
     default:
@@ -299,8 +392,95 @@ void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
   CLog::Log(iLog, "regexp ovector=%s", str.c_str());
 }
 
+void CRegExp::Cleanup()
+{
+  if (m_re)
+  {
+    pcre_free(m_re); 
+    m_re = NULL; 
+  }
+
+  if (m_sd)
+  {
+    pcre_free_study(m_sd);
+    m_sd = NULL;
+  }
+
+#ifdef PCRE_HAS_JIT_CODE
+  if (m_jitStack)
+  {
+    pcre_jit_stack_free(m_jitStack);
+    m_jitStack = NULL;
+  }
+#endif
+}
+
 inline bool CRegExp::IsValidSubNumber(int iSub) const
 {
   return iSub >= 0 && iSub <= m_iMatchCount && iSub <= m_MaxNumOfBackrefrences;
 }
 
+
+bool CRegExp::IsUtf8Supported(void)
+{
+  if (m_Utf8Supported == -1)
+  {
+    if (pcre_config(PCRE_CONFIG_UTF8, &m_Utf8Supported) != 0)
+      m_Utf8Supported = 0;
+  }
+
+  return m_Utf8Supported == 1;
+}
+
+bool CRegExp::AreUnicodePropertiesSupported(void)
+{
+#if defined(PCRE_CONFIG_UNICODE_PROPERTIES) && PCRE_UCP != 0
+  if (m_UcpSupported == -1)
+  {
+    if (pcre_config(PCRE_CONFIG_UNICODE_PROPERTIES, &m_UcpSupported) != 0)
+      m_UcpSupported = 0;
+  }
+#endif
+
+  return m_UcpSupported == 1;
+}
+
+bool CRegExp::LogCheckUtf8Support(void)
+{
+  bool utf8FullSupport = true;
+
+  if (!CRegExp::IsUtf8Supported())
+  {
+    utf8FullSupport = false;
+    CLog::Log(LOGWARNING, "UTF-8 is not supported in PCRE lib, support for national symbols is limited!");
+  }
+
+  if (!CRegExp::AreUnicodePropertiesSupported())
+  {
+    utf8FullSupport = false;
+    CLog::Log(LOGWARNING, "Unicode properties are not enabled in PCRE lib, support for national symbols may be limited!");
+  }
+
+  if (!utf8FullSupport)
+  {
+    CLog::Log(LOGNOTICE, "Consider installing PCRE lib version 8.10 or later with enabled Unicode properties and UTF-8 support. Your PCRE lib version: %s", PCRE::pcre_version());
+#if PCRE_UCP == 0
+    CLog::Log(LOGNOTICE, "You will need to rebuild XBMC after PCRE lib update.");
+#endif
+  }
+
+  return utf8FullSupport;
+}
+
+bool CRegExp::IsJitSupported(void)
+{
+  if (m_JitSupported == -1)
+  {
+#ifdef PCRE_HAS_JIT_CODE
+    if (pcre_config(PCRE_CONFIG_JIT, &m_JitSupported) != 0)
+#endif
+      m_JitSupported = 0;
+  }
+
+  return m_JitSupported == 1;
+}

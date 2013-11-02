@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include <Python.h>
 #include <string>
 #include <stdint.h>
@@ -27,31 +29,22 @@
 #include "interfaces/legacy/AddonClass.h"
 #include "interfaces/legacy/Window.h"
 
+#include "commons/typeindex.h"
+
 namespace PythonBindings
 {
   void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString = false,
                               const char* pos = "unknown", 
                               const char* methodname = "unknown") throw (XBMCAddon::WrongTypeException);
 
-  // This is for casting from child class to base class
-  struct TypeConverterBase
-  {
-    virtual void* convert(void* from) = 0;
-  };
-
-  /**
-   * Template to allow the instantiation of a particular type conversion
-   */
-  template<class T, class F> struct TypeConverter : public TypeConverterBase
-  {
-    inline virtual void* convert(void* from) { return static_cast<T*>((F*)from); }
-  };
-
   struct TypeInfo
   {
     const char* swigType;
     TypeInfo* parentType;
-    TypeConverterBase* converter;
+    PyTypeObject pythonType;
+    const XbmcCommons::type_index typeIndex;
+
+    TypeInfo(const std::type_info& ti);
   };
 
   // This will hold the pointer to the api type, whether known or unknown
@@ -60,46 +53,47 @@ namespace PythonBindings
     PyObject_HEAD
     int32_t magicNumber;
     const TypeInfo* typeInfo;
-    void* pSelf;
+    XBMCAddon::AddonClass* pSelf;
   };
 
 #define XBMC_PYTHON_TYPE_MAGIC_NUMBER 0x58626D63
 
-  void PyXBMCInitializeTypeObject(PyTypeObject* type_object, TypeInfo* typeInfo);
-
   /**
    * This method retrieves the pointer from the PyHolder. The return value should
-   * be case to the appropriate type.
+   * be cast to the appropriate type.
    *
    * Since the calls to this are generated there's no NULL pointer checks
    */
-  inline void* retrieveApiInstance(PyObject* pythonType, PyTypeObject* typeToCheck, 
+  inline XBMCAddon::AddonClass* retrieveApiInstance(PyObject* pythonObj, const TypeInfo* typeToCheck, 
                                    const char* methodNameForErrorString, 
                                    const char* typenameForErrorString) throw (XBMCAddon::WrongTypeException)
   {
-    if (pythonType == NULL || ((PyHolder*)pythonType)->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
+    if (pythonObj == NULL || pythonObj == Py_None)
       return NULL;
-    if (!PyObject_TypeCheck(pythonType, typeToCheck))
+    if (((PyHolder*)pythonObj)->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER || !PyObject_TypeCheck(pythonObj, (PyTypeObject*)(&(typeToCheck->pythonType))))
       throw XBMCAddon::WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\".",methodNameForErrorString,typenameForErrorString);
-    return ((PyHolder*)pythonType)->pSelf;
+    return ((PyHolder*)pythonObj)->pSelf;
   }
 
   bool isParameterRightType(const char* passedType, const char* expectedType, const char* methodNamespacePrefix, bool tryReverse = true);
 
-  void* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* expectedType, 
+  XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonObj, const TypeInfo* typeInfo, const char* expectedType, 
                               const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException);
 
   /**
    * This method retrieves the pointer from the PyHolder. The return value should
-   * be case to the appropriate type.
+   * be cast to the appropriate type.
    *
    * Since the calls to this are generated there's no NULL pointer checks
+   *
+   * This method will return NULL if either the pythonObj is NULL or the 
+   * pythonObj is Py_None.
    */
-  inline void* retrieveApiInstance(const PyObject* pythonType, const char* expectedType, const char* methodNamespacePrefix,
+  inline XBMCAddon::AddonClass* retrieveApiInstance(const PyObject* pythonObj, const char* expectedType, const char* methodNamespacePrefix,
                                    const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException)
   {
-    return (pythonType == NULL) ? NULL :
-      doretrieveApiInstance(((PyHolder*)pythonType),((PyHolder*)pythonType)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
+    return (pythonObj == NULL || pythonObj == Py_None) ? NULL :
+      doretrieveApiInstance(((PyHolder*)pythonObj),((PyHolder*)pythonObj)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
   }
 
   /**
@@ -125,12 +119,35 @@ namespace PythonBindings
   void cleanForDealloc(XBMCAddon::xbmcgui::Window* c);
 
   /**
-   * This method allows for conversion of the native api Type to the Python type
+   * This method allows for conversion of the native api Type to the Python type.
    *
-   * NOTE: swigTypeString must be in the data segment. That is, it should be an explicit string since
-   * the const char* is stored in a PyHolder struct and never deleted.
+   * When this form of the call is used (and pythonType isn't NULL) then the
+   * passed type is used in the instance. This is for classes that extend API
+   * classes in python. The type passed may not be the same type that's stored
+   * in the class metadata of the AddonClass of which 'api' is an instance, 
+   * it can be a subclass in python.
+   *
+   * if pythonType is NULL then the type is inferred using the class metadata 
+   * stored in the AddonClass instance 'api'.
    */
-  PyObject* makePythonInstance(void* api, PyTypeObject* typeObj, TypeInfo* typeInfo, bool incrementRefCount);
+  PyObject* makePythonInstance(XBMCAddon::AddonClass* api, PyTypeObject* pythonType, bool incrementRefCount);
+
+  /**
+   * This method allows for conversion of the native api Type to the Python type.
+   * 
+   * When this form of the call is used then the python type constructed will be the 
+   * type given by the class metadata in the AddonClass instance 'api'.
+   *
+   * This is just a helper inline to call the other makePythonInstance with NULL as
+   * the pythonType.
+   */
+  inline PyObject* makePythonInstance(XBMCAddon::AddonClass* api, bool incrementRefCount)
+  {
+    return makePythonInstance(api,NULL,incrementRefCount);
+  }
+
+  void registerAddonClassTypeInformation(const TypeInfo* classInfo);
+  const TypeInfo* getTypeInfoForInstance(XBMCAddon::AddonClass* obj);
 
   class Director
   {
@@ -161,7 +178,7 @@ namespace PythonBindings
     static inline int compare(PyObject* obj1, PyObject* obj2, const char* swigType, const char* methodNamespacePrefix, const char* methodNameForErrorString)
       throw(XBMCAddon::WrongTypeException)
     {
-      TRACE;
+      XBMC_TRACE;
       try
       {
         T* o1 = (T*)retrieveApiInstance(obj1, swigType, methodNamespacePrefix, methodNameForErrorString);

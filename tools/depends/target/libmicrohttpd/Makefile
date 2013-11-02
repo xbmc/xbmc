@@ -36,7 +36,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/src/daemon
 	$(MAKE) -C $(PLATFORM)/src/include install
-	#(STRIP_MEMMEM)
+	$(STRIP_MEMMEM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	rm -f $(PREFIX)/lib/libmicrohttpd.so $(PREFIX)/lib/libmicrohttpd.so.5 $(PREFIX)/lib/libmicrohttpd.so.5.2.1

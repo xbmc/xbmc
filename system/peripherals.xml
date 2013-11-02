@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <peripherals>
   <peripheral vendor_product="1915:003B,22B8:003B" bus="usb" name="Motorola Nyxboard Hybrid" mapTo="nyxboard">
     <setting key="do_not_use_custom_keymap" type="bool" value="0" label="35009" order="1" />

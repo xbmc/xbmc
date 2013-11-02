@@ -22,6 +22,8 @@
 /target/*/iphoneos*.*_arm*-target/
 /target/*/macosx*.*_x86_64-target/
 /target/*/macosx*.*_i386-target/
+/pre-depends/
+/pre-build-deps/
 Toolchain.cmake
 config.site
 config.site.native

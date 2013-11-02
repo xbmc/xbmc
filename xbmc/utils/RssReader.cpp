@@ -36,6 +36,7 @@
 #include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
 #include "log.h"
+#include "utils/FileUtils.h"
 
 #define RSS_COLOR_BODY      0
 #define RSS_COLOR_HEADLINE  1
@@ -161,14 +162,12 @@ void CRssReader::Process()
 
         if (url.GetProtocol() != "http" && url.GetProtocol() != "https")
         {
-          CFile file;
-          if (file.Open(strUrl))
+          void* bufferPtr;
+          const unsigned int fsize = CFileUtils::LoadFile(strUrl, bufferPtr);
+          if (fsize != 0)
           {
-            char *yo = new char[(int)file.GetLength() + 1];
-            file.Read(yo, file.GetLength());
-            yo[file.GetLength()] = '\0';
-            strXML = yo;
-            delete[] yo;
+            strXML.assign((const char*)bufferPtr, fsize);
+            free(bufferPtr);
             break;
           }
         }
@@ -327,7 +326,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 {
   m_xml.Clear();
-  m_xml.Parse((LPCSTR)szBuffer, 0, TIXML_ENCODING_LEGACY);
+  m_xml.Parse((LPCSTR)szBuffer, TIXML_ENCODING_LEGACY);
 
   m_encoding = "UTF-8";
   if (m_xml.RootElement())

@@ -1,0 +1,93 @@
+# XBMC Media Center language file
+# Addon Name: XBMC Version Check
+# Addon id: service.xbmc.versioncheck
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Indonesian (http://www.transifex.com/projects/p/xbmc-addons/language/id/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#32001"
+msgid "We would like to recommend you to upgrade."
+msgstr "Kami merekomendasikan Anda untuk upgrade."
+
+msgctxt "#32002"
+msgid "Visit XBMC.org for more information."
+msgstr "Kunjungi XBMC.org untuk informasi lebih lanjut."
+
+msgctxt "#32003"
+msgid "You are still using an older stable version of XBMC."
+msgstr "Anda masih menggunakan versi stabil XBMC yang lebih lama."
+
+msgctxt "#32004"
+msgid "You are still using an older RC version of XBMC."
+msgstr "Anda masih menggunakan versi RC XBMC yang lebih lama."
+
+msgctxt "#32005"
+msgid "You are still using an older beta version of XBMC."
+msgstr "Anda masih menggunakan versi beta XBMC yang lebih lama."
+
+msgctxt "#32006"
+msgid "You are still using an older alpha version of XBMC."
+msgstr "Anda masih menggunakan versi alpha XBMC yang lebih lama."
+
+msgctxt "#32007"
+msgid "You are still using an older monthly version of XBMC."
+msgstr "Anda masih menggunakan versi bulanan XBMC yang lebih lama."
+
+msgctxt "#32008"
+msgid "You are still using an older non stable version of XBMC."
+msgstr "Anda masih menggunakan versi non-stabil XBMC yang lebih lama."
+
+msgctxt "#32009"
+msgid "Would you like to remove this reminder?"
+msgstr "Apakah anda ingin menghapus pengingat ini?"
+
+msgctxt "#32010"
+msgid "You can enable/disable it through addon settings."
+msgstr "Anda dapat mengaktifkan/menonaktifkannya melalui pengaturan addon."
+
+msgctxt "#32011"
+msgid "Use your package manager(apt) to upgrade."
+msgstr "Gunakan manajer paket (apt) untuk upgrade."
+
+msgctxt "#32012"
+msgid "A new version is available, do you want to upgrade now?"
+msgstr "Versi yang baru sudah tersedia, apakah Anda ingin upgrade sekarang?"
+
+msgctxt "#32013"
+msgid "Upgrade successful"
+msgstr "Upgrade sukses"
+
+msgctxt "#32014"
+msgid "Do you want to restart Xbmc to finish the upgrade?"
+msgstr "Apakah Anda ingin memulai ulang XBMC untuk menuntaskan proses upgrade?"
+
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr "Apakah Anda ingin memeriksa repositori untuk versi yang baru?"
+
+msgctxt "#32020"
+msgid "General"
+msgstr "Umum"
+
+msgctxt "#32021"
+msgid "Enable XBMC version check?"
+msgstr "Aktifkan pengecekan versi XBMC?"
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr "Silakan masukkan kata sandi Anda"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "Linux: Upgrade sistem seluruhnya"

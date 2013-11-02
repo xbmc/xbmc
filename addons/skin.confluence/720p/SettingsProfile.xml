@@ -158,9 +158,21 @@
 				<align>right</align> 
 				<aligny>center</aligny> 
 				<label>$INFO[System.ProfileAutoLogin]</label> 
-				<scroll>Control.HasFocus(5)</scroll> 
+				<visible>!Control.HasFocus(5) + !System.HasLoginScreen</visible>
+			</control> 
+			<control type="label"> 
+				<posx>247</posx> 
+				<posy>201</posy> 
+				<width>200</width> 
+				<height>25</height> 
+				<font>font13caps</font> 
+				<textcolor>grey2</textcolor> 
+				<align>right</align> 
+				<aligny>center</aligny> 
+				<label>$INFO[System.ProfileAutoLogin]</label> 
+				<scroll>true</scroll> 
 				<scrollspeed>30</scrollspeed> 
-				<visible>!System.HasLoginScreen</visible> 
+				<visible>Control.HasFocus(5) + !System.HasLoginScreen</visible>
 			</control> 
 			<control type="group">
 				<posx>20</posx>

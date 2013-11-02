@@ -62,22 +62,19 @@ namespace XBMCAddon
    * If a scripting language bindings require specific handling there is a 
    *  hook to add in these language specifics that can be set here.
    */
-  class AddonClass
+  class AddonClass : public CCriticalSection
   {
   private:
     long   refs;
-    String classname;
-    CCriticalSection thisLock;
     bool m_isDeallocating;
+
     // no copying
     inline AddonClass(const AddonClass&);
-
 
 #ifdef XBMC_ADDON_DEBUG_MEMORY
     bool isDeleted;
 #endif
 
-    friend class Synchronize;
   protected:
     LanguageHook* languageHook;
 
@@ -92,15 +89,21 @@ namespace XBMCAddon
      */
     virtual void deallocating()
     {
-      Synchronize lock(*this);
+      CSingleLock lock(*this);
       m_isDeallocating = true;
     }
 
+    /**
+     * This is meant to be called during static initialization and so isn't
+     * synchronized.
+     */
+    static short getNextClassIndex();
+
   public:
-    AddonClass(const char* classname);
+    AddonClass();
     virtual ~AddonClass();
 
-    inline const String& GetClassname() const { return classname; }
+    inline const char* GetClassname() const { return typeid(*this).name(); }
     inline LanguageHook* GetLanguageHook() { return languageHook; }
 
     /**
@@ -108,7 +111,9 @@ namespace XBMCAddon
      *  on the object. It will prevent the deallocation during
      *  the time it's held.
      */
-    bool isDeallocating() { TRACE; return m_isDeallocating; }
+    bool isDeallocating() { XBMC_TRACE; return m_isDeallocating; }
+
+    static short getNumAddonClasses();
 
 #ifdef XBMC_ADDON_DEBUG_MEMORY
     virtual 
@@ -120,7 +125,7 @@ namespace XBMCAddon
     {
       long ct = AtomicDecrement((long*)&refs);
 #ifdef LOG_LIFECYCLE_EVENTS
-      CLog::Log(LOGDEBUG,"NEWADDON REFCNT decrementing to %ld on %s 0x%lx", ct,classname.c_str(), (long)(((void*)this)));
+      CLog::Log(LOGDEBUG,"NEWADDON REFCNT decrementing to %ld on %s 0x%lx", ct,GetClassname(), (long)(((void*)this)));
 #endif
       if(ct == 0)
         delete this;
@@ -140,7 +145,7 @@ namespace XBMCAddon
     {
 #ifdef LOG_LIFECYCLE_EVENTS
       CLog::Log(LOGDEBUG,"NEWADDON REFCNT incrementing to %ld on %s 0x%lx", 
-                AtomicIncrement((long*)&refs),classname.c_str(), (long)(((void*)this)));
+                AtomicIncrement((long*)&refs),GetClassname(), (long)(((void*)this)));
 #else
       AtomicIncrement((long*)&refs);
 #endif
@@ -205,22 +210,6 @@ namespace XBMCAddon
       template<class O> inline void reset(Ref<O> const & oref) { refcheck; (*this) = static_cast<T*>(oref.get()); refcheck; }
       template<class O> inline void reset(O * oref) { refcheck; (*this) = static_cast<T*>(oref); refcheck; }
       inline void reset() { refcheck; if (ac) ac->Release(); ac = NULL; }
-    };
-
-    /**
-     * This class can be used like a "synchronize" block in java as long
-     *  as the object is an AddonClass. It can be used to synchronize on
-     *  'this' effectively creating the effect of a synchronize keyword
-     *  on a method declaration.
-     *
-     * Keep in mind that this DOES NOT use 'monitor' semantics, but 
-     *  uses MUTEX semantics. That means that using this class, a thread
-     *  can deadlock itself, while in java a synchronize keyword won't.
-     */
-    class Synchronize : public CSingleLock
-    {
-    public:
-      inline Synchronize(const AddonClass& obj) : CSingleLock(obj.thisLock) {}
     };
 
   };

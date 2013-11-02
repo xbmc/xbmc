@@ -180,10 +180,6 @@ DIRECTORY_ARCHIVES += xbmc/android/bionic_supplement/bionic_supplement.a
 DIRECTORY_ARCHIVES += xbmc/android/jni/jni.a
 endif
 
-ifeq (@USE_AMLPLAYER@,1)
-DIRECTORY_ARCHIVES += xbmc/cores/amlplayer/amlplayer.a
-endif
-
 ifeq (@USE_OMXPLAYER@,1)
 DIRECTORY_ARCHIVES += xbmc/cores/omxplayer/omxplayer.a
 endif
@@ -545,6 +541,9 @@ install: install-binaries install-arch install-datas
 
 apk: install
 	make -C tools/android/packaging
+
+apk-clean: 
+	make -C tools/android/packaging clean
 
 install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/"

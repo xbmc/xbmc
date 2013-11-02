@@ -309,12 +309,13 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vec
     }
   }
   sort(vecColors.begin(), vecColors.end(), sortstringbyname());
-
   for (int i = 0; i < (int) vecColors.size(); ++i)
-  {
     list.push_back(make_pair(vecColors[i], vecColors[i]));
 
-    if (StringUtils::EqualsNoCase(vecColors[i], settingValue))
+  // try to find the best matching value
+  for (vector< pair<string, string> >::const_iterator it = list.begin(); it != list.end(); ++it)
+  {
+    if (StringUtils::EqualsNoCase(it->second, settingValue))
       current = settingValue;
   }
 }
@@ -417,10 +418,12 @@ void CSkinInfo::SettingOptionsSkinSoundFiller(const CSetting *setting, std::vect
 
   sort(vecSoundSkins.begin(), vecSoundSkins.end(), sortstringbyname());
   for (unsigned int i = 0; i < vecSoundSkins.size(); i++)
-  {
     list.push_back(make_pair(vecSoundSkins[i], vecSoundSkins[i]));
 
-    if (StringUtils::EqualsNoCase(vecSoundSkins[i], settingValue))
+  // try to find the best matching value
+  for (vector< pair<string, string> >::const_iterator it = list.begin(); it != list.end(); ++it)
+  {
+    if (StringUtils::EqualsNoCase(it->second, settingValue))
       current = settingValue;
   }
 }
@@ -444,10 +447,12 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vec
 
   // sort the themes for GUI and list them
   for (int i = 0; i < (int) vecTheme.size(); ++i)
-  {
     list.push_back(make_pair(vecTheme[i], vecTheme[i]));
 
-    if (StringUtils::EqualsNoCase(vecTheme[i], settingValue))
+  // try to find the best matching value
+  for (vector< pair<string, string> >::const_iterator it = list.begin(); it != list.end(); ++it)
+  {
+    if (StringUtils::EqualsNoCase(it->second, settingValue))
       current = settingValue;
   }
 }

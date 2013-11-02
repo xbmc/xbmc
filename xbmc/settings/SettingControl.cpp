@@ -126,6 +126,8 @@ bool CSettingControl::setAttributes(const std::string &strAttributes)
       controlAttributes |= (int)SettingControlAttributeHidden;
     else if (StringUtils::EqualsNoCase(*attribute, "new"))
       controlAttributes |= (int)SettingControlAttributeVerifyNew;
+    else if (StringUtils::EqualsNoCase(*attribute, "hide_value"))
+      controlAttributes |= (int)SettingControlAttributeHideValue;
     else
       return false;
   }

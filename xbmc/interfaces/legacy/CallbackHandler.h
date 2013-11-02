@@ -33,7 +33,7 @@ namespace XBMCAddon
   class CallbackHandler : public AddonClass
   {
   protected:
-    inline CallbackHandler(const char* classname):AddonClass(classname) {}
+    inline CallbackHandler() {}
 
   public:
     virtual void invokeCallback(Callback* cb) = 0;
@@ -54,7 +54,7 @@ namespace XBMCAddon
   class RetardedAsynchCallbackHandler : public CallbackHandler
   {
   protected:
-    RetardedAsynchCallbackHandler(const char* classname) : CallbackHandler(classname) {}
+    inline RetardedAsynchCallbackHandler() {}
   public:
 
     virtual ~RetardedAsynchCallbackHandler();

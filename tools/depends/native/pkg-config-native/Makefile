@@ -6,7 +6,7 @@ DEPS= ../../Makefile.include.in Makefile
 # lib name, version
 # lib name, version
 LIBNAME=pkg-config
-VERSION=0.23
+VERSION=0.28
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -16,7 +16,7 @@ PC_PATH:=$(PC_PATH):/usr/lib/pkgconfig:/usr/lib/$(HOST)/pkgconfig:/usr/share/pkg
 endif
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --enable-indirect-deps --with-pc-path=$(PC_PATH)
+CONFIGURE=./configure --prefix=$(PREFIX) --enable-indirect-deps --with-pc-path=$(PC_PATH) --with-internal-glib
 LIBDYLIB=$(PLATFORM)/pkg-config
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
@@ -30,6 +30,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); $(CONFIGURE)
+	cd $(PLATFORM); sed -ie "s|LN = ln|LN = ln -f|" Makefile
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)

@@ -101,7 +101,7 @@
           <dependencies>
             <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
           </dependencies>
-          <control type="button" format="action" />
+          <control type="button" format="action" attributes="hide_value" />
         </setting>
       </group>
     </category>
@@ -397,11 +397,9 @@
           <requirement>HAVE_LIBVDPAU</requirement>
           <level>2</level>
           <default>true</default>
-          <control>
-            <dependencies>
-              <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
-            </dependencies>
-          </control>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+          </dependencies>
         </setting>
         <setting id="videoplayer.usevaapi" type="boolean" label="13426" help="36156">
           <requirement>HAVE_LIBVA</requirement>
@@ -856,7 +854,12 @@
         <setting id="pvrmenu.searchicons" type="action" label="19167" help="36217">
           <level>1</level>
           <dependencies>
-            <dependency type="enable" setting="pvrmanager.enabled">true</dependency>
+            <dependency type="enable">
+              <and>
+                <condition setting="pvrmanager.enabled" operator="is">true</condition>
+                <condition setting="pvrmenu.iconpath" operator="!is"></condition>
+              </and>
+            </dependency>
           </dependencies>
         </setting>
       </group>
@@ -1969,17 +1972,20 @@
     </category>
     <category id="audiooutput" label="772" help="36360">
       <group id="1">
-        <setting id="audiooutput.mode" type="integer" label="337" help="36361">
-          <level>1</level>
-          <default>0</default> <!-- AUDIO_ANALOG -->
+        <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
+          <level>0</level>
+          <default>Default</default> <!-- will be properly set on startup -->
           <constraints>
-            <options>audiooutputmodes</options>
+            <options>audiodevices</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="audiooutput.channels" type="integer" label="34100" help="36362">
           <level>0</level>
           <default>1</default> <!-- AE_CH_LAYOUT_2_0 -->
+          <dependencies>
+            <dependency type="visible" on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.channels</dependency>
+          </dependencies>
           <constraints>
             <options>
               <option label="34101">1</option> <!-- AE_CH_LAYOUT_2_0 -->
@@ -1994,14 +2000,48 @@
               <option label="34110">10</option> <!-- AE_CH_LAYOUT_7_1 -->
             </options>
           </constraints>
-          <updates>
-            <update type="rename">audiooutput.channellayout</update>
-          </updates>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="audiooutput.normalizelevels" type="boolean" label="346" help="36363">
+        <setting id="audiooutput.config" type="integer" label="337" help="36361">
           <level>2</level>
-          <default>true</default>
+          <default>2</default>
+          <constraints>
+            <options>
+              <option label="338">1</option>
+              <option label="339">2</option>
+              <option label="420">3</option>
+            </options>
+          </constraints>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="audiooutput.samplerate" type="integer" label="458" help="36523">
+          <level>2</level>
+          <default>48000</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.samplerate</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.samplerate</condition>
+              </and>
+            </dependency>  
+          </dependencies>
+          <constraints>
+            <options>
+              <option label="34124">44100</option>
+              <option label="34125">48000</option>
+              <option label="34126">88200</option>
+              <option label="34127">96000</option>
+              <option label="34128">192000</option>
+            </options>
+          </constraints>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="audiooutput.stereoupmix" type="boolean" label="252" help="36364">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible" setting="audiooutput.channels" operator="!is">1</dependency>
+          </dependencies>
         </setting>
         <setting id="audiooutput.processquality" type="integer" label="13505" help="36169">
           <requirement>HAS_AE_QUALITY_LEVELS</requirement>
@@ -2012,117 +2052,16 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="audiooutput.stereoupmix" type="boolean" label="252" help="36364">
-          <level>2</level>
-          <default>false</default>
-        </setting>
-        <setting id="audiooutput.ac3passthrough" type="boolean" parent="audiooutput.mode" label="364" help="36365">
-          <level>2</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable">
-              <or>
-                <condition setting="audiooutput.mode">1</condition> <!-- AUDIO_IEC958 -->
-                <condition setting="audiooutput.mode">2</condition> <!-- AUDIO_HDMI -->
-              </or>
-            </dependency>
-          </dependencies>
-        </setting>
-        <setting id="audiooutput.eac3passthrough" type="boolean" parent="audiooutput.mode" label="448" help="37016">
-          <level>2</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable">
-              <or>
-                <condition setting="audiooutput.mode">1</condition> <!-- AUDIO_IEC958 -->
-                <condition setting="audiooutput.mode">2</condition> <!-- AUDIO_HDMI -->
-              </or>
-            </dependency>
-          </dependencies>
-        </setting>
-        <setting id="audiooutput.dtspassthrough" type="boolean" parent="audiooutput.mode" label="254" help="36366">
-          <level>2</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable">
-              <or>
-                <condition setting="audiooutput.mode">1</condition> <!-- AUDIO_IEC958 -->
-                <condition setting="audiooutput.mode">2</condition> <!-- AUDIO_HDMI -->
-              </or>
-            </dependency>
-          </dependencies>
-        </setting>
-        <setting id="audiooutput.passthroughaac" type="boolean" parent="audiooutput.mode" label="299" help="36367">
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable">
-              <or>
-                <condition setting="audiooutput.mode">1</condition> <!-- AUDIO_IEC958 -->
-                <condition setting="audiooutput.mode">2</condition> <!-- AUDIO_HDMI -->
-              </or>
-            </dependency>
-          </dependencies>
-        </setting>
-        <setting id="audiooutput.multichannellpcm" type="boolean" parent="audiooutput.mode" label="348" help="36368">
-          <level>2</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable" setting="audiooutput.mode">2</dependency> <!-- AUDIO_HDMI -->
-          </dependencies>
-        </setting>
-        <setting id="audiooutput.truehdpassthrough" type="boolean" parent="audiooutput.mode" label="349" help="36369">
-          <level>2</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable" setting="audiooutput.mode">2</dependency> <!-- AUDIO_HDMI -->
-          </dependencies>
-        </setting>
-        <setting id="audiooutput.dtshdpassthrough" type="boolean" parent="audiooutput.mode" label="347" help="36370">
-          <level>2</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable">
-              <and>
-                <condition setting="audiooutput.dtspassthrough">true</condition>
-                <condition setting="audiooutput.mode">2</condition> <!-- AUDIO_HDMI -->
-              </and>
-            </dependency>
-          </dependencies>
-        </setting>
-        <setting id="audiooutput.streamsilence" type="boolean" label="421" help="34111">
-          <level>2</level>
-          <requirement>audiosupportsdrain</requirement>
-          <default>true</default>
+        <setting id="audiooutput.streamsilence" type="integer" label="421" help="34111">
+          <level>1</level>
+          <default>1</default>
+          <constraints>
+            <options>audiostreamsilence</options>
+          </constraints>
+          <control type="spinner" format="string" />
         </setting>
       </group>
       <group id="2">
-        <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
-          <level>2</level>
-          <default>Default</default> <!-- will be properly set on startup -->
-          <constraints>
-            <options>audiodevices</options>
-          </constraints>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
-          <level>2</level>
-          <default>Default</default> <!-- will be properly set on startup -->
-          <constraints>
-            <options>audiodevicespassthrough</options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable">
-              <or>
-                <condition setting="audiooutput.mode">1</condition> <!-- AUDIO_IEC958 -->
-                <condition setting="audiooutput.mode">2</condition> <!-- AUDIO_HDMI -->
-              </or>
-            </dependency>
-          </dependencies>
-          <control type="spinner" format="string" />
-        </setting>
-      </group>
-      <group id="3">
         <setting id="audiooutput.guisoundmode" type="integer" label="34120" help="36373">
           <level>0</level>
           <default>1</default> <!-- AE_SOUND_IDLE -->
@@ -2134,6 +2073,99 @@
             </options>
           </constraints>
           <control type="spinner" format="string" />
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="audiooutput.passthrough" type="boolean" label="348" help="36368">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.passthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+              </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
+          <level>2</level>
+          <default>Default</default> <!-- will be properly set on startup -->
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="audiooutput.passthrough" operator="is">true</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.passthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <constraints>
+            <options>audiodevicespassthrough</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>        
+        <setting id="audiooutput.ac3passthrough" type="boolean" label="364" help="36365">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="audiooutput.passthrough" operator="is">true</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+              </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="audiooutput.eac3passthrough" type="boolean" label="448" help="37016">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="audiooutput.passthrough" operator="is">true</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+              </and>
+            </dependency>
+          </dependencies>      
+        </setting>
+        <setting id="audiooutput.dtspassthrough" type="boolean" label="254" help="36366">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="audiooutput.passthrough" operator="is">true</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+              </and>
+            </dependency>
+          </dependencies>       
+        </setting>
+        <setting id="audiooutput.truehdpassthrough" type="boolean" label="349" help="36369">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="audiooutput.passthrough" operator="is">true</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.truehdpassthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthroughdevice">audiooutput.truehdpassthrough</condition>
+              </and>
+            </dependency>
+          </dependencies>      
+        </setting>
+        <setting id="audiooutput.dtshdpassthrough" type="boolean" label="347" help="36370">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="audiooutput.passthrough" operator="is">true</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.dtshdpassthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthroughdevice">audiooutput.dtshdpassthrough</condition>
+              </and>
+            </dependency>
+          </dependencies>      
         </setting>
       </group>
     </category>
@@ -2327,7 +2359,7 @@
         <setting id="masterlock.lockcode" type="string" label="20100" help="36396">
           <level>2</level>
           <default>-</default>
-          <control type="button" format="action" />
+          <control type="button" format="action" attributes="hide_value"/>
         </setting>
         <setting id="masterlock.startuplock" type="boolean" label="20076" help="36397">
           <level>2</level>

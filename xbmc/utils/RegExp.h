@@ -26,6 +26,8 @@
 #include <vector>
 
 namespace PCRE {
+struct real_pcre_jit_stack; // forward declaration for PCRE without JIT
+typedef struct real_pcre_jit_stack pcre_jit_stack;
 #ifdef TARGET_WINDOWS
 #define PCRE_STATIC 1
 #ifdef _DEBUG
@@ -40,14 +42,71 @@ namespace PCRE {
 class CRegExp
 {
 public:
+  enum studyMode
+  {
+    NoStudy          = 0, // do not study expression
+    StudyRegExp      = 1, // study expression (slower compilation, faster find)
+    StudyWithJitComp      // study expression and JIT-compile it, if possible (heavyweight optimization) 
+  };
+
   static const int m_MaxNumOfBackrefrences = 20;
-  CRegExp(bool caseless = false);
+  /**
+   * @param caseless (optional) Matching will be case insensitive if set to true
+   *                            or case sensitive if set to false
+   * @param utf8 (optional) If set to true all string will be processed as UTF-8 strings 
+   */
+  CRegExp(bool caseless = false, bool utf8 = false);
+  /**
+   * Create new CRegExp object and compile regexp expression in one step
+   * @warning Use only with hardcoded regexp when you're sure that regexp is compiled without errors
+   * @param caseless    Matching will be case insensitive if set to true 
+   *                    or case sensitive if set to false
+   * @param utf8        If set to true all string will be processed as UTF-8 strings
+   * @param re          The regular expression
+   * @param study (optional) Controls study of expression, useful if expression will be used
+   *                         several times
+   */
+  CRegExp(bool caseless, bool utf8, const char *re, studyMode study = NoStudy);
+
   CRegExp(const CRegExp& re);
   ~CRegExp();
 
-  bool RegComp(const char *re);
-  bool RegComp(const std::string& re) { return RegComp(re.c_str()); }
+  /**
+   * Compile (prepare) regular expression
+   * @param re          The regular expression
+   * @param study (optional) Controls study of expression, useful if expression will be used 
+   *                         several times
+   * @return true on success, false on any error
+   */
+  bool RegComp(const char *re, studyMode study = NoStudy);
+
+  /**
+   * Compile (prepare) regular expression
+   * @param re          The regular expression
+   * @param study (optional) Controls study of expression, useful if expression will be used
+   *                         several times
+   * @return true on success, false on any error
+   */
+  bool RegComp(const std::string& re, studyMode study = NoStudy)
+  { return RegComp(re.c_str(), study); }
+
+  /**
+   * Find first match of regular expression in given string
+   * @param str         The string to match against regular expression
+   * @param startoffset (optional) The string offset to start matching
+   * @param maxNumberOfCharsToTest (optional) The maximum number of characters to test (match) in 
+   *                                          string. If set to -1 string checked up to the end.
+   * @return staring position of match in string, negative value in case of error or no match
+   */
   int RegFind(const char* str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
+  /**
+   * Find first match of regular expression in given string
+   * @param str         The string to match against regular expression
+   * @param startoffset (optional) The string offset to start matching
+   * @param maxNumberOfCharsToTest (optional) The maximum number of characters to test (match) in
+   *                                          string. If set to -1 string checked up to the end.
+   * @return staring position of match in string, negative value in case of error or no match
+   */
   int RegFind(const std::string& str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1)
   { return PrivateRegFind(str.length(), str.c_str(), startoffset, maxNumberOfCharsToTest); }
   std::string GetReplaceString(const std::string& sReplaceExp) const;
@@ -70,23 +129,40 @@ public:
   bool GetNamedSubPattern(const char* strName, std::string& strMatch) const;
   int GetNamedSubPatternNumber(const char* strName) const;
   void DumpOvector(int iLog);
+  /**
+   * Check is RegExp object is ready for matching
+   * @return true if RegExp object is ready for matching, false otherwise
+   */
+  inline bool IsCompiled(void)
+  { return !m_pattern.empty(); }
   const CRegExp& operator= (const CRegExp& re);
+  static bool IsUtf8Supported(void);
+  static bool AreUnicodePropertiesSupported(void);
+  static bool LogCheckUtf8Support(void);
+  static bool IsJitSupported(void);
 
 private:
   int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
+  void InitValues(bool caseless = false, bool utf8 = false);
 
-  void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
+  void Cleanup();
   inline bool IsValidSubNumber(int iSub) const;
 
   PCRE::pcre* m_re;
+  PCRE::pcre_extra* m_sd;
   static const int OVECCOUNT=(m_MaxNumOfBackrefrences + 1) * 3;
   unsigned int m_offset;
   int         m_iOvector[OVECCOUNT];
   int         m_iMatchCount;
   int         m_iOptions;
+  bool        m_jitCompiled;
   bool        m_bMatched;
+  PCRE::pcre_jit_stack* m_jitStack;
   std::string m_subject;
   std::string m_pattern;
+  static int  m_Utf8Supported;
+  static int  m_UcpSupported;
+  static int  m_JitSupported;
 };
 
 typedef std::vector<CRegExp> VECCREGEXP;

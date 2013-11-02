@@ -49,6 +49,23 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
+static bool CanSurfaceRenderWhiteList(const std::string &name)
+{
+  // All devices 'should' be capiable of surface rendering
+  // but that seems to be hit or miss as most odd name devices
+  // cannot surface render.
+    static const char *cansurfacerender_decoders[] = {
+      "OMX.Nvidia",
+      NULL
+    };
+    for (const char **ptr = cansurfacerender_decoders; *ptr; ptr++)
+    {
+      if (!strcmp(*ptr, name.c_str()))
+        return true;
+    }
+    return false;
+}
+
 /*****************************************************************************/
 /*****************************************************************************/
 class CNULL_Listener : public CJNISurfaceTextureOnFrameAvailableListener
@@ -158,6 +175,7 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
     m_frameready->Reset();
 
   m_codec->releaseOutputBuffer(m_index, render);
+
   if (xbmc_jnienv()->ExceptionOccurred())
   {
     CLog::Log(LOGERROR, "CDVDMediaCodecInfo::ReleaseOutputBuffer "
@@ -165,16 +183,13 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
     xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
   }
+}
 
-  // this is key, after calling releaseOutputBuffer, we must
-  // wait a little for MediaCodec to render to the surface.
-  // Then we can updateTexImage without delay. If we do not
-  // wait, then video playback gets jerky. To optomize this,
-  // we hook the SurfaceTexture OnFrameAvailable callback
-  // using CJNISurfaceTextureOnFrameAvailableListener and wait
-  // on a CEvent to fire. 20ms seems to be a good max fallback.
-  if (render)
-    m_frameready->WaitMSec(20);
+int CDVDMediaCodecInfo::GetIndex() const
+{
+  CSingleLock lock(m_section);
+
+  return m_index;
 }
 
 int CDVDMediaCodecInfo::GetTextureID() const
@@ -200,6 +215,19 @@ void CDVDMediaCodecInfo::UpdateTexImage()
 
   if (!m_valid)
     return;
+
+  // updateTexImage will check and spew any prior gl errors,
+  // clear them before we call updateTexImage.
+  glGetError();
+
+  // this is key, after calling releaseOutputBuffer, we must
+  // wait a little for MediaCodec to render to the surface.
+  // Then we can updateTexImage without delay. If we do not
+  // wait, then video playback gets jerky. To optomize this,
+  // we hook the SurfaceTexture OnFrameAvailable callback
+  // using CJNISurfaceTextureOnFrameAvailableListener and wait
+  // on a CEvent to fire. 20ms seems to be a good max fallback.
+  m_frameready->WaitMSec(20);
 
   m_surfacetexture->updateTexImage();
   if (xbmc_jnienv()->ExceptionOccurred())
@@ -292,12 +320,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       break;
   }
 
-  // odroid platform throws trying to updateTexImage with a 'error creating EGLImage' and
-  // 'unsupported native buffer format (0x13)', sw render them until we figure out why.
-  if (!m_render_sw)
-    m_render_sw = g_cpuInfo.getCPUHardware().find("ODROID") != std::string::npos;
-
-
   // CJNIMediaCodec::createDecoderByXXX doesn't handle errors nicely,
   // it crashes if the codec isn't found. This is fixed in latest AOSP,
   // but not in current 4.1 devices. So 1st search for a matching codec, then create it.
@@ -345,6 +367,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     SAFE_DELETE(m_bitstream);
     return false;
   }
+
+  // whitelist of devices that can surface render.
+  m_render_sw = CanSurfaceRenderWhiteList(m_codecname);
 
   ConfigureMediaCodec();
 
@@ -729,10 +754,10 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
         src_ptr += offset;
 
         int loop_end = 0;
-        if (m_videobuffer.format == RENDER_FMT_YUV420P)
-          loop_end = 3;
-        else if (m_videobuffer.format == RENDER_FMT_NV12)
+        if (m_videobuffer.format == RENDER_FMT_NV12)
           loop_end = 2;
+        else if (m_videobuffer.format == RENDER_FMT_YUV420P)
+          loop_end = 3;
 
         for (int i = 0; i < loop_end; i++)
         {

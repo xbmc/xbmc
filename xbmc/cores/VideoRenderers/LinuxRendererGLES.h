@@ -192,6 +192,10 @@ protected:
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
 
+  void UploadNV12Texture(int index);
+  void DeleteNV12Texture(int index);
+  bool CreateNV12Texture(int index);
+
   void UploadCVRefTexture(int index);
   void DeleteCVRefTexture(int index);
   bool CreateCVRefTexture(int index);
@@ -217,7 +221,7 @@ protected:
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
   void RenderEglImage(int index, int field);       // Android OES texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
-  void RenderMediaCodec(int index, int field);    // MediaCodec reference
+  void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
 
   CFrameBufferObject m_fbo;
 

@@ -72,6 +72,9 @@ using namespace std;
 #define CONTROL_START_CONTROL           -80
 #define CONTRL_BTN_LEVELS               20
 
+#define RESET_SETTING_ID                "settings.reset"
+#define EMPTY_CATEGORY_ID               "categories.empty"
+
 typedef struct {
   int id;
   string name;
@@ -93,6 +96,8 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml"),
       m_settings(CSettings::Get()),
       m_iSetting(0), m_iCategory(0), m_iSection(0),
+      m_resetSetting(NULL),
+      m_dummyCategory(NULL),
       m_pOriginalSpin(NULL),
       m_pOriginalRadioButton(NULL),
       m_pOriginalCategoryButton(NULL),
@@ -127,6 +132,9 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
     delete m_pOriginalEdit;
     m_pOriginalEdit = NULL;
   }
+
+  delete m_resetSetting;
+  delete m_dummyCategory;
 }
 
 bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
@@ -142,6 +150,14 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         m_iCategory = 0;
         ResetControlStates();
       }
+
+      m_resetSetting = new CSettingAction(RESET_SETTING_ID);
+      m_resetSetting->SetLabel(10041);
+      m_resetSetting->SetHelp(10045);
+
+      m_dummyCategory = new CSettingCategory(EMPTY_CATEGORY_ID);
+      m_dummyCategory->SetLabel(10046);
+      m_dummyCategory->SetHelp(10047);
       
       m_iSection = (int)message.GetParam2() - (int)CGUIWindow::GetID();
       CGUIWindow::OnMessage(message);
@@ -451,6 +467,8 @@ void CGUIWindowSettingsCategory::SetupControls(bool createSettings /* = true */)
 
   // get the categories we need
   m_categories = section->GetCategories(CViewStateSettings::Get().GetSettingLevel());
+  if (m_categories.empty())
+    m_categories.push_back(m_dummyCategory);
 
   // go through the categories and create the necessary buttons
   int buttonIdOffset = 0;
@@ -593,6 +611,13 @@ void CGUIWindowSettingsCategory::CreateSettings()
 
   if (!settingMap.empty())
     m_settings.RegisterCallback(this, settingMap);
+
+  if (!settingMap.empty())
+  {
+    // add "Reset" control
+    AddSeparator(group->GetWidth(), iControlID);
+    AddSetting(m_resetSetting, group->GetWidth(), iControlID);
+  }
   
   // update our settings (turns controls on/off as appropriate)
   UpdateSettings();
@@ -758,6 +783,12 @@ CGUIControl* CGUIWindowSettingsCategory::AddSettingControl(CGUIControl *pControl
 
 void CGUIWindowSettingsCategory::OnClick(BaseSettingControlPtr pSettingControl)
 {
+  if (pSettingControl->GetSetting()->GetId() == RESET_SETTING_ID)
+  {
+    OnAction(CAction(ACTION_SETTINGS_RESET));
+    return;
+  }
+
   // we need to first set the delayed setting and then execute OnClick()
   // because OnClick() triggers OnSettingChanged() and there we need to
   // know if the changed setting is delayed or not

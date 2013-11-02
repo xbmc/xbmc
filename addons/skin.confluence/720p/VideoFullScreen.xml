@@ -4,14 +4,14 @@
 	<controls>
 		<!-- media infos -->
 		<control type="group" id="1">
-			<visible>[Player.ShowInfo | Window.IsActive(VideoOSD)] + ![Window.IsVisible(123) | Window.IsVisible(124) | Window.IsVisible(125) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(SliderDialog)]</visible>
+			<visible>[Player.ShowInfo | Window.IsActive(VideoOSD)] + ![Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(SliderDialog)]</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<control type="image" id="1">
 				<posx>0</posx>
 				<posy>-150</posy>
 				<width>1280</width>
 				<height>256</height>
-				<texture flipy="true">HomeNowPlayingBack.png</texture>
+				<texture flipy="true" border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="label" id="1">
 				<description>Chapter Count Header label</description>
@@ -186,7 +186,7 @@
 					<itemgap>5</itemgap>
 					<orientation>horizontal</orientation>
 					<control type="label" id="1">
-						<width min="10" max="710">auto</width>
+						<width min="10" max="520">auto</width>
 						<height>30</height>
 						<font>font30</font>
 						<align>left</align>
@@ -215,6 +215,51 @@
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
 						<texture>$INFO[VideoPlayer.AudioChannels,flagging/audio/,.png]</texture>
+					</control>
+					<control type="group" id="1">
+						<width>85</width>
+						<height>35</height>
+						<visible>!IsEmpty(VideoPlayer.AudioLanguage)</visible>
+						<control type="image" id="1">
+							<posx>5</posx>
+							<posy>0</posy>
+							<description>Audio Language Image</description>
+							<width>80</width>
+							<height>35</height>
+							<texture>flagging/AudioLang.png</texture>
+						</control>
+						<control type="label" id="1">
+							<posx>38</posx>
+							<posy>2</posy>
+							<width>47</width>
+							<height>35</height>
+							<font>font13</font>
+							<align>left</align>
+							<label>$INFO[VideoPlayer.AudioLanguage]</label>
+							<textcolor>grey</textcolor>
+						</control>
+					</control>
+					<control type="group" id="1">
+						<width>85</width>
+						<height>35</height>
+						<visible>!IsEmpty(VideoPlayer.SubtitlesLanguage)</visible>
+						<control type="image" id="1">
+							<posx>5</posx>
+							<posy>0</posy>
+							<width>80</width>
+							<height>35</height>
+							<texture>flagging/SubLang.png</texture>
+						</control>
+						<control type="label" id="1">
+							<posx>38</posx>
+							<posy>2</posy>
+							<width>47</width>
+							<height>35</height>
+							<font>font13</font>
+							<align>left</align>
+							<label>$INFO[VideoPlayer.SubtitlesLanguage]</label>
+							<textcolor>grey</textcolor>
+						</control>
 					</control>
 				</control>
 				<control type="label" id="1">

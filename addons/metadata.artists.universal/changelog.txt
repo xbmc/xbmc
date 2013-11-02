@@ -1,3 +1,17 @@
+[B]3.3.0[/B]
+Added: Restore scraping from HTBackdrops.com using their new domain htbackdrops.org
+
+[B]3.2.0[/B]
+Added: An attempt to handle dash and exclamation mark in the artist name
+
+[B]3.1.0[/B]
+Added: Polish for theaudiodb.com language selection
+Removed: htbackdrops.com scraping since site is dead for a good while
+Fixed: allmusic.com scraping
+
+[B]3.0.0[/B]
+Added: ResolveIDToUrl
+
 [B]2.6.5[/B]
 Updated language files from Transifex
 

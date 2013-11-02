@@ -39,10 +39,6 @@ SRCS += AESinkFactory.cpp
 SRCS += Sinks/AESinkNULL.cpp
 SRCS += Sinks/AESinkProfiler.cpp
 
-SRCS += Engines/SoftAE/SoftAE.cpp
-SRCS += Engines/SoftAE/SoftAEStream.cpp
-SRCS += Engines/SoftAE/SoftAESound.cpp
-
 SRCS += Engines/ActiveAE/ActiveAE.cpp
 SRCS += Engines/ActiveAE/ActiveAESink.cpp
 SRCS += Engines/ActiveAE/ActiveAEStream.cpp

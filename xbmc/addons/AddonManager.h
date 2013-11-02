@@ -115,6 +115,21 @@ namespace ADDON
     void FindAddons();
     void RemoveAddon(const CStdString& ID);
 
+    /* \brief Disable an addon
+     Triggers the database routine and saves the current addon state to cache.
+     \param ID id of the addon
+     \param disable whether to enable or disable. Defaults to true (disable)
+     \sa IsAddonDisabled,
+     */
+    bool DisableAddon(const std::string& ID, bool disable = true);
+
+    /* \brief Check whether an addon has been disabled via DisableAddon.
+     In case the disabled cache does not know about the current state the database routine will be used.
+     \param ID id of the addon
+     \sa DisableAddon
+     */
+    bool IsAddonDisabled(const std::string& ID);
+
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
 
@@ -203,6 +218,7 @@ namespace ADDON
     CAddonMgr const& operator=(CAddonMgr const&);
     virtual ~CAddonMgr();
 
+    std::map<std::string, bool> m_disabled;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;

@@ -29,13 +29,14 @@
 namespace PiAudioAE
 {
 
-class CPiAudioAE : public IAE
+class CPiAudioAE : public IAE, public CThread
 {
 protected:
   friend class ::CAEFactory;
   CPiAudioAE();
   virtual ~CPiAudioAE();
   virtual bool  Initialize();
+  virtual void Process();
 
 public:
   virtual bool   Suspend();
@@ -58,17 +59,22 @@ public:
 
   virtual void GarbageCollect() {};
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
+  virtual std::string GetDefaultDevice(bool passthrough);
+  virtual bool IsSettingVisible(const std::string &settingId);
 
-  virtual bool SupportsRaw();
-  virtual bool SupportsDrain();
+  virtual bool SupportsRaw(AEDataFormat format);
+  virtual bool SupportsSilenceTimeout();
 
   virtual void OnLostDevice() {}
   virtual void OnResetDevice() {}
 
 protected:
   void UpdateStreamSilence();
+  void UpdateStreamSilence(bool enable);
   // polled via the interface
   float m_aeVolume;
   bool m_aeMuted;
+  int m_extSilenceTimeout;
+  XbmcThreads::EndTime m_extSilenceTimer;
 };
 };

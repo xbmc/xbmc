@@ -126,7 +126,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
     g_charsetConverter.unknownToUTF8(strUrl);
 
   CXBMCTinyXML doc;
-  doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
+  doc.Parse(strUrl, TIXML_ENCODING_UTF8);
 
   TiXmlElement* pElement = doc.RootElement();
   if (!pElement)
@@ -214,10 +214,9 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
       XFILE::CFile file;
       if (file.Open(strCachePath))
       {
-        char* temp = new char[(int)file.GetLength()];
-        file.Read(temp,file.GetLength());
-        strHTML.clear();
-        strHTML.append(temp,temp+file.GetLength());
+        size_t flen = file.GetLength();
+        char* temp = new char[flen];
+        strHTML.assign(temp, file.Read(temp, flen));
         file.Close();
         delete[] temp;
         return true;
@@ -278,7 +277,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
     g_charsetConverter.unknownToUTF8(strUrls);
 
   CXBMCTinyXML doc;
-  doc.Parse(strUrls.c_str(),0,TIXML_ENCODING_UTF8);
+  doc.Parse(strUrls, TIXML_ENCODING_UTF8);
   if (doc.RootElement())
   {
     TiXmlHandle docHandle( &doc );

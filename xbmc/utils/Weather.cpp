@@ -491,7 +491,12 @@ void CWeather::OnSettingChanged(const CSetting *setting)
 
   const std::string settingId = setting->GetId();
   if (settingId == "weather.addon")
+  {
+    // clear "WeatherProviderLogo" property that some weather addons set
+    CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
+    window->SetProperty("WeatherProviderLogo", "");
     Refresh();
+  }
 }
 
 void CWeather::OnSettingAction(const CSetting *setting)
