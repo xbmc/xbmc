@@ -46,6 +46,7 @@
 		<value condition="Container.Content(secondary)">secondary</value>
 		<value condition="Container.Content(photos)">photos</value>
 		<value condition="Container.Content(photoalbum)">photoalbum</value>
+		<value condition="Container.Content(photoalbums)">photoalbums</value>
 		<value/>
 	</variable>
 	<variable name="ListItemType">
@@ -112,7 +113,7 @@
 			<control type="grouplist">
 				<posx>40</posx>
 				<posy>40</posy>
-				<width>390</width>
+				<width>350</width>
 				<height>680</height>
 				<orientation>vertical</orientation>
 				<itemgap>5</itemgap>
