@@ -21,6 +21,8 @@
 		</control>
 	</include>
 	<include name="PhotoThumb">
+		<control type="group">
+			<visible>ListItem.Type(photo)</visible>
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
@@ -44,6 +46,55 @@
 			<height>122</height>
 			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+		</control>
+	</include>
+	<include name="PhotoAlbumCover">
+		<control type="group">
+			<visible>ListItem.Type(photoAlbum)</visible>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>148</width>
+			<height>148</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<description>Poster image</description>
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>122</width>
+			<height>122</height>
+			<texture background="true">default-square-small.png</texture>
+		</control>
+		<control type="image">
+			<description>Poster image</description>
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>122</width>
+			<height>122</height>
+			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+		</control>
+		<!-- base frame -->
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>122</width>
+			<height>122</height>
+			<texture background="true">mask-photoalbum-base.png</texture>
+		</control>
+			<!-- thumb -->
+			<control type="image">
+				<description>Poster image</description>
+				<posx>46</posx>
+				<posy>39</posy>
+				<width>72</width>
+				<height>70</height>
+				<texture background="true" diffuse="mask-photoalbum-center-photo.png">$INFO[ListItem.Art(thumb)]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
 		</control>
 	</include>	
 	<include name="PhotoLabel">
@@ -235,7 +286,8 @@
 					<height>690</height>
 					<itemlayout width="136" height="171">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>						
+						<include>PhotoThumb</include>
+						<include>PhotoAlbumCover</include>						
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>white</textcolor>
@@ -243,7 +295,8 @@
 					</itemlayout>
 					<focusedlayout width="136" height="171">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>						
+						<include>PhotoThumb</include>	
+						<include>PhotoAlbumCover</include>					
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>orangeLight</textcolor>
