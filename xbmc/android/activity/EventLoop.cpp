@@ -20,6 +20,7 @@
 
 #include "EventLoop.h"
 #include "XBMCApp.h"
+#include "AndroidExtra.h"
 
 CEventLoop::CEventLoop(android_app* application)
   : m_enabled(false),
@@ -133,24 +134,39 @@ void CEventLoop::processActivity(int32_t command)
 
 int32_t CEventLoop::processInput(AInputEvent* event)
 {
-  int32_t type = AInputEvent_getType(event);
-  switch (type)
+  int32_t rtn    = 0;
+  int32_t type   = AInputEvent_getType(event);
+  int32_t source = AInputEvent_getSource(event);
+
+  switch(type)
   {
+    case AINPUT_EVENT_TYPE_KEY:
+      if (source & AINPUT_SOURCE_GAMEPAD || source & AINPUT_SOURCE_JOYSTICK)
+      {
+        if (m_inputHandler->onJoyStickKeyEvent(event))
+          return true;
+      }
+      if (source & AINPUT_SOURCE_CLASS_BUTTON)
+        rtn = m_inputHandler->onKeyboardEvent(event);
+      break;
     case AINPUT_EVENT_TYPE_MOTION:
-      switch (AInputEvent_getSource(event))
+      switch(source)
       {
         case AINPUT_SOURCE_TOUCHSCREEN:
-          return m_inputHandler->onTouchEvent(event);
+          rtn = m_inputHandler->onTouchEvent(event);
+          break;
         case AINPUT_SOURCE_MOUSE:
-          return m_inputHandler->onMouseEvent(event);
+          rtn = m_inputHandler->onMouseEvent(event);
+          break;
+        case AINPUT_SOURCE_GAMEPAD:
+        case AINPUT_SOURCE_JOYSTICK:
+          rtn = m_inputHandler->onJoyStickMotionEvent(event);
+          break;
       }
       break;
-
-    case AINPUT_EVENT_TYPE_KEY:
-      return m_inputHandler->onKeyboardEvent(event);
   }
 
-  return 0;
+  return rtn;
 }
 
 void CEventLoop::activityCallback(android_app* application, int32_t command)
@@ -164,11 +180,11 @@ void CEventLoop::activityCallback(android_app* application, int32_t command)
 
 int32_t CEventLoop::inputCallback(android_app* application, AInputEvent* event)
 {
-  if (application == NULL || application->userData == NULL ||
-      event == NULL)
+  if (application == NULL || application->userData == NULL || event == NULL)
     return 0;
 
   CEventLoop& eventLoop = *((CEventLoop*)application->userData);
+
   return eventLoop.processInput(event);
 }
 
