@@ -98,18 +98,23 @@ bool CDVDVideoCodecHybris::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   switch(hints.codec)
   {
-    case CODEC_ID_VC1:
-      m_name = "hyb-vc1";
-      m_mimeType = "video/avc";
-      break;
     case CODEC_ID_MPEG4:
       m_name = "hyb-mpeg4";
       m_mimeType = "video/mp4v-es";
+      break;
+    case CODEC_ID_VP3:
+    case CODEC_ID_VP6:
+    case CODEC_ID_VP6F:
+    case CODEC_ID_VP8:
+      m_name = "hyb-vpX";
+      m_mimeType = "video/x-vnd.on2.vp8";
       break;
     case CODEC_ID_H263:
       m_name = "hyb-h263";
       m_mimeType = "video/3gpp";
       break;
+    case CODEC_ID_AVS:
+    case CODEC_ID_CAVS:
     case CODEC_ID_H264:
       m_name = "hyb-h264";
       m_mimeType = "video/avc";
@@ -134,6 +139,9 @@ bool CDVDVideoCodecHybris::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_codec = media_codec_create_by_codec_type(m_mimeType.c_str());
   if (m_codec == NULL) {
     CLog::Log(LOGERROR, "%s::%s - Failed to create codec for %s", CLASSNAME, __func__, m_mimeType.c_str());
+    media_codec_release(m_codec);
+    media_codec_delegate_destroy(m_codec);
+    media_format_destroy(m_codec);
     return false;
   }
 
@@ -150,6 +158,7 @@ bool CDVDVideoCodecHybris::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if (media_codec_configure(m_codec, m_format, 0) != OK) {
     CLog::Log(LOGERROR, "%s::%s - Failed to configure codec for %s", CLASSNAME, __func__, m_mimeType.c_str());
+    return false;
   }
 
 
@@ -182,6 +191,7 @@ void CDVDVideoCodecHybris::Dispose() {
     m_dts.pop();
 
   media_codec_stop(m_codec);
+  media_codec_release(m_codec);
   media_codec_delegate_destroy(m_codec);
   media_format_destroy(m_format);
 
@@ -368,7 +378,7 @@ int CDVDVideoCodecHybris::GetOutputPicture(void)
 #endif
     if (flags & 4 /*CJNIMediaCodec::BUFFER_FLAG_END_OF_STREAM*/)
     {
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: BUFFER_FLAG_END_OF_STREAM");
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecHybris:: BUFFER_FLAG_END_OF_STREAM");
       media_codec_release_output_buffer(m_codec, index, 0);
       return 0;
     }
@@ -434,7 +444,7 @@ CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture "
   else
   {
     // we should never get here
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture unknown index(%d)", index);
+    CLog::Log(LOGERROR, "CDVDVideoCodecHybris::GetOutputPicture unknown index(%d)", index);
   }
 
   return rtn;
