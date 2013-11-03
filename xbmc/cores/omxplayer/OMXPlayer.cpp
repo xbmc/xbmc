@@ -3004,6 +3004,7 @@ int COMXPlayer::GetAudioStream()
 
 void COMXPlayer::SetAudioStream(int iStream)
 {
+  CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = iStream;
   m_messenger.Put(new CDVDMsgPlayerSetAudioStream(iStream));
   SynchronizeDemuxer(100);
 }
@@ -3132,7 +3133,7 @@ bool COMXPlayer::OpenAudioStream(int iStream, int source, bool reset)
 
   /* software decoding normaly consumes full cpu time so prio it */
   m_omxPlayerAudio.SetPriority(GetPriority()+1);
-
+  CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream =  m_SelectionStreams.IndexOf(STREAM_AUDIO, source, iStream);
   return true;
 }
 
