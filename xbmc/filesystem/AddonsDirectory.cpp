@@ -231,7 +231,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
   }
 }
 
-CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdString &basePath, bool folder)
+CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CStdString &basePath, bool folder)
 {
   if (!addon)
     return CFileItemPtr();
