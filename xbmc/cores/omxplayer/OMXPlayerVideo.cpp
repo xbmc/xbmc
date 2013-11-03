@@ -259,6 +259,22 @@ void OMXPlayerVideo::ProcessOverlays(double pts)
   }
 }
 
+std::string OMXPlayerVideo::GetStereoMode()
+{
+  std::string  stereo_mode;
+
+  switch(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoMode)
+  {
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:   stereo_mode = "left_right"; break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL: stereo_mode = "top_bottom"; break;
+    default:                                  stereo_mode = m_hints.stereo_mode; break;
+  }
+
+  if(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoInvert)
+    stereo_mode = GetStereoModeInvert(stereo_mode);
+  return stereo_mode;
+}
+
 void OMXPlayerVideo::Output(double pts, bool bDropPacket)
 {
   if (!g_renderManager.IsStarted()) {
