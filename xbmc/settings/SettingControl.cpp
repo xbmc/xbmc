@@ -95,6 +95,8 @@ bool CSettingControl::setFormat(const std::string &strFormat)
     m_format = SettingControlFormatBoolean;
   else if (StringUtils::EqualsNoCase(strFormat, "string"))
     m_format = SettingControlFormatString;
+  else if (StringUtils::EqualsNoCase(strFormat, "stringlist"))
+    m_format = SettingControlFormatStringList;
   else if (StringUtils::EqualsNoCase(strFormat, "integer"))
     m_format = SettingControlFormatInteger;
   else if (StringUtils::EqualsNoCase(strFormat, "number"))

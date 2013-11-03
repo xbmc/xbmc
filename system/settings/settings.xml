@@ -3,6 +3,16 @@
   <section id="appearance" label="480" help="36101">
     <category id="lookandfeel" label="166" help="36102">
       <group id="1">
+        <setting id="lookandfeel.abc" type="stringlist" label="15111" 
+help="36105">
+          <level>0</level>
+          <default>English</default>
+          <constraints>
+            <options>languages</options>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="list" format="stringlist" />
+        </setting>
         <setting id="lookandfeel.skin" type="addon" label="166" help="36103">
           <level>0</level>
           <default>skin.confluence</default>

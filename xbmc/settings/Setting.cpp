@@ -1050,7 +1050,204 @@ void CSettingString::copy(const CSettingString &setting)
   m_allowEmpty = setting.m_allowEmpty;
   m_heading = setting.m_heading;
 }
-  
+
+CSettingStringList::CSettingStringList(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
+: CSetting(id, settingsManager),
+m_allowEmpty(false), m_heading(-1)
+{ }
+
+CSettingStringList::CSettingStringList(const std::string &id, const CSettingStringList &setting)
+: CSetting(id, setting)
+{
+  copy(setting);
+}
+
+CSettingStringList::CSettingStringList(const std::string &id, int label, const std::vector<std::string> &value, CSettingsManager *settingsManager /* = NULL */)
+: CSetting(id, settingsManager),
+m_value(value), m_default(value),
+m_allowEmpty(false), m_heading(-1)
+{
+  m_label = label;
+
+  m_control.SetType(SettingControlTypeList);
+  m_control.SetFormat(SettingControlFormatStringList);
+  m_control.SetAttributes(SettingControlAttributeNone);
+}
+
+bool CSettingStringList::Deserialize(const TiXmlNode *node, bool update /* = false */)
+{
+  CSingleLock lock(m_critical);
+
+  if (!CSetting::Deserialize(node, update))
+    return false;
+
+  if (m_control.GetType() != SettingControlTypeList || m_control.GetFormat() != SettingControlFormatStringList)
+  {
+    CLog::Log(LOGERROR, "CSettingString: invalid <control> of \"%s\"", m_id.c_str());
+    return false;
+  }
+
+  const TiXmlNode *control = node->FirstChild(XML_ELM_CONTROL);
+  if (control != NULL)
+  {
+    // get heading
+    XMLUtils::GetInt(control, "heading", m_heading);
+  }
+
+  const TiXmlNode *constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
+  if (constraints != NULL)
+  {
+    // get allowempty (needs to be parsed before parsing the default value)
+    XMLUtils::GetBoolean(constraints, "allowempty", m_allowEmpty);
+
+    // get the entries
+    const TiXmlNode *options = constraints->FirstChild(XML_ELM_OPTIONS);
+    if (options != NULL && options->FirstChild() != NULL &&
+        options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
+      m_optionsFiller = options->FirstChild()->ValueStr();
+  }
+
+  // get the default value
+  CStdString value;
+  if (XMLUtils::GetString(node, XML_ELM_DEFAULT, value) && !value.empty())
+    m_value = m_default = fromString(value);
+  else if (!update && !m_allowEmpty)
+  {
+    CLog::Log(LOGERROR, "CSettingString: error reading the default value of \"%s\"", m_id.c_str());
+    return false;
+  }
+
+  return true;
+}
+
+bool CSettingStringList::FromString(const std::string &value)
+{
+  return SetValue(fromString(value));
+}
+
+std::string CSettingStringList::ToString() const
+{
+  return StringUtils::Join(m_value, "|");
+}
+
+std::vector<std::string> CSettingStringList::fromString(const std::string &value)
+{
+  return StringUtils::Split(value, "|");
+}
+
+bool CSettingStringList::Equals(const std::string &value) const
+{
+  return fromString(value) == m_value;
+}
+
+bool CSettingStringList::CheckValidity(const std::string &value) const
+{
+  return CheckValidity(fromString(value));
+}
+
+bool CSettingStringList::CheckValidity(const std::vector<std::string> &value) const
+{
+  if (!m_allowEmpty && value.empty())
+    return false;
+
+  return true;
+}
+
+bool CSettingStringList::SetValue(const std::vector<std::string> &value)
+{
+  CSingleLock lock(m_critical);
+
+  if (value == m_value)
+    return true;
+
+  if (!CheckValidity(value))
+    return false;
+
+  std::vector<std::string> oldValue = m_value;
+  m_value = value;
+
+  if (!OnSettingChanging(this))
+  {
+    m_value = oldValue;
+
+    // the setting couldn't be changed because one of the
+    // callback handlers failed the OnSettingChanging()
+    // callback so we need to let all the callback handlers
+    // know that the setting hasn't changed
+    OnSettingChanging(this);
+    return false;
+  }
+
+  m_changed = m_value != m_default;
+  OnSettingChanged(this);
+  return true;
+}
+
+void CSettingStringList::SetDefault(const std::vector<std::string> &value)
+{
+  CSingleLock lock(m_critical);
+
+  m_default = value;
+  if (!m_changed)
+    m_value = m_default;
+}
+
+SettingOptionsType CSettingStringList::GetOptionsType() const
+{
+  if (!m_optionsFiller.empty())
+    return SettingOptionsTypeDynamic;
+
+  return SettingOptionsTypeNone;
+}
+
+DynamicStringSettingOptions CSettingStringList::UpdateDynamicOptions()
+{
+  DynamicStringSettingOptions options;
+  if (m_optionsFiller.empty() || m_settingsManager == NULL)
+    return options;
+
+  StringSettingOptionsFiller filler = (StringSettingOptionsFiller)m_settingsManager->GetSettingOptionsFiller(this);
+  if (filler == NULL)
+    return options;
+
+  /* NOTE: no checks for validity of current option here */
+  std::string bestMatchingValue = "";
+  filler(this, options, bestMatchingValue);
+
+  // check if the list of items has changed
+  bool changed = m_dynamicOptions.size() != options.size();
+  if (!changed)
+  {
+    for (size_t index = 0; index < options.size(); index++)
+    {
+      if (options[index].first.compare(m_dynamicOptions[index].first) != 0 ||
+          options[index].second.compare(m_dynamicOptions[index].second) != 0)
+      {
+        changed = true;
+        break;
+      }
+    }
+  }
+
+  if (changed)
+  {
+    m_dynamicOptions = options;
+    OnSettingPropertyChanged(this, "options");
+  }
+
+  return options;
+}
+
+void CSettingStringList::copy(const CSettingStringList &setting)
+{
+  CSetting::Copy(setting);
+
+  m_value = setting.m_value;
+  m_default = setting.m_default;
+  m_allowEmpty = setting.m_allowEmpty;
+  m_heading = setting.m_heading;
+}
+
 CSettingAction::CSettingAction(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : CSetting(id, settingsManager)
 {

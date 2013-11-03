@@ -383,6 +383,8 @@ void* CSettingsManager::GetSettingOptionsFiller(const CSetting *setting)
     filler = ((const CSettingInt*)setting)->GetOptionsFiller();
   else if (setting->GetType() == SettingTypeString)
     filler = ((const CSettingString*)setting)->GetOptionsFiller();
+  else if (setting->GetType() == SettingTypeStringList)
+    filler = ((const CSettingStringList*)setting)->GetOptionsFiller();
 
   if (filler.empty())
     return NULL;
@@ -408,7 +410,8 @@ void* CSettingsManager::GetSettingOptionsFiller(const CSetting *setting)
     
     case SettingOptionsFillerTypeString:
     {
-      if (setting->GetType() != SettingTypeString)
+      if (setting->GetType() != SettingTypeString &&
+          setting->GetType() != SettingTypeStringList)
         return NULL;
 
       break;
@@ -561,6 +564,26 @@ bool CSettingsManager::SetString(const std::string &id, const std::string &value
     return false;
 
   return ((CSettingString*)setting)->SetValue(value);
+}
+
+std::vector<std::string> CSettingsManager::GetStringList(const std::string &id) const
+{
+  CSingleLock lock(m_critical);
+  CSetting *setting = GetSetting(id);
+  if (setting == NULL || setting->GetType() != SettingTypeStringList)
+    return std::vector<std::string>();
+
+  return ((CSettingStringList*)setting)->GetValue();
+}
+
+bool CSettingsManager::SetStringList(const std::string &id, const std::vector<std::string> &value)
+{
+  CSingleLock lock(m_critical);
+  CSetting *setting = GetSetting(id);
+  if (setting == NULL || setting->GetType() != SettingTypeStringList)
+    return false;
+
+  return ((CSettingStringList*)setting)->SetValue(value);
 }
 
 void CSettingsManager::AddCondition(const std::string &condition)
@@ -773,6 +796,8 @@ CSetting* CSettingsManager::CreateSetting(const std::string &settingType, const 
     return new CSettingNumber(settingId, (CSettingsManager*)this);
   else if (StringUtils::EqualsNoCase(settingType, "string"))
     return new CSettingString(settingId, (CSettingsManager*)this);
+  else if (StringUtils::EqualsNoCase(settingType, "stringlist"))
+    return new CSettingStringList(settingId, (CSettingsManager*)this);
   else if (StringUtils::EqualsNoCase(settingType, "action"))
     return new CSettingAction(settingId, (CSettingsManager*)this);
 

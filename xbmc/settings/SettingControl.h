@@ -36,6 +36,7 @@ typedef enum {
   SettingControlFormatNone = 0,
   SettingControlFormatBoolean,
   SettingControlFormatString,
+  SettingControlFormatStringList,
   SettingControlFormatInteger,
   SettingControlFormatNumber,
   SettingControlFormatIP,
