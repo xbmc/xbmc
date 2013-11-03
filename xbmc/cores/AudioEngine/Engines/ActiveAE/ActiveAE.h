@@ -55,6 +55,7 @@ struct AudioSettings
   bool truehdpassthrough;
   bool dtshdpassthrough;
   bool stereoupmix;
+  bool normalizelevels;
   bool passthrough;
   int config;
   unsigned int samplerate;

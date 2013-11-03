@@ -364,7 +364,7 @@ void CPCMRemap::BuildMap()
   m_outStride = m_inSampleSize * m_outChannels;
 
   /* see if we need to normalize the levels */
-  bool dontnormalize = CSettings::Get().GetBool("audiooutput.normalizelevels");
+  bool dontnormalize = !CSettings::Get().GetBool("audiooutput.normalizelevels");
   CLog::Log(LOGDEBUG, "CPCMRemap: Downmix normalization is %s", (dontnormalize ? "disabled" : "enabled"));
 
   ResolveChannels();

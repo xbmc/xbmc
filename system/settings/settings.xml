@@ -2172,6 +2172,10 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="audiooutput.normalizelevels" type="boolean" label="346" help="36533">
+          <level>2</level>
+          <default>true</default>
+        </setting>
         <setting id="audiooutput.processquality" type="integer" label="13505" help="36169">
           <requirement>HAS_AE_QUALITY_LEVELS</requirement>
           <level>2</level>

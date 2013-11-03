@@ -1004,7 +1004,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       {
         (*it)->m_resampleBuffers = new CActiveAEBufferPoolResample((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
         (*it)->m_resampleBuffers->m_changeResampler = (*it)->m_forceResampler;
-        (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix);
+        (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix, m_settings.normalizelevels);
       }
       if (m_mode == MODE_TRANSCODE || m_streams.size() > 1)
         (*it)->m_resampleBuffers->m_fillPackets = true;
@@ -1240,14 +1240,22 @@ void CActiveAE::ChangeResamplers()
   std::list<CActiveAEStream*>::iterator it;
   for(it=m_streams.begin(); it!=m_streams.end(); ++it)
   {
+    bool normalize = true;
+    if (((*it)->m_resampleBuffers->m_format.m_channelLayout.Count() <
+         (*it)->m_resampleBuffers->m_inputFormat.m_channelLayout.Count()) &&
+         !m_settings.normalizelevels)
+      normalize = false;
+
     if ((*it)->m_resampleBuffers && (*it)->m_resampleBuffers->m_resampler &&
         (((*it)->m_resampleBuffers->m_resampleQuality != m_settings.resampleQuality) ||
-        ((*it)->m_resampleBuffers->m_stereoUpmix != m_settings.stereoupmix)))
+        (((*it)->m_resampleBuffers->m_stereoUpmix != m_settings.stereoupmix)) ||
+        ((*it)->m_resampleBuffers->m_normalize != normalize)))
     {
       (*it)->m_resampleBuffers->m_changeResampler = true;
     }
     (*it)->m_resampleBuffers->m_resampleQuality = m_settings.resampleQuality;
     (*it)->m_resampleBuffers->m_stereoUpmix = m_settings.stereoupmix;
+    (*it)->m_resampleBuffers->m_normalize = normalize;
   }
 }
 
@@ -1634,8 +1642,9 @@ bool CActiveAE::RunStages()
               fadingStep = delta / samples;
             }
 
-            // for stream amplification we need to run on a per sample basis
-            if ((*it)->m_amplify != 1.0)
+            // for streams amplification of turned off downmix normalization
+            // we need to run on a per sample basis
+            if ((*it)->m_amplify != 1.0 || !(*it)->m_resampleBuffers->m_normalize)
             {
               nb_floats = out->pkt->config.channels / out->pkt->planes;
               nb_loops = out->pkt->nb_samples;
@@ -1700,8 +1709,9 @@ bool CActiveAE::RunStages()
               fadingStep = delta / samples;
             }
 
-            // for stream amplification we need to run on a per sample basis
-            if ((*it)->m_amplify != 1.0)
+            // for streams amplification of turned off downmix normalization
+            // we need to run on a per sample basis
+            if ((*it)->m_amplify != 1.0 || !(*it)->m_resampleBuffers->m_normalize)
             {
               nb_floats = out->pkt->config.channels / out->pkt->planes;
               nb_loops = out->pkt->nb_samples;
@@ -1981,6 +1991,7 @@ void CActiveAE::LoadSettings()
   m_settings.samplerate = CSettings::Get().GetInt("audiooutput.samplerate");
 
   m_settings.stereoupmix = CSettings::Get().GetBool("audiooutput.stereoupmix");
+  m_settings.normalizelevels = CSettings::Get().GetBool("audiooutput.normalizelevels");
 
   m_settings.passthrough = m_settings.config == AE_CONFIG_FIXED ? false : CSettings::Get().GetBool("audiooutput.passthrough");
   m_settings.ac3passthrough = CSettings::Get().GetBool("audiooutput.ac3passthrough");
@@ -2057,7 +2068,8 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.streamsilence"     ||
       setting == "audiooutput.processquality"    ||
       setting == "audiooutput.passthrough"       ||
-      setting == "audiooutput.samplerate")
+      setting == "audiooutput.samplerate"        ||
+      setting == "audiooutput.normalizelevels")
   {
     m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
   }
@@ -2438,6 +2450,7 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
                   orig_config.fmt,
                   orig_config.bits_per_sample,
                   false,
+                  true,
                   NULL,
                   AE_QUALITY_MID);
 
