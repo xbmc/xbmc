@@ -290,7 +290,7 @@
 
 		<!-- !LiveTV -->
 		<control type="group">
-			<posx>355r</posx>
+			<posx>410r</posx>
 			<posy>60r</posy>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
@@ -306,12 +306,27 @@
 				<texturefocus>OSDStereoscopicFO.png</texturefocus>
 				<texturenofocus>OSDStereoscopicNF.png</texturenofocus>
 				<onleft>205</onleft>
-				<onright>250</onright>
+				<onright>256</onright>
 				<onup>501</onup>
 				<ondown>1000</ondown>
 			</control>
-			<control type="button" id="250">
+			<control type="button" id="256">
 				<posx>55</posx>
+				<posy>0</posy>
+				<width>55</width>
+				<height>55</height>
+				<label>-</label>
+				<font>-</font>
+				<texturefocus>OSDinfoFO.png</texturefocus>
+				<texturenofocus>OSDinfoNF.png</texturenofocus>
+				<onleft>255</onleft>
+				<onright>250</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onclick>ActivateWindow(1111)</onclick>
+			</control>
+			<control type="button" id="250">
+				<posx>110</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -319,13 +334,13 @@
 				<font>-</font>
 				<texturefocus>OSDSubtitlesFO.png</texturefocus>
 				<texturenofocus>OSDSubtitlesNF.png</texturenofocus>
-				<onleft>255</onleft>
+				<onleft>256</onleft>
 				<onright>251</onright>
 				<onup>404</onup>
 				<ondown>1000</ondown>
 			</control>
 			<control type="button" id="251">
-				<posx>110</posx>
+				<posx>165</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -340,7 +355,7 @@
 				<onclick>ActivateWindow(OSDVideoSettings)</onclick>
 			</control>
 			<control type="button" id="252">
-				<posx>165</posx>
+				<posx>220</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -355,7 +370,7 @@
 				<onclick>ActivateWindow(OSDAudioSettings)</onclick>
 			</control>
 			<control type="button" id="253">
-				<posx>220</posx>
+				<posx>275</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -370,7 +385,7 @@
 				<onclick>ActivateWindow(VideoBookmarks)</onclick>
 			</control>
 			<control type="button" id="254">
-				<posx>275</posx>
+				<posx>330</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -390,7 +405,7 @@
 
 		<!-- LiveTV -->
 		<control type="group">
-			<posx>300r</posx>
+			<posx>355r</posx>
 			<posy>60r</posy>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
@@ -406,12 +421,27 @@
 				<texturefocus>OSDStereoscopicFO.png</texturefocus>
 				<texturenofocus>OSDStereoscopicNF.png</texturenofocus>
 				<onleft>307</onleft>
-				<onright>350</onright>
+				<onright>355</onright>
 				<onup>551</onup>
 				<ondown>1000</ondown>
 			</control>
-			<control type="button" id="350">
+			<control type="button" id="355">
 				<posx>55</posx>
+				<posy>0</posy>
+				<width>55</width>
+				<height>55</height>
+				<label>-</label>
+				<font>-</font>
+				<texturefocus>OSDinfoFO.png</texturefocus>
+				<texturenofocus>OSDinfoNF.png</texturenofocus>
+				<onleft>354</onleft>
+				<onright>350</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onclick>ActivateWindow(1111)</onclick>
+			</control>
+			<control type="button" id="350">
+				<posx>110</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -419,14 +449,14 @@
 				<font>-</font>
 				<texturefocus>OSDTeleTextFO.png</texturefocus>
 				<texturenofocus>OSDTeleTextNF.png</texturenofocus>
-				<onleft>354</onleft>
+				<onleft>355</onleft>
 				<onright>351</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>ActivateWindow(Teletext)</onclick>
 			</control>
 			<control type="button" id="351">
-				<posx>110</posx>
+				<posx>165</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -441,7 +471,7 @@
 				<onclick>ActivateWindow(OSDVideoSettings)</onclick>
 			</control>
 			<control type="button" id="352">
-				<posx>165</posx>
+				<posx>220</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -456,7 +486,7 @@
 				<onclick>ActivateWindow(OSDAudioSettings)</onclick>
 			</control>
 			<control type="togglebutton" id="353">
-				<posx>220</posx>
+				<posx>275</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
