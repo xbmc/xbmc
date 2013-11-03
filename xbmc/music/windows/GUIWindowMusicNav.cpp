@@ -796,11 +796,6 @@ void CGUIWindowMusicNav::FrameMove()
   CGUIWindowMusicBase::FrameMove();
 }
 
-void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
-{
-  CGUIWindowMusicBase::OnPrepareFileItems(items);
-}
-
 void CGUIWindowMusicNav::AddSearchFolder()
 {
   // we use a general viewstate (and not our member) here as our

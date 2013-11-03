@@ -562,6 +562,12 @@
 		DFECFB11172D9CAB00A43CF7 /* SettingUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB03172D9CAB00A43CF7 /* SettingUpdate.cpp */; };
 		DFECFB1C172D9D0100A43CF7 /* BooleanLogic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB1A172D9D0100A43CF7 /* BooleanLogic.cpp */; };
 		DFECFB4C172D9D6D00A43CF7 /* NetworkServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB4A172D9D6D00A43CF7 /* NetworkServices.cpp */; };
+		DFEF0BAC180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEF0BA9180ADE6400AEAED1 /* FileItemListModification.cpp */; };
+		DFEF0BAD180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEF0BA9180ADE6400AEAED1 /* FileItemListModification.cpp */; };
+		DFEF0BAE180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEF0BA9180ADE6400AEAED1 /* FileItemListModification.cpp */; };
+		DFEF0BC1180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEF0BBF180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp */; };
+		DFEF0BC2180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEF0BBF180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp */; };
+		DFEF0BC3180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEF0BBF180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp */; };
 		DFF0EB54175280D1002DA3A4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CE6131F5DC6000AD0F6 /* libz.dylib */; };
 		DFF0EB55175280E5002DA3A4 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CF2131F5DFD000AD0F6 /* libiconv.dylib */; };
 		DFF0EBB3175281CE002DA3A4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910EC174E54D200741B6D /* AudioToolbox.framework */; };
@@ -4291,6 +4297,11 @@
 		DFECFB1B172D9D0100A43CF7 /* BooleanLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BooleanLogic.h; sourceTree = "<group>"; };
 		DFECFB4A172D9D6D00A43CF7 /* NetworkServices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetworkServices.cpp; sourceTree = "<group>"; };
 		DFECFB4B172D9D6D00A43CF7 /* NetworkServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkServices.h; sourceTree = "<group>"; };
+		DFEF0BA9180ADE6400AEAED1 /* FileItemListModification.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileItemListModification.cpp; sourceTree = "<group>"; };
+		DFEF0BAA180ADE6400AEAED1 /* FileItemListModification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileItemListModification.h; sourceTree = "<group>"; };
+		DFEF0BAB180ADE6400AEAED1 /* IFileItemListModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFileItemListModifier.h; sourceTree = "<group>"; };
+		DFEF0BBF180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmartPlaylistFileItemListModifier.cpp; sourceTree = "<group>"; };
+		DFEF0BC0180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartPlaylistFileItemListModifier.h; sourceTree = "<group>"; };
 		DFF0EB8717528174002DA3A4 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		DFF0EB8D17528174002DA3A4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		DFF0EB9517528174002DA3A4 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -6055,6 +6066,8 @@
 				18B7C92C129428CA009E7A26 /* PlayListXML.h */,
 				18B7C92D129428CA009E7A26 /* SmartPlayList.cpp */,
 				18B7C92E129428CA009E7A26 /* SmartPlayList.h */,
+				DFEF0BBF180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp */,
+				DFEF0BC0180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.h */,
 			);
 			path = playlists;
 			sourceTree = "<group>";
@@ -7229,6 +7242,8 @@
 				E38E168D0D25F9FA00618676 /* DynamicDll.h */,
 				E38E16920D25F9FA00618676 /* FileItem.cpp */,
 				E38E16930D25F9FA00618676 /* FileItem.h */,
+				DFEF0BA9180ADE6400AEAED1 /* FileItemListModification.cpp */,
+				DFEF0BAA180ADE6400AEAED1 /* FileItemListModification.h */,
 				DFBB4317178B5E6F006CC20A /* GitRevision.cpp */,
 				DFBB4318178B5E6F006CC20A /* GitRevision.h */,
 				E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */,
@@ -7238,6 +7253,7 @@
 				E38E17F20D25F9FA00618676 /* GUIPassword.cpp */,
 				E38E17F30D25F9FA00618676 /* GUIPassword.h */,
 				E38E17F60D25F9FA00618676 /* GUIUserMessages.h */,
+				DFEF0BAB180ADE6400AEAED1 /* IFileItemListModifier.h */,
 				E38E184F0D25F9FA00618676 /* IProgressCallback.h */,
 				E38E18580D25F9FA00618676 /* LangInfo.cpp */,
 				E38E18590D25F9FA00618676 /* LangInfo.h */,
@@ -10638,6 +10654,8 @@
 				F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */,
 				7C2612711825B6340086E04D /* DatabaseQuery.cpp in Sources */,
 				7C920CF9181669FF00DA1477 /* TextureOperations.cpp in Sources */,
+				DFEF0BAC180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
+				DFEF0BC1180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11670,6 +11688,8 @@
 				F500E35817F3412C004FC217 /* WinEvents.cpp in Sources */,
 				7C2612731825B6340086E04D /* DatabaseQuery.cpp in Sources */,
 				7C920CFB181669FF00DA1477 /* TextureOperations.cpp in Sources */,
+				DFEF0BAE180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
+				DFEF0BC3180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12704,6 +12724,8 @@
 				F500E35717F3412C004FC217 /* WinEvents.cpp in Sources */,
 				7C2612721825B6340086E04D /* DatabaseQuery.cpp in Sources */,
 				7C920CFA181669FF00DA1477 /* TextureOperations.cpp in Sources */,
+				DFEF0BAD180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
+				DFEF0BC2180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

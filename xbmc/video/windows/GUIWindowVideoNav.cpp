@@ -831,11 +831,6 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
   return true;
 }
 
-void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
-{
-  CGUIWindowVideoBase::OnPrepareFileItems(items);
-}
-
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItemPtr item;

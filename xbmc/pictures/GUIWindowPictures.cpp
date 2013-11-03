@@ -214,6 +214,8 @@ void CGUIWindowPictures::UpdateButtons()
 
 void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
 {
+  CGUIMediaWindow::OnPrepareFileItems(items);
+
   for (int i=0;i<items.Size();++i )
     if (items[i]->GetLabel().Equals("folder.jpg"))
       items.Remove(i);
