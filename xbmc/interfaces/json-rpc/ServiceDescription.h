@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.11.0";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.12.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -2696,6 +2696,18 @@ namespace JSONRPC
         "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
         "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork.Set\", \"required\": true } ], \"default\": null },"
         "{ \"name\": \"resume\", \"type\": [ \"null\", { \"$ref\": \"Video.Resume\", \"required\": true } ], \"default\": null }"
+      "],"
+      "\"returns\": \"string\""
+    "}",
+    "\"VideoLibrary.SetMovieSetDetails\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Update the given movie set with the given details\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"UpdateData\","
+      "\"params\": ["
+        "{ \"name\": \"setid\", \"$ref\": \"Library.Id\", \"required\": true },"
+        "{ \"name\": \"title\", \"$ref\": \"Optional.String\" },"
+        "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork.Set\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""
     "}",
