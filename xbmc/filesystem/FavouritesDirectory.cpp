@@ -190,7 +190,7 @@ CStdString CFavouritesDirectory::GetExecutePath(const CFileItem &item, const std
                             !(item.IsSmartPlayList() || item.IsPlayList())))
   {
     if (!contextWindow.empty())
-      execute.Format("ActivateWindow(%s,%s)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
+      execute.Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
   }
   else if (item.IsScript())
     execute.Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().Mid(9)).c_str());
