@@ -100,7 +100,7 @@
 				<onclick>SettingsLevelChange</onclick>
 			</control>
 			<control type="label">
-				<left>250</left>
+				<right>250</right>
 				<top>566</top>
 				<height>25</height>
 				<width>230</width> 
