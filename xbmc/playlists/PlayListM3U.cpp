@@ -191,8 +191,13 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
   CStdString strPlaylist = strFileName;
   size_t maxBandwidth = 0;
 
+  // first strip off any query string
+  size_t baseEnd = strPlaylist.find('?');
+  if (baseEnd != std::string::npos)
+    strPlaylist = strPlaylist.substr(0, baseEnd);
+
   // if we cannot get the last / we wont be able to determine the sub-playlists
-  size_t baseEnd = strPlaylist.rfind('/');
+  baseEnd = strPlaylist.rfind('/');
   if (baseEnd == std::string::npos)
     return strPlaylist;
 
