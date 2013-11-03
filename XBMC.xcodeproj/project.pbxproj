@@ -268,6 +268,9 @@
 		7C4458BD161E203800A905F6 /* Screenshot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4458BB161E203800A905F6 /* Screenshot.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */; };
+		7C4E6F721829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */; };
+		7C4E6F731829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */; };
+		7C4E6F741829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
 		7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
 		7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */; };
@@ -3733,6 +3736,8 @@
 		7C45DBE810F325C400D4BBF3 /* DAVDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVDirectory.h; sourceTree = "<group>"; };
 		7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonInstaller.cpp; sourceTree = "<group>"; };
 		7C4705AD12EF584C00369E51 /* AddonInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonInstaller.h; sourceTree = "<group>"; };
+		7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSubtitles.cpp; sourceTree = "<group>"; };
+		7C4E6F711829AA9700F1068F /* GUIDialogSubtitles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSubtitles.h; sourceTree = "<group>"; };
 		7C5608C40F1754930056433A /* ExternalPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExternalPlayer.cpp; sourceTree = "<group>"; };
 		7C5608C50F1754930056433A /* ExternalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalPlayer.h; sourceTree = "<group>"; };
 		7C62F24010505BC7002AD2C1 /* Bookmark.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bookmark.cpp; sourceTree = "<group>"; };
@@ -6581,6 +6586,8 @@
 				E38E17AB0D25F9FA00618676 /* GUIDialogFileStacking.h */,
 				886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */,
 				886328160E07B37200BB3DAB /* GUIDialogFullScreenInfo.h */,
+				7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */,
+				7C4E6F711829AA9700F1068F /* GUIDialogSubtitles.h */,
 				F5E55B65107412DE006E788A /* GUIDialogTeletext.cpp */,
 				F5E55B64107412DE006E788A /* GUIDialogTeletext.h */,
 				E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */,
@@ -10717,6 +10724,7 @@
 				7C7BCDC517727951004842FB /* IListProvider.cpp in Sources */,
 				7C7BCDC717727951004842FB /* StaticProvider.cpp in Sources */,
 				7C8FC6EE1829A4580045153D /* DirectoryProvider.cpp in Sources */,
+				7C4E6F721829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11757,6 +11765,7 @@
 				7C7BCDCB17727951004842FB /* IListProvider.cpp in Sources */,
 				7C7BCDCD17727952004842FB /* StaticProvider.cpp in Sources */,
 				7C8FC6F01829A4580045153D /* DirectoryProvider.cpp in Sources */,
+				7C4E6F741829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12799,6 +12808,7 @@
 				7C7BCDC817727951004842FB /* IListProvider.cpp in Sources */,
 				7C7BCDCA17727951004842FB /* StaticProvider.cpp in Sources */,
 				7C8FC6EF1829A4580045153D /* DirectoryProvider.cpp in Sources */,
+				7C4E6F731829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
