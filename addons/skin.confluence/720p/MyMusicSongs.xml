@@ -23,16 +23,16 @@
 		<include>ScrollOffsetLabel</include>
 		<control type="image">
 			<description>Section header image</description>
-			<posx>20</posx>
-			<posy>3</posy>
+			<left>20</left>
+			<top>3</top>
 			<width>35</width>
 			<height>35</height>
 			<aspectratio>keep</aspectratio>
 			<texture>icon_music.png</texture>
 		</control>
 		<control type="grouplist">
-			<posx>65</posx>
-			<posy>5</posy>
+			<left>65</left>
+			<top>5</top>
 			<width>1000</width>
 			<height>30</height>
 			<orientation>horizontal</orientation>
@@ -49,11 +49,11 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>-250</posx>
+			<left>-250</left>
 			<include>SideBladeLeft</include>
 			<control type="grouplist" id="9000">
-				<posx>0</posx>
-				<posy>110</posy>
+				<left>0</left>
+				<top>110</top>
 				<width>250</width>
 				<height>600</height>
 				<onleft>9000</onleft>

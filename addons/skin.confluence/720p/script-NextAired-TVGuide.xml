@@ -13,8 +13,8 @@
 		<control type="group">
 			<visible>!IsEmpty(Window(home).Property(TVGuide.BackgroundFanart))</visible>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>1280</width>
 				<height>720</height>
 				<aspectratio>scale</aspectratio>
@@ -25,8 +25,8 @@
 				<animation effect="fade" time="600">Hidden</animation>
 			</control>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>1280</width>
 				<height>720</height>
 				<aspectratio>scale</aspectratio>
@@ -37,8 +37,8 @@
 				<animation effect="fade" time="600">Hidden</animation>
 			</control>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>1280</width>
 				<height>720</height>
 				<aspectratio>scale</aspectratio>
@@ -49,8 +49,8 @@
 				<animation effect="fade" time="600">Hidden</animation>
 			</control>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>1280</width>
 				<height>720</height>
 				<aspectratio>scale</aspectratio>
@@ -61,8 +61,8 @@
 				<animation effect="fade" time="600">Hidden</animation>
 			</control>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>1280</width>
 				<height>720</height>
 				<aspectratio>scale</aspectratio>
@@ -73,8 +73,8 @@
 				<animation effect="fade" time="600">Hidden</animation>
 			</control>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>1280</width>
 				<height>720</height>
 				<aspectratio>scale</aspectratio>
@@ -85,8 +85,8 @@
 				<animation effect="fade" time="600">Hidden</animation>
 			</control>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>1280</width>
 				<height>720</height>
 				<aspectratio>scale</aspectratio>
@@ -98,8 +98,8 @@
 			</control>
 		</control>
 		<control type="image">
-			<posx>0</posx>
-			<posy>100r</posy>
+			<left>0</left>
+			<top>100r</top>
 			<width>1280</width>
 			<height>100</height>
 			<texture>floor.png</texture>
@@ -109,16 +109,16 @@
 		</control>
 		<control type="image">
 			<description>Section header image</description>
-			<posx>20</posx>
-			<posy>3</posy>
+			<left>20</left>
+			<top>3</top>
 			<width>35</width>
 			<height>35</height>
 			<aspectratio>keep</aspectratio>
 			<texture>icon_video.png</texture>
 		</control>
 		<control type="grouplist">
-			<posx>65</posx>
-			<posy>5</posy>
+			<left>65</left>
+			<top>5</top>
 			<width>1000</width>
 			<height>30</height>
 			<orientation>horizontal</orientation>
@@ -135,8 +135,8 @@
 		</control>
 		<control type="grouplist" id="2000">
 			<include>Window_OpenClose_Animation</include>		
-			<posx>40</posx>
-			<posy>60</posy>
+			<left>40</left>
+			<top>60</top>
 			<width>1200</width>
 			<height>660</height>
 			<orientation>horizontal</orientation>
@@ -148,22 +148,22 @@
 				<width>300</width>
 				<height>660</height>
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>300</width>
 					<height>600</height>
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
-					<posx>0</posx>
-					<posy>592</posy>
+					<left>0</left>
+					<top>592</top>
 					<width>300</width>
 					<height>64</height>
 					<texture border="15">ContentPanelMirror.png</texture>
 				</control>
 				<control type="label">
-					<posx>20</posx>
-					<posy>13</posy>
+					<left>20</left>
+					<top>13</top>
 					<width>260</width>
 					<height>20</height>
 					<label>$LOCALIZE[11]</label>
@@ -173,8 +173,8 @@
 					<textcolor>white</textcolor>
 				</control>
 				<control type="panel" id="200">
-					<posx>10</posx>
-					<posy>40</posy>
+					<left>10</left>
+					<top>40</top>
 					<width>280</width>
 					<height>530</height>
 					<scrolltime>200</scrolltime>
@@ -191,22 +191,22 @@
 				<width>300</width>
 				<height>660</height>
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>300</width>
 					<height>600</height>
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
-					<posx>0</posx>
-					<posy>592</posy>
+					<left>0</left>
+					<top>592</top>
 					<width>300</width>
 					<height>64</height>
 					<texture border="15">ContentPanelMirror.png</texture>
 				</control>
 				<control type="label">
-					<posx>20</posx>
-					<posy>13</posy>
+					<left>20</left>
+					<top>13</top>
 					<width>260</width>
 					<height>20</height>
 					<label>$LOCALIZE[12]</label>
@@ -216,8 +216,8 @@
 					<textcolor>white</textcolor>
 				</control>
 				<control type="panel" id="201">
-					<posx>10</posx>
-					<posy>40</posy>
+					<left>10</left>
+					<top>40</top>
 					<width>280</width>
 					<height>530</height>
 					<scrolltime>200</scrolltime>
@@ -234,22 +234,22 @@
 				<width>300</width>
 				<height>660</height>
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>300</width>
 					<height>600</height>
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
-					<posx>0</posx>
-					<posy>592</posy>
+					<left>0</left>
+					<top>592</top>
 					<width>300</width>
 					<height>64</height>
 					<texture border="15">ContentPanelMirror.png</texture>
 				</control>
 				<control type="label">
-					<posx>20</posx>
-					<posy>13</posy>
+					<left>20</left>
+					<top>13</top>
 					<width>260</width>
 					<height>20</height>
 					<label>$LOCALIZE[13]</label>
@@ -259,8 +259,8 @@
 					<textcolor>white</textcolor>
 				</control>
 				<control type="panel" id="202">
-					<posx>10</posx>
-					<posy>40</posy>
+					<left>10</left>
+					<top>40</top>
 					<width>280</width>
 					<height>530</height>
 					<scrolltime>200</scrolltime>
@@ -277,22 +277,22 @@
 				<width>300</width>
 				<height>660</height>
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>300</width>
 					<height>600</height>
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
-					<posx>0</posx>
-					<posy>592</posy>
+					<left>0</left>
+					<top>592</top>
 					<width>300</width>
 					<height>64</height>
 					<texture border="15">ContentPanelMirror.png</texture>
 				</control>
 				<control type="label">
-					<posx>20</posx>
-					<posy>13</posy>
+					<left>20</left>
+					<top>13</top>
 					<width>260</width>
 					<height>20</height>
 					<label>$LOCALIZE[14]</label>
@@ -302,8 +302,8 @@
 					<textcolor>white</textcolor>
 				</control>
 				<control type="panel" id="203">
-					<posx>10</posx>
-					<posy>40</posy>
+					<left>10</left>
+					<top>40</top>
 					<width>280</width>
 					<height>530</height>
 					<scrolltime>200</scrolltime>
@@ -320,22 +320,22 @@
 				<width>300</width>
 				<height>660</height>
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>300</width>
 					<height>600</height>
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
-					<posx>0</posx>
-					<posy>592</posy>
+					<left>0</left>
+					<top>592</top>
 					<width>300</width>
 					<height>64</height>
 					<texture border="15">ContentPanelMirror.png</texture>
 				</control>
 				<control type="label">
-					<posx>20</posx>
-					<posy>13</posy>
+					<left>20</left>
+					<top>13</top>
 					<width>260</width>
 					<height>20</height>
 					<label>$LOCALIZE[15]</label>
@@ -345,8 +345,8 @@
 					<textcolor>white</textcolor>
 				</control>
 				<control type="panel" id="204">
-					<posx>10</posx>
-					<posy>40</posy>
+					<left>10</left>
+					<top>40</top>
 					<width>280</width>
 					<height>530</height>
 					<scrolltime>200</scrolltime>
@@ -363,22 +363,22 @@
 				<width>300</width>
 				<height>660</height>
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>300</width>
 					<height>600</height>
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
-					<posx>0</posx>
-					<posy>592</posy>
+					<left>0</left>
+					<top>592</top>
 					<width>300</width>
 					<height>64</height>
 					<texture border="15">ContentPanelMirror.png</texture>
 				</control>
 				<control type="label">
-					<posx>20</posx>
-					<posy>13</posy>
+					<left>20</left>
+					<top>13</top>
 					<width>260</width>
 					<height>20</height>
 					<label>$LOCALIZE[16]</label>
@@ -388,8 +388,8 @@
 					<textcolor>white</textcolor>
 				</control>
 				<control type="panel" id="205">
-					<posx>10</posx>
-					<posy>40</posy>
+					<left>10</left>
+					<top>40</top>
 					<width>280</width>
 					<height>530</height>
 					<scrolltime>200</scrolltime>
@@ -406,22 +406,22 @@
 				<width>300</width>
 				<height>660</height>
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>300</width>
 					<height>600</height>
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
-					<posx>0</posx>
-					<posy>592</posy>
+					<left>0</left>
+					<top>592</top>
 					<width>300</width>
 					<height>64</height>
 					<texture border="15">ContentPanelMirror.png</texture>
 				</control>
 				<control type="label">
-					<posx>20</posx>
-					<posy>13</posy>
+					<left>20</left>
+					<top>13</top>
 					<width>260</width>
 					<height>20</height>
 					<label>$LOCALIZE[17]</label>
@@ -431,8 +431,8 @@
 					<textcolor>white</textcolor>
 				</control>
 				<control type="panel" id="206">
-					<posx>10</posx>
-					<posy>40</posy>
+					<left>10</left>
+					<top>40</top>
 					<width>280</width>
 					<height>530</height>
 					<scrolltime>200</scrolltime>
@@ -448,8 +448,8 @@
 			<include>Window_OpenClose_Animation</include>		
 			<control type="image">
 				<description>left Arrow</description>
-				<posx>10</posx>
-				<posy>120</posy>
+				<left>10</left>
+				<top>120</top>
 				<width>30</width>
 				<height>40</height>
 				<texture>arrow-big-left.png</texture>
@@ -458,8 +458,8 @@
 			</control>
 			<control type="image">
 				<description>left Arrow</description>
-				<posx>10</posx>
-				<posy>170r</posy>
+				<left>10</left>
+				<top>170r</top>
 				<width>30</width>
 				<height>40</height>
 				<texture>arrow-big-left.png</texture>
@@ -468,8 +468,8 @@
 			</control>
 			<control type="image">
 				<description>right Arrow</description>
-				<posx>1240</posx>
-				<posy>120</posy>
+				<left>1240</left>
+				<top>120</top>
 				<width>30</width>
 				<height>40</height>
 				<texture>arrow-big-right.png</texture>
@@ -478,8 +478,8 @@
 			</control>
 			<control type="image">
 				<description>right Arrow</description>
-				<posx>1240</posx>
-				<posy>170r</posy>
+				<left>1240</left>
+				<top>170r</top>
 				<width>30</width>
 				<height>40</height>
 				<texture>arrow-big-right.png</texture>
@@ -491,11 +491,11 @@
 		<include>MainWindowMouseButtons</include>
 		<include>BehindDialogFadeOut</include>
 		<control type="group">
-			<posx>-250</posx>
+			<left>-250</left>
 			<include>SideBladeLeft</include>
 			<control type="grouplist" id="9000">
-				<posx>0</posx>
-				<posy>110</posy>
+				<left>0</left>
+				<top>110</top>
 				<width>250</width>
 				<height>600</height>
 				<onleft>9000</onleft>

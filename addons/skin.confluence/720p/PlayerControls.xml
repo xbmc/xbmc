@@ -5,25 +5,25 @@
 	<visible>Player.HasMedia + Window.IsActive(PlayerControls) + !Window.IsActive(FullscreenVideo) + !Window.IsActive(Visualisation)</visible>
 	<coordinates>
 		<system>1</system>
-		<posx>390</posx>
-		<posy>250</posy>
+		<left>390</left>
+		<top>250</top>
 	</coordinates>
 	<controls>
 		<control type="image">
-			<posx>5</posx>
-			<posy>156</posy>
+			<left>5</left>
+			<top>156</top>
 			<width>483</width>
 			<height>53</height>
 			<texture flipy="true" border="20,20,20,2">InfoMessagePanel.png</texture>
 		</control>
 		<control type="group" id="100">
-			<posx>25</posx>
-			<posy>162</posy>
+			<left>25</left>
+			<top>162</top>
 			<defaultcontrol always="true">603</defaultcontrol>
 			<visible>!VideoPlayer.Content(LiveTV)</visible>
 			<control type="button" id="600">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -37,8 +37,8 @@
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="601">
-				<posx>40</posx>
-				<posy>0</posy>
+				<left>40</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -52,8 +52,8 @@
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="togglebutton" id="603">
-				<posx>80</posx>
-				<posy>0</posy>
+				<left>80</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -70,8 +70,8 @@
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="602">
-				<posx>120</posx>
-				<posy>0</posy>
+				<left>120</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -86,8 +86,8 @@
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="604">
-				<posx>160</posx>
-				<posy>0</posy>
+				<left>160</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -101,8 +101,8 @@
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="605">
-				<posx>200</posx>
-				<posy>0</posy>
+				<left>200</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -116,8 +116,8 @@
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="606">
-				<posx>240</posx>
-				<posy>0</posy>
+				<left>240</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -135,8 +135,8 @@
 			<control type="group">
 				<animation effect="slide" start="0,0" end="40,0" time="0" condition="!Player.HasAudio">Conditional</animation>
 				<control type="button" id="607">
-					<posx>325</posx>
-					<posy>0</posy>
+					<left>325</left>
+					<top>0</top>
 					<width>40</width>
 					<height>40</height>
 					<label>-</label>
@@ -150,8 +150,8 @@
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
-					<posx>325</posx>
-					<posy>0</posy>
+					<left>325</left>
+					<top>0</top>
 					<width>40</width>
 					<height>40</height>
 					<texture>OSDRepeatNF.png</texture>
@@ -160,8 +160,8 @@
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
-					<posx>325</posx>
-					<posy>0</posy>
+					<left>325</left>
+					<top>0</top>
 					<width>40</width>
 					<height>40</height>
 					<texture>OSDRepeatFO.png</texture>
@@ -170,8 +170,8 @@
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
-					<posx>325</posx>
-					<posy>0</posy>
+					<left>325</left>
+					<top>0</top>
 					<width>40</width>
 					<height>40</height>
 					<texture>OSDRepeatOneNF.png</texture>
@@ -180,8 +180,8 @@
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
-					<posx>325</posx>
-					<posy>0</posy>
+					<left>325</left>
+					<top>0</top>
 					<width>40</width>
 					<height>40</height>
 					<texture>OSDRepeatOneFO.png</texture>
@@ -190,8 +190,8 @@
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
-					<posx>325</posx>
-					<posy>0</posy>
+					<left>325</left>
+					<top>0</top>
 					<width>40</width>
 					<height>40</height>
 					<texture>OSDRepeatAllNF.png</texture>
@@ -200,8 +200,8 @@
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
-					<posx>325</posx>
-					<posy>0</posy>
+					<left>325</left>
+					<top>0</top>
 					<width>40</width>
 					<height>40</height>
 					<texture>OSDRepeatAllFO.png</texture>
@@ -210,8 +210,8 @@
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="togglebutton" id="608">
-					<posx>365</posx>
-					<posy>0</posy>
+					<left>365</left>
+					<top>0</top>
 					<width>40</width>
 					<height>40</height>
 					<label>-</label>
@@ -228,8 +228,8 @@
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="togglebutton" id="609">
-					<posx>405</posx>
-					<posy>0</posy>
+					<left>405</left>
+					<top>0</top>
 					<width>40</width>
 					<height>40</height>
 					<label>31128</label>
@@ -254,13 +254,13 @@
 			</control>
 		</control>
 		<control type="group" id="100">
-			<posx>25</posx>
-			<posy>162</posy>
+			<left>25</left>
+			<top>162</top>
 			<defaultcontrol always="true">700</defaultcontrol>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 			<control type="button" id="701">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -276,8 +276,8 @@
 				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
 			</control>
 			<control type="button" id="702">
-				<posx>40</posx>
-				<posy>0</posy>
+				<left>40</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -292,8 +292,8 @@
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="togglebutton" id="703">
-				<posx>80</posx>
-				<posy>0</posy>
+				<left>80</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -313,8 +313,8 @@
 				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
 			</control>
 			<control type="button" id="704">
-				<posx>120</posx>
-				<posy>0</posy>
+				<left>120</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -330,8 +330,8 @@
 				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
 			</control>
 			<control type="button" id="700">
-				<posx>200</posx>
-				<posy>0</posy>
+				<left>200</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -345,8 +345,8 @@
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="705">
-				<posx>240</posx>
-				<posy>0</posy>
+				<left>240</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -360,8 +360,8 @@
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="706">
-				<posx>280</posx>
-				<posy>0</posy>
+				<left>280</left>
+				<top>0</top>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
@@ -380,8 +380,8 @@
 		<!-- Music Info -->
 		<control type="image">
 			<description>gradient</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>500</width>
 			<height>165</height>
 			<colordiffuse>CCFFFFFF</colordiffuse>
@@ -399,8 +399,8 @@
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>420</posx>
-			<posy>5</posy>
+			<left>420</left>
+			<top>5</top>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>

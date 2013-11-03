@@ -5,8 +5,8 @@
 			<visible>Control.IsVisible(560)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="list" id="560">
-				<posx>70</posx>
-				<posy>75</posy>
+				<left>70</left>
+				<top>75</top>
 				<width>760</width>
 				<height>561</height>
 				<onleft>2</onleft>
@@ -19,15 +19,15 @@
 				<visible>Container.Content(LiveTV)</visible>
 				<itemlayout height="40" width="760">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>760</width>
 						<height>41</height>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
-						<posx>10</posx>
-						<posy>0</posy>
+						<left>10</left>
+						<top>0</top>
 						<width>730</width>
 						<height>40</height>
 						<font>font13</font>
@@ -38,8 +38,8 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>750</posx>
-						<posy>0</posy>
+						<left>750</left>
+						<top>0</top>
 						<width>700</width>
 						<height>40</height>
 						<font>font12</font>
@@ -52,8 +52,8 @@
 				</itemlayout>
 				<focusedlayout height="40" width="760">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>760</width>
 						<height>41</height>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
@@ -61,8 +61,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>760</width>
 						<height>41</height>
 						<texture border="0,2,0,2">MenuItemFO.png</texture>
@@ -70,16 +70,16 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
-						<posx>560</posx>
-						<posy>5</posy>
+						<left>560</left>
+						<top>5</top>
 						<width>200</width>
 						<height>31</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
 						<visible>Control.HasFocus(560) + !IsEmpty(ListItem.Label2)</visible>
 					</control>
 					<control type="label">
-						<posx>10</posx>
-						<posy>0</posy>
+						<left>10</left>
+						<top>0</top>
 						<width>730</width>
 						<height>40</height>
 						<font>font13</font>
@@ -90,8 +90,8 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>750</posx>
-						<posy>0</posy>
+						<left>750</left>
+						<top>0</top>
 						<width>700</width>
 						<height>40</height>
 						<font>font12</font>
@@ -104,8 +104,8 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>850</posx>
-				<posy>78</posy>
+				<left>850</left>
+				<top>78</top>
 				<width>25</width>
 				<height>560</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -121,11 +121,11 @@
 			</control>
 			<control type="group">
 				<visible>Control.IsVisible(560)</visible>
-				<posx>910</posx>
-				<posy>80</posy>
+				<left>910</left>
+				<top>80</top>
 				<control type="image">
-					<posx>10</posx>
-					<posy>0</posy>
+					<left>10</left>
+					<top>0</top>
 					<width>290</width>
 					<height>290</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
@@ -135,8 +135,8 @@
 					<bordersize>8</bordersize>
 				</control>
 				<control type="fadelabel">
-					<posx>10</posx>
-					<posy>300</posy>
+					<left>10</left>
+					<top>300</top>
 					<width>290</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Label2]</label>
@@ -150,8 +150,8 @@
 				</control>
 				<control type="textbox">
 					<description>Description Value for TV Show</description>
-					<posx>10</posx>
-					<posy>330</posy>
+					<left>10</left>
+					<top>330</top>
 					<width>290</width>
 					<height>220</height>
 					<font>font12</font>

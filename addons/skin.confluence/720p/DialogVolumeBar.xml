@@ -5,11 +5,11 @@
 	<animation effect="slide" start="0,0" end="0,-40" delay="400" time="100">WindowClose</animation>
 	<controls>
 		<control type="group">
-			<posx>820</posx>
-			<posy>0</posy>
+			<left>820</left>
+			<top>0</top>
 			<control type="image">
-				<posx>0</posx>
-				<posy>-10</posy>
+				<left>0</left>
+				<top>-10</top>
 				<width>300</width>
 				<height>50</height>
 				<texture flipy="true" border="20,20,20,2">InfoMessagePanel.png</texture>
@@ -18,8 +18,8 @@
 				<visible>!player.passthrough</visible>
 				<control type="image">
 					<description>Lite Volume Logo</description>
-					<posx>10</posx>
-					<posy>0</posy>
+					<left>10</left>
+					<top>0</top>
 					<width>40</width>
 					<height>35</height>
 					<aspectratio>keep</aspectratio>
@@ -27,8 +27,8 @@
 				</control>
 				<control type="progress" id="1">
 					<description>progress control</description>
-					<posx>50</posx>
-					<posy>8</posy>
+					<left>50</left>
+					<top>8</top>
 					<width>230</width>
 					<height>18</height>
 					<info>Player.Volume</info>
@@ -38,8 +38,8 @@
 				<visible>player.passthrough</visible>
 				<control type="image">
 					<description>Lite Volume Logo</description>
-					<posx>10</posx>
-					<posy>0</posy>
+					<left>10</left>
+					<top>0</top>
 					<width>40</width>
 					<height>35</height>
 					<aspectratio>keep</aspectratio>
@@ -48,8 +48,8 @@
 				</control>
 				<control type="label">
 					<description>Passthrough Label</description>
-					<posx>50</posx>
-					<posy>6</posy>
+					<left>50</left>
+					<top>6</top>
 					<width>230</width>
 					<height>20</height>
 					<label>$LOCALIZE[29802]</label>
