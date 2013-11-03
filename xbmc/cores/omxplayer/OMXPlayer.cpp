@@ -4079,8 +4079,8 @@ int COMXPlayer::GetCacheLevel() const
 
 double COMXPlayer::GetQueueTime()
 {
-  int a = m_omxPlayerVideo.GetLevel();
-  int v = m_omxPlayerAudio.GetLevel();
+  int a = m_omxPlayerAudio.GetLevel();
+  int v = m_omxPlayerVideo.GetLevel();
   return max(a, v) * 8000.0 / 100;
 }
 
