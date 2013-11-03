@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="6">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,50,60,61,70,71</views>
+	<views>40,50,60,61,70,71,80</views>
 	<allowoverlay>yes</allowoverlay>
 	<onunload>SetFocus(777)</onunload>
 	<controls>
@@ -9,11 +9,13 @@
 		<include>BGGrainy</include>
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
-		<!-- views (ViewsMovieTV.xml & ViewsChannels.xml & ViewsPreplay.xml) -->
+		<!-- views (ViewsMovieTV.xml & ViewsChannels.xml & ViewsPreplay.xml & ViewsClips.xml) -->
 		<!-- ListSecondary ID 40 -->
 		<include>ListSecondary</include>
 		<!-- LibraryPosters ID 50 -->
 		<include>LibraryPosters</include>
+		<!-- Clips ID 80 -->
+		<include>ClipThumbs</include>
 		<!-- PreplayShow ID 60 -->
 		<include>PreplayShow</include>
 		<!-- PreplaySeason ID 61 -->

@@ -1,3 +1,148 @@
 <?xml version="1.0"?>
 <includes>
+	<include name="ClipThumb">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>274</width>
+			<height>165</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>248</width>
+			<height>139</height>
+			<texture background="true">default-thumb-small.png</texture>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>248</width>
+			<height>139</height>
+			<texture background="true" diffuse="mask-wide-big.png">$INFO[ListItem.Art(thumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="ClipThumbCard">
+		<control type="image">
+			<posx>13</posx>
+			<posy>150</posy>
+			<width>248</width>
+			<height>56</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="ClipThumbSelectedBorder">
+		<control type="image">
+			<width>254</width>
+			<height>143</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="ClipTitle">
+		<posy>160</posy>
+		<posx>64</posx>
+		<width>190</width>
+		<height>20</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Condensed-17</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>
+	<include name="ClipSecondTitle">
+		<control type="label">
+			<posy>180</posy>
+			<posx>64</posx>
+			<width>190</width>
+			<height>20</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>Condensed-14</font>
+			<textcolor>FF999999</textcolor>
+			<label>$INFO[ListItem.DurationStr]$INFO[ListItem.Property(Recommender), [COLOR=orange]&#xB7;[/COLOR] ]</label>
+			<shadowcolor>FF222222</shadowcolor>
+		</control>
+	</include>
+	<include name="ClipSourceIcon">
+		<control type="image">
+			<posy>160</posy>
+			<posx>19</posx>
+			<width>38</width>
+			<height>38</height>
+			<texture>default-square-small.png</texture>
+			<aspectratio align="right" aligny="center">keep</aspectratio>
+			<visible>IsEmpty(ListItem.Art(sourceIcon))</visible>
+		</control>
+	<control type="image">
+		<posy>160</posy>
+		<posx>19</posx>
+		<width>38</width>
+		<height>38</height>
+		<texture>$INFO[ListItem.Art(sourceIcon)]</texture>
+		<aspectratio align="right" aligny="center">keep</aspectratio>
+	</control>
+	</include>
+	<include name="ClipThumbUnwatchedOverlay">
+		<control type="image">
+			<visible>!IsEmpty(ListItem.Overlay)</visible>
+			<posx>235</posx>
+			<posy>124</posy>
+			<info>ListItem.Overlay</info>
+		</control>
+	</include>
+	<!-- Library -->
+	<include name="ClipThumbs">
+		<!-- Clips -->
+		<control type="group" id="777">
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<visible>Container.content(Clips)</visible>
+			<control type="panel" id="80">
+				<viewtype label="ClipThumbs">panel</viewtype>
+				<visible>Container.content(Clips)</visible>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<onright>50</onright>
+				<onleft>1300</onleft>
+				<orientation>vertical</orientation>
+				<posx>102</posx>
+				<posy>28</posy>
+				<width>1200</width>
+				<height>680</height>
+				<itemlayout width="292" height="224">
+					<include>ClipThumbCard</include>
+					<include>ClipThumb</include>
+					<include>ClipSourceIcon</include>
+					<control type="label">
+						<include>ClipTitle</include>
+					</control>	
+					<include>ClipSecondTitle</include>
+					<include>ClipThumbUnwatchedOverlay</include>
+				</itemlayout>
+				<focusedlayout width="292" height="224">
+					<!--<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>208</width>
+						<height>317</height>
+						<include>BlackRounded</include>
+						<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+					</control>-->
+					<include>ClipThumbCard</include>
+					<include>ClipThumb</include>
+					<include>ClipSourceIcon</include>
+					<control type="label">
+						<include>ClipTitle</include>
+						<textcolor>orangeLight</textcolor>
+					</control>	
+					<include>ClipSecondTitle</include>
+					<include>ClipThumbSelectedBorder</include>
+					<include>ClipThumbUnwatchedOverlay</include>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
 </includes>
