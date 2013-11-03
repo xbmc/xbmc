@@ -19,6 +19,7 @@
  */
 
 #include "SettingConditions.h"
+#include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -33,12 +34,12 @@ bool CSettingConditionItem::Deserialize(const TiXmlNode *node)
     return false;
 
   // get the "name" attribute
-  const char *strAttribute = elem->Attribute("name");
+  const char *strAttribute = elem->Attribute(SETTING_XML_ATTR_NAME);
   if (strAttribute != NULL)
     m_name = strAttribute;
 
   // get the "setting" attribute
-  strAttribute = elem->Attribute("setting");
+  strAttribute = elem->Attribute(SETTING_XML_ATTR_SETTING);
   if (strAttribute != NULL)
     m_setting = strAttribute;
 

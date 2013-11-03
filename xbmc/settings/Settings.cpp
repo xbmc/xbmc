@@ -69,6 +69,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingAddon.h"
+#include "settings/SettingControl.h"
 #include "settings/SettingsManager.h"
 #include "settings/SettingPath.h"
 #include "settings/SkinSettings.h"
@@ -252,6 +253,22 @@ CSetting* CSettings::CreateSetting(const std::string &settingType, const std::st
   return NULL;
 }
 
+ISettingControl* CSettings::CreateControl(const std::string &controlType) const
+{
+  if (StringUtils::EqualsNoCase(controlType, "toggle"))
+    return new CSettingControlCheckmark();
+  else if (StringUtils::EqualsNoCase(controlType, "spinner"))
+    return new CSettingControlSpinner();
+  else if (StringUtils::EqualsNoCase(controlType, "edit"))
+    return new CSettingControlEdit();
+  else if (StringUtils::EqualsNoCase(controlType, "button"))
+    return new CSettingControlButton();
+  else if (StringUtils::EqualsNoCase(controlType, "list"))
+    return new CSettingControlList();
+
+  return NULL;
+}
+
 bool CSettings::Initialize()
 {
   CSingleLock lock(m_critical);
@@ -260,6 +277,8 @@ bool CSettings::Initialize()
 
   // register custom setting types
   InitializeSettingTypes();
+  // register custom setting controls
+  InitializeControls();
 
   // option fillers and conditions need to be
   // initialized before the setting definitions
@@ -607,6 +626,15 @@ void CSettings::InitializeSettingTypes()
   // register "addon" and "path" setting types implemented by CSettingAddon
   m_settingsManager->RegisterSettingType("addon", this);
   m_settingsManager->RegisterSettingType("path", this);
+}
+
+void CSettings::InitializeControls()
+{
+  m_settingsManager->RegisterSettingControl("toggle", this);
+  m_settingsManager->RegisterSettingControl("spinner", this);
+  m_settingsManager->RegisterSettingControl("edit", this);
+  m_settingsManager->RegisterSettingControl("button", this);
+  m_settingsManager->RegisterSettingControl("list", this);
 }
 
 void CSettings::InitializeVisibility()

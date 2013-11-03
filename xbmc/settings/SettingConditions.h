@@ -23,6 +23,7 @@
 #include <set>
 #include <string>
 
+#include "SettingDefinitions.h"
 #include "utils/BooleanLogic.h"
 
 class CSettingsManager;
@@ -52,7 +53,7 @@ public:
   virtual ~CSettingConditionItem() { }
   
   virtual bool Deserialize(const TiXmlNode *node);
-  virtual const char* GetTag() const { return "condition"; }
+  virtual const char* GetTag() const { return SETTING_XML_ELM_CONDITION; }
   virtual bool Check() const;
 
 protected:

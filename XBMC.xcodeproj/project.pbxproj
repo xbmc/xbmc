@@ -257,6 +257,9 @@
 		7C2612711825B6340086E04D /* DatabaseQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126F1825B6340086E04D /* DatabaseQuery.cpp */; };
 		7C2612721825B6340086E04D /* DatabaseQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126F1825B6340086E04D /* DatabaseQuery.cpp */; };
 		7C2612731825B6340086E04D /* DatabaseQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126F1825B6340086E04D /* DatabaseQuery.cpp */; };
+		7C2612671820667C0086E04D /* ISettingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2612631820667C0086E04D /* ISettingControl.cpp */; };
+		7C2612681820667C0086E04D /* ISettingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2612631820667C0086E04D /* ISettingControl.cpp */; };
+		7C2612691820667C0086E04D /* ISettingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2612631820667C0086E04D /* ISettingControl.cpp */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C4458BD161E203800A905F6 /* Screenshot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4458BB161E203800A905F6 /* Screenshot.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
@@ -3699,6 +3702,10 @@
 		7C1F6EBA13ECCFA7001726AB /* LibraryDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryDirectory.h; sourceTree = "<group>"; };
 		7C26126F1825B6340086E04D /* DatabaseQuery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseQuery.cpp; sourceTree = "<group>"; };
 		7C2612701825B6340086E04D /* DatabaseQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseQuery.h; sourceTree = "<group>"; };
+		7C2612631820667C0086E04D /* ISettingControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ISettingControl.cpp; sourceTree = "<group>"; };
+		7C2612641820667C0086E04D /* ISettingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISettingControl.h; sourceTree = "<group>"; };
+		7C2612651820667C0086E04D /* ISettingControlCreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISettingControlCreator.h; sourceTree = "<group>"; };
+		7C2612661820667C0086E04D /* SettingDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingDefinitions.h; sourceTree = "<group>"; };
 		7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocol.cpp; sourceTree = "<group>"; };
 		7C2D6AE30F35453E00DD2E85 /* SpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocol.h; sourceTree = "<group>"; };
 		7C4458BB161E203800A905F6 /* Screenshot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Screenshot.cpp; sourceTree = "<group>"; };
@@ -8548,6 +8555,9 @@
 				DFECFAEE172D9CAB00A43CF7 /* ISetting.cpp */,
 				DFECFAEF172D9CAB00A43CF7 /* ISetting.h */,
 				DFECFAF0172D9CAB00A43CF7 /* ISettingCallback.h */,
+				7C2612631820667C0086E04D /* ISettingControl.cpp */,
+				7C2612641820667C0086E04D /* ISettingControl.h */,
+				7C2612651820667C0086E04D /* ISettingControlCreator.h */,
 				DFECFAF1172D9CAB00A43CF7 /* ISettingCreator.h */,
 				DF8990141709BB2D00B35C21 /* ISettingsHandler.h */,
 				DF8990151709BB2D00B35C21 /* ISubSettings.h */,
@@ -8565,6 +8575,7 @@
 				DFECFAF9172D9CAB00A43CF7 /* SettingConditions.h */,
 				DFECFAFA172D9CAB00A43CF7 /* SettingControl.cpp */,
 				DFECFAFB172D9CAB00A43CF7 /* SettingControl.h */,
+				7C2612661820667C0086E04D /* SettingDefinitions.h */,
 				DFECFAFC172D9CAB00A43CF7 /* SettingDependency.cpp */,
 				DFECFAFD172D9CAB00A43CF7 /* SettingDependency.h */,
 				DFECFAFE172D9CAB00A43CF7 /* SettingPath.cpp */,
@@ -10656,6 +10667,7 @@
 				7C920CF9181669FF00DA1477 /* TextureOperations.cpp in Sources */,
 				DFEF0BAC180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
 				DFEF0BC1180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
+				7C2612671820667C0086E04D /* ISettingControl.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11690,6 +11702,7 @@
 				7C920CFB181669FF00DA1477 /* TextureOperations.cpp in Sources */,
 				DFEF0BAE180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
 				DFEF0BC3180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
+				7C2612691820667C0086E04D /* ISettingControl.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12726,6 +12739,7 @@
 				7C920CFA181669FF00DA1477 /* TextureOperations.cpp in Sources */,
 				DFEF0BAD180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
 				DFEF0BC2180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
+				7C2612681820667C0086E04D /* ISettingControl.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

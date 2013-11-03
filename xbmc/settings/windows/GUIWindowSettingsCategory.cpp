@@ -154,6 +154,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       m_resetSetting = new CSettingAction(RESET_SETTING_ID);
       m_resetSetting->SetLabel(10041);
       m_resetSetting->SetHelp(10045);
+      m_resetSetting->SetControl(m_settings.CreateControl("button"));
 
       m_dummyCategory = new CSettingCategory(EMPTY_CATEGORY_ID);
       m_dummyCategory->SetLabel(10046);
@@ -678,69 +679,56 @@ CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float wi
   }
 
   // create the proper controls
-  switch (pSetting->GetControl().GetType())
+  std::string controlType = pSetting->GetControl()->GetType();
+  if (controlType == "toggle")
   {
-    case SettingControlTypeCheckmark:
-    {
-      pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
-      if (pControl == NULL)
-        return NULL;
-
-      ((CGUIRadioButtonControl *)pControl)->SetLabel(label);
-      pSettingControl.reset(new CGUIControlRadioButtonSetting((CGUIRadioButtonControl *)pControl, iControlID, pSetting));
-      break;
-    }
-    
-    case SettingControlTypeSpinner:
-    {
-      pControl = new CGUISpinControlEx(*m_pOriginalSpin);
-      if (pControl == NULL)
-        return NULL;
-
-      ((CGUISpinControlEx *)pControl)->SetText(label);
-      pSettingControl.reset(new CGUIControlSpinExSetting((CGUISpinControlEx *)pControl, iControlID, pSetting));
-      break;
-    }
-    
-    case SettingControlTypeEdit:
-    {
-      pControl = new CGUIEditControl(*m_pOriginalEdit);
-      if (pControl == NULL)
-        return NULL;
-      
-      ((CGUIEditControl *)pControl)->SetLabel(label);
-      pSettingControl.reset(new CGUIControlEditSetting((CGUIEditControl *)pControl, iControlID, pSetting));
-      break;
-    }
-    
-    case SettingControlTypeList:
-    {
-      pControl = new CGUIButtonControl(*m_pOriginalButton);
-      if (pControl == NULL)
-        return NULL;
-
-      ((CGUIButtonControl *)pControl)->SetLabel(label);
-      pSettingControl.reset(new CGUIControlListSetting((CGUIButtonControl *)pControl, iControlID, pSetting));
-      break;
-    }
-    
-    case SettingControlTypeButton:
-    {
-      pControl = new CGUIButtonControl(*m_pOriginalButton);
-      if (pControl == NULL)
-        return NULL;
-      
-      ((CGUIButtonControl *)pControl)->SetLabel(label);
-      pSettingControl.reset(new CGUIControlButtonSetting((CGUIButtonControl *)pControl, iControlID, pSetting));
-      break;
-    }
-    
-    case SettingControlTypeNone:
-    default:
+    pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
+    if (pControl == NULL)
       return NULL;
-  }
 
-  if (pSetting->GetControl().GetDelayed())
+    ((CGUIRadioButtonControl *)pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlRadioButtonSetting((CGUIRadioButtonControl *)pControl, iControlID, pSetting));
+  }
+  else if (controlType == "spinner")
+  {
+    pControl = new CGUISpinControlEx(*m_pOriginalSpin);
+    if (pControl == NULL)
+      return NULL;
+
+    ((CGUISpinControlEx *)pControl)->SetText(label);
+    pSettingControl.reset(new CGUIControlSpinExSetting((CGUISpinControlEx *)pControl, iControlID, pSetting));
+  }
+  else if (controlType == "edit")
+  {
+    pControl = new CGUIEditControl(*m_pOriginalEdit);
+    if (pControl == NULL)
+      return NULL;
+      
+    ((CGUIEditControl *)pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlEditSetting((CGUIEditControl *)pControl, iControlID, pSetting));
+  }
+  else if (controlType == "list")
+  {
+    pControl = new CGUIButtonControl(*m_pOriginalButton);
+    if (pControl == NULL)
+      return NULL;
+
+    ((CGUIButtonControl *)pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlListSetting((CGUIButtonControl *)pControl, iControlID, pSetting));
+  }
+  else if (controlType == "button")
+  {
+    pControl = new CGUIButtonControl(*m_pOriginalButton);
+    if (pControl == NULL)
+      return NULL;
+      
+    ((CGUIButtonControl *)pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlButtonSetting((CGUIButtonControl *)pControl, iControlID, pSetting));
+  }
+  else
+    return NULL;
+
+  if (pSetting->GetControl()->GetDelayed())
     pSettingControl->SetDelayed();
 
   return AddSettingControl(pControl, pSettingControl, width, iControlID);
