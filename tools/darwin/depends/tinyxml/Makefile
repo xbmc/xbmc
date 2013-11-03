@@ -7,7 +7,7 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX)
+CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared
 
 
 LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
