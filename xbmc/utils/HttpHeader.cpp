@@ -130,6 +130,12 @@ std::vector<std::string> CHttpHeader::GetValues(std::string strParam) const
 
 std::string CHttpHeader::GetHeader(void) const
 {
+  /* Only pad with additional \n if there are params
+   * to put into the header or the protocol line has
+   * some data */
+  if (m_params.empty() && m_protoLine.empty())
+    return "";
+
   std::string strHeader(m_protoLine + '\n');
 
   for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)

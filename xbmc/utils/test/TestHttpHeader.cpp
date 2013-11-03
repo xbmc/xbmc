@@ -18,53 +18,224 @@
  *
  */
 
+#include <sstream>
+
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+
 #include "utils/HttpHeader.h"
 #include "gtest/gtest.h"
 
-TEST(TestHttpHeader, General)
-{
-  CHttpHeader a;
-  std::string str = "Host: xbmc.org\r\n"
-                   "Accept: text/*, text/html, text/html;level=1, */*\r\n"
-                   "Accept-Language: en\r\n"
-                   "Accept-Encoding: gzip, deflate\r\n"
-                   "Content-Type: text/html; charset=ISO-8859-4\r\n"
-                   "User-Agent: XBMC/snapshot (compatible; MSIE 5.5; Windows NT"
-                     " 4.0)\r\n"
-                   "Connection: Keep-Alive\r\n";
-  std::string refstr, varstr;
+using ::testing::ValuesIn;
 
-  a.Parse(str);
+namespace
+{
+
+class TestHttpHeader :
+  public ::testing::Test
+{
+public:
+
+  TestHttpHeader();
+
+  CHttpHeader& Header();
+
+private:
+
+  std::string m_ReferenceString;
+  CHttpHeader m_Header;
+};
+
+struct HeaderTokenData
+{
+  const char *tag;
+  const char *data;
+} headerTokenData[] =
+{
+  { "Host", "xbmc.org" },
+  { "Accept", "text/*, text/html, text/html;level=1, */*" },
+  { "Accept-Language", "en" },
+  { "Accept-Encoding", "gzip, deflate" },
+  { "Content-Type", "text/html; charset=ISO-8859-4" },
+  { "User-Agent", "XBMC/snapshot (compatible; MSIE 5.5; Windows NT 4.0)" },
+  { "Connection", "Keep-Alive" }
+};
+
+const char *headerResponse = "HTTP/1.1 200 OK";
+
+typedef boost::function<void(const char *, std::string &)> HeaderModifier;
+
+/* The HeaderModifier parameter allows the user of this function to pass
+ * a boost::function object to be called for each data member of the
+ * predetermiend header as specified in headerTokenData. This allows
+ * the user to modify parts of that data while it is being added to this
+ * stream, for instance, in order to test how the HttpHeader class handles
+ * different types and formats of data for certain tokens without having
+ * to re-specify all the tokens */
+std::string
+HeaderTokenDataInputString(HeaderModifier modifier = HeaderModifier())
+{
+  std::stringstream headerData;
+
+  headerData << headerResponse << "\r\n";
+
+  const size_t headerTokenDataSize = sizeof (headerTokenData) / sizeof (HeaderTokenData);
+  for (size_t i = 0; i < headerTokenDataSize; ++i)
+  {
+    std::string headerTokenDataForTag(headerTokenData[i].data);
+    if (!modifier.empty())
+      modifier(headerTokenData[i].tag, headerTokenDataForTag);
+
+    headerData << headerTokenData[i].tag
+               << ": "
+               << headerTokenDataForTag
+               << "\r\n";
+  }
+
+  return headerData.str();
+}
+
+CHttpHeader &
+TestHttpHeader::Header()
+{
+  return m_Header;
+}
+
+TestHttpHeader::TestHttpHeader() :
+  m_ReferenceString(HeaderTokenDataInputString())
+{
+  m_Header.Parse(m_ReferenceString);
+}
+
+TEST_F(TestHttpHeader, ParseToExpectedHeader)
+{
+  const char *refstr = "HTTP/1.1 200 OK\n"
+                       "host: xbmc.org\n"
+                       "accept: text/*, text/html, text/html;level=1, */*\n"
+                       "accept-language: en\n"
+                       "accept-encoding: gzip, deflate\n"
+                       "content-type: text/html; charset=ISO-8859-4\n"
+                       "user-agent: XBMC/snapshot (compatible; MSIE 5.5; Windows NT 4.0)\n"
+                       "connection: Keep-Alive\n"
+                       "\n";
 
   /* Should be in the same order as above */
-  refstr = "\n"
-           "host: xbmc.org\n"
-           "accept: text/*, text/html, text/html;level=1, */*\n"
-           "accept-language: en\n"
-           "accept-encoding: gzip, deflate\n"
-           "content-type: text/html; charset=ISO-8859-4\n"
-           "user-agent: XBMC/snapshot (compatible; MSIE 5.5; Windows NT 4.0)\n"
-           "connection: Keep-Alive\n"
-           "\n";
-  varstr.clear();
-  varstr = a.GetHeader();
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  EXPECT_STREQ(refstr, Header().GetHeader().c_str());
+}
 
-  refstr = "XBMC/snapshot (compatible; MSIE 5.5; Windows NT 4.0)";
-  varstr = a.GetValue("User-Agent");
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+class TestHttpHeaderParameterizedByTags :
+  public TestHttpHeader,
+  public ::testing::WithParamInterface<HeaderTokenData>
+{
+};
 
-  /* No charset should be here */
-  refstr = "text/html";
-  varstr = a.GetMimeType();
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+/* These parameterized tests check that fetching each specified tag
+ * in the header data always returns the same data as the input data */
+TEST_P(TestHttpHeaderParameterizedByTags, GetValue)
+{
+  const HeaderTokenData &headerData(GetParam());
+  EXPECT_STREQ(headerData.data, Header().GetValue(headerData.tag).c_str());
+}
 
-  refstr = "";
-  varstr = a.GetProtoLine();
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+/* Check that once we've cleared the header, calling GetValue always
+ * returns an empty string */
+TEST_P(TestHttpHeaderParameterizedByTags, GetValueAfterClear)
+{
+  Header().Clear();
+  const HeaderTokenData &headerData(GetParam());
+  EXPECT_STREQ("", Header().GetValue(headerData.tag).c_str());
+}
 
-  a.Clear();
-  refstr = "";
-  varstr = a.GetMimeType();
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+INSTANTIATE_TEST_CASE_P(XBMCHostData, TestHttpHeaderParameterizedByTags,
+                        ValuesIn(headerTokenData));
+
+typedef std::string (CHttpHeader::*GetFunction) () const;
+
+class TestHttpHeaderParameterizeByMemberFunction :
+  public TestHttpHeader,
+  public ::testing::WithParamInterface<GetFunction>
+{
+};
+
+/* Check that once we've cleared the header, calling any functions which
+ * would get pre-defined data about this header (such as the charset, mimetype, etc)
+ * also return an empty string */
+TEST_P(TestHttpHeaderParameterizeByMemberFunction, GetFunctionAfterClearReturnsEmptyString)
+{
+  GetFunction function(GetParam());
+
+  Header().Clear();
+
+  const char *result = (Header().*function) ().c_str();
+  EXPECT_STREQ("", result);
+}
+
+GetFunction getFunctions[] =
+{
+  &CHttpHeader::GetHeader,
+  &CHttpHeader::GetMimeType,
+  &CHttpHeader::GetCharset,
+  &CHttpHeader::GetProtoLine
+};
+
+INSTANTIATE_TEST_CASE_P(CHttpHeaderMemberMethods, TestHttpHeaderParameterizeByMemberFunction,
+                        ValuesIn(getFunctions));
+
+TEST_F(TestHttpHeader, GetMimeTypeHasNoCharsetTags)
+{
+  EXPECT_STREQ("text/html", Header().GetMimeType().c_str());
+}
+
+TEST_F(TestHttpHeader, NoneOnGetGetProtoLine)
+{
+  EXPECT_STREQ(headerResponse, Header().GetProtoLine().c_str());
+}
+
+void InsertForContentType(const char *tag, std::string &data, const char *replace)
+{
+  if (strcmp(tag, "content-type"))
+    return;
+
+  data = replace;
+}
+
+/* HttpHeader handles the "charset" token in the "content-type" tag to either have
+ * one space from the semicolon, or two. Test both */
+TEST_F(TestHttpHeader, GetCharsetSingleSpace)
+{
+  Header().Parse(HeaderTokenDataInputString(boost::bind(InsertForContentType, _1, _2,
+                                                        "text/html; charset=ISO-8859-4")));
+
+  EXPECT_STREQ("ISO-8859-4", Header().GetCharset().c_str());
+}
+
+TEST_F(TestHttpHeader, GetCharsetNoSpace)
+{
+  Header().Parse(HeaderTokenDataInputString(boost::bind(InsertForContentType, _1, _2,
+                                                        "text/html;charset=ISO-8859-4")));
+
+  EXPECT_STREQ("ISO-8859-4", Header().GetCharset().c_str());
+}
+
+TEST_F(TestHttpHeader, AddParam)
+{
+  const char *tag = "custom";
+  const char *value = "mock";
+  Header().AddParam(tag, value);
+
+  EXPECT_STREQ(value, Header().GetValue("custom").c_str());
+}
+
+TEST_F(TestHttpHeader, AddParamReplacesOld)
+{
+  const char *tag = "custom";
+  const char *value = "mock";
+  Header().AddParam(tag, value);
+
+  const char *nextValue = "newmock";
+  Header().AddParam(tag, nextValue);
+
+  EXPECT_STREQ(nextValue, Header().GetValue("custom").c_str());
+}
+
 }
