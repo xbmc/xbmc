@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.10.0";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.11.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -1834,7 +1834,12 @@ namespace JSONRPC
       "\"permission\": \"ControlPlayback\","
       "\"params\": ["
         "{ \"name\": \"playlistid\", \"$ref\": \"Playlist.Id\", \"required\": true },"
-        "{ \"name\": \"item\", \"$ref\": \"Playlist.Item\", \"required\": true }"
+        "{ \"name\": \"item\","
+          "\"type\": ["
+            "{ \"$ref\": \"Playlist.Item\", \"required\": true },"
+            "{ \"type\": \"array\", \"items\": { \"$ref\": \"Playlist.Item\" }, \"required\": true }"
+          "],"
+          "\"required\": true }"
       "],"
       "\"returns\": \"string\""
     "}",
@@ -1846,7 +1851,12 @@ namespace JSONRPC
       "\"params\": ["
         "{ \"name\": \"playlistid\", \"$ref\": \"Playlist.Id\", \"required\": true },"
         "{ \"name\": \"position\", \"$ref\": \"Playlist.Position\", \"required\": true },"
-        "{ \"name\": \"item\", \"$ref\": \"Playlist.Item\", \"required\": true }"
+        "{ \"name\": \"item\","
+          "\"type\": ["
+            "{ \"$ref\": \"Playlist.Item\", \"required\": true },"
+            "{ \"type\": \"array\", \"items\": { \"$ref\": \"Playlist.Item\" }, \"required\": true }"
+          "],"
+          "\"required\": true }"
       "],"
       "\"returns\": \"string\""
     "}",
