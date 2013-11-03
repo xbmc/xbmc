@@ -586,7 +586,7 @@ JSONRPC_STATUS CVideoLibrary::SetSeasonDetails(const CStdString &method, ITransp
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork);
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
 
   if (videodatabase.SetDetailsForSeason(infos, artwork, infos.m_iIdShow, id) <= 0)
     return InternalError;
