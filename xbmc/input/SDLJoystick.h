@@ -22,7 +22,7 @@
 #define SDL_JOYSTICK_H
 
 #include "system.h" // for HAS_SDL_JOYSTICK
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include <vector>
 #include <string>
 

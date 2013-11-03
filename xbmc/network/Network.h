@@ -23,7 +23,7 @@
 
 #include "system.h"
 
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include "utils/StdString.h"
 
 enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };

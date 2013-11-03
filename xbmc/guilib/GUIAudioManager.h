@@ -23,7 +23,7 @@
 #include <map>
 
 #include "cores/AudioEngine/Interfaces/AESound.h"
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/log.h"
 #include "utils/StdString.h"

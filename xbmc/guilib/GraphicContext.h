@@ -47,7 +47,7 @@
 #include "Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "DirtyRegion.h"
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include "rendering/RenderSystem.h"
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,

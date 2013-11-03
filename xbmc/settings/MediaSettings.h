@@ -22,8 +22,8 @@
 #include <map>
 #include <string>
 
-#include "settings/ISettingCallback.h"
-#include "settings/ISubSettings.h"
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISubSettings.h"
 #include "settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
 

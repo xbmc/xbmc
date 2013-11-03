@@ -25,7 +25,7 @@
 #include "filesystem/File.h"
 #include "interfaces/Builtins.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/RssReader.h"

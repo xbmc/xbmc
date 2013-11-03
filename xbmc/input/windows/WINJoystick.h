@@ -22,7 +22,7 @@
 #include <vector>
 #include <string>
 #include <stdint.h>
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
 #define JACTIVE_BUTTON 0x00000001

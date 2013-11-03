@@ -91,6 +91,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/rendering/rendering.a \
                    xbmc/settings/settings.a \
                    xbmc/settings/dialogs/settings_dialogs.a \
+                   xbmc/settings/lib/settings_lib.a \
                    xbmc/settings/windows/settings_windows.a \
                    xbmc/storage/storage.a \
                    xbmc/utils/utils.a \

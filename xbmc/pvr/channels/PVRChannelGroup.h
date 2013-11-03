@@ -22,7 +22,7 @@
 
 #include "FileItem.h"
 #include "PVRChannel.h"
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include "utils/JobManager.h"
 
 #include <boost/shared_ptr.hpp>

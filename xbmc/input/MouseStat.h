@@ -21,7 +21,7 @@
  *
  */
 
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include "windowing/XBMC_events.h"
 
 #define XBMC_BUTTON(X)		(1 << ((X)-1))

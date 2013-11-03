@@ -22,7 +22,7 @@
 #include "GUIAudioManager.h"
 #include "Key.h"
 #include "input/ButtonTranslator.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"

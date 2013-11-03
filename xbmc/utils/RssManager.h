@@ -25,8 +25,8 @@
 
 #include "threads/CriticalSection.h"
 
-#include "settings/ISettingCallback.h"
-#include "settings/ISettingsHandler.h"
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
 
 class CRssReader;
 class IRssObserver;

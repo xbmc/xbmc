@@ -21,11 +21,11 @@
 #include "SettingsOperations.h"
 #include "addons/Addon.h"
 #include "settings/SettingAddon.h"
-#include "settings/Setting.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
-#include "settings/SettingSection.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingSection.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 

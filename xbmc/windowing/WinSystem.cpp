@@ -21,7 +21,7 @@
 #include "WinSystem.h"
 #include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 
 using namespace std;

@@ -26,7 +26,7 @@
 #pragma once
 
 #include <stdlib.h>
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "rendering/RenderSystem.h"
 

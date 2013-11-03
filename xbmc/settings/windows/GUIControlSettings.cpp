@@ -39,7 +39,7 @@
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 

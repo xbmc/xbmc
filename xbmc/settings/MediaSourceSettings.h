@@ -22,7 +22,7 @@
 #include <string>
 
 #include "MediaSource.h"
-#include "settings/ISettingsHandler.h"
+#include "settings/lib/ISettingsHandler.h"
 
 class TiXmlNode;
 
