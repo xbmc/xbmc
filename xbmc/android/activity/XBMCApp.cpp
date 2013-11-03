@@ -1,3 +1,4 @@
+
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -401,38 +402,24 @@ bool CXBMCApp::HasLaunchIntent(const string &package)
 // Note intent, dataType, dataURI all default to ""
 bool CXBMCApp::StartActivity(const string &package, const string &intent, const string &dataType, const string &dataURI)
 {
-  CJNIIntent newIntent = GetPackageManager().getLaunchIntentForPackage(package);
-  if (!newIntent)
-    return false;
+  CJNIIntent newIntent = intent.empty() ?
+    GetPackageManager().getLaunchIntentForPackage(package) :
+    CJNIIntent(intent);
 
-  if (!dataURI.empty())
-    newIntent.setData(dataURI);
-
-  if (!intent.empty())
-    newIntent.setAction(intent);
-
-  startActivity(newIntent);
-  return true;
-}
-
-// Note intent, dataType, dataURI all default to ""
-bool CXBMCApp::StartExternalPlayerActivity(const string &package, const string &intent, const string &dataType, const string &dataURI)
-{
-  if (intent.empty())
-    return false;
-
-  CJNIIntent newIntent(intent);
   if (!newIntent)
     return false;
 
   if (!dataURI.empty())
   {
     CJNIURI jniURI = CJNIURI::parse(dataURI);
-    newIntent.setDataAndType(jniURI, dataType);
+
+    if (!jniURI)
+      return false;
+
+    newIntent.setDataAndType(jniURI, dataType); 
   }
 
   newIntent.setPackage(package);
-
   startActivity(newIntent);
   return true;
 }
