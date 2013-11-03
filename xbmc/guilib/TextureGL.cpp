@@ -19,7 +19,7 @@
  */
 
 #include "system.h"
-#include "TextureGL.h"
+#include "Texture.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"

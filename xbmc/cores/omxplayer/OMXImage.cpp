@@ -37,6 +37,14 @@
 #include "settings/Settings.h"
 #include "linux/RBP.h"
 #include "utils/URIUtils.h"
+#include "windowing/WindowingFactory.h"
+#include "Application.h"
+
+#ifdef _DEBUG
+#define CheckError() m_result = eglGetError(); if (m_result != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, m_result);
+#else
+#define CheckError()
+#endif
 
 #define EXIF_TAG_ORIENTATION    0x0112
 
@@ -45,6 +53,33 @@
 #undef CLASSNAME
 #endif
 #define CLASSNAME "COMXImage"
+
+COMXImage::COMXImage()
+: CThread("CRBPWorker")
+{
+}
+
+COMXImage::~COMXImage()
+{
+  Deinitialize();
+}
+
+void COMXImage::Initialize()
+{
+  Create();
+}
+
+void COMXImage::Deinitialize()
+{
+  // wake up thread so it can quit
+  {
+    CSingleLock lock(m_texqueue_lock);
+    m_bStop = true;
+    m_texqueue_cond.notifyAll();
+  }
+  if (IsRunning())
+    StopThread();
+}
 
 bool COMXImage::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height,
       unsigned int format, unsigned int pitch, const CStdString& destFile)
@@ -161,6 +196,241 @@ bool COMXImage::CreateThumb(const CStdString& srcFile, unsigned int maxHeight, u
       CLog::Log(LOGERROR, "%s: can't open output file: %s\n", __func__, destFile.c_str());
   }
   return okay;
+}
+
+void COMXImage::AllocTextureInternal(struct textureinfo *tex)
+{
+  glGenTextures(1, (GLuint*) &tex->texture);
+  glBindTexture(GL_TEXTURE_2D, tex->texture);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->width, tex->height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, 0);
+  tex->egl_image = eglCreateImageKHR(m_egl_display, m_egl_context, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)tex->texture, NULL);
+  tex->sync.Set();
+  GLint m_result;
+  CheckError();
+}
+
+void COMXImage::GetTexture(void *userdata, GLuint *texture)
+{
+  struct textureinfo *tex = static_cast<struct textureinfo *>(userdata);
+  *texture = tex->texture;
+}
+
+void COMXImage::DestroyTextureInternal(struct textureinfo *tex)
+{
+  bool s = true;
+  if (!tex->egl_image || !tex->texture)
+  {
+    CLog::Log(LOGNOTICE, "%s: Invalid image/texture %p:%d", __func__, tex->egl_image, tex->texture);
+    return;
+  }
+  s = eglDestroyImageKHR(m_egl_display, tex->egl_image);
+  if (!s)
+    CLog::Log(LOGNOTICE, "%s: failed to destroy texture", __func__);
+  glDeleteTextures(1, (GLuint*) &tex->texture);
+  tex->sync.Set();
+}
+
+void COMXImage::DestroyTexture(void *userdata)
+{
+  struct textureinfo *tex = static_cast<struct textureinfo *>(userdata);
+  // we can only call gl functions from the application thread
+
+  tex->action = TEXTURE_DELETE;
+  tex->sync.Reset();
+  if ( g_application.IsCurrentThread() )
+  {
+     DestroyTextureInternal(tex);
+  }
+  else
+  {
+    CSingleLock lock(m_texqueue_lock);
+    m_texqueue.push(tex);
+    m_texqueue_cond.notifyAll();
+  }
+  // wait for function to have finished (in texture thread)
+  tex->sync.Wait();
+  delete tex;
+}
+
+bool COMXImage::DecodeJpegToTexture(COMXImageFile *file, unsigned int width, unsigned int height, void **userdata)
+{
+  bool ret = false;
+  COMXTexture omx_image;
+
+  struct textureinfo *tex = new struct textureinfo;
+  if (!tex)
+    return NULL;
+
+  tex->parent = (void *)this;
+  tex->width = width;
+  tex->height = height;
+  tex->texture = 0;
+  tex->egl_image = NULL;
+  tex->filename = file->GetFilename();
+  tex->action = TEXTURE_ALLOC;
+  tex->sync.Reset();
+
+  {
+    CSingleLock lock(m_texqueue_lock);
+    m_texqueue.push(tex);
+    m_texqueue_cond.notifyAll();
+  }
+
+  // wait for function to have finished (in texture thread)
+  tex->sync.Wait();
+
+  if (tex->egl_image && tex->texture && omx_image.Decode(file->GetImageBuffer(), file->GetImageSize(), width, height, tex->egl_image, m_egl_display))
+  {
+    ret = true;
+    *userdata = tex;
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "%s: unable to decode to texture %s %dx%d", __func__, file->GetFilename(), width, height);
+    DestroyTexture(tex);
+  }
+  return ret;
+}
+
+static bool ChooseConfig(EGLDisplay display, const EGLint *configAttrs, EGLConfig *config)
+{
+  EGLBoolean eglStatus = true;
+  EGLint     configCount = 0;
+  EGLConfig* configList = NULL;
+  GLint m_result;
+  // Find out how many configurations suit our needs
+  eglStatus = eglChooseConfig(display, configAttrs, NULL, 0, &configCount);
+  CheckError();
+
+  if (!eglStatus || !configCount)
+  {
+    CLog::Log(LOGERROR, "EGL failed to return any matching configurations: %i", configCount);
+    return false;
+  }
+
+  // Allocate room for the list of matching configurations
+  configList = (EGLConfig*)malloc(configCount * sizeof(EGLConfig));
+  if (!configList)
+  {
+    CLog::Log(LOGERROR, "EGL failure obtaining configuration list");
+    return false;
+  }
+
+  // Obtain the configuration list from EGL
+  eglStatus = eglChooseConfig(display, configAttrs, configList, configCount, &configCount);
+  CheckError();
+  if (!eglStatus || !configCount)
+  {
+    CLog::Log(LOGERROR, "EGL failed to populate configuration list: %d", eglStatus);
+    return false;
+  }
+
+  // Select an EGL configuration that matches the native window
+  *config = configList[0];
+
+  free(configList);
+  return true;
+}
+
+void COMXImage::CreateContext()
+{
+  EGLConfig egl_config;
+  GLint m_result;
+
+  m_egl_display = g_Windowing.GetEGLDisplay();
+  eglInitialize(m_egl_display, NULL, NULL);
+  CheckError();
+  eglBindAPI(EGL_OPENGL_ES_API);
+  CheckError();
+  static const EGLint contextAttrs [] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
+  static const EGLint configAttrs [] = {
+        EGL_RED_SIZE,        8,
+        EGL_GREEN_SIZE,      8,
+        EGL_BLUE_SIZE,       8,
+        EGL_ALPHA_SIZE,      8,
+        EGL_DEPTH_SIZE,     16,
+        EGL_STENCIL_SIZE,    0,
+        EGL_SAMPLE_BUFFERS,  0,
+        EGL_SAMPLES,         0,
+        EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
+        EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+        EGL_NONE
+  };
+  bool s = ChooseConfig(m_egl_display, configAttrs, &egl_config);
+  CheckError();
+  if (!s)
+  {
+    CLog::Log(LOGERROR, "%s: Could not find a compatible configuration",__FUNCTION__);
+    return;
+  }
+  m_egl_context = eglCreateContext(m_egl_display, egl_config, g_Windowing.GetEGLContext(), contextAttrs);
+  CheckError();
+  if (m_egl_context == EGL_NO_CONTEXT)
+  {
+    CLog::Log(LOGERROR, "%s: Could not create a context",__FUNCTION__);
+    return;
+  }
+  EGLSurface egl_surface = eglCreatePbufferSurface(m_egl_display, egl_config, NULL);
+  CheckError();
+  if (egl_surface == EGL_NO_SURFACE)
+  {
+    CLog::Log(LOGERROR, "%s: Could not create a surface",__FUNCTION__);
+    return;
+  }
+  s = eglMakeCurrent(m_egl_display, egl_surface, egl_surface, m_egl_context);
+  CheckError();
+  if (!s)
+  {
+    CLog::Log(LOGERROR, "%s: Could not make current",__FUNCTION__);
+    return;
+  }
+}
+
+void COMXImage::Process()
+{
+  bool firsttime = true;
+
+  while(!m_bStop)
+  {
+    struct textureinfo *tex = NULL;
+    while (!m_bStop)
+    {
+      CSingleLock lock(m_texqueue_lock);
+      if (!m_texqueue.empty())
+      {
+        tex = m_texqueue.front();
+        m_texqueue.pop();
+        break;
+      }
+      m_texqueue_cond.wait(lock);
+    }
+
+    if (m_bStop)
+      return;
+
+    if (firsttime)
+      CreateContext();
+    firsttime = false;
+
+    if (tex && tex->action == TEXTURE_ALLOC)
+      AllocTextureInternal(tex);
+    else if (tex && tex->action == TEXTURE_DELETE)
+      DestroyTextureInternal(tex);
+    else
+      CLog::Log(LOGERROR, "%s: Unexpected texture job: %p:%d", __func__, tex, tex ? tex->action : 0);
+  }
+}
+
+void COMXImage::OnStartup()
+{
+}
+
+void COMXImage::OnExit()
+{
 }
 
 #ifdef CLASSNAME
@@ -1528,3 +1798,311 @@ bool COMXImageReEnc::ReEncode(COMXImageFile &srcFile, unsigned int maxWidth, uns
 
   return true;
 }
+
+
+#ifdef CLASSNAME
+#undef CLASSNAME
+#endif
+#define CLASSNAME "COMXTexture"
+
+COMXTexture::COMXTexture()
+{
+}
+
+COMXTexture::~COMXTexture()
+{
+  Close();
+}
+
+void COMXTexture::Close()
+{
+  CSingleLock lock(m_OMXSection);
+
+  if (m_omx_tunnel_decode.IsInitialized())
+    m_omx_tunnel_decode.Deestablish();
+  if (m_omx_tunnel_egl.IsInitialized())
+    m_omx_tunnel_egl.Deestablish();
+  // delete components
+  if (m_omx_decoder.IsInitialized())
+    m_omx_decoder.Deinitialize(true);
+  if (m_omx_resize.IsInitialized())
+    m_omx_resize.Deinitialize(true);
+  if (m_omx_egl_render.IsInitialized())
+    m_omx_egl_render.Deinitialize(true);
+}
+
+bool COMXTexture::HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, void *egl_image, void *egl_display, bool port_settings_changed)
+{
+  OMX_ERRORTYPE omx_err;
+
+  if (port_settings_changed)
+    CLog::Log(LOGERROR, "%s::%s Unexpected second port_settings_changed call\n", CLASSNAME, __func__);
+
+  OMX_PARAM_PORTDEFINITIONTYPE port_def;
+  OMX_INIT_STRUCTURE(port_def);
+
+  port_def.nPortIndex = m_omx_decoder.GetOutputPort();
+  omx_err = m_omx_decoder.GetParameter(OMX_IndexParamPortDefinition, &port_def);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s m_omx_decoder.GetParameter result(0x%x)\n", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  // TODO: jpeg decoder can decimate by factors of 2
+  port_def.format.image.eColorFormat = OMX_COLOR_FormatYUV420PackedPlanar;
+  port_def.format.image.nSliceHeight = 16;
+  port_def.format.image.nStride = 0;
+
+  omx_err = m_omx_decoder.SetParameter(OMX_IndexParamPortDefinition, &port_def);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s m_omx_decoder.SetParameter result(0x%x)\n", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  if (!m_omx_resize.Initialize("OMX.broadcom.resize", OMX_IndexParamImageInit))
+  {
+    CLog::Log(LOGERROR, "%s::%s error m_omx_resize.Initialize", CLASSNAME, __func__);
+    return false;
+  }
+
+  port_def.nPortIndex = m_omx_resize.GetInputPort();
+
+  omx_err = m_omx_resize.SetParameter(OMX_IndexParamPortDefinition, &port_def);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s m_omx_resize.SetParameter result(0x%x)\n", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  port_def.nPortIndex = m_omx_resize.GetOutputPort();
+  omx_err = m_omx_resize.GetParameter(OMX_IndexParamPortDefinition, &port_def);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s m_omx_resize.GetParameter result(0x%x)\n", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  port_def.format.image.eColorFormat = OMX_COLOR_FormatYUV420PackedPlanar;
+  port_def.format.image.nFrameWidth = resize_width;
+  port_def.format.image.nFrameHeight = resize_height;
+  port_def.format.image.nSliceHeight = 16;
+  port_def.format.image.nStride = 0;
+  omx_err = m_omx_resize.SetParameter(OMX_IndexParamPortDefinition, &port_def);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s m_omx_resize.SetParameter result(0x%x)\n", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  if (!m_omx_egl_render.Initialize("OMX.broadcom.egl_render", OMX_IndexParamVideoInit))
+  {
+    CLog::Log(LOGERROR, "%s::%s error m_omx_egl_render.Initialize", CLASSNAME, __func__);
+    return false;
+  }
+
+  port_def.nPortIndex = m_omx_egl_render.GetOutputPort();
+  omx_err = m_omx_egl_render.GetParameter(OMX_IndexParamPortDefinition, &port_def);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s m_omx_egl_render.SetParameter result(0x%x)\n", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+  port_def.nBufferCountActual = 1;
+  port_def.format.video.pNativeWindow = egl_display;
+
+  omx_err = m_omx_egl_render.SetParameter(OMX_IndexParamPortDefinition, &port_def);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s m_omx_egl_render.SetParameter result(0x%x)\n", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  omx_err = m_omx_egl_render.UseEGLImage(&m_egl_buffer, m_omx_egl_render.GetOutputPort(), NULL, egl_image);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s error m_omx_egl_render.UseEGLImage (%x)", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  m_omx_tunnel_decode.Initialize(&m_omx_decoder, m_omx_decoder.GetOutputPort(), &m_omx_resize, m_omx_resize.GetInputPort());
+
+  omx_err = m_omx_tunnel_decode.Establish(false);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s m_omx_tunnel_decode.Establish (%x)", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  m_omx_tunnel_egl.Initialize(&m_omx_resize, m_omx_resize.GetOutputPort(), &m_omx_egl_render, m_omx_egl_render.GetInputPort());
+
+  omx_err = m_omx_tunnel_egl.Establish(false);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s m_omx_tunnel_egl.Establish (%x)", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  omx_err = m_omx_resize.SetStateForComponent(OMX_StateExecuting);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s error m_omx_egl_render.GetParameter (%x)", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  omx_err = m_omx_egl_render.SetStateForComponent(OMX_StateExecuting);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s error m_omx_egl_render.SetStateForComponent (%x)", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  return true;
+}
+
+bool COMXTexture::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes, unsigned int width, unsigned int height, void *egl_image, void *egl_display)
+{
+  CSingleLock lock(m_OMXSection);
+  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
+
+  if (!demuxer_content || !demuxer_bytes)
+  {
+    CLog::Log(LOGERROR, "%s::%s no input buffer\n", CLASSNAME, __func__);
+    return false;
+  }
+
+  if (!m_omx_decoder.Initialize("OMX.broadcom.image_decode", OMX_IndexParamImageInit))
+  {
+    CLog::Log(LOGERROR, "%s::%s error m_omx_decoder.Initialize", CLASSNAME, __func__);
+    return false;
+  }
+
+  // set input format
+  OMX_PARAM_PORTDEFINITIONTYPE portParam;
+  OMX_INIT_STRUCTURE(portParam);
+  portParam.nPortIndex = m_omx_decoder.GetInputPort();
+
+  omx_err = m_omx_decoder.GetParameter(OMX_IndexParamPortDefinition, &portParam);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s error GetParameter:OMX_IndexParamPortDefinition omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  portParam.nBufferCountActual = portParam.nBufferCountMin;
+  portParam.nBufferSize = std::max(portParam.nBufferSize, ALIGN_UP(demuxer_bytes, portParam.nBufferAlignment));
+  portParam.format.image.eCompressionFormat = OMX_IMAGE_CodingJPEG;
+
+  omx_err = m_omx_decoder.SetParameter(OMX_IndexParamPortDefinition, &portParam);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s error SetParameter:OMX_IndexParamPortDefinition omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  omx_err = m_omx_decoder.AllocInputBuffers();
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s - Error alloc buffers  (%x)", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  omx_err = m_omx_decoder.SetStateForComponent(OMX_StateExecuting);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s error m_omx_sched.SetStateForComponent (%x)", CLASSNAME, __func__, omx_err);
+    return false;
+  }
+
+  bool port_settings_changed = false;
+  bool eos = false;
+  while(demuxer_bytes > 0 || !port_settings_changed || !eos)
+  {
+    long timeout = 0;
+    if (demuxer_bytes)
+    {
+      OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer(1000);
+      if (omx_buffer)
+      {
+        omx_buffer->nOffset = omx_buffer->nFlags  = 0;
+
+        omx_buffer->nFilledLen = (demuxer_bytes > omx_buffer->nAllocLen) ? omx_buffer->nAllocLen : demuxer_bytes;
+        memcpy(omx_buffer->pBuffer, demuxer_content, omx_buffer->nFilledLen);
+
+        demuxer_content += omx_buffer->nFilledLen;
+        demuxer_bytes -= omx_buffer->nFilledLen;
+
+        if (demuxer_bytes == 0)
+          omx_buffer->nFlags |= OMX_BUFFERFLAG_EOS;
+
+        omx_err = m_omx_decoder.EmptyThisBuffer(omx_buffer);
+        if (omx_err != OMX_ErrorNone)
+        {
+          CLog::Log(LOGERROR, "%s::%s - m_omx_decoder.OMX_EmptyThisBuffer (%x)", CLASSNAME, __func__, omx_err);
+          return false;
+         }
+      }
+    }
+    if (!demuxer_bytes)
+    {
+       // we've submitted all buffers so can wait now
+       timeout = 1000;
+    }
+
+    omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged, timeout);
+    if (omx_err == OMX_ErrorNone)
+    {
+      if (!HandlePortSettingChange(width, height, egl_image, egl_display, port_settings_changed))
+      {
+        CLog::Log(LOGERROR, "%s::%s - HandlePortSettingChange failed (%x)", CLASSNAME, __func__, omx_err);
+        return false;
+      }
+      port_settings_changed = true;
+    }
+    else if (omx_err == OMX_ErrorStreamCorrupt)
+    {
+      CLog::Log(LOGERROR, "%s::%s - image not supported", CLASSNAME, __func__);
+      return false;
+    }
+    else if (timeout || omx_err != OMX_ErrorTimeout)
+    {
+      CLog::Log(LOGERROR, "%s::%s WaitForEvent:OMX_EventPortSettingsChanged failed (%x)\n", CLASSNAME, __func__, omx_err);
+      return false;
+    }
+
+    if (port_settings_changed && m_egl_buffer && demuxer_bytes == 0 && !eos)
+    {
+      OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_egl_render.GetOutputBuffer();
+      if (!omx_buffer)
+      {
+        CLog::Log(LOGERROR, "%s::%s GetOutputBuffer failed\n", CLASSNAME, __func__);
+        return false;
+      }
+      if (omx_buffer != m_egl_buffer)
+      {
+        CLog::Log(LOGERROR, "%s::%s error m_omx_egl_render.GetOutputBuffer (%p,%p)", CLASSNAME, __func__, omx_buffer, m_egl_buffer);
+        return false;
+      }
+
+      omx_err = m_omx_egl_render.FillThisBuffer(m_egl_buffer);
+      if (omx_err != OMX_ErrorNone)
+      {
+        CLog::Log(LOGERROR, "%s::%s error m_omx_egl_render.FillThisBuffer (%x)", CLASSNAME, __func__, omx_err);
+        return false;
+      }
+
+      omx_err = m_omx_egl_render.WaitForOutputDone(1000);
+      if (omx_err != OMX_ErrorNone)
+      {
+        CLog::Log(LOGERROR, "%s::%s m_omx_egl_render.WaitForOutputDone result(0x%x)\n", CLASSNAME, __func__, omx_err);
+        return false;
+      }
+      eos = true;
+    }
+  }
+  Close();
+  return true;
+}
+
+COMXImage g_OMXImage;

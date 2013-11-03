@@ -23,6 +23,8 @@
 
 #include "utils/log.h"
 
+#include "cores/omxplayer/OMXImage.h"
+
 CRBP::CRBP()
 {
   m_initialized     = false;
@@ -58,6 +60,8 @@ bool CRBP::Initialize()
   if (vc_gencmd(response, sizeof response, "get_mem gpu") == 0)
     vc_gencmd_number_property(response, "gpu", &m_gpu_mem);
 
+  g_OMXImage.Initialize();
+  m_omx_image_init = true;
   return true;
 }
 
@@ -128,6 +132,9 @@ unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool sw
 
 void CRBP::Deinitialize()
 {
+  if (m_omx_image_init)
+    g_OMXImage.Deinitialize();
+
   if(m_omx_initialized)
     m_OMX->Deinitialize();
 
@@ -136,6 +143,7 @@ void CRBP::Deinitialize()
   if(m_initialized)
     m_DllBcmHost->Unload();
 
+  m_omx_image_init  = false;
   m_initialized     = false;
   m_omx_initialized = false;
 }
