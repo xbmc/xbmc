@@ -2114,6 +2114,41 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
   return -1;
 }
 
+int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idSet /* = -1 */)
+{
+  if (details.m_strTitle.empty())
+    return -1;
+
+  try
+  {
+    BeginTransaction();
+    if (idSet < 0)
+    {
+      idSet = AddSet(details.m_strTitle);
+      if (idSet < 0)
+      {
+        RollbackTransaction();
+        return -1;
+      }
+    }
+
+    SetArtForItem(idSet, "set", artwork);
+
+    // and insert the new row
+    CStdString sql = PrepareSQL("UPDATE sets SET strSet='%s' WHERE idSet=%i", details.m_strTitle.c_str(), idSet);
+    m_pDS->exec(sql.c_str());
+    CommitTransaction();
+
+    return idSet;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSet);
+  }
+  RollbackTransaction();
+  return -1;
+}
+
 int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, const map<string, string> &artwork, const map<int, map<string, string> > &seasonArt, int idTvShow /*= -1 */)
 {
   try
