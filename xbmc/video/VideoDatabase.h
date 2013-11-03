@@ -692,6 +692,8 @@ public:
   void SetArtForItem(int mediaId, const std::string &mediaType, const std::map<std::string, std::string> &art);
   bool GetArtForItem(int mediaId, const std::string &mediaType, std::map<std::string, std::string> &art);
   std::string GetArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
+  bool RemoveArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
+  bool RemoveArtForItem(int mediaId, const std::string &mediaType, const std::set<std::string> &artTypes);
   bool GetTvShowSeasonArt(int mediaId, std::map<int, std::map<std::string, std::string> > &seasonArt);
   bool GetArtTypes(const std::string &mediaType, std::vector<std::string> &artTypes);
 
