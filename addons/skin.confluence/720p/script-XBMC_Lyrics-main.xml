@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<allowoverlay>no</allowoverlay>
-	<defaultcontrol always="false">101</defaultcontrol>
 	<coordinates>
 		<system>1</system>
 		<left>680</left>
@@ -32,10 +31,6 @@
 				<onclick>PreviousMenu</onclick>
 				<texturefocus>DialogCloseButton-focus.png</texturefocus>
 				<texturenofocus>DialogCloseButton.png</texturenofocus>
-				<onleft>101</onleft>
-				<onright>101</onright>
-				<onup>101</onup>
-				<ondown>101</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="label">
@@ -83,33 +78,6 @@
 				<width>550</width>
 				<height>4</height>
 				<texture>separator.png</texture>
-			</control>
-			<!-- ** Required ** Do not change <id> or <type> (Text box for lyrics) -->
-			<control type="textbox" id="100">
-				<description>textarea</description>
-				<left>30</left>
-				<top>130</top>
-				<width>550</width>
-				<height>500</height>
-				<align>center</align>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<pagecontrol>101</pagecontrol>
-			</control>
-			<control type="spincontrol" id="101">
-				<description>Next page button</description>
-				<left>520</left>
-				<top>650</top>
-				<subtype>page</subtype>
-				<font>font12</font>
-				<onleft>101</onleft>
-				<onright>101</onright>
-				<ondown>101</ondown>
-				<onup>101</onup>
-				<textcolor>blue</textcolor>
-				<showonepage>true</showonepage>
-				<visible>Control.IsVisible(100)</visible>
 			</control>
 			<!-- ** Required ** Do not change <id> or <type> (Smooth scrolling list for lyrics) -->
 			<control type="list" id="110">
@@ -191,7 +159,7 @@
 				<font>font13_title</font>
 				<label>31203</label>
 				<textcolor>white</textcolor>
-				<visible>Control.IsVisible(120) + ![Control.IsVisible(100) | Control.IsVisible(110)]</visible>
+				<visible>Control.IsVisible(120) + !Control.IsVisible(110)</visible>
 			</control>
 			<!-- ** Required ** Do not change <id> or <type> (Song Chooser if it gets it wrong) -->
 			<control type="list" id="120">
