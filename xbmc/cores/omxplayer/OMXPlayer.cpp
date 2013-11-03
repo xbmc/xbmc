@@ -811,7 +811,7 @@ bool COMXPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 {
 
   // check if we should read from subtitle demuxer
-  if(m_dvdPlayerSubtitle.AcceptsData() &&  m_pSubtitleDemuxer)
+  if( m_pSubtitleDemuxer && m_dvdPlayerSubtitle.AcceptsData() )
   {
     if(m_pSubtitleDemuxer)
       packet = m_pSubtitleDemuxer->Read();
