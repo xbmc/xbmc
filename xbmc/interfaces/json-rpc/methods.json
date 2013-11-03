@@ -1700,7 +1700,7 @@
         "broadcastdetails": { "$ref": "PVR.Details.Broadcast" }
       }
     }
-  },      
+  },
   "PVR.Record": {
     "type": "method",
     "description": "Toggle recording of a channel",

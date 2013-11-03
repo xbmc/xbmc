@@ -790,9 +790,9 @@
                 "wasactive", "thumbnail" ]
     }
   },
-  "PVR.Details.Broadcast": {"
+  "PVR.Details.Broadcast": {
     "extends": "Item.Details.Base",
-    "properties": {"
+    "properties": {
       "broadcastid": { "$ref": "Library.Id", "required": true },
       "title": { "type": "string" },
       "plot": { "type": "string" },
