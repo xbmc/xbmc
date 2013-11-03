@@ -49,6 +49,12 @@ CGUIIncludes::CGUIIncludes()
   
   m_constantNodes.insert("posx");
   m_constantNodes.insert("posy");
+  m_constantNodes.insert("left");
+  m_constantNodes.insert("right");
+  m_constantNodes.insert("centerx");
+  m_constantNodes.insert("top");
+  m_constantNodes.insert("bottom");
+  m_constantNodes.insert("centery");
   m_constantNodes.insert("width");
   m_constantNodes.insert("height");
   m_constantNodes.insert("offsetx");
