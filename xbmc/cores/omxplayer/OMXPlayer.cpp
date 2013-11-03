@@ -517,7 +517,7 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
 #endif
 
     Create();
-    if(!m_ready.WaitMSec(100))
+    if(!m_ready.WaitMSec(g_advancedSettings.m_videoBusyDialogDelay_ms))
     {
       CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
       if(dialog)
