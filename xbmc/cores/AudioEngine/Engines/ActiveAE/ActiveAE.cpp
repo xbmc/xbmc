@@ -144,6 +144,7 @@ CActiveAE::CActiveAE() :
   m_silenceBuffers = NULL;
   m_encoderBuffers = NULL;
   m_vizBuffers = NULL;
+  m_vizBuffersInput = NULL;
   m_volume = 1.0;
   m_aeVolume = 1.0;
   m_muted = false;
@@ -899,6 +900,11 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       m_discardBufferPools.push_back(m_vizBuffers);
       m_vizBuffers = NULL;
     }
+    if (m_vizBuffersInput)
+    {
+      m_discardBufferPools.push_back(m_vizBuffersInput);
+      m_vizBuffersInput = NULL;
+    }
   }
   // resample buffers for streams
   else
@@ -1014,12 +1020,20 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       {
         m_discardBufferPools.push_back(m_vizBuffers);
         m_vizBuffers = NULL;
+        m_discardBufferPools.push_back(m_vizBuffersInput);
+        m_vizBuffersInput = NULL;
       }
       if (!m_vizBuffers)
       {
         AEAudioFormat vizFormat = m_internalFormat;
         vizFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
         vizFormat.m_dataFormat = AE_FMT_FLOAT;
+
+        // input buffers
+        m_vizBuffersInput = new CActiveAEBufferPool(m_internalFormat);
+        m_vizBuffersInput->Create(2000);
+
+        // resample buffers
         m_vizBuffers = new CActiveAEBufferPoolResample(m_internalFormat, vizFormat, m_settings.resampleQuality);
         // TODO use cache of sync + water level
         m_vizBuffers->Create(2000, false, false);
@@ -1650,12 +1664,12 @@ bool CActiveAE::RunStages()
               for(int j=0; j<out->pkt->planes; j++)
               {
 #ifdef __SSE__
-                CAEUtil::SSEMulArray((float*)out->pkt->data[j]+i*nb_floats, m_muted ? 0.0 : volume, nb_floats);
+                CAEUtil::SSEMulArray((float*)out->pkt->data[j]+i*nb_floats, volume, nb_floats);
 #else
                 float* fbuffer = (float*) out->pkt->data[j]+i*nb_floats;
                 for (int k = 0; k < nb_floats; ++k)
                 {
-                  fbuffer[k] *= m_muted ? 0.0 : volume;
+                  fbuffer[k] *= volume;
                 }
 #endif
               }
@@ -1718,7 +1732,7 @@ bool CActiveAE::RunStages()
                 float *dst = (float*)out->pkt->data[j]+i*nb_floats;
                 float *src = (float*)mix->pkt->data[j]+i*nb_floats;
 #ifdef __SSE__
-                CAEUtil::SSEMulAddArray(dst, src, m_muted ? 0.0 : volume, nb_floats);
+                CAEUtil::SSEMulAddArray(dst, src, volume, nb_floats);
                 for (int k = 0; k < nb_floats; ++k)
                 {
                   if (fabs(dst[k]) > 1.0f)
@@ -1730,7 +1744,7 @@ bool CActiveAE::RunStages()
 #else
                 for (int k = 0; k < nb_floats; ++k)
                 {
-                  dst[k] += src[k] * (m_muted ? 0.0 : volume);
+                  dst[k] += src[k] * volume;
                   if (fabs(dst[k]) > 1.0f)
                     needClamp = true;
                 }
@@ -1754,78 +1768,78 @@ bool CActiveAE::RunStages()
       }
 
       // process output buffer, gui sounds, encode, viz
-      CSampleBuffer *viz = NULL;
       if (out)
       {
+        // viz
+        {
+          CSingleLock lock(m_vizLock);
+          if (m_audioCallback && m_vizBuffers && !m_streams.empty())
+          {
+            if (!m_vizInitialized)
+            {
+              m_audioCallback->OnInitialize(2, m_vizBuffers->m_format.m_sampleRate, 32);
+              m_vizInitialized = true;
+            }
+
+            if (!m_vizBuffersInput->m_freeSamples.empty())
+            {
+              // copy the samples into the viz input buffer
+              CSampleBuffer *viz = m_vizBuffersInput->GetFreeBuffer();
+              int samples = std::min(512, out->pkt->nb_samples);
+              int bytes = samples * out->pkt->config.channels / out->pkt->planes * out->pkt->bytes_per_sample;
+              for(int i= 0; i < out->pkt->planes; i++)
+              {
+                memcpy(viz->pkt->data[i], out->pkt->data[i], bytes);
+              }
+              viz->pkt->nb_samples = samples;
+              m_vizBuffers->m_inputSamples.push_back(viz);
+            }
+            else
+              CLog::Log(LOGWARNING,"ActiveAE::%s - viz ran out of free buffers", __FUNCTION__);
+            unsigned int now = XbmcThreads::SystemClockMillis();
+            unsigned int timestamp = now + m_stats.GetDelay() * 1000;
+            busy |= m_vizBuffers->ResampleBuffers(timestamp);
+            while(!m_vizBuffers->m_outputSamples.empty())
+            {
+              CSampleBuffer *buf = m_vizBuffers->m_outputSamples.front();
+              if ((now - buf->timestamp) & 0x80000000)
+                break;
+              else
+              {
+                int samples;
+                samples = std::min(512, buf->pkt->nb_samples);
+                m_audioCallback->OnAudioData((float*)(buf->pkt->data[0]), samples);
+                buf->Return();
+                m_vizBuffers->m_outputSamples.pop_front();
+              }
+            }
+          }
+          else if (m_vizBuffers)
+            m_vizBuffers->Flush();
+        }
+
         // mix gui sounds
         MixSounds(*(out->pkt));
-        if (!m_sinkHasVolume)
+        if (!m_sinkHasVolume || m_muted)
           Deamplify(*(out->pkt));
 
-        // encode and backup out buffer for viz
-        viz = out;
         if (m_mode == MODE_TRANSCODE && m_encoder)
         {
           CSampleBuffer *buf = m_encoderBuffers->GetFreeBuffer();
           m_encoder->Encode(out->pkt->data[0], out->pkt->planes*out->pkt->linesize,
                             buf->pkt->data[0], buf->pkt->planes*buf->pkt->linesize);
           buf->pkt->nb_samples = buf->pkt->max_nb_samples;
+          out->Return();
           out = buf;
         }
-
         busy = true;
       }
 
-      // viz
-      {
-        CSingleLock lock(m_vizLock);
-        if (m_audioCallback && m_vizBuffers && !m_streams.empty())
-        {
-          if (!m_vizInitialized)
-          {
-            m_audioCallback->OnInitialize(2, m_vizBuffers->m_format.m_sampleRate, 32);
-            m_vizInitialized = true;
-          }
-
-          // if viz has no free buffer, it won't return current buffer "viz"
-          if (!m_vizBuffers->m_freeSamples.empty())
-          {
-            if (viz)
-            {
-              viz->Acquire();
-              m_vizBuffers->m_inputSamples.push_back(viz);
-            }
-          }
-          else
-            CLog::Log(LOGWARNING,"ActiveAE::%s - viz ran out of free buffers", __FUNCTION__);
-          unsigned int now = XbmcThreads::SystemClockMillis();
-          unsigned int timestamp = now + m_stats.GetDelay() * 1000;
-          busy |= m_vizBuffers->ResampleBuffers(timestamp);
-          while(!m_vizBuffers->m_outputSamples.empty())
-          {
-            CSampleBuffer *buf = m_vizBuffers->m_outputSamples.front();
-            if ((now - buf->timestamp) & 0x80000000)
-              break;
-            else
-            {
-              int samples;
-              samples = std::min(512, buf->pkt->nb_samples);
-              m_audioCallback->OnAudioData((float*)(buf->pkt->data[0]), samples);
-              buf->Return();
-              m_vizBuffers->m_outputSamples.pop_front();
-            }
-          }
-        }
-        else if (m_vizBuffers)
-          m_vizBuffers->Flush();
-      }
       // update stats
       if(out)
       {
         m_stats.AddSamples(out->pkt->nb_samples, m_streams);
         m_sinkBuffers->m_inputSamples.push_back(out);
-        if(viz && (viz != out))
-          viz->Return();
       }
     }
     // pass through
@@ -1934,7 +1948,7 @@ void CActiveAE::MixSounds(CSoundPacket &dstSample)
 
 void CActiveAE::Deamplify(CSoundPacket &dstSample)
 {
-  if (m_volume < 1.0)
+  if (m_volume < 1.0 || m_muted)
   {
     float *buffer;
     int nb_floats = dstSample.nb_samples * dstSample.config.channels / dstSample.planes;
