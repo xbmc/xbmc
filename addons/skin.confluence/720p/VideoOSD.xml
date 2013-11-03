@@ -544,12 +544,8 @@
 				<alttexturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</alttexturefocus>
 				<alttexturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</alttexturenofocus>
 				<onclick>Close</onclick>
-				<onclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</onclick>
-				<altclick>Skin.SetAddon(SubtitleScript_Path,xbmc.python.subtitles)</altclick>
-				<altclick>Close</altclick>
-				<altclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</altclick>
-				<usealttexture>IsEmpty(Skin.String(SubtitleScript_Path))</usealttexture>
-				<pulseonselect>false</pulseonselect>
+				<onclick>Dialog.Close(VideoOSD)</onclick>
+				<onclick>ActivateWindow(SubtitleSearch)</onclick>
 			</control>
 			<control type="button" id="402">
 				<height>40</height>
