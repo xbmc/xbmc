@@ -3997,9 +3997,9 @@ bool COMXPlayer::HasMenu()
 
 bool COMXPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 {
-  double pts = m_clock.GetClock();
+  double pts = m_clock.GetClock() + m_State.time_offset;
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) && m_CurrentSubtitle.source != STREAM_SOURCE_TEXT)
     return false;
 
   m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_omxPlayerVideo.GetSubtitleDelay());
