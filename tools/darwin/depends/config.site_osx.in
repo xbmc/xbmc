@@ -100,3 +100,7 @@ if test "${PACKAGE_NAME}" = "libjpeg-turbo" ; then
   export NASM="@use_toolchain@/bin/yasm"
   export CFLAGS="${CFLAGS} -fexceptions"
 fi
+
+if test "${PACKAGE_NAME}" = "libgcrypt" ; then
+  export CFLAGS="${CFLAGS} -fheinous-gnu-extensions"
+fi
