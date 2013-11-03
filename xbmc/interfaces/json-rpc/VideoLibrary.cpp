@@ -228,7 +228,25 @@ JSONRPC_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLay
   if (!videodatabase.GetSeasonsNav(strPath, items, -1, -1, -1, -1, tvshowID, false))
     return InternalError;
 
-  HandleFileItemList(NULL, false, "seasons", items, parameterObject, result);
+  HandleFileItemList("seasonid", false, "seasons", items, parameterObject, result);
+  return OK;
+}
+
+JSONRPC_STATUS CVideoLibrary::GetSeasonDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  int id = (int)parameterObject["seasonid"].asInteger();
+
+  CVideoInfoTag infos;
+  if (!videodatabase.GetSeasonInfo(id, infos) ||
+      infos.m_iDbId <= 0 || infos.m_iIdShow <= 0)
+    return InvalidParams;
+  
+  CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
+  HandleFileItem("seasonid", false, "seasondetails", pItem, parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
 
@@ -542,6 +560,39 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
     infos.m_playCount = playcount;
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
   }
+
+  CJSONRPCUtils::NotifyItemUpdated();
+  return ACK;
+}
+
+JSONRPC_STATUS CVideoLibrary::SetSeasonDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["seasonid"].asInteger();
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVideoInfoTag infos;
+  videodatabase.GetSeasonInfo(id, infos);
+  if (infos.m_iDbId <= 0 || infos.m_iIdShow <= 0)
+  {
+    videodatabase.Close();
+    return InvalidParams;
+  }
+
+  // get artwork
+  std::map<std::string, std::string> artwork;
+  videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
+
+  std::set<std::string> removedArtwork;
+  UpdateVideoTag(parameterObject, infos, artwork);
+
+  if (videodatabase.SetDetailsForSeason(infos, artwork, infos.m_iIdShow, id) <= 0)
+    return InternalError;
+
+  if (!videodatabase.RemoveArtForItem(infos.m_iDbId, "season", removedArtwork))
+    return InternalError;
 
   CJSONRPCUtils::NotifyItemUpdated();
   return ACK;

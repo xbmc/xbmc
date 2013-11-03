@@ -1791,6 +1791,50 @@ bool CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& det
   return false;
 }
 
+bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details)
+{
+  if (idSeason < 0)
+    return false;
+
+  try
+  {
+    if (!m_pDB.get() || !m_pDS.get())
+      return false;
+
+    CStdString sql = PrepareSQL("SELECT idShow FROM seasons WHERE idSeason=%i", idSeason);
+    if (!m_pDS->query(sql.c_str()))
+      return false;
+
+    int idShow = -1;
+    if (m_pDS->num_rows() == 1)
+      idShow = m_pDS->fv(0).get_asInt();
+
+    m_pDS->close();
+
+    if (idShow < 0)
+      return false;
+
+    CFileItemList seasons;
+    if (!GetSeasonsNav(StringUtils::Format("videodb://tvshows/titles/%ld/", idShow), seasons, -1, -1, -1, -1, idShow, false) || seasons.Size() <= 0)
+      return false;
+
+    for (int index = 0; index < seasons.Size(); index++)
+    {
+      const CFileItemPtr season = seasons.Get(index);
+      if (season->HasVideoInfoTag() && season->GetVideoInfoTag()->m_iDbId == idSeason && season->GetVideoInfoTag()->m_iIdShow == idShow)
+      {
+        details = *season->GetVideoInfoTag();
+        return true;
+      }
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSeason);
+  }
+  return false;
+}
+
 bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idEpisode /* = -1 */)
 {
   try
@@ -2146,6 +2190,41 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
   }
 
+  return -1;
+}
+
+int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idSeason /* = -1 */)
+{
+  if (idShow < 0 || details.m_iSeason < 0)
+    return -1;
+
+   try
+  {
+    BeginTransaction();
+    if (idSeason < 0)
+    {
+      idSeason = AddSeason(idShow, details.m_iSeason);
+      if (idSeason < 0)
+      {
+        CommitTransaction();
+        return -1;
+      }
+    }
+
+    SetArtForItem(idSeason, "season", artwork);
+
+    // and insert the new row
+    CStdString sql = PrepareSQL("UPDATE seasons SET season=%i WHERE idSeason=%i", details.m_iSeason, idSeason);
+    m_pDS->exec(sql.c_str());
+    CommitTransaction();
+
+    return idSeason;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSeason);
+  }
+  RollbackTransaction();
   return -1;
 }
 
