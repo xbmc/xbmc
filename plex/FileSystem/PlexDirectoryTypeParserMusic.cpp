@@ -20,8 +20,16 @@ void
 CPlexDirectoryTypeParserAlbum::Process(CFileItem &item, CFileItem &mediaContainer, TiXmlElement *itemElement)
 {
   CAlbum album;
-  album.strLabel = item.GetProperty("title").asString();
-  album.strAlbum = item.GetProperty("title").asString();
+
+  CStdString albumName = item.GetLabel();
+  if (albumName.empty() && item.HasProperty("album"))
+  {
+    albumName = item.GetProperty("album").asString();
+    item.SetLabel(albumName);
+  }
+
+  album.strLabel = albumName;
+  album.strAlbum = albumName;
   album.iYear = item.GetProperty("year").asInteger();
   album.m_strDateOfRelease = item.GetProperty("originallyAvailableAt").asString();
 
@@ -29,6 +37,11 @@ CPlexDirectoryTypeParserAlbum::Process(CFileItem &item, CFileItem &mediaContaine
     album.artist.push_back(item.GetProperty("parentTitle").asString());
   else if (mediaContainer.HasProperty("parentTitle"))
     album.artist.push_back(mediaContainer.GetProperty("parentTitle").asString());
+  else if (item.HasProperty("artist"))
+    album.artist.push_back(item.GetProperty("artist").asString());
+
+  if (item.HasProperty("genre"))
+    album.genre.push_back(item.GetProperty("genre").asString());
 
   item.SetFromAlbum(album);
 
@@ -73,9 +86,20 @@ CPlexDirectoryTypeParserTrack::Process(CFileItem &item, CFileItem &mediaContaine
 {
   CSong song;
 
-  song.strTitle = item.GetLabel();
+  CStdString songName = item.GetLabel();
+  if (songName.empty() && item.HasProperty("track"))
+  {
+    songName = item.GetProperty("track").asString();
+    item.SetLabel(songName);
+  }
+
+  song.strTitle = songName;
   song.strComment = item.GetProperty("summary").asString();
-  song.iDuration = item.GetProperty("duration").asInteger() / 1000;
+  if (item.HasProperty("duration"))
+    song.iDuration = item.GetProperty("duration").asInteger() / 1000;
+  else if (item.HasProperty("totalTime"))
+    song.iDuration = item.GetProperty("totalTime").asInteger() / 1000;
+
   song.iTrack = item.GetProperty("index").asInteger();
 
   if (item.HasProperty("parentYear"))
@@ -91,11 +115,15 @@ CPlexDirectoryTypeParserTrack::Process(CFileItem &item, CFileItem &mediaContaine
     song.artist.push_back(item.GetProperty("grandparentTitle").asString());
   else if (mediaContainer.HasProperty("grandparentTitle"))
     song.artist.push_back(mediaContainer.GetProperty("grandparentTitle").asString());
+  else if (item.HasProperty("artist"))
+    song.artist.push_back(item.GetProperty("artist").asString());
 
   if (item.HasProperty("parentTitle"))
     song.strAlbum = item.GetProperty("parentTitle").asString();
   else if (mediaContainer.HasProperty("parentTitle"))
     song.strAlbum = mediaContainer.GetProperty("parentTitle").asString();
+  else if (item.HasProperty("album"))
+    song.strAlbum = item.GetProperty("album").asString();
 
   if (item.HasProperty("originallyAvailableAt"))
   {
@@ -123,7 +151,14 @@ void CPlexDirectoryTypeParserArtist::Process(CFileItem &item, CFileItem &mediaCo
 {
   CArtist artist;
 
-  artist.strArtist = item.GetLabel();
+  CStdString artistName = item.GetLabel();
+  if (item.GetLabel().empty() && item.HasProperty("artist"))
+  {
+    artistName = item.GetProperty("artist").asString();
+    item.SetLabel(artistName);
+  }
+
+  artist.strArtist = artistName;
   artist.strBiography = item.GetProperty("summary").asString();
   item.SetProperty("description", item.GetProperty("summary"));
 

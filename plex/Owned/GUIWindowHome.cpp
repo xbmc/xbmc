@@ -791,6 +791,26 @@ void CGUIWindowHome::OpenItem(CFileItemPtr item, bool prePlay)
       window = WINDOW_MUSIC_FILES;
     else if (type == PLEX_DIR_TYPE_PHOTOALBUM || type == PLEX_DIR_TYPE_PHOTO)
       window = WINDOW_PICTURES;
+    else if (type == PLEX_DIR_TYPE_CHANNEL)
+    {
+      CStdString typeStr = item->GetProperty("type").asString();
+      if (typeStr == "channel")
+      {
+        CURL u(item->GetPath());
+        if (boost::starts_with(u.GetFileName(), "music"))
+          window = WINDOW_MUSIC_FILES;
+        else if (boost::starts_with(u.GetFileName(), "video"))
+          window = WINDOW_VIDEO_NAV;
+        else if (boost::starts_with(u.GetFileName(), "photos"))
+          window = WINDOW_PICTURES;
+      }
+      else if (typeStr == "music")
+        window = WINDOW_MUSIC_FILES;
+      else if (typeStr == "photos")
+        window = WINDOW_PICTURES;
+      else
+        window = WINDOW_VIDEO_NAV;
+    }
 
     CApplicationMessenger::Get().ActivateWindow(window, args, false);
   }
@@ -820,18 +840,6 @@ CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
   AddSection(item->GetPath(),
              CGUIWindowHome::GetSectionTypeFromDirectoryType(item->GetPlexDirectoryType()));
 
-#if 0
-  CStdString path("XBMC.ActivateWindow");
-  if (item->GetProperty("type").asString() == "artist")
-    path += "(MyMusicFiles, " + item->GetPath() + ",return)";
-  else if (item->GetProperty("type").asString() == "photo")
-    path += "(MyPictures," + item->GetPath() + ",return)";
-  else
-    path += "(MyVideoFiles," + item->GetPath() + ",return)";
-
-  newItem->SetPath(path);
-  newItem->SetClickActions(CGUIAction("", path));
-#endif
   return newItem;
 }
 
