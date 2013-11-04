@@ -772,6 +772,7 @@
 						<posy>18</posy>
 						<info>ListItem.Art(thumb)</info>
 						<include>leftMenuPreplayButton</include>
+						<colordiffuse>orange</colordiffuse>
 					</control>
 				</focusedlayout>
 				<content>
