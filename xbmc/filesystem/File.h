@@ -73,7 +73,7 @@ class CFile
 {
 public:
   CFile();
-  virtual ~CFile();
+  ~CFile();
 
   bool Open(const CStdString& strFileName, unsigned int flags = 0);
   bool OpenForWrite(const CStdString& strFileName, bool bOverWrite = false);
