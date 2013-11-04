@@ -402,6 +402,16 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
 
 int CFile::Stat(struct __stat64 *buffer)
 {
+  if (!buffer)
+    return -1;
+
+  if (!m_pFile)
+  {
+    memset(buffer, 0, sizeof(struct __stat64));
+    errno = ENOENT;
+    return -1;
+  }
+
   return m_pFile->Stat(buffer);
 }
 
@@ -414,6 +424,9 @@ bool CFile::SkipNext()
 
 int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 {
+  if (!buffer)
+    return -1;
+
   CURL url;
   
   try
@@ -463,7 +476,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 
 unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
 {
-  if (!m_pFile)
+  if (!m_pFile || !lpBuf)
     return 0;
 
   if(m_pBuffer)
@@ -641,7 +654,7 @@ int64_t CFile::GetPosition() const
 //*********************************************************************************************
 bool CFile::ReadString(char *szLine, int iLineLength)
 {
-  if (!m_pFile)
+  if (!m_pFile || !szLine)
     return false;
 
   if (m_pBuffer)
@@ -701,6 +714,9 @@ bool CFile::ReadString(char *szLine, int iLineLength)
 
 int CFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
+  if (!m_pFile || !lpBuf)
+    return -1;
+
   try
   {
     return m_pFile->Write(lpBuf, uiBufSize);
