@@ -31,6 +31,7 @@ namespace PlexUtils
   void SetSelectedStream(CFileItemPtr item, CFileItemPtr stream);
 
   bool CurrentSkinHasPreplay();
+  bool CurrentSkinHasFilters();
   
   std::string GetPlexCrashPath();
   CStdString GetPrettyStreamName(const CFileItem& fileItem, bool audio);

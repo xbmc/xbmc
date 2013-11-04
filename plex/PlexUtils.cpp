@@ -21,6 +21,9 @@
 #include "addons/Skin.h"
 #include "Client/PlexMediaServerClient.h"
 #include "PlexApplication.h"
+#include "GUIWindowManager.h"
+#include "Key.h"
+#include "GUI/GUIPlexMediaWindow.h"
 
 #include "File.h"
 
@@ -377,6 +380,18 @@ int usleep(useconds_t useconds)
 bool PlexUtils::CurrentSkinHasPreplay()
 {
   return g_SkinInfo->HasSkinFile("PlexPreplayVideo.xml");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool PlexUtils::CurrentSkinHasFilters()
+{
+  CGUIWindow* window = g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
+  if (window)
+  {
+    const CGUIControl* ctrl = window->GetControl(FILTER_PRIMARY_CONTAINER);
+    if (ctrl) return true;
+  }
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

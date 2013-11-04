@@ -976,10 +976,8 @@ CURL CGUIPlexMediaWindow::GetRealDirectoryUrl(const CStdString& url_)
   XFILE::CPlexDirectory dir;
   CURL dirUrl(url_);
 
-#if 0
   if (!PlexUtils::CurrentSkinHasFilters())
     return url_;
-#endif
 
   if (dirUrl.GetProtocol() == "plexserver" &&
       (dirUrl.GetHostName() == "channels" || dirUrl.GetHostName() == "shared" || dirUrl.GetHostName() == "channeldirectory"))
@@ -1037,6 +1035,9 @@ void CGUIPlexMediaWindow::UpdateSectionTitle()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::AddFilters()
 {
+  if (!PlexUtils::CurrentSkinHasFilters())
+    return;
+
   CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
   CGUIPlexFilterFactory factory(this);
 
