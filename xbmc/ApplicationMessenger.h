@@ -222,7 +222,7 @@ public:
 
   void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
 
-  void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "");
+  void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "", /* PLEX */ bool wait = true /* END PLEX */);
   void Show(CGUIDialog *pDialog);
   void Close(CGUIWindow *window, bool forceClose, bool waitResult = true, int nextWindowID = 0, bool enableSound = true);
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);

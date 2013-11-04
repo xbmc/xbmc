@@ -1168,13 +1168,13 @@ void CApplicationMessenger::Minimize(bool wait)
   SendMessage(tMsg, wait);
 }
 
-void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param)
+void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param, /* PLEX */ bool wait /*END PLEX */)
 {
   ThreadMessage tMsg = {TMSG_GUI_DO_MODAL};
   tMsg.lpVoid = pDialog;
   tMsg.dwParam1 = (DWORD)iWindowID;
   tMsg.strParam = param;
-  SendMessage(tMsg, true);
+  SendMessage(tMsg, wait /* PLEX */);
 }
 
 void CApplicationMessenger::ExecOS(const CStdString command, bool waitExit)

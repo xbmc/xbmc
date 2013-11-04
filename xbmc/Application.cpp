@@ -4652,11 +4652,7 @@ void CApplication::OnPlayBackPaused()
   /* PLEX */
   CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
   if (osd && !osd->IsActive())
-  {
-    std::vector<CStdString> arg;
-    arg.push_back("pauseOpen");
-    CApplicationMessenger::Get().ActivateWindow(WINDOW_DIALOG_VIDEO_OSD, arg, false);
-  }
+    CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
   /* END PLEX */
 }
 
