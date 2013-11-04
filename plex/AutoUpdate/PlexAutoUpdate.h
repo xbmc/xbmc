@@ -25,7 +25,7 @@
 class CPlexAutoUpdate : public ITimerCallback, IJobCallback
 {
   public:
-    CPlexAutoUpdate(const CURL& updateUrl, int searchFrequency = 21600000); /* 6 hours default */
+    CPlexAutoUpdate(const CURL& updateUrl, uint32_t searchFrequency = 86400000); /* 24 hours default */
     void OnTimeout();
     virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
     virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
@@ -47,7 +47,7 @@ class CPlexAutoUpdate : public ITimerCallback, IJobCallback
 
     CFileItemPtr m_downloadItem;
     CFileItemPtr m_downloadPackage;
-    int m_searchFrequency;
+    uint32_t m_searchFrequency;
     CURL m_url;
     CTimer m_timer;
 

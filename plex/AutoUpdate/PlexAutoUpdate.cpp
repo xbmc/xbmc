@@ -29,7 +29,7 @@ using namespace XFILE;
 
 //#define UPDATE_DEBUG 1
 
-CPlexAutoUpdate::CPlexAutoUpdate(const CURL &updateUrl, int searchFrequency)
+CPlexAutoUpdate::CPlexAutoUpdate(const CURL &updateUrl, uint32_t searchFrequency)
   : m_forced(false), m_isSearching(false), m_isDownloading(false), m_url(updateUrl), m_searchFrequency(searchFrequency), m_timer(this), m_ready(false)
 {
   m_timer.Start(5 * 1000, true);
