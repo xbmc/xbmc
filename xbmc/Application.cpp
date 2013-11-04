@@ -4651,7 +4651,7 @@ void CApplication::OnPlayBackPaused()
 
   /* PLEX */
   CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-  if (osd && !osd->IsActive())
+  if (IsPlayingVideo() && osd && !osd->IsActive())
     CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
   /* END PLEX */
 }
@@ -4669,7 +4669,7 @@ void CApplication::OnPlayBackResumed()
 
   /* PLEX */
   CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-  if (osd && osd->IsOpenedFromPause())
+  if (IsPlayingVideo() && osd && osd->IsOpenedFromPause())
     CApplicationMessenger::Get().Close(osd, false);
   /* PLEX */
 }
