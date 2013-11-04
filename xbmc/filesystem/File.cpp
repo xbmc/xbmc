@@ -58,6 +58,7 @@ CFile::CFile()
 //*********************************************************************************************
 CFile::~CFile()
 {
+  Close();
   if (m_pFile)
     SAFE_DELETE(m_pFile);
   if (m_pBuffer)
