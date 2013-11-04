@@ -1306,6 +1306,18 @@
     ],
     "returns": "string"
   },
+  "VideoLibrary.SetMovieSetDetails": {
+    "type": "method",
+    "description": "Update the given movie set with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "setid", "$ref": "Library.Id", "required": true },
+      { "name": "title", "$ref": "Optional.String" },
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
+    ],
+    "returns": "string"
+  },
   "VideoLibrary.SetTVShowDetails": {
     "type": "method",
     "description": "Update the given tvshow with the given details",
