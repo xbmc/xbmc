@@ -26,6 +26,7 @@
 #include "settings/ISettingControlCreator.h"
 #include "settings/ISettingCreator.h"
 #include "threads/CriticalSection.h"
+#include "utils/Variant.h"
 
 class CSetting;
 class CSettingSection;
@@ -185,6 +186,13 @@ public:
    \return String value of the setting with the given identifier
    */
   std::string GetString(const std::string &id) const;
+  /*!
+   \brief Gets the values of the list setting with the given identifier.
+
+   \param id Setting identifier
+   \return List of values of the setting with the given identifier
+   */
+  std::vector<CVariant> GetList(const std::string &id) const;
 
   /*!
    \brief Sets the boolean value of the setting with the given identifier.
@@ -225,6 +233,14 @@ public:
    \return True if setting the value was successful, false otherwise
    */
   bool SetString(const std::string &id, const std::string &value);
+  /*!
+   \brief Sets the values of the list setting with the given identifier.
+
+   \param id Setting identifier
+   \param value Values to set
+   \return True if setting the values was successful, false otherwise
+   */
+  bool SetList(const std::string &id, const std::vector<CVariant> &value);
 
   /*!
    \brief Loads the setting being represented by the given XML node with the
