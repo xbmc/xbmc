@@ -30,6 +30,12 @@
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "Video/DVDVideoCodecVideoToolBox.h"
 #endif
+#if defined(HAVE_EXYNOS4)
+#include "Video/DVDVideoCodecExynos4.h"
+#endif
+#if defined(HAVE_EXYNOS5)
+#include "Video/DVDVideoCodecExynos5.h"
+#endif
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
@@ -170,10 +176,28 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #elif defined(_LINUX) && !defined(TARGET_DARWIN)
   hwSupport += "VAAPI:no ";
 #endif
-
+#if defined(HAVE_EXYNOS4) && defined(_LINUX)
+  hwSupport += "MFCv5:yes ";
+#elif defined(_LINUX)
+  hwSupport += "MFCv5:no ";
+#endif
+#if defined(HAVE_EXYNOS5) && defined(_LINUX)
+  hwSupport += "MFCv6:yes ";
+#elif defined(_LINUX)
+  hwSupport += "MFCv6:no ";
+#endif
+#if defined(TARGET_HYBRIS)
   hwSupport += "hybris:yes ";
+#endif
 
   CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
+
+#if defined(HAVE_EXYNOS4) && defined(_LINUX)
+  if( (pCodec = OpenCodec(new CDVDVideoCodecExynos4(), hint, options)) ) return pCodec;
+#endif
+#if defined(HAVE_EXYNOS5) && defined(_LINUX)
+  if( (pCodec = OpenCodec(new CDVDVideoCodecExynos5(), hint, options)) ) return pCodec;
+#endif
 
   // dvd's have weird still-frames in it, which is not fully supported in ffmpeg
   if(hint.stills && (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO))
@@ -246,6 +270,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   }
 #endif
 
+#if defined(TARGET_HYBRIS)
   if (!hint.software )
   {
       if (hint.codec == CODEC_ID_H264 || hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_VC1)
@@ -253,7 +278,8 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
       if ( (pCodec = OpenCodec(new CDVDVideoCodecHybris(), hint, options)) ) return pCodec;
     }
   }
-#
+#endif
+
   // try to decide if we want to try halfres decoding
 #if !defined(_LINUX) && !defined(_WIN32)
   float pixelrate = (float)hint.width*hint.height*hint.fpsrate/hint.fpsscale;
