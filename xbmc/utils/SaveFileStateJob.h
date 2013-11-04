@@ -71,7 +71,8 @@ bool CSaveFileStateJob::DoWork()
 #endif
     if (m_item.IsVideo())
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, progressTrackingFile.c_str());
+      std::string redactPath = CURL::GetRedacted(progressTrackingFile);
+      CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, redactPath.c_str());
 
       CVideoDatabase videodatabase;
       if (!videodatabase.Open())
@@ -86,7 +87,7 @@ bool CSaveFileStateJob::DoWork()
         {
           if (m_updatePlayCount)
           {
-            CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, progressTrackingFile.c_str());
+            CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, redactPath.c_str());
 
             // consider this item as played
             videodatabase.IncrementPlayCount(m_item);
@@ -172,7 +173,8 @@ bool CSaveFileStateJob::DoWork()
 
     if (m_item.IsAudio())
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, m_item.GetPath().c_str());
+      std::string redactPath = CURL::GetRedacted(progressTrackingFile);
+      CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, redactPath.c_str());
 
       if (m_updatePlayCount)
       {
@@ -190,7 +192,7 @@ bool CSaveFileStateJob::DoWork()
           else
           {
             // consider this item as played
-            CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, m_item.GetPath().c_str());
+            CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, redactPath.c_str());
 
             musicdatabase.IncrementPlayCount(m_item);
             musicdatabase.Close();

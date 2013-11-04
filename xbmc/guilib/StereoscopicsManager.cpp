@@ -43,6 +43,7 @@
 #include "rendering/RenderSystem.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "URL.h"
 #include "windowing/WindowingFactory.h"
 
 
@@ -170,7 +171,7 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
   if (stereoMode.empty())
     stereoMode = "mono";
 
-  CLog::Log(LOGDEBUG, "StereoscopicsManager: Detected stereo mode in string '%s' is '%s'", needle.c_str(), stereoMode.c_str());
+  CLog::Log(LOGDEBUG, "StereoscopicsManager: Detected stereo mode in string '%s' is '%s'", CURL::GetRedacted(needle).c_str(), stereoMode.c_str());
   return stereoMode;
 }
 

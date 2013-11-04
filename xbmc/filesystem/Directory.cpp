@@ -33,6 +33,7 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;
@@ -191,7 +192,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
         {
           if (!cancel && g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
             continue;
-          CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
+          CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, CURL::GetRedacted(strPath).c_str());
           return false;
         }
       }
@@ -228,7 +229,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
+  CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, CURL::GetRedacted(strPath).c_str());
   return false;
 }
 
@@ -247,7 +248,7 @@ bool CDirectory::Create(const CStdString& strPath)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error creating %s", __FUNCTION__, strPath.c_str());
+  CLog::Log(LOGERROR, "%s - Error creating %s", __FUNCTION__, CURL::GetRedacted(strPath).c_str());
   return false;
 }
 
@@ -274,7 +275,7 @@ bool CDirectory::Exists(const CStdString& strPath, bool bUseCache /* = true */)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strPath.c_str());
+  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, CURL::GetRedacted(strPath).c_str());
   return false;
 }
 
@@ -296,7 +297,7 @@ bool CDirectory::Remove(const CStdString& strPath)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error removing %s", __FUNCTION__, strPath.c_str());
+  CLog::Log(LOGERROR, "%s - Error removing %s", __FUNCTION__, CURL::GetRedacted(strPath).c_str());
   return false;
 }
 
