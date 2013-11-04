@@ -554,10 +554,11 @@ void CDVDPlayerAudio::Process()
 
     if( result & DECODE_FLAG_TIMEOUT )
     {
+      bool transitioningToStalled = !m_stalled;
       m_stalled = true;
 
       // Flush as the audio output may keep looping if we don't
-      if(m_speed == DVD_PLAYSPEED_NORMAL)
+      if(m_speed == DVD_PLAYSPEED_NORMAL && transitioningToStalled)
       {
         m_dvdAudio.Drain();
         m_dvdAudio.Flush();
