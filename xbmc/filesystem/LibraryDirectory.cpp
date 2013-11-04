@@ -84,7 +84,10 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
         CStdString path;
         XMLUtils::GetPath(node, "path", path);
         if (!path.IsEmpty())
+        {
+          URIUtils::AddSlashAtEnd(path);
           return CDirectory::GetDirectory(path, items, m_strFileMask, m_flags);
+        }
       }
     }
     return false;
