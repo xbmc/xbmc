@@ -279,7 +279,7 @@
 					<width>182</width>
 					<height>274</height>
 					<fadetime>160</fadetime>
-					<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
+					<texture background="true" diffuse="mask-poster-middle.png">$INFO[Container.FolderThumb]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				</control>
 			</control>
