@@ -2142,8 +2142,20 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   bool bReturn = false;
   int condition = abs(condition1);
 
-  if (item && condition >= LISTITEM_START && condition < LISTITEM_END)
-    bReturn = GetItemBool(item, condition);
+  if (condition >= LISTITEM_START && condition < LISTITEM_END)
+  {
+    if (item)
+      bReturn = GetItemBool(item, condition);
+    else
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
+      if (window)
+      {
+        CFileItemPtr item = window->GetCurrentListItem();
+        bReturn = GetItemBool(item.get(), condition);
+      }
+    }
+  }
   // Ethernet Link state checking
   // Will check if system has a Ethernet Link connection! [Cable in!]
   // This can used for the skinner to switch off Network or Inter required functions
