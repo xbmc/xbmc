@@ -1087,6 +1087,10 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
 
 void COMXAudio::UpdateAttenuation()
 {
+  // always called with m_critSection lock held
+  if (!m_Initialized || m_Passthrough)
+    return;
+
   if (m_amplification == 1.0)
   {
     ApplyVolume();
