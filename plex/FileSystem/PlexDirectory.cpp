@@ -437,6 +437,15 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
     if (boost::ends_with(mediaContainer.Get(0)->GetProperty("unprocessed_key").asString(), "/allLeaves") &&
         mediaContainer.Size() > 1)
       mediaContainer.SetPlexDirectoryType(mediaContainer.Get(1)->GetPlexDirectoryType());
+    /* See https://github.com/plexinc/plex/issues/737 for a discussion around this workaround */
+    else if (boost::starts_with(m_url.GetFileName(), "library/sections/") &&
+             mediaContainer.Size() > 0 &&
+             mediaContainer.Get(0)->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTOALBUM)
+      mediaContainer.SetPlexDirectoryType(PLEX_DIR_TYPE_PHOTO);
+    else if (boost::starts_with(m_url.GetFileName(), "library/metadata/") &&
+             mediaContainer.Size() > 0 &&
+             mediaContainer.Get(0)->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO)
+      mediaContainer.SetPlexDirectoryType(PLEX_DIR_TYPE_PHOTOALBUM);
     else
       mediaContainer.SetPlexDirectoryType(mediaContainer.Get(0)->GetPlexDirectoryType());
   }
