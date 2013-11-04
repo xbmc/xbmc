@@ -96,7 +96,7 @@
 			<control type="group" id="777">
 				<control type="panel" id="52">
 					<viewtype label="MusicLibrary">panel</viewtype>
-					<visible>!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
+					<visible>[!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents)]</visible>
 					<posy>28</posy>
 					<posx>100</posx>
 					<width>1200</width>
@@ -129,7 +129,7 @@
 			<control type="group" id="777">
 				<posx>-54</posx>
 				<posy>-34</posy>
-				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
+				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + IsEmpty(Container.Property(mixedParents))</visible>
 				<!-- backgrounds & plot -->
 				<control type="group">
 					<!-- backgrounds -->
