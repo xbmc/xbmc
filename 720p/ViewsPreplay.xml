@@ -160,6 +160,100 @@
 			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
+	<!-- filtered results -->
+	<include name="EpisodePosterFiltered">
+		<control type="image">
+			<description>Poster image</description>
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>71</width>
+			<height>106</height>
+			<texture background="true" diffuse="mask-poster-filtered.png">$INFO[ListItem.Art(parentThumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+		<control type="image">
+			<description>Poster image</description>
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>71</width>
+			<height>106</height>
+			<texture background="true" diffuse="mask-poster-filtered.png">$INFO[ListItem.GrandparentThumb]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			<visible>IsEmpty(ListItem.Art(parentThumb))</visible>
+		</control>
+	</include>
+	<include name="EpisodeThumbFiltered">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>295</width>
+			<height>132</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>84</posx>
+			<posy>13</posy>
+			<width>198</width>
+			<height>106</height>
+			<texture background="true">default-thumb-small.png</texture>
+		</control>
+		<control type="image">
+			<posx>84</posx>
+			<posy>13</posy>
+			<width>198</width>
+			<height>106</height>
+			<texture background="true" diffuse="mask-episode-filtered.png">$INFO[ListItem.Art(thumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="EpisodeThumbCardFiltered">
+		<control type="image">
+			<posx>13</posx>
+			<posy>117</posy>
+			<width>269</width>
+			<height>50</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>141</posy>
+			<width>269</width>
+			<height>26</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="EpisodeTitleFiltered">
+		<posy>119</posy>
+		<posx>20</posx>
+		<width>255</width>
+		<height>20</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Condensed-14</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>
+	<include name="EpisodeThumbOverlayFiltered">
+		<control type="image">
+			<posx>84</posx>
+			<posy>81</posy>
+			<width>198</width>
+			<height>38</height>
+			<include>Black</include>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="EpisodeSelectedBorderFiltered">
+		<control type="image">
+			<posx>12</posx>
+			<posy>13</posy>
+			<width>271</width>
+			<height>106</height>
+			<include>Border</include>
+		</control>
+	</include>
 	<!-- all episodes are from the same season -->
 	<include name="EpisodeThumbOverlayTitle">
 		<posy>83</posy>
@@ -637,6 +731,72 @@
 						<info>ListItem.Overlay</info>
 					</control>
 					<include>EpisodeSelectedBorder</include>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+	<!-- Pre-play Filtered Episodes -->
+	<include name="PreplayFilteredEpisodes">
+		<control type="group" id="777">
+			<visible>Container.Content(filteredEpisodes)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- main list -->
+			<control type="panel" id="62">
+				<visible>Container.Content(filteredEpisodes)</visible>
+				<viewtype label="PreplayFilteredEpisodes">panel</viewtype>
+				<onup>62</onup>
+				<ondown>62</ondown>
+				<onright>62</onright>
+				<onleft>1300</onleft>
+				<orientation>vertical</orientation>
+				<posx>100</posx>
+				<posy>27</posy>
+				<width>1280</width>
+				<height>665</height>
+				<itemlayout width="285" height="165">
+					<include>EpisodeThumbCardFiltered</include>
+					<include>EpisodeThumbFiltered</include>
+					<include>EpisodePosterFiltered</include>
+					<control type="label">
+						<include>EpisodeTitleFiltered</include>
+					</control>
+					<include>EpisodeDate</include>
+					<include>EpisodeThumbOverlayFiltered</include>
+					<control type="label">
+						<posy>85</posy>
+						<posx>91</posx>
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<control type="image">
+						<posx>253</posx>
+						<posy>90</posy>
+						<info>ListItem.Overlay</info>
+					</control>
+				</itemlayout>
+				<focusedlayout width="285" height="165">
+					<include>EpisodeThumbCardFiltered</include>
+					<include>EpisodeThumbFiltered</include>
+					<include>EpisodePosterFiltered</include>
+					<control type="label">
+						<include>EpisodeTitleFiltered</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<include>EpisodeDate</include>
+					<include>EpisodeThumbOverlayFiltered</include>
+					<control type="label">
+						<posy>85</posy>
+						<posx>91</posx>
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<control type="image">
+						<posx>253</posx>
+						<posy>90</posy>
+						<info>ListItem.Overlay</info>
+					</control>
+					<include>EpisodeSelectedBorderFiltered</include>
 				</focusedlayout>
 			</control>
 		</control>
