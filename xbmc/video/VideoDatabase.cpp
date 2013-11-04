@@ -1146,7 +1146,6 @@ int CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
       CStdString strSQL=PrepareSQL("insert into movie (idMovie, idFile) values (NULL, %i)", idFile);
       m_pDS->exec(strSQL.c_str());
       idMovie = (int)m_pDS->lastinsertid();
-//      CommitTransaction();
     }
 
     return idMovie;
@@ -1199,8 +1198,6 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
     int idPath = AddPath(strPath, dateAdded.GetAsDBDateTime());
     strSQL=PrepareSQL("insert into tvshowlinkpath values (%i,%i)",idTvShow,idPath);
     m_pDS->exec(strSQL.c_str());
-
-//    CommitTransaction();
 
     return idTvShow;
   }
