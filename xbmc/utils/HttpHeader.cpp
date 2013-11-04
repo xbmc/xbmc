@@ -18,6 +18,8 @@
  *
  */
 
+#include <boost/bind.hpp>
+#include <boost/algorithm/string.hpp>
 #include "HttpHeader.h"
 #include "utils/StringUtils.h"
 
@@ -152,6 +154,56 @@ std::string CHttpHeader::GetMimeType(void) const
   return strValue.substr(0, strValue.find(';'));
 }
 
+namespace
+{
+/* We don't have boost::regex as it is a boost library
+ * so this function will have to do instead */
+bool AcceptableCharacter(char c)
+{
+  const char lowercaseStart = 'a';
+  const char lowercaseEnd = 'z';
+  const char uppercaseStart = 'A';
+  const char uppercaseEnd = 'Z';
+  const char numericStart = '0';
+  const char numericEnd = '9';
+  const char hyphen = '-';
+
+  if (c == hyphen)
+    return true;
+
+  if (c >= lowercaseStart &&
+      c <= lowercaseEnd)
+    return true;
+
+  if (c >= uppercaseStart &&
+      c <= uppercaseEnd)
+    return true;
+
+  if (c >= numericStart &&
+      c <= numericEnd)
+    return true;
+
+  return false;
+}
+
+boost::iterator_range<std::string::iterator>
+CharsetFinder(std::string::iterator begin,
+              std::string::iterator end)
+{
+  while(!AcceptableCharacter(*begin))
+    ++begin;
+
+  /* End is the element after the end, so we need
+   * to restore it to the last element */
+  --end;
+
+  while (!AcceptableCharacter(*end))
+    --end;
+
+  return boost::make_iterator_range(begin, ++end);
+}
+}
+
 std::string CHttpHeader::GetCharset(void) const
 {
   std::string strValue(GetValueRaw("content-type"));
@@ -164,15 +216,24 @@ std::string CHttpHeader::GetCharset(void) const
 
   StringUtils::ToUpper(strValue);
   size_t posCharset;
-  if ((posCharset = strValue.find("; CHARSET=", semicolonPos)) != std::string::npos)
-    posCharset += 10;
-  else if ((posCharset = strValue.find(";CHARSET=", semicolonPos)) != std::string::npos)
-    posCharset += 9;
+  if ((posCharset = strValue.find("CHARSET=", semicolonPos)) != std::string::npos)
+    posCharset += 8;
   else
     return "";
 
-  return strValue.substr(posCharset, strValue.find(';', posCharset) - posCharset);
+  std::string::iterator begin(strValue.begin() + posCharset);
+  std::string::iterator end(strValue.end());
+
+  boost::iterator_range<std::string::iterator> charsetDataToEnd(boost::make_iterator_range(begin ,end));
+
+  boost::iterator_range<std::string::iterator> charsetDataRange =
+    boost::algorithm::find(charsetDataToEnd,
+                           CharsetFinder);
+
+  return std::string(charsetDataRange.begin(),
+                     charsetDataRange.end());
 }
+
 
 void CHttpHeader::Clear()
 {

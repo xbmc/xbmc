@@ -26,6 +26,7 @@
 #include "utils/HttpHeader.h"
 #include "gtest/gtest.h"
 
+using ::testing::Range;
 using ::testing::ValuesIn;
 
 namespace
@@ -193,29 +194,64 @@ TEST_F(TestHttpHeader, NoneOnGetGetProtoLine)
 
 void InsertForContentType(const char *tag, std::string &data, const char *replace)
 {
-  if (strcmp(tag, "content-type"))
+  if (strcmp(tag, "Content-Type"))
     return;
 
   data = replace;
 }
 
-/* HttpHeader handles the "charset" token in the "content-type" tag to either have
- * one space from the semicolon, or two. Test both */
-TEST_F(TestHttpHeader, GetCharsetSingleSpace)
+class TestHttpHeaderParameterizedByInt :
+  public TestHttpHeader,
+  public ::testing::WithParamInterface<int>
 {
-  Header().Parse(HeaderTokenDataInputString(boost::bind(InsertForContentType, _1, _2,
-                                                        "text/html; charset=ISO-8859-4")));
+};
 
-  EXPECT_STREQ("ISO-8859-4", Header().GetCharset().c_str());
+/* In order to test a large spread of spaces, we need to
+ * insert N * 10 spaces */
+TEST_P(TestHttpHeaderParameterizedByInt, GetCharsetWithNSpacesBetweenSemicolon)
+{
+  const char *charset = "ISO-8859-4";
+  std::stringstream mimeTypeData;
+  const int &nSpaces(GetParam());
+
+  mimeTypeData << "text/html;";
+
+  for (int i = 0; i < nSpaces; ++i)
+  {
+    mimeTypeData << "          ";
+  }
+
+  mimeTypeData << "charset=" << charset;
+
+  Header().Parse(HeaderTokenDataInputString(boost::bind(InsertForContentType, _1, _2,
+                                                        mimeTypeData.str().c_str())));
+  EXPECT_STREQ(charset, Header().GetCharset().c_str());
 }
 
-TEST_F(TestHttpHeader, GetCharsetNoSpace)
+/* Check that garbage after the mimetype doesn't get caught either */
+TEST_P(TestHttpHeaderParameterizedByInt, GetCharsetWithNGarbageAfterCharset)
 {
-  Header().Parse(HeaderTokenDataInputString(boost::bind(InsertForContentType, _1, _2,
-                                                        "text/html;charset=ISO-8859-4")));
+  const char *charset = "ISO-8859-4";
+  std::stringstream mimeTypeData;
+  const int &nSpaces(GetParam());
 
-  EXPECT_STREQ("ISO-8859-4", Header().GetCharset().c_str());
+  mimeTypeData << "text/html; charset=" << charset;
+
+  for (int i = 0; i < nSpaces; ++i)
+  {
+    mimeTypeData << "\n\r\t :!@#$%^";
+  }
+
+  Header().Parse(HeaderTokenDataInputString(boost::bind(InsertForContentType, _1, _2,
+                                                        mimeTypeData.str().c_str())));
+  EXPECT_STREQ(charset, Header().GetCharset().c_str());
 }
+
+/* Range does not include the end number, we need to include it by
+ * bumping up to 11 */
+INSTANTIATE_TEST_CASE_P(RangeFromZeroToTen, TestHttpHeaderParameterizedByInt,
+                        Range(0, 11, 1));
+
 
 TEST_F(TestHttpHeader, AddParam)
 {
