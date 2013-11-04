@@ -2465,8 +2465,8 @@ void CMixer::ProcessPicture()
         past_surfaces[1] = m_mixerInput[2].videoSurface;
       }
       past_surfaces[0] = m_mixerInput[1].videoSurface;
-      futu_surfaces[0] = m_mixerInput[1].videoSurface;
-      futu_surfaces[1] = m_mixerInput[1].videoSurface;
+      futu_surfaces[0] = m_mixerInput[0].videoSurface;
+      futu_surfaces[1] = m_mixerInput[0].videoSurface;
 
       if (m_mixerInput[0].DVDPic.pts != DVD_NOPTS_VALUE &&
           m_mixerInput[1].DVDPic.pts != DVD_NOPTS_VALUE)
