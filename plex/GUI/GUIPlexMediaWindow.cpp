@@ -44,6 +44,18 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 {
+
+  if (message.GetMessage() == GUI_MSG_CLICKED)
+  {
+    if (message.GetSenderId() >= FILTER_BUTTONS_START && message.GetSenderId() < FILTER_BUTTONS_STOP)
+    {
+      OnFilterButton(message.GetSenderId());
+      return true;
+    }
+    else if (message.GetSenderId() == FILTER_CLEAR_FILTER_BUTTON)
+      OnAction(CAction(ACTION_CLEAR_FILTERS));
+  }
+
   bool ret = CGUIMediaWindow::OnMessage(message);
 
   switch(message.GetMessage())
@@ -118,18 +130,6 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
         m_filterValuesEvent.Set();
         m_waitingForFilter.clear();
       }
-      break;
-    }
-
-    case GUI_MSG_CLICKED:
-    {
-      if (message.GetSenderId() >= FILTER_BUTTONS_START && message.GetSenderId() < FILTER_BUTTONS_STOP)
-      {
-        OnFilterButton(message.GetSenderId());
-        return true;
-      }
-      else if (message.GetSenderId() == FILTER_CLEAR_FILTER_BUTTON)
-        OnAction(CAction(ACTION_CLEAR_FILTERS));
       break;
     }
       
@@ -239,6 +239,11 @@ void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
     }
     else
     {
+
+      CGUIRadioButtonControl *radio = (CGUIRadioButtonControl*)GetControl(filterButtonId);
+      if (radio)
+        radio->SetSelected(currentFilter->isSelected());
+
       m_filterValuesEvent.Reset();
       m_waitingForFilter = currentFilter->getFilterKey();
 
@@ -247,7 +252,7 @@ void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
       if (busy)
       {
         busy->Show();
-        while(!m_filterValuesEvent.WaitMSec(1))
+        while(!m_filterValuesEvent.WaitMSec(10))
         {
           g_windowManager.ProcessRenderLoop(false);
           if (busy->IsCanceled())
@@ -261,20 +266,17 @@ void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
         busy->Close();
       }
 
-      if (currentFilter->hasValues())
+      CGUIDialogFilterSort* dialog = (CGUIDialogFilterSort*)g_windowManager.GetWindow(WINDOW_DIALOG_FILTER_SORT);
+      if (dialog)
       {
-        CGUIDialogFilterSort* dialog = (CGUIDialogFilterSort*)g_windowManager.GetWindow(WINDOW_DIALOG_FILTER_SORT);
-        if (dialog)
-        {
-          dialog->SetFilter(currentFilter, filterButtonId);
-          dialog->DoModal();
+        dialog->SetFilter(currentFilter, filterButtonId);
+        dialog->DoModal();
 
-        }
       }
 
-      CGUIRadioButtonControl *radio = (CGUIRadioButtonControl*)GetControl(filterButtonId);
       if (radio)
         radio->SetSelected(currentFilter->isSelected());
+
     }
   }
   else

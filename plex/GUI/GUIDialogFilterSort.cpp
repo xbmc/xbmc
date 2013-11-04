@@ -27,12 +27,6 @@ void CGUIDialogFilterSort::SetFilter(CPlexSecondaryFilterPtr filter, int filterB
   m_filter = filter;
   m_filterButtonId = filterButtonId;
 
-  if (!m_filter->hasValues())
-  {
-    /* We should always have values at this point! */
-    return;
-  }
-
   CGUIControlGroupList* list = (CGUIControlGroupList*)GetControl(FILTER_SUBLIST);
   if (!list)
     return;
