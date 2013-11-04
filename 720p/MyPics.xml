@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="2">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,70,72,51</views>
+	<views>40,70,72,51,52</views>
 	<allowoverlay>yes</allowoverlay>
 	<onunload>SetFocus(777)</onunload>
 	<controls>
