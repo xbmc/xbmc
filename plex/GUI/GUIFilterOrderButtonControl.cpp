@@ -18,6 +18,7 @@ CGUIFilterOrderButtonControl::CGUIFilterOrderButtonControl(int parentID, int con
   m_off.SetAspectRatio(CAspectRatio::AR_KEEP);
   m_ascending.SetAspectRatio(CAspectRatio::AR_KEEP);
   m_descending.SetAspectRatio(CAspectRatio::AR_KEEP);
+  m_startState = DESCENDING;
 
   m_radioPosX = 0.0;
   m_radioPosY = 0.0;
@@ -153,11 +154,11 @@ bool CGUIFilterOrderButtonControl::OnAction(const CAction &action)
   if (action.GetID() == ACTION_SELECT_ITEM)
   {
     if (m_state == OFF)
-      m_state = ASCENDING;
-    else if (m_state == ASCENDING)
-      m_state = DESCENDING;
-    else if (m_state == DESCENDING)
-      m_state = ASCENDING;
+      m_state = m_startState;
+    else if (m_state == m_startState)
+      m_state = m_startState == DESCENDING ? ASCENDING : DESCENDING;
+    else if (m_state != m_startState)
+      m_state = m_startState;
 
     MarkDirtyRegion();
   }

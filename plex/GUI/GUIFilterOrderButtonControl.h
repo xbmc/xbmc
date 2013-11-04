@@ -38,14 +38,17 @@ class CGUIFilterOrderButtonControl : public CGUIButtonControl
     void SetHeight(float height);
     bool UpdateColors();
     bool OnAction(const CAction &action);
+    void SetStartState(FilterOrderButtonState state) { m_startState = state; }
 
   private:
+    FilterOrderButtonState m_startState;
     FilterOrderButtonState m_state;
     float m_radioPosY, m_radioPosX;
 
     CGUITexture m_off;
     CGUITexture m_ascending;
     CGUITexture m_descending;
+
 };
 
 #endif // GUIFILTERORDERBUTTONCONTROL_H

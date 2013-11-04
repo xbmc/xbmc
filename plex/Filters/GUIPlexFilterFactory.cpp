@@ -80,6 +80,10 @@ CGUIFilterOrderButtonControl *CGUIPlexFilterFactory::getSortButton(const std::st
   newButton->SetTristate(state);
   newButton->SetVisible(true);
 
+  /* TODO: the /sorts endpoint actually tells us what the default should be, but for now, just hack it :P */
+  if (label == "Name")
+    newButton->SetStartState(CGUIFilterOrderButtonControl::ASCENDING);
+
   return newButton;
 }
 
