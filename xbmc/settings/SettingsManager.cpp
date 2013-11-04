@@ -153,7 +153,7 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
 
 bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool triggerEvents /* = true */, std::map<std::string, CSetting*> *loadedSettings /* = NULL */)
 {
-  CExclusiveLock lock(m_critical);
+  CSharedLock lock(m_critical);
   CExclusiveLock settingsLock(m_settingsCritical);
   if (m_loaded || root == NULL)
     return false;
