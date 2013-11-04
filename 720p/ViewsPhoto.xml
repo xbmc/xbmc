@@ -203,6 +203,15 @@
 				<include>PlotFormat</include>
 				<label>$INFO[Container.Property(summary)]</label>
 			</control>
+			<control type="textbox">
+				<posx>100</posx>
+				<posy>410</posy>
+				<width>430</width>
+				<height>196</height>
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(Container.Property(summary))</visible>
+			</control>
 		</control>
 	</include>
 	<!-- Library -->

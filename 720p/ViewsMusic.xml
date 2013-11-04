@@ -176,6 +176,15 @@
 						<include>PlotFormat</include>
 						<label>$INFO[Container.Property(summary)]</label>
 					</control>
+					<control type="textbox">
+						<posx>95</posx>
+						<posy>420</posy>
+						<width>670</width>
+						<height>240</height>
+						<include>PlotFormat</include>
+						<include>NoPlotDefault</include>
+						<visible>IsEmpty(Container.Property(summary))</visible>
+					</control>
 				</control>
 				<!-- Infos Left -->
 				<control type="group">
@@ -336,6 +345,15 @@
 						<height>207</height>
 						<include>PlotFormat</include>
 						<label>$INFO[Container.Property(summary)]</label>
+					</control>
+					<control type="textbox">
+						<posx>95</posx>
+						<posy>420</posy>
+						<width>670</width>
+						<height>240</height>
+						<include>PlotFormat</include>
+						<include>NoPlotDefault</include>
+						<visible>IsEmpty(Container.Property(summary))</visible>
 					</control>
 				</control>
 				<!-- Infos Left -->

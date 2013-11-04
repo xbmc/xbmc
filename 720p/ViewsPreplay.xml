@@ -346,6 +346,15 @@
 				<height>207</height>
 				<label>$INFO[Container.ShowPlot]</label>
 			</control>
+			<control type="textbox">
+				<posx>40</posx>
+				<posy>412</posy>
+				<width>490</width>
+				<height>207</height>
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(Container.ShowPlot)</visible>
+			</control>
 			<!-- main list -->
 			<control type="panel" id="60">
 				<visible>Container.Content(Seasons)</visible>
@@ -555,6 +564,15 @@
 				<height>207</height>
 				<label>$INFO[Container.ShowPlot]</label>
 				<visible>!IsEmpty(Container.ShowPlot)</visible>
+			</control>
+			<control type="textbox">
+				<posx>40</posx>
+				<posy>412</posy>
+				<width>490</width>
+				<height>207</height>
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(Container.ShowPlot)</visible>
 			</control>
 			<!-- main list -->
 			<control type="panel" id="61">
@@ -822,6 +840,11 @@
 				<include>PlotFormat</include>
 				<visible>[ListItem.Status(UnWatched) + Skin.HasSetting(HidePlotForUnwatched)] | [ListItem.Status(InProgress) + Skin.HasSetting(HidePlotForUnwatched)]</visible>
 			</control>
+			<control type="textbox">
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(ListItem.Plot)</visible>
+			</control>
 			<!-- MediaFlags -->
 			<include>MediaFlags</include>
 		</control>
@@ -1020,6 +1043,15 @@
 				<autoscroll delay="10000" time="3000" repeat="5000">!Control.HasFocus(13)</autoscroll>
 				<include>PlotFormat</include>
 			</control>
+			<control type="textbox">
+				<posy>415</posy>
+				<posx>560</posx>
+				<width>685</width>
+				<height>195</height>
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(ListItem.Plot)</visible>
+			</control>
 			<!-- MediaFlags -->
 			<include>MediaFlags</include>
 		</control>
@@ -1097,7 +1129,7 @@
 					<label>$INFO[ListItem.Year]$INFO[ListItem.DurationStr, &#xB7; ]$INFO[ListItem.Property(sourceTitle), &#xB7; ]</label>
 					<font>CondensedBold-30</font>
 					<textcolor>FF999999</textcolor>
-				</control>			
+				</control>
 				<!-- Season, Episode -->
 				<control type="label">
 					<width>600</width>
@@ -1143,6 +1175,11 @@
 			<control type="textbox">
 				<label>$INFO[ListItem.Plot]</label>
 				<include>PlotFormat</include>
+			</control>
+			<control type="textbox">
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(ListItem.Plot)</visible>
 			</control>
 			<!-- MediaFlags -->
 			<include>MediaFlags</include>
