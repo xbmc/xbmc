@@ -310,6 +310,9 @@
     <Filter Include="listproviders">
       <UniqueIdentifier>{1dfaf73b-2e8d-49d2-87c1-07b1ac203ba0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="settings\lib">
+      <UniqueIdentifier>{4de9ae04-448d-4ebe-bde5-5ec2a61270c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2975,22 +2978,7 @@
     <ClCompile Include="..\..\xbmc\settings\windows\GUIControlSettings.cpp">
       <Filter>settings\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\ISetting.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\Setting.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\SettingCategoryAccess.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\SettingConditions.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\SettingControl.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\SettingDependency.cpp">
       <Filter>settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\NetworkServices.cpp">
@@ -2999,19 +2987,10 @@
     <ClCompile Include="..\..\xbmc\utils\BooleanLogic.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\SettingUpdate.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\SettingsManager.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\SettingAddon.cpp">
       <Filter>settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\SettingPath.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\SettingSection.cpp">
       <Filter>settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\FavouritesOperations.cpp">
@@ -3064,9 +3043,6 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\ApplicationPlayer.cpp" />
-    <ClCompile Include="..\..\xbmc\settings\SettingRequirement.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\AddonPythonInvoker.cpp">
       <Filter>interfaces\python</Filter>
     </ClCompile>
@@ -3080,8 +3056,35 @@
       <Filter>playlists</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileItemListModification.cpp" />
-    <ClCompile Include="..\..\xbmc\settings\ISettingControl.cpp">
-      <Filter>settings</Filter>
+    <ClCompile Include="..\..\xbmc\settings\lib\ISettingControl.cpp">
+      <Filter>settings\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\lib\ISetting.cpp">
+      <Filter>settings\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\lib\Setting.cpp">
+      <Filter>settings\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\lib\SettingCategoryAccess.cpp">
+      <Filter>settings\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\lib\SettingConditions.cpp">
+      <Filter>settings\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\lib\SettingDependency.cpp">
+      <Filter>settings\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\lib\SettingRequirement.cpp">
+      <Filter>settings\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\lib\SettingSection.cpp">
+      <Filter>settings\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\lib\SettingsManager.cpp">
+      <Filter>settings\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\lib\SettingUpdate.cpp">
+      <Filter>settings\lib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\CharsetDetection.cpp">
       <Filter>utils</Filter>
@@ -5874,12 +5877,6 @@
     <ClInclude Include="..\..\xbmc\utils\RssManager.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\ISettingsHandler.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\ISubSettings.h">
-      <Filter>settings</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\SkinSettings.h">
       <Filter>settings</Filter>
     </ClInclude>
@@ -5946,25 +5943,7 @@
     <ClInclude Include="..\..\xbmc\settings\windows\GUIControlSettings.h">
       <Filter>settings\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\ISetting.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\ISettingCallback.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\Setting.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\SettingCategoryAccess.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\SettingConditions.h">
-      <Filter>settings</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\SettingControl.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\SettingDependency.h">
       <Filter>settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\NetworkServices.h">
@@ -5976,22 +5955,10 @@
     <ClInclude Include="..\..\xbmc\utils\IXmlDeserializable.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\SettingUpdate.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\SettingsManager.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\ISettingCreator.h">
-      <Filter>settings</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\SettingAddon.h">
       <Filter>settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\SettingPath.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\SettingSection.h">
       <Filter>settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\FavouritesOperations.h">
@@ -6050,9 +6017,6 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\ApplicationPlayer.h" />
-    <ClInclude Include="..\..\xbmc\settings\SettingRequirement.h">
-      <Filter>settings</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\python\AddonPythonInvoker.h">
       <Filter>interfaces\python</Filter>
     </ClInclude>
@@ -6067,14 +6031,53 @@
       <Filter>playlists</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileItemListModification.h" />
-    <ClInclude Include="..\..\xbmc\settings\ISettingControl.h">
-      <Filter>settings</Filter>
+    <ClInclude Include="..\..\xbmc\settings\lib\ISettingControl.h">
+      <Filter>settings\lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\ISettingControlCreator.h">
-      <Filter>settings</Filter>
+    <ClInclude Include="..\..\xbmc\settings\lib\ISetting.h">
+      <Filter>settings\lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\SettingDefinitions.h">
-      <Filter>settings</Filter>
+    <ClInclude Include="..\..\xbmc\settings\lib\ISettingCallback.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\ISettingCreator.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\ISettingsHandler.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\ISubSettings.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\Setting.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\SettingCategoryAccess.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\SettingConditions.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\SettingDependency.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\SettingRequirement.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\SettingSection.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\SettingsManager.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\SettingUpdate.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\SettingDefinitions.h">
+      <Filter>settings\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\lib\ISettingControlCreator.h">
+      <Filter>settings\lib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\CharsetDetection.h">
       <Filter>utils</Filter>
