@@ -80,11 +80,6 @@ CProfilesManager& CProfilesManager::Get()
   return sProfilesManager;
 }
 
-bool CProfilesManager::OnSettingsLoading()
-{
-  return true;
-}
-
 void CProfilesManager::OnSettingsLoaded()
 {
   // check them all
