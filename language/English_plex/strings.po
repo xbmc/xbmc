@@ -786,8 +786,8 @@ msgid "Queue"
 msgstr "Queue"
 
 msgctxt "#44022"
-msgid "Recommendations"
-msgstr "Recommendations"
+msgid "Recommended"
+msgstr "Recommended"
 
 msgctxt "#44030"
 msgid "FILTERS"

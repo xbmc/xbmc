@@ -8,6 +8,8 @@
 #include "PlexApplication.h"
 #include "Client/PlexServerDataLoader.h"
 
+#include "LocalizeStrings.h"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexSectionFilter::CPlexSectionFilter(const CURL &sectionUrl) : m_sectionUrl(sectionUrl)
 {
@@ -184,8 +186,8 @@ CPlexMyPlexPlaylistFilter::CPlexMyPlexPlaylistFilter(const CURL &sectionUrl) : C
   m_currentPrimaryFilter = "queue";
   m_currentSortOrder = "";
 
-  m_primaryFilters["queue"] = "Queue";
-  m_primaryFilters["recommendations"] = "Recommended";
+  m_primaryFilters["queue"] = g_localizeStrings.Get(44021);
+  m_primaryFilters["recommendations"] = g_localizeStrings.Get(44022);
 
   CPlexSecondaryFilterPtr unwatchedFilter = CPlexSecondaryFilterPtr(new CPlexSecondaryFilter("Unwatched", "unwatched", "Unwatched", CPlexSecondaryFilter::FILTER_TYPE_BOOLEAN));
   m_secondaryFilters["unwatched"] = unwatchedFilter;
