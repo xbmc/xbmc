@@ -103,7 +103,7 @@ bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
   int result;
   while ((result = fread(buf, 1, BUFFER_SIZE, f)) > 0)
     data.append(buf, result);
-  return Parse(data, encoding) != NULL;
+  return Parse(data, encoding);
 }
 
 bool CXBMCTinyXML::SaveFile(const char *_filename) const
