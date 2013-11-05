@@ -490,7 +490,7 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
 {
   try
   {
-    CLog::Log(LOGNOTICE, "COMXPlayer: Opening: %s", file.GetPath().c_str());
+    CLog::Log(LOGNOTICE, "COMXPlayer: Opening: %s", CURL::GetRedacted(file.GetPath()).c_str());
 
     // if playing a file close it first
     // this has to be changed so we won't have to close it.
