@@ -865,7 +865,6 @@ void CSettings::InitializeISettingsHandlers()
 #endif
   m_settingsManager->RegisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->RegisterSettingsHandler(&CRssManager::Get());
-  m_settingsManager->RegisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->RegisterSettingsHandler(&g_application);
 }
 
