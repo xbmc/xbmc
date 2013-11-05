@@ -42,7 +42,8 @@
 		<height>50</height>
 		<align>center</align>
 		<font>CondensedBold-18</font>
-		<texturefocus border="12">black-rounded.png</texturefocus>
+		<focusedcolor>FFFFFFFF</focusedcolor>
+		<texturefocus border="12">orange-rounded.png</texturefocus>
 		<texturenofocus border="12">base-rounded-5%.png</texturenofocus>
 	</include>
 	<include name="DialogHeading">
