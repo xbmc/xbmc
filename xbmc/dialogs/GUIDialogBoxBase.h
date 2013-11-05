@@ -61,6 +61,6 @@ protected:
   // actual strings
   CCriticalSection m_section;
   std::string m_strHeading;
-  std::vector<std::string> m_lines;
+  std::string m_text;
   std::string m_strChoices[DIALOG_MAX_CHOICES];
 };
