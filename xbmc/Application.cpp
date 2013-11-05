@@ -2684,17 +2684,18 @@ bool CApplication::OnKey(const CKey& key)
     // to map key->action
 
     // first determine if we should use keyboard input directly
-#ifndef __PLEX__
     bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
-#else
-    bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC || iWin == WINDOW_PLEX_SEARCH);
-#endif
     CGUIWindow *window = g_windowManager.GetWindow(iWin);
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();
       if (control)
       {
+        /* PLEX */
+        if (iWin == WINDOW_PLEX_SEARCH && control->GetID() >= 64 && control->GetID() <= 100)
+          useKeyboard = true;
+        /* END PLEX */
+
         // If this is an edit control set usekeyboard to true. This causes the
         // keypress to be processed directly not through the key mappings.
         if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT)

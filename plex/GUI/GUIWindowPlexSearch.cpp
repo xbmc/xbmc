@@ -41,6 +41,10 @@
 #include "input/XBMC_vkeys.h"
 #include "PlexApplication.h"
 #include "Client/PlexTimelineManager.h"
+#include "GUIEditControl.h"
+#include "GUIMessage.h"
+#include "ApplicationMessenger.h"
+#include "PlexThemeMusicPlayer.h"
 
 #define CTL_LABEL_EDIT       310
 #define CTL_BUTTON_BACKSPACE 8
@@ -53,28 +57,21 @@ using namespace XFILE;
 using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
-CGUIWindowPlexSearch::CGUIWindowPlexSearch()
-  : CGUIWindow(WINDOW_PLEX_SEARCH, "PlexSearch.xml")
-  , m_lastSearchUpdate(0)
-  , m_lastArrowKey(0)
-  , m_resetOnNextResults(false)
-  , m_selectedContainerID(-1)
-  , m_selectedItem(-1)
+CGUIWindowPlexSearch::CGUIWindowPlexSearch() : CGUIWindow(WINDOW_PLEX_SEARCH, "PlexSearch.xml"), m_searchTimer(this)
 {
-  // Initialize results lists.
-  m_categoryResults[PLEX_DIR_TYPE_MOVIE] = Group(kVIDEO_LOADER);
-  m_categoryResults[PLEX_DIR_TYPE_SHOW] = Group(kVIDEO_LOADER);
-  m_categoryResults[PLEX_DIR_TYPE_EPISODE] = Group(kVIDEO_LOADER);
-  m_categoryResults[PLEX_DIR_TYPE_ARTIST] = Group(kMUSIC_LOADER);
-  m_categoryResults[PLEX_DIR_TYPE_ALBUM] = Group(kMUSIC_LOADER);
-  m_categoryResults[PLEX_DIR_TYPE_TRACK] = Group(kMUSIC_LOADER);
-// ? person?  m_categoryResults[CPlexDirectory::TYPE_PERSON] = Group(kVIDEO_LOADER);
-  m_categoryResults[PLEX_DIR_TYPE_CLIP] = Group(kVIDEO_LOADER);
-  
-  // Create the worker. We're not going to destroy it because whacking it on exit can cause problems.
-  m_workerManager = new PlexContentWorkerManager();
+  m_editControl = NULL;
+  m_loadType = LOAD_ON_GUI_INIT;
+  m_lastFocusedContainer = -1;
+  m_lastFocusedItem = -1;
 
-  m_loadType = LOAD_EVERY_TIME;
+  m_resultMap[PLEX_DIR_TYPE_MOVIE] = 9001;
+  m_resultMap[PLEX_DIR_TYPE_SHOW] = 9002;
+  m_resultMap[PLEX_DIR_TYPE_EPISODE] = 9004;
+  m_resultMap[PLEX_DIR_TYPE_ARTIST] = 9008;
+  m_resultMap[PLEX_DIR_TYPE_ALBUM] = 9009;
+  m_resultMap[PLEX_DIR_TYPE_TRACK] = 9010;
+  m_resultMap[PLEX_DIR_TYPE_CLIP] = 9012;
+  m_resultMap[PLEX_DIR_TYPE_ROLE] = 9013;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -82,520 +79,309 @@ CGUIWindowPlexSearch::~CGUIWindowPlexSearch()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::OnInitWindow()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CGUIWindowPlexSearch::GetString()
 {
-  CGUIWindow::OnInitWindow();
+  if (m_editControl)
+    return m_editControl->GetLabel2();
+  return "";
+}
 
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-  g_plexApplication.timelineManager->SetTextFieldFocused(true, "Search");
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowPlexSearch::OnTimeout()
+{
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), GetID());
+  CApplicationMessenger::Get().SendGUIMessage(msg, GetID(), false);
 
-  if (m_selectedItem != -1)
+  CStdString str = GetString();
+  CPlexServerManager::CPlexServerOwnedModifier modifier = g_guiSettings.GetBool("myplex.searchsharedlibraries") ? CPlexServerManager::SERVER_ALL : CPlexServerManager::SERVER_OWNED;
+  PlexServerList list = g_plexApplication.serverManager->GetAllServers(modifier);
+  BOOST_FOREACH(CPlexServerPtr server, list)
   {
-    // Convert back to utf8.
-    CStdString utf8Edit;
-    g_charsetConverter.wToUTF8(m_strEdit, utf8Edit);
-    pEdit->SetLabel(utf8Edit);
-    pEdit->SetCursorPos(utf8Edit.size());
+    CURL u = server->BuildPlexURL("/search");
+    u.SetOption("query", str);
+    m_currentSearchString.push_back(CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(u), this, CJob::PRIORITY_LOW));
+    CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::OnTimeout searching %s", server->toString().c_str());
+    MarkDirtyRegion();
+  }
+}
 
-    g_plexApplication.timelineManager->SetTextFieldFocused(true, "Search", utf8Edit);
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowPlexSearch::UpdateSearch()
+{
+  CStdString str = GetString();
+  StringUtils::ToUpper(str);
+  m_editControl->SetLabel2(str);
 
-    // Bind the lists.
-    Bind();
+  if (InProgress() && m_currentSearchString != str)
+  {
+    CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::UpdateSearch canceling all searches!");
 
-    // Select group.
-    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_selectedContainerID);
-    OnMessage(msg);
+    BOOST_FOREACH(int64_t id, m_currentSearchId)
+      CJobManager::GetInstance().CancelJob(id);
 
-    // Select item.
-    CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), m_selectedContainerID, m_selectedItem);
-    OnMessage(msg2);
+    m_currentSearchString.clear();
+  }
 
-    m_selectedContainerID = -1;
-    m_selectedItem = -1;
+  if (!str.empty())
+  {
+    if (m_searchTimer.IsRunning())
+      m_searchTimer.Restart();
+    else
+      m_searchTimer.Start(SEARCH_DELAY, false);
   }
   else
-  {
-    // Reset the view.
     Reset();
-    m_strEdit = "";
-    UpdateLabel();
-
-    // Select button.
-    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), 65);
-    OnMessage(msg);
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexSearch::OnAction(const CAction &action)
 {
-  CStdString strAction = action.GetName();
-  strAction = strAction.ToLower();
-  
-  // Eat returns.
-  if (action.GetUnicode() == 13 && GetFocusedControlID() < 9000)
+  if (m_editControl)
   {
-    return true;
-  }
-  else if (action.GetID() == ACTION_PREVIOUS_MENU ||
-           action.GetID() == ACTION_NAV_BACK ||
-           (action.GetID() == ACTION_PARENT_DIR && m_strEdit.size() == 0))
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-  else if (action.GetID() == ACTION_PARENT_DIR || action.GetID() == ACTION_BACKSPACE)
-  {
-    Backspace();
-    return true;
-  }
-  else if (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_RIGHT ||
-           action.GetID() == ACTION_MOVE_UP   || action.GetID() == ACTION_MOVE_DOWN  ||
-           action.GetID() == ACTION_PAGE_UP   || action.GetID() == ACTION_PAGE_DOWN ||
-           // action.wID == ACTION_HOME      || action.wID == ACTION_END)
-           action.GetID() == ACTION_SELECT_ITEM)
-  {
-    // If we're going to reset the search time, then make sure we track time since the key.
-    if (GetFocusedControlID() < 9000 && m_lastSearchUpdate != 0)
-      m_lastArrowKey = XbmcThreads::SystemClockMillis();
-    
-    // Reset search time.
-    m_lastSearchUpdate = 0;
-
-    // Allow cursor keys to work.
-    return CGUIWindow::OnAction(action);
-  }
-  else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
-  { // input from the keyboard (vkey, not ascii)
-    uint8_t b = action.GetID() & 0xFF;
-    if (b == XBMCVK_RETURN || b == XBMCVK_NUMPADENTER)
+    if (action.GetID() >= KEY_ASCII)
     {
-      return CGUIWindow::OnAction(action);
+      bool ret = m_editControl->OnAction(action);
+      UpdateSearch();
+      return ret;
     }
-    else if (b == XBMCVK_DELETE)
+    else if ((action.GetID() == ACTION_BACKSPACE || action.GetID() == ACTION_NAV_BACK) && !GetString().empty())
     {
-      if (GetCursorPos() < m_strEdit.GetLength())
-      {
-        MoveCursor(1);
-        Backspace();
-      }
+      bool ret = m_editControl->OnAction(CAction(ACTION_BACKSPACE));
+      UpdateSearch();
+      return ret;
     }
-    else if (b == XBMCVK_BACK) Backspace();
-    else if (b == XBMCVK_ESCAPE) Close();
   }
-  else if (action.GetID() >= KEY_ASCII)
-  {
-    int ch = action.GetUnicode();
-
-    // Input from the keyboard.
-    switch (ch)
-    {
-    case 0x1B: // escape.
-      Close();
-      break;
-    case 0x0:
-      return false;
-    default:
-      Character(action.GetUnicode());
-    }
-    return true;
-  }
-
-  return false;
+  return CGUIWindow::OnAction(action);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
 {
-  switch (message.GetMessage())
+
+  if (message.GetMessage() == GUI_MSG_CLICKED)
   {
-  case GUI_MSG_SEARCH_HELPER_COMPLETE:
-  {
-    PlexContentWorkerPtr worker = m_workerManager->find(message.GetParam1());
-    if (worker)
-    {
-      //printf("Processing results from worker: %d.\n", worker->getID());
-      CFileItemListPtr results = worker->getResults();
-
-      int lastFocusedList = -1;
-      if (m_resetOnNextResults)
-      {
-        // Get the last focused list.
-        lastFocusedList = GetFocusedControlID();
-        if (lastFocusedList < 9000)
-          lastFocusedList = -1;
-
-        Reset();
-        m_resetOnNextResults = false;
-      }
-
-      /*
-      // If we have any additional providers, run them in parallel.
-      vector<CFileItemPtr>& providers = results->GetProviders();
-      BOOST_FOREACH(CFileItemPtr& provider, providers)
-      {
-        // Convert back to utf8.
-        CStdString search;
-        g_charsetConverter.wToUTF8(m_strEdit, search);
-
-        // Create a new worker.
-        m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(provider->GetPath(), search), 0);
-      }
-       */
-
-      // Put the items in the right category.
-      for (int i=0; i<results->Size(); i++)
-      {
-        // Get the item and the type.
-        CFileItemPtr item = results->Get(i);
-        EPlexDirectoryType type = item->GetPlexDirectoryType();
-
-        // Add it to the correct "bucket".
-        if (m_categoryResults.find(type) != m_categoryResults.end())
-          m_categoryResults[type].list->Add(item);
-        else
-          printf("Warning, skipping item with category %d.\n", type);
-      }
-
-      // Bind all the lists.
-      int firstListWithStuff = -1;
-      BOOST_FOREACH(int_list_pair pair, m_categoryResults)
-      {
-        int controlID = 9000 + pair.first;
-        CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(controlID);
-        if (control && pair.second.list->Size() > 0)
-        {
-          if (control->GetRows() != (unsigned)pair.second.list->Size())
-          {
-            // Save selected item.
-            int selectedItem = control->GetSelectedItem();
-            
-            // Set the list.
-            CGUIMessage msg(GUI_MSG_LABEL_BIND, CTL_LABEL_EDIT, controlID, 0, 0, pair.second.list.get());
-            OnMessage(msg);
-            
-            // Restore selected item.
-            CONTROL_SELECT_ITEM(control->GetID(), selectedItem);
-            
-            // Make sure it's visible.
-            SET_CONTROL_VISIBLE(controlID);
-            SET_CONTROL_VISIBLE(controlID-2000);
-          }
-          
-          if (firstListWithStuff == -1)
-            firstListWithStuff = controlID;
-        }
-      }
-
-      // If we lost focus, restore it.
-      if (lastFocusedList > 0)
-      {
-        CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), firstListWithStuff != -1 ? firstListWithStuff : 70);
-        OnMessage(msg);
-      }
-
-      // Get thumbs.
-      BOOST_FOREACH(int_list_pair pair, m_categoryResults)
-        pair.second.loader->Load(*pair.second.list.get());
-
-      // Whack it.
-      m_workerManager->destroy(message.GetParam1());
-    }
+    if (OnClick(message.GetSenderId(), message.GetParam1()))
+      return true;
   }
-  break;
-
-  case GUI_MSG_WINDOW_DEINIT:
+  else if (message.GetMessage() == GUI_MSG_LABEL_RESET && message.GetControlId() == GetID())
   {
-    g_plexApplication.timelineManager->SetTextFieldFocused(false);
-    if (m_videoThumbLoader.IsLoading())
-      m_videoThumbLoader.StopThread();
-
-    if (m_musicThumbLoader.IsLoading())
-      m_musicThumbLoader.StopThread();
-    
-    m_workerManager->cancelPending();
-  }
-  break;
-
-  case GUI_MSG_CLICKED:
-  {
-    int iControl = message.GetSenderId();
-    OnClickButton(iControl);
+    Reset();
     return true;
   }
-  break;
-
-  case GUI_MSG_LOSTFOCUS:
-    g_plexApplication.timelineManager->SetTextFieldFocused(false);
-    break;
+  else if (message.GetMessage() == GUI_MSG_SEARCH_UPDATE)
+  {
+    ProcessResults((CFileItemList*)message.GetPointer());
+    return true;
   }
 
-  return CGUIWindow::OnMessage(message);
+  bool ret = CGUIWindow::OnMessage(message);
+
+  if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
+    InitWindow();
+
+  return ret;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::Render()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowPlexSearch::OnClick(int senderId, int action)
 {
-  // Enough time has passed since a key was pressed.
-  if (m_lastSearchUpdate && m_lastSearchUpdate + SEARCH_DELAY < XbmcThreads::SystemClockMillis())
-    UpdateLabel();
-  
-  // Enough time has passed since an arrow key was pressed after we had input.
-  if (m_lastArrowKey && m_lastArrowKey + SEARCH_DELAY < XbmcThreads::SystemClockMillis())
-    UpdateLabel();
-
-  CGUIWindow::Render();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::Character(WCHAR ch)
-{
-  if (!ch)
-    return;
-
-  m_strEdit.Insert(GetCursorPos(), ch);
-  UpdateLabel();
-  MoveCursor(1);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::Backspace()
-{
-  int iPos = GetCursorPos();
-  if (iPos > 0)
+  if (senderId == CTL_BUTTON_BACKSPACE)
   {
-    m_strEdit.erase(iPos - 1, 1);
-    MoveCursor(-1);
-    UpdateLabel();
+    OnAction(CAction(ACTION_BACKSPACE));
   }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::UpdateLabel()
-{
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-  if (pEdit)
+  else if (senderId == CTL_BUTTON_CLEAR)
   {
-    // Convert back to utf8.
-    CStdString utf8Edit;
-    g_charsetConverter.wToUTF8(m_strEdit, utf8Edit);
-    g_plexApplication.timelineManager->SetTextFieldFocused(true, "Search", utf8Edit);
-    pEdit->SetLabel(utf8Edit);
-
-    // Send off a search message if it's been SEARCH_DELAY since last search.
-    DWORD now = XbmcThreads::SystemClockMillis();
-    if (!m_lastSearchUpdate || m_lastSearchUpdate + SEARCH_DELAY >= now)
-    {
-      m_lastSearchUpdate = now;
-      m_lastArrowKey = 0;
-    }
-
-    if (m_lastSearchUpdate + SEARCH_DELAY < now ||
-        (m_lastArrowKey && m_lastArrowKey     + SEARCH_DELAY < now))
-    {
-      m_lastSearchUpdate = 0;
-      m_lastArrowKey = 0;
-      StartSearch(utf8Edit);
-    }
+    m_editControl->SetLabel2("");
+    Reset();
   }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::Bind()
-{
-  // Bind all the lists.
-  BOOST_FOREACH(int_list_pair pair, m_categoryResults)
+  else if (senderId == CTL_BUTTON_SPACE)
   {
-    int controlID = 9000 + pair.first;
-    CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(controlID);
-    if (control && pair.second.list->Size() > 0)
-    {
-      CGUIMessage msg(GUI_MSG_LABEL_BIND, CTL_LABEL_EDIT, controlID, 0, 0, pair.second.list.get());
-      OnMessage(msg);
+    CStdString str = GetString();
+    str += " ";
+    m_editControl->SetLabel2(str);
+    UpdateSearch();
+  }
+  else if (senderId >= 65 && senderId <= 100)
+  {
+    char c;
 
-      SET_CONTROL_VISIBLE(controlID);
-      SET_CONTROL_VISIBLE(controlID-2000);
-    }
+    if (senderId <= 90)
+      c = 'A' + (senderId - 65);
     else
-    {
-      SET_CONTROL_HIDDEN(controlID);
-      SET_CONTROL_HIDDEN(controlID-2000);
-    }
-  }
+      c = '0' + (senderId - 91);
 
-  // Get thumbs.
-  BOOST_FOREACH(int_list_pair pair, m_categoryResults)
-    pair.second.loader->Load(*pair.second.list.get());
+    CStdString str = GetString();
+    str += c;
+    m_editControl->SetLabel2(str);
+    UpdateSearch();
+  }
+  else if (senderId >= 9001)
+  {
+    CGUIBaseContainer* container = (CGUIBaseContainer*)GetControl(senderId);
+    if (container)
+    {
+      std::vector<CGUIListItemPtr> items = container->GetItems();
+      if (items.size() > container->GetSelectedItem())
+      {
+        CGUIListItemPtr item = items.at(container->GetSelectedItem());
+        if (item && item->IsFileItem())
+        {
+          CFileItemPtr fileItem = boost::static_pointer_cast<CFileItem>(item);
+
+          m_lastFocusedContainer = container->GetID();
+          m_lastFocusedItem = container->GetSelectedItem();
+
+          if (!item->m_bIsFolder)
+          {
+            if (action == ACTION_PLAYER_PLAY ||
+                (!PlexUtils::CurrentSkinHasPreplay() ||
+                 fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK ||
+                 fileItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO))
+            {
+              PlayPlexItem(fileItem);
+              return true;
+            }
+          }
+
+          if (action == ACTION_SELECT_ITEM)
+          {
+            m_navHelper.navigateToItem(fileItem);
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+  else
+    return false;
+
+
+  return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowPlexSearch::HideAllLists()
+{
+  std::pair<int, int> intPair;
+  BOOST_FOREACH(intPair, m_resultMap)
+  {
+    SET_CONTROL_HIDDEN(intPair.second);
+    SET_CONTROL_HIDDEN(intPair.second - 2000);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowPlexSearch::Reset()
 {
-  // Reset results.
-  BOOST_FOREACH(int_list_pair pair, m_categoryResults)
+  std::pair<int, int> intPair;
+  BOOST_FOREACH(intPair, m_resultMap)
   {
-    int controlID = 9000 + pair.first;
-    CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(controlID);
-    if (control)
+    CGUIBaseContainer* container = (CGUIBaseContainer*)GetControl(intPair.second);
+    if (container)
     {
-      CGUIMessage msg(GUI_MSG_LABEL_RESET, CTL_LABEL_EDIT, controlID);
+      CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), container->GetID());
       OnMessage(msg);
-
-      SET_CONTROL_HIDDEN(controlID);
-      SET_CONTROL_HIDDEN(controlID-2000);
     }
+
+    SET_CONTROL_HIDDEN(intPair.second);
+    SET_CONTROL_HIDDEN(intPair.second - 2000);
   }
 
-  // Fix focus if needed.
   if (GetFocusedControlID() >= 9000)
   {
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), 70);
     OnMessage(msg);
   }
-
-  // Reset results.
-  BOOST_FOREACH(int_list_pair pair, m_categoryResults)
-    pair.second.list->Clear();
 }
 
-///////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::StartSearch(const string& search)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowPlexSearch::InitWindow()
 {
-  // Cancel pending requests.
-  m_workerManager->cancelPending();
+  CGUIEditControl* ctrl = (CGUIEditControl*)GetControl(CTL_LABEL_EDIT);
+  if (ctrl)
+    m_editControl = ctrl;
+  else
+    CLog::Log(LOGWARNING, "CGUIWindowPlexSearch::InitWindow Couldn't find editlabel with ID %d", CTL_LABEL_EDIT);
 
-  if (search.empty())
-  {
-    // Reset the results, we're not searching for anything at the moment.
-    Reset();
-  }
+  if (m_lastFocusedContainer == -1)
+    HideAllLists();
   else
   {
-    if (g_plexApplication.serverManager->GetBestServer())
+    g_plexApplication.themeMusicPlayer->playForItem(CFileItem());
+
+    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_lastFocusedContainer);
+    OnMessage(msg);
+
+    CONTROL_SELECT_ITEM(m_lastFocusedContainer, m_lastFocusedItem);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowPlexSearch::ProcessResults(CFileItemList* results)
+{
+  std::map<int, CFileItemListPtr> mappedRes;
+  for (int i = 0; i < results->Size(); i ++)
+  {
+    CFileItemPtr item = results->Get(i);
+    if (item && m_resultMap.find(item->GetPlexDirectoryType()) != m_resultMap.end())
     {
-      m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(g_plexApplication.serverManager->GetBestServer(), search), 0);
+      CFileItemListPtr list;
+      if (mappedRes.find(item->GetPlexDirectoryType()) == mappedRes.end())
+      {
+        list = CFileItemListPtr(new CFileItemList);
+        mappedRes[item->GetPlexDirectoryType()] = list;
+      }
+      else
+        list = mappedRes[item->GetPlexDirectoryType()];
+
+      CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults Added item %s to %d", item->GetLabel().c_str(), item->GetPlexDirectoryType());
+      list->Add(item);
+    }
+    else if (item)
+    {
+      CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults got item with type %d which we can't handle!", item->GetPlexDirectoryType());
+    }
+  }
+
+  std::pair<int, CFileItemListPtr> pair;
+  BOOST_FOREACH(pair, mappedRes)
+  {
+    CGUIBaseContainer* container = (CGUIBaseContainer*)GetControl(m_resultMap[pair.first]);
+    if (container)
+    {
+      CFileItemListPtr list = pair.second;
+      std::vector<CGUIListItemPtr> cList = container->GetItems();
+
+      int i = 0;
+      BOOST_FOREACH(CGUIListItemPtr item, cList)
+        list->AddFront(boost::static_pointer_cast<CFileItem>(item), i++);
+
+      CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), container->GetID(), 0, 0, list.get());
+      OnMessage(msg);
+
+      SET_CONTROL_VISIBLE(container->GetID());
+      SET_CONTROL_VISIBLE(container->GetID() - 2000);
     }
     else
-    {
-      // Issue the request to the cloud.
-      /* FIXME: a Node Server in CPlexServerManager?
-      m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl("http://node.plexapp.com:32400/system/search", search), 0);
-       */
-    }
-    
-    // If we have shared servers, search them too.
-    if (g_guiSettings.GetBool("myplex.searchsharedlibraries"))
-    {
-      PlexServerList sharedServers = g_plexApplication.serverManager->GetAllServers(CPlexServerManager::SERVER_SHARED);
-      
-      BOOST_FOREACH(CPlexServerPtr server, sharedServers)
-        m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(server, search), 0);
-    }
-    
-    // Note that when we receive results, we need to clear out the old ones.
-    m_resetOnNextResults = true;
+      CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults Could not find container %d", m_resultMap[pair.first]);
   }
+
+  delete results;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::MoveCursor(int iAmount)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowPlexSearch::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-  if (pEdit)
-    pEdit->SetCursorPos(pEdit->GetCursorPos() + iAmount);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-int CGUIWindowPlexSearch::GetCursorPos() const
-{
-  const CGUILabelControl* pEdit = (const CGUILabelControl*)GetControl(CTL_LABEL_EDIT);
-  if (pEdit)
-    return pEdit->GetCursorPos();
-
-  return 0;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-char CGUIWindowPlexSearch::GetCharacter(int iButton)
-{
-  if (iButton >= 65 && iButton <= 90)
+  CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
+  if (fjob && success)
   {
-    // It's a letter.
-    return 'A' + (iButton-65);
+    CFileItemList* list = new CFileItemList;
+    list->Copy(fjob->m_items);
+
+    CGUIMessage msg(GUI_MSG_SEARCH_UPDATE, GetID(), GetID(), 0, 0, list);
+    CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_PLEX_SEARCH, false);
   }
-  else if (iButton >= 91 && iButton <= 100)
-  {
-    // It's a number.
-    return '0' + (iButton-91);
-  }
-
-  return 0;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::OnClickButton(int iButtonControl)
-{
-  if (iButtonControl == CTL_BUTTON_BACKSPACE)
-  {
-    Backspace();
-  }
-  else if (iButtonControl == CTL_BUTTON_CLEAR)
-  {
-    CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-    if (pEdit)
-    {
-      m_strEdit = "";
-      UpdateLabel();
-
-      // Convert back to utf8.
-      CStdString utf8Edit;
-      g_charsetConverter.wToUTF8(m_strEdit, utf8Edit);
-      pEdit->SetLabel(utf8Edit);
-      g_plexApplication.timelineManager->SetTextFieldFocused(true, "Search", utf8Edit);
-
-      // Reset cursor position.
-      pEdit->SetCursorPos(0);
-    }
-  }
-  else if (iButtonControl == CTL_BUTTON_SPACE)
-  {
-    Character(' ');
-  }
-  else
-  {
-    char ch = GetCharacter(iButtonControl);
-    if (ch != 0)
-    {
-      // A keyboard button was pressed.
-      Character(ch);
-    }
-    else
-    {
-      // We'll try to play the selected item.
-      PlayFileFromContainer(GetControl(iButtonControl));
-    }
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::SaveStateBeforePlay(CGUIBaseContainer* container)
-{
-  // Save state.
-  m_selectedContainerID = container->GetID();
-  m_selectedItem = container->GetSelectedItem();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-string CGUIWindowPlexSearch::BuildSearchUrl(const CPlexServerPtr& server, const string& theQuery)
-{
-  CURL url = server->BuildPlexURL("/search");
-  url.SetOption("query", theQuery);
-  return url.Get();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-bool CGUIWindowPlexSearch::InProgress()
-{
-  return (m_workerManager->pendingWorkers() > 0);
 }
