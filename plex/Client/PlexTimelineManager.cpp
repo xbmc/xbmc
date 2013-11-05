@@ -22,7 +22,7 @@
 #include "FileItem.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false), m_textFieldFocused(false), m_textFieldSecure(false)
+CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false), m_textFieldFocused(false), m_textFieldSecure(false), m_subscriberTimer(this)
 {
   m_currentItems[MUSIC] = CFileItemPtr();
   m_currentItems[PHOTO] = CFileItemPtr();
@@ -82,8 +82,18 @@ void CPlexTimelineManager::SendTimelineToSubscriber(CPlexRemoteSubscriberPtr sub
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexTimelineManager::SendTimelineToSubscribers()
 {
+  /* collate events under 200 MS */
+  if (m_subscriberTimer.IsRunning())
+    m_subscriberTimer.Restart();
+  else
+    m_subscriberTimer.Start(200);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexTimelineManager::OnTimeout()
+{
   BOOST_FOREACH(CPlexRemoteSubscriberPtr sub, g_plexApplication.remoteSubscriberManager->getSubscribers())
-      SendTimelineToSubscriber(sub);
+    SendTimelineToSubscriber(sub);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,12 +106,13 @@ void CPlexTimelineManager::SetTextFieldFocused(bool focused, const CStdString &n
     m_textFieldContents = contents;
     m_textFieldSecure = isSecure;
   }
-  else
+  else if (name == m_textFieldName) /* we only remove the data if the fieldname matches */
   {
     m_textFieldName = "";
     m_textFieldContents = "";
     m_textFieldSecure = false;
   }
+
   SendTimelineToSubscribers();
 }
 
@@ -441,7 +452,7 @@ CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(int commandID)
   {
     mediaContainer->SetAttribute("textFieldFocused", std::string(m_textFieldName));
     mediaContainer->SetAttribute("textFieldSecure", m_textFieldSecure ? "1" : "0");
-    mediaContainer->SetAttribute("textFieldContents", std::string(m_textFieldContents));
+    mediaContainer->SetAttribute("textFieldContent", std::string(m_textFieldContents));
   }
 
   if (commandID != -1)

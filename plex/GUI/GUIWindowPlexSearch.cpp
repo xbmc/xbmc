@@ -110,8 +110,6 @@ void CGUIWindowPlexSearch::OnTimeout()
 void CGUIWindowPlexSearch::UpdateSearch()
 {
   CStdString str = GetString();
-  StringUtils::ToUpper(str);
-  m_editControl->SetLabel2(str);
 
   if (InProgress() && m_currentSearchString != str)
   {
@@ -178,7 +176,16 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
   bool ret = CGUIWindow::OnMessage(message);
 
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
+  {
     InitWindow();
+    g_plexApplication.timelineManager->SetTextFieldFocused(true, m_editControl->GetDescription(), GetString());
+  }
+
+  if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
+    g_plexApplication.timelineManager->SetTextFieldFocused(false, m_editControl->GetDescription());
+
+  if (message.GetMessage() == GUI_MSG_SET_TEXT && message.GetControlId() == CTL_LABEL_EDIT)
+    UpdateSearch();
 
   return ret;
 }
@@ -302,7 +309,10 @@ void CGUIWindowPlexSearch::InitWindow()
 {
   CGUIEditControl* ctrl = (CGUIEditControl*)GetControl(CTL_LABEL_EDIT);
   if (ctrl)
+  {
     m_editControl = ctrl;
+    m_editControl->SetOnlyCaps(true);
+  }
   else
     CLog::Log(LOGWARNING, "CGUIWindowPlexSearch::InitWindow Couldn't find editlabel with ID %d", CTL_LABEL_EDIT);
 

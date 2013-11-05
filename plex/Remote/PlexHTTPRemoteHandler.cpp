@@ -27,6 +27,7 @@
 #include "PlexApplication.h"
 
 #include "settings/GUISettings.h"
+#include "guilib/GUIEditControl.h"
 
 #include "PlayList.h"
 
@@ -529,23 +530,39 @@ void CPlexHTTPRemoteHandler::setVolume(const ArgMap &arguments)
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::sendString(const ArgMap &arguments)
 {
-  if (arguments.find("text") == arguments.end())
-    return;
-  
-  /* this is a bit kludgy, but I couldn't figure out how to get the current text any other way
-   * TODO: how does this work with a numeric input? */
-  CGUIDialogKeyboardGeneric *keyb = dynamic_cast<CGUIDialogKeyboardGeneric*>(g_windowManager.GetWindow(g_windowManager.GetFocusedWindow()));
-  
-  if (!keyb)
-    return;
+  std::string newString;
 
+  /* old school */
+  if (arguments.find("text") != arguments.end())
+  {
+    newString = arguments.find("text")->second;
+  }
+  else if (g_plexApplication.timelineManager->IsTextFieldFocused())
+  {
+    if (arguments.find(g_plexApplication.timelineManager->GetCurrentFocusedTextField()) != arguments.end())
+      newString = arguments.find(g_plexApplication.timelineManager->GetCurrentFocusedTextField())->second;
+  }
+  
   g_application.WakeUpScreenSaverAndDPMS();
-  
-  CStdString newString = keyb->GetText() + arguments.find("text")->second.c_str();
-  
+
+  int currentWindow = g_windowManager.GetActiveWindow();
+  CGUIWindow* win = g_windowManager.GetWindow(currentWindow);
+  CGUIControl* ctrl;
+
+  if (currentWindow == WINDOW_PLEX_SEARCH)
+    ctrl = (CGUIControl*)win->GetControl(310);
+  else
+    ctrl = win->GetFocusedControl();
+
+  if (ctrl->GetControlType() != CGUIControl::GUICONTROL_EDIT)
+  {
+    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::sendString focused control %d is not a edit control", ctrl->GetID());
+    return;
+  }
+
   /* instead of calling keyb->SetText() we want to send this as a message
    * to avoid any thread locking and contention */
-  CGUIMessage msg(GUI_MSG_SET_TEXT, 0, 0);
+  CGUIMessage msg(GUI_MSG_SET_TEXT, 0, ctrl->GetID());
   msg.SetLabel(newString);
   msg.SetParam1(0);
   

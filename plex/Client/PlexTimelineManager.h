@@ -5,6 +5,7 @@
 #include "FileItem.h"
 #include "Utility/PlexTimer.h"
 #include "threads/Event.h"
+#include "threads/Timer.h"
 #include "UrlOptions.h"
 #include "FileItem.h"
 #include "Remote/PlexRemoteSubscriberManager.h"
@@ -13,7 +14,7 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 
-class CPlexTimelineManager
+class CPlexTimelineManager : public ITimerCallback
 {
   public:
     enum MediaType {
@@ -52,7 +53,12 @@ class CPlexTimelineManager
 
     void Stop();
 
+    std::string GetCurrentFocusedTextField() const { return m_textFieldName; }
+    bool IsTextFieldFocused() const { return m_textFieldFocused; }
+
   private:
+    void OnTimeout();
+
     std::map<MediaType, CFileItemPtr> m_currentItems;
     std::map<MediaType, MediaState> m_currentStates;
 
@@ -66,6 +72,8 @@ class CPlexTimelineManager
     CStdString m_textFieldName;
     CStdString m_textFieldContents;
     bool m_textFieldSecure;
+
+    CTimer m_subscriberTimer;
 };
 
 typedef boost::shared_ptr<CPlexTimelineManager> CPlexTimelineManagerPtr;
