@@ -1139,7 +1139,7 @@ CGUIWindowHome::GetSectionTypeFromDirectoryType(EPlexDirectoryType dirType)
     return SECTION_TYPE_SHOW;
   else if (dirType == PLEX_DIR_TYPE_ALBUM)
     return SECTION_TYPE_ALBUM;
-  else if (dirType == PLEX_DIR_TYPE_PHOTO)
+  else if (dirType == PLEX_DIR_TYPE_PHOTOALBUM || dirType == PLEX_DIR_TYPE_PHOTO)
     return SECTION_TYPE_PHOTOS;
   else if (dirType == PLEX_DIR_TYPE_ARTIST)
     return SECTION_TYPE_ALBUM;

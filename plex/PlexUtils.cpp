@@ -385,7 +385,12 @@ bool PlexUtils::CurrentSkinHasPreplay()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool PlexUtils::CurrentSkinHasFilters()
 {
-  CGUIWindow* window = g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
+  int iWin = g_windowManager.GetActiveWindow();
+
+  if (iWin != WINDOW_VIDEO_NAV && iWin != WINDOW_PICTURES && iWin != WINDOW_MUSIC_FILES)
+    iWin = WINDOW_VIDEO_NAV;
+
+  CGUIWindow* window = g_windowManager.GetWindow(iWin);
   if (window)
   {
     const CGUIControl* ctrl = window->GetControl(FILTER_PRIMARY_CONTAINER);
