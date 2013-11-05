@@ -94,16 +94,27 @@ void CGUIWindowPlexSearch::OnTimeout()
   CApplicationMessenger::Get().SendGUIMessage(msg, GetID(), false);
 
   CStdString str = GetString();
+
+  if (str.empty())
+    return;
+
   CPlexServerManager::CPlexServerOwnedModifier modifier = g_guiSettings.GetBool("myplex.searchsharedlibraries") ? CPlexServerManager::SERVER_ALL : CPlexServerManager::SERVER_OWNED;
   PlexServerList list = g_plexApplication.serverManager->GetAllServers(modifier);
+
+  CSingleLock lk(m_threadsSection);
+  m_currentSearchString = str;
   BOOST_FOREACH(CPlexServerPtr server, list)
   {
+    if (!server->GetActiveConnection())
+      continue;
+
     CURL u = server->BuildPlexURL("/search");
     u.SetOption("query", str);
-    m_currentSearchString.push_back(CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(u), this, CJob::PRIORITY_LOW));
+    m_currentSearchId.push_back(CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(u), this, CJob::PRIORITY_LOW));
     CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::OnTimeout searching %s", server->toString().c_str());
-    MarkDirtyRegion();
   }
+
+  SetInvalid();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,9 +126,11 @@ void CGUIWindowPlexSearch::UpdateSearch()
   {
     CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::UpdateSearch canceling all searches!");
 
-    BOOST_FOREACH(int64_t id, m_currentSearchId)
+    CSingleLock lk(m_threadsSection);
+    BOOST_FOREACH(unsigned int id, m_currentSearchId)
       CJobManager::GetInstance().CancelJob(id);
 
+    m_currentSearchId.clear();
     m_currentSearchString.clear();
   }
 
@@ -332,6 +345,10 @@ void CGUIWindowPlexSearch::InitWindow()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowPlexSearch::ProcessResults(CFileItemList* results)
 {
+  CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(results->Get(0));
+  if (server)
+    CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults got response from %s", server->toString().c_str());
+
   std::map<int, CFileItemListPtr> mappedRes;
   for (int i = 0; i < results->Size(); i ++)
   {
@@ -346,13 +363,7 @@ void CGUIWindowPlexSearch::ProcessResults(CFileItemList* results)
       }
       else
         list = mappedRes[item->GetPlexDirectoryType()];
-
-      CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults Added item %s to %d", item->GetLabel().c_str(), item->GetPlexDirectoryType());
       list->Add(item);
-    }
-    else if (item)
-    {
-      CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults got item with type %d which we can't handle!", item->GetPlexDirectoryType());
     }
   }
 
@@ -394,4 +405,7 @@ void CGUIWindowPlexSearch::OnJobComplete(unsigned int jobID, bool success, CJob 
     CGUIMessage msg(GUI_MSG_SEARCH_UPDATE, GetID(), GetID(), 0, 0, list);
     CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_PLEX_SEARCH, false);
   }
+
+  CSingleLock lk(m_threadsSection);
+  m_currentSearchId.erase(std::remove(m_currentSearchId.begin(), m_currentSearchId.end(), jobID));
 }
