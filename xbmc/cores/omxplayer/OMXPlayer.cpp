@@ -4115,7 +4115,11 @@ void COMXPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   if (index == GetAudioStream())
     info.bitrate = m_omxPlayerAudio.GetAudioBitrate();
   else
-    info.bitrate = m_pDemuxer->GetStreamFromAudioId(index)->iBitRate;
+  {
+    CDemuxStreamAudio* stream = m_pDemuxer->GetStreamFromAudioId(index);
+    if (stream)
+      info.bitrate = stream->iBitRate;
+  }
 
   OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, index);
   if(s.language.length() > 0)
