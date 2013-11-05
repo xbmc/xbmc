@@ -266,7 +266,6 @@
       <closesquarebracket>BigStepForward</closesquarebracket>
       <return>Pause</return>
       <i>CodecInfo</i>
-      <t>Info</t>
       <o>ShowTime</o>
       <s>ShowSubtitles</s>
       <s mod="ctrl">SubtitleAlign</s>
