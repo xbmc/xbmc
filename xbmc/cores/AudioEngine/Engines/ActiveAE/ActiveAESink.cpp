@@ -462,6 +462,7 @@ void CActiveAESink::Process()
   Message *msg = NULL;
   Protocol *port = NULL;
   bool gotMsg;
+  XbmcThreads::EndTime timer;
 
   m_state = S_TOP_UNCONFIGURED;
   m_extTimeout = 1000;
@@ -470,6 +471,7 @@ void CActiveAESink::Process()
   while (!m_bStop)
   {
     gotMsg = false;
+    timer.Set(m_extTimeout);
 
     if (m_bStateMachineSelfTrigger)
     {
@@ -510,6 +512,7 @@ void CActiveAESink::Process()
     // wait for message
     else if (m_outMsgEvent.WaitMSec(m_extTimeout))
     {
+      m_extTimeout = timer.MillisLeft();
       continue;
     }
     // time out
