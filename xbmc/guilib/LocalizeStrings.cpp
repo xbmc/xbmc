@@ -158,8 +158,6 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
     return false;
   }
 
-  XMLUtils::GetEncoding(&xmlDoc, encoding);
-
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (!pRootElement || pRootElement->NoChildren() ||
        pRootElement->ValueStr()!=CStdString("strings"))
@@ -177,7 +175,7 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
     {
       uint32_t id = atoi(attrId) + offset;
       if (m_strings.find(id) == m_strings.end())
-        m_strings[id].strTranslated = ToUTF8(encoding, pChild->FirstChild()->Value());
+        m_strings[id].strTranslated = pChild->FirstChild()->Value();
     }
     pChild = pChild->NextSiblingElement("string");
   }

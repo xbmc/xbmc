@@ -122,11 +122,8 @@ bool CScraperUrl::ParseString(CStdString strUrl)
     return false;
 
   // ok, now parse the xml file
-  if (!XMLUtils::HasUTF8Declaration(strUrl))
-    g_charsetConverter.unknownToUTF8(strUrl);
-
   CXBMCTinyXML doc;
-  doc.Parse(strUrl, TIXML_ENCODING_UTF8);
+  doc.Parse(strUrl, TIXML_ENCODING_UNKNOWN);
 
   TiXmlElement* pElement = doc.RootElement();
   if (!pElement)
@@ -273,11 +270,8 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
     return false;
 
   // ok, now parse the xml file
-  if (!XMLUtils::HasUTF8Declaration(strUrls))
-    g_charsetConverter.unknownToUTF8(strUrls);
-
   CXBMCTinyXML doc;
-  doc.Parse(strUrls, TIXML_ENCODING_UTF8);
+  doc.Parse(strUrls, TIXML_ENCODING_UNKNOWN);
   if (doc.RootElement())
   {
     TiXmlHandle docHandle( &doc );

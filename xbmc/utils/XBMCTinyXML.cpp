@@ -21,7 +21,12 @@
 #include "XBMCTinyXML.h"
 #include "filesystem/File.h"
 #include "utils/FileUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/CharsetConverter.h"
+#include "utils/CharsetDetection.h"
+#include "LangInfo.h"
 #include "RegExp.h"
+#include "utils/log.h"
 
 #define MAX_ENTITY_LENGTH 8 // size of largest entity "&#xNNNN;"
 #define BUFFER_SIZE 4096
@@ -39,6 +44,12 @@ CXBMCTinyXML::CXBMCTinyXML(const char *documentName)
 CXBMCTinyXML::CXBMCTinyXML(const std::string& documentName)
 : TiXmlDocument(documentName)
 {
+}
+
+CXBMCTinyXML::CXBMCTinyXML(const std::string& documentName, const std::string& documentCharset)
+: TiXmlDocument(documentName), m_SuggestedCharset(documentCharset)
+{
+  StringUtils::ToUpper(m_SuggestedCharset);
 }
 
 bool CXBMCTinyXML::LoadFile(TiXmlEncoding encoding)
@@ -77,6 +88,13 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
   return true;
 }
 
+bool CXBMCTinyXML::LoadFile(const std::string& _filename, const std::string& documentCharset)
+{
+  m_SuggestedCharset = documentCharset;
+  StringUtils::ToUpper(m_SuggestedCharset);
+  return LoadFile(_filename, TIXML_ENCODING_UNKNOWN);
+}
+
 bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
 {
   std::string data;
@@ -106,17 +124,82 @@ bool CXBMCTinyXML::SaveFile(const std::string& filename) const
   return false;
 }
 
-const char *CXBMCTinyXML::Parse(const char *_data, TiXmlEncoding encoding)
+bool CXBMCTinyXML::Parse(const char *_data, TiXmlEncoding encoding)
 {
   return Parse(std::string(_data), encoding);
 }
 
-const char *CXBMCTinyXML::Parse(const std::string& rawdata, TiXmlEncoding encoding)
+bool CXBMCTinyXML::Parse(const std::string& data, const std::string& dataCharset)
+{
+  m_SuggestedCharset = dataCharset;
+  StringUtils::ToUpper(m_SuggestedCharset);
+  return Parse(data, TIXML_ENCODING_UNKNOWN);
+}
+
+bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIXML_DEFAULT_ENCODING */)
+{
+  m_UsedCharset.clear();
+  if (encoding != TIXML_ENCODING_UNKNOWN)
+    return InternalParse(data, encoding);
+
+  if (!m_SuggestedCharset.empty() && TryParse(data, m_SuggestedCharset))
+    return true;
+
+  std::string detectedCharset;
+  if (CCharsetDetection::DetectXmlEncoding(data, detectedCharset) && TryParse(data, detectedCharset))
+    return true;
+
+  // check for valid UTF-8
+  if (m_SuggestedCharset != "UTF-8" && detectedCharset != "UTF-8" && g_charsetConverter.isValidUtf8(data) &&
+      TryParse(data, "UTF-8"))
+      return true;
+
+  // fallback: try user GUI charset
+  if (TryParse(data, g_langInfo.GetGuiCharSet()))
+    return true;
+
+  // can't detect correct data charset, try to process data as is
+  return InternalParse(data, TIXML_ENCODING_UNKNOWN);
+}
+
+bool CXBMCTinyXML::TryParse(const std::string& data, const std::string& tryDataCharset)
+{
+  if (tryDataCharset == "UTF-8")
+    InternalParse(data, TIXML_ENCODING_UTF8); // process data without conversion
+  else if (!tryDataCharset.empty())
+  {
+    std::string converted;
+    if (!g_charsetConverter.ToUtf8(tryDataCharset, data, converted) || converted.empty())
+      return false; // can't convert data
+
+    InternalParse(converted, TIXML_ENCODING_UTF8);
+  }
+  else
+    InternalParse(data, TIXML_ENCODING_LEGACY);
+
+  // 'Error()' contains result of last run of 'TiXmlDocument::Parse()'
+  if (Error())
+  {
+    Clear();
+    location.Clear();
+
+    return false;
+  }
+
+  m_UsedCharset = tryDataCharset;
+  if (!m_SuggestedCharset.empty() && m_UsedCharset != m_SuggestedCharset)
+    CLog::Log(LOGWARNING, "%s: Using \"%s\" charset instead of \"%s\" charset%s", __FUNCTION__, m_UsedCharset.c_str(), m_SuggestedCharset.c_str(),
+                (value.empty() ? "" : (" for file " + value).c_str()));
+
+  return true;
+}
+
+bool CXBMCTinyXML::InternalParse(const std::string& rawdata, TiXmlEncoding encoding /*= TIXML_DEFAULT_ENCODING */)
 {
   // Preprocess string, replacing '&' with '&amp; for invalid XML entities
   size_t pos = rawdata.find('&');
   if (pos == std::string::npos)
-    return TiXmlDocument::Parse(rawdata.c_str(), NULL, encoding); // nothing to fix, process data directly
+    return (TiXmlDocument::Parse(rawdata.c_str(), NULL, encoding) != NULL); // nothing to fix, process data directly
 
   std::string data(rawdata);
   CRegExp re(false, false, "^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
@@ -127,7 +210,7 @@ const char *CXBMCTinyXML::Parse(const std::string& rawdata, TiXmlEncoding encodi
     pos = data.find('&', pos + 1);
   } while (pos != std::string::npos);
 
-  return TiXmlDocument::Parse(data.c_str(), NULL, encoding);
+  return (TiXmlDocument::Parse(data.c_str(), NULL, encoding) != NULL);
 }
 
 bool CXBMCTinyXML::Test()

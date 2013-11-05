@@ -196,6 +196,7 @@ void CRssReader::Process()
         iStart = strXML.Find("<content:encoded>");
       }
 
+      // TODO: Use server reported charset
       if (Parse((LPSTR)strXML.c_str(), iFeed))
         CLog::Log(LOGDEBUG, "Parsed rss feed: %s", strUrl.c_str());
     }
@@ -326,17 +327,10 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 {
   m_xml.Clear();
-  m_xml.Parse((LPCSTR)szBuffer, TIXML_ENCODING_LEGACY);
+  m_xml.Parse((LPCSTR)szBuffer);
+  m_encoding = "UTF-8"; // TODO: remove member variable
 
-  m_encoding = "UTF-8";
-  if (m_xml.RootElement())
-  {
-    TiXmlDeclaration *tiXmlDeclaration = m_xml.RootElement()->Parent()->FirstChild()->ToDeclaration();
-    if (tiXmlDeclaration != NULL && strlen(tiXmlDeclaration->Encoding()) > 0)
-      m_encoding = tiXmlDeclaration->Encoding();
-  }
-
-  CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
+  CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_xml.GetUsedCharset().c_str());
 
   return Parse(iFeed);
 }

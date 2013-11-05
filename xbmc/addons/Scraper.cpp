@@ -255,11 +255,8 @@ vector<CStdString> CScraper::Run(const CStdString& function,
 
   CLog::Log(LOGDEBUG,"scraper: %s returned %s",function.c_str(),strXML.c_str());
 
-  if (!XMLUtils::HasUTF8Declaration(strXML))
-    g_charsetConverter.unknownToUTF8(strXML);
-
   CXBMCTinyXML doc;
-  doc.Parse(strXML, TIXML_ENCODING_UTF8);
+  doc.Parse(strXML, TIXML_ENCODING_UNKNOWN);
   if (!doc.RootElement())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse XML",__FUNCTION__);

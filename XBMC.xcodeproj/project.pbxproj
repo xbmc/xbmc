@@ -295,6 +295,9 @@
 		7CC30DB116291A5C003E7579 /* MusicThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DAF16291A5C003E7579 /* MusicThumbLoader.cpp */; };
 		7CC30DC016291C2C003E7579 /* VideoThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DBE16291C2C003E7579 /* VideoThumbLoader.cpp */; };
 		7CC30E8A16296078003E7579 /* EdenVideoArtUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30E8816296078003E7579 /* EdenVideoArtUpdater.cpp */; };
+		7CC82C9318284F9F0010DF30 /* CharsetDetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC82C9118284F9F0010DF30 /* CharsetDetection.cpp */; };
+		7CC82C9418284F9F0010DF30 /* CharsetDetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC82C9118284F9F0010DF30 /* CharsetDetection.cpp */; };
+		7CC82C9518284F9F0010DF30 /* CharsetDetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC82C9118284F9F0010DF30 /* CharsetDetection.cpp */; };
 		7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
 		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		7CCFD98D151494E100211D82 /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD98A151494E100211D82 /* PCMCodec.cpp */; };
@@ -3779,6 +3782,8 @@
 		7CC30DBF16291C2C003E7579 /* VideoThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoThumbLoader.h; sourceTree = "<group>"; };
 		7CC30E8816296078003E7579 /* EdenVideoArtUpdater.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EdenVideoArtUpdater.cpp; sourceTree = "<group>"; };
 		7CC30E8916296078003E7579 /* EdenVideoArtUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EdenVideoArtUpdater.h; sourceTree = "<group>"; };
+		7CC82C9118284F9F0010DF30 /* CharsetDetection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CharsetDetection.cpp; sourceTree = "<group>"; };
+		7CC82C9218284F9F0010DF30 /* CharsetDetection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharsetDetection.h; sourceTree = "<group>"; };
 		7CCF7F1B1069F3AE00992676 /* Builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Builtins.cpp; sourceTree = "<group>"; };
 		7CCF7F1C1069F3AE00992676 /* Builtins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Builtins.h; sourceTree = "<group>"; };
 		7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeUtils.cpp; sourceTree = "<group>"; };
@@ -8621,6 +8626,8 @@
 				DFECFB1B172D9D0100A43CF7 /* BooleanLogic.h */,
 				E38E1E290D25F9FD00618676 /* CharsetConverter.cpp */,
 				E38E1E2A0D25F9FD00618676 /* CharsetConverter.h */,
+				7CC82C9118284F9F0010DF30 /* CharsetDetection.cpp */,
+				7CC82C9218284F9F0010DF30 /* CharsetDetection.h */,
 				E38E1E2B0D25F9FD00618676 /* CPUInfo.cpp */,
 				E38E1E2C0D25F9FD00618676 /* CPUInfo.h */,
 				18B7C8E712942603009E7A26 /* Crc32.cpp */,
@@ -10668,6 +10675,7 @@
 				DFEF0BAC180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
 				DFEF0BC1180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 				7C2612671820667C0086E04D /* ISettingControl.cpp in Sources */,
+				7CC82C9318284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11703,6 +11711,7 @@
 				DFEF0BAE180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
 				DFEF0BC3180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 				7C2612691820667C0086E04D /* ISettingControl.cpp in Sources */,
+				7CC82C9518284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12740,6 +12749,7 @@
 				DFEF0BAD180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
 				DFEF0BC2180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 				7C2612681820667C0086E04D /* ISettingControl.cpp in Sources */,
+				7CC82C9418284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
