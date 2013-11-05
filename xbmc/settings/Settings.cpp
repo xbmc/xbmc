@@ -446,6 +446,9 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
 
+  // cleanup the settings manager
+  m_settingsManager->Clear();
+
   // unregister ISubSettings implementations
   m_settingsManager->UnregisterSubSettings(&g_application);
   m_settingsManager->UnregisterSubSettings(&CDisplaySettings::Get());
@@ -465,9 +468,6 @@ void CSettings::Uninitialize()
 #endif
   m_settingsManager->UnregisterSettingsHandler(&CProfilesManager::Get());
   m_settingsManager->UnregisterSettingsHandler(&g_application);
-
-  // cleanup the settings manager
-  m_settingsManager->Clear();
 
   m_initialized = false;
 }
