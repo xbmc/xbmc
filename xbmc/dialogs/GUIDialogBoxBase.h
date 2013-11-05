@@ -53,6 +53,7 @@ protected:
   virtual void OnDeinitWindow(int nextWindowID);
 
   bool m_bConfirmed;
+  bool m_hasTextbox;
 
   // actual strings
   CCriticalSection m_section;

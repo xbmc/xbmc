@@ -27,6 +27,7 @@ using namespace std;
 
 #define CONTROL_HEADING 1
 #define CONTROL_LINES_START 2
+#define CONTROL_TEXTBOX     9
 #define CONTROL_CHOICES_START 10
 
 CGUIDialogBoxBase::CGUIDialogBoxBase(int id, const CStdString &xmlFile)
@@ -34,6 +35,7 @@ CGUIDialogBoxBase::CGUIDialogBoxBase(int id, const CStdString &xmlFile)
 {
   m_bConfirmed = false;
   m_loadType = KEEP_IN_MEMORY;
+  m_hasTextbox = false;
 }
 
 CGUIDialogBoxBase::~CGUIDialogBoxBase(void)
@@ -117,8 +119,18 @@ void CGUIDialogBoxBase::Process(unsigned int currentTime, CDirtyRegionList &dirt
         choices.push_back(m_strChoices[i]);
     }
     SET_CONTROL_LABEL(CONTROL_HEADING, heading);
-    for (size_t i = 0 ; i < lines.size(); ++i)
-      SET_CONTROL_LABEL(CONTROL_LINES_START + i, lines[i]);
+    if (m_hasTextbox)
+    {
+      std::string text = lines[0];
+      for (size_t i = 1; i < lines.size(); ++i)
+        text += "\n" + lines[i];
+      SET_CONTROL_LABEL(CONTROL_TEXTBOX, text);
+    }
+    else
+    {
+      for (size_t i = 0 ; i < lines.size(); ++i)
+        SET_CONTROL_LABEL(CONTROL_LINES_START + i, lines[i]);
+    }
     for (size_t i = 0 ; i < choices.size() ; ++i)
       SET_CONTROL_LABEL(CONTROL_CHOICES_START + i, choices[i]);
   }
@@ -129,6 +141,11 @@ void CGUIDialogBoxBase::OnInitWindow()
 {
   // set focus to default
   m_lastControlID = m_defaultControl;
+
+  m_hasTextbox = false;
+  const CGUIControl *control = GetControl(CONTROL_TEXTBOX);
+  if (control && control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
+    m_hasTextbox = true;
 
   // set initial labels
   {
