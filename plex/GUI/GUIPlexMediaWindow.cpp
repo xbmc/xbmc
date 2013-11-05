@@ -1022,27 +1022,38 @@ void CGUIPlexMediaWindow::AddFilters()
 
       PlexStringPairVector sorts = sectionFilter->getSortOrders();
 
-      int id = SORT_BUTTONS_START;
-      BOOST_FOREACH(PlexStringPair p, sorts)
+      if (sorts.size() > 0)
       {
-        CGUIFilterOrderButtonControl::FilterOrderButtonState state = CGUIFilterOrderButtonControl::OFF;
+        SET_CONTROL_VISIBLE(SORT_LIST);
+        SET_CONTROL_VISIBLE(SORT_LABEL);
 
-        if (p.first == sectionFilter->currentSortOrder())
-          state = sectionFilter->currentSortOrderAscending() ? CGUIFilterOrderButtonControl::ASCENDING : CGUIFilterOrderButtonControl::DESCENDING;
-
-        CGUIFilterOrderButtonControl* button = factory.getSortButton(p.second, state);
-        if (button)
+        int id = SORT_BUTTONS_START;
+        BOOST_FOREACH(PlexStringPair p, sorts)
         {
-          button->SetID(id ++);
+          CGUIFilterOrderButtonControl::FilterOrderButtonState state = CGUIFilterOrderButtonControl::OFF;
 
-          if (!sectionFilter->secondaryFiltersActivated())
+          if (p.first == sectionFilter->currentSortOrder())
+            state = sectionFilter->currentSortOrderAscending() ? CGUIFilterOrderButtonControl::ASCENDING : CGUIFilterOrderButtonControl::DESCENDING;
+
+          CGUIFilterOrderButtonControl* button = factory.getSortButton(p.second, state);
+          if (button)
           {
-            button->SetEnabled(false);
-            button->SetTristate(CGUIFilterOrderButtonControl::OFF);
-          }
+            button->SetID(id ++);
 
-          sortButtons->AddControl(button);
+            if (!sectionFilter->secondaryFiltersActivated())
+            {
+              button->SetEnabled(false);
+              button->SetTristate(CGUIFilterOrderButtonControl::OFF);
+            }
+
+            sortButtons->AddControl(button);
+          }
         }
+      }
+      else
+      {
+        SET_CONTROL_HIDDEN(SORT_LIST);
+        SET_CONTROL_HIDDEN(SORT_LABEL);
       }
     }
   }
