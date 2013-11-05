@@ -773,12 +773,25 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     // as altering it will do nothing - we don't write to advancedsettings.xml
     XMLUtils::GetInt(pRootElement, "loglevel", m_logLevelHint, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
     CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("debug.showloginfo");
+#ifndef __PLEX__
     if (setting)
     {
       const char* hide;
       if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
         setting->SetAdvanced();
     }
+#else
+    CSettingString *label = (CSettingString *)g_guiSettings.GetSetting("advanced.labeldebug");
+    if (setting && label)
+    {
+      const char* hide;
+      if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
+      {
+        setting->SetAdvanced();
+        label->SetAdvanced();
+      }
+    }
+#endif
     g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
     CLog::SetLogLevel(g_advancedSettings.m_logLevel);
   }
@@ -1097,6 +1110,35 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetBoolean(pElement, "visualizedirtyregions", m_guiVisualizeDirtyRegions);
     XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
     XMLUtils::GetInt(pElement, "nofliptimeout",             m_guiDirtyRegionNoFlipTimeout);
+    
+    /* PLEX */
+    // If these are set manually in advancedsettings.xml, hide them from the UI since they won't be persisted.
+    TiXmlElement *pChildElement;
+    
+    pChildElement = pElement->FirstChildElement("visualizedirtyregions");
+    if (pChildElement)
+    {
+      CSettingBool *visualizeDirtyRegionsSetting = (CSettingBool *)g_guiSettings.GetSetting("debug.visualizedirtyregions");
+      if (visualizeDirtyRegionsSetting)
+        visualizeDirtyRegionsSetting->SetAdvanced();
+    }
+    
+    pChildElement = pElement->FirstChildElement("algorithmdirtyregions");
+    if (pChildElement)
+    {
+      CSettingBool *dirtyRegionsAlgorithmSetting = (CSettingBool *)g_guiSettings.GetSetting("debug.dirtyregionsalgorithm");
+      if (dirtyRegionsAlgorithmSetting)
+        dirtyRegionsAlgorithmSetting->SetAdvanced();
+    }
+    
+    pChildElement = pElement->FirstChildElement("nofliptimeout");
+    if (pChildElement)
+    {
+      CSettingBool *dirtyRegionsNoFlipTimeoutSetting = (CSettingBool *)g_guiSettings.GetSetting("debug.dirtyregionsnofliptimeout");
+      if (dirtyRegionsNoFlipTimeoutSetting)
+        dirtyRegionsNoFlipTimeoutSetting->SetAdvanced();
+    }
+    /* END PLEX */
   }
 
   /* PLEX */
