@@ -338,7 +338,7 @@ void CSettingsManager::UnregisterSettingsHandler(ISettingsHandler *settingsHandl
     return;
 
   CExclusiveLock lock(m_critical);
-  SettingsHandlers::const_iterator it = find(m_settingsHandlers.begin(), m_settingsHandlers.end(), settingsHandler);
+  SettingsHandlers::iterator it = find(m_settingsHandlers.begin(), m_settingsHandlers.end(), settingsHandler);
   if (it != m_settingsHandlers.end())
     m_settingsHandlers.erase(it);
 }
