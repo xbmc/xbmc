@@ -22,6 +22,7 @@
 #include "GUIDialogBoxBase.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -73,16 +74,15 @@ void CGUIDialogBoxBase::SetHeading(const CVariant& heading)
   }
 }
 
-void CGUIDialogBoxBase::SetLine(int iLine, const CVariant& line)
+void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
 {
-  if (iLine < 0 || iLine >= DIALOG_MAX_LINES)
-    return;
-
   std::string label = GetLocalized(line);
   CSingleLock lock(m_section);
-  if (label != m_strLines[iLine])
+  if (iLine >= m_lines.size())
+    m_lines.resize(iLine + 1);
+  if (label != m_lines[iLine])
   {
-    m_strLines[iLine] = label;
+    m_lines[iLine] = label;
     SetInvalid();
   }
 }
@@ -107,29 +107,28 @@ void CGUIDialogBoxBase::Process(unsigned int currentTime, CDirtyRegionList &dirt
   { // take a copy of our labels to save holding the lock for too long
     string heading;
     vector<string> lines;
-    lines.reserve(DIALOG_MAX_LINES);
     vector<string> choices;
     choices.reserve(DIALOG_MAX_CHOICES);
     {
       CSingleLock lock(m_section);
       heading = m_strHeading;
-      for (int i = 0; i < DIALOG_MAX_LINES; ++i)
-        lines.push_back(m_strLines[i]);
+      lines = m_lines;
       for (int i = 0; i < DIALOG_MAX_CHOICES; ++i)
         choices.push_back(m_strChoices[i]);
     }
     SET_CONTROL_LABEL(CONTROL_HEADING, heading);
     if (m_hasTextbox)
     {
-      std::string text = lines[0];
-      for (size_t i = 1; i < lines.size(); ++i)
-        text += "\n" + lines[i];
+      std::string text = StringUtils::Join(lines, "\n");
       SET_CONTROL_LABEL(CONTROL_TEXTBOX, text);
     }
     else
     {
-      for (size_t i = 0 ; i < lines.size(); ++i)
+      size_t i = 0;
+      for ( ; i < lines.size() && i < DIALOG_MAX_LINES; ++i)
         SET_CONTROL_LABEL(CONTROL_LINES_START + i, lines[i]);
+      for ( ; i < DIALOG_MAX_LINES; ++i)
+        SET_CONTROL_LABEL(CONTROL_LINES_START + i, "");
     }
     for (size_t i = 0 ; i < choices.size() ; ++i)
       SET_CONTROL_LABEL(CONTROL_CHOICES_START + i, choices[i]);
@@ -152,10 +151,12 @@ void CGUIDialogBoxBase::OnInitWindow()
     CSingleLock lock(m_section);
     if (m_strHeading.empty())
       m_strHeading = GetDefaultLabel(CONTROL_HEADING);
-    for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
+
+    m_lines.resize(DIALOG_MAX_LINES);
+    for (size_t i = 0; i < m_lines.size() && i < DIALOG_MAX_LINES ; ++i)
     {
-      if (m_strLines[i].empty())
-        m_strLines[i] = GetDefaultLabel(CONTROL_LINES_START + i);
+      if (m_lines[i].empty())
+        m_lines[i] = GetDefaultLabel(CONTROL_LINES_START + i);
     }
     for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
     {
@@ -172,8 +173,7 @@ void CGUIDialogBoxBase::OnDeinitWindow(int nextWindowID)
   {
     CSingleLock lock(m_section);
     m_strHeading.clear();
-    for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
-      m_strLines[i].clear();
+    m_lines.clear();
     for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
       m_strChoices[i].clear();
   }

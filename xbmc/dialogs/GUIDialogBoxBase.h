@@ -20,6 +20,8 @@
  *
  */
 
+#include <vector>
+
 #include "guilib/GUIDialog.h"
 #include "utils/Variant.h"
 #include "threads/CriticalSection.h"
@@ -35,7 +37,7 @@ public:
   virtual ~CGUIDialogBoxBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   bool IsConfirmed() const;
-  void SetLine(int iLine, const CVariant &line);
+  void SetLine(unsigned int iLine, const CVariant &line);
   void SetHeading(const CVariant &heading);
   void SetChoice(int iButton, const CVariant &choice);
 protected:
@@ -58,6 +60,6 @@ protected:
   // actual strings
   CCriticalSection m_section;
   std::string m_strHeading;
-  std::string m_strLines[DIALOG_MAX_LINES];
+  std::vector<std::string> m_lines;
   std::string m_strChoices[DIALOG_MAX_CHOICES];
 };
