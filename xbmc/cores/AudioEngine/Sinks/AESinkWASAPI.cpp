@@ -590,27 +590,6 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
   return frames;
 }
 
-bool CAESinkWASAPI::SoftSuspend()
-{
-  /* Sink has been asked to suspend output - we release audio   */
-  /* device as we are in exclusive mode and thus allow external */
-  /* audio sources to play. This requires us to reinitialize    */
-  /* on resume.                                                 */
-
-  Deinitialize();
-
-  return true;
-}
-
-bool CAESinkWASAPI::SoftResume()
-{
-  /* Sink asked to resume output. To release audio device in    */
-  /* exclusive mode we release the device context and therefore */
-  /* must reinitialize. Return false to force re-init by engine */
-
-  return false;
-}
-
 void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force)
 {
   IMMDeviceEnumerator* pEnumerator = NULL;

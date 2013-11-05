@@ -886,15 +886,3 @@ failed:
 
   return strDevName;
 }
-
-bool CAESinkDirectSound::SoftSuspend()
-{
-  Deinitialize();
-  return true;
-}
-
-bool CAESinkDirectSound::SoftResume()
-{
-  /* Return false to force re-init by engine */
-  return false;
-}
