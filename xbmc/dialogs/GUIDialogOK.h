@@ -30,6 +30,7 @@ public:
   virtual ~CGUIDialogOK(void);
   virtual bool OnMessage(CGUIMessage& message);
   static void ShowAndGetInput(const CVariant &heading, const CVariant &line0, const CVariant &line1, const CVariant &line2);
+  static void ShowAndGetInputTextbox(const CVariant &heading, const CVariant &line);
 protected:
   virtual int GetDefaultLabelID(int controlId) const;
 };
