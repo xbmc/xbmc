@@ -49,10 +49,12 @@
               <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.passthrough</condition>
             </dependency>
           </dependencies>
+          <control type="toggle" />
         </setting>
         <setting id="audiooutput.boostcentre" type="boolean" label="37018" help="36543">
           <level>2</level>
           <default>false</default>
+          <control type="toggle" />
         </setting>
         <setting id="audiooutput.config">
           <visible>false</visible>
