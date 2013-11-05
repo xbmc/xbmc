@@ -217,7 +217,7 @@
 	<!-- Library -->
 	<include name="LibraryPhoto">
 		<control type="group">
-			<visible>!Container.Content(photoAlbums)</visible>
+			<visible>!Container.Content(photoAlbums) + !Container.Content(channel)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- main list -->

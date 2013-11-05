@@ -25,7 +25,8 @@
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
 		<!-- ChannelVideo ID 71 -->
-		<include>ChannelVideo</include>
+		<!--><include>ChannelVideo</include>-->
+		<include>Channel</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
 		<!--<include>TopBar</include>-->

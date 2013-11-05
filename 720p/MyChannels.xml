@@ -13,7 +13,7 @@
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
-		<include>LeftSideMenu</include>
+		<!--><include>LeftSideMenu</include>-->
 		<!--<include>TopBar</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>
