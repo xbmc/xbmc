@@ -18,7 +18,7 @@
 class CPlexMediaServerClient : public CJobQueue, public boost::enable_shared_from_this<CPlexMediaServerClient>
 {
 public:
-  CPlexMediaServerClient() : CJobQueue() {}
+  CPlexMediaServerClient() : CJobQueue(false, 2, CJob::PRIORITY_HIGH) {}
   void SelectStream(const CFileItemPtr& item, int partID, int subtitleStreamID, int audioStreamID);
   
   /* scrobble events */
