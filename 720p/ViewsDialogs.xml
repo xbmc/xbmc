@@ -628,43 +628,43 @@
 	<!-- -->
 	<!-- DialogAddonSettings.xml -->
 	<!-- will probably need more work, but couldn't make it to show for any channels for now -->
-	<include name="DialogAddonSettings">
+	<include name="DialogPlugInSettings">
 		<control type="group">
 			<control type="group">
-				<posx>330</posx>
-				<posy>180</posy>
+				<posx>280</posx>
+				<posy>130</posy>
 				<control type="image">
 					<description>Background</description>
-					<width>600</width>
-					<height>380</height>
+					<width>700</width>
+					<height>480</height>
 					<include>DialogBG</include>
 				</control>
 				<control type="image">
 					<description>Title bg</description>
-					<width>600</width>
+					<width>700</width>
 					<height>50</height>
 					<include>DialogHeaderBG</include>
 				</control>
 				<control type="image">
 					<description>Title bg bottom border</description>
-					<width>600</width>
+					<width>700</width>
 					<include>DialogHeaderBorder</include>
 				</control>
 				<control type="image">
 					<description>Background border</description>
-					<width>602</width>
-					<height>382</height>
+					<width>702</width>
+					<height>482</height>
 					<include>DialogBorder</include>
 				</control>
 				<control type="image">
 					<description>Dialog arrow</description>
-					<posx>285</posx>
-					<posy>380</posy>
+					<posx>335</posx>
+					<posy>480</posy>
 					<include>DialogArrow</include>
 				</control>
 			</control>
 			<control type="group">
-				<posx>330</posx>
+				<posx>310</posx>
 				<posy>180</posy>
 				<control type="label" id="20">
 					<description>heading label</description>
@@ -675,7 +675,7 @@
 				<control type="grouplist" id="2">
 					<description>control area</description>
 					<posx>20</posx>
-					<width>560</width>
+					<width>600</width>
 					<height>230</height>
 					<itemgap>5</itemgap>
 					<onup>2</onup>
@@ -702,10 +702,10 @@
 				</control>
 				<control type="grouplist" id="9000">
 					<posx>20</posx>
-					<width>560</width>
-					<posy>312</posy>
+					<width>600</width>
+					<posy>342</posy>
 					<orientation>horizontal</orientation>
-					<itemgap>37</itemgap>
+					<itemgap>75</itemgap>
 					<onup>2</onup>
 					<control type="button" id="10">
 						<description>OK button</description>
