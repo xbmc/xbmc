@@ -328,7 +328,7 @@ void CSettingsManager::RegisterSettingsHandler(ISettingsHandler *settingsHandler
     return;
 
   CExclusiveLock lock(m_critical);
-  if (find(m_settingsHandlers.begin(), m_settingsHandlers.end(), settingsHandler) >= m_settingsHandlers.end())
+  if (find(m_settingsHandlers.begin(), m_settingsHandlers.end(), settingsHandler) == m_settingsHandlers.end())
     m_settingsHandlers.push_back(settingsHandler);
 }
 
