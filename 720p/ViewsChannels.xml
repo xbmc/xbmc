@@ -47,6 +47,34 @@
 		<font>Condensed-16</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
+	<include name="ChannelContentThumb">
+		<control type="group">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>148</width>
+				<height>148</height>
+				<include>Shadow</include>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true">default-square-small.png</texture>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+		</control>
+	</include>
 	<!-- left bg's -->
 	<include name="ChannelPlotBG">
 		<control type="image">
@@ -261,7 +289,7 @@
 					<height>665</height>
 					<itemlayout width="150" height="165">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>
+						<include>ChannelContentThumb</include>
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>white</textcolor>
@@ -269,7 +297,7 @@
 					</itemlayout>
 					<focusedlayout width="150" height="160">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>
+						<include>ChannelContentThumb</include>
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>orangeLight</textcolor>
