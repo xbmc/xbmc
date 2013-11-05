@@ -160,6 +160,100 @@
 			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
+	<!-- filtered results -->
+	<include name="EpisodePosterFiltered">
+		<control type="image">
+			<description>Poster image</description>
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>71</width>
+			<height>106</height>
+			<texture background="true" diffuse="mask-poster-filtered.png">$INFO[ListItem.Art(parentThumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+		<control type="image">
+			<description>Poster image</description>
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>71</width>
+			<height>106</height>
+			<texture background="true" diffuse="mask-poster-filtered.png">$INFO[ListItem.GrandparentThumb]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			<visible>IsEmpty(ListItem.Art(parentThumb))</visible>
+		</control>
+	</include>
+	<include name="EpisodeThumbFiltered">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>295</width>
+			<height>132</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>84</posx>
+			<posy>13</posy>
+			<width>198</width>
+			<height>106</height>
+			<texture background="true">default-thumb-small.png</texture>
+		</control>
+		<control type="image">
+			<posx>84</posx>
+			<posy>13</posy>
+			<width>198</width>
+			<height>106</height>
+			<texture background="true" diffuse="mask-episode-filtered.png">$INFO[ListItem.Art(thumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="EpisodeThumbCardFiltered">
+		<control type="image">
+			<posx>13</posx>
+			<posy>117</posy>
+			<width>269</width>
+			<height>50</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>141</posy>
+			<width>269</width>
+			<height>26</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="EpisodeTitleFiltered">
+		<posy>119</posy>
+		<posx>20</posx>
+		<width>255</width>
+		<height>20</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Condensed-14</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>
+	<include name="EpisodeThumbOverlayFiltered">
+		<control type="image">
+			<posx>84</posx>
+			<posy>81</posy>
+			<width>198</width>
+			<height>38</height>
+			<include>Black</include>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="EpisodeSelectedBorderFiltered">
+		<control type="image">
+			<posx>12</posx>
+			<posy>13</posy>
+			<width>271</width>
+			<height>106</height>
+			<include>Border</include>
+		</control>
+	</include>
 	<!-- all episodes are from the same season -->
 	<include name="EpisodeThumbOverlayTitle">
 		<posy>83</posy>
@@ -279,7 +373,7 @@
 					<width>182</width>
 					<height>274</height>
 					<fadetime>160</fadetime>
-					<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
+					<texture background="true" diffuse="mask-poster-middle.png">$INFO[Container.FolderThumb]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				</control>
 			</control>
@@ -326,7 +420,7 @@
 					<itemgap>10</itemgap>
 					<control type="label">
 						<include>LeftInfoFormatGrey</include>
-						<label>[UPPERCASE]Genre[/UPPERCASE]</label>
+						<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
 						<shadowcolor>ff333333</shadowcolor>
 						<visible>true</visible>
 					</control>
@@ -345,6 +439,15 @@
 				<width>490</width>
 				<height>207</height>
 				<label>$INFO[Container.ShowPlot]</label>
+			</control>
+			<control type="textbox">
+				<posx>40</posx>
+				<posy>412</posy>
+				<width>490</width>
+				<height>207</height>
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(Container.ShowPlot)</visible>
 			</control>
 			<!-- main list -->
 			<control type="panel" id="60">
@@ -556,6 +659,15 @@
 				<label>$INFO[Container.ShowPlot]</label>
 				<visible>!IsEmpty(Container.ShowPlot)</visible>
 			</control>
+			<control type="textbox">
+				<posx>40</posx>
+				<posy>412</posy>
+				<width>490</width>
+				<height>207</height>
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(Container.ShowPlot)</visible>
+			</control>
 			<!-- main list -->
 			<control type="panel" id="61">
 				<visible>Container.Content(episodes)</visible>
@@ -619,6 +731,72 @@
 						<info>ListItem.Overlay</info>
 					</control>
 					<include>EpisodeSelectedBorder</include>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+	<!-- Pre-play Filtered Episodes -->
+	<include name="PreplayFilteredEpisodes">
+		<control type="group" id="777">
+			<visible>Container.Content(filteredEpisodes)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- main list -->
+			<control type="panel" id="62">
+				<visible>Container.Content(filteredEpisodes)</visible>
+				<viewtype label="PreplayFilteredEpisodes">panel</viewtype>
+				<onup>62</onup>
+				<ondown>62</ondown>
+				<onright>62</onright>
+				<onleft>1300</onleft>
+				<orientation>vertical</orientation>
+				<posx>100</posx>
+				<posy>27</posy>
+				<width>1280</width>
+				<height>665</height>
+				<itemlayout width="285" height="165">
+					<include>EpisodeThumbCardFiltered</include>
+					<include>EpisodeThumbFiltered</include>
+					<include>EpisodePosterFiltered</include>
+					<control type="label">
+						<include>EpisodeTitleFiltered</include>
+					</control>
+					<include>EpisodeDate</include>
+					<include>EpisodeThumbOverlayFiltered</include>
+					<control type="label">
+						<posy>85</posy>
+						<posx>91</posx>
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<control type="image">
+						<posx>253</posx>
+						<posy>90</posy>
+						<info>ListItem.Overlay</info>
+					</control>
+				</itemlayout>
+				<focusedlayout width="285" height="165">
+					<include>EpisodeThumbCardFiltered</include>
+					<include>EpisodeThumbFiltered</include>
+					<include>EpisodePosterFiltered</include>
+					<control type="label">
+						<include>EpisodeTitleFiltered</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<include>EpisodeDate</include>
+					<include>EpisodeThumbOverlayFiltered</include>
+					<control type="label">
+						<posy>85</posy>
+						<posx>91</posx>
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<control type="image">
+						<posx>253</posx>
+						<posy>90</posy>
+						<info>ListItem.Overlay</info>
+					</control>
+					<include>EpisodeSelectedBorderFiltered</include>
 				</focusedlayout>
 			</control>
 		</control>
@@ -702,7 +880,7 @@
 				<control type="label">
 					<width>600</width>
 					<height>25</height>
-					<label>$LOCALIZE[31141] $INFO[ListItem.Season] &#xB7; $LOCALIZE[31114] $INFO[ListItem.Episode]$INFO[ListItem.Date, &#xB7; ]</label>
+					<label>$LOCALIZE[31141] $INFO[ListItem.Season] &#xB7; $LOCALIZE[31114, &#xB7; ] $INFO[ListItem.Episode]$INFO[ListItem.Date, &#xB7; ]</label>
 					<font>Condensed-18</font>
 					<textcolor>white</textcolor>
 					<visible>true</visible>
@@ -821,6 +999,11 @@
 				<label>* Plot hidden to avoid spoilers *</label>
 				<include>PlotFormat</include>
 				<visible>[ListItem.Status(UnWatched) + Skin.HasSetting(HidePlotForUnwatched)] | [ListItem.Status(InProgress) + Skin.HasSetting(HidePlotForUnwatched)]</visible>
+			</control>
+			<control type="textbox">
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(ListItem.Plot)</visible>
 			</control>
 			<!-- MediaFlags -->
 			<include>MediaFlags</include>
@@ -1020,6 +1203,15 @@
 				<autoscroll delay="10000" time="3000" repeat="5000">!Control.HasFocus(13)</autoscroll>
 				<include>PlotFormat</include>
 			</control>
+			<control type="textbox">
+				<posy>415</posy>
+				<posx>560</posx>
+				<width>685</width>
+				<height>195</height>
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(ListItem.Plot)</visible>
+			</control>
 			<!-- MediaFlags -->
 			<include>MediaFlags</include>
 		</control>
@@ -1027,41 +1219,18 @@
 	<!-- Pre-play Clip -->
 	<include name="PreplayClip">
 		<control type="group" id="777">
+			<posy>-28</posy>
 			<visible>Container.Content(clip)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
-			<control type="group">
-				<!-- left side big bg -->
-				<control type="image">
-					<posy>49</posy>
-					<posx>74</posx>
-					<width>447</width>
-					<height>672</height>
-					<texture>preplay-left-big-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
-				</control>
-				<!-- left side small bg -->
-				<control type="image">
-					<posy>384</posy>
-					<posx>74</posx>
-					<width>447</width>
-					<height>264</height>
-					<texture border="50">preplay-left-small-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-				</control>
-				<!-- right side plot bg -->
-				<control type="image">
-					<posy>384</posy>
-					<posx>506</posx>
-					<width>834</width>
-					<height>264</height>
-					<texture border="50" flipx="true">preplay-plot-bg.png</texture>
-					<aspectratio>stretch</aspectratio>
-					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
-				</control>
+			<control type="largeimage">
+				<posy>28</posy>
+				<posx>0</posx>
+				<width>1280</width>
+				<height>720</height>
+				<texture>preplay-movie-episode-bg.png</texture>
+				<aspectratio>scale</aspectratio>
 			</control>
 			<!-- Source Icon -->
 			<control type="image">
@@ -1112,54 +1281,15 @@
 					</control>
 				</control>
 				<!-- Year / Duration / Source -->
-				<control type="grouplist">
+				<control type="label">
 					<width>630</width>
-					<height>40</height>
-					<align>left</align>
-					<usecontrolcoords>true</usecontrolcoords>
-					<orientation>horizontal</orientation>
-					<itemgap>0</itemgap>
-					<control type="label">
-						<width min="30" max="500">auto</width>
-						<height>30</height>
-						<label>$INFO[ListItem.Year]</label>
-						<font>CondensedBold-30</font>
-						<textcolor>FF999999</textcolor>
-						<visible>!IsEmpty(ListItem.Year)</visible>
-					</control>
-					<control type="label">
-						<width min="30" max="500">auto</width>
-						<height>30</height>
-						<label> &#xB7; </label>
-						<font>CondensedBold-30</font>
-						<textcolor>FF999999</textcolor>
-						<visible>!IsEmpty(ListItem.Year)</visible>
-					</control>
-					<control type="label">
-						<width min="30" max="500">auto</width>
-						<height>30</height>
-						<label>$INFO[ListItem.DurationStr]</label>
-						<font>CondensedBold-30</font>
-						<textcolor>FF999999</textcolor>
-						<visible>!IsEmpty(ListItem.DurationStr)</visible>
-					</control>
-					<control type="label">
-						<width min="30" max="500">auto</width>
-						<height>30</height>
-						<label> &#xB7; </label>
-						<font>CondensedBold-30</font>
-						<textcolor>FF999999</textcolor>
-						<visible>!IsEmpty(ListItem.DurationStr) + IsEmpty(ListItem.Art(sourceIcon))</visible>
-					</control>
-					<control type="label">
-						<width min="30" max="500">auto</width>
-						<height>30</height>
-						<label>$INFO[ListItem.Property(sourceTitle)]</label>
-						<font>CondensedBold-30</font>
-						<textcolor>FF999999</textcolor>
-						<visible>!IsEmpty(ListItem.Property(sourceTitle)) + IsEmpty(ListItem.Art(sourceIcon))</visible>
-					</control>
-				</control>			
+					<height>30</height>
+					<width min="30" max="500">auto</width>
+					<height>30</height>
+					<label>$INFO[ListItem.Year]$INFO[ListItem.DurationStr, &#xB7; ]$INFO[ListItem.Property(sourceTitle), &#xB7; ]</label>
+					<font>CondensedBold-30</font>
+					<textcolor>FF999999</textcolor>
+				</control>
 				<!-- Season, Episode -->
 				<control type="label">
 					<width>600</width>
@@ -1205,6 +1335,11 @@
 			<control type="textbox">
 				<label>$INFO[ListItem.Plot]</label>
 				<include>PlotFormat</include>
+			</control>
+			<control type="textbox">
+				<include>PlotFormat</include>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(ListItem.Plot)</visible>
 			</control>
 			<!-- MediaFlags -->
 			<include>MediaFlags</include>

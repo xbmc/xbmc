@@ -62,15 +62,15 @@
 		<control type="group">
 			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
 			<control type="image">
-				<posy>385</posy>
+				<posy>390</posy>
 				<posx>15</posx>
 				<width>776</width>
-				<height>264</height>
+				<height>304</height>
 				<include>Black</include>
 			</control>
 			<control type="image">
 				<posx>791</posx>
-				<posy>500</posy>
+				<posy>527</posy>
 				<texture>arrow-big.png</texture>
 				<colordiffuse>FF000000</colordiffuse>
 			</control>
@@ -80,7 +80,7 @@
 		<control type="group">
 			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 			<control type="image">
-				<posy>20</posy>
+				<posy>28</posy>
 				<posx>791</posx>
 				<include>WhiteArrowInsertLeft</include>
 			</control>
@@ -96,7 +96,7 @@
 			<control type="group" id="777">
 				<control type="panel" id="52">
 					<viewtype label="MusicLibrary">panel</viewtype>
-					<visible>!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
+					<visible>[!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents)]</visible>
 					<posy>28</posy>
 					<posx>100</posx>
 					<width>1200</width>
@@ -127,7 +127,9 @@
 			</control>
 			<!-- Artist Albums -->
 			<control type="group" id="777">
-				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
+				<posx>-54</posx>
+				<posy>-34</posy>
+				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + IsEmpty(Container.Property(mixedParents))</visible>
 				<!-- backgrounds & plot -->
 				<control type="group">
 					<!-- backgrounds -->
@@ -155,25 +157,44 @@
 							<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Property(fanart_image)]</texture>
 							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						</control>
+						<control type="image">
+							<description>Poster image</description>
+							<posx>13</posx>
+							<posy>13</posy>
+							<width>274</width>
+							<height>274</height>
+							<texture background="true" diffuse="mask-square.png">$INFO[Container.FolderThumb]</texture>
+							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						</control>
 					</control>
 					<!-- plot text -->
 					<control type="textbox">
 						<posx>95</posx>
-						<posy>412</posy>
+						<posy>420</posy>
 						<width>670</width>
-						<height>207</height>
-						<include>Plot</include>
+						<height>240</height>
+						<include>PlotFormat</include>
+						<label>$INFO[Container.Property(summary)]</label>
+					</control>
+					<control type="textbox">
+						<posx>95</posx>
+						<posy>420</posy>
+						<width>670</width>
+						<height>240</height>
+						<include>PlotFormat</include>
+						<include>NoPlotDefault</include>
+						<visible>IsEmpty(Container.Property(summary))</visible>
 					</control>
 				</control>
 				<!-- Infos Left -->
 				<control type="group">
-					<posy>61</posy>
-					<posx>390</posx>
+					<posy>70</posy>
+					<posx>394</posx>
 					<!-- Title -->
 					<control type="label">
 						<width>370</width>
 						<height>40</height>
-						<label>$INFO[ListItem.Artist]</label>
+						<label>$INFO[Container.SecondTitle]</label>
 						<font>CondensedBold-36</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff333333</shadowcolor>
@@ -181,14 +202,13 @@
 					</control>
 					<!-- Genre -->
 					<control type="grouplist">
-						<posy>93</posy>
+						<posy>63</posy>
 						<orientation>horizontal</orientation>
 						<itemgap>10</itemgap>
 						<control type="label">
 							<width min="29" max="200">auto</width>
 							<height>15</height>
-							<!--><label>[UPPERCASE]$LOCALIZE[31135][/UPPERCASE]</label>-->
-							<label>[UPPERCASE]Genre[/UPPERCASE]</label>
+							<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
 							<font>Condensed-18</font>
 							<include>Grey1</include>
 							<shadowcolor>ff333333</shadowcolor>
@@ -197,22 +217,34 @@
 						<control type="label">
 							<width min="29" max="600">auto</width>
 							<height>15</height>
-							<!--><label>$INFO[ListItem.Genre]</label>-->
-							<label>Artist Genre</label>
+							<label>$INFO[Container.Genre]</label>
+							<font>Condensed-18</font>
+							<include>White2</include>
+							<visible>true</visible>
+						</control>
+					</control>
+					<!-- Count -->
+					<control type="grouplist">
+						<posy>93</posy>
+						<orientation>horizontal</orientation>
+						<itemgap>10</itemgap>
+						<control type="label">
+							<width min="29" max="600">auto</width>
+							<height>15</height>
+							<label>$VAR[TopBarItemCountStrings]</label>
 							<font>Condensed-18</font>
 							<include>White2</include>
 							<visible>true</visible>
 						</control>
 					</control>
 					<!-- Members -->
-					<control type="grouplist">
+					<!--><control type="grouplist">
 						<posy>121</posy>
 						<orientation>horizontal</orientation>
 						<itemgap>10</itemgap>
 						<control type="label">
 							<width min="29" max="100">auto</width>
 							<height>15</height>
-							<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
 							<label>[UPPERCASE]Members[/UPPERCASE]</label>
 							<font>Condensed-18</font>
 							<include>Grey1</include>
@@ -222,13 +254,12 @@
 						<control type="label">
 							<width min="29" max="330">auto</width>
 							<height>15</height>
-							<!--><label>$INFO[ListItem.Cast]</label>-->
 							<label>Band members</label>
 							<font>Condensed-18</font>
 							<include>White2</include>
 							<visible>true</visible>
 						</control>
-					</control>
+					</control>-->
 				</control>
 				<!-- list -->
 				<control type="panel" id="53">
@@ -239,11 +270,11 @@
 					<onright>53</onright>
 					<onleft>1300</onleft>
 					<orientation>vertical</orientation>
-					<posx>832</posx>
-					<posy>57</posy>
-					<width>450</width>
-					<height>647</height>
-					<itemlayout width="220" height="216">
+					<posx>850</posx>
+					<posy>60</posy>
+					<width>480</width>
+					<height>670</height>
+					<itemlayout width="235" height="223">
 						<include>MusicThumbCard</include>
 						<include>MusicThumb</include>
 						<control type="label">
@@ -251,7 +282,7 @@
 							<textcolor>white</textcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout width="220" height="216">
+					<focusedlayout width="235" height="223">
 						<include>MusicThumbCard</include>
 						<include>MusicThumb</include>
 						<control type="label">
@@ -264,6 +295,8 @@
 			</control>
 			<!-- Album Tracks -->
 			<control type="group" id="777">
+				<posx>-54</posx>
+				<posy>-34</posy>
 				<visible>Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
 				<!-- backgrounds & plot -->
 				<control type="group">
@@ -289,8 +322,19 @@
 							<posy>13</posy>
 							<width>274</width>
 							<height>274</height>
-							<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Property(fanart_image)]</texture>
+							<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
 							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						</control>
+						<!-- show fanart if track has no thumb -->
+						<control type="image">
+							<description>Poster image</description>
+							<posx>13</posx>
+							<posy>13</posy>
+							<width>274</width>
+							<height>274</height>
+							<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Property(Fanart_Image)]</texture>
+							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+							<visible>IsEmpty(ListItem.Art(thumb))</visible>
 						</control>
 					</control>
 					<!-- plot text -->
@@ -299,13 +343,23 @@
 						<posy>412</posy>
 						<width>670</width>
 						<height>207</height>
-						<include>Plot</include>
+						<include>PlotFormat</include>
+						<label>$INFO[Container.Property(summary)]</label>
+					</control>
+					<control type="textbox">
+						<posx>95</posx>
+						<posy>420</posy>
+						<width>670</width>
+						<height>240</height>
+						<include>PlotFormat</include>
+						<include>NoPlotDefault</include>
+						<visible>IsEmpty(Container.Property(summary))</visible>
 					</control>
 				</control>
 				<!-- Infos Left -->
 				<control type="group">
-					<posy>61</posy>
-					<posx>390</posx>
+					<posy>70</posy>
+					<posx>394</posx>
 					<!-- Titles -->
 					<control type="label">
 						<width>370</width>
@@ -334,39 +388,50 @@
 						<control type="label">
 							<width min="29" max="200">auto</width>
 							<height>15</height>
-							<label>[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</label>
+							<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
+							<font>Condensed-18</font>
+							<include>Grey1</include>
+							<shadowcolor>ff333333</shadowcolor>
+							<visible>true</visible>
+						</control>
+						<control type="label">
+							<width min="29" max="600">auto</width>
+							<height>15</height>
+							<label>$INFO[ListItem.Property(Genre)]</label>
 							<font>Condensed-18</font>
 							<include>White2</include>
-							<shadowcolor>ff222222</shadowcolor>
 							<visible>true</visible>
 						</control>
 					</control>
-					<!-- DurationStr -->
-					<control type="label">
-						<posy>121</posy>
-						<width min="29" max="200">auto</width>
-						<height>15</height>
-						<label>Placeholder for DurationStr</label>
-						<font>Condensed-18</font>
-						<include>White2</include>
-						<shadowcolor>ff222222</shadowcolor>
-						<visible>true</visible>
+					<!-- Count -->
+					<control type="grouplist">
+						<posy>123</posy>
+						<orientation>horizontal</orientation>
+						<itemgap>10</itemgap>
+						<control type="label">
+							<width min="29" max="600">auto</width>
+							<height>15</height>
+							<label>$VAR[TopBarItemCountStrings]</label>
+							<font>Condensed-18</font>
+							<include>White2</include>
+							<visible>true</visible>
+						</control>
 					</control>
 				</control>
 				<!-- list -->
 				<control type="list" id="54">
 					<visible>Container.Content(Songs)</visible>
 					<viewtype label="MusicLibraryAlbumTracks">list</viewtype>
-					<posx>790</posx>
-					<posy>65</posy>
-					<width>490</width>
-					<height>450</height>
+					<posx>794</posx>
+					<posy>55</posy>
+					<width>520</width>
+					<height>650</height>
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
 					<onleft>1300</onleft>
 					<onup>54</onup>
 					<ondown>54</ondown>
-					<itemlayout height="49" width="490">
+					<itemlayout height="49" width="520">
 						<control type="image">
 							<posx>20</posx>
 							<posy>0</posy>
@@ -385,7 +450,7 @@
 							<include>White2</include>
 						</control>
 						<control type="label">
-							<posx>470</posx>
+							<posx>505</posx>
 							<width>120</width>
 							<height>50</height>
 							<align>right</align>
@@ -395,7 +460,7 @@
 							<include>White2</include>
 						</control>
 					</itemlayout>
-					<focusedlayout height="49" width="490">
+					<focusedlayout height="49" width="520">
 						<control type="image">
 							<posx>20</posx>
 							<posy>0</posy>
@@ -419,7 +484,7 @@
 							<textcolor>orangeLight</textcolor>
 						</control>
 						<control type="label">
-							<posx>470</posx>
+							<posx>505</posx>
 							<width>120</width>
 							<height>50</height>
 							<align>right</align>

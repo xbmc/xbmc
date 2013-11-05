@@ -106,11 +106,11 @@
 	<variable name="HomeListItemFullInfoSecondTitle">
 		<!-- on deck -->
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">$INFO[Container(11001).ListItem.Title]</value>
-		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.DurationStr] &#xB7; $INFO[Container(11001).ListItem.Year]</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.DurationStr]$INFO[Container(11001).ListItem.Year, &#xB7; ]</value>
 		<!-- recently added -->
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(season)">$INFO[Container(11000).ListItem.Title]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">$INFO[Container(11000).ListItem.Title]</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">$INFO[Container(11000).ListItem.DurationStr] &#xB7; $INFO[Container(11000).ListItem.Year]</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">$INFO[Container(11000).ListItem.DurationStr]$INFO[Container(11000).ListItem.Year, &#xB7; ]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album)">$INFO[Container(11000).ListItem.Title]</value>
 		<!-- queue -->
 		<value condition="ControlGroup(7003).HasFocus]">$INFO[Container(11003).ListItem.DurationStr]</value>
@@ -119,17 +119,17 @@
 	</variable>
 	<variable name="HomeListItemFullInfoThirdTitle">
 		<!-- on deck -->
-		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">Season $INFO[Container(11001).ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[Container(11001).ListItem.Episode] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(11001).ListItem.Date]</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">Season $INFO[Container(11001).ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[Container(11001).ListItem.Episode]$INFO[Container(11001).ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">[UPPERCASE]$INFO[Container(11001).ListItem.Genre][/UPPERCASE]</value>
 		<!-- recently added -->
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(season)">$LOCALIZE[32101]: $INFO[Container(11000).ListItem.Property(LeafCount)]</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">Season $INFO[Container(11000).ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[Container(11000).ListItem.Episode] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(11000).ListItem.Date]</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">Season $INFO[Container(11000).ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[Container(11000).ListItem.Episode]$INFO[Container(11000).ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">[UPPERCASE]$INFO[Container(11000).ListItem.Genre][/UPPERCASE]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album) + !IsEmpty(Container(11000).ListItem.Album)">$INFO[Container(11000).ListItem.Album]</value>
 		<!-- queue -->
 		<value condition="ControlGroup(7003).HasFocus]">$INFO[Container(11003).ListItem.Property(sourceTitle)]</value>
 		<!-- recommended -->
-		<value condition="ControlGroup(7005).HasFocus]">$INFO[Container(11004).ListItem.Property(Recommender)] &#xB7; $INFO[Container(11004).ListItem.Property(sourceTitle)]</value>
+		<value condition="ControlGroup(7005).HasFocus]">$INFO[Container(11004).ListItem.Property(Recommender)]$INFO[Container(11004).ListItem.Property(sourceTitle), [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<!--><value>No second title available (debug).</value>-->
 		<!--><value>No third title available (debug).</value>-->
 	</variable>
@@ -793,7 +793,7 @@
 			<posy>179</posy>
 			<include>ListItemTitleWide</include>
 			<textcolor>FF999999</textcolor>
-			<label>$INFO[ListItem.Property(Recommender)] - $INFO[ListItem.Property(sourceTitle)]</label>
+			<label>$INFO[ListItem.Property(Recommender)]$INFO[ListItem.Property(sourceTitle), [COLOR=orange]&#xB7;[/COLOR] ]</label>
 		</control>
 	</include>
 	<include name="ListItemWideDimmer">
@@ -1170,7 +1170,7 @@
 									<include>ListItemInProgress</include>
 								</control>
 								<control type="group">
-									<visible>ListItem.Type(episode)</visible>
+									<visible>ListItem.Type(season)</visible>
 									<include>ListItemPosterCard</include>
 									<include>ListItemPosterTitleTV3</include>
 									<include>ListItemInProgress</include>

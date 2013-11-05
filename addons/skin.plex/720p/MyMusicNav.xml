@@ -45,7 +45,6 @@
 			<include>Clock</include>
 			<include>MusicNowPlayingIndicators</include>
 		</control>
-		<include>MediaCount</include>
-		<include>OptionsMenu</include>
+		<!--><include>MediaCount</include>-->
 	</controls>
 </window>

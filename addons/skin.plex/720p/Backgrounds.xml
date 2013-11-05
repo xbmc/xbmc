@@ -16,6 +16,23 @@
 			<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
 			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 		</control>
+		<!-- Clip backgrounds use item thumb, not as pretty so we'll hide them a bit more -->
+		<control type="group">
+		<visible>Container.Content(Clips)</visible>
+		<control type="largeimage">
+			<include>FullScreenScaled</include>
+			<fadetime>400</fadetime>
+			<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+			<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+			<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+		</control>
+		<control type="image">
+			<include>FullScreenScaled</include>
+			<texture>bg-overlay-grainy.png</texture>
+			<animation effect="fade" start="0" end="80" time="600">WindowOpen</animation>
+			<animation effect="fade" start="80" end="0" time="600">WindowClose</animation>
+		</control>
+		</control>
 	</include>
 	<include name="BGSharedContent">
 		<control type="largeimage">

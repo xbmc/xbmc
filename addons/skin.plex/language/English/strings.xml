@@ -107,6 +107,9 @@
   <string id="31139">Unwatched</string>
   <string id="31140">First Aired</string>
   <string id="31141">Season</string>
+  <string id="31142">Movie</string>
+  <string id="31143">TV Show</string>
+  <string id="31144">Video</string>
 
 <!--  Music  -->
   <string id="31220">Currently Playing</string>
@@ -118,6 +121,8 @@
   <string id="31226">Change</string>
   <string id="31227">Your Preset</string>
   <string id="31228">Lyrics</string>
+  <string id="31229">Artist</string>
+  <string id="31230">Album</string>
 
 <!--  Settings  --> 
   <string id="31601">Appearance</string> 
@@ -129,6 +134,7 @@
   <string id="31607">Current</string> 
   <string id="31608">Source</string> 
   <string id="31609">Dest</string> 
+  <string id="31610">Playback</string> 
   <string id="31620">Menu</string> 
   <string id="31621">Disable</string> 
   <string id="31622">Enable</string> 
@@ -272,5 +278,6 @@
 <string id="32100">Set Rating</string>
 <string id="32101">Episodes added</string>
 <string id="32102">All Episodes</string>
-
+<string id="32103">There is no description available for this </string>
+<string id="32104">You can add one for it in the Media Manager :)</string>
 </strings>

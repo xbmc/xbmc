@@ -21,41 +21,92 @@
 		</control>
 	</include>
 	<include name="PhotoThumb">
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>148</width>
-			<height>148</height>
-			<include>Shadow</include>
+		<control type="group">
+			<visible>ListItem.Type(photo)</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>148</width>
+				<height>148</height>
+				<include>Shadow</include>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true">default-square-small.png</texture>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
 		</control>
-		<control type="image">
-			<description>Poster image</description>
-			<posx>13</posx>
-			<posy>13</posy>
-			<width>122</width>
-			<height>122</height>
-			<texture background="true">default-square-small.png</texture>
+	</include>
+	<include name="PhotoAlbumCover">
+		<control type="group">
+			<visible>ListItem.Type(photoAlbum)</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>148</width>
+				<height>148</height>
+				<include>Shadow</include>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true">default-square-small.png</texture>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+			</control>
+			<!-- base frame -->
+			<control type="image">
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true">mask-photoalbum-base.png</texture>
+			</control>
+			<!-- thumb -->
+			<control type="image">
+				<description>Poster image</description>
+				<posx>46</posx>
+				<posy>39</posy>
+				<width>72</width>
+				<height>70</height>
+				<texture background="true" diffuse="mask-photoalbum-center-photo.png">$INFO[ListItem.Art(thumb)]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
 		</control>
-		<control type="image">
-			<description>Poster image</description>
-			<posx>13</posx>
-			<posy>13</posy>
-			<width>122</width>
-			<height>122</height>
-			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-		</control>
-	</include>	
+	</include>
 	<include name="PhotoLabel">
-			<posy>138</posy>
-			<posx>76</posx>
-			<width>110</width>
-			<height>20</height>
-			<align>center</align>
-			<aligny>center</aligny>
-			<label>$INFO[ListItem.Label]</label>
-			<font>Condensed-14</font>
-			<shadowcolor>ff222222</shadowcolor>
+		<posy>138</posy>
+		<posx>76</posx>
+		<width>110</width>
+		<height>20</height>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Condensed-14</font>
+		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<!-- LibraryPhoto -->
 	<include name="PlotBGLibrary">
@@ -69,30 +120,30 @@
 			<visible>true</visible>
 		</control>
 		<control type="group">
-		<control type="image">
-			<posy>385</posy>
-			<posx>0</posx>
-			<width>556</width>
-			<height>263</height>
-			<include>Black</include>
-			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>			
-		</control>
-		<control type="image">
-			<posx>556</posx>
-			<posy>500</posy>
-			<include>ArrowBlack</include>
-			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
-		</control>
+			<control type="image">
+				<posy>385</posy>
+				<posx>0</posx>
+				<width>556</width>
+				<height>263</height>
+				<include>Black</include>
+				<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posx>556</posx>
+				<posy>500</posy>
+				<include>ArrowBlack</include>
+				<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+			</control>
 		</control>
 	</include>
 	<include name="AlbumTitleLibrary">
 		<control type="group">
-			<posy>44</posy>
-			<posx>112</posx>
+			<posy>34</posy>
+			<posx>100</posx>
 			<control type="label">
 				<posy>0</posy>
 				<posx>0</posx>
-				<width>330</width>
+				<width>440</width>
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -104,7 +155,7 @@
 			<control type="label">
 				<posy>0</posy>
 				<posx>440</posx>
-				<width>330</width>
+				<width>440</width>
 				<height>20</height>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -117,63 +168,25 @@
 	</include>
 	<include name="AlbumIconsLibrary">
 		<control type="group">
-			<posx>105</posx>
-			<posy>220</posy>
-			<control type="group">			
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>148</width>
-					<height>148</height>
-					<include>Shadow</include>
-				</control>
-				<control type="image">
-					<description>Poster image</description>
-					<posx>13</posx>
-					<posy>13</posy>
-					<width>122</width>
-					<height>122</height>
-					<texture background="true" diffuse="mask-square.png">$INFO[Container(52).ListItem(0).Thumb]</texture>
-					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-				</control>
-			</control>
+			<posx>0</posx>
+			<posy>90</posy>
 			<control type="group">
-				<posx>136</posx>
-				<posy>0</posy>
+				<posx>252</posx>
+				<posy>-12</posy>
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>148</width>
-					<height>148</height>
+					<width>286</width>
+					<height>286</height>
 					<include>Shadow</include>
 				</control>
 				<control type="image">
 					<description>Poster image</description>
 					<posx>13</posx>
 					<posy>13</posy>
-					<width>122</width>
-					<height>122</height>
-					<texture background="true" diffuse="mask-square.png">$INFO[Container(52).ListItem(1).Thumb]</texture>
-					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-				</control>
-			</control>
-			<control type="group">
-				<posx>272</posx>
-				<posy>0</posy>
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>148</width>
-					<height>148</height>
-					<include>Shadow</include>
-				</control>
-				<control type="image">
-					<description>Poster image</description>
-					<posx>13</posx>
-					<posy>13</posy>
-					<width>122</width>
-					<height>122</height>
-					<texture background="true" diffuse="mask-square.png">$INFO[Container(52).ListItem(3).Thumb]</texture>
+					<width>260</width>
+					<height>260</height>
+					<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Property(Fanart_Image)]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				</control>
 			</control>
@@ -181,38 +194,73 @@
 	</include>
 	<include name="PlotLibrary">
 		<control type="group">
-			<!-- dummy plot -->
-			<!--><control type="textbox">
-				<posx>100</posx>
-				<posy>410</posy>
-				<width>430</width>
-				<height>205</height>
-				<include>Plot</include>
-				<visible>IsEmpty(Container.ShowPlot)</visible>
-			</control>-->
-			<!-- plot -->
+			<!-- album plot -->
 			<control type="textbox">
 				<posx>100</posx>
 				<posy>410</posy>
 				<width>430</width>
-				<height>205</height>
+				<height>196</height>
 				<include>PlotFormat</include>
-				<label>$INFO[ListItem.Plot]</label>
+				<label>$INFO[Container.Property(summary)]</label>
 			</control>
 			<control type="textbox">
 				<posx>100</posx>
 				<posy>410</posy>
 				<width>430</width>
-				<height>205</height>
+				<height>196</height>
 				<include>PlotFormat</include>
-				<label>$INFO[ListItem.Property(summary)]</label>
+				<include>NoPlotDefault</include>
+				<visible>IsEmpty(Container.Property(summary))</visible>
 			</control>
 		</control>
 	</include>
 	<!-- Library -->
 	<include name="LibraryPhoto">
 		<control type="group">
-			<visible>!Container.content(addons) + !Container.content(plugins) + !Container.content(secondary)</visible>
+			<visible>!Container.Content(photoAlbums)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- main list -->
+			<control type="group" id="777">
+				<control type="panel" id="51">
+					<visible>!Container.Content(photoAlbums)</visible>
+					<viewtype label="LibraryPhoto">panel</viewtype>
+					<onup>51</onup>
+					<ondown>51</ondown>
+					<onright>51</onright>
+					<onleft>1300</onleft>
+					<orientation>vertical</orientation>
+					<posx>93</posx>
+					<posy>15</posy>
+					<width>1200</width>
+					<height>690</height>
+					<itemlayout width="146" height="171">
+						<include>PhotoThumbCard</include>
+						<include>PhotoThumb</include>
+						<include>PhotoAlbumCover</include>
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>white</textcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout width="146" height="171">
+						<include>PhotoThumbCard</include>
+						<include>PhotoThumb</include>
+						<include>PhotoAlbumCover</include>
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>SelectedBorder</include>
+					</focusedlayout>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- Album -->
+	<include name="AlbumPhoto">
+		<control type="group">
+			<visible>Container.Content(photoAlbums)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<include>PlotBGLibrary</include>
@@ -221,9 +269,9 @@
 			<include>PlotLibrary</include>
 			<!-- main list -->
 			<control type="group" id="777">
-				<control type="panel" id="51">
-					<visible>!Container.content(addons) + !Container.content(plugins) + !Container.content(secondary)</visible>
-					<viewtype label="LibraryPhoto">panel</viewtype>
+				<control type="panel" id="52">
+					<visible>Container.Content(photoAlbums)</visible>
+					<viewtype label="AlbumPhoto">panel</viewtype>
 					<onup>51</onup>
 					<ondown>51</ondown>
 					<onright>51</onright>
@@ -231,11 +279,12 @@
 					<orientation>vertical</orientation>
 					<posx>573</posx>
 					<posy>15</posy>
-					<width>700</width>
+					<width>680</width>
 					<height>690</height>
-					<itemlayout width="136" height="171">						
+					<itemlayout width="136" height="171">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>						
+						<include>PhotoThumb</include>
+						<include>PhotoAlbumCover</include>
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>white</textcolor>
@@ -243,7 +292,8 @@
 					</itemlayout>
 					<focusedlayout width="136" height="171">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>						
+						<include>PhotoThumb</include>
+						<include>PhotoAlbumCover</include>
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>orangeLight</textcolor>

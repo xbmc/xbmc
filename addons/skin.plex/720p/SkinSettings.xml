@@ -66,18 +66,13 @@
 						<label>$LOCALIZE[31604]</label>
 						<onclick>SetFocus(201)</onclick>
 					</item>
-					<item id="2">
-						<description>Home</description>
-						<label>$LOCALIZE[31605]</label>
-						<onclick>SetFocus(202)</onclick>
-					</item>
 				</content>
 			</control>
 			<!-- a hack for highlighting the parent category while in settings list -->
 			<control type="group">
 				<control type="image">
 					<posx>120</posx>
-					<posy>215</posy>
+					<posy>135</posy>
 					<width>300</width>
 					<height>50</height>
 					<texture border="5">black-bottom-grey.png</texture>
@@ -87,7 +82,7 @@
 				<control type="label">
 					<description>General</description>
 					<posx>140</posx>
-					<posy>215</posy>
+					<posy>135</posy>
 					<width>300</width>
 					<font>CondensedBold-18</font>
 					<height>50</height>
@@ -99,7 +94,7 @@
 				</control>
 				<control type="image">
 					<posx>120</posx>
-					<posy>265</posy>
+					<posy>185</posy>
 					<width>300</width>
 					<height>50</height>
 					<texture border="5">black-bottom-grey.png</texture>
@@ -171,106 +166,6 @@
 					<label>Show all media flags in details view</label>
 					<onclick>Skin.ToggleSetting(ShowAllMediaFlags)</onclick>
 					<selected>Skin.HasSetting(ShowAllMediaFlags)</selected>
-				</control>
-			</control>
-			<!-- Home Options -->
-			<control type="grouplist" id="202">
-				<onup>202</onup>
-				<pagecontrol>61</pagecontrol>
-				<visible allowhiddenfocus="false">Container(101).HasFocus(2) | ControlGroup(202).HasFocus()</visible>
-				<posx>105</posx>
-				<posy>65</posy>
-				<width>625</width>
-				<height>350</height>
-				<itemgap>0</itemgap>
-				<onleft>101</onleft>
-				<orientation>vertical</orientation>
-				<animation effect="fade" end="100" time="500">WindowOpen</animation>
-				<animation effect="fade" end="0" time="500">WindowClose</animation>
-				<control type="radiobutton" id="220">
-					<description>Show Videos Menu</description>
-					<width>625</width>
-					<label>$LOCALIZE[31956] $LOCALIZE[31971]</label>
-					<onclick>Skin.ToggleSetting(HideVideos)</onclick>
-					<selected>!Skin.HasSetting(HideVideos)</selected>
-				</control>
-				<control type="radiobutton" id="235">
-					<description>Show Music Menu</description>
-					<width>625</width>
-					<label>$LOCALIZE[31956] $LOCALIZE[31972]</label>
-					<onclick>Skin.ToggleSetting(HideMusic)</onclick>
-					<selected>!Skin.HasSetting(HideMusic)</selected>
-				</control>
-				<control type="radiobutton" id="240">
-					<description>Show Pictures Menu</description>
-					<width>625</width>
-					<label>$LOCALIZE[31956] $LOCALIZE[31973]</label>
-					<onclick>Skin.ToggleSetting(HidePictures)</onclick>
-					<selected>!Skin.HasSetting(HidePictures)</selected>
-				</control>
-				<control type="radiobutton" id="245">
-					<description>Show Applications Menu</description>
-					<width>625</width>
-					<label>$LOCALIZE[31956] $LOCALIZE[31004]</label>
-					<onclick>Skin.ToggleSetting(HidePrograms)</onclick>
-					<selected>!Skin.HasSetting(HidePrograms)</selected>
-				</control>
-				<control type="radiobutton" id="250">
-					<description>Show DVD Menu</description>
-					<width>625</width>
-					<label>$LOCALIZE[31956] DVD</label>
-					<onclick>Skin.ToggleSetting(HideDVD)</onclick>
-					<selected>!Skin.HasSetting(HideDVD)</selected>
-				</control>
-				<control type="radiobutton" id="300">
-					<description>Show Help Menu</description>
-					<width>625</width>
-					<label>$LOCALIZE[31956] $LOCALIZE[31954]</label>
-					<onclick>Skin.ToggleSetting(HideHelp)</onclick>
-					<selected>!Skin.HasSetting(HideHelp)</selected>
-				</control>
-				<control type="radiobutton" id="307">
-					<description>Show App Store Menu</description>
-					<width>625</width>
-					<label>$LOCALIZE[31956] $LOCALIZE[31952]</label>
-					<onclick>Skin.ToggleSetting(HideAppStore)</onclick>
-					<selected>!Skin.HasSetting(HideAppStore)</selected>
-				</control>
-				<control type="radiobutton" id="308">
-					<description>Show Power Menu</description>
-					<width>625</width>
-					<label>$LOCALIZE[31956] $LOCALIZE[31962]</label>
-					<onclick>Skin.ToggleSetting(HidePower)</onclick>
-					<onclick>Skin.Reset(ShowShutDown)</onclick>
-					<onclick>Skin.Reset(ShowSleep)</onclick>
-					<selected>!Skin.HasSetting(HidePower)</selected>
-				</control>
-				<control type="radiobutton" id="309">
-					<description>Show Quit</description>
-					<width>625</width>
-					<label> - $LOCALIZE[31962] $LOCALIZE[31963] $LOCALIZE[31007]</label>
-					<onclick>Skin.Reset(ShowShutDown)</onclick>
-					<onclick>Skin.Reset(ShowSleep)</onclick>
-					<enable>!Skin.HasSetting(HidePower)</enable>
-					<selected>!Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</selected>
-				</control>
-				<control type="radiobutton" id="310">
-					<description>Show Sleep</description>
-					<width>625</width>
-					<label> - $LOCALIZE[31962] $LOCALIZE[31963] $LOCALIZE[31960]</label>
-					<onclick>Skin.Reset(ShowShutDown)</onclick>
-					<onclick>Skin.SetBool(ShowSleep)</onclick>
-					<enable>!Skin.HasSetting(HidePower)</enable>
-					<selected>Skin.HasSetting(ShowSleep)</selected>
-				</control>
-				<control type="radiobutton" id="311">
-					<description>Show Shutdown</description>
-					<width>625</width>
-					<label> - $LOCALIZE[31962] $LOCALIZE[31963] $LOCALIZE[31961]</label>
-					<onclick>Skin.SetBool(ShowShutDown)</onclick>
-					<onclick>Skin.Reset(ShowSleep)</onclick>
-					<enable>!Skin.HasSetting(HidePower)</enable>
-					<selected>Skin.HasSetting(ShowShutDown)</selected>
 				</control>
 			</control>
 			<!-- Scrollbar -->

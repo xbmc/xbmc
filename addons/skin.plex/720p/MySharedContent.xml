@@ -2,7 +2,6 @@
 <window id="100">
 	<defaultcontrol>777</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
-	<backgroundcolor>black</backgroundcolor>
 	<controls>
 		<!-- views (ViewsSharedContent.xml) -->
 		<include>SharedContent</include>
