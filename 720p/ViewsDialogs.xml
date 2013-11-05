@@ -392,7 +392,7 @@
 				</control>
 				<!-- Used for Clear Filters -->
 				<control type="button" id="19022">
-					<include>leftMenuFormat</include>
+					<include>leftSubMenuClearFilters</include>
 				</control>
 				<control type="scrollbar" id="61">
 					<description>Scroll Bar</description>
