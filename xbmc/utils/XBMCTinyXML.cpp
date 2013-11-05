@@ -143,7 +143,13 @@ bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIX
 {
   m_UsedCharset.clear();
   if (encoding != TIXML_ENCODING_UNKNOWN)
+  { // encoding != TIXML_ENCODING_UNKNOWN means "do not use m_SuggestedCharset and charset detection"
+    m_SuggestedCharset.clear();
+    if (encoding == TIXML_ENCODING_UTF8)
+      m_UsedCharset = "UTF-8";
+
     return InternalParse(data, encoding);
+  }
 
   if (!m_SuggestedCharset.empty() && TryParse(data, m_SuggestedCharset))
     return true;
