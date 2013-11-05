@@ -290,6 +290,19 @@ const char* CStereoscopicsManager::ConvertGuiStereoModeToString(const RENDER_STE
   return "";
 }
 
+std::string CStereoscopicsManager::NormalizeStereoMode(const std::string &mode)
+{
+  if (!mode.empty() && mode != "mono")
+  {
+    int guiMode = ConvertStringToGuiStereoMode(mode);
+    if (guiMode > -1)
+      return ConvertGuiStereoModeToString((RENDER_STEREO_MODE) guiMode);
+    else
+      return mode;
+  }
+  return "mono";
+}
+
 CAction CStereoscopicsManager::ConvertActionCommandToAction(const std::string &command, const std::string &parameter)
 {
   if (command == "SetStereoMode")

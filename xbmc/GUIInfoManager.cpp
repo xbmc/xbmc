@@ -51,6 +51,7 @@
 #include "settings/Settings.h"
 #include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/StereoscopicsManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
@@ -403,7 +404,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "hasepg",           VIDEOPLAYER_HAS_EPG },
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING },
                                   { "isstereoscopic",   VIDEOPLAYER_IS_STEREOSCOPIC },
-                                  { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE },
+                                  { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE }
 };
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
@@ -581,7 +582,9 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "progress",         LISTITEM_PROGRESS },
                                   { "dateadded",        LISTITEM_DATE_ADDED },
                                   { "dbtype",           LISTITEM_DBTYPE },
-                                  { "dbid",             LISTITEM_DBID }};
+                                  { "dbid",             LISTITEM_DBID },
+                                  { "stereoscopicmode", LISTITEM_STEREOSCOPIC_MODE },
+                                  { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -4950,6 +4953,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
         return dbid;
       }
     break;
+  case LISTITEM_STEREOSCOPIC_MODE:
+    {
+      std::string stereoMode = item->GetProperty("stereomode").asString();
+      if (stereoMode.empty() && item->HasVideoInfoTag())
+        stereoMode = CStereoscopicsManager::Get().NormalizeStereoMode(item->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
+      return stereoMode;
+    }
   }
   return "";
 }
@@ -5082,6 +5092,14 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       {
         return pItem->GetEPGInfoTag()->ChannelTag()->IsEncrypted();
       }
+    }
+    else if (condition == LISTITEM_IS_STEREOSCOPIC)
+    {
+      std::string stereoMode = pItem->GetProperty("stereomode").asString();
+      if (stereoMode.empty() && pItem->HasVideoInfoTag())
+          stereoMode = CStereoscopicsManager::Get().NormalizeStereoMode(pItem->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
+      if (!stereoMode.empty() && stereoMode != "mono")
+        return true;
     }
   }
 
