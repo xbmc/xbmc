@@ -18,6 +18,7 @@
 #include "threads/Event.h"
 #include "Filters/PlexSectionFilter.h"
 #include "guilib/GUIButtonControl.h"
+#include "PlexNavigationHelper.h"
 
 #define FILTER_PRIMARY_CONTAINER     19000
 #define FILTER_SECONDARY_CONTAINER   19001
@@ -73,9 +74,6 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     bool IsMusicContainer() const;
     bool IsPhotoContainer() const;
 
-    CStdString ShowPluginSearch(CFileItemPtr item);
-    CStdString ShowPluginSettings(CFileItemPtr item);
-
     int ContainerPlaylistType() const
     {
       int currentPlaylist = PLAYLIST_NONE;
@@ -103,10 +101,9 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     CEvent m_filterValuesEvent;
     CGUIButtonControl *m_clearFilterButton;
 
-    CEvent m_cacheEvent;
-    CStdString m_waitingCache;
-
     std::map<std::string, int> m_lastSelectedIndex;
+
+    CPlexNavigationHelper m_navHelper;
 };
 
 class CGUIPlexMusicWindow : public CGUIPlexMediaWindow

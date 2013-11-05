@@ -36,6 +36,7 @@
 
 #include "Utility/PlexTimer.h"
 #include "threads/Timer.h"
+#include "PlexNavigationHelper.h"
 
 
 // List IDs.
@@ -121,7 +122,7 @@ public:
   bool GetContentTypesFromSection(const CStdString& url, std::vector<int> &types);
   bool GetContentListFromSection(const CStdString& url, int contentType, CFileItemList &list);
   void SectionNeedsRefresh(const CStdString& url);
-  void OpenItem(CFileItemPtr item, bool prePlay);
+  void OpenItem(CFileItemPtr item);
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
@@ -148,5 +149,6 @@ public:
   CTimer                     m_loadFanoutTimer;
   CEvent                     m_loadNavigationEvent;
   bool                       m_cacheLoadFail;
+  CPlexNavigationHelper      m_navHelper;
 };
 

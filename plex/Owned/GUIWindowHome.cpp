@@ -361,9 +361,9 @@ bool CGUIWindowHome::OnAction(const CAction &action)
           m_loadFanoutTimer.Start(200);
       }
 
-      if (action.GetID() == ACTION_SELECT_ITEM && pItem->GetPath().empty() && pItem->HasProperty("sectionPath"))
+      if (action.GetID() == ACTION_SELECT_ITEM && pItem->HasProperty("sectionPath"))
       {
-        OpenItem(pItem, false);
+        OpenItem(pItem);
         return true;
       }
     }
@@ -695,29 +695,22 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           if (!item)
             return false;
 
-          EPlexDirectoryType type = item->GetPlexDirectoryType();
-
-          if (PlexUtils::CurrentSkinHasPreplay() && iAction == ACTION_SELECT_ITEM &&
-              (type == PLEX_DIR_TYPE_MOVIE || type == PLEX_DIR_TYPE_EPISODE ||
-               type == PLEX_DIR_TYPE_VIDEO || type == PLEX_DIR_TYPE_CLIP))
+          if (iAction == ACTION_SELECT_ITEM)
           {
-            OpenItem(item, true);
-            return true;
-          }
-          else if (iAction == ACTION_SELECT_ITEM)
-          {
-            OpenItem(item, false);
+            OpenItem(item);
             return true;
           }
           else
           {
             PlayFileFromContainer(container);
+            return true;
           }
         }
         else
         {
           CFileItemPtr item = GetCurrentListItem();
-          OpenItem(item, false);
+          OpenItem(item);
+          return true;
         }
       }
     }
@@ -728,91 +721,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::OpenItem(CFileItemPtr item, bool prePlay)
+void CGUIWindowHome::OpenItem(CFileItemPtr item)
 {
-  std::vector<CStdString> args;
-  CURL url = CGUIPlexMediaWindow::GetRealDirectoryUrl(item->GetProperty("key").asString());
-  args.push_back(item->GetProperty("key").asString());
-
-  if (item->HasProperty("sectionPath"))
+  CStdString url = m_navHelper.navigateToItem(item, CURL(), GetID());
+  if (!url.empty())
   {
-    url = CGUIPlexMediaWindow::GetRealDirectoryUrl(item->GetProperty("sectionPath").asString());
-    url.SetProtocolOption("containerStart", "0");
-    url.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
-
-    args.clear();
-    args.push_back(item->GetProperty("sectionPath").asString());
-  }
-
-  /* First we need to cache this item so it will not stall when PlexMediaWindow opens */
-  CGUIDialogBusy *busy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-  if (busy)
-  {
-    busy->Show();
-    m_loadNavigationEvent.Reset();
-    m_cacheLoadFail = false;
-    g_directoryCache.ClearDirectory(url.Get());
-
-    unsigned int job = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
-
-    while(!m_loadNavigationEvent.WaitMSec(10))
-    {
-      if (busy->IsCanceled())
-      {
-        CJobManager::GetInstance().CancelJob(job);
-        busy->Close();
-        return;
-      }
-      g_windowManager.ProcessRenderLoop();
-    }
-
-    busy->Close();
-  }
-
-  if (m_cacheLoadFail)
-  {
-    CGUIDialogOK::ShowAndGetInput("Failed to open directory!", "The section failed to open", "Check log file and report this as a bug.", "");
-    return;
-  }
-
-  args.push_back("return");
-  if (prePlay)
-  {
-    if (item->HasProperty("containerPath"))
-      args.push_back(item->GetProperty("containerPath").asString());
-
-    CApplicationMessenger::Get().ActivateWindow(WINDOW_PLEX_PREPLAY_VIDEO, args, false);
-  }
-  else
-  {
-    int window = WINDOW_VIDEO_NAV;
-    EPlexDirectoryType type = item->GetPlexDirectoryType();
-    if (type == PLEX_DIR_TYPE_ALBUM || type == PLEX_DIR_TYPE_ARTIST)
-      window = WINDOW_MUSIC_FILES;
-    else if (type == PLEX_DIR_TYPE_PHOTOALBUM || type == PLEX_DIR_TYPE_PHOTO)
-      window = WINDOW_PICTURES;
-    else if (type == PLEX_DIR_TYPE_CHANNEL)
-    {
-      CStdString typeStr = item->GetProperty("type").asString();
-      if (typeStr == "channel")
-      {
-        CURL u(item->GetPath());
-        if (boost::starts_with(u.GetFileName(), "music"))
-          window = WINDOW_MUSIC_FILES;
-        else if (boost::starts_with(u.GetFileName(), "video"))
-          window = WINDOW_VIDEO_NAV;
-        else if (boost::starts_with(u.GetFileName(), "photos"))
-          window = WINDOW_PICTURES;
-      }
-      else if (typeStr == "music")
-        window = WINDOW_MUSIC_FILES;
-      else if (typeStr == "photos")
-        window = WINDOW_PICTURES;
-      else
-        window = WINDOW_VIDEO_NAV;
-    }
-
-    CApplicationMessenger::Get().ActivateWindow(window, args, false);
+    CLog::Log(LOGDEBUG, "CGUIWindowHome::OpenItem got %s back from navigateToItem, not sure what to do with it?", url.c_str());
   }
 }
 
@@ -836,6 +750,7 @@ CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
   newItem->SetProperty("plex", true);
   newItem->SetProperty("sectionPath", item->GetPath());
   newItem->SetPlexDirectoryType(item->GetPlexDirectoryType());
+  newItem->m_bIsFolder = true;
 
   AddSection(item->GetPath(),
              CGUIWindowHome::GetSectionTypeFromDirectoryType(item->GetPlexDirectoryType()));

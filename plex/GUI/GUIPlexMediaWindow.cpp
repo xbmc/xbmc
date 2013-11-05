@@ -506,15 +506,6 @@ void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob *
   if (!fjob)
     return;
 
-  if (m_waitingCache == fjob->m_url.Get())
-  {
-    if (success)
-      g_directoryCache.SetDirectory(fjob->m_url.Get(), fjob->m_items, XFILE::DIR_CACHE_ALWAYS);
-    m_cacheEvent.Set();
-    m_waitingCache.clear();
-    return;
-  }
-
   if (success)
   {    
     int nItem = m_viewControl.GetSelectedItem();
@@ -550,83 +541,14 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
       return OnPlayMedia(iItem);
   }
 
-  CStdString url = item->GetPath();
-  if (item->m_bIsFolder)
-  {
-    if (item->GetProperty("search").asBoolean())
-      url = ShowPluginSearch(item);
-    else if (item->GetProperty("settings").asBoolean())
-      url = ShowPluginSettings(item);
-  }
+  CStdString newUrl = m_navHelper.navigateToItem(item, m_vecItems->GetPath(), GetID());
 
-  if (GetID() == WINDOW_SHARED_CONTENT)
-  {
-    CURL u = GetRealDirectoryUrl(url);
-    u.SetProtocolOption("containerStart", "0");
-    u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
-    url = u.Get();
-  }
-
-  CGUIDialogBusy *busy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-  if (busy)
-  {
-    m_cacheEvent.Reset();
-
-    m_waitingCache = url;
-    int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
-
-    busy->Show();
-    while (!m_cacheEvent.WaitMSec(10))
-    {
-      if (busy->IsCanceled())
-      {
-        CJobManager::GetInstance().CancelJob(id);
-        busy->Close();
-        return false;
-      }
-
-      g_windowManager.ProcessRenderLoop();
-    }
-    busy->Close();
-  }
-
-  if (GetID() == WINDOW_SHARED_CONTENT)
-  {
-    int window = WINDOW_VIDEO_NAV;
-    if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_ARTIST)
-      window = WINDOW_MUSIC_NAV;
-    else if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO ||
-             item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTOALBUM)
-      window = WINDOW_PICTURES;
-
-    std::vector<CStdString> args;
-    args.push_back(url);
-    args.push_back("return");
-
-    CApplicationMessenger::Get().ActivateWindow(window, args, false);
-    return true;
-  }
-
-  if (!item->m_bIsFolder && PlexUtils::CurrentSkinHasPreplay() &&
-      item->IsPlexMediaServer() &&
-      (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE ||
-       item->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE))
-  {
-    std::vector<CStdString> args;
-    args.push_back(url);
-    args.push_back("return");
-    args.push_back(m_vecItems->GetPath());
-
-    CApplicationMessenger::Get().ActivateWindow(WINDOW_PLEX_PREPLAY_VIDEO, args, false);
-    return true;
-  }
-
-  if (item->m_bIsFolder)
+  if (item->m_bIsFolder && !newUrl.empty())
   {
     CURL u(m_vecItems->GetPath());
     m_lastSelectedIndex[u.GetUrlWithoutOptions()] = iItem;
 
-    if (!Update(url, true))
+    if (!Update(newUrl, true))
       ShowShareErrorMessage(item.get());
     return true;
   }
@@ -884,6 +806,9 @@ bool CGUIPlexMediaWindow::IsVideoContainer(CFileItemPtr item) const
 {
   EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
 
+  if (dirType == PLEX_DIR_TYPE_CHANNEL)
+    dirType = m_vecItems->Get(0)->GetPlexDirectoryType();
+
   if (dirType == PLEX_DIR_TYPE_DIRECTORY && item)
     dirType = item->GetPlexDirectoryType();
 
@@ -909,36 +834,11 @@ bool CGUIPlexMediaWindow::IsMusicContainer() const
 bool CGUIPlexMediaWindow::IsPhotoContainer() const
 {
   EPlexDirectoryType dirType = m_vecItems->GetPlexDirectoryType();
+
+  if (dirType == PLEX_DIR_TYPE_CHANNEL)
+    dirType = m_vecItems->Get(0)->GetPlexDirectoryType();
+
   return (dirType == PLEX_DIR_TYPE_PHOTOALBUM | dirType == PLEX_DIR_TYPE_PHOTO);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-CStdString CGUIPlexMediaWindow::ShowPluginSearch(CFileItemPtr item)
-{
-  CStdString strSearchTerm = "";
-  if (CGUIKeyboardFactory::ShowAndGetInput(strSearchTerm, item->GetProperty("prompt").asString(), false))
-  {
-    // Encode the query.
-    CURL::Encode(strSearchTerm);
-
-    // Find the ? if there is one.
-    CURL u(item->GetPath());
-    u.SetOption("query", strSearchTerm);
-    return u.Get();
-  }
-  return CStdString();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-CStdString CGUIPlexMediaWindow::ShowPluginSettings(CFileItemPtr item)
-{
-  CFileItemList fileItems;
-  std::vector<CStdString> items;
-  XFILE::CPlexDirectory plexDir;
-
-  plexDir.GetDirectory(item->GetPath(), fileItems);
-  CGUIDialogPlexPluginSettings::ShowAndGetInput(item->GetPath(), plexDir.GetData());
-  return m_vecItems->GetPath();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
