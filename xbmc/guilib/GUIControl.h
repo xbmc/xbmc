@@ -214,7 +214,12 @@ public:
   virtual void SetEnabled(bool bEnable);
   virtual void SetInvalid() { m_bInvalidated = true; };
   virtual void SetPulseOnSelect(bool pulse) { m_pulseOnSelect = pulse; };
+#ifndef __PLEX__
   virtual CStdString GetDescription() const { return ""; };
+#else
+  virtual CStdString GetDescription() const { return m_description; }
+  virtual void SetDescription(const CStdString& desc) { m_description = desc; }
+#endif
 
   void SetAnimations(const std::vector<CAnimation> &animations);
   const std::vector<CAnimation> &GetAnimations() const { return m_animations; };
@@ -357,6 +362,10 @@ protected:
   bool m_hasCamera;
   TransformMatrix m_transform;
   TransformMatrix m_cachedTransform; // Contains the absolute transform the control
+
+  /* PLEX */
+  CStdString m_description;
+  /* END PLEX */
 
   bool  m_controlIsDirty;
   CRect m_renderRegion;         // In screen coordinates

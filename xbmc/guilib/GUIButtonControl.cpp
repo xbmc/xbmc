@@ -278,6 +278,10 @@ EVENT_RESULT CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEv
 CStdString CGUIButtonControl::GetDescription() const
 {
   CStdString strLabel(m_info.GetLabel(m_parentID));
+  /* PLEX */
+  if (strLabel.empty())
+    return CGUIControl::GetDescription();
+  /* END PLEX */
   return strLabel;
 }
 

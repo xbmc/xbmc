@@ -625,6 +625,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CTextureInfo imageNoFocus, imageFocus;
   /* PLEX */
   CTextureInfo textureOrderOff, textureOrderAsc, textureOrderDesc;
+  CStdString description;
   /* END PLEX */
   CGUIInfoLabel texturePath;
   CRect borderSize;
@@ -834,6 +835,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetTexture(pControlNode, "textureorderoff", textureOrderOff);
   GetTexture(pControlNode, "textureorderascending", textureOrderAsc);
   GetTexture(pControlNode, "textureorderdescending", textureOrderDesc);
+  XMLUtils::GetString(pControlNode, "description", description);
   /* END PLEX */
 
   GetTexture(pControlNode, "texturesliderbackground", textureBackground);
@@ -1379,6 +1381,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)
       control->SetCamera(camera);
+
+    /* PLEX */
+    if (!description.empty())
+      control->SetDescription(description);
+    /* END PLEX */
   }
   return control;
 }
