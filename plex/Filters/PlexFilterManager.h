@@ -37,6 +37,8 @@ class CPlexFilterManager : public IJobCallback
     CCriticalSection m_filterSection;
     std::map<std::string, CPlexSectionFilterPtr> m_filtersMap;
     void loadFiltersFromDisk();
+
+    CPlexSectionFilterPtr m_myPlexPlaylistFilter;
 };
 
 typedef boost::shared_ptr<CPlexFilterManager> CPlexFilterManagerPtr;

@@ -214,16 +214,15 @@ void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
       id ++;
     }
 
+    filter->setPrimaryFilter(selectedFilter.first);
+
     bool clear = false;
-    if ((filter->currentPrimaryFilter() == "all") &&
-        (selectedFilter.first != "all"))
+    if (!filter->secondaryFiltersActivated())
     {
       filter->clearFilters();
       clear = true;
     }
-
-    filter->setPrimaryFilter(selectedFilter.first);
-    updateFilterButtons(filter, clear, (selectedFilter.first != "all"));
+    updateFilterButtons(filter, clear, !filter->secondaryFiltersActivated());
   }
   else if (filterButtonId >= FILTER_SECONDARY_BUTTONS_START && filterButtonId < SORT_BUTTONS_START)
   {
@@ -378,7 +377,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     if (sectionFilter)
     {
       sectionFilter->clearFilters();
-      updateFilterButtons(sectionFilter, true, sectionFilter->currentPrimaryFilter() != "all");
+      updateFilterButtons(sectionFilter, true, !sectionFilter->secondaryFiltersActivated());
 
       /* set focus to the next filter */
       CGUIControl* ctrl = (CGUIControl*)GetControl(FILTER_SECONDARY_BUTTONS_START);
@@ -881,6 +880,7 @@ CURL CGUIPlexMediaWindow::GetRealDirectoryUrl(const CStdString& url_)
 
   if (dirUrl.GetProtocol() == "plexserver" &&
       (dirUrl.GetHostName() == "channels" || dirUrl.GetHostName() == "shared" || dirUrl.GetHostName() == "channeldirectory"))
+
     return url_;
 
   bool isSecondary = false;
@@ -902,6 +902,14 @@ CURL CGUIPlexMediaWindow::GetRealDirectoryUrl(const CStdString& url_)
       CLog::Log(LOGDEBUG, "CPlexFilterHelper::GetRealDirectoryUrl got section %d", sectionNumber);
      isSecondary = true;
     }
+  }
+
+  if (dirUrl.GetProtocol() == "plexserver" &&
+      dirUrl.GetHostName() == "myplex" &&
+      dirUrl.GetFileName() == "pms/playlists")
+  {
+    CLog::Log(LOGDEBUG, "CPlexMediaWindow::GetRealDirectoryUrl at myPlex playlists..");
+    isSecondary = true;
   }
 
   if (isSecondary)
@@ -993,7 +1001,7 @@ void CGUIPlexMediaWindow::AddFilters()
         {
           button->SetID(id ++);
 
-          if (sectionFilter->currentPrimaryFilter() != "all")
+          if (!sectionFilter->secondaryFiltersActivated())
             button->SetEnabled(false);
 
           CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::AddFilters added %s with id %d", button->GetLabel().c_str(), button->GetID());
@@ -1027,7 +1035,7 @@ void CGUIPlexMediaWindow::AddFilters()
         {
           button->SetID(id ++);
 
-          if (sectionFilter->currentPrimaryFilter() != "all")
+          if (!sectionFilter->secondaryFiltersActivated())
           {
             button->SetEnabled(false);
             button->SetTristate(CGUIFilterOrderButtonControl::OFF);

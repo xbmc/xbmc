@@ -17,6 +17,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexFilterManager::CPlexFilterManager()
 {
+  /* myplex playlist filters */
+  m_myPlexPlaylistFilter = CPlexSectionFilterPtr(new CPlexMyPlexPlaylistFilter(CURL("plexserver://myplex/pms/playlists")));
+  m_filtersMap["plexserver://myplex/pms/playlists"] = m_myPlexPlaylistFilter;
+
   loadFiltersFromDisk();
 }
 
@@ -40,7 +44,12 @@ void CPlexFilterManager::loadFiltersFromDisk()
       if (section->QueryStringAttribute("url", &url) == TIXML_SUCCESS)
       {
         CLog::Log(LOGDEBUG, "CPlexFilterManager::loadFiltersFromDisk loading filters for section %s", url.c_str());
-        CPlexSectionFilterPtr filter = CPlexSectionFilterPtr(new CPlexSectionFilter(CURL(url)));
+
+        CPlexSectionFilterPtr filter;
+        if ("plexserver://myplex/pms/playlists" == url)
+          filter = m_myPlexPlaylistFilter;
+        else
+          filter = CPlexSectionFilterPtr(new CPlexSectionFilter(CURL(url)));
 
         std::string primaryFilter;
         if(section->QueryStringAttribute("primaryFilter", &primaryFilter) == TIXML_SUCCESS)
@@ -80,7 +89,6 @@ void CPlexFilterManager::loadFiltersFromDisk()
         }
 
         m_filtersMap[url] = filter;
-
       }
       section = section->NextSiblingElement();
     }
@@ -130,6 +138,9 @@ void CPlexFilterManager::saveFiltersToDisk()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexSectionFilterPtr CPlexFilterManager::getFilterForSection(const std::string &sectionUrl)
 {
+  if (sectionUrl == m_myPlexPlaylistFilter->getFilterUrl())
+    return m_myPlexPlaylistFilter;
+
   CSingleLock lk(m_filterSection);
   if (m_filtersMap.find(sectionUrl) != m_filtersMap.end())
     return m_filtersMap[sectionUrl];

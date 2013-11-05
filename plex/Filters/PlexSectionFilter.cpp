@@ -177,3 +177,38 @@ void CPlexSectionFilter::loadFilterValues(CPlexSecondaryFilterPtr secFilter)
 {
   secFilter->loadValues(getFilterOptions());
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexMyPlexPlaylistFilter::CPlexMyPlexPlaylistFilter(const CURL &sectionUrl) : CPlexSectionFilter(sectionUrl)
+{
+  m_currentPrimaryFilter = "queue";
+  m_currentSortOrder = "";
+
+  m_primaryFilters["queue"] = "Media Queue";
+  m_primaryFilters["recommendations"] = "Recommended to you";
+
+  CPlexSecondaryFilterPtr unwatchedFilter = CPlexSecondaryFilterPtr(new CPlexSecondaryFilter("Unwatched", "unwatched", "Unwatched", CPlexSecondaryFilter::FILTER_TYPE_BOOLEAN));
+  m_secondaryFilters["unwatched"] = unwatchedFilter;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CURL CPlexMyPlexPlaylistFilter::addFiltersToUrl(const CURL &baseUrl)
+{
+  CURL ret(baseUrl);
+  PlexUtils::AppendPathToURL(ret, m_currentPrimaryFilter);
+
+  bool unwatched = false;
+  BOOST_FOREACH(CPlexSecondaryFilterPtr filter, m_currentSecondaryFilters)
+  {
+    if (filter->getFilterKey() == "unwatched" && filter->isSelected())
+    {
+      PlexUtils::AppendPathToURL(ret, filter->getFilterKey());
+      unwatched = true;
+    }
+  }
+
+  if (!unwatched)
+    PlexUtils::AppendPathToURL(ret, "all");
+
+  return ret;
+}

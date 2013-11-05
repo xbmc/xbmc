@@ -385,19 +385,7 @@ bool PlexUtils::CurrentSkinHasPreplay()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool PlexUtils::CurrentSkinHasFilters()
 {
-  int iWin = g_windowManager.GetActiveWindow();
-
-  if (iWin != WINDOW_VIDEO_NAV && iWin != WINDOW_PICTURES && iWin != WINDOW_MUSIC_FILES)
-    iWin = WINDOW_VIDEO_NAV;
-
-  CGUIWindow* window = g_windowManager.GetWindow(iWin);
-  if (window)
-  {
-    const CGUIControl* ctrl = window->GetControl(FILTER_PRIMARY_CONTAINER);
-    if (ctrl) return true;
-  }
-  return false;
-}
+return g_SkinInfo->HasSkinFile("DialogFilters.xml");}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 #include "filesystem/SpecialProtocol.h"

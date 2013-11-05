@@ -15,13 +15,13 @@ class CPlexSectionFilter
 {
   public:
     CPlexSectionFilter(const CURL& sectionUrl);
-    bool loadFilters();
+    virtual bool loadFilters();
+    virtual CURL addFiltersToUrl(const CURL& baseUrl);
+    virtual bool hasActiveSecondaryFilters() const;
 
     CUrlOptions getFilterOptions();
-    CURL addFiltersToUrl(const CURL& baseUrl);
-    bool hasActiveSecondaryFilters() const;
 
-    PlexStringPairVector getPrimaryFilters() const
+    virtual PlexStringPairVector getPrimaryFilters() const
     {
       PlexStringPairVector filters;
       BOOST_FOREACH(PlexStringPair p, m_primaryFilters)
@@ -29,7 +29,7 @@ class CPlexSectionFilter
       return filters;
     }
 
-    std::vector<CPlexSecondaryFilterPtr> getSecondaryFilters() const
+    virtual std::vector<CPlexSecondaryFilterPtr> getSecondaryFilters() const
     {
       std::vector<CPlexSecondaryFilterPtr> filters;
       std::pair<std::string, CPlexSecondaryFilterPtr> f;
@@ -38,7 +38,7 @@ class CPlexSectionFilter
       return filters;
     }
 
-    PlexStringPairVector getSortOrders() const
+    virtual PlexStringPairVector getSortOrders() const
     {
       PlexStringPairVector sorts;
       BOOST_FOREACH(PlexStringPair p, m_sortOrders)
@@ -46,27 +46,27 @@ class CPlexSectionFilter
       return sorts;
     }
 
-    void setPrimaryFilter(const std::string& primaryFilter) { m_currentPrimaryFilter = primaryFilter; }
-    std::string currentPrimaryFilter() const { return m_currentPrimaryFilter; }
+    virtual void setPrimaryFilter(const std::string& primaryFilter) { m_currentPrimaryFilter = primaryFilter; }
+    virtual std::string currentPrimaryFilter() const { return m_currentPrimaryFilter; }
 
-    std::string currentSortOrder() const { return m_currentSortOrder; }
-    bool currentSortOrderAscending() const { return m_currentSortOrderAscending; }
+    virtual std::string currentSortOrder() const { return m_currentSortOrder; }
+    virtual bool currentSortOrderAscending() const { return m_currentSortOrderAscending; }
 
-    void setSortOrder(const std::string& sortorder) { m_currentSortOrder = sortorder; }
-    void setSortOrderAscending(bool asc) { m_currentSortOrderAscending = asc; }
+    virtual void setSortOrder(const std::string& sortorder) { m_currentSortOrder = sortorder; }
+    virtual void setSortOrderAscending(bool asc) { m_currentSortOrderAscending = asc; }
 
-    std::vector<CPlexSecondaryFilterPtr> currentSecondaryFilters() const { return m_currentSecondaryFilters; }
+    virtual std::vector<CPlexSecondaryFilterPtr> currentSecondaryFilters() const { return m_currentSecondaryFilters; }
 
-    std::string getFilterUrl() const { return m_sectionUrl.Get(); }
-    bool isLoaded() const { return m_primaryFilters.size() > 0; }
-    bool hasAdvancedFilters() const { return m_secondaryFilters.size() > 0; }
+    virtual std::string getFilterUrl() const { return m_sectionUrl.Get(); }
+    virtual bool isLoaded() const { return m_primaryFilters.size() > 0; }
+    virtual bool hasAdvancedFilters() const { return m_secondaryFilters.size() > 0; }
 
-    void addSecondaryFilter(CPlexSecondaryFilterPtr secFilter);
-    CPlexSecondaryFilterPtr addSecondaryFilter(const std::string& filterKey);
+    virtual void addSecondaryFilter(CPlexSecondaryFilterPtr secFilter);
+    virtual CPlexSecondaryFilterPtr addSecondaryFilter(const std::string& filterKey);
 
-    void loadFilterValues(CPlexSecondaryFilterPtr secFilter);
+    virtual void loadFilterValues(CPlexSecondaryFilterPtr secFilter);
 
-    void clearFilters()
+    virtual void clearFilters()
     {
       BOOST_FOREACH(CPlexSecondaryFilterPtr filter, m_currentSecondaryFilters)
         filter->clearFilters();
@@ -74,7 +74,14 @@ class CPlexSectionFilter
       m_currentSecondaryFilters.clear();
     }
 
-  private:
+    virtual bool secondaryFiltersActivated() const
+    {
+      if (m_currentPrimaryFilter != "all")
+        return false;
+      return true;
+    }
+
+  protected:
     CURL m_sectionUrl;
     PlexStringMap m_primaryFilters;
     std::map<std::string, CPlexSecondaryFilterPtr> m_secondaryFilters;
@@ -85,6 +92,19 @@ class CPlexSectionFilter
 
     std::string m_currentPrimaryFilter;
     std::vector<CPlexSecondaryFilterPtr> m_currentSecondaryFilters;
+};
+
+class CPlexMyPlexPlaylistFilter : public CPlexSectionFilter
+{
+  public:
+    CPlexMyPlexPlaylistFilter(const CURL& sectionUrl);
+
+    virtual CURL addFiltersToUrl(const CURL& baseUrl);
+    virtual void loadFilterValues(CPlexSecondaryFilterPtr secFilter) { };
+    virtual bool hasAdvancedFilters() const { return true; }
+    virtual bool isLoaded() const { return true; }
+    virtual bool loadFilters() { return true; }
+    virtual bool secondaryFiltersActivated() const { return true; }
 };
 
 #endif // PLEXSECTIONFILTER_H
