@@ -64,6 +64,20 @@
 			<textcolor>FF999999</textcolor>
 			<label>$INFO[ListItem.DurationStr]$INFO[ListItem.Property(Recommender), [COLOR=orange]&#xB7;[/COLOR] ]</label>
 			<shadowcolor>FF222222</shadowcolor>
+			<visible>[!IsEmpty(ListItem.DurationStr) + !IsEmpty(ListItem.Property(Recommender))]</visible>
+		</control>
+		<control type="label">
+			<posy>180</posy>
+			<posx>64</posx>
+			<width>190</width>
+			<height>20</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>Condensed-14</font>
+			<textcolor>FF999999</textcolor>
+			<label>$INFO[ListItem.DurationStr]$INFO[ListItem.Property(Recommender)]</label>
+			<shadowcolor>FF222222</shadowcolor>
+			<visible>[IsEmpty(ListItem.DurationStr) | IsEmpty(ListItem.Property(Recommender))]</visible>
 		</control>
 	</include>
 	<include name="ClipSourceIcon">
