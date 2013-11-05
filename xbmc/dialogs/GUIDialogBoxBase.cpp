@@ -20,8 +20,8 @@
 
 #include "Application.h"
 #include "GUIDialogBoxBase.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "threads/SingleLock.h"
 
 using namespace std;
 
@@ -62,9 +62,13 @@ bool CGUIDialogBoxBase::IsConfirmed() const
 
 void CGUIDialogBoxBase::SetHeading(const CVariant& heading)
 {
-  m_strHeading = GetLocalized(heading);
-  if (IsActive())
-    SET_CONTROL_LABEL_THREAD_SAFE(1, m_strHeading);
+  std::string label = GetLocalized(heading);
+  CSingleLock lock(m_section);
+  if (label != m_strHeading)
+  {
+    m_strHeading = label;
+    SetInvalid();
+  }
 }
 
 void CGUIDialogBoxBase::SetLine(int iLine, const CVariant& line)
@@ -72,9 +76,13 @@ void CGUIDialogBoxBase::SetLine(int iLine, const CVariant& line)
   if (iLine < 0 || iLine >= DIALOG_MAX_LINES)
     return;
 
-  m_strLines[iLine] = GetLocalized(line);
-  if (IsActive())
-    SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_LINES_START + iLine, m_strLines[iLine]);
+  std::string label = GetLocalized(line);
+  CSingleLock lock(m_section);
+  if (label != m_strLines[iLine])
+  {
+    m_strLines[iLine] = label;
+    SetInvalid();
+  }
 }
 
 void CGUIDialogBoxBase::SetChoice(int iButton, const CVariant &choice) // iButton == 0 for no, 1 for yes
@@ -82,9 +90,39 @@ void CGUIDialogBoxBase::SetChoice(int iButton, const CVariant &choice) // iButto
   if (iButton < 0 || iButton >= DIALOG_MAX_CHOICES)
     return;
 
-  m_strChoices[iButton] = GetLocalized(choice);
-  if (IsActive())
-    SET_CONTROL_LABEL_THREAD_SAFE(CONTROL_CHOICES_START + iButton, m_strChoices[iButton]);
+  std::string label = GetLocalized(choice);
+  CSingleLock lock(m_section);
+  if (label != m_strChoices[iButton])
+  {
+    m_strChoices[iButton] = label;
+    SetInvalid();
+  }
+}
+
+void CGUIDialogBoxBase::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (m_bInvalidated)
+  { // take a copy of our labels to save holding the lock for too long
+    string heading;
+    vector<string> lines;
+    lines.reserve(DIALOG_MAX_LINES);
+    vector<string> choices;
+    choices.reserve(DIALOG_MAX_CHOICES);
+    {
+      CSingleLock lock(m_section);
+      heading = m_strHeading;
+      for (int i = 0; i < DIALOG_MAX_LINES; ++i)
+        lines.push_back(m_strLines[i]);
+      for (int i = 0; i < DIALOG_MAX_CHOICES; ++i)
+        choices.push_back(m_strChoices[i]);
+    }
+    SET_CONTROL_LABEL(CONTROL_HEADING, heading);
+    for (size_t i = 0 ; i < lines.size(); ++i)
+      SET_CONTROL_LABEL(CONTROL_LINES_START + i, lines[i]);
+    for (size_t i = 0 ; i < choices.size() ; ++i)
+      SET_CONTROL_LABEL(CONTROL_CHOICES_START + i, choices[i]);
+  }
+  CGUIDialog::Process(currentTime, dirtyregions);
 }
 
 void CGUIDialogBoxBase::OnInitWindow()
@@ -92,24 +130,36 @@ void CGUIDialogBoxBase::OnInitWindow()
   // set focus to default
   m_lastControlID = m_defaultControl;
 
-  // set control labels
-  SET_CONTROL_LABEL(CONTROL_HEADING, !m_strHeading.empty() ? m_strHeading : GetDefaultLabel(CONTROL_HEADING));
-  for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
-    SET_CONTROL_LABEL(CONTROL_LINES_START + i, !m_strLines[i].empty() ? m_strLines[i] : GetDefaultLabel(CONTROL_LINES_START + i));
-  for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
-    SET_CONTROL_LABEL(CONTROL_CHOICES_START + i, !m_strChoices[i].empty() ? m_strChoices[i] : GetDefaultLabel(CONTROL_CHOICES_START + i));
-
+  // set initial labels
+  {
+    CSingleLock lock(m_section);
+    if (m_strHeading.empty())
+      m_strHeading = GetDefaultLabel(CONTROL_HEADING);
+    for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
+    {
+      if (m_strLines[i].empty())
+        m_strLines[i] = GetDefaultLabel(CONTROL_LINES_START + i);
+    }
+    for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
+    {
+      if (m_strChoices[i].empty())
+        m_strChoices[i] = GetDefaultLabel(CONTROL_CHOICES_START + i);
+    }
+  }
   CGUIDialog::OnInitWindow();
 }
 
 void CGUIDialogBoxBase::OnDeinitWindow(int nextWindowID)
 {
   // make sure we set default labels for heading, lines and choices
-  SetHeading(m_strHeading = "");
-  for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
-    SetLine(i, m_strLines[i] = "");
-  for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
-    SetChoice(i, m_strChoices[i] = "");
+  {
+    CSingleLock lock(m_section);
+    m_strHeading.clear();
+    for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
+      m_strLines[i].clear();
+    for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
+      m_strChoices[i].clear();
+  }
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
 }

@@ -22,6 +22,7 @@
 
 #include "guilib/GUIDialog.h"
 #include "utils/Variant.h"
+#include "threads/CriticalSection.h"
 
 #define DIALOG_MAX_LINES 3
 #define DIALOG_MAX_CHOICES 2
@@ -47,12 +48,14 @@ protected:
    */
   CStdString GetLocalized(const CVariant &var) const;
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
 
   bool m_bConfirmed;
 
   // actual strings
+  CCriticalSection m_section;
   std::string m_strHeading;
   std::string m_strLines[DIALOG_MAX_LINES];
   std::string m_strChoices[DIALOG_MAX_CHOICES];
