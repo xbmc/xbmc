@@ -36,6 +36,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "guilib/GUIFontManager.h"
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
@@ -454,6 +455,8 @@ void CXBMCRenderManager::UnInit()
   m_bIsStarted = false;
 
   m_overlays.Flush();
+  g_fontManager.Unload("__subtitle__");
+  g_fontManager.Unload("__subtitleborder__");
 
   // free renderer resources.
   // TODO: we may also want to release the renderer here.
@@ -778,6 +781,7 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
   else
     PresentSingle(clear, flags, alpha);
 
+  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
   m_overlays.Render(m_presentsource);
 }
 

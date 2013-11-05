@@ -619,12 +619,6 @@ void CApplicationPlayer::GetGeneralInfo( CStdString& strVideoInfo)
     player->GetGeneralInfo(strVideoInfo);
 }
 
-bool CApplicationPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
-{
-  boost::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->GetCurrentSubtitle(strSubtitle));
-}
-
 int  CApplicationPlayer::SeekChapter(int iChapter)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();

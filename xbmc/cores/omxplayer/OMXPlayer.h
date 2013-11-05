@@ -235,8 +235,6 @@ public:
   virtual bool GetStreamDetails(CStreamDetails &details);
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
 
-  virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
-
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
   

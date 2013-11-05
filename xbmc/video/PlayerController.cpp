@@ -33,6 +33,7 @@
 #include "video/windows/GUIWindowFullScreen.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/OverlayRendererGUI.h"
 #endif
 #include "Application.h"
 #include "utils/LangCodeExpander.h"

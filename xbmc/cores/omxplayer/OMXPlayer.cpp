@@ -1274,6 +1274,9 @@ void COMXPlayer::Process()
     // update application with our state
     UpdateApplication(1000);
 
+    // make sure we run subtitle process here
+    m_dvdPlayerSubtitle.Process(m_clock.GetClock() - m_omxPlayerVideo.GetSubtitleDelay());
+
     // OMX emergency exit
     if(HasAudio() && m_omxPlayerAudio.BadState())
     {
@@ -3999,24 +4002,6 @@ bool COMXPlayer::HasMenu()
     return true;
   else
     return false;
-}
-
-bool COMXPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
-{
-  double pts = m_clock.GetClock() + m_State.time_offset;
-
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) && m_CurrentSubtitle.source != STREAM_SOURCE_TEXT && m_CurrentSubtitle.source != STREAM_SOURCE_DEMUX_SUB)
-    return false;
-
-  m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_omxPlayerVideo.GetSubtitleDelay());
-
-  // In case we stalled, don't output any subs
-  if ((m_omxPlayerVideo.IsStalled() && HasVideo()) || (m_omxPlayerAudio.IsStalled() && HasAudio()))
-    strSubtitle = m_lastSub;
-  else
-    m_lastSub = strSubtitle;
-
-  return !strSubtitle.IsEmpty();
 }
 
 CStdString COMXPlayer::GetPlayerState()

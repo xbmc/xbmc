@@ -35,12 +35,12 @@
 #include "settings/DisplaySettings.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
+#include "OverlayRendererGUI.h"
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "OverlayRendererGL.h"
 #elif defined(HAS_DX)
 #include "OverlayRendererDX.h"
 #endif
-
 
 using namespace OVERLAY;
 
@@ -331,6 +331,9 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayImageDX((CDVDOverlaySpu*)o);
 #endif
+
+  if(!r && o->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
+    r = new COverlayText((CDVDOverlayText*)o);
 
   if(r)
     o->m_overlay = r->Acquire();

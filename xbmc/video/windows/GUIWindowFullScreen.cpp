@@ -88,8 +88,6 @@ using namespace PVR;
 static CLinuxResourceCounter m_resourceCounter;
 #endif
 
-static color_t color[8] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF, 0xFFE5E5E5, 0xFFC0C0C0 };
-
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
 {
@@ -100,7 +98,6 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   m_bShowViewModeInfo = false;
   m_dwShowViewModeTimeout = 0;
   m_bShowCurrentTime = false;
-  m_subsLayout = NULL;
   m_bGroupSelectShow = false;
   m_loadType = KEEP_IN_MEMORY;
   // audio
@@ -401,26 +398,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       m_bShowViewModeInfo = false;
 
-      if (CUtil::IsUsingTTFSubtitles())
-      {
-        CSingleLock lock (m_fontLock);
-
-        CStdString fontPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", CSettings::Get().GetString("subtitles.font"));
-        if (!XFILE::CFile::Exists(fontPath))
-          fontPath = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", CSettings::Get().GetString("subtitles.font"));
-
-        // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.
-        RESOLUTION_INFO pal(720, 576, 0);
-        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[CSettings::Get().GetInt("subtitles.color")], 0, CSettings::Get().GetInt("subtitles.height"), CSettings::Get().GetInt("subtitles.style"), false, 1.0f, 1.0f, &pal, true);
-        CGUIFont *borderFont = g_fontManager.LoadTTF("__subtitleborder__", fontPath, 0xFF000000, 0, CSettings::Get().GetInt("subtitles.height"), CSettings::Get().GetInt("subtitles.style"), true, 1.0f, 1.0f, &pal, true);
-        if (!subFont || !borderFont)
-          CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
-        else
-          m_subsLayout = new CGUITextLayout(subFont, true, 0, borderFont);
-      }
-      else
-        m_subsLayout = NULL;
-
       return true;
     }
   case GUI_MSG_WINDOW_DEINIT:
@@ -454,16 +431,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       // make sure renderer is uptospeed
       g_renderManager.Update();
 #endif
-
-      CSingleLock lockFont(m_fontLock);
-      if (m_subsLayout)
-      {
-        g_fontManager.Unload("__subtitle__");
-        g_fontManager.Unload("__subtitleborder__");
-        delete m_subsLayout;
-        m_subsLayout = NULL;
-      }
-
       return true;
     }
   case GUI_MSG_CLICKED:
@@ -756,88 +723,7 @@ void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &d
 
 void CGUIWindowFullScreen::Render()
 {
-  if (g_application.m_pPlayer->HasPlayer())
-    RenderTTFSubtitles();
   CGUIWindow::Render();
-}
-
-void CGUIWindowFullScreen::RenderTTFSubtitles()
-{
-  if ((g_application.GetCurrentPlayer() == EPC_MPLAYER ||
-#if defined(HAS_OMXPLAYER)
-       g_application.GetCurrentPlayer() == EPC_OMXPLAYER ||
-#endif
-       g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
-      CUtil::IsUsingTTFSubtitles() && (g_application.m_pPlayer->GetSubtitleVisible()))
-  {
-    CSingleLock lock (m_fontLock);
-
-    if(!m_subsLayout)
-      return;
-
-    CStdString subtitleText = "How now brown cow";
-    if (g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
-    {
-      // Remove HTML-like tags from the subtitles until
-      subtitleText.Replace("\\r", "");
-      subtitleText.Replace("\r", "");
-      subtitleText.Replace("\\n", "[CR]");
-      subtitleText.Replace("\n", "[CR]");
-      subtitleText.Replace("<br>", "[CR]");
-      subtitleText.Replace("\\N", "[CR]");
-      subtitleText.Replace("<i>", "[I]");
-      subtitleText.Replace("</i>", "[/I]");
-      subtitleText.Replace("<b>", "[B]");
-      subtitleText.Replace("</b>", "[/B]");
-      subtitleText.Replace("<u>", "");
-      subtitleText.Replace("<p>", "");
-      subtitleText.Replace("<P>", "");
-      subtitleText.Replace("&nbsp;", "");
-      subtitleText.Replace("</u>", "");
-      subtitleText.Replace("</i", "[/I]"); // handle tags which aren't closed properly (happens).
-      subtitleText.Replace("</b", "[/B]");
-      subtitleText.Replace("</u", "");
-
-      RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
-      g_graphicsContext.SetRenderingResolution(res, false);
-
-      float maxWidth = (float) res.Overscan.right - res.Overscan.left;
-      m_subsLayout->Update(subtitleText, maxWidth * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
-
-      int subalign = CSettings::Get().GetInt("subtitles.align");
-      float textWidth, textHeight;
-      m_subsLayout->GetTextExtent(textWidth, textHeight);
-      float x = maxWidth * 0.5f + res.Overscan.left;
-      float y = (float) res.iSubtitles;
-
-      if (subalign == SUBTITLE_ALIGN_MANUAL)
-        y = (float) res.iSubtitles - textHeight;
-      else
-      {
-        SPlayerVideoStreamInfo info;
-        g_application.m_pPlayer->GetVideoStreamInfo(info);
-
-        if ((subalign == SUBTITLE_ALIGN_TOP_INSIDE) || (subalign == SUBTITLE_ALIGN_TOP_OUTSIDE))
-          y = info.DestRect.y1;
-        else
-          y = info.DestRect.y2;
-
-        // use the manual distance to the screenbottom as an offset to the automatic location
-        if ((subalign == SUBTITLE_ALIGN_BOTTOM_INSIDE) || (subalign == SUBTITLE_ALIGN_TOP_OUTSIDE))
-          y -= textHeight + g_graphicsContext.GetHeight() - res.iSubtitles;
-        else
-          y += g_graphicsContext.GetHeight() - res.iSubtitles;
-
-        y = std::max(y, (float) res.Overscan.top);
-        y = std::min(y, res.Overscan.bottom - textHeight);
-      }
-
-      m_subsLayout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, maxWidth);
-
-      // reset rendering resolution
-      g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
-    }
-  }
 }
 
 void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
