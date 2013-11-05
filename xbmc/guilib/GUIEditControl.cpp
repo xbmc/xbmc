@@ -31,6 +31,7 @@
 /* PLEX */
 #include "PlexApplication.h"
 #include "Client/PlexTimelineManager.h"
+#include "StringUtils.h"
 /* END PLEX */
 
 #if defined(TARGET_DARWIN)
@@ -69,6 +70,9 @@ void CGUIEditControl::DefaultConstructor()
   m_label.SetAlign(m_label.GetLabelInfo().align & XBFONT_CENTER_Y); // left align
   m_label2.GetLabelInfo().offsetX = 0;
   m_isMD5 = false;
+  /* PLEX */
+  m_caps = false;
+  /* END PLEX */
 }
 
 CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
@@ -351,14 +355,17 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
   if (sendUpdate)
   {
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
-
-    /* PLEX */
-    if (g_plexApplication.timelineManager)
-      g_plexApplication.timelineManager->SetTextFieldFocused(true, GetDescription().size() > 0 ? GetDescription() : "field", GetLabel2(), m_inputType == INPUT_TYPE_PASSWORD);
-    /* END PLEX */
-
     m_textChangeActions.ExecuteActions(GetID(), GetParentID());
   }
+
+  /* PLEX */
+  if (m_caps)
+    m_text2.ToUpper();
+
+  if (g_plexApplication.timelineManager)
+    g_plexApplication.timelineManager->SetTextFieldFocused(true, GetDescription().size() > 0 ? GetDescription() : "field", GetLabel2(), m_inputType == INPUT_TYPE_PASSWORD);
+  /* END PLEX */
+
   SetInvalid();
 }
 

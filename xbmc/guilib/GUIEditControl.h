@@ -80,6 +80,10 @@ public:
 
   bool HasTextChangeActions() { return m_textChangeActions.HasActionsMeetingCondition(); };
 
+  /* PLEX */
+  void SetOnlyCaps(bool caps) { m_caps = caps; }
+  /* END PLEX */
+
 protected:
   virtual void ProcessText(unsigned int currentTime);
   virtual void RenderText();
@@ -120,5 +124,9 @@ protected:
 
   static const char*        smsLetters[10];
   static const unsigned int smsDelay;
+
+  /* PLEX */
+  bool m_caps;
+  /* END PLEX */
 };
 #endif
