@@ -458,15 +458,15 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSubSettings(&CViewStateSettings::Get());
 
   // unregister ISettingsHandler implementations
-  m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->UnregisterSettingsHandler(&g_advancedSettings);
   m_settingsManager->UnregisterSettingsHandler(&CMediaSourceSettings::Get());
   m_settingsManager->UnregisterSettingsHandler(&CPlayerCoreFactory::Get());
-  m_settingsManager->UnregisterSettingsHandler(&CRssManager::Get());
+  m_settingsManager->UnregisterSettingsHandler(&CProfilesManager::Get());
 #ifdef HAS_UPNP
   m_settingsManager->UnregisterSettingsHandler(&CUPnPSettings::Get());
 #endif
-  m_settingsManager->UnregisterSettingsHandler(&CProfilesManager::Get());
+  m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::Get());
+  m_settingsManager->UnregisterSettingsHandler(&CRssManager::Get());
   m_settingsManager->UnregisterSettingsHandler(&g_application);
 
   m_initialized = false;
