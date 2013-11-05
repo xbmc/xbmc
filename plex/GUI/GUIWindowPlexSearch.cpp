@@ -353,6 +353,9 @@ void CGUIWindowPlexSearch::ProcessResults(CFileItemList* results)
   for (int i = 0; i < results->Size(); i ++)
   {
     CFileItemPtr item = results->Get(i);
+    item->SetProperty("plexServerName", server->GetName());
+    item->SetProperty("plexServerOwner", server->GetOwner());
+
     if (item && m_resultMap.find(item->GetPlexDirectoryType()) != m_resultMap.end())
     {
       CFileItemListPtr list;
