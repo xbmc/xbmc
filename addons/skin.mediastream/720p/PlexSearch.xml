@@ -40,7 +40,8 @@
 				<texture>plex-search-input.png</texture>
 			</control>
 			<!-- text field -->
-			<control type="label" id="310">
+			<control type="edit" id="310">
+				<description>Search</description>
 				<posx>35</posx>
 				<posy>55</posy>
 				<font>LargeSearchFont</font>
