@@ -260,8 +260,6 @@ bool CGUIControlListSetting::OnClick()
   if (!GetItems(m_pSetting, options) || options.Size() <= 1)
     return false;
   
-  const CSettingControlList *control = static_cast<const CSettingControlList*>(m_pSetting->GetControl());
-
   dialog->Reset();
   dialog->SetHeading(g_localizeStrings.Get(m_pSetting->GetLabel()));
   dialog->SetItems(&options);
