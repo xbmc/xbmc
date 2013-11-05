@@ -87,6 +87,18 @@ void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
   }
 }
 
+void CGUIDialogBoxBase::SetText(const CVariant& text)
+{
+  std::string label = GetLocalized(text);
+  CSingleLock lock(m_section);
+  std::string joined = StringUtils::Join(m_lines, "\n");
+  if (label != joined)
+  {
+    m_lines = StringUtils::Split(label, "\n");
+    SetInvalid();
+  }
+}
+
 void CGUIDialogBoxBase::SetChoice(int iButton, const CVariant &choice) // iButton == 0 for no, 1 for yes
 {
   if (iButton < 0 || iButton >= DIALOG_MAX_CHOICES)

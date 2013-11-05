@@ -38,6 +38,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   bool IsConfirmed() const;
   void SetLine(unsigned int iLine, const CVariant &line);
+  void SetText(const CVariant &text);
   void SetHeading(const CVariant &heading);
   void SetChoice(int iButton, const CVariant &choice);
 protected:
