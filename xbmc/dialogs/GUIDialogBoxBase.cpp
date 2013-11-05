@@ -161,15 +161,6 @@ void CGUIDialogBoxBase::OnInitWindow()
   // set initial labels
   {
     CSingleLock lock(m_section);
-    if (m_strHeading.empty())
-      m_strHeading = GetDefaultLabel(CONTROL_HEADING);
-
-    m_lines.resize(DIALOG_MAX_LINES);
-    for (size_t i = 0; i < m_lines.size() && i < DIALOG_MAX_LINES ; ++i)
-    {
-      if (m_lines[i].empty())
-        m_lines[i] = GetDefaultLabel(CONTROL_LINES_START + i);
-    }
     for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
     {
       if (m_strChoices[i].empty())
