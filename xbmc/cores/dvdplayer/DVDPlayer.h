@@ -27,7 +27,6 @@
 
 /* PLEX */
 #include "Variant.h"
-#include "PlexMediaPart.h"
 /* END PLEX */
 
 #include "DVDMessageQueue.h"

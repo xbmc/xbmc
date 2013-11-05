@@ -30,7 +30,6 @@
 /* PLEX */
 #include "BackgroundInfoLoader.h"
 #include "FileItem.h"
-#include "PlexMediaRefresher.h"
 #include "Client/PlexMediaServerClient.h"
 
 #define CONTENT_LIST_FILTERS 13000
@@ -160,13 +159,9 @@ protected:
   void OnRenameItem(int iItem);
 
   /* PLEX */
-  virtual bool OnPlayMedia(CFileItem* pItem);
-  virtual void Render();
   virtual CBackgroundInfoLoader* GetBackgroundLoader() { return 0; }
   void RefreshShares(bool update=false);
   CFileItemPtr m_updatedItem;
-  PlexMediaRefresher* m_mediaRefresher;
-  CStopWatch m_refreshTimer;
   /* END PLEX */
 
 protected:

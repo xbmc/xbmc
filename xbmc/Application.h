@@ -62,7 +62,7 @@ namespace MEDIA_DETECT
 #include "threads/Thread.h"
 
 /* PLEX */
-#include "plex/LaunchHost.h"
+#include "plex/Windows/LaunchHost.h"
 class CPlexHTTPRemoteHandler;
 class CGUIDialogCache;
 class PlexApplication;

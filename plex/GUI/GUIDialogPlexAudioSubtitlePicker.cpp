@@ -2,8 +2,6 @@
 #include "plex/PlexTypes.h"
 #include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
-#include "PlexMediaPart.h"
-#include "PlexMediaStream.h"
 #include "FileItem.h"
 #include "Client/PlexMediaServerClient.h"
 

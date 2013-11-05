@@ -1,0 +1,5 @@
+if(TARGET_WIN32)
+	set(win_SRC MediaCenterLaunchHost.cpp MediaCenterLaunchHost.h)
+endif(TARGET_WIN32)
+list(APPEND win_SRC LaunchHost.cpp LaunchHost.h)
+add_sources(${win_SRC})

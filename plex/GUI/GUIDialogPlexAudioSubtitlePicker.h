@@ -1,7 +1,5 @@
 #pragma once
 
-#include "PlexMediaStream.h"
-
 #include "dialogs/GUIDialogBoxBase.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "PlexTypes.h"

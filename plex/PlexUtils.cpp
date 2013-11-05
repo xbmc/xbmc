@@ -450,8 +450,7 @@ CStdString PlexUtils::GetPrettyStreamName(const CFileItem &fileItem, bool audio)
   return name;
 }
 
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CStdString PlexUtils::GetSHA1SumFromURL(const CURL &url)
 {
   SHA1 sha;
@@ -474,7 +473,7 @@ CStdString PlexUtils::GetSHA1SumFromURL(const CURL &url)
   return "";
 }
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CStdString PlexUtils::GetXMLString(const CXBMCTinyXML &document)
 {
   CXBMCTinyXML ldoc(document);

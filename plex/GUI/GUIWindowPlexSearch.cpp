@@ -32,7 +32,6 @@
 #include "GUILabelControl.h"
 #include "GUIWindowPlexSearch.h"
 #include "GUIUserMessages.h"
-#include "PlexContentWorker.h"
 #include "PlexDirectory.h"
 #include "Client/PlexServerManager.h"
 #include "Settings.h"
@@ -45,6 +44,7 @@
 #include "GUIMessage.h"
 #include "ApplicationMessenger.h"
 #include "PlexThemeMusicPlayer.h"
+#include "PlexJobs.h"
 
 #define CTL_LABEL_EDIT       310
 #define CTL_BUTTON_BACKSPACE 8

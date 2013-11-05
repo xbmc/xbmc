@@ -45,7 +45,6 @@
 
 #include "Client/MyPlex/MyPlexManager.h"
 #include "PlexDirectory.h"
-#include "PlexLibrarySectionManager.h"
 #include "threads/SingleLock.h"
 #include "PlexUtils.h"
 #include "video/VideoInfoTag.h"
