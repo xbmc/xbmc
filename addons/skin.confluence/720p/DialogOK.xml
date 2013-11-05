@@ -53,38 +53,16 @@
 			<ondown>10</ondown>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
-		<control type="label" id="2">
-			<description>dialog line 1</description>
+		<control type="textbox" id="9">
+			<description>text</description>
 			<left>30</left>
 			<top>60</top>
 			<width>550</width>
-			<height>30</height>
+			<height>80</height>
 			<align>left</align>
-			<aligny>center</aligny>
 			<label>-</label>
 			<font>font13</font>
-		</control>
-		<control type="label" id="3">
-			<description>dialog line 2</description>
-			<left>30</left>
-			<top>85</top>
-			<width>550</width>
-			<height>30</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<label>-</label>
-			<font>font13</font>
-		</control>
-		<control type="label" id="4">
-			<description>dialog line 3</description>
-			<left>30</left>
-			<top>110</top>
-			<width>550</width>
-			<height>30</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<label>-</label>
-			<font>font13</font>
+			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
 		<control type="button" id="10">
 			<description>OK button</description>
