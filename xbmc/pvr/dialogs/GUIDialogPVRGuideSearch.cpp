@@ -74,14 +74,19 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
   int iChannelGroup = pSpin->GetValue();
 
   pSpin->Clear();
-  pSpin->AddLabel(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
+  pSpin->AddLabel(g_localizeStrings.Get(19286), EPG_SEARCH_UNSET);
 
-  int iGroupId = (iChannelGroup == EPG_SEARCH_UNSET) ?
-      XBMC_INTERNAL_GROUP_TV :
-      iChannelGroup;
-  CPVRChannelGroupPtr group = g_PVRChannelGroups->GetByIdFromAll(iGroupId);
+  CPVRChannelGroupPtr group;
+  if(iChannelGroup == EPG_SEARCH_UNSET)
+  {
+    group = g_PVRChannelGroups->GetGroupAll(m_searchFilter->m_bIsRadio);
+  }
+  else
+  {
+    group = g_PVRChannelGroups->GetByIdFromAll(iChannelGroup);
+  }
   if (!group)
-    group = g_PVRChannelGroups->GetGroupAllTV();
+    group = g_PVRChannelGroups->GetGroupAll(m_searchFilter->m_bIsRadio);
 
   for (int iChannelPtr = 0; iChannelPtr < group->Size(); iChannelPtr++)
   {
@@ -103,13 +108,8 @@ void CGUIDialogPVRGuideSearch::UpdateGroupsSpin(void)
   std::vector<CPVRChannelGroupPtr> group;
   std::vector<CPVRChannelGroupPtr>::const_iterator it;
 
-  /* tv groups */
-  group = g_PVRChannelGroups->GetTV()->GetMembers();
-  for (it = group.begin(); it != group.end(); ++it)
-    pSpin->AddLabel((*it)->GroupName(), (*it)->GroupID());
-
-  /* radio groups */
-  group = g_PVRChannelGroups->GetRadio()->GetMembers();
+  /* groups */
+  group = g_PVRChannelGroups->Get(m_searchFilter->m_bIsRadio)->GetMembers();
   for (it = group.begin(); it != group.end(); ++it)
     pSpin->AddLabel((*it)->GroupName(), (*it)->GroupID());
 

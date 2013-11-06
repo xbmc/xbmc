@@ -4277,7 +4277,7 @@ bool CDVDPlayer::SwitchChannel(const CPVRChannel &channel)
   UpdatePlayState(0);
 
   /* make sure the pvr window is updated */
-  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(channel.IsRadio() ? WINDOW_RADIO : WINDOW_TV);
   if (pWindow)
     pWindow->SetInvalid();
 

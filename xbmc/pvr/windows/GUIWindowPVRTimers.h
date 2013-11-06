@@ -21,13 +21,12 @@
  */
 
 #include "GUIWindowPVRCommon.h"
-#include "utils/Observer.h"
 
 namespace PVR
 {
   class CGUIWindowPVR;
 
-  class CGUIWindowPVRTimers : public CGUIWindowPVRCommon, private Observer
+  class CGUIWindowPVRTimers : public CGUIWindowPVRCommon
   {
     friend class CGUIWindowPVR;
 

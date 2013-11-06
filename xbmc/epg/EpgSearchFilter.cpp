@@ -121,7 +121,8 @@ bool EpgSearchFilter::FilterEntry(const CEpgInfoTag &tag) const
       MatchStartAndEndTimes(tag) &&
       MatchSearchTerm(tag)) &&
       (!tag.HasPVRChannel() ||
-       (MatchChannelNumber(tag) &&
+       (MatchChannelType(tag) &&
+        MatchChannelNumber(tag) &&
         MatchChannelGroup(tag) &&
         (!m_bFTAOnly || !tag.ChannelTag()->IsEncrypted())));
 }
@@ -154,6 +155,10 @@ int EpgSearchFilter::RemoveDuplicates(CFileItemList &results)
   return iSize;
 }
 
+bool EpgSearchFilter::MatchChannelType(const CEpgInfoTag &tag) const
+{
+  return (g_PVRManager.IsStarted() && tag.ChannelTag()->IsRadio() == m_bIsRadio);
+}
 
 bool EpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
 {

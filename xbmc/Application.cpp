@@ -252,7 +252,8 @@
 /* PVR related include Files */
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/windows/GUIWindowPVR.h"
+#include "pvr/windows/GUIWindowTV.h"
+#include "pvr/windows/GUIWindowRadio.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
 #include "pvr/dialogs/GUIDialogPVRCutterOSD.h"
@@ -1415,7 +1416,8 @@ bool CApplication::Initialize()
 
     /* Load PVR related Windows and Dialogs */
     g_windowManager.Add(new CGUIDialogTeletext);
-    g_windowManager.Add(new CGUIWindowPVR);
+    g_windowManager.Add(new CGUIWindowTV);
+    g_windowManager.Add(new CGUIWindowRadio);
     g_windowManager.Add(new CGUIDialogPVRGuideInfo);
     g_windowManager.Add(new CGUIDialogPVRRecordingInfo);
     g_windowManager.Add(new CGUIDialogPVRTimerSettings);
@@ -1476,14 +1478,15 @@ bool CApplication::Initialize()
       CJSONRPC::Initialize();
 #endif
       ADDON::CAddonMgr::Get().StartServices(false);
-      if (g_SkinInfo->GetFirstWindow() == WINDOW_PVR)
+      int startWindow = g_SkinInfo->GetStartWindow();
+      if (startWindow == WINDOW_TV || startWindow == WINDOW_RADIO)
       {
+        StartPVRManager(g_SkinInfo->GetFirstWindow());
         g_windowManager.ActivateWindow(WINDOW_HOME);
-        StartPVRManager(true);
       }
       else
       {
-        StartPVRManager(false);
+        StartPVRManager();
         g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
       }
 
@@ -1582,10 +1585,12 @@ bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* 
   return ret;
 }
 
-void CApplication::StartPVRManager(bool bOpenPVRWindow /* = false */)
+void CApplication::StartPVRManager(int openWindowId /* = 0 */)
 {
   if (CSettings::Get().GetBool("pvrmanager.enabled"))
-    g_PVRManager.Start(true, bOpenPVRWindow);
+    g_PVRManager.Start(true, openWindowId);
+  else if (openWindowId)
+    g_windowManager.ActivateWindow(WINDOW_HOME);
 }
 
 void CApplication::StopPVRManager()
@@ -3393,7 +3398,8 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_SUBTITLES);
 
     /* Delete PVR related windows and dialogs */
-    g_windowManager.Delete(WINDOW_PVR);
+    g_windowManager.Delete(WINDOW_TV);
+    g_windowManager.Delete(WINDOW_RADIO);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_GUIDE_INFO);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_RECORDING_INFO);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_TIMER_SETTING);

@@ -24,6 +24,7 @@
 #include "epg/GUIEPGGridContainer.h"
 #include "utils/Stopwatch.h"
 #include "threads/CriticalSection.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 namespace PVR
 {
@@ -44,9 +45,6 @@ namespace PVR
     friend class CGUIWindowPVRTimers;
 
   public:
-    CGUIWindowPVR(void);
-    virtual ~CGUIWindowPVR(void);
-
     virtual CGUIWindowPVRCommon *GetActiveView(void) const;
     virtual void SetActiveView(CGUIWindowPVRCommon *window);
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
@@ -60,32 +58,39 @@ namespace PVR
     virtual void FrameMove();
     virtual void Reset(void);
     virtual void Cleanup(void);
+    virtual CPVRChannelGroupPtr GetSelectedGroup(void);
+    virtual void SetSelectedGroup(CPVRChannelGroupPtr group);
 
     EPG::CGUIEPGGridContainer *m_guideGrid;
 
   protected:
+    CGUIWindowPVR(int windowId, const char *xmlFile, bool bRadio);
+    virtual ~CGUIWindowPVR(void);
+    
     virtual void SetLabel(int iControl, const CStdString &strLabel);
     virtual void SetLabel(int iControl, int iLabel);
     virtual void UpdateButtons(void);
     virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
     virtual bool OnBack(int actionID);
+    virtual bool IsRadio();
+    virtual void SetRadio(bool bRadio);
 
   private:
-    virtual bool OnMessageFocus(CGUIMessage &message);
     virtual bool OnMessageClick(CGUIMessage &message);
-
+    virtual bool OpenGroupDialogSelect();
     virtual void CreateViews(void);
 
     CGUIWindowPVRCommon *    m_currentSubwindow;
     CGUIWindowPVRCommon *    m_savedSubwindow;
 
-    CGUIWindowPVRChannels *  m_windowChannelsTV;
-    CGUIWindowPVRChannels *  m_windowChannelsRadio;
+    CGUIWindowPVRChannels *  m_windowChannels;
     CGUIWindowPVRGuide    *  m_windowGuide;
     CGUIWindowPVRRecordings *m_windowRecordings;
     CGUIWindowPVRSearch *    m_windowSearch;
     CGUIWindowPVRTimers *    m_windowTimers;
     bool                     m_bWasReset;
+    bool                     m_bRadio;
+    CPVRChannelGroupPtr      m_selectedGroup;
 
     CCriticalSection         m_critSection;
 

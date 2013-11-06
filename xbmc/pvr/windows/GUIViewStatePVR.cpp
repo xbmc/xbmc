@@ -26,6 +26,8 @@
 
 using namespace PVR;
 
+#define PVR_VIEW_OFFSET 10701
+
 CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) :
   CGUIViewState(items)
 {
@@ -41,7 +43,7 @@ CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) :
     SetSortMethod(SortByDate);
   }
 
-  LoadViewState(items.GetPath(), ActiveView == PVR_WINDOW_UNKNOWN ? WINDOW_PVR : WINDOW_PVR + 100 - ActiveView );
+  LoadViewState(items.GetPath(), ActiveView == PVR_WINDOW_UNKNOWN ? WINDOW_TV : PVR_VIEW_OFFSET - ActiveView);
 }
 
 PVRWindow CGUIViewStatePVR::GetActiveView()
@@ -49,9 +51,9 @@ PVRWindow CGUIViewStatePVR::GetActiveView()
   PVRWindow returnWindow = PVR_WINDOW_UNKNOWN;
 
   int iActiveWindow = g_windowManager.GetActiveWindow();
-  if (iActiveWindow == WINDOW_PVR)
+  if (iActiveWindow == WINDOW_TV || iActiveWindow == WINDOW_RADIO)
   {
-    CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+    CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(iActiveWindow);
     CGUIWindowPVRCommon *pActiveView = NULL;
     if (pWindow && (pActiveView = pWindow->GetActiveView()) != NULL)
       returnWindow = pActiveView->GetWindowId();
@@ -63,7 +65,7 @@ PVRWindow CGUIViewStatePVR::GetActiveView()
 void CGUIViewStatePVR::SaveViewState(void) 
 {
   PVRWindow ActiveView = GetActiveView();
-  SaveViewToDb(m_items.GetPath(), ActiveView == PVR_WINDOW_UNKNOWN ? WINDOW_PVR : WINDOW_PVR + 100 - ActiveView, NULL);
+  SaveViewToDb(m_items.GetPath(), ActiveView == PVR_WINDOW_UNKNOWN ? WINDOW_TV : PVR_VIEW_OFFSET - ActiveView, NULL);
 }
 
 bool CGUIViewStatePVR::HideParentDirItems(void)
