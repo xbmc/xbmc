@@ -290,9 +290,13 @@ void UpdateInstaller::installFile(const UpdateScriptFile& file)
 				throw "Package file does not exist: " + packageFile;
 			}
 
+          std::string filePath = file.path;
+          if (!file.pathPrefix.empty())
+             filePath = file.pathPrefix + '/' + file.path;
+
 			// extract the file from the package and copy it to
 			// the destination
-			FileUtils::extractFromZip(packageFile.c_str(),file.path.c_str(),destPath.c_str());
+           FileUtils::extractFromZip(packageFile.c_str(),filePath.c_str(),destPath.c_str());
 		}
 		else
 		{
