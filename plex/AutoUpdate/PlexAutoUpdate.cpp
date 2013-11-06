@@ -446,7 +446,9 @@ void CPlexAutoUpdate::UpdateAndRestart()
 
   uint32_t size;
   GetDarwinBundlePath(installdir, &size);
-  appdir = std::string(installdir) + "/..";
+
+  appdir = std::string(installdir);
+
 #elif TARGET_WINDOWS
   CUtil::GetHomePath(appdir);
 #endif
@@ -460,6 +462,7 @@ void CPlexAutoUpdate::UpdateAndRestart()
   exec.Format("\"%s\" %s", updater, args);
 
   CLog::Log(LOGDEBUG, "CPlexAutoUpdate::UpdateAndRestart going to run %s", exec.c_str());
+  fprintf(stderr, "Running: %s\n", exec.c_str());
 
   pid_t pid = fork();
   if (pid == -1)
