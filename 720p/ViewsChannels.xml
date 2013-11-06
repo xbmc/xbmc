@@ -264,8 +264,68 @@
 		</control>
 	</include>
 	<!-- inside channels -->
-	<!-- Video Channel (MyVideoNav.xml) -->
+	<!-- Generic Channel view, a temporary throw-in-all -->
 	<include name="Channel">
+		<control type="group">
+			<visible>Container.content(channel)</visible>
+			<include>FadeDialog</include>
+			<!-- main list -->
+			<control type="group" id="777">
+				<control type="panel" id="99">
+					<viewtype label="ChannelGeneric">panel</viewtype>
+					<visible>Container.content(channel)</visible>
+					<onup>99</onup>
+					<ondown>99</ondown>
+					<onright>99</onright>
+					<onleft>9100</onleft>
+					<orientation>vertical</orientation>
+					<posx>28</posx>
+					<posy>28</posy>
+					<width>1300</width>
+					<height>660</height>
+					<!-- generic square thumb -->
+					<itemlayout condition="!ListItem.Type(episode) + !ListItem.Type(clip)" width="153" height="164">
+						<include>PhotoThumbCard</include>
+						<include>ChannelContentThumb</include>
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>white</textcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout condition="!ListItem.Type(episode) + !ListItem.Type(clip)" width="153" height="164">
+						<include>PhotoThumbCard</include>
+						<include>ChannelContentThumb</include>
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>SelectedBorder</include>
+					</focusedlayout>	
+					<!-- episode layout -->
+					<itemlayout condition="ListItem.Type(episode) | ListItem.Type(clip)" width="250" height="162">
+						<include>EpisodeThumbCard</include>
+						<include>EpisodeThumb</include>
+						<control type="label">
+							<include>EpisodeTitle</include>
+							<textcolor>white</textcolor>
+						</control>
+						<include>EpisodeDate</include>
+					</itemlayout>
+					<focusedlayout condition="ListItem.Type(episode) | ListItem.Type(clip)" width="250" height="165">
+						<include>EpisodeThumbCard</include>
+						<include>EpisodeThumb</include>
+						<control type="label">
+							<include>EpisodeTitle</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>EpisodeDate</include>
+						<include>EpisodeSelectedBorder</include>
+					</focusedlayout>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="_Channel">
 		<control type="group">
 			<visible>Container.content(channel)</visible>
 			<include>FadeDialog</include>
