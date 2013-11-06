@@ -41,6 +41,7 @@ class UpdateScriptFile
 		std::string path;
 		std::string package;
 		std::string linkTarget;
+       std::string pathPrefix;
 
 		/** The permissions for this file, specified
 		  * using the standard Unix mode_t values.
@@ -89,5 +90,7 @@ class UpdateScript
 		std::vector<UpdateScriptPackage> m_packages;
 		std::vector<UpdateScriptFile> m_filesToInstall;
 		std::vector<std::string> m_filesToUninstall;
+
+       std::string m_pathPrefix;
 };
 

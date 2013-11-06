@@ -70,6 +70,10 @@ void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
 		installNodeName = "install";
 	}
 
+  const TiXmlElement* prefixNode = updateNode->FirstChildElement("pathprefix");
+  if (prefixNode)
+    m_pathPrefix = prefixNode->GetText();
+
 	const TiXmlElement* installNode = updateNode->FirstChildElement(installNodeName);
 	if (installNode)
 	{
@@ -115,6 +119,10 @@ UpdateScriptFile UpdateScript::parseFile(const TiXmlElement* element)
 
 	file.linkTarget = elementText(element->FirstChildElement("target"));
 	file.isMainBinary = strToBool(elementText(element->FirstChildElement("is-main-binary")));
+
+  if (!m_pathPrefix.empty())
+    file.pathPrefix = m_pathPrefix;
+
 	return file;
 }
 
