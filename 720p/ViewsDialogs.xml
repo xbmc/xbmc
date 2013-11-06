@@ -95,8 +95,8 @@
 			<include condition="Window.IsVisible(2901)">OSDAudioSubtitleStreamPickerWindowPosition</include>
 			<!-- bg's -->
 			<control type="group">
-				<posx>340</posx>
-				<posy>170</posy>
+				<posx>339</posx>
+				<posy>136</posy>
 				<control type="image">
 					<posx>-1</posx>
 					<posy>-1</posy>
@@ -131,13 +131,18 @@
 				<!-- arrow -->
 				<include condition="Window.IsVisible(10090)">AudioSubtitleStreamPickerArrow</include>
 				<include condition="Window.IsVisible(2901)">OSDAudioSubtitleStreamPickerArrow</include>
+				<control type="image">
+					<posx>285</posx>
+					<posy>440</posy>
+					<include>ArrowBlackDown</include>
+					<visible>!Window.IsVisible(2901) + !Window.IsVisible(10090)</visible>
+				</control>
 			</control>
 			<control type="group">
 				<posx>340</posx>
-				<posy>190</posy>
+				<posy>155</posy>
 				<control type="label" id="1">
 					<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
-					<!--><label>$LOCALIZE[1023]</label>-->
 					<width>580</width>
 					<height>40</height>
 					<align>center</align>
@@ -145,11 +150,11 @@
 					<textcolor>Focused</textcolor>
 				</control>
 				<control type="group">
-					<posy>90</posy>
+					<posy>80</posy>
 					<posx>20</posx>
 					<control type="list" id="3">
 						<width>560</width>
-						<height>226</height>
+						<height>300</height>
 						<onleft>-</onleft>
 						<onright>5</onright>
 						<onup>3</onup>
