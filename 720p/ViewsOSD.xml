@@ -394,16 +394,16 @@
 						<visible>Control.HasFocus(721)</visible>
 					</control>
 						<control type="image">
-							<posy>0</posy>
-							<width>33</width>
+							<posy>-2</posy>
+							<width>29</width>
 							<height>24</height>
 							<texture>b-subtitles.png</texture>
 							<visible>!Control.HasFocus(721)</visible>
 							<colordiffuse>FF666666</colordiffuse>
 						</control>
 						<control type="button" id="721">
-							<posy>0</posy>
-							<width>33</width>
+							<posy>-2</posy>
+							<width>29</width>
 							<height>24</height>
 							<texturefocus>b-subtitles.png</texturefocus>
 							<texturenofocus>b-subtitles.png</texturenofocus>
@@ -498,18 +498,18 @@
 					<posx>600</posx>
 					<control type="image">
 						<posy>1</posy>
-						<posx>0</posx>
-						<width>30</width>
-						<height>24</height>
+						<posx>8</posx>
+						<width>21</width>
+						<height>25</height>
 						<texture>b-audio.png</texture>
 						<visible>!Control.HasFocus(717)</visible>
 						<colordiffuse>FF666666</colordiffuse>
 					</control>
 					<control type="button" id="717">
 						<posy>1</posy>
-						<posx>0</posx>
-						<width>30</width>
-						<height>24</height>
+						<posx>8</posx>
+						<width>21</width>
+						<height>25</height>
 						<texturefocus>b-audio.png</texturefocus>
 						<texturenofocus>b-audio.png</texturenofocus>
 						<onleft>716</onleft>
@@ -549,16 +549,18 @@
 					<posx>752</posx>
 					<control type="group">
 						<control type="image">
-							<posy>1</posy>
-							<width>34</width>
+							<posy>0</posy>
+							<posx>7</posx>
+							<width>29</width>
 							<height>24</height>
 							<texture>b-video.png</texture>
 							<visible>!Control.HasFocus(718)</visible>
 							<colordiffuse>FF666666</colordiffuse>
 						</control>
 						<control type="button" id="718">
-							<posy>1</posy>
-							<width>34</width>
+							<posy>0</posy>
+							<posx>7</posx>
+							<width>29</width>
 							<height>24</height>
 							<texturefocus>b-video.png</texturefocus>
 							<texturenofocus>b-video.png</texturenofocus>
