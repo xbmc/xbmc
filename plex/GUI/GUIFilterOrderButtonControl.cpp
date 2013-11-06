@@ -155,10 +155,8 @@ bool CGUIFilterOrderButtonControl::OnAction(const CAction &action)
   {
     if (m_state == OFF)
       m_state = m_startState;
-    else if (m_state == m_startState)
-      m_state = m_startState == DESCENDING ? ASCENDING : DESCENDING;
-    else if (m_state != m_startState)
-      m_state = m_startState;
+    else
+      m_state = m_state == DESCENDING ? ASCENDING : DESCENDING;
 
     MarkDirtyRegion();
   }
