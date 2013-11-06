@@ -782,6 +782,9 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
   bool ret = CGUIMediaWindow::Update(newUrl.Get(), updateFilterPath);
 
   m_vecItems->SetProperty("hasAdvancedFilters", m_hasAdvancedFilters ? "yes" : "");
+  CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+  if (filter && filter->currentPrimaryFilter() != "all")
+    m_vecItems->SetProperty("primaryFilterActivated", "1");
 
   if (!updateFromFilter)
     g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems);
