@@ -694,7 +694,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           if (!item)
             return false;
 
-          if (iAction == ACTION_SELECT_ITEM)
+          if (iAction == ACTION_SELECT_ITEM && PlexUtils::CurrentSkinHasPreplay())
           {
             OpenItem(item);
             return true;
