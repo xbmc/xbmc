@@ -317,32 +317,46 @@
 				</control>
 				<!-- audio selection -->
 				<control type="group">
-					<posy>15</posy>
-					<posx>50</posx>
+					<posy>12</posy>
+					<posx>-103</posx>
 					<control type="label">
-						<posy>-80</posy>
-						<posx>-100</posx>
-						<width>300</width>
+						<posy>0</posy>
+						<posx>-20</posx>
+						<width>165</width>
 						<height>24</height>
-						<label>AUDIO: $INFO[VideoPlayer.AudioStream]</label>
-						<include>LeftInfoFormatWhite</include>
+						<label>$INFO[VideoPlayer.AudioStream]</label>
+						<font>Condensed-16</font>
+						<textcolor>FF666666</textcolor>
+						<shadowcolor>FF000000</shadowcolor>
+						<visible>!Control.HasFocus(720)</visible>
+					</control>
+					<control type="label">
+						<posy>0</posy>
+						<posx>-20</posx>
+						<width>165</width>
+						<height>24</height>
+						<label>$INFO[VideoPlayer.AudioStream]</label>
+						<font>Condensed-16</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>FF000000</shadowcolor>
+						<visible>Control.HasFocus(720)</visible>
 					</control>
 					<control type="image">
-						<posy>0</posy>
+						<posy>-1</posy>
 						<posx>-60</posx>
-						<width>30</width>
+						<width>26</width>
 						<height>24</height>
-						<texture>b-audio.png</texture>
+						<texture>b-audio2.png</texture>
 						<visible>!Control.HasFocus(720)</visible>
 						<colordiffuse>FF666666</colordiffuse>
 					</control>
 					<control type="button" id="720">
-						<posy>0</posy>
+						<posy>-1</posy>
 						<posx>-60</posx>
-						<width>30</width>
+						<width>26</width>
 						<height>24</height>
-						<texturefocus>b-audio.png</texturefocus>
-						<texturenofocus>b-audio.png</texturenofocus>
+						<texturefocus>b-audio2.png</texturefocus>
+						<texturenofocus>b-audio2.png</texturenofocus>
 						<onleft>718</onleft>
 						<onright>721</onright>
 						<onup>200</onup>
@@ -357,14 +371,28 @@
 					<posy>15</posy>
 					<posx>50</posx>
 					<control type="group">
-						<control type="label">
-							<posy>-50</posy>
-							<posx>-100</posx>
-							<width>300</width>
-							<height>24</height>
-							<label>SUBS: $INFO[VideoPlayer.SubtitleStream]</label>
-							<include>LeftInfoFormatWhite</include>
-						</control>
+					<control type="label">
+						<posy>-4</posy>
+						<posx>45</posx>
+						<width>165</width>
+						<height>24</height>
+						<label>$INFO[VideoPlayer.SubtitleStream]</label>
+						<font>Condensed-16</font>
+						<textcolor>FF666666</textcolor>
+						<shadowcolor>FF000000</shadowcolor>
+						<visible>!Control.HasFocus(721)</visible>
+					</control>
+					<control type="label">
+						<posy>-4</posy>
+						<posx>45</posx>
+						<width>165</width>
+						<height>24</height>
+						<label>$INFO[VideoPlayer.SubtitleStream]</label>
+						<font>Condensed-16</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>FF000000</shadowcolor>
+						<visible>Control.HasFocus(721)</visible>
+					</control>
 						<control type="image">
 							<posy>0</posy>
 							<width>33</width>
@@ -392,7 +420,7 @@
 				<!-- rewind -->
 				<control type="image">
 					<posy>13</posy>
-					<posx>265</posx>
+					<posx>280</posx>
 					<width>42</width>
 					<height>22</height>
 					<texture>b-rewind.png</texture>
@@ -401,7 +429,7 @@
 				</control>
 				<control type="button" id="713">
 					<posy>13</posy>
-					<posx>265</posx>
+					<posx>280</posx>
 					<width>42</width>
 					<height>22</height>
 					<texturefocus>b-rewind.png</texturefocus>
@@ -417,7 +445,7 @@
 				<!-- forward -->
 				<control type="image">
 					<posy>13</posy>
-					<posx>396</posx>
+					<posx>380</posx>
 					<width>42</width>
 					<height>22</height>
 					<texture>b-forward.png</texture>
@@ -426,7 +454,7 @@
 				</control>
 				<control type="button" id="714">
 					<posy>13</posy>
-					<posx>396</posx>
+					<posx>380</posx>
 					<width>42</width>
 					<height>22</height>
 					<texturefocus>b-forward.png</texturefocus>
@@ -441,21 +469,21 @@
 				</control>
 				<!-- stop -->
 				<control type="image">
-					<posy>13</posy>
-					<posx>529</posx>
-					<width>22</width>
-					<height>22</height>
-					<texture>b-stop.png</texture>
+					<posy>12</posy>
+					<posx>440</posx>
+					<width>24</width>
+					<height>24</height>
+					<texture>b-stop2.png</texture>
 					<visible>!Control.HasFocus(716)</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
 				<control type="button" id="716">
-					<posy>13</posy>
-					<posx>529</posx>
-					<width>22</width>
-					<height>22</height>
-					<texturefocus>b-stop.png</texturefocus>
-					<texturenofocus>b-stop.png</texturenofocus>
+					<posy>12</posy>
+					<posx>440</posx>
+					<width>24</width>
+					<height>24</height>
+					<texturefocus>b-stop2.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
 					<onleft>714</onleft>
 					<onright>717</onright>
 					<onup>200</onup>
@@ -466,11 +494,11 @@
 				</control>
 				<!-- audio settings -->
 				<control type="group">
-					<posy>15</posy>
-					<posx>650</posx>
+					<posy>11</posy>
+					<posx>600</posx>
 					<control type="image">
-						<posy>0</posy>
-						<posx>-60</posx>
+						<posy>1</posy>
+						<posx>0</posx>
 						<width>30</width>
 						<height>24</height>
 						<texture>b-audio.png</texture>
@@ -478,8 +506,8 @@
 						<colordiffuse>FF666666</colordiffuse>
 					</control>
 					<control type="button" id="717">
-						<posy>0</posy>
-						<posx>-60</posx>
+						<posy>1</posy>
+						<posx>0</posx>
 						<width>30</width>
 						<height>24</height>
 						<texturefocus>b-audio.png</texturefocus>
@@ -492,14 +520,36 @@
 						<visible allowhiddenfocus="true">Control.HasFocus(717)</visible>
 						<colordiffuse>orange</colordiffuse>
 					</control>
+						<control type="label">
+							<posy>0</posy>
+							<posx>43</posx>
+							<width>165</width>
+							<height>24</height>
+							<label>$LOCALIZE[31060]</label>
+							<font>Condensed-16</font>
+							<textcolor>FF666666</textcolor>
+							<shadowcolor>FF000000</shadowcolor>
+							<visible>!Control.HasFocus(717)</visible>
+						</control>
+						<control type="label">
+							<posy>0</posy>
+							<posx>43</posx>
+							<width>165</width>
+							<height>24</height>
+							<label>$LOCALIZE[31060]</label>
+							<font>Condensed-16</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>FF000000</shadowcolor>
+							<visible>Control.HasFocus(717)</visible>
+						</control>
 				</control>
 				<!-- video settings -->
 				<control type="group">
-					<posy>15</posy>
-					<posx>650</posx>
+					<posy>11</posy>
+					<posx>752</posx>
 					<control type="group">
 						<control type="image">
-							<posy>0</posy>
+							<posy>1</posy>
 							<width>34</width>
 							<height>24</height>
 							<texture>b-video.png</texture>
@@ -507,7 +557,7 @@
 							<colordiffuse>FF666666</colordiffuse>
 						</control>
 						<control type="button" id="718">
-							<posy>0</posy>
+							<posy>1</posy>
 							<width>34</width>
 							<height>24</height>
 							<texturefocus>b-video.png</texturefocus>
@@ -520,6 +570,28 @@
 							<visible allowhiddenfocus="true">Control.HasFocus(718)</visible>
 							<colordiffuse>orange</colordiffuse>
 						</control>
+								<control type="label">
+									<posy>0</posy>
+									<posx>50</posx>
+									<width>165</width>
+									<height>24</height>
+									<label>$LOCALIZE[31060]</label>
+									<font>Condensed-16</font>
+									<textcolor>FF666666</textcolor>
+									<shadowcolor>FF000000</shadowcolor>
+									<visible>!Control.HasFocus(718)</visible>
+								</control>
+								<control type="label">
+									<posy>0</posy>
+									<posx>50</posx>
+									<width>165</width>
+									<height>24</height>
+									<label>$LOCALIZE[31060]</label>
+									<font>Condensed-16</font>
+									<textcolor>white</textcolor>
+									<shadowcolor>FF000000</shadowcolor>
+									<visible>Control.HasFocus(718)</visible>
+								</control>
 					</control>
 				</control>
 			</control>
