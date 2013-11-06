@@ -315,10 +315,18 @@
 					<visible allowhiddenfocus="true">Control.HasFocus(711)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
-				<!-- audio settings -->
+				<!-- audio selection -->
 				<control type="group">
 					<posy>15</posy>
 					<posx>50</posx>
+					<control type="label">
+						<posy>-80</posy>
+						<posx>-100</posx>
+						<width>300</width>
+						<height>24</height>
+						<label>AUDIO: $INFO[VideoPlayer.AudioStream]</label>
+						<include>LeftInfoFormatWhite</include>
+					</control>
 					<control type="image">
 						<posy>0</posy>
 						<posx>-60</posx>
@@ -344,11 +352,19 @@
 						<colordiffuse>orange</colordiffuse>
 					</control>
 				</control>
-				<!-- video settings -->
+				<!-- subtitle selection -->
 				<control type="group">
 					<posy>15</posy>
 					<posx>50</posx>
 					<control type="group">
+						<control type="label">
+							<posy>-50</posy>
+							<posx>-100</posx>
+							<width>300</width>
+							<height>24</height>
+							<label>SUBS: $INFO[VideoPlayer.SubtitleStream]</label>
+							<include>LeftInfoFormatWhite</include>
+						</control>
 						<control type="image">
 							<posy>0</posy>
 							<width>33</width>
