@@ -1,0 +1,91 @@
+#pragma once
+
+/*
+ *      Copyright (C) 2012-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#include "windows/GUIMediaWindow.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+
+#define CONTROL_BTNVIEWASICONS            2
+#define CONTROL_BTNCHANNELGROUPS          28
+
+#define CONTROL_LABEL_HEADER1             29
+#define CONTROL_LABEL_HEADER2             30
+
+namespace PVR
+{
+  enum EpgGuideView
+  {
+    GUIDE_VIEW_TIMELINE = 10,
+    GUIDE_VIEW_NOW      = 11,
+    GUIDE_VIEW_NEXT     = 12,
+    GUIDE_VIEW_CHANNEL  = 13
+  };
+
+  enum EPGSelectAction
+  {
+    EPG_SELECT_ACTION_CONTEXT_MENU = 0,
+    EPG_SELECT_ACTION_SWITCH       = 1,
+    EPG_SELECT_ACTION_INFO         = 2,
+    EPG_SELECT_ACTION_RECORD       = 3
+  };
+
+  class CGUIWindowPVRBase : public CGUIMediaWindow, public Observer
+  {
+  public:
+    virtual void OnInitWindow(void);
+    virtual bool OnMessage(CGUIMessage& message);
+    virtual bool Update(const std::string &strDirectory = "", bool updateFilterPath = true);
+    virtual void UpdateButtons(void);
+    virtual bool OnAction(const CAction &action);
+    virtual bool OnBack(int actionID);
+    virtual bool OpenGroupSelectionDialog(void);
+    virtual void ResetObservers(void) {};
+    virtual void Notify(const Observable &obs, const ObservableMessage msg) {};
+
+  protected:
+    CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);
+    virtual ~CGUIWindowPVRBase(void);
+
+    virtual CPVRChannelGroupPtr GetGroup(void);
+    virtual void SetGroup(CPVRChannelGroupPtr group);
+
+    virtual bool ActionRecord(CFileItem *item);
+    virtual bool ActionDeleteRecording(CFileItem *item);
+    virtual bool ActionPlayChannel(CFileItem *item);
+    virtual bool ActionPlayEpg(CFileItem *item);
+    virtual bool ActionDeleteChannel(CFileItem *item);
+    virtual bool ActionInputChannelNumber(int input);
+
+    virtual bool PlayRecording(CFileItem *item, bool bPlayMinimized = false);
+    virtual bool PlayFile(CFileItem *item, bool bPlayMinimized = false);
+    virtual bool StartRecordFile(const CFileItem &item);
+    virtual bool StopRecordFile(const CFileItem &item);
+    virtual void ShowEPGInfo(CFileItem *item);
+    virtual void ShowRecordingInfo(CFileItem *item);
+    virtual bool UpdateEpgForChannel(CFileItem *item);
+
+    CCriticalSection m_critSection;
+    bool m_bRadio;
+
+  private:
+    CPVRChannelGroupPtr m_group;
+  };
+}

@@ -113,7 +113,6 @@
 #define WINDOW_DIALOG_OSD_TELETEXT        10600
 
 // PVR related Window and Dialog ID's
-#define WINDOW_PVR                        10601
 #define WINDOW_DIALOG_PVR_GUIDE_INFO      10602
 #define WINDOW_DIALOG_PVR_RECORDING_INFO  10603
 #define WINDOW_DIALOG_PVR_TIMER_SETTING   10604
@@ -127,7 +126,16 @@
 #define WINDOW_DIALOG_PVR_OSD_DIRECTOR    10612
 #define WINDOW_DIALOG_PVR_OSD_CUTTER      10613
 #define WINDOW_FULLSCREEN_LIVETV          10614 // virtual window for PVR specific keymap bindings in fullscreen playback (which internally uses WINDOW_FULLSCREEN_VIDEO)
-// PVR_WINDOW VIEWS = 10694-10699
+#define WINDOW_TV_CHANNELS                10615
+#define WINDOW_TV_RECORDINGS              10616
+#define WINDOW_TV_GUIDE                   10617
+#define WINDOW_TV_TIMERS                  10618
+#define WINDOW_TV_SEARCH                  10619
+#define WINDOW_RADIO_CHANNELS             10620
+#define WINDOW_RADIO_RECORDINGS           10621
+#define WINDOW_RADIO_GUIDE                10622
+#define WINDOW_RADIO_TIMERS               10623
+#define WINDOW_RADIO_SEARCH               10624
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000

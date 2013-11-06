@@ -20,49 +20,39 @@
  *
  */
 
-#include "GUIWindowPVRCommon.h"
+#include "GUIWindowPVRBase.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoDatabase.h"
-#include "utils/Observer.h"
 
 namespace PVR
 {
-  class CGUIWindowPVR;
-
-  class CGUIWindowPVRRecordings : public CGUIWindowPVRCommon, private Observer
+  class CGUIWindowPVRRecordings : public CGUIWindowPVRBase
   {
-    friend class CGUIWindowPVR;
-
   public:
-    CGUIWindowPVRRecordings(CGUIWindowPVR *parent);
+    CGUIWindowPVRRecordings(bool bRadio);
     virtual ~CGUIWindowPVRRecordings(void) {};
 
     static CStdString GetResumeString(const CFileItem& item);
 
-    void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    bool OnMessage(CGUIMessage& message);
     bool OnAction(const CAction &action);
+    void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    void OnWindowUnload(void);
-    void UpdateData(bool bUpdateSelectedFile = true);
+    bool Update(const std::string &strDirectory = "", bool updateFilterPath = true);
     void Notify(const Observable &obs, const ObservableMessage msg);
     void UnregisterObservers(void);
     void ResetObservers(void);
 
   protected:
-    virtual void BeforeUpdate(const CStdString &strDirectory);
     virtual void AfterUpdate(CFileItemList& items);
 
   private:
-    bool OnClickButton(CGUIMessage &message);
-    bool OnClickList(CGUIMessage &message);
-
     bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
 
-    CStdString m_strSelectedPath;
     CVideoThumbLoader m_thumbLoader;
     CVideoDatabase m_database;
   };

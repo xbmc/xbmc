@@ -131,8 +131,35 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);
 
-  if (windowId==WINDOW_PVR)
-    return new CGUIViewStatePVR(items);
+  if (windowId==WINDOW_TV_CHANNELS)
+    return new CGUIViewStateWindowPVRChannels(windowId, items);
+
+  if (windowId==WINDOW_TV_RECORDINGS)
+    return new CGUIViewStateWindowPVRRecordings(windowId, items);
+
+  if (windowId==WINDOW_TV_GUIDE)
+    return new CGUIViewStateWindowPVRGuide(windowId, items);
+
+  if (windowId==WINDOW_TV_TIMERS)
+    return new CGUIViewStateWindowPVRTimers(windowId, items);
+
+  if (windowId==WINDOW_TV_SEARCH)
+    return new CGUIViewStateWindowPVRSearch(windowId, items);
+
+  if (windowId==WINDOW_RADIO_CHANNELS)
+      return new CGUIViewStateWindowPVRChannels(windowId, items);
+
+  if (windowId==WINDOW_RADIO_RECORDINGS)
+    return new CGUIViewStateWindowPVRRecordings(windowId, items);
+
+  if (windowId==WINDOW_RADIO_GUIDE)
+    return new CGUIViewStateWindowPVRGuide(windowId, items);
+
+  if (windowId==WINDOW_RADIO_TIMERS)
+    return new CGUIViewStateWindowPVRTimers(windowId, items);
+
+  if (windowId==WINDOW_RADIO_SEARCH)
+    return new CGUIViewStateWindowPVRSearch(windowId, items);
 
   if (windowId==WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);
