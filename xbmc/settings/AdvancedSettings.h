@@ -380,7 +380,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     unsigned int m_addonPackageFolderSize;
 
     unsigned int m_cacheMemBufferSize;
-    bool m_alwaysForceBuffer;
+    unsigned int m_networkBufferMode;
     float m_readBufferFactor;
 
     bool m_jsonOutputCompact;
