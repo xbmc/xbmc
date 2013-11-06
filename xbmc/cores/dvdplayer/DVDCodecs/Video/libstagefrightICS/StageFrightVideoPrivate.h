@@ -54,6 +54,8 @@
 class CStageFrightDecodeThread;
 class CJNISurface;
 class CJNISurfaceTexture;
+class CWinSystemEGL;
+class CAdvancedSettings;
 
 using namespace android;
 
@@ -106,6 +108,9 @@ public:
   GLint mPositionHandle;
   GLint mTexSamplerHandle;
   GLint mTexMatrixHandle;
+
+  CWinSystemEGL* m_g_Windowing;
+  CAdvancedSettings* m_g_advancedSettings;
 
   CFrameBufferObject fbo;
   EGLDisplay eglDisplay;

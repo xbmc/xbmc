@@ -45,6 +45,7 @@
 #endif
 #if defined(TARGET_ANDROID)
 #include "Video/DVDVideoCodecAndroidMediaCodec.h"
+#include "android/activity/AndroidFeatures.h"
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecLibMad.h"
@@ -286,7 +287,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #endif
 
 #if defined(HAS_LIBSTAGEFRIGHT)
-  if (CSettings::Get().GetBool("videoplayer.usestagefright") && !hint.software )
+  if (!hint.software && CSettings::Get().GetBool("videoplayer.usestagefright") && CAndroidFeatures::GetVersion() < 19 )
   {
     switch(hint.codec)
     {

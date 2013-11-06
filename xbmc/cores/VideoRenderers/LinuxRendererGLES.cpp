@@ -68,7 +68,7 @@
 #include <EGL/eglext.h>
 #include "windowing/egl/EGLWrapper.h"
 #include "android/activity/XBMCApp.h"
-#include "DVDCodecs/Video/StageFrightVideo.h"
+#include "DVDCodecs/Video/DVDVideoCodecStageFright.h"
 
 // EGL extension functions
 static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
@@ -2605,7 +2605,7 @@ void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef, int index)
 }
 #endif
 #ifdef HAS_LIBSTAGEFRIGHT
-void CLinuxRendererGLES::AddProcessor(CStageFrightVideo* stf, EGLImageKHR eglimg, int index)
+void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKHR eglimg, int index)
 {
 #ifdef DEBUG_VERBOSE
   unsigned int time = XbmcThreads::SystemClockMillis();
