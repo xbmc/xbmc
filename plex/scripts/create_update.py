@@ -141,7 +141,7 @@ if __name__ == "__main__":
 	o.add_option("-i", dest="input", default="output/Plex Home Theater.app", type="string")
 	o.add_option("-d", dest="delta", default=False, action="store_true")
 	o.add_option("-f", dest="fromversion", default="", type="string")
-	o.add_option("-m", dest="mainbinary", default="Plex Home Theater.app/Contents/MacOS/Plex Home Theater", type="string")
+	o.add_option("-m", dest="mainbinary", default="Contents/MacOS/Plex Home Theater", type="string")
 
 	(options, args) = o.parse_args()
 
