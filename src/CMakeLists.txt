@@ -137,4 +137,4 @@ endif()
 add_executable(zip-tool zip-tool.cpp)
 target_link_libraries(zip-tool updatershared)
 
-
+install(TARGETS updater RUNTIME DESTINATION update_installer)
