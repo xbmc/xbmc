@@ -29,6 +29,11 @@ def get_file_element(root, frelpath, size, perms, shasum, tarfilename, ismain):
 
 	return fileEl
 
+def mangle_file_path(path):
+	ps = path.split(os.sep)
+	if ps[0].endswith(".app"):
+		return os.path.join(*ps[1:])
+	return path
 
 def create_update(product, version, output, platform, input, delta, fversion, mainbinary):
 	if not os.path.isdir(input) and not input.endswith(".zip"):
@@ -77,7 +82,7 @@ def create_update(product, version, output, platform, input, delta, fversion, ma
 	if inputiszip:
 		archive = zipfile.ZipFile(tarfilename, "r")
 		for info in archive.infolist():
-			frelpath = info.filename
+			frelpath = mangle_file_path(info.filename)
 			size = info.file_size
 			perms = oct((info.external_attr >> 16) & 0777)
 
@@ -94,7 +99,7 @@ def create_update(product, version, output, platform, input, delta, fversion, ma
 		for root,dirs,files in os.walk(input):
 			for f in files:
 				fpath = os.path.join(root, f)
-				frelpath = fpath.replace(input + "/", "")
+				frelpath = mangle_file_path(fpath.replace(input + "/", ""))
 				shasum = make_shasum(open(fpath, "r"))
 				size = os.path.getsize(fpath)
 				perms = oct(stat.S_IMODE(os.lstat(fpath).st_mode))

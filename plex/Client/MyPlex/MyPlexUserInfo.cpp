@@ -49,6 +49,25 @@ bool CMyPlexUserInfo::SetFromXmlElement(TiXmlElement *root)
       if (dateTime.IsValid())
         joinedAt = dateTime;
     }
+    else if (element->ValueStr() == "roles")
+    {
+      for (TiXmlElement* roleEl = element->FirstChildElement(); roleEl; roleEl = roleEl->NextSiblingElement())
+      {
+        if (roleEl->ValueStr() == "role")
+        {
+          std::string roleId;
+          if (roleEl->QueryStringAttribute("id", &roleId) == TIXML_SUCCESS)
+          {
+            if (roleId == "employee")
+              roles |= ROLE_EMPLOYEE;
+            if (roleId == "ninja")
+              roles |= ROLE_NINJA;
+            if (roleId == "plexpass")
+              roles |= ROLE_PLEXPASS;
+          }
+        }
+      }
+    }
   }
 
   return true;

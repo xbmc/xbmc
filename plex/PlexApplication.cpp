@@ -47,7 +47,7 @@ PlexApplication::Start()
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
-  autoUpdater = new CPlexAutoUpdate(CURL("https://mystaging.plexapp.com/updater/products/1/check.xml"));
+  autoUpdater = new CPlexAutoUpdate;
 
   serverManager->load();
 

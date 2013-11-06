@@ -448,6 +448,10 @@ msgctxt "#40005"
 msgid "Ninja"
 msgstr "Ninja"
 
+msgctxt "#40006"
+msgid "I am Special!"
+msgstr "I am Special!"
+
 msgctxt "#40016"
 msgid "Check for update now..."
 msgstr "Check for update now..."

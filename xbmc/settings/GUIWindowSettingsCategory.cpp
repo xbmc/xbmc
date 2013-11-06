@@ -1151,6 +1151,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl*)GetControl(pSettingControl->GetID());
       if (pControl)
       {
+        pControl->SetEnabled(true);
         if (g_plexApplication.autoUpdater->IsReadyToInstall())
           pControl->SetLabel(g_localizeStrings.Get(40018));
         else
@@ -3307,15 +3308,18 @@ void CGUIWindowSettingsCategory::FillInPlexUpdateChannels(CSetting *pSetting)
 
   CMyPlexUserInfo user = g_plexApplication.myPlexManager->GetCurrentUserInfo();
 
-  pControl->AddLabel(g_localizeStrings.Get(40003),   PLEX_UPDATE_CHANNEL_STABLE);
+  pControl->AddLabel(g_localizeStrings.Get(40003), CMyPlexUserInfo::ROLE_USER);
 
-  if (user.subscription)
-    pControl->AddLabel(g_localizeStrings.Get(40004),   PLEX_UPDATE_CHANNEL_PLEXPASS);
+  if (user.hasRole(CMyPlexUserInfo::ROLE_PLEXPASS) || user.hasRole(CMyPlexUserInfo::ROLE_NINJA) || user.hasRole(CMyPlexUserInfo::ROLE_EMPLOYEE))
+    pControl->AddLabel(g_localizeStrings.Get(40004), CMyPlexUserInfo::ROLE_PLEXPASS);
 
-  if (user.ninja)
-    pControl->AddLabel(g_localizeStrings.Get(40005),   PLEX_UPDATE_CHANNEL_NINJA);
+  if (user.hasRole(CMyPlexUserInfo::ROLE_NINJA) || user.hasRole(CMyPlexUserInfo::ROLE_EMPLOYEE))
+    pControl->AddLabel(g_localizeStrings.Get(40005), CMyPlexUserInfo::ROLE_NINJA);
 
-  if (!user.subscription && !user.ninja)
+  if (user.hasRole(CMyPlexUserInfo::ROLE_EMPLOYEE))
+    pControl->AddLabel(g_localizeStrings.Get(40006), CMyPlexUserInfo::ROLE_EMPLOYEE);
+
+  if (pControl->GetMaximum() < 2)
     /* only one choice */
     pControl->SetEnabled(false);
 

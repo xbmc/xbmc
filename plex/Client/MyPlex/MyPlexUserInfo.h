@@ -13,10 +13,20 @@
 #include "XBDateTime.h"
 #include <string>
 
+
 class CMyPlexUserInfo
 {
   public:
-    CMyPlexUserInfo() : ninja(false) {}
+
+    enum MyPlexRoles
+    {
+      ROLE_USER = 0,
+      ROLE_EMPLOYEE = 2,
+      ROLE_NINJA = 4,
+      ROLE_PLEXPASS = 8
+    };
+
+    CMyPlexUserInfo() : roles(ROLE_USER), id(-1) {}
 
     bool SetFromXmlElement(TiXmlElement* root);
 
@@ -29,11 +39,17 @@ class CMyPlexUserInfo
     std::string authToken;
 
     bool subscription;
-    bool ninja;
     std::string subscriptionStatus;
     std::string subscriptionPlan;
     std::vector<std::string> features;
     CDateTime joinedAt;
+
+    int roles;
+
+    bool hasRole(MyPlexRoles role)
+    {
+      return (role & roles) == role;
+    }
 
     void operator=(const CMyPlexUserInfo& other)
     {
@@ -49,6 +65,7 @@ class CMyPlexUserInfo
       subscriptionPlan = other.subscriptionPlan;
       features = other.features;
       joinedAt = other.joinedAt;
+      roles = other.roles;
     }
 };
 

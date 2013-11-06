@@ -20,6 +20,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "PlexApplication.h"
 #include "Client/MyPlex/MyPlexManager.h"
+#include "LocalizeStrings.h"
 
 #include "xbmc/Util.h"
 #include "XBDateTime.h"
@@ -29,9 +30,16 @@ using namespace XFILE;
 
 //#define UPDATE_DEBUG 1
 
-CPlexAutoUpdate::CPlexAutoUpdate(const CURL &updateUrl, uint32_t searchFrequency)
-  : m_forced(false), m_isSearching(false), m_isDownloading(false), m_url(updateUrl), m_searchFrequency(searchFrequency), m_timer(this), m_ready(false)
+CPlexAutoUpdate::CPlexAutoUpdate()
+  : m_forced(false), m_isSearching(false), m_isDownloading(false),  m_timer(this), m_ready(false)
 {
+#ifdef UPDATE_DEBUG
+  m_url = CURL("https://mystaging.plexapp.com/updater/products/1/check.xml");
+#else
+  m_url = CURL("https://my.plexapp.com/updater/products/2/check.xml");
+#endif
+
+  m_searchFrequency = 86400000; /* default to 24h */
   m_timer.Start(5 * 1000, true);
 }
 
@@ -42,7 +50,6 @@ void CPlexAutoUpdate::OnTimeout()
   m_isSearching = true;
 
   /* First, check if we tried and updated to a new version */
-
   std::string version, packageHash;
   bool isDelta;
   if (GetUpdateInfo(version, isDelta, packageHash))
@@ -69,7 +76,11 @@ void CPlexAutoUpdate::OnTimeout()
   m_url.SetOption("version", g_infoManager.GetVersion());
 #endif
   m_url.SetOption("build", PLEX_BUILD_TAG);
-  m_url.SetOption("channel", "6");
+
+  int channel = g_guiSettings.GetInt("updates.channel");
+  if (channel > 0)
+    m_url.SetOption("channel", boost::lexical_cast<std::string>(channel));
+
   if (g_plexApplication.myPlexManager->IsSignedIn())
     m_url.SetOption("X-Plex-Token", g_plexApplication.myPlexManager->GetAuthToken());
 
@@ -95,6 +106,8 @@ void CPlexAutoUpdate::OnTimeout()
       }
     }
   }
+
+  Sleep(5000);
 
   CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout found %d candidates", updates.Size());
   CFileItemPtr selectedItem;
