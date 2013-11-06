@@ -15,6 +15,7 @@
     <ProjectGuid>{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}</ProjectGuid>
     <RootNamespace>libmad_dll</RootNamespace>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>

@@ -15,6 +15,7 @@
     <ProjectGuid>{44BF83C4-F73A-4093-A29A-11B9016318C4}</ProjectGuid>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>

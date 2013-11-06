@@ -14,6 +14,7 @@
     <ProjectName>ImageLib_jasper</ProjectName>
     <ProjectGuid>{3843C3D4-E5A6-4030-87EC-E7EE57242106}</ProjectGuid>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>

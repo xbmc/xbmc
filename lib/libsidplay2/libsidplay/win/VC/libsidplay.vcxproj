@@ -15,6 +15,7 @@
     <ProjectGuid>{FB3AB83A-C37A-4636-87FD-827F8506A8FC}</ProjectGuid>
     <RootNamespace>libsidplay</RootNamespace>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>

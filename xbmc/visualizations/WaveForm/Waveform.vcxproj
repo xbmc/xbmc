@@ -24,6 +24,7 @@
     <RootNamespace>visWaveform</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>

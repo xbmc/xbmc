@@ -14,6 +14,7 @@
     <ProjectName>ImageLib_libdcr</ProjectName>
     <ProjectGuid>{8E5F7DBE-2E8B-4FD2-BFFE-1960CE7EDC09}</ProjectGuid>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
