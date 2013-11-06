@@ -33,11 +33,37 @@
 #include "IMsgTargetCallback.h"
 #include "DirtyRegionTracker.h"
 #include "utils/GlobalsHandling.h"
+#include "guilib/WindowIDs.h"
 #include <list>
 
 class CGUIDialog;
 
 #define WINDOW_ID_MASK 0xffff
+
+class CGUIWindowManagerIdCache
+{
+public:
+  CGUIWindowManagerIdCache(void) : m_id(WINDOW_INVALID) {}
+  bool Get(int id, CGUIWindow *&window)
+  {
+    if (id != m_id)
+      return false;
+    window = m_window;
+    return true;
+  }
+  void Set(int id, CGUIWindow *window)
+  {
+    m_id = id;
+    m_window = window;
+  }
+  void Invalidate(void)
+  {
+    m_id = WINDOW_INVALID;
+  }
+private:
+  int m_id;
+  CGUIWindow *m_window;
+};
 
 /*!
  \ingroup winman
@@ -157,6 +183,7 @@ private:
 
   typedef std::map<int, CGUIWindow *> WindowMap;
   WindowMap m_mapWindows;
+  mutable CGUIWindowManagerIdCache m_idCache;
   std::vector <CGUIWindow*> m_vecCustomWindows;
   std::vector <CGUIWindow*> m_activeDialogs;
   std::vector <CGUIWindow*> m_deleteWindows;
