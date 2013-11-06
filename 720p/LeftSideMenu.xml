@@ -560,8 +560,8 @@
 				</control>
 				<!-- Audio -->
 				<control type="button" id="103">
-					<texturefocus>b-pp-audio-s.png</texturefocus>
-					<texturenofocus>b-pp-audio.png</texturenofocus>
+					<texturefocus>b-pp-audio-s2.png</texturefocus>
+					<texturenofocus>b-pp-audio2.png</texturenofocus>
 					<onclick>ActivateWindow(10205)</onclick>
 					<onup>102</onup>
 					<ondown>104</ondown>
