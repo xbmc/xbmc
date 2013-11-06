@@ -509,11 +509,8 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
 {
   if (!m_pcm)
   {
-    SoftResume();
-    if(!m_pcm)
-      return 0;
-
-    CLog::Log(LOGDEBUG, "CAESinkALSA - the grAEken is hunger, feed it (I am the downmost fallback - fix your code)");
+    CLog::Log(LOGERROR, "CAESinkALSA - Tried to add packets without a sink");
+    return INT_MAX;
   }
 
   int ret = snd_pcm_writei(m_pcm, (void*)data, frames);
@@ -1134,29 +1131,6 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
 
   info.m_deviceType = AE_DEVTYPE_HDMI;
   return true;
-}
-
-bool CAESinkALSA::SoftSuspend()
-{
-  if(m_pcm) // it is still there
-   Deinitialize();
-
-  return true;
-}
-bool CAESinkALSA::SoftResume()
-{
-    // reinit all the clibber
-    if(!m_pcm)
-    {
-      if (!snd_config)
-        snd_config_update();
-
-    // Initialize what we had before again, SoftAE might keep it
-    // but ignore ret value to give the chance to do reopening
-    Initialize(m_initFormat, m_initDevice);
-    }
-   // make sure that OpenInternalSink is done again
-   return false;
 }
 
 void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)

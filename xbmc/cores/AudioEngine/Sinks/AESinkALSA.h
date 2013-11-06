@@ -49,8 +49,6 @@ public:
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames, bool hasAudio, bool blocking = false);
   virtual void         Drain           ();
-  virtual bool         SoftSuspend();
-  virtual bool         SoftResume();
 
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 private:
