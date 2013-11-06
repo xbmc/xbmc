@@ -34,6 +34,7 @@ TEST(TestStreamDetails, General)
   video->m_fAspect = 2.39f;
   video->m_iDuration = 30;
   video->m_strCodec = "h264";
+  video->m_strStereoMode = "left_right";
 
   audio->m_iChannels = 2;
   audio->m_strCodec = "aac";
@@ -53,6 +54,7 @@ TEST(TestStreamDetails, General)
   EXPECT_EQ(0, a.GetVideoWidth());
   EXPECT_EQ(0, a.GetVideoHeight());
   EXPECT_EQ(0, a.GetVideoDuration());
+  EXPECT_STREQ("", a.GetStereoMode().c_str());
 
   EXPECT_EQ(1, a.GetStreamCount(CStreamDetail::AUDIO));
   EXPECT_EQ(1, a.GetAudioStreamCount());
@@ -70,6 +72,7 @@ TEST(TestStreamDetails, General)
   EXPECT_EQ(1920, a.GetVideoWidth());
   EXPECT_EQ(1080, a.GetVideoHeight());
   EXPECT_EQ(30, a.GetVideoDuration());
+  EXPECT_STREQ("left_right", a.GetStereoMode().c_str());
 }
 
 TEST(TestStreamDetails, VideoDimsToResolutionDescription)

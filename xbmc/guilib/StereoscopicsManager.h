@@ -68,6 +68,7 @@ public:
    * @return The integer of the according cAction or -1 if not valid
    */
   CAction ConvertActionCommandToAction(const std::string &command, const std::string &parameter);
+  std::string NormalizeStereoMode(const std::string &mode);
   virtual void OnSettingChanged(const CSetting *setting);
   virtual bool OnMessage(CGUIMessage &message);
   /*!

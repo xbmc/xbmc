@@ -127,4 +127,10 @@ protected:
   CVideoDatabase *m_videoDatabase;
   typedef std::map<int, std::map<std::string, std::string> > ArtCache;
   ArtCache m_showArt;
+
+  /*! \brief Tries to detect missing data/info from a file and adds those
+   \param item The CFileItem to process
+   \return void
+   */
+  void DetectAndAddMissingItemData(CFileItem &item);
 };

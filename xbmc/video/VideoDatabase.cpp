@@ -295,7 +295,7 @@ bool CVideoDatabase::CreateTables()
     CLog::Log(LOGINFO, "create streaminfo table");
     m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
       "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
-      "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, strSubtitleLanguage text, iVideoDuration integer)");
+      "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, strSubtitleLanguage text, iVideoDuration integer, strStereoMode text)");
     m_pDS->exec("CREATE INDEX ix_streamdetails ON streamdetails (idFile)");
 
    CLog::Log(LOGINFO, "create sets table");
@@ -2477,11 +2477,12 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
     for (int i=1; i<=details.GetVideoStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
-        "(idFile, iStreamType, strVideoCodec, fVideoAspect, iVideoWidth, iVideoHeight, iVideoDuration) "
-        "VALUES (%i,%i,'%s',%f,%i,%i,%i)",
+        "(idFile, iStreamType, strVideoCodec, fVideoAspect, iVideoWidth, iVideoHeight, iVideoDuration, strStereoMode) "
+        "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s')",
         idFile, (int)CStreamDetail::VIDEO,
         details.GetVideoCodec(i).c_str(), details.GetVideoAspect(i),
-        details.GetVideoWidth(i), details.GetVideoHeight(i), details.GetVideoDuration(i)));
+        details.GetVideoWidth(i), details.GetVideoHeight(i), details.GetVideoDuration(i),
+        details.GetStereoMode(i).c_str()));
     }
     for (int i=1; i<=details.GetAudioStreamCount(); i++)
     {
@@ -3298,6 +3299,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
           p->m_iWidth = pDS->fv(4).get_asInt();
           p->m_iHeight = pDS->fv(5).get_asInt();
           p->m_iDuration = pDS->fv(10).get_asInt();
+          p->m_strStereoMode = pDS->fv(11).get_asString();
           details.AddStream(p);
           retVal = true;
           break;
@@ -4538,6 +4540,9 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     m_pDS->exec("ALTER TABLE settings ADD StereoMode integer");
     m_pDS->exec("ALTER TABLE settings ADD StereoInvert bool");
   }
+  if (iVersion < 77)
+    m_pDS->exec("ALTER TABLE streamdetails ADD strStereoMode text");
+
   // always recreate the view after any table change
   CreateViews();
   return true;
@@ -4545,7 +4550,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
 
 int CVideoDatabase::GetMinVersion() const
 {
-  return 76;
+  return 77;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)

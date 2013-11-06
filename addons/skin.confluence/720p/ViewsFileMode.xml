@@ -70,6 +70,16 @@
 						<height>26</height>
 						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
 						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>!ListItem.IsStereoscopic</visible>
+					</control>
+					<control type="image">
+						<left>625</left>
+						<top>8</top>
+						<width>40</width>
+						<height>26</height>
+						<texture>flagging/lists/3D.png</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>ListItem.IsStereoscopic</visible>
 					</control>
 					<control type="image">
 						<left>665</left>
@@ -161,6 +171,16 @@
 						<height>26</height>
 						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
 						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>!ListItem.IsStereoscopic</visible>
+					</control>
+					<control type="image">
+						<left>625</left>
+						<top>8</top>
+						<width>40</width>
+						<height>26</height>
+						<texture>flagging/lists/3D.png</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>ListItem.IsStereoscopic</visible>
 					</control>
 					<control type="image">
 						<left>665</left>
@@ -559,6 +579,16 @@
 						<height>26</height>
 						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
 						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>!ListItem.IsStereoscopic</visible>
+					</control>
+					<control type="image">
+						<left>1010</left>
+						<top>8</top>
+						<width>40</width>
+						<height>26</height>
+						<texture>flagging/lists/3D.png</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>ListItem.IsStereoscopic</visible>
 					</control>
 					<control type="image">
 						<left>1050</left>
@@ -657,6 +687,16 @@
 						<height>26</height>
 						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
 						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>!ListItem.IsStereoscopic</visible>
+					</control>
+					<control type="image">
+						<left>1010</left>
+						<top>8</top>
+						<width>40</width>
+						<height>26</height>
+						<texture>flagging/lists/3D.png</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>ListItem.IsStereoscopic</visible>
 					</control>
 					<control type="image">
 						<left>1050</left>

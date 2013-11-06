@@ -59,6 +59,7 @@ public:
   float m_fAspect;
   int m_iDuration;
   CStdString m_strCodec;
+  std::string m_strStereoMode;
 };
 
 class CStreamDetailAudio : public CStreamDetail
@@ -111,6 +112,7 @@ public:
   int GetVideoWidth(int idx = 0) const;
   int GetVideoHeight(int idx = 0) const;
   int GetVideoDuration(int idx = 0) const;
+  std::string GetStereoMode(int idx = 0) const;
 
   CStdString GetAudioCodec(int idx = 0) const;
   CStdString GetAudioLanguage(int idx = 0) const;
