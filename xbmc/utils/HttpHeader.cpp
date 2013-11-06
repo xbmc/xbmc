@@ -17,11 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#include <boost/bind.hpp>
-#include <boost/algorithm/string.hpp>
-#include "HttpHeader.h"
 #include "utils/StringUtils.h"
+#include "HttpHeader.h"
 
 CHttpHeader::CHttpHeader()
 {
@@ -154,84 +151,54 @@ std::string CHttpHeader::GetMimeType(void) const
   return strValue.substr(0, strValue.find(';'));
 }
 
-namespace
-{
-/* We don't have boost::regex as it is a boost library
- * so this function will have to do instead */
-bool AcceptableCharacter(char c)
-{
-  const char lowercaseStart = 'a';
-  const char lowercaseEnd = 'z';
-  const char uppercaseStart = 'A';
-  const char uppercaseEnd = 'Z';
-  const char numericStart = '0';
-  const char numericEnd = '9';
-  const char hyphen = '-';
-
-  if (c == hyphen)
-    return true;
-
-  if (c >= lowercaseStart &&
-      c <= lowercaseEnd)
-    return true;
-
-  if (c >= uppercaseStart &&
-      c <= uppercaseEnd)
-    return true;
-
-  if (c >= numericStart &&
-      c <= numericEnd)
-    return true;
-
-  return false;
-}
-
-boost::iterator_range<std::string::iterator>
-CharsetFinder(std::string::iterator begin,
-              std::string::iterator end)
-{
-  while(!AcceptableCharacter(*begin))
-    ++begin;
-
-  /* End is the element after the end, so we need
-   * to restore it to the last element */
-  --end;
-
-  while (!AcceptableCharacter(*end))
-    --end;
-
-  return boost::make_iterator_range(begin, ++end);
-}
-}
-
 std::string CHttpHeader::GetCharset(void) const
 {
   std::string strValue(GetValueRaw("content-type"));
   if (strValue.empty())
     return strValue;
 
-  const size_t semicolonPos = strValue.find(';');
-  if (semicolonPos == std::string::npos)
+  const size_t posSemicolon = strValue.find (";");
+
+  /* There is an additional parameter as indicated by the semicolon */
+  if (posSemicolon == std::string::npos)
+    return "";
+
+  const size_t posParameter = strValue.find_first_not_of(" \t", posSemicolon + 1);
+
+  /* There is a parameter */
+  if (posParameter == std::string::npos)
+    return "";
+
+  /* We are assuming that there is no LWS between parameter,
+   * "=" and its value */
+  const size_t posEquals = strValue.find_first_of("=", posParameter);
+
+  if (posEquals == std::string::npos)
+    return "";
+
+  const size_t posParameterValue = posEquals + 1;
+
+  /* Is there anything on the right hand side of the equals? */
+  if (posEquals + 1 >= strValue.size())
     return "";
 
   StringUtils::ToUpper(strValue);
-  size_t posCharset;
-  if ((posCharset = strValue.find("CHARSET=", semicolonPos)) != std::string::npos)
-    posCharset += 8;
-  else
+
+  /* Quickly check if the value from the first non-space value to "="
+   * is CHARSET, if so then we can parse the charset on the right */
+  if (strncmp(&(strValue.c_str()[posParameter]),
+              "CHARSET",
+              7))
     return "";
 
-  std::string::iterator begin(strValue.begin() + posCharset);
-  std::string::iterator end(strValue.end());
+  size_t charsetParameterEnd =
+    strValue.find_first_of(" \t", posParameterValue);
 
-  boost::iterator_range<std::string::iterator> charsetDataToEnd(boost::make_iterator_range(begin ,end));
+  if (charsetParameterEnd == std::string::npos)
+    charsetParameterEnd = strValue.size();
 
-  boost::iterator_range<std::string::iterator> charsetDataRange =
-    boost::algorithm::find(charsetDataToEnd,
-                           CharsetFinder);
-
-  return std::string(charsetDataRange.begin(),
-                     charsetDataRange.end());
+  return strValue.substr(posParameterValue,
+                         charsetParameterEnd - posParameterValue);
 }
 
 

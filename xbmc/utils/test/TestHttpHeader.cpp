@@ -208,7 +208,7 @@ class TestHttpHeaderParameterizedByInt :
 
 /* In order to test a large spread of spaces, we need to
  * insert N * 10 spaces */
-TEST_P(TestHttpHeaderParameterizedByInt, GetCharsetWithNSpacesBetweenSemicolon)
+TEST_P(TestHttpHeaderParameterizedByInt, GetCharsetWithWhitespaceBetweenSemicolon)
 {
   const char *charset = "ISO-8859-4";
   std::stringstream mimeTypeData;
@@ -218,7 +218,7 @@ TEST_P(TestHttpHeaderParameterizedByInt, GetCharsetWithNSpacesBetweenSemicolon)
 
   for (int i = 0; i < nSpaces; ++i)
   {
-    mimeTypeData << "          ";
+    mimeTypeData << " \t \t \t \t \t";
   }
 
   mimeTypeData << "charset=" << charset;
@@ -229,7 +229,7 @@ TEST_P(TestHttpHeaderParameterizedByInt, GetCharsetWithNSpacesBetweenSemicolon)
 }
 
 /* Check that garbage after the mimetype doesn't get caught either */
-TEST_P(TestHttpHeaderParameterizedByInt, GetCharsetWithNGarbageAfterCharset)
+TEST_P(TestHttpHeaderParameterizedByInt, GetCharsetWithNWhitespaceAfterCharset)
 {
   const char *charset = "ISO-8859-4";
   std::stringstream mimeTypeData;
@@ -239,7 +239,7 @@ TEST_P(TestHttpHeaderParameterizedByInt, GetCharsetWithNGarbageAfterCharset)
 
   for (int i = 0; i < nSpaces; ++i)
   {
-    mimeTypeData << "\n\r\t :!@#$%^";
+    mimeTypeData << " \t \t \t";
   }
 
   Header().Parse(HeaderTokenDataInputString(boost::bind(InsertForContentType, _1, _2,
