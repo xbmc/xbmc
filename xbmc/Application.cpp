@@ -1714,6 +1714,14 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
       usemediacodec->SetValue(false);
     }
   }
+  else if (settingId == "videoplayer.usestagefright")
+  {
+    if (CAndroidFeatures::GetVersion() >= 19)
+    {
+      CSettingBool *usestagefright = (CSettingBool*)setting;
+      usestagefright->SetValue(false);
+    }
+  }
 #endif
 
   return false;

@@ -287,7 +287,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #endif
 
 #if defined(HAS_LIBSTAGEFRIGHT)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usestagefright") && CAndroidFeatures::GetVersion() < 19 )
+  if (!hint.software && CSettings::Get().GetBool("videoplayer.usestagefright"))
   {
     switch(hint.codec)
     {

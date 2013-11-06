@@ -23,6 +23,9 @@
           <requirement>HAVE_LIBSTAGEFRIGHTDECODER</requirement>
           <level>2</level>
           <default>true</default>
+          <updates>
+            <update type="change" />
+          </updates>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usemediacodec" type="boolean" label="13439" help="36544">
