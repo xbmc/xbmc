@@ -360,7 +360,8 @@ bool CGUIWindowHome::OnAction(const CAction &action)
           m_loadFanoutTimer.Start(200);
       }
 
-      if (action.GetID() == ACTION_SELECT_ITEM && pItem->HasProperty("sectionPath"))
+      if (action.GetID() == ACTION_SELECT_ITEM && pItem->HasProperty("sectionPath") &&
+          !pItem->GetProperty("navigateDirectly").asBoolean())
       {
         OpenItem(pItem);
         return true;
@@ -870,6 +871,7 @@ void CGUIWindowHome::UpdateSections()
     item->SetLabel(g_localizeStrings.Get(52102));
     item->SetProperty("plexchannels", true);
     item->SetProperty("sectionPath", "plexserver://channels/");
+    item->SetProperty("navigateDirectly", true);
 
     item->SetPath("XBMC.ActivateWindow(MyChannels,plexserver://channels,return)");
     item->SetClickActions(CGUIAction("", item->GetPath()));
@@ -889,6 +891,7 @@ void CGUIWindowHome::UpdateSections()
     item->SetProperty("sectionPath", "plexserver://shared");
     item->SetPath("XBMC.ActivateWindow(MySharedContent,plexserver://shared,return)");
     item->SetClickActions(CGUIAction("", item->GetPath()));
+    item->SetProperty("navigateDirectly", true);
     newList.push_back(item);
     listUpdated = true;
   }
