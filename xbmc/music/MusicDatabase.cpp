@@ -4907,6 +4907,7 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    RollbackTransaction();
   }
   if (progress)
     progress->Close();
@@ -5222,6 +5223,7 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    RollbackTransaction();
   }
 
   if (progress)
