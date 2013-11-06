@@ -208,7 +208,7 @@
 	<include name="DialogSelectAudioSubtitleStreamPicker">
 		<control type="group">
 			<posx>96</posx>
-			<posy>72</posy>
+			<posy>28</posy>
 			<!-- bg's -->
 			<control type="group">
 				<control type="image">
