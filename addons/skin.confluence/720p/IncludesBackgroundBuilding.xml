@@ -42,7 +42,7 @@
 			<width>1280</width>
 			<height>720</height>
 			<texture>special://skin/backgrounds/media-overlay.jpg</texture>
-			<visible>[Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] + ![Window.IsVisible(PVR) + [Control.IsVisible(11) | Control.IsVisible(12)]]</visible>
+			<visible>[Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels)</visible>
 			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="visualisation">
@@ -50,7 +50,7 @@
 			<top>0</top>
 			<width>1280</width>
 			<height>720</height>
-			<visible>Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis) + ![Window.IsVisible(PVR) + [Control.IsVisible(11) | Control.IsVisible(12)]]</visible>
+			<visible>Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis) + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels)</visible>
 			<visible>!SubString(Window(videolibrary).Property(TvTunesIsAlive),True)</visible>
 		</control>
 		<control type="videowindow">
@@ -58,7 +58,7 @@
 			<top>0</top>
 			<width>1280</width>
 			<height>720</height>
-			<visible>Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo) + ![Window.IsVisible(PVR) + [Control.IsVisible(11) | Control.IsVisible(12)]]</visible>
+			<visible>Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo) + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels)</visible>
 		</control>
 		<control type="image">
 			<left>0</left>
@@ -298,101 +298,4 @@
 			</control>
 		</control>
 	</include>
-	<include name="ContentPanelBackgroundsPVR">
-		<control type="image">
-			<left>0</left>
-			<top>100r</top>
-			<width>1280</width>
-			<height>100</height>
-			<texture>floor.png</texture>
-			<animation effect="fade" time="250" condition="Window.Previous(Home)">WindowOpen</animation>
-			<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
-		</control>
-		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
-			<control type="group">
-				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(10) | Control.IsVisible(14) | Control.IsVisible(15) | Control.IsVisible(16) | Control.IsVisible(17)</visible>
-				<control type="image">
-					<left>55</left>
-					<top>60</top>
-					<width>1170</width>
-					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
-				</control>
-				<control type="image">
-					<left>55</left>
-					<top>652</top>
-					<width>1170</width>
-					<height>64</height>
-					<texture border="15">ContentPanelMirror.png</texture>
-				</control>
-			</control>
-			<control type="group">
-				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(11) | Control.IsVisible(12)</visible>
-				<control type="image">
-					<left>50</left>
-					<top>60</top>
-					<width>450</width>
-					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
-				</control>
-				<control type="image">
-					<left>50</left>
-					<top>652</top>
-					<width>450</width>
-					<height>64</height>
-					<texture border="15">ContentPanelMirror.png</texture>
-				</control>
-				<control type="image">
-					<left>510</left>
-					<top>60</top>
-					<width>730</width>
-					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
-				</control>
-				<control type="image">
-					<left>510</left>
-					<top>652</top>
-					<width>730</width>
-					<height>64</height>
-					<texture border="15">ContentPanelMirror.png</texture>
-				</control>
-			</control>
-			<control type="group">
-				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(13)</visible>
-				<control type="image">
-					<left>50</left>
-					<top>60</top>
-					<width>840</width>
-					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
-				</control>
-				<control type="image">
-					<left>50</left>
-					<top>652</top>
-					<width>840</width>
-					<height>64</height>
-					<texture border="15">ContentPanelMirror.png</texture>
-				</control>
-				<control type="image">
-					<left>900</left>
-					<top>60</top>
-					<width>330</width>
-					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
-				</control>
-				<control type="image">
-					<left>900</left>
-					<top>652</top>
-					<width>330</width>
-					<height>64</height>
-					<texture border="15">ContentPanelMirror.png</texture>
-				</control>
-			</control>
-		</control>
-	</include>
-
 </includes>

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<views>50</views>
+	<controls>
+		<include>CommonBackground</include>
+		<control type="image">
+			<left>0</left>
+			<top>100r</top>
+			<width>1280</width>
+			<height>100</height>
+			<texture>floor.png</texture>
+			<animation effect="fade" time="250" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Animation</include>		
+			<control type="group">
+				<include>VisibleFadeEffect</include>
+				<visible>Control.IsVisible(50)</visible>
+				<control type="image">
+					<left>50</left>
+					<top>60</top>
+					<width>840</width>
+					<height>600</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<left>50</left>
+					<top>652</top>
+					<width>840</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+				<control type="image">
+					<left>900</left>
+					<top>60</top>
+					<width>330</width>
+					<height>600</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<left>900</left>
+					<top>652</top>
+					<width>330</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+			</control>
+		</control>
+		<include>MainWindowMouseButtons</include>
+		<include>PVRHeader</include>
+
+			
+		<control type="group">
+			<include>Window_OpenClose_Animation</include>
+			<description>Recordings group</description>
+			<visible>Control.IsVisible(50)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="list" id="50">
+				<left>70</left>
+				<top>75</top>
+				<width>760</width>
+				<height>561</height>
+				<onleft>102</onleft>
+				<onright>72</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<viewtype label="535">list</viewtype>
+				<pagecontrol>72</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="40" width="760">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>760</width>
+						<height>41</height>
+						<texture border="2">MenuItemNF.png</texture>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>5</top>
+						<width>30</width>
+						<height>30</height>
+						<texture background="true" fallback="DefaultVideoCover.png">$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="label">
+						<left>50</left>
+						<top>0</top>
+						<width>605</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<left>225</left>
+						<top>0</top>
+						<width>500</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Date]</label>
+					</control>
+					<control type="image">
+						<left>730</left>
+						<top>14</top>
+						<width>20</width>
+						<height>16</height>
+						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
+						<visible>!ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<left>730</left>
+						<top>14</top>
+						<width>16</width>
+						<height>16</height>
+						<texture>OverlayWatching.png</texture>
+						<visible>ListItem.IsResumable</visible>
+					</control>
+				</itemlayout>
+				<focusedlayout height="40" width="760">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>760</width>
+						<height>41</height>
+						<texture border="2">MenuItemFO.png</texture>
+						<visible>Control.HasFocus(50)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>760</width>
+						<height>41</height>
+						<texture border="2">MenuItemNF.png</texture>
+						<include>VisibleFadeEffect</include>
+						<visible>!Control.HasFocus(50)</visible>
+					</control>
+					<control type="image">
+						<left>560</left>
+						<top>5</top>
+						<width>200</width>
+						<height>31</height>
+						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
+						<visible>Control.HasFocus(50) + !IsEmpty(ListItem.Date)</visible>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>5</top>
+						<width>30</width>
+						<height>30</height>
+						<texture background="true" fallback="DefaultVideoCover.png">$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="label">
+						<left>50</left>
+						<top>0</top>
+						<width>630</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<left>225</left>
+						<top>0</top>
+						<width>500</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Date]</label>
+					</control>
+					<control type="image">
+						<left>730</left>
+						<top>14</top>
+						<width>20</width>
+						<height>16</height>
+						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
+						<visible>!ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<left>730</left>
+						<top>14</top>
+						<width>16</width>
+						<height>16</height>
+						<texture>OverlayWatching.png</texture>
+						<visible>ListItem.IsResumable</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="72">
+				<left>850</left>
+				<top>78</top>
+				<width>25</width>
+				<height>560</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>50</onleft>
+				<onright>102</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
+				<description>Page Count Label</description>
+				<right>40</right>
+				<top>53r</top>
+				<width>500</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<scroll>false</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>([COLOR=blue]$INFO[Container(50).NumItems][/COLOR]) $LOCALIZE[19163] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(50).CurrentPage]/$INFO[Container(50).NumPages][/COLOR])</label>
+				<include>Window_OpenClose_Animation</include>		
+			</control>
+			<control type="group">
+				<left>910</left>
+				<top>80</top>
+				<control type="image">
+					<left>10</left>
+					<top>0</top>
+					<width>290</width>
+					<height>230</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture fallback="DefaultVideoCover.png">$INFO[Container(50).ListItem.Icon]</texture>
+					<bordertexture border="8">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
+				</control>
+				<control type="fadelabel">
+					<left>10</left>
+					<top>230</top>
+					<width>290</width>
+					<height>25</height>
+					<label>$INFO[Container(50).ListItem.Title]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<scrollout>false</scrollout>
+					<pauseatend>1000</pauseatend>
+				</control>
+				<control type="textbox">
+					<description>Description Value for TV Show</description>
+					<left>10</left>
+					<top>270</top>
+					<width>290</width>
+					<height>280</height>
+					<font>font13</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<label>$INFO[Container(50).ListItem.Plot]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+			</control>
+		</control>
+
+		<include>CommonNowPlaying</include>
+		<include>BehindDialogFadeOut</include>
+		<include>ScrollOffsetLabel</include>
+
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1280</width>
+			<height>720</height>
+			<texture>black-back.png</texture>
+			<animation effect="fade" time="400">Visible</animation>
+			<animation effect="fade" time="200">Hidden</animation>
+			<visible>Window.IsActive(FileBrowser) | Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo) | Window.IsActive(PVRTimerSetting) | Window.IsActive(PVRGroupManager) | Window.IsActive(PVRGuideSearch)</visible>
+		</control>
+
+		<include>PVRSideBlade</include>
+		<include>Clock</include>
+	</controls>
+</window>

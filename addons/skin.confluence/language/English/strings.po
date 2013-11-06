@@ -601,8 +601,6 @@ msgctxt "#31506"
 msgid "Available[CR]Groups"
 msgstr ""
 
-#empty strings from id 31507 to 31508
-
 msgctxt "#31509"
 msgid "Channel Group"
 msgstr ""
@@ -663,7 +661,7 @@ msgid "PICTURES"
 msgstr ""
 
 msgctxt "#31952"
-msgid "LIVE TV"
+msgid "TV"
 msgstr ""
 
 msgctxt "#31953"
@@ -692,4 +690,8 @@ msgstr ""
 
 msgctxt "#31959"
 msgid "SYSTEM"
+msgstr ""
+
+msgctxt "#31960"
+msgid "RADIO"
 msgstr ""
