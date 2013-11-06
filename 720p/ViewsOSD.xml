@@ -219,7 +219,7 @@
 				<posx>20</posx>
 				<!-- top row -->
 				<control type="group">
-					<posy>30</posy>
+					<posy>28</posy>
 					<!-- clock -->
 					<control type="label">
 						<width>200</width>
@@ -523,7 +523,7 @@
 						<control type="label">
 							<posy>0</posy>
 							<posx>43</posx>
-							<width>165</width>
+							<width>100</width>
 							<height>24</height>
 							<label>$LOCALIZE[31060]</label>
 							<font>Condensed-16</font>
@@ -534,7 +534,7 @@
 						<control type="label">
 							<posy>0</posy>
 							<posx>43</posx>
-							<width>165</width>
+							<width>100</width>
 							<height>24</height>
 							<label>$LOCALIZE[31060]</label>
 							<font>Condensed-16</font>
@@ -572,8 +572,8 @@
 						</control>
 								<control type="label">
 									<posy>0</posy>
-									<posx>50</posx>
-									<width>165</width>
+									<posx>49</posx>
+									<width>80</width>
 									<height>24</height>
 									<label>$LOCALIZE[31060]</label>
 									<font>Condensed-16</font>
@@ -583,8 +583,8 @@
 								</control>
 								<control type="label">
 									<posy>0</posy>
-									<posx>50</posx>
-									<width>165</width>
+									<posx>49</posx>
+									<width>80</width>
 									<height>24</height>
 									<label>$LOCALIZE[31060]</label>
 									<font>Condensed-16</font>
