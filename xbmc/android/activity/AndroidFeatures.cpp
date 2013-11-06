@@ -55,6 +55,7 @@ int CAndroidFeatures::GetVersion()
     // <= 13 Honeycomb
     // <= 15 IceCreamSandwich
     //       JellyBean
+    // <= 19 KitKat
     version = iSdkVersion;
 
     jenv->DeleteLocalRef(jcOsBuild);
