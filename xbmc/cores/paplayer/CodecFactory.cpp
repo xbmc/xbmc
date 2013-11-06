@@ -126,18 +126,14 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     pcm_codec->SetMimeParams(strContent);
     return pcm_codec;
   }
-  else if( strContent.Equals("audio/aac")
-    || strContent.Equals("audio/aacp") )
+  else if( strContent.Equals("audio/aac") || strContent.Equals("audio/aacp") ||
+      strContent.Equals("audio/x-ms-wma") ||
+      strContent.Equals("audio/x-ape") || strContent.Equals("audio/ape"))
   {
     DVDPlayerCodec *pCodec = new DVDPlayerCodec;
-    if (urlFile.GetProtocol() == "shout" )
-      pCodec->SetContentType(strContent);
+    pCodec->SetContentType(strContent);
     return pCodec;
   }
-  else if( strContent.Equals("audio/x-ms-wma") )
-    return new DVDPlayerCodec();
-  else if( strContent.Equals("audio/x-ape") || strContent.Equals("audio/ape") )
-    return new DVDPlayerCodec();
   else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
     return CreateOGGCodec(strFile,filecache);
   else if (strContent.Equals("audio/x-xbmc-pcm"))

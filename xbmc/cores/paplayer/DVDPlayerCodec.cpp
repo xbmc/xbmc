@@ -26,6 +26,7 @@
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "cores/dvdplayer/DVDStreamInfo.h"
 #include "cores/dvdplayer/DVDCodecs/DVDFactoryCodec.h"
+#include "music/tags/TagLoaderTagLib.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include "URL.h"
@@ -155,6 +156,18 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_pInputStream = NULL;
     return false;
   }
+
+  //  Extract ReplayGain info
+  // tagLoaderTagLib.Load will try to determine tag type by file extension, so set fallback by contentType
+  CStdString strFallbackFileExtension = "";
+  if (m_strContentType.Equals("audio/aacp") || m_strContentType.Equals("audio/aacp" "audio/aac"))
+    strFallbackFileExtension = "m4a";
+  else if (m_strContentType.Equals("audio/x-ms-wma"))
+    strFallbackFileExtension = "wma";
+  else if (m_strContentType.Equals("audio/x-ape") || m_strContentType.Equals("audio/ape"))
+    strFallbackFileExtension = "ape";
+  CTagLoaderTagLib tagLoaderTagLib;
+  tagLoaderTagLib.Load(strFile, m_tag, strFallbackFileExtension);
 
   // we have to decode initial data in order to get channels/samplerate
   // for sanity - we read no more than 10 packets
