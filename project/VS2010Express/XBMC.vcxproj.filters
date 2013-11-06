@@ -313,6 +313,9 @@
     <Filter Include="settings\lib">
       <UniqueIdentifier>{4de9ae04-448d-4ebe-bde5-5ec2a61270c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="interfaces\json-rpc\schema">
+      <UniqueIdentifier>{e04e47ca-d34d-41e7-aaea-5f18cd802cd9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -6117,6 +6120,21 @@
       <Filter>interfaces\swig</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\GitRevision.h" />
+    <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\types.json">
+      <Filter>interfaces\json-rpc\schema</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\notifications.json">
+      <Filter>interfaces\json-rpc\schema</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\methods.json">
+      <Filter>interfaces\json-rpc\schema</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\version.txt">
+      <Filter>interfaces\json-rpc\schema</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\xbmc\interfaces\json-rpc\schema\license.txt">
+      <Filter>interfaces\json-rpc\schema</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i">
