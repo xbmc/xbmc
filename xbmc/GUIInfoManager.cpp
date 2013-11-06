@@ -453,6 +453,10 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "channelnumber",    VIDEOPLAYER_CHANNEL_NUMBER },
                                   { "channelgroup",     VIDEOPLAYER_CHANNEL_GROUP },
                                   { "hasepg",           VIDEOPLAYER_HAS_EPG },
+                                  /* PLEX */
+                                  { "audiostream",      VIDEOPLAYER_AUDIOSTREAM },
+                                  { "subtitlestream",   VIDEOPLAYER_SUBTITLESTREAM },
+                                  /* END PLEX */
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING }};
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
@@ -1533,6 +1537,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case VIDEOPLAYER_CHANNEL_GROUP:
   case VIDEOPLAYER_PARENTAL_RATING:
   case VIDEOPLAYER_PLAYCOUNT:
+  /* PLEX */
+  case VIDEOPLAYER_AUDIOSTREAM:
+  case VIDEOPLAYER_SUBTITLESTREAM:
+  /* END PLEX */
   case VIDEOPLAYER_LASTPLAYED:
     strLabel = GetVideoLabel(info);
   break;
@@ -4036,6 +4044,20 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
           return m_currentFile->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDateTime();
         break;
       }
+    /* PLEX */
+    case VIDEOPLAYER_AUDIOSTREAM:
+      {
+        if (g_application.CurrentFileItemPtr()->HasProperty("selectedAudioStream"))
+          return g_application.CurrentFileItemPtr()->GetProperty("selectedAudioStream").asString();
+        return g_localizeStrings.Get(1446);
+      }
+    case VIDEOPLAYER_SUBTITLESTREAM:
+      {
+        if (g_application.CurrentFileItemPtr()->HasProperty("selectedSubtitleStream"))
+          return g_application.CurrentFileItemPtr()->GetProperty("selectedSubtitleStream").asString();
+        return g_localizeStrings.Get(1446);
+      }
+    /* END PLEX */
     case VIDEOPLAYER_PLAYCOUNT:
       {
         CStdString strPlayCount;
