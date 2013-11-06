@@ -712,6 +712,7 @@ void CActiveAE::Process()
   Message *msg = NULL;
   Protocol *port = NULL;
   bool gotMsg;
+  XbmcThreads::EndTime timer;
 
   m_state = AE_TOP_UNCONFIGURED;
   m_extTimeout = 1000;
@@ -725,6 +726,7 @@ void CActiveAE::Process()
   while (!m_bStop)
   {
     gotMsg = false;
+    timer.Set(m_extTimeout);
 
     if (m_bStateMachineSelfTrigger)
     {
@@ -788,6 +790,7 @@ void CActiveAE::Process()
     // wait for message
     else if (m_outMsgEvent.WaitMSec(m_extTimeout))
     {
+      m_extTimeout = timer.MillisLeft();
       continue;
     }
     // time out
