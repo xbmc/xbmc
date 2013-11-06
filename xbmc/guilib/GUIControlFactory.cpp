@@ -573,8 +573,6 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
   CStdString fallback = element->Attribute("fallback");
   if (StringUtils::IsNaturalNumber(label))
     label = g_localizeStrings.Get(atoi(label));
-  else // we assume the skin xml's aren't encoded as UTF-8
-    g_charsetConverter.unknownToUTF8(label);
   if (StringUtils::IsNaturalNumber(fallback))
     fallback = g_localizeStrings.Get(atoi(fallback));
   else
@@ -645,8 +643,6 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTa
     text.Empty();
   if (StringUtils::IsNaturalNumber(text))
     text = g_localizeStrings.Get(atoi(text.c_str()));
-  else
-    g_charsetConverter.unknownToUTF8(text);
   return true;
 }
 

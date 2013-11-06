@@ -56,6 +56,7 @@ protected:
   void ReadTruncated(char* buf2, int size);
 
   CCurlFile m_file;
+  std::string m_fileCharset;
   int m_metaint;
   int m_discarded; // data used for tags
   int m_currint;
