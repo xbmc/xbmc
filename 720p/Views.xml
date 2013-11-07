@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <includes>
-	<include name="_ListSecondary">
+	<include name="ListSecondary">
 		<control type="group">
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
@@ -9,10 +9,10 @@
 				<control type="fixedlist" id="40">
 					<visible>Window.IsActive(25) + !Container.content(movies) + !Container.content(movie) + !Container.content(tvshows) + !Container.content(seasons) + !Container.content(season) + !Container.content(episodes) + !Container.content(episode) + !Container.content(clips) + !Container.content(clip) + !Container.content(channel) + !Container.content(channels) + !Container.content(empty)</visible>
 					<viewtype label="ListSecondary">list</viewtype>
-					<posy>235</posy>
+					<posy>50</posy>
 					<posx>100</posx>
-					<width>1000</width>
-					<height>400</height>
+					<width>1100</width>
+					<height>620</height>
 					<onright>-</onright>
 					<onleft>1300</onleft>
 					<onup>40</onup>
@@ -24,20 +24,19 @@
 					<itemlayout height="45" width="1000">
 						<control type="label">
 							<posx>60</posx>
-							<width>800</width>
+							<width>1000</width>
 							<height>42</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
 							<font>Condensed-28</font>
-							<textcolor>FF999999</textcolor>
-							<shadowcolor>FF222222</shadowcolor>
+							<include>White2</include>
 						</control>
 					</itemlayout>
 					<focusedlayout height="85" width="1000">
 						<control type="label">
 							<posx>80</posx>
-							<width>800</width>
+							<width>1000</width>
 							<height>80</height>
 							<align>left</align>
 							<aligny>center</aligny>
