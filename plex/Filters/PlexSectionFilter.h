@@ -59,7 +59,7 @@ class CPlexSectionFilter
 
     virtual std::string getFilterUrl() const { return m_sectionUrl.Get(); }
     virtual bool isLoaded() const { return m_primaryFilters.size() > 0; }
-    virtual bool hasAdvancedFilters() const { return m_secondaryFilters.size() > 0; }
+    virtual bool hasAdvancedFilters() const { return (m_secondaryFilters.size() > 0 || m_sortOrders.size() > 0); }
 
     virtual void addSecondaryFilter(CPlexSecondaryFilterPtr secFilter);
     virtual CPlexSecondaryFilterPtr addSecondaryFilter(const std::string& filterKey);
