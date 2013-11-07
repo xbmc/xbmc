@@ -152,6 +152,10 @@ int CEnvironment::win32_setenv(const std::string &name, const std::string &value
 #ifdef _DEBUG
     { L"msvcr110d.dll" },// Visual Studio 2012 (debug)
 #endif
+    { L"msvcr120.dll" }, // Visual Studio 2013
+#ifdef _DEBUG
+    { L"msvcr120d.dll" },// Visual Studio 2013 (debug)
+#endif
     { NULL }             // Terminating NULL for list
   };
   
