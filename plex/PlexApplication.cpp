@@ -157,6 +157,9 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
     
     mediaServerClient->CancelJobs();
     mediaServerClient.reset();
+
+    filterManager->saveFiltersToDisk();
+    filterManager.reset();
     
     delete remoteSubscriberManager;
     

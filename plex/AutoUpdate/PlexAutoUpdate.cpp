@@ -27,6 +27,7 @@
 #include "GUIInfoManager.h"
 #include "Application.h"
 #include "PlexAnalytics.h"
+#include "GUIUserMessages.h"
 
 using namespace XFILE;
 
@@ -342,7 +343,7 @@ void CPlexAutoUpdate::ProcessDownloads()
   verStr.Format("Version %s is now ready to be installed.", GetUpdateVersion());
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Update available!", verStr, 10000, false);
 
-  CGUIMessage msg(GUI_MSG_UPDATE_MAIN_MENU, PLEX_AUTO_UPDATER, 0);
+  CGUIMessage msg(GUI_MSG_UPDATE, PLEX_AUTO_UPDATER, 0);
   CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_HOME);
 
   m_isDownloading = false;

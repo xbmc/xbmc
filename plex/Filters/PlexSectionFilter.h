@@ -66,6 +66,29 @@ class CPlexSectionFilter
 
     virtual void loadFilterValues(CPlexSecondaryFilterPtr secFilter);
 
+    CPlexSecondaryFilterPtr getSecondaryFilterOfName(const std::string& name)
+    {
+      BOOST_FOREACH(CPlexSecondaryFilterPtr filter, getSecondaryFilters())
+      {
+        if (filter->getFilterName() == name)
+          return filter;
+      }
+      return CPlexSecondaryFilterPtr();
+    }
+
+    bool needRefreshOnStateChange()
+    {
+      CPlexSecondaryFilterPtr unwatched = getSecondaryFilterOfName("unwatched");
+
+      if (unwatched && unwatched->isSelected())
+        return true;
+
+      if (currentPrimaryFilter() == "onDeck")
+        return true;
+
+      return false;
+    }
+
     virtual void clearFilters()
     {
       BOOST_FOREACH(CPlexSecondaryFilterPtr filter, m_currentSecondaryFilters)
