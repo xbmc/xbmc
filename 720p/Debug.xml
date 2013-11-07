@@ -225,16 +225,6 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Hide Unwatched Episodes Plot : ON</label>
-					<visible>SkinHasSetting(HidePlotForUnwatched)</visible>
-				</control>
-				<control type="label">
-					<include>debugFont</include>
-					<label>Hide Unwatched Episodes Plot : OFF</label>
-					<visible>!SkinHasSetting(HidePlotForUnwatched)</visible>
-				</control>
-				<control type="label">
-					<include>debugFont</include>
 					<label/>
 				</control>
 				<!--><control type="label">
@@ -642,6 +632,48 @@
 				<control type="label">
 					<include>debugFont</include>
 					<label>Listitem.Property(Album_Type) : [COLOR=orangeLight]$INFO[Listitem.Property(Album_Type)][/COLOR]</label>
+				</control>
+			</control>
+			<!-- HOME LISTS DEBUG -->
+			<control type="grouplist">
+				<posx>820</posx>
+				<posy>40</posy>
+				<width>390</width>
+				<height>680</height>
+				<orientation>vertical</orientation>
+				<itemgap>5</itemgap>
+				<visible>Window.IsVisible(0)</visible>
+				<control type="label">
+					<include>debugFont</include>
+					<label>HOME ON DECK PLOT DEBUG:</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Hide Unwatched Episodes Plot : [COLOR=orangeLight]ON[/COLOR]</label>
+					<visible>Skin.HasSetting(HidePlotForUnwatched)</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Hide Unwatched Episodes Plot : [COLOR=orangeLight]OFF[/COLOR]</label>
+					<visible>!Skin.HasSetting(HidePlotForUnwatched)</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>On Deck Item Plot (untampered) :</label>
+				</control>
+				<control type="textbox">
+					<width>300</width>
+					<height>300</height>
+					<label>[COLOR=orangeLight]$INFO[Container(11001).ListItem.Plot][/COLOR]</label>
+					<include>debugFont</include>
 				</control>
 			</control>
 		</control>
