@@ -3,27 +3,24 @@
 	<defaultcontrol always="true">10085</defaultcontrol>
 	<!-- ViewsDialog.xml -->
 	<include>DialogFadeInOut</include>
-	
 	<controls>
 		<control type="group">
-			
 			<!-- bg's -->
+			<include>BeginnersBackground</include>
 			<include>SlideshowDimmed</include>
 			<control type="image">
 				<width>1280</width>
-				<height>130</height>
+				<height>100</height>
 				<include>Black</include>
 				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 			</control>
 			<!-- controls -->
 			<control type="group">
 				<posx>140</posx>
-				<posy>60</posy>
+				<posy>50</posy>
 				<control type="label" id="1">
-					<posy>33</posy>
 					<description>Heading</description>
 					<width>1000</width>
-					<textcolor>orangeLight</textcolor>
 					<include>DialogHeading</include>
 				</control>
 				<!-- hardcoded dialog title, delete when control 1 has a dynamic one -->
@@ -31,14 +28,12 @@
 					<posy>0</posy>
 					<description>Heading</description>
 					<width>1000</width>
-					<textcolor>orangeLight</textcolor>
-					<align>center</align>
-					<font>CondensedBold-30</font>
+					<include>DialogHeading</include>
 					<label>myPlex Log In</label>
 				</control>
 				<!-- description text -->
 				<control type="textbox" id="10081">
-					<posy>110</posy>
+					<posy>140</posy>
 					<posx>270</posx>
 					<width>460</width>
 					<height>195</height>
@@ -48,7 +43,7 @@
 				<!-- PIN area -->
 				<control type="group">
 					<visible>!Control.IsVisible(10083) + !Control.IsVisible(10088) + !Control.IsVisible(10089)</visible>
-					<posy>232</posy>
+					<posy>262</posy>
 					<posx>270</posx>
 					<control type="group">
 						<animation effect="fade" start="0" end="15" time="0" condition="true">Conditional</animation>
@@ -92,7 +87,7 @@
 				</control>
 				<!-- manual login area -->
 				<control type="group">
-					<posy>205</posy>
+					<posy>225</posy>
 					<posx>270</posx>
 					<!-- user field -->
 					<control type="group">
@@ -220,7 +215,7 @@
 				</control>
 				<!-- buttons area -->
 				<control type="group">
-					<posy>450</posy>
+					<posy>550</posy>
 					<posx>0</posx>
 					<control type="group">
 						<control type="image">

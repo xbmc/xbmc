@@ -32,20 +32,20 @@
 		</control>
 		<!-- Clip backgrounds use item thumb, not as pretty so we'll hide them a bit more -->
 		<control type="group">
-		<visible>Container.Content(Clips)</visible>
-		<control type="largeimage">
-			<include>FullScreenScaled</include>
-			<fadetime>400</fadetime>
-			<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
-			<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
-			<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
-		</control>
-		<control type="image">
-			<include>FullScreenScaled</include>
-			<texture>bg-overlay-grainy.png</texture>
-			<animation effect="fade" start="0" end="80" time="600">WindowOpen</animation>
-			<animation effect="fade" start="80" end="0" time="600">WindowClose</animation>
-		</control>
+			<visible>Container.Content(Clips)</visible>
+			<control type="largeimage">
+				<include>FullScreenScaled</include>
+				<fadetime>400</fadetime>
+				<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+				<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+				<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
+			<control type="image">
+				<include>FullScreenScaled</include>
+				<texture>bg-overlay-grainy.png</texture>
+				<animation effect="fade" start="0" end="80" time="600">WindowOpen</animation>
+				<animation effect="fade" start="80" end="0" time="600">WindowClose</animation>
+			</control>
 		</control>
 	</include>
 	<include name="BGSharedContent">
@@ -98,7 +98,7 @@
 			<visible>true</visible>
 			<animation effect="fade" start="80" end="50" time="500" condition="!ControlGroup(1300).HasFocus()">Conditional</animation>
 			<animation effect="fade" start="50" end="80" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
-		</control>		
+		</control>
 		<control type="label">
 			<posy>330</posy>
 			<posx>300</posx>
@@ -200,6 +200,24 @@
 			<animation type="WindowClose">
 				<effect type="fade" start="100" end="0" time="800"/>
 			</animation>
+		</control>
+		<control type="image">
+			<width>1280</width>
+			<height>720</height>
+			<texture>bg-overlay-grainy.png</texture>
+			<aspectratio>stretch</aspectratio>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>true</visible>
+		</control>
+	</include>
+	<include name="BeginnersBackground">
+		<control type="image">
+			<width>1280</width>
+			<height>720</height>
+			<texture>bg-beginner.jpg</texture>
+			<aspectratio>stretch</aspectratio>
+			<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
+			<visible>true</visible>
 		</control>
 		<control type="image">
 			<width>1280</width>
