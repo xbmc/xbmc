@@ -426,6 +426,9 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVAHD.cpp">
+      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodec.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
@@ -3239,6 +3242,9 @@
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.h">
+      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVAHD.h">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlay.h">
