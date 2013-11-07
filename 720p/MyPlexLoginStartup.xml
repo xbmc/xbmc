@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<window id="10080" type="dialog">
+	<defaultcontrol always="true">10085</defaultcontrol>
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
+	<controls>
+		<control type="group">
+			<posx>0</posx>
+			<posy>0</posy>
+			<control type="group">
+				<posy>30</posy>
+				<control type="label" id="1">
+					<posy>33</posy>
+					<description>Heading</description>
+					<width>1280</width>
+					<include>DialogHeading</include>
+				</control>
+				<!-- hardcoded dialog title, delete when control 1 has a dynamic one -->
+				<control type="label">
+					<posy>33</posy>
+					<description>Heading</description>
+					<width>1280</width>
+					<include>DialogHeading</include>
+					<label>$LOCALIZE[32001]</label>
+				</control>
+				<!-- description text -->
+				<control type="textbox" id="10081">
+					<posy>110</posy>
+					<posx>410</posx>
+					<width>460</width>
+					<height>195</height>
+					<align>center</align>
+					<font>PINdescription</font>
+				</control>
+				<!-- PIN area -->
+				<control type="group">
+					<visible>!Control.IsVisible(10083) + !Control.IsVisible(10088) + !Control.IsVisible(10089)</visible>
+					<posy>232</posy>
+					<posx>410</posx>
+					<control type="group">
+						<animation effect="fade" start="0" end="15" time="0" condition="true">Conditional</animation>
+						<control type="image">
+							<description>PIN # bg</description>
+							<posx>0</posx>
+							<width>100</width>
+							<height>150</height>
+							<include>Orange</include>
+						</control>
+						<control type="image">
+							<description>PIN # bg</description>
+							<posx>120</posx>
+							<width>100</width>
+							<height>150</height>
+							<include>Orange</include>
+						</control>
+						<control type="image">
+							<description>PIN # bg</description>
+							<posx>240</posx>
+							<width>100</width>
+							<height>150</height>
+							<include>Orange</include>
+						</control>
+						<control type="image">
+							<description>PIN # bg</description>
+							<posx>360</posx>
+							<width>100</width>
+							<height>150</height>
+							<include>Orange</include>
+						</control>
+					</control>
+					<control type="label" id="10082">
+						<posy>0</posy>
+						<posx>15</posx>
+						<width>480</width>
+						<height>150</height>
+						<font>CondensedBold-126</font>
+					</control>
+				</control>
+				<!-- manual login area -->
+				<control type="group">
+					<posy>205</posy>
+					<posx>410</posx>
+					<!-- user field -->
+					<control type="group">
+						<visible>Control.IsVisible(10083)</visible>
+						<control type="label">
+							<description>USER ID label</description>
+							<posy>23</posy>
+							<width>140</width>
+							<height>50</height>
+							<align>left</align>
+							<font>Condensed-22</font>
+							<textcolor>white</textcolor>
+							<label>31068</label>
+						</control>
+						<control type="image">
+							<posx>140</posx>
+							<posy>23</posy>
+							<width>340</width>
+							<height>53</height>
+							<include>BaseRounded</include>
+						</control>
+					</control>
+					<control type="edit" id="10083">
+						<description>User ID</description>
+						<posx>140</posx>
+						<posy>23</posy>
+						<width>310</width>
+						<height>50</height>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>-</onup>
+						<ondown>10084</ondown>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textoffsetx>16</textoffsetx>
+						<label/>
+						<hinttext/>
+						<font>Condensed-26</font>
+						<textcolor>FF222222</textcolor>
+					</control>
+					<!-- password field -->
+					<control type="group">
+						<visible>Control.IsVisible(10084)</visible>
+						<control type="label">
+							<description>PASSWORD label</description>
+							<posy>100</posy>
+							<width>140</width>
+							<height>50</height>
+							<align>left</align>
+							<font>Condensed-22</font>
+							<textcolor>white</textcolor>
+							<label>31069</label>
+						</control>
+						<control type="image">
+							<posx>140</posx>
+							<posy>100</posy>
+							<width>340</width>
+							<height>53</height>
+							<include>BaseRounded</include>
+						</control>
+					</control>
+					<control type="edit" id="10084">
+						<description>Password</description>
+						<posx>140</posx>
+						<posy>100</posy>
+						<width>310</width>
+						<height>50</height>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>10083</onup>
+						<ondown>10087</ondown>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textoffsetx>16</textoffsetx>
+						<label/>
+						<hinttext/>
+						<font>Condensed-26</font>
+						<textcolor>FF222222</textcolor>
+					</control>
+				</control>
+				<!-- results message area -->
+				<!-- success -->
+				<control type="group" id="10088">
+					<posy>210</posy>
+					<posx>512</posx>
+					<control type="image">
+						<description>round</description>
+						<width>256</width>
+						<height>200</height>
+						<texture>round-big.png</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+						<colordiffuse>FF336633</colordiffuse>
+					</control>
+					<control type="image">
+						<description>tick</description>
+						<posy>10</posy>
+						<posx>63</posx>
+						<width>174</width>
+						<height>130</height>
+						<texture>tick-big.png</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+					</control>
+				</control>
+				<!-- error -->
+				<control type="group" id="10089">
+					<posy>210</posy>
+					<posx>512</posx>
+					<control type="image">
+						<description>round</description>
+						<width>256</width>
+						<height>200</height>
+						<texture>round-big.png</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+						<colordiffuse>FF972323</colordiffuse>
+					</control>
+					<control type="image">
+						<description>tick</description>
+						<posy>35</posy>
+						<posx>41</posx>
+						<width>174</width>
+						<height>130</height>
+						<texture>exclamation-big.png</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+					</control>
+				</control>
+				<!-- buttons area -->
+				<control type="group">
+					<posy>610</posy>
+					<posx>0</posx>
+					<control type="group">
+						<control type="image">
+							<description>buttons bg</description>
+							<posx>0</posx>
+							<width>1280</width>
+							<height>80</height>
+							<include>Orange</include>
+							<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+						</control>
+					</control>
+					<control type="group" id="111">
+						<posy>15</posy>
+						<posx>410</posx>
+						<control type="button" id="10085">
+							<description>CANCEL/OK Button</description>
+							<width>120</width>
+							<onleft>-</onleft>
+							<onright>10086</onright>
+							<onup>Control.SetFocus(10084)</onup>
+							<include>DialogPressButton</include>
+							<animation effect="slide" start="0" end="170" time="400" condition="!Control.IsVisible(10086)">Conditional</animation>
+						</control>
+						<control type="button" id="10086">
+							<description>MANUAL/PIN Button</description>
+							<posx>260</posx>
+							<width>200</width>
+							<onleft>10085</onleft>
+							<onright>10087</onright>
+							<onup>Control.SetFocus(10084)</onup>
+							<include>DialogPressButton</include>
+							<animation effect="slide" start="0" end="-60" time="500" condition="Control.IsVisible(10083)">Conditional</animation>
+							<animation effect="slide" start="-60" end="0" time="500" condition="!Control.IsVisible(10083)">Conditional</animation>
+						</control>
+						<control type="button" id="10087">
+							<description>SUBMIT Button</description>
+							<posx>360</posx>
+							<width>120</width>
+							<onleft>10086</onleft>
+							<onright>-</onright>
+							<onup>Control.SetFocus(10084)</onup>
+							<include>DialogPressButton</include>
+							<animation effect="fade" start="0" end="100" time="300" delay="300">Visible</animation>
+							<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+		<!-- busy spinner -->
+		<control type="group">
+			<posx>15</posx>
+			<posy>-65</posy>
+			<control type="image">
+				<description>Background</description>
+				<posx>125</posx>
+				<posy>225</posy>
+				<width>1280</width>
+				<height>359</height>
+				<include>Black</include>
+				<animation effect="fade" start="0" end="90" time="0" condition="true">Conditional</animation>
+				<visible>Control.IsVisible(2)</visible>
+			</control>
+			<control type="image" id="2">
+				<posx>330</posx>
+				<posy>610</posy>
+				<width>60</width>
+				<height>60</height>
+				<texture>spinner.png</texture>
+				<aspectratio>keep</aspectratio>
+				<colordiffuse>FF888888</colordiffuse>
+				<animation effect="rotate" start="0" end="-360" center="624,464" time="1500" loop="true" condition="true">conditional</animation>
+				<animation type="WindowOpen">
+					<effect type="fade" start="0" end="100" time="700"/>
+				</animation>
+			</control>
+		</control>
+		<include>debugInfos</include>
+		<include>Grid</include>
+	</controls>
+</window>
