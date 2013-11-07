@@ -72,6 +72,36 @@
 			</control>
 		</control>
 	</include>
+	<include name="leftMenuBgSettings">
+		<control type="group">
+			<posy>0</posy>
+			<!-- Background -->
+			<control type="image">
+				<posx>-253</posx>
+				<height>720</height>
+				<width>254</width>
+				<include>Black</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="75"/>
+				</animation>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<width>74</width>
+				<height>720</height>
+				<include>Black</include>
+			</control>
+			<control type="image">
+				<posy>498</posy>
+				<posx>74</posx>
+				<width>16</width>
+				<height>32</height>
+				<aspectratio>scale</aspectratio>
+				<texture>arrow-big.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+			</control>
+		</control>
+	</include>
 	<include name="leftMenuBgHome">
 		<control type="group">
 			<posy>0</posy>
@@ -749,7 +779,7 @@
 	<include name="LeftSideMenuSettings">
 		<control type="group">
 			<include>leftMenuInitSlide</include>
-			<include>leftMenuBg</include>
+			<include>leftMenuBgSettings</include>
 			<!-- page title -->
 			<control type="group">
 				<posx>100</posx>
