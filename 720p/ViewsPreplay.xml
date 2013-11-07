@@ -1098,12 +1098,12 @@
 			<control type="textbox">
 				<label>$INFO[ListItem.Plot]</label>
 				<include>PlotFormat</include>
-				<visible>ListItem.Status(Watched) | [ListItem.Status(UnWatched) + !Skin.HasSetting(HidePlotForUnwatched)] | [ListItem.Status(InProgress) + !Skin.HasSetting(HidePlotForUnwatched)]</visible>
+				<visible>ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]</visible>
 			</control>
 			<control type="textbox">
 				<label>* Plot hidden to avoid spoilers *</label>
 				<include>PlotFormat</include>
-				<visible>[ListItem.Status(UnWatched) + Skin.HasSetting(HidePlotForUnwatched)] | [ListItem.Status(InProgress) + Skin.HasSetting(HidePlotForUnwatched)]</visible>
+				<visible>Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]</visible>
 			</control>
 			<control type="textbox">
 				<include>PlotFormat</include>
