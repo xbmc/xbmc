@@ -84,7 +84,7 @@
 		<animation effect="slide" end="0,200" time="300">WindowClose</animation>
 	</include>
 	<include name="FadeDialog">
-		<animation effect="fade" start="100" end="20" time="300" condition="Window.IsActive(selectdialog) | Window.IsActive(contextmenu) | Window.IsActive(okdialog) | Window.IsActive(addonsettings) | Window.IsActive(progressdialog) | Window.IsActive(10079) | Window.IsActive(10080) | Window.IsActive(playercontrols)">Conditional</animation>
+		<animation effect="fade" start="100" end="40" time="300" condition="Window.IsActive(selectdialog) | Window.IsActive(contextmenu) | Window.IsActive(okdialog) | Window.IsActive(addonsettings) | Window.IsActive(progressdialog) | Window.IsActive(10079) | Window.IsActive(10080) | Window.IsActive(2000) | Window.IsActive(10204) | Window.IsActive(10205) | Window.IsActive(200) | Window.IsActive(playercontrols)">Conditional</animation>
 	</include>
 	<!-- -->
 	<!-- DIALOG WINDOWS -->
@@ -246,7 +246,7 @@
 				<control type="image">
 					<description>Dialog arrow</description>
 					<posx>-14</posx>
-					<posy>86</posy>
+					<posy>65</posy>
 					<include>ArrowBlackLeft</include>
 				</control>
 			</control>

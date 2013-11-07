@@ -566,6 +566,8 @@
 					<onup>102</onup>
 					<ondown>104</ondown>
 					<include>leftMenuPreplayButton</include>
+					<onfocus>Skin.SetString(DialogPos,audiostreampicker)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Subtitles -->
 				<control type="button" id="104">
@@ -575,6 +577,8 @@
 					<onup>103</onup>
 					<ondown>105</ondown>
 					<include>leftMenuPreplayButton</include>
+					<onfocus>Skin.SetString(DialogPos,subtitlestreampicker)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Rate -->
 				<control type="button" id="105">
@@ -584,6 +588,8 @@
 					<onup>104</onup>
 					<ondown>106</ondown>
 					<include>leftMenuPreplayButton</include>
+					<onfocus>Skin.SetString(DialogPos,rate)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Recommend -->
 				<control type="button" id="106">
@@ -593,6 +599,8 @@
 					<ondown>107</ondown>
 					<include>leftMenuPreplayButton</include>
 					<visible>!IsEmpty(ListItem(0).Property(canRecommend))</visible>
+					<onfocus>Skin.SetString(DialogPos,recommend)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Share -->
 				<control type="button" id="107">
@@ -602,6 +610,8 @@
 					<ondown>108</ondown>
 					<include>leftMenuPreplayButton</include>
 					<visible>!IsEmpty(ListItem(0).Property(canShare))</visible>
+					<onfocus>Skin.SetString(DialogPos,share)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Watched -->
 				<control type="button" id="108">
