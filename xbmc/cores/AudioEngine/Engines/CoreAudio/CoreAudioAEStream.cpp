@@ -446,6 +446,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 // this is only called on the context of the coreaudio thread!
 unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
 {
+  /* PLEX - added the last condition where we check that m_flushRequested is not set. */
   // if we have been deleted
   if (!m_valid || m_delete || !m_Buffer || (m_paused && !m_flushRequested))
     return 0;
@@ -786,6 +787,7 @@ OSStatus CCoreAudioAEStream::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
   // if we have no valid data output silence
+  /* PLEX - added the last condition where we check that m_flushRequested is not set. */
   if (!m_valid || m_delete || !m_Buffer || m_firstInput || (m_paused && !m_flushRequested))
   {
   	for (UInt32 i = 0; i < ioData->mNumberBuffers; i++)
