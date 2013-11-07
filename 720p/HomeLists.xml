@@ -470,8 +470,8 @@
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode) + !Skin.HasSetting(HidePlotForUnwatched)">$INFO[Container(11001).ListItem.Plot]</value>
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode) + Skin.HasSetting(HidePlotForUnwatched)">* Plot hidden to avoid spoilers *</value>
 		<!-- recently added -->
-		<value condition="ControlGroup(7001).HasFocus + !Container(11000).ListItem.Type(episode)">$INFO[Container(11001).ListItem.Plot]</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode) + !Skin.HasSetting(HidePlotForUnwatched)">$INFO[Container(11001).ListItem.Plot]</value>
+		<value condition="ControlGroup(7001).HasFocus + !Container(11000).ListItem.Type(episode)">$INFO[Container(11000).ListItem.Plot]</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode) + !Skin.HasSetting(HidePlotForUnwatched)">$INFO[Container(11000).ListItem.Plot]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode) + Skin.HasSetting(HidePlotForUnwatched)">* Plot hidden to avoid spoilers *</value>
 		<!-- queue -->
 		<value condition="ControlGroup(7003).HasFocus]">$INFO[Container(11003).ListItem.Plot]</value>
