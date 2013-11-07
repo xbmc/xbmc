@@ -507,30 +507,31 @@
 				<control type="image">
 					<description>Background</description>
 					<width>600</width>
-					<height>200</height>
+					<height>240</height>
 					<include>DialogBG</include>
 				</control>
 				<control type="image">
 					<description>Title bg</description>
 					<width>600</width>
-					<height>50</height>
+					<height>70</height>
 					<include>DialogHeaderBG</include>
 				</control>
 				<control type="image">
 					<description>Title bg bottom border</description>
 					<width>600</width>
+					<posy>20</posy>
 					<include>DialogHeaderBorder</include>
 				</control>
 				<control type="image">
 					<description>Background border</description>
 					<width>602</width>
-					<height>202</height>
+					<height>242</height>
 					<include>DialogBorder</include>
 				</control>
 				<control type="image">
 					<description>Dialog arrow</description>
 					<posx>285</posx>
-					<posy>200</posy>
+					<posy>240</posy>
 					<include>DialogArrow</include>
 				</control>
 			</control>
@@ -538,17 +539,20 @@
 				<posy>22</posy>
 				<control type="label" id="1">
 					<description>Heading</description>
+					<posy>10</posy>
 					<width>600</width>
+					<textcolor>orangeLight</textcolor>
 					<include>DialogHeading</include>
 				</control>
 				<control type="group">
-					<posy>27</posy>
+					<posy>40</posy>
 					<control type="label" id="2">
 						<description>Line 1</description>
 						<posy>30</posy>
 						<posx>20</posx>
 						<width>560</width>
 						<scroll>yes</scroll>
+						<label>testing</label>
 					</control>
 					<control type="label" id="3">
 						<description>Line 2</description>
@@ -556,6 +560,7 @@
 						<posx>20</posx>
 						<width>560</width>
 						<scroll>yes</scroll>
+						<label>testing</label>
 					</control>
 					<control type="label" id="4">
 						<description>Line 3</description>
@@ -563,13 +568,14 @@
 						<posx>20</posx>
 						<width>560</width>
 						<scroll>yes</scroll>
+						<label>testing</label>
 					</control>
 					<control type="group">
-						<posy>90</posy>
-						<posx>260</posx>
+						<posy>110</posy>
+						<posx>240</posx>
 						<control type="button" id="10">
 							<description>OK Button</description>
-							<width>80</width>
+							<width>120</width>
 							<label>$LOCALIZE[186]</label>
 							<include>DialogPressButton</include>
 						</control>
