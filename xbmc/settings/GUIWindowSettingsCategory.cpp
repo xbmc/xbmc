@@ -1297,6 +1297,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     g_advancedSettings.SetDebugMode(g_guiSettings.GetBool("debug.showloginfo"));
   }
 /* PLEX */
+  else if (strSetting.Equals("debug.networklogging"))
+  {
+    g_plexApplication.setNetworkLogging(g_guiSettings.GetBool("debug.networklogging"));
+    g_advancedSettings.SetDebugMode(g_guiSettings.GetBool("debug.networklogging"));
+  }
   else if (strSetting.Equals("debug.visualizedirtyregions"))
   {
     g_advancedSettings.SetVisualizeDirtyRegions(g_guiSettings.GetBool("debug.visualizedirtyregions"));

@@ -571,8 +571,10 @@ void CGUISettings::Initialize()
   AddSeparator(advs, "audiooutput.sep2");
 #endif
 #endif
+
   AddString(advs, "advanced.labeldebug", 18112, "", BUTTON_CONTROL_STANDARD);
   AddBool(advs, "debug.showloginfo", 20191, false);
+  AddBool(advs, "debug.networklogging", 52404, false);
   AddPath(NULL, "debug.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
 

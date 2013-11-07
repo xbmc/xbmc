@@ -15,6 +15,9 @@
 #include "threads/Thread.h"
 #include "GlobalsHandling.h"
 #include "interfaces/IAnnouncer.h"
+#include "threads/Timer.h"
+#include "network/UdpClient.h"
+#include "FileItem.h"
 
 #ifdef TARGET_DARWIN_OSX
 #include "Helper/PlexHTHelper.h"
@@ -54,10 +57,10 @@ typedef boost::shared_ptr<CPlexFilterManager> CPlexFilterManagerPtr;
 ///
 /// The hub of all Plex goodness.
 ///
-class PlexApplication : public IMsgTargetCallback, public ANNOUNCEMENT::IAnnouncer
+class PlexApplication : public IMsgTargetCallback, public ANNOUNCEMENT::IAnnouncer, public ITimerCallback, public CUdpClient
 {
 public:
-  PlexApplication() : myPlexManager(NULL), remoteSubscriberManager(NULL) {};
+  PlexApplication() : myPlexManager(NULL), remoteSubscriberManager(NULL), m_networkLoggingTimer(this) {};
   void Start();
 
   /// Destructor
@@ -73,7 +76,6 @@ public:
   
   CFileItemPtr m_preplayItem;
   
-  
   CMyPlexManager *myPlexManager;
   CPlexServerManagerPtr serverManager;
   CPlexRemoteSubscriberManager *remoteSubscriberManager;
@@ -86,9 +88,15 @@ public:
   CPlexThumbCacher *thumbCacher;
   CPlexFilterManagerPtr filterManager;
 
+  void setNetworkLogging(bool);
+  void OnTimeout();
+  void sendNetworkLog(int level, const std::string& logline);
+
 private:
   /// Members
   CPlexServiceListenerPtr m_serviceListener;
+  CTimer m_networkLoggingTimer;
+  CStdString m_ipAddress;
   
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 };

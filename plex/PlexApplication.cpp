@@ -29,6 +29,10 @@
 #include "PlexFilterManager.h"
 
 #include "AutoUpdate/PlexAutoUpdate.h"
+#include "network/UdpClient.h"
+#include "DNSNameCache.h"
+
+#include <sstream>
 
 ////////////////////////////////////////////////////////////////////////////////
 void
@@ -129,6 +133,89 @@ void PlexApplication::OnWakeUp()
 void PlexApplication::ForceVersionCheck()
 {
   autoUpdater->ForceVersionCheckInBackground();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexApplication::setNetworkLogging(bool onOff)
+{
+  if (!myPlexManager->IsSignedIn())
+  {
+    g_guiSettings.SetBool("debug.networklogging", false);
+    return;
+  }
+
+  if (onOff && !m_networkLoggingTimer.IsRunning())
+  {
+    if (!Create())
+    {
+      CLog::Log(LOGWARNING, "CPlexApplication::setNetworkLogging failed to enable UDPClient");
+      g_guiSettings.SetBool("debug.networklogging", false);
+      return;
+    }
+
+    if (!CDNSNameCache::Lookup("logs.papertrailapp.com", m_ipAddress))
+    {
+      CLog::Log(LOGWARNING, "CPlexApplication::setNetworkLogging failed to resolve papertrail");
+      g_guiSettings.SetBool("debug.networklogging", false);
+      return;
+    }
+    m_networkLoggingTimer.Start(1200000); /* on for 20 minutes */
+    CLog::Log(LOGINFO, "Plex Home Theater v%s (%s %s) @ %s", g_infoManager.GetVersion().c_str(), PlexUtils::GetMachinePlatform().c_str(),
+              PlexUtils::GetMachinePlatformVersion().c_str(), myPlexManager->GetCurrentUserInfo().email.c_str());
+  }
+  else if (!onOff && m_networkLoggingTimer.IsRunning())
+  {
+    Destroy();
+    m_networkLoggingTimer.Stop();
+    CLog::Log(LOGWARNING, "CPlexApplication::setNetworkLogging stopped networkLogging");
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexApplication::OnTimeout()
+{
+  g_guiSettings.SetBool("debug.networklogging", false);
+  Destroy();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexApplication::sendNetworkLog(int level, const std::string &logline)
+{
+  if (boost::contains(logline, "DEBUG: UDPCLIENT"))
+    return;
+
+  if (!m_networkLoggingTimer.IsRunning())
+    return;
+
+  if (!myPlexManager->IsSignedIn())
+    return;
+
+  int priority = 16 * 8;
+
+  switch (level) {
+    case LOGSEVERE:
+    case LOGFATAL:
+    case LOGERROR: priority += 0;
+    case LOGWARNING: priority += 4;
+    case LOGNOTICE:
+    case LOGINFO: priority += 6;
+    case LOGDEBUG: priority += 7;
+  }
+
+  tm t;
+  CDateTime::GetCurrentDateTime().GetAsTm(t);
+  char time[128];
+  strftime(time, 63, "%b %d %H:%M:%S", &t);
+
+  std::stringstream s;
+  s << "<" << priority << ">" + std::string(time) << " x " << "Plex Home Theater: ";
+  s << "[" << myPlexManager->GetCurrentUserInfo().email << "] ";
+
+  int strleft = 1024 - s.str().size();
+  s << logline.substr(0, strleft);
+
+  CStdString packet(s.str());
+  Send(m_ipAddress, 60969, packet);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
