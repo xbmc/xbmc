@@ -416,6 +416,8 @@ void UpdateInstaller::restartMainApp()
 		std::string command;
 		std::list<std::string> args;
 
+    args.push_back("--from-auto-update");
+
 		for (std::vector<UpdateScriptFile>::const_iterator iter = m_script->filesToInstall().begin();
 			iter != m_script->filesToInstall().end();
 			iter++)
