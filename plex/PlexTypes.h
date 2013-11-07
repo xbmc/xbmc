@@ -115,13 +115,6 @@ enum EPlexDirectoryType
 #define PLEX_STREAM_AUDIO    2
 #define PLEX_STREAM_SUBTITLE 3
 
-// Media quality preference.
-#define MEDIA_QUALITY_ALWAYS_ASK  0
-#define MEDIA_QUALITY_1080P       1080
-#define MEDIA_QUALITY_720P        720
-#define MEDIA_QUALITY_480P        480
-#define MEDIA_QUALITY_SD          400
-
 // GUIInfoManager defines
 class CMusicThumbLoader;
 

@@ -31,6 +31,7 @@ public:
   static CURL GetTranscodeStopURL(CPlexServerPtr server);
   static PlexIntStringMap getOnlineQualties();
   static int SelectAOnlineQuality(int currentQuality);
+  static int getBandwidthForQuality(int quality);
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexTranscoderClient__) */

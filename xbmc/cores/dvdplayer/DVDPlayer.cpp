@@ -606,12 +606,24 @@ bool CDVDPlayer::OpenInputStream()
   // before creating the input stream, if this is an HLS playlist then get the
   // most appropriate bitrate based on our network settings
   // ensure to strip off the url options by using a temp CURL object
+#ifndef __PLEX__
   if (filename.Left(7) == "http://" && CURL(filename).GetFileName().Right(5) == ".m3u8")
+#else
+  CURL url(filename);
+  if (url.GetFileName().Right(5) == ".m3u8" && (url.GetProtocol() == "http" || url.GetProtocol() == "https" || url.GetProtocol() == "plexserver"))
+#endif
   {
     // get the available bandwidth (as per user settings)
     int maxrate = g_guiSettings.GetInt("network.bandwidth");
     if(maxrate <= 0)
       maxrate = INT_MAX;
+
+    /* PLEX */
+    if (m_item.GetProperty("plexDidTranscode").asBoolean())
+      maxrate = INT_MAX;
+    else
+      maxrate = CPlexTranscoderClient::getBandwidthForQuality(g_guiSettings.GetInt("plexmediaserver.onlinemediaquality"));
+    /* END PLEX */
 
     // determine the most appropriate stream
     m_filename = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(m_filename, (size_t)maxrate);

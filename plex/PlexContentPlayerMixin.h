@@ -20,6 +20,7 @@
 #include "StringUtils.h"
 #include "PlexTypes.h"
 #include "dialogs/GUIDialogOK.h"
+#include "Client/PlexTranscoderClient.h"
 
 class PlexContentPlayerMixin
 {
@@ -224,13 +225,12 @@ class PlexContentPlayerMixin
     // If there is more than one media item, allow picking which one.
      if (file->m_mediaItems.size() > 1)
      {
-       int  onlineQuality   = g_guiSettings.GetInt("videogeneral.onlinemediaquality");
+       int  onlineQuality   = g_guiSettings.GetInt("plexmediaserver.onlinemediaquality");
        bool isLibraryItem   = file->IsPlexMediaServerLibrary();
        
        // See if we're offering a choice.
-       if (isLibraryItem || (!isLibraryItem && onlineQuality == MEDIA_QUALITY_ALWAYS_ASK))
+       if (isLibraryItem || (!isLibraryItem && onlineQuality == PLEX_ONLINE_QUALITY_ALWAYS_ASK))
        {
-         CFileItemList   fileItems;
          CContextButtons choices;
          
          for (size_t i=0; i < file->m_mediaItems.size(); i++)
@@ -294,7 +294,7 @@ class PlexContentPlayerMixin
            // Try to pick something that's equal or less than the preferred resolution.
            std::map<int, int> qualityMap;
            std::vector<int> qualities;
-           int sd = MEDIA_QUALITY_SD;
+           int sd = PLEX_ONLINE_QUALITY_SD;
            
            for (size_t i=0; i < file->m_mediaItems.size(); i++)
            {

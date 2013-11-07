@@ -47,6 +47,24 @@ PlexIntStringMap CPlexTranscoderClient::getOnlineQualties()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+int CPlexTranscoderClient::getBandwidthForQuality(int quality)
+{
+  switch (quality)
+  {
+    case PLEX_ONLINE_QUALITY_SD:
+      return 50 * 8;
+    case PLEX_ONLINE_QUALITY_480p:
+      return 150 * 8;
+    case PLEX_ONLINE_QUALITY_720p:
+      return 400 * 8;
+    case PLEX_ONLINE_QUALITY_1080p:
+      return INT_MAX;
+    default:
+      return 400 * 8;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 int CPlexTranscoderClient::SelectAOnlineQuality(int currentQuality)
 {
   PlexIntStringMap qualities = getOnlineQualties();
