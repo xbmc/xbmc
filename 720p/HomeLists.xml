@@ -467,8 +467,8 @@
 	<variable name="HomeListItemFullInfoPlot">
 		<!-- on deck -->
 		<value condition="ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem.Plot) + !Container(11001).ListItem.Type(episode)">$INFO[Container(11001).ListItem.Plot]</value>
-		<value condition="[ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)] + [Container(11001).ListItem.Status(Watched) | [ListItem.Status(UnWatched) + !Skin.HasSetting(HidePlotForUnwatched)] | [Container(11001).ListItem.Status(InProgress) + !Skin.HasSetting(HidePlotForUnwatched)]]">$INFO[Container(11001).ListItem.Plot]</value>
-		<value condition="[ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)] + [[Container(11001).ListItem.Status(UnWatched) + Skin.HasSetting(HidePlotForUnwatched)] | [Container(11001).ListItem.Status(InProgress) + Skin.HasSetting(HidePlotForUnwatched)]]">* Plot hidden to avoid spoilers *</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode) + !Skin.HasSetting(HidePlotForUnwatched)">$INFO[Container(11001).ListItem.Plot]</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode) + Skin.HasSetting(HidePlotForUnwatched)">* Plot hidden to avoid spoilers *</value>
 		<!-- recently added -->
 		<value condition="ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem.Plot)">$INFO[Container(11000).ListItem.Plot]</value>
 		<!-- queue -->
