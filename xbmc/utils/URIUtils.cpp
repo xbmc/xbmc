@@ -405,17 +405,30 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
-CStdString URIUtils::SubstitutePath(const CStdString& strPath)
+CStdString URIUtils::SubstitutePath(const CStdString& strPath, bool reverse /* = false */)
 {
   for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin();
       i != g_advancedSettings.m_pathSubstitutions.end(); i++)
   {
-    if (strncmp(strPath.c_str(), i->first.c_str(), HasSlashAtEnd(i->first.c_str()) ? i->first.size()-1 : i->first.size()) == 0)
+    if (!reverse)
     {
-      if (strPath.size() > i->first.size())
-        return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
-      else
-        return i->second;
+      if (strncmp(strPath.c_str(), i->first.c_str(), HasSlashAtEnd(i->first.c_str()) ? i->first.size()-1 : i->first.size()) == 0)
+      {
+        if (strPath.size() > i->first.size())
+          return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+        else
+          return i->second;
+      }
+    }
+    else
+    {
+      if (strncmp(strPath.c_str(), i->second.c_str(), HasSlashAtEnd(i->second.c_str()) ? i->second.size()-1 : i->second.size()) == 0)
+      {
+        if (strPath.size() > i->second.size())
+          return URIUtils::AddFileToFolder(i->first, strPath.Mid(i->second.size()));
+        else
+          return i->second;
+      }
     }
   }
   return strPath;

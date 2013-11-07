@@ -46,10 +46,11 @@ private:
 
   struct CResult
   {
-    CResult(const CStdString& dir) : m_event(true), m_dir(dir), m_result(false) {}
+    CResult(const CStdString& dir, const CStdString& listDir) : m_event(true), m_dir(dir), m_listDir(listDir), m_result(false) {}
     CEvent        m_event;
     CFileItemList m_list;
     CStdString    m_dir;
+    CStdString    m_listDir;
     bool          m_result;
   };
 
@@ -64,7 +65,7 @@ private:
   public:
     virtual bool DoWork()
     {
-      m_result->m_list.SetPath(m_result->m_dir);
+      m_result->m_list.SetPath(m_result->m_listDir);
       m_result->m_result         = m_imp->GetDirectory(m_result->m_dir, m_result->m_list);
       m_result->m_event.Set();
       return m_result->m_result;
@@ -76,8 +77,8 @@ private:
 
 public:
 
-  CGetDirectory(boost::shared_ptr<IDirectory>& imp, const CStdString& dir) 
-    : m_result(new CResult(dir))
+  CGetDirectory(boost::shared_ptr<IDirectory>& imp, const CStdString& dir, const CStdString& listDir)
+    : m_result(new CResult(dir, listDir))
   {
     m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, m_result)
                                            , NULL
@@ -152,7 +153,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
         {
           CSingleExit ex(g_graphicsContext);
 
-          CGetDirectory get(pDirectory, realPath);
+          CGetDirectory get(pDirectory, realPath, strPath);
           if(!get.Wait(TIME_TO_BUSY_DIALOG))
           {
             CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
@@ -221,6 +222,16 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
     //  Disable for database folders, as they already contain the extracted items
     if (!(hints.flags & DIR_FLAG_NO_FILE_DIRS) && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
       FilterFileDirectories(items, hints.mask);
+
+    // Correct items for path substitution
+    if (strPath != realPath)
+    {
+      for (int i = 0; i < items.Size(); ++i)
+      {
+        CFileItemPtr item = items[i];
+        item->SetPath(URIUtils::SubstitutePath(item->GetPath(), true));
+      }
+    }
 
     return true;
   }
