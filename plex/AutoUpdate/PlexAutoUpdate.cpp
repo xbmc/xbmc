@@ -112,7 +112,6 @@ void CPlexAutoUpdate::OnTimeout()
       {
         CFileItemPtr updateItem = list.Get(i);
         if (updateItem->HasProperty("version") &&
-            updateItem->GetProperty("live").asBoolean() &&
             updateItem->GetProperty("autoupdate").asBoolean() &&
             updateItem->GetProperty("version").asString() != g_infoManager.GetVersion())
         {
