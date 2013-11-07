@@ -67,6 +67,8 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     void OnFilterSelected(const std::string& filterKey, int filterButtonId);
     static CURL GetRealDirectoryUrl(const CStdString &strDirectory);
 
+    void CheckPlexFilters(CFileItemList &list);
+
   private:
     void AddFilters();
 

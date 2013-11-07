@@ -64,6 +64,8 @@ public:
     (*pItem) = *(updatedItem.get());
     m_updatedItem = CFileItemPtr(pItem);
   }
+
+  virtual void CheckPlexFilters(CFileItemList& list) {};
   /* END PLEX */
 
   virtual bool CanFilterAdvanced() { return m_canFilterAdvanced; }

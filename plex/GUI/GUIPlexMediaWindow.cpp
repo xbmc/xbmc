@@ -780,12 +780,6 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
     m_history.RemoveParentPath();
 
   bool ret = CGUIMediaWindow::Update(newUrl.Get(), updateFilterPath);
-
-  m_vecItems->SetProperty("hasAdvancedFilters", m_hasAdvancedFilters ? "yes" : "");
-  CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
-  if (filter && filter->currentPrimaryFilter() != "all")
-    m_vecItems->SetProperty("primaryFilterActivated", "1");
-
   if (!updateFromFilter)
     g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems);
 
@@ -801,6 +795,15 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
     m_viewControl.SetSelectedItem(idx);
 
   return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
+{
+  CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+
+  list.SetProperty("hasAdvancedFilters", filter->hasAdvancedFilters() ? "yes" : "");
+  list.SetProperty("primaryFilterActivated", filter->secondaryFiltersActivated() ? "" : "yes");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

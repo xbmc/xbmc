@@ -912,6 +912,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     return false;
   }
 
+  CheckPlexFilters(items);
+
   if (items.GetLabel().IsEmpty())
     items.SetLabel(CUtil::GetTitleFromPath(items.GetPath(), true));
   
