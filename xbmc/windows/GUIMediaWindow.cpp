@@ -1943,6 +1943,7 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   // The idea here is to ensure we have something to focus if our file list
   // is empty.  As such, this check MUST be last and ignore the hide parent
   // fileitems settings.
+#ifndef __PLEX__
   if (m_vecItems->IsEmpty())
   {
     CFileItemPtr pItem(new CFileItem(".."));
@@ -1951,6 +1952,7 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
     pItem->m_bIsShareOrDrive = false;
     m_vecItems->AddFront(pItem, 0);
   }
+#endif
 
   // and update our view control + buttons
   m_viewControl.SetItems(*m_vecItems);

@@ -470,9 +470,14 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   }
   
   /* now we need to set content to something that XBMC expects */
-  CStdString content = CPlexDirectory::GetContentFromType(mediaContainer.GetPlexDirectoryType());
-  if (!content.empty())
-    mediaContainer.SetContent(content);
+  if (mediaContainer.IsEmpty() == 0)
+    mediaContainer.SetContent("empty");
+  else
+  {
+    CStdString content = CPlexDirectory::GetContentFromType(mediaContainer.GetPlexDirectoryType());
+    if (!content.empty())
+      mediaContainer.SetContent(content);
+  }
   
   /* set the sort method to none, this means that we respect the order from the server */
   mediaContainer.AddSortMethod(SORT_METHOD_NONE, 553, LABEL_MASKS());
