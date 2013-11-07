@@ -19,13 +19,13 @@
 				<visible>!IsEmpty(ListItem.Property(WizardAudio))</visible>
 				<width>1160</width>
 				<include>DialogHeading</include>
-				<label>$LOCALIZE[32002]</label>
+				<label>$LOCALIZE[32001]</label>
 			</control>
 			<control type="label">
 				<visible>!IsEmpty(ListItem.Property(WizardMyPlex))</visible>
 				<width>1160</width>
 				<include>DialogHeading</include>
-				<label>Sign in to MyPlex</label>
+				<label>$LOCALIZE[32001]</label>
 			</control>
 		</control>
 		<!-- welcome -->
@@ -42,7 +42,7 @@
 				<height>140</height>
 				<align>left</align>
 				<font>PINdescription</font>
-				<label>Welcome to Plex. Blah blah. Press "Next".</label>
+				<label>$LOCALIZE[32003]</label>
 			</control>
 			<control type="group">
 				<posy>500</posy>

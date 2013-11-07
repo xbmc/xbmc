@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <includes>
-	<include name="ListSecondary">
+	<include name="_ListSecondary">
 		<control type="group">
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>

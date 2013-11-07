@@ -89,14 +89,14 @@
 	<!-- Library -->
 	<include name="LibraryMusic">
 		<control type="group">
-			<visible>!Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
+			<visible>!Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + !Container.Content(channel)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- Library -->
 			<control type="group" id="777">
 				<control type="panel" id="52">
 					<viewtype label="MusicLibrary">panel</viewtype>
-					<visible>[!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents)]</visible>
+					<visible>[!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + !Container.Content(channel)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents))]</visible>
 					<posy>28</posy>
 					<posx>100</posx>
 					<width>1200</width>
@@ -196,8 +196,7 @@
 						<height>40</height>
 						<label>$INFO[Container.SecondTitle]</label>
 						<font>CondensedBold-36</font>
-						<textcolor>white</textcolor>
-						<shadowcolor>ff333333</shadowcolor>
+						<include>WhiteShadow</include>
 						<visible>true</visible>
 					</control>
 					<!-- Genre -->
@@ -211,7 +210,6 @@
 							<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
 							<font>Condensed-18</font>
 							<include>Grey1</include>
-							<shadowcolor>ff333333</shadowcolor>
 							<visible>true</visible>
 						</control>
 						<control type="label">
@@ -219,7 +217,7 @@
 							<height>15</height>
 							<label>$INFO[Container.Genre]</label>
 							<font>Condensed-18</font>
-							<include>White2</include>
+							<include>WhiteShadow</include>
 							<visible>true</visible>
 						</control>
 					</control>
@@ -366,8 +364,7 @@
 						<height>40</height>
 						<label>$INFO[ListItem.Artist]</label>
 						<font>CondensedBold-36</font>
-						<textcolor>white</textcolor>
-						<shadowcolor>ff222222</shadowcolor>
+						<include>WhiteShadow</include>
 						<visible>true</visible>
 					</control>
 					<control type="label">
@@ -377,7 +374,6 @@
 						<label>$INFO[ListItem.Album]</label>
 						<font>CondensedBold-36</font>
 						<include>Grey1</include>
-						<shadowcolor>ff222222</shadowcolor>
 						<visible>true</visible>
 					</control>
 					<!-- Genre -->
@@ -399,7 +395,7 @@
 							<height>15</height>
 							<label>$INFO[ListItem.Property(Genre)]</label>
 							<font>Condensed-18</font>
-							<include>White2</include>
+							<include>WhiteShadow</include>
 							<visible>true</visible>
 						</control>
 					</control>
@@ -413,7 +409,7 @@
 							<height>15</height>
 							<label>$VAR[TopBarItemCountStrings]</label>
 							<font>Condensed-18</font>
-							<include>White2</include>
+							<include>WhiteShadow</include>
 							<visible>true</visible>
 						</control>
 					</control>

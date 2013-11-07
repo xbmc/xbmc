@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="2">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,70,72,51,52</views>
+	<views>40,70,71,72,51,52,99</views>
 	<allowoverlay>yes</allowoverlay>
 	<onunload>SetFocus(777)</onunload>
 	<controls>
@@ -15,7 +15,9 @@
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
 		<!-- ChannelPhoto ID 72 -->
-		<include>ChannelPhoto</include>
+		<!--><include>ChannelPhoto</include>-->
+		<!-- Channel generic ID 99 -->
+		<include>Channel</include>
 		<!-- LibraryPhoto ID 51 -->
 		<include>LibraryPhoto</include>
 		<include>AlbumPhoto</include>

@@ -3,6 +3,7 @@
 	<backgroundcolor>black</backgroundcolor>
 	<controls>
 	<include>NowPlaying</include>	
+	<include>debugInfos</include>
 	<include>Grid</include>
 	<include>WindowFade</include>
 	</controls>

@@ -40,7 +40,7 @@
 				<posy>450</posy>
 				<include>ShowHomeClassic</include>
 				<control type="label">
-					<width>600</width>
+					<width>353</width>
 					<height>0</height>
 					<label>$INFO[Container(300).ListItem(0).Label]</label>
 					<align>right</align>
@@ -52,7 +52,7 @@
 				<!-- with Label2 -->
 				<control type="label">
 					<posy>22</posy>
-					<width>600</width>
+					<width>353</width>
 					<height>20</height>
 					<label>$INFO[Container(300).ListItem(0).Label2]</label>
 					<align>right</align>

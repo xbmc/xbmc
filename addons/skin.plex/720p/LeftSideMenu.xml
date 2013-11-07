@@ -159,6 +159,38 @@
 			<effect type="fade" start="0" end="100"/>
 		</animation>
 	</include>
+	<include name="leftSubMenuClearFilters">
+		<width>220</width>
+		<height>26</height>
+		<align>left</align>
+		<textoffsety>5</textoffsety>
+		<textoffsetx>10</textoffsetx>
+		<font>CondensedBold-17</font>
+		<shadowcolor>ff222222</shadowcolor>
+		<textcolor>red</textcolor>
+		<focusedcolor>orangeLight</focusedcolor>
+		<texturefocus>bg-b-clear-subfilters-s.png</texturefocus>
+		<texturenofocus>bg-b-clear-subfilters.png</texturenofocus>
+		<animation type="Conditional" condition="true">
+			<effect type="fade" start="0" end="100"/>
+		</animation>
+	</include>
+	<include name="leftMenuClearFilters">
+		<width>230</width>
+		<height>26</height>
+		<align>right</align>
+		<textoffsety>5</textoffsety>
+		<textoffsetx>0</textoffsetx>
+		<font>CondensedBold-17</font>
+		<shadowcolor>ff222222</shadowcolor>
+		<textcolor>red</textcolor>
+		<focusedcolor>orangeLight</focusedcolor>
+		<texturefocus>bg-b-clear-filters-s.png</texturefocus>
+		<texturenofocus>-</texturenofocus>
+		<animation type="Conditional" condition="true">
+			<effect type="fade" start="0" end="100"/>
+		</animation>
+	</include>
 	<include name="leftMenuFormatPreplay">
 		<width>230</width>
 		<height>24</height>
@@ -388,7 +420,7 @@
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
-			<visible>[!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode) + !Container.Content(episodes) + !Container.Content(seasons) + !Container.Content(songs) + !Container.Content(albums)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents)] | Container.Content(filteredEpisodes)</visible>
+			<visible>[!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode) + !Container.Content(episodes) + !Container.Content(seasons) + !Container.Content(songs) + !Container.Content(albums) + !Container.Content(channel)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents))] | !IsEmpty(Container.Property(primaryFilterActivated)) | Container.Content(empty)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -437,7 +469,7 @@
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
-					<animation effect="slide" end="0,-127" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-157" time="0" condition="Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-140" time="0" condition="Window.IsActive(2)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
@@ -449,13 +481,13 @@
 					<ondown>19010</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-137" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-167" time="0" condition="Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-150" time="0" condition="Window.IsActive(2)">Conditional</animation>
 				</control>
 				<!-- filters buttons -->
 				<control type="button" id="19005">
 					<textoffsetx>35</textoffsetx>
-					<include>leftMenuFormat</include>
+					<include>leftMenuClearFilters</include>
 				</control>
 				<control type="radiobutton" id="19006">
 					<textoffsetx>35</textoffsetx>
@@ -477,7 +509,7 @@
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
-					<animation effect="slide" end="0,-20" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-30" time="0" condition="Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-80" time="0" condition="Window.IsActive(2)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
@@ -488,7 +520,7 @@
 					<onup>19001</onup>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-30" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-80" time="0" condition="Window.IsActive(2)">Conditional</animation>
 				</control>
 				<!-- sorting buttons -->
@@ -499,7 +531,6 @@
 				</control>
 			</control>
 		</control>
-		<!-- SettingsCategory.xml -->
 	</include>
 	<!-- Preplay menu -->
 	<include name="LeftSideMenuPreplay">
@@ -529,8 +560,8 @@
 				</control>
 				<!-- Audio -->
 				<control type="button" id="103">
-					<texturefocus>b-pp-audio-s.png</texturefocus>
-					<texturenofocus>b-pp-audio.png</texturenofocus>
+					<texturefocus>b-pp-audio-s2.png</texturefocus>
+					<texturenofocus>b-pp-audio2.png</texturenofocus>
 					<onclick>ActivateWindow(10205)</onclick>
 					<onup>102</onup>
 					<ondown>104</ondown>

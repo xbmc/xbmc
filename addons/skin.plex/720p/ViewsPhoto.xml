@@ -217,13 +217,13 @@
 	<!-- Library -->
 	<include name="LibraryPhoto">
 		<control type="group">
-			<visible>!Container.Content(photoAlbums)</visible>
+			<visible>!Container.Content(photoAlbums) + !Container.Content(channel)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- main list -->
 			<control type="group" id="777">
 				<control type="panel" id="51">
-					<visible>!Container.Content(photoAlbums)</visible>
+					<visible>!Container.Content(photoAlbums) + !Container.Content(channel)</visible>
 					<viewtype label="LibraryPhoto">panel</viewtype>
 					<onup>51</onup>
 					<ondown>51</ondown>

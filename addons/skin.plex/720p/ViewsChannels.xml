@@ -47,6 +47,34 @@
 		<font>Condensed-16</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
+	<include name="ChannelContentThumb">
+		<control type="group">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>148</width>
+				<height>148</height>
+				<include>Shadow</include>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true">default-square-small.png</texture>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+		</control>
+	</include>
 	<!-- left bg's -->
 	<include name="ChannelPlotBG">
 		<control type="image">
@@ -209,22 +237,22 @@
 				<viewtype label="Channels">panel</viewtype>
 				<visible>Container.Content(channels)</visible>
 				<posy>28</posy>
-				<posx>105</posx>
-				<width>1200</width>
+				<posx>28</posx>
+				<width>1300</width>
 				<height>660</height>
 				<onup>70</onup>
 				<ondown>70</ondown>
 				<onright>70</onright>
 				<onleft>9100</onleft>
 				<orientation>vertical</orientation>
-				<itemlayout width="190" height="218">
+				<itemlayout width="206" height="218">
 					<include>ChannelThumb</include>
 					<control type="label">
 						<include>ChannelLabel</include>
 						<textcolor>white</textcolor>
 					</control>
 				</itemlayout>
-				<focusedlayout width="190" height="218">
+				<focusedlayout width="206" height="218">
 					<include>ChannelThumb</include>
 					<control type="label">
 						<include>ChannelLabel</include>
@@ -236,40 +264,100 @@
 		</control>
 	</include>
 	<!-- inside channels -->
-	<!-- Video Channel (MyVideoNav.xml) -->
-	<include name="ChannelVideo">
+	<!-- Generic Channel view, a temporary throw-in-all -->
+	<include name="Channel">
 		<control type="group">
 			<visible>Container.content(channel)</visible>
 			<include>FadeDialog</include>
-			<include>rightSideSlide</include>
-			<include>ChannelPlotBG</include>
-			<include>ChannelPlot</include>
-			<include>ChannelIcon</include>
 			<!-- main list -->
 			<control type="group" id="777">
-				<control type="panel" id="71">
-					<viewtype label="ChannelVideo">panel</viewtype>
+				<control type="panel" id="99">
+					<viewtype label="ChannelGeneric">panel</viewtype>
 					<visible>Container.content(channel)</visible>
-					<onup>72</onup>
-					<ondown>72</ondown>
-					<onright>72</onright>
+					<onup>99</onup>
+					<ondown>99</ondown>
+					<onright>99</onright>
 					<onleft>9100</onleft>
 					<orientation>vertical</orientation>
-					<posx>369</posx>
-					<posy>50</posy>
-					<width>1000</width>
-					<height>665</height>
-					<itemlayout width="150" height="165">
+					<posx>28</posx>
+					<posy>28</posy>
+					<width>1300</width>
+					<height>660</height>
+					<!-- generic square thumb -->
+					<itemlayout condition="!ListItem.Type(episode) + !ListItem.Type(clip)" width="153" height="164">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>
+						<include>ChannelContentThumb</include>
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>white</textcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout width="150" height="160">
+					<focusedlayout condition="!ListItem.Type(episode) + !ListItem.Type(clip)" width="153" height="164">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>
+						<include>ChannelContentThumb</include>
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>SelectedBorder</include>
+					</focusedlayout>	
+					<!-- episode layout -->
+					<itemlayout condition="ListItem.Type(episode) | ListItem.Type(clip)" width="250" height="162">
+						<include>EpisodeThumbCard</include>
+						<include>EpisodeThumb</include>
+						<control type="label">
+							<include>EpisodeTitle</include>
+							<textcolor>white</textcolor>
+						</control>
+						<include>EpisodeDate</include>
+					</itemlayout>
+					<focusedlayout condition="ListItem.Type(episode) | ListItem.Type(clip)" width="250" height="165">
+						<include>EpisodeThumbCard</include>
+						<include>EpisodeThumb</include>
+						<control type="label">
+							<include>EpisodeTitle</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>EpisodeDate</include>
+						<include>EpisodeSelectedBorder</include>
+					</focusedlayout>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="_Channel">
+		<control type="group">
+			<visible>Container.content(channel)</visible>
+			<include>FadeDialog</include>
+			<!--><include>rightSideSlide</include>
+			<include>ChannelPlotBG</include>
+			<include>ChannelPlot</include>
+			<include>ChannelIcon</include>-->
+			<!-- main list -->
+			<control type="group" id="777">
+				<control type="panel" id="71">
+					<viewtype label="ChannelVideo">panel</viewtype>
+					<visible>Container.content(channel)</visible>
+					<onup>71</onup>
+					<ondown>71</ondown>
+					<onright>71</onright>
+					<onleft>9100</onleft>
+					<orientation>vertical</orientation>
+					<posx>28</posx>
+					<posy>28</posy>
+					<width>1300</width>
+					<height>665</height>
+					<itemlayout width="153" height="165">
+						<include>PhotoThumbCard</include>
+						<include>ChannelContentThumb</include>
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>white</textcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout width="153" height="160">
+						<include>PhotoThumbCard</include>
+						<include>ChannelContentThumb</include>
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>orangeLight</textcolor>

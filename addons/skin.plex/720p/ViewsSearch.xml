@@ -699,6 +699,17 @@
 		<!-- tv episode -->
 		<value condition="ControlGroup(7004).HasFocus">Season $INFO[Container(9004).ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[Container(9004).ListItem.Episode] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(9004).ListItem.Date]</value>
 	</variable>
+	<variable name="SearchItemFullInfoSource">
+		<!-- movie -->
+		<value condition="ControlGroup(7001).HasFocus + !IsEmpty(Container(9001).ListItem.Property(plexServerOwner))">$INFO[Container(9001).ListItem.Property(plexServerOwner)] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(9001).ListItem.Property(plexServerName)]</value>
+		<value condition="ControlGroup(7001).HasFocus + IsEmpty(Container(9001).ListItem.Property(plexServerOwner))">$INFO[Container(9001).ListItem.Property(plexServerName)]</value>
+		<!-- tv show -->
+		<value condition="ControlGroup(7002).HasFocus + !IsEmpty(Container(9002).ListItem.Property(plexServerOwner))">$INFO[Container(9002).ListItem.Property(plexServerOwner)] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(9002).ListItem.Property(plexServerName)]</value>
+		<value condition="ControlGroup(7002).HasFocus + IsEmpty(Container(9002).ListItem.Property(plexServerOwner))">$INFO[Container(9002).ListItem.Property(plexServerName)]</value>
+		<!-- tv episode -->
+		<value condition="ControlGroup(7004).HasFocus + !IsEmpty(Container(9004).ListItem.Property(plexServerOwner))">$INFO[Container(9004).ListItem.Property(plexServerOwner)] [COLOR=orange]&#xB7;[/COLOR] $INFO[Container(9004).ListItem.Property(plexServerName)]</value>
+		<value condition="ControlGroup(7004).HasFocus + IsEmpty(Container(9004).ListItem.Property(plexServerOwner))">$INFO[Container(9004).ListItem.Property(plexServerName)]</value>
+	</variable>
 	<variable name="SearchItemFullInfoPlot">
 		<!-- movie -->
 		<value condition="ControlGroup(7001).HasFocus">$INFO[Container(9001).ListItem.Plot]</value>
@@ -723,7 +734,7 @@
 				<control type="group">
 					<control type="image">
 						<posx>22</posx>
-						<posy>333</posy>
+						<posy>383</posy>
 						<width>325</width>
 						<height>235</height>
 						<include>BlackRounded</include>
@@ -852,8 +863,19 @@
 							<width>300</width>
 							<shadowcolor>ff222222</shadowcolor>
 						</control>
+						<control type="label">
+							<posy>95</posy>
+							<align>left</align>
+							<label>$VAR[SearchItemFullInfoSource]</label>
+							<font>Condensed-14</font>
+							<scroll>false</scroll>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width>300</width>
+							<shadowcolor>ff222222</shadowcolor>
+						</control>
 						<control type="textbox">
-							<posy>87</posy>
+							<posy>137</posy>
 							<width>300</width>
 							<height>215</height>
 							<label>$VAR[SearchItemFullInfoPlot]</label>

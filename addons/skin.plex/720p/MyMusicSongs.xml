@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="501">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,70,73,52,53,54</views>
+	<views>40,70,71,73,52,53,54,99</views>
 	<allowoverlay>yes</allowoverlay>
 	<onunload>SetFocus(777)</onunload>
 	<controls>
@@ -15,7 +15,9 @@
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
 		<!-- ChannelMusic ID 73 -->
-		<include>ChannelMusic</include>
+		<!--><include>ChannelMusic</include>-->
+		<!-- Channel generic ID 99 -->
+		<include>Channel</include>
 		<!-- LibraryMusic ID 52 -->		
 		<include>LibraryMusic</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->

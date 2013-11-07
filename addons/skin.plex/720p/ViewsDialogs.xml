@@ -42,7 +42,8 @@
 		<height>50</height>
 		<align>center</align>
 		<font>CondensedBold-18</font>
-		<texturefocus border="12">black-rounded.png</texturefocus>
+		<focusedcolor>FFFFFFFF</focusedcolor>
+		<texturefocus border="12">orange-rounded.png</texturefocus>
 		<texturenofocus border="12">base-rounded-5%.png</texturenofocus>
 	</include>
 	<include name="DialogHeading">
@@ -94,8 +95,8 @@
 			<include condition="Window.IsVisible(2901)">OSDAudioSubtitleStreamPickerWindowPosition</include>
 			<!-- bg's -->
 			<control type="group">
-				<posx>340</posx>
-				<posy>170</posy>
+				<posx>339</posx>
+				<posy>136</posy>
 				<control type="image">
 					<posx>-1</posx>
 					<posy>-1</posy>
@@ -130,13 +131,18 @@
 				<!-- arrow -->
 				<include condition="Window.IsVisible(10090)">AudioSubtitleStreamPickerArrow</include>
 				<include condition="Window.IsVisible(2901)">OSDAudioSubtitleStreamPickerArrow</include>
+				<control type="image">
+					<posx>285</posx>
+					<posy>440</posy>
+					<include>ArrowBlackDown</include>
+					<visible>!Window.IsVisible(2901) + !Window.IsVisible(10090)</visible>
+				</control>
 			</control>
 			<control type="group">
 				<posx>340</posx>
-				<posy>190</posy>
+				<posy>155</posy>
 				<control type="label" id="1">
 					<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
-					<!--><label>$LOCALIZE[1023]</label>-->
 					<width>580</width>
 					<height>40</height>
 					<align>center</align>
@@ -144,11 +150,11 @@
 					<textcolor>Focused</textcolor>
 				</control>
 				<control type="group">
-					<posy>90</posy>
+					<posy>80</posy>
 					<posx>20</posx>
 					<control type="list" id="3">
 						<width>560</width>
-						<height>226</height>
+						<height>300</height>
 						<onleft>-</onleft>
 						<onright>5</onright>
 						<onup>3</onup>
@@ -202,7 +208,7 @@
 	<include name="DialogSelectAudioSubtitleStreamPicker">
 		<control type="group">
 			<posx>96</posx>
-			<posy>72</posy>
+			<posy>28</posy>
 			<!-- bg's -->
 			<control type="group">
 				<control type="image">
@@ -392,7 +398,7 @@
 				</control>
 				<!-- Used for Clear Filters -->
 				<control type="button" id="19022">
-					<include>leftMenuFormat</include>
+					<include>leftSubMenuClearFilters</include>
 				</control>
 				<control type="scrollbar" id="61">
 					<description>Scroll Bar</description>
@@ -627,43 +633,43 @@
 	<!-- -->
 	<!-- DialogAddonSettings.xml -->
 	<!-- will probably need more work, but couldn't make it to show for any channels for now -->
-	<include name="DialogAddonSettings">
+	<include name="DialogPlugInSettings">
 		<control type="group">
 			<control type="group">
-				<posx>330</posx>
-				<posy>180</posy>
+				<posx>280</posx>
+				<posy>130</posy>
 				<control type="image">
 					<description>Background</description>
-					<width>600</width>
-					<height>380</height>
+					<width>700</width>
+					<height>480</height>
 					<include>DialogBG</include>
 				</control>
 				<control type="image">
 					<description>Title bg</description>
-					<width>600</width>
+					<width>700</width>
 					<height>50</height>
 					<include>DialogHeaderBG</include>
 				</control>
 				<control type="image">
 					<description>Title bg bottom border</description>
-					<width>600</width>
+					<width>700</width>
 					<include>DialogHeaderBorder</include>
 				</control>
 				<control type="image">
 					<description>Background border</description>
-					<width>602</width>
-					<height>382</height>
+					<width>702</width>
+					<height>482</height>
 					<include>DialogBorder</include>
 				</control>
 				<control type="image">
 					<description>Dialog arrow</description>
-					<posx>285</posx>
-					<posy>380</posy>
+					<posx>335</posx>
+					<posy>480</posy>
 					<include>DialogArrow</include>
 				</control>
 			</control>
 			<control type="group">
-				<posx>330</posx>
+				<posx>310</posx>
 				<posy>180</posy>
 				<control type="label" id="20">
 					<description>heading label</description>
@@ -674,7 +680,7 @@
 				<control type="grouplist" id="2">
 					<description>control area</description>
 					<posx>20</posx>
-					<width>560</width>
+					<width>600</width>
 					<height>230</height>
 					<itemgap>5</itemgap>
 					<onup>2</onup>
@@ -701,10 +707,10 @@
 				</control>
 				<control type="grouplist" id="9000">
 					<posx>20</posx>
-					<width>560</width>
-					<posy>312</posy>
+					<width>600</width>
+					<posy>342</posy>
 					<orientation>horizontal</orientation>
-					<itemgap>37</itemgap>
+					<itemgap>75</itemgap>
 					<onup>2</onup>
 					<control type="button" id="10">
 						<description>OK button</description>

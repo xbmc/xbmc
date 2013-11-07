@@ -3,12 +3,19 @@
 	<!-- font colors -->
 	<include name="White1">
 		<textcolor>white</textcolor>
+		<shadowcolor>FF444444</shadowcolor>
+	</include>
+	<include name="WhiteShadow">
+		<textcolor>white</textcolor>
+		<shadowcolor>FF444444</shadowcolor>
 	</include>
 	<include name="White2">
 		<textcolor>FFefedeb</textcolor>
+		<shadowcolor>FF444444</shadowcolor>
 	</include>
 	<include name="Grey1">
 		<textcolor>FF999999</textcolor>
+		<shadowcolor>FF444444</shadowcolor>
 	</include>
 	<!-- -->
 	<!-- info formatting -->
@@ -22,7 +29,7 @@
 		<width min="29" max="600">auto</width>
 		<height>20</height>
 		<font>Condensed-18</font>
-		<include>White2</include>
+		<include>WhiteShadow</include>
 	</include>
 	<!-- bg's -->
 	<include name="PlotBG">
@@ -344,6 +351,81 @@
 		<description>button</description>
 	</include>
 	<!-- PRE-PLAY -->
+	<!-- Filtered Empty list -->
+	<include name="FilteredEmpty">
+		<control type="group" id="777">
+			<visible>Container.Content(empty)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- main list -->
+			<control type="panel" id="66">
+				<visible>Container.Content(empty)</visible>
+				<viewtype label="FilteredEmpty">panel</viewtype>
+				<onup>66</onup>
+				<ondown>66</ondown>
+				<onright>66</onright>
+				<onleft>1300</onleft>
+				<orientation>vertical</orientation>
+				<posx>100</posx>
+				<posy>27</posy>
+				<width>1280</width>
+				<height>665</height>
+				<itemlayout width="285" height="165">
+					<include>EpisodeThumbCardFiltered</include>
+					<include>EpisodeThumbFiltered</include>
+					<include>EpisodePosterFiltered</include>
+					<control type="label">
+						<include>EpisodeTitleFiltered</include>
+					</control>
+					<include>EpisodeDate</include>
+					<include>EpisodeThumbOverlayFiltered</include>
+					<control type="label">
+						<posy>85</posy>
+						<posx>91</posx>
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<control type="image">
+						<posx>253</posx>
+						<posy>90</posy>
+						<info>ListItem.Overlay</info>
+					</control>
+				</itemlayout>
+				<focusedlayout width="285" height="165">
+					<include>EpisodeThumbCardFiltered</include>
+					<include>EpisodeThumbFiltered</include>
+					<include>EpisodePosterFiltered</include>
+					<control type="label">
+						<include>EpisodeTitleFiltered</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<include>EpisodeDate</include>
+					<include>EpisodeThumbOverlayFiltered</include>
+					<control type="label">
+						<posy>85</posy>
+						<posx>91</posx>
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<control type="image">
+						<posx>253</posx>
+						<posy>90</posy>
+						<info>ListItem.Overlay</info>
+					</control>
+					<include>EpisodeSelectedBorderFiltered</include>
+				</focusedlayout>
+				<!-- default empty list item -->
+				<content>
+					<item id="1">
+						<description>Search</description>
+						<label>$LOCALIZE[137]</label>
+						<onfocus>Control.SendClick(1)</onfocus>
+						<onclick>Control.SetFocus(1300)</onclick>
+					</item>
+				</content>
+			</control>
+		</control>
+	</include>
 	<!-- Pre-play TV Show -->
 	<include name="PreplayShow">
 		<control type="group" id="777">
@@ -388,8 +470,7 @@
 					<label>$INFO[Container.SecondTitle]</label>
 					<label>Seasons view</label>
 					<font>CondensedBold-36</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>ff333333</shadowcolor>
+					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
 				<!-- MPAA flag -->
@@ -421,7 +502,6 @@
 					<control type="label">
 						<include>LeftInfoFormatGrey</include>
 						<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
-						<shadowcolor>ff333333</shadowcolor>
 						<visible>true</visible>
 					</control>
 					<control type="label">
@@ -483,7 +563,20 @@
 						<font>CondensedBold-26</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
-						<visible>IsEmpty(ListItem.Season)</visible>
+						<visible>IsEmpty(ListItem.Season) + !ListItem.Type(season)</visible>
+					</control>
+					<control type="label">
+						<posy>250</posy>
+						<posx>23</posx>
+						<width>180</width>
+						<height>30</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[UPPERCASE]$LOCALIZE[31145][/UPPERCASE]</label>
+						<font>CondensedBold-26</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<visible>IsEmpty(ListItem.Season) + ListItem.Type(season)</visible>
 					</control>
 					<control type="label">
 						<posy>250</posy>
@@ -496,7 +589,7 @@
 						<font>CondensedBold-26</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
-						<visible>ListItem.Type(season)</visible>
+						<visible>ListItem.Type(season) + !IsEmpty(ListItem.Season)</visible>
 					</control>
 					<control type="group">
 						<posy>-7</posy>
@@ -526,7 +619,20 @@
 						<font>CondensedBold-26</font>
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
-						<visible>IsEmpty(ListItem.Season)</visible>
+						<visible>IsEmpty(ListItem.Season) + !ListItem.Type(season)</visible>
+					</control>
+					<control type="label">
+						<posy>250</posy>
+						<posx>23</posx>
+						<width>180</width>
+						<height>30</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[UPPERCASE]$LOCALIZE[31145][/UPPERCASE]</label>
+						<font>CondensedBold-26</font>
+						<textcolor>orangeLight</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<visible>IsEmpty(ListItem.Season) + ListItem.Type(season)</visible>
 					</control>
 					<control type="label">
 						<posy>250</posy>
@@ -539,7 +645,7 @@
 						<font>CondensedBold-26</font>
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
-						<visible>ListItem.Type(season)</visible>
+						<visible>ListItem.Type(season) + !IsEmpty(ListItem.Season)</visible>
 					</control>
 					<control type="group">
 						<posy>-7</posy>
@@ -553,7 +659,7 @@
 	<!-- Pre-play Season -->
 	<include name="PreplaySeason">
 		<control type="group" id="777">
-			<visible>Container.Content(episodes)</visible>
+			<visible>Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
@@ -670,7 +776,7 @@
 			</control>
 			<!-- main list -->
 			<control type="panel" id="61">
-				<visible>Container.Content(episodes)</visible>
+				<visible>Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))</visible>
 				<viewtype label="PreplayEpisodes">panel</viewtype>
 				<onup>61</onup>
 				<ondown>61</ondown>
@@ -738,12 +844,12 @@
 	<!-- Pre-play Filtered Episodes -->
 	<include name="PreplayFilteredEpisodes">
 		<control type="group" id="777">
-			<visible>Container.Content(filteredEpisodes)</visible>
+			<visible>Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- main list -->
 			<control type="panel" id="62">
-				<visible>Container.Content(filteredEpisodes)</visible>
+				<visible>Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
 				<viewtype label="PreplayFilteredEpisodes">panel</viewtype>
 				<onup>62</onup>
 				<ondown>62</ondown>
@@ -851,8 +957,7 @@
 					<height>30</height>
 					<label>$INFO[ListItem.TVShowTitle]</label>
 					<font>CondensedBold-36</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>ff333333</shadowcolor>
+					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
 				<!-- Title Episode & Watched/Unwatched indicator -->
@@ -868,7 +973,7 @@
 						<height>40</height>
 						<label>$INFO[ListItem.Title]</label>
 						<font>CondensedBold-36</font>
-						<textcolor>FF999999</textcolor>
+						<include>Grey1</include>
 						<visible>true</visible>
 					</control>
 					<control type="image">
@@ -882,7 +987,7 @@
 					<height>25</height>
 					<label>$LOCALIZE[31141] $INFO[ListItem.Season] &#xB7; $LOCALIZE[31114, &#xB7; ] $INFO[ListItem.Episode]$INFO[ListItem.Date, &#xB7; ]</label>
 					<font>Condensed-18</font>
-					<textcolor>white</textcolor>
+					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
 			</control>
@@ -910,7 +1015,7 @@
 					<align>right</align>
 					<label>$INFO[ListItem.DurationStr]</label>
 					<font>CondensedBold-36</font>
-					<textcolor>FF999999</textcolor>
+					<include>Grey1</include>
 					<visible>true</visible>
 				</control>
 				<!-- Star Rating -->
@@ -1048,8 +1153,7 @@
 						<height>40</height>
 						<label>$INFO[ListItem.Title]</label>
 						<font>CondensedBold-36</font>
-						<textcolor>white</textcolor>
-						<shadowcolor>ff333333</shadowcolor>
+						<include>WhiteShadow</include>
 						<visible>true</visible>
 					</control>
 					<control type="image">
@@ -1063,7 +1167,7 @@
 					<height>15</height>
 					<label>[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</label>
 					<font>Condensed-18</font>
-					<textcolor>FF999999</textcolor>
+					<include>Grey1</include>
 					<visible>true</visible>
 				</control>
 				<!-- DurationStr -->
@@ -1072,7 +1176,7 @@
 					<height>15</height>
 					<label>$INFO[ListItem.DurationStr]</label>
 					<font>Condensed-18</font>
-					<textcolor>white</textcolor>
+					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
 			</control>
@@ -1088,7 +1192,7 @@
 					<align>right</align>
 					<label>$INFO[ListItem.Year]</label>
 					<font>CondensedBold-36</font>
-					<include>White1</include>
+					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
 				<!-- MPAA flag -->
@@ -1271,8 +1375,7 @@
 						<height>30</height>
 						<label>$INFO[ListItem.Title]</label>
 						<font>CondensedBold-36</font>
-						<textcolor>white</textcolor>
-						<shadowcolor>ff333333</shadowcolor>
+						<include>WhiteShadow</include>
 						<visible>true</visible>
 					</control>
 					<control type="image">
@@ -1288,7 +1391,7 @@
 					<height>30</height>
 					<label>$INFO[ListItem.Year]$INFO[ListItem.DurationStr, &#xB7; ]$INFO[ListItem.Property(sourceTitle), &#xB7; ]</label>
 					<font>CondensedBold-30</font>
-					<textcolor>FF999999</textcolor>
+					<include>Grey1</include>
 				</control>
 				<!-- Season, Episode -->
 				<control type="label">
@@ -1296,7 +1399,7 @@
 					<height>25</height>
 					<label>$INFO[ListItem.Date]</label>
 					<font>Condensed-18</font>
-					<textcolor>white</textcolor>
+					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
 			</control>

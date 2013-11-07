@@ -10,6 +10,7 @@
 		<wrapmultiline>false</wrapmultiline>
 	</include>
 	<variable name="ContainerContent">
+		<value condition="Container.Content(empty)">empty</value>
 		<value condition="Container.Content(files)">files</value>
 		<value condition="Container.Content(file)">file</value>
 		<value condition="Container.Content(songs)">songs</value>
@@ -201,6 +202,16 @@
 					<include>debugFont</include>
 					<label>Container.FolderThumb : [COLOR=orangeLight]$INFO[Container.FolderThumb][/COLOR]</label>
 				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(primaryFilterActivated) : [COLOR=orangeLight]1[/COLOR]</label>
+					<visible>!IsEmpty(Container.Property(primaryFilterActivated))</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(primaryFilterActivated) :</label>
+					<visible>IsEmpty(Container.Property(primaryFilterActivated))</visible>
+				</control>
 				<!--><control type="label">
 					<include>debugFont</include>
 					<label>ListItem.FileNameAndPath : [COLOR=orangeLight]$INFO[ListItem.FileNameAndPath][/COLOR]</label>
@@ -212,16 +223,6 @@
 				<control type="label">
 					<include>debugFont</include>
 					<label/>
-				</control>
-				<control type="label">
-					<include>debugFont</include>
-					<label>Hide Unwatched Episodes Plot : ON</label>
-					<visible>SkinHasSetting(HidePlotForUnwatched)</visible>
-				</control>
-				<control type="label">
-					<include>debugFont</include>
-					<label>Hide Unwatched Episodes Plot : OFF</label>
-					<visible>!SkinHasSetting(HidePlotForUnwatched)</visible>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
@@ -359,6 +360,14 @@
 				<control type="label">
 					<include>debugFont</include>
 					<label>ListItem.Art(poster) : [COLOR=orangeLight]$INFO[ListItem.Art(poster)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Property(plexServerName) : [COLOR=orangeLight]$INFO[ListItem.Property(plexServerName)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Property(plexServerOwner) : [COLOR=orangeLight]$INFO[ListItem.Property(plexServerOwner)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
@@ -624,6 +633,48 @@
 				<control type="label">
 					<include>debugFont</include>
 					<label>Listitem.Property(Album_Type) : [COLOR=orangeLight]$INFO[Listitem.Property(Album_Type)][/COLOR]</label>
+				</control>
+			</control>
+			<!-- HOME LISTS DEBUG -->
+			<control type="grouplist">
+				<posx>820</posx>
+				<posy>40</posy>
+				<width>390</width>
+				<height>680</height>
+				<orientation>vertical</orientation>
+				<itemgap>5</itemgap>
+				<visible>Window.IsVisible(0)</visible>
+				<control type="label">
+					<include>debugFont</include>
+					<label>HOME ON DECK PLOT DEBUG:</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Hide Unwatched Episodes Plot : [COLOR=orangeLight]ON[/COLOR]</label>
+					<visible>Skin.HasSetting(HidePlotForUnwatched)</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Hide Unwatched Episodes Plot : [COLOR=orangeLight]OFF[/COLOR]</label>
+					<visible>!Skin.HasSetting(HidePlotForUnwatched)</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>On Deck Item Plot (untampered) :</label>
+				</control>
+				<control type="textbox">
+					<width>300</width>
+					<height>300</height>
+					<label>[COLOR=orangeLight]$INFO[Container(11001).ListItem.Plot][/COLOR]</label>
+					<include>debugFont</include>
 				</control>
 			</control>
 		</control>

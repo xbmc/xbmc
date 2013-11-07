@@ -110,6 +110,7 @@
   <string id="31142">Movie</string>
   <string id="31143">TV Show</string>
   <string id="31144">Video</string>
+  <string id="31145">Specials</string>
 
 <!--  Music  -->
   <string id="31220">Currently Playing</string>
@@ -271,13 +272,13 @@
 	  
 	<string id="31999">End Time</string>
 <!-- Startup helper -->
-<string id="32000">To set up your audio connection, look at the images in the list below and choose either HDMI or Optical depending on what you have. Please verify that it is the correct one or your audio might not work correctly. If in doubt, or you're unable to verify your connection, choose neither (and press "Next") and we'll default to 2 channel audio. It will work just fine, and you can always change this setting later in the Preferences.</string>
-<string id="32001">Plex first startup Helper</string>
-<string id="32002">Setting your audio connection</string>
+<string id="32000">Please choose the type of audio connector used on this computer.  If you're unsure, or if you're using built-in speakers, you can accept the default and continue.  You can access this setting at any time in the Preferences.</string>
+<string id="32001">Plex Home Theater Setup</string>
+<string id="32003">Welcome to Plex!  In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to myPlex.  myPlex lets you queue and share online videos, and access shared media from your friends' libraries.  If you don't already have a free myPlex account, you can create one now at http://my.plexapp.com before continuing.</string>
 <!-- Other -->
 <string id="32100">Set Rating</string>
 <string id="32101">Episodes added</string>
 <string id="32102">All Episodes</string>
 <string id="32103">There is no description available for this </string>
-<string id="32104">You can add one for it in the Media Manager :)</string>
+<string id="32104">You can add one for it in the Media Manager</string>
 </strings>
