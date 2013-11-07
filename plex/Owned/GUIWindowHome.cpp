@@ -695,7 +695,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           if (!item)
             return false;
 
-          if (iAction == ACTION_SELECT_ITEM && PlexUtils::CurrentSkinHasPreplay())
+          if (iAction == ACTION_SELECT_ITEM && PlexUtils::CurrentSkinHasPreplay() &&
+              item->GetPlexDirectoryType() != PLEX_DIR_TYPE_PHOTO)
           {
             OpenItem(item);
             return true;
