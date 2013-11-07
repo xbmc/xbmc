@@ -488,7 +488,20 @@
 						<font>CondensedBold-26</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
-						<visible>IsEmpty(ListItem.Season)</visible>
+						<visible>IsEmpty(ListItem.Season) + !ListItem.Type(season)</visible>
+					</control>
+					<control type="label">
+						<posy>250</posy>
+						<posx>23</posx>
+						<width>180</width>
+						<height>30</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[UPPERCASE]$LOCALIZE[31145][/UPPERCASE]</label>
+						<font>CondensedBold-26</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<visible>IsEmpty(ListItem.Season) + ListItem.Type(season)</visible>
 					</control>
 					<control type="label">
 						<posy>250</posy>
@@ -501,7 +514,7 @@
 						<font>CondensedBold-26</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
-						<visible>ListItem.Type(season)</visible>
+						<visible>ListItem.Type(season) + !IsEmpty(ListItem.Season)</visible>
 					</control>
 					<control type="group">
 						<posy>-7</posy>
@@ -531,7 +544,20 @@
 						<font>CondensedBold-26</font>
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
-						<visible>IsEmpty(ListItem.Season)</visible>
+						<visible>IsEmpty(ListItem.Season) + !ListItem.Type(season)</visible>
+					</control>
+					<control type="label">
+						<posy>250</posy>
+						<posx>23</posx>
+						<width>180</width>
+						<height>30</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[UPPERCASE]$LOCALIZE[31145][/UPPERCASE]</label>
+						<font>CondensedBold-26</font>
+						<textcolor>orangeLight</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<visible>IsEmpty(ListItem.Season) + ListItem.Type(season)</visible>
 					</control>
 					<control type="label">
 						<posy>250</posy>
@@ -544,7 +570,7 @@
 						<font>CondensedBold-26</font>
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
-						<visible>ListItem.Type(season)</visible>
+						<visible>ListItem.Type(season) + !IsEmpty(ListItem.Season)</visible>
 					</control>
 					<control type="group">
 						<posy>-7</posy>
