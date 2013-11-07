@@ -763,7 +763,6 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFromFilter)
 {
-  CLog::Log(LOGDEBUG, "%s called with %s", __PRETTY_FUNCTION__, strDirectory.c_str());
   CURL newUrl = GetRealDirectoryUrl(strDirectory);
   if (newUrl.Get().empty())
     return false;

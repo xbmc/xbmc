@@ -54,7 +54,7 @@ void CPlexAutoUpdate::CheckInstalledVersion()
 {
   if (g_application.GetReturnedFromAutoUpdate())
   {
-    CLog::Log(LOGDEBUG, "%s We are returning from a autoupdate with version %s", __PRETTY_FUNCTION__, g_infoManager.GetVersion().c_str());
+    CLog::Log(LOGDEBUG, "CPlexAutoUpdate::CheckInstalledVersion We are returning from a autoupdate with version %s", g_infoManager.GetVersion().c_str());
 
     std::string version, packageHash, fromVersion;
     bool isDelta;
@@ -64,12 +64,12 @@ void CPlexAutoUpdate::CheckInstalledVersion()
     {
       if (version != g_infoManager.GetVersion())
       {
-        CLog::Log(LOGDEBUG, "%s Seems like we failed to upgrade from %s to %s, will NOT try this version again.", __PRETTY_FUNCTION__, version.c_str(), g_infoManager.GetVersion().c_str());
+        CLog::Log(LOGDEBUG, "CPlexAutoUpdate::CheckInstalledVersion Seems like we failed to upgrade from %s to %s, will NOT try this version again.", version.c_str(), g_infoManager.GetVersion().c_str());
         success = false;
       }
       else
       {
-        CLog::Log(LOGDEBUG, "%s Seems like we succeeded to upgrade correctly!", __PRETTY_FUNCTION__);
+        CLog::Log(LOGDEBUG, "CPlexAutoUpdate::CheckInstalledVersion Seems like we succeeded to upgrade correctly!");
         success = true;
       }
     }
@@ -119,7 +119,7 @@ void CPlexAutoUpdate::OnTimeout()
           if (std::find(alreadyTriedVersion.begin(), alreadyTriedVersion.end(), updateItem->GetProperty("version").asString()) == alreadyTriedVersion.end())
             updates.Add(updateItem);
           else
-            CLog::Log(LOGDEBUG, "%s We have already tried to install %s, skipping it.", __PRETTY_FUNCTION__, updateItem->GetProperty("version").asString().c_str());
+            CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout We have already tried to install %s, skipping it.", updateItem->GetProperty("version").asString().c_str());
         }
       }
     }
@@ -302,7 +302,7 @@ bool CPlexAutoUpdate::GetUpdateInfo(std::string& verStr, bool& isDelta, std::str
       continue;
   }
 
-  CLog::Log(LOGDEBUG, "%s Latest version we tried to install is %s", __PRETTY_FUNCTION__, verStr.c_str());
+  CLog::Log(LOGDEBUG, "CPlexAutoUpdate::GetUpdateInfo Latest version we tried to install is %s", verStr.c_str());
 
   return true;
 }
