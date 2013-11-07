@@ -4,14 +4,14 @@ option(CLANG_COLOR "Show CLang color during compile" ON)
 
 if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
   if(CLANG_COLOR)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -fcolor-diagnostics")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -fcolor-diagnostics")
   endif(CLANG_COLOR)
 endif(CMAKE_C_COMPILER_ID STREQUAL "Clang")
 
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-parentheses-equality -Wno-self-assign-field")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-parentheses-equality -Wno-self-assign-field")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -Wno-parentheses-equality -Wno-self-assign-field")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -Wno-parentheses-equality -Wno-self-assign-field")
 endif(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")  
 
 ############ Set global CFlags with the information from the subroutines
