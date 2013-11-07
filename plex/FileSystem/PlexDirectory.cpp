@@ -470,7 +470,7 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   }
   
   /* now we need to set content to something that XBMC expects */
-  if (mediaContainer.IsEmpty() == 0)
+  if (mediaContainer.IsEmpty())
     mediaContainer.SetContent("empty");
   else
   {
