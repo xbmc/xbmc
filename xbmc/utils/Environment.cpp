@@ -77,12 +77,11 @@ std::string CEnvironment::win32ConvertWToUtf8(const std::wstring &text, bool *re
   if (resultSuccessful != NULL)
     *resultSuccessful = false;
 
-  static const DWORD convFlags = /*WC_ERR_INVALID_CHARS*/ 0x80;
-  int bufSize = WideCharToMultiByte(CP_UTF8,  convFlags, text.c_str(), -1, NULL, 0, NULL, NULL);
+  int bufSize = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, text.c_str(), -1, NULL, 0, NULL, NULL);
   if (bufSize == 0)
     return "";
   char * converted = new char[bufSize];
-  if (WideCharToMultiByte(CP_UTF8, convFlags, text.c_str(), -1, converted, bufSize, NULL, NULL) != bufSize)
+  if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, text.c_str(), -1, converted, bufSize, NULL, NULL) != bufSize)
   {
     delete[] converted;
     return "";
