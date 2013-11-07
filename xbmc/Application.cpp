@@ -419,6 +419,7 @@ CApplication::CApplication(void)
   /* PLEX */
   , m_plexRemoteHandler(*new CPlexHTTPRemoteHandler)
   , m_pLaunchHost(NULL)
+  , m_returnFromAutoUpdate(false)
   /* END PLEX */
 {
   m_network = NULL;

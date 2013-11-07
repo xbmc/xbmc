@@ -38,10 +38,13 @@ class CPlexAutoUpdate : public ITimerCallback, IJobCallback
     void ForceVersionCheckInBackground();
     void ResetTimer();
 
+    void PokeFromSettings();
+
     void WriteUpdateInfo();
-    bool GetUpdateInfo(std::string& version, bool& isDelta, std::string& packageHash) const;
+    bool GetUpdateInfo(std::string& version, bool& isDelta, std::string& packageHash, std::string& fromVersion) const;
 
   private:
+    void CheckInstalledVersion();
     void DownloadUpdate(CFileItemPtr updateItem);
     void ProcessDownloads();
 
@@ -68,6 +71,8 @@ class CPlexAutoUpdate : public ITimerCallback, IJobCallback
     CFileItemPtr GetPackage(CFileItemPtr updateItem);
     bool NeedDownload(const std::string& localFile, const std::string& expectedHash);
     bool RenameLocalBinary();
+
+    std::vector<std::string> GetAllInstalledVersions() const;
 };
 
 #endif // PLEXAUTOUPDATE_H

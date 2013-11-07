@@ -25,6 +25,8 @@
 #include "xbmc/Util.h"
 #include "XBDateTime.h"
 #include "GUIInfoManager.h"
+#include "Application.h"
+#include "PlexAnalytics.h"
 
 using namespace XFILE;
 
@@ -40,35 +42,48 @@ CPlexAutoUpdate::CPlexAutoUpdate()
 #endif
 
   m_searchFrequency = 86400000; /* default to 24h */
-  m_timer.Start(5 * 1000, true);
+
+  CheckInstalledVersion();
+
+  if (g_guiSettings.GetBool("updates.auto"))
+    m_timer.Start(5 * 1000, true);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexAutoUpdate::CheckInstalledVersion()
+{
+  if (g_application.GetReturnedFromAutoUpdate())
+  {
+    CLog::Log(LOGDEBUG, "%s We are returning from a autoupdate with version %s", __PRETTY_FUNCTION__, g_infoManager.GetVersion().c_str());
+
+    std::string version, packageHash, fromVersion;
+    bool isDelta;
+    bool success;
+
+    if (GetUpdateInfo(version, isDelta, packageHash, fromVersion))
+    {
+      if (version != g_infoManager.GetVersion())
+      {
+        CLog::Log(LOGDEBUG, "%s Seems like we failed to upgrade from %s to %s, will NOT try this version again.", __PRETTY_FUNCTION__, version.c_str(), g_infoManager.GetVersion().c_str());
+        success = false;
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, "%s Seems like we succeeded to upgrade correctly!", __PRETTY_FUNCTION__);
+        success = true;
+      }
+    }
+
+    g_plexApplication.analytics->didUpgradeEvent(success, fromVersion, version, isDelta);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexAutoUpdate::OnTimeout()
 {
   CFileItemList list;
   CPlexDirectory dir;
   m_isSearching = true;
-
-  /* First, check if we tried and updated to a new version */
-  std::string version, packageHash;
-  bool isDelta;
-  if (GetUpdateInfo(version, isDelta, packageHash))
-  {
-    if (version != g_infoManager.GetVersion())
-    {
-      CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnTimeout we probably failed to update to version %s since this is %s", version.c_str(), g_infoManager.GetVersion().c_str());
-      if (isDelta)
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Failed to upgrade!", "PHT failed to (delta) upgrade to version " + version, 10000, true);
-      else
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Failed to upgrade!", "PHT failed to upgrade to version " + version, 10000, true);
-    }
-    else
-    {
-      CLog::Log(LOGINFO, "CPlexAutoUpdate::OnTimeout successfully upgraded to version %s", g_infoManager.GetVersion().c_str());
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Upgrade succesfull!", "PHT is upgraded to version " + version, 10000, true);
-      CFile::Delete("special://temp/autoupdate/plexupdateinfo.xml");
-    }
-  }
 
 #ifdef UPDATE_DEBUG
   m_url.SetOption("version", "0.0.0.0");
@@ -84,6 +99,7 @@ void CPlexAutoUpdate::OnTimeout()
   if (g_plexApplication.myPlexManager->IsSignedIn())
     m_url.SetOption("X-Plex-Token", g_plexApplication.myPlexManager->GetAuthToken());
 
+  std::vector<std::string> alreadyTriedVersion = GetAllInstalledVersions();
   CFileItemList updates;
 
   if (dir.GetDirectory(m_url, list))
@@ -101,7 +117,10 @@ void CPlexAutoUpdate::OnTimeout()
             updateItem->GetProperty("version").asString() != g_infoManager.GetVersion())
         {
           CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout got version %s from update endpoint", updateItem->GetProperty("version").asString().c_str());
-          updates.Add(updateItem);
+          if (std::find(alreadyTriedVersion.begin(), alreadyTriedVersion.end(), updateItem->GetProperty("version").asString()) == alreadyTriedVersion.end())
+            updates.Add(updateItem);
+          else
+            CLog::Log(LOGDEBUG, "%s We have already tried to install %s, skipping it.", __PRETTY_FUNCTION__, updateItem->GetProperty("version").asString().c_str());
         }
       }
     }
@@ -155,11 +174,6 @@ CFileItemPtr CPlexAutoUpdate::GetPackage(CFileItemPtr updateItem)
 {
   CFileItemPtr deltaItem, fullItem;
 
-  std::string version, packageHash;
-  bool isDelta;
-
-  GetUpdateInfo(version, isDelta, packageHash);
-
   if (updateItem && updateItem->m_mediaItems.size() > 0)
   {
     for (int i = 0; i < updateItem->m_mediaItems.size(); i ++)
@@ -173,15 +187,7 @@ CFileItemPtr CPlexAutoUpdate::GetPackage(CFileItemPtr updateItem)
   }
 
   if (deltaItem)
-  {
-    if (isDelta && deltaItem->GetProperty("manifestHash") == packageHash)
-    {
-      CLog::Log(LOGINFO, "CPlexAutoUpdate::GetPackage we failed installing delta %s so now we will ignore that.", packageHash.c_str());
-      return fullItem;
-    }
-    else
-      return deltaItem;
-  }
+    return deltaItem;
 
   return fullItem;
 }
@@ -239,19 +245,65 @@ void CPlexAutoUpdate::DownloadUpdate(CFileItemPtr updateItem)
     ProcessDownloads();
 }
 
-bool CPlexAutoUpdate::GetUpdateInfo(std::string& version, bool& isDelta, std::string& packageHash) const
+std::vector<std::string> CPlexAutoUpdate::GetAllInstalledVersions() const
 {
   CXBMCTinyXML doc;
-  doc.LoadFile("special://temp/autoupdate/plexupdateinfo.xml");
+  std::vector<std::string> versions;
+
+  if (!doc.LoadFile("special://profile/plexupdateinfo.xml"))
+    return versions;
+
+  if (!doc.RootElement())
+    return versions;
+
+  for (TiXmlElement *version = doc.RootElement()->FirstChildElement(); version; version = version->NextSiblingElement())
+  {
+    std::string verStr;
+    if (version->QueryStringAttribute("version", &verStr) == TIXML_SUCCESS)
+      versions.push_back(verStr);
+  }
+
+  return versions;
+}
+
+bool CPlexAutoUpdate::GetUpdateInfo(std::string& verStr, bool& isDelta, std::string& packageHash, std::string& fromVersion) const
+{
+  CXBMCTinyXML doc;
+
+  if (!doc.LoadFile("special://profile/plexupdateinfo.xml"))
+    return false;
+
   if (!doc.RootElement())
     return false;
 
-  if (doc.RootElement()->QueryStringAttribute("version", &version) != TIXML_SUCCESS)
-    return false;
-  if (doc.RootElement()->QueryBoolAttribute("isDelta", &isDelta) != TIXML_SUCCESS)
-    return false;
-  if (doc.RootElement()->QueryStringAttribute("packageHash", &packageHash) != TIXML_SUCCESS)
-    return false;
+  int installedTm = 0;
+  for (TiXmlElement *version = doc.RootElement()->FirstChildElement(); version; version = version->NextSiblingElement())
+  {
+    int iTm;
+    if (version->QueryIntAttribute("installtime", &iTm) == TIXML_SUCCESS)
+    {
+      if (iTm > installedTm)
+        installedTm = iTm;
+      else
+        continue;
+    }
+    else
+      continue;
+
+    if (version->QueryStringAttribute("version", &verStr) != TIXML_SUCCESS)
+      continue;
+
+    if (version->QueryBoolAttribute("delta", &isDelta) != TIXML_SUCCESS)
+      continue;
+
+    if (version->QueryStringAttribute("packageHash", &packageHash) != TIXML_SUCCESS)
+      continue;
+
+    if (version->QueryStringAttribute("fromVersion", &fromVersion) != TIXML_SUCCESS)
+      continue;
+  }
+
+  CLog::Log(LOGDEBUG, "%s Latest version we tried to install is %s", __PRETTY_FUNCTION__, verStr.c_str());
 
   return true;
 }
@@ -260,14 +312,29 @@ void CPlexAutoUpdate::WriteUpdateInfo()
 {
   CXBMCTinyXML doc;
 
-  doc.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));
-  TiXmlElement* el = new TiXmlElement("Update");
-  el->SetAttribute("version", m_downloadItem->GetProperty("version").asString());
-  el->SetAttribute("packageHash", m_downloadPackage->GetProperty("manifestHash").asString());
-  el->SetAttribute("isDelta", m_downloadPackage->GetProperty("delta").asBoolean());
-  doc.LinkEndChild(el);
+  if (!doc.LoadFile("special://profile/plexupdateinfo.xml"))
+    doc = CXBMCTinyXML();
 
-  doc.SaveFile("special://temp/autoupdate/plexupdateinfo.xml");
+  TiXmlElement *versions = doc.RootElement();
+  if (!versions)
+  {
+    doc.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));
+    versions = new TiXmlElement("versions");
+    doc.LinkEndChild(versions);
+  }
+
+  TiXmlElement thisVersion("version");
+  thisVersion.SetAttribute("version", m_downloadItem->GetProperty("version").asString());
+  thisVersion.SetAttribute("delta", m_downloadPackage->GetProperty("delta").asBoolean());
+  thisVersion.SetAttribute("packageHash", m_downloadPackage->GetProperty("manifestHash").asString());
+  thisVersion.SetAttribute("fromVersion", std::string(g_infoManager.GetVersion()));
+
+  if (versions->FirstChildElement())
+    versions->InsertBeforeChild(versions->FirstChildElement(), thisVersion);
+  else
+    versions->InsertEndChild(thisVersion);
+
+  doc.SaveFile("special://profile/plexupdateinfo.xml");
 }
 
 void CPlexAutoUpdate::ProcessDownloads()
@@ -582,4 +649,13 @@ void CPlexAutoUpdate::ResetTimer()
       m_timer.Stop(true);
     m_timer.Start(m_searchFrequency);
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexAutoUpdate::PokeFromSettings()
+{
+  if (g_guiSettings.GetBool("updates.auto") && !m_timer.IsRunning())
+    m_timer.Start(m_searchFrequency);
+  else if (!g_guiSettings.GetBool("updates.auto") && m_timer.IsRunning())
+    m_timer.Stop();
 }

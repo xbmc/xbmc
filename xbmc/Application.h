@@ -396,6 +396,8 @@ public:
   void OnWakeUp();
 
   void ForceVersionCheck();
+  void SetReturnFromAutoUpdate() { m_returnFromAutoUpdate = true; }
+  bool GetReturnedFromAutoUpdate() const { return m_returnFromAutoUpdate; }
   /* END PLEX */
 protected:
   bool LoadSkin(const CStdString& skinID);
@@ -512,6 +514,7 @@ protected:
 
   CPlexHTTPRemoteHandler& m_plexRemoteHandler;
   LaunchHost *m_pLaunchHost;
+  bool m_returnFromAutoUpdate;
   /* END PLEX */
 };
 
