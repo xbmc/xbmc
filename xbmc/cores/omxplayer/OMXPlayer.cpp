@@ -177,6 +177,40 @@ std::vector<OMXSelectionStream> COMXSelectionStreams::Get(StreamType type)
       return (lh) > (rh); \
   } while(0)
 
+class PredicateSubtitleFilter
+{
+private:
+  std::string audiolang;
+  bool original;
+public:
+  PredicateSubtitleFilter(std::string& lang)
+    : audiolang(lang),
+      original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
+  {
+  };
+  
+  bool operator()(const OMXSelectionStream& ss) const
+  {
+    if (ss.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream)
+      return false;
+
+    if ((ss.flags & CDemuxStream::FLAG_FORCED) && g_LangCodeExpander.CompareLangCodes(ss.language, audiolang))
+      return false;
+
+    if ((ss.flags & CDemuxStream::FLAG_DEFAULT))
+      return false;
+
+    if(!original)
+    {
+      std::string subtitle_language = g_langInfo.GetSubtitleLanguage();
+      if (g_LangCodeExpander.CompareLangCodes(subtitle_language, ss.language))
+        return false;
+    }
+
+    return true;
+  }
+};
+
 static bool PredicateAudioPriority(const OMXSelectionStream& lh, const OMXSelectionStream& rh)
 {
   PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream
@@ -781,7 +815,10 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
   m_omxPlayerVideo.EnableSubtitle(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 
   // open subtitle stream
-  streams = m_SelectionStreams.Get(STREAM_SUBTITLE, PredicateSubtitlePriority);
+  OMXSelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
+  PredicateSubtitleFilter psf(as.language);
+  streams = m_SelectionStreams.RemoveIf(STREAM_SUBTITLE, psf);
+  std::stable_sort(streams.begin(), streams.end(), PredicateSubtitlePriority);
   valid   = false;
   for(OMXSelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
@@ -793,7 +830,10 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
     }
   }
   if(!valid)
+  {
     CloseSubtitleStream(true);
+    SetSubtitleVisible(false);
+  }
 
   // open teletext stream
   streams = m_SelectionStreams.Get(STREAM_TELETEXT);
