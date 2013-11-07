@@ -1061,7 +1061,7 @@
 				<visible>ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]</visible>
 			</control>
 			<control type="textbox">
-				<label>* Plot hidden to avoid spoilers *</label>
+				<label>$LOCALIZE[32105]</label>
 				<include>PlotFormat</include>
 				<visible>Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]</visible>
 			</control>
