@@ -3,62 +3,37 @@
 	<defaultcontrol always="true">10085</defaultcontrol>
 	<!-- ViewsDialog.xml -->
 	<include>DialogFadeInOut</include>
+	
 	<controls>
 		<control type="group">
-			<posx>140</posx>
-			<posy>60</posy>
-			<!-- window dressing -->
-			<control type="group">
-				<control type="image">
-					<description>Background</description>
-					<posy>30</posy>
-					<width>1000</width>
-					<height>570</height>
-					<include>BlackRounded</include>
-					<animation effect="fade" start="0" end="90" time="0" condition="true">Conditional</animation>
-				</control>
-				<control type="image">
-					<description>Title bg</description>
-					<posy>30</posy>
-					<width>1000</width>
-					<height>70</height>
-					<include>DialogHeaderBGOrange</include>
-				</control>
-				<control type="image">
-					<description>Title bg bottom border</description>
-					<posy>50</posy>
-					<width>1000</width>
-					<include>DialogHeaderBorder</include>
-				</control>
-				<control type="image">
-					<description>Background border</description>
-					<posy>30</posy>
-					<width>1002</width>
-					<height>572</height>
-					<include>DialogBorder</include>
-				</control>
-				<control type="image">
-					<description>Dialog arrow</description>
-					<posx>485</posx>
-					<posy>600</posy>
-					<include>DialogArrow</include>
-				</control>
+			
+			<!-- bg's -->
+			<include>SlideshowDimmed</include>
+			<control type="image">
+				<width>1280</width>
+				<height>130</height>
+				<include>Black</include>
+				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 			</control>
 			<!-- controls -->
 			<control type="group">
-				<posy>30</posy>
+				<posx>140</posx>
+				<posy>60</posy>
 				<control type="label" id="1">
 					<posy>33</posy>
 					<description>Heading</description>
 					<width>1000</width>
+					<textcolor>orangeLight</textcolor>
 					<include>DialogHeading</include>
 				</control>
 				<!-- hardcoded dialog title, delete when control 1 has a dynamic one -->
 				<control type="label">
-					<posy>33</posy>
+					<posy>0</posy>
 					<description>Heading</description>
 					<width>1000</width>
-					<include>DialogHeading</include>
+					<textcolor>orangeLight</textcolor>
+					<align>center</align>
+					<font>CondensedBold-30</font>
 					<label>myPlex Log In</label>
 				</control>
 				<!-- description text -->
@@ -112,6 +87,7 @@
 						<width>480</width>
 						<height>150</height>
 						<font>CondensedBold-126</font>
+						<shadowcolor>FF222222</shadowcolor>
 					</control>
 				</control>
 				<!-- manual login area -->
@@ -249,10 +225,10 @@
 					<control type="group">
 						<control type="image">
 							<description>buttons bg</description>
-							<posx>0</posx>
-							<width>1000</width>
+							<posx>-500</posx>
+							<width>2000</width>
 							<height>80</height>
-							<include>Orange</include>
+							<include>Black</include>
 							<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 						</control>
 					</control>
