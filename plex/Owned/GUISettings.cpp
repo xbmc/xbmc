@@ -539,7 +539,7 @@ void CGUISettings::Initialize()
   AddBool(advs, "videoscreen.haslcd", 4501, false);
 #endif
   AddBool(advs, "debug.visualizedirtyregions", 18114, false);
-  AddInt(advs, "debug.dirtyregionsalgorithm", 18115, 3, 0, 1, 3, SPIN_CONTROL_INT);
+  AddInt(advs, "debug.dirtyregionsalgorithm", 18115, 1, 0, 1, 3, SPIN_CONTROL_INT);
   AddInt(advs, "debug.dirtyregionsnofliptimeout", 18116, 0, 0, 100, 10000, SPIN_CONTROL_INT);
 
   AddString(advs, "advanced.labelaudio", 292, "", BUTTON_CONTROL_STANDARD);
