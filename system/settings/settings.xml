@@ -2176,6 +2176,7 @@
           <visible>HAS_GLX</visible>
           <level>0</level>
           <default>false</default>
+          <control type="toggle" />
         </setting>
         <setting id="videoscreen.screen" type="integer" label="240" help="36351">
           <level>0</level>
