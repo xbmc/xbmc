@@ -1533,6 +1533,11 @@ bool CApplication::Initialize()
     /* window id's 3000 - 3100 are reserved for python */
 
     // Make sure we have at least the default skin
+    /* PLEX select plex skin if it's the first time you run it with mediastream */
+    if (g_guiSettings.GetString("lookandfeel.skin") != DEFAULT_SKIN && !g_guiSettings.GetBool("system.firstrunwizard"))
+      g_guiSettings.SetString("lookandfeel.skin", DEFAULT_SKIN);
+    /* END PLEX */
+
     if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")) && !LoadSkin(DEFAULT_SKIN))
     {
         CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
