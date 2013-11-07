@@ -802,8 +802,8 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
 {
   CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
 
-  list.SetProperty("hasAdvancedFilters", filter->hasAdvancedFilters() ? "yes" : "");
-  list.SetProperty("primaryFilterActivated", filter->secondaryFiltersActivated() ? "" : "yes");
+  list.SetProperty("hasAdvancedFilters", (filter && filter->hasAdvancedFilters()) ? "yes" : "");
+  list.SetProperty("primaryFilterActivated", (filter && filter->secondaryFiltersActivated()) ? "" : "yes");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
