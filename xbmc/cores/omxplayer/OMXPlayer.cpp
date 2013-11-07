@@ -2434,6 +2434,7 @@ void COMXPlayer::HandleMessages()
           {
             CloseAudioStream(false);
             OpenAudioStream(st.id, st.source);
+            AdaptForcedSubtitles();
             m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
           }
         }
@@ -3402,6 +3403,35 @@ bool COMXPlayer::OpenSubtitleStream(int iStream, int source)
 
   CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, source, iStream);
   return true;
+}
+
+bool COMXPlayer::AdaptForcedSubtitles()
+{
+  bool valid = false;
+  OMXSelectionStream ss = m_SelectionStreams.Get(STREAM_SUBTITLE, GetSubtitle());
+  if (ss.flags & CDemuxStream::FLAG_FORCED || !GetSubtitleVisible())
+  {
+    OMXSelectionStream as = m_SelectionStreams.Get(STREAM_SUBTITLE, GetAudioStream());
+    OMXSelectionStreams streams = m_SelectionStreams.Get(STREAM_SUBTITLE);
+
+    for(OMXSelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+    {
+      if (it->flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareLangCodes(it->language, as.language))
+      {
+        if(OpenSubtitleStream(it->id, it->source))
+        {
+          valid = true;
+          SetSubtitleVisible(true);
+        }
+      }
+    }
+    if(!valid)
+    {
+      CloseSubtitleStream(true);
+      SetSubtitleVisible(false);
+    }
+  }
+  return valid;
 }
 
 bool COMXPlayer::OpenTeletextStream(int iStream, int source)
