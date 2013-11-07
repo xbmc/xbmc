@@ -17,9 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#include "HttpHeader.h"
 #include "utils/StringUtils.h"
+#include "HttpHeader.h"
 
 CHttpHeader::CHttpHeader()
 {
@@ -130,6 +129,12 @@ std::vector<std::string> CHttpHeader::GetValues(std::string strParam) const
 
 std::string CHttpHeader::GetHeader(void) const
 {
+  /* Only pad with additional \n if there are params
+   * to put into the header or the protocol line has
+   * some data */
+  if (m_params.empty() && m_protoLine.empty())
+    return "";
+
   std::string strHeader(m_protoLine + '\n');
 
   for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
@@ -152,21 +157,50 @@ std::string CHttpHeader::GetCharset(void) const
   if (strValue.empty())
     return strValue;
 
-  const size_t semicolonPos = strValue.find(';');
-  if (semicolonPos == std::string::npos)
+  const size_t posSemicolon = strValue.find (";");
+
+  /* There is an additional parameter as indicated by the semicolon */
+  if (posSemicolon == std::string::npos)
+    return "";
+
+  const size_t posParameter = strValue.find_first_not_of(" \t", posSemicolon + 1);
+
+  /* There is a parameter */
+  if (posParameter == std::string::npos)
+    return "";
+
+  /* We are assuming that there is no LWS between parameter,
+   * "=" and its value */
+  const size_t posEquals = strValue.find_first_of("=", posParameter);
+
+  if (posEquals == std::string::npos)
+    return "";
+
+  const size_t posParameterValue = posEquals + 1;
+
+  /* Is there anything on the right hand side of the equals? */
+  if (posEquals + 1 >= strValue.size())
     return "";
 
   StringUtils::ToUpper(strValue);
-  size_t posCharset;
-  if ((posCharset = strValue.find("; CHARSET=", semicolonPos)) != std::string::npos)
-    posCharset += 10;
-  else if ((posCharset = strValue.find(";CHARSET=", semicolonPos)) != std::string::npos)
-    posCharset += 9;
-  else
+
+  /* Quickly check if the value from the first non-space value to "="
+   * is CHARSET, if so then we can parse the charset on the right */
+  if (strncmp(&(strValue.c_str()[posParameter]),
+              "CHARSET",
+              7))
     return "";
 
-  return strValue.substr(posCharset, strValue.find(';', posCharset) - posCharset);
+  size_t charsetParameterEnd =
+    strValue.find_first_of(" \t", posParameterValue);
+
+  if (charsetParameterEnd == std::string::npos)
+    charsetParameterEnd = strValue.size();
+
+  return strValue.substr(posParameterValue,
+                         charsetParameterEnd - posParameterValue);
 }
+
 
 void CHttpHeader::Clear()
 {
