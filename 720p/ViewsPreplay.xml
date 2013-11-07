@@ -371,48 +371,8 @@
 				<width>1280</width>
 				<height>665</height>
 				<itemlayout width="285" height="165">
-					<include>EpisodeThumbCardFiltered</include>
-					<include>EpisodeThumbFiltered</include>
-					<include>EpisodePosterFiltered</include>
-					<control type="label">
-						<include>EpisodeTitleFiltered</include>
-					</control>
-					<include>EpisodeDate</include>
-					<include>EpisodeThumbOverlayFiltered</include>
-					<control type="label">
-						<posy>85</posy>
-						<posx>91</posx>
-						<include>EpisodeThumbOverlayTitle2</include>
-						<textcolor>orangeLight</textcolor>
-					</control>
-					<control type="image">
-						<posx>253</posx>
-						<posy>90</posy>
-						<info>ListItem.Overlay</info>
-					</control>
 				</itemlayout>
 				<focusedlayout width="285" height="165">
-					<include>EpisodeThumbCardFiltered</include>
-					<include>EpisodeThumbFiltered</include>
-					<include>EpisodePosterFiltered</include>
-					<control type="label">
-						<include>EpisodeTitleFiltered</include>
-						<textcolor>orangeLight</textcolor>
-					</control>
-					<include>EpisodeDate</include>
-					<include>EpisodeThumbOverlayFiltered</include>
-					<control type="label">
-						<posy>85</posy>
-						<posx>91</posx>
-						<include>EpisodeThumbOverlayTitle2</include>
-						<textcolor>orangeLight</textcolor>
-					</control>
-					<control type="image">
-						<posx>253</posx>
-						<posy>90</posy>
-						<info>ListItem.Overlay</info>
-					</control>
-					<include>EpisodeSelectedBorderFiltered</include>
 				</focusedlayout>
 				<!-- default empty list item -->
 				<content>

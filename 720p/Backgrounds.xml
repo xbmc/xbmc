@@ -9,6 +9,20 @@
 		</control>
 	</include>
 	<include name="BGFanart">
+		<!-- generic global fanart for when the container is empty -->
+		<control type="multiimage">
+			<include>FullScreenScaled</include>
+			<timeperimage>8000</timeperimage>
+			<fadetime>1000</fadetime>
+			<randomize>true</randomize>
+			<loop>yes</loop>
+			<imagepath background="true">plexserver://best:32400/library/arts</imagepath>
+			<animation effect="fade" end="50" time="400" condition="true">Conditional</animation>
+			<animation type="WindowClose">
+				<effect type="fade" start="100" end="0" time="800"/>
+			</animation>
+			<visible>Container.Content(empty)</visible>
+		</control>
 		<control type="largeimage">
 			<include>FullScreenScaled</include>
 			<fadetime>400</fadetime>
@@ -84,6 +98,21 @@
 			<visible>true</visible>
 			<animation effect="fade" start="80" end="50" time="500" condition="!ControlGroup(1300).HasFocus()">Conditional</animation>
 			<animation effect="fade" start="50" end="80" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+		</control>		
+		<control type="label">
+			<posy>330</posy>
+			<posx>300</posx>
+			<width>680</width>
+			<align>center</align>
+			<aligny>center</aligny>
+			<height>60</height>
+			<label>The list is empty</label>
+			<font>CondensedBold-52</font>
+			<textcolor>orangeLight</textcolor>
+			<shadowcolor>FF222222</shadowcolor>
+			<visible>Container.Content(empty)</visible>
+			<animation effect="slide" start="0" end="180" time="500" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+			<animation effect="fade" start="100" end="70" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
 	<include name="SlideshowHome">

@@ -58,7 +58,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
-				<visible>Container.content(movies) | Container.content(tvshows) | Window.IsActive(2) | Window.IsActive(501)</visible>
+				<visible>Container.content(movies) | Container.content(tvshows) | Window.IsActive(2) | Window.IsActive(501) | Container.content(empty)</visible>
 			</control>
 			<control type="image">
 				<posy>680</posy>
