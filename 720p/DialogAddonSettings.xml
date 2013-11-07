@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">2</defaultcontrol>
+	<include>DialogFadeInOut</include>
+	<controls>
+		<control type="group">
+			<posx>330</posx>
+			<posy>180</posy>
+			<control type="image">
+				<description>Background</description>
+				<width>600</width>
+				<height>380</height>
+				<include>DialogBG</include>
+			</control>
+			<control type="image">
+				<description>Title bg</description>
+				<width>600</width>
+				<height>50</height>
+				<include>DialogHeaderBG</include>
+			</control>
+			<control type="image">
+				<description>Title bg bottom border</description>
+				<width>600</width>
+				<include>DialogHeaderBorder</include>
+			</control>
+			<control type="image">
+				<description>Background border</description>
+				<width>602</width>
+				<height>382</height>
+				<include>DialogBorder</include>
+			</control>
+			<control type="image">
+				<description>Dialog arrow</description>
+				<posx>285</posx>
+				<posy>380</posy>
+				<include>DialogArrow</include>
+			</control>
+		</control>
+		<control type="group">
+			<posx>330</posx>
+			<posy>180</posy>
+			<control type="label" id="20">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>10</posy>
+				<width>560</width>
+				<height>30</height>
+				<label>-</label>
+				<include>DialogHeading</include>
+			</control>
+			<!--><control type="grouplist" id="9">
+				<description>button area</description>
+				<posx>45</posx>
+				<posy>70</posy>
+				<width>710</width>
+				<height>40</height>
+				<itemgap>5</itemgap>
+				<align>center</align>
+				<orientation>horizontal</orientation>
+				<onleft>9</onleft>
+				<onright>9</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+			</control>-->
+			<control type="grouplist" id="2">
+				<description>control area</description>
+				<posx>40</posx>
+				<posy>70</posy>
+				<width>520</width>
+				<height>380</height>
+				<itemgap>5</itemgap>
+				<pagecontrol>61</pagecontrol>
+				<onup>9</onup>
+				<ondown>9001</ondown>
+				<onleft>2</onleft>
+				<onright>30</onright>
+			</control>
+			<control type="scrollbar" id="61">
+				<description>Scroll Bar</description>
+				<posx>570</posx>
+				<posy>64</posy>
+				<width>20</width>
+				<height>230</height>
+				<showonepage>true</showonepage>
+			</control>
+			<control type="grouplist" id="9001">
+				<posx>40</posx>
+				<width>560</width>
+				<posy>312</posy>
+				<orientation>horizontal</orientation>
+				<itemgap>37</itemgap>
+				<onup>2</onup>
+				<control type="button" id="10">
+					<description>OK button</description>
+					<label>186</label>
+					<width>150</width>
+					<include>DialogPressButton</include>
+				</control>
+				<control type="button" id="11">
+					<description>Cancel button</description>
+					<label>222</label>
+					<width>150</width>
+					<include>DialogPressButton</include>
+				</control>
+				<control type="button" id="12">
+					<description>Defaults button</description>
+					<label>409</label>
+					<width>150</width>
+					<include>DialogPressButton</include>
+				</control>
+			</control>
+			<control type="button" id="13">
+				<description>Default Category Button</description>
+			</control>
+			<control type="button" id="3">
+				<description>Default Button</description>
+			</control>
+			<control type="radiobutton" id="4">
+				<description>Default RadioButton</description>
+			</control>
+			<control type="spincontrolex" id="5">
+				<description>Default spincontrolex</description>
+			</control>
+			<control type="label" id="7">
+				<label>-</label>
+			</control>
+			<control type="image" id="6">
+				<description>Default Seperator</description>
+				<height>2</height>
+				<texture>separator2.png</texture>
+			</control>
+			<control type="sliderex" id="8">
+				<description>Default Slider</description>
+			</control>
+		</control>
+	</controls>
+</window>
