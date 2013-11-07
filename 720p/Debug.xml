@@ -10,6 +10,7 @@
 		<wrapmultiline>false</wrapmultiline>
 	</include>
 	<variable name="ContainerContent">
+		<value condition="Container.Content(empty)">empty</value>
 		<value condition="Container.Content(files)">files</value>
 		<value condition="Container.Content(file)">file</value>
 		<value condition="Container.Content(songs)">songs</value>
