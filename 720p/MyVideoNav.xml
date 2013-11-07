@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="6">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,50,60,61,62,70,71,80,99</views>
+	<views>40,50,60,61,62,66,70,71,80,99</views>
 	<allowoverlay>yes</allowoverlay>
 	<onunload>SetFocus(777)</onunload>
 	<controls>
@@ -22,6 +22,8 @@
 		<include>PreplaySeason</include>
 		<!-- PreplayFilteredEpisodes ID 62 -->
 		<include>PreplayFilteredEpisodes</include>
+		<!-- FilteredEmpty ID 66 -->
+		<include>FilteredEmpty</include>
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
 		<!-- ChannelVideo ID 71 -->

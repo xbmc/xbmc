@@ -351,6 +351,81 @@
 		<description>button</description>
 	</include>
 	<!-- PRE-PLAY -->
+	<!-- Filtered Empty list -->
+	<include name="FilteredEmpty">
+		<control type="group" id="777">
+			<visible>Container.Content(empty)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- main list -->
+			<control type="panel" id="66">
+				<visible>Container.Content(empty)</visible>
+				<viewtype label="FilteredEmpty">panel</viewtype>
+				<onup>66</onup>
+				<ondown>66</ondown>
+				<onright>66</onright>
+				<onleft>1300</onleft>
+				<orientation>vertical</orientation>
+				<posx>100</posx>
+				<posy>27</posy>
+				<width>1280</width>
+				<height>665</height>
+				<itemlayout width="285" height="165">
+					<include>EpisodeThumbCardFiltered</include>
+					<include>EpisodeThumbFiltered</include>
+					<include>EpisodePosterFiltered</include>
+					<control type="label">
+						<include>EpisodeTitleFiltered</include>
+					</control>
+					<include>EpisodeDate</include>
+					<include>EpisodeThumbOverlayFiltered</include>
+					<control type="label">
+						<posy>85</posy>
+						<posx>91</posx>
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<control type="image">
+						<posx>253</posx>
+						<posy>90</posy>
+						<info>ListItem.Overlay</info>
+					</control>
+				</itemlayout>
+				<focusedlayout width="285" height="165">
+					<include>EpisodeThumbCardFiltered</include>
+					<include>EpisodeThumbFiltered</include>
+					<include>EpisodePosterFiltered</include>
+					<control type="label">
+						<include>EpisodeTitleFiltered</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<include>EpisodeDate</include>
+					<include>EpisodeThumbOverlayFiltered</include>
+					<control type="label">
+						<posy>85</posy>
+						<posx>91</posx>
+						<include>EpisodeThumbOverlayTitle2</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<control type="image">
+						<posx>253</posx>
+						<posy>90</posy>
+						<info>ListItem.Overlay</info>
+					</control>
+					<include>EpisodeSelectedBorderFiltered</include>
+				</focusedlayout>
+				<!-- default empty list item -->
+				<content>
+					<item id="1">
+						<description>Search</description>
+						<label>$LOCALIZE[137]</label>
+						<onfocus>Control.SendClick(1)</onfocus>
+						<onclick>Control.SetFocus(1300)</onclick>
+					</item>
+				</content>
+			</control>
+		</control>
+	</include>
 	<!-- Pre-play TV Show -->
 	<include name="PreplayShow">
 		<control type="group" id="777">

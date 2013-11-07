@@ -420,7 +420,7 @@
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
-			<visible>[!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode) + !Container.Content(episodes) + !Container.Content(seasons) + !Container.Content(songs) + !Container.Content(albums) + !Container.Content(channel)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents))] | !IsEmpty(Container.Property(primaryFilterActivated))</visible>
+			<visible>[!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode) + !Container.Content(episodes) + !Container.Content(seasons) + !Container.Content(songs) + !Container.Content(albums) + !Container.Content(channel)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents))] | !IsEmpty(Container.Property(primaryFilterActivated)) | Container.Content(empty)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
