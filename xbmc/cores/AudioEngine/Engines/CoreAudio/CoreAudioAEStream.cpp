@@ -447,7 +447,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
 {
   // if we have been deleted
-  if (!m_valid || m_delete || !m_Buffer || m_paused)
+  if (!m_valid || m_delete || !m_Buffer || (m_paused && !m_flushRequested))
     return 0;
   
   if (m_flushRequested)
@@ -786,7 +786,7 @@ OSStatus CCoreAudioAEStream::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
   // if we have no valid data output silence
-  if (!m_valid || m_delete || !m_Buffer || m_firstInput || m_paused)
+  if (!m_valid || m_delete || !m_Buffer || m_firstInput || (m_paused && !m_flushRequested))
   {
   	for (UInt32 i = 0; i < ioData->mNumberBuffers; i++)
       bzero(ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);
