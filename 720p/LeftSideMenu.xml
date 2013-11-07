@@ -566,7 +566,6 @@
 					<onup>102</onup>
 					<ondown>104</ondown>
 					<include>leftMenuPreplayButton</include>
-					<enable>!Container.Content(clip)</enable>
 				</control>
 				<!-- Subtitles -->
 				<control type="button" id="104">
@@ -576,7 +575,6 @@
 					<onup>103</onup>
 					<ondown>105</ondown>
 					<include>leftMenuPreplayButton</include>
-					<enable>!Container.Content(clip)</enable>
 				</control>
 				<!-- Rate -->
 				<control type="button" id="105">
