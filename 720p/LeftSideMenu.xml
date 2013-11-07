@@ -58,7 +58,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
-				<visible>Container.content(movies) | Container.content(tvshows) | Window.IsActive(2) | Window.IsActive(501) | Container.content(empty)</visible>
+				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip)</visible>
 			</control>
 			<control type="image">
 				<posy>680</posy>
@@ -68,7 +68,7 @@
 				<aspectratio>scale</aspectratio>
 				<texture flipx="true">left-menu-indicator-arrow.png</texture>
 				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
-				<visible>!Container.Content(secondary) + !Window.IsActive(10202) + !Container.Content(tvshow) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(episode) + !Container.Content(movie) + !Container.Content(clip)</visible>
+				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip)</visible>
 			</control>
 		</control>
 	</include>
