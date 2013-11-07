@@ -12,6 +12,7 @@ class CPlexAnalytics : public ANNOUNCEMENT::IAnnouncer, public ITimerCallback
 {
   public:
     CPlexAnalytics();
+    void didUpgradeEvent(bool success, const std::string& fromVersion, const std::string& toVersion, bool delta);
 
   private:
     void setCustomDimensions(CUrlOptions &options);

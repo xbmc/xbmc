@@ -58,6 +58,16 @@ CPlexAnalytics::CPlexAnalytics() : m_timer(this), m_firstEvent(true), m_numberOf
   m_sessionLength.restart();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexAnalytics::didUpgradeEvent(bool success, const std::string &fromVersion, const std::string &toVersion, bool delta)
+{
+  CUrlOptions o;
+  o.AddOption("cd10", fromVersion);
+  o.AddOption("cd11", toVersion);
+  o.AddOption("cm1", (int)delta);
+  trackEvent("App", "Upgrade", success ? "success" : "failed", (int)success, o);
+}
+
 typedef std::pair<std::string, std::string> strPair;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
