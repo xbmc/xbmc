@@ -763,18 +763,20 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFromFilter)
 {
+  CLog::Log(LOGDEBUG, "%s called with %s", __PRETTY_FUNCTION__, strDirectory.c_str());
   CURL newUrl = GetRealDirectoryUrl(strDirectory);
   if (newUrl.Get().empty())
     return false;
-  
-  CURL oldUrl = CURL(m_vecItems->GetPath());
 
   if (strDirectory == m_startDirectory)
   {
     m_sectionRoot = strDirectory;
     g_plexApplication.filterManager->loadFilterForSection(m_sectionRoot.Get());
-    m_startDirectory = newUrl.GetUrlWithoutOptions();
   }
+
+  CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+  if (filter && boost::ends_with(newUrl.GetFileName(), filter->currentPrimaryFilter()))
+    m_startDirectory = newUrl.GetUrlWithoutOptions();
 
   if (updateFromFilter)
     m_history.RemoveParentPath();
