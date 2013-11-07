@@ -716,7 +716,8 @@
 		<!-- tv show -->
 		<value condition="ControlGroup(7002).HasFocus">$INFO[Container(9002).ListItem.Plot]</value>
 		<!-- tv episode -->
-		<value condition="ControlGroup(7004).HasFocus">$INFO[Container(9004).ListItem.Plot]</value>
+		<value condition="ControlGroup(7004).HasFocus + [!Skin.HasSetting(HidePlotForUnwatched) | Container(9004).ListItem.Status(Watched)]">$INFO[Container(9004).ListItem.Plot]</value>
+		<value condition="ControlGroup(7004).HasFocus + [Container(9004).ListItem.Status(InProgress) | Container(9004).ListItem.Status(UnWatched)] + Skin.HasSetting(HidePlotForUnwatched)">* Plot hidden to avoid spoilers *</value>
 	</variable>
 	<!-- slide for SearchItemFullInfo -->
 	<include name="SearchItemFullInfoSlide">
