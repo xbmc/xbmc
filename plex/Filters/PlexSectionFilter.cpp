@@ -37,10 +37,15 @@ bool CPlexSectionFilter::loadFilters()
     {
       CFileItemPtr primaryFilter = list.Get(i);
 
-      if (advancedFilters && type == PLEX_DIR_TYPE_MOVIE)
+      if (advancedFilters && primaryFilter->GetProperty("unprocessed_key").asString() == "folder" &&
+          type != PLEX_DIR_TYPE_HOME_MOVIES)
+        continue;
+
+      if (advancedFilters && (type == PLEX_DIR_TYPE_MOVIE || type == PLEX_DIR_TYPE_HOME_MOVIES))
       {
         if (primaryFilter->GetProperty("unprocessed_key").asString() == "all" ||
-            primaryFilter->GetProperty("unprocessed_key").asString() == "onDeck")
+            primaryFilter->GetProperty("unprocessed_key").asString() == "onDeck" ||
+            primaryFilter->GetProperty("unprocessed_key").asString() == "folder")
           m_primaryFilters[primaryFilter->GetProperty("unprocessed_key").asString()] = primaryFilter->GetLabel();
       }
       else

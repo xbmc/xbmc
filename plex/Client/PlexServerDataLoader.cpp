@@ -262,7 +262,12 @@ CFileItemPtr CPlexServerDataLoader::GetSection(const CURL &sectionUrl)
     {
       CFileItemPtr item = sections->Get(i);
       if (item && item->GetPath() == sectionUrl.Get())
+      {
+        if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE &&
+            item->GetProperty("agent").asString() == "com.plexapp.agents.none")
+          item->SetPlexDirectoryType(PLEX_DIR_TYPE_HOME_MOVIES);
         return item;
+      }
     }
   }
   return CFileItemPtr();
