@@ -153,7 +153,6 @@ CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &
     CLog::Log(LOGDEBUG, "CPlexNavigationHelper::navigateToItem navigating to %s (%s)", originalUrl.c_str(), item->GetLabel().c_str());
     std::vector<CStdString> args;
     args.push_back(originalUrl);
-    args.push_back("return");
     CApplicationMessenger::Get().ActivateWindow(window, args, false);
   }
   else
