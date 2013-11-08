@@ -21,6 +21,7 @@
 /* PLEX */
 #include "AdvancedSettings.h"
 #include <stdexcept>
+#include "PlexApplication.h"
 /* END PLEX */
 
 #include "system.h"
@@ -142,6 +143,10 @@ void CLog::Log(int loglevel, const char *format, ... )
 #if defined(TARGET_ANDROID) && defined(_DEBUG)
   CXBMCApp::android_printf("%s%s",strPrefix.c_str(), strData.c_str());
 #endif
+
+    /* PLEX */
+    g_plexApplication.sendNetworkLog(loglevel, strPrefix + strData);
+    /* END PLEX */
 
     fputs(strPrefix.c_str(), m_file);
     fputs(strData.c_str(), m_file);

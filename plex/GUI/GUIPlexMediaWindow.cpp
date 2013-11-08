@@ -60,6 +60,11 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 
   switch(message.GetMessage())
   {
+    case GUI_MSG_UPDATE:
+    {
+      Update(m_sectionRoot.Get(), false, false);
+      break;
+    }
     case GUI_MSG_LOAD_SKIN:
     {
       /* This is called BEFORE the skin is reloaded, so let's save this event to be handled
@@ -222,7 +227,9 @@ void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
       filter->clearFilters();
       clear = true;
     }
+
     updateFilterButtons(filter, clear, !filter->secondaryFiltersActivated());
+
   }
   else if (filterButtonId >= FILTER_SECONDARY_BUTTONS_START && filterButtonId < SORT_BUTTONS_START)
   {
@@ -235,6 +242,7 @@ void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
     {
       currentFilter->setSelected(!currentFilter->isSelected());
       filter->addSecondaryFilter(currentFilter);
+      m_clearFilterButton->SetVisible(filter->hasActiveSecondaryFilters());
     }
     else
     {
@@ -275,7 +283,6 @@ void CGUIPlexMediaWindow::OnFilterButton(int filterButtonId)
 
       if (radio)
         radio->SetSelected(currentFilter->isSelected());
-
     }
   }
   else
@@ -645,15 +652,20 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       QueueItem(item);
       break;
 
-    case CONTEXT_BUTTON_MARK_UNWATCHED:
-      item->MarkAsUnWatched(true);
-      g_directoryCache.ClearSubPaths(m_vecItems->GetPath());
-      break;
-
     case CONTEXT_BUTTON_MARK_WATCHED:
-      item->MarkAsWatched(true);
+    case CONTEXT_BUTTON_MARK_UNWATCHED:
+    {
+      CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+      bool reload = filter->needRefreshOnStateChange();
+
+      if (button == CONTEXT_BUTTON_MARK_WATCHED)
+        item->MarkAsWatched(reload);
+      else
+        item->MarkAsUnWatched(reload);
+
       g_directoryCache.ClearSubPaths(m_vecItems->GetPath());
       break;
+    }
 
     case CONTEXT_BUTTON_DELETE:
       g_plexApplication.mediaServerClient->deleteItem(item);

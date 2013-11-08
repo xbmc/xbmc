@@ -59,12 +59,35 @@ class CPlexSectionFilter
 
     virtual std::string getFilterUrl() const { return m_sectionUrl.Get(); }
     virtual bool isLoaded() const { return m_primaryFilters.size() > 0; }
-    virtual bool hasAdvancedFilters() const { return m_secondaryFilters.size() > 0; }
+    virtual bool hasAdvancedFilters() const { return (m_secondaryFilters.size() > 0 || m_sortOrders.size() > 0); }
 
     virtual void addSecondaryFilter(CPlexSecondaryFilterPtr secFilter);
     virtual CPlexSecondaryFilterPtr addSecondaryFilter(const std::string& filterKey);
 
     virtual void loadFilterValues(CPlexSecondaryFilterPtr secFilter);
+
+    CPlexSecondaryFilterPtr getSecondaryFilterOfName(const std::string& name)
+    {
+      BOOST_FOREACH(CPlexSecondaryFilterPtr filter, getSecondaryFilters())
+      {
+        if (filter->getFilterName() == name)
+          return filter;
+      }
+      return CPlexSecondaryFilterPtr();
+    }
+
+    bool needRefreshOnStateChange()
+    {
+      CPlexSecondaryFilterPtr unwatched = getSecondaryFilterOfName("unwatched");
+
+      if (unwatched && unwatched->isSelected())
+        return true;
+
+      if (currentPrimaryFilter() == "onDeck")
+        return true;
+
+      return false;
+    }
 
     virtual void clearFilters()
     {

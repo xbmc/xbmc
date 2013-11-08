@@ -589,11 +589,11 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_RESET:
     case GUI_MSG_PLEX_SERVER_DATA_LOADED:
     case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
-    case GUI_MSG_UPDATE_MAIN_MENU:
+    case GUI_MSG_UPDATE:
     {
       UpdateSections();
       
-      if (message.GetMessage() == GUI_MSG_WINDOW_RESET || message.GetMessage() == GUI_MSG_UPDATE_MAIN_MENU)
+      if (message.GetMessage() == GUI_MSG_WINDOW_RESET || message.GetMessage() == GUI_MSG_UPDATE)
         RefreshAllSections(false);
       else if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
         RefreshSectionsForServer(message.GetStringParam());

@@ -541,7 +541,7 @@ void CGUISettings::Initialize()
   AddBool(advs, "videoscreen.haslcd", 4501, false);
 #endif
   AddBool(advs, "debug.visualizedirtyregions", 18114, false);
-  AddInt(advs, "debug.dirtyregionsalgorithm", 18115, 3, 0, 1, 3, SPIN_CONTROL_INT);
+  AddInt(advs, "debug.dirtyregionsalgorithm", 18115, 1, 0, 1, 3, SPIN_CONTROL_INT);
   AddInt(advs, "debug.dirtyregionsnofliptimeout", 18116, 0, 0, 100, 10000, SPIN_CONTROL_INT);
 
   AddString(advs, "advanced.labelaudio", 292, "", BUTTON_CONTROL_STANDARD);
@@ -573,8 +573,10 @@ void CGUISettings::Initialize()
   AddSeparator(advs, "audiooutput.sep2");
 #endif
 #endif
+
   AddString(advs, "advanced.labeldebug", 18112, "", BUTTON_CONTROL_STANDARD);
   AddBool(advs, "debug.showloginfo", 20191, false);
+  AddBool(advs, "debug.networklogging", 52404, false);
   AddPath(NULL, "debug.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
 

@@ -111,7 +111,7 @@ void CPlexMediaServerClient::SetItemWatchStatus(const CFileItemPtr &item, bool w
     return;
   }
 
-  CGUIMessage msg(GUI_MSG_UPDATE_MAIN_MENU, 0, WINDOW_HOME, 0, 0);
+  CGUIMessage msg(GUI_MSG_UPDATE, PLEX_SERVER_MANAGER, g_windowManager.GetActiveWindow(), 0, 0);
   AddJob(new CPlexMediaServerClientJob(u, "GET", msg));
 }
 

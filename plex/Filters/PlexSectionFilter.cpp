@@ -67,33 +67,36 @@ bool CPlexSectionFilter::loadFilters()
   list.Clear();
 
   /* and now the secondaries */
-  PlexUtils::AppendPathToURL(fURL, "filters");
-  if (dir.GetDirectory(fURL.Get(), list))
+  if (type != PLEX_DIR_TYPE_HOME_MOVIES)
   {
-    for (int i = 0; i < list.Size(); i ++)
+    PlexUtils::AppendPathToURL(fURL, "filters");
+    if (dir.GetDirectory(fURL.Get(), list))
     {
-      CFileItemPtr filter = list.Get(i);
-      CPlexSecondaryFilterPtr secondaryFilter = CPlexSecondaryFilter::secondaryFilterFromItem(filter);
-      if (secondaryFilter)
+      for (int i = 0; i < list.Size(); i ++)
       {
-        /* we might already have this filter in our list because it was used last time
-         * and saved to the state file */
-        BOOST_FOREACH(CPlexSecondaryFilterPtr filter, m_currentSecondaryFilters)
+        CFileItemPtr filter = list.Get(i);
+        CPlexSecondaryFilterPtr secondaryFilter = CPlexSecondaryFilter::secondaryFilterFromItem(filter);
+        if (secondaryFilter)
         {
-          if (filter->getFilterKey() == secondaryFilter->getFilterKey())
+          /* we might already have this filter in our list because it was used last time
+         * and saved to the state file */
+          BOOST_FOREACH(CPlexSecondaryFilterPtr filter, m_currentSecondaryFilters)
           {
-            secondaryFilter = filter;
-            break;
+            if (filter->getFilterKey() == secondaryFilter->getFilterKey())
+            {
+              secondaryFilter = filter;
+              break;
+            }
           }
-        }
 
-        m_secondaryFilters[secondaryFilter->getFilterKey()] = secondaryFilter;
+          m_secondaryFilters[secondaryFilter->getFilterKey()] = secondaryFilter;
 
-        /* if this is a selected filter it probably comes from the
+          /* if this is a selected filter it probably comes from the
          * XML file at this point, so we need to load it values to
          * have something nice to show in the UI */
-        if (secondaryFilter->isSelected())
-          secondaryFilter->loadValues();
+          if (secondaryFilter->isSelected())
+            secondaryFilter->loadValues();
+        }
       }
     }
 

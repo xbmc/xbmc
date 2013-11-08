@@ -943,3 +943,7 @@ msgstr "Enter message"
 msgctxt "#52403"
 msgid "Share %s on %s with message:"
 msgstr "Share %s on %s with message:"
+
+msgctxt "#52404"
+msgid "Enable network logging"
+msgstr "Enable network logging"
