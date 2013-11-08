@@ -762,7 +762,7 @@
 						<control type="textbox">
 							<posy>90</posy>
 							<width>315</width>
-							<height>298</height>
+							<height>292</height>
 							<label>$VAR[HomeListItemFullInfoPlot]</label>
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
