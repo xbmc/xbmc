@@ -117,9 +117,9 @@
 			<control type="panel" id="80">
 				<viewtype label="ClipThumbs">panel</viewtype>
 				<visible>Container.content(Clips) | Container.Content(HomeMovies)</visible>
-				<onup>50</onup>
-				<ondown>50</ondown>
-				<onright>50</onright>
+				<onup>80</onup>
+				<ondown>80</ondown>
+				<onright>80</onright>
 				<onleft>1300</onleft>
 				<orientation>vertical</orientation>
 				<posx>102</posx>
