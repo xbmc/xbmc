@@ -364,17 +364,10 @@
 					<width>220</width>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
-					<control type="label">
-						<height>30</height>
-						<width min="29" max="80">auto</width>
-						<label>[UPPERCASE]Filter:[/UPPERCASE]</label>
-						<font>Condensed-24</font>
-						<textcolor>white</textcolor>
-					</control>
 					<control type="label" id="19029">
 						<height>30</height>
 						<description>Heading</description>
-						<width min="29" max="120">auto</width>
+						<width min="29" max="220">auto</width>
 						<font>Condensed-24</font>
 						<textcolor>white</textcolor>
 					</control>
