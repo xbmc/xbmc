@@ -91,7 +91,7 @@ CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &
   {
     int window = WINDOW_VIDEO_NAV;
     if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_ARTIST)
-      window = WINDOW_MUSIC_NAV;
+      window = WINDOW_MUSIC_FILES;
     else if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO ||
              item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTOALBUM)
       window = WINDOW_PICTURES;
