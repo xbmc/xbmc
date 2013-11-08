@@ -213,6 +213,7 @@
   <VideoOSD>
     <joystick name="AppleRemote">
       <button id="6">Close</button>
+      <button id="8">Stop</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
