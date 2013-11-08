@@ -28,9 +28,12 @@
 #include "VideoThumbLoader.h"
 #include "PlexFilterManager.h"
 
-#include "AutoUpdate/PlexAutoUpdate.h"
 #include "network/UdpClient.h"
 #include "DNSNameCache.h"
+
+#ifdef ENABLE_AUTOUPDATE
+#include "AutoUpdate/PlexAutoUpdate.h"
+#endif
 
 #include <sstream>
 
@@ -51,7 +54,9 @@ PlexApplication::Start()
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
+#ifdef ENABLE_AUTOUPDATE
   autoUpdater = new CPlexAutoUpdate;
+#endif
 
   serverManager->load();
 
@@ -132,7 +137,9 @@ void PlexApplication::OnWakeUp()
 ////////////////////////////////////////////////////////////////////////////////////////
 void PlexApplication::ForceVersionCheck()
 {
+#ifdef ENABLE_AUTOUPDATE
   autoUpdater->ForceVersionCheckInBackground();
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +260,9 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
 //    backgroundMusicPlayer->Die();
 //    delete backgroundMusicPlayer;
     
+#ifdef ENABLE_AUTOUPDATE
     delete autoUpdater;
+#endif
 
     delete thumbCacher;
   }
