@@ -822,6 +822,9 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
   CFileItemPtr section = g_plexApplication.dataLoader->GetSection(m_sectionRoot);
   if (section && section->GetPlexDirectoryType() == PLEX_DIR_TYPE_HOME_MOVIES)
     list.SetContent("homemovies");
+
+  if (filter->currentPrimaryFilter() == "folder")
+    list.SetContent("folders");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -835,12 +838,12 @@ bool CGUIPlexMediaWindow::IsVideoContainer(CFileItemPtr item) const
   if (dirType == PLEX_DIR_TYPE_DIRECTORY && item)
     dirType = item->GetPlexDirectoryType();
 
-  return (dirType == PLEX_DIR_TYPE_MOVIE ||
-          dirType == PLEX_DIR_TYPE_SHOW ||
-          dirType == PLEX_DIR_TYPE_SEASON ||
+  return (dirType == PLEX_DIR_TYPE_MOVIE    ||
+          dirType == PLEX_DIR_TYPE_SHOW     ||
+          dirType == PLEX_DIR_TYPE_SEASON   ||
           dirType == PLEX_DIR_TYPE_PLAYLIST ||
-          dirType == PLEX_DIR_TYPE_EPISODE ||
-          dirType == PLEX_DIR_TYPE_VIDEO ||
+          dirType == PLEX_DIR_TYPE_EPISODE  ||
+          dirType == PLEX_DIR_TYPE_VIDEO    ||
           dirType == PLEX_DIR_TYPE_CLIP);
 }
 
