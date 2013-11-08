@@ -427,7 +427,7 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath, bool reverse /* =
         if (strPath.size() > i->second.size())
           return URIUtils::AddFileToFolder(i->first, strPath.Mid(i->second.size()));
         else
-          return i->second;
+          return i->first;
       }
     }
   }
