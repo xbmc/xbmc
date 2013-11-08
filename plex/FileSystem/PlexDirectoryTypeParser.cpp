@@ -43,7 +43,8 @@ CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(EPlexDirectoryType type)
   else if (type == PLEX_DIR_TYPE_ARTIST)
     return artistParser;
 
-  else if (type == PLEX_DIR_TYPE_PHOTO)
+  else if (type == PLEX_DIR_TYPE_PHOTO ||
+           type == PLEX_DIR_TYPE_PHOTOALBUM)
     return pictureParser;
 
   else if (type == PLEX_DIR_TYPE_RELEASE)

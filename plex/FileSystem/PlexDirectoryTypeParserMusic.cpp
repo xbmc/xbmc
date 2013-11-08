@@ -164,6 +164,7 @@ void CPlexDirectoryTypeParserArtist::Process(CFileItem &item, CFileItem &mediaCo
 
   item.GetMusicInfoTag()->SetArtist(artist);
 
+  int thumbIdx = 0;
   for (TiXmlElement *el = itemElement->FirstChildElement(); el; el = el->NextSiblingElement())
   {
     CFileItemPtr tagItem = XFILE::CPlexDirectory::NewPlexElement(el, item, item.GetPath());
@@ -171,5 +172,7 @@ void CPlexDirectoryTypeParserArtist::Process(CFileItem &item, CFileItem &mediaCo
     if (tagItem &&
         tagItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_GENRE)
       ParseTag(item, *tagItem.get());
+    else if (tagItem && tagItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_THUMB)
+      item.SetArt(PLEX_ART_THUMB, thumbIdx ++, tagItem->GetPath());
   }
 }
