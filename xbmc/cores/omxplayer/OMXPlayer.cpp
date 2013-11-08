@@ -184,6 +184,17 @@ private:
   bool original;
   bool preferexternal;
 public:
+  /** \brief The class' operator() decides if the given (subtitle) SelectionStream is relevant wrt.
+  *          preferred subtitle language and audio language. If the subtitle is relevant <B>false</B> false is returned.
+  *
+  *          A subtitle is relevant if
+  *          - it was previously selected, or
+  *          - it's an external sub and "prefer external subs was selected", or
+  *          - it's a forced sub and "original stream's language" was selected, or
+  *          - it's a forced sub and its language matches the audio's language, or
+  *          - it's a default sub, or
+  *          - its language matches the preferred subtitle's language (unequal to "original stream's language")
+  */
   PredicateSubtitleFilter(std::string& lang)
     : audiolang(lang),
       original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original")),
