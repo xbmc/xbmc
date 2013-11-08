@@ -25,6 +25,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Setting.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #include <math.h>
 
@@ -105,14 +106,24 @@ void CJoystick::Initialize()
         continue;
       }
 #endif
-
-      m_Joysticks.push_back(joy);
       if (joy)
       {
-        m_JoystickNames.push_back(string(SDL_JoystickName(i)));
-        CLog::Log(LOGNOTICE, "Enabled Joystick: %s", SDL_JoystickName(i));
-        CLog::Log(LOGNOTICE, "Details: Total Axis: %d Total Hats: %d Total Buttons: %d",
-            SDL_JoystickNumAxes(joy), SDL_JoystickNumHats(joy), SDL_JoystickNumButtons(joy));        
+        // Some (Microsoft) Keyboards are recognized as Joysticks by modern kernels
+        // Don't enumerate them
+        // https://bugs.launchpad.net/ubuntu/+source/linux/+bug/390959
+        // NOTICE: Enabled Joystick: Microsoft Wired Keyboard 600
+        // Details: Total Axis: 37 Total Hats: 0 Total Buttons: 57
+        int num_axis = SDL_JoystickNumAxes(joy);
+        if (num_axis > 20 && StringUtils::FindWords(SDL_JoystickName(i), "keyboard") != std::string::npos)
+          CLog::Log(LOGNOTICE, "Your Joystick is a Keyboard, ignoring it: %s Axis: %d", SDL_JoystickName(i), num_axis);
+        else
+        {
+          m_JoystickNames.push_back(string(SDL_JoystickName(i)));
+          CLog::Log(LOGNOTICE, "Enabled Joystick: %s", SDL_JoystickName(i));
+          CLog::Log(LOGNOTICE, "Details: Total Axis: %d Total Hats: %d Total Buttons: %d",
+            num_axis, SDL_JoystickNumHats(joy), SDL_JoystickNumButtons(joy));
+          m_Joysticks.push_back(joy);
+        }
       }
       else
       {
