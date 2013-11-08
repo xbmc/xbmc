@@ -486,13 +486,13 @@
 				</control>
 				<!-- primary filters list -->
 				<control type="grouplist" id="19000">
-					<posy>87</posy>
+					<posy>77</posy>
 					<posx>0</posx>
 					<onup>19010</onup>
 					<ondown>29999</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-10" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,0" time="0" condition="Container.Content(movies)">Conditional</animation>
 				</control>
 				<!-- secondary filters list title -->
 				<control type="label" id="19009">
@@ -508,14 +508,14 @@
 				</control>
 				<!-- secondary filters list -->
 				<control type="grouplist" id="19001">
-					<posy>328</posy>
+					<posy>318</posy>
 					<posx>0</posx>
 					<onup>19000</onup>
 					<ondown>32000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-137" time="0" condition="Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-110" time="0" condition="Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-127" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-100" time="0" condition="Window.IsActive(2)">Conditional</animation>
 					<animation effect="slide" end="0,-80" time="0" condition="Window.IsActive(501)">Conditional</animation>
 				</control>
 				<!-- filters buttons -->
@@ -550,13 +550,13 @@
 				</control>
 				<!-- sorting list -->
 				<control type="grouplist" id="19010">
-					<posy>566</posy>
+					<posy>556</posy>
 					<posx>0</posx>
 					<onup>19001</onup>
 					<ondown>30000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-20" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-10" time="0" condition="Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-30" time="0" condition="Window.IsActive(2)">Conditional</animation>
 					<animation effect="slide" end="0,-160" time="0" condition="Window.IsActive(501)">Conditional</animation>
 				</control>
