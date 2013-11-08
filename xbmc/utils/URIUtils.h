@@ -68,6 +68,16 @@ public:
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static CStdString GetParentPath(const CStdString& strPath);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
+
+  /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
+    Handles changes in path separator and filename URL encoding if necessary to derive toFile.
+    \param fromPath the base path of the original URL
+    \param fromFile the filename portion of the original URL
+    \param toPath the base path of the resulting URL
+    \return the full path.
+   */
+  static std::string ChangeBasePath(const std::string &fromPath, const std::string &fromFile, const std::string &toPath);
+
   static CStdString SubstitutePath(const CStdString& strPath, bool reverse = false);
 
   static bool IsAddonsPath(const CStdString& strFile);
