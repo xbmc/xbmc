@@ -629,7 +629,7 @@
 					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Recommend -->
-				<control type="button" id="106">
+				<!--><control type="button" id="106">
 					<texturefocus>b-pp-recommend-s.png</texturefocus>
 					<texturenofocus>b-pp-recommend.png</texturenofocus>
 					<onup>105</onup>
@@ -638,7 +638,7 @@
 					<visible>!IsEmpty(ListItem(0).Property(canRecommend))</visible>
 					<onfocus>Skin.SetString(DialogPos,recommend)</onfocus>
 					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
-				</control>
+				</control>-->
 				<!-- Share -->
 				<control type="button" id="107">
 					<texturefocus>b-pp-share-s.png</texturefocus>
