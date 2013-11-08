@@ -158,11 +158,6 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
       URIUtils::RemoveSlashAtEnd(strNoSlash);
       CStdString strFileName = URIUtils::GetFileName(strNoSlash);
 
-      // URL Decode for cases where source uses URL encoding and target does not 
-      if ( URIUtils::ProtocolHasEncodedFilename(CURL(pItem->GetPath()).GetProtocol() )
-       && !URIUtils::ProtocolHasEncodedFilename(CURL(strDestFile).GetProtocol() ) )
-        CURL::Decode(strFileName);
-
       // special case for upnp
       if (URIUtils::IsUPnP(items.GetPath()) || URIUtils::IsUPnP(pItem->GetPath()))
       {
@@ -181,7 +176,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
 
       CStdString strnewDestFile;
       if(!strDestFile.empty()) // only do this if we have a destination
-        strnewDestFile = URIUtils::AddFileToFolder(strDestFile, strFileName);
+        strnewDestFile = URIUtils::ChangeBasePath(pItem->GetPath(), strFileName, strDestFile); // Convert (URL) encoding + slashes (if source / target differ)
 
       if (pItem->m_bIsFolder)
       {
