@@ -848,10 +848,10 @@
 				<control type="textbox" id="400">
 					<description>Description Value for Movies</description>
 					<left>210</left>
-					<top>515</top>
+					<top>525</top>
 					<width>1030</width>
 					<height>120</height>
-					<font>font12</font>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<pagecontrol>61</pagecontrol>

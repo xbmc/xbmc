@@ -720,8 +720,8 @@
 					<left>0</left>
 					<top>30</top>
 					<width>850</width>
-					<height>120</height>
-					<font>font12</font>
+					<height>100</height>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
@@ -1046,8 +1046,8 @@
 					<left>10</left>
 					<top>210</top>
 					<width>510</width>
-					<height>180</height>
-					<font>font12</font>
+					<height>190</height>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
@@ -1089,10 +1089,10 @@
 					<left>10</left>
 					<top>245</top>
 					<width>510</width>
-					<height>25</height>
+					<height>30</height>
 					<label>$INFO[ListItem.Season,[COLOR=blue] $LOCALIZE[20373] :[/COLOR] ] $INFO[ListItem.episode,[COLOR=blue] $LOCALIZE[20359] :[/COLOR] ] $INFO[ListItem.premiered,[COLOR=blue] $LOCALIZE[31322] :[/COLOR] ]</label>
 					<align>center</align>
-					<aligny>top</aligny>
+					<aligny>center</aligny>
 					<font>font12</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
@@ -1111,7 +1111,7 @@
 					<top>280</top>
 					<width>510</width>
 					<height>120</height>
-					<font>font12</font>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
@@ -1139,7 +1139,7 @@
 					<top>0</top>
 					<width>250</width>
 					<height>355</height>
-					<font>font12</font>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[Container.ShowPlot]</label>
@@ -1196,7 +1196,7 @@
 					<top>0</top>
 					<width>250</width>
 					<height>355</height>
-					<font>font12</font>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
@@ -1508,7 +1508,7 @@
 					<top>395</top>
 					<width>490</width>
 					<height>170</height>
-					<font>font12</font>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
@@ -1614,7 +1614,7 @@
 					<top>395</top>
 					<width>490</width>
 					<height>170</height>
-					<font>font12</font>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
@@ -1770,10 +1770,10 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>425</top>
+					<top>430</top>
 					<width>540</width>
-					<height>105</height>
-					<font>font12</font>
+					<height>100</height>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
@@ -1834,10 +1834,10 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>425</top>
+					<top>430</top>
 					<width>540</width>
 					<height>145</height>
-					<font>font12</font>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
@@ -1883,10 +1883,10 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>425</top>
+					<top>430</top>
 					<width>540</width>
 					<height>145</height>
-					<font>font12</font>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[Container.ShowPlot]</label>
@@ -1932,10 +1932,10 @@
 				<control type="textbox">
 					<description>Description Value for Video</description>
 					<left>10</left>
-					<top>425</top>
+					<top>430</top>
 					<width>400</width>
-					<height>105</height>
-					<font>font12</font>
+					<height>100</height>
+					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>

@@ -230,10 +230,10 @@
 					<control type="textbox">
 						<description>Description</description>
 						<left>10</left>
-						<top>100</top>
+						<top>95</top>
 						<width>490</width>
-						<height>180</height>
-						<font>font12</font>
+						<height>192</height>
+						<font>font13</font>
 						<align>justify</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
@@ -482,7 +482,7 @@
 						<top>110</top>
 						<width>290</width>
 						<height>400</height>
-						<font>font12</font>
+						<font>font13</font>
 						<align>justify</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
