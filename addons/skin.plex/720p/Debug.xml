@@ -13,6 +13,8 @@
 		<value condition="Container.Content(empty)">empty</value>
 		<value condition="Container.Content(files)">files</value>
 		<value condition="Container.Content(file)">file</value>
+		<value condition="Container.Content(folder)">folder</value>
+		<value condition="Container.Content(folders)">folders</value>
 		<value condition="Container.Content(songs)">songs</value>
 		<value condition="Container.Content(song)">song</value>
 		<value condition="Container.Content(artists)">artists</value>
@@ -29,6 +31,7 @@
 		<value condition="Container.Content(episode)">episode</value>
 		<value condition="Container.Content(clips)">clips</value>
 		<value condition="Container.Content(clip)">clip</value>
+		<value condition="Container.Content(homemovies)">homemovies</value>
 		<value condition="Container.Content(musicvideos)">musicvideos</value>
 		<value condition="Container.Content(genres)">genres</value>
 		<value condition="Container.Content(years)">years</value>
@@ -150,6 +153,14 @@
 					<include>debugFont</include>
 					<label/>
 				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Skin.String(SectionType) : [COLOR=orangeLight]$INFO[Skin.String(SectionType)][/COLOR]</label>
+				</control>
+					<control type="label">
+						<include>debugFont</include>
+						<label/>
+					</control>
 				<control type="label">
 					<include>debugFont</include>
 					<label>Container.Viewmode : [COLOR=orangeLight]$INFO[Container.Viewmode][/COLOR]</label>

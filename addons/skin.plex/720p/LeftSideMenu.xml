@@ -58,7 +58,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
-				<visible>Container.content(movies) | Container.content(tvshows) | Window.IsActive(2) | Window.IsActive(501)</visible>
+				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip)</visible>
 			</control>
 			<control type="image">
 				<posy>680</posy>
@@ -68,7 +68,37 @@
 				<aspectratio>scale</aspectratio>
 				<texture flipx="true">left-menu-indicator-arrow.png</texture>
 				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
-				<visible>!Container.Content(secondary) + !Window.IsActive(10202) + !Container.Content(tvshow) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(episode) + !Container.Content(movie) + !Container.Content(clip)</visible>
+				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip)</visible>
+			</control>
+		</control>
+	</include>
+	<include name="leftMenuBgSettings">
+		<control type="group">
+			<posy>0</posy>
+			<!-- Background -->
+			<control type="image">
+				<posx>-253</posx>
+				<height>720</height>
+				<width>254</width>
+				<include>Black</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="75"/>
+				</animation>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<width>74</width>
+				<height>720</height>
+				<include>Black</include>
+			</control>
+			<control type="image">
+				<posy>498</posy>
+				<posx>74</posx>
+				<width>16</width>
+				<height>32</height>
+				<aspectratio>scale</aspectratio>
+				<texture>arrow-big.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
 			</control>
 		</control>
 	</include>
@@ -144,7 +174,7 @@
 		<height>45</height>
 	</include>
 	<include name="leftMenuFormat">
-		<width>230</width>
+		<width>250</width>
 		<height>26</height>
 		<align>right</align>
 		<textoffsety>5</textoffsety>
@@ -155,6 +185,7 @@
 		<focusedcolor>orangeLight</focusedcolor>
 		<texturefocus>-</texturefocus>
 		<texturenofocus>-</texturenofocus>
+		<scroll>true</scroll>
 		<animation type="Conditional" condition="true">
 			<effect type="fade" start="0" end="100"/>
 		</animation>
@@ -167,23 +198,23 @@
 		<textoffsetx>10</textoffsetx>
 		<font>CondensedBold-17</font>
 		<shadowcolor>ff222222</shadowcolor>
-		<textcolor>red</textcolor>
+		<textcolor>white</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
 		<texturefocus>bg-b-clear-subfilters-s.png</texturefocus>
-		<texturenofocus>bg-b-clear-subfilters.png</texturenofocus>
+		<texturenofocus>-</texturenofocus>
 		<animation type="Conditional" condition="true">
 			<effect type="fade" start="0" end="100"/>
 		</animation>
 	</include>
 	<include name="leftMenuClearFilters">
-		<width>230</width>
+		<width>250</width>
 		<height>26</height>
 		<align>right</align>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>0</textoffsetx>
 		<font>CondensedBold-17</font>
 		<shadowcolor>ff222222</shadowcolor>
-		<textcolor>red</textcolor>
+		<textcolor>white</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
 		<texturefocus>bg-b-clear-filters-s.png</texturefocus>
 		<texturenofocus>-</texturenofocus>
@@ -234,7 +265,6 @@
 	</include>
 	<include name="leftMenuSortingButton">
 		<description>sorting radio button</description>
-		<!-- <textureorderoff>black-bottom-grey.png</textureorderoff> -->
 		<textureorderascending>arrow-big-up-orange.png</textureorderascending>
 		<textureorderdescending flipy="true">arrow-big-up-orange.png</textureorderdescending>
 		<align>right</align>
@@ -242,6 +272,7 @@
 		<pulseonselect>false</pulseonselect>
 		<radioheight>14</radioheight>
 		<radiowidth>16</radiowidth>
+		<radioposy>8</radioposy>
 	</include>
 	<!-- preplay buttons -->
 	<include name="leftMenuPreplayIcon">
@@ -441,8 +472,8 @@
 				<posx>-253</posx>
 				<posy>0</posy>
 				<width>253</width>
-				<height>720</height>
-				<ondown>19000</ondown>
+				<height>730</height>
+				<ondown>1300</ondown>
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
 				<!-- FILTERS -->
@@ -450,39 +481,42 @@
 				<control type="label" id="19008">
 					<description>Title</description>
 					<posy>22</posy>
-					<posx>253</posx>
+					<posx>255</posx>
 					<include>leftMenuTitle</include>
 				</control>
 				<!-- primary filters list -->
 				<control type="grouplist" id="19000">
-					<posy>87</posy>
-					<posx>15</posx>
-					<ondown>19001</ondown>
+					<posy>77</posy>
+					<posx>0</posx>
+					<onup>19010</onup>
+					<ondown>29999</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-10" time="0" condition="Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,0" time="0" condition="Container.Content(movies)">Conditional</animation>
 				</control>
 				<!-- secondary filters list title -->
 				<control type="label" id="19009">
 					<description>Secondary Title</description>
-					<posy>293</posy>
-					<posx>253</posx>
+					<posy>263</posy>
+					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
-					<animation effect="slide" end="0,-157" time="0" condition="Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-140" time="0" condition="Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-127" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-100" time="0" condition="Skin.String(SectionType,photos) | Window.IsVisible(2)">Conditional</animation>
+					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsVisible(501)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- secondary filters list -->
 				<control type="grouplist" id="19001">
-					<posy>358</posy>
-					<posx>15</posx>
+					<posy>318</posy>
+					<posx>0</posx>
 					<onup>19000</onup>
-					<ondown>19010</ondown>
+					<ondown>32000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-167" time="0" condition="Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-150" time="0" condition="Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-127" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-100" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 				</control>
 				<!-- filters buttons -->
 				<control type="button" id="19005">
@@ -505,27 +539,30 @@
 				<!-- sorting list title -->
 				<control type="label" id="19019">
 					<description>Title</description>
-					<posy>512</posy>
-					<posx>253</posx>
+					<posy>502</posy>
+					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
-					<animation effect="slide" end="0,-30" time="0" condition="Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-80" time="0" condition="Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-10" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-30" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- sorting list -->
 				<control type="grouplist" id="19010">
-					<posy>576</posy>
-					<posx>10</posx>
+					<posy>556</posy>
+					<posx>0</posx>
 					<onup>19001</onup>
+					<ondown>30000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-40" time="0" condition="Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-80" time="0" condition="Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-10" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-30" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 				</control>
 				<!-- sorting buttons -->
 				<control type="filterorderbutton" id="19011">
-					<textoffsetx>30</textoffsetx>
+					<textoffsetx>35</textoffsetx>
 					<include>leftMenuFormat</include>
 					<include>leftMenuSortingButton</include>
 				</control>
@@ -566,7 +603,8 @@
 					<onup>102</onup>
 					<ondown>104</ondown>
 					<include>leftMenuPreplayButton</include>
-					<enable>!Container.Content(clip)</enable>
+					<onfocus>Skin.SetString(DialogPos,audiostreampicker)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Subtitles -->
 				<control type="button" id="104">
@@ -576,7 +614,8 @@
 					<onup>103</onup>
 					<ondown>105</ondown>
 					<include>leftMenuPreplayButton</include>
-					<enable>!Container.Content(clip)</enable>
+					<onfocus>Skin.SetString(DialogPos,subtitlestreampicker)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Rate -->
 				<control type="button" id="105">
@@ -586,16 +625,20 @@
 					<onup>104</onup>
 					<ondown>106</ondown>
 					<include>leftMenuPreplayButton</include>
+					<onfocus>Skin.SetString(DialogPos,rate)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Recommend -->
-				<control type="button" id="106">
+				<!--><control type="button" id="106">
 					<texturefocus>b-pp-recommend-s.png</texturefocus>
 					<texturenofocus>b-pp-recommend.png</texturenofocus>
 					<onup>105</onup>
 					<ondown>107</ondown>
 					<include>leftMenuPreplayButton</include>
 					<visible>!IsEmpty(ListItem(0).Property(canRecommend))</visible>
-				</control>
+					<onfocus>Skin.SetString(DialogPos,recommend)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
+				</control>-->
 				<!-- Share -->
 				<control type="button" id="107">
 					<texturefocus>b-pp-share-s.png</texturefocus>
@@ -604,6 +647,8 @@
 					<ondown>108</ondown>
 					<include>leftMenuPreplayButton</include>
 					<visible>!IsEmpty(ListItem(0).Property(canShare))</visible>
+					<onfocus>Skin.SetString(DialogPos,share)</onfocus>
+					<onunfocus>Skin.Reset(DialogPos)</onunfocus>
 				</control>
 				<!-- Watched -->
 				<control type="button" id="108">
@@ -741,7 +786,7 @@
 	<include name="LeftSideMenuSettings">
 		<control type="group">
 			<include>leftMenuInitSlide</include>
-			<include>leftMenuBg</include>
+			<include>leftMenuBgSettings</include>
 			<!-- page title -->
 			<control type="group">
 				<posx>100</posx>

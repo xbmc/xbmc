@@ -274,11 +274,12 @@
 <!-- Startup helper -->
 <string id="32000">Please choose the type of audio connector used on this computer.  If you're unsure, or if you're using built-in speakers, you can accept the default and continue.  You can access this setting at any time in the Preferences.</string>
 <string id="32001">Plex Home Theater Setup</string>
-<string id="32003">Welcome to Plex!  In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to myPlex.  myPlex lets you queue and share online videos, and access shared media from your friends' libraries.  If you don't already have a free myPlex account, you can create one now at http://my.plexapp.com before continuing.</string>
+<string id="32003">[B]Welcome to Plex![/B]  [CR][CR]In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to [B]myPlex[/B].  [CR][CR][B]myPlex[/B] lets you queue and share online videos, and access shared media from your friends' libraries.  [CR][CR]If you don't already have a free [B]myPlex[/B] account, you can create one now at [COLOR=orange]http://my.plexapp.com[/COLOR] before continuing.</string>
 <!-- Other -->
 <string id="32100">Set Rating</string>
 <string id="32101">Episodes added</string>
 <string id="32102">All Episodes</string>
 <string id="32103">There is no description available for this </string>
 <string id="32104">You can add one for it in the Media Manager</string>
+<string id="32105">* Plot hidden to avoid spoilers *</string>
 </strings>

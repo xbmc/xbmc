@@ -468,11 +468,11 @@
 		<!-- on deck -->
 		<value condition="ControlGroup(7002).HasFocus + !Container(11001).ListItem.Type(episode)">$INFO[Container(11001).ListItem.Plot]</value>
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode) + !Skin.HasSetting(HidePlotForUnwatched)">$INFO[Container(11001).ListItem.Plot]</value>
-		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode) + Skin.HasSetting(HidePlotForUnwatched)">* Plot hidden to avoid spoilers *</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode) + Skin.HasSetting(HidePlotForUnwatched)">$LOCALIZE[32105]</value>
 		<!-- recently added -->
-		<value condition="ControlGroup(7001).HasFocus + !Container(11000).ListItem.Type(episode)">$INFO[Container(11001).ListItem.Plot]</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode) + !Skin.HasSetting(HidePlotForUnwatched)">$INFO[Container(11001).ListItem.Plot]</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode) + Skin.HasSetting(HidePlotForUnwatched)">* Plot hidden to avoid spoilers *</value>
+		<value condition="ControlGroup(7001).HasFocus + !Container(11000).ListItem.Type(episode)">$INFO[Container(11000).ListItem.Plot]</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode) + !Skin.HasSetting(HidePlotForUnwatched)">$INFO[Container(11000).ListItem.Plot]</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode) + Skin.HasSetting(HidePlotForUnwatched)">$LOCALIZE[32105]</value>
 		<!-- queue -->
 		<value condition="ControlGroup(7003).HasFocus]">$INFO[Container(11003).ListItem.Plot]</value>
 		<!-- recommended -->
@@ -762,7 +762,7 @@
 						<control type="textbox">
 							<posy>90</posy>
 							<width>315</width>
-							<height>298</height>
+							<height>292</height>
 							<label>$VAR[HomeListItemFullInfoPlot]</label>
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
@@ -943,7 +943,8 @@
 					<control type="fixedlist" id="11001">
 						<visible allowhiddenfocus="false">false</visible>
 						<orientation>horizontal</orientation>
-						<ondown>7001</ondown>
+						<ondown condition="Control.IsVisible(11000)">7001</ondown>
+						<ondown condition="!Control.IsVisible(11000)">300</ondown>
 						<onup>300</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
@@ -1017,7 +1018,8 @@
 						<visible allowhiddenfocus="false">false</visible>
 						<orientation>horizontal</orientation>
 						<ondown>300</ondown>
-						<onup>7002</onup>
+						<onup condition="Control.IsVisible(11001)">7002</onup>
+						<onup condition="!Control.IsVisible(11001)">300</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
 						<posx>0</posx>
@@ -1135,7 +1137,8 @@
 					<control type="fixedlist" id="11003">
 						<visible allowhiddenfocus="false">false</visible>
 						<orientation>horizontal</orientation>
-						<ondown>7005</ondown>
+						<ondown condition="Control.IsVisible(11004)">7005</ondown>
+						<ondown condition="!Control.IsVisible(11004)">300</ondown>
 						<onup>300</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
@@ -1214,7 +1217,8 @@
 						<visible allowhiddenfocus="false">false</visible>
 						<orientation>horizontal</orientation>
 						<ondown>300</ondown>
-						<onup>7003</onup>
+						<onup condition="Control.IsVisible(11003)">7003</onup>
+						<onup condition="!Control.IsVisible(11003)">300</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
 						<posx>-12</posx>
