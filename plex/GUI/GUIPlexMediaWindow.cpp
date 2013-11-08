@@ -35,6 +35,7 @@
 #include "Filters/GUIPlexFilterFactory.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "Client/PlexTimelineManager.h"
+#include "client/PlexServerDataLoader.h"
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
@@ -817,6 +818,10 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
 
   list.SetProperty("hasAdvancedFilters", (filter && filter->hasAdvancedFilters()) ? "yes" : "");
   list.SetProperty("primaryFilterActivated", (filter && filter->secondaryFiltersActivated()) ? "" : "yes");
+
+  CFileItemPtr section = g_plexApplication.dataLoader->GetSection(m_sectionRoot);
+  if (section && section->GetPlexDirectoryType() == PLEX_DIR_TYPE_HOME_MOVIES)
+    list.SetContent("homemovies");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
