@@ -253,6 +253,18 @@ static bool PredicateAudioPriority(const OMXSelectionStream& lh, const OMXSelect
   return false;
 }
 
+/** \brief The class' operator() decides if the given (subtitle) SelectionStream lh is 'better than' the given (subtitle) SelectionStream rh.
+*          If lh is 'better than' rh the return value is true, false otherwise.
+*
+*          A subtitle lh is 'better than' a subtitle rh (in evaluation order) if
+*          - lh was previously selected, or
+*          - lh is an external sub and "prefer external subs was selected" and rh not, or
+*          - lh is a forced sub and ("original stream's language" was selected or subtitles are off) and rh not, or
+*          - lh is an external sub and its language matches the preferred subtitle's language (unequal to "original stream's language") and rh not, or
+*          - lh is an external sub and rh not, or
+*          - lh is language matches the preferred subtitle's language (unequal to "original stream's language") and rh not, or
+*          - lh is a default sub and rh not
+*/
 class PredicateSubtitlePriority
 {
 private:
