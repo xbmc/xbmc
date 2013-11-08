@@ -1173,10 +1173,30 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (cat.name == "playlist")
     {
+      int ret = -1;
       for (size_t i = 0; i < sizeof(playlist) / sizeof(infomap); i++)
       {
         if (prop.name == playlist[i].str)
-          return playlist[i].val;
+        {
+          ret = playlist[i].val;
+          break;
+        }
+      }
+      if (ret >= 0)
+      {
+        if (prop.num_params() <= 0)
+          return ret;
+        else
+        {
+          int playlistid = PLAYLIST_NONE;
+          if (prop.param().Equals("video"))
+            playlistid = PLAYLIST_VIDEO;
+          else if (prop.param().Equals("music"))
+            playlistid = PLAYLIST_MUSIC;
+
+          if (playlistid > PLAYLIST_NONE)
+            return AddMultiInfo(GUIInfo(ret, playlistid));
+        }
       }
     }
     else if (cat.name == "pvr")
@@ -2993,6 +3013,30 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = (index >= 0 && index < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size());
         }
         break;
+
+      case PLAYLIST_ISRANDOM:
+        {
+          int playlistid = info.GetData1();
+          if (playlistid > PLAYLIST_NONE)
+            bReturn = g_playlistPlayer.IsShuffled(playlistid);
+        }
+        break;
+
+      case PLAYLIST_ISREPEAT:
+        {
+          int playlistid = info.GetData1();
+          if (playlistid > PLAYLIST_NONE)
+            bReturn = g_playlistPlayer.GetRepeat(playlistid) == PLAYLIST::REPEAT_ALL;
+        }
+        break;
+
+      case PLAYLIST_ISREPEATONE:
+        {
+          int playlistid = info.GetData1();
+          if (playlistid > PLAYLIST_NONE)
+            bReturn = g_playlistPlayer.GetRepeat(playlistid) == PLAYLIST::REPEAT_ONE;
+        }
+        break;
     }
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
@@ -3232,6 +3276,15 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     if (addon && info.m_info == SYSTEM_ADDON_VERSION)
       return addon->Version().c_str();
   }
+  else if (info.m_info == PLAYLIST_LENGTH ||
+           info.m_info == PLAYLIST_POSITION ||
+           info.m_info == PLAYLIST_RANDOM ||
+           info.m_info == PLAYLIST_REPEAT)
+  {
+    int playlistid = info.GetData1();
+    if (playlistid > PLAYLIST_NONE)
+      return GetPlaylistLabel(info.m_info, playlistid);
+  }
 
   return StringUtils::EmptyString;
 }
@@ -3467,10 +3520,12 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
   return GetMusicTagLabel(info.m_info, playlistItem.get());
 }
 
-CStdString CGUIInfoManager::GetPlaylistLabel(int item) const
+CStdString CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAYLIST_NONE */) const
 {
-  if (!g_application.m_pPlayer->IsPlaying()) return "";
-  int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+  if (playlistid <= PLAYLIST_NONE && !g_application.m_pPlayer->IsPlaying())
+    return "";
+
+  int iPlaylist = playlistid == PLAYLIST_NONE ? g_playlistPlayer.GetCurrentPlaylist() : playlistid;
   switch (item)
   {
   case PLAYLIST_LENGTH:

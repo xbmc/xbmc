@@ -777,7 +777,7 @@ public:
   CStdString GetMusicLabel(int item);
   CStdString GetMusicTagLabel(int info, const CFileItem *item);
   CStdString GetVideoLabel(int item);
-  CStdString GetPlaylistLabel(int item) const;
+  CStdString GetPlaylistLabel(int item, int playlistid = -1 /* PLAYLIST_NONE */) const;
   CStdString GetMusicPartyModeLabel(int item);
   const CStdString GetMusicPlaylistInfo(const GUIInfo& info);
   CStdString GetPictureLabel(int item);
