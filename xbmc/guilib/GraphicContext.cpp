@@ -33,6 +33,7 @@
 #include "GUIWindowManager.h"
 #include "utils/JobManager.h"
 #include "video/VideoReferenceClock.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -842,6 +843,12 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     }
 #endif
   }
+  
+  /* PLEX */
+  // add some debug logging to track res changes when toggling fullscreen
+  CLog::Log(LOGDEBUG, "Toggling full screen: %d", m_bFullScreenRoot);
+  CLog::Log(LOGDEBUG, "Setting resolution to: %dx%d", g_settings.m_ResInfo[newRes].iWidth, g_settings.m_ResInfo[newRes].iHeight);
+  /* END PLEX */
 
   SetVideoResolution(newRes);
   g_guiSettings.SetResolution(uiRes);

@@ -1568,6 +1568,7 @@ void CGUISettings::SetResolution(RESOLUTION res)
   }
   SetString("videoscreen.screenmode", mode);
   m_LookAndFeelResolution = res;
+  CLog::Log(LOGDEBUG, "Setting GUI settings res to: %dx%d", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
 
   SetChanged();
 }
