@@ -202,7 +202,7 @@ public:
         return false;
     }
 
-    if ((ss.flags & CDemuxStream::FLAG_FORCED) && g_LangCodeExpander.CompareLangCodes(ss.language, audiolang))
+    if ((ss.flags & CDemuxStream::FLAG_FORCED) && (original || g_LangCodeExpander.CompareLangCodes(ss.language, audiolang)))
       return false;
 
     if ((ss.flags & CDemuxStream::FLAG_DEFAULT))
@@ -242,50 +242,70 @@ static bool PredicateAudioPriority(const OMXSelectionStream& lh, const OMXSelect
   return false;
 }
 
-static bool PredicateSubtitlePriority(const OMXSelectionStream& lh, const OMXSelectionStream& rh)
+class PredicateSubtitlePriority
 {
-  if(!CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
+private:
+  std::string audiolang;
+  bool original;
+  bool preferextsubs;
+  bool subson;
+public:
+  PredicateSubtitlePriority(std::string& lang)
+    : audiolang(lang),
+      original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original")),
+      preferextsubs(CSettings::Get().GetBool("subtitles.preferexternal")),
+      subson(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
   {
-    PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED
-                   , rh.flags & CDemuxStream::FLAG_FORCED);
-  }
+  };
 
-  PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream
-                 , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
-
-  if (CSettings::Get().GetBool("subtitles.preferexternal"))
+  bool operator()(const OMXSelectionStream& lh, const OMXSelectionStream& rh) const
   {
+    PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream
+                   , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
+
+    if (preferextsubs)
+    {
+      PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
+                     , rh.source == STREAM_SOURCE_DEMUX_SUB);
+
+      PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
+                     , rh.source == STREAM_SOURCE_TEXT);
+    }
+
+    if(!subson || original)
+    {
+      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareLangCodes(lh.language, audiolang)
+                     , rh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareLangCodes(rh.language, audiolang));
+
+      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED
+                     , rh.flags & CDemuxStream::FLAG_FORCED);
+    }
+
+    CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
+    if(!original)
+    {
+      PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
+                     , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
+    }
+
     PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
                    , rh.source == STREAM_SOURCE_DEMUX_SUB);
 
     PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
                    , rh.source == STREAM_SOURCE_TEXT);
+
+    if(!original)
+    {
+      PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
+                     , g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
+    }
+
+    PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
+                   , rh.flags & CDemuxStream::FLAG_DEFAULT);
+
+    return false;
   }
-
-  CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
-  if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
-  {
-    PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
-                   , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
-  }
-
-  PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
-                 , rh.source == STREAM_SOURCE_DEMUX_SUB);
-
-  PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
-                 , rh.source == STREAM_SOURCE_TEXT);
-
-  if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
-  {
-    PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
-                   , g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
-  }
-
-  PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
-                 , rh.flags & CDemuxStream::FLAG_DEFAULT);
-
-  return false;
-}
+};
 
 static bool PredicateVideoPriority(const OMXSelectionStream& lh, const OMXSelectionStream& rh)
 {
@@ -835,7 +855,8 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
   OMXSelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
   PredicateSubtitleFilter psf(as.language);
   streams = m_SelectionStreams.RemoveIf(STREAM_SUBTITLE, psf);
-  std::stable_sort(streams.begin(), streams.end(), PredicateSubtitlePriority);
+  PredicateSubtitlePriority psp(as.language);
+  std::stable_sort(streams.begin(), streams.end(), psp);
   valid   = false;
   for(OMXSelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
