@@ -4,10 +4,10 @@
 		<control type="group">
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
-			<visible>Window.IsActive(25) + !Container.content(movies) + !Container.content(movie) + !Container.content(tvshows) + !Container.content(seasons) + !Container.content(season) + !Container.content(episodes) + !Container.content(episode) + !Container.content(clips) + !Container.content(clip) + !Container.content(channel) + !Container.content(channels) + !Container.content(empty)</visible>
+			<visible>Container.content(folders) | Container.content(folder)</visible>
 			<control type="group" id="777">
 				<control type="fixedlist" id="40">
-					<visible>Window.IsActive(25) + !Container.content(movies) + !Container.content(movie) + !Container.content(tvshows) + !Container.content(seasons) + !Container.content(season) + !Container.content(episodes) + !Container.content(episode) + !Container.content(clips) + !Container.content(clip) + !Container.content(channel) + !Container.content(channels) + !Container.content(empty)</visible>
+					<visible>Container.content(folders) | Container.content(folder)</visible>
 					<viewtype label="ListSecondary">list</viewtype>
 					<posy>50</posy>
 					<posx>100</posx>
