@@ -550,7 +550,10 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
   starrating.Format("rating%d.png", addon->Stars());
   pItem->SetProperty("Addon.StarRating",starrating);
   pItem->SetProperty("Addon.Path", addon->Path());
-  pItem->SetProperty("Addon.Broken", addon->Props().broken);
+  if (addon->Props().broken == "DEPSNOTMET")
+    pItem->SetProperty("Addon.Broken", g_localizeStrings.Get(24044));
+  else
+    pItem->SetProperty("Addon.Broken", addon->Props().broken);
   std::map<CStdString,CStdString>::iterator it = 
                     addon->Props().extrainfo.find("language");
   if (it != addon->Props().extrainfo.end())
