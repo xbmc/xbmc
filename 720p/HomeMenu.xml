@@ -96,8 +96,6 @@
 				<onright>5000</onright>
 				<focusposition>6</focusposition>
 				<scrolltime>200</scrolltime>
-				<!--><visible allowhiddenfocus="true">Control.HasFocus(300)</visible>-->
-				
 				<animation type="Conditional" condition="!Window.IsActive(4998)" reversible="false">
 				  <effect type="rotatey" center="304" start="80,455" end="0,455" time="300" />
 				  <effect type="fade" start="0" end="100" time="50" delay="0" />
@@ -107,8 +105,6 @@
 				  <effect type="fade" start="100" end="0" time="230" />
 				</animation>
 				<animation type="Conditional" condition="ControlGroup(5000).HasFocus()" reversible="false">
-				  <!--><effect type="rotatey" center="304" start="0,455" end="-80,455" time="300" />
-				  <effect type="fade" start="100" end="0" time="230" />-->
 				  <effect type="fade" start="100" end="0" time="0" />
 				</animation>
 				<itemlayout width="600" height="50">
@@ -155,52 +151,17 @@
 				</focusedlayout>
 				<!-- additional menu items -->
 				<content>
-					<!--><item id="12">
-						<description>Channel Directory</description>
-						<label> $LOCALIZE[31952]</label>
-						<onclick>Plex.ActivateWindow(1,plexserver://channeldirectory,return)</onclick>
-						<visible>!Skin.HasSetting(HideAppStore)</visible>
-						<textcolor>50FFFFFF</textcolor>
-					</item>
-					<item id="6">
-						<description>Preferences</description>
-						<label>$LOCALIZE[31955]</label>
-						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
-					</item>-->
 					<item id="7">
 						<description>Search</description>
 						<label>$LOCALIZE[137]</label>
 						<onclick>Plex.ActivateWindow(10051)</onclick>
 					</item>
-					<!--><item id="111">
-						<description>Quit</description>
-						<label>$LOCALIZE[31007]</label>
-						<onclick>Plex.Quit</onclick>
-						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
-					</item>
-					<item id="112">
-						<description>Sleep</description>
-						<label>$LOCALIZE[31960]</label>
-						<onclick>Plex.Suspend</onclick>
-						<visible>!Skin.HasSetting(HidePower) + Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
-					</item>
-					<item id="113">
-						<description>Shut Down</description>
-						<label>$LOCALIZE[31961]</label>
-						<onclick>Plex.Powerdown</onclick>
-						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + Skin.HasSetting(ShowShutDown)</visible>
-					</item>-->
 					<item id="114">
 						<description>Update and Restart</description>
 						<label>$LOCALIZE[40018]</label>
 						<onclick>Plex.UpdateAndRestart</onclick>
 						<visible>System.UpdateIsAvailable</visible>
 					</item>
-					<!--><item id="115">
-						<description>test</description>
-						<label>Wizard</label>
-						<onclick>Plex.ActivateWindow(4999)</onclick>
-					</item>-->
 				</content>
 			</control>
 		</control>		
