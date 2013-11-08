@@ -107,10 +107,13 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     setStreams(argumentMap);
   else if (boost::starts_with(path, "/resources"))
     resources();
-  else if (path.Equals("/player/playback/togglePlayPause"))
-    pausePlay(argumentMap);
   else if (path.Equals("/player/application/setText"))
     sendString(argumentMap);
+  else if (path.Equals("/player/playback/pause"))
+    pausePlay(argumentMap);
+  else if (path.Equals("/player/playback/play"))
+    pausePlay(argumentMap);
+
 
 #ifdef LEGACY
   else if (path.Equals("/player/application/sendString"))
@@ -121,10 +124,6 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   else if (path.Equals("/player/playback/bigStepForward") ||
            path.Equals("/player/playback/bigStepBack"))
     stepFunction(request.url, argumentMap);
-  else if (path.Equals("/player/playback/pause"))
-    pausePlay(argumentMap);
-  else if (path.Equals("/player/playback/play"))
-    pausePlay(argumentMap);
 #endif
 
   else
@@ -509,6 +508,18 @@ void CPlexHTTPRemoteHandler::set(const ArgMap &arguments)
       xbmcRepeat = PLAYLIST::REPEAT_ALL;
     
     CApplicationMessenger::Get().PlayListPlayerRepeat(playlistType, xbmcRepeat);
+  }
+
+  if (arguments.find("mute") != arguments.end())
+  {
+    bool mute;
+    try { mute = boost::lexical_cast<bool>(arguments.find("mute")->second); }
+    catch (boost::bad_lexical_cast) { return; }
+
+    if (g_application.IsMuted() && !mute)
+      g_application.ToggleMute();
+    else if (!g_application.IsMuted() && mute)
+      g_application.ToggleMute();
   }
 }
 

@@ -203,6 +203,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
         controllable.push_back("repeat");
       }
 
+      controllable.push_back("mute");
       controllable.push_back("volume");
       controllable.push_back("stepBack");
       controllable.push_back("stepForward");
@@ -236,6 +237,8 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
         options.AddOption("repeat", 2);
       else
         options.AddOption("repeat", 0);
+
+      options.AddOption("mute", g_application.IsMuted() ? "1" : "0");
 
       if (type == VIDEO && g_application.IsPlayingVideo())
       {
