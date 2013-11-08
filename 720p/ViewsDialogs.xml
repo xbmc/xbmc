@@ -694,12 +694,6 @@
 				<control type="spincontrolex" id="5">
 					<description>Default SpinControlex</description>
 				</control>
-				<control type="sliderex" id="8">
-					<description>Default Slider</description>
-					<height>40</height>
-					<include>DialogHeading</include>
-					<texturefocus border="5">button-focus2.png</texturefocus>
-				</control>
 				<control type="label" id="7">
 					<height>35</height>
 					<include>DialogHeading</include>
