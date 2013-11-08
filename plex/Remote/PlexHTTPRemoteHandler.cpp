@@ -290,14 +290,21 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   }
 
   item->m_lStartOffset = 0;
+  std::string offset;
   if (arguments.find("viewOffset") != arguments.end())
+    offset = arguments.find("viewOffset")->second;
+  else if (arguments.find("offset") != arguments.end())
+    offset = arguments.find("offset")->second;
+
+  if (!offset.empty())
   {
-    int offset = 0;
-    try { offset = boost::lexical_cast<int>(arguments.find("viewOffset")->second); }
+    int offint = 0;
+
+    try { offint = boost::lexical_cast<int>(offset); }
     catch (boost::bad_lexical_cast) { }
 
-    item->SetProperty("viewOffset", offset);
-    item->m_lStartOffset = offset != 0 ? STARTOFFSET_RESUME : 0;
+    item->SetProperty("viewOffset", offint);
+    item->m_lStartOffset = offint != 0 ? STARTOFFSET_RESUME : 0;
   }
 
   
