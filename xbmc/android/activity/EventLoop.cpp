@@ -146,8 +146,7 @@ int32_t CEventLoop::processInput(AInputEvent* event)
         if (m_inputHandler->onJoyStickKeyEvent(event))
           return true;
       }
-      if (source & AINPUT_SOURCE_CLASS_BUTTON)
-        rtn = m_inputHandler->onKeyboardEvent(event);
+      rtn = m_inputHandler->onKeyboardEvent(event);
       break;
     case AINPUT_EVENT_TYPE_MOTION:
       switch(source)
