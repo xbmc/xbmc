@@ -100,12 +100,12 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   // only show stuff available in digital mode if we have digital output
   if (SupportsAudioFeature(IPC_AUD_OUTPUT_STEREO))
     AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
-#endif
 
   int settings[3] = { 338, 339, 420 }; //ANALOG, IEC958, HDMI
   m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
   if (SupportsAudioFeature(IPC_AUD_SELECT_OUTPUT))
     AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 3, settings);
+#endif
 
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
