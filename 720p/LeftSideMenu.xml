@@ -501,9 +501,9 @@
 					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
-					<animation effect="slide" end="0,-127" time="0" condition="Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-100" time="0" condition="Window.IsActive(2)">Conditional</animation>
-					<animation effect="slide" end="0,-80" time="0" condition="Window.IsActive(501)">Conditional</animation>
+					<animation effect="slide" end="0,-127" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-100" time="0" condition="Skin.String(SectionType,photos) | Window.IsVisible(2)">Conditional</animation>
+					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsVisible(501)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- secondary filters list -->
@@ -514,9 +514,9 @@
 					<ondown>32000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-127" time="0" condition="Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-100" time="0" condition="Window.IsActive(2)">Conditional</animation>
-					<animation effect="slide" end="0,-80" time="0" condition="Window.IsActive(501)">Conditional</animation>
+					<animation effect="slide" end="0,-127" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-100" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 				</control>
 				<!-- filters buttons -->
 				<control type="button" id="19005">
@@ -543,9 +543,9 @@
 					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
-					<animation effect="slide" end="0,-10" time="0" condition="Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-30" time="0" condition="Window.IsActive(2)">Conditional</animation>
-					<animation effect="slide" end="0,-160" time="0" condition="Window.IsActive(501)">Conditional</animation>
+					<animation effect="slide" end="0,-10" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-30" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- sorting list -->
@@ -556,9 +556,9 @@
 					<ondown>30000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-10" time="0" condition="Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-30" time="0" condition="Window.IsActive(2)">Conditional</animation>
-					<animation effect="slide" end="0,-160" time="0" condition="Window.IsActive(501)">Conditional</animation>
+					<animation effect="slide" end="0,-10" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-30" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 				</control>
 				<!-- sorting buttons -->
 				<control type="filterorderbutton" id="19011">
