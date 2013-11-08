@@ -17,6 +17,46 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexNavigationHelper::CacheUrl(const std::string& url, bool& cancel, bool closeDialog)
+{
+
+  int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL(url)), this, CJob::PRIORITY_HIGH);
+
+  if (!m_cacheEvent.WaitMSec(300))
+  {
+    CGUIDialogBusy *busy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    cancel = false;
+
+    if (busy)
+    {
+      m_cacheEvent.Reset();
+
+
+      if (!busy->IsActive())
+        busy->Show();
+      while (!m_cacheEvent.WaitMSec(10))
+      {
+        if (busy->IsCanceled())
+        {
+          CJobManager::GetInstance().CancelJob(id);
+          busy->Close();
+          cancel = true;
+          return false;
+        }
+
+        g_windowManager.ProcessRenderLoop();
+      }
+
+      if (closeDialog)
+        busy->Close();
+    }
+  }
+
+  return m_cacheSuccess;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &parentUrl, int windowId)
 {
@@ -59,31 +99,11 @@ CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &
     cacheUrl = u.Get();
   }
 
-  CGUIDialogBusy *busy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-  if (busy)
+  bool didCancel;
+  if (!CacheUrl(cacheUrl, didCancel))
   {
-    m_cacheEvent.Reset();
-
-    int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(cacheUrl), this, CJob::PRIORITY_HIGH);
-
-    busy->Show();
-    while (!m_cacheEvent.WaitMSec(10))
-    {
-      if (busy->IsCanceled())
-      {
-        CJobManager::GetInstance().CancelJob(id);
-        busy->Close();
-        return empty;
-      }
-
-      g_windowManager.ProcessRenderLoop();
-    }
-    busy->Close();
-  }
-
-  if (!m_cacheSuccess)
-  {
-    CGUIDialogOK::ShowAndGetInput("Failed to load!", "The navigation item failed to load", "Check logs for more information.", "");
+    if (!didCancel)
+      CGUIDialogOK::ShowAndGetInput("Failed to load!", "The navigation item failed to load", "Check logs for more information.", "");
     return empty;
   }
 

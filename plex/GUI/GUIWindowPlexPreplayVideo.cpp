@@ -114,28 +114,31 @@ void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
   CFileItemPtr item = m_vecItems->Get(0);
   if (item && item->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
   {
-    if (!m_parentPath.empty())
+    if (item->HasProperty("parentKey"))
     {
-      CFileItemList list;
-      XFILE::CPlexDirectory dir;
-      if (dir.GetDirectory(m_parentPath, list))
-      {
-        CFileItemPtr litem;
-        for (int i = 0; i < list.Size(); i++)
-        {
-          litem = list.Get(i);
-          if (!litem)
-            continue;
+      bool cancel;
 
-          if (litem->GetPath() == item->GetPath())
+      CURL u(item->GetProperty("parentKey").asString());
+      PlexUtils::AppendPathToURL(u, "children");
+
+      if (m_navHelper.CacheUrl(u.Get(), cancel, false))
+      {
+        CFileItemList list;
+        if (GetDirectory(u.Get(), list))
+        {
+          for (int i = 0; i < list.Size(); i ++)
           {
-            litem = list.Get(i + idx);
-            break;
+            if (list.Get(i)->GetPath() == item->GetPath())
+            {
+              CFileItemPtr i2 = list.Get(i + idx);
+              if (!i2)
+                return;
+
+              if (m_navHelper.CacheUrl(i2->GetPath(), cancel))
+                Update(i2->GetPath(), false);
+            }
           }
         }
-
-        if (litem)
-          Update(litem->GetPath(), true);
       }
     }
   }
