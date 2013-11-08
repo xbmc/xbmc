@@ -79,6 +79,7 @@ class CPlexSectionFilter
     bool needRefreshOnStateChange()
     {
       CPlexSecondaryFilterPtr unwatched = getSecondaryFilterOfName("unwatched");
+      if (!unwatched) unwatched = getSecondaryFilterOfName("unwatchedLeaves");
 
       if (unwatched && unwatched->isSelected())
         return true;
