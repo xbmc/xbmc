@@ -329,6 +329,8 @@ void CGUISettings::Initialize()
   GetSetting("input.disablejoystickwithimon")->SetVisible(false);
 #endif
 
+  AddString(in, "input.peripherals", 35000, "", BUTTON_CONTROL_STANDARD);
+  
 
   // System/Audio output
   CSettingsCategory* ao = AddCategory(SETTINGS_SYSTEM, "audiooutput", 772);
