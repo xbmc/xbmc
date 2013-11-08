@@ -538,12 +538,18 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       bool returning = ret.CompareNoCase("return") == 0;
       if (!dir.IsEmpty())
       {
+        CLog::Log(LOGDEBUG, "CGUImediaWindow::onmessage got %s from message", dir.c_str());
         m_history.ClearPathHistory();
         // ensure our directory is valid
         dir = GetStartFolder(dir);
         if (!returning || m_vecItems->GetPath().Left(dir.GetLength()) != dir)
         { // we're not returning to the same path, so set our directory to the requested path
+          CLog::Log(LOGDEBUG, "CGUImediaWindow::onmessage setting %s as path", dir.c_str());
           m_vecItems->SetPath(dir);
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, "CGUImediaWindow::onmessage returning: %d %s = %s", (int)returning, m_vecItems->GetPath().Left(dir.GetLength()).c_str(), dir.c_str());
         }
         // check for network up
         if (URIUtils::IsRemote(m_vecItems->GetPath()) && !WaitForNetwork())

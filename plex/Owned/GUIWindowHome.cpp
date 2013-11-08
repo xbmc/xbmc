@@ -348,6 +348,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
     CFileItemPtr pItem = GetCurrentListItem();
     if (pItem)
     {
+      CLog::Log(LOGDEBUG, "CGUIWindowHome::OnAction %s=>%s", pItem->GetLabel().c_str(), pItem->GetProperty("sectionPath").asString().c_str());
       if (m_lastSelectedItem != GetCurrentItemName())
       {
         HideAllLists();
