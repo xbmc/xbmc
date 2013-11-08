@@ -125,10 +125,10 @@ sftp_file CSFTPSession::CreateFileHande(const CStdString &file)
       return handle;
     }
     else
-      CLog::Log(LOGERROR, "SFTPSession: Was connected but couldn't create filehandle\n");
+      CLog::Log(LOGERROR, "SFTPSession: Was connected but couldn't create filehandle for '%s'", file.c_str());
   }
   else
-    CLog::Log(LOGERROR, "SFTPSession: Not connected and can't create file handle");
+    CLog::Log(LOGERROR, "SFTPSession: Not connected and can't create file handle for '%s'", file.c_str());
 
   return NULL;
 }
@@ -158,7 +158,7 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
 
     if (!dir)
     {
-      CLog::Log(LOGERROR, "%s: %s", __FUNCTION__, SFTPErrorText(sftp_error));
+      CLog::Log(LOGERROR, "%s: %s for '%s'", __FUNCTION__, SFTPErrorText(sftp_error), folder.c_str());
     }
     else
     {
@@ -236,7 +236,7 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
     }
   }
   else
-    CLog::Log(LOGERROR, "SFTPSession: Not connected, can't list directory");
+    CLog::Log(LOGERROR, "SFTPSession: Not connected, can't list directory '%s'", folder.c_str());
 
   return false;
 }
@@ -277,13 +277,13 @@ int CSFTPSession::Stat(const char *path, struct __stat64* buffer)
     }
     else
     {
-      CLog::Log(LOGERROR, "SFTPSession: STAT - Failed to get attributes");
+      CLog::Log(LOGERROR, "SFTPSession::Stat - Failed to get attributes for '%s'", path);
       return -1;
     }
   }
   else
   {
-    CLog::Log(LOGERROR, "SFTPSession: STAT - Not connected");
+    CLog::Log(LOGERROR, "SFTPSession::Stat - Failed because not connected for '%s'", path);
     return -1;
   }
 }
@@ -355,7 +355,7 @@ bool CSFTPSession::Connect(const CStdString &host, unsigned int port, const CStd
   m_session=ssh_new();
   if (m_session == NULL)
   {
-    CLog::Log(LOGERROR, "SFTPSession: Failed to initialize session");
+    CLog::Log(LOGERROR, "SFTPSession: Failed to initialize session for host '%s'", host.c_str());
     return false;
   }
 
@@ -654,7 +654,7 @@ bool CSFTPFile::Exists(const CURL& url)
     return session->FileExists(url.GetFileName().c_str());
   else
   {
-    CLog::Log(LOGERROR, "SFTPFile: Failed to create session to check exists");
+    CLog::Log(LOGERROR, "SFTPFile: Failed to create session to check exists for '%s'", url.GetFileName().c_str());
     return false;
   }
 }
@@ -666,7 +666,7 @@ int CSFTPFile::Stat(const CURL& url, struct __stat64* buffer)
     return session->Stat(url.GetFileName().c_str(), buffer);
   else
   {
-    CLog::Log(LOGERROR, "SFTPFile: Failed to create session to stat");
+    CLog::Log(LOGERROR, "SFTPFile: Failed to create session to stat for '%s'", url.GetFileName().c_str());
     return -1;
   }
 }
@@ -676,7 +676,7 @@ int CSFTPFile::Stat(struct __stat64* buffer)
   if (m_session)
     return m_session->Stat(m_file.c_str(), buffer);
 
-  CLog::Log(LOGERROR, "SFTPFile: Can't stat without a session");
+  CLog::Log(LOGERROR, "SFTPFile: Can't stat without a session for '%s'", m_file.c_str());
   return -1;
 }
 
@@ -697,7 +697,7 @@ int64_t CSFTPFile::GetPosition()
   if (m_session && m_sftp_handle)
     return m_session->GetPosition(m_sftp_handle);
 
-  CLog::Log(LOGERROR, "SFTPFile: Can't get position without a filehandle");
+  CLog::Log(LOGERROR, "SFTPFile: Can't get position without a filehandle for '%s'", m_file.c_str());
   return 0;
 }
 
