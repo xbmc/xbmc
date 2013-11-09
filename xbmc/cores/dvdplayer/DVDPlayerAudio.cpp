@@ -273,7 +273,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         m_audioClock = dts;
 
       int len = m_pAudioCodec->Decode(m_decode.data, m_decode.size);
-      m_audioStats.AddSampleBytes(m_decode.size);
       if (len < 0 || len > m_decode.size)
       {
         /* if error, we skip the packet */
@@ -282,6 +281,8 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         m_pAudioCodec->Reset();
         return DECODE_FLAG_ERROR;
       }
+
+      m_audioStats.AddSampleBytes(len);
 
       m_decode.data += len;
       m_decode.size -= len;
