@@ -83,6 +83,12 @@ namespace EPG
      * @return True if it's active, false otherwise.
      */
     bool IsActive(void) const;
+      
+    /*!
+     * @brief Check if this event has already started
+     * @return True if it has started, false otherwise.
+     */
+    bool IsRunning(void) const;
 
     /*!
      * @return True when this event has already passed, false otherwise.
@@ -436,6 +442,7 @@ namespace EPG
 
     bool                     m_bNotify;            /*!< notify on start */
     bool                     m_bChanged;           /*!< keep track of changes to this entry */
+    bool                     m_bIsRunning;         /*!< check if an event has already started */
 
     int                      m_iBroadcastId;       /*!< database ID */
     int                      m_iGenreType;         /*!< genre type */
