@@ -187,10 +187,10 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
     return false;
 
   VECADDONS addons;
-  CStdStringArray deps;
+  vector<string> deps;
   CAddonMgr::Get().GetAllAddons(addons);
-  for (VECADDONS::iterator it  = addons.begin();
-                           it != addons.end();++it)
+  for (VECADDONS::const_iterator it  = addons.begin();
+       it != addons.end();++it)
   {
     ADDONDEPS::const_iterator i = (*it)->GetDeps().find(m_localAddon->ID());
     if (i != (*it)->GetDeps().end() && !i->second.second) // non-optional dependency
@@ -199,10 +199,9 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
   if (!deps.empty())
   {
-    CStdString strLine0, strLine1;
-    StringUtils::JoinString(deps, ", ", strLine1);
-    strLine0.Format(g_localizeStrings.Get(24046), m_localAddon->Name().c_str());
-    CGUIDialogOK::ShowAndGetInput(heading, strLine0, strLine1, line2);
+    string line0 = StringUtils::Format(g_localizeStrings.Get(24046), m_localAddon->Name().c_str());
+    string line1 = StringUtils::Join(deps, ", ");
+    CGUIDialogOK::ShowAndGetInput(heading, line0, line1, line2);
     return true;
   }
   return false;
