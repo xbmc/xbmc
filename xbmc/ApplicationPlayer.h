@@ -92,7 +92,6 @@ public:
   void  GetChapterName(CStdString& strChapterName);
   void  GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
   void  GetDeinterlaceModes(std::vector<int> &deinterlaceModes);
-  bool  GetCurrentSubtitle(CStdString& strSubtitle);
   void  GetGeneralInfo( CStdString& strVideoInfo);
   float GetPercentage() const;
   int   GetPictureHeight();

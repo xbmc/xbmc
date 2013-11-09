@@ -1089,6 +1089,9 @@ void CDVDPlayer::Process()
     // update application with our state
     UpdateApplication(1000);
 
+    // make sure we run subtitle process here
+    m_dvdPlayerSubtitle.Process(m_clock.GetClock() + m_State.time_offset - m_dvdPlayerVideo.GetSubtitleDelay());
+
     if (CheckDelayedChannelEntry())
       continue;
 
@@ -3725,24 +3728,6 @@ bool CDVDPlayer::HasMenu()
     return true;
   else
     return false;
-}
-
-bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
-{
-  double pts = m_clock.GetClock() + m_State.time_offset;
-
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) && m_CurrentSubtitle.source != STREAM_SOURCE_TEXT && m_CurrentSubtitle.source != STREAM_SOURCE_DEMUX_SUB)
-    return false;
-
-  m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
-
-  // In case we stalled, don't output any subs
-  if ((m_dvdPlayerVideo.IsStalled() && HasVideo()) || (m_dvdPlayerAudio.IsStalled() && HasAudio()))
-    strSubtitle = m_lastSub;
-  else
-    m_lastSub = strSubtitle;
-
-  return !strSubtitle.IsEmpty();
 }
 
 CStdString CDVDPlayer::GetPlayerState()
