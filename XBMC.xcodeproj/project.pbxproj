@@ -12815,7 +12815,6 @@
 					HAS_SPC_CODEC,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GENERATE_PROFILING_CODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -12948,7 +12947,6 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					$SRCROOT,
