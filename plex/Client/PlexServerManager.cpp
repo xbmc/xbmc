@@ -252,11 +252,16 @@ CPlexServerManager::ClearBestServer()
 
 void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool success)
 {
-  CPlexServerReachabilityThread* rt = NULL;
-  if (m_reachabilityThreads.find(server->GetUUID()) != m_reachabilityThreads.end())
+  if (m_stopped) return;
+
+  int reachThreads = 0;
+
   {
-    rt = m_reachabilityThreads[server->GetUUID()];
-    m_reachabilityThreads.erase(server->GetUUID());
+    CSingleLock lk(m_serverManagerLock);
+    if (m_reachabilityThreads.find(server->GetUUID()) != m_reachabilityThreads.end())
+      m_reachabilityThreads.erase(server->GetUUID());
+
+    reachThreads = m_reachabilityThreads.size();
   }
   
   if (success)
@@ -274,7 +279,7 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
     NotifyAboutServer(server, false);
   }
 
-  if (m_reachabilityThreads.size() == 0)
+  if (reachThreads == 0)
   {
     CLog::Log(LOGINFO, "CPlexServerManager::ServerRechabilityDone All servers have done their thing. have a nice day now.");
     m_reachabilityTestEvent.Set();
@@ -284,7 +289,7 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
   }
   else
   {
-    CLog::Log(LOGINFO, "CPlexServerManager::ServerRechabilityDone still %ld server checking reachability", m_reachabilityThreads.size());
+    CLog::Log(LOGINFO, "CPlexServerManager::ServerRechabilityDone still %d server checking reachability", reachThreads);
   }
 }
 
