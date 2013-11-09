@@ -295,22 +295,14 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       m_decode.data += len;
       m_decode.size -= len;
 
-
       // get decoded data and the size of it
-      audioframe.size = m_pAudioCodec->GetData(&audioframe.data);
-      audioframe.pts  = m_audioClock;
+      m_pAudioCodec->GetData(audioframe);
 
       if (audioframe.size == 0)
         continue;
 
-      audioframe.channel_layout        = m_pAudioCodec->GetChannelMap();
-      audioframe.channel_count         = m_pAudioCodec->GetChannels();
-      audioframe.encoded_channel_count = m_pAudioCodec->GetEncodedChannels();
-      audioframe.data_format           = m_pAudioCodec->GetDataFormat();
-      audioframe.bits_per_sample       = CAEUtil::DataFormatToBits(audioframe.data_format);
-      audioframe.sample_rate           = m_pAudioCodec->GetSampleRate();
-      audioframe.encoded_sample_rate   = m_pAudioCodec->GetEncodedSampleRate();
-      audioframe.passthrough           = m_pAudioCodec->NeedPassthrough();
+      if (audioframe.pts == DVD_NOPTS_VALUE)
+        audioframe.pts = m_audioClock;
 
       if (m_streaminfo.samplerate != audioframe.encoded_sample_rate)
       {
@@ -327,16 +319,8 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         }
       }
 
-      // compute duration.
-      int n = (audioframe.channel_count * audioframe.bits_per_sample * audioframe.sample_rate)>>3;
-      if (n > 0)
-      {
-        // safety check, if channels == 0, n will result in 0, and that will result in a nice devide exception
-        audioframe.duration = ((double)audioframe.size * DVD_TIME_BASE) / n;
-
-        // increase audioclock to after the packet
-        m_audioClock += audioframe.duration;
-      }
+      // increase audioclock to after the packet
+      m_audioClock += audioframe.duration;
 
       if(audioframe.duration > 0)
         m_duration = audioframe.duration;

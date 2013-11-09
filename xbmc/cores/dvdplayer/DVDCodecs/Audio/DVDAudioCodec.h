@@ -22,6 +22,9 @@
 
 #include "system.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "DVDClock.h"
+
 
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
@@ -34,6 +37,23 @@ struct AVStream;
 class CDVDStreamInfo;
 class CDVDCodecOption;
 class CDVDCodecOptions;
+
+typedef struct stDVDAudioFrame
+{
+  uint8_t*          data;
+  double            pts;
+  double            duration;
+  unsigned int      size;
+
+  int               channel_count;
+  int               encoded_channel_count;
+  CAEChannelInfo    channel_layout;
+  enum AEDataFormat data_format;
+  int               bits_per_sample;
+  int               sample_rate;
+  int               encoded_sample_rate;
+  bool              passthrough;
+} DVDAudioFrame;
 
 class CDVDAudioCodec
 {
@@ -59,10 +79,35 @@ public:
   virtual int Decode(uint8_t* pData, int iSize) = 0;
 
   /*
-   * returns nr of bytes used or -1 on error
+   * returns nr of bytes in decode buffer
    * the data is valid until the next Decode call
    */
   virtual int GetData(uint8_t** dst) = 0;
+
+  /*
+   * the data is valid until the next Decode call
+   */
+  virtual void GetData(DVDAudioFrame &frame)
+  {
+    frame.size                  = GetData(&frame.data);
+    if(frame.size == 0u)
+      return;
+    frame.channel_layout        = GetChannelMap();
+    frame.channel_count         = GetChannels();
+    frame.encoded_channel_count = GetEncodedChannels();
+    frame.data_format           = GetDataFormat();
+    frame.bits_per_sample       = CAEUtil::DataFormatToBits(frame.data_format);
+    frame.sample_rate           = GetSampleRate();
+    frame.encoded_sample_rate   = GetEncodedSampleRate();
+    frame.passthrough           = NeedPassthrough();
+    frame.pts                   = DVD_NOPTS_VALUE;
+    // compute duration.
+    int n = (frame.channel_count * frame.bits_per_sample * frame.sample_rate)>>3;
+    if (n)
+      frame.duration = ((double)frame.size * DVD_TIME_BASE) / n;
+    else
+      frame.duration = 0.0;
+  }
 
   /*
    * resets the decoder

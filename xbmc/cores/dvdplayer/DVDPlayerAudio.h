@@ -44,23 +44,6 @@ class CDVDAudioCodec;
 #define DECODE_FLAG_ABORT   8
 #define DECODE_FLAG_TIMEOUT 16
 
-typedef struct stDVDAudioFrame
-{
-  uint8_t* data;
-  double pts;
-  double duration;
-  unsigned int size;
-
-  int               channel_count;
-  int               encoded_channel_count;
-  CAEChannelInfo    channel_layout;
-  enum AEDataFormat data_format;
-  int               bits_per_sample;
-  int               sample_rate;
-  int               encoded_sample_rate;
-  bool              passthrough;
-} DVDAudioFrame;
-
 class CPTSInputQueue
 {
 private:
