@@ -192,11 +192,12 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
   for (VECADDONS::iterator it  = addons.begin();
                            it != addons.end();++it)
   {
-    if ((*it)->GetDeps().find(m_localAddon->ID()) != (*it)->GetDeps().end())
+    ADDONDEPS::const_iterator i = (*it)->GetDeps().find(m_localAddon->ID());
+    if (i != (*it)->GetDeps().end() && !i->second.second) // non-optional dependency
       deps.push_back((*it)->Name());
   }
 
-  if (!CAddonInstaller::Get().CheckDependencies(m_localAddon) && deps.size())
+  if (!deps.empty())
   {
     CStdString strLine0, strLine1;
     StringUtils::JoinString(deps, ", ", strLine1);
