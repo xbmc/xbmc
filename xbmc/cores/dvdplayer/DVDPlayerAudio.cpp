@@ -710,6 +710,19 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
         m_integral = 0;
       else if (fabs(m_error) > DVD_MSEC_TO_TIME(5))
         m_integral += m_error / DVD_TIME_BASE / INTEGRAL;
+
+      double proportional = 0.0;
+
+      //on big errors use more proportional
+      if (fabs(m_error / DVD_TIME_BASE) > 0.0)
+      {
+        double proportionaldiv = PROPORTIONAL * (PROPREF / fabs(m_error / DVD_TIME_BASE));
+        if (proportionaldiv < PROPDIVMIN) proportionaldiv = PROPDIVMIN;
+        else if (proportionaldiv > PROPDIVMAX) proportionaldiv = PROPDIVMAX;
+
+        proportional = m_error / DVD_TIME_BASE / proportionaldiv;
+      }
+      m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
     }
   }
 }
@@ -744,19 +757,6 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
   }
   else if (m_synctype == SYNC_RESAMPLE)
   {
-    double proportional = 0.0;
-
-    //on big errors use more proportional
-    if (fabs(m_error / DVD_TIME_BASE) > 0.0)
-    {
-      double proportionaldiv = PROPORTIONAL * (PROPREF / fabs(m_error / DVD_TIME_BASE));
-      if (proportionaldiv < PROPDIVMIN) proportionaldiv = PROPDIVMIN;
-      else if (proportionaldiv > PROPDIVMAX) proportionaldiv = PROPDIVMAX;
-
-      proportional = m_error / DVD_TIME_BASE / proportionaldiv;
-    }
-
-    m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
     m_dvdAudio.SetResampleRatio(m_resampleratio);
     m_dvdAudio.AddPackets(audioframe);
   }
