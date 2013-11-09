@@ -30,6 +30,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "epg/EpgInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -256,6 +257,9 @@ void CPVRGUIInfo::UpdateMisc(void)
   bool       bIsPlayingRadio           = bStarted && g_PVRClients->IsPlayingRadio();
   bool       bIsPlayingRecording       = bStarted && g_PVRClients->IsPlayingRecording();
   bool       bIsPlayingEncryptedStream = bStarted && g_PVRClients->IsEncrypted();
+  bool       bHasTVChannels            = bStarted && g_PVRChannelGroups->GetGroupAllTV()->HasChannels();
+  bool       bHasRadioChannels         = bStarted && g_PVRChannelGroups->GetGroupAllRadio()->HasChannels();
+  
   /* safe to fetch these unlocked, since they're updated from the same thread as this one */
   bool       bHasNonRecordingTimers    = bStarted && m_iTimerAmount - m_iRecordingTimerAmount > 0;
 
@@ -267,6 +271,8 @@ void CPVRGUIInfo::UpdateMisc(void)
   m_bIsPlayingRadio           = bIsPlayingRadio;
   m_bIsPlayingRecording       = bIsPlayingRecording;
   m_bIsPlayingEncryptedStream = bIsPlayingEncryptedStream;
+  m_bHasTVChannels            = bHasTVChannels;
+  m_bHasRadioChannels         = bHasRadioChannels;
 }
 
 bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
@@ -399,6 +405,12 @@ bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
     break;
   case PVR_HAS_TIMER:
     bReturn = m_iTimerAmount > 0;
+    break;
+  case PVR_HAS_TV_CHANNELS:
+    bReturn = m_bHasTVChannels;
+    break;
+  case PVR_HAS_RADIO_CHANNELS:
+    bReturn = m_bHasRadioChannels;
     break;
   case PVR_HAS_NONRECORDING_TIMER:
     bReturn = m_bHasNonRecordingTimers;
