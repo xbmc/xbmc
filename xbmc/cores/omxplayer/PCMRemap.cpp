@@ -446,7 +446,7 @@ void CPCMRemap::Reset()
 }
 
 /* sets the input format, and returns the requested channel layout */
-enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize, unsigned int sampleRate)
+enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize, unsigned int sampleRate, PCMLayout layout)
 {
   m_inChannels   = channels;
   m_inSampleSize = sampleSize;
@@ -456,7 +456,7 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
     memcpy(m_inMap, channelMap, sizeof(enum PCMChannels) * channels);
 
   /* get the audio layout, and count the channels in it */
-  m_channelLayout  = (enum PCMLayout)std::max(0, CSettings::Get().GetInt("audiooutput.channels")-1);
+  m_channelLayout  = layout;
   if (m_channelLayout >= PCM_MAX_LAYOUT) m_channelLayout = PCM_LAYOUT_2_0;
 
 

@@ -423,7 +423,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
 
   m_InputChannels = count_bits(channelMap);
   m_format = format;
-  enum PCMLayout layout = (enum PCMLayout)std::max(0, CSettings::Get().GetInt("audiooutput.channels")-1);
 
   if(m_InputChannels == 0)
     return false;
@@ -470,6 +469,11 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   {
     enum PCMChannels inLayout[OMX_AUDIO_MAXCHANNELS];
     enum PCMChannels outLayout[OMX_AUDIO_MAXCHANNELS];
+    enum PCMLayout layout = (enum PCMLayout)std::max(0, CSettings::Get().GetInt("audiooutput.channels")-1);
+    // ignore layout setting for analogue
+    if (CSettings::Get().GetBool("audiooutput.dualaudio") || CSettings::Get().GetString("audiooutput.audiodevice") == "Analogue")
+      layout = PCM_LAYOUT_2_0;
+
     // force out layout to stereo if input is not multichannel - it gives the receiver a chance to upmix
     if (channelMap == (AV_CH_FRONT_LEFT | AV_CH_FRONT_RIGHT) || channelMap == AV_CH_FRONT_CENTER)
       layout = PCM_LAYOUT_2_0;
@@ -477,7 +481,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
     m_OutputChannels = BuildChannelMapCEA(outLayout, GetChannelLayout(layout));
     CPCMRemap m_remap;
     m_remap.Reset();
-    /*outLayout = */m_remap.SetInputFormat (m_InputChannels, inLayout, CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8, m_format.m_sampleRate);
+    /*outLayout = */m_remap.SetInputFormat (m_InputChannels, inLayout, CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8, m_format.m_sampleRate, layout);
     m_remap.SetOutputFormat(m_OutputChannels, outLayout);
     m_remap.GetDownmixMatrix(m_downmix_matrix);
     m_wave_header.dwChannelMask = channelMap;
