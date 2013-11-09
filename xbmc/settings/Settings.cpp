@@ -549,6 +549,103 @@ bool CSettings::SetString(const std::string &id, const std::string &value)
   return m_settingsManager->SetString(id, value);
 }
 
+std::vector<CVariant> CSettings::GetList(const std::string &id) const
+{
+  std::vector<CVariant> realValues;
+
+  CSetting *setting = m_settingsManager->GetSetting(id);
+  if (setting == NULL)
+    return realValues;
+
+  CSettingList *listSetting = static_cast<CSettingList*>(setting);
+  const SettingPtrList &values = listSetting->GetValue();
+  for (SettingPtrList::const_iterator it = values.begin(); it != values.end(); ++it)
+  {
+    switch (listSetting->GetElementType())
+    {
+      case SettingTypeBool:
+        realValues.push_back(static_cast<const CSettingBool*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeInteger:
+        realValues.push_back(static_cast<const CSettingInt*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeNumber:
+        realValues.push_back(static_cast<const CSettingNumber*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeString:
+        realValues.push_back(static_cast<const CSettingString*>(it->get())->GetValue());
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return realValues;
+}
+
+bool CSettings::SetList(const std::string &id, const std::vector<CVariant> &value)
+{
+  CSetting *setting = m_settingsManager->GetSetting(id);
+  if (setting == NULL)
+    return false;
+
+  CSettingList *listSetting = static_cast<CSettingList*>(setting);
+  SettingPtrList newValues;
+  bool ret = true;
+  int index = 0;
+  for (std::vector<CVariant>::const_iterator itValue = value.begin(); itValue != value.end(); ++itValue)
+  {
+    CSetting *settingValue = listSetting->GetDefinition()->Clone(StringUtils::Format("%s.%d", listSetting->GetId().c_str(), index++));
+    if (settingValue == NULL)
+      return false;
+
+    switch (listSetting->GetElementType())
+    {
+      case SettingTypeBool:
+        if (!itValue->isBoolean())
+          return false;
+        ret = static_cast<CSettingBool*>(settingValue)->SetValue(itValue->asBoolean());
+        break;
+
+      case SettingTypeInteger:
+        if (!itValue->isInteger())
+          return false;
+        ret = static_cast<CSettingInt*>(settingValue)->SetValue(itValue->asInteger());
+        break;
+
+      case SettingTypeNumber:
+        if (!itValue->isDouble())
+          return false;
+        ret = static_cast<CSettingNumber*>(settingValue)->SetValue(itValue->asDouble());
+        break;
+
+      case SettingTypeString:
+        if (!itValue->isString())
+          return false;
+        ret = static_cast<CSettingString*>(settingValue)->SetValue(itValue->asString());
+        break;
+
+      default:
+        ret = false;
+        break;
+    }
+
+    if (!ret)
+    {
+      delete settingValue;
+      return false;
+    }
+
+    newValues.push_back(SettingPtr(settingValue));
+  }
+
+  return listSetting->SetValue(newValues);
+}
+
 bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
 {
   return m_settingsManager->LoadSetting(node, settingId);

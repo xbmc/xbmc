@@ -575,6 +575,26 @@ bool CSettingsManager::SetString(const std::string &id, const std::string &value
   return ((CSettingString*)setting)->SetValue(value);
 }
 
+std::vector< boost::shared_ptr<CSetting> > CSettingsManager::GetList(const std::string &id) const
+{
+  CSharedLock lock(m_settingsCritical);
+  CSetting *setting = GetSetting(id);
+  if (setting == NULL || setting->GetType() != SettingTypeList)
+    return std::vector< boost::shared_ptr<CSetting> >();
+
+  return ((CSettingList*)setting)->GetValue();
+}
+
+bool CSettingsManager::SetList(const std::string &id, const std::vector< boost::shared_ptr<CSetting> > &value)
+{
+  CSharedLock lock(m_settingsCritical);
+  CSetting *setting = GetSetting(id);
+  if (setting == NULL || setting->GetType() != SettingTypeList)
+    return false;
+
+  return ((CSettingList*)setting)->SetValue(value);
+}
+
 void CSettingsManager::AddCondition(const std::string &condition)
 {
   CExclusiveLock lock(m_critical);
@@ -778,15 +798,24 @@ void CSettingsManager::OnSettingPropertyChanged(const CSetting *setting, const c
 CSetting* CSettingsManager::CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager /* = NULL */) const
 {
   if (StringUtils::EqualsNoCase(settingType, "boolean"))
-    return new CSettingBool(settingId, (CSettingsManager*)this);
+    return new CSettingBool(settingId, const_cast<CSettingsManager*>(this));
   else if (StringUtils::EqualsNoCase(settingType, "integer"))
-    return new CSettingInt(settingId, (CSettingsManager*)this);
+    return new CSettingInt(settingId, const_cast<CSettingsManager*>(this));
   else if (StringUtils::EqualsNoCase(settingType, "number"))
-    return new CSettingNumber(settingId, (CSettingsManager*)this);
+    return new CSettingNumber(settingId, const_cast<CSettingsManager*>(this));
   else if (StringUtils::EqualsNoCase(settingType, "string"))
-    return new CSettingString(settingId, (CSettingsManager*)this);
+    return new CSettingString(settingId, const_cast<CSettingsManager*>(this));
   else if (StringUtils::EqualsNoCase(settingType, "action"))
-    return new CSettingAction(settingId, (CSettingsManager*)this);
+    return new CSettingAction(settingId, const_cast<CSettingsManager*>(this));
+  else if (settingType.size() > 6 &&
+           StringUtils::StartsWith(settingType, "list[") &&
+           StringUtils::EndsWith(settingType, "]"))
+  {
+    std::string elementType = StringUtils::Mid(settingType, 5, settingType.size() - 6);
+    CSetting *elementSetting = CreateSetting(elementType, settingId + ".definition", const_cast<CSettingsManager*>(this));
+    if (elementSetting != NULL)
+      return new CSettingList(settingId, elementSetting, const_cast<CSettingsManager*>(this));
+  }
 
   CSharedLock lock(m_critical);
   SettingCreatorMap::const_iterator creator = m_settingCreators.find(settingType);

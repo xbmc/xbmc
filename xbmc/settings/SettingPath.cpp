@@ -39,6 +39,11 @@ CSettingPath::CSettingPath(const std::string &id, const CSettingPath &setting)
   copy(setting);
 }
 
+CSetting* CSettingPath::Clone(const std::string &id) const
+{
+  return new CSettingPath(id, *this);
+}
+
 bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   CExclusiveLock lock(m_critical);

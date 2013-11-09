@@ -26,6 +26,7 @@
 #define SETTING_XML_ELM_CONTROL_VERIFYNEW    "verifynew"
 #define SETTING_XML_ELM_CONTROL_HEADING      "heading"
 #define SETTING_XML_ELM_CONTROL_HIDEVALUE    "hidevalue"
+#define SETTING_XML_ELM_CONTROL_MULTISELECT  "multiselect"
 
 class CSettingControlCheckmark : public ISettingControl
 {
@@ -134,9 +135,11 @@ public:
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
   
   int GetHeading() const { return m_heading; }
+  bool CanMultiSelect() const { return m_multiselect; }
 
 protected:
   virtual bool SetFormat(const std::string &format);
   
   int m_heading;
+  bool m_multiselect;
 };

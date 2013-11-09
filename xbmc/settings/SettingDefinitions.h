@@ -44,6 +44,7 @@
 #define SETTING_XML_ELM_UPDATES       "updates"
 #define SETTING_XML_ELM_UPDATE        "update"
 #define SETTING_XML_ELM_ACCESS        "access"
+#define SETTING_XML_ELM_DELIMITER     "delimiter"
 
 #define SETTING_XML_ATTR_ID           "id"
 #define SETTING_XML_ATTR_LABEL        "label"
