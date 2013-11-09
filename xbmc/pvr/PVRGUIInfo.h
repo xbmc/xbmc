@@ -125,6 +125,9 @@ namespace PVR
     void CharInfoBackendRecordings(CStdString &strValue) const;
     void CharInfoPlayingClientName(CStdString &strValue) const;
     void CharInfoEncryption(CStdString &strValue) const;
+    void CharInfoService(CStdString &strValue) const;
+    void CharInfoMux(CStdString &strValue) const;
+    void CharInfoProvider(CStdString &strValue) const;
 
     /** @name GUIInfoManager data */
     //@{
