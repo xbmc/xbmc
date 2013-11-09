@@ -1602,6 +1602,9 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
   else if (StringUtils::StartsWithNoCase(settingId, "audiooutput."))
   {
+    // AE is master of audio settings and needs to be informed first
+    CAEFactory::OnSettingsChange(settingId);
+
     if (settingId == "audiooutput.guisoundmode")
     {
       CAEFactory::SetSoundMode(((CSettingInt*)setting)->GetValue());
@@ -1611,10 +1614,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     else if (settingId == "audiooutput.passthrough")
     {
       CApplicationMessenger::Get().MediaRestart(false);
-      return;
     }
-
-    CAEFactory::OnSettingsChange(settingId);
   }
   else if (StringUtils::EqualsNoCase(settingId, "musicplayer.replaygaintype"))
     m_replayGainSettings.iType = ((CSettingInt*)setting)->GetValue();

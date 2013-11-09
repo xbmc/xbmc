@@ -274,7 +274,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == AUDIO_SETTINGS_DIGITAL_ANALOG)
   {
-    CSettings::Get().SetBool("audiooutput.passthrough", !m_outputmode);
+    CSettings::Get().SetBool("audiooutput.passthrough", m_outputmode);
 
     EnableSettings(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, true);
     EnableSettings(AUDIO_SETTINGS_VOLUME, !g_application.m_pPlayer->IsPassthrough());
