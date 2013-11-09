@@ -811,7 +811,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   // setup any logging...
   if (g_guiSettings.GetBool("debug.showloginfo"))
   {
+#ifndef __PLEX__
     g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
+#else
+    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG);
+#endif
     CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting (%d)", g_advancedSettings.m_logLevel);
   }
   else
