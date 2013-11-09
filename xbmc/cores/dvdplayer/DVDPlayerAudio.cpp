@@ -274,19 +274,10 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
       int len = m_pAudioCodec->Decode(m_decode.data, m_decode.size);
       m_audioStats.AddSampleBytes(m_decode.size);
-      if (len < 0)
+      if (len < 0 || len > m_decode.size)
       {
         /* if error, we skip the packet */
-        CLog::Log(LOGERROR, "CDVDPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet");
-        m_decode.Release();
-        m_pAudioCodec->Reset();
-        return DECODE_FLAG_ERROR;
-      }
-
-      // fix for fucked up decoders
-      if( len > m_decode.size )
-      {
-        CLog::Log(LOGERROR, "CDVDPlayerAudio:DecodeFrame - Codec tried to consume more data than available. Potential memory corruption");
+        CLog::Log(LOGERROR, "CDVDPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet (%d)", len);
         m_decode.Release();
         m_pAudioCodec->Reset();
         return DECODE_FLAG_ERROR;
