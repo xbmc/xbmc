@@ -401,6 +401,7 @@ CApplication::CApplication(void)
   m_bPlaybackStarting = false;
   m_ePlayState = PLAY_STATE_NONE;
   m_skinReloading = false;
+  m_skinReverting = false;
   m_loggingIn = false;
 
 #ifdef HAS_GLX
@@ -1579,7 +1580,12 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     if (settingId == "lookandfeel.skin" && CSettings::Get().GetString("lookandfeel.skintheme") != "SKINDEFAULT")
       CSettings::Get().SetString("lookandfeel.skintheme", "SKINDEFAULT");
     else
-      CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin");
+    {
+      std::string builtin("ReloadSkin");
+      if (!m_skinReverting)
+        builtin += "(confirm)";
+      CApplicationMessenger::Get().ExecBuiltIn(builtin);
+    }
   }
   else if (settingId == "lookandfeel.skintheme")
   {
@@ -1738,9 +1744,11 @@ bool CApplication::OnSettingsSaving() const
   return true;
 }
 
-void CApplication::ReloadSkin()
+void CApplication::ReloadSkin(bool confirm/*=false*/)
 {
   m_skinReloading = false;
+  std::string oldSkin = g_SkinInfo ? g_SkinInfo->ID() : "";
+
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
   g_windowManager.SendMessage(msg);
   
@@ -1762,6 +1770,21 @@ void CApplication::ReloadSkin()
       pWindow->OnMessage(msg3);
     }
   }
+
+  if (!m_skinReverting && confirm)
+  {
+    bool cancelled;
+    if (!CGUIDialogYesNo::ShowAndGetInput(13123, 13111, -1, -1, -1, -1, cancelled, 10000))
+    {
+      m_skinReverting = true;
+      if (oldSkin.empty())
+        CSettings::Get().GetSetting("lookandfeel.skin")->Reset();
+      else
+        CSettings::Get().SetString("lookandfeel.skin", oldSkin);
+    }
+  }
+
+  m_skinReverting = false;
 }
 
 bool CApplication::Load(const TiXmlNode *settings)
