@@ -38,7 +38,10 @@ bool CPlexMediaDecisionEngine::BlockAndResolve(const CFileItem &item, CFileItem 
       while(!m_done.WaitMSec(1))
       {
         if (dialog->IsCanceled())
+        {
+          Cancel();
           return false;
+        }
         
         g_windowManager.ProcessRenderLoop(false);
       }
