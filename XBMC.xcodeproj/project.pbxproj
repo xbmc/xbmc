@@ -846,7 +846,6 @@
 		DFF0F19317528350002DA3A4 /* DVDMessageTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157C0D25F9FA00618676 /* DVDMessageTracker.cpp */; };
 		DFF0F19417528350002DA3A4 /* DVDOverlayContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157E0D25F9FA00618676 /* DVDOverlayContainer.cpp */; };
 		DFF0F19517528350002DA3A4 /* DVDOverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15800D25F9FA00618676 /* DVDOverlayRenderer.cpp */; };
-		DFF0F19617528350002DA3A4 /* DVDPerformanceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15820D25F9FA00618676 /* DVDPerformanceCounter.cpp */; };
 		DFF0F19717528350002DA3A4 /* DVDPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15840D25F9FA00618676 /* DVDPlayer.cpp */; };
 		DFF0F19817528350002DA3A4 /* DVDPlayerAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */; };
 		DFF0F19917528350002DA3A4 /* DVDPlayerSubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15880D25F9FA00618676 /* DVDPlayerSubtitle.cpp */; };
@@ -1676,7 +1675,6 @@
 		E38E1FA30D25F9FD00618676 /* DVDMessageTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157C0D25F9FA00618676 /* DVDMessageTracker.cpp */; };
 		E38E1FA40D25F9FD00618676 /* DVDOverlayContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157E0D25F9FA00618676 /* DVDOverlayContainer.cpp */; };
 		E38E1FA50D25F9FD00618676 /* DVDOverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15800D25F9FA00618676 /* DVDOverlayRenderer.cpp */; };
-		E38E1FA60D25F9FD00618676 /* DVDPerformanceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15820D25F9FA00618676 /* DVDPerformanceCounter.cpp */; };
 		E38E1FA70D25F9FD00618676 /* DVDPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15840D25F9FA00618676 /* DVDPlayer.cpp */; };
 		E38E1FA80D25F9FD00618676 /* DVDPlayerAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */; };
 		E38E1FA90D25F9FD00618676 /* DVDPlayerSubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15880D25F9FA00618676 /* DVDPlayerSubtitle.cpp */; };
@@ -2272,7 +2270,6 @@
 		E49911FB174E5D4500741B6D /* DVDMessageTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157C0D25F9FA00618676 /* DVDMessageTracker.cpp */; };
 		E49911FC174E5D4500741B6D /* DVDOverlayContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157E0D25F9FA00618676 /* DVDOverlayContainer.cpp */; };
 		E49911FD174E5D4500741B6D /* DVDOverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15800D25F9FA00618676 /* DVDOverlayRenderer.cpp */; };
-		E49911FE174E5D4500741B6D /* DVDPerformanceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15820D25F9FA00618676 /* DVDPerformanceCounter.cpp */; };
 		E49911FF174E5D4500741B6D /* DVDPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15840D25F9FA00618676 /* DVDPlayer.cpp */; };
 		E4991200174E5D4500741B6D /* DVDPlayerAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */; };
 		E4991201174E5D4500741B6D /* DVDPlayerSubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15880D25F9FA00618676 /* DVDPlayerSubtitle.cpp */; };
@@ -4505,8 +4502,6 @@
 		E38E157F0D25F9FA00618676 /* DVDOverlayContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayContainer.h; sourceTree = "<group>"; };
 		E38E15800D25F9FA00618676 /* DVDOverlayRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayRenderer.cpp; sourceTree = "<group>"; };
 		E38E15810D25F9FA00618676 /* DVDOverlayRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayRenderer.h; sourceTree = "<group>"; };
-		E38E15820D25F9FA00618676 /* DVDPerformanceCounter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPerformanceCounter.cpp; sourceTree = "<group>"; };
-		E38E15830D25F9FA00618676 /* DVDPerformanceCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPerformanceCounter.h; sourceTree = "<group>"; };
 		E38E15840D25F9FA00618676 /* DVDPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayer.cpp; sourceTree = "<group>"; };
 		E38E15850D25F9FA00618676 /* DVDPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayer.h; sourceTree = "<group>"; };
 		E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerAudio.cpp; sourceTree = "<group>"; };
@@ -7441,8 +7436,6 @@
 				E38E157F0D25F9FA00618676 /* DVDOverlayContainer.h */,
 				E38E15800D25F9FA00618676 /* DVDOverlayRenderer.cpp */,
 				E38E15810D25F9FA00618676 /* DVDOverlayRenderer.h */,
-				E38E15820D25F9FA00618676 /* DVDPerformanceCounter.cpp */,
-				E38E15830D25F9FA00618676 /* DVDPerformanceCounter.h */,
 				E38E15840D25F9FA00618676 /* DVDPlayer.cpp */,
 				E38E15850D25F9FA00618676 /* DVDPlayer.h */,
 				E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */,
@@ -9706,7 +9699,6 @@
 				E38E1FA30D25F9FD00618676 /* DVDMessageTracker.cpp in Sources */,
 				E38E1FA40D25F9FD00618676 /* DVDOverlayContainer.cpp in Sources */,
 				E38E1FA50D25F9FD00618676 /* DVDOverlayRenderer.cpp in Sources */,
-				E38E1FA60D25F9FD00618676 /* DVDPerformanceCounter.cpp in Sources */,
 				E38E1FA70D25F9FD00618676 /* DVDPlayer.cpp in Sources */,
 				E38E1FA80D25F9FD00618676 /* DVDPlayerAudio.cpp in Sources */,
 				E38E1FA90D25F9FD00618676 /* DVDPlayerSubtitle.cpp in Sources */,
@@ -10941,7 +10933,6 @@
 				DFF0F19317528350002DA3A4 /* DVDMessageTracker.cpp in Sources */,
 				DFF0F19417528350002DA3A4 /* DVDOverlayContainer.cpp in Sources */,
 				DFF0F19517528350002DA3A4 /* DVDOverlayRenderer.cpp in Sources */,
-				DFF0F19617528350002DA3A4 /* DVDPerformanceCounter.cpp in Sources */,
 				DFF0F19717528350002DA3A4 /* DVDPlayer.cpp in Sources */,
 				DFF0F19817528350002DA3A4 /* DVDPlayerAudio.cpp in Sources */,
 				DFF0F19917528350002DA3A4 /* DVDPlayerSubtitle.cpp in Sources */,
@@ -11984,7 +11975,6 @@
 				E49911FB174E5D4500741B6D /* DVDMessageTracker.cpp in Sources */,
 				E49911FC174E5D4500741B6D /* DVDOverlayContainer.cpp in Sources */,
 				E49911FD174E5D4500741B6D /* DVDOverlayRenderer.cpp in Sources */,
-				E49911FE174E5D4500741B6D /* DVDPerformanceCounter.cpp in Sources */,
 				E49911FF174E5D4500741B6D /* DVDPlayer.cpp in Sources */,
 				E4991200174E5D4500741B6D /* DVDPlayerAudio.cpp in Sources */,
 				E4991201174E5D4500741B6D /* DVDPlayerSubtitle.cpp in Sources */,

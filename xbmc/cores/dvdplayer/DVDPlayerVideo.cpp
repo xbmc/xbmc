@@ -35,7 +35,6 @@
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDOverlayRenderer.h"
-#include "DVDPerformanceCounter.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
 #include "DVDCodecs/Overlay/DVDOverlaySSA.h"
@@ -147,7 +146,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iNrOfPicturesNotToSkip = 0;
   m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
-  g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
 
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
@@ -166,7 +164,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
 CDVDPlayerVideo::~CDVDPlayerVideo()
 {
   StopThread();
-  g_dvdPerformanceCounter.DisableVideoQueue();
   g_VideoReferenceClock.StopThread();
 }
 
@@ -303,7 +300,6 @@ void CDVDPlayerVideo::OnStartup()
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_FlipTimeStamp = m_pClock->GetAbsoluteClock();
 
-  g_dvdPerformanceCounter.EnableVideoDecodePerformance(this);
 }
 
 void CDVDPlayerVideo::Process()
@@ -761,8 +757,6 @@ void CDVDPlayerVideo::Process()
 
 void CDVDPlayerVideo::OnExit()
 {
-  g_dvdPerformanceCounter.DisableVideoDecodePerformance();
-
   if (m_pOverlayCodecCC)
   {
     m_pOverlayCodecCC->Dispose();

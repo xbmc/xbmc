@@ -24,7 +24,6 @@
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
-#include "DVDPerformanceCounter.h"
 #include "settings/Settings.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/log.h"
@@ -131,13 +130,11 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
 
   m_messageQueue.SetMaxDataSize(6 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
-  g_dvdPerformanceCounter.EnableAudioQueue(&m_messageQueue);
 }
 
 CDVDPlayerAudio::~CDVDPlayerAudio()
 {
   StopThread();
-  g_dvdPerformanceCounter.DisableAudioQueue();
 
   // close the stream, and don't wait for the audio to be finished
   // CloseStream(true);
@@ -504,8 +501,6 @@ void CDVDPlayerAudio::OnStartup()
 {
   m_decode.Release();
 
-  g_dvdPerformanceCounter.EnableAudioDecodePerformance(this);
-
 #ifdef TARGET_WINDOWS
   CoInitializeEx(NULL, COINIT_MULTITHREADED);
 #endif
@@ -812,8 +807,6 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 
 void CDVDPlayerAudio::OnExit()
 {
-  g_dvdPerformanceCounter.DisableAudioDecodePerformance();
-
 #ifdef TARGET_WINDOWS
   CoUninitialize();
 #endif
