@@ -56,6 +56,51 @@ public:
   void   Flush();
 };
 
+class CDVDErrorAverage
+{
+public:
+  CDVDErrorAverage()
+  {
+    Flush();
+  }
+  void    Add(double error)
+  {
+    m_buffer += error;
+    m_count++;
+  }
+
+  void    Flush()
+  {
+    m_buffer = 0.0f;
+    m_count  = 0;
+    m_timer.Set(2000);
+  }
+
+  double  Get()
+  {
+    if(m_count)
+      return m_buffer / m_count;
+    else
+      return 0.0;
+  }
+
+  bool    Get(double& error)
+  {
+    if(m_timer.IsTimePast())
+    {
+      error = Get();
+      Flush();
+      return true;
+    }
+    else
+      return false;
+  }
+
+  double               m_buffer; //place to store average errors
+  int                  m_count;  //number of errors stored
+  XbmcThreads::EndTime m_timer;
+};
+
 class CDVDPlayerAudio : public CThread
 {
 public:
@@ -177,13 +222,9 @@ protected:
 
   double m_error;    //last average error
 
-  int64_t m_errortime; //timestamp of last time we measured
-  int64_t m_freq;
-
   void   SetSyncType(bool passthrough);
   void   HandleSyncError(double duration);
-  double m_errorbuff; //place to store average errors
-  int    m_errorcount;//number of errors stored
+  CDVDErrorAverage m_errors;
   bool   m_syncclock;
 
   double m_integral; //integral correction for resampler

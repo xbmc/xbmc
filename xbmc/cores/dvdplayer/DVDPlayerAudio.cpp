@@ -117,16 +117,12 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_setsynctype = SYNC_DISCON;
   m_prevsynctype = -1;
   m_error = 0;
-  m_errorbuff = 0;
-  m_errorcount = 0;
+  m_errors.Flush();
   m_syncclock = true;
   m_integral = 0;
   m_skipdupcount = 0;
   m_prevskipped = false;
   m_maxspeedadjust = 0.0;
-
-  m_errortime = 0;
-  m_freq = CurrentHostFrequency();
 
   m_messageQueue.SetMaxDataSize(6 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
@@ -196,13 +192,11 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_prevsynctype = -1;
 
   m_error = 0;
-  m_errorbuff = 0;
-  m_errorcount = 0;
+  m_errors.Flush();
   m_integral = 0;
   m_skipdupcount = 0;
   m_prevskipped = false;
   m_syncclock = true;
-  m_errortime = CurrentHostCounter();
   m_silence = false;
 
   m_maxspeedadjust = CSettings::Get().GetNumber("videoplayer.maxspeedadjust");
@@ -648,36 +642,25 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 {
   double clock = m_pClock->GetClock();
   double error = m_dvdAudio.GetPlayingPts() - clock;
-  int64_t now;
 
   if( fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock )
   {
     m_pClock->Discontinuity(clock+error);
     CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity1 - was:%f, should be:%f, error:%f", clock, clock+error, error);
 
-    m_errorbuff = 0;
-    m_errorcount = 0;
+    m_errors.Flush();
     m_skipdupcount = 0;
     m_error = 0;
     m_syncclock = false;
-    m_errortime = CurrentHostCounter();
 
     return;
   }
 
-  m_errorbuff += error;
-  m_errorcount++;
+  m_errors.Add(error);
 
   //check if measured error for 2 seconds
-  now = CurrentHostCounter();
-  if ((now - m_errortime) >= m_freq * 2)
+  if (m_errors.Get(m_error))
   {
-    m_errortime = now;
-    m_error = m_errorbuff / m_errorcount;
-
-    m_errorbuff = 0;
-    m_errorcount = 0;
-
     if (m_synctype == SYNC_DISCON)
     {
       double limit, error;
