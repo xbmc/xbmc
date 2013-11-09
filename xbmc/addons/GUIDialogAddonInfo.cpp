@@ -87,7 +87,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
           OnInstall();
           return true;
         }
-        else if (CGUIDialogYesNo::ShowAndGetInput(24037, 750, 0, 0))
+        else
         {
           OnUninstall();
           return true;
@@ -205,6 +205,10 @@ void CGUIDialogAddonInfo::OnUninstall()
     CGUIDialogOK::ShowAndGetInput(24037, strLine0, strLine1, 24047);
     return;
   }
+
+  // prompt user to be sure
+  if (CGUIDialogYesNo::ShowAndGetInput(24037, 750, 0, 0))
+    return;
 
   // ensure the addon isn't disabled in our database
   CAddonMgr::Get().DisableAddon(m_localAddon->ID(), false);
