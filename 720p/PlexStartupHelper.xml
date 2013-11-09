@@ -43,7 +43,7 @@
 		<!-- welcome -->
 		<control type="group" id="100">
 			<visible>!IsEmpty(ListItem.Property(WizardWelcome))</visible>
-			<posx>100</posx>
+			<posx>70</posx>
 			<posy>160</posy>
 			<width>750</width>
 			<!-- myplex logo -->
@@ -51,15 +51,15 @@
 				<description>Poster image</description>
 				<posx>0</posx>
 				<posy>35</posy>
-				<width>300</width>
+				<width>350</width>
 				<height>300</height>
 				<texture>logo-myplex.png</texture>
-				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
 			</control>
 			<!-- description text -->
 			<control type="textbox" id="2">
 				<posy>30</posy>
-				<posx>350</posx>
+				<posx>380</posx>
 				<width>700</width>
 				<height>300</height>
 				<align>left</align>
@@ -73,7 +73,7 @@
 					<control type="image">
 						<description>button bg</description>
 						<posx>0</posx>
-						<width>1280</width>
+						<width>1500</width>
 						<height>80</height>
 						<include>Black</include>
 						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
