@@ -573,11 +573,6 @@ void CDVDPlayerAudio::Process()
       break;
     }
 
-#ifdef PROFILE /* during profiling we just drop all packets, after having decoded */
-    m_pClock->Discontinuity(audioframe.pts);
-    continue;
-#endif
-
     if( audioframe.size == 0 )
       continue;
 
