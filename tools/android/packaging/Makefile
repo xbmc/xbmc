@@ -5,7 +5,7 @@ OBJS = libcurl.so \
   libafpclient.so  \
   libplist.so libshairplay.so \
   libxbogg.so libxbvorbis.so libxbvorbisfile.so libxbFLAC.so libxbmpeg2.so \
-  libxbmpeg2convert.so libnfs.so libass.so
+  libxbmpeg2convert.so libnfs.so libass.so libbluray.so
 
 PLATFORM_OBJS =
 EXCLUDED_ADDONS = screensaver.rsxs.euphoria visualization.dxspectrum visualization.milkdrop visualization.projectm
