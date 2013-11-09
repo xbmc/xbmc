@@ -428,7 +428,8 @@ bool CGUIControlGroup::HasVisibleID(int id) const
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->HasVisibleID(id))
+    /* PLEX check that child is valid first */
+    if (child && child->HasVisibleID(id))
       return true;
   }
   return false;
