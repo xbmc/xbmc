@@ -759,6 +759,11 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
+        <setting id="subtitles.preferexternal" type="boolean" label="21600" help="21601">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="dvds" label="14087" help="36193">

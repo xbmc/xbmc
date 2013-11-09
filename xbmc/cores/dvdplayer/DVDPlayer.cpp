@@ -137,6 +137,59 @@ std::vector<SelectionStream> CSelectionStreams::Get(StreamType type)
       return (lh) > (rh); \
   } while(0)
 
+class PredicateSubtitleFilter
+{
+private:
+  std::string audiolang;
+  bool original;
+  bool preferexternal;
+public:
+  /** \brief The class' operator() decides if the given (subtitle) SelectionStream is relevant wrt.
+  *          preferred subtitle language and audio language. If the subtitle is relevant <B>false</B> false is returned.
+  *
+  *          A subtitle is relevant if
+  *          - it was previously selected, or
+  *          - it's an external sub and "prefer external subs was selected", or
+  *          - it's a forced sub and "original stream's language" was selected, or
+  *          - it's a forced sub and its language matches the audio's language, or
+  *          - it's a default sub, or
+  *          - its language matches the preferred subtitle's language (unequal to "original stream's language")
+  */
+  PredicateSubtitleFilter(std::string& lang)
+    : audiolang(lang),
+      original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original")),
+      preferexternal(CSettings::Get().GetBool("subtitles.preferexternal"))
+  {
+  };
+  
+  bool operator()(const SelectionStream& ss) const
+  {
+    if (ss.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream)
+      return false;
+
+    if (preferexternal)
+    {
+      if(ss.source == STREAM_SOURCE_DEMUX_SUB || ss.source == STREAM_SOURCE_TEXT)
+        return false;
+    }
+
+    if ((ss.flags & CDemuxStream::FLAG_FORCED) && (original || g_LangCodeExpander.CompareLangCodes(ss.language, audiolang)))
+      return false;
+
+    if ((ss.flags & CDemuxStream::FLAG_DEFAULT))
+      return false;
+
+    if(!original)
+    {
+      std::string subtitle_language = g_langInfo.GetSubtitleLanguage();
+      if (g_LangCodeExpander.CompareLangCodes(subtitle_language, ss.language))
+        return false;
+    }
+
+    return true;
+  }
+};
+
 static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStream& rh)
 {
   PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream
@@ -160,41 +213,82 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
   return false;
 }
 
-static bool PredicateSubtitlePriority(const SelectionStream& lh, const SelectionStream& rh)
+/** \brief The class' operator() decides if the given (subtitle) SelectionStream lh is 'better than' the given (subtitle) SelectionStream rh.
+*          If lh is 'better than' rh the return value is true, false otherwise.
+*
+*          A subtitle lh is 'better than' a subtitle rh (in evaluation order) if
+*          - lh was previously selected, or
+*          - lh is an external sub and "prefer external subs was selected" and rh not, or
+*          - lh is a forced sub and ("original stream's language" was selected or subtitles are off) and rh not, or
+*          - lh is an external sub and its language matches the preferred subtitle's language (unequal to "original stream's language") and rh not, or
+*          - lh is an external sub and rh not, or
+*          - lh is language matches the preferred subtitle's language (unequal to "original stream's language") and rh not, or
+*          - lh is a default sub and rh not
+*/
+class PredicateSubtitlePriority
 {
-  if(!CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
+private:
+  std::string audiolang;
+  bool original;
+  bool preferextsubs;
+  bool subson;
+public:
+  PredicateSubtitlePriority(std::string& lang)
+    : audiolang(lang),
+      original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original")),
+      preferextsubs(CSettings::Get().GetBool("subtitles.preferexternal")),
+      subson(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
   {
-    PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED
-                   , rh.flags & CDemuxStream::FLAG_FORCED);
-  }
+  };
 
-  PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream
-                 , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
-
-  CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
-  if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
+  bool operator()(const SelectionStream& lh, const SelectionStream& rh) const
   {
-    PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
-                   , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
+    PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream
+                   , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
+
+    if (preferextsubs)
+    {
+      PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
+                     , rh.source == STREAM_SOURCE_DEMUX_SUB);
+
+      PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
+                     , rh.source == STREAM_SOURCE_TEXT);
+    }
+
+    if(!subson || original)
+    {
+      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareLangCodes(lh.language, audiolang)
+                     , rh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareLangCodes(rh.language, audiolang));
+
+      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED
+                     , rh.flags & CDemuxStream::FLAG_FORCED);
+    }
+
+    CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
+    if(!original)
+    {
+      PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
+                     , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
+    }
+
+    PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
+                   , rh.source == STREAM_SOURCE_DEMUX_SUB);
+
+    PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
+                   , rh.source == STREAM_SOURCE_TEXT);
+
+    if(!original)
+    {
+      PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
+                     , g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
+    }
+
+    PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
+                   , rh.flags & CDemuxStream::FLAG_DEFAULT);
+
+    return false;
   }
-
-  PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
-                 , rh.source == STREAM_SOURCE_DEMUX_SUB);
-
-  PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
-                 , rh.source == STREAM_SOURCE_TEXT);
-
-  if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
-  {
-    PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
-                   , g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
-  }
-
-  PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
-                 , rh.flags & CDemuxStream::FLAG_DEFAULT);
-
-  return false;
-}
+};
 
 static bool PredicateVideoPriority(const SelectionStream& lh, const SelectionStream& rh)
 {
@@ -730,7 +824,11 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   m_dvdPlayerVideo.EnableSubtitle(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 
   // open subtitle stream
-  streams = m_SelectionStreams.Get(STREAM_SUBTITLE, PredicateSubtitlePriority);
+  SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
+  PredicateSubtitleFilter psf(as.language);
+  streams = m_SelectionStreams.RemoveIf(STREAM_SUBTITLE, psf);
+  PredicateSubtitlePriority psp(as.language);
+  std::stable_sort(streams.begin(), streams.end(), psp);
   valid   = false;
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
@@ -742,7 +840,10 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
     }
   }
   if(!valid)
+  {
     CloseSubtitleStream(true);
+    SetSubtitleVisible(false);
+  }
 
   // open teletext stream
   streams = m_SelectionStreams.Get(STREAM_TELETEXT);
@@ -2127,6 +2228,7 @@ void CDVDPlayer::HandleMessages()
           {
             CloseAudioStream(false);
             OpenAudioStream(st.id, st.source);
+            AdaptForcedSubtitles();
             m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
           }
         }
@@ -3062,6 +3164,35 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
 
   CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, source, iStream);
   return true;
+}
+
+bool CDVDPlayer::AdaptForcedSubtitles()
+{
+  bool valid = false;
+  SelectionStream ss = m_SelectionStreams.Get(STREAM_SUBTITLE, GetSubtitle());
+  if (ss.flags & CDemuxStream::FLAG_FORCED || !GetSubtitleVisible())
+  {
+    SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
+    SelectionStreams streams = m_SelectionStreams.Get(STREAM_SUBTITLE);
+
+    for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+    {
+      if (it->flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareLangCodes(it->language, as.language))
+      {
+        if(OpenSubtitleStream(it->id, it->source))
+        {
+          valid = true;
+          SetSubtitleVisible(true);
+        }
+      }
+    }
+    if(!valid)
+    {
+      CloseSubtitleStream(true);
+      SetSubtitleVisible(false);
+    }
+  }
+  return valid;
 }
 
 bool CDVDPlayer::OpenTeletextStream(int iStream, int source)

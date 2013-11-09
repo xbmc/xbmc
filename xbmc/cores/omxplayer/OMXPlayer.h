@@ -148,6 +148,14 @@ public:
     return streams;
   }
 
+  template<typename Filter>
+  OMXSelectionStreams RemoveIf(StreamType type, Filter filter)
+  {
+    OMXSelectionStreams streams = Get(type);
+    streams.erase(std::remove_if(streams.begin(), streams.end(), filter), streams.end());
+    return streams;
+  }
+
   void             Clear   (StreamType type, StreamSource source);
   int              Source  (StreamSource source, std::string filename);
 
@@ -279,6 +287,12 @@ protected:
   bool OpenAudioStream(int iStream, int source, bool reset = true);
   bool OpenVideoStream(int iStream, int source, bool reset = true);
   bool OpenSubtitleStream(int iStream, int source);
+
+  /** \brief Switches forced subtitles to forced subtitles matching the language of the current audio track.
+  *          If these are not available, subtitles are disabled.
+  *   \return true if the subtitles were changed, false otherwise.
+  */
+  bool AdaptForcedSubtitles();
   bool OpenTeletextStream(int iStream, int source);
   bool CloseAudioStream(bool bWaitForBuffers);
   bool CloseVideoStream(bool bWaitForBuffers);
