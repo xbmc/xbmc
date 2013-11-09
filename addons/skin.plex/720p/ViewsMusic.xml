@@ -200,7 +200,7 @@
 						<visible>true</visible>
 					</control>
 					<!-- Genre -->
-					<control type="grouplist">
+					<!--><control type="grouplist">
 						<posy>63</posy>
 						<orientation>horizontal</orientation>
 						<itemgap>10</itemgap>
@@ -220,10 +220,10 @@
 							<include>WhiteShadow</include>
 							<visible>true</visible>
 						</control>
-					</control>
+					</control>-->
 					<!-- Count -->
 					<control type="grouplist">
-						<posy>93</posy>
+						<posy>63</posy>
 						<orientation>horizontal</orientation>
 						<itemgap>10</itemgap>
 						<control type="label">
@@ -377,7 +377,7 @@
 						<visible>true</visible>
 					</control>
 					<!-- Genre -->
-					<control type="grouplist">
+					<!--><control type="grouplist">
 						<posy>93</posy>
 						<orientation>horizontal</orientation>
 						<itemgap>10</itemgap>
@@ -398,10 +398,10 @@
 							<include>WhiteShadow</include>
 							<visible>true</visible>
 						</control>
-					</control>
+					</control>-->
 					<!-- Count -->
 					<control type="grouplist">
-						<posy>123</posy>
+						<posy>93</posy>
 						<orientation>horizontal</orientation>
 						<itemgap>10</itemgap>
 						<control type="label">

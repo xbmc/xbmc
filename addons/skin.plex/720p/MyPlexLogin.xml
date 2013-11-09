@@ -5,57 +5,27 @@
 	<include>DialogFadeInOut</include>
 	<controls>
 		<control type="group">
-			<posx>140</posx>
-			<posy>60</posy>
-			<!-- window dressing -->
-			<control type="group">
-				<control type="image">
-					<description>Background</description>
-					<posy>30</posy>
-					<width>1000</width>
-					<height>570</height>
-					<include>BlackRounded</include>
-					<animation effect="fade" start="0" end="90" time="0" condition="true">Conditional</animation>
-				</control>
-				<control type="image">
-					<description>Title bg</description>
-					<posy>30</posy>
-					<width>1000</width>
-					<height>70</height>
-					<include>DialogHeaderBGOrange</include>
-				</control>
-				<control type="image">
-					<description>Title bg bottom border</description>
-					<posy>50</posy>
-					<width>1000</width>
-					<include>DialogHeaderBorder</include>
-				</control>
-				<control type="image">
-					<description>Background border</description>
-					<posy>30</posy>
-					<width>1002</width>
-					<height>572</height>
-					<include>DialogBorder</include>
-				</control>
-				<control type="image">
-					<description>Dialog arrow</description>
-					<posx>485</posx>
-					<posy>600</posy>
-					<include>DialogArrow</include>
-				</control>
+			<!-- bg's -->
+			<include>BeginnersBackground</include>
+			<include>SlideshowDimmed</include>
+			<control type="image">
+				<width>1280</width>
+				<height>100</height>
+				<include>Black</include>
+				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 			</control>
 			<!-- controls -->
 			<control type="group">
-				<posy>30</posy>
+				<posx>140</posx>
+				<posy>50</posy>
 				<control type="label" id="1">
-					<posy>33</posy>
 					<description>Heading</description>
 					<width>1000</width>
 					<include>DialogHeading</include>
 				</control>
 				<!-- hardcoded dialog title, delete when control 1 has a dynamic one -->
 				<control type="label">
-					<posy>33</posy>
+					<posy>0</posy>
 					<description>Heading</description>
 					<width>1000</width>
 					<include>DialogHeading</include>
@@ -63,7 +33,7 @@
 				</control>
 				<!-- description text -->
 				<control type="textbox" id="10081">
-					<posy>110</posy>
+					<posy>140</posy>
 					<posx>270</posx>
 					<width>460</width>
 					<height>195</height>
@@ -73,7 +43,7 @@
 				<!-- PIN area -->
 				<control type="group">
 					<visible>!Control.IsVisible(10083) + !Control.IsVisible(10088) + !Control.IsVisible(10089)</visible>
-					<posy>232</posy>
+					<posy>262</posy>
 					<posx>270</posx>
 					<control type="group">
             <visible>Control.IsVisible(10082)</visible>
@@ -113,11 +83,12 @@
 						<width>480</width>
 						<height>150</height>
 						<font>CondensedBold-126</font>
+						<shadowcolor>FF222222</shadowcolor>
 					</control>
 				</control>
 				<!-- manual login area -->
 				<control type="group">
-					<posy>205</posy>
+					<posy>225</posy>
 					<posx>270</posx>
 					<!-- user field -->
 					<control type="group">
@@ -245,15 +216,15 @@
 				</control>
 				<!-- buttons area -->
 				<control type="group">
-					<posy>450</posy>
+					<posy>550</posy>
 					<posx>0</posx>
 					<control type="group">
 						<control type="image">
 							<description>buttons bg</description>
-							<posx>0</posx>
-							<width>1000</width>
+							<posx>-500</posx>
+							<width>2000</width>
 							<height>80</height>
-							<include>Orange</include>
+							<include>Black</include>
 							<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 						</control>
 					</control>

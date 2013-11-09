@@ -285,6 +285,11 @@
 			<size>48</size>
 		</font>
 		<font>
+			<name>CondensedBold-52</name>
+			<filename>DejaVuSansCondensed-Bold.ttf</filename>
+			<size>52</size>
+		</font>
+		<font>
 			<name>CondensedBold-126</name>
 			<filename>DejaVuSansCondensed-Bold.ttf</filename>
 			<size>126</size>

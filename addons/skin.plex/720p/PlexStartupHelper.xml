@@ -3,10 +3,19 @@
 	<defaultcontrol always="false">100</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
+		<!-- bg's -->
+		<include>BeginnersBackground</include>
+		<include>SlideshowDimmed</include>
+		<control type="image">
+			<width>1280</width>
+			<height>100</height>
+			<include>Black</include>
+			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+		</control>
 		<!-- header title & description text -->
 		<control type="group">
 			<posx>60</posx>
-			<posy>60</posy>
+			<posy>50</posy>
 			<width>1160</width>
 			<!-- header title -->
 			<control type="label">
@@ -14,38 +23,51 @@
 				<width>1160</width>
 				<include>DialogHeading</include>
 				<label>$LOCALIZE[32001]</label>
+				<textcolor>orangeLight</textcolor>
 			</control>
 			<control type="label">
 				<visible>!IsEmpty(ListItem.Property(WizardAudio))</visible>
 				<width>1160</width>
 				<include>DialogHeading</include>
 				<label>$LOCALIZE[32001]</label>
+				<textcolor>orangeLight</textcolor>
 			</control>
 			<control type="label">
 				<visible>!IsEmpty(ListItem.Property(WizardMyPlex))</visible>
 				<width>1160</width>
 				<include>DialogHeading</include>
 				<label>$LOCALIZE[32001]</label>
+				<textcolor>orangeLight</textcolor>
 			</control>
 		</control>
 		<!-- welcome -->
 		<control type="group" id="100">
 			<visible>!IsEmpty(ListItem.Property(WizardWelcome))</visible>
 			<posx>100</posx>
-			<posy>120</posy>
+			<posy>160</posy>
 			<width>750</width>
+			<!-- myplex logo -->
+			<control type="image">
+				<description>Poster image</description>
+				<posx>0</posx>
+				<posy>35</posy>
+				<width>300</width>
+				<height>300</height>
+				<texture>logo-myplex.png</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
 			<!-- description text -->
 			<control type="textbox" id="2">
-				<posy>0</posy>
-				<posx>0</posx>
-				<width>1050</width>
-				<height>140</height>
+				<posy>30</posy>
+				<posx>350</posx>
+				<width>700</width>
+				<height>300</height>
 				<align>left</align>
 				<font>PINdescription</font>
 				<label>$LOCALIZE[32003]</label>
 			</control>
 			<control type="group">
-				<posy>500</posy>
+				<posy>440</posy>
 				<posx>-100</posx>
 				<control type="group">
 					<control type="image">
@@ -53,7 +75,7 @@
 						<posx>0</posx>
 						<width>1280</width>
 						<height>80</height>
-						<include>Orange</include>
+						<include>Black</include>
 						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 					</control>
 				</control>
@@ -81,16 +103,27 @@
 			<width>750</width>
 			<!-- description text -->
 			<control type="textbox" id="2">
-				<posy>0</posy>
+				<posy>30</posy>
+				<posx>70</posx>
+				<width>1000</width>
+				<height>140</height>
+				<align>left</align>
+				<font>PINdescription</font>
+				<label>$LOCALIZE[32000]</label>
+				<visible>!IsEmpty(ListItem(0).Property(HDMI))</visible>
+			</control>
+			<control type="textbox" id="2">
+				<posy>30</posy>
 				<posx>20</posx>
 				<width>1050</width>
 				<height>140</height>
 				<align>left</align>
 				<font>PINdescription</font>
 				<label>$LOCALIZE[32000]</label>
+				<visible>IsEmpty(ListItem(0).Property(HDMI))</visible>
 			</control>
 			<control type="group">
-				<posy>170</posy>
+				<posy>140</posy>
 				<!-- audio connector images -->
 				<control type="group">
 					<posx>0</posx>
@@ -157,18 +190,27 @@
 						<height>80</height>
 						<textoffsetx>20</textoffsetx>
 						<label>Analog / Built-in speakers</label>
+						<textcolor>FFefedeb</textcolor>
+						<shadowcolor>FF111111</shadowcolor>
+						<radioposx>720</radioposx>
 					</control>
 					<control type="radiobutton" id="212">
 						<width>770</width>
 						<height>80</height>
 						<textoffsetx>20</textoffsetx>
 						<label>Optical Audio Connection</label>
+						<textcolor>FFefedeb</textcolor>
+						<shadowcolor>FF111111</shadowcolor>
+						<radioposx>720</radioposx>
 					</control>
 					<control type="radiobutton" id="213">
 						<width>770</width>
 						<height>80</height>
 						<textoffsetx>20</textoffsetx>
 						<label>HDMI Audio Connection</label>
+						<textcolor>FFefedeb</textcolor>
+						<shadowcolor>FF111111</shadowcolor>
+						<radioposx>720</radioposx>
 					</control>
 				</control>
 				<!-- show this list if no HDMI detected -->
@@ -188,18 +230,24 @@
 						<height>130</height>
 						<textoffsetx>20</textoffsetx>
 						<label>Analog / Built-in speakers</label>
+						<textcolor>FFefedeb</textcolor>
+						<shadowcolor>FF111111</shadowcolor>
+						<radioposx>720</radioposx>
 					</control>
 					<control type="radiobutton" id="212">
 						<width>770</width>
 						<height>130</height>
 						<textoffsetx>20</textoffsetx>
 						<label>Optical Audio Connection</label>
+						<textcolor>FFefedeb</textcolor>
+						<shadowcolor>FF111111</shadowcolor>
+						<radioposx>720</radioposx>
 					</control>
 				</control>
 			</control>
 			<!-- buttons area -->
 			<control type="group">
-				<posy>500</posy>
+				<posy>480</posy>
 				<posx>-100</posx>
 				<control type="group">
 					<control type="image">
@@ -207,7 +255,7 @@
 						<posx>0</posx>
 						<width>1280</width>
 						<height>80</height>
-						<include>Orange</include>
+						<include>Black</include>
 						<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
 					</control>
 				</control>

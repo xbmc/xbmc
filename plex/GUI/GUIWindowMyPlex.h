@@ -16,10 +16,11 @@
 class CGUIWindowMyPlex : public CGUIWindow
 {
   public:
-    CGUIWindowMyPlex() : CGUIWindow(WINDOW_MYPLEX_LOGIN, "MyPlexLogin.xml"), m_goHome(false) {};
+    CGUIWindowMyPlex() : CGUIWindow(WINDOW_MYPLEX_LOGIN, "MyPlexLogin.xml"), m_goHome(false), m_failed(false) {};
 
     virtual bool OnMessage(CGUIMessage &message);
     static void ShowAndGetInput();
+    virtual bool OnAction(const CAction &action);
 
     void Setup();
     void ShowManualInput();
@@ -43,6 +44,7 @@ class CGUIWindowMyPlex : public CGUIWindow
   private:
     bool m_manual;
     bool m_goHome;
+    bool m_failed;
 };
 
 #endif // GUIDIALOGMYPLEXPIN_H

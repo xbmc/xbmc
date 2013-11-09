@@ -1151,11 +1151,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl*)GetControl(pSettingControl->GetID());
       if (pControl)
       {
+#ifdef ENABLE_AUTOUPDATE
         pControl->SetEnabled(true);
         if (g_plexApplication.autoUpdater->IsReadyToInstall())
           pControl->SetLabel(g_localizeStrings.Get(40018));
         else
           pControl->SetLabel(g_localizeStrings.Get(40016));
+#endif
       }
     }
     else if (strSetting.Equals("updates.current"))
@@ -1166,6 +1168,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(false);
       }
 
+#ifdef ENABLE_AUTOUPDATE
       if (g_plexApplication.autoUpdater->IsReadyToInstall())
       {
         pControl->SetLabel(g_localizeStrings.Get(40028));
@@ -1176,6 +1179,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetLabel(g_localizeStrings.Get(40029));
         g_guiSettings.SetString("updates.current", g_infoManager.GetVersion());
       }
+#endif
     }
     /* END PLEX */
 
@@ -2292,10 +2296,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Equals("updates.checknow"))
   {
+#ifdef ENABLE_AUTOUPDATE
     if (g_plexApplication.autoUpdater->IsReadyToInstall())
       g_plexApplication.autoUpdater->UpdateAndRestart();
     else
       g_plexApplication.autoUpdater->ForceVersionCheckInBackground();
+#endif
   }
   /* END PLEX */
 

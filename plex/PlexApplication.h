@@ -36,8 +36,12 @@ typedef boost::shared_ptr<CPlexMediaServerClient> CPlexMediaServerClientPtr;
 class CPlexServerDataLoader;
 typedef boost::shared_ptr<CPlexServerDataLoader> CPlexServerDataLoaderPtr;
 
+#ifdef ENABLE_AUTOUPDATE
 class CPlexAutoUpdate;
+#endif
+
 class BackgroundMusicPlayer;
+
 class CPlexAnalytics;
 
 class CPlexServiceListener;
@@ -83,7 +87,9 @@ public:
   CPlexServerDataLoaderPtr dataLoader;
   CPlexThemeMusicPlayerPtr themeMusicPlayer;
   CPlexAnalytics *analytics;
+#ifdef ENABLE_AUTOUPDATE
   CPlexAutoUpdate* autoUpdater;
+#endif
   CPlexTimelineManagerPtr timelineManager;  
   CPlexThumbCacher *thumbCacher;
   CPlexFilterManagerPtr filterManager;

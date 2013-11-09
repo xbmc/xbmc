@@ -18,7 +18,7 @@ include_directories(
   ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
-if(TARGET_OSX OR TARGET_WIN32)
+if(ENABLE_AUTOUPDATE)
   include(ExternalProject)
   ExternalProject_Add(Update-Installer
     CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}"
@@ -34,7 +34,9 @@ if(TARGET_OSX OR TARGET_WIN32)
             PERMISSIONS WORLD_READ WORLD_EXECUTE OWNER_WRITE OWNER_EXECUTE OWNER_READ GROUP_EXECUTE GROUP_READ
             DESTINATION ${BINPATH} COMPONENT RUNTIME)
   endif(TARGET_OSX)
-endif(TARGET_OSX OR TARGET_WIN32)
+
+  add_subdirectory(AutoUpdate)
+endif(ENABLE_AUTOUPDATE)
 
 if(TARGET_WIN32)
   # disable safe seh
@@ -49,7 +51,6 @@ add_subdirectory(GUI)
 add_subdirectory(Network)
 add_subdirectory(Owned)
 add_subdirectory(Utility)
-add_subdirectory(AutoUpdate)
 add_subdirectory(Remote)
 add_subdirectory(Filters)
 add_subdirectory(Windows)

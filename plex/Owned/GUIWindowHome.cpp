@@ -209,7 +209,8 @@ void CPlexSectionFanout::Refresh()
       
       m_outstandingJobs.push_back(LoadSection(trueUrl.Get(), CONTENT_LIST_RECENTLY_ADDED));
 
-      if (m_sectionType == SECTION_TYPE_MOVIE || m_sectionType == SECTION_TYPE_SHOW)
+      if (m_sectionType == SECTION_TYPE_MOVIE || m_sectionType == SECTION_TYPE_SHOW ||
+          m_sectionType == SECTION_TYPE_HOME_MOVIE)
       {
         trueUrl = CURL(m_url);
         PlexUtils::AppendPathToURL(trueUrl, "onDeck");
@@ -240,6 +241,17 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
     
     CFileItemList* newList = new CFileItemList;
     newList->Assign(load->m_items, false);
+
+    /* HACK HACK HACK */
+    if (m_sectionType == SECTION_TYPE_HOME_MOVIE)
+    {
+      for (int i = 0; i < newList->Size(); i ++)
+      {
+        newList->Get(i)->SetProperty("type", "clip");
+        newList->Get(i)->SetPlexDirectoryType(PLEX_DIR_TYPE_CLIP);
+      }
+    }
+
     m_fileLists[type] = newList;
     
     /* Pre-cache stuff */
@@ -1149,6 +1161,8 @@ CGUIWindowHome::GetSectionTypeFromDirectoryType(EPlexDirectoryType dirType)
     return SECTION_TYPE_ALBUM;
   else if (dirType == PLEX_DIR_TYPE_PLAYLIST)
     return SECTION_TYPE_QUEUE;
+  else if (dirType == PLEX_DIR_TYPE_HOME_MOVIES)
+    return SECTION_TYPE_HOME_MOVIE;
   else
   {
     CLog::Log(LOGINFO, "CGUIWindowHome::GetSectionTypeFromDirectoryType not handling DirectoryType %d", (int)dirType);

@@ -1667,7 +1667,9 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("updateandrestart"))
   {
+#ifdef ENABLE_AUTOUPDATE
     g_plexApplication.autoUpdater->UpdateAndRestart();
+#endif
   }
   else if (execute.Equals("togglewatched"))
   {

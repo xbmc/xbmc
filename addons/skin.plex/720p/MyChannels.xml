@@ -3,7 +3,9 @@
 	<defaultcontrol>777</defaultcontrol>
 	<views>70</views>
 	<allowoverlay>yes</allowoverlay>
+	<onload>Skin.SetString(SectionType,channels)</onload>
 	<onunload>SetFocus(777)</onunload>
+	<onunload>Skin.Reset(SectionType)</onunload>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>

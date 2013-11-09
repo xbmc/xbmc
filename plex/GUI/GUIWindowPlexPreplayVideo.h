@@ -3,6 +3,7 @@
 #include "windows/GUIMediaWindow.h"
 #include "JobManager.h"
 #include "threads/Event.h"
+#include "PlexNavigationHelper.h"
 
 class CGUIWindowPlexPreplayVideo : public CGUIMediaWindow, public IJobCallback
 {
@@ -27,4 +28,6 @@ public:
   CFileItemList m_friends;
   CFileItemList m_networks;
   void MoveToItem(int idx);
+
+  CPlexNavigationHelper m_navHelper;
 };

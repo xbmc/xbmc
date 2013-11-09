@@ -3,7 +3,11 @@
 	<defaultcontrol>777</defaultcontrol>
 	<views>40,50,60,61,62,66,70,71,80,99</views>
 	<allowoverlay>yes</allowoverlay>
+	<onload condition="Container.Content(movies)">Skin.SetString(SectionType,movies)</onload>
+	<onload condition="Container.Content(tvshows)">Skin.SetString(SectionType,tvshows)</onload>
+	<onload condition="Container.Content(clips)">Skin.SetString(SectionType,clips)</onload>
 	<onunload>SetFocus(777)</onunload>
+	<onunload>Skin.Reset(SectionType)</onunload>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>

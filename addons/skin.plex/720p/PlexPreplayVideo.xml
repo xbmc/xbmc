@@ -1,7 +1,8 @@
 <window id="10090">
 	<defaultcontrol always="true">102</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
-	<backgroundcolor>black</backgroundcolor>
+	<onload condition="Container.Content(clips)">Skin.SetString(SectionType,preplay)</onload>
+	<onunload>Skin.Reset(SectionType)</onunload>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>

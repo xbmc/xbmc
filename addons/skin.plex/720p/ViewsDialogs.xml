@@ -84,7 +84,7 @@
 		<animation effect="slide" end="0,200" time="300">WindowClose</animation>
 	</include>
 	<include name="FadeDialog">
-		<animation effect="fade" start="100" end="20" time="300" condition="Window.IsActive(selectdialog) | Window.IsActive(contextmenu) | Window.IsActive(okdialog) | Window.IsActive(addonsettings) | Window.IsActive(progressdialog) | Window.IsActive(10079) | Window.IsActive(10080) | Window.IsActive(playercontrols)">Conditional</animation>
+		<animation effect="fade" start="100" end="40" time="300" condition="Window.IsActive(selectdialog) | Window.IsActive(contextmenu) | Window.IsActive(okdialog) | Window.IsActive(addonsettings) | Window.IsActive(progressdialog) | Window.IsActive(10079) | Window.IsActive(10080) | Window.IsActive(2000) | Window.IsActive(10204) | Window.IsActive(10205) | Window.IsActive(200) | Window.IsActive(playercontrols)">Conditional</animation>
 	</include>
 	<!-- -->
 	<!-- DIALOG WINDOWS -->
@@ -246,7 +246,7 @@
 				<control type="image">
 					<description>Dialog arrow</description>
 					<posx>-14</posx>
-					<posy>86</posy>
+					<posy>65</posy>
 					<include>ArrowBlackLeft</include>
 				</control>
 			</control>
@@ -364,17 +364,10 @@
 					<width>220</width>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
-					<control type="label">
-						<height>30</height>
-						<width min="29" max="80">auto</width>
-						<label>[UPPERCASE]Filter:[/UPPERCASE]</label>
-						<font>Condensed-24</font>
-						<textcolor>white</textcolor>
-					</control>
 					<control type="label" id="19029">
 						<height>30</height>
 						<description>Heading</description>
-						<width min="29" max="120">auto</width>
+						<width min="29" max="220">auto</width>
 						<font>Condensed-24</font>
 						<textcolor>white</textcolor>
 					</control>
@@ -507,30 +500,31 @@
 				<control type="image">
 					<description>Background</description>
 					<width>600</width>
-					<height>200</height>
+					<height>240</height>
 					<include>DialogBG</include>
 				</control>
 				<control type="image">
 					<description>Title bg</description>
 					<width>600</width>
-					<height>50</height>
+					<height>70</height>
 					<include>DialogHeaderBG</include>
 				</control>
 				<control type="image">
 					<description>Title bg bottom border</description>
 					<width>600</width>
+					<posy>20</posy>
 					<include>DialogHeaderBorder</include>
 				</control>
 				<control type="image">
 					<description>Background border</description>
 					<width>602</width>
-					<height>202</height>
+					<height>242</height>
 					<include>DialogBorder</include>
 				</control>
 				<control type="image">
 					<description>Dialog arrow</description>
 					<posx>285</posx>
-					<posy>200</posy>
+					<posy>240</posy>
 					<include>DialogArrow</include>
 				</control>
 			</control>
@@ -538,17 +532,20 @@
 				<posy>22</posy>
 				<control type="label" id="1">
 					<description>Heading</description>
+					<posy>10</posy>
 					<width>600</width>
+					<textcolor>orangeLight</textcolor>
 					<include>DialogHeading</include>
 				</control>
 				<control type="group">
-					<posy>27</posy>
+					<posy>40</posy>
 					<control type="label" id="2">
 						<description>Line 1</description>
 						<posy>30</posy>
 						<posx>20</posx>
 						<width>560</width>
 						<scroll>yes</scroll>
+						<label>testing</label>
 					</control>
 					<control type="label" id="3">
 						<description>Line 2</description>
@@ -556,6 +553,7 @@
 						<posx>20</posx>
 						<width>560</width>
 						<scroll>yes</scroll>
+						<label>testing</label>
 					</control>
 					<control type="label" id="4">
 						<description>Line 3</description>
@@ -563,13 +561,14 @@
 						<posx>20</posx>
 						<width>560</width>
 						<scroll>yes</scroll>
+						<label>testing</label>
 					</control>
 					<control type="group">
-						<posy>90</posy>
-						<posx>260</posx>
+						<posy>110</posy>
+						<posx>240</posx>
 						<control type="button" id="10">
 							<description>OK Button</description>
-							<width>80</width>
+							<width>120</width>
 							<label>$LOCALIZE[186]</label>
 							<include>DialogPressButton</include>
 						</control>
@@ -694,12 +693,6 @@
 				</control>
 				<control type="spincontrolex" id="5">
 					<description>Default SpinControlex</description>
-				</control>
-				<control type="sliderex" id="8">
-					<description>Default Slider</description>
-					<height>40</height>
-					<include>DialogHeading</include>
-					<texturefocus border="5">button-focus2.png</texturefocus>
 				</control>
 				<control type="label" id="7">
 					<height>35</height>

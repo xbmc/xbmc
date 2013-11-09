@@ -558,7 +558,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       if (message.GetParam1() != WINDOW_INVALID)
       { // first time to this window - make sure we set the root path
+#ifndef __PLEX__
         m_startDirectory = returning ? dir : "";
+#else
+        m_startDirectory = dir;
+#endif
       }
     }
     break;

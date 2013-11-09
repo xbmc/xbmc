@@ -302,8 +302,7 @@
 	<!-- clock -->
 	<include name="Clock">
 		<control type="group">
-			<include>HomeListItemFullInfoSlide</include>
-			<include>leftMenuClockSlideHome</include>
+			<animation effect="slide" start="0" end="391" time="400" tween="out" condition="Control.IsVisible(999)">Conditional</animation>
 			<posx>30</posx>
 			<control type="label">
 				<label>$INFO[System.Time(short_no_meridian)]</label>

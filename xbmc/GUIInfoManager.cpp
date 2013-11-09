@@ -2398,7 +2398,11 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition == SYSTEM_UPDATE_IS_AVAILABLE)
   {
+#ifdef ENABLE_AUTOUPDATE
     bReturn = g_plexApplication.autoUpdater->IsReadyToInstall();
+#else
+    return false;
+#endif
   }
   /* END PLEX */
   else if (g_application.IsPlaying())

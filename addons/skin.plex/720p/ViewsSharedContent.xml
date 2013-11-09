@@ -2,11 +2,12 @@
 <includes>
 	<include name="SharedContentMainBG">
 		<include>BGSharedContent</include>
+		<!--
 		<control type="grouplist">
 			<orientation>horizontal</orientation>
 			<itemgap>0</itemgap>
 			<posx>0</posx>
-			<posy>49</posy>
+			<posy>0</posy>
 			<visible>!Container.OnNext + !Container.OnPrevious</visible>
 			<animation effect="fade" start="0" end="100" time="400" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
 			<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
@@ -71,7 +72,7 @@
 			<orientation>horizontal</orientation>
 			<itemgap>0</itemgap>
 			<posx>0</posx>
-			<posy>385</posy>
+			<posy>336</posy>
 			<visible>!Container.OnNext + !Container.OnPrevious</visible>
 			<animation effect="fade" start="0" end="100" time="400" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
 			<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
@@ -132,6 +133,7 @@
 				<aspectratio scalediffuse="true" align="center" aligny="top">keep</aspectratio>
 			</control>
 		</control>
+	-->
 		<include>BGOverlay</include>
 		<control type="group">
 			<include>BGGrainy</include>
@@ -160,7 +162,7 @@
 			<width>119</width>
 			<height>119</height>
 			<texture background="true" diffuse="mask-4leaf1.png">$INFO[ListItem(0).Thumb0]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
 		</control>
 		<control type="image">
 			<posx>132</posx>
@@ -168,7 +170,7 @@
 			<width>119</width>
 			<height>119</height>
 			<texture background="true" diffuse="mask-4leaf2.png">$INFO[ListItem(0).Thumb1]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
 		</control>
 		<control type="image">
 			<posx>13</posx>
@@ -176,7 +178,7 @@
 			<width>119</width>
 			<height>119</height>
 			<texture background="true" diffuse="mask-4leaf3.png">$INFO[ListItem(0).Thumb2]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
 		</control>
 		<control type="image">
 			<posx>132</posx>
@@ -184,7 +186,7 @@
 			<width>119</width>
 			<height>119</height>
 			<texture background="true" diffuse="mask-4leaf4.png">$INFO[ListItem(0).Thumb3]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			<aspectratio scalediffuse="false" align="center" aligny="middle">scale</aspectratio>
 		</control>
 	</include>
 	<include name="SharedContentLeafsSelectedBorder">
@@ -301,79 +303,6 @@
 				</control>
 			</control>
 		-->
-		</control>
-		<control type="group">
-			<posy>9</posy>
-			<include>TopOverlayTitlePos</include>
-			<visible>!Control.IsVisible(53) | !Container(53).Row(0)</visible>
-			<control type="group">
-				<visible>!IsEmpty(Container.SecondTitle)</visible>
-				<include>TopOverlayFirstTitleSlide</include>
-				<control type="grouplist">
-					<orientation>horizontal</orientation>
-					<itemgap>7</itemgap>
-					<control type="label">
-						<height>32</height>
-						<font>LargeTitleFont</font>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
-						<width>10</width>
-					</control>
-					<control type="label">
-						<description>First title</description>
-						<include>TopOverlayFirstTitleAreaText</include>
-						<label>$INFO[Container.FirstTitle]</label>
-					</control>
-					<control type="label">
-						<description>Second title</description>
-						<label>: $INFO[Container.SecondTitle]</label>
-						<include>TopOverlaySecondTitleAreaText</include>
-					</control>
-				</control>
-			</control>
-			<control type="group">
-				<visible>IsEmpty(Container.SecondTitle) + !IsEmpty(Container.FirstTitle)</visible>
-				<include>TopOverlayFirstTitleSlide</include>
-				<control type="grouplist">
-					<orientation>horizontal</orientation>
-					<itemgap>7</itemgap>
-					<control type="label">
-						<height>32</height>
-						<font>LargeTitleFont</font>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
-						<width>10</width>
-					</control>
-					<control type="label">
-						<description>First title</description>
-						<include>TopOverlayFirstTitleAreaText</include>
-						<label>Shared Content</label>
-					</control>
-				</control>
-			</control>
-			<control type="group">
-				<visible>IsEmpty(Container.FirstTitle) + IsEmpty(Container.SecondTitle)</visible>
-				<include>TopOverlayFirstTitleSlide</include>
-				<control type="grouplist">
-					<orientation>horizontal</orientation>
-					<itemgap>7</itemgap>
-					<control type="label">
-						<height>32</height>
-						<font>LargeTitleFont</font>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
-						<width>10</width>
-					</control>
-					<control type="label">
-						<description>Videos label</description>
-						<include>TopOverlayFirstTitleAreaText</include>
-						<label>Shared Content</label>
-					</control>
-				</control>
-			</control>
 		</control>
 	</include>
 </includes>

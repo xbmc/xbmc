@@ -32,6 +32,8 @@
 
 #include "PlexApplication.h"
 
+#include "input/XBMC_vkeys.h"
+
 void CGUIWindowMyPlex::Setup()
 {
   SET_CONTROL_HIDDEN(ID_ICON_ERROR);
@@ -53,6 +55,7 @@ void CGUIWindowMyPlex::ShowManualInput()
 
   SET_CONTROL_HIDDEN(ID_PIN_NR);
   SET_CONTROL_HIDDEN(ID_SPINNER);
+  SET_CONTROL_HIDDEN(ID_ICON_ERROR);
 
   SET_CONTROL_VISIBLE(ID_USERNAME);
   SET_CONTROL_VISIBLE(ID_PASSWORD);
@@ -60,11 +63,22 @@ void CGUIWindowMyPlex::ShowManualInput()
 
   CGUIEditControl *edit = (CGUIEditControl*)GetControl(ID_PASSWORD);
   if (edit)
+  {
     edit->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD, 0);
+    if (m_failed)
+      edit->SetLabel2("");
+  }
+
 
   SET_CONTROL_LABEL(ID_DESC_TEXT, g_localizeStrings.Get(44013));
   SET_CONTROL_LABEL(ID_BUTTON_MANUAL, g_localizeStrings.Get(44002));
-  SET_CONTROL_FOCUS(ID_USERNAME, 0);
+
+  if (m_failed)
+    SET_CONTROL_FOCUS(ID_PASSWORD, 0);
+  else
+    SET_CONTROL_FOCUS(ID_USERNAME, 0);
+
+  m_failed = false;
 }
 
 void CGUIWindowMyPlex::ShowPinInput()
@@ -99,6 +113,7 @@ void CGUIWindowMyPlex::ShowSuccess()
 
 void CGUIWindowMyPlex::ShowFailure(int reason)
 {
+  m_failed = true;
   SET_CONTROL_HIDDEN(ID_USERNAME);
   SET_CONTROL_HIDDEN(ID_PASSWORD);
   SET_CONTROL_HIDDEN(ID_PIN_NR);
@@ -240,7 +255,12 @@ CGUIWindowMyPlex::OnMessage(CGUIMessage &message)
 
       }
       else if (message.GetSenderId() == ID_BUTTON_CANCEL)
-        Close();
+      {
+        if (m_failed)
+          ShowManualInput();
+        else
+          Close();
+      }
 
 
       break;
@@ -254,4 +274,28 @@ CGUIWindowMyPlex::OnMessage(CGUIMessage &message)
       break;
   }
   return CGUIWindow::OnMessage(message);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowMyPlex::OnAction(const CAction &action)
+{
+  if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
+  {
+    BYTE b = action.GetID() & 0xFF;
+    if (b == XBMCVK_TAB)
+    {
+      int focus = GetFocusedControlID();
+
+      if (focus == ID_USERNAME)
+        focus = ID_PASSWORD;
+      else if (focus == ID_PASSWORD)
+        focus = ID_BUTTON_SUBMIT;
+      else if (focus == ID_BUTTON_SUBMIT)
+        focus = ID_USERNAME;
+
+      SET_CONTROL_FOCUS(focus, 0);
+      return true;
+    }
+  }
+  return CGUIWindow::OnAction(action);
 }
