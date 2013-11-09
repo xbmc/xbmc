@@ -23,12 +23,6 @@
 
 #include "gtest/gtest.h"
 
-TEST(TestXMLUtils, HasUTF8Declaration)
-{
-  EXPECT_TRUE(XMLUtils::HasUTF8Declaration(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-}
-
 TEST(TestXMLUtils, GetHex)
 {
   CXBMCTinyXML a;
@@ -179,18 +173,6 @@ TEST(TestXMLUtils, GetStringArray)
   EXPECT_STREQ("some string3", strarray.at(2).c_str());
   EXPECT_STREQ("some string4", strarray.at(3).c_str());
   EXPECT_STREQ("some string5", strarray.at(4).c_str());
-}
-
-TEST(TestXMLUtils, GetEncoding)
-{
-  CXBMCTinyXML a;
-  CStdString ref, val;
-
-  a.Parse("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
-  EXPECT_TRUE(XMLUtils::GetEncoding(&a, val));
-
-  ref = "UTF-16";
-  EXPECT_STREQ(ref.c_str(), val.c_str());
 }
 
 TEST(TestXMLUtils, GetPath)
