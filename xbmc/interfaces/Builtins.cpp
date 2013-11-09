@@ -763,7 +763,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("reloadskin"))
   {
     //  Reload the skin
-    g_application.ReloadSkin();
+    g_application.ReloadSkin(!params.empty() && StringUtils::EqualsNoCase(params[0], "confirm"));
   }
   else if (execute.Equals("unloadskin"))
   {
