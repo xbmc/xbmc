@@ -181,12 +181,11 @@ void CGUIDialogAddonInfo::OnInstall()
   Close();
 }
 
-void CGUIDialogAddonInfo::OnUninstall()
+bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 {
-  if (!m_localAddon.get())
-    return;
+  if (!m_localAddon)
+    return false;
 
-  // ensure the addon is not a dependency of other installed addons
   VECADDONS addons;
   CStdStringArray deps;
   CAddonMgr::Get().GetAllAddons(addons);
@@ -202,9 +201,20 @@ void CGUIDialogAddonInfo::OnUninstall()
     CStdString strLine0, strLine1;
     StringUtils::JoinString(deps, ", ", strLine1);
     strLine0.Format(g_localizeStrings.Get(24046), m_localAddon->Name().c_str());
-    CGUIDialogOK::ShowAndGetInput(24037, strLine0, strLine1, 24047);
-    return;
+    CGUIDialogOK::ShowAndGetInput(heading, strLine0, strLine1, line2);
+    return true;
   }
+  return false;
+}
+
+void CGUIDialogAddonInfo::OnUninstall()
+{
+  if (!m_localAddon.get())
+    return;
+
+  // ensure the addon is not a dependency of other installed addons
+  if (PromptIfDependency(24037, 24047))
+    return;
 
   // prompt user to be sure
   if (CGUIDialogYesNo::ShowAndGetInput(24037, 750, 0, 0))
@@ -222,6 +232,9 @@ void CGUIDialogAddonInfo::OnUninstall()
 void CGUIDialogAddonInfo::OnEnable(bool enable)
 {
   if (!m_localAddon.get())
+    return;
+
+  if (!enable && PromptIfDependency(24075, 24091))
     return;
 
   CAddonMgr::Get().DisableAddon(m_localAddon->ID(), !enable);

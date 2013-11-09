@@ -11891,7 +11891,12 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr ""
 
-#empty strings from id 24091 to 24093
+#: xbmc\addons\GUIDialogAddonInfo.cpp
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr ""
+
+#empty strings from id 24092 to 24093
 
 #: xbmc/addons/guidialogaddoninfo.cpp
 msgctxt "#24094"

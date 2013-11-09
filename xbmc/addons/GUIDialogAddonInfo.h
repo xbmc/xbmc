@@ -59,6 +59,13 @@ protected:
   void OnChangeLog();
   void OnRollback();
 
+  /*! \brief check if the add-on is a dependency of others, and if so prompt the user.
+   \param heading the label for the heading of the prompt dialog
+   \param line2 the action that could not be completed.
+   \return true if prompted, false otherwise.
+   */
+  bool PromptIfDependency(int heading, int line2);
+
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;
   ADDON::AddonPtr m_localAddon;
