@@ -823,7 +823,7 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
   if (section && section->GetPlexDirectoryType() == PLEX_DIR_TYPE_HOME_MOVIES)
     list.SetContent("homemovies");
 
-  if (filter->currentPrimaryFilter() == "folder")
+  if (filter && filter->currentPrimaryFilter() == "folder")
     list.SetContent("folders");
 }
 
