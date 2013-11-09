@@ -682,8 +682,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   if( fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock )
   {
     m_pClock->Discontinuity(clock+error);
-    if(m_speed == DVD_PLAYSPEED_NORMAL)
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity1 - was:%f, should be:%f, error:%f", clock, clock+error, error);
+    CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity1 - was:%f, should be:%f, error:%f", clock, clock+error, error);
 
     m_errorbuff = 0;
     m_errorcount = 0;
@@ -692,17 +691,6 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     m_syncclock = false;
     m_errortime = CurrentHostCounter();
 
-    return;
-  }
-
-  if (m_speed != DVD_PLAYSPEED_NORMAL)
-  {
-    m_errorbuff = 0;
-    m_errorcount = 0;
-    m_integral = 0;
-    m_skipdupcount = 0;
-    m_error = 0;
-    m_errortime = CurrentHostCounter();
     return;
   }
 
@@ -743,8 +731,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
       if (fabs(error) > limit - 0.001)
       {
         m_pClock->Discontinuity(clock+error);
-        if(m_speed == DVD_PLAYSPEED_NORMAL)
-          CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity2 - was:%f, should be:%f, error:%f", clock, clock+error, error);
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity2 - was:%f, should be:%f, error:%f", clock, clock+error, error);
       }
     }
     else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 && fabs(m_error) > DVD_MSEC_TO_TIME(10))
