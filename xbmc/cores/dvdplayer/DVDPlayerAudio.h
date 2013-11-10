@@ -228,7 +228,6 @@ protected:
   bool   m_syncclock;
 
   double m_integral; //integral correction for resampler
-  int    m_skipdupcount; //counter for skip/duplicate synctype
   bool   m_prevskipped;
   double m_maxspeedadjust;
   double m_resampleratio; //resample ratio when using SYNC_RESAMPLE, used for the codec info

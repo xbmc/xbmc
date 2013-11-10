@@ -34,6 +34,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <math.h>
 
 /* for sync-based resampling */
 #define PROPORTIONAL 20.0
@@ -120,7 +121,6 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_errors.Flush();
   m_syncclock = true;
   m_integral = 0;
-  m_skipdupcount = 0;
   m_prevskipped = false;
   m_maxspeedadjust = 0.0;
 
@@ -194,7 +194,6 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_error = 0;
   m_errors.Flush();
   m_integral = 0;
-  m_skipdupcount = 0;
   m_prevskipped = false;
   m_syncclock = true;
   m_silence = false;
@@ -649,7 +648,6 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity1 - was:%f, should be:%f, error:%f", clock, clock+error, error);
 
     m_errors.Flush();
-    m_skipdupcount = 0;
     m_error = 0;
     m_syncclock = false;
 
@@ -688,21 +686,6 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity2 - was:%f, should be:%f, error:%f", clock, clock+error, error);
       }
     }
-    else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 && fabs(m_error) > DVD_MSEC_TO_TIME(10))
-    {
-      //check how many packets to skip/duplicate
-      m_skipdupcount = (int)(m_error / duration);
-      //if less than one frame off, see if it's more than two thirds of a frame, so we can get better in sync
-      if (m_skipdupcount == 0 && fabs(m_error) > duration / 3 * 2)
-        m_skipdupcount = (int)(m_error / (duration / 3 * 2));
-
-      if (m_skipdupcount > 0)
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Duplicating %i packet(s) of %.2f ms duration",
-                  m_skipdupcount, duration / DVD_TIME_BASE * 1000.0);
-      else if (m_skipdupcount < 0)
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Skipping %i packet(s) of %.2f ms duration ",
-                  m_skipdupcount * -1,  duration / DVD_TIME_BASE * 1000.0);
-    }
     else if (m_synctype == SYNC_RESAMPLE)
     {
       //reset the integral on big errors, failsafe
@@ -735,25 +718,27 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
   }
   else if (m_synctype == SYNC_SKIPDUP)
   {
-    if (m_skipdupcount < 0)
+    double limit = std::max(DVD_MSEC_TO_TIME(10), audioframe.duration * 2.0 / 3.0);
+    if (m_error < -limit)
     {
       m_prevskipped = !m_prevskipped;
-      if (!m_prevskipped)
-      {
+      if (m_prevskipped)
         m_dvdAudio.AddPackets(audioframe);
-        m_skipdupcount++;
+      else
+      {
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Dropping packet of %d ms", DVD_TIME_TO_MSEC(audioframe.duration));
+        m_error += audioframe.duration;
       }
     }
-    else if (m_skipdupcount > 0)
+    else if(m_error > limit)
     {
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Duplicating packet of %d ms", DVD_TIME_TO_MSEC(audioframe.duration));
       m_dvdAudio.AddPackets(audioframe);
       m_dvdAudio.AddPackets(audioframe);
-      m_skipdupcount--;
+      m_error -= audioframe.duration;
     }
-    else if (m_skipdupcount == 0)
-    {
+    else
       m_dvdAudio.AddPackets(audioframe);
-    }
   }
   else if (m_synctype == SYNC_RESAMPLE)
   {
