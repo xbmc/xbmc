@@ -107,7 +107,6 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_pClock = pClock;
   m_pAudioCodec = NULL;
   m_audioClock = 0;
-  m_droptime = 0;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_stalled = true;
   m_started = false;
@@ -179,7 +178,6 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   if (hints.samplerate != m_streaminfo.samplerate)
     SwitchCodecIfNeeded();
 
-  m_droptime = 0;
   m_audioClock = 0;
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_started = false;
@@ -243,7 +241,7 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 }
 
 // decode one audio frame and returns its uncompressed size
-int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
+int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, int priority)
 {
   int result = 0;
 
@@ -308,12 +306,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
       // if demux source want's us to not display this, continue
       if(m_decode.msg->GetPacketDrop())
-        continue;
-
-      //If we are asked to drop this packet, return a size of zero. then it won't be played
-      //we currently still decode the audio.. this is needed since we still need to know it's
-      //duration to make sure clock is updated correctly.
-      if( bDropPacket )
         result |= DECODE_FLAG_DROP;
 
       return result;
@@ -324,7 +316,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     if (m_messageQueue.ReceivedAbortRequest()) return DECODE_FLAG_ABORT;
 
     CDVDMsg* pMsg;
-    int priority = (m_speed == DVD_PLAYSPEED_PAUSE && m_started) ? 1 : 0;
     int timeout  = (int)(1000 * m_dvdAudio.GetCacheTime()) + 100;
 
     // read next packet and return -1 on error
@@ -421,19 +412,20 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
-      m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+      double speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
 
-      if (m_speed == DVD_PLAYSPEED_NORMAL)
+      if (speed == DVD_PLAYSPEED_NORMAL)
       {
         m_dvdAudio.Resume();
       }
       else
       {
         m_syncclock = true;
-        if (m_speed != DVD_PLAYSPEED_PAUSE)
+        if (speed != DVD_PLAYSPEED_PAUSE)
           m_dvdAudio.Flush();
         m_dvdAudio.Pause();
       }
+      m_speed = speed;
     }
     else if (pMsg->IsType(CDVDMsg::AUDIO_SILENCE))
     {
@@ -491,9 +483,25 @@ void CDVDPlayerAudio::Process()
 
   while (!m_bStop)
   {
-    //Don't let anybody mess with our global variables
-    int result = DecodeFrame(audioframe, m_speed > DVD_PLAYSPEED_NORMAL || m_speed < 0 ||
-                         CAEFactory::IsSuspended()); // blocks if no audio is available, but leaves critical section before doing so
+    int priority;
+
+    //Do we want a new audio frame?
+    if (m_started == false                /* when not started */
+    ||  m_speed   == DVD_PLAYSPEED_NORMAL /* when playing normally */
+    ||  m_speed   <  DVD_PLAYSPEED_PAUSE  /* when rewinding */
+    || (m_speed   >  DVD_PLAYSPEED_NORMAL && m_audioClock < m_pClock->GetClock())) /* when behind clock in ff */
+      priority = 0;
+    else
+      priority = 1;
+
+    int result = DecodeFrame(audioframe, priority);
+
+    //Drop when not playing normally
+    if(m_speed   != DVD_PLAYSPEED_NORMAL
+    && m_started == true)
+    {
+      result |= DECODE_FLAG_DROP;
+    }
 
     UpdatePlayerInfo();
 
@@ -510,8 +518,8 @@ void CDVDPlayerAudio::Process()
       {
         m_dvdAudio.Drain();
         m_dvdAudio.Flush();
+        m_stalled = true;
       }
-      m_stalled = true;
 
       continue;
     }
@@ -548,24 +556,13 @@ void CDVDPlayerAudio::Process()
     if (m_silence)
       memset(audioframe.data, 0, audioframe.size);
 
-    if( result & DECODE_FLAG_DROP )
+    if(result & DECODE_FLAG_DROP)
     {
-      //frame should be dropped. Don't let audio move ahead of the current time thou
-      //we need to be able to start playing at any time
-      //when playing backwords, we try to keep as small buffers as possible
-
-      if(m_droptime == 0.0)
-        m_droptime = m_pClock->GetAbsoluteClock();
-      if(m_speed > 0)
-        m_droptime += audioframe.duration * DVD_PLAYSPEED_NORMAL / m_speed;
-      while( !m_bStop && m_droptime > m_pClock->GetAbsoluteClock() ) Sleep(1);
-
-      m_stalled = false;
+      // keep output times in sync
+     m_dvdAudio.SetPlayingPts(m_audioClock);
     }
     else
     {
-      m_droptime = 0.0;
-
       SetSyncType(audioframe.passthrough);
 
       // add any packets play

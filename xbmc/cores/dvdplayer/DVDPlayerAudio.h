@@ -152,7 +152,7 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
-  int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
+  int DecodeFrame(DVDAudioFrame &audioframe, int priority);
 
   void UpdatePlayerInfo();
 
@@ -207,7 +207,6 @@ protected:
   BitstreamStats m_audioStats;
 
   int     m_speed;
-  double  m_droptime;
   bool    m_stalled;
   bool    m_started;
   bool    m_silence;
