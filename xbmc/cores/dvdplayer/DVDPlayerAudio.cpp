@@ -351,6 +351,9 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     { //player asked us to set internal clock
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, %d)"
+                        , pMsgGeneralResync->m_timestamp
+                        , pMsgGeneralResync->m_clock);
 
       if (pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
         m_audioClock = pMsgGeneralResync->m_timestamp;
@@ -358,12 +361,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       m_ptsInput.Flush();
       m_dvdAudio.SetPlayingPts(m_audioClock);
       if (pMsgGeneralResync->m_clock)
-      {
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 1)", m_audioClock);
         m_pClock->Discontinuity(m_dvdAudio.GetPlayingPts());
-      }
-      else
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_audioClock);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -440,10 +438,8 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     else if (pMsg->IsType(CDVDMsg::AUDIO_SILENCE))
     {
       m_silence = static_cast<CDVDMsgBool*>(pMsg)->m_value;
-      if (m_silence)
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::AUDIO_SILENCE(%f, 1)", m_audioClock);
-      else
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::AUDIO_SILENCE(%f, 0)", m_audioClock);
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::AUDIO_SILENCE(%f, %d)"
+                        , m_audioClock, m_silence);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
