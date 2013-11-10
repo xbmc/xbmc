@@ -210,7 +210,6 @@ protected:
   double  m_droptime;
   bool    m_stalled;
   bool    m_started;
-  double  m_duration; // last packets duration
   bool    m_silence;
 
   bool OutputPacket(DVDAudioFrame &audioframe);

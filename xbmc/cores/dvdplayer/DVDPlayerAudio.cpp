@@ -112,7 +112,6 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_stalled = true;
   m_started = false;
   m_silence = false;
-  m_duration = 0.0;
   m_resampleratio = 1.0;
   m_synctype = SYNC_DISCON;
   m_setsynctype = SYNC_DISCON;
@@ -307,9 +306,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       // increase audioclock to after the packet
       m_audioClock += audioframe.duration;
 
-      if(audioframe.duration > 0)
-        m_duration = audioframe.duration;
-
       // if demux source want's us to not display this, continue
       if(m_decode.msg->GetPacketDrop())
         continue;
@@ -329,12 +325,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
     CDVDMsg* pMsg;
     int priority = (m_speed == DVD_PLAYSPEED_PAUSE && m_started) ? 1 : 0;
-
-    int timeout;
-    if(m_duration > 0)
-      timeout = (int)(1000 * (m_duration / DVD_TIME_BASE + m_dvdAudio.GetCacheTime()));
-    else
-      timeout = 1000;
+    int timeout  = (int)(1000 * m_dvdAudio.GetCacheTime()) + 100;
 
     // read next packet and return -1 on error
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
