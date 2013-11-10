@@ -1624,6 +1624,7 @@ bool CCurlFile::GetCookies(const CURL &url, std::string &cookies)
       if (valuesVec.size() < 7)
       {
         CLog::Log(LOGERROR, "CCurlFile::GetCookies - invalid cookie: '%s'", curlCookieIter->data);
+        curlCookieIter = curlCookieIter->next;
         continue;
       }
 
