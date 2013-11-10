@@ -241,7 +241,7 @@
 			<top>400</top>
 			<width>650</width>
 			<height>180</height>
-			<font>font12</font>
+			<font>font13</font>
 			<align>justify</align>
 			<pagecontrol>60</pagecontrol>
 			<label fallback="161">$INFO[ListItem.Plot]</label>

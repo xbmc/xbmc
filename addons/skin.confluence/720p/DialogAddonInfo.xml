@@ -240,8 +240,8 @@
 						<left>10</left>
 						<top>195</top>
 						<width>600</width>
-						<height>160</height>
-						<font>font12</font>
+						<height>170</height>
+						<font>font13</font>
 						<align>justify</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
@@ -249,9 +249,9 @@
 					</control>
 					<control type="scrollbar" id="60">
 						<left>610</left>
-						<top>190</top>
+						<top>195</top>
 						<width>25</width>
-						<height>175</height>
+						<height>170</height>
 						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -281,7 +281,7 @@
 						<width>600</width>
 						<height>40</height>
 						<font>font12</font>
-						<align>justify</align>
+						<align>left</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Disclaimer)]</label>
 						<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
@@ -304,10 +304,10 @@
 					<control type="textbox" id="401">
 						<description>Description</description>
 						<left>10</left>
-						<top>195</top>
+						<top>205</top>
 						<width>600</width>
-						<height>250</height>
-						<font>font12</font>
+						<height>240</height>
+						<font>font13</font>
 						<align>justify</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
@@ -315,9 +315,9 @@
 					</control>
 					<control type="scrollbar" id="61">
 						<left>610</left>
-						<top>190</top>
+						<top>205</top>
 						<width>25</width>
-						<height>250</height>
+						<height>240</height>
 						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
