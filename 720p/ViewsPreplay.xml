@@ -909,12 +909,12 @@
 			<control type="grouplist">
 				<orientation>vertical</orientation>
 				<itemgap>10</itemgap>
-				<posy>66</posy>
+				<posy>62</posy>
 				<posx>560</posx>
 				<!-- Title -->
 				<control type="label">
 					<width>570</width>
-					<height>30</height>
+					<height>40</height>
 					<label>$INFO[ListItem.TVShowTitle]</label>
 					<font>CondensedBold-36</font>
 					<include>WhiteShadow</include>
@@ -968,7 +968,7 @@
 				</control>
 				<!-- DurationStr -->
 				<control type="label">
-					<posy>38</posy>
+					<posy>44</posy>
 					<posx>40r</posx>
 					<width>200</width>
 					<height>40</height>
@@ -980,7 +980,7 @@
 				</control>
 				<!-- Star Rating -->
 				<control type="image">
-					<posy>90</posy>
+					<posy>97</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
@@ -989,7 +989,7 @@
 					<visible>IsEmpty(ListItem.Property(hasUserRating))</visible>
 				</control>
 				<control type="image">
-					<posy>90</posy>
+					<posy>97</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
@@ -1110,14 +1110,14 @@
 					<itemgap>20</itemgap>
 					<control type="label">
 						<width min="29" max="500">auto</width>
-						<height>40</height>
+						<height>44</height>
 						<label>$INFO[ListItem.Title]</label>
 						<font>CondensedBold-36</font>
 						<include>WhiteShadow</include>
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posy>13</posy>
+						<posy>15</posy>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>
@@ -1332,7 +1332,7 @@
 					<itemgap>20</itemgap>
 					<control type="label">
 						<width min="29" max="570">auto</width>
-						<height>30</height>
+						<height>40</height>
 						<label>$INFO[ListItem.Title]</label>
 						<font>CondensedBold-36</font>
 						<include>WhiteShadow</include>
