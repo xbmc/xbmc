@@ -75,10 +75,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.8.1"
+#define XBMC_PVR_API_VERSION "1.9.0"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "1.8.0"
+#define XBMC_PVR_MIN_API_VERSION "1.9.0"
 
 #ifdef __cplusplus
 extern "C" {
@@ -194,6 +194,9 @@ extern "C" {
   {
     char   strAdapterName[PVR_ADDON_NAME_STRING_LENGTH];   /*!< @brief (optional) name of the adapter that's being used */
     char   strAdapterStatus[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (optional) status of the adapter that's being used */
+    char   strServiceName[PVR_ADDON_NAME_STRING_LENGTH];   /*!< @brief (optional) name of the current service */
+    char   strProviderName[PVR_ADDON_NAME_STRING_LENGTH];  /*!< @brief (optional) name of the current service's provider */
+    char   strMuxName[PVR_ADDON_NAME_STRING_LENGTH];       /*!< @brief (optional) name of the current mux */
     int    iSNR;                                           /*!< @brief (optional) signal/noise ratio */
     int    iSignal;                                        /*!< @brief (optional) signal strength */
     long   iBER;                                           /*!< @brief (optional) bit error rate */
@@ -392,6 +395,9 @@ extern "C" {
     bool         (__cdecl* CanSeekStream)(void);
     bool         (__cdecl* SeekTime)(int, bool, double*);
     void         (__cdecl* SetSpeed)(int);
+    time_t       (__cdecl* GetPlayingTime)(void);
+    time_t       (__cdecl* GetBufferTimeStart)(void);
+    time_t       (__cdecl* GetBufferTimeEnd)(void);
   } PVRClient;
 
 #ifdef __cplusplus

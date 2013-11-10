@@ -665,7 +665,10 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "actstreamprogrsignal",     PVR_ACTUAL_STREAM_SIG_PROGR },
                                   { "actstreamprogrsnr",        PVR_ACTUAL_STREAM_SNR_PROGR },
                                   { "actstreamisencrypted",     PVR_ACTUAL_STREAM_ENCRYPTED },
-                                  { "actstreamencryptionname",  PVR_ACTUAL_STREAM_CRYPTION }};
+                                  { "actstreamencryptionname",  PVR_ACTUAL_STREAM_CRYPTION },
+                                  { "actstreamservicename",     PVR_ACTUAL_STREAM_SERVICE },
+                                  { "actstreammux",             PVR_ACTUAL_STREAM_MUX },
+                                  { "actstreamprovidername",    PVR_ACTUAL_STREAM_PROVIDER }};
 
 const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
                                   { "isactive",         SLIDESHOW_ISACTIVE },
@@ -1375,6 +1378,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case PVR_ACTUAL_STREAM_AUDIO_BR:
   case PVR_ACTUAL_STREAM_DOLBY_BR:
   case PVR_ACTUAL_STREAM_CRYPTION:
+  case PVR_ACTUAL_STREAM_SERVICE:
+  case PVR_ACTUAL_STREAM_MUX:
+  case PVR_ACTUAL_STREAM_PROVIDER:
     g_PVRManager.TranslateCharInfo(info, strLabel);
     break;
   case WEATHER_CONDITIONS:

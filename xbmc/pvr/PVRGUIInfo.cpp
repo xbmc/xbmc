@@ -342,6 +342,15 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
   case PVR_ACTUAL_STREAM_CRYPTION:
     CharInfoEncryption(strValue);
     break;
+  case PVR_ACTUAL_STREAM_SERVICE:
+    CharInfoService(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_MUX:
+    CharInfoMux(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_PROVIDER:
+    CharInfoProvider(strValue);
+    break;
   case PVR_BACKEND_NAME:
     CharInfoBackendName(strValue);
     break;
@@ -620,6 +629,30 @@ void CPVRGUIInfo::CharInfoEncryption(CStdString &strValue) const
     strValue = StringUtils::EmptyString;
 }
 
+void CPVRGUIInfo::CharInfoService(CStdString &strValue) const
+{
+  if (!strcmp(m_qualityInfo.strServiceName, StringUtils::EmptyString))
+    strValue.Format("%s", g_localizeStrings.Get(13205));
+  else
+    strValue.Format("%s", m_qualityInfo.strServiceName);
+}
+
+void CPVRGUIInfo::CharInfoMux(CStdString &strValue) const
+{
+  if (!strcmp(m_qualityInfo.strMuxName, StringUtils::EmptyString))
+    strValue.Format("%s", g_localizeStrings.Get(13205));
+  else
+    strValue.Format("%s", m_qualityInfo.strMuxName);
+}
+
+void CPVRGUIInfo::CharInfoProvider(CStdString &strValue) const
+{
+  if (!strcmp(m_qualityInfo.strProviderName, StringUtils::EmptyString))
+    strValue.Format("%s", g_localizeStrings.Get(13205));
+  else
+    strValue.Format("%s", m_qualityInfo.strProviderName);
+}
+
 void CPVRGUIInfo::UpdateBackendCache(void)
 {
   CStdString strBackendName;
@@ -783,10 +816,10 @@ int CPVRGUIInfo::GetStartTime(void) const
   if (m_playingEpgTag)
   {
     /* Calculate here the position we have of the running live TV event.
-     * "position in ms" = ("current local time" - "event start local time") * 1000
+     * "position in ms" = ("current UTC" - "event start UTC") * 1000
      */
-    CDateTime current = CDateTime::GetCurrentDateTime();
-    CDateTime start = m_playingEpgTag->StartAsLocalTime();
+    CDateTime current = g_PVRClients->GetPlayingTime();
+    CDateTime start = m_playingEpgTag->StartAsUTC();
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
     return (time.GetDays()   * 60 * 60 * 24
          + time.GetHours()   * 60 * 60

@@ -576,6 +576,25 @@ extern "C"
   void SetSpeed(int speed);
 
   /*!
+   *  Get actual playing time from addon. With timeshift enabled this is
+   *  different to live.
+   *  @return time as UTC
+   */
+  time_t GetPlayingTime();
+
+  /*!
+   *  Get time of oldest packet in timeshift buffer
+   *  @return time as UTC
+   */
+  time_t GetBufferTimeStart();
+
+  /*!
+   *  Get time of latest packet in timeshift buffer
+   *  @return time as UTC
+   */
+  time_t GetBufferTimeEnd();
+
+  /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
    * @param pClient The struct to assign the function pointers to.
    */
@@ -651,6 +670,10 @@ extern "C"
     pClient->DemuxAbort                     = DemuxAbort;
     pClient->DemuxFlush                     = DemuxFlush;
     pClient->DemuxRead                      = DemuxRead;
+
+    pClient->GetPlayingTime                 = GetPlayingTime;
+    pClient->GetBufferTimeStart             = GetBufferTimeStart;
+    pClient->GetBufferTimeEnd               = GetBufferTimeEnd;
   };
 };
 
