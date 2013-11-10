@@ -873,6 +873,33 @@ bool CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc
   return CInnerConverter::stdConvert(Utf32ToUtf8, utf32flipped, utf8StringDst, failOnBadString);
 }
 
+std::string CCharsetConverter::charUtf32ToStrUtf8(char32_t chr)
+{
+  std::string result;
+  if (chr <= 0x007F)
+    result.push_back((char)(chr & 0x7F));
+  else if (chr <= 0x07FF)
+  {
+    result.push_back((char)(0xC0 | ((chr >> 6) & 0x1F)));
+    result.push_back((char)(0x80 | (chr & 0x3F)));
+  }
+  else if (chr <= 0xFFFF)
+  {
+    result.push_back((char)(0xE0 | ((chr >> 12) & 0x0F)));
+    result.push_back((char)(0x80 | ((chr >> 6) & 0x3F)));
+    result.push_back((char)(0x80 | (chr & 0x3F)));
+  }
+  else if (chr <= 0x0010FFFF)
+  {
+    result.push_back((char)(0xF0 | ((chr >> 18) & 0x07)));
+    result.push_back((char)(0x80 | ((chr >> 12) & 0x3F)));
+    result.push_back((char)(0x80 | ((chr >> 6) & 0x3F)));
+    result.push_back((char)(0x80 | (chr & 0x3F)));
+  }
+
+  return result;
+}
+
 void CCharsetConverter::SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current)
 {
   std::vector<std::string> vecCharsets = g_charsetConverter.getCharsetLabels();
