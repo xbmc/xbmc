@@ -153,7 +153,7 @@ public:
   void RestartApp();
   void UnloadSkin(bool forReload = false);
   bool LoadUserWindows();
-  void ReloadSkin();
+  void ReloadSkin(bool confirm = false);
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
   virtual bool OnMessage(CGUIMessage& message);
@@ -367,6 +367,7 @@ protected:
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
   bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
+  bool m_skinReverting;
 
   bool m_loggingIn;
 

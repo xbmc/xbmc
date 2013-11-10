@@ -5097,7 +5097,7 @@ msgstr ""
 
 #: xbmc\settings\DisplaySettings.cpp
 msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
+msgid "Would you like to keep this change?"
 msgstr ""
 
 #: unknown
@@ -5151,7 +5151,11 @@ msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr ""
 
-#empty strings from id 13123 to 13129
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr ""
+
+#empty strings from id 13124 to 13129
 
 #: system/settings/settings.xml
 msgctxt "#13130"
