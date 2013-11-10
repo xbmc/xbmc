@@ -270,7 +270,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 }
 
 //*********************************************************************************************
-bool CFile::Open(const CStdString& strFileName, unsigned int flags)
+bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
 {
   m_flags = flags;
   try
@@ -296,16 +296,16 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
      * 2) Only buffer true internet filesystems (streams) (http, etc.)
      * 3) No buffer
      */
-    if ( (flags & READ_NO_CACHE) == 0 && !CUtil::IsPicture(strFileName) )
+    if ( (m_flags & READ_NO_CACHE) == 0 && !CUtil::IsPicture(strFileName) )
     {
       if (g_advancedSettings.m_networkBufferMode == 0 || g_advancedSettings.m_networkBufferMode == 2)
       {
         if (URIUtils::IsInternetStream(url, (g_advancedSettings.m_networkBufferMode == 0) ) )
-          flags |= READ_CACHED;
+          m_flags |= READ_CACHED;
       }
       else if (g_advancedSettings.m_networkBufferMode == 1)
       {
-        flags |= READ_CACHED; // Force cache for all others (in buffer mode 1)
+        m_flags |= READ_CACHED; // Force cache for all others (in buffer mode 1)
       }
     }
 
