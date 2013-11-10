@@ -49,7 +49,7 @@
 			</control>
 		</control>
 	</include>
-	<include name="PhotoAlbumCover">
+	<include name="_PhotoAlbumCover">
 		<control type="group">
 			<visible>ListItem.Type(photoAlbum)</visible>
 			<control type="image">
@@ -94,6 +94,43 @@
 				<height>70</height>
 				<texture background="true" diffuse="mask-photoalbum-center-photo.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+		</control>
+	</include>
+	<include name="PhotoAlbumCover">
+		<control type="group">
+			<visible>ListItem.Type(photoAlbum)</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>148</width>
+				<height>148</height>
+				<include>Shadow</include>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true">default-square-small.png</texture>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+			<control type="image">
+				<posx>13</posx>
+				<posy>97</posy>
+				<width>122</width>
+				<height>39</height>
+				<include>Black</include>
+				<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 			</control>
 		</control>
 	</include>
@@ -238,6 +275,14 @@
 						<include>PhotoThumbCard</include>
 						<include>PhotoThumb</include>
 						<include>PhotoAlbumCover</include>
+						<control type="image">
+							<posx>100</posx>
+							<posy>101</posy>
+							<width>30</width>
+							<height>30</height>
+							<texture>icon-photoalbum.png</texture>
+							<visible>ListItem.Type(photoAlbum)</visible>
+						</control>
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>white</textcolor>
@@ -247,6 +292,15 @@
 						<include>PhotoThumbCard</include>
 						<include>PhotoThumb</include>
 						<include>PhotoAlbumCover</include>
+						<control type="image">
+							<posx>100</posx>
+							<posy>101</posy>
+							<width>30</width>
+							<height>30</height>
+							<texture>icon-photoalbum.png</texture>
+							<colordiffuse>orange</colordiffuse>
+							<visible>ListItem.Type(photoAlbum)</visible>
+						</control>
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>orangeLight</textcolor>
