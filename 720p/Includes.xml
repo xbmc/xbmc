@@ -19,5 +19,6 @@
 	<include file="ViewsSettings.xml"/>
 	<include file="ViewsOSD.xml"/>
 	<include file="ViewsSearch.xml"/>	
-	<include file="ViewsDialogs.xml"/>
+	<include file="ViewsDialogs.xml"/>	
+	<include file="ViewsFullInfoCard.xml"/>
 </includes>
