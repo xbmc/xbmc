@@ -186,6 +186,11 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const CStdString &method, ITransp
       argv += StringUtils::Paramify(it->asString());
     }
   }
+  else if (params.isString())
+  {
+    if (!params.empty())
+      argv = StringUtils::Paramify(params.asString());
+  }
   
   CStdString cmd;
   if (params.size() == 0)
