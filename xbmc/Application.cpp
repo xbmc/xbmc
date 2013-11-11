@@ -1582,7 +1582,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     else
     {
       std::string builtin("ReloadSkin");
-      if (!m_skinReverting)
+      if (settingId == "lookandfeel.skin" && !m_skinReverting)
         builtin += "(confirm)";
       CApplicationMessenger::Get().ExecBuiltIn(builtin);
     }
