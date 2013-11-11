@@ -10988,7 +10988,12 @@ msgctxt "#21601"
 msgid "Prefer external subtitles to internal ones"
 msgstr ""
 
-#empty strings from id 21602 to 21799
+#: xbmc/Util.cpp
+msgctxt "#21602"
+msgid "(External)"
+msgstr ""
+
+#empty strings from id 21603 to 21799
 
 msgctxt "#21800"
 msgid "File name"
