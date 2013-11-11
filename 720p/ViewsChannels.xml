@@ -37,15 +37,39 @@
 		</control>
 	</include>
 	<include name="ChannelLabel">
-		<posy>192</posy>
-		<posx>96</posx>
+		<posy>182</posy>
+		<posx>20</posx>
 		<width>150</width>
 		<height>20</height>
-		<align>center</align>
+		<align>left</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
 		<font>Condensed-16</font>
 		<shadowcolor>ff222222</shadowcolor>
+	</include>
+	<include name="ChannelServer">
+	<control type="label">
+		<posy>202</posy>
+		<posx>20</posx>
+		<width>150</width>
+		<height>20</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label2]</label>
+		<font>Condensed-14</font>
+		<textcolor>FF999999</textcolor>
+		<shadowcolor>FF222222</shadowcolor>
+	</control>
+	</include>
+	<include name="ChannelThumbCard">
+		<control type="image">
+			<posx>13</posx>
+			<posy>170</posy>
+			<width>166</width>
+			<height>56</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+		</control>
 	</include>
 	<include name="ChannelContentThumb">
 		<control type="group">
@@ -236,28 +260,32 @@
 			<control type="panel" id="70">
 				<viewtype label="Channels">panel</viewtype>
 				<visible>Container.Content(channels)</visible>
-				<posy>28</posy>
+				<posy>18</posy>
 				<posx>28</posx>
 				<width>1300</width>
-				<height>660</height>
+				<height>680</height>
 				<onup>70</onup>
 				<ondown>70</ondown>
 				<onright>70</onright>
 				<onleft>9100</onleft>
 				<orientation>vertical</orientation>
-				<itemlayout width="206" height="218">
+				<itemlayout width="206" height="228">
+				<include>ChannelThumbCard</include>
 					<include>ChannelThumb</include>
 					<control type="label">
 						<include>ChannelLabel</include>
 						<textcolor>white</textcolor>
 					</control>
+					<include>ChannelServer</include>
 				</itemlayout>
-				<focusedlayout width="206" height="218">
+				<focusedlayout width="206" height="228">
+				<include>ChannelThumbCard</include>
 					<include>ChannelThumb</include>
 					<control type="label">
 						<include>ChannelLabel</include>
 						<textcolor>orangeLight</textcolor>
 					</control>
+					<include>ChannelServer</include>
 					<include>ChannelSelectedBorder</include>
 				</focusedlayout>
 			</control>
