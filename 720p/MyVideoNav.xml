@@ -34,6 +34,8 @@
 		<!--><include>ChannelVideo</include>-->
 		<!-- Channel generic ID 99 -->
 		<include>Channel</include>
+		<!-- Scroll Offset -->
+		<include>scrollOffset</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
 		<!--<include>TopBar</include>-->

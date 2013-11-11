@@ -22,6 +22,8 @@
 		<include>Channel</include>
 		<!-- LibraryMusic ID 52 -->		
 		<include>LibraryMusic</include>
+		<!-- Scroll Offset -->
+		<include>scrollOffset</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
 		<!--<include>TopBar</include>-->

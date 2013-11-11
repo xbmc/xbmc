@@ -23,6 +23,8 @@
 		<!-- LibraryPhoto ID 51 -->
 		<include>LibraryPhoto</include>
 		<include>AlbumPhoto</include>
+		<!-- Scroll Offset -->
+		<include>scrollOffset</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
 		<!--<include>TopBar</include>-->
