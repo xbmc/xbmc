@@ -65,7 +65,7 @@ void CPlexAutoUpdate::CheckInstalledVersion()
     {
       if (version != g_infoManager.GetVersion())
       {
-        CLog::Log(LOGDEBUG, "CPlexAutoUpdate::CheckInstalledVersion Seems like we failed to upgrade from %s to %s, will NOT try this version again.", version.c_str(), g_infoManager.GetVersion().c_str());
+        CLog::Log(LOGDEBUG, "CPlexAutoUpdate::CheckInstalledVersion Seems like we failed to upgrade from %s to %s, will NOT try this version again.", fromVersion.c_str(), g_infoManager.GetVersion().c_str());
         success = false;
       }
       else
@@ -328,6 +328,7 @@ void CPlexAutoUpdate::WriteUpdateInfo()
   thisVersion.SetAttribute("delta", m_downloadPackage->GetProperty("delta").asBoolean());
   thisVersion.SetAttribute("packageHash", m_downloadPackage->GetProperty("manifestHash").asString());
   thisVersion.SetAttribute("fromVersion", std::string(g_infoManager.GetVersion()));
+  thisVersion.SetAttribute("installtime", time(NULL));
 
   if (versions->FirstChildElement())
     versions->InsertBeforeChild(versions->FirstChildElement(), thisVersion);
