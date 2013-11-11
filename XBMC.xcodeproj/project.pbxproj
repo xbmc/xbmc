@@ -445,6 +445,8 @@
 		DF64FE3E16C07AAA00D028FB /* GUIViewState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE3716C07AAA00D028FB /* GUIViewState.cpp */; };
 		DF64FE4016C07AAA00D028FB /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE3A16C07AAA00D028FB /* ViewDatabase.cpp */; };
 		DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */; };
+		DF6D1DFE18312525009DB64F /* OverlayRendererGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D3604C1826CAB900DA66D2 /* OverlayRendererGUI.cpp */; };
+		DF6D1DFF18312525009DB64F /* OverlayRendererGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D3604C1826CAB900DA66D2 /* OverlayRendererGUI.cpp */; };
 		DF830D0C15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D0A15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp */; };
 		DF830D1215BB262700602BE6 /* GUIKeyboardFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D0F15BB262700602BE6 /* GUIKeyboardFactory.cpp */; };
 		DF89901C1709BB2D00B35C21 /* MediaSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8990161709BB2D00B35C21 /* MediaSettings.cpp */; };
@@ -11718,6 +11720,7 @@
 				DFEF0BC3180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 				7C2612691820667C0086E04D /* ISettingControl.cpp in Sources */,
 				7CC82C9518284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
+				DF6D1DFF18312525009DB64F /* OverlayRendererGUI.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12756,6 +12759,7 @@
 				DFEF0BC2180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 				7C2612681820667C0086E04D /* ISettingControl.cpp in Sources */,
 				7CC82C9418284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
+				DF6D1DFE18312525009DB64F /* OverlayRendererGUI.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
