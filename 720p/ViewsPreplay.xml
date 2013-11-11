@@ -238,9 +238,36 @@
 		<height>20</height>
 		<align>left</align>
 		<aligny>center</aligny>
+		<label>$INFO[ListItem.TVShowTitle]</label>
+		<font>CondensedBold-14</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>
+	<include name="EpisodeSecondTitleFiltered">
+	<control type="label">
+		<posy>142</posy>
+		<posx>20</posx>
+		<width>159</width>
+		<height>20</height>
+		<align>left</align>
+		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
 		<font>Condensed-14</font>
 		<shadowcolor>ff222222</shadowcolor>
+	</control>
+	</include>
+	<include name="EpisodeDateFiltered">
+		<control type="label">
+			<posy>142</posy>
+			<posx>10r</posx>
+			<width>90</width>
+			<height>20</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>$INFO[ListItem.Date]</label>
+			<font>Condensed-14</font>
+			<textcolor>FF999999</textcolor>
+			<shadowcolor>ff222222</shadowcolor>
+		</control>
 	</include>
 	<include name="EpisodeThumbOverlayFiltered">
 		<control type="image">
@@ -257,7 +284,7 @@
 			<posx>12</posx>
 			<posy>13</posy>
 			<width>271</width>
-			<height>106</height>
+			<height>156</height>
 			<include>Border</include>
 		</control>
 	</include>
@@ -827,13 +854,14 @@
 					<control type="label">
 						<include>EpisodeTitleFiltered</include>
 					</control>
-					<include>EpisodeDate</include>
+					<include>EpisodeSecondTitleFiltered</include>
+					<include>EpisodeDateFiltered</include>
 					<include>EpisodeThumbOverlayFiltered</include>
 					<control type="label">
 						<posy>85</posy>
 						<posx>91</posx>
 						<include>EpisodeThumbOverlayTitle2</include>
-						<textcolor>orangeLight</textcolor>
+						<textcolor>white</textcolor>
 					</control>
 					<control type="image">
 						<posx>253</posx>
@@ -847,15 +875,16 @@
 					<include>EpisodePosterFiltered</include>
 					<control type="label">
 						<include>EpisodeTitleFiltered</include>
-						<textcolor>orangeLight</textcolor>
+						<textcolor>orange</textcolor>
 					</control>
-					<include>EpisodeDate</include>
+					<include>EpisodeSecondTitleFiltered</include>
+					<include>EpisodeDateFiltered</include>
 					<include>EpisodeThumbOverlayFiltered</include>
 					<control type="label">
 						<posy>85</posy>
 						<posx>91</posx>
 						<include>EpisodeThumbOverlayTitle2</include>
-						<textcolor>orangeLight</textcolor>
+						<textcolor>orange</textcolor>
 					</control>
 					<control type="image">
 						<posx>253</posx>
