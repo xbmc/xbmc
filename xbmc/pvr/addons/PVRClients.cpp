@@ -884,8 +884,8 @@ int CPVRClients::RegisterClient(AddonPtr client)
 bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = false */)
 {
   bool bReturn(true);
-  ADDON::VECADDONS map;
-  ADDON::VECADDONS disableAddons;
+  VECADDONS map;
+  VECADDONS disableAddons;
   {
     CSingleLock lock(m_critSection);
     map = m_addons;
@@ -905,7 +905,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       CSingleLock lock(m_critSection);
       /* stop the client and remove it from the db */
       StopClient(clientAddon, false);
-      ADDON::VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), clientAddon);
+      VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), clientAddon);
       if (addonPtr != m_addons.end())
         m_addons.erase(addonPtr);
 
@@ -971,13 +971,13 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
   if (disableAddons.size() > 0)
   {
     CSingleLock lock(m_critSection);
-    for (ADDON::VECADDONS::iterator it = disableAddons.begin(); it != disableAddons.end(); it++)
+    for (VECADDONS::iterator it = disableAddons.begin(); it != disableAddons.end(); it++)
     {
       // disable in the add-on db
       CAddonMgr::Get().DisableAddon((*it)->ID(), true);
 
       // remove from the pvr add-on list
-      ADDON::VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), *it);
+      VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), *it);
       if (addonPtr != m_addons.end())
         m_addons.erase(addonPtr);
     }
@@ -1134,7 +1134,7 @@ void CPVRClients::LoadCurrentChannelSettings(void)
 
 bool CPVRClients::UpdateAddons(void)
 {
-  ADDON::VECADDONS addons;
+  VECADDONS addons;
   bool bReturn(CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true));
 
   if (bReturn)
@@ -1177,7 +1177,7 @@ void CPVRClients::Notify(const Observable &obs, const ObservableMessage msg)
     UpdateAddons();
 }
 
-bool CPVRClients::GetClient(const CStdString &strId, ADDON::AddonPtr &addon) const
+bool CPVRClients::GetClient(const CStdString &strId, AddonPtr &addon) const
 {
   CSingleLock lock(m_critSection);
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
