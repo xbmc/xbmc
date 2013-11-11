@@ -55,7 +55,7 @@
 		<height>20</height>
 		<align>left</align>
 		<aligny>center</aligny>
-		<label>$INFO[ListItem.Label2]</label>
+		<label>$INFO[ListItem.Property(serverName)]</label>
 		<font>Condensed-14</font>
 		<textcolor>FF999999</textcolor>
 		<shadowcolor>FF222222</shadowcolor>
