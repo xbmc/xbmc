@@ -97,7 +97,44 @@ bool aml_present()
     if (has_aml)
       CLog::Log(LOGNOTICE, "aml_present, rtn(%d)", rtn);
   }
-  return has_aml;
+  return has_aml == 1;
+}
+
+bool aml_wired_present()
+{
+  static int has_wired = -1;
+  if (has_wired == -1)
+  {
+    char test[64] = {0};
+    if (aml_get_sysfs_str("/sys/class/net/eth0/operstate", test, 63) != -1)
+      has_wired = 1;
+    else
+      has_wired = 0;
+  }
+  return has_wired == 1;
+}
+
+void aml_permissions()
+{
+  // most all aml devices are already rooted.
+  int ret = system("ls /system/xbin/su");
+  if (ret != 0)
+  {
+    CLog::Log(LOGWARNING, "aml_permissions: missing su, playback might fail");
+  }
+  else
+  {
+    // certain aml devices have 664 permission, we need 666.
+    system("su -c chmod 666 /sys/class/video/axis");
+    system("su -c chmod 666 /sys/class/video/screen_mode");
+    system("su -c chmod 666 /sys/class/video/disable_video");
+    system("su -c chmod 666 /sys/class/tsync/pts_pcrscr");
+    system("su -c chmod 666 /sys/class/audiodsp/digital_raw");
+    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
+    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
+    system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+    CLog::Log(LOGINFO, "aml_permissions: permissions changed");
+  }
 }
 
 int aml_get_cputype()
@@ -120,19 +157,42 @@ int aml_get_cputype()
   return aml_cputype;
 }
 
-void aml_cpufreq_limit(bool limit)
+void aml_cpufreq_min(bool limit)
 {
-  int cpufreq = 300000;
-  if (limit)
-    cpufreq = 600000;
+// do not touch scaling_min_freq on android
+#if !defined(TARGET_ANDROID)
+  // only needed for m1/m3 SoCs
+  if (aml_get_cputype() <= 3)
+  {
+    int cpufreq = 300000;
+    if (limit)
+      cpufreq = 600000;
 
-  aml_set_sysfs_int("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq", cpufreq);
+    aml_set_sysfs_int("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq", cpufreq);
+  }
+#endif
+}
+
+void aml_cpufreq_max(bool limit)
+{
+  if (!aml_wired_present() && aml_get_cputype() > 3)
+  {
+    // this is a MX Stick, they cannot substain 1GHz
+    // operation without overheating so limit them to 800MHz.
+    int cpufreq = 1000000;
+    if (limit)
+      cpufreq = 800000;
+
+    aml_set_sysfs_int("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq", cpufreq);
+    aml_set_sysfs_str("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", "ondemand");
+  }
 }
 
 void aml_set_audio_passthrough(bool passthrough)
 {
   if (aml_present())
   {
+    // m1 uses 1, m3 and above uses 2
     int raw = aml_get_cputype() < 3 ? 1:2;
     aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", passthrough ? raw:0);
   }
