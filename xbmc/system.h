@@ -143,6 +143,10 @@
 #endif
 #define HAS_UPNP
 
+/* PLEX */
+#define ENABLE_AUTOUPDATE
+/* END PLEX */
+
 #define DECLARE_UNUSED(a,b) a b;
 #endif
 
