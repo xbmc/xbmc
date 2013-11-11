@@ -126,7 +126,8 @@ class CSettingControlList : public ISettingControl
 {
 public:
   CSettingControlList()
-    : m_heading(-1)
+    : m_heading(-1),
+      m_multiselect(false)
   { }
   virtual ~CSettingControlList() { }
 
