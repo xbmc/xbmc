@@ -738,31 +738,18 @@ void CGraphicContext::SetResInfo(RESOLUTION res, const RESOLUTION_INFO& info)
   }
 }
 
-
-void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling)
+void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, float &scaleY, TransformMatrix *matrix /* = NULL */)
 {
-  Lock();
-  m_windowResolution = res;
-  if (needsScaling && m_Resolution != RES_INVALID)
+  if (m_Resolution != RES_INVALID)
   {
     // calculate necessary scalings
-    float fFromWidth;
-    float fFromHeight;
-    float fToPosX;
-    float fToPosY;
-    float fToWidth;
-    float fToHeight;
-
     RESOLUTION_INFO info = GetResInfo();
-
-    {
-      fFromWidth  = (float)res.iWidth;
-      fFromHeight = (float)res.iHeight;
-      fToPosX     = (float)info.Overscan.left;
-      fToPosY     = (float)info.Overscan.top;
-      fToWidth    = (float)info.Overscan.right  - fToPosX;
-      fToHeight   = (float)info.Overscan.bottom - fToPosY;
-    }
+    float fFromWidth  = (float)res.iWidth;
+    float fFromHeight = (float)res.iHeight;
+    float fToPosX     = (float)info.Overscan.left;
+    float fToPosY     = (float)info.Overscan.top;
+    float fToWidth    = (float)info.Overscan.right  - fToPosX;
+    float fToHeight   = (float)info.Overscan.bottom - fToPosY;
 
     if(!g_guiSkinzoom) // lookup gui setting if we didn't have it already
       g_guiSkinzoom = (CSettingInt*)CSettings::Get().GetSetting("lookandfeel.skinzoom");
@@ -781,12 +768,29 @@ void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool need
     fToPosY -= fToHeight * fZoom * 0.5f;
     fToHeight *= fZoom + 1.0f;
 
-    m_guiScaleX = fFromWidth / fToWidth;
-    m_guiScaleY = fFromHeight / fToHeight;
-    TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight, fToHeight / fFromHeight);
-    TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
-    m_guiTransform = guiOffset * guiScaler;
+    scaleX = fFromWidth / fToWidth;
+    scaleY = fFromHeight / fToHeight;
+    if (matrix)
+    {
+      TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight, fToHeight / fFromHeight);
+      TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
+      *matrix = guiOffset * guiScaler;
+    }
   }
+  else
+  {
+    scaleX = scaleY = 1.0f;
+    if (matrix)
+      matrix->Reset();
+  }
+}
+
+void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling)
+{
+  Lock();
+  m_windowResolution = res;
+  if (needsScaling && m_Resolution != RES_INVALID)
+    GetGUIScaling(res, m_guiScaleX, m_guiScaleY, &m_guiTransform);
   else
   {
     m_guiTransform.Reset();
