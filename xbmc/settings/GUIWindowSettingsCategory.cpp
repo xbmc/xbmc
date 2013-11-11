@@ -434,6 +434,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
         FillInEpgGuideView(pSetting);
       else if (strSetting.Equals("pvrplayback.startlast"))
         FillInPvrStartLastChannel(pSetting);
+      /* PLEX */
+      else if (strSetting.Equals("updates.channel"))
+        FillInPlexUpdateChannels(pSetting);
+      /* END PLEX */
+
       continue;
     }
 #ifdef HAS_WEB_SERVER
@@ -589,12 +594,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       continue;
     }
     /* PLEX */
-    else if (strSetting.Equals("updates.channel"))
-    {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
-      FillInPlexUpdateChannels(pSetting);
-      continue;
-    }
     else if (strSetting.Equals("updates.current"))
     {
       g_guiSettings.SetString("updates.current", g_infoManager.GetVersion());
@@ -2303,6 +2302,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
       g_plexApplication.autoUpdater->ForceVersionCheckInBackground();
 #endif
   }
+  else if (strSetting.Equals("updates.channel"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    g_guiSettings.SetInt("updates.channel", pControl->GetValue());
+    CLog::Log(LOGDEBUG, "CGUIWindowSettingsCategory::OnSettingsChanged updates.channel = %d", pControl->GetValue());
+  }
   /* END PLEX */
 
   UpdateSettings();
@@ -3315,6 +3320,8 @@ void CGUIWindowSettingsCategory::FillInPlexUpdateChannels(CSetting *pSetting)
 {
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+
+  pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
 
   CMyPlexUserInfo user = g_plexApplication.myPlexManager->GetCurrentUserInfo();

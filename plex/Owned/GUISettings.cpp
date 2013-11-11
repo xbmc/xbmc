@@ -428,7 +428,7 @@ void CGUISettings::Initialize()
   AddString(update, "updates.current", 40029, g_infoManager.GetVersion(), EDIT_CONTROL_INPUT, true);
 #ifdef ENABLE_AUTOUPDATE
   AddBool(update, "updates.auto", 40017, true);
-  AddString(update, "updates.channel", 40002, "Stable", SPIN_CONTROL_TEXT);
+  AddInt(update, "updates.channel", 40002, CMyPlexUserInfo::ROLE_USER, CMyPlexUserInfo::ROLE_ADMIN, 0, CMyPlexUserInfo::ROLE_USER, SPIN_CONTROL_TEXT);
   AddString(update, "updates.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
 #endif
 

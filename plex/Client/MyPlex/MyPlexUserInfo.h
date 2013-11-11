@@ -20,10 +20,11 @@ class CMyPlexUserInfo
 
     enum MyPlexRoles
     {
-      ROLE_USER = 0,
+      ROLE_ADMIN = 1,
       ROLE_EMPLOYEE = 2,
       ROLE_NINJA = 4,
-      ROLE_PLEXPASS = 8
+      ROLE_PLEXPASS = 8,
+      ROLE_USER = 16
     };
 
     CMyPlexUserInfo() : roles(ROLE_USER), id(-1) {}
