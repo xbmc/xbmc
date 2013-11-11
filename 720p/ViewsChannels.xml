@@ -56,10 +56,53 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Property(serverName)]</label>
-		<font>Condensed-14</font>
+		<font>Condensed-13</font>
 		<textcolor>FF999999</textcolor>
 		<shadowcolor>FF222222</shadowcolor>
 	</control>
+	</include>
+	<include name="ChannelTypeIcon">
+		<control type="image">
+			<posx>69r</posx>
+			<posy>137</posy>
+			<width>36</width>
+			<height>36</height>
+			<texture>round-small.png</texture>
+			<colordiffuse>FF000000</colordiffuse>
+			<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
+			<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+			<visible>ListItem.Type(video) | ListItem.Type(music) | ListItem.Type(photos)</visible>
+		</control>
+		<control type="image">
+			<posx>60r</posx>
+			<posy>146</posy>
+			<width>18</width>
+			<height>18</height>
+			<texture>icon-video.png</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>ListItem.Type(video)</visible>
+		</control>
+		<control type="image">
+			<posx>60r</posx>
+			<posy>146</posy>
+			<width>18</width>
+			<height>18</height>
+			<texture>icon-music.png</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>ListItem.Type(music)</visible>
+		</control>
+		<control type="image">
+			<posx>60r</posx>
+			<posy>146</posy>
+			<width>18</width>
+			<height>18</height>
+			<texture>icon-photo.png</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>ListItem.Type(photos)</visible>
+		</control>
 	</include>
 	<include name="ChannelThumbCard">
 		<control type="image">
@@ -277,6 +320,7 @@
 						<textcolor>white</textcolor>
 					</control>
 					<include>ChannelServer</include>
+					<include>ChannelTypeIcon</include>
 				</itemlayout>
 				<focusedlayout width="206" height="228">
 				<include>ChannelThumbCard</include>
@@ -286,6 +330,7 @@
 						<textcolor>orangeLight</textcolor>
 					</control>
 					<include>ChannelServer</include>
+					<include>ChannelTypeIcon</include>
 					<include>ChannelSelectedBorder</include>
 				</focusedlayout>
 			</control>
