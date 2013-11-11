@@ -20,8 +20,11 @@
  *
  */
 
+#include <vector>
+
 #include "guilib/GUIDialog.h"
 #include "utils/Variant.h"
+#include "threads/CriticalSection.h"
 
 #define DIALOG_MAX_LINES 3
 #define DIALOG_MAX_CHOICES 2
@@ -34,7 +37,8 @@ public:
   virtual ~CGUIDialogBoxBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   bool IsConfirmed() const;
-  void SetLine(int iLine, const CVariant &line);
+  void SetLine(unsigned int iLine, const CVariant &line);
+  void SetText(const CVariant &text);
   void SetHeading(const CVariant &heading);
   void SetChoice(int iButton, const CVariant &choice);
 protected:
@@ -47,13 +51,16 @@ protected:
    */
   CStdString GetLocalized(const CVariant &var) const;
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
 
   bool m_bConfirmed;
+  bool m_hasTextbox;
 
   // actual strings
+  CCriticalSection m_section;
   std::string m_strHeading;
-  std::string m_strLines[DIALOG_MAX_LINES];
+  std::string m_text;
   std::string m_strChoices[DIALOG_MAX_CHOICES];
 };
