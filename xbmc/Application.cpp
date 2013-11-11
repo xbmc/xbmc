@@ -2100,6 +2100,7 @@ bool CApplication::RenderNoPresent()
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo())
   {
+    g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
     g_renderManager.Render(true, 0, 255);
 
     // close window overlays

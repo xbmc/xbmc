@@ -151,6 +151,10 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   if(m_layout == NULL)
     return;
 
+  /* until we can get gfx scaling correct in windowed mode, we must disable this */
+  if(!g_graphicsContext.IsFullScreenVideo())
+    return;
+
   CRect rs, rd;
   g_renderManager.GetVideoRect(rs, rd);
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();

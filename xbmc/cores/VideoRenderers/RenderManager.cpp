@@ -764,7 +764,6 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
   else
     PresentSingle(clear, flags, alpha);
 
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
   m_overlays.Render(m_presentsource);
 }
 
