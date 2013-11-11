@@ -394,6 +394,35 @@
 			</control>
 		</control>
 	</include>
+			<!-- right side section title and origin -->
+			<control type="group">
+				<include>ShowHomeFullInfo</include>
+				<posx>20r</posx>
+				<posy>30</posy>
+				<control type="label">
+					<width>600</width>
+					<height>0</height>
+					<label>$INFO[Container(300).ListItem(0).Label]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>CondensedBold-28</font>
+					<textcolor>orange</textcolor>
+					<animation effect="fade" end="70" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- with Label2 -->
+				<control type="label">
+					<posy>20</posy>
+					<width>600</width>
+					<height>20</height>
+					<label>$INFO[Container(300).ListItem(0).Label2]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>CondensedBold-16</font>
+					<textcolor>white</textcolor>
+					<visible>!IsEmpty(Container(300).ListItem(0).Label2)</visible>
+					<animation effect="fade" start="50" end="50" time="0" condition="true">Conditional</animation>
+				</control>
+			</control>
 	<!-- SearchItemFullInfo -->
 	<variable name="SearchItemFullInfoTitle">
 		<!-- movie -->
