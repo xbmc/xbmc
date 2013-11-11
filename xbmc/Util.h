@@ -59,7 +59,7 @@ struct ExternalStreamInfo
   std::string language;
   unsigned int flag;
 
-  ExternalStreamInfo() : flag(0x1111){};
+  ExternalStreamInfo() : flag(0){};
 };
 
 class CUtil
