@@ -9,8 +9,8 @@
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
 		<!-- views (Views.xml & ViewsChannels.xml) -->
-		<!-- ListSecondary ID 40 -->
-		<include>ListSecondary</include>
+		<!-- ByFolder ID 40 -->
+		<include>ByFolder</include>
 		<!-- ChannelsDirectory ID 74 -->
 		<include>ChannelsDirectory</include>
 		<!-- top-level ui (IncludesGlobals.xml & Debug.xml) -->
