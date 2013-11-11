@@ -109,6 +109,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iClientIndex       == right.m_iClientIndex &&
           m_strSummary         == right.m_strSummary &&
           m_iClientChannelUid  == right.m_iClientChannelUid &&
+          m_bIsRadio           == right.m_bIsRadio &&
           m_bIsRepeating       == right.m_bIsRepeating &&
           m_StartTime          == right.m_StartTime &&
           m_StopTime           == right.m_StopTime &&
@@ -131,6 +132,7 @@ CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
   m_iClientIndex       = orig.m_iClientIndex;
   m_strSummary         = orig.m_strSummary;
   m_iClientChannelUid  = orig.m_iClientChannelUid;
+  m_bIsRadio           = orig.m_bIsRadio;
   m_bIsRepeating       = orig.m_bIsRepeating;
   m_StartTime          = orig.m_StartTime;
   m_StopTime           = orig.m_StopTime;
