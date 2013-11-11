@@ -106,6 +106,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     std::map<std::string, int> m_lastSelectedIndex;
 
     CPlexNavigationHelper m_navHelper;
+    CURL GetUrlWithParentArgument(const CURL &originalUrl);
 };
 
 class CGUIPlexMusicWindow : public CGUIPlexMediaWindow

@@ -868,23 +868,32 @@ bool CGUIPlexMediaWindow::IsPhotoContainer() const
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+CURL CGUIPlexMediaWindow::GetUrlWithParentArgument(const CURL &originalUrl)
+{
+  CURL o(originalUrl.GetUrlWithoutOptions());
+  if (originalUrl.HasOption("parent"))
+    o.SetOption("parent", originalUrl.GetOption("parent"));
+  return o;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::OnBack(int actionID)
 {
-  CURL currPath(m_vecItems->GetPath());
+  CURL currPath = GetUrlWithParentArgument(m_vecItems->GetPath());
+  CURL parent = GetUrlWithParentArgument(m_history.GetParentPath());
 
-  CURL parent(m_history.GetParentPath());
   if (!parent.Get().empty())
   {
     m_history.RemoveParentPath();
 
-    while (parent.GetUrlWithoutOptions() == currPath.GetUrlWithoutOptions())
+    while (parent.Get() == currPath.Get())
     {
       parent = CURL(m_history.GetParentPath());
       m_history.RemoveParentPath();
     }
   }
 
-  if (currPath.GetUrlWithoutOptions() == m_startDirectory || parent.Get().empty())
+  if (currPath.Get() == m_startDirectory || parent.Get().empty())
   {
     g_windowManager.PreviousWindow();
     return true;
