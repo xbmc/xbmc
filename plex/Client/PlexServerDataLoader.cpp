@@ -93,7 +93,11 @@ void CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob
     }
     
     if (j->m_channelList)
+    {
       m_channelMap[j->m_server->GetUUID()] = j->m_channelList;
+      m_channelMap[j->m_server->GetUUID()]->SetProperty("serverUUID", j->m_server->GetUUID());
+      m_channelMap[j->m_server->GetUUID()]->SetProperty("serverName", j->m_server->GetName());
+    }
 
     CGUIMessage msg(GUI_MSG_PLEX_SERVER_DATA_LOADED, PLEX_DATA_LOADER, 0);
     msg.SetStringParam(j->m_server->GetUUID());
@@ -225,7 +229,12 @@ CFileItemListPtr CPlexServerDataLoader::GetAllChannels() const
   BOOST_FOREACH(ServerDataPair pair, m_channelMap)
   {
     for (int i = 0; i < pair.second->Size(); i++)
-      list->Add(pair.second->Get(i));
+    {
+      CFileItemPtr item = pair.second->Get(i);
+      item->SetProperty("serverName", pair.second->GetProperty("serverName"));
+      item->SetProperty("serverUUID", pair.second->GetProperty("serverUUID"));
+      list->Add(item);
+    }
   }
 
   return CFileItemListPtr(list);

@@ -860,11 +860,10 @@ bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
     
     channel->SetProperty("mediaWindow", window);
     channel->SetProperty("type", type);
-    channel->SetPlexDirectoryType(GetDirectoryType(type));
-    
-    CStdString serverUUID = channel->GetProperty("plexserver").asString();
-    if (g_plexApplication.serverManager->FindByUUID(serverUUID))
-      channel->SetLabel2(g_plexApplication.serverManager->FindByUUID(serverUUID)->GetName());
+    channel->SetPlexDirectoryType(GetDirectoryType(type));    
+    channel->SetLabel2(channel->GetProperty("serverName").asString());
+
+    CLog::Log(LOGDEBUG, "CPlexDirectory::GetChannelDirectory channel %s from server %s", channel->GetLabel().c_str(), channel->GetLabel2().c_str());
     
     items.Add(channel);
   }
