@@ -28,6 +28,14 @@
 #include "DllAvCodec.h"
 
 typedef struct {
+  int       writer_le;
+  uint32_t  bit_buf;
+  int       bit_left;
+  uint8_t   *buf, *buf_ptr, *buf_end;
+  int       size_in_bits;
+} bits_writer_t;
+
+typedef struct {
   uint8_t *buffer, *start;
   int      offbits, length, oflow;
 } bits_reader_t;
@@ -60,6 +68,12 @@ typedef struct {
   ((uint8_t*)(p))[2] = (d) >> 8; \
   ((uint8_t*)(p))[1] = (d) >> 16; \
   ((uint8_t*)(p))[0] = (d) >> 24; }
+
+#define BS_WL32(p, d) { \
+  ((uint8_t*)(p))[0] = (d); \
+  ((uint8_t*)(p))[1] = (d) >> 8; \
+  ((uint8_t*)(p))[2] = (d) >> 16; \
+  ((uint8_t*)(p))[3] = (d) >> 24; }
 
 typedef struct
 {
@@ -146,6 +160,11 @@ public:
   static uint32_t   read_bits( bits_reader_t *br, int nbits );
   static void       skip_bits( bits_reader_t *br, int nbits );
   static uint32_t   get_bits( bits_reader_t *br, int nbits );
+
+  static void       init_bits_writer(bits_writer_t *s, uint8_t *buffer, int buffer_size, int writer_le);
+  static void       write_bits(bits_writer_t *s, int n, unsigned int value);
+  static void       skip_bits( bits_writer_t *s, int n);
+  static void       flush_bits(bits_writer_t *s);
 
   static void       parseh264_sps(const uint8_t *sps, const uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames);
   static bool       mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence);
