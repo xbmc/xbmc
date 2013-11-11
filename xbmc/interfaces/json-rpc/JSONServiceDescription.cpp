@@ -39,6 +39,7 @@
 #include "ProfilesOperations.h"
 #include "FavouritesOperations.h"
 #include "TextureOperations.h"
+#include "SettingsOperations.h"
 
 using namespace std;
 using namespace JSONRPC;
@@ -213,6 +214,14 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // Textures operations
   { "Textures.GetTextures",                         CTextureOperations::GetTextures },
   { "Textures.RemoveTexture",                       CTextureOperations::RemoveTexture },
+
+// Settings operations
+  { "Settings.GetSections",                         CSettingsOperations::GetSections },
+  { "Settings.GetCategories",                       CSettingsOperations::GetCategories },
+  { "Settings.GetSettings",                         CSettingsOperations::GetSettings },
+  { "Settings.GetSettingValue",                     CSettingsOperations::GetSettingValue },
+  { "Settings.SetSettingValue",                     CSettingsOperations::SetSettingValue },
+  { "Settings.ResetSettingValue",                   CSettingsOperations::ResetSettingValue },
 
 // XBMC operations
   { "XBMC.GetInfoLabels",                           CXBMCOperations::GetInfoLabels },

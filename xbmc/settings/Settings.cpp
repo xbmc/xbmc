@@ -491,6 +491,12 @@ CSetting* CSettings::GetSetting(const std::string &id) const
   return m_settingsManager->GetSetting(id);
 }
 
+std::vector<CSettingSection*> CSettings::GetSections() const
+{
+  CSingleLock lock(m_critical);
+  return m_settingsManager->GetSections();
+}
+
 CSettingSection* CSettings::GetSection(const std::string &section) const
 {
   CSingleLock lock(m_critical);
@@ -551,40 +557,12 @@ bool CSettings::SetString(const std::string &id, const std::string &value)
 
 std::vector<CVariant> CSettings::GetList(const std::string &id) const
 {
-  std::vector<CVariant> realValues;
-
   CSetting *setting = m_settingsManager->GetSetting(id);
   if (setting == NULL)
-    return realValues;
+    return std::vector<CVariant>();
 
   CSettingList *listSetting = static_cast<CSettingList*>(setting);
-  const SettingPtrList &values = listSetting->GetValue();
-  for (SettingPtrList::const_iterator it = values.begin(); it != values.end(); ++it)
-  {
-    switch (listSetting->GetElementType())
-    {
-      case SettingTypeBool:
-        realValues.push_back(static_cast<const CSettingBool*>(it->get())->GetValue());
-        break;
-
-      case SettingTypeInteger:
-        realValues.push_back(static_cast<const CSettingInt*>(it->get())->GetValue());
-        break;
-
-      case SettingTypeNumber:
-        realValues.push_back(static_cast<const CSettingNumber*>(it->get())->GetValue());
-        break;
-
-      case SettingTypeString:
-        realValues.push_back(static_cast<const CSettingString*>(it->get())->GetValue());
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  return realValues;
+  return ListToValues(listSetting, listSetting->GetValue());
 }
 
 bool CSettings::SetList(const std::string &id, const std::vector<CVariant> &value)
@@ -649,6 +627,41 @@ bool CSettings::SetList(const std::string &id, const std::vector<CVariant> &valu
 bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
 {
   return m_settingsManager->LoadSetting(node, settingId);
+}
+
+std::vector<CVariant> CSettings::ListToValues(const CSettingList *setting, const std::vector< boost::shared_ptr<CSetting> > &values)
+{
+  std::vector<CVariant> realValues;
+
+  if (setting == NULL)
+    return realValues;
+
+  for (SettingPtrList::const_iterator it = values.begin(); it != values.end(); ++it)
+  {
+    switch (setting->GetElementType())
+    {
+      case SettingTypeBool:
+        realValues.push_back(static_cast<const CSettingBool*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeInteger:
+        realValues.push_back(static_cast<const CSettingInt*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeNumber:
+        realValues.push_back(static_cast<const CSettingNumber*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeString:
+        realValues.push_back(static_cast<const CSettingString*>(it->get())->GetValue());
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return realValues;
 }
 
 bool CSettings::Initialize(const std::string &file)

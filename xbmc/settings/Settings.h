@@ -21,6 +21,9 @@
 
 #include <set>
 #include <string>
+#include <vector>
+
+#include <boost/shared_ptr.hpp>
 
 #include "settings/ISettingCallback.h"
 #include "settings/ISettingControlCreator.h"
@@ -29,6 +32,7 @@
 #include "utils/Variant.h"
 
 class CSetting;
+class CSettingList;
 class CSettingSection;
 class CSettingsManager;
 class TiXmlElement;
@@ -151,6 +155,12 @@ public:
    */
   CSetting* GetSetting(const std::string &id) const;
   /*!
+   \brief Gets the full list of setting sections.
+
+   \return List of setting sections
+   */
+  std::vector<CSettingSection*> GetSections() const;
+  /*!
    \brief Gets the setting section with the given identifier.
 
    \param section Setting section identifier
@@ -252,6 +262,7 @@ public:
    */
   bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
 
+  static std::vector<CVariant> ListToValues(const CSettingList *setting, const std::vector< boost::shared_ptr<CSetting> > &values);
 private:
   CSettings(const CSettings&);
   CSettings const& operator=(CSettings const&);

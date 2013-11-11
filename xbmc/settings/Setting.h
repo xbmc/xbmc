@@ -164,6 +164,10 @@ public:
   
   int GetElementType() const;
   const CSetting* GetDefinition() const { return m_definition; }
+
+  const std::string& GetDelimiter() const { return m_delimiter; }
+  int GetMinimum() const { return m_minimum; }
+  int GetMaximum() const { return m_maximum; }
   
   bool FromString(const std::vector<std::string> &value);
 
