@@ -753,6 +753,7 @@
             <options>languages</options>
             <delimiter>,</delimiter>
             <minimum>1</minimum>
+            <maximum>3</maximum>
           </constraints>
           <control type="list" format="string">
             <multiselect>true</multiselect>
