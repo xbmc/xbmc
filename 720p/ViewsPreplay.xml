@@ -317,7 +317,7 @@
 			<posx>12</posx>
 			<posy>13</posy>
 			<width>200</width>
-			<height>106</height>
+			<height>156</height>
 			<include>Border</include>
 		</control>
 	</include>

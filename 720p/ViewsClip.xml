@@ -37,7 +37,7 @@
 	<include name="ClipThumbSelectedBorder">
 		<control type="image">
 			<width>254</width>
-			<height>143</height>
+			<height>197</height>
 			<include>Border</include>
 		</control>
 	</include>
