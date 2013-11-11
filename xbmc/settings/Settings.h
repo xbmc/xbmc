@@ -23,6 +23,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/shared_ptr.hpp>
+
 #include "settings/ISettingCallback.h"
 #include "settings/ISettingControlCreator.h"
 #include "settings/ISettingCreator.h"
@@ -30,6 +32,7 @@
 #include "utils/Variant.h"
 
 class CSetting;
+class CSettingList;
 class CSettingSection;
 class CSettingsManager;
 class TiXmlElement;
@@ -259,6 +262,7 @@ public:
    */
   bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
 
+  static std::vector<CVariant> ListToValues(const CSettingList *setting, const std::vector< boost::shared_ptr<CSetting> > &values);
 private:
   CSettings(const CSettings&);
   CSettings const& operator=(CSettings const&);
