@@ -97,6 +97,8 @@ bool CPVRClients::IsConnectedClient(int iClientId) const
 
 bool CPVRClients::IsConnectedClient(const AddonPtr addon)
 {
+  CSingleLock lock(m_critSection);
+  
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
     if (itr->second->ID() == addon->ID())
       return itr->second->ReadyToUse();
@@ -367,9 +369,11 @@ bool CPVRClients::GetPlayingRecording(CPVRRecording &recording) const
 
 bool CPVRClients::HasTimerSupport(int iClientId)
 {
-  CSingleLock lock(m_critSection);
+  PVR_CLIENT client;
+  if (GetConnectedClient(iClientId, client))
+    return client->SupportsTimers();
 
-  return IsConnectedClient(iClientId) && m_clientMap[iClientId]->SupportsTimers();
+  return false;
 }
 
 PVR_ERROR CPVRClients::GetTimers(CPVRTimers *timers)
