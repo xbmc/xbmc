@@ -11772,8 +11772,8 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr ""
 
-#: xbmc/addons/addoninstaller.cpp
-#: xbmc/addons/Repository.cpp
+#: xbmc/addons/AddonInstaller.cpp
+#: xbmc/addons/AddonsDatabase.cpp
 msgctxt "#24044"
 msgid "Dependencies not met. Please contact Add-on author."
 msgstr ""
@@ -11798,7 +11798,10 @@ msgctxt "#24048"
 msgid "Rollback"
 msgstr ""
 
-#empty string with id 24049
+#: xbmc/addons/AddonsDirectory.cpp
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr ""
 
 #: unknown
 msgctxt "#24050"
@@ -11926,7 +11929,12 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr ""
 
-#empty strings from id 24091 to 24093
+#: xbmc\addons\GUIDialogAddonInfo.cpp
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr ""
+
+#empty strings from id 24092 to 24093
 
 #: xbmc/addons/guidialogaddoninfo.cpp
 msgctxt "#24094"
@@ -11978,7 +11986,12 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr ""
 
-#empty strings from id 24104 to 24999
+#: xbmc/addons/Repository.cpp
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr ""
+
+#empty strings from id 24105 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
