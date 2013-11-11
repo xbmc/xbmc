@@ -35,7 +35,7 @@
 #include "Filters/GUIPlexFilterFactory.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "Client/PlexTimelineManager.h"
-#include "client/PlexServerDataLoader.h"
+#include "Client/PlexServerDataLoader.h"
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
