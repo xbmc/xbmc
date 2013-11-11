@@ -253,6 +253,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keep default threading for Hi10p: %d",
                         m_pCodecContext->thread_type);
   }
+  else if (CSettings::Get().GetBool("videoplayer.useframemtdec"))
+  {
+    CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keep default threading %d by videoplayer.useframemtdec",
+                        m_pCodecContext->thread_type);
+  }
   else
     m_pCodecContext->thread_type = FF_THREAD_SLICE;
 

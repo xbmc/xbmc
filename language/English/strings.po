@@ -5995,7 +5995,11 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr ""
 
-#empty strings from id 13440 to 13499
+msgctxt "#13440"
+msgid "Frame Multi Threaded Decoding (less reliable)"
+msgstr ""
+
+#empty strings from id 13441 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"
@@ -14566,7 +14570,12 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr ""
 
-#empty strings from id 36423 to 36499
+#: system/settings/settings.xml
+msgctxt "#36423"
+msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
+msgstr ""
+
+#empty strings from id 36424 to 36499
 #end reservation
 
 #: system/settings/settings.xml
