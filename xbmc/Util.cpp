@@ -2188,6 +2188,8 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
     }
     StringUtils::Trim(name);
     info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);
+    info.name += " ";
+    info.name += g_localizeStrings.Get(21602); // External
   }
   if (info.flag == 0x1111)
     info.flag = CDemuxStream::FLAG_NONE;
