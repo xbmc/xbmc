@@ -9,7 +9,6 @@ SRCS += DVDMessageQueue.cpp
 SRCS += DVDMessageTracker.cpp
 SRCS += DVDOverlayContainer.cpp
 SRCS += DVDOverlayRenderer.cpp
-SRCS += DVDPerformanceCounter.cpp
 SRCS += DVDPlayer.cpp
 SRCS += DVDPlayerAudio.cpp
 SRCS += DVDPlayerSubtitle.cpp

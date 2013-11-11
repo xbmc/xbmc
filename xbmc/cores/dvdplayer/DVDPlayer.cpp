@@ -49,7 +49,6 @@
 #include "guilib/StereoscopicsManager.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "DVDPerformanceCounter.h"
 #include "filesystem/File.h"
 #include "pictures/Picture.h"
 #include "DllSwScale.h"
@@ -642,7 +641,6 @@ void CDVDPlayer::OnStartup()
 
   m_messenger.Init();
 
-  g_dvdPerformanceCounter.EnableMainPerformance(this);
   CUtil::ClearTempFonts();
 }
 
@@ -2039,8 +2037,6 @@ void CDVDPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
 
 void CDVDPlayer::OnExit()
 {
-  g_dvdPerformanceCounter.DisableMainPerformance();
-
   try
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");

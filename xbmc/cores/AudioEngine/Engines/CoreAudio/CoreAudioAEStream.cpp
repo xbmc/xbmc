@@ -380,6 +380,9 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   unsigned int addsize  = size;
   unsigned int channelsInBuffer = m_chLayoutCountStream;
 
+  if (m_flushRequested && m_paused)
+    InternalFlush();
+
   if (!m_valid || size == 0 || data == NULL || !m_Buffer || m_flushRequested)
     return 0;
 

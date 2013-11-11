@@ -23,7 +23,7 @@
 #include "DVDAudio.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
-#include "DVDPlayerAudio.h"
+#include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "settings/MediaSettings.h"

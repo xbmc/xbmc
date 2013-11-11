@@ -360,9 +360,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDOverlayRenderer.cpp">
       <Filter>cores\dvdplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPerformanceCounter.cpp">
-      <Filter>cores\dvdplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayer.cpp">
       <Filter>cores\dvdplayer</Filter>
     </ClCompile>
@@ -3140,9 +3137,6 @@
       <Filter>cores\dvdplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDOverlayRenderer.h">
-      <Filter>cores\dvdplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPerformanceCounter.h">
       <Filter>cores\dvdplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayer.h">
