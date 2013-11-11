@@ -558,7 +558,7 @@ bool CSettings::SetString(const std::string &id, const std::string &value)
 std::vector<CVariant> CSettings::GetList(const std::string &id) const
 {
   CSetting *setting = m_settingsManager->GetSetting(id);
-  if (setting == NULL)
+  if (setting == NULL || setting->GetType() != SettingTypeList)
     return std::vector<CVariant>();
 
   CSettingList *listSetting = static_cast<CSettingList*>(setting);
@@ -568,7 +568,7 @@ std::vector<CVariant> CSettings::GetList(const std::string &id) const
 bool CSettings::SetList(const std::string &id, const std::vector<CVariant> &value)
 {
   CSetting *setting = m_settingsManager->GetSetting(id);
-  if (setting == NULL)
+  if (setting == NULL || setting->GetType() != SettingTypeList)
     return false;
 
   CSettingList *listSetting = static_cast<CSettingList*>(setting);
