@@ -1,0 +1,1014 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2013-11-11 12:45+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgctxt "#31000"
+msgid "Browse"
+msgstr "瀏覽"
+
+msgctxt "#31001"
+msgid "Videos"
+msgstr "影片"
+
+msgctxt "#31002"
+msgid "Music"
+msgstr "音樂"
+
+msgctxt "#31003"
+msgid "Pictures"
+msgstr "圖片"
+
+msgctxt "#31004"
+msgid "Applications"
+msgstr "程式"
+
+msgctxt "#31005"
+msgid "Weather"
+msgstr "天氣"
+
+msgctxt "#31006"
+msgid "System"
+msgstr "系統"
+
+msgctxt "#31007"
+msgid "Quit"
+msgstr "開/關"
+
+msgctxt "#31008"
+msgid "TV Shows"
+msgstr "電視節目"
+
+msgctxt "#31011"
+msgid "Watch your"
+msgstr "觀賞"
+
+msgctxt "#31012"
+msgid "Listen to"
+msgstr "聆聽"
+
+msgctxt "#31013"
+msgid "View your"
+msgstr "瀏覽"
+
+msgctxt "#31014"
+msgid "Use your"
+msgstr "使用"
+
+msgctxt "#31015"
+msgid "Check"
+msgstr "查詢"
+
+msgctxt "#31016"
+msgid "Change your"
+msgstr "設定"
+
+msgctxt "#31018"
+msgid "Menu"
+msgstr "選單"
+
+msgctxt "#31019"
+msgid "Play the"
+msgstr "播放"
+
+msgctxt "#31020"
+msgid "Options"
+msgstr "選項"
+
+msgctxt "#31021"
+msgid "Seasons"
+msgstr "季"
+
+msgctxt "#31022"
+msgid "Hide"
+msgstr "隱藏"
+
+msgctxt "#31023"
+msgid "Sort By"
+msgstr "排序"
+
+msgctxt "#31024"
+msgid "Sort Direction"
+msgstr "排序方向"
+
+msgctxt "#31025"
+msgid "Backward"
+msgstr "向後"
+
+msgctxt "#31026"
+msgid "Forward"
+msgstr "向前"
+
+msgctxt "#31027"
+msgid "Began"
+msgstr "開始"
+
+msgctxt "#31028"
+msgid "Finished"
+msgstr "完成"
+
+msgctxt "#31029"
+msgid "Writer"
+msgstr "編劇"
+
+msgctxt "#31030"
+msgid "Track No."
+msgstr "音軌編號"
+
+msgctxt "#31031"
+msgid "Active"
+msgstr "啟用"
+
+msgctxt "#31032"
+msgid "Instrmts"
+msgstr "樂器"
+
+msgctxt "#31033"
+msgid "Last Refreshed"
+msgstr "最近更新"
+
+msgctxt "#31034"
+msgid "Build"
+msgstr "版本"
+
+msgctxt "#31035"
+msgid "Free RAM"
+msgstr "可用記憶體"
+
+msgctxt "#31036"
+msgid "IP Addr."
+msgstr "IP 位址"
+
+msgctxt "#31037"
+msgid "Hard Drive Space"
+msgstr "硬碟容量"
+
+msgctxt "#31038"
+msgid "Choose Your"
+msgstr "選擇"
+
+msgctxt "#31039"
+msgid "Favourite"
+msgstr "我的最愛"
+
+msgctxt "#31040"
+msgid "Modify"
+msgstr "更改"
+
+msgctxt "#31041"
+msgid "Editor"
+msgstr "編輯"
+
+msgctxt "#31042"
+msgid "Picture"
+msgstr "圖片"
+
+msgctxt "#31043"
+msgid "Check the"
+msgstr "查詢"
+
+msgctxt "#31044"
+msgid "By"
+msgstr "由"
+
+msgctxt "#31045"
+msgid "Recently Added"
+msgstr "最近新增"
+
+msgctxt "#31046"
+msgid "Path to Lyrics Script"
+msgstr "歌詞腳本路徑"
+
+msgctxt "#31047"
+msgid "Not Available"
+msgstr ""
+
+msgctxt "#31050"
+msgid "Items"
+msgstr ""
+
+msgctxt "#31051"
+msgid "Games"
+msgstr "遊戲"
+
+msgctxt "#31052"
+msgid "Emulators"
+msgstr "模擬器"
+
+msgctxt "#31053"
+msgid "Apps"
+msgstr "程式"
+
+msgctxt "#31060"
+msgid "Settings"
+msgstr "系統設定"
+
+msgctxt "#31061"
+msgid "Scripts"
+msgstr "腳本程式"
+
+msgctxt "#31062"
+msgid "File Manager"
+msgstr "檔案管理員"
+
+msgctxt "#31063"
+msgid "Favourites"
+msgstr "我的最愛"
+
+msgctxt "#31064"
+msgid "Profiles"
+msgstr "使用者設定檔"
+
+msgctxt "#31065"
+msgid "Info"
+msgstr "資料"
+
+msgctxt "#31066"
+msgid "Refresh"
+msgstr "重新整理"
+
+msgctxt "#31067"
+msgid "About Your"
+msgstr "關於"
+
+msgctxt "#31068"
+msgid "User ID:"
+msgstr ""
+
+msgctxt "#31069"
+msgid "Password:"
+msgstr ""
+
+msgctxt "#31071"
+msgid "Shutdown"
+msgstr "關機"
+
+msgctxt "#31072"
+msgid "Restart"
+msgstr "重新開機"
+
+msgctxt "#31073"
+msgid "Reload XBMC"
+msgstr "重新載入 XBMC"
+
+msgctxt "#31074"
+msgid "Dashboard"
+msgstr "原廠系統"
+
+msgctxt "#31075"
+msgid "Refresh Skin"
+msgstr "刷新桌面"
+
+msgctxt "#31111"
+msgid "Movies"
+msgstr "電影"
+
+msgctxt "#31112"
+msgid "TV Shows"
+msgstr "電視節目"
+
+msgctxt "#31113"
+msgid "Clips"
+msgstr "所有影片"
+
+msgctxt "#31114"
+msgid "Episode"
+msgstr "集:"
+
+msgctxt "#31115"
+msgid "N/A"
+msgstr "不明"
+
+msgctxt "#31116"
+msgid "Movie Title"
+msgstr "電影名"
+
+msgctxt "#31117"
+msgid "Thumb"
+msgstr "縮略圖"
+
+msgctxt "#31118"
+msgid "Fanart"
+msgstr "同人作品"
+
+msgctxt "#31119"
+msgid "Synopsis"
+msgstr "摘要"
+
+msgctxt "#31120"
+msgid "Star Rating"
+msgstr "評分"
+
+msgctxt "#31121"
+msgid "Movie Details"
+msgstr "電影細節"
+
+msgctxt "#31122"
+msgid "Aired"
+msgstr "發行/上映"
+
+msgctxt "#31123"
+msgid "MPAA"
+msgstr "分級"
+
+msgctxt "#31124"
+msgid "Eps."
+msgstr "集"
+
+msgctxt "#31125"
+msgid "Theater Times"
+msgstr "上映時間"
+
+msgctxt "#31126"
+msgid "TV Show Details"
+msgstr "電視節目細節"
+
+msgctxt "#31127"
+msgid "Episode Details"
+msgstr "劇集細節"
+
+msgctxt "#31128"
+msgid "Banner"
+msgstr ""
+
+msgctxt "#31129"
+msgid "Rating"
+msgstr ""
+
+msgctxt "#31130"
+msgid "IMDb Rating"
+msgstr ""
+
+msgctxt "#31131"
+msgid "Genre"
+msgstr ""
+
+msgctxt "#31132"
+msgid "Duration"
+msgstr ""
+
+msgctxt "#31133"
+msgid "Subtitles"
+msgstr ""
+
+msgctxt "#31134"
+msgid "Cast"
+msgstr ""
+
+msgctxt "#31135"
+msgid "Director"
+msgstr ""
+
+msgctxt "#31136"
+msgid "Writer"
+msgstr ""
+
+msgctxt "#31137"
+msgid "Episodes"
+msgstr ""
+
+msgctxt "#31138"
+msgid "Watched"
+msgstr ""
+
+msgctxt "#31139"
+msgid "Unwatched"
+msgstr ""
+
+msgctxt "#31140"
+msgid "First Aired"
+msgstr ""
+
+msgctxt "#31141"
+msgid "Season"
+msgstr ""
+
+msgctxt "#31142"
+msgid "Movie"
+msgstr ""
+
+msgctxt "#31143"
+msgid "TV Show"
+msgstr ""
+
+msgctxt "#31144"
+msgid "Video"
+msgstr ""
+
+msgctxt "#31145"
+msgid "Specials"
+msgstr ""
+
+msgctxt "#31220"
+msgid "Currently Playing"
+msgstr "現正播放"
+
+msgctxt "#31221"
+msgid "Previous Track"
+msgstr "之前播放"
+
+msgctxt "#31222"
+msgid "Upcoming Tracks"
+msgstr "即將播放"
+
+msgctxt "#31223"
+msgid "Click for Lyrics"
+msgstr "顯示歌詞"
+
+msgctxt "#31224"
+msgid "Open MENU for Options"
+msgstr "系統設定"
+
+msgctxt "#31225"
+msgid "Rating"
+msgstr "評分"
+
+msgctxt "#31226"
+msgid "Change"
+msgstr "更改"
+
+msgctxt "#31227"
+msgid "Your Preset"
+msgstr "你的設定"
+
+msgctxt "#31228"
+msgid "Lyrics"
+msgstr "歌詞"
+
+msgctxt "#31229"
+msgid "Artist"
+msgstr ""
+
+msgctxt "#31230"
+msgid "Album"
+msgstr ""
+
+msgctxt "#31601"
+msgid "Appearance"
+msgstr "外觀"
+
+msgctxt "#31602"
+msgid "Network"
+msgstr "網路"
+
+msgctxt "#31603"
+msgid "Skin"
+msgstr "桌面"
+
+msgctxt "#31604"
+msgid "General"
+msgstr "一般"
+
+msgctxt "#31605"
+msgid "Home"
+msgstr "主頁"
+
+msgctxt "#31606"
+msgid "Change Preferences For"
+msgstr "更改設定"
+
+msgctxt "#31607"
+msgid "Current"
+msgstr "目前"
+
+msgctxt "#31608"
+msgid "Source"
+msgstr "目錄"
+
+msgctxt "#31609"
+msgid "Dest"
+msgstr "目的"
+
+msgctxt "#31610"
+msgid "Playback"
+msgstr ""
+
+msgctxt "#31620"
+msgid "Menu"
+msgstr "設定"
+
+msgctxt "#31621"
+msgid "Disable"
+msgstr "關閉"
+
+msgctxt "#31622"
+msgid "Enable"
+msgstr "啟用"
+
+msgctxt "#31623"
+msgid "Background"
+msgstr "佈景"
+
+msgctxt "#31624"
+msgid "Select"
+msgstr "選擇"
+
+msgctxt "#31625"
+msgid "Use Default"
+msgstr "使用預設"
+
+msgctxt "#31650"
+msgid "Hide right blade"
+msgstr "隱藏右導覽頁面"
+
+msgctxt "#31651"
+msgid "Enable custom backgrounds"
+msgstr "啟用自訂背景"
+
+msgctxt "#31652"
+msgid "Enable"
+msgstr "啟用"
+
+msgctxt "#31653"
+msgid "View"
+msgstr "顯示模式"
+
+msgctxt "#31654"
+msgid "Hide Thumb Labels in File Browser dialog"
+msgstr "隱藏縮圖在檔案瀏覽"
+
+msgctxt "#31655"
+msgid "Display rotated Season thumb in Episodes view"
+msgstr "顯示可旋轉縮圖在 \"劇集瀏覽\""
+
+msgctxt "#31656"
+msgid "Backgrounds"
+msgstr "背景"
+
+msgctxt "#31657"
+msgid "Image"
+msgstr "圖片"
+
+msgctxt "#31658"
+msgid "Folder"
+msgstr "資料夾"
+
+msgctxt "#31659"
+msgid "Reset"
+msgstr "重設"
+
+msgctxt "#31660"
+msgid "Enable Custom BG's on Home"
+msgstr "啟用自訂背景在主頁"
+
+msgctxt "#31661"
+msgid "Apple Movie Trailers"
+msgstr "電影預告片"
+
+msgctxt "#31662"
+msgid "Hide clock"
+msgstr "隱藏時鐘顯示"
+
+msgctxt "#31663"
+msgid "Show Media Count"
+msgstr "顯示媒體計數"
+
+msgctxt "#31664"
+msgid "Hide Scrollbars on Media Screens"
+msgstr "隱藏捲軸在媒體螢幕"
+
+msgctxt "#31665"
+msgid "Hide Watched/Unwatched icons"
+msgstr "隱藏 已觀看/未觀看 圖示"
+
+msgctxt "#31666"
+msgid "Show Blade in Centre of Screen"
+msgstr "在螢幕中心顯示導覽頁面"
+
+msgctxt "#31667"
+msgid "MediaStream"
+msgstr "MediaStream"
+
+msgctxt "#31668"
+msgid "Show Larger Clock"
+msgstr "放大時鐘顯示"
+
+msgctxt "#31669"
+msgid "Show Weather on Home"
+msgstr "顯示天氣在主頁"
+
+msgctxt "#31670"
+msgid "Show Fanart"
+msgstr "顯示同人作品"
+
+msgctxt "#31671"
+msgid "Hide Plot in Video OSD"
+msgstr "隱藏劇情概要在影片顯示"
+
+msgctxt "#31672"
+msgid "Hide Info"
+msgstr "隱藏資訊"
+
+msgctxt "#31673"
+msgid "Media Views"
+msgstr "媒體顯示模式"
+
+msgctxt "#31674"
+msgid "Hide Fanart"
+msgstr "隱藏同人作品"
+
+msgctxt "#31675"
+msgid "with Movies Views"
+msgstr "在 \"電影顯示模式\""
+
+msgctxt "#31676"
+msgid "In Media Preview"
+msgstr "在 \"媒體預覽\""
+
+msgctxt "#31677"
+msgid "with TV Shows List"
+msgstr "在 電視節目表"
+
+msgctxt "#31678"
+msgid "Show Season thumb"
+msgstr "顯示影集縮圖"
+
+msgctxt "#31679"
+msgid "Hide Focus Details in Panel Stream"
+msgstr "隱藏細節在 \"面板效果\""
+
+msgctxt "#31680"
+msgid "Hide Thumbs in List View"
+msgstr "隱藏縮圖在 \"列表瀏覽\""
+
+msgctxt "#31681"
+msgid "in Files Mode"
+msgstr "在 \"檔案模式\""
+
+msgctxt "#31682"
+msgid "on TV Wall"
+msgstr "在 \"電視牆模式\""
+
+msgctxt "#31683"
+msgid "with TV Views"
+msgstr "在 \"電視節目瀏覽模式\""
+
+msgctxt "#31684"
+msgid "Hide Custom Backgrounds"
+msgstr "隱藏自訂背景"
+
+msgctxt "#31685"
+msgid "Show Animated"
+msgstr "動畫效果顯示"
+
+msgctxt "#31686"
+msgid "Show Horizontal Music Vis"
+msgstr "顯示音樂視覺化"
+
+msgctxt "#31687"
+msgid "with Video Views"
+msgstr "在 \"影片顯示模式\""
+
+msgctxt "#31688"
+msgid "with Music Views"
+msgstr "在 \"音樂顯示模式\""
+
+msgctxt "#31689"
+msgid "with Pictures Views"
+msgstr "在 \"圖片顯示模式\""
+
+msgctxt "#31690"
+msgid "Hide No Thumb Icons"
+msgstr "隱藏無縮圖圖示"
+
+msgctxt "#31691"
+msgid "Use Low Overlay for TV Shows Coverflow"
+msgstr "使用低覆蓋電視節目封面效果"
+
+msgctxt "#31692"
+msgid "Hide Info in Wall Stream view"
+msgstr "隱藏資訊在 \"牆效果瀏覽\""
+
+msgctxt "#31693"
+msgid "Hide Thumbs in Options Menu"
+msgstr "隱藏縮圖在選項選單"
+
+msgctxt "#31694"
+msgid "Show Now Playing UI on Left"
+msgstr "顯示「正在播放」在左側"
+
+msgctxt "#31695"
+msgid "Show AM/PM in clock"
+msgstr "顯示 上午/下午 在時鐘"
+
+msgctxt "#31697"
+msgid "Hide Photo Description in Slideshow"
+msgstr ""
+
+msgctxt "#31701"
+msgid "Setup"
+msgstr "設定"
+
+msgctxt "#31702"
+msgid "Showcase"
+msgstr "陳列展示"
+
+msgctxt "#31703"
+msgid "Seasons"
+msgstr "季"
+
+msgctxt "#31704"
+msgid "Photo"
+msgstr "圖片"
+
+msgctxt "#31705"
+msgid "Convex"
+msgstr "凸面"
+
+msgctxt "#31706"
+msgid "Episode Thumbs"
+msgstr "劇集縮圖"
+
+msgctxt "#31707"
+msgid "Media Preview"
+msgstr "媒體預覽"
+
+msgctxt "#31708"
+msgid "Media List"
+msgstr "媒體列表"
+
+msgctxt "#31709"
+msgid "Concave"
+msgstr "凹面"
+
+msgctxt "#31710"
+msgid "Display"
+msgstr "展示"
+
+msgctxt "#31711"
+msgid "Info List"
+msgstr "資訊列表"
+
+msgctxt "#31712"
+msgid "Image Stream"
+msgstr "圖像串流"
+
+msgctxt "#31713"
+msgid "Setup Options"
+msgstr "設定選項"
+
+msgctxt "#31714"
+msgid "Wall Stream"
+msgstr "牆效果"
+
+msgctxt "#31715"
+msgid "Panel Stream"
+msgstr "面板效果"
+
+msgctxt "#31716"
+msgid "Coverflow"
+msgstr "封面效果"
+
+msgctxt "#31717"
+msgid "Options Menu"
+msgstr "選項選單"
+
+msgctxt "#31720"
+msgid "Grid"
+msgstr ""
+
+msgctxt "#31721"
+msgid "Episodes List"
+msgstr ""
+
+msgctxt "#31722"
+msgid "Plugin Stream"
+msgstr ""
+
+msgctxt "#31800"
+msgid "About Plex"
+msgstr "製作團隊"
+
+msgctxt "#31801"
+msgid "Welcome to"
+msgstr "歡迎光臨"
+
+msgctxt "#31802"
+msgid "your media....[COLOR Highlighted]your[/COLOR] way"
+msgstr "你的媒體....[COLOR Highlighted]你的[/COLOR]方式"
+
+msgctxt "#31804"
+msgid "MediaStream is a new user interface for the popular multimedia XBMC.  Created by the newly-formed \"Team RazorFish\", this new interface seeks to combine functionality with form, merging style with substance.  Designed and optimized for the 'High-Def' generation, this interface seeks to bring a new experience to the already popular platform."
+msgstr "MediaStream 是流行的多媒體 XBMC 新使用者界面。由新成立的“RazorFish 團隊”製作，新介面力求功能結合形式，風格融合實質。設計和優化的'高畫質'世代，這個介面尋求給已流行的平臺帶來新的經驗。"
+
+msgctxt "#31805"
+msgid "Note"
+msgstr "注意"
+
+msgctxt "#31806"
+msgid "Please ensure that you have the very latest build of XBMC.  We recommend the latest SVN build of XBMC, and would ask that you always download the full skin package."
+msgstr "請確定你有最新的 XBMC 版本。我們推薦 SVN 最新的 XBMC 版本，並請你始終下載完整的佈景主題。"
+
+msgctxt "#31807"
+msgid "Skin Credits"
+msgstr "主題製作"
+
+msgctxt "#31808"
+msgid "The entire project was a collaborative effort between many talented individuals.  These are as follows: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Special thanks goes to emilio (a.k.a. thedeViL), without whom this project would never have happened.  Of course all thanks go to you, the XBMC community... without you there would be no reason to do what we do... keep rocking guys, you're the best!!!"
+msgstr "全部專案是在許多有才華的人努力合作完成的。這些人如下：skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.特別感謝 emilio (又名 thedeViL), 沒有他們，這專案將永遠不會發生。當然，都要感謝你，XBMC 社群...沒有你，我們就沒有理由這樣做...繼續加油，你是最好的!!!"
+
+msgctxt "#31809"
+msgid "Special Thanks: entire XBMC team, supporters at the xbmc and xbox-scene forums"
+msgstr "特別感謝：整個 XBMC 團隊，在 xbmc 和 xbox-scene 論壇的支持者"
+
+msgctxt "#31810"
+msgid "Click \"OK\" to continue and begin using our skin"
+msgstr "按下 \"OK\" 繼續並開始使用我們的主題"
+
+msgctxt "#31811"
+msgid "Note: This is the only time you will see this message once you hit \"OK\""
+msgstr "注意：這是你唯一一次看到這個訊息一旦你按下“OK”"
+
+msgctxt "#31851"
+msgid "[COLOR=orange]Plex[/COLOR] bridges the gap between your Mac and your home theater, doing so with a visually appealing user interface that provides instant access to your media. [COLOR=orange]Plex[/COLOR] can play a wide range of video, audio and photo formats as well as online streaming audio and video. The real power of [COLOR=orange]Plex[/COLOR] is found in its library features: Organize your media into versatile libraries, automatically retrieve metadata from the Internet and display your library using one of the visually stunning skins."
+msgstr ""
+
+msgctxt "#31852"
+msgid "At Plex, we would like to thank the following projects, without whom none of this would be possible:"
+msgstr ""
+
+msgctxt "#31853"
+msgid "[COLOR=orange]XBMC[/COLOR]: The most important one, for supplying us with a great foundation to build on."
+msgstr ""
+
+msgctxt "#31854"
+msgid "[COLOR=orange]Team RazorFish[/COLOR]: The talented team who created the original MediaStream skin."
+msgstr ""
+
+msgctxt "#31855"
+msgid "[COLOR=orange]FFmpeg[/COLOR]: Without this, there would be no decoding of video inside Plex. A critical component, to be sure."
+msgstr ""
+
+msgctxt "#31856"
+msgid "[COLOR=orange]SQLite[/COLOR]: The media database is stored using this excellent, industry standard free database."
+msgstr ""
+
+msgctxt "#31857"
+msgid "[COLOR=orange]CxImage[/COLOR]: The workhorse code responsible for loading images and photos. It uses lots of other libraries like libPNG, libJPEG, etc."
+msgstr ""
+
+msgctxt "#31858"
+msgid "[COLOR=orange]FreeType[/COLOR]: This code is responsible for the beautiful rendering of fonts within the application."
+msgstr ""
+
+msgctxt "#31859"
+msgid "[COLOR=orange]Python[/COLOR]: The media center embeds the Python interpreter to provide powerful scripting functionality."
+msgstr ""
+
+msgctxt "#31860"
+msgid "Please visit http://www.plexapp.com/credits.php for links and more information."
+msgstr ""
+
+msgctxt "#31900"
+msgid "Login As"
+msgstr "登錄"
+
+msgctxt "#31901"
+msgid "Modify Your"
+msgstr "修改"
+
+msgctxt "#31902"
+msgid "Profile"
+msgstr "個人設定檔"
+
+msgctxt "#31903"
+msgid "Profile name"
+msgstr "個人設定檔名稱"
+
+msgctxt "#31904"
+msgid "Profile picture"
+msgstr "個人設定檔圖片"
+
+msgctxt "#31950"
+msgid "Go to your"
+msgstr ""
+
+msgctxt "#31951"
+msgid "Visit"
+msgstr ""
+
+msgctxt "#31952"
+msgid "Channel Directory"
+msgstr ""
+
+msgctxt "#31953"
+msgid "Get"
+msgstr ""
+
+msgctxt "#31954"
+msgid "Help"
+msgstr ""
+
+msgctxt "#31955"
+msgid "Preferences"
+msgstr ""
+
+msgctxt "#31956"
+msgid "Show"
+msgstr ""
+
+msgctxt "#31960"
+msgid "Sleep"
+msgstr ""
+
+msgctxt "#31961"
+msgid "Shut Down"
+msgstr ""
+
+msgctxt "#31962"
+msgid "Power Menu"
+msgstr ""
+
+msgctxt "#31963"
+msgid "displays"
+msgstr ""
+
+msgctxt "#31964"
+msgid "Sleep Display"
+msgstr ""
+
+msgctxt "#31970"
+msgid "Channels"
+msgstr ""
+
+msgctxt "#31971"
+msgid "Video Channels"
+msgstr ""
+
+msgctxt "#31972"
+msgid "Music Channels"
+msgstr ""
+
+msgctxt "#31973"
+msgid "Picture Channels"
+msgstr ""
+
+msgctxt "#31981"
+msgid "Show Thumbnails in List View"
+msgstr ""
+
+msgctxt "#31982"
+msgid "Show Plot in Video OSD"
+msgstr ""
+
+msgctxt "#31983"
+msgid "Show Picture Descriptions in Slideshow"
+msgstr ""
+
+msgctxt "#31984"
+msgid "Show Now Playing Information in Visualisations"
+msgstr ""
+
+msgctxt "#31985"
+msgid "Show Separate Menu Items for Plug-in Sections"
+msgstr ""
+
+msgctxt "#31999"
+msgid "End Time"
+msgstr ""
+
+msgctxt "#32000"
+msgid "Please choose the type of audio connector used on this computer.  If you're unsure, or if you're using built-in speakers, you can accept the default and continue.  You can access this setting at any time in the Preferences."
+msgstr ""
+
+msgctxt "#32001"
+msgid "Plex Home Theater Setup"
+msgstr ""
+
+msgctxt "#32003"
+msgid "[B]Welcome to Plex![/B]  [CR][CR]In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to [B]myPlex[/B].  [CR][CR][B]myPlex[/B] lets you queue and share online videos, and access shared media from your friends' libraries.  [CR][CR]If you don't already have a free [B]myPlex[/B] account, you can create one now at [COLOR=orange]http://my.plexapp.com[/COLOR] before continuing."
+msgstr ""
+
+msgctxt "#32100"
+msgid "Set Rating"
+msgstr ""
+
+msgctxt "#32101"
+msgid "Episodes added"
+msgstr ""
+
+msgctxt "#32102"
+msgid "All Episodes"
+msgstr ""
+
+msgctxt "#32103"
+msgid "There is no description available for this "
+msgstr ""
+
+msgctxt "#32104"
+msgid "You can add one for it in the Media Manager"
+msgstr ""
+
+msgctxt "#32105"
+msgid "* Plot hidden to avoid spoilers *"
+msgstr ""

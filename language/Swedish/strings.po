@@ -1,0 +1,1014 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2013-11-11 12:45+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "#31000"
+msgid "Browse"
+msgstr "Bläddra"
+
+msgctxt "#31001"
+msgid "Videos"
+msgstr "Filmer"
+
+msgctxt "#31002"
+msgid "Music"
+msgstr "Musik"
+
+msgctxt "#31003"
+msgid "Pictures"
+msgstr "Bilder"
+
+msgctxt "#31004"
+msgid "Applications"
+msgstr "Program"
+
+msgctxt "#31005"
+msgid "Weather"
+msgstr "Väder"
+
+msgctxt "#31006"
+msgid "System"
+msgstr "System"
+
+msgctxt "#31007"
+msgid "Quit"
+msgstr "Av/På"
+
+msgctxt "#31008"
+msgid "TV Shows"
+msgstr "TV-serier"
+
+msgctxt "#31011"
+msgid "Watch your"
+msgstr "Titta på"
+
+msgctxt "#31012"
+msgid "Listen to"
+msgstr "Lyssna till"
+
+msgctxt "#31013"
+msgid "View your"
+msgstr "Visa"
+
+msgctxt "#31014"
+msgid "Use your"
+msgstr "Använd"
+
+msgctxt "#31015"
+msgid "Check"
+msgstr "Kontrollera"
+
+msgctxt "#31016"
+msgid "Change your"
+msgstr "Konfigurera"
+
+msgctxt "#31018"
+msgid "Menu"
+msgstr "Meny"
+
+msgctxt "#31019"
+msgid "Play the"
+msgstr "Spela"
+
+msgctxt "#31020"
+msgid "Options"
+msgstr "Inställningar"
+
+msgctxt "#31021"
+msgid "Seasons"
+msgstr "Säsonger"
+
+msgctxt "#31022"
+msgid "Hide"
+msgstr "Dölj"
+
+msgctxt "#31023"
+msgid "Sort By"
+msgstr "Sortera efter"
+
+msgctxt "#31024"
+msgid "Sort Direction"
+msgstr "Riktning"
+
+msgctxt "#31025"
+msgid "Backward"
+msgstr "Baklänges"
+
+msgctxt "#31026"
+msgid "Forward"
+msgstr "Framlänges"
+
+msgctxt "#31027"
+msgid "Began"
+msgstr "Början"
+
+msgctxt "#31028"
+msgid "Finished"
+msgstr "Slutet"
+
+msgctxt "#31029"
+msgid "Writer"
+msgstr "Författare"
+
+msgctxt "#31030"
+msgid "Track No."
+msgstr "Spårnummer"
+
+msgctxt "#31031"
+msgid "Active"
+msgstr "Aktiv"
+
+msgctxt "#31032"
+msgid "Instrmts"
+msgstr "Instrument"
+
+msgctxt "#31033"
+msgid "Last Refreshed"
+msgstr "Senast uppdaterad"
+
+msgctxt "#31034"
+msgid "Build"
+msgstr "Version"
+
+msgctxt "#31035"
+msgid "Free RAM"
+msgstr "Ledigt minne"
+
+msgctxt "#31036"
+msgid "IP Addr."
+msgstr "IP-adress"
+
+msgctxt "#31037"
+msgid "Hard Drive Space"
+msgstr "Hårddiskutrymme"
+
+msgctxt "#31038"
+msgid "Choose Your"
+msgstr "Välj din"
+
+msgctxt "#31039"
+msgid "Favourite"
+msgstr "Favorit"
+
+msgctxt "#31040"
+msgid "Modify"
+msgstr "Modifiera"
+
+msgctxt "#31041"
+msgid "Editor"
+msgstr "Redigerare"
+
+msgctxt "#31042"
+msgid "Picture"
+msgstr "Bild"
+
+msgctxt "#31043"
+msgid "Check the"
+msgstr "Kontrollera"
+
+msgctxt "#31044"
+msgid "By"
+msgstr "av"
+
+msgctxt "#31045"
+msgid "Recently Added"
+msgstr "Nyligen tillagda"
+
+msgctxt "#31046"
+msgid "Path to Lyrics Script"
+msgstr "sökväg till sångtextskript"
+
+msgctxt "#31047"
+msgid "Not Available"
+msgstr "Ej tillgänglig"
+
+msgctxt "#31050"
+msgid "Items"
+msgstr "Objekt"
+
+msgctxt "#31051"
+msgid "Games"
+msgstr "Spel"
+
+msgctxt "#31052"
+msgid "Emulators"
+msgstr "Emulatorer"
+
+msgctxt "#31053"
+msgid "Apps"
+msgstr "Program"
+
+msgctxt "#31060"
+msgid "Settings"
+msgstr "Inställningar"
+
+msgctxt "#31061"
+msgid "Scripts"
+msgstr "Skript"
+
+msgctxt "#31062"
+msgid "File Manager"
+msgstr "Filhanterare"
+
+msgctxt "#31063"
+msgid "Favourites"
+msgstr "Favoriter"
+
+msgctxt "#31064"
+msgid "Profiles"
+msgstr "Profiler"
+
+msgctxt "#31065"
+msgid "Info"
+msgstr "Information"
+
+msgctxt "#31066"
+msgid "Refresh"
+msgstr "Uppdatera"
+
+msgctxt "#31067"
+msgid "About Your"
+msgstr "Om ditt"
+
+msgctxt "#31068"
+msgid "User ID:"
+msgstr ""
+
+msgctxt "#31069"
+msgid "Password:"
+msgstr ""
+
+msgctxt "#31071"
+msgid "Shutdown"
+msgstr "Stäng av"
+
+msgctxt "#31072"
+msgid "Restart"
+msgstr "Starta om"
+
+msgctxt "#31073"
+msgid "Reload XBMC"
+msgstr "Ladda om XBMC"
+
+msgctxt "#31074"
+msgid "Dashboard"
+msgstr "Menysystem"
+
+msgctxt "#31075"
+msgid "Refresh Skin"
+msgstr "Uppdatera skal"
+
+msgctxt "#31111"
+msgid "Movies"
+msgstr "Biofilmer"
+
+msgctxt "#31112"
+msgid "TV Shows"
+msgstr "TV-serier"
+
+msgctxt "#31113"
+msgid "Clips"
+msgstr "Filmklipp"
+
+msgctxt "#31114"
+msgid "Episode"
+msgstr "Avsnitt:"
+
+msgctxt "#31115"
+msgid "N/A"
+msgstr "N/A"
+
+msgctxt "#31116"
+msgid "Movie Title"
+msgstr "Filmtitel"
+
+msgctxt "#31117"
+msgid "Thumb"
+msgstr "Miniatyr"
+
+msgctxt "#31118"
+msgid "Fanart"
+msgstr "Fan-konst"
+
+msgctxt "#31119"
+msgid "Synopsis"
+msgstr "Översikt"
+
+msgctxt "#31120"
+msgid "Star Rating"
+msgstr "Betyg"
+
+msgctxt "#31121"
+msgid "Movie Details"
+msgstr "Filmdetaljer"
+
+msgctxt "#31122"
+msgid "Aired"
+msgstr "Sänt"
+
+msgctxt "#31123"
+msgid "MPAA"
+msgstr "MPAA"
+
+msgctxt "#31124"
+msgid "Eps."
+msgstr "Avsnitt"
+
+msgctxt "#31125"
+msgid "Theater Times"
+msgstr "Biografvisningar"
+
+msgctxt "#31126"
+msgid "TV Show Details"
+msgstr "TV-serie detaljer"
+
+msgctxt "#31127"
+msgid "Episode Details"
+msgstr "Avsnittsdetaljer"
+
+msgctxt "#31128"
+msgid "Banner"
+msgstr "Banner"
+
+msgctxt "#31129"
+msgid "Rating"
+msgstr "Betyg"
+
+msgctxt "#31130"
+msgid "IMDb Rating"
+msgstr "IMDb-betyg"
+
+msgctxt "#31131"
+msgid "Genre"
+msgstr "Genre"
+
+msgctxt "#31132"
+msgid "Duration"
+msgstr "Längd"
+
+msgctxt "#31133"
+msgid "Subtitles"
+msgstr "Undertexter"
+
+msgctxt "#31134"
+msgid "Cast"
+msgstr "Medverkande"
+
+msgctxt "#31135"
+msgid "Director"
+msgstr "Regissör"
+
+msgctxt "#31136"
+msgid "Writer"
+msgstr "Manus"
+
+msgctxt "#31137"
+msgid "Episodes"
+msgstr "Avsnitt"
+
+msgctxt "#31138"
+msgid "Watched"
+msgstr "Sett"
+
+msgctxt "#31139"
+msgid "Unwatched"
+msgstr "Osett"
+
+msgctxt "#31140"
+msgid "First Aired"
+msgstr "Sändes första gången"
+
+msgctxt "#31141"
+msgid "Season"
+msgstr "Säsong"
+
+msgctxt "#31142"
+msgid "Movie"
+msgstr ""
+
+msgctxt "#31143"
+msgid "TV Show"
+msgstr ""
+
+msgctxt "#31144"
+msgid "Video"
+msgstr ""
+
+msgctxt "#31145"
+msgid "Specials"
+msgstr ""
+
+msgctxt "#31220"
+msgid "Currently Playing"
+msgstr "Spelas nu"
+
+msgctxt "#31221"
+msgid "Previous Track"
+msgstr "Föregående spår"
+
+msgctxt "#31222"
+msgid "Upcoming Tracks"
+msgstr "Kommande spår"
+
+msgctxt "#31223"
+msgid "Click for Lyrics"
+msgstr "Klicka för sångtexter"
+
+msgctxt "#31224"
+msgid "Open MENU for Options"
+msgstr "Öppna MENYN för val"
+
+msgctxt "#31225"
+msgid "Rating"
+msgstr "Betyg"
+
+msgctxt "#31226"
+msgid "Change"
+msgstr "Ändra"
+
+msgctxt "#31227"
+msgid "Your Preset"
+msgstr "Din förinställning"
+
+msgctxt "#31228"
+msgid "Lyrics"
+msgstr "Sångtexter"
+
+msgctxt "#31229"
+msgid "Artist"
+msgstr ""
+
+msgctxt "#31230"
+msgid "Album"
+msgstr ""
+
+msgctxt "#31601"
+msgid "Appearance"
+msgstr "Utseende"
+
+msgctxt "#31602"
+msgid "Network"
+msgstr "Nätverk"
+
+msgctxt "#31603"
+msgid "Skin"
+msgstr "Skal"
+
+msgctxt "#31604"
+msgid "General"
+msgstr "Allmänna"
+
+msgctxt "#31605"
+msgid "Home"
+msgstr "Hem"
+
+msgctxt "#31606"
+msgid "Change Preferences For"
+msgstr "Ändra inställning för"
+
+msgctxt "#31607"
+msgid "Current"
+msgstr "Nuvarande"
+
+msgctxt "#31608"
+msgid "Source"
+msgstr "Källa"
+
+msgctxt "#31609"
+msgid "Dest"
+msgstr "Mål"
+
+msgctxt "#31610"
+msgid "Playback"
+msgstr ""
+
+msgctxt "#31620"
+msgid "Menu"
+msgstr "Meny"
+
+msgctxt "#31621"
+msgid "Disable"
+msgstr "Avaktivera"
+
+msgctxt "#31622"
+msgid "Enable"
+msgstr "Aktivera"
+
+msgctxt "#31623"
+msgid "Background"
+msgstr "Bakgrund"
+
+msgctxt "#31624"
+msgid "Select"
+msgstr "Välj"
+
+msgctxt "#31625"
+msgid "Use Default"
+msgstr "Använd standard"
+
+msgctxt "#31650"
+msgid "Hide right blade"
+msgstr "Dölj högerbladet"
+
+msgctxt "#31651"
+msgid "Enable custom backgrounds"
+msgstr "Aktivera egna bakgrunder"
+
+msgctxt "#31652"
+msgid "Enable"
+msgstr "Aktivera"
+
+msgctxt "#31653"
+msgid "View"
+msgstr "Visa"
+
+msgctxt "#31654"
+msgid "Hide Thumb Labels in File Browser dialog"
+msgstr "Dölj miniatyretiketter i filbläddrardialogen"
+
+msgctxt "#31655"
+msgid "Display rotated Season thumb in Episodes view"
+msgstr "Visa roterad säsongsminiatyr i avsnittsvisning"
+
+msgctxt "#31656"
+msgid "Backgrounds"
+msgstr "Bakgrunder"
+
+msgctxt "#31657"
+msgid "Image"
+msgstr "Bild"
+
+msgctxt "#31658"
+msgid "Folder"
+msgstr "Mapp"
+
+msgctxt "#31659"
+msgid "Reset"
+msgstr "Återställ"
+
+msgctxt "#31660"
+msgid "Enable Custom BG's on Home"
+msgstr "Aktivera egna bakgrunder på hemfönstret"
+
+msgctxt "#31661"
+msgid "Apple Movie Trailers"
+msgstr "Apple Filmtrailers"
+
+msgctxt "#31662"
+msgid "Hide clock"
+msgstr "Dölj klocka"
+
+msgctxt "#31663"
+msgid "Show Media Count"
+msgstr "Visa mediaräkning"
+
+msgctxt "#31664"
+msgid "Hide Scrollbars on Media Screens"
+msgstr "Dölj skrollhandtag på mediafönster"
+
+msgctxt "#31665"
+msgid "Hide Watched/Unwatched icons"
+msgstr "Dölj visade/inte visade ikoner"
+
+msgctxt "#31666"
+msgid "Show Blade in Centre of Screen"
+msgstr "Visa bladet i mitten av skärmen"
+
+msgctxt "#31667"
+msgid "MediaStream"
+msgstr "MediaStream"
+
+msgctxt "#31668"
+msgid "Show Larger Clock"
+msgstr "Visa större klocka"
+
+msgctxt "#31669"
+msgid "Show Weather on Home"
+msgstr "Visa väder på hemmenyn"
+
+msgctxt "#31670"
+msgid "Show Fanart"
+msgstr "Visa fan-konst"
+
+msgctxt "#31671"
+msgid "Hide Plot in Video OSD"
+msgstr "Dölj handling i video OSD"
+
+msgctxt "#31672"
+msgid "Hide Info"
+msgstr "Dölj info"
+
+msgctxt "#31673"
+msgid "Media Views"
+msgstr "Media visningar"
+
+msgctxt "#31674"
+msgid "Hide Fanart"
+msgstr "Dölj fan-konst"
+
+msgctxt "#31675"
+msgid "with Movies Views"
+msgstr "i filmvisningar"
+
+msgctxt "#31676"
+msgid "In Media Preview"
+msgstr "i mediaförhandsgranskning"
+
+msgctxt "#31677"
+msgid "with TV Shows List"
+msgstr "med TV-serielista"
+
+msgctxt "#31678"
+msgid "Show Season thumb"
+msgstr "Visa säsongsminiatyr"
+
+msgctxt "#31679"
+msgid "Hide Focus Details in Panel Stream"
+msgstr "Dölj fokusdetaljer i panelström"
+
+msgctxt "#31680"
+msgid "Hide Thumbs in List View"
+msgstr "Dölj miniatyrer i listvisning"
+
+msgctxt "#31681"
+msgid "in Files Mode"
+msgstr "i filläget"
+
+msgctxt "#31682"
+msgid "on TV Wall"
+msgstr "på TV-vägg"
+
+msgctxt "#31683"
+msgid "with TV Views"
+msgstr "med TV-visning"
+
+msgctxt "#31684"
+msgid "Hide Custom Backgrounds"
+msgstr "Dölj egna bakgrunder"
+
+msgctxt "#31685"
+msgid "Show Animated"
+msgstr "Visa animerad"
+
+msgctxt "#31686"
+msgid "Show Horizontal Music Vis"
+msgstr "Visa horisontell musikvisual."
+
+msgctxt "#31687"
+msgid "with Video Views"
+msgstr "med Videovisningsläge"
+
+msgctxt "#31688"
+msgid "with Music Views"
+msgstr "med Musikvisningsläge"
+
+msgctxt "#31689"
+msgid "with Pictures Views"
+msgstr "med Bildvisningsläge"
+
+msgctxt "#31690"
+msgid "Hide No Thumb Icons"
+msgstr "Dölj Ingen ikon miniatyr"
+
+msgctxt "#31691"
+msgid "Use Low Overlay for TV Shows Coverflow"
+msgstr "Använd låga överlägg för TV-serier onslagsvisning"
+
+msgctxt "#31692"
+msgid "Hide Info in Wall Stream view"
+msgstr "Dölj info i väggströmsvisning"
+
+msgctxt "#31693"
+msgid "Hide Thumbs in Options Menu"
+msgstr "Dölj miniatyrer i Valmeny"
+
+msgctxt "#31694"
+msgid "Show Now Playing UI on Left"
+msgstr "Visa Spelas Nu till vänster"
+
+msgctxt "#31695"
+msgid "Show AM/PM in clock"
+msgstr "Visa AM/PM i klocka"
+
+msgctxt "#31697"
+msgid "Hide Photo Description in Slideshow"
+msgstr "Dölj Bildbeskrivning i bildspel"
+
+msgctxt "#31701"
+msgid "Setup"
+msgstr "Ställ in"
+
+msgctxt "#31702"
+msgid "Showcase"
+msgstr "Utställning"
+
+msgctxt "#31703"
+msgid "Seasons"
+msgstr "Avsnitt"
+
+msgctxt "#31704"
+msgid "Photo"
+msgstr "Foto"
+
+msgctxt "#31705"
+msgid "Convex"
+msgstr "Konvex"
+
+msgctxt "#31706"
+msgid "Episode Thumbs"
+msgstr "Avsnittsminiatyrer"
+
+msgctxt "#31707"
+msgid "Media Preview"
+msgstr "Mediavisning"
+
+msgctxt "#31708"
+msgid "Media List"
+msgstr "Medialista"
+
+msgctxt "#31709"
+msgid "Concave"
+msgstr "Konkav"
+
+msgctxt "#31710"
+msgid "Display"
+msgstr "Visa upp"
+
+msgctxt "#31711"
+msgid "Info List"
+msgstr "Infolista"
+
+msgctxt "#31712"
+msgid "Image Stream"
+msgstr "Bildström"
+
+msgctxt "#31713"
+msgid "Setup Options"
+msgstr "Ställ in val"
+
+msgctxt "#31714"
+msgid "Wall Stream"
+msgstr "Väggström"
+
+msgctxt "#31715"
+msgid "Panel Stream"
+msgstr "Panelström"
+
+msgctxt "#31716"
+msgid "Coverflow"
+msgstr "Omslagsflöde"
+
+msgctxt "#31717"
+msgid "Options Menu"
+msgstr "Valmeny"
+
+msgctxt "#31720"
+msgid "Grid"
+msgstr "Rutnät"
+
+msgctxt "#31721"
+msgid "Episodes List"
+msgstr "Avsnittslista"
+
+msgctxt "#31722"
+msgid "Plugin Stream"
+msgstr "Pluginström"
+
+msgctxt "#31800"
+msgid "About Plex"
+msgstr "Plexutvecklarna tackar"
+
+msgctxt "#31801"
+msgid "Welcome to"
+msgstr "Välkommen till"
+
+msgctxt "#31802"
+msgid "your media....[COLOR Highlighted]your[/COLOR] way"
+msgstr "ditt media....[COLOR Highlighted]på ditt[/COLOR] sätt"
+
+msgctxt "#31804"
+msgid "MediaStream is a new user interface for the popular multimedia XBMC.  Created by the newly-formed \"Team RazorFish\", this new interface seeks to combine functionality with form, merging style with substance.  Designed and optimized for the 'High-Def' generation, this interface seeks to bring a new experience to the already popular platform."
+msgstr "MediaStream är ett nytt användargränssnitt för Plex. Skapat av \"Team RazorFish\", detta nya gränssnitt kombinerar funktionalitet med form, och smälter samman stil med substans.  Designad och optimerad för HD-generationen så ger detta gränssnitt en ny upplevelse till den redan populära plattformen."
+
+msgctxt "#31805"
+msgid "Note"
+msgstr "Note"
+
+msgctxt "#31806"
+msgid "Please ensure that you have the very latest build of XBMC.  We recommend the latest SVN build of XBMC, and would ask that you always download the full skin package."
+msgstr "Please ensure that you have the very latest build of XBMC.  We recommend the latest SVN build of XBMC, and would ask that you always download the full skin package."
+
+msgctxt "#31807"
+msgid "Skin Credits"
+msgstr "Skin Credits"
+
+msgctxt "#31808"
+msgid "The entire project was a collaborative effort between many talented individuals.  These are as follows: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Special thanks goes to emilio (a.k.a. thedeViL), without whom this project would never have happened.  Of course all thanks go to you, the XBMC community... without you there would be no reason to do what we do... keep rocking guys, you're the best!!!"
+msgstr "The entire project was a collaborative effort between many talented individuals.  These are as follows: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Special thanks goes to emilio (a.k.a. thedeViL), without whom this project would never have happened.  Of course all thanks go to you, the XBMC community... without you there would be no reason to do what we do... keep rocking guys, you're the best!!!"
+
+msgctxt "#31809"
+msgid "Special Thanks: entire XBMC team, supporters at the xbmc and xbox-scene forums"
+msgstr "Special Thanks: entire XBMC team, supporters at the xbmc and xbox-scene forums"
+
+msgctxt "#31810"
+msgid "Click \"OK\" to continue and begin using our skin"
+msgstr "Klicka \"OK\" för att använda skalet"
+
+msgctxt "#31811"
+msgid "Note: This is the only time you will see this message once you hit \"OK\""
+msgstr "Note: This is the only time you will see this message once you hit \"OK\""
+
+msgctxt "#31851"
+msgid "[COLOR=orange]Plex[/COLOR] bridges the gap between your Mac and your home theater, doing so with a visually appealing user interface that provides instant access to your media. [COLOR=orange]Plex[/COLOR] can play a wide range of video, audio and photo formats as well as online streaming audio and video. The real power of [COLOR=orange]Plex[/COLOR] is found in its library features: Organize your media into versatile libraries, automatically retrieve metadata from the Internet and display your library using one of the visually stunning skins."
+msgstr "Plex överbrygger gapet mellan din Mac och din hemmabio genom ett visuellt tilldragande användargränssnitt som ger direkt åtkomst till dina media-filer. Plex kan spela upp ett brett spektrum av video, ljud och foto-format, men även strömmande ljud och bild från internet. Plex riktiga kraft ligger i biblioteksfunktionerna: Organisera dina media-filer, hämta metadata automatiskt från internet och visa upp ditt bibliotek via ett av de snygga skalen (skins) som erbjuds."
+
+msgctxt "#31852"
+msgid "At Plex, we would like to thank the following projects, without whom none of this would be possible:"
+msgstr "Plexutvecklarna vill tacka fäljande projekt, utan dessa skulle vi inte kunna finnas:"
+
+msgctxt "#31853"
+msgid "[COLOR=orange]XBMC[/COLOR]: The most important one, for supplying us with a great foundation to build on."
+msgstr "XBMC: Det viktigaste projektet, som gett oss en bra grund att bygga Plex på."
+
+msgctxt "#31854"
+msgid "[COLOR=orange]Team RazorFish[/COLOR]: The talented team who created the original MediaStream skin."
+msgstr "Team RazorFish: Den talangfulla gruppen som skapat det vackra skalet MediaStream."
+
+msgctxt "#31855"
+msgid "[COLOR=orange]FFmpeg[/COLOR]: Without this, there would be no decoding of video inside Plex. A critical component, to be sure."
+msgstr "FFmpeg: Utan detta skulle vi inte kunna avkoda video i Plex. En kritisk komponent, utan överdrift."
+
+msgctxt "#31856"
+msgid "[COLOR=orange]SQLite[/COLOR]: The media database is stored using this excellent, industry standard free database."
+msgstr "SQLite: Mediadatabasen lagras genom att använda denna fantastiska databas."
+
+msgctxt "#31857"
+msgid "[COLOR=orange]CxImage[/COLOR]: The workhorse code responsible for loading images and photos. It uses lots of other libraries like libPNG, libJPEG, etc."
+msgstr "CxImage: Arbetshästskoden som är ansvarig för laddandet av bilder. Den använder många olika bibliotek såsom libPNG, libJPEG, etc."
+
+msgctxt "#31858"
+msgid "[COLOR=orange]FreeType[/COLOR]: This code is responsible for the beautiful rendering of fonts within the application."
+msgstr "FreeType: Denna kod är ansvarig för den vackra renderingen av fonter i applikationen."
+
+msgctxt "#31859"
+msgid "[COLOR=orange]Python[/COLOR]: The media center embeds the Python interpreter to provide powerful scripting functionality."
+msgstr "Python: Mediacentret bäddar in Python-tolken för att ge oss en kraftfull skriptfunktionalitet."
+
+msgctxt "#31860"
+msgid "Please visit http://www.plexapp.com/credits.php for links and more information."
+msgstr "Besök http://www.plexapp.com/credits.php för länkar och ytterligare information"
+
+msgctxt "#31900"
+msgid "Login As"
+msgstr "Logga in som"
+
+msgctxt "#31901"
+msgid "Modify Your"
+msgstr "Modifera din"
+
+msgctxt "#31902"
+msgid "Profile"
+msgstr "Profil"
+
+msgctxt "#31903"
+msgid "Profile name"
+msgstr "Profilnamn"
+
+msgctxt "#31904"
+msgid "Profile picture"
+msgstr "Profilbild"
+
+msgctxt "#31950"
+msgid "Go to your"
+msgstr "Gå till dina"
+
+msgctxt "#31951"
+msgid "Visit"
+msgstr "Gå till"
+
+msgctxt "#31952"
+msgid "Channel Directory"
+msgstr "Plex Channels"
+
+msgctxt "#31953"
+msgid "Get"
+msgstr "Få"
+
+msgctxt "#31954"
+msgid "Help"
+msgstr "Hjälp"
+
+msgctxt "#31955"
+msgid "Preferences"
+msgstr "Inställningar"
+
+msgctxt "#31956"
+msgid "Show"
+msgstr "Visa"
+
+msgctxt "#31960"
+msgid "Sleep"
+msgstr "Somna in"
+
+msgctxt "#31961"
+msgid "Shut Down"
+msgstr "Stäng av"
+
+msgctxt "#31962"
+msgid "Power Menu"
+msgstr "Avstängningsmeny"
+
+msgctxt "#31963"
+msgid "displays"
+msgstr "visar"
+
+msgctxt "#31964"
+msgid "Sleep Display"
+msgstr "Släck skärm"
+
+msgctxt "#31970"
+msgid "Channels"
+msgstr "Plugins"
+
+msgctxt "#31971"
+msgid "Video Channels"
+msgstr "Video-plugins"
+
+msgctxt "#31972"
+msgid "Music Channels"
+msgstr "Musik-plugins"
+
+msgctxt "#31973"
+msgid "Picture Channels"
+msgstr "Bild-plugins"
+
+msgctxt "#31981"
+msgid "Show Thumbnails in List View"
+msgstr "Visa förhandsvisning i listvyerna"
+
+msgctxt "#31982"
+msgid "Show Plot in Video OSD"
+msgstr "Visa Handling i OSD"
+
+msgctxt "#31983"
+msgid "Show Picture Descriptions in Slideshow"
+msgstr "Visa Bildbeskrivningar under bildspel"
+
+msgctxt "#31984"
+msgid "Show Now Playing Information in Visualisations"
+msgstr "Visa \"Nu Spelas\"-information under bildeffekter"
+
+msgctxt "#31985"
+msgid "Show Separate Menu Items for Plug-in Sections"
+msgstr "Visa separata menyobjekt för plugin-sektioner"
+
+msgctxt "#31999"
+msgid "End Time"
+msgstr "Slutar"
+
+msgctxt "#32000"
+msgid "Please choose the type of audio connector used on this computer.  If you're unsure, or if you're using built-in speakers, you can accept the default and continue.  You can access this setting at any time in the Preferences."
+msgstr ""
+
+msgctxt "#32001"
+msgid "Plex Home Theater Setup"
+msgstr ""
+
+msgctxt "#32003"
+msgid "[B]Welcome to Plex![/B]  [CR][CR]In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to [B]myPlex[/B].  [CR][CR][B]myPlex[/B] lets you queue and share online videos, and access shared media from your friends' libraries.  [CR][CR]If you don't already have a free [B]myPlex[/B] account, you can create one now at [COLOR=orange]http://my.plexapp.com[/COLOR] before continuing."
+msgstr ""
+
+msgctxt "#32100"
+msgid "Set Rating"
+msgstr ""
+
+msgctxt "#32101"
+msgid "Episodes added"
+msgstr ""
+
+msgctxt "#32102"
+msgid "All Episodes"
+msgstr ""
+
+msgctxt "#32103"
+msgid "There is no description available for this "
+msgstr ""
+
+msgctxt "#32104"
+msgid "You can add one for it in the Media Manager"
+msgstr ""
+
+msgctxt "#32105"
+msgid "* Plot hidden to avoid spoilers *"
+msgstr ""
