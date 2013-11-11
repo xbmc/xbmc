@@ -706,6 +706,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\XBPython.cpp" />
     <ClCompile Include="..\..\xbmc\LangInfo.cpp" />
+    <ClCompile Include="..\..\xbmc\listproviders\IListProvider.cpp" />
+    <ClCompile Include="..\..\xbmc\listproviders\DirectoryProvider.cpp" />
+    <ClCompile Include="..\..\xbmc\listproviders\StaticProvider.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\music\Album.cpp" />
     <ClCompile Include="..\..\xbmc\music\Artist.cpp" />
@@ -2177,6 +2180,9 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\TextureOperations.h" />
     <ClInclude Include="..\..\xbmc\IProgressCallback.h" />
     <ClInclude Include="..\..\xbmc\LangInfo.h" />
+    <ClInclude Include="..\..\xbmc\listproviders\IListProvider.h" />
+    <ClInclude Include="..\..\xbmc\listproviders\DirectoryProvider.h" />
+    <ClInclude Include="..\..\xbmc\listproviders\StaticProvider.h" />
     <ClInclude Include="..\..\xbmc\MediaSource.h" />
     <ClInclude Include="..\..\xbmc\music\Album.h" />
     <ClInclude Include="..\..\xbmc\music\Artist.h" />

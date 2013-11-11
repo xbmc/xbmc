@@ -27,10 +27,11 @@
 #include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
-#include "GUIStaticItem.h"
+#include "FileItem.h"
 #include "Key.h"
 #include "utils/MathUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "listproviders/IListProvider.h"
 
 using namespace std;
 
@@ -50,20 +51,18 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_pageControl = 0;
   m_orientation = orientation;
   m_analogScrollCount = 0;
-  m_staticContent = false;
-  m_staticUpdateTime = 0;
-  m_staticDefaultItem = -1;
-  m_staticDefaultAlways = false;
   m_wasReset = false;
   m_layout = NULL;
   m_focusedLayout = NULL;
   m_cacheItems = preloadItems;
   m_scrollItemsPerFrame = 0.0f;
   m_type = VIEW_TYPE_NONE;
+  m_listProvider = NULL;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
 {
+  delete m_listProvider;
 }
 
 void CGUIBaseContainer::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -386,7 +385,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (!m_staticContent)
+    if (!m_listProvider)
     {
       if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetPointer())
       { // bind our items
@@ -717,14 +716,11 @@ bool CGUIBaseContainer::OnClick(int actionID)
   int subItem = 0;
   if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
   {
-    if (m_staticContent)
+    if (m_listProvider)
     { // "select" action
       int selected = GetSelectedItem();
       if (selected >= 0 && selected < (int)m_items.size())
-      {
-        CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_items[selected]);
-        item->GetClickActions().ExecuteActions(GetID(), GetParentID());
-      }
+        m_listProvider->OnClick(m_items[selected]);
       return true;
     }
     // grab the currently focused subitem (if applicable)
@@ -764,7 +760,7 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
 
 void CGUIBaseContainer::SaveStates(vector<CControlState> &states)
 {
-  if (!m_staticDefaultAlways)
+  if (!m_listProvider || !m_listProvider->AlwaysFocusDefaultItem())
     states.push_back(CControlState(GetID(), GetSelectedItem()));
 }
 
@@ -788,17 +784,18 @@ void CGUIBaseContainer::AllocResources()
 {
   CGUIControl::AllocResources();
   CalculateLayout();
-  UpdateStaticItems(true);
-  if (m_staticDefaultItem != -1) // select default item
-    SelectStaticItemById(m_staticDefaultItem);
+  UpdateListProvider(true);
+  if (m_listProvider)
+    SelectItem(m_listProvider->GetDefaultItem());
 }
 
 void CGUIBaseContainer::FreeResources(bool immediately)
 {
   CGUIControl::FreeResources(immediately);
-  if (m_staticContent)
-  { // free any static content
+  if (m_listProvider)
+  {
     Reset();
+    m_listProvider->Reset();
   }
   m_scroller.Stop();
 }
@@ -851,51 +848,41 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     SelectItem(itemIndex);
   }
 
-  UpdateStaticItems();
+  UpdateListProvider();
 }
 
-void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
+void CGUIBaseContainer::UpdateListProvider(bool refreshItems)
 {
-  if (m_staticContent)
-  { // update our item list with our new content, but only add those items that should
-    // be visible.  Save the previous item and keep it if we are adding that one.
-    std::vector<CGUIListItemPtr> items;
-    int reselect = -1;
-    int selected = GetSelectedItem();
-    CGUIListItem* selectedItem = (selected >= 0 && (unsigned int)selected < m_items.size()) ? m_items[selected].get() : NULL;
-    bool updateItemsProperties = false;
-    if (!m_staticUpdateTime)
-      m_staticUpdateTime = CTimeUtils::GetFrameTime();
-    if (CTimeUtils::GetFrameTime() - m_staticUpdateTime > 1000)
+  if (m_listProvider)
+  {
+    if (m_listProvider->Update(refreshItems))
     {
-      m_staticUpdateTime = CTimeUtils::GetFrameTime();
-      updateItemsProperties = true;
-    }
-    for (unsigned int i = 0; i < m_staticItems.size(); ++i)
-    {
-      CGUIStaticItemPtr staticItem = boost::static_pointer_cast<CGUIStaticItem>(m_staticItems[i]);
-      if (staticItem->UpdateVisibility(GetParentID()))
-        refreshItems = true;
-      if (staticItem->IsVisible())
-      {
-        items.push_back(staticItem);
-        // if item is selected and it changed position, re-select it
-        if (staticItem.get() == selectedItem && selected != (int)items.size() - 1)
-          reselect = items.size() - 1;
-      }
-      // update any properties
-      if (updateItemsProperties)
-        staticItem->UpdateProperties(GetParentID());
-    }
-    if (refreshItems)
-    {
+      // save the current item
+      int currentItem = GetSelectedItem();
+      CGUIListItem *current = (currentItem >= 0 && currentItem < (int)m_items.size()) ? m_items[currentItem].get() : NULL;
       Reset();
-      m_items = items;
+      m_listProvider->Fetch(m_items);
       SetPageControlRange();
-      if (reselect >= 0 && reselect < (int)m_items.size())
-        SelectItem(reselect);
+      // update the newly selected item
+      bool found = false;
+      for (int i = 0; i < (int)m_items.size(); i++)
+      {
+        if (m_items[i].get() == current)
+        {
+          found = true;
+          if (i != currentItem)
+          {
+            SelectItem(i);
+            break;
+          }
+        }
+      }
+      if (!found && currentItem >= (int)m_items.size())
+        SelectItem(m_items.size()-1);
       SetInvalid();
     }
+    // always update the scroll by letter, as the list provider may have altered labels
+    // while not actually changing the list items.
     UpdateScrollByLetter();
   }
 }
@@ -1034,34 +1021,19 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   }
 }
 
-void CGUIBaseContainer::LoadContent(TiXmlElement *content)
+void CGUIBaseContainer::LoadListProvider(TiXmlElement *content, int defaultItem, bool defaultAlways)
 {
-  TiXmlElement *root = content->FirstChildElement("content");
-  if (!root)
-    return;
-
-  vector<CGUIListItemPtr> items;
-  TiXmlElement *item = root->FirstChildElement("item");
-  while (item)
-  {
-    if (item->FirstChild())
-    {
-      CGUIStaticItemPtr newItem(new CGUIStaticItem(item, GetParentID()));
-      items.push_back(newItem);
-    }
-    item = item->NextSiblingElement("item");
-  }
-  SetStaticContent(items, false);
+  delete m_listProvider;
+  m_listProvider = IListProvider::Create(content, GetParentID());
+  if (m_listProvider)
+    m_listProvider->SetDefaultItem(defaultItem, defaultAlways);
 }
 
-void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items, bool forceUpdate /* = true */)
+void CGUIBaseContainer::SetListProvider(IListProvider *provider)
 {
-  m_staticContent = true;
-  m_staticUpdateTime = 0;
-  m_staticItems.clear();
-  m_staticItems.assign(items.begin(), items.end());
-  if (forceUpdate)
-    UpdateStaticItems(true);
+  delete m_listProvider;
+  m_listProvider = provider;
+  UpdateListProvider(true);
 }
 
 void CGUIBaseContainer::SetRenderOffset(const CPoint &offset)
@@ -1239,29 +1211,21 @@ void CGUIBaseContainer::SetOffset(int offset)
 
 bool CGUIBaseContainer::CanFocus() const
 {
-  return (!m_items.empty() && CGUIControl::CanFocus());
-}
-
-void CGUIBaseContainer::SelectStaticItemById(int id)
-{
-  if (m_staticContent)
+  if (CGUIControl::CanFocus())
   {
-    for (unsigned int i = 0 ; i < m_items.size() ; i++)
-    {
-      CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_items[i]);
-      if (item->m_iprogramCount == id)
-      {
-        SelectItem(i);
-        return;
-      }
-    }
+    /*
+     We allow focus if we have items available or if we have a list provider
+     that's in the process of updating.
+     */
+    return !m_items.empty() || (m_listProvider && m_listProvider->IsUpdating());
   }
+  return false;
 }
 
 void CGUIBaseContainer::OnFocus()
 {
-  if (m_staticDefaultAlways)
-    SelectStaticItemById(m_staticDefaultItem);
+  if (m_listProvider && m_listProvider->AlwaysFocusDefaultItem())
+    SelectItem(m_listProvider->GetDefaultItem());
 
   CGUIControl::OnFocus();
 }
