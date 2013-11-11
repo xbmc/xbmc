@@ -35,35 +35,35 @@
 		</control>
 	</include>
 	<include name="MenuFocusedLabel">
-			<control type="group">
-				<posx>363</posx>
-				<posy>450</posy>
-				<include>ShowHomeClassic</include>
-				<control type="label">
-					<width>353</width>
-					<height>0</height>
-					<label>$INFO[Container(300).ListItem(0).Label]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>CondensedBold-36</font>
-					<textcolor>orange</textcolor>
-					<shadowcolor>FF222222</shadowcolor>
-				</control>
-				<!-- with Label2 -->
-				<control type="label">
-					<posy>22</posy>
-					<width>353</width>
-					<height>20</height>
-					<label>$INFO[Container(300).ListItem(0).Label2]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>CondensedBold-16</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>FF222222</shadowcolor>
-					<visible>!IsEmpty(Container(300).ListItem(0).Label2)</visible>
-					<animation effect="fade" end="100" time="0" condition="true">Conditional</animation>
-				</control>
-			</control>				
+		<control type="group">
+			<posx>363</posx>
+			<posy>450</posy>
+			<include>ShowHomeClassic</include>
+			<control type="label">
+				<width>353</width>
+				<height>0</height>
+				<label>$INFO[Container(300).ListItem(0).Label]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>CondensedBold-36</font>
+				<textcolor>orange</textcolor>
+				<shadowcolor>FF222222</shadowcolor>
+			</control>
+			<!-- with Label2 -->
+			<control type="label">
+				<posy>22</posy>
+				<width>353</width>
+				<height>20</height>
+				<label>$INFO[Container(300).ListItem(0).Label2]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>CondensedBold-16</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>FF222222</shadowcolor>
+				<visible>!IsEmpty(Container(300).ListItem(0).Label2)</visible>
+				<animation effect="fade" end="100" time="0" condition="true">Conditional</animation>
+			</control>
+		</control>
 	</include>
 	<include name="HomeMenu">
 		<!-- Main Menu -->
@@ -80,7 +80,7 @@
 				<texture flipx="true">left-menu-indicator-arrow.png</texture>
 				<animation effect="rotate" end="-180" center="36,689" time="300" condition="Window.IsActive(4998)">Conditional</animation>
 				<animation type="Conditional" condition="ControlGroup(5000).HasFocus()" reversible="false">
-				  <effect type="fade" start="100" end="0" time="0" />
+					<effect type="fade" start="100" end="0" time="0"/>
 				</animation>
 			</control>
 			<!-- list -->
@@ -97,15 +97,15 @@
 				<focusposition>6</focusposition>
 				<scrolltime>200</scrolltime>
 				<animation type="Conditional" condition="!Window.IsActive(4998)" reversible="false">
-				  <effect type="rotatey" center="304" start="80,455" end="0,455" time="300" />
-				  <effect type="fade" start="0" end="100" time="50" delay="0" />
+					<effect type="rotatey" center="304" start="80,455" end="0,455" time="300"/>
+					<effect type="fade" start="0" end="100" time="50" delay="0"/>
 				</animation>
 				<animation type="Conditional" condition="Window.IsActive(4998)" reversible="false">
-				  <effect type="rotatey" center="304" start="0,455" end="80,455" time="300" />
-				  <effect type="fade" start="100" end="0" time="230" />
+					<effect type="rotatey" center="304" start="0,455" end="80,455" time="300"/>
+					<effect type="fade" start="100" end="0" time="230"/>
 				</animation>
 				<animation type="Conditional" condition="ControlGroup(5000).HasFocus()" reversible="false">
-				  <effect type="fade" start="100" end="0" time="0" />
+					<effect type="fade" start="100" end="0" time="0"/>
 				</animation>
 				<itemlayout width="600" height="50">
 					<control type="label">
@@ -164,6 +164,6 @@
 					</item>
 				</content>
 			</control>
-		</control>		
+		</control>
 	</include>
 </includes>
