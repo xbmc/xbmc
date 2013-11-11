@@ -38,6 +38,7 @@ class CPlexServerDataLoader : public CJobQueue, public ITimerCallback, public bo
     bool SectionHasFilters(const CURL &section);
 
     bool HasChannels() const { return m_channelMap.size() > 0; }
+    bool HasSharedSections() const { return m_sharedSectionsMap.size() > 0; }
 
     void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 

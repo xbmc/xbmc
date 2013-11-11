@@ -812,14 +812,25 @@ void CGUIWindowHome::UpdateSections()
     CGUIListItemPtr item = oldList[i];
     if (!item->HasProperty("plex"))
     {
-      if (item->HasProperty("plexshared"))
+      if (item->HasProperty("plexshared") &&
+          g_plexApplication.dataLoader->HasSharedSections())
+      {
         haveShared = true;
-      if (item->HasProperty("plexchannels"))
-        haveChannels = true;
-      if (item->HasProperty("plexupdate"))
-        haveUpdate = true;
+        newList.push_back(item);
+      }
 
-      newList.push_back(item);
+      if (item->HasProperty("plexchannels") &&
+          g_plexApplication.dataLoader->HasChannels())
+      {
+        haveChannels = true;
+        newList.push_back(item);
+      }
+
+      if (item->HasProperty("plexupdate"))
+      {
+        haveUpdate = true;
+        newList.push_back(item);
+      }
     }
     else
     {
@@ -895,9 +906,8 @@ void CGUIWindowHome::UpdateSections()
     AddSection("plexserver://channels/", SECTION_TYPE_CHANNELS);
   }
 
-  CFileItemListPtr sharedSections = g_plexApplication.dataLoader->GetAllSharedSections();
 
-  if (sharedSections->Size() > 0 && !haveShared)
+  if (g_plexApplication.dataLoader->HasSharedSections() && !haveShared)
   {
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
     item->SetLabel(g_localizeStrings.Get(44020));
