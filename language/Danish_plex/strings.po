@@ -114,8 +114,8 @@ msgstr "Hvis du fortsætter, kan du muligvis ikke kontrollere Plex/HT"
 #empty string with id 13142
 
 msgctxt "#13143"
-msgid "Search Remote Libraries"
-msgstr "Søg i fjernbiblioteker"
+msgid "Search remote libraries"
+msgstr "Søg i fjern biblioteker"
 
 
 #empty strings from id 13144 to 13145
@@ -262,8 +262,8 @@ msgstr "En genstart af Plex/HT kræves for at ændre dine"
 #empty strings from id 14040 to 15149
 
 msgctxt "#15150"
-msgid "Enable Global Slideshow"
-msgstr "Slå globalt slideshow til"
+msgid "Use library artwork backgrounds"
+msgstr "Brug biblioteks billeder som baggrund"
 
 
 #empty strings from id 15151 to 15204
@@ -277,7 +277,7 @@ msgstr "Opdater venligst Plex/HT"
 
 msgctxt "#16001"
 msgid "Configure Audio Hardware..."
-msgstr "Konfigurer Audio Hardware..."
+msgstr "Konfigurer lydudstyr"
 
 
 #empty strings from id 16002 to 17500
@@ -318,7 +318,7 @@ msgstr "Tilsluttet strøm"
 
 msgctxt "#18003"
 msgid "AC power (charging)"
-msgstr "Tilsluttet strøm (Oplader)"
+msgstr "Tilsluttet strøm (oplader)"
 
 
 msgctxt "#18004"
@@ -354,13 +354,13 @@ msgstr "Aktiver lavt batteri advarsel"
 #empty strings from id 18010 to 18100
 
 msgctxt "#18101"
-msgid "Background Music Volume"
-msgstr "Lydstyrke for baggrundmusik"
+msgid "Theme music volume"
+msgstr "Lydstyrke på tema musik"
 
 
 msgctxt "#18102"
-msgid "Enable Theme Music"
-msgstr "Aktiver titelmusik"
+msgid "Enable TV theme music"
+msgstr "Slå tema musik til"
 
 
 msgctxt "#18103"
@@ -373,7 +373,67 @@ msgid "Enable Background Music"
 msgstr "Aktiver baggrundsmusik"
 
 
-#empty strings from id 18105 to 18999
+msgctxt "#18105"
+msgid "Advanced"
+msgstr "Advanceret"
+
+
+msgctxt "#18106"
+msgid "Video"
+msgstr "Film"
+
+
+msgctxt "#18107"
+msgid "Music"
+msgstr "Musik"
+
+
+msgctxt "#18108"
+msgid "Photos"
+msgstr "Billeder"
+
+
+msgctxt "#18109"
+msgid "Video render method"
+msgstr "Billed gengivelses metode"
+
+
+msgctxt "#18110"
+msgid "HDMI output channels"
+msgstr "HDMI udgangs kanaler"
+
+
+msgctxt "#18111"
+msgid "Advanced video"
+msgstr "Advanceret billede"
+
+
+msgctxt "#18112"
+msgid "Logging"
+msgstr "Logning"
+
+
+msgctxt "#18113"
+msgid "Theme music"
+msgstr "Tema musik"
+
+
+msgctxt "#18114"
+msgid "Visualize dirty regions"
+msgstr "Visualiser forældet område"
+
+
+msgctxt "#18115"
+msgid "Dirty regions algorithm"
+msgstr "Forældet område algoritme"
+
+
+msgctxt "#18116"
+msgid "Dirty regions no flip timeout (ms)"
+msgstr "Udløb af forældet områdes rotations stop (ms)"
+
+
+#empty strings from id 18117 to 18999
 
 
 #empty strings from id 19022 to 20008
@@ -400,11 +460,24 @@ msgstr "denne sti fra Plex/HT biblioteket?"
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
-msgid "Allow control of Plex/HT via UPnP"
+msgid "Allow control of XBMC via UPnP"
 msgstr "Tillad kontrol af Plex/HT via UPnP"
 
 
-#empty strings from id 21882 to 33074
+msgctxt "#22003"
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+
+msgctxt "#22004"
+msgid "Delayed by: %2.3fs"
+msgstr "Forsinket med: %2.3fs"
+
+
+msgctxt "#22005"
+msgid "Ahead by: %2.3fs"
+msgstr "Foran med: %2.3fs"
+
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
@@ -438,153 +511,63 @@ msgstr "Ikke-understøttet libcec interface version. %d er højere end den versi
 #empty strings from id 36014 to 39999
 
 msgctxt "#40000"
-msgid "Software Update"
-msgstr "Softwareopdatering"
+msgid "Software update"
+msgstr "Opdater software"
 
 
 msgctxt "#40001"
-msgid "New Version Available"
-msgstr "En ny version er tilgængelig"
+msgid "Checking for available updates..."
+msgstr "Søg efter tilgængelige opdateringer"
 
 
 msgctxt "#40002"
-msgid "Install with Software Update"
-msgstr "Installer gennem softwareopdatering"
+msgid "Update channel"
+msgstr "Opdater kanal"
 
 
 msgctxt "#40003"
-msgid "A new version of Plex/HT is available."
-msgstr "En ny version af Plex/HT er tilgængelig."
+msgid "Stable"
+msgstr "Stabile"
 
 
 msgctxt "#40004"
-msgid "Version: %@  (you have %@)"
-msgstr "Version: %@ (du har %@)"
+msgid "PlexPass"
+msgstr "PlexPass"
 
 
 msgctxt "#40005"
-msgid "Would you like to download and install it now?"
-msgstr "Vil du hente og installere nu?"
+msgid "Ninja"
+msgstr "Ninja"
 
 
 msgctxt "#40006"
-msgid "You currently have the latest version of Plex/HT (%@)"
-msgstr "Du har den nyeste version af Plex/HT (%@)"
-
-
-msgctxt "#40007"
-msgid "Downloading Plex/HT update"
-msgstr "Henter Plex/HT update"
-
-
-msgctxt "#40008"
-msgid "%@ of %@"
-msgstr "%@ af %@"
-
-
-msgctxt "#40009"
-msgid "%@ downloaded"
-msgstr "%@ hentet"
-
-
-msgctxt "#40010"
-msgid "Extracting Plex/HT update"
-msgstr "Pakker Plex/HT opdatering ud"
-
-
-msgctxt "#40011"
-msgid "Installing Plex/HT update"
-msgstr "Installerer Plex/HT opdatering"
-
-
-msgctxt "#40012"
-msgid "Update Failed"
-msgstr "Opdateringen fejlede"
-
-
-msgctxt "#40013"
-msgid "An error has occurred."
-msgstr "Det opstod en fejl"
-
-
-msgctxt "#40014"
-msgid "Please check the console for more details."
-msgstr "Se venligst konsollen for yderligere detaljer"
-
-
-msgctxt "#40015"
-msgid "Checking for updates"
-msgstr "Søger efter opdateringer"
+msgid "I am Special!"
+msgstr "Jeg er unik"
 
 
 msgctxt "#40016"
-msgid "Check For Update Now..."
-msgstr "Søg efter opdateringer nu..."
+msgid "Check for update now..."
+msgstr "Søg efter opdateringer nu"
 
 
 msgctxt "#40017"
-msgid "Automatically Check For Updates"
+msgid "Automatically check for updates"
 msgstr "Søg automatisk efter opdateringer"
 
 
 msgctxt "#40018"
-msgid "Update"
-msgstr "Opdater"
-
-
-msgctxt "#40019"
-msgid "- If Updates Are Available"
-msgstr "- Hvis opdateringer er tilgængelige"
-
-
-msgctxt "#40020"
-msgid "Ahow a Notification"
-msgstr "Vis en besked"
-
-
-msgctxt "#40021"
-msgid "Ask to Install"
-msgstr "Spørg om der skal installeres"
-
-
-msgctxt "#40022"
-msgid "Check for Updates Automatically?"
-msgstr "Søg efter opdateringer automatisk?"
-
-
-msgctxt "#40023"
-msgid "Would you like Plex/HT to alert you when updates"
-msgstr "Vil du have at Plex/HT skal fortælle dig når opdateringer"
-
-
-msgctxt "#40024"
-msgid "are available?"
-msgstr "er tilgængelige?"
-
-
-msgctxt "#40025"
-msgid "- Check For Updates"
-msgstr "- Søg efter opdateringer"
-
-
-msgctxt "#40026"
-msgid "Every Hour"
-msgstr "Hver time"
-
-
-msgctxt "#40027"
-msgid "Every Day"
-msgstr "Hver dag"
-
-
-msgctxt "#40028"
-msgid "Every Week"
-msgstr "Hver uge"
+msgid "Update and restart"
+msgstr "Opdater og genstart"
 
 
 msgctxt "#40029"
 msgid "Current version"
 msgstr "Nuværende version"
+
+
+msgctxt "#40028"
+msgid "Update Available!"
+msgstr "Opdatering tilgængelig!"
 
 
 #empty strings from id 40029 to 40099
@@ -596,12 +579,12 @@ msgstr "Applikationer"
 
 msgctxt "#40101"
 msgid "Add Application"
-msgstr "Tilføj applikation"
+msgstr "Tilføj program"
 
 
 msgctxt "#40102"
 msgid "Remove Application"
-msgstr "Fjern applikation"
+msgstr "Fjern program"
 
 
 msgctxt "#40103"
@@ -650,7 +633,7 @@ msgstr "kilder."
 
 msgctxt "#40203"
 msgid "Plex Media Server"
-msgstr "Plex Medie Server"
+msgstr "Plex Media Server"
 
 
 msgctxt "#40204"
@@ -770,12 +753,12 @@ msgstr "Systemet vil slukke skærmen klokken"
 
 msgctxt "#40315"
 msgid "You have already set a quit timer."
-msgstr "Du har allerede indstillet en nedluknings timer"
+msgstr "Du har allerede indstillet en nedlukningstimer"
 
 
 msgctxt "#40316"
 msgid "You have already set a sleep timer."
-msgstr "Du har allerede indstillet en dvale timer."
+msgstr "Du har allerede indstillet en dvaletimer."
 
 
 msgctxt "#40317"
@@ -792,7 +775,7 @@ msgstr "Du har allerede defineret en dvale timer."
 
 msgctxt "#40320"
 msgid "Would you like to set a quit timer instead?"
-msgstr "Vil du indstille en afslutnings-timer i stedet?"
+msgstr "Vil du indstille en afslutningstimer i stedet?"
 
 
 msgctxt "#40321"
@@ -814,7 +797,7 @@ msgstr "Indstil skærm dvale timer"
 
 msgctxt "#40325"
 msgid "Timer already set"
-msgstr "Timer er allerede defineret"
+msgstr "Timer er allerede indstillet"
 
 
 #empty strings from id 40326 to 41999
@@ -933,8 +916,8 @@ msgstr "Adgangskode"
 
 
 msgctxt "#44002"
-msgid "Sign in with PIN code"
-msgstr "Log på med PIN kode"
+msgid "Use PIN"
+msgstr "Brug PIN kode"
 
 
 msgctxt "#44003"
@@ -977,6 +960,11 @@ msgid "Queue"
 msgstr "Kø"
 
 
+msgctxt "#44022"
+msgid "Recommended"
+msgstr "Anbefalet"
+
+
 msgctxt "#44030"
 msgid "FILTERS"
 msgstr "FILTRE"
@@ -985,6 +973,11 @@ msgstr "FILTRE"
 msgctxt "#44031"
 msgid "SORTING"
 msgstr "SORTERING"
+
+
+msgctxt "#44032"
+msgid "Clear Filters"
+msgstr "Nulstil filtre"
 
 
 msgctxt "#44100"
@@ -1012,6 +1005,11 @@ msgid "Hooray we are signed in!"
 msgstr "Hurra. Vi er logget ind!"
 
 
+msgctxt "#44105"
+msgid "Signed in to myPlex"
+msgstr "Logget ind til myPlex"
+
+
 msgctxt "#44200"
 msgid "PlexPass Required"
 msgstr "PlexPass påkrævet"
@@ -1035,6 +1033,11 @@ msgstr "PlexPass påkrævet"
 msgctxt "#44204"
 msgid "Press OK Quit"
 msgstr "Tryk OK for at afslutte"
+
+
+msgctxt "#44300"
+msgid "Allow control of Plex/HT from Plex Clients"
+msgstr "Tillad styring af Plex/HT fra Plex klienter"
 
 
 #### These are error strings shown from channels
@@ -1069,3 +1072,88 @@ msgid "This media is geoblocked and can't be accessed from your current location
 msgstr "Dette medie tillader ikke adgang fra din nuværende lokation"
 
 #### end error strings
+
+msgctxt "#52010"
+msgid "Please check that this file exists and the necessary drive is mounted"
+msgstr "Venligst kontroller at filen eksisterer samt at der er adgang til drevet"
+
+
+msgctxt "#52011"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "Plex Home Theater kan ikke afspille indholdet af denne kanal"
+
+
+msgctxt "#52012"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "Plex Home Theater kan ikke afspille indholdet af denne kanal"
+
+
+msgctxt "#52100"
+msgid "Select Audio Track"
+msgstr "Vælg lyd spor"
+
+
+msgctxt "#52101"
+msgid "Select Subtitle"
+msgstr "Vælg undertekst"
+
+
+msgctxt "#52102"
+msgid "Channels"
+msgstr "Kanaler"
+
+
+msgctxt "#52201"
+msgid "Local video quality"
+msgstr "Lokal billede kvalitet"
+
+
+msgctxt "#52202"
+msgid "Remote video quality"
+msgstr "Fjern billede kvalitet"
+
+
+msgctxt "#52203"
+msgid "Online video quality"
+msgstr "Online billede kvalitet"
+
+
+msgctxt "#52210"
+msgid "Show myPlex queue and recommendations"
+msgstr "Vis myPlex kø og anbefalinger"
+
+
+msgctxt "#52300"
+msgid "Media Server went away"
+msgstr "Medie serveren forsvandt"
+
+
+msgctxt "#52301"
+msgid "The Server you where browsing went away..."
+msgstr "Serveren du kiggede på forsvandt"
+
+
+msgctxt "#52400"
+msgid "No linked social accounts"
+msgstr "Ingen tilknyttede sociale konti "
+
+
+msgctxt "#52401"
+msgid "Go to http://my.plexapp.com to link your account"
+msgstr "Gå til http://my.plexapp.com for at forbinde din konto"
+
+
+msgctxt "#52402"
+msgid "Enter message"
+msgstr "Indtast besked"
+
+
+msgctxt "#52403"
+msgid "Share %s on %s with message:"
+msgstr "Del %s på %s med denne besked:"
+
+
+msgctxt "#52404"
+msgid "Enable network logging"
+msgstr "Slå netværks logning til"
+

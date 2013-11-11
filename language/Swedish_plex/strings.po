@@ -114,8 +114,8 @@ msgstr "Om du fortsätter så kanske du förlorar kontrollen över Plex/HT"
 #empty string with id 13142
 
 msgctxt "#13143"
-msgid "Search Remote Libraries"
-msgstr "Sök fjärrbibliotek"
+msgid "Search remote libraries"
+msgstr "Sök även i fjärrbibliotek"
 
 
 #empty strings from id 13144 to 13145
@@ -134,7 +134,7 @@ msgstr "Tillåt användning av alternativ biblioteks-media"
 
 msgctxt "#13149"
 msgid "Quality From Remote Media Servers"
-msgstr "Kvalitet från fjärrseverver"
+msgstr "Kvalitet från fjärrservrar"
 
 
 #empty strings from id 13150 to 13179
@@ -262,8 +262,8 @@ msgstr "Du måste starta om PLEX/HT för att ändra din"
 #empty strings from id 14040 to 15149
 
 msgctxt "#15150"
-msgid "Enable Global Slideshow"
-msgstr "Aktivera globalt bildspel"
+msgid "Use library artwork backgrounds"
+msgstr "Använd ditt biblioteks bakgrundsbilder"
 
 
 #empty strings from id 15151 to 15204
@@ -354,13 +354,13 @@ msgstr "Aktivera varning för låg batteristyrka"
 #empty strings from id 18010 to 18100
 
 msgctxt "#18101"
-msgid "Background Music Volume"
-msgstr "Bakgrundsmusikens ljudvolym"
+msgid "Theme music volume"
+msgstr "Temamusikens volym"
 
 
 msgctxt "#18102"
-msgid "Enable Theme Music"
-msgstr "Aktivera temamusik"
+msgid "Enable TV theme music"
+msgstr "Aktivera temamusik för TV-serier"
 
 
 msgctxt "#18103"
@@ -373,7 +373,67 @@ msgid "Enable Background Music"
 msgstr "Aktivera bakgrungsmusik"
 
 
-#empty strings from id 18105 to 18999
+msgctxt "#18105"
+msgid "Advanced"
+msgstr "Avancerat"
+
+
+msgctxt "#18106"
+msgid "Video"
+msgstr "Video"
+
+
+msgctxt "#18107"
+msgid "Music"
+msgstr "Musik"
+
+
+msgctxt "#18108"
+msgid "Photos"
+msgstr "Bilder"
+
+
+msgctxt "#18109"
+msgid "Video render method"
+msgstr "Metod för videorendering"
+
+
+msgctxt "#18110"
+msgid "HDMI output channels"
+msgstr "Kanaler för HDMI-ut"
+
+
+msgctxt "#18111"
+msgid "Advanced video"
+msgstr "Avancerat video"
+
+
+msgctxt "#18112"
+msgid "Logging"
+msgstr "Loggning"
+
+
+msgctxt "#18113"
+msgid "Theme music"
+msgstr "Temamusik"
+
+
+msgctxt "#18114"
+msgid "Visualize dirty regions"
+msgstr "Visa Dirty Region-fälten"
+
+
+msgctxt "#18115"
+msgid "Dirty regions algorithm"
+msgstr "Välj Dirty Region-algoritm"
+
+
+msgctxt "#18116"
+msgid "Dirty regions no flip timeout (ms)"
+msgstr "Tid innan en invaliderad region ritas om (ms)"
+
+
+#empty strings from id 18117 to 18999
 
 
 #empty strings from id 19022 to 20008
@@ -400,11 +460,24 @@ msgstr "den här sökvägen från Plex/HT biblioteket?"
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
-msgid "Allow control of Plex/HT via UPnP"
+msgid "Allow control of XBMC via UPnP"
 msgstr "Tillåt kontroll av Plex/HT via UPnP"
 
 
-#empty strings from id 21882 to 33074
+msgctxt "#22003"
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+
+msgctxt "#22004"
+msgid "Delayed by: %2.3fs"
+msgstr "Fördröjd med: %2.3fs"
+
+
+msgctxt "#22005"
+msgid "Ahead by: %2.3fs"
+msgstr "Före med: %2.3fs"
+
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
@@ -438,153 +511,63 @@ msgstr "Din version av libcec (%d) är nyare än den version Plex/HT stöder (%d
 #empty strings from id 36014 to 39999
 
 msgctxt "#40000"
-msgid "Software Update"
+msgid "Software update"
 msgstr "Programuppdatering"
 
 
 msgctxt "#40001"
-msgid "New Version Available"
-msgstr "Ny version tillgänglig"
+msgid "Checking for available updates..."
+msgstr "Söker efter tillgängliga uppdateringar..."
 
 
 msgctxt "#40002"
-msgid "Install with Software Update"
-msgstr "Installera med programuppdatering"
+msgid "Update channel"
+msgstr "Uppdatera kanal"
 
 
 msgctxt "#40003"
-msgid "A new version of Plex/HT is available."
-msgstr "Ny version av Plex/HT är tillgänglig."
+msgid "Stable"
+msgstr "Stabil"
 
 
 msgctxt "#40004"
-msgid "Version: %@  (you have %@)"
-msgstr "Version: %@ (du har %@)"
+msgid "PlexPass"
+msgstr "PlexPass"
 
 
 msgctxt "#40005"
-msgid "Would you like to download and install it now?"
-msgstr "Vill du ladda ner och installera nu?"
+msgid "Ninja"
+msgstr "Ninja"
 
 
 msgctxt "#40006"
-msgid "You currently have the latest version of Plex/HT (%@)"
-msgstr "Du har den senaste versionen av Plex/HT (%@)"
-
-
-msgctxt "#40007"
-msgid "Downloading Plex/HT update"
-msgstr "Laddar ned uppdatering av Plex/HT"
-
-
-msgctxt "#40008"
-msgid "%@ of %@"
-msgstr "%@ av %@"
-
-
-msgctxt "#40009"
-msgid "%@ downloaded"
-msgstr "%@ nerladdat"
-
-
-msgctxt "#40010"
-msgid "Extracting Plex/HT update"
-msgstr "Extraherar uppdatering av Plex/HT"
-
-
-msgctxt "#40011"
-msgid "Installing Plex/HT update"
-msgstr "Installerar uppdatering av Plex/HT"
-
-
-msgctxt "#40012"
-msgid "Update Failed"
-msgstr "Uppdatering misslyckades"
-
-
-msgctxt "#40013"
-msgid "An error has occurred."
-msgstr "Ett fel har inträffat."
-
-
-msgctxt "#40014"
-msgid "Please check the console for more details."
-msgstr "Se konsolen för detaljer."
-
-
-msgctxt "#40015"
-msgid "Checking for updates"
-msgstr "Letar efter uppdateringar"
+msgid "I am Special!"
+msgstr "Jag är speciell!"
 
 
 msgctxt "#40016"
-msgid "Check For Update Now..."
-msgstr "Leta efter uppdatering nu..."
+msgid "Check for update now..."
+msgstr "Sök efter uppdatering nu..."
 
 
 msgctxt "#40017"
-msgid "Automatically Check For Updates"
-msgstr "Leta efter uppdateringar automatiskt"
+msgid "Automatically check for updates"
+msgstr "Sök automatiskt efter uppdateringar"
 
 
 msgctxt "#40018"
-msgid "Update"
-msgstr "Uppdatera"
-
-
-msgctxt "#40019"
-msgid "- If Updates Are Available"
-msgstr "- om uppdateringar är tillgängliga"
-
-
-msgctxt "#40020"
-msgid "Ahow a Notification"
-msgstr "Visa en notifiering"
-
-
-msgctxt "#40021"
-msgid "Ask to Install"
-msgstr "Fråga för att installera"
-
-
-msgctxt "#40022"
-msgid "Check for Updates Automatically?"
-msgstr "Leta efter uppdateringar automatiskt?"
-
-
-msgctxt "#40023"
-msgid "Would you like Plex/HT to alert you when updates"
-msgstr "Vill du att Plex/HT ska säga till när uppdateringar "
-
-
-msgctxt "#40024"
-msgid "are available?"
-msgstr "är tillgängliga?"
-
-
-msgctxt "#40025"
-msgid "- Check For Updates"
-msgstr "- Leta efter uppdateringar"
-
-
-msgctxt "#40026"
-msgid "Every Hour"
-msgstr "Varje timme"
-
-
-msgctxt "#40027"
-msgid "Every Day"
-msgstr "Dagligen"
-
-
-msgctxt "#40028"
-msgid "Every Week"
-msgstr "Varje vecka"
+msgid "Update and restart"
+msgstr "Uppdatera och starta om"
 
 
 msgctxt "#40029"
 msgid "Current version"
 msgstr "Nuvarande version"
+
+
+msgctxt "#40028"
+msgid "Update Available!"
+msgstr "Uppdatering tillgänglig!"
 
 
 #empty strings from id 40029 to 40099
@@ -670,7 +653,7 @@ msgstr "Ändra Betyg ..."
 
 msgctxt "#40207"
 msgid "Set Rating"
-msgstr "Ställ in betyg"
+msgstr "Sätt betyg"
 
 
 msgctxt "#40208"
@@ -802,12 +785,12 @@ msgstr "Skulle du vilja ställa in en vilotimer istället?"
 
 msgctxt "#40322"
 msgid "Would you like to set a shut down timer instead?"
-msgstr "Skulle du vilja ställa in en avstängningstimer istället?"
+msgstr "Skulle du vilja ställa in en nedstängningstimer istället?"
 
 
 msgctxt "#40323"
 msgid "Set Sleep Display Timer"
-msgstr "Ställ in skärmvilotimer."
+msgstr "Ställ in timer för skärmvila"
 
 
 #empty string with id 40324
@@ -856,12 +839,12 @@ msgstr "Filen hittades ej"
 
 msgctxt "#42007"
 msgid "Unsupported network protocol"
-msgstr "Detta nätverksprotokoll stöds inte"
+msgstr "Detta nätverksprotokoll stöds ej"
 
 
 msgctxt "#42008"
 msgid "Error while opening file"
-msgstr "Fel vid öppning av fil"
+msgstr "Fel vid filöppning"
 
 
 #empty strings from id 42009 to 42998
@@ -933,8 +916,8 @@ msgstr "Lösenord"
 
 
 msgctxt "#44002"
-msgid "Sign in with PIN code"
-msgstr "Logga in med PIN-kod"
+msgid "Use PIN"
+msgstr "Använd PIN-kod"
 
 
 msgctxt "#44003"
@@ -964,7 +947,7 @@ msgstr "Fel vid inloggning"
 
 msgctxt "#44013"
 msgid "Manually enter username and password to sign in"
-msgstr "Skriv manuellt in användarnamn och lösenord för att logga in"
+msgstr "Skriv in användarnamn och lösenord för att logga in"
 
 
 msgctxt "#44020"
@@ -977,6 +960,11 @@ msgid "Queue"
 msgstr "Kö"
 
 
+msgctxt "#44022"
+msgid "Recommended"
+msgstr "Rekommenderat"
+
+
 msgctxt "#44030"
 msgid "FILTERS"
 msgstr "FILTER"
@@ -985,6 +973,11 @@ msgstr "FILTER"
 msgctxt "#44031"
 msgid "SORTING"
 msgstr "SORTERING"
+
+
+msgctxt "#44032"
+msgid "Clear Filters"
+msgstr "Rensa Filter"
 
 
 msgctxt "#44100"
@@ -1012,9 +1005,14 @@ msgid "Hooray we are signed in!"
 msgstr "Hurra, vi är inloggade!"
 
 
+msgctxt "#44105"
+msgid "Signed in to myPlex"
+msgstr "Inloggad på myPlex"
+
+
 msgctxt "#44200"
 msgid "PlexPass Required"
-msgstr "PlexPass nödvändigt"
+msgstr "PlexPass krävs"
 
 
 msgctxt "#44201"
@@ -1029,12 +1027,17 @@ msgstr "Tryck på OK för att tas till inställningsmenyn"
 
 msgctxt "#44203"
 msgid "PlexPass Required"
-msgstr "PlexPass nödvändigt"
+msgstr "PlexPass krävs"
 
 
 msgctxt "#44204"
 msgid "Press OK Quit"
 msgstr "Tryck OK för att avsluta"
+
+
+msgctxt "#44300"
+msgid "Allow control of Plex/HT from Plex Clients"
+msgstr "Tillåt andra klienter att styra Plex/HT"
 
 
 #### These are error strings shown from channels
@@ -1069,3 +1072,88 @@ msgid "This media is geoblocked and can't be accessed from your current location
 msgstr "Denna media är ej tillgänglig i ditt land."
 
 #### end error strings
+
+msgctxt "#52010"
+msgid "Please check that this file exists and the necessary drive is mounted"
+msgstr "Kontrollera att denna fil existerar på samma sökväg som då den inskannades"
+
+
+msgctxt "#52011"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "Plex Home Theater kan ej spela upp denna kanalens innehåll"
+
+
+msgctxt "#52012"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "Plex Home Theater kan ej spela upp denna kanalens innehåll"
+
+
+msgctxt "#52100"
+msgid "Select Audio Track"
+msgstr "Välj ljudspår"
+
+
+msgctxt "#52101"
+msgid "Select Subtitle"
+msgstr "Välj undertext"
+
+
+msgctxt "#52102"
+msgid "Channels"
+msgstr "Plugins"
+
+
+msgctxt "#52201"
+msgid "Local video quality"
+msgstr "Videokvalitet för lokalt nätverk"
+
+
+msgctxt "#52202"
+msgid "Remote video quality"
+msgstr "Videokvalitet for externt nätverk"
+
+
+msgctxt "#52203"
+msgid "Online video quality"
+msgstr "Önskad online-videokvalitet "
+
+
+msgctxt "#52210"
+msgid "Show myPlex queue and recommendations"
+msgstr "Visa myPlex-kön och rekommendationer"
+
+
+msgctxt "#52300"
+msgid "Media Server went away"
+msgstr "Mediaservern försvann"
+
+
+msgctxt "#52301"
+msgid "The Server you where browsing went away..."
+msgstr "Servern du var inne i försvann"
+
+
+msgctxt "#52400"
+msgid "No linked social accounts"
+msgstr "Inte länkade konton"
+
+
+msgctxt "#52401"
+msgid "Go to http://my.plexapp.com to link your account"
+msgstr "Gå till http://my.plexapp.com för att länka ditt konto"
+
+
+msgctxt "#52402"
+msgid "Enter message"
+msgstr "Skriv meddelande"
+
+
+msgctxt "#52403"
+msgid "Share %s on %s with message:"
+msgstr "Dela %s på %s med meddelandet:"
+
+
+msgctxt "#52404"
+msgid "Enable network logging"
+msgstr "Aktivera loggning av nätverket"
+
