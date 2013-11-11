@@ -289,14 +289,17 @@ bool CGUIControlListSetting::OnClick()
       if (values.size() > 1)
         return false;
       ret = ((CSettingInt *)m_pSetting)->SetValue((int)values.at(0).asInteger());
-    
+      break;
+
     case SettingTypeString:
       if (values.size() > 1)
         return false;
       ret = ((CSettingString *)m_pSetting)->SetValue(values.at(0).asString());
+      break;
 
     case SettingTypeList:
       ret = CSettings::Get().SetList(m_pSetting->GetId(), values);
+      break;
     
     default:
       break;
