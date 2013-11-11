@@ -30,6 +30,13 @@
 			<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
 			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 		</control>
+		<control type="image">
+			<include>FullScreenScaled</include>
+			<texture>bg-overlay-grainy.png</texture>
+			<animation effect="fade" start="0" end="100" time="600">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="600">WindowClose</animation>
+			<visible>!IsEmpty(Container.Property(primaryFilterActivated))</visible>
+		</control>
 		<!-- Clip backgrounds use item thumb, not as pretty so we'll hide them a bit more -->
 		<control type="group">
 			<visible>Container.Content(Clips)</visible>

@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<window>
+	<defaultcontrol always="true">20</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>335</posx>
+		<posy>100</posy>
+	</coordinates>
+	<include>DialogFade</include>
+	<controls>
+		<control type="group">
+			<!-- bg's -->
+			<control type="group">
+				<posx>0</posx>
+				<posy>0</posy>
+				<control type="image">
+					<description>Background</description>
+					<width>600</width>
+					<height>480</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>600</width>
+					<height>80</height>
+					<include>DialogHeaderBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<width>600</width>
+					<posy>30</posy>
+					<include>DialogHeaderBorder</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>602</width>
+					<height>482</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>285</posx>
+					<posy>480</posy>
+					<include>DialogArrow</include>
+				</control>
+			</control>
+			<control type="label" id="1">
+				<description>Heading</description>
+				<label>$LOCALIZE[35000]</label>
+				<include>DialogHeading</include>
+				<posx>0</posx>
+				<posy>40</posy>
+				<width>600</width>
+			</control>
+			<control type="list" id="20">
+				<posx>20</posx>
+				<posy>95</posy>
+				<width>550</width>
+				<height>260</height>
+				<onup>20</onup>
+				<ondown>20</ondown>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="85" width="550">
+					<control type="image">
+						<width>555</width>
+						<height>85</height>
+						<texture border="5">border-bottom-grey.png</texture>
+					</control>
+					<control type="label">
+						<description>Name</description>
+						<posx>10</posx>
+						<posy>5</posy>
+						<width>520</width>
+						<height>20</height>
+						<label>$INFO[ListItem.Label]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>CondensedBold-18</font>
+						<textcolor>white</textcolor>
+					</control>
+					<control type="label">
+						<description>Product ID Vendor ID</description>
+						<posx>10</posx>
+						<posy>30</posy>
+						<width>520</width>
+						<height>20</height>
+						<label>$LOCALIZE[35504]:  [COLOR=white]$INFO[ListItem.Property(Product)][/COLOR]    $LOCALIZE[35503]:  [COLOR=white]$INFO[ListItem.Property(Vendor)][/COLOR]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>Condensed-16</font>
+						<textcolor>white</textcolor>
+					</control>
+					<control type="label">
+						<description>class</description>
+						<posx>10</posx>
+						<posy>50</posy>
+						<width>520</width>
+						<height>20</height>
+						<label>$LOCALIZE[35501]:  [COLOR=white]$INFO[ListItem.Property(Class)][/COLOR]     $LOCALIZE[19114]:  [COLOR=white]$INFO[ListItem.Property(Version)][/COLOR]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>Condensed-18</font>
+						<textcolor>white</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout height="85" width="550">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>550</width>
+						<height>80</height>
+						<texture border="5">black-bottom-grey.png</texture>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>550</width>
+						<height>80</height>
+						<texture border="5">button-focus2.png</texture>
+						<visible>Control.HasFocus(20)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="label">
+						<description>Name</description>
+						<posx>10</posx>
+						<posy>5</posy>
+						<width>520</width>
+						<height>20</height>
+						<label>$INFO[ListItem.Label]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>CondensedBold-18</font>
+						<textcolor>Focused</textcolor>
+					</control>
+					<control type="label">
+						<description>Product ID Vendor ID</description>
+						<posx>10</posx>
+						<posy>30</posy>
+						<width>520</width>
+						<height>20</height>
+						<label>$LOCALIZE[35504]:  [COLOR=white]$INFO[ListItem.Property(Product)][/COLOR]    $LOCALIZE[35503]:  [COLOR=white]$INFO[ListItem.Property(Vendor)][/COLOR]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>Condensed-16</font>
+						<textcolor>white</textcolor>
+					</control>
+					<control type="label">
+						<description>class</description>
+						<posx>10</posx>
+						<posy>50</posy>
+						<width>520</width>
+						<height>20</height>
+						<label>$LOCALIZE[35501]:  [COLOR=white]$INFO[ListItem.Property(Class)][/COLOR]     $LOCALIZE[19114]:  [COLOR=white]$INFO[ListItem.Property(Version)][/COLOR]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>Condensed-18</font>
+						<textcolor>white</textcolor>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="61">
+				<description>Scroll Bar</description>
+				<posx>580</posx>
+				<posy>85</posy>
+				<width>20</width>
+				<height>265</height>
+				<showonepage>true</showonepage>
+			</control>
+			<control type="button" id="10">
+				<description>OK button</description>
+				<posx>200</posx>
+				<posy>410</posy>
+				<width>200</width>
+				<label>$LOCALIZE[186]</label>
+				<include>DialogPressButton</include>
+				<onleft>20</onleft>
+				<onright>20</onright>
+				<onup>20</onup>
+				<ondown>20</ondown>
+			</control>
+		</control>
+	</controls>
+</window>

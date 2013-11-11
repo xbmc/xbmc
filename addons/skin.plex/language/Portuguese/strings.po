@@ -1,0 +1,1014 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2013-11-11 12:45+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "#31000"
+msgid "Browse"
+msgstr "Explorar"
+
+msgctxt "#31001"
+msgid "Videos"
+msgstr "Vídeos"
+
+msgctxt "#31002"
+msgid "Music"
+msgstr "Música"
+
+msgctxt "#31003"
+msgid "Pictures"
+msgstr "Imagens"
+
+msgctxt "#31004"
+msgid "Applications"
+msgstr "Programas"
+
+msgctxt "#31005"
+msgid "Weather"
+msgstr "O Tempo"
+
+msgctxt "#31006"
+msgid "System"
+msgstr "Sistema"
+
+msgctxt "#31007"
+msgid "Quit"
+msgstr "Liga/Desliga"
+
+msgctxt "#31008"
+msgid "TV Shows"
+msgstr "Séries TV"
+
+msgctxt "#31011"
+msgid "Watch your"
+msgstr "Ver"
+
+msgctxt "#31012"
+msgid "Listen to"
+msgstr "Ouvir"
+
+msgctxt "#31013"
+msgid "View your"
+msgstr "Ver"
+
+msgctxt "#31014"
+msgid "Use your"
+msgstr "Usar"
+
+msgctxt "#31015"
+msgid "Check"
+msgstr "Verificar"
+
+msgctxt "#31016"
+msgid "Change your"
+msgstr "Configurar"
+
+msgctxt "#31018"
+msgid "Menu"
+msgstr "Menu"
+
+msgctxt "#31019"
+msgid "Play the"
+msgstr "Jogar"
+
+msgctxt "#31020"
+msgid "Options"
+msgstr "Opções"
+
+msgctxt "#31021"
+msgid "Seasons"
+msgstr "Temporadas"
+
+msgctxt "#31022"
+msgid "Hide"
+msgstr "Esconder"
+
+msgctxt "#31023"
+msgid "Sort By"
+msgstr "Ordenar por"
+
+msgctxt "#31024"
+msgid "Sort Direction"
+msgstr "Ordenação"
+
+msgctxt "#31025"
+msgid "Backward"
+msgstr "Para Trás"
+
+msgctxt "#31026"
+msgid "Forward"
+msgstr "Para a Frente"
+
+msgctxt "#31027"
+msgid "Began"
+msgstr "Iní­cio"
+
+msgctxt "#31028"
+msgid "Finished"
+msgstr "Fim"
+
+msgctxt "#31029"
+msgid "Writer"
+msgstr "Escritor"
+
+msgctxt "#31030"
+msgid "Track No."
+msgstr "Pista No."
+
+msgctxt "#31031"
+msgid "Active"
+msgstr "Activo"
+
+msgctxt "#31032"
+msgid "Instrmts"
+msgstr "Instrumentos"
+
+msgctxt "#31033"
+msgid "Last Refreshed"
+msgstr "Última Actualização"
+
+msgctxt "#31034"
+msgid "Build"
+msgstr "Versão"
+
+msgctxt "#31035"
+msgid "Free RAM"
+msgstr "RAM Livre"
+
+msgctxt "#31036"
+msgid "IP Addr."
+msgstr "Endereço IP"
+
+msgctxt "#31037"
+msgid "Hard Drive Space"
+msgstr "Espaço Livre HD"
+
+msgctxt "#31038"
+msgid "Choose Your"
+msgstr "Escolha a sua"
+
+msgctxt "#31039"
+msgid "Favourite"
+msgstr "Favorito"
+
+msgctxt "#31040"
+msgid "Modify"
+msgstr "Modificar"
+
+msgctxt "#31041"
+msgid "Editor"
+msgstr "Editor"
+
+msgctxt "#31042"
+msgid "Picture"
+msgstr "Imagem"
+
+msgctxt "#31043"
+msgid "Check the"
+msgstr "Ver"
+
+msgctxt "#31044"
+msgid "By"
+msgstr "Por"
+
+msgctxt "#31045"
+msgid "Recently Added"
+msgstr "Recentemente adicionados"
+
+msgctxt "#31046"
+msgid "Path to Lyrics Script"
+msgstr ""
+
+msgctxt "#31047"
+msgid "Not Available"
+msgstr ""
+
+msgctxt "#31050"
+msgid "Items"
+msgstr ""
+
+msgctxt "#31051"
+msgid "Games"
+msgstr "Jogos"
+
+msgctxt "#31052"
+msgid "Emulators"
+msgstr "Emuladores"
+
+msgctxt "#31053"
+msgid "Apps"
+msgstr "Aplicações"
+
+msgctxt "#31060"
+msgid "Settings"
+msgstr "Definições"
+
+msgctxt "#31061"
+msgid "Scripts"
+msgstr "Scripts"
+
+msgctxt "#31062"
+msgid "File Manager"
+msgstr "Explorador de Ficheiros"
+
+msgctxt "#31063"
+msgid "Favourites"
+msgstr "Favoritos"
+
+msgctxt "#31064"
+msgid "Profiles"
+msgstr "Perfil"
+
+msgctxt "#31065"
+msgid "Info"
+msgstr "Informação"
+
+msgctxt "#31066"
+msgid "Refresh"
+msgstr "Actualizar"
+
+msgctxt "#31067"
+msgid "About Your"
+msgstr "Acerca de"
+
+msgctxt "#31068"
+msgid "User ID:"
+msgstr ""
+
+msgctxt "#31069"
+msgid "Password:"
+msgstr ""
+
+msgctxt "#31071"
+msgid "Shutdown"
+msgstr "Desligar"
+
+msgctxt "#31072"
+msgid "Restart"
+msgstr "Reiniciar"
+
+msgctxt "#31073"
+msgid "Reload XBMC"
+msgstr "Recarregar Plex"
+
+msgctxt "#31074"
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgctxt "#31075"
+msgid "Refresh Skin"
+msgstr "Actualizar o Tema"
+
+msgctxt "#31111"
+msgid "Movies"
+msgstr "Filmes"
+
+msgctxt "#31112"
+msgid "TV Shows"
+msgstr "Séries de TV"
+
+msgctxt "#31113"
+msgid "Clips"
+msgstr "Videoclips"
+
+msgctxt "#31114"
+msgid "Episode"
+msgstr "Episódio:"
+
+msgctxt "#31115"
+msgid "N/A"
+msgstr "N/D"
+
+msgctxt "#31116"
+msgid "Movie Title"
+msgstr "Nome do Filme"
+
+msgctxt "#31117"
+msgid "Thumb"
+msgstr "Miniatura"
+
+msgctxt "#31118"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31119"
+msgid "Synopsis"
+msgstr "Sinopse"
+
+msgctxt "#31120"
+msgid "Star Rating"
+msgstr "PontuaÃ§Ã£o"
+
+msgctxt "#31121"
+msgid "Movie Details"
+msgstr "Detalhes do Filme"
+
+msgctxt "#31122"
+msgid "Aired"
+msgstr "Transmitido"
+
+msgctxt "#31123"
+msgid "MPAA"
+msgstr "MPAA"
+
+msgctxt "#31124"
+msgid "Eps."
+msgstr "Eps."
+
+msgctxt "#31125"
+msgid "Theater Times"
+msgstr "EstrÃ©ia"
+
+msgctxt "#31126"
+msgid "TV Show Details"
+msgstr ""
+
+msgctxt "#31127"
+msgid "Episode Details"
+msgstr ""
+
+msgctxt "#31128"
+msgid "Banner"
+msgstr ""
+
+msgctxt "#31129"
+msgid "Rating"
+msgstr ""
+
+msgctxt "#31130"
+msgid "IMDb Rating"
+msgstr ""
+
+msgctxt "#31131"
+msgid "Genre"
+msgstr ""
+
+msgctxt "#31132"
+msgid "Duration"
+msgstr ""
+
+msgctxt "#31133"
+msgid "Subtitles"
+msgstr ""
+
+msgctxt "#31134"
+msgid "Cast"
+msgstr ""
+
+msgctxt "#31135"
+msgid "Director"
+msgstr ""
+
+msgctxt "#31136"
+msgid "Writer"
+msgstr ""
+
+msgctxt "#31137"
+msgid "Episodes"
+msgstr ""
+
+msgctxt "#31138"
+msgid "Watched"
+msgstr ""
+
+msgctxt "#31139"
+msgid "Unwatched"
+msgstr ""
+
+msgctxt "#31140"
+msgid "First Aired"
+msgstr ""
+
+msgctxt "#31141"
+msgid "Season"
+msgstr ""
+
+msgctxt "#31142"
+msgid "Movie"
+msgstr ""
+
+msgctxt "#31143"
+msgid "TV Show"
+msgstr ""
+
+msgctxt "#31144"
+msgid "Video"
+msgstr ""
+
+msgctxt "#31145"
+msgid "Specials"
+msgstr ""
+
+msgctxt "#31220"
+msgid "Currently Playing"
+msgstr "a Tocar"
+
+msgctxt "#31221"
+msgid "Previous Track"
+msgstr "Pista Anterior"
+
+msgctxt "#31222"
+msgid "Upcoming Tracks"
+msgstr "Pista Seguinte"
+
+msgctxt "#31223"
+msgid "Click for Lyrics"
+msgstr "Carregar para Letras"
+
+msgctxt "#31224"
+msgid "Open MENU for Options"
+msgstr "Abrir MENU para OpÃ§Ãµes"
+
+msgctxt "#31225"
+msgid "Rating"
+msgstr "Pontuação"
+
+msgctxt "#31226"
+msgid "Change"
+msgstr "Modificar"
+
+msgctxt "#31227"
+msgid "Your Preset"
+msgstr "Suas Predifinições"
+
+msgctxt "#31228"
+msgid "Lyrics"
+msgstr "Letras"
+
+msgctxt "#31229"
+msgid "Artist"
+msgstr ""
+
+msgctxt "#31230"
+msgid "Album"
+msgstr ""
+
+msgctxt "#31601"
+msgid "Appearance"
+msgstr "Aspecto"
+
+msgctxt "#31602"
+msgid "Network"
+msgstr "Rede"
+
+msgctxt "#31603"
+msgid "Skin"
+msgstr "Tema"
+
+msgctxt "#31604"
+msgid "General"
+msgstr "Geral"
+
+msgctxt "#31605"
+msgid "Home"
+msgstr "Iní­cio"
+
+msgctxt "#31606"
+msgid "Change Preferences For"
+msgstr "Mudar Definições"
+
+msgctxt "#31607"
+msgid "Current"
+msgstr "Agora"
+
+msgctxt "#31608"
+msgid "Source"
+msgstr "Origem"
+
+msgctxt "#31609"
+msgid "Dest"
+msgstr "Destino"
+
+msgctxt "#31610"
+msgid "Playback"
+msgstr ""
+
+msgctxt "#31620"
+msgid "Menu"
+msgstr "Menu"
+
+msgctxt "#31621"
+msgid "Disable"
+msgstr "Esconder"
+
+msgctxt "#31622"
+msgid "Enable"
+msgstr "Activo"
+
+msgctxt "#31623"
+msgid "Background"
+msgstr "Fundo"
+
+msgctxt "#31624"
+msgid "Select"
+msgstr "Seleccionar"
+
+msgctxt "#31625"
+msgid "Use Default"
+msgstr "Usar a Pré-definição"
+
+msgctxt "#31650"
+msgid "Hide right blade"
+msgstr "Esconder Lâmina Direita"
+
+msgctxt "#31651"
+msgid "Enable custom backgrounds"
+msgstr "Activar Fundos Personalizados"
+
+msgctxt "#31652"
+msgid "Enable"
+msgstr "Activar"
+
+msgctxt "#31653"
+msgid "View"
+msgstr "Ver"
+
+msgctxt "#31654"
+msgid "Hide Thumb Labels in File Browser dialog"
+msgstr "Esconder texto das miniaturas no Explorador de Ficheiros"
+
+msgctxt "#31655"
+msgid "Display rotated Season thumb in Episodes view"
+msgstr "Mostrar Miniaturas da Série no Modo de Visualização de Episódios"
+
+msgctxt "#31656"
+msgid "Backgrounds"
+msgstr "Fundos"
+
+msgctxt "#31657"
+msgid "Image"
+msgstr "Imagem"
+
+msgctxt "#31658"
+msgid "Folder"
+msgstr "Pasta"
+
+msgctxt "#31659"
+msgid "Reset"
+msgstr "Reset"
+
+msgctxt "#31660"
+msgid "Enable Custom BG's on Home"
+msgstr "Activar Fundos personalizados no Início"
+
+msgctxt "#31661"
+msgid "Apple Movie Trailers"
+msgstr "Trailers de Filmes da Apple"
+
+msgctxt "#31662"
+msgid "Hide clock"
+msgstr "Esconder Relógio"
+
+msgctxt "#31663"
+msgid "Show Media Count"
+msgstr "Mostrar número de Media"
+
+msgctxt "#31664"
+msgid "Hide Scrollbars on Media Screens"
+msgstr "Esconder Barras de Scroll nos Ecrãns de Media"
+
+msgctxt "#31665"
+msgid "Hide Watched/Unwatched icons"
+msgstr "Esconder Icons Visto/Não Visto"
+
+msgctxt "#31666"
+msgid "Show Blade in Centre of Screen"
+msgstr "Mostrar Lãmina no meio do Ecrã"
+
+msgctxt "#31667"
+msgid "MediaStream"
+msgstr "MediaStream"
+
+msgctxt "#31668"
+msgid "Show Larger Clock"
+msgstr "Relógio Maior"
+
+msgctxt "#31669"
+msgid "Show Weather on Home"
+msgstr "Visualizar Meteorologia no Início"
+
+msgctxt "#31670"
+msgid "Show Fanart"
+msgstr "Mostar Fanart"
+
+msgctxt "#31671"
+msgid "Hide Plot in Video OSD"
+msgstr "Esconder Trama no OSD de Vídeo"
+
+msgctxt "#31672"
+msgid "Hide Info"
+msgstr "Esconder Informação"
+
+msgctxt "#31673"
+msgid "Media Views"
+msgstr "Visualização de Media"
+
+msgctxt "#31674"
+msgid "Hide Fanart"
+msgstr "Esconder Fanart"
+
+msgctxt "#31675"
+msgid "with Movies Views"
+msgstr "em Visualização de Filmes"
+
+msgctxt "#31676"
+msgid "In Media Preview"
+msgstr "Em Pre-Visualização de Media"
+
+msgctxt "#31677"
+msgid "with TV Shows List"
+msgstr "com Listagem de Séries TV"
+
+msgctxt "#31678"
+msgid "Show Season thumb"
+msgstr "Mostrar Miniaturas das Temporadas"
+
+msgctxt "#31679"
+msgid "Hide Focus Details in Panel Stream"
+msgstr "Esconder Detalhe de Foco em Painel de Imagens"
+
+msgctxt "#31680"
+msgid "Hide Thumbs in List View"
+msgstr "Esconder Miniaturas em Visualização de Lista"
+
+msgctxt "#31681"
+msgid "in Files Mode"
+msgstr "em Modo de Ficheiros"
+
+msgctxt "#31682"
+msgid "on TV Wall"
+msgstr "no Ecrã de Parede"
+
+msgctxt "#31683"
+msgid "with TV Views"
+msgstr "com Séries TV"
+
+msgctxt "#31684"
+msgid "Hide Custom Backgrounds"
+msgstr "Esconder Fundos Personalizados"
+
+msgctxt "#31685"
+msgid "Show Animated"
+msgstr "Mostrar Com Animação"
+
+msgctxt "#31686"
+msgid "Show Horizontal Music Vis"
+msgstr "Mostrar Visualização de Música Horizontal"
+
+msgctxt "#31687"
+msgid "with Video Views"
+msgstr ""
+
+msgctxt "#31688"
+msgid "with Music Views"
+msgstr ""
+
+msgctxt "#31689"
+msgid "with Pictures Views"
+msgstr ""
+
+msgctxt "#31690"
+msgid "Hide No Thumb Icons"
+msgstr ""
+
+msgctxt "#31691"
+msgid "Use Low Overlay for TV Shows Coverflow"
+msgstr ""
+
+msgctxt "#31692"
+msgid "Hide Info in Wall Stream view"
+msgstr ""
+
+msgctxt "#31693"
+msgid "Hide Thumbs in Options Menu"
+msgstr ""
+
+msgctxt "#31694"
+msgid "Show Now Playing UI on Left"
+msgstr ""
+
+msgctxt "#31695"
+msgid "Show AM/PM in clock"
+msgstr ""
+
+msgctxt "#31697"
+msgid "Hide Photo Description in Slideshow"
+msgstr ""
+
+msgctxt "#31701"
+msgid "Setup"
+msgstr "Configurar"
+
+msgctxt "#31702"
+msgid "Showcase"
+msgstr "Capas"
+
+msgctxt "#31703"
+msgid "Seasons"
+msgstr "Temporadas"
+
+msgctxt "#31704"
+msgid "Photo"
+msgstr "Foto"
+
+msgctxt "#31705"
+msgid "Convex"
+msgstr "Convexo"
+
+msgctxt "#31706"
+msgid "Episode Thumbs"
+msgstr "Miniaturas de Episodios"
+
+msgctxt "#31707"
+msgid "Media Preview"
+msgstr "Visualizar Media"
+
+msgctxt "#31708"
+msgid "Media List"
+msgstr "Listagem de Media"
+
+msgctxt "#31709"
+msgid "Concave"
+msgstr "Concavo"
+
+msgctxt "#31710"
+msgid "Display"
+msgstr "Ecrã"
+
+msgctxt "#31711"
+msgid "Info List"
+msgstr "Lista de Informação"
+
+msgctxt "#31712"
+msgid "Image Stream"
+msgstr "Sequência de Imagens"
+
+msgctxt "#31713"
+msgid "Setup Options"
+msgstr "Opções de Configuração"
+
+msgctxt "#31714"
+msgid "Wall Stream"
+msgstr "Parede de Imagens"
+
+msgctxt "#31715"
+msgid "Panel Stream"
+msgstr "Painel de Imagens"
+
+msgctxt "#31716"
+msgid "Coverflow"
+msgstr "Circulação de Capas"
+
+msgctxt "#31717"
+msgid "Options Menu"
+msgstr "Menu de Opções"
+
+msgctxt "#31720"
+msgid "Grid"
+msgstr ""
+
+msgctxt "#31721"
+msgid "Episodes List"
+msgstr ""
+
+msgctxt "#31722"
+msgid "Plugin Stream"
+msgstr ""
+
+msgctxt "#31800"
+msgid "About Plex"
+msgstr "Créditos"
+
+msgctxt "#31801"
+msgid "Welcome to"
+msgstr "Bem Vindo a"
+
+msgctxt "#31802"
+msgid "your media....[COLOR Highlighted]your[/COLOR] way"
+msgstr "o teu media....[COLOR Highlighted]á  tua[/color] maneira"
+
+msgctxt "#31804"
+msgid "MediaStream is a new user interface for the popular multimedia XBMC.  Created by the newly-formed \"Team RazorFish\", this new interface seeks to combine functionality with form, merging style with substance.  Designed and optimized for the 'High-Def' generation, this interface seeks to bring a new experience to the already popular platform."
+msgstr "MediaStream é uma nova interface de utilizador para o popular XBMC e Plex.  Criada pela recém formada \"Team RazorFish\", esta nova interface espera combinar funcionalidade com formas, juntando estilo com substância.  Desenhada e optimizada para a geração de 'Alta Definição', esta interface deseja trazer uma nova experiencia á  já tão popular plataforma."
+
+msgctxt "#31805"
+msgid "Note"
+msgstr "Nota"
+
+msgctxt "#31806"
+msgid "Please ensure that you have the very latest build of XBMC.  We recommend the latest SVN build of XBMC, and would ask that you always download the full skin package."
+msgstr "Por favor confirme se tem a última versão do XBMC ou Plex.  Recomendamos a ultima versão SVN do XBMC ou a última versão do Plex, e pedimos que façaa sempre o download do pacote completo da skin."
+
+msgctxt "#31807"
+msgid "Skin Credits"
+msgstr "Créditos da Skin"
+
+msgctxt "#31808"
+msgid "The entire project was a collaborative effort between many talented individuals.  These are as follows: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Special thanks goes to emilio (a.k.a. thedeViL), without whom this project would never have happened.  Of course all thanks go to you, the XBMC community... without you there would be no reason to do what we do... keep rocking guys, you're the best!!!"
+msgstr "Este projecto foi um esforço de cooperação de muitos indivíduos talentosos.  Foram eles os seguintes: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x. Agradecimento especial para o emilio (a.k.a. thedeViL), o qual, sem ele este projecto nunca teria acontecido.  E claro, todos os agradecimentos vão para vocês , a comunidade XBMC e Plex... sem vocês não haveria razão para fazer o que fazemos... continuem assim pessoal, vocês são os maiores!!!"
+
+msgctxt "#31809"
+msgid "Special Thanks: entire XBMC team, supporters at the xbmc and xbox-scene forums"
+msgstr "Agradecimento especial: toda a equipa XBMC e Plex, ajudantes no foruns xbmc, xbox-scene e Plex Forum"
+
+msgctxt "#31810"
+msgid "Click \"OK\" to continue and begin using our skin"
+msgstr "Carregue em \"OK\" para continuar e começar a utilizar este tema"
+
+msgctxt "#31811"
+msgid "Note: This is the only time you will see this message once you hit \"OK\""
+msgstr "Nota: Esta é a unica vez que irá ver esta mensagem após pressionar \"OK\""
+
+msgctxt "#31851"
+msgid "[COLOR=orange]Plex[/COLOR] bridges the gap between your Mac and your home theater, doing so with a visually appealing user interface that provides instant access to your media. [COLOR=orange]Plex[/COLOR] can play a wide range of video, audio and photo formats as well as online streaming audio and video. The real power of [COLOR=orange]Plex[/COLOR] is found in its library features: Organize your media into versatile libraries, automatically retrieve metadata from the Internet and display your library using one of the visually stunning skins."
+msgstr ""
+
+msgctxt "#31852"
+msgid "At Plex, we would like to thank the following projects, without whom none of this would be possible:"
+msgstr ""
+
+msgctxt "#31853"
+msgid "[COLOR=orange]XBMC[/COLOR]: The most important one, for supplying us with a great foundation to build on."
+msgstr ""
+
+msgctxt "#31854"
+msgid "[COLOR=orange]Team RazorFish[/COLOR]: The talented team who created the original MediaStream skin."
+msgstr ""
+
+msgctxt "#31855"
+msgid "[COLOR=orange]FFmpeg[/COLOR]: Without this, there would be no decoding of video inside Plex. A critical component, to be sure."
+msgstr ""
+
+msgctxt "#31856"
+msgid "[COLOR=orange]SQLite[/COLOR]: The media database is stored using this excellent, industry standard free database."
+msgstr ""
+
+msgctxt "#31857"
+msgid "[COLOR=orange]CxImage[/COLOR]: The workhorse code responsible for loading images and photos. It uses lots of other libraries like libPNG, libJPEG, etc."
+msgstr ""
+
+msgctxt "#31858"
+msgid "[COLOR=orange]FreeType[/COLOR]: This code is responsible for the beautiful rendering of fonts within the application."
+msgstr ""
+
+msgctxt "#31859"
+msgid "[COLOR=orange]Python[/COLOR]: The media center embeds the Python interpreter to provide powerful scripting functionality."
+msgstr ""
+
+msgctxt "#31860"
+msgid "Please visit http://www.plexapp.com/credits.php for links and more information."
+msgstr ""
+
+msgctxt "#31900"
+msgid "Login As"
+msgstr "Iniciar como"
+
+msgctxt "#31901"
+msgid "Modify Your"
+msgstr "Modificar o seu"
+
+msgctxt "#31902"
+msgid "Profile"
+msgstr "Perfil"
+
+msgctxt "#31903"
+msgid "Profile name"
+msgstr "Nome do Perfil"
+
+msgctxt "#31904"
+msgid "Profile picture"
+msgstr "Imagem do Perfil"
+
+msgctxt "#31950"
+msgid "Go to your"
+msgstr "Ir para os seus"
+
+msgctxt "#31951"
+msgid "Visit"
+msgstr "Ir á Loja de"
+
+msgctxt "#31952"
+msgid "Channel Directory"
+msgstr "Aplicações"
+
+msgctxt "#31953"
+msgid "Get"
+msgstr "Obter"
+
+msgctxt "#31954"
+msgid "Help"
+msgstr "Ajuda"
+
+msgctxt "#31955"
+msgid "Preferences"
+msgstr "Preferências"
+
+msgctxt "#31956"
+msgid "Show"
+msgstr "Mostrar"
+
+msgctxt "#31960"
+msgid "Sleep"
+msgstr ""
+
+msgctxt "#31961"
+msgid "Shut Down"
+msgstr ""
+
+msgctxt "#31962"
+msgid "Power Menu"
+msgstr ""
+
+msgctxt "#31963"
+msgid "displays"
+msgstr ""
+
+msgctxt "#31964"
+msgid "Sleep Display"
+msgstr ""
+
+msgctxt "#31970"
+msgid "Channels"
+msgstr ""
+
+msgctxt "#31971"
+msgid "Video Channels"
+msgstr ""
+
+msgctxt "#31972"
+msgid "Music Channels"
+msgstr ""
+
+msgctxt "#31973"
+msgid "Picture Channels"
+msgstr ""
+
+msgctxt "#31981"
+msgid "Show Thumbnails in List View"
+msgstr ""
+
+msgctxt "#31982"
+msgid "Show Plot in Video OSD"
+msgstr ""
+
+msgctxt "#31983"
+msgid "Show Picture Descriptions in Slideshow"
+msgstr ""
+
+msgctxt "#31984"
+msgid "Show Now Playing Information in Visualisations"
+msgstr ""
+
+msgctxt "#31985"
+msgid "Show Separate Menu Items for Plug-in Sections"
+msgstr ""
+
+msgctxt "#31999"
+msgid "End Time"
+msgstr ""
+
+msgctxt "#32000"
+msgid "Please choose the type of audio connector used on this computer.  If you're unsure, or if you're using built-in speakers, you can accept the default and continue.  You can access this setting at any time in the Preferences."
+msgstr ""
+
+msgctxt "#32001"
+msgid "Plex Home Theater Setup"
+msgstr ""
+
+msgctxt "#32003"
+msgid "[B]Welcome to Plex![/B]  [CR][CR]In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to [B]myPlex[/B].  [CR][CR][B]myPlex[/B] lets you queue and share online videos, and access shared media from your friends' libraries.  [CR][CR]If you don't already have a free [B]myPlex[/B] account, you can create one now at [COLOR=orange]http://my.plexapp.com[/COLOR] before continuing."
+msgstr ""
+
+msgctxt "#32100"
+msgid "Set Rating"
+msgstr ""
+
+msgctxt "#32101"
+msgid "Episodes added"
+msgstr ""
+
+msgctxt "#32102"
+msgid "All Episodes"
+msgstr ""
+
+msgctxt "#32103"
+msgid "There is no description available for this "
+msgstr ""
+
+msgctxt "#32104"
+msgid "You can add one for it in the Media Manager"
+msgstr ""
+
+msgctxt "#32105"
+msgid "* Plot hidden to avoid spoilers *"
+msgstr ""

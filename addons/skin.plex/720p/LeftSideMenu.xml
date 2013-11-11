@@ -304,12 +304,12 @@
 				<focusposition>2</focusposition>
 				<scrolltime>200</scrolltime>
 				<animation type="WindowOpen" condition="true" reversible="false">
-				  <effect type="rotatey" center="304" start="-90,455" end="0,455" time="300"/>
-				  <effect type="fade" start="0" end="100" time="50" delay="0" />
+					<effect type="rotatey" center="304" start="-90,455" end="0,455" time="300"/>
+					<effect type="fade" start="0" end="100" time="50" delay="0"/>
 				</animation>
 				<animation type="WindowClose" condition="true" reversible="false">
-				  <effect type="rotatey" center="304" start="0,455" end="-90,455" time="300" />
-				  <effect type="fade" start="100" end="0" time="230" />
+					<effect type="rotatey" center="304" start="0,455" end="-90,455" time="300"/>
+					<effect type="fade" start="100" end="0" time="230"/>
 				</animation>
 				<itemlayout width="600" height="50">
 					<control type="label">
@@ -376,7 +376,7 @@
 					</item>
 				</content>
 			</control>
-		</control>		
+		</control>
 	</include>
 	<include name="_LeftSideMenuHome">
 		<!-- Home.xml -->
@@ -459,16 +459,14 @@
 			<!--><include>GlobalSearch</include>-->
 			<!-- filters & sorting menu -->
 			<control type="group" id="1300">
-				<!--><visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>-->
 				<animation type="Conditional" condition="!Window.IsActive(10202)" reversible="false">
-				  <effect type="rotatey" center="-120" start="80" end="0" time="300" />
-				  <effect type="fade" start="0" end="100" time="0" delay="0" />
+					<effect type="rotatey" center="-120" start="80" end="0" time="300"/>
+					<effect type="fade" start="0" end="100" time="0" delay="0"/>
 				</animation>
 				<animation type="Conditional" condition="Window.IsActive(10202)" reversible="false">
-				  <effect type="rotatey" center="-120" start="0" end="80" time="300" />
-				  <effect type="fade" start="100" end="0" time="250" />
+					<effect type="rotatey" center="-120" start="0" end="80" time="300"/>
+					<effect type="fade" start="100" end="0" time="250"/>
 				</animation>
-				<!--><animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(10202)">Conditional</animation>-->
 				<posx>-253</posx>
 				<posy>0</posy>
 				<width>253</width>

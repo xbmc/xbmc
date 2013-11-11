@@ -12,8 +12,8 @@
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
 		<!-- views (ViewsPhoto.xml & ViewsChannels.xml) -->
-		<!-- ListSecondary ID 40 -->
-		<include>ListSecondary</include>
+		<!-- ByFolder ID 40 -->
+		<include>ByFolder</include>
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
 		<!-- ChannelPhoto ID 72 -->

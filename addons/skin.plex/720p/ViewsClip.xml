@@ -37,7 +37,7 @@
 	<include name="ClipThumbSelectedBorder">
 		<control type="image">
 			<width>254</width>
-			<height>143</height>
+			<height>197</height>
 			<include>Border</include>
 		</control>
 	</include>
@@ -117,9 +117,9 @@
 			<control type="panel" id="80">
 				<viewtype label="ClipThumbs">panel</viewtype>
 				<visible>Container.content(Clips) | Container.Content(HomeMovies)</visible>
-				<onup>50</onup>
-				<ondown>50</ondown>
-				<onright>50</onright>
+				<onup>80</onup>
+				<ondown>80</ondown>
+				<onright>80</onright>
 				<onleft>1300</onleft>
 				<orientation>vertical</orientation>
 				<posx>102</posx>
@@ -156,6 +156,82 @@
 					<include>ClipThumbSelectedBorder</include>
 					<include>ClipThumbUnwatchedOverlay</include>
 				</focusedlayout>
+			</control>
+		</control>
+	</include>
+	<!-- By Folder -->
+	<include name="ByFolder">
+		<control type="group">
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<visible>Container.content(folders) | Container.content(folder)</visible>
+			<control type="group" id="777">
+				<control type="list" id="40">
+					<visible>Container.content(folders) | Container.content(folder)</visible>
+					<viewtype label="ByFolder">list</viewtype>
+					<posy>30</posy>
+					<posx>100</posx>
+					<width>1200</width>
+					<height>655</height>
+					<onright>-</onright>
+					<onleft>1300</onleft>
+					<onup>40</onup>
+					<ondown>40</ondown>
+					<focusposition>0</focusposition>
+					<wraparound>true</wraparound>
+					<scrolltime>200</scrolltime>
+					<pagecontrol>61</pagecontrol>
+					<itemlayout height="50">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>1150</width>
+							<height>50</height>
+							<texture border="5">border-bottom-grey.png</texture>
+						</control>
+						<control type="image">
+							<posx>20</posx>
+							<posy>4</posy>
+							<width>40</width>
+							<height>40</height>
+							<texture>icon-folder.png</texture>
+							<aspectratio>keep</aspectratio>
+							<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+						</control>
+						<control type="label">
+							<width>1150</width>
+							<height>50</height>
+							<info>ListItem.Label</info>
+							<include>White2</include>
+							<textoffsetx>80</textoffsetx>
+						</control>
+					</itemlayout>
+					<focusedlayout height="50">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>1150</width>
+							<height>50</height>
+							<texture border="5">black-bottom-grey.png</texture>
+						</control>
+						<control type="image">
+							<posx>20</posx>
+							<posy>4</posy>
+							<width>40</width>
+							<height>40</height>
+							<texture>icon-folder.png</texture>
+							<aspectratio>keep</aspectratio>
+							<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+						</control>
+						<control type="label">
+							<width>1150</width>
+							<height>50</height>
+							<info>ListItem.Label</info>
+							<textcolor>Focused</textcolor>
+							<textoffsetx>80</textoffsetx>
+						</control>
+					</focusedlayout>
+				</control>
 			</control>
 		</control>
 	</include>

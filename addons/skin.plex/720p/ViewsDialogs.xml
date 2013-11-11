@@ -545,7 +545,6 @@
 						<posx>20</posx>
 						<width>560</width>
 						<scroll>yes</scroll>
-						<label>testing</label>
 					</control>
 					<control type="label" id="3">
 						<description>Line 2</description>
@@ -553,7 +552,6 @@
 						<posx>20</posx>
 						<width>560</width>
 						<scroll>yes</scroll>
-						<label>testing</label>
 					</control>
 					<control type="label" id="4">
 						<description>Line 3</description>
@@ -561,7 +559,6 @@
 						<posx>20</posx>
 						<width>560</width>
 						<scroll>yes</scroll>
-						<label>testing</label>
 					</control>
 					<control type="group">
 						<posy>110</posy>
