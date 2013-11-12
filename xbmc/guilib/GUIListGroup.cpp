@@ -175,6 +175,10 @@ void CGUIListGroup::SetFocusedItem(unsigned int focus)
 {
   for (iControls it = m_children.begin(); it != m_children.end(); it++)
   {
+    /* PLEX */
+    if (!*it) continue;
+    /* END PLEX */
+
     if ((*it)->GetControlType() == CGUIControl::GUICONTROL_MULTISELECT)
       ((CGUIMultiSelectTextControl *)(*it))->SetFocusedItem(focus);
     else if ((*it)->GetControlType() == CGUIControl::GUICONTROL_LISTGROUP)
