@@ -2143,6 +2143,7 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
   // trim any non-alphanumeric char in the begining
   std::string::iterator result = std::find_if(toParse.begin(), toParse.end(), ::isalnum);
 
+  std::string name;
   if (result != toParse.end()) // if we have anything to parse
   {
     std::string inputString(result, toParse.end());
@@ -2150,7 +2151,6 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
     std::vector<std::string> tokens;
     StringUtils::Tokenize(inputString, tokens, delimiters);
 
-    std::string name;
     for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
     {
       if (info.language.empty())
@@ -2186,11 +2186,11 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
       }
       name += " " + (*it);
     }
-    StringUtils::Trim(name);
-    info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);
-    info.name += " ";
-    info.name += g_localizeStrings.Get(21602); // External
   }
+  name += " ";
+  name += g_localizeStrings.Get(21602); // External
+  StringUtils::Trim(name);
+  info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);
   if (info.flag == 0x1111)
     info.flag = CDemuxStream::FLAG_NONE;
 
