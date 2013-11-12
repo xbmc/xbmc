@@ -32,11 +32,11 @@
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
-#if defined(HAS_AMLPLAYER)
+#if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif
 
-#define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
+#define ALSA_OPTIONS (SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
 
 #define ALSA_MAX_CHANNELS 16
 static enum AEChannel ALSAChannelMap[ALSA_MAX_CHANNELS + 1] = {
@@ -147,7 +147,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
     channelLayout = GetChannelLayout(format);
     m_passthrough   = false;
   }
-#if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
+#if defined(HAS_LIBAMCODEC)
   if (aml_present())
   {
     aml_set_audio_passthrough(m_passthrough);
@@ -196,7 +196,8 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   if (!InitializeHW(format) || !InitializeSW(format))
     return false;
 
-  snd_pcm_nonblock(m_pcm, 1);
+  // we want it blocking
+  snd_pcm_nonblock(m_pcm, 0);
   snd_pcm_prepare (m_pcm);
 
   m_format              = format;
@@ -446,7 +447,6 @@ void CAESinkALSA::Deinitialize()
 {
   if (m_pcm)
   {
-    snd_pcm_nonblock(m_pcm, 0);
     Stop();
     snd_pcm_close(m_pcm);
     m_pcm = NULL;
@@ -509,35 +509,11 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
 {
   if (!m_pcm)
   {
-    SoftResume();
-    if(!m_pcm)
-      return 0;
-
-    CLog::Log(LOGDEBUG, "CAESinkALSA - the grAEken is hunger, feed it (I am the downmost fallback - fix your code)");
+    CLog::Log(LOGERROR, "CAESinkALSA - Tried to add packets without a sink");
+    return INT_MAX;
   }
 
-  int ret;
-
-  ret = snd_pcm_avail(m_pcm);
-  if (ret < 0) 
-  {
-    HandleError("snd_pcm_avail", ret);
-    ret = 0;
-  }
-
-  if ((unsigned int)ret < frames)
-  {
-    if(blocking)
-    {
-      ret = snd_pcm_wait(m_pcm, m_timeout);
-      if (ret < 0)
-        HandleError("snd_pcm_wait", ret);
-    }
-    else
-      return 0;
-  }
-
-  ret = snd_pcm_writei(m_pcm, (void*)data, frames);
+  int ret = snd_pcm_writei(m_pcm, (void*)data, frames);
   if (ret < 0)
   {
     HandleError("snd_pcm_writei(1)", ret);
@@ -589,10 +565,8 @@ void CAESinkALSA::Drain()
   if (!m_pcm)
     return;
 
-  snd_pcm_nonblock(m_pcm, 0);
   snd_pcm_drain(m_pcm);
   snd_pcm_prepare(m_pcm);
-  snd_pcm_nonblock(m_pcm, 1);
 }
 
 void CAESinkALSA::AppendParams(std::string &device, const std::string &params)
@@ -1157,29 +1131,6 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
 
   info.m_deviceType = AE_DEVTYPE_HDMI;
   return true;
-}
-
-bool CAESinkALSA::SoftSuspend()
-{
-  if(m_pcm) // it is still there
-   Deinitialize();
-
-  return true;
-}
-bool CAESinkALSA::SoftResume()
-{
-    // reinit all the clibber
-    if(!m_pcm)
-    {
-      if (!snd_config)
-        snd_config_update();
-
-    // Initialize what we had before again, SoftAE might keep it
-    // but ignore ret value to give the chance to do reopening
-    Initialize(m_initFormat, m_initDevice);
-    }
-   // make sure that OpenInternalSink is done again
-   return false;
 }
 
 void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)

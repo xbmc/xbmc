@@ -22,11 +22,21 @@
 #include "AndroidTouch.h"
 #include "AndroidKey.h"
 #include "AndroidMouse.h"
+#include "AndroidJoyStick.h"
 
-class IInputHandler : public CAndroidTouch, public CAndroidKey, public CAndroidMouse
+class IInputHandler
+: public CAndroidKey
+, public CAndroidMouse
+, public CAndroidTouch
+, public CAndroidJoyStick
 {
 public:
-  IInputHandler() : CAndroidTouch(), CAndroidKey(), CAndroidMouse() {}
+  IInputHandler()
+  : CAndroidKey()
+  , CAndroidMouse()
+  , CAndroidTouch()
+  , CAndroidJoyStick()
+  {}
 
   virtual void setDPI(uint32_t dpi) { CAndroidTouch::setDPI(dpi); }
 };

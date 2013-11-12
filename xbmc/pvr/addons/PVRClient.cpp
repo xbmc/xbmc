@@ -1502,3 +1502,50 @@ void CPVRClient::UpdateCharInfoSignalStatus(void)
   CSingleLock lock(m_critSection);
   m_qualityInfo = qualityInfo;
 }
+
+time_t CPVRClient::GetPlayingTime(void) const
+{
+  time_t time = 0;
+  if (IsPlaying())
+  {
+    try
+    {
+      time = m_pStruct->GetPlayingTime();
+    }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+  // fallback if not implemented by addon
+  if (time == 0)
+  {
+    CDateTime::GetUTCDateTime().GetAsTime(time);
+  }
+  return time;
+}
+
+time_t CPVRClient::GetBufferTimeStart(void) const
+{
+  time_t time = 0;
+  if (IsPlaying())
+  {
+    try
+    {
+      time = m_pStruct->GetBufferTimeStart();
+    }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+  return time;
+}
+
+time_t CPVRClient::GetBufferTimeEnd(void) const
+{
+  time_t time = 0;
+  if (IsPlaying())
+  {
+    try
+    {
+      time = m_pStruct->GetBufferTimeEnd();
+    }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+  return time;
+}

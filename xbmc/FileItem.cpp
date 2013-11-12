@@ -699,45 +699,58 @@ void CFileItem::Serialize(CVariant& value) const
     (*m_pictureInfoTag).Serialize(value["pictureInfoTag"]);
 }
 
-void CFileItem::ToSortable(SortItem &sortable)
+void CFileItem::ToSortable(SortItem &sortable, Field field) const
 {
-  sortable[FieldPath] = m_strPath;
-  sortable[FieldDate] = (m_dateTime.IsValid()) ? m_dateTime.GetAsDBDateTime() : "";
-  sortable[FieldSize] = m_dwSize;
-  sortable[FieldDriveType] = m_iDriveType;
-  sortable[FieldStartOffset] = m_lStartOffset;
-  sortable[FieldEndOffset] = m_lEndOffset;
-  sortable[FieldProgramCount] = m_iprogramCount;
-  sortable[FieldBitrate] = m_dwSize;
-  sortable[FieldTitle] = m_strTitle;
-  sortable[FieldSortSpecial] = m_specialSort;
-  sortable[FieldFolder] = m_bIsFolder;
-
+  switch (field)
+  {
+  case FieldPath:         sortable[FieldPath] = m_strPath; break;
+  case FieldDate:         sortable[FieldDate] = (m_dateTime.IsValid()) ? m_dateTime.GetAsDBDateTime() : ""; break;
+  case FieldSize:         sortable[FieldSize] = m_dwSize; break;
+  case FieldDriveType:    sortable[FieldDriveType] = m_iDriveType; break;
+  case FieldStartOffset:  sortable[FieldStartOffset] = m_lStartOffset; break;
+  case FieldEndOffset:    sortable[FieldEndOffset] = m_lEndOffset; break;
+  case FieldProgramCount: sortable[FieldProgramCount] = m_iprogramCount; break;
+  case FieldBitrate:      sortable[FieldBitrate] = m_dwSize; break;
+  case FieldTitle:        sortable[FieldTitle] = m_strTitle; break;
   // If there's ever a need to convert more properties from CGUIListItem it might be
   // worth to make CGUIListItem  implement ISortable as well and call it from here
-  sortable[FieldLabel] = GetLabel();
+  default: break;
+  }
 
   if (HasMusicInfoTag())
-    GetMusicInfoTag()->ToSortable(sortable);
-    
+    GetMusicInfoTag()->ToSortable(sortable, field);
+
   if (HasVideoInfoTag())
   {
-    GetVideoInfoTag()->ToSortable(sortable);
+    GetVideoInfoTag()->ToSortable(sortable, field);
 
     if (GetVideoInfoTag()->m_type == "tvshow")
     {
-      if (HasProperty("totalepisodes"))
+      if (field == FieldNumberOfEpisodes && HasProperty("totalepisodes"))
         sortable[FieldNumberOfEpisodes] = GetProperty("totalepisodes");
-      if (HasProperty("unwatchedepisodes"))
+      if (field == FieldNumberOfWatchedEpisodes && HasProperty("unwatchedepisodes"))
         sortable[FieldNumberOfWatchedEpisodes] = GetProperty("unwatchedepisodes");
     }
   }
-    
+
   if (HasPictureInfoTag())
-    GetPictureInfoTag()->ToSortable(sortable);
+    GetPictureInfoTag()->ToSortable(sortable, field);
 
   if (HasPVRChannelInfoTag())
-    GetPVRChannelInfoTag()->ToSortable(sortable);
+    GetPVRChannelInfoTag()->ToSortable(sortable, field);
+}
+
+void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
+{
+  Fields::const_iterator it;
+  for (it = fields.begin(); it != fields.end(); it++)
+    ToSortable(sortable, *it);
+
+  /* FieldLabel is used as a fallback by all sorters and therefore has to be present as well */
+  sortable[FieldLabel] = GetLabel();
+  /* FieldSortSpecial and FieldFolder are required in conjunction with all other sorters as well */
+  sortable[FieldSortSpecial] = m_specialSort;
+  sortable[FieldFolder] = m_bIsFolder;
 }
 
 bool CFileItem::Exists(bool bUseCache /* = true */) const
@@ -775,7 +788,7 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
 bool CFileItem::IsVideo() const
 {
   /* check preset mime type */
-  if( m_mimetype.Left(6).Equals("video/") )
+  if( StringUtils::StartsWithNoCase(m_mimetype, "video/") )
     return true;
 
   if (HasVideoInfoTag()) return true;
@@ -787,7 +800,7 @@ bool CFileItem::IsVideo() const
     return true;
 
   CStdString extension;
-  if( m_mimetype.Left(12).Equals("application/") )
+  if( StringUtils::StartsWithNoCase(m_mimetype, "application/") )
   { /* check for some standard types */
     extension = m_mimetype.Mid(12);
     if( extension.Equals("ogg")
@@ -837,7 +850,7 @@ bool CFileItem::IsDiscStub() const
 bool CFileItem::IsAudio() const
 {
   /* check preset mime type */
-  if( m_mimetype.Left(6).Equals("audio/") )
+  if( StringUtils::StartsWithNoCase(m_mimetype, "audio/") )
     return true;
 
   if (HasMusicInfoTag()) return true;
@@ -845,7 +858,7 @@ bool CFileItem::IsAudio() const
   if (HasPictureInfoTag()) return false;
   if (IsCDDA()) return true;
 
-  if( m_mimetype.Left(12).Equals("application/") )
+  if( StringUtils::StartsWithNoCase(m_mimetype, "application/") )
   { /* check for some standard types */
     CStdString extension = m_mimetype.Mid(12);
     if( extension.Equals("ogg")
@@ -867,7 +880,7 @@ bool CFileItem::IsKaraoke() const
 
 bool CFileItem::IsPicture() const
 {
-  if( m_mimetype.Left(6).Equals("image/") )
+  if( StringUtils::StartsWithNoCase(m_mimetype, "image/") )
     return true;
 
   if (HasPictureInfoTag()) return true;
@@ -989,12 +1002,12 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
   if (bIfos)
   {
     if (strFileName.Equals("video_ts.ifo")) return true;
-    if (strFileName.Left(4).Equals("vts_") && strFileName.Right(6).Equals("_0.ifo") && strFileName.length() == 12) return true;
+    if (StringUtils::StartsWithNoCase(strFileName, "vts_") && StringUtils::EndsWithNoCase(strFileName, "_0.ifo") && strFileName.length() == 12) return true;
   }
   if (bVobs)
   {
     if (strFileName.Equals("video_ts.vob")) return true;
-    if (strFileName.Left(4).Equals("vts_") && strFileName.Right(4).Equals(".vob")) return true;
+    if (StringUtils::StartsWithNoCase(strFileName, "vts_") && StringUtils::EndsWithNoCase(strFileName, ".vob")) return true;
   }
 
   return false;
@@ -1033,7 +1046,7 @@ bool CFileItem::IsCBR() const
 
 bool CFileItem::IsRSS() const
 {
-  return m_strPath.Left(6).Equals("rss://") || URIUtils::HasExtension(m_strPath, ".rss")
+  return StringUtils::StartsWithNoCase(m_strPath, "rss://") || URIUtils::HasExtension(m_strPath, ".rss")
       || m_mimetype == "application/rss+xml";
 }
 
@@ -1368,9 +1381,9 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
       m_mimetype = "x-directory/normal";
     else if( m_pvrChannelInfoTag )
       m_mimetype = m_pvrChannelInfoTag->InputFormat();
-    else if( m_strPath.Left(8).Equals("shout://")
-          || m_strPath.Left(7).Equals("http://")
-          || m_strPath.Left(8).Equals("https://"))
+    else if( StringUtils::StartsWithNoCase(m_strPath, "shout://")
+          || StringUtils::StartsWithNoCase(m_strPath, "http://")
+          || StringUtils::StartsWithNoCase(m_strPath, "https://"))
     {
       // If lookup is false, bail out early to leave mime type empty
       if (!lookup)
@@ -1381,7 +1394,7 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
       // try to get mime-type again but with an NSPlayer User-Agent
       // in order for server to provide correct mime-type.  Allows us
       // to properly detect an MMS stream
-      if (m_mimetype.Left(11).Equals("video/x-ms-"))
+      if (StringUtils::StartsWithNoCase(m_mimetype, "video/x-ms-"))
         CCurlFile::GetMimeType(GetAsUrl(), m_mimetype, "NSPlayer/11.00.6001.7000");
 
       // make sure there are no options set in mime-type
@@ -1400,7 +1413,7 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
   }
 
   // change protocol to mms for the following mime-type.  Allows us to create proper FileMMS.
-  if( m_mimetype.Left(32).Equals("application/vnd.ms.wms-hdr.asfv1") || m_mimetype.Left(24).Equals("application/x-mms-framed") )
+  if( StringUtils::StartsWithNoCase(m_mimetype, "application/vnd.ms.wms-hdr.asfv1") || StringUtils::StartsWithNoCase(m_mimetype, "application/x-mms-framed") )
     m_strPath.Replace("http:", "mms:");
 }
 
@@ -1887,11 +1900,13 @@ void CFileItemList::Sort(SortDescription sortDescription)
   if (m_sortIgnoreFolders)
     sortDescription.sortAttributes = (SortAttribute)((int)sortDescription.sortAttributes | SortAttributeIgnoreFolders);
 
+  const Fields fields = SortUtils::GetFieldsForSorting(sortDescription.sortBy);
   SortItems sortItems((size_t)Size());
   for (int index = 0; index < Size(); index++)
   {
-    m_items[index]->ToSortable(sortItems[index]);
-    sortItems[index][FieldId] = index;
+    sortItems[index] = boost::shared_ptr<SortItem>(new SortItem);
+    m_items[index]->ToSortable(*sortItems[index], fields);
+    (*sortItems[index])[FieldId] = index;
   }
 
   // do the sorting
@@ -1902,9 +1917,9 @@ void CFileItemList::Sort(SortDescription sortDescription)
   sortedFileItems.reserve(Size());
   for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); it++)
   {
-    CFileItemPtr item = m_items[(int)it->at(FieldId).asInteger()];
+    CFileItemPtr item = m_items[(int)(*it)->at(FieldId).asInteger()];
     // Set the sort label in the CFileItem
-    item->SetSortLabel(CStdStringW(it->at(FieldSort).asWideString()));
+    item->SetSortLabel(CStdStringW((*it)->at(FieldSort).asWideString()));
 
     sortedFileItems.push_back(item);
   }
@@ -2273,7 +2288,7 @@ void CFileItemList::StackFolders()
 {
   // Precompile our REs
   VECCREGEXP folderRegExps;
-  CRegExp folderRegExp(true);
+  CRegExp folderRegExp(true, true);
   const CStdStringArray& strFolderRegExps = g_advancedSettings.m_folderStackRegExps;
 
   CStdStringArray::const_iterator strExpression = strFolderRegExps.begin();
@@ -2392,7 +2407,7 @@ void CFileItemList::StackFiles()
 {
   // Precompile our REs
   VECCREGEXP stackRegExps;
-  CRegExp tmpRegExp(true);
+  CRegExp tmpRegExp(true, true);
   const CStdStringArray& strStackRegExps = g_advancedSettings.m_videoStackRegExps;
   CStdStringArray::const_iterator strRegExp = strStackRegExps.begin();
   while (strRegExp != strStackRegExps.end())
@@ -2571,10 +2586,9 @@ bool CFileItemList::Load(int windowID)
   CFile file;
   if (file.Open(GetDiscFileCache(windowID)))
   {
-    CLog::Log(LOGDEBUG,"Loading fileitems [%s]",GetPath().c_str());
     CArchive ar(&file, CArchive::load);
     ar >> *this;
-    CLog::Log(LOGDEBUG,"  -- items: %i, directory: %s sort method: %i, ascending: %s", Size(), GetPath().c_str(), m_sortDescription.sortBy,
+    CLog::Log(LOGDEBUG,"Loading items: %i, directory: %s sort method: %i, ascending: %s", Size(), CURL::GetRedacted(GetPath()).c_str(), m_sortDescription.sortBy,
       m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
     ar.Close();
     file.Close();
@@ -2590,7 +2604,7 @@ bool CFileItemList::Save(int windowID)
   if (iSize <= 0)
     return false;
 
-  CLog::Log(LOGDEBUG,"Saving fileitems [%s]",GetPath().c_str());
+  CLog::Log(LOGDEBUG,"Saving fileitems [%s]", CURL::GetRedacted(GetPath()).c_str());
 
   CFile file;
   if (file.OpenForWrite(GetDiscFileCache(windowID), true)) // overwrite always
@@ -2655,8 +2669,8 @@ bool CFileItemList::AlwaysCache() const
 CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bool fallbackToFolder /* = false */) const
 {
   if (m_strPath.IsEmpty()
-   || m_strPath.Left(19).Equals("newsmartplaylist://")
-   || m_strPath.Left(14).Equals("newplaylist://")
+   || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
+   || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
    || m_bIsShareOrDrive
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)
@@ -2748,8 +2762,8 @@ CStdString CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) c
 {
   // ignore a bunch that are meaningless
   if (m_strPath.empty()
-   || m_strPath.Left(19).Equals("newsmartplaylist://")
-   || m_strPath.Left(14).Equals("newplaylist://")
+   || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
+   || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
    || m_bIsShareOrDrive
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)
@@ -3220,7 +3234,7 @@ CStdString CFileItem::FindTrailer() const
 
   // Precompile our REs
   VECCREGEXP matchRegExps;
-  CRegExp tmpRegExp(true);
+  CRegExp tmpRegExp(true, true);
   const CStdStringArray& strMatchRegExps = g_advancedSettings.m_trailerMatchRegExps;
 
   CStdStringArray::const_iterator strRegExp = strMatchRegExps.begin();

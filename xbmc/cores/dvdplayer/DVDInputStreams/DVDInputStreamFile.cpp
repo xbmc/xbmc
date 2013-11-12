@@ -54,11 +54,8 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
 
   unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED;
 
-  if ( g_advancedSettings.m_alwaysForceBuffer && 
-       !URIUtils::IsOnDVD(strFile) && 
-       !URIUtils::IsBluray(strFile) )
-    flags |= READ_CACHED; 
-
+  if (URIUtils::IsOnDVD(strFile) || URIUtils::IsBluray(strFile))
+    flags |= READ_NO_CACHE; // Never cache these
 
   if (content == "video/mp4" || content == "video/x-msvideo" || content == "video/avi")
     flags |= READ_MULTI_STREAM;

@@ -30,6 +30,7 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 #include <deque>
+#include "PlatformDefs.h"
 
 class CRenderCapture;
 

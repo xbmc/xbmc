@@ -22,9 +22,5 @@
 
 namespace XBMCAddon
 {
-  Callback::~Callback()
-  {
-    deallocating();
-  }
-
+  Callback::~Callback() { deallocating(); }
 }

@@ -71,7 +71,7 @@ namespace XBMCAddonUtils
     return cDefault;
   }
 
-#ifdef ENABLE_TRACE_API
+#ifdef ENABLE_XBMC_TRACE_API
   static XbmcThreads::ThreadLocal<TraceGuard> tlParent;
 
   static char** getSpacesArray(int size)

@@ -1,6 +1,7 @@
 SRCS  = BaseRenderer.cpp
 SRCS += OverlayRenderer.cpp
 SRCS += OverlayRendererUtil.cpp
+SRCS += OverlayRendererGUI.cpp
 SRCS += RenderCapture.cpp
 SRCS += RenderManager.cpp
 SRCS += RenderFlags.cpp

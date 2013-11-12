@@ -45,7 +45,7 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic() :
   m_framerate(0.0),
   m_video_rate(0),
   m_mpeg2_sequence(NULL),
-  m_parser(NULL),
+  m_bitparser(NULL),
   m_bitstream(NULL)
 {
   pthread_mutex_init(&m_queue_mutex, NULL);
@@ -96,8 +96,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         m_hints.extradata = malloc(m_hints.extrasize);
         memcpy(m_hints.extradata, m_bitstream->GetExtraData(), m_hints.extrasize);
       }
-      //m_parser = new CBitstreamParser();
-      //m_parser->Open();
+      //m_bitparser = new CBitstreamParser();
+      //m_bitparser->Open();
       break;
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_MSMPEG4V2:
@@ -184,8 +184,8 @@ void CDVDVideoCodecAmlogic::Dispose(void)
   if (m_bitstream)
     delete m_bitstream, m_bitstream = NULL;
 
-  if (m_parser)
-    delete m_parser, m_parser = NULL;
+  if (m_bitparser)
+    delete m_bitparser, m_bitparser = NULL;
 
   while (m_queue_depth)
     FrameQueuePop();
@@ -206,8 +206,8 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
       iSize = m_bitstream->GetConvertSize();
     }
 
-    if (m_parser)
-      m_parser->FindIdrSlice(pData, iSize);
+    if (m_bitparser)
+      m_bitparser->FindIdrSlice(pData, iSize);
 
     FrameRateTracking( pData, iSize, dts, pts);
   }

@@ -27,6 +27,7 @@
 #include "FileItem.h"
 #include "filesystem/StackDirectory.h"
 #include "addons/Addon.h"
+#include "utils/StringUtils.h"
 #ifndef TARGET_POSIX
 #include <sys\types.h>
 #include <sys\stat.h>
@@ -530,33 +531,33 @@ CStdString CURL::Get() const
   strURL = GetWithoutFilename();
   strURL += m_strFileName;
 
-  if( m_strOptions.length() > 0 )
+  if( !m_strOptions.empty() )
     strURL += m_strOptions;
-  if (m_strProtocolOptions.length() > 0)
+  if (!m_strProtocolOptions.empty())
     strURL += "|"+m_strProtocolOptions;
 
   return strURL;
 }
 
-CStdString CURL::GetWithoutUserDetails() const
+std::string CURL::GetWithoutUserDetails(bool redact) const
 {
-  CStdString strURL;
+  std::string strURL;
 
   if (m_strProtocol.Equals("stack"))
   {
     CFileItemList items;
-    CStdString strURL2;
+    std::string strURL2;
     strURL2 = Get();
     XFILE::CStackDirectory dir;
     dir.GetDirectory(strURL2,items);
-    vector<CStdString> newItems;
+    vector<std::string> newItems;
     for (int i=0;i<items.Size();++i)
     {
       CURL url(items[i]->GetPath());
-      items[i]->SetPath(url.GetWithoutUserDetails());
+      items[i]->SetPath(url.GetWithoutUserDetails(redact));
       newItems.push_back(items[i]->GetPath());
     }
-    dir.ConstructStackPath(newItems,strURL);
+    dir.ConstructStackPath(newItems, strURL);
     return strURL;
   }
 
@@ -568,6 +569,9 @@ CStdString CURL::GetWithoutUserDetails() const
                         + m_strProtocolOptions.length()
                         + 10;
 
+  if (redact)
+    sizeneed += sizeof("USERNAME:PASSWORD@");
+
   strURL.reserve(sizeneed);
 
   if (m_strProtocol == "")
@@ -576,9 +580,19 @@ CStdString CURL::GetWithoutUserDetails() const
   strURL = m_strProtocol;
   strURL += "://";
 
-  if (m_strHostName != "")
+  if (redact && !m_strUserName.empty())
   {
-    CStdString strHostName;
+    strURL += "USERNAME";
+    if (!m_strPassword.empty())
+    {
+      strURL += ":PASSWORD";
+    }
+    strURL += "@";
+  }
+
+  if (!m_strHostName.empty())
+  {
+    std::string strHostName;
 
     if (URIUtils::ProtocolHasParentInHostname(m_strProtocol))
       strHostName = CURL(m_strHostName).GetWithoutUserDetails();
@@ -592,10 +606,7 @@ CStdString CURL::GetWithoutUserDetails() const
 
     if ( HasPort() )
     {
-      CStdString strPort;
-      strPort.Format("%i", m_iPort);
-      strURL += ":";
-      strURL += strPort;
+      strURL += StringUtils::Format(":%i", m_iPort);
     }
     strURL += "/";
   }
@@ -664,6 +675,16 @@ CStdString CURL::GetWithoutFilename() const
   return strURL;
 }
 
+std::string CURL::GetRedacted() const
+{
+  return GetWithoutUserDetails(true);
+}
+
+std::string CURL::GetRedacted(const std::string& path)
+{
+  return CURL(path).GetRedacted();
+}
+
 bool CURL::IsLocal() const
 {
   return (IsLocalHost() || m_strProtocol.IsEmpty());
@@ -684,7 +705,7 @@ bool CURL::IsFullPath(const CStdString &url)
   if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
   if (url.Find("://") >= 0) return true;                 //   foo://bar.ext
   if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
-  if (url.compare(0,2,"\\\\") == 0) return true;    //   \\UNC\path\to\file
+  if (StringUtils::StartsWith(url, "\\\\")) return true;    //   \\UNC\path\to\file
   return false;
 }
 

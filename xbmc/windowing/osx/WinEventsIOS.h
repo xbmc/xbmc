@@ -25,16 +25,12 @@
 
 #include "windowing/WinEvents.h"
 
-class CWinEventsIOS : public CWinEventsBase
+class CWinEventsIOS : public IWinEvents
 {
 public:
-  static void Init();
-  static void DeInit();
-  static void MessagePush(XBMC_Event *newEvent);
-  static bool MessagePump();
-  static int  GetQueueSize();
-
-protected:
+  void MessagePush(XBMC_Event *newEvent);
+  bool MessagePump();
+  virtual size_t  GetQueueSize();
 };
 
 #endif // WINDOW_EVENTS_IOS_H

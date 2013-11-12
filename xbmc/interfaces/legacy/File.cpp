@@ -22,7 +22,6 @@
 
 namespace XBMCAddon
 {
-
   namespace xbmcvfs
   {
     XbmcCommons::Buffer File::readBytes(unsigned long numBytes)

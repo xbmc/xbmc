@@ -31,6 +31,7 @@
 #include "utils/URIUtils.h"
 #include "XBTF.h"
 #include <lzo/lzo1x.h>
+#include "utils/StringUtils.h"
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib,"liblzo2.lib")
@@ -121,13 +122,12 @@ void CTextureBundleXBT::GetTexturesFromPath(const CStdString &path, std::vector<
 
   CStdString testPath = Normalize(path);
   URIUtils::AddSlashAtEnd(testPath);
-  int testLength = testPath.GetLength();
 
   std::vector<CXBTFFile>& files = m_XBTFReader.GetFiles();
   for (size_t i = 0; i < files.size(); i++)
   {
     CStdString path = files[i].GetPath();
-    if (path.Left(testLength).Equals(testPath))
+    if (StringUtils::StartsWithNoCase(path, testPath))
       textures.push_back(path);
   }
 }

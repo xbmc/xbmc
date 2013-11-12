@@ -954,7 +954,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &pa
       if (!art->strThumb.empty())
         albumArt = art->strThumb;
       else
-        albumArt = CTextureCache::GetWrappedImageURL(art->strFileName, "music");
+        albumArt = CTextureUtils::GetWrappedImageURL(art->strFileName, "music");
     }
 
     if (!albumArt.empty())
@@ -970,7 +970,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &pa
       for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
       {
         if (k->strThumb.empty() && !k->embeddedArt.empty())
-          k->strThumb = CTextureCache::GetWrappedImageURL(k->strFileName, "music");
+          k->strThumb = CTextureUtils::GetWrappedImageURL(k->strFileName, "music");
       }
     }
   }

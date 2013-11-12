@@ -50,7 +50,6 @@ protected:
   OMXClock                  *m_av_clock;
   COMXAudio                 m_omxAudio;
   std::string               m_codec_name;
-  bool                      m_use_passthrough;
   bool                      m_passthrough;
   bool                      m_use_hw_decode;
   bool                      m_hw_decode;
@@ -70,7 +69,6 @@ protected:
   int                       m_nChannels;
   bool                      m_DecoderOpen;
 
-  DllBcmHost                m_DllBcmHost;
   bool                      m_bad_state;
 
   virtual void OnStartup();

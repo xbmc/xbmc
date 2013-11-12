@@ -211,6 +211,14 @@ int CDateTimeSpan::GetSeconds() const
   return (int)(((time.QuadPart/SECONDS_TO_FILETIME%SECONDS_PER_DAY)%SECONDS_PER_HOUR)%SECONDS_PER_MINUTE)%SECONDS_PER_MINUTE;
 }
 
+int CDateTimeSpan::GetSecondsTotal() const
+{
+  ULARGE_INTEGER time;
+  ToULargeInt(time);
+  
+  return (int)(time.QuadPart/SECONDS_TO_FILETIME);
+}
+
 void CDateTimeSpan::SetFromPeriod(const CStdString &period)
 {
   long days = atoi(period.c_str());

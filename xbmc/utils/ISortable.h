@@ -27,5 +27,5 @@ class ISortable
 {
 public:
   virtual ~ISortable() { }
-  virtual void ToSortable(SortItem& sortable) = 0;
+  virtual void ToSortable(SortItem& sortable, Field field) const = 0;
 };

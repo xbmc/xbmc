@@ -32,6 +32,7 @@
 #include "xbmc.h"
 #include "android/jni/Context.h"
 #include "android/jni/BroadcastReceiver.h"
+#include "threads/Event.h"
 
 // forward delares
 class CJNIWakeLock;
@@ -79,7 +80,7 @@ public:
   void onLostFocus();
 
 
-  static ANativeWindow* GetNativeWindow() { return m_window; };
+  static const ANativeWindow** GetNativeWindow(int timeout);
   static int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
   
@@ -98,6 +99,8 @@ public:
   static bool GetExternalStorage(std::string &path, const std::string &type = "");
   static bool GetStorageUsage(const std::string &path, std::string &usage);
   static int GetMaxSystemVolume();
+  static int GetSystemVolume();
+  static void SetSystemVolume(int val);
 
   static int GetDPI();
 protected:
@@ -117,12 +120,14 @@ private:
   static ANativeActivity *m_activity;
   CJNIWakeLock *m_wakeLock;
   static int m_batteryLevel;  
+  static int m_initialVolume;  
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;
   
   static ANativeWindow* m_window;
-  
+  static CEvent m_windowCreated;
+
   void XBMC_Pause(bool pause);
   void XBMC_Stop();
   bool XBMC_DestroyDisplay();

@@ -166,7 +166,10 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
 
   PLT_DeviceDataReference device;
   if(NPT_SUCCEEDED(m_control->FindRenderer(uuid, device)))
+  {
     m_delegate = new CUPnPPlayerController(m_control, device, callback);
+    CUPnP::RegisterUserdata(m_delegate);
+  }
   else
     CLog::Log(LOGERROR, "UPNP: CUPnPPlayer couldn't find device as %s", uuid);
 }
@@ -174,6 +177,7 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
 CUPnPPlayer::~CUPnPPlayer()
 {
   CloseFile();
+  CUPnP::UnregisterUserdata(m_delegate);
   delete m_delegate;
 }
 
@@ -415,7 +419,7 @@ void CUPnPPlayer::SeekPercentage(float percent)
     SeekTime((int64_t)(tot * percent / 100));
 }
 
-void CUPnPPlayer::Seek(bool bPlus, bool bLargeStep)
+void CUPnPPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 }
 

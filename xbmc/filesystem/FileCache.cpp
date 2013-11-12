@@ -168,7 +168,7 @@ bool CFileCache::Open(const CURL& url)
   // opening the source file.
   if (!m_source.Open(m_sourcePath, READ_NO_CACHE | READ_TRUNCATED | READ_CHUNKED))
   {
-    CLog::Log(LOGERROR,"%s - failed to open source <%s>", __FUNCTION__, m_sourcePath.c_str());
+    CLog::Log(LOGERROR,"%s - failed to open source <%s>", __FUNCTION__, url.GetRedacted().c_str());
     Close();
     return false;
   }
@@ -481,6 +481,15 @@ CStdString CFileCache::GetContent()
     return IFile::GetContent();
 
   return m_source.GetImplemenation()->GetContent();
+}
+
+std::string CFileCache::GetContentCharset(void)
+{
+  IFile* impl = m_source.GetImplemenation();
+  if (!impl)
+    return IFile::GetContentCharset();
+
+  return impl->GetContentCharset();
 }
 
 int CFileCache::IoControl(EIoControl request, void* param)

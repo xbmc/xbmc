@@ -26,6 +26,7 @@
 #include "URL.h"
 #include "ZipManager.h"
 #include "FileItem.h"
+#include "utils/StringUtils.h"
 
 #include <vector>
 
@@ -45,7 +46,7 @@ namespace XFILE
     CStdString strPath;
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
-    if( !strPathOrig.Left(6).Equals("zip://") )
+    if( !StringUtils::StartsWithNoCase(strPathOrig, "zip://") )
       URIUtils::CreateArchivePath(strPath, "zip", strPathOrig, "");
     else
       strPath = strPathOrig;
@@ -73,9 +74,9 @@ namespace XFILE
     if (!g_ZipManager.GetZipList(strPath,entries))
       return false;
 
-    vector<CStdString> baseTokens;
+    vector<std::string> baseTokens;
     if (!strPathInZip.IsEmpty())
-      CUtil::Tokenize(strPathInZip,baseTokens,"/");
+      StringUtils::Tokenize(strPathInZip,baseTokens,"/");
 
     for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
     {
@@ -84,8 +85,8 @@ namespace XFILE
       if (strEntryName == strPathInZip) // skip the listed dir
         continue;
 
-      vector<CStdString> pathTokens;
-      CUtil::Tokenize(strEntryName,pathTokens,"/");
+      vector<std::string> pathTokens;
+      StringUtils::Tokenize(strEntryName,pathTokens,"/");
       if (pathTokens.size() < baseTokens.size()+1)
         continue;
 

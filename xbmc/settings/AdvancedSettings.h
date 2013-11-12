@@ -43,6 +43,11 @@ public:
     user.clear();
     pass.clear();
     name.clear();
+    key.clear();
+    cert.clear();
+    ca.clear();
+    capath.clear();
+    ciphers.clear();
   };
   CStdString type;
   CStdString host;
@@ -50,6 +55,11 @@ public:
   CStdString user;
   CStdString pass;
   CStdString name;
+  CStdString key;
+  CStdString cert;
+  CStdString ca;
+  CStdString capath;
+  CStdString ciphers;
 };
 
 struct TVShowRegexp
@@ -128,13 +138,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
     bool m_dvdplayerIgnoreDTSinWAV;
-    int m_audioResample;
-    bool m_allowTranscode44100;
-    bool m_audioForceDirectSound;
-    bool m_audioAudiophile;
-    bool m_allChannelStereo;
-    bool m_streamSilence;
-    CStdString m_audioTranscodeTo;
     float m_limiterHold;
     float m_limiterRelease;
 
@@ -190,6 +193,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_DXVAForceProcessorRenderer;
     bool m_DXVANoDeintProcForProgressive;
     int  m_videoFpsDetect;
+    int  m_videoBusyDialogDelay_ms;
     bool m_videoDisableHi10pMultithreading;
     StagefrightConfig m_stagefrightConfig;
 
@@ -354,7 +358,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     /* PVR/TV related advanced settings */
     int m_iPVRTimeCorrection;     /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. defaults to 0. */
     int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */
-    bool m_bPVRShowEpgInfoOnEpgItemSelect; /*!< @brief when selecting an EPG fileitem, show the EPG info dialog if this setting is true. start playback on the selected channel if false */
+    bool m_bPVRShowEpgInfoOnEpgItemSelect; /*!< @brief when selecting an EPG fileitem, show the EPG info dialog if this setting is true. start playback on the selected channel if false AND fileitem has started */
     int m_iPVRMinVideoCacheLevel;      /*!< @brief cache up to this level in the video buffer buffer before resuming playback if the buffers run dry */
     int m_iPVRMinAudioCacheLevel;      /*!< @brief cache up to this level in the audio buffer before resuming playback if the buffers run dry */
     bool m_bPVRCacheInDvdPlayer; /*!< @brief true to use "CACHESTATE_PVR" in CDVDPlayer (default) */
@@ -376,7 +380,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     unsigned int m_addonPackageFolderSize;
 
     unsigned int m_cacheMemBufferSize;
-    bool m_alwaysForceBuffer;
+    unsigned int m_networkBufferMode;
     float m_readBufferFactor;
 
     bool m_jsonOutputCompact;
@@ -397,6 +401,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
     CStdString m_discStubExtensions;
+    CStdString m_subtitlesExtensions;
 
     CStdString m_stereoscopicflags_sbs;
     CStdString m_stereoscopicflags_tab;

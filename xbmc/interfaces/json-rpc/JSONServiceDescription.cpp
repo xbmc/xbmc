@@ -38,6 +38,8 @@
 #include "PVROperations.h"
 #include "ProfilesOperations.h"
 #include "FavouritesOperations.h"
+#include "TextureOperations.h"
+#include "SettingsOperations.h"
 
 using namespace std;
 using namespace JSONRPC;
@@ -124,6 +126,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.GetTVShows",                      CVideoLibrary::GetTVShows },
   { "VideoLibrary.GetTVShowDetails",                CVideoLibrary::GetTVShowDetails },
   { "VideoLibrary.GetSeasons",                      CVideoLibrary::GetSeasons },
+  { "VideoLibrary.GetSeasonDetails",                CVideoLibrary::GetSeasonDetails },
   { "VideoLibrary.GetEpisodes",                     CVideoLibrary::GetEpisodes },
   { "VideoLibrary.GetEpisodeDetails",               CVideoLibrary::GetEpisodeDetails },
   { "VideoLibrary.GetMusicVideos",                  CVideoLibrary::GetMusicVideos },
@@ -132,7 +135,9 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.GetRecentlyAddedEpisodes",        CVideoLibrary::GetRecentlyAddedEpisodes },
   { "VideoLibrary.GetRecentlyAddedMusicVideos",     CVideoLibrary::GetRecentlyAddedMusicVideos },
   { "VideoLibrary.SetMovieDetails",                 CVideoLibrary::SetMovieDetails },
+  { "VideoLibrary.SetMovieSetDetails",              CVideoLibrary::SetMovieSetDetails },
   { "VideoLibrary.SetTVShowDetails",                CVideoLibrary::SetTVShowDetails },
+  { "VideoLibrary.SetSeasonDetails",                CVideoLibrary::SetSeasonDetails },
   { "VideoLibrary.SetEpisodeDetails",               CVideoLibrary::SetEpisodeDetails },
   { "VideoLibrary.SetMusicVideoDetails",            CVideoLibrary::SetMusicVideoDetails },
   { "VideoLibrary.RemoveMovie",                     CVideoLibrary::RemoveMovie },
@@ -154,6 +159,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "GUI.ActivateWindow",                           CGUIOperations::ActivateWindow },
   { "GUI.ShowNotification",                         CGUIOperations::ShowNotification },
   { "GUI.SetFullscreen",                            CGUIOperations::SetFullscreen },
+  { "GUI.SetStereoscopicMode",                      CGUIOperations::SetStereoscopicMode },
+  { "GUI.GetStereoscopicModes",                     CGUIOperations::GetStereoscopicModes },
 
 // PVR operations
   { "PVR.GetProperties",                            CPVROperations::GetProperties },
@@ -161,6 +168,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "PVR.GetChannelGroupDetails",                   CPVROperations::GetChannelGroupDetails },
   { "PVR.GetChannels",                              CPVROperations::GetChannels },
   { "PVR.GetChannelDetails",                        CPVROperations::GetChannelDetails },
+  { "PVR.GetBroadcasts",                            CPVROperations::GetBroadcasts },
+  { "PVR.GetBroadcastDetails",                      CPVROperations::GetBroadcastDetails },
   { "PVR.Record",                                   CPVROperations::Record },
   { "PVR.Scan",                                     CPVROperations::Scan },
 
@@ -201,6 +210,18 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // Favourites operations
   { "Favourites.GetFavourites",                     CFavouritesOperations::GetFavourites },
   { "Favourites.AddFavourite",                      CFavouritesOperations::AddFavourite },
+
+// Textures operations
+  { "Textures.GetTextures",                         CTextureOperations::GetTextures },
+  { "Textures.RemoveTexture",                       CTextureOperations::RemoveTexture },
+
+// Settings operations
+  { "Settings.GetSections",                         CSettingsOperations::GetSections },
+  { "Settings.GetCategories",                       CSettingsOperations::GetCategories },
+  { "Settings.GetSettings",                         CSettingsOperations::GetSettings },
+  { "Settings.GetSettingValue",                     CSettingsOperations::GetSettingValue },
+  { "Settings.SetSettingValue",                     CSettingsOperations::SetSettingValue },
+  { "Settings.ResetSettingValue",                   CSettingsOperations::ResetSettingValue },
 
 // XBMC operations
   { "XBMC.GetInfoLabels",                           CXBMCOperations::GetInfoLabels },

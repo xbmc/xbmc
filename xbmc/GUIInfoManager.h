@@ -110,6 +110,7 @@ namespace INFO
 #define PLAYER_START_TIME            52
 #define PLAYER_TITLE                 53
 #define PLAYER_ISINTERNETSTREAM      54
+#define PLAYER_FILENAME              55
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -275,6 +276,8 @@ namespace INFO
 #define VIDEOPLAYER_VOTES             309
 #define VIDEOPLAYER_IS_STEREOSCOPIC   310
 #define VIDEOPLAYER_STEREOSCOPIC_MODE 311
+#define VIDEOPLAYER_SUBTITLES_LANG    312
+#define VIDEOPLAYER_AUDIO_LANG        313
 
 #define CONTAINER_CAN_FILTER         342
 #define CONTAINER_CAN_FILTERADVANCED 343
@@ -385,6 +388,7 @@ namespace INFO
 #define SYSTEM_IDLE_TIME            715
 #define SYSTEM_FRIENDLY_NAME        716
 #define SYSTEM_SCREENSAVER_ACTIVE   717
+#define SYSTEM_ADDON_VERSION        718
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
@@ -403,6 +407,7 @@ namespace INFO
 #define SYSTEM_PLATFORM_DARWIN_IOS  745
 #define SYSTEM_PLATFORM_DARWIN_ATV2 746
 #define SYSTEM_PLATFORM_ANDROID     747
+#define SYSTEM_PLATFORM_LINUX_RASPBERRY_PI 748
 
 #define SYSTEM_CAN_POWERDOWN        750
 #define SYSTEM_CAN_SUSPEND          751
@@ -472,7 +477,10 @@ namespace INFO
 #define PVR_ACTUAL_STREAM_AUDIO_BR  (PVR_STRINGS_START + 31)
 #define PVR_ACTUAL_STREAM_DOLBY_BR  (PVR_STRINGS_START + 32)
 #define PVR_ACTUAL_STREAM_CRYPTION  (PVR_STRINGS_START + 33)
-#define PVR_STRINGS_END             PVR_ACTUAL_STREAM_CRYPTION
+#define PVR_ACTUAL_STREAM_SERVICE   (PVR_STRINGS_START + 34)
+#define PVR_ACTUAL_STREAM_MUX       (PVR_STRINGS_START + 35)
+#define PVR_ACTUAL_STREAM_PROVIDER  (PVR_STRINGS_START + 36)
+#define PVR_STRINGS_END             PVR_ACTUAL_STREAM_PROVIDER
 
 #define WINDOW_PROPERTY             9993
 #define WINDOW_IS_TOPMOST           9994
@@ -490,7 +498,7 @@ namespace INFO
 
 #define VERSION_MAJOR               13
 #define VERSION_MINOR               0
-#define VERSION_TAG                 "-ALPHA8"
+#define VERSION_TAG                 "-ALPHA10"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -637,6 +645,8 @@ namespace INFO
 #define LISTITEM_PROGRESS           (LISTITEM_START + 137)
 #define LISTITEM_HAS_EPG            (LISTITEM_START + 138)
 #define LISTITEM_VOTES              (LISTITEM_START + 139)
+#define LISTITEM_STEREOSCOPIC_MODE  (LISTITEM_START + 140)
+#define LISTITEM_IS_STEREOSCOPIC    (LISTITEM_START + 141)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -770,7 +780,7 @@ public:
   CStdString GetMusicLabel(int item);
   CStdString GetMusicTagLabel(int info, const CFileItem *item);
   CStdString GetVideoLabel(int item);
-  CStdString GetPlaylistLabel(int item) const;
+  CStdString GetPlaylistLabel(int item, int playlistid = -1 /* PLAYLIST_NONE */) const;
   CStdString GetMusicPartyModeLabel(int item);
   const CStdString GetMusicPlaylistInfo(const GUIInfo& info);
   CStdString GetPictureLabel(int item);

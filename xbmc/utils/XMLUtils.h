@@ -28,7 +28,6 @@ class CDateTime;
 class XMLUtils
 {
 public:
-  static bool HasUTF8Declaration(const CStdString &strXML);
   static bool HasChild(const TiXmlNode* pRootNode, const char* strTag);
 
   static bool GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwHexValue);
@@ -55,8 +54,7 @@ public:
    \param clear       if true, clears the string prior to adding tags, if tags are available. Defaults to false.
    */
   static bool GetAdditiveString(const TiXmlNode* rootNode, const char* tag, const CStdString& separator, CStdString& value, bool clear = false);
-  static bool GetStringArray(const TiXmlNode* rootNode, const char* tag, std::vector<std::string>& arrayValue, bool clear = false, const std::string separator = "");
-  static bool GetEncoding(const CXBMCTinyXML* pDoc, CStdString& strEncoding);
+  static bool GetStringArray(const TiXmlNode* rootNode, const char* tag, std::vector<std::string>& arrayValue, bool clear = false, const std::string& separator = "");
   static bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value, const float min, const float max);
   static bool GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwUIntValue, const uint32_t min, const uint32_t max);

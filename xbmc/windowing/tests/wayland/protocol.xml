@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol name="xbmc_wayland_test">
+  <copyright>
+  Copyright (C) 2005-2013 Team XBMC
+    http://www.xbmc.org
+
+  This Program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  This Program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with XBMC; see the file COPYING.  If not, see
+  &lt;http://www.gnu.org/licenses/&gt;
+
+  </copyright>
+  <interface name="xbmc_wayland" version="1"/>
+    <request name="add_mode">
+      <arg name="width" type="int"/>
+      <arg name="height" type="int"/>
+      <arg name="refresh" type="uint"/>
+      <arg name="flags" type="uint"/>
+    </request>
+    <request name="move_pointer_to_on_surface">
+      <arg name="surface" type="object" interface="wl_surface"/>
+      <arg name="x" type="fixed"/>
+      <arg name="y" type="fixed"/>
+    </request>
+    <request name="send_button_to_surface">
+      <arg name="surface" type="object" interface="wl_surface"/>
+      <arg name="button" type="uint"/>
+      <arg name="state" type="uint"/>
+    </request>
+    <request name="send_axis_to_surface">
+      <arg name="surface" type="object" interface="wl_surface"/>
+      <arg name="axis" type="uint"/>
+      <arg name="value" type="fixed"/>
+    </request>
+    <request name="send_key_to_keyboard">
+      <arg name="surface" type="object" interface="wl_surface"/>
+      <arg name="key" type="uint"/>
+      <arg name="state" type="uint"/>
+    </request>
+    <request name="send_modifiers_to_keyboard">
+      <arg name="surface" type="object" interface="wl_surface"/>
+      <arg name="depressed" type="uint"/>
+      <arg name="latched" type="uint"/>
+      <arg name="locked" type="uint"/>
+      <arg name="group" type="uint"/>
+    </request>
+    <request name="give_surface_keyboard_focus">
+      <arg name="surface" type="object" interface="wl_surface"/>
+    </request>
+    <request name="ping_surface">
+      <arg name="surface" type="object" interface="wl_surface"/>
+      <arg name="timestamp" type="uint"/>
+    </request>
+</protocol>

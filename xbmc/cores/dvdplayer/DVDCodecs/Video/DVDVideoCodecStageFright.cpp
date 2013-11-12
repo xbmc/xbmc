@@ -31,17 +31,27 @@
 #include "settings/Settings.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecStageFright.h"
-#include "StageFrightVideo.h"
 #include "utils/log.h"
+#include "windowing/WindowingFactory.h"
+#include "settings/AdvancedSettings.h"
+
+#include "DllLibStageFrightCodec.h"
 
 #define CLASSNAME "CDVDVideoCodecStageFright"
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
+
+DllLibStageFrightCodec*     CDVDVideoCodecStageFright::m_stf_dll = NULL;
+
 CDVDVideoCodecStageFright::CDVDVideoCodecStageFright()
   : CDVDVideoCodec()
-  , m_stf_decoder(NULL), m_converter(NULL), m_convert_bitstream(false)
+  , m_convert_bitstream(false),  m_converter(NULL)
+  , m_stf_handle(NULL)
 {
   m_pFormatName = "stf-xxxx";
+
+  if (!m_stf_dll)
+    m_stf_dll = new DllLibStageFrightCodec;
 }
 
 CDVDVideoCodecStageFright::~CDVDVideoCodecStageFright()
@@ -94,21 +104,18 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
         break;
     }
 
-    m_stf_decoder = new CStageFrightVideo;
-    if (!m_stf_decoder->Open(hints))
+    if (!(m_stf_dll && m_stf_dll->Load()))
+      return false;
+    m_stf_dll->EnableDelayedUnload(false);
+
+    m_stf_handle = m_stf_dll->create_stf(&g_Windowing, &g_advancedSettings);
+
+    if (!m_stf_dll->stf_Open(m_stf_handle, hints))
     {
       CLog::Log(LOGERROR,
           "%s::%s - failed to open, codec(%d), profile(%d), level(%d)",
           CLASSNAME, __func__, hints.codec, hints.profile, hints.level);
-      delete m_stf_decoder;
-      m_stf_decoder = NULL;
-
-      if (m_converter)
-      {
-        m_converter->Close();
-        delete m_converter;
-        m_converter = NULL;
-      }
+      Dispose();
       return false;
     }
 
@@ -126,17 +133,17 @@ void CDVDVideoCodecStageFright::Dispose()
     delete m_converter;
     m_converter = NULL;
   }
-  if (m_stf_decoder)
+  if (m_stf_handle)
   {
-    m_stf_decoder->Close();
-    delete m_stf_decoder;
-    m_stf_decoder = NULL;
+    m_stf_dll->stf_Close(m_stf_handle);
+    m_stf_dll->destroy_stf(m_stf_handle);
+    m_stf_handle = NULL;
   }
 }
 
 void CDVDVideoCodecStageFright::SetDropState(bool bDrop)
 {
-  m_stf_decoder->SetDropState(bDrop);
+  m_stf_dll->stf_SetDropState(m_stf_handle, bDrop);
 }
 
 int CDVDVideoCodecStageFright::Decode(uint8_t *pData, int iSize, double dts, double pts)
@@ -163,29 +170,30 @@ int CDVDVideoCodecStageFright::Decode(uint8_t *pData, int iSize, double dts, dou
   CLog::Log(LOGDEBUG, ">>> decode conversion - tm:%d\n", XbmcThreads::SystemClockMillis() - time);
 #endif
 
-  rtn = m_stf_decoder->Decode(demuxer_content, demuxer_bytes, dts, pts);
+  rtn = m_stf_dll->stf_Decode(m_stf_handle, demuxer_content, demuxer_bytes, dts, pts);
 
   return rtn;
 }
 
 void CDVDVideoCodecStageFright::Reset(void)
 {
-  m_stf_decoder->Reset();
+  m_stf_dll->stf_Reset(m_stf_handle);
 }
 
 bool CDVDVideoCodecStageFright::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  return m_stf_decoder->GetPicture(pDvdVideoPicture);
+  pDvdVideoPicture->stf = this;
+  return m_stf_dll->stf_GetPicture(m_stf_handle, pDvdVideoPicture);
 }
 
 bool CDVDVideoCodecStageFright::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  return m_stf_decoder->ClearPicture(pDvdVideoPicture);
+  return m_stf_dll->stf_ClearPicture(m_stf_handle, pDvdVideoPicture);
 }
 
 void CDVDVideoCodecStageFright::SetSpeed(int iSpeed)
 {
-  m_stf_decoder->SetSpeed(iSpeed);
+  m_stf_dll->stf_SetSpeed(m_stf_handle, iSpeed);
 }
 
 int CDVDVideoCodecStageFright::GetDataSize(void)
@@ -196,6 +204,16 @@ int CDVDVideoCodecStageFright::GetDataSize(void)
 double CDVDVideoCodecStageFright::GetTimeSize(void)
 {
   return 0;
+}
+
+void CDVDVideoCodecStageFright::LockBuffer(EGLImageKHR eglimg)
+{
+  m_stf_dll->stf_LockBuffer(m_stf_handle, eglimg);
+}
+
+void CDVDVideoCodecStageFright::ReleaseBuffer(EGLImageKHR eglimg)
+{
+  m_stf_dll->stf_ReleaseBuffer(m_stf_handle, eglimg);
 }
 
 #endif

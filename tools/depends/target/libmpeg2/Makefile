@@ -28,6 +28,8 @@ ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p0 < ../02-neon.patch
 	cd $(PLATFORM); patch -p1 < ../03-config-fix.patch
 endif
+	cd $(PLATFORM); patch -p1 < ../04-clang-fix.patch
+	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)

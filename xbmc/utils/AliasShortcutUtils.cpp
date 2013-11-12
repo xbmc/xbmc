@@ -27,7 +27,7 @@
 
 #include "AliasShortcutUtils.h"
 
-bool IsAliasShortcut(CStdString &path)
+bool IsAliasShortcut(const std::string& path)
 {
   bool  rtn = false;
 
@@ -65,7 +65,7 @@ bool IsAliasShortcut(CStdString &path)
   return(rtn);
 }
 
-void TranslateAliasShortcut(CStdString &path)
+void TranslateAliasShortcut(std::string& path)
 {
 #if defined(TARGET_DARWIN_OSX)
   FSRef fileRef;

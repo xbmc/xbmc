@@ -24,6 +24,15 @@
 
 #include <map>
 
+#ifdef TARGET_WINDOWS
+#ifdef GetDateFormat
+#undef GetDateFormat
+#endif // GetDateFormat
+#ifdef GetTimeFormat
+#undef GetTimeFormat
+#endif // GetTimeFormat
+#endif // TARGET_WINDOWS
+
 class TiXmlNode;
 
 class CLangInfo : public ISettingCallback
@@ -34,7 +43,7 @@ public:
 
   virtual void OnSettingChanged(const CSetting *setting);
 
-  bool Load(const CStdString& strFileName);
+  bool Load(const std::string& strFileName, bool onlyCheckLanguage = false);
 
   CStdString GetGuiCharSet() const;
   CStdString GetSubtitleCharSet() const;
@@ -43,27 +52,28 @@ public:
   const CStdString& GetLanguageCode() const { return m_languageCodeGeneral; }
 
   bool SetLanguage(const std::string &strLanguage);
+  bool CheckLoadLanguage(const std::string &language);
 
   const CStdString& GetAudioLanguage() const;
   // language can either be a two char language code as defined in ISO639
   // or a three char language code
   // or a language name in english (as used by XBMC)
-  void SetAudioLanguage(const CStdString &language);
+  void SetAudioLanguage(const std::string& language);
   
   // three char language code (not win32 specific)
   const CStdString& GetSubtitleLanguage() const;
   // language can either be a two char language code as defined in ISO639
   // or a three char language code
   // or a language name in english (as used by XBMC)
-  void SetSubtitleLanguage(const CStdString &language);
+  void SetSubtitleLanguage(const std::string& language);
 
-  const CStdString& GetDVDMenuLanguage() const;
-  const CStdString& GetDVDAudioLanguage() const;
-  const CStdString& GetDVDSubtitleLanguage() const;
+  const std::string GetDVDMenuLanguage() const;
+  const std::string GetDVDAudioLanguage() const;
+  const std::string GetDVDSubtitleLanguage() const;
   const CStdString& GetTimeZone() const;
 
   const CStdString& GetRegionLocale() const;
-  const CStdString& GetLanguageLocale() const;
+  const std::string GetLanguageLocale(bool twochar = false) const;
 
   bool ForceUnicodeFont() const { return m_currentRegion->m_forceUnicodeFont; }
 
@@ -118,6 +128,8 @@ public:
   void SetCurrentRegion(const CStdString& strName);
   const CStdString& GetCurrentRegion() const;
 
+  static bool CheckLanguage(const std::string& language);
+
   static void LoadTokens(const TiXmlNode* pTokens, std::vector<CStdString>& vecTokens);
 
   static void SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
@@ -144,6 +156,7 @@ protected:
     CStdString m_strDVDAudioLanguage;
     CStdString m_strDVDSubtitleLanguage;
     CStdString m_strLangLocaleName;
+    std::string m_strLangLocaleCodeTwoChar;
     CStdString m_strRegionLocaleName;
     bool m_forceUnicodeFont;
     CStdString m_strName;

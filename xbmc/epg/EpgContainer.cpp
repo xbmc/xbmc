@@ -471,12 +471,10 @@ bool CEpgContainer::InterruptUpdate(void) const
   bool bReturn(false);
   CSingleLock lock(m_critSection);
   bReturn = g_application.m_bStop || m_bStop || m_bPreventUpdates;
-  lock.Leave();
 
   return bReturn ||
     (CSettings::Get().GetBool("epg.preventupdateswhileplayingtv") &&
-     g_PVRManager.IsStarted() &&
-     g_PVRManager.IsPlaying());
+     g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying());
 }
 
 void CEpgContainer::WaitForUpdateFinish(bool bInterrupt /* = true */)

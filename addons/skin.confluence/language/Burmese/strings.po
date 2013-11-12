@@ -24,10 +24,6 @@ msgctxt "#31005"
 msgid "Hide Information"
 msgstr "အချက်အလက်များကိုဖျောက်ထားမည်"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "စခရင်မျက်နှာပြင်အပြည့်"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "စုစုပေါင်းကြာချိန်"
@@ -119,10 +115,6 @@ msgstr "မကြာသေးခင်ကထည့်ခဲ့သော အယ�
 msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "မကြာသေးခင်ကထည့်ခဲ့သော ဗွီဒီယိုများ ကိုပြမည်"
-
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "ရာသီဥတုစာမျက်နှာ"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -243,6 +235,10 @@ msgstr "ရုပ်ရှင်မီနူး"
 msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "စာတန်းထိုးများကို ဒေါင်းလုတ်ဆွဲမည်"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "ဖွင့်ထားမည်"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"

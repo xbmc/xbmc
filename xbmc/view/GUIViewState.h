@@ -40,6 +40,7 @@ public:
   SortDescription SetNextSortMethod(int direction = 1);
   void SetCurrentSortMethod(int method);
   SortDescription GetSortMethod() const;
+  bool HasMultipleSortMethods() const;
   int GetSortMethodLabel() const;
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
 

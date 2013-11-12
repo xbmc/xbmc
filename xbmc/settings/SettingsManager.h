@@ -25,12 +25,13 @@
 
 #include "ISetting.h"
 #include "ISettingCallback.h"
+#include "ISettingControlCreator.h"
 #include "ISettingCreator.h"
 #include "ISettingsHandler.h"
 #include "ISubSettings.h"
 #include "SettingConditions.h"
 #include "SettingDependency.h"
-#include "threads/CriticalSection.h"
+#include "threads/SharedSection.h"
 
 class CSettingSection;
 class CSettingUpdate;
@@ -46,7 +47,8 @@ typedef void (*StringSettingOptionsFiller)(const CSetting *setting, std::vector<
  \brief Settings manager responsible for initializing, loading and handling
  all settings.
  */
-class CSettingsManager : public ISettingCreator, private ISettingCallback,
+class CSettingsManager : public ISettingCreator, public ISettingControlCreator,
+                         private ISettingCallback,
                          private ISettingsHandler, private ISubSettings
 {
 public:
@@ -58,6 +60,9 @@ public:
 
   // implementation of ISettingCreator
   virtual CSetting* CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const;
+
+  // implementation of ISettingControlCreator
+  virtual ISettingControl* CreateControl(const std::string &controlType) const;
 
   /*!
    \brief Initializes the settings manager using the setting definitions
@@ -154,6 +159,19 @@ public:
   void RegisterSettingType(const std::string &settingType, ISettingCreator *settingCreator);
 
   /*!
+   \brief Registers a custom setting control type and its
+   ISettingControlCreator implementation
+
+   When a setting control definition for a registered custom setting control
+   type is found its ISettingControlCreator implementation is called to create
+   and deserialize the setting control definition.
+   
+   \param controlType String representation of the custom setting control type
+   \param settingControlCreator ISettingControlCreator implementation
+   */
+  void RegisterSettingControl(const std::string &controlType, ISettingControlCreator *settingControlCreator);
+
+  /*!
    \brief Registers the given ISettingsHandler implementation.
 
    \param settingsHandler ISettingsHandler implementation
@@ -216,6 +234,12 @@ public:
    */
   CSetting* GetSetting(const std::string &id) const;
   /*!
+   \brief Gets the full list of setting sections.
+
+   \return List of setting sections
+   */
+  std::vector<CSettingSection*> GetSections() const;
+  /*!
    \brief Gets the setting section with the given identifier.
 
    \param section Setting section identifier
@@ -276,6 +300,13 @@ public:
    \return String value of the setting with the given identifier
    */
   std::string GetString(const std::string &id) const;
+  /*!
+   \brief Gets the values of the list setting with the given identifier.
+
+   \param id Setting identifier
+   \return List of values of the setting with the given identifier
+   */
+  std::vector< boost::shared_ptr<CSetting> > GetList(const std::string &id) const;
 
   /*!
    \brief Sets the boolean value of the setting with the given identifier.
@@ -316,6 +347,14 @@ public:
    \return True if setting the value was successful, false otherwise
    */
   bool SetString(const std::string &id, const std::string &value);
+  /*!
+   \brief Sets the values of the list setting with the given identifier.
+
+   \param id Setting identifier
+   \param value Values to set
+   \return True if setting the values was successful, false otherwise
+   */
+  bool SetList(const std::string &id, const std::vector< boost::shared_ptr<CSetting> > &value);
 
   /*!
    \brief Gets the setting conditions manager used by the settings manager.
@@ -395,8 +434,11 @@ private:
   typedef std::map<std::string, ISettingCreator*> SettingCreatorMap;
   SettingCreatorMap m_settingCreators;
 
+  typedef std::map<std::string, ISettingControlCreator*> SettingControlCreatorMap;
+  SettingControlCreatorMap m_settingControlCreators;
+
   std::set<ISubSettings*> m_subSettings;
-  typedef std::set<ISettingsHandler*> SettingsHandlers;
+  typedef std::vector<ISettingsHandler*> SettingsHandlers;
   SettingsHandlers m_settingsHandlers;
 
   CSettingConditionsManager m_conditions;
@@ -408,5 +450,6 @@ private:
   typedef std::map<std::string, SettingOptionsFiller> SettingOptionsFillerMap;
   SettingOptionsFillerMap m_optionsFillers;
 
-  CCriticalSection m_critical;
+  CSharedSection m_critical;
+  CSharedSection m_settingsCritical;
 };

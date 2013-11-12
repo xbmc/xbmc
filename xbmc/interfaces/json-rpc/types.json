@@ -363,6 +363,16 @@
     },
     "additionalProperties": { "$ref": "Global.String.NotEmpty" }
   },
+  "Media.Artwork.Set": {
+    "type": "object",
+    "properties": {
+      "thumb": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ], "default": "" },
+      "poster": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ], "default": "" },
+      "banner": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ], "default": "" },
+      "fanart": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ], "default": "" }
+    },
+    "additionalProperties": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ] }
+  },
   "Library.Fields.Genre": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string", "enum": [ "title", "thumbnail" ] }
@@ -690,6 +700,7 @@
   "Video.Details.Season": {
     "extends": "Video.Details.Base",
     "properties": {
+      "seasonid": { "$ref": "Library.Id", "required": true },
       "season": { "type": "integer", "required": true },
       "showtitle": { "type": "string" },
       "episode": { "type": "integer" },
@@ -780,6 +791,67 @@
       }
     }
   },
+  "PVR.Fields.Broadcast": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "title", "plot", "plotoutline", "starttime",
+                "endtime", "runtime", "progress", "progresspercentage",
+                "genre", "episodename", "episodenum", "episodepart",
+                "firstaired", "hastimer", "isactive", "parentalrating",
+                "wasactive", "thumbnail" ]
+    }
+  },
+  "PVR.Details.Broadcast": {
+    "extends": "Item.Details.Base",
+    "properties": {
+      "broadcastid": { "$ref": "Library.Id", "required": true },
+      "title": { "type": "string" },
+      "plot": { "type": "string" },
+      "plotoutline": { "type": "string" },
+      "starttime": { "type": "string" },
+      "endtime": { "type": "string" },
+      "runtime": { "type": "integer" },
+      "progress": { "type": "integer" },
+      "progresspercentage": { "type": "number" },
+      "genre": { "type": "string" },
+      "episodename": { "type": "string" },
+      "episodenum": { "type": "integer" },
+      "episodepart": { "type": "integer" },
+      "firstaired": { "type": "string" },
+      "hastimer": { "type": "boolean" },
+      "isactive": { "type": "boolean" },
+      "rating": { "type": "integer" },
+      "wasactive": { "type": "boolean" },
+      "thumbnail": { "type": "string" }
+    }
+  },
+  "Textures.Details.Size": {
+    "type": "object",
+    "properties": {
+      "size": { "type": "integer", "description": "Size of the texture (1 == largest)" },
+      "width": { "type": "integer", "description": "Width of texture" },
+      "height": { "type": "integer", "description": "Height of texture" },
+      "usecount": { "type": "integer", "description": "Number of uses" },
+      "lastused": { "type": "string", "description": "Date of last use" }
+    }
+  },
+  "Textures.Fields.Texture": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "url", "cachedurl", "lasthashcheck", "imagehash", "sizes" ]
+    }
+  },
+  "Textures.Details.Texture": {
+    "type": "object",
+    "properties": {
+      "textureid": { "$ref": "Library.Id", "required": "true" },
+      "url": { "type": "string", "description": "Original source URL" },
+      "cachedurl": { "type": "string", "description": "Cached URL on disk" },
+      "lasthashcheck": { "type": "string", "description": "Last time source was checked for changes" },
+      "imagehash": { "type": "string", "description": "Hash of image" },
+      "sizes": { "type": "array", "items": { "$ref": "Textures.Details.Size" } }
+    }
+  },
   "Profiles.Password": {
     "type": "object",
     "properties": {
@@ -850,6 +922,12 @@
     "extends": "List.Filter.Rule",
     "properties": {
       "field": { "$ref": "List.Filter.Fields.Songs", "required": true }
+    }
+  },
+  "List.Filter.Rule.Textures": {
+    "extends": "List.Filter.Rule",
+    "properties": {
+      "field": { "$ref": "List.Filter.Fields.Textures", "required": true }
     }
   },
   "List.Filter.Movies": {
@@ -997,6 +1075,27 @@
         }
       },
       { "$ref": "List.Filter.Rule.Songs" }
+    ]
+  },
+  "List.Filter.Textures": {
+    "type": [
+      { "type": "object",
+        "properties": {
+          "and": { "type": "array",
+            "items": { "$ref": "List.Filter.Textures" },
+            "minItems": 1, "required": true
+          }
+        }
+      },
+      { "type": "object",
+        "properties": {
+          "or": { "type": "array",
+            "items": { "$ref": "List.Filter.Textures" },
+            "minItems": 1, "required": true
+          }
+        }
+      },
+      { "$ref": "List.Filter.Rule.Textures" }
     ]
   },
   "List.Item.Base": {
@@ -1175,7 +1274,7 @@
   },
   "GUI.Property.Name": {
     "type": "string",
-    "enum": [ "currentwindow", "currentcontrol", "skin", "fullscreen" ]
+    "enum": [ "currentwindow", "currentcontrol", "skin", "fullscreen", "stereoscopicmode" ]
   },
   "GUI.Property.Value": {
     "type": "object",
@@ -1197,7 +1296,15 @@
           "name": { "type": "string" }
         }
       },
-      "fullscreen": { "type": "boolean" }
+      "fullscreen": { "type": "boolean" },
+      "stereoscopicmode": { "$ref": "GUI.Stereoscopy.Mode" }
+    }
+  },
+  "GUI.Stereoscopy.Mode": {
+    "type": "object",
+    "properties": {
+      "mode": { "type": "string", "required": true, "enum": [ "off", "split_vertical", "split_horizontal", "row_interleaved", "hardware_based", "anaglyph_cyan_red", "anaglyph_green_magenta", "monoscopic" ] },
+      "label": { "type": "string", "required": true }
     }
   },
   "System.Property.Name": {
@@ -1244,17 +1351,260 @@
     "enum": [ "media", "window", "script", "unknown" ]
   },
   "Favourite.Details.Favourite": {
+    "type": "object",
+    "properties": {
+      "title": { "type": "string", "required": true },
+      "type": { "$ref": "Favourite.Type", "required": true },
+      "path": { "type": "string" },
+      "window": { "type": "string" },
+      "windowparameter": { "type": "string" },
+      "thumbnail": { "type": "string" }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Type": {
+    "type": "string",
+    "enum": [
+      "boolean", "integer", "number", "string", "action", "list",
+      "path", "addon"
+    ]
+  },
+  "Setting.Level": {
+    "type": "string",
+    "enum": [ "basic", "standard", "advanced", "expert" ]
+  },
+  "Setting.Value": {
+    "type": [
+      { "type": "boolean", "required": true },
+      { "type": "integer", "required": true },
+      { "type": "number", "required": true },
+      { "type": "string", "required": true }
+    ]
+  },
+  "Setting.Value.List": {
     "type": "array",
-    "items": { "type": "object",
-      "properties": {
-        "title": { "type": "string", "required": true },
-        "type": { "$ref": "Favourite.Type", "required": true },
-        "path": { "type": "string" },
-        "window": { "type": "string" },
-        "windowparameter": { "type": "string" },
-        "thumbnail": { "type": "string" }
-      },
-      "additionalProperties": false
+    "items": { "$ref": "Setting.Value" }
+  },
+  "Setting.Value.Extended": {
+    "type": [
+      { "type": "boolean", "required": true },
+      { "type": "integer", "required": true },
+      { "type": "number", "required": true },
+      { "type": "string", "required": true },
+      { "$ref": "Setting.Value.List", "required": true }
+    ]
+  },
+  "Setting.Details.ControlBase": {
+    "type": "object",
+    "properties": {
+      "type": { "type": "string", "required": true },
+      "format": { "type": "string", "required": true },
+      "delayed": { "type": "boolean", "required": true }
     }
+  },
+  "Setting.Details.ControlCheckmark": {
+    "extends": "Setting.Details.ControlBase",
+    "properties": {
+      "type": { "type": "string", "required": true, "enum": [ "toggle" ] },
+      "format": { "type": "string", "required": true, "enum": [ "boolean" ] }
+    }
+  },
+  "Setting.Details.ControlSpinner": {
+    "extends": "Setting.Details.ControlBase",
+    "properties": {
+      "type": { "type": "string", "required": true, "enum": [ "spinner" ] },
+      "formatlabel": { "type": "string" },
+      "minimumlabel": { "type": "string" }
+    }
+  },
+  "Setting.Details.ControlHeading": {
+    "extends": "Setting.Details.ControlBase",
+    "properties": {
+      "heading": { "type": "string" }
+    }
+  },
+  "Setting.Details.ControlEdit": {
+    "extends": "Setting.Details.ControlHeading",
+    "properties": {
+      "type": { "type": "string", "required": true, "enum": [ "edit" ] },
+      "hidden": { "type": "boolean", "required": true },
+      "verifynewvalue": { "type": "boolean", "required": true }
+    }
+  },
+  "Setting.Details.ControlButton": {
+    "extends": "Setting.Details.ControlHeading",
+    "properties": {
+      "type": { "type": "string", "required": true, "enum": [ "button" ] }
+    }
+  },
+  "Setting.Details.ControlList": {
+    "extends": "Setting.Details.ControlHeading",
+    "properties": {
+      "type": { "type": "string", "required": true, "enum": [ "list" ] },
+      "multiselect": { "type": "boolean", "required": true }
+    }
+  },
+  "Setting.Details.Control": {
+    "type": [
+      { "$ref": "Setting.Details.ControlCheckmark", "required": true },
+      { "$ref": "Setting.Details.ControlSpinner", "required": true },
+      { "$ref": "Setting.Details.ControlEdit", "required": true },
+      { "$ref": "Setting.Details.ControlButton", "required": true },
+      { "$ref": "Setting.Details.ControlList", "required": true }
+    ]
+  },
+  "Setting.Details.Base": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "string", "required": true, "minLength": 1 },
+      "label": { "type": "string", "required": true },
+      "help": { "type": "string" }
+    }
+  },
+  "Setting.Details.SettingBase": {
+    "extends": "Setting.Details.Base",
+    "properties": {
+      "type": { "$ref": "Setting.Type", "required": true },
+      "enabled": { "type": "boolean", "required": true },
+      "level": { "type": "integer", "required": true },
+      "parent": { "type": "string" },
+      "control": { "$ref": "Setting.Details.Control" }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingBool": {
+    "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "value": { "type": "boolean", "required": true },
+      "default": { "type": "boolean", "required": true }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingInt": {
+    "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "value": { "type": "integer", "required": true },
+      "default": { "type": "integer", "required": true },
+      "minimum": { "type": "integer" },
+      "step": { "type": "integer" },
+      "maximum": { "type": "integer" },
+      "options": { "type": "array",
+        "items": { "type": "object",
+          "properties": {
+            "label": { "type": "string", "required": true },
+            "value": { "type": "integer", "required": true }
+          }
+        }
+      }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingNumber": {
+    "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "value": { "type": "number", "required": true },
+      "default": { "type": "number", "required": true },
+      "minimum": { "type": "number", "required": true },
+      "step": { "type": "number", "required": true },
+      "maximum": { "type": "number", "required": true }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingString": {
+    "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "value": { "type": "string", "required": true },
+      "default": { "type": "string", "required": true },
+      "allowempty": { "type": "boolean", "required": true },
+      "options": { "type": "array",
+        "items": { "type": "object",
+          "properties": {
+            "label": { "type": "string", "required": true },
+            "value": { "type": "string", "required": true }
+          }
+        }
+      }
+    }
+  },
+  "Setting.Details.SettingAction": {
+    "extends": "Setting.Details.SettingBase",
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingList": {
+    "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "value": { "$ref": "Setting.Value.List", "required": true },
+      "default": { "$ref": "Setting.Value.List", "required": true },
+      "elementtype": { "$ref": "Setting.Type", "required": true },
+      "definition": { "$ref": "Setting.Details.Setting", "required": true },
+      "delimiter": { "type": "string", "required": true },
+      "minimum": { "type": "integer" },
+      "maximum": { "type": "integer" }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingPath": {
+    "extends": "Setting.Details.SettingString",
+    "properties": {
+      "writable": { "type": "boolean", "required": true },
+      "sources": { "type": "array", "items": { "type": "string" } }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingAddon": {
+    "extends": "Setting.Details.SettingString",
+    "properties": {
+      "addontype": { "$ref": "Addon.Types", "required": true }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.Setting": {
+    "type": [
+      { "$ref": "Setting.Details.SettingBool", "required": true },
+      { "$ref": "Setting.Details.SettingInt", "required": true },
+      { "$ref": "Setting.Details.SettingNumber", "required": true },
+      { "$ref": "Setting.Details.SettingString", "required": true },
+      { "$ref": "Setting.Details.SettingAction", "required": true },
+      { "$ref": "Setting.Details.SettingList", "required": true },
+      { "$ref": "Setting.Details.SettingPath", "required": true },
+      { "$ref": "Setting.Details.SettingAddon", "required": true }
+    ]
+  },
+  "Setting.Details.Group": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "string", "required": true, "minLength": 1 },
+      "settings": {
+        "type": "array",
+        "items": { "$ref": "Setting.Details.Setting" },
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.Category": {
+    "extends": "Setting.Details.Base",
+    "properties": {
+      "groups": {
+        "type": "array",
+        "items": { "$ref": "Setting.Details.Group" },
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "additionalProperties": false
+  },
+  "Setting.Details.Section": {
+    "extends": "Setting.Details.Base",
+    "properties": {
+      "categories": {
+        "type": "array",
+        "items": { "$ref": "Setting.Details.Category" },
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "additionalProperties": false
   }
 }

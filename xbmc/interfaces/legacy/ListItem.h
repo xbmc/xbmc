@@ -56,7 +56,7 @@ namespace XBMCAddon
                const String& path = emptyString);
 
 #ifndef SWIG
-      inline ListItem(CFileItemPtr pitem) : AddonClass("ListItem"), item(pitem) {}
+      inline ListItem(CFileItemPtr pitem) : item(pitem) {}
 
       static inline AddonClass::Ref<ListItem> fromString(const String& str) 
       { 
@@ -346,7 +346,6 @@ namespace XBMCAddon
        * getfilename() -- Returns the filename of this PlayListItem.\n
        */
       String getfilename();
-
     };
 
     typedef std::vector<ListItem*> ListItemList;

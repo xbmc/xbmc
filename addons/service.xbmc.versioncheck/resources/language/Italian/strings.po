@@ -1,0 +1,93 @@
+# XBMC Media Center language file
+# Addon Name: XBMC Version Check
+# Addon id: service.xbmc.versioncheck
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/xbmc-addons/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#32001"
+msgid "We would like to recommend you to upgrade."
+msgstr "Ti raccomandiamo di aggiornare."
+
+msgctxt "#32002"
+msgid "Visit XBMC.org for more information."
+msgstr "Visita XBMC.org per più informazioni."
+
+msgctxt "#32003"
+msgid "You are still using an older stable version of XBMC."
+msgstr "Stai ancora usando una vecchia versione stabile di XBMC"
+
+msgctxt "#32004"
+msgid "You are still using an older RC version of XBMC."
+msgstr "Stai ancora usando una vecchia versione RC di XBMC."
+
+msgctxt "#32005"
+msgid "You are still using an older beta version of XBMC."
+msgstr "Stai ancora usando una vecchia versione beta di XBMC."
+
+msgctxt "#32006"
+msgid "You are still using an older alpha version of XBMC."
+msgstr "Stai ancora usando una vecchia versione alpha di XBMC."
+
+msgctxt "#32007"
+msgid "You are still using an older monthly version of XBMC."
+msgstr "Stai ancora usando una vecchia versione mensile di XBMC."
+
+msgctxt "#32008"
+msgid "You are still using an older non stable version of XBMC."
+msgstr "Stai ancora usando una vecchia versione non stabile di XBMC."
+
+msgctxt "#32009"
+msgid "Would you like to remove this reminder?"
+msgstr "Vuoi eliminare questo promemoria?"
+
+msgctxt "#32010"
+msgid "You can enable/disable it through addon settings."
+msgstr "Puoi abilitarlo/disabilitarlo dalle impostazioni dell'addon"
+
+msgctxt "#32011"
+msgid "Use your package manager(apt) to upgrade."
+msgstr "Usa il tuo gestore pacchetti (apt) per aggiornare."
+
+msgctxt "#32012"
+msgid "A new version is available, do you want to upgrade now?"
+msgstr "Una nuova versione è disponibile, vuoi aggiornare ora?"
+
+msgctxt "#32013"
+msgid "Upgrade successful"
+msgstr "Aggiornamento effettuato con successo"
+
+msgctxt "#32014"
+msgid "Do you want to restart Xbmc to finish the upgrade?"
+msgstr "Vuoi riavviare l'XBMC per finire l'aggiornamento?"
+
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr "Vuoi verificare la presenza di un nuovo aggiornamento?"
+
+msgctxt "#32020"
+msgid "General"
+msgstr "Generale"
+
+msgctxt "#32021"
+msgid "Enable XBMC version check?"
+msgstr "Abilita XBMC version check?"
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr "Inserisci la tua Password"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "Linux: Aggiornamento completo del sistema"

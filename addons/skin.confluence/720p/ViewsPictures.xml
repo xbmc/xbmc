@@ -4,11 +4,11 @@
 		<control type="group">
 			<visible>Control.IsVisible(510)</visible>
 			<include>VisibleFadeEffect</include>
-			<posx>0</posx>
-			<posy>440</posy>
+			<left>0</left>
+			<top>440</top>
 			<control type="wraplist" id="510">
-				<posx>-25</posx>
-				<posy>5</posy>
+				<left>-25</left>
+				<top>5</top>
 				<width>1330</width>
 				<height>250</height>
 				<onleft>510</onleft>
@@ -23,8 +23,8 @@
 				<preloaditems>4</preloaditems>
 				<itemlayout height="200" width="190">
 					<control type="image">
-						<posx>15</posx>
-						<posy>40</posy>
+						<left>15</left>
+						<top>40</top>
 						<width>160</width>
 						<height>160</height>
 						<aspectratio>stretch</aspectratio>
@@ -34,8 +34,8 @@
 						<texture border="2">ThumbBG.png</texture>
 					</control>
 					<control type="image">
-						<posx>25</posx>
-						<posy>50</posy>
+						<left>25</left>
+						<top>50</top>
 						<width>140</width>
 						<height>140</height>
 						<aspectratio>keep</aspectratio>
@@ -44,8 +44,8 @@
 				</itemlayout>
 				<focusedlayout height="200" width="190">
 					<control type="image">
-						<posx>15</posx>
-						<posy>40</posy>
+						<left>15</left>
+						<top>40</top>
 						<width>160</width>
 						<height>160</height>
 						<aspectratio>stretch</aspectratio>
@@ -57,8 +57,8 @@
 						<animation reversible="false" effect="zoom" end="15,40,160,160" start="-10,-5,210,210" time="200">unfocus</animation>
 					</control>
 					<control type="image">
-						<posx>25</posx>
-						<posy>50</posy>
+						<left>25</left>
+						<top>50</top>
 						<width>140</width>
 						<height>140</height>
 						<aspectratio>keep</aspectratio>
@@ -69,8 +69,8 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>310</posx>
-				<posy>200</posy>
+				<left>310</left>
+				<top>200</top>
 				<width>660</width>
 				<height>25</height>
 				<texturesliderbackground border="14,0,14,0">ScrollBarH.png</texturesliderbackground>
@@ -90,8 +90,8 @@
 		<control type="group">
 			<visible>Control.IsVisible(514)</visible>
 			<control type="panel" id="514">
-				<posx>60</posx>
-				<posy>75</posy>
+				<left>60</left>
+				<top>75</top>
 				<width>432</width>
 				<height>576</height>
 				<onleft>2</onleft>
@@ -104,8 +104,8 @@
 				<preloaditems>2</preloaditems>
 				<itemlayout height="144" width="144">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>144</width>
 						<height>144</height>
 						<aspectratio>stretch</aspectratio>
@@ -115,8 +115,8 @@
 						<texture border="2">ThumbBG.png</texture>
 					</control>
 					<control type="image">
-						<posx>10</posx>
-						<posy>10</posy>
+						<left>10</left>
+						<top>10</top>
 						<width>124</width>
 						<height>124</height>
 						<aspectratio>keep</aspectratio>
@@ -125,8 +125,8 @@
 				</itemlayout>
 				<focusedlayout height="144" width="144">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>144</width>
 						<height>144</height>
 						<aspectratio>stretch</aspectratio>
@@ -136,8 +136,8 @@
 						<texture border="2">ThumbBG.png</texture>
 					</control>
 					<control type="image">
-						<posx>10</posx>
-						<posy>10</posy>
+						<left>10</left>
+						<top>10</top>
 						<width>124</width>
 						<height>124</height>
 						<aspectratio>keep</aspectratio>
@@ -146,8 +146,8 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>500</posx>
-				<posy>70</posy>
+				<left>500</left>
+				<top>70</top>
 				<width>25</width>
 				<height>576</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -162,12 +162,12 @@
 				<visible>Control.IsVisible(514)</visible>
 			</control>
 			<control type="group">
-				<posx>570</posx>
-				<posy>80</posy>
+				<left>570</left>
+				<top>80</top>
 				<control type="label">
 					<description>Title txt</description>
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>640</width>
 					<height>15</height>
 					<label>$INFO[ListItem.Label]</label>
@@ -178,8 +178,8 @@
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="image">
-					<posx>0</posx>
-					<posy>30</posy>
+					<left>0</left>
+					<top>30</top>
 					<width>640</width>
 					<height>470</height>
 					<texture background="true">$INFO[ListItem.FilenameAndPath]</texture>
@@ -190,8 +190,8 @@
 				</control>
 				<control type="label">
 					<description>Date time txt</description>
-					<posx>0</posx>
-					<posy>510</posy>
+					<left>0</left>
+					<top>510</top>
 					<width>640</width>
 					<height>15</height>
 					<label>$INFO[ListItem.PictureDateTime,[COLOR=blue]$LOCALIZE[31326][/COLOR] - ]</label>
@@ -203,8 +203,8 @@
 				</control>
 				<control type="label">
 					<description>Resolution txt</description>
-					<posx>0</posx>
-					<posy>535</posy>
+					<left>0</left>
+					<top>535</top>
 					<width>640</width>
 					<height>15</height>
 					<label>$INFO[ListItem.PictureResolution,[COLOR=blue]$LOCALIZE[31327][/COLOR] - ]</label>

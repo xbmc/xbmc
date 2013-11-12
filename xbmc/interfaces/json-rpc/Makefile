@@ -12,7 +12,9 @@ SRCS=AddonsOperations.cpp \
      PlaylistOperations.cpp \
      ProfilesOperations.cpp \
      PVROperations.cpp \
+     SettingsOperations.cpp \
      SystemOperations.cpp \
+     TextureOperations.cpp \
      VideoLibrary.cpp \
      XBMCOperations.cpp \
 

@@ -116,27 +116,27 @@ bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
   while (URIUtils::IsInArchive(realPath))
     realPath = CURL(realPath).GetHostName();
 
-  if (StringUtils::StartsWith(realPath, "virtualpath://upnproot/"))
+  if (StringUtils::StartsWithNoCase(realPath, "virtualpath://upnproot/"))
     return true;
-  else if (StringUtils::StartsWith(realPath, "musicdb://"))
+  else if (StringUtils::StartsWithNoCase(realPath, "musicdb://"))
     return true;
-  else if (StringUtils::StartsWith(realPath, "videodb://"))
+  else if (StringUtils::StartsWithNoCase(realPath, "videodb://"))
     return true;
-  else if (StringUtils::StartsWith(realPath, "library://video"))
+  else if (StringUtils::StartsWithNoCase(realPath, "library://video"))
     return true;
-  else if (StringUtils::StartsWith(realPath, "sources://video"))
+  else if (StringUtils::StartsWithNoCase(realPath, "sources://video"))
     return true;
-  else if (StringUtils::StartsWith(realPath, "special://musicplaylists"))
+  else if (StringUtils::StartsWithNoCase(realPath, "special://musicplaylists"))
     return true;
-  else if (StringUtils::StartsWith(realPath, "special://profile/playlists"))
+  else if (StringUtils::StartsWithNoCase(realPath, "special://profile/playlists"))
     return true;
-  else if (StringUtils::StartsWith(realPath, "special://videoplaylists"))
+  else if (StringUtils::StartsWithNoCase(realPath, "special://videoplaylists"))
     return true;
-  else if (StringUtils::StartsWith(realPath, "addons://sources"))
+  else if (StringUtils::StartsWithNoCase(realPath, "addons://sources"))
     return true;
-  else if (StringUtils::StartsWith(realPath, "upnp://"))
+  else if (StringUtils::StartsWithNoCase(realPath, "upnp://"))
     return true;
-  else if (StringUtils::StartsWith(realPath, "plugin://"))
+  else if (StringUtils::StartsWithNoCase(realPath, "plugin://"))
     return true;
   bool isSource;
   for (unsigned int index = 0; index < SourcesSize; index++)
@@ -152,97 +152,12 @@ bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
 
 unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuffer)
 {
-  static const unsigned int max_file_size = 0x7FFFFFFF;
-  static const unsigned int min_chunk_size = 64*1024U;
-  static const unsigned int max_chunk_size = 2048*1024U;
-
-  outputBuffer = NULL;
-  if (filename.empty())
-    return 0;
-
+  XFILE::auto_buffer buffer;
   XFILE::CFile file;
-  if (!file.Open(filename, READ_TRUNCATED))
-    return 0;
 
-  /*
-   GetLength() will typically return values that fall into three cases:
-   1. The real filesize. This is the typical case.
-   2. Zero. This is the case for some http:// streams for example.
-   3. Some value smaller than the real filesize. This is the case for an expanding file.
+  const unsigned int total_read = file.LoadFile(filename, buffer);
+  outputBuffer = buffer.detach();
 
-   In order to handle all three cases, we read the file in chunks, relying on Read()
-   returning 0 at EOF.  To minimize (re)allocation of the buffer, the chunksize in
-   cases 1 and 3 is set to one byte larger than the value returned by GetLength().
-   The chunksize in case 2 is set to the lowest value larger than min_chunk_size aligned
-   to GetChunkSize().
-
-   We fill the buffer entirely before reallocation.  Thus, reallocation never occurs in case 1
-   as the buffer is larger than the file, so we hit EOF before we hit the end of buffer.
-
-   To minimize reallocation, we double the chunksize each read while chunksize is lower
-   than max_chunk_size.
-   */
-  int64_t filesize = file.GetLength();
-  if (filesize > max_file_size)
-  { /* file is too large for this function */
-    file.Close();
-    return 0;
-  }
-  unsigned int chunksize = (filesize > 0) ? (unsigned int)(filesize + 1) : CFile::GetChunkSize(file.GetChunkSize(), min_chunk_size);
-  unsigned char *inputBuff = NULL;
-  unsigned int inputBuffSize = 0;
-
-  unsigned int total_read = 0, free_space = 0;
-  while (true)
-  {
-    if (!free_space)
-    { // (re)alloc
-      inputBuffSize += chunksize;
-      unsigned char *tempinputBuff = NULL;
-      if (inputBuffSize <= max_file_size)
-        tempinputBuff = (unsigned char *)realloc(inputBuff, inputBuffSize);
-      if (!tempinputBuff)
-      {
-        CLog::Log(LOGERROR, "%s unable to (re)allocate buffer of size %u for file \"%s\"", __FUNCTION__, inputBuffSize, filename.c_str());
-        free(inputBuff);
-        file.Close();
-        return 0;
-      }
-      inputBuff = tempinputBuff;
-      free_space = chunksize;
-      if (chunksize < max_chunk_size)
-        chunksize *= 2;
-    }
-    unsigned int read = file.Read(inputBuff + total_read, free_space);
-    free_space -= read;
-    total_read += read;
-    if (!read)
-      break;
-  }
-
-  file.Close();
-
-  if (total_read == 0)
-  {
-    free(inputBuff);
-    return 0;
-  }
-
-  if (total_read + 1 < inputBuffSize)
-  {
-    /* free extra memory if more than 1 byte (cases 1 and 3) */
-    unsigned char *tempinputBuff = (unsigned char *)realloc(inputBuff, total_read);
-    if (!tempinputBuff)
-    {
-      /* just a precaution, shouldn't really happen */
-      CLog::Log(LOGERROR, "%s unable to reallocate buffer for file \"%s\"", __FUNCTION__, filename.c_str());
-      free(inputBuff);
-      return 0;
-    }
-    inputBuff = tempinputBuff;
-  }
-
-  outputBuffer = (void *) inputBuff;
   return total_read;
 }
 

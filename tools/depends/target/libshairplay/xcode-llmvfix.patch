@@ -1,0 +1,18 @@
+--- a/src/lib/dnssd.c	2013-10-26 16:39:10.000000000 -0400
++++ b/src/lib/dnssd.c	2013-10-26 16:38:32.000000000 -0400
+@@ -12,6 +12,13 @@
+  *  Lesser General Public License for more details.
+  */
+ 
++#ifndef __has_feature         // Optional of course.
++  #define __has_feature(x) 0  // Compatibility with non-clang compilers.
++#endif
++#ifndef __has_extension
++  #define __has_extension __has_feature // Compatibility with pre-3.0 compilers.
++#endif
++
+ #include <stdlib.h>
+ #include <string.h>
+ #include <stdio.h>
+
+

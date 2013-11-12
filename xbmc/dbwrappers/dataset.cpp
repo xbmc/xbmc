@@ -54,12 +54,18 @@ Database::~Database() {
   disconnect();		// Disconnect if connected to database
 }
 
-int Database::connectFull(const char *newHost, const char *newPort, const char *newDb, const char *newLogin, const char *newPasswd) {
+int Database::connectFull(const char *newHost, const char *newPort, const char *newDb, const char *newLogin, const char *newPasswd,
+                        const char *newKey, const char *newCert, const char *newCA, const char *newCApath, const char *newCiphers) {
   host = newHost;
   port = newPort;
   db = newDb;
   login = newLogin;
   passwd = newPasswd;
+  key = newKey;
+  cert = newCert;
+  ca = newCA;
+  capath = newCApath;
+  ciphers = newCiphers;
   return connect(true);
 }
 

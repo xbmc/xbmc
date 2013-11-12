@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="XBMC.org Add-ons"
-		version="2.1.10"
+		version="2.1.11"
 		provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
   </requires>
 	<extension point="xbmc.addon.repository"
 		name="Official XBMC.org Add-on Repository">
+		<dir minversion="12.9.0">
+			<info compressed="true">http://mirrors.xbmc.org/addons/gotham/addons.xml</info>
+			<checksum>http://mirrors.xbmc.org/addons/gotham/addons.xml.md5</checksum>
+			<datadir zip="true">http://mirrors.xbmc.org/addons/gotham</datadir>
+			<hashes>true</hashes>
+		</dir>
 		<info compressed="true">http://mirrors.xbmc.org/addons/frodo/addons.xml</info>
 		<checksum>http://mirrors.xbmc.org/addons/frodo/addons.xml.md5</checksum>
 		<datadir zip="true">http://mirrors.xbmc.org/addons/frodo</datadir>
-		<hashes>true</hashes>
-	</extension>
-	<extension point="xbmc.addon.repository"
-		name="XBMC.org Gotham Repository">
-		<info compressed="true">http://mirrors.xbmc.org/addons/gotham/addons.xml</info>
-		<checksum>http://mirrors.xbmc.org/addons/gotham/addons.xml.md5</checksum>
-		<datadir zip="true">http://mirrors.xbmc.org/addons/gotham</datadir>
 		<hashes>true</hashes>
 	</extension>
 	<extension point="xbmc.addon.metadata">
@@ -33,6 +32,7 @@
 		<summary lang="de">Installiere Add-ons von XBMC.org</summary>
 		<summary lang="el">Εγκατάσταση Πρόσθετων από το XBMC.org</summary>
 		<summary lang="en">Install Add-ons from XBMC.org</summary>
+		<summary lang="en_US">Install Add-ons from XBMC.org</summary>
 		<summary lang="es">Instalar Add-ons de XBMC.org</summary>
 		<summary lang="es_AR">Instalar Add-ons de XBMC.org</summary>
 		<summary lang="es_MX">Installar Add-ons de XBMC.org</summary>
@@ -81,7 +81,7 @@
 		<description lang="da">Hent og installer add-ons fra det officielle XBMC.org add-on fjernlager.[CR] Ved at bruge det officielle fjernlager drager du fordel af vores omfattende spejltjeneste, som gør at du kan hente hurtigere fra et sted nær dig.[CR]  Alle add-ons i dette fjernlager har gennemgået grundlæggende tests. Hvis du finder en defekt add-on, så rapporter venligst dette til Team XBMC, så vi kan tage hånd i hanke med eventuelle problemer.</description>
 		<description lang="de">Downloade und installiere Add-Ons aus dem offiziellen XBMC.org Add-On Repository.[CR]  Durch die Nutzung des offiziellen Repository hat man Zugriff auf das große Datei Mirror System welches schnelle Downloads aus der Nähe bereit stellt.[CR]  Alle Add-Ons im Repository wurden getestet, sollte dennoch ein Add-On Fehler haben oder gar nicht funktionieren, sollte dieser Fehler an das Team XBMC gemeldet werden, damit die nötigen Schritte getroffen werden können</description>
 		<description lang="el">Λήψη και εγκατάσταση πρόσθετων από το επίσημο αποθετήριο του XBMC.org.[CR]  Χρησιμοποιώντας το Επίσημο Αποθετήριο μπορείτε να εκμεταλλευτείτε τους εκτεταμένους διακομιστές αρχείων μας για ταχύτερες λήψεις από μία κοντινή σας περιοχή.[CR]  Όλα τα πρόσθετα σε αυτό το αποθετήριο έχουν περάσει τις στοιχειώδεις δοκιμές, αν βρείτε ένα κατεστραμμένο ή ανενεργό πρόσθετο παρακαλούμε να το αναφέρετε στην Ομάδα XBMC ούτως ώστε να ληφθούν οι απαραίτητες ενέργειες.</description>
-		<description lang="en">Download and install add-ons from the Official XBMC.org addon repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All addons on this repository have under gone basic testing, if you find a broken or not working addon please report it to Team XBMC so we can take any action needed.</description>
+		<description lang="en">Download and install add-ons from the Official XBMC.org add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team XBMC so we can take any action needed.</description>
 		<description lang="es">Descarga e instala add-ons desde el repositorio oficial de XBMC.[CR]  Usando el repositorio oficial tendrás las ventajas de nuestro servicio de mirrors para ayudarte a conseguir unas descargas más rápidas de un sitio cercano a tí.[CR]  Todos los add-ons en este repositorio han pasado por un periodo de pruebas básico, pero si encuentras algún add-on que no funciona, por favor informa de ello al equipo de XBMC para solucionar el problema.</description>
 		<description lang="es_AR">Descarga e instala add-ons desde el repositorio oficial de XBMC.[CR] Usando el repositorio oficial tendrás las ventajas de nuestro servicio de mirrors para ayudarte a conseguir unas descargas más rápidas de un sitio cercano a vos.[CR] Todos los add-ons en este repositorio han pasado por un periodo de pruebas básico, pero si encuentras algún add-on que no funciona, por favor informa de ello al equipo de XBMC para solucionar el problema.</description>
 		<description lang="es_MX">Descarga e instala add-ons del repositorio oficial XBMC.org.[CR] Al usar el repositorio oficial, tendrá la ventaja de los servicios de espejos, y así tener descargas más rápidas.[CR] Todos los add-ons en este repositorio se han probado de manera básica, si encuentra alguno que no funciona o roto, favor de reportarlo al Equipo de XBMC para poder tomar las medidas necesarias.</description>
@@ -129,6 +129,7 @@
 		<disclaimer lang="de">Team XBMC hat nicht alle Add-Ons aus dem Repository erstellt und ist für deren Inhalt nicht verantwortlich</disclaimer>
 		<disclaimer lang="el">Η Ομάδα XBMC δεν δημιούργησε όλα τα πρόσθετα σε αυτό το αποθετήριο συνεπώς δεν είναι υπεύθυνοι για το περιεχόμενό τους</disclaimer>
 		<disclaimer lang="en">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
+		<disclaimer lang="en_US">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
 		<disclaimer lang="es">El equipo de XBMC no ha hecho todos los Addons en este repositorio y no son responsables de su contenido</disclaimer>
 		<disclaimer lang="es_AR">El equipo de XBMC no ha hecho todos los Add-ons en este repositorio y no es responsable de su contenido</disclaimer>
 		<disclaimer lang="es_MX">El equipo de XBMC no hizo todos los add-ons en este repositorio y no es responsable de su contenido</disclaimer>
@@ -161,7 +162,7 @@
 		<disclaimer lang="sv">Team XBMC har inte gjort alla tillägg och är inte ansvariga för innehållet i dessa.</disclaimer>
 		<disclaimer lang="ta_IN">இந்த களஞ்சியத்தில் உள்ள துனை பயன்களை XBMC அணியால் உருவாக்கப்படவில்லை மற்றும் அவற்றின் உள்ளடக்கம் தங்கள் பொறுப்பு அல்ல.</disclaimer>
 		<disclaimer lang="th">ทีม XBMC ไม่ได้จัดทำ ส่วนเสริม ทั้งหมดในแหล่งข้อมูลโปรแกรมนี้ และจะไม่รับผิดชอบต่อเนื้อหาเหล่านั้น</disclaimer>
-		<disclaimer lang="tr">XBMC takımı depodaki tüm eklentileri geliştirmemiştir ve bunların içeriklerinden sorumlu değildir.</disclaimer>
+		<disclaimer lang="tr">XBMC takımı bu depodaki tüm eklentileri geliştirmemiştir ve bunların içeriklerinden sorumlu değildir.</disclaimer>
 		<disclaimer lang="uk">Зауважте, що не всі додатки в цьому Репозиторії створені Командою XBMC, і тому Команда не несе відповідальності за їх вміст.</disclaimer>
 		<disclaimer lang="vi">Đội ngũ XBMC không làm ra tất cả các add-on có trên kho chứa này và sẽ không chịu trách nhiệm về nội dung của các add-on đấy</disclaimer>
 		<disclaimer lang="zh">本库中扩展功能模块并非完全由XBMC开发团队开发，因此不对相关内容承担责任</disclaimer>

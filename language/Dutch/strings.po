@@ -857,10 +857,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Muziek"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Visualisatie"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Selecteer doelmap"
@@ -1193,10 +1189,6 @@ msgctxt "#337"
 msgid "Audio output"
 msgstr "Geluidsuitvoer"
 
-msgctxt "#338"
-msgid "Analog"
-msgstr "Analoog"
-
 msgctxt "#339"
 msgid "Optical/Coax"
 msgstr "Digitaal"
@@ -1517,6 +1509,10 @@ msgctxt "#420"
 msgid "HDMI"
 msgstr "HDMI"
 
+msgctxt "#421"
+msgid "Stream silence when idle"
+msgstr "Stilte streamen bij inactiviteit"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Albuminformatie wissen"
@@ -1588,10 +1584,6 @@ msgstr "Bestand openen"
 msgctxt "#439"
 msgid "Cache"
 msgstr "Buffer"
-
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "Harde schijf"
 
 msgctxt "#441"
 msgid "UDF"
@@ -1828,10 +1820,6 @@ msgstr "Media-info van bestanden inlezen..."
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Sorteer: Gebruik"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "Visualisaties weergeven"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2213,6 +2201,10 @@ msgctxt "#613"
 msgid "Sample rate"
 msgstr "Samplefrequentie"
 
+msgctxt "#614"
+msgid "Virtual folder"
+msgstr "Virtuele map"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Muziek CD's"
@@ -2273,14 +2265,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Eigen instelling"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "Normalisering"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "Normalisatiemethode"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Per nummer"
@@ -2288,18 +2272,6 @@ msgstr "Per nummer"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Per album"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "Voorversterking - genormaliseerd"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "Voorversterking - niet genormaliseerd"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "Het oversturen van genormaliseerde bestanden voorkomen"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -3121,6 +3093,10 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Zeroconf publishing"
 
+msgctxt "#1269"
+msgid "Allow volume control"
+msgstr "Laat toe om het volume aan te passen"
+
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
 msgstr "Ontvangen van AirPlay-inhoud door XBMC toelaten"
@@ -3517,10 +3493,6 @@ msgctxt "#10039"
 msgid "Level: Expert"
 msgstr "Nivo: Expert"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "Addon verkenner"
-
 msgctxt "#10041"
 msgid "Reset settings"
 msgstr "Instellingen terugzetten"
@@ -3536,14 +3508,6 @@ msgstr "Hulp"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Geen hulp beschikbaar"
-
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "Ja/Nee"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "Voortgang"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3685,17 +3649,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Filminformatie"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "Selecteren"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Muziek/Informatie"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "Bevestiging"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3708,14 +3664,6 @@ msgstr "Scripts/Informatie"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Volledig scherm"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "Geluidsvisualisatie"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "Bestanden groeperen"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4047,15 +3995,11 @@ msgstr "Slaapstand"
 
 msgctxt "#13012"
 msgid "Exit"
-msgstr "Stoppen"
+msgstr "Afsluiten"
 
 msgctxt "#13013"
 msgid "Reboot"
 msgstr "Opnieuw opstarten"
-
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "Minimaliseren"
 
 msgctxt "#13015"
 msgid "Power button action"
@@ -4221,10 +4165,6 @@ msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU HQ Upscaling level"
 
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr "VDPAU Studio level color conversion"
-
 msgctxt "#13130"
 msgid "Blank other displays"
 msgstr "Stop doorgifte videosignaal aan andere beeldschermen"
@@ -4276,10 +4216,6 @@ msgstr "Gateway"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "DNS-server"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "Initialiseren mislukt"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4525,10 +4461,6 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Diavoorstelling met mappen"
 
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "Willekeurig"
-
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Stereo"
@@ -4741,21 +4673,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Preset"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "Er zijn geen presets beschikbaar voor deze visualisatie"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "Er zijn geen instellingen beschikbaar voor deze visualisatie"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Lade open/dicht"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "Toon visualisaties tijdens afspelen muziek"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4929,6 +4849,10 @@ msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
 msgstr "Zet HQ Schalers aan voor schalen van bovenstaande"
 
+msgctxt "#13436"
+msgid "Allow hardware acceleration (libstagefright)"
+msgstr "Hardwareversnelling inschakelen (libstagefright)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V-synchronisatiemethode"
@@ -4944,10 +4868,6 @@ msgstr "Videosignaal (Drop/Dupe audio)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Videosignaal (Resample audio)"
-
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr "Maximum resample amount (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -5140,10 +5060,6 @@ msgstr "Geen TV"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Voer dichtstbijzijnde grote plaats in"
-
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "Video-/geluids-/DVD-buffer - harde schijf"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5489,10 +5405,6 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "Afspelen met..."
 
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "Geleidelijke A/V-synchronisatie gebruiken"
-
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "Bestandsnamen in miniatuurweergave verbergen"
@@ -5633,10 +5545,6 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Geen overeenkomstige nummers in bibliotheek."
 
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "Kan database niet initialiseren."
-
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "Kan database niet openen."
@@ -5696,6 +5604,14 @@ msgstr "Als niet-bekeken markeren"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "Titel aanpassen"
+
+msgctxt "#16106"
+msgid "Manage ..."
+msgstr "Beheren..."
+
+msgctxt "#16107"
+msgid "Edit sort title"
+msgstr "Sorteertitel aanpassen"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
@@ -5785,10 +5701,6 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Inverse telecine"
 
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr "Lanczos3 optimized"
-
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Auto"
@@ -5817,17 +5729,9 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 geoptimaliseerd"
-
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software menging"
-
-msgctxt "#16325"
-msgid "Auto - ION Optimized"
-msgstr "Automatisch - ION Geoptimaliseerd"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6481,10 +6385,6 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Timeout bij het openen van een nieuw kanaal"
 
-msgctxt "#19171"
-msgid "Start playback minimized"
-msgstr "Start afspelen geminimaliseerd"
-
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Lengte directe opname"
@@ -6552,10 +6452,6 @@ msgstr "TV gids wordt gewist"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Hervat laatste kanaal bij opstarten"
-
-msgctxt "#19190"
-msgid "Minimized"
-msgstr "Geminimaliseerd"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6713,10 +6609,6 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Sluit kanalen OSD na wijzigen kanaal"
 
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr "TV gids niet updaten tijdens het afspelen van een TV stream"
-
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "Gebruik altijd de volgorde van kanalen van backend(s)"
@@ -6728,10 +6620,6 @@ msgstr "Zoekresultaten wissen"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Toon een melding bij timer updates"
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Gebruik kanaalnummers van de backend (alleen als 1 PVR addon actief is)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7557,14 +7445,6 @@ msgctxt "#20085"
 msgid "Show system info"
 msgstr "Systeeminformatie weergeven"
 
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr "Vrije hardeschijfruimte op C:, E: en F: weergeven"
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr "Vrije hardeschijfruimte op E:F:G: weergeven"
-
 msgctxt "#20088"
 msgid "Weather info"
 msgstr "Weerbericht"
@@ -8367,7 +8247,7 @@ msgstr "Geselecteerde map bevat één enkele serie"
 
 msgctxt "#20380"
 msgid "Exclude selected folder from scans"
-msgstr "Map uitsluiten van scans"
+msgstr "Locatie uitsluiten van scans"
 
 msgctxt "#20381"
 msgid "Specials"
@@ -8501,10 +8381,6 @@ msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Zoek Fanart"
 
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr "Fanart in video- en muziekbibliotheek tonen"
-
 msgctxt "#20415"
 msgid "Scanning for new content"
 msgstr "Bezig met scannen naar nieuwe inhoud"
@@ -8575,7 +8451,7 @@ msgstr "Oude bestanden overschrijven?"
 
 msgctxt "#20432"
 msgid "Exclude path from library updates"
-msgstr "Pad uitsluiten van bibliotheekupdates"
+msgstr "Locatie uitsluiten van bibliotheekupdates"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
@@ -8584,6 +8460,10 @@ msgstr "Miniaturen en codec informatie uitlezen"
 msgctxt "#20434"
 msgid "Sets"
 msgstr "Sets"
+
+msgctxt "#20435"
+msgid "Combine split video items"
+msgstr "Combineer verdeelde video items"
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
@@ -8664,6 +8544,10 @@ msgstr "Luisteraar"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Luisteraars"
+
+msgctxt "#20456"
+msgid "Flatten library hierarchy"
+msgstr "Maak de hierarchie van de bibliotheek plat"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -9151,7 +9035,7 @@ msgstr "gemixed"
 
 msgctxt "#21460"
 msgid "Subtitle location"
-msgstr "Plaats van de ondertitels"
+msgstr "Locatie van de ondertitels"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9319,7 +9203,7 @@ msgstr "Oriëntatie"
 
 msgctxt "#21857"
 msgid "Sub-location"
-msgstr "Sub-locatie"
+msgstr "Sub locatie"
 
 msgctxt "#21858"
 msgid "Image type"
@@ -9577,10 +9461,6 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "Gids"
 
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "Toegestane afwijking in beeldverhouding (%)"
-
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "Toon videobestanden in lijst met afbeeldingen"
@@ -9740,10 +9620,6 @@ msgstr "Schermbeveiliging"
 msgctxt "#24009"
 msgid "Script"
 msgstr "Script"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Visualisatie"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -10457,6 +10333,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "When activated silence is output in order to keep alive receiver, otherwise sink is drained in idle state"
+msgstr "Wanneer dit ingeschakeld is zal stilte gestuurd worden om de ontvanger 'wakker' te houden, in het andere geval stopt de geluidsuitvoer volledig bij inactiviteit."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Interface geluiden afspelen"
@@ -10509,10 +10389,6 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Niet gelukt om video filters/scalers initialiseren, terugvallen naar bilinear scaling"
 
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr "Niet gelukt om audio apparaat te initialiseren"
-
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Controleer je audio-instellingen"
@@ -10544,10 +10420,6 @@ msgstr "Randapparatuur"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Generiek invoer apparaat"
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr "Generieke netwerkadapter"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10605,10 +10477,6 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "Product ID"
 
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr "Pulse-Eight CEC adapter"
-
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10628,10 +10496,6 @@ msgstr "Druk op \"user\" knop commando"
 msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Schakel commando's in bij het wisselen van kant"
-
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr "Kon de adapter niet openen"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
@@ -10653,10 +10517,6 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Kon de COM poort niet detecteren. Stel het manueel in."
 
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "Kon de CEC adapter niet initialiseren. Controleer de instellingen."
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI poort nummer"
@@ -10664,10 +10524,6 @@ msgstr "HDMI poort nummer"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Verbonden"
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "Kon de CEC adapter niet initialiseren: libCEC is niet gevonden op dit systeem."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10721,14 +10577,6 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Verbinding verbroken"
 
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr "Deze gebruiker heeft geen toestemming om de CEC adapter te openen."
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr "Deze poort is in gebruik. Slechts een programma tegelijk kan toegang hebben tot de CEC adapter"
-
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Pauzeer het afspelen bij het wisselen naar een andere bron"
@@ -10760,10 +10608,6 @@ msgstr "Niet-ondersteunde libCEC-interfaceversie. %x is lager dan de versie die 
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr " * Item map"
-
-msgctxt "#36042"
-msgid "Use limited color range (16-235)"
-msgstr "Gebruik gelimiteerde kleuren range (16-235)"
 
 msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
@@ -10881,10 +10725,6 @@ msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Stel de hoeveelheid inactieve tijd in voordat de schermbeveiliging wordt gestart."
 
-msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
-msgstr "Kies de schermbeveiliging. XBMC zal zowiezo de gedimde schermbeveiliging gebruiken wanneer video in volledig scherm gepauzeerd wordt, of wanneer een dialoogvenster actief is."
-
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
 msgstr "Verander specifieke schermbeveiligingsinstellingen. De beschikbare opties zijn afhankelijk van de gebruikte schermbeveiliging."
@@ -10892,10 +10732,6 @@ msgstr "Verander specifieke schermbeveiligingsinstellingen. De beschikbare optie
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "Test de gekozen schermbeveiliging."
-
-msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
-msgstr "Als muziek wordt afgespeeld, zal XBMC de gekozen visualisatie laten zien in plaats van de schermbeveiliging."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11025,21 +10861,13 @@ msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
 msgstr "Pauzeer gedurende een korte tijd bij het aanpassen van de verversingssnelheid. Activeer om automatisch de verversingssnelheid aan te passen zodat deze best overeenkomt met het afgespeelde videobestand. Omdat video doorgaans in verschillende snelheden - aantal frames per seconde - kan opgenomen zijn, en de display hierop best afgesteld wordt, laat dit mogelijk een perfect vloeiend beeld toe."
 
-msgctxt "#36166"
-msgid "Synchronize the video to the refresh rate of the monitor."
-msgstr "Synchroniseer video met de verversingssnelheid van de monitor."
-
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "Audio moet gesynchroniseerd blijven: dit is mogelijk ofwel via 'resampling', ofwel het overslaan/dupliceren van packets, ofwel door de klok aan te passen wanneer het synchronisatieverschil te groot is."
 
-msgctxt "#36168"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
-
 msgctxt "#36169"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Resampling and other sound processing quality. Low quality is fast, higher quality will consume more CPU."
+msgstr "Kwaliteit van geluidsaanpassing door re-sampling. Lage kwaliteit is snel, hogere kwaliteit zal meer CPU gebruiken. "
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -11048,10 +10876,6 @@ msgstr "Laat de videospeler toe de beeldverhouding licht aan te passen om zo een
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Kies het zoom-niveau voor 4:3 video's wanneer afgespeeld op breedbeeld schermen."
-
-msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
-msgstr "VDPAU studio level conversie laat geavanceerde toepassingen zoals XBMC toe om de kleurruimteconversie te beïnvloeden."
 
 msgctxt "#36173"
 msgid "No info available yet."
@@ -11070,8 +10894,8 @@ msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
 
 msgctxt "#36177"
-msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "Kies tussen Kies, Afspelen (standaard), Hervatten en Informatie tonen. Kies zal een item selecteren, bv. een folder openen in bestandsmode. Hervatten zal automatisch video's hervatten vanaf de laatst bekeken positie, zelfs na het herstarten van het systeem."
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "Kies tussen Kiezen, Afspelen (standaard), Hervatten en Informatie tonen. Kiezen zal een item selecteren, bv. een folder openen in bestandsbeheermodus. Hervatten zal automatisch video's hervatten vanaf de laatst bekeken positie, zelfs na het herstarten van het systeem."
 
 msgctxt "#36178"
 msgid "No info available yet."
@@ -11090,12 +10914,12 @@ msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
 
 msgctxt "#36182"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Enables direct playback of videos that are in folders, without having to open those folders first, as well as displaying multi-part video files as single items in non-library views."
+msgstr "Laat toe om videos in mappen meteen af te spelen zonder deze mappen eerst te moeten openen, en laat meerdelige video items zien als enkelvoudige items in niet-bibliotheek modus."
 
 msgctxt "#36183"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
+msgstr "Laat titel, genre, enz. selectieniveau's weg uit de bibliotheek. Een categorie selecteren brengt u meteen naar de titel-lijst."
 
 msgctxt "#36184"
 msgid "No info available yet."
@@ -11401,6 +11225,14 @@ msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
 msgstr "Controleer of er nieuwe of verwijderde mediabestanden zijn bij het opstarten van XBMC."
 
+msgctxt "#36260"
+msgid "No info available yet."
+msgstr "Nog geen informatie."
+
+msgctxt "#36261"
+msgid "Path where taken screenshots will be stored."
+msgstr "Locatie waar screenshots bewaard worden."
+
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
 msgstr "Exporteer de Muziek bibliotheek database naar XML bestanden. Dit zal mogelijks bestaande XML bestanden overschrijven."
@@ -11421,10 +11253,6 @@ msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
 msgstr "Wanneer nummers toegevoegd worden aan een afspeellijst, worden ze in de wachtrij gezet in plaats van meteen afgespeeld te worden."
 
-msgctxt "#36267"
-msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
-msgstr "XBMC zal Replay Gain informatie, geëncodeerd met behulp van een programma zoals MP3Gain, uit de muziekbestanden lezen en desgevallend de geluidsniveaus normaliseren."
-
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Standaard is 89dB. Voorzichtigheid is geboden bij het aanpassen."
@@ -11444,10 +11272,6 @@ msgstr "Zorg voor vloeiende overgang (fade) van één audio nummer naar het volg
 msgctxt "#36272"
 msgid "Allow crassfading to occur when both tracks are from the same album."
 msgstr "Laat crossfading toe wanneer beide nummers van hetzelfde album zijn."
-
-msgctxt "#36273"
-msgid "Select the visualization that will be displayed while listening to music."
-msgstr "Selecteer de visualisatie die getoond zal worden tijdens het luisteren naar muziek."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
@@ -11540,10 +11364,6 @@ msgstr "Kies het lettertype om te gebruiken bij karaoke."
 msgctxt "#36296"
 msgid "Select the size of the font used during karoake."
 msgstr "Kies de lettergrootte om te gebruiken bij karaoke."
-
-msgctxt "#36297"
-msgid "Select the font color used during karoake."
-msgstr "Kies de kleur van het lettertype gebruikt bij karaoke."
 
 msgctxt "#36298"
 msgid "Select the character set used during karoake."
@@ -11753,6 +11573,10 @@ msgctxt "#36349"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
 
+msgctxt "#36350"
+msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
+msgstr "Automatisch 'Wake-On-Lan' naar server(s) sturen, vlak voordat er toegang gezocht wordt tot gedeelde bestanden of diensten."
+
 msgctxt "#36351"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
@@ -11764,10 +11588,6 @@ msgstr "Nog geen informatie beschikbaar."
 msgctxt "#36353"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
-
-msgctxt "#36354"
-msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimizing other applications. Uses a bit more resources and playback may be slightly less smooth."
-msgstr "Het voornaamste voordeel ligt bij multi-scherm configuraties. Hiermee kan XBMC gebruikt worden zonder automatisch alle andere applicaties te minimaliseren. Dit gebruikt wat meer systeembronnen en het afspelen kan iets minder vloeiend zijn."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -11929,10 +11749,6 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Specificeer bijkomende bibliotheken die inbegrepen moeten worden in de foutregistratie."
 
-msgctxt "#36395"
-msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
-msgstr "Open het vergrendelcode-scherm, waar u uw vergrendelcode opties kan instellen."
-
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Definieer de PIN code die gebruikt wordt als vergrendelcode."
@@ -12032,6 +11848,122 @@ msgstr "Definieer locaties die gebruikt worden voor weersvoorspellingen."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36500"
+msgid "Stereoscopic mode (current)"
+msgstr "Stereoscopische modus (huidig)"
+
+msgctxt "#36501"
+msgid "Stereoscopic mode"
+msgstr "Stereoscopische modus"
+
+msgctxt "#36502"
+msgid "None"
+msgstr "Geen"
+
+msgctxt "#36503"
+msgid "Over/Under"
+msgstr "Boven/Onder"
+
+msgctxt "#36504"
+msgid "Side by side"
+msgstr "Naast elkaar"
+
+msgctxt "#36505"
+msgid "Anaglyph Red/Cyan"
+msgstr "Anaglyph Rood/Cyaan"
+
+msgctxt "#36506"
+msgid "Anaglyph Green/Magenta"
+msgstr "Anaglyph Groen/Magenta"
+
+msgctxt "#36507"
+msgid "Interlaced"
+msgstr "Interlaced"
+
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Hardware-gebaseerd"
+
+msgctxt "#36509"
+msgid "Monoscopic - 2D"
+msgstr "Monoscopisch - 2D"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos"
+msgstr "Weergavemodus van stereoscopische videos"
+
+msgctxt "#36521"
+msgid "Ask me"
+msgstr "Vraag"
+
+msgctxt "#36522"
+msgid "Use preferred mode"
+msgstr "Voorkeursmodus gebruiken"
+
+msgctxt "#36524"
+msgid "Preferred mode"
+msgstr "Voorkeursmodus"
+
+msgctxt "#36525"
+msgid "Same as movie (autodetect)"
+msgstr "Zelfde als film (auto-detectie)"
+
+msgctxt "#36526"
+msgid "Disable stereoscopic mode when playback is stopped"
+msgstr "Schakel stereoscopische modus uit wanneer het afspelen gestopt is"
+
+msgctxt "#36527"
+msgid "This video is stereoscopic. Select playback mode"
+msgstr "Deze video is stereoscopisch. Kies weergavemodus."
+
+msgctxt "#36528"
+msgid "Select stereoscopic mode"
+msgstr "Kies stereoscopische modus."
+
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "Mono (2D)"
+
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr "Voorkeursmodus"
+
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr "Kies alternatieve modus..."
+
+msgctxt "#36532"
+msgid "Same as movie"
+msgstr "Zelfde als film"
+
+msgctxt "#36535"
+msgid "Stereoscopic mode of video"
+msgstr "Stereoscopische modus van video"
+
+msgctxt "#36536"
+msgid "Stereoscopic mode inverted"
+msgstr "Stereoscopische modus omgekeerd"
+
+msgctxt "#36537"
+msgid "No info available yet."
+msgstr "Nog geen informatie."
+
+msgctxt "#36538"
+msgid "No info available yet."
+msgstr "Nog geen informatie."
+
+msgctxt "#36539"
+msgid "No info available yet."
+msgstr "Nog geen informatie."
+
+msgctxt "#36540"
+msgid "No info available yet."
+msgstr "Nog geen informatie."
+
+msgctxt "#36541"
+msgid "Allows volume control from AirPlay clients."
+msgstr "Laat toe om het volume aan te passen van AirPlay clients."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

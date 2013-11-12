@@ -100,7 +100,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   strFiles.MakeLower();  // Do we really want this case insensitive?
   CRegExp re(true);
 
-  if (re.RegComp(strFiles.c_str()) == NULL)
+  if (!re.RegComp(strFiles.c_str()))
     return(INVALID_HANDLE_VALUE);
 
   struct dirent **namelist = NULL;

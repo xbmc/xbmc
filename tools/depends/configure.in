@@ -102,7 +102,7 @@ case $host in
     #android builds are always cross
     cross_compiling="yes"
   ;;     
-  i*86*-android-linux-gnu*)
+  i*86*-linux-android*)
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
@@ -164,16 +164,30 @@ case $host in
         platform_cc=gcc-4.2
         platform_cxx=g++-4.2
         ;;
-      *)
+      4.* | 4.*.*)
         platform_cc=llvm-gcc-4.2
         platform_cxx=llvm-g++-4.2
+        ;; 
+      *)
+        platform_cc=clang
+        platform_cxx=clang++
+        platform_cflags="-fheinous-gnu-extensions -no-cpp-precomp -no-integrated-as"
+        platform_ldflags="-Wl,-search_paths_first"
+        platform_cxxflags="-no-cpp-precomp"
         ;;
     esac
     case $host in
       *86*-apple-darwin)
         found_sdk_version=[`$use_xcodebuild -showsdks | grep macosx | sort |  tail -n 1 | grep -oE 'macosx[0-9.0-9]+' | cut -c 7-$NF`]
+        case $use_xcode in
+          5.* | 5.*.* )
+            use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
+            ;;
+          *)
+            use_toolchain="${use_toolchain:-$use_xcodepath}"
+            ;;
+        esac
         use_sdk="${use_sdk:-$found_sdk_version}"
-        use_toolchain="${use_toolchain:-$use_xcodepath}"
         if test "$use_cpu" = "armv7"; then
           AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
         fi
@@ -182,6 +196,7 @@ case $host in
           10.6);;
           10.7);;
           10.8);;
+          10.9);;
           *)
             AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
         esac
@@ -217,11 +232,20 @@ case $host in
         found_sdk_version=[`$use_xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}'`]
         use_sdk="${use_sdk:-$found_sdk_version}"
         sdk_name=iphoneos$use_sdk
-        use_toolchain="${use_toolchain:-`$use_xcodebuild -version -sdk $sdk_name PlatformPath`/Developer}"
+        case $use_xcode in
+          5.* | 5.*.* )
+            use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
+            ;;
+          *)
+            use_toolchain="${use_toolchain:-`$use_xcodebuild -version -sdk $sdk_name PlatformPath`/Developer}"
+            ;;
+        esac
+        
 	case $use_sdk in
           4.*);;
           5.*);;
           6.*);;
+          7.*);;
             *)
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
             ;;
@@ -394,6 +418,7 @@ AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
 AC_SUBST(has_libcrystax)
+AC_SUBST(use_xcode)
 
 AC_OUTPUT
 echo -e "toolchain:\t $use_toolchain"

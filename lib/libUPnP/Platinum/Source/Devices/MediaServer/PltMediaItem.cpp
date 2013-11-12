@@ -282,7 +282,6 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
 
     // album art URI
     if ((mask & PLT_FILTER_MASK_ALBUMARTURI) && m_ExtraInfo.album_arts.GetItemCount()) {
-        NPT_List<PLT_AlbumArtInfo>::Iterator album_art = m_ExtraInfo.album_arts.GetFirstItem();
         for (NPT_List<PLT_AlbumArtInfo>::Iterator iter = m_ExtraInfo.album_arts.GetFirstItem();
              iter;
              iter++) {

@@ -34,6 +34,16 @@
 			<texture>$VAR[videocodec,flagging/video/,.png]</texture>
 		</control>
 	</include>
+	<include name="VideoStereoscopicsFlaggingConditions">
+		<control type="image">
+			<description>Video stereoscopics flagging image</description>
+			<width>55</width>
+			<height>35</height>
+			<aspectratio align="right">keep</aspectratio>
+			<texture>flagging/video/3D.png</texture>
+			<visible>ListItem.IsStereoscopic</visible>
+		</control>
+	</include>
 	<include name="VideoTypeHackFlaggingConditions">
 		<control type="image">
 			<description>Video Type Image</description>

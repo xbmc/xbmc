@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [12.9.8], [http://trac.xbmc.org])
+AC_INIT([xbmc], [12.9.10], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -39,6 +39,7 @@ AC_DEFUN([XB_ADD_CODEC],
   AC_MSG_CHECKING([for $2])
   case $add_codecs in
     *$2*)
+      use_codec_$2="yes"
       AC_SUBST([USE_$1], 1)
       AC_DEFINE([HAS_$1], 1, [using $2])
       AC_MSG_RESULT([enabling $2])
@@ -131,6 +132,8 @@ fishbmc_enabled="== FishBMC enabled. =="
 fishbmc_disabled="== FishBMC disabled. =="
 projectm_enabled="== ProjectM enabled. =="
 projectm_disabled="== ProjectM disabled. =="
+wayland_enabled="== Wayland enabled. =="
+wayland_disabled="== Wayland disabled. =="
 x11_enabled="== X11 enabled. =="
 x11_disabled="== X11 disabled. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
@@ -342,6 +345,12 @@ AC_ARG_ENABLE([projectm],
   [use_projectm=$enableval],
   [use_projectm=yes])
 
+AC_ARG_ENABLE([wayland],
+  [AS_HELP_STRING([--enable-wayland],
+  [enable wayland (default is no) 'Linux Only'])],
+  [use_wayland=$enableval],
+  [use_wayland=no])
+
 AC_ARG_ENABLE([x11],
   [AS_HELP_STRING([--enable-x11],
   [enable x11 (default is yes) 'Linux Only'])],
@@ -537,7 +546,7 @@ AC_ARG_ENABLE([libcap],
 
 AC_ARG_ENABLE([player],
   [AS_HELP_STRING([--enable-player],
-  [enable additional players from a list of comma separated names, (default is none, choices are amlplayer, omxplayer)])],
+  [enable additional players from a list of comma separated names, (default is none, choices are omxplayer)])],
   [add_players=$enableval],
   [add_players=no])
 
@@ -593,6 +602,7 @@ AC_PROG_LIBTOOL
 AC_PROG_AWK
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
+PKG_PROG_PKG_CONFIG
 MAKE="${MAKE:-make}"
 OBJDUMP="${OBJDUMP:-objdump}"
 
@@ -606,18 +616,32 @@ ffmpeg_target_os=$(tolower $(uname -s))
 
 # host detection and setup
 case $host in
-  i*86*-android-linux-gnu*)
+  i*86*-linux-android*)
      target_platform=target_android
      ARCH="i486-linux"
      use_arch="x86"
      use_cpu="i686"
      ffmpeg_target_os=linux
-     ;;
+     use_joystick=no
+     use_gles=yes
+     use_optical_drive=no
+     use_sdl=no
+     use_x11=no
+     build_shared_lib=yes    
+    ;;
   i*86*-linux-gnu*)
      ARCH="i486-linux"
+     if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
+        use_arch="x86"
+        use_cpu="i686"
+     fi
      ;;
   x86_64-*-linux-gnu*)
      ARCH="x86_64-linux"
+     if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
+        use_arch="x86_64"
+        use_cpu="x86_64"
+     fi
      ;;
   i386-*-freebsd*)
      ARCH="x86-freebsd"
@@ -672,6 +696,7 @@ case $host in
      use_gles=yes
      use_sdl=no
      use_x11=no
+     use_wayland=no
      ;;
   arm*-*linux-android*)
      target_platform=target_android
@@ -685,6 +710,7 @@ case $host in
      use_optical_drive=no
      use_sdl=no
      use_x11=no
+     use_wayland=no
      build_shared_lib=yes
      ;;
   *)
@@ -704,6 +730,7 @@ if test "$target_platform" = "target_android" ; then
   USE_ANDROID=1
   webserver_checkdepends=yes
   CFLAGS="$CFLAGS -Wno-psabi"
+  DROID_DVDLIB_SEEK64="-D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64"
   CXXFLAGS="$CXXFLAGS -Wno-psabi"
   AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
 fi
@@ -908,6 +935,13 @@ if test "x$have_builtin_sync_val_compare_and_swap" = "xyes"; then
         [Define to 1 if your compiler supports the __sync_val_compare_and_swap() intrinsic.])
 fi
 
+# Check for u16string/u32string declarations
+AC_LANG_PUSH([C++])
+AC_CHECK_TYPES([std::u16string, std::u32string], [], [], [[#include <string>]])
+AC_CHECK_TYPES([char16_t, char32_t])
+AC_CHECK_SIZEOF([wchar_t])
+AC_LANG_POP([C++])
+
 # Add top source directory for all builds so we can use config.h
 INCLUDES="-I\$(abs_top_srcdir) $INCLUDES" 
 
@@ -930,6 +964,65 @@ if test -z "$PYTHON_VERSION"; then
 else
   LIBS="$LIBS $PYTHON_LDFLAGS"
   AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
+fi
+
+# Wayland
+if test "$use_wayland" = "yes" && test "$host_vendor" != "apple"; then
+  AC_MSG_NOTICE($wayland_enabled)
+  PKG_CHECK_MODULES([WAYLAND_CLIENT],    [wayland-client],
+    [INCLUDES="$INCLUDES $WAYLAND_CLIENT_CFLAGS";
+     WAYLAND_CLIENT_LIBRARY_LINE=`LIBRARY=\`${PKG_CONFIG} --libs-only-l wayland-client\`; echo ${LIBRARY:2}`;
+     XB_FIND_SONAME([WAYLAND_CLIENT_LIBRARY], ${WAYLAND_CLIENT_LIBRARY_LINE})],
+     AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([WAYLAND_EGL],    [wayland-egl],
+    [INCLUDES="$INCLUDES $WAYLAND_EGL_CFLAGS";
+     WAYLAND_EGL_LIBRARY_LINE=`LIBRARY=\`${PKG_CONFIG} --libs-only-l wayland-egl\`; echo ${LIBRARY:2:11}`
+     XB_FIND_SONAME([WAYLAND_EGL_LIBRARY], ${WAYLAND_EGL_LIBRARY_LINE})],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([XKBCOMMON],    [xkbcommon],
+    [INCLUDES="$INCLUDES $XKBCOMMON_CFLAGS";
+     XKBCOMMON_LIBRARY_LINE=`LIBRARY=\`${PKG_CONFIG} --libs-only-l xkbcommon\`; echo ${LIBRARY:2}`;
+     XB_FIND_SONAME([XKBCOMMON_LIBRARY], $XKBCOMMON_LIBRARY_LINE)],
+    AC_MSG_ERROR($missing_library))
+  AC_DEFINE([HAVE_WAYLAND], [1], [Define to 1 if you have Wayland libs installed.])
+  AC_DEFINE([HAVE_XKBCOMMON], [1], [Define to 1 if you have libxkbcommon installed.])
+
+  # If we are also building with tests then we want to build
+  # wayland tests as well
+  if test "$configure_gtest" = "yes"; then
+    have_weston_sdk=no;
+    PKG_CHECK_MODULES([PIXMAN],
+                      [pixman-1],have_pixman=yes,
+                      [AC_MSG_WARN($missing_library); have_pixman=no])
+    PKG_CHECK_MODULES([WESTON],
+                      [weston >= 1.1.90],[have_weston_sdk=yes],
+                      [have_weston_sdk=no; AC_MSG_WARN($missing_library)])
+
+    AC_CHECK_PROG(WAYLAND_SCANNER, wayland-scanner, "wayland-scanner", "no")
+    if test "x$WAYLAND_SCANNER" == "xno"; then
+      AC_MSG_WARN($missing_program)
+    else
+      if test "x$have_weston_sdk" == "xyes" && test "x$have_pixman" = "xyes"; then
+        AC_SUBST(WAYLAND_TEST_INCLUDES,"$WAYLAND_CLIENT_CFLAGS $XKBCOMMON_CFLAGS $PIXMAN_CFLAGS $WESTON_CFLAGS")
+        AC_SUBST(WAYLAND_TEST_LIBS,"$WAYLAND_CLIENT_LIBS $XKBCOMMON_LIBS $PIXMAN_LIBS $WESTON_LIBS")
+        AC_DEFINE([HAVE_WESTON_SDK], [1], [Define to 1 if Weston SDK is installed.])
+        AC_SUBST(USE_WAYLAND_TEST_EXTENSION, 1)
+      fi
+      AC_SUBST(WAYLAND_SCANNER)
+      AC_DEFINE([HAVE_WAYLAND_XBMC_PROTO],[1],["Define to 1 if the wayland test-protocol will be built"])
+    fi
+  fi
+
+  # Disable SDL and X11 builds
+  use_sdl=no
+  use_joystick=no
+  use_x11=no
+
+  # Wayland requires the EGL "window system" which in turn only supports
+  # the OpenGL ES API, so enable gles support
+  use_gles=yes
+else
+  AC_MSG_RESULT($wayland_disabled)
 fi
 
 # Checks for platforms libraries.
@@ -1010,6 +1103,7 @@ if test "$gcrypt_headers_available" = "yes"; then
    AC_CHECK_LIB([gcrypt],[gcry_control],, AC_MSG_ERROR($missing_library))
    AC_DEFINE([HAVE_GCRYPT],[1],[Define if we have gcrypt])
 fi
+PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS], [1], [Define if we have gnutls])], AC_MSG_WARN("gnutls not found, ffmpeg TLS support disabled"))
 
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
@@ -1429,9 +1523,12 @@ fi
 
 # samba
 if test "x$use_samba" != "xno"; then
-  AC_CHECK_LIB([smbclient], [main],,
-    use_samba=no;AC_MSG_ERROR($missing_library))
-    USE_LIBSMBCLIENT=0
+  PKG_CHECK_MODULES([SAMBA], [smbclient],
+    [INCLUDES="$INCLUDES $SAMBA_CFLAGS"; LIBS="$LIBS $SAMBA_LIBS"],
+    [AC_CHECK_LIB([smbclient], [main],,
+      use_samba=no;AC_MSG_ERROR($missing_library))
+      USE_LIBSMBCLIENT=0
+    ])
 else
   AC_MSG_RESULT($samba_disabled)
   USE_LIBSMBCLIENT=0
@@ -1858,10 +1955,6 @@ AC_DEFINE(YAJL_MAJOR, 1, [yajl version 1])
 
 # additional internal players
 case $add_players in
-  *amlplayer*)
-      AC_CHECK_HEADER([amplayer/player_error.h],, AC_MSG_ERROR($missing_headers))
-      XB_ADD_PLAYER([AMLPLAYER], [amlplayer])
-      ;;
   *omxplayer*)
       XB_ADD_PLAYER([OMXPLAYER], [omxplayer])
       ;;
@@ -1874,7 +1967,6 @@ case $add_codecs in
       XB_ADD_CODEC([LIBAMCODEC], [amcodec])
       ;;
   *libstagefright*)
-      LIBS+="-L${prefix}/opt/android-libs -lstdc++ -lutils -lcutils -lstagefright -lbinder -lui -lgui"
       XB_ADD_CODEC([LIBSTAGEFRIGHT], [libstagefright])
       ;;
   *)
@@ -2092,6 +2184,14 @@ if test "$use_x11" = "yes"; then
   final_message="$final_message\n  X11:\t\tYes"
 else
   final_message="$final_message\n  X11:\t\tNo"
+fi
+
+if test "$use_wayland" = "yes"; then
+  final_message="$final_message\n  Wayland:\tYes"
+  USE_WAYLAND=1
+  USE_XKBCOMMON=1
+else
+  final_message="$final_message\n  Wayland:\tNo"
 fi
 
 if test "$use_libbluray" = "yes"; then
@@ -2338,9 +2438,15 @@ else
 fi
 
 if test "x$add_players" != "xno"; then
-  final_message="$final_message\n  additional players:\tYes"
+  final_message="$final_message\n  additional players:\tYes, $add_players"
 else
   final_message="$final_message\n  additional players:\tNo"
+fi
+
+if test "x$add_codecs" != "xno"; then
+  final_message="$final_message\n  additional codecs:\tYes, $add_codecs"
+else
+  final_message="$final_message\n  additional codecs:\tNo"
 fi
 
 ### External libraries messages
@@ -2394,7 +2500,6 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
     xbmc/cores/AudioEngine/Makefile \
     xbmc/cores/paplayer/Makefile \
-    xbmc/cores/amlplayer/Makefile \
     xbmc/cores/omxplayer/Makefile \
     lib/timidity/Makefile \
     lib/xbadpcm/Makefile \
@@ -2408,6 +2513,7 @@ OUTPUT_FILES="Makefile \
     xbmc/music/karaoke/Makefile \
     xbmc/osx/Makefile \
     xbmc/guilib/Makefile \
+    xbmc/input/linux/Makefile \
     xbmc/interfaces/Makefile \
     xbmc/network/Makefile \
     xbmc/network/upnp/Makefile \
@@ -2430,6 +2536,8 @@ OUTPUT_FILES="Makefile \
     xbmc/visualizations/OpenGLSpectrum/Makefile \
     xbmc/visualizations/fishBMC/Makefile \
     xbmc/visualizations/WaveForm/Makefile \
+    xbmc/windowing/Makefile \
+    xbmc/windowing/egl/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
     lib/addons/library.xbmc.codec/Makefile \
     lib/addons/library.xbmc.gui/Makefile \
@@ -2448,8 +2556,16 @@ OUTPUT_FILES="Makefile \
     xbmc/main/Makefile \
     project/cmake/xbmc-config.cmake"
 
+if test "$use_wayland" = "yes"; then
+OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"
+fi
+
 if test "$use_skin_touched" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.touched/media/Makefile"
+fi
+
+if test "$use_codec_libstagefright" = "yes"; then
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile"
 fi
 
 OUTPUT_FILES="$OUTPUT_FILES \
@@ -2517,8 +2633,10 @@ AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_MYSQL)
+AC_SUBST(USE_WAYLAND)
 AC_SUBST(USE_WEB_SERVER)
 AC_SUBST(USE_UPNP)
+AC_SUBST(USE_XKBCOMMON)
 AC_SUBST(USE_OMXLIB)
 AC_SUBST(USE_ANDROID)
 AC_SUBST(GTEST_CONFIGURED)
@@ -2612,6 +2730,9 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
     else
       ffmpg_config="$ffmpg_config --disable-libvorbis"
     fi
+    if test "$have_gnutls" = "yes"; then
+      ffmpg_config="$ffmpg_config --enable-gnutls"
+    fi
 
     # handle individual enables
     ffmpg_config="$ffmpg_config --enable-gpl"
@@ -2686,6 +2807,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "x$use_vaapi" != "xno"; then echo --enable-vaapi; else echo --disable-vaapi; fi` \
       `if test "$use_optimizations" != "no"; then echo --enable-optimizations; else echo --disable-optimizations; fi` \
       --enable-protocol=http \
+      `if test "$have_gnutls" = "yes"; then echo --enable-gnutls; fi` \
       --enable-pthreads \
       --enable-runtime-cpudetect \
       `if test "$use_hardcoded_tables" = "yes"; then echo --enable-hardcoded-tables; else echo --disable-hardcoded-tables; fi`\
@@ -2703,7 +2825,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdcss], [
   ./configure \
     CC="$CC" \
     CXX="$CXX" \
-    CFLAGS="$CFLAGS" \
+    CFLAGS="$CFLAGS $DROID_DVDLIB_SEEK64" \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
     --build=$build_alias \
@@ -2715,7 +2837,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdcss], [
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
   ./configure2 \
-    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../libdvdcss/src" \
+    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../libdvdcss/src $DROID_DVDLIB_SEEK64" \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
     --build=$build_alias \
@@ -2733,7 +2855,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
   ./configure2 \
-    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../includes" \
+    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../includes $DROID_DVDLIB_SEEK64" \
     --extra-ldflags="-L`pwd`/../libdvdread/obj" \
     --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
@@ -2782,7 +2904,13 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
   if test "$host_vendor" = "apple"; then
-    TEMPCFLAGS="${CFLAGS} -fgnu89-inline";
+    # clang treats inlines different
+    case $CC in
+      *clang*)
+        TEMPCFLAGS="$CFLAGS";;
+      *)
+        TEMPCFLAGS="${CFLAGS} -fgnu89-inline";;
+    esac
   else
     TEMPCFLAGS="$CFLAGS";
   fi

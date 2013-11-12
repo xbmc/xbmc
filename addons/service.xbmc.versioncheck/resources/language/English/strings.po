@@ -60,10 +60,36 @@ msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
 msgstr ""
 
+msgctxt "#32012"
+msgid "A new version is available, do you want to upgrade now?"
+msgstr ""
+
+msgctxt "#32013"
+msgid "Upgrade successful"
+msgstr ""
+
+msgctxt "#32014"
+msgid "Do you want to restart Xbmc to finish the upgrade?"
+msgstr ""
+
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr ""
+
+#empty strings from id 32016 to 32019
+
 msgctxt "#32020"
 msgid "General"
 msgstr ""
 
 msgctxt "#32021"
 msgid "Enable XBMC version check?"
+msgstr ""
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr ""
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
 msgstr ""

@@ -115,6 +115,7 @@ protected:
   float m_fadingBase;
   float m_fadingTarget;
   int m_fadingTime;
+  bool m_forceResampler;
 };
 }
 

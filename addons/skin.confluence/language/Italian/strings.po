@@ -26,7 +26,7 @@ msgstr "Impostazioni Avanzate"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "Sto lavorando..."
+msgstr "Attendere..."
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -39,10 +39,6 @@ msgstr "Vedi Opzioni"
 msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Impostazioni"
-
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Schermo Intero"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -92,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Informazioni"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Azioni"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "In riproduzione"
@@ -115,10 +115,6 @@ msgstr "INDIETRO"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "RICERCA"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Preset Visualizzazione"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -172,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Mostra \"In pausa\" durante la visualizzazione delle immagini"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Riproduci i trailer in finestra [COLOR=grey3](Solo nel pannello informazioni video)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Opzioni Varie"
@@ -212,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Mostra i Video Aggiunti di Recente"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Sottomenù Pagina Principale"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Nascondi i Fanart sullo sfondo"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Pagina Meteo"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Mostra nello Sfondo il nome del Video \"In Riproduzione\" "
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Mostra nello Sfondo Visualizzazioni il nome del file \"In Riproduzione\""
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "XBMC Testi Canzoni"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Nascondi le Fanart nella visualizzazione a tutto schermo"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Add-on Testi"
@@ -255,18 +231,6 @@ msgstr "Add-on Testi"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Add-on Sottotitoli"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Sottomenù Home Page Video"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Sottomenù Home Page Musica"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Sottomenù Home Page Immagini"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +380,18 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Scarica Sottotitoli"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Guarda come 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Cambia modalità"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Abilitato"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Predefinito della Skin"
@@ -456,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]CONFIGURA GLI ADD-ONS[/B][CR][CR]Gestisci i tuoi Add-ons installati · Cerca ed installa gli Add-ons da xbmc.org[CR]Modifica le impostazioni degli Add-ons"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]CONFIGURA IMPOSTAZIONI TV[/B][CR][CR]Cambia le informazioni a tutto schermo · Gestisci le impostazioni EPG"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]CONFIGURA IMPOSTAZIONI DI RETE[/B][CR][CR]Imposta il controllo di XBMC via UPnP e HTTP · Configura la condivisione dei file[CR]Abilita Zeroconf · Configura AirPlay"
@@ -468,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Aiuto primo avvio...."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Questa linguetta significa che c'è un menu off a lato di questa finestra che contiene ulteriori opzioni per questa sezione. Per accedere al menu, naviga a sinistra con il tuo telecomando o tastiera, o posiziona il mouse sulla linguetta. [CR][CR]Clicca \"Ok\" per chiudere questa informazione. Non apparirà nuovamente."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Scegli il tuo profilo utente di XBMC[CR]per fare il login e continuare"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Timer di Registrazione"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

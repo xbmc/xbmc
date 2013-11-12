@@ -40,21 +40,17 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Opcions de configuració"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Pantalla completa"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Duració total"
 
 msgctxt "#31022"
 msgid "Music - Files"
-msgstr "Fitxers - Música"
+msgstr "Música - Fitxers"
 
 msgctxt "#31023"
 msgid "Playing"
-msgstr "S'està reproduint"
+msgstr "Reproduint"
 
 msgctxt "#31024"
 msgid "Page"
@@ -90,7 +86,11 @@ msgstr "Tapa d'imatge"
 
 msgctxt "#31033"
 msgid "Info"
-msgstr "Informació"
+msgstr "Info"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Accions"
 
 msgctxt "#31040"
 msgid "Now Playing"
@@ -115,10 +115,6 @@ msgstr "REBOBINA"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "S'ESTÀ CERCANT"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Visualitzacions preestablertes"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -172,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Mostra \"Pausa\" a la presentació d'imatges"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Reprodueix els tràilers en una finestra [COLOR=grey3](Només al diàleg d'informació de vídeo)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Opcions vàries"
@@ -212,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Mostra els vídeos afegits recentment"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Submenú de programes de la pantalla principal"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Amaga el fanart del fons"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Pàgina del temps"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Mostra el vídeo en reproducció en el fons"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Mostra la visualització en reproducció en el fons"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lletres"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Amaga el fanart a la visualització de pantalla completa"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Complement de lletres"
@@ -255,18 +231,6 @@ msgstr "Complement de lletres"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Complement de subtítols"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Submenú de vídeos de la pantalla principal"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Submenú de música de la pantalla principal"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Submenú d'imatges de la pantalla principal"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,13 +380,25 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Baixar-se els subtítols"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Veure en 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Canvia el mode"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Activat"
+
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Tema per defecte"
+msgstr "Aparença per defecte"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Tema per defecte sense majúscules"
+msgstr "Aparença per defecte sense majúscules"
 
 msgctxt "#31392"
 msgid "Arial based"
@@ -456,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]CONFIGUREU ELS COMPLEMENTS[/B][CR][CR]Gestioneu els complements instal·lats · Cerqueu i instal·leu complements des de xbmc.org[CR]Modifiqueu els paràmetres dels complements"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]CONFIGURA ELS AJUSTOS DE TV[/B][CR][CR]Canvia la informació de pantalla completa · Gestiona els ajustos de les dades EPG"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]CONFIGUREU ELS PARÀMETRES DE SERVEI[/B][CR][CR]Configureu el control de l'XBMC a través de UPnP i HTTP[CR]Configureu l'ús compartit de fitxers · Habiliteu el Zeroconf · Configureu l'AirPlay"
@@ -468,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ajuda inicial...."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Aquesta pestanya indica que hi ha un menú al costat d'aquesta finestra que conté opcions addicionals a les d'aquesta secció. Per accedir a aquest menú, navegau a l'esquerra amb el comandament a distància o teclat, o posau el punter del ratolí a sobre de la pestanya. [CR] [CR]Clicau OK per tancar aquest dialog. No es tornarà a mostrar."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Seleccioneu el vostre perfil d'usuari de l'XBMC[CR]per iniciar la sessió i continuar"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Temporitzadors d'enregistraments"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

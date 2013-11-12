@@ -326,7 +326,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
     {
       CStdString strPath = pPathName->FirstChild()->ValueStr();
 
-      // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
+      // make sure there are no virtualpaths or stack paths defined in sources.xml
       if (!URIUtils::IsStack(strPath))
       {
         // translate special tags

@@ -35,7 +35,7 @@ typedef enum
   IOS_PLAYBACK_PLAYING
 } IOSPlaybackState;
 
-@interface XBMCController : UIViewController <UIGestureRecognizerDelegate>
+@interface XBMCController : UIViewController <UIGestureRecognizerDelegate, UIKeyInput>
 {
   UIWindow *m_window;
   IOSEAGLView  *m_glView;

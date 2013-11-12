@@ -108,6 +108,8 @@ namespace UPNP
 |   static
 +---------------------------------------------------------------------*/
 CUPnP* CUPnP::upnp = NULL;
+static NPT_List<void*> g_UserData;
+static NPT_Mutex       g_UserDataLock;
 
 /*----------------------------------------------------------------------
 |   CDeviceHostReferenceHolder class
@@ -288,39 +290,65 @@ public:
   {
   }
 
+#define CHECK_USERDATA_RETURN(userdata) do {     \
+  if (!g_UserData.Contains(userdata))            \
+      return;                                    \
+  } while(0)
+
   virtual void OnStopResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnStopResult(res, device, userdata); }
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnStopResult(res, device, userdata);
+  }
 
   virtual void OnSetPlayModeResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSetPlayModeResult(res, device, userdata); }
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSetPlayModeResult(res, device, userdata);
+  }
 
   virtual void OnSetAVTransportURIResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSetAVTransportURIResult(res, device, userdata); }
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSetAVTransportURIResult(res, device, userdata);
+  }
 
   virtual void OnSeekResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSeekResult(res, device, userdata); }
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSeekResult(res, device, userdata);
+  }
 
   virtual void OnPreviousResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPreviousResult(res, device, userdata); }
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPreviousResult(res, device, userdata);
+  }
 
   virtual void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPlayResult(res, device, userdata); }
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPlayResult(res, device, userdata);
+  }
 
   virtual void OnPauseResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPauseResult(res, device, userdata); }
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPauseResult(res, device, userdata);
+  }
 
   virtual void OnNextResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnNextResult(res, device, userdata); }
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnNextResult(res, device, userdata);
+  }
 
   virtual void OnGetMediaInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_MediaInfo* info, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetMediaInfoResult(res, device, info, userdata); }
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetMediaInfoResult(res, device, info, userdata);
+  }
 
   virtual void OnGetPositionInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_PositionInfo* info, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetPositionInfoResult(res, device, info, userdata); }
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetPositionInfoResult(res, device, info, userdata);
+  }
 
   virtual void OnGetTransportInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_TransportInfo* info, void* userdata)
-  { static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetTransportInfoResult(res, device, info, userdata); }
-
+  { CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetTransportInfoResult(res, device, info, userdata);
+  }
 
   virtual bool OnMRAdded(PLT_DeviceDataReference& device )
   {
@@ -650,6 +678,18 @@ void CUPnP::UpdateState()
 {
   if (!m_RendererHolder->m_Device.IsNull())
       ((CUPnPRenderer*)m_RendererHolder->m_Device.AsPointer())->UpdateState();
+}
+
+void CUPnP::RegisterUserdata(void* ptr)
+{
+  NPT_AutoLock lock(g_UserDataLock);
+  g_UserData.Add(ptr);
+}
+
+void CUPnP::UnregisterUserdata(void* ptr)
+{
+  NPT_AutoLock lock(g_UserDataLock);
+  g_UserData.Remove(ptr);
 }
 
 } /* namespace UPNP */

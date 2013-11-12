@@ -74,6 +74,9 @@ public:
     static bool SaveFileState(const CFileItem& item,
                               const CBookmark& bookmark,
                               const bool updatePlayCount);
+
+    static void RegisterUserdata(void* ptr);
+    static void UnregisterUserdata(void* ptr);
 private:
     // methods
     CUPnPRenderer* CreateRenderer(int port = 0);

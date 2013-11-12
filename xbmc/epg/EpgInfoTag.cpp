@@ -203,6 +203,7 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
 
 void CEpgInfoTag::Serialize(CVariant &value) const
 {
+  value["broadcastid"] = m_iUniqueBroadcastID;
   value["rating"] = m_iStarRating;
   value["title"] = m_strTitle;
   value["plotoutline"] = m_strPlotOutline;
@@ -213,6 +214,14 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["endtime"] = m_endTime.IsValid() ? m_endTime.GetAsDBDateTime() : StringUtils::EmptyString;
   value["runtime"] = StringUtils::Format("%d", GetDuration() / 60);
   value["firstaired"] = m_firstAired.IsValid() ? m_firstAired.GetAsDBDate() : StringUtils::EmptyString;
+  value["progress"] = Progress();
+  value["progresspercentage"] = ProgressPercentage();
+  value["episodename"] = m_strEpisodeName;
+  value["episodenum"] = m_iEpisodeNumber;
+  value["episodepart"] = m_iEpisodePart;
+  value["hastimer"] = HasTimer();
+  value["isactive"] = IsActive();
+  value["wasactive"] = WasActive();
 }
 
 bool CEpgInfoTag::Changed(void) const

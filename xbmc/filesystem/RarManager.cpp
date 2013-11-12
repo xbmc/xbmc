@@ -33,6 +33,7 @@
 
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
+#include "utils/StringUtils.h"
 
 #include <set>
 
@@ -247,9 +248,9 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
     pFileList = it->second.first;
 
   CFileItemPtr pFileItem;
-  vector<CStdString> vec;
+  vector<std::string> vec;
   set<CStdString> dirSet;
-  CUtil::Tokenize(strPathInRar,vec,"/");
+  StringUtils::Tokenize(strPathInRar,vec,"/");
   unsigned int iDepth = vec.size();
 
   ArchiveList_struct* pIterator;
@@ -277,7 +278,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
         continue;
 
       vec.clear();
-      CUtil::Tokenize(strName,vec,"/");
+      StringUtils::Tokenize(strName,vec,"/");
       if (vec.size() < iDepth)
         continue;
     }

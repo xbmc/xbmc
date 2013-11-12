@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
 <!-- The <global> section is a fall through - they will only be used if the button is not          -->
 <!-- used in the current window's section.  Note that there is only handling                       -->
@@ -119,8 +120,8 @@
       <button id="5">AspectRatio</button>
       <button id="6">Info</button>
       <button id="9">OSD</button>
-      <button id="13">BigStepForward</button>
-      <button id="14">StepForward</button>
+      <button id="13">ChapterOrBigStepForward</button>
+      <button id="14">ChapterOrStepForward</button>
       <button id="15">BigStepBack</button>
       <button id="16">StepBack</button>
       <button id="17">SmallStepBack</button>

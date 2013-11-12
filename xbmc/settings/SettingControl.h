@@ -19,67 +19,128 @@
  *
  */
 
-#include <string>
+#include "ISettingControl.h"
 
-class TiXmlNode;
+#define SETTING_XML_ELM_CONTROL_FORMATLABEL  "formatlabel"
+#define SETTING_XML_ELM_CONTROL_HIDDEN       "hidden"
+#define SETTING_XML_ELM_CONTROL_VERIFYNEW    "verifynew"
+#define SETTING_XML_ELM_CONTROL_HEADING      "heading"
+#define SETTING_XML_ELM_CONTROL_HIDEVALUE    "hidevalue"
+#define SETTING_XML_ELM_CONTROL_MULTISELECT  "multiselect"
 
-typedef enum {
-  SettingControlTypeNone =  0,
-  SettingControlTypeCheckmark,
-  SettingControlTypeSpinner,
-  SettingControlTypeEdit,
-  SettingControlTypeList,
-  SettingControlTypeButton
-} SettingControlType;
-
-typedef enum {
-  SettingControlFormatNone = 0,
-  SettingControlFormatBoolean,
-  SettingControlFormatString,
-  SettingControlFormatInteger,
-  SettingControlFormatNumber,
-  SettingControlFormatIP,
-  SettingControlFormatMD5,
-  SettingControlFormatPath,
-  SettingControlFormatAddon,
-  SettingControlFormatAction
-} SettingControlFormat;
-
-typedef enum {
-  SettingControlAttributeNone       = 0x0,
-  SettingControlAttributeHidden     = 0x1,
-  SettingControlAttributeVerifyNew  = 0x2
-} SettingControlAttribute;
-
-class CSettingControl
+class CSettingControlCheckmark : public ISettingControl
 {
 public:
-  CSettingControl(SettingControlType type = SettingControlTypeNone,
-                  SettingControlFormat format = SettingControlFormatNone,
-                  SettingControlAttribute attribute = SettingControlAttributeNone)
-    : m_type(type), m_format(format), m_attributes(attribute),
-      m_delayed(false)
-  { }
-  virtual ~CSettingControl() { }
+  CSettingControlCheckmark()
+  {
+    m_format = "boolean";
+  }
+  virtual ~CSettingControlCheckmark() { }
 
-  bool Deserialize(const TiXmlNode *node, bool update = false);
-
-  SettingControlType GetType() const { return m_type; }
-  SettingControlFormat GetFormat() const { return m_format; }
-  SettingControlAttribute GetAttributes() const { return m_attributes; }
-  bool GetDelayed() const { return m_delayed; }
-
-  void SetType(SettingControlType type) { m_type = type; }
-  void SetFormat(SettingControlFormat format) { m_format = format; }
-  void SetAttributes(SettingControlAttribute attributes) { m_attributes = attributes; }
+  // implementation of ISettingControl
+  virtual std::string GetType() const { return "toggle"; }
 
 protected:
-  bool setType(const std::string &strType);
-  bool setFormat(const std::string &strFormat);
-  bool setAttributes(const std::string &strAttributes);
+  virtual bool SetFormat(const std::string &format);
+};
 
-  SettingControlType m_type;
-  SettingControlFormat m_format;
-  SettingControlAttribute m_attributes;
-  bool m_delayed;
+class CSettingControlSpinner : public ISettingControl
+{
+public:
+  CSettingControlSpinner()
+    : m_formatLabel(-1),
+      m_formatString("%i"),
+      m_minimumLabel(-1)
+  { }
+  virtual ~CSettingControlSpinner() { }
+
+  // implementation of ISettingControl
+  virtual std::string GetType() const { return "spinner"; }
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+
+  int GetFormatLabel() const { return m_formatLabel; }
+  const std::string& GetFormatString() const { return m_formatString; }
+  int GetMinimumLabel() const { return m_minimumLabel; }
+
+protected:
+  virtual bool SetFormat(const std::string &format);
+
+  int m_formatLabel;
+  std::string m_formatString;
+  int m_minimumLabel;
+
+};
+
+class CSettingControlEdit : public ISettingControl
+{
+public:
+  CSettingControlEdit()
+    : m_hidden(false),
+      m_verifyNewValue(false),
+      m_heading(-1)
+  {
+    m_delayed = true;
+  }
+  virtual ~CSettingControlEdit() { }
+
+  // implementation of ISettingControl
+  virtual std::string GetType() const { return "edit"; }
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+
+  bool IsHidden() const { return m_hidden; }
+  bool VerifyNewValue() const { return m_verifyNewValue; }
+  int GetHeading() const { return m_heading; }
+
+protected:
+  virtual bool SetFormat(const std::string &format);
+
+  bool m_hidden;
+  bool m_verifyNewValue;
+  int m_heading;
+};
+
+class CSettingControlButton : public ISettingControl
+{
+public:
+  CSettingControlButton()
+    : m_heading(-1),
+      m_hideValue(false)
+  { }
+  virtual ~CSettingControlButton() { }
+
+  // implementation of ISettingControl
+  virtual std::string GetType() const { return "button"; }
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+
+  int GetHeading() const { return m_heading; }
+  bool HideValue() const { return m_hideValue; }
+
+protected:
+  virtual bool SetFormat(const std::string &format);
+
+  int m_heading;
+  bool m_hideValue;
+};
+
+class CSettingControlList : public ISettingControl
+{
+public:
+  CSettingControlList()
+    : m_heading(-1),
+      m_multiselect(false)
+  { }
+  virtual ~CSettingControlList() { }
+
+  // implementation of ISettingControl
+  virtual std::string GetType() const { return "list"; }
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+  
+  int GetHeading() const { return m_heading; }
+  bool CanMultiSelect() const { return m_multiselect; }
+
+protected:
+  virtual bool SetFormat(const std::string &format);
+  
+  int m_heading;
+  bool m_multiselect;
 };

@@ -114,26 +114,30 @@ bool CGUIDialogYesNo::ShowAndGetInput(const CStdString& heading, const CStdStrin
   return ShowAndGetInput(heading,line0,line1,line2,bDummy,noLabel,yesLabel);
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2, bool& bCanceled, const CStdString& noLabel, const CStdString& yesLabel)
+bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::string& text, bool& bCanceled, const std::string& noLabel, const std::string& yesLabel)
 {
   CGUIDialogYesNo *dialog = (CGUIDialogYesNo *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!dialog) return false;
   dialog->SetHeading(heading);
-  dialog->SetLine(0, line0);
-  dialog->SetLine(1, line1);
-  dialog->SetLine(2, line2);
+  dialog->SetText(text);
   dialog->m_bCanceled = false;
-  if (!noLabel.IsEmpty())
+  if (!noLabel.empty())
     dialog->SetChoice(0,noLabel);
   else
     dialog->SetChoice(0,106);
-  if (!yesLabel.IsEmpty())
+  if (!yesLabel.empty())
     dialog->SetChoice(1,yesLabel);
   else
     dialog->SetChoice(1,107);
   dialog->DoModal();
   bCanceled = dialog->m_bCanceled;
   return (dialog->IsConfirmed()) ? true : false;
+}
+
+bool CGUIDialogYesNo::ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2, bool& bCanceled, const CStdString& noLabel, const CStdString& yesLabel)
+{
+  std::string text = line0 + "\n" + line1 + "\n" + line2;
+  return ShowAndGetInput(heading, text, bCanceled, noLabel, yesLabel);
 }
 
 int CGUIDialogYesNo::GetDefaultLabelID(int controlId) const

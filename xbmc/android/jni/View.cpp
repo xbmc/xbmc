@@ -86,11 +86,30 @@ std::string CJNIViewInputDevice::getName() const
     "getName", "()Ljava/lang/String;"));
 }
 
+int CJNIViewInputDevice::getSources() const
+{
+  return call_method<int>(m_object,
+    "getSources", "()I");
+}
+
+const CJNIList<CJNIViewInputDeviceMotionRange> CJNIViewInputDevice::getMotionRanges() const
+{
+  return call_method<jhobject>(m_object,
+    "getMotionRanges", "()Ljava/util/List;");
+}
+
 const CJNIViewInputDeviceMotionRange CJNIViewInputDevice::getMotionRange(int axis) const
 {
   return call_method<jhobject>(m_object,
     "getMotionRange", "(I)Landroid/view/InputDevice$MotionRange;",
     axis);
+}
+
+const CJNIViewInputDeviceMotionRange CJNIViewInputDevice::getMotionRange(int axis, int source) const
+{
+  return call_method<jhobject>(m_object,
+    "getMotionRange", "(II)Landroid/view/InputDevice$MotionRange;",
+    axis, source);
 }
 
 /************************************************************************/

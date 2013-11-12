@@ -179,6 +179,7 @@ public:
   static int COLOR_Format24BitABGR6666;
   static int COLOR_TI_FormatYUV420PackedSemiPlanar;
   static int COLOR_QCOM_FormatYUV420SemiPlanar;
+  static int OMX_QCOM_COLOR_FormatYVU420SemiPlanarInterlace;
 
 private:
   CJNIMediaCodecInfoCodecCapabilities();

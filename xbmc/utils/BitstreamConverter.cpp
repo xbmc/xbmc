@@ -582,42 +582,62 @@ bool CBitstreamConverter::BitstreamConvertInit(void *in_extradata, int in_extras
 
   uint16_t unit_size;
   uint32_t total_size = 0;
-  uint8_t *out = NULL, unit_nb, sps_done = 0;
+  uint8_t *out = NULL, unit_nb, sps_done = 0, sps_seen = 0, pps_seen = 0;
   const uint8_t *extradata = (uint8_t*)in_extradata + 4;
   static const uint8_t nalu_header[4] = {0, 0, 0, 1};
 
   // retrieve length coded size
   m_sps_pps_context.length_size = (*extradata++ & 0x3) + 1;
-  if (m_sps_pps_context.length_size == 3)
-    return false;
 
   // retrieve sps and pps unit(s)
   unit_nb = *extradata++ & 0x1f;  // number of sps unit(s)
   if (!unit_nb)
   {
-    unit_nb = *extradata++;       // number of pps unit(s)
-    sps_done++;
+    goto pps;
   }
+  else
+  {
+    sps_seen = 1;
+  }
+
   while (unit_nb--)
   {
+    void *tmp;
+
     unit_size = extradata[0] << 8 | extradata[1];
     total_size += unit_size + 4;
-    if ( (extradata + 2 + unit_size) > ((uint8_t*)in_extradata + in_extrasize) )
-    {
+
+    if (total_size > INT_MAX - FF_INPUT_BUFFER_PADDING_SIZE ||
+      (extradata + 2 + unit_size) > ((uint8_t*)in_extradata + in_extrasize)) {
       m_dllAvUtil->av_free(out);
       return false;
     }
-    out = (uint8_t*)m_dllAvUtil->av_realloc(out, total_size);
-    if (!out)
-      return false;
-
+    tmp = m_dllAvUtil->av_realloc(out, total_size + FF_INPUT_BUFFER_PADDING_SIZE);
+    if (!tmp) {
+        m_dllAvUtil->av_free(out);
+        return false;
+    }
+    out = (uint8_t*)tmp;
     memcpy(out + total_size - unit_size - 4, nalu_header, 4);
     memcpy(out + total_size - unit_size, extradata + 2, unit_size);
     extradata += 2 + unit_size;
 
+pps:
     if (!unit_nb && !sps_done++)
-      unit_nb = *extradata++;     // number of pps unit(s)
+    {
+      unit_nb = *extradata++;   // number of pps unit(s)
+      if (unit_nb)
+        pps_seen = 1;
+    }
   }
+
+  if (out)
+    memset(out + total_size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+
+  if (!sps_seen)
+      CLog::Log(LOGDEBUG, "SPS NALU missing or invalid. The resulting stream may not play");
+  if (!pps_seen)
+      CLog::Log(LOGDEBUG, "PPS NALU missing or invalid. The resulting stream may not play");
 
   m_sps_pps_context.sps_pps_data = out;
   m_sps_pps_context.size = total_size;
@@ -632,7 +652,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
   // and Licensed GPL 2.1 or greater
 
-
+  int i;
   uint8_t *buf = pData;
   uint32_t buf_size = iSize;
   uint8_t  unit_type;
@@ -645,12 +665,8 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     if (buf + m_sps_pps_context.length_size > buf_end)
       goto fail;
 
-    if (m_sps_pps_context.length_size == 1)
-      nal_size = buf[0];
-    else if (m_sps_pps_context.length_size == 2)
-      nal_size = buf[0] << 8 | buf[1];
-    else
-      nal_size = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
+    for (nal_size = 0, i = 0; i < m_sps_pps_context.length_size; i++)
+      nal_size = (nal_size << 8) | buf[i];
 
     buf += m_sps_pps_context.length_size;
     unit_type = *buf & 0x1f;
@@ -691,24 +707,22 @@ void CBitstreamConverter::BitstreamAllocAndCopy( uint8_t **poutbuf, int *poutbuf
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
   // and Licensed GPL 2.1 or greater
 
-  #define CHD_WB32(p, d) { \
-    ((uint8_t*)(p))[3] = (d); \
-    ((uint8_t*)(p))[2] = (d) >> 8; \
-    ((uint8_t*)(p))[1] = (d) >> 16; \
-    ((uint8_t*)(p))[0] = (d) >> 24; }
-
   uint32_t offset = *poutbuf_size;
   uint8_t nal_header_size = offset ? 3 : 4;
+  void *tmp;
 
   *poutbuf_size += sps_pps_size + in_size + nal_header_size;
-  *poutbuf = (uint8_t*)m_dllAvUtil->av_realloc(*poutbuf, *poutbuf_size);
+  tmp = m_dllAvUtil->av_realloc(*poutbuf, *poutbuf_size);
+  if (!tmp)
+    return;
+  *poutbuf = (uint8_t*)tmp;
   if (sps_pps)
     memcpy(*poutbuf + offset, sps_pps, sps_pps_size);
 
   memcpy(*poutbuf + sps_pps_size + nal_header_size + offset, in, in_size);
   if (!offset)
   {
-    CHD_WB32(*poutbuf + sps_pps_size, 1);
+    BS_WB32(*poutbuf + sps_pps_size, 1);
   }
   else
   {
@@ -887,6 +901,121 @@ uint32_t CBitstreamConverter::get_bits( bits_reader_t *br, int nbits )
   return ret;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+void CBitstreamConverter::init_bits_writer(bits_writer_t *s, uint8_t *buffer, int buffer_size, int writer_le)
+{
+  if (buffer_size < 0)
+  {
+    buffer_size = 0;
+    buffer      = NULL;
+  }
+
+  s->size_in_bits = 8 * buffer_size;
+  s->buf          = buffer;
+  s->buf_end      = s->buf + buffer_size;
+  s->buf_ptr      = s->buf;
+  s->bit_left     = 32;
+  s->bit_buf      = 0;
+  s->writer_le    = writer_le;
+}
+
+void CBitstreamConverter::write_bits(bits_writer_t *s, int n, unsigned int value)
+{
+  // Write up to 32 bits into a bitstream.
+  unsigned int bit_buf;
+  int bit_left;
+
+  if (n == 32)
+  {
+    // Write exactly 32 bits into a bitstream.
+    // danger, recursion in play.
+    int lo = value & 0xffff;
+    int hi = value >> 16;
+    if (s->writer_le)
+    {
+      write_bits(s, 16, lo);
+      write_bits(s, 16, hi);
+    }
+    else
+    {
+      write_bits(s, 16, hi);
+      write_bits(s, 16, lo);
+    }
+    return;
+  }
+
+  bit_buf  = s->bit_buf;
+  bit_left = s->bit_left;
+
+  if (s->writer_le)
+  {
+    bit_buf |= value << (32 - bit_left);
+    if (n >= bit_left) {
+      BS_WL32(s->buf_ptr, bit_buf);
+      s->buf_ptr += 4;
+      bit_buf     = (bit_left == 32) ? 0 : value >> bit_left;
+      bit_left   += 32;
+    }
+    bit_left -= n;
+  }
+  else
+  {
+    if (n < bit_left) {
+      bit_buf     = (bit_buf << n) | value;
+      bit_left   -= n;
+    } else {
+      bit_buf   <<= bit_left;
+      bit_buf    |= value >> (n - bit_left);
+      BS_WB32(s->buf_ptr, bit_buf);
+      s->buf_ptr += 4;
+      bit_left   += 32 - n;
+      bit_buf     = value;
+    }
+  }
+
+  s->bit_buf  = bit_buf;
+  s->bit_left = bit_left;
+}
+
+void CBitstreamConverter::skip_bits(bits_writer_t *s, int n)
+{
+  // Skip the given number of bits.
+  // Must only be used if the actual values in the bitstream do not matter.
+  // If n is 0 the behavior is undefined.
+  s->bit_left -= n;
+  s->buf_ptr  -= 4 * (s->bit_left >> 5);
+  s->bit_left &= 31;
+}
+
+void CBitstreamConverter::flush_bits(bits_writer_t *s)
+{
+  if (!s->writer_le)
+  {
+    if (s->bit_left < 32)
+      s->bit_buf <<= s->bit_left;
+  }
+  while (s->bit_left < 32)
+  {
+
+    if (s->writer_le)
+    {
+      *s->buf_ptr++ = s->bit_buf;
+      s->bit_buf  >>= 8;
+    }
+    else
+    {
+      *s->buf_ptr++ = s->bit_buf >> 24;
+      s->bit_buf  <<= 8;
+    }
+    s->bit_left  += 8;
+  }
+  s->bit_left = 32;
+  s->bit_buf  = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence)
 {
   // parse nal's until a sequence_header_code is found

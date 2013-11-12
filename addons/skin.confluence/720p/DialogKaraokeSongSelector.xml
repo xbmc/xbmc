@@ -4,19 +4,19 @@
 	<animation effect="slide" start="0,0" end="0,-40" delay="400" time="100">WindowClose</animation>
 	<controls>
 		<control type="group">
-			<posx>100</posx>
-			<posy>0</posy>
+			<left>100</left>
+			<top>0</top>
 			<control type="image">
-				<posx>0</posx>
-				<posy>-10</posy>
+				<left>0</left>
+				<top>-10</top>
 				<width>370</width>
 				<height>70</height>
 				<texture flipy="true" border="20,20,20,2">InfoMessagePanel.png</texture>
 			</control>
 			<control type="label" id="401">
 				<description>Song Number Label</description>
-				<posx>15</posx>
-				<posy>2</posy>
+				<left>15</left>
+				<top>2</top>
 				<width>340</width>
 				<height>25</height>
 				<font>font13_title</font>
@@ -26,8 +26,8 @@
 			</control>
 			<control type="label" id="402">
 				<description>Song Name Label</description>
-				<posx>15</posx>
-				<posy>27</posy>
+				<left>15</left>
+				<top>27</top>
 				<width>340</width>
 				<height>20</height>
 				<font>font13</font>

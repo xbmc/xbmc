@@ -22,10 +22,11 @@
 #include "Utils/AEUtil.h"
 #include "Utils/AERingBuffer.h"
 #include "android/activity/XBMCApp.h"
-#include "utils/log.h"
-#if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
+#include "settings/Settings.h"
+#if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif
+#include "utils/log.h"
 
 #include <jni.h>
 
@@ -82,17 +83,16 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_draining = false;
   m_audiotrackbuffer_sec = 0.0;
   m_audiotrack_empty_sec = 0.0;
-  m_volume = 1.0;
-#if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
-  aml_cpufreq_limit(true);
+  m_audiotrack_empty_sec_tweaks = 0.0;
+#if defined(HAS_LIBAMCODEC)
+  if (aml_present())
+    m_audiotrack_empty_sec_tweaks = 0.250;
 #endif
+  m_volume = 1.0;
 }
 
 CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
 {
-#if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
-  aml_cpufreq_limit(false);
-#endif
 }
 
 bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
@@ -105,7 +105,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     m_passthrough = false;
 
 #if defined(HAS_LIBAMCODEC)
-  if (aml_present())
+  if (CSettings::Get().GetBool("videoplayer.useamcodec"))
     aml_set_audio_passthrough(m_passthrough);
 #endif
 
@@ -184,10 +184,8 @@ double CAESinkAUDIOTRACK::GetDelay()
 
   double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer->GetReadSize();
   sinkbuffer_seconds_to_empty += m_audiotrack_empty_sec;
-#if defined(HAS_LIBAMCODEC)
   if (sinkbuffer_seconds_to_empty > 0.0)
-    sinkbuffer_seconds_to_empty += 0.250;
-#endif
+    sinkbuffer_seconds_to_empty += m_audiotrack_empty_sec_tweaks;
   return sinkbuffer_seconds_to_empty;
 }
 
@@ -198,10 +196,8 @@ double CAESinkAUDIOTRACK::GetCacheTime()
 
   double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer->GetReadSize();
   sinkbuffer_seconds_to_empty += m_audiotrack_empty_sec;
-#if defined(HAS_LIBAMCODEC)
   if (sinkbuffer_seconds_to_empty > 0.0)
-    sinkbuffer_seconds_to_empty += 0.250;
-#endif
+    sinkbuffer_seconds_to_empty += m_audiotrack_empty_sec_tweaks;
   return sinkbuffer_seconds_to_empty;
 }
 

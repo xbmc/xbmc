@@ -239,6 +239,8 @@ int CJNIMediaCodecInfoCodecCapabilities::COLOR_Format24BitARGB6666(0);
 int CJNIMediaCodecInfoCodecCapabilities::COLOR_Format24BitABGR6666(0);
 int CJNIMediaCodecInfoCodecCapabilities::COLOR_TI_FormatYUV420PackedSemiPlanar(0);
 int CJNIMediaCodecInfoCodecCapabilities::COLOR_QCOM_FormatYUV420SemiPlanar(0);
+/* This one isn't exposed in 4.4 */
+int CJNIMediaCodecInfoCodecCapabilities::OMX_QCOM_COLOR_FormatYVU420SemiPlanarInterlace(0x7FA30C04);
 const char *CJNIMediaCodecInfoCodecCapabilities::m_classname = "android/media/MediaCodecInfo$CodecCapabilities";
 
 void CJNIMediaCodecInfoCodecCapabilities::PopulateStaticFields()
@@ -298,7 +300,7 @@ std::vector<int> CJNIMediaCodecInfoCodecCapabilities::colorFormats() const
 {
   JNIEnv *env = xbmc_jnienv();
 
-  jhintArray colorFormats = get_field<jhintArray>(m_object, "numBytesOfEncryptedData");
+  jhintArray colorFormats = get_field<jhintArray>(m_object, "colorFormats");
   jsize size = env->GetArrayLength(colorFormats.get());
   std::vector<int> intarray;
   intarray.resize(size);

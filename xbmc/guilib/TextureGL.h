@@ -40,7 +40,7 @@ public:
   void LoadToGPU();
   void BindToUnit(unsigned int unit);
 
-private:
+protected:
   GLuint m_texture;
 };
 

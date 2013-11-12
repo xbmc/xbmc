@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Inställningsalternativ"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Helskärm"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Total längd"
@@ -116,10 +112,6 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "LETAR"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Visualiseringsförval"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Sluttid"
@@ -172,10 +164,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Visa \"Pausad\" i bildspel"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Spela trailers i ett fönster [COLOR=grey3](Endast i videoinformationsdialogen)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Övriga alternativ"
@@ -212,25 +200,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Visa nyligen tillagda filmer"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Hemskärmens programundermeny"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Dölj bakgrundsfanart"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Vädersida"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Visa bakgrund \"Nu spelas\" filmer"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Visa bakgrund i \"Nu spelas\" visualisering"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +220,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Sångtexter"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Dölj fanart i fullskärmsvisualisering"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Sångtextstillägg"
@@ -255,18 +227,6 @@ msgstr "Sångtextstillägg"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Undertextstillägg"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Hemskärmens videoundermeny"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Hemskärmens musikundermeny"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Hemskärmens bildundermeny"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +376,14 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Ladda ner undertexter"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Se i 2D"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Aktiverad"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Skalets standard"
@@ -456,10 +424,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]KONFIGURERA TILLÄGG[/B][CR][CR]Hantera installerade tillägg · Visa och installera tillägg från xbmc.org[CR]Ändra inställningar för tillägg"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]KONFIGURERA TV-INSTÄLLNINGAR[/B][CR][CR]Ändra helskärmsinfo · Hantera EPG-datainställningar"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGURERA SERVICEINSTÄLLNINGAR[/B][CR][CR]Ställ in kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Aktivera Zeroconf · Konfigurera AirPlay"
@@ -468,17 +432,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Förstagångshjälp..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Den här fliken innebär att det är en meny på sidan av det här fönstret som innehåller extra val för denna section. För att komma åt menyn, navigera till vänster med din fjärrkontroll eller tangentbord eller placera din muspekare över fliken.[CR][CR]Klicka \"Ok\" för att stänga denna dialog. Den kommer inte att visas igen."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Välj din XBMC användarprofil[CR]för att logga in och fortsätta"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Inspelningstimers"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

@@ -23,13 +23,6 @@
 
 #include "SettingRequirement.h"
 
-#define XML_SETTING     "setting"
-
-#define XML_ATTR_ID     "id"
-#define XML_ATTR_LABEL  "label"
-#define XML_ATTR_HELP   "help"
-#define XML_ATTR_TYPE   "type"
-
 class CSettingsManager;
 class TiXmlNode;
 

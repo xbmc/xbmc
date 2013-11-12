@@ -40,6 +40,7 @@ namespace XBMCAddon
      */
     bool copy(const String& strSource, const String& strDestnation);
 
+    // delete a file
     /**
      * delete(file)
      * 
@@ -48,7 +49,6 @@ namespace XBMCAddon
      * example:
      *   - xbmcvfs.delete(file)
      */
-    // delete a file
     bool deleteFile(const String& file);
 
     /**

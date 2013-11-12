@@ -34,8 +34,6 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
 
-  virtual void OnPrepareFileItems(CFileItemList &items);
-
   virtual void OnInfo(CFileItem* pItem, ADDON::ScraperPtr &info);
   static bool CanDelete(const CStdString& strPath);
   static bool DeleteItem(CFileItem* pItem, bool bUnavailable=false);

@@ -1,7 +1,8 @@
 SRCS=	\
 	TestBasicEnvironment.cpp \
 	TestFileItem.cpp \
-	TestTextureCache.cpp \
+	TestTextureUtils.cpp \
+	TestURL.cpp \
 	TestUtils.cpp \
 	xbmc-test.cpp
 

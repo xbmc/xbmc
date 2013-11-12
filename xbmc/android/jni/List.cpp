@@ -19,10 +19,12 @@
  */
 
 #include "List.h"
-#include "jutils/jutils-details.hpp"
+#include "View.h"
 #include "ScanResult.h"
 #include "WifiConfiguration.h"
 #include "ApplicationInfo.h"
+
+#include "jutils/jutils-details.hpp"
 
 using namespace jni;
 
@@ -44,3 +46,4 @@ int CJNIList<T>::size()
 template class CJNIList<CJNIScanResult>;
 template class CJNIList<CJNIWifiConfiguration>;
 template class CJNIList<CJNIApplicationInfo>;
+template class CJNIList<CJNIViewInputDeviceMotionRange>;

@@ -50,7 +50,7 @@ namespace EPG
   public:
     CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width, float height,
                          ORIENTATION orientation, int scrollTime, int preloadItems, int minutesPerPage,
-                         int rulerUnit);
+                         int rulerUnit, const CTextureInfo& progressIndicatorTexture);
     virtual ~CGUIEPGGridContainer(void);
     virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); };
 
@@ -136,9 +136,11 @@ namespace EPG
     void ProcessChannels(unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void ProcessRuler(unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void ProcessProgrammeGrid(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+    void ProcessProgressIndicator(unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void RenderChannels();
     void RenderRuler();
     void RenderProgrammeGrid();
+    void RenderProgressIndicator();
 
     CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
 
@@ -212,7 +214,9 @@ namespace EPG
     CDateTime m_gridStart;
     CDateTime m_gridEnd;
 
-    struct GridItemsPtr **m_gridIndex;
+    CGUITexture m_guiProgressIndicatorTexture;
+
+    std::vector<std::vector<GridItemsPtr> > m_gridIndex;
     GridItemsPtr *m_item;
     CGUIListItem *m_lastItem;
     CGUIListItem *m_lastChannel;

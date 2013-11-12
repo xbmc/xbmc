@@ -22,6 +22,7 @@
 
 #include "JSONRPC.h"
 #include "ServiceDescription.h"
+#include "dbwrappers/DatabaseQuery.h"
 #include "input/ButtonTranslator.h"
 #include "interfaces/AnnouncementManager.h"
 #include "playlists/SmartPlayList.h"
@@ -29,6 +30,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "TextureDatabase.h"
 
 using namespace ANNOUNCEMENT;
 using namespace JSONRPC;
@@ -52,7 +54,7 @@ void CJSONRPC::Initialize()
 
   // filter-related enums
   vector<string> smartplaylistList;
-  CSmartPlaylist::GetAvailableOperators(smartplaylistList);
+  CDatabaseQueryRule::GetAvailableOperators(smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Operators", smartplaylistList);
 
   smartplaylistList.clear();
@@ -82,6 +84,10 @@ void CJSONRPC::Initialize()
   smartplaylistList.clear();
   CSmartPlaylist::GetAvailableFields("songs", smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Fields.Songs", smartplaylistList);
+
+  smartplaylistList.clear();
+  CTextureRule::GetAvailableFields(smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Textures", smartplaylistList);
 
   unsigned int size = sizeof(JSONRPC_SERVICE_TYPES) / sizeof(char*);
 

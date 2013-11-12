@@ -511,6 +511,21 @@ namespace PVR
 
     static const char *ToString(const PVR_ERROR error);
 
+    /*!
+     * @brief actual playing time
+     */
+    time_t GetPlayingTime() const;
+
+    /*!
+     * @brief time of oldest packet in timeshift buffer
+     */
+    time_t GetBufferTimeStart() const;
+
+    /*!
+     * @brief time of latest packet in timeshift buffer
+     */
+    time_t GetBufferTimeEnd() const;
+
   private:
     /*!
      * @brief Checks whether the provided API version is compatible with XBMC

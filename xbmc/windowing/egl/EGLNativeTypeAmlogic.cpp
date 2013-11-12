@@ -62,12 +62,15 @@ bool CEGLNativeTypeAmlogic::CheckCompatibility()
 
 void CEGLNativeTypeAmlogic::Initialize()
 {
-  aml_cpufreq_limit(true);
+  aml_permissions();
+  aml_cpufreq_min(true);
+  aml_cpufreq_max(true);
   return;
 }
 void CEGLNativeTypeAmlogic::Destroy()
 {
-  aml_cpufreq_limit(false);
+  aml_cpufreq_min(false);
+  aml_cpufreq_max(false);
   return;
 }
 
@@ -220,7 +223,7 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
 
   // setup gui freescale depending on display resolution
   DisableFreeScale();
-  if (modestr.Left(4).Equals("1080"))
+  if (StringUtils::StartsWith(modestr, "1080"))
   {
     EnableFreeScale();
   }

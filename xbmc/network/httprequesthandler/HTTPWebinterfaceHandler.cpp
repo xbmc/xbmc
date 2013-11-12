@@ -25,6 +25,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "Util.h"
+#include "utils/StringUtils.h"
 
 #define DEFAULT_PAGE        "index.html"
 
@@ -69,8 +70,8 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
   path = url;
   if (url.find("/addons/") == 0 && url.size() > 8)
   {
-    CStdStringArray components;
-    CUtil::Tokenize(path, components, "/");
+    std::vector<std::string> components;
+    StringUtils::Tokenize(path, components, "/");
     if (components.size() > 1)
     {
       CAddonMgr::Get().GetAddon(components.at(1), addon);

@@ -19,13 +19,11 @@
  */
 
 #include "SettingSection.h"
+#include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
-
-#define XML_CATEGORY    "category"
-#define XML_GROUP       "group"
 
 template<class T> void addISetting(const TiXmlNode *node, const T &item, std::vector<T> &items)
 {
@@ -38,10 +36,10 @@ template<class T> void addISetting(const TiXmlNode *node, const T &item, std::ve
 
   // check if there is a "before" or "after" attribute to place the setting at a specific position
   int position = -1; // -1 => end, 0 => before, 1 => after
-  const char *positionId = element->Attribute("before");
+  const char *positionId = element->Attribute(SETTING_XML_ATTR_BEFORE);
   if (positionId != NULL && strlen(positionId) > 0)
     position = 0;
-  else if ((positionId = element->Attribute("after")) != NULL && strlen(positionId) > 0)
+  else if ((positionId = element->Attribute(SETTING_XML_ATTR_AFTER)) != NULL && strlen(positionId) > 0)
     position = 1;
 
   if (positionId != NULL && strlen(positionId) > 0 && position >= 0)
@@ -80,7 +78,7 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
   if (!ISetting::Deserialize(node, update))
     return false;
 
-  const TiXmlElement *settingElement = node->FirstChildElement(XML_SETTING);
+  const TiXmlElement *settingElement = node->FirstChildElement(SETTING_XML_ELM_SETTING);
   while (settingElement != NULL)
   {
     std::string settingId;
@@ -99,7 +97,7 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
       update = (setting != NULL);
       if (!update)
       {
-        const char* settingType = settingElement->Attribute(XML_ATTR_TYPE);
+        const char* settingType = settingElement->Attribute(SETTING_XML_ATTR_TYPE);
         if (settingType == NULL || strlen(settingType) <= 0)
         {
           CLog::Log(LOGERROR, "CSettingGroup: unable to read setting type of \"%s\"", settingId.c_str());
@@ -123,7 +121,7 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
         addISetting(settingElement, setting, m_settings);
     }
       
-    settingElement = settingElement->NextSiblingElement(XML_SETTING);
+    settingElement = settingElement->NextSiblingElement(SETTING_XML_ELM_SETTING);
   }
     
   return true;
@@ -167,16 +165,16 @@ bool CSettingCategory::Deserialize(const TiXmlNode *node, bool update /* = false
     return false;
     
   int tmp = -1;
-  if (element->QueryIntAttribute(XML_ATTR_LABEL, &tmp) == TIXML_SUCCESS && tmp > 0)
+  if (element->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &tmp) == TIXML_SUCCESS && tmp > 0)
     m_label = tmp;
-  if (element->QueryIntAttribute(XML_ATTR_HELP, &m_help) == TIXML_SUCCESS && m_help > 0)
+  if (element->QueryIntAttribute(SETTING_XML_ATTR_HELP, &tmp) == TIXML_SUCCESS && tmp > 0)
     m_help = tmp;
 
-  const TiXmlNode *accessNode = node->FirstChild("access");
+  const TiXmlNode *accessNode = node->FirstChild(SETTING_XML_ELM_ACCESS);
   if (accessNode != NULL && !m_accessCondition.Deserialize(accessNode))
     return false;
     
-  const TiXmlNode *groupNode = node->FirstChildElement(XML_GROUP);
+  const TiXmlNode *groupNode = node->FirstChildElement(SETTING_XML_ELM_GROUP);
   while (groupNode != NULL)
   {
     std::string groupId;
@@ -209,7 +207,7 @@ bool CSettingCategory::Deserialize(const TiXmlNode *node, bool update /* = false
       }
     }
       
-    groupNode = groupNode->NextSibling(XML_GROUP);
+    groupNode = groupNode->NextSibling(SETTING_XML_ELM_GROUP);
   }
     
   return true;
@@ -257,12 +255,12 @@ bool CSettingSection::Deserialize(const TiXmlNode *node, bool update /* = false 
     return false;
 
   int tmp = -1;
-  if (element->QueryIntAttribute(XML_ATTR_LABEL, &tmp) == TIXML_SUCCESS && tmp > 0)
+  if (element->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &tmp) == TIXML_SUCCESS && tmp > 0)
     m_label = tmp;
-  if (element->QueryIntAttribute(XML_ATTR_HELP, &tmp) == TIXML_SUCCESS && tmp > 0)
+  if (element->QueryIntAttribute(SETTING_XML_ATTR_HELP, &tmp) == TIXML_SUCCESS && tmp > 0)
     m_help = tmp;
     
-  const TiXmlNode *categoryNode = node->FirstChild(XML_CATEGORY);
+  const TiXmlNode *categoryNode = node->FirstChild(SETTING_XML_ELM_CATEGORY);
   while (categoryNode != NULL)
   {
     std::string categoryId;
@@ -295,7 +293,7 @@ bool CSettingSection::Deserialize(const TiXmlNode *node, bool update /* = false 
       }
     }
       
-    categoryNode = categoryNode->NextSibling(XML_CATEGORY);
+    categoryNode = categoryNode->NextSibling(SETTING_XML_ELM_CATEGORY);
   }
     
   return true;

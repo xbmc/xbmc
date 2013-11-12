@@ -95,8 +95,8 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 
 void CGUIDialogPVRChannelsOSD::OnInitWindow()
 {
-  /* Close dialog immediately if now TV or radio channel is playing */
-  if (!g_PVRManager.IsPlaying())
+  /* Close dialog immediately if neither a TV nor a radio channel is playing */
+  if (!g_PVRManager.IsPlayingTV() && !g_PVRManager.IsPlayingRadio())
   {
     Close();
     return;

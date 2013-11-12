@@ -2,5 +2,6 @@
 <settings>
     <category label="32020">
         <setting label="32021" type="bool" id="versioncheck_enable" default="true"/>
+        <setting label="32023" type="bool" id="upgrade_system" default="false"/>
     </category>
 </settings>

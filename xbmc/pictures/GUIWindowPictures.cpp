@@ -43,6 +43,7 @@
 #include "utils/URIUtils.h"
 #include "Autorun.h"
 #include "interfaces/AnnouncementManager.h"
+#include "utils/StringUtils.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
@@ -62,6 +63,7 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 {
   m_thumbLoader.SetObserver(this);
   m_slideShowStarted = false;
+  m_dlgProgress = NULL;
 }
 
 void CGUIWindowPictures::OnInitWindow()
@@ -212,6 +214,8 @@ void CGUIWindowPictures::UpdateButtons()
 
 void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
 {
+  CGUIMediaWindow::OnPrepareFileItems(items);
+
   for (int i=0;i<items.Size();++i )
     if (items[i]->GetLabel().Equals("folder.jpg"))
       items.Remove(i);
@@ -468,13 +472,13 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 
   if (item && !item->GetProperty("pluginreplacecontextitems").asBoolean())
   {
-    if ( m_vecItems->IsVirtualDirectoryRoot() && item)
+    if ( m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == "sources://pictures/" )
     {
       CGUIDialogContextMenu::GetContextButtons("pictures", item, buttons);
     }
     else
     {
-      if (item && !item->GetPath().Left(14).Equals("addons://more/"))
+      if (item && !StringUtils::StartsWithNoCase(item->GetPath(), "addons://more/"))
       {
         if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
           buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
@@ -512,13 +516,10 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
-  if (m_vecItems->IsVirtualDirectoryRoot() && item)
+  if (CGUIDialogContextMenu::OnContextButton("pictures", item, button))
   {
-    if (CGUIDialogContextMenu::OnContextButton("pictures", item, button))
-    {
-      Update("");
-      return true;
-    }
+    Update("");
+    return true;
   }
   switch (button)
   {

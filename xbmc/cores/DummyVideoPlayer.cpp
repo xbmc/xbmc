@@ -141,7 +141,7 @@ bool CDummyVideoPlayer::CanSeek()
   return GetTotalTime() > 0;
 }
 
-void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep)
+void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
   if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2000*g_advancedSettings.m_videoTimeSeekForwardBig)
   {

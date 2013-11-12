@@ -69,6 +69,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingAddon.h"
+#include "settings/SettingControl.h"
 #include "settings/SettingsManager.h"
 #include "settings/SettingPath.h"
 #include "settings/SkinSettings.h"
@@ -82,6 +83,13 @@
 #include "utils/XBMCTinyXML.h"
 #include "view/ViewStateSettings.h"
 #include "windowing/WindowingFactory.h"
+#if defined(TARGET_ANDROID)
+#include "android/activity/AndroidFeatures.h"
+#endif
+
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
+#endif
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 #define SETTINGS_XML_ROOT   "settings"
@@ -245,6 +253,22 @@ CSetting* CSettings::CreateSetting(const std::string &settingType, const std::st
   return NULL;
 }
 
+ISettingControl* CSettings::CreateControl(const std::string &controlType) const
+{
+  if (StringUtils::EqualsNoCase(controlType, "toggle"))
+    return new CSettingControlCheckmark();
+  else if (StringUtils::EqualsNoCase(controlType, "spinner"))
+    return new CSettingControlSpinner();
+  else if (StringUtils::EqualsNoCase(controlType, "edit"))
+    return new CSettingControlEdit();
+  else if (StringUtils::EqualsNoCase(controlType, "button"))
+    return new CSettingControlButton();
+  else if (StringUtils::EqualsNoCase(controlType, "list"))
+    return new CSettingControlList();
+
+  return NULL;
+}
+
 bool CSettings::Initialize()
 {
   CSingleLock lock(m_critical);
@@ -253,6 +277,8 @@ bool CSettings::Initialize()
 
   // register custom setting types
   InitializeSettingTypes();
+  // register custom setting controls
+  InitializeControls();
 
   // option fillers and conditions need to be
   // initialized before the setting definitions
@@ -365,7 +391,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("aequalitylevels");
   m_settingsManager->UnregisterSettingOptionsFiller("audiodevices");
   m_settingsManager->UnregisterSettingOptionsFiller("audiodevicespassthrough");
-  m_settingsManager->UnregisterSettingOptionsFiller("audiooutputmodes");
+  m_settingsManager->UnregisterSettingOptionsFiller("audiostreamsilence");
   m_settingsManager->UnregisterSettingOptionsFiller("charsets");
   m_settingsManager->UnregisterSettingOptionsFiller("epgguideviews");
   m_settingsManager->UnregisterSettingOptionsFiller("fontheights");
@@ -416,6 +442,12 @@ void CSettings::Uninitialize()
 #endif // defined(TARGET_LINUX)
   m_settingsManager->UnregisterCallback(&g_weatherManager);
   m_settingsManager->UnregisterCallback(&PERIPHERALS::CPeripherals::Get());
+#if defined(TARGET_DARWIN_OSX)
+  m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
+#endif
+
+  // cleanup the settings manager
+  m_settingsManager->Clear();
 
   // unregister ISubSettings implementations
   m_settingsManager->UnregisterSubSettings(&g_application);
@@ -426,19 +458,16 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSubSettings(&CViewStateSettings::Get());
 
   // unregister ISettingsHandler implementations
-  m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->UnregisterSettingsHandler(&g_advancedSettings);
   m_settingsManager->UnregisterSettingsHandler(&CMediaSourceSettings::Get());
   m_settingsManager->UnregisterSettingsHandler(&CPlayerCoreFactory::Get());
-  m_settingsManager->UnregisterSettingsHandler(&CRssManager::Get());
+  m_settingsManager->UnregisterSettingsHandler(&CProfilesManager::Get());
 #ifdef HAS_UPNP
   m_settingsManager->UnregisterSettingsHandler(&CUPnPSettings::Get());
 #endif
-  m_settingsManager->UnregisterSettingsHandler(&CProfilesManager::Get());
+  m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::Get());
+  m_settingsManager->UnregisterSettingsHandler(&CRssManager::Get());
   m_settingsManager->UnregisterSettingsHandler(&g_application);
-
-  // cleanup the settings manager
-  m_settingsManager->Clear();
 
   m_initialized = false;
 }
@@ -462,6 +491,12 @@ CSetting* CSettings::GetSetting(const std::string &id) const
   return m_settingsManager->GetSetting(id);
 }
 
+std::vector<CSettingSection*> CSettings::GetSections() const
+{
+  CSingleLock lock(m_critical);
+  return m_settingsManager->GetSections();
+}
+
 CSettingSection* CSettings::GetSection(const std::string &section) const
 {
   CSingleLock lock(m_critical);
@@ -473,6 +508,10 @@ CSettingSection* CSettings::GetSection(const std::string &section) const
 
 bool CSettings::GetBool(const std::string &id) const
 {
+  // Backward compatibility (skins use this setting)
+  if (StringUtils::EqualsNoCase(id, "lookandfeel.enablemouse"))
+    return GetBool("input.enablemouse");
+
   return m_settingsManager->GetBool(id);
 }
 
@@ -516,9 +555,113 @@ bool CSettings::SetString(const std::string &id, const std::string &value)
   return m_settingsManager->SetString(id, value);
 }
 
+std::vector<CVariant> CSettings::GetList(const std::string &id) const
+{
+  CSetting *setting = m_settingsManager->GetSetting(id);
+  if (setting == NULL || setting->GetType() != SettingTypeList)
+    return std::vector<CVariant>();
+
+  CSettingList *listSetting = static_cast<CSettingList*>(setting);
+  return ListToValues(listSetting, listSetting->GetValue());
+}
+
+bool CSettings::SetList(const std::string &id, const std::vector<CVariant> &value)
+{
+  CSetting *setting = m_settingsManager->GetSetting(id);
+  if (setting == NULL || setting->GetType() != SettingTypeList)
+    return false;
+
+  CSettingList *listSetting = static_cast<CSettingList*>(setting);
+  SettingPtrList newValues;
+  bool ret = true;
+  int index = 0;
+  for (std::vector<CVariant>::const_iterator itValue = value.begin(); itValue != value.end(); ++itValue)
+  {
+    CSetting *settingValue = listSetting->GetDefinition()->Clone(StringUtils::Format("%s.%d", listSetting->GetId().c_str(), index++));
+    if (settingValue == NULL)
+      return false;
+
+    switch (listSetting->GetElementType())
+    {
+      case SettingTypeBool:
+        if (!itValue->isBoolean())
+          return false;
+        ret = static_cast<CSettingBool*>(settingValue)->SetValue(itValue->asBoolean());
+        break;
+
+      case SettingTypeInteger:
+        if (!itValue->isInteger())
+          return false;
+        ret = static_cast<CSettingInt*>(settingValue)->SetValue(itValue->asInteger());
+        break;
+
+      case SettingTypeNumber:
+        if (!itValue->isDouble())
+          return false;
+        ret = static_cast<CSettingNumber*>(settingValue)->SetValue(itValue->asDouble());
+        break;
+
+      case SettingTypeString:
+        if (!itValue->isString())
+          return false;
+        ret = static_cast<CSettingString*>(settingValue)->SetValue(itValue->asString());
+        break;
+
+      default:
+        ret = false;
+        break;
+    }
+
+    if (!ret)
+    {
+      delete settingValue;
+      return false;
+    }
+
+    newValues.push_back(SettingPtr(settingValue));
+  }
+
+  return listSetting->SetValue(newValues);
+}
+
 bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
 {
   return m_settingsManager->LoadSetting(node, settingId);
+}
+
+std::vector<CVariant> CSettings::ListToValues(const CSettingList *setting, const std::vector< boost::shared_ptr<CSetting> > &values)
+{
+  std::vector<CVariant> realValues;
+
+  if (setting == NULL)
+    return realValues;
+
+  for (SettingPtrList::const_iterator it = values.begin(); it != values.end(); ++it)
+  {
+    switch (setting->GetElementType())
+    {
+      case SettingTypeBool:
+        realValues.push_back(static_cast<const CSettingBool*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeInteger:
+        realValues.push_back(static_cast<const CSettingInt*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeNumber:
+        realValues.push_back(static_cast<const CSettingNumber*>(it->get())->GetValue());
+        break;
+
+      case SettingTypeString:
+        realValues.push_back(static_cast<const CSettingString*>(it->get())->GetValue());
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return realValues;
 }
 
 bool CSettings::Initialize(const std::string &file)
@@ -593,6 +736,15 @@ void CSettings::InitializeSettingTypes()
   // register "addon" and "path" setting types implemented by CSettingAddon
   m_settingsManager->RegisterSettingType("addon", this);
   m_settingsManager->RegisterSettingType("path", this);
+}
+
+void CSettings::InitializeControls()
+{
+  m_settingsManager->RegisterSettingControl("toggle", this);
+  m_settingsManager->RegisterSettingControl("spinner", this);
+  m_settingsManager->RegisterSettingControl("edit", this);
+  m_settingsManager->RegisterSettingControl("button", this);
+  m_settingsManager->RegisterSettingControl("list", this);
 }
 
 void CSettings::InitializeVisibility()
@@ -673,7 +825,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("aequalitylevels", CAEFactory::SettingOptionsAudioQualityLevelsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevices", CAEFactory::SettingOptionsAudioDevicesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevicespassthrough", CAEFactory::SettingOptionsAudioDevicesPassthroughFiller);
-  m_settingsManager->RegisterSettingOptionsFiller("audiooutputmodes", CAEFactory::SettingOptionsAudioOutputModesFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("audiostreamsilence", CAEFactory::SettingOptionsAudioStreamsilenceFiller);
   m_settingsManager->RegisterSettingOptionsFiller("charsets", CCharsetConverter::SettingOptionsCharsetsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("epgguideviews", PVR::CGUIWindowPVRGuide::SettingOptionsEpgGuideViewFiller);
   m_settingsManager->RegisterSettingOptionsFiller("fonts", GUIFontManager::SettingOptionsFontsFiller);
@@ -710,6 +862,9 @@ void CSettings::InitializeConditions()
 #endif
 #ifdef HAS_EVENT_SERVER
   m_settingsManager->AddCondition("has_event_server");
+#endif
+#ifdef HAVE_X11
+  m_settingsManager->AddCondition("have_x11");
 #endif
 #ifdef HAS_GL
   m_settingsManager->AddCondition("has_gl");
@@ -752,13 +907,22 @@ void CSettings::InitializeConditions()
 #ifdef HAVE_LIBVDPAU
   m_settingsManager->AddCondition("have_libvdpau");
 #endif
+#ifdef TARGET_ANDROID
+  if (CAndroidFeatures::GetVersion() > 15)
+    m_settingsManager->AddCondition("has_mediacodec");
+#endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   m_settingsManager->AddCondition("have_videotoolboxdecoder");
   if (g_sysinfo.HasVideoToolBoxDecoder())
     m_settingsManager->AddCondition("hasvideotoolboxdecoder");
 #endif
+#ifdef HAS_LIBAMCODEC
+  if (aml_present())
+    m_settingsManager->AddCondition("have_amcodec");
+#endif
 #ifdef HAS_LIBSTAGEFRIGHT
-  m_settingsManager->AddCondition("have_libstagefrightdecoder");
+  if (CAndroidFeatures::GetVersion() < 19)
+    m_settingsManager->AddCondition("have_libstagefrightdecoder");
 #endif
 #ifdef TARGET_DARWIN_IOS_ATV2
   if (g_sysinfo.IsAppleTV2())
@@ -771,9 +935,6 @@ void CSettings::InitializeConditions()
 
   if (g_application.IsStandAlone())
     m_settingsManager->AddCondition("isstandalone");
-
-  if (CAEFactory::SupportsDrain())
-    m_settingsManager->AddCondition("audiosupportsdrain");
 
   if(CAEFactory::SupportsQualitySetting())
     m_settingsManager->AddCondition("has_ae_quality_levels");
@@ -799,21 +960,23 @@ void CSettings::InitializeConditions()
   m_settingsManager->AddCondition("profilehassettingslocked", ProfileHasSettingsLocked);
   m_settingsManager->AddCondition("profilehasvideoslocked", ProfileHasVideosLocked);
   m_settingsManager->AddCondition("profilelockmode", ProfileLockMode);
+  m_settingsManager->AddCondition("aesettingvisible", CAEFactory::IsSettingVisible);
 }
 
 void CSettings::InitializeISettingsHandlers()
 {
   // register ISettingsHandler implementations
-  m_settingsManager->RegisterSettingsHandler(&g_application);
-  m_settingsManager->RegisterSettingsHandler(&CProfilesManager::Get());
+  // The order of these matters! Handlers are processed in the order they were registered.
   m_settingsManager->RegisterSettingsHandler(&g_advancedSettings);
   m_settingsManager->RegisterSettingsHandler(&CMediaSourceSettings::Get());
   m_settingsManager->RegisterSettingsHandler(&CPlayerCoreFactory::Get());
-  m_settingsManager->RegisterSettingsHandler(&CRssManager::Get());
+  m_settingsManager->RegisterSettingsHandler(&CProfilesManager::Get());
 #ifdef HAS_UPNP
   m_settingsManager->RegisterSettingsHandler(&CUPnPSettings::Get());
 #endif
   m_settingsManager->RegisterSettingsHandler(&CWakeOnAccess::Get());
+  m_settingsManager->RegisterSettingsHandler(&CRssManager::Get());
+  m_settingsManager->RegisterSettingsHandler(&g_application);
 }
 
 void CSettings::InitializeISubSettings()
@@ -862,7 +1025,9 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&CStereoscopicsManager::Get(), settingSet);
 
   settingSet.clear();
-  settingSet.insert("audiooutput.mode");
+  settingSet.insert("audiooutput.config");
+  settingSet.insert("audiooutput.samplerate");
+  settingSet.insert("audiooutput.passthrough");
   settingSet.insert("audiooutput.channels");
   settingSet.insert("audiooutput.processquality");
   settingSet.insert("audiooutput.guisoundmode");
@@ -870,13 +1035,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("audiooutput.ac3passthrough");
   settingSet.insert("audiooutput.eac3passthrough");
   settingSet.insert("audiooutput.dtspassthrough");
-  settingSet.insert("audiooutput.passthroughaac");
   settingSet.insert("audiooutput.truehdpassthrough");
   settingSet.insert("audiooutput.dtshdpassthrough");
-  settingSet.insert("audiooutput.multichannellpcm");
   settingSet.insert("audiooutput.audiodevice");
   settingSet.insert("audiooutput.passthroughdevice");
   settingSet.insert("audiooutput.streamsilence");
+  settingSet.insert("audiooutput.normalizelevels");
   settingSet.insert("lookandfeel.skin");
   settingSet.insert("lookandfeel.skinsettings");
   settingSet.insert("lookandfeel.font");
@@ -893,6 +1057,8 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("screensaver.settings");
   settingSet.insert("videoscreen.guicalibration");
   settingSet.insert("videoscreen.testpattern");
+  settingSet.insert("videoplayer.useamcodec");
+  settingSet.insert("videoplayer.usemediacodec");
   m_settingsManager->RegisterCallback(&g_application, settingSet);
 
   settingSet.clear();
@@ -925,6 +1091,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert("input.enablemouse");
   m_settingsManager->RegisterCallback(&g_Mouse, settingSet);
+
+#if defined(HAS_GL) && defined(HAVE_X11)
+  settingSet.clear();
+  settingSet.insert("input.enablesystemkeys");
+  m_settingsManager->RegisterCallback(&g_Windowing, settingSet);
+#endif
 
   settingSet.clear();
   settingSet.insert("services.webserver");

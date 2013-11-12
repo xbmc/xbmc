@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.6"
+       version="1.0.7"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -18,6 +18,7 @@
     <summary lang="de">Bildschirmshoner, welcher den Bildschirm schwarz färbt</summary>
     <summary lang="el">Προφύλαξη οθόνης που αμαυρώνει την οθόνη σας</summary>
     <summary lang="en">Screensaver that turns your screen black</summary>
+    <summary lang="en_US">Screensaver that turns your screen black</summary>
     <summary lang="es">Un salvapantallas que pone la pantalla en negro</summary>
     <summary lang="es_AR">Un protector de pantalla que pone la pantalla en negro</summary>
     <summary lang="es_MX">Protector de pantalla que obscurece la pantalla</summary>
@@ -68,6 +69,7 @@
     <description lang="de">Black ist ein einfacher Bildschirmschoner, welcher den Bildschirm schwarz abdunkelt</description>
     <description lang="el">Η Black είναι μία απλή προφύλαξη οθόνης που αμαυρώνει την οθόνη σας.</description>
     <description lang="en">Black is a simple screensaver that will turn your screen black.</description>
+    <description lang="en_US">Black is a simple screensaver that will turn your screen black.</description>
     <description lang="es">Black es un sencillo salvapantallas que pone la pantalla en negro.</description>
     <description lang="es_AR">Black es un sencillo protector de pantalla que pone la pantalla en negro.</description>
     <description lang="es_MX">Black es un simple protector de pantalla que la obscurece.</description>
@@ -84,7 +86,7 @@
     <description lang="it">Black è un semplice salvaschermo che trasforma il tuo schermo in nero.</description>
     <description lang="ja">画面を暗く黒くするだけの、シンプルなスクリーンセーバーです</description>
     <description lang="ko">블랙 화면보호기는 화면을 검게 만들어줍니다.</description>
-    <description lang="lt">Black yra paprasta ekrano užsklanda, kuri pavers jūsų ekraną juodu fonu.</description>
+    <description lang="lt">'Juodas' yra paprasta ekrano užsklanda, kuri pavers jūsų ekraną juodu fonu.</description>
     <description lang="lv">"Melns" ir vienkāršs ekrānsaudzētājs, kurš padara jūsu ekrānu melnu.</description>
     <description lang="mk">Црна е едноставна заштита на екран која екранот го прави црн.</description>
     <description lang="nl">Black is een eenvoudige schermbeveiliging die uw scherm op zwart zet.</description>

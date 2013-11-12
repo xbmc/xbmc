@@ -57,7 +57,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       groupedItems.Add(item);
   }
 
-  if ((groupBy & GroupBySet) && setMap.size() > 0)
+  if ((groupBy & GroupBySet) && !setMap.empty())
   {
     CVideoDbUrl itemsUrl;
     if (!itemsUrl.FromString(baseDir))

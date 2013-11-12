@@ -23,7 +23,7 @@
 
 using namespace jni;
 
-int CJNIAudioManager::STREAM_MUSIC(0);
+int CJNIAudioManager::STREAM_MUSIC(3);
 
 void CJNIAudioManager::PopulateStaticFields()
 {
@@ -35,6 +35,13 @@ int CJNIAudioManager::getStreamMaxVolume()
 {
   return call_method<jint>(m_object,
     "getStreamMaxVolume", "(I)I",
+    STREAM_MUSIC);
+}
+
+int CJNIAudioManager::getStreamVolume()
+{
+  return call_method<int>(m_object,
+    "getStreamVolume", "(I)I",
     STREAM_MUSIC);
 }
 

@@ -320,6 +320,8 @@ void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &p
   CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
   g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_SYSTEM);
 
+  SetChanged();
+
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35005), peripheral.DeviceName());
 }
 
@@ -332,6 +334,8 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
   // refresh settings (peripherals manager could be disabled now)
   CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
   g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_SYSTEM);
+
+  SetChanged();
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
 }
@@ -489,8 +493,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
       int iMin   = currentNode->Attribute("min") ? atoi(currentNode->Attribute("min")) : 0;
       int iStep  = currentNode->Attribute("step") ? atoi(currentNode->Attribute("step")) : 1;
       int iMax   = currentNode->Attribute("max") ? atoi(currentNode->Attribute("max")) : 255;
-      CStdString strFormat(currentNode->Attribute("format"));
-      setting = new CSettingInt(strKey, iLabelId, iValue, iMin, iStep, iMax, strFormat);
+      setting = new CSettingInt(strKey, iLabelId, iValue, iMin, iStep, iMax);
     }
     else if (strSettingsType.Equals("float"))
     {
@@ -506,10 +509,10 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
       if (!strEnums.IsEmpty())
       {
         vector< pair<int,int> > enums;
-        vector<CStdString> valuesVec;
-        CUtil::Tokenize(strEnums, valuesVec, "|");
+        vector<std::string> valuesVec;
+        StringUtils::Tokenize(strEnums, valuesVec, "|");
         for (unsigned int i = 0; i < valuesVec.size(); i++)
-          enums.push_back(make_pair(atoi(valuesVec[i]), atoi(valuesVec[i])));
+          enums.push_back(make_pair(atoi(valuesVec[i].c_str()), atoi(valuesVec[i].c_str())));
         int iValue = currentNode->Attribute("value") ? atoi(currentNode->Attribute("value")) : 0;
         setting = new CSettingInt(strKey, iLabelId, iValue, enums);
       }
@@ -537,7 +540,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
 
 void CPeripherals::GetDirectory(const CStdString &strPath, CFileItemList &items) const
 {
-  if (!strPath.Left(14).Equals("peripherals://"))
+  if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
     return;
 
   CStdString strPathCut = strPath.Right(strPath.length() - 14);
@@ -553,7 +556,7 @@ void CPeripherals::GetDirectory(const CStdString &strPath, CFileItemList &items)
 
 CPeripheral *CPeripherals::GetByPath(const CStdString &strPath) const
 {
-  if (!strPath.Left(14).Equals("peripherals://"))
+  if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
     return NULL;
 
   CStdString strPathCut = strPath.Right(strPath.length() - 14);

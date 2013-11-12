@@ -126,7 +126,6 @@ namespace XBMCAddon
        *   - if (kb.isConfirmed()):
        */
       bool isConfirmed();
-
     };
   }
 }

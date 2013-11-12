@@ -127,7 +127,7 @@ namespace XBMCAddon
                   Window* _window, int windowid) : P(windowid, "")
       { 
         ((classname = "Interceptor<") += specializedName) += ">";
-#ifdef ENABLE_TRACE_API
+#ifdef ENABLE_XBMC_TRACE_API
         XBMCAddonUtils::TraceGuard tg;
         CLog::Log(LOGDEBUG, "%sNEWADDON constructing %s 0x%lx", tg.getSpaces(),classname.c_str(), (long)(((void*)this)));
 #endif
@@ -140,7 +140,7 @@ namespace XBMCAddon
                   const char* xmlfile) : P(windowid, xmlfile)
       { 
         ((classname = "Interceptor<") += specializedName) += ">";
-#ifdef ENABLE_TRACE_API
+#ifdef ENABLE_XBMC_TRACE_API
         XBMCAddonUtils::TraceGuard tg;
         CLog::Log(LOGDEBUG, "%sNEWADDON constructing %s 0x%lx", tg.getSpaces(),classname.c_str(), (long)(((void*)this)));
 #endif
@@ -150,32 +150,32 @@ namespace XBMCAddon
 
       virtual ~Interceptor()
       { 
-#ifdef ENABLE_TRACE_API
+#ifdef ENABLE_XBMC_TRACE_API
         XBMCAddonUtils::TraceGuard tg;
         CLog::Log(LOGDEBUG, "%sNEWADDON LIFECYCLE destroying %s 0x%lx", tg.getSpaces(),classname.c_str(), (long)(((void*)this)));
 #endif
       }
 
       virtual bool    OnMessage(CGUIMessage& message) 
-      { TRACE; return up() ? P::OnMessage(message) : checkedb(OnMessage(message)); }
+      { XBMC_TRACE; return up() ? P::OnMessage(message) : checkedb(OnMessage(message)); }
       virtual bool    OnAction(const CAction &action) 
-      { TRACE; return up() ? P::OnAction(action) : checkedb(OnAction(action)); }
+      { XBMC_TRACE; return up() ? P::OnAction(action) : checkedb(OnAction(action)); }
 
       // NOTE!!: This ALWAYS skips up to the CGUIWindow instance.
       virtual bool    OnBack(int actionId) 
-      { TRACE; return up() ? CGUIWindow::OnBack(actionId) : checkedb(OnBack(actionId)); }
+      { XBMC_TRACE; return up() ? CGUIWindow::OnBack(actionId) : checkedb(OnBack(actionId)); }
 
       virtual void OnDeinitWindow(int nextWindowID)
-      { TRACE; if(up()) P::OnDeinitWindow(nextWindowID); else checkedv(OnDeinitWindow(nextWindowID)); }
+      { XBMC_TRACE; if(up()) P::OnDeinitWindow(nextWindowID); else checkedv(OnDeinitWindow(nextWindowID)); }
 
-      virtual bool    IsModalDialog() const { TRACE; return checkedb(IsModalDialog()); };
+      virtual bool    IsModalDialog() const { XBMC_TRACE; return checkedb(IsModalDialog()); };
 
-      virtual bool    IsDialogRunning() const { TRACE; return checkedb(IsDialogRunning()); };
-      virtual bool    IsDialog() const { TRACE; return checkedb(IsDialog()); };
-      virtual bool    IsMediaWindow() const { TRACE; return checkedb(IsMediaWindow());; };
+      virtual bool    IsDialogRunning() const { XBMC_TRACE; return checkedb(IsDialogRunning()); };
+      virtual bool    IsDialog() const { XBMC_TRACE; return checkedb(IsDialog()); };
+      virtual bool    IsMediaWindow() const { XBMC_TRACE; return checkedb(IsMediaWindow());; };
 
-      virtual void    setActive(bool active) { TRACE; P::m_active = active; }
-      virtual bool    isActive() { TRACE; return P::m_active; }
+      virtual void    setActive(bool active) { XBMC_TRACE; P::m_active = active; }
+      virtual bool    isActive() { XBMC_TRACE; return P::m_active; }
     };
 
     template <class P /* extends CGUIWindow*/> class InterceptorDialog : 

@@ -1,4 +1,5 @@
-﻿<settings>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<settings>
     <setting id="lastpresetfolder" type="text" default="" visible="false" />
     <setting id="lastpresetidx" type="integer" default="0" visible="false" />
     <setting id="lastlockedstatus" type="bool" default="false" visible="false" />

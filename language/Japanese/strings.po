@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "ファイル操作をキャンセル"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s-%s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "画面解像度"
@@ -853,10 +857,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "ミュージック"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "ビジュアライザー"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "ディレクトリの選択"
@@ -868,6 +868,10 @@ msgstr "ステレオ音声を全スピーカーから出力"
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "チャンネル数"
+
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS 対応レシーバー"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1041,6 +1045,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "ブックマーク"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "AAC 対応レシーバー"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 対応レシーバー"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 対応レシーバー"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 対応レシーバー"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "遅延"
@@ -1169,10 +1189,6 @@ msgctxt "#337"
 msgid "Audio output"
 msgstr "オーディオ出力"
 
-msgctxt "#338"
-msgid "Analog"
-msgstr "アナログ"
-
 msgctxt "#339"
 msgid "Optical/Coax"
 msgstr "デジタル(光/同軸)"
@@ -1204,6 +1220,18 @@ msgstr "公開年"
 msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "ダウンミックス時に音量ブースト"
+
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD 対応レシーバー"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "マルチチャンネル LPCM 対応レシーバー"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "フルHD 対応レシーバー"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1260,6 +1288,10 @@ msgstr "スクリーンセーバーの暗さ(%)"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "並べ替え：ファイル名"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "ドルビーディジタル（AC3）対応レシーバー"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1549,10 +1581,6 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "キャッシュ"
 
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "ハードディスク"
-
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1788,10 +1816,6 @@ msgstr "ファイルからメディア情報を読み込んでいます..."
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "並べ替え：回数"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "ビジュアライザーを有効化"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2229,14 +2253,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "カスタム"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "再生音量平均化"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "モード"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "トラックレベル使用"
@@ -2244,18 +2260,6 @@ msgstr "トラックレベル使用"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "アルバムレベル使用"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "プリアンプレベル - 平均化したファイルを基準"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "プリアンプレベル - 平均化ファイルを基準にしない"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "平均化したファイルのクリッピングを避ける"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2361,6 +2365,10 @@ msgctxt "#705"
 msgid "Network"
 msgstr "ネットワーク"
 
+msgctxt "#706"
+msgid "Server"
+msgstr "サーバー"
+
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "HTTP プロキシを使用"
@@ -2388,6 +2396,18 @@ msgstr "手動 (固定)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP アドレス"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "ネットマスク"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "デフォルトゲートウェイ"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "DNS サーバー"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2432,6 +2452,14 @@ msgstr "パスワードなし"
 msgctxt "#735"
 msgid "Character set"
 msgstr "文字セット"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "スタイル"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "色"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2565,6 +2593,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "ワイヤレスネットワーク名 (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "無線パスワード"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "無線セキュリティ"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "ネットワークインターフェース設定を保存して適用"
@@ -2665,6 +2701,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "ポート番号は 1024-65535 の間から選んで下さい"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "ピクチャーを追加..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "ミュージックを追加..."
@@ -2672,6 +2712,10 @@ msgstr "ミュージックを追加..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "ビデオを追加..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "プレビュー"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2873,6 +2917,26 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Web のアドレスを入力"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "プロキシーのタイプ"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "SMB シェア"
@@ -3009,9 +3073,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "デバイス名"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "パスワード保護を使用"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3369,25 +3441,65 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "設定 - プロファイル"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "アドオンブラウザー"
+msgctxt "#10035"
+msgid "Reset"
+msgstr "リセット"
 
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "はい/いいえ ダイアログ"
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "設定をリセット"
 
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "進行ダイアログ"
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "このカテゴリーの設定を全てリセットしてもいいですか？"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "ヘルプ"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "ヘルプがありません"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "ファイルブラウザー"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "ネットワーク設定"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "メディアソース"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "プロフィール設定"
 
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "ロックの設定"
 
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "コンテンツ設定"
+
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "お気に入り"
+
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "歌/情報"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "スマートプレイリストエディター"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "スマートプレイリストルールエディター"
 
 msgctxt "#10140"
 msgid "Add-on settings"
@@ -3481,17 +3593,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "ムービー情報"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "ダイアログの選択"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "ミュージック/情報"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "ダイアログ OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3504,14 +3608,6 @@ msgstr "スクリプト/情報"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "フルスクリーンビデオ"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "オーディオビジュアライザー"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "ファイルスタッキング ダイアログ"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -3849,10 +3945,6 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "再起動"
 
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "最小化"
-
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "電源ボタンを押した際の動作"
@@ -3892,6 +3984,22 @@ msgstr "ジョイスティックが接続されました"
 msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "ジョイスティックが外されました"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on LAN (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "ネットワーク接続中..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Wake on Lan の実行に失敗しました！"
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "サービス起動中..."
 
 msgctxt "#13050"
 msgid "Running low on battery"
@@ -3973,10 +4081,6 @@ msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU HQ Upscaling level"
 
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr "VDPAU Studio level color conversion"
-
 msgctxt "#13130"
 msgid "Blank other displays"
 msgstr "他のディスプレイをブランクにする"
@@ -4028,10 +4132,6 @@ msgstr "デフォルトゲートウェイ"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "プライマリ DNS"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "初期化に失敗"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4213,6 +4313,10 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "ファンスピード制御"
 
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "フォント"
+
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Flipping 双方向ストリングスを有効化"
@@ -4272,10 +4376,6 @@ msgstr "ビュー スライドショー"
 msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "スライドショー繰返し"
-
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "ランダム化"
 
 msgctxt "#13320"
 msgid "Stereo"
@@ -4489,21 +4589,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "プリセット"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "このビジュアライザーにはプリセットがありません"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "このビジュアライザーには設定がありません"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "イジェクト/ロード"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "音楽再生時にビジュアライザー使用"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4688,10 +4776,6 @@ msgstr "ビデオクロック (オーディオ側をあわせる)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "ビデオクロック (オーディオを再サンプリングする)"
-
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr "最大再サンプリング量 (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -4881,13 +4965,13 @@ msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "最も近くの大都市名を入力"
 
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "ビデオ/オーディオ/DVD キャッシュ - HDD"
-
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "ビデオ キャッシュ - DVD-ROM"
+
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "ローカルネットワーク"
 
 msgctxt "#14028"
 msgid "Internet"
@@ -4897,6 +4981,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "オーディオ キャッシュ - DVD-ROM"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "ローカルネットワーク"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "インターネット"
@@ -4904,6 +4992,10 @@ msgstr "インターネット"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD キャッシュ - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "ローカルネットワーク"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5053,6 +5145,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "お気に入りから削除"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "色"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "タイムゾーン(国)"
@@ -5189,6 +5285,10 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "スキン デフォルト"
 
+msgctxt "#15111"
+msgid "Theme"
+msgstr "テーマ"
+
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "デフォルトテーマ"
@@ -5208,10 +5308,6 @@ msgstr "接続できません"
 msgctxt "#15213"
 msgid "Play using..."
 msgstr "...を使用して再生"
-
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "Use Smoothed A/V Synchronisation"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
@@ -5352,10 +5448,6 @@ msgstr "パーティーモードを終了しました。"
 msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "ライブラリには一致する曲はありませんでした。"
-
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "データベースを初期化できませんでした。"
 
 msgctxt "#16033"
 msgid "Could not open database."
@@ -5505,10 +5597,6 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "逆テレシネ (30fps => 24fps)"
 
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr "Lanczos3 最適化"
-
 msgctxt "#16316"
 msgid "Auto"
 msgstr "自動"
@@ -5537,17 +5625,9 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 optimized"
-
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
-
-msgctxt "#16325"
-msgid "Auto - ION Optimized"
-msgstr "自動 - ION に最適化"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -5708,6 +5788,10 @@ msgstr "情報"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "このチャンネルで録画がすでに始まっています"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s は再生できませんでした。詳しくはログをチェックしてください。"
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -6197,10 +6281,6 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "再生開始時にタイムアウト"
 
-msgctxt "#19171"
-msgid "Start playback minimized"
-msgstr "最小化で再生開始"
-
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "簡易録画継続時間"
@@ -6268,10 +6348,6 @@ msgstr "EPG のリセット中"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "起動時に前回のチャンネルを使う"
-
-msgctxt "#19190"
-msgid "Minimized"
-msgstr "最小化"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6429,10 +6505,6 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "チャンネル切り替え後チャンネルのOSDを閉じる"
 
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr "TVストリーミングを再生中はEPGの更新を阻止する"
-
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "常にバックエンドからチャンネルの順序を使用する"
@@ -6444,10 +6516,6 @@ msgstr "検索結果をクリア"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "タイマーの更新で通知を表示する"
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "バックエンドのチャンネルナンバーを使用する (1つの有効なPVRアドオンとのみ動作する)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7272,14 +7340,6 @@ msgstr "天気予報情報を表示"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "システム情報を表示"
-
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr "Show available disc space C: E: F:"
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr "Show available disc space E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8212,10 +8272,6 @@ msgstr "テレビ番組のフラット化"
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Fanart を取得"
-
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr "ビデオ及び音楽ライブラリで Fanart を表示する"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -9153,6 +9209,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "ライブラリの更新状況を表示しない"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "DNS サフィックス"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9225,10 +9285,6 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "ガイド"
 
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "Allowed error in aspect ratio to minimize black bars"
-
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "リストでビデオファイルを表示"
@@ -9248,6 +9304,14 @@ msgstr "フォント"
 msgctxt "#22031"
 msgid "Size"
 msgstr "サイズ"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "色"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "文字セット"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9380,10 +9444,6 @@ msgstr "スクリーンセーバー"
 msgctxt "#24009"
 msgid "Script"
 msgstr "スクリプト"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "ビジュアライザー"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -9997,6 +10057,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "カスタムスクリプト用ボタンを有効にする"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "自動ログイン"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "起動に失敗しました："
@@ -10109,9 +10173,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "一つ前のアイテムがありません"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Zeroconf の起動に失敗"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Apple の Bonjour サービスはインストールされていますか? 詳しくはログを参照して下さい。"
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay の利用には Zeroconf が必要です"
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Zeroconf を停止できませんでした"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay と AirTunes の利用には Zeroconf が必要です"
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10120,10 +10200,6 @@ msgstr "ビデオレンダリング"
 msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "ビデオフィルタ/リサイズの初期化に失敗しました。代わりにバイリニアスケーリングを行います。"
-
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr "オーディオデバイスの初期化に失敗"
 
 msgctxt "#34403"
 msgid "Check your audiosettings"
@@ -10156,10 +10232,6 @@ msgstr "周辺機器"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "汎用 HID デバイス"
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr "汎用ネットワークアダプタ"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10213,10 +10285,6 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "Product ID"
 
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr "Pulse-Eight CEC アダプタ"
-
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard リモコン"
@@ -10237,10 +10305,6 @@ msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Enable switch side commands"
 
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr "アダプタをオープンできませんでした"
-
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
 msgstr "XBMC 起動時に電源を入れるデバイス"
@@ -10257,10 +10321,6 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "CEC ポートが検出できませんでした。手動で設定してください。"
 
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "CEC アダプタの初期化に失敗しました。設定を見直してください。"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI ポート番号"
@@ -10268,10 +10328,6 @@ msgstr "HDMI ポート番号"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "接続完了"
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "アダプタはありますが libCEC がありません"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10325,14 +10381,6 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "接続切断"
 
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr "ユーザーが CEC アダプターをオープンする権限がありません"
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr "ポートは使用中です。CEC アダプターに複数のプログラムが同時にアクセスできません。"
-
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "他のソースに切り替える時再生を一時停止"
@@ -10364,3 +10412,23 @@ msgstr "サポートされていないバージョンの libCEC です。%x は�
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* アイテムフォルダー"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "UI のルック＆フィールを変更"
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "選択したスキンのテーマを変更"
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "選択したスキンの色を変更"
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "RSS フィードを編集します。"
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "XBMC 起動時に新しいメディアファイルをチェックします。"

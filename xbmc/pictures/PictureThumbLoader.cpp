@@ -35,7 +35,7 @@
 using namespace XFILE;
 using namespace std;
 
-CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader(), CJobQueue(true)
+CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader(), CJobQueue(true, 1, CJob::PRIORITY_LOW_PAUSABLE)
 {
   m_regenerateThumbs = false;
 }
@@ -79,7 +79,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
   CStdString thumb;
   if (pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // load the thumb from the image file
-    thumb = pItem->HasArt("thumb") ? pItem->GetArt("thumb") : CTextureCache::GetWrappedThumbURL(pItem->GetPath());
+    thumb = pItem->HasArt("thumb") ? pItem->GetArt("thumb") : CTextureUtils::GetWrappedThumbURL(pItem->GetPath());
   }
   else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // video
@@ -223,7 +223,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
       { // less than 4 items, so just grab the first thumb
         items.Sort(SortByLabel, SortOrderAscending);
-        CStdString thumb = CTextureCache::GetWrappedThumbURL(items[0]->GetPath());
+        CStdString thumb = CTextureUtils::GetWrappedThumbURL(items[0]->GetPath());
         db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
         CTextureCache::Get().BackgroundCacheImage(thumb);
         pItem->SetArt("thumb", thumb);
@@ -235,7 +235,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         vector<string> files;
         for (int thumb = 0; thumb < 4; thumb++)
           files.push_back(items[thumb]->GetPath());
-        CStdString thumb = CTextureCache::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
+        CStdString thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
         CStdString relativeCacheFile = CTextureCache::GetCacheFile(thumb) + ".png";
         if (CPicture::CreateTiledThumb(files, CTextureCache::GetCachedPath(relativeCacheFile)))
         {

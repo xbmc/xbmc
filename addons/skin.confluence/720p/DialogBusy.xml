@@ -4,25 +4,25 @@
 	<animation effect="fade" time="200">WindowClose</animation>
 	<coordinates>
 		<system>1</system>
-		<posx>0</posx>
-		<posy>0</posy>
+		<left>0</left>
+		<top>0</top>
 	</coordinates>
 	<controls>
 		<control type="group">
-			<posx>1070</posx>
-			<posy>640</posy>
+			<left>1070</left>
+			<top>640</top>
 			<control type="image">
 				<description>background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>200</width>
 				<height>70</height>
 				<texture border="20">OverlayDialogBackground.png</texture>
 			</control>
 			<control type="image">
 				<description>Busy animation</description>
-				<posx>20</posx>
-				<posy>20</posy>
+				<left>20</left>
+				<top>20</top>
 				<width>32</width>
 				<height>32</height>
 				<texture>busy.png</texture>
@@ -31,8 +31,8 @@
 			</control>
 			<control type="label">
 				<description>Busy label</description>
-				<posx>60</posx>
-				<posy>20</posy>
+				<left>60</left>
+				<top>20</top>
 				<width>120</width>
 				<height>32</height>
 				<align>left</align>
@@ -42,8 +42,8 @@
 			</control>
 			<control type="progress" id="10">
 				<description>Progressbar</description>
-				<posx>20</posx>
-				<posy>53</posy>
+				<left>20</left>
+				<top>53</top>
 				<width>160</width>
 				<height>8</height>
 			</control>

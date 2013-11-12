@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "அமைப்பு விருப்பங்கள்"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "முழுத்திரை"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "முழு நீடிக்கும் காலம்"
@@ -92,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "தகவல்"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "நடவடிக்கைகள்"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "தற்போது வாசிக்கபடுவது"
@@ -115,10 +115,6 @@ msgstr "பின்சுற்று"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "தேடுகிறது"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "காட்சி முன் நிறுவுகள்"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -172,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "படவில்லை செய்யும்போது \"இடைநிறுத்தம்\" செய்யப்பட்டுள்ளதை காண்பி"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "திரைப்படகண்ணோட்டத்தை ஒரு சாளரத்தில் காண்பி [COLOR=grey3](படகாட்சி தகவல் உரையாடல் பெட்டி மட்டுமே)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "இதர விருப்பங்கள்"
@@ -212,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "சமிபத்தில் சேர்க்கப்பட்ட படக்காட்சியை காமி"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "தொடக்கப்பக்கம் நிரல் துணை மெனு"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "பின்னணி வரைபடத்தை மறை"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "வானிலை பக்கம்"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "பின்புலனில் காண்பி : \"தற்போது கான்பிக்கபடும்\" படகாட்சி"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "பின்புலனில் காண்பி : \"தற்போது கான்பிக்கபடும்\" காட்சி"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "பாடல்வரிகள்"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "முழுத்திரையில் விசிறிபடத்தை மறை"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "பாடல்வரிகள் துணை-பயன்"
@@ -255,18 +231,6 @@ msgstr "பாடல்வரிகள் துணை-பயன்"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "துணைத்தலைப்பு துணை-பயன்"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "தொடக்கப்பக்கம் படக்காட்சி துணை மெனு"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "தொடக்கப்பக்கம் இசை துணை மெனு"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "தொடக்கப்பக்கம் படங்கள் துணை மெனு"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +380,18 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "துணைத்தலைப்பை பதிவிறக்கு"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "2Dஇல் பார்க்கவும்"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "முறை மாற்றம்"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "செயல்படுத்தபட்டுள்ளது"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "இயல்புநிலை அலங்கார அமைப்பு"
@@ -456,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]துணை-பயன் அமைப்புகள் கட்டமைப்பு[/B][CR][CR]நிறுவிய துணை-பயன்களை மேலாண்மை · xbmc.org உலாவி மற்றும் துணை-பயன்களை நிறுவ[CR]துணை-பயன் அமைப்புகளை மாற்ற"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]தொலைக்காட்சி அமைப்புகள் கட்டமைப்பு[/B][CR][CR]முழுத்திரை தகவல் மாற்று · EPG தரவு அமைப்புகள் மேலாண்மை"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]சேவை அமைப்புகள் கட்டமைப்பு[/B][CR][CR]UPnP மற்றும் HTTP வழியாக XBMCஅமைப்பு கட்டுப்பாடு  · கோப்பு பகிர்வு கட்டமைப்பு[CR]Zeroconf செயல்படுத்த · AirPlay கட்டமைப்பு"
@@ -468,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "முதன்முறை இயக்க உதவி...."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "இந்த தாவல் மூலம் அறிவதாவது இந்த சாளரத்தின் பக்கத்தில் ஒரு மெனு உள்ளது. அதில்  கூடுதல் விருப்பங்கள் உள்ளன. அந்த மெனுவை அணுக, உங்கள் ரிமோட் கண்ட்ரோல் மூலம் அல்லது விசைப்பலகை மூலம் அல்லது சுட்டியை இடது நகர்த்தி தாவல் மேல் வைக்கவும். [CR][CR]இந்த உரையாடலை மூடுவதற்கு \"சரி\" என்பதை கிளிக் செய்யவும். அது மீண்டும் வராது."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "உங்கள் XBMC பயனர் விவரங்களை தேர்வுசெய்து[CR]உள்நுழைய தொடரச்செய்யவும்"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "பதிவு செய்யும் நேரம்"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

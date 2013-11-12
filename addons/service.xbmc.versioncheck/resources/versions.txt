@@ -4,6 +4,13 @@
         "stable": [
             {
                 "major": "12",
+                "minor": "2",
+                "tag": "stable",
+                "revision": "20130502-32b1a5e",
+                "extrainfo": "final"
+            },
+            {
+                "major": "12",
                 "minor": "1",
                 "tag": "stable",
                 "revision": "20130317-0d373cc",
@@ -129,6 +136,55 @@
         "alpha": [
         ],
         "prealpha": [
+            {
+                "major": "13",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20130929-494c67a",
+                "extrainfo": "alpha8"
+            },
+            {
+                "major": "13",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20130831-2da9c97",
+                "extrainfo": "alpha7"
+            },
+            {
+                "major": "13",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20130630-30f4a79",
+                "extrainfo": "alpha6"
+            },
+            {
+                "major": "13",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20130630-9188e6a",
+                "extrainfo": "alpha5"
+            },
+            {
+                "major": "13",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20130531-0ccc594",
+                "extrainfo": "alpha4"
+            },
+            {
+                "major": "13",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20130430-e8fe5cf",
+                "extrainfo": "alpha3"
+            },
+            {
+                "major": "13",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20130331-194c408",
+                "extrainfo": "alpha2"
+            },
             {
                 "major": "13",
                 "minor": "0",

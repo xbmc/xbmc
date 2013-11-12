@@ -20,6 +20,7 @@
 
 #include "JobManager.h"
 #include <algorithm>
+#include <stdexcept>
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -175,9 +176,16 @@ CJobManager::CJobManager()
 {
   m_jobCounter = 0;
   m_running = true;
-  
-  for (unsigned int priority = CJob::PRIORITY_LOW; priority <= CJob::PRIORITY_HIGH; ++priority)
-    m_jobPause[priority] = false; // Set this priority to unpaused
+  m_pauseJobs = false;
+}
+
+void CJobManager::Restart()
+{
+  CSingleLock lock(m_section);
+
+  if (m_running)
+    throw std::logic_error("CJobManager already running");
+  m_running = true;
 }
 
 void CJobManager::CancelJobs()
@@ -186,7 +194,7 @@ void CJobManager::CancelJobs()
   m_running = false;
 
   // clear any pending jobs
-  for (unsigned int priority = CJob::PRIORITY_LOW; priority <= CJob::PRIORITY_HIGH; ++priority)
+  for (unsigned int priority = CJob::PRIORITY_LOW_PAUSABLE; priority <= CJob::PRIORITY_HIGH; ++priority)
   {
     for_each(m_jobQueue[priority].begin(), m_jobQueue[priority].end(), mem_fun_ref(&CWorkItem::FreeJob));
     m_jobQueue[priority].clear();
@@ -234,7 +242,7 @@ void CJobManager::CancelJob(unsigned int jobID)
   CSingleLock lock(m_section);
 
   // check whether we have this job in the queue
-  for (unsigned int priority = CJob::PRIORITY_LOW; priority <= CJob::PRIORITY_HIGH; ++priority)
+  for (unsigned int priority = CJob::PRIORITY_LOW_PAUSABLE; priority <= CJob::PRIORITY_HIGH; ++priority)
   {
     JobQueue::iterator i = find(m_jobQueue[priority].begin(), m_jobQueue[priority].end(), jobID);
     if (i != m_jobQueue[priority].end())
@@ -272,9 +280,10 @@ void CJobManager::StartWorkers(CJob::PRIORITY priority)
 CJob *CJobManager::PopJob()
 {
   CSingleLock lock(m_section);
-  for (int priority = CJob::PRIORITY_HIGH; priority >= CJob::PRIORITY_LOW; --priority)
+  for (int priority = CJob::PRIORITY_HIGH; priority >= CJob::PRIORITY_LOW_PAUSABLE; --priority)
   {
-    if (m_jobPause[priority]) // In case this priority is paused, skip it
+    // Check whether we're pausing pausable jobs
+    if (priority == CJob::PRIORITY_LOW_PAUSABLE && m_pauseJobs)
       continue;
 
     if (m_jobQueue[priority].size() && m_processing.size() < GetMaxWorkers(CJob::PRIORITY(priority)))
@@ -292,27 +301,24 @@ CJob *CJobManager::PopJob()
   return NULL;
 }
 
-void CJobManager::Pause(const CJob::PRIORITY &priority)
+void CJobManager::PauseJobs()
 {
   CSingleLock lock(m_section);
-  m_jobPause[priority] = true;
+  m_pauseJobs = true;
 }
 
-void CJobManager::UnPause(const CJob::PRIORITY &priority)
+void CJobManager::UnPauseJobs()
 {
   CSingleLock lock(m_section);
-  m_jobPause[priority] = false;
-}
-
-bool CJobManager::IsPaused(const CJob::PRIORITY &priority) const
-{
-  CSingleLock lock(m_section);
-  return m_jobPause[priority];
+  m_pauseJobs = false;
 }
 
 bool CJobManager::IsProcessing(const CJob::PRIORITY &priority) const
 {
   CSingleLock lock(m_section);
+
+  if (m_pauseJobs)
+    return false;
 
   for(Processing::const_iterator it = m_processing.begin(); it < m_processing.end(); it++)
   {
@@ -322,13 +328,17 @@ bool CJobManager::IsProcessing(const CJob::PRIORITY &priority) const
   return false;
 }
 
-int CJobManager::IsProcessing(const std::string &pausedType) const
+int CJobManager::IsProcessing(const std::string &type) const
 {
   int jobsMatched = 0;
   CSingleLock lock(m_section);
+
+  if (m_pauseJobs)
+    return 0;
+
   for(Processing::const_iterator it = m_processing.begin(); it < m_processing.end(); it++)
   {
-    if (pausedType == std::string(it->m_job->GetType()))
+    if (type == std::string(it->m_job->GetType()))
       jobsMatched++;
   }
   return jobsMatched;

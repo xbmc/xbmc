@@ -36,6 +36,7 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
@@ -88,7 +89,7 @@ void CEventButtonState::Load()
         m_iKeyCode = CButtonTranslator::TranslateUniversalRemoteString( m_buttonName.c_str() );
       }
       else if ( (m_mapName.length() > 3) &&
-                (m_mapName.compare(0, 3, "LI:") == 0) ) // starts with LI: ?
+                (StringUtils::StartsWith(m_mapName, "LI:")) ) // starts with LI: ?
       {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
         string lircDevice = m_mapName.substr(3);
@@ -109,7 +110,7 @@ void CEventButtonState::Load()
   else
   {
     if (m_mapName.length() > 3 &&
-        (m_mapName.compare(0, 2, "JS") == 0) )
+        (StringUtils::StartsWith(m_mapName, "JS")) )
     {
       m_joystickName = m_mapName.substr(2);  // <num>:joyname
       m_iControllerNumber = (unsigned char)(*(m_joystickName.c_str()))
@@ -795,12 +796,8 @@ bool CEventClient::GetMousePos(float& x, float& y)
   CSingleLock lock(m_critSection);
   if (m_bMouseMoved)
   {
-    x = (float)((m_iMouseX / 65535.0f) *
-                (g_graphicsContext.GetViewWindow().x2
-                 -g_graphicsContext.GetViewWindow().x1));
-    y = (float)((m_iMouseY / 65535.0f) *
-                (g_graphicsContext.GetViewWindow().y2
-                 -g_graphicsContext.GetViewWindow().y1));
+    x = (float)((m_iMouseX / 65535.0f) * g_graphicsContext.GetWidth());
+    y = (float)((m_iMouseY / 65535.0f) * g_graphicsContext.GetHeight());
     m_bMouseMoved = false;
     return true;
   }

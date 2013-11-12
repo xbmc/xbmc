@@ -40,6 +40,10 @@ msgctxt "#31327"
 msgid "Resolution"
 msgstr "Rezolucija"
 
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Omogućeno"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Podrazumjevana maska"

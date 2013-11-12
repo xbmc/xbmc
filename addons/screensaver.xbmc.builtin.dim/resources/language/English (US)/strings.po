@@ -1,16 +1,15 @@
 # XBMC Media Center language file
 # Addon Name: Dim
 # Addon id: screensaver.xbmc.builtin.dim
-# Addon version: 1.0.0
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-28 15:37+0000\n"
-"PO-Revision-Date: 2012-05-28 23:29+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: English (United States) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/en_US/)\n"
+"Language-Team: English (US) (http://www.transifex.com/projects/p/xbmc-main/language/en_US/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,4 +18,4 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Dim level"
-msgstr ""
+msgstr "Dim level"

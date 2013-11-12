@@ -526,7 +526,7 @@ void CTCPServer::CTCPClient::Send(const char *data, unsigned int size)
   do
   {
     CSingleLock lock (m_critSection);
-    sent += send(m_socket, data, size - sent, 0);
+    sent += send(m_socket, data + sent, size - sent, 0);
   } while (sent < size);
 }
 

@@ -78,10 +78,10 @@ extern "C"
 
 CCriticalSection CPythonInvoker::s_critical;
 
-static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook>& languageHook)
+static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook>& languageHook)
 {
   CStdString message;
-  XBMCAddon::AddonClass::Synchronize l(*(languageHook.get()));
+  CSingleLock l(*(languageHook.get()));
   std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
   bool firstTime = true;
   for (std::set<XBMCAddon::AddonClass*>::iterator iter = acs.begin(); iter != acs.end(); ++iter)
@@ -90,7 +90,7 @@ static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref
       message += ",";
     else
       firstTime = false;
-    message += (*iter)->GetClassname().c_str();
+    message += (*iter)->GetClassname();
   }
 
   return message;
@@ -179,7 +179,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   // swap in my thread state
   PyThreadState_Swap(state);
 
-  XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook> languageHook(new XBMCAddon::Python::LanguageHook(state->interp));
+  XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> languageHook(new XBMCAddon::Python::PythonLanguageHook(state->interp));
   languageHook->RegisterMe();
 
   onInitialization();
@@ -286,22 +286,23 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   }
 
   bool systemExitThrown = false;
+  InvokerState stateToSet;
   if (!failed && !PyErr_Occurred())
   {
     CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): script successfully run", GetId(), m_source);
-    setState(InvokerStateDone);
+    stateToSet = InvokerStateDone;
     onSuccess();
   }
   else if (PyErr_ExceptionMatches(PyExc_SystemExit))
   {
     systemExitThrown = true;
     CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): script aborted", GetId(), m_source);
-    setState(InvokerStateFailed);
+    stateToSet = InvokerStateFailed;
     onAbort();
   }
   else
   {
-    setState(InvokerStateFailed);
+    stateToSet = InvokerStateFailed;
 
     // if it failed with an exception we already logged the details
     if (!failed)
@@ -315,7 +316,10 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
   // no need to do anything else because the script has already stopped
   if (failed)
+  {
+    setState(stateToSet);
     return true;
+  }
 
   PyObject *m = PyImport_AddModule((char*)"xbmc");
   if (m == NULL || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
@@ -386,6 +390,8 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   languageHook->UnregisterMe();
 
   PyEval_ReleaseLock();
+
+  setState(stateToSet);
 
   return true;
 }
@@ -497,7 +503,7 @@ std::map<std::string, CPythonInvoker::PythonModuleInitialization> CPythonInvoker
 
 void CPythonInvoker::onInitialization()
 {
-  TRACE;
+  XBMC_TRACE;
   {
     GilSafeSingleLock lock(s_critical);
     initializeModules(getModules());
@@ -533,7 +539,7 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 
 void CPythonInvoker::onDeinitialization()
 {
-  TRACE;
+  XBMC_TRACE;
 }
 
 void CPythonInvoker::onError()
@@ -588,7 +594,7 @@ bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
   return true;
 }
 
-void CPythonInvoker::addPath(const std::string path)
+void CPythonInvoker::addPath(const std::string& path)
 {
   if (path.empty())
     return;

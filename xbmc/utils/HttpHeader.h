@@ -20,33 +20,43 @@
  *
  */
 
-#include <map>
+#include <utility>
 #include <vector>
-#include "StdString.h"
-
-#define HTTPHEADER_CONTENT_TYPE "Content-Type"
-
-typedef std::map<CStdString, CStdString> HeaderParams;
-typedef std::map<CStdString, CStdString>::iterator HeaderParamsIter;
+#include <string>
 
 class CHttpHeader
 {
 public:
+  typedef std::pair<std::string, std::string> HeaderParamValue;
+  typedef std::vector<HeaderParamValue> HeaderParams;
+  typedef HeaderParams::iterator HeaderParamsIter;
+
   CHttpHeader();
   ~CHttpHeader();
 
-  void Parse(CStdString strData);
-  CStdString GetValue(CStdString strParam) const;
+  void Parse(const std::string& strData);
+  void AddParam(const std::string& param, const std::string& value, const bool overwrite = false);
 
-  void GetHeader(CStdString& strHeader) const;
+  std::string GetValue(const std::string& strParam) const;
+  std::vector<std::string> GetValues(std::string strParam) const;
 
-  CStdString GetMimeType() { return GetValue(HTTPHEADER_CONTENT_TYPE); }
-  CStdString GetProtoLine() { return m_protoLine; }
+  std::string GetHeader(void) const;
+
+  std::string GetMimeType(void) const;
+  std::string GetCharset(void) const;
+  inline std::string GetProtoLine() const
+  { return m_protoLine; }
+
+  inline bool IsHeaderDone(void) const
+  { return m_headerdone; }
 
   void Clear();
 
 protected:
+  std::string GetValueRaw(const std::string& strParam) const;
+
   HeaderParams m_params;
-  CStdString   m_protoLine;
+  std::string   m_protoLine;
+  bool m_headerdone;
 };
 

@@ -20,6 +20,7 @@
  */
 
 #include "DVDDemux.h"
+#include "utils/log.h"
 
 #ifdef TARGET_WINDOWS
 #define __attribute__(dummy_val)
@@ -42,7 +43,7 @@ public:
   void Abort();
   void Flush();
   DemuxPacket* Read();
-  bool SeekTime(int time, bool backwords = false, double* startpts = NULL) { return false; };
+  bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
   void SetSpeed(int iSpeed) {};
   int GetStreamLength() ;
   CDemuxStream* GetStream(int iStreamId);

@@ -4,13 +4,13 @@
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>0</system>
-		<posx>0</posx>
-		<posy>0</posy>
+		<left>0</left>
+		<top>0</top>
 	</coordinates>
 	<controls>
 		<control type="image">
-			<posx>50r</posx>
-			<posy>2</posy>
+			<left>50r</left>
+			<top>2</top>
 			<width>45</width>
 			<height>45</height>
 			<aspectratio>keep</aspectratio>

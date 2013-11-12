@@ -857,10 +857,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Música"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Visualización"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Seleccione carpeta destino"
@@ -1192,10 +1188,6 @@ msgstr "Conversión de imágenes por segundo"
 msgctxt "#337"
 msgid "Audio output"
 msgstr "Salida de sonido"
-
-msgctxt "#338"
-msgid "Analog"
-msgstr "Analógica"
 
 msgctxt "#339"
 msgid "Optical/Coax"
@@ -1589,10 +1581,6 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "Cache"
 
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "Disco Duro"
-
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1828,10 +1816,6 @@ msgstr "Cargando informacion de archivos..."
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Por: Uso"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "Habilitar Visualizaciones"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2273,14 +2257,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Personalizado"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "Replay gain"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "Ajuste de volumen Replay gain"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Usar volumen de la pista"
@@ -2288,18 +2264,6 @@ msgstr "Usar volumen de la pista"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Usar volumen del álbum"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "Nivel PreAmp - archivos con ReplayGain"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "Nivel PreAmp - archivos sin ReplayGain"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "Evitar distorsión digital en archivos con ReplayGain"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -3517,10 +3481,6 @@ msgctxt "#10039"
 msgid "Level: Expert"
 msgstr "Nivel: Experto"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "Navegador de Add-ons"
-
 msgctxt "#10041"
 msgid "Reset settings"
 msgstr "Resetear ajustes"
@@ -3536,14 +3496,6 @@ msgstr "Ayuda"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "No hay ayuda disponible"
-
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "Cuadro de diálogo Sí/No"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "Diálogo de Progreso"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3685,17 +3637,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Infor de película"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "Diálogo de Selección"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Música/info"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "Diálogo de OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3708,14 +3652,6 @@ msgstr "Secuencias de Comandos/Info"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Vídeo a pantalla completa"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "Visualización de sonido"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "Diálogo de agrupar archivos"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4053,10 +3989,6 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Reiniciar"
 
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "Minimizar"
-
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Acción del boton de Encendido"
@@ -4221,10 +4153,6 @@ msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "Nivel de reescalado HQ VDPAU"
 
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr "Conversión de color VDPAU con calidad de estudio"
-
 msgctxt "#13130"
 msgid "Blank other displays"
 msgstr "Blanquear otras pantallas"
@@ -4276,10 +4204,6 @@ msgstr "Puerta de enlace"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "DNS Primario"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "Fallo en inicialización"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4525,10 +4449,6 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Presentacion de diapositivas recursivo"
 
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "Reproducción aleatoria"
-
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Estéreo"
@@ -4741,21 +4661,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Ajustes Predeterminados"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "No hay ajustes predet.\ndisponibles para esta visualización"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "No hay ajustes disponibles\npara esta visualización"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Expulsar/Cargar"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "Usar visualización mientras se reproduce sonido"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4944,10 +4852,6 @@ msgstr "Clock de video(Drop/Dupe audio)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Clock de video (Re-muestreo de audio)"
-
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr "Re-muestreo máximo (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -5140,10 +5044,6 @@ msgstr "Sin TV"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Introduzca la ciudad grande más cercana"
-
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "Caché de vídeo - Disco Duro"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5489,10 +5389,6 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "Reproducir Usando..."
 
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "Usar sincronización A/V suavizada"
-
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "Ocultar nombres de fichero en vista de miniaturas"
@@ -5632,10 +5528,6 @@ msgstr "Modo fiesta abortado."
 msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "No hay canciones coincidentes en la base de datos."
-
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "No se pudo inicializar la base de datos."
 
 msgctxt "#16033"
 msgid "Could not open database."
@@ -5785,10 +5677,6 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Telecine inverso"
 
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr "Lanczos3 optimizado"
-
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Auto"
@@ -5817,17 +5705,9 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 optimized"
-
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
-
-msgctxt "#16325"
-msgid "Auto - ION Optimized"
-msgstr "Auto - Optimizado para ION"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6481,10 +6361,6 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Tiempo-fuera cuando se inicia la reproduccion"
 
-msgctxt "#19171"
-msgid "Start playback minimized"
-msgstr "Empezar reproducción minimizado"
-
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Duración de grabación instantánea"
@@ -6552,10 +6428,6 @@ msgstr "EPG reestableciendose"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Continuar con el último canal al inicio"
-
-msgctxt "#19190"
-msgid "Minimized"
-msgstr "Minimizado"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6713,10 +6585,6 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Cerrar OSD del canal después de cambiar canales"
 
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr "Evitar actualizaciones de EPG mientras se reproduce TV"
-
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "Siempre usar el orden de canales del backend"
@@ -6728,10 +6596,6 @@ msgstr "Limpiar resultados de búsqueda"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Mostrar una notificacion sobre las actualizaciones del temporizador"
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Usar los numeros de canales (solo funciona con 1 PVR habilitado) "
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7556,14 +7420,6 @@ msgstr "Mostrar info de clima"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Mostrar info de sistema"
-
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr "Mostrar espacio disponible en C: E: F:"
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr "Mostrar espacio disponible en E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8500,10 +8356,6 @@ msgstr "Aplanar series de TV"
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Obtener fanart"
-
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr "Mostrar fanart en la biblioteca de vídeo"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -9577,10 +9429,6 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "Guía"
 
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "Error de aspecto permitido para minimizar bandas negras"
-
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "Mostrar archivos de video en listados"
@@ -9740,10 +9588,6 @@ msgstr "Refrescapantalla"
 msgctxt "#24009"
 msgid "Script"
 msgstr "Script"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Visualización"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -10509,10 +10353,6 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Fallo al iniciar filtros/escaladores de video, utilizando escalado bilineal"
 
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr "Fallo al iniciar dispositivo de sonido"
-
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Verifique su configuracion de sonido"
@@ -10544,10 +10384,6 @@ msgstr "Periféricos"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Dispositivo HID genérico"
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr "Adaptador de red genérico"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10605,10 +10441,6 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "ID de producto"
 
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr "Adaptador Pulse-Eight CEC"
-
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10628,10 +10460,6 @@ msgstr "Press \"user\" button command"
 msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Enable switch side commands"
-
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr "No se pudo acceder al adaptador"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
@@ -10653,10 +10481,6 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "No se pudo detectar puerto CEC. Configurelo manualmente."
 
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "No se pudo detectar adaptador CEC."
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "puerto HDMI"
@@ -10664,10 +10488,6 @@ msgstr "puerto HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Connectado"
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "Adaptador encontrado, pero libcec no está disponible"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10721,14 +10541,6 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Se ha perdido la conexión"
 
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr "Este usuario no tiene permisos para abrir el adaptador CEC"
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr "El puerto esta opcupado. Solo un programa puede acceder al adaptador CEC"
-
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Pausar la reproducción cuando se cambie a otra fuente"
@@ -10760,10 +10572,6 @@ msgstr "Versión de interfaz libCEC no soportada. %x es menor a la versión sopo
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Carpeta de elemento"
-
-msgctxt "#36042"
-msgid "Use limited color range (16-235)"
-msgstr "Usar rango de color limitado (16-235)"
 
 msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
@@ -10881,10 +10689,6 @@ msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Establecer cantidad de tiempo de inactividad antes de mostrar el protector de pantalla."
 
-msgctxt "#36130"
-msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
-msgstr "Selecciona el protector de pantalla. XBMC puede forzar el 'Oscurecimiento' del protectorr de pantalla cuando un video en pantalla completa es pausado o una caja de dialogo esta activa."
-
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
 msgstr "Cambiar ajustes especificos del protector de pantalla. Las opciones disponibles dependen del protector de pantalla usado. "
@@ -10892,10 +10696,6 @@ msgstr "Cambiar ajustes especificos del protector de pantalla. Las opciones disp
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "Previsualizar el protector de pantalla seleccionado."
-
-msgctxt "#36133"
-msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
-msgstr "Si se reproduce musica, XBMC puede iniciar la visualizacion seleccionada en lugar de mostrar el protector de pantalla."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11021,21 +10821,9 @@ msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
 msgstr "Se realiza una pequeña pausa mientras se ajusta la tasa de refresco. Activar para ajustar automáticamente la tasa de refresco a la que más se ajuste al vídeo que está reproduciéndose. Esto puede permitir una reproducción perfectamente suave, ya que el material de vídeo puede ser grabado en una gran variedad de ajustes de velocidad de cuadros para lo cuales necesario ajustar la tasa de refresco para que se muestre una reproducción suave.  "
 
-msgctxt "#36166"
-msgid "Synchronize the video to the refresh rate of the monitor."
-msgstr "Sincroniza el vídeo para que se ajuste a la tasa de refresco del monitor."
-
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "El audio debe permanecer en sincronía, esto puede hacerse con saltos de paquetes duplicados o remuestreos, o ajustando la velocidad de reloj si la falta de sincronismo es muy marcada."
-
-msgctxt "#36168"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36169"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -11044,10 +10832,6 @@ msgstr "Permitir que el reproductor de vídeo ignore el radio de aspecto llenand
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Selecciona el nivel de zoom de esos videos 4:3 que seran mostrados en pantallas panoramicas."
-
-msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
-msgstr "La conversión VDPAU studio level provee una manera de influenciar la conversión del espacio de color en aplicaciones avanzadas como XBMC."
 
 msgctxt "#36173"
 msgid "No info available yet."
@@ -11065,10 +10849,6 @@ msgctxt "#36176"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
-msgctxt "#36177"
-msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "Elige entre las opciones, Reproducir (por omisión), Reanudar y mostrar la información. Elija un elemento, por ejemplo, abrir un directorio en modo de archivos. Reanudar retomará los vídeos automáticamente desde la última posición en la que estabas viendolo, incluso cuando reinicias el sistema."
-
 msgctxt "#36178"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -11082,14 +10862,6 @@ msgid "Extract thumbnails and information, such as codecs and aspect ratio, to d
 msgstr "Extrae las miniaturas y la información, tal como los codecs y radio de aspecto, para mostrarlo en el modo de Librería."
 
 msgctxt "#36181"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36182"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36183"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
@@ -11417,10 +11189,6 @@ msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
 msgstr "Cuando las canciones son agregadas ala lista de reproduccion ellas quedan en cola en lugar de reproducirse inmediatamente."
 
-msgctxt "#36267"
-msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
-msgstr "XBMC puede leer el la informacion de Replay Gain codificada en sus archivos de audio por un programa como MP3Gain y normalizar el nivel de sonido en consecuencia. "
-
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "El valor predeterminado estandar es 89dB. Cambielo con precaucion.  "
@@ -11440,10 +11208,6 @@ msgstr "Suavemente desaparecer de una pista de audio a la siguiente. Usted puede
 msgctxt "#36272"
 msgid "Allow crassfading to occur when both tracks are from the same album."
 msgstr "Permitir fundido entre ambas pistas cuando son del mismo album."
-
-msgctxt "#36273"
-msgid "Select the visualization that will be displayed while listening to music."
-msgstr "Selecciona la visualizacion que permite se mostrada mientras se escucha musica."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
@@ -11536,10 +11300,6 @@ msgstr "Seleccione el tipo de  letra utilizado durante el karaoke."
 msgctxt "#36296"
 msgid "Select the size of the font used during karoake."
 msgstr "Seleccione el tamaño del tipo de letra utilizado durante el karaoke."
-
-msgctxt "#36297"
-msgid "Select the font color used during karoake."
-msgstr "Seleccione el color del tipo de letra utilizado durante el karaoke."
 
 msgctxt "#36298"
 msgid "Select the character set used during karoake."
@@ -11757,10 +11517,6 @@ msgctxt "#36353"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
-msgctxt "#36354"
-msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimizing other applications. Uses a bit more resources and playback may be slightly less smooth."
-msgstr "El principal beneficio para la configuracion multi-pantalla, XBMC puede ser usado sin minimizar automaticamente las otras aplicaciones. Utiliza un poco mas de recursos y la reproduccion puede ser ligeramente menos suave."
-
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
 msgstr "En una configuracion multi-pantalla, las pantallas donde XBMC no se muestra estan oscurecidas."
@@ -11920,10 +11676,6 @@ msgstr "Carpeta usada para guardar las capturas de pantalla tomadas dentro de XB
 msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Especifique las bibliotecas adicionales que se incluiran en el registro de depuracion."
-
-msgctxt "#36395"
-msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
-msgstr "Abrir el cuadro de dialogo del Bloqueo Maestro, donde usted puede configurar las opciones del Bloqueo Maestro."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."

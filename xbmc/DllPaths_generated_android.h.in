@@ -73,6 +73,7 @@
 #define DLL_PATH_LIBDVDNAV     "libdvdnav-@ARCH@.so"
 #define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
 #define DLL_PATH_LIBMAD        "@MAD_SONAME@"
+#define DLL_PATH_LIBSTAGEFRIGHTICS    "libXBMCvcodec_stagefrightICS-@ARCH@.so"
 
 /* ffmpeg */
 #define DLL_PATH_LIBAVCODEC    "libavcodec-54-@ARCH@.so"

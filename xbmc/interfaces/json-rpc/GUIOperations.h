@@ -33,7 +33,10 @@ namespace JSONRPC
 
     static JSONRPC_STATUS ShowNotification(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS SetFullscreen(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS SetStereoscopicMode(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetStereoscopicModes(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
   private:
     static JSONRPC_STATUS GetPropertyValue(const CStdString &property, CVariant &result);
+    static CVariant GetStereoModeObjectFromGuiMode(const RENDER_STEREO_MODE &mode);
   };
 }

@@ -330,7 +330,7 @@ void DllLoaderContainer::UnRegisterDll(LibraryLoader* pDll)
 
 void DllLoaderContainer::UnloadPythonDlls()
 {
-  // unload all dlls that python24.dll could have loaded
+  // unload all dlls that python could have loaded
   for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
   {
     char* name = m_dlls[i]->GetName();
@@ -341,33 +341,5 @@ void DllLoaderContainer::UnloadPythonDlls()
       i = 0;
     }
   }
-
-  // last dll to unload, python24.dll
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
-  {
-    char* name = m_dlls[i]->GetName();
-
-#ifdef HAVE_LIBPYTHON2_6
-    if (strstr(name, "python26.dll") != NULL)
-#else
-    if (strstr(name, "python24.dll") != NULL)
-#endif
-    {
-      LibraryLoader* pDll = m_dlls[i];
-      pDll->IncrRef();
-      while (pDll->DecrRef() > 1) pDll->DecrRef();
-
-      // since we freed all python extension dlls first, we have to remove any associations with them first
-      DllTrackInfo* info = tracker_get_dlltrackinfo_byobject((DllLoader*) pDll);
-      if (info != NULL)
-      {
-        info->dllList.clear();
-      }
-
-      ReleaseModule(pDll);
-      break;
-    }
-  }
-
 
 }

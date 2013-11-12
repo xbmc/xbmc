@@ -2,8 +2,8 @@
 <!-- BEGIN_INCLUDE(manifest) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.xbmc.xbmc"
-    android:versionCode="14"
-    android:versionName="13.0-ALPHA8" >
+    android:versionCode="16"
+    android:versionName="13.0-ALPHA10" >
 
     <!-- This is the platform API where NativeActivity was introduced. -->
     <uses-sdk android:minSdkVersion="14" />
@@ -16,7 +16,7 @@
     <application android:icon="@drawable/ic_launcher" android:debuggable="true" android:label="@string/app_name" android:hasCode="true">
         <activity
             android:name=".Splash"
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation"
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:screenOrientation="sensorLandscape"
@@ -58,7 +58,7 @@
         -->
         <activity
             android:name=".Main"
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation"
             android:finishOnTaskLaunch="true"
             android:label="XBMC"
             android:launchMode="singleInstance"

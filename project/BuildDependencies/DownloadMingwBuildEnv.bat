@@ -46,13 +46,6 @@ SET FSTAB=%FSTAB:\=/%
 SET FSTAB=%FSTAB:"=%
 ECHO %FSTAB% /xbmc>>"%MSYS_INSTALL_PATH%\etc\fstab"
 
-rem patch mingw headers to compile ffmpeg
-xcopy mingw_support\postinstall\* "%MSYS_INSTALL_PATH%\postinstall\" /E /Q /I /Y
-cd "%MSYS_INSTALL_PATH%\postinstall"
-CALL pi_patches.bat
-
-cd %CUR_PATH%
-
 rem insert call to vcvars32.bat in msys.bat
 SET NET90VARS="%VS90COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 SET NET100VARS="%VS100COMNTOOLS%..\..\VC\bin\vcvars32.bat"

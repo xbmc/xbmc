@@ -14,22 +14,17 @@
  
 --- src/misc.c	2011-05-31 10:29:52.000000000 -0400
 +++ src/misc.c	2013-01-03 00:37:37.652737345 -0500
-@@ -208,6 +208,14 @@
+@@ -208,6 +208,9 @@
  
  char *ssh_get_user_home_dir(void) {
    char *szPath = NULL;
 +#ifdef ANDROID
-+  struct passwd *pwd = NULL;
-+  pwd = getpwuid(getuid());
-+  if ( pwd == NULL)
-+    return NULL;
-+
-+  szPath = strdup(pwd->pw_dir);
++  return strdup(getenv("HOME"));
 +#else
    struct passwd pwd;
    struct passwd *pwdbuf;
    char buf[NSS_BUFLEN_PASSWD];
-@@ -219,7 +227,7 @@
+@@ -219,7 +222,7 @@
    }
  
    szPath = strdup(pwd.pw_dir);
@@ -38,7 +33,7 @@
    return szPath;
  }
  
-@@ -233,6 +241,19 @@
+@@ -233,6 +236,19 @@
  }
  
  char *ssh_get_local_username(ssh_session session) {
@@ -58,7 +53,7 @@
      struct passwd pwd;
      struct passwd *pwdbuf;
      char buf[NSS_BUFLEN_PASSWD];
-@@ -248,6 +269,7 @@
+@@ -248,6 +264,7 @@
  
      name = strdup(pwd.pw_name);
  

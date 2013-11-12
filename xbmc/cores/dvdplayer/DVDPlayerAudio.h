@@ -44,23 +44,6 @@ class CDVDAudioCodec;
 #define DECODE_FLAG_ABORT   8
 #define DECODE_FLAG_TIMEOUT 16
 
-typedef struct stDVDAudioFrame
-{
-  uint8_t* data;
-  double pts;
-  double duration;
-  unsigned int size;
-
-  int               channel_count;
-  int               encoded_channel_count;
-  CAEChannelInfo    channel_layout;
-  enum AEDataFormat data_format;
-  int               bits_per_sample;
-  int               sample_rate;
-  int               encoded_sample_rate;
-  bool              passthrough;
-} DVDAudioFrame;
-
 class CPTSInputQueue
 {
 private:
@@ -71,6 +54,51 @@ public:
   void   Add(int64_t bytes, double pts);
   double Get(int64_t bytes, bool consume);
   void   Flush();
+};
+
+class CDVDErrorAverage
+{
+public:
+  CDVDErrorAverage()
+  {
+    Flush();
+  }
+  void    Add(double error)
+  {
+    m_buffer += error;
+    m_count++;
+  }
+
+  void    Flush()
+  {
+    m_buffer = 0.0f;
+    m_count  = 0;
+    m_timer.Set(2000);
+  }
+
+  double  Get()
+  {
+    if(m_count)
+      return m_buffer / m_count;
+    else
+      return 0.0;
+  }
+
+  bool    Get(double& error)
+  {
+    if(m_timer.IsTimePast())
+    {
+      error = Get();
+      Flush();
+      return true;
+    }
+    else
+      return false;
+  }
+
+  double               m_buffer; //place to store average errors
+  int                  m_count;  //number of errors stored
+  XbmcThreads::EndTime m_timer;
 };
 
 class CDVDPlayerAudio : public CThread
@@ -124,7 +152,7 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
-  int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
+  int DecodeFrame(DVDAudioFrame &audioframe, int priority);
 
   void UpdatePlayerInfo();
 
@@ -179,10 +207,8 @@ protected:
   BitstreamStats m_audioStats;
 
   int     m_speed;
-  double  m_droptime;
   bool    m_stalled;
   bool    m_started;
-  double  m_duration; // last packets duration
   bool    m_silence;
 
   bool OutputPacket(DVDAudioFrame &audioframe);
@@ -194,17 +220,12 @@ protected:
 
   double m_error;    //last average error
 
-  int64_t m_errortime; //timestamp of last time we measured
-  int64_t m_freq;
-
   void   SetSyncType(bool passthrough);
   void   HandleSyncError(double duration);
-  double m_errorbuff; //place to store average errors
-  int    m_errorcount;//number of errors stored
+  CDVDErrorAverage m_errors;
   bool   m_syncclock;
 
   double m_integral; //integral correction for resampler
-  int    m_skipdupcount; //counter for skip/duplicate synctype
   bool   m_prevskipped;
   double m_maxspeedadjust;
   double m_resampleratio; //resample ratio when using SYNC_RESAMPLE, used for the codec info

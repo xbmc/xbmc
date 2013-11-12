@@ -122,7 +122,7 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
 
   string ext = extension;
   StringUtils::ToLower(ext);
-  if (!StringUtils::StartsWith(ext, "."))
+  if (!StringUtils::StartsWithNoCase(ext, "."))
     ext = "." + ext;
 
   CSingleLock lock(m_critSection);

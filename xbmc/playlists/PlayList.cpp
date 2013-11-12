@@ -437,14 +437,9 @@ bool CPlayList::Load(const CStdString& strFileName)
 bool CPlayList::LoadData(std::istream &stream)
 {
   // try to read as a string
-  CStdString data;
-#if TARGET_WINDOWS
-  std::stringstream _stream(data);
-  _stream << stream;
-#else
-  std::stringstream(data) << stream;
-#endif
-  return LoadData(data);
+  std::ostringstream ostr;
+  ostr << stream.rdbuf();
+  return LoadData(ostr.str());
 }
 
 bool CPlayList::LoadData(const CStdString& strData)

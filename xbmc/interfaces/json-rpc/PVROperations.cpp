@@ -127,7 +127,7 @@ JSONRPC_STATUS CPVROperations::GetChannels(const CStdString &method, ITransportL
   if (channelGroup->GetMembers(channels) < 0)
     return InvalidParams;
   
-  HandleFileItemList("channelid", false, "channels", channels, parameterObject, result, false);
+  HandleFileItemList("channelid", false, "channels", channels, parameterObject, result, true);
     
   return OK;
 }
@@ -149,6 +149,55 @@ JSONRPC_STATUS CPVROperations::GetChannelDetails(const CStdString &method, ITran
     
   return OK;
 }
+
+JSONRPC_STATUS CPVROperations::GetBroadcasts(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  if (!g_PVRManager.IsStarted())
+    return FailedToExecute;
+
+  CPVRChannelGroupsContainer *channelGroupContainer = g_PVRManager.ChannelGroups();
+  if (channelGroupContainer == NULL)
+    return FailedToExecute;
+
+  CPVRChannelPtr channel = channelGroupContainer->GetChannelById((int)parameterObject["channelid"].asInteger());
+  if (channel == NULL)
+    return InvalidParams;
+
+  CEpg *channelEpg = channel->GetEPG();
+  if (channelEpg == NULL)
+    return InternalError;
+
+  CFileItemList programFull;
+  channelEpg->Get(programFull);
+
+  HandleFileItemList("broadcastid", false, "broadcasts", programFull, parameterObject, result, programFull.Size(), true);
+
+  return OK;
+}
+
+JSONRPC_STATUS CPVROperations::GetBroadcastDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  if (!g_PVRManager.IsStarted())
+    return FailedToExecute;
+
+  EpgSearchFilter filter;
+  filter.Reset();
+  filter.m_iUniqueBroadcastId = (int)parameterObject["broadcastid"].asInteger();
+
+  CFileItemList broadcasts;
+  int resultSize = g_EpgContainer.GetEPGSearch(broadcasts, filter);
+
+  if (resultSize <= 0)
+    return InvalidParams;
+  else if (resultSize > 1)
+    return InternalError;
+
+  CFileItemPtr broadcast = broadcasts.Get(0);
+  HandleFileItem("broadcastid", false, "broadcastdetails", broadcast, parameterObject, parameterObject["properties"], result, false);
+
+  return OK;
+}
+
 
 JSONRPC_STATUS CPVROperations::Record(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -188,7 +237,7 @@ JSONRPC_STATUS CPVROperations::Record(const CStdString &method, ITransportLayer 
     if (!g_PVRManager.ToggleRecordingOnChannel(pChannel->ChannelID()))
       return FailedToExecute;
   }
-  
+
   return ACK;
 }
 

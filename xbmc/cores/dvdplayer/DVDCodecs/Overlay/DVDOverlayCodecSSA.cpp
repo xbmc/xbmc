@@ -25,6 +25,7 @@
 #include "DVDClock.h"
 #include "Util.h"
 #include "utils/AutoPtrHandle.h"
+#include "utils/StringUtils.h"
 
 using namespace AUTOPTR;
 using namespace std;
@@ -81,8 +82,8 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
     double beg, end;
     size_t pos;
     CStdString      line, line2;
-    CStdStringArray lines;
-    CUtil::Tokenize((const char*)data, lines, "\r\n");
+    std::vector<std::string> lines;
+    StringUtils::Tokenize((const char*)data, lines, "\r\n");
     for(size_t i=0; i<lines.size(); i++)
     {
       line = lines[i];

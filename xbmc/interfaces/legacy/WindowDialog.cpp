@@ -27,9 +27,8 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
-
     WindowDialog::WindowDialog() throw(WindowException) :
-      Window("WindowDialog"), WindowDialogMixin(this)
+      WindowDialogMixin(this)
     {
       CSingleLock lock(g_graphicsContext);
       setWindow(new Interceptor<CGUIWindow>("CGUIWindow",this,getNextAvailalbeWindowId()));
@@ -39,8 +38,8 @@ namespace XBMCAddon
 
     bool WindowDialog::OnMessage(CGUIMessage& message)
     {
-#ifdef ENABLE_TRACE_API
-      TRACE;
+#ifdef ENABLE_XBMC_TRACE_API
+      XBMC_TRACE;
       CLog::Log(LOGDEBUG,"%sNEWADDON WindowDialog::OnMessage Message %d", _tg.getSpaces(),message.GetMessage());
 #endif
 
@@ -66,7 +65,7 @@ namespace XBMCAddon
 
     bool WindowDialog::OnAction(const CAction &action)
     {
-      TRACE;
+      XBMC_TRACE;
       return WindowDialogMixin::OnAction(action) ? true : Window::OnAction(action);
     }
 

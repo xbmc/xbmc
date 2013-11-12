@@ -48,16 +48,17 @@ struct AudioSettings
   std::string device;
   std::string driver;
   std::string passthoughdevice;
-  int mode;
   int channels;
   bool ac3passthrough;
   bool eac3passthrough;
   bool dtspassthrough;
-  bool aacpassthrough;
   bool truehdpassthrough;
   bool dtshdpassthrough;
-  bool multichannellpcm;
   bool stereoupmix;
+  bool normalizelevels;
+  bool passthrough;
+  int config;
+  unsigned int samplerate;
   AEQuality resampleQuality;
 };
 
@@ -214,9 +215,10 @@ public:
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual std::string GetDefaultDevice(bool passthrough);
-  virtual bool SupportsRaw();
-  virtual bool SupportsDrain();
+  virtual bool SupportsRaw(AEDataFormat format);
+  virtual bool SupportsSilenceTimeout();
   virtual bool SupportsQualityLevel(enum AEQuality level);
+  virtual bool IsSettingVisible(const std::string &settingId);
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback();
@@ -306,6 +308,7 @@ protected:
   // buffers
   CActiveAEBufferPoolResample *m_sinkBuffers;
   CActiveAEBufferPoolResample *m_vizBuffers;
+  CActiveAEBufferPool *m_vizBuffersInput;
   CActiveAEBufferPool *m_silenceBuffers;  // needed to drive gui sounds if we have no streams
   CActiveAEBufferPool *m_encoderBuffers;
 

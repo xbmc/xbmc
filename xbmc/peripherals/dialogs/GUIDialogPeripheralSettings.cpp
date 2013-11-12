@@ -97,12 +97,12 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             CSettingInt *intSetting = (CSettingInt *) setting;
             if (intSetting)
             {
-              if (intSetting->GetControl().GetFormat() == SettingControlFormatInteger)
+              if (intSetting->GetOptions().empty())
               {
                 m_intSettings.insert(make_pair(CStdString(intSetting->GetId()), (float) intSetting->GetValue()));
                 AddSlider(m_settingId++, intSetting->GetLabel(), &m_intSettings[intSetting->GetId()], (float)intSetting->GetMinimum(), (float)intSetting->GetStep(), (float)intSetting->GetMaximum(), CGUIDialogVideoSettings::FormatInteger, false);
               }
-              else if (intSetting->GetControl().GetFormat() == SettingControlFormatString)
+              else
               {
                 m_intTextSettings.insert(make_pair(CStdString(intSetting->GetId()), intSetting->GetValue()));
                 vector<pair<int, int> > entries;

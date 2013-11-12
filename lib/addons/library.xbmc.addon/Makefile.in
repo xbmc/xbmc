@@ -19,7 +19,7 @@ else
 endif
 
 CLEAN_FILES = \
-	$(LIBNAME).so \
+	$(LIB_SHARED) \
 
 DISTCLEAN_FILES= \
 	Makefile \

@@ -62,14 +62,18 @@ CCoreAudioChannelLayout::~CCoreAudioChannelLayout()
 
 bool CCoreAudioChannelLayout::CopyLayout(AudioChannelLayout& layout)
 {
-  free(m_pLayout);
+  enum {
+    kVariableLengthArray_deprecated = 1
+  };
+
+    free(m_pLayout);
   m_pLayout = NULL;
 
   // This method always produces a layout with a ChannelDescriptions structure
 
   OSStatus ret = 0;
   UInt32 channels = GetChannelCountForLayout(layout);
-  UInt32 size = sizeof(AudioChannelLayout) + (channels - kVariableLengthArray) * sizeof(AudioChannelDescription);
+  UInt32 size = sizeof(AudioChannelLayout) + (channels - kVariableLengthArray_deprecated) * sizeof(AudioChannelDescription);
 
   if (layout.mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
   {

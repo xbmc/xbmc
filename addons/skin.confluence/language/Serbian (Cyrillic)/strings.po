@@ -96,10 +96,6 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "ПРЕМОТАВАЊЕ"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Постојеће визуализације"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Време завршетка"
@@ -144,10 +140,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Прикажи „Паузирано“ приликом репродукције слика"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Репродукуј најаве филмова у прозору [COLOR=grey3](Video Info. Dialog Only)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Разне опције"
@@ -168,21 +160,9 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Прикажи недавно додате филмове"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Подмени почетне стране"
-
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Страна временске прогнозе"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Прикажи тренутни филм у позадини"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Прикажи тренутну визуализацију у позадини"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -315,6 +295,10 @@ msgstr "Филмски мени"
 msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Преузми титлове"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Омогућено"
 
 msgctxt "#31390"
 msgid "Skin default"

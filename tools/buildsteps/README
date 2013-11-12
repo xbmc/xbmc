@@ -11,5 +11,6 @@ $XBMC_DEPENDS_ROOT - root for installing the xbmc build depends and toolchain he
 Additional ENV variables might be specified by the buildnodes. For android buildslaves these are:
 
 TOOLCHAIN - the used toolchain dir
+TOOLCHAIN_X86 - this is the toolchain dir for x86 toolchain of android. This needs this extra var for beeing able to specify both toolchains (arm & x86) at the same slave.
 NDK_PATH  - the path to the android native ndk
 SDK_PATH  - the path to the android sdk

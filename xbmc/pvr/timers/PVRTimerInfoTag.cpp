@@ -46,7 +46,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_strSummary         = StringUtils::EmptyString;
   m_iClientId          = g_PVRClients->GetFirstConnectedClientID();
   m_iClientIndex       = -1;
-  m_iClientChannelUid  = -1;
+  m_iClientChannelUid  = PVR_VIRTUAL_CHANNEL_UID;
   m_iPriority          = CSettings::Get().GetInt("pvrrecord.defaultpriority");
   m_iLifetime          = CSettings::Get().GetInt("pvrrecord.defaultlifetime");
   m_bIsRepeating       = false;

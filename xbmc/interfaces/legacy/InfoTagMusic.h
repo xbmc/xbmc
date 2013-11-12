@@ -102,7 +102,6 @@ namespace XBMCAddon
        * getLyrics() -- returns a string.\n
        */
       String getLyrics();
-
     };
   }
 }

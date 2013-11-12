@@ -3,8 +3,8 @@
 	<defaultcontrol always="true">3</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>240</posx>
-		<posy>20</posy>
+		<left>240</left>
+		<top>20</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -12,24 +12,24 @@
 			<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(AddonSettings)">Conditional</animation>
 			<control type="image">
 				<description>background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>800</width>
 				<height>680</height>
 				<texture border="40">DialogBack.png</texture>
 			</control>
 			<control type="image">
 				<description>Dialog Header image</description>
-				<posx>40</posx>
-				<posy>16</posy>
+				<left>40</left>
+				<top>16</top>
 				<width>720</width>
 				<height>40</height>
 				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label" id="1">
 				<description>header label</description>
-				<posx>40</posx>
-				<posy>20</posy>
+				<left>40</left>
+				<top>20</top>
 				<width>720</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -41,8 +41,8 @@
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>710</posx>
-				<posy>15</posy>
+				<left>710</left>
+				<top>15</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -58,8 +58,8 @@
 			</control>
 			<control type="label">
 				<description>Content Picker Header</description>
-				<posx>30</posx>
-				<posy>60</posy>
+				<left>30</left>
+				<top>60</top>
 				<width>320</width>
 				<height>40</height>
 				<font>font12</font>
@@ -71,8 +71,8 @@
 			</control>
 			<control type="spincontrolex" id="3">
 				<description>Content Picker</description>
-				<posx>30</posx>
-				<posy>100</posy>
+				<left>30</left>
+				<top>100</top>
 				<width>320</width>
 				<height>40</height>
 				<texturefocus border="5">button-focus.png</texturefocus>
@@ -87,8 +87,8 @@
 			</control>
 			<control type="label">
 				<description>Content Picker label</description>
-				<posx>35</posx>
-				<posy>100</posy>
+				<left>35</left>
+				<top>100</top>
 				<width>280</width>
 				<height>40</height>
 				<font>font13_title</font>
@@ -100,8 +100,8 @@
 			</control>
 			<control type="label">
 				<description>Used Scraper Header</description>
-				<posx>30</posx>
-				<posy>150</posy>
+				<left>30</left>
+				<top>150</top>
 				<width>320</width>
 				<height>20</height>
 				<font>font12</font>
@@ -113,8 +113,8 @@
 			</control>
 			<control type="image">
 				<description>Used Scraper Image</description>
-				<posx>30</posx>
-				<posy>175</posy>
+				<left>30</left>
+				<top>175</top>
 				<width>320</width>
 				<height>130</height>
 				<aspectratio>keep</aspectratio>
@@ -122,8 +122,8 @@
 			</control>
 			<control type="label">
 				<description>Used Scaper Label</description>
-				<posx>30</posx>
-				<posy>315</posy>
+				<left>30</left>
+				<top>315</top>
 				<width>320</width>
 				<height>30</height>
 				<font>font13</font>
@@ -134,8 +134,8 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="image">
-				<posx>370</posx>
-				<posy>60</posy>
+				<left>370</left>
+				<top>60</top>
 				<width>5</width>
 				<height>280</height>
 				<aspectratio>stretch</aspectratio>
@@ -143,8 +143,8 @@
 			</control>
 			<control type="label">
 				<description>Scraper List Header</description>
-				<posx>400</posx>
-				<posy>60</posy>
+				<left>400</left>
+				<top>60</top>
 				<width>360</width>
 				<height>40</height>
 				<font>font12</font>
@@ -155,8 +155,8 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="list" id="4">
-				<posx>400</posx>
-				<posy>100</posy>
+				<left>400</left>
+				<top>100</top>
 				<width>360</width>
 				<height>241</height>
 				<onup>4</onup>
@@ -167,22 +167,22 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="45">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>360</width>
 						<height>40</height>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="image">
-						<posx>5</posx>
-						<posy>5</posy>
+						<left>5</left>
+						<top>5</top>
 						<width>35</width>
 						<height>30</height>
 						<texture>$INFO[Listitem.Icon]</texture>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>0</posy>
+						<left>50</left>
+						<top>0</top>
 						<width>290</width>
 						<height>40</height>
 						<font>font13</font>
@@ -195,31 +195,31 @@
 				</itemlayout>
 				<focusedlayout height="45">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>360</width>
 						<height>40</height>
 						<visible>!Control.HasFocus(4)</visible>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>360</width>
 						<height>40</height>
 						<visible>Control.HasFocus(4)</visible>
 						<texture border="5">button-focus2.png</texture>
 					</control>
 					<control type="image">
-						<posx>5</posx>
-						<posy>5</posy>
+						<left>5</left>
+						<top>5</top>
 						<width>35</width>
 						<height>30</height>
 						<texture>$INFO[Listitem.Icon]</texture>
 					</control>
 					<control type="label">
-						<posx>50</posx>
-						<posy>0</posy>
+						<left>50</left>
+						<top>0</top>
 						<width>290</width>
 						<height>40</height>
 						<font>font13</font>
@@ -232,8 +232,8 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>760</posx>
-				<posy>100</posy>
+				<left>760</left>
+				<top>100</top>
 				<width>25</width>
 				<height>240</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -248,8 +248,8 @@
 			</control>
 			<control type="label">
 				<description>Scanning Options Header</description>
-				<posx>30</posx>
-				<posy>350</posy>
+				<left>30</left>
+				<top>350</top>
 				<width>740</width>
 				<height>20</height>
 				<font>font12</font>
@@ -261,8 +261,8 @@
 			</control>
 			<control type="grouplist" id="5">
 				<description>control area</description>
-				<posx>30</posx>
-				<posy>380</posy>
+				<left>30</left>
+				<top>380</top>
 				<width>740</width>
 				<height>220</height>
 				<itemgap>4</itemgap>
@@ -273,26 +273,26 @@
 			</control>
 			<control type="button" id="7">
 				<description>Default Button</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<height>40</height>
 				<font>font13</font>
 				<texturefocus border="5">button-focus2.png</texturefocus>
 			</control>
 			<control type="radiobutton" id="8">
 				<description>Default RadioButton</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<height>40</height>
 				<font>font13</font>
 				<texturefocus border="5">button-focus2.png</texturefocus>
 			</control>
 			<control type="group" id="9001">
-				<posy>615</posy>
+				<top>615</top>
 				<control type="button" id="28">
 					<description>OK Button</description>
-					<posx>300</posx>
-					<posy>0</posy>
+					<left>300</left>
+					<top>0</top>
 					<width>200</width>
 					<height>40</height>
 					<align>center</align>
@@ -306,8 +306,8 @@
 				</control>
 				<control type="button" id="29">
 					<description>Cancel Button</description>
-					<posx>510</posx>
-					<posy>0</posy>
+					<left>510</left>
+					<top>0</top>
 					<width>200</width>
 					<height>40</height>
 					<align>center</align>
@@ -321,8 +321,8 @@
 				</control>
 				<control type="button" id="6">
 					<description>Settings Button</description>
-					<posx>90</posx>
-					<posy>0</posy>
+					<left>90</left>
+					<top>0</top>
 					<width>200</width>
 					<height>40</height>
 					<align>center</align>

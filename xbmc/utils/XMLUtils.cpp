@@ -191,7 +191,7 @@ bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
   Parses the XML for multiple tags of the given name.
   Does not clear the array to support chaining.
 */
-bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, std::vector<std::string>& arrayValue, bool clear /* = false */, const std::string separator /* = "" */)
+bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, std::vector<std::string>& arrayValue, bool clear /* = false */, const std::string& separator /* = "" */)
 {
   std::string strTemp;
   const TiXmlElement* node = pRootNode->FirstChildElement(strTag);
@@ -224,38 +224,6 @@ bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, st
   }
 
   return bResult;
-}
-
-/*!
-  Returns true if the encoding of the document is other then UTF-8.
-  /param strEncoding Returns the encoding of the document. Empty if UTF-8
-*/
-bool XMLUtils::GetEncoding(const CXBMCTinyXML* pDoc, CStdString& strEncoding)
-{
-  const TiXmlNode* pNode=NULL;
-  while ((pNode=pDoc->IterateChildren(pNode)) && pNode->Type()!=TiXmlNode::TINYXML_DECLARATION) {}
-  if (!pNode) return false;
-  const TiXmlDeclaration* pDecl=pNode->ToDeclaration();
-  if (!pDecl) return false;
-  strEncoding=pDecl->Encoding();
-  if (strEncoding.Equals("UTF-8") || strEncoding.Equals("UTF8")) strEncoding.Empty();
-  strEncoding.MakeUpper();
-  return !strEncoding.IsEmpty(); // Other encoding then UTF8?
-}
-
-/*!
-  Returns true if the encoding of the document is specified as as UTF-8
-  /param strXML The XML file (embedded in a string) to check.
-*/
-bool XMLUtils::HasUTF8Declaration(const CStdString &strXML)
-{
-  CStdString test = strXML;
-  test.ToLower();
-  // test for the encoding="utf-8" string
-  if (test.Find("encoding=\"utf-8\"") >= 0)
-    return true;
-  // TODO: test for plain UTF8 here?
-  return false;
 }
 
 bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)

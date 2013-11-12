@@ -33,6 +33,10 @@ public class SwigTypeParser
     */
    private static Map typeTable = [:]
 
+   /**
+    * Add a typedef node to the global list of typedefs to be used later in 
+    *  parsing types.
+    */
    public static void appendTypeTable(Node typetab) { typetab.each { typeTable[it.@namespace + it.@type] = it.@basetype } }
 
    /**
@@ -128,25 +132,56 @@ public class SwigTypeParser
       return result.replaceAll('<\\(', '<').replaceAll('\\)>', '>')
    }
 
+   /**
+    * This will resolve the typedefs given the parameter passed is a simple type.
+    *  see SwigType_resolve_all_typedefs which will handle qualifiers, pointers,
+    *  references, and typedef of typedefs to resolve all the way down to the
+    *  most basic types.
+    */
    public static String SwigType_typedef_resolve(String t)
    {
       String td = typeTable[t]
       String ret = td == null ? t : td
-//      System.out.println "trying to resolve ${t} and it appears to be typedefed to ${ret}"
       return ret
    }
 
-   public static String SwigType_typedef_resolve_all(String t)
-   {
-      String prev = t
-      t = SwigType_typedef_resolve(prev)
-      while(prev != t)
-      {
-         String tmp = t
-         t = SwigType_typedef_resolve(prev)
-         prev = tmp
+   /**
+    * This will resolve typedefs anbd handle qualifiers, pointers,
+    *  references, and typedef of typedefs to resolve all the way down to the
+    *  most basic types.
+    */
+   public static String SwigType_resolve_all_typedefs(String s)
+   { 
+      String result = ''
+      String tc = s
+
+      /* Nuke all leading qualifiers, appending them to the result*/
+      while (SwigType_isqualifier(tc)) {
+         List tmpl = SwigType_pop(tc)
+         tc = tmpl[1]
+         result += tmpl[0]
       }
-      return t
+
+      if (SwigType_issimple(tc)) {
+         /* Resolve any typedef definitions */
+         String tt = tc
+         String td
+         while ((td = SwigType_typedef_resolve(tt)) != tt) {
+            if (td != tt) {
+               tt = td
+               break
+            }
+            else if (td != tt) tt = td
+         }
+         tc = td
+
+         return tc
+      }
+
+      List tmpl = SwigType_pop(tc)
+      result += tmpl[0]
+      result += SwigType_resolve_all_typedefs(tmpl[1])
+      return result
    }
 
    /**
@@ -205,7 +240,7 @@ public class SwigTypeParser
             firstarray = false
          } else if (SwigType_isreference(element)) {
             if (notypeconv) {
-               result == element
+               result += element
             } else {
                result += "p."
             }
@@ -216,7 +251,7 @@ public class SwigTypeParser
             } else {
                result += "p."
             }
-            firstarray = 0;
+            firstarray = false;
          } else if (SwigType_isenum(element)) {
             boolean anonymous_enum = (element == "enum ")
             if (notypeconv || !anonymous_enum) {

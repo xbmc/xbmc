@@ -26,7 +26,6 @@
   #include "Engines/CoreAudio/CoreAudioAE.h"
   #include "settings/SettingsManager.h"
 #else
-  #include "Engines/SoftAE/SoftAE.h"
   #include "Engines/ActiveAE/ActiveAE.h"
 #endif
 
@@ -34,8 +33,13 @@
   #include "Engines/PulseAE/PulseAE.h"
 #endif
 
+#if defined(TARGET_RASPBERRY_PI)
+  #include "Engines/PiAudio/PiAudioAE.h"
+#endif
+
 #include "guilib/LocalizeStrings.h"
 #include "settings/Setting.h"
+#include "settings/Settings.h"
 #include "utils/StringUtils.h"
 
 IAE* CAEFactory::AE = NULL;
@@ -52,7 +56,7 @@ bool CAEFactory::LoadEngine()
   bool loaded = false;
 
 #if defined(TARGET_RASPBERRY_PI)
-  return true;
+  return CAEFactory::LoadEngine(AE_ENGINE_PIAUDIO);
 #elif defined(TARGET_DARWIN)
   return CAEFactory::LoadEngine(AE_ENGINE_COREAUDIO);
 #endif
@@ -68,9 +72,6 @@ bool CAEFactory::LoadEngine()
       loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
     #endif
     
-    if (!loaded && engine == "SOFT" )
-      loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
-
     if (!loaded && engine == "ACTIVE")
       loaded = CAEFactory::LoadEngine(AE_ENGINE_ACTIVE);
   }
@@ -98,13 +99,14 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
 #if defined(TARGET_DARWIN)
     case AE_ENGINE_COREAUDIO: AE = new CCoreAudioAE(); break;
 #else
-    case AE_ENGINE_SOFT     : AE = new CSoftAE(); break;
     case AE_ENGINE_ACTIVE   : AE = new ActiveAE::CActiveAE(); break;
 #endif
 #if defined(HAS_PULSEAUDIO)
     case AE_ENGINE_PULSE    : AE = new CPulseAE(); break;
 #endif
-
+#if defined(TARGET_RASPBERRY_PI)
+    case AE_ENGINE_PIAUDIO  : AE = new PiAudioAE::CPiAudioAE(); break;
+#endif
     default:
       return false;
   }
@@ -130,10 +132,6 @@ void CAEFactory::UnLoadEngine()
 
 bool CAEFactory::StartEngine()
 {
-#if defined(TARGET_RASPBERRY_PI)
-  return true;
-#endif
-
   if (!AE)
     return false;
 
@@ -236,18 +234,38 @@ std::string CAEFactory::GetDefaultDevice(bool passthrough)
   return "default";
 }
 
-bool CAEFactory::SupportsRaw()
+bool CAEFactory::SupportsRaw(AEDataFormat format)
 {
+  // check if passthrough is enabled
+  if (!CSettings::Get().GetBool("audiooutput.passthrough"))
+    return false;
+
+  // fixed config disabled passthrough
+  if (CSettings::Get().GetInt("audiooutput.config") == AE_CONFIG_FIXED)
+    return false;
+
+  // check if the format is enabled in settings
+  if (format == AE_FMT_AC3 && !CSettings::Get().GetBool("audiooutput.ac3passthrough"))
+    return false;
+  if (format == AE_FMT_DTS && !CSettings::Get().GetBool("audiooutput.dtspassthrough"))
+    return false;
+  if (format == AE_FMT_EAC3 && !CSettings::Get().GetBool("audiooutput.eac3passthrough"))
+    return false;
+  if (format == AE_FMT_TRUEHD && !CSettings::Get().GetBool("audiooutput.truehdpassthrough"))
+    return false;
+  if (format == AE_FMT_DTSHD && !CSettings::Get().GetBool("audiooutput.dtshdpassthrough"))
+    return false;
+
   if(AE)
-    return AE->SupportsRaw();
+    return AE->SupportsRaw(format);
 
   return false;
 }
 
-bool CAEFactory::SupportsDrain()
+bool CAEFactory::SupportsSilenceTimeout()
 {
   if(AE)
-    return AE->SupportsDrain();
+    return AE->SupportsSilenceTimeout();
 
   return false;
 }
@@ -337,15 +355,6 @@ void CAEFactory::SettingOptionsAudioDevicesPassthroughFiller(const CSetting *set
   SettingOptionsAudioDevicesFillerGeneral(setting, list, current, true);
 }
 
-void CAEFactory::SettingOptionsAudioOutputModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
-{
-  list.push_back(std::make_pair(g_localizeStrings.Get(338), AUDIO_ANALOG));
-#if !defined(TARGET_RASPBERRY_PI)
-  list.push_back(std::make_pair(g_localizeStrings.Get(339), AUDIO_IEC958));
-#endif
-  list.push_back(std::make_pair(g_localizeStrings.Get(420), AUDIO_HDMI));
-}
-
 void CAEFactory::SettingOptionsAudioQualityLevelsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
 {
   if (!AE)
@@ -359,6 +368,24 @@ void CAEFactory::SettingOptionsAudioQualityLevelsFiller(const CSetting *setting,
     list.push_back(std::make_pair(g_localizeStrings.Get(13508), AE_QUALITY_HIGH));
   if(AE->SupportsQualityLevel(AE_QUALITY_REALLYHIGH))
     list.push_back(std::make_pair(g_localizeStrings.Get(13509), AE_QUALITY_REALLYHIGH));
+}
+
+void CAEFactory::SettingOptionsAudioStreamsilenceFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  if (!AE)
+    return;
+
+  list.push_back(std::make_pair(g_localizeStrings.Get(20422), XbmcThreads::EndTime::InfiniteValue));
+  list.push_back(std::make_pair(g_localizeStrings.Get(13551), 0));
+
+  if (AE->SupportsSilenceTimeout())
+  {
+    list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(13554).c_str(), 1), 1));
+    for (int i = 2; i <= 10; i++)
+    {
+      list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(13555).c_str(), i), i));
+    }
+  }
 }
 
 void CAEFactory::SettingOptionsAudioDevicesFillerGeneral(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, bool passthrough)
@@ -407,4 +434,12 @@ void CAEFactory::UnregisterAudioCallback()
 {
   if (AE)
     AE->UnregisterAudioCallback();
+}
+
+bool CAEFactory::IsSettingVisible(const std::string &condition, const std::string &value, const std::string &settingId)
+{
+  if (settingId.empty() || value.empty() || !AE)
+    return false;
+
+  return AE->IsSettingVisible(value);
 }

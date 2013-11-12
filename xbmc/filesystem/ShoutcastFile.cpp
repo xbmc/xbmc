@@ -72,8 +72,8 @@ bool CShoutcastFile::Open(const CURL& url)
   url2.SetProtocolOptions(url2.GetProtocolOptions()+"&noshout=true&Icy-MetaData=1");
   url2.SetProtocol("http");
 
-  bool result=false;
-  if ((result=m_file.Open(url2.Get())))
+  bool result = m_file.Open(url2.Get());
+  if (result)
   {
     m_tag.SetTitle(m_file.GetHttpHeader().GetValue("icy-name"));
     if (m_tag.GetTitle().IsEmpty())
@@ -83,6 +83,7 @@ bool CShoutcastFile::Open(const CURL& url)
       m_tag.SetGenre(m_file.GetHttpHeader().GetValue("ice-genre")); // icecast
     m_tag.SetLoaded(true);
   }
+  m_fileCharset = m_file.GetServerReportedCharset();
   m_metaint = atoi(m_file.GetHttpHeader().GetValue("icy-metaint").c_str());
   if (!m_metaint)
     m_metaint = -1;
@@ -139,7 +140,15 @@ void CShoutcastFile::Close()
 bool CShoutcastFile::ExtractTagInfo(const char* buf)
 {
   CStdString strBuffer = buf;
-  g_charsetConverter.unknownToUTF8(strBuffer);
+
+  if (!m_fileCharset.empty())
+  {
+    std::string converted;
+    g_charsetConverter.ToUtf8(m_fileCharset, strBuffer, converted);
+    strBuffer = converted;
+  }
+  else
+    g_charsetConverter.unknownToUTF8(strBuffer);
   
   bool result=false;
 
@@ -153,7 +162,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
 
   if (reTitle.RegFind(strBuffer.c_str()) != -1)
   {
-    std::string newtitle = reTitle.GetReplaceString("\\1");
+    std::string newtitle(reTitle.GetMatch(1));
     result = (m_tag.GetTitle() != newtitle);
     m_tag.SetTitle(newtitle);
   }

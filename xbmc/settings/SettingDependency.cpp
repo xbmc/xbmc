@@ -22,6 +22,7 @@
 
 #include "SettingDependency.h"
 #include "Setting.h"
+#include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -37,7 +38,7 @@ bool CSettingDependencyCondition::Deserialize(const TiXmlNode *node)
     return false;
 
   m_target = SettingDependencyTargetSetting;
-  const char *strTarget = elem->Attribute("on");
+  const char *strTarget = elem->Attribute(SETTING_XML_ATTR_ON);
   if (strTarget != NULL && !setTarget(strTarget))
   {
     CLog::Log(LOGWARNING, "CSettingDependencyCondition: unknown target \"%s\"", strTarget);
@@ -62,7 +63,7 @@ bool CSettingDependencyCondition::Deserialize(const TiXmlNode *node)
   }
 
   m_operator = SettingDependencyOperatorEquals;
-  const char *strOperator = elem->Attribute("operator");
+  const char *strOperator = elem->Attribute(SETTING_XML_ATTR_OPERATOR);
   if (strOperator != NULL && !setOperator(strOperator))
   {
     CLog::Log(LOGWARNING, "CSettingDependencyCondition: unknown operator \"%s\"", strOperator);
@@ -131,12 +132,12 @@ bool CSettingDependencyCondition::setTarget(const std::string &target)
 bool CSettingDependencyCondition::setOperator(const std::string &op)
 {
   size_t length = 0;
-  if (StringUtils::EndsWith(op, "is"))
+  if (StringUtils::EndsWithNoCase(op, "is"))
   {
     m_operator = SettingDependencyOperatorEquals;
     length = 2;
   }
-  else if (StringUtils::EndsWith(op, "contains"))
+  else if (StringUtils::EndsWithNoCase(op, "contains"))
   {
     m_operator = SettingDependencyOperatorContains;
     length = 8;
@@ -217,7 +218,7 @@ bool CSettingDependency::Deserialize(const TiXmlNode *node)
   if (elem == NULL)
     return false;
   
-  const char *strType = elem->Attribute("type");
+  const char *strType = elem->Attribute(SETTING_XML_ATTR_TYPE);
   if (strType == NULL || strlen(strType) <= 0 || !setType(strType))
   {
     CLog::Log(LOGWARNING, "CSettingDependency: missing or unknown dependency type definition");

@@ -8,9 +8,9 @@
     </category>
     <category id="audiooutput">
       <group id="1">
-        <setting id="audiooutput.passthroughaac">
-          <visible>false</visible>
-        </setting>
+        <setting id="audiooutput.channels" help="36367" />
+      </group>
+      <group id="3">
         <setting id="audiooutput.truehdpassthrough">
           <visible>false</visible>
         </setting>
@@ -40,6 +40,7 @@
           <dependencies>
             <dependency type="enable" setting="input.appleremotemode" operator="!is">0</dependency> <!-- APPLE_REMOTE_DISABLED -->
           </dependencies>
+          <control type="toggle" />
         </setting>
         <setting id="input.appleremotesequencetime" type="integer" label="13603" help="36418">
           <level>1</level>
@@ -50,7 +51,7 @@
             <maximum>1000</maximum>
           </constraints>
           <dependencies>
-            <dependency type="enable" id="input.appleremotemode">2</dependency> <!-- APPLE_REMOTE_UNIVERSAL -->
+            <dependency type="enable" setting="input.appleremotemode" operator="is">2</dependency> <!-- APPLE_REMOTE_UNIVERSAL -->
           </dependencies>
           <control type="spinner" format="string">
             <formatlabel>14046</formatlabel>

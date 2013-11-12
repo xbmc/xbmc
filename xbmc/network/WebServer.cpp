@@ -75,15 +75,21 @@ CWebServer::CWebServer()
 
 int CWebServer::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
 {
+  if (cls == NULL || key == NULL)
+    return MHD_NO;
+
   map<string, string> *arguments = (map<string, string> *)cls;
-  arguments->insert(pair<string,string>(key,value));
+  arguments->insert(pair<string, string>(key, value != NULL ? value : StringUtils::Empty));
   return MHD_YES; 
 }
 
 int CWebServer::FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
 {
+  if (cls == NULL || key == NULL)
+    return MHD_NO;
+
   multimap<string, string> *arguments = (multimap<string, string> *)cls;
-  arguments->insert(pair<string,string>(key,value));
+  arguments->insert(pair<string, string>(key, value != NULL ? value : StringUtils::Empty));
   return MHD_YES; 
 }
 
@@ -965,7 +971,7 @@ int64_t CWebServer::ParseRangeHeader(const std::string &rangeHeaderValue, int64_
   firstPosition = 0;
   lastPosition = totalLength - 1;
 
-  if (rangeHeaderValue.empty() || !StringUtils::StartsWith(rangeHeaderValue, "bytes="))
+  if (rangeHeaderValue.empty() || !StringUtils::StartsWithNoCase(rangeHeaderValue, "bytes="))
     return totalLength;
 
   int64_t rangesLength = 0;

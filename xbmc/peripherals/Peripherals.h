@@ -25,6 +25,7 @@
 #include "settings/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
+#include "utils/Observer.h"
 
 class CFileItemList;
 class CSetting;
@@ -37,7 +38,8 @@ namespace PERIPHERALS
 {
   #define g_peripherals CPeripherals::Get()
 
-  class CPeripherals : public ISettingCallback
+  class CPeripherals :  public ISettingCallback,
+                        public Observable
   {
   public:
     static CPeripherals &Get(void);

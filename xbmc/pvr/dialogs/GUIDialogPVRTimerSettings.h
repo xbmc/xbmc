@@ -46,15 +46,17 @@ namespace PVR
     virtual void SetWeekdaySettingFromTimer(const CPVRTimerInfoTag &timer);
     virtual void SetTimerFromWeekdaySetting(CPVRTimerInfoTag &timer);
 
-    SYSTEMTIME      timerStartTime;
-    SYSTEMTIME      timerEndTime;
-    CStdString      timerStartTimeStr;
-    CStdString      timerEndTimeStr;
-    int             m_tmp_iFirstDay;;
-    int             m_tmp_day;
-    bool            m_bTimerActive;
+    SYSTEMTIME                          timerStartTime;
+    SYSTEMTIME                          timerEndTime;
+    CStdString                          timerStartTimeStr;
+    CStdString                          timerEndTimeStr;
+    int                                 m_tmp_iFirstDay;
+    int                                 m_tmp_day;
+    bool                                m_bTimerActive;
+    int                                 m_selectedChannelEntry;
+    std::map<std::pair<bool, int>, int> m_channelEntries;
 
-    CFileItem      *m_timerItem;
-    bool            m_cancelled;
+    CFileItem                          *m_timerItem;
+    bool                                m_cancelled;
   };
 }

@@ -234,41 +234,38 @@ public:
   void CancelJobs();
 
   /*!
-   \brief Checks to see if any jobs of a specific type are currently processing.
-   \param pausedType Job type to search for
-   \return Number of matching jobs
-   \sa Pause(), UnPause(), IsPaused()
+   \brief Re-start accepting jobs again
+   Called after calling CancelJobs() to allow this manager to accept more jobs
+   \throws std::logic_error if the manager was not previously cancelled
+   \sa CancelJobs()
    */
-  int IsProcessing(const std::string &pausedType) const;
+  void Restart();
 
   /*!
-   \brief Suspends queueing of the specified priority until unpaused
+   \brief Checks to see if any jobs of a specific type are currently processing.
+   \param type Job type to search for
+   \return Number of matching jobs
+   */
+  int IsProcessing(const std::string &type) const;
+
+  /*!
+   \brief Suspends queueing of jobs with priority PRIORITY_LOW_PAUSABLE until unpaused
    Useful to (for ex) stop queuing thumb jobs during video start/playback.
    Does not affect currently processing jobs, use IsProcessing to see if any need to be waited on
-   \param priority only jobs of this priority will be affected
-   \sa UnPause(), IsPaused(), IsProcessing()
+   \sa UnPauseJobs()
    */
-  void Pause(const CJob::PRIORITY &priority);
+  void PauseJobs();
 
   /*!
-   \brief Resumes queueing of the specified priority
-   \param priority only jobs of this priority will be affected
-   \sa Pause(), IsPaused(), IsProcessing()
+   \brief Resumes queueing of (previously paused) jobs with priority PRIORITY_LOW_PAUSABLE
+   \sa PauseJobs()
    */
-  void UnPause(const CJob::PRIORITY &priority);
-
-  /*!
-   \brief Checks if jobs of specified priority are paused.
-   \param priority only jobs of this priority will be affected
-   \sa Pause(), UnPause(), IsProcessing()
-   */
-  bool IsPaused(const CJob::PRIORITY &priority) const;
+  void UnPauseJobs();
 
   /*!
    \brief Checks to see if any jobs with specific priority are currently processing.
    \param priority to search for
    \return true if processing jobs, else returns false
-   \sa Pause(), UnPause(), IsPaused()
    */
   bool IsProcessing(const CJob::PRIORITY &priority) const;
 
@@ -326,7 +323,7 @@ private:
   typedef std::vector<CJobWorker*> Workers;
 
   JobQueue   m_jobQueue[CJob::PRIORITY_HIGH+1];
-  bool       m_jobPause[CJob::PRIORITY_HIGH+1];
+  bool       m_pauseJobs;
   Processing m_processing;
   Workers    m_workers;
 

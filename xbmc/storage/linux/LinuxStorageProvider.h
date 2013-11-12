@@ -21,6 +21,7 @@
 #include "storage/IStorageProvider.h"
 #include "HALProvider.h"
 #include "DeviceKitDisksProvider.h"
+#include "UDevProvider.h"
 #include "UDisksProvider.h"
 #include "PosixMountProvider.h"
 
@@ -40,6 +41,10 @@ public:
 #ifdef HAS_HAL
     if (m_instance == NULL)
       m_instance = new CHALProvider();
+#endif
+#ifdef HAVE_LIBUDEV
+    if (m_instance == NULL)
+      m_instance = new CUDevProvider();
 #endif
 
     if (m_instance == NULL)

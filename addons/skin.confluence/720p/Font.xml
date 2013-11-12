@@ -75,11 +75,6 @@
 			<filename>Roboto-Bold.ttf</filename>
 			<size>35</size>
 		</font>
-		<font>
-			<name>font45caps_title</name>
-			<filename>Roboto-Bold.ttf</filename>
-			<size>45</size>
-		</font>
 
 		<font>
 			<name>font_MainMenu</name>
@@ -167,11 +162,6 @@
 			<name>font35_title</name>
 			<filename>Roboto-Bold.ttf</filename>
 			<size>35</size>
-		</font>
-		<font>
-			<name>font45caps_title</name>
-			<filename>Roboto-Bold.ttf</filename>
-			<size>45</size>
 		</font>
 
 		<font>
@@ -266,12 +256,6 @@
 			<name>font35_title</name>
 			<filename>arial.ttf</filename>
 			<size>33</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>font45caps_title</name>
-			<filename>arial.ttf</filename>
-			<size>43</size>
 			<style>bold</style>
 		</font>
 

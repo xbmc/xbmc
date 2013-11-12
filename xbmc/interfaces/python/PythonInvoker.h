@@ -64,7 +64,7 @@ protected:
 private:
   void initializeModules(const std::map<std::string, PythonModuleInitialization> &modules);
   bool initializeModule(PythonModuleInitialization module);
-  void addPath(const std::string path);
+  void addPath(const std::string& path);
 
   std::string m_pythonPath;
   void *m_threadState;

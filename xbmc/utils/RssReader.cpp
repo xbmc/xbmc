@@ -36,6 +36,7 @@
 #include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
 #include "log.h"
+#include "utils/FileUtils.h"
 
 #define RSS_COLOR_BODY      0
 #define RSS_COLOR_HEADLINE  1
@@ -141,6 +142,7 @@ void CRssReader::Process()
 
     int nRetries = 3;
     CURL url(strUrl);
+    std::string fileCharset;
 
     // we wait for the network to come up
     if ((url.GetProtocol() == "http" || url.GetProtocol() == "https") &&
@@ -148,11 +150,10 @@ void CRssReader::Process()
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
     else
     {
-      unsigned int starttime = XbmcThreads::SystemClockMillis();
+      XbmcThreads::EndTime timeout(15000);
       while (!m_bStop && nRetries > 0)
       {
-        unsigned int currenttimer = XbmcThreads::SystemClockMillis() - starttime;
-        if (currenttimer > 15000)
+        if (timeout.IsTimePast())
         {
           CLog::Log(LOGERROR, "Timeout whilst retrieving %s", strUrl.c_str());
           http.Cancel();
@@ -163,19 +164,17 @@ void CRssReader::Process()
         if (url.GetProtocol() != "http" && url.GetProtocol() != "https")
         {
           CFile file;
-          if (file.Open(strUrl))
+          auto_buffer buffer;
+          if (file.LoadFile(strUrl, buffer))
           {
-            char *yo = new char[(int)file.GetLength() + 1];
-            file.Read(yo, file.GetLength());
-            yo[file.GetLength()] = '\0';
-            strXML = yo;
-            delete[] yo;
+            strXML.assign(buffer.get(), buffer.length());
             break;
           }
         }
         else
           if (http.Get(strUrl, strXML))
           {
+            fileCharset = http.GetServerReportedCharset();
             CLog::Log(LOGDEBUG, "Got rss feed: %s", strUrl.c_str());
             break;
           }
@@ -198,7 +197,7 @@ void CRssReader::Process()
         iStart = strXML.Find("<content:encoded>");
       }
 
-      if (Parse((LPSTR)strXML.c_str(), iFeed))
+      if (Parse(strXML, iFeed, fileCharset))
         CLog::Log(LOGDEBUG, "Parsed rss feed: %s", strUrl.c_str());
     }
   }
@@ -286,7 +285,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 
           CStdStringW unicodeText, unicodeText2;
 
-          fromRSSToUTF16(htmlText, unicodeText2);
+          g_charsetConverter.utf8ToW(htmlText, unicodeText2, m_rtlText);
           html.ConvertHTMLToW(unicodeText2, unicodeText);
 
           mTagElements.insert(StrPair(*i, unicodeText));
@@ -313,32 +312,12 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
   }
 }
 
-void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDest)
-{
-  CStdString flippedStrSource, strSourceUtf8;
-
-  g_charsetConverter.stringCharsetToUtf8(m_encoding, strSource, strSourceUtf8);
-  if (m_rtlText)
-    g_charsetConverter.utf8logicalToVisualBiDi(strSourceUtf8, flippedStrSource);
-  else
-    flippedStrSource = strSourceUtf8;
-  g_charsetConverter.utf8ToW(flippedStrSource, strDest, false);
-}
-
-bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
+bool CRssReader::Parse(const std::string& data, int iFeed, const std::string& charset)
 {
   m_xml.Clear();
-  m_xml.Parse((LPCSTR)szBuffer, 0, TIXML_ENCODING_LEGACY);
+  m_xml.Parse(data, charset);
 
-  m_encoding = "UTF-8";
-  if (m_xml.RootElement())
-  {
-    TiXmlDeclaration *tiXmlDeclaration = m_xml.RootElement()->Parent()->FirstChild()->ToDeclaration();
-    if (tiXmlDeclaration != NULL && strlen(tiXmlDeclaration->Encoding()) > 0)
-      m_encoding = tiXmlDeclaration->Encoding();
-  }
-
-  CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
+  CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_xml.GetUsedCharset().c_str());
 
   return Parse(iFeed);
 }
@@ -369,7 +348,7 @@ bool CRssReader::Parse(int iFeed)
     {
       CStdString strChannel = titleNode->FirstChild()->Value();
       CStdStringW strChannelUnicode;
-      fromRSSToUTF16(strChannel, strChannelUnicode);
+      g_charsetConverter.utf8ToW(strChannel, strChannelUnicode, m_rtlText);
       AddString(strChannelUnicode, RSS_COLOR_CHANNEL, iFeed);
 
       AddString(":", RSS_COLOR_CHANNEL, iFeed);

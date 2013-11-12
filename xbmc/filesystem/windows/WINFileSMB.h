@@ -58,7 +58,7 @@ public:
 
   virtual int IoControl(EIoControl request, void* param);
 protected:
-  CStdString GetLocal(const CURL &url); /* crate a properly format path from an url */
+  std::string GetLocal(const CURL &url); /* create a properly format path from an url */
   AUTOPTR::CAutoPtrHandle m_hFile;
   int64_t m_i64FilePos;
 };

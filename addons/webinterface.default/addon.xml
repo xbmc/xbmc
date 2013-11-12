@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.0"
+  version="2.2.1"
   name="Default"
   provider-name="Team XBMC">
   <requires>
@@ -17,13 +17,14 @@
     <summary lang="ast">Interfaz web de XBMC. (Interfaz web por defeutu de XBMC)</summary>
     <summary lang="be">Team XBMC Web Interface. (XBMC's default web interface)</summary>
     <summary lang="bg">Уебинтерфейс на Team XBMC. (стандартният уебинтерфейс на XBMC)</summary>
-    <summary lang="ca">Interfície web de l'Equip XBMC. (Interficie web per defecte de l'XBMC)</summary>
+    <summary lang="ca">Interfície web de l'equip XBMC. (Interficie web per defecte de l'XBMC)</summary>
     <summary lang="cs">Webové rozhraní týmu XBMC (Výchozí webové rozhraní XBMC).</summary>
     <summary lang="cy">Rhyngwyneb Gwe Team XBMC (Rhyngwyneb gwe rhagosodedig XBMC)</summary>
     <summary lang="da">Team XBMC Web-grænseflade. (XBMC's standard webgrænseflade)</summary>
     <summary lang="de">Team XBMC Webinterface. (XBMC's standard Webinterface)</summary>
     <summary lang="el">Διεπαφή Ιστού της Team XBMC. (Προεπιλεγμένη διεπαφή ιστού του XBMC)</summary>
     <summary lang="en">Team XBMC Web Interface. (XBMC's default web interface)</summary>
+    <summary lang="en_US">Team XBMC Web Interface. (XBMC's default web interface)</summary>
     <summary lang="es">Interfaz web de XBMC. (Interfaz web por defecto de XBMC)</summary>
     <summary lang="es_AR">Interfaz Web del Equipo de XBMC. (Interfaz web por defecto de XBMC)</summary>
     <summary lang="es_MX">Interfaz Web del Equipo de XBMC (Interfaz Web por defecto de XBMC)</summary>
@@ -76,6 +77,7 @@
     <description lang="de">Standard XBMC Webinterface; Für alle Geräte und Auflösungen geeignet</description>
     <description lang="el">Προεπιλεγμένη διεπαφή ιστού για το XBMC. Σχεδιασμένη για συσκευές όλων των αναλύσεων.</description>
     <description lang="en">Default web interface for XBMC; Designed for devices of all resolutions</description>
+    <description lang="en_US">Default web interface for XBMC; Designed for devices of all resolutions</description>
     <description lang="es">Interfaz web por defecto de XBMC. Diseñada para dispositivos de cualquier resolución</description>
     <description lang="es_AR">Interfaz web por defecto de XBMC. Diseñada para dispositivos de cualquier resolución</description>
     <description lang="es_MX">Interfaz Web por defecto para XBMC; Diseñado para dispositivos de todas las resoluciones</description>

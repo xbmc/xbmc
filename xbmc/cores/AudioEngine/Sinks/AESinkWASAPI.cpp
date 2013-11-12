@@ -192,6 +192,7 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_uiBufferLen(0),
   m_avgTimeWaiting(50),
   m_sinkLatency(0.0),
+  m_lastWriteToBuffer(0),
   m_pBuffer(NULL),
   m_bufferPtr(0)
 {
@@ -231,7 +232,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   hr = pEnumDevices->GetCount(&uiCount);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of audio endpoint count failed.")
 
-  if(StringUtils::EndsWith(device, std::string("default")))
+  if(StringUtils::EndsWithNoCase(device, std::string("default")))
     bdefault = true;
 
   if(!bdefault)
@@ -499,12 +500,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
       return INT_MAX;
     }
 
-    /* Inject one buffer of silence if sink has just opened */
-    /* to avoid losing start of stream or GUI sound         */
-    if (g_advancedSettings.m_streamSilence)
-      memcpy(buf, data, NumFramesRequested * m_format.m_frameSize); //fill buffer with audio
-    else
-      memset(buf,    0, NumFramesRequested * m_format.m_frameSize); //fill buffer with silence
+    memset(buf, 0, NumFramesRequested * m_format.m_frameSize); //fill buffer with silence
 
     hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
     if (FAILED(hr))
@@ -519,7 +515,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
     if (FAILED(hr))
       CLog::Log(LOGERROR, __FUNCTION__": AudioClient Start Failed");
     m_running = true; //signal that we're processing frames
-    return g_advancedSettings.m_streamSilence ? NumFramesRequested : 0U;
+    return 0U;
   }
 
 #ifndef _DEBUG
@@ -544,15 +540,8 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
   {
     if(eventAudioCallback != WAIT_OBJECT_0 || !&buf)
     {
-      /* Event handle timed out - flag sink as dirty for re-initializing */
       CLog::Log(LOGERROR, __FUNCTION__": Endpoint Buffer timed out");
-      if (g_advancedSettings.m_streamSilence)
-      {
-        m_isDirty = true; //flag new device or re-init needed
-        Deinitialize();
-        m_running = false;
-        return INT_MAX;
-      }
+      return INT_MAX;
     }
   }
 
@@ -599,27 +588,6 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
   }
 
   return frames;
-}
-
-bool CAESinkWASAPI::SoftSuspend()
-{
-  /* Sink has been asked to suspend output - we release audio   */
-  /* device as we are in exclusive mode and thus allow external */
-  /* audio sources to play. This requires us to reinitialize    */
-  /* on resume.                                                 */
-
-  Deinitialize();
-
-  return true;
-}
-
-bool CAESinkWASAPI::SoftResume()
-{
-  /* Sink asked to resume output. To release audio device in    */
-  /* exclusive mode we release the device context and therefore */
-  /* must reinitialize. Return false to force re-init by engine */
-
-  return false;
 }
 
 void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force)

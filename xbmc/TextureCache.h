@@ -115,6 +115,12 @@ public:
    */
   void ClearCachedImage(const CStdString &image, bool deleteSource = false);
 
+  /*! \brief clear the cached version of the image with given id
+   \param database id of the image
+   \sa GetCachedImage
+   */
+  bool ClearCachedImage(int textureID);
+
   /*! \brief retrieve a cache file (relative to the cache path) to associate with the given image, excluding extension
    Use GetCachedPath(GetCacheFile(url)+extension) for the full path to the file.
    \param url location of the image
@@ -127,22 +133,6 @@ public:
    \return full path of the cached file
    */
   static CStdString GetCachedPath(const CStdString &file);
-
-  /*! \brief retrieve a wrapped URL for a image file
-   \param image name of the file
-   \param type signifies a special type of image (eg embedded video thumb, picture folder thumb)
-   \param options which options we need (eg size=thumb)
-   \return full wrapped URL of the image file
-   */
-  static CStdString GetWrappedImageURL(const CStdString &image, const CStdString &type = "", const CStdString &options = "");
-  static CStdString GetWrappedThumbURL(const CStdString &image);
-
-  /*! \brief Unwrap an image://<url_encoded_path> style URL
-   Such urls are used for art over the webserver or other users of the VFS
-   \param image url of the image
-   \return the unwrapped URL, or the original URL if unwrapping is inappropriate.
-   */
-  static CStdString UnwrapImageURL(const CStdString &image);
 
   /*! \brief check whether an image:// URL may be cached
    \param url the URL to the image
@@ -203,6 +193,7 @@ private:
    \return true if we had a cached version of this image, false otherwise.
    */
   bool ClearCachedTexture(const CStdString &url, CStdString &cacheFile);
+  bool ClearCachedTexture(int textureID, CStdString &cacheFile);
 
   /*! \brief Increment the use count of a texture
    Stores locally before calling CTextureDatabase::IncrementUseCount via a CUseCountJob

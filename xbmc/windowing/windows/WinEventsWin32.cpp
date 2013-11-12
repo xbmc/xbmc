@@ -25,7 +25,7 @@
 
 #include "utils/log.h"
 #include "Windowsx.h"
-#include "windowing/WinEvents.h"
+#include "WinEventsWin32.h"
 #include "WIN32Util.h"
 #include "storage/windows/Win32StorageProvider.h"
 #include "Application.h"
@@ -390,6 +390,12 @@ bool CWinEventsWin32::MessagePump()
     DispatchMessage( &msg );
   }
   return true;
+}
+
+size_t CWinEventsWin32::GetQueueSize()
+{
+  MSG  msg;
+  return PeekMessage( &msg, NULL, 0U, 0U, PM_NOREMOVE );
 }
 
 LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

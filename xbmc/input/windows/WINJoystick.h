@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <string>
+#include <stdint.h>
 #include "settings/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 

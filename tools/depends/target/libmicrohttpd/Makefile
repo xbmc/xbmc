@@ -11,6 +11,13 @@ ARCHIVE=$(SOURCE).tar.gz
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared
 
+# internal memmem sym collides with internal gnutils memmem
+# when built on 10.6.8, strip it.
+ifeq ($(OS), osx)
+STRIP_MEMMEM=-$(AR) d $(PLATFORM)/src/daemon/.libs/libmicrohttpd.a memmem.o
+endif
+
+
 LIBDYLIB=$(PLATFORM)/src/daemon/.libs/$(LIBNAME).a
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
@@ -29,6 +36,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/src/daemon
 	$(MAKE) -C $(PLATFORM)/src/include install
+	$(STRIP_MEMMEM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	rm -f $(PREFIX)/lib/libmicrohttpd.so $(PREFIX)/lib/libmicrohttpd.so.5 $(PREFIX)/lib/libmicrohttpd.so.5.2.1

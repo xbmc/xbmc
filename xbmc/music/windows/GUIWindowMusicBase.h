@@ -68,7 +68,6 @@ protected:
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
   virtual void OnScan(int iItem) {};
   void OnRipCD();
-  virtual void OnPrepareFileItems(CFileItemList &items);
   virtual CStdString GetStartFolder(const CStdString &dir);
 
   virtual bool CheckFilterAdvanced(CFileItemList &items) const;

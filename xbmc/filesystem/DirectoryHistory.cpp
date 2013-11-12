@@ -118,13 +118,14 @@ void CDirectoryHistory::ClearPathHistory()
   m_vecPathHistory.clear();
 }
 
+bool CDirectoryHistory::IsMusicSearchUrl(CPathHistoryItem &i)
+{
+  return i.GetPath().Left(14) == "musicsearch://";
+}
+
 void CDirectoryHistory::ClearSearchHistory()
 {
-  for (vector<CPathHistoryItem>::iterator it = m_vecPathHistory.begin(); it != m_vecPathHistory.end(); ++it)
-  {
-    if (it->GetPath().Left(14) == "musicsearch://")
-      it = m_vecPathHistory.erase(it);
-  }
+  m_vecPathHistory.erase(remove_if(m_vecPathHistory.begin(), m_vecPathHistory.end(), IsMusicSearchUrl), m_vecPathHistory.end());
 }
 
 void CDirectoryHistory::DumpPathHistory()

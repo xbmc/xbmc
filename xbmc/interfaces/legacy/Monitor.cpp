@@ -24,7 +24,7 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    Monitor::Monitor() : AddonCallback("Monitor") 
+    Monitor::Monitor()
     {
       if (languageHook)
       {

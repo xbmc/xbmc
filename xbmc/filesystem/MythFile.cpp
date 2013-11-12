@@ -28,6 +28,7 @@
 #include "DirectoryCache.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 
 extern "C" {
@@ -638,7 +639,7 @@ bool CMythFile::PrevChannel(bool preview)
 
 bool CMythFile::SelectChannel(unsigned int channel)
 {
-  return ChangeChannel(CHANNEL_DIRECTION_SAME,""+channel);
+  return ChangeChannel(CHANNEL_DIRECTION_SAME, StringUtils::Format("%d", channel));
 }
 
 bool CMythFile::CanRecord()

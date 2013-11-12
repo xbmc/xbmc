@@ -116,6 +116,7 @@ static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LP
 CAESinkDirectSound::CAESinkDirectSound() :
   m_pBuffer       (NULL ),
   m_pDSound       (NULL ),
+  m_encodedFormat (AE_FMT_INVALID),
   m_AvgBytesPerSec(0    ),
   m_dwChunkSize   (0    ),
   m_dwFrameSize   (0    ),
@@ -149,7 +150,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   std::string deviceFriendlyName;
   DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
 
-  if(StringUtils::EndsWith(device, std::string("default")))
+  if(StringUtils::EndsWithNoCase(device, std::string("default")))
     strDeviceGUID = GetDefaultDevice();
 
   for (std::list<DSDevice>::iterator itt = DSDeviceList.begin(); itt != DSDeviceList.end(); ++itt)
@@ -271,6 +272,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
   format.m_channelLayout = m_channelLayout;
+  m_encodedFormat = format.m_dataFormat;
   format.m_frames = uiFrameCount;
   format.m_frameSamples = format.m_frames * format.m_channelLayout.Count();
   format.m_frameSize = (AE_IS_RAW(format.m_dataFormat) ? wfxex.Format.wBitsPerSample >> 3 : sizeof(float)) * format.m_channelLayout.Count();
@@ -779,6 +781,12 @@ const char *CAESinkDirectSound::dserr2str(int err)
     case DSERR_UNINITIALIZED: return "DSERR_UNINITIALIZED";
     case DSERR_NOINTERFACE: return "DSERR_NOINTERFACE";
     case DSERR_ACCESSDENIED: return "DSERR_ACCESSDENIED";
+    case DSERR_BUFFERTOOSMALL: return "DSERR_BUFFERTOOSMALL";
+    case DSERR_DS8_REQUIRED: return "DSERR_DS8_REQUIRED";
+    case DSERR_SENDLOOP: return "DSERR_SENDLOOP";
+    case DSERR_BADSENDBUFFERGUID: return "DSERR_BADSENDBUFFERGUID";
+    case DSERR_OBJECTNOTFOUND: return "DSERR_OBJECTNOTFOUND";
+    case DSERR_FXUNAVAILABLE: return "DSERR_FXUNAVAILABLE";
     default: return "unknown";
   }
 }
@@ -877,16 +885,4 @@ failed:
   SAFE_RELEASE(pEnumerator);
 
   return strDevName;
-}
-
-bool CAESinkDirectSound::SoftSuspend()
-{
-  Deinitialize();
-  return true;
-}
-
-bool CAESinkDirectSound::SoftResume()
-{
-  /* Return false to force re-init by engine */
-  return false;
 }

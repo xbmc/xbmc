@@ -14,7 +14,11 @@ XBMCTEX_DIRS= \
 
 DVDPCODECS_DIRS= \
 	lib \
-	lib/libdvd
+	lib/libdvd 
+
+ifeq (@USE_LIBSTAGEFRIGHT@,1)
+DVDPCODECS_DIRS += xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
+endif
 
 DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
                    xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a \
@@ -57,6 +61,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/interfaces/interfaces.a \
                    xbmc/interfaces/json-rpc/json-rpc.a \
                    xbmc/linux/linux.a \
+                   xbmc/listproviders/listproviders.a \
                    xbmc/music/dialogs/musicdialogs.a \
                    xbmc/music/infoscanner/musicscanner.a \
                    xbmc/music/karaoke/karaoke.a \
@@ -178,10 +183,6 @@ DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
 DIRECTORY_ARCHIVES += xbmc/android/activity/activity.a
 DIRECTORY_ARCHIVES += xbmc/android/bionic_supplement/bionic_supplement.a
 DIRECTORY_ARCHIVES += xbmc/android/jni/jni.a
-endif
-
-ifeq (@USE_AMLPLAYER@,1)
-DIRECTORY_ARCHIVES += xbmc/cores/amlplayer/amlplayer.a
 endif
 
 ifeq (@USE_OMXPLAYER@,1)
@@ -308,9 +309,22 @@ CHECK_LIBS = xbmc/filesystem/test/filesystemTest.a \
              xbmc/threads/test/threadTest.a \
              xbmc/interfaces/python/test/pythonSwigTest.a \
              xbmc/test/xbmc-test.a
+
+ifeq (@USE_WAYLAND@,1)
+CHECK_LIBS += xbmc/windowing/tests/wayland/test_wayland.a
+
+ifeq (@USE_WAYLAND_TEST_EXTENSION@,1)
+WAYLAND_TEST_MODULE = xbmc/windowing/tests/wayland/xbmc-wayland-test-extension.so
+$(WAYLAND_TEST_MODULE): force
+	$(MAKE) -C $(@D) $(@F)
+CHECK_EXTENSIONS = $(WAYLAND_TEST_MODULE)
+CHECK_LIBADD=@WAYLAND_TEST_LIBS@
+endif
+endif
+
 CHECK_PROGRAMS = xbmc-test
 
-CLEAN_FILES += $(CHECK_PROGRAMS)
+CLEAN_FILES += $(CHECK_PROGRAMS) $(CHECK_EXTENSIONS)
 
 all : $(FINAL_TARGETS)
 	@echo '-----------------------'
@@ -320,7 +334,7 @@ all : $(FINAL_TARGETS)
 include Makefile.include
 
 .PHONY : dllloader exports visualizations screensavers eventclients papcodecs \
-	dvdpcodecs imagelib codecs externals force skins libaddon check \
+	dvdpcodecs dvdpextcodecs imagelib codecs externals force skins libaddon check \
 	testframework testsuite
 
 # hack targets to keep build system up to date
@@ -393,6 +407,14 @@ libaddon: exports
 dvdpcodecs: dllloader
 	$(MAKE) -C lib
 	$(MAKE) -C lib/libdvd
+
+ifeq (@USE_LIBSTAGEFRIGHT@,1)
+dvdpextcodecs: libxbmc.so 
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
+else
+dvdpextcodecs:
+endif
+
 eventclients:
 ifeq ($(findstring osx,@ARCH@), osx)
 ifneq ($(findstring arm,@ARCH@), arm)
@@ -433,7 +455,7 @@ ifeq (@USE_PVR_ADDONS@,1)
 	$(MAKE) -C pvr-addons
 endif
 
-codecs: papcodecs dvdpcodecs
+codecs: papcodecs dvdpcodecs dvdpextcodecs
 
 libs: libhdhomerun imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 
@@ -501,10 +523,10 @@ else
 	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(MAINOBJS) -Wl,--start-group $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
 endif
 
-xbmc/main/main.a:
+xbmc/main/main.a: force
 	$(MAKE) -C xbmc/main
 
-xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS) xbmc/main/main.a
+xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
@@ -535,6 +557,9 @@ install: install-binaries install-arch install-datas
 
 apk: install
 	make -C tools/android/packaging
+
+apk-clean: 
+	make -C tools/android/packaging clean
 
 install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/"
@@ -674,7 +699,7 @@ ifeq (1,@GTEST_CONFIGURED@)
 check: testsuite
 	for check_program in $(CHECK_PROGRAMS); do $(CURDIR)/$$check_program; done
 
-testsuite: $(CHECK_PROGRAMS)
+testsuite: $(CHECK_EXTENSIONS) $(CHECK_PROGRAMS)
 
 testframework: $(GTEST_LIBS)
 
@@ -688,9 +713,9 @@ $(CHECK_LIBS): force
 
 xbmc-test: $(CHECK_LIBS) $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(GTEST_LIBS)
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(SILENT_LD) $(CXX) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,-all_load,-ObjC $(CHECK_LIBS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) $(LIBS) $(CHECK_LIBADD) -rdynamic
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,--whole-archive $(CHECK_LIBS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(GTEST_LIBS) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(CHECK_LIBS) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(LIBS) $(CHECK_LIBADD) -rdynamic
 endif
 else
 # Give a message that the framework is not configured, but don't fail.

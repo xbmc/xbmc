@@ -21,7 +21,6 @@
 #include "SettingAddon.h"
 #include "addons/Addon.h"
 #include "settings/SettingsManager.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -31,11 +30,7 @@
 CSettingAddon::CSettingAddon(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : CSettingString(id, settingsManager),
     m_addonType(ADDON::ADDON_UNKNOWN)
-{
-  m_control.SetType(SettingControlTypeButton);
-  m_control.SetFormat(SettingControlFormatAddon);
-  m_control.SetAttributes(SettingControlAttributeNone);
-}
+{ }
   
 CSettingAddon::CSettingAddon(const std::string &id, const CSettingAddon &setting)
   : CSettingString(id, setting)
@@ -43,16 +38,20 @@ CSettingAddon::CSettingAddon(const std::string &id, const CSettingAddon &setting
   copy(setting);
 }
 
+CSetting* CSettingAddon::Clone(const std::string &id) const
+{
+  return new CSettingAddon(id, *this);
+}
+
 bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CSingleLock lock(m_critical);
+  CExclusiveLock lock(m_critical);
 
   if (!CSettingString::Deserialize(node, update))
     return false;
     
-  if (m_control.GetType() != SettingControlTypeButton ||
-      m_control.GetFormat() != SettingControlFormatAddon ||
-      m_control.GetAttributes() != SettingControlAttributeNone)
+  if (m_control != NULL &&
+     (m_control->GetType() != "button" || m_control->GetFormat() != "addon"))
   {
     CLog::Log(LOGERROR, "CSettingAddon: invalid <control> of \"%s\"", m_id.c_str());
     return false;
@@ -84,6 +83,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
 void CSettingAddon::copy(const CSettingAddon &setting)
 {
   CSettingString::Copy(setting);
-
+  
+  CExclusiveLock lock(m_critical);
   m_addonType = setting.m_addonType;
 }

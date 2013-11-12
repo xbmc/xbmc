@@ -36,10 +36,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Tùy chọn xem"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Toàn màn hình"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Độ dài"
@@ -108,10 +104,6 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "QUAY LẠI"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Hiệu chỉnh hiệu ứng"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Thời gian kết thúc"
@@ -155,10 +147,6 @@ msgstr "Hình nền"
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Hiển thị \"Tạm Dừng\" trong trình diễn ảnh"
-
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Hiển thị trailer ở một cửa sổ khác [COLOR=grey3](Chỉ hiện thông tin về video)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"

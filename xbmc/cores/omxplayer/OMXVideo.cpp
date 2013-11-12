@@ -68,7 +68,6 @@ COMXVideo::COMXVideo() : m_video_codec_name("")
   m_is_open           = false;
   m_extradata         = NULL;
   m_extrasize         = 0;
-  m_video_convert     = false;
   m_deinterlace       = false;
   m_deinterlace_request = VS_DEINTERLACEMODE_OFF;
   m_hdmi_clock_sync   = false;
@@ -93,6 +92,7 @@ COMXVideo::~COMXVideo()
 
 bool COMXVideo::SendDecoderConfig()
 {
+  CSingleLock lock (m_critSection);
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
 
   /* send decoder config */
@@ -145,6 +145,7 @@ bool COMXVideo::NaluFormatStartCodes(enum AVCodecID codec, uint8_t *in_extradata
 
 bool COMXVideo::PortSettingsChanged()
 {
+  CSingleLock lock (m_critSection);
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
 
   if (m_settings_changed)
@@ -339,6 +340,7 @@ bool COMXVideo::PortSettingsChanged()
 
 bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE deinterlace, bool hdmi_clock_sync)
 {
+  CSingleLock lock (m_critSection);
   bool vflip = false;
   Close();
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
@@ -675,12 +677,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
 
 void COMXVideo::Close()
 {
-  m_omx_tunnel_decoder.Flush();
-  if(m_deinterlace)
-    m_omx_tunnel_image_fx.Flush();
-  m_omx_tunnel_clock.Flush();
-  m_omx_tunnel_sched.Flush();
-
+  CSingleLock lock (m_critSection);
   m_omx_tunnel_clock.Deestablish();
   m_omx_tunnel_decoder.Deestablish();
   if(m_deinterlace)
@@ -702,7 +699,6 @@ void COMXVideo::Close()
   m_extradata = NULL;
   m_extrasize = 0;
 
-  m_video_convert     = false;
   m_video_codec_name  = "";
   m_deinterlace       = false;
   m_av_clock          = NULL;
@@ -718,19 +714,22 @@ void COMXVideo::SetDropState(bool bDrop)
 
 unsigned int COMXVideo::GetFreeSpace()
 {
+  CSingleLock lock (m_critSection);
   return m_omx_decoder.GetInputBufferSpace();
 }
 
 unsigned int COMXVideo::GetSize()
 {
+  CSingleLock lock (m_critSection);
   return m_omx_decoder.GetInputBufferSize();
 }
 
 int COMXVideo::Decode(uint8_t *pData, int iSize, double pts)
 {
+  CSingleLock lock (m_critSection);
   OMX_ERRORTYPE omx_err;
 
-  if( m_drop_state )
+  if( m_drop_state || !m_is_open )
     return true;
 
   unsigned int demuxer_bytes = (unsigned int)iSize;
@@ -818,17 +817,20 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double pts)
 
 void COMXVideo::Reset(void)
 {
+  CSingleLock lock (m_critSection);
   if(!m_is_open)
     return;
 
   m_setStartTime = true;
   m_omx_decoder.FlushInput();
-  m_omx_tunnel_decoder.Flush();
+  if(m_deinterlace)
+    m_omx_image_fx.FlushInput();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
 {
+  CSingleLock lock (m_critSection);
   if(!m_is_open)
     return;
 
@@ -859,11 +861,13 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
 
 int COMXVideo::GetInputBufferSize()
 {
+  CSingleLock lock (m_critSection);
   return m_omx_decoder.GetInputBufferSize();
 }
 
 void COMXVideo::SubmitEOS()
 {
+  CSingleLock lock (m_critSection);
   if(!m_is_open)
     return;
 
@@ -897,6 +901,7 @@ void COMXVideo::SubmitEOS()
 
 bool COMXVideo::IsEOS()
 {
+  CSingleLock lock (m_critSection);
   if(!m_is_open)
     return true;
   if (!m_failed_eos && !m_omx_render.IsEOS())

@@ -13,7 +13,11 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
 
 
 ifeq ($(OS),ios)
-  NATIVE += dpkg-native tar-native
+  NATIVE += dpkg-native xz-native tar-native
+endif
+
+ifeq ($(OS),osx)
+  NATIVE += xz-native tar-native
 endif
 
 .PHONY: $(NATIVE) native
@@ -31,6 +35,7 @@ swig-native: pcre-native
 libsdl_image-native: libsdl-native libpng-native libjpeg-turbo-native tiff-native
 distribute-native: python26-native
 distutilscross-native: python26-native distribute-native
+tar-native: xz-native
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2-native: automake-native

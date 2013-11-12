@@ -252,6 +252,50 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 @synthesize m_networkAutoSuspendTimer;
 @synthesize nowPlayingInfo;
 //--------------------------------------------------------------
+- (void) sendKeypressEvent: (XBMC_Event) event
+{
+  event.type = XBMC_KEYDOWN;
+  CWinEvents::MessagePush(&event);
+
+  event.type = XBMC_KEYUP;
+  CWinEvents::MessagePush(&event);
+}
+
+// START OF UIKeyInput protocol
+- (BOOL)hasText
+{
+  return NO;
+}
+
+- (void)insertText:(NSString *)text
+{
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(newEvent));
+  unichar currentKey = [text characterAtIndex:0];
+
+  // handle upper case letters
+  if (currentKey >= 'A' && currentKey <= 'Z')
+  {
+    newEvent.key.keysym.mod = XBMCKMOD_LSHIFT;
+    currentKey += 0x20;// convert to lower case
+  }
+
+  // handle return
+  if (currentKey == '\n' || currentKey == '\r')
+    currentKey = XBMCK_RETURN;
+
+  newEvent.key.keysym.sym = (XBMCKey)currentKey;
+  newEvent.key.keysym.unicode = currentKey;
+
+  [self sendKeypressEvent:newEvent];
+}
+
+- (void)deleteBackward
+{
+  [self sendKey:XBMCK_BACKSPACE];
+}
+// END OF UIKeyInput protocol
+
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {  
   //on external screens somehow the logic is rotated by 90°
@@ -312,12 +356,8 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   
   //newEvent.key.keysym.unicode = key;
   newEvent.key.keysym.sym = key;
+  [self sendKeypressEvent:newEvent];
   
-  newEvent.type = XBMC_KEYDOWN;
-  CWinEventsIOS::MessagePush(&newEvent);
-  
-  newEvent.type = XBMC_KEYUP;
-  CWinEventsIOS::MessagePush(&newEvent);
 }
 //--------------------------------------------------------------
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -626,7 +666,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   newEvent.motion.y = point.y;
   newEvent.motion.xrel = 0;
   newEvent.motion.yrel = 0;
-  CWinEventsIOS::MessagePush(&newEvent);
+  CWinEvents::MessagePush(&newEvent);
 }
 //--------------------------------------------------------------
 - (IBAction)handleSingleFingerSingleTap:(UIGestureRecognizer *)sender 
@@ -785,6 +825,16 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 	
   [super viewWillDisappear:animated];
+}
+//--------------------------------------------------------------
+-(UIView *)inputView
+{
+  // override our input view to an empty view
+  // this prevents the on screen keyboard
+  // which would be shown whenever this UIResponder
+  // becomes the first responder (which is always the case!)
+  // caused by implementing the UIKeyInput protocol
+  return [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
 }
 //--------------------------------------------------------------
 - (BOOL) canBecomeFirstResponder

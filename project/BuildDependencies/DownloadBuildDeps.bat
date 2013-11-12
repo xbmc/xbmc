@@ -33,6 +33,15 @@ FOR /F "tokens=*" %%S IN ('dir /B "*_d.bat"') DO (
   CALL %%S
 )
 
+SET FORMED_OK_FLAG=%TMP_PATH%\got-all-formed-packages
+REM Trick to preserve console title
+start /b /wait cmd.exe /c get_formed.cmd
+IF NOT EXIST %FORMED_OK_FLAG% (
+  ECHO ERROR: Not all formed packages are ready!
+  EXIT /B 101
+)
+
 cd %CUR_PATH%
 
 rmdir %TMP_PATH% /S /Q
+EXIT /B 0

@@ -30,7 +30,7 @@ namespace XBMCAddon
   {
     void WindowDialogMixin::show()
     {
-      TRACE;
+      XBMC_TRACE;
       ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, HACK_CUSTOM_ACTION_OPENING, 0u};
       tMsg.lpVoid = w->window->get();
       CApplicationMessenger::Get().SendMessage(tMsg, true);
@@ -38,7 +38,7 @@ namespace XBMCAddon
 
     void WindowDialogMixin::close()
     {
-      TRACE;
+      XBMC_TRACE;
       w->bModal = false;
       w->PulseActionEvent();
 
@@ -49,11 +49,11 @@ namespace XBMCAddon
       w->iOldWindowId = 0;
     }
 
-    bool WindowDialogMixin::IsDialogRunning() const { TRACE; return w->window->isActive(); }
+    bool WindowDialogMixin::IsDialogRunning() const { XBMC_TRACE; return w->window->isActive(); }
 
     bool WindowDialogMixin::OnAction(const CAction &action)
     {
-      TRACE;
+      XBMC_TRACE;
       switch (action.GetID())
       {
       case HACK_CUSTOM_ACTION_OPENING:

@@ -32,8 +32,8 @@ typedef struct LCENTRY
   const char *name;
 } LCENTRY;
 
-extern const struct LCENTRY g_iso639_1[144];
-extern const struct LCENTRY g_iso639_2[537];
+extern const struct LCENTRY g_iso639_1[145];
+extern const struct LCENTRY g_iso639_2[538];
 
 struct CharCodeConvertionWithHack
 {
@@ -141,11 +141,7 @@ bool CLangCodeExpander::Lookup(CStdString& desc, const int code)
   return Lookup(desc, lang);
 }
 
-#ifdef TARGET_WINDOWS
-bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack /*= false*/)
-#else
-bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode)
-#endif
+bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool checkWin32Locales /*= false*/)
 {       
   if ( strTwoCharCode.length() == 2 )
   {
@@ -158,13 +154,11 @@ bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, 
     {
       if (strTwoCharCodeLower.Equals(CharCode2To3[index].old))
       {
-#ifdef TARGET_WINDOWS
-        if (localeHack && CharCode2To3[index].win_id)
+        if (checkWin32Locales && CharCode2To3[index].win_id)
         {
           strThreeCharCode = CharCode2To3[index].win_id;
           return true;
         }
-#endif
         strThreeCharCode = CharCode2To3[index].id;
         return true;
       }
@@ -175,28 +169,16 @@ bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, 
   return false;
 }
 
-#ifdef TARGET_WINDOWS
-bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool localeHack /*= false*/)
-#else
-bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode)
-#endif
+bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool checkXbmcLocales /*= true*/, bool checkWin32Locales /*= false*/)
 {
   if (strCharCode.size() == 2)
-#ifdef TARGET_WINDOWS
-    return g_LangCodeExpander.ConvertTwoToThreeCharCode(strThreeCharCode, strCharCode, localeHack);
-#else
-    return g_LangCodeExpander.ConvertTwoToThreeCharCode(strThreeCharCode, strCharCode);
-#endif
+    return g_LangCodeExpander.ConvertTwoToThreeCharCode(strThreeCharCode, strCharCode, checkWin32Locales);
   else if (strCharCode.size() == 3)
   {
     for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
     {
-#ifdef TARGET_WINDOWS
       if (strCharCode.Equals(CharCode2To3[index].id) ||
-         (localeHack && CharCode2To3[index].win_id != NULL && strCharCode.Equals(CharCode2To3[index].win_id)))
-#else
-      if (strCharCode.Equals(CharCode2To3[index].id))
-#endif
+           (checkWin32Locales && CharCode2To3[index].win_id != NULL && strCharCode.Equals(CharCode2To3[index].win_id)) )
       {
         strThreeCharCode = strCharCode;
         return true;
@@ -213,14 +195,24 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
   }
   else if (strCharCode.size() > 3)
   {
-    CStdString strLangInfoPath;
-    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strCharCode.c_str());
-    CLangInfo langInfo;
-    if (!langInfo.Load(strLangInfoPath))
-      return false;
+    for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+    {
+      if (strCharCode.Equals(g_iso639_2[i].name))
+      {
+        CodeToString(g_iso639_2[i].code, strThreeCharCode);
+        return true;
+      }
+    }
 
-    strThreeCharCode = langInfo.GetLanguageCode();
-    return true;
+    if (checkXbmcLocales)
+    {
+      CLangInfo langInfo;
+      if (!langInfo.CheckLoadLanguage(strCharCode))
+        return false;
+
+      strThreeCharCode = langInfo.GetLanguageCode();
+      return !strThreeCharCode.empty();
+    }
   }
 
   return false;
@@ -269,8 +261,11 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
 }
 #endif
 
-bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString& lang)
+bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString& lang, bool checkXbmcLocales /*= true*/)
 {
+  if (lang.empty())
+    return false;
+
   if (lang.length() == 2)
   {
     CStdString tmp;
@@ -314,18 +309,22 @@ bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString&
       return ConvertToTwoCharCode(code, tmp);
   }
 
-  // try xbmc specific language names
-  CStdString strLangInfoPath;
-  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", lang.c_str());
-  CLangInfo langInfo;
-  if (!langInfo.Load(strLangInfoPath))
+  if (!checkXbmcLocales)
     return false;
 
-  return ConvertToTwoCharCode(code, langInfo.GetLanguageCode());
+  // try xbmc specific language names
+  CLangInfo langInfo;
+  if (!langInfo.CheckLoadLanguage(lang))
+    return false;
+
+  return ConvertToTwoCharCode(code, langInfo.GetLanguageCode(), false);
 }
 
 bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
 {
+  if (desc.empty())
+    return false;
+
   CStdString descTmp(desc);
   descTmp.Trim();
   STRINGLOOKUPTABLE::iterator it;
@@ -358,6 +357,9 @@ bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
 
 bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
 {
+  if (code.empty())
+    return false;
+
   STRINGLOOKUPTABLE::iterator it;
   //Make sure we convert to lowercase before trying to find it
   CStdString sCode(code);
@@ -375,6 +377,9 @@ bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
 
 bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
 {
+  if (code.empty())
+    return false;
+
   long longcode;
   CStdString sCode(code);
   sCode.MakeLower();
@@ -481,6 +486,9 @@ bool CLangCodeExpander::CompareLangCodes(const CStdString& code1, const CStdStri
 
 CStdString CLangCodeExpander::ConvertToISO6392T(const CStdString& lang)
 {
+  if (lang.empty())
+    return lang;
+
   CStdString two, three;
   if (ConvertToTwoCharCode(two, lang))
   {
@@ -490,7 +498,7 @@ CStdString CLangCodeExpander::ConvertToISO6392T(const CStdString& lang)
   return lang;
 }
 
-extern const LCENTRY g_iso639_1[144] =
+extern const LCENTRY g_iso639_1[145] =
 {
   { MAKECODE('\0','\0','c','c'), "Closed Caption" },
   { MAKECODE('\0','\0','a','a'), "Afar" },
@@ -514,20 +522,20 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','c','o'), "Corsican" },
   { MAKECODE('\0','\0','c','s'), "Czech" },
   { MAKECODE('\0','\0','c','y'), "Welsh" },
-  { MAKECODE('\0','\0','d','a'), "Dansk" },
+  { MAKECODE('\0','\0','d','a'), "Danish" },
   { MAKECODE('\0','\0','d','e'), "German" },
   { MAKECODE('\0','\0','d','z'), "Bhutani" },
   { MAKECODE('\0','\0','e','l'), "Greek" },
   { MAKECODE('\0','\0','e','n'), "English" },
   { MAKECODE('\0','\0','e','o'), "Esperanto" },
-  { MAKECODE('\0','\0','e','s'), "Espanol" },
+  { MAKECODE('\0','\0','e','s'), "Spanish" },
   { MAKECODE('\0','\0','e','t'), "Estonian" },
   { MAKECODE('\0','\0','e','u'), "Basque" },
   { MAKECODE('\0','\0','f','a'), "Persian" },
   { MAKECODE('\0','\0','f','i'), "Finnish" },
   { MAKECODE('\0','\0','f','j'), "Fiji" },
   { MAKECODE('\0','\0','f','o'), "Faroese" },
-  { MAKECODE('\0','\0','f','r'), "Francais" },
+  { MAKECODE('\0','\0','f','r'), "French" },
   { MAKECODE('\0','\0','f','y'), "Frisian" },
   { MAKECODE('\0','\0','g','a'), "Irish" },
   { MAKECODE('\0','\0','g','d'), "Scots Gaelic" },
@@ -537,7 +545,7 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','h','a'), "Hausa" },
   { MAKECODE('\0','\0','h','e'), "Hebrew" },
   { MAKECODE('\0','\0','h','i'), "Hindi" },
-  { MAKECODE('\0','\0','h','r'), "Hrvatski" },
+  { MAKECODE('\0','\0','h','r'), "Croatian" },
   { MAKECODE('\0','\0','h','u'), "Hungarian" },
   { MAKECODE('\0','\0','h','y'), "Armenian" },
   { MAKECODE('\0','\0','i','a'), "Interlingua" },
@@ -545,8 +553,8 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','i','e'), "Interlingue" },
   { MAKECODE('\0','\0','i','k'), "Inupiak" },
   { MAKECODE('\0','\0','i','n'), "Indonesian" },
-  { MAKECODE('\0','\0','i','s'), "Islenska" },
-  { MAKECODE('\0','\0','i','t'), "Italiano" },
+  { MAKECODE('\0','\0','i','s'), "Icelandic" },
+  { MAKECODE('\0','\0','i','t'), "Italian" },
   { MAKECODE('\0','\0','i','u'), "Inuktitut" },
   { MAKECODE('\0','\0','i','w'), "Hebrew" },
   { MAKECODE('\0','\0','j','a'), "Japanese" },
@@ -578,9 +586,10 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','m','y'), "Burmese" },
   { MAKECODE('\0','\0','n','a'), "Nauru" },
   { MAKECODE('\0','\0','n','e'), "Nepali" },
-  { MAKECODE('\0','\0','n','l'), "Nederlands" },
-  { MAKECODE('\0','\0','n','o'), "Norsk" },
+  { MAKECODE('\0','\0','n','l'), "Dutch" },
+  { MAKECODE('\0','\0','n','o'), "Norwegian" },
   { MAKECODE('\0','\0','o','c'), "Occitan" },
+  { MAKECODE('\0','\0','o','s'), "Ossetic" },
   { MAKECODE('\0','\0','o','m'), "(Afan) Oromo" },
   { MAKECODE('\0','\0','o','r'), "Oriya" },
   { MAKECODE('\0','\0','p','a'), "Punjabi" },
@@ -608,7 +617,7 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','s','s'), "Siswati" },
   { MAKECODE('\0','\0','s','t'), "Sesotho" },
   { MAKECODE('\0','\0','s','u'), "Sundanese" },
-  { MAKECODE('\0','\0','s','v'), "Svenska" },
+  { MAKECODE('\0','\0','s','v'), "Swedish" },
   { MAKECODE('\0','\0','s','w'), "Swahili" },
   { MAKECODE('\0','\0','t','a'), "Tamil" },
   { MAKECODE('\0','\0','t','e'), "Telugu" },
@@ -638,7 +647,7 @@ extern const LCENTRY g_iso639_1[144] =
   { MAKECODE('\0','\0','z','u'), "Zulu" },
 };
 
-extern const LCENTRY g_iso639_2[537] =
+extern const LCENTRY g_iso639_2[538] =
 {
   { MAKECODE('\0','a','b','k'), "Abkhaz" },
   { MAKECODE('\0','a','b','k'), "Abkhazian" },
@@ -1178,6 +1187,7 @@ extern const LCENTRY g_iso639_2[537] =
   { MAKECODE('\0','z','h','a'), "Zhuang" },
   { MAKECODE('\0','z','u','l'), "Zulu" },
   { MAKECODE('\0','z','u','n'), "Zuni" },
+  { MAKECODE('\0','u','n','d'), "Undetermined" }, // non-ISO entry for Matroska special language code
 };
 
 const CharCodeConvertionWithHack CharCode2To3[184] =

@@ -124,8 +124,9 @@ public:
   virtual void Update();
   virtual void Clear() { m_pButton = NULL; }
 private:
-  static bool GetItems(CSetting *setting, CFileItemList &items);
-  static bool GetIntegerItems(CSetting *setting, CFileItemList &items);
+  static bool GetItems(const CSetting *setting, CFileItemList &items);
+  static bool GetIntegerItems(const CSetting *setting, CFileItemList &items);
+  static bool GetStringItems(const CSetting *setting, CFileItemList &items);
 
   CGUIButtonControl *m_pButton;
 };

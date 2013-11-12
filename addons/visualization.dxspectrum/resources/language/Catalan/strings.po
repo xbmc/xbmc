@@ -22,11 +22,11 @@ msgstr "Mode"
 
 msgctxt "#30001"
 msgid "Filled"
-msgstr "Emplenat"
+msgstr "Sòlid"
 
 msgctxt "#30002"
 msgid "Wireframe"
-msgstr "Fil de ferro"
+msgstr "Malla"
 
 msgctxt "#30003"
 msgid "Points"

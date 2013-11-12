@@ -84,7 +84,7 @@ public:
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
   virtual void SetInfo(const CGUIInfoLabel &info);
-  virtual void SetFileName(const CStdString& strFileName, bool setConstant = false);
+  virtual void SetFileName(const CStdString& strFileName, bool setConstant = false, const bool useCache = true);
   virtual void SetAspectRatio(const CAspectRatio &aspect);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);

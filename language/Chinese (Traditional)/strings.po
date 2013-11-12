@@ -857,10 +857,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "音樂"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "視覺效果"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "選擇目的目錄"
@@ -1192,10 +1188,6 @@ msgstr "調整畫面頻率"
 msgctxt "#337"
 msgid "Audio output"
 msgstr "音效輸出"
-
-msgctxt "#338"
-msgid "Analog"
-msgstr "類比"
 
 msgctxt "#339"
 msgid "Optical/Coax"
@@ -1589,10 +1581,6 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "快取"
 
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "硬碟"
-
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1828,10 +1816,6 @@ msgstr "正在從檔案載入媒體資訊…"
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "排序：使用次數"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "啟用 視覺效果"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2085,6 +2069,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "已播放時間"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "已花費日期"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "排序方向"
@@ -2269,14 +2257,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "自訂"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "重覆播放"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "重覆播放模式"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "依曲目重覆播放"
@@ -2284,18 +2264,6 @@ msgstr "依曲目重覆播放"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "依專輯重覆播放"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "音量 - 重覆播放的檔案"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "音量 - 不重覆播放的檔案"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "重覆播放時忽略消波失真"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2724,6 +2692,10 @@ msgstr "網際網路訪問"
 msgctxt "#799"
 msgid "Library Update"
 msgstr "資料庫更新"
+
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "音樂庫需要重新掃描檔案標籤"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -3489,13 +3461,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "重置"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "附加元件瀏覽器"
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "層級：基本"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "層級：標準"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "層級：進階"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "層級：專家"
 
 msgctxt "#10041"
 msgid "Reset settings"
 msgstr "重置設定"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "您確定要重設該類別下的設定嗎？"
 
 msgctxt "#10043"
 msgid "Help"
@@ -3504,14 +3492,6 @@ msgstr "說明"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "無說明內容"
-
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "確認對話框"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "進度對話框"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3653,17 +3633,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "電影資訊"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "選擇對話"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "音樂/資訊"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "確認"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3676,14 +3648,6 @@ msgstr "腳本/資訊"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "全螢幕視訊"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "音效視覺效果"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "檔案堆疊對話框"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4021,10 +3985,6 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "重新啟動"
 
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "最小化"
-
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "電源按鈕作用"
@@ -4064,6 +4024,50 @@ msgstr "手把連接"
 msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "手把沒有連接"
+
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "嘗試在連入時喚醒遠端伺服器"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "以區域網路喚醒 (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "等待網路連接..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "執行網路喚醒失敗！"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "等待伺服器開機..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "延長等待伺服器開機..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "等待服務啟動..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "搜尋 MAC"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "已更新 %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "已發現 %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "已失敗 %s"
 
 msgctxt "#13050"
 msgid "Running low on battery"
@@ -4145,10 +4149,6 @@ msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU 高品質倍線等級"
 
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr "VDPAU 視聽室等級色彩轉換"
-
 msgctxt "#13130"
 msgid "Blank other displays"
 msgstr "顯示空白"
@@ -4200,10 +4200,6 @@ msgstr "閘道位址"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "主要的 DNS 位址"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "初始化失敗"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4449,10 +4445,6 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "重覆圖片"
 
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "隨機"
-
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "立體聲"
@@ -4665,21 +4657,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "預設"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "該視覺效果\n沒有預設值"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "該視覺效果\n沒有可用的設定"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "托盤開/關"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "撥放音效時使用視覺效果"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4864,10 +4844,6 @@ msgstr "視訊為主(放棄/重複音效)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "視訊為主(重新取樣音效)"
-
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr "最高重取樣速率(%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -5056,10 +5032,6 @@ msgstr "無電視"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "輸入最近的城市"
-
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "視訊/音效/光碟緩衝區 - 硬碟"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5405,10 +5377,6 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "播放方式…"
 
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "使用平滑的影音同步"
-
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "顯示縮圖時隱藏檔案名稱"
@@ -5548,10 +5516,6 @@ msgstr "取消派對模式。"
 msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "資料庫歌曲檔案不符。"
-
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "無法重建資料庫。"
 
 msgctxt "#16033"
 msgid "Could not open database."
@@ -5701,10 +5665,6 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "填補為逐行信號"
 
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr "Lanczos3 最佳化"
-
 msgctxt "#16316"
 msgid "Auto"
 msgstr "自動"
@@ -5733,17 +5693,9 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "最佳化的 Spline36"
-
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "軟體混合"
-
-msgctxt "#16325"
-msgid "Auto - ION Optimized"
-msgstr "自動 - ION 最佳化"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6393,10 +6345,6 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "開始播放時超時"
 
-msgctxt "#19171"
-msgid "Start playback minimized"
-msgstr "開始播放時最小化"
-
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "即時錄影長度"
@@ -6464,10 +6412,6 @@ msgstr "電子節目表已經被重設"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "啟動時切換到上次的頻道"
-
-msgctxt "#19190"
-msgid "Minimized"
-msgstr "最小化"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6625,10 +6569,6 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "切換頻道後關閉頻道 OSD"
 
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr "播放電視串流時禁止更新電子節目表"
-
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "永遠使用後端的頻道順序"
@@ -6640,10 +6580,6 @@ msgstr "清除搜尋結果"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "定時器更新時顯示通知"
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "使用後端頻道號碼（只適用於1個已啟用的 PVR 附加元件）"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7468,14 +7404,6 @@ msgstr "顯示天氣資訊"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "顯示系統資訊"
-
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr "顯示可用的硬碟空間 C: E: F:"
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr "顯示可用的硬碟空間 E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8412,10 +8340,6 @@ msgstr "自動連續播放電視劇"
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "取得 Fanart"
-
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr "在視訊和音樂資料庫顯示 Fanart"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -9449,10 +9373,6 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "節目表"
 
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "為減少黑邊允許高寬比誤差"
-
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "在清單中顯示視訊檔"
@@ -9612,10 +9532,6 @@ msgstr "螢幕保護程式"
 msgctxt "#24009"
 msgid "Script"
 msgstr "腳本"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "視覺效果"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -10365,10 +10281,6 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "影像濾鏡/放大器初始化失敗，改用預設的雙線性放大"
 
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr "初始化音訊裝置失敗"
-
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "檢查你的音訊設定"
@@ -10400,10 +10312,6 @@ msgstr "周邊裝置"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "通用 HID 裝置"
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr "通用網路配接器"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10457,10 +10365,6 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "產品 ID"
 
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr "Pulse-Eight CEC 配接器"
-
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Pulse-Eight Nyxboard"
@@ -10481,10 +10385,6 @@ msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "啟用命令模式切換"
 
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr "無法開啟配接器"
-
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
 msgstr "開啟 XBMC 時打開這台電視"
@@ -10501,10 +10401,6 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "無法偵測CEC連接埠。請手動設定。"
 
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "無法偵測CEC配接器"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI連接埠編號"
@@ -10512,10 +10408,6 @@ msgstr "HDMI連接埠編號"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "已連接"
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "找到配接器，但無法取得 libcec"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10568,14 +10460,6 @@ msgstr "當電視被關閉時"
 msgctxt "#36030"
 msgid "Connection lost"
 msgstr "失去連線"
-
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr "這個使用者沒有開啟 CEC 配接器的權限"
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr "連接埠忙碌中。同時只有一個程式可以使用 CEC 配接器。"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
@@ -10713,14 +10597,6 @@ msgctxt "#36163"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
-msgctxt "#36168"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36169"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36173"
 msgid "No info available yet."
 msgstr "無可用資訊。"
@@ -10734,14 +10610,6 @@ msgid "No info available yet."
 msgstr "無可用資訊。"
 
 msgctxt "#36181"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36182"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36183"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 

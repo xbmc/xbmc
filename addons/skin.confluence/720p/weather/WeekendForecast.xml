@@ -6,8 +6,8 @@
 			<include>VisibleFadeEffect</include>
 			<control type="button" id="998">
 				<description>Hidden Button for focus</description>
-				<posx>-600</posx>
-				<posy>-20</posy>
+				<left>-600</left>
+				<top>-20</top>
 				<width>1</width>
 				<height>1</height>
 				<texturenofocus>-</texturenofocus>
@@ -17,8 +17,8 @@
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>20</posx>
-				<posy>13</posy>
+				<left>20</left>
+				<top>13</top>
 				<width>610</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -29,8 +29,8 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="label">
-				<posx>0</posx>
-				<posy>200</posy>
+				<left>0</left>
+				<top>200</top>
 				<width>600</width>
 				<height>30</height>
 				<font>font13</font>
@@ -41,16 +41,16 @@
 				<visible>IsEmpty(Window.Property(Weekend.IsFetched))</visible>
 			</control>
 			<control type="group">
-				<posx>20</posx>
-				<posy>50</posy>
+				<left>20</left>
+				<top>50</top>
 				<visible>!IsEmpty(Window.Property(Weekend.IsFetched))</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="group">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<control type="label">
-						<posx>0</posx>
-						<posy>5</posy>
+						<left>0</left>
+						<top>5</top>
 						<width>600</width>
 						<height>30</height>
 						<font>font13_title</font>
@@ -60,16 +60,16 @@
 						<label>$INFO[Window.Property(Weekend.1.LongDay)] - $INFO[Window.Property(Weekend.1.ShortDate)]</label>
 					</control>
 					<control type="image">
-						<posx>10</posx>
-						<posy>20</posy>
+						<left>10</left>
+						<top>20</top>
 						<width>130</width>
 						<height>160</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[Window.Property(Weekend.1.OutlookIcon)]</texture>
 					</control>
 					<control type="label">
-						<posx>140</posx>
-						<posy>40</posy>
+						<left>140</left>
+						<top>40</top>
 						<width>100</width>
 						<height>50</height>
 						<font>font13_title</font>
@@ -80,8 +80,8 @@
 						<label>[COLOR=grey2]$LOCALIZE[393][CR][/COLOR]$INFO[Window.Property(Weekend.1.HighTemperature),[B] ,[/B]]</label>
 					</control>
 					<control type="label">
-						<posx>140</posx>
-						<posy>100</posy>
+						<left>140</left>
+						<top>100</top>
 						<width>100</width>
 						<height>50</height>
 						<font>font13_title</font>
@@ -92,8 +92,8 @@
 						<label>[COLOR=grey2]$LOCALIZE[391][CR][/COLOR]$INFO[Window.Property(Weekend.1.LowTemperature),[B] ,[/B]]</label>
 					</control>
 					<control type="textbox">
-						<posx>240</posx>
-						<posy>40</posy>
+						<left>240</left>
+						<top>40</top>
 						<width>350</width>
 						<height>130</height>
 						<font>font12</font>
@@ -102,8 +102,8 @@
 						<label>$INFO[Window.Property(Weekend.1.Humidity),[COLOR=grey2]$LOCALIZE[406] :[/COLOR][B] ,[/B]][CR][CR]$INFO[Window.Property(Weekend.1.ShortWindDirection),[COLOR=grey2]$LOCALIZE[404] :[/COLOR][B] ,[/B]][CR][CR]$INFO[Window.Property(Weekend.1.Precipitation),[COLOR=grey2]$LOCALIZE[33021] :[/COLOR][B] ,[/B]]</label>
 					</control>
 					<control type="label">
-						<posx>0</posx>
-						<posy>170</posy>
+						<left>0</left>
+						<top>170</top>
 						<width>590</width>
 						<height>20</height>
 						<font>font12</font>
@@ -114,8 +114,8 @@
 						<label>$INFO[Window.Property(Weekend.1.Outlook),[COLOR=grey2]$LOCALIZE[33030]: [/COLOR]]</label>
 					</control>
 					<control type="textbox">
-						<posx>0</posx>
-						<posy>210</posy>
+						<left>0</left>
+						<top>210</top>
 						<width>590</width>
 						<height>70</height>
 						<font>font12</font>
@@ -125,19 +125,19 @@
 						<label>$INFO[Window.Property(Weekend.1.LongOutlookDay),[COLOR=grey2]$LOCALIZE[31905]: [/COLOR]][CR]</label>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>270</posy>
+						<left>0</left>
+						<top>270</top>
 						<width>650</width>
 						<height>4</height>
 						<texture>separator.png</texture>
 					</control>
 				</control>
 				<control type="group">
-					<posx>0</posx>
-					<posy>280</posy>
+					<left>0</left>
+					<top>280</top>
 					<control type="label">
-						<posx>0</posx>
-						<posy>5</posy>
+						<left>0</left>
+						<top>5</top>
 						<width>600</width>
 						<height>30</height>
 						<font>font13_title</font>
@@ -147,16 +147,16 @@
 						<label>$INFO[Window.Property(Weekend.2.LongDay)] - $INFO[Window.Property(Weekend.2.ShortDate)]</label>
 					</control>
 					<control type="image">
-						<posx>10</posx>
-						<posy>20</posy>
+						<left>10</left>
+						<top>20</top>
 						<width>130</width>
 						<height>160</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[Window.Property(Weekend.2.OutlookIcon)]</texture>
 					</control>
 					<control type="label">
-						<posx>140</posx>
-						<posy>40</posy>
+						<left>140</left>
+						<top>40</top>
 						<width>100</width>
 						<height>50</height>
 						<font>font13_title</font>
@@ -167,8 +167,8 @@
 						<label>[COLOR=grey2]$LOCALIZE[393][CR][/COLOR]$INFO[Window.Property(Weekend.2.HighTemperature),[B] ,[/B]]</label>
 					</control>
 					<control type="label">
-						<posx>140</posx>
-						<posy>100</posy>
+						<left>140</left>
+						<top>100</top>
 						<width>100</width>
 						<height>50</height>
 						<font>font13_title</font>
@@ -179,8 +179,8 @@
 						<label>[COLOR=grey2]$LOCALIZE[391][CR][/COLOR]$INFO[Window.Property(Weekend.2.LowTemperature),[B] ,[/B]]</label>
 					</control>
 					<control type="textbox">
-						<posx>240</posx>
-						<posy>40</posy>
+						<left>240</left>
+						<top>40</top>
 						<width>350</width>
 						<height>130</height>
 						<font>font12</font>
@@ -189,8 +189,8 @@
 						<label>$INFO[Window.Property(Weekend.2.Humidity),[COLOR=grey2]$LOCALIZE[406] :[/COLOR][B] ,[/B]][CR][CR]$INFO[Window.Property(Weekend.2.ShortWindDirection),[COLOR=grey2]$LOCALIZE[404] :[/COLOR][B] ,[/B]][CR][CR]$INFO[Window.Property(Weekend.2.Precipitation),[COLOR=grey2]$LOCALIZE[33021] :[/COLOR][B] ,[/B]]</label>
 					</control>
 					<control type="label">
-						<posx>0</posx>
-						<posy>170</posy>
+						<left>0</left>
+						<top>170</top>
 						<width>590</width>
 						<height>20</height>
 						<font>font12</font>
@@ -201,8 +201,8 @@
 						<label>$INFO[Window.Property(Weekend.2.Outlook),[COLOR=grey2]$LOCALIZE[33030]: [/COLOR]]</label>
 					</control>
 					<control type="textbox">
-						<posx>0</posx>
-						<posy>210</posy>
+						<left>0</left>
+						<top>210</top>
 						<width>590</width>
 						<height>70</height>
 						<font>font12</font>

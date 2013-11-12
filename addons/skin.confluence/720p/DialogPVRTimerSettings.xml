@@ -3,31 +3,31 @@
 	<defaultcontrol>29</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>275</posx>
-		<posy>30</posy>
+		<left>275</left>
+		<top>30</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image">
 			<description>background image</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>730</width>
 			<height>660</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
 			<description>Dialog Header image</description>
-			<posx>40</posx>
-			<posy>16</posy>
+			<left>40</left>
+			<top>16</top>
 			<width>650</width>
 			<height>40</height>
 			<texture>dialogheader.png</texture>
 		</control>
 		<control type="label" id="2">
 			<description>header label</description>
-			<posx>40</posx>
-			<posy>20</posy>
+			<left>40</left>
+			<top>20</top>
 			<width>650</width>
 			<height>30</height>
 			<font>font13_title</font>
@@ -39,8 +39,8 @@
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>640</posx>
-			<posy>15</posy>
+			<left>640</left>
+			<top>15</top>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -56,8 +56,8 @@
 		</control>
 		<control type="grouplist" id="5">
 			<description>control area</description>
-			<posx>30</posx>
-			<posy>70</posy>
+			<left>30</left>
+			<top>70</top>
 			<width>670</width>
 			<height>510</height>
 			<itemgap>5</itemgap>
@@ -67,12 +67,12 @@
 			<onright>9001</onright>
 		</control>
 		<control type="group" id="9001">
-			<posx>160</posx>
-			<posy>590</posy>
+			<left>160</left>
+			<top>590</top>
 			<control type="button" id="28">
 				<description>OK Button</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>200</width>
 				<height>40</height>
 				<align>center</align>
@@ -86,8 +86,8 @@
 			</control>
 			<control type="button" id="29">
 				<description>Cancel Button</description>
-				<posx>210</posx>
-				<posy>0</posy>
+				<left>210</left>
+				<top>0</top>
 				<width>200</width>
 				<height>40</height>
 				<align>center</align>

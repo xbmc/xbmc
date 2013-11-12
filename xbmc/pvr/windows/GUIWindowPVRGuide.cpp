@@ -242,7 +242,11 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
   CDateTime gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
   CDateTime firstDate(g_EpgContainer.GetFirstEPGDate());
   CDateTime lastDate(g_EpgContainer.GetLastEPGDate());
-  m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
+  if (!firstDate.IsValid() || firstDate < gridStart)
+    firstDate = gridStart;
+  if (!lastDate.IsValid() || lastDate < firstDate)
+    lastDate = firstDate;
+  m_parent->m_guideGrid->SetStartEnd(firstDate, lastDate);
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
@@ -354,10 +358,10 @@ bool CGUIWindowPVRGuide::OnClickList(CGUIMessage &message)
     bReturn = true;
     if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
     {
-      if (g_advancedSettings.m_bPVRShowEpgInfoOnEpgItemSelect)
-        ShowEPGInfo(pItem.get());
-      else
+      if (!g_advancedSettings.m_bPVRShowEpgInfoOnEpgItemSelect && pItem->GetEPGInfoTag()->StartAsLocalTime() <= CDateTime::GetCurrentDateTime())
         PlayEpgItem(pItem.get());
+      else
+        ShowEPGInfo(pItem.get());
     }
     else if (iAction == ACTION_SHOW_INFO)
       ShowEPGInfo(pItem.get());
@@ -428,6 +432,7 @@ bool CGUIWindowPVRGuide::PlayEpgItem(CFileItem *item)
 
   CLog::Log(LOGDEBUG, "play channel '%s'", channel->ChannelName().c_str());
   CFileItem channelItem = CFileItem(*channel);
+  g_application.SwitchToFullScreen();
   bool bReturn = PlayFile(&channelItem);
   if (!bReturn)
   {

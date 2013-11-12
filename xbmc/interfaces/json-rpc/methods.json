@@ -441,7 +441,12 @@
     "permission": "ControlPlayback",
     "params": [
       { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
-      { "name": "item", "$ref": "Playlist.Item", "required": true }
+      { "name": "item",
+        "type": [
+          { "$ref": "Playlist.Item", "required": true },
+          { "type": "array", "items": { "$ref": "Playlist.Item" }, "required": true }
+        ],
+        "required": true }
     ],
     "returns": "string"
   },
@@ -453,7 +458,12 @@
     "params": [
       { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
       { "name": "position", "$ref": "Playlist.Position", "required": true },
-      { "name": "item", "$ref": "Playlist.Item", "required": true }
+      { "name": "item",
+        "type": [
+          { "$ref": "Playlist.Item", "required": true },
+          { "type": "array", "items": { "$ref": "Playlist.Item" }, "required": true }
+        ],
+        "required": true }
     ],
     "returns": "string"
   },
@@ -1073,6 +1083,21 @@
       }
     }
   },
+  "VideoLibrary.GetSeasonDetails": {
+    "type": "method",
+    "description": "Retrieve details about a specific tv show season",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "seasonid", "$ref": "Library.Id", "required": true },
+      { "name": "properties", "$ref": "Video.Fields.Season" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "seasondetails": { "$ref": "Video.Details.Season" }
+      }
+    }
+  },
   "VideoLibrary.GetEpisodes": {
     "type": "method",
     "description": "Retrieve all tv show episodes",
@@ -1276,8 +1301,20 @@
       { "name": "thumbnail", "$ref": "Optional.String" },
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork", "required": true } ], "default": null },
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.SetMovieSetDetails": {
+    "type": "method",
+    "description": "Update the given movie set with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "setid", "$ref": "Library.Id", "required": true },
+      { "name": "title", "$ref": "Optional.String" },
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1305,7 +1342,18 @@
       { "name": "thumbnail", "$ref": "Optional.String" },
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork", "required": true } ], "default": null }
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.SetSeasonDetails": {
+    "type": "method",
+    "description": "Update the given season with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "seasonid", "$ref": "Library.Id", "required": true },
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1332,7 +1380,7 @@
       { "name": "originaltitle", "$ref": "Optional.String" },
       { "name": "thumbnail", "$ref": "Optional.String" },
       { "name": "fanart", "$ref": "Optional.String" },
-      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork", "required": true } ], "default": null },
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
     ],
     "returns": "string"
@@ -1359,7 +1407,7 @@
       { "name": "thumbnail", "$ref": "Optional.String" },
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork", "required": true } ], "default": null },
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
     ],
     "returns": "string"
@@ -1494,6 +1542,33 @@
     ],
     "returns": { "type": "boolean", "description": "Fullscreen state" }
   },
+  "GUI.SetStereoscopicMode": {
+    "type": "method",
+    "description": "Sets the stereoscopic mode of the GUI to the given mode",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [
+      { "name": "mode", "type": "string", "enum": [ "toggle", "tomono", "next", "previous", "select", "off", "split_vertical", "split_horizontal", "row_interleaved", "hardware_based", "anaglyph_cyan_red", "anaglyph_green_magenta", "monoscopic" ], "required": true }
+    ],
+    "returns": "string"
+  },
+  "GUI.GetStereoscopicModes": {
+    "type": "method",
+    "description": "Returns the supported stereoscopic modes of the GUI",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "stereoscopicmodes" : {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "GUI.Stereoscopy.Mode" }
+        }
+      }
+    }
+  },
   "Addons.GetAddons": {
     "type": "method",
     "description": "Gets all available addons",
@@ -1551,8 +1626,10 @@
       { "name": "addonid", "type": "string", "required": true },
       { "name": "params", "type": [
           { "type": "object", "additionalProperties": { "type": "string" } },
-          { "type": "array", "items": { "type": "string" } }
-        ]
+          { "type": "array", "items": { "type": "string" } },
+          { "type": "string", "description": "URL path (must start with / or ?" }
+        ],
+        "default": ""
       },
       { "name": "wait", "type": "boolean", "default": false }
     ],
@@ -1640,6 +1717,40 @@
       }
     }
   },
+  "PVR.GetBroadcasts": {
+    "type": "method",
+    "description": "Retrieves the program of a specific channel",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "channelid", "$ref": "Library.Id", "required": true },
+      { "name": "properties", "$ref": "PVR.Fields.Broadcast" },
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "broadcasts": { "type": "array", "required": true,
+          "items": { "$ref": "PVR.Details.Broadcast" }
+        }
+      }
+    }
+  },
+  "PVR.GetBroadcastDetails": {
+    "type": "method",
+    "description": "Retrieves the details of a specific broadcast",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "broadcastid", "$ref": "Library.Id", "required": true },
+      { "name": "properties", "$ref": "PVR.Fields.Broadcast" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "broadcastdetails": { "$ref": "PVR.Details.Broadcast" }
+      }
+    }
+  },
   "PVR.Record": {
     "type": "method",
     "description": "Toggle recording of a channel",
@@ -1663,6 +1774,34 @@
     "permission": "ControlPVR",
     "params": [ ],
     "returns":  "string"
+  },
+  "Textures.GetTextures": {
+    "type": "method",
+    "description": "Retrieve all textures",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "Textures.Fields.Texture" },
+      { "name": "filter", "$ref": "List.Filter.Textures" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "textures": { "type": "array", "required": true,
+          "items": { "$ref": "Textures.Details.Texture" }
+        }
+      }
+    }
+  },
+  "Textures.RemoveTexture": {
+    "type": "method",
+    "description": "Remove the specified texture",
+    "transport": "Response",
+    "permission": "RemoveData",
+    "params": [
+      { "name": "textureid", "$ref": "Library.Id", "required": true, "description": "Texture database identifier" }
+    ],
+    "returns": "string"
   },
   "Profiles.GetProfiles": {
     "type": "method",
@@ -1967,6 +2106,116 @@
       { "name": "window", "$ref": "Optional.String", "description": "Required for window favourite type" },
       { "name": "windowparameter", "$ref": "Optional.String" },
       { "name": "thumbnail", "$ref": "Optional.String" }
+    ],
+    "returns": "string"
+  },
+  "Settings.GetSections": {
+    "type": "method",
+    "description": "Retrieves all setting sections",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "level", "$ref": "Setting.Level", "default": "standard" },
+      { "name": "properties", "extends": "Item.Fields.Base",
+        "items": { "type": "string",
+          "enum": [ "categories" ]
+        }
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "sections": { "type": "array",
+          "items": { "$ref": "Setting.Details.Section" }
+        }
+      }
+    }
+  },
+  "Settings.GetCategories": {
+    "type": "method",
+    "description": "Retrieves all setting categories",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "level", "$ref": "Setting.Level", "default": "standard" },
+      { "name": "section", "type": "string", "default": "" },
+      { "name": "properties", "extends": "Item.Fields.Base",
+        "items": { "type": "string",
+          "enum": [ "settings" ]
+        }
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "categories": { "type": "array",
+          "items": { "$ref": "Setting.Details.Category" }
+        }
+      }
+    }
+  },
+  "Settings.GetSettings": {
+    "type": "method",
+    "description": "Retrieves all settings",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "level", "$ref": "Setting.Level", "default": "standard" },
+      { "name": "filter", "type": [
+          { "type": "object",
+            "properties": {
+              "section": { "type": "string", "required": true, "minLength": 1 },
+              "category": { "type": "string", "required": true, "minLength": 1 }
+            },
+            "additionalProperties": false,
+            "required": true
+          }
+        ],
+        "default": null
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "settings": { "type": "array",
+          "items": { "$ref": "Setting.Details.Setting" }
+        }
+      }
+    }
+  },
+  "Settings.GetSettingValue": {
+    "type": "method",
+    "description": "Retrieves the value of a setting",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "setting", "type": "string", "required": true, "minLength": 1 }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "value": { "$ref": "Setting.Value.Extended", "required": true }
+      }
+    }
+  },
+  "Settings.SetSettingValue": {
+    "type": "method",
+    "description": "Changes the value of a setting",
+    "transport": "Response",
+    "permission": "WriteSetting",
+    "params": [
+      { "name": "setting", "type": "string", "required": true, "minLength": 1 },
+      { "name": "value", "$ref": "Setting.Value.Extended", "required": true }
+    ],
+    "returns": "boolean"
+  },
+  "Settings.ResetSettingValue": {
+    "type": "method",
+    "description": "Resets the value of a setting",
+    "transport": "Response",
+    "permission": "WriteSetting",
+    "params": [
+      { "name": "setting", "type": "string", "required": true, "minLength": 1 }
     ],
     "returns": "string"
   }

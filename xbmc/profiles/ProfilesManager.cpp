@@ -80,11 +80,6 @@ CProfilesManager& CProfilesManager::Get()
   return sProfilesManager;
 }
 
-bool CProfilesManager::OnSettingsLoading()
-{
-  return true;
-}
-
 void CProfilesManager::OnSettingsLoaded()
 {
   // check them all
@@ -253,9 +248,6 @@ bool CProfilesManager::LoadProfile(size_t index)
   CSettings::Get().SetLoaded();
 
   CreateProfileFolders();
-
-  // initialize our charset converter
-  g_charsetConverter.reset();
 
   // Load the langinfo to have user charset <-> utf-8 conversion
   string strLanguage = CSettings::Get().GetString("locale.language");

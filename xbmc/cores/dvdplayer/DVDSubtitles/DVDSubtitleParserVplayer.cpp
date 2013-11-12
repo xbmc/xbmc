@@ -61,13 +61,13 @@ bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo &hints)
   {
     if (reg.RegFind(line) > -1)
     {
-      std::string hour = reg.GetReplaceString("\\1");
-      std::string min  = reg.GetReplaceString("\\2");
-      std::string sec  = reg.GetReplaceString("\\3");
+      std::string hour(reg.GetMatch(1));
+      std::string min (reg.GetMatch(2));
+      std::string sec (reg.GetMatch(3));
       std::string lines[3];
-      lines[0] = reg.GetReplaceString("\\4");
-      lines[1] = reg.GetReplaceString("\\6");
-      lines[2] = reg.GetReplaceString("\\8");
+      lines[0] = reg.GetMatch(4);
+      lines[1] = reg.GetMatch(6);
+      lines[2] = reg.GetMatch(8);
 
       CDVDOverlayText* pOverlay = new CDVDOverlayText();
       pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay

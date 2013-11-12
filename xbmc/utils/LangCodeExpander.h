@@ -62,9 +62,10 @@ public:
   *          or full english name string to a 2-Char (ISO 639-1) code.  
   *   \param[out] code The 2-Char language code of the given language lang.
   *   \param[in] lang The language that should be converted.
+  *   \param[in] checkXbmcLocales Try to find in XBMC specific locales
   *   \return true if the conversion succeeded, false otherwise. 
   */ 
-  bool ConvertToTwoCharCode(CStdString& code, const CStdString& lang);
+  bool ConvertToTwoCharCode(CStdString& code, const CStdString& lang, bool checkXbmcLocales = true);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
@@ -73,13 +74,8 @@ public:
   *   \return The 3-Char ISO 639-2/T code of lang if that code exists, lang otherwise.
   */
   CStdString ConvertToISO6392T(const CStdString& lang);
-#ifdef TARGET_WINDOWS
-  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack = false);
-  bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool localeHack = false);
-#else
-  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode);
-  bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode);
-#endif
+  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool checkWin32Locales = false);
+  bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool checkXbmcLocales = true, bool checkWin32Locales = false);
 
 #ifdef TARGET_WINDOWS
   bool ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode);

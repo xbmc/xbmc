@@ -99,6 +99,7 @@ string StringUtils::FormatV(const char *fmt, va_list args)
     cstr = new_cstr;
   }
 
+  free(cstr);
   return "";
 }
 
@@ -114,12 +115,25 @@ void StringUtils::ToLower(string &str)
 
 bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
 {
-  string tmp1 = str1;
-  string tmp2 = str2;
-  ToLower(tmp1);
-  ToLower(tmp2);
-  
-  return tmp1.compare(tmp2) == 0;
+  return EqualsNoCase(str1.c_str(), str2.c_str());
+}
+
+bool StringUtils::EqualsNoCase(const std::string &str1, const char *s2)
+{
+  return EqualsNoCase(str1.c_str(), s2);
+}
+
+bool StringUtils::EqualsNoCase(const char *s1, const char *s2)
+{
+  char c2; // we need only one char outside the loop
+  do
+  {
+    const char c1 = *s1++; // const local variable should help compiler to optimize
+    c2 = *s2++;
+    if (c1 != c2 && ::tolower(c1) != ::tolower(c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
+      return false;
+  } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need to test them both.
+  return true;
 }
 
 string StringUtils::Left(const string &str, size_t count)
@@ -153,15 +167,22 @@ std::string& StringUtils::Trim(std::string &str)
   return TrimRight(str);
 }
 
+// hack to ensure that std::string::iterator will be dereferenced as _unsigned_ char
+// without this hack "TrimX" functions failed on Win32 with UTF-8 strings
+static int isspace_c(char c)
+{
+  return ::isspace((unsigned char)c);
+}
+
 std::string& StringUtils::TrimLeft(std::string &str)
 {
-  str.erase(str.begin(), ::find_if(str.begin(), str.end(), ::not1(::ptr_fun<int, int>(::isspace))));
+  str.erase(str.begin(), ::find_if(str.begin(), str.end(), ::not1(::ptr_fun(isspace_c))));
   return str;
 }
 
 std::string& StringUtils::TrimRight(std::string &str)
 {
-  str.erase(::find_if(str.rbegin(), str.rend(), ::not1(::ptr_fun<int, int>(::isspace))).base(), str.end());
+  str.erase(::find_if(str.rbegin(), str.rend(), ::not1(::ptr_fun(isspace_c))).base(), str.end());
   return str;
 }
 
@@ -225,24 +246,95 @@ int StringUtils::Replace(std::string &str, const std::string &oldStr, const std:
   return replacedChars;
 }
 
-bool StringUtils::StartsWith(const std::string &str, const std::string &str2, bool useCase /* = false */)
+bool StringUtils::StartsWith(const std::string &str1, const std::string &str2)
 {
-  std::string left = StringUtils::Left(str, str2.size());
-  
-  if (useCase)
-    return left.compare(str2) == 0;
-
-  return StringUtils::EqualsNoCase(left, str2);
+  return str1.compare(0, str2.size(), str2) == 0;
 }
 
-bool StringUtils::EndsWith(const std::string &str, const std::string &str2, bool useCase /* = false */)
+bool StringUtils::StartsWith(const std::string &str1, const char *s2)
 {
-  std::string right = StringUtils::Right(str, str2.size());
-  
-  if (useCase)
-    return right.compare(str2) == 0;
+  return StartsWith(str1.c_str(), s2);
+}
 
-  return StringUtils::EqualsNoCase(right, str2);
+bool StringUtils::StartsWith(const char *s1, const char *s2)
+{
+  while (*s2 != '\0')
+  {
+    if (*s1 != *s2)
+      return false;
+    s1++;
+    s2++;
+  }
+  return true;
+}
+
+bool StringUtils::StartsWithNoCase(const std::string &str1, const std::string &str2)
+{
+  return StartsWithNoCase(str1.c_str(), str2.c_str());
+}
+
+bool StringUtils::StartsWithNoCase(const std::string &str1, const char *s2)
+{
+  return StartsWithNoCase(str1.c_str(), s2);
+}
+
+bool StringUtils::StartsWithNoCase(const char *s1, const char *s2)
+{
+  while (*s2 != '\0')
+  {
+    if (::tolower(*s1) != ::tolower(*s2))
+      return false;
+    s1++;
+    s2++;
+  }
+  return true;
+}
+
+bool StringUtils::EndsWith(const std::string &str1, const std::string &str2)
+{
+  if (str1.size() < str2.size())
+    return false;
+  return str1.compare(str1.size() - str2.size(), str2.size(), str2) == 0;
+}
+
+bool StringUtils::EndsWith(const std::string &str1, const char *s2)
+{
+  size_t len2 = strlen(s2);
+  if (str1.size() < len2)
+    return false;
+  return str1.compare(str1.size() - len2, len2, s2) == 0;
+}
+
+bool StringUtils::EndsWithNoCase(const std::string &str1, const std::string &str2)
+{
+  if (str1.size() < str2.size())
+    return false;
+  const char *s1 = str1.c_str() + str1.size() - str2.size();
+  const char *s2 = str2.c_str();
+  while (*s2 != '\0')
+  {
+    if (::tolower(*s1) != ::tolower(*s2))
+      return false;
+    s1++;
+    s2++;
+  }
+  return true;
+}
+
+bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
+{
+  size_t len2 = strlen(s2);
+  if (str1.size() < len2)
+    return false;
+  const char *s1 = str1.c_str() + str1.size() - len2;
+  while (*s2 != '\0')
+  {
+    if (::tolower(*s1) != ::tolower(*s2))
+      return false;
+    s1++;
+    s2++;
+  }
+  return true;
 }
 
 void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result)
@@ -341,7 +433,7 @@ CStdStringArray StringUtils::SplitString(const CStdString& input, const CStdStri
   return result;
 }
 
-vector<string> StringUtils::Split(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings /* = 0 */)
+vector<string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings /* = 0 */)
 {
   CStdStringArray result;
   SplitString(input, delimiter, result, iMaxStrings);
@@ -451,7 +543,7 @@ long StringUtils::TimeStringToSeconds(const CStdString &timeString)
   CStdString strCopy(timeString);
   strCopy.TrimLeft(" \n\r\t");
   strCopy.TrimRight(" \n\r\t");
-  if(strCopy.Right(4).Equals(" min"))
+  if(StringUtils::EndsWithNoCase(strCopy, " min"))
   {
     // this is imdb format of "XXX min"
     return 60 * atoi(strCopy.c_str());
@@ -773,4 +865,23 @@ std::string StringUtils::Paramify(const std::string &param)
 
   // add double quotes around the whole string
   return "\"" + result + "\"";
+}
+
+void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters)
+{
+  // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
+  // Skip delimiters at beginning.
+  string::size_type lastPos = input.find_first_not_of(delimiters, 0);
+  // Find first "non-delimiter".
+  string::size_type pos = input.find_first_of(delimiters, lastPos);
+
+  while (string::npos != pos || string::npos != lastPos)
+  {
+    // Found a token, add it to the vector.
+    tokens.push_back(input.substr(lastPos, pos - lastPos));
+    // Skip delimiters.  Note the "not_of"
+    lastPos = input.find_first_not_of(delimiters, pos);
+    // Find next "non-delimiter"
+    pos = input.find_first_of(delimiters, lastPos);
+  }
 }

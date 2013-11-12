@@ -149,7 +149,7 @@ bool CFavouritesDirectory::AddOrRemove(CFileItem *item, int contextWindow)
   CFileItemList items;
   Load(items);
 
-  CStdString executePath(GetExecutePath(item, contextWindow));
+  CStdString executePath(GetExecutePath(*item, contextWindow));
 
   CFileItemPtr match = items.Get(executePath);
   if (match)
@@ -175,27 +175,35 @@ bool CFavouritesDirectory::IsFavourite(CFileItem *item, int contextWindow)
   CFileItemList items;
   if (!Load(items)) return false;
 
-  return items.Contains(GetExecutePath(item, contextWindow));
+  return items.Contains(GetExecutePath(*item, contextWindow));
 }
 
-CStdString CFavouritesDirectory::GetExecutePath(const CFileItem *item, int contextWindow)
+CStdString CFavouritesDirectory::GetExecutePath(const CFileItem &item, int contextWindow)
+{
+  return GetExecutePath(item, StringUtils::Format("%i", contextWindow));
+}
+
+CStdString CFavouritesDirectory::GetExecutePath(const CFileItem &item, const std::string &contextWindow)
 {
   CStdString execute;
-  if (item->m_bIsFolder && (g_advancedSettings.m_playlistAsFolders ||
-                            !(item->IsSmartPlayList() || item->IsPlayList())))
-    execute.Format("ActivateWindow(%i,%s)", contextWindow, StringUtils::Paramify(item->GetPath()).c_str());
-  else if (item->IsScript())
-    execute.Format("RunScript(%s)", StringUtils::Paramify(item->GetPath().Mid(9)).c_str());
-  else if (item->IsAndroidApp())
-    execute.Format("StartAndroidActivity(%s)", StringUtils::Paramify(item->GetPath().Mid(26)).c_str());
+  if (item.m_bIsFolder && (g_advancedSettings.m_playlistAsFolders ||
+                            !(item.IsSmartPlayList() || item.IsPlayList())))
+  {
+    if (!contextWindow.empty())
+      execute.Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
+  }
+  else if (item.IsScript())
+    execute.Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().Mid(9)).c_str());
+  else if (item.IsAndroidApp())
+    execute.Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().Mid(26)).c_str());
   else  // assume a media file
   {
-    if (item->IsVideoDb() && item->HasVideoInfoTag())
-      execute.Format("PlayMedia(%s)", StringUtils::Paramify(item->GetVideoInfoTag()->m_strFileNameAndPath).c_str());
+    if (item.IsVideoDb() && item.HasVideoInfoTag())
+      execute.Format("PlayMedia(%s)", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath).c_str());
     else
-      execute.Format("PlayMedia(%s)", StringUtils::Paramify(item->GetPath()).c_str());
+      execute.Format("PlayMedia(%s)", StringUtils::Paramify(item.GetPath()).c_str());
   }
   return execute;
 }
-  
+
 }

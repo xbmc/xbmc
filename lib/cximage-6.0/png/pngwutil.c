@@ -1721,7 +1721,6 @@ png_write_tIME(png_structp png_ptr, png_timep mod_time)
    png_write_chunk(png_ptr, png_tIME, buf, (png_size_t)7);
 }
 #endif
-
 /* initializes the row writing capability of libpng */
 void /* PRIVATE */
 png_write_start_row(png_structp png_ptr)
@@ -1790,8 +1789,8 @@ png_write_start_row(png_structp png_ptr)
             (png_ptr->rowbytes + 1));
          png_ptr->paeth_row[0] = PNG_FILTER_VALUE_PAETH;
       }
-#endif /* PNG_NO_WRITE_FILTERING */
    }
+#endif /* PNG_NO_WRITE_FILTERING */
 
 #ifdef PNG_WRITE_INTERLACING_SUPPORTED
    /* if interlaced, we need to set up width and height of pass */

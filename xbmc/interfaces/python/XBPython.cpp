@@ -72,7 +72,7 @@ XBPython::XBPython()
 
 XBPython::~XBPython()
 {
-  TRACE;
+  XBMC_TRACE;
   CAnnouncementManager::RemoveAnnouncer(this);
 }
 
@@ -116,7 +116,7 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
 // message all registered callbacks that we started playing
 void XBPython::OnPlayBackStarted()
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -128,7 +128,7 @@ void XBPython::OnPlayBackStarted()
 // message all registered callbacks that we paused playing
 void XBPython::OnPlayBackPaused()
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -140,7 +140,7 @@ void XBPython::OnPlayBackPaused()
 // message all registered callbacks that we resumed playing
 void XBPython::OnPlayBackResumed()
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -152,7 +152,7 @@ void XBPython::OnPlayBackResumed()
 // message all registered callbacks that xbmc stopped playing
 void XBPython::OnPlayBackEnded()
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -164,7 +164,7 @@ void XBPython::OnPlayBackEnded()
 // message all registered callbacks that user stopped playing
 void XBPython::OnPlayBackStopped()
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -176,7 +176,7 @@ void XBPython::OnPlayBackStopped()
 // message all registered callbacks that playback speed changed (FF/RW)
 void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -188,7 +188,7 @@ void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 // message all registered callbacks that player is seeking
 void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -200,7 +200,7 @@ void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
 // message all registered callbacks that player chapter seeked
 void XBPython::OnPlayBackSeekChapter(int iChapter)
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -212,7 +212,7 @@ void XBPython::OnPlayBackSeekChapter(int iChapter)
 // message all registered callbacks that next item has been queued
 void XBPython::OnQueueNextItem()
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -223,14 +223,14 @@ void XBPython::OnQueueNextItem()
 
 void XBPython::RegisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
-  TRACE;
+  XBMC_TRACE;
   CSingleLock lock(m_vecPlayerCallbackList);
   m_vecPlayerCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
-  TRACE;
+  XBMC_TRACE;
   CSingleLock lock(m_vecPlayerCallbackList);
   PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
   while (it != m_vecPlayerCallbackList.end())
@@ -247,14 +247,14 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 
 void XBPython::RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
-  TRACE;
+  XBMC_TRACE;
   CSingleLock lock(m_vecMonitorCallbackList);
   m_vecMonitorCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
-  TRACE;
+  XBMC_TRACE;
   CSingleLock lock(m_vecMonitorCallbackList);
   MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
   while (it != m_vecMonitorCallbackList.end())
@@ -271,7 +271,7 @@ void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallba
 
 void XBPython::OnSettingsChanged(const CStdString &ID)
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -282,7 +282,7 @@ void XBPython::OnSettingsChanged(const CStdString &ID)
 
 void XBPython::OnScreensaverActivated()
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -293,7 +293,7 @@ void XBPython::OnScreensaverActivated()
 
 void XBPython::OnScreensaverDeactivated()
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -304,7 +304,7 @@ void XBPython::OnScreensaverDeactivated()
 
 void XBPython::OnDatabaseUpdated(const std::string &database)
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -315,7 +315,7 @@ void XBPython::OnDatabaseUpdated(const std::string &database)
 
 void XBPython::OnDatabaseScanStarted(const std::string &database)
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -326,7 +326,7 @@ void XBPython::OnDatabaseScanStarted(const std::string &database)
 
 void XBPython::OnAbortRequested(const CStdString &ID)
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -342,7 +342,7 @@ void XBPython::OnAbortRequested(const CStdString &ID)
 
 void XBPython::OnNotification(const std::string &sender, const std::string &method, const std::string &data)
 {
-  TRACE;
+  XBMC_TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
@@ -415,7 +415,7 @@ void XBPython::UnloadExtensionLibs()
 */
 bool XBPython::InitializeEngine()
 {
-  TRACE;
+  XBMC_TRACE;
   CLog::Log(LOGINFO, "initializing python engine.");
   CSingleLock lock(m_critSection);
   m_iDllScriptCounter++;
@@ -512,7 +512,7 @@ bool XBPython::InitializeEngine()
 */
 void XBPython::FinalizeScript()
 {
-  TRACE;
+  XBMC_TRACE;
   CSingleLock lock(m_critSection);
   // for linux - we never release the library. its loaded and stays in memory.
   if (m_iDllScriptCounter)
@@ -525,7 +525,7 @@ void XBPython::FinalizeScript()
 // Always called with the lock held on m_critSection
 void XBPython::Finalize()
 {
-  TRACE;
+  XBMC_TRACE;
   if (m_bInitialized)
   {
     CLog::Log(LOGINFO, "Python, unloading python shared library because no scripts are running anymore");
@@ -548,13 +548,13 @@ void XBPython::Finalize()
     UnloadExtensionLibs();
 #endif
 
-    // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
+    // first free all dlls loaded by python, after that unload python (this is done by UnloadPythonDlls
 #if !(defined(TARGET_DARWIN) || defined(TARGET_WINDOWS))
     DllLoaderContainer::UnloadPythonDlls();
 #endif
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
     // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
-    // The implementation for linux needs looking at - UnloadPythonDlls() currently only searches for "python24.dll"
+    // The implementation for linux needs looking at - UnloadPythonDlls() currently only searches for "python26.dll"
     // The implementation for osx can never unload the python dylib.
     DllLoaderContainer::ReleaseModule(m_pDll);
 #endif

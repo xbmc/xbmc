@@ -40,12 +40,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr ""
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr ""
+#empty string with id 31007
 
 msgctxt "#31008"
-msgid "Fullscreen"
+msgid "Full screen"
 msgstr ""
 
 msgctxt "#31009"
@@ -139,7 +137,7 @@ msgstr ""
 #empty string with id 31047
 
 msgctxt "#31048"
-msgid "Visualization Presets"
+msgid "Visualisation Presets"
 msgstr ""
 
 msgctxt "#31049"
@@ -245,7 +243,7 @@ msgid "Show Recently added Videos"
 msgstr ""
 
 msgctxt "#31118"
-msgid "Home Page Programs Submenu"
+msgid "Home Page Programs Sub-menu"
 msgstr ""
 
 msgctxt "#31119"
@@ -259,7 +257,7 @@ msgid "Show Background \"Now Playing\" Video"
 msgstr ""
 
 msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
+msgid "Show Background \"Now Playing\" Visualisation"
 msgstr ""
 
 msgctxt "#31126"
@@ -275,7 +273,7 @@ msgid "Lyrics"
 msgstr ""
 
 msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
+msgid "Hide Fanart in full screen visualisation"
 msgstr ""
 
 #empty strings from id 31130 to 31131
@@ -284,20 +282,18 @@ msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr ""
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr ""
+#empty string with id 31133
 
 msgctxt "#31134"
-msgid "Home Page Videos Submenu"
+msgid "Home Page Videos Sub-menu"
 msgstr ""
 
 msgctxt "#31135"
-msgid "Home Page Music Submenu"
+msgid "Home Page Music Sub-menu"
 msgstr ""
 
 msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
+msgid "Home Page Pictures Sub-menu"
 msgstr ""
 
 #empty strings from id 31137 to 31139
@@ -308,6 +304,10 @@ msgstr ""
 
 msgctxt "#31141"
 msgid "Video OSD"
+msgstr ""
+
+msgctxt "#31142"
+msgid "Settings level"
 msgstr ""
 
 #empty strings from id 31142 to 31199
@@ -473,7 +473,8 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr ""
 
-#empty strings from id 31357 to 31358
+#empty strings from id 31357 to 31359
+
 # Stereoscopic labels
 msgctxt "#31360"
 msgid "Watch as 2D"
@@ -487,7 +488,7 @@ msgctxt "#31362"
 msgid "Enabled"
 msgstr ""
 
-#empty strings from id 3136 to 31389
+#empty strings from id 31363 to 31389
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -537,7 +538,7 @@ msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse f
 msgstr ""
 
 msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
 msgstr ""
 
 msgctxt "#31410"
@@ -552,16 +553,17 @@ msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr ""
 
-#empty strings from id 31413 to 31420
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr ""
+
+#empty strings from id 31414 to 31420
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr ""
 
-#empty strings from id 31422 to 31499
-#PVR labels
-
-#empty string id #31500
+#empty strings from id 31422 to 31500
 
 msgctxt "#31501"
 msgid "Scheduled Time"

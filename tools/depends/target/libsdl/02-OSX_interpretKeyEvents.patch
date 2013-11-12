@@ -1,0 +1,15 @@
+--- src/video/quartz/SDL_QuartzEvents.m	2009-10-13 07:07:14.000000000 +0800
++++ src/video/quartz/SDL_QuartzEvents.m	2013-08-03 09:12:27.000000000 +0800
+@@ -280,7 +280,11 @@
+         the scancode/keysym.
+     */
+     if (SDL_TranslateUNICODE && state == SDL_PRESSED) {
+-        [field_edit interpretKeyEvents:[NSArray arrayWithObject:event]];
++        NSResponder *firstResponder = [[NSApp keyWindow] firstResponder];
++        if ([NSStringFromClass([firstResponder class]) isEqual:@"OSXTextInputResponder"])
++          [firstResponder interpretKeyEvents:[NSArray arrayWithObject:event]];
++        else
++          [field_edit interpretKeyEvents:[NSArray arrayWithObject:event]];
+         chars = [ event characters ];
+         numChars = [ chars length ];
+         if (numChars > 0)

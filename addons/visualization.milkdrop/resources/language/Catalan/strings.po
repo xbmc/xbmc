@@ -26,7 +26,7 @@ msgstr "Temps entre predefinits"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
-msgstr "Temps aleatori addicional"
+msgstr "Temps Aleatori Addicional"
 
 msgctxt "#30003"
 msgid "Enable Anisotropic Filtering"
@@ -34,15 +34,15 @@ msgstr "Activa el filtre anisotròpic"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
-msgstr "Activa talls durs"
+msgstr "Activa talls en sec"
 
 msgctxt "#30005"
 msgid "Loudness Threshold For Hard Cuts"
-msgstr "Llindar de potència pels talls durs"
+msgstr "Llindar de volum pels talls en sec"
 
 msgctxt "#30006"
 msgid "Average Time Between Hard Cuts"
-msgstr "Temps mig entre talls curts"
+msgstr "Temps mig entre talls en sec"
 
 msgctxt "#30007"
 msgid "Maximum Refresh Rate"
@@ -50,7 +50,7 @@ msgstr "Temps de refresc màxim"
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
-msgstr "Activa l'estèreo 3D"
+msgstr "Activa l'Stereo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
@@ -62,7 +62,7 @@ msgstr "Directori de predefinits de l'usuari"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Mode de mescla de predefinits"
+msgstr "Mode aleatori de predefinits"
 
 msgctxt "#30020"
 msgid "WA51 Presets"

@@ -15,6 +15,7 @@
         <setting id="videoplayer.usevda" type="boolean" label="13429" help="36160">
           <level>2</level>
           <default>true</default>
+          <control type="toggle" />
         </setting>
       </group>
     </category>

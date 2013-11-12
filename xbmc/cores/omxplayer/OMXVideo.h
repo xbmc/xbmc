@@ -31,6 +31,7 @@
 #include "guilib/Geometry.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "xbmc/settings/VideoSettings.h"
+#include "threads/CriticalSection.h"
 #include <string>
 
 #define VIDEO_BUFFERS 60
@@ -88,7 +89,6 @@ protected:
   uint8_t           *m_extradata;
   int               m_extrasize;
 
-  bool              m_video_convert;
   std::string       m_video_codec_name;
 
   bool              m_deinterlace;
@@ -101,6 +101,7 @@ protected:
   OMX_DISPLAYTRANSFORMTYPE m_transform;
   bool              m_settings_changed;
   static bool NaluFormatStartCodes(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize);
+  CCriticalSection m_critSection;
 };
 
 #endif

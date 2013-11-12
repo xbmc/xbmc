@@ -56,7 +56,7 @@ private:
    \param options any options, such as "hideext" to hide extensions
    \return the filenames in the path that match the mask
    */
-  std::vector<CStdString> GetFileEnumValues(const CStdString &path, const CStdString &mask, const CStdString &options) const;
+  std::vector<std::string> GetFileEnumValues(const CStdString &path, const CStdString &mask, const CStdString &options) const;
 
   /*! \brief Translate list of addon IDs to list of addon names
    \param addonIDslist comma seperated list of addon IDs

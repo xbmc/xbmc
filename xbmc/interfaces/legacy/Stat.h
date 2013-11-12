@@ -42,7 +42,7 @@ namespace XBMCAddon
       struct __stat64 st;
       
     public:
-      Stat(const String& path) : AddonClass("Stat")
+      Stat(const String& path)
       {
         DelayedCallGuard dg;
         XFILE::CFile::Stat(path, &st);

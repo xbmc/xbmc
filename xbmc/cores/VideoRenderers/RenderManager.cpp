@@ -26,6 +26,7 @@
 #include "threads/CriticalSection.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
+#include "threads/Atomics.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -35,6 +36,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "guilib/GUIFontManager.h"
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
@@ -164,14 +166,6 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
     return;
   }
 
-  bool ismaster = CDVDClock::IsMasterClock();
-
-  //the videoreferenceclock updates its clock on every vertical blank
-  //we want every frame's presenttime to end up in the middle of two vblanks
-  //if CDVDPlayerAudio is the master clock, we add a correction to the presenttime
-  if (ismaster)
-    presenttime += m_presentcorr * frametime;
-
   double clock     = CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
   double target    = 0.5;
   double error     = ( clock - presenttime ) / frametime - target;
@@ -201,20 +195,11 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   avgerror /= ERRORBUFFSIZE;
 
 
-  //if CDVDPlayerAudio is not the master clock, we change the clock speed slightly
+  //we change the clock speed slightly
   //to make every frame's presenttime end up in the middle of two vblanks
-  if (!ismaster)
-  {
-    //integral correction, clamp to -0.5:0.5 range
-    m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.1), -0.1);
-    g_VideoReferenceClock.SetFineAdjust(1.0 - avgerror * 0.01 - m_presentcorr * 0.01);
-  }
-  else
-  {
-    //integral correction, wrap to -0.5:0.5 range
-    m_presentcorr = wrap(m_presentcorr + avgerror * 0.01, target - 1.0, target);
-    g_VideoReferenceClock.SetFineAdjust(1.0);
-  }
+  //integral correction, clamp to -0.5:0.5 range
+  m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.1), -0.1);
+  g_VideoReferenceClock.SetFineAdjust(1.0 - avgerror * 0.01 - m_presentcorr * 0.01);
 
   //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
 }
@@ -453,6 +438,8 @@ void CXBMCRenderManager::UnInit()
   m_bIsStarted = false;
 
   m_overlays.Flush();
+  g_fontManager.Unload("__subtitle__");
+  g_fontManager.Unload("__subtitleborder__");
 
   // free renderer resources.
   // TODO: we may also want to release the renderer here.
@@ -936,6 +923,10 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
 #ifdef HAS_LIBSTAGEFRIGHT
   else if(pic.format == RENDER_FMT_EGLIMG)
     m_pRenderer->AddProcessor(pic.stf, pic.eglimg, index);
+#endif
+#if defined(TARGET_ANDROID)
+  else if(pic.format == RENDER_FMT_MEDIACODEC)
+    m_pRenderer->AddProcessor(pic.mediacodec, index);
 #endif
 
   m_pRenderer->ReleaseImage(index, false);

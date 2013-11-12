@@ -48,6 +48,9 @@ protected:
 
   ~TestJobManager()
   {
+    /* Always cancel jobs test completion */
+    CJobManager::GetInstance().CancelJobs();
+    CJobManager::GetInstance().Restart();
     CSettings::Get().Unload();
   }
 };
@@ -56,7 +59,6 @@ TEST_F(TestJobManager, AddJob)
 {
   CJob* job = new CSysInfoJob();
   CJobManager::GetInstance().AddJob(job, NULL);
-  CJobManager::GetInstance().CancelJobs();
 }
 
 TEST_F(TestJobManager, CancelJob)
@@ -67,26 +69,111 @@ TEST_F(TestJobManager, CancelJob)
   CJobManager::GetInstance().CancelJob(id);
 }
 
-TEST_F(TestJobManager, Pause)
+namespace
 {
-  CJob* job = new CSysInfoJob();
-  CJobManager::GetInstance().AddJob(job, NULL, CJob::PRIORITY_NORMAL);
+struct JobControlPackage
+{
+  JobControlPackage() :
+    ready (false)
+  {
+    // We're not ready to wait yet
+    jobCreatedMutex.lock();
+  }
 
-  EXPECT_FALSE(CJobManager::GetInstance().IsPaused(CJob::PRIORITY_NORMAL));
-  CJobManager::GetInstance().Pause(CJob::PRIORITY_NORMAL);
-  EXPECT_TRUE(CJobManager::GetInstance().IsPaused(CJob::PRIORITY_NORMAL));
-  CJobManager::GetInstance().UnPause(CJob::PRIORITY_NORMAL);
-  EXPECT_FALSE(CJobManager::GetInstance().IsPaused(CJob::PRIORITY_NORMAL));
+  ~JobControlPackage()
+  {
+    jobCreatedMutex.unlock();
+  }
 
-  CJobManager::GetInstance().CancelJobs();
+  bool ready;
+  XbmcThreads::ConditionVariable jobCreatedCond;
+  CCriticalSection jobCreatedMutex;
+};
+
+class BroadcastingJob :
+  public CJob
+{
+public:
+
+  BroadcastingJob(JobControlPackage &package) :
+    m_package(package),
+    m_finish(false)
+  {
+  }
+
+  void FinishAndStopBlocking()
+  {
+    CSingleLock lock(m_blockMutex);
+
+    m_finish = true;
+    m_block.notifyAll();
+  }
+
+  const char * GetType() const
+  {
+    return "BroadcastingJob";
+  }
+
+  bool DoWork()
+  {
+    {
+      CSingleLock lock(m_package.jobCreatedMutex);
+    
+      m_package.ready = true;
+      m_package.jobCreatedCond.notifyAll();
+    }
+
+    CSingleLock blockLock(m_blockMutex);
+
+    // Block until we're told to go away
+    while (!m_finish)
+      m_block.wait(m_blockMutex);
+    return true;
+  }
+
+private:
+
+  JobControlPackage &m_package;
+
+  XbmcThreads::ConditionVariable m_block;
+  CCriticalSection m_blockMutex;
+  bool m_finish;
+};
+
+BroadcastingJob *
+WaitForJobToStartProcessing(CJob::PRIORITY priority, JobControlPackage &package)
+{
+  BroadcastingJob* job = new BroadcastingJob(package);
+  CJobManager::GetInstance().AddJob(job, NULL, priority);
+
+  // We're now ready to wait, wait and then unblock once ready
+  while (!package.ready)
+    package.jobCreatedCond.wait(package.jobCreatedMutex);
+
+  return job;
+}
+}
+  
+TEST_F(TestJobManager, PauseLowPriorityJob)
+{
+  JobControlPackage package;
+  BroadcastingJob *job (WaitForJobToStartProcessing(CJob::PRIORITY_LOW_PAUSABLE, package));
+
+  EXPECT_TRUE(CJobManager::GetInstance().IsProcessing(CJob::PRIORITY_LOW_PAUSABLE));
+  CJobManager::GetInstance().PauseJobs();
+  EXPECT_FALSE(CJobManager::GetInstance().IsProcessing(CJob::PRIORITY_LOW_PAUSABLE));
+  CJobManager::GetInstance().UnPauseJobs();
+  EXPECT_TRUE(CJobManager::GetInstance().IsProcessing(CJob::PRIORITY_LOW_PAUSABLE));
+
+  job->FinishAndStopBlocking();
 }
 
 TEST_F(TestJobManager, IsProcessing)
 {
-  CJob* job = new CSysInfoJob();
-  CJobManager::GetInstance().AddJob(job, NULL);
+  JobControlPackage package;
+  BroadcastingJob *job (WaitForJobToStartProcessing(CJob::PRIORITY_LOW_PAUSABLE, package));
 
   EXPECT_EQ(0, CJobManager::GetInstance().IsProcessing(""));
 
-  CJobManager::GetInstance().CancelJobs();
+  job->FinishAndStopBlocking();
 }

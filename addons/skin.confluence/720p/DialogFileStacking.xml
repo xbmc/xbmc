@@ -4,21 +4,21 @@
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
-		<posx>315</posx>
-		<posy>260</posy>
+		<left>315</left>
+		<top>260</top>
 	</coordinates>
 	<controls>
 		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>650</width>
 			<height>200</height>
 			<texture border="20">OverlayDialogBackground.png</texture>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>560</posx>
-			<posy>5</posy>
+			<left>560</left>
+			<top>5</top>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -34,8 +34,8 @@
 		</control>
 		<control type="label">
 			<description>heading label</description>
-			<posx>40</posx>
-			<posy>18</posy>
+			<left>40</left>
+			<top>18</top>
 			<width>570</width>
 			<height>30</height>
 			<align>center</align>
@@ -45,8 +45,8 @@
 			<textcolor>white</textcolor>
 		</control>
 		<control type="label">
-			<posx>40</posx>
-			<posy>60</posy>
+			<left>40</left>
+			<top>60</top>
 			<width>570</width>
 			<height>30</height>
 			<align>center</align>
@@ -56,24 +56,24 @@
 			<textcolor>grey2</textcolor>
 		</control>
 		<control type="image">
-			<posx>50</posx>
-			<posy>110</posy>
+			<left>50</left>
+			<top>110</top>
 			<width>20</width>
 			<height>25</height>
 			<texture>scroll-left-focus.png</texture>
 			<visible>Container(450).HasPrevious</visible>
 		</control>
 		<control type="image">
-			<posx>575</posx>
-			<posy>110</posy>
+			<left>575</left>
+			<top>110</top>
 			<width>20</width>
 			<height>25</height>
 			<texture>scroll-right-focus.png</texture>
 			<visible>Container(450).HasNext</visible>
 		</control>
 		<control type="list" id="450">
-			<posx>85</posx>
-			<posy>105</posy>
+			<left>85</left>
+			<top>105</top>
 			<width>480</width>
 			<height>100</height>
 			<onleft>450</onleft>
@@ -86,8 +86,8 @@
 			<scrolltime>200</scrolltime>
 			<itemlayout width="40">
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>38</width>
 					<height>32</height>
 					<aspectratio>stretch</aspectratio>
@@ -96,8 +96,8 @@
 			</itemlayout>
 			<focusedlayout width="40">
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>38</width>
 					<height>32</height>
 					<aspectratio>stretch</aspectratio>
@@ -106,8 +106,8 @@
 			</focusedlayout>
 		</control>
 		<control type="label">
-			<posx>40</posx>
-			<posy>155</posy>
+			<left>40</left>
+			<top>155</top>
 			<width>570</width>
 			<height>22</height>
 			<font>font13_title</font>

@@ -65,6 +65,7 @@ namespace OVERLAY {
 
     enum EPosition
     { POSITION_ABSOLUTE
+    , POSITION_ABSOLUTE_SCREEN
     , POSITION_RELATIVE
     } m_pos;
 

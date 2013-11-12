@@ -37,6 +37,7 @@
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
 #include "guilib/LocalizeStrings.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 #define PLAYERCOREFACTORY_XML "playercorefactory.xml"
 
@@ -162,7 +163,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 {
   CURL url(item.GetPath());
 
-  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", item.GetPath().c_str());
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", CURL::GetRedacted(item.GetPath()).c_str());
 
   // Process rules
   for(unsigned int i = 0; i < m_vecCoreSelectionRules.size(); i++)
@@ -189,13 +190,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
     if (bAdd)
     {
-      if( CSettings::Get().GetInt("audiooutput.mode") == AUDIO_ANALOG )
-      {
-        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding PAPlayer (%d)", EPC_PAPLAYER);
-        vecCores.push_back(EPC_PAPLAYER);
-      }
-      else if (url.GetFileType().Equals("ac3") 
-            || url.GetFileType().Equals("dts"))
+      if ((url.GetFileType().Equals("ac3") && !CAEFactory::SupportsRaw(AE_FMT_AC3))
+            || (url.GetFileType().Equals("dts") && !CAEFactory::SupportsRaw(AE_FMT_DTS)))
       {
         CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding DVDPlayer (%d)", EPC_DVDPLAYER);
         vecCores.push_back(EPC_DVDPLAYER);
@@ -338,13 +334,6 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", EPC_PAPLAYER, NULL);
     paplayer->m_bPlaysAudio = true;
     m_vecCoreConfigs.push_back(paplayer);
-
-#if defined(HAS_AMLPLAYER)
-    CPlayerCoreConfig* amlplayer = new CPlayerCoreConfig("AMLPlayer", EPC_AMLPLAYER, NULL);
-    amlplayer->m_bPlaysAudio = true;
-    amlplayer->m_bPlaysVideo = true;
-    m_vecCoreConfigs.push_back(amlplayer);
-#endif
 
 #if defined(HAS_OMXPLAYER)
     CPlayerCoreConfig* omxplayer = new CPlayerCoreConfig("OMXPlayer", EPC_OMXPLAYER, NULL);

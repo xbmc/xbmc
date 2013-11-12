@@ -203,8 +203,6 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
 {
   CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   items.ClearItems();
-  CAddonDatabase db;
-  db.Open();
   for (unsigned i=0; i < addons.size(); i++)
   {
     AddonPtr addon = addons[i];
@@ -216,10 +214,12 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     AddonPtr addon2;
     if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
-    else if (db.IsOpen() && db.IsAddonDisabled(addon->ID()))
+    else if (CAddonMgr::Get().IsAddonDisabled(addon->ID()))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24023));
 
-    if (!addon->Props().broken.IsEmpty())
+    if (addon->Props().broken == "DEPSNOTMET")
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24049));
+    else if (!addon->Props().broken.empty())
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24098));
     if (addon2 && addon2->Version() < addon->Version())
     {
@@ -229,10 +229,9 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
     items.Add(pItem);
   }
-  db.Close();
 }
 
-CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdString &basePath, bool folder)
+CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CStdString &basePath, bool folder)
 {
   if (!addon)
     return CFileItemPtr();

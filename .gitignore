@@ -57,14 +57,6 @@ config.log
 *.pbxuser
 *project.xcworkspace
 *xcuserdata
-/tools/darwin/depends/config.site
-/tools/darwin/depends/config.site.mk
-/tools/darwin/depends/Makefile
-/tools/darwin/depends/Makefile.include
-/tools/darwin/depends/configure
-/tools/darwin/depends/python26/Makefile
-/tools/darwin/depends/**/.gitignore
-/tools/darwin/depends/**/.installed
 
 .libs/
 .deps/
@@ -419,6 +411,11 @@ lib/cmyth/Makefile
 /system/players/dvdplayer/libdvdnav.dll
 /system/players/dvdplayer/libexpat-1.dll
 /system/players/dvdplayer/libfontconfig-1.dll
+/system/players/dvdplayer/libgmp-10.dll
+/system/players/dvdplayer/libgnutls-28.dll
+/system/players/dvdplayer/libhogweed-2-5.dll
+/system/players/dvdplayer/libnettle-4-7.dll
+/system/players/dvdplayer/libp11-kit-0.dll
 /system/players/dvdplayer/librtmp.dll
 /system/players/dvdplayer/postproc-52.dll
 /system/players/dvdplayer/swresample-0.dll
@@ -591,6 +588,9 @@ lib/cmyth/Makefile
 /xbmc/guilib/Profile
 /xbmc/guilib/Profile_FastCap
 
+# /xbmc/input
+/xbmc/input/linux/Makefile
+
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
 /xbmc/interfaces/python/Makefile
@@ -716,6 +716,14 @@ lib/cmyth/Makefile
 #/xbmc/win32/
 # no longer used
 /xbmc/win32/git_rev.h
+
+# /xbmc/windowing/
+/xbmc/windowing/Makefile
+/xbmc/windowing/egl/Makefile
+/xbmc/windowing/tests/wayland/xbmc_wayland_test_client_protocol.h
+/xbmc/windowing/tests/wayland/xbmc_wayland_test_protocol.c
+/xbmc/windowing/tests/wayland/xbmc_wayland_test_server_protocol.h
+/xbmc/windowing/tests/wayland/Makefile
 
 # /lib/ffmpeg/
 /lib/ffmpeg/config.h

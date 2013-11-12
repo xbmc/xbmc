@@ -83,10 +83,10 @@ public:
   enum WindowsVersion
   {
     WindowsVersionUnknown = -1, // Undetected, unsupported Windows version or OS in not Windows
-    WindowsVersionWinXP,        // Windows XP, Windows Server 2003 (R2), Windows Home Server
     WindowsVersionVista,        // Windows Vista, Windows Server 2008
     WindowsVersionWin7,         // Windows 7, Windows Server 2008 R2
     WindowsVersionWin8,         // Windows 8, Windows Server 2012
+    WindowsVersionWin8_1,       // Windows 8.1
     /* Insert new Windows versions here, when they'll be known */
     WindowsVersionFuture = 100  // Future Windows version, not known to code
   };
@@ -120,13 +120,17 @@ public:
   static bool IsWindowsVersion(WindowsVersion ver);
   static bool IsWindowsVersionAtLeast(WindowsVersion ver);
   static WindowsVersion GetWindowsVersion();
-  static bool IsOS64bit();
+  static int GetKernelBitness(void);
+  static int GetXbmcBitness(void);
   static CStdString GetKernelVersion();
   CStdString GetCPUModel();
   CStdString GetCPUBogoMips();
   CStdString GetCPUHardware();
   CStdString GetCPURevision();
   CStdString GetCPUSerial();
+  CStdString GetManufacturer();
+  CStdString GetProduct();
+  CStdString GetModel();
   bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
   CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   CStdString GetHddSpaceInfo(int drive, bool shortText=false);
@@ -136,6 +140,7 @@ public:
 
   static std::string GetBuildTargetPlatformName(void);
   static std::string GetBuildTargetPlatformVersion(void);
+  static std::string GetBuildTargetCpuFamily(void);
 
 protected:
   virtual CJob *GetJob() const;

@@ -21,115 +21,144 @@
 #include <vector>
 
 #include "SettingControl.h"
+#include "settings/SettingDefinitions.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 
-bool CSettingControl::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingControlCheckmark::SetFormat(const std::string &format)
 {
-  if (node == NULL)
+  return format.empty() || StringUtils::EqualsNoCase(format, "boolean");
+}
+
+bool CSettingControlSpinner::Deserialize(const TiXmlNode *node, bool update /* = false */)
+{
+  if (!ISettingControl::Deserialize(node, update))
     return false;
 
-  const TiXmlElement *elem = node->ToElement();
-  if (elem == NULL)
-    return false;
-
-  const char *strTmp = elem->Attribute("type");
-  if ((strTmp == NULL && !update && m_type == SettingControlTypeNone) || (strTmp != NULL && !setType(strTmp)))
+  if (m_format == "string")
   {
-    CLog::Log(LOGERROR, "CSetting: error reading \"type\" attribute of <control>");
-    return false;
-  }
+    XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_FORMATLABEL, m_formatLabel);
 
-  strTmp = elem->Attribute("format");
-  if ((strTmp == NULL && !update && m_format == SettingControlFormatNone) || (strTmp != NULL && !setFormat(strTmp)))
-  {
-    CLog::Log(LOGERROR, "CSetting: error reading \"format\" attribute of <control>");
-    return false;
-  }
-
-  if ((strTmp = elem->Attribute("attributes")) != NULL && !setAttributes(strTmp))
-  {
-    CLog::Log(LOGERROR, "CSetting: error reading \"attributes\" attribute of <control>");
-    return false;
-  }
-
-  if ((strTmp = elem->Attribute("delayed")) != NULL)
-  {
-    if (!StringUtils::EqualsNoCase(strTmp, "false") && !StringUtils::EqualsNoCase(strTmp, "true"))
+    // get the minimum label from <setting><constraints><minimum label="X" />
+    const TiXmlNode *settingNode = node->Parent();
+    if (settingNode != NULL)
     {
-      CLog::Log(LOGERROR, "CSetting: error reading \"delayed\" attribute of <control>");
-      return false;
+      const TiXmlNode *contraintsNode = settingNode->FirstChild(SETTING_XML_ELM_CONSTRAINTS);
+      if (contraintsNode != NULL)
+      {
+        const TiXmlNode *minimumNode = contraintsNode->FirstChild(SETTING_XML_ELM_MINIMUM);
+        if (minimumNode != NULL)
+        {
+          const TiXmlElement *minimumElem = minimumNode->ToElement();
+          if (minimumElem != NULL)
+          {
+            if (minimumElem->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &m_minimumLabel) != TIXML_SUCCESS)
+              m_minimumLabel = -1;
+          }
+        }
+      }
     }
-    else
-      m_delayed = StringUtils::EqualsNoCase(strTmp, "true");
+
+    if (m_minimumLabel < 0)
+    {
+      std::string strFormat;
+      if (XMLUtils::GetString(node, SETTING_XML_ATTR_FORMAT, strFormat) && !strFormat.empty())
+        m_formatString = strFormat;
+    }
   }
+
+  return true;
+}
+
+bool CSettingControlSpinner::SetFormat(const std::string &format)
+{
+  if (!StringUtils::EqualsNoCase(format, "string") &&
+      !StringUtils::EqualsNoCase(format, "integer") &&
+      !StringUtils::EqualsNoCase(format, "number"))
+    return false;
+
+  m_format = format;
+  StringUtils::ToLower(m_format);
+
+  return true;
+}
+
+bool CSettingControlEdit::Deserialize(const TiXmlNode *node, bool update /* = false */)
+{
+  if (!ISettingControl::Deserialize(node, update))
+    return false;
+
+  XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_HIDDEN, m_hidden);
+  XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_VERIFYNEW, m_verifyNewValue);
+  XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_HEADING, m_heading);
+
+  return true;
+}
+
+bool CSettingControlEdit::SetFormat(const std::string &format)
+{
+  if (!StringUtils::EqualsNoCase(format, "string") &&
+      !StringUtils::EqualsNoCase(format, "integer") &&
+      !StringUtils::EqualsNoCase(format, "number") &&
+      !StringUtils::EqualsNoCase(format, "ip") &&
+      !StringUtils::EqualsNoCase(format, "md5") &&
+      !StringUtils::EqualsNoCase(format, "path")) // TODO
+    return false;
+
+  m_format = format;
+  StringUtils::ToLower(m_format);
+
+  return true;
+}
+
+bool CSettingControlButton::Deserialize(const TiXmlNode *node, bool update /* = false */)
+{
+  if (!ISettingControl::Deserialize(node, update))
+    return false;
   
+  XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_HEADING, m_heading);
+  XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_HIDEVALUE, m_hideValue);
+
   return true;
 }
 
-bool CSettingControl::setType(const std::string &strType)
+bool CSettingControlButton::SetFormat(const std::string &format)
 {
-  if (StringUtils::EqualsNoCase(strType, "toggle"))
-    m_type = SettingControlTypeCheckmark;
-  else if (StringUtils::EqualsNoCase(strType, "spinner"))
-    m_type = SettingControlTypeSpinner;
-  else if (StringUtils::EqualsNoCase(strType, "edit"))
-  {
-    m_type = SettingControlTypeEdit;
-    m_delayed = true;
-  }
-  else if (StringUtils::EqualsNoCase(strType, "list"))
-    m_type = SettingControlTypeList;
-  else if (StringUtils::EqualsNoCase(strType, "button"))
-    m_type = SettingControlTypeButton;
-  else
+  if (!StringUtils::EqualsNoCase(format, "string") &&  // TODO
+      !StringUtils::EqualsNoCase(format, "integer") &&  // TODO
+      !StringUtils::EqualsNoCase(format, "number") &&  // TODO
+      !StringUtils::EqualsNoCase(format, "path") &&
+      !StringUtils::EqualsNoCase(format, "addon") &&  // TODO
+      !StringUtils::EqualsNoCase(format, "action"))
     return false;
 
+  m_format = format;
+  StringUtils::ToLower(m_format);
+
   return true;
 }
 
-bool CSettingControl::setFormat(const std::string &strFormat)
+bool CSettingControlList::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  if (StringUtils::EqualsNoCase(strFormat, "boolean"))
-    m_format = SettingControlFormatBoolean;
-  else if (StringUtils::EqualsNoCase(strFormat, "string"))
-    m_format = SettingControlFormatString;
-  else if (StringUtils::EqualsNoCase(strFormat, "integer"))
-    m_format = SettingControlFormatInteger;
-  else if (StringUtils::EqualsNoCase(strFormat, "number"))
-    m_format = SettingControlFormatNumber;
-  else if (StringUtils::EqualsNoCase(strFormat, "ip"))
-    m_format = SettingControlFormatIP;
-  else if (StringUtils::EqualsNoCase(strFormat, "md5"))
-    m_format = SettingControlFormatMD5;
-  else if (StringUtils::EqualsNoCase(strFormat, "path"))
-    m_format = SettingControlFormatPath;
-  else if (StringUtils::EqualsNoCase(strFormat, "addon"))
-    m_format = SettingControlFormatAddon;
-  else if (StringUtils::EqualsNoCase(strFormat, "action"))
-    m_format = SettingControlFormatAction;
-  else
+  if (!ISettingControl::Deserialize(node, update))
+    return false;
+  
+  XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_HEADING, m_heading);
+  XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_MULTISELECT, m_multiselect);
+
+  return true;
+}
+
+bool CSettingControlList::SetFormat(const std::string &format)
+{
+  if (!StringUtils::EqualsNoCase(format, "string") &&
+      !StringUtils::EqualsNoCase(format, "integer"))
     return false;
 
-  return true;
-}
+  m_format = format;
+  StringUtils::ToLower(m_format);
 
-bool CSettingControl::setAttributes(const std::string &strAttributes)
-{
-  std::vector<std::string> attributeList = StringUtils::Split(strAttributes, ",");
-
-  int controlAttributes = SettingControlAttributeNone;
-  for (std::vector<std::string>::const_iterator attribute = attributeList.begin(); attribute != attributeList.end(); ++attribute)
-  {
-    if (StringUtils::EqualsNoCase(*attribute, "hidden"))
-      controlAttributes |= (int)SettingControlAttributeHidden;
-    else if (StringUtils::EqualsNoCase(*attribute, "new"))
-      controlAttributes |= (int)SettingControlAttributeVerifyNew;
-    else
-      return false;
-  }
-
-  m_attributes = (SettingControlAttribute)controlAttributes;
   return true;
 }

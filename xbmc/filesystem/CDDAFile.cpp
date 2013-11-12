@@ -60,8 +60,6 @@ bool CFileCDDA::Open(const CURL& url)
   m_pCdIo = m_cdio->cdio_open(g_mediaManager.TranslateDevicePath(strURL), DRIVER_UNKNOWN);
 #elif defined(TARGET_WINDOWS)
   m_pCdIo = m_cdio->cdio_open_win32(g_mediaManager.TranslateDevicePath(strURL, true));
-#else
-  m_pCdIo = m_cdio->cdio_open_win32("D:");
 #endif
   if (!m_pCdIo)
   {

@@ -36,7 +36,7 @@ CActiveAEResample::~CActiveAEResample()
   m_dllSwResample.Unload();
 }
 
-bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, bool upmix, CAEChannelInfo *remapLayout, AEQuality quality)
+bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality)
 {
   if (!m_dllAvUtil.Load() || !m_dllSwResample.Load())
     return false;
@@ -82,6 +82,15 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
     m_dllAvUtil.av_opt_set_int(m_pContext, "output_sample_bits", m_dst_bits, 0);
   }
 
+  // tell resampler to clamp float values
+  // not required for sink stage (remapLayout == true)
+  if ((m_dst_fmt == AV_SAMPLE_FMT_FLT || m_dst_fmt == AV_SAMPLE_FMT_FLTP) &&
+      (m_src_fmt == AV_SAMPLE_FMT_FLT || m_src_fmt == AV_SAMPLE_FMT_FLTP) &&
+      !remapLayout && normalize)
+  {
+     m_dllAvUtil.av_opt_set_double(m_pContext, "rematrix_maxval", 1.0, 0);
+  }
+
   if(!m_pContext)
   {
     CLog::Log(LOGERROR, "CActiveAEResample::Init - create context failed");
@@ -96,7 +105,7 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
     m_dst_chan_layout = 0;
     for (unsigned int out=0; out<remapLayout->Count(); out++)
     {
-      m_dst_chan_layout += (1 << out);
+      m_dst_chan_layout += (uint64_t) (1 << out);
       int idx = GetAVChannelIndex((*remapLayout)[out], m_src_chan_layout);
       if (idx >= 0)
       {

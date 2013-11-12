@@ -72,6 +72,7 @@ public:
   int GetHours() const;
   int GetMinutes() const;
   int GetSeconds() const;
+  int GetSecondsTotal() const;
 
 private:
   void ToULargeInt(ULARGE_INTEGER& time) const;

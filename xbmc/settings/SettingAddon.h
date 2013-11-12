@@ -29,6 +29,8 @@ public:
   CSettingAddon(const std::string &id, const CSettingAddon &setting);
   virtual ~CSettingAddon() { }
 
+  virtual CSetting* Clone(const std::string &id) const;
+
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
   ADDON::TYPE GetAddonType() const { return m_addonType; }

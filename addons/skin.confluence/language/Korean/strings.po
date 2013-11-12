@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "설정 옵션"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "전체화면"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "총 재생시간"
@@ -92,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "정보"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "동작"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "지금 재생중"
@@ -115,10 +115,6 @@ msgstr "되감기"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "찾는 중"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "시각화 사전설정"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -172,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "사진 슬라이드쇼에 \"일시정지됨\" 보기"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "윈도우에 예고편 재생 [COLOR=grey3](비디오 정보 대화창만)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "기타 옵션"
@@ -212,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "최근 추가한 비디오 보기"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "홈 페이지 프로그램 하위메뉴"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "배경 팬아트 숨기기"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "날씨 페이지"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "배경에 \"지금 재생중\" 비디오 보기"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "배경에 \"지금 재생중\" 시각화 보기"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "가사"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "전체 화면 시각화에서 팬아트 숨기기"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "가사 추가기능"
@@ -255,18 +231,6 @@ msgstr "가사 추가기능"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "자막 추가기능"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "홈 페이지 비디오 하위메뉴"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "홈 페이지 음악 하위메뉴"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "홈 페이지 사진 하위메뉴"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +380,18 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "자막 다운로드"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "2D로 감상"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "모드 변경"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "사용함"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "스킨 기본값"
@@ -456,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]애드온 설정[/B][CR][CR]설치한 추가기능 관리 · xbmc.org에서 추가기능 찾기 및 설치[CR]추가기능 설정 변경"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]TV 설정[/B][CR][CR]전체 화면 정보 변경 · EPG 데이터 설정"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]서비스 설정[/B][CR][CR]UPnP 및 HTTP를 통한 XBMC 제어 설정 · 파일 공유 설정[CR]Zeroconf 활성화 · AirPlay 설정"
@@ -468,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "처음 실행 도움말...."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "이 탭은 현재 섹션의 추가 옵션메뉴가 화면 가장자리에 숨어 있다는 것을 의미합니다.  메뉴에 접근하려면 리모컨 또는 키보드로 왼쪽으로 이동하거나 탭 위로 마우스를 가져가세요. [CR] [CR]\"확인\"을 누르면 대화상자가 닫히고 다시 표시되지 않습니다."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "로그인할 XBMC 사용자 프로파일을[CR]선택하고 계속하세요"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "녹화 예약"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

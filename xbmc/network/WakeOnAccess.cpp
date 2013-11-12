@@ -38,6 +38,7 @@
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
+#include "utils/URIUtils.h"
 
 #include "WakeOnAccess.h"
 
@@ -487,7 +488,12 @@ static void AddHostFromDatabase(const DatabaseSettings& setting, vector<string>&
 void CWakeOnAccess::QueueMACDiscoveryForHost(const CStdString& host)
 {
   if (IsEnabled())
-    CJobManager::GetInstance().AddJob(new CMACDiscoveryJob(host), this);
+  {
+    if (URIUtils::IsHostOnLAN(host, true))
+      CJobManager::GetInstance().AddJob(new CMACDiscoveryJob(host), this);
+    else
+      CLog::Log(LOGNOTICE, "%s - skip Mac discovery for non-local host '%s'", __FUNCTION__, host.c_str());
+  }
 }
 
 static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std::string>& hosts)

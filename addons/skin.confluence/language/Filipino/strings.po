@@ -24,10 +24,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Tingnan ang Options"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Buong Screen"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Kabuuang Haba"

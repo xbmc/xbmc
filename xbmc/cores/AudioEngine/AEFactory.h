@@ -29,10 +29,10 @@ class CSetting;
 enum AEEngine
 {
   AE_ENGINE_NULL,
-  AE_ENGINE_SOFT,
   AE_ENGINE_COREAUDIO,
   AE_ENGINE_PULSE,
-  AE_ENGINE_ACTIVE
+  AE_ENGINE_ACTIVE,
+  AE_ENGINE_PIAUDIO
 };
 
 class CAEFactory
@@ -53,8 +53,8 @@ public:
   static void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   static void VerifyOutputDevice(std::string &device, bool passthrough);
   static std::string GetDefaultDevice(bool passthrough);
-  static bool SupportsRaw();
-  static bool SupportsDrain();
+  static bool SupportsRaw(AEDataFormat format);
+  static bool SupportsSilenceTimeout();
 
   /**
    * Returns true if current AudioEngine supports at lest two basic quality levels
@@ -73,8 +73,9 @@ public:
 
   static void SettingOptionsAudioDevicesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsAudioDevicesPassthroughFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
-  static void SettingOptionsAudioOutputModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
   static void SettingOptionsAudioQualityLevelsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+  static void SettingOptionsAudioStreamsilenceFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+  static bool IsSettingVisible(const std::string &condition, const std::string &value, const std::string &settingId);
 
   static void RegisterAudioCallback(IAudioCallback* pCallback);
   static void UnregisterAudioCallback();

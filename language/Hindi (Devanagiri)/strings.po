@@ -685,10 +685,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "संगीतें"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "कल्पना"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "चुन्लेना अभिप्राय की निदेशिका"
@@ -968,10 +964,6 @@ msgstr "फ्रेमरेट रूपांतरण"
 msgctxt "#337"
 msgid "Audio output"
 msgstr "ऑडियो आउटपुट"
-
-msgctxt "#338"
-msgid "Analog"
-msgstr "अनुरूप"
 
 msgctxt "#339"
 msgid "Optical/Coax"
@@ -1325,10 +1317,6 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "कैश"
 
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "हार्ड डिस्क"
-
 msgctxt "#442"
 msgid "Local network"
 msgstr "स्थानीय नेटवर्क"
@@ -1532,10 +1520,6 @@ msgstr "लोड हो रहा है फाइलों से जानक
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "इसके द्वारा सॉर्ट करें: यूसेज"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "विसुअलिज़तिओन्स  सक्षम करें"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -1945,14 +1929,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "रिवाज"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "रिप्ले लाभ"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "रिप्ले लाभ की मात्रा का समायोजन"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "ट्रैक स्तर का उपयोग करें"
@@ -1960,10 +1936,6 @@ msgstr "ट्रैक स्तर का उपयोग करें"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "एलबम के स्तर का प्रयोग करें"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "पुनरावृत्ति पर क्लिपिंग बचें फ़ाइलें प्राप्त"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2789,10 +2761,6 @@ msgctxt "#13387"
 msgid "Track naming template - right"
 msgstr "ट्रैक नामकरण टेम्पलेट - ठीक है"
 
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "दृश्य का प्रयोग करें अगर ऑडियो खेल"
-
 msgctxt "#13398"
 msgid "Shortcuts"
 msgstr "लघु पाथें "
@@ -3173,10 +3141,6 @@ msgctxt "#22014"
 msgid "Use dim if paused during video playback"
 msgstr "मंद का प्रयोग करें अगर वीडियो प्लेबैक के दौरान रोके गए"
 
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "पहलू अनुपात में रख सकते त्रुटि काली सलाखों के कम से कम"
-
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "लिस्टिंग में वीडियो फ़ाइलों को दिखाएँ"
@@ -3224,10 +3188,6 @@ msgstr "मूवी जानकारी"
 msgctxt "#24008"
 msgid "Screensaver"
 msgstr "स्क्रीनसेवर"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "कल्पना"
 
 msgctxt "#24012"
 msgid "Subtitles"

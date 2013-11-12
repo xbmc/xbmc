@@ -32,10 +32,11 @@
 using namespace std;
 
 
-CImageLoader::CImageLoader(const CStdString &path)
+CImageLoader::CImageLoader(const CStdString &path, const bool useCache)
 {
   m_path = path;
   m_texture = NULL;
+  m_use_cache = useCache;
 }
 
 CImageLoader::~CImageLoader()
@@ -46,18 +47,22 @@ CImageLoader::~CImageLoader()
 bool CImageLoader::DoWork()
 {
   bool needsChecking = false;
+  CStdString loadPath;
 
   CStdString texturePath = g_TextureManager.GetTexturePath(m_path);
-  CStdString loadPath = CTextureCache::Get().CheckCachedImage(texturePath, true, needsChecking); 
+  if (m_use_cache)
+    loadPath = CTextureCache::Get().CheckCachedImage(texturePath, true, needsChecking);
+  else
+    loadPath = texturePath;
 
-  if (loadPath.IsEmpty())
+  if (m_use_cache && loadPath.IsEmpty())
   {
     // not in our texture cache, so try and load directly and then cache the result
     loadPath = CTextureCache::Get().CacheImage(texturePath, &m_texture);
     if (m_texture)
       return true; // we're done
   }
-  if (!loadPath.IsEmpty())
+  if (!m_use_cache || !loadPath.IsEmpty())
   {
     // direct route - load the image
     unsigned int start = XbmcThreads::SystemClockMillis();
@@ -148,7 +153,7 @@ void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &texture, bool firstRequest)
+bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &texture, bool firstRequest, const bool useCache)
 {
   CSingleLock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
@@ -164,7 +169,7 @@ bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &te
   }
 
   if (firstRequest)
-    QueueImage(path);
+    QueueImage(path, useCache);
 
   return true;
 }
@@ -197,7 +202,7 @@ void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediat
 }
 
 // queue the image, and start the background loader if necessary
-void CGUILargeTextureManager::QueueImage(const CStdString &path)
+void CGUILargeTextureManager::QueueImage(const CStdString &path, bool useCache)
 {
   CSingleLock lock(m_listSection);
   for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
@@ -212,7 +217,7 @@ void CGUILargeTextureManager::QueueImage(const CStdString &path)
 
   // queue the item
   CLargeTexture *image = new CLargeTexture(path);
-  unsigned int jobID = CJobManager::GetInstance().AddJob(new CImageLoader(path), this, CJob::PRIORITY_NORMAL);
+  unsigned int jobID = CJobManager::GetInstance().AddJob(new CImageLoader(path, useCache), this, CJob::PRIORITY_NORMAL);
   m_queued.push_back(make_pair(jobID, image));
 }
 

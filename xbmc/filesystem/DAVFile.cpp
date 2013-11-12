@@ -71,7 +71,7 @@ bool CDAVFile::Execute(const CURL& url)
     ReadData(strResponse);
 
     CXBMCTinyXML davResponse;
-    davResponse.Parse(strResponse.c_str());
+    davResponse.Parse(strResponse);
 
     if (!davResponse.Parse(strResponse))
     {

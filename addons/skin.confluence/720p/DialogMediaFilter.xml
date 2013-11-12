@@ -3,31 +3,31 @@
 	<defaultcontrol always="true">5</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>240</posx>
-		<posy>100</posy>
+		<left>240</left>
+		<top>100</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image">
 			<description>background image</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>800</width>
 			<height>500</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
 			<description>Dialog Header image</description>
-			<posx>40</posx>
-			<posy>16</posy>
+			<left>40</left>
+			<top>16</top>
 			<width>720</width>
 			<height>40</height>
 			<texture>dialogheader.png</texture>
 		</control>
 		<control type="label" id="2">
 			<description>header label</description>
-			<posx>40</posx>
-			<posy>20</posy>
+			<left>40</left>
+			<top>20</top>
 			<width>720</width>
 			<height>30</height>
 			<font>font13_title</font>
@@ -39,8 +39,8 @@
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>710</posx>
-			<posy>15</posy>
+			<left>710</left>
+			<top>15</top>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -57,8 +57,8 @@
 
 		<control type="grouplist" id="5">
 			<description>control area</description>
-			<posx>30</posx>
-			<posy>70</posy>
+			<left>30</left>
+			<top>70</top>
 			<width>720</width>
 			<height>350</height>
 			<itemgap>4</itemgap>
@@ -69,8 +69,8 @@
 			<onright>6</onright>
 		</control>
 		<control type="scrollbar" id="6">
-			<posx>755</posx>
-			<posy>70</posy>
+			<left>755</left>
+			<top>70</top>
 			<width>25</width>
 			<height>350</height>
 			<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -86,8 +86,8 @@
 
 		<control type="button" id="7">
 			<description>Default Button</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<height>40</height>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
@@ -97,8 +97,8 @@
 		</control>
 		<control type="radiobutton" id="8">
 			<description>Default RadioButton</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<height>40</height>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
@@ -108,8 +108,8 @@
 		</control>
 		<control type="spincontrolex" id="9">
 			<description>Default SpinControlex</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<height>40</height>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
@@ -121,8 +121,8 @@
 		</control>
 		<control type="sliderex" id="10">
 			<description>Default Slider</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<height>40</height>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
@@ -133,8 +133,8 @@
 		</control>
 		<control type="edit" id="12">
 			<description>Default Edit</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<height>40</height>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
@@ -144,12 +144,12 @@
 		</control>
 
 		<control type="group" id="9001">
-			<posx>190</posx>
-			<posy>435</posy>
+			<left>190</left>
+			<top>435</top>
 			<control type="button" id="28">
 				<description>Ok Button</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>200</width>
 				<height>40</height>
 				<align>center</align>
@@ -165,8 +165,8 @@
 			</control>
 			<control type="button" id="27">
 				<description>Clear Button</description>
-				<posx>210</posx>
-				<posy>0</posy>
+				<left>210</left>
+				<top>0</top>
 				<width>200</width>
 				<height>40</height>
 				<align>center</align>

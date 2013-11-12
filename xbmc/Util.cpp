@@ -90,9 +90,12 @@
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "URL.h"
+#include "utils/LangCodeExpander.h"
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
 #endif
+
+#include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
 
 using namespace std;
 
@@ -209,11 +212,11 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     strFilename = g_localizeStrings.Get(744);
 
   // Music Playlists
-  else if (path.Left(24).Equals("special://musicplaylists"))
+  else if (StringUtils::StartsWithNoCase(path, "special://musicplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
   // Video Playlists
-  else if (path.Left(24).Equals("special://videoplaylists"))
+  else if (StringUtils::StartsWithNoCase(path, "special://videoplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
   else if (URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFilename.IsEmpty())
@@ -240,8 +243,8 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
-  CRegExp reTags(true);
-  CRegExp reYear;
+  CRegExp reTags(true, true);
+  CRegExp reYear(false, true);
 
   if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
@@ -251,8 +254,8 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   {
     if (reYear.RegFind(strTitleAndYear.c_str()) >= 0)
     {
-      strTitleAndYear = reYear.GetReplaceString("\\1");
-      strYear = reYear.GetReplaceString("\\2");
+      strTitleAndYear = reYear.GetMatch(1);
+      strYear = reYear.GetMatch(2);
     }
   }
 
@@ -473,24 +476,24 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 
 bool CUtil::IsPVR(const CStdString& strFile)
 {
-  return strFile.Left(4).Equals("pvr:");
+  return StringUtils::StartsWithNoCase(strFile, "pvr:");
 }
 
 bool CUtil::IsHTSP(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("htsp:");
+  return StringUtils::StartsWithNoCase(strFile, "htsp:");
 }
 
 bool CUtil::IsLiveTV(const CStdString& strFile)
 {
-  if (strFile.Left(14).Equals("pvr://channels"))
+  if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
     return true;
 
   if(URIUtils::IsTuxBox(strFile)
   || URIUtils::IsVTP(strFile)
   || URIUtils::IsHDHomeRun(strFile)
   || URIUtils::IsHTSP(strFile)
-  || strFile.Left(4).Equals("sap:"))
+  || StringUtils::StartsWithNoCase(strFile, "sap:"))
     return true;
 
   if (URIUtils::IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
@@ -501,7 +504,7 @@ bool CUtil::IsLiveTV(const CStdString& strFile)
 
 bool CUtil::IsTVRecording(const CStdString& strFile)
 {
-  return strFile.Left(15).Equals("pvr://recording");
+  return StringUtils::StartsWithNoCase(strFile, "pvr://recording");
 }
 
 bool CUtil::IsPicture(const CStdString& strFile)
@@ -515,7 +518,7 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
   if (strFileOrFolder.IsEmpty())
     return false;
 
-  CRegExp regExExcludes(true);  // case insensitive regex
+  CRegExp regExExcludes(true, true);  // case insensitive regex
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -740,25 +743,6 @@ CStdString CUtil::GetNextPathname(const CStdString &path_template, int max)
   return "";
 }
 
-void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters)
-{
-  // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
-  // Skip delimiters at beginning.
-  string::size_type lastPos = path.find_first_not_of(delimiters, 0);
-  // Find first "non-delimiter".
-  string::size_type pos = path.find_first_of(delimiters, lastPos);
-
-  while (string::npos != pos || string::npos != lastPos)
-  {
-    // Found a token, add it to the vector.
-    tokens.push_back(path.substr(lastPos, pos - lastPos));
-    // Skip delimiters.  Note the "not_of"
-    lastPos = path.find_first_not_of(delimiters, pos);
-    // Find next "non-delimiter"
-    pos = path.find_first_of(delimiters, lastPos);
-  }
-}
-
 void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
 {
   result->st_dev = stat->st_dev;
@@ -969,12 +953,12 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
   // recurse and crash XBMC
   if (URIUtils::IsURL(path) && 
      (path.Find('%') >= 0 ||
-      path.Left(4).Equals("apk:") ||
-      path.Left(4).Equals("zip:") ||
-      path.Left(4).Equals("rar:") ||
-      path.Left(6).Equals("stack:") ||
-      path.Left(7).Equals("bluray:") ||
-      path.Left(10).Equals("multipath:") ))
+      StringUtils::StartsWithNoCase(path, "apk:") ||
+      StringUtils::StartsWithNoCase(path, "zip:") ||
+      StringUtils::StartsWithNoCase(path, "rar:") ||
+      StringUtils::StartsWithNoCase(path, "stack:") ||
+      StringUtils::StartsWithNoCase(path, "bluray:") ||
+      StringUtils::StartsWithNoCase(path, "multipath:") ))
     return result;
 
   // check the path for incorrect slashes
@@ -1066,7 +1050,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
 
   // remove any whitespace, and the standard prefix (if it exists)
   function.Trim();
-  if( function.Left(5).Equals("xbmc.", false) )
+  if( StringUtils::StartsWithNoCase(function, "xbmc.") )
     function.Delete(0, 5);
 
   SplitParams(paramString, parameters);
@@ -1267,7 +1251,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
         strShare += "/";
       int iLenShare = strShare.size();
 
-      if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
+      if ((iLenPath >= iLenShare) && StringUtils::StartsWithNoCase(strDest, strShare) && (iLenShare > iLength))
       {
         // if exact match, return it immediately
         if (iLenPath == iLenShare)
@@ -1291,7 +1275,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
     // rar:// and zip://
     // if archive wasn't mounted, look for a matching share for the archive instead
-    if( strPath.Left(6).Equals("rar://") || strPath.Left(6).Equals("zip://") )
+    if( StringUtils::StartsWithNoCase(strPath, "rar://") || StringUtils::StartsWithNoCase(strPath, "zip://") )
     {
       // get the hostname portion of the url since it contains the archive file
       strPath = checkURL.GetHostName();
@@ -1310,28 +1294,28 @@ CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
 {
   if (!strSpecial.IsEmpty() && strSpecial[0] == '$')
   {
-    if (strSpecial.Left(5).Equals("$HOME"))
+    if (StringUtils::StartsWithNoCase(strSpecial, "$home"))
       return URIUtils::AddFileToFolder("special://home/", strSpecial.Mid(5));
-    else if (strSpecial.Left(10).Equals("$SUBTITLES"))
+    else if (StringUtils::StartsWithNoCase(strSpecial, "$subtitles"))
       return URIUtils::AddFileToFolder("special://subtitles/", strSpecial.Mid(10));
-    else if (strSpecial.Left(9).Equals("$USERDATA"))
+    else if (StringUtils::StartsWithNoCase(strSpecial, "$userdata"))
       return URIUtils::AddFileToFolder("special://userdata/", strSpecial.Mid(9));
-    else if (strSpecial.Left(9).Equals("$DATABASE"))
+    else if (StringUtils::StartsWithNoCase(strSpecial, "$database"))
       return URIUtils::AddFileToFolder("special://database/", strSpecial.Mid(9));
-    else if (strSpecial.Left(11).Equals("$THUMBNAILS"))
+    else if (StringUtils::StartsWithNoCase(strSpecial, "$thumbnails"))
       return URIUtils::AddFileToFolder("special://thumbnails/", strSpecial.Mid(11));
-    else if (strSpecial.Left(11).Equals("$RECORDINGS"))
+    else if (StringUtils::StartsWithNoCase(strSpecial, "$recordings"))
       return URIUtils::AddFileToFolder("special://recordings/", strSpecial.Mid(11));
-    else if (strSpecial.Left(12).Equals("$SCREENSHOTS"))
+    else if (StringUtils::StartsWithNoCase(strSpecial, "$screenshots"))
       return URIUtils::AddFileToFolder("special://screenshots/", strSpecial.Mid(12));
-    else if (strSpecial.Left(15).Equals("$MUSICPLAYLISTS"))
+    else if (StringUtils::StartsWithNoCase(strSpecial, "$musicplaylists"))
       return URIUtils::AddFileToFolder("special://musicplaylists/", strSpecial.Mid(15));
-    else if (strSpecial.Left(15).Equals("$VIDEOPLAYLISTS"))
+    else if (StringUtils::StartsWithNoCase(strSpecial, "$videoplaylists"))
       return URIUtils::AddFileToFolder("special://videoplaylists/", strSpecial.Mid(15));
-    else if (strSpecial.Left(7).Equals("$CDRIPS"))
+    else if (StringUtils::StartsWithNoCase(strSpecial, "$cdrips"))
       return URIUtils::AddFileToFolder("special://cdrips/", strSpecial.Mid(7));
     // this one will be removed post 2.0
-    else if (strSpecial.Left(10).Equals("$PLAYLISTS"))
+    else if (StringUtils::StartsWithNoCase(strSpecial, "$playlists"))
       return URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), strSpecial.Mid(10));
   }
   return strSpecial;
@@ -1938,7 +1922,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
       StringUtils::SplitString( strLookInPaths[i], "\\", directories );
 
     // if it's inside a cdX dir, add parent path
-    if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && directories[directories.size()-2].Left(2).Equals("cd")) // SplitString returns empty token as last item, hence size-2
+    if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && StringUtils::StartsWithNoCase(directories[directories.size()-2], "cd")) // SplitString returns empty token as last item, hence size-2
     {
       CStdString strPath2;
       URIUtils::GetParentPath(strLookInPaths[i], strPath2);
@@ -2003,14 +1987,13 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     {
       CFileItemList items;
       
-      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip",DIR_FLAG_NO_FILE_DIRS);
-      int fnl = strMovieFileNameNoExt.size();
+      CDirectory::GetDirectory(strLookInPaths[step], items, g_advancedSettings.m_subtitlesExtensions, DIR_FLAG_NO_FILE_DIRS);
       
       for (int j = 0; j < items.Size(); j++)
       {
         URIUtils::Split(items[j]->GetPath(), strPath, strItem);
         
-        if (strItem.Left(fnl).Equals(strMovieFileNameNoExt))
+        if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt))
         {
           // is this a rar or zip-file
           if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
@@ -2119,7 +2102,7 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
 
    // check that the found filename matches the movie filename
    int fnl = strMovieFileNameNoExt.size();
-   if (fnl && !URIUtils::GetFileName(strPathInRar).Left(fnl).Equals(strMovieFileNameNoExt))
+   if (fnl && !StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), strMovieFileNameNoExt))
      continue;
 
    int iPos=0;
@@ -2143,6 +2126,75 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   }
 
   return nSubtitlesAdded;
+}
+
+void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, const CStdString& strStream, ExternalStreamInfo& info)
+{
+  CStdString videoBaseName = URIUtils::GetFileName(strVideo);
+  URIUtils::RemoveExtension(videoBaseName);
+
+  CStdString toParse = URIUtils::GetFileName(strStream);
+  URIUtils::RemoveExtension(toParse);
+
+  // we check left part - if it's same as video base name - strip it
+  if (toParse.Left(videoBaseName.length()).Equals(videoBaseName))
+    toParse = toParse.Mid(videoBaseName.length());
+
+  // trim any non-alphanumeric char in the begining
+  std::string::iterator result = std::find_if(toParse.begin(), toParse.end(), ::isalnum);
+
+  if (result != toParse.end()) // if we have anything to parse
+  {
+    std::string inputString(result, toParse.end());
+    std::string delimiters(" .-");
+    std::vector<std::string> tokens;
+    StringUtils::Tokenize(inputString, tokens, delimiters);
+
+    std::string name;
+    for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
+    {
+      if (info.language.empty())
+      {
+        CStdString langTmp(*it);
+        CStdString langCode;
+        // try to recognize language
+        if (g_LangCodeExpander.ConvertToThreeCharCode(langCode, langTmp))
+        {
+          info.language = langCode;
+          continue;
+        }
+      }
+      if (info.flag == 0x1111)
+      {
+        std::string  flag_tmp(*it);
+        StringUtils::ToLower(flag_tmp);
+        if (!flag_tmp.compare("none"))
+        {
+          info.flag = CDemuxStream::FLAG_NONE;
+          continue;
+        }
+        else if (!flag_tmp.compare("default"))
+        {
+          info.flag = CDemuxStream::FLAG_DEFAULT;
+          continue;
+        }
+        else if (!flag_tmp.compare("forced"))
+        {
+          info.flag = CDemuxStream::FLAG_FORCED;
+          continue;
+        }
+      }
+      name += " " + (*it);
+    }
+    StringUtils::Trim(name);
+    info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);
+    info.name += " ";
+    info.name += g_localizeStrings.Get(21602); // External
+  }
+  if (info.flag == 0x1111)
+    info.flag = CDemuxStream::FLAG_NONE;
+
+  CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s", __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, strStream.c_str());
 }
 
 /*! \brief in a vector of subtitles finds the corresponding .sub file for a given .idx file

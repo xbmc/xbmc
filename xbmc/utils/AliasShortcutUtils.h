@@ -21,5 +21,5 @@
 
 #include "StdString.h"
 
-bool IsAliasShortcut(CStdString &path);
-void TranslateAliasShortcut(CStdString &path);
+bool IsAliasShortcut(const std::string& path);
+void TranslateAliasShortcut(std::string &path);

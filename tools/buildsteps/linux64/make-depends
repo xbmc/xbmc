@@ -4,6 +4,6 @@ XBMC_PLATFORM_DIR=linux64
 
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
-  cd $WORKSPACE/tools/depends;make -j $BUILDTHREADS && tagSuccessFulBuild .
+  cd $WORKSPACE/tools/depends;make -j $BUILDTHREADS || make && tagSuccessFulBuild .
 fi
 

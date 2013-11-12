@@ -90,7 +90,7 @@ class CActiveAEBufferPoolResample : public CActiveAEBufferPool
 public:
   CActiveAEBufferPoolResample(AEAudioFormat inputFormat, AEAudioFormat outputFormat, AEQuality quality);
   virtual ~CActiveAEBufferPoolResample();
-  virtual bool Create(unsigned int totaltime, bool remap, bool upmix);
+  virtual bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true);
   void ChangeResampler();
   bool ResampleBuffers(unsigned int timestamp = 0);
   float GetDelay();
@@ -108,6 +108,7 @@ public:
   double m_resampleRatio;
   AEQuality m_resampleQuality;
   bool m_stereoUpmix;
+  bool m_normalize;
 };
 
 }

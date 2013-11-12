@@ -42,7 +42,11 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import "IOSEAGLView.h"
-#import "XBMCController.h"
+#if defined(TARGET_DARWIN_IOS_ATV2)
+#import "xbmc/osx/atv2/XBMCController.h"
+#elif defined(TARGET_DARWIN_IOS)
+#import "xbmc/osx/ios/XBMCController.h"
+#endif
 #import "IOSScreenManager.h"
 #import "AutoPool.h"
 #import "DarwinUtils.h"
@@ -330,7 +334,6 @@
 	if (!animating && context)
 	{
 		animating = TRUE;
-    CWinEventsIOS::Init();
 
     // kick off an animation thread
     animationThreadLock = [[NSConditionLock alloc] initWithCondition: FALSE];
@@ -358,7 +361,6 @@
     // wait for animation thread to die
     if ([animationThread isFinished] == NO)
       [animationThreadLock lockWhenCondition:TRUE];
-    CWinEventsIOS::DeInit();
 	}
 }
 //--------------------------------------------------------------

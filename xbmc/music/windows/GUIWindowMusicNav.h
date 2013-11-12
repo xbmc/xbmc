@@ -36,7 +36,6 @@ public:
   virtual bool OnAction(const CAction& action);
   virtual void FrameMove();
 
-  virtual void OnPrepareFileItems(CFileItemList &items);
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   // override base class methods

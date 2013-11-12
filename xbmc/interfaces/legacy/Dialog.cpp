@@ -36,7 +36,6 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
-
     static void XBMCWaitForThreadMessage(int message, int param1, int param2)
     {
       ThreadMessage tMsg = {(DWORD)message, (DWORD)param1, (DWORD)param2};
@@ -353,11 +352,11 @@ namespace XBMCAddon
       return value;
     }
 
-    DialogProgress::~DialogProgress() { TRACE; deallocating(); }
+    DialogProgress::~DialogProgress() { XBMC_TRACE; deallocating(); }
 
     void DialogProgress::deallocating()
     {
-      TRACE;
+      XBMC_TRACE;
 
       if (dlg)
       {
@@ -429,11 +428,11 @@ namespace XBMCAddon
       return dlg->IsCanceled();
     }
 
-    DialogProgressBG::~DialogProgressBG() { TRACE; deallocating(); }
+    DialogProgressBG::~DialogProgressBG() { XBMC_TRACE; deallocating(); }
 
     void DialogProgressBG::deallocating()
     {
-      TRACE;
+      XBMC_TRACE;
 
       if (dlg)
       {

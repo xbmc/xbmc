@@ -21,12 +21,18 @@
 
 #include <set>
 #include <string>
+#include <vector>
+
+#include <boost/shared_ptr.hpp>
 
 #include "settings/ISettingCallback.h"
+#include "settings/ISettingControlCreator.h"
 #include "settings/ISettingCreator.h"
 #include "threads/CriticalSection.h"
+#include "utils/Variant.h"
 
 class CSetting;
+class CSettingList;
 class CSettingSection;
 class CSettingsManager;
 class TiXmlElement;
@@ -38,7 +44,7 @@ class TiXmlNode;
  setting types.
  \sa CSettingsManager
  */
-class CSettings : public ISettingCreator
+class CSettings : public ISettingCreator, public ISettingControlCreator
 {
 public:
   /*!
@@ -59,6 +65,9 @@ public:
 
   // implementation of ISettingCreator
   virtual CSetting* CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const;
+
+  // implementation of ISettingControlCreator
+  virtual ISettingControl* CreateControl(const std::string &controlType) const;
 
   /*!
    \brief Initializes the setting system with the generic
@@ -146,6 +155,12 @@ public:
    */
   CSetting* GetSetting(const std::string &id) const;
   /*!
+   \brief Gets the full list of setting sections.
+
+   \return List of setting sections
+   */
+  std::vector<CSettingSection*> GetSections() const;
+  /*!
    \brief Gets the setting section with the given identifier.
 
    \param section Setting section identifier
@@ -181,6 +196,13 @@ public:
    \return String value of the setting with the given identifier
    */
   std::string GetString(const std::string &id) const;
+  /*!
+   \brief Gets the values of the list setting with the given identifier.
+
+   \param id Setting identifier
+   \return List of values of the setting with the given identifier
+   */
+  std::vector<CVariant> GetList(const std::string &id) const;
 
   /*!
    \brief Sets the boolean value of the setting with the given identifier.
@@ -221,6 +243,14 @@ public:
    \return True if setting the value was successful, false otherwise
    */
   bool SetString(const std::string &id, const std::string &value);
+  /*!
+   \brief Sets the values of the list setting with the given identifier.
+
+   \param id Setting identifier
+   \param value Values to set
+   \return True if setting the values was successful, false otherwise
+   */
+  bool SetList(const std::string &id, const std::vector<CVariant> &value);
 
   /*!
    \brief Loads the setting being represented by the given XML node with the
@@ -232,6 +262,7 @@ public:
    */
   bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
 
+  static std::vector<CVariant> ListToValues(const CSettingList *setting, const std::vector< boost::shared_ptr<CSetting> > &values);
 private:
   CSettings(const CSettings&);
   CSettings const& operator=(CSettings const&);
@@ -239,6 +270,7 @@ private:
   bool Initialize(const std::string &file);
   bool InitializeDefinitions();
   void InitializeSettingTypes();
+  void InitializeControls();
   void InitializeVisibility();
   void InitializeDefaults();
   void InitializeOptionFillers();

@@ -42,7 +42,9 @@ struct SSession
   SSession()
   {
     session = NULL;
+    port    = 0;
     refs    = 0;
+    last    = 0;
   }
 
   std::string            hostname;

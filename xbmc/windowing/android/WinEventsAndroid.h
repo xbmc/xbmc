@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2010-2013 Team XBMC
+ *      Copyright (C) 2010-2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,20 +23,43 @@
 #ifndef WINDOW_EVENTS_ANDROID_H
 #define WINDOW_EVENTS_ANDROID_H
 
-#include "windowing/WinEvents.h"
-#include "input/MouseStat.h"
+#include <list>
+#include <queue>
+#include <vector>
+#include <string>
 
-class CWinEventsAndroid : public CWinEventsBase
+#include "threads/Event.h"
+#include "threads/Thread.h"
+#include "threads/CriticalSection.h"
+#include "windowing/WinEvents.h"
+
+typedef struct {
+  int32_t id;
+  std::string name;
+} APP_InputDevice;
+
+class CWinEventsAndroid : public IWinEvents, public CThread
 {
 public:
-  static void Init();
-  static void DeInit();
-  static void MessagePush(XBMC_Event *newEvent);
-  static bool MessagePump();
+  CWinEventsAndroid();
+ ~CWinEventsAndroid();
 
-protected:
-  static int  GetQueueSize();
+  void            MessagePush(XBMC_Event *newEvent);
+  void            MessagePushRepeat(XBMC_Event *repeatEvent);
+  bool            MessagePump();
+  virtual size_t  GetQueueSize();
 
+private:
+  // for CThread
+  virtual void    Process();
+
+  CCriticalSection             m_eventsCond;
+  std::list<XBMC_Event>        m_events;
+
+  CCriticalSection             m_lasteventCond;
+  std::queue<XBMC_Event>       m_lastevent;
+
+  std::vector<APP_InputDevice> m_input_devices;
 };
 
 #endif // WINDOW_EVENTS_ANDROID_H

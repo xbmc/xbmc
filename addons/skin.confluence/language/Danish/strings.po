@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Visningsindstillinger"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Fuld skærm"
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr "Indstillingsmuligheder"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -88,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Info"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Handlinger"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Spiller nu"
@@ -108,9 +112,9 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "SPOL TILBAGE"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Visualiserings-forudindstillinger"
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "SØGER"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -164,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Vis \"PAUSE\" i  billeddiasshow"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Afspil trailere i et vindue [COLOR=grey3](Kun videoinformationsdialog)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Diverse indstillinger"
@@ -204,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Vis nyligt tilføjede Videoer"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Undermenu til programmer på startskærmen"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Skjul baggrundsfankunst"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Vejrside"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Vis \"Spiller nu\" i baggrunden for videoer"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Vis \"Spiller nu\" visualisering i baggrunden"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -236,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Sangtekster"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Skjul fankunst i fuldskærmsvisualisering"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Add-on til Sangtekster"
@@ -247,18 +231,6 @@ msgstr "Add-on til Sangtekster"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Add-on til Undertekster"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Undermenu til Videoer på Hjemmeskærmen"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Undermenu til Musik på Hjemmeskærmen"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Undermenu til Billeder på Hjemmeskærmen"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -408,6 +380,18 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Hent Undertekster"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Se i 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Skift tilstand"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Aktiveret"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Skinnets standard"
@@ -448,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]KONFIGURER ADD-ONS[/B][CR][CR]Administrer dine installerede Add-ons · Gennemse og installer Add-ons fra xbmc.org[CR]Tilpas indstillinger til Add-ons"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]KONFIGURER TV-INDSTILLINGER[/B][CR][CR]Skift fuldskærmsinfo · Administrer dataindstillinger for EPG"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGURER TJENESTER[/B][CR][CR]Opsæt styring af XBMC ved hjælp af UPnP og HTTP · Konfigurer fildeling[CR]Aktiver Zeroconf · Konfigurer AirPlay"
@@ -460,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Prøv først hjælp..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Dette faneblad indikerer, at der er en menu i siden af dette vindue, som indeholder ekstra indstillinger til denne sektion.\nFor at få adgang til denne menu, skal du navigere til venstre  med din fjernbetjening eller dit tastatur. Du kan også placere din musemarkør over fanebladet. [CR][CR]Tryk \"Ok\" for at lukke denne dialog. Den dukker ikke op igen."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Vælg din XBMC brugerprofil[CR]for at logge ind og fortsætte"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Optagelsestimere"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -539,3 +511,43 @@ msgstr "Henter vejrudsigt..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Kort og Advarsler"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "VEJR"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "BILLEDER"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "DIREKTE TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEOER"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILM"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV-SERIER"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUSIK"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMMER"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "AFSPIL PLADE"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SYSTEM"

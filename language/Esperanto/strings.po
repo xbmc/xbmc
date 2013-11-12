@@ -685,10 +685,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Muziko"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Vido"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Elektu celdosierujon"
@@ -980,10 +976,6 @@ msgstr "Framerate Conversion"
 msgctxt "#337"
 msgid "Audio output"
 msgstr "Audio Output"
-
-msgctxt "#338"
-msgid "Analog"
-msgstr "Analog"
 
 msgctxt "#339"
 msgid "Optical/Coax"
@@ -1349,10 +1341,6 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "Cache"
 
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "Durdisko"
-
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1589,10 +1577,6 @@ msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "ordigi je: Usage"
 
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "Enable Visualisations"
-
 msgctxt "#511"
 msgid "Enable video mode switching"
 msgstr "Enable filmoj mode switching"
@@ -1789,14 +1773,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Custom"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "Replay Gain"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "Replay Gain Mode"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Use Track Levels"
@@ -1804,18 +1780,6 @@ msgstr "Use Track Levels"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Use Albumo Levels"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "PreAmp Level - Replay Gained vicos"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "PreAmp Level - Non Replay Gained vicos"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "Avoid Clipping on Replay Gained vicos"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2469,14 +2433,6 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Preferoj->Provicos"
 
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "Jes/ne dialog"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "Progress dialog"
-
 msgctxt "#10500"
 msgid "Music/Playlist"
 msgstr "Mia Muziko/Playlist"
@@ -2545,17 +2501,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Filmo Info"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "Elekti dialog"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Mia Muziko/info"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "Dialog OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -2568,14 +2516,6 @@ msgstr "Mia Scripts/Info"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Fullekrano filmoj"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "Soni visualisation"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "Vicostacking dialog"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -2889,10 +2829,6 @@ msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "DNS"
 
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "Initialize failed"
-
 msgctxt "#13170"
 msgid "Never"
 msgstr "Never"
@@ -3113,10 +3049,6 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Recursive Slideshow"
 
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "Randomize"
-
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Stereo"
@@ -3329,21 +3261,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Presets"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "Lare are no presets available\nfor this visualisation"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "Lare are no Preferoj available\nfor this visualisation"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Eject/Load"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "Use Visualisation if playing audio"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -3512,10 +3432,6 @@ msgstr "No TV"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "tajpi la nearest large town or US ZIP code"
-
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "Filmoj/Audio/DVD Cache - Harddisk"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -3745,10 +3661,6 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "Play Using..."
 
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "Use Smoolad A/V Syncronization"
-
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "Hide vico nomoj in Thumbs Vido"
@@ -3869,10 +3781,6 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Ne matching kantoj in la datinbanko."
 
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "Could not initialise datinbanko."
-
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "Could not open datinbanko."
@@ -3980,10 +3888,6 @@ msgstr "Filmoj info"
 msgctxt "#24008"
 msgid "Screensaver"
 msgstr "ekranosaver"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Visualisation"
 
 msgctxt "#24012"
 msgid "Subtitles"

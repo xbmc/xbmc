@@ -32,7 +32,7 @@ namespace XBMCAddon
     AddonClass::Ref<Callback> cb;
     RetardedAsynchCallbackHandler* handler;
     AsynchCallbackMessage(Callback* _cb, RetardedAsynchCallbackHandler* _handler) :
-      AddonClass("AsynchCallbackMessage"), cb(_cb), handler(_handler) { TRACE; }
+      cb(_cb), handler(_handler) { XBMC_TRACE; }
   };
 
   //********************************************************************
@@ -46,14 +46,14 @@ namespace XBMCAddon
 
   void RetardedAsynchCallbackHandler::invokeCallback(Callback* cb)
   {
-    TRACE;
+    XBMC_TRACE;
     CSingleLock lock(critSection);
     g_callQueue.push_back(new AsynchCallbackMessage(cb,this));
   }
 
   RetardedAsynchCallbackHandler::~RetardedAsynchCallbackHandler()
   {
-    TRACE;
+    XBMC_TRACE;
     CSingleLock lock(critSection);
 
     // find any messages that might be there because of me ... and remove them
@@ -75,7 +75,7 @@ namespace XBMCAddon
 
   void RetardedAsynchCallbackHandler::makePendingCalls()
   {
-    TRACE;
+    XBMC_TRACE;
     CSingleLock lock(critSection);
     CallbackQueue::iterator iter = g_callQueue.begin();
     while (iter != g_callQueue.end())
@@ -100,10 +100,10 @@ namespace XBMCAddon
           // we need to grab the object lock to see if the object of the call 
           //  is deallocating. holding this lock should prevent it from 
           //  deallocating durring the execution of this call.
-#ifdef ENABLE_TRACE_API
+#ifdef ENABLE_XBMC_TRACE_API
           CLog::Log(LOGDEBUG,"%sNEWADDON executing callback 0x%lx",_tg.getSpaces(),(long)(p->cb.get()));
 #endif
-          Synchronize lock2(*(p->cb->getObject()));
+          CSingleLock lock2(*(p->cb->getObject()));
           if (!p->cb->getObject()->isDeallocating())
           {
             try
@@ -132,7 +132,7 @@ namespace XBMCAddon
 
   void RetardedAsynchCallbackHandler::clearPendingCalls(void* userData)
   {
-    TRACE;
+    XBMC_TRACE;
     CSingleLock lock(critSection);
     CallbackQueue::iterator iter = g_callQueue.begin();
     while (iter != g_callQueue.end())
@@ -141,7 +141,7 @@ namespace XBMCAddon
 
       if(p->handler->shouldRemoveCallback(p->cb->getObject(),userData))
       {
-#ifdef ENABLE_TRACE_API
+#ifdef ENABLE_XBMC_TRACE_API
         CLog::Log(LOGDEBUG,"%sNEWADDON removing callback 0x%lx for PyThreadState 0x%lx from queue", _tg.getSpaces(),(long)(p->cb.get()) ,(long)userData);
 #endif
         iter = g_callQueue.erase(iter);

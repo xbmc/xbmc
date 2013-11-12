@@ -144,6 +144,23 @@ DemuxPacket* CDVDDemuxCDDA::Read()
   return pPacket;
 }
 
+bool CDVDDemuxCDDA::SeekTime(int time, bool backwords, double* startpts)
+{
+  int bytes_per_second = m_stream->iBitRate>>3;
+  // clamp seeks to bytes per full sample
+  int clamp_bytes = (m_stream->iBitsPerSample>>3) * m_stream->iChannels;
+
+  // time is in milliseconds
+  int64_t seekPos = m_pInput->Seek((((int64_t)time * bytes_per_second / 1000) / clamp_bytes ) * clamp_bytes, SEEK_SET) > 0;
+  if (seekPos > 0)
+    m_bytes = seekPos;
+
+  if (startpts)
+    *startpts = (double)m_bytes * DVD_TIME_BASE / bytes_per_second;
+
+  return seekPos > 0;
+};
+
 int CDVDDemuxCDDA::GetStreamLength()
 {
   int64_t num_track_bytes = m_pInput->GetLength();

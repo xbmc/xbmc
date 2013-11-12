@@ -129,7 +129,6 @@ namespace XBMCAddon
        *   - version = self.Addon.getAddonInfo('version')
        */
       String getAddonInfo(const char* id) throw (AddonException);
-
     };
   }
 }

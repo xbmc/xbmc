@@ -185,7 +185,7 @@ void CExternalPlayer::Process()
       CStdString strMatch = vecSplit[0];
       strMatch.Replace(",,",",");
       bool bCaseless = vecSplit[3].Find('i') > -1;
-      CRegExp regExp(bCaseless);
+      CRegExp regExp(bCaseless, true);
 
       if (!regExp.RegComp(strMatch.c_str()))
       { // invalid regexp - complain in logs
@@ -212,7 +212,7 @@ void CExternalPlayer::Process()
         while ((iStart = regExp.RegFind(mainFile, iStart)) > -1)
         {
           int iLength = regExp.GetFindLen();
-          mainFile = mainFile.Left(iStart) + regExp.GetReplaceString(strRep.c_str()).c_str() + mainFile.Mid(iStart+iLength);
+          mainFile = mainFile.Left(iStart) + regExp.GetReplaceString(strRep).c_str() + mainFile.Mid(iStart + iLength);
           if (!bGlobal)
             break;
         }
@@ -310,11 +310,17 @@ void CExternalPlayer::Process()
 
   /* Suspend AE temporarily so exclusive or hog-mode sinks */
   /* don't block external player's access to audio device  */
-  if (!CAEFactory::Suspend())
+  CAEFactory::Suspend();
+  // wait for AE has completed suspended
+  XbmcThreads::EndTime timer(2000);
+  while (!timer.IsTimePast() && !CAEFactory::IsSuspended())
   {
-    CLog::Log(LOGNOTICE,"%s: Failed to suspend AudioEngine before launching external player", __FUNCTION__);
+    Sleep(50);
   }
-
+  if (timer.IsTimePast())
+  {
+    CLog::Log(LOGERROR,"%s: AudioEngine did not suspend before launching external player", __FUNCTION__);
+  }
 
   BOOL ret = TRUE;
 #if defined(TARGET_WINDOWS)
@@ -527,7 +533,7 @@ bool CExternalPlayer::CanSeek()
   return false;
 }
 
-void CExternalPlayer::Seek(bool bPlus, bool bLargeStep)
+void CExternalPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 }
 

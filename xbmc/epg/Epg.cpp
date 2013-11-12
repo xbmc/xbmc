@@ -150,7 +150,7 @@ bool CEpg::HasValidEntries(void) const
   CSingleLock lock(m_critSection);
 
   return (m_iEpgID > 0 && /* valid EPG ID */
-      m_tags.size() > 0 && /* contains at least 1 tag */
+      !m_tags.empty()  && /* contains at least 1 tag */
       m_tags.rbegin()->second->EndAsUTC() >= CDateTime::GetCurrentDateTime().GetAsUTCDateTime()); /* the last end time hasn't passed yet */
 }
 
@@ -303,7 +303,7 @@ CEpgInfoTagPtr CEpg::GetTagAround(const CDateTime &time) const
   CSingleLock lock(m_critSection);
   for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
   {
-    if ((it->second->StartAsUTC() <= time) && (it->second->EndAsUTC() >= time))
+    if ((it->second->StartAsUTC() < time) && (it->second->EndAsUTC() > time))
       return it->second;
   }
 
@@ -580,7 +580,7 @@ CDateTime CEpg::GetFirstDate(void) const
   CDateTime first;
 
   CSingleLock lock(m_critSection);
-  if (m_tags.size() > 0)
+  if (!m_tags.empty())
     first = m_tags.begin()->second->StartAsUTC();
 
   return first;
@@ -591,7 +591,7 @@ CDateTime CEpg::GetLastDate(void) const
   CDateTime last;
 
   CSingleLock lock(m_critSection);
-  if (m_tags.size() > 0)
+  if (!m_tags.empty())
     last = m_tags.rbegin()->second->StartAsUTC();
 
   return last;
@@ -628,33 +628,11 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
       it->second->ClearTimer();
       m_tags.erase(it++);
     }
-    else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
+    else if (previousTag->EndAsUTC() != currentTag->StartAsUTC())
     {
-      currentTag->SetStartFromUTC(previousTag->EndAsUTC());
+      previousTag->SetEndFromUTC(currentTag->StartAsUTC());
       if (bUpdateDb)
-        m_changedTags.insert(make_pair(currentTag->UniqueBroadcastID(), currentTag));
-
-      previousTag = it->second;
-    }
-    else if (previousTag->EndAsUTC() < currentTag->StartAsUTC())
-    {
-      time_t start, end, middle;
-      previousTag->EndAsUTC().GetAsTime(start);
-      currentTag->StartAsUTC().GetAsTime(end);
-      middle = start + ((end - start) / 2);
-      CDateTime newTime(middle);
-
-      currentTag->SetStartFromUTC(newTime);
-      previousTag->SetEndFromUTC(newTime);
-
-      if (m_nowActiveStart == it->first)
-        m_nowActiveStart = currentTag->StartAsUTC();
-
-      if (bUpdateDb)
-      {
-        m_changedTags.insert(make_pair(currentTag->UniqueBroadcastID(), currentTag));
         m_changedTags.insert(make_pair(previousTag->UniqueBroadcastID(), previousTag));
-      }
 
       previousTag = it->second;
     }

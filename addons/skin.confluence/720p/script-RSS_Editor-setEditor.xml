@@ -3,31 +3,31 @@
 	<defaultcontrol>10</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>240</posx>
-		<posy>140</posy>
+		<left>240</left>
+		<top>140</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image">
 			<description>background image</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<width>800</width>
 			<height>420</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
 			<description>Dialog Header image</description>
-			<posx>40</posx>
-			<posy>16</posy>
+			<left>40</left>
+			<top>16</top>
 			<width>720</width>
 			<height>40</height>
 			<texture>dialogheader.png</texture>
 		</control>
 		<control type="label" id="2">
 			<description>header label</description>
-			<posx>40</posx>
-			<posy>20</posy>
+			<left>40</left>
+			<top>20</top>
 			<width>720</width>
 			<height>30</height>
 			<font>font13_title</font>
@@ -38,8 +38,8 @@
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>710</posx>
-			<posy>15</posy>
+			<left>710</left>
+			<top>15</top>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -55,8 +55,8 @@
 		</control>
 		<control type="label" id="3">
 			<description>List label</description>
-			<posx>20</posx>
-			<posy>65</posy>
+			<left>20</left>
+			<top>65</top>
 			<width>760</width>
 			<height>30</height>
 			<align>center</align>
@@ -66,8 +66,8 @@
 			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="list" id="10">
-			<posx>30</posx>
-			<posy>105</posy>
+			<left>30</left>
+			<top>105</top>
 			<width>520</width>
 			<height>225</height>
 			<onup>9001</onup>
@@ -78,15 +78,15 @@
 			<scrolltime>200</scrolltime>
 			<itemlayout height="45">
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>520</width>
 					<height>40</height>
 					<texture border="5">button-nofocus.png</texture>
 				</control>
 				<control type="label">
-					<posx>10</posx>
-					<posy>0</posy>
+					<left>10</left>
+					<top>0</top>
 					<width>500</width>
 					<height>40</height>
 					<font>font13</font>
@@ -99,24 +99,24 @@
 			</itemlayout>
 			<focusedlayout height="45">
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>520</width>
 					<height>40</height>
 					<visible>!Control.HasFocus(10)</visible>
 					<texture border="5">button-nofocus.png</texture>
 				</control>
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<width>520</width>
 					<height>40</height>
 					<visible>Control.hasfocus(14) | Control.HasFocus(10)</visible>
 					<texture border="5">button-focus2.png</texture>
 				</control>
 				<control type="label">
-					<posx>10</posx>
-					<posy>0</posy>
+					<left>10</left>
+					<top>0</top>
 					<width>500</width>
 					<height>40</height>
 					<font>font13</font>
@@ -128,8 +128,8 @@
 			</focusedlayout>
 		</control>
 		<control type="scrollbar" id="60">
-			<posx>552</posx>
-			<posy>105</posy>
+			<left>552</left>
+			<top>105</top>
 			<width>25</width>
 			<height>225</height>
 			<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -143,12 +143,12 @@
 			<orientation>vertical</orientation>
 		</control>
 		<control type="group" id="9000">
-			<posx>580</posx>
-			<posy>105</posy>
+			<left>580</left>
+			<top>105</top>
 			<control type="button" id="11">
 				<description>Change Set Button</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>200</width>
 				<height>40</height>
 				<font>font12_title</font>
@@ -161,8 +161,8 @@
 			</control>
 			<control type="button" id="13">
 				<description>Add Button</description>
-				<posx>0</posx>
-				<posy>45</posy>
+				<left>0</left>
+				<top>45</top>
 				<width>200</width>
 				<height>40</height>
 				<font>font12_title</font>
@@ -176,8 +176,8 @@
 			</control>
 			<control type="button" id="14">
 				<description>Remove Button</description>
-				<posx>0</posx>
-				<posy>90</posy>
+				<left>0</left>
+				<top>90</top>
 				<width>200</width>
 				<height>40</height>
 				<font>font12_title</font>
@@ -193,8 +193,8 @@
 		<control type="group" id="9001">
 			<control type="button" id="18">
 				<description>Ok Button</description>
-				<posx>200</posx>
-				<posy>355</posy>
+				<left>200</left>
+				<top>355</top>
 				<width>200</width>
 				<height>40</height>
 				<align>center</align>
@@ -208,8 +208,8 @@
 			</control>
 			<control type="button" id="19">
 				<description>Cancel Button</description>
-				<posx>410</posx>
-				<posy>355</posy>
+				<left>410</left>
+				<top>355</top>
 				<width>200</width>
 				<height>40</height>
 				<align>center</align>

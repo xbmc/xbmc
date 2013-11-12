@@ -541,7 +541,7 @@ void CGUIControl::SetVisible(bool bVisible, bool setVisState)
   if (bVisible && setVisState)
   {  // TODO: currently we only update m_visible from GUI_MSG_VISIBLE (SET_CONTROL_VISIBLE)
      //       otherwise we just set m_forceHidden
-    GUIVISIBLE visible = m_visible;
+    GUIVISIBLE visible;
     if (m_visibleCondition)
       visible = g_infoManager.GetBoolValue(m_visibleCondition) ? VISIBLE : HIDDEN;
     else

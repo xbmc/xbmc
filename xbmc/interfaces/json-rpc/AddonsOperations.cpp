@@ -142,21 +142,17 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const CStdString &method, ITra
 
 JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CAddonDatabase addondatabase;
-  if (!addondatabase.Open())
-    return InternalError;
-
   string id = parameterObject["addonid"].asString();
   bool disabled = false;
   if (parameterObject["enabled"].isBoolean())
     disabled = !parameterObject["enabled"].asBoolean();
   // we need to toggle the current disabled state of the addon
   else if (parameterObject["enabled"].isString())
-    disabled = !addondatabase.IsAddonDisabled(id);
+    disabled = !CAddonMgr::Get().IsAddonDisabled(id);
   else
     return InvalidParams;
 
-  if (!addondatabase.DisableAddon(id, disabled))
+  if (!CAddonMgr::Get().DisableAddon(id, disabled))
       return InvalidParams;
 
   return ACK;
@@ -190,6 +186,11 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const CStdString &method, ITransp
       argv += StringUtils::Paramify(it->asString());
     }
   }
+  else if (params.isString())
+  {
+    if (!params.empty())
+      argv = StringUtils::Paramify(params.asString());
+  }
   
   CStdString cmd;
   if (params.size() == 0)
@@ -221,9 +222,7 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
     // from the addon database because it can't be read from addon.xml
     if (field == "enabled")
     {
-      if (!addondb.IsOpen() && !addondb.Open())
-        return;
-      object[field] = !addondb.IsAddonDisabled(addon->ID());
+      object[field] = !CAddonMgr::Get().IsAddonDisabled(addon->ID());
     }
     else if (field == "fanart" || field == "thumbnail")
     {
@@ -233,7 +232,7 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
       bool needsRecaching;
       CStdString image = CTextureCache::Get().CheckCachedImage(url, false, needsRecaching);
       if (!image.empty() || CFile::Exists(url))
-        object[field] = CTextureCache::Get().GetWrappedImageURL(url);
+        object[field] = CTextureUtils::GetWrappedImageURL(url);
       else
         object[field] = "";
     }

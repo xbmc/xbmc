@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Možnosti zobrazenia"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Celá obrazovka"
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr "Možnosti nastavenia"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -88,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Informácie"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Akcie"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Práve hrá"
@@ -108,9 +112,9 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "PRETÁČA SA DOZADU"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Predvolby Vizualizácií"
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "VYHĽADÁVANIE"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -164,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Zobrazovať 'Pauza' pri prezentácií obrázkov"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Prehrávať ukážky v okne [COLOR=grey3](iba z okna Detailné Informácie)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Rôzne nastavenia"
@@ -204,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Zobrazovať Posledné pridané"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Domovská stránka"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Skryť Fanart na pozadí"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Počasie"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Zobrazovať práve prehrávané video na pozadí"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Zobrazovať vizualizáciu na pozadí"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -236,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Texty skladieb"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Skryť Fanart pri vizualizácii na celú obrazovku"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Doplnok Texty skladieb"
@@ -247,18 +231,6 @@ msgstr "Doplnok Texty skladieb"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Doplnok Titulky"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Domovská stránka / podmenu videá"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Domovská stránka / podmenu hudba"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Domovská stránka / podmenu obrázky"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -408,6 +380,18 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Stiahnuť titulky"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Pozerať ako 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Zmeniť režim"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Aktívne"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Predvolený vzhľad"
@@ -448,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]MOŽNOSTI DOPLNKOV[/B][CR][CR]Správa nainštalovaných doplnkov · Vyhľadávanie a inštalácia doplnkov z xbmc.org[CR]Nastavenie doplnkov"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]NASTAVENIA TV[/B][CR][CR]Zmeniť informácie zobrazené na celej obrazovke · Spravovať nastavenia EPG dát"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGUROVAŤ NASTAVENIA SLUŽBY[/B][CR][CR]Nastaviť ovládanie XBMC pomocou UPnP a HTTP · Konfigurovať zdielanie[CR]Zapnúť Zeroconf · Konfigurovať AirPlay"
@@ -460,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Pomocník po prvom spustení..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Táto záložka zvýrazňuje, že sa na bočnej strane okna nachádza skryté menu. Aby ste sa k nemu dostali, kurzorovými tlačidlami na vašom diaľkovom ovládači alebo klávesnici choďte doľava, prípadne umiestnite kurzor myši ponad túto záložku. [CR][CR]Kliknutím na tlačidlo \"Ok\" sa zavrie toto dialógové okno. V budúcnosti sa už nezobrazí."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Prihlásenie užívateľa[CR]Pokračujte výberom profilu"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Časovače nahrávania"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -539,3 +511,43 @@ msgstr "Zisťujem informácie o počasí..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Mapa a upozornenia"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "POČASIE"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "OBRÁZKY"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEÁ"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMY"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "SERIÁLY"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "HUDBA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMY"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "CD/DVD/Blu-ray"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SYSTÉM"

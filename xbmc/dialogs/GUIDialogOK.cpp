@@ -47,6 +47,17 @@ bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
+void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &text)
+{
+  CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+  if (!dialog)
+    return;
+  dialog->SetHeading(heading);
+  dialog->SetText(text);
+  dialog->DoModal();
+}
+
+// \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
 void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &line0, const CVariant &line1, const CVariant &line2)
 {
   CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);

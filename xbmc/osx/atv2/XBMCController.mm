@@ -51,7 +51,7 @@
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
-#import "WinEventsIOS.h"
+#import "WinEvents.h"
 #import "XBMC_events.h"
 #include "utils/log.h"
 #include "osx/DarwinUtils.h"
@@ -728,7 +728,7 @@ static void XBMCController$setUserEvent(XBMCController* self, SEL _cmd, int even
   newEvent.type = XBMC_USEREVENT;
   newEvent.jbutton.which = eventId;
   newEvent.jbutton.holdTime = holdTime;
-  CWinEventsIOS::MessagePush(&newEvent);
+  CWinEvents::MessagePush(&newEvent);
 }
 
 static unsigned int XBMCController$appleModKeyToXbmcModKey(XBMCController* self, SEL _cmd, unsigned int appleModifier)
@@ -845,9 +845,9 @@ static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent
         {
           newEvent.key.keysym.mod = (XBMCMod)[self appleModKeyToXbmcModKey:modifier];
           newEvent.type = XBMC_KEYDOWN;
-          CWinEventsIOS::MessagePush(&newEvent);
+          CWinEvents::MessagePush(&newEvent);
           newEvent.type = XBMC_KEYUP;
-          CWinEventsIOS::MessagePush(&newEvent);
+          CWinEvents::MessagePush(&newEvent);
           is_handled = TRUE;
         }
       }
@@ -921,7 +921,7 @@ static void XBMCController$keyPressTimerCallback(XBMCController* self, SEL _cmd,
 { 
   //if queue is empty - skip this timer event
   //for letting it process
-  if(CWinEventsIOS::GetQueueSize())
+  if(CWinEvents::GetQueueSize())
     return;
 
   NSDate *startDate = [[theTimer userInfo] objectForKey:@"StartDate"];
@@ -1294,7 +1294,7 @@ static void XBMCController$pauseAnimation(XBMCController* self, SEL _cmd)
  
   newEvent.appcommand.type = XBMC_APPCOMMAND;
   newEvent.appcommand.action = ACTION_PLAYER_PLAYPAUSE;
-  CWinEventsIOS::MessagePush(&newEvent);
+  CWinEvents::MessagePush(&newEvent);
   
   Sleep(2000); 
   [[self glView] pauseAnimation];
@@ -1309,7 +1309,7 @@ static void XBMCController$resumeAnimation(XBMCController* self, SEL _cmd)
 
   newEvent.appcommand.type = XBMC_APPCOMMAND;
   newEvent.appcommand.action = ACTION_PLAYER_PLAY;
-  CWinEventsIOS::MessagePush(&newEvent);
+  CWinEvents::MessagePush(&newEvent);
  
   [[self glView] resumeAnimation];
 }

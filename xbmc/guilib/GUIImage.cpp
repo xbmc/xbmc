@@ -310,10 +310,13 @@ void CGUIImage::SetCrossFade(unsigned int time)
     m_crossFadeTime = 1;
 }
 
-void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
+void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant, const bool useCache)
 {
   if (setConstant)
     m_info.SetLabel(strFileName, "", GetParentID());
+
+  // Set whether or not to use cache
+  m_texture.SetUseCache(useCache);
 
   if (m_crossFadeTime)
   {

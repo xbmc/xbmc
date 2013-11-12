@@ -35,7 +35,7 @@ public:
   virtual ~CRssReader();
 
   void Create(IRssObserver* aObserver, const std::vector<std::string>& aUrl, const std::vector<int>& times, int spacesBetweenFeeds, bool rtl);
-  bool Parse(LPSTR szBuffer, int iFeed);
+  bool Parse(const std::string& data, int iFeed, const std::string& charset);
   void getFeed(vecText &text);
   void AddTag(const CStdString &addTag);
   void AddToQueue(int iAdd);
@@ -46,7 +46,6 @@ public:
   unsigned int m_SavedScrollPos;
 
 private:
-  void fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDest);
   void Process();
   bool Parse(int iFeed);
   void GetNewsItems(TiXmlElement* channelXmlNode, int iFeed);
@@ -67,7 +66,6 @@ private:
   std::vector<std::string> m_vecUrls;
   std::vector<int> m_vecQueue;
   bool m_bIsRunning;
-  CStdString m_encoding;
   bool m_rtlText;
   bool m_requestRefresh;
 

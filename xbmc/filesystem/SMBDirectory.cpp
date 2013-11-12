@@ -1,4 +1,3 @@
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -125,7 +124,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     strFile = aDir.name;
 
     if (!strFile.Equals(".") && !strFile.Equals("..")
-      && !strFile.Equals("lost+found")
+      && !strFile.Equals("lost+found") && !strFile.empty()
       && aDir.type != SMBC_PRINTER_SHARE && aDir.type != SMBC_IPC_SHARE)
     {
      int64_t iSize = 0;
@@ -133,7 +132,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       int64_t lTimeDate = 0;
       bool hidden = false;
 
-      if(strFile.Right(1).Equals("$") && aDir.type == SMBC_FILE_SHARE )
+      if(StringUtils::EndsWith(strFile, "$") && aDir.type == SMBC_FILE_SHARE )
         continue;
 
       // only stat files that can give proper responses
@@ -151,7 +150,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && g_advancedSettings.m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
-          CStdString strFullName = strAuth + smb.URLEncode(strFile);
+          const CStdString strFullName = strAuth + smb.URLEncode(strFile);
 
           lock.Enter();
 
@@ -172,7 +171,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
                 hidden = true;
             }
             else
-              CLog::Log(LOGERROR, "Getting extended attributes for the share: '%s'\nunix_err:'%x' error: '%s'", strFullName.c_str(), errno, strerror(errno));
+              CLog::Log(LOGERROR, "Getting extended attributes for the share: '%s'\nunix_err:'%x' error: '%s'", CURL::GetRedacted(strFullName).c_str(), errno, strerror(errno));
 #endif
 
             bIsDir = (info.st_mode & S_IFDIR) ? true : false;
@@ -182,7 +181,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
             iSize = info.st_size;
           }
           else
-            CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
+            CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, CURL::GetRedacted(strFullName).c_str());
 
           lock.Leave();
         }
@@ -260,7 +259,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 
   // remove the / or \ at the end. the samba library does not strip them off
   // don't do this for smb:// !!
-  CStdString s = strAuth;
+  std::string s = strAuth;
   int len = s.length();
   if (len > 1 && s.at(len - 2) != '/' &&
       (s.at(len - 1) == '/' || s.at(len - 1) == '\\'))
@@ -268,7 +267,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
     s.erase(len - 1, 1);
   }
 
-  CLog::Log(LOGDEBUG, "%s - Using authentication url %s", __FUNCTION__, s.c_str());
+  CLog::Log(LOGDEBUG, "%s - Using authentication url %s", __FUNCTION__, CURL::GetRedacted(s).c_str());
   { CSingleLock lock(smb);
     fd = smbc_opendir(s.c_str());
   }
@@ -323,9 +322,9 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
   {
     // write error to logfile
 #ifdef TARGET_WINDOWS
-    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strAuth.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
+    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", CURL::GetRedacted(strAuth).c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
 #else
-    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", strAuth.c_str(), errno, strerror(errno));
+    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", CURL::GetRedacted(strAuth).c_str(), errno, strerror(errno));
 #endif
   }
 

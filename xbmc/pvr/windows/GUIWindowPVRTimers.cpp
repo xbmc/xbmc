@@ -70,11 +70,12 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
   }
   else
   {
-    buttons.Add(CONTEXT_BUTTON_EDIT, 19057);            /* edit timer */
-    buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* new timer */
+    buttons.Add(CONTEXT_BUTTON_FIND, 19003);            /* Find similar program */
     buttons.Add(CONTEXT_BUTTON_ACTIVATE, 19058);        /* activate/deactivate */
-    buttons.Add(CONTEXT_BUTTON_RENAME, 118);            /* rename timer */
     buttons.Add(CONTEXT_BUTTON_DELETE, 117);            /* delete timer */
+    buttons.Add(CONTEXT_BUTTON_EDIT, 19057);            /* edit timer */
+    buttons.Add(CONTEXT_BUTTON_RENAME, 118);            /* rename timer */
+    buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* new timer */
     buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* sort by name */
     buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* sort by date */
     if (g_PVRClients->HasMenuHooks(pItem->GetPVRTimerInfoTag()->m_iClientId, PVR_MENUHOOK_TIMER))

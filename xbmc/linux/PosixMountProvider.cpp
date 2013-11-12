@@ -65,6 +65,7 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
             || strcmp(fs, "ext2") == 0 || strcmp(fs, "ext3") == 0
             || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0
             || strcmp(fs, "ntfs-3g") == 0 || strcmp(fs, "iso9660") == 0
+            || strcmp(fs, "exfat") == 0
             || strcmp(fs, "fusefs") == 0 || strcmp(fs, "hfs") == 0)
           accepted = true;
 

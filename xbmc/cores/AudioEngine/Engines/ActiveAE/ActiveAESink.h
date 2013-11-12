@@ -83,12 +83,14 @@ class CActiveAESink : private CThread
 {
 public:
   CActiveAESink(CEvent *inMsgEvent);
-  void EnumerateSinkList();
+  void EnumerateSinkList(bool force);
   void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   std::string GetDefaultDevice(bool passthrough);
   void Start();
   void Dispose();
   bool HasVolume();
+  AEDeviceType GetDeviceType(const std::string &device);
+  bool HasPassthroughDevice();
   CSinkControlProtocol m_controlPort;
   CSinkDataProtocol m_dataPort;
 
@@ -114,7 +116,8 @@ protected:
   bool m_bStateMachineSelfTrigger;
   int m_extTimeout;
   bool m_extError;
-  bool m_extSilence;
+  int m_extSilenceTimeout;
+  XbmcThreads::EndTime m_extSilenceTimer;
 
   CSampleBuffer m_sampleOfSilence;
   uint8_t *m_convertBuffer;

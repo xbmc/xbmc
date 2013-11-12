@@ -677,10 +677,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Mūzika"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Vizualizācija"
-
 msgctxt "#257"
 msgid "Error"
 msgstr "Kļūda"
@@ -1212,10 +1208,6 @@ msgstr "Fonts"
 msgctxt "#24008"
 msgid "Screensaver"
 msgstr "Ekrānsaudzētājs"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Vizualizācija"
 
 msgctxt "#24013"
 msgid "Lyrics"

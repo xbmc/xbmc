@@ -18,6 +18,8 @@
  *
  */
 
+#include <set>
+
 #include "GUIControlSettings.h"
 #include "FileItem.h"
 #include "Util.h"
@@ -33,6 +35,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/SettingAddon.h"
+#include "settings/SettingControl.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
@@ -61,7 +64,8 @@ void CGUIControlBaseSetting::Update()
     return;
 
   control->SetEnabled(IsEnabled());
-  control->SetVisible(m_pSetting->IsVisible());
+  if (m_pSetting)
+    control->SetVisible(m_pSetting->IsVisible());
 }
 
 CGUIControlRadioButtonSetting::CGUIControlRadioButtonSetting(CGUIRadioButtonControl *pRadioButton, int id, CSetting *pSetting)
@@ -144,49 +148,39 @@ void CGUIControlSpinExSetting::FillControl()
 {
   m_pSpin->Clear();
 
-  switch (m_pSetting->GetControl().GetFormat())
+  const std::string &controlFormat = m_pSetting->GetControl()->GetFormat();
+  if (controlFormat == "number")
   {
-    case SettingControlFormatNumber:
-    {
-      CSettingNumber *pSettingNumber = (CSettingNumber *)m_pSetting;
-      m_pSpin->SetType(SPIN_CONTROL_TYPE_FLOAT);
-      m_pSpin->SetFloatRange((float)pSettingNumber->GetMinimum(), (float)pSettingNumber->GetMaximum());
-      m_pSpin->SetFloatInterval((float)pSettingNumber->GetStep());
+    CSettingNumber *pSettingNumber = (CSettingNumber *)m_pSetting;
+    m_pSpin->SetType(SPIN_CONTROL_TYPE_FLOAT);
+    m_pSpin->SetFloatRange((float)pSettingNumber->GetMinimum(), (float)pSettingNumber->GetMaximum());
+    m_pSpin->SetFloatInterval((float)pSettingNumber->GetStep());
 
-      m_pSpin->SetFloatValue((float)pSettingNumber->GetValue());
-      break;
-    }
+    m_pSpin->SetFloatValue((float)pSettingNumber->GetValue());
+  }
+  else if (controlFormat == "integer")
+  {
+    m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
+    FillIntegerSettingControl();
+  }
+  else if (controlFormat == "string")
+  {
+    m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
 
-    case SettingControlFormatInteger:
-    {
-      m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
+    if (m_pSetting->GetType() == SettingTypeInteger)
       FillIntegerSettingControl();
-      break;
-    }
-
-    case SettingControlFormatString:
+    else if (m_pSetting->GetType() == SettingTypeString)
     {
-      m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
-
-      if (m_pSetting->GetType() == SettingTypeInteger)
-        FillIntegerSettingControl();
-      else if (m_pSetting->GetType() == SettingTypeString)
+      CSettingString *pSettingString = (CSettingString *)m_pSetting;
+      if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
       {
-        CSettingString *pSettingString = (CSettingString *)m_pSetting;
-        if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
-        {
-          DynamicStringSettingOptions options = pSettingString->UpdateDynamicOptions();
-          for (std::vector< std::pair<std::string, std::string> >::const_iterator option = options.begin(); option != options.end(); ++option)
-            m_pSpin->AddLabel(option->first, option->second);
+        DynamicStringSettingOptions options = pSettingString->UpdateDynamicOptions();
+        for (std::vector< std::pair<std::string, std::string> >::const_iterator option = options.begin(); option != options.end(); ++option)
+          m_pSpin->AddLabel(option->first, option->second);
 
-          m_pSpin->SetStringValue(pSettingString->GetValue());
-        }
+        m_pSpin->SetStringValue(pSettingString->GetValue());
       }
-      break;
     }
-
-    default:
-      break;
   }
 }
 
@@ -218,18 +212,20 @@ void CGUIControlSpinExSetting::FillIntegerSettingControl()
     {
       std::string strLabel;
       int i = pSettingInt->GetMinimum();
-      if (pSettingInt->GetMinimumLabel() > -1)
+      const CSettingControlSpinner *control = static_cast<const CSettingControlSpinner*>(pSettingInt->GetControl());
+      if (control->GetMinimumLabel() > -1)
       {
-        strLabel = g_localizeStrings.Get(pSettingInt->GetMinimumLabel());
+        strLabel = g_localizeStrings.Get(control->GetMinimumLabel());
         m_pSpin->AddLabel(strLabel, pSettingInt->GetMinimum());
         i += pSettingInt->GetStep();
       }
+
       for (; i <= pSettingInt->GetMaximum(); i += pSettingInt->GetStep())
       {
-        if (pSettingInt->GetFormat() > -1)
-          strLabel = StringUtils::Format(g_localizeStrings.Get(pSettingInt->GetFormat()).c_str(), i);
+        if (control->GetFormatLabel() > -1)
+          strLabel = StringUtils::Format(g_localizeStrings.Get(control->GetFormatLabel()).c_str(), i);
         else
-          strLabel = StringUtils::Format(pSettingInt->GetFormatString().c_str(), i);
+          strLabel = StringUtils::Format(control->GetFormatString().c_str(), i);
         m_pSpin->AddLabel(strLabel, i);
       }
 
@@ -263,34 +259,56 @@ bool CGUIControlListSetting::OnClick()
   CFileItemList options;
   if (!GetItems(m_pSetting, options) || options.Size() <= 1)
     return false;
+
+  const CSettingControlList *control = static_cast<const CSettingControlList*>(m_pSetting->GetControl());
   
   dialog->Reset();
   dialog->SetHeading(g_localizeStrings.Get(m_pSetting->GetLabel()));
   dialog->SetItems(&options);
-  dialog->SetMultiSelection(false);
+  dialog->SetMultiSelection(control->CanMultiSelect());
   dialog->DoModal();
 
   if (!dialog->IsConfirmed())
     return false;
 
-  const CFileItemPtr item = dialog->GetSelectedItem();
-  if (item == NULL || !item->HasProperty("value"))
-    return false;
-  
-  CVariant value = item->GetProperty("value");
+  const CFileItemList &items = dialog->GetSelectedItems();
+  std::vector<CVariant> values;
+  for (int index = 0; index < items.Size(); index++)
+  {
+    const CFileItemPtr item = items[index];
+    if (item == NULL || !item->HasProperty("value"))
+      return false;
+
+    values.push_back(item->GetProperty("value"));
+  }
+
+  bool ret = false;
   switch (m_pSetting->GetType())
   {
     case SettingTypeInteger:
-      return ((CSettingInt *)m_pSetting)->SetValue((int)value.asInteger());
-    
+      if (values.size() > 1)
+        return false;
+      ret = ((CSettingInt *)m_pSetting)->SetValue((int)values.at(0).asInteger());
+      break;
+
     case SettingTypeString:
-      return ((CSettingString *)m_pSetting)->SetValue(value.asString());
+      if (values.size() > 1)
+        return false;
+      ret = ((CSettingString *)m_pSetting)->SetValue(values.at(0).asString());
+      break;
+
+    case SettingTypeList:
+      ret = CSettings::Get().SetList(m_pSetting->GetId(), values);
+      break;
     
     default:
       break;
   }
 
-  return true;
+  if (ret)
+    Update();
+
+  return ret;
 }
 
 void CGUIControlListSetting::Update()
@@ -303,15 +321,15 @@ void CGUIControlListSetting::Update()
   CFileItemList options;
   if (GetItems(m_pSetting, options))
   {
+    std::vector<std::string> labels;
     for (int index = 0; index < options.Size(); index++)
     {
       const CFileItemPtr pItem = options.Get(index);
       if (pItem->IsSelected())
-      {
-        m_pButton->SetLabel2(pItem->GetLabel());
-        break;
-      }
+        labels.push_back(pItem->GetLabel());
     }
+
+    m_pButton->SetLabel2(StringUtils::Join(labels, ", "));
   }
 
   // disable the control if it has less than two items
@@ -327,47 +345,55 @@ static CFileItemPtr GetItem(const std::string &label, const CVariant &value)
   return pItem;
 }
 
-bool CGUIControlListSetting::GetItems(CSetting *setting, CFileItemList &items)
+bool CGUIControlListSetting::GetItems(const CSetting *setting, CFileItemList &items)
 {
-  switch (setting->GetControl().GetFormat())
+  const CSettingControlList *control = static_cast<const CSettingControlList*>(setting->GetControl());
+  const std::string &controlFormat = control->GetFormat();
+
+  if (controlFormat == "integer")
+    return GetIntegerItems(setting, items);
+  else if (controlFormat == "string")
   {
-    case SettingControlFormatInteger:
+    if (setting->GetType() == SettingTypeInteger ||
+       (setting->GetType() == SettingTypeList && ((CSettingList *)setting)->GetElementType() == SettingTypeInteger))
       return GetIntegerItems(setting, items);
-
-    case SettingControlFormatString:
-    {
-      if (setting->GetType() == SettingTypeInteger)
-        return GetIntegerItems(setting, items);
-      else if (setting->GetType() == SettingTypeString)
-      {
-        CSettingString *pSettingString = (CSettingString *)setting;
-        if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
-        {
-          DynamicStringSettingOptions options = pSettingString->UpdateDynamicOptions();
-          for (DynamicStringSettingOptions::const_iterator option = options.begin(); option != options.end(); ++option)
-          {
-            CFileItemPtr pItem = GetItem(option->first, option->second);
-
-            if (StringUtils::EqualsNoCase(option->second, pSettingString->GetValue()))
-              pItem->Select(true);
-
-            items.Add(pItem);
-          }
-        }
-      }
-      break;
-    }
-
-    default:
-      return false;
+    else if (setting->GetType() == SettingTypeString ||
+            (setting->GetType() == SettingTypeList && ((CSettingList *)setting)->GetElementType() == SettingTypeString))
+      return GetStringItems(setting, items);
   }
+  else
+    return false;
 
   return true;
 }
 
-bool CGUIControlListSetting::GetIntegerItems(CSetting *setting, CFileItemList &items)
+bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemList &items)
 {
-  CSettingInt *pSettingInt = (CSettingInt *)setting;
+  const CSettingInt *pSettingInt = NULL;
+  std::set<int> values;
+  if (setting->GetType() == SettingTypeInteger)
+  {
+    pSettingInt = static_cast<const CSettingInt*>(setting);
+    values.insert(pSettingInt->GetValue());
+  }
+  else if (setting->GetType() == SettingTypeList)
+  {
+    const CSettingList *settingList = static_cast<const CSettingList*>(setting);
+    if (settingList->GetElementType() != SettingTypeInteger)
+      return false;
+
+    pSettingInt = static_cast<const CSettingInt*>(settingList->GetDefinition());
+    std::vector<CVariant> list = CSettings::Get().GetList(settingList->GetId());
+    for (std::vector<CVariant>::const_iterator itValue = list.begin(); itValue != list.end(); ++itValue)
+    {
+      if (!itValue->isInteger())
+        return false;
+      values.insert(itValue->asInteger());
+    }
+  }
+  else
+    return false;
+
   switch (pSettingInt->GetOptionsType())
   {
     case SettingOptionsTypeStatic:
@@ -377,7 +403,7 @@ bool CGUIControlListSetting::GetIntegerItems(CSetting *setting, CFileItemList &i
       {
         CFileItemPtr pItem = GetItem(g_localizeStrings.Get(it->first), it->second);
 
-        if (it->second == pSettingInt->GetValue())
+        if (values.find(it->second) != values.end())
           pItem->Select(true);
 
         items.Add(pItem);
@@ -387,12 +413,12 @@ bool CGUIControlListSetting::GetIntegerItems(CSetting *setting, CFileItemList &i
 
     case SettingOptionsTypeDynamic:
     {
-      DynamicIntegerSettingOptions options = pSettingInt->UpdateDynamicOptions();
+      DynamicIntegerSettingOptions options = const_cast<CSettingInt*>(pSettingInt)->UpdateDynamicOptions();
       for (DynamicIntegerSettingOptions::const_iterator option = options.begin(); option != options.end(); ++option)
       {
         CFileItemPtr pItem = GetItem(option->first, option->second);
 
-        if (option->second == pSettingInt->GetValue())
+        if (values.find(option->second) != values.end())
           pItem->Select(true);
 
         items.Add(pItem);
@@ -404,6 +430,52 @@ bool CGUIControlListSetting::GetIntegerItems(CSetting *setting, CFileItemList &i
     default:
       return false;
   }
+
+  return true;
+}
+
+bool CGUIControlListSetting::GetStringItems(const CSetting *setting, CFileItemList &items)
+{
+  const CSettingString *pSettingString = NULL;
+  std::set<std::string> values;
+  if (setting->GetType() == SettingTypeString)
+  {
+    pSettingString = static_cast<const CSettingString*>(setting);
+    values.insert(pSettingString->GetValue());
+  }
+  else if (setting->GetType() == SettingTypeList)
+  {
+    const CSettingList *settingList = static_cast<const CSettingList*>(setting);
+    if (settingList->GetElementType() != SettingTypeString)
+      return false;
+
+    pSettingString = static_cast<const CSettingString*>(settingList->GetDefinition());
+    std::vector<CVariant> list = CSettings::Get().GetList(settingList->GetId());
+    for (std::vector<CVariant>::const_iterator itValue = list.begin(); itValue != list.end(); ++itValue)
+    {
+      if (!itValue->isString())
+        return false;
+      values.insert(itValue->asString());
+    }
+  }
+  else
+    return false;
+
+  if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
+  {
+    DynamicStringSettingOptions options = const_cast<CSettingString*>(pSettingString)->UpdateDynamicOptions();
+    for (DynamicStringSettingOptions::const_iterator option = options.begin(); option != options.end(); ++option)
+    {
+      CFileItemPtr pItem = GetItem(option->first, option->second);
+
+      if (values.find(option->second) != values.end())
+        pItem->Select(true);
+
+      items.Add(pItem);
+    }
+  }
+  else
+    return false;
 
   return true;
 }
@@ -424,42 +496,29 @@ bool CGUIControlButtonSetting::OnClick()
   if (m_pButton == NULL)
     return false;
 
-  bool success = false;
-  switch (m_pSetting->GetControl().GetFormat())
+  const std::string &controlFormat = m_pSetting->GetControl()->GetFormat();
+  if (controlFormat == "addon")
   {
-    case SettingControlFormatAddon:
-    {
-      // prompt for the addon
-      CSettingAddon *setting = (CSettingAddon *)m_pSetting;
-      CStdString addonID = setting->GetValue();
-      if (!CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty()) == 1)
-        return false;
-
-      success = setting->SetValue(addonID);
-      break;
-    }
-
-    case SettingControlFormatPath:
-    {
-      success = GetPath((CSettingPath *)m_pSetting);
-      break;
-    }
-
-    case SettingControlFormatAction:
-    {
-      // simply call the OnSettingAction callback and whoever knows what to
-      // do can do so (based on the setting's identification
-      CSettingAction *pSettingAction = (CSettingAction *)m_pSetting;
-      pSettingAction->OnSettingAction(pSettingAction);
-      success = true;
-      break;
-    }
-
-    default:
+    // prompt for the addon
+    CSettingAddon *setting = (CSettingAddon *)m_pSetting;
+    CStdString addonID = setting->GetValue();
+    if (!CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty()) == 1)
       return false;
+
+    return setting->SetValue(addonID);
+  }
+  if (controlFormat == "path")
+    return GetPath((CSettingPath *)m_pSetting);
+  if (controlFormat == "action")
+  {
+    // simply call the OnSettingAction callback and whoever knows what to
+    // do can do so (based on the setting's identification
+    CSettingAction *pSettingAction = (CSettingAction *)m_pSetting;
+    pSettingAction->OnSettingAction(pSettingAction);
+    return true;
   }
 
-  return success;
+  return false;
 }
 
 void CGUIControlButtonSetting::Update()
@@ -469,31 +528,24 @@ void CGUIControlButtonSetting::Update()
 
   CGUIControlBaseSetting::Update();
 
-  if (m_pSetting->GetType() == SettingTypeString)
+  if (m_pSetting->GetType() == SettingTypeString &&
+      !static_cast<const CSettingControlButton*>(m_pSetting->GetControl())->HideValue())
   {
     std::string strText = ((CSettingString *)m_pSetting)->GetValue();
-    switch (m_pSetting->GetControl().GetFormat())
+    const std::string &controlFormat = m_pSetting->GetControl()->GetFormat();
+    if (controlFormat == "addon")
     {
-      case SettingControlFormatAddon:
-      {
-        ADDON::AddonPtr addon;
-        if (ADDON::CAddonMgr::Get().GetAddon(strText, addon))
-          strText = addon->Name();
-        if (strText.empty())
-          strText = g_localizeStrings.Get(231); // None
-        break;
-      }
-
-      case SettingControlFormatPath:
-      {
-        CStdString shortPath;
-        if (CUtil::MakeShortenPath(strText, shortPath, 30))
-          strText = shortPath;
-        break;
-      }
-
-      default:
-        return;
+      ADDON::AddonPtr addon;
+      if (ADDON::CAddonMgr::Get().GetAddon(strText, addon))
+        strText = addon->Name();
+      if (strText.empty())
+        strText = g_localizeStrings.Get(231); // None
+    }
+    else if (controlFormat == "path")
+    {
+      CStdString shortPath;
+      if (CUtil::MakeShortenPath(strText, shortPath, 30))
+        strText = shortPath;
     }
 
     m_pButton->SetLabel2(strText);
@@ -519,7 +571,7 @@ bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
   g_mediaManager.GetNetworkLocations(shares);
   g_mediaManager.GetLocalDrives(shares);
 
-  if (!CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pathSetting->GetHeading()), path, pathSetting->Writable()))
+  if (!CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(static_cast<const CSettingControlButton*>(pathSetting->GetControl())->GetHeading()), path, pathSetting->Writable()))
     return false;
 
   return pathSetting->SetValue(path);
@@ -528,45 +580,34 @@ bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
 CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl *pEdit, int id, CSetting *pSetting)
   : CGUIControlBaseSetting(id, pSetting)
 {
+  const CSettingControlEdit* control = static_cast<const CSettingControlEdit*>(pSetting->GetControl());
   m_pEdit = pEdit;
   m_pEdit->SetID(id);
   int heading = m_pSetting->GetLabel();
-  if (m_pSetting->GetType() == SettingTypeString)
-  {
-    CSettingString *pSettingString = (CSettingString *)m_pSetting;
-    if (pSettingString->GetHeading() > 0)
-      heading = pSettingString->GetHeading();
-  }
+  if (control->GetHeading() > 0)
+    heading = control->GetHeading();
   if (heading < 0)
     heading = 0;
 
   CGUIEditControl::INPUT_TYPE inputType = CGUIEditControl::INPUT_TYPE_TEXT;
-  const CSettingControl& control = pSetting->GetControl();
-  switch (control.GetFormat())
+  const std::string &controlFormat = control->GetFormat();
+  if (controlFormat == "string")
   {
-    case SettingControlFormatString:
-      if (control.GetAttributes() & SettingControlAttributeHidden)
-        inputType = CGUIEditControl::INPUT_TYPE_PASSWORD;
-      break;
-      
-    case SettingControlFormatInteger:
-      if (control.GetAttributes() & SettingControlAttributeVerifyNew)
-        inputType = CGUIEditControl::INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW;
-      else
-        inputType = CGUIEditControl::INPUT_TYPE_NUMBER;
-      break;
-      
-    case SettingControlFormatIP:
-      inputType = CGUIEditControl::INPUT_TYPE_IPADDRESS;
-      break;
-      
-    case SettingControlFormatMD5:
-      inputType = CGUIEditControl::INPUT_TYPE_PASSWORD_MD5;
-      break;
-
-    default:
-      break;
+    if (control->IsHidden())
+      inputType = CGUIEditControl::INPUT_TYPE_PASSWORD;
   }
+  else if (controlFormat == "integer")
+  {
+    if (control->VerifyNewValue())
+      inputType = CGUIEditControl::INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW;
+    else
+      inputType = CGUIEditControl::INPUT_TYPE_NUMBER;
+  }
+  else if (controlFormat == "ip")
+    inputType = CGUIEditControl::INPUT_TYPE_IPADDRESS;
+  else if (controlFormat == "md5")
+    inputType = CGUIEditControl::INPUT_TYPE_PASSWORD_MD5;
+
   m_pEdit->SetInputType(inputType, heading);
 
   Update();

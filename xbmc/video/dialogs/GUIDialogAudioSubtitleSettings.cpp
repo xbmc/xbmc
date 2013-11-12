@@ -46,10 +46,6 @@ using namespace std;
 using namespace XFILE;
 using namespace PVR;
 
-#ifdef HAS_VIDEO_PLAYBACK
-extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers); //lowlevel audio
-#endif
-
 CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "VideoOSDSettings.xml")
 {
@@ -100,14 +96,13 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   if (SupportsAudioFeature(IPC_AUD_SELECT_STREAM))
     AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
-  // only show stuff available in digital mode if we have digital output
+  // TODO: remove this setting
   if (SupportsAudioFeature(IPC_AUD_OUTPUT_STEREO))
-    AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &CMediaSettings::Get().GetCurrentVideoSettings().m_OutputToAllSpeakers, AUDIO_IS_BITSTREAM(CSettings::Get().GetInt("audiooutput.mode")));
+    AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &CMediaSettings::Get().GetCurrentVideoSettings().m_OutputToAllSpeakers, true);
 
-  int settings[3] = { 338, 339, 420 }; //ANALOG, IEC958, HDMI
-  m_outputmode = CSettings::Get().GetInt("audiooutput.mode");
+  m_outputmode = CSettings::Get().GetBool("audiooutput.passthrough");
   if (SupportsAudioFeature(IPC_AUD_SELECT_OUTPUT))
-    AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 3, settings);
+    AddBool(AUDIO_SETTINGS_DIGITAL_ANALOG, 348, &m_outputmode);
 
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
@@ -279,16 +274,9 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == AUDIO_SETTINGS_DIGITAL_ANALOG)
   {
-    bool bitstream = false;
+    CSettings::Get().SetBool("audiooutput.passthrough", m_outputmode);
 
-    switch(m_outputmode)
-    {
-      case 0: CSettings::Get().SetInt("audiooutput.mode", AUDIO_ANALOG ); break;
-      case 1: CSettings::Get().SetInt("audiooutput.mode", AUDIO_IEC958 ); bitstream = true; break;
-      case 2: CSettings::Get().SetInt("audiooutput.mode", AUDIO_HDMI   ); bitstream = true; break;
-    }
-
-    EnableSettings(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, bitstream);
+    EnableSettings(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, true);
     EnableSettings(AUDIO_SETTINGS_VOLUME, !g_application.m_pPlayer->IsPassthrough());
   }
   else if (setting.id == SUBTITLE_SETTINGS_ENABLE)

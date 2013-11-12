@@ -67,6 +67,9 @@
 			<RegExp input="" output="" dest="11">
 				<expression />
 			</RegExp>
+			<RegExp input="" output="" dest="12">
+				<expression />
+			</RegExp>
 			<RegExp input="$$1" output="\1" dest="11">
 				<expression fixchars="1">strBiographyEN&quot;:&quot;(.*?)&quot;,&quot;</expression>
 			</RegExp>
@@ -149,6 +152,9 @@
 			<RegExp input="" output="" dest="11">
 				<expression />
 			</RegExp>
+			<RegExp input="" output="" dest="12">
+				<expression />
+			</RegExp>
 			<RegExp input="$$1" output="&lt;formed&gt;\2 (\1)&lt;/formed&gt;" dest="11">
 				<expression fixchars="2" noclean="1">intFormedYear&quot;:&quot;([^&quot;]*).*?strCountry&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
@@ -190,6 +196,9 @@
 			<RegExp input="" output="" dest="11">
 				<expression />
 			</RegExp>
+			<RegExp input="" output="" dest="12">
+				<expression />
+			</RegExp>
 			<RegExp input="$$1" output="&lt;formed&gt;\2 (\1)&lt;/formed&gt;" dest="11">
 				<expression fixchars="2" noclean="1">intFormedYear&quot;:&quot;([^&quot;]*).*?strCountry&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
@@ -225,6 +234,9 @@
 				<expression />
 			</RegExp>
 			<RegExp input="" output="" dest="11">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="12">
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="11">
@@ -285,6 +297,25 @@
 			<expression noclean="1" />
 		</RegExp>
 	</ParseTADBAlbumReview>
+
+	<GetTADBAlbumRating dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumRating&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBAlbumRating>
+	<GetTADBAlbumRatingByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumRating&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBAlbumRatingByMBID>
+	<ParseTADBAlbumRating dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;rating max=&quot;10.0&quot;&gt;\1&lt;/rating&gt;" dest="2">
+				<expression fixchars="1">intScore&quot;:&quot;(.*?)&quot;,&quot;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseTADBAlbumRating>
 
 	<GetTADBAlbumTitleByID dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumTitle&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">

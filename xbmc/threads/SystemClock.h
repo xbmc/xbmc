@@ -45,20 +45,28 @@ namespace XbmcThreads
     unsigned int startTime;
     unsigned int totalWaitTime;
   public:
+    static const unsigned int InfiniteValue;
     inline EndTime() : startTime(0), totalWaitTime(0) {}
     inline EndTime(unsigned int millisecondsIntoTheFuture) : startTime(SystemClockMillis()), totalWaitTime(millisecondsIntoTheFuture) {}
 
     inline void Set(unsigned int millisecondsIntoTheFuture) { startTime = SystemClockMillis(); totalWaitTime = millisecondsIntoTheFuture; }
 
-    inline bool IsTimePast() { return totalWaitTime == 0 ? true : (SystemClockMillis() - startTime) >= totalWaitTime; }
+    inline bool IsTimePast() const { return totalWaitTime == InfiniteValue ? false : (totalWaitTime == 0 ? true : (SystemClockMillis() - startTime) >= totalWaitTime); }
 
-    inline unsigned int MillisLeft()
+    inline unsigned int MillisLeft() const
     {
+      if (totalWaitTime == InfiniteValue)
+        return InfiniteValue;
+      if (totalWaitTime == 0)
+        return 0;
       unsigned int timeWaitedAlready = (SystemClockMillis() - startTime);
       return (timeWaitedAlready >= totalWaitTime) ? 0 : (totalWaitTime - timeWaitedAlready);
     }
 
     inline void SetExpired() { totalWaitTime = 0; }
-    inline void SetInfinite() { totalWaitTime = std::numeric_limits<unsigned int>::max(); }
+    inline void SetInfinite() { totalWaitTime = InfiniteValue; }
+    inline bool IsInfinite(void) const { return (totalWaitTime == InfiniteValue); }
+    inline unsigned int GetInitialTimeoutValue(void) const { return totalWaitTime; }
+    inline unsigned int GetStartTime(void) const { return startTime; }
   };
 }

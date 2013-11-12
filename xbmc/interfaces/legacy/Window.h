@@ -40,15 +40,22 @@ namespace XBMCAddon
     // file needs to include the Window class because of the template
     class InterceptorBase;
 
+    /**
+     * Action class.
+     * 
+     * For backwards compatibility reasons the == operator is extended so that it\n
+     * can compare an action with other actions and action.GetID() with numbers
+     *  - example: (action == ACTION_MOVE_LEFT)
+     */
     class Action : public AddonClass
     {
     public:
-      Action() : AddonClass("Action"), id(-1), fAmount1(0.0f), fAmount2(0.0f), 
+      Action() : id(-1), fAmount1(0.0f), fAmount2(0.0f), 
                  fRepeat(0.0f), buttonCode(0), strAction("")
       { }
 
 #ifndef SWIG
-      Action(const CAction& caction) : AddonClass("Action") { setFromCAction(caction); }
+      Action(const CAction& caction) { setFromCAction(caction); }
 
       void setFromCAction(const CAction& caction);
 
@@ -63,16 +70,45 @@ namespace XBMCAddon
       AddonClass::Ref<Control> control; // previously pObject
 #endif
 
-      long getId() { TRACE; return id; }
-      long getButtonCode() { TRACE; return buttonCode; }
-      float getAmount1() { TRACE; return fAmount1; }
-      float getAmount2() { TRACE; return fAmount2; }
+      /**
+       * getId() -- Returns the action's current id as a long or 0 if no action is mapped in the xml's.
+       */
+      long getId() { XBMC_TRACE; return id; }
+
+      /**
+       * getButtonCode() -- Returns the button code for this action.
+       */
+      long getButtonCode() { XBMC_TRACE; return buttonCode; }
+
+      /**
+       * getAmount1() -- Returns the first amount of force applied to the thumbstick n.
+       */
+      float getAmount1() { XBMC_TRACE; return fAmount1; }
+      
+      /**
+       * getAmount2() -- Returns the second amount of force applied to the thumbstick n.
+       */
+      float getAmount2() { XBMC_TRACE; return fAmount2; }
     };
 
+    //============================================================================
+    // This is the main class for the xbmcgui.Window functionality. It is tied
+    //  into the main XBMC windowing system via the Interceptor\n
+    //============================================================================
     /**
-     * This is the main class for the xbmcgui.Window functionality. It is tied\n
-     *  into the main XBMC windowing system via the Interceptor\n
-     */
+     * Window class.
+     * 
+     * Window(self[, int windowId):
+     *   - Create a new Window to draw on.
+     *   - Specify an id to use an existing window.
+     * 
+     * Throws:
+     *   - ValueError, if supplied window Id does not exist.
+     *   - Exception, if more then 200 windows are created.
+     * 
+     * Deleting this window will activate the old window that was active\n
+     * and resets (not delete) all controls that are associated with this window.
+    */
     class Window : public AddonCallback
     {
       friend class WindowDialogMixin;
@@ -98,7 +134,7 @@ namespace XBMCAddon
       bool existingWindow;
       bool destroyAfterDeInit;
 
-      Window(const char* classname) throw (WindowException);
+      Window() throw (WindowException);
 
       virtual void deallocating();
 
@@ -133,7 +169,7 @@ namespace XBMCAddon
 #endif
 
     public:
-      Window(int existingWindowId = -1) throw (WindowException);
+      Window(int existingWindowId) throw (WindowException);
 
       virtual ~Window();
 
@@ -143,15 +179,15 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool    OnBack(int actionId);
       SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
 
-      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool    IsDialog() const { TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool    IsModalDialog() const { TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { XBMC_TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool    IsDialog() const { XBMC_TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool    IsModalDialog() const { XBMC_TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { XBMC_TRACE; return false; };
       SWIGHIDDENVIRTUAL void    dispose();
 
       // This is called from the InterceptorBase destructor to prevent further
       //  use of the interceptor from the window.
-      inline void interceptorClear() { Synchronize lock(*this); window = NULL; }
+      inline void interceptorClear() { CSingleLock lock(*this); window = NULL; }
 #endif
 
       // callback takes a parameter
@@ -167,12 +203,46 @@ namespace XBMCAddon
        * - Don't forget to capture ACTION_PREVIOUS_MENU or ACTION_NAV_BACK, else the user can't close this window.
        */
       virtual void onAction(Action* action);
+
       // on control is not actually on Window in the api but is called
-      //  into Python anyway. This must result in a problem when 
+      //  into Python anyway.
+      /**
+       * onControl(self, Control control) -- onClick method.
+       * 
+       * This method will recieve all click events on owned and selected controls when\n
+       * the control itself doesn't handle the message.
+       */
       virtual void onControl(Control* control);
+
+      /**
+       * onClick(self, int controlId) -- onClick method.
+       * 
+       * This method will recieve all click events that the main program will send\n
+       * to this window.
+       */
       virtual void onClick(int controlId);
+
+      /**
+       * onDoubleClick(self, int controlId) -- onClick method.
+       * 
+       * This method will recieve all double click events that the main program will send\n
+       * to this window.
+       */
       virtual void onDoubleClick(int controlId);
+
+      /**
+       * onFocus(self, int controlId) -- onFocus method.
+       * 
+       * This method will recieve all focus events that the main program will send\n
+       * to this window.
+       */
       virtual void onFocus(int controlId);
+
+      /**
+       * onInit(self) -- onInit method.
+       * 
+       * This method will be called to initialize the window
+       */
       virtual void onInit();
 
       /**

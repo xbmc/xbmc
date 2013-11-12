@@ -29,7 +29,7 @@ using namespace jni;
 CJNIMediaCodecBufferInfo::CJNIMediaCodecBufferInfo() : CJNIBase("android/media/MediaCodec$BufferInfo")
 {
   m_object = new_object(GetClassName(), "<init>", "()V");
-  //m_object.setGlobal();
+  m_object.setGlobal();
 }
 
 void CJNIMediaCodecBufferInfo::set(int newOffset, int newSize, int64_t newTimeUs, int newFlags)

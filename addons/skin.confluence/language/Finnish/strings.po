@@ -36,10 +36,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Näkymän asetukset"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Kokoruutu"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Kokonaiskesto"
@@ -108,10 +104,6 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "KELAUS TAAKSEPÄIN"
 
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Visualisoinnin esiasetukset"
-
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Päättymisaika"
@@ -164,10 +156,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Näytä \"Tauko\" kuvaesityksessä"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Toista esittelyt ikkunassa [COLOR=grey3](Videotiedot-ikkuna)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Yleiset asetukset"
@@ -204,25 +192,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Näytä viimeksi lisätyt videot"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Päävalikon Ohjelmat-alivalikko"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Piilota taustan fanitaide"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Sääsivu"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Näytä taustalla \"Nyt katsellaan\"-video"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Näytä taustalla \"Nyt kuunnellaan\"-visualisointi"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -236,10 +212,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Sanoitukset"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Piilota fanitaide kokoruudun visualisoinnissa"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Sanoitukset-lisäosa"
@@ -247,18 +219,6 @@ msgstr "Sanoitukset-lisäosa"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Tekstitykset-lisäosa"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Päävalikon Videot-alivalikko"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Päävalikon Musiikki-alivalikko"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Päävalikon Kuvat-alivalikko"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -408,6 +368,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Lataa tekstitykset"
 
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Käytössä"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Ulkoasun oletus"
@@ -448,10 +412,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]Muokkaa lisäosia[/B][CR][CR]Hallitse asennettuja lisäosia · Valitse ja asenna lisäosia xbmc.org:sta[CR]Muokkaa lisäosien asetuksia"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]Muokkaa TV-asetuksia[/B][CR][CR]Muokkaa kokoruudun tietoja · Hallitse ohjelmaoppaan asetuksia"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Määritä XBMC:n kauko ohjaus käyttäen UPnP:tä ja HTTP:tä · Määritä tiedostonjako[CR]Kytke päälle Zeroconf · Määritä AirPlay"
@@ -460,17 +420,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ensimmäisen käynnistyksen apu..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Tämä välilehti viittaa siihen että on valikko tämän ikkunan kyljessä joka sisältää lisäominaisuuksia tähän alueeseen liittyen.   Avataaksesi valikon, liiku vasemmalle kaukosäätimellä tai näppäimistöllä tai siirrä hiiresi kursori välilehden päälle. [CR] [CR]Tämä ilmoitus ei näy uudestaan, klikkaa \"Ok\" sulkeaaksesi sen."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Valitse XBMC-käyttäjäprofiili[CR]kirjautuaksesi sisään"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Nauhoitusajastukset"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

@@ -674,7 +674,8 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
   pDlgProgress->Progress();
 
   /* reset the EPG pointers */
-  m_database->ResetEPG();
+  if (m_database)
+    m_database->ResetEPG();
 
   /* stop the thread */
   Stop();

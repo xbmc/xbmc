@@ -476,7 +476,7 @@ diff -Naur afpfs-ng-0.8.1/include/afpfs-ng/afp.h afpfs-ng-0.8.1.patch/include/af
 +
 +struct afp_server * afp_server_full_connect(void * priv, struct afp_connection_request * req);
 +
-+void * just_end_it_now(void *other);
++void just_end_it_now(void *other);
 +void add_fd_and_signal(int fd);
 +void loop_disconnect(struct afp_server *s);
 +void afp_wait_for_started_loop(void);
@@ -2685,6 +2685,16 @@ diff -Naur afpfs-ng-0.8.1/lib/loop.c afpfs-ng-0.8.1.patch/lib/loop.c
  
  #define SIGNAL_TO_USE SIGUSR2
  
+@@ -85,7 +85,7 @@ void signal_main_thread(void)
+ }
+ 
+ static int ending=0;
+-void * just_end_it_now(void * ignore)
++void just_end_it_now(void * ignore)
+ {
+ 	if (ending) return;
+ 	ending=1;
+ 	
 diff -Naur afpfs-ng-0.8.1/lib/lowlevel.c afpfs-ng-0.8.1.patch/lib/lowlevel.c
 --- afpfs-ng-0.8.1/lib/lowlevel.c	2008-02-20 02:33:17.000000000 +0100
 +++ afpfs-ng-0.8.1.patch/lib/lowlevel.c	2011-09-10 12:13:50.136124828 +0200

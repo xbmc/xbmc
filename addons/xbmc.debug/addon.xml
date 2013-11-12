@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.3" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.4" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>
@@ -9,7 +9,7 @@
     <summary lang="cs">Doplňky pro podrobné protokolování</summary>
     <summary lang="de">Erweiterung zur Verbesserung der Logging Anpassbarkeit.</summary>
     <summary lang="el">Πρόσθετο για τη βελτίωση της προσαρμοστικότητας των καταγραφών σφαλμάτων</summary>
-    <summary lang="en">Addon to improve logging customizability</summary>
+    <summary lang="en">Add-on to improve logging customisability</summary>
     <summary lang="es">Complemento para mejorar la personalización del registro</summary>
     <summary lang="es_MX">Complemento para mejorar la personalizacion del registro</summary>
     <summary lang="et">Lisa, mis võimaldab logimise kohandamist</summary>

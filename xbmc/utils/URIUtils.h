@@ -61,12 +61,14 @@ public:
                                      const CStdString& strNewExtension);
   static void Split(const CStdString& strFileNameAndPath, 
                     CStdString& strPath, CStdString& strFileName);
+  static void Split(const std::string& strFileNameAndPath, 
+                    std::string& strPath, std::string& strFileName);
   static CStdStringArray SplitPath(const CStdString& strPath);
 
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static CStdString GetParentPath(const CStdString& strPath);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
-  static CStdString SubstitutePath(const CStdString& strPath);
+  static CStdString SubstitutePath(const CStdString& strPath, bool reverse = false);
 
   static bool IsAddonsPath(const CStdString& strFile);
   static bool IsSourcesPath(const CStdString& strFile);
@@ -95,6 +97,7 @@ public:
   static bool IsAfp(const CStdString& strFile);    
   static bool IsOnDVD(const CStdString& strFile);
   static bool IsOnLAN(const CStdString& strFile);
+  static bool IsHostOnLAN(const CStdString& hostName, bool offLineCheck = false);
   static bool IsPlugin(const CStdString& strFile);
   static bool IsScript(const CStdString& strFile);
   static bool IsRAR(const CStdString& strFile);
@@ -114,10 +117,11 @@ public:
   static bool IsAndroidApp(const CStdString& strFile);
   static bool IsLibraryFolder(const CStdString& strFile);
 
-  static void AddSlashAtEnd(CStdString& strFolder);
-  static bool HasSlashAtEnd(const CStdString& strFile, bool checkURL = false);
-  static void RemoveSlashAtEnd(CStdString& strFolder);
+  static void AddSlashAtEnd(std::string& strFolder);
+  static bool HasSlashAtEnd(const std::string& strFile, bool checkURL = false);
+  static void RemoveSlashAtEnd(std::string& strFolder);
   static bool CompareWithoutSlashAtEnd(const CStdString& strPath1, const CStdString& strPath2);
+  static std::string FixSlashesAndDups(const std::string& path, const char slashCharacter = '/', const size_t startFrom = 0);
 
   static void CreateArchivePath(CStdString& strUrlPath,
                                 const CStdString& strType,

@@ -183,7 +183,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             item.m_lStartOffset = STARTOFFSET_RESUME;
 
           g_application.PlayFile(item, false);
-          bPlaying = true;
           return true;
         }
 
@@ -201,7 +200,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             item.m_lStartOffset = STARTOFFSET_RESUME;
 
           g_application.PlayFile(item, false);
-          bPlaying = true;
           return true;
         }
 
@@ -297,7 +295,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             {
               CLog::Log(LOGINFO,"HD DVD: External singlefile playback initiated: %s",hddvdname.c_str());
               g_application.PlayFile(item, false);
-              bPlaying = true;
               return true;
             } else
               CLog::Log(LOGINFO,"HD DVD: No external player found. Fallback to internal one.");
@@ -310,7 +307,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
           g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
           g_playlistPlayer.Play(0);
-          bPlaying = true;
           return true;
         }
 				
@@ -334,7 +330,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
             g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
             g_playlistPlayer.Play(0);
-            bPlaying = true;
             return true;
           }
         }

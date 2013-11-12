@@ -111,7 +111,7 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
 bool CAddonInstaller::IsDownloading() const
 {
   CSingleLock lock(m_critSection);
-  return m_downloadJobs.size() > 0;
+  return !m_downloadJobs.empty();
 }
 
 void CAddonInstaller::GetInstallList(VECADDONS &addons) const
@@ -578,10 +578,8 @@ bool CAddonInstallJob::OnPreInstall()
 
   if (m_addon->Type() == ADDON_SERVICE)
   {
-    CAddonDatabase database;
-    database.Open();
-    bool running = !database.IsAddonDisabled(m_addon->ID()); //grab a current state
-    database.DisableAddon(m_addon->ID(),false); // enable it so we can remove it??
+    bool running = !CAddonMgr::Get().IsAddonDisabled(m_addon->ID()); //grab a current state
+    CAddonMgr::Get().DisableAddon(m_addon->ID(),false); // enable it so we can remove it??
     // regrab from manager to have the correct path set
     AddonPtr addon;
     ADDON::CAddonMgr::Get().GetAddon(m_addon->ID(), addon);
@@ -698,22 +696,19 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
     if (reloadAddon || (!m_update && CGUIDialogYesNo::ShowAndGetInput(m_addon->Name(),
                                                         g_localizeStrings.Get(24099),"","")))
     {
-      CSettings::Get().SetString("lookandfeel.skin",m_addon->ID().c_str());
       CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
       if (toast)
       {
         toast->ResetTimer();
         toast->Close(true);
       }
-      CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin");
+      CSettings::Get().SetString("lookandfeel.skin",m_addon->ID().c_str());
     }
   }
 
   if (m_addon->Type() == ADDON_SERVICE)
   {
-    CAddonDatabase database;
-    database.Open();
-    database.DisableAddon(m_addon->ID(),!reloadAddon); //return it into state it was before OnPreInstall()
+    CAddonMgr::Get().DisableAddon(m_addon->ID(),!reloadAddon); //return it into state it was before OnPreInstall()
     if (reloadAddon) // reload/start it if it was running
     {
       // regrab from manager to have the correct path set

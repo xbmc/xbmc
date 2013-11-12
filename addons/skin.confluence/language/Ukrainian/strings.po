@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Опції налаштування"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Повний екран"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Загальна тривалість"
@@ -92,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Інформація"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Дії"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Зараз відтворюється:"
@@ -115,10 +115,6 @@ msgstr "ПЕРЕМОТКА НАЗАД"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "ПОШУК"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Налаштування візуалізації"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -172,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Показувати \"Пауза\" в режими слайдшоу"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Відтворювати трейлери у вікні [COLOR=grey3](лише для вікна відомостей)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Різні параметри"
@@ -212,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Показувати останнє додане відео"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Підменю програм головного екрану"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Приховувати фанарт на тлі"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Сторінка кнопки"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Відтворюване відео на тлі"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Музична візуалізація на тлі"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Тексти"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Приховувати фанарт у повноекранній візуалізації"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Надбудова текстів пісень"
@@ -255,18 +231,6 @@ msgstr "Надбудова текстів пісень"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Надбудова субтитрів"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Підменю відео головного екрану"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Підменю музики головного екрану"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Підменю фото головного екрану"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +380,18 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Завантажити субтитри"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Переглядати як 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Зміна режиму"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Увімкн."
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Стандартні"
@@ -456,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]НАЛАШТУВАННЯ НАДБУДОВ[/B][CR][CR]Керування встановленими надбудовами • Встановлення надбудов з xbmc.org[CR]Зміна налаштувань надбудов"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]НАЛАШТУВАННЯ ТБ[/B][CR][CR]Налаштування повноекранних відомостей · Керування параметрами EPG"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]НАЛАШТУВАННЯ ПАРАМЕТРІВ СЛУЖБ[/B][CR][CR]Налаштування керування XBMC за UPnP і HTTP • Налаштування доступу до файлів[CR]Увімкнення Zeroconf • Налаштування AirPlay"
@@ -468,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Довідка при першому запуску."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Ця вкладка означає, що збоку є меню із додатковими налаштуваннями розділу.  Для доступу до меню перейдіть вліво за допомогою пульта ДУ чи клавіатури або помістіть курсор миші над вкладкою. [CR][CR] ОК — закрити цей діалог. Він більше не з'явиться."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Виберіть профіль користувача XBMC,[CR]щоб увійти до системи"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Таймери запису"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

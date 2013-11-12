@@ -49,12 +49,26 @@ public:
   RENDER_STEREO_MODE GetStereoMode(void);
   RENDER_STEREO_MODE GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step = 1);
   std::string DetectStereoModeByString(const std::string &needle);
-  RENDER_STEREO_MODE ConvertVideoToGuiStereoMode(const std::string &mode);
-  RENDER_STEREO_MODE GetStereoModeByUserChoice(const CStdString& heading = "");
+  RENDER_STEREO_MODE GetStereoModeByUserChoice(const CStdString &heading = "");
   RENDER_STEREO_MODE GetStereoModeOfPlayingVideo(void);
   CStdString GetLabelForStereoMode(const RENDER_STEREO_MODE &mode);
   RENDER_STEREO_MODE GetPreferredPlaybackMode(void);
-
+  int ConvertVideoToGuiStereoMode(const std::string &mode);
+  /**
+   * @brief will convert a string representation into a GUI stereo mode
+   * @param mode The string to convert
+   * @return -1 if not found, otherwise the according int of the RENDER_STEREO_MODE enum
+   */
+  int ConvertStringToGuiStereoMode(const std::string &mode);
+  const char* ConvertGuiStereoModeToString(const RENDER_STEREO_MODE &mode);
+  /**
+   * @brief Converts a stereoscopics related action/command from Builtins and JsonRPC into the according cAction ID.
+   * @param command The command/action
+   * @param parameter The parameter of the command
+   * @return The integer of the according cAction or -1 if not valid
+   */
+  CAction ConvertActionCommandToAction(const std::string &command, const std::string &parameter);
+  std::string NormalizeStereoMode(const std::string &mode);
   virtual void OnSettingChanged(const CSetting *setting);
   virtual bool OnMessage(CGUIMessage &message);
   /*!

@@ -18,11 +18,15 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Ubah ... Anda"
+msgstr "Ubah "
 
 msgctxt "#31003"
 msgid "Power Options"
 msgstr "Opsyen Kuasa"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Bekerja..."
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -35,10 +39,6 @@ msgstr "Lihat Opsyen"
 msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Opsyen Tetapan"
-
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Skrin penuh"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -56,6 +56,10 @@ msgctxt "#31024"
 msgid "Page"
 msgstr "Muka surat"
 
+msgctxt "#31025"
+msgid "Items"
+msgstr "Item"
+
 msgctxt "#31026"
 msgid "Misc Options"
 msgstr "Opsyen-opsyen Lain"
@@ -64,29 +68,49 @@ msgctxt "#31027"
 msgid "Location"
 msgstr "Kedudukan"
 
+msgctxt "#31028"
+msgid "Poster Wrap"
+msgstr "Balutan Poster"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Hasil Seni Peminat"
+
+msgctxt "#31031"
+msgid "Pic Thumbs"
+msgstr "Thumbnail Gambar"
+
+msgctxt "#31032"
+msgid "Image Wrap"
+msgstr "Balutan Imej"
+
 msgctxt "#31033"
 msgid "Info"
 msgstr "Maklumat"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "Bermain Kini"
+msgstr "Kini Bermain"
 
 msgctxt "#31042"
 msgid "PLAYING"
 msgstr "BERMAIN"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "TERHENTI SEJENAK"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "MARA LAJU"
 
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "PUTAR SEMULA"
+
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "MENCARI"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Praset pengvisualan"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -100,6 +124,10 @@ msgctxt "#31051"
 msgid "Sort: Descending"
 msgstr "Susun: Menurun"
 
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Buka senarai audio video"
+
 msgctxt "#31056"
 msgid "Save playlist"
 msgstr "Simpan senarai audio video"
@@ -108,13 +136,89 @@ msgctxt "#31057"
 msgid "Close playlist"
 msgstr "Tutup senarai audio video"
 
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Fail muzik sistem"
+
 msgctxt "#31059"
 msgid "Current playlist"
 msgstr "Senarai audio video semasa"
 
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Fail ini disusun tindan. Pilih bahagian yang anda ingin mainkan."
+
 msgctxt "#31061"
 msgid "Current Selected"
 msgstr "Pilihan Semasa"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Opsyen skrin utama"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Latar Belakang"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Papar \"Henti Sejenak\" pada persembahan slaid gambar"
+
+msgctxt "#31108"
+msgid "Hide Main Menu Buttons"
+msgstr "Sembunyi Punat Menu Utama"
+
+msgctxt "#31109"
+msgid "Enable Custom Background"
+msgstr "Benarkan Latar Belakang Tersuai"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Laluan Latar Belakang:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Sembunyi"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Opsyen"
+
+msgctxt "#31116"
+msgid "Show Recently added Albums"
+msgstr "Papar Album baru tambah"
+
+msgctxt "#31117"
+msgid "Show Recently added Videos"
+msgstr "Papar Video baru tambah"
+
+msgctxt "#31119"
+msgid "Hide Background Fanart"
+msgstr "Sembunyi Latar Hasil Seni Peminat "
+
+msgctxt "#31124"
+msgid "Show Background \"Now Playing\" Video"
+msgstr "Papar Latar VIdeo \"Kini Bermain\""
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Mainkan lagu-lagu tema TV dalam perpustakaan video (perisian tambahan TVTunes)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Lirik"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Perisisan tambahan Lirik"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Perisian tambahan Sarikata"
 
 msgctxt "#31327"
 msgid "Resolution"

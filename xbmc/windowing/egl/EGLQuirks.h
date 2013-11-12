@@ -20,17 +20,22 @@
  *
  */
 
-#define EGL_QUIRK_NONE 0
+#define EGL_QUIRK_NONE (0)
 
 /*! \brief Enable this if the implementation does not know its native
      resolution until a surface has been created. Used, for example, on Android
      where we have no control over the resolution, so we query it once the
      surface exists.
 */
-#define EGL_QUIRK_NEED_WINDOW_FOR_RES 1
+#define EGL_QUIRK_NEED_WINDOW_FOR_RES (1 << 0)
 
 /*! \brief Enable this if the implementation should have its native window
      destroyed when the surface is destroyed. In practice this means that a new
      native window will be created each time the main XBMC window is recreated.
 */
-#define EGL_QUIRK_DESTROY_NATIVE_WINDOW_WITH_SURFACE 2
+#define EGL_QUIRK_DESTROY_NATIVE_WINDOW_WITH_SURFACE (1 << 1)
+
+/*! \brief The intel driver on wayland is broken and always returns a surface
+           size of -1, -1. Work around it for now
+*/
+#define EGL_QUIRK_DONT_TRUST_SURFACE_SIZE (1 << 2)

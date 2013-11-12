@@ -867,6 +867,8 @@ bool CGUIWindowPVRCommon::OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON bu
         m_parent->m_windowSearch->m_searchfilter.m_strSearchTerm = "\"" + tag.Title() + "\"";
       else if (item->IsPVRRecording())
         m_parent->m_windowSearch->m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRRecordingInfoTag()->m_strTitle + "\"";
+      else if (item->IsPVRTimer())
+        m_parent->m_windowSearch->m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRTimerInfoTag()->m_strTitle + "\"";
 
       m_parent->m_windowSearch->m_bSearchConfirmed = true;
       m_parent->SetLabel(m_iControlButton, 0);

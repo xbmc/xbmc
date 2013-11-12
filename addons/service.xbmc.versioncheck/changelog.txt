@@ -1,3 +1,34 @@
+v0.1.11
+- Updated language files from Transifex
+- Fix problems with python2.7.5
+- Update with 13.0 Gotham_alpha8
+
+v0.1.11
+- Update with 13.0 Gotham_alpha7
+
+v0.1.9
+- Update with 13.0 Gotham_alpha6
+- Updated language files from Transifex
+
+v0.1.7
+- Update with 13.0 Gotham_alpha5
+
+v0.1.7
+- Update with 13.0 Gotham_alpha4
+
+v0.1.6
+- Update with 12.2 Frodo stable
+- Added Linux full system upgrade
+
+v0.1.5
+- Update with 13.0 Gotham_alpha3
+
+v0.1.4
+- We can now upgrade xbmc on Linux. This works either via polkit or shell wrapper as fallback
+
+v0.1.3
+- Update with 13.0 Gotham_alpha2
+
 v0.1.2
 - Add notification for Ubuntu users checking through apt command
 

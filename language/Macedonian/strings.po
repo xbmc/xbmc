@@ -853,10 +853,6 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Музика"
 
-msgctxt "#250"
-msgid "Visualization"
-msgstr "Визуелизација"
-
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Изаберете целна папка"
@@ -1168,10 +1164,6 @@ msgstr "Конверзија на брзина на слики"
 msgctxt "#337"
 msgid "Audio output"
 msgstr "Излез на звук"
-
-msgctxt "#338"
-msgid "Analog"
-msgstr "Аналогни"
 
 msgctxt "#339"
 msgid "Optical/Coax"
@@ -1541,10 +1533,6 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "Кеш"
 
-msgctxt "#440"
-msgid "Harddisk"
-msgstr "Тврд диск"
-
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1780,10 +1768,6 @@ msgstr "Вчитување податоци за медиум од датоте�
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Подреди по: Употреба"
-
-msgctxt "#510"
-msgid "Enable visualizations"
-msgstr "Овозможи визуализации"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2209,14 +2193,6 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Прилагодено"
 
-msgctxt "#637"
-msgid "Replay gain"
-msgstr "Нормализација"
-
-msgctxt "#638"
-msgid "Replaygain volume adjustments"
-msgstr "Подес. јачина нормализ. звук"
-
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Користи на ниво на нумера"
@@ -2224,18 +2200,6 @@ msgstr "Користи на ниво на нумера"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Користи на ниво на албум"
-
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr "Ниво предпојачување - со нормализација на датотеки"
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr "Ниво предпојачување - без нормализација на датотеки"
-
-msgctxt "#643"
-msgid "Avoid clipping on replay gained files"
-msgstr "Избегни исечоци при нормализација на датотеки"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -3341,18 +3305,6 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Поставки - Профили"
 
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr "Пребарувач на додатоци"
-
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr "Да/Не прозор"
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr "Дијалог на прогресот"
-
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Заклучај ги поставките"
@@ -3453,17 +3405,9 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Податоци за филмот"
 
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr "Одберете дијалог"
-
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Музика/Податоци"
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr "Дијалог во ред"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3476,14 +3420,6 @@ msgstr "Скрипти/Податоци"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Филм преку целиот екран"
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr "Визуализација на звук"
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr "Дијалог за средување датотеки"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -3821,10 +3757,6 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Одново Стартувај"
 
-msgctxt "#13014"
-msgid "Minimize"
-msgstr "Смали"
-
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Акција на копчето за вклучување"
@@ -3937,10 +3869,6 @@ msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU HQ Upscaling level"
 
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr "VDPAU Studio level color conversion"
-
 msgctxt "#13130"
 msgid "Blank other displays"
 msgstr "Зацрни ги останатите екрани"
@@ -3992,10 +3920,6 @@ msgstr "Мрежен премин"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "Примарен DNS"
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr "Неуспешна иницијализација"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4237,10 +4161,6 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Рекурзивна репрод. слајдови"
 
-msgctxt "#13319"
-msgid "Randomize"
-msgstr "Случајно"
-
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Стерео"
@@ -4453,21 +4373,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Однапред зададено"
 
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr "Не постојат одапред зададени поставки за оваа визуализација"
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr "Не постојат достапни поставки за оваа визуализација"
-
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Исфрли/Уфрли"
-
-msgctxt "#13392"
-msgid "Use visualization if playing audio"
-msgstr "Користи визуализација доколку се репродуцира звук"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4652,10 +4560,6 @@ msgstr "Часовник на филмот (Drop/Dupe звук)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Часовник на филмот (Понов. одб. звук)"
-
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr "Максимална количина пон. одбир. (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -4844,10 +4748,6 @@ msgstr "Без TV приемник"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Внесете најблзок поголем град"
-
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr "Видео/Звучен/DVD кеш - цврст диск"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5173,10 +5073,6 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "Репродуцирај со помош на..."
 
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr "Користи омекната A/V синхронизација"
-
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "Сокриј ги имињата на датотеките за време на приказ на омоти"
@@ -5316,10 +5212,6 @@ msgstr "Покренат режим на журка."
 msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Нема совпаѓачки песни во библиотеката."
-
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr "Не е можно покренување на базата на податоци."
 
 msgctxt "#16033"
 msgid "Could not open database."
@@ -5469,10 +5361,6 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Обратен Telecine"
 
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr "Оптимизиран Lanczos3"
-
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Автоматски"
@@ -5500,10 +5388,6 @@ msgstr "DXVA Best"
 msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
-
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr "Spline36 optimized"
 
 msgctxt "#16324"
 msgid "Software Blend"
@@ -5729,10 +5613,6 @@ msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Продолжи со последниот канал при стартување"
 
-msgctxt "#19190"
-msgid "Minimized"
-msgstr "Минимизирано"
-
 msgctxt "#19191"
 msgid "PVR service"
 msgstr "ПВР сервис"
@@ -5881,10 +5761,6 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Сокриј ја информацијата за канали после промена на канал"
 
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr "Не го освежувај ТВ-Водичот ако гледам ТВ канал"
-
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "Секогаш користи го редоследот на канали од изворот(ите)"
@@ -5896,10 +5772,6 @@ msgstr "Испразни ја листата со резултати"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Прикажи информација за промена на тајмери"
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Користи ги броевите на каналите од изворот (само ако користите 1 ПВР)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6244,14 +6116,6 @@ msgstr "Прикажи податоци за време"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Прикажи податоци за системот"
-
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr "Прикажи слободен простор на диск C: E: F:"
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr "Прикажи слободен простор на диск E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -7161,10 +7025,6 @@ msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Зан. слика"
 
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr "Прикажи сликички во видео и музички библиотеки"
-
 msgctxt "#20415"
 msgid "Scanning for new content"
 msgstr "Пребарување за нови содржини"
@@ -8045,10 +7905,6 @@ msgctxt "#22019"
 msgid "Recordings by title"
 msgstr "Снимки по наслов"
 
-msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "Дозволена грешка во пропорцијата за да се намалат црните ленти"
-
 msgctxt "#22023"
 msgid "DirectX vendor:"
 msgstr "DirectX вендор:"
@@ -8164,10 +8020,6 @@ msgstr "Чувар на екран"
 msgctxt "#24009"
 msgid "Script"
 msgstr "Скрипта"
-
-msgctxt "#24010"
-msgid "Visualization"
-msgstr "Визуелизација"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -8468,10 +8320,6 @@ msgstr "Дали е инсталиран Bonjour сервисот на Apple? П
 msgctxt "#34400"
 msgid "Video Rendering"
 msgstr "Видео Рендерирање"
-
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr "Неуспешно иницијализирање на аудио уред"
 
 msgctxt "#35500"
 msgid "Location"

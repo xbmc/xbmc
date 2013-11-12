@@ -79,7 +79,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iAddonInfoToggleCurrent     = 0;
   m_iTimerInfoToggleStart       = 0;
   m_iTimerInfoToggleCurrent     = 0;
-  m_iToggleShowInfo             = 0;
+  m_ToggleShowInfo.SetInfinite();
   m_iDuration                   = 0;
   m_bHasNonRecordingTimers      = false;
   m_bIsPlayingTV                = false;
@@ -123,7 +123,7 @@ void CPVRGUIInfo::ShowPlayerInfo(int iTimeout)
   CSingleLock lock(m_critSection);
 
   if (iTimeout > 0)
-    m_iToggleShowInfo = (int) XbmcThreads::SystemClockMillis() + iTimeout * 1000;
+    m_ToggleShowInfo.Set(iTimeout * 1000);
 
   g_infoManager.SetShowInfo(true);
 }
@@ -132,9 +132,9 @@ void CPVRGUIInfo::ToggleShowInfo(void)
 {
   CSingleLock lock(m_critSection);
 
-  if (m_iToggleShowInfo > 0 && m_iToggleShowInfo < (unsigned int) XbmcThreads::SystemClockMillis())
+  if (m_ToggleShowInfo.IsTimePast())
   {
-    m_iToggleShowInfo = 0;
+    m_ToggleShowInfo.SetInfinite();
     g_infoManager.SetShowInfo(false);
   }
 }
@@ -341,6 +341,15 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
     break;
   case PVR_ACTUAL_STREAM_CRYPTION:
     CharInfoEncryption(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_SERVICE:
+    CharInfoService(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_MUX:
+    CharInfoMux(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_PROVIDER:
+    CharInfoProvider(strValue);
     break;
   case PVR_BACKEND_NAME:
     CharInfoBackendName(strValue);
@@ -620,6 +629,30 @@ void CPVRGUIInfo::CharInfoEncryption(CStdString &strValue) const
     strValue = StringUtils::EmptyString;
 }
 
+void CPVRGUIInfo::CharInfoService(CStdString &strValue) const
+{
+  if (!strcmp(m_qualityInfo.strServiceName, StringUtils::EmptyString))
+    strValue.Format("%s", g_localizeStrings.Get(13205));
+  else
+    strValue.Format("%s", m_qualityInfo.strServiceName);
+}
+
+void CPVRGUIInfo::CharInfoMux(CStdString &strValue) const
+{
+  if (!strcmp(m_qualityInfo.strMuxName, StringUtils::EmptyString))
+    strValue.Format("%s", g_localizeStrings.Get(13205));
+  else
+    strValue.Format("%s", m_qualityInfo.strMuxName);
+}
+
+void CPVRGUIInfo::CharInfoProvider(CStdString &strValue) const
+{
+  if (!strcmp(m_qualityInfo.strProviderName, StringUtils::EmptyString))
+    strValue.Format("%s", g_localizeStrings.Get(13205));
+  else
+    strValue.Format("%s", m_qualityInfo.strProviderName);
+}
+
 void CPVRGUIInfo::UpdateBackendCache(void)
 {
   CStdString strBackendName;
@@ -783,10 +816,10 @@ int CPVRGUIInfo::GetStartTime(void) const
   if (m_playingEpgTag)
   {
     /* Calculate here the position we have of the running live TV event.
-     * "position in ms" = ("current local time" - "event start local time") * 1000
+     * "position in ms" = ("current UTC" - "event start UTC") * 1000
      */
-    CDateTime current = CDateTime::GetCurrentDateTime();
-    CDateTime start = m_playingEpgTag->StartAsLocalTime();
+    CDateTime current = g_PVRClients->GetPlayingTime();
+    CDateTime start = m_playingEpgTag->StartAsUTC();
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
     return (time.GetDays()   * 60 * 60 * 24
          + time.GetHours()   * 60 * 60

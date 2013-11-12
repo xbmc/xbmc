@@ -32,6 +32,7 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/Key.h"
+#include "guilib/StereoscopicsManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -45,10 +46,12 @@
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "interfaces/AnnouncementManager.h"
 #include "network/NetworkServices.h"
 #include "utils/log.h"
 #include "storage/MediaManager.h"
 #include "utils/RssManager.h"
+#include "utils/JSONVariantParser.h"
 #include "PartyModeManager.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/DisplaySettings.h"
@@ -138,6 +141,7 @@ const BUILT_IN commands[] = {
 #endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
   { "RunAddon",                   true,   "Run the specified plugin/script" },
+  { "NotifyAll",                  true,   "Notify all connected clients" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
@@ -223,6 +227,7 @@ const BUILT_IN commands[] = {
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
 #endif
+  { "SetStereoMode",              true,   "Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, monoscopic)" }
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -561,14 +566,26 @@ int CBuiltins::Execute(const CStdString& execString)
         CStdString cmd;
         if (plugin && addon->Type() == ADDON_PLUGIN)
         {
+          CStdString addonid = params[0];
+          CStdString urlParameters;
+          CStdStringArray parameters;
+          if (params.size() == 2 &&
+             (StringUtils::StartsWith(params[1], "/") || StringUtils::StartsWith(params[1], "?")))
+            urlParameters = params[1];
+          else if (params.size() > 1)
+          {
+            parameters.insert(parameters.begin(), params.begin() + 1, params.end());
+            urlParameters = "?" + StringUtils::JoinString(parameters, "&");
+          }
+
           if (plugin->Provides(CPluginSource::VIDEO))
-            cmd.Format("ActivateWindow(Video,plugin://%s,return)",params[0]);
+            cmd.Format("ActivateWindow(Video,plugin://%s%s,return)", addonid, urlParameters);
           else if (plugin->Provides(CPluginSource::AUDIO))
-            cmd.Format("ActivateWindow(Music,plugin://%s,return)",params[0]);
+            cmd.Format("ActivateWindow(Music,plugin://%s%s,return)", addonid, urlParameters);
           else if (plugin->Provides(CPluginSource::EXECUTABLE))
-            cmd.Format("ActivateWindow(Programs,plugin://%s,return)",params[0]);
+            cmd.Format("ActivateWindow(Programs,plugin://%s%s,return)", addonid, urlParameters);
           else if (plugin->Provides(CPluginSource::IMAGE))
-            cmd.Format("ActivateWindow(Pictures,plugin://%s,return)",params[0]);
+            cmd.Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid, urlParameters);
           else
             // Pass the script name (params[0]) and all the parameters
             // (params[1] ... params[x]) separated by a comma to RunPlugin
@@ -586,6 +603,19 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       CLog::Log(LOGERROR, "XBMC.RunAddon called with no arguments.");
     }
+  }
+  else if (execute.Equals("notifyall"))
+  {
+    if (params.size() > 1)
+    {
+      CVariant data;
+      if (params.size() > 2)
+        data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
+
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, params[0], params[1], data);
+    }
+    else
+      CLog::Log(LOGERROR, "XBMC.NotifyAll needs two parameters");
   }
   else if (execute.Equals("playmedia"))
   {
@@ -629,7 +659,7 @@ int CBuiltins::Execute(const CStdString& execString)
         // force the item to start at the beginning (m_lStartOffset is initialized to 0)
         askToResume = false;
       }
-      else if (params[i].Left(11).Equals("playoffset=")) {
+      else if (StringUtils::StartsWithNoCase(params[i], "playoffset=")) {
         playOffset = atoi(params[i].Mid(11)) - 1;
         item.SetProperty("playlist_starting_track", playOffset);
       }
@@ -729,7 +759,7 @@ int CBuiltins::Execute(const CStdString& execString)
           flags |= 4;
         else if (params[i].Equals("pause"))
           flags |= 8;
-        else if (params[i].Left(11).Equals("beginslide="))
+        else if (StringUtils::StartsWithNoCase(params[i], "beginslide="))
           beginSlidePath = params[i].Mid(11);
       }
     }
@@ -745,7 +775,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("reloadskin"))
   {
     //  Reload the skin
-    g_application.ReloadSkin();
+    g_application.ReloadSkin(!params.empty() && StringUtils::EqualsNoCase(params[0], "confirm"));
   }
   else if (execute.Equals("unloadskin"))
   {
@@ -830,7 +860,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(true, false);
     }
-    else if (parameter.Left(14).Equals("seekpercentage"))
+    else if (StringUtils::StartsWithNoCase(parameter, "seekpercentage"))
     {
       CStdString offset = "";
       if (parameter.size() == 14)
@@ -858,16 +888,16 @@ int CBuiltins::Execute(const CStdString& execString)
       if( g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->CanRecord())
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
     }
-    else if (parameter.Left(9).Equals("partymode"))
+    else if (StringUtils::StartsWithNoCase(parameter, "partymode"))
     {
       CStdString strXspPath = "";
       //empty param=music, "music"=music, "video"=video, else xsp path
       PartyModeContext context = PARTYMODECONTEXT_MUSIC;
       if (parameter.size() > 9)
       {
-        if (parameter.Mid(10).Equals("video)"))
+        if (parameter.size() == 16 && StringUtils::EndsWithNoCase(parameter, "video)"))
           context = PARTYMODECONTEXT_VIDEO;
-        else if (!parameter.Mid(10).Equals("music)"))
+        else if (parameter.size() != 16 || !StringUtils::EndsWithNoCase(parameter, "music)"))
         {
           strXspPath = parameter.Mid(10).TrimRight(")");
           context = PARTYMODECONTEXT_UNKNOWN;
@@ -911,7 +941,7 @@ int CBuiltins::Execute(const CStdString& execString)
       g_windowManager.SendThreadMessage(msg);
 
     }
-    else if (parameter.Left(6).Equals("repeat"))
+    else if (StringUtils::StartsWithNoCase(parameter, "repeat"))
     {
       // get current playlist
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
@@ -1245,7 +1275,7 @@ int CBuiltins::Execute(const CStdString& execString)
         CStdString replace;
         if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
         {
-          if (replace.Mid(0,9).Equals("addons://"))
+          if (StringUtils::StartsWithNoCase(replace, "addons://"))
             CSkinSettings::Get().SetString(string, URIUtils::GetFileName(replace));
           else
             CSkinSettings::Get().SetString(string, replace);
@@ -1714,6 +1744,17 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("StartAndroidActivity") && params.size() > 0)
   {
     CApplicationMessenger::Get().StartAndroidActivity(params);
+  }
+  else if (execute.Equals("SetStereoMode") && !parameter.IsEmpty())
+  {
+    CAction action = CStereoscopicsManager::Get().ConvertActionCommandToAction(execute, parameter);
+    if (action.GetID() != ACTION_NONE)
+      CApplicationMessenger::Get().SendAction(action);
+    else
+    {
+      CLog::Log(LOGERROR,"Builtin 'SetStereoMode' called with unknown parameter: %s", parameter.c_str());
+      return -2;
+    }
   }
   else
     return -1;

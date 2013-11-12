@@ -73,12 +73,20 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   while(http.ReadString(buffer, sizeof(buffer)-1))
   {
     CStdString strBuffer = buffer;
+    std::string fileCharset(http.GetServerReportedCharset());
+    if (!fileCharset.empty() && fileCharset != "UTF-8")
+    {
+      std::string converted;
+      if (g_charsetConverter.ToUtf8(fileCharset, strBuffer, converted) && !converted.empty())
+        strBuffer = converted;
+    }
+
     StringUtils::RemoveCRLF(strBuffer);
 
     if (reItem.RegFind(strBuffer.c_str()) >= 0)
     {
-      strLink = reItem.GetReplaceString("\\1");
-      strName = reItem.GetReplaceString("\\2");
+      strLink = reItem.GetMatch(1);
+      strName = reItem.GetMatch(2);
 
       if(strLink[0] == '/')
         strLink = strLink.Mid(1);
@@ -86,7 +94,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       CStdString strNameTemp = strName.Trim();
 
       CStdStringW wName, wLink, wConverted;
-      g_charsetConverter.unknownToUTF8(strNameTemp);
+      if (fileCharset.empty())
+        g_charsetConverter.unknownToUTF8(strNameTemp);
       g_charsetConverter.utf8ToW(strNameTemp, wName, false);
       HTML::CHTMLUtil::ConvertHTMLToW(wName, wConverted);
       g_charsetConverter.wToUTF8(wConverted, strNameTemp);
@@ -105,12 +114,13 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
       URIUtils::RemoveSlashAtEnd(strLinkTemp);
       CURL::Decode(strLinkTemp);
-      g_charsetConverter.unknownToUTF8(strLinkTemp);
+      if (fileCharset.empty())
+        g_charsetConverter.unknownToUTF8(strLinkTemp);
       g_charsetConverter.utf8ToW(strLinkTemp, wLink, false);
       HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
       g_charsetConverter.wToUTF8(wConverted, strLinkTemp);
 
-      if (strNameTemp.Right(3).Equals("..>") && 
+      if (StringUtils::EndsWith(strNameTemp, "..>") && 
           strLinkTemp.Left(strNameTemp.GetLength()-3).Equals(strNameTemp.Left(strNameTemp.GetLength()-3)))
         strName = strNameTemp = strLinkTemp;
 
@@ -131,27 +141,27 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
         if (reDateTime.RegFind(strBuffer.c_str()) >= 0)
         {
-          day = reDateTime.GetReplaceString("\\1");
-          month = reDateTime.GetReplaceString("\\2");
-          year = reDateTime.GetReplaceString("\\3");
-          hour = reDateTime.GetReplaceString("\\4");
-          minute = reDateTime.GetReplaceString("\\5");
+          day = reDateTime.GetMatch(1);
+          month = reDateTime.GetMatch(2);
+          year = reDateTime.GetMatch(3);
+          hour = reDateTime.GetMatch(4);
+          minute = reDateTime.GetMatch(5);
         }
         else if (reDateTimeNginx.RegFind(strBuffer.c_str()) >= 0)
         {
-          day = reDateTimeNginx.GetReplaceString("\\1");
-          month = reDateTimeNginx.GetReplaceString("\\2");
-          year = reDateTimeNginx.GetReplaceString("\\3");
-          hour = reDateTimeNginx.GetReplaceString("\\4");
-          minute = reDateTimeNginx.GetReplaceString("\\5");
+          day = reDateTimeNginx.GetMatch(1);
+          month = reDateTimeNginx.GetMatch(2);
+          year = reDateTimeNginx.GetMatch(3);
+          hour = reDateTimeNginx.GetMatch(4);
+          minute = reDateTimeNginx.GetMatch(5);
         }
         else if (reDateTimeLighttp.RegFind(strBuffer.c_str()) >= 0)
         {
-          day = reDateTimeLighttp.GetReplaceString("\\3");
-          month = reDateTimeLighttp.GetReplaceString("\\2");
-          year = reDateTimeLighttp.GetReplaceString("\\1");
-          hour = reDateTimeLighttp.GetReplaceString("\\4");
-          minute = reDateTimeLighttp.GetReplaceString("\\5");
+          day = reDateTimeLighttp.GetMatch(3);
+          month = reDateTimeLighttp.GetMatch(2);
+          year = reDateTimeLighttp.GetMatch(1);
+          hour = reDateTimeLighttp.GetMatch(4);
+          minute = reDateTimeLighttp.GetMatch(5);
         }
 
         if (day.length() > 0 && month.length() > 0 && year.length() > 0)
@@ -163,8 +173,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         {
           if (reSize.RegFind(strBuffer.c_str()) >= 0)
           {
-            double Size = atof(reSize.GetReplaceString("\\1").c_str());
-            CStdString strUnit = reSize.GetReplaceString("\\2");
+            double Size = atof(reSize.GetMatch(1).c_str());
+            std::string strUnit(reSize.GetMatch(2));
 
             if (strUnit == "K")
               Size = Size * 1024;
@@ -177,8 +187,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           }
           else if (reSizeNginx.RegFind(strBuffer.c_str()) >= 0)
           {
-            double Size = atof(reSizeNginx.GetReplaceString("\\1").c_str());
-            CStdString strUnit = reSizeNginx.GetReplaceString("\\2");
+            double Size = atof(reSizeNginx.GetMatch(1).c_str());
+            std::string strUnit(reSize.GetMatch(2));
 
             if (strUnit == "K")
               Size = Size * 1024;

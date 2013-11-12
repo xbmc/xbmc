@@ -58,7 +58,6 @@ typedef struct omx_event {
   OMX_U32 nData2;
 } omx_event;
 
-class DllLibOMXCore;
 class COMXCore;
 class COMXCoreComponent;
 class COMXCoreTunel;
@@ -72,20 +71,15 @@ public:
 
   void Initialize(COMXCoreComponent *src_component, unsigned int src_port, COMXCoreComponent *dst_component, unsigned int dst_port);
   bool IsInitialized();
-  OMX_ERRORTYPE Flush();
   OMX_ERRORTYPE Deestablish(bool noWait = false);
-  OMX_ERRORTYPE Establish(bool portSettingsChanged, bool enable_ports = true);
+  OMX_ERRORTYPE Establish(bool portSettingsChanged, bool enable_ports = true, bool disable_ports = false);
 private:
-  pthread_mutex_t   m_lock;
   bool              m_portSettingsChanged;
   COMXCoreComponent *m_src_component;
   COMXCoreComponent *m_dst_component;
   unsigned int      m_src_port;
   unsigned int      m_dst_port;
   DllOMX            *m_DllOMX;
-  bool              m_DllOMXOpen;
-  void              Lock();
-  void              UnLock();
   bool              m_tunnel_set;
 };
 
@@ -129,12 +123,12 @@ public:
     OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBufferHeader);
 
   // OMXCore decoder callback routines.
-  OMX_ERRORTYPE DecoderEventHandler(OMX_HANDLETYPE hComponent, OMX_PTR pAppData,
+  OMX_ERRORTYPE DecoderEventHandler(OMX_HANDLETYPE hComponent,
     OMX_EVENTTYPE eEvent, OMX_U32 nData1, OMX_U32 nData2, OMX_PTR pEventData);
   OMX_ERRORTYPE DecoderEmptyBufferDone(
-    OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBuffer);
+    OMX_HANDLETYPE hComponent, OMX_BUFFERHEADERTYPE* pBuffer);
   OMX_ERRORTYPE DecoderFillBufferDone(
-    OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBuffer);
+    OMX_HANDLETYPE hComponent, OMX_BUFFERHEADERTYPE* pBuffer);
 
   void TransitionToStateLoaded();
 
@@ -153,7 +147,7 @@ public:
   void FlushOutput();
 
   OMX_BUFFERHEADERTYPE *GetInputBuffer(long timeout=200);
-  OMX_BUFFERHEADERTYPE *GetOutputBuffer();
+  OMX_BUFFERHEADERTYPE *GetOutputBuffer(long timeout=200);
 
   OMX_ERRORTYPE AllocInputBuffers(bool use_buffers = false);
   OMX_ERRORTYPE AllocOutputBuffers(bool use_buffers = false);
@@ -161,9 +155,13 @@ public:
   OMX_ERRORTYPE FreeInputBuffers();
   OMX_ERRORTYPE FreeOutputBuffers();
 
+  OMX_ERRORTYPE WaitForInputDone(long timeout=200);
+  OMX_ERRORTYPE WaitForOutputDone(long timeout=200);
+
   bool IsEOS() { return m_eos; };
   bool BadState() { return m_resource_error; };
   void ResetEos();
+  void IgnoreNextError(OMX_S32 error) { m_ignore_error = error; }
 
 private:
   OMX_HANDLETYPE m_handle;
@@ -172,8 +170,8 @@ private:
   std::string    m_componentName;
   pthread_mutex_t   m_omx_event_mutex;
   pthread_mutex_t   m_omx_eos_mutex;
-  pthread_mutex_t   m_lock;
   std::vector<omx_event> m_omx_events;
+  OMX_S32 m_ignore_error;
 
   OMX_CALLBACKTYPE  m_callbacks;
 
@@ -197,7 +195,6 @@ private:
 
   bool          m_exit;
   DllOMX        *m_DllOMX;
-  bool          m_DllOMXOpen;
   pthread_cond_t    m_input_buffer_cond;
   pthread_cond_t    m_output_buffer_cond;
   pthread_cond_t    m_omx_event_cond;
@@ -205,8 +202,6 @@ private:
   bool          m_flush_input;
   bool          m_flush_output;
   bool          m_resource_error;
-  void              Lock();
-  void              UnLock();
 };
 
 class COMXCore
@@ -218,10 +213,10 @@ public:
   // initialize OMXCore and get decoder component
   bool Initialize();
   void Deinitialize();
+  DllOMX *GetDll() { return m_DllOMX; }
 
 protected:
   bool              m_is_open;
-  bool              m_Initialized;
   DllOMX            *m_DllOMX;
 };
 

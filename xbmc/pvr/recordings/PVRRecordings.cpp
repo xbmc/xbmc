@@ -32,6 +32,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
+#include "utils/StringUtils.h"
 
 using namespace PVR;
 
@@ -242,7 +243,7 @@ CStdString CPVRRecordings::AddAllRecordingsPathExtension(const CStdString &strDi
     return strDirectory;
 
   CStdString strResult = strDirectory;
-  if (!strDirectory.Right(1).Equals("/"))
+  if (!StringUtils::EndsWith(strDirectory, "/"))
     strResult = strResult + "/";
 
   return strResult + PVR_ALL_RECORDINGS_PATH_EXTENSION + "/";

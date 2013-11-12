@@ -37,5 +37,6 @@ namespace XFILE
     static bool GetPaths(const CStdString& strPath, std::vector<CStdString>& vecPaths);
     static CStdString ConstructStackPath(const CFileItemList& items, const std::vector<int> &stack);
     static bool ConstructStackPath(const std::vector<CStdString> &paths, CStdString &stackedPath);
+    static bool ConstructStackPath(const std::vector<std::string> &paths, std::string &stackedPath);
   };
 }

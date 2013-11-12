@@ -69,13 +69,40 @@ public:
 
 class CFileStreamBuffer;
 
+class auto_buffer
+{
+public:
+  auto_buffer(void) : p(NULL), s(0)
+  { }
+  explicit auto_buffer(size_t size);
+  ~auto_buffer();
+
+  auto_buffer& allocate(size_t size);
+  auto_buffer& resize(size_t newSize);
+  auto_buffer& clear(void);
+
+  inline char* get(void) const { return static_cast<char*>(p); }
+  inline size_t size(void) const { return s; }
+  inline size_t length(void) const { return s; }
+
+  auto_buffer& attach(void* pointer, size_t size);
+  void* detach(void);
+
+private:
+  auto_buffer(const auto_buffer& other); // disallow copy constructor
+  auto_buffer& operator=(const auto_buffer& other); // disallow assignment
+
+  void* p;
+  size_t s;
+};
+
 class CFile
 {
 public:
   CFile();
   virtual ~CFile();
 
-  bool Open(const CStdString& strFileName, unsigned int flags = 0);
+  bool Open(const CStdString& strFileName, const unsigned int flags = 0);
   bool OpenForWrite(const CStdString& strFileName, bool bOverWrite = false);
   unsigned int Read(void* lpBuf, int64_t uiBufSize);
   bool ReadString(char *szLine, int iLineLength);
@@ -87,6 +114,10 @@ public:
   int64_t GetLength();
   void Close();
   int GetChunkSize();
+  std::string GetContentMimeType(void);
+  std::string GetContentCharset(void);
+  unsigned int LoadFile(const std::string &filename, auto_buffer& outputBuffer);
+
 
   // will return a size, that is aligned to chunk size
   // but always greater or equal to the file's chunk size

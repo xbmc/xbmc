@@ -59,7 +59,7 @@ namespace XFILE
   {
     // Load up our REs
     VECCREGEXP  RegExps;
-    CRegExp     tempRE(true);
+    CRegExp     tempRE(true, true);
     const CStdStringArray& strRegExps = g_advancedSettings.m_videoStackRegExps;
     CStdStringArray::const_iterator itRegExp = strRegExps.begin();
     vector<pair<int, CStdString> > badStacks;
@@ -219,14 +219,29 @@ namespace XFILE
 
   bool CStackDirectory::ConstructStackPath(const vector<CStdString> &paths, CStdString& stackedPath)
   {
+    vector<string> pathsT;
+    pathsT.reserve(paths.size());
+    for (vector<CStdString>::const_iterator path = paths.begin();
+         path != paths.end(); ++path)
+    {
+      pathsT.push_back(*path);
+    }
+    std::string stackedPathT = stackedPath;
+    bool retVal = ConstructStackPath(pathsT, stackedPathT);
+    stackedPath = stackedPathT;
+    return retVal;
+  }
+
+  bool CStackDirectory::ConstructStackPath(const vector<std::string> &paths, std::string& stackedPath)
+  {
     if (paths.size() < 2)
       return false;
     stackedPath = "stack://";
-    CStdString folder, file;
+    std::string folder, file;
     URIUtils::Split(paths[0], folder, file);
     stackedPath += folder;
     // double escape any occurence of commas
-    file.Replace(",", ",,");
+    StringUtils::Replace(file, ",", ",,");
     stackedPath += file;
     for (unsigned int i = 1; i < paths.size(); ++i)
     {
@@ -234,7 +249,7 @@ namespace XFILE
       file = paths[i];
 
       // double escape any occurence of commas
-      file.Replace(",", ",,");
+      StringUtils::Replace(file, ",", ",,");
       stackedPath += file;
     }
     return true;

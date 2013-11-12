@@ -132,19 +132,20 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
   if (!dav.Open(url))
   {
-    CLog::Log(LOGERROR, "%s - Unable to get dav directory (%s)", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "%s - Unable to get dav directory (%s)", __FUNCTION__, CURL::GetRedacted(strPath).c_str());
     return false;
   }
 
   CStdString strResponse;
   dav.ReadData(strResponse);
 
+  std::string fileCharset(dav.GetServerReportedCharset());
   CXBMCTinyXML davResponse;
-  davResponse.Parse(strResponse.c_str());
+  davResponse.Parse(strResponse, fileCharset);
 
   if (!davResponse.Parse(strResponse))
   {
-    CLog::Log(LOGERROR, "%s - Unable to process dav directory (%s)", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "%s - Unable to process dav directory (%s)", __FUNCTION__, CURL::GetRedacted(strPath).c_str());
     dav.Close();
     return false;
   }
@@ -201,7 +202,7 @@ bool CDAVDirectory::Create(const char* strPath)
  
   if (!dav.Execute(url))
   {
-    CLog::Log(LOGERROR, "%s - Unable to create dav directory (%s) - %d", __FUNCTION__, url.Get().c_str(), dav.GetLastResponseCode());
+    CLog::Log(LOGERROR, "%s - Unable to create dav directory (%s) - %d", __FUNCTION__, url.GetRedacted().c_str(), dav.GetLastResponseCode());
     return false;
   }
 
@@ -234,7 +235,7 @@ bool CDAVDirectory::Remove(const char* strPath)
  
   if (!dav.Execute(url))
   {
-    CLog::Log(LOGERROR, "%s - Unable to delete dav directory (%s) - %d", __FUNCTION__, url.Get().c_str(), dav.GetLastResponseCode());
+    CLog::Log(LOGERROR, "%s - Unable to delete dav directory (%s) - %d", __FUNCTION__, url.GetRedacted().c_str(), dav.GetLastResponseCode());
     return false;
   }
 

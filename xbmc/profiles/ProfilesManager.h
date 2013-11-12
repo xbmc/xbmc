@@ -32,7 +32,6 @@ class CProfilesManager : public ISettingsHandler
 public:
   static CProfilesManager& Get();
 
-  virtual bool OnSettingsLoading();
   virtual void OnSettingsLoaded();
   virtual bool OnSettingsSaved();
   virtual void OnSettingsCleared();

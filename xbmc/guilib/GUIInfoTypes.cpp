@@ -105,7 +105,7 @@ void CGUIInfoColor::Parse(const CStdString &label, int context)
   if (label.Equals("-", false))
     return;
 
-  if (label.Left(4).Equals("$VAR", false))
+  if (StringUtils::StartsWithNoCase(label, "$var"))
   {
     label2 = label.Mid(5, label.length() - 6);
     m_info = g_infoManager.TranslateSkinVariableString(label2, context);
@@ -114,7 +114,7 @@ void CGUIInfoColor::Parse(const CStdString &label, int context)
     return;
   }
 
-  if (label.Left(5).Equals("$INFO", false))
+  if (StringUtils::StartsWithNoCase(label, "$info"))
     label2 = label.Mid(6, label.length()-7);
 
   m_info = g_infoManager.TranslateString(label2);

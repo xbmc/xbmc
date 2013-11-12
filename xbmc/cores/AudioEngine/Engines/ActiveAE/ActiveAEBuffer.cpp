@@ -146,6 +146,7 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
   m_resampleQuality = quality;
   m_changeResampler = false;
   m_stereoUpmix = false;
+  m_normalize = true;
 }
 
 CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
@@ -153,13 +154,19 @@ CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
   delete m_resampler;
 }
 
-bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, bool upmix)
+bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize)
 {
   CActiveAEBufferPool::Create(totaltime);
 
+  m_stereoUpmix = upmix;
+  m_normalize = true;
+  if ((m_format.m_channelLayout.Count() < m_inputFormat.m_channelLayout.Count() && !normalize))
+    m_normalize = false;
+
   if (m_inputFormat.m_channelLayout != m_format.m_channelLayout ||
       m_inputFormat.m_sampleRate != m_format.m_sampleRate ||
-      m_inputFormat.m_dataFormat != m_format.m_dataFormat)
+      m_inputFormat.m_dataFormat != m_format.m_dataFormat ||
+      m_changeResampler)
   {
     m_resampler = new CActiveAEResample();
     m_resampler->Init(CActiveAEResample::GetAVChannelLayout(m_format.m_channelLayout),
@@ -173,11 +180,12 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
                                 CActiveAEResample::GetAVSampleFormat(m_inputFormat.m_dataFormat),
                                 CAEUtil::DataFormatToUsedBits(m_inputFormat.m_dataFormat),
                                 upmix,
+                                m_normalize,
                                 remap ? &m_format.m_channelLayout : NULL,
                                 m_resampleQuality);
   }
 
-  m_stereoUpmix = upmix;
+  m_changeResampler = false;
 
   return true;
 }
@@ -198,6 +206,7 @@ void CActiveAEBufferPoolResample::ChangeResampler()
                                 CActiveAEResample::GetAVSampleFormat(m_inputFormat.m_dataFormat),
                                 CAEUtil::DataFormatToUsedBits(m_inputFormat.m_dataFormat),
                                 m_stereoUpmix,
+                                m_normalize,
                                 NULL,
                                 m_resampleQuality);
 

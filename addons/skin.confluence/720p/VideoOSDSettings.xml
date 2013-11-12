@@ -3,8 +3,8 @@
 	<defaultcontrol>5</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>240</posx>
-		<posy>60</posy>
+		<left>240</left>
+		<top>60</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -12,24 +12,24 @@
 			<animation effect="fade" start="100" end="0" time="400" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(FileBrowser)">Conditional</animation>
 			<control type="image">
 				<description>background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>800</width>
 				<height>600</height>
 				<texture border="40">DialogBack2.png</texture>
 			</control>
 			<control type="image">
 				<description>Dialog Header image</description>
-				<posx>40</posx>
-				<posy>16</posy>
+				<left>40</left>
+				<top>16</top>
 				<width>720</width>
 				<height>40</height>
 				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>40</posx>
-				<posy>20</posy>
+				<left>40</left>
+				<top>20</top>
 				<width>720</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -42,8 +42,8 @@
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>40</posx>
-				<posy>20</posy>
+				<left>40</left>
+				<top>20</top>
 				<width>720</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -56,8 +56,8 @@
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>710</posx>
-				<posy>15</posy>
+				<left>710</left>
+				<top>15</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -73,8 +73,8 @@
 			</control>
 			<control type="label" id="3">
 				<description>No Settings Label</description>
-				<posx>20</posx>
-				<posy>180</posy>
+				<left>20</left>
+				<top>180</top>
 				<width>760</width>
 				<align>center</align>
 				<label>13390</label>
@@ -82,8 +82,8 @@
 			</control>
 			<control type="grouplist" id="5">
 				<description>control area</description>
-				<posx>40</posx>
-				<posy>65</posy>
+				<left>40</left>
+				<top>65</top>
 				<width>720</width>
 				<height>490</height>
 				<itemgap>5</itemgap>
@@ -94,8 +94,8 @@
 				<ondown>5</ondown>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>760</posx>
-				<posy>65</posy>
+				<left>760</left>
+				<top>65</top>
 				<width>25</width>
 				<height>490</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -122,8 +122,8 @@
 		</control>
 		<control type="button" id="7">
 			<description>Default Button</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<height>40</height>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
@@ -132,8 +132,8 @@
 		</control>
 		<control type="radiobutton" id="8">
 			<description>Default RadioButton</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<height>40</height>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
@@ -142,8 +142,8 @@
 		</control>
 		<control type="spincontrolex" id="9">
 			<description>Default SpinControlex</description>
-			<posx>0</posx>
-			<posy>0</posy>
+			<left>0</left>
+			<top>0</top>
 			<height>40</height>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>

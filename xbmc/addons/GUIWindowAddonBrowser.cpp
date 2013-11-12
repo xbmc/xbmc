@@ -480,7 +480,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStd
 
 CStdString CGUIWindowAddonBrowser::GetStartFolder(const CStdString &dir)
 {
-  if (dir.Left(9).Equals("addons://"))
+  if (StringUtils::StartsWithNoCase(dir, "addons://"))
     return dir;
   return CGUIMediaWindow::GetStartFolder(dir);
 }

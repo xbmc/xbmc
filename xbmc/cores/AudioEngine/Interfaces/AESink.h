@@ -87,17 +87,5 @@ public:
     This method sets the volume control, volume ranges from 0.0 to 1.0.
   */
   virtual void  SetVolume(float volume) {};
-
-  /*
-    Requests sink to prepare itself for a suspend state
-    @return false if sink cannot be suspended
-  */
-  virtual bool SoftSuspend() {return false;};
-
-  /*
-    Notify sink to prepare to resume processing after suspend state
-    @return false if sink must be reinitialized
-  */
-  virtual bool SoftResume() {return false;};
 };
 

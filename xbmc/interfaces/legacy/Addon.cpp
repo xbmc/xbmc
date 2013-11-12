@@ -36,7 +36,7 @@ namespace XBMCAddon
 
     String Addon::getAddonVersion() { return languageHook == NULL ? emptyString : languageHook->GetAddonVersion(); }
 
-    Addon::Addon(const char* cid) throw (AddonException) : AddonClass("Addon") 
+    Addon::Addon(const char* cid) throw (AddonException)
     {
       String id(cid ? cid : emptyString);
 

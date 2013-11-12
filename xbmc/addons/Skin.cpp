@@ -281,6 +281,12 @@ const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const CStdString&
 
 void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
+  CStdString settingValue = ((const CSettingString*)setting)->GetValue();
+  // Remove the .xml extension from the Themes
+  if (URIUtils::HasExtension(settingValue, ".xml"))
+    URIUtils::RemoveExtension(settingValue);
+  current = "SKINDEFAULT";
+
   // There is a default theme (just defaults.xml)
   // any other *.xml files are additional color themes on top of this one.
   
@@ -303,21 +309,21 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vec
     }
   }
   sort(vecColors.begin(), vecColors.end(), sortstringbyname());
-
   for (int i = 0; i < (int) vecColors.size(); ++i)
     list.push_back(make_pair(vecColors[i], vecColors[i]));
 
-  CStdString settingValue = ((const CSettingString*)setting)->GetValue();
-  // Remove the .xml extension from the Themes
-  if (URIUtils::HasExtension(settingValue, ".xml"))
-    URIUtils::RemoveExtension(settingValue);
-  
-  // Set the choosen theme
-  current = settingValue;
+  // try to find the best matching value
+  for (vector< pair<string, string> >::const_iterator it = list.begin(); it != list.end(); ++it)
+  {
+    if (StringUtils::EqualsNoCase(it->second, settingValue))
+      current = settingValue;
+  }
 }
 
 void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
+  CStdString settingValue = ((const CSettingString*)setting)->GetValue();
+  bool currentValueSet = false;
   std::string strPath = g_SkinInfo->GetSkinPath("Font.xml");
 
   CXBMCTinyXML xmlDoc;
@@ -361,6 +367,9 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vect
             list.push_back(make_pair(g_localizeStrings.Get(atoi(idLocAttr)), idAttr));
           else
             list.push_back(make_pair(idAttr, idAttr));
+
+          if (StringUtils::EqualsNoCase(idAttr, settingValue.c_str()))
+            currentValueSet = true;
         }
       }
 
@@ -371,11 +380,19 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vect
   {
     // Since no fontset is defined, there is no selection of a fontset, so disable the component
     list.push_back(make_pair(g_localizeStrings.Get(13278), ""));
+    current = "";
+    currentValueSet = true;
   }
+
+  if (!currentValueSet)
+    current = list[0].second;
 }
 
 void CSkinInfo::SettingOptionsSkinSoundFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
+  CStdString settingValue = ((const CSettingString*)setting)->GetValue();
+  current = "SKINDEFAULT";
+
   //find skins...
   CFileItemList items;
   CDirectory::GetDirectory("special://xbmc/sounds/", items);
@@ -402,13 +419,24 @@ void CSkinInfo::SettingOptionsSkinSoundFiller(const CSetting *setting, std::vect
   sort(vecSoundSkins.begin(), vecSoundSkins.end(), sortstringbyname());
   for (unsigned int i = 0; i < vecSoundSkins.size(); i++)
     list.push_back(make_pair(vecSoundSkins[i], vecSoundSkins[i]));
+
+  // try to find the best matching value
+  for (vector< pair<string, string> >::const_iterator it = list.begin(); it != list.end(); ++it)
+  {
+    if (StringUtils::EqualsNoCase(it->second, settingValue))
+      current = settingValue;
+  }
 }
 
 void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
+  // get the choosen theme and remove the extension from the current theme (backward compat)
+  CStdString settingValue = ((const CSettingString*)setting)->GetValue();
+  URIUtils::RemoveExtension(settingValue);
+  current = "SKINDEFAULT";
+
   // there is a default theme (just Textures.xpr/xbt)
   // any other *.xpr|*.xbt files are additional themes on top of this one.
-  const CSettingString *pSettingString = (const CSettingString *)setting;
 
   // add the default Label
   list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard Textures.xpr/xbt will be used
@@ -421,14 +449,19 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vec
   for (int i = 0; i < (int) vecTheme.size(); ++i)
     list.push_back(make_pair(vecTheme[i], vecTheme[i]));
 
-  // set the choosen theme and remove the extension from the current theme (backward compat)
-  CStdString settingValue = pSettingString->GetValue();
-  URIUtils::RemoveExtension(settingValue);
-  current = settingValue;
+  // try to find the best matching value
+  for (vector< pair<string, string> >::const_iterator it = list.begin(); it != list.end(); ++it)
+  {
+    if (StringUtils::EqualsNoCase(it->second, settingValue))
+      current = settingValue;
+  }
 }
 
 void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
 {
+  int settingValue = ((const CSettingInt *)setting)->GetValue();
+  current = -1;
+
   const vector<CStartupWindow> &startupWindows = g_SkinInfo->GetStartupWindows();
 
   for (vector<CStartupWindow>::const_iterator it = startupWindows.begin(); it != startupWindows.end(); it++)
@@ -439,7 +472,14 @@ void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std:
     int windowID = it->m_id;
 
     list.push_back(make_pair(windowName, windowID));
+
+    if (settingValue == windowID)
+      current = settingValue;
   }
+
+  // if the current value hasn't been properly set, set it to the first window in the list
+  if (current < 0)
+    current = list[0].second;
 }
 
 } /*namespace ADDON*/

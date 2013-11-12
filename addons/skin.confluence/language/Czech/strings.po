@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Settings Options"
 msgstr "Možnosti nastavení"
 
-msgctxt "#31008"
-msgid "Fullscreen"
-msgstr "Celá obrazovka"
-
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Celková doba trvání"
@@ -92,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Informace"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Činnosti"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Nyní přehrávám"
@@ -115,10 +115,6 @@ msgstr "PŘETOČIT ZPĚT"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "VYHLEDÁVÁM"
-
-msgctxt "#31048"
-msgid "Visualization Presets"
-msgstr "Předvolby vizualizace"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -172,10 +168,6 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Zobrazovat \"Pozastaveno\" při promítání obrázků"
 
-msgctxt "#31104"
-msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Přehrávat upoutávky v okně [COLOR=grey3](pouze z okna Informace o videu)[/COLOR]"
-
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Různá nastavení"
@@ -212,25 +204,13 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Zobrazovat nedávno přidaná videa"
 
-msgctxt "#31118"
-msgid "Home Page Programs Submenu"
-msgstr "Úvodní obrazovka, podnabídka programů"
-
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Skrýt Fanart na pozadí"
 
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr "Počasí"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Zobrazovat na pozadí právě přehrávané video"
-
-msgctxt "#31125"
-msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Zobrazovat právě přehrávanou vizualizaci na pozadí"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -244,10 +224,6 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Texty písní"
 
-msgctxt "#31129"
-msgid "Hide Fanart in full screen visualization"
-msgstr "Skrýt fanart při vizualizaci v režimu celé obrazovky"
-
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Doplněk textů písní"
@@ -255,18 +231,6 @@ msgstr "Doplněk textů písní"
 msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Doplněk titulků"
-
-msgctxt "#31134"
-msgid "Home Page Videos Submenu"
-msgstr "Úvodní obrazovka, podnabídka videí"
-
-msgctxt "#31135"
-msgid "Home Page Music Submenu"
-msgstr "Úvodní obrazovka, podnabídka Hudba"
-
-msgctxt "#31136"
-msgid "Home Page Pictures Submenu"
-msgstr "Úvodní obrazovka, podmenu obrázků"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -416,6 +380,18 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Stáhnout titulky"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Sledovat jako 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Změnit režim"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Povoleno"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Výchozí vzhled"
@@ -426,7 +402,7 @@ msgstr "Výchozí vzhled bez velkých písmen"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "Písmo Arial"
+msgstr "Písmo založené na Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
@@ -456,10 +432,6 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ DOPLŇKŮ[/B][CR][CR]Správa nainstalovaných doplňků · Vyhledávání a instalace doplňků z xbmc.org[CR]Nastavení doplňků"
 
-msgctxt "#31409"
-msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ PŘEHRÁVÁNÍ TELEVIZNE[/B][CR][CR]Změnit zobrazení přes celou obrazovku · Nastavení EPG dat"
-
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání XBMC skrze UPnP a HTTP · Nastavení sdílení souborů[CR]Povolit zeroconf · Nastavit AirPlay"
@@ -468,17 +440,9 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Nejprve spusťte nápovědu..."
 
-msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Tato záložka zdůrazňuje, že se na boční straně okna nachází skryté menu s dalšími vlastnostmi.\nPro přístup k tomuto menu se přesuňte doleva dálkovým ovladačem, či klávesnicí, nebo přesuňte myš nad tuto kartu.[CR][CR]Kliknutím na tlačítko OK zavřete tento dialog, který se již znovu nezobrazí."
-
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Vyberte preofil XBMC[CR]pro přihlášení a pokračování"
-
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr "Časovače nahrávání"
+msgstr "Vyberte profil XBMC[CR]pro přihlášení a pokračování"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -506,7 +470,7 @@ msgstr "Dostupné[CR]skupiny"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr "Skupiny programů"
+msgstr "Skupina programů"
 
 msgctxt "#31510"
 msgid "Timer Set"
@@ -514,7 +478,7 @@ msgstr "Časovač nastaven"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr "Nastavení kanálů"
+msgstr "Možnosti kanálů"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -542,7 +506,7 @@ msgstr "Pravděpodobnost srážek"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
-msgstr "Získávám informace předpovědi..."
+msgstr "Získávám předpověd..."
 
 msgctxt "#31910"
 msgid "Map & Alerts"

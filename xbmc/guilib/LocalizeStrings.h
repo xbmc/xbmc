@@ -57,8 +57,6 @@ public:
   void ClearSkinStrings();
   const CStdString& Get(uint32_t code) const;
   void Clear();
-  uint32_t LoadBlock(const CStdString &id, const CStdString &path, const CStdString &language);
-  void ClearBlock(const CStdString &id);
 protected:
   void Clear(uint32_t start, uint32_t end);
 
@@ -98,10 +96,6 @@ protected:
   typedef std::map<uint32_t, LocStr>::const_iterator ciStrings;
   typedef std::map<uint32_t, LocStr>::iterator       iStrings;
 
-  static const uint32_t block_start = 0xf000000;
-  static const uint32_t block_size = 4096;
-  std::map<CStdString, uint32_t> m_blocks;
-  typedef std::map<CStdString, uint32_t>::iterator iBlocks;
   CCriticalSection m_critSection;
 };
 
