@@ -665,6 +665,8 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
   }
   else
   {
+    CSingleLock lk(m_augmentationLock);
+    m_isCanceled = true;
     CLog::Log(LOGWARNING, "CPlexDirectory::DoAugmentation timed out");
     BOOST_FOREACH(int id, m_augmentationJobs)
       CJobManager::GetInstance().CancelJob(id);
@@ -681,6 +683,9 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
 void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CSingleLock lk(m_augmentationLock);
+
+  if (m_isCanceled)
+    return;
 
   if (success)
   {
@@ -892,6 +897,9 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
 void CPlexDirectory::AddAugmentation(const CURL &url)
 {
   CSingleLock lk(m_augmentationLock);
+  if (m_isCanceled)
+    return;
+
   CLog::Log(LOGDEBUG, "CPlexDirectory::AddAugmentation adding %s", url.Get().c_str());
   int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
   m_augmentationJobs.push_back(id);

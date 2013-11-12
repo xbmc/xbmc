@@ -33,7 +33,7 @@ namespace XFILE
     public:
 
 
-      CPlexDirectory() : m_isAugmented(false) {}
+      CPlexDirectory() : m_isAugmented(false), m_isCanceled(false) {}
 
       bool GetDirectory(const CURL& url, CFileItemList& items);
 
@@ -97,6 +97,7 @@ namespace XFILE
       CCriticalSection m_augmentationLock;
       std::vector<int> m_augmentationJobs;
       bool m_isAugmented;
+      bool m_isCanceled;
 
       std::vector<CFileItemList*> m_augmentationItems;
       CEvent m_augmentationEvent;
