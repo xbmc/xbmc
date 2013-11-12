@@ -23,27 +23,42 @@
 
 #include "gtest/gtest.h"
 
-TEST(TestTextureUtils, GetWrappedImageURL)
+using ::testing::ValuesIn;
+
+namespace
 {
-  typedef struct
-  {
-    const char *in;
-    const char *type;
-    const char *options;
-    const char *out;
-  } testfiles;
+typedef struct
+{
+  const char *in;
+  const char *type;
+  const char *options;
+  const char *out;
+} TestFiles;
 
-  const testfiles test_files[] = {{ "/path/to/image/file.jpg", "", "", "image://%2fpath%2fto%2fimage%2ffile.jpg/" },
-                                  { "/path/to/image/file.jpg", "", "size=thumb", "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb" },
-                                  { "/path/to/video/file.mkv", "video", "", "image://video@%2fpath%2fto%2fvideo%2ffile.mkv/" },
-                                  { "/path/to/music/file.mp3", "music", "", "image://music@%2fpath%2fto%2fmusic%2ffile.mp3/" },
-                                  { "image://%2fpath%2fto%2fimage%2ffile.jpg/", "", "", "image://%2fpath%2fto%2fimage%2ffile.jpg/" },
-                                  { "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb", "", "size=thumb", "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb" }};
+const TestFiles test_files[] = {{ "/path/to/image/file.jpg", "", "", "image://%2fpath%2fto%2fimage%2ffile.jpg/" },
+                                { "/path/to/image/file.jpg", "", "size=thumb", "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb" },
+                                { "/path/to/video/file.mkv", "video", "", "image://video@%2fpath%2fto%2fvideo%2ffile.mkv/" },
+                                { "/path/to/music/file.mp3", "music", "", "image://music@%2fpath%2fto%2fmusic%2ffile.mp3/" },
+                                { "image://%2fpath%2fto%2fimage%2ffile.jpg/", "", "", "image://%2fpath%2fto%2fimage%2ffile.jpg/" },
+                                { "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb", "", "size=thumb", "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb" }};
 
-  for (unsigned int i = 0; i < sizeof(test_files) / sizeof(testfiles); i++)
-  {
-    std::string expected = test_files[i].out;
-    std::string out = CTextureUtils::GetWrappedImageURL(test_files[i].in, test_files[i].type, test_files[i].options);
-    EXPECT_EQ(out, expected);
-  }
+
+class TestTextureUtils :
+  public ::testing::TestWithParam<TestFiles>
+{
+};
+
+TEST_P(TestTextureUtils, GetWrappedImageURL)
+{
+  const TestFiles &testFiles(GetParam());
+
+  std::string expected = testFiles.out;
+  std::string out = CTextureUtils::GetWrappedImageURL(testFiles.in,
+                                                      testFiles.type,
+                                                      testFiles.options);
+  EXPECT_EQ(expected, out);
+}
+
+INSTANTIATE_TEST_CASE_P(SampleFiles, TestTextureUtils,
+                        ValuesIn(test_files));
 }
