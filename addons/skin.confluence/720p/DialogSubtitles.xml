@@ -137,7 +137,7 @@
 							<top>11</top>
 							<width>26</width>
 							<height>17</height>
-							<texture>Subtitles/flags/$INFO[ListItem.Thumb]</texture>
+							<texture>Subtitles/flags/$INFO[ListItem.Thumb].gif</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -208,7 +208,7 @@
 							<top>11</top>
 							<width>26</width>
 							<height>17</height>
-							<texture>Subtitles/flags/$INFO[ListItem.Thumb]</texture>
+							<texture>Subtitles/flags/$INFO[ListItem.Thumb].gif</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
