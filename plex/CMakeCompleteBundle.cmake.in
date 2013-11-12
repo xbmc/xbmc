@@ -53,6 +53,9 @@ if(NOT TARGET_WIN32)
       execute_process(COMMAND codesign --force --sign "Developer ID Application: Plex Inc." "${LIB}")
     endforeach(LIB ${DYLIBS})
 
+    message("Signing binary: ${EXECUTABLE_NAME}.app/Contents/Resources/XBMC/tools/updater")
+    execute_process(COMMAND codesign --force --sign "Developer ID Application: Plex Inc." "${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app/Contents/Resources/XBMC/tools/updater")
+
     message("Signing binary: ${EXECUTABLE_NAME}.app")
     execute_process(COMMAND codesign --force --sign "Developer ID Application: Plex Inc." -r ${PLEXDIR}/Resources/requirement.bin "${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app")
 
