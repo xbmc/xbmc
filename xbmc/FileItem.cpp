@@ -3595,7 +3595,11 @@ void CFileItemList::Insert(int iIndex, CFileItemPtr pItem)
 {
   CSingleLock lock(m_lock);
   
-  m_items.insert(m_items.begin() + iIndex, pItem);
+  if (iIndex > m_items.size())
+    m_items.push_back(pItem);
+  else
+    m_items.insert(m_items.begin() + iIndex, pItem);
+
   if (m_fastLookup)
   {
     m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
