@@ -679,6 +679,9 @@ CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float wi
   }
 
   // create the proper controls
+  if (!pSetting->GetControl())
+    return NULL;
+
   std::string controlType = pSetting->GetControl()->GetType();
   if (controlType == "toggle")
   {
