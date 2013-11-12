@@ -152,10 +152,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
   
   bool result=false;
 
-  CStdStringW wBuffer, wConverted;
-  g_charsetConverter.utf8ToW(strBuffer, wBuffer, false);
-  HTML::CHTMLUtil::ConvertHTMLToW(wBuffer, wConverted);
-  g_charsetConverter.wToUTF8(wConverted, strBuffer);
+  strBuffer = HTML::CHTMLUtil::DecodeHTMLCharRefs(strBuffer);
 
   CRegExp reTitle(true);
   reTitle.RegComp("StreamTitle=\'(.*?)\';");

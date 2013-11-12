@@ -93,12 +93,9 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
       CStdString strNameTemp = StringUtils::Trim(strName);
 
-      CStdStringW wName, wLink, wConverted;
       if (fileCharset.empty())
         g_charsetConverter.unknownToUTF8(strNameTemp);
-      g_charsetConverter.utf8ToW(strNameTemp, wName, false);
-      HTML::CHTMLUtil::ConvertHTMLToW(wName, wConverted);
-      g_charsetConverter.wToUTF8(wConverted, strNameTemp);
+      strNameTemp = HTML::CHTMLUtil::DecodeHTMLCharRefs(strNameTemp);
       URIUtils::RemoveSlashAtEnd(strNameTemp);
 
       CStdString strLinkBase = strLink;
@@ -116,9 +113,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       CURL::Decode(strLinkTemp);
       if (fileCharset.empty())
         g_charsetConverter.unknownToUTF8(strLinkTemp);
-      g_charsetConverter.utf8ToW(strLinkTemp, wLink, false);
-      HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
-      g_charsetConverter.wToUTF8(wConverted, strLinkTemp);
+      strLinkTemp = HTML::CHTMLUtil::DecodeHTMLCharRefs(strLinkTemp);
 
       if (StringUtils::EndsWith(strNameTemp, "..>") &&
           StringUtils::StartsWith(strLinkTemp, strNameTemp.substr(0, strNameTemp.length() - 3)))
