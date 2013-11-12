@@ -3,32 +3,68 @@
 	<defaultcontrol/>
 	<zorder>5</zorder>
 	<controls>
-		<control type="group" id="0">
-			<include>VolumePos</include>
-			<control type="image" id="0">
-				<description>Mute image</description>
-				<texture>VolumeBlue.png</texture>
-				<include>VolumeImage</include>
-			</control>
-			<!--
-    <control type="slider" id="1">
-      <description>Volume Slider</description>
-      <posx>25</posx>
-      <posy>42</posy>
-      <texturesliderbar>osd_slider_volume_bg.png</texturesliderbar>
-      <textureslidernib>slider_nibFO.png</textureslidernib>
-      <textureslidernibfocus>slider_nibFO.png</textureslidernibfocus>
-      <info>Player.Volume</info>
-      <onup>1</onup>
-      <ondown>1</ondown>
-      <onleft>1</onleft>
-      <onright>1</onright>
-    </control>
--->
-			<control type="label" id="0">
-				<description>Volume Label</description>
-				<info>Player.Volume</info>
-				<include>VolumeLabel</include>
+		<control type="group">
+			<animation effect="slide" time="500" tween="circle" easing="out" start="0,-200" end="0,0">WindowOpen</animation>
+			<animation effect="slide" time="100" tween="circle" easing="in" start="0,0" end="0,-200">WindowClose</animation>			
+			<control type="group">
+				<posy>25</posy>
+				<posx>360r</posx>
+				<control type="image">
+					<description>Background</description>
+					<width>330</width>
+					<height>75</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>332</width>
+					<height>77</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>150</posx>
+					<posy>-15</posy>
+					<include>ArrowBlackUp</include>
+				</control>
+				<control type="group" id="0">
+					<posx>20</posx>
+					<posy>20</posy>
+					<control type="image" id="0">
+						<description>Volume image</description>
+						<texture>VolumeFull.png</texture>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio scalediffuse="false">keep</aspectratio>
+						<visible>!Window.IsVisible(113)</visible>
+					</control>
+					<control type="image" id="0">
+						<description>Mute image</description>
+						<texture>VolumeOff.png</texture>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio scalediffuse="false">keep</aspectratio>
+						<colordiffuse>orangeLight</colordiffuse>
+						<visible>Window.IsVisible(113)</visible>
+					</control>
+					<control type="progress" id="1">
+						<description>progress control</description>
+						<posx>50</posx>
+						<posy>8</posy>
+						<width>150</width>
+						<height>16</height>
+						<texturebg border="8">OSDProgressBack2.png</texturebg>
+						<midtexture border="8">OSDProgressMid-grey4.png</midtexture>
+						<info>Player.Volume</info>
+					</control>
+					<control type="label" id="0">
+						<description>Volume Label</description>
+						<info>Player.Volume</info>
+						<posx>220</posx>
+						<posy>15</posy>
+						<width>120</width>
+					</control>
+				</control>
 			</control>
 		</control>
 	</controls>
