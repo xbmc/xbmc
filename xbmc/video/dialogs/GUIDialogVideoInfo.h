@@ -49,6 +49,9 @@ public:
   static int ManageVideoItem(const CFileItemPtr &item);
   static bool UpdateVideoItemTitle(const CFileItemPtr &pItem);
   static bool MarkWatched(const CFileItemPtr &item, bool bMark);
+  static bool CanDeleteVideoItem(const CFileItemPtr &item);
+  static bool DeleteVideoItemFromDatabase(const CFileItemPtr &item, bool unavailable = false);
+  static bool DeleteVideoItem(const CFileItemPtr &item, bool unavailable = false);
 
   static bool GetMoviesForSet(const CFileItem *setItem, CFileItemList &originalMovies, CFileItemList &selectedMovies);
   static bool GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet);

@@ -645,21 +645,6 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
   CGUIWindowVideoBase::OnInfo(pItem,scraper);
 }
 
-bool CGUIWindowVideoNav::CanDelete(const CStdString& strPath)
-{
-  CQueryParams params;
-  CVideoDatabaseDirectory::GetQueryParams(strPath,params);
-
-  if (params.GetMovieId()   != -1 ||
-      params.GetEpisodeId() != -1 ||
-      params.GetMVideoId()  != -1 ||
-      (params.GetTvShowId() != -1 && params.GetSeason() <= -1
-              && !CVideoDatabaseDirectory::IsAllItem(strPath)))
-    return true;
-
-  return false;
-}
-
 void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 {
   if (m_vecItems->IsParentFolder())
@@ -719,112 +704,11 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   }
   else
   {
-    if (!DeleteItem(pItem.get()))
+    if (!CGUIDialogVideoInfo::DeleteVideoItem(pItem))
       return;
-
-    CStdString strDeletePath;
-    if (pItem->m_bIsFolder)
-      strDeletePath=pItem->GetVideoInfoTag()->m_strPath;
-    else
-      strDeletePath=pItem->GetVideoInfoTag()->m_strFileNameAndPath;
-
-    if (URIUtils::GetFileName(strDeletePath).Equals("VIDEO_TS.IFO"))
-    {
-      strDeletePath = URIUtils::GetDirectory(strDeletePath);
-      if (StringUtils::EndsWithNoCase(strDeletePath, "video_ts/"))
-      {
-        URIUtils::RemoveSlashAtEnd(strDeletePath);
-        strDeletePath = URIUtils::GetDirectory(strDeletePath);
-      }
-    }
-    if (URIUtils::HasSlashAtEnd(strDeletePath))
-      pItem->m_bIsFolder=true;
-
-    if (CSettings::Get().GetBool("filelists.allowfiledeletion") &&
-        CUtil::SupportsWriteFileOperations(strDeletePath))
-    {
-      pItem->SetPath(strDeletePath);
-      CGUIWindowVideoBase::OnDeleteItem(pItem);
-    }
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
-}
-
-bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = false */)
-{
-  if (!pItem->HasVideoInfoTag() || !CanDelete(pItem->GetPath()))
-    return false;
-
-  VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.empty())
-    iType = VIDEODB_CONTENT_TVSHOWS;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
-    iType = VIDEODB_CONTENT_EPISODES;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_artist.empty())
-    iType = VIDEODB_CONTENT_MUSICVIDEOS;
-
-  // dont allow update while scanning
-  if (g_application.IsVideoScanning())
-  {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
-    return false;
-  }
-
-
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (!pDialog)
-    return false;
-  if (iType == VIDEODB_CONTENT_MOVIES)
-    pDialog->SetHeading(432);
-  if (iType == VIDEODB_CONTENT_EPISODES)
-    pDialog->SetHeading(20362);
-  if (iType == VIDEODB_CONTENT_TVSHOWS)
-    pDialog->SetHeading(20363);
-  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
-    pDialog->SetHeading(20392);
-
-  if(bUnavailable)
-  {
-    pDialog->SetLine(0, g_localizeStrings.Get(662));
-    pDialog->SetLine(1, g_localizeStrings.Get(663));
-    pDialog->SetLine(2, "");;
-    pDialog->DoModal();
-  }
-  else
-  {
-    CStdString strLine = StringUtils::Format(g_localizeStrings.Get(433), pItem->GetLabel().c_str());
-    pDialog->SetLine(0, strLine);
-    pDialog->SetLine(1, "");
-    pDialog->SetLine(2, "");;
-    pDialog->DoModal();
-  }
-
-  if (!pDialog->IsConfirmed())
-    return false;
-
-  CStdString path;
-  CVideoDatabase database;
-  database.Open();
-
-  database.GetFilePathById(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
-  if (path.empty())
-    return false;
-  if (iType == VIDEODB_CONTENT_MOVIES)
-    database.DeleteMovie(path);
-  if (iType == VIDEODB_CONTENT_EPISODES)
-    database.DeleteEpisode(path, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == VIDEODB_CONTENT_TVSHOWS)
-    database.DeleteTvShow(path);
-  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
-    database.DeleteMusicVideo(path);
-
-  if (iType == VIDEODB_CONTENT_TVSHOWS)
-    database.SetPathHash(path,"");
-  else
-    database.SetPathHash(URIUtils::GetDirectory(path), "");
-
-  return true;
 }
 
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -989,9 +873,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           else
             buttons.Add(CONTEXT_BUTTON_SET_ACTOR_THUMB, 20403);
         }
-        if (item->IsVideoDb() && item->HasVideoInfoTag() &&
-          (!item->m_bIsFolder || node == NODE_TYPE_TITLE_TVSHOWS))
-          buttons.Add(CONTEXT_BUTTON_DELETE, 646);
       }
 
       if (!m_vecItems->IsVideoDb() && !m_vecItems->IsVirtualDirectoryRoot())
@@ -1423,7 +1304,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
   if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
   {
     CLog::Log(LOGDEBUG, "%s called on '%s' but file doesn't exist", __FUNCTION__, item->GetPath().c_str());
-    if (!DeleteItem(item.get(), true))
+    if (!CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(item, true))
       return true;
 
     // update list

@@ -53,11 +53,14 @@
 #include "video/VideoThumbLoader.h"
 #include "filesystem/Directory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
+#include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
 #endif
+#include "utils/FileUtils.h"
 
 using namespace std;
+using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
 
 #define CONTROL_IMAGE                3
@@ -982,6 +985,9 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
       item->GetVideoInfoTag()->m_iBookmarkId > 0)
     buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
 
+  if (!item->m_bIsFolder || type == VIDEODB_CONTENT_TVSHOWS)
+    buttons.Add(CONTEXT_BUTTON_DELETE, 646);
+
   bool result = false;
   int button = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
   if (button >= 0)
@@ -1025,6 +1031,10 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
         result = true;
         break;
 
+      case CONTEXT_BUTTON_DELETE:
+        result = DeleteVideoItem(item);
+        break;
+
       default:
         result = false;
         break;
@@ -1042,6 +1052,9 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
 //Add change a title's name
 bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
 {
+  if (!pItem->HasVideoInfoTag())
+    return false;
+
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
@@ -1129,6 +1142,155 @@ bool CGUIDialogVideoInfo::MarkWatched(const CFileItemPtr &item, bool bMark)
   database.Close();
 
   return true;
+}
+
+bool CGUIDialogVideoInfo::CanDeleteVideoItem(const CFileItemPtr &item)
+{
+  if (item == NULL || !item->HasVideoInfoTag())
+    return false;
+
+  CQueryParams params;
+  CVideoDatabaseDirectory::GetQueryParams(item->GetPath(), params);
+
+  return params.GetMovieId()   != -1 ||
+         params.GetEpisodeId() != -1 ||
+         params.GetMVideoId()  != -1 ||
+         (params.GetTvShowId() != -1 && params.GetSeason() <= -1 &&
+          !CVideoDatabaseDirectory::IsAllItem(item->GetPath()));
+}
+
+bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, bool unavailable /* = false */)
+{
+  if (!item->HasVideoInfoTag() || !CanDeleteVideoItem(item))
+    return false;
+
+  // dont allow update while scanning
+  if (g_application.IsVideoScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return false;
+  }
+
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (pDialog == NULL)
+    return false;
+  
+  int heading = -1;
+  VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)item->GetVideoContentType();
+  switch (type)
+  {
+    case VIDEODB_CONTENT_MOVIES:
+      heading = 432;
+      break;
+    case VIDEODB_CONTENT_EPISODES:
+      heading = 20362;
+      break;
+    case VIDEODB_CONTENT_TVSHOWS:
+      heading = 20363;
+      break;
+    case VIDEODB_CONTENT_MUSICVIDEOS:
+      heading = 20392;
+      break;
+
+    default:
+      return false;
+  }
+
+  pDialog->SetHeading(heading);
+
+  if (unavailable)
+  {
+    pDialog->SetLine(0, g_localizeStrings.Get(662));
+    pDialog->SetLine(1, g_localizeStrings.Get(663));
+  }
+  else
+  {
+    pDialog->SetLine(0, StringUtils::Format(g_localizeStrings.Get(433), item->GetLabel().c_str()));
+    pDialog->SetLine(1, "");
+  }
+  pDialog->SetLine(2, "");
+  pDialog->DoModal();
+
+  if (!pDialog->IsConfirmed())
+    return false;
+
+  CStdString path;
+  CVideoDatabase database;
+  database.Open();
+
+  database.GetFilePathById(item->GetVideoInfoTag()->m_iDbId, path, type);
+  if (path.empty())
+    return false;
+
+  switch (type)
+  {
+    case VIDEODB_CONTENT_MOVIES:
+      database.DeleteMovie(path);
+      break;
+    case VIDEODB_CONTENT_EPISODES:
+      database.DeleteEpisode(path, item->GetVideoInfoTag()->m_iDbId);
+      break;
+    case VIDEODB_CONTENT_TVSHOWS:
+      database.DeleteTvShow(path);
+      break;
+    case VIDEODB_CONTENT_MUSICVIDEOS:
+      database.DeleteMusicVideo(path);
+      break;
+  
+    default:
+      return false;
+  }
+
+  if (type == VIDEODB_CONTENT_TVSHOWS)
+    database.SetPathHash(path,"");
+  else
+    database.SetPathHash(URIUtils::GetDirectory(path), "");
+
+  return true;
+}
+
+bool CGUIDialogVideoInfo::DeleteVideoItem(const CFileItemPtr &item, bool unavailable /* = false */)
+{
+  // delete the video item from the database
+  if (!DeleteVideoItemFromDatabase(item, unavailable))
+    return false;
+
+  bool result = true;
+  // check if the user is allowed to delete the actual file as well
+  if ((CProfilesManager::Get().GetCurrentProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+       !CProfilesManager::Get().GetCurrentProfile().filesLocked() ||
+       g_passwordManager.IsMasterLockUnlocked(true)) &&
+      CSettings::Get().GetBool("filelists.allowfiledeletion"))
+  {
+    CStdString strDeletePath = item->GetVideoInfoTag()->GetPath();
+
+    if (URIUtils::GetFileName(strDeletePath).Equals("VIDEO_TS.IFO"))
+    {
+      strDeletePath = URIUtils::GetDirectory(strDeletePath);
+      if (StringUtils::EndsWithNoCase(strDeletePath, "video_ts/"))
+      {
+        URIUtils::RemoveSlashAtEnd(strDeletePath);
+        strDeletePath = URIUtils::GetDirectory(strDeletePath);
+      }
+    }
+    if (URIUtils::HasSlashAtEnd(strDeletePath))
+      item->m_bIsFolder = true;
+
+    // check if the file/directory can be deleted
+    if (CUtil::SupportsWriteFileOperations(strDeletePath))
+    {
+      item->SetPath(strDeletePath);
+
+      // HACK: stacked files need to be treated as folders in order to be deleted
+      if (item->IsStack())
+        item->m_bIsFolder = true;
+      result = CFileUtils::DeleteItem(item);
+    }
+  }
+
+  CUtil::DeleteVideoDatabaseDirectoryCache();
+
+  return result;
 }
 
 bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemList &originalMovies, CFileItemList &selectedMovies)
