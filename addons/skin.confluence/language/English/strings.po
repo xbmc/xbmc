@@ -282,9 +282,7 @@ msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr ""
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr ""
+#empty string with id 31133
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
@@ -555,7 +553,11 @@ msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr ""
 
-#empty strings from id 31413 to 31420
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr ""
+
+#empty strings from id 31414 to 31420
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

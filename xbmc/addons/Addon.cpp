@@ -74,10 +74,10 @@ static const TypeMapping types[] =
    {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005, "" },
    {"xbmc.python.script",                ADDON_SCRIPT,              24009, "" },
    {"xbmc.python.weather",               ADDON_SCRIPT_WEATHER,      24027, "DefaultAddonWeather.png" },
-   {"xbmc.python.subtitles",             ADDON_SCRIPT_SUBTITLES,    24012, "DefaultAddonSubtitles.png" },
    {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013, "DefaultAddonLyrics.png" },
    {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24014, "" },
    {"xbmc.python.module",                ADDON_SCRIPT_MODULE,           0, "" },
+   {"xbmc.subtitle.module",              ADDON_SUBTITLE_MODULE,     24012, "DefaultAddonSubtitles.png" },
    {"xbmc.gui.skin",                     ADDON_SKIN,                  166, "DefaultAddonSkin.png" },
    {"xbmc.gui.webinterface",             ADDON_WEB_INTERFACE,         199, "DefaultAddonWebSkin.png" },
    {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011, "DefaultAddonRepository.png" },
@@ -355,7 +355,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_WEATHER:
-    case ADDON_SCRIPT_SUBTITLES:
+    case ADDON_SUBTITLE_MODULE:        
     case ADDON_PLUGIN:
     case ADDON_SERVICE:
       ext = ADDON_PYTHON_EXT;
@@ -378,8 +378,8 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SCRIPT_LIBRARY:
       case ADDON_SCRIPT_LYRICS:
       case ADDON_SCRIPT_WEATHER:
-      case ADDON_SCRIPT_SUBTITLES:
       case ADDON_SCRIPT_MODULE:
+      case ADDON_SUBTITLE_MODULE:
       case ADDON_SCRAPER_ALBUMS:
       case ADDON_SCRAPER_ARTISTS:
       case ADDON_SCRAPER_MOVIES:

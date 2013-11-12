@@ -736,6 +736,29 @@
         </setting>
       </group>
       <group id="2">
+        <setting id="subtitles.savetomoviefolder" type="boolean" label="24115" help="24106">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="subtitles.languages" type="list[string]" label="24111" help="24112">
+          <level>1</level>
+          <default>English</default>
+          <constraints>
+            <options>languages</options>
+            <delimiter>,</delimiter>
+            <minimum>1</minimum>
+            <maximum>3</maximum>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
         <setting id="subtitles.custompath" type="path" label="21366" help="36191">
           <level>1</level>
           <default></default>

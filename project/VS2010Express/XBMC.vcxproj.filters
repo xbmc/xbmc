@@ -1600,6 +1600,9 @@
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.cpp">
       <Filter>video\dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogSubtitles.cpp">
+      <Filter>video\dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogTeletext.cpp">
       <Filter>video\dialogs</Filter>
     </ClCompile>
@@ -4630,6 +4633,9 @@
       <Filter>video\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.h">
+      <Filter>video\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogSubtitles.h">
       <Filter>video\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogTeletext.h">
