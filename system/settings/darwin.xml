@@ -40,6 +40,7 @@
           <dependencies>
             <dependency type="enable" setting="input.appleremotemode" operator="!is">0</dependency> <!-- APPLE_REMOTE_DISABLED -->
           </dependencies>
+          <control type="toggle" />
         </setting>
         <setting id="input.appleremotesequencetime" type="integer" label="13603" help="36418">
           <level>1</level>
