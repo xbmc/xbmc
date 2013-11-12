@@ -22,7 +22,7 @@
 #include <vector>
 
 #include "profiles/Profile.h"
-#include "settings/ISettingsHandler.h"
+#include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
 
 class TiXmlNode;

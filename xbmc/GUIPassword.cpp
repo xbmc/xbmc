@@ -30,7 +30,6 @@
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "Util.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/Setting.h"
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"

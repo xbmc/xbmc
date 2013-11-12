@@ -23,7 +23,7 @@
 #include "Application.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "input/KeyboardStat.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"

@@ -19,7 +19,7 @@
  *
  */
 
-#include "ISettingControl.h"
+#include "settings/lib/ISettingControl.h"
 
 #define SETTING_XML_ELM_CONTROL_FORMATLABEL  "formatlabel"
 #define SETTING_XML_ELM_CONTROL_HIDDEN       "hidden"

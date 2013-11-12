@@ -21,7 +21,7 @@
 #include "URL.h"
 #include "XBDateTime.h"
 #include "utils/Job.h"
-#include "settings/ISettingsHandler.h"
+#include "settings/lib/ISettingsHandler.h"
 
 class CWakeOnAccess : private IJobCallback, public ISettingsHandler
 {

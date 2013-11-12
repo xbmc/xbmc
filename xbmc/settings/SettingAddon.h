@@ -19,7 +19,7 @@
  *
  */
 
-#include "Setting.h"
+#include "settings/lib/Setting.h"
 #include "addons/IAddon.h"
 
 class CSettingAddon : public CSettingString

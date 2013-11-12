@@ -26,7 +26,7 @@
 #include "WinSystemX11.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "guilib/DispResource.h"

@@ -21,7 +21,7 @@
 
 #include <vector>
 
-#include "Setting.h"
+#include "settings/lib/Setting.h"
 
 class CSettingPath : public CSettingString
 {

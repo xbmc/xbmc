@@ -22,7 +22,7 @@
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/URIUtils.h"
 #include "guilib/LocalizeStrings.h"

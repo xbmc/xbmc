@@ -22,7 +22,7 @@
 
 #include "md5.h"
 #include "InfoLoader.h"
-#include "settings/ISubSettings.h"
+#include "settings/lib/ISubSettings.h"
 
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
 #define MB  (1024*KB)       // 1 MegaByte (1MB)   1024 KB (2^10 KB)

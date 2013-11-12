@@ -23,7 +23,7 @@
 
 #if !defined(__arm__)
 
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 
 enum AppleRemoteOptions
 {

@@ -21,7 +21,7 @@
 #include "GUIDialogPeripheralSettings.h"
 #include "addons/Skin.h"
 #include "peripherals/Peripherals.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 #include "video/dialogs/GUIDialogVideoSettings.h"
 

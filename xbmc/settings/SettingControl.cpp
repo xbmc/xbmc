@@ -21,7 +21,7 @@
 #include <vector>
 
 #include "SettingControl.h"
-#include "settings/SettingDefinitions.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"

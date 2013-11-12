@@ -20,7 +20,7 @@
  */
 
 #include "system.h"
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 
 #ifdef HAS_WEB_SERVER
 class CWebServer;

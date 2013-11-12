@@ -24,7 +24,7 @@
 
 #include "system.h"
 #include "cores/IPlayerCallback.h"
-#include "settings/ISettingsHandler.h"
+#include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
 

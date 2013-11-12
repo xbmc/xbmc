@@ -23,9 +23,9 @@
 #include <map>
 #include <vector>
 
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include "utils/StdString.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 
 class CFileItem;
 class CMediaSource;

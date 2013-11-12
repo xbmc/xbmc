@@ -22,7 +22,7 @@
 #include <map>
 
 #include "addons/include/xbmc_pvr_types.h"
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/JobManager.h"

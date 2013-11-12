@@ -49,9 +49,9 @@ class CPlayerController;
 #include "cores/IPlayerCallback.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
-#include "settings/ISettingsHandler.h"
-#include "settings/ISettingCallback.h"
-#include "settings/ISubSettings.h"
+#include "settings/lib/ISettingsHandler.h"
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISubSettings.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif

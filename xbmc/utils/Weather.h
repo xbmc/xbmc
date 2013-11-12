@@ -22,7 +22,7 @@
 
 #include "InfoLoader.h"
 #include "StdString.h"
-#include "settings/ISettingCallback.h"
+#include "settings/lib/ISettingCallback.h"
 #include "utils/GlobalsHandling.h"
 
 #include <map>

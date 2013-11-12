@@ -36,7 +36,7 @@
 #include "Util.h"
 #include "utils/StringUtils.h"
 #include "XBDateTime.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 
 using namespace std;

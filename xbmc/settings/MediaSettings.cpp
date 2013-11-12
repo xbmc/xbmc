@@ -30,7 +30,7 @@
 #include "interfaces/Builtins.h"
 #include "music/MusicDatabase.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"

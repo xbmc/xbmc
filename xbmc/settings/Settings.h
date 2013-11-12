@@ -25,9 +25,9 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "settings/ISettingCallback.h"
-#include "settings/ISettingControlCreator.h"
-#include "settings/ISettingCreator.h"
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingControlCreator.h"
+#include "settings/lib/ISettingCreator.h"
 #include "threads/CriticalSection.h"
 #include "utils/Variant.h"
 

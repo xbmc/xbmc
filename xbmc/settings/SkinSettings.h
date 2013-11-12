@@ -22,7 +22,7 @@
 #include <map>
 #include <string>
 
-#include "settings/ISubSettings.h"
+#include "settings/lib/ISubSettings.h"
 #include "threads/CriticalSection.h"
 
 class TiXmlNode;

@@ -24,10 +24,10 @@
 
 #include "GUIControlSettings.h"
 #include "guilib/GUIWindow.h"
-#include "settings/SettingDependency.h"
-#include "settings/SettingSection.h"
+#include "settings/lib/SettingDependency.h"
+#include "settings/lib/SettingSection.h"
 #include "settings/Settings.h"
-#include "settings/SettingsManager.h"
+#include "settings/lib/SettingsManager.h"
 #include "threads/Timer.h"
 
 typedef boost::shared_ptr<CGUIControlBaseSetting> BaseSettingControlPtr;

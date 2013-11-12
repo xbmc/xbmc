@@ -19,7 +19,7 @@
  */
 
 #include "SettingPath.h"
-#include "settings/SettingsManager.h"
+#include "settings/lib/SettingsManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"

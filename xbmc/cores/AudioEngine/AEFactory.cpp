@@ -24,7 +24,7 @@
 
 #if defined(TARGET_DARWIN)
   #include "Engines/CoreAudio/CoreAudioAE.h"
-  #include "settings/SettingsManager.h"
+  #include "settings/lib/SettingsManager.h"
 #else
   #include "Engines/ActiveAE/ActiveAE.h"
 #endif
@@ -38,7 +38,7 @@
 #endif
 
 #include "guilib/LocalizeStrings.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 

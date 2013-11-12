@@ -23,7 +23,7 @@
 #include "ButtonTranslator.h"
 #include "peripherals/devices/PeripheralImon.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 

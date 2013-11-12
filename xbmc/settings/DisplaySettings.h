@@ -24,8 +24,8 @@
 #include <vector>
 
 #include "guilib/Resolution.h"
-#include "settings/ISettingCallback.h"
-#include "settings/ISubSettings.h"
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISubSettings.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 

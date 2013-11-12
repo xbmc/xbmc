@@ -47,7 +47,7 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "guilib/Key.h"
-#include "settings/Setting.h"
+#include "settings/lib/Setting.h"
 
 using namespace PERIPHERALS;
 using namespace XFILE;
