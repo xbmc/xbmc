@@ -389,7 +389,8 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
 
       /* set focus to the next filter */
       CGUIControl* ctrl = (CGUIControl*)GetControl(FILTER_SECONDARY_BUTTONS_START);
-      ctrl->SetFocus(true);
+      if (ctrl)
+        ctrl->SetFocus(true);
 
       m_clearFilterButton->SetFocus(false);
       m_clearFilterButton->SetVisible(false);
