@@ -6052,6 +6052,7 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\StringValidation.h">
       <Filter>utils</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\uXstrings.h">
       <Filter>utils</Filter>
     </ClInclude>
