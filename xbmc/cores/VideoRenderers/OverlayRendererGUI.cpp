@@ -151,16 +151,28 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   if(m_layout == NULL)
     return;
 
-  /* until we can get gfx scaling correct in windowed mode, we must disable this */
-  if(!g_graphicsContext.IsFullScreenVideo())
-    return;
-
   CRect rs, rd;
   g_renderManager.GetVideoRect(rs, rd);
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
 
+  /* our coordinates are in screen coordinates constrained to rd, but the font is sized suitably for fullscreen,
+     so we must scale up the positioning to screen coordinates, and then scale down to our final size and position
+     on render */
+
+  /* transform matrix is scale and translate */
+  float scale = rd.Width() / (res.Overscan.right - res.Overscan.left);
+  TransformMatrix mat;
+  mat.m[0][0] = mat.m[1][1] = scale;
+  mat.m[3][0] = rd.x1;
+  mat.m[3][1] = rd.y1;
+
+  float x = state.x, y = state.y;
+  mat.InverseTransformPosition(x, y);
+
+  g_graphicsContext.SetTransform(mat, 1.0f, 1.0f);
+
   float width_max = (float) res.Overscan.right - res.Overscan.left;
-  float y, width, height;
+  float width, height;
   m_layout->Update(m_text, width_max * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
   m_layout->GetTextExtent(width, height);
 
@@ -175,5 +187,6 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   y = std::max(y, (float) res.Overscan.top);
   y = std::min(y, res.Overscan.bottom - height);
 
-  m_layout->RenderOutline(state.x, y, 0, 0xFF000000, XBFONT_CENTER_X, width_max);
+  m_layout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, width_max);
+  g_graphicsContext.RemoveTransform();
 }

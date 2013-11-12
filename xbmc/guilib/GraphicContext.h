@@ -214,6 +214,13 @@ public:
    m_transforms.push(m_finalTransform);
    m_finalTransform.matrix = matrix;
   }
+  inline void SetTransform(const TransformMatrix &matrix, float scaleX, float scaleY)
+  {
+    m_transforms.push(m_finalTransform);
+    m_finalTransform.matrix = matrix;
+    m_finalTransform.scaleX = scaleX;
+    m_finalTransform.scaleY = scaleY;
+  }
   inline void RemoveTransform()
   {
     if (!m_transforms.empty())
