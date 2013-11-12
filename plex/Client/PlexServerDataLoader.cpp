@@ -118,8 +118,8 @@ CFileItemListPtr CPlexServerDataLoader::GetSectionsForUUID(const CStdString &uui
     return m_sectionMap[uuid];
 
   /* not found in our server map, check shared servers */
-  if (m_sharedSectionsMap.find(uuid) != m_sectionMap.end())
-    return m_sectionMap[uuid];
+  if (m_sharedSectionsMap.find(uuid) != m_sharedSectionsMap.end())
+    return m_sharedSectionsMap[uuid];
 
   return CFileItemListPtr();
 }
