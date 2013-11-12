@@ -63,6 +63,8 @@ void CGUIColorManager::Load(const CStdString &colorFile)
     return; // nothing to do
 
   path = URIUtils::AddFileToFolder(basePath, colorFile);
+  if (!URIUtils::HasExtension(path))
+    path += ".xml";
   CLog::Log(LOGINFO, "Loading colors from %s", path.c_str());
 
   if (xmlDoc.LoadFile(path))
