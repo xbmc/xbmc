@@ -6953,7 +6953,7 @@ msgid "Edit title"
 msgstr ""
 
 msgctxt "#16106"
-msgid "Manage ..."
+msgid "Manage..."
 msgstr ""
 
 msgctxt "#16107"
