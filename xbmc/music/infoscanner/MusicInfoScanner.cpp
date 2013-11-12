@@ -117,8 +117,7 @@ void CMusicInfoScanner::Process()
       m_bCanInterrupt = false;
       m_needsCleanup = false;
 
-      bool commit = false;
-      bool cancelled = false;
+      bool commit = true;
       for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); it++)
       {
         if (!CDirectory::Exists(*it) && !m_bClean)
@@ -133,8 +132,10 @@ void CMusicInfoScanner::Process()
           continue;
         }
         else if (!DoScan(*it))
-          cancelled = true;
-        commit = !cancelled;
+        {
+          commit = false;
+          break;
+        }
       }
 
       if (commit)
