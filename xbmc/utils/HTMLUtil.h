@@ -34,7 +34,6 @@ public:
   void getValueOfTag(const CStdString& strTagAndValue, CStdString& strValue);
   void getAttributeOfTag(const CStdString& strTagAndValue, const CStdString& strTag, CStdString& strValue);
   static void RemoveTags(CStdString& strHTML);
-  static void ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStripped);
   static bool DecodeHTMLCharRefs(const std::string& htmlText, std::string& decodedText);
   inline static std::string DecodeHTMLCharRefs(const std::string& htmlText)
   {
