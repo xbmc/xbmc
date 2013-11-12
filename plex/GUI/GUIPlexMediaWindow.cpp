@@ -953,11 +953,14 @@ CURL CGUIPlexMediaWindow::GetRealDirectoryUrl(const CStdString& url_)
   {
     CURL url(dirUrl);
 
-    CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(url.Get());
-    if (filter)
-      url = filter->addFiltersToUrl(url);
-    else
-      PlexUtils::AppendPathToURL(url, "all");
+    if (g_plexApplication.filterManager)
+    {
+      CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(url.Get());
+      if (filter)
+        url = filter->addFiltersToUrl(url);
+      else
+        PlexUtils::AppendPathToURL(url, "all");
+    }
 
     return url;
   }

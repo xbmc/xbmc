@@ -61,8 +61,12 @@ std::string CPlexSecondaryFilter::getCurrentValue() const
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 std::string CPlexSecondaryFilter::getValueLabel(const std::string &value) const
 {
-  if (m_filterValues.find(value) != m_filterValues.end())
-    return m_filterValues.at(value);
+  BOOST_FOREACH(PlexStringPair p, m_filterValues)
+  {
+    if (p.first == value)
+      return p.second;
+  }
+
   return "";
 }
 
@@ -152,7 +156,9 @@ void CPlexSecondaryFilter::OnJobComplete(unsigned int jobID, bool success, CJob 
       CFileItemPtr item = fjob->m_items.Get(i);
       std::string key = item->GetProperty("unprocessed_key").asString();
       key = CURL::Decode(key);
-      m_filterValues[key] = item->GetProperty("title").asString();
+
+      PlexStringPair pair = std::make_pair(key, item->GetProperty("title").asString());
+      m_filterValues.push_back(pair);
     }
 
     CGUIMessage msg(GUI_MSG_FILTER_VALUES_LOADED, PLEX_FILTER_MANAGER, 0, 0, 0);

@@ -72,10 +72,7 @@ class CPlexSecondaryFilter : public IJobCallback
 
     PlexStringPairVector getFilterValues() const
     {
-      PlexStringPairVector values;
-      BOOST_FOREACH(PlexStringPair p, m_filterValues)
-        values.push_back(p);
-      return values;
+      return m_filterValues;
     }
 
     void loadValues(const CUrlOptions &options = CUrlOptions());
@@ -103,7 +100,7 @@ class CPlexSecondaryFilter : public IJobCallback
     bool m_booleanValue;
 
     /* All available values */
-    PlexStringMap m_filterValues;
+    PlexStringPairVector m_filterValues;
     std::string getValueLabel(const std::string &value) const;
 };
 
