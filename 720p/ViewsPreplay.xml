@@ -133,7 +133,7 @@
 		</control>
 	</include>
 	<include name="EpisodeTitle">
-		<posy>119</posy>
+		<posy>121</posy>
 		<posx>20</posx>
 		<width>174</width>
 		<height>20</height>
@@ -145,7 +145,7 @@
 	</include>
 	<include name="EpisodeDate">
 		<control type="label">
-			<posy>142</posy>
+			<posy>144</posy>
 			<posx>20</posx>
 			<width>174</width>
 			<height>20</height>
@@ -281,7 +281,7 @@
 	</include>
 	<!-- all episodes are from the same season -->
 	<include name="EpisodeThumbOverlayTitle">
-		<posy>83</posy>
+		<posy>85</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
@@ -293,7 +293,7 @@
 	</include>
 	<!-- episodes are mixed from different seasons -->
 	<include name="EpisodeThumbOverlayTitle2">
-		<posy>83</posy>
+		<posy>85</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
@@ -785,8 +785,8 @@
 						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 					</control>
 					<control type="image">
-						<posx>182</posx>
-						<posy>90</posy>
+						<posx>176</posx>
+						<posy>84</posy>
 						<info>ListItem.Overlay</info>
 					</control>
 				</itemlayout>
@@ -810,8 +810,8 @@
 						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 					</control>
 					<control type="image">
-						<posx>182</posx>
-						<posy>90</posy>
+						<posx>176</posx>
+						<posy>84</posy>
 						<info>ListItem.Overlay</info>
 					</control>
 					<include>EpisodeSelectedBorder</include>
@@ -852,8 +852,8 @@
 						<textcolor>white</textcolor>
 					</control>
 					<control type="image">
-						<posx>253</posx>
-						<posy>90</posy>
+						<posx>248</posx>
+						<posy>86</posy>
 						<info>ListItem.Overlay</info>
 					</control>
 				</itemlayout>
@@ -872,8 +872,8 @@
 						<textcolor>orange</textcolor>
 					</control>
 					<control type="image">
-						<posx>253</posx>
-						<posy>90</posy>
+						<posx>248</posx>
+						<posy>86</posy>
 						<info>ListItem.Overlay</info>
 					</control>
 					<include>EpisodeSelectedBorderFiltered</include>
@@ -951,7 +951,7 @@
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posy>13</posy>
+						<posy>10</posy>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>

@@ -167,14 +167,14 @@
 	</include>
 	<include name="ListItemPosterTitleTV1">
 		<control type="label">
-			<posy>190</posy>
+			<posy>192</posy>
 			<include>ListItemTitle1</include>
 		</control>
 	</include>
 	<include name="ListItemPosterTitleTV2">
 		<control type="group">
 			<visible>ListItem.Type(episode)</visible>
-			<posy>214</posy>
+			<posy>216</posy>
 			<posx>95</posx>
 			<control type="label">
 				<width>110</width>
@@ -205,7 +205,7 @@
 	<include name="ListItemPosterTitleTV3">
 		<control type="group">
 			<visible>ListItem.Type(season)</visible>
-			<posy>214</posy>
+			<posy>216</posy>
 			<posx>95</posx>
 			<control type="label">
 				<width>110</width>
@@ -236,10 +236,10 @@
 	<include name="ListItemInProgress">
 		<control type="image">
 			<visible>ListItem.Status(InProgress)</visible>
-			<posx>133</posx>
-			<posy>207</posy>
-			<width>16</width>
-			<height>16</height>
+			<posx>131</posx>
+			<posy>204</posy>
+			<width>22</width>
+			<height>22</height>
 			<info>ListItem.Overlay</info>
 			<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7001).HasFocus">Conditional</animation>
 		</control>

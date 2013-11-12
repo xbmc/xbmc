@@ -28,7 +28,7 @@
 	<include name="MovieTVPosterSelectedBorder">
 		<control type="image">
 			<width>192</width>
-			<height>280</height>
+			<height>281</height>
 			<include>Border</include>
 		</control>
 	</include>
@@ -46,8 +46,8 @@
 	<include name="MovieTVUnwatchedOverlay">
 		<control type="image">
 			<visible>[Container.Content(movies) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
-			<posx>174</posx>
-			<posy>262</posy>
+			<posx>167</posx>
+			<posy>256</posy>
 			<info>ListItem.Overlay</info>
 		</control>
 	</include>
@@ -93,6 +93,16 @@
 		<label>$INFO[ListItem.Label]</label>
 		<font>Condensed-17</font>
 		<shadowcolor>FF222222</shadowcolor>
+	</include>
+	<include name="MovieTVUnwatchedOverlaySmaller">
+		<control type="group">
+		<control type="image">
+			<posx>103</posx>
+			<posy>163</posy>
+			<info>ListItem.Overlay</info>
+			<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+		</control>
+	</control>
 	</include>
 	<!-- Library -->
 	<include name="LibraryPostersBigger">
