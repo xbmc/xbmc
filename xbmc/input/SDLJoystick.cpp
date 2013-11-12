@@ -113,15 +113,19 @@ void CJoystick::Initialize()
         // https://bugs.launchpad.net/ubuntu/+source/linux/+bug/390959
         // NOTICE: Enabled Joystick: Microsoft Wired Keyboard 600
         // Details: Total Axis: 37 Total Hats: 0 Total Buttons: 57
+        // NOTICE: Enabled Joystick: Microsoft Microsoft® 2.4GHz Transceiver v6.0
+        // Details: Total Axis: 37 Total Hats: 0 Total Buttons: 57
         int num_axis = SDL_JoystickNumAxes(joy);
-        if (num_axis > 20 && StringUtils::FindWords(SDL_JoystickName(i), "keyboard") != std::string::npos)
-          CLog::Log(LOGNOTICE, "Your Joystick is a Keyboard, ignoring it: %s Axis: %d", SDL_JoystickName(i), num_axis);
+        int num_buttons = SDL_JoystickNumButtons(joy);
+        if (num_axis > 20 && num_buttons > 50)
+          CLog::Log(LOGNOTICE, "Your Joystick seems to be a Keyboard, ignoring it: %s Axis: %d Buttons: %d", 
+            SDL_JoystickName(i), num_axis, num_buttons);
         else
         {
           m_JoystickNames.push_back(string(SDL_JoystickName(i)));
           CLog::Log(LOGNOTICE, "Enabled Joystick: %s", SDL_JoystickName(i));
           CLog::Log(LOGNOTICE, "Details: Total Axis: %d Total Hats: %d Total Buttons: %d",
-            num_axis, SDL_JoystickNumHats(joy), SDL_JoystickNumButtons(joy));
+            num_axis, SDL_JoystickNumHats(joy), num_buttons);
           m_Joysticks.push_back(joy);
         }
       }
