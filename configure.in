@@ -843,6 +843,7 @@ if test "$host_vendor" = "apple" ; then
     LIBS="$LIBS -framework IOSurface"
     LIBS="$LIBS -framework QuartzCore"
     LIBS="$LIBS -framework SystemConfiguration"
+    LIBS="$LIBS -framework VideoDecodeAcceleration"
   fi
   USE_EXTERNAL_FFMPEG=1
 elif test "$target_platform" = "target_raspberry_pi"; then
