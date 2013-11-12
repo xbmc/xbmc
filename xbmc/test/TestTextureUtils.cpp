@@ -19,11 +19,11 @@
  */
 
 #include "URL.h"
-#include "TextureCache.h"
+#include "TextureDatabase.h"
 
 #include "gtest/gtest.h"
 
-TEST(TestTextureCache, GetWrappedImageURL)
+TEST(TestTextureUtils, GetWrappedImageURL)
 {
   typedef struct
   {
@@ -43,7 +43,7 @@ TEST(TestTextureCache, GetWrappedImageURL)
   for (unsigned int i = 0; i < sizeof(test_files) / sizeof(testfiles); i++)
   {
     std::string expected = test_files[i].out;
-    std::string out = CTextureCache::GetWrappedImageURL(test_files[i].in, test_files[i].type, test_files[i].options);
+    std::string out = CTextureUtils::GetWrappedImageURL(test_files[i].in, test_files[i].type, test_files[i].options);
     EXPECT_EQ(out, expected);
   }
 }

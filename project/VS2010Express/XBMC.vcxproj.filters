@@ -2848,7 +2848,7 @@
     <ClCompile Include="..\..\xbmc\test\TestFileItem.cpp">
       <Filter>test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\test\TestTextureCache.cpp">
+    <ClCompile Include="..\..\xbmc\test\TestTextureUtils.cpp">
       <Filter>test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\PVROperations.cpp">
