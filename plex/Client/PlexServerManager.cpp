@@ -25,10 +25,13 @@ CPlexServerReachabilityThread::Process()
   if (!g_plexApplication.serverManager)
     return;
 
-  if (m_server->UpdateReachability())
-    g_plexApplication.serverManager->ServerReachabilityDone(m_server, true);
-  else
-    g_plexApplication.serverManager->ServerReachabilityDone(m_server, false);
+  if (m_server)
+  {
+    if (m_server->UpdateReachability())
+      g_plexApplication.serverManager->ServerReachabilityDone(m_server, true);
+    else
+      g_plexApplication.serverManager->ServerReachabilityDone(m_server, false);
+  }
 }
 
 CPlexServerManager::CPlexServerManager() : m_stopped(false)
