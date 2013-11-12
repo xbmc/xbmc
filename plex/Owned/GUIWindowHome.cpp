@@ -812,25 +812,25 @@ void CGUIWindowHome::UpdateSections()
     CGUIListItemPtr item = oldList[i];
     if (!item->HasProperty("plex"))
     {
-      if (item->HasProperty("plexshared") &&
-          g_plexApplication.dataLoader->HasSharedSections())
+      if (item->HasProperty("plexshared"))
       {
         haveShared = true;
-        newList.push_back(item);
+        if (g_plexApplication.dataLoader->HasSharedSections())
+          newList.push_back(item);
       }
-
-      if (item->HasProperty("plexchannels") &&
-          g_plexApplication.dataLoader->HasChannels())
+      else if (item->HasProperty("plexchannels"))
       {
         haveChannels = true;
-        newList.push_back(item);
+        if (g_plexApplication.dataLoader->HasChannels())
+          newList.push_back(item);
       }
-
-      if (item->HasProperty("plexupdate"))
+      else if (item->HasProperty("plexupdate"))
       {
         haveUpdate = true;
         newList.push_back(item);
       }
+      else
+        newList.push_back(item);
     }
     else
     {
