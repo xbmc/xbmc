@@ -1196,6 +1196,7 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist)
 
     int discographyOffset = artist_enumCount;
 
+    artist.discography.clear();
     artist = GetArtistFromDataset(m_pDS.get()->get_sql_record(), 0, true); // true to grab the thumburl rather than the thumb
     while (!m_pDS->eof())
     {
