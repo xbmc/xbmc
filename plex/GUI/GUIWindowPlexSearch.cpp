@@ -191,11 +191,15 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
     InitWindow();
-    g_plexApplication.timelineManager->SetTextFieldFocused(true, m_editControl->GetDescription(), GetString());
+    if (g_plexApplication.timelineManager)
+      g_plexApplication.timelineManager->SetTextFieldFocused(true, m_editControl->GetDescription(), GetString());
   }
 
   if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
-    g_plexApplication.timelineManager->SetTextFieldFocused(false, m_editControl->GetDescription());
+  {
+    if (g_plexApplication.timelineManager)
+      g_plexApplication.timelineManager->SetTextFieldFocused(false, m_editControl->GetDescription());
+  }
 
   if (message.GetMessage() == GUI_MSG_SET_TEXT && message.GetControlId() == CTL_LABEL_EDIT)
     UpdateSearch();
