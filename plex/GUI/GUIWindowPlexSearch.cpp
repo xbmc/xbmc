@@ -152,13 +152,21 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
   {
     if (action.GetID() >= KEY_ASCII)
     {
-      bool ret = m_editControl->OnAction(action);
+      bool ret = false;
+
+      if (m_editControl)
+        ret = m_editControl->OnAction(action);
+
       UpdateSearch();
       return ret;
     }
     else if ((action.GetID() == ACTION_BACKSPACE || action.GetID() == ACTION_NAV_BACK) && !GetString().empty())
     {
-      bool ret = m_editControl->OnAction(CAction(ACTION_BACKSPACE));
+      bool ret = false;
+
+      if (m_editControl)
+        ret = m_editControl->OnAction(CAction(ACTION_BACKSPACE));
+
       UpdateSearch();
       return ret;
     }
@@ -192,13 +200,21 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
   {
     InitWindow();
     if (g_plexApplication.timelineManager)
-      g_plexApplication.timelineManager->SetTextFieldFocused(true, m_editControl->GetDescription(), GetString());
+    {
+      std::string desc = "search";
+      if (m_editControl) desc = m_editControl->GetDescription();
+      g_plexApplication.timelineManager->SetTextFieldFocused(true, desc, GetString());
+    }
   }
 
   if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
   {
     if (g_plexApplication.timelineManager)
-      g_plexApplication.timelineManager->SetTextFieldFocused(false, m_editControl->GetDescription());
+    {
+      std::string desc = "field";
+      if (m_editControl) desc = m_editControl->GetDescription();
+      g_plexApplication.timelineManager->SetTextFieldFocused(false, desc);
+    }
   }
 
   if (message.GetMessage() == GUI_MSG_SET_TEXT && message.GetControlId() == CTL_LABEL_EDIT)
@@ -216,14 +232,16 @@ bool CGUIWindowPlexSearch::OnClick(int senderId, int action)
   }
   else if (senderId == CTL_BUTTON_CLEAR)
   {
-    m_editControl->SetLabel2("");
+    if (m_editControl)
+      m_editControl->SetLabel2("");
     Reset();
   }
   else if (senderId == CTL_BUTTON_SPACE)
   {
     CStdString str = GetString();
     str += " ";
-    m_editControl->SetLabel2(str);
+    if (m_editControl)
+      m_editControl->SetLabel2(str);
     UpdateSearch();
   }
   else if (senderId >= 65 && senderId <= 100)
@@ -237,7 +255,8 @@ bool CGUIWindowPlexSearch::OnClick(int senderId, int action)
 
     CStdString str = GetString();
     str += c;
-    m_editControl->SetLabel2(str);
+    if (m_editControl)
+      m_editControl->SetLabel2(str);
     UpdateSearch();
   }
   else if (senderId >= 9001)
