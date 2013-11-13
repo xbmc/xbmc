@@ -133,7 +133,7 @@
 		</control>
 	</include>
 	<include name="EpisodeTitle">
-		<posy>119</posy>
+		<posy>121</posy>
 		<posx>20</posx>
 		<width>174</width>
 		<height>20</height>
@@ -145,7 +145,7 @@
 	</include>
 	<include name="EpisodeDate">
 		<control type="label">
-			<posy>142</posy>
+			<posy>144</posy>
 			<posx>20</posx>
 			<width>174</width>
 			<height>20</height>
@@ -168,27 +168,6 @@
 		</control>
 	</include>
 	<!-- filtered results -->
-	<include name="EpisodePosterFiltered">
-		<control type="image">
-			<description>Poster image</description>
-			<posx>13</posx>
-			<posy>13</posy>
-			<width>71</width>
-			<height>106</height>
-			<texture background="true" diffuse="mask-poster-filtered.png">$INFO[ListItem.Art(parentThumb)]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-		</control>
-		<control type="image">
-			<description>Poster image</description>
-			<posx>13</posx>
-			<posy>13</posy>
-			<width>71</width>
-			<height>106</height>
-			<texture background="true" diffuse="mask-poster-filtered.png">$INFO[ListItem.GrandparentThumb]</texture>
-			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-			<visible>IsEmpty(ListItem.Art(parentThumb))</visible>
-		</control>
-	</include>
 	<include name="EpisodeThumbFiltered">
 		<control type="image">
 			<posx>0</posx>
@@ -198,18 +177,19 @@
 			<include>Shadow</include>
 		</control>
 		<control type="image">
-			<posx>84</posx>
+			<posx>13</posx>
 			<posy>13</posy>
-			<width>198</width>
+			<width>269</width>
 			<height>106</height>
 			<texture background="true">default-thumb-small.png</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
 		<control type="image">
-			<posx>84</posx>
+			<posx>13</posx>
 			<posy>13</posy>
-			<width>198</width>
+			<width>269</width>
 			<height>106</height>
-			<texture background="true" diffuse="mask-episode-filtered.png">$INFO[ListItem.Art(thumb)]</texture>
+			<texture background="true" diffuse="mask-wide-big.png">$INFO[ListItem.Art(fanart)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
 	</include>
@@ -239,7 +219,7 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.TVShowTitle]</label>
-		<font>CondensedBold-14</font>
+		<font>Condensed-14</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<include name="EpisodeSecondTitleFiltered">
@@ -271,9 +251,9 @@
 	</include>
 	<include name="EpisodeThumbOverlayFiltered">
 		<control type="image">
-			<posx>84</posx>
+			<posx>13</posx>
 			<posy>81</posy>
-			<width>198</width>
+			<width>269</width>
 			<height>38</height>
 			<include>Black</include>
 			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
@@ -288,9 +268,20 @@
 			<include>Border</include>
 		</control>
 	</include>
+	<include name="EpisodeThumbOverlayTitle2Filtered">
+		<posy>83</posy>
+		<posx>20</posx>
+		<width>180</width>
+		<height>30</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>S$INFO[ListItem.Season]&#xB7;E$INFO[ListItem.Episode]</label>
+		<font>CondensedBold-26</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>
 	<!-- all episodes are from the same season -->
 	<include name="EpisodeThumbOverlayTitle">
-		<posy>83</posy>
+		<posy>85</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
@@ -302,7 +293,7 @@
 	</include>
 	<!-- episodes are mixed from different seasons -->
 	<include name="EpisodeThumbOverlayTitle2">
-		<posy>83</posy>
+		<posy>85</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
@@ -794,8 +785,8 @@
 						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 					</control>
 					<control type="image">
-						<posx>182</posx>
-						<posy>90</posy>
+						<posx>176</posx>
+						<posy>84</posy>
 						<info>ListItem.Overlay</info>
 					</control>
 				</itemlayout>
@@ -819,8 +810,8 @@
 						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 					</control>
 					<control type="image">
-						<posx>182</posx>
-						<posy>90</posy>
+						<posx>176</posx>
+						<posy>84</posy>
 						<info>ListItem.Overlay</info>
 					</control>
 					<include>EpisodeSelectedBorder</include>
@@ -850,7 +841,6 @@
 				<itemlayout width="285" height="165">
 					<include>EpisodeThumbCardFiltered</include>
 					<include>EpisodeThumbFiltered</include>
-					<include>EpisodePosterFiltered</include>
 					<control type="label">
 						<include>EpisodeTitleFiltered</include>
 					</control>
@@ -858,21 +848,18 @@
 					<include>EpisodeDateFiltered</include>
 					<include>EpisodeThumbOverlayFiltered</include>
 					<control type="label">
-						<posy>85</posy>
-						<posx>91</posx>
-						<include>EpisodeThumbOverlayTitle2</include>
+						<include>EpisodeThumbOverlayTitle2Filtered</include>
 						<textcolor>white</textcolor>
 					</control>
 					<control type="image">
-						<posx>253</posx>
-						<posy>90</posy>
+						<posx>248</posx>
+						<posy>86</posy>
 						<info>ListItem.Overlay</info>
 					</control>
 				</itemlayout>
 				<focusedlayout width="285" height="165">
 					<include>EpisodeThumbCardFiltered</include>
 					<include>EpisodeThumbFiltered</include>
-					<include>EpisodePosterFiltered</include>
 					<control type="label">
 						<include>EpisodeTitleFiltered</include>
 						<textcolor>orange</textcolor>
@@ -881,14 +868,12 @@
 					<include>EpisodeDateFiltered</include>
 					<include>EpisodeThumbOverlayFiltered</include>
 					<control type="label">
-						<posy>85</posy>
-						<posx>91</posx>
-						<include>EpisodeThumbOverlayTitle2</include>
+						<include>EpisodeThumbOverlayTitle2Filtered</include>
 						<textcolor>orange</textcolor>
 					</control>
 					<control type="image">
-						<posx>253</posx>
-						<posy>90</posy>
+						<posx>248</posx>
+						<posy>86</posy>
 						<info>ListItem.Overlay</info>
 					</control>
 					<include>EpisodeSelectedBorderFiltered</include>
@@ -966,7 +951,7 @@
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posy>13</posy>
+						<posy>10</posy>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>
@@ -1092,7 +1077,7 @@
 			<control type="textbox">
 				<label>$LOCALIZE[32105]</label>
 				<include>PlotFormat</include>
-				<visible>Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]</visible>
+				<visible>Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)</visible>
 			</control>
 			<control type="textbox">
 				<include>PlotFormat</include>

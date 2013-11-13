@@ -132,12 +132,19 @@
 				<pagecontrol>61</pagecontrol>
 				<visible allowhiddenfocus="false">Container(101).HasFocus(1) | ControlGroup(201).HasFocus()</visible>
 				<orientation>vertical</orientation>
-				<control type="radiobutton" id="210">
+				<!--><control type="radiobutton" id="210">
 					<description>Show Thumbs in List View (All)</description>
 					<width>625</width>
 					<label>$LOCALIZE[31981]</label>
 					<onclick>Skin.ToggleSetting(HideListViewIcons)</onclick>
 					<selected>!Skin.HasSetting(HideListViewIcons)</selected>
+				</control>-->
+				<control type="radiobutton" id="211">
+					<description>Show Big Posters View in Sections</description>
+					<width>625</width>
+					<label>Show Big Posters View in Sections</label>
+					<onclick>Skin.ToggleSetting(ShowBigPostersLibraryView)</onclick>
+					<selected>Skin.HasSetting(ShowBigPostersLibraryView)</selected>
 				</control>
 				<control type="radiobutton" id="327">
 					<description>Hide plot for Unwatched/In Progress</description>
@@ -146,13 +153,27 @@
 					<onclick>Skin.ToggleSetting(HidePlotForUnwatched)</onclick>
 					<selected>Skin.HasSetting(HidePlotForUnwatched)</selected>
 				</control>
-				<control type="radiobutton" id="324">
+				<control type="radiobutton" id="212">
+					<description>Hide Unwatched indicators for Movies</description>
+					<width>625</width>
+					<label>Hide Unwatched indicators for Movies in Library</label>
+					<onclick>Skin.ToggleSetting(HideUnwatchedIconsMovies)</onclick>
+					<selected>Skin.HasSetting(HideUnwatchedIconsMovies)</selected>
+				</control>
+				<control type="radiobutton" id="213">
+					<description>Hide Unwatched indicators for TV</description>
+					<width>625</width>
+					<label>Hide Unwatched indicators for TV Shows and Seasons in Library</label>
+					<onclick>Skin.ToggleSetting(HideUnwatchedIconsTVShows)</onclick>
+					<selected>Skin.HasSetting(HideUnwatchedIconsTVShows)</selected>
+				</control>
+				<!--><control type="radiobutton" id="324">
 					<description>Show Pictures description</description>
 					<width>625</width>
 					<label>$LOCALIZE[31983]</label>
 					<onclick>Skin.ToggleSetting(HideDescriptionInSlideshow)</onclick>
 					<selected>!Skin.HasSetting(HideDescriptionInSlideshow)</selected>
-				</control>
+				</control>-->
 				<control type="radiobutton" id="325">
 					<description>Show Now playing in viz description</description>
 					<width>625</width>

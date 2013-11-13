@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="6">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,50,60,61,62,66,70,71,80,99</views>
+	<views>40,50,51,60,61,62,66,70,71,80,99</views>
 	<allowoverlay>yes</allowoverlay>
 	<onload condition="Container.Content(movies)">Skin.SetString(SectionType,movies)</onload>
 	<onload condition="Container.Content(tvshows)">Skin.SetString(SectionType,tvshows)</onload>
@@ -17,7 +17,9 @@
 		<!-- ByFolder ID 40 -->
 		<include>ByFolder</include>
 		<!-- LibraryPosters ID 50 -->
-		<include>LibraryPosters</include>
+		<include condition="!Skin.HasSetting(ShowBigPostersLibraryView)">LibraryPosters</include>
+		<!-- LibraryPostersBigger ID 51 -->
+		<include condition="Skin.HasSetting(ShowBigPostersLibraryView)">LibraryPostersBigger</include>
 		<!-- Clips ID 80 -->
 		<include>ClipThumbs</include>
 		<!-- PreplayShow ID 60 -->
@@ -34,6 +36,8 @@
 		<!--><include>ChannelVideo</include>-->
 		<!-- Channel generic ID 99 -->
 		<include>Channel</include>
+		<!-- Scroll Offset -->
+		<include>scrollOffset</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
 		<!--<include>TopBar</include>-->

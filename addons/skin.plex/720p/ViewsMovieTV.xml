@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <includes>
+	<!-- Big posters -->
 	<include name="MovieTVPoster">
 		<control type="image">
 			<posx>0</posx>
@@ -27,7 +28,7 @@
 	<include name="MovieTVPosterSelectedBorder">
 		<control type="image">
 			<width>192</width>
-			<height>280</height>
+			<height>281</height>
 			<include>Border</include>
 		</control>
 	</include>
@@ -45,21 +46,74 @@
 	<include name="MovieTVUnwatchedOverlay">
 		<control type="image">
 			<visible>[Container.Content(movies) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
-			<posx>174</posx>
-			<posy>262</posy>
+			<posx>167</posx>
+			<posy>256</posy>
 			<info>ListItem.Overlay</info>
 		</control>
 	</include>
+	<!-- Smaller posters -->
+	<include name="MovieTVPosterSmaller">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>146</width>
+			<height>206</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>120</width>
+			<height>180</height>
+			<texture background="true">default-poster-middle.png</texture>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>120</width>
+			<height>180</height>
+			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="MovieTVPosterSelectedBorderSmaller">
+		<control type="image">
+			<width>126</width>
+			<height>186</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="MovieTVTitleSmaller">
+		<posy>203</posy>
+		<posx>73</posx>
+		<width>120</width>
+		<height>20</height>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Condensed-17</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>
+	<include name="MovieTVUnwatchedOverlaySmaller">
+		<control type="group">
+		<control type="image">
+			<posx>103</posx>
+			<posy>163</posy>
+			<info>ListItem.Overlay</info>
+			<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+		</control>
+	</control>
+	</include>
 	<!-- Library -->
-	<include name="LibraryPosters">
+	<include name="LibraryPostersBigger">
 		<!-- Library Movies & TV Shows -->
 		<control type="group" id="777">
 			<include>FadeDialog</include>
 			<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
 			<include>rightSideSlide</include>
-			<control type="panel" id="50">
+			<control type="panel" id="51">
 				<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
-				<viewtype label="LibraryPosters">panel</viewtype>
+				<viewtype label="LibraryPostersBigger">panel</viewtype>
 				<onup>50</onup>
 				<ondown>50</ondown>
 				<onright>50</onright>
@@ -92,6 +146,51 @@
 					</control>
 					<include>MovieTVPosterSelectedBorder</include>
 					<include>MovieTVUnwatchedOverlay</include>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+	<include name="LibraryPosters">
+		<!-- Library Movies & TV Shows -->
+		<control type="group" id="777">
+			<include>FadeDialog</include>
+			<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+			<include>rightSideSlide</include>
+			<control type="panel" id="50">
+				<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+				<viewtype label="LibraryPosters">panel</viewtype>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<onright>50</onright>
+				<onleft>1300</onleft>
+				<orientation>vertical</orientation>
+				<posx>100</posx>
+				<posy>28</posy>
+				<width>1200</width>
+				<height>670</height>
+				<itemlayout width="144" height="220">
+					<include>MovieTVPosterSmaller</include>
+					<control type="label">
+						<include>MovieTVTitleSmaller</include>
+					</control>
+					<include>MovieTVUnwatchedOverlaySmaller</include>
+				</itemlayout>
+				<focusedlayout width="144" height="220">
+					<!--<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>208</width>
+						<height>317</height>
+						<include>BlackRounded</include>
+						<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+					</control>-->
+					<include>MovieTVPosterSmaller</include>
+					<control type="label">
+						<include>MovieTVTitleSmaller</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<include>MovieTVPosterSelectedBorderSmaller</include>
+					<include>MovieTVUnwatchedOverlaySmaller</include>
 				</focusedlayout>
 			</control>
 		</control>

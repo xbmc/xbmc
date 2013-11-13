@@ -1,16 +1,44 @@
 <?xml version="1.0"?>
 <window id="113">
 	<defaultcontrol>901</defaultcontrol>
-	<zorder>5</zorder>
+	<zorder>4</zorder>
 	<controls>
 		<control type="group">
-			<posx>10</posx>
-			<posy>34</posy>
-			<control type="image">
-				<description>Mute image</description>
-				<width>100</width>
-				<height>100</height>
-				<texture>Mute.png</texture>
+			<animation effect="slide" time="500" tween="circle" easing="out" start="0,-200" end="0,0">WindowOpen</animation>
+			<animation effect="slide" time="100" tween="circle" easing="in" start="0,0" end="0,-200">WindowClose</animation>			
+			<control type="group">
+				<posy>25</posy>
+				<posx>100r</posx>
+				<control type="image">
+					<description>Background</description>
+					<width>70</width>
+					<height>75</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>72</width>
+					<height>77</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>20</posx>
+					<posy>-15</posy>
+					<include>ArrowBlackUp</include>
+				</control>
+				<control type="group" id="0">
+					<posx>15</posx>
+					<posy>15</posy>
+					<control type="image" id="0">
+						<description>Mute image</description>
+						<texture>VolumeOff.png</texture>
+						<width>40</width>
+						<height>40</height>
+						<aspectratio scalediffuse="false">keep</aspectratio>
+						<colordiffuse>orangeLight</colordiffuse>
+					</control>
+				</control>
 			</control>
 		</control>
 	</controls>

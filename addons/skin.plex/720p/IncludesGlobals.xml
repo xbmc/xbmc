@@ -286,7 +286,7 @@
 		<posy>415</posy>
 		<posx>560</posx>
 		<width>685</width>
-		<height>195</height>
+		<height>190</height>
 		<font>Condensed-18</font>
 		<include>White2</include>
 		<shadowcolor>ff333333</shadowcolor>
@@ -311,6 +311,49 @@
 				<font>Condensed-17</font>
 				<textcolor>FF999999</textcolor>
 			</control>
+		</control>
+	</include>
+	<!-- scroll letter offset -->
+	<include name="scrollOffset">
+		<control type="group">
+			<visible>Container.Scrolling</visible>
+			<animation effect="slide" time="500" delay="400" tween="circle" easing="out" start="0,300" end="0,0">Visible</animation>
+			<animation effect="slide" time="100" tween="circle" easing="in" start="0,0" end="0,300">Hidden</animation>
+			<control type="group">
+				<posy>610</posy>
+				<posx>190r</posx>
+				<control type="image">
+					<description>Background</description>
+					<width>100</width>
+					<height>85</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>102</width>
+					<height>87</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>35</posx>
+					<posy>85</posy>
+					<include>DialogArrow</include>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>10</posy>
+					<height>60</height>
+					<width>100</width>
+					<aligny>center</aligny>
+					<align>center</align>
+					<font>CondensedBold-52</font>
+					<shadowcolor>FF222222</shadowcolor>
+					<textcolor>white</textcolor>
+					<label>$INFO[ListItem.SortLetter]</label>
+				</control>
+			</control>
+			
 		</control>
 	</include>
 	<!-- animations -->

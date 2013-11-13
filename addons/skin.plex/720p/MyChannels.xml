@@ -14,6 +14,8 @@
 		<!-- views (ViewsChannels.xml) -->
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
+		<!-- Scroll Offset -->
+		<include>scrollOffset</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<!--><include>LeftSideMenu</include>-->
 		<!--<include>TopBar</include>-->

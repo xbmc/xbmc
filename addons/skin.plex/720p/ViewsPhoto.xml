@@ -13,10 +13,10 @@
 	</include>
 	<include name="SelectedBorder">
 		<control type="image">
-			<posx>12</posx>
-			<posy>12</posy>
-			<width>124</width>
-			<height>124</height>
+			<posx>11</posx>
+			<posy>11</posy>
+			<width>128</width>
+			<height>155</height>
 			<include>Border</include>
 		</control>
 	</include>
