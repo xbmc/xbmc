@@ -26,6 +26,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../01-SDL_SetWidthHeight.patch
 	cd $(PLATFORM); patch -p0 < ../02-OSX_interpretKeyEvents.patch
 	cd $(PLATFORM); patch -p0 < ../03-mavericks-compile.patch
+	cd $(PLATFORM); patch -p0 < ../04-fix_external_screen_crash.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
