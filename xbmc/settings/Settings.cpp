@@ -1681,6 +1681,7 @@ void CSettings::CycleWatchMode(const CStdString& content)
 
 void CSettings::LoadUserFolderLayout()
 {
+#ifndef __PLEX__
   // check them all
   CStdString strDir = g_guiSettings.GetString("system.playlistspath");
   if (strDir == "set default")
@@ -1692,6 +1693,7 @@ void CSettings::LoadUserFolderLayout()
   CDirectory::Create(URIUtils::AddFileToFolder(strDir,"music"));
   CDirectory::Create(URIUtils::AddFileToFolder(strDir,"video"));
   CDirectory::Create(URIUtils::AddFileToFolder(strDir,"mixed"));
+#endif
 }
 
 CStdString CSettings::GetProfileUserDataFolder() const
