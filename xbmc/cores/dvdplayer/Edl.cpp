@@ -634,9 +634,10 @@ bool CEdl::ReadPvr(const CStdString &strMovie)
       cut.action = MUTE;
       break;
     case PVR_EDL_TYPE_SCENE:
-      //cut.action = SCENE;
-      //break;
-      CLog::Log(LOGINFO, "%s - Ignoring entry of type SCENE", __FUNCTION__);
+      if (!AddSceneMarker(cut.end))
+      {
+        CLog::Log(LOGWARNING, "%s - Error adding scene marker for pvr recording", __FUNCTION__);
+      }
       continue;
     case PVR_EDL_TYPE_COMBREAK:
       cut.action = COMM_BREAK;
