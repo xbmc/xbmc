@@ -194,7 +194,7 @@ protected:
   void SelectSWVideoFilter();
   void SelectPSVideoFilter();
   void UpdatePSVideoFilter();
-  bool CreateIntermediateRenderTarget();
+  bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height);
 
   void RenderProcessor(DWORD flags);
   int  m_iYV12RenderBuffer;
