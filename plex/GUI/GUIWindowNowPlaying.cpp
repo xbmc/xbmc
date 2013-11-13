@@ -59,7 +59,8 @@ bool CGUIWindowNowPlaying::OnAction(const CAction &action)
   {
     return true;
   }
-  else if (action.GetID() == ACTION_SHOW_GUI)
+  else if (action.GetID() == ACTION_SHOW_GUI ||
+           action.GetID() == ACTION_NAV_BACK)
   {
     g_windowManager.PreviousWindow();
     return true;
