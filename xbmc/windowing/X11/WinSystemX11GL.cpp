@@ -129,16 +129,14 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
     return;
 
   bool vendor_nvidia = strVendor.find("nvidia") != std::string::npos;
-  bool vendor_ati    = StringUtils::StartsWith(strVendor, "ati");
 
-  if (m_glXSwapIntervalMESA && !m_iVSyncMode && vendor_ati)
+  if (m_glXSwapIntervalMESA && !m_iVSyncMode && !vendor_nvidia)
   {
     if(m_glXSwapIntervalMESA(1) == 0)
       m_iVSyncMode = 2;
     else
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
   }
-
   if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode && !vendor_nvidia)
   {
     unsigned int count;
@@ -154,14 +152,6 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
     else
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalSGI failed", __FUNCTION__);
   }
-  if (m_glXSwapIntervalMESA && !m_iVSyncMode && !vendor_ati)
-  {
-    if(m_glXSwapIntervalMESA(1) == 0)
-      m_iVSyncMode = 2;
-    else
-      CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
-  }
-
 }
 
 bool CWinSystemX11GL::IsExtSupported(const char* extension)
