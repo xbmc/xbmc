@@ -102,8 +102,8 @@
 	<include name="ClipThumbUnwatchedOverlay">
 		<control type="image">
 			<visible>!IsEmpty(ListItem.Overlay)</visible>
-			<posx>235</posx>
-			<posy>124</posy>
+			<posx>229</posx>
+			<posy>120</posy>
 			<info>ListItem.Overlay</info>
 		</control>
 	</include>
