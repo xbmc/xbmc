@@ -3363,7 +3363,7 @@ void CGUIWindowSettingsCategory::FillInPlexUpdateChannels(CSetting *pSetting)
   if (user.hasRole(CMyPlexUserInfo::ROLE_EMPLOYEE))
     pControl->AddLabel(g_localizeStrings.Get(40006), CMyPlexUserInfo::ROLE_EMPLOYEE);
 
-  if (pControl->GetMaximum() < 2)
+  if (pControl->GetMaximum() < 1)
     /* only one choice */
     pControl->SetEnabled(false);
 
