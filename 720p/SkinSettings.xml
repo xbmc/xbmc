@@ -153,6 +153,20 @@
 					<onclick>Skin.ToggleSetting(HidePlotForUnwatched)</onclick>
 					<selected>Skin.HasSetting(HidePlotForUnwatched)</selected>
 				</control>
+				<control type="radiobutton" id="212">
+					<description>Hide Unwatched indicators for Movies</description>
+					<width>625</width>
+					<label>Hide Unwatched indicators for Movies in Library</label>
+					<onclick>Skin.ToggleSetting(HideUnwatchedIconsMovies)</onclick>
+					<selected>Skin.HasSetting(HideUnwatchedIconsMovies)</selected>
+				</control>
+				<control type="radiobutton" id="213">
+					<description>Hide Unwatched indicators for TV</description>
+					<width>625</width>
+					<label>Hide Unwatched indicators for TV Shows and Seasons in Library</label>
+					<onclick>Skin.ToggleSetting(HideUnwatchedIconsTVShows)</onclick>
+					<selected>Skin.HasSetting(HideUnwatchedIconsTVShows)</selected>
+				</control>
 				<!--><control type="radiobutton" id="324">
 					<description>Show Pictures description</description>
 					<width>625</width>
